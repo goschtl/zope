@@ -19,6 +19,8 @@ import re
 from Globals import InitializeClass, DTMLFile
 from AccessControl import ClassSecurityInfo
 
+from zope.interface import implements, implementedBy
+
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.ActionInformation import ActionInformation
@@ -35,7 +37,7 @@ class RegistrationTool(BaseTool):
     """ Manage through-the-web signup policies.
     """
 
-    __implements__ = BaseTool.__implements__
+    implements(implementedBy(BaseTool))
 
     meta_type = 'Default Registration Tool'
     _actions = ( ActionInformation( id='join'

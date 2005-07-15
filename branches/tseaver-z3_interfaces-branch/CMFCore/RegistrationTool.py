@@ -16,12 +16,14 @@ $Id$
 """
 
 import re
+from random import choice
 
 from Globals import InitializeClass
 from Globals import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from AccessControl import ClassSecurityInfo
-from random import choice
+
+from zope.interface import implements, implementedBy
 
 from ActionProviderBase import ActionProviderBase
 from permissions import AddPortalMember
@@ -33,8 +35,7 @@ from utils import _limitGrantedRoles
 from utils import getToolByName
 from utils import _dtmldir
 
-from interfaces.portal_registration \
-        import portal_registration as IRegistrationTool
+from interfaces import IRegistrationTool
 
 
 class RegistrationTool(UniqueObject, SimpleItem, ActionProviderBase):
@@ -42,7 +43,8 @@ class RegistrationTool(UniqueObject, SimpleItem, ActionProviderBase):
     """ Create and modify users by making calls to portal_membership.
     """
 
-    __implements__ = (IRegistrationTool, ActionProviderBase.__implements__)
+    implements(IRegistrationTool,
+               implementedBy(ActionProviderBase))
 
     id = 'portal_registration'
     meta_type = 'CMF Registration Tool'

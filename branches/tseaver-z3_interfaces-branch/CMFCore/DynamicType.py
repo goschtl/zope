@@ -20,7 +20,9 @@ from urllib import quote
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
 
-from interfaces.Dynamic import DynamicType as IDynamicType
+from zope.interface import implements
+
+from interfaces import IDynamicType
 from utils import getToolByName
 
 
@@ -30,7 +32,7 @@ class DynamicType:
     a dynamic type property.
     """
 
-    __implements__ = IDynamicType
+    implements(IDynamicType)
 
     portal_type = None
 

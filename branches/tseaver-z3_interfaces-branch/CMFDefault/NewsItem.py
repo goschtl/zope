@@ -18,6 +18,8 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
 
+from zope.interface import implements, implementedBy
+
 from Document import Document
 from permissions import ModifyPortalContent
 from permissions import View
@@ -81,6 +83,7 @@ class NewsItem( Document ):
     """
 
     __implements__ = Document.__implements__  # redundant, but explicit
+    implements(implementedBy(Document))
 
     meta_type='News Item'
     text_format = 'html'

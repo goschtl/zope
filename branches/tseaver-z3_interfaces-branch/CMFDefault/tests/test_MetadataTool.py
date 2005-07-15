@@ -126,16 +126,6 @@ class TestMetadataTool( TestCase ):
     def tearDown( self ):
         del self.tool
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionProvider as IActionProvider
-        from Products.CMFCore.interfaces.portal_metadata \
-                import portal_metadata as IMetadataTool
-
-        verifyClass(IActionProvider, MetadataTool)
-        verifyClass(IMetadataTool, MetadataTool)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IActionProvider

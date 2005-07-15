@@ -28,11 +28,13 @@ from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.utils import contributorsplitter
 from Products.CMFCore.utils import keywordsplitter
 
+from zope.interface import implements, implementedBy
+
 from DublinCore import DefaultDublinCoreImpl
 from exceptions import EditingConflict
 from exceptions import ResourceLockedError
-from interfaces.Document import IDocument
-from interfaces.Document import IMutableDocument
+from interfaces import IDocument
+from interfaces import IMutableDocument
 from permissions import ModifyPortalContent
 from permissions import View
 from utils import _dtmldir
@@ -86,9 +88,12 @@ def addDocument(self, id, title='', description='', text_format='',
 class Document(PortalContent, DefaultDublinCoreImpl):
     """ A Document - Handles both StructuredText and HTML """
 
-    __implements__ = (IDocument, IMutableDocument,
-                      PortalContent.__implements__,
-                      DefaultDublinCoreImpl.__implements__)
+    __implements__ = PortalContent.__implements__
+
+    implements(IDocument,
+               IMutableDocument,
+               implementedBy(PortalContent),
+               implementedBy(DefaultDublinCoreImpl))
 
     meta_type = 'Document'
     effective_date = expiration_date = None

@@ -31,14 +31,6 @@ from Products.CMFCore.tests.base.testcase import SecurityTest
 
 class IndexableObjectWrapperTests(TestCase):
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.CatalogTool import IndexableObjectWrapper
-        from Products.CMFCore.interfaces.portal_catalog \
-                import IndexableObjectWrapper as IIndexableObjectWrapper
-
-        verifyClass(IIndexableObjectWrapper, IndexableObjectWrapper)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.CatalogTool import IndexableObjectWrapper
@@ -53,19 +45,6 @@ class CatalogToolTests(SecurityTest):
         from Products.CMFCore.CatalogTool import CatalogTool
 
         return CatalogTool(*args, **kw)
-
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.CatalogTool import CatalogTool
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionProvider as IActionProvider
-        from Products.CMFCore.interfaces.portal_catalog \
-                import portal_catalog as ICatalogTool
-        from Products.ZCatalog.IZCatalog import IZCatalog
-
-        verifyClass(IActionProvider, CatalogTool)
-        verifyClass(ICatalogTool, CatalogTool)
-        verifyClass(IZCatalog, CatalogTool)
 
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass

@@ -19,9 +19,11 @@ from Globals import InitializeClass
 from Acquisition import aq_base
 from OFS.SimpleItem import SimpleItem
 from AccessControl import ClassSecurityInfo
-from webdav.WriteLockInterface import WriteLockInterface
+from webdav.WriteLockInterface import WriteLockInterface # Still Z2!
 
-from interfaces.Contentish import Contentish
+from zope.interface import implements, implementedBy
+
+from interfaces import IContentish
 from DynamicType import DynamicType
 from CMFCatalogAware import CMFCatalogAware
 from exceptions import NotFound
@@ -39,10 +41,10 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
         Derived classes must implement the interface described in
         interfaces/DublinCore.py.
     """
+    __implements__ = (WriteLockInterface,)
 
-    __implements__ = (Contentish,
-                      WriteLockInterface,
-                      DynamicType.__implements__)
+    implements(IContentish,
+               implementedBy(DynamicType))
 
     isPortalContent = 1
     _isPortalContent = 1  # More reliable than 'isPortalContent'.

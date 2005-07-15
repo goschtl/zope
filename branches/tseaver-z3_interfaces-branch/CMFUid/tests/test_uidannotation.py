@@ -20,14 +20,8 @@ import Testing
 import Zope2
 Zope2.startup()
 
-from Interface.Verify import verifyObject
 
-from Products.CMFCore.PortalFolder import PortalFolder
-from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.testcase import SecurityTest
-
-from Products.CMFUid.interfaces import IUniqueIdAnnotation
-from Products.CMFUid.interfaces import IUniqueIdAnnotationManagement
 
 
 UID_ATTRNAME = 'cmf_uid'
@@ -35,6 +29,7 @@ UID_ATTRNAME = 'cmf_uid'
 class UniqueIdAnnotationTests(SecurityTest):
 
     def setUp(self):
+        from Products.CMFCore.tests.base.dummy import DummyContent
         from Products.CMFUid.UniqueIdAnnotationTool \
                 import UniqueIdAnnotationTool
 
@@ -43,6 +38,10 @@ class UniqueIdAnnotationTests(SecurityTest):
         self.root._setObject('dummy', DummyContent(id='dummy'))
 
     def test_interface(self):
+        from zope.interface.verify import verifyObject
+        from Products.CMFUid.interfaces import IUniqueIdAnnotation
+        from Products.CMFUid.interfaces import IUniqueIdAnnotationManagement
+
         dummy = self.root.dummy
         anno_tool = self.root.portal_uidannotation
         annotation = anno_tool(dummy, UID_ATTRNAME)
@@ -121,6 +120,9 @@ class UniqueIdAnnotationTests(SecurityTest):
         self.assertEqual(getattr(dummy, UID_ATTRNAME), annotation)
 
     def test_simulateNestedFolderCloneRemovingUid1(self):
+        from Products.CMFCore.PortalFolder import PortalFolder
+        from Products.CMFCore.tests.base.dummy import DummyContent
+
         self.root._setObject( 'foo', PortalFolder(id='foo') )
         foo = self.root.foo
         foo._setObject( 'sub1', PortalFolder(id='sub1') )

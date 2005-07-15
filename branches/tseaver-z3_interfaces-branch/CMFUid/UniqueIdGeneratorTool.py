@@ -22,6 +22,8 @@ from BTrees.Length import Length
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 
+from zope.interface import implements, implementedBy
+
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.utils import UniqueObject
 from Products.CMFUid.interfaces import IUniqueIdGenerator
@@ -34,11 +36,10 @@ class UniqueIdGeneratorTool(UniqueObject, SimpleItem, ActionProviderBase):
     ConflictErrors under high load and the values are predictable.
     """
 
-    __implements__ = (
-        IUniqueIdGenerator,
-        ActionProviderBase.__implements__,
-        SimpleItem.__implements__,
-    )
+    implements(IUniqueIdGenerator,
+               implementedBy(ActionProviderBase),
+               implementedBy(SimpleItem),
+              )
 
     id = 'portal_uidgenerator'
     alternative_id = 'portal_standard_uidgenerator'

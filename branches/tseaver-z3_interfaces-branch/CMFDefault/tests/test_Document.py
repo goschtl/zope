@@ -65,30 +65,6 @@ class RequestTestBase(RequestTest):
 
 class DocumentTests(RequestTestBase):
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.Contentish \
-                import Contentish as IContentish
-        from Products.CMFCore.interfaces.DublinCore \
-                import CatalogableDublinCore as ICatalogableDublinCore
-        from Products.CMFCore.interfaces.DublinCore \
-                import DublinCore as IDublinCore
-        from Products.CMFCore.interfaces.DublinCore \
-                import MutableDublinCore as IMutableDublinCore
-        from Products.CMFCore.interfaces.Dynamic \
-                import DynamicType as IDynamicType
-        from Products.CMFDefault.Document import Document
-        from Products.CMFDefault.interfaces.Document import IDocument
-        from Products.CMFDefault.interfaces.Document import IMutableDocument
-
-        verifyClass(ICatalogableDublinCore, Document)
-        verifyClass(IContentish, Document)
-        verifyClass(IDocument, Document)
-        verifyClass(IDublinCore, Document)
-        verifyClass(IDynamicType, Document)
-        verifyClass(IMutableDocument, Document)
-        verifyClass(IMutableDublinCore, Document)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import ICatalogableDublinCore

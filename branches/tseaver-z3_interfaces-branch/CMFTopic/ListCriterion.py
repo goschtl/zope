@@ -17,11 +17,12 @@ $Id$
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 
+from zope.interface import implements
 
 from permissions import View
 from permissions import ChangeTopics
 from AbstractCriterion import AbstractCriterion
-from interfaces import Criterion
+from interfaces import ICriterion
 from Topic import Topic
 
 
@@ -30,7 +31,7 @@ class ListCriterion( AbstractCriterion ):
         Represent a criterion which is a list of values (for an
         'OR' search).
     """
-    __implements__ = ( Criterion, )
+    implements(ICriterion)
 
     meta_type = 'List Criterion'
     operator = None

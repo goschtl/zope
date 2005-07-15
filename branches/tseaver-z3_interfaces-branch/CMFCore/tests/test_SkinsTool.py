@@ -23,14 +23,6 @@ Zope2.startup()
 
 class SkinsContainerTests(TestCase):
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_skins \
-                import SkinsContainer as ISkinsContainer
-        from Products.CMFCore.SkinsContainer import SkinsContainer
-
-        verifyClass(ISkinsContainer, SkinsContainer)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import ISkinsContainer
@@ -45,20 +37,6 @@ class SkinsToolTests(TestCase):
         from Products.CMFCore.SkinsTool import SkinsTool
 
         return SkinsTool(*args, **kw)
-
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionProvider as IActionProvider
-        from Products.CMFCore.interfaces.portal_skins \
-                import portal_skins as ISkinsTool
-        from Products.CMFCore.interfaces.portal_skins \
-                import SkinsContainer as ISkinsContainer
-        from Products.CMFCore.SkinsTool import SkinsTool
-
-        verifyClass(IActionProvider, SkinsTool)
-        verifyClass(ISkinsContainer, SkinsTool)
-        verifyClass(ISkinsTool, SkinsTool)
 
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass

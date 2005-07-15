@@ -20,6 +20,8 @@ from DateTime import DateTime
 from Globals import InitializeClass
 import transaction
 
+from zope.interface import implements, implementedBy
+
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.utils import contributorsplitter
 from Products.CMFCore.utils import keywordsplitter
@@ -116,9 +118,9 @@ class Event(PortalContent, DefaultDublinCoreImpl):
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
 
-    __implements__ = ( PortalContent.__implements__
-                     , DefaultDublinCoreImpl.__implements__
-                     )
+    implements(implementedBy(PortalContent),
+               implementedBy(DefaultDublinCoreImpl),
+              )
 
     def __init__(self
                  , id

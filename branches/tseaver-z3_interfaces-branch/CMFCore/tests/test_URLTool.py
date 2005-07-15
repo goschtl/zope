@@ -36,17 +36,6 @@ class URLToolTests(TestCase):
         url_tool = URLTool(*args, **kw)
         return url_tool.__of__( self.site )
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionProvider as IActionProvider
-        from Products.CMFCore.interfaces.portal_url \
-                import portal_url as IURLTool
-        from Products.CMFCore.URLTool import URLTool
-
-        verifyClass(IActionProvider, URLTool)
-        verifyClass(IURLTool, URLTool)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IActionProvider

@@ -30,12 +30,14 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zLOG import LOG, ERROR
 import Products
 
+from zope.interface import implements, implementedBy
+
 from ActionProviderBase import ActionProviderBase
 from exceptions import AccessControl_Unauthorized
 from exceptions import BadRequest
 from exceptions import zExceptions_Unauthorized
-from interfaces.portal_types import ContentTypeInformation as ITypeInformation
-from interfaces.portal_types import portal_types as ITypesTool
+from interfaces import ITypeInformation
+from interfaces import ITypesTool
 from permissions import AccessContentsInformation
 from permissions import ManagePortal
 from permissions import View
@@ -438,7 +440,7 @@ class FactoryTypeInformation(TypeInformation):
     Portal content factory.
     """
 
-    __implements__ = ITypeInformation
+    implements(ITypeInformation)
 
     meta_type = 'Factory-based Type Information'
     security = ClassSecurityInfo()
@@ -554,7 +556,7 @@ class ScriptableTypeInformation( TypeInformation ):
     Invokes a script rather than a factory to create the content.
     """
 
-    __implements__ = ITypeInformation
+    implements(ITypeInformation)
 
     meta_type = 'Scriptable Type Information'
     security = ClassSecurityInfo()
@@ -632,7 +634,8 @@ class TypesTool(UniqueObject, IFAwareObjectManager, Folder,
         Provides a configurable registry of portal content types.
     """
 
-    __implements__ = (ITypesTool, ActionProviderBase.__implements__)
+    implements(ITypesTool,  
+               implementedBy(ActionProviderBase))
 
     id = 'portal_types'
     meta_type = 'CMF Types Tool'

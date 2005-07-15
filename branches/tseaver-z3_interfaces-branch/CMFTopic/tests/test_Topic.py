@@ -147,21 +147,6 @@ class TestTopic(SecurityTest):
             self.site._setObject( k, v )
             self.site.portal_catalog._index( document )
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from OFS.IOrderSupport import IOrderedContainer
-        from webdav.WriteLockInterface import WriteLockInterface
-        from Products.CMFCore.interfaces.Dynamic \
-                import DynamicType as IDynamicType
-        from Products.CMFCore.interfaces.Folderish \
-                import Folderish as IFolderish
-        from Products.CMFTopic.Topic import Topic
-
-        verifyClass(IDynamicType, Topic)
-        verifyClass(IFolderish, Topic)
-        verifyClass(IOrderedContainer, Topic)
-        verifyClass(WriteLockInterface, Topic)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IDynamicType

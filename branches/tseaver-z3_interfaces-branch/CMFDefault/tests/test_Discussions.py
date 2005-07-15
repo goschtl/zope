@@ -36,29 +36,6 @@ from Products.CMFDefault.exceptions import DiscussionNotAllowed
 
 class DiscussionItemTests(TestCase):
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.Contentish \
-                import Contentish as IContentish
-        from Products.CMFCore.interfaces.Discussions \
-                import DiscussionResponse as IDiscussionResponse
-        from Products.CMFCore.interfaces.DublinCore \
-                import CatalogableDublinCore as ICatalogableDublinCore
-        from Products.CMFCore.interfaces.DublinCore \
-                import DublinCore as IDublinCore
-        from Products.CMFCore.interfaces.DublinCore \
-                import MutableDublinCore as IMutableDublinCore
-        from Products.CMFCore.interfaces.Dynamic \
-                import DynamicType as IDynamicType
-        from Products.CMFDefault.DiscussionItem import DiscussionItem
-
-        verifyClass(ICatalogableDublinCore, DiscussionItem)
-        verifyClass(IContentish, DiscussionItem)
-        verifyClass(IDiscussionResponse, DiscussionItem)
-        verifyClass(IDublinCore, DiscussionItem)
-        verifyClass(IDynamicType, DiscussionItem)
-        verifyClass(IMutableDublinCore, DiscussionItem)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import ICatalogableDublinCore
@@ -78,14 +55,6 @@ class DiscussionItemTests(TestCase):
 
 
 class DiscussionItemContainerTests(TestCase):
-
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.Discussions \
-                import Discussable as IDiscussable
-        from Products.CMFDefault.DiscussionItem import DiscussionItemContainer
-
-        verifyClass(IDiscussable, DiscussionItemContainer)
 
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass

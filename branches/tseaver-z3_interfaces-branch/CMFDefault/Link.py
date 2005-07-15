@@ -26,6 +26,8 @@ from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.utils import contributorsplitter
 from Products.CMFCore.utils import keywordsplitter
 
+from zope.interface import implements, implementedBy
+
 from DublinCore import DefaultDublinCoreImpl
 from exceptions import ResourceLockedError
 from permissions import ModifyPortalContent
@@ -85,10 +87,10 @@ class Link( PortalContent
     """
         A Link
     """
+    __implements__ = PortalContent.__implements__   # WriteLockInterface
 
-    __implements__ = ( PortalContent.__implements__
-                     , DefaultDublinCoreImpl.__implements__
-                     )
+    implements(implementedBy(PortalContent),
+               implementedBy(DefaultDublinCoreImpl))
 
     meta_type = 'Link'
     URL_FORMAT = format = 'text/url'

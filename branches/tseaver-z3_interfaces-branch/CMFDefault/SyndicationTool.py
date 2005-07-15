@@ -24,6 +24,8 @@ from Globals import HTMLFile
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 
+from zope.interface import implements, implementedBy
+
 from Products.CMFCore.ActionInformation import ActionInformation
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.Expression import Expression
@@ -44,7 +46,7 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
         syndication of folder content as RSS.
     """
 
-    __implements__ = ActionProviderBase.__implements__
+    implements(implementedBy(ActionProviderBase))
 
     id = 'portal_syndication'
     meta_type = 'Default Syndication Tool'

@@ -20,25 +20,26 @@ from Globals import InitializeClass, DTMLFile
 from Acquisition import Implicit
 from AccessControl import ClassSecurityInfo
 
+from zope.interface import implements, implementedBy
+
 from ActionProviderBase import ActionProviderBase
 from permissions import AccessContentsInformation
 from permissions import ManagePortal
 from permissions import ReplyToItem
 from permissions import View
-from interfaces.Discussions import OldDiscussable as IOldDiscussable
-from interfaces.portal_discussion \
-        import oldstyle_portal_discussion as IOldstyleDiscussionTool
+from interfaces import IDiscussable
+from interfaces import IDiscussionTool
 from utils import _dtmldir
 from utils import getToolByName
 from utils import UniqueObject
 
 
-class OldDiscussable(Implicit):
+class Discussable(Implicit):
     """
         Adapter for PortalContent to implement "old-style" discussions.
     """
 
-    __implements__ = IOldDiscussable
+    implements(IDiscussable)
 
     _isDiscussable = 1
 
@@ -114,8 +115,8 @@ class OldDiscussable(Implicit):
 
 class DiscussionTool (UniqueObject, SimpleItem, ActionProviderBase):
 
-    __implements__ = (IOldstyleDiscussionTool,
-                      ActionProviderBase.__implements__)
+    implements(IDiscussionTool,
+               implementedBy(ActionProviderBase))
 
     id = 'portal_discussion'
     meta_type = 'Oldstyle CMF Discussion Tool'
@@ -140,7 +141,7 @@ class DiscussionTool (UniqueObject, SimpleItem, ActionProviderBase):
     def getDiscussionFor(self, content):
         '''Gets the PortalDiscussion object that applies to content.
         '''
-        return OldDiscussable( content ).__of__( content )
+        return Discussable( content ).__of__( content )
 
     security.declarePublic('isDiscussionAllowedFor')
     def isDiscussionAllowedFor(self, content):
@@ -154,6 +155,27 @@ class DiscussionTool (UniqueObject, SimpleItem, ActionProviderBase):
         if typeInfo:
             return typeInfo.allowDiscussion()
         return 0
+
+    def overrideDiscussionFor(self, content, allowDiscussion):
+        """ Override discussability for the given object or clear the setting.
+
+        o 'allowDiscussion' may be True, False, or None.
+
+        o If 'allowDiscussion' is None, then clear any overridden setting for
+          discussability, letting the site's default policy apply.
+
+        o Otherwise, set the override to match 'allowDiscussion'.
+
+        o Permission:  PUblic XXX?  Should be ManageContent, or something.
+        """
+        if allowDiscussion is None:
+            try:
+                del content.allowDiscussion
+            except (AttributeError, KeyError):
+                pass
+        else:
+            content.allowDiscussion = allowDiscussion
+
 
     security.declarePrivate('listActions')
     def listActions(self, info=None, object=None):

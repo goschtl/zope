@@ -28,15 +28,6 @@ class MajorMinorPredicateTests( TestCase ):
 
         return MajorMinorPredicate(*args, **kw)
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.ContentTypeRegistry import MajorMinorPredicate
-        from Products.CMFCore.interfaces.ContentTypeRegistry \
-                import ContentTypeRegistryPredicate \
-                as IContentTypeRegistryPredicate
-
-        verifyClass(IContentTypeRegistryPredicate, MajorMinorPredicate)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.ContentTypeRegistry import MajorMinorPredicate
@@ -84,15 +75,6 @@ class ExtensionPredicateTests( TestCase ):
 
         return ExtensionPredicate(*args, **kw)
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.ContentTypeRegistry import ExtensionPredicate
-        from Products.CMFCore.interfaces.ContentTypeRegistry \
-                import ContentTypeRegistryPredicate \
-                as IContentTypeRegistryPredicate
-
-        verifyClass(IContentTypeRegistryPredicate, ExtensionPredicate)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.ContentTypeRegistry import ExtensionPredicate
@@ -135,16 +117,6 @@ class MimeTypeRegexPredicateTests( TestCase ):
 
         return MimeTypeRegexPredicate(*args, **kw)
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.ContentTypeRegistry \
-                import MimeTypeRegexPredicate
-        from Products.CMFCore.interfaces.ContentTypeRegistry \
-                import ContentTypeRegistryPredicate \
-                as IContentTypeRegistryPredicate
-
-        verifyClass(IContentTypeRegistryPredicate, MimeTypeRegexPredicate)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.ContentTypeRegistry \
@@ -180,15 +152,6 @@ class NameRegexPredicateTests( TestCase ):
         from Products.CMFCore.ContentTypeRegistry import NameRegexPredicate
 
         return NameRegexPredicate(*args, **kw)
-
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.ContentTypeRegistry import NameRegexPredicate
-        from Products.CMFCore.interfaces.ContentTypeRegistry \
-                import ContentTypeRegistryPredicate \
-                as IContentTypeRegistryPredicate
-
-        verifyClass(IContentTypeRegistryPredicate, NameRegexPredicate)
 
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
@@ -228,14 +191,6 @@ class ContentTypeRegistryTests( TestCase ):
 
     def setUp( self ):
         self.reg = self._makeOne()
-
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.ContentTypeRegistry import ContentTypeRegistry
-        from Products.CMFCore.interfaces.ContentTypeRegistry \
-                import ContentTypeRegistry as IContentTypeRegistry
-
-        verifyClass(IContentTypeRegistry, ContentTypeRegistry)
 
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass

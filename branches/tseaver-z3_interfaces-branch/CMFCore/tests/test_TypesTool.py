@@ -69,17 +69,6 @@ class TypesToolTests(SecurityTest):
         fti = FTIDATA_DUMMY[0].copy()
         self.ttool._setObject( 'Dummy Content', FTI(**fti) )
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionProvider as IActionProvider
-        from Products.CMFCore.interfaces.portal_types \
-                import portal_types as ITypesTool
-        from Products.CMFCore.TypesTool import TypesTool
-
-        verifyClass(IActionProvider, TypesTool)
-        verifyClass(ITypesTool, TypesTool)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IActionProvider
@@ -444,14 +433,6 @@ class FTIDataTests( TypeInfoTests ):
 
         return FactoryTypeInformation(id, **kw)
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_types \
-                import ContentTypeInformation as ITypeInformation
-        from Products.CMFCore.TypesTool import FactoryTypeInformation
-
-        verifyClass(ITypeInformation, FactoryTypeInformation)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import ITypeInformation
@@ -478,14 +459,6 @@ class STIDataTests( TypeInfoTests ):
         from Products.CMFCore.TypesTool import ScriptableTypeInformation
 
         return ScriptableTypeInformation(id, **kw)
-
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_types \
-                import ContentTypeInformation as ITypeInformation
-        from Products.CMFCore.TypesTool import ScriptableTypeInformation
-
-        verifyClass(ITypeInformation, ScriptableTypeInformation)
 
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass

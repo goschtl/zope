@@ -27,12 +27,14 @@ from Globals import InitializeClass
 from OFS.OrderSupport import OrderSupport
 from OFS.Folder import Folder
 
+from zope.interface import implements, implementedBy
+
 from CMFCatalogAware import CMFCatalogAware
 from DynamicType import DynamicType
 from exceptions import AccessControl_Unauthorized
 from exceptions import BadRequest
 from exceptions import zExceptions_Unauthorized
-from interfaces.Folderish import Folderish as IFolderish
+from interfaces import IFolderish
 from permissions import AddPortalContent
 from permissions import AddPortalFolders
 from permissions import ChangeLocalRoles
@@ -101,8 +103,9 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
     """
     meta_type = 'Portal Folder Base'
 
-    __implements__ = (IFolderish, DynamicType.__implements__,
-                      Folder.__implements__)
+    implements(IFolderish,
+               implementedBy(DynamicType),
+               implementedBy(Folder))
 
     security = ClassSecurityInfo()
 
@@ -532,8 +535,8 @@ class PortalFolder(OrderSupport, PortalFolderBase):
     meta_type = 'Portal Folder'
     portal_type = 'Folder'
 
-    __implements__ = (PortalFolderBase.__implements__,
-                      OrderSupport.__implements__)
+    implements(implementedBy(PortalFolderBase),
+               implementedBy(OrderSupport))
 
     security = ClassSecurityInfo()
 

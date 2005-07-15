@@ -23,15 +23,6 @@ Zope2.startup()
 
 class DefaultWorkflowDefinitionTests(TestCase):
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_workflow \
-                import WorkflowDefinition as IWorkflowDefinition
-        from Products.CMFDefault.DefaultWorkflow \
-                import DefaultWorkflowDefinition
-
-        verifyClass(IWorkflowDefinition, DefaultWorkflowDefinition)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IWorkflowDefinition

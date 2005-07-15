@@ -268,14 +268,6 @@ class CachingPolicyManagerTests(TestCase):
     def assertEqualDelta( self, lhs, rhs, delta ):
         self.failUnless( abs( lhs - rhs ) <= delta )
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
-        from Products.CMFCore.interfaces.CachingPolicyManager \
-                import CachingPolicyManager as ICachingPolicyManager
-
-        verifyClass(ICachingPolicyManager, CachingPolicyManager)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.CachingPolicyManager import CachingPolicyManager

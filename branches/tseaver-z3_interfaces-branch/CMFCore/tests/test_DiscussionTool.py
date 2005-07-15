@@ -23,49 +23,19 @@ Zope2.startup()
 
 class DiscussionToolTests(TestCase):
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.DiscussionTool import DiscussionTool
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionProvider as IActionProvider
-        from Products.CMFCore.interfaces.portal_discussion \
-                import oldstyle_portal_discussion as IOldstyleDiscussionTool
-
-        verifyClass(IActionProvider, DiscussionTool)
-        verifyClass(IOldstyleDiscussionTool, DiscussionTool)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.DiscussionTool import DiscussionTool
         from Products.CMFCore.interfaces import IActionProvider
-        from Products.CMFCore.interfaces import IOldstyleDiscussionTool
+        from Products.CMFCore.interfaces import IDiscussionTool
 
         verifyClass(IActionProvider, DiscussionTool)
-        verifyClass(IOldstyleDiscussionTool, DiscussionTool)
-
-
-class OldDiscussableTests(TestCase):
-
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.DiscussionTool import OldDiscussable
-        from Products.CMFCore.interfaces.Discussions \
-                import OldDiscussable as IOldDiscussable
-
-        verifyClass(IOldDiscussable, OldDiscussable)
-
-    def test_z3interfaces(self):
-        from zope.interface.verify import verifyClass
-        from Products.CMFCore.DiscussionTool import OldDiscussable
-        from Products.CMFCore.interfaces import IOldstyleDiscussable
-
-        verifyClass(IOldstyleDiscussable, OldDiscussable)
+        verifyClass(IDiscussionTool, DiscussionTool)
 
 
 def test_suite():
     return TestSuite((
         makeSuite( DiscussionToolTests ),
-        makeSuite( OldDiscussableTests ),
         ))
 
 if __name__ == '__main__':

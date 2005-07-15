@@ -37,17 +37,6 @@ class DiscussionToolTests(TestCase):
         self.site._setObject( 'portal_discussion', self._makeOne() )
         self.site._setObject( 'portal_membership', DummyTool() )
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionProvider as IActionProvider
-        from Products.CMFCore.interfaces.portal_discussion \
-                import portal_discussion as IDiscussionTool
-        from Products.CMFDefault.DiscussionTool import DiscussionTool
-
-        verifyClass(IActionProvider, DiscussionTool)
-        verifyClass(IDiscussionTool, DiscussionTool)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IActionProvider

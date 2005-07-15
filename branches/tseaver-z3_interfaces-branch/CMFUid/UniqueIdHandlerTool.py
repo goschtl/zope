@@ -26,6 +26,8 @@ from Acquisition import Implicit, aq_base
 
 from OFS.SimpleItem import SimpleItem
 
+from zope.interface import implements, implementedBy
+
 from Products.CMFCore.utils import getToolByName, UniqueObject
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.permissions import ManagePortal
@@ -40,13 +42,12 @@ UID_ATTRIBUTE_NAME = 'cmf_uid'
 class UniqueIdHandlerTool(UniqueObject, SimpleItem, ActionProviderBase):
     __doc__ = __doc__ # copy from module
 
-    __implements__ = (
-        IUniqueIdHandler,
-        IUniqueIdBrainQuery,
-        IUniqueIdUnrestrictedQuery,
-        ActionProviderBase.__implements__,
-        SimpleItem.__implements__,
-    )
+    implements(IUniqueIdHandler,
+               IUniqueIdBrainQuery,
+               IUniqueIdUnrestrictedQuery,
+               implementedBy(ActionProviderBase),
+               implementedBy(SimpleItem),
+              )
 
     id = 'portal_uidhandler'
     alternative_id = "portal_standard_uidhandler"

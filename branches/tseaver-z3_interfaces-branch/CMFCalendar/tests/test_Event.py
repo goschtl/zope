@@ -33,26 +33,6 @@ class TestEvent(TestCase):
 
         return Event(id, *args, **kw)
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.Contentish \
-                import Contentish as IContentish
-        from Products.CMFCore.interfaces.DublinCore \
-                import CatalogableDublinCore as ICatalogableDublinCore
-        from Products.CMFCore.interfaces.DublinCore \
-                import DublinCore as IDublinCore
-        from Products.CMFCore.interfaces.DublinCore \
-                import MutableDublinCore as IMutableDublinCore
-        from Products.CMFCore.interfaces.Dynamic \
-                import DynamicType as IDynamicType
-        from Products.CMFCalendar.Event import Event
-
-        verifyClass(ICatalogableDublinCore, Event)
-        verifyClass(IContentish, Event)
-        verifyClass(IDublinCore, Event)
-        verifyClass(IDynamicType, Event)
-        verifyClass(IMutableDublinCore, Event)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCalendar.Event import Event

@@ -169,17 +169,6 @@ class WorkflowToolTests(TestCase):
         tool.setChainForPortalTypes( ( 'Dummy Content', ), ( 'a', 'b' ) )
         return tool
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionProvider as IActionProvider
-        from Products.CMFCore.interfaces.portal_workflow \
-                import portal_workflow as IWorkflowTool
-        from Products.CMFCore.WorkflowTool import WorkflowTool
-
-        verifyClass(IActionProvider, WorkflowTool)
-        verifyClass(IWorkflowTool, WorkflowTool)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IActionProvider

@@ -69,17 +69,6 @@ class MemberDataToolTests(TestCase):
 
         return MemberDataTool(*args, **kw)
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionProvider as IActionProvider
-        from Products.CMFCore.interfaces.portal_memberdata \
-                import portal_memberdata as IMemberDataTool
-        from Products.CMFCore.MemberDataTool import MemberDataTool
-
-        verifyClass(IActionProvider, MemberDataTool)
-        verifyClass(IMemberDataTool, MemberDataTool)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IActionProvider
@@ -104,14 +93,6 @@ class MemberDataTests(TestCase):
         from Products.CMFCore.MemberDataTool import MemberData
 
         return MemberData(*args, **kw)
-
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_memberdata \
-                import MemberData as IMemberData
-        from Products.CMFCore.MemberDataTool import MemberData
-
-        verifyClass(IMemberData, MemberData)
 
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass

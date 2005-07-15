@@ -38,14 +38,6 @@ class ActionCategoryTests(TestCase):
 
         return ActionCategory(*args, **kw)
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.ActionInformation import ActionCategory
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionCategory as IActionCategory
-
-        verifyClass(IActionCategory, ActionCategory)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.ActionInformation import ActionCategory
@@ -70,14 +62,6 @@ class ActionTests(TestCase):
         from Products.CMFCore.ActionInformation import Action
 
         return Action(*args, **kw)
-
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.ActionInformation import Action
-        from Products.CMFCore.interfaces.portal_actions \
-                import Action as IAction
-
-        verifyClass(IAction, Action)
 
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
@@ -118,20 +102,12 @@ class ActionInfoTests(TestCase):
 
         return ActionInfo(*args, **kw)
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.ActionInformation import ActionInfo
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionInfo as IActionInfo
-
-        verifyClass(IActionInfo, ActionInfo)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.ActionInformation import ActionInfo
-        from Products.CMFCore.interfaces import IActionInfo
+        from Products.CMFCore.interfaces import IActionInformation
 
-        verifyClass(IActionInfo, ActionInfo)
+        verifyClass(IActionInformation, ActionInfo)
 
     def test_create_from_Action(self):
         from Products.CMFCore.ActionInformation import Action
@@ -252,14 +228,6 @@ class ActionInformationTests(TransactionalTest):
         from Products.CMFCore.ActionInformation import ActionInformation
 
         return ActionInformation(*args, **kw)
-
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.ActionInformation import ActionInformation
-        from Products.CMFCore.interfaces.portal_actions \
-                import Action as IAction
-
-        verifyClass(IAction, ActionInformation)
 
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass

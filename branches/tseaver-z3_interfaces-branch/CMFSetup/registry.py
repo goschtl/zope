@@ -22,6 +22,8 @@ from Acquisition import Implicit
 from Globals import InitializeClass
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
+from zope.interface import implements, implementedBy
+
 from interfaces import BASE
 from interfaces import IImportStepRegistry
 from interfaces import IExportStepRegistry
@@ -41,7 +43,7 @@ class ImportStepRegistry( Implicit ):
 
     o Steps are composed together to define a site profile.
     """
-    __implements__ = ( IImportStepRegistry, )
+    implements(IImportStepRegistry)
 
     security = ClassSecurityInfo()
 
@@ -273,7 +275,7 @@ class ExportStepRegistry( Implicit ):
       - 'filename' is a suggested filename for use when downloading.
 
     """
-    __implements__ = ( IExportStepRegistry, )
+    implements(IExportStepRegistry)
 
     security = ClassSecurityInfo()
 
@@ -403,7 +405,7 @@ class ToolsetRegistry( Implicit ):
 
     """ Track required / forbidden tools.
     """
-    __implements__ = ( IToolsetRegistry, )
+    implements(IToolsetRegistry)
 
     security = ClassSecurityInfo()
     security.setDefaultAccess( 'allow' )
@@ -520,7 +522,7 @@ class ProfileRegistry( Implicit ):
 
     """ Track registered profiles.
     """
-    __implements__ = ( IProfileRegistry, )
+    implements(IProfileRegistry)
 
     security = ClassSecurityInfo()
     security.setDefaultAccess( 'allow' )

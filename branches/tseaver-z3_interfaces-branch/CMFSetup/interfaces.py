@@ -15,7 +15,7 @@
 $Id$
 """
 
-from Interface import Interface
+from zope.interface import Interface
 
 
 BASE, EXTENSION = range(2)

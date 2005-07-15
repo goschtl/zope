@@ -122,21 +122,6 @@ class PortalFolderTests(SecurityTest):
 
         return self.site._setObject( id, PortalFolder(id, *args, **kw) )
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from OFS.IOrderSupport import IOrderedContainer
-        from webdav.WriteLockInterface import WriteLockInterface
-        from Products.CMFCore.interfaces.Dynamic \
-                import DynamicType as IDynamicType
-        from Products.CMFCore.interfaces.Folderish \
-                import Folderish as IFolderish
-        from Products.CMFCore.PortalFolder import PortalFolder
-
-        verifyClass(IDynamicType, PortalFolder)
-        verifyClass(IFolderish, PortalFolder)
-        verifyClass(IOrderedContainer, PortalFolder)
-        verifyClass(WriteLockInterface, PortalFolder)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IDynamicType

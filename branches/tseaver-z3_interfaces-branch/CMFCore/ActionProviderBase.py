@@ -19,12 +19,14 @@ from AccessControl import ClassSecurityInfo
 from Globals import DTMLFile
 from Globals import InitializeClass
 
+from zope.interface import implements
+
 from ActionInformation import ActionInfo
 from ActionInformation import ActionInformation
 from ActionInformation import getOAI
 from exceptions import AccessControl_Unauthorized
 from Expression import getExprContext
-from interfaces.portal_actions import ActionProvider as IActionProvider
+from interfaces import IActionProvider
 from permissions import ManagePortal
 from utils import _dtmldir
 
@@ -33,7 +35,7 @@ class ActionProviderBase:
     """ Provide ActionTabs and management methods for ActionProviders
     """
 
-    __implements__ = IActionProvider
+    implements(IActionProvider)
 
     security = ClassSecurityInfo()
 

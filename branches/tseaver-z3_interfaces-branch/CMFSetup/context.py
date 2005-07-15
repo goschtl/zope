@@ -37,6 +37,8 @@ from OFS.Image import Image
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.PythonScripts.PythonScript import PythonScript
 
+from zope.interface import implements, implementedBy
+
 from interfaces import IExportContext
 from interfaces import IImportContext
 from permissions import ManagePortal
@@ -44,7 +46,7 @@ from permissions import ManagePortal
 
 class DirectoryImportContext( Implicit ):
 
-    __implements__ = ( IImportContext, )
+    implements(IImportContext)
 
     security = ClassSecurityInfo()
 
@@ -146,7 +148,7 @@ InitializeClass( DirectoryImportContext )
 
 class DirectoryExportContext( Implicit ):
 
-    __implements__ = ( IExportContext, )
+    implements(IExportContext)
 
     security = ClassSecurityInfo()
 
@@ -188,7 +190,7 @@ InitializeClass( DirectoryExportContext )
 
 class TarballExportContext( Implicit ):
 
-    __implements__ = ( IExportContext, )
+    implements(IExportContext)
 
     security = ClassSecurityInfo()
 
@@ -245,7 +247,7 @@ InitializeClass( TarballExportContext )
 
 class SnapshotExportContext( Implicit ):
 
-    __implements__ = ( IExportContext, )
+    implements(IExportContext)
 
     security = ClassSecurityInfo()
 
@@ -344,7 +346,7 @@ InitializeClass( SnapshotExportContext )
 
 class SnapshotImportContext( Implicit ):
 
-    __implements__ = ( IImportContext, )
+    implements(IImportContext)
 
     security = ClassSecurityInfo()
 

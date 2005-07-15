@@ -22,20 +22,23 @@ from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 
+from zope.interface import implements, implementedBy
+
 from ActionProviderBase import ActionProviderBase
 from permissions import ManagePortal
 from permissions import View
 from utils import _dtmldir
 from utils import UniqueObject
 
-from interfaces.portal_url import portal_url as IURLTool
+from interfaces import IURLTool
 
 
 class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
     """ CMF URL Tool.
     """
 
-    __implements__ = (IURLTool, ActionProviderBase.__implements__)
+    implements(IURLTool,
+               implementedBy(ActionProviderBase))
 
     id = 'portal_url'
     meta_type = 'CMF URL Tool'

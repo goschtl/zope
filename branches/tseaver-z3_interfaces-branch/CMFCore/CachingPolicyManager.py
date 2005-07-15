@@ -25,11 +25,12 @@ from OFS.SimpleItem import SimpleItem
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
 
+from zope.interface import implements
+
 from permissions import ManagePortal
 from permissions import View
 from Expression import Expression
-from interfaces.CachingPolicyManager \
-        import CachingPolicyManager as ICachingPolicyManager
+from interfaces import ICachingPolicyManager
 from utils import _dtmldir
 from utils import getToolByName
 
@@ -256,7 +257,7 @@ class CachingPolicyManager( SimpleItem ):
         to them from skin methods.
     """
 
-    __implements__ = ICachingPolicyManager
+    implements(ICachingPolicyManager)
 
     id = 'caching_policy_manager'
     meta_type = 'CMF Caching Policy Manager'

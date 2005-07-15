@@ -22,9 +22,11 @@ from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.PropertyManager import PropertyManager
 
-from Products.CMFCore.interfaces.DublinCore import CatalogableDublinCore
-from Products.CMFCore.interfaces.DublinCore import DublinCore
-from Products.CMFCore.interfaces.DublinCore import MutableDublinCore
+from zope.interface import implements
+
+from Products.CMFCore.interfaces import IDublinCore
+from Products.CMFCore.interfaces import ICatalogableDublinCore
+from Products.CMFCore.interfaces import IMutableDublinCore
 from Products.CMFCore.utils import getToolByName
 
 from permissions import ModifyPortalContent
@@ -42,7 +44,9 @@ _zone = DateTime().timezone()
 class DefaultDublinCoreImpl( PropertyManager ):
     """ Mix-in class which provides Dublin Core methods.
     """
-    __implements__ = DublinCore, CatalogableDublinCore, MutableDublinCore
+    implements(IDublinCore,
+               ICatalogableDublinCore,
+               IMutableDublinCore)
 
     security = ClassSecurityInfo()
 

@@ -22,8 +22,9 @@ from AccessControl import ClassSecurityInfo
 from DateTime import DateTime
 from Globals import InitializeClass
 
-from Products.CMFCore.interfaces.portal_workflow \
-        import WorkflowDefinition as IWorkflowDefinition
+from zope.interface import implements
+
+from Products.CMFCore.interfaces import IWorkflowDefinition
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import _modifyPermissionMappings
 from Products.CMFCore.utils import getToolByName
@@ -40,7 +41,7 @@ class DefaultWorkflowDefinition (SimpleItemWithProperties):
     """ Default workflow definition.
     """
 
-    __implements__ = IWorkflowDefinition
+    implements(IWorkflowDefinition)
 
     meta_type = 'Workflow'
     id = 'default_workflow'

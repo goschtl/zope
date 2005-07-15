@@ -22,6 +22,8 @@ from AccessControl import ClassSecurityInfo
 
 from Products.CMFCore.PortalContent import PortalContent
 
+from zope.interface import implements, implementedBy
+
 from DublinCore import DefaultDublinCoreImpl
 from permissions import View
 from permissions import ModifyPortalContent
@@ -126,9 +128,10 @@ class File( OFS.Image.File
     # this problem altogether. getId is the new way, accessing .id is
     # deprecated.
 
-    __implements__ = ( PortalContent.__implements__
-                     , DefaultDublinCoreImpl.__implements__
-                     )
+    __implements__ = PortalContent.__implements__   # WriteLockInterface
+
+    implements(implementedBy(PortalContent),
+               implementedBy(DefaultDublinCoreImpl))
     
     meta_type='Portal File'
     effective_date = expiration_date = None

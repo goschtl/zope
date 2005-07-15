@@ -24,9 +24,9 @@ from Acquisition import Implicit
 from Acquisition import aq_parent
 from OFS.Folder import Folder
 from OFS.OrderedFolder import OrderedFolder
+from zope.interface import implements
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.interfaces.portal_actions \
-    import ActionProvider as IActionProvider
+from Products.CMFCore.interfaces import IActionProvider
 
 from common import BaseRegistryTests
 from common import DummyExportContext
@@ -35,7 +35,7 @@ from common import DummyImportContext
 
 class DummyTool( OrderedFolder, ActionProviderBase ):
 
-    __implements__ = ( IActionProvider, )
+    implements(IActionProvider)
 
 
 class DummyUser( Implicit ):

@@ -26,9 +26,10 @@ from Globals import InitializeClass
 from OFS.Folder import Folder
 from OFS.ObjectManager import bad_id
 
+from zope.interface import implements
+
 # CMFCore
-from Products.CMFCore.interfaces.portal_workflow \
-        import WorkflowDefinition as IWorkflowDefinition
+from Products.CMFCore.interfaces import IWorkflowDefinition
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import ObjectDeleted
 from Products.CMFCore.WorkflowCore import ObjectMoved
@@ -60,7 +61,7 @@ class DCWorkflowDefinition (WorkflowUIMixin, Folder):
     UI methods are in WorkflowUIMixin.
     '''
 
-    __implements__ = IWorkflowDefinition
+    implements(IWorkflowDefinition)
 
     meta_type = 'Workflow'
     title = 'DC Workflow Definition'

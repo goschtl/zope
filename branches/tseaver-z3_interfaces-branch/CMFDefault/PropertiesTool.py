@@ -20,19 +20,21 @@ from Acquisition import aq_inner, aq_parent
 from Globals import InitializeClass, DTMLFile
 from AccessControl import ClassSecurityInfo
 
+from zope.interface import implements, implementedBy
+
 from Products.CMFCore.utils import UniqueObject
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.ActionInformation import ActionInformation
 from Products.CMFCore.Expression import Expression
-from Products.CMFCore.interfaces.portal_properties \
-        import portal_properties as IPropertiesTool
+from Products.CMFCore.interfaces import IPropertiesTool
 
 from permissions import ManagePortal
 from utils import _dtmldir
 
 class PropertiesTool(UniqueObject, SimpleItem, ActionProviderBase):
 
-    __implements__ = (IPropertiesTool, ActionProviderBase.__implements__)
+    implements(IPropertiesTool,
+               implementedBy(ActionProviderBase))
 
     id = 'portal_properties'
     meta_type = 'Default Properties Tool'

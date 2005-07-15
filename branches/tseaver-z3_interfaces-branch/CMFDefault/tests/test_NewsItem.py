@@ -35,26 +35,6 @@ class NewsItemTests(TestCase):
 
         return NewsItem(id, *args, **kw)
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.Contentish \
-                import Contentish as IContentish
-        from Products.CMFCore.interfaces.DublinCore \
-                import CatalogableDublinCore as ICatalogableDublinCore
-        from Products.CMFCore.interfaces.DublinCore \
-                import DublinCore as IDublinCore
-        from Products.CMFCore.interfaces.DublinCore \
-                import MutableDublinCore as IMutableDublinCore
-        from Products.CMFCore.interfaces.Dynamic \
-                import DynamicType as IDynamicType
-        from Products.CMFDefault.NewsItem import NewsItem
-
-        verifyClass(ICatalogableDublinCore, NewsItem)
-        verifyClass(IContentish, NewsItem)
-        verifyClass(IDublinCore, NewsItem)
-        verifyClass(IDynamicType, NewsItem)
-        verifyClass(IMutableDublinCore, NewsItem)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import ICatalogableDublinCore

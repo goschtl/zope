@@ -46,17 +46,6 @@ class ActionsToolTests( SecurityRequestTest ):
         self.tool = root.portal_actions
         self.tool.action_providers = ('portal_actions',)
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.ActionsTool import ActionsTool
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionProvider as IActionProvider
-        from Products.CMFCore.interfaces.portal_actions \
-                import portal_actions as IActionsTool
-
-        verifyClass(IActionProvider, ActionsTool)
-        verifyClass(IActionsTool, ActionsTool)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.ActionsTool import ActionsTool

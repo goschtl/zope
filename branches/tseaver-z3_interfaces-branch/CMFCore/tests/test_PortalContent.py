@@ -32,17 +32,6 @@ from Products.CMFDefault.Portal import PortalGenerator
 
 class PortalContentTests(TestCase):
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.Contentish \
-                import Contentish as IContentish
-        from Products.CMFCore.interfaces.Dynamic \
-                import DynamicType as IDynamicType
-        from Products.CMFCore.PortalContent import PortalContent
-
-        verifyClass(IContentish, PortalContent)
-        verifyClass(IDynamicType, PortalContent)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IContentish

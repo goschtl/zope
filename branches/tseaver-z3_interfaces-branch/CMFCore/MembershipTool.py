@@ -27,11 +27,12 @@ from Globals import PersistentMapping
 from OFS.Folder import Folder
 from ZODB.POSException import ConflictError
 
+from zope.interface import implements, implementedBy
+
 from ActionProviderBase import ActionProviderBase
 from exceptions import AccessControl_Unauthorized
 from exceptions import BadRequest
-from interfaces.portal_membership \
-        import portal_membership as IMembershipTool
+from interfaces import IMembershipTool
 from permissions import AccessContentsInformation
 from permissions import ChangeLocalRoles
 from permissions import ListPortalMembers
@@ -53,7 +54,8 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
     different way.
     """
 
-    __implements__ = (IMembershipTool, ActionProviderBase.__implements__)
+    implements(IMembershipTool,
+               implementedBy(ActionProviderBase))
 
     id = 'portal_membership'
     meta_type = 'CMF Membership Tool'

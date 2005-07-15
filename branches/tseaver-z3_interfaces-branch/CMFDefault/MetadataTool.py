@@ -22,9 +22,10 @@ from Globals import InitializeClass
 from Globals import PersistentMapping
 from OFS.SimpleItem import SimpleItem
 
+from zope.interface import implements, implementedBy
+
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.interfaces.portal_metadata \
-        import portal_metadata as IMetadataTool
+from Products.CMFCore.interfaces import IMetadataTool
 from Products.CMFCore.utils import UniqueObject
 
 from exceptions import MetadataError
@@ -201,7 +202,8 @@ InitializeClass( ElementSpec )
 
 class MetadataTool( UniqueObject, SimpleItem, ActionProviderBase ):
 
-    __implements__ = (IMetadataTool, ActionProviderBase.__implements__)
+    implements(IMetadataTool,
+               implementedBy(ActionProviderBase))
 
     id = 'portal_metadata'
     meta_type = 'Default Metadata Tool'

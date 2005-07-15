@@ -25,8 +25,10 @@ from Globals import InitializeClass
 from Globals import PersistentMapping
 from OFS.Folder import Folder
 
+from zope.interface import implements, implementedBy
+
 from ActionProviderBase import ActionProviderBase
-from interfaces.portal_workflow import portal_workflow as IWorkflowTool
+from interfaces import IWorkflowTool
 from permissions import ManagePortal
 from utils import _dtmldir
 from utils import getToolByName
@@ -64,8 +66,8 @@ class WorkflowTool(UniqueObject, Folder, ActionProviderBase):
     """
     id = 'portal_workflow'
     meta_type = 'CMF Workflow Tool'
-    __implements__ = (IWorkflowTool,
-                      ActionProviderBase.__implements__)
+    implements(IWorkflowTool,
+               implementedBy(ActionProviderBase))
 
     _chains_by_type = None  # PersistentMapping
     _default_chain = ('default_workflow',)

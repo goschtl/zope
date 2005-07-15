@@ -72,13 +72,6 @@ class ActionProviderBaseTests(SecurityRequestTest):
         klass = dummy and DummyProvider or ActionProviderBase
         return klass()
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionProvider as IActionProvider
-
-        verifyClass(IActionProvider, ActionProviderBase)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IActionProvider

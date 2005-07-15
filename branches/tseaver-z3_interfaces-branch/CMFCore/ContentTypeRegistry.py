@@ -24,10 +24,10 @@ from Globals import PersistentMapping
 from OFS.SimpleItem import SimpleItem
 from ZPublisher.mapply import mapply
 
-from interfaces.ContentTypeRegistry \
-        import ContentTypeRegistry as IContentTypeRegistry
-from interfaces.ContentTypeRegistry \
-        import ContentTypeRegistryPredicate as IContentTypeRegistryPredicate
+from zope.interface import implements
+
+from interfaces import IContentTypeRegistry
+from interfaces import IContentTypeRegistryPredicate
 from permissions import ManagePortal
 from utils import _dtmldir
 from utils import getToolByName
@@ -39,7 +39,7 @@ class MajorMinorPredicate( SimpleItem ):
         Empty major or minor implies wildcard (all match).
     """
 
-    __implements__ = IContentTypeRegistryPredicate
+    implements(IContentTypeRegistryPredicate)
 
     major = minor = None
     PREDICATE_TYPE  = 'major_minor'
@@ -125,7 +125,7 @@ class ExtensionPredicate( SimpleItem ):
         Predicate matching on filename extensions.
     """
 
-    __implements__ = IContentTypeRegistryPredicate
+    implements(IContentTypeRegistryPredicate)
 
     extensions = None
     PREDICATE_TYPE  = 'extension'
@@ -189,7 +189,7 @@ class MimeTypeRegexPredicate( SimpleItem ):
         also be passed).
     """
 
-    __implements__ = IContentTypeRegistryPredicate
+    implements(IContentTypeRegistryPredicate)
 
     pattern         = None
     PREDICATE_TYPE  = 'mimetype_regex'
@@ -245,7 +245,7 @@ class NameRegexPredicate( SimpleItem ):
         and 'pattern' can also be passed).
     """
 
-    __implements__ = IContentTypeRegistryPredicate
+    implements(IContentTypeRegistryPredicate)
 
     pattern         = None
     PREDICATE_TYPE  = 'name_regex'
@@ -319,7 +319,7 @@ class ContentTypeRegistry( SimpleItem ):
         Registry for rules which map PUT args to a CMF Type Object.
     """
 
-    __implements__ = IContentTypeRegistry
+    implements(IContentTypeRegistry)
 
     meta_type = 'Content Type Registry'
     id = 'content_type_registry'

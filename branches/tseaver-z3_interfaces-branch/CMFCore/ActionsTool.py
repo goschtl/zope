@@ -21,12 +21,14 @@ from Globals import InitializeClass
 from OFS.ObjectManager import IFAwareObjectManager
 from OFS.OrderedFolder import OrderedFolder
 
+from zope.interface import implements, implementedBy
+
 from ActionInformation import ActionInformation
 from ActionProviderBase import ActionProviderBase
 from Expression import Expression
-from interfaces.portal_actions import ActionCategory as IActionCategory
-from interfaces.portal_actions import ActionProvider as IActionProvider
-from interfaces.portal_actions import portal_actions as IActionsTool
+from interfaces import IActionCategory
+from interfaces import IActionProvider
+from interfaces import IActionsTool
 from permissions import ListFolderContents
 from permissions import ManagePortal
 from utils import _dtmldir
@@ -40,8 +42,9 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         to the current user and context.
     """
 
-    __implements__ = (IActionsTool, OrderedFolder.__implements__,
-                      ActionProviderBase.__implements__)
+    implements(IActionsTool,
+               implementedBy(OrderedFolder),
+               implementedBy(ActionProviderBase))
 
     id = 'portal_actions'
     meta_type = 'CMF Actions Tool'
@@ -178,12 +181,12 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         # Include actions from specific tools.
         for provider_name in self.listActionProviders():
             provider = getattr(self, provider_name)
-            if IActionProvider.isImplementedBy(provider):
+            if IActionProvider.providedBy(provider):
                 actions.extend( provider.listActionInfos(object=object) )
 
         # Include actions from object.
         if object is not None:
-            if IActionProvider.isImplementedBy(object):
+            if IActionProvider.providedBy(object):
                 actions.extend( object.listActionInfos(object=object) )
 
         # Reorganize the actions by category.

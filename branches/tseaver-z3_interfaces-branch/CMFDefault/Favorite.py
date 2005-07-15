@@ -21,6 +21,8 @@ from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 
+from zope.interface import implements, implementedBy
+
 from Products.CMFCore.utils import getToolByName
 
 from permissions import View
@@ -79,6 +81,7 @@ class Favorite( Link ):
     """
 
     __implements__ = Link.__implements__ # redundant, but explicit
+    implements(implementedBy(Link))
 
     meta_type='Favorite'
 

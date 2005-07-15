@@ -32,6 +32,7 @@ import ContentTypeRegistry
 import CachingPolicyManager
 import CMFBTreeFolder
 import utils
+import interfaces
 
 from permissions import AddPortalFolders
 from permissions import ManagePortal
@@ -144,6 +145,7 @@ def initialize(context):
         TypesTool.FactoryTypeInformation,
         permission=ManagePortal,
         constructors=( TypesTool.manage_addFactoryTIForm, ),
+        interfaces=( interfaces.ITypeInformation, ),
         icon='images/typeinfo.gif',
         visibility=None)
 
@@ -151,6 +153,7 @@ def initialize(context):
         TypesTool.ScriptableTypeInformation,
         permission=ManagePortal,
         constructors=( TypesTool.manage_addScriptableTIForm, ),
+        interfaces=( interfaces.ITypeInformation, ),
         icon='images/typeinfo.gif',
         visibility=None)
 

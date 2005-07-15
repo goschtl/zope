@@ -50,13 +50,6 @@ class DynamicTypeTests(TestCase):
         self.site.portal_types._setObject( 'Dummy Content 15', FTI(**fti) )
         self.site._setObject( 'foo', DummyContent() )
 
-    def test_z2interfaces(self):
-        from Interface.Verify import verifyClass
-        from Products.CMFCore.interfaces.Dynamic \
-                import DynamicType as IDynamicType
-
-        verifyClass(IDynamicType, DynamicType)
-
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IDynamicType

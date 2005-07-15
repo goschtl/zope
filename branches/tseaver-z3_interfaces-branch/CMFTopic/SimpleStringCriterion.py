@@ -17,17 +17,19 @@ $Id$
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 
+from zope.interface import implements
+
 from permissions import View
 from permissions import ChangeTopics
 from AbstractCriterion import AbstractCriterion
 from Topic import Topic
-from interfaces import Criterion
+from interfaces import ICriterion
 
 class SimpleStringCriterion( AbstractCriterion ):
     """
         Represent a simple field-match for a string value.
     """
-    __implements__ = ( Criterion, )
+    implements(ICriterion)
 
     meta_type = 'String Criterion'
 

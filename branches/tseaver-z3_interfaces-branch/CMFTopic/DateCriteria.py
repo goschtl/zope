@@ -19,10 +19,12 @@ from AccessControl import ClassSecurityInfo
 from DateTime.DateTime import DateTime
 from Globals import InitializeClass
 
+from zope.interface import implements
+
 from permissions import View
 from permissions import ChangeTopics
 from AbstractCriterion import AbstractCriterion
-from interfaces import Criterion
+from interfaces import ICriterion
 from Topic import Topic
 
 
@@ -31,7 +33,7 @@ class FriendlyDateCriterion( AbstractCriterion ):
         Put a friendly interface on date range searches, like
         'where effective date is less than 5 days old'.
     """
-    __implements__ = ( Criterion, )
+    implements(ICriterion)
 
     meta_type = 'Friendly Date Criterion'
 

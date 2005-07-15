@@ -23,8 +23,10 @@ from Globals import Persistent
 from Globals import PersistentMapping
 from OFS.Traversable import Traversable
 
-from Products.CMFCore.interfaces.Discussions import Discussable
-from Products.CMFCore.interfaces.Discussions import DiscussionResponse
+from zope.interface import implements, implementedBy
+
+from Products.CMFCore.interfaces import IDiscussable
+from Products.CMFCore.interfaces import IDiscussionResponse
 from Products.CMFCore.utils import getToolByName
 
 from Document import Document
@@ -93,7 +95,9 @@ class DiscussionItem(Document):
         Class for content which is a response to other content.
     """
 
-    __implements__ = (DiscussionResponse, Document.__implements__)
+    __implements__ = Document.__implements__   # WriteLockInterface
+
+    implements(implementedBy(Document))
 
     meta_type           = 'Discussion Item'
     portal_type         = 'Discussion Item'
@@ -117,12 +121,12 @@ class DiscussionItem(Document):
         return self.creators
 
     #
-    #   DiscussionResponse interface
+    #   IDiscussionResponse interface
     #
     security.declareProtected(View, 'inReplyTo')
     def inReplyTo( self, REQUEST=None ):
         """
-            Return the Discussable object to which we are a reply.
+            Return the IDiscussable object to which we are a reply.
 
             Two cases obtain:
 
@@ -178,7 +182,7 @@ class DiscussionItemContainer( Persistent, Implicit, Traversable ):
         hold the discussion threads.
     """
 
-    __implements__ = Discussable
+    implements(IDiscussable)
 
     # for the security machinery to allow traversal
     #__roles__ = None
@@ -283,7 +287,7 @@ class DiscussionItemContainer( Persistent, Implicit, Traversable ):
         return self._container.values()
 
     #
-    #   Discussable interface
+    #   IDiscussable interface
     #
     security.declareProtected(ReplyToItem, 'createReply')
     def createReply( self, title, text, Creator=None, text_format='structured-text' ):
@@ -368,7 +372,7 @@ class DiscussionItemContainer( Persistent, Implicit, Traversable ):
     security.declareProtected(View, 'getReplies')
     def getReplies( self ):
         """
-            Return a sequence of the DiscussionResponse objects which are
+            Return a sequence of the IDiscussionResponse objects which are
             associated with this Discussable
         """
         objects = []

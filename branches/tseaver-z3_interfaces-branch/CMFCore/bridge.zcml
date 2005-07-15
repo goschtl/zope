@@ -2,6 +2,7 @@
     xmlns="http://namespaces.zope.org/five"
     >
 
+<!--
   <bridge
       zope2=".interfaces.CachingPolicyManager.CachingPolicyManager"
       package=".interfaces"
@@ -229,5 +230,6 @@
       package=".interfaces"
       name="ISyndicatable"
       />
+      -->
 
 </configure>

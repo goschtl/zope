@@ -28,11 +28,13 @@ from OFS.ObjectManager import REPLACEABLE
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.PythonScripts.PythonScript import PythonScript
 
+from zope.interface import implements, implementedBy
+
 from ActionProviderBase import ActionProviderBase
 from DirectoryView import base_ignore
 from DirectoryView import ignore
 from DirectoryView import ignore_re
-from interfaces.portal_skins import portal_skins as ISkinsTool
+from interfaces import ISkinsTool
 from permissions import AccessContentsInformation
 from permissions import ManagePortal
 from permissions import View
@@ -59,8 +61,9 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     """ This tool is used to supply skins to a portal.
     """
 
-    __implements__ = (ISkinsTool, SkinsContainer.__implements__,
-                      ActionProviderBase.__implements__)
+    implements(ISkinsTool,
+               implementedBy(SkinsContainer),
+               implementedBy(ActionProviderBase))
 
     id = 'portal_skins'
     meta_type = 'CMF Skins Tool'

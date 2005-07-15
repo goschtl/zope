@@ -20,23 +20,8 @@ import Testing
 import Zope2
 Zope2.startup()
 
-from Interface.Verify import verifyObject
 
 from Products.CMFCore.tests.base.testcase import SecurityTest
-
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.dummy import DummyFolder
-from Products.CMFCore.tests.base.dummy import DummySite
-
-from Products.CMFCore.CatalogTool import CatalogTool
-
-from Products.CMFUid.interfaces import IUniqueIdHandler
-from Products.CMFUid.interfaces import IUniqueIdBrainQuery
-from Products.CMFUid.interfaces import IUniqueIdUnrestrictedQuery
-
-from Products.CMFUid.UniqueIdGeneratorTool import UniqueIdGeneratorTool
-from Products.CMFUid.UniqueIdAnnotationTool import UniqueIdAnnotationTool
-from Products.CMFUid.UniqueIdHandlerTool import UniqueIdHandlerTool
 
 def removeUnnecessaryIndexes(catalog):
     indexes = [id[0] for id in catalog.enumerateIndexes()]
@@ -52,6 +37,14 @@ class DummyUid:
 class UniqueIdHandlerTests(SecurityTest):
 
     def setUp(self):
+        from Products.CMFCore.tests.base.dummy import DummyContent
+        from Products.CMFCore.CatalogTool import CatalogTool
+        from Products.CMFUid.UniqueIdGeneratorTool \
+            import UniqueIdGeneratorTool
+        from Products.CMFUid.UniqueIdAnnotationTool \
+            import UniqueIdAnnotationTool
+        from Products.CMFUid.UniqueIdHandlerTool \
+            import UniqueIdHandlerTool
         SecurityTest.setUp(self)
         self.root._setObject('portal_catalog', CatalogTool())
         self.root._setObject('portal_uidgenerator', UniqueIdGeneratorTool())
@@ -63,6 +56,11 @@ class UniqueIdHandlerTests(SecurityTest):
         removeUnnecessaryIndexes(self.root.portal_catalog)
     
     def test_interface(self):
+        from zope.interface.verify import verifyObject
+        from Products.CMFUid.interfaces import IUniqueIdHandler
+        from Products.CMFUid.interfaces import IUniqueIdBrainQuery
+        from Products.CMFUid.interfaces import IUniqueIdUnrestrictedQuery
+
         handler = self.root.portal_uidhandler
         verifyObject(IUniqueIdHandler, handler)
         verifyObject(IUniqueIdBrainQuery, handler)

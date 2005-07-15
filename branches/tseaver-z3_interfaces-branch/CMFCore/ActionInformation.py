@@ -25,10 +25,12 @@ from OFS.OrderedFolder import OrderedFolder
 from OFS.SimpleItem import SimpleItem
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
+from zope.interface import implements, implementedBy
+
 from Expression import Expression
-from interfaces.portal_actions import Action as IAction
-from interfaces.portal_actions import ActionCategory as IActionCategory
-from interfaces.portal_actions import ActionInfo as IActionInfo
+from interfaces import IAction
+from interfaces import IActionCategory
+from interfaces import IActionInformation
 from permissions import View
 from utils import _checkPermission
 from utils import _wwwdir
@@ -42,7 +44,7 @@ class ActionCategory(IFAwareObjectManager, OrderedFolder):
     """ Group of Action objects.
     """
 
-    __implements__ = (IActionCategory, OrderedFolder.__implements__)
+    implements(IActionCategory, implementedBy(OrderedFolder))
 
     meta_type = 'CMF Action Category'
 
@@ -57,9 +59,9 @@ class ActionCategory(IFAwareObjectManager, OrderedFolder):
         actions = []
 
         for obj in self.objectValues():
-            if IActionCategory.isImplementedBy(obj):
+            if IActionCategory.providedBy(obj):
                 actions.extend( obj.listActions() )
-            elif IAction.isImplementedBy(obj):
+            elif IAction.providedBy(obj):
                 actions.append(obj)
 
         return tuple(actions)
@@ -83,7 +85,7 @@ class Action(SimpleItemWithProperties):
     """ Reference to an action.
     """
 
-    __implements__ = IAction
+    implements(IAction)
 
     meta_type = 'CMF Action'
 
@@ -170,7 +172,7 @@ class ActionInfo(UserDict):
     """ A lazy dictionary for Action infos.
     """
 
-    __implements__ = IActionInfo
+    implements(IActionInformation)
 
     __allow_access_to_unprotected_subobjects__ = 1
 
@@ -255,7 +257,7 @@ class ActionInformation( SimpleItem ):
     of the site.  They can be filtered via their conditions.
     """
 
-    __implements__ = IAction
+    implements(IAction)
 
     _isActionInformation = 1
     __allow_access_to_unprotected_subobjects__ = 1

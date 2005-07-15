@@ -52,6 +52,10 @@ HEAD only (unreleased)
 
   Others
 
+    - All interfaces declared in the CMF are now Zope3-style interfaces
+      (the one remaining exception is to leave the Zope2's
+      'webdav.WriteLockInterface' declared).
+
     - The CMF now depends on Zope 2.8 / Five.
 
     - Non-release packages moved out of the /CMF/ repository package:

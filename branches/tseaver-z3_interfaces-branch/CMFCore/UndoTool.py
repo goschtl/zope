@@ -20,11 +20,13 @@ from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 
+from zope.interface import implements, implementedBy
+
 from ActionInformation import ActionInformation
 from ActionProviderBase import ActionProviderBase
 from exceptions import AccessControl_Unauthorized
 from Expression import Expression
-from interfaces.portal_undo import portal_undo as IUndoTool
+from interfaces import IUndoTool
 from permissions import ListUndoableChanges
 from permissions import ManagePortal
 from utils import _checkPermission
@@ -37,7 +39,8 @@ class UndoTool (UniqueObject, SimpleItem, ActionProviderBase):
     """ This tool is used to undo changes.
     """
 
-    __implements__ = (IUndoTool, ActionProviderBase.__implements__)
+    implements(IUndoTool,
+               implementedBy(ActionProviderBase))
 
     id = 'portal_undo'
     meta_type = 'CMF Undo Tool'

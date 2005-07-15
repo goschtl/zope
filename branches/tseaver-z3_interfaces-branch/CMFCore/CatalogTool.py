@@ -28,10 +28,11 @@ from Products.ZCTextIndex.Lexicon import Splitter
 from Products.ZCTextIndex.Lexicon import StopWordRemover
 from Products.ZCTextIndex.ZCTextIndex import PLexicon
 
+from zope.interface import implements, implementedBy
+
 from ActionProviderBase import ActionProviderBase
-from interfaces.portal_catalog \
-        import IndexableObjectWrapper as IIndexableObjectWrapper
-from interfaces.portal_catalog import portal_catalog as ICatalogTool
+from interfaces import IIndexableObjectWrapper
+from interfaces import ICatalogTool
 from permissions import AccessInactivePortalContent
 from permissions import ManagePortal
 from permissions import View
@@ -46,7 +47,7 @@ from utils import UniqueObject
 
 class IndexableObjectWrapper:
 
-    __implements__ = IIndexableObjectWrapper
+    implements(IIndexableObjectWrapper)
 
     def __init__(self, vars, ob):
         self.__vars = vars
@@ -81,8 +82,9 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
     """ This is a ZCatalog that filters catalog queries.
     """
 
-    __implements__ = (ICatalogTool, ZCatalog.__implements__,
-                      ActionProviderBase.__implements__)
+    implements(ICatalogTool,
+               implementedBy(ZCatalog),
+               implementedBy(ActionProviderBase))
 
     id = 'portal_catalog'
     meta_type = 'CMF Catalog'

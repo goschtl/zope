@@ -192,7 +192,7 @@ class ActionProvidersConfigurator(ConfiguratorBase):
 
             provider = getToolByName( self._site, provider_id )
 
-            if not IActionProvider.isImplementedBy( provider ):
+            if not IActionProvider.providedBy( provider ):
                 continue
 
             if provider_id == 'portal_actions':

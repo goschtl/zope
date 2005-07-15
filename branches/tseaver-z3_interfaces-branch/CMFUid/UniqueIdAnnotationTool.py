@@ -22,6 +22,8 @@ from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base, aq_inner, aq_parent
 from Acquisition import Implicit
 
+from zope.interface import implements, implementedBy
+
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
 
@@ -36,9 +38,7 @@ class UniqueIdAnnotation(Persistent, Implicit):
     """Unique id object used as annotation on (content) objects.
     """
 
-    __implements__ = (
-        IUniqueIdAnnotation,
-    )
+    implements(IUniqueIdAnnotation)
 
     def __init__(self, obj, id):
         """See IUniqueIdAnnotation.
@@ -109,11 +109,10 @@ InitializeClass(UniqueIdAnnotation)
 class UniqueIdAnnotationTool(UniqueObject, SimpleItem, PropertyManager, ActionProviderBase):
     __doc__ = __doc__ # copy from module
 
-    __implements__ = (
-        IUniqueIdAnnotationManagement,
-        ActionProviderBase.__implements__,
-        SimpleItem.__implements__,
-    )
+    implements(IUniqueIdAnnotationManagement,
+               implementedBy(ActionProviderBase),
+               implementedBy(SimpleItem),
+              )
 
     manage_options = (
         PropertyManager.manage_options +
