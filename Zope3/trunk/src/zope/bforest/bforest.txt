@@ -209,6 +209,8 @@ but here are some additional cases
 
     >>> d == None
     False
+    >>> d == [1, 2]
+    False
     >>> d != None
     True
     >>> None == d

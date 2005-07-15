@@ -130,7 +130,7 @@ class AbstractBForest(Persistent):
                 return False
             try:
                 other = dict(other)
-            except TypeError:
+            except (TypeError, ValueError):
                 return False
         return dict(self)==other # :-/
     
