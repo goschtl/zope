@@ -90,7 +90,6 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
         u'<p>b\xc3h</p>\n'
         """
         settings_overrides = {
-            'report_level': 1,
             'halt_level': 6,
             'input_encoding': 'unicode',
             'output_encoding': 'unicode',
