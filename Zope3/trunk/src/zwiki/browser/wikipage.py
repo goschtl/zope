@@ -197,12 +197,7 @@ class ViewWikiPage(object):
 
         # if it's an ordinary url, link to it
         if url.match(m):
-            # except, if preceded by " or = it should probably be left alone
-            if re.match('^["=]', m):     # "
-                return m
-            else:
-                # leave the URL alone; docutils will add the href tag correctly
-                return m
+            return m
 
         # it might be a structured text footnote ?
         elif re.search(r'(?si)<a name="%s"' % (m),text):
