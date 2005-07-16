@@ -28,6 +28,9 @@ HEAD only (unreleased)
 
   Bug Fixes
 
+    - Added testing framework to suppress / examine output from warnings
+      module and from zLOG.
+
     - CMFUid/UniqueIdGeneratorTool.py: Replaced the old BTree.Length.Length
       implementation by a simple counter. Using a BTree.Length.Length object
       as counter may have caused setting the same unique id to multiple 

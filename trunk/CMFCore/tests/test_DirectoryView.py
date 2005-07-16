@@ -12,6 +12,7 @@ from Globals import DevelopmentMode
 from Products.CMFCore.tests.base.dummy import DummyFolder
 from Products.CMFCore.tests.base.testcase import _prefix
 from Products.CMFCore.tests.base.testcase import FSDVTest
+from Products.CMFCore.tests.base.testcase import WarningInterceptor
 
 from Products.CMFCore.DirectoryView import DirectoryView
 
@@ -24,7 +25,7 @@ class DummyDirectoryViewSurrogate:
     pass
 
 
-class DirectoryViewPathTests( TestCase ):
+class DirectoryViewPathTests( TestCase, WarningInterceptor ):
     """
     These test that, no matter what is stored in their dirpath,
     FSDV's will do their best to find an appropriate skin
@@ -38,6 +39,9 @@ class DirectoryViewPathTests( TestCase ):
         registerDirectory('fake_skins', _prefix)
         self.ob = DummyFolder()
         addDirectoryViews(self.ob, 'fake_skins', _prefix)
+
+    def tearDown(self):
+        self._free_warning_output()
 
     def test_getDirectoryInfo(self):
         skin = self.ob.fake_skin
@@ -105,6 +109,7 @@ class DirectoryViewPathTests( TestCase ):
     # Test we do nothing if given a really wacky path
     def test_UnhandleableExpandPath( self ):
         from tempfile import mktemp
+        self._trap_warning_output()
         file = mktemp()
         self.ob.fake_skin.manage_properties(file)
         self.assertEqual(self.ob.fake_skin.objectIds(),[])
@@ -114,6 +119,7 @@ class DirectoryViewPathTests( TestCase ):
         text = 'DirectoryView fake_skin refers to a non-existing path %s' % file
         text = text.replace('\\','/')
         self.assert_(text in warnings)
+        self.failUnless(text in self._our_stderr_stream.getvalue())
 
     def test_UnhandleableMinimalPath( self ):
         from Products.CMFCore.utils import minimalpath, normalize

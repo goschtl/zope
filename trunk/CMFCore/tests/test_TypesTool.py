@@ -39,6 +39,7 @@ from Products.CMFCore.tests.base.dummy import DummyUserFolder
 from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.security import UserWithRoles
 from Products.CMFCore.tests.base.testcase import SecurityTest
+from Products.CMFCore.tests.base.testcase import WarningInterceptor
 from Products.CMFCore.tests.base.tidata import FTIDATA_ACTIONS
 from Products.CMFCore.tests.base.tidata import FTIDATA_CMF13
 from Products.CMFCore.tests.base.tidata import FTIDATA_CMF13_FOLDER
@@ -51,7 +52,7 @@ from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
 from Products.CMFCore.tests.base.tidata import STI_SCRIPT
 
 
-class TypesToolTests(SecurityTest):
+class TypesToolTests(SecurityTest, WarningInterceptor):
 
     def _makeOne(self):
         from Products.CMFCore.TypesTool import TypesTool
@@ -68,6 +69,10 @@ class TypesToolTests(SecurityTest):
         self.ttool = self.site._setObject( 'portal_types', self._makeOne() )
         fti = FTIDATA_DUMMY[0].copy()
         self.ttool._setObject( 'Dummy Content', FTI(**fti) )
+
+    def tearDown(self):
+        SecurityTest.tearDown(self)
+        self._free_warning_output()
 
     def test_z2interfaces(self):
         from Interface.Verify import verifyClass
@@ -182,8 +187,11 @@ class TypesToolTests(SecurityTest):
 
         # Now try with the old representation, which will throw a BadRequest
         # unless the workaround in the code is used
+        self._trap_warning_output()
         ti_factory(ti_type, id='NewType2', typeinfo_name=old_repr)
         self.failUnless('NewType2' in self.ttool.objectIds())
+        self.failUnless('DeprecationWarning' in
+                            self._our_stderr_stream.getvalue())
 
 
 class TypeInfoTests(TestCase):
