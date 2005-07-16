@@ -23,6 +23,7 @@ except ImportError: # BBB: for Zope 2.7
     import Zope as Zope2
 Zope2.startup()
 
+from OFS.Folder import manage_addFolder
 from Products.PythonScripts.PythonScript import manage_addPythonScript
 
 from Products.CMFCore.Expression import createExprContext
@@ -130,6 +131,73 @@ class ActionInfoSecurityTests(SecurityTest):
         self.assertEqual( ai['available'], WANTED['available'] )
         self.assertEqual( ai['allowed'], WANTED['allowed'] )
         self.assertEqual( ai, WANTED )
+
+    def test_category_object(self):
+        # Permissions for action category 'object*' should be
+        # evaluated in object context.
+        manage_addFolder(self.site, 'actions_dummy')
+        self.object = self.site.actions_dummy
+        self.object.manage_permission('View', [], acquire=0)
+
+        WANTED = {'allowed': False, 'category': 'object'}
+
+        action = {'name': 'foo', 'url': '', 'permissions': ('View',)}
+        ec = createExprContext(self.site, self.site, self.object)
+        ai = self._makeOne(action, ec)
+
+        self.assertEqual( ai['category'], WANTED['category'] )
+        self.assertEqual( ai['allowed'], WANTED['allowed'] )
+
+    def test_category_folder(self):
+        # Permissions for action category 'folder*' should be
+        # evaluated in folder context.
+        manage_addFolder(self.site, 'actions_dummy')
+        self.folder = self.site.actions_dummy
+        self.folder.manage_permission('View', [], acquire=0)
+
+        WANTED = {'allowed': False, 'category': 'folder'}
+
+        action = {'name': 'foo', 'url': '', 'permissions': ('View',)}
+        ec = createExprContext(self.folder, self.site, None)
+        ai = self._makeOne(action, ec)
+        ai['category'] = 'folder' # pfff
+
+        self.assertEqual( ai['category'], WANTED['category'] )
+        self.assertEqual( ai['allowed'], WANTED['allowed'] )
+
+    def test_category_workflow(self):
+        # Permissions for action category 'workflow*' should be
+        # evaluated in object context.
+        manage_addFolder(self.site, 'actions_dummy')
+        self.object = self.site.actions_dummy
+        self.object.manage_permission('View', [], acquire=0)
+
+        WANTED = {'allowed': False, 'category': 'workflow'}
+
+        action = {'name': 'foo', 'url': '', 'permissions': ('View',)}
+        ec = createExprContext(self.site, self.site, self.object)
+        ai = self._makeOne(action, ec)
+        ai['category'] = 'workflow' # pfff
+
+        self.assertEqual( ai['category'], WANTED['category'] )
+        self.assertEqual( ai['allowed'], WANTED['allowed'] )
+
+    def test_category_document(self):
+        # Permissions for action category 'document*' should be
+        # evaluated in object context (not in portal context).
+        manage_addFolder(self.site, 'actions_dummy')
+        self.object = self.site.actions_dummy
+        self.object.manage_permission('View', [], acquire=0)
+
+        WANTED = {'allowed': False, 'category': 'document'}
+
+        action = {'name': 'foo', 'url': '', 'permissions': ('View',)}
+        ec = createExprContext(self.site, self.site, self.object)
+        ai = self._makeOne(action, ec)
+        ai['category'] = 'document' # pfff
+
+        self.assertEqual( ai['category'], WANTED['category'] )
+        self.assertEqual( ai['allowed'], WANTED['allowed'] )
 
     def test_copy(self):
 

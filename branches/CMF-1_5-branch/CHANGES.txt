@@ -2,6 +2,10 @@ After CMF 1.5.2beta2
 
   Bugs Fixed
 
+    - CMFCore/ActionInformation.py: Permissions of action categories starting
+      with 'document' are now evaluated in the object context instead of the
+      portal context. This should probably be generalized some more.
+
     - Added testing framework to suppress / examine output from warnings
       module and from zLOG.
 

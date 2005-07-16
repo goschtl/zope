@@ -121,7 +121,8 @@ class ActionInfo(UserDict):
         category = self['category']
         object = self._ec.contexts['object']
         if object is not None and ( category.startswith('object') or
-                                    category.startswith('workflow') ):
+                                    category.startswith('workflow') or
+                                    category.startswith('document') ):
             context = object
         else:
             folder = self._ec.contexts['folder']
