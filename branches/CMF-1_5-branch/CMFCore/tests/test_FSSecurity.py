@@ -13,9 +13,10 @@ from Globals import DevelopmentMode
 
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
+from Products.CMFCore.tests.base.testcase import LogInterceptor
 
 
-class FSSecurityBase( RequestTest, FSDVTest ):
+class FSSecurityBase( RequestTest, FSDVTest, LogInterceptor ):
 
     def _checkSettings(self, object, permissionname, acquire=0, roles=[]):
         # check the roles and acquire settings for a permission on an
@@ -54,9 +55,10 @@ class FSSecurityBase( RequestTest, FSDVTest ):
     def tearDown( self ):
         RequestTest.tearDown(self)
         FSDVTest.tearDown(self)
+        self._ignore_log_errors()
 
 
-class FSSecurityTests( FSSecurityBase ):
+class FSSecurityTests( FSSecurityBase, LogInterceptor ):
 
     def test_basicPermissions( self ):
         # Test basic FS permissions
@@ -67,6 +69,8 @@ class FSSecurityTests( FSSecurityBase ):
         self._checkSettings(self.ob.fake_skin.test4,'Access contents information',0,[])
 
     def test_invalidPermissionNames( self ):
+        import zLOG
+        self._catch_log_errors(zLOG.ERROR)
         # Test for an invalid permission name
         # baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])

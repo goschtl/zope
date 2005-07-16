@@ -30,6 +30,7 @@ from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
 from Products.ZCatalog import CatalogBrains
 from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
+from Products.CMFCore.tests.base.testcase import LogInterceptor
 
 
 def physicalpath(ob):
@@ -100,7 +101,7 @@ class TheClass(CMFCatalogAware, Folder):
         self.notified = True
 
 
-class CMFCatalogAwareTests(unittest.TestCase):
+class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
 
     def setUp(self):
         self.root = DummyRoot('')
@@ -108,6 +109,9 @@ class CMFCatalogAwareTests(unittest.TestCase):
         self.site = self.root.site
         self.site._setObject('portal_catalog', DummyCatalog())
         self.site.foo = TheClass('foo')
+
+    def tearDown(self):
+        self._ignore_log_errors
 
     def test_indexObject(self):
         foo = self.site.foo
@@ -178,15 +182,18 @@ class CMFCatalogAwareTests(unittest.TestCase):
 
     def test_reindexObjectSecurity_missing_raise(self):
         # Exception raised for missing object (Zope 2.8 brains)
+        self._catch_log_errors()
         foo = self.site.foo
         missing = TheClass('missing').__of__(foo)
         missing.GETOBJECT_RAISES = True
         cat = self.site.portal_catalog
         cat.setObs([foo, missing])
         self.assertRaises(NotFound, foo.reindexObjectSecurity)
+        self.failUnless( self.logged is None ) # no logging due to raise
 
     def test_reindexObjectSecurity_missing_noraise(self):
         # Raising disabled
+        self._catch_log_errors()
         foo = self.site.foo
         missing = TheClass('missing').__of__(foo)
         missing.GETOBJECT_RAISES = False
@@ -200,6 +207,7 @@ class CMFCatalogAwareTests(unittest.TestCase):
 
     def test_reindexObjectSecurity_missing_oldbrain(self):
         # Missing object is swallowed by old Zope brains
+        self._catch_log_errors()
         self.site.portal_catalog.brain_class = DummyOldBrain
         foo = self.site.foo
         missing = TheClass('missing').__of__(foo)
@@ -211,6 +219,7 @@ class CMFCatalogAwareTests(unittest.TestCase):
                           ["reindex /site/foo ('allowedRolesAndUsers',)"])
         self.failIf(foo.notified)
         self.failIf(missing.notified)
+        self.assertEqual( len(self.logged), 1 ) # logging because no raise
 
     # FIXME: more tests needed
 

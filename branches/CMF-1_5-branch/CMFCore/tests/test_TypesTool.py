@@ -23,9 +23,6 @@ except ImportError: # BBB: for Zope 2.7
     import Zope as Zope2
 Zope2.startup()
 
-from warnings import filterwarnings
-from warnings import filters
-
 from AccessControl import Unauthorized
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
@@ -45,6 +42,7 @@ from Products.CMFCore.tests.base.dummy import DummyUserFolder
 from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.security import UserWithRoles
 from Products.CMFCore.tests.base.testcase import SecurityTest
+from Products.CMFCore.tests.base.testcase import WarningInterceptor
 from Products.CMFCore.tests.base.tidata import FTIDATA_ACTIONS
 from Products.CMFCore.tests.base.tidata import FTIDATA_CMF13
 from Products.CMFCore.tests.base.tidata import FTIDATA_CMF13_FOLDER
@@ -58,7 +56,7 @@ from Products.CMFCore.tests.base.tidata import STI_SCRIPT
 from Products.CMFCore.utils import _getViewFor
 
 
-class TypesToolTests(SecurityTest):
+class TypesToolTests(SecurityTest, WarningInterceptor):
 
     def _makeOne(self):
         from Products.CMFCore.TypesTool import TypesTool
@@ -70,7 +68,6 @@ class TypesToolTests(SecurityTest):
 
         SecurityTest.setUp(self)
 
-        filterwarnings('ignore', category=DeprecationWarning)
         self.site = DummySite('site').__of__(self.root)
         self.acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
         self.ttool = self.site._setObject( 'portal_types', self._makeOne() )
@@ -78,9 +75,8 @@ class TypesToolTests(SecurityTest):
         self.ttool._setObject( 'Dummy Content', FTI(**fti) )
 
     def tearDown(self):
-        del filters[0]
-
         SecurityTest.tearDown(self)
+        self._free_warning_output()
 
     def test_z2interfaces(self):
         from Interface.Verify import verifyClass
@@ -122,6 +118,7 @@ class TypesToolTests(SecurityTest):
         dummy.edit = DummyObject("edit")
 
         default_view = dummy()
+        self._trap_warning_output()
         custom_view = _getViewFor( dummy, view='view2' )()
         unpermitted_view = _getViewFor( dummy, view='edit' )()
 
@@ -223,22 +220,22 @@ class TypesToolTests(SecurityTest):
 
         # Now try with the old representation, which will throw a BadRequest
         # unless the workaround in the code is used
+        self._trap_warning_output()
         ti_factory(ti_type, id='NewType2', typeinfo_name=old_repr)
         self.failUnless('NewType2' in self.ttool.objectIds())
+        self.failUnless('DeprecationWarning' in
+                            self._our_stderr_stream.getvalue())
 
 
-class TypeInfoTests(TestCase):
+class TypeInfoTests(TestCase, WarningInterceptor):
 
     def _makeTypesTool(self):
         from Products.CMFCore.TypesTool import TypesTool
 
         return TypesTool()
 
-    def setUp(self):
-        filterwarnings('ignore', category=DeprecationWarning)
-
     def tearDown(self):
-        del filters[0]
+        self._free_warning_output()
 
     def test_construction( self ):
         ti = self._makeInstance( 'Foo'
@@ -336,6 +333,7 @@ class TypeInfoTests(TestCase):
         self.failIf( 'slot' in visible )
 
     def test_getActionById( self ):
+        self._trap_warning_output()
         ti = self._makeInstance( 'Foo' )
         marker = []
         self.assertEqual( id( ti.getActionById( 'view', marker ) )

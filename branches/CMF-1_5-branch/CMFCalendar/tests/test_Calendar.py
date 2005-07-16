@@ -33,6 +33,7 @@ from DateTime import DateTime
 from Products.ExternalMethod.ExternalMethod import manage_addExternalMethod
 from Products.TemporaryFolder.TemporaryFolder import MountedTemporaryFolder
 from Products.Transience.Transience import TransientObjectContainer
+from Products.CMFCore.tests.base.testcase import WarningInterceptor
 from Testing.makerequest import makerequest
 try:
     import transaction
@@ -81,9 +82,10 @@ class CalendarTests(unittest.TestCase):
             locale.setlocale(locale.LC_ALL, old_locale)
 
 
-class CalendarRequestTests(unittest.TestCase):
+class CalendarRequestTests(unittest.TestCase, WarningInterceptor):
 
     def setUp(self):
+        self._trap_warning_output()
         transaction.begin()
 
         app = self.app = makerequest(Zope2.app())
@@ -121,6 +123,7 @@ class CalendarRequestTests(unittest.TestCase):
         noSecurityManager()
         transaction.abort()
         self.app._p_jar.close()
+        self._free_warning_output()
 
     def _testURL(self,url,params=None):
         Site = self.Site

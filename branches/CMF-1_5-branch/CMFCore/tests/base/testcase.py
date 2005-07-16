@@ -17,6 +17,7 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
 from AccessControl.SecurityManager import setSecurityPolicy
 from Testing.makerequest import makerequest
+import zLOG
 try:
     import transaction
 except ImportError:
@@ -26,6 +27,58 @@ except ImportError:
 from dummy import DummyFolder
 from security import AnonymousUser
 from security import PermissiveSecurityPolicy
+
+class LogInterceptor:
+
+    _old_log_write = None
+    logged = None
+
+    def _catch_log_errors( self, ignored_level=zLOG.PROBLEM ):
+
+        if self._old_log_write is not None:
+            return
+
+        def log_write(subsystem, severity, summary, detail, error):
+            if severity > ignored_level:
+                assert 0, "%s(%s): %s" % (subsystem, severity, summary)
+            if self.logged is None:
+                self.logged = []
+            self.logged.append( ( subsystem, severity, summary, detail ) )
+
+        self._old_log_write = zLOG.log_write
+        zLOG.log_write = log_write
+
+    def _ignore_log_errors( self ):
+
+        if self._old_log_write is None:
+            return
+
+        zLOG.log_write = self._old_log_write
+        del self._old_log_write
+
+class WarningInterceptor:
+
+    _old_stderr = None
+    _our_stderr_stream = None
+
+    def _trap_warning_output( self ):
+
+        if self._old_stderr is not None:
+            return
+
+        import sys
+        from StringIO import StringIO
+
+        self._old_stderr = sys.stderr
+        self._our_stderr_stream = sys.stderr = StringIO()
+
+    def _free_warning_output( self ):
+
+        if self._old_stderr is None:
+            return
+
+        import sys
+        sys.stderr = self._old_stderr
 
 
 class TransactionalTest( TestCase ):
