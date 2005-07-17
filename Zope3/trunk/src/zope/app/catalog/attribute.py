@@ -108,8 +108,9 @@ class AttributeIndex(object):
     default_field_name = None
     default_interface = None
 
-    def __init__(self, field_name=None, interface=None, field_callable=False):
-        super(AttributeIndex, self).__init__()
+    def __init__(self, field_name=None, interface=None, field_callable=False,
+                 *args, **kwargs):
+        super(AttributeIndex, self).__init__(*args, **kwargs)
         if field_name is None and self.default_field_name is None:
             raise ValueError, "Must pass a field_name"
         if field_name is None:
