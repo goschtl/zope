@@ -33,7 +33,7 @@ class ICSS(IPageletSlot):
     """CSS pagelet slot interface.
 
     This pagelet slot will lookup for pagelets. If you like to additional 
-    content to this slot, use the 'zope.app.boston.slots.IHead' 
+    content to this slot, use the 'zope.app.boston.slots.ICSS' 
     interface for the slot attribute in a pagelet directive.
     """
 
@@ -51,7 +51,7 @@ class IToolBar(IPageletSlot):
     """View action pagelet slot interface.
 
     This pagelet slot will lookup for pagelets. If you like to additional 
-    content to this slot, use the 'zope.app.boston.slots.IViewAction' 
+    content to this slot, use the 'zope.app.boston.slots.IToolBar' 
     interface for the slot attribute in a pagelet directive. 
     """
 
