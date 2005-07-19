@@ -1,8 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope">
-
-  <adapter 
-    for=".interfaces.IMyInterface"
-    provides=".interfaces.INewInterface"
-    factory=".classes.MyAdapter" /> 
-    
-</configure>
