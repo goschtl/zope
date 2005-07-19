@@ -248,3 +248,9 @@ class AddView(EditView):
 
     def nextURL(self):
         return self.context.nextURL()
+
+
+# BBB: Will be removed in future versions
+from Products.Five import browser
+browser.AddView = AddView
+browser.EditView = EditView

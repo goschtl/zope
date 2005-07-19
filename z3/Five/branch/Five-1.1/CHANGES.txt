@@ -2,6 +2,17 @@
 Five Changes
 ============
 
+After Five 1.1b
+===============
+
+Bugfixes
+--------
+
+* Added backwards compatibility for some moved classes (AddForm, EditForm, 
+  ContentAdding)
+
+
+
 Five 1.1b (2005-07-13)
 ======================
 
