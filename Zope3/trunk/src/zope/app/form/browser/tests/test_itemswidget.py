@@ -216,11 +216,13 @@ class ItemsEditWidgetBaseTest(ItemsWidgetBaseTest):
              u'<option value="token2">Two</option>',
              u'<option value="token3">Three</option>'])             
 
-    def test_error(self):
-        widget = self._makeWidget(form={'field.choice': 'ten'})
-        widget.setPrefix('field.')
-        widget._getFormValue()
-        self.assert_(isinstance(widget._error, ConversionError))
+# This test is disabled because it tests for the presense of a missfeature,
+# which has been removed.  Did someone actually *want* this?
+##     def test_error(self):
+##         widget = self._makeWidget(form={'field.choice': 'ten'})
+##         widget.setPrefix('field.')
+##         widget._getFormValue()
+##         self.assert_(isinstance(widget._error, ConversionError))
     
     def test_hidden(self):
         widget = self._makeWidget(form={'field.choice': 'token2'})
@@ -413,11 +415,13 @@ class ItemsMultiEditWidgetBaseTest(ItemsEditWidgetBaseTest):
              '>One</option>\n', 'value="token2"', '>Two</option>\n',
              'value="token3"', '>Three</option>', '</select>'])
 
-    def test_error(self):
-        widget = self._makeWidget(form={'field.numbers': ['ten']})
-        widget.setPrefix('field.')
-        widget._getFormValue()
-        self.assert_(isinstance(widget._error, ConversionError))
+# This test is disabled because it tests for the presense of a missfeature,
+# which has been removed.  Did someone actually *want* this?
+##     def test_error(self):
+##         widget = self._makeWidget(form={'field.numbers': ['ten']})
+##         widget.setPrefix('field.')
+##         widget._getFormValue()
+##         self.assert_(isinstance(widget._error, ConversionError))
     
     def test_hidden(self):
         widget = self._makeWidget(

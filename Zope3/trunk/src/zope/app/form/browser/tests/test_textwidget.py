@@ -253,6 +253,23 @@ def test_w_nonrequired_and_missing_value_and_no_inout():
       value=""
       />
 
+    """
+
+def test_no_error_on_render_only():
+    """This is really a test of a bug fix to SimpleInputWidget.
+
+    _error shouldn't be set due to an *internal* call to getInputValue
+    when rendering.
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.schema import TextLine
+    >>> field = TextLine(__name__='foo')
+    >>> request = TestRequest(form={'field.foo': ''})
+    >>> widget = TextWidget(field, request)
+    >>> ignored = widget()
+    >>> unicode(widget.error())
+    u''
+
 
     """
 

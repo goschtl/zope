@@ -356,9 +356,16 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         """Returns a value suitable for use in an HTML form."""
         if not self._renderedValueSet():
             if self.hasInput():
+
+                # It's insane to use getInputValue this way. It can
+                # cause _error to get set spuriously.  We'll work
+                # around this by saving and restoring _error if
+                # necessary.
+                error = self._error
                 try:
                     value = self.getInputValue()
                 except InputErrors:
+                    self._error = error
                     return self.request.form.get(self.name, self._missing)
             else:
                 value = self._getDefault()
