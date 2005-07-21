@@ -3,12 +3,12 @@ Principal Folder
 ================
 
 Principal folders contain principal-information objects that contain principal
-information. We create principal information using the `PrincipalInformation`
+information. We create an internal principal using the `InternalPrincipal`
 class:
 
-  >>> from zope.app.authentication.principalfolder import PrincipalInformation
-  >>> p1 = PrincipalInformation('login1', '123', "Principal 1")
-  >>> p2 = PrincipalInformation('login2', '456', "The Other One")
+  >>> from zope.app.authentication.principalfolder import InternalPrincipal
+  >>> p1 = InternalPrincipal('login1', '123', "Principal 1")
+  >>> p2 = InternalPrincipal('login2', '456', "The Other One")
 
 and add then in map fashion to a principal folder:
 
@@ -68,7 +68,7 @@ If there are a large number of matches:
 
   >>> for i in range(20):
   ...     i = str(i)
-  ...     p = PrincipalInformation('l'+i, i, "Dude "+i)
+  ...     p = InternalPrincipal('l'+i, i, "Dude "+i)
   ...     principals[i] = p
 
   >>> pprint(list(principals.search({'search': 'D'})))

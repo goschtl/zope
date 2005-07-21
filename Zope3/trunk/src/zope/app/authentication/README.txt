@@ -33,7 +33,7 @@ authenticator plugins to authenticate them.
 
 If an authenticator succeeds in authenticating a set of credentials, the PAU
 uses the authenticator to create a principal corresponding to the credentials.
-The authenticator notifies subscribers if an authenticated princiapl is created.
+The authenticator notifies subscribers if an authenticated principal is created.
 Subscribers are responsible for adding data, especially groups, to the
 principal. Typically, if a subscriber adds data, it should also add
 corresponding interface declarations.
