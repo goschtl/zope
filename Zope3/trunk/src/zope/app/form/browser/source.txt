@@ -135,7 +135,7 @@ nothing) and a form elements for seaching for values:
        Nothing
       </div>
     </div>
-    <input type="hidden" name="field.dog.displayed" value="y">
+    <input type="hidden" name="field.dog.displayed" value="y" />
     <div class="queries">
       <div class="query">
         <div class="queryinput">
@@ -195,7 +195,7 @@ Now if we render the widget, we'll see the search results:
        Nothing
       </div>
     </div>
-    <input type="hidden" name="field.dog.displayed" value="y">
+    <input type="hidden" name="field.dog.displayed" value="y" />
     <div class="queries">
       <div class="query">
         <div class="queryinput">
@@ -207,7 +207,7 @@ Now if we render the widget, we'll see the search results:
   <option value="Ym93c2Vy">bowser</option>
   <option value="c3BvdA==">spot</option>
   </select>
-  <input type="submit" name="field.dog.query.apply" value="Apply">
+  <input type="submit" name="field.dog.query.apply" value="Apply" />
         </div> <!-- queryresults -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -233,8 +233,8 @@ Then we'll show the newly selected value:
        spot
       </div>
     </div>
-    <input type="hidden" name="field.dog" value="c3BvdA==">
-    <input type="hidden" name="field.dog.displayed" value="y">
+    <input type="hidden" name="field.dog" value="c3BvdA==" />
+    <input type="hidden" name="field.dog.displayed" value="y" />
     <div class="queries">
       <div class="query">
         <div class="queryinput">
@@ -317,7 +317,7 @@ and cats:
        Nothing
       </div>
     </div>
-    <input type="hidden" name="field.pet.displayed" value="y">
+    <input type="hidden" name="field.pet.displayed" value="y" />
     <div class="queries">
       <div class="query">
         <div class="queryinput">
@@ -352,7 +352,7 @@ In which case, we'll get some results:
        Nothing
       </div>
     </div>
-    <input type="hidden" name="field.pet.displayed" value="y">
+    <input type="hidden" name="field.pet.displayed" value="y" />
     <div class="queries">
       <div class="query">
         <div class="queryinput">
@@ -372,7 +372,7 @@ In which case, we'll get some results:
   <option value="dGlnZXI=">tiger</option>
   <option value="dG9t">tom</option>
   </select>
-  <input type="submit" name="field.pet.MQ__.apply" value="Apply">
+  <input type="submit" name="field.pet.MQ__.apply" value="Apply" />
         </div> <!-- queryresults -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -398,8 +398,8 @@ and get a selection:
        tabby
       </div>
     </div>
-    <input type="hidden" name="field.pet" value="dGFiYnk=">
-    <input type="hidden" name="field.pet.displayed" value="y">
+    <input type="hidden" name="field.pet" value="dGFiYnk=" />
+    <input type="hidden" name="field.pet.displayed" value="y" />
     <div class="queries">
       <div class="query">
         <div class="queryinput">
@@ -461,7 +461,7 @@ If we render the widget:
 
   >>> print widget()
   <div class="value">
-    <input type="hidden" name="field.pets.displayed" value="y">
+    <input type="hidden" name="field.pets.displayed" value="y" />
     <div class="queries">
       <div class="query">
         <div class="queryinput">
@@ -493,7 +493,7 @@ In which case, we'll get some results:
 
   >>> print widget()
   <div class="value">
-    <input type="hidden" name="field.pets.displayed" value="y">
+    <input type="hidden" name="field.pets.displayed" value="y" />
     <div class="queries">
       <div class="query">
         <div class="queryinput">
@@ -513,7 +513,7 @@ In which case, we'll get some results:
   <option value="dGlnZXI=">tiger</option>
   <option value="dG9t">tom</option>
   </select>
-  <input type="submit" name="field.pets.MQ__.apply" value="Apply">
+  <input type="submit" name="field.pets.MQ__.apply" value="Apply" />
         </div> <!-- queryresults -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -532,21 +532,21 @@ Which then leads to the selections appearing as widget selections:
 
   >>> print widget()
   <div class="value">
-    <input type="checkbox" name="field.pets.checked:list" value="dGFiYnk=">
+    <input type="checkbox" name="field.pets.checked:list" value="dGFiYnk=" />
     tabby
-    <input type="hidden" name="field.pets:list" value="dGFiYnk=">
-    <br>
-    <input type="checkbox" name="field.pets.checked:list" value="dGlnZXI=">
+    <input type="hidden" name="field.pets:list" value="dGFiYnk=" />
+    <br />
+    <input type="checkbox" name="field.pets.checked:list" value="dGlnZXI=" />
     tiger
-    <input type="hidden" name="field.pets:list" value="dGlnZXI=">
-    <br>
-    <input type="checkbox" name="field.pets.checked:list" value="dG9t">
+    <input type="hidden" name="field.pets:list" value="dGlnZXI=" />
+    <br />
+    <input type="checkbox" name="field.pets.checked:list" value="dG9t" />
     tom
-    <input type="hidden" name="field.pets:list" value="dG9t">
-    <br>
-    <input type="submit" name="field.pets.remove" value="Remove">
-    <br>
-    <input type="hidden" name="field.pets.displayed" value="y">
+    <input type="hidden" name="field.pets:list" value="dG9t" />
+    <br />
+    <input type="submit" name="field.pets.remove" value="Remove" />
+    <br />
+    <input type="hidden" name="field.pets.displayed" value="y" />
     <div class="queries">
       <div class="query">
         <div class="queryinput">
@@ -580,13 +580,13 @@ buttons that allow us to remove selections:
 
   >>> print widget()
   <div class="value">
-    <input type="checkbox" name="field.pets.checked:list" value="dGlnZXI=">
+    <input type="checkbox" name="field.pets.checked:list" value="dGlnZXI=" />
     tiger
-    <input type="hidden" name="field.pets:list" value="dGlnZXI=">
-    <br>
-    <input type="submit" name="field.pets.remove" value="Remove">
-    <br>
-    <input type="hidden" name="field.pets.displayed" value="y">
+    <input type="hidden" name="field.pets:list" value="dGlnZXI=" />
+    <br />
+    <input type="submit" name="field.pets.remove" value="Remove" />
+    <br />
+    <input type="hidden" name="field.pets.displayed" value="y" />
     <div class="queries">
       <div class="query">
         <div class="queryinput">

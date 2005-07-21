@@ -15,7 +15,6 @@
 
 $Id$
 """
-import cgi
 import xml.sax.saxutils
 
 import zope.schema.interfaces
@@ -174,8 +173,8 @@ class SourceInputWidget(zope.app.form.InputWidget):
             # it as if it was missing and return nothing.
             return ''
                 
-        return ('<input type="hidden" name="%s" value="%s">'
-                % (self.name, cgi.escape(term.token))
+        return ('<input type="hidden" name="%s" value=%s />'
+                % (self.name, xml.sax.saxutils.quoteattr(term.token))
                 )
 
     def error(self):
@@ -226,10 +225,11 @@ class SourceInputWidget(zope.app.form.InputWidget):
                 result.append(u'     ' + self.renderTermForDisplay(term))
                 result.append('    </div>')
                 result.append('  </div>')
-                result.append('  <input type="hidden" name="%s" value="%s">'
-                              % (self.name, cgi.escape(term.token)))
+                result.append(
+                    '  <input type="hidden" name="%s" value=%s />'
+                    % (self.name, xml.sax.saxutils.quoteattr(term.token)))
 
-        result.append('  <input type="hidden" name="%s.displayed" value="y">'
+        result.append('  <input type="hidden" name="%s.displayed" value="y" />'
                       % self.name)
         
         result.append('  <div class="queries">')
@@ -261,7 +261,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
             '<select name="%s.selection">\n'
             '%s\n'
             '</select>\n'
-            '<input type="submit" name="%s.apply" value="%s">'
+            '<input type="submit" name="%s.apply" value="%s" />'
             % (name,
                '\n'.join(
                    [('<option value="%s">%s</option>'
@@ -399,9 +399,10 @@ class SourceListInputWidget(SourceInputWidget):
                 # it as if it was missing and skip
                 continue
             else:
-                result.append('<input type="hidden" name="%s:list" value="%s">'
-                              % (self.name, cgi.escape(term.token))
-                              )
+                result.append(
+                    '<input type="hidden" name="%s:list" value=%s />'
+                    % (self.name, xml.sax.saxutils.quoteattr(term.token))
+                    )
 
     def __call__(self):
         result = ['<div class="value">']
@@ -417,24 +418,24 @@ class SourceListInputWidget(SourceInputWidget):
                 else:
                     result.append(
                         '  <input type="checkbox" name="%s.checked:list"'
-                        ' value="%s">'
-                        % (self.name, cgi.escape(term.token))
+                        ' value=%s />'
+                        % (self.name, xml.sax.saxutils.quoteattr(term.token))
                         )
                     result.append('  ' + self.renderTermForDisplay(term))
                     result.append(
-                        '  <input type="hidden" name="%s:list" value="%s">'
-                        % (self.name, cgi.escape(term.token)))
-                    result.append('  <br>')
+                        '  <input type="hidden" name="%s:list" value=%s />'
+                        % (self.name, xml.sax.saxutils.quoteattr(term.token)))
+                    result.append('  <br />')
 
             result.append(
-                '  <input type="submit" name="%s.remove" value="%s">'
+                '  <input type="submit" name="%s.remove" value="%s" />'
                 % (self.name,
                    self._translate(_("MultipleSourceInputWidget-remove",
                                      default="Remove")))
                 )
-            result.append('  <br>')
+            result.append('  <br />')
 
-        result.append('  <input type="hidden" name="%s.displayed" value="y">'
+        result.append('  <input type="hidden" name="%s.displayed" value="y" />'
                       % self.name)
         
         result.append('  <div class="queries">')
@@ -468,7 +469,7 @@ class SourceListInputWidget(SourceInputWidget):
             '<select name="%s.selection:list" multiple>\n'
             '%s\n'
             '</select>\n'
-            '<input type="submit" name="%s.apply" value="%s">'
+            '<input type="submit" name="%s.apply" value="%s" />'
             % (name,
                '\n'.join([('<option value="%s">%s</option>' % (token, title))
                           for (title, token) in terms]),
