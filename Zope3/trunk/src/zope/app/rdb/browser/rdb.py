@@ -31,8 +31,9 @@ class TestSQL(object):
 class Connection(object):
     __used_for__ = IManageableZopeDatabaseAdapter
 
-    def edit(self, dsn):
+    def edit(self, dsn, encoding):
         self.context.setDSN(dsn)
+        self.context.setEncoding(encoding)
         return self.request.response.redirect(self.request.URL[-1])
 
     def connect(self):

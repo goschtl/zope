@@ -42,6 +42,8 @@ from zope.app.rdb.interfaces import IZopeDatabaseAdapter
 from zope.thread import local
 
 
+DEFAULT_ENCODING = "utf-8"
+
 def sqlquote(x):
     """
     Escape data suitable for inclusion in generated ANSI SQL92 code for
@@ -173,6 +175,15 @@ class ZopeDatabaseAdapter(Persistent, Contained):
     # Pessimistic defaults
     paramstyle = 'pyformat'
     threadsafety = 0
+    encoding = DEFAULT_ENCODING
+
+    def setEncoding(self, encoding):
+        # Check the encoding
+        "".decode(encoding)
+        self.encoding = encoding
+
+    def getEncoding(self):
+        return self.encoding
 
     def getConverter(self, type):
         'See IDBITypeInfo'
@@ -277,7 +288,8 @@ class ZopeCursor(object):
         connection with the transaction system.  """
 
         if isinstance(operation, unicode):
-            operation = operation.encode('UTF-8')
+            encoding = self.connection.getTypeInfo().getEncoding()
+            operation = operation.encode(encoding)
         self.connection.registerForTxn()
         if parameters is None:
             return self.cursor.execute(operation)

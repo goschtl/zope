@@ -58,6 +58,13 @@ class IDBITypeInfo(Interface):
         variables or other external sources that are beyond your control.
         """)
 
+    encoding = TextLine(
+        title=_("Database encoding"),
+        description=_("Encoding of the database content"),
+        default=u"utf-8",
+        required=False
+        )
+
     def getConverter(type):
         """Return a converter function for field type matching key"""
 
@@ -388,6 +395,12 @@ class IZopeDatabaseAdapterManagement(Interface):
         "All values should be properlu URL-encoded."),
         default=u"dbi://dbname",
         required=True)
+
+    def getEncoding():
+        """Get the database encoding."""
+
+    def setEncoding(encoding):
+        """Set the database encoding."""
 
     def connect():
         """Connect to the specified database."""

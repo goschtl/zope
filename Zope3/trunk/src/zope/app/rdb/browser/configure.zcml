@@ -16,7 +16,7 @@
   <view
       name="+"
       for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
-      class="zope.app.container.browser.adding.Adding" 
+      class="zope.app.container.browser.adding.Adding"
       permission="zope.ManageServices" />
 
   <pages
@@ -24,12 +24,12 @@
       permission="zope.ManageServices"
       class=".rdb.Connection">
 
-    <page name="editForm.html" template="rdbconnection.pt" 
+    <page name="editForm.html" template="rdbconnection.pt"
           menu="zmi_views" title="Edit"/>
     <page name="edit.html" attribute="edit" />
     <page name="connect.html" attribute="connect" />
     <page name="disconnect.html" attribute="disconnect" />
-  
+
   </pages>
 
   <pages
