@@ -10,9 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
 
-$Id$
-"""
-
-from zc.page.page import Page
+from listcontainer import ListContainer, Contained
+from listcontainer import ObjectMovedEvent, ObjectAddedEvent, \
+    ObjectRemovedEvent, ObjectReplacedEvent

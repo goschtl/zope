@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zc">
+
+  <class class=".listcontainer.ListContainer">
+    <require
+        interface=".interfaces.IListContainer"
+        permission="zope.ManageContent"
+        />
+  </class>
+</configure>
+

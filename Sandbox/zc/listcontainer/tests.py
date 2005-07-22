@@ -10,11 +10,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Domain definition
+"""listcontainer module test runner
 
 $Id$
 """
 
-import zope.i18nmessageid
+import unittest
+from zope.testing import doctest
 
-_ = zope.i18nmessageid.MessageFactory('zc.page')
+def test_suite():
+    return unittest.TestSuite((
+        doctest.DocFileSuite(
+            'README.txt'),))
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

@@ -10,24 +10,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Simple Page support
+"""I18N support for tasks.
 
-$Id$
+This defines a `MessageFactory` for the I18N domain for the catalog
+package.  This is normally used with this import::
+
+  from i18n import MessageFactory as _
+
+The factory is then used normally.  Two examples::
+
+  text = _('some internationalized text')
+  text = _('helpful-descriptive-message-id', 'default text')
 """
+__docformat__ = "reStructuredText"
 
-from zope import interface
-from zope.publisher.interfaces import NotFound
-from zope.app.publisher.browser import BrowserView
-from zc.page.interfaces import IPage
 
-class Page(BrowserView):
-    """Simple page-support class
-    """ 
+from zope import i18nmessageid
 
-    interface.implements(IPage)
-
-    def browserDefault(self, request):
-        return self, ()
-
-    def publishTraverse(self, request, name):
-        raise NotFound(self, name, request)
+MessageFactory = _ = i18nmessageid.MessageFactory("zc.catalog")
