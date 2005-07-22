@@ -17,12 +17,18 @@ Lock storage implementation.
 $Id: $
 """
 
+import time
+
+import persistent
+
+from BTrees.OOBTree import OOBTree
+from BTrees.IOBTree import IOBTree
+
+import zope.interface
+
 from zope.app.keyreference.interfaces import IKeyReference
 from zope.app.locking.interfaces import ILockTracker
 from zope.app.locking.interfaces import LockingError
-from BTrees.OOBTree import OOBTree
-from BTrees.IOBTree import IOBTree
-import zope.interface, time
 
 
 timefunc = time.time
@@ -37,10 +43,24 @@ class ILockStorage(zope.interface.Interface):
 
 
 class LockStorage(object):
-    """
+    # WARNING: This is not persistent.  Use PersistentLockStorage instead.
+    # This class must remain so that existing instances can be unpickled
+    # from the database.  New instances cannot be created without subclassing.
+    #
+    # The persistent.Persistent base class cannot be added to this
+    # without causing the containers to fail to unpickle properly
+    # since the pickle for a LockStorage is embedded in the pickle of
+    # the containing object.  For this reason, applications must
+    # replace existing LockStorage instances with some new class.  The
+    # LockStorage instances don't need to be removed, but an alternate
+    # class needs to be used instead.
+
+    """Peristent storage for locks.
+
     This class implements both the ILockTracker utility as well as the
     internal ILockStorage utility which is used by the ILockable adapter
     implementation. It acts as the persistent storage for locks.
+
     """
 
     zope.interface.implements(ILockStorage, ILockTracker)
@@ -48,6 +68,11 @@ class LockStorage(object):
     def __init__(self):
         self.timeouts = IOBTree()
         self.locks = OOBTree()
+        if self.__class__ is LockStorage:
+            raise TypeError(
+                "%s.LockStorage is insane; use a persistent subclass instead"
+                " (%s.PersistentLockStorage should do nicely)"
+                % (__name__, __name__))
 
     # ILockTracker implementation
     
@@ -113,5 +138,10 @@ class LockStorage(object):
                     del self.locks[keyref]
             del self.timeouts[key]
 
-        
 
+class PersistentLockStorage(persistent.Persistent, LockStorage):
+    """LockStorage that isn't fickle."""
+
+    # This is the class that should generally be used with Zope 3.
+    # Alternate subclasses can be used, but LockStorage can't be used
+    # directly.  Subclasses are responsible for providing persistence.

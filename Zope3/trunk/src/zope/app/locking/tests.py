@@ -68,14 +68,14 @@ def setUp(test):
     from zope.app.locking.interfaces import ILockable, ILockTracker
     from zope.app.locking.adapter import LockingAdapterFactory
     from zope.app.locking.adapter import LockingPathAdapter
-    from zope.app.locking.storage import ILockStorage, LockStorage
+    from zope.app.locking.storage import ILockStorage, PersistentLockStorage
     from zope.app.traversing.interfaces import IPathAdapter
 
     ztapi.provideAdapter(Interface, IKeyReference, FakeKeyReference)
     ztapi.provideAdapter(Interface, ILockable, LockingAdapterFactory)
     ztapi.provideAdapter(None, IPathAdapter, LockingPathAdapter,
                          "locking")
-    storage = LockStorage()
+    storage = PersistentLockStorage()
     ztapi.provideUtility(ILockStorage, storage)
     ztapi.provideUtility(ILockTracker, storage)
     test._storage = storage # keep-alive
