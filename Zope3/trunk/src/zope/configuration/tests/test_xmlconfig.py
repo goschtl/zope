@@ -456,7 +456,7 @@ def test_includeOverrides():
     We see that:
 
     - The conflicting actions between bar2.zcml and bar21.zcml have
-      been resolves, and
+      been resolved, and
 
     - The remaining (after conflict resolution) actions from bar2.zcml
       and bar21.zcml have the includepath that they would have if they
@@ -472,7 +472,7 @@ def test_includeOverrides():
 
     >>> len(foo.data)
     3
-    
+
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 0))
@@ -490,6 +490,43 @@ def test_includeOverrides():
     (('x', 'blah'), ('y', 1))
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/bar2.zcml", line 6.2-6.24
+
+
+    We expect the exact same results when using includeOverrides with
+    the ``files`` argument instead of the ``file`` argument.  The
+    baro2.zcml file uses the former:
+
+    >>> context = config.ConfigurationMachine()
+    >>> xmlconfig.registerCommonDirectives(context)
+    >>> path = os.path.join(here, "samplepackage", "baro2.zcml")
+    >>> xmlconfig.include(context, path)
+
+    Actions look like above:
+
+    >>> pprint(clean_actions(context.actions))
+    [{'discriminator': (('x', 'blah'), ('y', 0)),
+      'includepath': ['tests/samplepackage/baro2.zcml',
+                      'tests/samplepackage/bar1.zcml',
+                      'tests/samplepackage/configure.zcml'],
+      'info': 'File "tests/samplepackage/configure.zcml", line 12.2-12.29'},
+     {'discriminator': (('x', 'blah'), ('y', 1)),
+      'includepath': ['tests/samplepackage/baro2.zcml',
+                      'tests/samplepackage/bar1.zcml'],
+      'info': 'File "tests/samplepackage/bar1.zcml", line 5.2-5.24'},
+     {'discriminator': (('x', 'blah'), ('y', 0)),
+      'includepath': ['tests/samplepackage/baro2.zcml'],
+      'info': 'File "tests/samplepackage/bar21.zcml", line 3.2-3.24'},
+     {'discriminator': (('x', 'blah'), ('y', 2)),
+      'includepath': ['tests/samplepackage/baro2.zcml'],
+      'info': 'File "tests/samplepackage/bar2.zcml", line 5.2-5.24'},
+     {'discriminator': (('x', 'blah'), ('y', 1)),
+      'includepath': ['tests/samplepackage/baro2.zcml'],
+      'info': 'File "tests/samplepackage/bar2.zcml", line 6.2-6.24'}]
+
+    >>> context.execute_actions()
+    >>> len(foo.data)
+    3
+    >>> del foo.data[:]
 
     """
 
@@ -590,4 +627,5 @@ def test_suite():
         DocTestSuite(),
         ))
 
-if __name__ == '__main__': unittest.main()
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

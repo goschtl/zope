@@ -493,7 +493,7 @@ def include(_context, file=None, package=None, files=None):
             assert _context.stack[-1].context is context
             _context.stack.pop()
 
-def includeOverrides(_context, file, package=None):
+def includeOverrides(_context, file=None, package=None, files=None):
     """Include zcml file containing overrides
 
     The actions in the included file are added to the context as if they
@@ -510,7 +510,7 @@ def includeOverrides(_context, file, package=None):
     includepath = _context.includepath
 
     # Now we'll include the file. We'll munge the actions after
-    include(_context, file, package)
+    include(_context, file, package, files)
 
     # Now we'll grab the new actions, resolve conflicts,
     # and munge the includepath:
