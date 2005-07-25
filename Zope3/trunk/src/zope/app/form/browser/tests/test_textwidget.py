@@ -229,7 +229,7 @@ class DatetimeDisplayWidgetTest(DateDisplayWidgetTest):
         super(DatetimeDisplayWidgetTest, self).testRenderFull()
         self.verifyResult(self._widget(), ["14:39:01 +000"])
 
-class TextAreaWidgetTest(BrowserWidgetTest):
+class TextAreaDisplayWidgetTest(BrowserWidgetTest):
 
     _WidgetFactory = TextAreaWidget
 
@@ -305,7 +305,7 @@ def test_suite():
         unittest.makeSuite(URIDisplayWidgetTest),
         unittest.makeSuite(DateDisplayWidgetTest),
         unittest.makeSuite(DatetimeDisplayWidgetTest),
-        unittest.makeSuite(TextAreaWidgetTest),
+        unittest.makeSuite(TextAreaDisplayWidgetTest),
         doctest.DocTestSuite(),
         ))
 
