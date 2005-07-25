@@ -52,6 +52,7 @@ Zope Changes
       - Change ``zope.app.intid.addIntIdSubscriber`` and
         ``.removeIntIdSubscriber`` to adapt it's ob argument to
         ``IKeyReference``. They register/unregister the object only if it get
+
         the adapter.
 
       - Add ``content_factory_id`` attribute to the ``addform`` and
@@ -172,8 +173,8 @@ Zope Changes
         * Fixed security hole by disabling automatic import of paths when a
           module is not available in ``sys.modules`` by default. It can be
           activated using::
-  
-            <apidoc:moduleImport allow="true" /> 
+
+            <apidoc:moduleImport allow="true" />
 
         * Code Browser now also shows interfaces and text files.
 
@@ -623,7 +624,7 @@ Zope Changes
           not include the default layer.
 
       - Replaced ``copypastemove.rename`` with adapters to
-        ``IContainerItemRenamer``.  Instead of 
+        ``IContainerItemRenamer``.  Instead of
         ``rename(container, oldName, newName)``, one should use
         ``IContainerItemRenamer(container).renameItem(oldName, newName)``.
 
@@ -649,6 +650,8 @@ Zope Changes
       - Changed directory resources to support recursion into subdirectories.
 
     Bug Fixes
+
+      - Fix #316: Zope3 test.py truncates path with dir=
 
       - Fix #332 : Death to IContentContainer
 
@@ -686,7 +689,7 @@ Zope Changes
         ``request`` should be ``self.request``
 
       - Fixed issue #333: XML Tree doesn't load if some item
-        contains non-ASCII characters 
+        contains non-ASCII characters
 
       - Fixed issue #301: Bug with ``i18n:name`` and ``i18n:translate``
         on the same element
@@ -832,7 +835,7 @@ Zope Changes
         the directive schema, while it actually was expected to be
         required.
 
-      - Added redirection of stdout / stderr when running as a windows 
+      - Added redirection of stdout / stderr when running as a windows
         service (otherwise logging and other output will cause problems).
 
     Much thanks to everyone who contributed to this release:
