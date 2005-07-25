@@ -76,6 +76,10 @@ Current contents:
 
   This will eventually either move to zope.app or its own (public) project.
 
+- mechtest: this expects to live in zc.mechtest.  It provides a browser-like
+  interface for doing functional tests.
+
+
 Upcoming contents: 
 
 a union field, a combination field, and widgets for both.  Not included now
