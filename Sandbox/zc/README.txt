@@ -79,6 +79,9 @@ Current contents:
 - mechtest: this expects to live in zc.mechtest.  It provides a browser-like
   interface for doing functional tests.
 
+  * requires ClientForm, ClientCookie, and pullparser from 
+    svn+ssh://svn.zope.com/repos/main/z4i/trunk
+
 
 Upcoming contents: 
 
