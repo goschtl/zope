@@ -26,9 +26,15 @@ from zope.publisher.browser import TestRequest
 from zope.app.form.interfaces import IInputWidget
 
 from zope.app.form.browser import TextWidget
+
 from zope.app.form.browser import TextAreaWidget
 from zope.app.form.browser import BytesAreaWidget
 from zope.app.form.browser import PasswordWidget
+from zope.app.form.browser import FileWidget
+from zope.app.form.browser import IntWidget
+from zope.app.form.browser import FloatWidget
+from zope.app.form.browser import BytesWidget
+from zope.app.form.browser import ASCIIWidget
 
 from zope.app.form.browser import DateDisplayWidget
 from zope.app.form.browser import DatetimeDisplayWidget
@@ -235,7 +241,7 @@ class TextAreaDisplayWidgetTest(BrowserWidgetTest):
 
     _WidgetFactory = TextAreaWidget
 
-    # Rendering with the default DisplayWidget for this widget
+    # It uses the default DisplayWidget
     def testRender(self):
         value = u"""
         texttexttexttexttexttextexttexttexttexttextéééééééééééééééé
@@ -260,7 +266,7 @@ class BytesAreaDisplayWidgetTest(BrowserWidgetTest):
 
     _WidgetFactory = BytesAreaWidget
 
-    # Rendering with the default DisplayWidget for this widget
+    # It uses the default DisplayWidget
     def testRender(self):
         value = """
         texttexttexttexttexttexttexttexttexttexttexttexttexttexttext
@@ -281,15 +287,81 @@ class BytesAreaDisplayWidgetTest(BrowserWidgetTest):
         for a, v in check_list:
             self.verifyResult(self._widget(), [a, v])
 
+class BytesDisplayWidgetTest(BrowserWidgetTest):
+
+    _WidgetFactory = BytesWidget
+
+    # It uses the BytesDisplayWidget
+    def testRender(self):
+        value = "Food Value"
+        self._widget.setRenderedValue(value)
+        check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
+                      'value="%s"'%value, 'size="20"')
+        self.verifyResult(self._widget(), check_list)
+
+class ASCIIDisplayWidgetTest(BrowserWidgetTest):
+
+    _WidgetFactory = ASCIIWidget
+
+    # It uses the default BytesDisplayWidget
+    def testRender(self):
+        value = "Food Value"
+        self._widget.setRenderedValue(value)
+        check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
+                      'value="%s"'%value, 'size="20"')
+        self.verifyResult(self._widget(), check_list)
+
 class PasswordDisplayWidgetTest(BrowserWidgetTest):
 
     _WidgetFactory = PasswordWidget
 
+    # It uses the default DisplayWidget
     def testRender(self):
         value = 'Foo Value'
         self._widget.setRenderedValue(value)
         check_list = ('type="password"', 'id="field.foo"', 'name="field.foo"',
                       'value=""', 'size="20"')
+        self.verifyResult(self._widget(), check_list)
+
+class FileDisplayWidgetTest(BrowserWidgetTest):
+
+    _WidgetFactory = FileWidget
+
+    # It uses the default DisplayWidget
+    def testRender(self):
+        value = 'Foo Value'
+        self._widget.setRenderedValue(value)
+        check_list = ('type="file"', 'id="field.foo"', 'name="field.foo"',
+                      'size="20"')
+        self.verifyResult(self._widget(), check_list)
+        check_list = ('type="hidden"',) + check_list[1:-1]
+        self.verifyResult(self._widget.hidden(), check_list)
+        check_list = ('style="color: red"',) + check_list
+        self._widget.extra = 'style="color: red"'
+        self.verifyResult(self._widget.hidden(), check_list)
+
+class IntDisplayWidgetTest(BrowserWidgetTest):
+
+    _WidgetFactory = IntWidget
+
+    # It uses the default DisplayWidget
+    def testRender(self):
+        value = 1
+        self._widget.setRenderedValue(value)
+        check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
+                      'size="10"', 'value="%s"'%str(value))
+        self.verifyResult(self._widget(), check_list)
+
+class FloatDisplayWidgetTest(BrowserWidgetTest):
+
+    _WidgetFactory = FloatWidget
+
+    # It uses the default DisplayWidget
+    def testRender(self):
+        value = 1.2
+        self._widget.setRenderedValue(value)
+        check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
+                      'size="10"', 'value="%s"'%str(value))
         self.verifyResult(self._widget(), check_list)
 
 def test_w_nonrequired_and_missing_value_and_no_inout():
@@ -346,6 +418,11 @@ def test_suite():
         unittest.makeSuite(TextAreaDisplayWidgetTest),
         unittest.makeSuite(BytesAreaDisplayWidgetTest),
         unittest.makeSuite(PasswordDisplayWidgetTest),
+        unittest.makeSuite(FileDisplayWidgetTest),
+        unittest.makeSuite(IntDisplayWidgetTest),
+        unittest.makeSuite(FloatDisplayWidgetTest),
+        unittest.makeSuite(BytesDisplayWidgetTest),
+        unittest.makeSuite(ASCIIDisplayWidgetTest),
         doctest.DocTestSuite(),
         ))
 
