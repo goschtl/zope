@@ -11,7 +11,8 @@ Bugfixes
 * Added backwards compatibility for some moved classes (AddForm, EditForm, 
   ContentAdding)
 
-
+* The deprecated FivePageTemplateFile was removed, and the erroneous use of 
+  this by EditView was changed.
 
 Five 1.1b (2005-07-13)
 ======================
