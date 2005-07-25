@@ -26,6 +26,7 @@ from zope.publisher.browser import TestRequest
 from zope.app.form.interfaces import IInputWidget
 
 from zope.app.form.browser import TextWidget
+from zope.app.form.browser import TextAreaWidget
 from zope.app.form.browser import DateDisplayWidget
 from zope.app.form.browser import DatetimeDisplayWidget
 from zope.app.form.browser import URIDisplayWidget
@@ -228,6 +229,30 @@ class DatetimeDisplayWidgetTest(DateDisplayWidgetTest):
         super(DatetimeDisplayWidgetTest, self).testRenderFull()
         self.verifyResult(self._widget(), ["14:39:01 +000"])
 
+class TextAreaWidgetTest(BrowserWidgetTest):
+
+    _WidgetFactory = TextAreaWidget
+
+    # Rendering with the default DisplayWidget for this widget
+    def testRender(self):
+        value = """
+        texttexttexttexttexttexttexttexttexttexttexttexttexttexttext
+        texttexttexttexttexttexttexttexttexttexttexttexttexttexttext
+        texttexttexttexttexttexttexttexttexttexttexttexttexttexttext
+        """
+        self._widget.setRenderedValue(value)
+        self.assert_(value, self._widget._toFieldValue(value))
+        self.verifyResult(self._widget(), ["<textarea",
+                                           self._widget._toFormValue(value)])
+        check_list = (
+            ('id', 'field.foo'),
+            ('name', 'field.foo'),
+            #('value', ), tested above
+            ('cols', '60'),
+            ('rows', '15'),
+            )
+        for a, v in check_list:
+            self.verifyResult(self._widget(), [a, v])
 
 def test_w_nonrequired_and_missing_value_and_no_inout():
     """
@@ -280,6 +305,7 @@ def test_suite():
         unittest.makeSuite(URIDisplayWidgetTest),
         unittest.makeSuite(DateDisplayWidgetTest),
         unittest.makeSuite(DatetimeDisplayWidgetTest),
+        unittest.makeSuite(TextAreaWidgetTest),
         doctest.DocTestSuite(),
         ))
 
