@@ -28,6 +28,7 @@ from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import TextWidget
 from zope.app.form.browser import TextAreaWidget
 from zope.app.form.browser import BytesAreaWidget
+from zope.app.form.browser import PasswordWidget
 
 from zope.app.form.browser import DateDisplayWidget
 from zope.app.form.browser import DatetimeDisplayWidget
@@ -36,7 +37,6 @@ from zope.app.form.browser import URIDisplayWidget
 from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
-
 
 class TextWidgetTest(SimpleInputWidgetTest):
     """Documents and tests the text widget.
@@ -281,6 +281,17 @@ class BytesAreaDisplayWidgetTest(BrowserWidgetTest):
         for a, v in check_list:
             self.verifyResult(self._widget(), [a, v])
 
+class PasswordDisplayWidgetTest(BrowserWidgetTest):
+
+    _WidgetFactory = PasswordWidget
+
+    def testRender(self):
+        value = 'Foo Value'
+        self._widget.setRenderedValue(value)
+        check_list = ('type="password"', 'id="field.foo"', 'name="field.foo"',
+                      'value=""', 'size="20"')
+        self.verifyResult(self._widget(), check_list)
+
 def test_w_nonrequired_and_missing_value_and_no_inout():
     """
     There was a bug that caused the value attribute to be set to
@@ -334,6 +345,7 @@ def test_suite():
         unittest.makeSuite(DatetimeDisplayWidgetTest),
         unittest.makeSuite(TextAreaDisplayWidgetTest),
         unittest.makeSuite(BytesAreaDisplayWidgetTest),
+        unittest.makeSuite(PasswordDisplayWidgetTest),
         doctest.DocTestSuite(),
         ))
 
