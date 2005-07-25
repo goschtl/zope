@@ -113,13 +113,3 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
                 return obj
 
 
-# this is not in use right now, but would be how to integrate Zope 3 page
-# templates instead of Zope 2 page templates
-class FivePageTemplateFile(ViewPageTemplateFile):
-    
-    def pt_getContext(self, instance, request, **_kw):
-        # instance is a View component
-        namespace = super(FivePageTemplateFile, self).pt_getContext(
-            instance, request, **_kw)
-        namespace['here'] = namespace['context']
-        return namespace

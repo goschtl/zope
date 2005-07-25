@@ -60,6 +60,9 @@ Bugfixes
 
 * The deprecated get_transaction method is no longer used in Zope 2.8.
 
+* The deprecated FivePageTemplateFile was removed, and the erroneous 
+  use of this by EditView was changed.
+
 Five 1.0.2 (2005-07-12)
 =======================
 
