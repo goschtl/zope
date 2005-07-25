@@ -51,9 +51,8 @@ Zope Changes
 
       - Change ``zope.app.intid.addIntIdSubscriber`` and
         ``.removeIntIdSubscriber`` to adapt it's ob argument to
-        ``IKeyReference``. They register/unregister the object only if it get
-
-        the adapter.
+        ``IKeyReference``. They register/unregister the object only if
+        it gets an adapter.
 
       - Add ``content_factory_id`` attribute to the ``addform`` and
         ``addwizard`` directive so that named factories can be invoked too.
