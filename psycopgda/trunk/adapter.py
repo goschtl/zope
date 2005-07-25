@@ -21,7 +21,6 @@ from datetime import date, time, datetime, timedelta
 import psycopg
 import re
 
-PG_ENCODING = 'utf8'
 
 # These OIDs are taken from include/server/pg_type.h from PostgreSQL headers.
 # Unfortunatelly psycopg does not export them as constants, and
@@ -272,10 +271,12 @@ def _conv_interval(s):
         else:
             return timedelta(days=d, hours=hr, minutes=mn, seconds=sc)
 
-def _conv_string(s):
-    if s is not None:
-        s = s.decode(PG_ENCODING)
-    return s
+def _get_string_conv(encoding):
+    def _conv_string(s):
+        if s is not None:
+            s = s.decode(encoding)
+        return s
+    return _conv_string
 
 # User-defined types
 DATE = psycopg.new_type((DATE_OID,), "ZDATE", _conv_date)
@@ -286,9 +287,6 @@ TIMESTAMPTZ = psycopg.new_type((TIMESTAMPTZ_OID,), "ZTIMESTAMPTZ",
                                 _conv_timestamptz)
 INTERVAL = psycopg.new_type((INTERVAL_OID,), "ZINTERVAL", _conv_interval)
 
-STRING = psycopg.new_type((CHAR_OID, TEXT_OID, BPCHAR_OID, VARCHAR_OID),
-                          "ZSTRING", _conv_string)
-
 
 dsn2option_mapping = {'host': 'host',
                       'port': 'port',
@@ -296,7 +294,7 @@ dsn2option_mapping = {'host': 'host',
                       'username': 'user',
                       'password': 'password'}
 
-def registerTypes():
+def registerTypes(encoding):
     """Register type conversions for psycopg"""
     psycopg.register_type(DATE)
     psycopg.register_type(TIME)
@@ -304,6 +302,8 @@ def registerTypes():
     psycopg.register_type(TIMESTAMP)
     psycopg.register_type(TIMESTAMPTZ)
     psycopg.register_type(INTERVAL)
+    STRING = psycopg.new_type((CHAR_OID, TEXT_OID, BPCHAR_OID, VARCHAR_OID),
+                              "ZSTRING", _get_string_conv(encoding))
     psycopg.register_type(STRING)
  
 class PsycopgAdapter(ZopeDatabaseAdapter):
@@ -334,6 +334,4 @@ class PsycopgAdapter(ZopeDatabaseAdapter):
 
     def _registerTypes(self):
         """Register type conversions for psycopg"""
-        registerTypes()
-
-           
+        registerTypes(self.getEncoding())

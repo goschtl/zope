@@ -153,7 +153,8 @@ class TestPsycopgTypeConversion(TestCase):
         self.assertRaises(ValueError, c, '123')
 
     def test_conv_string(self):
-        from psycopgda.adapter import _conv_string
+        from psycopgda.adapter import _get_string_conv
+        _conv_string = _get_string_conv("utf-8")
         self.assertEquals(_conv_string(None), None)
         self.assertEquals(_conv_string(''), u'')
         self.assertEquals(_conv_string('c'), u'c')
