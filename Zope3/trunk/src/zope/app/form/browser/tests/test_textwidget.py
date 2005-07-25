@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002, 2004, 2005 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -24,9 +24,12 @@ from zope.schema import TextLine
 from zope.publisher.browser import TestRequest
 
 from zope.app.form.interfaces import IInputWidget
+
 from zope.app.form.browser import TextWidget
-from zope.app.form.browser import DateDisplayWidget, DatetimeDisplayWidget
-from zope.app.form.browser.textwidgets import URIDisplayWidget
+from zope.app.form.browser import DateDisplayWidget
+from zope.app.form.browser import DatetimeDisplayWidget
+from zope.app.form.browser import URIDisplayWidget
+
 from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
@@ -121,7 +124,6 @@ class TextWidgetTest(SimpleInputWidgetTest):
         self._widget.extra = 'style="color: red"'
         self.verifyResult(self._widget.hidden(), check_list)
 
-
 class URIDisplayWidgetTest(BrowserWidgetTest):
 
     _WidgetFactory = URIDisplayWidget
@@ -137,7 +139,6 @@ class URIDisplayWidgetTest(BrowserWidgetTest):
         self._widget.linkTarget = "there"
         self.verifyResult(self._widget(), ["<a", 'href="uri:fake"',
                                            'target="there"'])
-
 
 class DateDisplayWidgetTest(BrowserWidgetTest):
 

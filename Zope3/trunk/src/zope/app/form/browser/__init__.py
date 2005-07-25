@@ -29,6 +29,7 @@ from zope.app.form.browser.textwidgets import DatetimeWidget, DateWidget
 from zope.app.form.browser.textwidgets import DatetimeDisplayWidget
 from zope.app.form.browser.textwidgets import DateDisplayWidget
 from zope.app.form.browser.textwidgets import BytesDisplayWidget
+from zope.app.form.browser.textwidgets import URIDisplayWidget
 
 # Widgets for boolean fields
 from zope.app.form.browser.boolwidgets import CheckBoxWidget
