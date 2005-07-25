@@ -100,6 +100,7 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
 
 # this is not in use right now, but would be how to integrate Zope 3 page
 # templates instead of Zope 2 page templates
+# This class will go away in Five 1.1.
 class FivePageTemplateFile(ViewPageTemplateFile):
     
     def pt_getContext(self, instance, request, **_kw):

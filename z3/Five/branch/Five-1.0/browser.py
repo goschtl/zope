@@ -45,7 +45,7 @@ from zope.schema.interfaces import ValidationError
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 
 # Five
-from Products.Five.pagetemplatefile import FivePageTemplateFile
+from Products.Five.pagetemplatefile import ZopeTwoPageTemplateFile
 
 class BrowserView(Acquisition.Explicit):
     security = ClassSecurityInfo()
@@ -134,7 +134,7 @@ class EditView(BrowserView):
     # Fall-back field names computes from schema
     fieldNames = property(lambda self: getFieldNamesInOrder(self.schema))
     # Fall-back template
-    generated_form = FivePageTemplateFile('edit.pt')
+    generated_form = ZopeTwoPageTemplateFile('edit.pt')
 
     def __init__(self, context, request):
         BrowserView.__init__(self, context, request)
