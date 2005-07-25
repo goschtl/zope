@@ -27,6 +27,8 @@ from zope.app.form.interfaces import IInputWidget
 
 from zope.app.form.browser import TextWidget
 from zope.app.form.browser import TextAreaWidget
+from zope.app.form.browser import BytesAreaWidget
+
 from zope.app.form.browser import DateDisplayWidget
 from zope.app.form.browser import DatetimeDisplayWidget
 from zope.app.form.browser import URIDisplayWidget
@@ -235,6 +237,31 @@ class TextAreaDisplayWidgetTest(BrowserWidgetTest):
 
     # Rendering with the default DisplayWidget for this widget
     def testRender(self):
+        value = u"""
+        texttexttexttexttexttextexttexttexttexttextéééééééééééééééé
+        texttexttexttexttextteéééééxttexttexttexttexttexttexttextte
+        texttexttexttexttexttexttexttexttexttexttexttexttexttexttext
+        """
+        self._widget.setRenderedValue(value)
+        self.assert_(value, self._widget._toFieldValue(value))
+        self.verifyResult(self._widget(), ["<textarea",
+                                           self._widget._toFormValue(value)])
+        check_list = (
+            ('id', 'field.foo'),
+            ('name', 'field.foo'),
+            #('value', ), tested above
+            ('cols', '60'),
+            ('rows', '15'),
+            )
+        for a, v in check_list:
+            self.verifyResult(self._widget(), [a, v])
+
+class BytesAreaDisplayWidgetTest(BrowserWidgetTest):
+
+    _WidgetFactory = BytesAreaWidget
+
+    # Rendering with the default DisplayWidget for this widget
+    def testRender(self):
         value = """
         texttexttexttexttexttexttexttexttexttexttexttexttexttexttext
         texttexttexttexttexttexttexttexttexttexttexttexttexttexttext
@@ -306,6 +333,7 @@ def test_suite():
         unittest.makeSuite(DateDisplayWidgetTest),
         unittest.makeSuite(DatetimeDisplayWidgetTest),
         unittest.makeSuite(TextAreaDisplayWidgetTest),
+        unittest.makeSuite(BytesAreaDisplayWidgetTest),
         doctest.DocTestSuite(),
         ))
 
