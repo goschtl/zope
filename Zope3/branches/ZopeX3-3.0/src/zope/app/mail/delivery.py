@@ -29,14 +29,17 @@ from random import randrange
 from time import strftime
 from socket import gethostname
 
+import transaction, ZODB
 from zope.interface import implements
 from zope.app.mail.interfaces import IDirectMailDelivery, IQueuedMailDelivery
 from zope.app.mail.maildir import Maildir
 from transaction.interfaces import IDataManager
-from transaction import get_transaction
-from transaction.util import NoSavepointSupportRollback
 
 class MailDataManager(object):
+    """Mail Data Manager
+
+    This implementation is written against ZODB 3.3, the ZODB version
+    shipping with Zope X3.0."""
     implements(IDataManager)
 
     def __init__(self, callable, args=(), onAbort=None):
@@ -55,10 +58,44 @@ class MailDataManager(object):
         self.callable(*self.args)
 
     def savepoint(self, transaction):
+        # need to import this here since it's only available in ZODB 3.3
+        from transaction.util import NoSavepointSupportRollback
         return NoSavepointSupportRollback(self)
 
     def sortKey(self):
         return id(self)
+
+class ZODB34MailDataManager(MailDataManager):
+    """Mail Data Manager
+
+    This implementation is written against ZODB 3.4, the ZODB version
+    shipping with Zope 2.8 which Zope X3.0 is a part of."""
+
+    def __init__(self, callable, args=(), onAbort=None):
+        super(MailDataManager, self).__init__(callable, args, onAbort)
+        # Use the default thread transaction manager.
+        self.transaction_manager = transaction.manager
+
+    # No subtransaction support.
+    def abort_sub(self, transaction):
+        pass
+    commit_sub = abort_sub
+
+    def beforeCompletion(self, transaction):
+        pass
+
+    afterCompletion = beforeCompletion
+
+    def tpc_begin(self, transaction, subtransaction=False):
+        assert not subtransaction
+
+    def tpc_vote(self, transaction):
+        pass
+
+    tpc_finish = tpc_abort = tpc_vote
+
+if ZODB.__version__ >= "3.4":
+    MailDataManager = ZODB34MailDataManager
 
 class AbstractMailDelivery(object):
 
@@ -80,7 +117,7 @@ class AbstractMailDelivery(object):
         else:
             messageid = self.newMessageId()
             message = 'Message-Id: <%s>\n%s' % (messageid, message)
-        get_transaction().join(
+        transaction.get().join(
             self.createDataManager(fromaddr, toaddrs, message))
         return messageid
 
