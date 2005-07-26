@@ -17,7 +17,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import re
 from zope.interface import implements
 from zope.i18n import translate
 
@@ -263,12 +262,10 @@ class SequenceDisplayWidget(DisplayWidget):
 
         # deal with special cases:
         if data == self.context.missing_value:
-            return translate(self._missingValueMessage, self.request,
-                             self._missingValueMessage.default)
+            return translate(self._missingValueMessage, self.request)
         data = list(data)
         if not data:
-            return translate(self._emptySequenceMessage, self.request,
-                             self._emptySequenceMessage.default)
+            return translate(self._emptySequenceMessage, self.request)
 
         parts = []
         for i, item in enumerate(data):
