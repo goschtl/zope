@@ -491,7 +491,7 @@ def test_persistence():
     >>> L2.lookup([IF2], IB1, 'bob')
     'A112'
 
-    >>> get_transaction().commit()
+    >>> transaction.commit()
 
     Now, let's open another transaction:
 
@@ -525,7 +525,7 @@ def test_persistence():
     >>> L2.lookup([IF2], IB1, 'bob')
     'A11G'
 
-    >>> get_transaction().commit()
+    >>> transaction.commit()
 
     If we look back at the first connection, we should get the same data:
 
@@ -705,7 +705,7 @@ from zope.component.adapter import GlobalAdapterService
 from zope.app.adapter.adapter import LocalAdapterRegistry, LocalAdapterService
 import zope.interface
 from ZODB.tests.util import DB
-from transaction import get_transaction
+import transaction
 from zope.app import zapi
 from zope.app.registration.interfaces import RegisteredStatus
 

@@ -16,7 +16,7 @@
 $Id$
 """
 from persistent import Persistent
-from transaction import get_transaction
+import transaction
 from zope.interface import implements
 from zope.app.tests.functional import HTTPTestCase
 
@@ -47,7 +47,7 @@ class DAVTestCase(HTTPTestCase):
     def createObject(self, path, obj):
         folder, id = self.createFolders(path)
         folder[id] = obj
-        get_transaction().commit()
+        transaction.commit()
 
     def addPage(self, path, content):
         page = Page()

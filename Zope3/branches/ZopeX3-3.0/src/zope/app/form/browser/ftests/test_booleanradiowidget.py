@@ -17,7 +17,7 @@ $Id: $
 """
 import unittest
 from persistent import Persistent
-from transaction import get_transaction
+import transaction
 
 from support import *
 
@@ -54,7 +54,7 @@ class Test(BrowserTestCase):
 
     def test_display_editform(self):
         self.getRootFolder()['foo'] = Foo()
-        get_transaction().commit()
+        transaction.commit()
 
         # display edit view
         response = self.publish('/foo/edit.html')
@@ -77,7 +77,7 @@ class Test(BrowserTestCase):
 
     def test_submit_editform(self):
         self.getRootFolder()['foo'] = Foo()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit edit view
         response = self.publish('/foo/edit.html', form={
@@ -93,7 +93,7 @@ class Test(BrowserTestCase):
 
     def test_missing_value(self):
         self.getRootFolder()['foo'] = Foo()
-        get_transaction().commit()
+        transaction.commit()
         
         # temporarily make bar field not required
         IFoo['bar'].required = False
@@ -116,7 +116,7 @@ class Test(BrowserTestCase):
 
     def test_required_validation(self):
         self.getRootFolder()['foo'] = Foo()
-        get_transaction().commit()
+        transaction.commit()
         
         self.assert_(IFoo['bar'].required)
 
@@ -132,7 +132,7 @@ class Test(BrowserTestCase):
 
     def test_invalid_allowed_value(self):
         self.getRootFolder()['foo'] = Foo()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit a value for bar isn't allowed
         response = self.publish('/foo/edit.html', form={

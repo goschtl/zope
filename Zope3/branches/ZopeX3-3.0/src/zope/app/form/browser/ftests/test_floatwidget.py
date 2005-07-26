@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 from persistent import Persistent
-from transaction import get_transaction
+import transaction
 
 from support import *
 
@@ -66,7 +66,7 @@ class Test(BrowserTestCase):
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = FloatTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # display edit view
         response = self.publish('/test/edit.html')
@@ -88,7 +88,7 @@ class Test(BrowserTestCase):
 
     def test_submit_editform(self):
         self.getRootFolder()['test'] = FloatTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit edit view
         response = self.publish('/test/edit.html', form={
@@ -108,7 +108,7 @@ class Test(BrowserTestCase):
 
     def test_missing_value(self):
         self.getRootFolder()['test'] = FloatTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit missing values for f2 and f3
         response = self.publish('/test/edit.html', form={
@@ -128,7 +128,7 @@ class Test(BrowserTestCase):
 
     def test_required_validation(self):
         self.getRootFolder()['test'] = FloatTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit missing values for required field f1
         response = self.publish('/test/edit.html', form={
@@ -146,7 +146,7 @@ class Test(BrowserTestCase):
 
     def test_invalid_allowed_value(self):
         self.getRootFolder()['test'] = FloatTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit a value for f3 that isn't allowed
         response = self.publish('/test/edit.html', form={
@@ -158,7 +158,7 @@ class Test(BrowserTestCase):
 
     def test_min_max_validation(self):
         self.getRootFolder()['test'] = FloatTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit value for f1 that is too low
         response = self.publish('/test/edit.html', form={
@@ -179,7 +179,7 @@ class Test(BrowserTestCase):
 
     def test_omitted_value(self):
         self.getRootFolder()['test'] = FloatTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # confirm default values
         object = traverse(self.getRootFolder(), 'test')
@@ -204,7 +204,7 @@ class Test(BrowserTestCase):
 
     def test_conversion(self):
         self.getRootFolder()['test'] = FloatTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit value for f1 that cannot be convert to an float
         response = self.publish('/test/edit.html', form={

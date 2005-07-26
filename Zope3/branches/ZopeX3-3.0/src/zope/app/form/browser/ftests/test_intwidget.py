@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 from persistent import Persistent
-from transaction import get_transaction
+import transaction
 
 from support import *
 
@@ -88,7 +88,7 @@ class Test(BrowserTestCase):
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = IntTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # display edit view
         response = self.publish('/test/edit.html')
@@ -110,7 +110,7 @@ class Test(BrowserTestCase):
 
     def test_submit_editform(self):
         self.getRootFolder()['test'] = IntTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit edit view
         response = self.publish('/test/edit.html', form={
@@ -130,7 +130,7 @@ class Test(BrowserTestCase):
 
     def test_missing_value(self):
         self.getRootFolder()['test'] = IntTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit missing values for i2 and i3
         response = self.publish('/test/edit.html', form={
@@ -154,7 +154,7 @@ class Test(BrowserTestCase):
         """
 
         self.getRootFolder()['test'] = IntTest2() # note alt. class
-        get_transaction().commit()
+        transaction.commit()
 
         # display edit form
         response = self.publish('/test/edit.html')
@@ -184,7 +184,7 @@ class Test(BrowserTestCase):
 
     def test_required_validation(self):
         self.getRootFolder()['test'] = IntTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit missing values for required field i1
         response = self.publish('/test/edit.html', form={
@@ -202,7 +202,7 @@ class Test(BrowserTestCase):
 
     def test_invalid_allowed_value(self):
         self.getRootFolder()['test'] = IntTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit a value for i3 that isn't allowed
         response = self.publish('/test/edit.html', form={
@@ -214,7 +214,7 @@ class Test(BrowserTestCase):
 
     def test_min_max_validation(self):
         self.getRootFolder()['test'] = IntTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit value for i1 that is too low
         response = self.publish('/test/edit.html', form={
@@ -235,7 +235,7 @@ class Test(BrowserTestCase):
 
     def test_omitted_value(self):
         self.getRootFolder()['test'] = IntTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # confirm default values
         object = traverse(self.getRootFolder(), 'test')
@@ -260,7 +260,7 @@ class Test(BrowserTestCase):
 
     def test_conversion(self):
         self.getRootFolder()['test'] = IntTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit value for i1 that cannot be convert to an int
         response = self.publish('/test/edit.html', form={

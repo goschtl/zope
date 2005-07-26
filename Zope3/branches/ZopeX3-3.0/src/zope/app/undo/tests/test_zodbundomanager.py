@@ -17,7 +17,7 @@ $Id$
 """
 from time import time
 from unittest import TestCase, main, makeSuite
-from transaction import get_transaction
+import transaction
 
 from zope.testing.cleanup import CleanUp 
 from zope.app.tests import ztapi
@@ -138,7 +138,7 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(list(self.undo.getTransactions()), expected)
 
         # assert that the transaction has been annotated
-        txn = get_transaction()
+        txn = transaction.get()
         self.assert_(txn._extension.has_key('undo'))
         self.assert_(txn._extension['undo'] is True)
 

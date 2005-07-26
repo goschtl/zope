@@ -17,7 +17,7 @@ $Id: test_checkboxwidget.py 26267 2004-07-08 23:06:19Z garrett $
 """
 import unittest
 from persistent import Persistent
-from transaction import get_transaction
+import transaction
 
 from zope.interface import Interface
 from zope.interface import implements
@@ -59,7 +59,7 @@ class Test(BrowserTestCase):
         self.getRootFolder()['foo'] = Foo()
         self.getRootFolder()['foo'].required_text = u'initial required'
         self.getRootFolder()['foo'].optional_text = u'initial optional'
-        get_transaction().commit()
+        transaction.commit()
 
         # submit form with legal value for optional_text and invalid for 
         # required_text

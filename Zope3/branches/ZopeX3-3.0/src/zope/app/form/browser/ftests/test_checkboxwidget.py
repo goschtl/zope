@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 from persistent import Persistent
-from transaction import get_transaction
+import transaction
 
 from zope.interface import Interface
 from zope.interface import implements
@@ -59,7 +59,7 @@ class Test(BrowserTestCase):
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = BoolTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # display edit view
         response = self.publish('/test/edit.html')
@@ -82,7 +82,7 @@ class Test(BrowserTestCase):
 
     def test_submit_editform(self):
         self.getRootFolder()['test'] = BoolTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit edit view
         response = self.publish('/test/edit.html', form={
@@ -103,7 +103,7 @@ class Test(BrowserTestCase):
         object.b1 = True
         object.b2 = True
         self.getRootFolder()['test'] = object
-        get_transaction().commit()
+        transaction.commit()
 
         # submit invalud type for text line
         response = self.publish('/test/edit.html', form={
@@ -124,7 +124,7 @@ class Test(BrowserTestCase):
         # test confirms that one cannot set a Bool field to None.
 
         self.getRootFolder()['test'] = BoolTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # confirm default value of b1 is True
         object = traverse(self.getRootFolder(), 'test')

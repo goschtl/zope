@@ -18,7 +18,6 @@ $Id$
 import unittest
 import cgi
 from cStringIO import StringIO
-from transaction import get_transaction
 from zope.app.tests.functional import BrowserTestCase
 from zope.publisher.browser import FileUpload
 

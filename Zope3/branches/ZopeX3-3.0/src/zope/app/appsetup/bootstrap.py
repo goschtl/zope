@@ -19,7 +19,7 @@ essential services.
 
 $Id$
 """
-from transaction import get_transaction
+import transaction
 from zope.app.publication.zopepublication import ZopePublication
 from zope.interface import implements
 from zope.component.exceptions import ComponentLookupError
@@ -80,7 +80,7 @@ class BootstrapSubscriberBase(object):
 
         self.doSetup()
 
-        get_transaction().commit()
+        transaction.commit()
         connection.close()
 
     def ensureObject(self, object_name, object_type, object_factory):

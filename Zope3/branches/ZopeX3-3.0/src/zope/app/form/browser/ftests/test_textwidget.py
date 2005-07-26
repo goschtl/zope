@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 from persistent import Persistent
-from transaction import get_transaction
+import transaction
 
 from zope.interface import Interface, implements
 from zope.schema import TextLine, Choice
@@ -62,7 +62,7 @@ class Test(BrowserTestCase):
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = TextLineTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # display edit view
         response = self.publish('/test/edit.html')
@@ -83,7 +83,7 @@ class Test(BrowserTestCase):
 
     def test_submit_editform(self):
         self.getRootFolder()['test'] = TextLineTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit edit view
         response = self.publish('/test/edit.html', form={
@@ -108,7 +108,7 @@ class Test(BrowserTestCase):
         unicode.
         """
         self.getRootFolder()['test'] = TextLineTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit invalud type for text line
         response = self.publish('/test/edit.html', form={
@@ -124,7 +124,7 @@ class Test(BrowserTestCase):
 
     def test_missing_value(self):
         self.getRootFolder()['test'] = TextLineTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit missing values for s2 and s3
         response = self.publish('/test/edit.html', form={
@@ -144,7 +144,7 @@ class Test(BrowserTestCase):
 
     def test_required_validation(self):
         self.getRootFolder()['test'] = TextLineTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit missing values for required field s1
         response = self.publish('/test/edit.html', form={
@@ -162,7 +162,7 @@ class Test(BrowserTestCase):
 
     def test_invalid_value(self):
         self.getRootFolder()['test'] = TextLineTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit a value for s3 that isn't allowed
         response = self.publish('/test/edit.html', form={
@@ -174,7 +174,7 @@ class Test(BrowserTestCase):
 
     def test_length_validation(self):
         self.getRootFolder()['test'] = TextLineTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit value for s1 that is too short
         response = self.publish('/test/edit.html', form={
@@ -195,7 +195,7 @@ class Test(BrowserTestCase):
 
     def test_omitted_value(self):
         self.getRootFolder()['test'] = TextLineTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # confirm default values
         object = traverse(self.getRootFolder(), 'test')

@@ -18,7 +18,7 @@ $Id$
 import unittest
 import re
 from persistent import Persistent
-from transaction import get_transaction
+import transaction
 from datetime import datetime
 from zope.app.datetimeutils import parseDatetimetz, tzinfo
 
@@ -94,7 +94,7 @@ class Test(BrowserTestCase):
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = DatetimeTest()
-        get_transaction().commit()
+        transaction.commit()
         object = traverse(self.getRootFolder(), 'test')
 
         # display edit view
@@ -109,7 +109,7 @@ class Test(BrowserTestCase):
 
     def test_submit_editform(self):
         self.getRootFolder()['test'] = DatetimeTest()
-        get_transaction().commit()
+        transaction.commit()
 
         d1 = datetime(2003, 2, 1, tzinfo=tzinfo(0))
         d2 = datetime(2003, 2, 2, tzinfo=tzinfo(0))
@@ -134,7 +134,7 @@ class Test(BrowserTestCase):
 
     def test_missing_value(self):
         self.getRootFolder()['test'] = DatetimeTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit missing values for d2 and d3
         response = self.publish('/test/edit.html', form={
@@ -153,7 +153,7 @@ class Test(BrowserTestCase):
 
     def test_required_validation(self):
         self.getRootFolder()['test'] = DatetimeTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit missing values for required field d1
         response = self.publish('/test/edit.html', form={
@@ -171,7 +171,7 @@ class Test(BrowserTestCase):
 
     def test_invalid_value(self):
         self.getRootFolder()['test'] = DatetimeTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit a value for d3 that isn't allowed
         response = self.publish('/test/edit.html', form={
@@ -183,7 +183,7 @@ class Test(BrowserTestCase):
 
     def test_min_max_validation(self):
         self.getRootFolder()['test'] = DatetimeTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit value for d1 that is too low
         response = self.publish('/test/edit.html', form={
@@ -204,7 +204,7 @@ class Test(BrowserTestCase):
 
     def test_omitted_value(self):
         self.getRootFolder()['test'] = DatetimeTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # remember default values
         object = traverse(self.getRootFolder(), 'test')

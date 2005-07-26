@@ -55,7 +55,7 @@ class SchemaManager(object):
 
          >>> manager.evolve(context, 2)
          >>> manager.evolve(context, 3)
-         >>> get_transaction().commit()
+         >>> transaction.commit()
 
        The demo evolvers simply record their data in a root key:
 
@@ -301,7 +301,7 @@ def evolve(db, how=EVOLVE):
         generations = root.get(generations_key)
         if generations is None:
             generations = root[generations_key] = PersistentDict()
-            get_transaction().commit()
+            transaction.commit()
 
         for key, manager in findManagers():
             generation = generations.get(key)
@@ -312,7 +312,7 @@ def evolve(db, how=EVOLVE):
             if generation is None:
                 # This is a new database, so no old data
                 generations[key] = manager.generation
-                get_transaction().commit()
+                transaction.commit()
                 continue
 
             if generation > manager.generation:
@@ -337,10 +337,10 @@ def evolve(db, how=EVOLVE):
                     transaction.begin()
                     manager.evolve(context, generation)
                     generations[key] = generation
-                    get_transaction().commit()
+                    transaction.commit()
                 except:
                     # An unguarded handler is intended here
-                    get_transaction().abort()
+                    transaction.abort()
                     logging.getLogger('zope.app.generations').exception(
                         "Failed to evolve database to generation %d for %s",
                         generation, key)
