@@ -57,14 +57,14 @@ def _verify(iface, candidate, tentative=0, vtype=None):
                 # We can't verify non-methods on classes, since the
                 # class may provide attrs in it's __init__.
                 continue
-            
+
             raise BrokenImplementation(iface, name)
 
         attr = getattr(candidate, name)
         if not isinstance(desc, Method):
             # If it's not a method, there's nothing else we can test
             continue
-        
+
         if isinstance(attr, FunctionType):
             # should never get here, since classes should not provide functions
             meth = fromFunction(attr, iface, name=name)
