@@ -149,18 +149,13 @@ class Sized(object):
     zope.component.adapts(ILockStorage)
 
     def __init__(self, context):
-        import sys
-        print >>sys.__stderr__, "sized:", repr(context)
         self.context = context
 
     def sizeForSorting(self):
         return ('item', self._get_size())
 
     def sizeForDisplay(self):
-        import sys
-        print >>sys.__stderr__, "sizeForDisplay:", repr(self.context)
         num_items = self._get_size()
-        print >>sys.__stderr__, "sizeForDisplay:", num_items, repr(self.context)
         if num_items == 1:
             return _('1 item')
         size = _('${items} items')
