@@ -10,6 +10,11 @@ Zope Changes
 
     Bug Fixes
 
+      - Several fixes were backported from the Zope 2.8 integration
+        branch, making the main X3.0 line compatible with Zope 2.8 and
+        thus allowing X3.0 releases to be included into Zope 2.8
+        releases without modification.
+
       - Fixed issue 333 (XML Tree doesn't load if some item
         contains non-ASCII characters).
 
