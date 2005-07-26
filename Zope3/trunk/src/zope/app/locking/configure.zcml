@@ -18,6 +18,18 @@
   </configure>
 
   <adapter
+      factory=".storage.Sized"
+      trusted="yes"
+      />
+
+  <class class=".storage.Sized">
+    <require
+        permission="zope.Public"
+        interface="zope.app.size.interfaces.ISized"
+        />
+  </class>
+
+  <adapter
       for="*"
       factory=".adapter.LockingPathAdapter"
       name="locking"

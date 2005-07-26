@@ -24,11 +24,15 @@ import persistent
 from BTrees.OOBTree import OOBTree
 from BTrees.IOBTree import IOBTree
 
+import zope.component
 import zope.interface
 
 from zope.app.keyreference.interfaces import IKeyReference
 from zope.app.locking.interfaces import ILockTracker
 from zope.app.locking.interfaces import LockingError
+from zope.app.size.interfaces import ISized
+
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 
 timefunc = time.time
@@ -137,6 +141,43 @@ class LockStorage(object):
                 if self.locks.get(keyref, None) is not None:
                     del self.locks[keyref]
             del self.timeouts[key]
+
+
+class Sized(object):
+
+    zope.interface.implements(ISized)
+    zope.component.adapts(ILockStorage)
+
+    def __init__(self, context):
+        import sys
+        print >>sys.__stderr__, "sized:", repr(context)
+        self.context = context
+
+    def sizeForSorting(self):
+        return ('item', self._get_size())
+
+    def sizeForDisplay(self):
+        import sys
+        print >>sys.__stderr__, "sizeForDisplay:", repr(self.context)
+        num_items = self._get_size()
+        print >>sys.__stderr__, "sizeForDisplay:", num_items, repr(self.context)
+        if num_items == 1:
+            return _('1 item')
+        size = _('${items} items')
+        size.mapping = {'items': str(num_items)}
+        return size
+
+    def _get_size(self):
+        # We only want to include active locks, so we'd like to simply
+        # call `cleanup()`, but we also don't want to cause the
+        # transaction to write, so we adjust the count instead.
+
+        nlocks = len(self.context.locks)
+        for key in self.context.timeouts.keys(max=int(timefunc())):
+            for keyref in self.context.timeouts[key]:
+                if self.context.locks.get(keyref, None) is not None:
+                    nlocks -= 1
+        return nlocks
 
 
 class PersistentLockStorage(persistent.Persistent, LockStorage):
