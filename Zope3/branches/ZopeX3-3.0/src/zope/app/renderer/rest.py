@@ -128,17 +128,19 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
       ... This is more source.
       ... ''')
       >>> renderer = ReStructuredTextToHTMLRenderer(source, TestRequest())
-      >>> print renderer.render().strip()
-      <div class="document">
-      <p>This is source.</p>
-      <div class="section" id="header-3">
-      <h3><a name="header-3">Header 3</a></h3>
-      <p>This is more source.</p>
-      </div>
-      </div>
-    """ 
 
+    We need to be a little weird about this test here because reST/STX
+    behaviour changes from Zope X3.0 to Zope 2.8 (which X3.0 is a part
+    of):
 
+      >>> '''\
+      ... <p>This is source.</p>
+      ... <div class="section" id="header-3">
+      ... <h3><a name="header-3">Header 3</a></h3>
+      ... <p>This is more source.</p>
+      ... </div>''' in renderer.render().strip()
+      True
+    """
     implements(IHTMLRenderer)
     __used_for__ = IReStructuredTextSource
 
