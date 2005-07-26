@@ -10,6 +10,8 @@ After Five 1.0.2
   
 * FivePageTemplate is depracated and will be removed in Five 1.1.
 
+* Some parts of add.pt and edit.pt was not being translated.
+
 Five 1.0.2 (2005-07-12)
 =======================
 
