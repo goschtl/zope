@@ -9,9 +9,9 @@ Five 1.0.3 (...)
   instead of the ZopeTwoPageTemplateFile.  This seem to cause access 
   problems in some very obscure situations, and is now fixed.
   
-* FivePageTemplate is deprecated and will be removed in Five 1.1.
+* FivePageTemplate is now deprecated and will be removed in Five 1.1.
 
-* Some parts of add.pt and edit.pt was not being translated.
+* Some parts of add.pt and edit.pt were not being translated.
 
 Five 1.0.2 (2005-07-12)
 =======================
