@@ -16,6 +16,9 @@ Bugfixes
 
 * Some parts of add.pt and edit.pt was not being translated.
 
+* The ZPT variable 'container' did not always contain the parent object
+  of the context.
+
 Five 1.1b (2005-07-13)
 ======================
 
