@@ -14,6 +14,8 @@ Bugfixes
 * The deprecated FivePageTemplateFile was removed, and the erroneous use of 
   this by EditView was changed.
 
+* Some parts of add.pt and edit.pt was not being translated.
+
 Five 1.1b (2005-07-13)
 ======================
 
