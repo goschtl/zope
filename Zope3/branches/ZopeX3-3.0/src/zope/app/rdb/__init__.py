@@ -25,9 +25,8 @@ from urllib import unquote_plus
 
 from persistent import Persistent
 
-from transaction import get_transaction
-from transaction.interfaces import IDataManager, IRollback
-from transaction.util import NoSavepointSupportRollback
+import transaction
+from transaction.interfaces import IDataManager
 
 from zope.security.checker import NamesChecker
 
@@ -339,7 +338,7 @@ class ZopeConnection(object):
         'See IZopeConnection'
         if not self._txn_registered:
             tm = ZopeDBTransactionManager(self)
-            get_transaction().join(tm)
+            transaction.get().join(tm)
             self._txn_registered = True
 
     def commit(self):
@@ -410,15 +409,23 @@ class ZopeDBTransactionManager(object):
 
         >>> dm = ZopeDBTransactionManager(None)
         >>> rb = dm.savepoint(None)
-        >>> rb.rollback()
-        Traceback (most recent call last):
-        ...
-        NotImplementedError: """ \
-           """ZopeDBTransactionManager data managers do not support """ \
-           """savepoints (aka subtransactions
-        """
 
-        return NoSavepointSupportRollback(self)
+        >>> success = True
+        >>> if rb is not None:
+        ...     try:
+        ...         rb.rollback()
+        ...         success = False
+        ...     except NotImplementedError:
+        ...         pass
+        >>> success
+        True
+        """
+        try:
+            # need to import this here since it's only available in ZODB 3.3
+            from transaction.util import NoSavepointSupportRollback
+            return NoSavepointSupportRollback(self)
+        except ImportError:
+            pass
 
     def sortKey(self):
         """
@@ -478,7 +485,3 @@ def RowClassFactory(columns):
     klass_namespace['__slots__'] = tuple(columns)
 
     return type('GeneratedRowClass', (Row,), klass_namespace)
-
-
-
-
