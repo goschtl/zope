@@ -76,6 +76,9 @@ class ZODB34MailDataManager(MailDataManager):
         # Use the default thread transaction manager.
         self.transaction_manager = transaction.manager
 
+    def savepoint(self, transaction):
+        pass
+
     # No subtransaction support.
     def abort_sub(self, transaction):
         pass
