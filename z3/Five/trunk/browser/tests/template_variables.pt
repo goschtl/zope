@@ -3,6 +3,6 @@ View is a view: <tal:block
 >dunno</tal:block>
 Context is testoid: <tal:block content="python:context.id">dunno</tal:block>
 Container is contexts parent: <tal:block content="python:container is context.aq_inner.aq_parent">dunno</tal:block>
-Container is folder: <tal:block content="python:container.id">dunno</tal:block>
+Container is folder: <tal:block content="python:container.aq_base.id">dunno</tal:block>
 Nothing is None: <tal:block content="python:nothing is None">dunno</tal:block>
 Here is context: <tal:block content="python:here is context">dunno</tal:block>
