@@ -1,0 +1,26 @@
+<html metal:use-macro="context/@@standard_macros/dialog"
+    i18n:domain="zope">
+<body>
+
+<!-- XXX : This is just a temporary way of overriding the elements not needed,
+            only done for visual purposes. Do not clone this ;)
+                                                - Alexander
+                                                -->
+<div metal:fill-slot="tabs" />
+<div metal:fill-slot="actions" />
+
+<div metal:fill-slot="body">
+
+  <p>
+    <a href="@@AllRolePermissions.html"
+       i18n:translate="">Grant permissions to roles</a>
+  </p>
+  <p>
+    <a href="@@PrincipalRoles.html"
+       i18n:translate="">Grant roles to principals</a>
+  </p>
+
+</div>
+</body>
+</html>
+
