@@ -419,6 +419,10 @@ Zope Changes
         hold either value of 'left-to-right', 'right-to-left',
         'top-to-bottom', 'bottom-to-top'.
 
+      - Made overriding ZCML directives easier by allowing packages to
+        drop ZCML slugs ending with ``*-overrides.zcml`` into
+        ``package-includes``.  These slugs will be loaded as overrides.
+
     Restructuring
 
       - Applied changes suggested in issue 339: Improvements to generated forms
@@ -838,6 +842,9 @@ Zope Changes
 
       - Added redirection of stdout / stderr when running as a windows
         service (otherwise logging and other output will cause problems).
+
+      - Made the <includeOverrides /> ZCML directive behave like the
+        <include /> directive with respect to the 'files' parameter.
 
     Much thanks to everyone who contributed to this release:
 
