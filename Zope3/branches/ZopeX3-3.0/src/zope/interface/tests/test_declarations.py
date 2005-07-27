@@ -318,10 +318,9 @@ def test_getting_spec_for_proxied_builtin_class():
 
 def test_suite():
     suite = unittest.TestSuite()
-    #suite.addTest(unittest.makeSuite(Test))
+    suite.addTest(unittest.makeSuite(Test))
     suite.addTest(DocTestSuite("zope.interface.declarations"))
-    #suite.addTest(DocTestSuite())
-    
+    suite.addTest(DocTestSuite())
     return suite
 
 
