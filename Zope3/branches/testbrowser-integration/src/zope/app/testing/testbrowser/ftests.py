@@ -20,12 +20,7 @@ import unittest
 from zope.app.testing.functional import FunctionalDocFileSuite
 
 def test_suite():
-    try:
-        import mechanize
-    except ImportError:
-        return
-    else:
-        return FunctionalDocFileSuite('README.txt')
+    return FunctionalDocFileSuite('README.txt')
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

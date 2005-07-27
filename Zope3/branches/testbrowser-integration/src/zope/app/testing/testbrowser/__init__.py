@@ -1,4 +1,1 @@
-try:
-    from testing import Browser
-except ImportError:
-    pass
+from testing import Browser
