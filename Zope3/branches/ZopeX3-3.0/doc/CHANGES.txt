@@ -10,6 +10,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Backported some small fixes from the trunk to fix i18n of forms.
+
       - Fixed issue 298 (Role/permission title and description
         should be messageids)
 
