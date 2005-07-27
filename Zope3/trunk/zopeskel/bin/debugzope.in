@@ -45,6 +45,6 @@ if __name__ == '__main__':
     db = startup()
     del startup
     from zope.app.debug import Debugger
-    debugger = Debugger.fromDatabase(db)
+    debugger = app = Debugger.fromDatabase(db)
     del db
     del Debugger
