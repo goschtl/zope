@@ -64,24 +64,23 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
                                getEngine=getEngine)
 
     def _pt_getContext(self):
-        view = self._getContext()
         try:
             root = self.getPhysicalRoot()
-            here = view.context
+            view = self._getContext()
         except AttributeError:
-            # self has no attribute getPhysicalRoot.
-            # This typically happens when the template has
-            # no proper acquisition context. That means it has no view,
-            # since that's the normal context for a template in Five. /regebro
+            # self has no attribute getPhysicalRoot. This typically happens 
+            # when the template has no proper acquisition context. 
+            # That also means it has no view.  /regebro
             root = self.context.getPhysicalRoot()
-            here = self.context
             view = None
+
+        here = self.context.aq_inner
 
         request = getattr(root, 'REQUEST', None)
         c = {'template': self,
              'here': here,
              'context': here,
-             'container': self._getContainer(here),
+             'container': here,
              'nothing': None,
              'options': {},
              'root': root,
