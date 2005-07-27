@@ -180,6 +180,15 @@ class IBrowser(zope.interface.Interface):
         schema=IFormsMapping,
         required=True)
 
+    handleErrors = zope.schema.Bool(
+        title=u"Handle Errors",
+        description=(u"Describes whether server-side errors will be handled "
+                     u"by the publisher. If set to ``False``, the error will "
+                     u"progress all the way to the test, which is good for "
+                     u"debugging."),
+        default=True,
+        required=True)
+
     def addHeader(key, value):
         """Adds a header to each HTTP request.
 
