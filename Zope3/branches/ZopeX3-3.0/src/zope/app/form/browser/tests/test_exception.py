@@ -16,11 +16,13 @@
 $Id$
 """
 import unittest
+from zope.app.tests.placelesssetup import setUp, tearDown
 from zope.testing.doctestunit import DocTestSuite
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.form.browser.exception'),
+        DocTestSuite('zope.app.form.browser.exception',
+                     setUp=setUp, tearDown=tearDown),
         ))
 
 if __name__ == '__main__':

@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 from cgi import escape
 
 from zope.interface import implements
+from zope.i18n import translate
 
 from zope.app.form.interfaces import IWidgetInputError
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
@@ -55,5 +56,6 @@ class WidgetInputErrorView(object):
         >>> view.snippet()
         u'<span class="error">Could not convert to float.</span>'
         """
-        return u'<span class="error">%s</span>' %(
-            escape(self.context.doc()))
+        message = self.context.doc()
+        translated = translate(message, context=self.request, default=message)
+        return u'<span class="error">%s</span>' % escape(translated)
