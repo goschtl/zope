@@ -7,7 +7,7 @@ Introduction
 Zope3 includes a mechanism to debug an object publishing request,
 similar to the `Zope 2 debug mechanism`_
 
-.. _Zoep 2 debug mechanism: http://www.zope.org/Members/mcdonc/HowTos/UsingTheZopeDebugger
+.. _Zope 2 debug mechanism: http://www.zope.org/Members/mcdonc/HowTos/UsingTheZopeDebugger
 
 
 Setting up the environment
@@ -41,8 +41,14 @@ and drop into a regular Python prompt, with the Debugger instance
 bound to the ``debugger`` variable:
 
   $ bin/zopectl debug
->>> debugger
-<zope.app.debug.debug.Debugger object at 0x660350>
+  >>> debugger
+  <zope.app.debug.debug.Debugger object at 0x660350>
+
+For people with Zope 2 experience, the debugger is also available
+under the name ``app``:
+
+  >>> app
+  <zope.app.debug.debug.Debugger object at 0x660350>
 
 
 Using the Debugger
