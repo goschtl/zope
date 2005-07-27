@@ -33,7 +33,7 @@ class RolePermissionView(object):
         roles = getattr(self, '_roles', None)
         if roles is None:
             roles = [
-                (translate(role.title, context=self.request, default=role.title).strip(), role)
+                (translate(role.title, context=self.request).strip(), role)
                 for name, role in zapi.getUtilitiesFor(IRole)]
             roles.sort()
             roles = self._roles = [role for name, role in roles]
@@ -47,8 +47,6 @@ class RolePermissionView(object):
                 for name, perm in zapi.getUtilitiesFor(IPermission)
                 if name != 'zope.Public']
             permissions.sort()
-            
-            
             permissions = self._permissions = [perm
                                                for name, perm in permissions]
 
@@ -137,7 +135,7 @@ class RolePermissionView(object):
                 rperm = permission.id
                 if rperm in allowed and rperm in denied:
                     raise UserError(
-                        'You chose both allow and deny for permission "%s". '
+                        'You choose both allow and deny for permission "%s". '
                         'This is not allowed.'
                         % translate(permission.title, context=self.request)
                         )
@@ -229,4 +227,3 @@ class RolePermissions(object):
                  'title': permission.title,
                  'setting': settings.get(permission.id, nosetting)}
                 for permission in self._permissions]
-

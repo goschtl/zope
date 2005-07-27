@@ -27,8 +27,6 @@ Others
 
   * 296: missing display widgets
 
-  * 298: Role/permission title and description should be messageids
-
   * 307: browser:addMenuItem and broken view references
 
   * 336: zpkg: defining 'zpkgsetup' resource shouldn't be necessary

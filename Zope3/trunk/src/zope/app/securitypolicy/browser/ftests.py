@@ -16,7 +16,14 @@
 $Id$
 """
 import unittest
+
 from zope.app.testing import functional
+from zope.app.security.interfaces import IPermission
+from zope.app.security.permission import Permission
+from zope.app.securitypolicy.role import Role
+from zope.app.securitypolicy.interfaces import IRole
+from zope.app.tests import ztapi
+
 
 class RolePermissionsTest(functional.BrowserTestCase):
 
@@ -77,6 +84,44 @@ class RolePermissionsTest(functional.BrowserTestCase):
         self.assert_('Deny' in body)
         self.checkForBrokenLinks(body, '/++etc++site/@@RolesPermissions.html',
                                  'mgr:mgrpw')
+
+    def testAllRolePermissionsFormForLocalRoles(self):
+        role = Role(u"id", u"Local Role")
+        ztapi.provideUtility(IRole, role)
+        self.testAllRolePermissions()
+
+        response = self.publish(
+            '/++etc++site/@@AllRolePermissions.html',
+            basic='mgr:mgrpw')
+        body = response.getBody()
+        self.assert_('Local Role' in body)
+
+    def testAllRolePermissionsFormForLocalPermissions(self):
+        permission = Permission(u"id", u"Local Permission")
+        ztapi.provideUtility(IPermission, permission)
+        self.testAllRolePermissions()
+
+        response = self.publish(
+            '/++etc++site/@@AllRolePermissions.html',
+            basic='mgr:mgrpw')
+        body = response.getBody()
+        self.assert_('Local Permission' in body)
+
+    def testRolesWithPermissionsFormForLocalPermission(self):
+        permission = Permission(u"id", u"Local Permission")
+        ztapi.provideUtility(IPermission, permission)
+
+        response = self.publish(
+            '/++etc++site/@@AllRolePermissions.html',
+            form={'role_id': 'zope.Manager',
+                  'Allow': ['id'],
+                  'Deny': ['id'],
+                  'SUBMIT_ROLE': 'Save Changes'},
+            basic='mgr:mgrpw',
+            handle_errors=True)
+        body = response.getBody()
+        self.assert_('You choose both allow and deny for permission'
+            ' "Local Permission". This is not allowed.' in body)
 
 _result = '''\
             <option value="Unset"> </option>
