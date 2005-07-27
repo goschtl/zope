@@ -19,8 +19,8 @@ __docformat__ = "reStructuredText"
 
 from zope.deprecation.deprecation import deprecated, ShowSwitch
 
-# This attribute can be used to temporarly deactivate deprecation warnings, so
-# that backward-compatibility code can import other backward-compatiblity
-# components without arnings being produced.
+# This attribute can be used to temporarly deactivate deprecation
+# warnings, so that backward-compatibility code can import other
+# backward-compatiblity components without warnings being produced.
 
 __show__ = ShowSwitch()
