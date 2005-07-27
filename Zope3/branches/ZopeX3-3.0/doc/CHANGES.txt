@@ -10,6 +10,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 298 (Role/permission title and description
+        should be messageids)
+
       - Several fixes were backported from the Zope 2.8 integration
         branch, making the main X3.0 line compatible with Zope 2.8 and
         thus allowing X3.0 releases to be included into Zope 2.8
@@ -387,7 +390,7 @@ Zope Changes
 
     - Write generic get/queryType(object, type) that returns the interface of
       the 'object' that provides 'type'.
-      
+
     - Implemented Permission Redefinition portion of ZCMLEnhancements.
 
     - Implemented http://dev.zope.org/Zope3/MinimalDefaultViewDirectives
@@ -646,7 +649,7 @@ Zope Changes
 
       o Made Zope-specific Vocabulary Registry use utilities. The vocabulary
         directive now registers vocabulary factories as utilities.
-    
+
       o Roles are now stored as utilities. While doing this, I also schemafied
         the IRole interface to use 'id', 'title', 'description' instead of
         'getId()', 'getTitle()' and 'getDescription()'. This was done for
@@ -670,7 +673,7 @@ Zope Changes
 
           translate(location, msgid, domain=None, mapping=None, context=None,
                     target_language=None, default=None):
- 
+
       o The Factory Service was removed and factories became utilities. The
         'getFactoryInterfaces()' and 'createObject()' functions are still
         available via 'zope.app.zapi'. I also added the 'getFactoriesFor()'
@@ -741,12 +744,12 @@ Zope Changes
     - Gave many class and function doc strings some meaning, including some
       that just contained XXX statements. Many more files exist that have
       meaningless or incomplete doc strings.
- 
+
     - Removed unused imports.
 
     - Removed the simple local authentication service
       zope.app.services.auth. It was deprecated for a while already.
-      
+
     - Removed all fixup entries in zope/app/backward.zcml. backward.zcml was
       not included anywhere anyways, so that this should not pose a
       problem. Removed all fixup code as well. 
@@ -874,7 +877,7 @@ Zope Changes
 
     - Introspector uses the Interface service now, instead of the ++module++
       namespace.
-     
+
     - Refactoring and cleanup of the schema/form code.
 
     - Improvements to the OnlineHelp, which has been deactivated for this
@@ -889,7 +892,7 @@ Zope Changes
 
     - Various improvements to ZConfig
 
-    
+
     Miscellaneous
 
     - Progress with the TUV-IT security accredidation
@@ -1048,7 +1051,7 @@ Zope Changes
                    Amaya).
 
     - Partial WebDAV support
-          
+
     - A basic workflow system
 
     - Improvements to Zope 3 schemas and form generation
@@ -1166,5 +1169,3 @@ Zope Changes
       - FTP support (not sure if this works)
 
       - XML-RPC support  (not sure if this works)
-
-

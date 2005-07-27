@@ -16,7 +16,13 @@
 $Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
 """
 import unittest
+
 from zope.app.tests.functional import BrowserTestCase
+from zope.app.security.interfaces import IPermission
+from zope.app.security.permission import Permission
+from zope.app.securitypolicy.role import Role
+from zope.app.securitypolicy.interfaces import IRole
+from zope.app.tests import ztapi
 
 class GrantTest(BrowserTestCase):
 
@@ -88,6 +94,44 @@ class RolePermissionsTest(BrowserTestCase):
         self.assert_('Deny' in body)
         self.checkForBrokenLinks(body, '/@@RolesPermissions.html',
                                  'mgr:mgrpw')
+
+    def testAllRolePermissionsFormForLocalRoles(self):
+        role = Role(u"id", u"Local Role")
+        ztapi.provideUtility(IRole, role)
+        self.testAllRolePermissions()
+
+        response = self.publish(
+            '/@@AllRolePermissions.html',
+            basic='mgr:mgrpw')
+        body = response.getBody()
+        self.assert_('Local Role' in body)
+
+    def testAllRolePermissionsFormForLocalPermissions(self):
+        permission = Permission(u"id", u"Local Permission")
+        ztapi.provideUtility(IPermission, permission)
+        self.testAllRolePermissions()
+
+        response = self.publish(
+            '/@@AllRolePermissions.html',
+            basic='mgr:mgrpw')
+        body = response.getBody()
+        self.assert_('Local Permission' in body)
+
+    def testRolesWithPermissionsFormForLocalPermission(self):
+        permission = Permission(u"id", u"Local Permission")
+        ztapi.provideUtility(IPermission, permission)
+
+        response = self.publish(
+            '/@@AllRolePermissions.html',
+            form={'role_id': 'zope.Manager',
+                  'Allow': ['id'],
+                  'Deny': ['id'],
+                  'SUBMIT_ROLE': 'Save Changes'},
+            basic='mgr:mgrpw',
+            handle_errors=True)
+        body = response.getBody()
+        self.assert_('You choose both allow and deny for permission'
+            ' "Local Permission". This is not allowed.' in body)
 
 _result = '''\
             <option value="Unset"> </option>
