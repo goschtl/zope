@@ -24,9 +24,11 @@ import mechanize
 import ClientCookie
 
 from zope.app.testing.functional import HTTPCaller
+from zope.app.testing.testbrowser import browser
 
 
-class PublisherConnection:
+class PublisherConnection(object):
+    """A ``urllib2`` compatible connection obejct."""
 
     def __init__(self, host):
         self.host = host
@@ -36,10 +38,15 @@ class PublisherConnection:
         pass
 
     def request(self, method, url, body=None, headers=None):
-        header_chunks = []
+        """Send a request to the publisher.
+
+        The response will be stored in ``self.response``.
+        """
         if body is None:
             body = ''
 
+        # Construct the headers.
+        header_chunks = []
         if headers is not None:
             for header in headers.items():
                 header_chunks.append('%s: %s' % header)
@@ -47,13 +54,21 @@ class PublisherConnection:
         else:
             headers = ''
 
+        # Construct the full HTTP request string, since that is what the
+        # ``HTTPCaller`` wants. 
         request_string = (method + ' ' + url + ' HTTP/1.1\n'
                           + headers + '\n' + body)
 
         self.response = self.caller(request_string)
 
     def getresponse(self):
-        headers = self.response.header_output.headersl
+        """Return a ``urllib2`` compatible response.
+
+        The goal of ths method is to convert the Zope Publisher's reseponse to
+        a ``urllib2`` compatible response, which is also understood by
+        mechanize.
+        """
+        headers = self.response.header_output.headers
         real_response = self.response._response
         status = real_response.getStatus()
         reason = real_response._reason # XXX should add a getReason method
@@ -62,7 +77,8 @@ class PublisherConnection:
         return PublisherResponse(output, status, reason)
 
 
-class PublisherResponse:
+class PublisherResponse(object):
+    """``urllib2`` compatible response object."""
 
     def __init__(self, content, status, reason):
         self.content = content
@@ -75,20 +91,23 @@ class PublisherResponse:
         return self.content_as_file.read(amt)
 
 
-class PublisherHandler(urllib2.HTTPHandler):
+class PublisherHTTPHandler(urllib2.HTTPHandler):
+    """Special HTTP handler to use the Zope Publisher."""
 
     http_request = urllib2.AbstractHTTPHandler.do_request_
 
     def http_open(self, req):
+        """Open an HTTP connection having a ``urllib2`` request."""
+        # Here we connect to the publisher.
         return self.do_open(PublisherConnection, req)
 
 
-import browser
-
-class MyMechBrowser(mechanize.Browser):
+class PublisherMechanizeBrowser(mechanize.Browser):
+    """Special ``mechanize`` browser using the Zope Publisher HTTP handler."""
+    
     handler_classes = {
         # scheme handlers
-        "http": PublisherHandler,
+        "http": PublisherHTTPHandler,
 
         "_http_error": ClientCookie.HTTPErrorProcessor,
         "_http_request_upgrade": ClientCookie.HTTPRequestUpgradeProcessor,
@@ -111,7 +130,8 @@ class MyMechBrowser(mechanize.Browser):
 
 
 class Browser(browser.Browser):
+    """A Zope ``testbrowser` Browser that uses the Zope Publisher."""
+    
     def __init__(self, url=None):
-        mech_browser = MyMechBrowser()
-        mech_browser.add_handler(PublisherHandler())
+        mech_browser = PublisherMechanizeBrowser()
         super(Browser, self).__init__(url=url, mech_browser=mech_browser)
