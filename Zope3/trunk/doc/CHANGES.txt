@@ -656,8 +656,6 @@ Zope Changes
 
       - Fix #298: Role/permission title and description should be messageids
 
-      - Fix #316: Zope3 test.py truncates path with dir=
-
       - Fix #332 : Death to IContentContainer
 
       - Fix #356 : Copy and Paste does not handle exceptions raised by

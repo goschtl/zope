@@ -27,6 +27,8 @@ Others
 
   * 296: missing display widgets
 
+  * 316: Zope3 test.py truncates path with dir=	
+
   * 307: browser:addMenuItem and broken view references
 
   * 336: zpkg: defining 'zpkgsetup' resource shouldn't be necessary
