@@ -64,24 +64,23 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
                                getEngine=getEngine)
 
     def _pt_getContext(self):
-        view = self._getContext()
         try:
             root = self.getPhysicalRoot()
-            here = view.context
+            view = self._getContext()
         except AttributeError:
-            # self has no attribute getPhysicalRoot.
-            # This typically happens when the template has
-            # no proper acquisition context. That means it has no view,
-            # since that's the normal context for a template in Five. /regebro
+            # self has no attribute getPhysicalRoot. This typically happens 
+            # when the template has no proper acquisition context. 
+            # That also means it has no view.  /regebro
             root = self.context.getPhysicalRoot()
-            here = self.context
             view = None
+
+        here = self.context.aq_inner
 
         request = getattr(root, 'REQUEST', None)
         c = {'template': self,
              'here': here,
              'context': here,
-             'container': self._getContainer(here),
+             'container': here,
              'nothing': None,
              'options': {},
              'root': root,
@@ -96,19 +95,3 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
 
     pt_getContext = rebindFunction(_pt_getContext,
                                    SecureModuleImporter=ModuleImporter)
-
-    def _getContainer(self, obj=None):
-        # Utility for bindcode.
-        if obj is None:
-            obj = self
-        while 1:
-            obj = obj.aq_inner.aq_parent
-            if not getattr(obj, '_is_wrapperish', None):
-                parent = getattr(obj, 'aq_parent', None)
-                inner = getattr(obj, 'aq_inner', None)
-                container = getattr(inner, 'aq_parent', None)
-                try: getSecurityManager().validate(parent, container, '', obj)
-                except Unauthorized:
-                    return UnauthorizedBinding('container', obj)
-                return obj
-

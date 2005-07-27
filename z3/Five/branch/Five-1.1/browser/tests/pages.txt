@@ -141,11 +141,22 @@ Make sure that global template variables in ZPT pages are correct:
   >>> view = self.folder.unrestrictedTraverse('testoid/template_variables.html')
   >>> print view()
   View is a view: True
-  Context is testoid: testoid
-  Container is contexts parent: True
-  Container is folder: test_folder_1_
-  Nothing is None: True
+  Context is testoid: True
+  Contaxt.aq_parent is test_folder_1_: True
+  Container is context: True
   Here is context: True
+  Nothing is None: True
+  Default works: True
+  Root is the application: True
+  Template is a template: True
+  Traverse_subpath exists and is empty: True
+  Request is a request: True
+  User is manager: True
+  Options exist: True
+  Attrs exist: True
+  Repeat exists: True
+  Loop exists: True
+  Modules exists: True
 
 Make sure that ZPT's aren't a security-less zone.  Let's logout and
 try to access some protected stuff.  Let's not forgot to login again,

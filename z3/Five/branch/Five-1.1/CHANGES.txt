@@ -16,6 +16,10 @@ Bugfixes
 
 * Some parts of add.pt and edit.pt was not being translated.
 
+* The ZPT variable 'container' makes little sense in Zope3/Five, but is now
+  always set to be the same as 'here' which is normal Zope2 behaviour.
+  It is in Five 1.0.x set to be the same as 'view' which breaks some templates.
+
 Five 1.1b (2005-07-13)
 ======================
 
