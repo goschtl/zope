@@ -1,7 +1,8 @@
-zope.app.testing.testbrowser
-============================
+================
+The Test Browser
+================
 
-The zope.app.testing.testbrowser module exposes a `Browser` class that
+The ``zope.app.testing.testbrowser`` module exposes a ``Browser`` class that
 simulates a web browser similar to Mozilla Firefox or IE.
 
     >>> from zope.app.testing.testbrowser import Browser
@@ -16,7 +17,7 @@ The browser can `open` web pages:
 
 
 Page Contents
-=============
+-------------
 
 The contents of the current page are available:
 
@@ -33,7 +34,7 @@ Making assertions about page contents are easy.
 
 
 Headers
-=======
+-------
 
 The page's headers are also available as an httplib.HTTPMessage instance:
 
@@ -55,7 +56,7 @@ Or as a mapping:
 
 
 Navigation
-==========
+----------
 
 If you want to simulate clicking on a link, there is a `click` method.
 
@@ -71,7 +72,7 @@ We'll navigate to a form and fill in some values and the submit the form.
 
 
 Forms
-=====
+-----
 
 The current page has a form on it, let's look at some of the controls:
 
@@ -111,7 +112,7 @@ a dictionary:
     False
 
 Finding Specific Forms
-======================
+----------------------
 
 Because pages can have multiple forms with like-named controls, it is sometimes
 neccesary to access forms by name or id.  The browser's `forms` attribute can
@@ -139,7 +140,7 @@ The form's controls can also be accessed with the `controls` mapping.
 ##    '...'
 
 More Forms
-==========
+----------
 
 Now, let's navegate to a page with a slightly more complex form.
 
@@ -191,3 +192,5 @@ Let's set it back, so we don't mess anything up.
 
     >>> permission.value = original_permission
     >>> browser.click('Change')
+
+
