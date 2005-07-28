@@ -66,7 +66,7 @@ class IContainerItemRenamer(Interface):
     def renameItem(oldName, newName):
         """Renames an object in the container from oldName to newName.
 
-        Raises KeyError if oldName doesn't exist in the container.
+        Raises ItemNotFoundError if oldName doesn't exist in the container.
 
         Raises DuplicationError if newName is already used in the container.
         """
