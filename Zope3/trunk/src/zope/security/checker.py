@@ -30,6 +30,7 @@ import sys
 import sets
 import types
 import datetime
+import pytz
 import weakref
 
 from zope.exceptions import DuplicationError
@@ -573,6 +574,8 @@ BasicTypes = {
     datetime.datetime: NoProxy,
     datetime.date: NoProxy,
     datetime.time: NoProxy,
+    datetime.tzinfo: NoProxy,
+    type(pytz.UTC): NoProxy,
 }
 
 # Available for tests. Located here so it can be kept in sync with BasicTypes.

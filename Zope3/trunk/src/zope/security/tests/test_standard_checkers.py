@@ -54,7 +54,7 @@ def test_dict():
     """Test that we can do everything we expect to be able to do
 
     with proxied dicts.
-    
+
     >>> d = ProxyFactory({'a': 1, 'b': 2})
 
     >>> check_forbidden_get(d, 'clear') # Verify that we are protected
@@ -72,7 +72,7 @@ def test_dict():
     1
     >>> int(d.has_key('a'))
     1
-    
+
     >>> c = d.copy()
     >>> check_forbidden_get(c, 'clear')
     'ForbiddenAttribute: clear'
@@ -103,7 +103,7 @@ def test_dict():
     [('a', 1), ('b', 2)]
 
     Always available:
-    
+
     >>> int(d < d)
     0
     >>> int(d > d)
@@ -127,7 +127,7 @@ def test_list():
     """Test that we can do everything we expect to be able to do
 
     with proxied lists.
-    
+
     >>> l = ProxyFactory([1, 2])
     >>> check_forbidden_delitem(l, 0)
     'ForbiddenAttribute: __delitem__'
@@ -157,7 +157,7 @@ def test_list():
     [1, 2, 1, 2]
 
     Always available:
-    
+
     >>> int(l < l)
     0
     >>> int(l > l)
@@ -175,14 +175,14 @@ def test_list():
     >>> int(l.__class__ == list)
     1
 
-        
+
     """
 
 def test_tuple():
     """Test that we can do everything we expect to be able to do
 
     with proxied lists.
-    
+
     >>> l = ProxyFactory((1, 2))
     >>> l[0]
     1
@@ -202,7 +202,7 @@ def test_tuple():
     (1, 2, 1, 2)
 
     Always available:
-    
+
     >>> int(l < l)
     0
     >>> int(l > l)
@@ -219,7 +219,7 @@ def test_tuple():
     1
     >>> int(l.__class__ == tuple)
     1
-        
+
     """
 
 def test_iter():
@@ -258,9 +258,9 @@ def test_new_class():
     1
     >>> len(C.__mro__)
     2
-    
+
     Always available:
-    
+
     >>> int(C < C)
     0
     >>> int(C > C)
@@ -277,7 +277,7 @@ def test_new_class():
     1
     >>> int(C.__class__ == type)
     1
-    
+
     """
 
 def test_new_instance():
@@ -294,9 +294,9 @@ def test_new_instance():
     1
     >>> int(c.__class__ == C)
     1
-    
+
     Always available:
-    
+
     >>> int(c < c)
     0
     >>> int(c > c)
@@ -313,7 +313,7 @@ def test_new_instance():
     1
     >>> int(c.__class__ == C)
     1
-    
+
     """
 
 def test_classic_class():
@@ -332,9 +332,9 @@ def test_classic_class():
     1
     >>> len(C.__bases__)
     0
-    
+
     Always available:
-    
+
     >>> int(C < C)
     0
     >>> int(C > C)
@@ -349,7 +349,7 @@ def test_classic_class():
     0
     >>> int(bool(C))
     1
-    
+
     """
 
 def test_classic_instance():
@@ -366,9 +366,9 @@ def test_classic_instance():
     1
     >>> int(c.__class__ == C)
     1
-    
+
     Always available:
-    
+
     >>> int(c < c)
     0
     >>> int(c > c)
@@ -385,9 +385,9 @@ def test_classic_instance():
     1
     >>> int(c.__class__ == C)
     1
-    
+
     """
-    
+
 def test_rocks():
     """
     >>> int(type(ProxyFactory(  object()  )) is object)
@@ -409,7 +409,7 @@ def test_rocks():
     >>> int(type(ProxyFactory(  True  )) is type(True))
     1
 
-    >>> from datetime import timedelta, datetime, date, time
+    >>> from datetime import timedelta, datetime, date, time, tzinfo
     >>> int(type(ProxyFactory(  timedelta(1)  )) is timedelta)
     1
     >>> int(type(ProxyFactory(  datetime(2000, 1, 1)  )) is datetime)
@@ -417,6 +417,12 @@ def test_rocks():
     >>> int(type(ProxyFactory(  date(2000, 1, 1)  )) is date)
     1
     >>> int(type(ProxyFactory(  time()  )) is time)
+    1
+    >>> int(type(ProxyFactory(  tzinfo() )) is tzinfo)
+    1
+
+    >>> from pytz import UTC
+    >>> int(type(ProxyFactory(  UTC )) is type(UTC))
     1
     """
 
@@ -426,18 +432,18 @@ def test_iter_of_sequences():
     ...   d = 1, 2, 3
     ...   def __getitem__(self, i):
     ...      return self.d[i]
-    ... 
+    ...
     >>> x = X()
 
     We can iterate over sequences
-    
+
     >>> list(x)
     [1, 2, 3]
     >>> c = NamesChecker(['__getitem__'])
     >>> p = ProxyFactory(x, c)
 
     Even if they are proxied
-    
+
     >>> list(p)
     [1, 2, 3]
 
@@ -448,7 +454,7 @@ def test_iter_of_sequences():
     [1, 2, 3]
 
     We shouldn't be able to iterate if we don't have an assertion:
-    
+
     >>> check_forbidden_call(list, p)
     'ForbiddenAttribute: __iter__'
     """
@@ -481,7 +487,7 @@ def test_interfaces_and_declarations():
     True
     """
 
-    
+
 from zope.testing.doctestunit import DocTestSuite
 
 def test_suite():
