@@ -15,12 +15,17 @@
 
 $Id$
 """
+import zope.deprecation
+
 from zope.interface import Interface, Attribute
+
+# BBB: Can be removed in 3.3
+zope.deprecation.__show__.off()
 from zope.exceptions import NotFoundError
+zope.deprecation.__show__.on()
 
 # BBB: Backward-compatibility; 12/05/2004
 from bbb.interfaces import *
-
 
 class ComponentLookupError(NotFoundError):
     """A component could not be found."""
@@ -30,7 +35,6 @@ class Invalid(Exception):
 
 class Misused(Exception):
     """A component is being used (registered) for the wrong interface."""
-
 
 class IComponentArchitecture(Interface, IBBBComponentArchitecture):
     """The Component Architecture is defined by two key components: Adapters

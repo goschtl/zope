@@ -17,6 +17,8 @@ This vocabulary provides permission IDs.
 
 $Id$
 """
+import zope.deprecation
+
 from zope.security.checker import CheckerPublic
 from zope.app import zapi
 from zope.interface import implements
@@ -27,7 +29,10 @@ from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.component import queryNextUtility
 
 # BBB Backward Compatibility
+zope.deprecation.__show__.off()
 from zope.exceptions import NotFoundError
+zope.deprecation.__show__.on()
+
 import warnings
 
 from interfaces import IPrincipalSource

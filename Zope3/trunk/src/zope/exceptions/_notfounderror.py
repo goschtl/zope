@@ -15,8 +15,21 @@
 
 $Id$
 """
+
+from zope.deprecation import deprecated
+
 from zope.interface.common.interfaces import IKeyError
 from zope.interface import implements
+
+deprecated('INotFoundError',
+           'This interface has been deprecated. '
+           'Use standard interface instead '
+           'The reference will be gone in 3.3')
+
+deprecated('NotFoundError',
+           'This class has been deprecated. '
+           'Use standard exceptions instead '
+           'The reference will be gone in 3.3')
 
 class INotFoundError(IKeyError):
     pass

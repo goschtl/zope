@@ -15,12 +15,18 @@
 
 $Id$
 """
+
+import zope.deprecation
+
 from zope.app import zapi
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.security.interfaces import IAuthentication
 
-# BBB Backward Compatibility
+# BBB Backward Compatibility (Can go away in 3.3)
+zope.deprecation.__show__.off()
 from zope.exceptions import NotFoundError
+zope.deprecation.__show__.on()
+
 import warnings
 
 def checkPrincipal(context, principal_id):

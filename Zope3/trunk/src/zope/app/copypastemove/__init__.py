@@ -17,8 +17,10 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import zope.deprecation
+
 from zope.interface import implements, Invalid
-from zope.exceptions import NotFoundError, DuplicationError
+from zope.exceptions import DuplicationError
 from zope.component import adapts
 from zope.event import notify
 
@@ -38,8 +40,17 @@ from zope.app.copypastemove.interfaces import IObjectMover
 from zope.app.copypastemove.interfaces import IObjectCopier
 from zope.app.copypastemove.interfaces import IContainerItemRenamer
 from zope.app.copypastemove.interfaces import IPrincipalClipboard
+from zope.app.copypastemove.interfaces import IItemNotFoundError
+
+# BBB (remove in 3.3)
+zope.deprecation.__show__.off()
+from zope.exceptions import NotFoundError
+zope.deprecation.__show__.on()
 
 import warnings # BBB (remove in 3.3)
+
+class ItemNotFoundError(NotFoundError):
+    implements(IItemNotFoundError)
 
 class ObjectMover(object):
     """Adapter for moving objects between containers
@@ -474,7 +485,7 @@ class ContainerItemRenamer(object):
 
       >>> renamer.renameItem('foo', 'bar') # doctest:+ELLIPSIS
       Traceback (most recent call last):
-      NotFoundError: (<...SampleContainer...>, 'foo')
+      ItemNotFoundError: (<...SampleContainer...>, 'foo')
 
     If the new item name already exists, a DuplicationError is raised:
 
@@ -494,7 +505,7 @@ class ContainerItemRenamer(object):
     def renameItem(self, oldName, newName):
         object = self.container.get(oldName)
         if object is None:
-            raise NotFoundError(self.container, oldName)
+            raise ItemNotFoundError(self.container, oldName)
         mover = IObjectMover(object)
 
         if newName in self.container:
@@ -551,7 +562,7 @@ class OrderedContainerItemRenamer(ContainerItemRenamer):
 
       >>> renamer.renameItem('IV', '4') # doctest:+ELLIPSIS
       Traceback (most recent call last):
-      NotFoundError: (<...OrderedContainer...>, 'IV')
+      ItemNotFoundError: (<...OrderedContainer...>, 'IV')
 
     And if the new item name already exists, a DuplicationError is raised:
 

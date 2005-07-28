@@ -23,8 +23,6 @@ File Content Component
 Others
 ~~~~~~
 
-  * 284: Bogus 404 errors with TALES traversal fails
-
   * 296: missing display widgets
 
   * 316: Zope3 test.py truncates path with dir=	

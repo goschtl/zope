@@ -17,13 +17,13 @@ $Id$
 """
 import unittest
 
+from zope.app.fssync.fsregistry import FactoryNotFoundError
 from zope.app.fssync.fsregistry import getSynchronizer
 from zope.app.fssync.tests.sampleclass import \
      C1, C2, CDirAdapter, CDefaultAdapter
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
 from zope.configuration.config import ConfigurationConflictError
-from zope.exceptions import NotFoundError
 import zope.app.fssync.tests
 
 
@@ -31,7 +31,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def testFSDirective(self):
         # Register the adapter for the class
-        self.assertRaises(NotFoundError, getSynchronizer, C2())
+        self.assertRaises(FactoryNotFoundError, getSynchronizer, C2())
         self.context = xmlconfig.file("fssync.zcml", zope.app.fssync.tests)
         self.assertEqual(getSynchronizer(C2()).__class__, CDirAdapter)
 

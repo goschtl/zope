@@ -19,9 +19,22 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.exceptions import DuplicationError, NotFoundError
+import zope.deprecation
+
+from zope.exceptions import DuplicationError
 from zope.interface import implements
 from zope.app.fssync.interfaces import IGlobalFSSyncUtility
+from zope.app.fssync.interfaces import IFactoryNotFoundError
+
+# BBB Backward Compatibility (Can go away in 3.3)
+zope.deprecation.__show__.off()
+from zope.exceptions import NotFoundError
+zope.deprecation.__show__.on()
+
+class FactoryNotFoundError(NotFoundError):
+    # BBB : NotFoundError inheritance
+    # Backward Compatibility (Can go away in 3.3)
+    implements(IFactoryNotFoundError)
 
 class FSRegistry(object):
     """Registry Wrapper class.
@@ -42,16 +55,15 @@ class FSRegistry(object):
 
         If no factory is registered for the given class, return the
         default factory, if one has been registered.  If no default
-        factory has been registered, raise ``NotFoundError``.
+        factory has been registered, raise ``FactoryNotFoundError``.
         """
 
         factory = self._class_factory_reg.get(object.__class__)
         if factory is None:
             factory = self._class_factory_reg.get(None)
             if factory is None:
-                raise NotFoundError
+                raise FactoryNotFoundError
         return factory(object)
-
 
     def provideSynchronizer(self,class_, factory):
         """Set `class_`, factory into the dictionary."""

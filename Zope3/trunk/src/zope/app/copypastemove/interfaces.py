@@ -66,7 +66,7 @@ class IContainerItemRenamer(Interface):
     def renameItem(oldName, newName):
         """Renames an object in the container from oldName to newName.
 
-        Raises NotFoundError if oldName doesn't exist in the container.
+        Raises KeyError if oldName doesn't exist in the container.
 
         Raises DuplicationError if newName is already used in the container.
         """
@@ -90,3 +90,6 @@ class IPrincipalClipboard(Interface):
 
     def getContents():
         """Return the contents of the clipboard"""
+
+class IItemNotFoundError(Interface):
+    pass

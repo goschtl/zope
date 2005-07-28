@@ -19,6 +19,8 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 
+class IFactoryNotFoundError(Interface):
+    pass
 
 class IFSSyncUtility(Interface):
     """Lookup file-system representation adapters."""

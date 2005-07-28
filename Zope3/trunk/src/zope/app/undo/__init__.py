@@ -19,6 +19,7 @@ from datetime import datetime
 
 import transaction
 
+import zope.deprecation
 from zope.interface import implements
 from zope.app.security.interfaces import PrincipalLookupError
 
@@ -28,8 +29,10 @@ from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.interfaces import IPrincipal
 
-# BBB Backward Compatibility
+# BBB Backward Compatibility (Can go away in 3.3)
+zope.deprecation.__show__.off()
 from zope.exceptions import NotFoundError
+zope.deprecation.__show__.on()
 import warnings
 
 def undoSetup(event):

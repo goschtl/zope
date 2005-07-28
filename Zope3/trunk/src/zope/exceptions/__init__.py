@@ -19,7 +19,24 @@ application-specific packages.
 $Id$
 """
 
+import zope.deprecation
+
+zope.deprecation.deprecated('INotFoundError',
+                            'This interface has been deprecated. '
+                            'Use standard interface instead '
+                            'The reference will be gone in 3.3')
+
+zope.deprecation.deprecated('NotFoundError',
+                            'This class has been deprecated. '
+                            'Use standard exceptions instead '
+                            'The reference will be gone in 3.3')
+
+# Turn of deprecation warning here for the above import that are here for BBB
+# The depreaction above and within the _notfounderror module will do the job.
+zope.deprecation.__show__.off()
 from zope.exceptions._notfounderror import NotFoundError, INotFoundError
+zope.deprecation.__show__.on()
+
 from zope.exceptions._duplicate import DuplicationError, IDuplicationError
 
 # Importing these interfaces from here is deprecated!
