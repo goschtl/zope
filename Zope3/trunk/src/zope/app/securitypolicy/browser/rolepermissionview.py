@@ -29,6 +29,15 @@ from zope.app.securitypolicy.interfaces import IRole, IRolePermissionManager
 
 class RolePermissionView(object):
 
+    _pagetip = _("""For each permission you want to grant (or deny) to a role,
+        set the entry for that permission and role to a '+' (or '-').
+        Permissions are shown on the left side, going down.
+        Roles are shown accross the top.
+        """)
+
+    def pagetip(self):
+        return translate(self._pagetip, context=self.request)
+
     def roles(self):
         roles = getattr(self, '_roles', None)
         if roles is None:
@@ -134,11 +143,11 @@ class RolePermissionView(object):
             for permission in self.permissions():
                 rperm = permission.id
                 if rperm in allowed and rperm in denied:
-                    raise UserError(
-                        'You choose both allow and deny for permission "%s". '
-                        'This is not allowed.'
-                        % translate(permission.title, context=self.request)
-                        )
+                    msg = _('You choose both allow and deny for permission'
+                        ' "${permission}". This is not allowed.')
+                    msg.mapping = {'permission': translate(
+                        permission.title, context=self.request)}
+                    raise UserError(msg)
                 if rperm in allowed:
                     prm.grantPermissionToRole(rperm, role_id)
                 elif rperm in denied:
