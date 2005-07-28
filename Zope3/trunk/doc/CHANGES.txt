@@ -655,6 +655,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Container proxy instances had __dict__ attributes that hid
+        the __dict__ attributes of proxied objects.
+
       - Fix #284: Bogus 404 errors with TALES traversal fails
 
       - Fix #298: Role/permission title and description should be messageids
