@@ -1,0 +1,46 @@
+<html metal:use-macro="context/@@standard_macros/view">
+<body>
+<div metal:fill-slot="body">
+
+  <div tal:repeat="vocab view/getManagableVocabularyViews">     
+
+  <h2 tal:content="vocab/title">Some Variable Definitions</h2>
+  <br />
+  <form action="." method="post">
+
+    <input type="hidden" name="iface" value=""
+        tal:attributes="value vocab/vocab_iface/getName" />
+
+    <b i18n:translate="" i18n:domain="bugtracker">Existing Values:</b> 
+    <select size="5" name="values:list" multiple="yes">
+      <tal:block repeat="entry vocab/getExistingValues">
+        <option value=""
+            tal:attributes="value entry/value"
+            tal:content="string: ${entry/title} (${entry/value})">
+          New
+        </option>
+      </tal:block>
+    </select>
+    <input type="submit" name="deleteValues.html:method" value="Delete" 
+           i18n:attributes="value delete-button"/>
+    <input type="submit" name="setDefaultValue.html:method" 
+           value="Set Default" i18n:attributes="value set-default-button"/>
+    <br>
+    <b i18n:translate="" i18n:domain="bugtracker">Default Value:</b>
+    <span tal:define="default vocab/default" 
+          tal:content="string: ${default/title} (${default/value})" />
+
+    <br>
+    <span i18n:translate="">Value:</span> 
+      <input type="text" size="10" name="value" />
+    <span i18n:translate="">Title:</span>
+      <input type="text" size="10" name="title" />
+    <input type="submit" name="addValue.html:method" value="Add" 
+           i18n:attributes="value add-button"/>
+  </form>
+
+  </div>
+
+</div>
+</body>
+</html>
