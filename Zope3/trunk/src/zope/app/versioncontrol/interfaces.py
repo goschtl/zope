@@ -124,6 +124,13 @@ class IRepository(zope.interface.Interface):
         history.
         """
 
+    def copyVersion(object, selector):
+        """Copy data from an old version to a checked out object
+
+        The object's data are updated and it remains checked out and
+        modified.
+        """
+
     def labelResource(object, label, force=None):
         """
         Associate the given resource with a label. If force is true, then
@@ -301,6 +308,21 @@ class IVersionable(persistent.interfaces.IPersistent,
 class IVersioned(IVersionable):
     """Version control is in effect for this object."""
 
+class ICheckedIn(IVersioned):
+    """Object that has been checked in.
+
+    Changes should not be allowed.
+
+    An object may be ICheckedIn or ICheckedOut, but not both,
+    """
+
+class ICheckedOut(IVersioned):
+    """Object that has been checked out.
+
+    Changes should be allowed.
+
+    An object may be ICheckedIn or ICheckedOut, but not both,
+    """
 
 # Events that are raised for interesting occurances:
 

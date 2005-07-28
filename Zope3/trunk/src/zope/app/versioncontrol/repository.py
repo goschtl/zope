@@ -35,6 +35,7 @@ from zope.app.versioncontrol import event
 from zope.app.versioncontrol.history import VersionHistory
 from zope.app.versioncontrol.interfaces import VersionControlError
 from zope.app.versioncontrol.interfaces import IVersionable, IVersioned
+from zope.app.versioncontrol.interfaces import ICheckedIn, ICheckedOut
 from zope.app.versioncontrol.interfaces import IRepository
 from zope.app.versioncontrol.interfaces import CHECKED_IN, CHECKED_OUT
 from zope.app.versioncontrol.interfaces import ACTION_CHECKIN, ACTION_CHECKOUT
@@ -183,7 +184,7 @@ class Repository(persistent.Persistent):
         version_id = version.__name__
 
         # Add bookkeeping information to the version controlled object.
-        declare_versioned(object)
+        declare_checked_in(object)
         info = utility.VersionInfo(history_id, version_id, CHECKED_IN)
         annotations = IAnnotations(object)
         annotations[VERSION_INFO_KEY] = info
@@ -230,6 +231,7 @@ class Repository(persistent.Persistent):
         # Update bookkeeping information.
         info.status = CHECKED_OUT
         info.touch()
+        declare_checked_out(object)
 
         zope.event.notify(event.VersionCheckedOut(object, info))
 
@@ -272,6 +274,7 @@ class Repository(persistent.Persistent):
         info.version_id = version.__name__
         info.status = CHECKED_IN
         info.touch()
+        declare_checked_in(object)
 
         zope.event.notify(event.VersionCheckedIn(object, info, message))
 
@@ -301,6 +304,7 @@ class Repository(persistent.Persistent):
                                    CHECKED_IN)
         annotations = IAnnotations(object)
         annotations[VERSION_INFO_KEY] = info
+        declare_checked_in(object)
 
         zope.event.notify(event.VersionReverted(object, info))
 
@@ -370,7 +374,7 @@ class Repository(persistent.Persistent):
         version_id = version and version.__name__ or info.version_id
         if version and (version_id != info.version_id):
             self.replaceState(object, version.copyState())
-            declare_versioned(object)
+            declare_checked_in(object)
 
             history.addLogEntry(version_id,
                                 ACTION_UPDATE,
@@ -385,6 +389,32 @@ class Repository(persistent.Persistent):
         annotations[VERSION_INFO_KEY] = info
 
         zope.event.notify(event.VersionUpdated(object, info, oldversion))
+
+    def copyVersion(self, object, selector):
+        info = self.getVersionInfo(object)
+        if info.status != CHECKED_OUT:
+            raise VersionControlError(
+                'The selected resource is not checked out.'
+                )
+
+        history = self.getVersionHistory(info.history_id)
+
+        if history.hasVersionId(selector):
+            version = history.getVersionById(selector)
+
+        elif self._labels.has_key(selector):
+            version = history.getVersionByLabel(selector)
+
+        elif self._branches.has_key(selector):
+            version = history.getLatestVersion(selector)
+        else:
+            raise VersionControlError(
+                'Invalid version selector: %s' % selector
+                    )
+        
+        self.replaceState(object, version.copyState())
+        IAnnotations(object)[VERSION_INFO_KEY] = info
+        declare_checked_out(object)
 
     def labelResource(self, object, label, force=0):
         info = self.getVersionInfo(object)
@@ -480,7 +510,7 @@ class Repository(persistent.Persistent):
                     version = history.getVersionByDate('mainline', timestamp)
 
         object = version.copyState()
-        declare_versioned(object)
+        declare_checked_in(object)
 
         info = utility.VersionInfo(history_id, version.__name__, CHECKED_IN)
         if sticky is not None:
@@ -508,8 +538,20 @@ class Repository(persistent.Persistent):
         return history.getLogEntries()
 
 
-def declare_versioned(object):
-    """Apply bookkeeping needed to recognize an object version controlled."""
+def declare_checked_in(object):
+    """Apply bookkeeping needed to recognize an object version controlled.
+    """
     ifaces = zope.interface.directlyProvidedBy(object)
-    ifaces += IVersioned
+    if ICheckedOut in ifaces:
+        ifaces -= ICheckedOut
+    ifaces += ICheckedIn
+    zope.interface.directlyProvides(object, *ifaces)
+
+def declare_checked_out(object):
+    """Apply bookkeeping needed to recognize an object version controlled.
+    """
+    ifaces = zope.interface.directlyProvidedBy(object)
+    if ICheckedIn in ifaces:
+        ifaces -= ICheckedIn
+    ifaces += ICheckedOut
     zope.interface.directlyProvides(object, *ifaces)

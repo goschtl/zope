@@ -13,12 +13,13 @@ interface that promises that there will be adapters to:
 
 It also requires that instances support `IPersistent` and `IAnnotatable`.
 
-Normally, these interfaces will be provided by adapters.  To simplify the
-example, we'll just create a class that already implements the required
-interfaces directly.  We need to be careful to avoid including the `__name__`
-and `__parent__` attributes in state copies, so even a fairly simple
-implementation of INonVersionedData has to deal with these for objects that
-contain their own location information.
+Normally, the INonVersionedData and IPhysicallyLocatable interfaces
+will be provided by adapters.  To simplify the example, we'll just
+create a class that already implements the required interfaces
+directly.  We need to be careful to avoid including the `__name__` and
+`__parent__` attributes in state copies, so even a fairly simple
+implementation of INonVersionedData has to deal with these for objects
+that contain their own location information.
 
     >>> import persistent
     >>> from zope import component, interface
@@ -207,20 +208,47 @@ out", modified and "checked in" to create new versions.  For many
 applications, this parallels form-based changes to objects, but this
 is a matter of policy.
 
+When version control is applied to an object, or when an object is
+retrieved from the repository, it is checked in.  It provides
+`ICheckedIn`:
+
+    >>> interfaces.ICheckedIn.providedBy(samp)
+    True
+    >>> interfaces.ICheckedIn.providedBy(ob)
+    True
+
+It is not checked out:
+
+    >>> interfaces.ICheckedOut.providedBy(samp)
+    False
+    >>> interfaces.ICheckedOut.providedBy(ob)
+    False
+
 Let's save some information about the current version of the object so
 we can see that it changes:
 
     >>> orig_history_id = info.history_id
     >>> orig_version_id = info.version_id
 
-Now, let's check out the object and add an attribute:
+Now, let's check out the object:
 
     >>> repository.checkoutResource(ob)
     checked out <Sample object>, version 1
+
+At this point, the object provides `ICheckedOut` and not `ICheckedIn`:
+
+    >>> interfaces.ICheckedOut.providedBy(ob)
+    True
+    >>> interfaces.ICheckedIn.providedBy(ob)
+    False
+
+Now, we'll and add an attribute:
+
     >>> ob.value = 42
     >>> repository.checkinResource(ob)
     checked in <Sample object>, version 2
     >>> transaction.commit()
+
 
 We can now compare information about the updated version with the
 original information:
@@ -277,6 +305,14 @@ repository.
     updated <Sample object> from version 1 to 2
     >>> repository.checkoutResource(samp)
     checked out <Sample object>, version 2
+
+
+    >>> interfaces.ICheckedOut.providedBy(samp)
+    True
+    >>> interfaces.ICheckedIn.providedBy(samp)
+    False
+
+
     >>> transaction.commit()
 
     >>> repository.isResourceChanged(samp)
@@ -297,6 +333,13 @@ message argument; we'll see later how this can be used.
 
     >>> repository.checkinResource(samp, 'sample checkin')
     checked in <Sample object>, version 3
+
+
+    >>> interfaces.ICheckedIn.providedBy(samp)
+    True
+    >>> interfaces.ICheckedOut.providedBy(samp)
+    False
+
     >>> transaction.commit()
 
     >>> repository.checkoutResource(samp)
@@ -799,3 +842,42 @@ restored by the `restoreNonVersionedData()` method) without exposing
 any information about how it communicates with itself (it could store
 all the relevant data into an external file and use the value returned
 to locate the state file again, if that was needed for some reason).
+
+Copying old version data
+------------------------
+
+Sometimes, you'd like to copy old version data.  You can do so with
+`copyVersion`:
+
+    >>> ob = Sample()
+    >>> ob.__name__ = 'samp'
+    >>> root["samp"] = ob
+    >>> transaction.commit()
+    >>> ob.x = 1
+    >>> repository.applyVersionControl(ob)
+    applied version control to <Sample object>
+    >>> repository.checkoutResource(ob)
+    checked out <Sample object>, version 1
+    >>> ob.x = 2
+    >>> repository.checkinResource(ob)
+    checked in <Sample object>, version 2
+    >>> repository.copyVersion(ob, '1')
+    Traceback (most recent call last):
+    ...
+    VersionControlError: The selected resource is not checked out.
+
+    >>> repository.checkoutResource(ob)
+    checked out <Sample object>, version 2
+    >>> ob.x = 3
+    >>> transaction.commit()
+    >>> repository.copyVersion(ob, '1')
+    >>> ob.x
+    1
+
+    >>> transaction.commit()
+    >>> repository.isResourceChanged(ob)
+    True
+    >>> repository.checkinResource(ob)
+    checked in <Sample object>, version 3
+
+
