@@ -27,8 +27,6 @@ Others
 
   * 307: browser:addMenuItem and broken view references
 
-  * 344: PAU registration error
-
   - 381: Handle migration of site instance 'securitypolicy.zcml' files
 
   * 384: Problems with permissions in zcml utility directives
