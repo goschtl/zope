@@ -15,15 +15,6 @@ Miscellaneous
 Bug Fixes
 ---------
 
-File Content Component
-~~~~~~~~~~~~~~~~~~~~~~
-
-  * 302: File objects can't contain non-ascii characters (fixed in trunk, but
-    not backported to 3.0.x branch)
-
-Others
-~~~~~~
-
   * 307: browser:addMenuItem and broken view references
 
   * 384: Problems with permissions in zcml utility directives
