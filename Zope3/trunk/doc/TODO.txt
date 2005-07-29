@@ -15,8 +15,6 @@ Miscellaneous
 Bug Fixes
 ---------
 
-  * 307: browser:addMenuItem and broken view references
-
   * 384: Problems with permissions in zcml utility directives
 
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
