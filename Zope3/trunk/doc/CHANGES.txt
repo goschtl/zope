@@ -859,7 +859,7 @@ Zope Changes
       Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen,
       Shane Hathaway, Bjorn Tillenius, Garrett Smith, Marius Gedminas, Stuart
       Bishop, Dominik Huber, Dmitry Vasiliev, Gary Poster, Brian Lloyd,
-      Julien Anguenot
+      Julien Anguenot, Albertas Agejevas
 
 
   ------------------------------------------------------------------
