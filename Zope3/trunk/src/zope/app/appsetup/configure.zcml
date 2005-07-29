@@ -5,4 +5,9 @@
       for="zope.app.appsetup.IDatabaseOpenedEvent"
       />
 
+  <subscriber
+      handler=".bootstrap.checkSecurityPolicy"
+      for="zope.app.appsetup.IDatabaseOpenedEvent"
+      />
+
 </configure>

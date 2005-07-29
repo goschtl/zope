@@ -20,8 +20,11 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 import transaction
+import logging
 
 import zope.event
+from zope.security.management import getSecurityPolicy
+from zope.security.simplepolicies import ParanoidSecurityPolicy
 
 from zope.app.component.interfaces import ISite
 from zope.app.component import site
@@ -150,3 +153,16 @@ def bootStrapSubscriber(event):
 
 ########################################################################
 ########################################################################
+
+def checkSecurityPolicy(event):
+    """Warn if the configured security policy is ParanoidSecurityPolicy
+
+    Between Zope X3 3.0 and Zope X3 3.1 the security policy got
+    refactored and now it needs to be included from site.zcml.
+    """
+    if getSecurityPolicy() is ParanoidSecurityPolicy:
+        logging.getLogger('zope.app.appsetup').warn(
+            'Security policy is not configured.\n'
+            'Please make sure that securitypolicy.zcml is included'
+            ' in site.zcml immediately\n'
+            'before principals.zcml')
