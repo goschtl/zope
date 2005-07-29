@@ -18,10 +18,13 @@ $Id$
 import unittest
 
 from zope.testing import doctest
+from zope.app.testing import placelesssetup
 
 
 def test_suite():
-    return doctest.DocTestSuite("zope.app.file.browser.file")
+    return doctest.DocTestSuite("zope.app.file.browser.file",
+                                setUp=placelesssetup.setUp,
+                                tearDown=placelesssetup.tearDown)
 
 if __name__ == "__main__":
     unittest.main(defaultTest="test_suite")

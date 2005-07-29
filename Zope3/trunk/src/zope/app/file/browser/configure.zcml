@@ -6,18 +6,15 @@
 
   <!-- directives for File -->
   
-  <browser:editform
+  <browser:form
       name="edit.html"
-      schema="zope.app.file.interfaces.IFile"
+      for="zope.app.file.interfaces.IFile"
+      schema="zope.app.file.browser.file.IFileEditForm"
       label="Change a file"
-      permission="zope.ManageContent" 
+      permission="zope.ManageContent"
+      class="zope.app.file.browser.file.FileEdit"
       >
-
-    <widget
-        field="data"
-        class="zope.app.form.browser.BytesAreaWidget" />
-
-  </browser:editform>
+  </browser:form>
 
   <browser:menuItem
       menu="zmi_views" title="Edit"

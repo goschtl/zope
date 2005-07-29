@@ -20,11 +20,13 @@ from datetime import datetime
 
 import zope.event
 
+from zope.schema import Text
 from zope.app import content_types
 from zope.app.event import objectevent
 from zope.app.file.file import File
 from zope.app.file.interfaces import IFile
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.exception.interfaces import UserError
 
 __docformat__ = 'restructuredtext'
 
@@ -218,3 +220,177 @@ class FileUpload(FileUpdateView):
         status = _("Updated on ${date_time}")
         status.mapping = {'date_time': formatter.format(datetime.utcnow())}
         return status
+
+
+class IFileEditForm(IFile):
+    """Schema for the File edit form.
+
+    Replaces the Bytes `data` field with a Text field.
+    """
+
+    data = Text(
+        title=_(u'Data'),
+        description=_(u'The actual content of the object.'),
+        default=u'',
+        missing_value=u'',
+        required=False,
+        )
+
+
+class UnknownCharset(Exception):
+    """Unknown character set."""
+
+class CharsetTooWeak(Exception):
+    """Character set cannot encode all characters in text."""
+
+
+class FileEdit(object):
+    r"""File edit form mixin.
+
+    Lets the user edit a text file directly via a browser form.
+
+    Converts between Unicode strings used in browser forms and 8-bit strings
+    stored internally.
+
+        >>> from zope.app.publisher.browser import BrowserView
+        >>> from zope.publisher.browser import TestRequest
+        >>> class FileEditView(FileEdit, BrowserView): pass
+        >>> view = FileEditView(File(), TestRequest())
+        >>> view.getData()
+        {'data': u'', 'contentType': ''}
+
+        >>> view.setData({'contentType': 'text/plain; charset=ISO-8859-13',
+        ...               'data': u'text \u0105'})
+        u'Updated on ${date_time}'
+
+        >>> view.context.contentType
+        'text/plain; charset=ISO-8859-13'
+        >>> view.context.data
+        'text \xe0'
+
+        >>> view.getData()['data']
+        u'text \u0105'
+
+    You will get an error if you try to specify a charset that cannot encode
+    all the characters
+
+        >>> view.setData({'contentType': 'text/xml; charset=ISO-8859-1',
+        ...               'data': u'text \u0105'})
+        Traceback (most recent call last):
+          ...
+        CharsetTooWeak: ISO-8859-1
+
+    You will get a different error if you try to specify an invalid charset
+
+        >>> view.setData({'contentType': 'text/xml; charset=UNKNOWN',
+        ...               'data': u'text \u0105'})
+        Traceback (most recent call last):
+          ...
+        UnknownCharset: UNKNOWN
+
+    The update method catches those errors and replaces them with error
+    messages
+
+        >>> from zope.i18n import translate
+        >>> class FakeFormView(BrowserView):
+        ...     def update(self):
+        ...         raise CharsetTooWeak('ASCII')
+        >>> class FileEditView(FileEdit, FakeFormView): pass
+        >>> view = FileEditView(File(), TestRequest())
+        >>> translate(view.update())
+        u'The character set you specified (ASCII) cannot encode all characters in text.'
+        >>> translate(view.update_status)
+        u'The character set you specified (ASCII) cannot encode all characters in text.'
+
+        >>> class FakeFormView(BrowserView):
+        ...     def update(self):
+        ...         raise UnknownCharset('UNKNOWN')
+        >>> class FileEditView(FileEdit, FakeFormView): pass
+        >>> view = FileEditView(File(), TestRequest())
+        >>> translate(view.update())
+        u'The character set you specified (UNKNOWN) is not supported.'
+        >>> translate(view.update_status)
+        u'The character set you specified (UNKNOWN) is not supported.'
+
+    Speaking about errors, if you trick the system and upload a file with
+    incorrect charset designation, you will get a UserError when you visit the
+    view:
+
+        >>> view.context.contentType = 'text/plain; charset=UNKNOWN'
+        >>> view.context.data = '\xff'
+        >>> view.getData()
+        Traceback (most recent call last):
+          ...
+        UserError: The character set specified in the content type ($charset) is not supported.
+
+        >>> view.context.contentType = 'text/plain; charset=UTF-8'
+        >>> view.context.data = '\xff'
+        >>> view.getData()
+        Traceback (most recent call last):
+          ...
+        UserError: The character set specified in the content type ($charset) does not match file content.
+
+    """
+
+    error = None
+
+    def getData(self):
+        charset = extractCharset(self.context.contentType)
+        try:
+            return {'contentType': self.context.contentType,
+                    'data': self.context.data.decode(charset)}
+        except LookupError:
+            msg = _("The character set specified in the content type"
+                    " ($charset) is not supported.")
+            msg.mapping = {'charset': charset}
+            raise UserError(msg)
+        except UnicodeDecodeError:
+            msg = _("The character set specified in the content type"
+                    " ($charset) does not match file content.")
+            msg.mapping = {'charset': charset}
+            raise UserError(msg)
+
+    def setData(self, data):
+        charset = extractCharset(data['contentType'])
+        try:
+            self.context.data = data['data'].encode(charset)
+        except LookupError:
+            raise UnknownCharset(charset)
+        except UnicodeEncodeError:
+            raise CharsetTooWeak(charset)
+        self.context.contentType = data['contentType']
+        formatter = self.request.locale.dates.getFormatter('dateTime',
+                                                           'medium')
+        status = _("Updated on ${date_time}")
+        status.mapping = {'date_time': formatter.format(datetime.utcnow())}
+        return status
+
+    def update(self):
+        try:
+            return super(FileEdit, self).update()
+        except CharsetTooWeak, charset:
+            self.update_status = _("The character set you specified ($charset)"
+                                   " cannot encode all characters in text.")
+            self.update_status.mapping = {'charset': charset}
+            return self.update_status
+        except UnknownCharset, charset:
+            self.update_status = _("The character set you specified ($charset)"
+                                   " is not supported.")
+            self.update_status.mapping = {'charset': charset}
+            return self.update_status
+
+
+def extractCharset(content_type):
+    """Extract charset information from a MIME type.
+
+        >>> extractCharset('text/plain; charset=UTF-8')
+        'UTF-8'
+        >>> extractCharset('text/html; charset=ISO-8859-1')
+        'ISO-8859-1'
+        >>> extractCharset('text/plain')
+        'ASCII'
+
+    """
+    if 'charset=' not in content_type:
+        return 'ASCII'
+    return content_type.split('charset=')[1]
