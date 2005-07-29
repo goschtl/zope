@@ -38,7 +38,7 @@ def EditViewFactory(name, schema, label, permission, layer,
     class_ = makeClassForTemplate(template, globals(), used_for=schema,
                                   bases=bases)
     class_.schema = schema
-    class_.label = label
+    class_._label = label or u''
     class_.fieldNames = fields
 
     class_.fulledit_path = fulledit_path
@@ -95,7 +95,7 @@ def AddViewFactory(name, schema, label, permission, layer,
                                   bases=bases)
 
     class_.schema = schema
-    class_.label = label
+    class_._label = label or u''
     class_.fieldNames = fields
     class_._factory = content_factory
     class_._arguments = arguments

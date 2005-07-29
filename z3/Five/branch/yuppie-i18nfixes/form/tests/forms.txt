@@ -438,6 +438,34 @@ that the edit form works:
   ...
 
 
+i18n:
+-----
+
+Test i18n functionality of forms
+
+  >>> configure_zcml = '''
+  ... <configure 
+  ...     xmlns:i18n="http://namespaces.zope.org/i18n"
+  ...     package="Products.Five.form.tests">
+  ...   <i18n:registerTranslations directory="locales"/>
+  ... </configure>'''
+  >>> zcml.load_string(configure_zcml)
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/ftf/+/addfieldcontent.html HTTP/1.1
+  ... Accept-Language: de
+  ... """, handle_errors=False)
+  HTTP/1.1 200 OK
+  ...Eine kurz...Titel...
+  ...Eine ausf...Beschreibung...
+  ...Irgendeine Zahl...
+  ...Irgendeine Liste...
+  ...hinzuf...
+  ...Auffrischen...
+  ...Hinzuf...
+  ...Objektname...
+
+
 Clean up
 --------
 

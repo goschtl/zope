@@ -1,4 +1,5 @@
-<html metal:use-macro="context/@@standard_macros/page">
+<html metal:use-macro="context/@@standard_macros/page"
+    i18n:domain="zope">
   <body>
   <div metal:fill-slot="body">
 
@@ -12,13 +13,11 @@
         <h3 tal:condition="view/label"
             tal:content="view/label"
             metal:define-slot="heading"
-            i18n:translate=""
             >Edit something</h3>
 
         <p tal:define="status view/update"
            tal:condition="status"
-           tal:content="status"
-           i18n:translate=""/>
+           tal:content="status" />
 
         <p tal:condition="view/errors" i18n:translate="">
           There are <strong tal:content="python:len(view.errors)"
@@ -33,7 +32,7 @@
             <div class="label"><input type="text" style="width:100%" /></div>
         </div>
 
-        <div metal:use-macro="context/@@widget_macros/widget_rows" />
+        <div metal:use-macro="context/@@form_macros/widget_rows" />
 
         <div class="separator"></div>
 
@@ -72,3 +71,4 @@
   </body>
 
 </html>
+
