@@ -34,7 +34,7 @@ from zope.app.exception.interfaces import UserError
 class FunkTest(functional.BrowserTestCase):
 
     def test_copypaste_duplicated_id_object(self):
-        
+
         root = self.getRootFolder()
 
         # Create a principal Folder
@@ -47,7 +47,7 @@ class FunkTest(functional.BrowserTestCase):
         directlyProvides(principal, IInternalPrincipal)
 
         pf['p1'] = principal
-        
+
         transaction.commit()
         self.assertEqual(len(pf.keys()), 1)
         #raise str([x for x in pf.keys()])
@@ -86,7 +86,7 @@ class FunkTest(functional.BrowserTestCase):
         directlyProvides(principal, IInternalPrincipal)
 
         pf['p1'] = principal
-        
+
         transaction.commit()
         self.assertEqual(len(pf.keys()), 1)
         #raise str([x for x in pf.keys()])
@@ -110,11 +110,12 @@ class FunkTest(functional.BrowserTestCase):
         else:
             # test failed !
             self.asserEqual(1, 0)
-            
+
 def test_suite():
     return unittest.TestSuite((
         functional.FunctionalDocFileSuite('principalfolder.txt'),
         functional.FunctionalDocFileSuite('groupfolder.txt'),
+        functional.FunctionalDocFileSuite('pau_prefix_and_searching.txt'),
         functional.FunctionalDocFileSuite(
             'group_searching_with_empty_string.txt'),
         functional.FunctionalDocFileSuite('special-groups.txt'),
