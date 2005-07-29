@@ -79,7 +79,7 @@ Now when a request is sent in, the data is transmitted in the form
 and as soon as the `update()` method is called
 
   >>> view.update()
-  ''
+  u'Updated on ${date_time}'
 
 the global name variable is changed:
 

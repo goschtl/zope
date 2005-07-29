@@ -16,6 +16,8 @@
 $Id: editview.py 29143 2005-02-14 22:43:16Z srichter $
 """
 __docformat__ = 'restructuredtext'
+
+from datetime import datetime
 import transaction
 
 from zope.app.form.interfaces import WidgetsError, IInputWidget
@@ -77,6 +79,11 @@ class FormView(EditView):
             else:
                 if changed:
                     self.setData(self.data)
+                    formatter = self.request.locale.dates.getFormatter(
+                        'dateTime', 'medium')
+                    status = _("Updated on ${date_time}")
+                    status.mapping = {'date_time': formatter.format(
+                        datetime.utcnow())}
                 setUpWidgets(
                     self, self.schema, IInputWidget, initial=self.data,
                     ignoreStickyValues=True, names=self.fieldNames)
