@@ -1,0 +1,39 @@
+==========================================================
+Things to do for the next release (in no particular order)
+==========================================================
+
+Miscellaneous
+-------------
+
+- Remove XXX comments (there are about 80 in zope)
+
+- Ensure backward compatibility
+
+  o Run book sources against source tree (Stephan and Phillip)
+
+
+Bug Fixes
+---------
+
+File Content Component
+~~~~~~~~~~~~~~~~~~~~~~
+
+  * 302: File objects can't contain non-ascii characters
+
+Others
+~~~~~~
+
+  * 296: missing display widgets
+
+  * 307: browser:addMenuItem and broken view references
+
+  * 344: PAU registration error
+
+  * 372: WidgetInputError.doc is broken
+
+  - 381: Handle migration of site instance 'securitypolicy.zcml' files
+
+  * 384: Problems with permissions in zcml utility directives
+
+Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
+well .
