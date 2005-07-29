@@ -264,6 +264,7 @@ def test_suite():
         unittest.makeSuite(FileTest),
         unittest.makeSuite(ImageTest),
         functional.FunctionalDocFileSuite('url.txt'),
+        functional.FunctionalDocFileSuite('file.txt'),
         ))
 
 if __name__ == '__main__':
