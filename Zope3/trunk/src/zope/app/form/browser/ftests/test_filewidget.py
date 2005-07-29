@@ -107,7 +107,9 @@ class Test(BrowserTestCase):
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
             'field.f1' : self.sampleTextFile,
-            'field.f2' : self.sampleTextFile })
+            'field.f2' : self.sampleTextFile,
+            'field.f1.used' : '',
+            'field.f2.used' : '' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
 
@@ -124,25 +126,24 @@ class Test(BrowserTestCase):
         # submit an invalid file value
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.f1' : 'not a file - same as missing input' })
+            'field.f1' : 'not a file - same as missing input',
+            'field.f1.used' : '',
+            'field.f2.used' : '' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(validationErrorExists('f1',
             'Form input is not a file object', response.getBody()))
 
 
-    # For some reason this test does not work, which means that the missing
-    # input recognition of file widgets does not work correctly. I just lost
-    # my patience looking at it. 
-    def XXX_test_required_validation(self):
+    def test_required_validation(self):
         self.getRootFolder()['test'] = FileTest()
         transaction.commit()
 
         # submit missing value for required field f1
         response = self.publish('/test/edit.html', form={
-            'UPDATE_SUBMIT' : ''})
+            'UPDATE_SUBMIT' : '',
+            'field.f1.used' : '',
+            'field.f2.used' : ''})
         self.assertEqual(response.getStatus(), 200)
-
-        print response.getBody()
 
         # confirm error msgs
         self.assert_(missingInputErrorExists('f1', response.getBody()))
@@ -156,7 +157,11 @@ class Test(BrowserTestCase):
         # submit an empty text file
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.f2' : self.emptyFile })
+            'field.f2' : self.emptyFile,
+            # 'field.f1.used' : '', # we don't let f1 know that it was rendered
+            # or else it will complain (see test_required_validation) and the
+            # change will not succeed.
+            'field.f2.used' : ''})
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
 

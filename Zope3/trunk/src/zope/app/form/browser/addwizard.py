@@ -126,7 +126,7 @@ def _setFactory(self, value):
     self.__dict__['_factory_or_id'] = value
 
 
-# XXX: Needs unittest
+# TODO: Needs unittest
 def AddWizardViewFactory(
     name, schema, permission, layer, panes, fields,
     template, default_template, bases, for_, content_factory, arguments,

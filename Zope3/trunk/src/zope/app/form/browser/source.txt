@@ -480,7 +480,7 @@ If we render the widget:
 
 Here the output looks very similar to the simple choice case.  We get
 a search input for each source.  In this case, we don't show any
-inputs (XXX we probably should make it clearer that there are no
+inputs (TODO we probably should make it clearer that there are no
 selected values.)
 
 As before, we can search one of the sources:

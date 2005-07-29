@@ -49,6 +49,13 @@ class FileWidgetTest(SimpleInputWidgetTest):
         self.assertEqual(self._widget.displayWidth, 20)
         self.assertEqual(self._widget.displayMaxWidth, '')
 
+    def test_hasInput(self): # override the usual one
+        del self._widget.request.form['field.foo']
+        self._widget.request.form['field.foo.used'] = ''
+        self.failUnless(self._widget.hasInput())
+        del self._widget.request.form['field.foo.used']
+        self.failIf(self._widget.hasInput())
+
     def testRender(self):
         value = 'Foo Value'
         self._widget.setRenderedValue(value)

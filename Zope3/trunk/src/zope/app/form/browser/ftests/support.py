@@ -83,8 +83,10 @@ def patternExists(pattern, source, flags=0):
 
 
 def validationErrorExists(field, error_msg, source):
-    return patternExists(
-        '%s.*name="field.%s"' % (error_msg, field), source, re.DOTALL)
+    regex = re.compile(r'%s.*?name="field.(\w+)(?:\.[\w\.]+)?"' % (error_msg,),
+                       re.DOTALL)
+    # compile it first because Python 2.3 doesn't allow flags in findall
+    return field in regex.findall(source)
 
 
 def missingInputErrorExists(field, source):

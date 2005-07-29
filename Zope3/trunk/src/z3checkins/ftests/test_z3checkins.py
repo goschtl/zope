@@ -54,6 +54,7 @@ class TestCheckins(BrowserTestCase):
         response = self.publish('/z3c/@@+',
                                 basic='mgr:mgrpw',
                                 form={'field.data': self.open('msg1.txt'),
+                                      'field.data.used': '',
                                       'UPDATE_SUBMIT': u'Submit'})
         self.assertEqual(response.getStatus(), 200)
         self.assertEqual(response.getBody().count("Checkin message"), 1)
@@ -61,6 +62,7 @@ class TestCheckins(BrowserTestCase):
         response = self.publish('/z3c/+/CheckinMessage',
                                 basic='mgr:mgrpw',
                                 form={'field.data': self.open('msg1.txt'),
+                                      'field.data.used': '',
                                       'UPDATE_SUBMIT': u'Submit'})
         self.assertEqual(response.getStatus(), 302)
 
@@ -85,6 +87,7 @@ class TestCheckins(BrowserTestCase):
         response = self.publish('/z3c/+/CheckinMessage',
                                 basic='mgr:mgrpw',
                                 form={'field.data': self.open('msg2.txt'),
+                                      'field.data.used': '',
                                       'UPDATE_SUBMIT': u'Submit'})
         self.assertEqual(response.getStatus(), 302)
 

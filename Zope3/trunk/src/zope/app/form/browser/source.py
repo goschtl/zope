@@ -179,7 +179,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
 
     def error(self):
         if self._error:
-            # XXX This code path is untested.
+            # TODO This code path is untested.
             return zapi.getMultiAdapter((self._error, self.request),
                                         IWidgetInputErrorView).snippet()
         return ""
@@ -291,7 +291,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
 
         if token is None:
             if field.required:
-                # XXX This code path is untested.
+                # TODO This code path is untested.
                 raise zope.app.form.interfaces.MissingInputError(
                     field.__name__, self.label,
                     )
@@ -300,7 +300,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
         try:
             value = self.terms.getValue(str(token))
         except LookupError:
-            # XXX This code path is untested.
+            # TODO This code path is untested.
             err = zope.schema.interfaces.ValidationError(
                 "Invalid value id", token)
             raise WidgetInputError(field.__name__, self.label, err)
@@ -311,7 +311,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
         try:
             field.validate(value)
         except ValidationError, err:
-            # XXX This code path is untested.
+            # TODO This code path is untested.
             self._error = WidgetInputError(field.__name__, self.label, err)
             raise self._error
 
@@ -487,7 +487,7 @@ class SourceListInputWidget(SourceInputWidget):
         try:
             field.validate(value)
         except ValidationError, err:
-            # XXX This code path is untested.
+            # TODO This code path is untested.
             self._error = WidgetInputError(field.__name__, self.label, err)
             raise self._error
 

@@ -270,7 +270,6 @@ class AddFormDirective(BaseFormDirective):
             args=self._args()+(self.content_factory, self.arguments,
                                  self.keyword_arguments,
                                  self.set_before_add, self.set_after_add),
-            kw={'menu': self.menu},
             )
 
 class EditFormDirectiveBase(BaseFormDirective):
@@ -305,7 +304,6 @@ class EditFormDirective(EditFormDirectiveBase):
             discriminator=self._discriminator(),
             callable=EditViewFactory,
             args=self._args(),
-            kw={'menu': self.menu},
         )
 
 class FormDirective(EditFormDirective):

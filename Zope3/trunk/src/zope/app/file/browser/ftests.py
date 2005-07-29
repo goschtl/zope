@@ -53,6 +53,7 @@ class FileTest(BrowserTestCase):
             '/+/zope.app.file.File=',
             form={'type_name': u'zope.app.file.File',
                   'field.data': StringIO('A file'),
+                  'field.data.used': '',
                   'add_input_name': u'file',
                   'UPDATE_SUBMIT': u'Add'},
             basic='mgr:mgrpw')
@@ -82,6 +83,7 @@ class FileTest(BrowserTestCase):
         response = self.publish(
             '/file/@@edit.html',
             form={'field.data': u'<h1>A File</h1>',
+                  'field.data.used': '',
                   'field.contentType': u'text/plain',
                   'UPDATE_SUBMIT': u'Edit'},
             basic='mgr:mgrpw')
@@ -114,6 +116,7 @@ class FileTest(BrowserTestCase):
         response = self.publish(
             '/file/@@upload.html',
             form={'field.data': StringIO('<h1>A file</h1>'),
+                  'field.data.used': '',
                   'field.contentType': u'text/plain',
                   'UPDATE_SUBMIT': u'Change'},
             basic='mgr:mgrpw')
@@ -178,6 +181,7 @@ class ImageTest(BrowserTestCase):
             '/+/zope.app.file.Image=',
             form={'type_name': u'zope.app.image.Image',
                   'field.data': StringIO(self.content),
+                  'field.data.used': '',
                   'add_input_name': u'image',
                   'UPDATE_SUBMIT': u'Add'},
             basic='mgr:mgrpw')
@@ -207,6 +211,7 @@ class ImageTest(BrowserTestCase):
         response = self.publish(
             '/image/@@upload.html',
             form={'field.data': StringIO(''),
+                  'field.data.used': '',
                   'UPDATE_SUBMIT': u'Change'},
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)

@@ -154,8 +154,7 @@ def _setFactory(self, value):
 def AddViewFactory(name, schema, label, permission, layer,
                    template, default_template, bases, for_,
                    fields, content_factory, arguments,
-                   keyword_arguments, set_before_add, set_after_add,
-                   menu=u''):
+                   keyword_arguments, set_before_add, set_after_add):
 
     class_  = SimpleViewClass(
         template, used_for=schema, bases=bases, name=name)

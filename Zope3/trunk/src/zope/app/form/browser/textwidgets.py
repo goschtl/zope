@@ -136,7 +136,7 @@ class TextWidget(SimpleInputWidget):
                   'size': self.displayWidth,
                   'extra': self.extra}
         if self.displayMaxWidth:
-            kwargs['maxlength'] = self.displayMaxWidth # XXX This is untested.
+            kwargs['maxlength'] = self.displayMaxWidth # TODO This is untested.
 
         return renderElement(self.tag, **kwargs)
 
@@ -402,8 +402,13 @@ class FileWidget(TextWidget):
 
     def __call__(self):
         displayMaxWidth = self.displayMaxWidth or 0
+        hidden = renderElement(self.tag,
+                               type='hidden',
+                               name=self.name+".used",
+                               id=self.name+".used",
+                               value="")
         if displayMaxWidth > 0:
-            return renderElement(self.tag,
+            elem = renderElement(self.tag,
                                  type=self.type,
                                  name=self.name,
                                  id=self.name,
@@ -412,16 +417,17 @@ class FileWidget(TextWidget):
                                  maxlength=displayMaxWidth,
                                  extra=self.extra)
         else:
-            return renderElement(self.tag,
+            elem = renderElement(self.tag,
                                  type=self.type,
                                  name=self.name,
                                  id=self.name,
                                  cssClass=self.cssClass,
                                  size=self.displayWidth,
                                  extra=self.extra)
+        return "%s %s" % (hidden, elem)
 
     def _toFieldValue(self, input):
-        if input == '':
+        if input is None or input == '':
             return self.context.missing_value
         try:
             seek = input.seek
@@ -435,6 +441,9 @@ class FileWidget(TextWidget):
                 return data
             else:
                 return self.context.missing_value
+
+    def hasInput(self):
+        return self.name+".used" in self.request.form
 
 class IntWidget(TextWidget):
     """Integer number widget.

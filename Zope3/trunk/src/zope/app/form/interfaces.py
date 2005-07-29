@@ -45,7 +45,7 @@ class WidgetInputError(UserError):
         self.errors = errors
 
     def doc(self):
-        # XXX this duck typing is to get the code working.  See
+        # TODO this duck typing is to get the code working.  See
         # collector issue 372
         if isinstance(self.errors, basestring):
             return self.errors
