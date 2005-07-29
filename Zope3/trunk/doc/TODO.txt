@@ -29,8 +29,6 @@ Others
 
   * 307: browser:addMenuItem and broken view references
 
-  * 336: zpkg: defining 'zpkgsetup' resource shouldn't be necessary
-
   * 344: PAU registration error
 
   * 372: WidgetInputError.doc is broken
