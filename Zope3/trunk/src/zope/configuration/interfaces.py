@@ -74,16 +74,18 @@ class IConfigurationContext(Interface):
         is better than an unlimited number of conflict errors.
         """
 
-    def action(self, discriminator, callable, args=(), kw={}):
+    def action(self, discriminator, callable, args=(), kw={}, order=0):
         """Record a configuration action
 
-        The job of most directives is to compute actions for later processing.
-        The action method is used to record those actions.  The discriminator
-        is used to to find actions that conflict. Actions conflict if they
-        have the same discriminator. The exception to this is the
-        special case of the discriminator with the value None. An
-        actions with a discriminator of None never conflicts with
-        other actions.
+        The job of most directives is to compute actions for later
+        processing.  The action method is used to record those
+        actions.  The discriminator is used to to find actions that
+        conflict. Actions conflict if they have the same
+        discriminator. The exception to this is the special case of
+        the discriminator with the value None. An actions with a
+        discriminator of None never conflicts with other actions. This
+        is possible to add an order argument to crudely control the
+        order of execution
         """
 
     def provideFeature(name):
