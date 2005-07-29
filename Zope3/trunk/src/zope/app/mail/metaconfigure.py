@@ -26,7 +26,7 @@ from zope.app.component.metaconfigure import handler, proxify, PublicPermission
 from zope.app.mail.delivery import QueuedMailDelivery, DirectMailDelivery
 from zope.app.mail.delivery import QueueProcessorThread
 from zope.app.mail.interfaces import IMailer, IMailDelivery
-from zope.app.mail.mailer import SendmailMailer, SMTPMailer
+from zope.app.mail.mailer import SMTPMailer
 
 
 def _assertPermission(permission, interfaces, component):
@@ -78,15 +78,6 @@ def directDelivery(_context, permission, mailer, name="Mail"):
             callable = createDirectDelivery,
             args = () )
 
-
-def sendmailMailer(_context, name,
-                   command="/usr/lib/sendmail -oem -oi -f %(from)s %(to)s"):
-    _context.action(
-        discriminator = ('utility', IMailer, name),
-        callable = handler,
-        args = ('provideUtility',
-                IMailer, SendmailMailer(command), name)
-        )
 
 def smtpMailer(_context, name, hostname="localhost", port="25",
                username=None, password=None):

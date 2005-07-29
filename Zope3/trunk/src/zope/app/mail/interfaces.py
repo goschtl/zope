@@ -46,9 +46,6 @@ Email sending from Zope 3 applications works as follows:
 
     - `ISMTPMailer` sends all messages to a relay host using SMTP
 
-    - `ISendmailMailer` sends messages by calling an external process (usually
-      /usr/lib/sendmail on Unix systems).
-
 - If mail delivery succeeds, an `IMailSentEvent` is dispatched by the mailer.
   If mail delivery fails, no exceptions are raised, but an `IMailErrorEvent` is
   dispatched by the mailer.
@@ -166,15 +163,6 @@ class ISMTPMailer(IMailer):
     password = Password(
         title=_(u"Password"),
         description=_(u"Password used for optional SMTP authentication."))
-
-
-class ISendmailMailer(IMailer):
-    """A mailer that delivers mail by calling an external process."""
-
-    command = BytesLine(
-        title=_(u"Command"),
-        description=_(u"Command used to send email."),
-        default="/usr/lib/sendmail -oem -oi -f %(from)s %(to)s")
 
 
 class IMailEvent(Interface):

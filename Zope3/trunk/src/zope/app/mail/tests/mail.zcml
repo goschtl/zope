@@ -14,10 +14,6 @@
       mailer="test.mailer"
       permission="zope.Public" />
 
-  <mail:sendmailMailer 
-      name="Sendmail"
-      command="/usr/lib/sendmail -oem -oi -f %(from)s %(to)s" />
-  
   <mail:smtpMailer 
       name="smtp"
       hostname="localhost"

@@ -19,37 +19,7 @@ $Id$
 import unittest
 from StringIO import StringIO
 from zope.interface.verify import verifyObject
-from zope.app.mail.interfaces import ISendmailMailer, ISMTPMailer
-
-
-class TestSendmailMailer(unittest.TestCase):
-
-    def setUp(self):
-        from zope.app.mail.mailer import SendmailMailer
-
-        class ShtringIO(StringIO):
-            def close(self):
-                pass
-        self.input = ShtringIO()
-        def popen(cmd, mode):
-            self.cmd_arg = cmd
-            self.mode_arg = mode
-            return self.input
-        self.mailer = SendmailMailer()
-        self.mailer.popen = popen
-
-    def test_interface(self):
-        verifyObject(ISendmailMailer, self.mailer)
-
-    def test_send(self):
-        msgtext = 'Headers: headers\n\nbodybodybody\n-- \nsig\n'
-        self.mailer.send('me@example.com',
-                         ('you@example.com', 'him@example.com'),
-                         msgtext)
-        self.assertEquals(self.input.getvalue(), msgtext)
-        self.assertEquals(self.cmd_arg, "/usr/lib/sendmail -oem -oi"
-                          " -f me@example.com you@example.com him@example.com")
-        self.assertEquals(self.mode_arg, "w")
+from zope.app.mail.interfaces import ISMTPMailer
 
 
 class TestSMTPMailer(unittest.TestCase):
@@ -123,7 +93,6 @@ class TestSMTPMailer(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestSendmailMailer))
     suite.addTest(unittest.makeSuite(TestSMTPMailer))
     return suite
 

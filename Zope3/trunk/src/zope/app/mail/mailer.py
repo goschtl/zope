@@ -19,28 +19,10 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from os import popen
 from smtplib import SMTP
 
 from zope.interface import implements
-from zope.app.mail.interfaces import ISendmailMailer, ISMTPMailer
-
-
-class SendmailMailer(object):
-
-    implements(ISendmailMailer)
-
-    # A hook for unit tests
-    popen = popen
-
-    def __init__(self, command="/usr/lib/sendmail -oem -oi -f %(from)s %(to)s"):
-        self.command = command
-
-    def send(self, fromaddr, toaddrs, message):
-        command = self.command % {'from': fromaddr, 'to': " ".join(toaddrs)}
-        f = self.popen(command, "w")
-        f.write(message)
-        f.close()
+from zope.app.mail.interfaces import ISMTPMailer
 
 
 class SMTPMailer(object):

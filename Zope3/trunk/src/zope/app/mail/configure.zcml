@@ -10,8 +10,6 @@
              Send out mail with arbitrary from and to addresses"
       />
 
-  <mail:sendmailMailer name="sendmail"/>
-
   <mail:smtpMailer name="smtp" hostname="localhost" port="25" />
 
   <!--

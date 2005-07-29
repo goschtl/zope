@@ -16,12 +16,6 @@
 
   <meta:directive 
       namespace="http://namespaces.zope.org/mail"
-      name="sendmailMailer" 
-      schema=".metadirectives.ISendmailMailerDirective"
-      handler=".metaconfigure.sendmailMailer" />
-
-  <meta:directive 
-      namespace="http://namespaces.zope.org/mail"
       name="smtpMailer" 
       schema=".metadirectives.ISMTPMailerDirective"
       handler=".metaconfigure.smtpMailer" />

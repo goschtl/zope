@@ -68,16 +68,6 @@ class IMailerDirective(Interface):
         required=True)
     
 
-class ISendmailMailerDirective(IMailerDirective):
-    """Registers a new Sendmail mailer."""
-
-    command = ASCII(
-        title=u"Command",
-        description=u"A template command for sending out mail, containing "\
-                    u"%(from)s and %(to)s for respective addresses.",
-        required=False)
-
-
 class ISMTPMailerDirective(IMailerDirective):
     """Registers a new SMTP mailer."""
 

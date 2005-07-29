@@ -27,7 +27,7 @@ from zope.interface import implements
 
 from zope.app import zapi
 from zope.app.mail.interfaces import \
-     IMailDelivery, IMailer, ISMTPMailer, ISendmailMailer
+     IMailDelivery, IMailer, ISMTPMailer
 from zope.app.mail.delivery import QueueProcessorThread
 from zope.app.mail import delivery
 from zope.app.testing import ztapi
@@ -88,10 +88,6 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         delivery = zapi.getUtility(IMailDelivery, "Mail2")
         self.assertEqual('DirectMailDelivery', delivery.__class__.__name__)
         self.assert_(self.testMailer is delivery.mailer)
-
-    def testSendmailMailer(self):
-        mailer = zapi.getUtility(IMailer, "Sendmail")
-        self.assert_(ISendmailMailer.providedBy(mailer))
 
     def testSMTPMailer(self):
         mailer = zapi.getUtility(IMailer, "smtp")
