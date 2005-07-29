@@ -65,6 +65,7 @@
     name="index.html"
     schema="..field.IFieldIndex"
     label="Field Index"
+    fields="interface field_name field_callable"
     permission="zope.ManageServices"
     menu="zmi_views" title="Configuration"
     />

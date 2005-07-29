@@ -37,8 +37,5 @@ Others
 
   * 384: Problems with permissions in zcml utility directives
 
-  * 397: DisplayView shouldn't display fields with private suffix
-
-
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
 well .
