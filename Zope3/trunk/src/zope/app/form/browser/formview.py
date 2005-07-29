@@ -17,7 +17,6 @@ $Id: editview.py 29143 2005-02-14 22:43:16Z srichter $
 """
 __docformat__ = 'restructuredtext'
 
-from datetime import datetime
 import transaction
 
 from zope.app.form.interfaces import WidgetsError, IInputWidget
@@ -51,6 +50,8 @@ class FormView(EditView):
         """Set the data gotten from a form.
 
         The data will be a dictionary of fieldnames to values.
+
+        May return a status message.
         """
         NotImplemented, 'Must be implemented by a specific form class'
     
@@ -78,12 +79,7 @@ class FormView(EditView):
                 transaction.abort()
             else:
                 if changed:
-                    self.setData(self.data)
-                    formatter = self.request.locale.dates.getFormatter(
-                        'dateTime', 'medium')
-                    status = _("Updated on ${date_time}")
-                    status.mapping = {'date_time': formatter.format(
-                        datetime.utcnow())}
+                    status = self.setData(self.data)
                 setUpWidgets(
                     self, self.schema, IInputWidget, initial=self.data,
                     ignoreStickyValues=True, names=self.fieldNames)

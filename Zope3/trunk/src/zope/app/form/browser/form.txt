@@ -43,6 +43,7 @@ store the data in a global attribute called name:
   ...         global name
   ...         name[0] = data['first']
   ...         name[1] = data['last']
+  ...         return u"Saved changes."
 
 
 We now imitate the form-directive's behavior and create the view class:
@@ -79,7 +80,7 @@ Now when a request is sent in, the data is transmitted in the form
 and as soon as the `update()` method is called
 
   >>> view.update()
-  u'Updated on ${date_time}'
+  u'Saved changes.'
 
 the global name variable is changed:
 
