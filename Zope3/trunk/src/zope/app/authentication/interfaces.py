@@ -187,6 +187,10 @@ class FoundPrincipalCreated:
         self.info = info
 
 
+class IQueriableAuthenticator(zope.interface.Interface):
+    """Indicates the authenticator provides a search UI for principals."""
+
+
 class IQuerySchemaSearch(zope.interface.Interface):
     """An interface for searching using schema-constrained input."""
 

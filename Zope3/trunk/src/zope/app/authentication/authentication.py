@@ -90,12 +90,12 @@ class PluggableAuthentication(SiteManagementFolder):
 
     def getQueriables(self):
         for name in self.authenticatorPlugins:
-            authplugin = component.queryUtility(interfaces.IAuthenticatorPlugin,
-                name, context=self)
+            authplugin = component.queryUtility(
+                interfaces.IAuthenticatorPlugin, name, context=self)
             if authplugin is None:
                 continue
             queriable = component.queryMultiAdapter((authplugin, self),
-                interfaces.IQuerySchemaSearch)
+                interfaces.IQueriableAuthenticator)
             if queriable is not None:
                 yield name, queriable
 
@@ -145,25 +145,29 @@ class PluggableAuthentication(SiteManagementFolder):
                 next.logout(request)
 
 
-class PluggableAuthenticationQueriable(object):
-    """Performs principal searches on behald of a PAU.
+class QuerySchemaSearchAdapter(object):
+    """Performs schema-based principal searches on behalf of a PAU.
 
-    Delegates the search to the authenticator but prepends the PAU prefix to
-    the resulting principal IDs.
+    Delegates the search to the adapted authenticator (which also provides
+    IQuerySchemaSearch) and prepends the PAU prefix to the resulting principal
+    IDs.
     """
     component.adapts(
         interfaces.IQuerySchemaSearch,
         interfaces.IPluggableAuthentication)
 
-    zope.interface.implements(interfaces.IQuerySchemaSearch, ILocation)
+    zope.interface.implements(
+        interfaces.IQueriableAuthenticator,
+        interfaces.IQuerySchemaSearch,
+        ILocation)
 
-    def __init__(self, queriable, pau):
+    def __init__(self, authplugin, pau):
         self.__parent__ = pau
         self.__name__ = ''
-        self.queriable = queriable
+        self.authplugin = authplugin
         self.pau = pau
-        self.schema = queriable.schema
+        self.schema = authplugin.schema
 
     def search(self, query, start=None, batch_size=None):
-        for id in self.queriable.search(query, start, batch_size):
+        for id in self.authplugin.search(query, start, batch_size):
             yield self.pau.prefix + id

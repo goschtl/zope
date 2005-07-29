@@ -679,8 +679,8 @@ Before we illustrate how an authenticator is used by the PAU to search for
 principals, we need to setup an adapter used by PAU:
 
   >>> provideAdapter(
-  ...     authentication.authentication.PluggableAuthenticationQueriable,
-  ...     provides=interfaces.IQuerySchemaSearch)
+  ...     authentication.authentication.QuerySchemaSearchAdapter,
+  ...     provides=interfaces.IQueriableAuthenticator)
 
 This adapter delegates search responsibility to an authenticator, but prepends
 the PAU prefix to any principal IDs returned in a search.
@@ -708,7 +708,7 @@ and install it as a plugin:
 Now, the PAU provides a single queriable:
 
   >>> list(pau.getQueriables()) # doctest: +ELLIPSIS
-  [('Queriable', ...PluggableAuthenticationQueriable object...)]
+  [('Queriable', ...QuerySchemaSearchAdapter object...)]
 
 We can use this queriable to search for our principal:
 

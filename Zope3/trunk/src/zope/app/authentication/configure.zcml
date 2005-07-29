@@ -17,8 +17,10 @@
   </localUtility>
 
   <adapter
-    provides=".interfaces.IQuerySchemaSearch"
-    factory=".authentication.PluggableAuthenticationQueriable" />
+    for=".interfaces.IQuerySchemaSearch
+         .interfaces.IPluggableAuthentication"
+    provides=".interfaces.IQueriableAuthenticator"
+    factory=".authentication.QuerySchemaSearchAdapter" />
 
   <!-- This explicit declaration is needed indirectly by vocabulary to make
     the interface available as an IInterface utility. This is bogus...the
