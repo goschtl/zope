@@ -122,10 +122,6 @@ class InternalPrincipal(Persistent, Contained):
             return getattr(self, attr)
 
 
-# BBB, alias gone in 3.1
-PrincipalInformation = InternalPrincipal
-
-
 class PrincipalInfo(object):
     """An implementation of IPrincipalInfo used by the principal folder.
 

@@ -1,4 +1,4 @@
-<zope:configure 
+<zope:configure
     xmlns:zope="http://namespaces.zope.org/zope"
     xmlns="http://namespaces.zope.org/browser">
 
@@ -22,7 +22,7 @@
   <addform
       schema="..principalfolder.IInternalPrincipal"
       label="Add Principal Information"
-      content_factory="..principalfolder.PrincipalInformation"
+      content_factory="..principalfolder.InternalPrincipal"
       arguments="login password title"
       keyword_arguments="description"
       name="AddPrincipalInformation.html"
@@ -30,8 +30,8 @@
       />
 
   <addMenuItem
-      title="Principal Information" 
-      class="..principalfolder.PrincipalInformation"
+      title="Principal Information"
+      class="..principalfolder.InternalPrincipal"
       permission="zope.ManageServices"
       view="AddPrincipalInformation.html"
       />

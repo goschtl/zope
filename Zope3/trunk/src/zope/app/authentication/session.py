@@ -68,11 +68,7 @@ class SessionCredentials(object):
     """
     implements(ISessionCredentials)
 
-    # BBB the __init__ signature below that makes login and password optional
-    # is to allow old-style class SessionCredentials that are already persisted
-    # to load. Remove the default args for login and password for the second
-    # beta of 3.1.
-    def __init__(self, login=None, password=None):
+    def __init__(self, login, password):
         self.login = login
         self.password = password
 

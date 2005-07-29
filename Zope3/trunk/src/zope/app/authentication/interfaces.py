@@ -228,35 +228,3 @@ class GroupAdded:
 
     def __repr__(self):
         return "<GroupAdded %r>" % self.principal.id
-
-
-# ----------------------------------------------------------------------------
-# Everything below is BBB to be deleted for 3.1
-
-class IPlugin(zope.interface.Interface):
-    pass
-
-class IExtractionPlugin(IPlugin):
-    pass
-
-class IChallengePlugin(IPlugin):
-    pass
-
-class IExtractionAndChallengePlugin(IExtractionPlugin, IChallengePlugin):
-    pass
-
-class IPrincipalIdAwarePlugin(IPlugin):
-    pass
-
-class IAuthenticationPlugin(IPrincipalIdAwarePlugin):
-    pass
-
-class IPrincipalSearchPlugin(IPrincipalIdAwarePlugin):
-    pass
-
-class ISearchableAuthenticationPlugin(IAuthenticationPlugin,
-                                      IPrincipalSearchPlugin):
-    pass
-
-class IPrincipalFactoryPlugin(zope.interface.Interface):
-    pass

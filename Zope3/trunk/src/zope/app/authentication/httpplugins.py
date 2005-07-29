@@ -137,13 +137,3 @@ class HTTPBasicAuthCredentialsPlugin(Persistent, Contained):
 
         """
         return False
-
-
-# BBB, everything below is gone for 3.1
-# =============================================================================
-
-class HTTPBasicAuthExtractor(Persistent, Contained):
-    pass
-
-class HTTPBasicAuthChallenger(Persistent, Contained):
-    pass

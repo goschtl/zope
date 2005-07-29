@@ -27,22 +27,22 @@ from zope.app.authentication import interfaces
 
 class NoChallengeCredentialsPlugin(object):
     """A plugin that doesn't challenge if the principal is authenticated.
-    
+
     There are two reasonable ways to handle an unauthorized error for an
     authenticated principal:
 
       - Inform the user of the unauthorized error
-      
+
       - Let the user login with a different set of credentials
-      
+
     Since either approach is reasonable, we need to give the site manager
     some way of specifying one of the two policies.
-    
+
     By default, a user will be challenged for a new set of credentials if
     unauthorized. A site manager can insert this plugin in the front of the
     plugin list to prevent that challenge from occurring. This will
     typically result in an 'Unauthorized' message to the user.
-    
+
     The 'challenge' behavior of the plugin is simple. To illustrate, we'll
     create a plugin:
 
@@ -64,7 +64,7 @@ class NoChallengeCredentialsPlugin(object):
     challenged the user (even though it actually did nothing). The PAU
     will stop trying to challenge and the user will not get a chance to
     provide different credentials. The result is typically an error message.
-    
+
     On the other hand, if the user is unauthenticated:
 
       >>> class Principal(object):
@@ -74,14 +74,14 @@ class NoChallengeCredentialsPlugin(object):
       True
 
     the plugin challenge will return None:
-        
+
       >>> print challenger.challenge(request)
       None
 
     signaling the PAU that it should try the next plugin for a challenge. If
     the PAU is configured properly, the user will receive a challenge and be
     allowed to provide different credentials.
-    """    
+    """
     implements(interfaces.ICredentialsPlugin)
 
     def extractCredentials(self, request):
@@ -95,7 +95,3 @@ class NoChallengeCredentialsPlugin(object):
     def logout(self, request):
         return False
 
-
-# BBB, gone for 3.1
-class AlreadyAuthenticatedUserChallenger(Persistent, Contained):
-    pass
