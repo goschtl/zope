@@ -655,6 +655,15 @@ Zope Changes
 
     Bug Fixes
 
+      - Fix #384: Handling utility permissions
+
+        When defining utilities in ZCML with permissions, checker
+        objects were saved on the utilty's __Security_checker__
+        attribute. This caused problems if the component was
+        registered more than once, or if the component was a class.
+        Now a proxy is used to hold the security checker, so that the 
+        checker is specific to a particular registration.
+
       - Fix  307: browser:addMenuItem and broken view references
 
       - Fix #411: Remove SendmailMailer

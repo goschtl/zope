@@ -15,7 +15,5 @@ Miscellaneous
 Bug Fixes
 ---------
 
-  * 384: Problems with permissions in zcml utility directives
-
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
 well .
