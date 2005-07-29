@@ -474,7 +474,7 @@ Register group folder pulgin.
   ...
 
 
-
+Next we'll select the credentials and authenticators for the PAU:
 
   >>> print http(r"""
   ... POST /++etc++site/default/PAU/@@configure.html HTTP/1.1
@@ -583,17 +583,17 @@ That includes Betty, Mary and Mike:
   ...
   ...
   ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.principals.MC51c2Vycw__.selection:list"
+  ... Content-Disposition: form-data; name="field.principals:list"
   ...
-  ... dXNlcnNiZXR0eQ__
+  ... dXNlcnMz
   ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.principals.MC51c2Vycw__.selection:list"
+  ... Content-Disposition: form-data; name="field.principals:list"
   ...
-  ... dXNlcnNtYXJ5
+  ... dXNlcnM3
   ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.principals.MC51c2Vycw__.selection:list"
+  ... Content-Disposition: form-data; name="field.principals:list"
   ...
-  ... dXNlcnNtaWtl
+  ... dXNlcnM2
   ... -----------------------------6981402699601872602121555350
   ... Content-Disposition: form-data; name="field.principals.MC51c2Vycw__.apply"
   ...
@@ -643,6 +643,7 @@ and a group "Power Users"
   HTTP/1.1 303 See Other
   ...
 
+with Bill and Betty as members:
 
   >>> print http(r"""
   ... POST /++etc++site/default/PAU/groups/power/@@edit.html HTTP/1.1
@@ -662,23 +663,11 @@ and a group "Power Users"
   ... -----------------------------181944013812647128322134918391
   ... Content-Disposition: form-data; name="field.principals:list"
   ...
-  ... dXNlcnNiZXR0eQ__
+  ... dXNlcnMz
   ... -----------------------------181944013812647128322134918391
   ... Content-Disposition: form-data; name="field.principals:list"
   ...
-  ... dXNlcnNiaWxs
-  ... -----------------------------181944013812647128322134918391
-  ... Content-Disposition: form-data; name="field.principals:list"
-  ...
-  ... dXNlcnNib2I_
-  ... -----------------------------181944013812647128322134918391
-  ... Content-Disposition: form-data; name="field.principals:list"
-  ...
-  ... dXNlcnNnZW9yZ2U_
-  ... -----------------------------181944013812647128322134918391
-  ... Content-Disposition: form-data; name="field.principals:list"
-  ...
-  ... dXNlcnNtYXJ5
+  ... dXNlcnMy
   ... -----------------------------181944013812647128322134918391
   ... Content-Disposition: form-data; name="field.principals.displayed"
   ...
@@ -704,31 +693,28 @@ and a group "Power Users"
   HTTP/1.1 200 Ok
   ...
 
-XXX *very* temporary disabling of tests (3/25/05) to be reinstated in the
-next few days:
-
 Now, with these groups set up, we should see these groups on the
 affected principals.  First, we'll make the root folder the
 thread-local site:
 
-  >> from zope.app.component.hooks import setSite
-  >> setSite(getRootFolder())
+  >>> from zope.app.component.hooks import setSite
+  >>> setSite(getRootFolder())
 
 and we'll get the pluggable authentication utility:
 
-  >> from zope.app import zapi
-  >> principals = zapi.principals()
+  >>> from zope.app import zapi
+  >>> principals = zapi.principals()
 
 Finally we'll get Betty and see that she is in the admin and
 power-user groups:
-  >> betty = principals.getPrincipal(u'users3')
-  >> betty.groups.sort()
-  >> betty.groups
-  [u'groups.1', u'groups.power', 'zope.Authenticated', 'zope.Everybody']
+  >>> betty = principals.getPrincipal(u'users3')
+  >>> betty.groups.sort()
+  >>> betty.groups
+  [u'groupspower', 'zope.Authenticated', 'zope.Everybody']
 
 
 And we'll get Bill, and see that he is only in the power-user group:
 
-  >> bill = principals.getPrincipal(u'users2')
-  >> bill.groups
-  ['zope.Everybody', 'zope.Authenticated', u'groups.power']
+  >>> bill = principals.getPrincipal(u'users2')
+  >>> bill.groups
+  ['zope.Everybody', 'zope.Authenticated', u'groupspower']
