@@ -21,7 +21,7 @@ from zope.testing.doctestunit import DocTestSuite
 from zope.app.dublincore.dcsv import encode, decode
 
 
-# XXX still need tests for errors, and createMapping()
+# TODO still need tests for errors, and createMapping()
 
 
 def test_decode_empty():
@@ -107,7 +107,7 @@ def test_decode_simple_escaped_list():
     """
 
 def test_decode_empty_values():
-    # XXX weird case; hard to know the intent of the specification
+    # weird case; hard to know the intent of the specification
     """
     >>> decode('=')
     [('', '')]

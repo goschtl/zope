@@ -15,8 +15,10 @@
 $Id$
 """
 
-# XXX Don't normalize whitespace in this file -- the tests depend on the
-# whitespace in the triple quoted strings.
+# ****************************************************************************
+# *** Don't normalize whitespace in this file -- the tests depend on the   ***
+# *** whitespace in the triple quoted strings.                             ***
+# ****************************************************************************
 
 import unittest
 from zope.documenttemplate.tests.dtmltestbase import DTMLTestBase

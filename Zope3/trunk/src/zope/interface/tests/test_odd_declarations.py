@@ -168,7 +168,7 @@ class Test(unittest.TestCase):
     def test_directlyProvides_fails_for_odd_class(self):
         self.assertRaises(TypeError, directlyProvides, C, I5)
 
-    # XXX see above
+    # see above
     def XXX_test_classProvides_fails_for_odd_class(self):
         try:
             class A(Odd):

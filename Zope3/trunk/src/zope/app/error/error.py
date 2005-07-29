@@ -15,7 +15,7 @@
 
 This is a port of the Zope 2 error reporting object
 
-$Id: __init__.py 26735 2004-07-23 22:04:28Z pruggera $
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -97,12 +97,12 @@ class ErrorReportingUtility(Persistent, Contained):
             username = None
             req_html = None
             if request:
-                # XXX: Temporary fix, which Steve should undo. URL is
+                # TODO: Temporary fix, which Steve should undo. URL is
                 #      just too HTTPRequest-specific.
                 if hasattr(request, 'URL'):
                     url = request.URL
                 try:
-                    # XXX: UnauthenticatedPrincipal does not have getLogin()
+                    # UnauthenticatedPrincipal does not have getLogin()
                     if hasattr(request.principal, 'getLogin'):
                         login = request.principal.getLogin()
                     else:
@@ -114,12 +114,11 @@ class ErrorReportingUtility(Persistent, Contained):
                                          )])
                 # When there's an unauthorized access, request.principal is
                 # not set, so we get an AttributeError
-                # XXX is this right? Surely request.principal should be set!
-                # XXX Answer: Catching AttributeError is correct for the
-                #             simple reason that UnauthenticatedUser (which
-                #             I always use during coding), has no 'getLogin()'
-                #             method. However, for some reason this except
-                #             does **NOT** catch these errors.
+                # ??? Is this right? Surely request.principal should be set!
+                # !!! Yes.  Catching AttributeError is correct for the simple
+                # reason that UnauthenticatedUser (which I always use during
+                # coding), has no 'getLogin()' method. However, for some reason
+                # this except does **NOT** catch these errors.
                 except AttributeError:
                     pass
 
@@ -165,7 +164,7 @@ class ErrorReportingUtility(Persistent, Contained):
             info = None
 
     def _do_copy_to_zlog(self, now, strtype, url, info):
-        # XXX info is unused; logging.exception() will call sys.exc_info()
+        # info is unused; logging.exception() will call sys.exc_info()
         # work around this with an evil hack
         when = _rate_restrict_pool.get(strtype,0)
         if now > when:

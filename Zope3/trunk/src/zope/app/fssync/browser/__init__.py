@@ -146,7 +146,7 @@ class SnarfCheckin(SnarfSubmission):
     """
 
     def run_submission(self):
-        # XXX need to make sure the top-level name doesn't already
+        # TODO need to make sure the top-level name doesn't already
         # exist, or existing site data can get screwed
         self.call_committer()
         return ""

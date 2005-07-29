@@ -189,7 +189,7 @@ class Test(unittest.TestCase):
         p._p_jar = dm
         p._p_changed = 0
         p._p_deactivate()
-        # XXX does this really test the activate method?
+        # ??? does this really test the activate method?
         p._p_activate()
         self.assertEqual(p._p_state, UPTODATE)
         self.assertEqual(p.x, 42)
@@ -208,7 +208,7 @@ class Test(unittest.TestCase):
         self.assertEqual(p._p_state, UPTODATE)
         self.assertEqual(p.x, 42)
 
-# XXX to do this right and expose both IPersistent and the
+# To do this right and expose both IPersistent and the
 # underlying object's interfaces, we'd need to use a specialized
 # descriptor.  This would create to great a dependency on
 # zope.interface.

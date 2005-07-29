@@ -290,7 +290,7 @@ class INonVersionedData(zope.interface.Interface):
         object to a revision.  `data` is a value provided by the
         `getNonVersionedData()` method of this instance.
 
-        XXX question for Gary:
+        ??? question:
         This should not overwrite data that exists in the object but
         that is included in the passed-in data.  
 

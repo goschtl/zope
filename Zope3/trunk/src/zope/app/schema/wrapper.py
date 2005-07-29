@@ -30,7 +30,7 @@ class SecurityDescriptor(object):
         if inst is None:
             return selectChecker(cls)
         else:
-            # XXX This is *VERY* tricky. There is a possibility that
+            # This is *VERY* tricky. There is a possibility that
             # the object was loaded, but not active by the time
             # __proxied__ needs to be accessed, which results
             # in an AttributeError here, which is swallowed
@@ -73,7 +73,7 @@ class Struct(Persistent):
   made through external attribute assignments.
   """
 
-  # XXX to do this right and expose both IPersistent and the
+  # TODO to do this right and expose both IPersistent and the
   # underlying object's interfaces, we'd need to use a specialized
   # descriptor.  This would create to great a dependency on
   # zope.interface.
@@ -93,7 +93,7 @@ class Struct(Persistent):
           if hasattr(v, '__get__'):
               return v.__get__(self, type(self))
           return v
-      # XXX This is butt ugly. See the comment on SecurityDescriptor.
+      # TODO This is butt ugly. See the comment on SecurityDescriptor.
       if self._p_state == GHOST:
           self._p_activate()
       proxied = self.__proxied__

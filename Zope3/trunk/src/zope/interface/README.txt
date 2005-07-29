@@ -693,5 +693,5 @@ And the list will be filled with the individual exceptions::
              object that provides IBaz should be usable whereever an
              object that provides IBlat is expected.
 
-             The interface implementation doesn't enforce this. XXX
+             The interface implementation doesn't enforce this.
              but maybe it should do some checks.

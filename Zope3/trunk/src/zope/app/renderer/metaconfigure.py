@@ -41,7 +41,7 @@ class IRendererDirective(Interface):
                     u"view on the source.",
         required=True)
 
-# XXX: Does not seem to be tested
+# TODO: Does not seem to be tested
 def renderer(_context, sourceType, for_, factory):
     _context.action(
         discriminator = ('view', sourceType, u'', for_, 'default'),

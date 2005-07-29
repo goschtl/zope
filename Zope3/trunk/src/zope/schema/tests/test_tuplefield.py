@@ -96,7 +96,7 @@ class TupleTest(FieldTestBase):
         self.assertRaises(WrongContainedType, field.validate, (3.14159,) )
 
     def testCorrectValueType(self):
-        # allow value_type of None (XXX)
+        # allow value_type of None (??? is this OK?)
         Tuple(value_type=None)
 
         # do not allow arbitrary value types

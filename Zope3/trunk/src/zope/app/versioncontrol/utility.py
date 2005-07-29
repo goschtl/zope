@@ -81,7 +81,7 @@ def _findModificationTime(object):
         if not isinstance(s, str):
             return None
 
-        # XXX obviously no test for this
+        # TODO obviously no test for this
         if (zope.app.location.ILocation.providedBy(ob)
             and not zope.app.location.inside(ob, object)):
             return '1' # go away

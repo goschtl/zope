@@ -146,7 +146,7 @@ class ParentPersistentIdGenerator(object):
             if location.inside(object, self.location):
                 return None
             elif object is self.parent:
-                # XXX emit special parent marker
+                # emit special parent marker
                 return PARENT_MARKER
             elif location.inside(object, self.root):
                 return LocationPhysicallyLocatable(object).getPath()

@@ -2,8 +2,8 @@
     i18n:domain="zope">
 <body>
 
-<!-- XXX : This is just a temporary way of overriding the elements not needed,
-            only done for visual purposes. Do not clone this ;)
+<!-- This is just a temporary way of overriding the elements not needed,
+     only done for visual purposes. Do not clone this ;)
                                                 - Alexander
                                                 -->
 <div metal:fill-slot="tabs" />

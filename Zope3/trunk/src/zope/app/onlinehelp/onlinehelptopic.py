@@ -475,7 +475,7 @@ class simple(BrowserView):
 
         raise NotFound(self, name, request)
 
-    # XXX: we need some unittests for this !!!
+    # TODO: we need some unittests for this !!!
     def __getitem__(self, name):
         return self.index.macros[name]
 

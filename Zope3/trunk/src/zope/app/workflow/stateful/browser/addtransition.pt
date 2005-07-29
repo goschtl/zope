@@ -45,7 +45,7 @@
     <div class="row">
       <div class="label" i18n:translate="">Permission</div>
       <div class="field">
-        <!-- XXX: This should be really a Permission widget --> 
+        <!-- TODO: This should be really a Permission widget --> 
         <input type="text" name="permission" size="40" value="" />
       </div>
     </div>

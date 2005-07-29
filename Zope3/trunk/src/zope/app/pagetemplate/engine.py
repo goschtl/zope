@@ -123,7 +123,7 @@ class ZopeContextBase(Context):
                     'you cannot have inline code snippets in your Page '
                     'Template. Activate Inline Code Evaluation and try again.')
 
-        # XXX This is only needed when self.evaluateInlineCode is true,
+        # TODO This is only needed when self.evaluateInlineCode is true,
         # so should only be needed for zope.app.pythonpage.
         from zope.app.interpreter.interfaces import IInterpreter
         interpreter = zapi.queryUtility(IInterpreter, lang)

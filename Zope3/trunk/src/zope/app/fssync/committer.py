@@ -354,7 +354,7 @@ class Committer(object):
                         adapter.setBody(newdata)
                     # Now publish an event, but not for annotations or
                     # extras.  To know which case we have, see if
-                    # getName() works.  XXX This is a hack.
+                    # getName() works.  *** This is a hack. ***
                     try:
                         getName(obj)
                     except:

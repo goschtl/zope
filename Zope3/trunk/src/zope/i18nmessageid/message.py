@@ -147,7 +147,7 @@ class Message(unicode):
             ustr = unicode(ustr)
         self.domain = domain
         if default is None:
-            # XXX MessageID does: self.default = ustr
+            # MessageID does: self.default = ustr
             self.default = default
         else:
             self.default = unicode(default)

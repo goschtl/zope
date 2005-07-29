@@ -28,7 +28,7 @@ class BasicAuthAdapter(LoginPassword):
 
     def __init__(self, request):
         self.__request = request
-        # XXX base64 decoding should be done here, not in request
+        # TODO base64 decoding should be done here, not in request
         lpw = request._authUserPW()
         if lpw is None:
             login, password = None, None

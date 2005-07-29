@@ -84,7 +84,7 @@ class Repository(persistent.Persistent):
         """Internal: replace the state of a persistent object.
         """
         non_versioned = nonversioned.getNonVersionedData(obj)
-        # XXX There ought to be some way to do this more cleanly.
+        # TODO There ought to be some way to do this more cleanly.
         # This fills the __dict__ of the old object with new state.
         # The other way to achieve the desired effect is to replace
         # the object in its container, but this method preserves the

@@ -533,9 +533,9 @@ class TestCheckerClass(TestBase):
         self.fooentry.clear()
         self.check_no_errors()
 
-    # XXX Extra and Annotations is not tested directly
+    # TODO Extra and Annotations is not tested directly
 
-    # XXX Changing directories into files or vice versa is not tested
+    # TODO Changing directories into files or vice versa is not tested
 
 
 

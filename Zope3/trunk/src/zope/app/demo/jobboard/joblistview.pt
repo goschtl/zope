@@ -19,7 +19,7 @@
 </tr>
 </table>
 
-<!-- XXX this should only appear if the user has the proper permissions -->
+<!-- TODO this should only appear if the user has the proper permissions -->
 <h2 i18n:translate="other-operations">Other operations</h2>
 <a href="review.html"
    i18n:translate="approve-submitted-jobs">Approve submitted jobs</a>

@@ -276,7 +276,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         if not script:
             return True
         if isinstance(script, (str, unicode)):
-            # XXX: not tested!
+            # TODO: not tested!
             script = resolve(script)
         return script(contexts)
 

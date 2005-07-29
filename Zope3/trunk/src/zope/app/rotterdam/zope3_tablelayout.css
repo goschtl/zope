@@ -462,8 +462,8 @@ div.label {
 }
 */
 
-/* XXX: div.row div.field doesn't appear to be selecting. div.row div
-        is a workaround */
+/* div.row div.field doesn't appear to be selecting. div.row div
+       is a workaround */
 /* This seems to work in Firefox 1.0 and IE6. */
 
 div.row div.field {
