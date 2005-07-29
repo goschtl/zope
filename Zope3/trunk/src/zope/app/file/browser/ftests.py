@@ -219,7 +219,25 @@ class ImageTest(BrowserTestCase):
         image = root['image']
         self.assertEqual(image.data, '')
         self.assertEqual(image.contentType, 'image/gif')
-        
+
+    def testUpload_only_change_content_type(self):
+        self.addImage()
+        response = self.publish(
+            '/image/@@upload.html',
+            form={'field.contentType': 'image/png',
+                  'UPDATE_SUBMIT': u'Change'},
+            basic='mgr:mgrpw')
+        self.assertEqual(response.getStatus(), 200)
+        body = response.getBody()
+        self.assert_('Upload an image' in body)
+        self.assert_('Content Type' in body)
+        self.assert_('Data' in body)
+        self.assert_('1 KB 16x16' in body)
+        root = self.getRootFolder()
+        image = root['image']
+        self.assertEqual(image.data, self.content)
+        self.assertEqual(image.contentType, 'image/png')
+
     def testIndex(self):
         self.addImage()
         response = self.publish(
