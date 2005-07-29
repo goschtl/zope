@@ -72,6 +72,22 @@
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IASCII"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".textwidgets.ASCIIDisplayWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IASCIILine"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".DisplayWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IURI"
       provides="zope.app.form.interfaces.IDisplayWidget"
       factory=".textwidgets.URIDisplayWidget"
@@ -140,7 +156,15 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IASCII"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".BytesAreaWidget"
+      factory=".ASCIIAreaWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IASCIILine"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".ASCIIWidget"
       permission="zope.Public"
       />
 

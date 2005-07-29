@@ -106,12 +106,19 @@ class Tests(object):
         >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, FileWidget)
         True
+        		
+    IASCIILine, IInputWidget -> ASCIIWidget
+    
+        >>> field = fields.ASCIILine()
+        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> isinstance(widget, ASCIIWidget)
+        True
         
-    IASCII, IInputWidget -> BytesAreaWidget
+    IASCII, IInputWidget -> ASCIIAreaWidget
     
         >>> field = fields.ASCII()
         >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
-        >>> isinstance(widget, BytesAreaWidget)
+        >>> isinstance(widget, ASCIIAreaWidget)
         True
         
     IInt, IInputWidget -> IntWidget

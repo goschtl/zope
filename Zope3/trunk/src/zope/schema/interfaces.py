@@ -284,6 +284,9 @@ class IASCII(IBytes):
 class IBytesLine(IBytes):
     u"""Field containing a byte string without newlines."""
 
+class IASCIILine(IASCII):
+    u"""Field containing a 7-bit ASCII string without newlines."""
+
 class IText(IMinMaxLen, IIterable, IField):
     u"""Field containing a unicode string."""
 

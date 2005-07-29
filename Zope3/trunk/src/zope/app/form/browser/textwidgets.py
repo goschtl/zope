@@ -166,7 +166,6 @@ class Bytes(SimpleInputWidget):
                 raise ConversionError(_("Invalid textual data"), v)
         return value
 
-
 class BytesWidget(Bytes, TextWidget):
     """Bytes widget.
 
@@ -203,6 +202,8 @@ class ASCIIWidget(BytesWidget):
     Single-line data (string) input
     """
 
+class ASCIIDisplayWidget(BytesDisplayWidget):
+    """ASCII display widget"""
 
 class URIDisplayWidget(DisplayWidget):
     """URI display widget.
@@ -339,6 +340,22 @@ class BytesAreaWidget(Bytes, TextAreaWidget):
     >>> field = Bytes(__name__='foo', title=u'on')
     >>> request = TestRequest(form={'field.foo': u'Hello\\r\\nworld!'})
     >>> widget = BytesAreaWidget(field, request)
+    >>> widget.hasInput()
+    True
+    >>> widget.getInputValue()
+    'Hello\\nworld!'
+    """
+
+class ASCIIAreaWidget(ASCII, TextAreaWidget):
+    """ASCIIArea widget.
+
+    Multi-line string input.
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.schema import ASCII
+    >>> field = ASCII(__name__='foo', title=u'on')
+    >>> request = TestRequest(form={'field.foo': u'Hello\\r\\nworld!'})
+    >>> widget = ASCIIAreaWidget(field, request)
     >>> widget.hasInput()
     True
     >>> widget.getInputValue()

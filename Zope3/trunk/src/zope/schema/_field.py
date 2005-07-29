@@ -28,7 +28,7 @@ from zope.schema.interfaces import IField
 from zope.schema.interfaces import IMinMaxLen, IText, ITextLine
 from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IInterfaceField
-from zope.schema.interfaces import IBytes, IASCII, IBytesLine
+from zope.schema.interfaces import IBytes, IASCII, IBytesLine, IASCIILine
 from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime
 from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate, ITimedelta
@@ -133,6 +133,14 @@ class BytesLine(Bytes):
         # TODO: we should probably use a more general definition of newlines
         return '\n' not in value
 
+class ASCIILine(ASCII):
+    __doc__ = IASCIILine.__doc__
+
+    implements(IASCIILine)
+
+    def constraint(self, value):
+        # TODO: we should probably use a more general definition of newlines
+        return '\n' not in value
 
 class Float(Orderable, Field):
     __doc__ = IFloat.__doc__
