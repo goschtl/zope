@@ -1,10 +1,29 @@
-<zope:configure 
+<zope:configure
     xmlns:zope="http://namespaces.zope.org/zope"
     xmlns="http://namespaces.zope.org/browser"
     i18n_domain="zope">
 
+  <addform
+      schema="..interfaces.IPluggableAuthentication"
+      label="Add Pluggable Authentication"
+      content_factory="..authentication.PluggableAuthentication"
+      fields="prefix"
+      keyword_arguments="prefix"
+      name="AddPluggableAuthentication.html"
+      permission="zope.ManageServices">
+
+      <widget
+          field="prefix"
+          class="zope.app.form.browser.TextWidget"
+          required="False"
+          convert_missing_value="False"
+          />
+
+  </addform>
+
   <addMenuItem
        class="..authentication.PluggableAuthentication"
+       view="AddPluggableAuthentication.html"
        title="Pluggable Authentication Utility"
        description="New-style pluggable authentication utility"
        permission="zope.ManageServices"
@@ -14,23 +33,23 @@
       schema="..interfaces.IPluggableAuthentication"
       label="Edit Pluggable Authentication Utility"
       name="configure.html"
-      fields="credentialsPlugins authenticatorPlugins"
+      fields="prefix credentialsPlugins authenticatorPlugins"
       menu="zmi_views" title="Configure"
       permission="zope.ManageServices" />
-      
+
   <page
       name="plugins.html"
       for="..interfaces.IPluggableAuthentication"
       menu="zmi_views" title="Plugins"
       permission="zope.ManageSite"
       class="zope.app.container.browser.contents.Contents"
-      attribute="contents" 
+      attribute="contents"
       />
 
-  <menuItem 
+  <menuItem
       menu="zmi_views"
       for="..interfaces.IPluggableAuthentication"
-      title="Contents" 
+      title="Contents"
       action=""
       filter="python:False" />
 
@@ -68,6 +87,13 @@
       content_factory=".register.authenticatorPluginRegistration"
       arguments="name component"
       fields="name component status permission"
+      />
+
+  <zope:adapter
+      for="..interfaces.IQuerySchemaSearch
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.browser.interfaces.ISourceQueryView"
+      factory=".schemasearch.QuerySchemaSearchView"
       />
 
   <tool

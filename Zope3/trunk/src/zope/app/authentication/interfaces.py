@@ -187,23 +187,21 @@ class FoundPrincipalCreated:
         self.info = info
 
 
-class IQueriableAuthenticator(zope.interface.Interface):
-    """Indicates the authenticator provides a search UI for principals."""
-
-
 class IQuerySchemaSearch(zope.interface.Interface):
-    """The schema used to search for principals."""
+    """An interface for searching using schema-constrained input."""
 
-    schema = zope.interface.Attribute("""Search Schema
+    schema = zope.interface.Attribute("""
+        The schema that constrains the input provided to the search method.
 
-        A schema specifying search parameters.
+        A mapping of name/value pairs for each field in this schema is used
+        as the query argument in the search method.
         """)
 
     def search(query, start=None, batch_size=None):
-        """Search for principals.
+        """Returns an iteration of principal IDs matching the query.
 
-        The query argument is a mapping object with items defined by
-        the plugins.  An iterable of principal ids should be returned.
+        query is a mapping of name/value pairs for fields specified by the
+        schema.
 
         If the start argument is provided, then it should be an
         integer and the given number of initial items should be

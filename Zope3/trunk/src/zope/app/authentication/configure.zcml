@@ -16,6 +16,10 @@
         />
   </localUtility>
 
+  <adapter
+    provides=".interfaces.IQuerySchemaSearch"
+    factory=".authentication.PluggableAuthenticationQueriable" />
+
   <!-- This explicit declaration is needed indirectly by vocabulary to make
     the interface available as an IInterface utility. This is bogus...the
     vocabulary directive should make sure this registration happens. -->

@@ -22,6 +22,7 @@ import zope.schema
 from zope import component
 from zope.schema.interfaces import ISourceQueriables
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
+from zope.app.location.interfaces import ILocation
 from zope.app.component import queryNextUtility
 from zope.app.component.site import SiteManagementFolder
 
@@ -67,7 +68,9 @@ class PluggableAuthentication(SiteManagementFolder):
     def getPrincipal(self, id):
         if not id.startswith(self.prefix):
             next = queryNextUtility(self, IAuthentication)
-            return (next is not None) and next.getPrincipal(id) or None
+            if next is None:
+                raise PrincipalLookupError(id)
+            return next.getPrincipal(id)
         id = id[len(self.prefix):]
         for name in self.authenticatorPlugins:
             authplugin = component.queryUtility(
@@ -87,15 +90,14 @@ class PluggableAuthentication(SiteManagementFolder):
 
     def getQueriables(self):
         for name in self.authenticatorPlugins:
-            authplugin = component.queryUtility(
-                interfaces.IAuthenticatorPlugin,
+            authplugin = component.queryUtility(interfaces.IAuthenticatorPlugin,
                 name, context=self)
             if authplugin is None:
                 continue
-            queriable = interfaces.IQueriableAuthenticator(authplugin, None)
-            if queriable is None:
-                continue
-            yield name, queriable
+            queriable = component.queryMultiAdapter((authplugin, self),
+                interfaces.IQuerySchemaSearch)
+            if queriable is not None:
+                yield name, queriable
 
     def unauthenticatedPrincipal(self):
         return None
@@ -141,3 +143,27 @@ class PluggableAuthentication(SiteManagementFolder):
             next = queryNextUtility(self, IAuthentication)
             if next is not None:
                 next.logout(request)
+
+
+class PluggableAuthenticationQueriable(object):
+    """Performs principal searches on behald of a PAU.
+
+    Delegates the search to the authenticator but prepends the PAU prefix to
+    the resulting principal IDs.
+    """
+    component.adapts(
+        interfaces.IQuerySchemaSearch,
+        interfaces.IPluggableAuthentication)
+
+    zope.interface.implements(interfaces.IQuerySchemaSearch, ILocation)
+
+    def __init__(self, queriable, pau):
+        self.__parent__ = pau
+        self.__name__ = ''
+        self.queriable = queriable
+        self.pau = pau
+        self.schema = queriable.schema
+
+    def search(self, query, start=None, batch_size=None):
+        for id in self.queriable.search(query, start, batch_size):
+            yield self.pau.prefix + id

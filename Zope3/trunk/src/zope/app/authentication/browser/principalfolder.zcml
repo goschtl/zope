@@ -59,11 +59,4 @@
       permission="zope.ManageServices"
       menu="zmi_views" title="Prefix" />
 
-  <zope:adapter
-      for="..interfaces.IQuerySchemaSearch
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.browser.interfaces.ISourceQueryView"
-      factory=".schemasearch.QuerySchemaSearchView"
-      />
-
 </zope:configure>

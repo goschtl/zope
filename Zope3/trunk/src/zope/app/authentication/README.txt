@@ -117,7 +117,7 @@ Configuring a PAU
 Finally, we'll create the PAU itself:
 
   >>> from zope.app import authentication
-  >>> pau = authentication.PluggableAuthentication()
+  >>> pau = authentication.PluggableAuthentication('xyz_')
 
 and configure it with the two plugins:
 
@@ -144,7 +144,7 @@ However, if we provide the proper credentials:
   >>> request = TestRequest(credentials='secretcode')
   >>> principal = pau.authenticate(request)
   >>> principal
-  Principal('bob')
+  Principal('xyz_bob')
 
 we get an authenticated principal.
 
@@ -203,7 +203,7 @@ If we put it before the original authenticator:
 Then it will be given the first opportunity to authenticate a request:
 
   >>> pau.authenticate(TestRequest(credentials='secretcode'))
-  Principal('black')
+  Principal('xyz_black')
 
 If neither plugins can authenticate, pau returns None:
 
@@ -219,12 +219,12 @@ When we change the order of the authenticator plugins:
 we see that our original plugin is now acting first:
 
   >>> pau.authenticate(TestRequest(credentials='secretcode'))
-  Principal('bob')
+  Principal('xyz_bob')
 
 The second plugin, however, gets a chance to authenticate if first does not:
 
   >>> pau.authenticate(TestRequest(credentials='hiddenkey'))
-  Principal('white')
+  Principal('xyz_white')
 
 Multiple Credentials Plugins
 ----------------------------
@@ -260,7 +260,7 @@ request.
 
   >>> pau.authenticate(TestRequest(credentials='secretcode',
   ...                              form={'my_credentials': 'hiddenkey'}))
-  Principal('white')
+  Principal('xyz_white')
 
 In this case, the first credentials plugin succeeded in getting credentials
 from the form and the second authenticator was able to authenticate the
@@ -279,7 +279,7 @@ credentials. Specifically, the PAU went through these steps:
 Let's try a different scenario:
 
   >>> pau.authenticate(TestRequest(credentials='secretcode'))
-  Principal('bob')
+  Principal('xyz_bob')
 
 In this case, the PAU went through these steps:
 
@@ -297,7 +297,7 @@ Let's try a slightly more complex scenario:
 
   >>> pau.authenticate(TestRequest(credentials='hiddenkey',
   ...                              form={'my_credentials': 'bogusvalue'}))
-  Principal('white')
+  Principal('xyz_white')
 
 This highlights PAU's ability to use multiple plugins for authentication:
 
@@ -333,7 +333,7 @@ principal with a principal ID. The PAU looks up a principal by delegating to
 its authenticators. In out example, none of the authenticators implement this
 search capability, so when we look for a principal:
 
-  >>> print pau.getPrincipal('bob')
+  >>> print pau.getPrincipal('xyz_bob')
   Traceback (most recent call last):
   PrincipalLookupError: 'bob'
 
@@ -390,8 +390,8 @@ and add some principals to the authenticator:
 
 Now when we ask the PAU to find a principal:
 
-  >>> pau.getPrincipal('bob')
-  Principal('bob')
+  >>> pau.getPrincipal('xyz_bob')
+  Principal('xyz_bob')
 
 but only those it knows about:
 
@@ -407,9 +407,9 @@ a FoundPrincipalCreatedEvent is published when the authenticator finds a
 principal on behalf of PAU's 'getPrincipal':
 
   >>> clearEvents()
-  >>> principal = pau.getPrincipal('white')
+  >>> principal = pau.getPrincipal('xyz_white')
   >>> principal
-  Principal('white')
+  Principal('xyz_white')
 
   >>> [event] = getEvents(interfaces.IFoundPrincipalCreated)
   >>> event.principal is principal
@@ -451,18 +451,18 @@ order):
 
 we see how the PAU uses both plugins:
 
-  >>> pau.getPrincipal('white')
-  Principal('white')
+  >>> pau.getPrincipal('xyz_white')
+  Principal('xyz_white')
 
-  >>> pau.getPrincipal('black')
-  Principal('black')
+  >>> pau.getPrincipal('xyz_black')
+  Principal('xyz_black')
 
 If more than one plugin know about the same principal ID, the first plugin is
 used and the remaining are not delegated to. To illustrate, we'll add
 another principal with the same ID as an existing principal:
 
   >>> searchable2.add('white', 'White Rider', '', 'r1der')
-  >>> pau.getPrincipal('white').title
+  >>> pau.getPrincipal('xyz_white').title
   'White Rider'
 
 If we change the order of the plugins:
@@ -473,7 +473,7 @@ If we change the order of the plugins:
 
 we get a different principal for ID 'white':
 
-  >>> pau.getPrincipal('white').title
+  >>> pau.getPrincipal('xyz_white').title
   'White Spy'
 
 
@@ -653,7 +653,7 @@ Searching
 PAU implements ISourceQueriables:
 
   >>> from zope.schema.interfaces import ISourceQueriables
-  >>> ISourceQueriables.implementedBy(authentication.PluggableAuthentication)
+  >>> ISourceQueriables.providedBy(pau)
   True
 
 This means a PAU can be used in a principal source vocabulary (Zope provides a
@@ -661,7 +661,8 @@ sophisticated searching UI for principal sources).
 
 As we've seen, a PAU uses each of its authenticator plugins to locate a
 principal with a given ID. However, plugins may also provide the interface
-IQueriableAuthenticator to indicate they can be used as PAU 'queriables'.
+IQuerySchemaSearch to indicate they can be used in the PAU's principal search
+scheme.
 
 Currently, our list of authenticators:
 
@@ -674,18 +675,52 @@ queriables:
   >>> list(pau.getQueriables())
   []
 
-If we install a queriable plugin:
+Before we illustrate how an authenticator is used by the PAU to search for
+principals, we need to setup an adapter used by PAU:
+
+  >>> provideAdapter(
+  ...     authentication.authentication.PluggableAuthenticationQueriable,
+  ...     provides=interfaces.IQuerySchemaSearch)
+
+This adapter delegates search responsibility to an authenticator, but prepends
+the PAU prefix to any principal IDs returned in a search.
+
+Next, we'll create a plugin that provides a search interface:
 
   >>> class QueriableAuthenticatorPlugin(MyAuthenticatorPlugin):
   ...
-  ...     interface.implements(interfaces.IQueriableAuthenticator)
+  ...     interface.implements(interfaces.IQuerySchemaSearch)
   ...
-  >>> provideUtility(QueriableAuthenticatorPlugin(),
+  ...     schema = None
+  ...
+  ...     def search(self, query, start=None, batch_size=None):
+  ...         yield 'foo'
+  ...
+
+and install it as a plugin:
+
+  >>> plugin = QueriableAuthenticatorPlugin()
+  >>> provideUtility(plugin,
   ...                provides=interfaces.IAuthenticatorPlugin,
   ...                name='Queriable')
   >>> pau.authenticatorPlugins += ('Queriable',)
 
-the PAU will provide it as a queriable:
+Now, the PAU provides a single queriable:
 
   >>> list(pau.getQueriables()) # doctest: +ELLIPSIS
-  [('Queriable', ...QueriableAuthenticatorPlugin object...)]
+  [('Queriable', ...PluggableAuthenticationQueriable object...)]
+
+We can use this queriable to search for our principal:
+
+  >>> queriable = list(pau.getQueriables())[0][1]
+  >>> list(queriable.search('not-used'))
+  ['mypau_foo']
+
+Note that the resulting principal ID includes the PAU prefix. Were we to sarch
+the plugin directly:
+
+  >>> list(plugin.search('not-used'))
+  ['foo']
+
+The result does not include the PAU prefix. The prepending of the prefix is
+handled by the PluggableAuthenticationQueriable.

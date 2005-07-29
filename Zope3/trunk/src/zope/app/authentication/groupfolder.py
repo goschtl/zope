@@ -121,7 +121,6 @@ class GroupFolder(BTreeContainer):
 
     interface.implements(
         interfaces.IAuthenticatorPlugin,
-        interfaces.IQueriableAuthenticator,
         interfaces.IQuerySchemaSearch,
         IGroupFolder)
 

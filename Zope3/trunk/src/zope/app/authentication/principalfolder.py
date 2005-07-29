@@ -66,7 +66,6 @@ class IInternalPrincipalContainer(interface.Interface):
         description=_(
         "Prefix to be added to all principal ids to assure "
         "that all ids are unique within the authentication service"),
-        required=False,
         missing_value=u"",
         default=u'',
         readonly=True)
@@ -159,7 +158,6 @@ class PrincipalFolder(BTreeContainer):
     """
 
     interface.implements(interfaces.IAuthenticatorPlugin,
-                         interfaces.IQueriableAuthenticator,
                          interfaces.IQuerySchemaSearch,
                          IInternalPrincipalContainer)
 
