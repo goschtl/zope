@@ -655,6 +655,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fix #411: Remove SendmailMailer
+
       - Fix #302: File objects can contain non-ASCII characters and be editable
         through the web.
 
@@ -859,7 +861,7 @@ Zope Changes
       Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen,
       Shane Hathaway, Bjorn Tillenius, Garrett Smith, Marius Gedminas, Stuart
       Bishop, Dominik Huber, Dmitry Vasiliev, Gary Poster, Brian Lloyd,
-      Julien Anguenot, Albertas Agejevas
+      Julien Anguenot, Albertas Agejevas, Benji York
 
 
   ------------------------------------------------------------------
