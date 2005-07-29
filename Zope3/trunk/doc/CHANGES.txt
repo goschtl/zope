@@ -655,6 +655,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fix #302: File objects can contain non-ASCII characters and be editable
+        through the web.
+
       - Container proxy instances had __dict__ attributes that hid
         the __dict__ attributes of proxied objects.
 

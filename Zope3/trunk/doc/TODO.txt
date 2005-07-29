@@ -18,7 +18,8 @@ Bug Fixes
 File Content Component
 ~~~~~~~~~~~~~~~~~~~~~~
 
-  * 302: File objects can't contain non-ascii characters
+  * 302: File objects can't contain non-ascii characters (fixed in trunk, but
+    not backported to 3.0.x branch)
 
 Others
 ~~~~~~
