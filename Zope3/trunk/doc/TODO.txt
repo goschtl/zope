@@ -23,8 +23,6 @@ File Content Component
 Others
 ~~~~~~
 
-  * 296: missing display widgets
-
   * 307: browser:addMenuItem and broken view references
 
   - 381: Handle migration of site instance 'securitypolicy.zcml' files
