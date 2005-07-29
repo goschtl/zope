@@ -143,10 +143,6 @@ class IAuthentication(Interface):
         object hierarchy.
         """
 
-# BBB gone for 3.1
-class IAuthentication2(IAuthentication):
-    pass
-
 class IAuthenticationUtility(IAuthentication):
     """This interface is deprecated
     """
