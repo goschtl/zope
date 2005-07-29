@@ -16,7 +16,7 @@
     <div class="row">
       <div class="label" i18n:translate="">Title</div>
       <div class="field">
-        <input name="dctitle" size="50" value="Title"
+        <input type="text" name="dctitle" size="50" value="Title"
                tal:attributes="value data/dctitle" />
       </div>
     </div>
