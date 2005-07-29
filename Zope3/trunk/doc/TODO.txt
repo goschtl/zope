@@ -29,8 +29,6 @@ Others
 
   * 344: PAU registration error
 
-  * 372: WidgetInputError.doc is broken
-
   - 381: Handle migration of site instance 'securitypolicy.zcml' files
 
   * 384: Problems with permissions in zcml utility directives

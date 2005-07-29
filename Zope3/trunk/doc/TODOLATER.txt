@@ -2,6 +2,8 @@
 Things to do After the next release (in no particular order) 
 ============================================================
 
+- Issue 372: WidgetInputError.doc is broken
+
 - Support for iterable sources
 
 - Issue 316: Zope3 test.py truncates path with dir=
