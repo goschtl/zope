@@ -5,8 +5,6 @@ Things to do for the next release (in no particular order)
 Miscellaneous
 -------------
 
-- Remove XXX comments (there are about 80 in zope)
-
 - Ensure backward compatibility
 
   o Run book sources against source tree (Stephan and Phillip)
