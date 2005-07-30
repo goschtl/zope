@@ -655,6 +655,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fix #421: TextArea widgets didn't handle missing values
+        correctly.
+
       - Fix #384: Handling utility permissions
 
         When defining utilities in ZCML with permissions, checker
