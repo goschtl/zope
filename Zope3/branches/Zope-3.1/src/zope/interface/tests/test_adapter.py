@@ -284,6 +284,33 @@ def test_adapter_registry_update_upon_interface_bases_change():
     >>> hook = zope.interface.interface.adapter_hooks.pop()
     """
 
+
+def test_changing_declarations():
+    """
+
+    If we change declarations for a class, those adapter lookup should
+    eflect the changes:
+
+    >>> class I1(zope.interface.Interface):
+    ...     pass
+    >>> class I2(zope.interface.Interface):
+    ...     pass
+
+    >>> registry = AdapterRegistry()
+    >>> registry.register([I1], I2, '', 42)
+
+    >>> class C:
+    ...     pass
+
+    >>> registry.lookup([zope.interface.implementedBy(C)], I2, '')
+
+    >>> zope.interface.classImplements(C, I1)
+
+    >>> registry.lookup([zope.interface.implementedBy(C)], I2, '')
+    42
+    """
+
+
 def test_suite():
     from zope.testing import doctest, doctestunit
     return unittest.TestSuite((
