@@ -44,7 +44,8 @@ from zope.app.form.browser import URIDisplayWidget
 
 from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
-from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
+from zope.app.form.browser.tests.test_browserwidget \
+     import SimpleInputWidgetTest
 
 class TextWidgetTest(SimpleInputWidgetTest):
     """Documents and tests the text widget.
@@ -371,7 +372,6 @@ def test_w_nonrequired_and_missing_value_and_no_inout():
     There was a bug that caused the value attribute to be set to
     'value' under these circumstances.
 
-    >>> from zope.publisher.browser import TestRequest
     >>> from zope.schema import TextLine
     >>> field = TextLine(__name__='foo', title=u'on',
     ...                  required=False, missing_value=u'')
@@ -399,7 +399,6 @@ def test_no_error_on_render_only():
     _error shouldn't be set due to an *internal* call to getInputValue
     when rendering.
 
-    >>> from zope.publisher.browser import TestRequest
     >>> from zope.schema import TextLine
     >>> field = TextLine(__name__='foo')
     >>> request = TestRequest(form={'field.foo': ''})
@@ -410,6 +409,34 @@ def test_no_error_on_render_only():
 
 
     """
+
+def test_text_area_works_with_missing_value():
+    """
+    >>> from zope.schema import Text
+    >>> field = Text(__name__='foo', title=u'on',
+    ...              required=False, missing_value=u'')
+    >>> request = TestRequest()
+    >>> widget = TextAreaWidget(field, request)
+    >>> def normalize(s):
+    ...   return '\\n  '.join(filter(None, s.split(' ')))
+
+    >>> print normalize( widget() )
+    <textarea
+      cols="60"
+      id="field.foo"
+      name="field.foo"
+      rows="15"
+      ></textarea>
+
+    >>> print normalize( widget.hidden() )
+    <input
+      class="hiddenType"
+      id="field.foo"
+      name="field.foo"
+      type="hidden"
+      value=""
+      />
+      """
 
 def test_suite():
     return unittest.TestSuite((

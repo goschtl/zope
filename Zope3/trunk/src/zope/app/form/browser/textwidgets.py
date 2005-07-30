@@ -317,6 +317,9 @@ class TextAreaWidget(SimpleInputWidget):
         if value:
             value = value.replace("\n", "\r\n")
             value = escape(value)
+        else:
+            value = u''
+            
         return value
 
     def __call__(self):
