@@ -308,7 +308,12 @@ def test_getting_spec_for_proxied_builtin_class():
 
       >>> implementedBy(cls) is impl
       True
-    
+
+    Of course, we don't want to leave it there. :)
+
+      >>> del zope.interface.declarations.BuiltinImplementationSpecifications[
+      ...   cls]
+
     """
 
 def test_declaration_get():
@@ -355,9 +360,9 @@ def test_declaration_get():
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(Test))
+    #suite.addTest(unittest.makeSuite(Test))
     suite.addTest(DocTestSuite("zope.interface.declarations"))
-    suite.addTest(DocTestSuite())
+    #suite.addTest(DocTestSuite())
     
     return suite
 
