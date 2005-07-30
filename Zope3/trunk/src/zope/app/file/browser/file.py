@@ -20,6 +20,7 @@ from datetime import datetime
 
 import zope.event
 
+from zope.publisher import contenttype
 from zope.schema import Text
 from zope.app import content_types
 from zope.app.event import objectevent
@@ -391,6 +392,8 @@ def extractCharset(content_type):
         'ASCII'
 
     """
-    if 'charset=' not in content_type:
-        return 'ASCII'
-    return content_type.split('charset=')[1]
+    if content_type and content_type.strip():
+        major, minor, params = contenttype.parse(content_type)
+        return params.get("charset", "ASCII")
+    else:
+        return "ASCII"
