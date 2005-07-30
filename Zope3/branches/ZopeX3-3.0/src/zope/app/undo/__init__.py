@@ -28,12 +28,13 @@ from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.interfaces import IPrincipal
 
+
 def undoSetup(event):
     # setup undo functionality
     svc = zapi.getGlobalService(Utilities)
     svc.provideUtility(IUndoManager, ZODBUndoManager(event.database))
 
-class Prefix(str):
+class Prefix(unicode):
     """A prefix is equal to any string it is a prefix of.
 
     This class can be compared to a string (or arbitrary sequence).
@@ -83,10 +84,9 @@ class Prefix(str):
     False
     """
     def __eq__(self, other):
-        if not other:
-            return False
-        length = len(self)
-        return str(other[:length]).__eq__(self)
+        if other and unicode(other[:len(self)]).__cmp__(self) == 0:
+            return True
+        return False
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -106,7 +106,7 @@ class ZODBUndoManager(object):
                                  first=0, last=-20):
         """See zope.app.undo.interfaces.IPrincipal"""
         if not IPrincipal.providedBy(principal):
-            raise TypeError, "Invalid principal: %s" % principal        
+            raise TypeError, "Invalid principal: %s" % principal
         return self._getUndoInfo(context, principal, first, last)
 
     def _getUndoInfo(self, context, principal, first, last):
