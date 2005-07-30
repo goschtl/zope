@@ -446,7 +446,10 @@ class FileWidget(TextWidget):
                 return self.context.missing_value
 
     def hasInput(self):
-        return self.name+".used" in self.request.form
+        return ((self.name+".used" in self.request.form)
+                or
+                (self.name in self.request.form)
+                )
 
 class IntWidget(TextWidget):
     """Integer number widget.
