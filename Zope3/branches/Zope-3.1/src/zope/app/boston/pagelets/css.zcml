@@ -1,0 +1,16 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <pagelet
+      name="css"
+      for="*"
+      slot="zope.app.boston.slots.ICSS"
+      permission="zope.Public"
+      template="css.pt"
+      layer="zope.app.boston.boston"
+      weight="0"
+      />
+
+</configure>
