@@ -28,17 +28,17 @@ from zope.app.undo.interfaces import UndoError
 
 testdata = [
     dict(id='1', user_name='/ jim', time=time(), description='des 1',
-         location='/spam/1'),
+         location=u'/spam\N{CYRILLIC CAPITAL LETTER A}/1'),
     dict(id='2', user_name='/ jim', time=time(), description='des 2',
-         location='/parrot/2'),
+         location=u'/parrot/2'),
     dict(id='3', user_name='/ anthony', time=time(), description='des 3',
-         location='/spam/spam/3'),
+         location=u'/spam\N{CYRILLIC CAPITAL LETTER A}/spam/3'),
     dict(id='4', user_name='/ jim', time=time(), description='des 4',
-         location='/spam/parrot/4'),
+         location=u'/spam\N{CYRILLIC CAPITAL LETTER A}/parrot/4'),
     dict(id='5', user_name='/ anthony', time=time(), description='des 5'),
     dict(id='6', user_name='/ anthony', time=time(), description='des 6'),
     dict(id='7', user_name='/ jim', time=time(), description='des 7',
-         location='/spam/7'),
+         location=u'/spam\N{CYRILLIC CAPITAL LETTER A}/7'),
     dict(id='8', user_name='/ anthony', time=time(), description='des 8'),
     dict(id='9', user_name='/ jim', time=time(), description='des 9'),
     dict(id='10', user_name='/ jim', time=time(), description='des 10'),
@@ -116,12 +116,13 @@ class Test(PlacelessSetup, TestCase):
 
         root = Location()
         spam = Location()
-        spam.__name__ = 'spam'
+        spam.__name__ = u'spam\N{CYRILLIC CAPITAL LETTER A}'
         spam.__parent__ = root
         directlyProvides(root, IContainmentRoot)
 
         expected = [dict for dict in self.data if 'location' in dict
-                    and dict['location'].startswith('/spam')]
+                    and dict['location'].startswith(
+                        u'/spam\N{CYRILLIC CAPITAL LETTER A}')]
         self.assertEqual(list(self.undo.getTransactions(spam)), expected)
 
         # now test this with getPrincipalTransactions()
