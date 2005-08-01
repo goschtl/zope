@@ -29,14 +29,7 @@
         set_schema="zope.app.filerepresentation.interfaces.IReadFile"
         />
   </content>
-  
-  <browser:addMenuItem
-      class=".ftests.KeeperFile"
-      title="Keeper File"
-      permission="zope.ManageContent"
-      view="KeeperFile"
-      />
-  
+    
   <browser:addform
       schema="zope.app.file.interfaces.IFile"
       label="Add a Keeper File"
