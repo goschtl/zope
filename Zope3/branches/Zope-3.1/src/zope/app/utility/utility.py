@@ -39,7 +39,20 @@ deprecated('UtilityRegistration',
 
 class LocalUtilityService(Persistent, Contained):
     # I really hope noone noone is using this class manually! 
-    pass
+    # ...6 months later: Yes, my book does. :(
+
+    def getUtilitiesFor(self, interface):
+        sm = self.__parent__.__parent__
+        return sm.getUtilitiesFor(interface)
+    
+    def getUtility(self, interface, name=''):
+        sm = self.__parent__.__parent__
+        return sm.queryUtility(interface, name)
+
+    def queryUtility(self, interface, name='', default=None):
+        sm = self.__parent__.__parent__
+        return sm.queryUtility(interface, name, default)
+
 
 deprecated('LocalUtilityService',
            'Services have been removed. Use site manager API. '
