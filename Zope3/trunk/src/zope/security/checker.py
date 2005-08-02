@@ -659,6 +659,14 @@ _default_checkers = {
     zope.interface.declarations.Declaration: _Declaration_checker,
 }
 
+# If we are running with Python 2.4+, setup security on the builtin
+# set and frozenset types.
+try:
+    _default_checkers[set] = _setChecker
+    _default_checkers[frozenset] = _setChecker
+except NameError:
+    pass
+
 def _clear():
     _checkers.clear()
     _checkers.update(_default_checkers)
