@@ -25,7 +25,7 @@ if sys.platform in ("win32",):
     lib = os.path.join(here, "Lib", "site-packages")
 else:
     lib = os.path.join(here, "lib", "python")
-sys.path.append(lib)
+sys.path.insert(1, lib)
 
 ftesting = os.path.join(here, "zopeskel", "etc", "ftesting.zcml")
 
