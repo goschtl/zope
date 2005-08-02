@@ -174,4 +174,4 @@ correspond to the Zope 2 methods ``manage_afterAdd`` and
 pagesFromDirectory
 ------------------
 
-Loads all files with .pt extension in a directory as pages. 
+Loads all files with .pt extension in a directory as pages.

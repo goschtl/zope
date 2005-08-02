@@ -2,8 +2,35 @@
 Five Changes
 ============
 
-Five 1.1 (unreleased)
-=====================
+Trunk only
+==========
+
+Others
+------
+
+* Removed backwards compatibility for some moved classes (AddForm, EditForm, 
+  ContentAdding)
+
+After Five 1.1b
+===============
+
+Bugfixes
+--------
+
+* Added backwards compatibility for some moved classes (AddForm, EditForm, 
+  ContentAdding)
+
+* The deprecated FivePageTemplateFile was removed, and the erroneous use of 
+  this by EditView was changed.
+
+* Some parts of add.pt and edit.pt was not being translated.
+
+* The ZPT variable 'container' makes little sense in Zope3/Five, but is now
+  always set to be the same as 'here' which is normal Zope2 behaviour.
+  It is in Five 1.0.x set to be the same as 'view' which breaks some templates.
+
+Five 1.1b (2005-07-13)
+======================
 
 Features
 --------
@@ -58,16 +85,10 @@ Restructuring
 Bugfixes
 --------
 
+* The ZPT variable 'container' did not always contain the parent object
+  of the context.
+
 * The deprecated get_transaction method is no longer used in Zope 2.8.
-
-* The deprecated FivePageTemplateFile was removed, and the erroneous 
-  use of this by EditView was changed.
-
-* Some parts of add.pt and edit.pt was not being translated.
-
-* The ZPT variable 'container' makes little sense in Zope3/Five, but is now
-  always set to be the same as 'here' which is normal Zope2 behaviour.
-  It is in Five 1.0.x set to be the same as 'view' which breaks some templates.
 
 Five 1.0.2 (2005-07-12)
 =======================
