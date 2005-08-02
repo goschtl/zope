@@ -8,13 +8,18 @@ After Five 1.1b
 Bugfixes
 --------
 
+* Some parts of add.pt and edit.pt were not translated correctly or not
+  translated at all. The fix depends on TAL changes in Zope 2.8.1 and changes
+  in Zope X3-3.0.1 (shipped with 2.8.1). Form i18n is still broken with older
+  Zope versions.
+
+* 'zope' domain translations are now set up by default. Form i18n needs them.
+
 * Added backwards compatibility for some moved classes (AddForm, EditForm, 
   ContentAdding)
 
 * The deprecated FivePageTemplateFile was removed, and the erroneous use of 
   this by EditView was changed.
-
-* Some parts of add.pt and edit.pt was not being translated.
 
 * The ZPT variable 'container' makes little sense in Zope3/Five, but is now
   always set to be the same as 'here' which is normal Zope2 behaviour.

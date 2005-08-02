@@ -1,7 +1,9 @@
-<configure xmlns="http://namespaces.zope.org/zope"
-           xmlns:browser="http://namespaces.zope.org/browser"
-           xmlns:five="http://namespaces.zope.org/five"
-           i18n_domain="fivetest">
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="formtest">
 
   <!-- make the zope2.Public permission work -->
   <redefinePermission from="zope2.Public" to="zope.Public" />
@@ -13,9 +15,10 @@
       schema=".schemacontent.IFieldContent"
       for=".schemacontent.IFieldContent"
       name="edit.html"
+      label="Edit Field Content"
       permission="zope2.Public"
       />
-      
+
   <five:traversable class=".schemacontent.ComplexSchemaContent" />
 
   <browser:editform
@@ -41,21 +44,22 @@
       name="widgetoverride.html"
       permission="zope2.Public"
       >
-      
+
       <widget
          field="description"
          class="zope.app.form.browser.TextAreaWidget"
          />
-         
+
   </browser:editform>
-      
+
   <browser:addform
      schema=".schemacontent.IFieldContent"
      content_factory=".schemacontent.FieldContent"
      name="addfieldcontent.html"
+     label="Add Field Content"
      permission="zope2.Public"
      />
-     
+
   <browser:addform
      schema=".schemacontent.IFieldContent"
      content_factory=".schemacontent.FieldContent"
@@ -66,7 +70,7 @@
          field="description"
          class="zope.app.form.browser.TextAreaWidget"
          />
-         
+
   </browser:addform>
 
   <browser:addform
@@ -75,5 +79,7 @@
      name="protectedaddform.html"
      permission="zope2.ViewManagementScreens"
      />
+
+  <i18n:registerTranslations directory="locales"/>
 
 </configure>

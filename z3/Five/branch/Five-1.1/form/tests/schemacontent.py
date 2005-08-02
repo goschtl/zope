@@ -18,36 +18,39 @@ $Id$
 from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass
 
+from zope.i18nmessageid import MessageIDFactory
 from zope.interface import implements, Interface
 from zope.schema import TextLine, Text, Object, Int, List
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import ObjectWidget
 
+_ = MessageIDFactory('formtest')
+
 class IFieldContent(Interface):
 
     title = TextLine(
-        title=u"Title",
-        description=u"A short description of the event.",
+        title=_(u"Title"),
+        description=_(u"A short description of the event."),
         default=u"",
         required=True
         )
 
     description = Text(
-        title=u"Description",
-        description=u"A long description of the event.",
+        title=_(u"Description"),
+        description=_(u"A long description of the event."),
         default=u"",
         required=False
         )
 
     somenumber = Int(
-        title=u"Some number",
+        title=_(u"Some number"),
         default=0,
         required=False
         )
 
     somelist = List(
-        title=u"Some List",
-        value_type=TextLine(title=u"Some item"),
+        title=_(u"Some List"),
+        value_type=TextLine(title=_(u"Some item")),
         default=[],
         required=False
         )
@@ -69,7 +72,7 @@ def manage_addFieldContent(self, id, title, REQUEST=None):
     return ''
 
 class IComplexSchemaContent(Interface):
-    
+
     fishtype = TextLine(
         title=u"Fish type",
         description=u"The type of fish",
@@ -94,7 +97,7 @@ class ComplexSchemaContent(SimpleItem):
 
 class ComplexSchemaView:
     """Needs a docstring"""
-    
+
     fish_widget = CustomWidgetFactory(ObjectWidget, FieldContent)
 
 InitializeClass(ComplexSchemaContent)
