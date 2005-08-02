@@ -1,0 +1,11 @@
+Zope Road Map
+=============
+
+This file lists features or tasks planned for future releases. It is
+roughly the compliment of CHANGES.txt. Over time, entries from this
+file will migrate to CHANGES.txt and then to HISTORY.txt.
+
+Zope 3.2
+--------
+
+See TODOLATER.txt.

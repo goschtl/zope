@@ -1,0 +1,31 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zope">
+<body>
+<div metal:fill-slot="body">
+
+  <br />
+  <p tal:define="success request/success | nothing"
+     tal:condition="success"
+     i18n:translate="">
+    Import was successfull!
+  </p>
+
+  <p i18n:translate="">Import / Export Process Definitions:</p>
+  <span i18n:translate="">Import:</span>
+  <form action="@@import.html" method="post" encoding="multipart/form-data">
+    <textarea cols="50" rows="10" name="definition"></textarea>
+    <br />
+    <input type="submit" value="Import"
+           i18n:attributes="value import-button" />
+  </form>
+
+  <p i18n:translate="">
+    Export: <a href="@@export.html">save as file</a>
+  </p>
+  
+  <pre tal:content="view/exportDefinition"/>
+
+</div>
+</body>
+</html>
+  
