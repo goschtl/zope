@@ -13,7 +13,7 @@
         <h3 tal:condition="view/label"
             tal:content="view/label"
             metal:define-slot="heading"
-            >Edit something</h3>
+            >Add something</h3>
 
         <p tal:define="status view/update"
            tal:condition="status"
