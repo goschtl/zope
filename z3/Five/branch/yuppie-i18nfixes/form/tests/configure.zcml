@@ -1,7 +1,9 @@
-<configure xmlns="http://namespaces.zope.org/zope"
-           xmlns:browser="http://namespaces.zope.org/browser"
-           xmlns:five="http://namespaces.zope.org/five"
-           i18n_domain="formtest">
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="formtest">
 
   <!-- make the zope2.Public permission work -->
   <redefinePermission from="zope2.Public" to="zope.Public" />
@@ -77,5 +79,7 @@
      name="protectedaddform.html"
      permission="zope2.ViewManagementScreens"
      />
+
+  <i18n:registerTranslations directory="locales"/>
 
 </configure>
