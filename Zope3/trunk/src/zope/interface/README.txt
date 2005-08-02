@@ -129,7 +129,7 @@ Declaring interfaces
 ====================
 
 Having defined interfaces, we can *declare* that objects provide
-them.  Before we describe the details, lets define some some terms:
+them.  Before we describe the details, lets define some terms:
 
 *provide*
    We say that objects *provide* interfaces.  If an object provides an
@@ -145,10 +145,10 @@ them.  Before we describe the details, lets define some some terms:
    in addition to what their classes implement.)
 
    It is important to note that classes don't usually provide the
-   interfaces that the implement.
+   interfaces that they implement.
 
    We can generalize this to factories.  For any callable object we
-   can declare that it produces objects that provides some interfaces
+   can declare that it produces objects that provide some interfaces
    by saying that the factory implements the interfaces.
 
 Now that we've defined these terms, we can talk about the API for
@@ -241,7 +241,7 @@ classes:
   ... # doctest: +NORMALIZE_WHITESPACE
   Traceback (most recent call last):
     ...
-  TypeError: Can't use implementer with classes.  
+  TypeError: Can't use implementer with classes.
   Use one of the class-declaration functions instead.
 
 Declaring provided interfaces
@@ -310,7 +310,7 @@ a new interface, `ISpecial`::
   ...     def brag():
   ...         "Brag about being special"
 
-We can make a an existing foo instance special by providing `reason`
+We can make an existing foo instance special by providing `reason`
 and `brag` attributes::
 
   >>> foo.reason = 'I just am'
@@ -469,9 +469,9 @@ Note that `IBaz` overrides eek::
   >>> IBaz['eek'].__doc__
   'eek in baz blah'
 
-We were careful to override eek in a compatible way.  When an
-extending an interface, the extending interface should be compatible
-[#compat]_ with the extended interfaces.
+We were careful to override eek in a compatible way.  When extending
+an interface, the extending interface should be compatible [#compat]_
+with the extended interfaces.
 
 We can ask whether one interface extends another::
 
@@ -502,7 +502,7 @@ method for that::
   >>> list(IBaz.names())
   ['eek']
 
-Inheritance if attribute specifications
+Inheritance of attribute specifications
 ---------------------------------------
 
 An interface may override attribute definitions from base interfaces.
@@ -546,7 +546,7 @@ Specifications
 --------------
 
 Interfaces and declarations are both special cases of specifications.
-What we described above for interface inheritence applies to both
+What we described above for interface inheritance applies to both
 declarations and specifications.  Declarations actually extend the
 interfaces that they declare:
 
