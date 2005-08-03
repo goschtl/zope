@@ -31,6 +31,7 @@ typedef struct {
 
 
 static PyObject *strget, *strisOrExtends, *str__sro__, *strindex, *Null;
+static PyObject *emptystr;
 
 static int
 AdapterLookup_init(AdapterLookup *self, PyObject *args, PyObject *keywds)
@@ -502,7 +503,7 @@ static PyObject *
 AdapterLookup_lookup1(AdapterLookup *self, PyObject *args, PyObject *keywds)
 {
         PyObject *required, *provided;
-        PyObject *name = NULL;
+        PyObject *name = emptystr;
         PyObject *_default = Py_None;
         PyObject *required_list;
         PyObject *res;
@@ -515,22 +516,15 @@ AdapterLookup_lookup1(AdapterLookup *self, PyObject *args, PyObject *keywds)
                                          &name, &_default))
                 return NULL;
 
-        if (name == NULL)
-                name = PyString_FromString("");
-        else
-                Py_INCREF(name);
+        param_args = Py_BuildValue("[O]O", required, provided);
 
-        required_list = Py_BuildValue("[O]", required);
-
-        param_args = Py_BuildValue("OO", required_list, provided);
-        kw = Py_BuildValue("{s:O,s:O}", "name", name, "default", _default);
-        Py_DECREF(required_list);
+        kw = keywds;
+        Py_XINCREF(kw);
 
         res = AdapterLookup_lookup(self, param_args, kw);
 
-        Py_DECREF(kw);
+        Py_XDECREF(kw);
         Py_DECREF(param_args);
-        Py_XDECREF(name);
 
         return res;
 }
@@ -1131,6 +1125,8 @@ if (!(str##s = PyString_FromString(#s))) return
         DEFINE_STRING(__sro__);
         DEFINE_STRING(index);
 #undef DEFINE_STRING
+
+        emptystr = PyString_FromString("");
 
         /* Initialize types: */
         AdapterLookupType.tp_new = PyType_GenericNew;
