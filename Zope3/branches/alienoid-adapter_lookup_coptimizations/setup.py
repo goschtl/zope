@@ -251,6 +251,9 @@ ext_modules = [
     Extension("zope.interface._zope_interface_coptimizations",
               ["src/zope/interface/_zope_interface_coptimizations.c"]),
 
+    Extension("zope.interface._zope_adapter_lookup_coptimizations",
+              ["src/zope/interface/_zope_adapter_lookup_coptimizations.c"]),
+
     Extension("zope.hookable._zope_hookable",
               ["src/zope/hookable/_zope_hookable.c"]),
 
@@ -266,7 +269,7 @@ ext_modules = [
                  "src/persistent/cPersistence.h",
                  "src/zope/proxy/_zope_proxy_proxy.c",
                  ]),
-    
+
     ]
 
 # We're using the module docstring as the distutils descriptions.
