@@ -15,6 +15,9 @@
 #include "Python.h"
 #include "structmember.h"
 
+#define _ZOPE_INTERFACE_COPTIMIZATIONS
+#include "_zope_interface_coptimizations.h"
+
 #define TYPE(O) ((PyTypeObject*)(O))
 #define OBJECT(O) ((PyObject*)(O))
 #define CLASSIC(O) ((PyClassObject*)(O))
@@ -27,7 +30,7 @@ static PyTypeObject *Implements;
 
 static int imported_declarations = 0;
 
-static int 
+static int
 import_declarations(void)
 {
   PyObject *declarations, *i;
@@ -35,7 +38,7 @@ import_declarations(void)
   declarations = PyImport_ImportModule("zope.interface.declarations");
   if (declarations == NULL)
     return -1;
-  
+
   BuiltinImplementationSpecifications = PyObject_GetAttrString(
                     declarations, "BuiltinImplementationSpecifications");
   if (BuiltinImplementationSpecifications == NULL)
@@ -57,7 +60,7 @@ import_declarations(void)
 
   if (! PyType_Check(i))
     {
-      PyErr_SetString(PyExc_TypeError, 
+      PyErr_SetString(PyExc_TypeError,
                       "zope.declarations.Implements is not a type");
       return -1;
     }
@@ -126,7 +129,7 @@ implementedBy(PyObject *ignored, PyObject *cls)
   /* Maybe we have a builtin */
   if (imported_declarations == 0 && import_declarations() < 0)
     return NULL;
-  
+
   spec = PyDict_GetItem(BuiltinImplementationSpecifications, cls);
   if (spec != NULL)
     {
@@ -170,13 +173,13 @@ static PyObject *
 providedBy(PyObject *ignored, PyObject *ob)
 {
   PyObject *result, *cls, *cp;
-  
+
   result = PyObject_GetAttr(ob, str__providedBy__);
   if (result == NULL)
     {
       PyErr_Clear();
       return getObjectSpecification(NULL, ob);
-    } 
+    }
 
 
   /* We want to make sure we have a spec. We can't do a type check
@@ -185,7 +188,7 @@ providedBy(PyObject *ignored, PyObject *ob)
   */
   if (PyObject_HasAttr(result, strextends))
     return result;
-    
+
   /*
     The object's class doesn't understand descriptors.
     Sigh. We need to get an object descriptor, but we have to be
@@ -200,13 +203,13 @@ providedBy(PyObject *ignored, PyObject *ob)
 
   result = PyObject_GetAttr(ob, str__provides__);
   if (result == NULL)
-    {      
+    {
       /* No __provides__, so just fall back to implementedBy */
       PyErr_Clear();
       result = implementedBy(NULL, cls);
       Py_DECREF(cls);
       return result;
-    } 
+    }
 
   cp = PyObject_GetAttr(cls, str__provides__);
   if (cp == NULL)
@@ -251,7 +254,7 @@ inst_attr(PyObject *self, PyObject *name)
 
 static PyObject *
 Spec_extends(PyObject *self, PyObject *other)
-{  
+{
   PyObject *implied;
 
   implied = inst_attr(self, str_implied);
@@ -271,11 +274,11 @@ Spec_extends(PyObject *self, PyObject *other)
 #endif
 }
 
-static char Spec_extends__doc__[] = 
+static char Spec_extends__doc__[] =
 "Test whether a specification is or extends another"
 ;
 
-static char Spec_providedBy__doc__[] = 
+static char Spec_providedBy__doc__[] =
 "Test whether an interface is implemented by the specification"
 ;
 
@@ -292,7 +295,7 @@ Spec_providedBy(PyObject *self, PyObject *ob)
     item = Spec_extends(decl, self);
   else
     /* decl is probably a security proxy.  We have to go the long way
-       around. 
+       around.
     */
     item = PyObject_CallMethodObjArgs(decl, strisOrExtends, self, NULL);
 
@@ -301,7 +304,7 @@ Spec_providedBy(PyObject *self, PyObject *ob)
 }
 
 
-static char Spec_implementedBy__doc__[] = 
+static char Spec_implementedBy__doc__[] =
 "Test whether the specification is implemented by instances of a class"
 ;
 
@@ -313,7 +316,7 @@ Spec_implementedBy(PyObject *self, PyObject *cls)
   decl = implementedBy(NULL, cls);
   if (decl == NULL)
     return NULL;
-  
+
   if (PyObject_TypeCheck(decl, &SpecType))
     item = Spec_extends(decl, self);
   else
@@ -324,10 +327,10 @@ Spec_implementedBy(PyObject *self, PyObject *cls)
 }
 
 static struct PyMethodDef Spec_methods[] = {
-	{"providedBy",  
+	{"providedBy",
          (PyCFunction)Spec_providedBy,		METH_O,
 	 Spec_providedBy__doc__},
-	{"implementedBy", 
+	{"implementedBy",
          (PyCFunction)Spec_implementedBy,	METH_O,
 	 Spec_implementedBy__doc__},
 	{"isOrExtends",	(PyCFunction)Spec_extends,	METH_O,
@@ -444,7 +447,7 @@ CPB_descr_get(PyObject *self, PyObject *inst, PyObject *cls)
       Py_XINCREF(implements);
       return implements;
     }
-  
+
   PyErr_SetObject(PyExc_AttributeError, str__provides__);
   return NULL;
 }
@@ -495,7 +498,7 @@ static struct PyMethodDef m_methods[] = {
    "Get an object's interfaces (internal api)"},
   {"providedBy", (PyCFunction)providedBy, METH_O,
    "Get an object's interfaces"},
-  
+
   {NULL,	 (PyCFunction)NULL, 0, NULL}		/* sentinel */
 };
 
@@ -506,6 +509,8 @@ PyMODINIT_FUNC
 init_zope_interface_coptimizations(void)
 {
   PyObject *m;
+  static void *Interface_API[Interface_API_pointers];
+  PyObject *c_api_object;
 
 #define DEFINE_STRING(S) \
   if(! (str ## S = PyString_FromString(# S))) return
@@ -521,8 +526,8 @@ init_zope_interface_coptimizations(void)
   DEFINE_STRING(_implements);
   DEFINE_STRING(_cls);
 #undef DEFINE_STRING
-  
-        
+
+
   /* Initialize types: */
   SpecType.tp_new = PyBaseObject_Type.tp_new;
   if (PyType_Ready(&SpecType) < 0)
@@ -533,21 +538,29 @@ init_zope_interface_coptimizations(void)
   CPBType.tp_new = PyBaseObject_Type.tp_new;
   if (PyType_Ready(&CPBType) < 0)
     return;
-  
+
   /* Create the module and add the functions */
   m = Py_InitModule3("_zope_interface_coptimizations", m_methods,
                      "C optimizations for zope.interface\n\n"
-                     "$Id$");  
+                     "$Id$");
   if (m == NULL)
     return;
-  
+
   /* Add types: */
   if (PyModule_AddObject(m, "SpecificationBase", (PyObject *)&SpecType) < 0)
     return;
-  if (PyModule_AddObject(m, "ObjectSpecificationDescriptor", 
+  if (PyModule_AddObject(m, "ObjectSpecificationDescriptor",
                          (PyObject *)&OSDType) < 0)
     return;
   if (PyModule_AddObject(m, "ClassProvidesBase", (PyObject *)&CPBType) < 0)
     return;
-}
 
+  /* Initialize the C API pointer array */
+  Interface_API[providedBy_NUM] = (void *)providedBy;
+
+  /* Create a CObject containing the API pointer array's address */
+  c_api_object= PyCObject_FromVoidPtr((void *)Interface_API, NULL);
+
+  if (c_api_object)
+    PyModule_AddObject(m, "_C_API", c_api_object);
+}
