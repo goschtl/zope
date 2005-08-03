@@ -318,10 +318,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
         return value
 
     def hasInput(self):
-        if self.name in self.request:
-            return True
-        if (not self.context.required and
-            self.name+'.displayed' in self.request):
+        if self.name in self.request or self.name+'.displayed' in self.request:
             return True
 
         for name, queryview in self.queryviews:

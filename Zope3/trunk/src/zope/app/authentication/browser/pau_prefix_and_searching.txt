@@ -301,7 +301,11 @@ the available groups:
   ... Content-Length: 191
   ... Content-Type: application/x-www-form-urlencoded
   ... 
-  ... field.principal.displayed=y&field.principal.MC5Hcm91cHM_.field.search=&field.principal.MC5Hcm91cHM_.search=Search&field.principal.MC5Vc2Vycw__.field.search=&field.principal.MQ__.searchstring=""")
+  ... field.principal.displayed=y&"""
+  ... "field.principal.MC5Hcm91cHM_.field.search=&"
+  ... "field.principal.MC5Hcm91cHM_.search=Search&"
+  ... "field.principal.MC5Vc2Vycw__.field.search=&"
+  ... "field.principal.MQ__.searchstring=")
   HTTP/1.1 200 Ok
   ...
   <select name="field.principal.MC5Hcm91cHM_.selection">
@@ -321,7 +325,12 @@ principals:
   ... Content-Length: 255
   ... Content-Type: application/x-www-form-urlencoded
   ... 
-  ... field.principal.displayed=y&field.principal.MC5Hcm91cHM_.field.search=&field.principal.MC5Hcm91cHM_.selection=cGF1MV9ncm91cHNfbmljZQ__&field.principal.MC5Vc2Vycw__.field.search=&field.principal.MC5Vc2Vycw__.search=Search&field.principal.MQ__.searchstring=""")
+  ... field.principal.displayed=y&"""
+  ... "field.principal.MC5Hcm91cHM_.field.search=&"
+  ... "field.principal.MC5Hcm91cHM_.selection=cGF1MV9ncm91cHNfbmljZQ__&"
+  ... "field.principal.MC5Vc2Vycw__.field.search=&"
+  ... "field.principal.MC5Vc2Vycw__.search=Search&"
+  ... "field.principal.MQ__.searchstring=")
   HTTP/1.1 200 Ok
   ...
   <select name="field.principal.MC5Vc2Vycw__.selection">

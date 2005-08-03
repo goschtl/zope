@@ -26,8 +26,8 @@ which we can choose:
   ... Referer: http://localhost:8081/@@grant.html
   ... 
   ... field.principal.displayed=y"""
-  ... """&field.principal.MA__.searchstring="""
-  ... """&field.principal.MA__.search=Search""")
+  ... "&field.principal.MA__.searchstring="
+  ... "&field.principal.MA__.search=Search")
   HTTP/1.1 200 Ok
   ...
   <option value="em9wZS5tZ3I_">Manager</option>

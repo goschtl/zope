@@ -24,6 +24,7 @@ from zope.app.security.vocabulary import PrincipalSource
 from zope.app.form.utility import setUpWidget
 from zope.app.form.browser import RadioWidget
 from zope.app.form.browser.widget import renderElement
+from zope.app.form.interfaces import MissingInputError
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 from zope.app.form.interfaces import IInputWidget
@@ -147,8 +148,11 @@ class Granting(object):
         setUpWidget(self, 'principal', self.principal_field, IInputWidget)
         if not self.principal_widget.hasInput():
             return u''
-
-        principal = self.principal_widget.getInputValue()
+        try:
+            principal = self.principal_widget.getInputValue()
+        except MissingInputError:
+            return u''
+        
         self.principal = principal
 
         # Make sure we can use the principal id in a form by base64ing it
@@ -193,17 +197,21 @@ class Granting(object):
             name = principal_token + '.role.'+role.id
             role_widget = getattr(self, name+'_widget')
             if role_widget.hasInput():
-                setting = role_widget.getInputValue()
-                # Arrgh!
-                if setting is settings.Allow:
-                    principal_roles.assignRoleToPrincipal(
-                        role.id, principal)
-                elif setting is settings.Deny:
-                    principal_roles.removeRoleFromPrincipal(
-                        role.id, principal)
+                try:
+                    setting = role_widget.getInputValue()
+                except MissingInputError:
+                    pass
                 else:
-                    principal_roles.unsetRoleForPrincipal(
-                        role.id, principal)
+                    # Arrgh!
+                    if setting is settings.Allow:
+                        principal_roles.assignRoleToPrincipal(
+                            role.id, principal)
+                    elif setting is settings.Deny:
+                        principal_roles.removeRoleFromPrincipal(
+                            role.id, principal)
+                    else:
+                        principal_roles.unsetRoleForPrincipal(
+                            role.id, principal)
 
         for perm in perms:
             if perm.id == 'zope.Public':
@@ -211,16 +219,20 @@ class Granting(object):
             name = principal_token + '.permission.'+perm.id
             perm_widget = getattr(self, name+'_widget')
             if perm_widget.hasInput():
-                setting = perm_widget.getInputValue()
-                # Arrgh!
-                if setting is settings.Allow:
-                    principal_perms.grantPermissionToPrincipal(
-                        perm.id, principal)
-                elif setting is settings.Deny:
-                    principal_perms.denyPermissionToPrincipal(
-                        perm.id, principal)
+                try:
+                    setting = perm_widget.getInputValue()
+                except MissingInputError:
+                    pass
                 else:
-                    principal_perms.unsetPermissionForPrincipal(
-                        perm.id, principal)
+                    # Arrgh!
+                    if setting is settings.Allow:
+                        principal_perms.grantPermissionToPrincipal(
+                            perm.id, principal)
+                    elif setting is settings.Deny:
+                        principal_perms.denyPermissionToPrincipal(
+                            perm.id, principal)
+                    else:
+                        principal_perms.unsetPermissionForPrincipal(
+                            perm.id, principal)
 
         return _('Grants updated.')
