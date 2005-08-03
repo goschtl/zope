@@ -1,0 +1,691 @@
+# translation of bugtracker.po to Russian
+# #############################################################################
+#
+# Copyright (c) 2003-2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+# #############################################################################
+# Dmitry Vasiliev <dima@hlabs.spb.ru>, 2004
+msgid ""
+msgstr ""
+"Project-Id-Version: Development/Revision: 27349\n"
+"POT-Creation-Date: Wed Apr 20 18:16:40 2005\n"
+"PO-Revision-Date: 2004-08-30 18:03+0000\n"
+"Last-Translator: Dmitry Vasiliev <dima@hlabs.spb.ru>\n"
+"Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: zope/app/locales/extract.py\n"
+"X-Generator: KBabel 1.0\n"
+
+#: src/bugtracker/browser/bug_edit.pt:24 src/bugtracker/browser/bug_add.pt:19
+msgid "There are ${num_errors} input errors."
+msgstr "Найдено ${num_errors} ошибок ввода."
+
+# Default: "Import"
+#: src/bugtracker/browser/bug_edit.pt:77 src/bugtracker/browser/bug_add.pt:71
+msgid "submit-button"
+msgstr "Загрузить"
+
+#: src/bugtracker/browser/bug_listing_normal.pt:10
+msgid "Bug #${bug_id} - ${bug_title}"
+msgstr "Баг #${bug_id} - ${bug_title}"
+
+#: src/bugtracker/browser/bug_listing_normal.pt:18
+#: src/bugtracker/browser/bug_edit.pt:43 src/bugtracker/browser/bug_add.pt:35
+msgid "Status:"
+msgstr "Статус:"
+
+#: src/bugtracker/browser/bug_listing_normal.pt:24
+#: src/bugtracker/browser/bug_edit.pt:40 src/bugtracker/browser/bug_add.pt:32
+msgid "Type:"
+msgstr "Тип:"
+
+#: src/bugtracker/browser/bug_listing_normal.pt:37
+msgid "Posted by ${submitter} on ${created_date} - ${num_comments} comments"
+msgstr "Добавлено ${submitter}, ${created_date}, коментариев: ${num_comments}"
+
+#: src/bugtracker/browser/bug_overview.pt:18
+#: src/bugtracker/browser/bug_edit.pt:34
+msgid "From ${user} at ${date}"
+msgstr "От ${user}, ${date}"
+
+#: src/bugtracker/browser/bug_overview.pt:34
+#: src/bugtracker/browser/bug_listing_normal.pt:21
+#: src/bugtracker/browser/bug_edit.pt:49 src/bugtracker/browser/bug_add.pt:41
+msgid "Priority:"
+msgstr "Приоритет:"
+
+#: src/bugtracker/browser/bug_overview.pt:39
+#: src/bugtracker/browser/bug_edit.pt:52 src/bugtracker/browser/bug_add.pt:44
+msgid "Release Target:"
+msgstr "Релиз:"
+
+#: src/bugtracker/browser/bug_overview.pt:44
+#: src/bugtracker/browser/bug_edit.pt:58 src/bugtracker/browser/bug_add.pt:50
+msgid "Owners:"
+msgstr "Владельцы:"
+
+#: src/bugtracker/browser/bug_overview.pt:54
+#: src/bugtracker/browser/bug_edit.pt:64
+msgid "Last modified:"
+msgstr "Последнее изменение:"
+
+#: src/bugtracker/browser/bug_overview.pt:64
+msgid "Direct Dependencies"
+msgstr "Прямые зависимости"
+
+#: src/bugtracker/browser/bug_overview.pt:78
+msgid "Attachments"
+msgstr "Присоединенные файлы"
+
+#: src/bugtracker/browser/bug_overview.pt:87
+msgid "Add File"
+msgstr "Добавить файл"
+
+#: src/bugtracker/browser/bug_overview.pt:89
+msgid "Add Image"
+msgstr "Добавить изображение"
+
+#: src/bugtracker/browser/bug_overview.pt:93
+msgid "Comments"
+msgstr "Комментарии"
+
+#: src/bugtracker/browser/bug_overview.pt:98
+msgid "Entry #${bug_id} by ${creator} on ${modified_datetime}"
+msgstr "Запись #${bug_id} создана ${creator}, ${modified_datetime}"
+
+#: src/bugtracker/browser/configure.zcml:144
+msgid "Add Dependent Bug"
+msgstr "Добавить зависимый баг"
+
+#: src/bugtracker/browser/configure.zcml:175
+msgid "Change Bug"
+msgstr "Изменить баг"
+
+#: src/bugtracker/browser/configure.zcml:175
+#: src/bugtracker/browser/configure.zcml:262
+msgid "Edit"
+msgstr "Редактировать"
+
+#: src/bugtracker/browser/configure.zcml:238
+#: src/bugtracker/browser/bug_overview.pt:104
+msgid "Add Comment"
+msgstr "Добавить комментарий"
+
+#: src/bugtracker/browser/configure.zcml:254
+msgid "Bug Comment"
+msgstr "Коментарий бага"
+
+#: src/bugtracker/browser/configure.zcml:254
+msgid "A Comment"
+msgstr "Комментарий"
+
+#: src/bugtracker/browser/configure.zcml:262
+msgid "Change Comment"
+msgstr "Изменить комментарий"
+
+#: src/bugtracker/browser/configure.zcml:31
+msgid "Add Bug Tracker"
+msgstr "Трекер багов"
+
+#: src/bugtracker/browser/configure.zcml:60
+#: src/bugtracker/browser/configure.zcml:205
+msgid "Overview"
+msgstr "Краткое описание"
+
+#: src/bugtracker/browser/configure.zcml:66
+msgid "Bug Tracker - Overview"
+msgstr "Краткое описание трекера"
+
+#: src/bugtracker/browser/configure.zcml:79
+msgid "Settings"
+msgstr "Установки"
+
+#: src/bugtracker/browser/configure.zcml:86
+#: src/bugtracker/browser/configure.zcml:218
+msgid "Subscriptions"
+msgstr "Подписки"
+
+#: src/bugtracker/browser/configure.zcml:98
+msgid "XML Export/Import"
+msgstr "Загрузка/Сохранение XML"
+
+#: src/bugtracker/browser/dependencies.pt:106
+msgid "Dependency Statistics"
+msgstr "Статистики зависимостей"
+
+#: src/bugtracker/browser/dependencies.pt:112
+msgid "Closed/Deferred Bugs:"
+msgstr "Закрытые/отложенные баги:"
+
+#: src/bugtracker/browser/dependencies.pt:120
+msgid "New (unseen) Bugs:"
+msgstr "Новые (не просмотренные) баги:"
+
+#: src/bugtracker/browser/dependencies.pt:128
+msgid "Opened/Assigned Bugs:"
+msgstr "Открытые/назначенные баги:"
+
+#: src/bugtracker/browser/dependencies.pt:137
+msgid "Dependency Tree"
+msgstr "Дерево зависимостей"
+
+#: src/bugtracker/browser/dependencies.pt:25
+msgid ""
+"Dependencies - Bugs that have to be completed before this bug can be closed."
+msgstr ""
+"Зависимости - баги которые должны быть разобраны перед тем как данный баг "
+"может быть закрыт."
+
+#: src/bugtracker/browser/dependencies.pt:27
+msgid ""
+"Dependents - This bug has to be completed in before the Dependents can be "
+"closed."
+msgstr ""
+"Зависимые - этот баг должен быть разобран перед тем как зависимые могут быть "
+"закрыты."
+
+#: src/bugtracker/browser/dependencies.pt:40
+msgid "Available Bugs"
+msgstr "Доступные баги"
+
+#: src/bugtracker/browser/exportimport.pt:14
+msgid "Export XML"
+msgstr "Сохранение XML"
+
+#: src/bugtracker/browser/exportimport.pt:16
+msgid "Simply click <a href=\"./tracker.xml\">here</a>."
+msgstr "Скачать <a href=\"./tracker.xml\">здесь</a>."
+
+#: src/bugtracker/browser/exportimport.pt:18
+msgid "Import XML"
+msgstr "Загрузка XML"
+
+#: src/bugtracker/browser/exportimport.pt:23
+msgid "XML File"
+msgstr "XML файл"
+
+# Default: "Import"
+#: src/bugtracker/browser/exportimport.pt:29
+msgid "import-button"
+msgstr "Загрузить"
+
+#: src/bugtracker/browser/legend.pt:13
+msgid "Critial"
+msgstr "Критический"
+
+#: src/bugtracker/browser/legend.pt:2
+msgid "Status Markup"
+msgstr "Отметка статуса"
+
+#: src/bugtracker/browser/legend.pt:9
+msgid "Priority Markup"
+msgstr "Отметка приоритета"
+
+#: src/bugtracker/browser/mail.py:31
+msgid "Subscribers successfully added: $emails"
+msgstr "Подписчики успешно добавлены: $emails"
+
+#: src/bugtracker/browser/mail.py:38
+msgid "Subscribers successfully deleted: $emails"
+msgstr "Подписчики успешно удалены: $emails"
+
+#: src/bugtracker/browser/skin/dialog_macros.pt:10
+msgid "Zope 3 Bug Tracker"
+msgstr "Трекер багов"
+
+#: src/bugtracker/browser/skin/dialog_macros.pt:103
+#: src/bugtracker/browser/skin/template.pt:230
+msgid "Powered by Zope 3. Written by Stephan Richter in 2003."
+msgstr ""
+
+#: src/bugtracker/browser/skin/template.pt:155
+msgid "Logout"
+msgstr "Выйти"
+
+#: src/bugtracker/browser/skin/template.pt:160
+msgid "Login"
+msgstr "Войти"
+
+#: src/bugtracker/browser/skin/template.pt:167
+msgid "You are logged in as ${user_title}."
+msgstr "Вы зарегистрированы в системе как ${user_title}."
+
+#: src/bugtracker/browser/skin/template.pt:204
+msgid "Tip"
+msgstr "Намек"
+
+#: src/bugtracker/browser/skin/template.pt:92
+msgid "&nbsp;Bug Tracker"
+msgstr "&nbsp;Трекер багов"
+
+#: src/bugtracker/browser/subscriptions.pt:12
+msgid "Current Subscriptions"
+msgstr "Текущие подписки"
+
+# Default: "Remove"
+#: src/bugtracker/browser/subscriptions.pt:20
+msgid "remove-button"
+msgstr "Удалить"
+
+#: src/bugtracker/browser/subscriptions.pt:27
+msgid "Enter new Users (separate by 'Return')"
+msgstr "Введите новых пользователей (разделяя переводом строки)"
+
+# Default: "Refresh"
+#: src/bugtracker/browser/subscriptions.pt:37
+#: src/bugtracker/browser/bug_edit.pt:75 src/bugtracker/browser/bug_add.pt:69
+msgid "refresh-button"
+msgstr "Обновить"
+
+# Default: "Add"
+#: src/bugtracker/browser/subscriptions.pt:39
+#: src/bugtracker/browser/tracker_settings.pt:39
+msgid "add-button"
+msgstr "Добавить"
+
+#: src/bugtracker/browser/tracker.py:187 src/bugtracker/interfaces.py:78
+msgid "Status"
+msgstr "Статус"
+
+#: src/bugtracker/browser/tracker.py:188 src/bugtracker/interfaces.py:92
+msgid "Type"
+msgstr "Тип"
+
+#: src/bugtracker/browser/tracker.py:190 src/bugtracker/interfaces.py:85
+msgid "Priority"
+msgstr "Приоритет"
+
+#: src/bugtracker/browser/tracker.py:191 src/bugtracker/interfaces.py:106
+msgid "Owners"
+msgstr "Владельцы"
+
+#: src/bugtracker/browser/tracker.py:50 src/bugtracker/browser/legend.pt:3
+msgid "New"
+msgstr "Новый"
+
+#: src/bugtracker/browser/tracker.py:51 src/bugtracker/browser/legend.pt:4
+msgid "Open"
+msgstr "Открытый"
+
+#: src/bugtracker/browser/tracker.py:52 src/bugtracker/browser/legend.pt:5
+msgid "Assigned"
+msgstr "Связанный"
+
+#: src/bugtracker/browser/tracker.py:53 src/bugtracker/browser/legend.pt:6
+msgid "Deferred"
+msgstr "Отложенный"
+
+#: src/bugtracker/browser/tracker.py:54 src/bugtracker/browser/legend.pt:7
+msgid "Closed"
+msgstr "Закрытый"
+
+#: src/bugtracker/browser/tracker.py:56 src/bugtracker/configure.zcml:245
+#: src/bugtracker/browser/configure.zcml:136
+msgid "Bug"
+msgstr "Баг"
+
+#: src/bugtracker/browser/tracker.py:57
+msgid "Feature"
+msgstr "Особенность"
+
+#: src/bugtracker/browser/tracker.py:58 src/bugtracker/browser/tracker.py:189
+#: src/bugtracker/interfaces.py:99
+msgid "Release"
+msgstr "Релиз"
+
+#: src/bugtracker/browser/tracker.py:60
+msgid "(not specified)"
+msgstr "(не определено)"
+
+#: src/bugtracker/browser/tracker.py:62 src/bugtracker/browser/legend.pt:10
+msgid "Low"
+msgstr "Низкий"
+
+#: src/bugtracker/browser/tracker.py:63 src/bugtracker/browser/legend.pt:11
+msgid "Normal"
+msgstr "Обычный"
+
+#: src/bugtracker/browser/tracker.py:64 src/bugtracker/browser/legend.pt:12
+msgid "Urgent"
+msgstr "Срочный"
+
+#: src/bugtracker/browser/tracker.py:65
+msgid "Critical"
+msgstr "Критический"
+
+#: src/bugtracker/browser/tracker_add.pt:13
+msgid "Create Initial Vocabulary Entries"
+msgstr "Создать стандартные записи"
+
+#: src/bugtracker/browser/tracker_add.pt:15
+msgid ""
+"To make your life easier, when this option is selected, it creates "
+"vocabulary entries for the status, release, priority and type fields of a "
+"bug. This will save you some time with the setup."
+msgstr ""
+"Для упрощения настройки, когда данная опция выбрана, будут созданы "
+"стандартные записи для полей статуса, релиза, приоритета и типа багов."
+
+#: src/bugtracker/browser/tracker_overview.pt:107
+#: src/bugtracker/browser/tracker_overview.pt:147
+msgid "Previous (${start_number} to ${end_number})"
+msgstr "Предыдущий (${start_number} до ${end_number})"
+
+#: src/bugtracker/browser/tracker_overview.pt:114
+#: src/bugtracker/browser/tracker_overview.pt:154
+msgid ""
+"${start_number} to ${end_number} of ${batch_total_number} found "
+"(${bug_number} total)"
+msgstr ""
+"${start_number} до ${end_number} из ${batch_total_number} найденных "
+"(${bug_number} всего)"
+
+#: src/bugtracker/browser/tracker_overview.pt:124
+#: src/bugtracker/browser/tracker_overview.pt:164
+msgid "Next (${start_number} to ${end_number})"
+msgstr "Следующий (${start_number} до ${end_number})"
+
+#: src/bugtracker/browser/tracker_overview.pt:16
+msgid "Filter Options"
+msgstr "Опции фильтрации"
+
+#: src/bugtracker/browser/tracker_overview.pt:25
+msgid "Filter Text"
+msgstr "Текст для фильтрации"
+
+#: src/bugtracker/browser/tracker_overview.pt:31
+msgid "View Type"
+msgstr "Тип просмотра"
+
+# Default: "Refresh"
+#: src/bugtracker/browser/tracker_overview.pt:70
+msgid "save-filter-changes-button"
+msgstr "Обновить"
+
+# Default: "Collapse"
+#: src/bugtracker/browser/tracker_overview.pt:75
+#: src/bugtracker/browser/dependencies.pt:91
+msgid "collapse-button"
+msgstr "Свернуть"
+
+# Default: "Expand"
+#: src/bugtracker/browser/tracker_overview.pt:79
+#: src/bugtracker/browser/dependencies.pt:95
+msgid "expand-button"
+msgstr "Развернуть"
+
+# Default: "Add Bug"
+#: src/bugtracker/browser/tracker_overview.pt:93
+#: src/bugtracker/browser/tracker_overview.pt:172
+msgid "add-bug-button"
+msgstr "Добавить баг"
+
+#: src/bugtracker/browser/tracker_settings.pt:15
+msgid "Existing Values:"
+msgstr "Существующие значения:"
+
+# Default: "Add"
+#: src/bugtracker/browser/tracker_settings.pt:25
+msgid "delete-button"
+msgstr "Добавить"
+
+# Default: "Set Default"
+#: src/bugtracker/browser/tracker_settings.pt:27
+msgid "set-default-button"
+msgstr "Установить по умолчанию"
+
+#: src/bugtracker/browser/tracker_settings.pt:30
+msgid "Default Value:"
+msgstr "Значение по умолчанию:"
+
+#: src/bugtracker/browser/tracker_settings.pt:35
+msgid "Value:"
+msgstr "Значение:"
+
+#: src/bugtracker/browser/tracker_settings.pt:37
+#: src/bugtracker/browser/bug_add.pt:27
+msgid "Title:"
+msgstr "Заголовок:"
+
+#: src/bugtracker/bug.py:45 src/bugtracker/bug.py:46
+msgid "Stati"
+msgstr "Статус"
+
+#: src/bugtracker/bug.py:50 src/bugtracker/bug.py:51
+msgid "Priorities"
+msgstr "Приоритеты"
+
+#: src/bugtracker/bug.py:55 src/bugtracker/bug.py:56
+msgid "BugTypes"
+msgstr "Типы багов"
+
+#: src/bugtracker/bug.py:60 src/bugtracker/bug.py:61
+msgid "Releases"
+msgstr "Релизы"
+
+#: src/bugtracker/configure.zcml:13
+msgid "Bug Tracker User"
+msgstr "Пользователь трекера"
+
+#: src/bugtracker/configure.zcml:13
+msgid "The user can browse the bug tracker"
+msgstr "Данный пользователь может просматривать баги"
+
+#: src/bugtracker/configure.zcml:172 src/bugtracker/browser/configure.zcml:41
+msgid "A Bug Tracker"
+msgstr "Трекер багов"
+
+#: src/bugtracker/configure.zcml:172 src/bugtracker/browser/configure.zcml:41
+msgid "Bug Tracker"
+msgstr "Трекер багов"
+
+#: src/bugtracker/configure.zcml:18
+msgid "Bug Tracker Editor"
+msgstr "Редактор трекера багов"
+
+#: src/bugtracker/configure.zcml:18
+msgid "The Bug Tracker editor can add and edit bugs."
+msgstr "Редактор трекера багов может добавлять и редактировать баги."
+
+#: src/bugtracker/configure.zcml:23
+msgid "The Admin can fully manage a bug tracker."
+msgstr "Администратор может полностью управлять трекером."
+
+#: src/bugtracker/configure.zcml:23
+msgid "Bug Tracker Administrator"
+msgstr "Администратор трекера багов"
+
+#: src/bugtracker/configure.zcml:245 src/bugtracker/browser/configure.zcml:136
+msgid "A Bug"
+msgstr "Баг"
+
+#: src/bugtracker/configure.zcml:28
+msgid "Manage Bug Tracker"
+msgstr "Управление трекером багов"
+
+#: src/bugtracker/configure.zcml:28
+msgid "Allows to change the settings of the Bug Tracker."
+msgstr "Позволяет изменять настройки трекера багов."
+
+#: src/bugtracker/configure.zcml:325
+msgid "Comment"
+msgstr "Комментарий"
+
+#: src/bugtracker/configure.zcml:325
+msgid "A comment about the bug."
+msgstr "Коментарий насчет бага."
+
+#: src/bugtracker/configure.zcml:37
+msgid "Allows to view the overview of the Bug Tracker."
+msgstr "Позволяет просматривать трекер багов."
+
+#: src/bugtracker/configure.zcml:37
+msgid "View Bug Tracker"
+msgstr "Просмотр трекера багов"
+
+#: src/bugtracker/configure.zcml:46
+msgid "View Bug"
+msgstr "Просмотр бага"
+
+#: src/bugtracker/configure.zcml:46
+msgid "Allows to view the overview and dependencies of the Bug."
+msgstr "Позволяет просматривать баг и его зависимости."
+
+#: src/bugtracker/configure.zcml:55
+msgid "Allows to add a Bug to the Tracker."
+msgstr "Позволяет добавлять баги к трекеру."
+
+#: src/bugtracker/configure.zcml:55 src/bugtracker/browser/configure.zcml:111
+#: src/bugtracker/browser/bug_overview.pt:74
+msgid "Add Bug"
+msgstr "Добавление бага"
+
+#: src/bugtracker/configure.zcml:64
+msgid "Allows to edit the data of a Bug."
+msgstr "Позволяет редактировать данные бага."
+
+#: src/bugtracker/configure.zcml:64
+msgid "Edit Bug"
+msgstr "Редактирование бага"
+
+#: src/bugtracker/configure.zcml:73
+msgid "Allows to add comments to a bug."
+msgstr "Позволяет добавлять коментарии к багу."
+
+#: src/bugtracker/configure.zcml:73
+msgid "Add Bug Comment"
+msgstr "Добавление коментария к багу"
+
+#: src/bugtracker/configure.zcml:82
+msgid "Allows to add attachments (files and images)  to a bug."
+msgstr "Позволяет добавлять файлы и изображения к багу."
+
+#: src/bugtracker/configure.zcml:82
+msgid "Add Bug Attachment"
+msgstr "Добавление файлов к багу"
+
+#: src/bugtracker/interfaces.py:100
+msgid "Defines the release for which the bug is scheduled."
+msgstr "Определяет релиз для которого запланирован баг"
+
+#: src/bugtracker/interfaces.py:107
+msgid "List of people assigned as owners of the bug."
+msgstr "Список людей записанных как владельцы этого бага."
+
+#: src/bugtracker/interfaces.py:139 src/bugtracker/browser/configure.zcml:213
+#: src/bugtracker/browser/dependencies.pt:59
+#: src/bugtracker/browser/dependencies.pt:65
+msgid "Dependencies"
+msgstr "Зависимости"
+
+#: src/bugtracker/interfaces.py:140
+msgid "Other bugs this bug depends on."
+msgstr "Другие баги от которых зависит данный баг."
+
+#: src/bugtracker/interfaces.py:141 src/bugtracker/interfaces.py:154
+msgid "Bug Id"
+msgstr "Идентификатор бага"
+
+#: src/bugtracker/interfaces.py:142 src/bugtracker/interfaces.py:155
+msgid "Bug Id."
+msgstr "Идентификатор бага."
+
+#: src/bugtracker/interfaces.py:152 src/bugtracker/browser/dependencies.pt:60
+#: src/bugtracker/browser/dependencies.pt:64
+msgid "Dependents"
+msgstr "Зависимые"
+
+#: src/bugtracker/interfaces.py:153
+msgid "Other bugs that depend on this one"
+msgstr "Другие баги которые зависят от данного бага"
+
+#: src/bugtracker/interfaces.py:193
+msgid "Body"
+msgstr "Содержимое"
+
+#: src/bugtracker/interfaces.py:194
+msgid "Renderable body of the Comment."
+msgstr "Содержимое коментария."
+
+#: src/bugtracker/interfaces.py:214
+msgid "Default"
+msgstr "По умолчанию"
+
+#: src/bugtracker/interfaces.py:215
+msgid "Default value of the vocabulary."
+msgstr "Значение по умолчанию из словаря."
+
+#: src/bugtracker/interfaces.py:42 src/bugtracker/interfaces.py:63
+msgid "Title"
+msgstr "Заголовок"
+
+#: src/bugtracker/interfaces.py:43
+msgid "Title of the bug tracker."
+msgstr "Заголовок трекера багов."
+
+#: src/bugtracker/interfaces.py:64
+msgid "Title/Summary of the bug."
+msgstr "Заголовок/Краткое описание бага."
+
+#: src/bugtracker/interfaces.py:68 src/bugtracker/browser/bug_overview.pt:60
+#: src/bugtracker/browser/bug_edit.pt:70 src/bugtracker/browser/bug_add.pt:57
+msgid "Description"
+msgstr "Описание"
+
+#: src/bugtracker/interfaces.py:69
+msgid "Detailed Description of the bug."
+msgstr "Детальное описание бага."
+
+#: src/bugtracker/interfaces.py:73
+msgid "Submitter"
+msgstr "Репортер"
+
+#: src/bugtracker/interfaces.py:74
+msgid "Name of the person that submitted the bug."
+msgstr "Имя человека который нашел баг."
+
+#: src/bugtracker/interfaces.py:79
+msgid "The current status of the bug."
+msgstr "Текущий статус бага."
+
+#: src/bugtracker/interfaces.py:86
+msgid "Specifies how urgent this bug is."
+msgstr "Определяет срочность бага."
+
+#: src/bugtracker/interfaces.py:93
+msgid "Specifies of what nature the bug is."
+msgstr "Определяет тип бага."
+
+#: src/bugtracker/vocabulary.py:101
+msgid "Cannot delete default value '${value}'."
+msgstr "Невозможно удалить значение по умолчанию '${value}'."
+
+#: src/bugtracker/vocabulary.py:124
+msgid "The value '${value}' was not found in the vocabulary"
+msgstr "Значение '${value}' не было найдено в словаре"
+
+#: src/bugtracker/vocabulary.py:140
+msgid "Status Definitions"
+msgstr "Определения статуса"
+
+#: src/bugtracker/vocabulary.py:150
+msgid "Release Definitions"
+msgstr "Определения релизов"
+
+#: src/bugtracker/vocabulary.py:160
+msgid "Priority Definitions"
+msgstr "Определения приоритетов"
+
+#: src/bugtracker/vocabulary.py:170
+msgid "Bug Type Definitions"
+msgstr "Определения типов бага"
