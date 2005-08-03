@@ -155,36 +155,30 @@ button:
   >>> request.form['field.dog.query.string'] = u'o'
   >>> request.form['field.dog.query'] = u'Search'
 
-Because the field is required, a non-selection is not valid. Thus, the widget
-does not have an input value.
+Because the field is required, a non-selection is not valid. Thus, while the
+widget still hasInput, it will raise an error when you getInputValue.
 
   >>> widget.hasInput()
-  False
+  True
+  >>> widget.getInputValue()
+  Traceback (most recent call last):
+  ...
+  MissingInputError: ('dog', u'Dogs', None)
 
 If the field is not required:
 
   >>> dog.required = False
 
-then as long as the field is displayed, the widget says it has input.
+then as long as the field is displayed, the widget still has input but returns
+the field's missing value.
 
   >>> widget.hasInput()
   True
-
-  >>> dog.required = True
-
-If we actually provide some input:
-
-  >>> request.form['field.dog'] = 'foo'
-
-then we have input:
-
-  >>> widget.hasInput()
-  True
-
-  >>> del request.form['field.dog']
+  >>> widget.getInputValue() # None
 
 Now if we render the widget, we'll see the search results:
 
+  >>> dog.required = True
   >>> print widget()
   <div class="value">
     <div class="row">
