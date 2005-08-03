@@ -655,6 +655,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed a bug in the codemodule of apidoc that prevented the class
+        documentation code to detect the interface in which an attribute,
+        property or method was declared.
+
       - Fix #421: TextArea widgets didn't handle missing values
         correctly.
 
