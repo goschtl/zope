@@ -655,6 +655,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed a bug in source widgets: hasInput should always return True after
+        an initial render even if field (context) is required.
+
       - Fixed a bug in the codemodule of apidoc that prevented the class
         documentation code to detect the interface in which an attribute,
         property or method was declared.
