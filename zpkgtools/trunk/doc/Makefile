@@ -36,7 +36,7 @@ all:	local apiref
 
 .SUFFIXES: .txt .html
 .txt.html:
-	$(RST2HTML) $<
+	$(RST2HTML) --stylesheet rest.css $<
 
 $(LOCAL_HTML): links.rst
 
