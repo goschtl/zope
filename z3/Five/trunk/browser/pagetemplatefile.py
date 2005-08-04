@@ -95,20 +95,3 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
 
     pt_getContext = rebindFunction(_pt_getContext,
                                    SecureModuleImporter=ModuleImporter)
-
-    def _getContainer(self, obj=None):
-        # Utility for bindcode.
-        if obj is None:
-            obj = self
-        while 1:
-            obj = obj.aq_inner.aq_parent
-            if not getattr(obj, '_is_wrapperish', None):
-                parent = getattr(obj, 'aq_parent', None)
-                inner = getattr(obj, 'aq_inner', None)
-                container = getattr(inner, 'aq_parent', None)
-                try: getSecurityManager().validate(parent, container, '', obj)
-                except Unauthorized:
-                    return UnauthorizedBinding('container', obj)
-                return obj
-
-
