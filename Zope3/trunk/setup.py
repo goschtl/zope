@@ -33,7 +33,6 @@ Topic :: Software Development :: Libraries :: Python Modules
 """
 
 import os
-import sys
 
 # Provide a bunch of custom components that make it possible to build and
 # install non-.py files into the package destinations.
@@ -44,26 +43,6 @@ from distutils.command.install_lib import install_lib as installcmd
 from distutils.core import setup
 from distutils.dist import Distribution
 from distutils.extension import Extension
-
-if sys.version_info < (2, 3):
-    _setup = setup
-    def setup(**kwargs):
-        if kwargs.has_key("classifiers"):
-            del kwargs["classifiers"]
-        _setup(**kwargs)
-
-
-# A hack to determine if Extension objects support the `depends' keyword arg,
-# which only exists in Python 2.3's distutils.
-if not "depends" in Extension.__init__.func_code.co_varnames:
-    # If it doesn't, create a local replacement that removes depends from the
-    # kwargs before calling the regular constructor.
-    _Extension = Extension
-    class Extension(_Extension):
-        def __init__(self, name, sources, **kwargs):
-            if "depends" in kwargs:
-                del kwargs["depends"]
-            _Extension.__init__(self, name, sources, **kwargs)
 
 
 # We have to snoop for file types that distutils doesn't copy correctly when
