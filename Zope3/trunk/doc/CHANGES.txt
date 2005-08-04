@@ -655,6 +655,13 @@ Zope Changes
 
     Bug Fixes
 
+      - Fix #433: Bogus ZEO scripts.
+
+        The (non-functional) runzeo.py, zopectl.py, zeopasswd.py and
+        mkzeoinst.py scripts were removed from the 'bin' directory of
+        Zope installations.  A replacement for creating ZEO instances,
+        mkzeoinstance, was added instead.
+
       - Fixed a bug in source widgets: hasInput should always return True after
         an initial render even if field (context) is required.
 
