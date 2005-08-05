@@ -255,6 +255,8 @@ class ContextDisplay(Command):
     # method above; this is a really hackish way to get the kwargs
     # dict, but it works.
 
+    description = "dump all packaging metadata used by distutils"
+
     user_options = []
 
     def initialize_options(self):
