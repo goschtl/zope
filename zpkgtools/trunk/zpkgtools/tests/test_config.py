@@ -61,6 +61,11 @@ class ConfigTestCase(unittest.TestCase):
         self.assertRaises(cfgparser.ConfigurationError,
                           self.load_text, "resource-map \n")
 
+        # application too many times
+        self.assertRaises(cfgparser.ConfigurationError,
+                          self.load_text, ("build-application true\n"
+                                           "build-application true\n"))
+
         # collect-dependencies too many times
         self.assertRaises(cfgparser.ConfigurationError,
                           self.load_text, ("collect-dependencies false\n"

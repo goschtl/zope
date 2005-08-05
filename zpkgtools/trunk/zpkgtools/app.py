@@ -80,6 +80,8 @@ class Application:
         self.locations = cf.locations
         if cf.collect_dependencies:
             self.options.collect = True
+        if cf.application:
+            self.options.application = True
 
         # XXX Hack: This should be part of BuilderApplication
         if options.include_support_code is None:

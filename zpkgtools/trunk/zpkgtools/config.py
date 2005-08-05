@@ -52,6 +52,7 @@ SCHEMA = cfgparser.Schema(
     ({"resource-map": non_empty_string,
       "include-support-code": boolean,
       "collect-dependencies": boolean,
+      "build-application": boolean,
       }, [], None),
     )
 
@@ -70,6 +71,7 @@ class Configuration:
 
     def __init__(self):
         """Initialize a new `Configuration` object."""
+        self.application = False
         self.collect_dependencies = False
         self.location_maps = []
         self.locations = locationmap.LocationMap()
@@ -124,9 +126,15 @@ class Configuration:
         # collect-dependencies
         if len(cf.collect_dependencies) > 1:
             raise cfgparser.ConfigurationError(
-                "include-support-code can be specified at most once")
+                "collect-dependencies can be specified at most once")
         if cf.collect_dependencies:
             self.collect_dependencies = cf.collect_dependencies[0]
+        # build-application
+        if len(cf.build_application) > 1:
+            raise cfgparser.ConfigurationError(
+                "build-application can be specified at most once")
+        if cf.build_application:
+            self.application = cf.build_application[0]
 
 
 def defaultConfigurationPath():
