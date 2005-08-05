@@ -694,9 +694,11 @@ Contributors
 
 - Dmitry Vasiliev
 
-  Russian translation.
+  Did the Russian translation all by himself
 
-  Work on I18n.
+  Much work on i18n.
+
+  Fixed many bugs in PageTemplates.
 
   Miscellaneous bug fixes.
 
@@ -705,6 +707,18 @@ Contributors
   Miscellaneous bug fixes.
 
   Work on the Cookbook
+
+- Julien Anguenot
+
+  Work on the WFMC implementation.
+
+  Many bug fixes.
+
+- Egon Frerich
+
+  Kept the German translation up-to-date
+
+  Work on i18n.
 
 Other Contributions
 -------------------
