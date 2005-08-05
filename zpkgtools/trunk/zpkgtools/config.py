@@ -51,6 +51,7 @@ def non_empty_string(string):
 SCHEMA = cfgparser.Schema(
     ({"resource-map": non_empty_string,
       "include-support-code": boolean,
+      "collect-dependencies": boolean,
       }, [], None),
     )
 
@@ -69,6 +70,7 @@ class Configuration:
 
     def __init__(self):
         """Initialize a new `Configuration` object."""
+        self.collect_dependencies = False
         self.location_maps = []
         self.locations = locationmap.LocationMap()
         self.include_support_code = True
@@ -113,11 +115,18 @@ class Configuration:
         for value in cf.resource_map:
             value = urlparse.urljoin(base, value)
             self.location_maps.append(value)
+        # include-support-code
         if len(cf.include_support_code) > 1:
             raise cfgparser.ConfigurationError(
                 "include-support-code can be specified at most once")
         if cf.include_support_code:
             self.include_support_code = cf.include_support_code[0]
+        # collect-dependencies
+        if len(cf.collect_dependencies) > 1:
+            raise cfgparser.ConfigurationError(
+                "include-support-code can be specified at most once")
+        if cf.collect_dependencies:
+            self.collect_dependencies = cf.collect_dependencies[0]
 
 
 def defaultConfigurationPath():

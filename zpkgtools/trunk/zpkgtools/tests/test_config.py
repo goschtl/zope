@@ -39,6 +39,7 @@ class ConfigTestCase(unittest.TestCase):
     def test_constructor(self):
         cf = config.Configuration()
         self.assert_(cf.include_support_code)
+        self.assert_(not cf.collect_dependencies)
         self.assertEqual(len(cf.locations), 0)
         self.assertEqual(len(cf.location_maps), 0)
 
@@ -59,6 +60,11 @@ class ConfigTestCase(unittest.TestCase):
         # repository-map without path
         self.assertRaises(cfgparser.ConfigurationError,
                           self.load_text, "resource-map \n")
+
+        # collect-dependencies too many times
+        self.assertRaises(cfgparser.ConfigurationError,
+                          self.load_text, ("collect-dependencies false\n"
+                                           "collect-dependencies false\n"))
 
         # include-support-code too many times
         self.assertRaises(cfgparser.ConfigurationError,

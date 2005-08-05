@@ -78,6 +78,8 @@ class Application:
             cf.loadPath(path)
         cf.finalize()
         self.locations = cf.locations
+        if cf.collect_dependencies:
+            self.options.collect = True
 
         # XXX Hack: This should be part of BuilderApplication
         if options.include_support_code is None:
