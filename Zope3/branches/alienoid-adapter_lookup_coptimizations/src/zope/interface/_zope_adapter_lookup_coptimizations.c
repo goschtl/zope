@@ -1108,7 +1108,8 @@ if (!(str##s = PyString_FromString(#s))) return
         DEFINE_STRING(index);
 #undef DEFINE_STRING
 
-        emptystr = PyString_FromString("");
+        if (!(emptystr = PyString_FromString("")))
+                return;
 
         /* Initialize types: */
         AdapterLookupType.tp_new = PyType_GenericNew;
