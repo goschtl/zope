@@ -75,17 +75,6 @@ from zpkgsetup import urlutils
 PACKAGE_CONF = "SETUP.cfg"
 
 
-class Header(object):
-    """Information about a header file and the package that provides it."""
-
-    def __init__(self, package, path):
-        self.package = package
-        self.path = path
-
-    def __repr__(self):
-        return "<Header(%r, %r)>" % (self.package, self.path)
-
-
 def loadPackageInfo(pkgname, directory, reldir):
     """Load package information for a Python package.
 
@@ -104,8 +93,6 @@ def loadPackageInfo(pkgname, directory, reldir):
     pkginfo = read_package_info(directory, reldir)
     pkginfo.extensions = [create_extension(ext, pkgname, reldir)
                           for ext in pkginfo.extension]
-    pkginfo.package_headers = [Header(pkgname, path)
-                               for path in pkginfo.header]
     return pkginfo
 
 

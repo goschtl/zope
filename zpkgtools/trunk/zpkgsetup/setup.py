@@ -66,7 +66,6 @@ class SetupContext:
         self.packages = []
         self.package_data = {}
         self.package_dir = {}
-        self.package_headers = []
         self.ext_modules = []
         self.scripts = []
         self.platforms = None
@@ -224,7 +223,6 @@ class SetupContext:
                 self.add_package_file(pkgname, posixpath.join(reldir, fn))
 
     def scan_basic(self, pkginfo):
-        self.package_headers.extend(pkginfo.package_headers)
         self.scripts.extend(pkginfo.script)
         if pkginfo.data_files:
             if self.data_files:
