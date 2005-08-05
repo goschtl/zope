@@ -107,8 +107,18 @@ The configuration files used by **zpkg** use a subset of the
 Blank lines and comments (lines that start with ``#`` as the first
 non-blank character) are ignored.
 
-Two keys are currently defined for the configuration file:
-``include-support-code`` and ``resource-map``.
+Four keys are currently defined for the configuration file:
+``build-application``, ``collect-dependencies``,
+``include-support-code``, and ``resource-map``.
+
+If ``build-application`` is set to ``true``, then an application
+distribution is constructed instead of a conventional distutils
+distribution; this is equivalent to specifying **-a** on the command
+line.
+
+Setting ``collect-dependencies`` to ``true`` causes dependencies to be
+added to the distribution if they can be located.  This is the same as
+using the **-c** option on the command line.
 
 The ``include-support-code`` key is used to control whether **zpkg**
 bundles the support code along with the resulting distribution.  The
