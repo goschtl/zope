@@ -95,4 +95,9 @@ Things that need to be done
   shorter than the conventional setup.py (28 lines, not including the
   license blurb).
 
+  Depending on <load> sections or renamings in <collection> sections
+  makes this much more difficult since the sources needed to
+  build/install a package may not be available since the distribution
+  construction has not been performed.
+
 - Documentation, documentation, documentation!
