@@ -25,6 +25,8 @@ An online version of the documentation is available at:
 
   http://www.zope.org/Members/fdrake/zpkgtools/
 
+**zpkg** supports Python versions 2.3 and newer.
+
 
 Running the unit tests
 ----------------------
