@@ -516,14 +516,10 @@ AdapterLookup_lookup1(AdapterLookup *self, PyObject *args, PyObject *keywds)
                                          &name, &_default))
                 return NULL;
 
-        param_args = Py_BuildValue("[O]O", required, provided);
+        param_args = Py_BuildValue("[O]OOO", required, provided,
+                                   name, _default);
 
-        kw = keywds;
-        Py_XINCREF(kw);
-
-        res = AdapterLookup_lookup(self, param_args, kw);
-
-        Py_XDECREF(kw);
+        res = AdapterLookup_lookup(self, param_args, NULL);
         Py_DECREF(param_args);
 
         return res;
@@ -535,8 +531,8 @@ AdapterLookup_adapter_hook(AdapterLookup *self, PyObject *args,
 {
         PyObject *interface;
         PyObject *object;
-        PyObject *name = NULL;
-        PyObject *_default = NULL;
+        PyObject *name = emptystr;
+        PyObject *_default = Py_None;
 
         static char *kwlist[] = {"interface", "object", "name", "default",
                                  NULL};
@@ -546,20 +542,14 @@ AdapterLookup_adapter_hook(AdapterLookup *self, PyObject *args,
                                          &name, &_default))
                 return NULL;
 
-        if (name == NULL)
-                name = PyString_FromString("");
-        else
-                Py_INCREF(name);
-
         /* factory = self.lookup1(providedBy(object), interface, name) */
         PyObject *required = providedBy(NULL, object);
-        PyObject *lookup_args = Py_BuildValue("OO", required, interface);
-        PyObject *kw = Py_BuildValue("{s:O}", "name", name);
+        PyObject *lookup_args = Py_BuildValue("OOO", required, interface,
+                                              name);
         Py_DECREF(required);
 
-        PyObject *factory = AdapterLookup_lookup1(self, lookup_args, kw);
+        PyObject *factory = AdapterLookup_lookup1(self, lookup_args, NULL);
         Py_DECREF(lookup_args);
-        Py_DECREF(kw);
 
         /*
            if factory is not None:
@@ -574,22 +564,18 @@ AdapterLookup_adapter_hook(AdapterLookup *self, PyObject *args,
                 Py_DECREF(params);
                 if (adapter == NULL) {
                         Py_DECREF(factory);
-                        Py_XDECREF(name);
                         return NULL;
                 }
                 if (adapter != Py_None) {
                         Py_DECREF(factory);
-                        Py_XDECREF(name);
                         return adapter;
                 }
         }
         Py_XDECREF(factory);
-        if (_default == NULL) {
-                Py_XDECREF(name);
+        if (_default == Py_None) {
                 Py_INCREF(Py_None);
                 return Py_None;
         }
-        Py_XDECREF(name);
         Py_INCREF(_default);
         return _default;
 }
@@ -600,7 +586,7 @@ AdapterLookup_queryAdapter(AdapterLookup *self, PyObject *args,
 {
         PyObject *interface;
         PyObject *object;
-        PyObject *name = NULL;
+        PyObject *name = emptystr;
         PyObject *_default = Py_None;
 
         static char *kwlist[] = {"object", "interface", "name", "default",
@@ -610,18 +596,14 @@ AdapterLookup_queryAdapter(AdapterLookup *self, PyObject *args,
                                          &name, &_default))
                 return NULL;
 
-        if (name == NULL)
-                name = PyString_FromString("");
-        else
-                Py_INCREF(name);
-
-        PyObject *params = Py_BuildValue("OO", interface, object);
-        PyObject *kw = Py_BuildValue("{s:O,s:O}", "name", name,
-                                     "default", _default);
-        PyObject *result =  AdapterLookup_adapter_hook(self, params, kw);
-        Py_DECREF(kw);
+        PyObject *params = Py_BuildValue("OOOO", interface, object,
+                                         name, _default);
+        PyObject *result =  AdapterLookup_adapter_hook(self, params, NULL);
         Py_DECREF(params);
-        Py_XDECREF(name);
+
+        if (result == NULL)
+                return NULL;
+
         return result;
 }
 
