@@ -45,6 +45,15 @@ Things that need to be done
 
 - Package assembler script and distribution runtime
 
+  - It should be possible to simply embed a resoure map within a
+    configuration file, so a project can avoid needing two files to
+    configure **zpkg**.  This might look something like this::
+
+      <resources>
+        First  svn://svn.example.org/repos/main/First/tags/*/
+        Second svn://svn.example.org/repos/main/Second/tags/*/
+      </resources>
+
   - We should have a way to express dependence on particular versions
     of Python, and a way to say which is preferred.  (This can be used
     when building an "application" distribution since that has some
