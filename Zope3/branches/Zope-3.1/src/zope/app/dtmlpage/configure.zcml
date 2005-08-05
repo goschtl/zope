@@ -13,7 +13,7 @@
     <factory
         id="zope.app.DTMLPage"
         title="DTML Page"
-        description="A simple, content-based DTML Page"
+        description="A simple, content-based DTML page"
         />
 
     <require
