@@ -616,6 +616,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Request factories were not uniformly pluggable.  All are pluggable now
+        without having to write a new server.
+
       - Fix #433: Bogus ZEO scripts.
 
         The (non-functional) runzeo.py, zopectl.py, zeopasswd.py and
