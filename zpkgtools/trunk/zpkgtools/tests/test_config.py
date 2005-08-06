@@ -39,6 +39,7 @@ class ConfigTestCase(unittest.TestCase):
     def test_constructor(self):
         cf = config.Configuration()
         self.assert_(cf.include_support_code)
+        self.assert_(not cf.application)
         self.assert_(not cf.collect_dependencies)
         self.assertEqual(len(cf.locations), 0)
         self.assertEqual(len(cf.location_maps), 0)
@@ -80,6 +81,22 @@ class ConfigTestCase(unittest.TestCase):
         path = os.path.join(here, "no-such-file")
         cf = config.Configuration()
         self.assertRaises(IOError, cf.loadPath, path)
+
+    def test_simple_values_false(self):
+        cf = self.load_text("build-application no\n"
+                            "collect-dependencies false\n"
+                            "include-support-code false\n")
+        self.assert_(not cf.application)
+        self.assert_(not cf.collect_dependencies)
+        self.assert_(not cf.include_support_code)
+
+    def test_simple_values_true(self):
+        cf = self.load_text("build-application true\n"
+                            "collect-dependencies yes\n"
+                            "include-support-code true\n")
+        self.assert_(cf.application)
+        self.assert_(cf.collect_dependencies)
+        self.assert_(cf.include_support_code)
 
     def load_text(self, text, path=None, basedir=None):
         if path is None:
