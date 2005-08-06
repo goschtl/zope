@@ -20,6 +20,7 @@ from zope.app.rdb import ZopeConnection
 from zope.app.rdb import ZopeCursor
 from zope.app.rdb.tests.stubs import *
 
+
 class MyConnectionStub(ConnectionStub):
     def cursor(self):
         return MyCursorStub()
@@ -41,6 +42,10 @@ class MyCursorStub(CursorStub):
     _raw = raw
 
     description = ((None, 'string'), (None, 'int'), (None, 'foo'))
+
+    def execute(self, query, args=None):
+        self.query = query
+        self.args = args
 
     def fetchone(self):
         if self._raw:
@@ -85,7 +90,8 @@ class MyTypeInfoStub(TypeInfoStub):
 class ZopeCursorTests(TestCase):
 
     def setUp(self):
-        zc = ZopeConnection(MyConnectionStub(), MyTypeInfoStub())
+        self.typeInfo = MyTypeInfoStub()
+        zc = ZopeConnection(MyConnectionStub(), self.typeInfo)
         self.cursor = ZopeCursor(zc.conn.cursor(), zc)
 
     def test_cursor_fetchone(self):
@@ -118,6 +124,33 @@ class ZopeCursorTests(TestCase):
                    'type conversion was not performed in cursor.fetchall:\n'
                    'got      %r,\n'
                    'expected %r' % (results, expected))
+
+    def test_cursor_query_encoding(self):
+        self.cursor.execute(u'\u0422\u0435\u0441\u0442')
+        self.assertEqual('\xd0\xa2\xd0\xb5\xd1\x81\xd1\x82',
+            self.cursor.cursor.query)
+
+        self.typeInfo.setEncoding("windows-1251")
+        self.cursor.execute(u'\u0422\u0435\u0441\u0442')
+        self.assertEqual('\xd2\xe5\xf1\xf2', self.cursor.cursor.query)
+
+    def test_cursor_tuple_args_encoding(self):
+        self.typeInfo.setEncoding("windows-1251")
+        self.cursor.execute("SELECT * FROM table",
+            (u'\u0422\u0435\u0441\u0442',))
+        self.assertEqual('\xd2\xe5\xf1\xf2', self.cursor.cursor.args[0])
+
+    def test_cursor_list_args_encoding(self):
+        self.typeInfo.setEncoding("windows-1251")
+        self.cursor.execute("SELECT * FROM table",
+            [u'\u0422\u0435\u0441\u0442'])
+        self.assertEqual('\xd2\xe5\xf1\xf2', self.cursor.cursor.args[0])
+
+    def test_cursor_dict_args_encoding(self):
+        self.typeInfo.setEncoding("windows-1251")
+        self.cursor.execute("SELECT * FROM table",
+            {"value": u'\u0422\u0435\u0441\u0442'})
+        self.assertEqual('\xd2\xe5\xf1\xf2', self.cursor.cursor.args["value"])
 
 
 def test_suite():

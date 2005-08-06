@@ -47,5 +47,11 @@ class TypeInfoStub(object):
     threadsafety = 0
     encoding = 'utf-8'
 
+    def setEncoding(self, encoding):
+        self.encoding = encoding
+
+    def getEncoding(self):
+        return self.encoding
+
     def getConverter(self, type):
         return lambda x: x
