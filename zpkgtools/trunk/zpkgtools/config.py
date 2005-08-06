@@ -48,13 +48,42 @@ def non_empty_string(string):
         raise ValueError("value cannot be empty")
     return string
 
-SCHEMA = cfgparser.Schema(
-    ({"resource-map": non_empty_string,
-      "include-support-code": boolean,
-      "collect-dependencies": boolean,
-      "build-application": boolean,
-      }, [], None),
-    )
+
+class Schema(cfgparser.Schema, object):
+
+    def __init__(self, filename, locations):
+        # We can use the base schema for the top-level definitions,
+        # except for the <resources> section.
+        super(Schema, self).__init__(
+            ({"resource-map": non_empty_string,
+              "include-support-code": boolean,
+              "collect-dependencies": boolean,
+              "build-application": boolean,
+              }, ["resources"], None))
+        self.base = urlutils.file_url(filename)
+        self.filename = filename
+        self.locations = locations
+
+    def startSection(self, parent, typename, name):
+        if typename != "resources":
+            raise cfgparser.ConfigurationError(
+                "only <resources> sections are allowed")
+        if isinstance(parent, locationmap.LocationMap):
+            raise cfgparser.ConfigurationError(
+                "<resources> sections may not be nested")
+        return locationmap.MapLoader(self.base, self.filename, self.locations)
+
+    def addValue(self, section, key, value):
+        if isinstance(section, locationmap.MapLoader):
+            section.add(key, value)
+        else:
+            super(Schema, self).addValue(section, key, value)
+
+    def finishSection(self, section):
+        if isinstance(section, locationmap.MapLoader):
+            return section.mapping
+        return super(Schema, self).finishSection(section)
+
 
 
 class Configuration:
@@ -111,7 +140,7 @@ class Configuration:
             paths found in the configuration file.
 
         """
-        p = cfgparser.Parser(f, path, SCHEMA)
+        p = cfgparser.Parser(f, path, Schema(path, self.locations))
         cf = p.load()
         base = urlutils.file_url(os.path.abspath(basedir)) + "/"
         for value in cf.resource_map:

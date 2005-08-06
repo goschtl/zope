@@ -33,7 +33,7 @@ _logger = logging.getLogger(__name__)
 
 
 class MapLoadingError(ValueError):
-    def __init__(self, message, filename, lineno):
+    def __init__(self, message, filename, lineno=None):
         self.filename = filename
         self.lineno = lineno
         ValueError.__init__(self, message)
@@ -142,6 +142,66 @@ class LocationMap(UserDict.UserDict):
         return key in self._wildcards
 
 
+class MapLoader:
+
+    def __init__(self, base, filename, mapping):
+        assert base
+        self.base = base
+        self.filename = filename
+        self.mapping = mapping
+        self.local_entries = {}
+        try:
+            self.cvsbase = loader.parse(base)
+        except ValueError:
+            self.cvsbase = None
+
+    def add(self, resource, url):
+        urlparts = url.split()
+        if len(urlparts) != 1:
+            raise MapLoadingError("malformed package specification",
+                                  self.filename)
+        try:
+            cvsurl = loader.parse(url)
+        except ValueError:
+            # conventional URL
+            if self.cvsbase is None:
+                url = urlparse.urljoin(self.base, url)
+        else:
+            if isinstance(cvsurl, cvsloader.RepositoryUrl):
+                if self.cvsbase is None:
+                    raise MapLoadingError(
+                        "repository: URLs are not supported"
+                        " without a cvs: or Subversion base URL",
+                        self.filename)
+                cvsurl = self.cvsbase.join(cvsurl)
+                url = get_template_url(cvsurl)
+
+        if resource in self.local_entries:
+            _logger.warn(
+                "found duplicate entry for resource %r in %s at line %d",
+                resource, self.filename)
+        elif resource.endswith(".*"):
+            # Deal with wildcarded resources;
+            # need to check if it's already there
+            wildcard = resource[:-2]
+            if not is_module_name(wildcard):
+                raise MapLoadingError("wildcard package name specified, but"
+                                      " prefix is not a legal package name: %r"
+                                      % wildcard,
+                                      self.filename)
+            if not self.mapping._have_wildcard(wildcard):
+                self.mapping._add_wildcard(wildcard, url)
+        elif "*" in resource:
+            raise MapLoadingError("invalid wildcard specification: %r"
+                                  % resource,
+                                  self.filename)
+        elif resource not in self.mapping:
+            # We only want to add it once, so that loading several
+            # mappings causes the first defining a resource to "win":
+            self.mapping[resource] = url
+        self.local_entries[resource] = resource
+
+
 def load(f, base, mapping):
     """Parse a location map from an open file.
 
@@ -156,13 +216,9 @@ def load(f, base, mapping):
     easier to test the map parsing aspect of this module.
 
     """
-    assert base
-    try:
-        cvsbase = loader.parse(base)
-    except ValueError:
-        cvsbase = None
-    local_entries = {}
     lineno = 0
+    filename = getattr(f, "name", "<unknown>")
+    maploader = MapLoader(base, filename, mapping)
     for line in f:
         lineno += 1
         line = line.strip()
@@ -172,48 +228,12 @@ def load(f, base, mapping):
         parts = line.split()
         if len(parts) != 2:
             raise MapLoadingError("malformed package specification",
-                                  getattr(f, "name", "<unknown>"), lineno)
-        resource, url = parts
+                                  filename, lineno)
         try:
-            cvsurl = loader.parse(url)
-        except ValueError:
-            # conventional URL
-            if cvsbase is None:
-                url = urlparse.urljoin(base, url)
-        else:
-            if isinstance(cvsurl, cvsloader.RepositoryUrl):
-                if cvsbase is None:
-                    raise MapLoadingError(
-                        "repository: URLs are not supported"
-                        " without a cvs: or Subversion base URL",
-                        getattr(f, "name", "<unknown>"), lineno)
-                cvsurl = cvsbase.join(cvsurl)
-                url = get_template_url(cvsurl)
-
-        if resource in local_entries:
-            _logger.warn(
-                "found duplicate entry for resource %r in %s at line %d",
-                resource, getattr(f, "name", "<unknown>"), lineno)
-        elif resource.endswith(".*"):
-            # Deal with wildcarded resources;
-            # need to check if it's already there
-            wildcard = resource[:-2]
-            if not is_module_name(wildcard):
-                raise MapLoadingError("wildcard package name specified, but"
-                                      " prefix is not a legal package name: %r"
-                                      % wildcard,
-                                      getattr(f, "name", "<unknown>"), lineno)
-            if not mapping._have_wildcard(wildcard):
-                mapping._add_wildcard(wildcard, url)
-        elif "*" in resource:
-            raise MapLoadingError("invalid wildcard specification: %r"
-                                  % resource,
-                                  getattr(f, "name", "<unknown>"), lineno)
-        elif resource not in mapping:
-            # We only want to add it once, so that loading several
-            # mappings causes the first defining a resource to "win":
-            mapping[resource] = url
-        local_entries[resource] = resource
+            maploader.add(*parts)
+        except MapLoadingError, e:
+            e.lineno = lineno
+            raise
 
 
 def get_template_url(parsed):

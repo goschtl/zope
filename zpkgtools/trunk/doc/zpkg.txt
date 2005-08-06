@@ -109,7 +109,8 @@ non-blank character) are ignored.
 
 Four keys are currently defined for the configuration file:
 ``build-application``, ``collect-dependencies``,
-``include-support-code``, and ``resource-map``.
+``include-support-code``, and ``resource-map``.  There is also one
+section type that can be used as well, ``<resources>``.
 
 If ``build-application`` is set to ``true``, then an application
 distribution is constructed instead of a conventional distutils
@@ -140,13 +141,25 @@ For example, if the configuration file `/home/fdrake/zpkg.conf`
 contains::
 
   resource-map  local.map
-  resource-map  cvs://cvs.zope.org/cvs-repository:Packages2/packages.map
+
+  <resources>
+    somepkg  some/relative/path
+  </resources>
+
+  resource-map cvs://cvs.zope.org/cvs-repository:Packages2/packages.map
+
+  <resources>
+    another  some/where/else
+  </resources>
 
 **zpkg** will first load the maps in the order:
 
-1. ``/home/fdrake/local.map``
-2. ``cvs://cvs.zope.org/cvs-repository:Packages2/packages.map``
+1. embedded maps, in their order of appearance
+2. ``/home/fdrake/local.map``
+3. ``cvs://cvs.zope.org/cvs-repository:Packages2/packages.map``
 
+Note that all ``<resources>`` sections will be processed before any
+external maps are loaded, regardless of ordering.
 
 .. _ZConfig: http://www.zope.org/Members/fdrake/zconfig/
 

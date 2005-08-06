@@ -98,6 +98,30 @@ class ConfigTestCase(unittest.TestCase):
         self.assert_(cf.collect_dependencies)
         self.assert_(cf.include_support_code)
 
+    def test_embedded_resource_map(self):
+        cf = config.Configuration()
+        fd, path = tempfile.mkstemp(".conf", text=True)
+        f = os.fdopen(fd, "w+")
+        f.write(
+            "<resources>\n"
+            "  PKG1  svn://svn.example.net/repos/pkg1/trunk\n"
+            "  pkg2  svn://svn.example.net/repos/proj/trunk/src/pkg2\n"
+            "  rel  some/dir\n"
+            "</resources>\n")
+        f.close()
+        where = os.path.dirname(path)
+        whereurl = urlutils.file_url(where)
+        try:
+            cf.loadPath(path)
+            self.assertEqual(cf.locations["PKG1"],
+                             "svn://svn.example.net/repos/pkg1/trunk")
+            self.assertEqual(cf.locations["pkg2"],
+                             "svn://svn.example.net/repos/proj/trunk/src/pkg2")
+            self.assertEqual(cf.locations["rel"],
+                             whereurl + "/some/dir")
+        finally:
+            os.unlink(path)
+
     def load_text(self, text, path=None, basedir=None):
         if path is None:
             if basedir is None:
