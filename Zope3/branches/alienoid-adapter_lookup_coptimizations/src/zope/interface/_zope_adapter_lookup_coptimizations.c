@@ -234,7 +234,7 @@ AdapterLookup_lookup(AdapterLookup *self, PyObject *args, PyObject *keywds)
 {
         int i, j, k;
         PyObject *required, *provided;
-        PyObject *name = NULL;
+        PyObject *name = emptystr;
         PyObject *_default = Py_None;
         PyObject *surrogate, *byname, *value = NULL;
 
@@ -247,11 +247,6 @@ AdapterLookup_lookup(AdapterLookup *self, PyObject *args, PyObject *keywds)
                 return NULL;
 
         const int order = PySequence_Length(required);
-
-        if (name == NULL)
-                name = PyString_FromString("");
-        else
-                Py_INCREF(name);
 
         if (order == 1) {
                 /* Simple adapter */
@@ -293,18 +288,15 @@ AdapterLookup_lookup(AdapterLookup *self, PyObject *args, PyObject *keywds)
                                         value = _default;
                         } else {
                                 Py_XDECREF(byname);
-                                Py_XDECREF(name);
                                 Py_INCREF(_default);
                                 return _default;
                         }
                 }
 
-                Py_XDECREF(name);
                 Py_INCREF(value);
                 return value;
 
         on_error:
-                Py_XDECREF(name);
                 return NULL;
 
         } else if (!order) {
@@ -312,23 +304,19 @@ AdapterLookup_lookup(AdapterLookup *self, PyObject *args, PyObject *keywds)
                 byname = PyObject_CallMethodObjArgs(self->_null,
                                                     strget,
                                                     provided, NULL);
-                if (byname == NULL) {
-                        Py_XDECREF(name);
+                if (byname == NULL)
                         return NULL;
-                }
 
                 if (byname != Py_None) {
                         value = PyDict_GetItem(byname, name);
                         Py_XDECREF(byname);
                         if (value == NULL)
                                 value = _default;
-                        Py_XDECREF(name);
                         Py_XINCREF(value);
                         return value;
                 }
 
                 Py_XDECREF(byname);
-                Py_XDECREF(name);
                 Py_INCREF(_default);
                 return _default;
         }
@@ -484,7 +472,6 @@ finish:
         Py_XDECREF(surrogates);
         Py_XDECREF(key);
         Py_XDECREF(with);
-        Py_XDECREF(name);
         if (_default == NULL) {
                 Py_INCREF(Py_None);
                 return Py_None;
@@ -495,7 +482,6 @@ finish:
 fail_req:
         Py_DECREF(with);
 fail_with:
-        Py_XDECREF(name);
         return NULL;
 }
 
