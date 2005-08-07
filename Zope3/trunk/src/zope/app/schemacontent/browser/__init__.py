@@ -31,6 +31,7 @@ from zope.schema import getFieldsInOrder, Choice
 from zope.security.checker import CheckerPublic
 from zope.security.proxy import removeSecurityProxy
 
+
 class ContentComponentPermissionEdit(EditView):
 
     def __init__(self, context, request):
@@ -40,7 +41,7 @@ class ContentComponentPermissionEdit(EditView):
     def buildPermissionWidgets(self):
         schema = self.context.schema
         for name, field in getFieldsInOrder(schema):
-            
+
             # get the permissions and then the permission id.
             # We can't deal in dropdownboxes with permission itself.
             # There is no way to compare the permission to the
@@ -60,7 +61,7 @@ class ContentComponentPermissionEdit(EditView):
                     set_perm_id = None
             else:
                 get_perm_id, set_perm_id = None, None
-            
+
             # Create the Accessor Permission Widget for this field
             permField = Choice(
                 __name__=name+'_get_perm',
@@ -93,7 +94,7 @@ class ContentComponentPermissionEdit(EditView):
             for name, field in getFieldsInOrder(schema):
                 getPermWidget = getattr(self, name+'_get_perm_widget')
                 setPermWidget = getattr(self, name+'_set_perm_widget')
-                
+
                 # get the selected permission id from the from request
                 get_perm_id = getPermWidget.getInputValue()
                 set_perm_id = setPermWidget.getInputValue()
@@ -101,14 +102,14 @@ class ContentComponentPermissionEdit(EditView):
                 # get the right permission from the given id
                 get_perm = zapi.getUtility(IPermission, get_perm_id)
                 set_perm = zapi.getUtility(IPermission, set_perm_id)
-                
+
                 # set the permission back to the instance
                 perms[name] = (get_perm, set_perm)
 
                 # update widget ohterwise we see the old value
                 getPermWidget.setRenderedValue(get_perm_id)
                 setPermWidget.setRenderedValue(set_perm_id)
-                
+
             status = 'Fields permissions mapping updated.'
 
         return status
@@ -144,7 +145,7 @@ class AddContentComponentInstanceView(AddView):
                     for name, util in zapi.getUtilitiesFor(
                                                   IContentComponentDefinition)
                     if name == type_name]
-            
+
         if not matching:
             raise ComponentLookupError, \
                   "No Content Component Definition named '%s' found" %type_name
@@ -187,4 +188,3 @@ class EditContentComponentInstanceView(EditView):
         self.label = 'Edit %s' %context.__name__
         super(EditContentComponentInstanceView, self).__init__(context,
                                                                request)
-

@@ -99,5 +99,3 @@ def ContentComponentInstanceChecker(instance):
                    instance.__checker_setattr.get)
 
 defineChecker(ContentComponentInstance, ContentComponentInstanceChecker)
-
-
