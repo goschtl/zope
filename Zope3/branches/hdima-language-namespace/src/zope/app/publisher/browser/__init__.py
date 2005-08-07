@@ -20,9 +20,16 @@ from zope.component import getSiteManager
 
 import zope.interface
 from zope.interface import implements, directlyProvidedBy, directlyProvides
+from zope.publisher.browser import BrowserLanguages
+from zope.i18n.interfaces import IModifiableUserPreferredLanguages
+
+from zope.app.annotation import IAnnotations
 from zope.app.location import Location
 from zope.app.publisher.interfaces.browser import IBrowserView
 from zope.publisher.interfaces.browser import ISkin
+
+
+key = "zope.app.publisher.browser.IUserPreferredLanguages"
 
 # TODO: needs testing of __parent__ property
 class BrowserView(Location):
@@ -33,7 +40,7 @@ class BrowserView(Location):
         self.request = request
 
     def __getParent(self):
-        return hasattr(self, '_parent') and self._parent or self.context
+        return getattr(self, '_parent', self.context)
 
     def __setParent(self, parent):
         self._parent = parent
@@ -90,10 +97,10 @@ def applySkin(request, skin):
     >>> class SkinB(Interface): pass
     >>> directlyProvides(SkinB, ISkin)
     >>> class IRequest(Interface): pass
-    
+
     >>> class Request(object):
     ...     implements(IRequest)
-    
+
     >>> req = Request()
 
     >>> applySkin(req, SkinA)
@@ -113,3 +120,27 @@ def applySkin(request, skin):
     # Add the new skin.
     ifaces.append(skin)
     directlyProvides(request, *ifaces)
+
+class ModifiableBrowserLanguages(BrowserLanguages):
+
+    implements(IModifiableUserPreferredLanguages)
+
+    def setPreferredLanguages(self, languages):
+        languages_data = self._getLanguagesData()
+        languages_data["overridden"] = languages
+
+    def getPreferredLanguages(self):
+        languages_data = self._getLanguagesData()
+        if "overridden" in languages_data:
+            return languages_data["overridden"]
+        elif "cached" not in languages_data:
+            languages_data["cached"] = super(ModifiableBrowserLanguages,
+                self).getPreferredLanguages()
+        return languages_data["cached"]
+
+    def _getLanguagesData(self):
+        annotations = IAnnotations(self.request)
+        languages_data = annotations.get(key)
+        if languages_data is None:
+            annotations[key] = languages_data = {}
+        return languages_data

@@ -230,6 +230,7 @@ class HTTPRequest(BaseRequest):
         'method',         # The upper-cased request method (REQUEST_METHOD)
         '_locale',        # The locale for the request
         '_vh_root',       # Object at the root of the virtual host
+        '__annotations__',
         )
 
     retry_max_count = 3    # How many times we're willing to retry
@@ -809,7 +810,7 @@ class HTTPResponse(BaseResponse):
                 status=302
             else:
                 status=303
-                
+
         self.setStatus(status)
         self.setHeader('Location', location)
         return location
@@ -897,7 +898,7 @@ class HTTPResponse(BaseResponse):
 
     def output(self, data):
         """Output the data to the world.
-        
+
         There are a couple of steps we have to do:
 
         1. Check that there is a character encoding for the data. If not,
@@ -921,7 +922,7 @@ class HTTPResponse(BaseResponse):
         if self.getHeader('content-type', '').startswith('text'):
             data = self._encode(data)
             self._updateContentLength(data)
-        
+
         if (not ('content-length' in self._headers)
             and not ('transfer-encoding' in self._headers)):
             self._updateContentLength()
