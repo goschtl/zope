@@ -26,6 +26,7 @@ from zope.interface import implements
 from zope.app.container.contained import Contained
 from zope.app.cache.interfaces.ram import IRAMCache
 
+
 # A global caches dictionary shared between threads
 caches = {}
 
@@ -120,13 +121,10 @@ class RAMCache(Persistent, Contained):
 
     def _getStorage(self):
         "Finds or creates a storage object."
-
-        global caches
-        global writelock
         cacheId = self._cacheId
         writelock.acquire()
         try:
-            if not caches.has_key(cacheId):
+            if cacheId not in caches:
                 caches[cacheId] = Storage(self.maxEntries, self.maxAge,
                                           self.cleanupInterval)
             self._v_storage = caches[cacheId]
@@ -136,13 +134,12 @@ class RAMCache(Persistent, Contained):
 
     def _buildKey(kw):
         "Build a tuple which can be used as an index for a cached value"
-
         if kw:
             items = kw.items()
             items.sort()
             return tuple(items)
-
         return ()
+
     _buildKey = staticmethod(_buildKey)
 
 
@@ -291,10 +288,7 @@ class Storage(object):
 
         self.writelock.acquire()
         try:
-            keys = []
-            for ob in self._data:
-                for key in self._data[ob]:
-                    keys.append((ob, key))
+            keys = [(ob, k) for ob, v in self._data.iteritems() for k in v]
 
             if len(keys) > self.maxEntries:
                 def cmpByCount(x,y):
