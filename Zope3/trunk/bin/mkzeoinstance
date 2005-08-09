@@ -30,8 +30,11 @@ for parts in [("src",), ("lib", "python"), ("Lib", "site-packages")]:
         sys.path.insert(0, d)
         break
 else:
-    print >>sys.stderr, "Could not locate ZODB software installation!"
-    sys.exit(1)
+    try:
+        import ZEO
+    except ImportError:
+        print >>sys.stderr, "Could not locate ZODB software installation!"
+        sys.exit(1)
 
 
 from ZEO.mkzeoinst import ZEOInstanceBuilder
