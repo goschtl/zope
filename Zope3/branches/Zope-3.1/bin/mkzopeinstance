@@ -32,8 +32,11 @@ for parts in [("src",), ("lib", "python"), ("Lib", "site-packages")]:
         sys.path.insert(0, d)
         break
 else:
-    print >>sys.stderr, "Could not locate Zope software installation!"
-    sys.exit(1)
+    try:
+        import zope.app.server
+    except ImportError:
+        print >>sys.stderr, "Could not locate Zope software installation!"
+        sys.exit(1)
 
 
 from zope.app.server.mkzopeinstance import main
