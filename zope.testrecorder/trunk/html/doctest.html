@@ -107,7 +107,8 @@ DoctestRenderer.prototype.click = function(item) {
 }
 
 DoctestRenderer.prototype.change = function(item) {
-  this.stmt("# change event");
+  var id = this.bestId(item);
+  this.stmt("browser.controls['" + id + "'] = " + this.pyrepr(item.value));
 }
 
 DoctestRenderer.prototype.comment = function(item) {

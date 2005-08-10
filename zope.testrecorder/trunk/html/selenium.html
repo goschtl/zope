@@ -104,10 +104,11 @@ SeleniumRenderer.prototype.render = function() {
 }
 
 SeleniumRenderer.prototype.bestId = function(item) {
-  if ((item.info) && (item.info.bestid)) {
-    return item.info.bestid();
-  }
-  return "unknown";
+  if (item.id)
+    return item.id;
+  if (item.name)
+    return item.name;
+  return 'unknown';
 }
 
 SeleniumRenderer.prototype.openUrl = function(item) {
@@ -121,6 +122,8 @@ SeleniumRenderer.prototype.click = function(item) {
 }
 
 SeleniumRenderer.prototype.change = function(item) {
+  var id = this.bestId(item);
+  this.row("type", id, this.repr(item.value));
   return;
 }
 

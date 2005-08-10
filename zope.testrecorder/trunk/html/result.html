@@ -96,10 +96,11 @@ GenericRenderer.prototype.toggle = function(e) {
 
 
 GenericRenderer.prototype.bestId = function(item) {
-  if ((item.info) && (item.info.bestid)) {
-    return item.info.bestid();
-  }
-  return "unknown";
+  if (item.id)
+    return item.id;
+  if (item.name)
+    return item.name;
+  return 'unknown';
 }
 
 GenericRenderer.prototype.openUrl = function(item) {
@@ -111,7 +112,8 @@ GenericRenderer.prototype.click = function(item) {
 }
 
 GenericRenderer.prototype.change = function(item) {
-  return "change: (todo)";
+  var id = this.bestId(item);
+  return "change: (" + id + ") -> " + this.repr(item.value);
 }
 
 GenericRenderer.prototype.comment = function(item) {

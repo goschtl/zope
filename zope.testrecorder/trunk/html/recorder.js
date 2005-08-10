@@ -702,6 +702,7 @@ TestRecorder.Recorder.prototype.onpageload = function() {
 
 TestRecorder.Recorder.prototype.onchange = function(e) {
   var e = new TestRecorder.Event(e);
+  recorder.testcase.append(new TestRecorder.ChangeEvent(e.target()));
   recorder.log("value changed: " + e.target());
 }
 
