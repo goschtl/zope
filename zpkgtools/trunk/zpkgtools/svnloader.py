@@ -314,7 +314,7 @@ class SubversionLoader:
 
         """
         # do an "svn cat" to get a file, or learn that this is a directory
-        cmd = "svn cat '%s'" % url
+        cmd = 'svn cat "%s"' % url
         runlog.report_command(cmd)
         stdin, stdout, stderr = os.popen3(cmd)
         data = stdout.read()
@@ -324,7 +324,7 @@ class SubversionLoader:
             if "directory" in err:
                 # it is!
                 target = os.path.join(workdir, "foo")
-                cmd = "svn export -q '%s' '%s'" % (url, target)
+                cmd = 'svn export -q "%s" "%s"' % (url, target)
                 runlog.report_command(cmd)
                 rc = os.system(cmd)
                 runlog.report_exit_code(rc)

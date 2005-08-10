@@ -387,6 +387,6 @@ class CvsLoader:
     # separate this out to ease testing
 
     def openCvsRLog(self, cvsroot, path):
-        cmd = "cvs -f -q -d '%s' rlog -R -l '%s'" % (cvsroot, path)
+        cmd = 'cvs -f -q -d "%s" rlog -R -l "%s"' % (cvsroot, path)
         runlog.report_command(cmd)
         return os.popen(cmd, "r")
