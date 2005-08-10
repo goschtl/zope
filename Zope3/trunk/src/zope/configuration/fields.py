@@ -24,7 +24,7 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.interface import implements
 from zope.configuration.interfaces import InvalidToken
 
-PYIDENTIFIER_REGEX = u'\A[a-zA-Z_]+[a-zA-Z0-9_]*\Z'
+PYIDENTIFIER_REGEX = u'\\A[a-zA-Z_]+[a-zA-Z0-9_]*\\Z'
 pyidentifierPattern = re.compile(PYIDENTIFIER_REGEX)
 
 class PythonIdentifier(schema.TextLine):
