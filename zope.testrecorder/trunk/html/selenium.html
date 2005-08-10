@@ -14,6 +14,22 @@ function SeleniumRenderer(document) {
   this.recorder = top.frames["control"].recorder;
   this.title = this.recorder.testcase.title;
   this.items = this.recorder.testcase.items;
+  this.output = "";
+}
+
+SeleniumRenderer.prototype.quote = function(data) {
+  if (data) {
+    
+    data = data.replace(/[<]/g, '&lt;');
+    data = data.replace(/[>]/g, '&gt;');
+    data = data.replace(/["]/g, '&quot;');
+  }
+  return data;
+}
+
+SeleniumRenderer.prototype.write = function(data) {
+  this.document.write(data);
+  this.output = this.output + this.quote(data);
 }
 
 SeleniumRenderer.prototype.otag = function(tag, ex) {
@@ -29,12 +45,12 @@ SeleniumRenderer.prototype.row = function(tx1, tx2, tx3) {
   tx1 = tx1 ? tx1 : "";
   tx2 = tx2 ? tx2 : "";
   tx3 = tx3 ? tx3 : "";
-  var s = this.otag("tr");
+  var s = this.otag("tr") + "\n";
   s = s + this.otag("td") + tx1 + this.ctag("td") + "\n";
   s = s + this.otag("td") + tx2 + this.ctag("td") + "\n";
   s = s + this.otag("td") + tx3 + this.ctag("td") + "\n";
   s = s + this.ctag("tr") + "\n";
-  this.document.write(s);
+  this.write(s);
 }
 
 SeleniumRenderer.prototype.repr = function(text) {
@@ -65,7 +81,8 @@ SeleniumRenderer.prototype.render = function() {
 
   this.document.write(this.otag("html"));
   this.document.write(this.otag("body"));
-  this.document.write(this.otag("table", "border=1"));
+
+  this.write(this.otag("table", "border=1") + "\n");
 
   // should write title here
 
@@ -76,7 +93,11 @@ SeleniumRenderer.prototype.render = function() {
     }
   }
 
-  this.document.write(this.ctag("table"));
+  this.write(this.ctag("table"));
+
+  this.document.write(this.otag("pre"));
+  this.document.write(this.output);
+  this.document.write(this.ctag("pre"));
   this.document.write(this.ctag("body"));
   this.document.write(this.ctag("html"));
   this.document.close();
@@ -162,13 +183,15 @@ SeleniumRenderer.prototype.checkImageSrc = function(item) {
   this.row("verifyAttribute", id + "@src", item.info.src);
 }
 
+var sr = new SeleniumRenderer(document);
 
 function onpageload() {
-  var sr = new SeleniumRenderer(document);
   sr.render();
 }
 
 //--></script>
 </head>
-<body onload="onpageload()"></body>
+<body onload="onpageload()">
+
+</body>
 </html>
