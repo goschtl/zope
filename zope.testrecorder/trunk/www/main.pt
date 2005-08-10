@@ -1,0 +1,10 @@
+<h1 tal:replace="structure here/manage_page_header">Header</h1>
+<h1 tal:replace="structure here/manage_tabs">Tabs</h1>
+
+<p>
+<a href="./index.html" target="_new">Start the test recorder</a> in a 
+new window.
+</p>
+
+<h1 tal:replace="structure here/manage_page_footer">Footer</h1>
+

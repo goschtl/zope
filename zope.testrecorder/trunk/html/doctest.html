@@ -1,0 +1,191 @@
+<html>
+<head>
+
+<title>Doctest Renderer</title>
+
+<script language="javascript" type="text/javascript"><!--
+
+// ---------------------------------------------------------------------------
+// DoctestRenderer -- a class to render recorded tests to a Zope 3 doctest /
+// browser test format.
+// ---------------------------------------------------------------------------
+
+function DoctestRenderer(document) {
+  this.document = document;
+  this.recorder = top.frames["control"].recorder;
+  this.title = this.recorder.testcase.title;
+  this.items = this.recorder.testcase.items;
+}
+
+DoctestRenderer.prototype.text = function(txt) {
+  // todo: long lines
+  this.document.writeln(txt);
+}
+
+DoctestRenderer.prototype.stmt = function(text) {
+  this.document.writeln("    >>> " + text);
+}
+
+DoctestRenderer.prototype.cont = function(text) {
+  this.document.writeln("    ... " + text);
+}
+
+DoctestRenderer.prototype.pyout = function(text) {
+  this.document.writeln("    " + text);
+}
+
+DoctestRenderer.prototype.pyrepr = function(text) {
+  // todo: handle non--strings & quoting
+  return "'" + text + "'";
+}
+
+DoctestRenderer.prototype.space = function() {
+  this.document.write("\n");
+}
+
+DoctestRenderer.prototype.dispatch = {
+  "open url":"openUrl",
+  "click":"click",
+  "change":"change",
+  "comment":"comment",
+  "check page title":"checkPageTitle",
+  "check page location":"checkPageLocation",
+  "check value":"checkValue",
+  "check text":"checkText",
+  "check href":"checkHref",
+  "check enabled":"checkEnabled",
+  "check disabled":"checkDisabled",
+  "check select value":"checkSelectValue",
+  "check select options":"checkSelectOptions",
+  "check image src":"checkImageSrc"
+};
+
+DoctestRenderer.prototype.render = function() {
+  this.document.open();
+  this.document.write("<" + "pre" + ">");
+  this.writeHeader();
+  for (var i=0; i < this.items.length; i++) {
+    var item = this.items[i];
+    if (this.dispatch[item.type]) {
+      this[this.dispatch[item.type]](item);
+    }
+    this.space();
+  }
+  this.document.write("<" + "/" + "pre" + ">");
+  this.document.close();
+}
+
+DoctestRenderer.prototype.writeHeader = function() {
+  var date = new Date();
+  this.text("==============================================================================");
+  this.text("Doctest generated " + date);
+  this.text("==============================================================================");
+  this.space();
+  this.stmt("from zope.testbrowser import Browser");
+  this.stmt("browser = Browser()");
+  //this.stmt("browser.addHeader('Authorization', 'Basic mgr:mgrpw')");
+  this.space();
+}
+
+DoctestRenderer.prototype.bestId = function(item) {
+  if ((item.info) && (item.info.bestid)) {
+    return item.info.bestid();
+  }
+  return "unknown";
+}
+
+DoctestRenderer.prototype.openUrl = function(item) {
+  var url = this.pyrepr(item.url);
+  this.stmt("browser.open(" + url + ")");
+  this.stmt("browser.url");
+  this.pyout(url);
+}
+
+DoctestRenderer.prototype.click = function(item) {
+  var id = this.bestId(item);
+  this.stmt("browser.click('" + id + "')");
+}
+
+DoctestRenderer.prototype.change = function(item) {
+  this.stmt("# change event");
+}
+
+DoctestRenderer.prototype.comment = function(item) {
+  this.text(item.text);
+}
+
+DoctestRenderer.prototype.checkPageTitle = function(item) {
+  var title = this.pyrepr(item.info.title);
+  this.stmt("browser.title");
+  this.pyout(title);
+}
+
+DoctestRenderer.prototype.checkPageLocation = function(item) {
+  var url = this.pyrepr(item.info.url);
+  this.stmt("browser.url");
+  this.pyout(url)
+}
+
+DoctestRenderer.prototype.checkValue = function(item) {
+  var id = this.bestId(item);
+  this.stmt("control = browser.controls['" + id + "']");
+  this.stmt("control.value");
+  this.pyout(this.pyrepr(item.info.value));
+}
+
+DoctestRenderer.prototype.checkText = function(item) {
+  this.stmt("# check text");
+}
+
+DoctestRenderer.prototype.checkHref = function(item) {
+  this.stmt("# check href");
+}
+
+DoctestRenderer.prototype.checkEnabled = function(item) {
+  var id = this.bestId(item);
+  this.stmt("control = browser.controls['" + id + "']");
+  this.stmt("control.disabled");
+  this.pyout("False");
+}
+
+DoctestRenderer.prototype.checkDisabled = function(item) {
+  var id = this.bestId(item);
+  this.stmt("control = browser.controls['" + id + "']");
+  this.stmt("control.disabled");
+  this.pyout("True");
+}
+
+DoctestRenderer.prototype.checkSelectValue = function(item) {
+  var id = this.bestId(item);
+  this.stmt("control = browser.controls['" + id + "']");
+  this.stmt("control.value");
+  this.pyrepr(item.info.value);
+}
+
+DoctestRenderer.prototype.checkSelectOptions = function(item) {
+  var id = this.bestId(item);
+  this.stmt("control = browser.controls['" + id + "']");
+  this.stmt("control.options");
+  var st = "[";
+  for (var i=0; i < item.info.options.length; i++) {
+    if (i > 0) 
+      st = st + ", ";
+    st = st + this.pyrepr(item.info.options[i].value);
+  }
+  this.pyout(st + "]")
+}
+
+DoctestRenderer.prototype.checkImageSrc = function(item) {
+  this.stmt("# check image src");
+}
+
+
+function onpageload() {
+  var dt = new DoctestRenderer(document);
+  dt.render();
+}
+
+//--></script>
+</head>
+<body onload="onpageload()"></body>
+</html>

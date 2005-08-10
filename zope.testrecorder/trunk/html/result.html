@@ -1,0 +1,234 @@
+<html>
+<head>
+
+<title>Test Recording</title>
+
+<link rel="stylesheet" type="text/css" href="./style.css" />
+
+<script language="javascript" type="text/javascript"><!--
+
+// ---------------------------------------------------------------------------
+// GenericRenderer -- renders tests in a neutral intermediate format.
+// ---------------------------------------------------------------------------
+
+function GenericRenderer(document) {
+  this.document = document;
+  this.recorder = top.frames["control"].recorder;
+  this.title = this.recorder.testcase.title;
+  this.items = this.recorder.testcase.items;
+  this.skip = [];
+}
+
+generic = new GenericRenderer(document);
+
+GenericRenderer.prototype.repr = function(text) {
+  // todo: handle non--strings & quoting
+  return "'" + text + "'";
+}
+
+GenericRenderer.prototype.dispatch = {
+  "open url":"openUrl",
+  "click":"click",
+  "change":"change",
+  "comment":"comment",
+  "check page title":"checkPageTitle",
+  "check page location":"checkPageLocation",
+  "check value":"checkValue",
+  "check text":"checkText",
+  "check href":"checkHref",
+  "check enabled":"checkEnabled",
+  "check disabled":"checkDisabled",
+  "check select value":"checkSelectValue",
+  "check select options":"checkSelectOptions",
+  "check image src":"checkImageSrc"
+};
+
+GenericRenderer.prototype.render = function() {
+  var root = this.document.getElementById("items");
+  for (var i=0; i < this.items.length; i++) {
+    var item = this.items[i];
+    if (this.dispatch[item.type]) {
+      var txt = this[this.dispatch[item.type]](item);
+      var r = this.row(item, txt, i);
+      root.appendChild(r);
+    }
+  }
+}
+
+GenericRenderer.prototype.row = function(item, txt, i) {
+  var bgcolor = (i == 0 || Math.floor(i/2) == i/2) ? "#c0c0c0" : "#ffffff";
+  var tr = this.document.createElement("tr");
+  tr.setAttribute("bgcolor", bgcolor);
+  var td = this.document.createElement("td");
+  td.setAttribute("width", "16");
+  tr.appendChild(td);
+  var cb = this.document.createElement("input");
+  cb.setAttribute("type", "checkbox");
+  cb.setAttribute("name", "item");
+  cb.setAttribute("value", i);
+  cb.onchange = this.toggle;
+  td.appendChild(cb);
+  td = this.document.createElement("td");
+  var tn = this.document.createTextNode(txt);
+  td.appendChild(tn);
+  tr.appendChild(td);
+  return tr;
+}
+
+GenericRenderer.prototype.toggle = function(e) {
+  var e = new top.frames["control"].TestRecorder.Event(e);
+  var t = e.target();
+  var c = t.parentNode;
+  var r = c.parentNode;
+
+  var i = parseInt(t.value);
+  if (generic.skip[i]) {
+    var bgcolor = (i == 0 || Math.floor(i/2) == i/2) ? "#c0c0c0" : "#ffffff";
+    r.setAttribute("bgcolor", bgcolor);
+    generic.skip[i] = null;
+  }
+  else {
+    generic.skip[i] = true;
+    r.setAttribute("bgcolor", "red");
+  }
+  return true;
+}
+
+
+GenericRenderer.prototype.bestId = function(item) {
+  if ((item.info) && (item.info.bestid)) {
+    return item.info.bestid();
+  }
+  return "unknown";
+}
+
+GenericRenderer.prototype.openUrl = function(item) {
+  return "open url: " + this.repr(item.url);
+}
+
+GenericRenderer.prototype.click = function(item) {
+  return "click: " + this.repr(this.bestId(item));
+}
+
+GenericRenderer.prototype.change = function(item) {
+  return "change: (todo)";
+}
+
+GenericRenderer.prototype.comment = function(item) {
+  return "comment: " + item.text;
+}
+
+GenericRenderer.prototype.checkPageTitle = function(item) {
+  var title = this.repr(item.info.title);
+  return "check page title: " + title;
+}
+
+GenericRenderer.prototype.checkPageLocation = function(item) {
+  var url = this.repr(item.info.url);
+  return "check page location: " + url;
+}
+
+GenericRenderer.prototype.checkValue = function(item) {
+  var id = this.bestId(item);
+  return "check value: " + id;
+}
+
+GenericRenderer.prototype.checkText = function(item) {
+  var id = this.bestId(item);
+  return "check text: " + id;
+}
+
+GenericRenderer.prototype.checkHref = function(item) {
+  var id = this.bestId(item);
+  return "check href: " + id;
+}
+
+GenericRenderer.prototype.checkEnabled = function(item) {
+  var id = this.bestId(item);
+  return "check enabled: " + id;
+}
+
+GenericRenderer.prototype.checkDisabled = function(item) {
+  var id = this.bestId(item);
+  return "check disabled: " + id;
+}
+
+GenericRenderer.prototype.checkSelectValue = function(item) {
+  var st = "check select value (" + item.info.name + ") == '";
+  return st + item.info.value + "'";
+}
+
+GenericRenderer.prototype.checkSelectOptions = function(item) {
+  var id = this.bestId(item);
+  var so = "check select options(" + item.info.name + ") == [";
+  for (var i=0; i < item.info.options.length; i++) {
+    var o = item.info.options[i];
+    if (i > 0) {
+      so = so + ", ";
+    }
+      so = so + "'" + o.value + "'";
+  }
+  return so + "]";
+}
+
+GenericRenderer.prototype.checkImageSrc = function(item) {
+  var id = this.bestId(item);
+  var src = this.repr(item.src);
+  return "check image src: (" + id + ") == " + src;
+}
+
+
+
+
+
+
+
+
+
+
+
+function onpageload() {
+  var generic = new GenericRenderer(document);
+  generic.render();
+}
+
+function render() {
+  var fmt = document.forms[0].elements["format"];
+  var url = "./" + fmt.options[fmt.selectedIndex].value + ".html";
+  document.location.href = url;
+}
+
+
+//--></script>
+</head>
+<body onload="onpageload()">
+
+<div id="header">
+<p>
+The results of the test recording are listed below. Select an output format 
+and click <strong>render</strong> to render the test.
+</p>
+</div>
+
+<form>
+<div id="format">
+<p>
+<select name="format">
+  <option value="doctest">Python Doctest</option>
+  <option value="selenium">Selenium Test</option>
+</select> 
+<input type="submit" name="submit" value="Render" 
+ onclick="render(); return false;">
+</p>
+</div>
+
+<div>
+<table id="items" width="98%" cellpadding="4" cellspacing="0" border="0" 
+ class="results">
+
+</table>
+</div>
+
+</form>
+</body>
+</html>
