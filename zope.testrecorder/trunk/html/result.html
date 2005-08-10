@@ -142,7 +142,7 @@ GenericRenderer.prototype.checkValue = function(item) {
 
 GenericRenderer.prototype.checkText = function(item) {
   var id = this.bestId(item);
-  return "check text: " + id;
+  return "check text: " + this.repr(item.text);
 }
 
 GenericRenderer.prototype.checkHref = function(item) {

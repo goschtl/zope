@@ -141,7 +141,16 @@ DoctestRenderer.prototype.checkValue = function(item) {
 }
 
 DoctestRenderer.prototype.checkText = function(item) {
-  this.stmt("# check text");
+  var id = this.bestId(item);
+  if ((item.type == "submit") || (item.type == "button")) {
+    this.stmt("control = browser.controls['" + id + "']");
+    this.stmt("control.value");
+    this.pyout(this.pyrepr(item.text));
+  }
+  else {
+    this.stmt(this.pyrepr(item.text) + " in browser.contents");
+    this.pyout("True")
+  }
 }
 
 DoctestRenderer.prototype.checkHref = function(item) {

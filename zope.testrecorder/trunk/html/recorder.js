@@ -18,7 +18,7 @@
 //
 // todo:
 //   - handle cmenu on far right of window
-//   - capture onchange
+//   - capture submit (w/lookback for doctest)
 //
 //
 // Contact Brian Lloyd (brian@zope.com) with questions or comments.
@@ -236,6 +236,7 @@ TestRecorder.ElementInfo = function(element) {
   this.tagName = element.tagName;
   this.value = element.value;
   this.name = element.name;
+  this.type = element.type;
   this.src = element.src;
   this.id = element.id;
 
@@ -291,10 +292,10 @@ TestRecorder.CheckElementEvent = function(type, target) {
   this.info = new TestRecorder.ElementInfo(target);
 }
 
-TestRecorder.CheckTextEvent = function(type, target) {
+TestRecorder.CheckTextEvent = function(type, target, text) {
   this.type = type;
   this.info = new TestRecorder.ElementInfo(target);
-  this.text = "";
+  this.text = text;
 }
 
 
@@ -310,6 +311,7 @@ TestRecorder.CheckTextEvent = function(type, target) {
 // ---------------------------------------------------------------------------
 
 TestRecorder.ContextMenu = function() {
+  this.selected = null;
   this.target = null;
   this.window = null;
   this.visible = false;
@@ -340,43 +342,44 @@ TestRecorder.ContextMenu.prototype.build = function(t, x, y) {
   menu.onmouseover=contextmenu.onmouseover;
   menu.onmouseout=contextmenu.onmouseout;
 
-  //var txt = d.createTextNode(t.toString());
-  //menu.appendChild(txt);
+  var selected = recorder.getSelection().toString();
 
   if (t.width && t.height) {
     menu.appendChild(this.item("Check Image Src", this.checkImgSrc));
-    menu.appendChild(this.item("Check Attributes", this.checkAttrs));
-  }
-
-  if (t.href) {
-    menu.appendChild(this.item("Check Link Text", this.checkText));
-    menu.appendChild(this.item("Check Link Href", this.checkHref));
-    menu.appendChild(this.item("Check Attributes", this.checkAttrs));
-  }
-
-  if (t.selectedIndex) {
-    if (t.type == "select-one") {
-      menu.appendChild(this.item("Check Selected Value", this.checkSelectValue));
-      menu.appendChild(this.item("Check Select Options", this.checkSelectOptions));
-      menu.appendChild(this.item("Check Enabled", this.checkEnabled));
-      menu.appendChild(this.item("Check Disabled", this.checkDisabled));
-    }
-    else {
-      menu.appendChild(this.item("Check Selected Values", this.checkSelectValue));
-      menu.appendChild(this.item("Check Select Options", this.checkSelectOptions));
-      menu.appendChild(this.item("Check Enabled", this.checkEnabled));
-      menu.appendChild(this.item("Check Disabled", this.checkDisabled));
-    }
-  }
-
-  else if (t.type == "button" || t.type == "submit") {
-    menu.appendChild(this.item("Check Button Text", this.checkText));
-    menu.appendChild(this.item("Check Enabled", this.checkEnabled));
-    menu.appendChild(this.item("Check Disabled", this.checkDisabled));
   }
 
   else if (t.type == "text" || t.type == "textarea") {
     menu.appendChild(this.item("Check Text Value", this.checkText));
+    menu.appendChild(this.item("Check Enabled", this.checkEnabled));
+    menu.appendChild(this.item("Check Disabled", this.checkDisabled));
+  }
+
+  else if (selected && (selected != "")) {
+    this.selected = recorder.strip(selected);
+    menu.appendChild(this.item("Check Text Appears On Page", 
+                     this.checkTextPresent));
+  }
+
+  else if (t.href) {
+    menu.appendChild(this.item("Check Link Text", this.checkText));
+    menu.appendChild(this.item("Check Link Href", this.checkHref));
+  }
+
+  else if (t.selectedIndex || t.type == "option") {
+    var name = "Check Selected Value";
+    if (t.type != "select-one") {
+      name = name + "s";
+    }
+    menu.appendChild(this.item(name, this.checkSelectValue));
+    menu.appendChild(this.item("Check Select Options",
+                     this.checkSelectOptions));
+    menu.appendChild(this.item("Check Enabled", this.checkEnabled));
+    menu.appendChild(this.item("Check Disabled", this.checkDisabled));
+  }
+
+  else if (t.type == "button" || t.type == "submit") {
+    menu.appendChild(this.item("Check Button Text", this.checkText));
+    menu.appendChild(this.item("Check Button Value", this.checkValue));
     menu.appendChild(this.item("Check Enabled", this.checkEnabled));
     menu.appendChild(this.item("Check Disabled", this.checkDisabled));
   }
@@ -387,16 +390,7 @@ TestRecorder.ContextMenu.prototype.build = function(t, x, y) {
     menu.appendChild(this.item("Check Disabled", this.checkDisabled));
   }
 
-  if (t.cellIndex) {
-    menu.appendChild(this.item("Check Table Cell Text", this.checkText));
-  }
-
-  if (t.tagName == "SPAN" || t.tagName == "P") {
-    menu.appendChild(this.item("Check Text Appears On Page", 
-                     this.checkTextPresent));
-  }
-
-  if (!menu.hasChildNodes()) {
+  else {
     menu.appendChild(this.item("Check Page Location", this.checkPageLocation));
     menu.appendChild(this.item("Check Page Title", this.checkPageTitle));
   }
@@ -510,15 +504,31 @@ TestRecorder.ContextMenu.prototype.checkLabel = function() {
   contextmenu.record(e);
 }
 
+TestRecorder.ContextMenu.prototype.innertext = function(e) {
+  var r = recorder.window.document.createRange();
+  r.selectNodeContents(e);
+  return r.toString();
+}
+
 TestRecorder.ContextMenu.prototype.checkText = function() {
   var t = contextmenu.target;
-  var e = new TestRecorder.CheckTextEvent("check text", t);
+  var s = "";
+  if (t.type == "button" || t.type == "submit") {
+    s = t.value;
+  }
+  else {
+    s = contextmenu.innertext(t);
+  }
+  s = recorder.strip(s);
+  var e = new TestRecorder.CheckTextEvent("check text", t, s);
   contextmenu.record(e);
 }
 
 TestRecorder.ContextMenu.prototype.checkTextPresent = function() {
   var t = contextmenu.target;
-  var e = new TestRecorder.CheckTextEvent("check text present", t);
+  var s = contextmenu.selected;
+  var e = new TestRecorder.CheckTextEvent("check text present", t, s);
+  contextmenu.selected = null;
   contextmenu.record(e);
 }
 
