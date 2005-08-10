@@ -66,6 +66,7 @@ class SetupContext:
         self.packages = []
         self.package_data = {}
         self.package_dir = {}
+        self.package_headers = []
         self.ext_modules = []
         self.scripts = []
         self.platforms = None
@@ -85,7 +86,7 @@ class SetupContext:
             depnames = os.listdir(depsdir)
             suffix = "-%s-%s" % (self._pkgname, self.version)
             for name in depnames:
-                if name != "Includes" and not name.endswith(suffix):
+                if not name.endswith(suffix):
                     # an unexpected name; we didn't put this here!
                     print >>sys.stderr, \
                           "unexpected name in Dependencies/: %r" % name
@@ -100,10 +101,6 @@ class SetupContext:
                 pkgdir = os.path.join(depdir, depname)
                 reldir = posixpath.join("Dependencies", name, depname)
                 self.scan(depname, pkgdir, reldir)
-            includes_dir = os.path.join(depsdir, "Includes")
-            if os.path.isdir(includes_dir):
-                for ext in self.ext_modules:
-                    ext.include_dirs.append(includes_dir)
 
     def setup(self):
         kwargs = self.__dict__.copy()
@@ -223,6 +220,7 @@ class SetupContext:
                 self.add_package_file(pkgname, posixpath.join(reldir, fn))
 
     def scan_basic(self, pkginfo):
+        self.package_headers.extend(pkginfo.package_headers)
         self.scripts.extend(pkginfo.script)
         if pkginfo.data_files:
             if self.data_files:

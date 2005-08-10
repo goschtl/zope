@@ -19,6 +19,10 @@ import distutils.dist
 import distutils.extension
 import sys
 
+import zpkgsetup.build
+import zpkgsetup.build_ext
+import zpkgsetup.build_headers
+
 
 class ZPkgExtension(distutils.extension.Extension):
     """Distutils representation of a compiled extension module."""
@@ -29,9 +33,16 @@ class ZPkgDistribution(distutils.dist.Distribution):
 
     def __init__ (self, attrs=None):
         self.package_data = None
+        self.package_headers = attrs.pop("package_headers", ())
         distutils.dist.Distribution.__init__(self, attrs)
         if self.package_data and sys.version_info < (2, 4):
             from zpkgsetup.build_py import build_py
             from zpkgsetup.install_lib import install_lib
             self.cmdclass.setdefault('build_py', build_py)
             self.cmdclass.setdefault('install_lib', install_lib)
+        self.cmdclass.setdefault('build',
+                                 zpkgsetup.build.build)
+        self.cmdclass.setdefault('build_ext',
+                                 zpkgsetup.build_ext.build_ext)
+        self.cmdclass.setdefault('build_headers',
+                                 zpkgsetup.build_headers.build_headers)

@@ -173,7 +173,6 @@ class BuilderApplication(Application):
                 component.write_setup_py(pathparts=["..", ".."],
                                          distclass=distclass)
                 component.write_setup_cfg()
-                self.add_headers(component)
         if self.options.application:
             top.write_setup_py(filename="install.py",
                                version=self.options.version,
@@ -189,22 +188,6 @@ class BuilderApplication(Application):
             return Component(resource, location, self.ip)
         except zpkgtools.Error, e:
             self.error(str(e), rc=1)
-
-    def add_headers(self, component):
-        pkginfo = component.get_package_info()
-        if not pkginfo.header:
-            return
-        includes_dir = os.path.join(self.destination,
-                                    "Dependencies", "Includes")
-        if not os.path.isdir(includes_dir):
-            os.mkdir(includes_dir)
-        for src in pkginfo.header:
-            src = os.path.join(component.destination, *src.split("/"))
-            name = os.path.basename(src)
-            path = os.path.join(includes_dir, name)
-            if os.path.exists(path):
-                self.error("multiple headers with name %r" % name)
-            self.ip.copy_file(src, path)
 
     def add_manifest(self, destination):
         self.ip.add_manifest(destination)

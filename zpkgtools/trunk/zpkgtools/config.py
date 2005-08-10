@@ -140,9 +140,14 @@ class Configuration:
             paths found in the configuration file.
 
         """
-        p = cfgparser.Parser(f, path, Schema(path, self.locations))
+        if basedir:
+            basedir = os.path.abspath(basedir)
+        else:
+            basedir = os.getcwd()
+        p = cfgparser.Parser(f, path, Schema(os.path.abspath(path),
+                                             self.locations))
         cf = p.load()
-        base = urlutils.file_url(os.path.abspath(basedir)) + "/"
+        base = urlutils.file_url(basedir) + "/"
         for value in cf.resource_map:
             value = urlparse.urljoin(base, value)
             self.location_maps.append(value)
