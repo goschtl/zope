@@ -50,6 +50,7 @@ DoctestRenderer.prototype.dispatch = {
   "comment":"comment",
   "check page title":"checkPageTitle",
   "check page location":"checkPageLocation",
+  "check text present":"checkTextPresent",
   "check value":"checkValue",
   "check text":"checkText",
   "check href":"checkHref",
@@ -125,6 +126,11 @@ DoctestRenderer.prototype.checkPageLocation = function(item) {
   var url = this.pyrepr(item.info.url);
   this.stmt("browser.url");
   this.pyout(url)
+}
+
+DoctestRenderer.prototype.checkTextPresent = function(item) {
+  this.stmt(this.pyrepr(item.text) + " in browser.contents");
+  this.pyout("True")
 }
 
 DoctestRenderer.prototype.checkValue = function(item) {

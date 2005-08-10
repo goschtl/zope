@@ -232,8 +232,6 @@ TestRecorder.DocumentInfo = function(doc) {
 }
 
 TestRecorder.ElementInfo = function(element) {
-
-
   this.href = element.href;
   this.tagName = element.tagName;
   this.value = element.value;
@@ -291,6 +289,12 @@ TestRecorder.CheckDocumentEvent = function(type, target) {
 TestRecorder.CheckElementEvent = function(type, target) {
   this.type = type;
   this.info = new TestRecorder.ElementInfo(target);
+}
+
+TestRecorder.CheckTextEvent = function(type, target) {
+  this.type = type;
+  this.info = new TestRecorder.ElementInfo(target);
+  this.text = "";
 }
 
 
@@ -388,7 +392,8 @@ TestRecorder.ContextMenu.prototype.build = function(t, x, y) {
   }
 
   if (t.tagName == "SPAN" || t.tagName == "P") {
-    menu.appendChild(this.item("Check Text Appears On Page", this.checkText));
+    menu.appendChild(this.item("Check Text Appears On Page", 
+                     this.checkTextPresent));
   }
 
   if (!menu.hasChildNodes()) {
@@ -507,7 +512,13 @@ TestRecorder.ContextMenu.prototype.checkLabel = function() {
 
 TestRecorder.ContextMenu.prototype.checkText = function() {
   var t = contextmenu.target;
-  var e = new TestRecorder.CheckElementEvent("check text", t);
+  var e = new TestRecorder.CheckTextEvent("check text", t);
+  contextmenu.record(e);
+}
+
+TestRecorder.ContextMenu.prototype.checkTextPresent = function() {
+  var t = contextmenu.target;
+  var e = new TestRecorder.CheckTextEvent("check text present", t);
   contextmenu.record(e);
 }
 

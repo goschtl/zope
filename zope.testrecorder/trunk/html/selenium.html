@@ -65,6 +65,7 @@ SeleniumRenderer.prototype.dispatch = {
   "comment":"comment",
   "check page title":"checkPageTitle",
   "check page location":"checkPageLocation",
+  "check text present":"checkTextPresent",
   "check value":"checkValue",
   "check text":"checkText",
   "check href":"checkHref",
@@ -139,6 +140,10 @@ SeleniumRenderer.prototype.checkPageTitle = function(item) {
 SeleniumRenderer.prototype.checkPageLocation = function(item) {
   var url = this.repr(item.info.url);
   this.row("verifyLocation", url, "");
+}
+
+SeleniumRenderer.prototype.checkTextPresent = function(item) {
+  this.row("verifyTextPresent", item.text, "");
 }
 
 SeleniumRenderer.prototype.checkValue = function(item) {

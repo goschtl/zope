@@ -33,6 +33,7 @@ GenericRenderer.prototype.dispatch = {
   "comment":"comment",
   "check page title":"checkPageTitle",
   "check page location":"checkPageLocation",
+  "check text present":"checkTextPresent",
   "check value":"checkValue",
   "check text":"checkText",
   "check href":"checkHref",
@@ -128,6 +129,10 @@ GenericRenderer.prototype.checkPageTitle = function(item) {
 GenericRenderer.prototype.checkPageLocation = function(item) {
   var url = this.repr(item.info.url);
   return "check page location: " + url;
+}
+
+GenericRenderer.prototype.checkTextPresent = function(item) {
+  return "check text present: " + this.repr(item.text);
 }
 
 GenericRenderer.prototype.checkValue = function(item) {
