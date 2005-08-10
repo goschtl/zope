@@ -266,28 +266,6 @@ class CollectingHandler(logging.Handler):
         self.list.append(record)
 
 
-class CvsWorkingDirectoryTestCase(CvsWorkingDirectoryBase):
-    """Tests that rely on a CVS working directory."""
-
-    def setUp(self):
-        super(CvsWorkingDirectoryTestCase, self).setUp()
-        self.initialize(":ext:cvs.example.org:/cvsroot", "module")
-        self.packages_txt = os.path.join(self.workingdir, "PACKAGES.txt")
-        f = open(self.packages_txt, "w")
-        f.write(SAMPLE_INPUT_WITH_REPOSITORY_URLS)
-        f.close()
-
-    def test_fromPathOrUrl_from_cvs_workdir(self):
-        mapping = locationmap.fromPathOrUrl(self.packages_txt)
-        self.assertEqual(mapping, EXPECTED_OUTPUT)
-
-    def test_fromPathOrUrl_passes_mapping(self):
-        d = {"other": "over-there"}
-        mapping = locationmap.fromPathOrUrl(self.packages_txt, mapping=d)
-        self.assertEqual(d.pop("other"), "over-there")
-        self.assertEqual(d, EXPECTED_OUTPUT)
-
-
 class LocationMapTestCase(unittest.TestCase):
     """Tests of the convenience mapping used as the CVS mapping storage.
 
@@ -387,7 +365,6 @@ class LocationMapTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.makeSuite(LoadTestCase)
-    suite.addTest(unittest.makeSuite(CvsWorkingDirectoryTestCase))
     suite.addTest(unittest.makeSuite(LocationMapTestCase))
     return suite
 

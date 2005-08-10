@@ -263,11 +263,7 @@ def fromPathOrUrl(path, mapping=None):
     if os.path.isfile(path):
         # prefer a revision-control URL over a local path if possible:
         # XXX why????  this doesn't make much sense
-        rcurl = loader.fromPath(path)
-        if rcurl is None:
-            base = urlutils.file_url(path)
-        else:
-            base = loader.baseUrl(rcurl)
+        base = urlutils.file_url(path)
         f = open(path, "rU")
     else:
         try:
