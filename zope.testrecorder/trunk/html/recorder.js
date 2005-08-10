@@ -18,7 +18,6 @@
 //
 // todo:
 //   - handle cmenu on far right of window
-//   - filter out clicks on right menu divs
 //   - capture onchange
 //
 //
@@ -602,38 +601,30 @@ TestRecorder.Recorder.prototype.stop = function() {
   return;
 }
 
+TestRecorder.Recorder.prototype.open = function(url) {
+  var e = new TestRecorder.OpenURLEvent(url);
+  this.testcase.append(e);
+  this.log("open url: " + url);
+}
+
 TestRecorder.Recorder.prototype.captureEvents = function() {
   var wnd = this.window;
   TestRecorder.Event.captureEvent(wnd, "contextmenu", this.oncontextmenu);
-  TestRecorder.Event.captureEvent(wnd, "blur", this.generic);
   TestRecorder.Event.captureEvent(wnd, "click", this.onclick);
-  TestRecorder.Event.captureEvent(wnd, "mouseup", this.generic);
-  TestRecorder.Event.captureEvent(wnd, "mouseover", this.generic);
-  TestRecorder.Event.captureEvent(wnd, "mouseout", this.generic);
   TestRecorder.Event.captureEvent(wnd, "change", this.onchange);
-  TestRecorder.Event.captureEvent(wnd, "dblclick", this.generic);
-  TestRecorder.Event.captureEvent(wnd, "dragdrop", this.generic);
   TestRecorder.Event.captureEvent(wnd, "keypress", this.onkeypress);
-  TestRecorder.Event.captureEvent(wnd, "error", this.generic);
-  TestRecorder.Event.captureEvent(wnd, "select", this.generic);
-  TestRecorder.Event.captureEvent(wnd, "submit", this.generic);
+  TestRecorder.Event.captureEvent(wnd, "select", this.onselect);
+  TestRecorder.Event.captureEvent(wnd, "submit", this.onsubmit);
 }
 
 TestRecorder.Recorder.prototype.releaseEvents = function() {
   var wnd = this.window;
   TestRecorder.Event.releaseEvent(wnd, "contextmenu", this.oncontextmenu);
-  TestRecorder.Event.releaseEvent(wnd, "blur", this.generic);
   TestRecorder.Event.releaseEvent(wnd, "click", this.onclick);
-  TestRecorder.Event.releaseEvent(wnd, "mouseup", this.generic);
-  TestRecorder.Event.releaseEvent(wnd, "mouseover", this.generic);
-  TestRecorder.Event.releaseEvent(wnd, "mouseout", this.generic);
   TestRecorder.Event.releaseEvent(wnd, "change", this.onchange);
-  TestRecorder.Event.releaseEvent(wnd, "dblclick", this.generic);
-  TestRecorder.Event.releaseEvent(wnd, "dragdrop", this.generic);
   TestRecorder.Event.releaseEvent(wnd, "keypress", this.onkeypress);
-  TestRecorder.Event.releaseEvent(wnd, "error", this.generic);
-  TestRecorder.Event.releaseEvent(wnd, "select", this.generic);
-  TestRecorder.Event.releaseEvent(wnd, "submit", this.generic);
+  TestRecorder.Event.releaseEvent(wnd, "select", this.onselect);
+  TestRecorder.Event.releaseEvent(wnd, "submit", this.onsubmit);
 }
 
 TestRecorder.Recorder.prototype.getSelection = function () {
@@ -651,11 +642,6 @@ TestRecorder.Recorder.prototype.getSelection = function () {
   return "";
 }
 
-TestRecorder.Recorder.prototype.open = function(url) {
-  var e = new TestRecorder.OpenURLEvent(url);
-  this.testcase.append(e);
-  this.log("open url: " + url);
-}
 
 
 TestRecorder.Recorder.prototype.clickaction = function(e) {
@@ -699,23 +685,16 @@ TestRecorder.Recorder.prototype.check = function(e) {
   }
 }
 
-// decoy
-TestRecorder.Recorder.prototype.selectCheck = function(e, text) {
-  // This method is called by our low-level event handler when some text 
-  // is selected in check mode.
-  if (text && text.length > 0) {
-    recorder.log("selected check: " + text);
-  }
-}
 
 
 
 
 
-// This must be called each time a new document is fully loaded into the
-// testing target frame to ensure that events are captured for the page.
+
 
 TestRecorder.Recorder.prototype.onpageload = function() {
+  // This must be called each time a new document is fully loaded into the
+  // testing target frame to ensure that events are captured for the page.
   if (this.active) {
     recorder.captureEvents();
   }
@@ -726,6 +705,15 @@ TestRecorder.Recorder.prototype.onchange = function(e) {
   recorder.log("value changed: " + e.target());
 }
 
+TestRecorder.Recorder.prototype.onselect = function(e) {
+  var e = new TestRecorder.Event(e);
+  recorder.log("select: " + e.target());
+}
+
+TestRecorder.Recorder.prototype.onsubmit = function(e) {
+  var e = new TestRecorder.Event(e);
+  recorder.log("submit: " + e.target());
+}
 
 
 // The dance here between onclick and oncontextmenu requires a bit of 
@@ -780,12 +768,6 @@ TestRecorder.Recorder.prototype.onkeypress = function(e) {
   if (e.shiftkey() && (e.keychar() == 'C')) {
     alert("comment box");
   }
-  return true;
-}
-
-TestRecorder.Recorder.prototype.generic = function(e) {
-  //var e = new TestRecorder.Event(e);
-  //recorder.log(e.type() + " event");
   return true;
 }
 

@@ -11,7 +11,7 @@
 #
 ##############################################################################
 
-import sys, os, CLR
+import sys, os
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from AccessControl import ClassSecurityInfo
