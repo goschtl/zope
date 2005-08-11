@@ -32,6 +32,10 @@ HEAD only (unreleased)
 
   Bug Fixes
 
+    - CMFTopic Friendly Date Criteria: Fixed the strange and broken search
+      filter interpretation which ran counter to what people might expect
+      from a search (http://www.zope.org/Collectors/CMF/339)
+
     - Got rid of the "CMF Site" and "Configured CMF Site" duality in the ZMI
       add list by removing the "CMF Site" class registration in CMFDefault
       and moving the "Configured CMF Site" registration from CMFSetup into
