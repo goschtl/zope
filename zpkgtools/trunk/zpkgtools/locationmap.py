@@ -132,14 +132,22 @@ class LocationMap(UserDict.UserDict):
                         parts[2] = posixpath.join("", suffix)
                     return urlparse.urlunsplit(parts)
                 else:
-                    pathpart = cvsloader.RepositoryUrl(suffix)
-                    parsed = parsed.join(pathpart)
+                    if isinstance(parsed, cvsloader.CvsUrl):
+                        parsed.path = posixpath.join(parsed.path, suffix)
+                    else:
+                        pathpart = RelativePath(suffix)
+                        parsed = parsed.join(pathpart)
                     return get_template_url(parsed)
         return None
 
     def _have_wildcard(self, key):
         """Return true iff we already have a wildcard for key."""
         return key in self._wildcards
+
+class RelativePath:
+    def __init__(self, path):
+        self.tag = None
+        self.path = path
 
 
 class MapLoader:
@@ -166,15 +174,6 @@ class MapLoader:
             # conventional URL
             if self.cvsbase is None:
                 url = urlparse.urljoin(self.base, url)
-        else:
-            if isinstance(cvsurl, cvsloader.RepositoryUrl):
-                if self.cvsbase is None:
-                    raise MapLoadingError(
-                        "repository: URLs are not supported"
-                        " without a cvs: or Subversion base URL",
-                        self.filename)
-                cvsurl = self.cvsbase.join(cvsurl)
-                url = get_template_url(cvsurl)
 
         if resource in self.local_entries:
             _logger.warn(

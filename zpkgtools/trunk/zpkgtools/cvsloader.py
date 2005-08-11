@@ -47,20 +47,10 @@ _cvs_url_match = re.compile(
     """,
     re.IGNORECASE | re.VERBOSE).match
 
-_repository_url_match = re.compile(
-    """
-    repository:(?P<path>[^:]*)
-    (:(?P<tag>[^:]*))?$
-    """,
-    re.IGNORECASE | re.VERBOSE).match
-
 def parse(cvsurl):
     m = _cvs_url_match(cvsurl)
     if m is None:
-        m = _repository_url_match(cvsurl)
-        if m is None:
-            raise ValueError("not a valid CVS url: %r" % cvsurl)
-        return RepositoryUrl(m.group("path"), m.group("tag"))
+        raise ValueError("not a valid CVS url: %r" % cvsurl)
     host = m.group("host")
     cvsroot = "/" + m.group("cvsroot")
     path = m.group("path")
@@ -256,42 +246,7 @@ class CvsUrl(UrlBase):
         return url
 
     def join(self, relurl):
-        assert isinstance(relurl, RepositoryUrl)
-        cvsurl = copy.copy(self)
-        if relurl.path:
-            path = posixpath.normpath(relurl.path)
-            if path[:1] == "/":
-                newpath = path[1:]
-            else:
-                newpath = posixpath.join(cvsurl.path, relurl.path)
-            cvsurl.path = posixpath.normpath(newpath)
-        if relurl.tag:
-            cvsurl.tag = relurl.tag
-        return cvsurl
-
-
-class RepositoryUrl(UrlBase):
-    """Parsed representation of a ``repository:`` URL.
-
-    :ivar path: Path the the identified resource.  This may be either
-      an absolute path (starting with ``/``) or a relative path.  The
-      path is written using POSIX notation.
-    :type path: `str` or `None`
-
-    :ivar tag: Tag that should be referenced in the repository.
-    :type tag: `str` or `None`
-
-    """
-
-    def __init__(self, path, tag=None):
-        self.path = path or None
-        self.tag = tag or None
-
-    def getUrl(self):
-        url = "repository:" + (self.path or '')
-        if self.tag:
-            url = "%s:%s" % (url, self.tag)
-        return url
+        raise TypeError("this makes no sense!")
 
 
 class CvsLoader:

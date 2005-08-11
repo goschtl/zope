@@ -52,13 +52,6 @@ class LoaderTestCase(LoaderTestBase,
         # cvs:
         eq(convert("cvs://cvs.example.org/cvsroot:module"),
            "cvs://cvs.example.org/cvsroot:module:TAG")
-        # repository:
-        eq(convert("repository::"),
-           "repository::TAG")
-        eq(convert("repository:path"),
-           "repository:path:TAG")
-        eq(convert("repository:/some/path/:"),
-           "repository:/some/path/:TAG")
         # Subversion:
         self.check_changing_subversion_urls("svn", "svn.example.org")
         self.check_changing_subversion_urls("svn+ssh", "svn.example.org")
@@ -93,10 +86,6 @@ class LoaderTestCase(LoaderTestBase,
            "file:///path/to/somewhere.py")
         eq(convert("cvs://cvs.example.org/cvsroot:path/:tag"),
            "cvs://cvs.example.org/cvsroot:path/:tag")
-        eq(convert("repository:path/:tag"),
-           "repository:path/:tag")
-        eq(convert("repository:/some/path/:tag"),
-           "repository:/some/path/:tag")
         eq(convert("svn://example.org/path/to/svnroot/tags/foo/file.txt"),
            "svn://example.org/path/to/svnroot/tags/foo/file.txt")
         eq(convert("svn://example.org/path/to/svnroot/branches/foo/file.txt"),

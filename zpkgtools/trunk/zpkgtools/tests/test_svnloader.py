@@ -161,69 +161,6 @@ class SubversionUrlTestCase(SubversionTestBase):
         eq(split("/tags/foo/file.txt"), ("", "file.txt", "foo"))
         eq(split("/tags/*/file.txt"),   ("", "file.txt", None))
 
-    def test_join_with_path(self):
-        URL = self.mkurl("/tags/*/path")
-        repo = cvsloader.parse("repository:more/path")
-        svnurl = svnloader.parse(URL)
-        newurl = svnurl.join(repo)
-        self.assertEqual(newurl.tag, None)
-        self.assertEqual(newurl.prefix, self.mkurl(""))
-        self.assertEqual(newurl.tail, "path/more/path")
-
-    def test_join_with_path_and_new_tag(self):
-        eq = self.assertEqual
-
-        URL = self.mkurl("/tags/*/path")
-        repo = cvsloader.parse("repository:more/path:TAG")
-        svnurl = svnloader.parse(URL)
-        newurl = svnurl.join(repo)
-        eq(newurl.tag, "TAG")
-        eq(newurl.prefix, self.mkurl(""))
-        eq(newurl.tail, "path/more/path")
-        eq(newurl.getUrl(), self.mkurl("/tags/TAG/path/more/path"))
-
-        repo = cvsloader.parse("repository:more/path:HEAD")
-        svnurl = svnloader.parse(URL)
-        newurl = svnurl.join(repo)
-        eq(newurl.tag, "HEAD")
-        eq(newurl.prefix, self.mkurl(""))
-        eq(newurl.tail, "path/more/path")
-        eq(newurl.getUrl(), self.mkurl("/trunk/path/more/path"))
-
-    def test_join_with_just_new_tag(self):
-        eq = self.assertEqual
-        svnroot = self.mkurl("")
-
-        # join with a changed tag:
-        URL = self.mkurl("/tags/*/file.txt")
-        repo = cvsloader.parse("repository::FOO")
-        svnurl = svnloader.parse(URL)
-        newurl = svnurl.join(repo)
-        eq(newurl.tag, "FOO")
-        eq(newurl.prefix, svnroot)
-        eq(newurl.tail, "file.txt")
-        eq(newurl.getUrl(), self.mkurl("/tags/FOO/file.txt"))
-
-        # join, changing the tag to the HEAD:
-        URL = self.mkurl("/tags/*/file.txt")
-        repo = cvsloader.parse("repository::HEAD")
-        svnurl = svnloader.parse(URL)
-        newurl = svnurl.join(repo)
-        eq(newurl.tag, "HEAD")
-        eq(newurl.prefix, svnroot)
-        eq(newurl.tail, "file.txt")
-        eq(newurl.getUrl(), self.mkurl("/trunk/file.txt"))
-
-        # join, changing the tag from the HEAD:
-        URL = self.mkurl("/trunk/file.txt")
-        repo = cvsloader.parse("repository::FOO")
-        svnurl = svnloader.parse(URL)
-        newurl = svnurl.join(repo)
-        eq(newurl.tag, "FOO")
-        eq(newurl.prefix, svnroot)
-        eq(newurl.tail, "file.txt")
-        eq(newurl.getUrl(), self.mkurl("/tags/FOO/file.txt"))
-
     def test_is_subversion_url(self):
         note = " (repo in %s)" % self.SVNROOT
         def check(path):

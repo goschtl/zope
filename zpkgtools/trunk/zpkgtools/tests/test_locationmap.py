@@ -42,17 +42,6 @@ SAMPLE_INPUT_WITHOUT_REPOSITORY_URLS = """
 
     """ % (PREFIX, PREFIX, PREFIX, PREFIX)
 
-SAMPLE_INPUT_WITH_REPOSITORY_URLS = """
-    # This is a comment.
-
-    zope             repository:/Zope3/src/zope
-    zope.app         repository:/Zope3/src/zope/app
-    ZConfig          repository:/Packages/ZConfig
-    NotReal          repository:something/relative:TAG
-    file:README.txt  http://www.example.com/README.txt
-
-    """
-
 EXPECTED_OUTPUT = {
     "zope":             PREFIX + "Zope3/src/zope",
     "zope.app":         PREFIX + "Zope3/src/zope/app",
@@ -91,13 +80,6 @@ class LoadTestCase(unittest.TestCase):
         d["ZConfig"] = EXPECTED_OUTPUT["ZConfig"]
         self.check_sample_results(d)
 
-    def test_load_with_cvs_base(self):
-        sio = StringIO(SAMPLE_INPUT_WITH_REPOSITORY_URLS)
-        locationmap.load(
-            sio, "cvs://cvs.example.org:ext/cvsroot:module",
-            self.mapping)
-        self.check_sample_results(self.mapping)
-
     def test_fromPathOrUrl_with_url(self):
         dirname = os.path.dirname(os.path.abspath(__file__))
         dirname = os.path.join(dirname, "input")
@@ -135,9 +117,6 @@ class LoadTestCase(unittest.TestCase):
         d.update(mapping)
         self.assertEqual(d, EXPECTED_OUTPUT)
         self.failIf("NotThere" in mapping)
-
-    def test_repository_without_cvsbase(self):
-        self.check_error("package.module  repository:yeah/right")
 
     def test_malformed_lines(self):
         self.check_error("package-without-location")
