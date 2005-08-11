@@ -1,4 +1,4 @@
-PYTHON=python
+PYTHON=python2.4
 TESTFLAGS=-v
 TESTOPTS=
 SETUPFLAGS=
@@ -10,9 +10,6 @@ all: inplace runners
 inplace:
 	$(PYTHON) setup.py $(SETUPFLAGS) build_ext -i
 
-build:
-	$(PYTHON) setup.py $(SETUPFLAGS) build
-
 runners: bin/runzope
 
 bin/runzope: Makefile
@@ -20,14 +17,8 @@ bin/runzope: Makefile
 	echo "exec $(PYTHON) z3.py" >> bin/runzope;
 	chmod +x bin/runzope
 
-test_build: build
-	$(PYTHON) test.py $(TESTFLAGS) $(TESTOPTS)
-
 test_inplace: inplace
 	$(PYTHON) test.py $(TESTFLAGS) $(TESTOPTS)
-
-ftest_build: build
-	$(PYTHON) test.py -f $(TESTFLAGS) $(TESTOPTS)
 
 ftest_inplace: inplace
 	$(PYTHON) test.py -f $(TESTFLAGS) $(TESTOPTS)
