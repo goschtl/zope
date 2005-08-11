@@ -22,6 +22,7 @@ import sys
 import zpkgsetup.build
 import zpkgsetup.build_ext
 import zpkgsetup.build_headers
+import zpkgsetup.install_headers
 
 
 class ZPkgExtension(distutils.extension.Extension):
@@ -46,3 +47,5 @@ class ZPkgDistribution(distutils.dist.Distribution):
                                  zpkgsetup.build_ext.build_ext)
         self.cmdclass.setdefault('build_headers',
                                  zpkgsetup.build_headers.build_headers)
+        self.cmdclass.setdefault('install_headers',
+                                 zpkgsetup.install_headers.install_headers)
