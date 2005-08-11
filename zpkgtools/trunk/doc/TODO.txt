@@ -37,11 +37,14 @@ Things that need to be done
   performed.  If could be implemented as a stock distutils feature,
   though that isn't strictly necessary.  It would probably be best
   implemented as a new command, build_headers, that would be run
-  before build_ext.  An alternate install_headers implementation may
-  be needed.
+  before build_ext.  An alternate install_headers implementation is
+  required.
 
   Such an approach should allow removal of the Dependencies/Includes/
   directory from distributions that provide headers.
+
+  **Status:**  This is done, except for the alternate install_headers
+  command.  Additional tests need to be written.
 
 - Package assembler script and distribution runtime
 
