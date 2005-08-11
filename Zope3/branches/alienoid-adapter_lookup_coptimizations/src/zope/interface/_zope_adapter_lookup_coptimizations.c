@@ -252,18 +252,18 @@ AdapterLookup_lookup(AdapterLookup *self, PyObject *args, PyObject *keywds)
                 /* Simple adapter */
                 PyObject *req = PySequence_GetItem(required, 0);
                 if (req == NULL)
-                        goto on_error;
+                        return NULL;
                 surrogate = PyObject_CallMethodObjArgs((PyObject *)self,
                                                        strget, req, NULL);
                 Py_DECREF(req);
                 if (surrogate == NULL)
-                        goto on_error;
+                        return NULL;
 
                 byname = PyObject_CallMethodObjArgs(surrogate, strget,
                                                     provided, NULL);
                 Py_XDECREF(surrogate);
                 if (byname == NULL)
-                        goto on_error;
+                        return NULL;
 
                 if (byname != Py_None) {
                         value = PyDict_GetItem(byname, name);
@@ -279,7 +279,7 @@ AdapterLookup_lookup(AdapterLookup *self, PyObject *args, PyObject *keywds)
                                                             strget,
                                                             provided, NULL);
                         if (byname == NULL)
-                                goto on_error;
+                                return NULL;
 
                         if (byname != Py_None) {
                                 value = PyDict_GetItem(byname, name);
@@ -295,9 +295,6 @@ AdapterLookup_lookup(AdapterLookup *self, PyObject *args, PyObject *keywds)
 
                 Py_INCREF(value);
                 return value;
-
-        on_error:
-                return NULL;
 
         } else if (!order) {
                 /* null adapter */
@@ -326,7 +323,7 @@ AdapterLookup_lookup(AdapterLookup *self, PyObject *args, PyObject *keywds)
 
         with = PySequence_GetSlice(required, 1, order); /* new reference */
         if (with == NULL)
-                goto fail_with;
+                return NULL;
         PyObject *key = Py_BuildValue("Oi", provided, order);
 
         PyObject *req = PySequence_GetItem(required, 0);
@@ -481,7 +478,6 @@ finish:
 
 fail_req:
         Py_DECREF(with);
-fail_with:
         return NULL;
 }
 
@@ -491,9 +487,8 @@ AdapterLookup_lookup1(AdapterLookup *self, PyObject *args, PyObject *keywds)
         PyObject *required, *provided;
         PyObject *name = emptystr;
         PyObject *_default = Py_None;
-        PyObject *required_list;
         PyObject *res;
-        PyObject *param_args, *kw;
+        PyObject *param_args;
 
         static char *kwlist[] = {"required", "provided", "name", "default",
                                  NULL};
