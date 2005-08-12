@@ -38,11 +38,20 @@ found in the same directory as this README.txt file::
   $ python2.3 tests.py
   ......................................................................
   ......................................................................
-  ...............................................
+  ........................................
   ----------------------------------------------------------------------
-  Ran 204 tests in 0.999s
+  Ran 180 tests in 0.798s
 
   OK
+
+
+Getting More Information
+------------------------
+
+To get additional information about **zpkg** or to discuss this with
+others, there is a mailing list specifically for **zpkg**::
+
+  http://mail.zope.org/mailman/listinfo/zpkg
 
 
 Reporting Bugs
