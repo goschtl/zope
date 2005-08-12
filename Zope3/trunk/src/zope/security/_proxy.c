@@ -17,7 +17,7 @@ $Id$
 */
 
 #include <Python.h>
-#include "proxy.h"
+#include "zope.proxy/proxy.h"
 
 static PyObject *__class__str = 0, *__name__str = 0, *__module__str = 0;
 
