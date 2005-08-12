@@ -5,6 +5,5 @@
     >
 
 <include package=".container.browser.ftests" />
-<include package=".pagetemplate.ftests" />
 
 </configure>
