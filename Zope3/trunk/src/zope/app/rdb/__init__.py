@@ -407,8 +407,21 @@ class ZopeDBTransactionManager(object):
 
     def __init__(self, dbconn):
         self._dbconn = dbconn
+        self.transaction_manager = transaction.manager
 
     def prepare(self, txn):
+        pass
+
+    def tpc_begin(self, txn):
+        pass
+
+    def tpc_vote(self, txn):
+        pass
+
+    def tpc_finish(self, txn):
+        pass
+
+    def tpc_abort(self, txn):
         pass
 
     def abort(self, txn):

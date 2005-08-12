@@ -17,10 +17,14 @@ $Id$
 """
 from unittest import TestCase, main, makeSuite, TestSuite
 import transaction
+from transaction.interfaces import IDataManager
 from transaction.tests.abstestIDataManager import IDataManagerTests
+
+from zope.interface.verify import verifyObject
 from zope.app.rdb import ZopeDBTransactionManager
 from zope.app.rdb import ZopeConnection
 from zope.app.rdb.tests.stubs import ConnectionStub, TypeInfoStub
+
 
 class TxnMgrTest(IDataManagerTests, TestCase):
 
@@ -34,6 +38,9 @@ class TxnMgrTest(IDataManagerTests, TestCase):
     def tearDown(self):
         """ make sure the global env is clean"""
         transaction.abort()
+
+    def test_interface(self):
+        self.assert_(verifyObject(IDataManager, self.datamgr))
 
     def test_abort(self):
         transaction.abort()
