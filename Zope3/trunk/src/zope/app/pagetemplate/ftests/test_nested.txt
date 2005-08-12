@@ -1,0 +1,38 @@
+
+First, we need to create a content object that we can test our sample
+views on::
+
+  >>> print http("""
+  ... POST /@@+/action.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... """, form={"type_name": "BrowserAdd__zope.app.folder.folder.Folder",
+  ...            "id": "folder",
+  ...            "add": "Add"})
+  HTTP/1.1 303 ...
+  Location: http://localhost/@@contents.html
+  <BLANKLINE>
+
+Now let's look at our test view to make sure we're seeing the expected
+template expansion::
+
+  >>> print http("""
+  ... GET /folder/@@outer HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... """, handle_errors=False)
+  HTTP/1.1 200 ...
+  <BLANKLINE>
+  <html>
+  <head>
+  <title>Example</title>
+  </head>
+  <body>
+  hello
+  <div>
+  <div>
+  inner body slot content
+  </div>
+  intermediate body slot stuff
+  </div>
+  </body>
+  </html>
+  <BLANKLINE>

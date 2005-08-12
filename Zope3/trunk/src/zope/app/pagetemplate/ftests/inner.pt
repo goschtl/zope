@@ -1,0 +1,11 @@
+<html metal:use-macro='context/@@intermediate/intermediate'>
+<head>
+<title>Example</title>
+</head>
+<body>
+hello
+<div metal:fill-slot="body">
+inner body slot content
+</div>
+</body>
+</html>
