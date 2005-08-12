@@ -237,6 +237,8 @@ TestRecorder.ElementInfo = function(element) {
   this.value = element.value;
   this.name = element.name;
   this.type = element.type;
+  if (this.type)
+    this.type = this.type.toLowerCase();
   this.src = element.src;
   this.id = element.id;
 
@@ -280,6 +282,7 @@ TestRecorder.ChangeEvent = function(target) {
   this.id = target.id;
   this.name = target.name;
   this.value = target.value;
+  this.info = new TestRecorder.ElementInfo(target);
 }
 
 TestRecorder.CheckDocumentEvent = function(type, target) {

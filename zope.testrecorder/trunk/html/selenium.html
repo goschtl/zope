@@ -19,7 +19,6 @@ function SeleniumRenderer(document) {
 
 SeleniumRenderer.prototype.quote = function(data) {
   if (data) {
-    
     data = data.replace(/[<]/g, '&lt;');
     data = data.replace(/[>]/g, '&gt;');
     data = data.replace(/["]/g, '&quot;');
@@ -116,7 +115,7 @@ SeleniumRenderer.prototype.bestId = function(item) {
 
 SeleniumRenderer.prototype.xpathId = function(item) {
   // Try to produce an xpath identifier for item
-  if (!item.info.tagName) {
+  if (!item.info || !item.info.tagName) {
     return null;
   }
 
@@ -156,9 +155,6 @@ SeleniumRenderer.prototype.xpathId = function(item) {
   return null;
 }
 
-
-
-
 SeleniumRenderer.prototype.openUrl = function(item) {
   var url = this.repr(item.url);
   this.row("open", url, "");
@@ -175,12 +171,14 @@ SeleniumRenderer.prototype.click = function(item) {
 
 SeleniumRenderer.prototype.change = function(item) {
   var id = this.bestId(item);
-  var type = item.type;
+  var tag = item.info ? item.info.tagName : null;
+  var type = item.info ? item.info.type : null;
   var cmd = "type";
+
   if ((type == "radio") || (type == "checkbox")) {
     return this.click(item);
   }
-  else if (type == "select") {
+  else if (tag && tag.toLowerCase() == "select") {
     cmd = "select";
   }
   this.row(cmd, id, this.repr(item.value));
