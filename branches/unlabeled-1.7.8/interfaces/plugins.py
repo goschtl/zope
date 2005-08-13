@@ -427,6 +427,31 @@ class IRoleEnumerationPlugin( Interface ):
           scaling issues for some implementations.
         """
 
+class IRequestTypeSniffer( Interface ):
+
+    """ Given a request, detects the request type for later use by other plugins.
+    """
+    def sniffRequestType( request ):
+        """ Return a interface identifying what kind the request is.
+        """
+
+class IChallengeProtocolChooser( Interface ):
+
+    """ Choose a proper set of protocols to be used for challenging
+    the client given a request.
+    """
+    def chooseProtocols( request ):
+        """ -> ( protocol_1, ... protocol_N) | None
+        
+        o If a set of protocols is returned, the first plugin with a
+            protocol that is in the set will define the protocol to be
+            used for the current request.
+
+        o If None is returned, the 'first found protocol' wins.
+
+        o Once the protocol is decided, all challenge plugins for that
+            protocol will be executed.
+        """
 #
 #   XXX:  Do we need a LocalRoleAlgorithm plugin type?  E.g., base_cms
 #         has two different algorithms, based on whether or not the

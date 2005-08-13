@@ -164,3 +164,23 @@ class IRoleAssignerPlugin_conformance:
             import IRoleAssignerPlugin
 
         verifyClass( IRoleAssignerPlugin, self._getTargetClass() )
+
+class IChallengeProtocolChooser_conformance:
+
+    def test_ChallengeProtocolChooser_conformance( self ):
+
+        from Interface.Verify import verifyClass
+        from Products.PluggableAuthService.interfaces.plugins \
+            import IChallengeProtocolChooser
+
+        verifyClass( IChallengeProtocolChooser, self._getTargetClass() )
+
+class IRequestTypeSniffer_conformance:
+
+    def test_RequestTypeSniffer_conformance( self ):
+
+        from Interface.Verify import verifyClass
+        from Products.PluggableAuthService.interfaces.plugins \
+            import IRequestTypeSniffer
+
+        verifyClass( IRequestTypeSniffer, self._getTargetClass() )
