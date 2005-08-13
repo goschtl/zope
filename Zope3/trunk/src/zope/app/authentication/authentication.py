@@ -15,9 +15,7 @@
 
 $Id$
 """
-from zope.event import notify
 import zope.interface
-import zope.schema
 
 from zope import component
 from zope.schema.interfaces import ISourceQueriables
@@ -27,6 +25,7 @@ from zope.app.component import queryNextUtility
 from zope.app.component.site import SiteManagementFolder
 
 from zope.app.authentication import interfaces
+
 
 class PluggableAuthentication(SiteManagementFolder):
 
@@ -162,7 +161,7 @@ class QuerySchemaSearchAdapter(object):
         ILocation)
 
     def __init__(self, authplugin, pau):
-        self.__parent__ = pau
+        self.__parent__ = authplugin
         self.__name__ = ''
         self.authplugin = authplugin
         self.pau = pau

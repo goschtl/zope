@@ -44,13 +44,13 @@ class QuerySchemaSearchView(object):
         sourcepath = getPath(self.context)
         setUpWidgets(self, schema, IInputWidget, prefix=name+'.field')
         html = []
-        
+
         # add sub title for source search field
         html.append('<h4>%s</h4>' % sourcename)
-        
+
         # start row for path display field
         html.append('<div class="row">')
-        
+
         # for each source add path of source
         html.append('  <div class="label">')
         label = translate(source_label, context=self.request)
@@ -61,16 +61,15 @@ class QuerySchemaSearchView(object):
         html.append('  </div>')
         html.append('  <div class="field">')
         html.append('      %s' % sourcepath)
-        html.append('    </field>')
         html.append('  </div>')
         html.append('</div>')
-        
+
         # start row for search fields
         html.append('<div class="row">')
 
         for field_name, field in getFieldsInOrder(schema):
             widget = getattr(self, field_name+'_widget')
-            
+
             # for each field add label...
             html.append('  <div class="label">')
             html.append('    <label for="%s" title="%s">'
@@ -78,7 +77,7 @@ class QuerySchemaSearchView(object):
             html.append('      %s' % widget.label)
             html.append('    </label>')
             html.append('  </div>')
-            
+
             # ...and field widget
             html.append('  <div class="field">')
             html.append('    %s' % widget())

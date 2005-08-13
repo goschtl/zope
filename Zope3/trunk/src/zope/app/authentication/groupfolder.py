@@ -38,6 +38,7 @@ import zope.app.security.vocabulary
 from zope.app.security.interfaces import IAuthenticatedGroup, IEveryoneGroup
 from zope.app.authentication import principalfolder, interfaces
 
+
 class IGroupInformation(interface.Interface):
 
     title = schema.TextLine(
@@ -64,8 +65,8 @@ class IGroupFolder(zope.app.container.interfaces.IContainer):
     zope.app.container.constraints.contains(IGroupInformation)
 
     prefix = schema.TextLine(
-        title=u"Group ID prefix",
-        description=u"Prefix added to IDs of groups in this folder",
+        title=_("Group ID prefix"),
+        description=_("Prefix added to IDs of groups in this folder"),
         readonly=True,
         )
 
@@ -84,7 +85,7 @@ class IGroupContained(zope.app.container.interfaces.IContained):
 class IGroupSearchCriteria(interface.Interface):
 
     search = schema.TextLine(
-        title=u"Group Search String",
+        title=_("Group Search String"),
         required=False,
         missing_value=u'',
         )
@@ -124,7 +125,7 @@ class GroupFolder(BTreeContainer):
         interfaces.IQuerySchemaSearch,
         IGroupFolder)
 
-    schema = (IGroupSearchCriteria)
+    schema = IGroupSearchCriteria
 
     def __init__(self, prefix=u''):
         self.prefix=prefix
