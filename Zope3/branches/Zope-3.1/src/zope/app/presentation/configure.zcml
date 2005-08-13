@@ -89,7 +89,7 @@
   
   <content class=".zpt.ZPTTemplate">
     <factory
-        title="zope.app.ZPTTemplate"
+        title="ZPT Template"
         description="Persistent View Page Template"
         />
     <implements
