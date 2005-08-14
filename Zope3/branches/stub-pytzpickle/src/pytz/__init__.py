@@ -1,7 +1,4 @@
-#!/usr/bin/env python
 '''
-$Id: __init__.py,v 1.12 2005/02/15 20:21:41 zenzen Exp $
-
 datetime.tzinfo timezone definitions generated from the
 Olson timezone database:
 
@@ -12,92 +9,20 @@ on how to use these modules.
 '''
 
 # The Olson database has historically been updated about 4 times a year
-OLSON_VERSION = '2005i'
+OLSON_VERSION = '2005k'
 VERSION = OLSON_VERSION
 #VERSION = OLSON_VERSION + '.2'
+__version__ = OLSON_VERSION
 
 OLSEN_VERSION = OLSON_VERSION # Old releases had this misspelling
 
-__all__ = ['timezone', 'all_timezones', 'common_timezones', 'utc']
+__all__ = [
+    'timezone', 'all_timezones', 'common_timezones', 'utc',
+    'AmbiguousTimeError',
+    ]
 
 import sys, datetime
-
-from tzinfo import AmbiguousTimeError
-
-ZERO = datetime.timedelta(0)
-HOUR = datetime.timedelta(hours=1)
-
-# A UTC class.
-
-class UTC(datetime.tzinfo):
-    """UTC
-    
-    Identical to the reference UTC implementation given in Python docs except
-    that it unpickles using the single module global instance defined beneath
-    this class declaration.
-    """
-
-    def utcoffset(self, dt):
-        return ZERO
-
-    def tzname(self, dt):
-        return "UTC"
-
-    def dst(self, dt):
-        return ZERO
-    
-    def __reduce__(self):
-        return _UTC, ()
-
-    def localize(self, dt, is_dst=False):
-        '''Convert naive time to local time'''
-        if dt.tzinfo is not None:
-            raise ValueError, 'Not naive datetime (tzinfo is already set)'
-        return dt.replace(tzinfo=self)
-
-    def normalize(self, dt, is_dst=False):
-        '''Correct the timezone information on the given datetime'''
-        if dt.tzinfo is None:
-            raise ValueError, 'Naive time - no tzinfo set'
-        return dt.replace(tzinfo=self)
-
-    def __repr__(self):
-        return '<UTC>'
-
-
-UTC = utc = UTC()
-
-def _UTC():
-    """Factory function for utc unpickling.
-    
-    Makes sure that unpickling a utc instance always returns the same 
-    module global.
-    
-    These examples belong in the UTC class above, but it is obscured; or in
-    the README.txt, but we are not depending on Python 2.4 so integrating
-    the README.txt examples with the unit tests is not trivial.
-    
-    >>> import datetime, pickle
-    >>> dt = datetime.datetime(2005, 3, 1, 14, 13, 21, tzinfo=utc)
-    >>> naive = dt.replace(tzinfo=None)
-    >>> p = pickle.dumps(dt, 1)
-    >>> naive_p = pickle.dumps(naive, 1)
-    >>> len(p), len(naive_p), len(p) - len(naive_p)
-    (60, 43, 17)
-    >>> new = pickle.loads(p)
-    >>> new == dt
-    True
-    >>> new is dt
-    False
-    >>> new.tzinfo is dt.tzinfo
-    True
-    >>> utc is UTC is timezone('UTC')
-    True
-    >>> utc is timezone('GMT')
-    False
-    """
-    return utc
-_UTC.__safe_for_unpickling__ = True
+from tzinfo import AmbiguousTimeError, unpickler
 
 def timezone(zone):
     ''' Return a datetime.tzinfo implementation for the given timezone 
@@ -139,10 +64,105 @@ def timezone(zone):
     assert type(rv) != type(sys)
     return rv
 
+
 def _munge_zone(zone):
     ''' Convert a zone into a string suitable for use as a Python identifier 
     '''
     return zone.replace('+', '_plus_').replace('-', '_minus_')
+
+
+ZERO = datetime.timedelta(0)
+HOUR = datetime.timedelta(hours=1)
+
+
+class UTC(datetime.tzinfo):
+    """UTC
+    
+    Identical to the reference UTC implementation given in Python docs except
+    that it unpickles using the single module global instance defined beneath
+    this class declaration.
+
+    Also contains extra attributes and methods to match other pytz tzinfo
+    instances.
+    """
+    zone = "UTC"
+
+    def utcoffset(self, dt):
+        return ZERO
+
+    def tzname(self, dt):
+        return "UTC"
+
+    def dst(self, dt):
+        return ZERO
+    
+    def __reduce__(self):
+        return _UTC, ()
+
+    def localize(self, dt, is_dst=False):
+        '''Convert naive time to local time'''
+        if dt.tzinfo is not None:
+            raise ValueError, 'Not naive datetime (tzinfo is already set)'
+        return dt.replace(tzinfo=self)
+
+    def normalize(self, dt, is_dst=False):
+        '''Correct the timezone information on the given datetime'''
+        if dt.tzinfo is None:
+            raise ValueError, 'Naive time - no tzinfo set'
+        return dt.replace(tzinfo=self)
+
+    def __repr__(self):
+        return "<UTC>"
+
+    def __str__(self):
+        return "UTC"
+
+
+UTC = utc = UTC() # UTC is a singleton
+
+
+def _UTC():
+    """Factory function for utc unpickling.
+    
+    Makes sure that unpickling a utc instance always returns the same 
+    module global.
+    
+    These examples belong in the UTC class above, but it is obscured; or in
+    the README.txt, but we are not depending on Python 2.4 so integrating
+    the README.txt examples with the unit tests is not trivial.
+    
+    >>> import datetime, pickle
+    >>> dt = datetime.datetime(2005, 3, 1, 14, 13, 21, tzinfo=utc)
+    >>> naive = dt.replace(tzinfo=None)
+    >>> p = pickle.dumps(dt, 1)
+    >>> naive_p = pickle.dumps(naive, 1)
+    >>> len(p), len(naive_p), len(p) - len(naive_p)
+    (60, 43, 17)
+    >>> new = pickle.loads(p)
+    >>> new == dt
+    True
+    >>> new is dt
+    False
+    >>> new.tzinfo is dt.tzinfo
+    True
+    >>> utc is UTC is timezone('UTC')
+    True
+    >>> utc is timezone('GMT')
+    False
+    """
+    return utc
+_UTC.__safe_for_unpickling__ = True
+
+
+def _p(*args):
+    """Factory function for unpickling pytz tzinfo instances.
+
+    Just a wrapper around tzinfo.unpickler to save a few bytes in each pickle
+    by shortening the path.
+    """
+    return unpickler(*args)
+_p.__safe_for_unpickling__ = True
+
 
 def _test():
     import doctest, os, sys
