@@ -1,6 +1,6 @@
 PluggableAuthService changelog
 
-  After PluggableAuthService
+  After PluggableAuthService 1.1b2
 
     - Repaired unit test breakage (unittest.TestCase instances have
       'failUnless'/'failIf', rather than 'assertTrue'/'assertFalse').
