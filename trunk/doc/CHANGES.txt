@@ -1,5 +1,10 @@
 PluggableAuthService changelog
 
+  After PluggableAuthService
+
+    - Repaired unit test breakage (unittest.TestCase instances have
+      'failUnless'/'failIf', rather than 'assertTrue'/'assertFalse').
+
   PluggableAuthService 1.1b2 (2005/07/14)
 
     - Missed a 'nocall:' in the Interfaces activation form.
