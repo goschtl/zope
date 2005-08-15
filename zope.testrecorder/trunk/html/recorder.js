@@ -17,7 +17,6 @@
 // caveats: popup windows undefined, cant handle framesets
 //
 // todo:
-//   - handle cmenu on far right of window
 //   - capture submit (w/lookback for doctest)
 //   - cleanup strings
 //
@@ -104,6 +103,33 @@ TestRecorder.Browser.getSelection = function(wnd) {
   return "";
 }
 
+TestRecorder.Browser.windowHeight = function(wnd) {
+  var doc = wnd.document;
+  if (wnd.innerHeight) {
+    return wnd.innerHeight;
+  }
+  else if (doc.documentElement && doc.documentElement.clientHeight) {
+    return doc.documentElement.clientHeight;
+  }
+  else if (document.body) {
+    return document.body.clientHeight;
+  }
+  return -1;
+}
+
+TestRecorder.Browser.windowWidth = function(wnd) {
+  var doc = wnd.document;
+  if (wnd.innerWidth) {
+    return wnd.innerWidth;
+  }
+  else if (doc.documentElement && doc.documentElement.clientWidth) {
+    return doc.documentElement.clientWidth;
+  }
+  else if (document.body) {
+    return document.body.clientWidth;
+  }
+  return -1;
+}
 
 
 // ---------------------------------------------------------------------------
@@ -449,7 +475,18 @@ TestRecorder.ContextMenu.prototype.show = function(e) {
   var doc = wnd.document;
   this.target = e.target();
   TestRecorder.Browser.captureEvent(wnd, "mousedown", this.onmousedown);
-  var menu = this.build(e.target(), e.posX(), e.posY());
+
+  var wh = TestRecorder.Browser.windowHeight(wnd);
+  var ww = TestRecorder.Browser.windowWidth(wnd);
+  var x = e.posX();
+  var y = e.posY();
+  if ((ww >= 0) && ((ww - x) < 100)) {
+    x = x - 100;
+  } 
+  if ((wh >= 0) && ((wh - y) < 100)) {
+    y = y - 100;
+  } 
+  var menu = this.build(e.target(), x, y);
   this.menu = menu;
   menu.style.display = "";
   this.visible = true;
