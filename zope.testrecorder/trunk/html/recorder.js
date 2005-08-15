@@ -19,6 +19,7 @@
 // todo:
 //   - handle cmenu on far right of window
 //   - capture submit (w/lookback for doctest)
+//   - cleanup strings
 //
 //
 // Contact Brian Lloyd (brian@zope.com) with questions or comments.
@@ -29,11 +30,87 @@ if (typeof(TestRecorder) == "undefined") {
 }
 
 
+
 // ---------------------------------------------------------------------------
-// Event -- a class that provides a cross-browser API for managing event 
-// handlers and dealing with most interesting information about events.
+// Browser -- a singleton that provides a cross-browser API for managing event 
+// handlers and miscellaneous browser functions.
 //
-// Instance Methods:
+// Methods:
+//
+//   captureEvent(window, name, handler) -- capture the named event occurring
+//   in the given window, setting the function handler as the event handler.
+//   The event name should be of the form "click", "blur", "change", etc. 
+//
+//   releaseEvent(window, name, handler) -- release the named event occurring
+//   in the given window. The event name should be of the form "click", "blur",
+//   "change", etc. 
+//
+//   getSelection(window) -- return the text currently selected, or the empty
+//   string if no text is currently selected in the browser.
+//
+// ---------------------------------------------------------------------------
+
+if (typeof(TestRecorder.Browser) == "undefined") {
+  TestRecorder.Browser = {};
+}
+
+TestRecorder.Browser.captureEvent = function(wnd, name, func) {
+  var lname = name.toLowerCase();
+  var doc = wnd.document;
+  if (doc.layers && wnd.captureEvents) {
+    wnd.captureEvents(Event[name.toUpperCase()]);
+    wnd["on" + lname] = func;
+  }
+  else if (doc.all && !doc.getElementById) {
+    doc["on" + lname] = func;
+  }
+  else if (doc.all && doc.attachEvent) {
+    doc.attachEvent("on" + lname, func);
+  }
+  else if (doc.addEventListener) {
+    doc.addEventListener(lname, func, true);
+  }
+}
+
+TestRecorder.Browser.releaseEvent = function(wnd, name, func) {
+  var lname = name.toLowerCase();
+  var doc = wnd.document;
+  if (doc.layers && wnd.releaseEvents) {
+    wnd.releaseEvents(Event[name.toUpperCase()]);
+    wnd["on" + lname] = null;
+  }
+  else if (doc.all && !doc.getElementById) {
+    doc["on" + lname] = null;
+  }
+  else if (doc.all && doc.attachEvent) {
+    doc.detachEvent("on" + lname, func);
+  }
+  else if (doc.addEventListener) {
+    doc.removeEventListener(lname, func, true);
+  }
+}
+
+TestRecorder.Browser.getSelection = function(wnd) {
+  var doc = wnd.document;
+  if (wnd.getSelection) {
+    return wnd.getSelection() + "";
+  }
+  else if (doc.getSelection) {
+    return doc.getSelection() + "";
+  } 
+  else if (doc.selection && doc.selection.createRange) {
+    return doc.selection.createRange().text + "";
+  }
+  return "";
+}
+
+
+
+// ---------------------------------------------------------------------------
+// Event -- a class that provides a cross-browser API dealing with most of the
+// interesting information about events.
+//
+// Methods:
 //
 //   type() -- returns the string type of the event (e.g. "click")
 //
@@ -62,16 +139,6 @@ if (typeof(TestRecorder) == "undefined") {
 //   stopPropagation() -- stop event propagation (if supported)
 //
 //   preventDefault() -- prevent the default action (if supported)
-//
-// Static Methods:
-//
-//   captureEvent(window, name, handler) -- capture the named event occurring
-//   in the given window, setting the function handler as the event handler.
-//   The event name should be of the form "click", "blur", "change", etc. 
-//
-//   releaseEvent(window, name, handler) -- release the named event occurring
-//   in the given window. The event name should be of the form "click", "blur",
-//   "change", etc. 
 //
 // ---------------------------------------------------------------------------
 
@@ -153,42 +220,6 @@ TestRecorder.Event.prototype.posY = function() {
   return 0;
 }
 
-TestRecorder.Event.captureEvent = function(wnd, name, func) {
-  var lname = name.toLowerCase();
-  var doc = wnd.document;
-  if (doc.layers && wnd.captureEvents) {
-    wnd.captureEvents(Event[name.toUpperCase()]);
-    wnd["on" + lname] = func;
-  }
-  else if (doc.all && !doc.getElementById) {
-    doc["on" + lname] = func;
-  }
-  else if (doc.all && doc.attachEvent) {
-    doc.attachEvent("on" + lname, func);
-  }
-  else if (doc.addEventListener) {
-    doc.addEventListener(lname, func, true);
-  }
-}
-
-TestRecorder.Event.releaseEvent = function(wnd, name, func) {
-  var lname = name.toLowerCase();
-  var doc = wnd.document;
-  if (doc.layers && wnd.releaseEvents) {
-    wnd.releaseEvents(Event[name.toUpperCase()]);
-    wnd["on" + lname] = null;
-  }
-  else if (doc.all && !doc.getElementById) {
-    doc["on" + lname] = null;
-  }
-  else if (doc.all && doc.attachEvent) {
-    doc.detachEvent("on" + lname, func);
-  }
-  else if (doc.addEventListener) {
-    doc.removeEventListener(lname, func, true);
-  }
-}
-
 
 
 // ---------------------------------------------------------------------------
@@ -207,12 +238,10 @@ TestRecorder.Event.releaseEvent = function(wnd, name, func) {
 TestRecorder.TestCase = function() {
   this.title = "Test Case";
   this.items = new Array();
-  this.index = 0;
 }
 
 TestRecorder.TestCase.prototype.append = function(o) {
-  this.items[this.index] = o;
-  this.index++;
+  this.items[this.items.length] = o;
 }
 
 TestRecorder.TestCase.prototype.peek = function() {
@@ -222,14 +251,34 @@ TestRecorder.TestCase.prototype.peek = function() {
 
 
 // ---------------------------------------------------------------------------
-// Event types: xxx
-// 
+// Event types -- whenever an interesting event happens (an action or a check)
+// it is recorded as one of the object types defined below. All events have a
+// 'type' attribute that marks the type of the event (one of the values in the
+// EventTypes enumeration) and different attributes to capture the pertinent 
+// information at the time of the event.
 // ---------------------------------------------------------------------------
 
-TestRecorder.DocumentInfo = function(doc) {
-  this.url = doc.URL;
-  this.title = doc.title;
+if (typeof(TestRecorder.EventTypes) == "undefined") {
+  TestRecorder.EventTypes = {};
 }
+
+TestRecorder.EventTypes.OpenUrl = 0;
+TestRecorder.EventTypes.Click = 1;
+TestRecorder.EventTypes.Change = 2;
+TestRecorder.EventTypes.Comment = 3;
+TestRecorder.EventTypes.CheckPageTitle = 4;
+TestRecorder.EventTypes.CheckPageLocation = 5;
+TestRecorder.EventTypes.CheckTextPresent = 6;
+TestRecorder.EventTypes.CheckValue = 7;
+TestRecorder.EventTypes.CheckValueContains = 8;
+TestRecorder.EventTypes.CheckText = 9;
+TestRecorder.EventTypes.CheckHref = 10;
+TestRecorder.EventTypes.CheckEnabled = 11;
+TestRecorder.EventTypes.CheckDisabled = 12;
+TestRecorder.EventTypes.CheckSelectValue = 13;
+TestRecorder.EventTypes.CheckSelectOptions = 14;
+TestRecorder.EventTypes.CheckImageSrc = 15;
+
 
 TestRecorder.ElementInfo = function(element) {
   this.href = element.href;
@@ -241,7 +290,6 @@ TestRecorder.ElementInfo = function(element) {
     this.type = this.type.toLowerCase();
   this.src = element.src;
   this.id = element.id;
-
   this.options = [];
   if (element.selectedIndex) {
     for (var i=0; i < element.options.length; i++) {
@@ -249,60 +297,29 @@ TestRecorder.ElementInfo = function(element) {
       this.options[i] = {text:o.text, value:o.value};
     }
   }
-
 }
 
-TestRecorder.ElementInfo.prototype.bestid = function() {
-  if (this.id)
-    return this.id;
-  if (this.name)
-    return this.name;
-  return this.tagName;
+TestRecorder.DocumentEvent = function(type, target) {
+  this.type = type;
+  this.url = target.URL;
+  this.title = target.title;
 }
 
-
-
-TestRecorder.OpenURLEvent = function(url) {
-  this.type = "open url";
-  this.url = url;
+TestRecorder.ElementEvent = function(type, target, text) {
+  this.type = type;
+  this.info = new TestRecorder.ElementInfo(target);
+  this.text = text;
 }
 
 TestRecorder.CommentEvent = function(text) {
-  this.type = "comment";
+  this.type = TestRecorder.EventTypes.Comment;
   this.text = text;
 }
 
-TestRecorder.ClickEvent = function(target) {
-  this.type = "click";
-  this.info = new TestRecorder.ElementInfo(target);
+TestRecorder.OpenURLEvent = function(url) {
+  this.type = TestRecorder.EventTypes.OpenUrl;
+  this.url = url;
 }
-
-TestRecorder.ChangeEvent = function(target) {
-  this.type = "change";
-  this.id = target.id;
-  this.name = target.name;
-  this.value = target.value;
-  this.info = new TestRecorder.ElementInfo(target);
-}
-
-TestRecorder.CheckDocumentEvent = function(type, target) {
-  this.type = type;
-  this.info = new TestRecorder.DocumentInfo(target);
-}
-
-TestRecorder.CheckElementEvent = function(type, target) {
-  this.type = type;
-  this.info = new TestRecorder.ElementInfo(target);
-}
-
-TestRecorder.CheckTextEvent = function(type, target, text) {
-  this.type = type;
-  this.info = new TestRecorder.ElementInfo(target);
-  this.text = text;
-}
-
-
-
 
 
 
@@ -345,14 +362,20 @@ TestRecorder.ContextMenu.prototype.build = function(t, x, y) {
   menu.onmouseover=contextmenu.onmouseover;
   menu.onmouseout=contextmenu.onmouseout;
 
-  var selected = recorder.getSelection().toString();
+  var selected = TestRecorder.Browser.getSelection(recorder.window).toString();
 
   if (t.width && t.height) {
     menu.appendChild(this.item("Check Image Src", this.checkImgSrc));
   }
 
   else if (t.type == "text" || t.type == "textarea") {
-    menu.appendChild(this.item("Check Text Value", this.checkText));
+    if (selected && (selected != "")) {
+      this.selected = recorder.strip(selected);
+      menu.appendChild(this.item("Check Selected Text", 
+                       this.checkValueContains)
+                       );
+    }
+    menu.appendChild(this.item("Check Text Value", this.checkValue));
     menu.appendChild(this.item("Check Enabled", this.checkEnabled));
     menu.appendChild(this.item("Check Disabled", this.checkDisabled));
   }
@@ -425,7 +448,7 @@ TestRecorder.ContextMenu.prototype.show = function(e) {
   var wnd = recorder.window;
   var doc = wnd.document;
   this.target = e.target();
-  TestRecorder.Event.captureEvent(wnd, "mousedown", this.onmousedown);
+  TestRecorder.Browser.captureEvent(wnd, "mousedown", this.onmousedown);
   var menu = this.build(e.target(), e.posX(), e.posY());
   this.menu = menu;
   menu.style.display = "";
@@ -435,7 +458,7 @@ TestRecorder.ContextMenu.prototype.show = function(e) {
 
 TestRecorder.ContextMenu.prototype.hide = function() {
   var wnd = recorder.window;
-  TestRecorder.Event.releaseEvent(wnd, "mousedown", this.onmousedown);
+  TestRecorder.Browser.releaseEvent(wnd, "mousedown", this.onmousedown);
   var d = wnd.document;
   var b = d.getElementsByTagName("body").item(0);
   this.menu.style.display = "none" ;
@@ -485,25 +508,31 @@ TestRecorder.ContextMenu.prototype.record = function(o) {
 
 TestRecorder.ContextMenu.prototype.checkPageTitle = function() {
   var doc = recorder.window.document;
-  var e = new TestRecorder.CheckDocumentEvent("check page title", doc);
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.DocumentEvent(et.CheckPageTitle, doc);
   contextmenu.record(e);
 }
 
 TestRecorder.ContextMenu.prototype.checkPageLocation = function() {
   var doc = recorder.window.document;
-  var e = new TestRecorder.CheckDocumentEvent("check page location", doc);
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.DocumentEvent(et.CheckPageLocation, doc);
   contextmenu.record(e);
 }
 
 TestRecorder.ContextMenu.prototype.checkValue = function() {
   var t = contextmenu.target;
-  var e = new TestRecorder.CheckElementEvent("check value", t);
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.ElementEvent(et.CheckValue, t);
   contextmenu.record(e);
 }
 
-TestRecorder.ContextMenu.prototype.checkLabel = function() {
+TestRecorder.ContextMenu.prototype.checkValueContains = function() {
+  var s = contextmenu.selected;
   var t = contextmenu.target;
-  var e = new TestRecorder.CheckElementEvent("check label", t);
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.ElementEvent(et.CheckValueContains, t, s);
+  contextmenu.selected = null;
   contextmenu.record(e);
 }
 
@@ -523,57 +552,59 @@ TestRecorder.ContextMenu.prototype.checkText = function() {
     s = contextmenu.innertext(t);
   }
   s = recorder.strip(s);
-  var e = new TestRecorder.CheckTextEvent("check text", t, s);
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.ElementEvent(et.CheckText, t, s);
   contextmenu.record(e);
 }
 
 TestRecorder.ContextMenu.prototype.checkTextPresent = function() {
   var t = contextmenu.target;
   var s = contextmenu.selected;
-  var e = new TestRecorder.CheckTextEvent("check text present", t, s);
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.ElementEvent(et.CheckTextPresent, t, s);
   contextmenu.selected = null;
   contextmenu.record(e);
 }
 
 TestRecorder.ContextMenu.prototype.checkHref = function() {
   var t = contextmenu.target;
-  var e = new TestRecorder.CheckElementEvent("check href", t);
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.ElementEvent(et.CheckHref, t);
   contextmenu.record(e);
 }
 
 TestRecorder.ContextMenu.prototype.checkEnabled = function() {
   var t = contextmenu.target;
-  var e = new TestRecorder.CheckElementEvent("check enabled", t);
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.ElementEvent(et.CheckEnabled, t);
   contextmenu.record(e);
 }
 
 TestRecorder.ContextMenu.prototype.checkDisabled = function() {
   var t = contextmenu.target;
-  var e = new TestRecorder.CheckElementEvent("check disabled", t);
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.ElementEvent(et.CheckDisabled, t);
   contextmenu.record(e);
 }
 
 TestRecorder.ContextMenu.prototype.checkSelectValue = function() {
   var t = contextmenu.target;
-  var e = new TestRecorder.CheckElementEvent("check select value", t);
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.ElementEvent(et.CheckSelectValue, t);
   contextmenu.record(e);
 }
 
 TestRecorder.ContextMenu.prototype.checkSelectOptions = function() {
   var t = contextmenu.target;
-  var e = new TestRecorder.CheckElementEvent("check select options", t);
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.ElementEvent(et.CheckSelectOptions, t);
   contextmenu.record(e);
 }
 
 TestRecorder.ContextMenu.prototype.checkImgSrc = function() {
   var t = contextmenu.target;
-  var e = new TestRecorder.CheckElementEvent("check image src", t);
-  contextmenu.record(e);
-}
-
-TestRecorder.ContextMenu.prototype.checkAttrs = function() {
-  var t = contextmenu.target;
-  var e = new TestRecorder.CheckElementEvent("check attributes", t);
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.ElementEvent(et.CheckImageSrc, t);
   contextmenu.record(e);
 }
 
@@ -633,37 +664,22 @@ TestRecorder.Recorder.prototype.open = function(url) {
 
 TestRecorder.Recorder.prototype.captureEvents = function() {
   var wnd = this.window;
-  TestRecorder.Event.captureEvent(wnd, "contextmenu", this.oncontextmenu);
-  TestRecorder.Event.captureEvent(wnd, "click", this.onclick);
-  TestRecorder.Event.captureEvent(wnd, "change", this.onchange);
-  TestRecorder.Event.captureEvent(wnd, "keypress", this.onkeypress);
-  TestRecorder.Event.captureEvent(wnd, "select", this.onselect);
-  TestRecorder.Event.captureEvent(wnd, "submit", this.onsubmit);
+  TestRecorder.Browser.captureEvent(wnd, "contextmenu", this.oncontextmenu);
+  TestRecorder.Browser.captureEvent(wnd, "click", this.onclick);
+  TestRecorder.Browser.captureEvent(wnd, "change", this.onchange);
+  TestRecorder.Browser.captureEvent(wnd, "keypress", this.onkeypress);
+  TestRecorder.Browser.captureEvent(wnd, "select", this.onselect);
+  TestRecorder.Browser.captureEvent(wnd, "submit", this.onsubmit);
 }
 
 TestRecorder.Recorder.prototype.releaseEvents = function() {
   var wnd = this.window;
-  TestRecorder.Event.releaseEvent(wnd, "contextmenu", this.oncontextmenu);
-  TestRecorder.Event.releaseEvent(wnd, "click", this.onclick);
-  TestRecorder.Event.releaseEvent(wnd, "change", this.onchange);
-  TestRecorder.Event.releaseEvent(wnd, "keypress", this.onkeypress);
-  TestRecorder.Event.releaseEvent(wnd, "select", this.onselect);
-  TestRecorder.Event.releaseEvent(wnd, "submit", this.onsubmit);
-}
-
-TestRecorder.Recorder.prototype.getSelection = function () {
-  var wnd = this.window;
-  var doc = wnd.document;
-  if (wnd.getSelection) {
-    return wnd.getSelection();
-  }
-  else if (doc.getSelection) {
-    return doc.getSelection();
-  } 
-  else if (doc.selection && doc.selection.createRange) {
-    return doc.selection.createRange().text;
-  }
-  return "";
+  TestRecorder.Browser.releaseEvent(wnd, "contextmenu", this.oncontextmenu);
+  TestRecorder.Browser.releaseEvent(wnd, "click", this.onclick);
+  TestRecorder.Browser.releaseEvent(wnd, "change", this.onchange);
+  TestRecorder.Browser.releaseEvent(wnd, "keypress", this.onkeypress);
+  TestRecorder.Browser.releaseEvent(wnd, "select", this.onselect);
+  TestRecorder.Browser.releaseEvent(wnd, "submit", this.onsubmit);
 }
 
 
@@ -677,10 +693,11 @@ TestRecorder.Recorder.prototype.clickaction = function(e) {
   // menu (selecting a check) or out of the menu (cancelling it) so we 
   // always discard clicks that happen when the menu is visible.
   if (!contextmenu.visible) {
+    var et = TestRecorder.EventTypes;
     var t = e.target();
     if (t.href || (t.type && t.type == "submit") || 
        (t.type && t.type == "submit")) {
-      this.testcase.append(new TestRecorder.ClickEvent(e.target()));
+      this.testcase.append(new TestRecorder.ElementEvent(et.Click,e.target()));
     }
   }
 }
@@ -709,13 +726,6 @@ TestRecorder.Recorder.prototype.check = function(e) {
   }
 }
 
-
-
-
-
-
-
-
 TestRecorder.Recorder.prototype.onpageload = function() {
   // This must be called each time a new document is fully loaded into the
   // testing target frame to ensure that events are captured for the page.
@@ -726,13 +736,16 @@ TestRecorder.Recorder.prototype.onpageload = function() {
 
 TestRecorder.Recorder.prototype.onchange = function(e) {
   var e = new TestRecorder.Event(e);
-  recorder.testcase.append(new TestRecorder.ChangeEvent(e.target()));
+  var et = TestRecorder.EventTypes;
+  var v = new TestRecorder.ElementEvent(et.Change, e.target());
+  recorder.testcase.append(v);
   recorder.log("value changed: " + e.target());
 }
 
 TestRecorder.Recorder.prototype.onselect = function(e) {
   var e = new TestRecorder.Event(e);
   recorder.log("select: " + e.target());
+  alert("select");
 }
 
 TestRecorder.Recorder.prototype.onsubmit = function(e) {
