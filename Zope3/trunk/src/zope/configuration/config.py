@@ -612,23 +612,24 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
 
 
         """
-        for action in resolveConflicts(self.actions):
-            (discriminator, callable, args, kw, includepath, info, order
-             ) = expand_action(*action)
-            if callable is None:
-                continue
-            try:
-                callable(*args, **kw)
-            except:
-                if testing:
-                    raise
-                t, v = sys.exc_info()[:2]
-                v = ConfigurationExecutionError(t, v, info)
-                t = ConfigurationExecutionError
-                raise t, v, sys.exc_info()[2]
-
-        if clear:
-            del self.actions[:]
+        try:
+            for action in resolveConflicts(self.actions):
+                (discriminator, callable, args, kw, includepath, info, order
+                 ) = expand_action(*action)
+                if callable is None:
+                    continue
+                try:
+                    callable(*args, **kw)
+                except:
+                    if testing:
+                        raise
+                    t, v = sys.exc_info()[:2]
+                    v = ConfigurationExecutionError(t, v, info)
+                    t = ConfigurationExecutionError
+                    raise t, v, sys.exc_info()[2]
+        finally:
+            if clear:
+                del self.actions[:]
 
 
 class ConfigurationExecutionError(ConfigurationError):
