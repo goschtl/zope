@@ -32,6 +32,7 @@ d[TestRecorder.EventTypes.OpenUrl] = "openUrl";
 d[TestRecorder.EventTypes.Click] = "click";
 d[TestRecorder.EventTypes.Change] = "change";
 d[TestRecorder.EventTypes.Comment] = "comment";
+d[TestRecorder.EventTypes.Submit] = "submit";
 d[TestRecorder.EventTypes.CheckPageTitle] = "checkPageTitle";
 d[TestRecorder.EventTypes.CheckPageLocation] = "checkPageLocation";
 d[TestRecorder.EventTypes.CheckTextPresent] = "checkTextPresent";
@@ -99,82 +100,113 @@ GenericRenderer.prototype.toggle = function(e) {
 
 
 GenericRenderer.prototype.bestId = function(item) {
-  if (item.id)
-    return item.id;
-  if (item.name)
-    return item.name;
+  if (item.info && item.info.id)
+    return item.info.id;
+  if (item.info && item.info.name)
+    return item.info.name;
+  if (item.info && item.info.href)
+    return item.text;
   return 'unknown';
 }
 
+GenericRenderer.prototype.niceId = function(item) {
+  var id = this.repr(this.bestId(item));
+  if (item.info && item.info.type) {
+    var type = item.info.type;
+    if ((type == "submit") || (type == "image")) {
+      return "submit button " + id;
+    }
+    else if (item.type == "text") {
+      return "text input " + id;
+    }
+    return item.info.type + " " + id;
+  }
+  if (item.info && item.info.href) {
+    return "link " + id;
+  }
+  return id;
+}
+
 GenericRenderer.prototype.openUrl = function(item) {
-  return "open url: " + this.repr(item.url);
+  return "Open url " + this.repr(item.url);
 }
 
 GenericRenderer.prototype.click = function(item) {
-  return "click: " + this.repr(this.bestId(item));
+  return "Click " + this.niceId(item);
 }
 
 GenericRenderer.prototype.change = function(item) {
-  var id = this.bestId(item);
-  return "change: (" + id + ") -> " + this.repr(item.value);
+  var id = this.niceId(item);
+  var v = this.repr(item.value);
+  return "Change " + id + " to " + v;
+}
+
+GenericRenderer.prototype.submit = function(item) {
+  var id = this.niceId(item);
+  return "Submit form " + id;
 }
 
 GenericRenderer.prototype.comment = function(item) {
-  return "comment: " + item.text;
+  return "Comment: " + item.text;
 }
 
 GenericRenderer.prototype.checkPageTitle = function(item) {
   var title = this.repr(item.title);
-  return "check page title: " + title;
+  return "Check page title == " + title;
 }
 
 GenericRenderer.prototype.checkPageLocation = function(item) {
   var url = this.repr(item.url);
-  return "check page location: " + url;
+  return "Check page location == " + url;
 }
 
 GenericRenderer.prototype.checkTextPresent = function(item) {
-  return "check text present: " + this.repr(item.text);
+  return "Check text appears on page: " + this.repr(item.text);
 }
 
 GenericRenderer.prototype.checkValue = function(item) {
-  var id = this.bestId(item);
-  return "check value: " + id;
+  var id = this.niceId(item);
+  var v = this.repr(item.info.value);
+  return "Check value of " + id + " == " + v;
 }
 
 GenericRenderer.prototype.checkValueContains = function(item) {
-  var id = this.bestId(item);
-  return "check value contains: (" + id + ") '" + item.text + "'";
+  var id = this.niceId(item);
+  var v = this.repr(item.text);
+  return "Check value of " + id + " contains " + v;
 }
 
 GenericRenderer.prototype.checkText = function(item) {
-  var id = this.bestId(item);
-  return "check text: " + this.repr(item.text);
+  var id = this.niceId(item);
+  var v = this.repr(item.text);
+  return "Check text of " + id + " == " + v;
 }
 
 GenericRenderer.prototype.checkHref = function(item) {
-  var id = this.bestId(item);
-  return "check href: " + id;
+  var id = this.niceId(item);
+  var v = this.repr(item.info.href);
+  return "Check href of " + id;
 }
 
 GenericRenderer.prototype.checkEnabled = function(item) {
-  var id = this.bestId(item);
-  return "check enabled: " + id;
+  var id = this.niceId(item);
+  return "Check enabled: " + id;
 }
 
 GenericRenderer.prototype.checkDisabled = function(item) {
-  var id = this.bestId(item);
+  var id = this.niceId(item);
   return "check disabled: " + id;
 }
 
 GenericRenderer.prototype.checkSelectValue = function(item) {
-  var st = "check select value (" + item.info.name + ") == '";
-  return st + item.info.value + "'";
+  var id = this.repr(this.bestId(item));
+  var v = this.repr(item.info.value);
+  return "Check selected value of " + id + " == " + v;
 }
 
 GenericRenderer.prototype.checkSelectOptions = function(item) {
-  var id = this.bestId(item);
-  var so = "check select options(" + item.info.name + ") == [";
+  var id = this.repr(this.bestId(item));
+  var so = "Check select options for " + id + " == [";
   for (var i=0; i < item.info.options.length; i++) {
     var o = item.info.options[i];
     if (i > 0) {
@@ -188,7 +220,7 @@ GenericRenderer.prototype.checkSelectOptions = function(item) {
 GenericRenderer.prototype.checkImageSrc = function(item) {
   var id = this.bestId(item);
   var src = this.repr(item.src);
-  return "check image src: (" + id + ") == " + src;
+  return "Check image src == " + src;
 }
 
 

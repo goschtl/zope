@@ -63,6 +63,7 @@ d[TestRecorder.EventTypes.OpenUrl] = "openUrl";
 d[TestRecorder.EventTypes.Click] = "click";
 d[TestRecorder.EventTypes.Change] = "change";
 d[TestRecorder.EventTypes.Comment] = "comment";
+d[TestRecorder.EventTypes.Submit] = "submit";
 d[TestRecorder.EventTypes.CheckPageTitle] = "checkPageTitle";
 d[TestRecorder.EventTypes.CheckPageLocation] = "checkPageLocation";
 d[TestRecorder.EventTypes.CheckTextPresent] = "checkTextPresent";
@@ -184,6 +185,11 @@ SeleniumRenderer.prototype.change = function(item) {
     cmd = "select";
   }
   this.row(cmd, id, this.repr(item.info.value));
+  return;
+}
+
+SeleniumRenderer.prototype.submit = function(item) {
+  // submit events are not used / needed for selenium
   return;
 }
 

@@ -292,21 +292,24 @@ TestRecorder.EventTypes.OpenUrl = 0;
 TestRecorder.EventTypes.Click = 1;
 TestRecorder.EventTypes.Change = 2;
 TestRecorder.EventTypes.Comment = 3;
-TestRecorder.EventTypes.CheckPageTitle = 4;
-TestRecorder.EventTypes.CheckPageLocation = 5;
-TestRecorder.EventTypes.CheckTextPresent = 6;
-TestRecorder.EventTypes.CheckValue = 7;
-TestRecorder.EventTypes.CheckValueContains = 8;
-TestRecorder.EventTypes.CheckText = 9;
-TestRecorder.EventTypes.CheckHref = 10;
-TestRecorder.EventTypes.CheckEnabled = 11;
-TestRecorder.EventTypes.CheckDisabled = 12;
-TestRecorder.EventTypes.CheckSelectValue = 13;
-TestRecorder.EventTypes.CheckSelectOptions = 14;
-TestRecorder.EventTypes.CheckImageSrc = 15;
+TestRecorder.EventTypes.Submit = 4;
+TestRecorder.EventTypes.CheckPageTitle = 5;
+TestRecorder.EventTypes.CheckPageLocation = 6;
+TestRecorder.EventTypes.CheckTextPresent = 7;
+TestRecorder.EventTypes.CheckValue = 8;
+TestRecorder.EventTypes.CheckValueContains = 9;
+TestRecorder.EventTypes.CheckText = 10;
+TestRecorder.EventTypes.CheckHref = 11;
+TestRecorder.EventTypes.CheckEnabled = 12;
+TestRecorder.EventTypes.CheckDisabled = 13;
+TestRecorder.EventTypes.CheckSelectValue = 14;
+TestRecorder.EventTypes.CheckSelectOptions = 15;
+TestRecorder.EventTypes.CheckImageSrc = 16;
 
 
 TestRecorder.ElementInfo = function(element) {
+  this.action = element.action;
+  this.method = element.method;
   this.href = element.href;
   this.tagName = element.tagName;
   this.value = element.value;
@@ -334,7 +337,7 @@ TestRecorder.DocumentEvent = function(type, target) {
 TestRecorder.ElementEvent = function(type, target, text) {
   this.type = type;
   this.info = new TestRecorder.ElementInfo(target);
-  this.text = text;
+  this.text = text ? text : recorder.strip(contextmenu.innertext(target));
 }
 
 TestRecorder.CommentEvent = function(text) {
@@ -782,11 +785,19 @@ TestRecorder.Recorder.prototype.onchange = function(e) {
 TestRecorder.Recorder.prototype.onselect = function(e) {
   var e = new TestRecorder.Event(e);
   recorder.log("select: " + e.target());
-  alert("select");
+  //alert("select");
 }
 
 TestRecorder.Recorder.prototype.onsubmit = function(e) {
   var e = new TestRecorder.Event(e);
+  var et = TestRecorder.EventTypes;
+  // We want to save the form element as the event target
+  var t = e.target();
+  while (t.parentNode && t.tagName != "FORM") {
+    t = t.parentNode;
+  }
+  var v = new TestRecorder.ElementEvent(et.Submit, t);
+  recorder.testcase.append(v);
   recorder.log("submit: " + e.target());
 }
 

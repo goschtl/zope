@@ -49,6 +49,7 @@ d[TestRecorder.EventTypes.OpenUrl] = "openUrl";
 d[TestRecorder.EventTypes.Click] = "click";
 d[TestRecorder.EventTypes.Change] = "change";
 d[TestRecorder.EventTypes.Comment] = "comment";
+d[TestRecorder.EventTypes.Submit] = "submit";
 d[TestRecorder.EventTypes.CheckPageTitle] = "checkPageTitle";
 d[TestRecorder.EventTypes.CheckPageLocation] = "checkPageLocation";
 d[TestRecorder.EventTypes.CheckTextPresent] = "checkTextPresent";
@@ -63,13 +64,30 @@ d[TestRecorder.EventTypes.CheckSelectOptions] = "checkSelectOptions";
 d[TestRecorder.EventTypes.CheckImageSrc] = "checkImageSrc";
 DoctestRenderer.prototype.dispatch = d;
 
+var cc = TestRecorder.EventTypes;
+
 DoctestRenderer.prototype.render = function() {
+  var etypes = TestRecorder.EventTypes;
   this.document.open();
   this.document.write("<" + "pre" + ">");
   this.writeHeader();
+
   for (var i=0; i < this.items.length; i++) {
     var item = this.items[i];
     if (this.dispatch[item.type]) {
+      // Special case: we want to ignore submit events if they came from
+      // a click of a submit button, since we can just use the click in
+      // the doctest. If the last event was not a button click, we assume
+      // that the submit must have come from some funny javascript or 
+      // or something and include the submit event.
+      if ((i > 0) && (item.type == etypes.Submit)) {
+        var last = this.items[i - 1];
+        if (last.type == etypes.Click) {
+          if ((last.info.type == "submit") || (last.info.type == "image")) {
+            continue;
+          }
+        }
+      }
       this[this.dispatch[item.type]](item);
     }
     this.space();
@@ -114,6 +132,11 @@ DoctestRenderer.prototype.change = function(item) {
   var id = this.bestId(item);
   var v = this.pyrepr(item.info.value)
   this.stmt("browser.controls['" + id + "'] = " + v);
+}
+
+DoctestRenderer.prototype.submit = function(item) {
+  var id = this.bestId(item);
+  this.stmt("# submit form");
 }
 
 DoctestRenderer.prototype.comment = function(item) {
