@@ -10,6 +10,12 @@ interrupt-check-interval 200
   address 8080
 </server>
 
+# uncomment this if you want the FTP server up and running
+#<server ftp>
+#  type FTP
+#  address 8021
+#</server>
+
 # For debugging purposes, you can use this publisher instead/as well
 # (obviously if it's as well, use a different port number). If there's
 # an exception, Zope will drop into pdb at the point of the exception.
@@ -17,11 +23,6 @@ interrupt-check-interval 200
 #  type PostmortemDebuggingHTTP
 #  address 8080
 #</server>
-
-<server ftp>
-  type FTP
-  address 8021
-</server>
 
 # Standard Filestorage
 <zodb main>
