@@ -34,8 +34,10 @@ _SequenceTypes = ( TupleType, ListType )
 
 from DateTime.DateTime import DateTime
 
+from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.interfaces.propertysheets \
     import IPropertySheet
+
 
 def _guessSchema( kw ):
 
@@ -84,8 +86,6 @@ class UserPropertySheet:
       as a sequence of (id, type) tuples;  if not passed, the c'tor will
       guess the schema from the keyword args.
     """
-
-    __implements__ = ( IPropertySheet, )
 
     def __init__( self, id, schema=None, **kw ):
 
@@ -173,3 +173,7 @@ class UserPropertySheet:
         """ See IPropertySheet.
         """
         return [ ( x, self._properties.get( x ) ) for x in self.propertyIds() ]
+
+classImplements( UserPropertySheet
+               , IPropertySheet
+               )

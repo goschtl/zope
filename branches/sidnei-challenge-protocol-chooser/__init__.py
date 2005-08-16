@@ -43,6 +43,8 @@ from plugins import DelegatingMultiPlugin as DMP
 from plugins import SearchPrincipalsPlugin as SPP
 from plugins import RecursiveGroupsPlugin as RGP
 from plugins import DynamicGroupsPlugin as DGP
+from plugins import ChallengeProtocolChooser as CPC
+from plugins import RequestTypeSniffer as RTS
 
 registerMultiPlugin(HBAH.HTTPBasicAuthHelper.meta_type)
 registerMultiPlugin(IAH.InlineAuthHelper.meta_type)
@@ -58,6 +60,8 @@ registerMultiPlugin(DMP.DelegatingMultiPlugin.meta_type)
 registerMultiPlugin(SPP.SearchPrincipalsPlugin.meta_type)
 registerMultiPlugin(RGP.RecursiveGroupsPlugin.meta_type)
 registerMultiPlugin(DGP.DynamicGroupsPlugin.meta_type)
+registerMultiPlugin(CPC.ChallengeProtocolChooser.meta_type)
+registerMultiPlugin(RTS.RequestTypeSniffer.meta_type)
 
 # monkey patch Zope to cause zmi logout to be PAS-aware
 from App.Management import Navigation
@@ -224,4 +228,22 @@ def initialize(context):
                             DGP.addDynamicGroupsPlugin, )
                          , visibility=None
                          , icon='plugins/www/DynamicGroupsPlugin.png'
+                         )
+
+    context.registerClass( CPC.ChallengeProtocolChooser
+                         , permission=ManageUsers
+                         , constructors=(
+                            CPC.manage_addChallengeProtocolChooserForm,
+                            CPC.addChallengeProtocolChooserPlugin, )
+                         , visibility=None
+                         , icon='plugins/www/DelegatingMultiPlugin.png'
+                         )
+
+    context.registerClass( RTS.RequestTypeSniffer
+                         , permission=ManageUsers
+                         , constructors=(
+                            RTS.manage_addRequestTypeSnifferForm,
+                            RTS.addRequestTypeSnifferPlugin, )
+                         , visibility=None
+                         , icon='plugins/www/DelegatingMultiPlugin.png'
                          )

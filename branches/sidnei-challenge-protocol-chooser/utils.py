@@ -30,6 +30,12 @@ except ImportError:
         return klass.__implements__
 
 try:
+    from Products.Five.bridge import fromZ2Interface
+except ImportError:
+    def fromZ2Interface(i):
+        raise ValueError, i
+
+try:
     from zope import interface
 except ImportError:
     def directlyProvides(obj, *interfaces):
@@ -40,7 +46,6 @@ except ImportError:
 
 else:
     def directlyProvides(obj, *interfaces):
-        from Products.Five.bridge import fromZ2Interface
         # convert any Zope 2 interfaces to Zope 3 using fromZ2Interface
         normalized_interfaces = []
         for i in interfaces:
@@ -52,7 +57,6 @@ else:
         return interface.directlyProvides(obj, *normalized_interfaces)
 
     def classImplements(class_, *interfaces):
-        from Products.Five.bridge import fromZ2Interface
         # convert any Zope 2 interfaces to Zope 3 using fromZ2Interface
         normalized_interfaces = []
         for i in interfaces:
