@@ -76,7 +76,7 @@ class ChallengeProtocolChooser( BasePlugin ):
 
     security = ClassSecurityInfo()
 
-    manage_options = (({'label': 'Mapping', 
+    manage_options = (({'label': 'Mapping',
                         'action': 'manage_editProtocolMapping'
                         },
                        )
@@ -135,7 +135,7 @@ class ChallengeProtocolChooser( BasePlugin ):
 
         request_types = listRequestTypesLabels()
         request_types.sort()
-        
+
         for label in request_types:
             settings = []
             select_any = False

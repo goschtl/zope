@@ -995,7 +995,14 @@ class PluggableAuthService( Folder, Cacheable ):
 
         # Find valid protocols for this request type
         valid_protocols = []
-        choosers = plugins.listPlugins( IChallengeProtocolChooser )
+        choosers = []
+        try:
+            choosers = plugins.listPlugins( IChallengeProtocolChooser )
+        except KeyError:
+            # Work around the fact that old instances might not have
+            # IChallengeProtocolChooser registered with the
+            # PluginRegistry.
+            pass
 
         for chooser_id, chooser in choosers:
             choosen = chooser.chooseProtocols(request)

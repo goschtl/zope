@@ -25,7 +25,7 @@ folder.
 
   >>> folder.acl_users.meta_type
   'Pluggable Auth Service'
- 
+
 Now, we'll setup this PAS instance with what most people would get by
 default, users and roles stored in ZODB with HTTP Basic auth.
 
@@ -76,7 +76,7 @@ called.
 
   >>> script = folder._getOb('test_script')
   >>> script.write('return "Access Granted"')
-  >>> script.manage_permission(permission_to_manage='View', 
+  >>> script.manage_permission(permission_to_manage='View',
   ...                          roles=['Manager'], acquire=0)
 
 Access the script through a simple ``GET`` request, simulating browser
@@ -159,7 +159,7 @@ And with valid credentials the reqeuest should succeed:
 
 Adding a Cookie Auth Helper now to test the correct behaviour of the
 Challenge Protocol Helper.
-  
+
   >>> dispatcher = pas.manage_addProduct['PluggableAuthService']
   >>> dispatcher.addCookieAuthHelper('cookie_auth',
   ...                                cookie_name='__ac')
@@ -209,7 +209,7 @@ And for a XML-RPC request:
 
 However, not all WebDAV and XML-RPC clients understand the
 redirect. Even worse, they will not be able to display the login form
-that is the target of this redirect. 
+that is the target of this redirect.
 
 For this reason we should disable the Cookie Auth Helper for
 non-browser requests. In fact, we might only want plugins that
@@ -231,7 +231,7 @@ the Request Type Sniffer plugin.
   ...            'XML-RPC': ['http'],
   ...		 'Browser': []}
 
-  >>> dispatcher.addChallengeProtocolChooserPlugin('chooser', 
+  >>> dispatcher.addChallengeProtocolChooserPlugin('chooser',
   ...                                              mapping=mapping)
   >>> plugins.activatePlugin(IChallengeProtocolChooser, 'chooser')
 
