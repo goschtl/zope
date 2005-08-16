@@ -1,17 +1,15 @@
-#!/usr/bin/env python
 # -*- coding: ascii -*-
-'''
-$Id: test_tzinfo.py,v 1.9 2004/10/25 04:14:00 zenzen Exp $
-'''
-
-__rcs_id__  = '$Id: test_tzinfo.py,v 1.9 2004/10/25 04:14:00 zenzen Exp $'
-__version__ = '$Revision: 1.9 $'[11:-2]
 
 import sys, os, os.path
-sys.path.insert(0, os.path.join(os.pardir, os.pardir))
-
 import unittest, doctest
+import cPickle as pickle
 from datetime import datetime, tzinfo, timedelta
+
+if __name__ == '__main__':
+    # Only munge path if invoked as a script. Testrunners should have setup
+    # the paths already
+    sys.path.insert(0, os.path.join(os.pardir, os.pardir))
+
 import pytz
 from pytz import reference
 
@@ -26,6 +24,12 @@ GMT = pytz.timezone('GMT')
 
 class BasicTest(unittest.TestCase):
 
+    def testVersion(self):
+        # Ensuring the correct version of pytz has been loaded
+        self.failUnlessEqual('2005k', pytz.__version__,
+                'Incorrect pytz version loaded. Import path is stuffed.'
+                )
+
     def testGMT(self):
         now = datetime.now(tz=GMT)
         self.failUnless(now.utcoffset() == NOTIME)
@@ -38,6 +42,60 @@ class BasicTest(unittest.TestCase):
         self.failUnless(now.utcoffset() == NOTIME)
         self.failUnless(now.dst() == NOTIME)
         self.failUnless(now.timetuple() == now.utctimetuple())
+
+
+class PicklingTest(unittest.TestCase):
+
+    def _roundtrip_tzinfo(self, tz):
+        p = pickle.dumps(tz)
+        unpickled_tz = pickle.loads(p)
+        self.failUnless(tz is unpickled_tz, '%s did not roundtrip' % tz.zone)
+
+    def _roundtrip_datetime(self, dt):
+        # Ensure that the tzinfo attached to a datetime instance
+        # is identical to the one returned. This is important for
+        # DST timezones, as some state is stored in the tzinfo.
+        tz = dt.tzinfo
+        p = pickle.dumps(dt)
+        unpickled_dt = pickle.loads(p)
+        unpickled_tz = unpickled_dt.tzinfo
+        self.failUnless(tz is unpickled_tz, '%s did not roundtrip' % tz.zone)
+
+    def testDst(self):
+        tz = pytz.timezone('Europe/Amsterdam')
+        dt = datetime(2004, 2, 1, 0, 0, 0)
+
+        for localized_tz in tz._tzinfos.values():
+            self._roundtrip_tzinfo(localized_tz)
+            self._roundtrip_datetime(dt.replace(tzinfo=localized_tz))
+
+    def testRoundtrip(self):
+        dt = datetime(2004, 2, 1, 0, 0, 0)
+        for zone in pytz.all_timezones:
+            tz = pytz.timezone(zone)
+            self._roundtrip_tzinfo(tz)
+
+    def testDatabaseFixes(self):
+        # Hack the pickle to make it refer to a timezone abbreviation
+        # that does not match anything. The unpickler should be able
+        # to repair this case
+        tz = pytz.timezone('Australia/Melbourne')
+        p = pickle.dumps(tz)
+        tzname = tz._tzname
+        hacked_p = p.replace(tzname, '???')
+        self.failIfEqual(p, hacked_p)
+        unpickled_tz = pickle.loads(hacked_p)
+        self.failUnless(tz is unpickled_tz)
+
+        # Simulate a database correction. In this case, the incorrect
+        # data will continue to be used.
+        p = pickle.dumps(tz)
+        new_utcoffset = tz._utcoffset.seconds + 42
+        hacked_p = p.replace(str(tz._utcoffset.seconds), str(new_utcoffset))
+        self.failIfEqual(p, hacked_p)
+        unpickled_tz = pickle.loads(hacked_p)
+        self.failUnlessEqual(unpickled_tz._utcoffset.seconds, new_utcoffset)
+        self.failUnless(tz is not unpickled_tz)
 
 
 class USEasternDSTStartTestCase(unittest.TestCase):
@@ -65,10 +123,11 @@ class USEasternDSTStartTestCase(unittest.TestCase):
         }
 
     def _test_tzname(self, utc_dt, wanted):
+        tzname = wanted['tzname']
         dt = utc_dt.astimezone(self.tzinfo)
-        self.failUnlessEqual(dt.tzname(),wanted['tzname'],
+        self.failUnlessEqual(dt.tzname(), tzname,
             'Expected %s as tzname for %s. Got %s' % (
-                wanted['tzname'],str(utc_dt),dt.tzname()
+                tzname, str(utc_dt), dt.tzname()
                 )
             )
 
@@ -76,18 +135,10 @@ class USEasternDSTStartTestCase(unittest.TestCase):
         utcoffset = wanted['utcoffset']
         dt = utc_dt.astimezone(self.tzinfo)
         self.failUnlessEqual(
-                dt.utcoffset(),utcoffset,
+                dt.utcoffset(), wanted['utcoffset'],
                 'Expected %s as utcoffset for %s. Got %s' % (
-                    utcoffset,utc_dt,dt.utcoffset()
+                    utcoffset, utc_dt, dt.utcoffset()
                     )
-                )
-        return
-        dt_wanted = utc_dt.replace(tzinfo=None) + utcoffset
-        dt_got = dt.replace(tzinfo=None)
-        self.failUnlessEqual(
-                dt_wanted,
-                dt_got,
-                'Got %s. Wanted %s' % (str(dt_got),str(dt_wanted))
                 )
 
     def _test_dst(self, utc_dt, wanted):
@@ -95,7 +146,7 @@ class USEasternDSTStartTestCase(unittest.TestCase):
         dt = utc_dt.astimezone(self.tzinfo)
         self.failUnlessEqual(dt.dst(),dst,
             'Expected %s as dst for %s. Got %s' % (
-                dst,utc_dt,dt.dst()
+                dst, utc_dt, dt.dst()
                 )
             )
 
@@ -391,18 +442,12 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite('pytz'))
     suite.addTest(doctest.DocTestSuite('pytz.tzinfo'))
-    suite.addTest(unittest.defaultTestLoader.loadTestsFromModule(
-        __import__('__main__')
-        ))
+    import test_tzinfo
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromModule(test_tzinfo))
     return suite
 
-if __name__ == '__main__':
-    suite = test_suite()
-    if '-v' in sys.argv:
-        runner = unittest.TextTestRunner(verbosity=2)
-    else:
-        runner = unittest.TextTestRunner()
-    runner.run(suite)
+DEFAULT = test_suite()
 
-# vim: set filetype=python ts=4 sw=4 et
+if __name__ == '__main__':
+    unittest.main(defaultTest='DEFAULT')
 
