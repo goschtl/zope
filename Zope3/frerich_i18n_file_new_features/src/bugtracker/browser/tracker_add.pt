@@ -1,0 +1,27 @@
+<html metal:use-macro="context/@@standard_macros/page"
+    i18n:domain="bugtracker">
+<body>
+
+  <div metal:fill-slot="body">
+
+    <div metal:use-macro="context/@@form_macros/addform">
+
+      <div class="row" metal:fill-slot="extra_bottom">
+        <div class="field">
+          <h3><input type="checkbox" name="setup_vocabs:int" value="1"
+                checked=""/>
+            <span i18n:translate="">Create Initial Vocabulary Entries</span>
+          </h3>
+          <span i18n:translate="">To make your life easier, when this
+                option is selected, it creates vocabulary entries for the
+                status, release, priority and type fields of a bug. This
+                will save you some time with the setup.</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

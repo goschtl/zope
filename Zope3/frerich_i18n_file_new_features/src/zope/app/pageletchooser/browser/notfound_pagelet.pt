@@ -1,0 +1,3 @@
+<div class="notfoundmacro" metal:define-macro="notfoundmacro">
+<span i18n.translate="">PageletChooser didn't find a pagelet macro!</span>
+</div>
