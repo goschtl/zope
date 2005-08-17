@@ -61,7 +61,6 @@ This allows us to render a search form.
     </div>
     <div class="field">
         /searchplugin
-      </field>
     </div>
   </div>
   <div class="row">
