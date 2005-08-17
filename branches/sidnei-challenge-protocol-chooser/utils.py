@@ -14,20 +14,28 @@
 ##############################################################################
 import os
 import unittest
+from types import TupleType, ListType
 
 from Globals import package_home
+
+def tuplize(value):
+    if isinstance(value, TupleType):
+        return value
+    if isinstance(value, ListType):
+        return tuple(value)
+    return (value,)
 
 try:
     from zope.interface import providedBy
 except ImportError:
     def providedBy(obj):
-        return obj.__implements__
+        return tuplize(obj.__implements__)
 
 try:
     from zope.interface import implementedBy
 except ImportError:
     def implementedBy(klass):
-        return klass.__implements__
+        return tuplize(klass.__implements__)
 
 try:
     from Products.Five.bridge import fromZ2Interface
