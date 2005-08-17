@@ -21,6 +21,9 @@ PluggableAuthService changelog
       registered interface. (Would be nice to have some sort of
       migration for the PluginRegistry between PAS releases)
 
+    - Don't assume that just because zope.interface can be imported
+      that Five is present.
+
   PluggableAuthService 1.1b2 (2005/07/14)
 
     - Missed a 'nocall:' in the Interfaces activation form.

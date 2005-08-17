@@ -41,6 +41,8 @@ try:
     from Products.Five.bridge import fromZ2Interface
 except ImportError:
     def fromZ2Interface(i):
+        # Raise ValueError to work around a cornerish case where
+        # zope.interface is available but Five is not.
         raise ValueError, i
 
 try:
