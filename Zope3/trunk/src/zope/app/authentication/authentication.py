@@ -161,8 +161,12 @@ class QuerySchemaSearchAdapter(object):
         ILocation)
 
     def __init__(self, authplugin, pau):
-        self.__parent__ = authplugin
-        self.__name__ = ''
+        if ILocation.providedBy(authplugin):
+            self.__parent__ = authplugin.__parent__
+            self.__name__ = authplugin.__name__
+        else:
+            self.__parent__ = pau
+            self.__name__ = ""
         self.authplugin = authplugin
         self.pau = pau
         self.schema = authplugin.schema
