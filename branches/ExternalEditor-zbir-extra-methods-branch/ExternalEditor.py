@@ -182,8 +182,8 @@ InitializeClass(ExternalEditor)
 
 is_mac_user_agent = re.compile('.*Mac OS X.*|.*Mac_PowerPC.*').match
 
-def EditLink(self, object, borrow_lock=0):
-    """Insert the external editor link to an object if appropriate"""
+def EditURL(self, object, borrow_lock=0):
+    """Return the URL to externally edit an object if appropriate"""
     base = Acquisition.aq_base(object)
     user = getSecurityManager().getUser()
     editable = (hasattr(base, 'manage_FTPget')
@@ -203,17 +203,23 @@ def EditLink(self, object, borrow_lock=0):
             ext = ''
         if borrow_lock:
             query['borrow_lock'] = 1
-        url = "%s/externalEdit_/%s%s%s" % (object.aq_parent.absolute_url(), 
+
+        return "%s/externalEdit_/%s%s%s" % (object.aq_parent.absolute_url(), 
                                            urllib.quote(object.getId()), 
                                            ext, querystr(query))
+    return ''
+
+def EditLink(self, object, borrow_lock=0):
+    """Insert the external editor link to an object if appropriate"""
+    url = EditURL(self, object, borrow_lock)
+    if url:
         return ('<a href="%s" '
                 'title="Edit using external editor">'
                 '<img src="%s/misc_/ExternalEditor/edit_icon" '
                 'align="middle" hspace="2" border="0" alt="External Editor" />'
                 '</a>' % (url, object.REQUEST.BASEPATH1)
                )
-    else:
-        return ''
+    return ''
 
 def querystr(d):
     """Create a query string from a dict"""
