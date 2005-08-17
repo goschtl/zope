@@ -246,7 +246,7 @@ class SelectWidgetTest(ItemsEditWidgetBaseTest):
             widget(),
             '<div>\n'
             '<div class="value">\n'
-            '<select name="field.choice" size="%i" >\n'
+            '<select id="field.choice" name="field.choice" size="%i" >\n'
             '<option value="">(no value)</option>\n'
             '<option selected="selected" value="token1">One</option>\n'
             '<option value="token2">Two</option>\n'
@@ -260,7 +260,7 @@ class SelectWidgetTest(ItemsEditWidgetBaseTest):
         widget.setPrefix('field.')
         self.assertEqual(
             widget.renderValue('one'),
-            '<select name="field.choice" size="%i" >\n'
+            '<select id="field.choice" name="field.choice" size="%i" >\n'
             '<option selected="selected" value="token1">One</option>\n'
             '<option value="token2">Two</option>\n'
             '<option value="token3">Three</option>\n'
