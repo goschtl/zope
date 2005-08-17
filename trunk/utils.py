@@ -14,20 +14,36 @@
 ##############################################################################
 import os
 import unittest
+from types import TupleType, ListType
 
 from Globals import package_home
+
+def tuplize(value):
+    if isinstance(value, TupleType):
+        return value
+    if isinstance(value, ListType):
+        return tuple(value)
+    return (value,)
 
 try:
     from zope.interface import providedBy
 except ImportError:
     def providedBy(obj):
-        return obj.__implements__
+        return tuplize(obj.__implements__)
 
 try:
     from zope.interface import implementedBy
 except ImportError:
     def implementedBy(klass):
-        return klass.__implements__
+        return tuplize(klass.__implements__)
+
+try:
+    from Products.Five.bridge import fromZ2Interface
+except ImportError:
+    def fromZ2Interface(i):
+        # Raise ValueError to work around a cornerish case where
+        # zope.interface is available but Five is not.
+        raise ValueError, i
 
 try:
     from zope import interface
@@ -40,7 +56,6 @@ except ImportError:
 
 else:
     def directlyProvides(obj, *interfaces):
-        from Products.Five.bridge import fromZ2Interface
         # convert any Zope 2 interfaces to Zope 3 using fromZ2Interface
         normalized_interfaces = []
         for i in interfaces:
@@ -52,7 +67,6 @@ else:
         return interface.directlyProvides(obj, *normalized_interfaces)
 
     def classImplements(class_, *interfaces):
-        from Products.Five.bridge import fromZ2Interface
         # convert any Zope 2 interfaces to Zope 3 using fromZ2Interface
         normalized_interfaces = []
         for i in interfaces:

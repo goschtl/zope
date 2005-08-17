@@ -5,6 +5,25 @@ PluggableAuthService changelog
     - Repaired unit test breakage (unittest.TestCase instances have
       'failUnless'/'failIf', rather than 'assertTrue'/'assertFalse').
 
+    - Added two new interfaces, IChallengeProtocolChooser and
+      IRequestTypeSniffer. Those are used to select the 'authorization
+      protocol' or 'challenger protocol' to be used for challenging
+      according to the incoming request type.
+
+    - Fixed a couple more places where Zope 2-style ``__implements__``
+      where being used to standardize on using ``classImplements``.
+
+    - Fixed fallback implementations of ``providedBy`` and
+      ``implementedBy`` to always return a tuple.
+
+    - Make sure challenge doesn't break if existing instances of the
+      PluginRegistry don't yet have ``IChallengeProtocolChooser`` as a
+      registered interface. (Would be nice to have some sort of
+      migration for the PluginRegistry between PAS releases)
+
+    - Don't assume that just because zope.interface can be imported
+      that Five is present.
+
   PluggableAuthService 1.1b2 (2005/07/14)
 
     - Missed a 'nocall:' in the Interfaces activation form.

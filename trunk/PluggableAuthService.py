@@ -65,13 +65,15 @@ from interfaces.plugins import IUserAdderPlugin
 from interfaces.plugins import IGroupEnumerationPlugin
 from interfaces.plugins import IRoleEnumerationPlugin
 from interfaces.plugins import IRoleAssignerPlugin
+from interfaces.plugins import IChallengeProtocolChooser
+from interfaces.plugins import IRequestTypeSniffer
 
 from permissions import SearchPrincipals
 
 from PropertiedUser import PropertiedUser
 from utils import _wwwdir
 from utils import createViewName
-
+from utils import classImplements
 
 security = ModuleSecurityInfo(
     'Products.PluggableAuthService.PluggableAuthService' )
@@ -94,8 +96,6 @@ def registerMultiPlugin(meta_type):
     MultiPlugins.append(meta_type)
 
 class DumbHTTPExtractor( Implicit ):
-
-    __implements__ = ( ILoginPasswordHostExtractionPlugin, )
 
     security = ClassSecurityInfo()
 
@@ -121,12 +121,14 @@ class DumbHTTPExtractor( Implicit ):
 
         return creds
 
+classImplements( DumbHTTPExtractor
+               , ILoginPasswordHostExtractionPlugin
+               )
+
 InitializeClass( DumbHTTPExtractor )
 
 
 class EmergencyUserAuthenticator( Implicit ):
-
-    __implements__ = ( IAuthenticationPlugin, )
 
     security = ClassSecurityInfo()
 
@@ -149,6 +151,10 @@ class EmergencyUserAuthenticator( Implicit ):
 
         return (None, None)
 
+classImplements( EmergencyUserAuthenticator
+               , IAuthenticationPlugin
+               )
+
 InitializeClass( EmergencyUserAuthenticator )
 
 
@@ -156,8 +162,6 @@ class PluggableAuthService( Folder, Cacheable ):
 
     """ All-singing, all-dancing user folder.
     """
-    __implements__ = ( IPluggableAuthService, )
-
     security = ClassSecurityInfo()
 
     meta_type = 'Pluggable Auth Service'
@@ -986,8 +990,26 @@ class PluggableAuthService( Folder, Cacheable ):
             resp._has_challenged = True
 
     def challenge(self, request, response):
-        # Go through all challenge plugins
         plugins = self._getOb('plugins')
+
+        # Find valid protocols for this request type
+        valid_protocols = []
+        choosers = []
+        try:
+            choosers = plugins.listPlugins( IChallengeProtocolChooser )
+        except KeyError:
+            # Work around the fact that old instances might not have
+            # IChallengeProtocolChooser registered with the
+            # PluginRegistry.
+            pass
+
+        for chooser_id, chooser in choosers:
+            choosen = chooser.chooseProtocols(request)
+            if choosen is None:
+                continue
+            valid_protocols.extend(choosen)
+
+        # Go through all challenge plugins
         challengers = plugins.listPlugins( IChallengePlugin )
 
         protocol = None
@@ -995,6 +1017,9 @@ class PluggableAuthService( Folder, Cacheable ):
         for challenger_id, challenger in challengers:
             challenger_protocol = getattr(challenger, 'protocol',
                                           challenger_id)
+            if valid_protocols and challenger_protocol not in valid_protocols:
+                # Skip invalid protocol for this request type.
+                continue
             if protocol is None or protocol == challenger_protocol:
                 if challenger.challenge(request, response):
                     protocol = challenger_protocol
@@ -1072,6 +1097,9 @@ class PluggableAuthService( Folder, Cacheable ):
             for resetter_id, resetter in cred_resetters:
                 resetter.resetCredentials(request, response)
 
+classImplements( PluggableAuthService
+               , IPluggableAuthService
+               )
 
 InitializeClass( PluggableAuthService )
 
@@ -1168,6 +1196,17 @@ _PLUGIN_TYPE_INFO = (
     , 'role_assigner'
     , "Role Assigner plugins allow the Pluggable Auth Service to assign"
       " roles to principals."
+    )
+  , ( IChallengeProtocolChooser
+    , 'IChallengeProtocolChooser'
+    , 'challenge_protocol_chooser'
+    , "Challenge Protocol Chooser plugins decide what authorization"
+      "protocol to use for a given request type."
+    )
+  , ( IRequestTypeSniffer
+    , 'IRequestTypeSniffer'
+    , 'request_type_sniffer'
+    , "Request Type Sniffer plugins detect the type of an incoming request."
     )
   )
 
