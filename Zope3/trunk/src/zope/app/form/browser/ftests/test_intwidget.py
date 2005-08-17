@@ -162,7 +162,7 @@ class Test(BrowserTestCase):
 
         # confirm that i1 is has a blank item at top with value=""
         self.assert_(patternExists(
-            '<select name="field.i1" .*>', response.getBody()))
+            '<select id="field.i1" name="field.i1" .*>', response.getBody()))
         self.assert_(patternExists(
             '<option value="">.*</option>', response.getBody()))
         self.assert_(patternExists(

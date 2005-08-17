@@ -400,6 +400,7 @@ class SelectWidget(ItemsEditWidgetBase):
         contents = "\n%s\n" %"\n".join(rendered_items)
         return renderElement('select',
                              name=self.name,
+                             id=self.name,
                              contents=contents,
                              size=self.size,
                              extra=self.extra)

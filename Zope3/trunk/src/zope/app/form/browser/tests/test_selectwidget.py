@@ -41,7 +41,7 @@ class SelectWidgetTest(unittest.TestCase):
 
 select_html = '''<div>
 <div class="value">
-<select name="field.terms" size="5" >
+<select id="field.terms" name="field.terms" size="5" >
 <option value="&lt; foo">&lt; foo</option>
 <option value="bar/&gt;">bar/&gt;</option>
 <option value="&amp;blah&amp;">&amp;blah&amp;</option>
