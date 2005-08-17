@@ -18,7 +18,7 @@ from Globals import ImageFile, DTMLFile
 from OFS.ObjectManager import ObjectManager
 from OFS.FindSupport import FindSupport
 from App.Management import Tabs
-from ExternalEditor import ExternalEditor, EditLink
+from ExternalEditor import ExternalEditor, EditURL, EditLink
 
 # Add the icon and the edit method to the misc_ namespace
 
@@ -26,6 +26,7 @@ misc_ = {'edit_icon': ImageFile('edit_icon.gif', globals())}
 
 # Insert the global external editor resources
 methods = {'externalEdit_': ExternalEditor(),
+           'externalEditURL_': EditURL,
            'externalEditLink_': EditLink}
 
 # Monkey patch in our manage_main for Object Manager
