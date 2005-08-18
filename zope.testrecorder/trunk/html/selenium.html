@@ -56,6 +56,16 @@ SeleniumRenderer.prototype.row = function(tx1, tx2, tx3) {
   this.write(s);
 }
 
+
+SeleniumRenderer.prototype.fixurl = function(url) {
+  var i = url.indexOf("//");
+  if (i < 0) return url;
+  url = url.slice(i + 2, url.length);
+  i = url.indexOf("/");
+  if (i < 0) return url;
+  return url.slice(i, url.length);
+}
+
 SeleniumRenderer.prototype.repr = function(text) {
   // todo: handle non--strings & quoting
   return text;
@@ -150,7 +160,7 @@ SeleniumRenderer.prototype.xpathId = function(item) {
       return xp + "text()='" + this.repr(item.info.text) + "']";
     
     }
-    return xp + "@href='" + this.repr(item.info.href) + "']";
+    return xp + "@href='" + this.repr(this.fixurl(item.info.href)) + "']";
   }
   else if (item.info.text) {
     return xp + "text()='" + this.repr(item.info.text) + "']";
@@ -162,7 +172,7 @@ SeleniumRenderer.prototype.xpathId = function(item) {
 }
 
 SeleniumRenderer.prototype.openUrl = function(item) {
-  var url = this.repr(item.url);
+  var url = this.repr(this.fixurl(item.url));
   this.row("open", url, "");
 }
 
@@ -209,7 +219,7 @@ SeleniumRenderer.prototype.checkPageTitle = function(item) {
 }
 
 SeleniumRenderer.prototype.checkPageLocation = function(item) {
-  var url = this.repr(item.url);
+  var url = this.repr(this.fixurl(item.url));
   this.row("verifyLocation", url, "");
 }
 
@@ -234,7 +244,7 @@ SeleniumRenderer.prototype.checkText = function(item) {
 
 SeleniumRenderer.prototype.checkHref = function(item) {
   var id = this.bestId(item);
-  this.row("verifyAttribute", id + "@href", item.info.src);
+  this.row("verifyAttribute", id + "@href", this.fixurl(item.info.href));
 }
 
 SeleniumRenderer.prototype.checkEnabled = function(item) {
@@ -264,7 +274,7 @@ SeleniumRenderer.prototype.checkSelectOptions = function(item) {
 
 SeleniumRenderer.prototype.checkImageSrc = function(item) {
   var id = this.bestId(item);
-  this.row("verifyAttribute", id + "@src", item.info.src);
+  this.row("verifyAttribute", id + "@src", this.fixurl(item.info.src));
 }
 
 var sr = new SeleniumRenderer(document);
