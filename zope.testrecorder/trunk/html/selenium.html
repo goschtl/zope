@@ -8,6 +8,9 @@
 
 // ---------------------------------------------------------------------------
 // SeleniumRenderer -- a class to render tests in selenium format.
+// todo:
+//   - remove host from urls and hrefs?
+//   - 
 // ---------------------------------------------------------------------------
 
 function SeleniumRenderer(document) {
@@ -194,6 +197,9 @@ SeleniumRenderer.prototype.submit = function(item) {
 }
 
 SeleniumRenderer.prototype.comment = function(item) {
+  this.write("\n<" + "!--\n");
+  this.write(item.text);
+  this.write("\n--" + ">\n\n");
   return;
 }
 
