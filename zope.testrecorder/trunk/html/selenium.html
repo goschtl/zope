@@ -122,10 +122,10 @@ SeleniumRenderer.prototype.render = function() {
 SeleniumRenderer.prototype.bestId = function(item) {
   var id = this.xpathId(item);
   if (id) return id;
-  else if (item.info && item.info.id)
-    return item.info.id;
   else if (item.info && item.info.name)
     return item.info.name;
+  else if (item.info && item.info.id)
+    return item.info.id;
   return 'unknown';
 }
 
