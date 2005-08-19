@@ -51,8 +51,8 @@ instances, we now use schema fields:
   ...         description=u'URL of the Bookmark',
   ...         required=True)
   ...
-  
-Now we create a class that implements this interface and create an isntance of
+
+Now we create a class that implements this interface and create an instance of
 it:
 
   >>> class Bookmark(object):
@@ -131,7 +131,7 @@ down example from the programmer's tutorial:
 
     >>> class IContact(zope.interface.Interface):
     ...     """Provides access to basic contact information."""
-    ... 
+    ...
     ...     first = zope.schema.TextLine(title=u"First name")
     ...
     ...     last = zope.schema.TextLine(title=u"Last name")
@@ -154,7 +154,7 @@ Now we want a class that adheres to the ``IContact`` schema:
 
     >>> class Contact(object):
     ...     zope.interface.implements(IContact)
-    ... 
+    ...
     ...     def __init__(self, first, last, email, address, pc):
     ...         self.first = first
     ...         self.last = last
@@ -165,9 +165,9 @@ Now we want a class that adheres to the ``IContact`` schema:
 Now you can see if an instance of ``Contact`` actually implements the
 schema:
 
-    >>> someone = Contact(u'Tim', u'Roberts', u'tim@roberts', u'', 
+    >>> someone = Contact(u'Tim', u'Roberts', u'tim@roberts', u'',
     ...                   u'12032-3492')
-    
+
     >>> for field in zope.schema.getFields(IContact).values():
     ...     bound = field.bind(someone)
     ...     bound.validate(bound.get(someone))
