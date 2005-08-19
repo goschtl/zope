@@ -49,6 +49,12 @@ Zope Changes
 
     New features
 
+      - Implemented the METAL 1.1 macro language in page templates.
+        This adds the "macro extension" feature to the METAL 1.0
+        implementation included in previous versions of Zope.  The new
+        specification is available in the ZPT wiki:
+        http://www.zope.org/Wikis/DevSite/Projects/ZPT/MetalSpecification11
+
       - Change ``zope.app.intid.addIntIdSubscriber`` and
         ``.removeIntIdSubscriber`` to adapt it's ob argument to
         ``IKeyReference``. They register/unregister the object only if
