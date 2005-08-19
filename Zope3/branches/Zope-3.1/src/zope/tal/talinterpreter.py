@@ -16,6 +16,7 @@
 $Id$
 """
 import cgi
+import operator
 import sys
 
 # Do not use cStringIO here!  It's not unicode aware. :(
@@ -85,6 +86,28 @@ class AltTALGenerator(TALGenerator):
             repldict = self.repldict
             self.repldict = None
         return TALGenerator.replaceAttrs(self, attrlist, repldict)
+
+
+
+class MacroStackItem(list):
+    # This is a `list` subclass for backward compability.
+    """Stack entry for the TALInterpreter.macroStack.
+
+    This offers convenience attributes for more readable access.
+
+    """
+    __slots__ = ()
+
+    # These would be nicer using @syntax, but that would require
+    # Python 2.4.x; this will do for now.
+
+    macroName = property(lambda self: self[0])
+    slots = property(lambda self: self[1])
+    definingName = property(lambda self: self[2])
+    extending = property(lambda self: self[3])
+    entering = property(lambda self: self[4],
+                        lambda self, value: operator.setitem(self, 4, value))
+    i18nContext = property(lambda self: self[5])
 
 
 class TALInterpreter(object):
@@ -180,9 +203,11 @@ class TALInterpreter(object):
         self.html = 0
         self.endsep = "/>"
         self.endlen = len(self.endsep)
-        # macroStack contains:
-        # [(macroName, slots, definingName, extending, entering, i18ncontext)]
+        # macroStack entries are MacroStackItem instances;
+        # the entries are mutated while on the stack
         self.macroStack = []
+        # `inUseDirective` is set iff we're handling either a
+        # metal:use-macro or a metal:extend-macro
         self.inUseDirective = False
         self.position = None, None  # (lineno, offset)
         self.col = 0
@@ -193,6 +218,11 @@ class TALInterpreter(object):
         self.i18nInterpolate = i18nInterpolate
         self.i18nContext = TranslationContext()
         self.sourceAnnotations = sourceAnnotations
+
+    def StringIO(self):
+        # Third-party products wishing to provide a full Unicode-aware
+        # StringIO can do so by monkey-patching this method.
+        return FasterStringIO()
 
     def saveState(self):
         return (self.position, self.col, self.stream, self._stream_stack,
@@ -222,12 +252,13 @@ class TALInterpreter(object):
         assert self.level == level
         assert self.scopeLevel == scopeLevel
 
-    def pushMacro(self, macroName, slots, definingName, extending, entering=1):
+    def pushMacro(self, macroName, slots, definingName, extending):
         if len(self.macroStack) >= self.stackLimit:
             raise METALError("macro nesting limit (%d) exceeded "
                              "by %s" % (self.stackLimit, `macroName`))
-        self.macroStack.append([macroName, slots, definingName, extending,
-                                entering, self.i18nContext])
+        self.macroStack.append(
+            MacroStackItem((macroName, slots, definingName, extending,
+                            True, self.i18nContext)))
 
     def popMacro(self):
         return self.macroStack.pop()
@@ -405,20 +436,18 @@ class TALInterpreter(object):
             # use-macro and its extensions
             if len(macs) > 1:
                 for macro in macs[1:]:
-                    extending = macro[3]
-                    if not extending:
+                    if not macro.extending:
                         return ()
-            if not macs[-1][4]:
+            if not macs[-1].entering:
                 return ()
-            # Clear 'entering' flag
-            macs[-1][4] = 0
+            macs[-1].entering = False
             # Convert or drop depth-one METAL attributes.
             i = name.rfind(":") + 1
             prefix, suffix = name[:i], name[i:]
             if suffix == "define-macro":
                 # Convert define-macro as we enter depth one.
-                useName = macs[0][0]
-                defName = macs[0][2]
+                useName = macs[0].macroName
+                defName = macs[0].definingName
                 res = []
                 if defName:
                     res.append('%sdefine-macro=%s' % (prefix, quote(defName)))
@@ -475,7 +504,7 @@ class TALInterpreter(object):
 
     def no_tag(self, start, program):
         state = self.saveState()
-        self.stream = stream = StringIO()
+        self.stream = stream = self.StringIO()
         self._stream_write = stream.write
         self.interpret(start)
         self.restoreOutputState(state)
@@ -631,7 +660,7 @@ class TALInterpreter(object):
             # evaluate the mini-program to get the value of the variable.
             state = self.saveState()
             try:
-                tmpstream = StringIO()
+                tmpstream = self.StringIO()
                 self.pushStream(tmpstream)
                 try:
                     self.interpret(program)
@@ -691,7 +720,7 @@ class TALInterpreter(object):
         # Use a temporary stream to capture the interpretation of the
         # subnodes, which should /not/ go to the output stream.
         currentTag = self._currentTag
-        tmpstream = StringIO()
+        tmpstream = self.StringIO()
         self.pushStream(tmpstream)
         try:
             self.interpret(stuff[1])
@@ -788,7 +817,7 @@ class TALInterpreter(object):
         lang, program = stuff
         # Use a temporary stream to capture the interpretation of the
         # subnodes, which should /not/ go to the output stream.
-        tmpstream = StringIO()
+        tmpstream = self.StringIO()
         self.pushStream(tmpstream)
         try:
             self.interpret(program)
@@ -833,7 +862,6 @@ class TALInterpreter(object):
     bytecode_handlers["condition"] = do_condition
 
     def do_defineMacro(self, (macroName, macro)):
-        macs = self.macroStack
         wasInUse = self.inUseDirective
         self.inUseDirective = False
         self.interpret(macro)
@@ -882,10 +910,7 @@ class TALInterpreter(object):
         # extendMacro results from a combination of define-macro and
         # use-macro.  definingName has the value of the
         # metal:define-macro attribute.
-        extending = False
-        if self.metal and self.inUseDirective:
-            # extend the calling directive.
-            extending = True
+        extending = self.metal and self.inUseDirective
         self.do_useMacro((macroName, macroExpr, compiledSlots, block),
                          definingName, extending)
     bytecode_handlers["extendMacro"] = do_extendMacro
@@ -906,7 +931,7 @@ class TALInterpreter(object):
             # Measure the extension depth of this use-macro
             depth = 1
             while depth < len_macs:
-                if macs[-depth][3]:
+                if macs[-depth].extending:
                     depth += 1
                 else:
                     break
@@ -914,13 +939,12 @@ class TALInterpreter(object):
             # most general macro.  The most general is at the top of
             # the stack.
             slot = None
-            i = len_macs - depth
-            while i < len_macs:
-                slots = macs[i][1]
-                slot = slots.get(slotName)
+            i = len_macs - 1
+            while i >= (len_macs - depth):
+                slot = macs[i].slots.get(slotName)
                 if slot is not None:
                     break
-                i += 1
+                i -= 1
             if slot is not None:
                 # Found a slot filler.  Temporarily chop the macro
                 # stack starting at the macro that filled the slot and
@@ -934,7 +958,7 @@ class TALInterpreter(object):
                     self.sourceFile = prev_source
                 # Restore the stack entries.
                 for mac in chopped:
-                    mac[4] = 0  # Not entering
+                    mac.entering = False  # Not entering
                 macs.extend(chopped)
                 return
             # Falling out of the 'if' allows the macro to be interpreted.
@@ -946,7 +970,7 @@ class TALInterpreter(object):
 
     def do_onError_tal(self, (block, handler)):
         state = self.saveState()
-        self.stream = stream = StringIO()
+        self.stream = stream = self.StringIO()
         self._stream_write = stream.write
         try:
             self.interpret(block)
@@ -980,3 +1004,26 @@ class TALInterpreter(object):
     bytecode_handlers_tal["onError"] = do_onError_tal
     bytecode_handlers_tal["<attrAction>"] = attrAction_tal
     bytecode_handlers_tal["optTag"] = do_optTag_tal
+
+
+class FasterStringIO(StringIO):
+    """Append-only version of StringIO.
+
+    This let's us have a much faster write() method.
+    """
+    def close(self):
+        if not self.closed:
+            self.write = _write_ValueError
+            StringIO.close(self)
+
+    def seek(self, pos, mode=0):
+        raise RuntimeError("FasterStringIO.seek() not allowed")
+
+    def write(self, s):
+        #assert self.pos == self.len
+        self.buflist.append(s)
+        self.len = self.pos = self.pos + len(s)
+
+
+def _write_ValueError(s):
+    raise ValueError, "I/O operation on closed file"
