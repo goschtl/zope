@@ -19,8 +19,7 @@ sub transactions need to implement their own proxy.
 
 $Id$
 """
-import types, string, time, random, thread
-from types import StringTypes
+import time, random, thread
 from urllib import unquote_plus
 
 from persistent import Persistent
@@ -31,42 +30,42 @@ from transaction.interfaces import IDataManager
 from zope.security.checker import NamesChecker
 
 from zope.interface import implements
-from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.rdb.interfaces import DatabaseException
 from zope.app.rdb.interfaces import IResultSet
 from zope.app.rdb.interfaces import IZopeConnection, IZopeCursor
-from zope.app.rdb.interfaces import ISQLCommand
 from zope.app.rdb.interfaces import IManageableZopeDatabaseAdapter
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter
 from zope.thread import local
 
 
 DEFAULT_ENCODING = "utf-8"
 
 def sqlquote(x):
-    """
+    r"""
     Escape data suitable for inclusion in generated ANSI SQL92 code for
     cases where bound variables are not suitable.
 
-    >>> sqlquote('''Hi''')
+    >>> sqlquote("Hi")
     "'Hi'"
-    >>> sqlquote('''It's mine''')
+    >>> sqlquote("It's mine")
     "'It''s mine'"
+    >>> sqlquote("\\'")
+    "'\\\\'''"
+    >>> sqlquote(u"\\'")
+    u"'\\\\'''"
     >>> sqlquote(32)
     32
     >>> sqlquote(None)
     'NULL'
     """
-    if type(x) == types.StringType:
-        x = "'" + string.replace(
-            string.replace(str(x), '\\', '\\\\'), "'", "''") + "'"
-    elif type(x) in (types.IntType, types.LongType, types.FloatType):
+    if isinstance(x, (str, unicode)):
+        x = "'%s'" % x.replace('\\', '\\\\').replace("'", "''")
+    elif isinstance(x, (int, long, float)):
         pass
     elif x is None:
         x = 'NULL'
     else:
-        raise TypeError, 'do not know how to handle type %s' % type(x)
+        raise TypeError('do not know how to handle type %s' % type(x))
     return x
 
 
@@ -219,11 +218,10 @@ def parseDSN(dsn):
        dbname       database name
        parameters   a mapping of additional parameters to their values
     """
-    if not isinstance(dsn, StringTypes):
-        raise ValueError('The dsn is not a string. It is a %s'
-                         % repr(type(dsn)))
+    if not isinstance(dsn, (str, unicode)):
+        raise ValueError('The dsn is not a string. It is a %r' % type(dsn))
     if not dsn.startswith('dbi://'):
-        raise ValueError('Invalid DSN; must start with "dbi://": %s' % dsn)
+        raise ValueError('Invalid DSN; must start with "dbi://": %r' % dsn)
 
     result = {}
 
