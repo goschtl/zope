@@ -138,19 +138,25 @@ class ZopeCursorTests(TestCase):
         self.typeInfo.setEncoding("windows-1251")
         self.cursor.execute("SELECT * FROM table",
             (u'\u0422\u0435\u0441\u0442',))
-        self.assertEqual('\xd2\xe5\xf1\xf2', self.cursor.cursor.args[0])
+        self.assertEqual(('\xd2\xe5\xf1\xf2',), self.cursor.cursor.args)
 
     def test_cursor_list_args_encoding(self):
         self.typeInfo.setEncoding("windows-1251")
-        self.cursor.execute("SELECT * FROM table",
+        self.cursor.execute(u'\u0422\u0435\u0441\u0442',
             [u'\u0422\u0435\u0441\u0442'])
-        self.assertEqual('\xd2\xe5\xf1\xf2', self.cursor.cursor.args[0])
+        self.assertEqual('\xd2\xe5\xf1\xf2', self.cursor.cursor.query)
+        self.assertEqual(['\xd2\xe5\xf1\xf2'], self.cursor.cursor.args)
+
+        self.cursor.execute("SELECT * FROM table",
+            [(u'\u0422\u0435\u0441\u0442',)])
+        self.assertEqual([('\xd2\xe5\xf1\xf2',)], self.cursor.cursor.args)
 
     def test_cursor_dict_args_encoding(self):
         self.typeInfo.setEncoding("windows-1251")
         self.cursor.execute("SELECT * FROM table",
             {"value": u'\u0422\u0435\u0441\u0442'})
-        self.assertEqual('\xd2\xe5\xf1\xf2', self.cursor.cursor.args["value"])
+        self.assertEqual({"value": '\xd2\xe5\xf1\xf2'},
+            self.cursor.cursor.args)
 
 
 def test_suite():
