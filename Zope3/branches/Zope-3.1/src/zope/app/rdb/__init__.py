@@ -296,11 +296,23 @@ class ZopeCursor(object):
         encoding = self.connection.getTypeInfo().getEncoding()
         if isinstance(operation, unicode):
             operation = operation.encode(encoding)
-        if isinstance(parameters, (tuple, list)):
+
+        if isinstance(parameters, list):
+            for i, v in enumerate(parameters):
+                if isinstance(v, unicode):
+                    parameters[i] = v.encode(encoding)
+                elif isinstance(v, tuple):
+                    values = list(v)
+                    for j, v in enumerate(values):
+                        if isinstance(v, unicode):
+                            values[j] = v.encode(encoding)
+                    parameters[i] = tuple(values)
+        elif isinstance(parameters, tuple):
             parameters = list(parameters)
             for i, v in enumerate(parameters):
                 if isinstance(v, unicode):
                     parameters[i] = v.encode(encoding)
+            parameters = tuple(parameters)
         elif isinstance(parameters, dict):
             for k, v in parameters.items():
                 if isinstance(v, unicode):
