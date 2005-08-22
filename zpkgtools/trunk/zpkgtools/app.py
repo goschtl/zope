@@ -308,9 +308,12 @@ class BuilderApplication(Application):
         pwd = os.getcwd()
         os.chdir(self.tmpdir)
         cmdline = ("tar", "czf", self.target_file, self.target_name)
+        # The os.spawn?p*() functions are not available on Windows, so
+        # we need to search the PATH ourselves:
+        cmdpath = runlog.find_command(cmdline[0])
         runlog.report_command(" ".join(cmdline))
         try:
-            rc = os.spawnlp(os.P_WAIT, cmdline[0], *cmdline)
+            rc = os.spawnv(os.P_WAIT, cmdpath, cmdline)
         finally:
             os.chdir(pwd)
         runlog.report_exit_code(rc)

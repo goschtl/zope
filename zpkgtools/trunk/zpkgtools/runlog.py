@@ -54,3 +54,31 @@ def _get_logger():
     f = sys._getframe(2)
     name = f.f_globals.get("__name__", "<unknown>")
     return logging.getLogger(name)
+
+
+# Since the os.spawn?p*() functions are not available on Windows, we
+# need to search the PATH for the desired executable ourselves.  This
+# function is called to do that, and tries to mimic the platform
+# algorithm to determine whether the executable is found.
+
+if sys.platform[:3].lower() == "win":
+    def find_command(name):
+        # This list of defaults was found at:
+        # http://www.computerhope.com/starthlp.htm
+        exts = os.environ.get("PATHEXT", ".COM;.EXE;.BAT;.CMD").splits(";")
+        for i, ext in enumerate(exts):
+            if not ext.startswith("."):
+                exts[i] = "." + ext
+        for p in os.environ.get("PATH").split(os.path.pathsep):
+            for ext in exts:
+                fn = os.path.join(p, name + ext)
+                if os.path.isfile(fn):
+                    return fn
+        raise ValueError("could not locate matching command: %s" % name)
+else:
+    def find_command(name):
+        for p in os.environ.get("PATH").split(os.path.pathsep):
+            fn = os.path.join(p, name)
+            if os.path.isfile(fn):
+                return fn
+        raise ValueError("could not locate matching command: %s" % name)

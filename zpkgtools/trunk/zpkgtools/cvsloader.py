@@ -289,14 +289,15 @@ class CvsLoader:
         # separated out from load() to ease testing the rest of load()
         # XXX not sure of a good way to test this method!
         wf = posixpath.basename(path)
-        pwd = os.getcwd()
-        os.chdir(workdir)
         cmdline = ("cvs", "-f", "-Q", "-z6", "-d", cvsroot,
                    "export", "-kk", "-d", wf, "-r", tag, path)
+        pwd = os.getcwd()
+        os.chdir(workdir)
 
+        cmdpath = runlog.find_command(cmdline[0])
         runlog.report_command(" ".join(cmdline))
         try:
-            rc = os.spawnlp(os.P_WAIT, cmdline[0], *cmdline)
+            rc = os.spawnv(os.P_WAIT, cmdpath, cmdline)
         finally:
             os.chdir(pwd)
         runlog.report_exit_code(rc)
