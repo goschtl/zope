@@ -65,7 +65,7 @@ if sys.platform[:3].lower() == "win":
     def find_command(name):
         # This list of defaults was found at:
         # http://www.computerhope.com/starthlp.htm
-        exts = os.environ.get("PATHEXT", ".COM;.EXE;.BAT;.CMD").splits(";")
+        exts = os.environ.get("PATHEXT", ".COM;.EXE;.BAT;.CMD").split(";")
         for i, ext in enumerate(exts):
             if not ext.startswith("."):
                 exts[i] = "." + ext
