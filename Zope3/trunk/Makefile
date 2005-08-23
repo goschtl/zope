@@ -8,7 +8,8 @@ all: inplace runners
 
 # Build in-place
 inplace:
-	$(PYTHON) setup.py $(SETUPFLAGS) build_ext -i
+	$(PYTHON) setup.py $(SETUPFLAGS) \
+		build_ext -i install_data --install-dir .
 
 runners: bin/runzope
 
@@ -39,6 +40,8 @@ debug: principals.zcml
 clean:
 	find . \( -name '*.o' -o -name '*.so' -o -name '*.py[co]' -o -name '*.dll' \) -exec rm -f {} \;
 	rm -rf build
+	rm zopeskel/etc/package-includes/*.zcml
+	rm zopeskel/etc/securitypolicy.zcml
 
 realclean: clean
 	rm -f TAGS tags

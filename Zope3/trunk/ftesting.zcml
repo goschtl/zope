@@ -9,9 +9,9 @@
   <include package="zope.app" />
   <include package="zope.app" file="ftesting.zcml" />
 
-  <include files="package-includes/*-meta.zcml" />
-  <include files="package-includes/*-configure.zcml" />
-  <include files="package-includes/*-ftesting.zcml" />
+  <include files="zopeskel/etc/package-includes/*-meta.zcml" />
+  <include files="zopeskel/etc/package-includes/*-configure.zcml" />
+  <include files="zopeskel/etc/package-includes/*-ftesting.zcml" />
 
   <include file="securitypolicy.zcml" />
   <include file="securitypolicy-ftesting.zcml" />
