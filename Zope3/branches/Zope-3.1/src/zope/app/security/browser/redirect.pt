@@ -13,7 +13,7 @@
 
      <p style="font-size: 150%">
        <a tal:attributes="href view/request/nextURL" i18n:translate="">
-         If you you see this screen for more than 5 seconds, click here.
+         If you see this screen for more than 5 seconds, click here.
        </a>
      </p>
 

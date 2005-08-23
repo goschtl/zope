@@ -7,7 +7,7 @@
   <p tal:define="success request/success | nothing"
      tal:condition="success"
      i18n:translate="">
-    Import was successfull!
+    Import was successful!
   </p>
 
   <p i18n:translate="">Import / Export Process Definitions:</p>
