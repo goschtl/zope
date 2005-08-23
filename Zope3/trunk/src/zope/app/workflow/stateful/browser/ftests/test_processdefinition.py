@@ -137,7 +137,7 @@ class Test(BrowserTestCase):
 
         self.assert_(body.find('initial_foo') >= 0)
 
-        self.assert_(body.find('Import was successfull!') >= 0)
+        self.assert_(body.find('Import was successful!') >= 0)
 
 
 def test_suite():
