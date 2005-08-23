@@ -5,6 +5,9 @@ Five Changes
 Five 1.0.3 (...)
 ================
 
+* FiveTraversable should only do a view lookup and not call the traverse 
+  method of its superclass.
+
 * EditView's generated_form pointed to the deprecated FivePageTemplateFile
   instead of the ZopeTwoPageTemplateFile.  This seem to cause access 
   problems in some very obscure situations, and is now fixed.

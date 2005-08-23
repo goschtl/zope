@@ -103,5 +103,3 @@ class FiveTraversable(DefaultTraversable):
             return getView(context, name, REQUEST)
         except ComponentLookupError:
             pass
-        # If a view can't be found, then use default traversable
-        return super(FiveTraversable, self).traverse(name, furtherPath)

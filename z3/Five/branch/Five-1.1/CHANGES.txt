@@ -8,6 +8,9 @@ After Five 1.1b
 Bugfixes
 --------
 
+* FiveTraversable should only do a view lookup and not call the traverse 
+  method of its superclass.
+
 * Some parts of add.pt and edit.pt were not translated correctly or not
   translated at all. The fix depends on TAL changes in Zope 2.8.1 and changes
   in Zope X3-3.0.1 (shipped with 2.8.1). Form i18n is still broken with older
