@@ -53,7 +53,7 @@ class IContentComponentMenuItem(IBrowserMenuItem):
                       "local browser menu for you. If this "
                       "option is set to False, the system will try to find "
                       "the next site manager that has a menu "
-                      "with the specifed id. If no menu was found or the menu "
+                      "with the specified id. If no menu was found or the menu "
                       "is a global menu, then an error is occurred."),
         default=True,
         required=True)

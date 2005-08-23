@@ -6,7 +6,7 @@
 
   <browser:addMenuItem
       title="SQL Script"
-      description="A content-based script to execute dyanmic SQL."
+      description="A content-based script to execute dynamic SQL."
       class="zope.app.sqlscript.SQLScript"
       permission="zope.ManageContent"   
       view="zope.app.sqlscript.SQLScript"

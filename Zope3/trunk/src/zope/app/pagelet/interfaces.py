@@ -44,7 +44,7 @@ class IPagelet(Interface):
     you can use more then one views in a pageltemplate. This
     let's pagelets act as portlets. The pagelet view can support
     content independent information where you can access in every
-    page template on which the pagelet is registred.
+    page template on which the pagelet is registered.
     
     The meta directive set the 'weight' attribute to the class attribute
     '_weight'. If you whould like to use the settings from the meta 
@@ -91,7 +91,7 @@ class IMacrosCollector(Interface):
     def macros():
         """Returns macros related to the context, request, view and slot.
         
-        The pagelets are registred as adapters on a tuple like:
+        The pagelets are registered as adapters on a tuple like:
         
         (context, request, view, slot)
         
@@ -117,9 +117,9 @@ class IMacroCollector(Interface):
     """
     
     def __getitem__(key):
-        """Returns a single pagelet macro registred by the given name.
+        """Returns a single pagelet macro registered by the given name.
         
-        The pagelets are registred as adapters on a tuple like:
+        The pagelets are registered as adapters on a tuple like:
         
         (context, request, view, slot)
         
@@ -147,7 +147,7 @@ class ITALESPageletsExpression(ITALESExpression):
     """
 
     pagelets = Attribute("pagelets",
-                _(u"Pagelets registred for context, request, view and slot."))
+                _(u"Pagelets registered for context, request, view and slot."))
 
 
 
@@ -166,7 +166,7 @@ class ITALESPageletExpression(ITALESExpression):
     """
 
     pagelet = Attribute("pagelet",
-                _(u"Pagelet registred for context, request, view and slot."))
+                _(u"Pagelet registered for context, request, view and slot."))
 
 
 
@@ -182,7 +182,7 @@ class ITALESPageDataExpression(ITALESExpression):
     """
 
     pagedata = Attribute("pagedata",
-            _(u"Page data adapter registred for context, request and view."))
+            _(u"Page data adapter registered for context, request and view."))
 
     def __call__():
         """Returns the page data adapter."""

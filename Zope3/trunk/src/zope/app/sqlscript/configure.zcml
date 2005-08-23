@@ -23,7 +23,7 @@
     <factory
         id="zope.app.content.SQLScript"
         title="SQL Script"
-        description="A content-based script to execute dyanmic SQL."
+        description="A content-based script to execute dynamic SQL."
         />
     <require
         permission="zope.ManageContent"
