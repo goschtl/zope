@@ -643,8 +643,11 @@ def main(argv=None):
     try:
         options = parse_args(argv)
     except SystemExit, e:
-        print >>sys.stderr, e
-        return 2
+        if e.code is None or isinstance(e.code, int):
+            return 0
+        else:
+            print >>sys.stderr, e
+            return 2
 
     try:
         app = BuilderApplication(options)
