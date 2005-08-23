@@ -116,10 +116,6 @@ class InternalPrincipal(Persistent, Contained):
 
     login = property(getLogin, setLogin)
 
-    def __getitem__(self, attr):
-        if attr in ('title', 'description'):
-            return getattr(self, attr)
-
 
 class PrincipalInfo(object):
     """An implementation of IPrincipalInfo used by the principal folder.
