@@ -95,6 +95,7 @@ class NonHTTPSessionTestCase(unittest.TestCase):
 
 def test_suite():
     return unittest.TestSuite((
+        doctest.DocTestSuite('zope.app.authentication.interfaces'),
         doctest.DocTestSuite('zope.app.authentication.generic'),
         doctest.DocTestSuite('zope.app.authentication.httpplugins'),
         doctest.DocTestSuite('zope.app.authentication.ftpplugins'),

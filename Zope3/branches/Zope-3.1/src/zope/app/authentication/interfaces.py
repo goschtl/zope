@@ -163,6 +163,13 @@ class IAuthenticatedPrincipalCreated(IPrincipalCreated):
 
 
 class AuthenticatedPrincipalCreated:
+    """
+    >>> from zope.interface.verify import verifyObject
+    >>> event = AuthenticatedPrincipalCreated("authentication", "principal",
+    ...     "info", "request")
+    >>> verifyObject(IAuthenticatedPrincipalCreated, event)
+    True
+    """
 
     zope.interface.implements(IAuthenticatedPrincipalCreated)
 
@@ -178,6 +185,13 @@ class IFoundPrincipalCreated(IPrincipalCreated):
 
 
 class FoundPrincipalCreated:
+    """
+    >>> from zope.interface.verify import verifyObject
+    >>> event = FoundPrincipalCreated("authentication", "principal",
+    ...     "info")
+    >>> verifyObject(IFoundPrincipalCreated, event)
+    True
+    """
 
     zope.interface.implements(IFoundPrincipalCreated)
 
@@ -217,16 +231,23 @@ class IQuerySchemaSearch(zope.interface.Interface):
         """
 
 class IGroupAdded(zope.interface.Interface):
+    """A group has been added."""
 
     group = zope.interface.Attribute("""The group that was defined""")
 
 
 class GroupAdded:
+    """
+    >>> from zope.interface.verify import verifyObject
+    >>> event = GroupAdded("group")
+    >>> verifyObject(IGroupAdded, event)
+    True
+    """
 
     zope.interface.implements(IGroupAdded)
 
-    def __init__(self, principal):
-        self.principal = principal
+    def __init__(self, group):
+        self.group = group
 
     def __repr__(self):
-        return "<GroupAdded %r>" % self.principal.id
+        return "<GroupAdded %r>" % self.group.id
