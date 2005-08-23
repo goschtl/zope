@@ -74,6 +74,13 @@ The following command line options are provided:
   This can be used to provide additional software to be used when
   distutils is running for the distributed package.
 
+-t, --tree
+  Build the distribution tree only, but don't create a tarball.  The
+  distribution tree will be created in the current directory and will
+  be given the same name it would have in the tarball.  A directory of
+  that name must not already exist; if it does, it is considered an
+  error.
+
 -v VERSION
   Set the version number of the release to `VERSION`.
 

@@ -46,6 +46,14 @@ class CommandLineTestCase(unittest.TestCase):
         self.assertEqual(options.resource, "resource")
         return options
 
+    def test_set_tree_only(self):
+        options = self.parse_args([])
+        self.assert_(not options.tree_only)
+        options = self.parse_args(["-t"])
+        self.assert_(options.tree_only)
+        options = self.parse_args(["--tree"])
+        self.assert_(options.tree_only)
+
     def test_set_package_version(self):
         options = self.parse_args([])
         self.assertEqual(options.version, "0.0.0")
@@ -402,6 +410,26 @@ class BuilderApplicationTestCase(unittest.TestCase):
         f.close()
         # convert package_map to URL so relative names are resolved properly
         return "file://" + urllib.pathname2url(package_map)
+
+    def test_building_distribution_tree_only(self):
+        # This builds a package and checks that the tree_only flag
+        # causes the application to build a tree in the current
+        # directory instead of a tarball.
+        package_map = self.createPackageMap()
+        app = self.createApplication(
+            ["-f", "-t", "-m", package_map, "package"])
+        app.run()
+        # make sure the local tree is present and looks like one of
+        # our distributions:
+        self.assert_(os.path.isdir("package-0.0.0"))
+        self.assert_(os.path.isdir(os.path.join("package-0.0.0", "package")))
+        self.assert_(os.path.isdir(os.path.join("package-0.0.0", "Support")))
+        self.assert_(isfile("package-0.0.0", "setup.py"))
+        self.assert_(isfile("package-0.0.0", "setup.cfg"))
+        self.assert_(isfile("package-0.0.0", "MANIFEST"))
+        self.assert_(isfile("package-0.0.0", "Support", "MANIFEST"))
+        self.assert_(isfile("package-0.0.0", "Support", "README.txt"))
+        self.assert_(isfile("package-0.0.0", "Support", "setup.py"))
 
     def test_adding_extra_support_code(self):
         package_map = self.createPackageMap()

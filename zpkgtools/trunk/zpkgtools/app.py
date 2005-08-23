@@ -118,7 +118,10 @@ class BuilderApplication(Application):
         release_name = self.options.release_name
         self.target_name = "%s-%s" % (release_name, self.options.version)
         self.target_file = self.target_name + ".tgz"
-        self.destination = os.path.join(self.tmpdir, self.target_name)
+        if self.options.tree_only:
+            self.destination = os.path.abspath(self.target_name)
+        else:
+            self.destination = os.path.join(self.tmpdir, self.target_name)
         os.mkdir(self.destination)
         self.support_packages = DEFAULT_SUPPORT_PACKAGES[:]
         self.support_packages.extend(
@@ -347,7 +350,8 @@ class BuilderApplication(Application):
             except zpkgtools.LoadingError, e:
                 self.error(str(e), e.exitcode)
             self.write_manifests()
-            self.create_tarball()
+            if not self.options.tree_only:
+                self.create_tarball()
             self.cleanup()
         except:
             print >>sys.stderr, "----\ntemporary files are in", self.tmpdir
@@ -600,6 +604,9 @@ def parse_args(argv):
     parser.add_option(
         "-s", dest="include_support_code", action="store_true",
         help="include copies of the zpkgtools support code (the default)")
+    parser.add_option(
+        "-t", "--tree", dest="tree_only", action="store_true",
+        help="generate an unpacked distribution tree, not a tarball")
     parser.add_option(
         "-v", dest="version",
         help="version label for the new distribution")
