@@ -204,9 +204,9 @@ def EditURL(self, object, borrow_lock=0):
         if borrow_lock:
             query['borrow_lock'] = 1
 
-        return "%s/externalEdit_/%s%s%s" % (object.aq_parent.absolute_url(), 
-                                           urllib.quote(object.getId()), 
-                                           ext, querystr(query))
+        path = object.absolute_url().split('/')
+        path.insert(-1, 'externalEdit_')
+        return "%s%s%s" % ('/'.join(path), ext, querystr(query))
     return ''
 
 def EditLink(self, object, borrow_lock=0):
