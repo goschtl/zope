@@ -438,7 +438,7 @@ class InterfaceClass(Element, Specification):
             elif attr is _decorator_non_return:
                 del attrs[name]
             else:
-                raise InvalidInterface("Concrete attribute, %s" %name)
+                raise InvalidInterface("Concrete attribute, " + name)
 
         self.__attrs = attrs
 
@@ -831,11 +831,11 @@ class Method(Attribute):
         for v in self.positional:
             sig.append(v)
             if v in self.optional.keys():
-                sig[-1] += "=%s" % `self.optional[v]`
+                sig[-1] += "=" + `self.optional[v]`
         if self.varargs:
-            sig.append("*%s" % self.varargs)
+            sig.append("*" + self.varargs)
         if self.kwargs:
-            sig.append("**%s" % self.kwargs)
+            sig.append("**" + self.kwargs)
 
         return "(%s)" % ", ".join(sig)
 
