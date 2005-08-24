@@ -14,6 +14,8 @@
 
 import os
 
+import zpkgsetup.package
+import zpkgsetup.publication
 import zpkgsetup.setup
 
 
@@ -23,7 +25,8 @@ context = zpkgsetup.setup.SetupContext(
     "Zope", "3.1.0a42", __file__)
 
 context.load_metadata(
-    os.path.join(here, "releases", "Zope", "PUBLICATION.cfg"))
+    os.path.join(here, "releases", "Zope",
+                 zpkgsetup.publication.PUBLICATION_CONF))
 
 for root, dirs, files in os.walk("src"):
     for d in dirs[:]:
@@ -31,7 +34,7 @@ for root, dirs, files in os.walk("src"):
         initfn = os.path.join(root, d, "__init__.py")
         if not os.path.isfile(initfn):
             dirs.remove(d)
-    if "SETUP.cfg" in files:
+    if zpkgsetup.package.PACKAGE_CONF in files:
         # scan this directory as a package:
         pkgname = root[4:].replace(os.path.sep, ".")
         local_full_path = os.path.join(here, root)
