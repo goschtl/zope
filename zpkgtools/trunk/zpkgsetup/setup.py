@@ -160,7 +160,7 @@ class SetupContext:
                 initfn = os.path.join(root, d, "__init__.py")
                 if not os.path.isfile(initfn):
                     dirs.remove(d)
-            if zpkgsetup.package.PACKAGE_CONF in files:
+            if package.PACKAGE_CONF in files:
                 # scan this directory as a package:
                 pkgname = root[prefix_len:].replace(os.path.sep, ".")
                 local_full_path = os.path.join(self._working_dir, root)
