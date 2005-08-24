@@ -151,6 +151,16 @@ class SetupContext:
         path in POSIX notation.
 
         """
+        #
+        # walk_packages() doesn't pick up packages that don't have a
+        # SETUP.cfg in them, so it's not everything we want.  However,
+        # picking up C extensions in leaf packages gets us an in-place
+        # build, which is a good start.
+        #
+        # To fix this, the zpkgsetup code needs to understand the
+        # right way to detect package boundaries, which is currently
+        # done implicitly by the distribution construction code.
+        #
         parts = root.split("/")
         local_root = os.path.join(*parts)
         prefix_len = len(os.path.join(local_root, ""))

@@ -52,6 +52,23 @@ class SetupContextTestCase(unittest.TestCase):
         self.assertEqual(context.package_data,
                          {"package2": ["PUBLICATION.cfg", "SETUP.cfg"]})
 
+    def test_walk_packages(self):
+        import zpkgsetup
+        top = os.path.dirname(os.path.dirname(zpkgsetup.__file__))
+        context = setup.SetupContext("collection", "0.1.2",
+                                     os.path.join(top, "setup.py"))
+        context.walk_packages("zpkgsetup/tests/input")
+        context.packages.sort()
+        self.assertEqual(context.ext_modules[0].name, "package2.sample")
+        #
+        # See the comments in the walk_packages() function for an
+        # explanation of the limitations of the method.  The following
+        # check is commented out due to the limitation, but should be
+        # enabled with a proper implementation.
+        #
+        #self.assertEqual(context.packages, ["package", "package2"])
+        
+
 
 def test_suite():
     return unittest.makeSuite(SetupContextTestCase)
