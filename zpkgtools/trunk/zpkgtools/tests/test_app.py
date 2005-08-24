@@ -430,6 +430,7 @@ class BuilderApplicationTestCase(unittest.TestCase):
         self.assert_(isfile("package-0.0.0", "Support", "MANIFEST"))
         self.assert_(isfile("package-0.0.0", "Support", "README.txt"))
         self.assert_(isfile("package-0.0.0", "Support", "setup.py"))
+        shutil.rmtree("package-0.0.0")
 
     def test_adding_extra_support_code(self):
         package_map = self.createPackageMap()
