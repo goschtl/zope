@@ -140,6 +140,33 @@ class SetupContext:
                     devstatus = publication.BETA
                 publication.set_development_status(self, devstatus)
 
+    def walk_packages(self, root):
+        """Walk over a package tree and load all available packages.
+
+        Packages are identified by checking for both and __init__.py
+        and a SETUP.cfg; if present, the package is scanned.  If there
+        is no __init__.py, scanning ignores that subtree.
+
+        `root` is the top of a package hierarchy, given as a relative
+        path in POSIX notation.
+
+        """
+        parts = root.split("/")
+        local_root = os.path.join(*parts)
+        prefix_len = len(os.path.join(local_root, ""))
+        for root, dirs, files in os.walk(local_root):
+            for d in dirs[:]:
+                # drop sub-directories that are not Python packages:
+                initfn = os.path.join(root, d, "__init__.py")
+                if not os.path.isfile(initfn):
+                    dirs.remove(d)
+            if zpkgsetup.package.PACKAGE_CONF in files:
+                # scan this directory as a package:
+                pkgname = root[prefix_len:].replace(os.path.sep, ".")
+                local_full_path = os.path.join(self._working_dir, root)
+                relative_path = root.replace(os.path.sep, "/")
+                self.scan_package(pkgname, local_full_path, relative_path)
+
     def scan(self, name, directory, reldir):
         init_py = os.path.join(directory, "__init__.py")
         if os.path.isfile(init_py):
