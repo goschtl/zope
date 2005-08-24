@@ -28,17 +28,5 @@ context.load_metadata(
     os.path.join(here, "releases", "Zope",
                  zpkgsetup.publication.PUBLICATION_CONF))
 
-for root, dirs, files in os.walk("src"):
-    for d in dirs[:]:
-        # drop sub-directories that are not Python packages:
-        initfn = os.path.join(root, d, "__init__.py")
-        if not os.path.isfile(initfn):
-            dirs.remove(d)
-    if zpkgsetup.package.PACKAGE_CONF in files:
-        # scan this directory as a package:
-        pkgname = root[4:].replace(os.path.sep, ".")
-        local_full_path = os.path.join(here, root)
-        relative_path = root.replace(os.path.sep, "/")
-        context.scan(pkgname, local_full_path, relative_path)
-
+context.walk_packages("src")
 context.setup()
