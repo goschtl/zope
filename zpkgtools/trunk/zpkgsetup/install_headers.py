@@ -40,7 +40,10 @@ class install_headers(distutils.command.install_headers.install_headers):
         self.mkpath(install_base)
 
         for header in headers:
-            install_dir = os.path.join(install_base, header.package)
+            if header.package:
+                install_dir = os.path.join(install_base, header.package)
+            else:
+                install_dir = install_base
             self.mkpath(install_dir)
             (out, _) = self.copy_file(header.path, install_dir)
             self.outfiles.append(out)

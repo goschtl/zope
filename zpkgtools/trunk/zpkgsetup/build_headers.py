@@ -44,7 +44,10 @@ class build_headers(distutils.core.Command):
         if not self.package_headers:
             return
         for header in self.package_headers:
-            dir = os.path.join(self.build_dir, header.package)
+            if header.package:
+                dir = os.path.join(self.build_dir, header.package)
+            else:
+                dir = self.build_dir
             self.mkpath(dir)
             srcfile = distutils.util.convert_path(header.path)
             outfile = os.path.join(

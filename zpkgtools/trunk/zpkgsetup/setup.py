@@ -163,6 +163,12 @@ class SetupContext:
         #
         parts = root.split("/")
         local_root = os.path.join(*parts)
+        if os.path.isfile(os.path.join(local_root, package.PACKAGE_CONF)):
+            # There's a SETUP.cfg at the top level; load it:
+            pkginfo = package.loadCollectionInfo(
+                os.path.join(self._working_dir, local_root),
+                root)
+            self.scan_basic(pkginfo)
         prefix_len = len(os.path.join(local_root, ""))
         for root, dirs, files in os.walk(local_root):
             for d in dirs[:]:
@@ -170,7 +176,8 @@ class SetupContext:
                 initfn = os.path.join(root, d, "__init__.py")
                 if not os.path.isfile(initfn):
                     dirs.remove(d)
-            if package.PACKAGE_CONF in files:
+            if (package.PACKAGE_CONF in files
+                and "__init__.py" in files):
                 # scan this directory as a package:
                 pkgname = root[prefix_len:].replace(os.path.sep, ".")
                 local_full_path = os.path.join(self._working_dir, root)
@@ -193,7 +200,6 @@ class SetupContext:
         # load the package metadata
         pkginfo = package.loadPackageInfo(name, directory, reldir)
         self.scan_basic(pkginfo)
-        self.ext_modules.extend(pkginfo.extensions)
         self.add_package_dir(name, reldir)
 
         # scan the files in the directory:
@@ -272,6 +278,7 @@ class SetupContext:
         for fn in pkginfo.header:
             if fn not in self.headers:
                 self.headers.append(fn)
+        self.ext_modules.extend(pkginfo.extensions)
 
     def add_package_dir(self, pkgname, reldir):
         self.packages.append(pkgname)

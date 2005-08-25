@@ -122,10 +122,9 @@ def loadCollectionInfo(directory, reldir):
 
     """
     pkginfo = read_package_info(directory, reldir)
-    if pkginfo.extension:
-        raise ValueError("extensions cannot be defined in collections")
-    pkginfo.extensions = []
-    pkginfo.package_headers = [Header(pkgname, path)
+    pkginfo.extensions = [create_extension(ext, None, reldir)
+                          for ext in pkginfo.extension]
+    pkginfo.package_headers = [Header(None, path)
                                for path in pkginfo.header]
     return pkginfo
 

@@ -214,6 +214,9 @@ section of the form::
     ...
   </extension>
 
+Extensions which are not in packages but provided by simple
+collections are supported as well.
+
 The **<extension>** section can contain the settings described below.
 All of these can be repeated with the exception of the **language**
 setting.

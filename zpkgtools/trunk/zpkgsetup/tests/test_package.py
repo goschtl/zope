@@ -141,12 +141,13 @@ class PackageInfoTestCase(unittest.TestCase):
         eq(pkginfo.documentation, ["doc/README.txt"])
         eq(pkginfo.script, ["bin/runme.py"])
 
-    def test_collection_pkginfo_disallows_extensions(self):
+    def test_collection_pkginfo_allows_extensions(self):
         self.write_config("<extension foo>\n"
                           "  source  foo.c\n"
                           "</extension>\n")
-        self.assertRaises(ValueError, package.loadCollectionInfo,
-                          self.tmpdir, None)
+        pkginfo = package.loadCollectionInfo(self.tmpdir, ".")
+        self.assertEqual(len(pkginfo.extensions), 1)
+        self.assertEqual(pkginfo.extensions[0].name, "foo")
 
     def test_data_files_1(self):
         self.write_config("<data-files etc>\n"
