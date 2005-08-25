@@ -10,7 +10,7 @@
 // SeleniumRenderer -- a class to render tests in selenium format.
 // todo:
 //   - remove host from urls and hrefs?
-//   - 
+//   -
 // ---------------------------------------------------------------------------
 
 function SeleniumRenderer(document) {
@@ -158,7 +158,6 @@ SeleniumRenderer.prototype.xpathId = function(item) {
   else if (tag == "a") {
     if (item.info.text) {
       return xp + "text()='" + this.repr(item.info.text) + "']";
-    
     }
     return xp + "@href='" + this.repr(this.fixurl(item.info.href)) + "']";
   }
@@ -265,7 +264,7 @@ SeleniumRenderer.prototype.checkSelectOptions = function(item) {
   var id = this.bestId(item);
   var so = "";
   for (var i=0; i < item.info.options.length; i++) {
-    if (i > 0) 
+    if (i > 0)
       so = so + ",";
     so = so + this.repr(item.info.options[i].value);
   }
