@@ -21,7 +21,7 @@ In the top-level ``Zope3`` directory, you should find a script called
 setup.py.  Run it to build the extension modules needed by Zope.  Example::
 
   # cd Zope3
-  # python setup.py -q build_ext -i
+  # python setup.py -q build_ext -i install_data --install-dir .
 
 On a unix variant, you can just type: ``make``
 
