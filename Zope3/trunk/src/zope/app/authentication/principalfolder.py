@@ -244,9 +244,8 @@ class PrincipalFolder(BTreeContainer):
         if search is None:
             return
         search = search.lower()
-        i = 0
         n = 1
-        for value in self.values():
+        for i, value in enumerate(self.values()):
             if (search in value.title.lower() or
                 search in value.description.lower() or
                 search in value.login.lower()):
@@ -254,7 +253,6 @@ class PrincipalFolder(BTreeContainer):
                         or (batch_size is not None and n > batch_size)):
                     n += 1
                     yield self.prefix + value.__name__
-                i += 1
 
 
 class Principal(object):

@@ -178,10 +178,9 @@ class GroupFolder(BTreeContainer):
         """ Search for groups"""
         search = query.get('search')
         if search is not None:
-            i = 0
             n = 0
             search = search.lower()
-            for id, groupinfo in self.items():
+            for i, (id, groupinfo) in enumerate(self.items()):
                 if (search in groupinfo.title.lower() or
                     (groupinfo.description and 
                      search in groupinfo.description.lower())):
@@ -189,8 +188,7 @@ class GroupFolder(BTreeContainer):
                             or
                             (batch_size is not None and n >= batch_size)):
                         n += 1
-                        yield self.prefix+id
-                i += 1
+                        yield self.prefix + id
 
     def authenticateCredentials(self, credentials):
         # user folders don't authenticate
