@@ -8,6 +8,42 @@ Zope Changes
 
   Zope 3.1.0
 
+    Changes for Zope 3.1.0 RC 2
+
+      - Removed an untested missfeature that can cause infinite loops in
+        principalfolder's Principal class.
+
+      - Switch to METAL 1.1, which solved a serious bug.
+
+      - Grant view cleaned up.
+
+      - Add missing id attribute to select widget.
+
+      - pytz has been updated.
+
+      - Some code optimization in the HTTP factory of the publisher and
+        ftesting framework.
+
+      - Multiple headers having the same name are correctly handled now.
+
+      - Now SQL operation parameters will be properly encoded before executing.
+
+      - More carefully handle case when SQL parameters is a tuple or a list of
+        a tuples.
+
+      - All request factories can now be configured.
+
+      - Script and Installation documentation improvements.
+
+      - Fixed several bugs in API doc. Also provided some flexibility with the
+        UI.
+
+      - Fix to source widget hasInput and associated changes
+
+      - Updated Build System.
+
+      - Fix I18n bugs. Updated Russian and German translations.
+
     New features
 
       - Implemented the METAL 1.1 macro language in page templates.
