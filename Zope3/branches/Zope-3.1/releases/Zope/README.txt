@@ -12,7 +12,7 @@ experiences of Zope 2.
 Requirements
 ------------
 
-Zope X3 requires that Python 2.3.5 or newer be installed.
+Zope 3 requires that Python 2.3.5 or newer be installed.
 
 Building the Zope 3 software requires a C compiler supported by the distutils.
 
