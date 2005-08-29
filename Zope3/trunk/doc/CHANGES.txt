@@ -32,6 +32,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #445: gadflyDA not full implementation
+
       - Fix: Pagelet directive was inoring the permission. Pagelets which
         not the right permission are not shwon if calling via the Tales
         expression ``pagelets:``. If calling named pagelets directly via the

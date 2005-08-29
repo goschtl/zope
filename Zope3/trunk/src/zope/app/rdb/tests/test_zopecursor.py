@@ -25,6 +25,10 @@ class MyConnectionStub(ConnectionStub):
     def cursor(self):
         return MyCursorStub()
 
+class MyConnectionStub2(ConnectionStub):
+    def cursor(self):
+        return MyCursorStub2()
+
 
 raw       = [['mano',      2,    'buvo batai'],
              ['dingo',     1,    'nerandu'],
@@ -44,6 +48,7 @@ class MyCursorStub(CursorStub):
     description = ((None, 'string'), (None, 'int'), (None, 'foo'))
 
     def execute(self, query, args=None):
+        self.method = "execute"
         self.query = query
         self.args = args
 
@@ -58,6 +63,13 @@ class MyCursorStub(CursorStub):
 
     def fetchmany(self, size=2):
         return self._raw[:size]
+
+class MyCursorStub2(MyCursorStub):
+
+    def executemany(self, query, args):
+        self.method = "executemany"
+        self.query = query
+        self.args = args
 
 
 class MyTypeInfoStub(TypeInfoStub):
@@ -125,6 +137,19 @@ class ZopeCursorTests(TestCase):
                    'got      %r,\n'
                    'expected %r' % (results, expected))
 
+    def test_cursor_executemany(self):
+        self.cursor.executemany("SELECT", [("A",), ("B",)])
+        self.assertEqual("execute", self.cursor.cursor.method)
+        self.assertEqual("SELECT", self.cursor.cursor.query)
+        self.assertEqual([("A",), ("B",)], self.cursor.cursor.args)
+
+        zc = ZopeConnection(MyConnectionStub2(), self.typeInfo)
+        self.cursor = ZopeCursor(zc.conn.cursor(), zc)
+        self.cursor.executemany("SELECT", [("A",), ("B",)])
+        self.assertEqual("executemany", self.cursor.cursor.method)
+        self.assertEqual("SELECT", self.cursor.cursor.query)
+        self.assertEqual([("A",), ("B",)], self.cursor.cursor.args)
+
     def test_cursor_query_encoding(self):
         self.cursor.execute(u'\u0422\u0435\u0441\u0442')
         self.assertEqual('\xd0\xa2\xd0\xb5\xd1\x81\xd1\x82',
@@ -150,6 +175,15 @@ class ZopeCursorTests(TestCase):
         self.cursor.execute("SELECT * FROM table",
             [(u'\u0422\u0435\u0441\u0442',)])
         self.assertEqual([('\xd2\xe5\xf1\xf2',)], self.cursor.cursor.args)
+
+        self.cursor.execute("SELECT * FROM table",
+            [[u'\u0422\u0435\u0441\u0442']])
+        self.assertEqual([['\xd2\xe5\xf1\xf2']], self.cursor.cursor.args)
+
+        self.cursor.execute("SELECT * FROM table",
+            [{"value": u'\u0422\u0435\u0441\u0442'}])
+        self.assertEqual([{"value": '\xd2\xe5\xf1\xf2'}],
+            self.cursor.cursor.args)
 
     def test_cursor_dict_args_encoding(self):
         self.typeInfo.setEncoding("windows-1251")

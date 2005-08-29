@@ -19,8 +19,12 @@ import os
 import tempfile
 from unittest import TestCase, TestSuite, main, makeSuite
 
+from zope.interface.verify import verifyObject
+
 from zope.app.rdb import DatabaseAdapterError
+from zope.app.rdb.interfaces import IZopeConnection, IZopeCursor
 from zope.app.rdb.gadflyda import GadflyAdapter, setGadflyRoot
+
 
 class GadflyTestBase(TestCase):
 
@@ -42,8 +46,7 @@ class GadflyTestBase(TestCase):
         return self.tempdir
 
     def _create(self, *args):
-        obj = GadflyAdapter(*args)
-        return obj
+        return GadflyAdapter(*args)
 
 
 class TestGadflyAdapter(GadflyTestBase):
@@ -130,6 +133,13 @@ class TestGadflyAdapterDefault(GadflyTestBase):
 
         conn = a._connection_factory()
         conn.rollback()         # is it really a connection?
+
+    def test__interfaces(self):
+        a = self._create("dbi://demo")
+        connection = a()
+        verifyObject(IZopeConnection, connection)
+        cursor = connection.cursor()
+        verifyObject(IZopeCursor, cursor)
 
 
 def test_suite():
