@@ -86,6 +86,10 @@ class Application:
         # XXX Hack: This should be part of BuilderApplication
         if options.include_support_code is None:
             options.include_support_code = cf.include_support_code
+        if options.resource is None:
+            if not cf.default_collection:
+                self.error("no resource to package specified")
+            options.resource = cf.default_collection
 
     def error(self, message, rc=1):
         self.logger.critical(message)
@@ -385,8 +389,7 @@ class Component:
         #
         # Check that this package is valid:
         #
-        setup_cfg = os.path.join(self.source, package.PACKAGE_CONF)
-        if self.is_python_package() or os.path.isfile(setup_cfg):
+        if self.is_python_package() or self.has_packaging_data():
             return
         raise zpkgtools.Error(
             "%r is an invalid distribution component: all components must"
@@ -446,6 +449,17 @@ class Component:
         else:
             dir = self.source
         return os.path.isfile(os.path.join(dir, "__init__.py"))
+
+    def has_packaging_data(self):
+        """Return True iff this component contains packaging metadata."""
+        # Should PUBLICATION.cfg count toword this?
+        dir = self.source
+        for fn in (package.PACKAGE_CONF,
+                   include.PACKAGE_CONF,
+                   "DEPENDENCIES.cfg"):
+            if os.path.isfile(os.path.join(dir, fn)):
+                return True
+        return False
 
     def write_package(self, destination):
         self.destination = destination
@@ -624,11 +638,14 @@ def parse_args(argv):
               " (dependencies will be ignored)"))
 
     options, args = parser.parse_args(argv[1:])
-    if len(args) != 1:
-        parser.error("wrong number of arguments")
+    if len(args) > 1:
+        parser.error("too many arguments")
     options.program = prog
     options.args = args
-    options.resource = args[0]
+    if args:
+        options.resource = args[0]
+    else:
+        options.resource = None
     if options.revision_tag and not options.version:
         options.version = version_from_tagname(options.revision_tag)
     if not options.version:

@@ -94,8 +94,10 @@ packages.  These include:
 
 `SETUP.cfg`
   Information about what's included in the distrubution, primarily for
-  use by a `setup.py` script.  For components that aren't Python
-  packages, this file is required.
+  use by a `setup.py` script.
+
+For components that aren't Python packages, at least one of
+`DEPENDENCIES.cfg`, `PACKAGE.cfg`, or `SETUP.cfg` is required.
 
 Additional information on these files can be found in `Metadata
 Descriptions for Distributions <metadata.html>`_.

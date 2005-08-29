@@ -43,6 +43,7 @@ class ConfigTestCase(unittest.TestCase):
         self.assert_(not cf.collect_dependencies)
         self.assertEqual(len(cf.locations), 0)
         self.assertEqual(len(cf.location_maps), 0)
+        self.assert_(not cf.default_collection)
 
     def test_loadPath(self):
         path = os.path.join(here, "zpkg-ok.conf")
@@ -76,6 +77,15 @@ class ConfigTestCase(unittest.TestCase):
         self.assertRaises(cfgparser.ConfigurationError,
                           self.load_text, ("include-support-code false\n"
                                            "include-support-code false\n"))
+
+        # default-collection too many times
+        self.assertRaises(cfgparser.ConfigurationError,
+                          self.load_text, ("default-collection foo\n"
+                                           "default-collection foo\n"))
+
+    def test_default_collection(self):
+        cf = self.load_text("default-collection foo\n")
+        self.assertEqual(cf.default_collection, "foo")
 
     def test_loadPath_no_such_file(self):
         path = os.path.join(here, "no-such-file")

@@ -128,6 +128,10 @@ Setting ``collect-dependencies`` to ``true`` causes dependencies to be
 added to the distribution if they can be located.  This is the same as
 using the **-c** option on the command line.
 
+The ``default-collection`` value is used to specify a resource that
+should be used as the top-level collection to package if no collection
+is specified on the command line.
+
 The ``include-support-code`` key is used to control whether **zpkg**
 bundles the support code along with the resulting distribution.  The
 value is a boolean, where the strings ``true`` and ``false`` can be

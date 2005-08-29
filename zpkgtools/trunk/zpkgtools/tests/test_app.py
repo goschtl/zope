@@ -419,18 +419,50 @@ class BuilderApplicationTestCase(unittest.TestCase):
         app = self.createApplication(
             ["-f", "-t", "-m", package_map, "package"])
         app.run()
-        # make sure the local tree is present and looks like one of
-        # our distributions:
-        self.assert_(os.path.isdir("package-0.0.0"))
-        self.assert_(os.path.isdir(os.path.join("package-0.0.0", "package")))
-        self.assert_(os.path.isdir(os.path.join("package-0.0.0", "Support")))
-        self.assert_(isfile("package-0.0.0", "setup.py"))
-        self.assert_(isfile("package-0.0.0", "setup.cfg"))
-        self.assert_(isfile("package-0.0.0", "MANIFEST"))
-        self.assert_(isfile("package-0.0.0", "Support", "MANIFEST"))
-        self.assert_(isfile("package-0.0.0", "Support", "README.txt"))
-        self.assert_(isfile("package-0.0.0", "Support", "setup.py"))
-        shutil.rmtree("package-0.0.0")
+        self.check_package_tree("package")
+
+    def test_building_default_collection(self):
+        # Test that a configuration's setting of a default collection
+        # is used to actually determine what's built.
+        config = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              "input", "package.conf")
+        package_map = self.createPackageMap()
+        app = self.createApplication(
+            ["-C", config, "-t", "-m", package_map])
+        app.run()
+        self.check_package_tree("package")
+
+    def test_building_default_collection_override(self):
+        # Test that a configuration's setting of a default collection
+        # can be overridden to actually determine what's built.
+        import logging
+        root_logger = logging.getLogger()
+        root_logger.addHandler(logging.StreamHandler())
+        config = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              "input", "package.conf")
+        package_map = self.createPackageMap()
+        app = self.createApplication(
+            ["-C", config, "-t", "-m", package_map, "collection-1"])
+        app.run()
+        self.check_package_tree("collection-1")
+
+    def check_package_tree(self, name, version="0.0.0"):
+        # Make sure the local tree is present and looks like one of
+        # our distributions; this relies on the tree being built
+        # unpacked (the -t option).
+        pd = "%s-%s" % (name, version)
+        self.assert_(os.path.isdir(pd))
+        try:
+            self.assert_(os.path.isdir(os.path.join(pd, name)))
+            self.assert_(os.path.isdir(os.path.join(pd, "Support")))
+            self.assert_(isfile(pd, "setup.py"))
+            self.assert_(isfile(pd, "setup.cfg"))
+            self.assert_(isfile(pd, "MANIFEST"))
+            self.assert_(isfile(pd, "Support", "MANIFEST"))
+            self.assert_(isfile(pd, "Support", "README.txt"))
+            self.assert_(isfile(pd, "Support", "setup.py"))
+        finally:
+            shutil.rmtree(pd)
 
     def test_adding_extra_support_code(self):
         package_map = self.createPackageMap()

@@ -59,6 +59,7 @@ class Schema(cfgparser.Schema, object):
               "include-support-code": boolean,
               "collect-dependencies": boolean,
               "build-application": boolean,
+              "default-collection": non_empty_string,
               }, ["resources"], None))
         self.base = urlutils.file_url(filename)
         self.filename = filename
@@ -105,6 +106,7 @@ class Configuration:
         self.location_maps = []
         self.locations = locationmap.LocationMap()
         self.include_support_code = True
+        self.default_collection = None
 
     def finalize(self):
         """Load the location maps into `locations`."""
@@ -169,6 +171,12 @@ class Configuration:
                 "build-application can be specified at most once")
         if cf.build_application:
             self.application = cf.build_application[0]
+        # default-collection
+        if len(cf.default_collection) > 1:
+            raise cfgparser.ConfigurationError(
+                "default-collection can be specified at most once")
+        if cf.default_collection:
+            self.default_collection = cf.default_collection[0]
 
 
 def defaultConfigurationPath():
