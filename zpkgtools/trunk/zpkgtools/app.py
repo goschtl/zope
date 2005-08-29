@@ -23,6 +23,7 @@ import tempfile
 
 import zpkgtools
 
+from zpkgsetup import cfgparser
 from zpkgsetup import loggingapi as logging
 from zpkgsetup import package
 from zpkgsetup import publication
@@ -63,19 +64,20 @@ class Application:
         location_maps = []
         for map in options.location_maps:
             if os.path.isfile(map):
-                map = os.path.abspath(map)
-                map = "file://" + urlutils.pathname2url(map)
+                map = urlutils.file_url(os.path.abspath(map))
             location_maps.append(map)
         cf.location_maps.extend(location_maps)
         path = options.configfile
         if path is None:
             path = config.defaultConfigurationPath()
-            if os.path.exists(path):
-                self.logger.debug("loading configuration file %s", path)
-                cf.loadPath(path)
-        elif path:
+            if not os.path.exists(path):
+                path = None
+        if path:
             self.logger.debug("loading configuration file %s", path)
-            cf.loadPath(path)
+            try:
+                cf.loadPath(path)
+            except cfgparser.ConfigurationError, e:
+                self.error(str(e))
         cf.finalize()
         self.locations = cf.locations
         if cf.collect_dependencies:
