@@ -163,6 +163,7 @@ class SetupContext:
         #
         parts = root.split("/")
         local_root = os.path.join(*parts)
+        self.package_dir[""] = root
         if os.path.isfile(os.path.join(local_root, package.PACKAGE_CONF)):
             # There's a SETUP.cfg at the top level; load it:
             pkginfo = package.loadCollectionInfo(
