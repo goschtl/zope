@@ -435,9 +435,6 @@ class BuilderApplicationTestCase(unittest.TestCase):
     def test_building_default_collection_override(self):
         # Test that a configuration's setting of a default collection
         # can be overridden to actually determine what's built.
-        import logging
-        root_logger = logging.getLogger()
-        root_logger.addHandler(logging.StreamHandler())
         config = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                               "input", "package.conf")
         package_map = self.createPackageMap()
