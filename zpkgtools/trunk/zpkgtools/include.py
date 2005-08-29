@@ -65,19 +65,16 @@ class InclusionSpecificationError(cfgparser.ConfigurationError,
         return s
 
 
-def load(sourcedir, url=None):
+def load(sourcedir):
     """Return the specifications for populating the distribution and
     collection directories.
 
     :param sourcedir: Directory we're loading the specifications for.
 
-    :param url: URL used to retrieve `sourcedir`; this is needed to
-      resolve repository: references.
-
     If there is not specification file, return empty specifications.
     """
     package_conf = os.path.join(sourcedir, PACKAGE_CONF)
-    schema = SpecificationSchema(sourcedir, package_conf, baseurl=url)
+    schema = SpecificationSchema(sourcedir, package_conf)
     if os.path.isfile(package_conf):
         f = open(package_conf, "rU")
         try:
@@ -119,13 +116,11 @@ def normalize_path(path, type, group):
         return np.replace("/", os.sep)
 
 
-def normalize_path_or_url(path, type, group, baseurl=None):
+def normalize_path_or_url(path, type, group):
     if ":" in path:
         scheme, rest = urllib.splittype(path)
         if len(scheme) != 1:
             # should normalize the URL, but skip that for now
-            if baseurl and scheme == "repository":
-                path = loader.join(baseurl, path)
             return path
     return normalize_path(path, type, group)
 
@@ -134,8 +129,7 @@ class SpecificationSchema(cfgparser.Schema):
     """Specialized schema that handles populating a set of Specifications.
     """
 
-    def __init__(self, source, filename, baseurl=None):
-        self.baseurl = baseurl
+    def __init__(self, source, filename):
         self.filename = filename
         self.source = source
 
@@ -198,8 +192,7 @@ class SpecificationSchema(cfgparser.Schema):
                     " in <load> section")
             # perhaps should make sure workfile and other don't refer
             # to the same file
-            other = normalize_path_or_url(other, "source", section.group,
-                                          self.baseurl)
+            other = normalize_path_or_url(other, "source", section.group)
         elif other:
             # workfile and other have a backward relationship for this:
             # <destination>

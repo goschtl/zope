@@ -374,7 +374,7 @@ class Component:
         self.pkginfo = None
         self.pubinfo = None
         self.source = self.ip.loader.load(self.url)
-        specs = include.load(self.source, url=self.url)
+        specs = include.load(self.source)
         if specs.loads:
             source = self.ip.loader.load_mutable_copy(self.url)
             if source != self.source:
