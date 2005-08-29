@@ -1,0 +1,31 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <!-- This is only a sample configure.zcml file
+       See README.txt in zope.app.skintools for more 
+       information about the skintools concept.
+       --> 
+
+  <!-- pagelet defining the box data -->
+  <pagelet
+      name="contextmenu"
+      for="*"
+      slot="the slot used in your skin"
+      permission="zope.ManageContent"
+      template="contextmenu.pt"
+      layer="the layer of your skin"
+      weight="2"
+      />
+
+  <!-- pagelet defining the layout -->
+  <pagelet
+      name="contextmenu_layout"
+      for="*"
+      slot="zope.app.skintools.contextmenu.IContextMenuLayout"
+      permission="zope.ManageContent"
+      template="contextmenu_layout.pt"
+      />
+
+</configure>
