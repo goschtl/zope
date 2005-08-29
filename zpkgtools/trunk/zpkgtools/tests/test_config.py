@@ -132,6 +132,26 @@ class ConfigTestCase(unittest.TestCase):
         finally:
             os.unlink(path)
 
+    def test_nested_resources(self):
+        cf = config.Configuration()
+        fd, path = tempfile.mkstemp(".conf", text=True)
+        f = os.fdopen(fd, "w+")
+        f.write(
+            "<resources>\n"
+            "  PKG1  svn://svn.example.net/repos/pkg1/trunk\n"
+            "  <resources>\n"
+            "    pkg2  svn://svn.example.net/repos/proj/trunk/src/pkg2\n"
+            "  </resources>\n"
+            "</resources>\n")
+        f.close()
+        where = os.path.dirname(path)
+        whereurl = urlutils.file_url(where)
+        try:
+            self.assertRaises(cfgparser.ConfigurationError,
+                              cf.loadPath, path)
+        finally:
+            os.unlink(path)
+
     def load_text(self, text, path=None, basedir=None):
         if path is None:
             if basedir is None:

@@ -69,7 +69,7 @@ class Schema(cfgparser.Schema, object):
         if typename != "resources":
             raise cfgparser.ConfigurationError(
                 "only <resources> sections are allowed")
-        if isinstance(parent, locationmap.LocationMap):
+        if isinstance(parent, locationmap.MapLoader):
             raise cfgparser.ConfigurationError(
                 "<resources> sections may not be nested")
         return locationmap.MapLoader(self.base, self.filename, self.locations)
