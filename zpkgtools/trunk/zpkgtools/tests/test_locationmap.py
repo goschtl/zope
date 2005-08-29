@@ -87,9 +87,9 @@ class LoadTestCase(unittest.TestCase):
         url = urlutils.file_url(fn)
         map = locationmap.fromPathOrUrl(url)
         base = urlutils.file_url(dirname)
-        self.assertEqual(map["collection:collection-1"],
+        self.assertEqual(map["collection-1"],
                          base + "/collection-1/")
-        self.assertEqual(map["collection:collection-2"],
+        self.assertEqual(map["collection-2"],
                          base + "/collection-2/")
 
     def test_fromPathOrUrl_with_path(self):
@@ -105,9 +105,9 @@ class LoadTestCase(unittest.TestCase):
             # check the map:
             map = locationmap.fromPathOrUrl(output)
             base = urlutils.file_url(dirpath)
-            self.assertEqual(map["collection:collection-1"],
+            self.assertEqual(map["collection-1"],
                              base + "/collection-1/")
-            self.assertEqual(map["collection:collection-2"],
+            self.assertEqual(map["collection-2"],
                              base + "/collection-2/")
         finally:
             shutil.rmtree(dirpath)
