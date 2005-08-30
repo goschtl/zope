@@ -54,7 +54,7 @@ def timezone(zone):
     try:
         module = __import__(module_name, globals(), locals())
     except ImportError:
-        raise KeyError, zone
+        raise KeyError(zone)
     rv = module
     for bit in zone_bits[1:]:
         rv = getattr(rv, bit)
@@ -102,13 +102,13 @@ class UTC(datetime.tzinfo):
     def localize(self, dt, is_dst=False):
         '''Convert naive time to local time'''
         if dt.tzinfo is not None:
-            raise ValueError, 'Not naive datetime (tzinfo is already set)'
+            raise ValueError('Not naive datetime (tzinfo is already set)')
         return dt.replace(tzinfo=self)
 
     def normalize(self, dt, is_dst=False):
         '''Correct the timezone information on the given datetime'''
         if dt.tzinfo is None:
-            raise ValueError, 'Naive time - no tzinfo set'
+            raise ValueError('Naive time - no tzinfo set')
         return dt.replace(tzinfo=self)
 
     def __repr__(self):

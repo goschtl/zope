@@ -131,7 +131,7 @@ class PersistentModuleManager(Persistent):
     def new(self, name, source):
         """Return a new module from a name and source text."""
         if self._module is not None:
-            raise ValueError, "module already exists"
+            raise ValueError("module already exists")
         if "." in name:
             parent = self._new_package(name)
         else:
@@ -179,7 +179,7 @@ class PersistentModuleManager(Persistent):
         parent = None
         for i in range(len(parts)):
             if parts[i] == "__init__":
-                raise ValueError, "__init__ can not be a package"
+                raise ValueError("__init__ can not be a package")
             pname = ".".join(parts[:i+1])
             package = self._registry.findModule(pname)
             if package is None:
@@ -188,7 +188,7 @@ class PersistentModuleManager(Persistent):
                 if parent is not None:
                     setattr(parent, parts[i], package)
             elif not isinstance(package, PersistentPackage):
-                raise ValueError, "%s is module" % pname
+                raise ValueError("%s is module" % pname)
             parent = package
         return parent
 
@@ -302,7 +302,7 @@ class PersistentModuleRegistry(Persistent):
         if name in self._modules:
             # The name is already in use.
             # XXX should raise a better error
-            raise ValueError, name
+            raise ValueError(name)
         self._p_changed = True
         self._modules[name] = module
 

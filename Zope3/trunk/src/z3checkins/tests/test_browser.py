@@ -733,7 +733,7 @@ def diff(a, b):
         elif tag == 'equal':
             dump(' ', a, alo, ahi)
         else:
-            raise ValueError, 'unknown tag ' + `tag`
+            raise ValueError('unknown tag ' + `tag`)
     return "\n".join(diff)
 
 

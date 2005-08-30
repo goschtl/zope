@@ -71,12 +71,12 @@ class ExtClassDescr:
             self.clsset(val)
         else:
             if self.instdescr is None:
-                raise AttributeError, self.name
+                raise AttributeError(self.name)
             return self.instdescr.__set__(obj, val)
 
     def __delete__(self, obj):
         if self.instdescr is None:
-            raise AttributeError, self.name
+            raise AttributeError(self.name)
         return self.instdescr.__delete__(obj)
 
     # subclass should override

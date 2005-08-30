@@ -77,6 +77,6 @@ class WikiPageTraversable:
         if subobj is _marker:
             subobj = getattr(self._page, name, _marker)
             if subobj is _marker:
-                raise TraversalError, name
+                raise TraversalError(name)
 
         return subobj

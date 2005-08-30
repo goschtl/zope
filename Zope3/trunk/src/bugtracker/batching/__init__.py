@@ -27,7 +27,7 @@ class Batch(object):
         if len(list) == 0:
             self.start = -1
         elif start >= len(list):
-            raise IndexError, 'start index key out of range'
+            raise IndexError('start index key out of range')
         self.size = size
         self.trueSize = size
         if start+size >= len(list):
@@ -39,7 +39,7 @@ class Batch(object):
 
     def __getitem__(self, key):
         if key >= self.trueSize:
-            raise IndexError, 'batch index out of range'
+            raise IndexError('batch index out of range')
         return self.list[self.start+key]
 
     def __iter__(self): 

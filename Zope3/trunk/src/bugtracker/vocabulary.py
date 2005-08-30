@@ -100,7 +100,7 @@ class ManagableVocabulary(object):
         if value == self.default.value:
             error_msg = _("Cannot delete default value '${value}'.")
             error_msg.mapping = {'value': value}
-            raise ValueError, error_msg
+            raise ValueError(error_msg)
         del self.annotations[self.key][value]
 
     def _getRealContext(self, context):
@@ -124,7 +124,7 @@ class ManagableVocabulary(object):
             error_msg = _("The value '${value}' was not found in the "
                           "vocabulary")
             error_msg.mapping = {'value': value}
-            raise ValueError, error_msg
+            raise ValueError(error_msg)
         self.annotations[self.key+'/default'] = value
 
     default = property(getDefault, setDefault)
@@ -246,9 +246,8 @@ class VocabularyPropertySetter(object):
         try:
             vocab = registry.get(instance, self._vocab_name)
             if value not in vocab:
-                raise ValueError, \
-                      "The value '%s' was not found in vocabulary '%s'" %(
-                    value, self._vocab_name)
+                raise ValueError("The value '%s' was not found in vocabulary "
+                                 "'%s'" % (value, self._vocab_name))
         except TypeError:
             # We cannot assume that the bug will always have a context to
             # find the vocabulary data. In these cases, we just skip the

@@ -84,13 +84,13 @@ class StaticTzInfo(BaseTzInfo):
     def localize(self, dt, is_dst=False):
         '''Convert naive time to local time'''
         if dt.tzinfo is not None:
-            raise ValueError, 'Not naive datetime (tzinfo is already set)'
+            raise ValueError('Not naive datetime (tzinfo is already set)')
         return dt.replace(tzinfo=self)
 
     def normalize(self, dt, is_dst=False):
         '''Correct the timezone information on the given datetime'''
         if dt.tzinfo is None:
-            raise ValueError, 'Naive time - no tzinfo set'
+            raise ValueError('Naive time - no tzinfo set')
         return dt.replace(tzinfo=self)
 
     def __repr__(self):
@@ -177,7 +177,7 @@ class DstTzInfo(BaseTzInfo):
 
         '''
         if dt.tzinfo is None:
-            raise ValueError, 'Naive time - no tzinfo set'
+            raise ValueError('Naive time - no tzinfo set')
 
         # Convert dt in localtime to UTC
         offset = dt.tzinfo._utcoffset
@@ -229,7 +229,7 @@ class DstTzInfo(BaseTzInfo):
 
         '''
         if dt.tzinfo is not None:
-            raise ValueError, 'Not naive datetime (tzinfo is already set)'
+            raise ValueError('Not naive datetime (tzinfo is already set)')
 
         # Find the possibly correct timezones. We probably just have one,
         # but we might end up with two if we are in the end-of-DST

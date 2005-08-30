@@ -169,7 +169,7 @@ class BugMethods(MethodPublisher):
         if encoding == 'base64':
             attach.data = base64.decodestring(data)
         else:
-            raise UnknownEncoding, 'The encoding is not known: %s' %encoding
+            raise UnknownEncoding('The encoding is not known: %s' % encoding)
         attach = contained(attach, self.context, name=name)
         self.context[name] = attach
         return zapi.name(attach)
@@ -201,7 +201,7 @@ class AttachmentMethods(MethodPublisher):
         if encoding == 'base64':
             return base64.encodestring(self.context.data)
         else:
-            raise UnknownEncoding, 'The encoding is not known: %s' %encoding 
+            raise UnknownEncoding('The encoding is not known: %s' % encoding)
 
     def setData(self, data, encoding='base64'):
         """Set the data of the attachment converting from the specified
@@ -209,4 +209,4 @@ class AttachmentMethods(MethodPublisher):
         if encoding == 'base64':
             self.context.data = base64.decodestring(data)
         else:
-            raise UnknownEncoding, 'The encoding is not known: %s' %encoding 
+            raise UnknownEncoding('The encoding is not known: %s' % encoding)

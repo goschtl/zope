@@ -58,7 +58,7 @@ def textdiff(old_text, new_text, verbose=1):
         elif tag == 'equal':
             pass
         else:
-            raise ValueError, 'unknown tag ' + `tag`
+            raise ValueError('unknown tag ' + `tag`)
 
     return '\n' + join(r, '\n')
 

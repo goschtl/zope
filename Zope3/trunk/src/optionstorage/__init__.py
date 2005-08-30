@@ -76,7 +76,7 @@ class Table(object):
         marker = object()
         cell = self.queryCell(rowkey, colkey, marker)
         if cell is marker:
-            raise KeyError, "Invalid row/column pair"
+            raise KeyError("Invalid row/column pair")
         return cell
 
     def getRow(self, rowkey):
@@ -197,7 +197,7 @@ class OptionStorageProperty(object):
 
     def __set__(self, object, value):
         if self._readonly:
-            raise AttributeError, "Attribute '%s' is read-only" % self._name
+            raise AttributeError("Attribute '%s' is read-only" % self._name)
         if type(value) is not list:
             values = [value]
         else:
@@ -207,8 +207,8 @@ class OptionStorageProperty(object):
             keys = dict.getKeys()
             invalid = [x for x in values if x not in keys]
             if invalid:
-                raise ValueError, "Invalid values: %s" % \
-                                  ", ".join(map(repr, invalid))
+                raise ValueError("Invalid values: %s" % ", ".join(
+                    map(repr, invalid)))
         if self._islist:
             value = values
         setattr(object, self._name, value)

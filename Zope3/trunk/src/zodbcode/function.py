@@ -90,7 +90,7 @@ class PersistentFunction(Persistent):
         # principle this code be fixed with C code, but it should be
         # done in Python, not Zope.
         if func.func_code.co_freevars:
-            raise TypeError, "persistent function can not have free variables"
+            raise TypeError("persistent function can not have free variables")
 
     def __repr__(self):
         return "<PersistentFunction %s.%s>" % (self._pf_module.__name__,
@@ -104,7 +104,7 @@ class PersistentFunction(Persistent):
         # If it wasn't found in __dict__, then it must be a function
         # attribute.
         if attr == '_pf_func':
-            raise AttributeError, attr
+            raise AttributeError(attr)
         return getattr(self._pf_func, attr)
 
     def __setattr__(self, attr, value):
