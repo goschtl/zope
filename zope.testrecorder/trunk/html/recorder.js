@@ -271,7 +271,7 @@ TestRecorder.TestCase.prototype.append = function(o) {
 }
 
 TestRecorder.TestCase.prototype.peek = function() {
-  return this.items[this.index - 1];
+  return this.items[this.items.length - 1];
 }
 
 
@@ -305,7 +305,7 @@ TestRecorder.EventTypes.CheckDisabled = 13;
 TestRecorder.EventTypes.CheckSelectValue = 14;
 TestRecorder.EventTypes.CheckSelectOptions = 15;
 TestRecorder.EventTypes.CheckImageSrc = 16;
-
+TestRecorder.EventTypes.PageLoad = 17;
 
 TestRecorder.ElementInfo = function(element) {
   this.action = element.action;
@@ -313,6 +313,7 @@ TestRecorder.ElementInfo = function(element) {
   this.href = element.href;
   this.tagName = element.tagName;
   this.value = element.value;
+  this.checked = element.checked;
   this.name = element.name;
   this.type = element.type;
   if (this.type)
@@ -326,6 +327,51 @@ TestRecorder.ElementInfo = function(element) {
       this.options[i] = {text:o.text, value:o.value};
     }
   }
+  this.label = this.findLabelText(element);
+}
+
+TestRecorder.ElementInfo.prototype.findLabelText = function(element) {
+  var label = this.findContainingLabel(element)
+  var text;
+//  alert(label);
+  if (!label) {
+    label = this.findReferencingLabel(element);
+//    alert(label);
+  }
+  if (label) {
+    text = label.innerHTML;
+    // remove newlines
+    text = text.replace('\n', ' ');
+    // remove tags
+    text = text.replace(/<[^>]*>/g, ' ');
+    // remove non-alphanumeric prefixes or suffixes
+    text = text.replace(/^\W*/mg, '')
+    text = text.replace(/\W*$/mg, '')
+    // remove extra whitespace
+    text = text.replace(/^\s*/, '').replace(/\s*$/, '').replace(/\s+/g, ' ');
+  }
+
+  return text;
+}
+
+TestRecorder.ElementInfo.prototype.findReferencingLabel = function(element) {
+  var labels = top.frames[1].document.getElementsByTagName('label')
+  for (var i = 0; i < labels.length; i++) {
+    if (labels[i].attributes['for'].value == element.id)
+        return labels[i]
+  }
+}
+
+TestRecorder.ElementInfo.prototype.findContainingLabel = function(element) {
+  var parent = element.parentNode;
+  if (!parent)
+    return undefined;
+//  alert(parent);
+//  alert(parent.tagName);
+  if (parent.tagName && parent.tagName.toLowerCase() == 'label')
+    return parent;
+  else
+    return this.findContainingLabel(parent);
 }
 
 TestRecorder.DocumentEvent = function(type, target) {
@@ -348,6 +394,13 @@ TestRecorder.CommentEvent = function(text) {
 TestRecorder.OpenURLEvent = function(url) {
   this.type = TestRecorder.EventTypes.OpenUrl;
   this.url = url;
+  this.viaBack = back
+}
+
+TestRecorder.PageLoadEvent = function(url) {
+  this.type = TestRecorder.EventTypes.OpenUrl;
+  this.url = url;
+  this.viaBack = back
 }
 
 
@@ -702,6 +755,14 @@ TestRecorder.Recorder.prototype.open = function(url) {
   this.log("open url: " + url);
 }
 
+TestRecorder.Recorder.prototype.pageLoad = function() {
+  var doc = recorder.window.document;
+  var et = TestRecorder.EventTypes;
+  var e = new TestRecorder.DocumentEvent(et.PageLoad, doc);
+  this.testcase.append(e);
+  this.log("page loaded url: " + e.url);
+}
+
 TestRecorder.Recorder.prototype.captureEvents = function() {
   var wnd = this.window;
   TestRecorder.Browser.captureEvent(wnd, "contextmenu", this.oncontextmenu);
@@ -772,6 +833,20 @@ TestRecorder.Recorder.prototype.onpageload = function() {
   if (this.active) {
     recorder.captureEvents();
   }
+  // if a new page has loaded, but there doesn't seem to be a reason why, then
+  // we need to record the fact or the information will be lost
+  if (this.testcase.peek()) {
+    var last_event_type = this.testcase.peek().type;
+    if (last_event_type != TestRecorder.EventTypes.OpenUrl && 
+        last_event_type != TestRecorder.EventTypes.Click && 
+        last_event_type != TestRecorder.EventTypes.Submit) {
+      this.open(this.window.location.toString());
+    }
+  }
+
+  // record the fact that a page load happened
+  if (this.window)
+    this.pageLoad();
 }
 
 TestRecorder.Recorder.prototype.onchange = function(e) {
@@ -857,8 +932,8 @@ TestRecorder.Recorder.prototype.onkeypress = function(e) {
   return true;
 }
 
-TestRecorder.Recorder.prototype.strip = function(s) {
-  return s.replace('/^\s*/', "").replace('/\s*$/', "");
+TestRecorder.Recorder.prototype.strip = function(s) { 
+  return s.replace('\n', ' ').replace(/^\s*/, "").replace(/\s*$/, "");
 }
 
 TestRecorder.Recorder.prototype.log = function(text) {
@@ -867,6 +942,3 @@ TestRecorder.Recorder.prototype.log = function(text) {
     this.logfunc(text);
   }
 }
-
-
-
