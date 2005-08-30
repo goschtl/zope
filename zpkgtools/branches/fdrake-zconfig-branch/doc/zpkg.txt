@@ -136,10 +136,10 @@ The ``include-support-code`` key is used to control whether **zpkg**
 bundles the support code along with the resulting distribution.  The
 value is a boolean, where the strings ``true`` and ``false`` can be
 used in the configuration file.  If true (the default), copies of the
-``zpkgsetup`` package and any additionally configured support packages
-will be included in the distribution (less the test code).  If false,
-these packages will be assumed to be available for import on target
-systems.
+``zpkgsetup`` and ``ZConfig`` packages and any additionally configured
+support packages will be included in the distribution (less the test
+code).  If false, the right versions of these packages will be assumed
+to be available for import on target systems.
 
 The value for ``resource-map`` is a path or URL (including
 ``cvs:`` URLs) for a file that defines the map.  Relative paths are
@@ -251,15 +251,14 @@ Support Packages
 ----------------
 
 **zpkg** creates distributions which require some additional support
-packages to operate properly.  These packages are located in much the
-same way that other packages are located: the resource map is
-consulted to determine their location.  One difference is that if the
-resource map does not define the appropriate resources, a built-in
-fallback location will be used.
+packages to operate properly.  These packages are located in a similar
+way to packages that go into the distribution.  An internal map is
+used first, followed by the resource map based on the configuration
+files.
 
-The fallback location for the ``zpkgsetup`` package is the copy
-provided as part of the running **zpkg**; a location only needs to be
-specified if a different version should be used.  (This seems highly
-unlikely.)
+The sources for the ``zpkgsetup`` and ``ZConfig`` packages are the
+copies provided as part of the running **zpkg**; a location only needs
+to be specified for additional packages that should appear in the
+support directory.
 
 .. include:: links.rst

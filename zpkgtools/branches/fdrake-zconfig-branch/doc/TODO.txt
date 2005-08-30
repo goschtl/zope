@@ -20,6 +20,10 @@ Things that need to be done
         Second svn://svn.example.org/repos/main/Second/tags/*/
       </resources>
 
+  - It should be possible to specify a separate resource map for
+    support code.  This would allow the packaging and the distributed
+    code to remain completely independent.
+
   - We should have a way to express dependence on particular versions
     of Python, and a way to say which is preferred.  (This can be used
     when building an "application" distribution since that has some

@@ -292,16 +292,11 @@ class BuilderApplication(Application):
             # have the package as a side effect of something else
             return
         source = None
-        if name in self.locations:
-            url = self.locations[name]
-        else:
-            url = fallback
-            if not url:
-                self.logger.warning("resource %s not configured;"
-                                    " no fallback URL" % name)
-                return
-            self.logger.info("resource %s not configured;"
-                             " using fallback URL" % name)
+        url = fallback or self.locations.get(name)
+        if not url:
+            self.logger.warning("resource %s not configured;"
+                                " no location known" % name)
+            return
         if source is None:
             self.logger.debug("loading resource '%s' from %s",
                               name, url)
