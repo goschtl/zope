@@ -84,7 +84,7 @@ def collection_section(section):
                 excludes.append(k)
                 continue
             if v:
-                includes[k] = v
+                includes[v] = k
             else:
                 L = includes.setdefault(None, [])
                 L.append(k)
@@ -158,18 +158,23 @@ def load(sourcedir):
         cf, _ = cfgparser.loadConfig(get_schema(), package_conf)
         config = PackageConstruction(sourcedir, package_conf)
         if cf.collection is not None:
-            if cf.collection.excludes:
-                # XXX should make sure PACKAGE_CONF isn't already excluded
-                cf.collection.excludes.append(PACKAGE_CONF)
-            elif not cf.collection.includes:
-                # Nothing included or excluded; simply exclude PACKAGE_CONF:
-                cf.collection.excludes.append(PACKAGE_CONF)
             config.collection.excludes = cf.collection.excludes
             config.collection.includes = cf.collection.includes
         if cf.distribution is not None:
             config.distribution.includes = cf.distribution.includes
         if cf.loads is not None:
             config.loads.includes = cf.loads.includes
+
+        # Now that the configuration object is populated and we know
+        # that the PACKAGE_CONF file exists, make sure it isn't copied
+        # if there's nothing specified in the <collection> section.
+        #
+        if config.collection.excludes:
+            # XXX should make sure PACKAGE_CONF isn't already excluded
+            config.collection.excludes.append(PACKAGE_CONF)
+        elif not config.collection.includes:
+            # Nothing included or excluded; simply exclude PACKAGE_CONF:
+            config.collection.excludes.append(PACKAGE_CONF)
     else:
         config = PackageConstruction(sourcedir, None)
     return config
