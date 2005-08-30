@@ -16,7 +16,8 @@ from ZConfig import ConfigurationError
 
 # This is new:
 
-def cachedSchemaLoader(filename="schema.xml", package=None):
+def cachedSchemaLoader(filename="schema.xml", package=None,
+                       loader_factory=None):
     if package is None:
         frame = sys._getframe(1)
         __path__ = _get_path_from_frame(frame)
@@ -26,6 +27,8 @@ def cachedSchemaLoader(filename="schema.xml", package=None):
         __import__(package)
         __path__ = sys.modules[package].__path__
 
+    if loader_factory is None:
+        loader_factory = SchemaLoader
     cache = []
     def loadSchemaCache():
         if cache:
@@ -33,7 +36,7 @@ def cachedSchemaLoader(filename="schema.xml", package=None):
         for p in __path__:
             path = os.path.join(p, filename)
             if os.path.isfile(path):
-                schema = loadSchema(path)
+                schema = loader_factory().loadURL(path)
                 cache.append(schema)
                 return schema
         raise ValueError("could not locate schema %r for package %r (path=%r)"
@@ -62,12 +65,6 @@ def _get_path_from_frame(frame):
 
 
 
-
-def loadSchema(url):
-    return SchemaLoader().loadURL(url)
-
-def loadSchemaFile(file, url=None):
-    return SchemaLoader().loadFile(file, url)
 
 def loadConfig(schema, url, overrides=()):
     return _get_config_loader(schema, overrides).loadURL(url)
