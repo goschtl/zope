@@ -1,0 +1,12 @@
+PluginRegistry Product Changelog
+================================
+
+  After PluginRegistry-1.0.1
+
+    - Repaired product directory computation.
+
+  PluginRegistry-1.0.1 (2004/04/28)
+
+    - CVS tag, 'PluginRegistry-1_0'.
+
+    - Initial public release
