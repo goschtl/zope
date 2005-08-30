@@ -77,5 +77,5 @@ class ZopeTalesAPI(object):
     def size(self):
         a = ISized(self.context, None)
         if a is None:
-            raise AttributeError('created')
+            raise AttributeError('size')
         return a.sizeForDisplay()
