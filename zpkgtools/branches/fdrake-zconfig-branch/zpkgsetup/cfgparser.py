@@ -131,21 +131,5 @@ class ExtendedConfigLoader(ConfigLoaderMixin,
 
 class OptionBag(ZConfig.cmdline.OptionBag):
 
-    def get_section_info(self, type, name):
-        L = []  # what pertains to the child section
-        R = []  # what we keep
-        for item in self.sectitems:
-            optpath, val, pos = item
-            s = optpath[0]
-            bk = self.basic_key(s, pos)
-            if name and s == name:
-                L.append((optpath[1:], val, pos))
-            elif bk == type:
-                L.append((optpath[1:], val, pos))
-            else:
-                R.append(item)
-        if L:
-            self.sectitems[:] = R
-            return OptionBag(self.schema, self.schema.gettype(type), L)
-        else:
-            return None
+    def _normalize_case(self, string):
+        return string
