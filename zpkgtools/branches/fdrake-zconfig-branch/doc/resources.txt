@@ -1,0 +1,79 @@
+==================
+Resource Locations
+==================
+
+.. This is a reStructuredText document.
+.. include:: links.rst
+
+Overview
+--------
+
+The |zpkg|_ tool uses URLs to identify external resources.  In most
+cases, any URL type supported by Python's ``urllib2`` module is
+supported if the identified resource is a simple file.  (Directories
+are *not* handled well via HTTP or FTP in the current implementation,
+but that's considered a quality-of-implementation issue that can be
+dealt with if needed.)
+
+A URL scheme has been defined specifically for use with this tool.
+The ``cvs:`` scheme identifies a resource stored in a CVS repository
+(either local or remote).
+
+Subversion is supported using the ``svn:``, ``svn+ssh:`` (as well as
+Subversion's general ``svn+special:`` schemes), and
+``file:`` schemes.  |zpkg|_ is able to determine whether a ``file:``
+URL refers to a Subversion repository or refers to a normal
+filesystem path and will handle either appropriately.
+
+
+Absolute Locations and the ``cvs:`` Scheme
+------------------------------------------
+
+The ``cvs:`` scheme can be used to identify any absolute path on any
+branch or tag within a CVS repository.  It contains the following
+components, separated by colons:
+
+- scheme identifier (always ``cvs``)
+- host part
+- host-relative cvs root
+- path
+- tag
+
+The host part can include optional username, password, and connection
+type parts::
+
+  [ username [ ":" password ] "@" ] hostname [ ":" connection-type ]
+
+This is very similar to the format used for FTP or HTTP with Basic
+authentication, where connection-type replaces the port number.
+
+XXX We should actually still support a port number, at least for
+``pserver`` connections.  The default port for ``pserver`` is 2041.
+
+The path may be omitted (left empty) to refer to the entire
+repository, including the top-level `CVSROOT/` directory.
+
+The tag part, including the colon used to separate it from the rest,
+can be omitted.  The tag can specify a symbolic tag, a branch tag, or
+a revision number.
+
+Some examples::
+
+  cvs:///usr/local/cvsroot:module
+
+  cvs://cvs.example.org:ext/cvs-repository:myproject/README.txt:1.2
+
+  cvs://user@pw:cvs.example.org:pserver/cvsroot/module/doc/:r1-1-maint-branch
+
+
+Supporting Other Revision Control Systems
+-----------------------------------------
+
+Currently, CVS is supported generally, and Subversion is supported in
+a somewhat limited fashion.
+
+Support for additional systems hinges on creating new URL schemes for
+each system.
+
+Most of the time, it makes more sense to use file: URLs to reference
+files in a checkout on the local system.
