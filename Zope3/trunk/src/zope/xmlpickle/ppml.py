@@ -284,7 +284,7 @@ class CloseWrapper(Wrapper):
 
 class Collection(Base):
     def value(self, write, indent):
-        raise AttributeError, 'value'
+        raise AttributeError('value')
 
     def output(self, write, indent=0):
         if self.id:

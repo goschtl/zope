@@ -118,10 +118,10 @@ class ZopeContextBase(Context):
 
     def evaluateCode(self, lang, code):
         if not self.evaluateInlineCode:
-            raise InlineCodeError, \
+            raise InlineCodeError(
                   _('Inline Code Evaluation is deactivated, which means that '
                     'you cannot have inline code snippets in your Page '
-                    'Template. Activate Inline Code Evaluation and try again.')
+                    'Template. Activate Inline Code Evaluation and try again.'))
 
         # TODO This is only needed when self.evaluateInlineCode is true,
         # so should only be needed for zope.app.pythonpage.
@@ -130,7 +130,7 @@ class ZopeContextBase(Context):
         if interpreter is None:
             error = _('No interpreter named "${lang_name}" was found.')
             error.mapping = {'lang_name': lang}
-            raise InlineCodeError, error
+            raise InlineCodeError(error)
 
         globals = self.vars.copy()
         result = interpreter.evaluateRawCode(code, globals)
@@ -198,7 +198,7 @@ class AdapterNamespaces(object):
                 try:
                     return zapi.getAdapter(object, IPathAdapter, name)
                 except ComponentLookupError:
-                    raise KeyError, name
+                    raise KeyError(name)
 
             self.namespaces[name] = namespace
         return namespace

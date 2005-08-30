@@ -76,7 +76,7 @@ class XMLDAVWidget(DAVWidget):
         return self._data
 
     def __str__(self):
-        raise ValueError, "xmldavwidget is not a string."
+        raise ValueError("xmldavwidget is not a string.")
 
     def __call__(self):
         return self._data

@@ -193,7 +193,7 @@ class _adapts_descr(object):
     def __get__(self, inst, cls):
         if inst is None:
             return self.interfaces
-        raise AttributeError, '__component_adapts__'
+        raise AttributeError('__component_adapts__')
 
 class adapter:
 

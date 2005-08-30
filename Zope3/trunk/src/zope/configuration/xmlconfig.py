@@ -222,9 +222,8 @@ class ConfigurationHandler(ContentHandler):
         except:
             if self.testing:
                 raise
-            raise ZopeXMLConfigurationError, (
-                info, sys.exc_info()[0], sys.exc_info()[1]
-                ), sys.exc_info()[2]
+            raise ZopeXMLConfigurationError(info, sys.exc_info()[0],
+                sys.exc_info()[1]), None, sys.exc_info()[2]
 
         self.context.setInfo(info)
 
@@ -327,9 +326,8 @@ class ConfigurationHandler(ContentHandler):
         except:
             if self.testing:
                 raise
-            raise ZopeXMLConfigurationError, (
-                info, sys.exc_info()[0], sys.exc_info()[1]
-                ), sys.exc_info()[2]
+            raise ZopeXMLConfigurationError(info, sys.exc_info()[0],
+                sys.exc_info()[1]), None, sys.exc_info()[2]
 
 
 def processxmlfile(file, context, testing=False):
@@ -345,7 +343,7 @@ def processxmlfile(file, context, testing=False):
     try:
         parser.parse(src)
     except SAXParseException:
-        raise ZopeSAXParseException, sys.exc_info()[1], sys.exc_info()[2]
+        raise ZopeSAXParseException(sys.exc_info()[1]), None, sys.exc_info()[2]
 
 
 def openInOrPlain(filename):

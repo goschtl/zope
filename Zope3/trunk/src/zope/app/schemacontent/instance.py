@@ -83,7 +83,7 @@ class ContentComponentInstance(Persistent):
         if is_schema_field:
             super(ContentComponentInstance, self).__setattr__(key, value)
         else:
-            raise AttributeError, 'Attribute not available'
+            raise AttributeError('Attribute not available')
 
 
     def getSchema(self):

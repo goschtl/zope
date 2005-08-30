@@ -40,13 +40,13 @@ class PrincipalTerms(object):
 
     def getTerm(self, principal_id):
         if principal_id not in self.context:
-            raise LookupError, principal_id
+            raise LookupError(principal_id)
 
         auth = zapi.principals()
         principal = auth.getPrincipal(principal_id)
 
         if principal is None:
-            raise LookupError, principal_id
+            raise LookupError(principal_id)
 
         return Term(principal_id.encode('base64').strip().replace('=', '_'),
                     principal.title)

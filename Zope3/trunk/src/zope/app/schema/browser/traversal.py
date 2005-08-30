@@ -69,6 +69,6 @@ class SchemaFieldTraversable(object):
     def traverse(self, name, furtherPath):
         subobj = self._context.get(name, _marker)
         if subobj is _marker:
-            raise TraversalError, name
+            raise TraversalError(name)
 
         return subobj

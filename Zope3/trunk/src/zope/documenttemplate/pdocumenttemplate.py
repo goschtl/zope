@@ -57,7 +57,7 @@ class InstanceDict:
         try:
             r = getattr(inst, key)
         except AttributeError:
-            raise KeyError, key
+            raise KeyError(key)
 
         self.cache[key] = r
         return r
@@ -77,7 +77,7 @@ class MultiMapping:
                 return d[key]
             except (KeyError, AttributeError):
                 pass
-        raise KeyError, key
+        raise KeyError(key)
 
     def push(self,d):
         self.dicts.insert(0, d)
@@ -103,7 +103,7 @@ class DictInstance:
         try:
             return self.__d[name]
         except KeyError:
-            raise AttributeError, name
+            raise AttributeError(name)
 
 
 class TemplateDict:
@@ -186,19 +186,19 @@ class TemplateDict:
         elif len(args) == 2:
             iStart, iEnd, iStep = iFirst, args[0], args[1]
         else:
-            raise AttributeError, u'range() requires 1-3 int arguments'
+            raise AttributeError(u'range() requires 1-3 int arguments')
         if iStep == 0:
-            raise ValueError, u'zero step for range()'
+            raise ValueError(u'zero step for range()')
         iLen = int((iEnd - iStart) / iStep)
         if iLen < 0:
             iLen = 0
         if iLen >= RANGELIMIT:
-            raise ValueError, u'range() too large'
+            raise ValueError(u'range() too large')
         return range(iStart, iEnd, iStep)
 
     def pow(self, x, y, z):
         if not z:
-            raise ValueError, 'pow(x, y, z) with z==0'
+            raise ValueError('pow(x, y, z) with z==0')
         return pow(x,y,z)
 
     def test(self, *args):
@@ -298,7 +298,7 @@ def render_blocks(blocks, md):
                             except KeyError, v:
                                 v = v[0]
                                 if n != v:
-                                    raise KeyError, v, sys.exc_traceback
+                                    raise KeyError(v), None, sys.exc_traceback
                                 cond=None
                         else:
                             cond = cond(md)

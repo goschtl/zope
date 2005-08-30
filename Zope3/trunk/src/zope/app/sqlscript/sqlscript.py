@@ -133,9 +133,8 @@ class SQLScript(Persistent, Contained):
         try:
             connection = self.getConnection()
         except KeyError:
-            raise AttributeError, (
-                "The database connection '%s' cannot be found." % (
-                self.connectionName))
+            raise AttributeError("The database connection '%s' cannot be "
+                                 "found." % (self.connectionName))
 
         query = apply(self.template, (), arg_values)
         cache = getCacheForObject(self)
@@ -189,7 +188,7 @@ def parseArguments(text, result=None):
                 # We are done parsing
                 if not text or not text.strip():
                     return Arguments(result)
-                raise InvalidParameter, text
+                raise InvalidParameter(text)
 
     # Find type of argument (int, float, string, ...)
     lt = name.find(':')
@@ -198,7 +197,7 @@ def parseArguments(text, result=None):
             value['type'] = name[lt+1:]
             name = name[:lt]
         else:
-            raise InvalidParameter, text
+            raise InvalidParameter(text)
 
     result[name] = value
 

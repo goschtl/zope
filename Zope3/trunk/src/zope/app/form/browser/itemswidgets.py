@@ -128,8 +128,7 @@ class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
             try:
                 term = self.vocabulary.getTermByToken(token)
             except LookupError, error:
-                raise InvalidValue, \
-                      "token %r not found in vocabulary" %token
+                raise InvalidValue("token %r not found in vocabulary" % token)
             else:
                 values.append(term.value)
         return values

@@ -147,8 +147,8 @@ class AddContentComponentInstanceView(AddView):
                     if name == type_name]
 
         if not matching:
-            raise ComponentLookupError, \
-                  "No Content Component Definition named '%s' found" %type_name
+            raise ComponentLookupError("No Content Component Definition named "
+                                       "'%s' found" % type_name)
 
         self.definition = matching[0]
         self.schema = self.definition.schema

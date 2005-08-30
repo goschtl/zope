@@ -135,7 +135,7 @@ class Test(CleanUp, TestCase):
 
     def testQuoteLastLine(self):
         class C(object): pass
-        try: raise TypeError, C()
+        try: raise TypeError(C())
         except:
             s = tb(1)
         else:

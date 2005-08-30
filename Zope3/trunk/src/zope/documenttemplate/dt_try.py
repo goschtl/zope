@@ -115,20 +115,20 @@ class Try:
             for tname, nargs, nsection in blocks[1:]:
                 if tname == 'else':
                     if not self.elseBlock is None:
-                        raise ParseError, (
+                        raise ParseError(
                             'No more than one else block is allowed',
                             self.name)
                     self.elseBlock = nsection.blocks
 
                 elif tname == 'finally':
-                    raise ParseError, (
+                    raise ParseError(
                         'A try..finally combination cannot contain '
                         'any other else, except or finally blocks',
                         self.name)
 
                 else:
                     if not self.elseBlock is None:
-                        raise ParseError, (
+                        raise ParseError(
                             'The else block should be the last block '
                             'in a try tag', self.name)
 
@@ -136,7 +136,7 @@ class Try:
                         self.handlers.append((errname, nsection.blocks))
                     if nargs.strip() == '':
                         if defaultHandlerFound:
-                            raise ParseError, (
+                            raise ParseError(
                                 'Only one default exception handler '
                                 'is allowed', self.name)
                         else:

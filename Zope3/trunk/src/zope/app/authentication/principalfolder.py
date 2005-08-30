@@ -171,7 +171,7 @@ class PrincipalFolder(BTreeContainer):
         """
         # A user with the new login already exists
         if principal.login in self.__id_by_login:
-            raise ValueError, 'Principal Login already taken!'
+            raise ValueError('Principal Login already taken!')
 
         del self.__id_by_login[oldLogin]
         self.__id_by_login[principal.login] = principal.__name__
@@ -204,7 +204,7 @@ class PrincipalFolder(BTreeContainer):
         """
         # A user with the new login already exists
         if principal.login in self.__id_by_login:
-            raise DuplicateIDError, 'Principal Login already taken!'
+            raise DuplicateIDError('Principal Login already taken!')
 
         super(PrincipalFolder, self).__setitem__(id, principal)
         self.__id_by_login[principal.login] = id

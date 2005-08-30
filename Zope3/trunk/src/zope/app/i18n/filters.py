@@ -53,8 +53,8 @@ class GettextExportFilter(object):
         elif len(languages) == 1:
             language = languages[0]
         else:
-            raise TypeError, \
-                'Only one language at a time is supported for gettext export.'
+            raise TypeError(
+                'Only one language at a time is supported for gettext export.')
 
         dt = time.time()
         dt = time.localtime(dt)
@@ -89,8 +89,8 @@ class GettextImportFilter(object):
         elif len(languages) == 1:
             language = languages[0]
         else:
-            raise TypeError, \
-                'Only one language at a time is supported for gettext export.'
+            raise TypeError(
+                'Only one language at a time is supported for gettext export.')
 
         result = parseGetText(file.readlines())[3]
         headers = parserHeaders(''.join(result[('',)][1]))

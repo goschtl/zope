@@ -49,7 +49,7 @@ class GadflyAdapter(ZopeDatabaseAdapter):
                            conn_info['parameters'].get('dir', connection))
 
         if not os.path.isdir(dir):
-            raise DatabaseAdapterError, 'Not a directory ' + dir
+            raise DatabaseAdapterError('Not a directory ' + dir)
 
         if not os.path.exists(os.path.join(dir, connection + ".gfd")):
             db = gadfly.gadfly()

@@ -204,7 +204,7 @@ class Var:
                 if have_arg('missing'):
                     return args['missing']
                 else:
-                    raise KeyError, name
+                    raise KeyError(name)
         else:
             val = val.eval(md)
             if have_arg('url'):
@@ -233,7 +233,7 @@ class Var:
                     t, v = sys.exc_info()[:2]
                     if val is None or not str(val):
                         return args['null']
-                    raise t, v
+                    raise t(v)
 
             else:
                 # We duplicate the code here to avoid exception handler

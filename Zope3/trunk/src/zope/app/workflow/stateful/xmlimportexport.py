@@ -60,7 +60,7 @@ class XMLStatefulImporter(ContentHandler):
     def startElement(self, name, attrs):
         handler = getattr(self, 'start' + name.title().replace('-', ''), None)
         if not handler:
-            raise ValueError, 'Unknown element %s' % name
+            raise ValueError('Unknown element %s' % name)
 
         handler(attrs)
 

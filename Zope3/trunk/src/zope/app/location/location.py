@@ -162,7 +162,7 @@ class LocationProxy(ProxyBase):
         self.__name__ = name
 
     def __reduce__(self, proto=None):
-        raise TypeError, "Not picklable"
+        raise TypeError("Not picklable")
 
 
     __doc__ = ClassAndInstanceDescr(

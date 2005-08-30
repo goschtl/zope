@@ -103,13 +103,13 @@ class If:
             if args:
                 ename,expr=name_param(context, args,'else',1)
                 if ename != name:
-                    raise ParseError, ('name in else does not match if', 'in')
+                    raise ParseError('name in else does not match if', 'in')
             elses=section.blocks
         else: elses = None
 
         for tname, args, section in blocks[1:]:
             if tname == 'else':
-                raise ParseError, (
+                raise ParseError(
                     'more than one else tag for a single if tag', 'in')
             args = parse_params(args, name='', expr='')
             name,expr = name_param(context, args, 'elif', 1)

@@ -521,7 +521,7 @@ class DateTimeParser:
         will raise a DateTimeError.
         """
         if not isinstance(arg, StringTypes):
-            raise TypeError, 'Expected a string argument'
+            raise TypeError('Expected a string argument')
 
         if not arg:
             raise SyntaxError(arg)

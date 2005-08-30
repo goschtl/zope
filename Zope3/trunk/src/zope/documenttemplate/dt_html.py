@@ -159,7 +159,7 @@ class HTML(String):
         args=args.strip()
         if end:
             if not command or name != command.name:
-                raise ParseError, ('unexpected end tag', tag)
+                raise ParseError('unexpected end tag', tag)
             return tag, args, None, None
 
         if command and name in command.blockContinuations:
@@ -176,7 +176,7 @@ class HTML(String):
 
         try: return tag, args, self.commands[name], None
         except KeyError:
-            raise ParseError, ('Unexpected tag', tag)
+            raise ParseError('Unexpected tag', tag)
 
 
     def SubTemplate(self, name):

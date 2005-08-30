@@ -103,7 +103,7 @@ class DefaultPreferenceGroup(preference.PreferenceGroup):
             return getattr(nextGroup, key, self.__schema__[key].default)
 
         # Nothing found, raise an attribute error
-        raise AttributeError, "'%s' is not a preference or sub-group." %key
+        raise AttributeError("'%s' is not a preference or sub-group." % key)
 
     def data(self):
         if self.__id__ not in self.provider.data:

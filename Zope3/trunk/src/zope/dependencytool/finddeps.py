@@ -98,7 +98,7 @@ def makeDottedName(path):
         if path.startswith(syspath):
             return path[len(syspath):].replace(os.sep, ".")
 
-    raise ValueError, 'Cannot create dotted name for %r' % path
+    raise ValueError('Cannot create dotted name for %r' % path)
 
 
 def getDependenciesOfPythonFile(path, packages):

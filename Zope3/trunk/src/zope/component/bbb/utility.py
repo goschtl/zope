@@ -52,7 +52,7 @@ class UtilityService(object):
         if attr is not None:
             return attr
 
-        raise AttributeError, name
+        raise AttributeError(name)
 
 
 class GlobalUtilityService(UtilityService, GlobalService):

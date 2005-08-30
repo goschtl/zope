@@ -31,7 +31,7 @@ class FakeModule:
         try:
             return self.__dict[name]
         except KeyError:
-            raise AttributeError, name
+            raise AttributeError(name)
 
 name = 'zope.app.locking.README'
 

@@ -57,6 +57,6 @@ class Raise:
         except:
             v = 'Invalid Error Value'
 
-        raise t, v
+        raise t(v)
 
     __call__ = render

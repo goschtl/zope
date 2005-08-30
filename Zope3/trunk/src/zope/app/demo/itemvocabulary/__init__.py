@@ -82,7 +82,7 @@ class ItemVocabulary(object):
     def getTerm(self, value):
         """See zope.schema.interfaces.IBaseVocabulary"""
         if value not in self.context.keys():
-            raise LookupError, value
+            raise LookupError(value)
         return ItemTerm(value)
 
     def getTermByToken(self, token):

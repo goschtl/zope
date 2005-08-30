@@ -172,7 +172,7 @@ class Checker(object):
                 raise Unauthorized(object, name, permission)
 
         __traceback_supplement__ = (TracebackSupplement, object)
-        raise ForbiddenAttribute, (name, object)
+        raise ForbiddenAttribute(name, object)
 
     def check(self, object, name):
         'See IChecker'
@@ -190,7 +190,7 @@ class Checker(object):
 
         if name != '__iter__' or hasattr(object, name):
             __traceback_supplement__ = (TracebackSupplement, object)
-            raise ForbiddenAttribute, (name, object)
+            raise ForbiddenAttribute(name, object)
 
     def proxy(self, value):
         'See IChecker'

@@ -44,7 +44,7 @@ class AddWizardView(EditWizardView):
     def _setUpWidgets(self):
         if self.use_session:
             # Need session for File upload fields
-            raise NotImplementedError, 'Need a working ISessionDataManager'
+            raise NotImplementedError('Need a working ISessionDataManager')
         else:
             self.storage = WizardStorage(self.fieldNames, None)
 

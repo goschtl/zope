@@ -57,9 +57,9 @@ class String:
         return s
 
     def parse_error(self, mess, tag, text, start):
-        raise ParseError, "%s, for tag %s, on line %s of %s<p>" % (
+        raise ParseError("%s, for tag %s, on line %s of %s<p>" % (
             mess, self.errQuote(tag), len(text[:start].split('\n')),
-            self.errQuote(self.__name__))
+            self.errQuote(self.__name__)))
 
     commands={
         'var': Var,
@@ -124,7 +124,7 @@ class String:
 
         if fmt == ']':
             if not command or name != command.name:
-                raise ParseError, ('unexpected end tag', tag)
+                raise ParseError('unexpected end tag', tag)
             return tag, args, None, None
         elif fmt == '[' or fmt == '!':
             if command and name in command.blockContinuations:
@@ -142,7 +142,7 @@ class String:
             try:
                 return tag, args, self.commands[name], None
             except KeyError:
-                raise ParseError, ('Unexpected tag', tag)
+                raise ParseError('Unexpected tag', tag)
         else:
             # Var command
             args = args and ("%s %s" % (name, args)) or name
@@ -456,7 +456,7 @@ class String:
 
         level = md.level
         if level > 200:
-            raise SystemError, ('infinite recursion in document template')
+            raise SystemError('infinite recursion in document template')
         md.level = level+1
 
         if client is not None:

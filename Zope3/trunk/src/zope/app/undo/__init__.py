@@ -113,7 +113,7 @@ class ZODBUndoManager(object):
                                  first=0, last=-20):
         """See zope.app.undo.interfaces.IPrincipal"""
         if not IPrincipal.providedBy(principal):
-            raise TypeError, "Invalid principal: %s" % principal
+            raise TypeError("Invalid principal: %s" % principal)
         return self._getUndoInfo(context, principal, first, last)
 
     def _getUndoInfo(self, context, principal, first, last):
@@ -176,7 +176,7 @@ class ZODBUndoManager(object):
     def undoPrincipalTransactions(self, principal, ids):
         """See zope.app.undo.interfaces.IPrincipal"""
         if not IPrincipal.providedBy(principal):
-            raise TypeError, "Invalid principal: %s" % principal
+            raise TypeError("Invalid principal: %s" % principal)
 
         # Make sure we only undo the transactions initiated by our
         # principal
@@ -191,9 +191,9 @@ class ZODBUndoManager(object):
             first += batch_size
             txns = self._getUndoInfo(None, principal, first, -batch_size)
         if left_overs:
-            raise UndoError, ("You are trying to undo a transaction that "
-                              "either does not exist or was not initiated "
-                              "by the principal.")
+            raise UndoError("You are trying to undo a transaction that "
+                            "either does not exist or was not initiated "
+                            "by the principal.")
         self._undo(ids)
 
     def _undo(self, ids):

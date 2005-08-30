@@ -200,7 +200,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         pd = self.getProcessDefinition()
         clean_pd = removeAllProxies(pd)
         if not id in self._outgoingTransitions(clean_pd):
-            raise KeyError, 'Invalid Transition Id: %s' % id
+            raise KeyError('Invalid Transition Id: %s' % id)
         transition = clean_pd.transitions[id]
         # Get the object whose status is being changed.
         obj = getParent(self)

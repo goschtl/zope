@@ -47,10 +47,10 @@ class SQLTest(object):
         self.__name__ = name_param(context, args, 'sqlvar')
         has_key=args.has_key
         if not has_key('type'):
-            raise ParseError, ('the type attribute is required', 'sqltest')
+            raise ParseError('the type attribute is required', 'sqltest')
         self.type = t = args['type']
         if not valid_type(t):
-            raise ParseError, ('invalid type, %s' % t, 'sqltest')
+            raise ParseError('invalid type, %s' % t, 'sqltest')
         if has_key('optional'):
             self.optional = args['optional']
         if has_key('multiple'):
@@ -76,7 +76,7 @@ class SQLTest(object):
         except KeyError, key:
             if key[0] == name and self.optional:
                 return ''
-            raise KeyError, key, sys.exc_info()[2]
+            raise KeyError(key), None, sys.exc_info()[2]
 
         if (list in v.__class__.__mro__  # isinstance doesn't work w 
             or                           # security proxies, so we use
@@ -101,8 +101,7 @@ class SQLTest(object):
                     else:
                         v = str(int(v))
                 except ValueError:
-                    raise ValueError, (
-                        'Invalid integer value for **%s**' %name)
+                    raise ValueError('Invalid integer value for **%s**' % name)
 
             elif t == 'float':
                 if not v and isinstance(v, str):
@@ -113,8 +112,8 @@ class SQLTest(object):
                     else:
                         v = str(float(v))
                 except ValueError:
-                    raise ValueError, (
-                        'Invalid floating-point value for **%s**' %name)
+                    raise ValueError(
+                        'Invalid floating-point value for **%s**' % name)
             else:
                 v = str(v)
                 v = self.sql_quote__(v)
@@ -124,7 +123,7 @@ class SQLTest(object):
         if not vs:
             if self.optional:
                 return ''
-            raise MissingInput, 'No input was provided for **%s**' %name
+            raise MissingInput('No input was provided for **%s**' % name)
 
         if len(vs) > 1:
             vs = ', '.join(map(str, vs))
@@ -208,11 +207,11 @@ class SQLVar(object):
 
         self.args = args
         if not args.has_key('type'):
-            raise ParseError, ('the type attribute is required', 'dtvar')
+            raise ParseError('the type attribute is required', 'dtvar')
 
         t = args['type']
         if not valid_type(t):
-            raise ParseError, ('invalid type, %s' % t, 'dtvar')
+            raise ParseError('invalid type, %s' % t, 'dtvar')
 
 
     def render(self, md):
@@ -230,7 +229,7 @@ class SQLVar(object):
                 return 'null'
             if not isinstance(expr, StringTypes):
                 raise
-            raise MissingInput, 'Missing input variable, **%s**' %name
+            raise MissingInput('Missing input variable, **%s**' % name)
 
         # TODO: Shrug, should these tyoes be really hard coded? What about
         # Dates and other types a DB supports; I think we should make this
@@ -244,8 +243,7 @@ class SQLVar(object):
             except:
                 if not v and args.has_key('optional') and args['optional']:
                     return 'null'
-                raise ValueError, (
-                    'Invalid integer value for **%s**' % name)
+                raise ValueError('Invalid integer value for **%s**' % name)
 
         elif t == 'float':
             try:
@@ -256,7 +254,7 @@ class SQLVar(object):
             except ValueError:
                 if not v and args.has_key('optional') and args['optional']:
                     return 'null'
-                raise ValueError, (
+                raise ValueError(
                     'Invalid floating-point value for **%s**' % name)
 
         else:
@@ -266,7 +264,7 @@ class SQLVar(object):
                 if args.has_key('optional') and args['optional']:
                     return 'null'
                 else:
-                    raise ValueError, (
+                    raise ValueError(
                         'Invalid empty string value for **%s**' % name)
 
             v = self.sql_quote__(v)

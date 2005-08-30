@@ -45,7 +45,7 @@ class Macros(object):
                 pass
             else:
                 return v
-        raise KeyError, key
+        raise KeyError(key)
 
 class StandardMacros(BrowserView, Macros):
     macro_pages = ('view_macros', 'dialog_macros')

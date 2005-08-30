@@ -183,9 +183,8 @@ class ConfigurationContext(object):
         try:
             mod = __import__(mname, *_import_chickens)
         except ImportError, v:
-            raise ConfigurationError, (
-                "Couldn't import %s, %s" % (mname, v)
-                ), sys.exc_info()[2]
+            raise ConfigurationError(
+                "Couldn't import %s, %s" % (mname, v)), None, sys.exc_info()[2]
 
         if not oname:
             # see not mname case above
@@ -623,10 +622,8 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
                 except:
                     if testing:
                         raise
-                    t, v = sys.exc_info()[:2]
-                    v = ConfigurationExecutionError(t, v, info)
-                    t = ConfigurationExecutionError
-                    raise t, v, sys.exc_info()[2]
+                    t, v, tb = sys.exc_info()
+                    raise ConfigurationExecutionError(t, v, info), None, tb
         finally:
             if clear:
                 del self.actions[:]
@@ -1392,8 +1389,8 @@ def toargs(context, schema, data):
             try:
                 args[str(name)] = field.fromUnicode(s)
             except zope.schema.ValidationError, v:
-                raise ConfigurationError, (
-                    "Invalid value for", n, str(v)), sys.exc_info()[2]
+                raise ConfigurationError(
+                    "Invalid value for", n, str(v)), None, sys.exc_info()[2]
         elif field.required:
             # if the default is valid, we can use that:
             default = field.default

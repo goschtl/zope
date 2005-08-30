@@ -261,7 +261,7 @@ class Choice(Field):
             except VocabularyRegistryError:
                 raise ValueError("Can't validate value without vocabulary")
         if value not in vocabulary:
-            raise ConstraintNotSatisfied, value
+            raise ConstraintNotSatisfied(value)
 
 class InterfaceField(Field):
     __doc__ = IInterfaceField.__doc__
@@ -317,7 +317,7 @@ def _validate_uniqueness(value):
     temp_values = []
     for item in value:
         if item in temp_values:
-            raise NotUnique, item
+            raise NotUnique(item)
 
         temp_values.append(item)
 
@@ -329,7 +329,7 @@ class AbstractCollection(MinMaxLen, Iterable):
         super(AbstractCollection, self).__init__(**kw)
         # whine if value_type is not a field
         if value_type is not None and not IField.providedBy(value_type):
-            raise ValueError, "'value_type' must be field instance."
+            raise ValueError("'value_type' must be field instance.")
         self.value_type = value_type
         self.unique = unique
 
@@ -346,7 +346,7 @@ class AbstractCollection(MinMaxLen, Iterable):
         super(AbstractCollection, self)._validate(value)
         errors = _validate_sequence(self.value_type, value)
         if errors:
-            raise WrongContainedType, errors
+            raise WrongContainedType(errors)
         if self.unique:
             _validate_uniqueness(value)
 
@@ -423,9 +423,9 @@ class Dict(MinMaxLen, Iterable):
         super(Dict, self).__init__(**kw)
         # whine if key_type or value_type is not a field
         if key_type is not None and not IField.providedBy(key_type):
-            raise ValueError, "'key_type' must be field instance."
+            raise ValueError("'key_type' must be field instance.")
         if value_type is not None and not IField.providedBy(value_type):
-            raise ValueError, "'value_type' must be field instance."
+            raise ValueError("'value_type' must be field instance.")
         self.key_type = key_type
         self.value_type = value_type
 
@@ -439,7 +439,7 @@ class Dict(MinMaxLen, Iterable):
             errors = _validate_sequence(self.key_type, value, errors)
 
             if errors:
-                raise WrongContainedType, errors
+                raise WrongContainedType(errors)
 
         finally:
             errors = None
@@ -470,7 +470,7 @@ class URI(BytesLine):
         if _isuri(value):
             return
 
-        raise InvalidURI, value
+        raise InvalidURI(value)
 
     def fromUnicode(self, value):
         """
@@ -525,7 +525,7 @@ class Id(BytesLine):
         if _isdotted(value) and "." in value:
             return
 
-        raise InvalidId, value
+        raise InvalidId(value)
 
     def fromUnicode(self, value):
         """
@@ -642,12 +642,11 @@ class DottedName(BytesLine):
             raise InvalidDottedName(value)
         dots = value.count(".")
         if dots < self.min_dots:
-            raise InvalidDottedName, \
-                  ("too few dots; %d required" % self.min_dots, value)
+            raise InvalidDottedName("too few dots; %d required" % self.min_dots,
+                                    value)
         if self.max_dots is not None and dots > self.max_dots:
-            raise InvalidDottedName, \
-                  ("too many dots; no more than %d allowed" % self.max_dots,
-                   value)
+            raise InvalidDottedName("too many dots; no more than %d allowed" % 
+                                    self.max_dots, value)
 
     def fromUnicode(self, value):
         v = str(value.strip())

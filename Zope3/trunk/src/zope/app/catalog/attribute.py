@@ -112,7 +112,7 @@ class AttributeIndex(object):
                  *args, **kwargs):
         super(AttributeIndex, self).__init__(*args, **kwargs)
         if field_name is None and self.default_field_name is None:
-            raise ValueError, "Must pass a field_name"
+            raise ValueError("Must pass a field_name")
         if field_name is None:
             self.field_name = self.default_field_name
         else:

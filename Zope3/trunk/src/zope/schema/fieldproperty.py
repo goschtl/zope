@@ -43,7 +43,7 @@ class FieldProperty(object):
             field = self.__field.bind(inst)
             value = getattr(field, 'default', _marker)
             if value is _marker:
-                raise AttributeError, self.__name
+                raise AttributeError(self.__name)
 
         return value
 

@@ -157,7 +157,7 @@ class ZopeDatabaseAdapter(Persistent, Contained):
             # issues at this point, so that we can convert it to a
             # DatabaseException.
             except Exception, error:
-                raise DatabaseException, str(error)
+                raise DatabaseException(str(error))
 
     def disconnect(self):
         if self.isConnected():

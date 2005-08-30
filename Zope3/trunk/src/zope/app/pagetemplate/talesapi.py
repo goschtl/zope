@@ -40,28 +40,28 @@ class ZopeTalesAPI(object):
     def title(self):
         a = IZopeDublinCore(self.context, None)
         if a is None:
-            raise AttributeError, 'title'
+            raise AttributeError('title')
         return a.title
     title = property(title)
 
     def description(self):
         a = IZopeDublinCore(self.context, None)
         if a is None:
-            raise AttributeError, 'description'
+            raise AttributeError('description')
         return a.description
     description = property(description)
 
     def created(self):
         a = IZopeDublinCore(self.context, None)
         if a is None:
-            raise AttributeError, 'created'
+            raise AttributeError('created')
         return a.created
     created = property(created)
 
     def modified(self):
         a = IZopeDublinCore(self.context, None)
         if a is None:
-            raise AttributeError, 'modified'
+            raise AttributeError('modified')
         return a.modified
     modified = property(modified)
 
@@ -77,5 +77,5 @@ class ZopeTalesAPI(object):
     def size(self):
         a = ISized(self.context, None)
         if a is None:
-            raise AttributeError, 'created'
+            raise AttributeError('created')
         return a.sizeForDisplay()

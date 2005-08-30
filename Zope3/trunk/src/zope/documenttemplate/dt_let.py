@@ -65,7 +65,7 @@ class Let:
                     args[i] = name, Eval(context, expr).eval
                 except SyntaxError, v:
                     m,(huh,l,c,src) = v
-                    raise ParseError, (
+                    raise ParseError(
                         '<strong>Expression (Python) Syntax error</strong>:'
                         '\n<pre>\n%s\n</pre>\n' % v[0],
                         'let')
@@ -112,7 +112,7 @@ def parse_let_params(text,
     else:
         if not text or not text.strip():
             return result
-        raise ParseError, ('invalid parameter: "%s"' % text, tag)
+        raise ParseError('invalid parameter: "%s"' % text, tag)
 
     result.append((name,value))
 

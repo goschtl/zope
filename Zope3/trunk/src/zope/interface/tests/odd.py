@@ -92,7 +92,7 @@ class MetaClass(object):
             v = getattr(b, name, self)
             if v is not self:
                 return v
-        raise AttributeError, name
+        raise AttributeError(name)
 
     def __repr__(self):
         return "<odd class %s at %s>" % (self.__name__, hex(id(self)))

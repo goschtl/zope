@@ -88,7 +88,7 @@ class StubServiceService(object):
         try:
             return self.services[name]
         except KeyError:
-            raise ComponentLookupError, name
+            raise ComponentLookupError(name)
 
 class ConformsToIServiceService(object):
 

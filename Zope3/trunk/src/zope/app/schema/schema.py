@@ -63,7 +63,7 @@ class BaseSchemaUtility(InterfaceClass):
         field_names = [n for n, f in fields]
         fields = [f for n, f in fields]
         if name in field_names:
-            raise KeyError, "Field %s already exists." % name
+            raise KeyError("Field %s already exists." % name)
         if fields:
             field.order = fields[-1].order + 1
         self[name] = field
@@ -72,16 +72,16 @@ class BaseSchemaUtility(InterfaceClass):
         """See zope.app.interfaces.utilities.IMutableSchema"""
         fields = getFieldNamesInOrder(self)
         if name not in fields:
-            raise KeyError, "Field %s does not exists." % name
+            raise KeyError("Field %s does not exists." % name)
         del self[name]
 
     def renameField(self, orig_name, target_name):
         """See zope.app.interfaces.utilities.IMutableSchema"""
         fields = getFieldNamesInOrder(self)
         if orig_name not in fields:
-            raise KeyError, "Field %s does not exists." % orig_name
+            raise KeyError("Field %s does not exists." % orig_name)
         if target_name in fields:
-            raise KeyError, "Field %s already exists." % target_name
+            raise KeyError("Field %s already exists." % target_name)
         field = self[orig_name]
         del self[orig_name]
         field.__name__ = None
@@ -93,9 +93,9 @@ class BaseSchemaUtility(InterfaceClass):
         field_names = [n for n, f in fields]
         fields = [f for n, f in fields]
         if name in field_names:
-            raise KeyError, "Field %s already exists." % name
+            raise KeyError("Field %s already exists." % name)
         if not 0 <= position <= len(field_names):
-            raise IndexError, "Position %s out of range." % position
+            raise IndexError("Position %s out of range." % position)
         fields.insert(position, field)
         for p, f in enumerate(fields):
             if not f.order == p:
@@ -108,9 +108,9 @@ class BaseSchemaUtility(InterfaceClass):
         field_names = [n for n, f in fields]
         fields = [f for n, f in fields]
         if name not in field_names:
-            raise KeyError, "Field %s does not exist." % name
+            raise KeyError("Field %s does not exist." % name)
         if not 0 <= position <= len(field_names):
-            raise IndexError, "Position %s out of range." % position
+            raise IndexError("Position %s out of range." % position)
         index = field_names.index(name)
         if index == position: return
         field = fields[index]
@@ -188,7 +188,7 @@ class BaseSchemaUtility(InterfaceClass):
         if r is not None:
             return r
 
-        raise KeyError, name
+        raise KeyError(name)
 
     __getitem__ = getDescriptionFor
 

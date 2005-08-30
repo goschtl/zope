@@ -81,7 +81,7 @@ class Metadata(object):
             if len(errors) == 1:
                 raise
             else:
-                raise IOError, tuple(errors)
+                raise IOError(tuple(errors))
 
 
 class DirectoryManager(object):

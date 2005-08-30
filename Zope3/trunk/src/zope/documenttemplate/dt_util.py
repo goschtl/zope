@@ -106,39 +106,39 @@ def name_param(context, params, tag='', expr=0, attr='name',
 
         if v[:1] == '"' and v[-1:] == '"' and len(v) > 1: # expr shorthand
             if used(attr):
-                raise ParseError, (u'%s and expr given' % attr, tag)
+                raise ParseError(u'%s and expr given' % attr, tag)
             if expr:
                 if used('expr'):
-                    raise ParseError, (u'two exprs given', tag)
+                    raise ParseError(u'two exprs given', tag)
                 v = v[1:-1]
                 try:
                     expr=Eval(context, v)
                 except SyntaxError, v:
-                    raise ParseError, (
+                    raise ParseError(
                         u'<strong>Expression (Python) Syntax error</strong>:'
                         u'\n<pre>\n%s\n</pre>\n' % v[0],
                         tag)
                 return v, expr
             else:
-                raise ParseError, (
+                raise ParseError(
                     u'The "..." shorthand for expr was used in a tag '
                     u'that doesn\'t support expr attributes.',
                     tag)
 
         else: # name shorthand
             if used(attr):
-                raise ParseError, (u'Two %s values were given' % attr, tag)
+                raise ParseError(u'Two %s values were given' % attr, tag)
             if expr:
                 if used('expr'):
                     # raise 'Waaaaaa', 'waaa'
-                    raise ParseError, (u'%s and expr given' % attr, tag)
+                    raise ParseError(u'%s and expr given' % attr, tag)
                 return params[''],None
             return params['']
 
     elif used(attr):
         if expr:
             if used('expr'):
-                raise ParseError, (u'%s and expr given' % attr, tag)
+                raise ParseError(u'%s and expr given' % attr, tag)
             return params[attr],None
         return params[attr]
     elif expr and used('expr'):
@@ -146,7 +146,7 @@ def name_param(context, params, tag='', expr=0, attr='name',
         expr = Eval(context, name)
         return name, expr
 
-    raise ParseError, (u'No %s given' % attr, tag)
+    raise ParseError(u'No %s given' % attr, tag)
 
 
 Expr_doc = u"""
@@ -258,11 +258,11 @@ def parse_params(text,
         l = len(mo_unp.group(1))
         if result:
             if parms.has_key(name):
-                if parms[name] is None: raise ParseError, (
+                if parms[name] is None: raise ParseError(
                     u'Attribute %s requires a value' % name, tag)
 
                 result[name] = parms[name]
-            else: raise ParseError, (
+            else: raise ParseError(
                 u'Invalid attribute name, "%s"' % name, tag)
         else:
             result[''] = name
@@ -271,22 +271,22 @@ def parse_params(text,
         name = mo_unq.group(2)
         l = len(mo_unq.group(1))
         if result:
-            raise ParseError, (u'Invalid attribute name, "%s"' % name, tag)
+            raise ParseError(u'Invalid attribute name, "%s"' % name, tag)
         else:
             result[''] = name
         return apply(parse_params, (text[l:], result), parms)
     else:
         if not text or not text.strip():
             return result
-        raise ParseError, (u'invalid parameter: "%s"' % text, tag)
+        raise ParseError(u'invalid parameter: "%s"' % text, tag)
 
     if not parms.has_key(name):
-        raise ParseError, (u'Invalid attribute name, "%s"' % name, tag)
+        raise ParseError(u'Invalid attribute name, "%s"' % name, tag)
 
     if result.has_key(name):
         p = parms[name]
         if type(p) is not ListType or p:
-            raise ParseError, (
+            raise ParseError(
                 u'Duplicate values for attribute "%s"' % name, tag)
 
     result[name] = value

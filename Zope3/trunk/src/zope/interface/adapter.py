@@ -274,8 +274,8 @@ class Surrogate(object):
 
     def _subscriptionAdaptTo(self, specification, object, with=()):
         if object is None:
-            raise TypeError, ("Unregistering subscription adapters" 
-                              " isn't implemented")
+            raise TypeError("Unregistering subscription adapters isn't "
+                            "implemented")
 
         key = (True, tuple(with), '', specification)
         self.adapters[key] = self.adapters.get(key, ()) + (object, )

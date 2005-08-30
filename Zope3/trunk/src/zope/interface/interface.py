@@ -438,7 +438,7 @@ class InterfaceClass(Element, Specification):
 
         for base in bases:
             if not isinstance(base, InterfaceClass):
-                raise TypeError, 'Expected base interfaces'
+                raise TypeError('Expected base interfaces')
 
         Specification.__init__(self, bases)
 
@@ -526,7 +526,7 @@ class InterfaceClass(Element, Specification):
         if r is not None:
             return r
 
-        raise KeyError, name
+        raise KeyError(name)
 
     __getitem__ = getDescriptionFor
 

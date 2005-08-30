@@ -161,7 +161,7 @@ class Message(unicode):
         It cannot be changed once the message id is created.
         """
         if getattr(self, '_readonly', False):
-            raise TypeError, 'readonly attribute'
+            raise TypeError('readonly attribute')
         else:
             return unicode.__setattr__(self, key, value)
         

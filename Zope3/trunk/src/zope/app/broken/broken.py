@@ -55,7 +55,7 @@ class Broken(ZODB.broken.Broken):
         annotations = self.__getAnnotations()
         if annotations:
             return annotations[key]
-        raise KeyError, key
+        raise KeyError(key)
 
     def __setitem__(self, key, value):
         raise ZODB.broken.BrokenModified("Can't modify broken objects")

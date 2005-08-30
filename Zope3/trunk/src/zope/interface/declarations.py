@@ -688,7 +688,7 @@ class Provides(Declaration):  # Really named ProvidesClass
             # being called on the same class that we were defined for:
             return self
 
-        raise AttributeError, '__provides__'
+        raise AttributeError('__provides__')
 
 ProvidesClass = Provides
 
@@ -951,7 +951,7 @@ class ClassProvidesBasePy(object):
 
             return self._implements
 
-        raise AttributeError, '__provides__'
+        raise AttributeError('__provides__')
 
 ClassProvidesBase = ClassProvidesBasePy
 

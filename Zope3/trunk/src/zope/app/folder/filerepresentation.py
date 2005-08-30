@@ -54,7 +54,7 @@ class ReadDirectory(object):
     def __getitem__(self, key):
         v = self.get(key, self)
         if v is self:
-            raise KeyError, key
+            raise KeyError(key)
         return v
 
     def values(self):

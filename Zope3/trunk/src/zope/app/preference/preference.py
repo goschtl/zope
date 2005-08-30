@@ -106,7 +106,7 @@ class PreferenceGroup(Location):
         default = object()
         obj = self.get(key, default)
         if obj is default:
-            raise KeyError, key
+            raise KeyError(key)
         return obj
 
     def __contains__(self, key):
@@ -150,7 +150,7 @@ class PreferenceGroup(Location):
             return value
 
         # Nothing found, raise an attribute error
-        raise AttributeError, "'%s' is not a preference or sub-group." %key
+        raise AttributeError("'%s' is not a preference or sub-group." % key)
 
     def __setattr__(self, key, value):
         if self.__schema__ and key in self.__schema__:

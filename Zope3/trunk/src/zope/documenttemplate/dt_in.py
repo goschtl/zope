@@ -336,6 +336,9 @@ class InFactory:
 
 In = InFactory()
 
+class InError(Exception):
+    """Strings are not allowed as input to the in tag"""
+
 class InClass:
     elses = None
     expr = sort = batch = mapping = None
@@ -374,7 +377,7 @@ class InClass:
 
         for n in 'orphan','overlap','previous','next':
             if has_key(n) and not self.batch:
-                raise ParseError, (
+                raise ParseError(
                     """
                     The %s attribute was used but neither of the
                     <code>start</code>, <code>end</code>, or <code>size</code>
@@ -397,14 +400,14 @@ class InClass:
         self.__name__, self.expr = name, expr
         self.section = section.blocks
         if len(blocks) > 1:
-            if len(blocks) != 2: raise ParseError, (
+            if len(blocks) != 2: raise ParseError(
                 'too many else blocks', 'in')
             tname, args, section = blocks[1]
             args=parse_params(args, name='')
             if args:
                 ename = name_param(context, args)
                 if ename != name:
-                    raise ParseError, (
+                    raise ParseError(
                         'name in else does not match in', 'in')
             self.elses = section.blocks
 
@@ -425,8 +428,7 @@ class InClass:
             return ''
 
         if isinstance(sequence, StringType):
-            raise 'InError', (
-                'Strings are not allowed as input to the in tag.')
+            raise InError('Strings are not allowed as input to the in tag.')
 
 
         section = self.section
@@ -572,7 +574,7 @@ class InClass:
                                 if index == first:
                                     kw['sequence-start'] = 0
                                 continue
-                            raise ValidationError, index
+                            raise ValidationError(index)
 
                     kw['sequence-index'] = index
                     if isinstance(client, TupleType) and len(client) == 2:
@@ -617,8 +619,7 @@ class InClass:
             return ''
 
         if isinstance(sequence, StringType):
-            raise 'InError', (
-                'Strings are not allowed as input to the in tag.')
+            raise InError('Strings are not allowed as input to the in tag.')
 
         section = self.section
         mapping = self.mapping
@@ -669,7 +670,7 @@ class InClass:
                             if index == 1:
                                 kw['sequence-start'] = 0
                             continue
-                        raise ValidationError, index
+                        raise ValidationError(index)
 
                 kw['sequence-index'] = index
                 if isinstance(client, TupleType) and len(client) == 2:

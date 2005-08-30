@@ -58,7 +58,7 @@ class PasswdPrincipalSource(Contained, Persistent):
         for p in self.readPrincipals():
             if p._id == id:
                 return p
-        raise PrincipalLookupError, id
+        raise PrincipalLookupError(id)
 
     def getPrincipals(self, name):
         """See `IPrincipalSource`."""

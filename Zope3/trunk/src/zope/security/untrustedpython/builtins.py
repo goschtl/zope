@@ -117,10 +117,10 @@ class ImmutableModule(new.module):
         self.__dict__.update(kw)
 
     def __setattr__(self, name, v):
-        raise AttributeError, name
+        raise AttributeError(name)
 
     def __delattr__(self, name):
-        raise AttributeError, name
+        raise AttributeError(name)
 
 
 SafeBuiltins = ImmutableModule(**SafeBuiltins())

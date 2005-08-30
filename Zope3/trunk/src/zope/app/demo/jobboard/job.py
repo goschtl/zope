@@ -109,7 +109,7 @@ class JobList(Persistent):
         try:
             jobid = int(jobid)
         except ValueError:
-            raise KeyError, jobid
+            raise KeyError(jobid)
         del self._jobs[jobid]
 
     def query(self, state):
@@ -126,7 +126,7 @@ class JobList(Persistent):
         try:
             jobid = int(jobid)
         except ValueError:
-            raise KeyError, jobid
+            raise KeyError(jobid)
         return self._jobs[jobid]
 
     def getPendingIds(self):

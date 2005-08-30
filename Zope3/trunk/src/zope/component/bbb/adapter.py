@@ -71,7 +71,7 @@ class AdapterService(object):
         attr = getattr(self.sm.adapters, name)
         if attr is not None:
             return attr
-        raise AttributeError, name
+        raise AttributeError(name)
 
 
 class GlobalAdapterService(AdapterService, GlobalService):

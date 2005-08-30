@@ -46,6 +46,10 @@ class StatesContainer(ProcessDefinitionElementContainer):
     implements(IStatefulStatesContainer)
 
 
+class NoLocalProcessDefinition(Exception):
+    """No local process definition found"""
+    
+
 class StateNamesVocabulary(SimpleVocabulary):
     """Vocabulary providing the names of states in a local process definition.
     """
@@ -61,7 +65,7 @@ class StateNamesVocabulary(SimpleVocabulary):
             for obj in zapi.getParents(context):
                 if IStatefulProcessDefinition.providedBy(obj):
                     return obj.getStateNames()
-        raise 'NoLocalProcessDefinition', 'No local process definition found.'
+        raise NoLocalProcessDefinition('No local process definition found.')
 
 
 class Transition(Persistent, Contained):
@@ -142,7 +146,7 @@ class StatefulProcessDefinition(ProcessDefinition):
     def addState(self, name, state):
         """See workflow.stateful.IStatefulProcessDefinition"""
         if name in self.states:
-            raise KeyError, name
+            raise KeyError(name)
         self.states[name] = state
 
     def getState(self, name):
@@ -164,7 +168,7 @@ class StatefulProcessDefinition(ProcessDefinition):
     def addTransition(self, name, transition):
         """See workflow.stateful.IStatefulProcessDefinition"""
         if name in self.transitions:
-            raise KeyError, name
+            raise KeyError(name)
         self.transitions[name] = transition
 
     def getTransition(self, name):

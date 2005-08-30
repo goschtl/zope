@@ -36,7 +36,7 @@ class AttrMapping(object):
     def __getitem__(self, name):
         if name in self.attrs:
             return getattr(self.context, name)
-        raise KeyError, name
+        raise KeyError(name)
 
     def get(self, name, default=None):
         if name in self.attrs:
@@ -50,13 +50,13 @@ class AttrMapping(object):
         if name in self.attrs:
             delattr(self.context, name)
             return
-        raise KeyError, name
+        raise KeyError(name)
 
     def __setitem__(self, name, value):
         if name in self.attrs:
             setattr(self.context, name, value)
             return
-        raise KeyError, name
+        raise KeyError(name)
 
     def __iter__(self):
         return iter(self.attrs)

@@ -38,26 +38,24 @@ class SQLExpr(StringExpr):
             conn_name = econtext.vars['sql_conn']
             adapter = zapi.queryUtility(IZopeDatabaseAdapter, conn_name)
             if adapter is None:
-                raise ConnectionError, \
-                      ("The RDB DA name, '%s' you specified is not "
-                       "valid." %conn_name)
+                raise ConnectionError("The RDB DA name, '%s' you specified is "
+                                      "not valid." % conn_name)
         elif econtext.vars.has_key('rdb') and econtext.vars.has_key('dsn'):
             rdb = econtext.vars['rdb']
             dsn = econtext.vars['dsn']
             try:
                 adapter = zapi.createObject(rdb, dsn)
             except ComponentLookupError:
-                raise ConnectionError, \
-                      ("The factory id, '%s', you specified in the `rdb` "
-                       "attribute did not match any registered factory." %rdb)
+                raise ConnectionError("The factory id, '%s', you specified in "
+                                      "the `rdb` attribute did not match any "
+                                      "registered factory." % rdb)
 
             if not IZopeDatabaseAdapter.providedBy(adapter):
-                raise ConnectionError, \
-                      ("The factory id, '%s', you specifed did not create a "
-                       "Zope Database Adapter component." %rdb)
+                raise ConnectionError("The factory id, '%s', you specifed did "
+                                      "not create a Zope Database Adapter "
+                                      "component." % rdb)
         else:
-            raise ConnectionError, \
-                  'You did not specify a RDB connection.'
+            raise ConnectionError('You did not specify a RDB connection.')
 
         connection = adapter()
         vvals = []

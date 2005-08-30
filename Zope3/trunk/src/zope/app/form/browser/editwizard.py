@@ -50,7 +50,7 @@ class WizardStorage(dict):
         try:
             return self[key]
         except KeyError:
-            raise AttributeError, key
+            raise AttributeError(key)
 
     def __setattr__(self, key, value):
         self[key] = value
@@ -63,8 +63,8 @@ class EditWizardView(EditView):
 
         if self.use_session:
             # Need session for File upload fields
-            raise NotImplementedError, \
-                'Cannot be implemented until we have an ISessionDataManager'
+            raise NotImplementedError('Cannot be implemented until we have an '
+                                      'ISessionDataManager')
         else:
             self.storage = WizardStorage(self.fieldNames, self.adapted)
 
@@ -196,7 +196,7 @@ class EditWizardView(EditView):
             # doesn't conflict with other wizards in progress in other
             # browser windows.
             # Otherwise, no more state to propagate
-            raise NotImplementedError, 'use_session'
+            raise NotImplementedError('use_session')
 
         else:
             current_fields = self.currentPane().names

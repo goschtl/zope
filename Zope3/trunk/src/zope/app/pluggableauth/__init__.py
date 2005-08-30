@@ -138,7 +138,7 @@ class PluggableAuthentication(OrderedContainer):
 
         source = self.get(principal_src_id)
         if source is None:
-            raise PrincipalLookupError, principal_src_id
+            raise PrincipalLookupError(principal_src_id)
         return source.getPrincipal(id)
 
     def getPrincipals(self, name):
@@ -460,7 +460,7 @@ class BTreePrincipalSource(Persistent, Contained):
         try:
             return self._principals_by_number[id]
         except KeyError:
-            raise PrincipalLookupError, id
+            raise PrincipalLookupError(id)
 
     def getPrincipals(self, name):
         """ See `IPrincipalSource`.
