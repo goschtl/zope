@@ -21,6 +21,8 @@ import shutil
 import sys
 import tempfile
 
+import ZConfig
+import zpkgsetup
 import zpkgtools
 
 from zpkgsetup import cfgparser
@@ -38,12 +40,13 @@ from zpkgtools import loader
 from zpkgtools import runlog
 
 
-zpkgsetup_dir = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "zpkgsetup")
+def package_resource(package):
+    dir = os.path.dirname(os.path.abspath(package.__path__[0]))
+    return urlutils.file_url(dir)
 
 DEFAULT_SUPPORT_PACKAGES = [
-    ("zpkgsetup", urlutils.file_url(zpkgsetup_dir)),
+    ("ZConfig",   package_resource(ZConfig)),
+    ("zpkgsetup", package_resource(zpkgsetup)),
     ]
 
 
@@ -382,7 +385,7 @@ class Component:
                 # we need to re-load the specs to get the .source
                 # attribute of the specification objects correct
                 # XXX need test!
-                specs = include.load(source, url=self.url)
+                specs = include.load(source)
             self.ip.addIncludes(self.source, specs.loads)
         specs.collection.cook()
         specs.distribution.cook()
