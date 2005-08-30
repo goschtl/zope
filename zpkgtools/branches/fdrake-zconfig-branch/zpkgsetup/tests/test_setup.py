@@ -60,7 +60,7 @@ class SetupContextTestCase(unittest.TestCase):
         context.walk_packages("zpkgsetup/tests/input")
         exts = [ext.name for ext in context.ext_modules]
         exts.sort()
-        self.assertEqual(exts, ["foo", "package2.sample"])
+        self.assertEqual(exts, ["foo", "package2.Sample"])
         #
         # See the comments in the walk_packages() function for an
         # explanation of the limitations of the method.  The following
