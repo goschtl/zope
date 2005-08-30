@@ -19,12 +19,6 @@ distribution component.  The same kinds of information can be
 described for any component, with the exception that extensions only
 make sense for package components.
 
-Package configuration files use a syntax very like the `ZConfig`_
-package, but fewer features are available.  The specific syntax is
-implemented by the `zpkgsetup.cfgparser` module.
-
-.. _ZConfig:  http://www.zope.org/Members/fdrake/zconfig/
-
 There are only a few types of information which can appear in a
 package configuration file; the file is intended to describe what a
 package provides that is not a module or data file.  The three types

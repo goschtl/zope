@@ -162,11 +162,6 @@ package::
     scripts
   </collection>
 
-What isn't obvious is that one of the files in the ``ZConfig``
-package under revision control isn't included in either the
-distribution root or the component-specific directory (the
-`BRANCHES.txt` file in particular).
-
 
 Embedded Package Definitions
 ----------------------------
@@ -174,7 +169,7 @@ Embedded Package Definitions
 Distribution components can include a `SETUP.cfg` that contains
 information about special files in the component (such as
 documentation and scripts), and what extensions need to be built.
-This file is a ZConfig-like configuration file that can contain the
+This file uses the `ZConfig`_ syntax, and contains the
 following settings, repeated as necessary:
 
 **documentation**

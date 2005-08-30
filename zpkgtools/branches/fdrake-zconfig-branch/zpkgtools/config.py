@@ -13,14 +13,7 @@
 ##############################################################################
 """Configuration support for **zpkg**.
 
-The syntax of the configuration files is incredibly simple, but is
-intended to be a strict subset of the `ZConfig`_.  This allows us to
-switch to `ZConfig`_ in the future if we decide the dependency is
-worth it.
-
-.. _ZConfig:  http://www.zope.org/Members/fdrake/zconfig/
-
-:undocumented: boolean non_empty_string \*_STRINGS
+:undocumented: non_empty_string resource_map
 """
 
 import os

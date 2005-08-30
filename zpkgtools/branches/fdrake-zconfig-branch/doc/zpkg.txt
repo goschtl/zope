@@ -108,7 +108,7 @@ file, the only way to initialize the resource map is by using the
 Configuration File Format
 -------------------------
 
-The configuration files used by **zpkg** use a subset of the
+The configuration files used by **zpkg** use the
 `ZConfig`_ configuration language.
 
 Blank lines and comments (lines that start with ``#`` as the first
@@ -171,8 +171,6 @@ contains::
 
 Note that all ``<resources>`` sections will be processed before any
 external maps are loaded, regardless of ordering.
-
-.. _ZConfig: http://www.zope.org/Members/fdrake/zconfig/
 
 
 Resource Maps
@@ -263,3 +261,5 @@ The fallback location for the ``zpkgsetup`` package is the copy
 provided as part of the running **zpkg**; a location only needs to be
 specified if a different version should be used.  (This seems highly
 unlikely.)
+
+.. include:: links.rst
