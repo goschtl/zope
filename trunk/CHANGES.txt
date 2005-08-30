@@ -1,7 +1,9 @@
 PluginRegistry Product Changelog
 ================================
 
-  After PluginRegistry-1.0.1
+  PluginRegistry-1.0.2 (2005/08/30)
+
+    - Added release management files.
 
     - Repaired product directory computation.
 
