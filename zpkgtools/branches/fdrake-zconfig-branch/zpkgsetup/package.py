@@ -55,7 +55,7 @@ characters.
 :Groups:
   - `Public interface`: loadCollectionInfo loadPackageInfo
   - `Helper functions`: create_extension expand_globs read_package_info
-  - `Datatype functions`: cpp_definition cpp_names path_ref extension
+  - `Datatype functions`: cpp_definition cpp_names path_ref
 
 """
 
@@ -73,6 +73,8 @@ from zpkgsetup import urlutils
 
 
 PACKAGE_CONF = "SETUP.cfg"
+
+get_schema = cfgparser.cachedSchemaLoader("package.xml")
 
 
 class Header(object):
@@ -103,7 +105,7 @@ def loadPackageInfo(pkgname, directory, reldir):
     """
     pkginfo = read_package_info(directory, reldir)
     pkginfo.extensions = [create_extension(ext, pkgname, reldir)
-                          for ext in pkginfo.extension]
+                          for ext in pkginfo.extensions]
     pkginfo.package_headers = [Header(pkgname, path)
                                for path in pkginfo.header]
     return pkginfo
@@ -123,7 +125,7 @@ def loadCollectionInfo(directory, reldir):
     """
     pkginfo = read_package_info(directory, reldir)
     pkginfo.extensions = [create_extension(ext, None, reldir)
-                          for ext in pkginfo.extension]
+                          for ext in pkginfo.extensions]
     pkginfo.package_headers = [Header(None, path)
                                for path in pkginfo.header]
     return pkginfo
@@ -154,10 +156,11 @@ def read_package_info(directory, reldir=None):
         url = "<no file>"
         f = StringIO("")
     try:
-        p = cfgparser.Parser(f, url, PackageSchema(directory, reldir))
-        pkginfo = p.load()
+        pkginfo, _ = cfgparser.loadConfigFile(get_schema(), f, url)
     finally:
         f.close()
+    for name, data_files in pkginfo.data_files:
+        data_files[:] = expand_globs(directory, reldir, data_files)
     pkginfo.documentation = expand_globs(directory, reldir,
                                          pkginfo.documentation)
     pkginfo.header = expand_globs(directory, reldir, pkginfo.header)
@@ -243,9 +246,9 @@ def create_extension(section, pkgname, reldir):
     """
     kwargs = {}
     if pkgname:
-        kwargs["name"] = "%s.%s" % (pkgname, section.name)
+        kwargs["name"] = "%s.%s" % (pkgname, section.getSectionName())
     else:
-        kwargs["name"] = section.name
+        kwargs["name"] = section.getSectionName()
     kwargs["sources"] = [posixpath.join(reldir, fn)
                          for fn in section.source]
     if section.define:
@@ -385,20 +388,10 @@ def cpp_names(s):
 _cpp_ident_match = re.compile("[A-Za-z_][A-Za-z_0-9]*$").match
 
 
-def extension(section):
-    """Transform `section`, checking several fields for valid values.
-
-    :param section: Configuration section.
-    :return: Modified section.
-    """
-    section.name = section.getSectionName()
-    if not section.name:
-        raise ValueError("extensions must be named")
-    if not section.source:
-        raise ValueError("at least one extension source file must be listed")
-    if len(section.language) > 1:
-        raise ValueError("language can only be specified once")
-    return section
+def empty_string(s):
+    if s:
+        raise ValueError("data-file specifications may not have values")
+    return s
 
 
 def path_ref(s):
@@ -456,80 +449,6 @@ def path_ref(s):
     return p
 
 
-class PackageSchema(cfgparser.Schema):
-    """Schema implementation with a <data-files> section type.
-
-    The <data-files> sections have keys that are glob-expanded (based
-    on information passed to the constructor) and combined into a
-    single ``data_files`` member on the resulting package information
-    object.  The value of the ``data_files`` attribute is suitable for
-    passing to the `distutils.core.setup()` function.
-
-    """
-
-    def __init__(self, directory, reldir):
-        cfgparser.Schema.__init__(
-            self,
-            ({"script": path_ref,
-              "documentation": path_ref,
-              "header": path_ref},
-             ["extension"], None),
-            {"extension": ({"source": path_ref, "depends-on": path_ref,
-                            "define" : cpp_definition, "undefine": cpp_names,
-                            "language": str,
-                            },
-                           (), extension),
-             }
-            )
-        self.__cf = None
-        self.__datafiles = None
-        self.__directory = directory
-        self.__reldir = reldir
-
-    def getConfiguration(self):
-        assert self.__cf is None
-        self.__cf = cfgparser.Schema.getConfiguration(self)
-        self.__cf.data_files = []
-        return self.__cf
-
-    def startSection(self, parent, typename, name):
-        if self.__datafiles is not None:
-            raise cfgparser.ConfigurationError(
-                "can't nest another section inside <data-files> section")
-        if typename == "data-files":
-            if not name:
-                raise cfgparser.ConfigurationError(
-                    "<data-files> section must have a name")
-            normname = posixpath.normpath(name)
-            for target, files in self.__cf.data_files:
-                if target == normname:
-                    raise cfgparser.ConfigurationError(
-                        "can't have two sections of the same name:"
-                        " <data-files %s>" % name)
-            self.__datafiles = []
-            self.__cf.data_files.append((normname, self.__datafiles))
-            # The return value is passed around, but that's it
-            return ()
-        else:
-            return cfgparser.Schema.startSection(self, parent, typename, name)
-
-    def endSection(self, parent, typename, name, child):
-        if self.__datafiles is None:
-            cfgparser.Schema.endSection(self, parent, typename, name, child)
-        else:
-            # mutate self.__datafiles since the reference from
-            # self.__cf.data_files is what's actually used
-            self.__datafiles[:] = expand_globs(self.__directory,
-                                               self.__reldir,
-                                               self.__datafiles)
-            self.__datafiles = None
-
-    def addValue(self, section, key, value):
-        if self.__datafiles is not None:
-            if value:
-                raise cfgparser.ConfigurationError(
-                    "each entry in a <data-files> section must be"
-                    " a single glob pattern")
-            self.__datafiles.append(key)
-        else:
-            cfgparser.Schema.addValue(self, section, key, value)
+def data_file_section(section):
+    name = posixpath.normpath(section.getSectionName())
+    return name, section.files.keys()
