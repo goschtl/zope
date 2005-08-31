@@ -133,45 +133,26 @@ class ConfigTestCase(unittest.TestCase):
             os.unlink(path)
 
     def test_nested_resources(self):
-        cf = config.Configuration()
-        fd, path = tempfile.mkstemp(".conf", text=True)
-        f = os.fdopen(fd, "w+")
-        f.write(
+        self.assertRaises(
+            cfgparser.ConfigurationError,
+            self.load_text,
             "<resources>\n"
             "  PKG1  svn://svn.example.net/repos/pkg1/trunk\n"
             "  <resources>\n"
             "    pkg2  svn://svn.example.net/repos/proj/trunk/src/pkg2\n"
             "  </resources>\n"
             "</resources>\n")
-        f.close()
-        where = os.path.dirname(path)
-        whereurl = urlutils.file_url(where)
-        try:
-            self.assertRaises(cfgparser.ConfigurationError,
-                              cf.loadPath, path)
-        finally:
-            os.unlink(path)
 
     def test_exclude_packages(self):
-        cf = config.Configuration()
-        fd, path = tempfile.mkstemp(".conf", text=True)
-        f = os.fdopen(fd, "w+")
-        f.write(
+        cf = self.load_text(
             "<exclude>\n"
             "  reportlab\n"
             "  zope.app\n"
             "  zpkgsetup\n"
             "</exclude>\n")
-        f.close()
-        where = os.path.dirname(path)
-        whereurl = urlutils.file_url(where)
-        try:
-            cf.loadPath(path)
-            cf.exclude_packages.sort()
-            self.assertEqual(cf.exclude_packages,
-                             ['reportlab', 'zope.app', 'zpkgsetup'])
-        finally:
-            os.unlink(path)
+        cf.exclude_packages.sort()
+        self.assertEqual(cf.exclude_packages,
+                         ['reportlab', 'zope.app', 'zpkgsetup'])
 
     def load_text(self, text, path=None, basedir=None):
         if path is None:
