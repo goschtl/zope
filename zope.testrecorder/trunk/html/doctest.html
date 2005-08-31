@@ -16,6 +16,7 @@ function DoctestRenderer(document) {
   this.recorder = top.frames["control"].recorder;
   this.title = this.recorder.testcase.title;
   this.items = this.recorder.testcase.items;
+  this.history = new Array();
 }
 
 DoctestRenderer.prototype.text = function(txt) {
@@ -123,12 +124,20 @@ DoctestRenderer.prototype.shortUrl = function(url) {
 
 DoctestRenderer.prototype.openUrl = function(item) {
   var url = this.pyrepr(this.rewriteUrl(item.url));
-  this.stmt("browser.open(" + url + ")");
+  var history = this.history;
+  // if the user apparently hit the back button, render the event as such
+  if (url == history[history.length - 2]) {
+    this.stmt("browser.back()");
+    history.pop();
+    history.pop();
+  } else {
+    this.stmt("browser.open(" + url + ")");
+  }
 }
 
-var last_loaded_url = '';
 DoctestRenderer.prototype.pageLoad = function(item) {
   var url = this.pyrepr(this.rewriteUrl(item.url));
+  this.history.push(url);
 }
 
 DoctestRenderer.prototype.normalizeWhitespace = function(s) {
