@@ -382,7 +382,7 @@ class Component:
                 # we need to re-load the specs to get the .source
                 # attribute of the specification objects correct
                 # XXX need test!
-                specs = include.load(source, url=self.url)
+                specs = include.load(source)
             self.ip.addIncludes(self.source, specs.loads)
         specs.collection.cook()
         specs.distribution.cook()
