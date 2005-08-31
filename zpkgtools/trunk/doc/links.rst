@@ -6,3 +6,5 @@
 
 .. _zpkg: zpkg.html
 .. |zpkg| replace:: **zpkg**
+
+.. _ZConfig: http://www.zope.org/Members/fdrake/zconfig/

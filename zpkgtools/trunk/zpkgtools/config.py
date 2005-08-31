@@ -13,14 +13,7 @@
 ##############################################################################
 """Configuration support for **zpkg**.
 
-The syntax of the configuration files is incredibly simple, but is
-intended to be a strict subset of the `ZConfig`_.  This allows us to
-switch to `ZConfig`_ in the future if we decide the dependency is
-worth it.
-
-.. _ZConfig:  http://www.zope.org/Members/fdrake/zconfig/
-
-:undocumented: boolean non_empty_string \*_STRINGS
+:undocumented: non_empty_string resource_map
 """
 
 import os
@@ -32,16 +25,8 @@ from zpkgsetup import urlutils
 from zpkgtools import locationmap
 
 
-TRUE_STRINGS =("yes", "true", "on")
-FALSE_STRINGS = ("no", "false", "off")
+get_schema = cfgparser.cachedSchemaLoader("config.xml")
 
-def boolean(string):
-    s = string.lower()
-    if s in FALSE_STRINGS:
-        return False
-    if s in TRUE_STRINGS:
-        return True
-    raise ValueError("unknown boolean value: %r" % string)
 
 def non_empty_string(string):
     if not string:
@@ -49,42 +34,8 @@ def non_empty_string(string):
     return string
 
 
-class Schema(cfgparser.Schema, object):
-
-    def __init__(self, filename, locations):
-        # We can use the base schema for the top-level definitions,
-        # except for the <resources> section.
-        super(Schema, self).__init__(
-            ({"resource-map": non_empty_string,
-              "include-support-code": boolean,
-              "collect-dependencies": boolean,
-              "build-application": boolean,
-              "default-collection": non_empty_string,
-              }, ["resources"], None))
-        self.base = urlutils.file_url(filename)
-        self.filename = filename
-        self.locations = locations
-
-    def startSection(self, parent, typename, name):
-        if typename != "resources":
-            raise cfgparser.ConfigurationError(
-                "only <resources> sections are allowed")
-        if isinstance(parent, locationmap.MapLoader):
-            raise cfgparser.ConfigurationError(
-                "<resources> sections may not be nested")
-        return locationmap.MapLoader(self.base, self.filename, self.locations)
-
-    def addValue(self, section, key, value):
-        if isinstance(section, locationmap.MapLoader):
-            section.add(key, value)
-        else:
-            super(Schema, self).addValue(section, key, value)
-
-    def finishSection(self, section):
-        if isinstance(section, locationmap.MapLoader):
-            return section.mapping
-        return super(Schema, self).finishSection(section)
-
+def resource_map(value):
+    return value.map
 
 
 class Configuration:
@@ -146,37 +97,27 @@ class Configuration:
             basedir = os.path.abspath(basedir)
         else:
             basedir = os.getcwd()
-        p = cfgparser.Parser(f, path, Schema(os.path.abspath(path),
-                                             self.locations))
-        cf = p.load()
-        base = urlutils.file_url(basedir) + "/"
-        for value in cf.resource_map:
-            value = urlparse.urljoin(base, value)
+        schema = get_schema()
+        url = urlutils.file_url(os.path.abspath(path))
+        cf, _ = cfgparser.loadConfigFile(schema, f, url)
+        # deal with embedded resource maps:
+        for map in cf.resource_maps:
+            for key, value in map.iteritems():
+                value = urlparse.urljoin(url, value)
+                if key.endswith(".*"):
+                    wildcard = key[:-2]
+                    if not self.locations._have_wildcard(wildcard):
+                        self.locations._add_wildcard(wildcard, value)
+                elif key not in self.locations:
+                    self.locations[key] = value
+        self.application = cf.build_application
+        self.collect_dependencies = cf.collect_dependencies
+        self.default_collection = cf.default_collection
+        self.include_support_code = cf.include_support_code
+        self.resource_maps = cf.resource_maps
+        for value in cf.location_maps:
+            value = urlparse.urljoin(url, value)
             self.location_maps.append(value)
-        # include-support-code
-        if len(cf.include_support_code) > 1:
-            raise cfgparser.ConfigurationError(
-                "include-support-code can be specified at most once")
-        if cf.include_support_code:
-            self.include_support_code = cf.include_support_code[0]
-        # collect-dependencies
-        if len(cf.collect_dependencies) > 1:
-            raise cfgparser.ConfigurationError(
-                "collect-dependencies can be specified at most once")
-        if cf.collect_dependencies:
-            self.collect_dependencies = cf.collect_dependencies[0]
-        # build-application
-        if len(cf.build_application) > 1:
-            raise cfgparser.ConfigurationError(
-                "build-application can be specified at most once")
-        if cf.build_application:
-            self.application = cf.build_application[0]
-        # default-collection
-        if len(cf.default_collection) > 1:
-            raise cfgparser.ConfigurationError(
-                "default-collection can be specified at most once")
-        if cf.default_collection:
-            self.default_collection = cf.default_collection[0]
 
 
 def defaultConfigurationPath():

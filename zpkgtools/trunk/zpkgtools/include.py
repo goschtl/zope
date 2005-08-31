@@ -27,6 +27,7 @@ import urllib
 
 from zpkgsetup import cfgparser
 from zpkgsetup import loggingapi as logging
+from zpkgsetup import package
 from zpkgsetup import publication
 from zpkgsetup import setup
 from zpkgsetup import urlutils
@@ -39,6 +40,84 @@ logger = logging.getLogger(__name__)
 
 # Name of the configuration file:
 PACKAGE_CONF = "PACKAGE.cfg"
+
+
+get_schema = cfgparser.cachedSchemaLoader("include.xml")
+
+
+def collection_path_ref(value):
+    if value == "-":
+        return value
+    if value:
+        return normalize_path(value, "destination")
+    else:
+        return None
+
+def distribution_path_ref(value):
+    if value == "-":
+        raise ValueError("exclusion not allowed in <distribution>")
+    if value:
+        return normalize_path(value, "destination")
+    else:
+        return None
+
+def load_path_ref(value):
+    if value == "-":
+        raise ValueError("exclusion not allowed in <load>")
+    if not value:
+        raise ValueError("source must be specified in <load>")
+    return normalize_path_or_url(value, "source")
+
+def workspace_path_ref(value):
+    return normalize_path(value, "workspace file")
+
+
+def collection_section(section):
+    excludes = []
+    includes = {}
+    for (k, vs) in section.mapping.iteritems():
+        for v in vs:
+            if v == "-":
+                if len(vs) != 1:
+                    raise ValueError("too many exclusions specified for %s"
+                                     % k)
+                excludes.append(k)
+                continue
+            if v:
+                includes[v] = k
+            else:
+                L = includes.setdefault(None, [])
+                L.append(k)
+    if excludes and includes:
+        raise ValueError(
+            "includes and excludes cannot be mixed in <collection>")
+    section.excludes = excludes
+    section.includes = includes
+    return section
+
+def distribution_section(section):
+    includes = {}
+    for (k, v) in section.mapping.iteritems():
+        if v:
+            includes[v] = k
+        else:
+            L = includes.setdefault(None, [])
+            L.append(k)
+    section.excludes = {}
+    section.includes = includes
+    return section
+
+def load_section(section):
+    includes = {}
+    for (k, v) in section.mapping.iteritems():
+        if v:
+            includes[v] = k
+        else:
+            L = includes.setdefault(None, [])
+            L.append(k)
+    section.excludes = {}
+    section.includes = includes
+    return section
 
 
 class InclusionError(Error):
@@ -74,14 +153,22 @@ def load(sourcedir):
     If there is not specification file, return empty specifications.
     """
     package_conf = os.path.join(sourcedir, PACKAGE_CONF)
-    schema = SpecificationSchema(sourcedir, package_conf)
+    url = urlutils.file_url(os.path.abspath(package_conf))
     if os.path.isfile(package_conf):
-        f = open(package_conf, "rU")
-        try:
-            parser = cfgparser.Parser(f, package_conf, schema)
-            config = parser.load()
-        finally:
-            f.close()
+        cf, _ = cfgparser.loadConfig(get_schema(), package_conf)
+        config = PackageConstruction(sourcedir, package_conf)
+        if cf.collection is not None:
+            config.collection.excludes = cf.collection.excludes
+            config.collection.includes = cf.collection.includes
+        if cf.distribution is not None:
+            config.distribution.includes = cf.distribution.includes
+        if cf.loads is not None:
+            config.loads.includes = cf.loads.includes
+
+        # Now that the configuration object is populated and we know
+        # that the PACKAGE_CONF file exists, make sure it isn't copied
+        # if there's nothing specified in the <collection> section.
+        #
         if config.collection.excludes:
             # XXX should make sure PACKAGE_CONF isn't already excluded
             config.collection.excludes.append(PACKAGE_CONF)
@@ -89,11 +176,19 @@ def load(sourcedir):
             # Nothing included or excluded; simply exclude PACKAGE_CONF:
             config.collection.excludes.append(PACKAGE_CONF)
     else:
-        config = schema.getConfiguration()
+        config = PackageConstruction(sourcedir, None)
     return config
 
 
-def normalize_path(path, type, group):
+class PackageConstruction(object):
+
+    def __init__(self, source, filename):
+        self.loads = Specification(source, filename, "load")
+        self.collection = Specification(source, filename, "collection")
+        self.distribution = Specification(source, filename, "distribution")
+
+
+def normalize_path(path, type):
     if ":" in path:
         scheme, rest = urllib.splittype(path)
         if len(scheme) == 1:
@@ -116,99 +211,13 @@ def normalize_path(path, type, group):
         return np.replace("/", os.sep)
 
 
-def normalize_path_or_url(path, type, group):
+def normalize_path_or_url(path, type):
     if ":" in path:
         scheme, rest = urllib.splittype(path)
         if len(scheme) != 1:
             # should normalize the URL, but skip that for now
             return path
-    return normalize_path(path, type, group)
-
-
-class SpecificationSchema(cfgparser.Schema):
-    """Specialized schema that handles populating a set of Specifications.
-    """
-
-    def __init__(self, source, filename):
-        self.filename = filename
-        self.source = source
-
-    def getConfiguration(self):
-        conf = cfgparser.SectionValue(None, None, None)
-        conf.loads = Specification(
-            self.source, self.filename, "load")
-        conf.collection = Specification(
-            self.source, self.filename, "collection")
-        conf.distribution = Specification(
-            self.source, self.filename, "distribution")
-        return conf
-
-    def startSection(self, parent, typename, name):
-        if not isinstance(parent, cfgparser.SectionValue):
-            raise cfgparser.ConfigurationError("unexpected section")
-        if typename == "collection":
-            return parent.collection
-        elif typename == "distribution":
-            return parent.distribution
-        elif typename == "load":
-            return parent.loads
-        raise cfgparser.ConfigurationError("unknown section type: %s"
-                                           % typename)
-
-    def endSection(self, parent, typename, name, child):
-        if child.includes and child.excludes:
-            # XXX not sure what the exact semantics should be of
-            # allowing both inclusions and exclusions at the same
-            # time; which takes precedence?  what about precedence
-            # when wildcards are involved?
-            raise cfgparser.ConfigurationError(
-                "exclusions and inclusions cannot coexist in a single section")
-
-    def createSection(self, name, typename, typedef):
-        raise NotImplementedError(
-            "createSection() should not be called for SpecificationSchema")
-
-    def finishSection(self, section):
-        return section
-
-    def addValue(self, section, workfile, other):
-        if not isinstance(section, Specification):
-            raise cfgparser.ConfigurationError(
-                "all inclusion lines must be in a section")
-
-        if other == "-":
-            # This is an exclusion.
-            if section.group != "collection":
-                raise cfgparser.ConfigurationError(
-                    "exclusions are only permitted in <collection>")
-            workfile = normalize_path(workfile, "exclusion", section.group)
-            section.excludes.append(workfile)
-            return
-
-        if section.group == "load":
-            if not other:
-                raise cfgparser.ConfigurationError(
-                    "referenced file must be named explicitly"
-                    " in <load> section")
-            # perhaps should make sure workfile and other don't refer
-            # to the same file
-            other = normalize_path_or_url(other, "source", section.group)
-        elif other:
-            # workfile and other have a backward relationship for this:
-            # <destination>
-            #   target workfile
-            # </destination>
-            other = normalize_path(other, "destination", section.group)
-
-        if workfile:
-            workfile = normalize_path(workfile, "workspace file",
-                                      section.group)
-
-        if other:
-            section.includes[other] = workfile
-        else:
-            L = section.includes.setdefault(None, [])
-            L.append(workfile)
+    return normalize_path(path, type)
 
 
 class Specification:

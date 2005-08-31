@@ -150,6 +150,17 @@ class RelativePath:
         self.path = path
 
 
+def resource_name(value):
+    if value.endswith(".*"):
+        if not is_module_name(value[:-2]):
+            raise ValueError("wildcard package name specified, but"
+                             " prefix is not a legal package name: %r"
+                             % value)
+    elif "*" in value:
+        raise ValueError("invalid wildcard specification: %r" % resource)
+    return value
+
+
 class MapLoader:
 
     def __init__(self, base, filename, mapping):

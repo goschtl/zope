@@ -194,7 +194,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
             </collection>
             """)
         specs = include.load(self.source)
-        self.assertRaises(include.InclusionSpecificationError,
+        self.assertRaises(cfgparser.ConfigurationError,
                           specs.collection.cook)
 
     def test_omitted_destination_keeps_name(self):
@@ -234,7 +234,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
             </%s>
             """ % (sectionname, sectionname)
         self.write_file(include.PACKAGE_CONF, text)
-        self.assertRaises(include.InclusionSpecificationError,
+        self.assertRaises(cfgparser.ConfigurationError,
                           include.load, self.source)
 
     # These two tests are really checking internal helpers, but
@@ -251,29 +251,29 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.check_normalize_urls(normalize)
 
     def check_normalize_paths(self, normalize):
-        self.assertEqual(normalize("README.txt", "t", "group"),
+        self.assertEqual(normalize("README.txt", "t"),
                          "README.txt")
-        self.assertEqual(normalize("doc/README.txt", "t", "group"),
+        self.assertEqual(normalize("doc/README.txt", "t"),
                          join("doc", "README.txt"))
-        self.assertEqual(normalize(".", "t", "group"),
+        self.assertEqual(normalize(".", "t"),
                          os.curdir)
         # Ignore this because it looks like a Windows drive letter:
         self.assertRaises(include.InclusionSpecificationError,
-                          normalize, "c:foo/bar", "t", "group")
+                          normalize, "c:foo/bar", "t")
         # Absolute paths are an error as well:
         self.assertRaises(include.InclusionSpecificationError,
-                          normalize, "/absolute/path", "t", "group")
+                          normalize, "/absolute/path", "t")
         # Relative paths that point up the hierarchy are also disallowed:
         self.assertRaises(include.InclusionSpecificationError,
-                          normalize, "abc/../../def.txt", "t", "group")
+                          normalize, "abc/../../def.txt", "t")
         self.assertRaises(include.InclusionSpecificationError,
-                          normalize, "../def.txt", "t", "group")
+                          normalize, "../def.txt", "t")
 
     def check_normalize_urls(self, normalize):
         for url in ("http://www.example.com/index.html",
                     "repository:/Zope3/doc",
                     "cvs://cvs.zope.com/cvs-repository:/Zope3/doc:HEAD"):
-            self.assertEqual(normalize(url, "t", "group"), url)
+            self.assertEqual(normalize(url, "t"), url)
 
     def test_createDistributionTree_creates_destination(self):
         os.rmdir(self.destination)

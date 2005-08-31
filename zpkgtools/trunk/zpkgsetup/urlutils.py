@@ -17,6 +17,13 @@ __docformat__ = "reStructuredText"
 
 import posixpath
 import urllib
+import urlparse
+
+# svn: and svn+ssh: weren't handled properly by urlparse before Python
+# 2.4.2 and 2.5; this makes all versions handled them correctly:
+#
+if "svn" not in urlparse.uses_netloc:
+    urlparse.uses_netloc.extend(["svn", "svn+ssh"])
 
 
 def file_url(path):
