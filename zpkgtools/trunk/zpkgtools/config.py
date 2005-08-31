@@ -38,6 +38,10 @@ def resource_map(value):
     return value.map
 
 
+def exclude(value):
+    return value.mapping.keys()
+
+
 class Configuration:
     """Configuration settings for **zpkg**.
 
@@ -48,6 +52,8 @@ class Configuration:
 
       - `include_support_code`: Indicates whether support code should
         be included in distributions.
+
+      - `exclude_packages`: Resources to exclude from the package.
     """
 
     def __init__(self):
@@ -56,6 +62,7 @@ class Configuration:
         self.collect_dependencies = False
         self.location_maps = []
         self.locations = locationmap.LocationMap()
+        self.exclude_packages = []
         self.include_support_code = True
         self.default_collection = None
 
@@ -115,6 +122,7 @@ class Configuration:
         self.default_collection = cf.default_collection
         self.include_support_code = cf.include_support_code
         self.resource_maps = cf.resource_maps
+        self.exclude_packages = cf.exclude_packages
         for value in cf.location_maps:
             value = urlparse.urljoin(url, value)
             self.location_maps.append(value)

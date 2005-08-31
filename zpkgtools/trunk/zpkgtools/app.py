@@ -88,6 +88,8 @@ class Application:
         if cf.application:
             self.options.application = True
 
+        self.exclude_packages = sets.Set(cf.exclude_packages)
+
         # XXX Hack: This should be part of BuilderApplication
         if options.include_support_code is None:
             options.include_support_code = cf.include_support_code
@@ -135,7 +137,6 @@ class BuilderApplication(Application):
         self.support_packages = DEFAULT_SUPPORT_PACKAGES[:]
         self.support_packages.extend(
             [(pkg, None) for pkg in options.support_packages])
-        self.exclude_packages = sets.Set()
         for pkg in options.exclude_packages:
             if pkg not in self.exclude_packages:
                 self.exclude_packages.add(pkg)
@@ -146,7 +147,7 @@ class BuilderApplication(Application):
         This method does everything needed to knit a distribution
         together; it should be refactored substantially.
         """
-        dep_sources = {} 
+        dep_sources = {}
         top = self.get_component(self.resource, self.resource_url)
         top.write_package(self.destination)
         distclass = self.options.distribution_class

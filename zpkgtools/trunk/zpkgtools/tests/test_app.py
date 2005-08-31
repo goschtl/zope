@@ -411,6 +411,19 @@ class BuilderApplicationTestCase(unittest.TestCase):
         # convert package_map to URL so relative names are resolved properly
         return "file://" + urllib.pathname2url(package_map)
 
+    def test_creating_complete_exclude_resources_list(self):
+        config = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              "input", "exclude.cfg")
+        package_map = self.createPackageMap()
+
+        app = self.createApplication(
+            ["-x", "foo.baz", "--exclude", "this",
+             "-C", config, "-m", package_map, "package"])
+        excluded = list(app.exclude_packages)
+        excluded.sort()
+        self.assertEqual(excluded,
+                         ["blah", "foo.bar", "foo.baz", "this"])
+
     def test_building_distribution_tree_only(self):
         # This builds a package and checks that the tree_only flag
         # causes the application to build a tree in the current

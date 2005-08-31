@@ -33,6 +33,24 @@
     </description>
   </multikey>
 
+  <sectiontype name="exclude"
+               datatype=".config.exclude"
+               keytype=".config.non_empty_string"
+               >
+    <key name="+"
+         attribute="mapping"
+         type=".config.non_empty_string"
+         />
+  </sectiontype>
+
+  <section type="exclude"
+           attribute="exclude_packages"
+           >
+    <description>
+      A list of packages that are excluded from the collection.
+    </description>
+  </section>
+
   <key name="build-application"
        datatype="boolean"
        required="no"

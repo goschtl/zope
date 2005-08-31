@@ -152,6 +152,27 @@ class ConfigTestCase(unittest.TestCase):
         finally:
             os.unlink(path)
 
+    def test_exclude_packages(self):
+        cf = config.Configuration()
+        fd, path = tempfile.mkstemp(".conf", text=True)
+        f = os.fdopen(fd, "w+")
+        f.write(
+            "<exclude>\n"
+            "  reportlab\n"
+            "  zope.app\n"
+            "  zpkgsetup\n"
+            "</exclude>\n")
+        f.close()
+        where = os.path.dirname(path)
+        whereurl = urlutils.file_url(where)
+        try:
+            cf.loadPath(path)
+            cf.exclude_packages.sort()
+            self.assertEqual(cf.exclude_packages,
+                             ['reportlab', 'zope.app', 'zpkgsetup'])
+        finally:
+            os.unlink(path)
+
     def load_text(self, text, path=None, basedir=None):
         if path is None:
             if basedir is None:

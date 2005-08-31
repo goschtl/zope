@@ -172,6 +172,11 @@ contains::
 Note that all ``<resources>`` sections will be processed before any
 external maps are loaded, regardless of ordering.
 
+Optionally, there is a ``<exclude>`` section in which you can specify the
+packages/resources that should be excluded (in other words not loaded) from
+the package. Every line should specify one package. This is equivalent of
+specifying **-x** or **--exclude** for every excluded package.
+
 
 Resource Maps
 -------------
