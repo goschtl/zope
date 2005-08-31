@@ -41,7 +41,7 @@ from zpkgtools import runlog
 
 
 def package_resource(package):
-    dir = os.path.dirname(os.path.abspath(package.__path__[0]))
+    dir = os.path.abspath(package.__path__[0])
     return urlutils.file_url(dir)
 
 DEFAULT_SUPPORT_PACKAGES = [
@@ -302,9 +302,9 @@ class BuilderApplication(Application):
             self.logger.debug("loading resource '%s' from %s",
                               name, url)
             source = self.loader.load_mutable_copy(url)
-            tests_dir = os.path.join(source, "tests")
-            if os.path.exists(tests_dir):
-                rmtree_force(tests_dir)
+##            tests_dir = os.path.join(source, "tests")
+##            if os.path.exists(tests_dir):
+##                rmtree_force(tests_dir)
 
         self.ip.copyTree(source, destination)
 

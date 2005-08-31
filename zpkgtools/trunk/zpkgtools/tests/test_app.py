@@ -471,6 +471,10 @@ class BuilderApplicationTestCase(unittest.TestCase):
             self.assert_(isfile(pd, "Support", "MANIFEST"))
             self.assert_(isfile(pd, "Support", "README.txt"))
             self.assert_(isfile(pd, "Support", "setup.py"))
+            # Check for a few things inside the support packages themselves,
+            # to make sure we copied in the right thing:
+            self.assert_(isfile(pd, "Support", "zpkgsetup", "__init__.py"))
+            self.assert_(isfile(pd, "Support", "zpkgsetup", "setup.py"))
         finally:
             shutil.rmtree(pd)
 
