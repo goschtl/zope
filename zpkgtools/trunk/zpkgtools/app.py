@@ -302,9 +302,6 @@ class BuilderApplication(Application):
             self.logger.debug("loading resource '%s' from %s",
                               name, url)
             source = self.loader.load_mutable_copy(url)
-##            tests_dir = os.path.join(source, "tests")
-##            if os.path.exists(tests_dir):
-##                rmtree_force(tests_dir)
 
         self.ip.copyTree(source, destination)
 
