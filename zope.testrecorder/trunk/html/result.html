@@ -18,6 +18,7 @@ function GenericRenderer(document) {
   this.title = this.recorder.testcase.title;
   this.items = this.recorder.testcase.items;
   this.skip = [];
+  this.row_odd_even = false;
 }
 
 generic = new GenericRenderer(document);
@@ -60,9 +61,10 @@ GenericRenderer.prototype.render = function() {
 }
 
 GenericRenderer.prototype.row = function(item, txt, i) {
-  var bgcolor = (i == 0 || Math.floor(i/2) == i/2) ? "#c0c0c0" : "#ffffff";
+  this.row_odd_even = !this.row_odd_even;
+  var bgcolor = this.row_odd_even ? "#c0c0c0" : "#ffffff";
   var tr = this.document.createElement("tr");
-  tr.setAttribute("bgcolor", bgcolor);
+  tr.style.backgroundColor = bgcolor;
   var td = this.document.createElement("td");
   td.setAttribute("width", "16");
   tr.appendChild(td);
@@ -70,7 +72,7 @@ GenericRenderer.prototype.row = function(item, txt, i) {
   cb.setAttribute("type", "checkbox");
   cb.setAttribute("name", "item");
   cb.setAttribute("value", i);
-  cb.onchange = this.toggle;
+  cb.onclick = this.toggle;
   td.appendChild(cb);
   td = this.document.createElement("td");
   var tn = this.document.createTextNode(txt);
@@ -80,20 +82,18 @@ GenericRenderer.prototype.row = function(item, txt, i) {
 }
 
 GenericRenderer.prototype.toggle = function(e) {
-  var e = new top.frames["control"].TestRecorder.Event(e);
-  var t = e.target();
-  var c = t.parentNode;
-  var r = c.parentNode;
+  var t = this;
+  var row = t.parentNode.parentNode;
 
   var i = parseInt(t.value);
   if (generic.skip[i]) {
-    var bgcolor = (i == 0 || Math.floor(i/2) == i/2) ? "#c0c0c0" : "#ffffff";
-    r.setAttribute("bgcolor", bgcolor);
-    generic.skip[i] = null;
+    row.style.backgroundColor = row.getAttribute("original_bgcolor");
+    generic.skip[i] = false;
   }
   else {
+    row.setAttribute("original_bgcolor", row.style.backgroundColor);
+    row.style.backgroundColor = '#ff0000';
     generic.skip[i] = true;
-    r.setAttribute("bgcolor", "red");
   }
   return true;
 }
