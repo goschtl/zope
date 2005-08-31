@@ -154,6 +154,14 @@ class ConfigTestCase(unittest.TestCase):
         self.assertEqual(cf.exclude_packages,
                          ['reportlab', 'zope.app', 'zpkgsetup'])
 
+    def test_exclude_packages_does_not_allow_value(self):
+        self.assertRaises(
+            cfgparser.ConfigurationError,
+            self.load_text,
+            "<exclude>\n"
+            "  reportlab   unnecessary junk\n"
+            "</exclude>\n")
+
     def load_text(self, text, path=None, basedir=None):
         if path is None:
             if basedir is None:

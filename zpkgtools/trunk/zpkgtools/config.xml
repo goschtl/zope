@@ -39,7 +39,7 @@
                >
     <key name="+"
          attribute="mapping"
-         type=".config.non_empty_string"
+         datatype=".config.empty_string"
          />
   </sectiontype>
 

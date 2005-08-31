@@ -28,6 +28,12 @@ from zpkgtools import locationmap
 get_schema = cfgparser.cachedSchemaLoader("config.xml")
 
 
+def empty_string(string):
+    if string:
+        raise ValueError("no value can be associated with an exclusion")
+    return string
+
+
 def non_empty_string(string):
     if not string:
         raise ValueError("value cannot be empty")
