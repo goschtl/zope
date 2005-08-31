@@ -630,9 +630,14 @@ TestRecorder.ContextMenu.prototype.checkValueContains = function() {
 }
 
 TestRecorder.ContextMenu.prototype.innertext = function(e) {
-  var r = recorder.window.document.createRange();
-  r.selectNodeContents(e);
-  return r.toString();
+  var doc = recorder.window.document;
+  if (document.createRange) {
+    var r = recorder.window.document.createRange();
+    r.selectNodeContents(e);
+    return r.toString();
+  } else {
+    return e.innerText;
+  }
 }
 
 TestRecorder.ContextMenu.prototype.checkText = function() {
