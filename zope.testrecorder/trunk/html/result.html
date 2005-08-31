@@ -223,18 +223,9 @@ GenericRenderer.prototype.checkImageSrc = function(item) {
   return "Check image src == " + src;
 }
 
-
-
-
-
-
-
-
-
-
+// page-level code
 
 function onpageload() {
-  var generic = new GenericRenderer(document);
   generic.render();
 }
 
@@ -251,7 +242,7 @@ function render() {
 
 <div id="header">
 <p>
-The results of the test recording are listed below. Select an output format 
+The results of the test recording are listed below. Select an output format
 and click <strong>render</strong> to render the test.
 </p>
 </div>
@@ -262,16 +253,15 @@ and click <strong>render</strong> to render the test.
 <select name="format">
   <option value="doctest">Python Doctest</option>
   <option value="selenium">Selenium Test</option>
-</select> 
-<input type="submit" name="submit" value="Render" 
+</select>
+<input type="submit" name="submit" value="Render"
  onclick="render(); return false;">
 </p>
 </div>
 
 <div>
-<table id="items" width="98%" cellpadding="4" cellspacing="0" border="0" 
- class="results">
-
+<table width="98%" cellpadding="4" cellspacing="0" border="0" class="results">
+<tbody id="items"></tbody>
 </table>
 </div>
 

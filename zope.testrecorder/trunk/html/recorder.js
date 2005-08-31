@@ -333,10 +333,8 @@ TestRecorder.ElementInfo = function(element) {
 TestRecorder.ElementInfo.prototype.findLabelText = function(element) {
   var label = this.findContainingLabel(element)
   var text;
-//  alert(label);
   if (!label) {
     label = this.findReferencingLabel(element);
-//    alert(label);
   }
   if (label) {
     text = label.innerHTML;
@@ -366,8 +364,6 @@ TestRecorder.ElementInfo.prototype.findContainingLabel = function(element) {
   var parent = element.parentNode;
   if (!parent)
     return undefined;
-//  alert(parent);
-//  alert(parent.tagName);
   if (parent.tagName && parent.tagName.toLowerCase() == 'label')
     return parent;
   else
@@ -394,7 +390,6 @@ TestRecorder.CommentEvent = function(text) {
 TestRecorder.OpenURLEvent = function(url) {
   this.type = TestRecorder.EventTypes.OpenUrl;
   this.url = url;
-  this.viaBack = back
 }
 
 TestRecorder.PageLoadEvent = function(url) {
@@ -833,25 +828,26 @@ TestRecorder.Recorder.prototype.check = function(e) {
 }
 
 TestRecorder.Recorder.prototype.onpageload = function() {
-  // This must be called each time a new document is fully loaded into the
-  // testing target frame to ensure that events are captured for the page.
   if (this.active) {
+    // This must be called each time a new document is fully loaded into the
+    // testing target frame to ensure that events are captured for the page.
     recorder.captureEvents();
-  }
-  // if a new page has loaded, but there doesn't seem to be a reason why, then
-  // we need to record the fact or the information will be lost
-  if (this.testcase.peek()) {
-    var last_event_type = this.testcase.peek().type;
-    if (last_event_type != TestRecorder.EventTypes.OpenUrl && 
-        last_event_type != TestRecorder.EventTypes.Click && 
-        last_event_type != TestRecorder.EventTypes.Submit) {
-      this.open(this.window.location.toString());
-    }
-  }
 
-  // record the fact that a page load happened
-  if (this.window)
-    this.pageLoad();
+    // if a new page has loaded, but there doesn't seem to be a reason why, 
+    // then we need to record the fact or the information will be lost
+    if (this.testcase.peek()) {
+      var last_event_type = this.testcase.peek().type;
+      if (last_event_type != TestRecorder.EventTypes.OpenUrl && 
+          last_event_type != TestRecorder.EventTypes.Click && 
+          last_event_type != TestRecorder.EventTypes.Submit) {
+        this.open(this.window.location.toString());
+      }
+    }
+
+    // record the fact that a page load happened
+    if (this.window)
+      this.pageLoad();
+  }
 }
 
 TestRecorder.Recorder.prototype.onchange = function(e) {
@@ -865,7 +861,6 @@ TestRecorder.Recorder.prototype.onchange = function(e) {
 TestRecorder.Recorder.prototype.onselect = function(e) {
   var e = new TestRecorder.Event(e);
   recorder.log("select: " + e.target());
-  //alert("select");
 }
 
 TestRecorder.Recorder.prototype.onsubmit = function(e) {
@@ -932,7 +927,7 @@ TestRecorder.Recorder.prototype.oncontextmenu = function(e) {
 TestRecorder.Recorder.prototype.onkeypress = function(e) {
   var e = new TestRecorder.Event(e);
   if (e.shiftkey() && (e.keychar() == 'C')) {
-    alert("comment box");
+    // TODO show comment box here
   }
   return true;
 }

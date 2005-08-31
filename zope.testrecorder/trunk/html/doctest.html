@@ -62,6 +62,7 @@ d[TestRecorder.EventTypes.CheckDisabled] = "checkDisabled";
 d[TestRecorder.EventTypes.CheckSelectValue] = "checkSelectValue";
 d[TestRecorder.EventTypes.CheckSelectOptions] = "checkSelectOptions";
 d[TestRecorder.EventTypes.CheckImageSrc] = "checkImageSrc";
+d[TestRecorder.EventTypes.PageLoad] = "pageLoad";
 DoctestRenderer.prototype.dispatch = d;
 
 var cc = TestRecorder.EventTypes;
@@ -123,6 +124,11 @@ DoctestRenderer.prototype.shortUrl = function(url) {
 DoctestRenderer.prototype.openUrl = function(item) {
   var url = this.pyrepr(this.rewriteUrl(item.url));
   this.stmt("browser.open(" + url + ")");
+}
+
+var last_loaded_url = '';
+DoctestRenderer.prototype.pageLoad = function(item) {
+  var url = this.pyrepr(this.rewriteUrl(item.url));
 }
 
 DoctestRenderer.prototype.normalizeWhitespace = function(s) {
