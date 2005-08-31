@@ -13,13 +13,20 @@
 ##############################################################################
 
 import os
+import site
+import sys
+
+here = os.path.dirname(os.path.abspath(__file__))
+buildsupport = os.path.join(here, "buildsupport")
+
+sys.path.insert(0, buildsupport)
+# Process *.pth files from buildsupport/:
+site.addsitedir(buildsupport)
 
 import zpkgsetup.package
 import zpkgsetup.publication
 import zpkgsetup.setup
 
-
-here = os.path.dirname(os.path.abspath(__file__))
 
 context = zpkgsetup.setup.SetupContext(
     "Zope", "3.1.0a42", __file__)
