@@ -88,7 +88,13 @@ class ZODBRoleManager( BasePlugin ):
 
         """ See IRolesPlugin.
         """
-        return tuple( self._principal_roles.get( principal.getId(), () ) )
+        result = list( self._principal_roles.get( principal.getId(), () ) )
+
+        getGroups = getattr( principal, 'getGroups', lambda x: () )
+        for group_id in getGroups():
+            result.extend( self._principal_roles.get( group_id, () ) )
+
+        return tuple( result )
 
     #
     #   IRoleEnumerationPlugin implementation

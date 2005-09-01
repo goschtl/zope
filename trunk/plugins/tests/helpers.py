@@ -37,9 +37,13 @@ class FauxSmartPAS( FauxContainer ):
 
 class DummyUser:
 
-    def __init__( self, id ):
+    def __init__( self, id, groups=() ):
         self._id = id
+        self._groups = groups
 
     def getId( self ):
         return self._id
+
+    def getGroups( self ):
+        return self._groups
 

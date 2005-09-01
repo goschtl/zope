@@ -283,6 +283,26 @@ class ZODBRoleManagerTests( unittest.TestCase
         self.failUnless( 'test1' in roles )
         self.failUnless( 'test2' in roles )
 
+    def test_assignRoleToPrincipal_group( self ):
+
+        from Products.PluggableAuthService.tests.test_PluggableAuthService \
+            import FauxRoot
+
+        root = FauxRoot()
+        zrm = self._makeOne( id='assign_user' ).__of__( root )
+        zrm.addRole( 'test1' )
+        zrm.addRole( 'test2' )
+        user = DummyUser( 'foo', ( 'qux', ) )
+
+        roles = zrm.getRolesForPrincipal( user )
+        self.assertEqual( len( roles ), 0 )
+
+        zrm.assignRoleToPrincipal( 'test1', 'qux' )
+
+        roles = zrm.getRolesForPrincipal( user )
+        self.assertEqual( len( roles ), 1 )
+        self.failUnless( 'test1' in roles )
+
     def test_assignRoleToPrincipal_new( self ):
 
         root = FauxPAS()

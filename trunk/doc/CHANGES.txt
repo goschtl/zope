@@ -2,6 +2,9 @@ PluggableAuthService changelog
 
   After PluggableAuthService 1.1b2
 
+    - Made ZODBRoleManager plugin check grants to the principal's groups,
+      as well as those made to the principal directly.
+
     - Repaired unit test breakage (unittest.TestCase instances have
       'failUnless'/'failIf', rather than 'assertTrue'/'assertFalse').
 
