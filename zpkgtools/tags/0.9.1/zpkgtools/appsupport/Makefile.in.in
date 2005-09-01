@@ -1,0 +1,27 @@
+# Makefile.in for @PACKAGE_FULL_NAME@ @PACKAGE_VERSION@
+#
+# This makefile provides two interesting targets:
+#
+#     build    build the software
+#     install  install the software
+
+default: build
+
+PYTHON=@PYTHON@
+TESTOPTS=-v
+
+prefix=@prefix@
+
+.PHONY: build
+
+build:
+	$(PYTHON) install.py -q build
+
+# The "install" target skips the distutils build step since that's
+# handled via the dependency on the build target.
+#
+install: build
+	$(PYTHON) install.py -q install --skip-build --home "$(prefix)"
+
+check test: build
+	$(PYTHON) test.py $(TESTOPTS)
