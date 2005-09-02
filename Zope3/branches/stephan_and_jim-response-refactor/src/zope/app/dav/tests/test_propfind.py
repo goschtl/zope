@@ -84,7 +84,7 @@ def _createRequest(body=None, headers=None, skip_headers=None):
             if _environ.has_key(key.upper()):
                 del _environ[key.upper()]
 
-    request = TestRequest(StringIO(body), StringIO(), _environ)
+    request = TestRequest(StringIO(body), _environ)
     return request
 
 class FileSized(object):
