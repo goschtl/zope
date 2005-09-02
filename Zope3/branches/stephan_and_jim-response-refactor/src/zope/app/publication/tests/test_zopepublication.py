@@ -327,21 +327,20 @@ class ZopePublicationErrorHandling(BasePublicationTests):
         self.assertEqual(self.request, adapter.request)
 
     def testExceptionResetsResponse(self):
-        self.request._response = BrowserResponse(
-            self.request.response._outstream)
-        self.request.response.setHeader('Content-Type', 'application/pdf')
-        self.request.response.setCookie('spam', 'eggs')
+        from zope.publisher.browser import TestRequest
+        request = TestRequest()
+        request.response.setHeader('Content-Type', 'application/pdf')
+        request.response.setCookie('spam', 'eggs')
         from ZODB.POSException import ConflictError
         try:
             raise ConflictError
         except:
             pass
         self.publication.handleException(
-            self.object, self.request, sys.exc_info(), retry_allowed=False)
-        self.request.response.outputBody()
-        self.assertEqual(self.request.response.getHeader('Content-Type'),
+            self.object, request, sys.exc_info(), retry_allowed=False)
+        self.assertEqual(request.response.getHeader('Content-Type'),
                          'text/html;charset=utf-8')
-        self.assertEqual(self.request.response._cookies, {})
+        self.assertEqual(request.response._cookies, {})
 
     def testAbortOrCommitTransaction(self):
         txn = transaction.get()
