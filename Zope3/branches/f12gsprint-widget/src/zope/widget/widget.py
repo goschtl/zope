@@ -3,6 +3,7 @@
 from zope import interface
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.schema.interfaces import ValidationError
+from xml.sax.saxutils import quoteattr
 
 import zope.widget.interfaces
 
@@ -120,14 +121,19 @@ class AdvancedBaseInputWidget(BaseInputWidget):
 
 class TextLineWidget(BaseInputWidget):
     
-    #template = namedtemplate.NamedTemplate('default')    
+    #template = namedtemplate.NamedTemplate('default')   
+    
+    t = ("""<input type="text" value=%(value)s name=%(name)s """
+         """id=%(name)s size="20" />""")
+    
 
     def __call__(self):
         if self._valueForced:
             value = self.getValue()
         else:
             value = self._state
-        return self.template(value=value)
+        return self.t % {'value':quoteattr(value or ''),
+                         'name':quoteattr(self.name)}
 
     #("""<input type="text" value=%(value)s name=%(name)s """
     #            """id=%(name)s size="20" />""")

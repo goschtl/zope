@@ -41,6 +41,8 @@ default value and will have a name equivalent to the field name.
     >>> w.getState() # None
     >>> w.hasState()
     False
+    >>> w()
+    '<input type="text" value="" name="test_name" id="test_name" size="20" />'
 
 Because we have set no value for the widget, nor was any available in the 
 request, a required field will raise a RequiredMissing is getValue is called.
