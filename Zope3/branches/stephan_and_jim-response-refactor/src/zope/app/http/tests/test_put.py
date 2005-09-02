@@ -52,7 +52,7 @@ class TestNullPUT(PlacelessSetup, TestCase):
     def test(self):
         container = Container()
         content = "some content\n for testing"
-        request = TestRequest(StringIO(content), StringIO(),
+        request = TestRequest(StringIO(content), 
                               {'CONTENT_TYPE': 'test/foo',
                                'CONTENT_LENGTH': str(len(content)),
                                })
@@ -73,7 +73,7 @@ class TestNullPUT(PlacelessSetup, TestCase):
     def test_bad_content_header(self):
         container = Container()
         content = "some content\n for testing"
-        request = TestRequest(StringIO(content), StringIO(),
+        request = TestRequest(StringIO(content), 
                               {'CONTENT_TYPE': 'test/foo',
                                'CONTENT_LENGTH': str(len(content)),
                                'HTTP_CONTENT_FOO': 'Bar',
@@ -92,7 +92,7 @@ class TestFilePUT(PlacelessSetup, TestCase):
     def test(self):
         file = File("thefile", "text/x", "initial content")
         content = "some content\n for testing"
-        request = TestRequest(StringIO(content), StringIO(),
+        request = TestRequest(StringIO(content), 
                               {'CONTENT_TYPE': 'test/foo',
                                'CONTENT_LENGTH': str(len(content)),
                                })
@@ -104,7 +104,7 @@ class TestFilePUT(PlacelessSetup, TestCase):
     def test_bad_content_header(self):
         file = File("thefile", "text/x", "initial content")
         content = "some content\n for testing"
-        request = TestRequest(StringIO(content), StringIO(),
+        request = TestRequest(StringIO(content), 
                               {'CONTENT_TYPE': 'test/foo',
                                'CONTENT_LENGTH': str(len(content)),
                                'HTTP_CONTENT_FOO': 'Bar',
