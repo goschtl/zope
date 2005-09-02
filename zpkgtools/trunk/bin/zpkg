@@ -16,14 +16,12 @@
 import os
 import sys
 
-try:
-    import zpkgtools
-except ImportError:
-    # Not installed; running from development copy:
-    here = os.path.dirname(os.path.realpath(__file__))
-    basedir = os.path.dirname(here)
-    sys.path.append(basedir)
-    import zpkgtools
+here = os.path.dirname(os.path.realpath(__file__))
+basedir = os.path.dirname(here)
+
+initfn = os.path.join(basedir, "zpkgtools", "__init__.py")
+if os.path.isfile(initfn):
+    sys.path.insert(0, basedir)
 
 from zpkgsetup import loggingapi as logging
 
