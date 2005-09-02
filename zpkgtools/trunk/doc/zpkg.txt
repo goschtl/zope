@@ -92,6 +92,7 @@ The following command line options are provided:
   distribution.  Dependencies of the named package will be included
   due to `PACKAGE` needing them, but may be included due to an another
   dependency.  This option may be given as many times as needed.
+  Package wildcards are not supported.
 
 If neither **-C** nor **-f** is specified on the command line, a
 default configuration file is loaded if it exists.  This is
@@ -176,6 +177,17 @@ Optionally, there is a ``<exclude>`` section in which you can specify the
 packages/resources that should be excluded (in other words not loaded) from
 the package. Every line should specify one package. This is equivalent of
 specifying **-x** or **--exclude** for every excluded package.
+
+For example, we can exclude ``zope.interface`` and ``zope.component``
+using::
+
+  <exclude>
+    zope.interface
+    zope.component
+  </exclude>
+
+Note that neither the ``<exclude>`` section nor the **-x** and
+**--exclude** command-line options support wildcards.
 
 
 Resource Maps
