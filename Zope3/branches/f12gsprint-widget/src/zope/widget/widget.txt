@@ -2,15 +2,6 @@
 Widget API
 =====
 
-[...]
-
-
-=====================
-
-
-
-
-
 
     >>> from zope.widget import widget, interfaces
 
