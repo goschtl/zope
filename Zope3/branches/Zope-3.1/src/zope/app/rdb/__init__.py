@@ -290,21 +290,28 @@ class ZopeCursor(object):
             return self.cursor.execute(operation)
         return self.cursor.execute(operation, parameters)
 
+    def executemany(self, operation, parameters):
+        """Executes an operation, registering the underlying
+        connection with the transaction system.  """
+        operation, parameters = self._prepareOperation(operation, parameters)
+        method = getattr(self.cursor, "executemany", self.cursor.execute)
+        self.connection.registerForTxn()
+        return method(operation, parameters)
+
     def _prepareOperation(self, operation, parameters):
         encoding = self.connection.getTypeInfo().getEncoding()
         if isinstance(operation, unicode):
             operation = operation.encode(encoding)
+        parameters = self._prepareParameters(parameters, encoding)
+        return operation, parameters
 
+    def _prepareParameters(self, parameters, encoding):
         if isinstance(parameters, list):
             for i, v in enumerate(parameters):
                 if isinstance(v, unicode):
                     parameters[i] = v.encode(encoding)
-                elif isinstance(v, tuple):
-                    values = list(v)
-                    for j, v in enumerate(values):
-                        if isinstance(v, unicode):
-                            values[j] = v.encode(encoding)
-                    parameters[i] = tuple(values)
+                else:
+                    parameters[i] = self._prepareParameters(v, encoding)
         elif isinstance(parameters, tuple):
             parameters = list(parameters)
             for i, v in enumerate(parameters):
@@ -315,7 +322,7 @@ class ZopeCursor(object):
             for k, v in parameters.items():
                 if isinstance(v, unicode):
                     parameters[k] = v.encode(encoding)
-        return operation, parameters
+        return parameters
 
     def __getattr__(self, key):
         return getattr(self.cursor, key)

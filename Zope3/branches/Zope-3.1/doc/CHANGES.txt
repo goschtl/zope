@@ -658,6 +658,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #445: gadflyDA not full implementation
+
       - Request factories were not uniformly pluggable.  All are pluggable now
         without having to write a new server.
 
