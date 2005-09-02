@@ -15,70 +15,54 @@
 
 $Id$
 """
-from zope.server.http.httpserver import HTTPServer
+import zope.deprecation
+from zope.server.http import wsgihttpserver
 from zope.publisher.publish import publish
 import zope.security.management
 
 
-class PublisherHTTPServer(HTTPServer):
-    """Zope Publisher-specific HTTP Server"""
+class PublisherHTTPServer(wsgihttpserver.WSGIHTTPServer):
 
     def __init__(self, request_factory, sub_protocol=None, *args, **kw):
 
-        # This 'adjustment' to args[0] (the hostname for the HTTP server)
-        # under Windows is to get Zope to accept connections from other machines
-        # when the host name is omitted from the server address (in zope.conf).
-        # The address comes in as 'localhost' from ZConfig by way of some
-        # dubious special handling. See collector issue 383 for more info.
-        import sys
-        if sys.platform[:3] == "win" and args[0] == 'localhost':
-            args = ('',) + args[1:]
+        def application(environ, start_response):
+            request = request_factory(environ['wsgi.input'], environ)
+            response = request.response
+            publish(request)
+            start_response(response.getStatusString(), response.getHeaders())
+            return response.result.body
+
+        return super(PublisherHTTPServer, self).__init__(
+            application, sub_protocol, *args, **kw)
 
 
-        # The common HTTP
-        self.request_factory = request_factory
+class PMDBHTTPServer(wsgihttpserver.WSGIHTTPServer):
 
-        # An HTTP server is not limited to serving up HTML; it can be
-        # used for other protocols, like XML-RPC, SOAP and so as well
-        # Here we just allow the logger to output the sub-protocol type.
-        if sub_protocol:
-            self.SERVER_IDENT += ' (%s)' %str(sub_protocol)
+    def __init__(self, request_factory, sub_protocol=None, *args, **kw):
 
-        HTTPServer.__init__(self, *args, **kw)
-
-    def executeRequest(self, task):
-        """Overrides HTTPServer.executeRequest()."""
-        env = task.getCGIEnvironment()
-        instream = task.request_data.getBodyStream()
-
-        request = self.request_factory(instream, task, env)
-        response = request.response
-        response.setHeaderOutput(task)
-        response.setHTTPTransaction(task)
-        publish(request)
-
-
-class PMDBHTTPServer(PublisherHTTPServer):
-    """Enter the post-mortem debugger when there's an error"""
-
-    def executeRequest(self, task):
-        """Overrides HTTPServer.executeRequest()."""
-        env = task.getCGIEnvironment()
-        instream = task.request_data.getBodyStream()
-
-        request = self.request_factory(instream, task, env)
-        response = request.response
-        response.setHeaderOutput(task)
-        try:
-            publish(request, handle_errors=False)
-        except:
-            import sys, pdb
-            print "%s:" % sys.exc_info()[0]
-            print sys.exc_info()[1]
-            zope.security.management.restoreInteraction()
+        def application(environ, start_response):
+            request = request_factory(environ['wsgi.input'], environ)
+            response = request.response
             try:
-                pdb.post_mortem(sys.exc_info()[2])
-                raise
-            finally:
-                zope.security.management.endInteraction()
+                publish(request, handle_errors=False)
+            except:
+                import sys, pdb
+                print "%s:" % sys.exc_info()[0]
+                print sys.exc_info()[1]
+                zope.security.management.restoreInteraction()
+                try:
+                    pdb.post_mortem(sys.exc_info()[2])
+                    raise
+                finally:
+                    zope.security.management.endInteraction()
+            start_response(response.getStatusString(), response.getHeaders())
+            return response.result.body
 
+        return super(PublisherHTTPServer, self).__init__(
+            application, sub_protocol, *args, **kw)
+
+zope.deprecation.deprecated(
+    ('PublisherHTTPServer', 'PMDBHTTPServer'),
+    'This plain publisher support has been replaced in favor of the '
+    'WSGI HTTP server '
+    'The reference will be gone in X3.4.')

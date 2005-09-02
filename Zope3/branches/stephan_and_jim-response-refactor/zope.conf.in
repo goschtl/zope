@@ -6,7 +6,7 @@ site-definition site.zcml
 interrupt-check-interval 200
 
 <server http>
-  type HTTP
+  type WSGI-HTTP
   address 8080
 </server>
 

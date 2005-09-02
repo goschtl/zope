@@ -19,6 +19,12 @@ import re
 import sys
 from zope.server.http.httpserver import HTTPServer
 from zope.publisher.publish import publish
+import zope.security.management
+
+
+def fakeWrite(body):
+    raise NotImplementedError(
+        "Zope 3's HTTP Server does not support the WSGI write() function.")
 
 
 class WSGIHTTPServer(HTTPServer):
@@ -49,7 +55,41 @@ class WSGIHTTPServer(HTTPServer):
             task.appendResponseHeaders(['%s: %s' % i for i in headers])
 
             # Return the write method used to write the response data.
-            return task.write
+            return fakeWrite
 
         # Call the application to handle the request and write a response
-        self.application(env, start_response)
+        task.write(''.join(self.application(env, start_response)))
+
+
+class PMDBWSGIHTTPServer(WSGIHTTPServer):
+    """Enter the post-mortem debugger when there's an error"""
+
+    def executeRequest(self, task):
+        """Overrides HTTPServer.executeRequest()."""
+        env = task.getCGIEnvironment()
+        env['wsgi.input'] = task.request_data.getBodyStream()
+        env['wsgi.handleErrors'] = False
+
+        def start_response(status, headers):
+            # Prepare the headers for output
+            status, reason = re.match('([0-9]*) (.*)', status).groups()
+            task.setResponseStatus(status, reason)
+            task.appendResponseHeaders(['%s: %s' % i for i in headers])
+
+            # Return the write method used to write the response data.
+            return fakeWrite
+
+        # Call the application to handle the request and write a response
+        try:
+            task.write(''.join(self.application(env, start_response)))
+        except:
+            import sys, pdb
+            print "%s:" % sys.exc_info()[0]
+            print sys.exc_info()[1]
+            zope.security.management.restoreInteraction()
+            try:
+                pdb.post_mortem(sys.exc_info()[2])
+                raise
+            finally:
+                zope.security.management.endInteraction()
+
