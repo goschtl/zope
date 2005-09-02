@@ -63,7 +63,7 @@ class HTTPPublicationRequestFactory(object):
         self._db = db
         self._publication_cache = {}
 
-    def __call__(self, input_stream, output_steam, env):
+    def __call__(self, input_stream, env):
         """See `zope.app.publication.interfaces.IPublicationRequestFactory`"""
         method = env.get('REQUEST_METHOD', 'GET').upper()
         request_class, publication_class = chooseClasses(method, env)
@@ -73,7 +73,7 @@ class HTTPPublicationRequestFactory(object):
             publication = publication_class(self._db)
             self._publication_cache[publication_class] = publication
 
-        request = request_class(input_stream, output_steam, env)
+        request = request_class(input_stream, env)
         request.setPublication(publication)
         if IBrowserRequest.providedBy(request):
             # only browser requests have skins
