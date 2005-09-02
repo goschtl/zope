@@ -34,6 +34,7 @@ from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate, ITimedelta
 from zope.schema.interfaces import IURI, IId, IFromUnicode
 from zope.schema.interfaces import ISource, IBaseVocabulary
+from zope.schema.interfaces import IContextSourceBinder
 
 from zope.schema.interfaces import ValidationError, InvalidValue
 from zope.schema.interfaces import WrongType, WrongContainedType, NotUnique
@@ -196,7 +197,6 @@ class Choice(Field):
             assert source is None, (
                 "You cannot specify both source and vocabulary.")
         elif source is not None:
-            assert ISource.providedBy(source)
             vocabulary = source
 
         assert not (values is None and vocabulary is None), (
@@ -211,7 +211,8 @@ class Choice(Field):
         elif isinstance(vocabulary, (unicode, str)):
             self.vocabularyName = vocabulary
         else:
-            assert ISource.providedBy(vocabulary)
+            assert (ISource.providedBy(vocabulary) or 
+                    IContextSourceBinder.providedBy(vocabulary))
             self.vocabulary = vocabulary
         # Before a default value is checked, it is validated. However, a
         # named vocabulary is usually not complete when these fields are
@@ -228,9 +229,14 @@ class Choice(Field):
         """See zope.schema._bootstrapinterfaces.IField."""
         clone = super(Choice, self).bind(object)
         # get registered vocabulary if needed:
-        if clone.vocabulary is None and self.vocabularyName is not None:
+        if IContextSourceBinder.providedBy(self.vocabulary):
+            clone.vocabulary = self.vocabulary(object)
+            assert ISource.providedBy(clone.vocabulary)
+        elif clone.vocabulary is None and self.vocabularyName is not None:
             vr = getVocabularyRegistry()
             clone.vocabulary = vr.get(object, self.vocabularyName)
+            assert ISource.providedBy(clone.vocabulary)
+
         return clone
 
     def fromUnicode(self, str):

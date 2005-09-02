@@ -498,6 +498,11 @@ class ISourceQueriables(Interface):
           searcing for items.
 
         """
+
+class IContextSourceBinder(Interface):
+    def __call__(context):
+        """Return a context-bound instance that implements ISource.
+        """
     
 
 # TODO, define iterable sources.  For now, we'll just use vocabularies.

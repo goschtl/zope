@@ -20,6 +20,7 @@ from zope.testing import doctest
 
 def test_suite():
     return unittest.TestSuite((
+        doctest.DocFileSuite('../sources.txt', optionflags=doctest.ELLIPSIS),
         doctest.DocFileSuite('../README.txt'),
         ))
 
