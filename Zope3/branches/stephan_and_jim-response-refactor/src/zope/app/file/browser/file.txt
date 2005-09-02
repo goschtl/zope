@@ -32,7 +32,7 @@ Let's follow that link.
   >>> print http(r"""
   ... GET /@@+/action.html?type_name=zope.app.file.File HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... """)
+  ... """, handle_errors=False)
   HTTP/1.1 303 See Other
   Content-Length: ...
   Location: http://localhost/+/zope.app.file.File=
@@ -171,7 +171,7 @@ The file is initially empty, since we did not upload anything.
   ... """)
   HTTP/1.1 200 Ok
   Content-Length: 0
-  Content-Type: text/plain;charset=utf-8
+  Content-Type: text/plain
   <BLANKLINE>
 
 Since it is a text file, we can edit it directly in a web form.
@@ -268,7 +268,7 @@ Here's the file
   ... """)
   HTTP/1.1 200 Ok
   Content-Length: ...
-  Content-Type: text/plain;charset=utf-8
+  Content-Type: text/plain
   <BLANKLINE>
   This is a sample text file.
   <BLANKLINE>

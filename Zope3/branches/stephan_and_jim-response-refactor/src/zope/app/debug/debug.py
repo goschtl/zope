@@ -51,16 +51,13 @@ class Debugger(object):
         return self.db.open().root()[ZopePublication.root_name]
 
     def _request(self,
-                 path='/', stdin='', stdout=None, basic=None,
+                 path='/', stdin='', basic=None,
                  environment = None, form=None,
                  request=None, publication=BrowserPublication):
         """Create a request
         """
 
         env = {}
-
-        if stdout is None:
-            stdout = StringIO()
 
         if type(stdin) is str:
             stdin = StringIO(stdin)
@@ -83,9 +80,9 @@ class Debugger(object):
         pub = publication(self.db)
 
         if request is not None:
-            request = request(stdin, stdout, env)
+            request = request(stdin, env)
         else:
-            request = TestRequest(stdin, stdout, env)
+            request = TestRequest(stdin, env)
             setDefaultSkin(request)
         request.setPublication(pub)
         if form:

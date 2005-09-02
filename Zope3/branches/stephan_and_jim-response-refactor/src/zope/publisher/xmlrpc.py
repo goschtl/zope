@@ -34,9 +34,9 @@ class XMLRPCRequest(HTTPRequest):
 
     _args = ()
 
-    def _createResponse(self, outstream):
+    def _createResponse(self):
         """Create a specific XML-RPC response object."""
-        return XMLRPCResponse(outstream)
+        return XMLRPCResponse()
 
     def processInputs(self):
         'See IPublisherRequest'
@@ -52,8 +52,7 @@ class XMLRPCRequest(HTTPRequest):
 
 class TestRequest(XMLRPCRequest):
 
-    def __init__(self, body_instream=None, outstream=None, environ=None,
-                 response=None, **kw):
+    def __init__(self, body_instream=None, environ=None, response=None, **kw):
 
         _testEnv =  {
             'SERVER_URL':         'http://127.0.0.1',
@@ -69,11 +68,7 @@ class TestRequest(XMLRPCRequest):
         if body_instream is None:
             body_instream = StringIO('')
 
-        if outstream is None:
-            outstream = StringIO()
-
-        super(TestRequest, self).__init__(
-            body_instream, outstream, _testEnv, response)
+        super(TestRequest, self).__init__(body_instream, _testEnv, response)
 
 
 class XMLRPCResponse(HTTPResponse):

@@ -29,7 +29,7 @@ class FTPResponse(BaseResponse):
     def getResult(self):
         if getattr(self, '_exc', None) is not None:
             raise self._exc[0], self._exc[1], self._exc[2]
-        return self._getBody()
+        return self.result
 
     def handleException(self, exc_info):
         self._exc = exc_info
@@ -39,12 +39,11 @@ class FTPRequest(BaseRequest):
 
     __slots__ = '_auth'
 
-    def __init__(self, body_instream, outstream, environ, response=None):
+    def __init__(self, body_instream, environ, response=None):
         self._auth = environ.get('credentials')
         del environ['credentials']
 
-        super(FTPRequest, self).__init__(
-            body_instream, outstream, environ, response)
+        super(FTPRequest, self).__init__(body_instream, environ, response)
 
         path = environ['path']
         if path.startswith('/'):
@@ -55,9 +54,9 @@ class FTPRequest(BaseRequest):
             self.setTraversalStack(path)
 
 
-    def _createResponse(self, outstream):
+    def _createResponse(self):
         """Create a specific XML-RPC response object."""
-        return FTPResponse(outstream)
+        return FTPResponse()
 
     def _authUserPW(self):
         'See IFTPCredentials'

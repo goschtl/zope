@@ -26,7 +26,7 @@ from zope.app.file.tests.test_image import zptlogo
 
 class FileTest(BrowserTestCase):
 
-    content = u'File <Data>' 
+    content = u'File <Data>'
 
     def addFile(self):
         file = File(self.content)
@@ -130,7 +130,7 @@ class FileTest(BrowserTestCase):
         file = root['file']
         self.assertEqual(file.data, '<h1>A file</h1>')
         self.assertEqual(file.contentType, 'text/plain')
-        
+
     def testIndex(self):
         self.addFile()
         response = self.publish(

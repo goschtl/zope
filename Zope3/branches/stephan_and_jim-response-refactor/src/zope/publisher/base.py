@@ -36,34 +36,15 @@ class BaseResponse(object):
     """
 
     __slots__ = (
-        '_body',      # The response body
-        '_outstream', # The output stream
-        '_request',    # The associated request (if any)
+        'result',     # The result of the application call
+        '_request',   # The associated request (if any)
         )
 
     implements(IResponse)
 
-
-    def __init__(self, outstream):
-        self._body = ''
-        self._outstream = outstream
-
-    def outputBody(self):
+    def setResult(self, result):
         'See IPublisherResponse'
-        self._outstream.write(self._getBody())
-
-    def setBody(self, body):
-        'See IPublisherResponse'
-        self._body = body
-
-    # This method is not part of this interface
-    def _getBody(self):
-        'Returns a string representing the currently set body.'
-        return self._body
-
-    def reset(self):
-        'See IPublisherResponse'
-        self._body = ""
+        self.result = result
 
     def handleException(self, exc_info):
         'See IPublisherResponse'
@@ -74,13 +55,18 @@ class BaseResponse(object):
         'See IPublisherResponse'
         pass
 
+    def reset(self):
+        'See IPublisherResponse'
+        pass
+
     def retry(self):
         'See IPublisherResponse'
-        return self.__class__(self.outstream)
+        return self.__class__()
 
-    def write(self, string):
-        'See IApplicationResponse'
-        self._body += string
+    # XXX: Do BBB properly
+    def setBody(self, body):
+        return self.setResult(body)
+
 
 class RequestDataGetter(object):
 
@@ -196,7 +182,7 @@ class BaseRequest(object):
 
     environment = RequestDataProperty(RequestEnvironment)
 
-    def __init__(self, body_instream, outstream, environ, response=None,
+    def __init__(self, body_instream, environ, response=None,
                  positional=()):
         self._traversal_stack = []
         self._last_obj_traversed = None
@@ -205,7 +191,7 @@ class BaseRequest(object):
 
         self._args = positional
         if response is None:
-            self._response = self._createResponse(outstream)
+            self._response = self._createResponse()
         else:
             self._response = response
         self._response._request = self
@@ -283,7 +269,7 @@ class BaseRequest(object):
         for held in self._held:
             if IHeld.providedBy(held):
                 held.release()
-        
+
         self._held = None
         self._response = None
         self._body_instream = None
@@ -381,9 +367,9 @@ class BaseRequest(object):
 
     has_key = __contains__
 
-    def _createResponse(self, outstream):
+    def _createResponse(self):
         # Should be overridden by subclasses
-        return BaseResponse(outstream)
+        return BaseResponse()
 
     def __nonzero__(self):
         # This is here to avoid calling __len__ for boolean tests
@@ -398,7 +384,7 @@ class BaseRequest(object):
         path = self.get(attr, "/").strip()
         if path.endswith('/'):
             # Remove trailing backslash, so that we will not get an empty
-            # last entry when splitting the path. 
+            # last entry when splitting the path.
             path = path[:-1]
             self._endswithslash = True
         else:
@@ -424,16 +410,14 @@ class TestRequest(BaseRequest):
 
     __slots__ = ('_presentation_type', )
 
-    def __init__(self, path, body_instream=None, outstream=None, environ=None):
+    def __init__(self, path, body_instream=None, environ=None):
         if environ is None:
             environ = {}
         environ['PATH_INFO'] = path
         if body_instream is None:
             body_instream = StringIO('')
-        if outstream is None:
-            outstream = StringIO()
 
-        super(TestRequest, self).__init__(body_instream, outstream, environ)
+        super(TestRequest, self).__init__(body_instream, environ)
 
 
 class DefaultPublication(object):

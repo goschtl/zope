@@ -213,16 +213,14 @@ class BrowserRequest(HTTPRequest):
     # effective and actual URLs differ.
     use_redirect = False 
 
-    def __init__(self, body_instream, outstream, environ, response=None):
+    def __init__(self, body_instream, environ, response=None):
         self.form = {}
         self.charsets = None
-        super(BrowserRequest, self).__init__(
-            body_instream, outstream, environ, response)
+        super(BrowserRequest, self).__init__(body_instream, environ, response)
 
 
-    def _createResponse(self, outstream):
-        # Should be overridden by subclasses
-        return BrowserResponse(outstream)
+    def _createResponse(self):
+        return BrowserResponse()
 
     def _decode(self, text):
         """Try to decode the text using one of the available charsets."""
@@ -600,8 +598,7 @@ class TestRequest(BrowserRequest):
     """Browser request with a constructor convenient for testing
     """
 
-    def __init__(self,
-                 body_instream=None, outstream=None, environ=None, form=None,
+    def __init__(self, body_instream=None, environ=None, form=None,
                  skin=None,
                  **kw):
 
@@ -620,11 +617,7 @@ class TestRequest(BrowserRequest):
             from StringIO import StringIO
             body_instream = StringIO('')
 
-        if outstream is None:
-            from StringIO import StringIO
-            outstream = StringIO()
-
-        super(TestRequest, self).__init__(body_instream, outstream, _testEnv)
+        super(TestRequest, self).__init__(body_instream, _testEnv)
         if form:
             self.form.update(form)
 
@@ -655,58 +648,10 @@ class BrowserResponse(HTTPResponse):
         '_base', # The base href
         )
 
-    def setBody(self, body):
-        """Sets the body of the response
-
-        Sets the return body equal to the (string) argument "body". Also
-        updates the "content-length" return header and sets the status to
-        200 if it has not already been set.
-        """
-        if body is None:
-            return
-
-        if not isinstance(body, StringTypes):
-            body = unicode(body)
-
-        if 'content-type' not in self._headers:
-            c = (self.__isHTML(body) and 'text/html' or 'text/plain')
-            if self._charset is not None:
-                c += ';charset=' + self._charset
-            self.setHeader('content-type', c)
-            self.setHeader('x-content-type-warning', 'guessed from content')
-            # TODO: emit a warning once all page templates are changed to
-            # specify their content type explicitly.
-
+    def _implicitResult(self, body):
+        body, headers = super(BrowserResponse, self)._implicitResult(body)
         body = self.__insertBase(body)
-        self._body = body
-        self._updateContentLength()
-        if not self._status_set:
-            self.setStatus(200)
-
-
-    def __isHTML(self, str):
-        """Try to determine whether str is HTML or not."""
-        s = str.lstrip().lower()
-        if s.startswith('<!doctype html'):
-            return True
-        if s.startswith('<html') and (s[5:6] in ' >'):
-            return True
-        if s.startswith('<!--'):
-            idx = s.find('<html')
-            return idx > 0 and (s[idx+5:idx+6] in ' >')
-        else:
-            return False
-
-
-    def __wrapInHTML(self, title, content):
-        t = escape(title)
-        return (
-            "<html><head><title>%s</title></head>\n"
-            "<body><h2>%s</h2>\n"
-            "%s\n"
-            "</body></html>\n" %
-            (t, t, content)
-            )
+        return body, headers
 
 
     def __insertBase(self, body):
