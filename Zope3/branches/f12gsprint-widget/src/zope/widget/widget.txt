@@ -1,0 +1,298 @@
+=====
+Widget API
+=====
+
+[...]
+
+
+=====================
+
+
+
+
+
+
+    >>> from zope.widget import widget, interfaces
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.schema import TextLine
+    >>> request = TestRequest()
+    >>> field = TextLine(__name__='test_name', title=u'Test Title', 
+    ...                  min_length=2, description=u'Test Description')
+    >>> context = object()
+    >>> field = field.bind(context)
+    >>> w = widget.TextLineWidget(field, request)
+    
+After creating a widget, the next step that must be taken is to initialize it.
+
+This is a separate step because the adapter machinery looks up the widget by
+context and request and instantiates it.  The widget must then be told how to
+obtain its value using initialize().
+
+The initialize method has three optional arguments: prefix, value and state.
+
+A widget that is initialized without any of these arguments will use the field
+default value and will have a name equivalent to the field name.
+
+    >>> w.initialize()
+    >>> w.prefix # None
+    >>> w.name
+    'test_name'
+    >>> w.getState() # None
+    >>> w.hasState()
+    False
+
+Because we have set no value for the widget, nor was any available in the 
+request, a required field will raise a RequiredMissing is getValue is called.
+
+    >>> w.getValue()
+    Traceback (most recent call last):
+    ...
+    RequiredMissing
+
+If the previous request rendered the field, the state will be gathered from it
+during initialize; if value is not passed explicitly to initialize, it will
+be set from the gathered state.
+
+    >>> request = TestRequest()
+    >>> request.form['test_name'] = u'Joe'
+    >>> w = widget.TextLineWidget(field, request)
+    >>> w.initialize()
+    >>> w.hasState()
+    True
+    >>> w.getState() is not None
+    True
+    >>> w.getValue()
+    u'Joe'
+    
+A widget that is initialized with a prefix will prepend that prefix, plus a dot,
+to the field name.
+
+    >>> request = TestRequest()
+    >>> w = widget.TextLineWidget(field, request)
+    >>> w.initialize(prefix='test_prefix')
+    >>> w.prefix
+    'test_prefix'
+    >>> w.name
+    'test_prefix.test_name'
+    >>> w.hasState()
+    False
+
+The prefix is also used for finding the previous information in the request, if 
+any.
+
+    >>> request = TestRequest()
+    >>> request.form['test_prefix.test_name'] = u'Joe'
+    >>> w = widget.TextLineWidget(field, request)
+    >>> w.initialize(prefix='test_prefix')
+    >>> w.getValue()
+    u'Joe'
+    >>> w.hasState()
+    True
+    >>> w.getState() is not None
+    True
+    
+Prefix may be set directly.  It affects the read-only name attribute.
+
+    >>> w.prefix = 'new_prefix'
+    >>> w.name
+    'new_prefix.test_name'
+    >>> w.prefix = None
+    >>> w.name
+    'test_name'
+
+If a widget has been initialized, it will already have state gathered from the
+request, whether or not the prefix is the same.  This can be useful if the
+widget was drawn with one prefix, with valuable data, but needs to be redrawn
+with a new prefix.
+
+    >>> w.getValue()
+    u'Joe'
+    >>> w.hasState()
+    True
+    >>> w.getState() is not None
+    True
+
+A widget that is initialized with a value will attempt to set that value if
+it is valid.
+    
+    >>> request = TestRequest()
+    >>> w = widget.TextLineWidget(field, request)
+    >>> w.initialize(value=u'test value')
+    >>> w.getValue()
+    u'test value'
+    >>> w.hasState()
+    False
+    >>> w.getState() # None    
+    
+State objects are black boxes.  The only contract they have is that they are
+pickleable.  Do not rely on their values, except for their intended use.
+    
+It is possible to keep a widget's state and use it to initilize a new widget
+of the same class.  This affects the value and whatever rendering the widget
+supports.  It does not affect the prefix.
+
+    >>> request = TestRequest()
+    >>> request.form['test_prefix.test_name'] = u'Joe'
+    >>> w = widget.TextLineWidget(field, request)
+    >>> w.initialize(prefix='test_prefix')
+    >>> s = w.getState()
+    
+    >>> request = TestRequest()
+    >>> w2 = widget.TextLineWidget(field, request)
+    >>> w2.initialize(state=s)
+    >>> w2.hasState()
+    True
+    
+    >>> w.getState() == w2.getState()
+    True
+    >>> w.getValue() == w2.getValue()
+    True
+    >>> w.prefix != w2.prefix
+    True
+    >>> w.name != w2.name
+    True
+    
+A widget that is initialized with an invalid or unconvertable value will 
+store an exception object in the error attribute.  Calling getValue raises
+that error.
+    
+    >>> from zope.schema.interfaces import ValidationError
+    >>> request = TestRequest()
+    >>> w = widget.TextLineWidget(field, request)
+    >>> w.initialize(value=5)
+    >>> isinstance(w.error, ValidationError)
+    True
+    >>> w.getState() # None
+    >>> w.hasState()
+    False
+    >>> w.getValue()
+    Traceback (most recent call last):
+    ...
+    WrongType: (5, <type 'unicode'>)
+    
+    
+    
+    >>> request = TestRequest()
+    >>> w = widget.TextLineWidget(field, request)
+    >>> w.initialize()
+    >>> w.setValue(5)
+    >>> isinstance(w.error, ValidationError)
+    True
+    >>> w.getState() # None
+    >>> w.hasState()
+    False
+    >>> w.getValue()
+    Traceback (most recent call last):
+    ...
+    WrongType: (5, <type 'unicode'>)
+    
+
+    >>> request = TestRequest()
+    >>> request.form['test_name'] = 't'  # violates min length
+    >>> w = widget.TextLineWidget(field, request)
+    >>> w.initialize()
+    >>> isinstance(w.error, ValidationError)
+    True
+    >>> w.getState() is not None
+    True
+    >>> w.hasState()
+    True
+    >>> w.getValue()
+    Traceback (most recent call last):
+    ...    
+    TooShort: (u't', 2)
+        
+    
+Attempting to pass both a value and a state to initialize will raise a
+TypeError.
+
+    >>> request = TestRequest()
+    >>> w3 = widget.TextLineWidget(field, request)
+    >>> w3.initialize(state=s, value='foo')
+    Traceback (most recent call last):
+    ...
+    TypeError: May pass only one of value and state
+    
+Note that if the widget has state and you pass in a value to initialize or 
+call setValue, calling getState will raise an InvalidStateError.
+
+    >>> request = TestRequest()
+    >>> request.form['test_prefix.test_name'] = u'Joe'  # widget has state
+    >>> w = widget.TextLineWidget(field, request)
+    >>> w.initialize(prefix='test_prefix', value='foo')
+    >>> s = w.getState()
+    Traceback (most recent call last):
+    ...
+    InvalidStateError
+
+    >>> request = TestRequest()
+    >>> request.form['test_prefix.test_name'] = u'Joe'  # widget has state
+    >>> w = widget.TextLineWidget(field, request)
+    >>> w.initialize(prefix='test_prefix')
+    >>> w.setValue('foo')
+    >>> s = w.getState()
+    Traceback (most recent call last):
+    ...
+    InvalidStateError
+
+    
+
+Until the widget has been initialized, the default implementation raises
+RuntimeError if another method is called as a help to the developer.
+
+    >>> w = widget.TextLineWidget(field, TestRequest())
+    >>> w.setValue('foo')
+    Traceback (most recent call last):
+    ...
+    RuntimeError: Initialize widget first
+    
+    >>> w.getValue()
+    Traceback (most recent call last):
+    ...
+    RuntimeError: Initialize widget first
+
+    >>> w.getState()
+    Traceback (most recent call last):
+    ...
+    RuntimeError: Initialize widget first
+
+    >>> w.hasState()
+    Traceback (most recent call last):
+    ...
+    RuntimeError: Initialize widget first
+
+    
+Widget objects have a label and a hint attribute.  Translation of these
+values is left to the template or presentation code.  Widget objects also have a
+required attribute.  
+
+    >>> request = TestRequest()
+    >>> w = widget.TextLineWidget(field, request)
+    >>> w.initialize()
+    >>> w.label == field.title
+    True
+    >>> w.label
+    u'Test Title'
+    >>> w.hint == field.description
+    True
+    >>> w.hint
+    u'Test Description'
+    >>> w.required == field.required
+    True
+    >>> w.required
+    True
+
+All three can be changed by setting the property.    
+    
+    >>> w.label = 'test label'
+    >>> w.label
+    'test label'
+    >>> w.hint = 'test hint'
+    >>> w.hint
+    'test hint'
+    >>> w.required = False
+    >>> w.required
+    False
+    
+# XXX remember to show __call__ and message

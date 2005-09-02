@@ -22,7 +22,13 @@ from zope.component.interfaces import IView
 from zope.interface import Attribute, Interface, implements
 from zope.schema import Bool
 
+# TODO: dots in names
 
+class ConversionError(ValueError):
+    """ Value could not be converted to correct type """
+    
+class InvalidStateError(RuntimeError):
+    """ This widget's state has been invalidated by a call to setValue()"""
 
 class IBaseWidget(IView):
     """Generically describes the behavior of a widget.
@@ -48,9 +54,6 @@ class IBaseWidget(IView):
 
         Hint may be translated for the request.""")
 
-    visible = Attribute(
-        """A flag indicating whether or not the widget is visible.""")
-
     required = Bool(
         title=u"Required",
         description=u"""If True, widget should be displayed as requiring input.
@@ -69,8 +72,7 @@ class IWidget(IBaseWidget):
     def initialize(prefix=None, value=None, state=None):
         """ Initialize widget and set its value.
 
-        If any widget method is called before initialize is called,
-        raise RuntimeError.
+        Initialize must be called before any other method besides __init__.
 
         If prefix is passed in, the prefix attribute of the widget is set.
         Prefix must be None or be a string.  See prefix attribute for more 
@@ -85,22 +87,21 @@ class IWidget(IBaseWidget):
         from the getState method of a widget of the same class.  
         
         Only one of value or state may be passed, passing both raises
-        ValueError.        
+        TypeError.        
         
-        If the widget's value is not valid, its error attribute will contain an
-        appropriate ValidationError.  If a widget wishes to add an object to
-        message, that may be done here.
+        If the widget's value is not valid, its error attribute will contain 
+        either a ConversionError or zope.schema.interfaces.ValidationError.  If 
+        a widget wishes to add an object to message, that may be done here.
         """        
         
     def getState():
-        """ Return a pickleable object representing the state of the widget as 
-        currently rendered.
+        """ If the widget has been viewed previously, returns a non-None, 
+        picklable object representing the widget's state, unless setValue has 
+        been called, in which case it raises InvalidStateError.  Otherwise, 
+        returns None.
 
-        This object can later be passed in to initialize to restore the
+        A state object can later be passed in to initialize to restore the
         state of the widget.
-        
-        If the widget has never been rendered, getState should return None.
-        If the widget *has* been rendered, returning None would be an error.
         """
         
     def hasState():
@@ -124,7 +125,7 @@ class IWidget(IBaseWidget):
         Prefix name may be None, or a string.  Any other value raises 
         ValueError.  When prefixes are concatenated with the widget name, a dot 
         is used as a delimiter; a trailing dot is neither required nor suggested
-        in the prefix itself.""")
+        in the prefix itself. """)
         
     error = Attribute(""" An exception created by initialize or setValue.  If 
         this value is not None, it is raised when getValue is called.
