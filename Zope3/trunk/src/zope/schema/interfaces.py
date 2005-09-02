@@ -17,8 +17,8 @@ $Id$
 """
 
 from zope.interface import Interface, Attribute
-from zope.schema._bootstrapfields import Field, Text, TextLine, Bool, Int
 from zope.schema._bootstrapfields import Container, Iterable
+from zope.schema._bootstrapfields import Field, Text, TextLine, Bool, Int
 
 from zope.i18nmessageid import MessageIDFactory
 _ = MessageIDFactory("zope")
@@ -523,6 +523,21 @@ class IBaseVocabulary(ISource):
         If 'value' is not a valid term, this method raises LookupError.
         """
 
+
+class IIterableSource(Interface):
+    """Source which supports iteration over allowed values.
+
+    The objects iteration provides must be values from the source.
+    """
+
+    def __iter__():
+        """Return an iterator which provides the values from the source."""
+
+    def __len__():
+        """Return the number of valid values, or sys.maxint."""
+
+
+# BBB vocabularies are pending deprecation, hopefully in 3.2
 class IIterableVocabulary(Interface):
     """Vocabulary which supports iteration over allowed values.
 
