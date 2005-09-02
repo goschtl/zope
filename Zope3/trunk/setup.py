@@ -19,9 +19,14 @@ import sys
 here = os.path.dirname(os.path.abspath(__file__))
 buildsupport = os.path.join(here, "buildsupport")
 
-sys.path.insert(0, buildsupport)
 # Process *.pth files from buildsupport/:
+last = len(sys.path)
 site.addsitedir(buildsupport)
+if len(sys.path) > last:
+    # Move all appended directories to the start
+    new = sys.path[last:]
+    del sys.path[last:]
+    sys.path[:0] = new
 
 import zpkgsetup.package
 import zpkgsetup.publication
