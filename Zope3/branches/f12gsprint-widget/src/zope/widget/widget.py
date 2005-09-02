@@ -19,13 +19,13 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.schema.interfaces import ValidationError
 from xml.sax.saxutils import quoteattr
 
-import zope.widget.interfaces
+from zope.widget import interfaces
 
 class BaseInputWidget(object):
     """base simple widget"""
     
-    interface.implements(zope.widget.interfaces.IInputWidget)
-    __doc__ = zope.widget.interfaces.IInputWidget.__doc__
+    interface.implements(interfaces.IInputWidget)
+    __doc__ = interfaces.IInputWidget.__doc__
     
     _name = None
     name = property(lambda self: self._name)
@@ -55,16 +55,16 @@ class BaseInputWidget(object):
     _valueForced = False
     _initialized = False    
     _state = None
-    def initialize(self, prefix=None, value=None, state=None):
+    def initialize(self, prefix=None, value=interfaces.marker, state=None):
         self._initialized = True
         self.prefix = prefix
         if state is None:
             state = self._calculateStateFromRequest()
         else:
-            if value is not None:
+            if value is not interfaces.marker:
                 raise TypeError('May pass only one of value and state')
         self._state = state
-        if value is None:
+        if value is interfaces.marker:
             if self._state is None:
                 value = self.context.default
             else:
@@ -78,7 +78,7 @@ class BaseInputWidget(object):
         if not self._initialized:
             raise RuntimeError('Initialize widget first')
         if self._state is not None and self._valueForced:
-            raise zope.widget.interfaces.InvalidStateError()
+            raise interfaces.InvalidStateError()
         return self._state
     
     def hasState(self):
@@ -156,6 +156,6 @@ class TextLineWidget(BaseInputWidget):
         try:
             value = unicode(self._state)
         except ValueError, v: # XXX
-            e = zope.widget.interfaces.ConversionError(v)
+            e = interfaces.ConversionError(v)
         else:
             return value

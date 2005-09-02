@@ -24,16 +24,18 @@ from zope.schema import Bool
 
 # TODO: dots in names
 
+marker = object()
+
 class ConversionError(ValueError):
     """ Value could not be converted to correct type """
     
 class InvalidStateError(RuntimeError):
     """ This widget's state has been invalidated by a call to setValue()"""
 
-class IBaseWidget(IView):
+class IWidget(IView):
     """Generically describes the behavior of a widget.
 
-    Note that this level must be still presentation independent.
+    This must be presentation independent.
     """
 
     name = Attribute(
@@ -62,14 +64,28 @@ class IBaseWidget(IView):
         field can be set to False for widgets that always provide input (e.g.
         a checkbox) to avoid unnecessary 'required' UI notations.
         """)
+                
+    prefix = Attribute("""Element names should begin with the given `prefix`.
+        Prefix name may be None, or a string.  Any other value raises 
+        ValueError.  When prefixes are concatenated with the widget name, a dot 
+        is used as a delimiter; a trailing dot is neither required nor suggested
+        in the prefix itself. """)
+        
+    error = Attribute(""" An exception created by initialize or setValue.  If 
+        this value is not None, it is raised when getValue is called.
+        
+        Minimally, an exception object is expected to be adaptable to
+        a view named snippet.""")
     
-class IWidget(IBaseWidget):
-    """ new interface for widget """
+    message =  Attribute(""" A message object created in initialize or 
+        setValue.  Minimally, a message object is expected to be adaptable to
+        a view named snippet.
+        """)
     
     def __call__():
         """ render widget """
         
-    def initialize(prefix=None, value=None, state=None):
+    def initialize(prefix=None, value=marker, state=None):
         """ Initialize widget and set its value.
 
         Initialize must be called before any other method besides __init__.
@@ -120,23 +136,6 @@ class IWidget(IBaseWidget):
         message attributes to only the message and error pertaining 
         to the new value, if any.
         """
-                
-    prefix = Attribute("""Element names should begin with the given `prefix`.
-        Prefix name may be None, or a string.  Any other value raises 
-        ValueError.  When prefixes are concatenated with the widget name, a dot 
-        is used as a delimiter; a trailing dot is neither required nor suggested
-        in the prefix itself. """)
-        
-    error = Attribute(""" An exception created by initialize or setValue.  If 
-        this value is not None, it is raised when getValue is called.
-        
-        Minimally, an exception object is expected to be adaptable to
-        a view named snippet.""")
-    
-    message =  Attribute(""" A message object created in initialize or 
-        setValue.  Minimally, a message object is expected to be adaptable to
-        a view named snippet.
-        """)
     
 class IInputWidget(IWidget):
     """a widget used for input"""
