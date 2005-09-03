@@ -19,11 +19,12 @@ import sys
 here = os.path.dirname(os.path.abspath(__file__))
 buildsupport = os.path.join(here, "buildsupport")
 
-# Process *.pth files from buildsupport/:
+# Add 'buildsupport' to sys.path and process *.pth files from 'buildsupport':
 last = len(sys.path)
 site.addsitedir(buildsupport)
 if len(sys.path) > last:
-    # Move all appended directories to the start
+    # Move all appended directories to the start.
+    # Make sure we use ZConfig shipped with the distribution
     new = sys.path[last:]
     del sys.path[last:]
     sys.path[:0] = new
