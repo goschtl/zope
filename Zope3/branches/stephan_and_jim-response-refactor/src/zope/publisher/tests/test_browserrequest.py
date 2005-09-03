@@ -81,12 +81,12 @@ class BrowserTests(HTTPTests):
         class Item(object):
             """Required docstring for the publisher."""
             def __call__(self, a, b):
-                return "%s, %s" % (`a`, `b`)
+                return u"%s, %s" % (`a`, `b`)
 
         class Item3(object):
             """Required docstring for the publisher."""
             def __call__(self, *args):
-                return "..."
+                return u"..."
 
         class View(object):
             """Required docstring for the publisher."""
@@ -95,7 +95,7 @@ class BrowserTests(HTTPTests):
 
             def index(self, a, b):
                 """Required docstring for the publisher."""
-                return "%s, %s" % (`a`, `b`)
+                return u"%s, %s" % (`a`, `b`)
 
         class Item2(object):
             """Required docstring for the publisher."""

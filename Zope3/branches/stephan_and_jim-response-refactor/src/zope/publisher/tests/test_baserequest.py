@@ -35,7 +35,7 @@ class TestBaseRequest(BaseTestIPublicationRequest,
 
     def _Test__new(self, **kw):
         from zope.publisher.base import BaseRequest
-        return BaseRequest(StringIO(''), StringIO(), kw)
+        return BaseRequest(StringIO(''), kw)
 
     def _Test__expectedViewType(self):
         return None # we don't expect
