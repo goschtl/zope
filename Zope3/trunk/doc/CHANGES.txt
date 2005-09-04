@@ -16,7 +16,7 @@ Zope Changes
         implementation will replace the old one in upcoming versions.
 
       - Added pagelet concept. Pagelets are responsible for a piece
-        of content in a view. They can be used to render additionaly
+        of content in a view. They can be used to render additionally
         provided information into a pagetemplate.
 
         + Added tales expression 'pagelet'
@@ -34,11 +34,11 @@ Zope Changes
 
       - Fixed issue #445: gadflyDA not full implementation
 
-      - Fix: Pagelet directive was inoring the permission. Pagelets which
-        not the right permission are not shwon if calling via the Tales
+      - Fix: Pagelet directive was ignoring the permission. Pagelets which
+        not the right permission are not shown if calling via the Tales
         expression ``pagelets:``. If calling named pagelets directly via the
         Tales expression ``pagelet:`` we raise a Unauthorized exception if
-        the permission ins't right.
+        the permission isn't right.
 
     Much thanks to everyone who contributed to this release:
 
@@ -259,7 +259,7 @@ Zope Changes
         open to a user before presenting it.  If the code relies on a certain
         permission, the Zope 3 goal of keeping knowledge of security
         assertions out of the code and only in configuration is broken.
-        Instead, ask if the current intreaction canAccess or canWrite some
+        Instead, ask if the current interaction canAccess or canWrite some
         pertinent aspect of the object.  canAccess is used for both read
         access on an attribute and call access to methods.
 
@@ -437,7 +437,7 @@ Zope Changes
       - Applied changes suggested in issue 339: Improvements to generated forms
 
       - Deprecated ``zope.app.introspector``. You should use the public apidoc
-        utilities isntead. A new "Introspector" tab was implemented that
+        utilities instead. A new "Introspector" tab was implemented that
         redirects you to the correct code browser documentation screen.
 
       - Ensured that all adapters can be registered for classes as well as
@@ -456,7 +456,7 @@ Zope Changes
 
       - Deprecated ``_configureCopy`` in
         ``zope.app.copypastemove.ObjectCopier``. To configure a recently
-        copied object, suscribe to ``IObjectCopiedEvent`` for the type of
+        copied object, subscribe to ``IObjectCopiedEvent`` for the type of
         object you're interested in configuring.
 
       - Several changes have been made to the API doc tool:
@@ -479,16 +479,16 @@ Zope Changes
           the interface details view.
 
       - Changed the test-counting mechanism for doctests.  Now a
-        doctest count a test for every example that is preceeded by
+        doctest count a test for every example that is preceded by
         prose. (Although a doctest will never count less than 1 test.)
 
       - Moved reusable test setups/APIs from ``zope.app.tests`` to
         ``zope.app.testing``. No reusable testing code should be in a ``tests``
         package or module.
 
-      - Removal of Services. You can now access the adapter and utiliy
+      - Removal of Services. You can now access the adapter and utility
         registry directly via the site manager's ``adapters`` and ``utilities``
-        attribute, respecitvely.
+        attribute, respectively.
 
         + Converted `Error Reporting Service` to a utility. Added database
           evolution code to convert all service instances to utilities.
@@ -601,7 +601,7 @@ Zope Changes
           exists, the order and then the title of the menu item are taken
           account.
 
-      - Removed Presentation Serivce and implemented views as adapters. This
+      - Removed Presentation Service and implemented views as adapters. This
         mainly means that layers and skins became adapters. Here are some
         other points:
 
@@ -686,7 +686,7 @@ Zope Changes
       - Fix #384: Handling utility permissions
 
         When defining utilities in ZCML with permissions, checker
-        objects were saved on the utilty's __Security_checker__
+        objects were saved on the utility's __Security_checker__
         attribute. This caused problems if the component was
         registered more than once, or if the component was a class.
         Now a proxy is used to hold the security checker, so that the 
@@ -816,7 +816,7 @@ Zope Changes
       - Fixed most formatting characters for i18n's datetime formatter.
 
       - Partially fixed issue #306 (Problem 2: Browser ``page`` and ``view``
-        directive cannot register serveral pages views within different layers
+        directive cannot register several pages views within different layers
         for the same for, menu and title attributes.)
 
       - Fixed issue #353 (``applySkin()`` does not work in functional doctests).
@@ -832,15 +832,15 @@ Zope Changes
         was no input.
 
       - Fixed a bug in the adapter registry that would prevent `dict`-derived
-        utilites from being retrieved correctly.
+        utilities from being retrieved correctly.
 
       - Resolved issue 304 (Slash involve dbname). We require now that all
         values in a DSN are properly URL-encoded, so that all values can
         contain any special character, except for the hostname and the port.
 
       - Fixed `intid` utility: Registration and unregistration of
-        local utitlity services, context aware registration of nested
-        components that may provide their own intids utiltities.
+        local utility services, context aware registration of nested
+        components that may provide their own intids utilities.
 
       - Fixed ``browser:defaultView`` metaconfigure: ``for_`` passes a
         ``GlobalObject`` and not a ``Token`` of ``GlobalObjects``.
@@ -856,7 +856,7 @@ Zope Changes
         represent a failure of the system, rather than the user, to set
         the response status to 500.
 
-      - ``NotFound`` pages and stattus codes are now returned only when
+      - ``NotFound`` pages and status codes are now returned only when
         something can't be found during publishing-path (e.g. URL)
         traversal. Traversal errors within application code are no
         longer treated as "Not Found" errors.
@@ -948,7 +948,7 @@ Zope Changes
 
       - Changed the security policy:
 
-        o Fix a bug (actually a missfeature). It wasn't possible for
+        o Fix a bug (actually a misfeature). It wasn't possible for
           local settings to override global (zcml) settings.
 
         o Changed the way role denies work.  A role deny simply
@@ -991,7 +991,7 @@ Zope Changes
         the expression is compiled rather than when it is evaluated.
         This has always been illegal according to the specification,
         and most often caused a runtime error before.  Template
-        authors can now get an error up front, avoiding embarrasment
+        authors can now get an error up front, avoiding embarrassment
         when once an application is moved into production after
         insufficient testing.
 
@@ -1026,7 +1026,7 @@ Zope Changes
       - Fixed so that a UnicodeDecodeError isn't produced when Internet
         Explorer requests a page containing non-ISO-8859-1 characters.
 
-      - Fixed the TextWidget and TextAreaWidget, added convertion
+      - Fixed the TextWidget and TextAreaWidget, added conversion
         from string to unicode in the method _toFieldValue.
 
       - Location-event subscribers weren't notified when containing
