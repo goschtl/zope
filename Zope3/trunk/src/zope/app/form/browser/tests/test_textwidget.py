@@ -1,5 +1,3 @@
-# -*- coding: iso-8859-15 -*-
-
 ##############################################################################
 #
 # Copyright (c) 2001, 2002, 2004, 2005 Zope Corporation and Contributors.
@@ -247,8 +245,8 @@ class TextAreaDisplayWidgetTest(BrowserWidgetTest):
     # It uses the default DisplayWidget
     def testRender(self):
         value = u"""
-        texttexttexttexttexttextexttexttexttexttextéééééééééééééééé
-        texttexttexttexttextteéééééxttexttexttexttexttexttexttextte
+        texttexttexttexttexttextexttexttext\xE9\xE9\xE9\xE9\xE9\xE9\xE9\xE9\xE9
+        texttexttexttexttextte\xE9\xE9\xE9\xE9\xE9xttexttexttexttexttexttexttex
         texttexttexttexttexttexttexttexttexttexttexttexttexttexttext
         """
         self._widget.setRenderedValue(value)
