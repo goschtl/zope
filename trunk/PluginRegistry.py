@@ -122,7 +122,11 @@ class PluginRegistry( SimpleItem ):
         parent = aq_parent( aq_inner( self ) )
         plugin = parent._getOb( plugin_id ) 
 
-        if not plugin_type.isImplementedBy(plugin):
+        satisfies = getattr(plugin_type, 'providedBy', None)
+        if satisfies is None:
+            satisfies = plugin_type.isImplementedBy
+
+        if not satisfies(plugin):
             raise ValueError, 'Plugin does not implement %s' % plugin_type 
         
         plugins.append( plugin_id )
@@ -271,8 +275,12 @@ class PluginRegistry( SimpleItem ):
         active = self._getPlugins( interface )
         available = []
 
+        satisfies = getattr(interface, 'providedBy', None)
+        if satisfies is None:
+            satisfies = interface.isImplementedBy
+
         for id, value in aq_parent( aq_inner( self ) ).objectItems():
-            if interface.isImplementedBy( value ):
+            if satisfies( value ):
                 if id not in active:
                     available.append( id )
 

@@ -12,10 +12,15 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-from OFS.Folder import Folder
-from Interface import Interface
-from Acquisition import Implicit
 import unittest
+from OFS.Folder import Folder
+
+try:
+    from zope.interface import Interface
+except ImportError:  # Zope < 2.8.0
+    from Interface import Interface
+
+from Acquisition import Implicit
 
 from Products.PluginRegistry.utils import directlyProvides
 

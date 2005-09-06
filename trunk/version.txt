@@ -1,1 +1,1 @@
-PluginRegistry-1_0_2
+PluginRegistry-1_0_2+
