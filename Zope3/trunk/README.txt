@@ -60,7 +60,7 @@ This will run Zope on port 8080.  Visit the url::
   http://localhost:8080/manage
 
 This goes to the Zope 3 default management interface.  Note that
-this release of Zope 3 requires recent versions of Mozilla or IE. Note that
+this release of Zope 3 requires recent versions of Mozilla or IE.  Note that
 other modern browsers, such as Konqueror and Safari, also mostly work well.
 
 If you insist on using an older browser (or a text-based browser)
