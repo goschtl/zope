@@ -1,6 +1,6 @@
-=======
-Zope X3
-=======
+======
+Zope 3
+======
 
 Welcome to the Zope 3 distribution!
 
