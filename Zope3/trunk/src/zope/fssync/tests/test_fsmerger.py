@@ -44,6 +44,9 @@ class TestFSMerger(TempFiles):
         return self.diff3ok
 
     def diff3_check(self):
+        if sys.platform == 'win32':
+            sys.stderr.write("\nrunning on Windows, tests disabled\n")
+            return False
         if not hasattr(os, "popen"):
             sys.stderr.write("\nos.popen() not found, diff3 tests disabled\n")
             return False

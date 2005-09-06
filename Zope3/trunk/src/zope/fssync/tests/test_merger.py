@@ -16,7 +16,7 @@
 $Id$
 """
 
-import os
+import os, sys
 import unittest
 
 from os.path import exists
@@ -39,6 +39,8 @@ class TestMerger(TempFiles):
         return self.diff3ok
 
     def diff3_check(self):
+        if sys.platform == 'win32':
+            return False
         if not hasattr(os, "popen"):
             return False
         f1 = self.tempfile("a")
