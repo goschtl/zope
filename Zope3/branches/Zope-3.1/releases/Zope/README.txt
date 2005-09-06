@@ -88,7 +88,15 @@ optional step, and can take a while to complete.  The tests can be run using
   Running UNIT tests from /home/user/Zope-3.1.0/build/lib.linux-i686-2.3
   [...lots of dots, one per test...]
   ----------------------------------------------------------------------
-  Ran 4510 tests in 501.389s
+  Ran 7956 tests in 246.866s
+
+  OK
+
+  Running FUNCTIONAL tests at level 1
+  Running FUNCTIONAL tests from /home/user/Zope-3.2.0/build/lib.linux-i686-2.3
+  [...lots of dots, one per test...]
+  ----------------------------------------------------------------------
+  Ran 385 tests in 99.269s
 
   OK
 
