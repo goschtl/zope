@@ -84,7 +84,7 @@ def _createRequest(body=None, headers=None, skip_headers=None):
             if _environ.has_key(key.upper()):
                 del _environ[key.upper()]
 
-    request = TestRequest(StringIO(body), StringIO(), _environ)
+    request = TestRequest(StringIO(body), _environ)
     return request
 
 class FileSized(object):
@@ -267,7 +267,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 207)
         self.assertEqual(pfind.getDepth(), depth)
-        s1 = normalize_xml(request.response._body)
+        s1 = normalize_xml(request.response.consumeBody())
         s2 = normalize_xml(expect)
         self.assertEqual(s1, s2)
 

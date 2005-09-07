@@ -10,6 +10,36 @@ Zope Changes
 
     New features
 
+      - Formalized the Publisher Response API.
+
+        + Until now the publisher made assumptions about the form of ouput of
+          a publishing process. Either the called method returned a string
+          (regular or unicode) or the response's write() method was used
+          directly to write the data. Those models do not work well with some
+          protocols. Thus, now the publisher deals with result objects. Those
+          are generally not well defined, but for HTTP they must implement the
+          IResult interface.
+
+        + HTTP responses provide two new methods that make reading the output
+          easier: `consumeBody()` and `consumeBodyIter()`. Either method can
+          be only called once. After that the output iterator is used and
+          empty.
+
+        + The WSGI specification specifically has some provisions in it that
+          supported our use of writing directly to the output stream. However,
+          this method of providing an output is strongly discouraged. Instead,
+          the application should return an iterable. Using the new IResult
+          implementation in the HTTP publisher, we can now return such an
+          iterable.
+
+        + When a retry is issued in the publisher, then a new request is
+          created. This means that the request (including its response) that
+          were passed into `publish()` are not necessarily the same that are
+          eventually used. This caused some failures in the WSGI support. Now
+          the `publish()` method returns the used request and the request's
+          `close()` method does not unlink the response, so that
+          `request.response` is still available after the publish call.
+
       - Added a re-implementation of i18n message IDs (now simply
         called ``Message``) that is immutable and thus can be treated
         like unicode strings with respect to security proxying.  This

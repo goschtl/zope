@@ -31,7 +31,7 @@ class FTPCredentialsPlugin(object):
 
           >>> from zope.publisher.ftp import FTPRequest
           >>> from StringIO import StringIO
-          >>> request = FTPRequest(StringIO(''), StringIO(),
+          >>> request = FTPRequest(StringIO(''),
           ...                      {'credentials': ('bob', '123'),
           ...                       'path': '/a/b/c'})
 

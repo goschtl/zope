@@ -96,7 +96,7 @@ class PROPFIND(object):
         self._depthRecurse(ms)
 
         body = resp.toxml('utf-8')
-        self.request.response.setBody(body)
+        self.request.response.setResult(body)
         self.request.response.setStatus(207)
         self.request.response.setHeader('content-type', 'text/xml')
         return body

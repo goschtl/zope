@@ -65,8 +65,7 @@ class TestMethodNotAllowedView(PlacelessSetup, TestCase):
         from zope.publisher.http import HTTPRequest
 
         context = C()
-        request = HTTPRequest(StringIO('PUT /bla/bla HTTP/1.1\n\n'),
-                              StringIO(), {})
+        request = HTTPRequest(StringIO('PUT /bla/bla HTTP/1.1\n\n'), {})
         error = MethodNotAllowed(context, request)
         view = MethodNotAllowedView(error, request)
 

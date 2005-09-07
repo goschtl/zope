@@ -47,13 +47,13 @@ class PROPPATCH(object):
         _avail_props = {}
         # List all *registered* DAV interface namespaces and their properties
         for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
-            _avail_props[ns] = getFieldNamesInOrder(iface)    
+            _avail_props[ns] = getFieldNamesInOrder(iface)
         # List all opaque DAV namespaces and the properties we know of
         if self.oprops:
             for ns, oprops in self.oprops.items():
                 _avail_props[ns] = list(oprops.keys())
         self.avail_props = _avail_props
-    
+
     def PROPPATCH(self):
         if self.content_type not in ['text/xml', 'application/xml']:
             self.request.response.setStatus(400)
@@ -73,7 +73,7 @@ class PROPPATCH(object):
         ms.lastChild.appendChild(resp.createElement('href'))
         ms.lastChild.lastChild.appendChild(resp.createTextNode(resource_url))
 
-        updateel = xmldoc.getElementsByTagNameNS(self.default_ns, 
+        updateel = xmldoc.getElementsByTagNameNS(self.default_ns,
                                                  'propertyupdate')
         if not updateel:
             self.request.response.setStatus(422)
@@ -87,7 +87,7 @@ class PROPPATCH(object):
         self._handlePropertyUpdate(resp, updates)
 
         body = resp.toxml('utf-8')
-        self.request.response.setBody(body)
+        self.request.response.setResult(body)
         self.request.response.setStatus(207)
         return body
 
@@ -108,7 +108,7 @@ class PROPPATCH(object):
                 props = results.setdefault(node.namespaceURI, [])
                 if node.localName not in props:
                     props.append(node.localName)
-        
+
         if _propresults.keys() != [200]:
             # At least some props failed, abort transaction
             transaction.abort()
@@ -119,7 +119,7 @@ class PROPPATCH(object):
                     failed_props = failed.setdefault(ns, [])
                     failed_props.extend(props)
                 del _propresults[200]
-        
+
         # Create the response document
         re = resp.lastChild.lastChild
         for status, results in _propresults.items():
@@ -156,30 +156,30 @@ class PROPPATCH(object):
                     props.append(prop.localName)
                 return 200
             return 403
-        
+
         if not prop.localName in self.avail_props[ns]:
             return 403 # Cannot add propeties to a registered schema
-        
+
         fields = getFields(iface)
         field = fields[prop.localName]
         if field.readonly:
             return 409 # RFC 2518 specifies 409 for readonly props
-        
+
         value = field.get(iface(self.context))
         if value is field.missing_value:
             value = no_value
         setUpWidget(self, prop.localName, field, IDAVWidget,
             value=value, ignoreStickyValues=True)
-        
+
         widget = getattr(self, prop.localName + '_widget')
         widget.setRenderedValue(prop)
 
         if not widget.hasValidInput():
             return 409 # Didn't match the widget validation
-        
+
         if widget.applyChanges(iface(self.context)):
             return 200
-        
+
         return 422 # Field didn't accept the value
 
     def _handleRemove(self, prop):
@@ -193,20 +193,20 @@ class PROPPATCH(object):
                 return 200
             self.oprops.removeProperty(ns, prop.localName)
             return 200
-        
+
         # Registered interfaces
         fields = getFields(iface)
         field = fields[prop.localName]
         if field.readonly:
             return 409 # RFC 2518 specifies 409 for readonly props
-        
+
         if field.required:
             if field.default is None:
                 return 409 # Clearing a required property is a conflict
             # Reset the field to the default if a value is required
             field.set(iface(self.context), field.default)
             return 200
-        
+
         # Reset the field to it's defined missing_value
         field.set(iface(self.context), field.missing_value)
         return 200

@@ -23,19 +23,19 @@ First, we'll test accessing a protected page without credentials:
   HTTP/1.1 401 Unauthorized
   Content-Length: ...
   Content-Type: text/html;charset=utf-8
-  Www-Authenticate: basic realm=zope
+  WWW-Authenticate: basic realm=zope
   <BLANKLINE>
   <!DOCTYPE html PUBLIC ...
 
 Here we see that we got:
 
   - A 404 response,
-  - A Www-Authenticate header, and
+  - A WWW-Authenticate header, and
   - An html body with an error message
 
 Note that we used ellipeses to indicate ininteresting details.
 
-Next, we'll access the same page with credentials: 
+Next, we'll access the same page with credentials:
 
   >>> print http(r"""
   ... GET /@@contents.html HTTP/1.1
@@ -48,11 +48,11 @@ Next, we'll access the same page with credentials:
   <!DOCTYPE html PUBLIC ...
 
 Important note: you must use the user named "mgr" with a password
-"mgrpw". 
+"mgrpw".
 
 And we get a normal output.
 
-Next we'll try accessing site management. Since we used "/manage", 
+Next we'll try accessing site management. Since we used "/manage",
 we got redirected:
 
   >>> print http(r"""
@@ -125,7 +125,7 @@ transaction before the HTTP request.
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 73
   ... Content-Type: application/x-www-form-urlencoded
-  ... 
+  ...
   ... type_name=BrowserAdd__zope.app.folder.folder.Folder&new_value=f1""")
   HTTP/1.1 303 See Other
   Content-Length: ...

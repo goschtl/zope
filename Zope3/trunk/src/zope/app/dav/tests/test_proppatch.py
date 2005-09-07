@@ -28,7 +28,7 @@ from zope.publisher.interfaces.http import IHTTPRequest
 from zope.publisher.http import status_reasons
 from zope.pagetemplate.tests.util import normalize_xml
 from ZODB.tests.util import DB
-	
+
 from zope.app import zapi
 from zope.app.testing import ztapi
 
@@ -70,7 +70,7 @@ def _createRequest(body=None, headers=None, skip_headers=None,
                 ''.join(remove))
         for prefix, ns in namespaces:
             nsAttrs += ' xmlns:%s="%s"' % (prefix, ns)
-            
+
         body = '''<?xml version="1.0" encoding="utf-8"?>
 
         <propertyupdate xmlns="DAV:"%s>
@@ -90,7 +90,7 @@ def _createRequest(body=None, headers=None, skip_headers=None,
             if _environ.has_key(key.upper()):
                 del _environ[key.upper()]
 
-    request = TestRequest(StringIO(body), StringIO(), _environ)
+    request = TestRequest(StringIO(body), _environ)
     return request
 
 
@@ -108,7 +108,7 @@ class TestSchemaAdapter(object):
     implements(ITestSchema)
     __used_for__ = IAnnotatable
     annotations = None
-    
+
     def __init__(self, context):
         annotations = IAnnotations(context)
         data = annotations.get(TestKey)
@@ -119,7 +119,7 @@ class TestSchemaAdapter(object):
                      u'unusualMissingValue': (EmptyTestValue,),
                      u'constrained': (EmptyTestValue,)}
         self._mapping = data
-        
+
     def _changed(self):
         if self.annotations is not None:
             self.annotations[TestKey] = self._mapping
@@ -171,7 +171,7 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         root = self.conn.root()
         root['Application'] = self.rootFolder
         transaction.commit()
-        
+
     def tearDown(self):
         self.db.close()
 
@@ -222,7 +222,7 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 207)
         self.assertEqual(ppatch.content_type, 'text/xml')
-        
+
     def test_noupdates(self):
         file = self.file
         request = _createRequest(namespaces=(), set=(), remove=())
@@ -230,9 +230,9 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         ppatch.PROPPATCH()
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 422)
-        
+
     def _checkProppatch(self, obj, ns=(), set=(), rm=(), extra='', expect=''):
-        request = _createRequest(namespaces=ns, set=set, remove=rm, 
+        request = _createRequest(namespaces=ns, set=set, remove=rm,
                                  extra=extra)
         resource_url = zapi.absoluteURL(obj, request)
         expect = '''<?xml version="1.0" encoding="utf-8"?>
@@ -246,10 +246,10 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         ppatch.PROPPATCH()
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 207)
-        s1 = normalize_xml(request.response._body)
+        s1 = normalize_xml(request.response.consumeBody())
         s2 = normalize_xml(expect)
         self.assertEqual(s1, s2)
-        
+
     def _makePropstat(self, ns, properties, status=200):
         nsattrs = ''
         count = 0
@@ -268,37 +268,37 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         namespacesA.sort()
         namespacesB = expect.keys()
         namespacesB.sort()
-        self.assertEqual(namespacesA, namespacesB, 
+        self.assertEqual(namespacesA, namespacesB,
                          'available opaque namespaces were %s, '
                          'expected %s' % (namespacesA, namespacesB))
-        
+
         for ns in namespacesA:
             propnamesA = list(oprops[ns].keys())
             propnamesA.sort()
             propnamesB = expect[ns].keys()
             propnamesB.sort()
-            self.assertEqual(propnamesA, propnamesB, 
+            self.assertEqual(propnamesA, propnamesB,
                              'props for opaque namespaces %s were %s, '
                              'expected %s' % (ns, propnamesA, propnamesB))
             for prop in propnamesA:
                 valueA = oprops[ns][prop]
                 valueB = expect[ns][prop]
-                self.assertEqual(valueA, valueB, 
+                self.assertEqual(valueA, valueB,
                                  'opaque prop %s:%s was %s, '
                                  'expected %s' % (ns, prop, valueA, valueB))
-        
+
     def test_removenonexisting(self):
         expect = self._makePropstat(('uri://foo',), '<bar xmlns="a0"/>')
         self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
             rm=('<foo:bar />'), expect=expect)
-        
+
     def test_opaque_set_simple(self):
         expect = self._makePropstat(('uri://foo',), '<bar xmlns="a0"/>')
         self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
             set=('<foo:bar>spam</foo:bar>'), expect=expect)
-        self._assertOPropsEqual(self.zpt, 
+        self._assertOPropsEqual(self.zpt,
                                 {u'uri://foo': {u'bar': '<bar>spam</bar>'}})
-        
+
     def test_opaque_remove_simple(self):
         oprops = IDAVOpaqueNamespaces(self.zpt)
         oprops['uri://foo'] = {'bar': '<bar>eggs</bar>'}
@@ -306,26 +306,26 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
             rm=('<foo:bar>spam</foo:bar>'), expect=expect)
         self._assertOPropsEqual(self.zpt, {})
-        
+
     def test_opaque_add_and_replace(self):
         oprops = IDAVOpaqueNamespaces(self.zpt)
         oprops['uri://foo'] = {'bar': '<bar>eggs</bar>'}
         expect = self._makePropstat(
-            ('uri://castle', 'uri://foo'), 
+            ('uri://castle', 'uri://foo'),
             '<camelot xmlns="a0"/><bar xmlns="a1"/>')
-        self._checkProppatch(self.zpt, 
+        self._checkProppatch(self.zpt,
             ns=(('foo', 'uri://foo'), ('c', 'uri://castle')),
-            set=('<foo:bar>spam</foo:bar>', 
+            set=('<foo:bar>spam</foo:bar>',
                  '<c:camelot place="silly" xmlns:k="uri://knights">'
                  '  <k:roundtable/>'
-                 '</c:camelot>'), 
+                 '</c:camelot>'),
             expect=expect)
         self._assertOPropsEqual(self.zpt, {
             u'uri://foo': {u'bar': '<bar>spam</bar>'},
-            u'uri://castle': {u'camelot': 
+            u'uri://castle': {u'camelot':
                 '<camelot place="silly" xmlns:p0="uri://knights">'
                 '  <p0:roundtable/></camelot>'}})
-        
+
     def test_opaque_set_and_remove(self):
         expect = self._makePropstat(
             ('uri://foo',), '<bar xmlns="a0"/>')
@@ -333,7 +333,7 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
             set=('<foo:bar>eggs</foo:bar>',), rm=('<foo:bar/>',),
             expect=expect)
         self._assertOPropsEqual(self.zpt, {})
-        
+
     def test_opaque_complex(self):
         # PROPPATCH allows us to set, remove and set the same property, ordered
         expect = self._makePropstat(
@@ -342,45 +342,45 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
             set=('<foo:bar>spam</foo:bar>',), rm=('<foo:bar/>',),
             extra='<set><prop><foo:bar>spam</foo:bar></prop></set>',
             expect=expect)
-        self._assertOPropsEqual(self.zpt, 
+        self._assertOPropsEqual(self.zpt,
                                 {u'uri://foo': {u'bar': '<bar>spam</bar>'}})
-        
+
     def test_proppatch_failure(self):
         expect = self._makePropstat(
             ('uri://foo',), '<bar xmlns="a0"/>', 424)
         expect += self._makePropstat(
             ('http://www.purl.org/dc/1.1',), '<nonesuch xmlns="a0"/>', 403)
-        self._checkProppatch(self.zpt, 
+        self._checkProppatch(self.zpt,
             ns=(('foo', 'uri://foo'), ('DC', 'http://www.purl.org/dc/1.1')),
             set=('<foo:bar>spam</foo:bar>', '<DC:nonesuch>Test</DC:nonesuch>'),
             expect=expect)
         self._assertOPropsEqual(self.zpt, {})
-        
+
     def test_nonexistent_dc(self):
         expect = self._makePropstat(
             ('http://www.purl.org/dc/1.1',), '<nonesuch xmlns="a0"/>', 403)
-        self._checkProppatch(self.zpt, 
+        self._checkProppatch(self.zpt,
             ns=(('DC', 'http://www.purl.org/dc/1.1'),),
             set=('<DC:nonesuch>Test</DC:nonesuch>',), expect=expect)
-        
+
     def test_set_readonly(self):
         expect = self._makePropstat((), '<getcontentlength/>', 409)
-        self._checkProppatch(self.zpt, 
+        self._checkProppatch(self.zpt,
             set=('<getcontentlength>Test</getcontentlength>',), expect=expect)
-        
+
     def test_remove_readonly(self):
         expect = self._makePropstat((), '<getcontentlength/>', 409)
-        self._checkProppatch(self.zpt, rm=('<getcontentlength/>',), 
+        self._checkProppatch(self.zpt, rm=('<getcontentlength/>',),
                              expect=expect)
 
     def test_remove_required_no_default(self):
         testprops = ITestSchema(self.zpt)
         testprops.requiredNoDefault = u'foo'
         transaction.commit()
-        expect = self._makePropstat((TestURI,), 
+        expect = self._makePropstat((TestURI,),
                                     '<requiredNoDefault xmlns="a0"/>', 409)
-        self._checkProppatch(self.zpt, 
-            ns=(('tst', TestURI),), rm=('<tst:requiredNoDefault/>',), 
+        self._checkProppatch(self.zpt,
+            ns=(('tst', TestURI),), rm=('<tst:requiredNoDefault/>',),
             expect=expect)
         self.assertEqual(ITestSchema(self.zpt).requiredNoDefault, u'foo')
 
@@ -388,10 +388,10 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         testprops = ITestSchema(self.zpt)
         testprops.requiredDefault = u'foo'
         transaction.commit()
-        expect = self._makePropstat((TestURI,), 
+        expect = self._makePropstat((TestURI,),
                                     '<requiredDefault xmlns="a0"/>', 200)
-        self._checkProppatch(self.zpt, 
-            ns=(('tst', TestURI),), rm=('<tst:requiredDefault/>',), 
+        self._checkProppatch(self.zpt,
+            ns=(('tst', TestURI),), rm=('<tst:requiredDefault/>',),
             expect=expect)
         self.assertEqual(testprops.requiredDefault, u'Default Value')
 
@@ -399,10 +399,10 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         testprops = ITestSchema(self.zpt)
         testprops.unusualMissingValue = u'foo'
         transaction.commit()
-        expect = self._makePropstat((TestURI,), 
+        expect = self._makePropstat((TestURI,),
                                     '<unusualMissingValue xmlns="a0"/>', 200)
-        self._checkProppatch(self.zpt, 
-            ns=(('tst', TestURI),), rm=('<tst:unusualMissingValue/>',), 
+        self._checkProppatch(self.zpt,
+            ns=(('tst', TestURI),), rm=('<tst:unusualMissingValue/>',),
             expect=expect)
         self.assertEqual(testprops.unusualMissingValue, u'Missing Value')
 
@@ -410,11 +410,11 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         dc = IZopeDublinCore(self.zpt)
         dc.title = u'Test Title'
         transaction.commit()
-        expect = self._makePropstat(('http://www.purl.org/dc/1.1',), 
+        expect = self._makePropstat(('http://www.purl.org/dc/1.1',),
                                     '<title xmlns="a0"/>', 200)
-        self._checkProppatch(self.zpt, 
-            ns=(('DC', 'http://www.purl.org/dc/1.1'),), 
-            set=('<DC:title>Foo Bar</DC:title>',), 
+        self._checkProppatch(self.zpt,
+            ns=(('DC', 'http://www.purl.org/dc/1.1'),),
+            set=('<DC:title>Foo Bar</DC:title>',),
             expect=expect)
         self.assertEqual(dc.title, u'Foo Bar')
 
@@ -422,11 +422,11 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         dc = IZopeDublinCore(self.zpt)
         dc.subjects = (u'Bla', u'Ble', u'Bli')
         transaction.commit()
-        expect = self._makePropstat(('http://www.purl.org/dc/1.1',), 
+        expect = self._makePropstat(('http://www.purl.org/dc/1.1',),
                                     '<subjects xmlns="a0"/>', 200)
-        self._checkProppatch(self.zpt, 
-            ns=(('DC', 'http://www.purl.org/dc/1.1'),), 
-            set=('<DC:subjects>Foo, Bar</DC:subjects>',), 
+        self._checkProppatch(self.zpt,
+            ns=(('DC', 'http://www.purl.org/dc/1.1'),),
+            set=('<DC:subjects>Foo, Bar</DC:subjects>',),
             expect=expect)
         self.assertEqual(dc.subjects, (u'Foo', u'Bar'))
 

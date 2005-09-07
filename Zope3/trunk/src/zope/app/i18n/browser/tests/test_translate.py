@@ -38,7 +38,7 @@ class Translate(Translate):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        
+
 
 class TranslateTest(PlacelessSetup, unittest.TestCase):
 
@@ -71,7 +71,7 @@ class TranslateTest(PlacelessSetup, unittest.TestCase):
 
 
     def _getRequest(self, **kw):
-        request = BrowserRequest(StringIO(''), StringIO(), kw)
+        request = BrowserRequest(StringIO(''), kw)
         request._cookies = {'edit_languages': 'en,de'}
         request._traversed_names = ['foo', 'bar']
         return request
