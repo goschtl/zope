@@ -286,8 +286,6 @@ class CommandLineTestCase(unittest.TestCase):
                               self.parse_args, ["-x", "foo.*"])
         finally:
             sys.stderr = old_stderr
-        text = sio.getvalue().strip()
-        self.failUnless(text.endswith("exclusions do not support wildcards"))
 
 
 class ComponentTestCase(unittest.TestCase):
