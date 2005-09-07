@@ -1,0 +1,31 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <!-- This is only a sample configure.zcml file
+       See README.txt in zope.app.skintools for more 
+       information about the skintools concept.
+       --> 
+
+  <!-- pagelet defining the box data -->
+  <pagelet
+      name="addbox"
+      for="zope.app.container.interfaces.IWriteContainer"
+      slot="the slot used in your skin"
+      permission="zope.ManageContent"
+      template="addbox.pt"
+      layer="the layer of your skin"
+      weight="1"
+      />
+
+  <!-- pagelet defining the layout -->
+  <pagelet
+      name="addbox_layout"
+      for="*"
+      slot="zope.app.skintools.addbox.IAddBoxLayout"
+      permission="zope.ManageContent"
+      template="addbox_layout.pt"
+      />
+
+</configure>
