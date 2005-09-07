@@ -246,7 +246,7 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         ppatch.PROPPATCH()
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 207)
-        s1 = normalize_xml(''.join(request.response.result.body))
+        s1 = normalize_xml(request.response.consumeBody())
         s2 = normalize_xml(expect)
         self.assertEqual(s1, s2)
 
