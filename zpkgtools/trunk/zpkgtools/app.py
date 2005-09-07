@@ -637,6 +637,11 @@ def parse_args(argv):
     options, args = parser.parse_args(argv[1:])
     if len(args) > 1:
         parser.error("too many arguments")
+    try:
+        for exclusion in options.exclude_packages:
+            config.resource_name(exclusion)
+    except ValueError, e:
+        parser.error(str(e))
     options.program = prog
     options.args = args
     if args:

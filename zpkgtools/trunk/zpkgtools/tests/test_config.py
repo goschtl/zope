@@ -83,6 +83,10 @@ class ConfigTestCase(unittest.TestCase):
                           self.load_text, ("default-collection foo\n"
                                            "default-collection foo\n"))
 
+        # default-collection with wildcard
+        self.assertRaises(cfgparser.ConfigurationError,
+                          self.load_text, "default-collection foo.*\n")
+
     def test_default_collection(self):
         cf = self.load_text("default-collection foo\n")
         self.assertEqual(cf.default_collection, "foo")
@@ -160,6 +164,14 @@ class ConfigTestCase(unittest.TestCase):
             self.load_text,
             "<exclude>\n"
             "  reportlab   unnecessary junk\n"
+            "</exclude>\n")
+
+    def test_exclude_packages_does_not_allow_wildcard(self):
+        self.assertRaises(
+            cfgparser.ConfigurationError,
+            self.load_text,
+            "<exclude>\n"
+            "  reportlab.*\n"
             "</exclude>\n")
 
     def load_text(self, text, path=None, basedir=None):

@@ -40,6 +40,13 @@ def non_empty_string(string):
     return string
 
 
+def resource_name(value):
+    value = locationmap.resource_name(value)
+    if value.endswith(".*"):
+        raise ValueError("exclusions do not support wildcards")
+    return value
+
+
 def resource_map(value):
     return value.map
 

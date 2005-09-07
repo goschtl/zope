@@ -277,6 +277,18 @@ class CommandLineTestCase(unittest.TestCase):
         options = self.parse_args(["--exclude=pkg1", "-xpkg2"])
         self.assertEqual(options.exclude_packages, ["pkg1", "pkg2"])
 
+    def test_exclude_resources_wildcards(self):
+        # excluded packages are not allowed to include wildcards
+        old_stderr = sys.stderr
+        sys.stderr = sio = StringIO()
+        try:
+            self.assertRaises(SystemExit,
+                              self.parse_args, ["-x", "foo.*"])
+        finally:
+            sys.stderr = old_stderr
+        text = sio.getvalue().strip()
+        self.failUnless(text.endswith("exclusions do not support wildcards"))
+
 
 class ComponentTestCase(unittest.TestCase):
 

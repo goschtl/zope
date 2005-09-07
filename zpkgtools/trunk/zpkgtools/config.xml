@@ -35,7 +35,7 @@
 
   <sectiontype name="exclude"
                datatype=".config.exclude"
-               keytype=".config.non_empty_string"
+               keytype=".config.resource_name"
                >
     <key name="+"
          attribute="mapping"
@@ -64,7 +64,7 @@
        />
 
   <key name="default-collection"
-       datatype=".config.non_empty_string"
+       datatype=".config.resource_name"
        required="no"
        />
 
