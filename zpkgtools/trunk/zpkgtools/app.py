@@ -138,8 +138,7 @@ class BuilderApplication(Application):
         self.support_packages.extend(
             [(pkg, None) for pkg in options.support_packages])
         for pkg in options.exclude_packages:
-            if pkg not in self.exclude_packages:
-                self.exclude_packages.add(pkg)
+            self.exclude_packages.add(pkg)
 
     def build_distribution(self):
         """Create the distribution tree.
