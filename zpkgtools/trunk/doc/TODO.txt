@@ -44,37 +44,6 @@ Things that need to be done
       the generated distribution, instead of having alternate resource
       maps to work from a checkout to access the branch.
 
-  - CVS retriever (mostly done; need to deal with unspecified type and
-    user for remote repositories)
-
-    - can check *~/.cvspass* to see if there's an entry there
-
-    - otherwise assume :ext: if there's a CVS_RSH setting?  or just
-      always?  try anonymous :pserver: access?
-
-    - more configuration settings?
-
-    It's not clear these remaining issues are particularly important.
-
-  - Use delayed loading of resource maps, especially those that need to
-    be retrieved from remote systems.  The basic model of the resource
-    map allows this strategy to be employed effectively.  Low priority.
-
-  - Support use of http: and https: for access to Subversion
-    repositories.  Very low priority since we're using svn: and svn+ssh:
-    for svn.zope.org.
-
-  - Implement tarball generation directly in Python to avoid
-    dependence on external applications (because that's
-    platform-specific).  Low priority; you can use -t/--tree to just
-    build the tree and avoid archive creation.
-
-  - Support different types of generated archives; bzipped tarballs,
-    gzipped tarballs and ZIP archives should both be easily generated.
-    Perhaps a configuration option should specify which are produced
-    by default.  Low priority; you can use -t/--tree to just build the
-    tree and avoid archive creation.
-
 - Look at the package manager used by the MacPython people to see what
   can be/has been done.
 
