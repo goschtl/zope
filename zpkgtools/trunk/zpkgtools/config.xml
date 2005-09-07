@@ -9,7 +9,7 @@
                >
     <key name="+"
          attribute="map"
-         type=".config.non_empty_string"
+         datatype=".config.non_empty_string"
          />
   </sectiontype>
 

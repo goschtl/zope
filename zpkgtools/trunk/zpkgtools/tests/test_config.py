@@ -147,6 +147,14 @@ class ConfigTestCase(unittest.TestCase):
             "  </resources>\n"
             "</resources>\n")
 
+    def test_embedded_resource_map_without_value(self):
+        self.assertRaises(
+            cfgparser.ConfigurationError,
+            self.load_text,
+            "<resources>\n"
+            "  pkg  \n"
+            "</resources>\n")
+
     def test_exclude_packages(self):
         cf = self.load_text(
             "<exclude>\n"
