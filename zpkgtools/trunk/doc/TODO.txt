@@ -33,11 +33,6 @@ Things that need to be done
     manually.  This doesn't feel like it "plays nice" in the distutils
     world, though.
 
-  - Consider looking for the configuration file in the current
-    directory before looking in ~/.zpkg/.  Note that it's already
-    possible to specify an configuration file, or just add additional
-    resource maps, using command-line options.
-
   - Re-visit the abstractions for parsed revision control URLs:
 
     - The current abstraction is pretty painful to work with, and
@@ -71,12 +66,14 @@ Things that need to be done
 
   - Implement tarball generation directly in Python to avoid
     dependence on external applications (because that's
-    platform-specific).
+    platform-specific).  Low priority; you can use -t/--tree to just
+    build the tree and avoid archive creation.
 
   - Support different types of generated archives; bzipped tarballs,
     gzipped tarballs and ZIP archives should both be easily generated.
     Perhaps a configuration option should specify which are produced
-    by default.  Low priority.
+    by default.  Low priority; you can use -t/--tree to just build the
+    tree and avoid archive creation.
 
 - Look at the package manager used by the MacPython people to see what
   can be/has been done.
