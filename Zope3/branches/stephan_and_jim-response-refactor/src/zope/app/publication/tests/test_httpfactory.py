@@ -33,9 +33,8 @@ from zope.app.testing import ztapi
 from zope.app.publication import interfaces
 
 class DummyRequestFactory(object):
-    def __call__(self, input_stream, output_steam, env):
+    def __call__(self, input_stream, env):
         self.input_stream = input_stream
-        self.output_steam = output_steam
         self.env = env
         return self
 
