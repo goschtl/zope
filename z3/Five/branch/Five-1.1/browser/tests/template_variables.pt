@@ -8,9 +8,9 @@ Here is context: <tal:block content="python:here is context"/>
 Nothing is None: <tal:block content="python:nothing is None"/>
 Default works: <tal:block replace="non_existent_var|default" />True
 Root is the application: <tal:block 
-  replace="python:repr(root).startswith('<OFS.Application.Application')" />
+  replace="python:repr(root).find('Application') != -1" />
 Template is a template: <tal:block 
-  replace="python:repr(template).startswith('<ZopeTwoPageTemplateFile')" />
+  replace="python:repr(template.aq_base).startswith('<ZopeTwoPageTemplateFile')" />
 Traverse_subpath exists and is empty: <tal:block 
   replace="python:traverse_subpath == []" />
 Request is a request: <tal:block 
