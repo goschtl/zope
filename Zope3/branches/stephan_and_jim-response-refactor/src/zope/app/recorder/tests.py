@@ -27,36 +27,6 @@ from zope.app.testing import setup, ztapi
 from zope.app.publisher.browser import BrowserView
 
 
-def doctest_RecordingHTTPServer():
-    r"""Unit tests for RecordingHTTPServer.
-
-    We will use stubs instead of real channel and request parser objects, to
-    keep the test fixture small.
-
-        >>> from zope.app.recorder import RecordingHTTPTask
-        >>> channel = ChannelStub()
-        >>> request_data = RequestDataStub()
-        >>> task = RecordingHTTPTask(channel, request_data)
-
-    RecordingHTTPTask is a thin wrapper around HTTPTask.  It records all data
-    written through task.write, plus the response header, of course.
-
-        >>> task.write('request body\n')
-        >>> task.write('goes in here')
-
-    We need to strip CR characters, as they confuse doctest.
-
-        >>> print task.getRawResponse().replace('\r', '')
-        HTTP/1.1 200 Ok
-        Connection: close
-        Server: Stub Server
-        <BLANKLINE>
-        request body
-        goes in here
-
-    """
-
-
 def doctest_RecordingHTTPRequestParser():
     r"""Unit tests for RecordingHTTPRequestParser.
 
@@ -99,10 +69,23 @@ def doctest_RecordingHTTPServer():
     Further, to keep things simple, we will override the constructor and
     prevent it from listening on sockets.
 
+        >>> def application(environ, start_response):
+        ...     return ()
+
+        >>> from zope.publisher.publish import publish
         >>> from zope.app.recorder import RecordingHTTPServer
         >>> class RecordingHTTPServerForTests(RecordingHTTPServer):
         ...     def __init__(self):
-        ...         self.request_factory = RecorderRequest
+        ...         pass
+        ...
+        ...     def application(self, environ, start_response):
+        ...         request = RecorderRequest(environ['wsgi.input'], environ)
+        ...         response = request.response
+        ...         publish(request)
+        ...         start_response(response.getStatusString(),
+        ...                        response.getHeaders())
+        ...         return ()
+
         >>> server = RecordingHTTPServerForTests()
 
     We will need a request parser
@@ -140,13 +123,13 @@ def doctest_RecordingHTTPServer():
         '/'
         >>> print rq.response_string.replace('\r', '')
         HTTP/1.1 599 No status set
-        Content-Length: 0
-        X-Powered-By: Zope (www.zope.org), Python (www.python.org)
+        Connection: close
         Server: Stub Server
+        X-Powered-By: Zope (www.zope.org), Python (www.python.org)
         <BLANKLINE>
         <BLANKLINE>
         >>> rq.status
-        599
+        '599'
         >>> rq.reason
         'No status set'
 

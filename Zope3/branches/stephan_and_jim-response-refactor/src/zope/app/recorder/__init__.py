@@ -99,7 +99,7 @@ class RecordingHTTPServer(PublisherHTTPServer):
 
         Wraps PublisherHTTPServer.executeRequest().
         """
-        PublisherHTTPServer.executeRequest(self, task)
+        super(RecordingHTTPServer, self).executeRequest(task)
         # PublisherHTTPServer either committed or aborted a transaction,
         # so we need a new one.
         # TODO: Actually, we only need a transaction if we use
