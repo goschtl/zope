@@ -27,7 +27,7 @@ from BTrees.IOBTree import IOBTree
 from zope.app.publication.httpfactory import HTTPPublicationRequestFactory
 from zope.app.server.servertype import ServerType
 from zope.server.http.commonaccesslogger import CommonAccessLogger
-from zope.server.http.publisherhttpserver import PublisherHTTPServer
+from zope.server.http.wsgihttpserver import WSGIHTTPServer
 from zope.server.http.httpserverchannel import HTTPServerChannel
 from zope.server.http.httprequestparser import HTTPRequestParser
 from zope.server.http.httptask import HTTPTask
@@ -88,7 +88,7 @@ class RecordingHTTPServerChannel(HTTPServerChannel):
     parser_class = RecordingHTTPRequestParser
 
 
-class RecordingHTTPServer(PublisherHTTPServer):
+class RecordingHTTPServer(WSGIHTTPServer):
     """Zope Publisher-specific HTTP server that can record requests."""
 
     channel_class = RecordingHTTPServerChannel
