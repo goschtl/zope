@@ -9,7 +9,7 @@ on how to use these modules.
 '''
 
 # The Olson database has historically been updated about 4 times a year
-OLSON_VERSION = '2005k'
+OLSON_VERSION = '2005m'
 VERSION = OLSON_VERSION
 #VERSION = OLSON_VERSION + '.2'
 __version__ = OLSON_VERSION
@@ -18,10 +18,10 @@ OLSEN_VERSION = OLSON_VERSION # Old releases had this misspelling
 
 __all__ = [
     'timezone', 'all_timezones', 'common_timezones', 'utc',
-    'AmbiguousTimeError',
+    'AmbiguousTimeError', 'country_timezones',
     ]
 
-import sys, datetime
+import sys, datetime, os.path
 from tzinfo import AmbiguousTimeError, unpickler
 
 def timezone(zone):
@@ -54,7 +54,7 @@ def timezone(zone):
     try:
         module = __import__(module_name, globals(), locals())
     except ImportError:
-        raise KeyError(zone)
+        raise KeyError, zone
     rv = module
     for bit in zone_bits[1:]:
         rv = getattr(rv, bit)
@@ -102,13 +102,13 @@ class UTC(datetime.tzinfo):
     def localize(self, dt, is_dst=False):
         '''Convert naive time to local time'''
         if dt.tzinfo is not None:
-            raise ValueError('Not naive datetime (tzinfo is already set)')
+            raise ValueError, 'Not naive datetime (tzinfo is already set)'
         return dt.replace(tzinfo=self)
 
     def normalize(self, dt, is_dst=False):
         '''Correct the timezone information on the given datetime'''
         if dt.tzinfo is None:
-            raise ValueError('Naive time - no tzinfo set')
+            raise ValueError, 'Naive time - no tzinfo set'
         return dt.replace(tzinfo=self)
 
     def __repr__(self):
@@ -163,6 +163,34 @@ def _p(*args):
     return unpickler(*args)
 _p.__safe_for_unpickling__ = True
 
+_country_timezones_cache = {}
+
+def country_timezones(iso3166_code):
+    """Return a list of timezones used in a particular country.
+
+    iso3166_code is the two letter code used to identify the country.
+
+    >>> country_timezones('ch')
+    ['Europe/Zurich']
+    >>> country_timezones('CH')
+    ['Europe/Zurich']
+    >>> country_timezones('XXX')
+    Traceback (most recent call last):
+    ...
+    KeyError: 'XXX'
+    """
+    iso3166_code = iso3166_code.upper()
+    if not _country_timezones_cache:
+        zone_tab_name = os.path.join(os.path.dirname(__file__), 'zone.tab')
+        for line in open(zone_tab_name):
+            if line.startswith('#'):
+                continue
+            code, coordinates, zone = line.split(None, 4)[:3]
+            try:
+                _country_timezones_cache[code].append(zone)
+            except KeyError:
+                _country_timezones_cache[code] = [zone]
+    return _country_timezones_cache[iso3166_code]
 
 def _test():
     import doctest, os, sys
@@ -251,6 +279,7 @@ common_timezones = \
  'America/Cayman',
  'America/Chicago',
  'America/Chihuahua',
+ 'America/Coral_Harbour',
  'America/Cordoba',
  'America/Costa_Rica',
  'America/Cuiaba',
@@ -458,6 +487,7 @@ common_timezones = \
  'Australia/Brisbane',
  'Australia/Broken_Hill',
  'Australia/Canberra',
+ 'Australia/Currie',
  'Australia/Darwin',
  'Australia/Hobart',
  'Australia/LHI',
@@ -701,6 +731,7 @@ all_timezones = \
  'America/Cayman',
  'America/Chicago',
  'America/Chihuahua',
+ 'America/Coral_Harbour',
  'America/Cordoba',
  'America/Costa_Rica',
  'America/Cuiaba',
@@ -915,6 +946,7 @@ all_timezones = \
  'Australia/Brisbane',
  'Australia/Broken_Hill',
  'Australia/Canberra',
+ 'Australia/Currie',
  'Australia/Darwin',
  'Australia/Hobart',
  'Australia/LHI',
