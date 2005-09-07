@@ -7,7 +7,7 @@ Overview
 
 This is a very brief "getting started" guide to using the Zope 3
 package tool, |zpkg|_.  We'll start with simple instructions for
-building a Zope-3.1.X distribution.  These instructions only apply to
+building a Zope-3.2.X distribution.  These instructions only apply to
 Unix systems.
 
 The packaging tool builds a distribution pacakge based on *resources*.
@@ -29,9 +29,8 @@ Before you can build a distribution, you need to have the packaging
 tool itself and at least a minimal configuration.  This only needs to
 be done once.
 
-There isn't a distribution for |zpkg|_ yet (simply because we haven't
-had time), but this is easy to get from Subversion.  Use the following
-command to retrieve the ``zpkgtools`` code::
+Use the following command to retrieve the ``zpkgtools`` code from
+Subversion::
 
   svn co svn://svn.zope.org/repos/main/zpkgtools/trunk zpkgtools
 
@@ -61,7 +60,7 @@ using the Python interpreter::
   >>> os.path.expanduser('~')
   'C:\\Documents and Settings\\username'
 
-If you're working with the Zope 3 source code (for Zope 3.1 or newer),
+If you're working with the Zope 3 source code (for Zope 3.2 or newer),
 a sample configuration with an embedded resource map is in the
 checked-out sources as *releases/Zope.cfg*.  Take a look at that for a
 moderately typical configuration.
@@ -79,7 +78,7 @@ to hold the finished tarball in the current directory.
 
 Run |zpkg|_ using this command::
 
-  zpkg -C releases/Zope.cfg -vVERSION Zope
+  zpkg -C releases/Zope.cfg -vVERSION
 
 After a short while, you should find a very large tarball named
 *Zope-VERSION.tgz* in the current directory.
