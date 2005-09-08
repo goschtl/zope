@@ -18,9 +18,10 @@ $Id$
 __docformat__ = "reStructuredText"
 import types
 
+from zope import interface
 from zope.interface import implements, providedBy, implementedBy, declarations
 from zope.interface.adapter import AdapterRegistry
-from zope.interface.interfaces import IInterface
+from zope.interface.interfaces import ISpecification
 
 from zope.component.interfaces import ISiteManager, IRegistry
 from zope.component.interfaces import ComponentLookupError, Invalid
@@ -90,21 +91,13 @@ class SiteManager(object):
     
     def queryUtility(self, interface, name='', default=None):
         """See ISiteManager interface"""
-
-        byname = self.utilities._null.get(interface)
-        if byname:
-            return byname.get(name, default)
-        else:
-            return default
+        return self.utilities.lookup((), interface, name, default)
 
     def getUtilitiesFor(self, interface):
-        byname = self.utilities._null.get(interface)
-        if byname:
-            for item in byname.iteritems():
-                yield item
+        return self.utilities.lookupAll((), interface)
 
     def getAllUtilitiesRegisteredFor(self, interface):
-        return iter(self.utilities._null.get(('s', interface)) or ())
+        return self.utilities.subscriptions((), interface)
 
 
 class GlobalSiteManager(SiteManager):
@@ -114,7 +107,7 @@ class GlobalSiteManager(SiteManager):
 
     def __init__(self, name=None):
         self.__name__ = name
-        self._registrations = {}
+        self._registrations = []
         self.adapters = GlobalAdapterRegistry(self, 'adapters')
         self.utilities = GlobalAdapterRegistry(self, 'utilities')
 
@@ -164,18 +157,11 @@ class GlobalSiteManager(SiteManager):
         >>> registry.queryMultiAdapter((O1(), O2()), R1, '').__class__
         <class 'zope.component.site.O3'>
         """
-        ifaces = []
-        for iface in required:
-            if not IInterface.providedBy(iface) and iface is not None:
-                if not isinstance(iface, (type, types.ClassType)):
-                    raise TypeError(iface, IInterface)
-                iface = implementedBy(iface)
+        required = tuple(map(_spec, required))
 
-            ifaces.append(iface)
-        required = tuple(ifaces)
-
-        self._registrations[(required, provided, name)] = AdapterRegistration(
-            required, provided, name, factory, info)
+        self._registrations.append(
+            AdapterRegistration(required, provided, name, factory, info),
+            )
 
         self.adapters.register(required, provided, name, factory)
 
@@ -208,25 +194,11 @@ class GlobalSiteManager(SiteManager):
         SubscriptionRegistration(('R1',), 'P2', 'c1', 'd1')
         SubscriptionRegistration(('R1',), 'P2', 'c2', 'd2')
         """
-        ifaces = []
-        for iface in required:
-            if not IInterface.providedBy(iface) and \
-                   not isinstance(iface, declarations.Implements) and \
-                   iface is not None:
-                if not isinstance(iface, (type, types.ClassType)):
-                    raise TypeError(iface, IInterface)
-                iface = implementedBy(iface)
 
-            ifaces.append(iface)
-        required = tuple(ifaces)
+        required = tuple(map(_spec, required))
 
-        registration = SubscriptionRegistration(
-            required, provided, factory, info)
-
-        self._registrations[(required, provided)] = (
-            self._registrations.get((required, provided), ())
-            +
-            (registration, )
+        self._registrations.append(
+            SubscriptionRegistration(required, provided, factory, info),
             )
 
         self.adapters.subscribe(required, provided, factory)
@@ -243,20 +215,26 @@ class GlobalSiteManager(SiteManager):
         # Also subscribe to support getAllUtilitiesRegisteredFor:
         self.utilities.subscribe((), providedInterface, component)
 
-        self._registrations[(providedInterface, name)] = UtilityRegistration(
-            providedInterface, name, component, info)
+        self._registrations.append(
+            UtilityRegistration(providedInterface, name, component, info),
+            )
 
     def registrations(self):
-        for registration in self._registrations.itervalues():
-            if isinstance(registration, tuple):
-                for r in registration:
-                    yield r
-            else:
-                yield registration
+        return iter(self._registrations)
 
     def __reduce__(self):
         # Global site managers are pickled as global objects
         return self.__name__
+
+_class_types = (type, types.ClassType)
+def _spec(iface_or_class):
+    if ISpecification.providedBy(iface_or_class):
+        return iface_or_class
+    if iface_or_class is None:
+        return interface.Interface
+    if isinstance(iface_or_class, _class_types):
+        return interface.implementedBy(iface_or_class)
+    raise TypeError(iface_or_class, ISpecification)
 
 
 def GAR(siteManager, registryName):

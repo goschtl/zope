@@ -241,8 +241,8 @@ And now get the info dictionary:
 
   >>> pprint(component.getAdapterInfoDictionary(reg))
   {'doc': 'doc info',
-   'factory': '__builtin__.MyResult',
-   'factory_url': '__builtin__/MyResult',
+   'factory': '__builtin__.MyResult ?',
+   'factory_url': None,
    'name': 'FooToResult',
    'provided': {'module': '__builtin__', 'name': 'IResult'},
    'required': [{'module': '__builtin__', 'name': 'IFoo'},
@@ -258,8 +258,8 @@ see how the function handles subscriptions:
 
   >>> pprint(component.getAdapterInfoDictionary(reg))
   {'doc': 'doc info',
-   'factory': '__builtin__.MyResult',
-   'factory_url': '__builtin__/MyResult',
+   'factory': '__builtin__.MyResult ?',
+   'factory_url': None,
    'name': u'<subscription>',
    'provided': None,
    'required': [{'module': '__builtin__', 'name': 'IFoo'},
@@ -281,7 +281,7 @@ registrations:
   {'description': u'<p>My Foo Bar</p>\n',
    'name': 'MyFooBar',
    'title': 'MyFooBar',
-   'url': '__builtin__/MyFooBar'}
+   'url': '__builtin__/MyFooBar ?'}
 
 
 `getUtilityInfoDictionary(name, factory)`
@@ -296,6 +296,6 @@ registrations:
   >>> pprint(component.getUtilityInfoDictionary(
   ...     component.getUtilities(IFooBar).next()))
   {'name': u'<i>no name</i>',
-   'path': '__builtin__.MyFooBar',
-   'url': '__builtin__/MyFooBar',
+   'path': '__builtin__.MyFooBar ?',
+   'url': '__builtin__/MyFooBar ?',
    'url_name': '__noname__'}

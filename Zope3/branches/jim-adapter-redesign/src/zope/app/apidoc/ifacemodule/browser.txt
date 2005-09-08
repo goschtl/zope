@@ -218,7 +218,10 @@ we get a result:
 
   >>> pprint(details.getTypes())
   [{'name': 'IMyType',
-    'path': '__builtin__.IMyType'}]
+    'path': '__builtin__.IMyType ?'}]
+
+Note that a space and question mark is shown after the object name to
+indicate that the object name wasn't found in the module.
 
 
 `getAttributes()`
@@ -300,8 +303,96 @@ Get adapters where this interface is required.
 Get adapters where this interface is required.
 
   >>> pprint(details.getGenericRequiredAdapters())
-  []
+  [{'doc': '',
+    'factory': 'append',
+    'factory_url': 'append',
+    'name': u'<subscription>',
+    'provided': None,
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.adapters.Traverser',
+    'factory_url': 'zope/app/traversing/adapters/Traverser',
+    'name': '',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraverser'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.adapters.DefaultTraversable',
+    'factory_url': 'zope/app/traversing/adapters/DefaultTraversable',
+    'name': '',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraversable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.location.traversing.LocationPhysicallyLocatable',
+    'factory_url': 'zope/app/location/traversing/LocationPhysicallyLocatable',
+    'name': '',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'IPhysicallyLocatable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.namespace.etc',
+    'factory_url': 'zope/app/traversing/namespace/etc',
+    'name': 'etc',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraversable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.namespace.etc',
+    'factory_url': 'zope/app/traversing/namespace/etc',
+    'name': 'etc',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraversable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'},
+                 {'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.namespace.etc',
+    'factory_url': 'zope/app/traversing/namespace/etc',
+    'name': 'etc',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraversable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'},
+                 {'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.namespace.etc',
+    'factory_url': 'zope/app/traversing/namespace/etc',
+    'name': 'etc',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraversable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'},
+                 {'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.namespace.etc',
+    'factory_url': 'zope/app/traversing/namespace/etc',
+    'name': 'etc',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraversable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'},
+                 {'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None}]
 
+Note that these include interfaces for which *any* interface is required.
 
 `getProvidedAdapters()`
 -----------------------
@@ -310,8 +401,8 @@ Get adapters where this interface is provided.
 
   >>> pprint(details.getProvidedAdapters())
   [{'doc': '',
-    'factory': '__builtin__.Foo',
-    'factory_url': '__builtin__/Foo',
+    'factory': '__builtin__.Foo ?',
+    'factory_url': None,
     'name': '',
     'provided': {'module': '__builtin__',
                  'name': 'IFoo'},
@@ -319,6 +410,8 @@ Get adapters where this interface is provided.
                   'name': 'IBar'}],
     'zcml': None}]
 
+Note that the factory URL is None, because the factory doesn't
+actually exist in __builtin__.
 
 `getClasses()`
 ---------------
@@ -339,7 +432,7 @@ interface.
   [{'description': u'',
     'name': 'FooFactory',
     'title': 'Foo Factory',
-    'url': '__builtin__/Foo'}]
+    'url': '__builtin__/Foo ?'}]
 
 `getUtilities()`
 ----------------
@@ -348,6 +441,6 @@ Return all utilities that provide this interface.
 
   >>> pprint(details.getUtilities())
   [{'name': 'The Foo',
-    'path': '__builtin__.Foo',
-    'url': '__builtin__/Foo',
+    'path': '__builtin__.Foo ?',
+    'url': '__builtin__/Foo ?',
     'url_name': 'The Foo'}]

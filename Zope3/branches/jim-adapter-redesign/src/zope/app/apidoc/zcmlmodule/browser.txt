@@ -186,8 +186,8 @@ Return `None`, if the info attribute is a parser info:
 Return information about the directive handler object.
 
   >>> pprint(details.getHandler())
-  {'path': 'None.foo',
-   'url': 'None/foo'}
+  {'path': 'foo',
+   'url': 'foo'}
 
 
 `getSubdirectives()`
@@ -210,8 +210,8 @@ but if we add one
 the result becomes more interesting:
 
   >>> pprint(details.getSubdirectives()) #doctest:+ELLIPSIS
-  [{'handler': {'path': 'None.handler',
-                'url': 'None/handler'},
+  [{'handler': {'path': 'handler',
+                'url': 'handler'},
     'info': 'info',
     'name': 'foo',
     'namespace': 'browser',

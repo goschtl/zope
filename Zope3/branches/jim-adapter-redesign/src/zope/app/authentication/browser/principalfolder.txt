@@ -246,7 +246,7 @@ select any one credentials.
   ... 
   ... users
   ... -----------------------------6519411471194050603270010787--
-  ... """)
+  ... """, handle_errors=False)
   HTTP/1.1 200 Ok
   ... 
 

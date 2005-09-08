@@ -54,6 +54,9 @@ class FakeKeyReference(object):
     def __cmp__(self, other):
         return cmp(id(self.object), id(other.object))
 
+def maybeFakeKeyReference(ob):
+    if not isinstance(ob, int):
+        return FakeKeyReference(ob)
 
 
 def setUp(test):
@@ -71,7 +74,7 @@ def setUp(test):
     from zope.app.locking.storage import ILockStorage, PersistentLockStorage
     from zope.app.traversing.interfaces import IPathAdapter
 
-    ztapi.provideAdapter(Interface, IKeyReference, FakeKeyReference)
+    ztapi.provideAdapter(Interface, IKeyReference, maybeFakeKeyReference)
     ztapi.provideAdapter(Interface, ILockable, LockingAdapterFactory)
     ztapi.provideAdapter(None, IPathAdapter, LockingPathAdapter,
                          "locking")

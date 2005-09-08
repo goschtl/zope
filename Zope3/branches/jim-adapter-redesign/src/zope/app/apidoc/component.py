@@ -59,14 +59,16 @@ def getProvidedAdapters(iface, withViews=False):
     gsm = zapi.getGlobalSiteManager()
     for reg in gsm.registrations():
         # Only get adapters
-        if not isinstance(reg, (AdapterRegistration, SubscriptionRegistration)):
+        if not isinstance(reg,
+                          (AdapterRegistration, SubscriptionRegistration)):
             continue
         # Ignore adapters that have no required interfaces
         if len(reg.required) == 0:
             continue
         # Ignore views
-        if not withViews and reg.required[-1] and \
-               reg.required[-1].isOrExtends(IRequest):
+        if (not withViews and reg.required[-1]
+            and reg.required[-1].isOrExtends(IRequest)
+            ):
             continue
         # Only get adapters for which this interface is provided
         if reg.provided is None or not reg.provided.isOrExtends(iface):
@@ -172,6 +174,11 @@ def getAdapterInfoDictionary(reg):
        url = None
     else:
         url = path.replace('.', '/')
+
+    if ' ' in url:
+        # We got a generated class. It can't have a url
+        url = None
+                
     if isinstance(reg.doc, (str, unicode)):
         doc = reg.doc
         zcml = None

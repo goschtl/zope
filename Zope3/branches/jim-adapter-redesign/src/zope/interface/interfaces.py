@@ -645,11 +645,30 @@ class IAdapterRegistry(Interface):
         provided interface, and a name.
         """
 
-    def lookup(required, provided, name, default=None):
+    def lookup(required, provided, name='', default=None):
         """Lookup a value
 
         A value is looked up based on a *sequence* of required
         specifications, a provided interface, and a name.
+        """
+
+    def queryMultiAdapter(objects, provided, name=u'', default=None):
+        """Adapt a sequence of objects to a named, provided, interface
+        """
+
+    def lookup1(required, provided, name=u'', default=None):
+        """Lookup a value using a single required interface
+
+        A value is looked up based on a single required
+        specifications, a provided interface, and a name.
+        """
+
+    def queryAdapter(object, provided, name=u'', default=None):
+        """Adapt an object using a registered adapter factory.
+        """
+
+    def adapter_hook(provided, object, name=u'', default=None):
+        """Adapt an object using a registered adapter factory.
         """
 
     def lookupAll(required, provided):
@@ -662,7 +681,7 @@ class IAdapterRegistry(Interface):
         """Return the names for which there are registered objects
         """
 
-    def subscribe(required, provided, subscriber):
+    def subscribe(required, provided, subscriber, name=u''):
         """Register a subscriber
 
         A subscriber is registered for a *sequence* of required
@@ -672,10 +691,13 @@ class IAdapterRegistry(Interface):
         equivalent) interfaces.
         """
 
-    def subscriptions(required, provided):
+    def subscriptions(required, provided, name=u''):
         """Get a sequence of subscribers
 
         Subscribers for a *sequence* of required interfaces, and a provided
         interface are returned.
         """
     
+    def subscribers(objects, provided, name=u''):
+        """Get a sequence of subscription adapters
+        """

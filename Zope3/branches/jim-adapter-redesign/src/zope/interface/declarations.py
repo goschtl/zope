@@ -237,21 +237,6 @@ class Declaration(Specification):
 
     __radd__ = __add__
 
-    def __nonzero__(self):
-        """Test whether there are any interfaces in a specification.
-
-        >>> from zope.interface import Interface
-        >>> class I1(Interface): pass
-        ...
-        >>> spec = Declaration(I1)
-        >>> int(bool(spec))
-        1
-        >>> spec = Declaration()
-        >>> int(bool(spec))
-        0
-        """
-        return bool(self.__iro__)
-
 
 ##############################################################################
 #
@@ -1213,31 +1198,6 @@ def ObjectSpecification(direct, cls):
         >>> int(providedBy(c).extends(I31))
         1
         >>> int(providedBy(c).extends(I5))
-        1
-
-
-        nonzero:
-
-        >>> from zope.interface import Interface
-        >>> class I1(Interface):
-        ...     pass
-        >>> class I2(Interface):
-        ...     pass
-        >>> class C(object):
-        ...     implements(I1)
-        >>> c = C()
-        >>> int(bool(providedBy(c)))
-        1
-        >>> directlyProvides(c, I2)
-        >>> int(bool(providedBy(c)))
-        1
-        >>> class C(object):
-        ...     pass
-        >>> c = C()
-        >>> int(bool(providedBy(c)))
-        0
-        >>> directlyProvides(c, I2)
-        >>> int(bool(providedBy(c)))
         1
 
 

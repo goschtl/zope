@@ -23,6 +23,7 @@ static PyObject *str__dict__, *str__implemented__, *strextends;
 static PyObject *BuiltinImplementationSpecifications, *str__provides__;
 static PyObject *str__class__, *str__providedBy__, *strisOrExtends;
 static PyObject *empty, *fallback, *str_implied, *str_cls, *str_implements;
+static PyObject *str__sro__;
 static PyTypeObject *Implements;
 
 static int imported_declarations = 0;
@@ -487,6 +488,424 @@ static PyTypeObject CPBType = {
         /* tp_descr_get      */ (descrgetfunc)CPB_descr_get,
 };
 
+/* 
+
+def _lookup(components, specs, i, l):
+    if i < l:
+        for spec in specs[i].__sro__:
+            comps = components.get(spec)
+            if comps is not None:
+                r = _lookup(comps, specs, i+1, l)
+                if r is not None:
+                    return r
+        return None
+    
+    return components
+ */
+static PyObject *
+_lookup(PyObject *components, PyObject *specs, int i, int l)
+{
+  /* Note that result is NOT increfed */
+
+  PyObject *specs_i, *spec, *sro, *comps;
+  int ls, is;
+
+  if (i < l)
+    {
+      specs_i = PyTuple_GET_ITEM(specs, i);
+      if (specs_i != NULL)
+        { 
+          sro = PyObject_GetAttr(specs_i, str__sro__);
+          if (sro == NULL)
+            return NULL;
+          ls = PyTuple_Size(sro);
+          if (ls < 0)
+            {
+              Py_DECREF(sro);
+              return NULL;
+            }
+          for (is = 0; is < ls; is++)
+            {
+              spec = PyTuple_GET_ITEM(sro, is);
+              if (spec == NULL)
+                continue;
+              comps = PyDict_GetItem(components, spec);
+              if (comps == NULL)
+                continue;
+              comps = _lookup(comps, specs, i+1, l);
+              if (comps != Py_None)
+                {
+                  Py_DECREF(sro);
+                  return comps;
+                }
+            }
+          
+        }
+      return Py_None;
+    }
+
+  return components;
+}
+
+static PyObject *
+tuple(PyObject *iterable)
+{
+  if (PyTuple_Check(iterable))
+    {
+      Py_INCREF(iterable);
+      return iterable;
+    }
+  return PyObject_CallFunctionObjArgs((PyObject*)&PyTuple_Type, iterable, 
+                                      NULL);
+}
+
+/* 
+
+def lookup(components, required, provided):
+    components = components.get(provided)
+    if components:
+
+        if required:
+            components = find(components, required, 0, len(required))
+            if not components:
+                return None
+
+        return components[0][0]
+
+    return None
+
+ */
+static PyObject *
+lookup(PyObject *ignored, PyObject *args)
+{
+  PyObject *components, *required, *provided, *result=Py_None;
+  int l;
+  
+  if (PyArg_ParseTuple(args, "O!OO", 
+                       &PyDict_Type, &components, &required, &provided) 
+      == 0)
+    return NULL;
+
+  required = tuple(required);
+  if (required == NULL)
+    goto err;
+
+  components = PyDict_GetItem(components, provided);
+  if (components != NULL)
+    {
+      l = PyTuple_GET_SIZE(required);
+      if (l > 0)
+        {
+          components = _lookup(components, required, 0, l);
+          if (components == Py_None)
+            goto done;
+        }
+
+      components = PyTuple_GetItem(components, 0);
+      if (components == NULL)
+        return NULL;
+      result = PyTuple_GetItem(components, 0);
+    }
+
+ done:
+  Py_DECREF(required);
+  Py_INCREF(result);
+  return result;
+
+ err:
+  Py_DECREF(required);
+  return NULL;
+}
+
+/* 
+
+def lookup1(components, required, provided):
+    components = components.get(provided)
+    if components:
+        for s in required.__sro__:
+            comps = components.get(s)
+            if comps:
+                return comps[0][0]
+
+    return None
+
+ */
+
+static PyObject *
+lookup1(PyObject *ignored, PyObject *args)
+{
+  PyObject *components, *required, *provided, *r=Py_None;
+  
+  if (PyArg_ParseTuple(args, "O!OO", 
+                       &PyDict_Type, &components, &required, &provided) 
+      == 0)
+    return NULL;
+
+  components = PyDict_GetItem(components, provided);
+  if (components != NULL)
+    {
+      PyObject *sro;
+      int is, ls;
+
+      sro = PyObject_GetAttr(required, str__sro__);
+      if (sro == NULL)
+        return NULL;
+      ls = PyTuple_Size(sro);
+      if (ls < 0)
+        {
+          Py_DECREF(sro);
+          return NULL;
+        }
+  
+      for (is = 0; is < ls; is++)
+        {
+          PyObject *spec, *comps;
+          int l;
+
+          spec = PyTuple_GET_ITEM(sro, is);
+          if (spec == NULL)
+            continue;
+          comps = PyDict_GetItem(components, spec);
+          if (comps == NULL)
+            continue;
+          l = PyTuple_Size(comps);
+          if (l == 0)
+            continue;
+          if (l < 0)
+            r = NULL;
+          else
+            {
+              r = PyTuple_GET_ITEM(comps, 0);
+              r = PyTuple_GetItem(r, 0);
+            }
+          break;
+        }
+      
+      Py_DECREF(sro);
+    }
+
+  Py_XINCREF(r);
+  return r;
+}
+
+/* 
+
+def _subscribers(components, specs, i, l, objects, result):
+    if i < l:
+        sro = list(specs[i].__sro__)
+        sro.reverse()
+        for spec in sro:
+            comps = components.get(spec)
+            if comps is not None:
+                _subscribers(comps, specs, i+1, l, objects, result)
+    else:
+        if objects is None:
+            result.extend([c[0] for c in components])
+        else:
+            for c in components:
+                c = c[0](*objects)
+                if c is not None and result is not None:
+                    result.append(c)
+
+ */
+
+static int
+_subscribers(PyObject *components, PyObject *specs, int i, int l, 
+             PyObject *objects, PyObject *result)
+{
+  PyObject *comps;
+
+  if (i < l)
+    {
+      PyObject *sro, *spec;
+      int ls;
+
+      spec = PyTuple_GET_ITEM(specs, i);
+      if (specs == NULL)
+        return 0; /* should never happen. Treat as empty spec. */
+
+      sro = PyObject_GetAttr(spec, str__sro__);
+      if (sro == NULL)
+        return -1;
+      ls = PyTuple_Size(sro);
+      if (ls < 0)
+        {
+          Py_DECREF(sro);
+          return -1;
+        }
+      for (ls-- ; ls >= 0; ls--)
+        {
+          spec = PyTuple_GET_ITEM(sro, ls);
+          if (spec == NULL)
+            continue;
+          comps = PyDict_GetItem(components, spec);
+          if (comps == NULL)
+            continue;
+          if (_subscribers(comps, specs, i+1, l, objects, result) < 0)
+            {
+              Py_DECREF(sro);
+              return -1;
+            }
+        }
+      Py_DECREF(sro);
+    }
+  else
+    {
+      l = PyTuple_Size(components);
+      if (l < 0)
+        return -1;
+      for (i=0; i < l; i++)
+        {
+          comps = PyTuple_GET_ITEM(components, i);
+          comps = PyTuple_GetItem(comps, 0);
+          if (comps == NULL)
+            return -1;
+
+          if (objects != NULL)
+            {
+              comps = PyObject_CallObject(comps, objects);
+              if (comps == NULL)
+                return -1;
+
+              if (result != NULL && comps != Py_None)
+                {
+                  int a = 0;
+
+                  a = PyList_Append(result, comps);
+                  Py_DECREF(comps);
+                  if (a < 0)
+                    return -1;
+                }
+              else
+                Py_DECREF(comps);
+            }
+          else if (PyList_Append(result, comps) < 0)
+            /* if objects is NULL, then result is not NULL */
+            return -1;
+        }
+    }
+  
+  return 0;
+}
+
+/* 
+
+def subscriptions(components, required, provided, result):
+    components = components.get(provided)
+    if components:
+        _subsciptions(components, required, 0, len(required), result)
+ */
+static PyObject *
+subscriptions(PyObject *ignored, PyObject *args)
+{
+  PyObject *components, *required, *provided, *result;
+  
+  if (PyArg_ParseTuple(args, "O!OOO", 
+                       &PyDict_Type, &components, &required, &provided,
+                       &result) 
+      == 0)
+    return NULL;
+
+  required = tuple(required);
+  if (required == NULL)
+    return NULL;
+
+  components = PyDict_GetItem(components, provided);
+  if (components != NULL)
+    {
+      int l;
+
+      l = PyTuple_GET_SIZE(required);
+      if (_subscribers(components, required, 0, l, NULL, result) < 0)
+        goto err;
+    }
+
+  Py_DECREF(required);
+  Py_INCREF(Py_None);
+  return Py_None;
+
+ err:
+  Py_DECREF(required);
+  return NULL;
+}
+
+/* 
+
+def subscribers(components, objects, provided, result):
+    components = components.get(provided)
+    if not components:
+        return
+
+    required = map(providedBy, objects)
+
+    if provided is None:
+        result == None
+
+    _subscribers(components, required, 0, len(required), objects, result)
+
+ */
+static PyObject *
+subscribers(PyObject *ignored, PyObject *args)
+{
+  PyObject *components, *objects, *provided, *result;
+  
+  if (PyArg_ParseTuple(args, "O!OOO", 
+                       &PyDict_Type, &components, 
+                       &objects, &provided,
+                       &result) 
+      == 0)
+    return NULL;
+
+  objects = tuple(objects);
+  if (objects == NULL)
+    return NULL;
+
+  components = PyDict_GetItem(components, provided);
+  if (components != NULL)
+    {
+      int i, l;
+      PyObject *required;
+
+      l = PyTuple_GET_SIZE(objects);
+      required = PyTuple_New(l);
+      if (required == NULL)
+        goto err;
+
+      for (i=0; i < l; i++)
+        {
+          PyObject *o;
+
+          o = PyTuple_GET_ITEM(objects, i);
+          if (o == NULL)
+            continue;
+          o = providedBy(NULL, o);
+          if (o == NULL)
+            {
+              Py_DECREF(required);
+              goto err;
+            }
+          PyTuple_SET_ITEM(required, i, o);
+        }
+
+      if (provided == Py_None)
+        result = NULL;
+      
+      i = _subscribers(components, required, 0, l, objects, result);
+      Py_DECREF(required);
+
+      if (i < 0)
+        goto err;
+    }
+
+  Py_DECREF(objects);
+  Py_INCREF(Py_None);
+  return Py_None;
+
+ err:
+  Py_DECREF(objects);
+  return NULL;
+}
+
 
 static struct PyMethodDef m_methods[] = {
   {"implementedBy", (PyCFunction)implementedBy, METH_O,
@@ -495,6 +914,24 @@ static struct PyMethodDef m_methods[] = {
    "Get an object's interfaces (internal api)"},
   {"providedBy", (PyCFunction)providedBy, METH_O,
    "Get an object's interfaces"},
+
+  {"lookup", (PyCFunction)lookup, METH_VARARGS,
+   "lookup(components, required, provided) -- lookup a multi-adapter factory"
+  },
+
+  {"lookup1", (PyCFunction)lookup1, METH_VARARGS,
+   "lookup(components, required, provided) -- lookup an adapter factory"
+  },
+
+  {"subscriptions", (PyCFunction)subscriptions, METH_VARARGS,
+   "subscriptions(components, required, provided, result)"
+   " -- find subscriptions"
+  },
+
+  {"subscribers", (PyCFunction)subscribers, METH_VARARGS,
+   "subscriptions(components, objects, provided, result)"
+   " -- find subscriptions"
+  },
   
   {NULL,	 (PyCFunction)NULL, 0, NULL}		/* sentinel */
 };
@@ -520,6 +957,7 @@ init_zope_interface_coptimizations(void)
   DEFINE_STRING(_implied);
   DEFINE_STRING(_implements);
   DEFINE_STRING(_cls);
+  DEFINE_STRING(__sro__);
 #undef DEFINE_STRING
   
         

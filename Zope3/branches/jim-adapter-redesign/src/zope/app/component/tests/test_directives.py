@@ -42,7 +42,8 @@ from zope.app import zapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.component.interface import queryInterface
 from zope.app.component.metaconfigure import interface
-from zope.app.component.tests.adapter import A1, A2, A3, I1, I3, IS, Handler
+from zope.app.component.tests.adapter import A1, A2, A3, Handler
+from zope.app.component.tests.adapter import I1, I2, I3, IS
 from zope.app.component.tests.components import IContent, Content, Comp, comp
 from zope.app.component.tests.components import IApp
 from zope.app.component.tests.views import IV, IC, V1, R1, IR
@@ -161,15 +162,9 @@ class Test(PlacelessSetup, unittest.TestCase):
             '''
             )))
 
-        content = Content()
-        a1 = A1()
-        a2 = A2()
-        subscribers = zapi.subscribers((content, a1, a2), None)
-
-        a3 = subscribers[0]
-
-        self.assertEqual(a3.__class__, A3)
-        self.assertEqual(a3.context, (content, a1, a2))
+        sm = zapi.getSiteManager()
+        a3 = sm.adapters.subscriptions((IContent, I1, I2), None)[0]
+        self.assertEqual(a3, A3)
         
 
     def testTrustedSubscriber(self):

@@ -62,22 +62,22 @@ have a referencable name, so we lookup the class and use its name:
   
   >>> info = presentation.getViewFactoryData(Factory())
   >>> pprint(info)
-  {'path': '__builtin__.Factory',
+  {'path': '__builtin__.Factory ?',
    'referencable': True,
    'resource': None,
    'template': None,
-   'url': '__builtin__/Factory'}
+   'url': '__builtin__/Factory ?'}
 
 One of the more common cases, however, is that the factory is a class or
 type. In this case we can just retrieve the reference directly: 
 
   >>> info = presentation.getViewFactoryData(Factory)
   >>> pprint(info)
-  {'path': '__builtin__.Factory',
+  {'path': '__builtin__.Factory ?',
    'referencable': True,
    'resource': None,
    'template': None,
-   'url': '__builtin__/Factory'}
+   'url': '__builtin__/Factory ?'}
  
 When factories are created by the directive, they can also be functions. In
 those cases we just simply return the function path:
@@ -90,11 +90,11 @@ those cases we just simply return the function path:
 
   >>> info = presentation.getViewFactoryData(factory)
   >>> pprint(info)
-  {'path': '__builtin__.factory',
+  {'path': '__builtin__.factory ?',
    'referencable': True,
    'resource': None,
    'template': None,
-   'url': '__builtin__/factory'}
+   'url': '__builtin__/factory ?'}
 
 However, the function is rather unhelpful, since it will be the same for all
 views that use that code path. For this reason the function keeps track of the
@@ -104,11 +104,11 @@ original factory component in a function attribute called ``factory``:
 
   >>> info = presentation.getViewFactoryData(factory)
   >>> pprint(info)
-  {'path': '__builtin__.Factory',
+  {'path': '__builtin__.Factory ?',
    'referencable': True,
    'resource': None,
    'template': None,
-   'url': '__builtin__/Factory'} 
+   'url': '__builtin__/Factory ?'} 
 
 
 `getPresentationType(iface)`
@@ -303,11 +303,11 @@ Let's first create a registration:
 
   >>> pprint(presentation.getViewInfoDictionary(reg))
   {'doc': 'reg info',
-   'factory': {'path': '__builtin__.Factory',
+   'factory': {'path': '__builtin__.Factory ?',
                'referencable': True,
                'resource': None,
                'template': None,
-               'url': '__builtin__/Factory'},
+               'url': '__builtin__/Factory ?'},
    'layer': None,
    'name': 'view.html',
    'provided': {'module': 'zope.interface',

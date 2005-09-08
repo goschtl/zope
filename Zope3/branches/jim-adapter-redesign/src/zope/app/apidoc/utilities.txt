@@ -164,7 +164,7 @@ For interfaces we simply get
   ...     pass
 
   >>> utilities.getPythonPath(ISample)
-  '__builtin__.ISample'
+  '__builtin__.ISample ?'
 
 and for classes
 
@@ -173,7 +173,7 @@ and for classes
   ...         pass
 
   >>> utilities.getPythonPath(Sample.sample)
-  '__builtin__.Sample'
+  '__builtin__.Sample ?'
 
 One can also pass functions
 
@@ -182,12 +182,12 @@ One can also pass functions
 
   >>> # Result is a bit strange due to doctests
   >>> utilities.getPythonPath(sample)
-  'None.sample'
+  'sample'
 
 and even methods. If a method is passed in, its class path is returned.
 
   >>> utilities.getPythonPath(Sample.sample)
-  '__builtin__.Sample'
+  '__builtin__.Sample ?'
 
 Modules are another kind of objects that can return a python path:
 
@@ -471,7 +471,7 @@ By default, `asPath` is `True`, which means the path of the interface is
 returned:
 
   >>> utilities.getInterfaceForAttribute('attr', (I1, I2))
-  '__builtin__.I1'
+  '__builtin__.I1 ?'
 
 If no match is found, ``None`` is returned.
 

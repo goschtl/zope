@@ -382,6 +382,9 @@ And even null adapters::
 Subscriptions
 =============
 
+XXX need tests that demonstrate that more general subscribers are
+    called before more specific subscribers
+
 Normally, we want to look up an object that most-closely matches a
 specification.  Sometimes, we want to get all of the objects that
 match some specification.  We use subscriptions for this.  We
@@ -452,7 +455,7 @@ specify None for the first required interface, to specify a default::
 
 You can have subscriptions that are indepenent of any specifications::
   
-  >>> registry.subscriptions([], IP1)
+  >>> list(registry.subscriptions([], IP1))
   []
 
   >>> registry.subscribe([], IP2, 'sub2')

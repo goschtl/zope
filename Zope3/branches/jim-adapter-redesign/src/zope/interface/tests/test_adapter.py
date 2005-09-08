@@ -36,22 +36,6 @@ class IR1(IR0):
     pass
 
 
-def test_orderwith():
-    """
-    >>> Interface = zope.interface.Interface
-    >>> bywith = {(Interface, Interface): 'A0',
-    ...           (IF0,       Interface): 'A1', 
-    ...           (Interface, IB0):       'A2', 
-    ...           (IF0,       IB0):       'A3', 
-    ...           (IF1,       IB0):       'A4', 
-    ...           (IF0,       IB1):       'A5', 
-    ...           (IF1,       IB1):       'A6', 
-    ...          }
-
-    >>> [value for spec, value in zope.interface.adapter.orderwith(bywith)]
-    ['A6', 'A4', 'A5', 'A3', 'A1', 'A2', 'A0']
-    """
-
 
 def test_multi_adapter_get_best_match():
     """

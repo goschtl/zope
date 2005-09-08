@@ -1,746 +1,436 @@
-############################################################################
+##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-############################################################################
-"""Adapter-style interface registry
-
-This implementation is based on a notion of "surrogate" interfaces.
+##############################################################################
+"""Adapter management
 
 $Id$
 """
 
-# Implementation notes
+from zope.interface import providedBy, Interface, ro
 
-# We keep a collection of surrogates.
+_marker = object
+class AdapterRegistry(object):
 
-# A surrogate is a surrogate for a specification (interface or
-# declaration).  We use weak references in order to remove surrogates
-# if the corresponding specification goes away.
+    def __init__(self, bases=()):
+        self._unnamed_adapters = [] # [{ provided -> components }]
+        self._named_adapters = {} # { name -> [{ provided -> components }] }
+        self._unnamed_subscriptions = [] # ditto
+        self._named_subscriptions = {} # ditto
+        self.__bases__ = bases
 
-# Each surrogate keeps track of:
-
-# - The adapters registered directly for that surrogate, and
-
-# - The "implied" adapters, which is the adapters that can be computed
-#   from instances of that surrogate.
-
-# The later data structure takes into account adapters registered for
-# specifications that the registered surrogate extends.
-
-# The registrations are of the form:
-
-#   {(subscription, with, name, specification) -> factories}
-
-# where:
-
-#   'subscription' is a flag indicating if this registration is for
-#   subscription adapters.
-
-#   'with' is a tuple of specs that is non-empty only in the case
-#   of multi-adapters.  
-
-#   'name' is a unicode adapter name.  Unnamed adapters have an empty
-#   name.
-
-#   'specification' is the interface being adapted to.
-
-#   'factories' is normally a tuple of factories, but can be anything.
-#   (See the "raw" option to the query-adapter calls.)  For subscription
-#   adapters, it is a tuple of tuples of factories.
-
-# The implied adapters are held in a single dictionary. The items in the
-# dictionary are of several forms:
-
-# For single adapters:
-#
-# {specification -> {name -> object}
-#
-# where object is usually a sequence of factories
-
-# For multiple adapters:
-#
-# {(specification, order) -> {name -> {with -> object}}}
-
-# For single subscription adapters:
-#
-# {('s', specification) -> tuple([object])}
-
-# For multiple-subscription adapters:
-#
-# {('s', specification, order) -> {with -> tuple([object])}}
-
-
-from __future__ import generators
-
-import weakref
-from zope.interface.ro import ro
-from zope.interface.declarations import providedBy
-from zope.interface.interface import InterfaceClass, Interface
-
-Default = InterfaceClass("Default", (), {})
-Null = InterfaceClass("Null", (), {})
-
-# 2.2 backwards compatability
-try:
-    enumerate
-except NameError:
-    def enumerate(l):
-        i = 0
-        for o in l:
-            yield i, o
-            i += 1
-try:
-    basestring
-except NameError:
-    basestring = (str, unicode)
-
-
-class ReadProperty(object):
-
-    def __init__(self, func):
-        self.func = func
-
-    def __get__(self, inst, class_):
-        if inst is None:
-            return self
-        return self.func(inst)
-
-class Surrogate(object):
-    """Specification surrogate
-
-    A specification surrogate is used to hold adapter registrations on
-    behalf of a specification.
-    """
-
-    def __init__(self, spec, registry):
-        self.spec = spec.weakref()
-        self.registry = registry
-        spec.subscribe(self)
-        self.adapters = {}
-        self.dependents = weakref.WeakKeyDictionary()
-
-        self.registry = registry
-        self.__bases__ = [registry.get(base) for base in spec.__bases__]
-        for base in self.__bases__:
-            base.subscribe(self)
-
-    def dirty(self):
-        if 'get' in self.__dict__:
-            # Not already dirty
-            del self.selfImplied
-            del self.multImplied
-            del self.get
-
-        bases = [self.registry.get(base) for base in self.spec().__bases__]
-        if bases != self.__bases__:
-            # Our bases changed. unsubscribe from the old ones
-            # and subscribe to the new ones
-            for base in self.__bases__:
-                base.unsubscribe(self)
-
-            self.__bases__ = bases
-            for base in bases:
-                base.subscribe(self)
-
-        for dependent in self.dependents.keys():
-            dependent.dirty()
-
-    def clean(self):
-        for base in self.__bases__:
-            base.unsubscribe(self)
-        self.__bases__ = [self.registry.get(base)
-                          for base in self.spec().__bases__]
-        for base in self.__bases__:
-            base.subscribe(self)
-
-        self.selfImplied, self.multImplied = adapterImplied(self.adapters)
-
-        implied = {}
-
-        ancestors = ro(self)
-
-        # Collect implied data in reverse order to have more specific data
-        # override less-specific data.
-        ancestors.reverse()
-        for ancestor in ancestors:
+    def __bases__():
+        def get(self):
+            return self.__dict__['__bases__']
+        def set(self, v):
+            self.__dict__['__bases__'] = v
+            self.ro = ro.ro(self)
             
-            for key, v in ancestor.selfImplied.iteritems():
+        return property(get, set)
+    __bases__ = __bases__()
+        
+    def register(self, required, provided, name, value):
+        if value is None:
+            self.unregister(required, provided, name, value)
+            return
 
-                # key is specification or ('s', specification)
-                subscription = isinstance(key, tuple) and key[0] == 's'
-                if subscription:
-                    # v is tuple of subs
-                    implied[key] = implied.get(key, ()) + v
-                else:
-                    oldbyname = implied.get(key)
-                    if not oldbyname:
-                        implied[key] = oldbyname = {}
-                    
-                    # v is name -> object
-                    oldbyname.update(v)
-
-            for key, v in ancestor.multImplied.iteritems():
-                # key is (specification, order)
-                #     or ('s', specification, order)
-                subscription = key[0] == 's'
-                if subscription:
-                    oldwithobs = implied.get(key)
-                    if not oldwithobs:
-                        oldwithobs = implied[key] = {}
-                        
-                    # v is {with -> tuple([object])}
-                    for with, objects in v.iteritems():
-                        oldwithobs[with] = oldwithobs.get(with, ()) + objects
-                    
-                else:
-                    oldbyname = implied.get(key)
-                    if not oldbyname:
-                        implied[key] = oldbyname = {}
-
-                    # v is {name -> {with -> ?}}
-                    for name, withobs in v.iteritems():
-                        oldwithobs = oldbyname.get(name)
-                        if not oldwithobs:
-                            oldwithobs = oldbyname[name] = {}
-
-                        # withobs is {with -> object}
-                        oldwithobs.update(withobs)
-
-        # Now flatten with mappings to tuples
-        for key, v in implied.iteritems():
-            if isinstance(key, tuple):
-                if key[0] == 's':
-                    # subscriptions
-                    if isinstance(v, dict):
-                        implied[key] = v.items()
-                else:
-                    byname = v
-                    for name, value in byname.iteritems():
-                        if isinstance(value, dict):
-                            # We have {with -> value}
-                            # convert it to sorted [(with, value]
-                            byname[name] = orderwith(value)
-
-        self.get = implied.get
-
-    def get(self, key):
-        """Get an implied value
-
-        This is only called when the surrogate is dirty
-        """
-        self.clean()
-        return self.__dict__['get'](key)
-
-    def selfImplied(self):
-        """Return selfImplied when dirty
-        """
-        self.clean()
-        return self.__dict__['selfImplied']
-    selfImplied = ReadProperty(selfImplied)
-
-    def multiImplied(self):
-        """Return _multiImplied when dirty
-        """
-        self.clean()
-        return self.__dict__['multiImplied']
-    multiImplied = ReadProperty(multiImplied)
-
-    def subscribe(self, dependent):
-        self.dependents[dependent] = 1
-
-    def unsubscribe(self, dependent):
-        del self.dependents[dependent]
-
-    def _adaptTo(self, specification, object, name='', with=()):
-        if object is None:
-            try:
-                del self.adapters[False, tuple(with), name, specification]
-            except KeyError:
-                pass
+        if name:
+            name = _normalize_name(name)
+            byorder = self._named_adapters.get(name)
+            if byorder is None:
+                self._named_adapters[name] = byorder = []
         else:
-            self.adapters[False, tuple(with), name, specification
-                          ] = object
+            byorder = self._unnamed_adapters
 
-        self.dirty()
-
-    def _subscriptionAdaptTo(self, specification, object, with=()):
-        if object is None:
-            raise TypeError, ("Unregistering subscription adapters" 
-                              " isn't implemented")
-
-        key = (True, tuple(with), '', specification)
-        self.adapters[key] = self.adapters.get(key, ()) + (object, )
-        self.dirty()
-
-    def changed(self, which=None):
-        self.dirty()
-
-    def __repr__(self):
-        return '<%s(%s)>' % (self.__class__.__name__, self.spec())
-
-def orderwith(bywith):
-
-    # Convert {with -> adapter} to withs, [(with, value)]
-    # such that there are no i, j, i < j, such that
-    #           withs[j][0] extends withs[i][0].
-
-    withs = []
-    for with, value in bywith.iteritems():
-        for i, (w, v) in enumerate(withs):
-            if withextends(with, w):
-                withs.insert(i, (with, value))
-                break
-        else:
-            withs.append((with, value))
-            
-    return withs
-    
-
-def withextends(with1, with2):
-    for spec1, spec2 in zip(with1, with2):
-        if spec1.extends(spec2):
-            return True
-        if spec1 != spec2:
-            break
-    return False
-
-
-class AdapterLookup(object):
-    # Adapter lookup support
-    # We have a class here because we want to provide very
-    # fast lookup support in C and making this part of the adapter
-    # registry itself would provide problems if someone wanted
-    # persistent adapter registries, because we want C slots for fast
-    # lookup that would clash with persistence-supplied slots.
-    # so this class acts a little bit like a lookup adapter for the adapter
-    # registry.
-
-    def __init__(self, registry, surrogates, _remove):
-        self._registry = registry
-        self._surrogateClass = registry._surrogateClass
-        self._default = registry._default
-        self._null = registry._null
-        self._surrogates = surrogates
-        self._remove = _remove
-
-    def lookup(self, required, provided, name='', default=None):
         order = len(required)
-        if order == 1:
-            # Simple adapter:
-            s = self.get(required[0])
-            byname = s.get(provided)
-            if byname:
-                value = byname.get(name)
+        while len(byorder) <= order:
+            byorder.append(Adapters())
+
+        components = byorder[order]
+        components.register(required, provided, value)
+        
+    def unregister(self, required, provided, name, value=None):
+        if name:
+            name = _normalize_name(name)
+            byorder = self._named_adapters.get(name)
+            if byorder is None:
+                return
+        else:
+            byorder = self._unnamed_adapters
+
+        order = len(required)
+        if order >= len(byorder):
+            return
+        components = byorder[order]
+        components.unregister(required, provided, value)
+
+
+    def lookup(self, required, provided, name=u'', default=None):
+        for self in self.ro:
+            if name:
+                byorder = self._named_adapters.get(name)
+                if byorder is None:
+                    continue
             else:
-                value = None
+                byorder = self._unnamed_adapters
 
-            if value is None:
-                byname = self._default.get(provided)
-                if byname:
-                    value = byname.get(name, default)
-                else:
-                    return default
-                
-            return value
-
-        elif order == 0:
-            # null adapter
-            byname = self._null.get(provided)
-            if byname:
-                return byname.get(name, default)
-            else:
-                return default
-
-        # Multi adapter
-
-        with = required[1:]
-        key = provided, order
-
-        for surrogate in self.get(required[0]), self._default:
-            byname = surrogate.get(key)
-            if not byname:
+            order = len(required)
+            if order >= len(byorder):
                 continue
 
-            bywith = byname.get(name)
-            if not bywith:
-                continue
-
-            # Selecting multi-adapters is not just a matter of matching the
-            # required interfaces of the adapter to the ones passed. Several
-            # adapters might match, but we only want the best one. We use a
-            # ranking algorithm to determine the best match.
-
-            # `best` carries the rank and value of the best found adapter.
-            best = None
-            for rwith, value in bywith:
-                # the `rank` describes how well the found adapter matches.
-                rank = []
-                for rspec, spec in zip(rwith, with):
-                    if not spec.isOrExtends(rspec):
-                        break # This one is no good
-                    # Determine the rank of this particular specification.
-                    rank.append(list(spec.__sro__).index(rspec))
-                else:
-                    # If the new rank is better than the best previously
-                    # recorded one, make the new adapter the best one found. 
-                    rank = tuple(rank)
-                    if best is None or rank < best[0]:
-                        best = rank, value
-            # If any match was found, return the best one.
-            if best:
-                return best[1]
+            components = byorder[order]
+            result = lookup(components.components, required, provided)
+            if result is not None:
+                return result
 
         return default
 
-    def lookup1(self, required, provided, name='', default=None):
-        return self.lookup((required,), provided, name, default)
+    def queryMultiAdapter(self, objects, provided, name=u'', default=None):
+        factory = self.lookup(map(providedBy, objects), provided, name)
+        if factory is None:
+            return default
 
-    def adapter_hook(self, interface, object, name='', default=None):
-        """Hook function used when calling interfaces.
+        result = factory(*objects)
+        if result is None:
+            return default
 
-        When called from Interface.__adapt__, only the interface and
-        object parameters will be passed.
+        return result        
 
-        If the factory produces `None`, then the default is returned. This
-        allows us to prevent adaptation (if desired) and make the factory
-        decide whether an adapter will be available.
-        """
-        factory = self.lookup1(providedBy(object), interface, name)
+    def lookup1(self, required, provided, name=u'', default=None):
+        for self in self.ro:
+            if name:
+                byorder = self._named_adapters.get(name)
+                if byorder is None:
+                    continue
+            else:
+                byorder = self._unnamed_adapters
+
+            if 1 >= len(byorder):
+                continue
+
+            components = byorder[1]
+            result = lookup1(components.components, required, provided)
+            if result is not None:
+                return result
+
+        return default
+
+    def queryAdapter(self, object, provided, name=u'', default=None):
+        return self.adapter_hook(provided, object, name, default)
+
+    def adapter_hook(self, provided, object, name=u'', default=None):
+        factory = self.lookup1(providedBy(object), provided, name)
         if factory is not None:
-            adapter = factory(object)
-            if adapter is not None:
-                return adapter
+            result = factory(object)
+            if result is not None:
+                return result
+
         return default
 
-    def queryAdapter(self, object, interface, name='', default=None):
-        # Note that we rarely call queryAdapter directly
-        # We usually end up calling adapter_hook
-        return self.adapter_hook(interface, object, name, default)
+    def lookupAll(self, required, provided):
+        for self in self.ro:
+            order = len(required)
+            if order < len(self._unnamed_adapters):
+                result = lookup(self._unnamed_adapters[order].components,
+                                required, provided)
+                if result is not None:
+                    yield (u'', result)
 
-    def subscriptions(self, required, provided):
-        if provided is None:
-            provided = Null
+            for name, byorder in self._named_adapters.iteritems():
+                if order < len(byorder):
+                    result = lookup(byorder[order].components,
+                                    required, provided)
+                    if result is not None:
+                        yield (name, result)
+
+    def names(self, required, provided):
+        return [c[0] for c in self.lookupAll(required, provided)]
+
+    def subscribe(self, required, provided, value):
+
+# XXX when we are ready to support named subscribers, we'll add a name
+# argument and uncomment the following.
+##         if name:
+##             name = _normalize_name(name)
+##             byorder = self._named_subscriptions.get(name)
+##             if byorder is None:
+##                 self._named_subscriptions[name] = byorder = []
+##         else:
+##             byorder = self._unnamed_subscriptions
+
+        byorder = self._unnamed_subscriptions
 
         order = len(required)
-        if order == 1:
-            # Simple subscriptions:
-            s = self.get(required[0])
-            result = s.get(('s', provided))
-            if result:
-                result = list(result)
-            else:
-                result = []
+        while len(byorder) <= order:
+            byorder.append(Subscriptions())
 
-            default = self._default.get(('s', provided))
-            if default:
-                result.extend(default)
-                
-            return result
+        components = byorder[order]
+        components.register(required, provided, value)
 
-        elif order == 0:
-            result = self._null.get(('s', provided))
-            if result:
-                return list(result)
-            else:
-                return []
-        
-        # Multi
-        key = 's', provided, order
-        with = required[1:]
+    def unsubscribe(self, required, provided, value):
+
+# XXX when we are ready to support named subscribers, we'll add a name
+# argument and uncomment the following.
+##         if name:
+##             name = _normalize_name(name)
+##             byorder = self._named_subscriptions.get(name)
+##             if byorder is None:
+##                 self._named_subscriptions[name] = byorder = []
+##         else:
+##             byorder = self._unnamed_subscriptions
+
+        byorder = self._unnamed_subscriptions
+
+        order = len(required)
+        if len(byorder) <= order:
+            return
+
+        components = byorder[order]
+        components.unregister(required, provided, value)
+
+    def subscriptions(self, required, provided, name=u''):
         result = []
-        
-        for surrogate in self.get(required[0]), self._default:
-            bywith = surrogate.get(key)
-            if not bywith:
-                continue
+        # XXX should we traverse ro in reverse?
+        for self in self.ro:
+            if name:
+                byorder = self._named_subscriptions.get(name)
+                if byorder is None:
+                    continue
+            else:
+                byorder = self._unnamed_subscriptions
 
-            for rwith, values in bywith:
-                for rspec, spec in zip(rwith, with):
-                    if not spec.isOrExtends(rspec):
-                        break # This one is no good
-                else:
-                    # we didn't break, so we have a match
-                    result.extend(values)
+            order = len(required)
+            if order >= len(byorder):
+                continue
+            
+            subscriptions(byorder[order].components, required, provided,
+                          result)
 
         return result
 
-        
-
-    def queryMultiAdapter(self, objects, interface, name='', default=None):
-        factory = self.lookup(map(providedBy, objects), interface, name)
-        if factory is not None:
-            return factory(*objects)
-
-        return default
-
-    def subscribers(self, objects, interface):
-        subscriptions = self.subscriptions(map(providedBy, objects), interface)
-        subscribers = [subscription(*objects)
-                       for subscription in subscriptions]
-        # Filter None values
-        return [x for x in subscribers if x is not None]
-
-    def get(self, declaration):
-        if declaration is None:
-            return self._default
-
-        ref = declaration.weakref(self._remove)
-        surrogate = self._surrogates.get(ref)
-        if surrogate is None:
-            surrogate = self._surrogateClass(declaration, self._registry)
-            self._surrogates[ref] = surrogate
-
-        return surrogate
-
-
-class AdapterRegistry(object):
-    """Adapter registry
-    """
-
-    # Implementation note:
-    # We are like a weakref dict ourselves. We can't use a weakref
-    # dict because we have to use spec.weakref() rather than
-    # weakref.ref(spec) to get weak refs to specs.
-
-    _surrogateClass = Surrogate
-
-    def __init__(self):
-        default = self._surrogateClass(Default, self)
-        self._default = default
-        null = self._surrogateClass(Null, self)
-        self._null = null
-
-        # Create separate lookup object and copy it's methods
-        surrogates = {Default.weakref(): default, Null.weakref(): null}
-        def _remove(k):
-            try:
-                del surrogates[k]
-            except KeyError:
-                pass
-        lookup = AdapterLookup(self, surrogates, _remove)
-        
-        for name in ('lookup', 'lookup1', 'queryAdapter', 'get',
-                     'adapter_hook', 'subscriptions',
-                     'queryMultiAdapter', 'subscribers',
-                     ):
-            setattr(self, name, getattr(lookup, name))
-
-    def register(self, required, provided, name, value):
-        if required:
-            with = []
-            for iface in required[1:]:
-                if iface is None:
-                    iface = Interface
-                with.append(iface)
-            with = tuple(with)
-            required = self.get(required[0])
+    def subscribers(self, objects, provided, name=u''):
+        if provided is None:
+            result = ()
         else:
-            with = ()
-            required = self._null
-        
-        if not isinstance(name, basestring):
-            raise TypeError("The name provided to provideAdapter "
-                            "must be a string or unicode")
+            result = []
+            
+        for self in self.ro:
+            if name:
+                byorder = self._named_subscriptions.get(name)
+                if byorder is None:
+                    continue
+            else:
+                byorder = self._unnamed_subscriptions
 
-        required._adaptTo(provided, value, unicode(name), with)
-
-    def lookupAll(self, required, provided):
-        order = len(required)
-        if order == 1:
-            # Simple adapter:
-            s = self.get(required[0])
-            byname = s.get(provided)
-            if byname:
-                for item in byname.iteritems():
-                    yield item
-
-            defbyname = self._default.get(provided)
-            if defbyname:
-                for name, value in defbyname.iteritems():
-                    if name in byname:
-                        continue
-                    yield name, value
-
-            return
-
-        elif order == 0:
-            # null adapter
-            byname = self._null.get(provided)
-            if byname:
-                for item in byname.iteritems():
-                    yield item
-
-            return
-
-
-        # Multi adapter
-
-        with = required[1:]
-        key = provided, order
-        first = ()
-
-        for surrogate in self.get(required[0]), self._default:
-            byname = surrogate.get(key)
-            if not byname:
+            order = len(objects)
+            if order >= len(byorder):
                 continue
 
-            for name, bywith in byname.iteritems():
-                if not bywith or name in first:
-                    continue
+            subscribers(byorder[order].components, objects, provided, result)
 
-                # See comments on lookup() above
-                best  = None
-                for rwith, value in bywith:
-                    # the `rank` describes how well the found adapter matches.
-                    rank = []
-                    for rspec, spec in zip(rwith, with):
-                        if not spec.isOrExtends(rspec):
-                            break # This one is no good
-                        # Determine the rank of this particular specification.
-                        rank.append(list(spec.__sro__).index(rspec))
-                    else:
-                        # If the new rank is better than the best previously
-                        # recorded one, make the new adapter the best one found.
-                        rank = tuple(rank)
-                        if best is None or rank < best[0]:
-                            best = rank, value
+        return result
 
-                # If any match was found, return the best one.
-                if best:
-                    yield name, best[1]
+def _normalize_name(name):
+    if isinstance(name, basestring):
+        return unicode(name)
 
-            first = byname
+    raise TypeError("name must be a regular or unicode string")
 
-    def subscribe(self, required, provided, value):
-        if required:
-            required, with = self.get(required[0]), tuple(required[1:])
+        
+class Next:
+
+    def __init__(self, spec, basis):
+        sro = spec.__sro__
+        self.__sro__ = sro[sro.index(basis)+1:]
+        
+
+class Adapters(object):
+
+    def __init__(self):
+        self.components = {}
+        self.provided = {} # {iface -> (iro, [(required, value)])}
+
+    def register(self, required, provided, value):
+        if (provided is None) or (provided is Interface):
+            self._register(required, provided, provided, value)
         else:
-            required = self._null
-            with = ()
+            registered = self.provided.get(provided)
+            if registered is None:
+                self.provided[provided] = registered = provided.__iro__, []
+                provided.subscribe(self)
+            registered[1].append((required, value))
+
+            for p in provided.__iro__:
+                self._register(required, provided, p, value)
+
+    def _register(self, required, provided, p, value):
+        d = self.components
+        k = p
+        for r in required:
+            if r is None:
+                r = Interface
+            v = d.get(k)
+            if v is None:
+                d[k] = v = {}
+            d = v
+            k = r
+
+        components = d.get(k, ())
+        d[k] = self._add(components, provided, value)
+
+    def _add(self, components, provided, value):
+        if provided is None:
+            return components + ((value, provided), )
+        
+        return (
+            tuple([c for c in components if provided.extends(c[1])])
+            +
+            ((value, provided), )
+            +
+            tuple([c for c in components if not provided.extends(c[1])])
+            )
+        
+    def unregister(self, required, provided, value):
+        if (provided is None) or (provided is Interface):
+            self._unregister(required, provided, provided, value)
+        else:
+            registered = self.provided.get(provided)
+            if registered is None:
+                return
+            if value is None:
+                rv = [r for r in registered[1] if r[0] != required]
+            else:
+                rv = [r for r in registered[1] if r != (required, value)]
+
+            if rv:
+                self.provided[provided] = registered[0], rv
+            else:
+                del self.provided[provided]
+
+            for p in provided.__iro__:
+                self._unregister(required, provided, p, value)
+
+    def _unregister(self, required, provided, p, value):
+        items = []
+        d = self.components
+        k = p
+        for r in required:
+            if r is None:
+                r = Interface
+            v = d.get(k)
+            if v is None:
+                return
+            items.append((d, k))
+            d = v
+            k = r
+
+        components = d.get(k, None)
+        if components is None:
+            return
+
+        if value is None:
+            # unregister all
+            components = [c for c in components
+                          if c[1] != provided]
+        else:
+            # unregister just this one
+            components = [c for c in components
+                          if c != (value, provided)]
+
+        if components:
+            d[k] = tuple(components)
+        else:
+            del d[k]
+
+            items.reverse()
+            for d, k in items:
+                if not d[k]:
+                    del d[k]
+
+class Subscriptions(Adapters):
+
+    def _add(self, components, provided, value):
+        return components + ((value, provided), )
+
+def _lookup(components, specs, i, l):
+    if i < l:
+        for spec in specs[i].__sro__:
+            comps = components.get(spec)
+            if comps is not None:
+                r = _lookup(comps, specs, i+1, l)
+                if r is not None:
+                    return r
+        return None
+    
+    return components
+
+def lookup(components, required, provided):
+    components = components.get(provided)
+    if components:
+
+        if required:
+            components = _lookup(components, required, 0, len(required))
+            if not components:
+                return None
+
+        return components[0][0]
+
+    return None
+
+def lookup1(components, required, provided):
+    components = components.get(provided)
+    if components:
+        for s in required.__sro__:
+            comps = components.get(s)
+            if comps:
+                return comps[0][0]
+
+    return None
+
+def _subscribers(components, specs, i, l, objects, result):
+    if i < l:
+        sro = list(specs[i].__sro__)
+        sro.reverse()
+        for spec in sro:
+            comps = components.get(spec)
+            if comps is not None:
+                _subscribers(comps, specs, i+1, l, objects, result)
+    else:
+        if objects is None:
+            result.extend([c[0] for c in components])
+        else:
+            for c in components:
+                c = c[0](*objects)
+                if c is not None and result is not None:
+                    result.append(c)
+
+def subscriptions(components, required, provided, result):
+    components = components.get(provided)
+    if components:
+        _subscribers(components, required, 0, len(required), None, result)
+
+def subscribers(components, objects, provided, result):
+    components = components.get(provided)
+    if components:
+        required = map(providedBy, objects)
 
         if provided is None:
-            provided = Null
-            
-        required._subscriptionAdaptTo(provided, value, with)
+            result == None
 
-def mextends(with, rwith):
-    if len(with) == len(rwith):
-        for w, r in zip(with, rwith):
-            if not w.isOrExtends(r):
-                break
-        else:
-            return True
-    return False
+        _subscribers(components, required, 0, len(required), objects, result)
 
-def adapterImplied(adapters):
-    implied = {}
-    multi = {}
-
-    # This dictionary is used to catch situations specific adapters
-    # override less specific adapters.
-    # Because subscriptions are cumulative, registered doesn't apply.
-    registered = {}
-
-    # Add adapters and interfaces directly implied by same:
-
-    for key, value in adapters.iteritems():
-
-        # TODO: Backward compatibility
-        # BBB ? Don't need to handle 3-tuples some day
-        try:
-            (subscription, with, name, target) = key
-        except ValueError:
-            (with, name, target) = key
-            subscription = False
-
-        if subscription:
-            if with:
-                _add_multi_sub_adapter(with, target, multi, value)
-            else:
-                _add_named_sub_adapter(target, implied, value)
-        else:
-            if with:
-                _add_multi_adapter(with, name, target, target, multi,
-                                   registered, value)
-            else:
-                _add_named_adapter(target, target, name, implied,
-                                   registered, value)
-
-    return implied, multi
-
-def _add_named_adapter(target, provided, name, implied,
-                       registered, value):
+try:
+    from _zope_interface_coptimizations import lookup, lookup1
+    from _zope_interface_coptimizations import subscribers, subscriptions
+except ImportError:
+    pass
     
-    ikey = target
-    rkey = target, name
-
-    byname = implied.get(ikey)
-    if not byname:
-        byname = implied[ikey] = {}
-
-    if (name not in byname
-        or
-        (rkey in registered and registered[rkey].extends(provided))
-        ):
-
-        registered[rkey] = provided
-        byname[name] = value
-
-        for b in target.__bases__:
-            _add_named_adapter(b, provided, name, implied,
-                               registered, value)
-
-def _add_multi_adapter(with, name, target, provided, implied,
-                       registered, object):
-
-    ikey = target, (len(with) + 1)
-    byname = implied.get(ikey)
-    if not byname:
-        byname = implied[ikey] = {}
-
-    bywith = byname.get(name)
-    if not bywith:
-        bywith = byname[name] = {}
-
-    
-    rkey = ikey, name, with # The full key has all 4
-    if (with not in bywith
-        or
-        (rkey not in registered or registered[rkey].extends(provided))
-        ):
-        # This is either a new entry or it is an entry for a more
-        # general interface that is closer provided than what we had
-        # before
-        registered[rkey] = provided
-        bywith[with] = object
-
-    for b in target.__bases__:
-        _add_multi_adapter(with, name, b, provided, implied,
-                           registered, object)
-
-def _add_named_sub_adapter(target, implied, objects):
-    key = ('s', target)
-    implied[key] = implied.get(key, ()) + objects
-    
-    for b in target.__bases__:
-        _add_named_sub_adapter(b, implied, objects)
-
-def _add_multi_sub_adapter(with, target, implied, objects):
-    key = 's', target, (len(with) + 1)
-    bywith = implied.get(key)
-    if not bywith:
-        bywith = implied[key] = {}
-
-    bywith[with] = bywith.get(with, ()) + objects
-
-    for b in target.__bases__:
-        _add_multi_sub_adapter(with, b, implied, objects)

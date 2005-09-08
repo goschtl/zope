@@ -123,7 +123,7 @@ and get the id (for example):
 
   >>> iface = details.getInterface()
   >>> iface.getId()
-  '__builtin__.IBlah'
+  '__builtin__.IBlah ?'
 
 
 `getComponent()`
@@ -150,5 +150,5 @@ Then we create a utility documentation class and its details view:
 Now we can get the component information:
 
   >>> pprint(details.getComponent())
-  {'path': '__builtin__.Foo',
-   'url': '__builtin__/Foo'}
+  {'path': '__builtin__.Foo ?',
+   'url': '__builtin__/Foo ?'}

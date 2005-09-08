@@ -98,10 +98,17 @@ def getPythonPath(obj):
     if hasattr(naked, "im_class"):
         naked = naked.im_class
     module = getattr(naked, '__module__', _marker)
-    if module is _marker:
-        return naked.__name__
+    name = naked.__name__
+    if module is _marker or module is None:
+        return name
     else:
-        return '%s.%s' %(module, naked.__name__)
+        m = sys.modules.get(module)
+        if m is None:
+            module += ' ?'
+        else:
+            if m.__dict__.get(name) is not naked:
+                name += ' ?'
+        return '%s.%s' %(module, name)
 
 
 def _evalId(id):
