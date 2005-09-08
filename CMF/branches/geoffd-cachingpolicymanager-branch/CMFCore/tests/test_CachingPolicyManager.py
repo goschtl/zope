@@ -181,9 +181,9 @@ class CachingPolicyTests(TestCase):
         self.assertEqual( headers[2][0].lower() , 'cache-control' )
         self.assertEqual( headers[2][1] , 'max-age=86400' )
 
-    def test_noCache( self ):
+    def test_sMaxAge( self ):
 
-        policy = self._makePolicy( 'noCache', no_cache=1 )
+        policy = self._makePolicy( 's_aged', s_max_age_secs=86400 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
 
@@ -192,7 +192,23 @@ class CachingPolicyTests(TestCase):
         self.assertEqual( headers[0][1]
                         , rfc1123_date(self._epoch.timeTime()) )
         self.assertEqual( headers[1][0].lower() , 'cache-control' )
+        self.assertEqual( headers[1][1] , 's-maxage=86400' )
+        self.assertEqual(policy.getSMaxAgeSecs(), 86400)
+
+    def test_noCache( self ):
+
+        policy = self._makePolicy( 'noCache', no_cache=1 )
+        context = self._makeContext()
+        headers = policy.getHeaders( context )
+
+        self.assertEqual( len( headers ), 3 )
+        self.assertEqual( headers[0][0].lower() , 'last-modified' )
+        self.assertEqual( headers[0][1]
+                        , rfc1123_date(self._epoch.timeTime()) )
+        self.assertEqual( headers[1][0].lower() , 'pragma' )
         self.assertEqual( headers[1][1] , 'no-cache' )
+        self.assertEqual( headers[2][0].lower() , 'cache-control' )
+        self.assertEqual( headers[2][1] , 'no-cache' )
 
     def test_noStore( self ):
 
@@ -219,6 +235,62 @@ class CachingPolicyTests(TestCase):
                         , rfc1123_date(self._epoch.timeTime()) )
         self.assertEqual( headers[1][0].lower() , 'cache-control' )
         self.assertEqual( headers[1][1] , 'must-revalidate' )
+
+    def test_proxyRevalidate( self ):
+
+        policy = self._makePolicy( 'proxyRevalidate', proxy_revalidate=1 )
+        context = self._makeContext()
+        headers = policy.getHeaders( context )
+
+        self.assertEqual( len( headers ), 2 )
+        self.assertEqual( headers[0][0].lower() , 'last-modified' )
+        self.assertEqual( headers[0][1]
+                        , rfc1123_date(self._epoch.timeTime()) )
+        self.assertEqual( headers[1][0].lower() , 'cache-control' )
+        self.assertEqual( headers[1][1] , 'proxy-revalidate' )
+        self.assertEqual(policy.getProxyRevalidate(), 1)
+
+    def test_public( self ):
+
+        policy = self._makePolicy( 'public', public=1 )
+        context = self._makeContext()
+        headers = policy.getHeaders( context )
+
+        self.assertEqual( len( headers ), 2 )
+        self.assertEqual( headers[0][0].lower() , 'last-modified' )
+        self.assertEqual( headers[0][1]
+                        , rfc1123_date(self._epoch.timeTime()) )
+        self.assertEqual( headers[1][0].lower() , 'cache-control' )
+        self.assertEqual( headers[1][1] , 'public' )
+        self.assertEqual(policy.getPublic(), 1)
+
+    def test_private( self ):
+
+        policy = self._makePolicy( 'private', private=1 )
+        context = self._makeContext()
+        headers = policy.getHeaders( context )
+
+        self.assertEqual( len( headers ), 2 )
+        self.assertEqual( headers[0][0].lower() , 'last-modified' )
+        self.assertEqual( headers[0][1]
+                        , rfc1123_date(self._epoch.timeTime()) )
+        self.assertEqual( headers[1][0].lower() , 'cache-control' )
+        self.assertEqual( headers[1][1] , 'private' )
+        self.assertEqual(policy.getPrivate(), 1)
+
+    def test_noTransform( self ):
+
+        policy = self._makePolicy( 'noTransform', no_transform=1 )
+        context = self._makeContext()
+        headers = policy.getHeaders( context )
+
+        self.assertEqual( len( headers ), 2 )
+        self.assertEqual( headers[0][0].lower() , 'last-modified' )
+        self.assertEqual( headers[0][1]
+                        , rfc1123_date(self._epoch.timeTime()) )
+        self.assertEqual( headers[1][0].lower() , 'cache-control' )
+        self.assertEqual( headers[1][1] , 'no-transform' )
+        self.assertEqual(policy.getNoTransform(), 1)
 
     def test_ETag( self ):
 
@@ -249,12 +321,14 @@ class CachingPolicyTests(TestCase):
         context = self._makeContext()
         headers = policy.getHeaders( context )
 
-        self.assertEqual( len( headers ), 2 )
+        self.assertEqual( len( headers ), 3 )
         self.assertEqual( headers[0][0].lower() , 'last-modified' )
         self.assertEqual( headers[0][1]
                         , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'cache-control' )
-        self.assertEqual( headers[1][1] , 'no-cache, no-store' )
+        self.assertEqual( headers[1][0].lower() , 'pragma' )
+        self.assertEqual( headers[1][1] , 'no-cache' )
+        self.assertEqual( headers[2][0].lower() , 'cache-control' )
+        self.assertEqual( headers[2][1] , 'no-cache, no-store' )
 
 
 class CachingPolicyManagerTests(TestCase):
@@ -303,28 +377,46 @@ class CachingPolicyManagerTests(TestCase):
         self.assertEqual( len( headers ), 0 )
 
         self.assertRaises( KeyError, mgr._updatePolicy
-                         , 'xyzzy', None, None, None, None, None, None, '', '' )
+                         , 'xyzzy', None, None, None, None, None, None, '', '', None, None, None, None, None )
         self.assertRaises( KeyError, mgr._removePolicy, 'xyzzy' )
         self.assertRaises( KeyError, mgr._reorderPolicy, 'xyzzy', -1 )
 
-    def test_addPolicy( self ):
+    def test_addAndUpdatePolicy( self ):
 
         mgr = self._makeOne()
-        mgr._addPolicy( 'first', 'python:1', None, 0, 0, 0, 0, '', '' )
-        headers = mgr.getHTTPCachingHeaders( content=DummyContent(self._epoch)
-                                           , view_method='foo_view'
-                                           , keywords={}
-                                           , time=self._epoch
-                                           )
-        self.assertEqual( len( headers ), 3 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'expires' )
-        self.assertEqual( headers[1][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[2][0].lower() , 'cache-control' )
-        self.assertEqual( headers[2][1], 'max-age=0' )
+        mgr.addPolicy( 'first', 'python:1', 'mtime', 1, 0, 1, 0, 'vary', 'etag', None, 2, 1, 0, 1, 0 )
+        p = mgr._policies['first']
+        self.assertEqual(p.getPolicyId(), 'first')
+        self.assertEqual(p.getPredicate(), 'python:1')
+        self.assertEqual(p.getMTimeFunc(), 'mtime')
+        self.assertEqual(p.getMaxAgeSecs(), 1)
+        self.assertEqual(p.getNoCache(), 0)
+        self.assertEqual(p.getNoStore(), 1)
+        self.assertEqual(p.getMustRevalidate(), 0)
+        self.assertEqual(p.getVary(), 'vary')
+        self.assertEqual(p.getETagFunc(), 'etag')
+        self.assertEqual(p.getSMaxAgeSecs(), 2)
+        self.assertEqual(p.getProxyRevalidate(), 1)
+        self.assertEqual(p.getPublic(), 0)
+        self.assertEqual(p.getPrivate(), 1)
+        self.assertEqual(p.getNoTransform(), 0)
+        
+        mgr.updatePolicy( 'first', 'python:0', 'mtime2', 2, 1, 0, 1, 'vary2', 'etag2', None, 1, 0, 1, 0, 1 )
+        p = mgr._policies['first']
+        self.assertEqual(p.getPolicyId(), 'first')
+        self.assertEqual(p.getPredicate(), 'python:0')
+        self.assertEqual(p.getMTimeFunc(), 'mtime2')
+        self.assertEqual(p.getMaxAgeSecs(), 2)
+        self.assertEqual(p.getNoCache(), 1)
+        self.assertEqual(p.getNoStore(), 0)
+        self.assertEqual(p.getMustRevalidate(), 1)
+        self.assertEqual(p.getVary(), 'vary2')
+        self.assertEqual(p.getETagFunc(), 'etag2')
+        self.assertEqual(p.getSMaxAgeSecs(), 1)
+        self.assertEqual(p.getProxyRevalidate(), 0)
+        self.assertEqual(p.getPublic(), 1)
+        self.assertEqual(p.getPrivate(), 0)
+        self.assertEqual(p.getNoTransform(), 1)
 
     def test_reorder( self ):
 
