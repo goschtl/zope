@@ -23,7 +23,7 @@ try:
 except ImportError:
     from twisted.web2.channel.http import HTTPFactory
 
-from zope.app.server.server import ServerType, SSLServerType
+from zope.app.twisted.server import ServerType, SSLServerType
 from zope.app import wsgi
 
 

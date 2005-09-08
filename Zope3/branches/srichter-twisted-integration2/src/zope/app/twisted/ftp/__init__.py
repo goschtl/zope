@@ -14,9 +14,9 @@
 """FTP and SFTP server factories.
 """
 
-from zope.app.server.server import ServerType
-from zope.app.server.ftp.server import FTPFactory
-from zope.app.server.server import SSHServerType
+from zope.app.twisted.server import ServerType
+from zope.app.twisted.ftp.server import FTPFactory
+from zope.app.twisted.server import SSHServerType
 
 from utils import FTPRequestFactory
 from sftpserver import SFTPFactory

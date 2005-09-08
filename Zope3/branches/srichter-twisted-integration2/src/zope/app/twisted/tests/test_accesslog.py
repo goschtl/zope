@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for zope.app.server.accesslog.
+"""Tests for zope.app.twisted.accesslog.
 
 $Id$
 """
@@ -28,7 +28,7 @@ class TestAccessLogging(test_logger.LoggingTestBase):
 
     _schematext = """
       <schema>
-        <import package='zope.app.server' file='accesslog.xml'/>
+        <import package='zope.app.twisted' file='accesslog.xml'/>
         <section type='accesslog' name='*' attribute='accesslog'/>
       </schema>
     """

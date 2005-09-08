@@ -15,7 +15,7 @@
 """
 from zope.interface import implements
 
-from zope.app.server.interfaces import IFileSystem
+from zope.app.twisted.interfaces import IFileSystem
 
 from twisted.cred.portal import IRealm, Portal
 from twisted.cred.credentials import IUsernamePassword

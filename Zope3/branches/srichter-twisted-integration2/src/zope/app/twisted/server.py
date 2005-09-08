@@ -24,7 +24,7 @@ from twisted.internet import reactor, interfaces
 
 from zope.interface import implements
 from zope.app import zapi
-from zope.app.server.interfaces import IServerType, ISSLServerType, \
+from zope.app.twisted.interfaces import IServerType, ISSLServerType, \
      ISSHServerType
 
 class SSLNotSupported(Exception):
@@ -37,12 +37,12 @@ def logStartUp(service):
             service.kwargs['interface'] or 'localhost',
             service.args[0]
             ))
-    
+
 
 class ZopeTCPServer(internet.TCPServer):
 
     def __init__(self, name, *args, **kwargs):
-        internet.TCPServer.__init__(self, *args, **kwargs)        
+        internet.TCPServer.__init__(self, *args, **kwargs)
         self.name = name
 
     def startService(self):
@@ -52,13 +52,13 @@ class ZopeTCPServer(internet.TCPServer):
 class ZopeSSLServer(internet.SSLServer):
 
     def __init__(self, name, *args, **kwargs):
-        internet.SSLServer.__init__(self, *args, **kwargs)        
+        internet.SSLServer.__init__(self, *args, **kwargs)
         self.name = name
 
     def startService(self):
         internet.SSLServer.startService(self)
         logStartUp(self)
-        
+
 
 class ServerType(object):
 

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for zope.app.server.servertype
+"""Tests for zope.app.twisted.servertype
 
 $Id$
 """
@@ -54,7 +54,7 @@ def test_suite():
         doctest.DocFileSuite('../log.txt',
                              globs={'pprint': doctestunit.pprint},
                              optionflags=doctest.NORMALIZE_WHITESPACE),
-        doctest.DocTestSuite('zope.app.server.ftp.utils')
+        doctest.DocTestSuite('zope.app.twisted.ftp.utils')
         ))
 
 

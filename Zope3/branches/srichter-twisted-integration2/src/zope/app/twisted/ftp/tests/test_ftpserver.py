@@ -24,10 +24,10 @@ from twisted.trial.util import wait
 
 from zope.testing import doctest
 
-from zope.app.server.ftp.server import FTPFactory
+from zope.app.twisted.ftp.server import FTPFactory
 
-from zope.app.server.tests.test_publisher import RequestFactory
-from zope.app.server.tests import demofs
+from zope.app.twisted.tests.test_publisher import RequestFactory
+from zope.app.twisted.tests import demofs
 
 class TestServerSetup(TestCase):
 
@@ -88,9 +88,9 @@ class TestServerSetup(TestCase):
 def test_suite():
     return TestSuite((
         makeSuite(TestServerSetup),
-        doctest.DocTestSuite('zope.app.server.ftp.server'),
-        doctest.DocTestSuite('zope.app.server.ftp.utils'),
-        doctest.DocTestSuite('zope.app.server.ftp.sftpserver'),
+        doctest.DocTestSuite('zope.app.twisted.ftp.server'),
+        doctest.DocTestSuite('zope.app.twisted.ftp.utils'),
+        doctest.DocTestSuite('zope.app.twisted.ftp.sftpserver'),
         ))
 
 if __name__=='__main__':

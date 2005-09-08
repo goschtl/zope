@@ -21,7 +21,7 @@ from zope.testing.doctestunit import DocTestSuite
 def test_suite():
     pass
     #return unittest.TestSuite((
-    #    DocTestSuite('zope.app.server.ftp'),
+    #    DocTestSuite('zope.app.twisted.ftp'),
     #    ))
 
 if __name__ == '__main__':
