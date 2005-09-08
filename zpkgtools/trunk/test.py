@@ -20,7 +20,7 @@ import os.path
 import sys
 
 try:
-    from zope.app.tests.test import process_args
+    from zope.app.testing.test import process_args
 except ImportError:
     if sys.argv[1:]:
         # We got args, but we're not about to support them here.
