@@ -54,7 +54,6 @@ def doctest_RecordingProtocol():
       >>> recording.dataReceived('GET / HTTP/1.1\n\n')
       >>> recording.dataReceived('hello world!\n')
 
->>>>>>> .merge-right.r30049
     then the result is immediately available in the ``input`` attribute:
 
       >>> print recording.input.getvalue()

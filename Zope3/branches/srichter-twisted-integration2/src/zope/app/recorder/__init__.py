@@ -30,7 +30,7 @@ import ZODB.MappingStorage
 from ZODB.POSException import ConflictError
 from BTrees.IOBTree import IOBTree
 from zope.app import wsgi
-from zope.app.server.server import ServerType
+from zope.app.twisted.server import ServerType
 
 class RecordingProtocol(policies.ProtocolWrapper):
     """A special protocol that keeps track of all input and output of an HTTP
