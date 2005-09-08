@@ -19,8 +19,12 @@ $Id$
 """
 
 import os
+import sys
 import glob
 import warnings
+import App
+from zLOG import LOG, ERROR
+
 from zope.interface import classImplements
 from zope.configuration import xmlconfig
 from zope.app.component.interface import provideInterface
@@ -28,6 +32,8 @@ from viewable import Viewable
 from traversable import Traversable
 from bridge import fromZ2Interface
 from browserconfigure import page
+
+debug_mode = App.config.getConfiguration().debug_mode
 
 def findProducts():
     import Products
@@ -39,28 +45,48 @@ def findProducts():
             products.append(product)
     return products
 
+def handleBrokenProduct(product):
+    if debug_mode:
+        # Just reraise the error and let Zope handle it.
+        raise
+    # Not debug mode. Zope should continue to load. Print a log message:
+    # XXX It would be really cool if we could make this product appear broken
+    # in the control panel. However, all attempts to do so has failed from my 
+    # side. //regebro
+    exc = sys.exc_info()
+    LOG('Five', ERROR, 'Could not import Product %s' % name, error=exc)
+
 def loadProducts(_context):
     products = findProducts()
-
+    
     # first load meta.zcml files
     for product in products:
         zcml = os.path.join(os.path.dirname(product.__file__), 'meta.zcml')
         if os.path.isfile(zcml):
-            xmlconfig.include(_context, zcml, package=product)
-
+            try:
+                xmlconfig.include(_context, zcml, package=product)
+            except: # Yes, really, *any* kind of error.
+                handleBrokenProduct(product)
+                
     # now load their configure.zcml
     for product in products:
         zcml = os.path.join(os.path.dirname(product.__file__),
                             'configure.zcml')
         if os.path.isfile(zcml):
-            xmlconfig.include(_context, zcml, package=product)
+            try:
+                xmlconfig.include(_context, zcml, package=product)
+            except: # Yes, really, *any* kind of error.
+                handleBrokenProduct(product)
 
 def loadProductsOverrides(_context):
     for product in findProducts():
         zcml = os.path.join(os.path.dirname(product.__file__),
                             'overrides.zcml')
         if os.path.isfile(zcml):
-            xmlconfig.includeOverrides(_context, zcml, package=product)
+            try:
+                xmlconfig.includeOverrides(_context, zcml, package=product)
+            except: # Yes, really, *any* kind of error.
+                handleBrokenProduct(product)
 
 def implements(_context, class_, interface):
     for interface in interface:

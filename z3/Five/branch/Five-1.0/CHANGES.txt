@@ -16,6 +16,16 @@ Five 1.0.3 (...)
 
 * Some parts of add.pt and edit.pt were not being translated.
 
+* When Zope was not in debug mode, an error in a ZCML file would cause Five to
+  stop loading ZCML completely, making all subsequent products "dead". The
+  effect would typically be that objects appeared to have no views at all. 
+  Now a ZCML error will only stop the ZCML loading for that product, but the 
+  rest of the products will load as usual. A traceback will still be printed 
+  in the event log.
+  
+  In debug mode the behaviour has not changed; a ZCML error will stop Zope 
+  startup completely, and print a traceback if running in foreground mode.
+
 Five 1.0.2 (2005-07-12)
 =======================
 
