@@ -1,23 +1,25 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <utility 
+<!-- XXX: Temporary, till we figure this out.
+  <utility
       component=".servercontrol.serverControl"
       provides="zope.app.applicationcontrol.interfaces.IServerControl" />
+-->
 
   <utility
-      name="HTTP"
+      name="Twisted-HTTP"
       component=".http.http"
       provides=".interfaces.IServerType"
       />
 
   <utility
-      name="HTTPS"
+      name="Twisted-HTTPS"
       component=".http.https"
       provides=".interfaces.IServerType"
       />
 
   <utility
-      name="PostmortemDebuggingHTTP"
+      name="Twisted-PostmortemDebuggingHTTP"
       component=".http.pmhttp"
       provides=".interfaces.IServerType"
       />

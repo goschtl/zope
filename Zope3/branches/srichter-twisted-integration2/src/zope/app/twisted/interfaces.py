@@ -35,7 +35,7 @@ class IServerType(Interface):
 
 class ISSLServerType(IServerType):
     """SSL Server Type utility"""
-    
+
     def create(name, db, privateKeyPath, certificatePath, tls=False,
                ip=None, port=None, backlog=50):
         """Create an SSL server instance.
@@ -68,7 +68,7 @@ class IFileSystem(Interface):
        request. Thus it is not advisable to store state in them. However, if
        you have a special kind of `IFileSystemAccess` object that somhow
        manages an `IFileSystem` for each set of credentials, then it would be
-       possible to store some state on this obejct. 
+       possible to store some state on this obejct.
     """
 
     def type(path):
@@ -197,21 +197,21 @@ class IFileSystem(Interface):
         """Create a directory.
 
         If it is not possible or allowed to create the directory, an `OSError`
-        should be raised describing the reason of failure. 
+        should be raised describing the reason of failure.
         """
 
     def remove(path):
         """Remove a file.  Same as unlink.
 
         If it is not possible or allowed to remove the file, an `OSError`
-        should be raised describing the reason of failure. 
+        should be raised describing the reason of failure.
         """
 
     def rmdir(path):
         """Remove a directory.
 
         If it is not possible or allowed to remove the directory, an `OSError`
-        should be raised describing the reason of failure. 
+        should be raised describing the reason of failure.
         """
 
     def rename(old, new):

@@ -39,6 +39,6 @@ class ServerControl(object):
 
         # Passing an exit status of 1 causes zdaemon to restart the process.
         LoopCallback.exit_status = 1
-        
+
 
 serverControl = ServerControl()

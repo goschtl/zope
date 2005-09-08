@@ -4,9 +4,9 @@
 
 
   <utility
-      name="RecordingHTTP"
+      name="Twisted-RecordingHTTP"
       component=".recordinghttp"
-      provides="zope.app.server.interfaces.IServerType"
+      provides="zope.app.twisted.interfaces.IServerType"
       />
 
   <browser:page
