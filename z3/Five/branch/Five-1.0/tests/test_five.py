@@ -49,7 +49,7 @@ from Products.Five.tests.products.FiveTest.fancycontent import manage_addFancyCo
 from Products.Five.tests.products import FiveTest
 _prefix = os.path.dirname(FiveTest.__file__)
 dir_resource_names = [os.path.basename(r)
-                      for r in (glob.glob('%s/*.png' % _prefix) +
+                        for r in (glob.glob('%s/*.png' % _prefix) +
                                 glob.glob('%s/*.pt' % _prefix) +
                                 glob.glob('%s/[a-z]*.py' % _prefix) +
                                 glob.glob('%s/*.css' % _prefix))]
@@ -274,13 +274,13 @@ class FiveTest(FiveTestCase):
         # Test traversal
         base = 'testoid/@@fivetest_macros/%s'
         for macro in ('birdmacro', 'dogmacro',
-                      'flying', 'walking'):
+                        'flying', 'walking'):
             view = self.folder.unrestrictedTraverse(base % macro)
         self.failUnless(view)
 
     def test_unrestrictedTraverse_non_existing(self):
         self.assertRaises(AttributeError, self.folder.unrestrictedTraverse,
-                          'testoid/@@invalid_page')
+                            'testoid/@@invalid_page')
 
     def test_get_widgets_for_schema_fields(self):
         salutation = Choice(title=u'Salutation', values=("Mr.", "Mrs.", "Captain", "Don"))
@@ -409,7 +409,7 @@ class RecursionTest(unittest.TestCase):
 
 
 from zope.app.publisher.browser.globalbrowsermenuservice import \
-     globalBrowserMenuService
+        globalBrowserMenuService
 
 class MenuTest(FiveTestCase):
 
@@ -435,13 +435,13 @@ class SizeTest(FiveTestCase):
 
     def test_no_get_size_on_original(self):
         manage_addSimpleContent(self.folder, 'simple', 'Simple')
-	obj = self.folder.simple
-	self.assertEquals(obj.get_size(), 42)
+        obj = self.folder.simple
+        self.assertEquals(obj.get_size(), 42)
 
     def test_get_size_on_original_and_fallback(self):
-	manage_addFancyContent(self.folder, 'fancy', 'Fancy')
-	obj = self.folder.fancy
-	self.assertEquals(obj.get_size(), 43)
+        manage_addFancyContent(self.folder, 'fancy', 'Fancy')
+        obj = self.folder.fancy
+        self.assertEquals(obj.get_size(), 43)
 
 def test_suite():
     from unittest import TestSuite, makeSuite

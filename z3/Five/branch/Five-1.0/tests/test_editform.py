@@ -58,9 +58,9 @@ def test_suite():
     return unittest.TestSuite((
             ZopeDocTestSuite(),
             FunctionalDocFileSuite(
-		'forms.txt',
-		package="Products.Five.tests",
-		setUp=setUpForms),
+        'forms.txt',
+        package="Products.Five.tests",
+        setUp=setUpForms),
             ))
 
 if __name__ == '__main__':
