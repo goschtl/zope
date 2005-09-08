@@ -16,6 +16,7 @@
 $Id$
 """
 import re, time, random
+import cStringIO
 from urllib import quote, unquote, splitport
 from types import StringTypes, ClassType
 from cgi import escape
@@ -169,6 +170,37 @@ class URLGetter(object):
                 return default
             raise
 
+class HTTPInputStream(object):
+    """Special stream that supports caching the read data.
+
+    This is important, so that we can retry requests.
+    """
+
+    def __init__(self, stream):
+        self.stream = stream
+        self.cacheStream = cStringIO.StringIO()
+
+    def getCacheStream(self):
+        self.read()
+        self.cacheStream.seek(0)
+        return self.cacheStream
+
+    def read(self, size=-1):
+        data = self.stream.read(size)
+        self.cacheStream.write(data)
+        return data
+
+    def readline(self):
+        data = self.stream.readline()
+        self.cacheStream.write(data)
+        return data
+
+    def readlines(self, hint=None):
+        data = self.stream.readlines(hint)
+        self.cacheStream.write(''.join(data))
+        return data
+        
+
 DEFAULT_PORTS = {'http': '80', 'https': '443'}
 STAGGER_RETRIES = True
 
@@ -249,7 +281,8 @@ class HTTPRequest(BaseRequest):
                           2)
             environ, response = response, outstream
 
-        super(HTTPRequest, self).__init__(body_instream, environ, response)
+        super(HTTPRequest, self).__init__(
+            HTTPInputStream(body_instream), environ, response)
 
         self._orig_env = environ
         environ = sane_environment(environ)
@@ -380,10 +413,11 @@ class HTTPRequest(BaseRequest):
         'See IPublisherRequest'
         count = getattr(self, '_retry_count', 0)
         self._retry_count = count + 1
-        self._body_instream.seek(0)
+
         new_response = self.response.retry()
         request = self.__class__(
-            body_instream=self._body_instream,
+            # Use the cache stream as the new input stream.
+            body_instream=self._body_instream.getCacheStream(),
             environ=self._orig_env,
             response=new_response,
             )

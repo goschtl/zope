@@ -6,9 +6,14 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  Some future release (Zope 3.2.0)
+  Some future release Zope 3.2.0
 
     New features
+
+      - Fixed issue 390. Deprecated ``IBaseRequest.body`` and
+        ``IBaseRequest.bodyFile``. The latter was simply renamed to
+        ``IBaseRequest.bodyStream``. No code assumes anymore that the input
+        streams are seekable.
 
       - Formalized the Publisher Response API.
 
@@ -71,6 +76,8 @@ Zope Changes
         the permission isn't right.
 
     Much thanks to everyone who contributed to this release:
+
+      Stephan Richter, Michael Kerrin, Jim Fulton
 
     Note: If you are not listed and contributed, please add yourself. This
           note will be deleted before the release.
