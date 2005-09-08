@@ -22,17 +22,12 @@ from Products.PageTemplates.PythonExpr import PythonExpr
 from Products.PageTemplates.Expressions import \
      SubPathExpr, PathExpr, \
      StringExpr, \
-     getEngine, installHandlers
+     getEngine, installHandlers,\
+     SecureModuleImporter
 
 from ReuseUtils import rebindFunction
 
-
-class _ModuleImporter:
-  def __getitem__(self, module):
-    __import__(module)
-    return modules[module]
-ModuleImporter = _ModuleImporter()
-
+ModuleImporter = SecureModuleImporter
 
 def trustedTraverse(ob, path, ignored,):
   if not path: return self
@@ -110,3 +105,4 @@ getEngine = rebindFunction(getEngine,
                            )
 
 
+  

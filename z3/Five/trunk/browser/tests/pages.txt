@@ -162,6 +162,8 @@ Make sure that ZPT's aren't a security-less zone.  Let's logout and
 try to access some protected stuff.  Let's not forgot to login again,
 of course:
 
+  >>> from AccessControl import allow_module
+  >>> allow_module('smtpd')
   >>> self.logout()
   >>> view = self.folder.unrestrictedTraverse('testoid/security.html')
   >>> print view()
