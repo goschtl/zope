@@ -33,6 +33,16 @@ Bugfixes
 * The ZPT variable 'container' makes little sense in Zope3/Five, but is now
   always set to be the same as 'here' which is normal Zope2 behaviour.
   It is in Five 1.0.x set to be the same as 'view' which breaks some templates.
+  
+* When Zope was not in debug mode, an error in a ZCML file would cause Five to
+  stop loading ZCML completely, making all subsequent products "dead". The
+  effect would typically be that objects appeared to have no views at all. 
+  Now a ZCML error will only stop the ZCML loading for that product, but the 
+  rest of the products will load as usual. A traceback will still be printed 
+  in the event log.
+  
+  In debug mode the behaviour has not changed; a ZCML error will stop Zope 
+  startup completely, and print a traceback if running in foreground mode.
 
 Five 1.1b (2005-07-13)
 ======================
