@@ -23,7 +23,7 @@ observe:
 
 Now we create the observer for the access log:
 
-  >>> from zope.app.server import log
+  >>> from zope.app.twisted import log
   >>> observer = log.CommonAccessLoggingObserver()
 
 To start listening to Twisted logging calls, simply call ``start()``:
@@ -37,7 +37,7 @@ To start listening to Twisted logging calls, simply call ``start()``:
 
 When the system emits an arbitrary log request, the observer does nothing
 
-  >>> from twisted.web2 import http, http_headers, iweb
+  >>> from twisted.web2 import http, http_headers, iweb, channel
   >>> twisted.python.log.msg('foo bar')
   >>> logfile.getvalue()
   ''
@@ -47,20 +47,35 @@ contain an `interface` key that specifies ``web2.iweb.IRequest``, a `request`
 key that contains the HTTP request implementing ``web2.iweb.IRequest``, and
 the `response` of the request:
 
-  >>> chanRequest = http.HTTPChannelRequest(None, 'GET /index.html HTTP/1.1', 1)
-  >>> chanRequest.transport.client = ('127.0.0.1', 0)
+  >>> class TestHTTPChannel(channel.http.HTTPChannelRequest):
+  ...     def getRemoteHost(self):
+  ...         return type('TestRemoteHost', (), {'host': '127.0.0.1'})
+
+  >>> chanRequest = TestHTTPChannel(None, 'GET /index.html HTTP/1.1', 1)
   >>> request = http.Request(chanRequest, 'GET', '/index.html', (1, 1),
   ...                        http_headers.Headers())
-  >>> response = http.Response()
 
-  >>> eventDict = {'interface': iweb.IRequest, 
-  ...              'request': request, 'response': response}
+  >>> response = http.Response()
+  >>> response.headers.setHeader('date', 1120000000)
+
+  >>> from zope.interface import implements
+  >>> from twisted.web2 import log
+  >>> class FauxContext(object):
+  ...     implements(log.ILogInfo)
+  ...     responseCompleted=True
+  ...     secondsTaken=1
+  ...     bytesSent=300
+  ...     startTime=1120000000
+
+  >>> eventDict = {'interface': iweb.IRequest,
+  ...              'request': request, 'response': response,
+  ...              'context': FauxContext()}
 
 If we now emit a log event, we should receive an entry:
 
   >>> twisted.python.log.msg(**eventDict)
   >>> print logfile.getvalue() #doctest: +ELLIPSIS
-  127.0.0.1 - anonymous [...] "GET /index.html HTTP/1.1" 200 0 "-" "-"
+  127.0.0.1 - - [28/Jun/2005:...] "GET /index.html HTTP/1.1" 200 300 "-" "-"
   <BLANKLINE>
 
 If I now set the `referer` and `user-agent` headers, we get some more output:
@@ -73,7 +88,7 @@ If I now set the `referer` and `user-agent` headers, we get some more output:
 
   >>> twisted.python.log.msg(**eventDict)
   >>> print logfile.getvalue() #doctest: +ELLIPSIS
-  127.0.0.1 - anonymous [...] "GET /index.html HTTP/1.1" 200 0 
+  127.0.0.1 - - [28/Jun/2005:...] "GET /index.html HTTP/1.1" 200 300
   "http://localhost:8080/manage" "Mozilla 1.7"
   <BLANKLINE>
 
@@ -84,3 +99,7 @@ Finally, to end listening to Twisted logging calls, simply call ``stop()``:
   >>> observer.stop()
   >>> observer.emit in twisted.python.log.theLogPublisher.observers
   False
+
+And cleanup the logger:
+
+  >>> logger.removeHandler(handler)

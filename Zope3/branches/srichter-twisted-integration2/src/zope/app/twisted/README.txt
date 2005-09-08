@@ -40,13 +40,13 @@ to listen on all interfaces.
 
 We are now ready to instantiate the server type:
 
-  >>> from zope.app.server.server import ServerType
+  >>> from zope.app.twisted.server import ServerType
   >>> st = ServerType(factory, defaultPort=8080)
 
 and let's make sure it really implements the promised interface:
 
   >>> from zope.interface.verify import verifyObject
-  >>> from zope.app.server.interfaces import IServerType
+  >>> from zope.app.twisted.interfaces import IServerType
   >>> verifyObject(IServerType, st)
   True
 
@@ -57,13 +57,13 @@ servers listening on a specific port.
 When you create an instance of a server using the ``create()`` method of the
 server type, you need to tell it an identifying name and a the ZODB database
 object. The IP address, port and backlog count can be optionally passed to the
-method. 
+method.
 
   >>> db = 'my database'
   >>> server = st.create('Example-HTTP', db, port=8080)
   ZODB: my database
   >>> server #doctest:+ELLIPSIS
-  <zope.app.server.server.ZopeTCPServer instance at ...>
+  <zope.app.twisted.server.ZopeTCPServer instance at ...>
 
 As you can see the server type creates a Zope-specific TCP server, which is
 simply a standard ``twisted.internet.TCPServer`` that creates a log entry upon
@@ -94,14 +94,14 @@ A special type of server type is the SSL server type; it requires some
 additional information (private key path, certificate path, and TLS flag) to
 start up the server. The setup will only work, if OpenSSL is installed:
 
-  # >>> from zope.app.server.server import SSLServerType
+  # >>> from zope.app.twisted.server import SSLServerType
   # >>> ssl_st = SSLServerType(factory, defaultPort=8443)
-  # 
+  #
   # >>> ssl_server = ssl_st.create('Example-HTTPS', db,
   # ...                            'server.pem', 'server.pem')
   # ZODB: my database
   # >>> ssl_server #doctest:+ELLIPSIS
-  # <zope.app.server.server.ZopeSSLServer instance at ...>
+  # <zope.app.twisted.server.ZopeSSLServer instance at ...>
 
 
 Server Factories
@@ -115,7 +115,7 @@ and ``SSLServerFactory`` objects that then use the server types to create the
 servers.
 
   >>> from zope.interface import implements
-  >>> from zope.app.server.interfaces import IServerType
+  >>> from zope.app.twisted.interfaces import IServerType
   >>> class MyServerType:
   ...     implements(IServerType)
   ...     def create(self, name, db,
@@ -139,7 +139,7 @@ specified in a ZConfig ``<server>`` section.
     ...     backlog = 30
     >>> my_section = ServerSectionStub()
 
-    >>> from zope.app.server.server import ServerFactory
+    >>> from zope.app.twisted.server import ServerFactory
     >>> sf = ServerFactory(my_section)
 
 The server factory object knows how to create a server, given a ZODB database
@@ -149,7 +149,7 @@ object.
     >>> print sf.create(db)
     HTTP server on *:8080, registered with my db, backlog 30
 
-The settings should actually work with FTP as well. 
+The settings should actually work with FTP as well.
 
     >>> my_section.type = 'FTP'
     >>> my_section.address = ('127.0.0.1', 8021)

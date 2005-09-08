@@ -25,7 +25,7 @@ handler = None
 
 def setUp(test):
     setup.placelessSetUp()
-    
+
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 

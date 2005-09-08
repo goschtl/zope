@@ -26,7 +26,7 @@ class DemoFileSystem(demofs.DemoFileSystem):
 
     def rename(self, path, old, new):
         return demofs.DemoFileSystem.rename(
-            self, "%s/%s" % (path, old), "%s/%s" % (path, new)) 
+            self, "%s/%s" % (path, old), "%s/%s" % (path, new))
 
 class Publication(object):
 
@@ -35,7 +35,7 @@ class Publication(object):
 
     def beforeTraversal(self, request):
         pass
-    
+
     def getApplication(self, request):
         return self.root
 
@@ -56,7 +56,7 @@ class Publication(object):
 
     def handleException(self, object, request, info, retry_allowed=True):
         request.response._exc = info[:2]
-        
+
 
 class Request(object):
 
@@ -80,7 +80,7 @@ class Response(object):
 
     _exc = _body = None
 
-    def setBody(self, result):
+    def setResult(self, result):
         self._body = result
 
     def outputBody(self):
