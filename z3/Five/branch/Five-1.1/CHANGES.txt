@@ -37,6 +37,9 @@ Bugfixes
   
   In debug mode the behaviour has not changed; a ZCML error will stop Zope 
   startup completely, and print a traceback if running in foreground mode.
+  
+* In some hard to replicate cases, using the "modules" variable in ZPT cause
+  an AuthenticationError. Using the secure module importer fixes this.
 
 Five 1.1b (2005-07-13)
 ======================
