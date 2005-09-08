@@ -21,8 +21,6 @@ from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.interface import implements
 
-import zope.server.ftp.tests.demofs as demofs
-
 from zope.app.testing import ztapi
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.filerepresentation.interfaces import IReadDirectory
@@ -37,6 +35,8 @@ from zope.app.copypastemove.interfaces import IContainerItemRenamer
 from zope.app.copypastemove import ContainerItemRenamer
 from zope.app.container.contained import setitem, Contained
 from zope.app.container.interfaces import IContainer
+
+import demofs
 
 class Directory(demofs.Directory, Contained):
 
