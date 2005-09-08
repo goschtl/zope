@@ -190,6 +190,8 @@ class FiveTest(FiveTestCase):
         self.assertEquals(expected, view())
 
     def test_zpt_security(self):
+        from AccessControl import allow_module
+        allow_module('smtpd')
         self.logout()
         view = self.folder.unrestrictedTraverse('testoid/security.html')
         expected = """\
