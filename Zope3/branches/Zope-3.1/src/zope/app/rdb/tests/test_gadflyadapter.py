@@ -141,12 +141,82 @@ class TestGadflyAdapterDefault(GadflyTestBase):
         cursor = connection.cursor()
         verifyObject(IZopeCursor, cursor)
 
+class GadflyCursorStub(object):
+
+    def __init__(self):
+        self.operations = []
+
+    def execute(self, operation, parameters=None):
+        self.operations.append((operation, parameters))
+
+class GadflyConnectionStub(object):
+
+    def cursor(self):
+        return GadflyCursorStub()
+
+    def commit(self):
+        pass
+
+    def rollback(self):
+        pass
+
+    def close(self):
+        pass
+
+class GadflyTestAdapter(GadflyAdapter):
+
+    def _connection_factory(self):
+        return GadflyConnectionStub()
+
+class GadflyAdapterTests(TestCase):
+
+    def setUp(self):
+        self.adapter = GadflyTestAdapter("dbi://")
+        self.connection = self.adapter()
+        self.cursor = self.connection.cursor()
+
+    def testBadExecutemanyOperations(self):
+        raises = self.assertRaises
+        for operation in [
+                "SELECT",
+                "CREATE",
+                "DROP",
+                ]:
+            raises(DatabaseAdapterError,
+                self.cursor.executemany, operation, [])
+
+    def testExecutemanyInsert(self):
+        operation = "INSERT INTO table(v1, v2) VALUES (?, ?)"
+        parameters = [(1, 2), (3, 4)]
+        self.cursor.executemany(operation, parameters)
+        self.failUnlessEqual([(operation, parameters)],
+            self.cursor.operations)
+
+    def testExecutemanyUpdate(self):
+        operation = "UPDATE table SET value=0 WHERE id=?"
+        parameters = [(1,), (2,)]
+        self.cursor.executemany(operation, parameters)
+        self.failUnlessEqual([
+            (operation, parameters[0]),
+            (operation, parameters[1]),
+            ], self.cursor.operations)
+
+    def testExecutemanyDelete(self):
+        operation = "DELETE FROM table WHERE id=?"
+        parameters = [(1,), (2,)]
+        self.cursor.executemany(operation, parameters)
+        self.failUnlessEqual([
+            (operation, parameters[0]),
+            (operation, parameters[1]),
+            ], self.cursor.operations)
+
 
 def test_suite():
     return TestSuite((
         makeSuite(TestGadflyAdapter),
         makeSuite(TestGadflyAdapterNew),
         makeSuite(TestGadflyAdapterDefault),
+        makeSuite(GadflyAdapterTests),
         ))
 
 if __name__=='__main__':

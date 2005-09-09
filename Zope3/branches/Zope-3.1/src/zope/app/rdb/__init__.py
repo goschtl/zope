@@ -31,7 +31,7 @@ from zope.security.checker import NamesChecker
 
 from zope.interface import implements
 from zope.app.container.contained import Contained
-from zope.app.rdb.interfaces import DatabaseException
+from zope.app.rdb.interfaces import DatabaseException, DatabaseAdapterError
 from zope.app.rdb.interfaces import IResultSet
 from zope.app.rdb.interfaces import IZopeConnection, IZopeCursor
 from zope.app.rdb.interfaces import IManageableZopeDatabaseAdapter
@@ -104,10 +104,6 @@ class ResultSet(list):
         return cmp(len(self), len(other))
 
 
-class DatabaseAdapterError(Exception):
-    pass
-
-
 class ZopeDatabaseAdapter(Persistent, Contained):
 
     implements(IManageableZopeDatabaseAdapter)
@@ -152,6 +148,8 @@ class ZopeDatabaseAdapter(Persistent, Contained):
             try:
                 self._v_connection = ZopeConnection(
                     self._connection_factory(), self)
+            except DatabaseException:
+                raise
             # Note: I added the general Exception, since the DA can return
             # implementation-specific errors. But we really want to catch all
             # issues at this point, so that we can convert it to a
@@ -294,6 +292,8 @@ class ZopeCursor(object):
         """Executes an operation, registering the underlying
         connection with the transaction system.  """
         operation, parameters = self._prepareOperation(operation, parameters)
+        # If executemany() is not defined pass parameters
+        # to execute() as defined by DB API v.1
         method = getattr(self.cursor, "executemany", self.cursor.execute)
         self.connection.registerForTxn()
         return method(operation, parameters)
