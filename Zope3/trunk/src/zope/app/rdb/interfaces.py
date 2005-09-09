@@ -93,6 +93,9 @@ class DatabaseException(Exception):
     def __str__(self):
         return self.message
 
+class DatabaseAdapterError(DatabaseException):
+    pass
+
 arraysize = 1 # default constant, symbolic
 
 class IDBICursor(Interface):

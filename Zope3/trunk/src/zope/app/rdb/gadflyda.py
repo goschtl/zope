@@ -19,17 +19,39 @@ import gadfly
 import os
 
 from zope.app.rdb import ZopeDatabaseAdapter, parseDSN
-from zope.app.rdb import DatabaseAdapterError
+from zope.app.rdb import DatabaseException, DatabaseAdapterError
+from zope.app.rdb import ZopeConnection, ZopeCursor
 
 GadflyError = DatabaseAdapterError
 
+
+class GadflyAdapterCursor(ZopeCursor):
+
+    def executemany(self, operation, parameters):
+        command = operation.split(None, 1)[0].lower()
+        if command not in ("insert", "update", "delete"):
+            raise DatabaseAdapterError(
+                "executemany() is not applicable for %r" % operation)
+
+        operation, parameters = self._prepareOperation(operation, parameters)
+        self.connection.registerForTxn()
+        if command == "insert":
+            self.execute(operation, parameters)
+        else:
+            for param in parameters:
+                self.execute(operation, param)
+
+class GadflyAdapterConnection(ZopeConnection):
+
+    def cursor(self):
+        return GadflyAdapterCursor(self.conn.cursor(), self)
 
 class GadflyAdapter(ZopeDatabaseAdapter):
     """A Gadfly adapter for Zope3"""
 
     # The registerable object needs to have a container
     __name__ = __parent__ = None 
-    
+
     def _connection_factory(self):
         """Create a Gadfly DBI connection based on the DSN.
 
@@ -59,6 +81,14 @@ class GadflyAdapter(ZopeDatabaseAdapter):
 
         return db
 
+    def connect(self):
+        if not self.isConnected():
+            try:
+                self._v_connection = GadflyAdapterConnection(
+                    self._connection_factory(), self)
+            except gadfly.error, error:
+                raise DatabaseException(str(error))
+
 _gadflyRoot = 'gadfly'
 
 def setGadflyRoot(path='gadfly'):
@@ -66,5 +96,4 @@ def setGadflyRoot(path='gadfly'):
     _gadflyRoot = path
 
 def getGadflyRoot():
-    global _gadflyRoot
     return _gadflyRoot
