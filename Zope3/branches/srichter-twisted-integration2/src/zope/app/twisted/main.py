@@ -110,9 +110,10 @@ def setup(options):
     observer = log.CommonAccessLoggingObserver()
     observer.start()
 
-    zope.app.appsetup.config(options.site_definition)
+    zope.app.appsetup.config(options.site_definition,
+                             features=('twisted',))
 
-    db = multi_database(options.databases)[0][0]
+    db = zope.app.appsetup.appsetup.multi_database(options.databases)[0][0]
 
     notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
 

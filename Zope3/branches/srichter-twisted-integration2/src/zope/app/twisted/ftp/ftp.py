@@ -97,7 +97,8 @@ class ZopeFTPShell(object):
 
     def _stat(self, path, keys):
         if self.fs_access.type(path) == 'd':
-            raise ftp.WrongFileType()
+            import pdb; pdb.set_trace()
+            raise ftp.WrongFiletype()
         result = self._gotlisting(self.fs_access.lsinfo(path), keys)
         return result[1]
 
@@ -118,19 +119,25 @@ class ZopeFTPShell(object):
 
     def _list_size(self, value):
         return value.get('size', 0)
+
     def _list_hardlinks(self, value):
         return value.get('nlinks', 1)
+
     def _list_owner(self, value):
         return value.get('owner_name', 'na')
+
     def _list_group(self, value):
         return value.get('group_name', 'na')
+
     def _list_directory(self, value):
         return value['type'] == 'd'
+
     def _list_modified(self, value):
         mtime = value.get('mtime', None)
         if mtime:
             return int(mtime.strftime('%s'))
         return 0
+
     def _list_permissions(self, value):
         ret = 0
         if value.get('other_executable', False):

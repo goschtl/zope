@@ -6,13 +6,13 @@ site-definition site.zcml
 interrupt-check-interval 200
 
 <server>
-  type Twisted-HTTP
+  type HTTP
   address 8080
 </server>
 
 # Ready to go HTTPS server. You just need to make sure OpenSSL is installed.
 # <sslserver>
-#   type Twisted-HTTPS
+#   type HTTPS
 #   address 8443
 #   privatekeypath server.pem
 #   certificatepath server.pem
@@ -22,25 +22,25 @@ interrupt-check-interval 200
 # (obviously if it's as well, use a different port number). If there's
 # an exception, Zope will drop into pdb at the point of the exception.
 #<server>
-#  type Twisted-PostmortemDebuggingHTTP
+#  type PostmortemDebuggingHTTP
 #  address 8080
 #</server>
 
 # A special HTTP server that records HTTP session that can be converted to
 # functional tests.
 # <server>
-#   type Twisted-RecordingHTTP
+#   type RecordingHTTP
 #   address 8081
 # </server>
 
 <server>
-  type Twisted-FTP
+  type FTP
   address 8021
 </server>
 
 # You must install pycrypto to use the SFTP server.
 # <sshserver>
-#   type Twisted-SFTP
+#   type SFTP
 #   address 8115
 #   hostkey ssh_host_rsa_key
 # </sshserver>

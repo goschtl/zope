@@ -1,13 +1,13 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
   <utility
-     name="Twisted-SFTP"
+     name="SFTP"
      component=".sftpserver"
      provides="..interfaces.IServerType"
      />
 
   <utility
-     name="Twisted-FTP"
+     name="FTP"
      component=".ftpserver"
      provides="..interfaces.IServerType"/>
 
