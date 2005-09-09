@@ -31,9 +31,61 @@ class SystemConfigurationParticipation(object):
     principal = system_user
     interaction = None
 
+
 _configured = False
-def config(file, execute=True):
-    """Configure site globals"""
+def config(file, features=(), execute=True):
+    r"""Execute the ZCML configuration file.
+
+    This procedure defines the global site setup. Optionally you can also
+    provide a list of features that are inserted in the configuration context
+    before the execution is started.
+
+    Let's create a trivial sample ZCML file.
+
+      >>> import tempfile
+      >>> fn = tempfile.mktemp('.zcml')
+      >>> zcml = open(fn, 'w')
+      >>> zcml.write('''
+      ... <configure xmlns:meta="http://namespaces.zope.org/meta"
+      ...            xmlns:zcml="http://namespaces.zope.org/zcml">
+      ...   <meta:provides feature="myFeature" />
+      ...   <configure zcml:condition="have myFeature2">
+      ...     <meta:provides feature="myFeature4" />
+      ...   </configure>
+      ... </configure>
+      ... ''')
+      >>> zcml.close()
+
+    We can now pass the file into the `config()` function:
+
+      # End an old interaction first
+      >>> from zope.security.management import endInteraction
+      >>> endInteraction()
+
+      >>> context = config(fn, features=('myFeature2', 'myFeature3'))
+      >>> context.hasFeature('myFeature')
+      True
+      >>> context.hasFeature('myFeature2')
+      True
+      >>> context.hasFeature('myFeature3')
+      True
+      >>> context.hasFeature('myFeature4')
+      True
+
+    Further, we should have access to the configuration file name and context
+    now:
+
+      >>> getConfigSource() is fn
+      True
+      >>> getConfigContext() is context
+      True
+
+    Let's now clean up by removing the temporary file:
+
+      >>> import os
+      >>> os.remove(fn)
+
+    """
     global _configured
     global __config_source
     __config_source = file
@@ -41,7 +93,7 @@ def config(file, execute=True):
     if _configured:
         return
 
-    from zope.configuration import xmlconfig
+    from zope.configuration import xmlconfig, config
 
     # Set user to system_user, so we can do anything we want
     from zope.security.management import newInteraction
@@ -51,7 +103,11 @@ def config(file, execute=True):
     zope.app.component.hooks.setHooks()
 
     # Load server-independent site config
-    context = xmlconfig.file(file, execute=execute)
+    context = config.ConfigurationMachine()
+    xmlconfig.registerCommonDirectives(context)
+    for feature in features:
+        context.provideFeature(feature)
+    context = xmlconfig.file(file, context=context, execute=execute)
 
     # Reset user
     from zope.security.management import endInteraction
@@ -63,6 +119,7 @@ def config(file, execute=True):
     __config_context = context
 
     return context
+
 
 def database(db):
     """Load ZODB database from Python module or FileStorage file"""
