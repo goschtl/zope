@@ -112,7 +112,7 @@ def setup(options):
 
     zope.app.appsetup.config(options.site_definition)
 
-    db = options.database.open()
+    db = multi_database(options.databases)[0][0]
 
     notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
 
