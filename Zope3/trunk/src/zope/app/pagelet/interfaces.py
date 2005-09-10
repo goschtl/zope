@@ -24,6 +24,7 @@ from zope.interface import Attribute
 from zope.schema import Int
 
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.location import ILocation
         
 
 
@@ -36,7 +37,7 @@ class IPageletSlot(Interface):
 
 
 
-class IPagelet(Interface):
+class IPagelet(ILocation):
     """Interface for custom pagelet adapters.
     
     Pagelets can be used in a page template as a piece of content
@@ -173,7 +174,7 @@ class ITALESPageletExpression(ITALESExpression):
 class ITALESPageDataExpression(ITALESExpression):
     """Tal namespace for set the view namespace in MacrosCollector.
     
-    For to call a page data adapter in a page template use the the 
+    For calling a page data adapter in a page template use the 
     following syntax:
     <metal:block 
         tal:define="data pagedata:x.y.interfaces.IDemoPageData" />

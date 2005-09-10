@@ -106,7 +106,8 @@ class MacrosCollector(object):
         pagelets.sort(lambda x, y: x[1].weight - y[1].weight)
 
         for name, pagelet in pagelets:
-            # append pagelet macros if the permission is correct
+            # append pagelet macros if the permission is correct pagelets
+            # are now locatable and can invoke local authentication utilities
             if canAccess(pagelet, '__getitem__'):
                 macros.append(pagelet[name])
 
@@ -192,7 +193,7 @@ class MacroCollector(object):
         pagelet = zapi.getMultiAdapter(objects, IPagelet, key)
 
         # rasie Unauthorized exception if we don't have the permission for 
-        # calling the pagelet's macro code
+        # calling the pagelet's macro code. Pagelets are locatable.
         if canAccess(pagelet, '__getitem__'):
             return pagelet[key]
         else:

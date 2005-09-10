@@ -65,7 +65,7 @@ class TestPageletContent(BrowserTestCase):
 
         # As zope.Manager we see both pagelets
         self.assert_(body.find('Macro: demo_pagelet_macro') != -1)
-        self.assert_(body.find('demo_pagelet_macro2') == -1)
+        self.assert_(body.find('demo_pagelet_macro2') != -1)
 
 
 def test_suite():

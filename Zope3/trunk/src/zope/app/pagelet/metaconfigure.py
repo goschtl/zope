@@ -70,6 +70,7 @@ class simplepagelet(object):
         self.context = context
         self.request = request
         self.view = view
+        self.__parent__ = context
 
     def __getitem__(self, name):
         """Get the zpt code defined in 'define-macro' by name."""
