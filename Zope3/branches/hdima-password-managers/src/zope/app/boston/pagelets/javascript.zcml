@@ -1,0 +1,16 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <pagelet
+      name="javascript"
+      for="*"
+      slot="zope.app.boston.slots.IJavaScript"
+      permission="zope.Public"
+      template="javascript.pt"
+      layer="zope.app.boston.boston"
+      weight="1"
+      />
+
+</configure>
