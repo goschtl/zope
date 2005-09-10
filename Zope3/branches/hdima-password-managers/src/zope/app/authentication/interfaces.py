@@ -115,6 +115,15 @@ class IAuthenticatorPlugin(IPlugin):
         If the plugin cannot find information for the id, returns None.
         """
 
+class IPasswordManager(zope.interface.Interface):
+    """Password manager."""
+
+    def encodePassword(password):
+        """Return encoded data for the password."""
+
+    def checkPassword(storedPassword, password):
+        """Return whether the password coincide with the storedPassword."""
+
 class IPrincipalInfo(zope.interface.Interface):
     """Minimal information about a principal."""
 

@@ -61,6 +61,7 @@
 
   </configure>
 
+  <include file="password.zcml" />
   <include file="session.zcml" />
   <include file="httpplugins.zcml" />
   <include file="principalfolder.zcml" />
