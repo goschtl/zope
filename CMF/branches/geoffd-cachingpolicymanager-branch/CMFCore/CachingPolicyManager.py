@@ -295,7 +295,8 @@ class CachingPolicy:
 
             if self.getNoCache():
                 control.append( 'no-cache' )
-                headers.append(('Pragma', 'no-cache')) # tell HTTP 1.0 clients not to cache
+                # The following is for HTTP 1.0 clients
+                headers.append(('Pragma', 'no-cache'))
 
             if self.getNoStore():
                 control.append( 'no-store' )
@@ -661,7 +662,6 @@ class CachingPolicyManager( SimpleItem ):
 
         return ()
 
-    # 304 handling helper
     security.declareProtected( View, 'getHTTPCachingHeaders' )
     def getModTimeAndETag( self, content, view_method, keywords, time=None):
         """ Return the modification time and ETag for the content object,
