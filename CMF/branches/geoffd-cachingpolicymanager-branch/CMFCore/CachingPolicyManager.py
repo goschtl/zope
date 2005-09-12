@@ -662,7 +662,7 @@ class CachingPolicyManager( SimpleItem ):
 
         return ()
 
-    security.declareProtected( View, 'getHTTPCachingHeaders' )
+    security.declareProtected( View, 'getModTimeAndETag' )
     def getModTimeAndETag( self, content, view_method, keywords, time=None):
         """ Return the modification time and ETag for the content object,
             view method, and keywords as the tuple (modification_time, etag)
