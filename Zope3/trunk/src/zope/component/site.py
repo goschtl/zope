@@ -235,7 +235,7 @@ class GlobalSiteManager(SiteManager):
                         strict=True):
 
         if strict and not providedInterface.providedBy(component):
-            raise Invalid("The registered component doesn't implement "
+            raise Invalid("The registered component doesn't provide "
                           "the promised interface.")
 
         self.utilities.register((), providedInterface, name, component)
