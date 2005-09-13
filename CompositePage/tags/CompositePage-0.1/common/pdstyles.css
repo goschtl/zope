@@ -1,0 +1,31 @@
+/* Manageable Object Styles (CSS 2) */
+
+div#drag-feedback-box {
+  border: 1px dotted black;
+  position: absolute;
+  display: none;
+  z-index: 1000;
+}
+
+.context-menu {
+  position: absolute;
+  border: 1px outset Menu;
+  background-color: Menu;
+  color: MenuText;
+  cursor: default;
+  z-index: 1000;
+  visibility: hidden;
+  display: table;
+}
+
+.context-menu-item {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.separator {
+  border-top: 1px inset Menu;
+  border-bottom: 1px inset Menu;
+}

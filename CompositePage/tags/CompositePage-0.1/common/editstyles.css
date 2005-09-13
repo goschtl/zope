@@ -1,0 +1,13 @@
+/* Composite editing styles */
+
+.slot_target {
+  padding: 2px;
+  border-top: 1px dashed #0000ff;
+  border-left: 1px dashed #0000ff;
+  margin: 1px;
+}
+
+.slot_element {
+  background: #dddddd;
+  border: 1px inset #dddddd;
+}

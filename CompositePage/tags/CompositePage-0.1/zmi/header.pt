@@ -1,0 +1,10 @@
+<!-- zmi/header.pt -->
+<tal:block tal:define="url options/transformer/absolute_url">
+<link rel="stylesheet" type="text/css"
+  tal:attributes="href string:${root/absolute_url}/manage_page_style.css" />
+<script type="text/javascript" 
+  tal:attributes="src string:${url}/zmi_edit_js"></script>
+<script type="text/javascript" tal:content="structure string:
+var zmi_transformer_url = '${url}';
+"></script>
+</tal:block>

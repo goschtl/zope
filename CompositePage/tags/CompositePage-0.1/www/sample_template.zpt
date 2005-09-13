@@ -1,0 +1,66 @@
+<html>
+  <head>
+    <title tal:content="template/title">The title</title>
+  </head>
+  <body>
+
+<table border="4" width="100%">
+<tr>
+<th colspan="3">
+<h2>
+Composite Page Example
+</h2>
+</th>
+</tr>
+<tr>
+
+<td width="25%" valign="top">
+Left column
+<div class="column-element" tal:repeat="element here/slots/left/multiple|nothing"
+     tal:content="structure element">
+Element here...
+</div>
+</td>
+
+<td width="50%" valign="top">
+Middle column
+<div class="main-element" tal:repeat="element here/slots/middle/multiple|nothing"
+     tal:content="structure element">
+Element here...
+</div>
+</td>
+
+<td width="50%" valign="top">
+
+Small ad
+
+<table border="1" width="100%">
+<tr>
+<td tal:content="structure here/slots/small_ad/single|default">
+&nbsp;
+</td>
+</tr>
+</table>
+
+Right column
+<div class="column-element" tal:repeat="element here/slots/right/multiple|nothing"
+     tal:content="structure element">
+Element here...
+</div>
+</td>
+
+</tr>
+
+</table>
+
+<br />
+
+<div align="center">
+Copyrights and trademarks
+<div tal:content="structure here/slots/bottom/single|default">
+</div>
+</div>
+
+  </body>
+</html>
+

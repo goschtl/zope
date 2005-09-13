@@ -1,0 +1,25 @@
+<!-- zmi/bottom.pt -->
+
+<div id="slot-element-context-menu" class="context-menu">
+<div class="context-menu-item"
+     onmouseup="zmi_edit(pd_selected_item)"
+     filter="pd_selected_item">Edit...</div>
+<div class="separator" filter="pd_selected_item"></div>
+<div class="context-menu-item"
+     onmouseup="window.alert('Clipboard functions are not yet implemented.')"
+     filter="pd_selected_items">Copy</div>
+<div class="context-menu-item"
+     onmouseup="window.alert('Clipboard functions are not yet implemented.')"
+     filter="pd_selected_items">Cut</div>
+<div class="separator"></div>
+<div class="context-menu-item" onmouseup="composite_delete(pd_selected_items)"
+     filter="pd_selected_items">Delete</div>
+</div>
+
+<div id="slot-target-context-menu" class="context-menu">
+<div class="context-menu-item" onmouseup="zmi_add(pd_selected_item)"
+     filter="pd_selected_item">Add...</div>
+<div class="context-menu-item"
+     onmouseup="window.alert('Clipboard functions are not yet implemented.')"
+     filter="pd_selected_item">Paste</div>
+</div>

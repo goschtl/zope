@@ -1,0 +1,15 @@
+<!-- common/bottom.pt -->
+<div id="drag-feedback-box"></div>
+
+<form action="moveAndDelete" name="modify_composites" method="POST"
+  tal:attributes="action
+  string:${options/tool/absolute_url}/moveAndDelete">
+<input type="hidden" name="move_source_paths" value="" />
+<input type="hidden" name="move_target_path" value="" />
+<input type="hidden" name="move_target_index" value="" />
+<input type="hidden" name="delete_source_paths" value="" />
+</form>
+
+<script type="text/javascript"><!--
+pd_setupPage();
+// --></script>
