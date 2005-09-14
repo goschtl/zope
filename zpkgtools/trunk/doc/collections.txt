@@ -12,8 +12,8 @@ distributions containing package and collection distributions based on
 dependency information.
 
 Collection distributions are laid out as a directory tree with a
-specific form.  If the primary resource being packaged is ``ZopeX3``,
-and the release tag is ``ZopeX3-1_0``, we get a tree that looks like
+specific form.  If the primary resource being packaged is ``Zope``,
+and the release tag is ``Zope-3.1.0``, we get a tree that looks like
 this (assuming it has the ``zope`` package as a dependency)::
 
   ZopeX3-1.0/
@@ -35,7 +35,7 @@ this (assuming it has the ``zope`` package as a dependency)::
                   version.txt
 
       Support/
-          setuptools/
+          ZConfig/
               __init__.py
               ...
           zpkgtools/
@@ -53,7 +53,7 @@ this (assuming it has the ``zope`` package as a dependency)::
 The support packages aren't shown in their entirety, both for brevity
 and because they really aren't the meaningful part of the payload.
 The dependency list is assumed to be shorter than actually expected
-for ZopeX3 as well.
+for Zope 3 as well.
 
 
 Explanation
@@ -75,33 +75,12 @@ which contains the packages that define the collection.  Each
 component is equivalent to a non-collection package of just the one
 component.
 
-Collections are defined by a set of metadata files similar to
-packages.  These include:
-
-`DEPENDENCIES.cfg`
-  Another optional file containing a list of direct dependencies, as
-  well as any files that are specific to the collection.  Each line
-  must be a resource identifier, a comment, or blank.
-
-`PACKAGE.cfg`
-  An optional file which describes how the collection distribution
-  should be assembled.
-
-`PUBLICATION.cfg`
-  Publication metadata, including many Dublin Core fields and similar
-  information.  This is required, but is not expected to change often
-  for a distribution.
-
-`SETUP.cfg`
-  Information about what's included in the distrubution, primarily for
-  use by a `setup.py` script.
-
-For components that aren't Python packages, at least one of
+Collections are defined by the same set of metadata files as any other
+packages.  Additional information on these files can be found in
+`Metadata Descriptions for Distributions <metadata.html>`_.  For
+components that aren't Python packages, at least one of
 `DEPENDENCIES.cfg`, `PACKAGE.cfg`, or `SETUP.cfg` is required.
-
-Additional information on these files can be found in `Metadata
-Descriptions for Distributions <metadata.html>`_.
-
+                    
 For each dependency that can be fulfilled (a location is specified in
 the `resource maps`_ loaded by |zpkg|_), an additional directory is
 added to the `Packages/` directory.  The new directory will have the
@@ -136,8 +115,9 @@ a collection distribution:
 
 - We're currently only supporting a limited amount of "package
   information" for collections, but this is largely a software issue,
-  not a design problem.  The information file will be called
-  `SETUP.cfg`.
+  not a design problem.  The information file is called `SETUP.cfg`,
+  and what's accepted is a subset of what's allowed for a Python
+  package.
 
 
 .. include:: links.rst

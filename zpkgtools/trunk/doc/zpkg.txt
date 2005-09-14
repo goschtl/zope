@@ -7,13 +7,11 @@ Overview and the Command Line
 
 Configuration of **zpkg** is generally required since **zpkg** always
 refers to a `resource map` to provide information about the resource
-its packaging.  Regardless of the availability of an appropriate
-checkout, **zpkg** always uses the resource map to locate the
-components it's adding to the release.
+its packaging.
 
 The **zpkg** command provides some command line options to control
-configuration, and a very simple configuration file to allow
-configurations to be saved.
+configuration, and a simple configuration file to allow configurations
+to be saved.
 
 The following command line options are provided:
 
@@ -36,8 +34,11 @@ The following command line options are provided:
 
 --distribution CLASS
   Set the distribution class to be used by distutils.  By default, the
-  zpkgsetup.dist.ZPkgDistribution class is used, but this allows an
-  alternate class to be used instead.
+  ``zpkgsetup.dist.ZPkgDistribution`` class is used, but this allows
+  an alternate class to be used instead.  Alternate classes should be
+  very careful that everything initialized in the default class is
+  also properly initialized, either by subclassing or implementing the
+  required commands directly.
 
 -f
   Don't load any configuration file, not even the default.
@@ -53,10 +54,13 @@ The following command line options are provided:
   is used for the package name.
 
 -r TAG, --revision-tag=TAG
-  Generate the distribution using the CVS tag `TAG` instead of the
-  ``HEAD`` tag.  The revision tag is used to generate the release
-  version if that's not specified directly and the tag follows the
-  Zope Corporation tagging convention (see below).
+  Generate the distribution using the revision control tag `TAG`
+  instead of the ``HEAD`` tag.  The revision tag is used to generate
+  the release version if that's not specified directly and the tag
+  follows the Zope Corporation tagging convention (see below).  Note
+  that tags are handled according to the typical conventions of the
+  revision control system identified by the corresponding resource
+  URL.
 
 -s
   Include required support packages in the distribution.  This is the
@@ -65,7 +69,8 @@ The following command line options are provided:
 -S
   Don't include the required support packages in the distribution.
   This can be used to generate smaller distributions when the
-  ``zpkgsetup`` package is known to be available on target systems.
+  ``zpkgsetup`` and ``ZConfig`` packages are known to be available on
+  target systems.
 
 --support RESOURCE
   Include an additional resource in the Support/ directory of the
@@ -106,9 +111,9 @@ file, the only way to initialize the resource map is by using the
 **-m** option.
 
 The command line can include the name of the resource to be packaged
-simply by naming it.  It this is not specified on the command line,
-but must be specified in the configuration file using the
-``default-collection`` setting.  Only one resource can be specified
+simply by naming it.  If this is not specified on the command line, it
+must be specified in the configuration file using the
+**default-collection** setting.  Only one resource can be specified
 for a single distribution.
 
 
@@ -118,40 +123,41 @@ Configuration File Format
 The configuration files used by **zpkg** use the
 `ZConfig`_ configuration language.
 
-Blank lines and comments (lines that start with ``#`` as the first
+Blank lines and comments (lines that start with **#** as the first
 non-blank character) are ignored.
 
 Four keys are currently defined for the configuration file:
-``build-application``, ``collect-dependencies``,
-``include-support-code``, and ``resource-map``.  There is also one
-section type that can be used as well, ``<resources>``.
+**build-application**, **collect-dependencies**,
+**include-support-code**, and **resource-map**.  There are also two
+section types that can be used as well, **<resources>** and
+**<exclude>**.
 
-If ``build-application`` is set to ``true``, then an application
+If **build-application** is set to **true**, then an application
 distribution is constructed instead of a conventional distutils
 distribution; this is equivalent to specifying **-a** on the command
 line.
 
-Setting ``collect-dependencies`` to ``true`` causes dependencies to be
+Setting **collect-dependencies** to **true** causes dependencies to be
 added to the distribution if they can be located.  This is the same as
 using the **-c** option on the command line.
 
-The ``default-collection`` value is used to specify a resource that
+The **default-collection** value is used to specify a resource that
 should be used as the top-level collection to package if no collection
 is specified on the command line.
 
-The ``include-support-code`` key is used to control whether **zpkg**
+The **include-support-code** key is used to control whether **zpkg**
 bundles the support code along with the resulting distribution.  The
-value is a boolean, where the strings ``true`` and ``false`` can be
+value is a boolean, where the strings **true** and **false** can be
 used in the configuration file.  If true (the default), copies of the
 ``zpkgsetup`` and ``ZConfig`` packages and any additionally configured
 support packages will be included in the distribution (less the test
 code).  If false, the right versions of these packages will be assumed
 to be available for import on target systems.
 
-The value for ``resource-map`` is a path or URL (including
+The value for **resource-map** is a path or URL (including
 ``cvs:`` URLs) for a file that defines the map.  Relative paths are
 interpreted as relative to the directory containing the configuration
-file.  The ``resource-map`` key may be given any number of times;
+file.  The **resource-map** key may be given any number of times;
 entries in the first named map take precedence over entries of the
 same name in later maps.
 
@@ -176,10 +182,10 @@ contains::
 2. ``/home/fdrake/local.map``
 3. ``cvs://cvs.zope.org/cvs-repository:Packages2/packages.map``
 
-Note that all ``<resources>`` sections will be processed before any
+Note that all **<resources>** sections will be processed before any
 external maps are loaded, regardless of ordering.
 
-Optionally, there is a ``<exclude>`` section in which you can specify the
+Optionally, there is an **<exclude>** section in which you can specify the
 packages/resources that should be excluded (in other words not loaded) from
 the package. Every line should specify one package. This is equivalent of
 specifying **-x** or **--exclude** for every excluded package.
@@ -197,7 +203,7 @@ using::
     zope.component
   </exclude>
 
-Note that neither the ``<exclude>`` section nor the **-x** and
+Note that neither the **<exclude>** section nor the **-x** and
 **--exclude** command-line options support wildcards.
 
 
@@ -217,7 +223,7 @@ must be unique.
 
 A file representing a resource map is a simple two-column table with
 the fields separated by whitespace.  Blank lines and comments (lines
-that start with ``#`` as the first non-blank character) are ignored.
+that start with **#** as the first non-blank character) are ignored.
 
 The first field is the name of a resource, and the second field is the
 URL by which it can be accessed.
@@ -228,7 +234,8 @@ to identify an entire tree of packages::
   foo    svn://svn.example.org/myproject/tags/*/src/foo
   foo.*  svn://svn.example.org/myproject/tags/*/src/foo/
 
-allows all descendent packages of "foo" to be located.
+allows all descendent packages of ``foo`` to be located.  Note that
+``*`` alone is not accepted as a wildcard package specification.
 
 
 Zope Corporation Tagging Convention

@@ -18,7 +18,7 @@ files is optional if the information in that file is not needed.
 
     feature:XML parser
 
-  Blank lines and lines starting with ``#`` as the first non-white
+  Blank lines and lines starting with **#** as the first non-white
   character are ignored.  All other lines are considered a single
   dependency; leading and trailing whitespace will be ignored.
   Dependencies are case-sensitive.
@@ -57,9 +57,9 @@ Package Construction Information
 --------------------------------
 
 The `PACKAGE.cfg` file can contain three distinct sections; the
-``<load>`` section identifies files that need to be loaded from
-other sources, the ``<distribution>`` section is used to include
-files in the distribution root, and the ``<collection>`` section is
+**<load>** section identifies files that need to be loaded from
+other sources, the **<distribution>** section is used to include
+files in the distribution root, and the **<collection>** section is
 used to include files in the component itself (even if the component
 isn't a collection; this name is used since it usually will be a
 collection).
@@ -70,21 +70,27 @@ explanation.  The process has the following steps:
 1. A copy of the component is made that can be written to.  This is
    the *workspace*.
 
-2. External references are loaded into the workspace.  It is
-   possible for this to overwrite portions of the component itself,
-   so specify the loads carefully.  This is based on the ``<load>``
-   section of `PACKAGE.cfg`.
+2. External references are loaded into the workspace.  It is possible
+   for this to overwrite portions of the component itself, so specify
+   the loads carefully.  This is based on the **<load>** section of
+   `PACKAGE.cfg`.  Note that using **<load>** sections to retrieve
+   critical parts of a Python package's functionality makes the
+   package more difficult to work with directly from a checkout from a
+   revision control repository.  Current best practice is to use it
+   only for information that should be loaded for a distribution, and
+   even that should be avoided when possible since it can be used to
+   bypass the value of the revision control system.
 
 3. Files from the workspace are copied into their final locations in
    the component-specific portion of the distribution tree.
 
-   If `PACKAGE.cfg` contains a ``<collection>`` section, it is used
+   If `PACKAGE.cfg` contains a **<collection>** section, it is used
    to specify which files should be copied into the
    component-specific portion of the distribution tree.  Only files
-   listed will be copied.  If the ``<collection>`` section specifies
+   listed will be copied.  If the **<collection>** section specifies
    exclusions, all files will be copied *except* for those excluded.
 
-   If the ``<collection>`` section is not present or is empty, all
+   If the **<collection>** section is not present or is empty, all
    files in the workspace are copied; directories are copied
    recursively.  Files named `.cvsignore` and directories with names
    of `{arch}`, `CVS`, `_darcs`, `RCS`, `SCCS`, or `.svn` are
@@ -107,9 +113,9 @@ explanation.  The process has the following steps:
    specifying exclusions instead of inclusions.  It is not possible to
    specify both using the current |zpkg|_ implementation.  An
    exclusion is similar to an inclusion, but the destination is always
-   ``-`` (a single hyphen):
+   **-** (a single hyphen):
 
-     *source* ``-``
+     *source* **-**
 
    will cause files and directories matching *source* to be excluded
    from the distribution.  *source* can contain POSIX globbing
@@ -117,7 +123,7 @@ explanation.  The process has the following steps:
 
 4. If the component being processed is the primary resource being
    packaged, files from the workspace can be copied into the
-   distribution root.  This is done using the ``<distribution>``
+   distribution root.  This is done using the **<distribution>**
    section of `PACKAGE.cfg`.  This is most useful for including a
    `README.txt` in the distribution root so people unpacking the
    distribution can read about the package they've just unpacked.
@@ -127,7 +133,7 @@ explanation.  The process has the following steps:
 
      *destination*   *source*
 
-   Unlike inclusions in the ``<collection>`` section, the
+   Unlike inclusions in the **<collection>** section, the
    *destination* is interpreted relative to the distribution root
    rather than the component-specific portion of the distribution
    tree.

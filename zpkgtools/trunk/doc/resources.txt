@@ -40,15 +40,15 @@ components, separated by colons:
 - tag
 
 The host part can include optional username, password, and connection
-type parts::
+type parts:
 
-  [ username [ ":" password ] "@" ] hostname [ ":" connection-type ]
+  [ *username* [ ":" *password* ] "@" ] *hostname* [ ":" *connection-type* ]
 
 This is very similar to the format used for FTP or HTTP with Basic
 authentication, where connection-type replaces the port number.
 
-XXX We should actually still support a port number, at least for
-``pserver`` connections.  The default port for ``pserver`` is 2041.
+.. XXX We should actually still support a port number, at least for
+   ``pserver`` connections.  The default port for ``pserver`` is 2041.
 
 The path may be omitted (left empty) to refer to the entire
 repository, including the top-level `CVSROOT/` directory.
@@ -66,14 +66,32 @@ Some examples::
   cvs://user@pw:cvs.example.org:pserver/cvsroot/module/doc/:r1-1-maint-branch
 
 
+Tags and Subversion URLs
+------------------------
+
+Subversion doesn't distinguish tags specially, since the conceptual
+equivalent is actually the revision number.  To support the (common)
+convention of having a */tags/* tree within the Subversion repository
+that can be used to provide human-friendly names for tags, |zpkg|_
+supports the use of the text */tags/\*/* as a marker for the tag
+position in Subversion URLs.  If the HEAD revision is to be used,
+*/tags/\*/* is replaced by */trunk/* instead.  If a tag was specified
+using the **-r** or **--revision-tag** command line option, that value
+is substituted for the asterisk in the URL to generate the actual URL
+to use.
+
+
 Supporting Other Revision Control Systems
 -----------------------------------------
 
-Currently, CVS is supported generally, and Subversion is supported in
-a somewhat limited fashion.
+Currently, CVS is supported generally, and Subversion is supported for
+schemes other than ``http:`` and ``https:``.
 
 Support for additional systems hinges on creating new URL schemes for
 each system.
 
 Most of the time, it makes more sense to use file: URLs to reference
-files in a checkout on the local system.
+files in a checkout on the local system.  By using this and storing
+the configuration and map files use by |zpkg|_ as part of the resource
+being packaged, everything needed by |zpkg|_ can be kept under
+revision control in a consistent state.
