@@ -30,7 +30,7 @@ class Default(object):
             pythonPath = buildout.getPathToBinary('python')
             buildout.runCommand(
                 '%(pythonPath)s %(mkzopeinstancePath)s '
-                '-d instance -u admin:tuesday -s %(zopeskelPath)s' % locals())
+                '-d instance -u admin:admin -s %(zopeskelPath)s' % locals())
 
         # Link commands into bin directorys.
         buildout.mkdir('bin')
