@@ -388,7 +388,6 @@ class InclusionProcessorTestCase(unittest.TestCase):
         deststat = os.stat(destname)
         self.assertEqual(srcstat.st_mode, deststat.st_mode)
         self.assertEqual(srcstat.st_mtime, deststat.st_mtime)
-        self.assertEqual(srcstat.st_atime, deststat.st_atime)
 
     def test_including_from_cvs_url(self):
         self.start_including_from_cvs_url()
