@@ -1,6 +1,6 @@
 This directory is a sandbox for Zope Corporation projects.  We make projects
-available here for the community that we plan to move to the open source 
-repository but that we are still working with.  As such, the releases are 
+available here for the community that we plan to move to the open source
+repository but that we are still working with.  As such, the releases are
 snapshots from ongoing work in the zope.com repositories.
 
 We invite comments on these projects.
@@ -11,7 +11,7 @@ Current contents:
 
  - catalog: this expects to live in zc.catalog.  It contains the following
    bits:
-   
+
    * an extent catalog.  This is a subclass of the zope.app.catalog that
      has two features.  First, it has a filtered extent.  This allows you to
      control what is added to the catalog as well as a canonical way to query
@@ -51,7 +51,7 @@ Current contents:
   * a stemmer for the zope/index/text index based on Andreas Jung's work on
     the TextIndexNG.  TextIndexNG has many admirable advantages.  We couldn't
     use it for our use cases because we required relevance ranking and the
-    speed that Tim Peters and other ZC employees had put into the 
+    speed that Tim Peters and other ZC employees had put into the
     zope/index/text code.  Until TextIndexNG surpasses zope/index/text (and
     Andreas plans to, I believe :-) ) in those areas, we want to at least take
     advantage of some of his code.  The stemmer in zc.catalog is a pipeline
@@ -61,8 +61,8 @@ Current contents:
   * something that converts the atoms of a text index query to all globs.
     ignore this.  :-)  It was in case we couldn't get the stemming to work
     quickly enough.
-  
-  The plans for this code will be to move as much of it as possible to 
+
+  The plans for this code will be to move as much of it as possible to
   zope/index and zope/app/catalog, as appropriate, after 3.1.
 
 - listcontainer: this expects to live in zc.listcontainer.  It is an odd bird--
@@ -76,14 +76,7 @@ Current contents:
 
   This will eventually either move to zope.app or its own (public) project.
 
-- mechtest: this expects to live in zc.mechtest.  It provides a browser-like
-  interface for doing functional tests.
-
-  * requires ClientForm, ClientCookie, and pullparser from 
-    svn+ssh://svn.zope.com/repos/main/z4i/trunk
-
-
-Upcoming contents: 
+Upcoming contents:
 
 a union field, a combination field, and widgets for both.  Not included now
 because they need to be separated out from some other old code (superceded by
@@ -92,6 +85,8 @@ zope.formlib).
 Past contents:
 
  - page: development on this has moved from the zope.com repositories into
-   zope.org.  It may be checked out from its canonical location in 
+   zope.org.  It may be checked out from its canonical location in
    svn.zope.org/repos/main/zope.formlib/trunk/ .
-   
+
+ - mechtest: this expects to live in zc.mechtest.  It provides a browser-like
+   interface for doing functional tests. (superseded by zope.testbrowser)
