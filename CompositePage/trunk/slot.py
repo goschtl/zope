@@ -43,7 +43,6 @@ import perm_names
 
 _www = os.path.join(os.path.dirname(__file__), "www")
 
-
 target_tag = '''<div class="slot_target" title="Slot: %s [%d]"
 target_path="%s" target_index="%d"></div>'''
 
@@ -154,11 +153,13 @@ class Slot(OrderedFolder):
                 icon_base_url = self.REQUEST['BASEPATH1']
             else:
                 icon_base_url = '/'
+       
+        if editing and allow_add:
+            res.append(self._render_add_target(myid, 0, mypath))
+        
         for index in range(len(items)):
             name, obj = items[index]
 
-            if editing and allow_add:
-                res.append(target_tag % (myid, index, mypath, index))
 
             try:
                 assert ICompositeElement.isImplementedBy(obj), (
@@ -175,10 +176,9 @@ class Slot(OrderedFolder):
                 res.append(self._render_editing(obj, text, icon_base_url))
             else:
                 res.append(view_tag % text)
-
-        if editing and allow_add:
-            index = len(items)
-            res.append(target_tag % (myid, index, mypath, index))
+            
+            if editing and allow_add:
+                res.append(self._render_add_target(myid, index+1, mypath, obj.getId()))
 
         return res
 
@@ -190,6 +190,9 @@ class Slot(OrderedFolder):
         return edit_tag % (path,
                                escape(icon), escape(title), text)
 
+    def _render_add_target(self, slot_id, index, path, obj_id=''):
+         return target_tag % (slot_id, index, path, index)
+         
 Globals.InitializeClass(Slot)
 
 
