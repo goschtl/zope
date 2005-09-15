@@ -1,9 +1,10 @@
 <configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:meta="http://namespaces.zope.org/meta"
            xmlns:browser="http://namespaces.zope.org/browser"
            i18n_domain="fivetest">
 
   <!-- make the zope2.Public permission work -->
-  <redefinePermission from="zope2.Public" to="zope.Public" />
+  <meta:redefinePermission from="zope2.Public" to="zope.Public" />
 
   <!-- browser menu support -->
   <browser:menu
