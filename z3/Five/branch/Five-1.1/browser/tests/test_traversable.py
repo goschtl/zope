@@ -46,11 +46,12 @@ def test_traversable():
 
       >>> configure_zcml = '''
       ... <configure xmlns="http://namespaces.zope.org/zope"
+      ...            xmlns:meta="http://namespaces.zope.org/meta"
       ...            xmlns:browser="http://namespaces.zope.org/browser"
-      ...             xmlns:five="http://namespaces.zope.org/five">
+      ...            xmlns:five="http://namespaces.zope.org/five">
       ... 
       ... <!-- make the zope2.Public permission work -->
-      ... <redefinePermission from="zope2.Public" to="zope.Public" />
+      ... <meta:redefinePermission from="zope2.Public" to="zope.Public" />
       ... 
       ... <five:traversable
       ...     class="Products.Five.testing.fancycontent.FancyContent"

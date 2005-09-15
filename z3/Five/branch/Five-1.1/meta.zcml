@@ -18,12 +18,6 @@
         />
 
     <meta:directive
-        name="redefinePermission"
-        schema="zope.app.security.metadirectives.IRedefinePermission"
-        handler="zope.app.security.metaconfigure.redefinePermission"
-        />
-
-    <meta:directive
         name="interface"
         schema="zope.app.component.metadirectives.IInterfaceDirective"
         handler="zope.app.component.metaconfigure.interface"
@@ -169,6 +163,13 @@
        />
 
   </meta:directives>
+
+  <meta:directive
+      name="redefinePermission"
+      namespace="http://namespaces.zope.org/meta"
+      schema="zope.app.security.metadirectives.IRedefinePermission"
+      handler="zope.app.security.metaconfigure.redefinePermission"
+      />
 
   <!-- load the i18n:registerTranslations directive -->
   <include package="zope.app.i18n" file="meta.zcml" />

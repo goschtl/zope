@@ -10,6 +10,7 @@
   <include package=".form" />
   <include package=".skin" />
 
+  <include package="zope.app.event" />
   <include package="zope.app.traversing" />
 
   <!-- do 'traditional' traversing by default; needed by ZPT -->
