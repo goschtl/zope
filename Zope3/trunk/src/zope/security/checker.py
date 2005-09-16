@@ -95,7 +95,7 @@ def canWrite(obj, name):
     checker = getChecker(obj)
     try:
         checker.check_setattr(obj, name)
-    except Unauthorized:
+    except (Unauthorized, ForbiddenAttribute):
         return False
     # if it is Forbidden (or anything else), let it be raised: it probably
     # indicates a programming or configuration error
@@ -113,7 +113,7 @@ def canAccess(obj, name):
     checker = getChecker(obj)
     try:
         checker.check_getattr(obj, name)
-    except Unauthorized:
+    except (Unauthorized, ForbiddenAttribute):
         return False
     # if it is Forbidden (or anything else), let it be raised: it probably
     # indicates a programming or configuration error
