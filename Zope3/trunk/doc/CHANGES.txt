@@ -62,6 +62,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #450: ignore python level CookieError and report them 
+        to the log file.
+
       - Fixed issue #445: gadflyDA not full implementation
 
       - Fix: Pagelet directive was ignoring the permission. Pagelets which
@@ -71,6 +74,8 @@ Zope Changes
         the permission isn't right.
 
     Much thanks to everyone who contributed to this release:
+
+      Stephan Richter, Roger Ineichen
 
     Note: If you are not listed and contributed, please add yourself. This
           note will be deleted before the release.
