@@ -8,6 +8,25 @@ Zope Changes
 
   Zope 3.1.0
 
+    Changes for Zope 3.1.0 RC 3
+
+      - Fixed several bugs that were considered critical.
+
+        * Ported Stuart Bishop's work in ``pytz`` and ``zope.i18n`` to address
+          broken and misleading timezone code (i.e., one issue was broken and
+          another was misleading).
+
+        * Fixed apidoc to handle extended paths, so that zope packages could
+          be installed in software instances without apidoc losing knowledge
+          of the core zope code.
+
+        * Added custom ``executemany()`` method for cursors created through
+          GadflyAdapter. See http://www.zope.org/Collectors/Zope3-dev/445 for
+          discussion.
+
+      - Updated ZODB to 3.5.1b2.
+
+
     Changes for Zope 3.1.0 RC 2
 
       - Removed an untested missfeature that can cause infinite loops in
