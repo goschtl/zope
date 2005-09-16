@@ -314,10 +314,18 @@ class SubversionLoader:
 
         """
         # do an "svn cat" to get a file, or learn that this is a directory
+        lc_all = os.environ.get("LC_ALL")
         cmd = 'svn cat "%s"' % url
         runlog.report_command(cmd)
-        stdin, stdout, stderr = os.popen3(cmd)
-        data = stdout.read()
+        os.environ["LC_ALL"] = "C"
+        try:
+            stdin, stdout, stderr = os.popen3(cmd)
+            data = stdout.read()
+        finally:
+            if lc_all is None:
+                del os.environ["LC_ALL"]
+            else:
+                os.environ["LC_ALL"] = lc_all
         if not data:
             # maybe url referenced a directory
             err = stderr.readline()
