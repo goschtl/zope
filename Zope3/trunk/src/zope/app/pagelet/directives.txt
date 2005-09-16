@@ -1,0 +1,187 @@
+=========================
+The ``pagelet`` Directive
+=========================
+
+The pagelet directive allows you to quickly register a new paglet without much
+hassle, like it was shown in the `README.txt` file. Here is a sample
+directive::
+
+  >>> from zope.configuration import xmlconfig
+  >>> context = xmlconfig.string('''
+  ... <configure i18n_domain="zope">
+  ...   <include package="zope.app.pagelet" file="meta.zcml" />
+  ... </configure>
+  ... ''')
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
+  ...            package="zope.app.pagelet.tests">
+  ...   <pagelet
+  ...       name="testpagelet"
+  ...       for="*"
+  ...       slot=".test_doc.ITestSlot"
+  ...       template="test_pagelet.pt"
+  ...       permission="zope.Public"
+  ...       />
+  ... </configure>
+  ... ''', context=context)
+
+As you can see, the directive looks very similar to the page directive and you
+are right. The pagelet directive does not permit you to specify a `menu` and
+`title`, since it is not sensible to have a menu item for a pagelet. However,
+it does support two more qualifying attributes, `view` and `slot`. While view
+is nearly never specified (very common default), the `slot` attribute *must*
+be specified. An optional `weight` attribute (not shown above) allows you to
+change the position of a particular pagelet relative to the others. The
+default value is zero.
+
+If we now look into the adapter registry, we will find the pagelet:
+
+  >>> class Content(object):
+  ...     pass
+  >>> content = Content()
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+  >>> from zope.app.publisher.browser import BrowserView
+  >>> view = BrowserView(content, request)
+
+  >>> import zope.interface
+  >>> from zope.app.pagelet.tests.test_doc import ITestSlot
+  >>> class Slot(object):
+  ...     pass
+  >>> slot = Slot()
+  >>> zope.interface.directlyProvides(slot, ITestSlot)
+
+  >>> import zope.component
+  >>> from zope.app.pagelet.interfaces import IPagelet
+  >>> pagelet = zope.component.getMultiAdapter(
+  ...     (content, request, view, slot), IPagelet, name='testpagelet')
+  >>> pagelet()
+  u'<div>testpagelet macro content</div>\n'
+
+Let's now ensure that we can also specify a pagelet class:
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
+  ...            package="zope.app.pagelet.tests">
+  ...   <pagelet
+  ...       name="testpagelet2"
+  ...       for="*"
+  ...       slot=".test_doc.ITestSlot"
+  ...       template="test_pagelet.pt"
+  ...       class=".test_doc.TestPagelet"
+  ...       permission="zope.Public"
+  ...       />
+  ... </configure>
+  ... ''', context=context)
+
+  >>> pagelet = zope.component.getMultiAdapter(
+  ...     (content, request, view, slot), IPagelet, name='testpagelet2')
+  >>> pagelet()
+  u'<div>testpagelet macro content</div>\n'
+
+Okay, so the template-driven cases wrok. But just specifying a class should
+also work:
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
+  ...            package="zope.app.pagelet.tests">
+  ...   <pagelet
+  ...       name="testpagelet3"
+  ...       for="*"
+  ...       slot=".test_doc.ITestSlot"
+  ...       class=".test_doc.TestPagelet2"
+  ...       permission="zope.Public"
+  ...       />
+  ... </configure>
+  ... ''', context=context)
+
+  >>> pagelet = zope.component.getMultiAdapter(
+  ...     (content, request, view, slot), IPagelet, name='testpagelet3')
+  >>> pagelet()
+  u'called'
+
+It should also be possible to specify an alternative attribute of the class to
+be rendered upon calling the pagelet:
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
+  ...            package="zope.app.pagelet.tests">
+  ...   <pagelet
+  ...       name="testpagelet4"
+  ...       for="*"
+  ...       slot=".test_doc.ITestSlot"
+  ...       class=".test_doc.TestPagelet"
+  ...       attribute="doSomething"
+  ...       permission="zope.Public"
+  ...       />
+  ... </configure>
+  ... ''', context=context)
+
+  >>> pagelet = zope.component.getMultiAdapter(
+  ...     (content, request, view, slot), IPagelet, name='testpagelet4')
+  >>> pagelet()
+  u'something'
+
+
+Error Scenarios
+---------------
+
+Neither the class or template have been specified:
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
+  ...            package="zope.app.pagelet.tests">
+  ...   <pagelet
+  ...       name="testpagelet"
+  ...       slot=".test_doc.ITestSlot"
+  ...       permission="zope.Public"
+  ...       />
+  ... </configure>
+  ... ''', context=context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError: File "<string>", line 4.2-8.8
+      ConfigurationError: Must specify a class or template
+
+The specified attribute is not ``__call__``, but also a template has been
+specified:
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
+  ...            package="zope.app.pagelet.tests">
+  ...   <pagelet
+  ...       name="testpagelet"
+  ...       slot=".test_doc.ITestSlot"
+  ...       template="test_pagelet.pt"
+  ...       attribute="faux"
+  ...       permission="zope.Public"
+  ...       />
+  ... </configure>
+  ... ''', context=context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError: File "<string>", line 4.2-10.8
+      ConfigurationError: Attribute and template cannot be used together.
+
+Now, we are not specifying a template, but a class that does not have the
+specified attribute:
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
+  ...            package="zope.app.pagelet.tests">
+  ...   <pagelet
+  ...       name="testpagelet"
+  ...       slot=".test_doc.ITestSlot"
+  ...       class=".test_doc.TestPagelet"
+  ...       attribute="faux"
+  ...       permission="zope.Public"
+  ...       />
+  ... </configure>
+  ... ''', context=context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError: File "<string>", line 4.2-10.8
+    ConfigurationError: The provided class doesn't have the specified attribute

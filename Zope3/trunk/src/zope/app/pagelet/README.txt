@@ -2,8 +2,17 @@
 Pagelets
 ========
 
-Definition
+This package provides a framework to develop componentized Web GUI
+applications. Instead of describing the content of a page using a single
+template or static system of templates and METAL macros, regions (called
+slots) can be defined and are filled dynamically with content based on the
+setup of the application.
+
+The Design
 ----------
+
+UML Diagram
+~~~~~~~~~~~
                       _________
                      |         |
                      | Context |
@@ -38,192 +47,304 @@ Definition
         | Pagelet |               | Portlet |
         |_________|               |_________|
 
-A view instance is associated with one context. A context may be viewed
-with none ore more views.
-
-The distinction between Pagelet and Portlet is still fuzzy. Pagelets and
-portlets are designed to be parts of a view. In that meaning pagelets
-and portlets are equal. They are specialized viewlets. A view is composed
-of viewlets which are related to a specific slot of that view.
-
-But what is the difference between them? The reconstructed interpretation
-of Zope's common sense is the following::
-
-    A pagelet of a view displays the underlying context.
-    A portlet of a view displays data from different contexts.
-
-    Examples: The metadata pagelet displays the metadata of
-    the underlying context. The metadata portlet displays for
-    example the metadata of all its children.
-
-    A calendar pagelet displays the calendar data of a content
-    object that implements an own calendar. A calendar portlet
-    displays global calendar data on different objects that may
-    come from an utility for example.
+Natively, Zope 3 allows us to associate one or more views to a given
+object. Those views are either registered for the provided interfaces of the
+object or the object itself. In a view, usually a template, one can define
+zero or more view slots. Upon rendering time, those view slots are populated
+with the viewlets that have been assigned to the slot.
 
 
-In view of the component architecture this differentiation does not make
-sense anymore, because the adaption mechanism hides such criteria
-(implementation decisions and details) transparently inside an adapter.
+The Difference betwen a Pagelet and a Portlet
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-That is the reason, why we try to provide a new definition::
+Let's start with the properties the two share. Pagelets and portlets are
+designed to be parts of a view; they are specialized viewlets. In the Zope
+world the difference is commonly seen as follows:
 
-    A pagelet of a view operates of the underlying context.
-    A portlet of a view operates of the underlying or a
-    different context.
+  * A pagelet of a view displays the underlying context.
 
-    Examples: The metadata pagelet displays the metadata.
-    Therefore it adapts the underlying context to IMetadata.
-    The metadata portlet displays metadata too, but it adapts
-    a context independently to the underlying view context.
+  * A portlet of a view displays data from different contexts.
 
-    Hence several pagelets of the same type composed inside
-    one view must display always the similar content where
-    several portlets of the same type composed inside a view
-    can present different contents.
+For example, the metadata pagelet displays the metadata of the underlying
+context. A metadata portlet, on the other hand, could display the metadata of
+all of the context's children (assuming the context is a container). In a
+second example, a calendar pagelet displays the calendar data of a content
+object that implements its own calendar, while a calendar portlet displays
+global calendar data on different objects that may come from an utility.
+
+The above definitions need to be altered slightly when talking in terms of
+Zope 3, since the adaption mechanism used for looking up views hides the data
+retrieval from the user. Thus, let's slightly reword the definitions:
+
+  * A pagelet of a view operates on the underlying context.
+
+  * A portlet of a view operates on the underlying or on a different context.
+
+Rephrasing our examples, we have: The metadata pagelet displays the metadata
+of the view context by adapting it to ``IMetadata``. The portlet, on the other
+hand, adapts to a context independent of the underlying view context.
+
+Therefore, a set of pagelets of the same type inside a particular views must
+always display similar content, while a set of portlets of the same type can
+provide a wide range of contents from very different parts of the site.
 
 
 Usage
 -----
-This pagelet implementation supports pagelets and portlets in respect of
-the first definition, but it only supports pagelets in respect of the
-second definition.
 
-In the following text we us pagelet in the sense of the latter.
+This pagelet implementation supports pagelets of the first and second
+definition, but portlets only of the first. In the following text we use the
+term "pagelet" as defined in the second definition.
 
-Pagelets are responsible for a piece of content in a view. They can be
-used to render additionally provided information into a pagetemplate.
+Pagelets are responsible for a piece of content in a view. They can be used to
+provide additionally information about an object that is not fully relevant
+for the view's functionality, but provides useful information and/or links to
+the user. Pagelets are small, view-like components that are identified by the
+following set of interfaces they are registered for:
 
-Pagelets are small, view-like components that can registered to
-skin layers(request)-, contenttype-, view- and slot-interfaces.
+  * Layer: The layer in which the pagelet will be used.
 
-Inside a pagetemplate of a view, the registered pagelets can be called by
-the tal:pagelets command. The return value is a list of macros where each
-macro correspondents to a registered pagelet. The pagelet engine always uses
-the macro from the pagelet which has the same name like the pagelet itself.
-This macros can be used to invoke the pagelets:
+  * Content Type: The interface the context of the the view must provide. This
+    is the ``for`` attribute of the view and pagelet directive.
+
+  * View: The interface the view must provide. By default this is
+    ``IBrowserView`` and the default is commonly not changed.
+
+  * Slot: The instance of the slot in which this pagelet can be placed.
+
+Inside a pagetemplate the pagelets of a particular slot can be retrieved using
+the ``pagelets`` TALES namespace. The return value is a sequence of pagelet
+objects that can simply be called. The pagelets are selected by the four
+above-mentioned parameters and sorted by the weight of the pagelets::
 
   <div class="row">
-    <tal:repeat="pagelets pagelets:zope.app.demo.pagelet.interfaces.IDemoSlot">
-      <tal:block metal:use-macro="pagelets" />
+    <tal:repeat="pagelet pagelets:path.to.Slot">
+      <tal:block replace="structure pagelet" />
     </tal:repeat>
   </div>
 
-Such a macro may process static content or invoke the context- or
-view-namespace for dynamic contents::
 
-  <div class="row">
-    <h4>content:</h4>
-    <span tal:content="view/title">title</span>
-  </div>
+An Example
+----------
 
-The latter is not recommended, because it glues view and pagelet together.
-That means a pagelet depends on a specific view- or context implementation.
+Before we even start demonstrating the template, we need to register the
+`pagelets` TALES namespace:
 
-In respect of modularization we provide an additional tal:pagedata
-command. This command allows to look up adapters providing an interface
-derived form IPageletData::
+  >>> from zope.app.pagetemplate import metaconfigure
+  >>> from zope.app.pagelet import tales
+  >>> metaconfigure.registerType('pagelets', tales.TALESPageletsExpression)
 
-  <div class="row">
-    <tal:define="data pagedata:zope.app.demo.pagelet.interfaces.IDemoPageData">
-      <h4>content:</h4>
-      <span tal:content="data/title">title</span>
-    </tal:define>
-  </div>
+The first task will be to create a slot that we can use in a pagetemplate. A
+slot is simply an interface that simply needs to provide ``IPageletSlot``. The
+interface is then registered as a utility providing the interface.
 
-This is a restricted adapter invocation. It should prevent uncontrolled
-adapter invocation inside pagetemplates, because that would glue view
-layer and programming layer in not appreciable manner.
+  >>> import zope.interface
+  >>> class IDemoSlot(zope.interface.Interface):
+  ...     '''A slot for demonstration purposes.'''
 
-
-Let's show how to use pagelets
-==============================
-
-Imports:
+  >>> from zope.app.pagelet import interfaces
+  >>> zope.interface.directlyProvides(IDemoSlot, interfaces.IPageletSlot)
 
   >>> import zope.component
-  >>> from zope.app import zapi
-  >>> from zope.interface import Interface
-  >>> from zope.security.checker import defineChecker
-  >>> from zope.publisher.browser import TestRequest
-  >>> from zope.publisher.interfaces.browser import IBrowserRequest
-  >>> from zope.component.interfaces import IView
-  >>> from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+  >>> zope.component.provideUtility(IDemoSlot, interfaces.IPageletSlot,
+  ...                               'DemoSlot')
+
+The argument to the slot class is commonly used for documentations. Next we
+can create pagelets for this Now we can create a page template that uses this
+slot object to define a slot in the template:
+
+  >>> import os, tempfile
+  >>> temp_dir = tempfile.mkdtemp()
+
+  >>> zpt_filename = os.path.join(temp_dir, 'template.pt')
+  >>> open(zpt_filename, 'w').write('''
+  ... <html>
+  ...   <body>
+  ...     <h1>Pagelet Demo</h1>
+  ...     <div class="left-column">
+  ...       <div class="column-item"
+  ...            tal:repeat="pagelet pagelets:DemoSlot">
+  ...         <tal:block replace="structure pagelet" />
+  ...       </div>
+  ...     </div>
+  ...   </body>
+  ... </html>
+  ... ''')
+
+Now that the template is created, we register the template as a browser page
+view:
+
+  >>> from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+  >>> DemoPage = SimpleViewClass(zpt_filename, name='demo.html')
+
+  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+  >>> zope.component.provideAdapter(
+  ...     DemoPage,
+  ...     (zope.interface.Interface, IDefaultBrowserLayer),
+  ...     zope.interface.Interface,
+  ...     name='demo.html')
+
+In the following step we will create a couple of pagelets that are used in the
+demo page. Pagelets are really views, except that they additionally adapt
+their view and slot. The first pagelet is a minimalistic implementation:
+
   >>> from zope.app.publisher.browser import BrowserView
-  >>> from zope.app.pagelet.interfaces import IPagelet
-  >>> from zope.app.pagelet.interfaces import IPageletSlot
-  >>> from zope.app.pagelet.interfaces import IMacrosCollector
-  >>> from zope.app.pagelet.tales import TALESPageletsExpression
-  >>> from zope.app.pagelet.collector import MacrosCollector
-  >>> from zope.app.pagelet.tests import TestPagelet
-  >>> from zope.app.pagelet.tests import TestContext
-  >>> from zope.app.pagelet.tests import testChecker
+  >>> class Pagelet1(BrowserView):
+  ...     weight = 0
+  ...
+  ...     def __init__(self, context, request, view, slot):
+  ...         super(Pagelet1, self).__init__(context, request)
+  ...
+  ...     def __call__(self):
+  ...         return u'<h3>Pagelet 1 Content</h3>'
 
-Setup:
+  >>> from zope.security.checker import NamesChecker, defineChecker
+  >>> pageletChecker = NamesChecker(('__call__', 'weight'))
+  >>> defineChecker(Pagelet1, pageletChecker)
 
-  >>> gsm = zapi.getGlobalSiteManager()
+  >>> from zope.interface import Interface, providedBy
+  >>> from zope.app.publisher.interfaces.browser import IBrowserView
+  >>> zope.component.provideAdapter(
+  ...     Pagelet1,
+  ...     (Interface, IDefaultBrowserLayer, IBrowserView, IDemoSlot),
+  ...     interfaces.IPagelet,
+  ...     name='pagelet1')
 
-Register slot interface:
+Let's now register a more typical pagelet. We first create a template:
 
-  >>> from zope.app.component.interface import provideInterface
-  >>> provideInterface('', IPageletSlot, None)
+  >>> plt_filename = os.path.join(temp_dir, 'pagelet2.pt')
+  >>> open(plt_filename, 'w').write('''
+  ...         <div class="box">
+  ...           <tal:block replace="pagelet/title" />
+  ...         </div>
+  ... ''')
 
-Register TALES pagelet expression:
+  >>> class Pagelet2Base(object):
+  ...     def title(self):
+  ...         return 'Pagelet 2 Content'
 
-  >>> from zope.app.pagetemplate.metaconfigure import registerType
-  >>> registerType('pagelets', TALESPageletsExpression)
+As you can see, the pagelet Python class is known as ``pagelet``, while the
+view class is still available as ``view``. Next we build and register the
+pagelet using a special helper function:
 
-Define a pagelet in a ZCML directive pagelet like:
+  >>> from zope.app.pagelet import pagelet
+  >>> Pagelet2 = pagelet.SimplePageletClass(
+  ...     plt_filename, bases=(Pagelet2Base,), name='pagelet2', weight=1)
 
-<zope:pagelet
-  name="demopagelet"
-  layer="zope.publisher.interfaces.browser.IBrowserRequest"
-  slot="zope.app.pagelet.interfaces.IPageletSlot"
-  template="path_to/pagelet.pt"
-  for="*"
-  permission="zope.View"
-  weight="0"
-  />
+  >>> defineChecker(Pagelet2, pageletChecker)
 
-Setup a test pagelet:
+  >>> zope.component.provideAdapter(
+  ...     Pagelet2,
+  ...     (Interface, IDefaultBrowserLayer, IBrowserView, IDemoSlot),
+  ...     interfaces.IPagelet,
+  ...     name='pagelet2')
 
-  >>> name = 'testpagelet'
-  >>> pagelet_factory = TestPagelet
-  >>> defineChecker(pagelet_factory, testChecker)
-  >>> gsm.provideAdapter(
-  ...        (Interface, IBrowserRequest, IView, IPageletSlot)
-  ...        , IPagelet, name, pagelet_factory)
+Now all the setup is completed. Let's create a content object:
 
-Register pagelet collector as a adapter:
+  >>> class Content(object):
+  ...     zope.interface.implements(zope.interface.Interface)
 
-  >>> collector_factory = MacrosCollector
-  >>> gsm.provideAdapter(
-  ...        (Interface, IBrowserRequest, IView, IPageletSlot)
-  ...        , IMacrosCollector, '', collector_factory)
+  >>> content = Content()
 
-Setup a simply browser view with a 'index_pagelets.pt' template:
+and finally, we look up the view and render it:
 
-  >>> ob = TestContext()
+  >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
-  >>> view = BrowserView(ob, request)
 
-Setup a view page template called 'index':
+  >>> view = zope.component.getMultiAdapter((content, request),
+  ...                                       name='demo.html')
+  >>> print view().strip()
+  <html>
+    <body>
+      <h1>Pagelet Demo</h1>
+      <div class="left-column">
+        <div class="column-item">
+          <h3>Pagelet 1 Content</h3>
+        </div>
+        <div class="column-item">
+  <BLANKLINE>
+          <div class="box">
+            Pagelet 2 Content
+          </div>
+  <BLANKLINE>
+        </div>
+      </div>
+    </body>
+  </html>
 
-  >>> from zope.app.pagelet.tests import testfiles
-  >>> import os.path
-  >>> path = os.path.dirname(testfiles.__file__)
-  >>> index = ViewPageTemplateFile('index_pagelets.pt', path)
+Note that if we turn the weight around,
 
-Call the 'index' (view) on the browser view instance the sample pagelet
-'index_pagelets.pt' calls pagelets registered for the slot
-'zope.app.pagelet.interfaces.IPageletSlot'. We registred the
-'test_pagelet' for this slot in the TestPagelet class. For more info
-take a look at the index_pagelets.pt' file in the tests/testfiles folder:
+  >>> Pagelet1.weight = 1
+  >>> Pagelet2._weight = 0
 
-  >>> html = index(view, request)
+the order of the left column in the page template shoudl change:
 
-Test if the pagelet content is in the html output:
+  >>> print view().strip()
+  <html>
+    <body>
+      <h1>Pagelet Demo</h1>
+      <div class="left-column">
+        <div class="column-item">
+  <BLANKLINE>
+          <div class="box">
+            Pagelet 2 Content
+          </div>
+  <BLANKLINE>
+        </div>
+        <div class="column-item">
+          <h3>Pagelet 1 Content</h3>
+        </div>
+      </div>
+    </body>
+  </html>
 
-  >>> import string
-  >>> string.count(html, 'testpagelet macro content')
-  1
+
+Looking up a pagelet by name
+----------------------------
+
+In some cases you want to be able to look up a particular pagelet for a slot,
+given a context and a view. For this use case, you can simply use a second
+TALES namespace called ``pagelet`` that selects the pagelet using the
+expression ``<path to slot>/<pagelet name>``.
+
+  >>> metaconfigure.registerType('pagelet', tales.TALESPageletExpression)
+
+Since everything else is already setup, we can simply register a new view:
+
+  >>> zpt_filename2 = os.path.join(temp_dir, 'template2.pt')
+  >>> open(zpt_filename2, 'w').write('''
+  ... <html>
+  ...   <body>
+  ...     <h1>Pagelet Demo</h1>
+  ...     <div class="left-column">
+  ...       <div class="column-item">
+  ...         <tal:block replace="structure pagelet:DemoSlot/pagelet1" />
+  ...       </div>
+  ...     </div>
+  ...   </body>
+  ... </html>
+  ... ''')
+
+  >>> DemoPage2 = SimpleViewClass(zpt_filename2, name='demo2.html')
+  >>> zope.component.provideAdapter(
+  ...     DemoPage2,
+  ...     (zope.interface.Interface, IDefaultBrowserLayer),
+  ...     zope.interface.Interface,
+  ...     name='demo2.html')
+
+  >>> view = zope.component.getMultiAdapter((content, request),
+  ...                                       name='demo2.html')
+  >>> print view().strip()
+  <html>
+    <body>
+      <h1>Pagelet Demo</h1>
+      <div class="left-column">
+        <div class="column-item">
+          <h3>Pagelet 1 Content</h3>
+        </div>
+      </div>
+    </body>
+  </html>
+
+Note that this namespace returns the rendered pagelet and not the pagelet
+view, like the ``pagelets`` TALES namespace.

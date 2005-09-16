@@ -18,25 +18,42 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import unittest
+import zope.interface
+from zope.testing import doctest
+from zope.testing.doctestunit import DocTestSuite, DocFileSuite
+from zope.app.testing import setup
 
-import zope.component
+from zope.app.pagelet import interfaces
 
-from zope.security.checker import defineChecker
 
-from zope.testing.doctestunit import DocTestSuite
-from zope.testing.doctestunit import DocFileSuite
+class TestPagelet(object):
 
-from zope.app.testing import placelesssetup, ztapi, setup
+    def doSomething(self):
+        return u'something'
 
+
+class TestPagelet2(object):
+
+    def __call__(self):
+        return u'called'
+
+
+class ITestSlot(zope.interface.Interface):
+    '''A slot for testing purposes.'''
+zope.interface.directlyProvides(ITestSlot, interfaces.IPageletSlot)
 
 
 def test_suite():
     return unittest.TestSuite((
         DocTestSuite('zope.app.pagelet.tales'),
-        DocTestSuite('zope.app.pagelet.collector'),
         DocFileSuite('../README.txt',
                      setUp=setup.placefulSetUp,
                      tearDown=setup.placefulTearDown(),
+                     ),
+        DocFileSuite('../directives.txt',
+                     setUp=setup.placefulSetUp,
+                     tearDown=setup.placefulTearDown(),
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         ))
 

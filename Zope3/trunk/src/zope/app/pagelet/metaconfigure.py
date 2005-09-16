@@ -18,136 +18,106 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import os
-import sys
-
-from zope.interface import Interface
-from zope.interface import implements
-
-from zope.security.checker import defineChecker
-from zope.security.checker import CheckerPublic, Checker
 
 from zope.configuration.exceptions import ConfigurationError
-
+from zope.interface import Interface, classImplements
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.security.checker import defineChecker, Checker
 
-from zope.app import zapi
-from zope.app.component.metaconfigure import handler
 from zope.app.component.interface import provideInterface
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.component.interfaces import IView
+from zope.app.component import metaconfigure
+from zope.app.publisher.browser import viewmeta
+from zope.app.publisher.interfaces.browser import IBrowserView
 
-from zope.app.pagelet.interfaces import IPageletSlot
-from zope.app.pagelet.interfaces import IPagelet
-
-
-
-def checkInterface(iface, baseIface):
-    if not iface.isOrExtends(baseIface):
-        raise ConfigurationError(
-            "slot has to implement pagelet.interfaces.IPageletSlot")
+from zope.app.pagelet.interfaces import IPageletSlot, IPagelet
+from zope.app.pagelet.pagelet import SimplePageletClass
+from zope.app.pagelet.pagelet import SimpleAttributePagelet
 
 
-def PageletClass(template, weight=0, bases=()):
-
-    frame = sys._getframe(1).f_globals
-    
-    class_ = type("PageletClass from %s" % template, bases,
-                  {'_template':ViewPageTemplateFile(template, frame)
-                  ,'_weight':weight})
-
-    return class_
-
-
-
-class simplepagelet(object):
-    """Pagelet adapter class used in meta directive as a mixin class."""
-
-    implements(IPagelet)
-
-    _weight = 0
-
-    def __init__(self, context, request, view, ignored):
-        self.context = context
-        self.request = request
-        self.view = view
-        self.__parent__ = context
-
-    def __getitem__(self, name):
-        """Get the zpt code defined in 'define-macro' by name."""
-        return self._template.macros[name]
-
-    def _getWeight (self):
-        """The weight of the pagelet."""
-        return self._weight
-
-    weight = property(_getWeight)
-
-
-
-def pagelet(_context, name, slot, permission, for_=Interface,
-            layer=IDefaultBrowserLayer, view=IView, weight=0, template=None):
+def pagelet(_context, name, permission,
+            slot, for_=Interface, layer=IDefaultBrowserLayer, view=IBrowserView,
+            class_=None, template=None, attribute='__call__', weight=0,
+            allowed_interface=None, allowed_attributes=None):
 
     required = {}
 
-    # set permission checker
-    permission = _handle_permission(permission)
+    # Get the permission; mainly to correctly handle CheckerPublic.
+    permission = viewmeta._handle_permission(_context, permission)
 
-    if not name:
-        raise ConfigurationError("Must specify name.")
+    # Either the class or template must be specified.
+    if not (class_ or template):
+        raise ConfigurationError("Must specify a class or template")
 
-    if not slot:
-        raise ConfigurationError("Must specify a slot interface.")
+    # Make sure that all the non-default attribute specifications are correct.
+    if attribute != '__call__':
+        if template:
+            raise ConfigurationError(
+                "Attribute and template cannot be used together.")
 
-    if not template:
-        raise ConfigurationError("Must specify a template.")
+        # Note: The previous logic forbids this condition to evere occur.
+        if not class_:
+            raise ConfigurationError(
+                "A class must be provided if attribute is used")
 
-    template = os.path.abspath(str(_context.path(template)))
-    if not os.path.isfile(template):
-        raise ConfigurationError("No such file", template)
+    # Make sure that the template exists and that all low-level API methods
+    # have the right permission.
+    if template:
+        template = os.path.abspath(str(_context.path(template)))
+        if not os.path.isfile(template):
+            raise ConfigurationError("No such file", template)
+        required['__getitem__'] = permission
 
-    new_class = PageletClass(template, weight, bases=(simplepagelet, ))
+    # Make sure the has the right form, if specified.
+    if class_:
+        if attribute != '__call__':
+            if not hasattr(class_, attribute):
+                raise ConfigurationError(
+                    "The provided class doesn't have the specified attribute "
+                    )
+        if template:
+            # Create a new class for the pagelet template and class.
+            new_class = SimplePageletClass(
+                template, bases=(class_, ), weight=weight)
+        else:
+            if not hasattr(class_, 'browserDefault'):
+                cdict = {
+                    'browserDefault':
+                    lambda self, request: (getattr(self, attribute), ())
+                    }
+            else:
+                cdict = {}
 
-    # set permissions
-    for n in ('__getitem__', 'weight'):
-        required[n] = permission
+            cdict['__name__'] = name
+            cdict['__page_attribute__'] = attribute
+            new_class = type(class_.__name__,
+                             (class_, SimpleAttributePagelet), cdict)
 
-    #register interface
-    _handle_iface(_context, for_)
-    _handle_iface(_context, view)
-    _handle_iface(_context, slot)
+        if hasattr(class_, '__implements__'):
+            classImplements(new_class, IBrowserPublisher)
 
-    # check slot interface
-    _handle_check_interface(_context, slot, IPageletSlot)
+    else:
+        # Create a new class for the pagelet template alone.
+        new_class = SimplePageletClass(template, name=name, weight=weight)
 
-    # define checker
+    for attr_name in (attribute, 'browserDefault', '__call__',
+                      'publishTraverse', 'weight'):
+        required[attr_name] = permission
+
+    viewmeta._handle_allowed_interface(
+        _context, allowed_interface, permission, required)
+    viewmeta._handle_allowed_attributes(
+        _context, allowed_interface, permission, required)
+
+    viewmeta._handle_for(_context, for_)
+    metaconfigure.interface(_context, view)
+    metaconfigure.interface(_context, slot, IPageletSlot)
+
     defineChecker(new_class, Checker(required))
 
     # register pagelet
     _context.action(
         discriminator = ('pagelet', for_, layer, view, slot, name),
-        callable = handler,
+        callable = metaconfigure.handler,
         args = ('provideAdapter',
-                (for_, layer, view, slot), IPagelet, name, new_class
-                , _context.info),)
-
-
-def _handle_iface(_context, iface):
-    if iface is not None:
-        _context.action(
-            discriminator = None,
-            callable = provideInterface,
-            args = ('', iface)
-            )
-
-def _handle_check_interface(_context, iface, baseIface):
-    if iface is not None and baseIface is not None:
-        _context.action(
-            discriminator = None,
-            callable = checkInterface,
-            args = (iface, baseIface)
-            )
-
-def _handle_permission(permission):
-    if permission == 'zope.Public':
-        permission = CheckerPublic
-    return permission
+                (for_, layer, view, slot), IPagelet, name, new_class,
+                 _context.info),)

@@ -17,70 +17,34 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.interface import Interface
-
-from zope.schema import TextLine
+from zope.configuration.fields import GlobalInterface
 from zope.schema import Int
 
-from zope.app.security.fields import Permission
-from zope.app.component.fields import LayerField
-
-from zope.configuration.fields import GlobalObject, GlobalInterface
+from zope.app.publisher.browser import metadirectives
 
 
+class IPageletDirective(metadirectives.IPagesDirective,
+                        metadirectives.IViewPageSubdirective):
+    """A directive to register a new pagelet.
 
-class IPageletDirective(Interface):
-    """TODO: write documentation."""
-
-    name = TextLine(
-        title=u"The name of the pagelet.",
-        description=u"The name of the pagelet has to be unique",
-        required=True
-        )
+    Pagelet registrations are very similar to page registrations, except that
+    they are additionally qualified by the slot and view they are used for. An
+    additional `weight` attribute is specified that is intended to coarsly
+    control the order of the pagelets.
+    """
 
     slot = GlobalInterface(
         title=u"slot",
         description=u"The slot interface this pagelet is for.",
-        required=True
-        )
-
-    permission = Permission(
-        title=u"Permission",
-        description=u"The permission needed to use the pagelet.",
-        required=True
-        )
-
-    for_ = GlobalInterface(
-        title=u"for",
-        description=u"The interface this pagelet is for (default IInterface)",
-        required=False
-        )
-
-    layer = LayerField(
-        title=u"The layer the pagelet should be found in",
-        description=u"""
-            For information on layers, see the documentation for the skin
-            directive. Defaults to "default".""",
-        required=False
-        )
+        required=True)
 
     view = GlobalInterface(
         title=u"view",
-        description=u"""
-            The interface of the view this pagelet is for. (default IView)""",
-        required=False
-        )
+        description=u"The interface of the view this pagelet is for. "
+                    u"(default IBrowserView)""",
+        required=False)
 
     weight = Int(
         title=u"weight",
         description=u"Integer key for sorting pagelets in the same slot.",
-        required=False
-        )
-
-    template = TextLine(
-        title=u"Page template.",
-        description=u"""
-            Refers to a file containing a page template (must end in
-            extension '.pt').""",
-        required=False
-        )
+        required=False)
