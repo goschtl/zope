@@ -240,7 +240,7 @@ def adapter_hook(interface, object, name='', default=None):
         return None
     return sitemanager.queryAdapter(object, interface, name, default)
 
-# Make the component architecture's adapter hook hookable 
+# Make the component architecture's adapter hook hookable
 adapter_hook = hookable(adapter_hook)
 
 import zope.interface.interface
@@ -270,7 +270,7 @@ def getAllUtilitiesRegisteredFor(interface, context=None):
 # Factories
 
 def createObject(__factory_name, *args, **kwargs):
-    # BBB: Goes away in 3.3 
+    # BBB: Goes away in 3.3
     if not isinstance(__factory_name, basestring):
         import warnings
         warnings.warn(
@@ -282,7 +282,7 @@ def createObject(__factory_name, *args, **kwargs):
         __factory_name, args = args[0], args[1:]
     else:
         context = kwargs.pop('context', None)
-    
+
     return getUtility(IFactory, __factory_name, context)(*args, **kwargs)
 
 def getFactoryInterfaces(name, context=None):
@@ -328,7 +328,7 @@ def provideAdapter(factory, adapts=None, provides=None, name=''):
             adapts = factory.__component_adapts__
         except AttributeError:
             raise TypeError("Missing 'adapts' argument")
-            
+
     getGlobalSiteManager().provideAdapter(adapts, provides, name, factory)
 
 def provideSubscriptionAdapter(factory, adapts=None, provides=None):
@@ -344,7 +344,7 @@ def provideSubscriptionAdapter(factory, adapts=None, provides=None):
             adapts = factory.__component_adapts__
         except AttributeError:
             raise TypeError("Missing 'adapts' argument")
-            
+
     getGlobalSiteManager().subscribe(adapts, provides, factory)
 
 def provideHandler(factory, adapts=None):
@@ -354,5 +354,5 @@ def provideHandler(factory, adapts=None):
             adapts = factory.__component_adapts__
         except AttributeError:
             raise TypeError("Missing 'adapts' argument")
-            
+
     getGlobalSiteManager().subscribe(adapts, None, factory)

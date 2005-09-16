@@ -33,7 +33,7 @@ class IGlobalSiteManager(ISiteManager, IRegistry):
 
         :Parameters:
           - `required`: a sequence of specifications for objects to be
-             adapted. 
+             adapted.
           - `provided`: The interface provided by the adapter
           - `name`: The adapter name
           - `factory`: The object used to compute the adapter
@@ -45,7 +45,7 @@ class IGlobalSiteManager(ISiteManager, IRegistry):
 
         :Parameters:
           - `required`: a sequence of specifications for objects to be
-             adapted. 
+             adapted.
           - `provided`: The interface provided by the adapter
           - `name`: The adapter name
           - `factory`: The object used to compute the subscriber
@@ -73,7 +73,7 @@ class SiteManager(object):
         """See ISiteManager interface"""
         return self.adapters.queryMultiAdapter(objects, interface, name,
                                                default)
-    
+
     def getAdapters(self, objects, provided):
         """See ISiteManager interface"""
         result = []
@@ -87,7 +87,7 @@ class SiteManager(object):
     def subscribers(self, required, provided):
         """See ISiteManager interface"""
         return self.adapters.subscribers(required, provided)
-    
+
     def queryUtility(self, interface, name='', default=None):
         """See ISiteManager interface"""
 
@@ -272,7 +272,7 @@ class GlobalAdapterRegistry(AdapterRegistry):
        self.__parent__ = parent
        self.__name__ = name
        super(GlobalAdapterRegistry, self).__init__()
-    
+
     def __reduce__(self):
         return GAR, (self.__parent__, self.__name__)
 
