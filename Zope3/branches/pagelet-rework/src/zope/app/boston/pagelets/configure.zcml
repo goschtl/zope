@@ -14,6 +14,9 @@
 
   <!-- IToolBar slot pagelets -->
   <include file="toolbar.zcml" />
+<!--
+  <include file="zmiactions.zcml" />
+-->
   <include file="helpaction.zcml" />
 
   <!-- ILeft slot pagelets -->

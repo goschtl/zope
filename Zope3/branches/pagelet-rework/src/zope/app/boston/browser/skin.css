@@ -99,12 +99,6 @@ h6 {
     font-size: 80%;
 }
 
-ul { 
-    line-height: 1.5em;
-    /* list-style-image: url("bullet.gif"); */
-    margin-left: 2em;
-    padding:0;
-}
 
 ol {
     line-height: 1.5em;
@@ -112,7 +106,7 @@ ol {
     padding:0;
 }
 
-ul a, ol a {
+ol a {
     text-decoration: underline;
 }
 
@@ -229,12 +223,6 @@ table {
 
 #layout tr.menu {
     width: 100%;
-}
-
-#layout tr.menu td {
-    height: 24px;
-    background-color: #EBE9DF;
-    border: 1px solid #C1BBAC;
 }
 
 #layout tr.head{

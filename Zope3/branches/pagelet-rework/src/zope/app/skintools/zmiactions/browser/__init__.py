@@ -11,14 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Skintools toolbar
+"""Skintools zmiactions views
 
 $Id$
 """
-__docformat__ = "reStructuredText"
-
-from zope.app.pagelet.interfaces import IPageletSlot
-
-
-class IToolBarLayout(IPageletSlot):
-    """This slot contains all pagelet for the toolbar layout."""

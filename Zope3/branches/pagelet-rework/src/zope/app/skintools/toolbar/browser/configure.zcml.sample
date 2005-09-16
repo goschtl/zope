@@ -6,9 +6,58 @@
   <!-- This is only a sample configure.zcml file
        See README.txt in zope.app.skintools for more 
        information about the skintools concept.
-       --> 
+       -->
+  <resource 
+      name="divmenu.js"
+      file="divmenu.js"
+      layer="the layer of your skin"
+      />
 
-  <!-- pagelet defining the box data -->
+  <resource 
+      name="toolbar.css"
+      file="toolbar.css"
+      layer="the layer of your skin"
+      />
+ 
+  <resource
+      name="toolbarGrip.gif"
+      file="toolbarGrip.gif"
+      layer="the layer of your skin"
+      />
+ 
+  <resource
+      name="toolbarArrow.gif"
+      file="toolbarArrow.gif"
+      layer="the layer of your skin"
+      />
+ 
+  <resource
+      name="toolbarArrowOver.gif"
+      file="toolbarArrowOver.gif"
+      layer="the layer of your skin"
+      />
+
+  <!-- pagelet defining javascript -->
+  <pagelet
+      name="toolbar-js"
+      for="*"
+      slot="the slot used in your skin" 
+      permission="zope.Public"
+      template="toolbar.pt"
+      layer="the layer of your skin"
+      />
+
+  <!-- pagelet defining css -->
+  <pagelet
+      name="toolbar-css"
+      for="*"
+      slot="the slot used in your skin"
+      permission="zope.Public"
+      template="toolbar.pt"
+      layer="the layer of your skin"
+      />
+
+  <!-- pagelet defining the toolbar -->
   <pagelet
       name="toolbar"
       for="*"
@@ -19,13 +68,23 @@
       weight="2"
       />
 
-  <!-- pagelet defining the layout -->
+  <!-- pagelet defining nested layout -->
   <pagelet
-      name="toolbar_layout"
+      name="toolbar-button"
       for="*"
-      slot="zope.app.skintools.toolbar.IToolBarLayout"
-      permission="zope.ManageContent"
-      template="toolbar_layout.pt"
+      slot="the slot used in your skin"
+      permission="zope.View"
+      template="toolbar.pt"
+      layer="the layer of your skin"
+      />
+
+  <pagelet
+      name="toolbar-item"
+      for="*"
+      slot="the slot used in your skin"
+      permission="zope.View"
+      template="toolbar.pt"
+      layer="the layer of your skin"
       />
 
 </configure>
