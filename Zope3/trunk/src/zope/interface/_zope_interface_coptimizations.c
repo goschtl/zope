@@ -302,7 +302,8 @@ Spec_providedBy(PyObject *self, PyObject *ob)
 
 
 static char Spec_implementedBy__doc__[] = 
-"Test whether the specification is implemented by instances of a class"
+"Test whether the specification is implemented by a class or factory.\n"
+"Raise TypeError if argument is neither a class nor a callable."
 ;
 
 static PyObject *
@@ -490,7 +491,8 @@ static PyTypeObject CPBType = {
 
 static struct PyMethodDef m_methods[] = {
   {"implementedBy", (PyCFunction)implementedBy, METH_O,
-   "Interfaces implemented by instances of a class"},
+   "Interfaces implemented by a class or factory.\n"
+   "Raises TypeError if argument is neither a class nor a callable."},
   {"getObjectSpecification", (PyCFunction)getObjectSpecification, METH_O,
    "Get an object's interfaces (internal api)"},
   {"providedBy", (PyCFunction)providedBy, METH_O,
@@ -550,4 +552,3 @@ init_zope_interface_coptimizations(void)
   if (PyModule_AddObject(m, "ClassProvidesBase", (PyObject *)&CPBType) < 0)
     return;
 }
-
