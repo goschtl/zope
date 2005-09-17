@@ -116,7 +116,8 @@ class SpecificationBasePy(object):
         return self in spec._implied
 
     def implementedBy(self, cls):
-        """Do instances of the given class implement the interface?"""
+        """Test whether the specification is implemented by a class or factory.
+        Raise TypeError if argument is neither a class nor a callable."""
         spec = implementedBy(cls)
         return self in spec._implied
 
