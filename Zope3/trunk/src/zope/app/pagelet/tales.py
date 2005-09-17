@@ -42,7 +42,7 @@ def getSlot(str):
     slot = zapi.queryUtility(IPageletSlot, name=str)
     if slot is None:
         raise PageletSlotLookupError(
-            _('Pagelet slot interface not found.'), str)
+            'Pagelet slot interface not found.', str)
 
     # Create a dummy slot instance for adapter lookup. This is not ultra
     # clean but puts the burden of filtering by slot on the adapter
