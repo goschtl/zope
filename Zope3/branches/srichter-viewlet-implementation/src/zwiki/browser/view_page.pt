@@ -1,0 +1,32 @@
+<html metal:use-macro="views/standard_macros/view"
+    i18n:domain="zwiki">
+  <head>
+    <style metal:fill-slot="style_slot">
+    </style>
+  </head>
+  <body>
+    <div metal:fill-slot="body">
+
+      <div tal:replace="structure view/render">
+        This is the rendered Wiki
+      </div>
+
+      <div tal:define="comments view/comments"
+           tal:condition="comments">
+
+        <hr size="1" width="100%" noshade="" />
+
+        <div tal:repeat="info comments" style="padding-bottom: 1em;">
+          <h4 tal:content="info/title">Title</h4>
+          <i i18n:translate="">
+            Posted by <span tal:replace="info/author" i18n:name="user" />
+            on <span tal:replace="info/modified" i18n:name="date" />
+          </i>
+          <div tal:replace="structure info/text" />
+        </div>
+
+      </div>
+
+    </div>
+  </body>
+</html>
