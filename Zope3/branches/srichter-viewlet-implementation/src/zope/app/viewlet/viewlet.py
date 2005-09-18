@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pagelet implementation
+"""Viewlet implementation
 
 $Id: metaconfigure.py 38437 2005-09-10 01:59:07Z rogerineichen $
 """
@@ -23,40 +23,40 @@ from zope.app.pagetemplate.simpleviewclass import simple
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
 
-from zope.app.pagelet import interfaces
+from zope.app.viewlet import interfaces
 
 
-class PageletPageTemplateFile(ViewPageTemplateFile):
+class ViewletPageTemplateFile(ViewPageTemplateFile):
 
     def pt_getContext(self, instance, request, **_kw):
-        namespace = super(PageletPageTemplateFile, self).pt_getContext(
+        namespace = super(ViewletPageTemplateFile, self).pt_getContext(
             instance, request, **_kw)
         namespace['view'] = instance.view
-        namespace['pagelet'] = instance
+        namespace['viewlet'] = instance
         return namespace
 
 
-class SimplePagelet(BrowserView):
-    """Pagelet adapter class used in meta directive as a mixin class."""
+class SimpleViewlet(BrowserView):
+    """Viewlet adapter class used in meta directive as a mixin class."""
 
-    zope.interface.implements(interfaces.IPagelet)
+    zope.interface.implements(interfaces.IViewlet)
 
     _weight = 0
 
-    def __init__(self, context, request, view, slot):
-        super(SimplePagelet, self).__init__(context, request)
+    def __init__(self, context, request, view, region):
+        super(SimpleViewlet, self).__init__(context, request)
         self.view = view
-        self.slot = slot
+        self.region = region
 
     def _getWeight (self):
-        """The weight of the pagelet."""
+        """The weight of the viewlet."""
         return self._weight
 
-    # See zope.app.pagelet.interfaces.IPagelet
+    # See zope.app.viewlet.interfaces.IViewlet
     weight = property(_getWeight)
 
 
-class SimpleAttributePagelet(SimplePagelet):
+class SimpleAttributeViewlet(SimpleViewlet):
 
     def publishTraverse(self, request, name):
         raise NotFound(self, name, request)
@@ -73,17 +73,17 @@ class SimpleAttributePagelet(SimplePagelet):
         return meth(*args, **kw)
 
 
-def SimplePageletClass(template, offering=None, bases=(), name=u'', weight=0):
+def SimpleViewletClass(template, offering=None, bases=(), name=u'', weight=0):
     # Get the current frame
     if offering is None:
         offering = sys._getframe(1).f_globals
 
     # Create the base class hierarchy
-    bases += (SimplePagelet, simple)
+    bases += (SimpleViewlet, simple)
 
     # Generate a derived view class.
-    class_ = type("SimplePageletClass from %s" % template, bases,
-                  {'index' : PageletPageTemplateFile(template, offering),
+    class_ = type("SimpleViewletClass from %s" % template, bases,
+                  {'index' : ViewletPageTemplateFile(template, offering),
                    '_weight' : weight,
                    '__name__' : name})
 

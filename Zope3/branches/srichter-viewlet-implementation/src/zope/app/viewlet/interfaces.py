@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pagelet interfaces
+"""Viewlet interfaces
 
 $Id$
 """
@@ -29,26 +29,26 @@ from zope.app.location import ILocation
 from zope.app.publisher.interfaces.browser import IBrowserView
 
 
-class PageletSlotLookupError(ComponentLookupError):
-    """Pagelet slot object not found."""
+class ViewletRegionLookupError(ComponentLookupError):
+    """Viewlet region object not found."""
 
 
-class IPageletSlot(IInterface):
-    """Marker interface for pagelet slots.
+class IViewletRegion(IInterface):
+    """Marker interface for viewlet regions.
 
-    The pagelet slot is used as a part ot the key for to register and
-    collect pagelets.
+    The viewlet region is used as a part ot the key for to register and
+    collect viewlets.
     """
 
 
-class IPagelet(IBrowserView):
-    """Interface for custom pagelet adapters.
+class IViewlet(IBrowserView):
+    """Interface for custom viewlet adapters.
 
-    Pagelets can be used in a page template as a piece of content rendered
-    with it's own python view class. Yes with pagelets you can use more then
-    one views in a pageltemplate. This let's pagelets act as portlets. The
-    pagelet view can support content independent information where you can
-    access in every page template on which the pagelet is registered.
+    Viewlets can be used in a page template as a piece of content rendered
+    with it's own python view class. Yes with viewlets you can use more then
+    one views in a pageltemplate. This let's viewlets act as portlets. The
+    viewlet view can support content independent information where you can
+    access in every page template on which the viewlet is registered.
 
     The meta directive set the 'weight' attribute to the class attribute
     '_weight'. If you whould like to use the settings from the meta directive
@@ -58,43 +58,43 @@ class IPagelet(IBrowserView):
     class attribute '_template'.
     """
 
-    view = Attribute('The view the pagelet is used in.')
+    view = Attribute('The view the viewlet is used in.')
 
-    slot = Attribute('The slot in which the pagelet is placed.')
+    region = Attribute('The region in which the viewlet is placed.')
 
     weight = Int(
         title=_(u'weight'),
         description=_(u"""
-            Key for sorting pagelets if the pagelet collector is supporting
+            Key for sorting viewlets if the viewlet collector is supporting
             this sort mechanism."""),
         required=False,
         default=0)
 
 
-class ITALESPageletsExpression(ITALESExpression):
-    """TAL namespace for getting a list of pagelets.
+class ITALESViewletsExpression(ITALESExpression):
+    """TAL namespace for getting a list of viewlets.
 
-    To call pagelets in a view use the the following syntax in a page
+    To call viewlets in a view use the the following syntax in a page
     template::
 
-      <tal:block repeat="pagelet pagelets:path.to.my.ISlot">
-        <tal:block replace="structure pagelet" />
+      <tal:block repeat="viewlet viewlets:path.to.my.IRegion">
+        <tal:block replace="structure viewlet" />
       </tal:block>
 
-    where ``path.to.my.ISlot`` is a slot object that provides
-    ``pagelet.interfaces.IPageletSlot``.
+    where ``path.to.my.IRegion`` is a region object that provides
+    ``viewlet.interfaces.IViewletRegion``.
     """
 
 
-class ITALESPageletExpression(ITALESExpression):
-    """TAL namespace for getting a single pagelet.
+class ITALESViewletExpression(ITALESExpression):
+    """TAL namespace for getting a single viewlet.
 
-    To call a named pagelet in a view use the the following syntax in a page
+    To call a named viewlet in a view use the the following syntax in a page
     template::
 
-      <tal:block replace="structure pagelet:path.to.my.ISlot/name" />
+      <tal:block replace="structure viewlet:path.to.my.IRegion/name" />
 
-    where ``path.to.my.ISlot`` is a slot object that provides
-    ``pagelet.interfaces.IPageletSlot`` and ``name`` is the name of the page
+    where ``path.to.my.IRegion`` is a region object that provides
+    ``viewlet.interfaces.IViewletRegion`` and ``name`` is the name of the page
     template .
     """

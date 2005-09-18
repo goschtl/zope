@@ -4,9 +4,9 @@
   <meta:directives namespace="http://namespaces.zope.org/browser">
 
     <meta:directive
-        name="pagelet"
-        schema=".metadirectives.IPageletDirective"
-        handler=".metaconfigure.pagelet"
+        name="viewlet"
+        schema=".metadirectives.IViewletDirective"
+        handler=".metaconfigure.viewlet"
         />
 
   </meta:directives>

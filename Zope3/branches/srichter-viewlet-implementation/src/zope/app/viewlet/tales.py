@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pagelet tales expression registrations
+"""Viewlet tales expression registrations
 
 $Id$
 """
@@ -27,61 +27,61 @@ from zope.tales.expressions import StringExpr
 
 from zope.app import zapi
 
-from zope.app.pagelet.interfaces import ITALESPageletExpression
-from zope.app.pagelet.interfaces import ITALESPageletsExpression
-from zope.app.pagelet.interfaces import IPageletSlot
-from zope.app.pagelet.interfaces import IPagelet
-from zope.app.pagelet.interfaces import PageletSlotLookupError
+from zope.app.viewlet.interfaces import ITALESViewletExpression
+from zope.app.viewlet.interfaces import ITALESViewletsExpression
+from zope.app.viewlet.interfaces import IViewletRegion
+from zope.app.viewlet.interfaces import IViewlet
+from zope.app.viewlet.interfaces import ViewletRegionLookupError
 
 
-def getSlot(str):
-    """Get a slot from the string.
+def getRegion(str):
+    """Get a region from the string.
 
-    This function will create the dummy slot implementation as well.
+    This function will create the dummy region implementation as well.
     """
-    slot = zapi.queryUtility(IPageletSlot, name=str)
-    if slot is None:
-        raise PageletSlotLookupError(
-            'Pagelet slot interface not found.', str)
+    region = zapi.queryUtility(IViewletRegion, name=str)
+    if region is None:
+        raise ViewletRegionLookupError(
+            'Viewlet region interface not found.', str)
 
-    # Create a dummy slot instance for adapter lookup. This is not ultra
-    # clean but puts the burden of filtering by slot on the adapter
+    # Create a dummy region instance for adapter lookup. This is not ultra
+    # clean but puts the burden of filtering by region on the adapter
     # registry.
-    class DummySlot(object):
-        implements(slot)
-    return DummySlot()
+    class DummyRegion(object):
+        implements(region)
+    return DummyRegion()
 
 
-class TALESPageletsExpression(StringExpr):
-    """Collect pagelets via a TAL namespace called `pagelets`."""
+class TALESViewletsExpression(StringExpr):
+    """Collect viewlets via a TAL namespace called `viewlets`."""
 
-    implements(ITALESPageletsExpression)
+    implements(ITALESViewletsExpression)
 
     def __call__(self, econtext):
         context = econtext.vars['context']
         request = econtext.vars['request']
         view = econtext.vars['view']
 
-        # get the slot from the expression
-        slot = getSlot(self._s)
+        # get the region from the expression
+        region = getRegion(self._s)
 
-        # Find the pagelets
-        pagelets = zapi.getAdapters((context, request, view, slot), IPagelet)
-        pagelets = [pagelet for name, pagelet in pagelets
-                    if canAccess(pagelet, '__call__')]
-        pagelets.sort(lambda x, y: cmp(x.weight, y.weight))
+        # Find the viewlets
+        viewlets = zapi.getAdapters((context, request, view, region), IViewlet)
+        viewlets = [viewlet for name, viewlet in viewlets
+                    if canAccess(viewlet, '__call__')]
+        viewlets.sort(lambda x, y: cmp(x.weight, y.weight))
 
-        return pagelets
+        return viewlets
 
 
-class TALESPageletExpression(StringExpr):
-    """Collects a single pagelet via a TAL namespace called pagelet."""
+class TALESViewletExpression(StringExpr):
+    """Collects a single viewlet via a TAL namespace called viewlet."""
 
-    implements(ITALESPageletExpression)
+    implements(ITALESViewletExpression)
 
     def __init__(self, name, expr, engine):
         if not '/' in expr:
-            raise KeyError('Use `iface/pageletname` for defining the pagelet.')
+            raise KeyError('Use `iface/viewletname` for defining the viewlet.')
 
         parts = expr.split('/')
         if len(parts) > 2:
@@ -96,20 +96,20 @@ class TALESPageletExpression(StringExpr):
         request = econtext.vars['request']
         view = econtext.vars['view']
 
-        # get the slot from the expression
-        slot = getSlot(self._iface)
+        # get the region from the expression
+        region = getRegion(self._iface)
 
-        # Find the pagelets
-        pagelet = zapi.queryMultiAdapter(
-            (context, request, view, slot), IPagelet, name=self._name)
+        # Find the viewlets
+        viewlet = zapi.queryMultiAdapter(
+            (context, request, view, region), IViewlet, name=self._name)
 
-        if pagelet is None:
+        if viewlet is None:
             raise ComponentLookupError(
-                'No pagelet with name `%s` found.' %self._name)
+                'No viewlet with name `%s` found.' %self._name)
 
-        if not canAccess(pagelet, '__call__'):
+        if not canAccess(viewlet, '__call__'):
             raise Unauthorized(
-                'You are not authorized to access the pagelet '
+                'You are not authorized to access the viewlet '
                 'called `%s`.' %self._name)
 
-        return pagelet()
+        return viewlet()

@@ -4,16 +4,16 @@
     i18n_domain="zope"
     >
 
-  <interface interface=".interfaces.ITALESPageletsExpression" />
+  <interface interface=".interfaces.ITALESViewletsExpression" />
   <tales:expressiontype
-      name="pagelets"
-      handler=".tales.TALESPageletsExpression"
+      name="viewlets"
+      handler=".tales.TALESViewletsExpression"
       />
 
-  <interface interface=".interfaces.ITALESPageletExpression" />
+  <interface interface=".interfaces.ITALESViewletExpression" />
   <tales:expressiontype
-      name="pagelet"
-      handler=".tales.TALESPageletExpression"
+      name="viewlet"
+      handler=".tales.TALESViewletExpression"
       />
 
 </configure>
