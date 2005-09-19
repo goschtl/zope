@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pagelet metadconfigure
+"""Viewlet metadconfigure
 
 $Id$
 """
@@ -19,25 +19,25 @@ __docformat__ = 'restructuredtext'
 
 import os
 
+from zope.security import checker
+
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import Interface, classImplements
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.security.checker import defineChecker, Checker
 
 from zope.app.component.interface import provideInterface
 from zope.app.component import metaconfigure
 from zope.app.publisher.browser import viewmeta
 from zope.app.publisher.interfaces.browser import IBrowserView
 
-from zope.app.pagelet.interfaces import IPageletSlot, IPagelet
-from zope.app.pagelet.pagelet import SimplePageletClass
-from zope.app.pagelet.pagelet import SimpleAttributePagelet
+from zope.app.viewlet import viewlet, interfaces
 
 
-def pagelet(_context, name, permission,
-            slot, for_=Interface, layer=IDefaultBrowserLayer, view=IBrowserView,
-            class_=None, template=None, attribute='__call__', weight=0,
-            allowed_interface=None, allowed_attributes=None):
+def viewletDirective(_context, name, permission, region,
+                     for_=Interface, layer=IDefaultBrowserLayer,
+                     view=IBrowserView,
+                     class_=None, template=None, attribute='__call__', weight=0,
+                     allowed_interface=None, allowed_attributes=None):
 
     required = {}
 
@@ -75,8 +75,8 @@ def pagelet(_context, name, permission,
                     "The provided class doesn't have the specified attribute "
                     )
         if template:
-            # Create a new class for the pagelet template and class.
-            new_class = SimplePageletClass(
+            # Create a new class for the viewlet template and class.
+            new_class = viewlet.SimpleViewletClass(
                 template, bases=(class_, ), weight=weight)
         else:
             if not hasattr(class_, 'browserDefault'):
@@ -90,14 +90,18 @@ def pagelet(_context, name, permission,
             cdict['__name__'] = name
             cdict['__page_attribute__'] = attribute
             new_class = type(class_.__name__,
-                             (class_, SimpleAttributePagelet), cdict)
+                             (class_, viewlet.SimpleAttributeViewlet), cdict)
 
         if hasattr(class_, '__implements__'):
             classImplements(new_class, IBrowserPublisher)
 
     else:
-        # Create a new class for the pagelet template alone.
-        new_class = SimplePageletClass(template, name=name, weight=weight)
+        # Create a new class for the viewlet template alone.
+        new_class = viewlet.SimpleViewletClass(
+            template, name=name, weight=weight)
+
+    # Make sure the new class implements the region
+    classImplements(new_class, region)
 
     for attr_name in (attribute, 'browserDefault', '__call__',
                       'publishTraverse', 'weight'):
@@ -110,14 +114,14 @@ def pagelet(_context, name, permission,
 
     viewmeta._handle_for(_context, for_)
     metaconfigure.interface(_context, view)
-    metaconfigure.interface(_context, slot, IPageletSlot)
+    metaconfigure.interface(_context, region, interfaces.IRegion)
 
-    defineChecker(new_class, Checker(required))
+    checker.defineChecker(new_class, checker.Checker(required))
 
-    # register pagelet
+    # register viewlet
     _context.action(
-        discriminator = ('pagelet', for_, layer, view, slot, name),
+        discriminator = ('viewlet', for_, layer, view, region, name),
         callable = metaconfigure.handler,
         args = ('provideAdapter',
-                (for_, layer, view, slot), IPagelet, name, new_class,
+                (for_, layer, view), region, name, new_class,
                  _context.info),)

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pagelet metadirective
+"""Viewlet metadirective
 
 $Id$
 """
@@ -23,28 +23,28 @@ from zope.schema import Int
 from zope.app.publisher.browser import metadirectives
 
 
-class IPageletDirective(metadirectives.IPagesDirective,
+class IViewletDirective(metadirectives.IPagesDirective,
                         metadirectives.IViewPageSubdirective):
-    """A directive to register a new pagelet.
+    """A directive to register a new viewlet.
 
-    Pagelet registrations are very similar to page registrations, except that
-    they are additionally qualified by the slot and view they are used for. An
+    Viewlet registrations are very similar to page registrations, except that
+    they are additionally qualified by the region and view they are used for. An
     additional `weight` attribute is specified that is intended to coarsly
-    control the order of the pagelets.
+    control the order of the viewlets.
     """
 
-    slot = GlobalInterface(
-        title=u"slot",
-        description=u"The slot interface this pagelet is for.",
+    region = GlobalInterface(
+        title=u"region",
+        description=u"The region interface this viewlet is for.",
         required=True)
 
     view = GlobalInterface(
         title=u"view",
-        description=u"The interface of the view this pagelet is for. "
+        description=u"The interface of the view this viewlet is for. "
                     u"(default IBrowserView)""",
         required=False)
 
     weight = Int(
         title=u"weight",
-        description=u"Integer key for sorting pagelets in the same slot.",
+        description=u"Integer key for sorting viewlets in the same region.",
         required=False)

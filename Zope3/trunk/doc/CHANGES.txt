@@ -45,24 +45,16 @@ Zope Changes
         like unicode strings with respect to security proxying.  This
         implementation will replace the old one in upcoming versions.
 
-      - Added pagelet concept. Pagelets are responsible for a piece
-        of content in a view. They can be used to render additionally
-        provided information into a pagetemplate.
-
-        + Added tales expression 'pagelet'
-
-        + Added tales expression 'pagelets'
-
-        + Added tales expression 'pagedata'
-
-      - Added pagelet chooser for store pagelet name in the annotation
-        of a object.
+      - Implemented the concept of viewlets, formerly known as
+        pagelets. Viewlets allow you to insert pieces of content into
+        specified regions of a page. Using this base implementation, one could
+        easily implement pagelets and portlets.
 
     Restructuring
 
     Bug Fixes
 
-      - Fixed issue #450: ignore python level CookieError and report them 
+      - Fixed issue #450: ignore python level CookieError and report them
         to the log file.
 
       - Fixed issue #445: gadflyDA not full implementation
@@ -724,7 +716,7 @@ Zope Changes
         objects were saved on the utility's __Security_checker__
         attribute. This caused problems if the component was
         registered more than once, or if the component was a class.
-        Now a proxy is used to hold the security checker, so that the 
+        Now a proxy is used to hold the security checker, so that the
         checker is specific to a particular registration.
 
       - Fix  307: browser:addMenuItem and broken view references

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pagelet tests
+"""Viewlet tests
 
 $Id$
 """
@@ -19,40 +19,60 @@ __docformat__ = 'restructuredtext'
 
 import unittest
 import zope.interface
+import zope.security
 from zope.testing import doctest
 from zope.testing.doctestunit import DocTestSuite, DocFileSuite
 from zope.app.testing import setup
 
-from zope.app.pagelet import interfaces
+from zope.app.viewlet import interfaces
 
 
-class TestPagelet(object):
+class TestViewlet(object):
 
     def doSomething(self):
         return u'something'
 
 
-class TestPagelet2(object):
+class TestViewlet2(object):
 
     def __call__(self):
         return u'called'
 
 
-class ITestSlot(zope.interface.Interface):
-    '''A slot for testing purposes.'''
-zope.interface.directlyProvides(ITestSlot, interfaces.IPageletSlot)
+class ITestRegion(zope.interface.Interface):
+    '''A region for testing purposes.'''
+zope.interface.directlyProvides(ITestRegion, interfaces.IRegion)
+
+
+class TestParticipation(object):
+    principal = 'foobar'
+    interaction = None
+
+
+def setUp(test):
+    setup.placefulSetUp()
+
+    from zope.app.pagetemplate import metaconfigure
+    from zope.app.viewlet import tales
+    metaconfigure.registerType('viewlets', tales.TALESViewletsExpression)
+    metaconfigure.registerType('viewlet', tales.TALESViewletExpression)
+
+    zope.security.management.getInteraction().add(TestParticipation())
+
+
+def tearDown(test):
+    setup.placefulTearDown()
 
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.pagelet.tales'),
+        DocTestSuite('zope.app.viewlet.tales'),
         DocFileSuite('../README.txt',
-                     setUp=setup.placefulSetUp,
-                     tearDown=setup.placefulTearDown(),
+                     setUp=setUp, tearDown=tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         DocFileSuite('../directives.txt',
-                     setUp=setup.placefulSetUp,
-                     tearDown=setup.placefulTearDown(),
+                     setUp=setUp, tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         ))

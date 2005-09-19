@@ -1,41 +1,41 @@
 =========================
-The ``pagelet`` Directive
+The ``viewlet`` Directive
 =========================
 
-The pagelet directive allows you to quickly register a new paglet without much
+The viewlet directive allows you to quickly register a new paglet without much
 hassle, like it was shown in the `README.txt` file. Here is a sample
 directive::
 
   >>> from zope.configuration import xmlconfig
   >>> context = xmlconfig.string('''
   ... <configure i18n_domain="zope">
-  ...   <include package="zope.app.pagelet" file="meta.zcml" />
+  ...   <include package="zope.app.viewlet" file="meta.zcml" />
   ... </configure>
   ... ''')
 
   >>> context = xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
-  ...            package="zope.app.pagelet.tests">
-  ...   <pagelet
-  ...       name="testpagelet"
+  ...            package="zope.app.viewlet.tests">
+  ...   <viewlet
+  ...       name="testviewlet"
   ...       for="*"
-  ...       slot=".test_doc.ITestSlot"
-  ...       template="test_pagelet.pt"
+  ...       region=".test_doc.ITestRegion"
+  ...       template="test_viewlet.pt"
   ...       permission="zope.Public"
   ...       />
   ... </configure>
   ... ''', context=context)
 
 As you can see, the directive looks very similar to the page directive and you
-are right. The pagelet directive does not permit you to specify a `menu` and
-`title`, since it is not sensible to have a menu item for a pagelet. However,
-it does support two more qualifying attributes, `view` and `slot`. While view
-is nearly never specified (very common default), the `slot` attribute *must*
+are right. The viewlet directive does not permit you to specify a `menu` and
+`title`, since it is not sensible to have a menu item for a viewlet. However,
+it does support two more qualifying attributes, `view` and `region`. While view
+is nearly never specified (very common default), the `region` attribute *must*
 be specified. An optional `weight` attribute (not shown above) allows you to
-change the position of a particular pagelet relative to the others. The
+change the position of a particular viewlet relative to the others. The
 default value is zero.
 
-If we now look into the adapter registry, we will find the pagelet:
+If we now look into the adapter registry, we will find the viewlet:
 
   >>> class Content(object):
   ...     pass
@@ -48,81 +48,77 @@ If we now look into the adapter registry, we will find the pagelet:
   >>> view = BrowserView(content, request)
 
   >>> import zope.interface
-  >>> from zope.app.pagelet.tests.test_doc import ITestSlot
-  >>> class Slot(object):
-  ...     pass
-  >>> slot = Slot()
-  >>> zope.interface.directlyProvides(slot, ITestSlot)
+  >>> from zope.app.viewlet.tests.test_doc import ITestRegion
 
   >>> import zope.component
-  >>> from zope.app.pagelet.interfaces import IPagelet
-  >>> pagelet = zope.component.getMultiAdapter(
-  ...     (content, request, view, slot), IPagelet, name='testpagelet')
-  >>> pagelet()
-  u'<div>testpagelet macro content</div>\n'
+  >>> from zope.app.viewlet.interfaces import IViewlet
+  >>> viewlet = zope.component.getMultiAdapter(
+  ...     (content, request, view), ITestRegion, name='testviewlet')
+  >>> viewlet()
+  u'<div>testviewlet macro content</div>\n'
 
-Let's now ensure that we can also specify a pagelet class:
+Let's now ensure that we can also specify a viewlet class:
 
   >>> context = xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
-  ...            package="zope.app.pagelet.tests">
-  ...   <pagelet
-  ...       name="testpagelet2"
+  ...            package="zope.app.viewlet.tests">
+  ...   <viewlet
+  ...       name="testviewlet2"
   ...       for="*"
-  ...       slot=".test_doc.ITestSlot"
-  ...       template="test_pagelet.pt"
-  ...       class=".test_doc.TestPagelet"
+  ...       region=".test_doc.ITestRegion"
+  ...       template="test_viewlet.pt"
+  ...       class=".test_doc.TestViewlet"
   ...       permission="zope.Public"
   ...       />
   ... </configure>
   ... ''', context=context)
 
-  >>> pagelet = zope.component.getMultiAdapter(
-  ...     (content, request, view, slot), IPagelet, name='testpagelet2')
-  >>> pagelet()
-  u'<div>testpagelet macro content</div>\n'
+  >>> viewlet = zope.component.getMultiAdapter(
+  ...     (content, request, view), ITestRegion, name='testviewlet2')
+  >>> viewlet()
+  u'<div>testviewlet macro content</div>\n'
 
 Okay, so the template-driven cases wrok. But just specifying a class should
 also work:
 
   >>> context = xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
-  ...            package="zope.app.pagelet.tests">
-  ...   <pagelet
-  ...       name="testpagelet3"
+  ...            package="zope.app.viewlet.tests">
+  ...   <viewlet
+  ...       name="testviewlet3"
   ...       for="*"
-  ...       slot=".test_doc.ITestSlot"
-  ...       class=".test_doc.TestPagelet2"
+  ...       region=".test_doc.ITestRegion"
+  ...       class=".test_doc.TestViewlet2"
   ...       permission="zope.Public"
   ...       />
   ... </configure>
   ... ''', context=context)
 
-  >>> pagelet = zope.component.getMultiAdapter(
-  ...     (content, request, view, slot), IPagelet, name='testpagelet3')
-  >>> pagelet()
+  >>> viewlet = zope.component.getMultiAdapter(
+  ...     (content, request, view), ITestRegion, name='testviewlet3')
+  >>> viewlet()
   u'called'
 
 It should also be possible to specify an alternative attribute of the class to
-be rendered upon calling the pagelet:
+be rendered upon calling the viewlet:
 
   >>> context = xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
-  ...            package="zope.app.pagelet.tests">
-  ...   <pagelet
-  ...       name="testpagelet4"
+  ...            package="zope.app.viewlet.tests">
+  ...   <viewlet
+  ...       name="testviewlet4"
   ...       for="*"
-  ...       slot=".test_doc.ITestSlot"
-  ...       class=".test_doc.TestPagelet"
+  ...       region=".test_doc.ITestRegion"
+  ...       class=".test_doc.TestViewlet"
   ...       attribute="doSomething"
   ...       permission="zope.Public"
   ...       />
   ... </configure>
   ... ''', context=context)
 
-  >>> pagelet = zope.component.getMultiAdapter(
-  ...     (content, request, view, slot), IPagelet, name='testpagelet4')
-  >>> pagelet()
+  >>> viewlet = zope.component.getMultiAdapter(
+  ...     (content, request, view), ITestRegion, name='testviewlet4')
+  >>> viewlet()
   u'something'
 
 
@@ -133,10 +129,10 @@ Neither the class or template have been specified:
 
   >>> context = xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
-  ...            package="zope.app.pagelet.tests">
-  ...   <pagelet
-  ...       name="testpagelet"
-  ...       slot=".test_doc.ITestSlot"
+  ...            package="zope.app.viewlet.tests">
+  ...   <viewlet
+  ...       name="testviewlet"
+  ...       region=".test_doc.ITestRegion"
   ...       permission="zope.Public"
   ...       />
   ... </configure>
@@ -151,11 +147,11 @@ specified:
 
   >>> context = xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
-  ...            package="zope.app.pagelet.tests">
-  ...   <pagelet
-  ...       name="testpagelet"
-  ...       slot=".test_doc.ITestSlot"
-  ...       template="test_pagelet.pt"
+  ...            package="zope.app.viewlet.tests">
+  ...   <viewlet
+  ...       name="testviewlet"
+  ...       region=".test_doc.ITestRegion"
+  ...       template="test_viewlet.pt"
   ...       attribute="faux"
   ...       permission="zope.Public"
   ...       />
@@ -171,11 +167,11 @@ specified attribute:
 
   >>> context = xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope"
-  ...            package="zope.app.pagelet.tests">
-  ...   <pagelet
-  ...       name="testpagelet"
-  ...       slot=".test_doc.ITestSlot"
-  ...       class=".test_doc.TestPagelet"
+  ...            package="zope.app.viewlet.tests">
+  ...   <viewlet
+  ...       name="testviewlet"
+  ...       region=".test_doc.ITestRegion"
+  ...       class=".test_doc.TestViewlet"
   ...       attribute="faux"
   ...       permission="zope.Public"
   ...       />
