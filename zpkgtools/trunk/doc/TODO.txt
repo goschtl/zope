@@ -20,15 +20,6 @@ Things that need to be done
     when building an "application" distribution since that has some
     support to select from different available Python interpreters.)
 
-  - There should be a way to specify a Download-URL when building a
-    package; using the distutils "register" command would then cause
-    that field to be provided via PyPI.
-
-    An alternative is to not include the Download-URL information in
-    the distribution and to simply edit the finished registration
-    manually.  This doesn't feel like it "plays nice" in the distutils
-    world, though.
-
   - Re-visit the abstractions for parsed revision control URLs:
 
     - The current abstraction is pretty painful to work with, and
