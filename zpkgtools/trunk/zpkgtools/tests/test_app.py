@@ -526,6 +526,34 @@ class BuilderApplicationTestCase(unittest.TestCase):
         self.assert_(os.path.isdir(package_dir))
         self.assert_(isfile(package_dir, "__init__.py"))
 
+    def test_adding_support_code_with_location(self):
+        package_map = self.createPackageMap()
+
+        # Let's add a support package `foo`, but that contains zpkgsetup:
+        configfile = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                  "input", "tmp.conf")
+        zpkgsetup_path = os.path.abspath(zpkgsetup.__path__[0])
+        zpkgsetup_path = urlutils.file_url(zpkgsetup_path)
+        f = open(configfile, "w")
+        self.extra_files.append(configfile)
+        print >>f, "<support-packages>"
+        print >>f, "  package", zpkgsetup_path
+        print >>f, "</support-packages>"
+        f.close()
+
+        app = self.createApplication(
+            ["-C", configfile, "-m", package_map, "package"])
+        app.run()
+        # make sure the extra support code is actually present:
+        support_dir = os.path.join(app.destination, "Support")
+        package_dir = os.path.join(support_dir, "package")
+        self.assert_(os.path.isdir(package_dir))
+        self.assert_(isfile(package_dir, "__init__.py"))
+        # and that this is really zpkgsetup:
+        self.assert_(isfile(package_dir, "cfgparser.py"))
+        self.assert_(isfile(package_dir, "package.xml"))
+        self.assert_(isfile(package_dir, "urlutils.py"))
+
     def test_alternate_distclass(self):
         # create the distribution tree:
         package_map = self.createPackageMap()

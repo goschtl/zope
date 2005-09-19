@@ -11,10 +11,6 @@ Things that need to be done
 
 - Package assembler script and distribution runtime
 
-  - It should be possible to specify a separate resource map for
-    support code.  This would allow the packaging and the distributed
-    code to remain completely independent.
-
   - The **-x** and **--exclude** options and the ``<exclude>``
     configuration sections should support wildcards, similar to
     resource maps.

@@ -153,7 +153,10 @@ class Configuration:
             value = urlparse.urljoin(url, value)
             self.location_maps.append(value)
         if cf.support_packages:
-            self.support_packages.update(cf.support_packages)
+            for pkgname, location in cf.support_packages.iteritems():
+                if location:
+                    location = urlparse.urljoin(url, location)
+                self.support_packages[pkgname] = location
         self.distribution_class = cf.distribution_class
 
 
