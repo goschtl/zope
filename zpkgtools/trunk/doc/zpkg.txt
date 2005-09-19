@@ -126,11 +126,8 @@ The configuration files used by **zpkg** use the
 Blank lines and comments (lines that start with **#** as the first
 non-blank character) are ignored.
 
-Four keys are currently defined for the configuration file:
-**build-application**, **collect-dependencies**,
-**include-support-code**, and **resource-map**.  There are also two
-section types that can be used as well, **<resources>** and
-**<exclude>**.
+There are several keys and sections which can be used in the
+configuration file.  Everything is optional.
 
 If **build-application** is set to **true**, then an application
 distribution is constructed instead of a conventional distutils
@@ -144,6 +141,13 @@ using the **-c** option on the command line.
 The **default-collection** value is used to specify a resource that
 should be used as the top-level collection to package if no collection
 is specified on the command line.
+
+The **distribution-class** setting is used to indicate that a
+particular class should be use to create the ``distutils``
+distribution object.  **zpkg** provides on that supports the **zpkg**
+extensions, but an alternate or further extended version can be used
+by setting this.  This is equivalent to the **--distribution**
+command-line option.
 
 The **include-support-code** key is used to control whether **zpkg**
 bundles the support code along with the resulting distribution.  The
@@ -192,7 +196,31 @@ contains::
 Note that all **<resources>** sections will be processed before any
 external maps are loaded, regardless of ordering.
 
-Optionally, there is an **<exclude>** section in which you can specify the
+The **<support-packages>** section can be used to add additional
+packages to the *Support/* directory of the generated distribution.
+Within this section, each key specifies a Python package which should
+be added to the support area.  If a value is given for the key, that
+is used as the location from which the resource should be loaded.  If
+no location is specified, the global resource map is used; this is
+equivalent to using the **--support** command-line option.
+
+For example, using this **<support-packages>** section::
+
+  <support-packages>
+    foo
+    bar  svn://svn.example.net/repo/foo/trunk/src/foo
+  </support-packages>
+
+would cause the ``foo`` package to be located using the global
+resource map, but the ``bar`` package to be loaded from the specied
+location, without regard for the global resource map.
+
+Note that when using the **<support-packages>** section, packages are
+always added to the *Support/* directory (they cannot be removed from
+the command line), but the **-s** and **-S** options still control
+whether the support directory is included in the distribution at all.
+
+There is an **<exclude>** section in which you can specify the
 packages/resources that should be excluded (in other words not loaded) from
 the package. Every line should specify one package. This is equivalent of
 specifying **-x** or **--exclude** for every excluded package.
@@ -211,7 +239,8 @@ using::
   </exclude>
 
 Note that neither the **<exclude>** section nor the **-x** and
-**--exclude** command-line options support wildcards.
+**--exclude** command-line options support wildcards.  Exclusions do
+not affect the construction of the *Support/* directory.
 
 
 Resource Maps

@@ -100,6 +100,14 @@ class Application:
         if not options.release_name:
             options.release_name = cf.release_name
 
+        pkgs = sets.Set()
+        for pkgname, location in options.support_packages:
+            pkgs.add(pkgname)
+        for pkgname, location in cf.support_packages.iteritems():
+            if pkgname not in pkgs:
+                options.support_packages.append((pkgname, location))
+                pkgs.add(pkgname)
+
     def error(self, message, rc=1):
         self.logger.critical(message)
         sys.exit(rc)
@@ -134,9 +142,15 @@ class BuilderApplication(Application):
         else:
             self.destination = os.path.join(self.tmpdir, self.target_name)
         os.mkdir(self.destination)
-        self.support_packages = DEFAULT_SUPPORT_PACKAGES[:]
-        self.support_packages.extend(
-            [(pkg, None) for pkg in options.support_packages])
+        pkgs = sets.Set()
+        self.support_packages = []
+        for pkgname, location in options.support_packages:
+            if pkgname not in pkgs:
+                self.support_packages.append((pkgname, location))
+        for pkgname, location in DEFAULT_SUPPORT_PACKAGES:
+            if pkgname not in pkgs:
+                self.support_packages.append((pkgname, location))
+                pkgs.add(pkgname)
         for pkg in options.exclude_packages:
             self.exclude_packages.add(pkg)
 
@@ -655,6 +669,8 @@ def parse_args(argv):
         parser.error(str(e))
     options.program = prog
     options.args = args
+    options.support_packages = [
+        (pkgname, None) for pkgname in options.support_packages]
     if args:
         options.resource = args[0]
     else:

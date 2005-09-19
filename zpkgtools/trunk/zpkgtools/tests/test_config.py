@@ -87,6 +87,15 @@ class ConfigTestCase(unittest.TestCase):
         self.assertRaises(cfgparser.ConfigurationError,
                           self.load_text, "default-collection foo.*\n")
 
+        # distribution-class too many times
+        self.assertRaises(cfgparser.ConfigurationError,
+                          self.load_text, ("distribution-class foo\n"
+                                           "distribution-class foo\n"))
+
+        # distribution-class with a bad value
+        self.assertRaises(cfgparser.ConfigurationError,
+                          self.load_text, "distribution-class not-really\n")
+
         # release-name too many times
         self.assertRaises(cfgparser.ConfigurationError,
                           self.load_text, ("release-name foo\n"
@@ -95,6 +104,10 @@ class ConfigTestCase(unittest.TestCase):
     def test_default_collection(self):
         cf = self.load_text("default-collection foo\n")
         self.assertEqual(cf.default_collection, "foo")
+
+    def test_distribution_class(self):
+        cf = self.load_text("distribution-class foo.bar\n")
+        self.assertEqual(cf.distribution_class, "foo.bar")
 
     def test_release_name(self):
         cf = self.load_text("release-name foo\n")
@@ -190,6 +203,27 @@ class ConfigTestCase(unittest.TestCase):
             "<exclude>\n"
             "  reportlab.*\n"
             "</exclude>\n")
+
+    def test_support_packages(self):
+        cf = self.load_text(
+            "<support-packages>\n"
+            "  some.package\n"
+            "  another.package svn://svn.example.net/repo/somewhere/trunk\n"
+            "</support-packages>\n")
+        items = cf.support_packages.items()
+        items.sort()
+        self.assertEqual(
+            items,
+            [("another.package", "svn://svn.example.net/repo/somewhere/trunk"),
+             ("some.package", None)])
+
+    def test_support_packages_with_bad_key(self):
+        self.assertRaises(
+            cfgparser.ConfigurationError,
+            self.load_text,
+            "<support-packages>\n"
+            "  foo-bar \n"
+            "</support-packages>\n")
 
     def load_text(self, text, path=None, basedir=None):
         if path is None:

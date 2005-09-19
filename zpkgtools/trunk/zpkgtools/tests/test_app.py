@@ -256,13 +256,16 @@ class CommandLineTestCase(unittest.TestCase):
 
     def test_support_packages(self):
         options = self.parse_args([])
-        self.assertEqual(options.support_packages, [])
+        self.assertEqual(options.support_packages,
+                         [])
         # one package:
         options = self.parse_args(["--support", "pkg"])
-        self.assertEqual(options.support_packages, ["pkg"])
+        self.assertEqual(options.support_packages,
+                         [("pkg", None)])
         # two packages
         options = self.parse_args(["--support", "pkg1", "--support=pkg2"])
-        self.assertEqual(options.support_packages, ["pkg1", "pkg2"])
+        self.assertEqual(options.support_packages,
+                         [("pkg1", None), ("pkg2", None)])
 
     def test_exclude_resources(self):
         options = self.parse_args([])

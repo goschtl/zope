@@ -53,6 +53,10 @@ def release_name(value):
         raise ValueError("resource-name does not support wildcards")
 
 
+def optional_location(value):
+    return value or None
+
+
 def resource_map(value):
     return value.map
 
@@ -85,6 +89,7 @@ class Configuration:
         self.include_support_code = True
         self.default_collection = None
         self.release_name = None
+        self.support_packages = {}
 
     def finalize(self):
         """Load the location maps into `locations`."""
@@ -147,6 +152,9 @@ class Configuration:
         for value in cf.location_maps:
             value = urlparse.urljoin(url, value)
             self.location_maps.append(value)
+        if cf.support_packages:
+            self.support_packages.update(cf.support_packages)
+        self.distribution_class = cf.distribution_class
 
 
 def defaultConfigurationPath():

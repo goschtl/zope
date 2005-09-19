@@ -79,4 +79,30 @@
        required="no"
        />
 
+  <key name="distribution-class"
+       datatype="dotted-name"
+       required="no"
+       />
+
+  <sectiontype
+      name="support-packages"
+      datatype="ZConfig.components.basic.mapping.mapping"
+      keytype="dotted-name"
+      >
+    <!-- Keys in the <support-packages> section name resources, but
+         those resources must be Python packages, so we use a
+         restricted keytype.
+         -->
+    <key name="+"
+         attribute="mapping"
+         datatype=".config.optional_location"
+         required="no"
+         />
+  </sectiontype>
+  <section name="*"
+           type="support-packages"
+           attribute="support_packages"
+           required="no"
+           />
+
 </schema>
