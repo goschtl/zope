@@ -49,15 +49,11 @@ If we now look into the adapter registry, we will find the viewlet:
 
   >>> import zope.interface
   >>> from zope.app.viewlet.tests.test_doc import ITestRegion
-  >>> class Region(object):
-  ...     pass
-  >>> region = Region()
-  >>> zope.interface.directlyProvides(region, ITestRegion)
 
   >>> import zope.component
   >>> from zope.app.viewlet.interfaces import IViewlet
   >>> viewlet = zope.component.getMultiAdapter(
-  ...     (content, request, view, region), IViewlet, name='testviewlet')
+  ...     (content, request, view), ITestRegion, name='testviewlet')
   >>> viewlet()
   u'<div>testviewlet macro content</div>\n'
 
@@ -78,7 +74,7 @@ Let's now ensure that we can also specify a viewlet class:
   ... ''', context=context)
 
   >>> viewlet = zope.component.getMultiAdapter(
-  ...     (content, request, view, region), IViewlet, name='testviewlet2')
+  ...     (content, request, view), ITestRegion, name='testviewlet2')
   >>> viewlet()
   u'<div>testviewlet macro content</div>\n'
 
@@ -99,7 +95,7 @@ also work:
   ... ''', context=context)
 
   >>> viewlet = zope.component.getMultiAdapter(
-  ...     (content, request, view, region), IViewlet, name='testviewlet3')
+  ...     (content, request, view), ITestRegion, name='testviewlet3')
   >>> viewlet()
   u'called'
 
@@ -121,7 +117,7 @@ be rendered upon calling the viewlet:
   ... ''', context=context)
 
   >>> viewlet = zope.component.getMultiAdapter(
-  ...     (content, request, view, region), IViewlet, name='testviewlet4')
+  ...     (content, request, view), ITestRegion, name='testviewlet4')
   >>> viewlet()
   u'something'
 

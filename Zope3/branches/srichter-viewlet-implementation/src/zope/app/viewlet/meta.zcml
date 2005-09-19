@@ -6,7 +6,7 @@
     <meta:directive
         name="viewlet"
         schema=".metadirectives.IViewletDirective"
-        handler=".metaconfigure.viewlet"
+        handler=".metaconfigure.viewletDirective"
         />
 
   </meta:directives>

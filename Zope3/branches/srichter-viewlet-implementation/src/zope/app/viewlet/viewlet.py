@@ -43,10 +43,9 @@ class SimpleViewlet(BrowserView):
 
     _weight = 0
 
-    def __init__(self, context, request, view, region):
+    def __init__(self, context, request, view):
         super(SimpleViewlet, self).__init__(context, request)
         self.view = view
-        self.region = region
 
     def _getWeight (self):
         """The weight of the viewlet."""

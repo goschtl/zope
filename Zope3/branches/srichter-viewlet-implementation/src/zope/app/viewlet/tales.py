@@ -16,22 +16,11 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
-import sys
+import zope.interface
+import zope.component
+from zope.tales import expressions
 
-from zope.component.interfaces import ComponentLookupError
-from zope.interface import implements, directlyProvides
-from zope.security import canAccess
-from zope.security.interfaces import Unauthorized
-
-from zope.tales.expressions import StringExpr
-
-from zope.app import zapi
-
-from zope.app.viewlet.interfaces import ITALESViewletExpression
-from zope.app.viewlet.interfaces import ITALESViewletsExpression
-from zope.app.viewlet.interfaces import IViewletRegion
-from zope.app.viewlet.interfaces import IViewlet
-from zope.app.viewlet.interfaces import ViewletRegionLookupError
+from zope.app.viewlet import interfaces, manager
 
 
 def getRegion(str):
@@ -39,23 +28,25 @@ def getRegion(str):
 
     This function will create the dummy region implementation as well.
     """
-    region = zapi.queryUtility(IViewletRegion, name=str)
+    region = zope.component.queryUtility(interfaces.IRegion, name=str)
     if region is None:
-        raise ViewletRegionLookupError(
+        raise interfaces.ViewletRegionLookupError(
             'Viewlet region interface not found.', str)
-
-    # Create a dummy region instance for adapter lookup. This is not ultra
-    # clean but puts the burden of filtering by region on the adapter
-    # registry.
-    class DummyRegion(object):
-        implements(region)
-    return DummyRegion()
+    return region
 
 
-class TALESViewletsExpression(StringExpr):
+def getRegionFieldData(region, context):
+    """Get a dictionary of values for the region fields."""
+    data = {}
+    for name, field in zope.schema.getFields(region).items():
+        data[name] = context.vars.get(name, field.default)
+    return data
+
+
+class TALESViewletsExpression(expressions.StringExpr):
     """Collect viewlets via a TAL namespace called `viewlets`."""
 
-    implements(ITALESViewletsExpression)
+    zope.interface.implements(interfaces.ITALESViewletsExpression)
 
     def __call__(self, econtext):
         context = econtext.vars['context']
@@ -66,18 +57,26 @@ class TALESViewletsExpression(StringExpr):
         region = getRegion(self._s)
 
         # Find the viewlets
-        viewlets = zapi.getAdapters((context, request, view, region), IViewlet)
-        viewlets = [viewlet for name, viewlet in viewlets
-                    if canAccess(viewlet, '__call__')]
-        viewlets.sort(lambda x, y: cmp(x.weight, y.weight))
+        viewletManager = zope.component.queryMultiAdapter(
+            (context, request, view), interfaces.IViewletManager)
+        if viewletManager is None:
+            viewletManager = manager.DefaultViewletManager(
+                context, request, view)
+
+        viewlets = viewletManager.getViewlets(region)
+
+        # Insert the data gotten from the context
+        data = getRegionFieldData(region, econtext)
+        for viewlet in viewlets:
+            viewlet.__dict__.update(data)
 
         return viewlets
 
 
-class TALESViewletExpression(StringExpr):
+class TALESViewletExpression(expressions.StringExpr):
     """Collects a single viewlet via a TAL namespace called viewlet."""
 
-    implements(ITALESViewletExpression)
+    zope.interface.implements(interfaces.ITALESViewletExpression)
 
     def __init__(self, name, expr, engine):
         if not '/' in expr:
@@ -100,16 +99,16 @@ class TALESViewletExpression(StringExpr):
         region = getRegion(self._iface)
 
         # Find the viewlets
-        viewlet = zapi.queryMultiAdapter(
-            (context, request, view, region), IViewlet, name=self._name)
+        viewletManager = zope.component.queryMultiAdapter(
+            (context, request, view), interfaces.IViewletManager)
+        if viewletManager is None:
+            viewletManager = manager.DefaultViewletManager(
+                context, request, view)
 
-        if viewlet is None:
-            raise ComponentLookupError(
-                'No viewlet with name `%s` found.' %self._name)
+        viewlet = viewletManager.getViewlet(self._name, region)
 
-        if not canAccess(viewlet, '__call__'):
-            raise Unauthorized(
-                'You are not authorized to access the viewlet '
-                'called `%s`.' %self._name)
+        # Insert the data gotten from the context
+        data = getRegionFieldData(region, econtext)
+        viewlet.__dict__.update(data)
 
         return viewlet()
