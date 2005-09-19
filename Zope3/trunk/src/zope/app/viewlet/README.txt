@@ -650,3 +650,11 @@ object. Those views are either registered for the provided interfaces of the
 object or the object itself. In a view, usually a template, one can define
 zero or more view regions. Upon rendering time, those view regions are populated
 with the viewlets that have been assigned to the region.
+
+
+Cleanup
+-------
+
+  >>> import shutil
+  >>> shutil.rmtree(temp_dir)
+
