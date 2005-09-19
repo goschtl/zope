@@ -154,6 +154,13 @@ support packages will be included in the distribution (less the test
 code).  If false, the right versions of these packages will be assumed
 to be available for import on target systems.
 
+The **release-name** may be set in the configuration file as well;
+this specifies the external name of the release, which can differ from
+the name of the resource being released.  This is equivalent to the
+**-n** and **--name** command-line options.  This should normally be
+used only in configuration files used to create distribution for a
+single product.
+
 The value for **resource-map** is a path or URL (including
 ``cvs:`` URLs) for a file that defines the map.  Relative paths are
 interpreted as relative to the directory containing the configuration
