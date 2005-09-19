@@ -335,7 +335,7 @@ class BuilderApplication(Application):
         runlog.report_command(" ".join(cmdline1))
         try:
             rc = os.spawnv(os.P_WAIT, cmdpath, cmdline1)
-            if os.WIFEXITED(rc) and os.WEXITSTATUS(rc) == 2:
+            if os.WIFEXITED(rc) and os.WEXITSTATUS(rc) > 0:
                 # didn't like the command line; maybe not GNU tar?
                 if os.path.exists(self.target_file):
                     os.unlink(self.target_file)
