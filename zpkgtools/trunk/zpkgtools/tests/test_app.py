@@ -295,7 +295,7 @@ class ComponentTestCase(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp(prefix="test-app-")
-        self.mypkg_url = urlutils.file_url(self.tmpdir)
+        self.mypkg_url = "file://" + urllib.pathname2url(self.tmpdir)
         self.ip = include.InclusionProcessor(loader.Loader())
 
     def write_app_file(self, name, text):
@@ -416,13 +416,13 @@ class BuilderApplicationTestCase(unittest.TestCase):
         shutil.copy(os.path.join(input, "packages.map"), package_map)
         self.extra_files.append(package_map)
         zpkgsetup_path = os.path.abspath(zpkgsetup.__path__[0])
-        zpkgsetup_path = urlutils.file_url(zpkgsetup_path)
+        zpkgsetup_path = "file://" + urllib.pathname2url(zpkgsetup_path)
         f = open(package_map, "a")
         print >>f
         print >>f, "zpkgsetup", zpkgsetup_path
         f.close()
         # convert package_map to URL so relative names are resolved properly
-        return urlutils.file_url(package_map)
+        return "file://" + urllib.pathname2url(package_map)
 
     def test_create_tarball(self):
         # This builds a package and checks that the distribution
@@ -610,8 +610,8 @@ class BuilderApplicationTestCase(unittest.TestCase):
         os.chdir(here)
         try:
             app = self.createApplication(args)
-            pkgurl = urlutils.file_url(
-                os.path.join(here, "input", "package")) + "/"
+            pkgurl = "file://%s/" % urlutils.pathname2url(
+                os.path.join(here, "input", "package"))
             self.assertEqual(app.locations["package"], pkgurl)
         finally:
             os.chdir(orig_pwd)
