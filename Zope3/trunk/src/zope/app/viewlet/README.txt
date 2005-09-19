@@ -70,8 +70,8 @@ a more commonly used page-template-driven viewlet:
   ...     def title(self):
   ...         return 'Viewlet Title'
 
-As you can see, the viewlet Python class is known as ``viewlet`` inside the
-template, while the view class is still available as ``view``. Next we build
+As you can see, the viewlet Python object is known as ``viewlet`` inside the
+template, while the view object is still available as ``view``. Next we build
 and register the viewlet using a special helper function:
 
   # Create the viewlet class
@@ -202,7 +202,7 @@ not before the first one. Here is a most simple implementation:
   ...     name='infoViewlet')
 
 
-Note that you would commonly not state in the class that itself that it
+Note that you would commonly not state in the class itself that it
 implements a particular region, since it is usually done by the ZCML
 directive, which is introduced in `directives.zcml`.
 
@@ -273,7 +273,7 @@ given a context and a view. For this use case, you can simply use a second
 TALES namespace called ``viewlet`` that selects the viewlet using the
 expression ``<path to region>/<viewlet name>``.
 
-Since everything else is already setup, we can simply register a new view:
+Since everything else is already set up, we can simply register a new view:
 
   >>> template2FileName = os.path.join(temp_dir, 'template2.pt')
   >>> open(template2FileName, 'w').write('''
@@ -364,7 +364,7 @@ like to allow various columns that are controlled by viewlets:
   ...     name='contents.html')
 
 As you can see from the page template code, in order for the viewlets to be
-any useful, they need access the the ``item`` variable as defined in the page
+of any use, they need access to the ``item`` variable as defined in the page
 template. Thus, the region definition will state that the viewlet must have
 access to a variable called ``item`` that contains the value of ``item`` in
 the page template:
@@ -406,7 +406,7 @@ Next we implement two very simple viewlets, one displaying the name
   ...     IObjectInfoColumn,
   ...     name='name')
 
-... and the other the size of the of objects in the list:
+... and the other displaying the size of the of objects in the list:
 
   >>> class SizeColumnViewlet(BrowserView):
   ...     zope.interface.implements(interfaces.IViewlet, IObjectInfoColumn)
@@ -465,7 +465,7 @@ and view to the ``IViewletManager`` interface. They must implement two
 methods. The first one is ``getViewlets(region)``, which returns a list of
 viewlets for the specified region. The region argument is the region
 interface. The second method is ``getViewlet(name, region)``, which allows you
-to look up a specific viewlet by name ans region.
+to look up a specific viewlet by name and region.
 
 
 The Default Viewlet Manager
@@ -506,7 +506,7 @@ declarations, then it is ignored:
   2
 
 Also, when you try to look up the unauthorized viewlet by name you will get an
-exception telling you that you have insufficient priveledges to access the
+exception telling you that you have insufficient priviledges to access the
 viewlet:
 
   >>> defaultManager.getViewlet('unauthorized', ILeftColumn)
