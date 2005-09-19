@@ -456,7 +456,17 @@ class BuilderApplicationTestCase(unittest.TestCase):
         app = self.createApplication(
             ["-f", "-t", "-m", package_map, "package"])
         app.run()
-        self.check_package_tree("package")
+        self.check_package_tree("package", "package")
+
+    def test_building_distribution_tree_alternate_name(self):
+        # This builds a package and checks that the tree_only flag
+        # causes the application to build a tree in the current
+        # directory instead of a tarball.
+        package_map = self.createPackageMap()
+        app = self.createApplication(
+            ["-f", "-t", "-m", package_map, "-n", "other", "package"])
+        app.run()
+        self.check_package_tree("other", "package")
 
     def test_building_default_collection(self):
         # Test that a configuration's setting of a default collection
@@ -467,7 +477,7 @@ class BuilderApplicationTestCase(unittest.TestCase):
         app = self.createApplication(
             ["-C", config, "-t", "-m", package_map])
         app.run()
-        self.check_package_tree("package")
+        self.check_package_tree("package", "package")
 
     def test_building_default_collection_override(self):
         # Test that a configuration's setting of a default collection
@@ -478,16 +488,16 @@ class BuilderApplicationTestCase(unittest.TestCase):
         app = self.createApplication(
             ["-C", config, "-t", "-m", package_map, "collection-1"])
         app.run()
-        self.check_package_tree("collection-1")
+        self.check_package_tree("collection-1", "collection-1")
 
-    def check_package_tree(self, name, version="0.0.0"):
+    def check_package_tree(self, name, resource, version="0.0.0"):
         # Make sure the local tree is present and looks like one of
         # our distributions; this relies on the tree being built
         # unpacked (the -t option).
         pd = "%s-%s" % (name, version)
         self.assert_(os.path.isdir(pd))
         try:
-            self.assert_(os.path.isdir(os.path.join(pd, name)))
+            self.assert_(os.path.isdir(os.path.join(pd, resource)))
             self.assert_(os.path.isdir(os.path.join(pd, "Support")))
             self.assert_(isfile(pd, "setup.py"))
             self.assert_(isfile(pd, "setup.cfg"))

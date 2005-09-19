@@ -87,9 +87,18 @@ class ConfigTestCase(unittest.TestCase):
         self.assertRaises(cfgparser.ConfigurationError,
                           self.load_text, "default-collection foo.*\n")
 
+        # release-name too many times
+        self.assertRaises(cfgparser.ConfigurationError,
+                          self.load_text, ("release-name foo\n"
+                                           "release-name foo\n"))
+
     def test_default_collection(self):
         cf = self.load_text("default-collection foo\n")
         self.assertEqual(cf.default_collection, "foo")
+
+    def test_release_name(self):
+        cf = self.load_text("release-name foo\n")
+        self.assertEqual(cf.release_name, "foo")
 
     def test_loadPath_no_such_file(self):
         path = os.path.join(here, "no-such-file")

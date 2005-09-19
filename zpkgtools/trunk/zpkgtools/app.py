@@ -97,6 +97,8 @@ class Application:
             if not cf.default_collection:
                 self.error("no resource to package specified")
             options.resource = cf.default_collection
+        if not options.release_name:
+            options.release_name = cf.release_name
 
     def error(self, message, rc=1):
         self.logger.critical(message)
@@ -110,8 +112,6 @@ class BuilderApplication(Application):
         self.manifests = []
         self.ip = None
         self.resource = options.resource
-        if not options.release_name:
-            options.release_name = self.resource
         # Create a new directory for all temporary files to go in:
         self.tmpdir = tempfile.mkdtemp(prefix=options.program + "-")
         self.old_tmpdir = tempfile.tempdir
@@ -126,7 +126,7 @@ class BuilderApplication(Application):
             self.error("unknown resource: %s" % self.resource)
         self.resource_url = self.locations[self.resource]
         #
-        release_name = self.options.release_name
+        release_name = options.release_name or self.resource
         self.target_name = "%s-%s" % (release_name, self.options.version)
         self.target_file = self.target_name + ".tgz"
         if self.options.tree_only:

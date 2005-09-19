@@ -46,6 +46,12 @@ def resource_name(value):
         raise ValueError("exclusions do not support wildcards")
     return value
 
+def release_name(value):
+    try:
+        return resource_name(value)
+    except ValueError:
+        raise ValueError("resource-name does not support wildcards")
+
 
 def resource_map(value):
     return value.map
@@ -78,6 +84,7 @@ class Configuration:
         self.exclude_packages = []
         self.include_support_code = True
         self.default_collection = None
+        self.release_name = None
 
     def finalize(self):
         """Load the location maps into `locations`."""
@@ -134,6 +141,7 @@ class Configuration:
         self.collect_dependencies = cf.collect_dependencies
         self.default_collection = cf.default_collection
         self.include_support_code = cf.include_support_code
+        self.release_name = cf.release_name
         self.resource_maps = cf.resource_maps
         self.exclude_packages = cf.exclude_packages
         for value in cf.location_maps:
