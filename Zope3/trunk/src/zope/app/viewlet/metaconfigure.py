@@ -87,6 +87,7 @@ def viewletDirective(_context, name, permission, region,
             else:
                 cdict = {}
 
+            cdict['_weight'] = weight
             cdict['__name__'] = name
             cdict['__page_attribute__'] = attribute
             new_class = type(class_.__name__,
