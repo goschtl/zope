@@ -403,7 +403,7 @@ class BuilderApplicationTestCase(unittest.TestCase):
 
     def createApplication(self, args):
         options = app.parse_args([CMD] + args)
-        self.app = DelayedCleanupBuilderApplication(options)
+        self.app = DelayedCleanupNonBuilderApplication(options)
         return self.app
 
     def createPackageMap(self):
@@ -420,6 +420,20 @@ class BuilderApplicationTestCase(unittest.TestCase):
         f.close()
         # convert package_map to URL so relative names are resolved properly
         return "file://" + urllib.pathname2url(package_map)
+
+    def test_create_tarball(self):
+        # This builds a package and checks that the distribution
+        # archive was created.  This only works if 'tar' is available,
+        # so we skip this on Windows.
+        if sys.platform[:3].lower() == "win":
+            return
+        package_map = self.createPackageMap()
+        options = app.parse_args(
+            [CMD, "-f", "-m", package_map, "-v", "1.2.3", "package"])
+        application = DelayedCleanupBuilderApplication(options)
+        application.run()
+        self.failUnless(os.path.isfile("package-1.2.3.tgz"))
+        os.unlink("package-1.2.3.tgz")
 
     def test_creating_complete_exclude_resources_list(self):
         config = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -592,14 +606,17 @@ class BuilderApplicationTestCase(unittest.TestCase):
 
 class DelayedCleanupBuilderApplication(app.BuilderApplication):
 
-    def create_tarball(self):
-        pass
-
     def cleanup(self):
         pass
 
     def delayed_cleanup(self):
         app.BuilderApplication.cleanup(self)
+
+
+class DelayedCleanupNonBuilderApplication(DelayedCleanupBuilderApplication):
+
+    def create_tarball(self):
+        pass
 
 
 

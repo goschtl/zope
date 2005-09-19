@@ -311,13 +311,24 @@ class BuilderApplication(Application):
         """
         pwd = os.getcwd()
         os.chdir(self.tmpdir)
-        cmdline = ("tar", "czf", self.target_file, self.target_name)
+        cmdline1 = ("tar", "czf", self.target_file,
+                    "--owner=0", "--group=0", "--mode=a+r",
+                    self.target_name)
+        cmdline2 = ("tar", "czf", self.target_file, self.target_name)
         # The os.spawn?p*() functions are not available on Windows, so
         # we need to search the PATH ourselves:
-        cmdpath = runlog.find_command(cmdline[0])
-        runlog.report_command(" ".join(cmdline))
+        cmdpath = runlog.find_command(cmdline1[0])
+        runlog.report_command(" ".join(cmdline1))
         try:
-            rc = os.spawnv(os.P_WAIT, cmdpath, cmdline)
+            rc = os.spawnv(os.P_WAIT, cmdpath, cmdline1)
+            if os.WIFEXITED(rc) and os.WEXITSTATUS(rc) == 2:
+                # didn't like the command line; maybe not GNU tar?
+                if os.path.exists(self.target_file):
+                    os.unlink(self.target_file)
+                    cmdpath = runlog.find_command(cmdline2[0])
+                runlog.report_exit_code(rc)
+                runlog.report_command(" ".join(cmdline2))
+                rc = os.spawnv(os.P_WAIT, cmdpath, cmdline2)
         finally:
             os.chdir(pwd)
         runlog.report_exit_code(rc)
