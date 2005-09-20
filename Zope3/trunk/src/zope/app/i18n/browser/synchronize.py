@@ -117,7 +117,7 @@ class Synchronize(BaseView):
         if connected:
             fmsgs = self._connection.getMessagesFor(self.sync_languages)
         else:
-            fmdgs = []
+            fmsgs = []
 
         return self.context.getMessagesMapping(self.sync_languages,
                                                fmsgs)
