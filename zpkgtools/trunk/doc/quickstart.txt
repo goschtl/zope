@@ -10,7 +10,7 @@ package tool, |zpkg|_.  We'll start with simple instructions for
 building a Zope-3.2.X distribution.  These instructions only apply to
 Unix systems.
 
-The packaging tool builds a distribution pacakge based on *resources*.
+The packaging tool builds a distribution package based on *resources*.
 The tool builds a distribution based on a single resource; this is
 called the *primary resource*.  Individual resources can be Python
 packages or *collections*, which are (essentially) a bunch of files
