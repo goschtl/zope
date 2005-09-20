@@ -11,17 +11,19 @@
 #
 ##############################################################################
 import ConfigParser
+import errno
 import getpass
 import os
 import os.path
+import re
 import shutil
+import subprocess
 import sys
-import urllib
 import tarfile
-import zipfile
 import tempfile
+import urllib
 import urlparse
-import errno
+import zipfile
 
 verbose = 0 # set by buildout.py
 
@@ -163,27 +165,36 @@ def getSourcePath(package):
 def getBaseArchivePath():
     return os.path.join(getBasePath(), 'var', 'files')
 
-##log = open('command.log', 'wt')
 def runCommand(file, args=(), successMarker=None, errorMarker=None,
                ignoreExitCode=False):
-    cmd = file + ' ' + ' '.join(args)
+    if verbose >= 2:
+        print 'buildout: executing ', file, ' '.join(args)
+
+    command = [file]
+    command.extend(args)
+    child = subprocess.Popen(command, stdout=subprocess.PIPE, 
+                             stderr=subprocess.STDOUT)
+    output = child.communicate()[0]
+
+    try:
+        if not (successMarker or errorMarker):
+            # If no success or error text was provided, use the proccess'
+            #  exit value.
+            if child.returncode and not ignoreExitCode:
+                raise RuntimeError('Command exit code indicated error: '+cmd)
+        else:
+            if errorMarker != None and errorMarker in output:
+                raise RuntimeError('Command produced erronious output.')
+            if successMarker != None and successMarker not in output:
+                raise RuntimeError('Command failed to produce success output.')
+    except:
+        print output
+        raise
+
     if verbose >= 3:
-        print "runCommand:", cmd
-##    print >>log, cmd
-    if not (successMarker or errorMarker):
-        # If no success or error text was provided, use the proccess'
-        #  exit value.
-        if os.system(cmd) and not ignoreExitCode:
-            raise RuntimeError('Command exit code indicated error: '+cmd)
-    else:
-        chin, chout = os.popen4(cmd)
-        chin.close()
-        output = chout.read()
-        chout.close()
-        if errorMarker != None and errorMarker in output:
-            raise RuntimeError('Command produced erronious output.')
-        if successMarker != None and successMarker not in output:
-            raise RuntimeError('Command failed to produce success output.')
+        print output
+
+    return output
 
 packagePaths = []
 def registerPythonPackage(path):
@@ -212,18 +223,54 @@ def setUpPackages():
     path_file.close()
 
 def svnCheckout(url, path):
-    runCommand('svn', ('checkout', url, path))
+    runCommand('svn', ['checkout', url, path])
 
 def svnUpdate(name):
-    chdir(getSourcePath(name))
-    runCommand('svn', ('update',))
-    popdir()
+    svnUpdatePath(getSourcePath(name))
 
+current_repo_versions = {}
 def svnUpdatePath(path):
     chdir(path)
-    runCommand('svn', ('update',))
+    uuid, current_revision = getSubversionInfo(path)
+    if current_repo_versions.get(uuid, 999999999) > current_revision:
+        # if something has changed in this part of the repo, update it
+        log_xml = runCommand('svn', ['log', '-r', 'BASE:HEAD', '--xml'])
+        match = re.search(r'<logentry[^>]+revision="(\d+)"', log_xml, re.S)
+        if match:
+            last_revision = int(match.group(1))
+        else:
+            last_revision = 999999999
+
+        if '<log>\n</log>' in log_xml or last_revision == current_revision:
+            if verbose > 0:
+                print 'buildout: skipping "%s" (nothing has changed)' % path
+        else:
+            if verbose > 0:
+                print 'buildout: updating "%s"' % path
+
+            output = runCommand('svn', ['update'])
+            uuid, current_revision = getSubversionInfo(path)
+            current_repo_versions[uuid] = current_revision
+    else:
+        if verbose > 0:
+            print 'buildout: skipping "%s" (already up to date)' % path
     popdir()
 
+def getSubversionInfo(path):
+    chdir(path)
+    # collect some info about the working directory
+    output = runCommand('svn', ('info',))
+
+    # get the UUID of the repository
+    match = re.search('^Repository UUID: (.*)$', output, re.MULTILINE)
+    uuid = match.group(1)
+
+    # get the current revision of the working directory
+    match = re.search('^Revision: (.*)$', output, re.MULTILINE)
+    current_revision = int(match.group(1))
+    popdir()
+
+    return uuid, current_revision
 
 dir_stack = []
 def chdir(path):
@@ -259,7 +306,7 @@ def rmtree(path):
         if sys.platform.startswith('win'):
             # the "rmdir" command complains if the path is already gone
             if os.path.exists(path):
-                runCommand('rmdir /q/s ' + os.path.normpath(path))
+                runCommand('rmdir', ['/q/s', os.path.normpath(path)])
         else:
             shutil.rmtree(path)
     except OSError, e:
@@ -444,8 +491,8 @@ def distutilsCommand(name, command):
 
     def doit():
         os.chdir(source)
-	runCommand(getPathToBinary('python') + ' ' +
-                   'setup.py %s --home %s' % (command, prefix))
+	runCommand(getPathToBinary('python'), 
+                   ['setup.py', command, '--home', prefix])
 
     dirBuildHelper(prefix, doit)
     registerPythonPackage(os.path.join(prefix, 'lib', 'python'))
@@ -559,8 +606,7 @@ class WindowsMsi(object):
         if not os.path.exists(self.install_marker):
             installer = fileFromUrl(self.download_url)
             msi_path = os.path.join(getBaseArchivePath(), installer)
-            runCommand('msiexec', ['/i', msi_path],
-                                ignoreExitCode=True)
+            runCommand('msiexec', ['/i', msi_path], ignoreExitCode=True)
 
     def freshen(self):
         # nothing to do

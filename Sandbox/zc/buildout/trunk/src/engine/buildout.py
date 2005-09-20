@@ -155,6 +155,7 @@ def subversionCommand(command, packages):
                 raise
             
 def main(argv):
+    # really need to use optparse instead
     for index, arg in list(enumerate(argv))[::-1]:
         if arg[:2] == '-v':
             arg = arg[1:]
@@ -162,6 +163,10 @@ def main(argv):
                 util.verbose += 1
                 arg = arg[1:]
             del argv[index]
+
+    if util.verbose == 0:
+        print 'working...',
+        sys.stdout.flush()
 
     # get the packages to be built, and their respective versions
     packages = getPackages()
@@ -213,3 +218,4 @@ def main(argv):
                 break
 
         setUpPackages()
+    print 'done'
