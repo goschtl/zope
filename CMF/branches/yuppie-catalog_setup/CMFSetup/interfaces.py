@@ -506,3 +506,29 @@ class ISetupTool( Interface ):
         o If 'ignore_whitespace', then suppress diffs due only to whitespace
           (c.f:  'diff -wbB')
         """
+
+
+from zope.interface import Interface
+
+
+PURGE, UPDATE = range(1, 3)
+
+
+class INodeExporter(Interface):
+
+    """Node exporter.
+    """
+
+    def exportNode(doc):
+        """Export the object as a DOM node.
+        """
+
+
+class INodeImporter(Interface):
+
+    """Node importer.
+    """
+
+    def importNode(node, mode=PURGE):
+        """Import the object from the DOM node.
+        """
