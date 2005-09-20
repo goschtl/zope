@@ -1,15 +1,3 @@
-##############################################################################
-#
-# Copyright (c) 2005 Zope Corporation and Contributors. All Rights Reserved.
-#
-# This software is subject to the provisions of the Zope Public License,
-# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
-# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
-# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-# FOR A PARTICULAR PURPOSE.
-#
-##############################################################################
 import os, sys, shutil
 
 import buildout
@@ -42,7 +30,7 @@ class Default(buildout.DownloadSource):
                 os.path.join(buildout.getSourcePath(self.name), 'configure'),
                 ['--cache-file='+cache_file, '--prefix='+prefix])
             buildout.runCommand('make')
-            buildout.runCommand('make install')
+            buildout.runCommand('make', ['install'])
 
         buildout.dirBuildHelper(os.path.join(prefix, 'build'), helper)
 

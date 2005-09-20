@@ -1,15 +1,3 @@
-##############################################################################
-#
-# Copyright (c) 2005 Zope Corporation and Contributors. All Rights Reserved.
-#
-# This software is subject to the provisions of the Zope Public License,
-# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
-# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
-# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-# FOR A PARTICULAR PURPOSE.
-#
-##############################################################################
 import os, sys
 
 import buildout
@@ -28,9 +16,10 @@ class Default(object):
             zopeskelPath = os.path.join(
                     buildout.getBasePath(), 'zopeskel')
             pythonPath = buildout.getPathToBinary('python')
-            buildout.runCommand(
-                '%(pythonPath)s %(mkzopeinstancePath)s '
-                '-d instance -u admin:admin -s %(zopeskelPath)s' % locals())
+            buildout.runCommand(pythonPath, [mkzopeinstancePath, 
+                                '-d', 'instance', 
+                                '-u', 'admin:tuesday', 
+                                '-s', zopeskelPath])
 
         # Link commands into bin directorys.
         buildout.mkdir('bin')
@@ -38,11 +27,13 @@ class Default(object):
         if sys.platform.startswith('win'):
             buildout.linkOrCopy('../instance/bin/runzope.bat', 'bin/runzope.bat')
             buildout.linkOrCopy('../instance/bin/test.bat', 'bin/test.bat')
+            buildout.linkOrCopy('../instance/bin/selenium.bat', 'bin/selenium.bat')
             buildout.linkOrCopy(pathToPython, 'bin/python.exe')
             buildout.linkOrCopy(pathToPython, 'instance/bin/python.exe')
         else:
             buildout.linkOrCopy('../instance/bin/runzope', 'bin/runzope')
             buildout.linkOrCopy('../instance/bin/test', 'bin/test')
+            buildout.linkOrCopy('../instance/bin/selenium', 'bin/selenium')
             buildout.linkOrCopy('../instance/bin/zopectl', 'bin/zopectl')
             buildout.linkOrCopy(pathToPython, 'bin/python')
             buildout.linkOrCopy(pathToPython, 'instance/bin/python')
