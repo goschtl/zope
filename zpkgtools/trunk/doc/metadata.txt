@@ -1,9 +1,6 @@
-=======================================
-Metadata Descriptions for Distributions
-=======================================
-
-Overview
---------
+===================================
+Metadata Descriptions for Resources
+===================================
 
 Distributions will be described using a collection of files that
 contain different aspects of the relevant metadata.  Each of these

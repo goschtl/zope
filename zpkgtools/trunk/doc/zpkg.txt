@@ -21,7 +21,7 @@ The following command line options are provided:
   file for distutils, but has a more conventional **configure** /
   **make** / **make install** build process that creates an
   application-specific installation tree (for example,
-  `/usr/local/ZopeX3`).
+  `/usr/local/Zope`).
 
 -c, --collection
   Collect dependencies as well as the resource named on the command
@@ -30,7 +30,8 @@ The following command line options are provided:
 
 -C FILE, --configuraion=FILE
   Load the configuration file `FILE` instead of the default
-  configuration file.  `FILE` must exist.
+  configuration file.  No more than one configuration file will ever
+  be loaded.  `FILE` must exist.
 
 --distribution CLASS
   Set the distribution class to be used by distutils.  By default, the
@@ -117,11 +118,20 @@ must be specified in the configuration file using the
 for a single distribution.
 
 
-Configuration File Format
--------------------------
+Configuration File
+------------------
 
-The configuration files used by **zpkg** use the
-`ZConfig`_ configuration language.
+The configuration files used by **zpkg** use the `ZConfig`_
+configuration language.  By default, **zpkg** looks for a
+configuration file at *~/.zkpg/zpkg.conf* on Unix or *zpkg\\zpkg.conf*
+in the *\\Documents and Settings\\username* folder on Windows.  The
+exact name of the folder on Windows depends on the native language
+settings; you can determine the actual location using the Python
+interpreter::
+
+  >>> import os
+  >>> os.path.expanduser('~')
+  'C:\\Documents and Settings\\username'
 
 Blank lines and comments (lines that start with **#** as the first
 non-blank character) are ignored.
@@ -129,118 +139,132 @@ non-blank character) are ignored.
 There are several keys and sections which can be used in the
 configuration file.  Everything is optional.
 
-If **build-application** is set to **true**, then an application
-distribution is constructed instead of a conventional distutils
-distribution; this is equivalent to specifying **-a** on the command
-line.
+The following settings are available in **zpkg** configuration files:
 
-Setting **collect-dependencies** to **true** causes dependencies to be
-added to the distribution if they can be located.  This is the same as
-using the **-c** option on the command line.
+**build-application** (boolean)
+  If set to **true**, then an application distribution is constructed
+  instead of a conventional distutils distribution; this is equivalent
+  to specifying **-a** on the command line.
 
-The **default-collection** value is used to specify a resource that
-should be used as the top-level collection to package if no collection
-is specified on the command line.
+**collect-dependencies** (boolean)
+  Setting to **true** causes dependencies to be added to the
+  distribution if they can be located.  This is the same as using the
+  **-c** option on the command line.
 
-The **distribution-class** setting is used to indicate that a
-particular class should be use to create the ``distutils``
-distribution object.  **zpkg** provides on that supports the **zpkg**
-extensions, but an alternate or further extended version can be used
-by setting this.  This is equivalent to the **--distribution**
-command-line option.
+**default-collection** (resource name)
+  Name of the resource to package by default; a resource named on the
+  command line overrides this setting.
 
-The **include-support-code** key is used to control whether **zpkg**
-bundles the support code along with the resulting distribution.  The
-value is a boolean, where the strings **true** and **false** can be
-used in the configuration file.  If true (the default), copies of the
-``zpkgsetup`` and ``ZConfig`` packages and any additionally configured
-support packages will be included in the distribution (less the test
-code).  If false, the right versions of these packages will be assumed
-to be available for import on target systems.
+**distribution-class** (class name)
+  Use the class identified by this dotted name to create the
+  ``distutils`` distribution object.  **zpkg** provides one that
+  supports the **zpkg** extensions, but an alternate or further
+  extended version can be used by setting this.  This is equivalent to
+  the **--distribution** command-line option.
 
-The **release-name** may be set in the configuration file as well;
-this specifies the external name of the release, which can differ from
-the name of the resource being released.  This is equivalent to the
-**-n** and **--name** command-line options.  This should normally be
-used only in configuration files used to create distribution for a
-single product.
+**include-support-code** (boolean)
+  Controls whether **zpkg** bundles the support code along with the
+  resulting distribution.  The value is a boolean, where the strings
+  **true** and **false** can be used in the configuration file.  If
+  true (the default), copies of the ``zpkgsetup`` and ``ZConfig``
+  packages and any additionally configured support packages will be
+  included in the distribution; this is equivalent to the **-s**
+  command-line option.  If false, the right versions of these
+  packages will be assumed to be available for import on target
+  systems; this is equivalent to the **-S** command-line option.
 
-The value for **resource-map** is a path or URL (including
-``cvs:`` URLs) for a file that defines the map.  Relative paths are
-interpreted as relative to the directory containing the configuration
-file.  The **resource-map** key may be given any number of times;
-entries in the first named map take precedence over entries of the
-same name in later maps.
+**release-name** (string)
+  This name specifies the external name of the release, which can
+  differ from the name of the resource being released.  This is
+  equivalent to the **-n** and **--name** command-line options.  This
+  should normally be used only in configuration files used to create
+  distribution for a single product.
 
-For example, if the configuration file `/home/fdrake/zpkg.conf`
-contains::
+**resource-map** (URL reference)
+  This is a path or URL (including URLs for revision-controlled
+  resources) for a file that defines the map.  Relative paths are
+  interpreted as relative to the directory containing the
+  configuration file.  The **resource-map** key may be given any
+  number of times; entries in the first named map take precedence over
+  entries of the same name in later maps.  This is equivalent to the
+  **-m** command-line option.
 
-  resource-map  local.map
+There are also some sections that can be added to the configuration
+file to provide more structured information:
 
-  <resources>
-    somepkg  some/relative/path
-  </resources>
+**<exclude>**
+  Specify resources that should not be included in the distribution.
+  Every line should specify one package. This is equivalent of
+  specifying **-x** or **--exclude** for every excluded package.
 
-  resource-map cvs://cvs.zope.org/cvs-repository:Packages2/packages.map
+  If a package is excluded, dependency information is not loaded for
+  that package either.  The dependencies for that package are only
+  included if some other package also depends on them, unless they
+  have also been excluded explicitly.
 
-  <resources>
-    another  some/where/else
-  </resources>
+  For example, we can exclude ``zope.interface`` and
+  ``zope.component`` using::
 
-**zpkg** will first load the maps in the order:
+    <exclude>
+      zope.interface
+      zope.component
+    </exclude>
 
-1. embedded maps, in their order of appearance
-2. ``/home/fdrake/local.map``
-3. ``cvs://cvs.zope.org/cvs-repository:Packages2/packages.map``
+  Note that neither the **<exclude>** section nor the **-x** and
+  **--exclude** command-line options support wildcards.  Exclusions do
+  not affect the construction of the *Support/* directory.
 
-Note that all **<resources>** sections will be processed before any
-external maps are loaded, regardless of ordering.
+**<resources>**
+  Provide a resource map embedded in the configuration file.  For
+  example, if the configuration file `/home/fdrake/zpkg.conf`
+  contains::
 
-The **<support-packages>** section can be used to add additional
-packages to the *Support/* directory of the generated distribution.
-Within this section, each key specifies a Python package which should
-be added to the support area.  If a value is given for the key, that
-is used as the location from which the resource should be loaded.  If
-no location is specified, the global resource map is used; this is
-equivalent to using the **--support** command-line option.
+    resource-map  local.map
 
-For example, using this **<support-packages>** section::
+    <resources>
+      somepkg  some/relative/path
+    </resources>
 
-  <support-packages>
-    foo
-    bar  svn://svn.example.net/repo/foo/trunk/src/foo
-  </support-packages>
+    resource-map cvs://cvs.zope.org/cvs-repository:Packages2/packages.map
 
-would cause the ``foo`` package to be located using the global
-resource map, but the ``bar`` package to be loaded from the specied
-location, without regard for the global resource map.
+    <resources>
+      another  some/where/else
+    </resources>
 
-Note that when using the **<support-packages>** section, packages are
-always added to the *Support/* directory (they cannot be removed from
-the command line), but the **-s** and **-S** options still control
-whether the support directory is included in the distribution at all.
+  **zpkg** will first load the maps in the order:
 
-There is an **<exclude>** section in which you can specify the
-packages/resources that should be excluded (in other words not loaded) from
-the package. Every line should specify one package. This is equivalent of
-specifying **-x** or **--exclude** for every excluded package.
+  1. embedded maps, in their order of appearance
+  2. ``/home/fdrake/local.map``
+  3. ``cvs://cvs.zope.org/cvs-repository:Packages2/packages.map``
 
-If a package is excluded, dependency information is not loaded for
-that package either.  Dependencies for that package are only loaded if
-some other package also depends on them, unless they have also been
-excluded explicitly.
+  Note that all **<resources>** sections will be processed before any
+  external maps are loaded, regardless of ordering.
 
-For example, we can exclude ``zope.interface`` and ``zope.component``
-using::
+**<support-packages>**
+  This section can be used to add additional packages to the
+  *Support/* directory of the generated distribution.  Within this
+  section, each key specifies a Python package which should be added
+  to the support area.  If a value is given for the key, that is used
+  as the location from which the resource should be loaded.  If no
+  location is specified, the global resource map is used; this is
+  equivalent to using the **--support** command-line option.
 
-  <exclude>
-    zope.interface
-    zope.component
-  </exclude>
+  For example, using this **<support-packages>** section::
 
-Note that neither the **<exclude>** section nor the **-x** and
-**--exclude** command-line options support wildcards.  Exclusions do
-not affect the construction of the *Support/* directory.
+    <support-packages>
+      foo
+      bar  svn://svn.example.net/repo/foo/trunk/src/foo
+    </support-packages>
+
+  would cause the ``foo`` package to be located using the global
+  resource map, but the ``bar`` package to be loaded from the specied
+  location, without regard for the global resource map.
+
+  Note that when using the **<support-packages>** section, packages
+  are always added to the *Support/* directory (they cannot be removed
+  from the command line), but the **-s** and **-S** options still
+  control whether the support directory is included in the
+  distribution at all.
 
 
 Resource Maps

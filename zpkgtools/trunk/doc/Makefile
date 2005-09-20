@@ -21,6 +21,7 @@ RST2HTML=../../../Zope3/utilities/rst2html
 LOCAL_HTML=\
 	collections.html \
 	index.html \
+	intro.html \
 	metadata.html \
 	quickstart.html \
 	resources.html \
