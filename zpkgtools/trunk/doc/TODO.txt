@@ -20,6 +20,12 @@ Things that need to be done
     when building an "application" distribution since that has some
     support to select from different available Python interpreters.)
 
+  - We're currently only supporting a limited amount of "package
+    information" for collections, but this is largely a software
+    issue, not a design problem.  The information file is called
+    `SETUP.cfg`, and what's accepted is a subset of what's allowed for
+    a Python package.
+
   - Re-visit the abstractions for parsed revision control URLs:
 
     - The current abstraction is pretty painful to work with, and

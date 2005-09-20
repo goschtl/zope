@@ -2,9 +2,6 @@
 Collection Distributions
 ========================
 
-Overview
---------
-
 Collection distributions contain one or more other distributions and
 the necessary support for installing all of the contained
 distributions.  The |zpkg|_ utility can build collection
@@ -91,33 +88,6 @@ this directory will have the collection content and any distutils
 support files needed.  For packages, the contents of the directory are
 exactly the same as they would be for a separate package distribution
 build with |zpkg|_.
-
-
-Issues
-------
-
-The following issues are known to exist with the current structure of
-a collection distribution:
-
-- In theory, the namespaces for different types of resources are
-  separate, so collections and packages with the same name should be
-  able to coexist.  This directory structure doesn't distinguish
-  between them, so that remains theory.  The only case we currently
-  need to deal with like this is ZODB: there is a Python package named
-  ``ZODB``, and there's a collection that contains that and a handful
-  of other packages that are normally distributed as part of a
-  separate ZODB distribution (``ZEO``, ``zLOG``, ``ZConfig``, and a
-  few others).  Given this limitation, the collection would need to
-  have a different name (``ZODB3`` comes to mind).
-
-  This isn't enough of a problem to worry about at this point; we just
-  need to keep this in mind when naming components.
-
-- We're currently only supporting a limited amount of "package
-  information" for collections, but this is largely a software issue,
-  not a design problem.  The information file is called `SETUP.cfg`,
-  and what's accepted is a subset of what's allowed for a Python
-  package.
 
 
 .. include:: links.rst
