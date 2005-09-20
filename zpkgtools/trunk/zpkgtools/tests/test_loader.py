@@ -54,6 +54,9 @@ class LoaderTestCase(LoaderTestBase,
            "cvs://cvs.example.org/cvsroot:module:TAG")
         # Subversion:
         self.check_changing_subversion_urls("svn", "svn.example.org")
+        self.check_changing_subversion_urls("svn:http", "svn.example.org")
+        self.check_changing_subversion_urls("svn:svn", "svn.example.org")
+        self.check_changing_subversion_urls("svn:svn+ssh", "svn.example.org")
         self.check_changing_subversion_urls("svn+ssh", "svn.example.org")
         repodir = urlutils.pathname2url(self.svnrepodir)
         self.check_changing_subversion_urls("file", "", repodir)
@@ -90,6 +93,18 @@ class LoaderTestCase(LoaderTestBase,
            "svn://example.org/path/to/svnroot/tags/foo/file.txt")
         eq(convert("svn://example.org/path/to/svnroot/branches/foo/file.txt"),
            "svn://example.org/path/to/svnroot/branches/foo/file.txt")
+        eq(convert("svn:http://example.org/path/to/svnroot/tags/foo/file.txt"),
+           "svn:http://example.org/path/to/svnroot/tags/foo/file.txt")
+        eq(convert("svn:http://example.org/path/to/svnroot/branches/foo/f.txt"),
+            "svn:http://example.org/path/to/svnroot/branches/foo/f.txt")
+        eq(convert("svn:svn://example.org/path/to/svnroot/tags/foo/f.txt"),
+           "svn:svn://example.org/path/to/svnroot/tags/foo/f.txt")
+        eq(convert("svn:svn://example.org/path/to/svnrt/branches/f/f.txt"),
+           "svn:svn://example.org/path/to/svnrt/branches/f/f.txt")
+        eq(convert("svn:svn+ssh://example.org/path/to/svnroot/tags/foo/f.txt"),
+           "svn:svn+ssh://example.org/path/to/svnroot/tags/foo/f.txt")
+        eq(convert("svn:svn+ssh://example.org/path/to/svnrt/branches/f/f.txt"),
+           "svn:svn+ssh://example.org/path/to/svnrt/branches/f/f.txt")
         eq(convert("svn+ssh://example.org/path/to/svnroot/tags/foo/file.txt"),
            "svn+ssh://example.org/path/to/svnroot/tags/foo/file.txt")
         eq(convert("svn+ssh://example.org/path/to/svnroot/branches/foo/file"),
@@ -116,6 +131,33 @@ class LoaderTestCase(LoaderTestBase,
                               "project/tags/SPLAT/file.txt"))
         else:
             self.fail("expected the general Subversion handler to be called")
+ 
+    def test_load_with_svn_prefix(self):
+        """Test loader with svn prefix.
+        
+        Ensure that:
+            1. load_svn handles all urls with an svn: prefix.
+            2. that the url is passed to the svn loader with the prefix stripped
+        """
+        PREFIX = 'svn:'
+        URL = ("bar+foo://svn.example.net/path/to/svnroot/"
+               "project/tags/*/file.txt")
+        class MyError(Exception):
+            def __init__(self, url):
+                self.url = url
+        class MySvnLoader:
+            def load(self, url, tmp):
+                raise MyError(url)
+        loader = self.createLoader(tag="SPLAT")
+        loader.svnloader = MySvnLoader()
+        try:
+            loader.load(PREFIX + URL)
+        except MyError, e:
+            self.assertEqual(e.url,
+                             ("bar+foo://svn.example.net/path/to/svnroot/"
+                              "project/tags/SPLAT/file.txt"))
+        else:
+            self.fail("subversion prefix handling failed")
 
     def test_load_with_file(self):
         filename = os.path.abspath(__file__)
@@ -280,6 +322,21 @@ class SvnSshUrlFunctionTestCase(UrlFunctionTestCase):
     TYPE = "svn+ssh"
 
 
+class SvnSvnUrlFunctionTestCase(UrlFunctionTestCase):
+
+    TYPE = "svn:svn"
+
+
+class SvnSvnSshUrlFunctionTestCase(UrlFunctionTestCase):
+
+    TYPE = "svn:svn+ssh"
+
+
+class SvnHttpUrlFunctionTestCase(UrlFunctionTestCase):
+
+    TYPE = "svn:http"
+
+
 class SvnSpecialUrlFunctionTestCase(UrlFunctionTestCase):
 
     TYPE = "svn+other"
@@ -303,6 +360,9 @@ def test_suite():
     suite.addTest(unittest.makeSuite(LoaderTestCase))
     suite.addTest(unittest.makeSuite(UrlFunctionTestCase))
     suite.addTest(unittest.makeSuite(SvnSshUrlFunctionTestCase))
+    suite.addTest(unittest.makeSuite(SvnSvnUrlFunctionTestCase))
+    suite.addTest(unittest.makeSuite(SvnSvnSshUrlFunctionTestCase))
+    suite.addTest(unittest.makeSuite(SvnHttpUrlFunctionTestCase))
     suite.addTest(unittest.makeSuite(SvnSpecialUrlFunctionTestCase))
     suite.addTest(unittest.makeSuite(SvnFileUrlFunctionTestCase))
     suite.addTest(unittest.makeSuite(SvnFileLocalhostUrlFunctionTestCase))

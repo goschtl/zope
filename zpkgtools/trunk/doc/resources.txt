@@ -82,7 +82,10 @@ Supporting Other Revision Control Systems
 -----------------------------------------
 
 Currently, CVS is supported generally, and Subversion is supported for
-schemes other than ``http:`` and ``https:``.
+most schemes; for ``http:`` and ``https:``, add an ``svn:`` prefix so
+|zpkg|_ knows the URL is accessible via Subversion::
+
+    svn:http://codespeak.net/svn/user/fdrake/testpkg
 
 Support for additional systems hinges on creating new URL schemes for
 each system.

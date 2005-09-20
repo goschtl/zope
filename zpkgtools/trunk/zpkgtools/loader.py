@@ -261,11 +261,15 @@ class Loader:
                          " appropriate revision-control base URL")
 
     def load_svn(self, url):
+        original_url = url
+        type, rest = urllib.splittype(url)
+        if type == "svn" and urllib.splittype(rest)[0]:
+            url = rest
         if self.svnloader is None:
             self.svnloader = svnloader.SubversionLoader()
         tmp = tempfile.mkdtemp(prefix="svnloader-")
         path = self.svnloader.load(url, tmp)
-        self.add_working_dir(url, tmp, path, True)
+        self.add_working_dir(original_url, tmp, path, True)
         return path
 
     def load_svn_ssh(self, url):
