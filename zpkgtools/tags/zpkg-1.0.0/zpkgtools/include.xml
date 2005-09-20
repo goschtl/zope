@@ -1,0 +1,37 @@
+<schema prefix="zpkgtools">
+
+  <sectiontype name="collection"
+               datatype=".include.collection_section"
+               keytype=".include.workspace_path_ref">
+    <multikey name="+"
+             attribute="mapping"
+             datatype=".include.collection_path_ref"
+             />
+  </sectiontype>
+
+  <sectiontype name="distribution"
+               datatype=".include.distribution_section"
+               keytype=".include.workspace_path_ref">
+    <key name="+"
+        attribute="mapping"
+        datatype=".include.distribution_path_ref"
+        />
+  </sectiontype>
+
+  <sectiontype name="load"
+               datatype=".include.load_section"
+               keytype=".include.workspace_path_ref">
+    <key name="+"
+        attribute="mapping"
+        datatype=".include.load_path_ref"
+        />
+  </sectiontype>
+
+  <section type="collection"
+           attribute="collection"/>
+  <section type="distribution"
+           attribute="distribution"/>
+  <section type="load"
+           attribute="loads"/>
+
+</schema>
