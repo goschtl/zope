@@ -2,7 +2,7 @@
 import sys, os
 
 ENGINE_PATH = './buildout/engine'
-ENGINE_URL = 'svn+ssh://svn.zope.com/repos/main/buildout/trunk/src/engine'
+ENGINE_URL = 'svn://svn.zope.org/repos/main/Sandbox/zc/buildout/trunk/src/engine'
 
 # bootstrap the buildout code, if it doesn't yet exist
 if os.path.exists(ENGINE_PATH):
