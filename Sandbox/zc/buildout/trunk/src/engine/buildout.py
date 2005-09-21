@@ -27,7 +27,6 @@ def getRecipe(module):
         recipe = module.Default()
     return recipe
 
-        
 def get(modules, packages):
     try:
         version_file = open('.version_info', 'rb')
@@ -39,6 +38,7 @@ def get(modules, packages):
 
     new_packages = {}
     for module, (package, version) in zip(modules, packages):
+        activityDot()
         if isExternal(package):
             old_version = old_packages.get(package)
             if old_packages and old_version and old_version != version:
@@ -58,8 +58,8 @@ def get(modules, packages):
                                'ok? [yes|no] ' % package)
             if answer != 'yes':
                 raise SystemExit
-            shutil.rmtree(source_path)
-            shutil.rmtree(build_path)
+            util.rmtree(source_path)
+            util.rmtree(build_path)
 
         chdir('.')
 
@@ -80,6 +80,7 @@ def get(modules, packages):
 
 def build(modules, packages):
     for module, (package, version) in zip(modules, packages):
+        activityDot()
         if isExternal(package):
             if util.verbose:
                 print 'buildout: skipping external', package
@@ -96,6 +97,7 @@ def build(modules, packages):
 
 def install(modules, packages):
     for module, (package, version) in zip(modules, packages):
+        activityDot()
         chdir('.')
         if util.verbose:
             print 'buildout: installing', package
@@ -106,6 +108,7 @@ def install(modules, packages):
 
 def freshen(modules, packages):
     for module, (package, version) in zip(modules, packages):
+        activityDot()
         if isExternal(package):
             if util.verbose:
                 print 'buildout: skipping external', package
@@ -193,29 +196,8 @@ def main(argv):
         install(modules, packages)
         setUpPackages()
     elif len(argv) == 2 and argv[1] == 'clobber':
-        for p in ['src', 'opt', 'bin', 'instance']:
+        for p in ['var/src', 'var/opt', 'bin', 'instance']:
+            activityDot()
             if os.path.exists(p):
-                shutil.rmtree(p)
-    elif len(argv) == 2: # If the user requested a package be rebuilt.
-        name = argv[1]
-        for package in packages:
-            if package[0] == name:
-                version = package[1]
-                break
-        else:
-            raise RuntimeError('Unknown package: ' + name)
-
-        for module in modules:
-            if module.__name__.endswith('.'+name):
-                if not isExternal(name):
-                    path = getBuildPath(name)
-                    if os.path.exists(name):
-                        shutil.rmtree(name)
-                    get([module], [(name, version)])
-                    freshen([module], [(name, version)])
-                    build([module], [(name, version)])
-                    install([module], [(name, version)])
-                break
-
-        setUpPackages()
+                util.rmtree(p)
     print 'done'

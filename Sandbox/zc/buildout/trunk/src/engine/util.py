@@ -21,6 +21,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import time
 import urllib
 import urlparse
 import zipfile
@@ -165,6 +166,15 @@ def getSourcePath(package):
 def getBaseArchivePath():
     return os.path.join(getBasePath(), 'var', 'files')
 
+DOT_TIME = 0.33
+last_activity_dot_time = 0
+def activityDot():
+    global last_activity_dot_time
+    if verbose == 0 and time.time() - last_activity_dot_time > DOT_TIME:
+        sys.stdout.write('.')
+        sys.stdout.flush()
+        last_activity_dot_time = time.time()
+
 def runCommand(file, args=(), successMarker=None, errorMarker=None,
                ignoreExitCode=False):
     if verbose >= 2:
@@ -174,14 +184,23 @@ def runCommand(file, args=(), successMarker=None, errorMarker=None,
     command.extend(args)
     child = subprocess.Popen(command, stdout=subprocess.PIPE, 
                              stderr=subprocess.STDOUT)
-    output = child.communicate()[0]
 
+    output = []
+    while True:
+        activityDot()
+        output.append(child.stdout.read())
+        if child.poll() is not None:
+            break
+        time.sleep(0)
+
+    output = ''.join(output)
     try:
         if not (successMarker or errorMarker):
             # If no success or error text was provided, use the proccess'
             #  exit value.
             if child.returncode and not ignoreExitCode:
-                raise RuntimeError('Command exit code indicated error: '+cmd)
+                raise RuntimeError('Command exit code indicated error: '+
+                                   ' '.join(command))
         else:
             if errorMarker != None and errorMarker in output:
                 raise RuntimeError('Command produced erronious output.')
