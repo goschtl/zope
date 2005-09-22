@@ -112,6 +112,7 @@ def getDependenciesOfPythonFile(path, packages):
     return finder.get_imports()
 
 
+# TODO: Issue: 459, the option -z isn't working
 def getDependenciesOfZCMLFile(path, packages):
     """Get dependencies from ZCML file."""
     s = makeDottedName(path)
@@ -197,17 +198,28 @@ def getDependencies(path, zcml=False, packages=False):
                     deps += getDependencies(filePath, zcml, packages)
 
     elif os.path.isfile(path):
+        # return a empty list if no extension will fit
+        deps = []
         ext = os.path.splitext(path)[1]
         if ext == ".py":
             deps = getDependenciesOfPythonFile(path, packages)
         elif ext == ".zcml":
             deps = getDependenciesOfZCMLFile(path, packages)
-        else:
-            print >>sys.stderr, ("dependencies can only be"
-                                 " extracted from Python and ZCML files")
-            sys.exit(1)
+        # TODO: Issue: 459, check this
+        # It doesn't make sense to exit here, check why we run into this
+        # and make sure this whan't happen in the future. I guess we need
+        # more 'elif' case where will handle other extensions too
+        #else:
+        #    print >>sys.stderr, ("dependencies can only be"
+        #                         " extracted from Python and ZCML files")
+        #    sys.exit(1)
 
     else:
+        # TODO: Issue: 459, why do we exit here? I think the dependency tool
+        # should report dependeny and not exit at all. It doesn't make sense
+        # to abort on any error because we should report as much as possible
+        # Perhaps we should add another script like 'findmissing' or
+        # something like that, where is able to find missing imported packages.
         print >>sys.stderr, path, "does not exist"
         sys.exit(1)
 
@@ -223,19 +235,23 @@ def getCleanedDependencies(path, zcml=False, packages=False):
     return deps
 
 
-def getAllCleanedDependencies(path, zcml=False, deps=None, paths=None,
+# TODO: Issue: 459, check changed constructor
+def getAllCleanedDependencies(path, zcml=False, deps=[], paths=[],
                               packages=False):
     """Return a list of all cleaned dependencies in a path."""
+    # TODO: Issue: 459, remove this comment and make sure we now what we like 
+    # to do here
+
     # zope and zope/app are too general to be considered.
     # TODO: why?  dependencies are dependencies.
     # Because otherwise it would just pick up zope as a dependency, but
     # nothing else. We need a way to detect packages.
-    if path.endswith('src/zope/') or path.endswith('src/zope/app/'):
-        return deps
 
-    if deps is None:
-        deps = []
-        paths = []
+    # TODO: Issue: 459, implement a better path check method
+    # there's a t east me useing windows ;-)
+    if path.endswith('src/zope/') or path.endswith('src/zope/app/') or \
+        path.endswith('src\\zope\\') or path.endswith('src\\zope\\app\\'):
+        return deps
 
     newdeps = getCleanedDependencies(path, zcml, packages)
     for dep in newdeps:
@@ -254,7 +270,7 @@ def getAllCleanedDependencies(path, zcml=False, deps=None, paths=None,
 def showDependencies(path, zcml=False, long=False, all=False, packages=False):
     """Show the dependencies of a module on the screen."""
     if all:
-        deps = getAllCleanedDependencies(path, zcml, packages)
+        deps = getAllCleanedDependencies(path, zcml, packages=packages)
     else:
         deps = getCleanedDependencies(path, zcml, packages)
 
