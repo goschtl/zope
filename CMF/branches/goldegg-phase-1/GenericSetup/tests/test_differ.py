@@ -12,19 +12,25 @@
 ##############################################################################
 """ Unit tests for differ module.
 
-$Id$
+$Id: test_differ.py,v 1.1.1.1 2005/08/08 19:38:37 tseaver Exp $
 """
 
 import unittest
 import Testing
-import Zope2
+try:
+    import Zope2
+except ImportError: # BBB: for Zope 2.7
+    import Zope as Zope2
 Zope2.startup()
 
 from OFS.Folder import Folder
 from OFS.Image import File
 
 from DateTime.DateTime import DateTime
-from Products.CMFCore.tests.base.testcase import SecurityRequestTest
+
+#from Products.CMFCore.tests.base.testcase import SecurityRequestTest
+from Testing.ZopeTestCase import ZopeTestCase
+from common import SecurityRequestTest
 
 
 class DummySite( Folder ):
@@ -36,7 +42,7 @@ class Test_unidiff( unittest.TestCase ):
 
     def test_unidiff_both_text( self ):
 
-        from Products.CMFSetup.differ import unidiff
+        from Products.GenericSetup.differ import unidiff
 
         diff_lines = unidiff( ONE_FOUR, ZERO_FOUR )
         diff_text = '\n'.join( diff_lines )
@@ -44,7 +50,7 @@ class Test_unidiff( unittest.TestCase ):
 
     def test_unidiff_both_lines( self ):
 
-        from Products.CMFSetup.differ import unidiff
+        from Products.GenericSetup.differ import unidiff
 
         diff_lines = unidiff( ONE_FOUR.splitlines(), ZERO_FOUR.splitlines() )
         diff_text = '\n'.join( diff_lines )
@@ -52,7 +58,7 @@ class Test_unidiff( unittest.TestCase ):
 
     def test_unidiff_mixed( self ):
 
-        from Products.CMFSetup.differ import unidiff
+        from Products.GenericSetup.differ import unidiff
 
         diff_lines = unidiff( ONE_FOUR, ZERO_FOUR.splitlines() )
         diff_text = '\n'.join( diff_lines )
@@ -60,7 +66,7 @@ class Test_unidiff( unittest.TestCase ):
 
     def test_unidiff_ignore_blanks( self ):
 
-        from Products.CMFSetup.differ import unidiff
+        from Products.GenericSetup.differ import unidiff
 
         double_spaced = ONE_FOUR.replace( '\n', '\n\n' )
         diff_lines = unidiff( double_spaced
@@ -104,7 +110,7 @@ class ConfigDiffTests( SecurityRequestTest ):
 
     def _getTargetClass( self ):
 
-        from Products.CMFSetup.differ import ConfigDiff
+        from Products.GenericSetup.differ import ConfigDiff
         return ConfigDiff
 
     def _makeOne( self, lhs, rhs, *args, **kw ):
@@ -117,14 +123,14 @@ class ConfigDiffTests( SecurityRequestTest ):
             return
 
         site = self.site = DummySite( 'site' ).__of__( self.root )
-        site._setObject( 'portal_setup', Folder( 'portal_setup' ) )
-        self.tool = tool = site._getOb( 'portal_setup' )
+        site._setObject( 'setup_tool', Folder( 'setup_tool' ) )
+        self.tool = tool = site._getOb( 'setup_tool' )
 
         tool._setObject( 'snapshots', Folder( 'snapshots' ) )
 
     def _makeContext( self, context_id ):
 
-        from Products.CMFSetup.context import SnapshotImportContext
+        from Products.GenericSetup.context import SnapshotImportContext
 
         self._makeSite()
 

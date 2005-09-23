@@ -10,14 +10,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" CMFSetup rolemap export / import unit tests
+""" GenericSetup rolemap export / import unit tests
 
-$Id$
+$Id: test_rolemap.py,v 1.1.1.1 2005/08/08 19:38:37 tseaver Exp $
 """
 
 import unittest
 import Testing
-import Zope2
+try:
+    import Zope2
+except ImportError: # BBB: for Zope 2.7
+    import Zope as Zope2
 Zope2.startup()
 
 from OFS.Folder import Folder
@@ -30,7 +33,7 @@ class RolemapConfiguratorTests( BaseRegistryTests ):
 
     def _getTargetClass( self ):
 
-        from Products.CMFSetup.rolemap import RolemapConfigurator
+        from Products.GenericSetup.rolemap import RolemapConfigurator
         return RolemapConfigurator
 
     def test_listRoles_normal( self ):
@@ -366,7 +369,7 @@ class Test_exportRolemap( BaseRegistryTests ):
 
         context = DummyExportContext( site )
 
-        from Products.CMFSetup.rolemap import exportRolemap
+        from Products.GenericSetup.rolemap import exportRolemap
         exportRolemap( context )
 
         self.assertEqual( len( context._wrote ), 1 )
@@ -385,7 +388,7 @@ class Test_exportRolemap( BaseRegistryTests ):
 
         context = DummyExportContext( site )
 
-        from Products.CMFSetup.rolemap import exportRolemap
+        from Products.GenericSetup.rolemap import exportRolemap
         exportRolemap( context )
 
         self.assertEqual( len( context._wrote ), 1 )
@@ -406,7 +409,7 @@ class Test_exportRolemap( BaseRegistryTests ):
 
         context = DummyExportContext( site )
 
-        from Products.CMFSetup.rolemap import exportRolemap
+        from Products.GenericSetup.rolemap import exportRolemap
         exportRolemap( context )
 
         self.assertEqual( len( context._wrote ), 1 )
@@ -429,7 +432,7 @@ class Test_exportRolemap( BaseRegistryTests ):
 
         context = DummyExportContext( site )
 
-        from Products.CMFSetup.rolemap import exportRolemap
+        from Products.GenericSetup.rolemap import exportRolemap
         exportRolemap( context )
 
         self.assertEqual( len( context._wrote ), 1 )
@@ -449,7 +452,7 @@ class Test_exportRolemap( BaseRegistryTests ):
 
         context = DummyExportContext( site )
 
-        from Products.CMFSetup.rolemap import exportRolemap
+        from Products.GenericSetup.rolemap import exportRolemap
         exportRolemap( context )
 
         self.assertEqual( len( context._wrote ), 1 )
@@ -472,7 +475,7 @@ class Test_importRolemap( BaseRegistryTests ):
         context = DummyImportContext( site )
         context._files[ 'rolemap.xml' ] = _EMPTY_EXPORT
 
-        from Products.CMFSetup.rolemap import importRolemap
+        from Products.GenericSetup.rolemap import importRolemap
         importRolemap( context )
 
         new_roles = list( getattr( site, '__ac_roles__', [] ) )[:]
@@ -494,7 +497,7 @@ class Test_importRolemap( BaseRegistryTests ):
         context = DummyImportContext( site, True )
         context._files[ 'rolemap.xml' ] = _EMPTY_EXPORT
 
-        from Products.CMFSetup.rolemap import importRolemap
+        from Products.GenericSetup.rolemap import importRolemap
         importRolemap( context )
 
         new_roles = list( getattr( site, '__ac_roles__', [] ) )[:]
@@ -516,7 +519,7 @@ class Test_importRolemap( BaseRegistryTests ):
         context = DummyImportContext( site, False )
         context._files[ 'rolemap.xml' ] = _EMPTY_EXPORT
 
-        from Products.CMFSetup.rolemap import importRolemap
+        from Products.GenericSetup.rolemap import importRolemap
         importRolemap( context )
 
         new_roles = list( getattr( site, '__ac_roles__', [] ) )[:]
@@ -548,7 +551,7 @@ class Test_importRolemap( BaseRegistryTests ):
         context = DummyImportContext( site, True )
         context._files[ 'rolemap.xml' ] = _ACQUIRED_EXPORT
 
-        from Products.CMFSetup.rolemap import importRolemap
+        from Products.GenericSetup.rolemap import importRolemap
         importRolemap( context )
 
         new_allowed = [ x[ 'name' ]
@@ -582,7 +585,7 @@ class Test_importRolemap( BaseRegistryTests ):
         context = DummyImportContext( site, False )
         context._files[ 'rolemap.xml' ] = _ACQUIRED_EXPORT
 
-        from Products.CMFSetup.rolemap import importRolemap
+        from Products.GenericSetup.rolemap import importRolemap
         importRolemap( context )
 
         new_allowed = [ x[ 'name' ]
@@ -616,7 +619,7 @@ class Test_importRolemap( BaseRegistryTests ):
         context = DummyImportContext( site, True )
         context._files[ 'rolemap.xml' ] = _UNACQUIRED_EXPORT
 
-        from Products.CMFSetup.rolemap import importRolemap
+        from Products.GenericSetup.rolemap import importRolemap
         importRolemap( context )
 
         new_allowed = [ x[ 'name' ]
@@ -649,7 +652,7 @@ class Test_importRolemap( BaseRegistryTests ):
         context = DummyImportContext( site, False )
         context._files[ 'rolemap.xml' ] = _UNACQUIRED_EXPORT
 
-        from Products.CMFSetup.rolemap import importRolemap
+        from Products.GenericSetup.rolemap import importRolemap
         importRolemap( context )
 
         new_allowed = [ x[ 'name' ]
@@ -684,7 +687,7 @@ class Test_importRolemap( BaseRegistryTests ):
         context = DummyImportContext( site, True )
         context._files[ 'rolemap.xml' ] = _COMBINED_EXPORT
 
-        from Products.CMFSetup.rolemap import importRolemap
+        from Products.GenericSetup.rolemap import importRolemap
         importRolemap( context )
 
         self.failUnless( site._has_user_defined_role( 'ZZZ' ) )
@@ -721,7 +724,7 @@ class Test_importRolemap( BaseRegistryTests ):
         context = DummyImportContext( site, False )
         context._files[ 'rolemap.xml' ] = _COMBINED_EXPORT
 
-        from Products.CMFSetup.rolemap import importRolemap
+        from Products.GenericSetup.rolemap import importRolemap
         importRolemap( context )
 
         self.failUnless( site._has_user_defined_role( 'ZZZ' ) )
@@ -758,7 +761,7 @@ class Test_importRolemap( BaseRegistryTests ):
         context = DummyImportContext( site, False, encoding='ascii' )
         context._files[ 'rolemap.xml' ] = _COMBINED_EXPORT
 
-        from Products.CMFSetup.rolemap import importRolemap
+        from Products.GenericSetup.rolemap import importRolemap
         importRolemap( context )
 
         self.failUnless( site._has_user_defined_role( 'ZZZ' ) )

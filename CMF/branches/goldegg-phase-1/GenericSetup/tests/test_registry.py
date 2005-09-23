@@ -12,17 +12,20 @@
 ##############################################################################
 """ Registry unit tests.
 
-$Id$
+$Id: test_registry.py,v 1.1.1.1 2005/08/08 19:38:37 tseaver Exp $
 """
 
 import unittest
 import Testing
-import Zope2
+try:
+    import Zope2
+except ImportError: # BBB: for Zope 2.7
+    import Zope as Zope2
 Zope2.startup()
 
 from OFS.Folder import Folder
-from Products.CMFSetup.tests.common import BaseRegistryTests
-from Products.CMFSetup import EXTENSION
+from Products.GenericSetup.tests.common import BaseRegistryTests
+from Products.GenericSetup import EXTENSION
 
 from conformance import ConformsToIStepRegistry
 from conformance import ConformsToIImportStepRegistry
@@ -55,7 +58,7 @@ class ImportStepRegistryTests( BaseRegistryTests
 
     def _getTargetClass( self ):
 
-        from Products.CMFSetup.registry import ImportStepRegistry
+        from Products.GenericSetup.registry import ImportStepRegistry
         return ImportStepRegistry
 
     def test_empty( self ):
@@ -595,7 +598,7 @@ class ExportStepRegistryTests( BaseRegistryTests
 
     def _getTargetClass( self ):
 
-        from Products.CMFSetup.registry import ExportStepRegistry
+        from Products.GenericSetup.registry import ExportStepRegistry
         return ExportStepRegistry
 
     def _makeOne( self, *args, **kw ):
@@ -834,7 +837,7 @@ class ToolsetRegistryTests( BaseRegistryTests
 
     def _getTargetClass( self ):
 
-        from Products.CMFSetup.registry import ToolsetRegistry
+        from Products.GenericSetup.registry import ToolsetRegistry
         return ToolsetRegistry
 
     def _initSite( self ):
@@ -1030,7 +1033,7 @@ class ProfileRegistryTests( BaseRegistryTests
 
     def _getTargetClass( self ):
 
-        from Products.CMFSetup.registry import ProfileRegistry
+        from Products.GenericSetup.registry import ProfileRegistry
         return ProfileRegistry
 
     def test_empty( self ):

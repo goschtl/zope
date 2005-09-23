@@ -10,14 +10,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for CMFSetup tool.
+""" Unit tests for GenericSetup tool.
 
-$Id$
+$Id: test_tool.py,v 1.1.1.1 2005/08/08 19:38:37 tseaver Exp $
 """
 
 import unittest
 import Testing
-import Zope2
+try:
+    import Zope2
+except ImportError: # BBB: for Zope 2.7
+    import Zope as Zope2
 Zope2.startup()
 
 from StringIO import StringIO
@@ -25,12 +28,15 @@ from StringIO import StringIO
 from Acquisition import aq_base
 from OFS.Folder import Folder
 
-from Products.CMFSetup import profile_registry
+from Products.GenericSetup import profile_registry
 
 from common import DOMComparator
 from common import DummyExportContext
 from common import DummyImportContext
 from common import FilesystemTestBase
+
+#from Products.CMFCore.tests.base.testcase import SecurityRequestTest
+from Testing.ZopeTestCase import ZopeTestCase
 from common import SecurityRequestTest
 from common import TarballTester
 from conformance import ConformsToISetupTool
@@ -58,7 +64,7 @@ class SetupToolTests( FilesystemTestBase
 
     def _getTargetClass( self ):
 
-        from Products.CMFSetup.tool import SetupTool
+        from Products.GenericSetup.tool import SetupTool
         return SetupTool
 
     def _makeOne( self, *args, **kw ):
@@ -94,9 +100,9 @@ class SetupToolTests( FilesystemTestBase
 
     def test_getImportContextID( self ):
 
-        from Products.CMFSetup.tool import IMPORT_STEPS_XML
-        from Products.CMFSetup.tool import EXPORT_STEPS_XML
-        from Products.CMFSetup.tool import TOOLSET_XML
+        from Products.GenericSetup.tool import IMPORT_STEPS_XML
+        from Products.GenericSetup.tool import EXPORT_STEPS_XML
+        from Products.GenericSetup.tool import TOOLSET_XML
         from test_registry import _EMPTY_IMPORT_XML
         from test_registry import _EMPTY_EXPORT_XML
         from test_registry import _EMPTY_TOOLSET_XML
@@ -135,9 +141,9 @@ class SetupToolTests( FilesystemTestBase
 
     def test_setImportContext( self ):
 
-        from Products.CMFSetup.tool import IMPORT_STEPS_XML
-        from Products.CMFSetup.tool import EXPORT_STEPS_XML
-        from Products.CMFSetup.tool import TOOLSET_XML
+        from Products.GenericSetup.tool import IMPORT_STEPS_XML
+        from Products.GenericSetup.tool import EXPORT_STEPS_XML
+        from Products.GenericSetup.tool import TOOLSET_XML
         from test_registry import _SINGLE_IMPORT_XML
         from test_registry import _SINGLE_EXPORT_XML
         from test_registry import _NORMAL_TOOLSET_XML
@@ -176,7 +182,7 @@ class SetupToolTests( FilesystemTestBase
         self.assertEqual( info[ 'version' ], '1' )
         self.failUnless( 'One small step' in info[ 'description' ] )
         self.assertEqual( info[ 'handler' ]
-                        , 'Products.CMFSetup.tests.test_registry.ONE_FUNC' )
+                        , 'Products.GenericSetup.tests.test_registry.ONE_FUNC' )
 
         self.assertEqual( import_registry.getStep( 'one' ), ONE_FUNC )
 
@@ -188,7 +194,7 @@ class SetupToolTests( FilesystemTestBase
         self.assertEqual( info[ 'title' ], 'One Step' )
         self.failUnless( 'One small step' in info[ 'description' ] )
         self.assertEqual( info[ 'handler' ]
-                        , 'Products.CMFSetup.tests.test_registry.ONE_FUNC' )
+                        , 'Products.GenericSetup.tests.test_registry.ONE_FUNC' )
 
         self.assertEqual( export_registry.getStep( 'one' ), ONE_FUNC )
 
@@ -441,8 +447,8 @@ class SetupToolTests( FilesystemTestBase
         from test_registry import _EMPTY_IMPORT_XML
 
         site = self._makeSite()
-        site.portal_setup = self._makeOne()
-        tool = site.portal_setup
+        site.setup_tool = self._makeOne()
+        tool = site.setup_tool
 
         result = tool.runExportStep( 'step_registries' )
 
@@ -466,8 +472,8 @@ class SetupToolTests( FilesystemTestBase
         from test_registry import _EMPTY_IMPORT_XML
 
         site = self._makeSite()
-        site.portal_setup = self._makeOne()
-        tool = site.portal_setup
+        site.setup_tool = self._makeOne()
+        tool = site.setup_tool
 
         result = tool.runAllExportSteps()
 
@@ -491,8 +497,8 @@ class SetupToolTests( FilesystemTestBase
         from test_registry import _EMPTY_IMPORT_XML
 
         site = self._makeSite()
-        site.portal_setup = self._makeOne()
-        tool = site.portal_setup
+        site.setup_tool = self._makeOne()
+        tool = site.setup_tool
 
         import_reg = tool.getImportStepRegistry()
         import_reg.registerStep( 'dependable', '1'
@@ -544,8 +550,8 @@ class SetupToolTests( FilesystemTestBase
                     ]
 
         site = self._makeSite()
-        site.portal_setup = self._makeOne()
-        tool = site.portal_setup
+        site.setup_tool = self._makeOne()
+        tool = site.setup_tool
 
         self.assertEqual( len( tool.listSnapshotInfo() ), 0 )
 
@@ -591,7 +597,7 @@ _DEFAULT_STEP_REGISTRIES_EXPORT_XML = """\
 <?xml version="1.0"?>
 <export-steps>
  <export-step id="step_registries"
-              handler="Products.CMFSetup.tool.exportStepRegistries"
+              handler="Products.GenericSetup.tool.exportStepRegistries"
               title="Export import / export steps.">
   
  </export-step>
@@ -601,14 +607,16 @@ _DEFAULT_STEP_REGISTRIES_EXPORT_XML = """\
 _EXTRAS_STEP_REGISTRIES_EXPORT_XML = """\
 <?xml version="1.0"?>
 <export-steps>
- <export-step id="properties"
-              handler="Products.CMFSetup.tests.test_tool._exportPropertiesINI"
-              title="properties">
+ <export-step
+    id="properties"
+    handler="Products.GenericSetup.tests.test_tool._exportPropertiesINI"
+    title="properties">
 
  </export-step>
- <export-step id="step_registries"
-              handler="Products.CMFSetup.tool.exportStepRegistries"
-              title="Export import / export steps.">
+ <export-step
+    id="step_registries"
+    handler="Products.GenericSetup.tool.exportStepRegistries"
+    title="Export import / export steps.">
 
  </export-step>
 </export-steps>
@@ -617,24 +625,27 @@ _EXTRAS_STEP_REGISTRIES_EXPORT_XML = """\
 _EXTRAS_STEP_REGISTRIES_IMPORT_XML = """\
 <?xml version="1.0"?>
 <import-steps>
- <import-step id="dependable"
-              version="1"
-              handler="Products.CMFSetup.tests.test_tool._underscoreSiteTitle"
-              title="dependable">
+ <import-step
+    id="dependable"
+    version="1"
+    handler="Products.GenericSetup.tests.test_tool._underscoreSiteTitle"
+    title="dependable">
   <dependency step="purging" />
 
  </import-step>
- <import-step id="dependent"
-              version="1"
-              handler="Products.CMFSetup.tests.test_tool._uppercaseSiteTitle"
-              title="dependent">
+ <import-step
+    id="dependent"
+    version="1"
+    handler="Products.GenericSetup.tests.test_tool._uppercaseSiteTitle"
+    title="dependent">
   <dependency step="dependable" />
 
  </import-step>
- <import-step id="purging"
-              version="1"
-              handler="Products.CMFSetup.tests.test_tool._purgeIfRequired"
-              title="purging">
+ <import-step
+    id="purging"
+    version="1"
+    handler="Products.GenericSetup.tests.test_tool._purgeIfRequired"
+    title="purging">
 
  </import-step>
 </import-steps>
@@ -676,12 +687,12 @@ class _ToolsetSetup( SecurityRequestTest ):
 
     def _initSite( self ):
 
-        from Products.CMFSetup.tool import SetupTool
+        from Products.GenericSetup.tool import SetupTool
         site = Folder()
         site._setId( 'site' )
         self.root._setObject( 'site', site )
         site = self.root._getOb( 'site' )
-        site._setObject( 'portal_setup', SetupTool() )
+        site._setObject( 'setup_tool', SetupTool() )
         return site
 
 class Test_exportToolset( _ToolsetSetup
@@ -690,8 +701,8 @@ class Test_exportToolset( _ToolsetSetup
 
     def test_empty( self ):
 
-        from Products.CMFSetup.tool import TOOLSET_XML
-        from Products.CMFSetup.tool import exportToolset
+        from Products.GenericSetup.tool import TOOLSET_XML
+        from Products.GenericSetup.tool import exportToolset
 
         site = self._initSite()
         context = DummyExportContext( site )
@@ -706,11 +717,11 @@ class Test_exportToolset( _ToolsetSetup
 
     def test_normal( self ):
 
-        from Products.CMFSetup.tool import TOOLSET_XML
-        from Products.CMFSetup.tool import exportToolset
+        from Products.GenericSetup.tool import TOOLSET_XML
+        from Products.GenericSetup.tool import exportToolset
 
         site = self._initSite()
-        toolset = site.portal_setup.getToolsetRegistry()
+        toolset = site.setup_tool.getToolsetRegistry()
         toolset.addForbiddenTool( 'doomed' )
         toolset.addRequiredTool( 'mandatory', 'path.to.one' )
         toolset.addRequiredTool( 'obligatory', 'path.to.another' )
@@ -730,10 +741,10 @@ class Test_importToolset( _ToolsetSetup ):
     def test_tool_ids( self ):
         # The tool import mechanism used to rely on the fact that all tools
         # have unique IDs set at the class level and that you can call their
-        # constructor with no arguments. However, there might be tools 
+        # constructor with no arguments. However, there might be tools
         # that need IDs set.
-        from Products.CMFSetup.tool import TOOLSET_XML
-        from Products.CMFSetup.tool import importToolset
+        from Products.GenericSetup.tool import TOOLSET_XML
+        from Products.GenericSetup.tool import importToolset
 
         site = self._initSite()
         context = DummyImportContext( site )
@@ -747,8 +758,8 @@ class Test_importToolset( _ToolsetSetup ):
 
     def test_forbidden_tools( self ):
 
-        from Products.CMFSetup.tool import TOOLSET_XML
-        from Products.CMFSetup.tool import importToolset
+        from Products.GenericSetup.tool import TOOLSET_XML
+        from Products.GenericSetup.tool import importToolset
         TOOL_IDS = ( 'doomed', 'blasted', 'saved' )
 
         site = self._initSite()
@@ -769,13 +780,13 @@ class Test_importToolset( _ToolsetSetup ):
         importToolset( context )
 
         self.assertEqual( len( site.objectIds() ), 2 )
-        self.failUnless( 'portal_setup' in site.objectIds() )
+        self.failUnless( 'setup_tool' in site.objectIds() )
         self.failUnless( 'saved' in site.objectIds() )
 
     def test_required_tools_missing( self ):
 
-        from Products.CMFSetup.tool import TOOLSET_XML
-        from Products.CMFSetup.tool import importToolset
+        from Products.GenericSetup.tool import TOOLSET_XML
+        from Products.GenericSetup.tool import importToolset
 
         site = self._initSite()
         self.assertEqual( len( site.objectIds() ), 1 )
@@ -793,8 +804,8 @@ class Test_importToolset( _ToolsetSetup ):
 
     def test_required_tools_no_replacement( self ):
 
-        from Products.CMFSetup.tool import TOOLSET_XML
-        from Products.CMFSetup.tool import importToolset
+        from Products.GenericSetup.tool import TOOLSET_XML
+        from Products.GenericSetup.tool import importToolset
 
         site = self._initSite()
 
@@ -819,8 +830,8 @@ class Test_importToolset( _ToolsetSetup ):
 
     def test_required_tools_with_replacement( self ):
 
-        from Products.CMFSetup.tool import TOOLSET_XML
-        from Products.CMFSetup.tool import importToolset
+        from Products.GenericSetup.tool import TOOLSET_XML
+        from Products.GenericSetup.tool import importToolset
 
         site = self._initSite()
 
@@ -858,7 +869,6 @@ class AnotherDummyTool( Folder ):
 
     pass
 
-
 _EMPTY_TOOLSET_XML = """\
 <?xml version="1.0"?>
 <tool-setup>
@@ -888,18 +898,18 @@ _REQUIRED_TOOLSET_XML = """\
 <tool-setup>
  <required
     tool_id="mandatory"
-    class="Products.CMFSetup.tests.test_tool.DummyTool" />
+    class="Products.GenericSetup.tests.test_tool.DummyTool" />
  <required
     tool_id="obligatory"
-    class="Products.CMFSetup.tests.test_tool.DummyTool" />
+    class="Products.GenericSetup.tests.test_tool.DummyTool" />
 </tool-setup>
 """
 
 def test_suite():
     # reimport to make sure tests are run from Products
-    from Products.CMFSetup.tests.test_tool import SetupToolTests
-    from Products.CMFSetup.tests.test_tool import Test_exportToolset
-    from Products.CMFSetup.tests.test_tool import Test_importToolset
+    from Products.GenericSetup.tests.test_tool import SetupToolTests
+    from Products.GenericSetup.tests.test_tool import Test_exportToolset
+    from Products.GenericSetup.tests.test_tool import Test_importToolset
 
     return unittest.TestSuite((
         unittest.makeSuite( SetupToolTests ),

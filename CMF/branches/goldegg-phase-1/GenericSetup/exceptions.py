@@ -10,16 +10,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Various context implementations for export / import of configurations.
+""" GenericSetup product exceptions.
 
-Wrappers representing the state of an import / export operation.
-
-$Id$
+$Id: exceptions.py,v 1.1.1.1 2005/08/08 19:38:37 tseaver Exp $
 """
 
-# BBB
-from Products.GenericSetup.context import DirectoryImportContext
-from Products.GenericSetup.context import DirectoryExportContext
-from Products.GenericSetup.context import TarballExportContext
-from Products.GenericSetup.context import SnapshotExportContext
-from Products.GenericSetup.context import SnapshotImportContext
+from AccessControl import ModuleSecurityInfo
+security = ModuleSecurityInfo('Products.GenericSetup.exceptions')
+
+security.declarePublic('BadRequest')
+from zExceptions import BadRequest
