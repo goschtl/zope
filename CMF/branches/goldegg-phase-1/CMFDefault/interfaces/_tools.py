@@ -10,11 +10,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Document content type interfaces.
+""" CMFDefault tool interfaces.
 
 $Id$
 """
 
-# BBB: module will be removed in CMF 2.2
-#      zope2 interfaces created on runtime:
-#      - IDocument
+from Products.CMFCore.interfaces import IMembershipTool as BaseInterface
+
+
+class IMembershipTool(BaseInterface):
+
+    """ Declare product-specific APIs for CMFDefault's tool.
+    """
+
+    def setMembersFolderById(id=''):
+        """ Set the members folder object by its id.
+
+        The members folder has to be in the same container as the membership
+        tool. id is the id of an existing folder. If id is empty, member areas
+        are disabled.
+
+        Permission -- Manage portal
+        """
