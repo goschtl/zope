@@ -17,6 +17,8 @@ After Five 1.1b
 Bugfixes
 --------
 
+* Fixed manage_beforeDelete triggering for classes using five:sendEvents.
+
 * The redefinePermission directive was falsely registered under the
   ``zope`` namespace, not the ``meta`` namespace as it is in Zope 3.
 

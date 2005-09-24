@@ -79,6 +79,11 @@ That object event should have been an object added event:
   >>> events[0].newParent == foo.aq_parent
   True
 
+Check that the object's original manage_afterAdd method was also called:
+
+  >>> foo.afterAdd_called
+  True
+
 Now clean up:
 
   >>> clearEvents()
@@ -233,6 +238,9 @@ Removed event
 -------------
 
   >>> manage_addSimpleContent(folder, 'foo', 'Foo')
+  >>> foo = folder.foo
+  >>> foo.beforeDelete_called
+  False
   >>> folder.manage_delObjects(['foo'])
 
   >>> events = getEvents()
@@ -241,6 +249,11 @@ Removed event
 
   >>> events[1].object.id
   'foo'
+
+Check that the object's original manage_beforeDelete method was also called:
+
+  >>> foo.beforeDelete_called
+  True
 
   >>> clearEvents()
 
