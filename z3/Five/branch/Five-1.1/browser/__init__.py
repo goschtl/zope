@@ -15,17 +15,22 @@
 
 $Id$
 """
-import Acquisition
+#import Acquisition
+
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
+import Acquisition
 
 class BrowserView(Acquisition.Explicit):
+    """
+    doc
+    """
     security = ClassSecurityInfo()
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
-
+    
     # XXX do not create any methods on the subclass called index_html,
     # as this makes Zope 2 traverse into that first!
 

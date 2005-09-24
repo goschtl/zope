@@ -23,6 +23,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
+from Acquisition import ExplicitAcquisitionWrapper as aq_wrapper
 
 from AccessControl import getSecurityManager
 from Products.Five.security import newInteraction
@@ -71,12 +72,15 @@ class Traversable:
                 REQUEST = FakeRequest()
         # con Zope 3 into using Zope 2's checkPermission
         newInteraction()
+
         try:
-            return ITraverser(self).traverse(
+            obj = ITraverser(self).traverse(
                 path=[name], request=REQUEST).__of__(self)
+            return obj 
         except (ComponentLookupError, NotFoundError,
                 AttributeError, KeyError, NotFound):
             pass
+
         try:
             return getattr(self, name)
         except AttributeError:

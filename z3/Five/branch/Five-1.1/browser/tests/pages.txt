@@ -29,6 +29,8 @@ Simple pages
 A browser page that is a view class's attribute (method):
 
   >>> view = self.folder.unrestrictedTraverse('testoid/eagle.txt')
+  >>> view != None
+  True
   >>> from Products.Five.browser.tests.pages import SimpleView
   >>> isinstance(view, SimpleView)
   True
@@ -211,6 +213,33 @@ evaluated. __roles__ is a imPermissionRole object:
   >>> view_roles
   ('Manager',)
 
+Check to see if view's context properly acquires it's true
+parent
+
+  >>> from Acquisition import aq_parent, aq_base, aq_inner
+  >>> context = getattr(view, 'context')
+
+Check the wrapper type
+
+  >>> from Acquisition import ImplicitAcquisitionWrapper
+  >>> type(context) == ImplicitAcquisitionWrapper
+  True
+ 
+The acquired parent is the view. This isn't 
+usually what you want.
+
+  >>> aq_parent(context) == view
+  True 
+
+To get what you usually want, do this
+
+  >>> context.aq_inner.aq_parent
+  <Folder at /test_folder_1_> 
+
+C methods work the same
+
+  >>> aq_parent(aq_inner(context))
+  <Folder at /test_folder_1_> 
 
 High-level security
 -------------------
