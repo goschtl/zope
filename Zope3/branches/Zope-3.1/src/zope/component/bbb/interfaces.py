@@ -331,7 +331,10 @@ class IViewFactory(Interface):
         "stands in" for the user.
         """
 
-
+# When this code is removed, this needs to be undeprecated and moved
+# towards a private interface somewhere in zope.app.publisher. In
+# effect the Zope 3 core is still using IDefaultViewName at present,
+# even though it's in bbb.
 class IDefaultViewName(Interface):
     """A string that contains the default view name
 
