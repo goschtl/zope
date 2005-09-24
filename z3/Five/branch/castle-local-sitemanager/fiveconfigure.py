@@ -27,6 +27,7 @@ from zLOG import LOG, ERROR
 
 from zope.interface import classImplements
 from zope.configuration import xmlconfig
+from zope.configuration.exceptions import ConfigurationError
 from zope.app.component.interface import provideInterface
 
 from viewable import Viewable
@@ -55,7 +56,7 @@ def handleBrokenProduct(product):
     # in the control panel. However, all attempts to do so has failed from my 
     # side. //regebro
     exc = sys.exc_info()
-    LOG('Five', ERROR, 'Could not import Product %s' % name, error=exc)
+    LOG('Five', ERROR, 'Could not import Product %s' % product.name, error=exc)
 
 def loadProducts(_context):
     products = findProducts()
@@ -274,3 +275,53 @@ def cleanUp():
 from zope.testing.cleanup import addCleanUp
 addCleanUp(cleanUp)
 del addCleanUp
+
+from zope.interface.interface import InterfaceClass
+from zope.app.site.interfaces import IPossibleSite
+from zope.app.component.metaconfigure import adapter
+from interfaces import IUtilityProvider
+from localsite import FiveSite
+
+def classSiteHook(class_):
+    if hasattr(class_, '__five_possible_site__'):
+        if (hasattr(class_, 'getSiteManager') and
+            isFiveMethod(class_.getSiteManager)):
+            return
+    setattr(class_, 'getSiteManager',
+            FiveSite.getSiteManager.im_func)
+    setattr(class_, 'setSiteManager',
+            FiveSite.setSiteManager.im_func)
+    setattr(class_, '__five_possible_site__', True)
+ 
+count = 0
+def next():
+    global count
+    count += 1
+    return count
+
+def installSiteHook(_context, class_, utility_provider):
+    _context.action(
+        discriminator = (class_,),
+        callable = classSiteHook,
+        args=(class_,)
+        )
+    _context.action(
+        discriminator = (class_, IPossibleSite),
+        callable = classImplements,
+        args=(class_, IPossibleSite)
+        )
+    if not IUtilityProvider.implementedBy(utility_provider):
+        raise ConfigurationError('Global object does not implement '
+                                 'IUtilityProvider: %s' % utility_provider)
+    # Generate a marker interface that should be unique, so that
+    # we can register the utility provider only for this class.
+    iface = InterfaceClass('I%s' % next())
+    adapter(_context, factory=(utility_provider,),
+            provides=IUtilityProvider,
+            for_=(iface,))
+    _context.action(
+        discriminator = (class_, 'UtilityMarker'),
+        callable = classImplements,
+        args=(class_, iface)
+        )
+

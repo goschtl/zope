@@ -104,3 +104,17 @@ class IPagesFromDirectoryDirective(IBasicResourceInformation):
         description=u"The directory containing the resource data.",
         required=True
         )
+
+class IFiveLocalSite(Interface):
+    """Make instances of class hookable for Local Site.
+
+    Actual implementation of ISite is delegated to a IFiveSite adapter.
+    """
+    class_ = GlobalObject(
+        title=u"Class",
+        required=True
+        )
+    utility_provider = GlobalObject(
+        title=u"Utility Provider",
+        required=True
+        )
