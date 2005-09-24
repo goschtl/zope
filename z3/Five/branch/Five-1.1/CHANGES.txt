@@ -11,6 +11,8 @@ Bugfixes
 * FiveTraversable should only do a view lookup and not call the traverse 
   method of its superclass.
 
+* Fixed manage_beforeDelete triggering for classes using five:sendEvents.
+
 * The redefinePermission directive was falsely registered under the
   ``zope`` namespace, not the ``meta`` namespace as it is in Zope 3.
 

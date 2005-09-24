@@ -79,9 +79,9 @@ manage_afterAdd.__five_method__ = True
 def manage_beforeDelete(self, item, container):
     notify(ObjectRemovedEvent(self))
     # call original
-    method = getattr(self, '__five_manage_beforeDelete', None)
+    method = getattr(self, '__five_original_manage_beforeDelete', None)
     if method is not None:
-        self._five_original_manage_beforeDelete(item, container)
+        self.__five_original_manage_beforeDelete(item, container)
 
 manage_beforeDelete.__five_method__ = True
 
