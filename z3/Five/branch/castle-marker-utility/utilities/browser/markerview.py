@@ -16,20 +16,20 @@ class MarkerView(BrowserView):
         return self.context_url + 
             '/view_details?iface=%s&type=zope.publisher.interfaces.browser.IBrowserRequest' % interfaceName
 
-    def _getNameLinkTuples(interfaceNames):
+    def _getNameLinkDicts(interfaceNames):
         return [{'name':name,
                  'link':self._getLinkToInterfaceDetailsView(name)}
                 for name in interfaceNames]
 
     def getAvailableInterfaceNames(self):
-        return self._getNameLinkTuples(
+        return self._getNameLinkDicts(
             self.utility.getAvailableInterfaceNames(self.context))
 
     def getDirectlyProvidedNames(self):
-        return self._getNameLinkTuples(
+        return self._getNameLinkDicts(
             self.utility.getDirectlyProvidedNames(self.context))
 
     def getProvidedNames(self):
-        return self._getNameLinkTuples(
+        return self._getNameLinkDicts(
             self.utility.getProvidedNames(self.context))
 
