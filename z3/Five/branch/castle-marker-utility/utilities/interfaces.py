@@ -33,8 +33,14 @@ class IReadInterface(Interface):
 
 class IWriteInterface(Interface):
 
-    def update(context, add, remove):
+    def update(obj, add=[], remove=[]):
         """Update directly provided interfaces for an instance."""
+
+    def mark(obj, interface):
+        """ add interface to interfaces an object directly provides"""
+
+    def erase(obj, interface):
+        """ remove interfaces from interfaces an object directly provides"""
 
 class IMarkerUtility(IReadInterface, IWriteInterface):
     """This utility exposes part of the IIntrospector interface from Zope3.

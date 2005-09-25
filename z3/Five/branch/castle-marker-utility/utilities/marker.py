@@ -28,11 +28,9 @@ from Products.Five.utilities.interfaces import IMarkerUtility
 #from persistent import Persistent
 
 def mark(ob, interface):
-    #interface = getInterface(ob, interface)
     directlyProvides(ob, directlyProvidedBy(ob), interface)
     
 def erase(ob, interface):
-    #interface = getInterface(ob, interface)
     directlyProvides(ob, directlyProvidedBy(ob)-interface)
 
 # not sure this needs containment or persistence
@@ -63,17 +61,17 @@ class MarkerUtility(object):
         provided = providedBy(context)
         return IIntrospector(context).getInterfaceNames(interfaces=provided)
 
-    def update(self, context, add=[], remove=[]):
+    def update(self, obj, add=[], remove=[]):
         """
         Currently update adds and then removes, rendering duplicate null
         """
-        marker_ifaces = self.getMarkerInterface(context)
+        marker_ifaces = self.getMarkerInterfaces(obj)
         if len(add):
-            [mark(ob, interface) for interface in Set(marker_ifaces) & Set(add)]
+            [mark(obj, interface) for interface in Set(marker_ifaces) & Set(add)]
 
-        direct_ifaces = self.getDirectlyProvided(context)
+        direct_ifaces = self.getDirectlyProvided(obj)
         if len(remove):
-            [erase(ob, interface) for interface in Set(direct_ifaces) & Set(remove)]
+            [erase(obj, interface) for interface in Set(direct_ifaces) & Set(remove)]
 
 _utility = MarkerUtility()
 def getMarkerUtility():
