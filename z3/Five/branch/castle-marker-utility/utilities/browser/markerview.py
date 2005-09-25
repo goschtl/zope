@@ -11,5 +11,10 @@ class MarkerView(BrowserView):
         self.utility = zapi.getUtility(IMarkerUtility)
 
     def getAvailableInterfaceNames(self):
-        
-    
+        return self.utility.getAvailableInterfaceNames(self.context) 
+
+    def getDirectlyProvidedNames(self):
+        return self.utility.getDirectlyProvidedNames(self.context) 
+
+    def getProvidedNames(self):
+        return self.utility.getProvidedNames(self.context) 

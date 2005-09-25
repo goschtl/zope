@@ -1,0 +1,13 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:five="http://namespaces.zope.org/five">
+
+  <browser:page
+      for="*"
+      class=".markerview.MarkerView"
+      template="marker_view.pt"
+      name="marker"
+      permission="zope2.ManageProperties"
+      />
+
+</configure>
