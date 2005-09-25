@@ -72,8 +72,10 @@ class Traversable:
         # con Zope 3 into using Zope 2's checkPermission
         newInteraction()
         try:
-            return ITraverser(self).traverse(
+            traversed = ITraverser(self).traverse(
                 path=[name], request=REQUEST).__of__(self)
+            traversed.__name__ = name
+            return traversed
         except (ComponentLookupError, NotFoundError,
                 AttributeError, KeyError, NotFound):
             pass
@@ -100,7 +102,9 @@ class FiveTraversable(DefaultTraversable):
             REQUEST = FakeRequest()
         # Try to lookup a view first
         try:
-            return getView(context, name, REQUEST)
+            view = getView(context, name, REQUEST)
+            view.__name__ = name
+            return view
         except ComponentLookupError:
             pass
         # If a view can't be found, then use default traversable

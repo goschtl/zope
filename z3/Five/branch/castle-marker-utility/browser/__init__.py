@@ -19,7 +19,15 @@ import Acquisition
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
 
-class BrowserView(Acquisition.Explicit):
+from zope.interface import implements
+
+from zope.app.publisher.interfaces.browser import IBrowserView
+
+from Products.Five.traversable import Traversable
+
+class BrowserView(Acquisition.Explicit, Traversable):
+    implements(IBrowserView)
+
     security = ClassSecurityInfo()
 
     def __init__(self, context, request):

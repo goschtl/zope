@@ -1,5 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope"
-           xmlns:browser="http://namespaces.zope.org/browser">
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:five="http://namespaces.zope.org/five">
 
   <serviceType
       id="BrowserMenu"
@@ -30,6 +31,10 @@
       provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
       />
 
+  <!-- register views as traversable in order to be able to traverse to 
+       views on views (like absolute_url) -->
+  
+    
   <browser:page
       for="zope.app.traversing.interfaces.IContainmentRoot"
       name="absolute_url"
@@ -41,6 +46,22 @@
   <view
       for="zope.app.traversing.interfaces.IContainmentRoot"
       factory=".absoluteurl.SiteAbsoluteURL"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      permission="zope.Public"
+      provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      />
+
+  <browser:page
+      for="zope.app.publisher.interfaces.browser.IBrowserView"
+      name="absolute_url"
+      class=".absoluteurl.BrowserViewAbsoluteURL"
+      permission="zope.Public"
+      allowed_interface="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      />
+
+  <view
+      for="zope.app.publisher.interfaces.browser.IBrowserView"
+      factory=".absoluteurl.BrowserViewAbsoluteURL"
       type="zope.publisher.interfaces.http.IHTTPRequest"
       permission="zope.Public"
       provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"

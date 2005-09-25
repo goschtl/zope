@@ -37,6 +37,11 @@ from Products.Five.browser import BrowserView
 
 _marker = []
 
+def addResourceNamespace(name):
+    if not name.startswith('++resource++'):
+        name = '++resource++' + name
+    return name    
+
 class Resource(Explicit):
     """A publishable resource
     """
@@ -52,7 +57,7 @@ class Resource(Explicit):
         url = str(getViewProviding(container, IAbsoluteURL, self.request))
         url = urllib.unquote(url)
         if not isinstance(container, DirectoryResource):
-            name = '++resource++%s' % name
+            name = addResourceNamespace(name)
         return "%s/%s" % (url, name)
 
 class PageTemplateResource(BrowserView, Resource):
@@ -129,7 +134,7 @@ class ResourceFactory:
     resource = None
 
     def __init__(self, name, path, resource_factory=None):
-        self.__name = name
+        self.__name__ = name
         self.__rsrc = self.factory(path, name)
         if resource_factory is not None:
             self.resource = resource_factory
@@ -193,10 +198,7 @@ class DirectoryResource(BrowserView, Resource, OFSTraversable):
         self.REQUEST = request
 
     def getId(self):
-        name = self.__name__
-        if not name.startswith('++resource++'):
-            name = '++resource++%s' % self.__name__
-        return name
+        return addResourceNamespace(self.__name__)
 
     def __browser_default__(self, request):
         '''See interface IBrowserPublisher'''

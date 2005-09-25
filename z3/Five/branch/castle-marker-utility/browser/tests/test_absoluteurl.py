@@ -38,6 +38,16 @@ def test_absoluteurl():
       >>> view()
       'http://nohost/test_folder_1_/testoid'
 
+    Traversal to @@absolute_url of a view should work as well
+    
+      >>> import Products.Five.browser.tests
+      >>> zcml.load_config('pages.zcml', package=Products.Five.browser.tests)
+      >>> from Products.Five.testing.simplecontent import manage_addSimpleContent
+      >>> manage_addSimpleContent(self.folder, 'testsc', 'Testsc')
+      >>> view_on_view = self.folder.unrestrictedTraverse('testsc/@@eagle.txt/@@absolute_url')
+      >>> view_on_view()
+      'http://nohost/test_folder_1_/testsc/@@eagle.txt'
+
     IAbsoluteURL also defines a breadcrumbs() method that returns a
     simple Python structure:
 

@@ -12,11 +12,11 @@ class MarkerView(BrowserView):
         self.context_url = self.context.absolute_url()
 
     
-    def _getLinkToInterfaceDetailsView(interfaceName):
+    def _getLinkToInterfaceDetailsView(self, interfaceName):
         return (self.context_url + 
             '/view_details?iface=%s&type=zope.publisher.interfaces.browser.IBrowserRequest' % interfaceName)
 
-    def _getNameLinkDicts(interfaceNames):
+    def _getNameLinkDicts(self, interfaceNames):
         return [dict(name=name,
                      link=self._getLinkToInterfaceDetailsView(name))
                 for name in interfaceNames]

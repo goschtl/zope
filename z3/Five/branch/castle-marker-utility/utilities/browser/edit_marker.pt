@@ -4,8 +4,7 @@
 
   <head><title></title></head>
   <body metal:define-macro='marker_edit'>
-    <div metal:fill-slot="main"
-         tal:define="errors view/state/getErrors">
+    <div tal:define="errors python:{}">
 
       <h1 i18n:translate="heading_edit_marker">
         Edit Marker Interfaces
@@ -21,7 +20,7 @@
             action="."
             method="post"
             enctype="multipart/form-data"
-            tal:attributes="action string:${context/getId}/${view/name}"
+            tal:attributes="action view/@@absolute_url"
             tal:define="provided view/getDirectlyProvidedNames;
                         impl view/getProvidedNames"
             >

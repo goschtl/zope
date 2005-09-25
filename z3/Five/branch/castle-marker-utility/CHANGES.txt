@@ -7,6 +7,9 @@ Trunk only
 
 Others
 ------
+* Views on views were added
+
+* MarkerUtility provides access to IIntrospector
 
 * Removed backwards compatibility for some moved classes (AddForm, EditForm, 
   ContentAdding)

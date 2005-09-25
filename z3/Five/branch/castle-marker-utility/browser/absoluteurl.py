@@ -19,6 +19,7 @@ from Acquisition import aq_inner, aq_parent
 from OFS.interfaces import ITraversable
 
 from zope.interface import implements
+from zope.component import getView
 from zope.app import zapi
 from zope.app.traversing.browser.interfaces import IAbsoluteURL
 
@@ -35,9 +36,12 @@ class AbsoluteURL(BrowserView):
         self.context, self.request = context, request
 
     def __str__(self):
+        return self._getContextAbsoluteUrl()
+
+    def _getContextAbsoluteUrl(self):
         context = aq_inner(self.context)
         return context.absolute_url()
-
+    
     __call__ = __str__
 
     def breadcrumbs(self):
@@ -50,7 +54,7 @@ class AbsoluteURL(BrowserView):
         if container is None or self._isVirtualHostRoot() \
             or not ITraversable.providedBy(container):
             return (
-                {'name': name, 'url': context.absolute_url()},)
+                {'name': name, 'url': self._getContextAbsoluteUrl()},)
 
         view = zapi.getViewProviding(container, IAbsoluteURL, request)
         base = tuple(view.breadcrumbs())
@@ -75,10 +79,25 @@ class SiteAbsoluteURL(AbsoluteURL):
     (original: zope.app.traversing.browser.absoluteurl)
     """
 
+    def _getContextAbsoluteUrl(self):
+        return self.context.absolute_url()
+    
     def breadcrumbs(self):
         context = self.context
         request = self.request
 
         return ({'name': context.getId(),
-                 'url': context.absolute_url()
+                 'url': self._getContextAbsoluteUrl()
                  },)
+
+class BrowserViewAbsoluteURL(AbsoluteURL):
+    """
+    views need to access inside the wrapper
+    """
+    def _getContextAbsoluteUrl(self):
+        viewed = self.context.aq_inner.aq_parent
+        #import pdb; pdb.set_trace() 
+        viewed_url = getView(viewed, 'absolute_url', self.request)()
+        return viewed_url + '/' + self.context.__name__
+    
+
