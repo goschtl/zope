@@ -23,7 +23,7 @@ from zope.configuration.exceptions import ConfigurationError
 from security import CheckerPublic
 from security import protectName, initializeClass
 
-class ContentDirective:
+class ContentDirective(object):
 
     def __init__(self, _context, class_):
         self.__class = class_

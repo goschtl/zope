@@ -52,3 +52,6 @@ class IFieldSimpleContent(ISimpleContent):
         description=u"A long description of the event.",
         default=u"",
         required=False)
+
+class IStubInterface(Interface):
+    """a stub for use as a marker"""

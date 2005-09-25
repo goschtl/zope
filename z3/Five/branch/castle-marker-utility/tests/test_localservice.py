@@ -21,6 +21,8 @@ from zope.app.site.interfaces import IPossibleSite, ISite, ISiteManager
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.tests.placelesssetup import setUp, tearDown
 
+from Products.Five.testing.interfaces import IDummySite
+
 from Acquisition import Implicit
 from OFS.ObjectManager import ObjectManager
 from OFS.SimpleItem import SimpleItem
