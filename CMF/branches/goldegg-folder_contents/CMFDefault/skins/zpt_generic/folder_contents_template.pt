@@ -7,9 +7,9 @@
 </metal:slot>
 
 <metal:slot metal:fill-slot="main" i18n:domain="cmf_default"
-   tal:define="batch options/batch;
-               form options/form;
-               up_info options/up_info">
+   tal:define="batch view/batch|options/batch;
+               form view/form|options/form;
+               up_info view/up_info|options/up_info">
 <div class="Desktop">
 
 <p tal:condition="up_info"
@@ -24,7 +24,7 @@
  ><span class="mild" i18n:translate="">Root</span></tal:case></p>
 
 <form action="folder_contents" method="post"
-   tal:attributes="action form/action"
+   tal:attributes="action view/action|form/action"
 ><metal:macro metal:use-macro="context/form_widgets/macros/hidden_vars" />
  <table class="BatchTable"
     tal:condition="batch/listItemInfos">
