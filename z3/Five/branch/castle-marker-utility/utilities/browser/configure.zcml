@@ -5,7 +5,7 @@
   <browser:page
       for="*"
       class=".markerview.MarkerView"
-      template="marker_view.pt"
+      template="edit_marker.pt"
       name="marker"
       permission="zope2.ManageProperties"
       />
