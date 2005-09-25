@@ -23,7 +23,6 @@
             enctype="multipart/form-data"
             tal:attributes="action string:${context/getId}/${view/name}"
             tal:define="provided view/getDirectlyProvidedNames;
-                        available view/getAvailableInterfaceNames;
                         impl view/getProvidedNames"
             >
 
@@ -51,7 +50,6 @@
 
             <div tal:content="error">Validation error output</div>
 
-
             <tal:block tal:repeat="iface provided">
 
               <input type="checkbox"
@@ -60,18 +58,18 @@
                      value=""
                      size="40"
                      tabindex=""
-                     tal:attributes="value iface;
-                                     id iface;
-                                     checked python:iface in remove and 'checked'"
+                     tal:attributes="value iface/name;
+                                     id iface/name;
+                                     checked python:iface/name in remove and 'checked'"
                      />
 
               <label for=""
                      i18n:translate=""
-                     tal:attributes="for iface"
-                     tal:content="iface" />
+                     tal:attributes="for iface/name"
+                     tal:content="iface/name" />
 
               [<a href=""
-                   tal:attributes="href string:${here_url}/view_details?iface=${iface}&type=zope.publisher.interfaces.browser.IBrowserRequest">
+                   tal:attributes="href iface/link">
                   Views
               </a>]
 
@@ -96,7 +94,7 @@
             <div tal:content="error">Validation error output</div>
 
 
-            <tal:block tal:repeat="iface available">
+            <tal:block tal:repeat="iface view/getAvailableInterfaceNames">
 
               <input type="checkbox"
                      id="iface-name"
@@ -104,19 +102,19 @@
                      value=""
                      size="40"
                      tabindex=""
-                     tal:attributes="value iface;
-                                     id iface;
-				     checked python:iface in add and 'checked'"
+                     tal:attributes="value iface/name;
+                                     id iface/name;
+				     checked python:iface/name in add and 'checked'"
                      />
 
               <label for=""
                      i18n:translate=""
-                     tal:attributes="for iface"
-                     tal:content="iface"
+                     tal:attributes="for iface/name"
+                     tal:content="iface/name"
                      />
 
               [<a href=""
-                   tal:attributes="href string:${context/absolute_url}/view_details?iface=${iface}&type=zope.publisher.interfaces.browser.IBrowserRequest">
+                   tal:attributes="href iface/link">
                   Views
               </a>]
 
@@ -154,11 +152,11 @@
 
               <label for=""
                      i18n:translate=""
-                     tal:attributes="for iface"
-                     tal:content="iface" />
+                     tal:attributes="for iface/name"
+                     tal:content="iface/name" />
 
               [<a href=""
-                   tal:attributes="href string:${context/absolute_url}/view_details?iface=${iface}&type=zope.publisher.interfaces.browser.IBrowserRequest">
+                   tal:attributes="href iface/link">
                   Views
               </a>]
 
