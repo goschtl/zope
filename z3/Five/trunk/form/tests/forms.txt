@@ -17,7 +17,7 @@ We need to configure all of Five for the functional test:
 Finally, we need to setup a traversable folder.  Otherwise, Five won't
 get to to do its view lookup:
 
-  >>> from Products.Five.testing import manage_addFiveTraversableFolder
+  >>> from Products.Five.tests.testing import manage_addFiveTraversableFolder
   >>> manage_addFiveTraversableFolder(self.folder, 'ftf')
 
 

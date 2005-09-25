@@ -8,7 +8,7 @@ Set up the test fixtures:
   >>> zcml.load_config("configure.zcml", Products.Five)
   >>> zcml.load_config('resource.zcml', package=Products.Five.browser.tests)
 
-  >>> from Products.Five.testing import manage_addFiveTraversableFolder
+  >>> from Products.Five.tests.testing import manage_addFiveTraversableFolder
   >>> manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
 
   >>> import os, glob

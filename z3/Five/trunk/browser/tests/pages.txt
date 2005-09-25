@@ -10,7 +10,7 @@ Let's register a quite large amount of test pages:
 
 Let's add a test object that we view most of the pages off of:
 
-  >>> from Products.Five.testing.simplecontent import manage_addSimpleContent
+  >>> from Products.Five.tests.testing.simplecontent import manage_addSimpleContent
   >>> manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
 
 We also need to create a stub user account and login; otherwise we
@@ -226,8 +226,8 @@ High-level security
   ...     'nodoc-method', 'nodoc-function', 'nodoc-object',
   ...     'dirpage1', 'dirpage2']
 
-  >>> from Products.Five.testing.restricted import checkRestricted
-  >>> from Products.Five.testing.restricted import checkUnauthorized
+  >>> from Products.Five.tests.testing.restricted import checkRestricted
+  >>> from Products.Five.tests.testing.restricted import checkUnauthorized
 
 As long as we're not authenticated, we should get Unauthorized for
 protected views, but we should be able to view the public ones:
