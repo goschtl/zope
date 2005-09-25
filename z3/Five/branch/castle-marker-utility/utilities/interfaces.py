@@ -19,10 +19,10 @@ class IReadInterface(Interface):
     def getDirectlyProvidedNames(context):
         """See IIntrospector"""
 
-    def getMarkerInterfaces(context):
+    def getAvailableInterfaces(context):
         """See IIntrospector"""
 
-    def getMarkerInterfaceNames(context):
+    def getAvailableInterfaceNames(context):
         """See IIntrospector"""
 
     def getProvided(context):

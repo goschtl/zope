@@ -24,17 +24,12 @@ from zope.app.introspector.interfaces import IIntrospector
 from zope.app.component.interface import getInterface
 from Products.Five.utilities.interfaces import IMarkerUtility
 
-#from zope.app.container.contained import Contained
-#from persistent import Persistent
-
 def mark(ob, interface):
     directlyProvides(ob, directlyProvidedBy(ob), interface)
     
 def erase(ob, interface):
     directlyProvides(ob, directlyProvidedBy(ob)-interface)
 
-# not sure this needs containment or persistence
-# or to be local
 class MarkerUtility(object):
 
     implements(IMarkerUtility)
@@ -42,30 +37,30 @@ class MarkerUtility(object):
     mark = staticmethod(mark)
     erase = staticmethod(erase)
 
-    def getDirectlyProvided(self, context):
-        return IIntrospector(context).getDirectlyProvided()
+    def getDirectlyProvided(self, obj):
+        return IIntrospector(obj).getDirectlyProvided()
 
-    def getDirectlyProvidedNames(self, context):
-        return IIntrospector(context).getDirectlyProvidedNames()
+    def getDirectlyProvidedNames(self, obj):
+        return IIntrospector(obj).getDirectlyProvidedNames()
 
-    def getMarkerInterfaces(self, context):
-        return IIntrospector(context).getMarkerInterfaces()
+    def getAvailableInterfaces(self, obj):
+        return IIntrospector(obj).getMarkerInterfaces()
 
-    def getMarkerInterfaceNames(self, context):
-        return IIntrospector(context).getMarkerInterfaceNames()
+    def getAvailableInterfaceNames(self, obj):
+        return IIntrospector(obj).getMarkerInterfaceNames()
 
-    def getProvided(self, context):
-        return providedBy(context)
+    def getProvided(self, obj):
+        return providedBy(obj)
 
-    def getProvidedNames(self, context):
-        provided = providedBy(context)
-        return IIntrospector(context).getInterfaceNames(interfaces=provided)
+    def getProvidedNames(self, obj):
+        provided = providedBy(obj)
+        return IIntrospector(obj).getInterfaceNames(interfaces=provided)
 
     def update(self, obj, add=[], remove=[]):
         """
         Currently update adds and then removes, rendering duplicate null
         """
-        marker_ifaces = self.getMarkerInterfaces(obj)
+        marker_ifaces = self.getAvailableInterfaces(obj)
         if len(add):
             [mark(obj, interface) for interface in Set(marker_ifaces) & Set(add)]
 

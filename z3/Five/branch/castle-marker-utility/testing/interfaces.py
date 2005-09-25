@@ -55,3 +55,10 @@ class IFieldSimpleContent(ISimpleContent):
 
 class IStubInterface(Interface):
     """a stub for use as a marker"""
+         
+class IStubInterface2(Interface):
+    """a stub for use as a marker"""
+
+class IStubInterface3(Interface):
+    """a stub for use as a marker"""
+
