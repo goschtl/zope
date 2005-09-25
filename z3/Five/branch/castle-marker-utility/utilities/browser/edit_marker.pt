@@ -38,7 +38,7 @@
                tal:condition="provided"
                tal:define="error errors/add | nothing;
                            remove python:request.get('remove', ());"
-               tal:attributes="class python:test(error, 'field error', 'field')">
+               talx:attributes="class python:test(error, 'field error', 'field')">
 
             <label for="id" i18n:translate="label_marker_provided">Remove Interfaces</label>
 
@@ -59,7 +59,7 @@
                      tabindex=""
                      tal:attributes="value iface/name;
                                      id iface/name;
-                                     checked python:iface/name in remove and 'checked'"
+                                     checked python:iface['name'] in remove and 'checked'"
                      />
 
               <label for=""
@@ -80,7 +80,7 @@
           <div class="field"
                tal:define="error errors/add | nothing;
                            add python:request.get('add', ());"
-               tal:attributes="class python:test(error, 'field error', 'field')">
+               talx:attributes="class python:test(error, 'field error', 'field')">
 
 
             <label for="id" i18n:translate="label_marker_add">Add Interfaces</label>
@@ -103,7 +103,7 @@
                      tabindex=""
                      tal:attributes="value iface/name;
                                      id iface/name;
-				     checked python:iface/name in add and 'checked'"
+				     checked python:iface['name'] in add and 'checked'"
                      />
 
               <label for=""
