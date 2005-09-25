@@ -22,17 +22,6 @@
  
  
  </export-step>
- <export-step id="catalog"
-              handler="Products.CMFSetup.catalog.exportCatalogTool"
-              title="Catalog Tool">
-  
-  
-  
-  Export catalog tool's sub-objects, indexes and columns.
- 
- 
- 
- </export-step>
  <export-step id="properties"
               handler="Products.CMFSetup.properties.exportSiteProperties"
               title="Site Properties">
