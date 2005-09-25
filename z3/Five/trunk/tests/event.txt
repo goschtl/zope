@@ -110,24 +110,29 @@ We should get two events...
 
 the removed event...
 
-  >>> events[0].object == foo
+  >>> event = events[0]
+  >>> from zope.app.container.interfaces import IObjectRemovedEvent
+  >>> IObjectRemovedEvent.providedBy(event)
   True
-  >>> events[0].oldName
-  'foo'
-  >>> events[0].newName
-  >>> events[0].oldParent == folder
+  >>> event.object == foo
   True
-  >>> events[0].newParent
+  >>> event.oldName, event.newName
+  ('foo', None)
+  >>> event.oldParent == folder
+  True
+  >>> event.newParent is None
+  True
 
 and the moved event:
 
-  >>> events[1].oldName
-  'foo'
-  >>> events[1].newName
-  'bar'
-  >>> events[1].oldParent == folder
+  >>> event = events[1]
+  >>> event.object == foo
   True
-  >>> events[1].newParent == folder
+  >>> event.oldName, event.newName
+  ('foo', 'bar')
+  >>> event.oldParent == folder
+  True
+  >>> event.newParent == folder
   True
 
 Now clean up:
@@ -168,22 +173,26 @@ to the folder, we expect two events...
 
 a removed event...
 
-  >>> events[1].oldParent == folder1
+  >>> event = events[1]
+  >>> from zope.app.container.interfaces import IObjectRemovedEvent
+  >>> IObjectRemovedEvent.providedBy(event)
   True
-  >>> events[1].newParent
+  >>> event.oldParent == folder1
+  True
+  >>> event.newParent is None
+  True
 
 and a moved event:
 
-  >>> events[2].object == foo
+  >>> event = events[2]
+  >>> event.object == foo
   True
-  >>> events[2].oldParent == folder1
+  >>> event.oldName, event.newName
+  ('foo', 'foo')
+  >>> event.oldParent == folder1
   True
-  >>> events[2].newParent == folder2
+  >>> event.newParent == folder2
   True
-  >>> events[2].oldName
-  'foo'
-  >>> events[2].newName
-  'foo'
 
 Now clean up:
 
@@ -215,17 +224,24 @@ to the folder, we expect two events...
 
 a copied event...
 
+  >>> event = events[1]
+  >>> from zope.app.event.interfaces import IObjectCopiedEvent
+  >>> IObjectCopiedEvent.providedBy(event)
+  True
   >>> events[1].object == foo
   True
 
 and an added event:
 
-  >>> events[2].object == foo
+  >>> event = events[2]
+  >>> IObjectAddedEvent.providedBy(event)
   True
-  >>> events[2].newParent == folder1
+  >>> event.object == foo
   True
-  >>> events[2].newName
+  >>> event.newName
   'foo'
+  >>> event.newParent == folder1
+  True
 
 Now clean up:
 
