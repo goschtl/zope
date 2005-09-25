@@ -1,12 +1,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       lang="en"
-      metal:use-macro="context/main_template/macros/master"
-      i18n:domain="plone">
+      i18n:domain="five">
 
   <head><title></title></head>
-  <body>
+  <body metal:define-macro='marker_edit'>
     <div metal:fill-slot="main"
-         tal:define="errors options/state/getErrors">
+         tal:define="errors view/state/getErrors">
 
       <h1 i18n:translate="heading_edit_marker">
         Edit Marker Interfaces
@@ -22,12 +21,11 @@
             action="."
             method="post"
             enctype="multipart/form-data"
-            tal:attributes="action string:${context/getId}/${template/getId}"
-            tal:define="iface_tool iface_tool|portal/portal_interface|nothing;
-provided python:iface_tool.getDirectlyProvidedNames(context);
-                              available python:iface_tool.getMarkerInterfaceNames(context);
-                              impl python:iface_tool.getProvidedNames(context)"
-            tal:condition="iface_tool">
+            tal:attributes="action string:${context/getId}/${view/name}"
+            tal:define="provided view/getDirectlyProvidedNames;
+                        available view/getAvailableInterfaceNames;
+                        impl view/getProvidedNames"
+            >
 
         <fieldset>
 
@@ -64,7 +62,6 @@ provided python:iface_tool.getDirectlyProvidedNames(context);
                      tabindex=""
                      tal:attributes="value iface;
                                      id iface;
-                                     tabindex tabindex/next;
                                      checked python:iface in remove and 'checked'"
                      />
 
@@ -109,8 +106,7 @@ provided python:iface_tool.getDirectlyProvidedNames(context);
                      tabindex=""
                      tal:attributes="value iface;
                                      id iface;
-                                     tabindex tabindex/next;
-                                     checked python:iface in add and 'checked'"
+				     checked python:iface in add and 'checked'"
                      />
 
               <label for=""
@@ -136,7 +132,6 @@ provided python:iface_tool.getDirectlyProvidedNames(context);
                    name="form.button.Save"
                    value="Save"
                    i18n:attributes="value"
-                   tal:attributes="tabindex tabindex/next;"
                    />
           </div>
 
