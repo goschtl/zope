@@ -1,0 +1,124 @@
+Association Fields
+==================
+
+Association fields provide a Python reaization of (a subset of) UML
+associations. Associations model connections between objects.
+Association fields are used for "intrinsic" associations, which are
+associations that are implemented directly by objects.  (Intrinsic
+references are in contrast to "extrinsic" references, which are
+maintained by the system to support system concerns.)
+
+Let's create an association between people and organizations.
+To do that we'll start with a person schema:
+
+    >>> from zope import interface
+    >>> from zope.agxassociation import association
+
+    >>> class IPerson(interface.Interface):
+    ...     organization = association.Association(
+    ...        target = 'zope.agxassociation.association_txt.IOrganization',
+    ...        inverse = 'members',
+    ...        )
+
+There are some things to note:
+
+- The association is with objects of some other type.  In this case,
+  we want the association to be with IOrganization objects, but we
+  haven't defined IOrganization yet.  We use a dotted name to allow
+  the actual definition of the interface to be defered until needed.
+
+- We used the `inverse` option to specify that this is a two way
+  association and to specify the attribute in the organization schema
+  that will be used to refer back to the person.  This allows us to
+  automate updating the other side of an association when one side is
+  updated. 
+
+Now let's define IOrganization:
+
+    >>> class IOrganization(interface.Interface):
+    ...     members = association.Association(
+    ...        target = IPerson,
+    ...        inverse = 'organization',
+    ...        cardinality = association.SetCardinality()
+    ...        )
+
+Note:
+
+- We didn't need to use a dotted name in IOrganization, because
+  IPerson already exists. 
+
+- We specified a cardinality for the association.  There are a number
+  of ways to express cardinality.  The default is one to one
+  (association.SINGLE). Here we want a one to many association, and we
+  want to use a set API.  We use a SetCardinality to specify this. 
+
+Let's create implementations of these schemas:
+
+    >>> class Named(object):
+    ...
+    ...     def __init__(self, name=''):
+    ...         self.name = name
+    ...
+    ...     def __repr__(self):
+    ...         return "%s(%r)" % (self.__class__.__name__, self.name)
+
+    >>> class Person(Named):
+    ...     interface.implements(IPerson)
+    ...
+    ...     organization = association.SingleProperty(IPerson['organization'])
+    
+
+    >>> class Organization(Named):
+    ...     interface.implements(IOrganization)
+    ...
+    ...     members = association.SetProperty(IOrganization['members'])
+    ...
+    ...     def __init__(self, name=''):
+    ...         super(Organization, self).__init__(name)
+    ...         self.members = set()
+
+These classes use helper properties provided by the association
+module:
+
+- SingleProperty makes sure that when we assign valies to an
+  attribute, the assigned value is of the specified type.  In
+  addition, if an inverse attribute is specified in the schema field,
+  the inverse attribute is updated.  We passed the organization field
+  to the property to provide the attribute specification.
+
+- SetProperty provides an IAssociationSet implementation.  It uses set
+  proxies to make sure that the order side of the association is
+  updated when the set is updated.
+
+Now, with this in place, we can try to validate values for
+organization:
+
+    >>> IPerson['organization'].validate(22)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+    ...
+    WrongType: 
+    (<InterfaceClass zope.agxassociation.association_txt.IOrganization>, 22)
+
+    >>> IPerson['organization'].validate(Organization())
+
+If we assign an organization attribute, we see that the organization
+is updated:
+
+    >>> guido = Person('Guido')
+    >>> psf = Organization('PSF')
+    >>> guido.organization = psf
+    >>> psf.members
+    set([Person('Guido')])
+
+
+Similarly, if we add a person to an organization, their organization
+will be set:
+
+    >>> tim = Person('Tim')
+    >>> psf.members.add(tim)
+    >>> sorted(psf.members)
+    [Person('Guido'), Person('Tim')]
+
+    >>> tim.organization
+    Organization('PSF')
