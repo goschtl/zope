@@ -46,9 +46,10 @@ otherwise we will fail to access it:
 
   >>> print http(r"""
   ... GET /test_folder_1_/ftf/+/protectedaddform.html HTTP/1.1
-  ... """)
-  HTTP/1.1 401 Unauthorized
+  ... """, handle_errors=False)
+  Traceback (most recent call last):
   ...
+  Unauthorized: ...
 
 Now let's add a piece of our sample content object to test more things
 on it:
