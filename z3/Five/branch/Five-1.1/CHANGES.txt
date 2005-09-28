@@ -8,6 +8,11 @@ After Five 1.1b
 Bugfixes
 --------
 
+* Repaired 'forms.txt' test which expected an error page when passing
+  'handle_errors' as False;  it now expects an Unauthorized traceback.
+  Note that this test fails on Zope 2.8.1, which incorrectly ignored
+  'handle_errors'.
+
 * FiveTraversable should only do a view lookup and not call the traverse 
   method of its superclass.
 

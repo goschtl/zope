@@ -42,7 +42,8 @@ For a protected one we need a manager account:
   HTTP/1.1 200 OK
   ...
 
-otherwise we will fail to access it:
+otherwise we will fail to access it (N.B: this test will fail on Zope 2.8.1,
+which incorrectly ignored its 'handle_errors' argument):
 
   >>> print http(r"""
   ... GET /test_folder_1_/ftf/+/protectedaddform.html HTTP/1.1
