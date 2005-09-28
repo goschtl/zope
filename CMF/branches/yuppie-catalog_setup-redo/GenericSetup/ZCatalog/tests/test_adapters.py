@@ -20,9 +20,12 @@ import Testing
 import Zope2
 Zope2.startup()
 
+import Products
+from Products.Five import zcml
 from Products.GenericSetup.interfaces import INodeExporter
 from Products.GenericSetup.testing import NodeAdapterTestCase
 from Products.GenericSetup.utils import PrettyDocument
+from zope.app.tests.placelesssetup import PlacelessSetup
 
 
 class _extra:
@@ -73,7 +76,7 @@ _VOCABULARY_XML = """\
 """
 
 
-class ZCatalogNodeAdapterTests(NodeAdapterTestCase):
+class ZCatalogNodeAdapterTests(PlacelessSetup, NodeAdapterTestCase):
 
     def _getTargetClass(self):
         from Products.GenericSetup.ZCatalog.adapters \
@@ -129,6 +132,13 @@ class ZCatalogNodeAdapterTests(NodeAdapterTestCase):
 
     def setUp(self):
         from Products.ZCatalog.ZCatalog import ZCatalog
+
+        PlacelessSetup.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml',
+                         Products.GenericSetup.PluginIndexes)
+        zcml.load_config('configure.zcml', Products.GenericSetup.ZCatalog)
+        zcml.load_config('configure.zcml', Products.GenericSetup.ZCTextIndex)
 
         self._obj = ZCatalog('foo_catalog')
         self._XML = _CATALOG_XML % ('', '')

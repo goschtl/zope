@@ -17,10 +17,12 @@ $Id$
 
 import unittest
 import Testing
-import Zope2
-Zope2.startup()
 
+import Products.Five
+import Products.GenericSetup.PluginIndexes
+from Products.Five import zcml
 from Products.GenericSetup.testing import NodeAdapterTestCase
+from zope.app.tests.placelesssetup import PlacelessSetup
 
 
 _DATE_XML = """\
@@ -70,7 +72,7 @@ _TOPIC_XML = """\
 """
 
 
-class DateIndexNodeAdapterTests(NodeAdapterTestCase):
+class DateIndexNodeAdapterTests(PlacelessSetup, NodeAdapterTestCase):
 
     def _getTargetClass(self):
         from Products.GenericSetup.PluginIndexes.adapters \
@@ -81,11 +83,16 @@ class DateIndexNodeAdapterTests(NodeAdapterTestCase):
     def setUp(self):
         from Products.PluginIndexes.DateIndex.DateIndex import DateIndex
 
+        PlacelessSetup.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml',
+                         Products.GenericSetup.PluginIndexes)
+
         self._obj = DateIndex('foo_date')
         self._XML = _DATE_XML
 
 
-class DateRangeIndexNodeAdapterTests(NodeAdapterTestCase):
+class DateRangeIndexNodeAdapterTests(PlacelessSetup, NodeAdapterTestCase):
 
     def _getTargetClass(self):
         from Products.GenericSetup.PluginIndexes.adapters \
@@ -100,11 +107,16 @@ class DateRangeIndexNodeAdapterTests(NodeAdapterTestCase):
         from Products.PluginIndexes.DateRangeIndex.DateRangeIndex \
                 import DateRangeIndex
 
+        PlacelessSetup.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml',
+                         Products.GenericSetup.PluginIndexes)
+
         self._obj = DateRangeIndex('foo_daterange')
         self._XML = _DATERANGE_XML
 
 
-class FieldIndexNodeAdapterTests(NodeAdapterTestCase):
+class FieldIndexNodeAdapterTests(PlacelessSetup, NodeAdapterTestCase):
 
     def _getTargetClass(self):
         from Products.GenericSetup.PluginIndexes.adapters \
@@ -118,11 +130,16 @@ class FieldIndexNodeAdapterTests(NodeAdapterTestCase):
     def setUp(self):
         from Products.PluginIndexes.FieldIndex.FieldIndex import FieldIndex
 
+        PlacelessSetup.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml',
+                         Products.GenericSetup.PluginIndexes)
+
         self._obj = FieldIndex('foo_field')
         self._XML = _FIELD_XML
 
 
-class KeywordIndexNodeAdapterTests(NodeAdapterTestCase):
+class KeywordIndexNodeAdapterTests(PlacelessSetup, NodeAdapterTestCase):
 
     def _getTargetClass(self):
         from Products.GenericSetup.PluginIndexes.adapters \
@@ -137,11 +154,17 @@ class KeywordIndexNodeAdapterTests(NodeAdapterTestCase):
         from Products.PluginIndexes.KeywordIndex.KeywordIndex \
                 import KeywordIndex
 
+
+        PlacelessSetup.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml',
+                         Products.GenericSetup.PluginIndexes)
+
         self._obj = KeywordIndex('foo_keyword')
         self._XML = _KEYWORD_XML
 
 
-class PathIndexNodeAdapterTests(NodeAdapterTestCase):
+class PathIndexNodeAdapterTests(PlacelessSetup, NodeAdapterTestCase):
 
     def _getTargetClass(self):
         from Products.GenericSetup.PluginIndexes.adapters \
@@ -152,11 +175,17 @@ class PathIndexNodeAdapterTests(NodeAdapterTestCase):
     def setUp(self):
         from Products.PluginIndexes.PathIndex.PathIndex import PathIndex
 
+
+        PlacelessSetup.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml',
+                         Products.GenericSetup.PluginIndexes)
+
         self._obj = PathIndex('foo_path')
         self._XML = _PATH_XML
 
 
-class VocabularyNodeAdapterTests(NodeAdapterTestCase):
+class VocabularyNodeAdapterTests(PlacelessSetup, NodeAdapterTestCase):
 
     def _getTargetClass(self):
         from Products.GenericSetup.PluginIndexes.adapters \
@@ -167,6 +196,11 @@ class VocabularyNodeAdapterTests(NodeAdapterTestCase):
     def setUp(self):
         from Products.PluginIndexes.TextIndex.Vocabulary import Vocabulary
 
+        PlacelessSetup.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml',
+                         Products.GenericSetup.PluginIndexes)
+
         self._obj = Vocabulary('foo_vocabulary')
         self._XML = _VOCABULARY_XML
 
@@ -174,7 +208,7 @@ class VocabularyNodeAdapterTests(NodeAdapterTestCase):
         pass
 
 
-class TextIndexNodeAdapterTests(NodeAdapterTestCase):
+class TextIndexNodeAdapterTests(PlacelessSetup, NodeAdapterTestCase):
 
     def _getTargetClass(self):
         from Products.GenericSetup.PluginIndexes.adapters \
@@ -185,6 +219,11 @@ class TextIndexNodeAdapterTests(NodeAdapterTestCase):
     def setUp(self):
         from Products.PluginIndexes.TextIndex.TextIndex import TextIndex
 
+        PlacelessSetup.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml',
+                         Products.GenericSetup.PluginIndexes)
+
         self._obj = TextIndex('foo_text')
         self._XML = _TEXT_XML
 
@@ -192,7 +231,7 @@ class TextIndexNodeAdapterTests(NodeAdapterTestCase):
         pass
 
 
-class FilteredSetNodeAdapterTests(NodeAdapterTestCase):
+class FilteredSetNodeAdapterTests(PlacelessSetup, NodeAdapterTestCase):
 
     def _getTargetClass(self):
         from Products.GenericSetup.PluginIndexes.adapters \
@@ -207,11 +246,16 @@ class FilteredSetNodeAdapterTests(NodeAdapterTestCase):
         from Products.PluginIndexes.TopicIndex.FilteredSet \
                 import PythonFilteredSet
 
+        PlacelessSetup.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml',
+                         Products.GenericSetup.PluginIndexes)
+
         self._obj = PythonFilteredSet('bar', '')
         self._XML = _SET_XML
 
 
-class TopicIndexNodeAdapterTests(NodeAdapterTestCase):
+class TopicIndexNodeAdapterTests(PlacelessSetup, NodeAdapterTestCase):
 
     def _getTargetClass(self):
         from Products.GenericSetup.PluginIndexes.adapters \
@@ -225,6 +269,11 @@ class TopicIndexNodeAdapterTests(NodeAdapterTestCase):
 
     def setUp(self):
         from Products.PluginIndexes.TopicIndex.TopicIndex import TopicIndex
+
+        PlacelessSetup.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml',
+                         Products.GenericSetup.PluginIndexes)
 
         self._obj = TopicIndex('foo_topic')
         self._XML = _TOPIC_XML

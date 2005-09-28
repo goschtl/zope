@@ -17,12 +17,14 @@ $Id$
 
 import unittest
 import Testing
-import Zope2
-Zope2.startup()
 
 from Acquisition import Implicit
 
+import Products.Five
+import Products.GenericSetup.ZCTextIndex
+from Products.Five import zcml
 from Products.GenericSetup.testing import NodeAdapterTestCase
+from zope.app.tests.placelesssetup import PlacelessSetup
 
 
 class _extra:
@@ -52,7 +54,7 @@ _ZCTEXT_XML = """\
 """
 
 
-class ZCLexiconNodeAdapterTests(NodeAdapterTestCase):
+class ZCLexiconNodeAdapterTests(PlacelessSetup, NodeAdapterTestCase):
 
     def _getTargetClass(self):
         from Products.GenericSetup.ZCTextIndex.adapters \
@@ -69,11 +71,15 @@ class ZCLexiconNodeAdapterTests(NodeAdapterTestCase):
     def setUp(self):
         from Products.ZCTextIndex.ZCTextIndex import PLexicon
 
+        PlacelessSetup.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml', Products.GenericSetup.ZCTextIndex)
+
         self._obj = PLexicon('foo_plexicon')
         self._XML = _PLEXICON_XML
 
 
-class ZCTextIndexNodeAdapterTests(NodeAdapterTestCase):
+class ZCTextIndexNodeAdapterTests(PlacelessSetup, NodeAdapterTestCase):
 
     def _getTargetClass(self):
         from Products.GenericSetup.ZCTextIndex.adapters \
@@ -84,6 +90,10 @@ class ZCTextIndexNodeAdapterTests(NodeAdapterTestCase):
     def setUp(self):
         from Products.ZCTextIndex.ZCTextIndex import PLexicon
         from Products.ZCTextIndex.ZCTextIndex import ZCTextIndex
+
+        PlacelessSetup.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml', Products.GenericSetup.ZCTextIndex)
 
         catalog = DummyCatalog()
         catalog.foo_plexicon = PLexicon('foo_plexicon')

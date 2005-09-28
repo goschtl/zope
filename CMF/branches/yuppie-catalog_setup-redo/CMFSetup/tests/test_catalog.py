@@ -17,14 +17,15 @@ $Id$
 
 import unittest
 import Testing
-import Zope2
-Zope2.startup()
 
+import Products
 from OFS.Folder import Folder
+from Products.Five import zcml
 from Products.ZCTextIndex.Lexicon import CaseNormalizer
 from Products.ZCTextIndex.Lexicon import Splitter
 from Products.ZCTextIndex.Lexicon import StopWordRemover
 from Products.ZCTextIndex.ZCTextIndex import PLexicon
+from zope.app.tests.placelesssetup import PlacelessSetup
 
 from Products.CMFCore.CatalogTool import CatalogTool
 
@@ -38,7 +39,7 @@ class _extra:
     pass
 
 
-class _CatalogToolSetup(BaseRegistryTests):
+class _CatalogToolSetup(PlacelessSetup, BaseRegistryTests):
 
     def _initSite(self, foo=2):
         site = self.root.site = Folder(id='site')
@@ -65,6 +66,18 @@ class _CatalogToolSetup(BaseRegistryTests):
 
         return site
 
+    def setUp(self):
+        PlacelessSetup.setUp(self)
+        BaseRegistryTests.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml',
+                         Products.GenericSetup.PluginIndexes)
+        zcml.load_config('configure.zcml', Products.GenericSetup.ZCatalog)
+        zcml.load_config('configure.zcml', Products.GenericSetup.ZCTextIndex)
+
+    def tearDown(self):
+        BaseRegistryTests.tearDown(self)
+        PlacelessSetup.tearDown(self)
 
 _EMPTY_EXPORT = """\
 <?xml version="1.0"?>
