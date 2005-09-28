@@ -1969,9 +1969,9 @@ Now run the tests in the copy:
       Ran 4 tests with 0 failures and 0 errors in N.NNN seconds.
     False
 
-If we delete the source files, it's normally a disaster (the test runner
-doesn't believe any test files, or even packages, exist).  Note that we
-pass ``--keepbytecode`` this time, because otherwise the testrunner would
+If we delete the source files, it's normally a disaster:  the test runner
+doesn't believe any test files, or even packages, exist.  Note that we pass
+``--keepbytecode`` this time, because otherwise the test runner would
 delete the compiled Python files too:
 
     >>> for root, dirs, files in os.walk(dst):
