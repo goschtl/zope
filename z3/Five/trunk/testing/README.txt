@@ -11,6 +11,16 @@ named "1.2"), in order to take advantage of its improved support for
 debugging doctests (compared to that provided by the stock zope.testing
 in Zope 2.8.1/3.0.1).
 
+
+Nota Bene
+---------
+
+This package will be removed from Five as of version 1.3, at which
+point the new 'zope.testing' code should be available in the Zope 2.9
+/ Zope 3.2 tree.  Please do not add unnecessary dependencies, beyond
+using the testrunner as described below.
+
+
 Using the Package
 -----------------
 

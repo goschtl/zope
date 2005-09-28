@@ -62,13 +62,9 @@ def test_get_widgets_for_schema_fields():
 
 def test_suite():
     import unittest
-    #from Testing.ZopeTestCase import ZopeDocTestSuite, FunctionalDocFileSuite
-    #from Products.Five.testing.doctest import DocFileSuite
     from Products.Five.testing.doctest import DocTestSuite
     from Testing.ZopeTestCase import FunctionalDocFileSuite
     return unittest.TestSuite((
-            #ZopeDocTestSuite(),
-            #DocFileSuite('forms.txt', package='Products.Five.form.tests'),
             DocTestSuite(),
             FunctionalDocFileSuite('forms.txt',
                                    package="Products.Five.form.tests",),
