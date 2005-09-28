@@ -239,8 +239,8 @@ Passing arguments explicitly
 
 In most of the examples here, we set up `sys.argv`.  In normal usage,
 the testrunner just uses `sys.argv`.  It is possible to pass athiments
-explicitly. 
-    
+explicitly.
+
     >>> testrunner.run(defaults, 'test --layer 111'.split())
     Running samplelayers.Layer111 tests:
       Set up samplelayers.Layerx in N.NNN seconds.
@@ -1395,7 +1395,7 @@ examples in the same test to fail.  Each failure is reported:
       File "testrunner-ex/sample2/sampletests_1.py", line 17, in eek
     <BLANKLINE>
     ----------------------------------------------------------------------
-    File "testrunner-ex/sample2/sampletests_1.py", line 19, 
+    File "testrunner-ex/sample2/sampletests_1.py", line 19,
          in sample2.sampletests_1.eek
     Failed example:
         x = y
@@ -1407,7 +1407,7 @@ examples in the same test to fail.  Each failure is reported:
             x = y
         NameError: name 'y' is not defined
     ----------------------------------------------------------------------
-    File "testrunner-ex/sample2/sampletests_1.py", line 21, 
+    File "testrunner-ex/sample2/sampletests_1.py", line 21,
          in sample2.sampletests_1.eek
     Failed example:
         x
@@ -1419,7 +1419,7 @@ examples in the same test to fail.  Each failure is reported:
             x
         NameError: name 'x' is not defined
     ----------------------------------------------------------------------
-    File "testrunner-ex/sample2/sampletests_1.py", line 24, 
+    File "testrunner-ex/sample2/sampletests_1.py", line 24,
          in sample2.sampletests_1.eek
     Failed example:
         z = x + 1
@@ -1449,7 +1449,7 @@ me the first failed example in a doctest" :)
       File "testrunner-ex/sample2/sampletests_1.py", line 17, in eek
     <BLANKLINE>
     ----------------------------------------------------------------------
-    File "testrunner-ex/sample2/sampletests_1.py", line 19, 
+    File "testrunner-ex/sample2/sampletests_1.py", line 19,
          in sample2.sampletests_1.eek
     Failed example:
         x = y
@@ -1592,7 +1592,7 @@ Note that, prior to Python 2.4, calling pdb.set_trace caused pdb to
 break in the pdb.set_trace function.  It was necessary to use 'next'
 or 'up' to get to the application code that called pdb.set_trace.  In
 Python 2.4, pdb.set_trace causes pdb to stop right after the call to
-pdb.set_trace. 
+pdb.set_trace.
 
 You can also do post-mortem debugging, using the --post-mortem (-D)
 option:
@@ -1608,7 +1608,7 @@ option:
     <BLANKLINE>
     Error in test test_post_mortem1 (sample3.sampletests_d.TestSomething)
     Traceback (most recent call last):
-      File "testrunner-ex/sample3/sampletests_d.py", 
+      File "testrunner-ex/sample3/sampletests_d.py",
               line 34, in test_post_mortem1
         raise ValueError
     ValueError
