@@ -92,17 +92,22 @@ class Debugger(object):
 
         return request
 
-    def publish(self, path='/', stdin='', stdout=None, *args, **kw):
+    def publish(self, path='/', stdin='', *args, **kw):
         t, c = time.time(), time.clock()
 
-        if stdout is None:
-            stdout = StringIO()
-
-        request = self._request(path, stdin, stdout, *args, **kw)
+        request = self._request(path, stdin, *args, **kw)
         getStatus = getattr(request.response, 'getStatus', lambda: None)
         _publish(request)
-        stdout.seek(0)
-        print stdout.read()
+
+        # XXX need to stop writing things like this!!!
+
+        headers = request.response.getHeaders()
+        headers.sort()
+        print 'Status %s\r\n%s\r\n\r\n%s' % (
+            request.response.getStatusString(),
+            '\r\n'.join([("%s: %s" % h) for h in headers]),
+            request.response.consumeBody(),
+            )
         return time.time()-t, time.clock()-c, getStatus()
 
     def run(self, *args, **kw):
