@@ -22,7 +22,7 @@ bash syntax):
 To start interacting with the debugger you need to initialize the zope
 application:
 
-  $ python2.3
+  $ python2.4
   >>> from zope.app.debug import Debugger
   >>> debugger = Debugger()
 
