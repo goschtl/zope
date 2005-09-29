@@ -28,12 +28,22 @@ def dotted(iface):
 ifaces = (IFace, IStubInterface2, IStubInterface3)
 iface_names = tuple([dotted(x) for x in ifaces])
 
-for iface_name, iface in zip(iface_names, ifaces):
-    provideInterface(iface_name, iface)
-
 class Test(ZopeTestCase.ZopeTestCase):
-
+    _iface_reg = False
+    def beforeTearDown(self):
+        tearDown()
+        
     def afterSetUp(self):
+        setUp()
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('permissions.zcml', Products.Five)
+        zcml.load_config('configure.zcml', Products.Five.utilities)
+        if self._iface_reg != True:
+            # this should only happen once
+            # setUp() clears registries for adapters, but not interfaces
+            for iface_name, iface in zip(iface_names, ifaces):
+                provideInterface(iface_name, iface)
+            self._iface_reg = True
         self.marker_util = zapi.getUtility(IMarkerUtility)
         manage_addFiveTraversableFolder(self.folder, 'test_folder', "")
         self.test_folder = self.folder.test_folder
