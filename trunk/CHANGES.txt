@@ -3,6 +3,11 @@ PluginRegistry Product Changelog
 
   After PluginRegistry-1.0.2
 
+    - Saner version name
+
+    - Added a new ZMI tab offering a simple overview over active/available
+      plugins for each known plugin type.
+
     - Removed deprecation warnings under Zope 2.8.x.
 
   PluginRegistry-1.0.2 (2005/08/30)

@@ -299,14 +299,18 @@ class PluginRegistry( SimpleItem ):
 
     security.declareProtected( ManageUsers, 'manage_plugins' )
     manage_plugins = PageTemplateFile( 'plugins', _wwwdir )
+    security.declareProtected( ManageUsers, 'manage_active' )
+    manage_active = PageTemplateFile( 'active_plugins', _wwwdir )
     manage_twoLists = PageTemplateFile( 'two_lists', _wwwdir )
 
-    manage_options=( ( { 'label'        : 'Plugins'
-                       , 'action'       : 'manage_plugins'
-                     # , 'help'         : ( 'PluggableAuthService'
-                     #                    , 'plugins.stx')
+    manage_options=( ( { 'label'  : 'Plugins'
+                       , 'action' : 'manage_plugins'
+                     # , 'help'   : ( 'PluggableAuthService'
+                     #              , 'plugins.stx')
                        }
-                     ,
+                     , { 'label'  : 'Active'
+                       , 'action' : 'manage_active'
+                       }
                      )
                    + SimpleItem.manage_options
                    )
