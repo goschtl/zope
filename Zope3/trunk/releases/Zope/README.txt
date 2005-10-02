@@ -12,7 +12,7 @@ experiences of Zope 2.
 Requirements
 ------------
 
-Zope 3 requires that Python 2.3.5 or newer be installed.
+Zope 3 requires that Python 2.4.1 or newer be installed.
 
 Building the Zope 3 software requires a C compiler supported by the distutils.
 
@@ -35,17 +35,17 @@ use with Zope::
 
   Testing for an acceptable Python interpreter...
 
-  Python version 2.4a0 found at /usr/local/bin/python
-  Python version 2.3.5 found at /usr/local/bin/python2.4
+  Python version 2.3.5 found at /usr/local/bin/python
+  Python version 2.4.1 found at /usr/local/bin/python2.4
 
-  The optimum Python version (2.3.5) was found at /usr/local/bin/python2.4.
+  The optimum Python version (2.4.1) was found at /usr/local/bin/python2.4.
 
 If you want to specify which Python should be used with Zope, use the
 `--with-python` option to indicate the specific Python interpreter to use::
 
-  $ ./configure --with-python /opt/Python-2.3.5/bin/python
+  $ ./configure --with-python /opt/Python-2.4.1/bin/python
 
-  Using Python interpreter at python2.4
+  Using Python interpreter at /opt/Python-2.4.1/bin/python
 
   Configuring Zope 3 installation
 
@@ -61,10 +61,10 @@ alternate location:
 
   Testing for an acceptable Python interpreter...
 
-  Python version 2.4.1 found at /usr/local/bin/python
-  Python version 2.3.5 found at /usr/local/bin/python2.4
+  Python version 2.3.5 found at /usr/local/bin/python
+  Python version 2.4.1 found at /usr/local/bin/python2.4
 
-  The optimum Python version (2.3.5) was found at /usr/local/bin/python2.4.
+  The optimum Python version (2.4.1) was found at /usr/local/bin/python2.4.
 
 If you want to use the same prefix as a previous installation, you need to
 remove the original installation first.  Instances created using one
@@ -117,25 +117,25 @@ Windows (installer)
 ~~~~~~~~~~~~~~~~~~~
 
 On Windows it's easiest to use the Windows installer.  The instructions here
-assume you installed Python in its default location, ``\Python23``.
+assume you installed Python in its default location, ``\Python24``.
 
 If you have a previous version of Zope 3 installed, use the Windows Control
 Panel's Add/Remove Programs applet to uninstall the old version first. The
-name of the appropriate entry starts with "Python 2.3 Zope 3-".
+name of the appropriate entry starts with "Python 2.4 Zope 3-".
 
 Run the installer.  Note that the installer creates an uninstallation program,
 and an entry to run it under Control Panel's Add/Remove Programs applet.  This
-will remove the files installed under ``\Python23``, but will not remove
+will remove the files installed under ``\Python24``, but will not remove
 anything in the instance directory (which you create next).
 
-Change to the ``\Python23\Scripts`` directory and create an instance::
+Change to the ``\Python24\Scripts`` directory and create an instance::
 
   ..\python mkzopeinstance -d <instance dir> -u <username>:<password>
 
 Change to the instance directory (this is the new directory you specified as
 the ``-d`` argument to ``mkzopeinstance``) and start Zope::
 
-  \Python23\python bin/runzope
+  \Python24\python bin/runzope
 
 
 Windows (source)
@@ -152,23 +152,23 @@ installer, you will need to remove the previous installation.
 In using the distribution on Windows, you will need to run Python directly
 several times with various command lines; you should be careful to use the
 same Python installation for each of these.  The default installation for
-Python 2.3.x on Windows places the Python interpreter at ``\Python23\python``;
+Python 2.3.x on Windows places the Python interpreter at ``\Python24\python``;
 this will be used in the examples, but you may need to use a different path to
 the interpreter if you installed Python in a non-default location.  On
-NT/2000/XP using cmd.exe, and if Python 2.3.x is associated with the .py
+NT/2000/XP using cmd.exe, and if Python 2.4.x is associated with the .py
 extension (the Python Windows installer does so by default), you can leave off
-the ``\Python23\python `` at the start of each command line.
+the ``\Python24\python `` at the start of each command line.
 
 Build the Zope software by switching to the directory created by unpacking the
 source distribution, then running the command::
 
-  C:\Zope-3.2.0> \Python23\python install.py -q build
+  C:\Zope-3.2.0> \Python24\python install.py -q build
 
 The unit tests for the Zope software can be run once this is complete.  This
 is an optional step, and can take a while to complete.  The tests can be run
 using the command::
 
-  C:\Zope-3.2.0> \Python23\python test.py -v
+  C:\Zope-3.2.0> \Python24\python test.py -v
   Running UNIT tests at level 1
   Running UNIT tests from C:\Zope-3.2.0\build\lib.win32-2.3
   [...lots of dots, one per test...]
@@ -183,7 +183,7 @@ operating system, and host platform.
 
 At this point, you can install the software using the command:
 
-  C:\Zope-3.2.0> \Python23\python install.py -q install
+  C:\Zope-3.2.0> \Python24\python install.py -q install
 
 You now have a complete Zope 3 installation.  Note that this method of
 installing Zope does not allow for easy uninstallation later: you will need to
@@ -208,7 +208,7 @@ Run this script to create the instance home::
 
 or::
 
-  C:\Python23\Scripts> ..\python mkzopeinstance -u username:password -d directory
+  C:\Python24\Scripts> ..\python mkzopeinstance -u username:password -d directory
 
 This will create the directory named on the command line and provide a default
 configuration. The configuration files for the Zope application server are in
