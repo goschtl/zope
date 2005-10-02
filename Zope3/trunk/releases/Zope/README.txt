@@ -36,16 +36,16 @@ use with Zope::
   Testing for an acceptable Python interpreter...
 
   Python version 2.4a0 found at /usr/local/bin/python
-  Python version 2.3.5 found at /usr/local/bin/python2.3
+  Python version 2.3.5 found at /usr/local/bin/python2.4
 
-  The optimum Python version (2.3.5) was found at /usr/local/bin/python2.3.
+  The optimum Python version (2.3.5) was found at /usr/local/bin/python2.4.
 
 If you want to specify which Python should be used with Zope, use the
 `--with-python` option to indicate the specific Python interpreter to use::
 
   $ ./configure --with-python /opt/Python-2.3.5/bin/python
 
-  Using Python interpreter at python2.3
+  Using Python interpreter at python2.4
 
   Configuring Zope 3 installation
 
@@ -62,9 +62,9 @@ alternate location:
   Testing for an acceptable Python interpreter...
 
   Python version 2.4.1 found at /usr/local/bin/python
-  Python version 2.3.5 found at /usr/local/bin/python2.3
+  Python version 2.3.5 found at /usr/local/bin/python2.4
 
-  The optimum Python version (2.3.5) was found at /usr/local/bin/python2.3.
+  The optimum Python version (2.3.5) was found at /usr/local/bin/python2.4.
 
 If you want to use the same prefix as a previous installation, you need to
 remove the original installation first.  Instances created using one
@@ -74,7 +74,7 @@ Once you've configured Zope, you can build the software using ``make``.  No
 options are needed.
 
   $ make
-  python2.3 install.py -q build
+  python2.4 install.py -q build
 
 Now that the software has been built, you can run the unit tests for the
 software to make sure that everything is working on your platform.  This is an
@@ -82,8 +82,8 @@ optional step, and can take a while to complete.  The tests can be run using
 ``make`` as well::
 
   $ make check
-  python2.3 install.py -q build
-  python2.3 test.py -v
+  python2.4 install.py -q build
+  python2.4 test.py -v
   Running UNIT tests at level 1
   Running UNIT tests from /home/user/Zope-3.2.0/build/lib.linux-i686-2.3
   [...lots of dots, one per test...]
@@ -107,8 +107,8 @@ system, and host platform.
 To install the software, run ``make`` again::
 
   $ make install
-  python2.3 install.py -q build
-  python2.3 install.py -q install --home "/opt/Zope-3.2.0"
+  python2.4 install.py -q build
+  python2.4 install.py -q install --home "/opt/Zope-3.2.0"
 
 You now have a complete Zope 3 installation.
 

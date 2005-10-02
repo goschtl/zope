@@ -17,7 +17,7 @@
 # This script assumes it is located in the utilities directory of Zope3
 
 
-PYTHON=`which python2.3`
+PYTHON=`which python2.4`
 
 PATTERN='# ?(XXX|TODO)'
 TMPFILE=`mktemp` 

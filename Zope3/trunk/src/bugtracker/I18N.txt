@@ -12,7 +12,7 @@ Internationalization (I18n) and Localization (L10n)
 
     3. Go into the 'locales' directory and execute i18nextract.py::
 
-      python2.3 utilities/i18nextract.py -d bugtracker -p ..
+      python2.4 utilities/i18nextract.py -d bugtracker -p ..
 
 
   Updating Message Catalog (PO) Files

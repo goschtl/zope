@@ -1270,7 +1270,7 @@ Zope Changes
       in the ZODB 4 format, you need to convert it using the following
       command executed from the Zope3 directory::
 
-        PYTHONPATH=src python2.3 src/ZODB/zodb4/main.py Data.fs
+        PYTHONPATH=src python2.4 src/ZODB/zodb4/main.py Data.fs
 
     - Removed source type service and replaced source types by source
       factories. Updated the vocabulary accordingly.
