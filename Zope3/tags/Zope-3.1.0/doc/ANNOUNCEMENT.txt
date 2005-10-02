@@ -1,4 +1,4 @@
-The Zope 3 development team is proud to announce Zope 3.1.0 candidate 3.
+The Zope 3 development team is proud to announce Zope 3.1.0 final.
 
 Zope 3 is the next major Zope release and has been written from scratch based
 on the latest software design patterns and the experiences of Zope 2.
@@ -26,25 +26,6 @@ Downloads
 
   Zope 3.1 requires Python 2.3.5 or 2.4.1 to run. You must also have zlib
   installed on your system.
-
-Changes Since 3.1.0c2
-
-  - Fixed several bugs that were considered critical.
-
-    * Ported Stuart Bishop's work in ``pytz`` and ``zope.i18n`` to address
-      broken and misleading timezone code (i.e., one issue was broken and
-      another was misleading).
-
-    * Fixed apidoc to handle extended paths, so that zope packages could
-      be installed in software instances without apidoc losing knowledge
-      of the core zope code.
-
-    * Added custom ``executemany()`` method for cursors created through
-      GadflyAdapter. See http://www.zope.org/Collectors/Zope3-dev/445 for
-      discussion.
-
-  - Updated ZODB to 3.5.1b2.
-
 
 Most Important Changes Since 3.0
 
@@ -119,10 +100,6 @@ Most Important Changes Since 3.0
     are defined: source, tal, errors.
 
   - Improved logout support.
-
-  - Added the HTTP request recorder, which lets you inspect raw HTTP requests
-    and responses.  It can be used to create functional doctests without
-    requiring third-party tools such as TCPWatch.
 
   - Developed a generic 'browser:form' directive. It is pretty much the
     same as the 'browser:editform' directive, except that the data is
