@@ -23,7 +23,7 @@ def test_directives():
     """
     Test ZCML directives
 
-      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> setUp()
 
     There isn't much to test here since the actual directive handlers

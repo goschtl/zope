@@ -1,5 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
+<!--
   <serviceType
       id="Utilities"
       interface="zope.component.interfaces.IUtilityService" />
@@ -23,5 +24,6 @@
   <service
       serviceType="Presentation"
       factory="zope.component.presentation.GlobalPresentationService" />
- 
+-->
+
 </configure>

@@ -23,7 +23,7 @@ def test_directive():
     """
     Test the i18n directive
 
-      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> setUp()
 
     First, we need to register the ZCML directive:

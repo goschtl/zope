@@ -23,7 +23,7 @@ def test_defaultView():
     """
     Testing default view functionality
 
-      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> setUp()
 
     Take a class Foo and an interface IFoo:

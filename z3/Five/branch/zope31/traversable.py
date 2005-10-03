@@ -16,9 +16,8 @@
 $Id$
 """
 from zExceptions import NotFound
-from zope.exceptions import NotFoundError
 from zope.component import getView, ComponentLookupError
-from zope.interface import implements
+from zope.interface import implements, Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
@@ -74,7 +73,7 @@ class Traversable:
         try:
             return ITraverser(self).traverse(
                 path=[name], request=REQUEST).__of__(self)
-        except (ComponentLookupError, NotFoundError,
+        except (ComponentLookupError, LookupError,
                 AttributeError, KeyError, NotFound):
             pass
         try:
@@ -100,7 +99,7 @@ class FiveTraversable(DefaultTraversable):
             REQUEST = FakeRequest()
         # Try to lookup a view first
         try:
-            return getView(context, name, REQUEST)
+            return getMultiAdapter((context, REQUEST), Interface, name)
         except ComponentLookupError:
             pass
         # If a view can't be found, then use default traversable

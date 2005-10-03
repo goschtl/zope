@@ -283,5 +283,5 @@ Test traversal to resources from within ZPT pages:
 Clean up
 --------
 
-  >>> from zope.app.tests.placelesssetup import tearDown
+  >>> from zope.app.testing.placelesssetup import tearDown
   >>> tearDown()

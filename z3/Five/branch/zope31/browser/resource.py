@@ -22,7 +22,6 @@ from Acquisition import Explicit
 from ComputedAttribute import ComputedAttribute
 from OFS.Traversable import Traversable as OFSTraversable
 
-from zope.exceptions import NotFoundError
 from zope.interface import implements
 from zope.component.interfaces import IResource
 from zope.component import getViewProviding
@@ -213,7 +212,7 @@ class DirectoryResource(BrowserView, Resource, OFSTraversable):
         filename = os.path.join(path, name)
         if not os.path.isfile(filename):
             if default is _marker:
-                raise NotFoundError(name)
+                raise KeyError(name)
             return default
         ext = name.split('.')[-1]
         factory = self.resource_factories.get(ext, self.default_factory)

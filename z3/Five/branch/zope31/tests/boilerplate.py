@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
 def test_boilerplate():
     """
-      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> setUp()
 
       >>> import Products.Five.tests

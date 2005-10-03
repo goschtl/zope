@@ -54,7 +54,7 @@ def test_size():
 
     Set up:
 
-      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> setUp()
 
       >>> configure_zcml = '''
