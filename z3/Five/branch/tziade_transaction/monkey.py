@@ -53,5 +53,10 @@ def monkeyPatch():
         import Zope2
     except ImportError:
         import sys
-        from Products.Five.bbb import transaction
-        sys.modules['transaction'] = transaction
+        import transaction
+        from Products.Five.bbb import transaction_patch
+        transaction.begin = transaction_patch.begin
+        transaction.commit = transaction_patch.commit
+        transaction.abort = transaction_patch.abort
+        transaction.get_transaction = transaction_patch.get_transaction
+        transaction.get = transaction_patch.get
