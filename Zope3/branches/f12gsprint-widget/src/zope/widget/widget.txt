@@ -1,18 +1,51 @@
-=====
+==========
 Widget API
-=====
+==========
 
+Widgets are views on schema fields--that is, components that adapt a schema
+field and a request, and provide methods that are intended to generate user
+interface code.  The user interface is either designed to gather input from
+a user or to display values to a user.  Widgets must be assembled and displayed
+by a coordinating component such as a zope.formlib form.
+
+The widget package has three clients: 
+
+- developers who want to use widgets to gather information from end users;
+- developers who want to create widgets; and
+- the end users themselves.
+
+This document addresses the first two clients.  We will first examine the full
+widget API, trying to provide a guide for developers who want to use widgets.
+We will then 
+for 
+The widget API is a simple approach based on the concept of calculating and
+processing user-visible state objects.  The widget module provides some simple
+abstract classes that should let most widget writers concentrate on only two
+tasks: rendering the widget, a
 
     >>> from zope.widget import widget, interfaces
-
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.schema import TextLine
     >>> request = TestRequest()
+    >>> context = object()
+
+Field is required but has no default
+
     >>> field = TextLine(__name__='test_name', title=u'Test Title', 
     ...                  min_length=2, description=u'Test Description')
-    >>> context = object()
     >>> field = field.bind(context)
+
+Field2 is required and has a default value.
+
+    >>> field2 = TextLine(__name__='test_name', title=u'Test Title', 
+    ...                  min_length=2, description=u'Test Description',
+    ...                  default=u'test_default')
+    >>> field2 = field2.bind(context)    
+    
+Create the widget.    
+    
     >>> w = widget.TextLineWidget(field, request)
+
     
 After creating a widget, the next step that must be taken is to initialize it.
 
@@ -42,6 +75,16 @@ request, a required field will raise a RequiredMissing is getValue is called.
     Traceback (most recent call last):
     ...
     RequiredMissing
+    
+A widget with a required field with a default value, will obtain that default.
+
+    >>> request = TestRequest()
+    >>> w = widget.TextLineWidget(field2, request)
+    >>> w.initialize()
+    >>> w.getValue()
+    u'test_default'
+
+
 
 If the previous request rendered the field, the state will be gathered from it
 during initialize; if value is not passed explicitly to initialize, it will
@@ -117,6 +160,24 @@ it is valid.
     >>> w.hasState()
     False
     >>> w.getState() # None    
+    
+    
+It is possible to explicitly set the value to None rather than accept the 
+default value.
+
+    >>> request = TestRequest()
+    >>> w = widget.TextLineWidget(field2, request)
+    >>> w.initialize(value=None)
+    >>> w.getValue() # None
+
+    >>> request = TestRequest()
+    >>> w = widget.TextLineWidget(field2, request)
+    >>> w.initialize()  # will use field default value
+    >>> w.getValue()
+    'test_default'
+    >>> w.setValue(None)
+    >>> w.getValue() # None
+    
     
 State objects are black boxes.  The only contract they have is that they are
 pickleable.  Do not rely on their values, except for their intended use.

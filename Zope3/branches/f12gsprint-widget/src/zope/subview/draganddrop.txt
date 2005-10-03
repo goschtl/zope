@@ -1,0 +1,31 @@
+=============
+Drag and Drop
+=============
+
+The pattern of the drag and drop approach is this. 
+
+* First, on the browser, dragging and dropping an item needs to generate the id
+  of the dragged item, the id of the containing subview, the id of the drag
+  target, and the id of the containing subview.  This means that draggable
+  items and targets need to be identified and given tokens that can be
+  resolved on the server back to the dragged item. The draggable items should
+  be identified with class="zope.subview.dnd_source"; the targets should be
+  identified with class="zope.subview.dnd_target".  They should have ids that
+  are tokens that can be converted to the appropriate objects on the server,
+  as described below.
+
+* These four tokens--source object, target object, source subview, and target
+  subview--should be sent back to the server to determine what
+  the effect of the action is, if any.  The call can be with AJAX or with a
+  full page submission.  
+
+* The server should use ISubviewCollection.getSubviewByPrefix to get the subviews by their prefix (the
+  id on the page).  They can then try to adapt the subviews to IDragAndDropSource
+  and IDragAndDropTarge, respectively.  If adapters exist, then the object tokens
+  should be converted to objects. XXX otherwise no action
+
+* Get the multi adapter for (source object, target object, source subview,
+  target subview) to IDragAndDropHandler. XXX document return values; add
+  interfaces
+
+XXX

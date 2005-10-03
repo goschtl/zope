@@ -14,30 +14,22 @@
 
 $Id: form.py 38007 2005-08-19 17:50:28Z poster $
 """
+import persistent
+import persistent.dict
 from zope import interface
+import zope.subview
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.schema.interfaces import ValidationError
+from zope.schema.interfaces import ValidationError, RequiredMissing
 from xml.sax.saxutils import quoteattr
 
 from zope.widget import interfaces
 
-class BaseInputWidget(object):
-    """base simple widget"""
+class Widget(zope.subview.SubviewBase):
+    """widget, designed to be used by composition or subclass to get core
+    behavior"""
     
-    interface.implements(interfaces.IInputWidget)
+    interface.implements(interfaces.IWidget)
     __doc__ = interfaces.IInputWidget.__doc__
-    
-    _name = None
-    name = property(lambda self: self._name)
-
-    _prefix = None
-    def prefix(self, value):
-        self._prefix = value
-        if value is None:
-            self._name = self.context.__name__
-        else:
-            self._name = '.'.join((value, self.context.__name__))
-    prefix = property(lambda self: self._prefix, prefix)
     
     _error = None
     error = property(lambda self: self._error)
@@ -45,43 +37,37 @@ class BaseInputWidget(object):
     _message = None
     message = property(lambda self: self._message)
     
-    def __init__(self, context, request):
+    def __init__(self, context, request, core_widget=None):
         self.context = context
         self.request = request
         self.label = context.title
         self.hint = context.description
         self.required = context.required
-        
+        assert core_widget is None or interfaces.ICoreWidget.providedBy(
+            core_widget)
+        self._core_widget = core_widget
+
     _valueForced = False
-    _initialized = False    
-    _state = None
-    def initialize(self, prefix=None, value=interfaces.marker, state=None):
-        self._initialized = True
-        self.prefix = prefix
-        if state is None:
-            state = self._calculateStateFromRequest()
-        else:
-            if value is not interfaces.marker:
-                raise TypeError('May pass only one of value and state')
-        self._state = state
+    def update(self, parent=None, name=None, value=interfaces.marker):
+        super(Widget, self).initialize(parent, name)
+        self._state = self._calculateState()
         if value is interfaces.marker:
-            if self._state is None:
-                value = self.context.default
+            if not self.hasInput():
+                self.setValue(self.context.default) # effectively a force
             else:
-                value = self._calculateValueFromState()
-            self.setValue(value)
-            self._valueForced = False
+                try:
+                    value = self._calculateValue()
+                except interfaces.ConversionError, e:
+                    self._error = e
+                    self._message = None
+                    self._value = self.context.missing_value
+                else:
+                    self.setValue(value)
+                self._valueForced = False # not a force
         else:
-            self.setValue(value)
-            
-    def getState(self):
-        if not self._initialized:
-            raise RuntimeError('Initialize widget first')
-        if self._state is not None and self._valueForced:
-            raise interfaces.InvalidStateError()
-        return self._state
+            self.setValue(value) # this is a force.
     
-    def hasState(self):
+    def hasInput(self):
         if not self._initialized:
             raise RuntimeError('Initialize widget first')
         return self._state is not None
@@ -90,7 +76,8 @@ class BaseInputWidget(object):
     def getValue(self):
         if not self._initialized:
             raise RuntimeError('Initialize widget first')
-        if self.error is not None:
+        if self.error is not None and isinstance(
+            self.error, interfaces.ConversionError):
             raise self.error
         return self._value
     
@@ -107,55 +94,127 @@ class BaseInputWidget(object):
         self._value = value
         self._valueForced = True
 
-    def __call__(self):
-        raise NotImplementedError
+    # the following methods may typically either be overridden or be used
+    # as is, delegating to an ICoreWidget implementation.
+
+    def needsRedraw(self):
+        return self._valueForced or (
+            self._state is not None and self._core_widget.needsRedraw(
+                self.context, self.request, self._state))
+    needsRedraw = property(needsRedraw)
+
+    def render(self):
+        """render the widget.
         
-    def _calculateStateFromRequest(self):
-        """return the widget's state object if it was rendered previously, or
-        None"""
-        return self.request.form.get(self.name)
+        if self._valueForced:
+            if self.error is not None:
+                draw the widget with no value filled in
+            else:
+                draw the widget on the basis of the current value
+        else:
+            draw the widget on the basis of the _state (which should
+            always be non-None if _valueForced is False)"""
+        if self._valueForced:
+            if self.error is not None:
+                return self._core_widget.renderInvalidValue(
+                    self.context, self.request, self.prefix, self._value)
+            else:
+                return self._core_widget.renderValidValue(
+                    self.context, self.request, self.prefix, self._value)
+        else:
+            return self._core_widget.renderState(
+                    self.context, self.request, self.prefix, self._state)
+        
+    def _calculateState(self):
+        """return the widget's state object if the (logical) widget was
+        rendered previously, or None."""
+        return self._core_widget.calculateState(
+            self.context, self.request, self.name)
 
-    def _calculateValueFromState(self):
-        """return the current value on the basis of the _state attribute"""
+    def _calculateValue(self):
+        """return the current value only on the basis of the _state attribute.
+
+        Do not validate.  If cannot generate a value from the current _state,
+        raise zope.widget.interfaces.ConversionError.
+
+        _state will never be None when this method is called."""
+        return self._core_widget.calculateValue(self._state)
+
+class CoreWidget(persistent.Persistent):
+
+    interface.implements(interfaces.ICoreWidget)
+
+    def renderInvalidValue(self, context, request, name, value):
+        """render a widget for an invalid value"""
         raise NotImplementedError
-    
 
-class AdvancedBaseInputWidget(BaseInputWidget):
+    def renderValidValue(self, context, request, name, value):
+        """render a widget for the given valid value"""
+        raise NotImplementedError
+
+    def renderState(self, context, request, name, state):
+        """render a widget for the given state"""
+        raise NotImplementedError
+
+    def calculateState(self, context, request, name):
+        """return the widget's state object if the (logical) widget was
+        rendered previously, or None.
+        
+        This simple implementation is good for widgets that have only one
+        input field."""
+        return request.form.get(name+".value")
+
+    def calculateValue(self, state):
+        """given a state, return a value, or raise ConversionError"""
+        raise NotImplementedError
+
+    def needsRedraw(self, context, request, state):
+        return False
+
+class AdvancedCoreWidget(object):
     """base advanced widget"""
 
-    def _calculateStateFromRequest(self):
-        res = {}
-        name = self.name
-        len_name = len(name)
-        prename = name + "."
-        for n, v in self.request.form.items():
-            if n == name or n.startswith(prename):
-                res[n[len_name:]] = v
+    def calculateState(self, context, request, name):
+        """return the widget's state object if the (logical) widget was
+        rendered previously, or None.
+        
+        This advanced implementation is good for widgets that are comprised
+        of multiple input fields.  It means that the state object (if not None)
+        is a dictionary."""
+        res = persistent.dict.PersistentDict()
+        prefix = self.prefix + "."
+        slice = len(prefix)
+        for n, v in request.form.items():
+            if n.startswith(prefix):
+                res[n[slice:]] = v
         return res or None
 
-class TextLineWidget(BaseInputWidget):
-    
-    #template = namedtemplate.NamedTemplate('default')   
-    
-    t = ("""<input type="text" value=%(value)s name=%(name)s """
-         """id=%(name)s size="20" />""")
-    
+class CoreTextLineWidget(SimpleCoreWidget):
 
-    def __call__(self):
-        if self._valueForced:
-            value = self.getValue()
-        else:
-            value = self._state
-        return self.t % {'value':quoteattr(value or ''),
-                         'name':quoteattr(self.name)}
+    def __init__(self, size='20', extra=''):
+        self.size = size
+        self.extra = extra
 
-    #("""<input type="text" value=%(value)s name=%(name)s """
-    #            """id=%(name)s size="20" />""")
-    
-    def _calculateValueFromState(self):
+    def renderInvalidValue(self, context, request, name, value):
+        return self.renderValidValue(name, '')
+
+    def renderValidValue(self, context, request, name, value):
+        return (
+            """<input type="text" value=%(value)s name=%(name)s """
+            """id=%(name)s size="%(size)s" %(extra)s />""" % 
+            {'value': value, 'name': name+".value", 'size': self.size, 
+             'extra': self.extra})
+    renderState = renderValidValue
+
+    def calculateValue(self, state):
         try:
-            value = unicode(self._state)
-        except ValueError, v: # XXX
-            e = interfaces.ConversionError(v)
-        else:
-            return value
+            return unicode(state)
+        except ValueError, v:
+            raise interfaces.ConversionError(v)
+
+textLineWidget = CoreTextLineWidget()
+
+def TextLineWidget(context, request):
+    w = InputWidget(context, request, textLineWidget)
+    interface.directlyProvides(w, interfaces.IBrowserInputWidget)
+    return w

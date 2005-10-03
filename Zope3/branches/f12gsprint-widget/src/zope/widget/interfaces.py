@@ -18,7 +18,7 @@ $Id: interfaces.py 30595 2005-06-01 22:14:18Z fdrake $
 __docformat__ = 'restructuredtext'
 
 from zope.schema.interfaces import ValidationError
-from zope.component.interfaces import IView
+import zope.subview.interfaces
 from zope.interface import Attribute, Interface, implements
 from zope.schema import Bool
 
@@ -28,20 +28,13 @@ marker = object()
 
 class ConversionError(ValueError):
     """ Value could not be converted to correct type """
-    
-class InvalidStateError(RuntimeError):
-    """ This widget's state has been invalidated by a call to setValue()"""
 
-class IWidget(IView):
+class IWidget(zope.subview.interfaces.ISubview):
     """Generically describes the behavior of a widget.
-
-    This must be presentation independent.
+    
+    Note that all state calculation (e.g., gathering value from request) must
+    happen within initialize.
     """
-
-    name = Attribute(
-        """The unique widget name
-
-        This must be unique within a set of widgets.""")
 
     label = Attribute(
         """The widget label.
@@ -64,12 +57,6 @@ class IWidget(IView):
         field can be set to False for widgets that always provide input (e.g.
         a checkbox) to avoid unnecessary 'required' UI notations.
         """)
-                
-    prefix = Attribute("""Element names should begin with the given `prefix`.
-        Prefix name may be None, or a string.  Any other value raises 
-        ValueError.  When prefixes are concatenated with the widget name, a dot 
-        is used as a delimiter; a trailing dot is neither required nor suggested
-        in the prefix itself. """)
         
     error = Attribute(""" An exception created by initialize or setValue.  If 
         this value is not None, it is raised when getValue is called.
@@ -81,60 +68,45 @@ class IWidget(IView):
         setValue.  Minimally, a message object is expected to be adaptable to
         a view named snippet.
         """)
-    
-    def __call__():
-        """ render widget """
         
-    def initialize(prefix=None, value=marker, state=None):
-        """ Initialize widget and set its value.
-
-        Initialize must be called before any other method besides __init__.
-
-        If prefix is passed in, the prefix attribute of the widget is set.
-        Prefix must be None or be a string.  See prefix attribute for more 
-        detail.
-        
-        If neither value nor state is included, the widget will try
-        to set its value from the request.  
-
-        If value is passed in, the widget will use that value.  If state is 
-        passed in, the widget will use the state object to set its value and
-        do any other initialization desired. The state object must be obtained 
-        from the getState method of a widget of the same class.  
-        
-        Only one of value or state may be passed, passing both raises
-        TypeError.        
-        
-        If the widget's value is not valid, its error attribute will contain 
-        either a ConversionError or zope.schema.interfaces.ValidationError.  If 
-        a widget wishes to add an object to message, that may be done here.
-        """        
-        
-    def getState():
-        """ If the widget has been viewed previously, returns a non-None, 
-        picklable object representing the widget's state, unless setValue has 
-        been called, in which case it raises InvalidStateError.  Otherwise, 
-        returns None.
-
-        A state object can later be passed in to initialize to restore the
-        state of the widget.
+    def hasInput():
+        """True if subview has a user-visible (client-side) state from a
+        previous rendering (either persistently or from the most recent
+        initialization).
         """
         
-    def hasState():
-        """ Return True if the widget has a state from a previous request.
+    def update(parent=None, name=None, value=marker):
+        """ Initialize widget, calculating all state; and set its value.
         
-        Should be equivalent to self.getState() is not None.
-        """
+        See ISubview.initialize for essential basic behavior.
+
+        If the value is not provided, it will try to calculate the value from
+        the environment (e.g., the a browser request).
+
+        After a call to initialize, if the widget's value is not valid, its
+        error attribute will contain either a ConversionError or
+        zope.schema.interfaces.ValidationError.  If a widget wishes to add an
+        object to message, that may be done here."""
 
     def getValue():
         """ Return the current value as set by initialize or setValue.
 
-        If error is not None, raise it."""
+        Value is *not* validated.  Value should not be used to assign to 
+        a field unless the widget's error attribute is None.
+        
+        May raise ConversionError (i.e., widget has state but does not
+        know how to convert it to a validatable value) but not
+        ValidationError.  For instance, if the widget's value is currently a
+        required field's missing value, getValue must return the missing value.
+        
+        If setValue was called and did not raise an exception, the value
+        must be returnable by this method."""
         
     def setValue(value):
         """ Sets the current value of the widget.  Resets the error and 
         message attributes to only the message and error pertaining 
-        to the new value, if any.
+        to the new value, if any.  Must minimally accept the widget's field's
+        missing value and valid values.
         """
     
 class IInputWidget(IWidget):
@@ -143,3 +115,57 @@ class IInputWidget(IWidget):
 class IDisplayWidget(IWidget):
     """a widget used for display"""
 
+class IBrowserInputWidget(IWidget):
+    """a browser widget used for input"""
+
+class IBrowserDisplayWidget(IWidget):
+    """a browser widget used for display"""
+
+class ICoreWidget(interface.Interface):
+    """A private interface to support lean widgets usable in both the old and
+    new widget frameworks.
+    
+    The interface intends to allow for full flexibility by the widget author,
+    while enforcing the patterns needed by the subview and widget interfaces.
+    The only particularly unusual approach is using a state object to pass
+    calculated values.  This state should not depend on the widget's name or
+    prefix for use.  It encourages all state calculation to be done once,
+    as is necessary for the initialize method.
+    """
+
+    def renderInvalidValue(context, request, name, value):
+        """render a widget for an invalid value; typically renders a widget
+        with an empty value.
+        
+        This is only called if calculateState returned None, or if
+        a value has been explicitly set on the widget; and the value is
+        invalid, according to the widget's field (context)."""
+
+    def renderValidValue(context, request, name, value):
+        """render a widget for the given valid value
+        
+        This is only called if calculateState returned None, or if
+        a value has been explicitly set on the widget; and the value is
+        valid, according to the widget's field (context)."""
+
+    def renderState(context, request, name, state):
+        """render a widget for the given valid (non-None) state.
+        
+        This is called if calculateState returned a non-None value and the
+        widget's value was not set explicitly.
+        """
+
+    def calculateState(context, request, name):
+        """return the widget's state object if the (logical) widget was
+        rendered previously, or None.
+        
+        State must be persistable."""
+
+    def calculateValue(state):
+        """given a state provided by calculateState, return a value, or raise
+        ConversionError"""
+
+    def needsRedraw(context, request, state):
+        """return a boolean on whether the given state (provided by
+        calculateState) suggests that the widget should be redrawn (for
+        instance, because the widget processed an internal submit)."""
