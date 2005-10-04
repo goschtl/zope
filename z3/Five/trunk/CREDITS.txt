@@ -31,6 +31,8 @@ Five contributors
 
 - Malcolm Cleaton (malcolm@jamkit.com)
 
+- Tarek Ziadé (tziade@nuxeo.com)
+
 Thank you
 ---------
 

@@ -5,11 +5,8 @@ Five Changes
 Trunk only
 ==========
 
-Others
-------
-
-* FiveTraversable should only do a view lookup and not call the traverse 
-  method of its superclass.
+Restructuring
+-------------
 
 * Added a (temporarily) forked copy of the "new-and-improved" test runner
   and supporting 'zope.testing' package, lifted from
@@ -23,8 +20,27 @@ Others
 * Removed backwards compatibility for some moved classes (AddForm, EditForm, 
   ContentAdding)
 
-After Five 1.1b
-===============
+Five 1.1 (2005-10-04)
+=====================
+
+Features
+--------
+
+* When Zope was not in debug mode, an error in a ZCML file would cause Five to
+  stop loading ZCML completely, making all subsequent products "dead". The
+  effect would typically be that objects appeared to have no views at all. 
+  Now a ZCML error will only stop the ZCML loading for that product, but the 
+  rest of the products will load as usual. A traceback will still be printed 
+  in the event log.
+
+  In debug mode the behaviour has not changed; a ZCML error will stop Zope 
+  startup completely, and print a traceback if running in foreground mode.
+  
+Restructuring
+-------------
+
+* The deprecated FivePageTemplateFile was removed, and the erroneous use of 
+  this by EditView was changed.
 
 Bugfixes
 --------
@@ -33,6 +49,9 @@ Bugfixes
   'handle_errors' as False;  it now expects an Unauthorized traceback.
   Note that this test fails on Zope 2.8.1, which incorrectly ignored
   'handle_errors'.
+
+* FiveTraversable should only do a view lookup and not call the traverse 
+  method of its superclass.
 
 * Fixed manage_beforeDelete triggering for classes using five:sendEvents.
 
@@ -49,25 +68,16 @@ Bugfixes
 * Added backwards compatibility for some moved classes (AddForm, EditForm, 
   ContentAdding)
 
-* The deprecated FivePageTemplateFile was removed, and the erroneous use of 
-  this by EditView was changed.
-
 * The ZPT variable 'container' makes little sense in Zope3/Five, but is now
   always set to be the same as 'here' which is normal Zope2 behaviour.
   It is in Five 1.0.x set to be the same as 'view' which breaks some templates.
   
-* When Zope was not in debug mode, an error in a ZCML file would cause Five to
-  stop loading ZCML completely, making all subsequent products "dead". The
-  effect would typically be that objects appeared to have no views at all. 
-  Now a ZCML error will only stop the ZCML loading for that product, but the 
-  rest of the products will load as usual. A traceback will still be printed 
-  in the event log.
-  
-  In debug mode the behaviour has not changed; a ZCML error will stop Zope 
-  startup completely, and print a traceback if running in foreground mode.
-  
 * In some hard to replicate cases, using the "modules" variable in ZPT cause
   an AuthenticationError. Using the secure module importer fixes this.
+
+* If you used some parts of Zope 3 (for example the mail delivery) Five 1.1
+  transaction backport would conflict with Zope 3s transaction module.
+  This is now solved.
 
 Five 1.1b (2005-07-13)
 ======================
