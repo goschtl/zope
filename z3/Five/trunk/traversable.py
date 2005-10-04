@@ -98,10 +98,8 @@ class FiveTraversable(DefaultTraversable):
         REQUEST = getattr(context, 'REQUEST', None)
         if not IBrowserRequest.providedBy(REQUEST):
             REQUEST = FakeRequest()
-        # Try to lookup a view first
+        # Try to lookup a view
         try:
             return getView(context, name, REQUEST)
         except ComponentLookupError:
             pass
-        # If a view can't be found, then use default traversable
-        return super(FiveTraversable, self).traverse(name, furtherPath)
