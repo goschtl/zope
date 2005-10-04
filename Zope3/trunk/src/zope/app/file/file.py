@@ -115,7 +115,7 @@ class File(Persistent):
     >>> verifyClass(interfaces.IFile, File)
     True
     """
-    
+
     implements(zope.app.publication.interfaces.IFileContent, interfaces.IFile)
 
     def __init__(self, data='', contentType=''):
@@ -127,9 +127,9 @@ class File(Persistent):
             return str(self._data)
         else:
             return self._data
-            
+
     def _setData(self, data) :
-     
+
         # Handle case when data is a string
         if isinstance(data, unicode):
             data = data.encode('UTF-8')
@@ -165,7 +165,7 @@ class File(Persistent):
 
         # Make sure we have an _p_jar, even if we are a new object, by
         # doing a sub-transaction commit.
-        transaction.savepoint()
+        transaction.savepoint(optimistic=True)
 
         jar = self._p_jar
 
@@ -197,7 +197,7 @@ class File(Persistent):
             data.next = next
 
             # Now make it get saved in a sub-transaction!
-            transaction.savepoint()
+            transaction.savepoint(optimistic=True)
 
             # Now make it a ghost to free the memory.  We
             # don't need it anymore!
