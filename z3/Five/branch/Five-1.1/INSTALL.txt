@@ -4,7 +4,7 @@ How to install Five
 Requirements for Five 1.1
 =========================
 
-* Zope 2.7.4+ with python 2.3.x. Zope versions lower than Zope 2.7.4
+* Zope 2.7.4+ with Python 2.3.x.  Zope versions lower than Zope 2.7.4
   may work, but no guarantees.  Zope 2.8.1 or higher is recommended.
 
 * Zope X3 3.0.1, found here: http://www.zope.org/Products/Zope3/3.0.1/
@@ -67,8 +67,8 @@ Installing Five is relatively straightforward.
   subdirectory of Five by copying them into your ``Products``
   directory.
 
-Installing the tests
-====================
+Running the tests
+=================
 
 For information on how to run the automatic Five tests, please see
 ``tests/README.txt``.
