@@ -21,7 +21,8 @@ or to existing ones, even normal Folders!
 
 Five works with a straight Zope 2.7 installation, as long as Zope 3
 has been installed. See Five's INSTALL.txt for more information on how
-to set it up.
+to set it up. Five 1.0 is also already included in Zope 2.8, newer
+Five releases since are available however.
 
 We're in the process of evaluating lots more Zope 3 technologies for
 integration into Zope 2. This is the right moment for interested Zope
@@ -31,6 +32,10 @@ system for us all.
 
 Download 
 --------
+
+2005-10-04 -- We have release Five 1.1! Download it here:
+
+http://codespeak.net/z3/five/release/Five-1.1.tgz
 
 2005-07-13 -- We have released Five 1.1b! Download it here:
 
