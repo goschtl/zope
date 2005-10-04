@@ -50,7 +50,7 @@ def monkeyPatch():
     i18n.monkey()
 
     try:
-        import Zope2
+        import transaction
     except ImportError:
         import sys
         from Products.Five.bbb import transaction

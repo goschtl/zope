@@ -51,6 +51,10 @@ Bugfixes
 * In some hard to replicate cases, using the "modules" variable in ZPT cause
   an AuthenticationError. Using the secure module importer fixes this.
 
+* There was some cases with conflicts of the transaction module. One
+  fix is included, an alternative is in branch/tziade_transaction.
+  More testing is needed before we know which is the best one. /regebro
+
 Five 1.1b (2005-07-13)
 ======================
 
