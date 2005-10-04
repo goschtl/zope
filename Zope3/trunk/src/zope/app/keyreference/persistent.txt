@@ -30,7 +30,7 @@ Then we'll create some key references:
 
 We can call the keys to get the objects:
 
-    >>> key1() is root['ob1'], key1() is root['ob1']
+    >>> key1() is root['ob1'], key2() is root['ob2']
     (True, True)
     
 New keys to the same objects are equal to the old:
