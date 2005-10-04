@@ -21,7 +21,7 @@ from zope.interface import Interface, Attribute
 
 
 class IObjectEvent(Interface):
-    """Something has happened to an object.
+    """An event related to an object.
 
     The object that generated this event is not necessarily the object
     refered to by location.
