@@ -5,7 +5,7 @@
    >
 
   <permission
-      id="zope.SendMail" 
+      id="zope.SendMail"
       title="[send-mail-permission]
              Send out mail with arbitrary from and to addresses"
       />
@@ -16,7 +16,7 @@
     To send mail, uncomment the following directive and be sure to
     create the queue directory.
 
-  <mail:queuedService permission="zope.SendMail"
+  <mail:queuedDelivery permission="zope.SendMail"
                       queuePath="./queue"
                       mailer="smtp" />
    -->
@@ -26,7 +26,7 @@
   <vocabulary
       name="Mail Delivery Names"
       factory="zope.app.component.vocabulary.UtilityVocabulary"
-      interface="zope.app.mail.interfaces.IMailDelivery" 
+      interface="zope.app.mail.interfaces.IMailDelivery"
       nameOnly="True" />
 
 
