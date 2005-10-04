@@ -11,27 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unit tests for the viewable module.
+"""Test import conflicts
 
-$Id: $
+$Id$
 """
 import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-def test_defaultView():
+def testImportConflicts():
     """
-    Under a Five environment, importing zope3
-    packages that would use zope 3 transaction module
-    would lead to an error, because of the monkey patching
+    In a Five environment, importing Zope 3 packages that would use
+    interfaces from the Zope 3 transaction module would lead to an
+    error, because of the monkey patching.  The zope.app.mail package
+    makes use of transaction interfaces, for example the following
+    class:
 
-      >>> from zope.app.tests.placelesssetup import setUp, tearDown
-      >>> setUp()
       >>> from zope.app.mail.delivery import QueueProcessorThread
 
-    Clean up:
-
-      >>> tearDown()
+    Note that this only concerns Zope 2.7 and Zope X3 3.0.
     """
 
 def test_suite():
