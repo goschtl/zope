@@ -9,6 +9,11 @@ Miscellaneous
 
   o Run book sources against source tree (Stephan and Phillip)
 
+- Separate the loading of the meta-ZCML from the configuration ZCML,
+  so that an application can load all the meta without loading any
+  configuration, so gaining control over what configuration gets
+  loaded.
+
 
 Bug Fixes
 ---------
