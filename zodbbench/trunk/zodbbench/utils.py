@@ -72,7 +72,8 @@ else:
     from time import time as now
 
 class BenchBase(object):
-    name = None   # subclass should override with benchmark name
+    name = None     # subclass should override with benchmark name
+    version = None  #    "       "       "       "      "     version number
 
     def open_fs(self, path=None):
         """Open a FileStorage.
@@ -110,12 +111,12 @@ class BenchBase(object):
     def report(self, msg):
         """Display a report to stdout.
 
-        The starts by listing the name of the benchmark (self.name),
-        then gives the Python and ZODB versions in use, and then displays
-        `msg`.
+        The starts by listing the name of the benchmark (self.name and
+        self.version), then gives the Python and ZODB versions in use, and
+        then displays `msg`.
         """
 
-        print "Benchmark", self.name
+        print "Benchmark %s, version %s" % (self.name, self.version)
         print "Python version:", sys.version
         print "ZODB version:", ZODB.__version__
         print msg

@@ -31,6 +31,7 @@ from zodbbench.utils import now, tcommit, BenchBase
 
 class OneMinute(BenchBase):
     name = "one-minute commit"
+    version = "0.9"
 
     def __init__(self):
         self.open_fs()
