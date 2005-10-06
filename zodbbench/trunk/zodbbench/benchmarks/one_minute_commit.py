@@ -23,6 +23,11 @@ This starts with an empty database and an empty IIBTree t.  Then it does:
         i += 1
 
 and reports on how many commits it completed in one minute.
+
+Note that this is very sensitive to the efficiency of Python's os.fsync,
+and on a box where that's slow (Windows boxes seem especially prone to
+this, and esp. when using an internal IDE drive), fsync() can be the
+overwhelming bottleneck.
 """
 
 from BTrees.IIBTree import IIBTree
