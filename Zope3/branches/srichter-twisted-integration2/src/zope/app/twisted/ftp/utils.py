@@ -164,8 +164,7 @@ class PublisherFileSystem(object):
             env['path'] = path
             
         env['credentials'] = self.credentials
-        # NoOutput avoids creating a black hole.
-        request = self.request_factory(StringIO(''), NoOutput(), env)
+        request = self.request_factory(StringIO(''), env)
 
         # Note that publish() calls close() on request, which deletes the
         # response from the request, so that we need to keep track of it.
