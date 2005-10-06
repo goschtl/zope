@@ -20,11 +20,12 @@ __docformat__ = 'restructuredtext'
 
 import thread
 import threading
+
 import transaction
 import ZODB.MappingStorage
 from ZODB.POSException import ConflictError
 from BTrees.IOBTree import IOBTree
-from zope.app.publication.httpfactory import HTTPPublicationRequestFactory
+
 from zope.app.server.servertype import ServerType
 from zope.server.http.commonaccesslogger import CommonAccessLogger
 from zope.server.http.wsgihttpserver import WSGIHTTPServer
@@ -32,6 +33,8 @@ from zope.server.http.httpserverchannel import HTTPServerChannel
 from zope.server.http.httprequestparser import HTTPRequestParser
 from zope.server.http.httptask import HTTPTask
 from zope.publisher.publish import publish
+
+from zope.app.wsgi import WSGIPublisherApplication
 
 
 class RecordingHTTPTask(HTTPTask):
@@ -263,6 +266,6 @@ class ZODBBasedRequestStorage(object):
 requestStorage = RequestStorage()
 
 recordinghttp = ServerType(RecordingHTTPServer,
-                           HTTPPublicationRequestFactory,
+                           WSGIPublisherApplication,
                            CommonAccessLogger,
                            8081, True)
