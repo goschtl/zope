@@ -29,17 +29,19 @@ __all__ = ['tcommit',    # commit current transaction
 
            # `now` is time.clock on Windows, and time.time elsewhere:
            # an approximation to the best-resolution wall-clock timer
-           # available
+           # available.
            'now',        # time.clock on Windows, time.time elsewhere
           ]
 
-v = ZODB.__version__
-i = v.index('.')
-i = v.index('.', i+1)  # index of second dot
-first_two = map(int, v[:i].split('.'))
+# Figure out which version of ZODB is in use.
+first_two = map(int, ZODB.__version__.split('.')[:2])
 assert len(first_two) == 2
 
 if first_two <= (3, 2):
+    # ZODB 3.2.0 or earlier.
+
+    # `get_transaction` magically appears in __builtin__ as a result of
+    # importing ZODB.
     tcurrent = get_transaction
 
     def tcommit():
@@ -49,11 +51,13 @@ if first_two <= (3, 2):
         get_transaction().abort()
 
 else:
-    # ZODB 3.3 or later.
+    # ZODB 3.3.0 or later.
     import transaction
     tcurrent = transaction.get
     tcommit = transaction.commit
     tabort = transaction.abort
+
+    del transaction
 
 if sys.platform == "win32":
     from time import clock as now
@@ -62,4 +66,4 @@ else:
 
 del sys
 del ZODB
-del v, i, first_two
+del first_two
