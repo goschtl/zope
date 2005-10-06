@@ -82,3 +82,38 @@ class IFileContent(interface.Interface):
     /.  In particular, if the content included HTML, relative links in
     the HTML are relative to the container the content is in.
     """
+
+
+# marker interfaces for request-publication factories
+class IMethodPOST(interface.Interface):
+    """Marker interface for request-publication factories able to deal
+       with POST requests.
+    """
+
+class IMethodGET(interface.Interface):
+    """Marker interface for request-publication factories able to deal
+       with GET requests.
+    """
+
+class IMethodHEAD(interface.Interface):
+    """Marker interface for request-publication factories able to deal
+       with HEAD requests.
+    """
+    
+class IMimetypeTextXML(interface.Interface):
+    """ request-chooser able to deal with text/html """
+
+class IMimetypesAll(interface.Interface):
+    """ request-chooser able to deal with any mimetypes """
+
+class IRequestPublicationFactory(interface.Interface):
+    """ request-publication factory """
+
+    def canHandle(environment):
+        """ returns True if it can handle the request,
+            otherwise False. 'environment' can be used by the factory 
+            to make a decision based on the HTTP headers.
+        """
+
+    def getRequestPublication():
+        """ returns a tuple (request, publication) """
