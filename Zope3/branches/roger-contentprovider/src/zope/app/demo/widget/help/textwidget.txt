@@ -1,0 +1,293 @@
+=====================
+TextLineWidget sample
+=====================
+
+Interface
+---------
+
+Add interfaces with TextLine fields::
+
+    class IReadDemoTextWidget(Interface):
+        """Widget read interface."""
+    
+        readonly = TextLine(
+            title = _(u"readonly"),
+            description=_(u"zope.schema.TextLine field with readonly = True."),
+            required=False,
+            readonly=True,
+            default=u'readonly')
+    
+    
+    class IWriteDemoTextWidget(Interface):
+        """Widget write interface."""
+    
+        standard = TextLine(
+            title = _(u"standard"),
+            description=_(u"""zope.schema.TextLine field with only title and description."""),
+            )
+    
+        required = TextLine(
+            title = _(u"required"),
+            description=_(u"zope.schema.TextLine field with required = True."),
+            required=True)
+    
+        constraint = TextLine(
+            title = _(u"constraint"),
+            description=_(u"""zope.schema.TextLine field with """
+                """constraint = lambda x: x == u'constraint'."""),
+            constraint=lambda x: x == u'constraint')
+    
+        default = TextLine(
+            title = _(u"default"),
+            description=_(u"""zope.schema.TextLine field with """
+                """default = u'default'."""),
+            default=u'default')
+    
+        min_length = TextLine(
+            title = _(u"min_length"),
+            description=_(u"zope.schema.TextLine field with min_length = 5."),
+            min_length=5)
+    
+        max_length = TextLine(
+            title = _(u"max_length"),
+            description=_(u"zope.schema.TextLine field with max_length = 10"),
+            max_length=10)
+    
+        min_max = TextLine(
+            title = _(u"min_max"),
+            description=_(u"""zope.schema.TextLine field with min_lenght = 5 """
+                """and max_length = 10"""),
+            min_length=5,
+            max_length=10)
+    
+    
+    class IDemoTextWidget(IDemoWidget, IReadDemoTextWidget, IWriteDemoTextWidget):
+        """Widget interface inherits read and write interfaces."""
+
+Define a class::
+
+      class DemoTextWidget(DemoWidget):
+          """Demo TextWidget implementation."""
+      
+          implements(IDemoTextWidget)
+      
+          standard = FieldProperty(IDemoTextWidget['standard'])
+          required = FieldProperty(IDemoTextWidget['required'])
+          readonly = FieldProperty(IDemoTextWidget['readonly'])
+          constraint = FieldProperty(IDemoTextWidget['constraint'])
+          default = FieldProperty(IDemoTextWidget['default'])
+          min_length = FieldProperty(IDemoTextWidget['min_length'])
+          max_length = FieldProperty(IDemoTextWidget['max_length'])
+          min_max = FieldProperty(IDemoTextWidget['min_max'])
+
+Register the class::
+
+  <content class=".textwidget.DemoTextWidget">
+
+    <require permission="zope.View" 
+        interface=".interfaces.IDemoTextWidget"
+        />
+
+    <require permission="zope.ManageContent" 
+        set_schema=".interfaces.IDemoTextWidget"
+        />
+
+  </content>
+
+Register a addform::
+
+  <addMenuItem
+      title="TextWidget"
+      description="Add a Demo TextWidget"
+      class="..textwidget.DemoTextWidget"
+      permission="zope.ManageContent"
+      view="addDemoTextWidget.html"
+      />
+
+  <addform
+      name="addDemoTextWidget.html"
+      label="Add a Demo TextWidget"
+      schema="..interfaces.IWriteDemoTextWidget"
+      content_factory="..textwidget.DemoTextWidget"
+      permission="zope.ManageContent"
+      />
+
+Register a editform::
+
+  <editform
+      name="edit.html"
+      label="Edit"
+      for="..interfaces.IDemoTextWidget"
+      schema="..interfaces.IWriteDemoTextWidget"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"
+      />
+
+Add a DemoWidgetContainer for test the widgets::
+
+  >>> print http(r"""
+  ... POST /@@contents.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: application/x-www-form-urlencoded
+  ... 
+  ... type_name=BrowserAdd__zope.app.demo.widget.app.DemoWidgetContainer&new_value=widgets""")
+  HTTP/1.1 303 See Other
+  ...
+
+Add a TextWidget using the addform::
+
+  >>> print http(r"""
+  ... POST /widgets/+/addDemoTextWidget.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: multipart/form-data; boundary=---------------------------7d513d22e30f9a
+  ... Referer: http://localhost:8081/widgets/+/addDemoTextWidget.html=
+  ... -----------------------------7d513d22e30f9a
+  ... Content-Disposition: form-data; name="field.standard"
+  ... 
+  ... demotext
+  ... -----------------------------7d513d22e30f9a
+  ... Content-Disposition: form-data; name="field.required"
+  ... 
+  ... demotext
+  ... -----------------------------7d513d22e30f9a
+  ... Content-Disposition: form-data; name="field.constraint"
+  ... 
+  ... constraint
+  ... -----------------------------7d513d22e30f9a
+  ... Content-Disposition: form-data; name="field.default"
+  ... 
+  ... default
+  ... -----------------------------7d513d22e30f9a
+  ... Content-Disposition: form-data; name="field.min_length"
+  ... 
+  ... aaaaaa
+  ... -----------------------------7d513d22e30f9a
+  ... Content-Disposition: form-data; name="field.max_length"
+  ... 
+  ... a
+  ... -----------------------------7d513d22e30f9a
+  ... Content-Disposition: form-data; name="field.min_max"
+  ... 
+  ... aaaaaa
+  ... -----------------------------7d513d22e30f9a
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ... 
+  ... Add
+  ... -----------------------------7d513d22e30f9a
+  ... Content-Disposition: form-data; name="add_input_name"
+  ... 
+  ... demo
+  ... -----------------------------7d513d22e30f9a--
+  ... """)
+  HTTP/1.1 303 See Other
+  ...<h3>Add a Demo TextWidget</h3>
+        <div class="row">
+            <div class="label">
+              <label for="field.standard"
+                     title="zope.schema.TextLine field with only title and description.">standard</label>
+            </div>
+            <div class="field"><input class="textType" id="field.standard" name="field.standard" size="20" type="text" value="demotext"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.required"
+                     title="zope.schema.TextLine field with required = True.">required</label>
+            </div>
+            <div class="field"><input class="textType" id="field.required" name="field.required" size="20" type="text" value="demotext"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.constraint"
+                     title="zope.schema.TextLine field with constraint = lambda x: x == u'constraint'.">constraint</label>
+            </div>
+            <div class="field"><input class="textType" id="field.constraint" name="field.constraint" size="20" type="text" value="constraint"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.default"
+                     title="zope.schema.TextLine field with default = u'default'.">default</label>
+            </div>
+            <div class="field"><input class="textType" id="field.default" name="field.default" size="20" type="text" value="default"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.min_length"
+                     title="zope.schema.TextLine field with min_length = 5.">min_length</label>
+            </div>
+            <div class="field"><input class="textType" id="field.min_length" name="field.min_length" size="20" type="text" value="aaaaaa"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.max_length"
+                     title="zope.schema.TextLine field with max_length = 10">max_length</label>
+            </div>
+            <div class="field"><input class="textType" id="field.max_length" name="field.max_length" size="20" type="text" value="a"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.min_max"
+                     title="zope.schema.TextLine field with min_lenght = 5 and max_length = 10">min_max</label>
+            </div>
+            <div class="field"><input class="textType" id="field.min_max" name="field.min_max" size="20" type="text" value="aaaaaa"  /></div>
+        </div...
+
+Check the editform::
+
+  >>> print http(r"""
+  ... GET /widgets/demo/@@edit.html HTTP/1.1
+  ... Host: localhost:8081
+  ... Authorization: Basic mgr:mgrpw
+  ... Referer: http://localhost:8081/widgets/demo/@@contents.html
+  ... """)
+  HTTP/1.1 200 Ok
+  ...
+        <div class="row">
+            <div class="label">
+              <label for="field.standard"
+                     title="zope.schema.TextLine field with only title and description.">standard</label>
+            </div>
+            <div class="field"><input class="textType" id="field.standard" name="field.standard" size="20" type="text" value="demotext"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.required"
+                     title="zope.schema.TextLine field with required = True.">required</label>
+            </div>
+            <div class="field"><input class="textType" id="field.required" name="field.required" size="20" type="text" value="demotext"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.constraint"
+                     title="zope.schema.TextLine field with constraint = lambda x: x == u'constraint'.">constraint</label>
+            </div>
+            <div class="field"><input class="textType" id="field.constraint" name="field.constraint" size="20" type="text" value="constraint"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.default"
+                     title="zope.schema.TextLine field with default = u'default'.">default</label>
+            </div>
+            <div class="field"><input class="textType" id="field.default" name="field.default" size="20" type="text" value="default"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.min_length"
+                     title="zope.schema.TextLine field with min_length = 5.">min_length</label>
+            </div>
+            <div class="field"><input class="textType" id="field.min_length" name="field.min_length" size="20" type="text" value="aaaaaa"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.max_length"
+                     title="zope.schema.TextLine field with max_length = 10">max_length</label>
+            </div>
+            <div class="field"><input class="textType" id="field.max_length" name="field.max_length" size="20" type="text" value="a"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.min_max"
+                     title="zope.schema.TextLine field with min_lenght = 5 and max_length = 10">min_max</label>
+            </div>
+            <div class="field"><input class="textType" id="field.min_max" name="field.min_max" size="20" type="text" value="aaaaaa"  /></div>
+        </div>
+  ...
