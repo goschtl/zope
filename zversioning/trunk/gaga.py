@@ -175,3 +175,22 @@ assert redummy.subdummy.__class__ is dummy.subdummy.__class__
 assert redummy.subdummy.level2.__class__ == dummy.subdummy.level2.__class__
 
 print
+
+
+
+
+from zope.app.servicenames import Authentication
+
+	try :
+		auth = zapi.getService(Authentication)
+		for principal in auth.getPrincipals('') :
+			return principal.getLogin()
+	except :
+	
+		from kmrc.visualgroup.client.main.main import gApplication
+		if gApplication and gApplication.synchronizer :
+			return gApplication.synchronizer.login_id
+	return "Anonymous"
+	
+	
+	
