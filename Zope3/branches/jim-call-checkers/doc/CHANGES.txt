@@ -10,12 +10,6 @@ Zope Changes
 
     New features
 
-      - Added a test browser. The test browser simulates a real Web browser as
-        much as possible as a Python object. This allows us to write
-        functional tests the same way the site would be experienced by the
-        user. This greatly simplifies functional tests, makes documentation
-        better and even helps analyzing usability.
-
       - addMenuItem directive supports a `layer` attribute.
 
       - Formalized the Publisher Response API.
@@ -79,8 +73,7 @@ Zope Changes
 
     Much thanks to everyone who contributed to this release:
 
-      Stephan Richter, Roger Ineichen, Marius Gedminas, Julien Anguenot, Benji
-      York, Gary Poster, Jim Fulton
+      Stephan Richter, Roger Ineichen, Marius Gedminas, Julien Anguenot
 
     Note: If you are not listed and contributed, please add yourself. This
           note will be deleted before the release.
