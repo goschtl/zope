@@ -76,18 +76,6 @@ class FTPRequestFactory(object):
         return request
 
 
-class NoOutput(object):
-    """An output stream lookalike that warns you if you try to
-    dump anything into it."""
-
-    def write(self, data):
-        raise RuntimeError, "Not a writable stream"
-
-    def flush(self):
-        pass
-
-    close = flush
-
 ## this is the old zope.server.ftp.publisher.PublisherFileSystem class
 class PublisherFileSystem(object):
     """Generic Publisher FileSystem implementation."""
