@@ -75,7 +75,7 @@ If we now emit a log event, we should receive an entry:
 
   >>> twisted.python.log.msg(**eventDict)
   >>> print logfile.getvalue() #doctest: +ELLIPSIS
-  127.0.0.1 - - [28/Jun/2005:...] "GET /index.html HTTP/1.1" 200 300 "-" "-"
+  127.0.0.1 - - [29/Jun/2005:...] "GET /index.html HTTP/1.1" 200 300 "-" "-"
   <BLANKLINE>
 
 If I now set the `referer` and `user-agent` headers, we get some more output:
@@ -88,7 +88,7 @@ If I now set the `referer` and `user-agent` headers, we get some more output:
 
   >>> twisted.python.log.msg(**eventDict)
   >>> print logfile.getvalue() #doctest: +ELLIPSIS
-  127.0.0.1 - - [28/Jun/2005:...] "GET /index.html HTTP/1.1" 200 300
+  127.0.0.1 - - [29/Jun/2005:...] "GET /index.html HTTP/1.1" 200 300
   "http://localhost:8080/manage" "Mozilla 1.7"
   <BLANKLINE>
 

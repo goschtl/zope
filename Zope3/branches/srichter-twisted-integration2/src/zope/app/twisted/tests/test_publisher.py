@@ -60,7 +60,7 @@ class Publication(object):
 
 class Request(object):
 
-    def __init__(self, input, output, env):
+    def __init__(self, input, env):
         self.env = env
         self.response = Response()
         self.user = env['credentials']
@@ -96,8 +96,8 @@ class RequestFactory(object):
     def __init__(self, root):
         self.pub = Publication(root)
 
-    def __call__(self, input, output, env):
-        r = Request(input, output, env)
+    def __call__(self, input, env):
+        r = Request(input, env)
         r.publication = self.pub
         return r
 
