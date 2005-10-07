@@ -32,6 +32,18 @@ from zope.app.publication.soap import SOAPPublication
 
 
 def chooseClasses(method, environment):
+    from zope.app.publication.requestpublicationregistry import PublicationRegistry
+
+    content_type = environment.get('CONTENT_TYPE', '')
+    import pdb
+    pdb.set_trace()
+    factory = PublicationRegistry.lookup(method, content_type, environment)
+    if not factory:
+        raise RuntimeError('nothing found')
+    return factory()
+
+
+
     if method in ('GET', 'POST', 'HEAD'):
         content_type = environment.get('CONTENT_TYPE', '')
         if method == 'POST' and content_type.startswith('text/xml'):
