@@ -27,25 +27,28 @@ from twisted.internet import threads, defer
 from twisted.protocols import ftp
 
 from utils import PublisherFileSystem
+from buffers import OverflowableBuffer
 
 class ConsumerObject(object):
     def __init__(self, fs, name):
         self.fs = fs
         self.name = name
-        self.total = 0
+        ## value copied from zope.server.adjustments.Adjustments.inbuf_overflow
+        inbuf_overflow = 525000
+        self.buffer = OverflowableBuffer(inbuf_overflow)
 
     def registerProducer(self, producer, streaming):
         assert streaming
 
     def unregisterProducer(self):
-        pass
+        self._finish()
+
+    def _finish(self):
+        self.fs.writefile(self.name, self.buffer.getfile())
 
     def write(self, bytes):
-        ## XXX - this is going to mess up the transaction machinary since
-        ## for a big file this method could be called hundreds of times.
-        instream = StringIO(bytes)
-        self.fs.writefile(self.name, instream, start = self.total)
-        self.total += len(bytes)
+        self.buffer.append(bytes)
+
 
 class ZopeFTPShell(object):
     """An abstraction of the shell commands used by the FTP protocol
