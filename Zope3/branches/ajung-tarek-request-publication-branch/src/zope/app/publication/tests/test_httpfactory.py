@@ -30,7 +30,7 @@ from zope.app.publication.browser import BrowserPublication
 from zope.app.publication.http import HTTPPublication
 from zope.app.publication.xmlrpc import XMLRPCPublication
 from zope.app.testing import ztapi
-from zope.app.publication import interfaces
+from zope.app.publication import interfaces, publicationfactories
 
 class DummyRequestFactory(object):
     def __call__(self, input_stream, env):
@@ -45,6 +45,31 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
+
+        ztapi.provideUtility(interfaces.IMethodBase, interfaces.IMethodPOST,
+                             'POST')
+
+        ztapi.provideUtility(interfaces.IMethodBase, interfaces.IMethodGET,
+                             'GET')
+
+        ztapi.provideUtility(interfaces.IMethodBase, interfaces.IMethodHEAD,
+                             'HEAD')
+
+        ztapi.provideUtility(interfaces.IMimetypeBase, interfaces.IMimetypeTextXML,
+                             'text/xml')
+
+        # POST + text/xml -> XMLRPC or Soap
+        ztapi.provideAdapter(required=(interfaces.IMethodPOST, interfaces.IMimetypeTextXML),
+                             provided=interfaces.IRequestPublicationFactory,
+                             name='XMLRPC',
+                             factory=publicationfactories.XMLRPCFactory())
+
+        ztapi.provideAdapter(required=(interfaces.IMethodPOST, interfaces.IMimetypeTextXML),
+                             provided=interfaces.IRequestPublicationFactory,
+                             name='SOAP',
+                             factory=publicationfactories.SOAPFactory())
+
+
         self.__factory = HTTPPublicationRequestFactory(None)
         self.__env =  {
             'SERVER_URL':         'http://127.0.0.1',

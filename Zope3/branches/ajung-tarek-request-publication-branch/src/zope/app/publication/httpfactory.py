@@ -29,31 +29,51 @@ from zope.app.publication.http import HTTPPublication
 from zope.app.publication.browser import BrowserPublication, setDefaultSkin
 from zope.app.publication.xmlrpc import XMLRPCPublication
 from zope.app.publication.soap import SOAPPublication
+from zope.app.zapi import getUtility, getSiteManager
+
+from zope.component.adapter import GlobalAdapterService
+from zope.component.exceptions import ComponentLookupError
+
+from zope.app.publication.publicationfactories import HTTPFactory, BrowserFactory
 
 
-def chooseClasses(method, environment):
-    if method in ('GET', 'POST', 'HEAD'):
-        content_type = environment.get('CONTENT_TYPE', '')
-        if method == 'POST' and content_type.startswith('text/xml'):
-            soap_req = component.queryUtility(interfaces.ISOAPRequestFactory)
-            if environment.get('HTTP_SOAPACTION') and soap_req is not None:
-                request_class = soap_req
-                publication_class = SOAPPublication
-            else:
-                request_class = component.queryUtility(
-                    interfaces.IXMLRPCRequestFactory, default=XMLRPCRequest)
-                publication_class = XMLRPCPublication
-        else:
-            request_class = component.queryUtility(
-                interfaces.IBrowserRequestFactory, default=BrowserRequest)
-            publication_class = BrowserPublication
-    else:
-        request_class = component.queryUtility(
-            interfaces.IHTTPRequestFactory, default=HTTPRequest)
-        publication_class = HTTPPublication
+def chooseClasses(method, environment, context=None):
+    """ see README.txt """
+    def _byname(chooser1, chooser2):
+        """ reverse sorting """
+        return cmp(chooser2.getSortKey(), chooser1.getSortKey())
 
-    return request_class, publication_class
+    try:
+        method_interface = getUtility(interfaces.IMethodBase, method)
+    except ComponentLookupError:
+        # unhandled method, returns http publisher
+        return HTTPFactory()()
 
+    content_type = environment.get('CONTENT_TYPE', '')
+
+    try:
+        content_type_interface = getUtility(interfaces.IMimetypeBase, content_type)
+    except ComponentLookupError:
+        # unhandled mimetype, returns browser publisher
+        return BrowserFactory()()
+
+    # do a lookup here, returns a list callables
+    adapters = getSiteManager(context).adapters
+
+    choosers = adapters.lookupAll(required=(method_interface,
+                                            content_type_interface),
+                                  provided=interfaces.IRequestPublicationFactory)
+
+    # choose a chooser here
+    # chooser sorting, to sort from most specialized to less
+    choosers = [chooser[1] for chooser in list(choosers)]
+    choosers.sort(_byname)
+
+    for chooser in choosers:
+        if chooser.canHandle(environment):
+            return chooser()
+
+    return BrowserFactory()() 
 
 class HTTPPublicationRequestFactory(object):
     interface.implements(interfaces.IPublicationRequestFactory)
@@ -79,7 +99,7 @@ class HTTPPublicationRequestFactory(object):
 
 
         method = env.get('REQUEST_METHOD', 'GET').upper()
-        request_class, publication_class = chooseClasses(method, env)
+        request_class, publication_class = chooseClasses(method, env, self._db)
 
         publication = self._publication_cache.get(publication_class)
         if publication is None:
