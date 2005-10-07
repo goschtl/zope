@@ -15,6 +15,7 @@ from zope.interface import directlyProvides, directlyProvidedBy
 from zope.interface import implements
 from zope.component import getGlobalServices
 from zope.component.interfaces import IServiceService, IUtilityService
+from zope.app.utility.interfaces import ILocalUtilityService
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Utilities
 from zope.app.site.interfaces import ISite
@@ -26,23 +27,8 @@ from interfaces import IFiveSite
 from ExtensionClass import Base
 from Acquisition import aq_base, aq_inner, aq_parent
 from Products.SiteAccess.AccessRule import AccessRule
-from Products.Five.interfaces import IUtilityProvider
 from ZPublisher.BeforeTraverse import registerBeforeTraverse
 from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
-
-class FiveSite:
-
-    def getSiteManager(self):
-        adapted = IFiveSite(self, None)
-        if adapted is None:
-            return None
-        return adapted.getSiteManager()
-
-    def setSiteManager(self, sm):
-        adapted = IFiveSite(self, None)
-        if adapted is None:
-            return None
-        return adapted.setSiteManager(sm)
 
 def serviceServiceAdapter(ob):
     """An adapter * -> IServiceService.
@@ -122,7 +108,7 @@ class LocalService:
         return getGlobalServices().getService(name)
 
 class SimpleLocalUtilityService:
-    implements(IUtilityService)
+    implements(ILocalUtilityService)
 
     def __init__(self, context):
         self.context = context
@@ -138,23 +124,32 @@ class SimpleLocalUtilityService:
     def queryUtility(self, interface, name='', default=None):
         """See IUtilityService interface
         """
-        return IUtilityProvider(self.context).queryUtility(interface,
-                                                           name, default)
+        utilities = getattr(self.context, 'utilities')
+        utility = utilities._getOb(name, None)
+        if utility is None:
+            return default
+        if not interface.providedBy(utility):
+            return default
+        return utility
 
     def getUtilitiesFor(self, interface):
-        return IUtilityProvider(self.context).getUtilitiesFor(interface)
+        utilities = getattr(self.context, 'utilities')
+        for utility in utilities.objectValues():
+            if interface.providedBy(utility):
+                yield utility
 
     def getAllUtilitiesRegisteredFor(self, interface):
         return ()
 
-class FiveSiteAdapter:
-    implements(IFiveSite)
+
+class FiveSite:
+    implements(IPossibleSite)
 
     def __init__(self, context):
         self.context = context
 
     def getSiteManager(self):
-        return LocalService(self.context)
+        return LocalService(self)
 
     def setSiteManager(self, sm):
         return

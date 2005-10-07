@@ -164,7 +164,7 @@
 
     <meta:directive
        name="localsite"
-       schema=".fivedirectives.IFiveLocalSite"
+       schema=".fivedirectives.ISiteDirective"
        handler=".fiveconfigure.installSiteHook"
        />
        

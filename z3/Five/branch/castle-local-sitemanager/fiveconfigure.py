@@ -277,21 +277,16 @@ addCleanUp(cleanUp)
 del addCleanUp
 
 from zope.interface.interface import InterfaceClass
-from zope.app.site.interfaces import IPossibleSite
+from zope.app.site.interfaces import IPossibleSite, ISite
 from zope.app.component.metaconfigure import adapter
-from interfaces import IUtilityProvider
-from localsite import FiveSite
+from zope.app.utility.interfaces import ILocalUtilityService
+from localsite import FiveSite, SimpleLocalUtilityService
 
-def classSiteHook(class_):
-    if hasattr(class_, '__five_possible_site__'):
-        if (hasattr(class_, 'getSiteManager') and
-            isFiveMethod(class_.getSiteManager)):
-            return
+def classSiteHook(class_, site_class):
     setattr(class_, 'getSiteManager',
-            FiveSite.getSiteManager.im_func)
+            site_class.getSiteManager.im_func)
     setattr(class_, 'setSiteManager',
-            FiveSite.setSiteManager.im_func)
-    setattr(class_, '__five_possible_site__', True)
+            site_class.setSiteManager.im_func)
  
 count = 0
 def next():
@@ -299,25 +294,39 @@ def next():
     count += 1
     return count
 
-def installSiteHook(_context, class_, utility_provider):
-    _context.action(
-        discriminator = (class_,),
-        callable = classSiteHook,
-        args=(class_,)
-        )
-    _context.action(
-        discriminator = (class_, IPossibleSite),
-        callable = classImplements,
-        args=(class_, IPossibleSite)
-        )
-    if not IUtilityProvider.implementedBy(utility_provider):
-        raise ConfigurationError('Global object does not implement '
-                                 'IUtilityProvider: %s' % utility_provider)
+def installSiteHook(_context, class_, site_class=None, utility_service=None):
+    if site_class is None:
+        if not IPossibleSite.implementedBy(class_):
+            # This is not a possible site, we need to monkey-patch it so that
+            # it is.
+            site_class = FiveSite
+    else:
+        if not IPossibleSite.implementedBy(site_class):
+            raise ConfigurationError('Site class does not implement '
+                                     'IPossibleClass: %s' % site_class)
+    if site_class is not None:
+        _context.action(
+            discriminator = (class_,),
+            callable = classSiteHook,
+            args=(class_, site_class)
+            )
+        _context.action(
+            discriminator = (class_, ISite),
+            callable = classImplements,
+            args=(class_, ISite)
+            )
+    if utility_service is None:
+        utility_service = SimpleLocalUtilityService
+    else:
+        if not ILocalUtilityService.implementedBy(utility_service):
+            raise ConfigurationError('utility_service does not implement '
+                                     'ILocalUtilityService: %s' % utility_service)
+        
     # Generate a marker interface that should be unique, so that
-    # we can register the utility provider only for this class.
-    iface = InterfaceClass('I%s' % next())
-    adapter(_context, factory=(utility_provider,),
-            provides=IUtilityProvider,
+    # we can register the utility service only for this class.
+    iface = InterfaceClass('IFiveSite%s' % next())
+    adapter(_context, factory=(utility_service,),
+            provides=ILocalUtilityService,
             for_=(iface,))
     _context.action(
         discriminator = (class_, 'UtilityMarker'),

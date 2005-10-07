@@ -20,12 +20,6 @@
       for="zope.interface.Interface"
       />
 
-  <adapter
-      for="*"
-      provides="Products.Five.interfaces.IFiveSite"
-      factory=".localsite.FiveSiteAdapter"
-      />
-
   <subscriber
       factory="zope.app.component.localservice.threadSiteSubscriber"
       for="zope.app.publication.interfaces.IBeforeTraverseEvent"

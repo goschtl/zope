@@ -105,16 +105,18 @@ class IPagesFromDirectoryDirective(IBasicResourceInformation):
         required=True
         )
 
-class IFiveLocalSite(Interface):
-    """Make instances of class hookable for Local Site.
+class ISiteDirective(Interface):
+    """Make instances of class hookable for Site.
 
-    Actual implementation of ISite is delegated to a IFiveSite adapter.
+    site_class is an implementation of ISite, which will have it's methods
+    monkey_patched into the the class. If not given a default implementation
+    will be used.
     """
     class_ = GlobalObject(
         title=u"Class",
         required=True
         )
-    utility_provider = GlobalObject(
-        title=u"Utility Provider",
-        required=True
+    site_class = GlobalObject(
+        title=u"Site Class",
+        required=False
         )

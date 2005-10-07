@@ -107,8 +107,7 @@ class Test(ZopeTestCase.ZopeTestCase):
         zcml_text = """<configure 
           xmlns="http://namespaces.zope.org/zope"
           xmlns:five="http://namespaces.zope.org/five">
-          <five:localsite class="Products.Five.testing.localsite.DummySite"
-          utility_provider="Products.Five.testing.localsite.UtilityProvider" />
+          <five:localsite class="Products.Five.testing.localsite.DummySite" />
         </configure>"""
         zcml.load_string(zcml_text)
 
@@ -282,8 +281,7 @@ class BeforeTraversalTest(ZopeTestCase.FunctionalTestCase):
         zcml.load_config("meta.zcml", Products.Five)
         zcml.load_config("localsite.zcml", Products.Five)
         zcml_text = """<configure xmlns:five="http://namespaces.zope.org/five">
-        <five:localsite class="Products.Five.testing.localsite.DummySite"
-          utility_provider="Products.Five.testing.localsite.UtilityProvider" />
+        <five:localsite class="Products.Five.testing.localsite.DummySite" />
         </configure>"""
         zcml.load_string(zcml_text)
 
@@ -320,8 +318,7 @@ class LocalUtilityServiceTest(ZopeTestCase.FunctionalTestCase):
         zcml.load_config("meta.zcml", Products.Five)
         zcml.load_config("localsite.zcml", Products.Five)
         zcml_text = """<configure xmlns:five="http://namespaces.zope.org/five">
-        <five:localsite class="Products.Five.testing.localsite.DummySite"
-          utility_provider="Products.Five.testing.localsite.UtilityProvider" />
+        <five:localsite class="Products.Five.testing.localsite.DummySite" />
         </configure>"""
         zcml.load_string(zcml_text)
         manage_addDummySite(self.folder, 'site')

@@ -2,13 +2,13 @@ from zope.interface import implements
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IUtilityService
 from zope.component.servicenames import Utilities
+from zope.app.utility.interfaces import ILocalUtilityService
 
 from OFS.Folder import Folder
-from Products.Five.interfaces import IUtilityProvider
 from Products.Five.testing.interfaces import IDummySite
 
-class UtilityProvider:
-    implements(IUtilityProvider)
+class LocalUtilityService:
+    implements(ILocalUtilityService)
 
     def __init__(self, context):
         self.context = context

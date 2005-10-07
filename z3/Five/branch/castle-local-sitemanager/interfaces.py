@@ -39,17 +39,6 @@ class IFiveSite(ISite):
     """Five specialization of ISite
     """
 
-class IUtilityProvider(Interface):
-    """Lookup utilities for a given context
-    """
-
-    def queryUtility(interface, name='', default=None):
-        """ See IUtilityService interface
-        """
-
-    def getUtilitiesFor(interface):
-        """ See IUtilityService interface
-        """
 #
 # BBB: Zope core interfaces
 #
