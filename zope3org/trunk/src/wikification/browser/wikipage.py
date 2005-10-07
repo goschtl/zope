@@ -48,6 +48,7 @@ class WikiPage(BrowserView) :
                 body = html_body(file.data)
             else :
                 body = file.data
+            self.request.response.setHeader("Content-Type", "text/html")
             return self.render(body)
         
         return "Sorry, not wikifiable at the moment."
