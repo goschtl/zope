@@ -62,10 +62,10 @@ Zope Changes
 
       - The publisher machinery is now completely pluggable. Publishers can be
         registered and configured through ZCML. Publishers are registered
-        for sequence of request methods and a configurable list of mimetypes.
+        for a sequence of request methods and a configurable list of mimetypes.
         To register multiple publishers for the same request method and the
         same mimetype (e.g. POST+text/xml: SOAP, XMLRPC) publishers can be
-        priotized and publishers can introspect the request environment to 
+        priorized and publishers can introspect the request environment to 
         decide if they can handle a request or not.
 
     Bug Fixes
