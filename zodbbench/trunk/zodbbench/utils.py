@@ -19,6 +19,7 @@ basic operations (like "commit the current transaction") across ZODB
 versions.
 """
 
+import os
 import sys
 import tempfile
 
@@ -112,11 +113,17 @@ class BenchBase(object):
         """Display a report to stdout.
 
         The starts by listing the name of the benchmark (self.name and
-        self.version), then gives the Python and ZODB versions in use, and
+        self.version), then gives the ZODB and Python versions in use, and
         then displays `msg`.
         """
 
         print "Benchmark %s, version %s" % (self.name, self.version)
-        print "Python version:", sys.version
-        print "ZODB version:", ZODB.__version__
+
+        print "ZODB:", ZODB.__version__
+        print "     ", os.path.dirname(os.path.dirname(ZODB.__file__))
+
+        version = sys.version.replace("\n", "        \n")
+        print "Python:", version
+        print "       ", sys.executable
+
         print msg
