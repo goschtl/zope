@@ -1,9 +1,12 @@
-import doctest, unittest
+import unittest
 
+import zope
+from zope.testing import doctest, doctestunit
 from zope.app.testing import ztapi
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.setup import placefulSetUp, placefulTearDown
 
 from zope.interface import classImplements
+from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.annotation.interfaces import IAnnotatable
@@ -17,37 +20,44 @@ from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.traversing.adapters import RootPhysicallyLocatable
 from zope.app.traversing.adapters import Traverser
 
+from zope.app.folder import rootFolder
 from zope.app.folder import Folder
 from zope.app.file import File
 
 
+
+
 example1 = u"""<html>
-<body>
-<p>Wikifiable</p>
-<p>An <a href="folder1/target">existing link</a></p>
-<p>A <a href="folder1/newitem">new page</a></p>
-<p>A [New Subject]</a></p>
-</body>
+    <body>
+        <p>Wikifiable</p>
+        <p>An <a href="target">existing link</a></p>
+        <p>A <a href="newitem">new page</a></p>
+        <p>A <a href="folder1/newitem">new page in a subfolder</a></p>
+        <p>A [New Subject]</a></p>
+    </body>
 </html>"""
 
-ps = PlacelessSetup() 
+
 
 def buildSampleSite() :
+    """ Build a sample structure
     
-    site = Folder()
-    
-    folder1 = site[u"folder1"] = Folder()
-    folder2 = site[u"folder2"] = Folder()
+        root
+            index.html          (with example1 as content)
+            target              (an existing file)
+            folder              (a sample folder)
+    """
+    root = rootFolder() 
+    root[u"target"] = File()
+    folder = root[u"folder"] = Folder()
+    root[u"index.html"] = File(example1, 'text/html')    
+    return root    
 
-    site[u"index.html"] = File(example1, 'text/html')
-    folder1[u"target"] = File()
-    return site    
 
-
-def renderWikiPage(file) :
-    return file.data
 
 def setUpWikification(test) :
+   
+    placefulSetUp()
     
     classImplements(File, IAnnotatable)
     classImplements(Folder, IAnnotatable)
@@ -63,14 +73,22 @@ def setUpWikification(test) :
 
     
 def tearDownWikification(test) :
-    ps.tearDown()   
+    placefulTearDown()   
 
 
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocFileSuite("README.txt", setUp=setUpWikification, 
-                                           tearDown=tearDownWikification),
+        doctest.DocFileSuite("README.txt", 
+                                setUp=setUpWikification, 
+                                tearDown=tearDownWikification,
+                                globs={'zapi': zope.app.zapi,
+                                       'pprint': doctestunit.pprint,
+                                       'TestRequest': zope.publisher.browser.TestRequest                                
+                                        },
+                                optionflags=doctest.NORMALIZE_WHITESPACE+
+                                            doctest.ELLIPSIS
+                             ),
         ))
 
 if __name__ == '__main__':

@@ -2,51 +2,72 @@ Wikification
 ============
 
 We want to be able to convert existing HTML documents into a collaborative Wiki.
+As a minimal assumption we consider only file and folder content types.
 
-Let's take some example pages.
+Let's take some example pages :
 
 >>> from tests import buildSampleSite
->>> from tests import renderWikiPage
->>> from zope.app import zapi
 >>> site = buildSampleSite()
->>> sorted(site.keys())
-[u'folder1', u'folder2', u'index.html']
->>> index_page = site[u"index.html"]
->>> print index_page.data
-<html>
-<body>
-<p>Wikifiable</p>
-<p>An <a href="folder1/target">existing link</a></p>
-<p>A <a href="folder1/newitem">new page</a></p>
-<p>A <a href="folder1/subfolder/newitem">new page in a subfolder</a></p>
-<p>A [New Subject]</a></p>
-</body>
-</html>
+
+The site has the following structure
+    
+        root
+            index.html          (with example1 as content)
+            target              (an existing file)
+            folder              (a sample folder)
 
 
-If a given HTML document links may point to external places or existing local
-documents as well as not yet existing local objects, which are marked in Wikis
-by questions marks. If we assume that the first link above has an existing
-counterpart in the object hierarchy and the second link not, the resulting
-HTML should look as follows :
+    >>> sorted(site.keys())
+    [u'folder', u'index.html', u'target']
 
->>> zapi.traverse(site, [u'folder1', u'target'])
-<zope.app.file.file.File object at 0x12c4630>
->>> zapi.traverse(site, [u'folder1', u'newitem'])
+The index.html is our starting point and contains the following HTML :
 
->>> print renderWikiPage(index_page)
-<html>
-<body>
-<p>Wikifiable</p>
-<p>An <a href="folder1/target">existing link</a></p>
-<p>A <a class="create-link" href="folder1/createLink?path=newitem">new page</a></p>
-<p>A <a class="create-link" href="folder1/createLink?path=NewSubject1">[New Subject]</a></p>
-<p>A <a class="create-link" href="folder1/createLink?path=subfolder/newitem">new page in a subfolder</a></p>
-</body>
-</html>
+    >>> index_page = site[u"index.html"]
+    >>> print index_page.data
+    <html>
+        <body>
+            <p>Wikifiable</p>
+            <p>An <a href="target">existing link</a></p>
+            <p>A <a href="newitem">new page</a></p>
+            <p>A <a href="folder1/newitem">new page in a subfolder</a></p>
+            <p>A [New Subject]</a></p>
+        </body>
+    </html>
 
 
+The links within the document may point to 
+    1. external resources
+    2. existing local documents, and
+    3. non existing sub items of the site, which should be marked
+       as wiki links
 
+In many Wikis links to non existant pages are marked by question marks. 
+If we assume that the first link in index.html works and the second is a dead
+one, the resulting HTML could look as follows :
+
+
+    >>> from wikification.browser.wikipage import WikiPage
+    >>> page = WikiPage(index_page.__parent__, TestRequest("/index.html"))
+    >>> print page.render(index_page.data)
+    <html>
+        <body>
+            <p>Wikifiable</p>
+            <p>An <a class="create-link" href="target">existing link</a></p>
+            <p>A <a class="create-link" href="http://127.0.0.1/createLink?path=newitem">new page</a></p>
+            <p>A <a class="create-link" href="http://127.0.0.1/createLink?path=folder1/newitem">new page in a subfolder</a></p>
+            <p>A [New Subject]</a></p>
+        </body>
+    </html>
+    
+    The task of creating a new page is delegated to the createLink method of the 
+    wiki page. We considered the possibility to adapt the traversal mechanism
+    in order to throw add forms in case of TraversalErrors, but a simple
+    page method seems to be the simplest solution:
+    
+    >>> request = TestRequest("/index.html", form={'path':'folder1/newitem', })
+    >>> WikiPage(index_page.__parent__, request).createLink()
+    >>> index_page.__parent__[u'folder1'][u'newitem']
+    <zope.app.file.file.File object at ...>
 
 Comments
 --------
