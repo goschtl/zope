@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <interface interface="zope.app.boston.regions.IHead" />
+  <interface interface="zope.app.boston.regions.IJavaScript" />
+  <interface interface="zope.app.boston.regions.ICSS" />
+  <interface interface="zope.app.boston.regions.IToolBar" />
+  <interface interface="zope.app.boston.regions.ILeft" />
+  <interface interface="zope.app.boston.regions.IContextMenu" />
+
+</configure>

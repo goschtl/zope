@@ -1,0 +1,84 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="tiks">
+
+  <configure package="zope.app.skintools.toolbar.browser">
+    <resource 
+        name="divmenu.js"
+        file="divmenu.js"
+        layer="zope.app.boston.boston"
+        />
+
+    <resource 
+        name="toolbar.css"
+        file="toolbar.css"
+        layer="zope.app.boston.boston"
+        />
+
+    <resource
+        name="toolbarGrip.gif"
+        file="toolbarGrip.gif"
+        layer="zope.app.boston.boston"
+        />
+
+    <resource
+        name="toolbarArrow.gif"
+        file="toolbarArrow.gif"
+        layer="zope.app.boston.boston"
+        />
+
+    <resource
+        name="toolbarArrowOver.gif"
+        file="toolbarArrowOver.gif"
+        layer="zope.app.boston.boston"
+        />
+
+    <pagelet
+        for="*"
+        slot="zope.app.boston.slots.IJavaScript"
+        name="toolbar-js"
+        permission="zope.Public"
+        template="toolbar.pt"
+        layer="zope.app.boston.boston"
+        />
+
+    <pagelet
+        name="toolbar-css"
+        for="*"
+        slot="zope.app.boston.slots.ICSS"
+        permission="zope.Public"
+        template="toolbar.pt"
+        layer="zope.app.boston.boston"
+        />
+
+    <pagelet
+        name="toolbar"
+        for="*"
+        slot="zope.app.boston.slots.IToolBar"
+        permission="zope.View"
+        template="toolbar.pt"
+        layer="zope.app.boston.boston"
+        weight="1"
+        />
+
+    <pagelet
+        name="toolbar-button"
+        for="*"
+        slot="zope.app.skintools.toolbar.IToolBarLayout"
+        permission="zope.View"
+        template="toolbar.pt"
+        layer="zope.app.boston.boston"
+        />
+
+    <pagelet
+        name="toolbar-item"
+        for="*"
+        slot="zope.app.skintools.toolbar.IToolBarLayout"
+        permission="zope.View"
+        template="toolbar.pt"
+        layer="zope.app.boston.boston"
+        />
+  </configure>
+
+</configure>
