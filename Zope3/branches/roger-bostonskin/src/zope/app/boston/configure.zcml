@@ -5,8 +5,8 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="zope">
 
-<!--  <include package=".viewlet" />-->
   <include package=".regions" />
+  <include package=".viewlets" />
   <include package=".browser" />
 
   <configure zcml:condition="have onlinehelp">

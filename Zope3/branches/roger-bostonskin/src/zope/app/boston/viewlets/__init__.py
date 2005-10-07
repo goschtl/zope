@@ -13,5 +13,13 @@
 ##############################################################################
 """Boston skin
 
-$Id:$
+$Id$
 """
+
+from zope.viewlet import viewlet
+
+
+BostonJavascriptViewlet = viewlet.JavaScriptViewlet('boston.js')
+
+BostonCSSViewlet = viewlet.CSSViewlet('boston.css', 'all')
+BostonWidgetsCSSViewlet = viewlet.CSSViewlet('widgets.css', 'all')

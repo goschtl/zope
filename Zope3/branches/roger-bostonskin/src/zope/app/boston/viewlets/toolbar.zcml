@@ -3,7 +3,7 @@
     xmlns="http://namespaces.zope.org/browser"
     i18n_domain="tiks">
 
-  <configure package="zope.app.skintools.toolbar.browser">
+  <configure package="zope.app.boston.toolbar.browser">
     <resource 
         name="divmenu.js"
         file="divmenu.js"

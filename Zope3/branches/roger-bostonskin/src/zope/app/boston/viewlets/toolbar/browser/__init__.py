@@ -11,16 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Boston skin
+"""Skintools toolbar views
 
 $Id$
 """
-
-from zope.viewlet import viewlet
-
-
-BostonJavascriptViewlet = viewlet.JavaScriptViewlet('boston.js')
-
-BostonSkinCSSViewlet = viewlet.CSSViewlet('skin.css', 'all')
-
-BostonWidgetCSSViewlet = viewlet.CSSViewlet('widget.css', 'all')

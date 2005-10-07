@@ -16,59 +16,65 @@
 $Id:$
 """
 
-from zope.contentprovider.interfaces import IRegion
+from zope.interface import Interface
 
 
 
-class IHead(IRegion):
-    """Head pagelet slot interface.
+class IHead(Interface):
+    """Head region slot interface.
 
-    This pagelet slot will lookup for pagelets. If you like to additional 
-    content to this slot, use the 'zope.app.boston.slots.IHead' 
-    interface for the slot attribute in a pagelet directive.
+    This region will lookup for content providers. If you like to add 
+    additional content providers to this region, use the 
+    'zope.app.boston.regions.IHead' interface for the region attribute 
+    in a provider directive. 
     """
 
 
-class ICSS(IRegion):
-    """CSS pagelet slot interface.
+class ICSS(Interface):
+    """CSS region slot interface.
 
-    This pagelet slot will lookup for pagelets. If you like to additional 
-    content to this slot, use the 'zope.app.boston.slots.ICSS' 
-    interface for the slot attribute in a pagelet directive.
+    This region will lookup for content providers. If you like to add 
+    additional content providers to this region, use the 
+    'zope.app.boston.regions.ICSS' interface for the region attribute 
+    in a provider directive. 
     """
 
 
-class IJavaScript(IRegion):
-    """Javasscript pagelet slot interface. 
+class IJavaScript(Interface):
+    """Javasscript region slot interface.
 
-    This pagelet slot will lookup for pagelets. If you like to additional 
-    content to this slot, use the 'zope.app.boston.slots.IJavaScript' 
-    interface for the slot attribute in a pagelet directive. 
+    This region will lookup for content providers. If you like to add 
+    additional content providers to this region, use the 
+    'zope.app.boston.regions.IJavaScript' interface for the region attribute 
+    in a provider directive. 
     """
 
 
-class IToolBar(IRegion):
-    """View action pagelet slot interface.
+class IToolBar(Interface):
+    """View action region slot interface.
 
-    This pagelet slot will lookup for pagelets. If you like to additional 
-    content to this slot, use the 'zope.app.boston.slots.IToolBar' 
-    interface for the slot attribute in a pagelet directive. 
+    This region will lookup for content providers. If you like to add 
+    additional content providers to this region, use the 
+    'zope.app.boston.regions.IToolBar' interface for the region attribute 
+    in a provider directive.  
     """
 
 
-class IContextMenu(IRegion):
-    """Context menu (zmi_views) pagelet slot interface.
+class IContextMenu(Interface):
+    """Context menu (zmi_views) region interface.
 
-    This pagelet slot will lookup for pagelets. If you like to additional 
-    content to this slot, use the 'zope.app.boston.slots.IContextMenu' 
-    interface for the slot attribute in a pagelet directive. 
+    This region will lookup for content providers. If you like to add 
+    additional content providers to this region, use the 
+    'zope.app.boston.regions.IContextMenu' interface for the region attribute 
+    in a provider directive. 
     """
 
 
-class ILeft(IRegion):
-    """Left pagelet slot interface.
+class ILeft(Interface):
+    """Left region slot interface.
 
-    This pagelet slot will lookup for pagelets. If you like to additional 
-    content to this slot, use the 'zope.app.boston.slots.ILeft' 
-    interface for the slot attribute in a pagelet directive.
+    This region will lookup for content providers. If you like to add 
+    additional content providers to this region, use the 
+    'zope.app.boston.regions.ILeft' interface for the region attribute 
+    in a provider directive. 
     """

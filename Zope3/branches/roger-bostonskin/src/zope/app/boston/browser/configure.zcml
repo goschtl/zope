@@ -1,49 +1,79 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser">
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser">
 
-  <browser:layer 
+  <layer 
       name="boston"
       interface="zope.app.boston.boston"
       />  
 
-  <browser:skin 
+  <skin 
       name="Boston"
       interface="zope.app.boston.Boston"
       />
 
-  <browser:resource 
+  <resource 
       name="boston.js"
       file="boston.js"
       layer="zope.app.boston.boston"
       />
 
-  <browser:resource 
+  <resource 
       name="skin.css"
       file="skin.css"
       layer="zope.app.boston.boston"
       />
 
-  <browser:resource 
+  <resource 
       name="widget.css"
       file="widget.css"
       layer="zope.app.boston.boston"
       />
 
+  <viewlet
+      name="boston.js"
+      for="*"
+      region="zope.app.boston.regions.IJavaScript"
+      permission="zope.Public"
+      class=".BostonJavascriptViewlet"
+      layer="zope.app.boston.boston"
+      weight="1"
+      />
+
+  <viewlet
+      name="skin.css"
+      for="*"
+      region="zope.app.boston.regions.ICSS"
+      permission="zope.Public"
+      class=".BostonSkinCSSViewlet"
+      layer="zope.app.boston.boston"
+      weight="0"
+      />
+
+  <viewlet
+      name="widget.css"
+      for="*"
+      region="zope.app.boston.regions.ICSS"
+      permission="zope.Public"
+      class=".BostonWidgetCSSViewlet"
+      layer="zope.app.boston.boston"
+      weight="1"
+      />
+
   <!-- layout img -->
-  <browser:resource
+  <resource
       name="favicon.png"
       file="img/favicon.png"
       layer="zope.app.boston.boston"
       />
 
-  <browser:resource 
+  <resource 
       name="logo.gif"
       file="img/zopelogo.gif"
       layer="zope.app.boston.boston"
       />
 
-  <browser:page
+  <page
       for="*"
       name="standard_macros"
       permission="zope.View"
@@ -52,7 +82,7 @@
       layer="zope.app.boston.boston" 
       />
 
-  <browser:page 
+  <page 
       for="*"
       name="skin_macros"
       permission="zope.View"
@@ -60,7 +90,7 @@
       layer="zope.app.boston.boston"
       />
 
-  <browser:page
+  <page
       for="*"
       name="widget_macros"
       permission="zope.Public"

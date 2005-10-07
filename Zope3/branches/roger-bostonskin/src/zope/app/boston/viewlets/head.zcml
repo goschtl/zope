@@ -3,10 +3,10 @@
     xmlns="http://namespaces.zope.org/browser"
     i18n_domain="zope">
 
-  <pagelet
+  <viewlet
       name="head"
       for="*"
-      slot="zope.app.boston.slots.IHead"
+      region="zope.app.boston.regions.IHead"
       permission="zope.Public"
       template="head.pt"
       layer="zope.app.boston.boston"

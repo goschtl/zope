@@ -1,12 +1,34 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser">
+    xmlns="http://namespaces.zope.org/zope">
 
-  <interface interface="zope.app.boston.regions.IHead" />
-  <interface interface="zope.app.boston.regions.IJavaScript" />
-  <interface interface="zope.app.boston.regions.ICSS" />
-  <interface interface="zope.app.boston.regions.IToolBar" />
-  <interface interface="zope.app.boston.regions.ILeft" />
-  <interface interface="zope.app.boston.regions.IContextMenu" />
+  <interface
+      interface="zope.app.boston.regions.IHead"
+      type="zope.contentprovider.interfaces.IRegion"
+      />
+
+  <interface
+      interface="zope.app.boston.regions.IJavaScript"
+      type="zope.contentprovider.interfaces.IRegion"
+      />
+
+  <interface
+      interface="zope.app.boston.regions.ICSS"
+      type="zope.contentprovider.interfaces.IRegion"
+      />
+
+  <interface
+      interface="zope.app.boston.regions.IToolBar"
+      type="zope.contentprovider.interfaces.IRegion"
+      />
+
+  <interface
+      interface="zope.app.boston.regions.ILeft"
+      type="zope.contentprovider.interfaces.IRegion"
+      />
+
+  <interface
+      interface="zope.app.boston.regions.IContextMenu"
+      type="zope.contentprovider.interfaces.IRegion"
+      />
 
 </configure>

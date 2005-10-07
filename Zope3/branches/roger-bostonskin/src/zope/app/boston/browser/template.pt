@@ -10,27 +10,22 @@
   </title>
 
   <!-- head region -->
-<!--
   <metal:block tal:repeat="provider providers:zope.app.boston.regions.IHead">
-    <tal:block repeat="structure provider" />
+    <tal:block replace="structure provider" />
   </metal:block>
--->	
   <metal:block define-slot="headers"></metal:block>
 
   <!-- css region -->
-<!--
   <metal:block tal:repeat="provider providers:zope.app.boston.regions.ICSS">
-    <tal:block repeat="structure provider" />
+    <tal:block replace="structure provider" />
   </metal:block>
--->	
   <metal:block define-slot="style_slot"></metal:block>
 
   <!-- javascripts region -->
-<!--
   <metal:block tal:repeat="provider providers:zope.app.boston.regions.IJavaScript">
-    <tal:block repeat="structure provider" />
+    <tal:block replace="structure provider" />
   </metal:block>
--->	
+
   <metal:block define-slot="ecmascript_slot"></metal:block>
 
   <link rel="icon" type="image/png" 
@@ -43,13 +38,12 @@
   <table id="layout">
     <tr class="menu">
       <td colspan="2">
-
         <!-- toolbar region (zmi_action) -->
 <!--
         <metal:block tal:repeat="provider providers:zope.app.boston.regions.IToolBar">
-          <tal:block repeat="structure provider" />
+          <tal:block replace="structure provider" />
         </metal:block>
--->	
+-->
         <div id="userdetails">
           <metal:block define-macro="logged_user">
             <span tal:omit-tag="" i18n:translate="">User:</span>
@@ -95,22 +89,18 @@
     <tr>
       <td id="navigation">
         <div id="slotbox">
-<!--	
         	<metal:block tal:repeat="provider providers:zope.app.boston.regions.ILeft">
-          	<tal:block repeat="structure provider" />
+          	<tal:block replace="structure provider" />
         	</metal:block>
--->	
         </div>
       </td>
       <td id="content">
         <!-- context menu (zmi_views) just visible in view template -->
         <div id="contextmenu">
-<!--
           <metal:block tal:condition="python: macroname == 'view'"
-                       tal:repeat="pagelets providers:zope.app.boston.regions.IContextMenu">
-            <tal:block repeat="structure provider" />
+                       tal:repeat="provider providers:zope.app.boston.regions.IContextMenu">
+            <tal:block replace="structure provider" />
           </metal:block>
--->	
         </div>
         <!-- content area -->
         <div metal:define-slot="message" id="message" />

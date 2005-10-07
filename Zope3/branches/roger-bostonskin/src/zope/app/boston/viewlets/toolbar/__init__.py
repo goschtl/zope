@@ -11,16 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Boston skin
+"""Skintools toolbar
 
 $Id$
 """
+__docformat__ = "reStructuredText"
 
-from zope.viewlet import viewlet
+from zope.app.pagelet.interfaces import IPageletSlot
 
 
-BostonJavascriptViewlet = viewlet.JavaScriptViewlet('boston.js')
-
-BostonSkinCSSViewlet = viewlet.CSSViewlet('skin.css', 'all')
-
-BostonWidgetCSSViewlet = viewlet.CSSViewlet('widget.css', 'all')
+class IToolBarLayout(IPageletSlot):
+    """This slot contains all pagelet for the toolbar layout."""
