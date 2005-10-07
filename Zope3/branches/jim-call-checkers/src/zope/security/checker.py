@@ -212,7 +212,14 @@ class Checker(object):
 
     def check(self, object, name):
         'See IChecker'
-        permission = self.get_permissions.get(name)
+        try:
+            permission = self.get_permissions.get(name)
+        except AttributeError:
+            if self.get_permissions is None:
+                # special case for NoProxy
+                return
+            raise
+
         if permission is not None:
             if permission is CheckerPublic:
                 return # Public
@@ -239,6 +246,9 @@ class Checker(object):
         return checker(value)
 
     def __call__(self, value):
+        if self.get_permissions is None:
+            # special case for NoProxy
+            return value
         return Proxy(value, self)
 
 
@@ -421,16 +431,8 @@ def undefineChecker(type_):
                 'type_ must be a type, class or module, not a %s' % type_)
     del _checkers[type_]
 
-
-class NoProxyChecker(Checker):
-
-    def check(self, object, name):
-        pass
-
-    def __call__(self, object):
-        return object
-
-NoProxy = NoProxyChecker({})
+NoProxy = Checker({})
+NoProxy.get_permissions = None
 
 # _checkers is a mapping.
 #
