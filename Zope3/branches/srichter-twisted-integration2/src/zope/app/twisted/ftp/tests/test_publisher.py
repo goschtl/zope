@@ -106,13 +106,13 @@ class TestPublisherFileSystem(FileSystemTests, TestCase):
     def setUp(self):
         root = demofs.Directory()
         root.grant('bob', demofs.write)
-        fs = DemoFileSystem(root, 'bob')
+        fs = DemoFileSystem(root, ('bob', '123'))
         fs.mkdir(self.dir_name)
         fs.writefile(self.file_name, StringIO(self.file_contents))
         fs.writefile(self.unwritable_filename, StringIO("save this"))
         fs.get(self.unwritable_filename).revoke('bob', demofs.write)
 
-        self.filesystem = PublisherFileSystem('bob', RequestFactory(fs))
+        self.filesystem = PublisherFileSystem(('bob', '123'), RequestFactory(fs))
 
 def test_suite():
     return TestSuite((

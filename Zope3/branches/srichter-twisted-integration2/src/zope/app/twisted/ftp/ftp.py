@@ -20,6 +20,9 @@ from types import StringTypes
 
 from zope.interface import implements
 
+from zope.publisher.interfaces import NotFound
+from zope.security.interfaces import Unauthorized
+
 from twisted.internet import threads, defer
 from twisted.protocols import ftp
 
@@ -58,27 +61,52 @@ class ZopeFTPShell(object):
         return '/' + '/'.join(path)
 
     def makeDirectory(self, path):
-        return threads.deferToThread(self.fs_access.mkdir, self._path(path))
+        def failed(failure):
+            raise ftp.PermissionDeniedError(self._path(path))
+        d = threads.deferToThread(self.fs_access.mkdir, self._path(path))
+        d.addErrback(failed)
+
+        return d
 
     def removeDirectory(self, path):
-        return threads.deferToThread(self.fs_access.rmdir, self._path(path))
+        def failed(failure):
+            raise ftp.PermissionDeniedError(self._path(path))
+        d = threads.deferToThread(self.fs_access.rmdir, self._path(path))
+        d.addErrback(failed)
+
+        return d
 
     def removeFile(self, path):
-        return threads.deferToThread(self.fs_access.remove, self._path(path))
+        def failed(failure):
+            raise ftp.PermissionDeniedError(self._path(path))
+        d = threads.deferToThread(self.fs_access.remove, self._path(path))
+        d.addErrback(failed)
+
+        return d
 
     def rename(self, fromPath, toPath):
-        return threads.deferToThread(self.fs_access.rename,
-                                     self._path(fromPath),
-                                     self._path(toPath))
+        def failed(failure):
+            raise ftp.PermissionDeniedError(self._path(path))
+        d = threads.deferToThread(self.fs_access.rename,
+                                  self._path(fromPath),
+                                  self._path(toPath))
+        d.addErrback(failed)
+
+        return d
 
     def access(self, path):
         def success(result):
             return None
-        def failure(result):
-            ## XXX - return more appropriate results
-            raise ftp.PermissionDeniedError(path)
 
-        ## XXX - is ls the right method to use here - seems a bit slow.
+        def failure(failure):
+            if failure.type is NotFound:
+                raise ftp.FileNotFoundError(self._path(path))
+            ## Unauthorized error - is there any other errors I should
+            ## be catching.
+            raise ftp.PermissionDeniedError(self._path(path))
+
+        ## the ls method used where might be a bit slow on a directory
+        ## with lots of entries.
         d = threads.deferToThread(self.fs_access.ls, self._path(path))
         d.addCallback(success)
         d.addErrback(failure)
@@ -112,8 +140,14 @@ class ZopeFTPShell(object):
                 ret.append(self._gotlisting(result, keys))
             return ret
 
+        def goterror(failure):
+            if failure.type is NotFound:
+                raise ftp.FileNotFoundError(self._path(path))
+            raise ftp.PermissionDeniedError(self._path(path))
+
         d = threads.deferToThread(self.fs_access.ls, self._path(path))
         d.addCallback(gotresults, keys)
+        d.addErrback(goterror)
 
         return d
 
@@ -167,28 +201,34 @@ class ZopeFTPShell(object):
     def send(self, path, consumer):
         def finished(result, consumer):
             consumer.transport.loseConnection()
-        def failed(result, path):
+
+        def failed(failure, consumer):
             consumer.transport.loseConnection()
-            ## XXX - a more appropriate exception here.
-            raise ftp.PermissionDeniedError(path)
+            if failure.type is NotFound:
+                raise ftp.FileNotFoundError(self._path(path))
+            ## Unauthorized error - is there any other errors I should
+            ## be catching.
+            raise ftp.PermissionDeniedError(self._path(path))
 
         p = self._path(path)
         d = threads.deferToThread(self.fs_access.readfile, p, consumer)
         d.addCallback(finished, consumer)
-        d.addErrback(failed, consumer, p)
+        d.addErrback(failed, consumer)
         return d
 
     def receive(self, path):
-        def accessok(result, fs, path):
+        def accessok(result, fs):
             if not result:
-                raise ftp.PermissionDeniedError(path)
+                raise ftp.PermissionDeniedError(self._path(path))
             return ConsumerObject(fs, p)
-        def failure(result, path):
+
+        def failure(result):
             ## XXX - should be a better exception
             raise ftp.PermissionDeniedError(path)
+
         p = self._path(path)
         d = threads.deferToThread(self.fs_access.writable, p)
-        d.addCallback(accessok, self.fs_access, p)
-        d.addErrback(failure, p)
+        d.addCallback(accessok, self.fs_access)
+        d.addErrback(failure)
 
         return d

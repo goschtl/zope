@@ -25,7 +25,7 @@ class Test(FileSystemTests, TestCase):
     def setUp(self):
         root = demofs.Directory()
         root.grant('bob', demofs.write)
-        fs = self.filesystem = demofs.DemoFileSystem(root, 'bob')
+        fs = self.filesystem = demofs.DemoFileSystem(root, ('bob', '123'))
         fs.mkdir(self.dir_name)
         fs.writefile(self.file_name, StringIO(self.file_contents))
         fs.writefile(self.unwritable_filename, StringIO("save this"))

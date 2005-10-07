@@ -73,7 +73,7 @@ class FTPServerTestCase(test_ftp.FTPServerTestCase):
         root = demofs.Directory()
         # the tuple has a user name is used by ZopeSimpleAuthentication to
         # authenticate users.
-        root.grant(('root', 'root'), demofs.write)
+        root.grant('root', demofs.write)
         self.rootfs = rootfs = DemoFileSystem(root, ('root', 'root'))
 
         # Start the server
@@ -110,7 +110,25 @@ class FTPServerTestCase(test_ftp.FTPServerTestCase):
         )
 
 class BasicFTPServerTestCase(FTPServerTestCase, test_ftp.BasicFTPServerTestCase):
-    pass
+    def _authLogin(self):
+        responseLines = wait(self.client.queueStringCommand('USER root'))
+        self.assertEquals(
+            ['331 Password required for root.'],
+            responseLines
+        )
+
+        responseLines = wait(self.client.queueStringCommand(
+            'PASS root')
+        )
+        self.assertEquals(
+            ['230 User logged in, proceed'],
+            responseLines
+        )
+
+    def test_MKD(self):
+        self._authLogin()
+        responseLines = wait(self.client.queueStringCommand('MKD /newdir'))
+        self.assertEqual(['257 "/newdir" created'], responseLines)
 
 class FTPServerPasvDataConnectionTestCase(FTPServerTestCase,
                                           test_ftp.FTPServerPasvDataConnectionTestCase):
@@ -130,8 +148,6 @@ class FTPServerPasvDataConnectionTestCase(FTPServerTestCase,
         # Make some directories
         self.rootfs.mkdir_nocheck('/foo')
         self.rootfs.mkdir_nocheck('/bar')
-##         os.mkdir(os.path.join(self.directory, 'foo'))
-##         os.mkdir(os.path.join(self.directory, 'bar'))
 
         # Download a listing again
         downloader = self._makeDataConnection()
@@ -174,9 +190,6 @@ class FTPServerPasvDataConnectionTestCase(FTPServerTestCase,
         # Download a range of different size files
         for size in range(100000, 110000, 500):
             self.rootfs.writefile_nocheck('/%d.txt' % (size,), StringIO('x' * size))
-##             fObj = file(os.path.join(self.directory, '%d.txt' % (size,)), 'wb')
-##             fObj.write('x' * size)
-##             fObj.close()
 
             downloader = self._makeDataConnection()
             d = self.client.queueStringCommand('RETR %d.txt' % (size,))
@@ -193,3 +206,67 @@ class FTPServerPortDataConnectionTestCaes(FTPServerPasvDataConnectionTestCase, t
         l = [defer.maybeDeferred(port.stopListening) for port in self.dataPorts]
         wait(defer.DeferredList(l, fireOnOneErrback=True))
         return FTPServerPasvDataConnectionTestCase.tearDown(self)
+
+from twisted.test.test_ftp import _BufferingProtocol
+
+class ZopeFTPPermissionTestCases(FTPServerTestCase):
+    def setUp(self):
+        FTPServerTestCase.setUp(self)
+        self.filename = 'nopermissionfolder'
+        self.rootfs.writefile('/%s' % self.filename, StringIO('x' * 100))
+        file = self.rootfs.get(self.filename)
+        file.grant('michael', 0)
+        del file.access['anonymous']
+
+    def _makeDataConnection(self):
+        # Establish a passive data connection (i.e. client connecting to
+        # server).
+        responseLines = wait(self.client.queueStringCommand('PASV'))
+        host, port = ftp.decodeHostPort(responseLines[-1][4:])
+        downloader = wait(
+            protocol.ClientCreator(reactor,
+                                   _BufferingProtocol).connectTCP('127.0.0.1',
+                                                                  port)
+        )
+        return downloader
+
+    def _michaelLogin(self):
+        responseLines = wait(self.client.queueStringCommand('USER michael'))
+        self.assertEquals(
+            ['331 Password required for michael.'],
+            responseLines
+        )
+
+        responseLines = wait(self.client.queueStringCommand(
+            'PASS michael')
+        )
+        self.assertEquals(
+            ['230 User logged in, proceed'],
+            responseLines
+        )
+
+    def testNoSuchDirectory(self):
+        self._michaelLogin()
+        deferred = self.client.queueStringCommand('CWD /nosuchdir')
+        failureResponseLines = self._waitForCommandFailure(deferred)
+        self.failUnless(failureResponseLines[-1].startswith('550'),
+                        "Response didn't start with 550: %r" % failureResponseLines[-1])
+
+    def testListNonPermission(self):
+        self._michaelLogin()
+
+        # Download a listing
+        downloader = self._makeDataConnection()
+        d = self.client.queueStringCommand('NLST ')
+        wait(defer.gatherResults([d, downloader.d]))
+
+        # No files, so the file listing should be empty
+        filenames = downloader.buffer[:-2].split('\r\n')
+        filenames.sort()
+        self.assertEqual([self.filename], filenames)
+
+        downloader = self._makeDataConnection()
+        d = self.client.queueStringCommand('RETR %s' % self.filename)
+        failureResponseLines = self._waitForCommandFailure(d)
+        self.failUnless(failureResponseLines[-1].startswith('426'),
+                        "Response didn't start with 426 i.e. data connection closed error")

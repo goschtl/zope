@@ -15,8 +15,9 @@ $Id: demofs.py 27459 2004-09-07 01:45:52Z shane $
 """
 import posixpath
 from zope.security.interfaces import Unauthorized
+from zope.publisher.interfaces import NotFound
+
 from zope.app.twisted.interfaces import IFileSystem
-## from zope.server.interfaces.ftp import IFileSystemAccess
 from zope.interface import implements
 
 execute = 1
@@ -31,6 +32,8 @@ class File(object):
         self.access = {'anonymous': read}
 
     def accessable(self, user, access=read):
+        if isinstance(user, tuple) and len(user) == 2:
+            user = user[0]
         return (user == 'root'
                 or (self.access.get(user, 0) & access)
                 or (self.access.get('anonymous', 0) & access)
@@ -76,7 +79,8 @@ class DemoFileSystem(object):
     File = File
     Directory = Directory
 
-    def __init__(self, files, user=''):
+    def __init__(self, files, user = ''):
+        ## user is not username, password
         self.files = files
         self.user = user
 
@@ -101,7 +105,7 @@ class DemoFileSystem(object):
     def getany(self, path):
         d = self.get(path)
         if d is None:
-            raise OSError("No such file or directory:", path)
+            raise NotFound(self, path)
         return d
 
     def getdir(self, path):
@@ -165,6 +169,9 @@ class DemoFileSystem(object):
         "See zope.server.interfaces.ftp.IFileSystem"
         f = self.getfile(path)
 
+        if not f.accessable(self.user, read):
+            raise Unauthorized(path)
+
         data = f.data
         if end is not None:
             data = data[:end]
@@ -195,7 +202,7 @@ class DemoFileSystem(object):
         if name in d.files:
             raise OSError("Already exists:", name)
         newdir = self.Directory()
-        newdir.grant(self.user, read | write)
+        newdir.grant(self.user[0], read | write)
         d.files[name] = newdir
 
     def remove(self, path):
@@ -244,7 +251,7 @@ class DemoFileSystem(object):
         if f is None:
             d = self.getwdir(path)
             f = d.files[name] = self.File()
-            f.grant(self.user, read | write)
+            f.grant(self.user[0], read | write)
         elif f.type != 'f':
             raise OSError("Can't overwrite a directory")
 
