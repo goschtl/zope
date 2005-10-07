@@ -46,15 +46,15 @@ If we assume that the first link in index.html works and the second is a dead
 one, the resulting HTML could look as follows :
 
 
-    >>> from wikification.browser.wikipage import WikiPage
-    >>> page = WikiPage(index_page.__parent__, TestRequest("/index.html"))
-    >>> print page.render(index_page.data)
+    >>> from wikification.browser.wikipage import WikiFilePage
+    >>> page = WikiFilePage(index_page, TestRequest("/index.html"))
+    >>> print page.wiki()
     <html>
         <body>
             <p>Wikifiable</p>
-            <p>An <a class="create-link" href="target">existing link</a></p>
-            <p>A <a class="create-link" href="http://127.0.0.1/createLink?path=newitem">new page</a></p>
-            <p>A <a class="create-link" href="http://127.0.0.1/createLink?path=folder1/newitem">new page in a subfolder</a></p>
+            <p>An <a href="target">existing link</a></p>
+            <p>A <a style="color: red"  href="http://127.0.0.1/createPage?path=newitem">new page</a></p>
+            <p>A <a style="color: red"  href="http://127.0.0.1/createPage?path=folder1/newitem">new page in a subfolder</a></p>
             <p>A [New Subject]</a></p>
         </body>
     </html>
@@ -65,8 +65,9 @@ one, the resulting HTML could look as follows :
     page method seems to be the simplest solution:
     
     >>> request = TestRequest("/index.html", form={'path':'folder1/newitem', })
-    >>> WikiPage(index_page.__parent__, request).createLink()
-    >>> index_page.__parent__[u'folder1'][u'newitem']
+    >>> page = WikiFilePage(index_page, request)
+    >>> new_file = page.createLink()  
+    >>> site[u'folder1'][u'newitem']
     <zope.app.file.file.File object at ...>
 
 Comments
