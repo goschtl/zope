@@ -56,12 +56,12 @@ class OneMinute(BenchBase):
         finally:
             self.close_and_delete()
 
-    def report(self):
+    def summary(self):
         msg = "Did %d commits in %.1f seconds, for %.2f txn/sec." % (
                 self.ntransactions,
                 self.elapsed,
                 self.ntransactions / self.elapsed)
-        BenchBase.report(self, msg)
+        return msg
 
 def main():
     om = OneMinute()

@@ -76,6 +76,11 @@ class BenchBase(object):
     name = None     # subclass should override with benchmark name
     version = None  #    "       "       "       "      "     version number
 
+    # Subclass must override.
+    def summary(self):
+        """Return a string summarizing the result of the benchmark run."""
+        raise NotImplementedError
+
     def open_fs(self, path=None):
         """Open a FileStorage.
 
@@ -108,13 +113,12 @@ class BenchBase(object):
         # exist before ZODB 3.2, though.
         self.storage.cleanup()
 
-
-    def report(self, msg):
+    def report(self):
         """Display a report to stdout.
 
-        The starts by listing the name of the benchmark (self.name and
+        This starts by listing the name of the benchmark (self.name and
         self.version), then gives the ZODB and Python versions in use, and
-        then displays `msg`.
+        then prints the string self.summary() returns.
         """
 
         print "Benchmark %s, version %s" % (self.name, self.version)
@@ -127,4 +131,4 @@ class BenchBase(object):
         print "       ", sys.executable
         print "       ", sys.platform
 
-        print msg
+        print self.summary()
