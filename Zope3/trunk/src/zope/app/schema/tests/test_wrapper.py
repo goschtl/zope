@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 
-from persistent import Persistent, GHOST, UPTODATE
+from persistent import Persistent, GHOST, UPTODATE, CHANGED
 from persistent.tests.persistenttestbase import DM as BaseDM, BrokenDM
 
 from zope.interface import Interface, directlyProvides, directlyProvidedBy
@@ -140,8 +140,10 @@ class Test(unittest.TestCase):
         self.assertEqual(dm.called, 1)
 
     def testGhostChanged(self):
-        # An object is a ghost, and it's _p_changed it set to True.
-        # This assignment should have no effect.
+        # If an object is a ghost and its _p_changed is set to True (any
+        # true value),i t should activate (unghostify) the object.  This
+        # behavior is new in ZODB 3.6; before then, an attempt to do
+        # "ghost._p_changed = True" was ignored.
         p = self.klass()
         p._p_oid = 1
         dm = DM()
@@ -149,7 +151,7 @@ class Test(unittest.TestCase):
         p._p_deactivate()
         self.assertEqual(p._p_state, GHOST)
         p._p_changed = True
-        self.assertEqual(p._p_state, GHOST)
+        self.assertEqual(p._p_state, CHANGED)
 
     def testRegistrationFailure(self):
         p = self.klass()
