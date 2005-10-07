@@ -7,14 +7,14 @@
     <page		
       name="wiki"
       for="zope.app.folder.interfaces.IFolder"
-      class=".wikipage.WikiFolderPage"
+      class="wikification.browser.wikipage.WikiFolderPage"
       attribute="wiki"
       permission="zope.View" />
 
     <page		
       name="wiki"
       for="zope.app.file.interfaces.IFile"
-      class=".wikipage.WikiFilePage"
+      class="wikification.browser.wikipage.WikiFilePage"
       attribute="wiki"
       permission="zope.View" />
 
@@ -22,14 +22,14 @@
     <page		
       name="editPage"
       for="zope.app.file.interfaces.IFile"
-      class=".wikipage.EditWikiPage"
+      class="wikification.browser.wikipage.EditWikiPage"
       template="edit.pt"
       permission="zope.ManageContent" />
     
     <page		
       name="createPage"
       for="zope.app.folder.interfaces.IFolder"
-      class=".wikipage.CreateWikiPage"
+      class="wikification.browser.wikipage.CreateWikiPage"
       template="edit.pt"
       permission="zope.ManageContent" />
 
