@@ -24,7 +24,7 @@
         interface=".IReadComments"
         />
     <require
-        permission="zope.Member"
+        permission="zope.View"
         interface=".IDeleteComments"
         />
     <require
@@ -32,5 +32,10 @@
         set_schema=".IComment"
         />
   </class>
+
+  <adapter
+      provides=".IComments"
+      factory=".comments.CommentsForAnnotatable"
+      trusted="True" />
 
 </configure>

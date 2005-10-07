@@ -24,6 +24,7 @@ import zope.app.annotation
 
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.file import File
+from zope.app.location import Location
 
 from comment import IAnnotableComments
 from comment import IComment
@@ -47,7 +48,7 @@ class Comment(File):
 
 
 
-class CommentsForAnnotatable(object):
+class CommentsForAnnotatable(Location):
     """Annotate comments."""
 
     zope.component.adapts(IAnnotableComments,)
