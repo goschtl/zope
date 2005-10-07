@@ -1,6 +1,6 @@
 import re
 from zope.app import zapi
-
+from zope.interface import implements
 from zope.app.traversing.interfaces import TraversalError
 from zope.app.folder import Folder
 from zope.app.file import File
@@ -27,6 +27,9 @@ class WikiPage(BrowserView) :
     """
     
     editable = False
+    supported = 'text/html', 'application/xhtml+xml', 'application/xml', 'text/xml'
+    
+    implements(IWikiPage)
     
     def __init__(self, context, request) :
         super(WikiPage, self).__init__(context, request)
@@ -40,7 +43,7 @@ class WikiPage(BrowserView) :
         """
         
         file = self.getFile()
-        if file.contentType == "text/html" :
+        if file.contentType in self.supported :
             if self.editable :
                 body = html_body(file.data)
             else :
