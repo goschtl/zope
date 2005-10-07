@@ -30,9 +30,12 @@ The index.html is our starting point and contains the following HTML :
             <p>An <a href="target">existing link</a></p>
             <p>A <a href="newitem">new page</a></p>
             <p>A <a href="folder1/newitem">new page in a subfolder</a></p>
-            <p>A [New Subject]</a></p>
+            <p>A [New Subject]</p>
+            <p>An <a href="http://www.google.org">external absolute link</a></p>
+            <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
         </body>
     </html>
+    
 
 
 The links within the document may point to 
@@ -49,16 +52,7 @@ one, the resulting HTML could look as follows :
     >>> from wikification.browser.wikipage import WikiFilePage
     >>> page = WikiFilePage(index_page, TestRequest("/index.html"))
     >>> print page.wiki()
-    <html>
-        <body>
-            <p>Wikifiable</p>
-            <p>An <a href="target">existing link</a></p>
-            <p>A <a style="color: red"  href="http://127.0.0.1/createPage?path=newitem">new page</a></p>
-            <p>A <a style="color: red"  href="http://127.0.0.1/createPage?path=folder1/newitem">new page in a subfolder</a></p>
-            <p>A [New Subject]</a></p>
-        </body>
-    </html>
-    
+
     The task of creating a new page is delegated to the createLink method of the 
     wiki page. We considered the possibility to adapt the traversal mechanism
     in order to throw add forms in case of TraversalErrors, but a simple
@@ -92,7 +86,9 @@ asdf/sdfa           # traverse relative to container
 
 asdf                # traverse relative to container
 
-http://asdfsd       # leave untouched
+http://asdfsd       # absolute link to somewhere else, leave untouched
+
+http://site/        # XXX absolute link to site object, traverse
 
 Hierarchical substructures are not Wiki-like?
 

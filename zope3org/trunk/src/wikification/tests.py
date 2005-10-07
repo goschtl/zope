@@ -33,7 +33,9 @@ example1 = u"""<html>
         <p>An <a href="target">existing link</a></p>
         <p>A <a href="newitem">new page</a></p>
         <p>A <a href="folder1/newitem">new page in a subfolder</a></p>
-        <p>A [New Subject]</a></p>
+        <p>A [New Subject]</p>
+        <p>An <a href="http://www.google.org">external absolute link</a></p>
+        <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
     </body>
 </html>"""
 
@@ -47,7 +49,8 @@ def buildSampleSite() :
             target              (an existing file)
             folder              (a sample folder)
     """
-    root = rootFolder() 
+    root = rootFolder()
+    root.__name__ = u"site"
     root[u"target"] = File()
     folder = root[u"folder"] = Folder()
     root[u"index.html"] = File(example1, 'text/html')    

@@ -31,8 +31,10 @@ class WikiPage(BrowserView) :
     
     implements(IWikiPage)
     
+       
     def __init__(self, context, request) :
         super(WikiPage, self).__init__(context, request)
+        
         self.folder = self.getFolder()
         self.file = self.getFile()
         self.base = zapi.absoluteURL(self.folder, request)
@@ -66,7 +68,7 @@ class WikiPage(BrowserView) :
         """
         
         if self.isAbsoluteLink(link) :
-            return link
+            return False, link
             
         path = link.split("/")
         try :
@@ -120,9 +122,7 @@ class WikiPage(BrowserView) :
         
         assert len(path) > 0
         
-        base = self.folder
-        
-        
+        folder = base = self.folder
         for name in path[:-1] :
             folder = base[name] = Folder()
             base = folder
@@ -132,17 +132,22 @@ class WikiPage(BrowserView) :
         return file
         
     def saveText(self) :
-        """ Generic store method.
-            
         """
-        
-        text = self.request.form.get("text")        
+            Generic store method.           
+        """
+        request = self.request
+        text = request.form.get("body")        
         if self.create :
             file = self.createLink()
         else :
             file = self.file
-        file.data = text    
-        
+        file.data = text        
+        request.response.redirect(self.nextURL())
+
+    def nextURL(self) :
+        url = zapi.absoluteURL(self.context, self.request)
+        return url + "/@@wiki"
+
 
         
 class WikiFolderPage(WikiPage) :
@@ -168,13 +173,22 @@ class WikiFilePage(WikiPage) :
         return self.context
         
         
-class EditWikiPage(WikiPage) :
+class EditWikiPage(WikiFilePage) :
 
     editable = True
     create = False
- 
-class CreateWikiPage(WikiPage) :
+    
+    def getBody(self) :
+        return html_body(self.file.data)
+        
+    body = property(getBody)
+    
+   
+class CreateWikiPage(WikiFolderPage) :
 
     editable = True
     create = True
+    
+    body = u""
+    
     

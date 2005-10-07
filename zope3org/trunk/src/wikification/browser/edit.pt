@@ -6,19 +6,11 @@
 	       enctype="multipart/form-data"
 	       action="saveText">
 	     
-	    <input id="path" type="hidden" value="" 
-	           tal:attributes="value view/request/form/path | nothing"/>
+	    <input id="path" name="path" type="hidden" value="" 
+	           tal:attributes="value request/path"/>
 					           
 		<table>
-			<tr>
-				<td valign="top" class="form-title">
-					Title:
-				</td>
-				<td>
-					<input id="title" name="title" type="text" size="50" value="" 
-					           tal:attributes="value view/title"/>
-				</td>
-			</tr>
+			
 			<tr>
 				<td valign="top" class="form-title">
 					Abstract: 
