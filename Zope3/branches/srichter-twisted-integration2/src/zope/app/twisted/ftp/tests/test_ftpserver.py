@@ -79,7 +79,7 @@ class TestServerSetup(TestCase):
         responseLines = wait(self.client.queueStringCommand('PASS root'))
         self.assertEqual(['230 User logged in, proceed'], responseLines)
 
-    def test_MLD(self):
+    def test_MKD(self):
         self._authLogin()
         responseLines = wait(self.client.queueStringCommand('MKD /newdir'))
         self.assertEqual(['257 "/newdir" created'], responseLines)

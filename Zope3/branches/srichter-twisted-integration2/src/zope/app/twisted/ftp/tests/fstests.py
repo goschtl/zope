@@ -33,7 +33,28 @@ class FileSystemTests(object):
     def test_type(self):
         self.assertEqual(self.filesystem.type(self.dir_name), 'd')
         self.assertEqual(self.filesystem.type(self.file_name), 'f')
+        self.assertEqual(self.filesystem.type('/'), 'd')
 
+    def test_ls(self):
+        self.assertEqual(self.filesystem.ls(self.dir_name),
+                         [{'group_write': 4, 'group_read': 2, 'type': 'f',
+                           'name': 'file.txt',
+                           'size': len(self.file_contents)},
+                          {'group_write': 0, 'group_read': 2, 'type': 'f',
+                           'name': 'protected.txt', 'size': 9}])
+
+    def test_lsinfo(self):
+        self.assertEqual(self.filesystem.lsinfo(self.dir_name),
+                         {'group_write': 4, 'group_read': 2, 'type': 'd',
+                          'name': 'dir'})
+
+    def test_size(self):
+        self.assertEqual(self.filesystem.size(self.file_name),
+                         len(self.file_contents))
+
+    def test_mtime(self):
+        ## this is a weird mtime value.
+        self.assertEqual(self.filesystem.mtime(self.file_name), None)
 
     def test_names(self):
         lst = self.filesystem.names(self.dir_name)
@@ -51,7 +72,6 @@ class FileSystemTests(object):
         self.filesystem.readfile(self.file_name, s, 2)
         self.assertEqual(s.getvalue(), self.file_contents[2:])
 
-
     def testReadPartOfFile2(self):
         s = StringIO()
         self.filesystem.readfile(self.file_name, s, 1, 5)
@@ -64,7 +84,6 @@ class FileSystemTests(object):
         self.filesystem.remove(self.file_name)
         self.failIf(self.filesystem.type(self.file_name))
 
-
     def testMkdir(self):
         path = self.dir_name + '/x'
         self.filesystem.mkdir(path)
@@ -75,12 +94,10 @@ class FileSystemTests(object):
         self.filesystem.rmdir(self.dir_name)
         self.failIf(self.filesystem.type(self.dir_name))
 
-
     def testRename(self):
         self.filesystem.rename(self.file_name, self.file_name + '.bak')
         self.assertEqual(self.filesystem.type(self.file_name), None)
         self.assertEqual(self.filesystem.type(self.file_name + '.bak'), 'f')
-
 
     def testWriteFile(self):
         s = StringIO()
@@ -94,7 +111,6 @@ class FileSystemTests(object):
         s = StringIO()
         self.filesystem.readfile(self.file_name, s)
         self.assertEqual(s.getvalue(), data)
-
 
     def testAppendToFile(self):
         data = ' again'
@@ -139,7 +155,6 @@ class FileSystemTests(object):
         self.filesystem.readfile(self.file_name, s)
         self.assertEqual(s.getvalue(), expect)
 
-
     def testWriteNewFile(self):
         s = StringIO(self.file_contents)
         self.filesystem.writefile(self.file_name + '.new', s)
@@ -147,7 +162,6 @@ class FileSystemTests(object):
         s = StringIO()
         self.filesystem.readfile(self.file_name, s)
         self.assertEqual(s.getvalue(), self.file_contents)
-
 
     def test_writable(self):
         self.failIf(self.filesystem.writable(self.dir_name))
