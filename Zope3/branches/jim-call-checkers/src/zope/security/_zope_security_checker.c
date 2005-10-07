@@ -13,9 +13,10 @@
 */
 #include <Python.h>
 
-static PyObject *_checkers, *_defaultChecker, *_available_by_default, *NoProxy;
+static PyObject *_checkers, *defaultChecker, *_available_by_default, *NoProxy;
 static PyObject *Proxy, *thread_local, *CheckerPublic;
 static PyObject *ForbiddenAttribute, *Unauthorized;
+static PyObject *call_tuple;
 
 #define DECLARE_STRING(N) static PyObject *str_##N
 
@@ -34,8 +35,11 @@ typedef struct {
 static PyObject *
 Checker_permission_id(Checker *self, PyObject *name)
 {
-/*         return self._permission_func(name) */
   PyObject *result;
+  /*
+        if self.get_permissions:
+            return self.get_permissions.get(name)
+  */
 
   if (self->getperms)
     {
@@ -115,18 +119,30 @@ Checker_check_int(Checker *self, PyObject *object, PyObject *name)
   PyObject *permission=NULL;
   int operator;
 
-/*         permission = self._permission_func(name) */
+  /*
+        try:
+            permission = self.get_permissions.get(name)
+        except AttributeError:
+            if self.get_permissions is None:
+                # special case for NoProxy
+                return
+            raise
+  */
+
+  if (! self->getperms)
+    return 0;
+
   if (self->getperms)
     permission = PyDict_GetItem(self->getperms, name);
 
+  if (permission == CheckerPublic) /* Moved this up -- it's a common case */
+    return 0;
+
 /*         if permission is not None: */
-  if (permission != NULL)
-    {
 /*             if permission is CheckerPublic: */
 /*                 return # Public */
-      if (permission == CheckerPublic)
-        return 0;
-
+  if (permission != NULL)
+    {
       if (checkPermission(permission, object, name) < 0)
         return -1;
       return 0;
@@ -256,21 +272,12 @@ Checker_proxy(Checker *self, PyObject *value)
       if (checker == NULL)
         return NULL;
 
-/*             if checker is None: */
-/*                 return value */
-      if (checker == Py_None)
-        {
-          Py_DECREF(checker);
-          Py_INCREF(value);
-          return value;
-        }
     }
-  else if (checker == Py_None)
+  else if (! checker->ob_type->tp_call)
     {
-      PyObject *errv = Py_BuildValue("sO",
-                                     "Invalid value, None. "
-                                     "for security checker",
-                                     value);
+      PyObject *errv = Py_BuildValue("sOO",
+                                     "Invalid security checker for value",
+                                     checker, value);
       if (errv != NULL)
         {
           PyErr_SetObject(PyExc_ValueError, errv);
@@ -280,10 +287,53 @@ Checker_proxy(Checker *self, PyObject *value)
       return NULL;
     }
 
-  r = PyObject_CallFunctionObjArgs(Proxy, value, checker, NULL);
+  PyTuple_SET_ITEM(call_tuple, 0, value);
+  r = checker->ob_type->tp_call(checker, call_tuple, NULL);
+  if (call_tuple->ob_refcnt != 1)
+    {
+      /* Someone stole a reference */
+      Py_INCREF(value);
+      Py_DECREF(call_tuple);
+      call_tuple = PyTuple_New(1);
+      if (call_tuple == NULL)
+        {
+          Py_DECREF(r);
+          r = NULL;
+        }
+    }
+  else
+    PyTuple_SET_ITEM(call_tuple, 0, NULL);
+
   Py_DECREF(checker);
+
   return r;
 }
+
+PyObject *
+Checker_call(Checker *self, PyObject *args, PyObject *kw_ignored)
+{
+  /* 
+    def __call__(self, value):
+        if self.get_permissions is None:
+            # special case for NoProxy
+            return value
+        return Proxy(value, self)
+  */
+
+  if (args == call_tuple)
+    args = PyTuple_GET_ITEM(args, 0);
+  else
+    if (! PyArg_ParseTuple(args, "O", &args))
+      return NULL;
+
+  if (self->getperms)
+      return PyObject_CallFunctionObjArgs(Proxy, args, self, NULL);
+
+  /* NoProxy case */
+  Py_INCREF(args);
+  return args;
+}
+
 
 /*         return Proxy(value, checker) */
 
@@ -424,7 +474,7 @@ static PyTypeObject CheckerType = {
 	/* tp_as_sequence    */ 0,
 	/* tp_as_mapping     */ &Checker_as_mapping,
 	/* tp_hash           */ (hashfunc)0,
-	/* tp_call           */ (ternaryfunc)0,
+	/* tp_call           */ (ternaryfunc)Checker_call,
 	/* tp_str            */ (reprfunc)0,
         /* tp_getattro       */ (getattrofunc)0,
         /* tp_setattro       */ (setattrofunc)0,
@@ -476,37 +526,16 @@ selectChecker(PyObject *ignored, PyObject *object)
 {
   PyObject *checker;
 
-/*     checker = _getChecker(type(object), _defaultChecker) */
+/*     checker = _getChecker(type(object), defaultChecker) */
 
   checker = PyDict_GetItem(_checkers, (PyObject*)(object->ob_type));
   if (checker == NULL)
-    checker = _defaultChecker;
-
-/*     if checker is NoProxy: */
-/*         return None */
-
-  if (checker == NoProxy)
-    {
-      Py_INCREF(Py_None);
-      return Py_None;
-    }
-
-/*     if checker is _defaultChecker and isinstance(object, Exception): */
-/*         return None */
-
-  if (checker == _defaultChecker
-      && PyObject_IsInstance(object, PyExc_Exception))
-    {
-      Py_INCREF(Py_None);
-      return Py_None;
-    }
+    checker = defaultChecker;
+  Py_INCREF(checker);
 
 /*     while not isinstance(checker, Checker): */
 /*         checker = checker(object) */
-/*         if checker is NoProxy or checker is None: */
-/*             return None */
 
-  Py_INCREF(checker);
   while (! PyObject_TypeCheck(checker, &CheckerType))
     {
       PyObject *newchecker;
@@ -515,12 +544,6 @@ selectChecker(PyObject *ignored, PyObject *object)
       if (newchecker == NULL)
         return NULL;
       checker = newchecker;
-      if (checker == NoProxy || checker == Py_None)
-        {
-          Py_DECREF(checker);
-          Py_INCREF(Py_None);
-          return Py_None;
-        }
     }
 
 /*     return checker */
@@ -546,9 +569,16 @@ init_zope_security_checker(void)
   if (PyType_Ready(&CheckerType) < 0)
     return;
 
-  _defaultChecker = PyObject_CallFunction((PyObject*)&CheckerType, "{}");
-  if (_defaultChecker == NULL)
+  defaultChecker = PyObject_CallFunction((PyObject*)&CheckerType, "{}");
+  if (defaultChecker == NULL)
     return;
+
+  NoProxy = PyObject_CallFunction((PyObject*)&CheckerType, "{}");
+  if (NoProxy == NULL)
+    return;
+  m = ((Checker *)NoProxy)->getperms;
+  ((Checker *)NoProxy)->getperms = NULL;
+  Py_DECREF(m);
 
 #define INIT_STRING(S) \
 if((str_##S = PyString_InternFromString(#S)) == NULL) return
@@ -560,8 +590,7 @@ if((str_##S = PyString_InternFromString(#S)) == NULL) return
   if ((_checkers = PyDict_New()) == NULL)
     return;
 
-  NoProxy = PyObject_CallObject((PyObject*)&PyBaseObject_Type, NULL);
-  if (NoProxy == NULL)
+  if ((call_tuple = PyTuple_New(1)) == NULL)
     return;
 
   if ((m = PyImport_ImportModule("zope.security._proxy")) == NULL) return;
@@ -597,7 +626,7 @@ if((str_##S = PyString_InternFromString(#S)) == NULL) return
 
   EXPORT(_checkers);
   EXPORT(NoProxy);
-  EXPORT(_defaultChecker);
+  EXPORT(defaultChecker);
   EXPORT(_available_by_default);
 
   Py_INCREF(&CheckerType);
