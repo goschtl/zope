@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:help="http://namespaces.zope.org/help"
+    i18n_domain="zope">
+
+  <help:register
+      id="css"
+      parent="styleguide"
+      title="CSS"
+      doc_path="index.html"
+      class="zope.app.onlinehelp.onlinehelptopic.ZPTOnlineHelpTopic"
+      />
+
+</configure>
