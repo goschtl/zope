@@ -19,7 +19,7 @@ from unittest import TestCase, makeSuite, TestSuite
 
 from zope.configuration import xmlconfig
 from zope.schema import Text, getFieldNamesInOrder, getFieldsInOrder
-from zope.security.checker import getChecker, _defaultChecker, ProxyFactory
+from zope.security.checker import getChecker, ProxyFactory
 from zope.app.schema.schema import SchemaUtility
 from zope.app.testing import setup
 from zope.app import zapi

@@ -73,17 +73,53 @@ def ProxyFactory(object, checker=None):
             # can call ProxyFactory.
             raise TypeError("Tried to use ProxyFactory to change a Proxy's"
                             " checker.")
+        
     if checker is None:
         checker = getattr(object, '__Security_checker__', None)
 
         if checker is None:
             checker = selectChecker(object)
-            if checker is None:
-                return object
 
-    return Proxy(object, checker)
+    try:
+        return checker(object)
+    except TypeError:
+        import warnings
+        warnings.warn(
+            "Non-callable checkers like %s are deprecated and will not be"
+            " supported after 2006." % checker,
+            DeprecationWarning)
+        return Proxy(object, checker)
 
 directlyProvides(ProxyFactory, ISecurityProxyFactory)
+
+def queryChecker(ob, default=None):
+    """Determine the checker for an object
+
+    Return None if no checker is defined.
+
+    >>> class C(object):
+    ...     pass
+
+    >>> c = C()
+    >>> print queryChecker(c)
+    None
+
+    >>> checker1 = Checker({})
+    >>> defineChecker(C, checker1)
+    >>> queryChecker(c) is checker1
+    True
+    >>> checker2 = Checker({})
+    >>> c.__Security_checker__ = checker2
+    >>> queryChecker(c) is checker2
+    True
+    
+    """
+    checker = getattr(ob, '__Security_checker__', None)
+
+    if checker is None:
+        checker = _getChecker(type(ob), default)
+
+    return checker
 
 def canWrite(obj, name):
     """Check whether the interaction may write an attribute named name on obj.
@@ -199,10 +235,11 @@ class Checker(object):
         checker = getattr(value, '__Security_checker__', None)
         if checker is None:
             checker = selectChecker(value)
-            if checker is None:
-                return value
 
-        return Proxy(value, checker)
+        return checker(value)
+
+    def __call__(self, value):
+        return Proxy(value, self)
 
 
 
@@ -335,28 +372,10 @@ def selectChecker(object):
     return value is None, then object should not be wrapped in a proxy.
     """
 
-    # We need to be careful here. We might have a proxy, in which case
-    # we can't use the type.  OTOH, we might not be able to use the
-    # __class__ either, since not everything has one.
-
-    # TODO: we really need formal proxy introspection
-
-    #if type(object) is Proxy:
-    #    # Is this already a security proxy?
-    #    return None
-
-    checker = _getChecker(type(object), _defaultChecker)
-
-    #checker = _getChecker(getattr(object, '__class__', type(object)),
-    #                      _defaultChecker)
-
-    if checker is NoProxy:
-        return None
+    checker = _getChecker(type(object), defaultChecker)
 
     while not isinstance(checker, Checker):
         checker = checker(object)
-        if checker is NoProxy or checker is None:
-            return None
 
     return checker
 
@@ -376,7 +395,42 @@ def defineChecker(type_, checker):
         raise DuplicationError(type_)
     _checkers[type_] = checker
 
-NoProxy = object()
+def undefineChecker(type_):
+    """Undefine a checker for a given type of object
+
+    >>> class C(object):
+    ...     pass
+
+    >>> c = C()
+    >>> print queryChecker(c)
+    None
+
+    >>> checker1 = Checker({})
+    >>> defineChecker(C, checker1)
+    >>> queryChecker(c) is checker1
+    True
+
+    >>> undefineChecker(C)
+    >>> print queryChecker(c)
+    None
+
+    
+    """
+    if not isinstance(type_, (type, types.ClassType, types.ModuleType)):
+        raise TypeError(
+                'type_ must be a type, class or module, not a %s' % type_)
+    del _checkers[type_]
+
+
+class NoProxyChecker(Checker):
+
+    def check(self, object, name):
+        pass
+
+    def __call__(self, object):
+        return object
+
+NoProxy = NoProxyChecker({})
 
 # _checkers is a mapping.
 #
@@ -390,7 +444,8 @@ NoProxy = object()
 #
 _checkers = {}
 
-_defaultChecker = Checker({})
+defaultChecker = Checker({})
+
 _available_by_default = []
 
 # Get optimized versions
@@ -401,7 +456,7 @@ except ImportError:
 else:
     from zope.security._zope_security_checker import _checkers, selectChecker
     from zope.security._zope_security_checker import NoProxy, Checker
-    from zope.security._zope_security_checker import _defaultChecker
+    from zope.security._zope_security_checker import defaultChecker
     from zope.security._zope_security_checker import _available_by_default
     zope.interface.classImplements(Checker, INameBasedChecker)
 
@@ -463,8 +518,10 @@ class CheckerLoggingMixin(object):
     Prints verbose debugging information about every performed check to
     sys.stderr.
 
-    If verbosity is set to 1, only displays Unauthorized and Forbidden messages.
-    If verbosity is set to a larger number, displays all messages.
+    If verbosity is set to 1, only displays Unauthorized and Forbidden
+    messages.  If verbosity is set to a larger number, displays all
+    messages.
+
     """
 
     verbosity = 1
@@ -532,7 +589,7 @@ if WATCH_CHECKERS:
         verbosity = WATCH_CHECKERS
 
 def _instanceChecker(inst):
-    return _checkers.get(inst.__class__, _defaultChecker)
+    return _checkers.get(inst.__class__, defaultChecker)
 
 def moduleChecker(module):
     return _checkers.get(module)
@@ -605,7 +662,7 @@ _Declaration_checker = InterfaceChecker(
     _implied=CheckerPublic,
     subscribe=CheckerPublic)
 
-def f():
+def generator_sample():
     yield f
 
 
@@ -642,7 +699,7 @@ _default_checkers = {
     type({}.iterkeys()): _iteratorChecker,
     type({}.itervalues()): _iteratorChecker,
     type(iter(_Sequence())): _iteratorChecker,
-    type(f()): _iteratorChecker,
+    type(generator_sample()): _iteratorChecker,
     type(Interface): InterfaceChecker(
         IInterface,
         __str__=CheckerPublic, _implied=CheckerPublic, subscribe=CheckerPublic,

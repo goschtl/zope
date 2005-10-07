@@ -18,6 +18,7 @@ $Id$
 
 import unittest
 from zope.security.proxy import getChecker, ProxyFactory, removeSecurityProxy
+from zope.security.proxy import Proxy
 from zope.proxy import ProxyBase as proxy
 
 class Checker(object):
@@ -42,6 +43,10 @@ class Checker(object):
         if type(value) in self.unproxied_types:
             return value
         return ProxyFactory(value, self)
+
+    def __call__(self, value):
+        return Proxy(value, self)
+        
 
 
 class Something:
@@ -388,6 +393,9 @@ def test_using_mapping_slots_hack():
       ...         print 'check_getattr', name
       ...     def proxy(self, object):
       ...         return 1
+      ...     def __call__(self, object):
+      ...         return Proxy(object, self)
+      
       >>> def f():
       ...     pass
       >>> p = ProxyFactory(f, Checker())

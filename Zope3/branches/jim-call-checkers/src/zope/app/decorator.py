@@ -19,7 +19,8 @@ additional features.
 $Id$
 """
 from zope.proxy import getProxiedObject, ProxyBase
-from zope.security.checker import selectChecker, CombinedChecker
+from zope.security.checker import selectChecker, CombinedChecker, queryChecker
+from zope.security.checker import defaultChecker
 from zope.security.proxy import Proxy, getChecker
 from zope.interface.declarations import ObjectSpecificationDescriptor
 from zope.interface.declarations import getObjectSpecification
@@ -169,11 +170,8 @@ class DecoratedSecurityCheckerDescriptor(object):
 
     When the wrapper has a checker but the proxied object doesn't:
 
-      >>> from zope.security.checker import NoProxy, _checkers
-      >>> del _checkers[Foo]
-      >>> defineChecker(Foo, NoProxy)
-      >>> selectChecker(foo) is None
-      True
+      >>> from zope.security.checker import undefineChecker
+      >>> undefineChecker(Foo)
       >>> selectChecker(wrapper) is wrapperChecker
       True
 
@@ -185,14 +183,8 @@ class DecoratedSecurityCheckerDescriptor(object):
 
     When the proxied object has a checker but the wrapper doesn't:
 
-      >>> del _checkers[Wrapper]
-      >>> defineChecker(Wrapper, NoProxy)
-      >>> selectChecker(wrapper) is None
-      True
-      >>> del _checkers[Foo]
+      >>> undefineChecker(Wrapper)
       >>> defineChecker(Foo, fooChecker)
-      >>> selectChecker(foo) is fooChecker
-      True
 
     the decorator uses only the proxied object checker:
 
@@ -201,12 +193,7 @@ class DecoratedSecurityCheckerDescriptor(object):
 
     Finally, if neither the wrapper not the proxied have checkers:
 
-      >>> del _checkers[Foo]
-      >>> defineChecker(Foo, NoProxy)
-      >>> selectChecker(foo) is None
-      True
-      >>> selectChecker(wrapper) is None
-      True
+      >>> undefineChecker(Foo)
 
     the decorator doesn't have a checker:
 
@@ -219,14 +206,14 @@ class DecoratedSecurityCheckerDescriptor(object):
             return self
         else:
             proxied_object = getProxiedObject(inst)
-            if type(proxied_object) is Proxy:
+            if isinstance(proxied_object, Proxy):
                 checker = getChecker(proxied_object)
             else:
-                checker = getattr(proxied_object, '__Security_checker__', None)
-                if checker is None:
-                    checker = selectChecker(proxied_object)
+                checker = queryChecker(proxied_object)
+
             wrapper_checker = selectChecker(inst)
-            if wrapper_checker is None:
+            if wrapper_checker is defaultChecker:
+                # optimization
                 return checker
             elif checker is None:
                 return wrapper_checker

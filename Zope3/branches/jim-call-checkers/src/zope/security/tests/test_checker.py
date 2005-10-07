@@ -32,6 +32,7 @@ from zope.security.checker import defineChecker, ProxyFactory
 from zope.security.checker import canWrite, canAccess
 from zope.security.proxy import Proxy
 import types, pickle
+from zope.testing import doctest
 
 class SecurityPolicy(object):
     implements(ISecurityPolicy)
@@ -349,8 +350,8 @@ class Test(TestCase, CleanUp):
 
         proxy = ProxyFactory(obj)
         self.assert_(type(proxy) is Proxy)
-        from zope.security.checker import _defaultChecker
-        self.assert_(getChecker(proxy) is _defaultChecker)
+        from zope.security.checker import defaultChecker
+        self.assert_(getChecker(proxy) is defaultChecker)
 
         defineChecker(SomeClass, checker)
 
@@ -544,6 +545,7 @@ def test_suite():
         makeSuite(Test),
         makeSuite(TestCheckerPublic),
         makeSuite(TestCombinedChecker),
+        doctest.DocTestSuite('zope.security.checker')
         ))
 
 if __name__=='__main__':

@@ -25,7 +25,7 @@ from zope.security.checker import ProxyFactory
 from zope.security.management import system_user, newInteraction
 from zope.app.testing import setup
 from zope.app.schema.wrapper import Struct
-from zope.security.checker import getChecker, _defaultChecker
+from zope.security.checker import getChecker, defaultChecker
 import zope.app.schema.tests
 
 
@@ -62,8 +62,8 @@ class FieldPermissions(unittest.TestCase):
         f2 = Struct(f2)
         f2 = ProxyFactory(f2)
         self.assertEquals(getChecker(f1), getChecker(f2))
-        self.failIf(getChecker(f1) is _defaultChecker)
-        self.failIf(getChecker(f2) is _defaultChecker)
+        self.failIf(getChecker(f1) is defaultChecker)
+        self.failIf(getChecker(f2) is defaultChecker)
 
     def tearDown(self):
         setup.placefulTearDown()
