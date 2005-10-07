@@ -180,7 +180,8 @@ class Checker(object):
 
     def permission_id(self, name):
         'See INameBasedChecker'
-        return self.get_permissions.get(name)
+        if self.get_permissions:
+            return self.get_permissions.get(name)
 
     def setattr_permission_id(self, name):
         'See INameBasedChecker'
