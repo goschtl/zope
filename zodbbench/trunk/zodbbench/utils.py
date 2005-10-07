@@ -122,8 +122,9 @@ class BenchBase(object):
         print "ZODB:", ZODB.__version__
         print "     ", os.path.dirname(os.path.dirname(ZODB.__file__))
 
-        version = sys.version.replace("\n", "        \n")
+        version = sys.version.replace("\n", "\n        ")
         print "Python:", version
         print "       ", sys.executable
+        print "       ", sys.platform
 
         print msg
