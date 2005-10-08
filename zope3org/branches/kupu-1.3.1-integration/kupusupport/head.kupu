@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<kupu:feature
+    name="head"
+    implementation="zope3isar"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    >
+
+  <kupu:part name="meta" />
+
+  <kupu:part name="styles">
+    <link rel="stylesheet" type="text/css" href="kupustyles.css"
+          tal:attributes="href string:${context/++resource++kupustyles.css}" />
+  </kupu:part>
+
+  <kupu:part name="jsincludes">
+    <script type="text/javascript" src="#"
+	    tal:attributes="src string:${context/++resource++common/sarissa.js}"> </script>
+	<script type="text/javascript" src="#"
+	    tal:attributes="src string:${context/++resource++common/kupuhelpers.js}"> </script>
+	<script type="text/javascript" src="#"
+	    tal:attributes="src string:${context/++resource++common/kupueditor.js}"> </script>
+	<script type="text/javascript" src="#"
+	    tal:attributes="src string:${context/++resource++common/kupubasetools.js}"> </script>
+	<script type="text/javascript" src="#"
+	    tal:attributes="src string:${context/++resource++common/kupuloggers.js}"> </script>
+	<script type="text/javascript" src="#"
+	    tal:attributes="src string:${context/++resource++common/kupucontentfilters.js}"> </script>
+  </kupu:part>
+  <kupu:part name="bootstrap-editor">
+	<script type="text/javascript" src="#"
+	    tal:attributes="src string:${context/++resource++common/kupuinit.js}"> </script>
+	<script type="text/javascript" src="#"
+	    tal:attributes="src string:${context/++resource++common/kupustart.js}"> </script>
+  </kupu:part>
+</kupu:feature>

@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<libraries xmlns:tal="http://xml.zope.org/namespaces/tal">
+  <library id="global_images">
+    <uri>++resource++imagelibrary1.xml</uri>
+    <title>Global Images</title>
+    <src>++resource++imagelibrary1.xml</src>
+    <icon>++resource++kupuimages/kupulibrary.png</icon>
+  </library>
+  <library id="contained_imgages">
+    <uri tal:content="string:${context/@@absolute_url}/@@imagelibrary.xml">@@images.xml</uri>
+    <title>Contained Images</title>
+    <src tal:content="string:${context/@@absolute_url}/@@imagelibrary.xml">@@images.xml</src>
+    <icon>++resource++kupuimages/kupulibrary.png</icon>
+  </library>
+</libraries>

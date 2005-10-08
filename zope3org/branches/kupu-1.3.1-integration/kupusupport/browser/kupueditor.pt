@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/@@standard_macros/view">
+
+  <head>
+    <title>Kupu Editor template</title>
+		<metal:block fill-slot="headers">
+      <tal:var condition="not: body_onload | nothing" >
+        <tal:block define="global body_onload string:" />
+      </tal:var>
+      <tal:var define="startkupujs string:kupu = startKupu(); 
+                       global body_onload python: startkupujs + ';; ' + body_onload" />
+      <metal:macro use-macro="view/head"></metal:macro>
+    </metal:block>
+  </head>
+
+  <body onload="kupu = startKupu();">
+    <div xmlns:metal="http://xml.zope.org/namespaces/metal" metal:fill-slot="body">
+      <h1>Kupu Editor</h1>
+      <form action="" method="POST" tal:attributes="action string:${context/@@absolute_url}/@@update.html">
+          <!-- include the xmlconfig -->
+          <metal:macro use-macro="view/xmlconfig">
+            <metal:slot fill-slot="dst"><tal:block replace="string:${context/@@absolute_url}/@@kupuconent.html" /></metal:slot>
+          </metal:macro>
+    
+          <!-- include the fulleditor -->
+          <metal:macro use-macro="view/fulleditor"></metal:macro>
+      </form>
+    </div>
+  </body>
+
+</html>

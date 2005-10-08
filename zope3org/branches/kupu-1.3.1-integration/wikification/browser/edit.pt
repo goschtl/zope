@@ -1,0 +1,89 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      >
+
+  <head>
+    <title>Kupu Editor</title>
+  <!--  <metal:block fill-slot="headers">
+      <tal:var condition="not: body_onload | nothing" >
+        <tal:block define="global body_onload string:" />
+      </tal:var>
+      <tal:var define="startkupujs string:kupu = startKupu(); 
+                       global body_onload python: startkupujs + ';; ' + body_onload" />
+      
+    </metal:block> -->
+    
+    
+        <tal:var condition="not: body_onload | nothing" >
+        <tal:block define="global body_onload string:" />
+      </tal:var>
+      <tal:var define="startkupujs string:kupu = startKupu(); 
+                       global body_onload python: startkupujs + ';; ' + body_onload" />
+ 
+ 
+  </head>
+
+  <body onload="kupu = startKupu();">
+  
+    <h2>Edit</h2>
+	 
+	 
+	     <form action="" method="POST" tal:attributes="action string:${context/@@absolute_url}/@@update.html">
+          <!-- include the xmlconfig -->
+          
+          <input id="path" name="path" type="hidden" value="" 
+	           tal:attributes="value request/path"/>
+        
+          <tal:block replace="string:${context/@@absolute_url}/@@kupuconent.html" />
+          
+          <!--
+          
+          <metal:macro use-macro="view/xmlconfig">
+            <metal:slot fill-slot="dst"><tal:block replace="string:${context/@@absolute_url}/@@kupuconent.html" /></metal:slot>
+          </metal:macro>
+          --> 
+          <!-- include the fulleditor 
+          <metal:macro use-macro="view/fulleditor"></metal:macro> -->
+      </form>
+      
+<!-- 
+	<form method="post"
+	       enctype="multipart/form-data"
+	       action="saveText">
+	     
+	    <input id="path" name="path" type="hidden" value="" 
+	           tal:attributes="value request/path"/>
+			
+			
+    
+      
+    
+		<table>
+			
+			<tr>
+				<td valign="top" class="form-title">
+					Abstract: 
+				</td>
+				<td>
+					<textarea id="text" name="body"
+					               tal:content="view/body" 
+					               cols="60" rows="40" value="123"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;		
+				</td>
+				<td bgcolor="#CCCCCC">
+					<input name="entry_submit" type="submit" value="Submit">
+					<input name="cancel_submit" type="reset" value="Cancel"/>
+				</td>
+			</tr>
+		</table>
+	</form>
+	
+-->
+	
+    </body>
+</html>

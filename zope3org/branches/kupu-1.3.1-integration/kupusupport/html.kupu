@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<kupu:feature
+    name="html"
+    implementation="zope3isar"
+    xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    >
+  <kupu:part name="html">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <kupu:define-slot name="html" />
+    </html>
+  </kupu:part>
+</kupu:feature>

@@ -1,0 +1,33 @@
+<macros>
+
+  <div id="breadcrumbs"
+       metal:define-macro="breadcrumbs">
+    breadcrumbs
+  </div>
+
+  <h1 id="main-header"
+       metal:define-macro="main_header">
+    main header
+  </h1>
+
+  <div id="actions"
+       metal:define-macro="actions">
+   actions 
+  </div>
+
+  <div id="main-body"
+       metal:define-macro="main_body">
+    
+  </div>
+
+  <div id="navtree"
+       metal:define-macro="navtree">
+   navtree 
+  </div>
+
+  <div id="layout-footer"
+       metal:define-macro="layout_footer">
+    layout-footer 
+  </div>
+
+</macros>

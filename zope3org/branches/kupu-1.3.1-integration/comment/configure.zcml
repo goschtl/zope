@@ -1,0 +1,44 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  i18n_domain="zope">
+
+  <!-- comment -->
+  <content class=".comments.Comment">
+    <factory id="comment.interfaces.IComment" />
+    <implements 
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="zope.Public"
+        interface=".IComment"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".IComment"
+        />
+  </content>
+
+
+  <!-- comments -->
+  <class class=".comments.CommentsForAnnotableComments">
+    <factory id="comment.interfaces.IComments" />
+    <require
+        permission="zope.Public"
+        interface=".IReadComments"
+        />
+    <require
+        permission="zope.View"
+        interface=".IDeleteComments"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".IComment"
+        />
+  </class>
+
+  <adapter
+      provides=".IComments"
+      factory=".comments.CommentsForAnnotableComments"
+      trusted="True" />
+
+</configure>

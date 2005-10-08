@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<collection xmlns:tal="http://xml.zope.org/namespaces/tal">
+    <uri tal:content="string:${context/@@absolute_url}/@@imagelibrary.xml">/++resource++imagelibrary1.xml</uri>
+    <icon>/++resource++kupuimages/kupulibrary.png</icon>
+    <title>Portal Root</title>
+    <src tal:content="string:${context/@@absolute_url}/@@imagelibrary.xml">/++resource++imagelibrary1.xml</src>
+    <items>
+        <collection tal:repeat="library view/libraryInfos" id="http://zea.zope-europe.org/oxm5r3/Members" tal:attributes="id library/name">
+            <uri tal:content="library/url">http://zea.zope-europe.org/oxm5r3/Members</uri>
+            <icon>++resource++kupuimages/folder.png</icon>
+            <title tal:content="library/title">Members</title>
+            <description tal:content="library/description">Container for portal members' home directories</description>
+            <src tal:content="string: ${library/url}/@@imagelibrary.xml">http://zea.zope-europe.org/oxm5r3/Members/kupucollection.xml?resource_type=mediaobject</src>
+        </collection>
+        <resource tal:repeat="image view/imageInfos" id="bold.png" tal:attributes="id image/name">
+            <uri tal:content="image/url">++resource++kupuimages/bold.png</uri>
+            <title tal:content="image/title">Bold</title>
+            <description tal:content="image/description">Bold button</description>
+            <size tal:content="string:${image/size}Kb">2.1Kb</size>
+            <height tal:content="image/height">20</height>
+            <width tal:content="image/width">20</width>
+            <icon>++resource++kupuimages/image.gif</icon>
+        </resource>
+    </items>
+</collection>

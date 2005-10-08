@@ -1,0 +1,49 @@
+<configure 
+   xmlns="http://namespaces.zope.org/browser"
+   xmlns:zope="http://namespaces.zope.org/zope"
+   >
+
+    <page		
+      name="wiki"
+      for="zope.app.folder.interfaces.IFolder"
+      class="wikification.browser.wikipage.WikiContainerPage"
+      attribute="wiki"
+      permission="zope.View" />
+
+    <page		
+      name="wiki"
+      for="zope.app.file.interfaces.IFile"
+      class="wikification.browser.wikipage.WikiFilePage"
+      attribute="wiki"
+      permission="zope.View" />
+
+
+    <page		
+      name="editPage"
+      for="zope.app.file.interfaces.IFile"
+      class="wikification.browser.wikipage.EditWikiPage"
+      template="edit.pt"
+      permission="zope.ManageContent" />
+    
+    <page		
+      name="createPage"
+      for="zope.app.folder.interfaces.IFolder"
+      class="wikification.browser.wikipage.CreateWikiPage"
+      template="edit.pt"
+      permission="zope.ManageContent" />
+
+    <page		
+      name="saveText"
+      for="zope.app.folder.interfaces.IFolder"
+      class="wikification.browser.wikipage.CreateWikiPage"
+      attribute="saveText"
+      permission="zope.ManageContent" />
+
+    <page		
+      name="saveText"
+      for="zope.app.file.interfaces.IFile"
+      class="wikification.browser.wikipage.EditWikiPage"
+      attribute="saveText"
+      permission="zope.ManageContent" />
+      
+</configure>
