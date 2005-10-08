@@ -24,24 +24,24 @@ from zope.testing import doctest
 from zope.testing.doctestunit import DocTestSuite, DocFileSuite
 from zope.app.testing import setup
 
-from zope.contentprovider.interfaces import IRegion
+#from zope.contentprovider.interfaces import IRegion
 
 
-class TestPortlet(object):
-
-    def doSomething(self):
-        return u'something'
-
-
-class TestPortlet2(object):
-
-    def __call__(self):
-        return u'called'
-
-
-class ITestRegion(zope.interface.Interface):
-    """A region for testing purposes."""
-zope.interface.directlyProvides(ITestRegion, IRegion)
+#class TestPortlet(object):
+#
+#    def doSomething(self):
+#        return u'something'
+#
+#
+#class TestPortlet2(object):
+#
+#    def __call__(self):
+#        return u'called'
+#
+#
+#class ITestRegion(zope.interface.Interface):
+#    """A region for testing purposes."""
+#zope.interface.directlyProvides(ITestRegion, IRegion)
 
 
 class TestParticipation(object):
@@ -65,14 +65,15 @@ def tearDown(test):
 
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite('../README.txt',
-                     setUp=setUp, tearDown=tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                     ),
-         DocFileSuite('../directives.txt',
-                      setUp=setUp, tearDown=tearDown,
-                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                      ),
+        DocTestSuite('zope.portlet.namespace'),
+#        DocFileSuite('../README.txt',
+#                     setUp=setUp, tearDown=tearDown,
+#                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+#                     ),
+#         DocFileSuite('../directives.txt',
+#                      setUp=setUp, tearDown=tearDown,
+#                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+#                      ),
         ))
 
 if __name__ == '__main__':

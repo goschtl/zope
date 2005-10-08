@@ -1,0 +1,16 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="tiks">
+
+  <!-- ++view++ namespace is used as a hook for IControllable objects -->
+  <view
+      name="portlet"
+      type="*"
+      for="*"
+      provides="zope.app.traversing.interfaces.ITraversable"
+      factory=".namespace.portlet"
+      />
+
+  <include package=".browser" />
+
+</configure>
