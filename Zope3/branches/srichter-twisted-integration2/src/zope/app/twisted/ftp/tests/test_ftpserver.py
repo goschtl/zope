@@ -22,7 +22,7 @@ def test_suite():
     return TestSuite((
         doctest.DocTestSuite('zope.app.twisted.ftp.server'),
         doctest.DocTestSuite('zope.app.twisted.ftp.utils'),
-        doctest.DocTestSuite('zope.app.twisted.ftp.sftpserver'),
+        ## doctest.DocTestSuite('zope.app.twisted.ftp.sftpserver'),
         ))
 
 if __name__=='__main__':
