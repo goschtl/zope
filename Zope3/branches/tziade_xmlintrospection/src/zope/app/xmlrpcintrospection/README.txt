@@ -155,7 +155,55 @@ And call our xmlrpc method, that should list the content method:
   </methodResponse>
   <BLANKLINE>
 
+Let's try to add another method, to se if it gets listed...
 
-
+  >>> class FolderListing2:
+  ...     def contents2(self):
+  ...         return list(self.context.keys())
+  >>> from zope.configuration import xmlconfig
+  >>> ignored = xmlconfig.string("""
+  ... <configure
+  ...     xmlns="http://namespaces.zope.org/zope"
+  ...     xmlns:xmlrpc="http://namespaces.zope.org/xmlrpc"
+  ...     >
+  ...   <!-- We only need to do this include in this example,
+  ...        Normally the include has already been done for us. -->
+  ...   <include package="zope.app.publisher.xmlrpc" file="meta.zcml" />
+  ...
+  ...   <xmlrpc:view
+  ...       for="zope.app.folder.folder.IFolder"
+  ...       methods="contents2"
+  ...       class="zope.app.xmlrpcintrospection.README.FolderListing2"
+  ...       permission="zope.ManageContent"
+  ...       />
+  ... </configure>
+  ... """)
+  >>> print http(r"""
+  ... POST / HTTP/1.0
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>listAllMethods</methodName>
+  ... <params>
+  ... </params>
+  ... </methodCall>
+  ... """, handle_errors=False)
+  HTTP/1.0 200 Ok
+  Content-Length: ...
+  Content-Type: text/xml...
+  <BLANKLINE>
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><array><data>
+  <value><string>contents</string></value>
+  <value><string>contents2</string></value>
+  </data></array></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
 
 

@@ -46,6 +46,7 @@ class XMLRPCIntrospection(object):
                 if result not in adapter_registrations:
                     adapter_registrations.append(result)
 
+        adapter_registrations.sort()
         return adapter_registrations
 
     def listAllMethods(self):
