@@ -14,9 +14,9 @@ Getting Started
 
   >>> from zope.app.testing import ztapi
   >>> from zope.app import zapi
-  >>> from zope.interface import implements
-  >>> from zope.interface import providedBy
-  
+  >>> from zope.interface import implements, directlyProvides
+
+  >>> from zope.contentprovider.interfaces import IContentProviderType
   >>> from zope.portlet.interfaces import IStateHandler
   >>> from zope.portlet.interfaces import IPortlet
 
@@ -31,12 +31,12 @@ transiently in itself.
   ...         self.states = {}
   ...
   ...     def setState(self, state, name):
-  ...         cpType = list(providedBy(self.context))[0]
+  ...         cpType = zapi.queryType(self.context, IContentProviderType)
   ...         cpTypeName = cpType.__module__ + '.' + cpType.__name__
   ...         self.states[cpTypeName + '/' + name] = state
   ...
   ...     def getState(self, name):
-  ...         cpType = list(providedBy(self.context))[0]
+  ...         cpType = zapi.queryType(self.context, IContentProviderType)
   ...         cpTypeName = cpType.__module__ + '.' + cpType.__name__
   ...         return self.states[cpTypeName + '/' + name]
 
@@ -50,6 +50,11 @@ content provider type.
 
   >>> class ISpecialPortlet(IPortlet):
   ...     pass
+
+Our content provider must be of IContentProviderType so it can recognized
+during adapter lookup:
+  
+  >>> directlyProvides(ISpecialPortlet, IContentProviderType)
 
   >>> class Portlet(object):
   ...     implements(ISpecialPortlet)
@@ -67,4 +72,11 @@ Now we can retrieve the state again:
   >>> handler.getState(name='dummy.portlet')
   'visible'
   
-  
+
+Use preferences for portlat state storage
+-----------------------------------------
+
+  >>> from zope.portlet.statehandler import PreferencesStateHandler
+  >>> ztapi.provideAdapter(IPortlet, IStateHandler, PreferencesStateHandler)
+
+

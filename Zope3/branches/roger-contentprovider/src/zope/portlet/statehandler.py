@@ -23,16 +23,16 @@ from zope.portlet import interfaces
 
 
 
-class PreferenceStateHandler(object):
+class PreferencesStateHandler(object):
     """State handler based on preferences."""
 
-    implements(interfaces.IStateHandler)
+    zope.interface.implements(interfaces.IStateHandler)
 
     def __init__(self, context):
         self.context = context
         self.preferences = None
 
-    def setState(self, name, value):
+    def setState(self, value, name):
         """xxx"""
         # self.preferences.portletmanager.%s.state = %s % (portletname, name)
 
