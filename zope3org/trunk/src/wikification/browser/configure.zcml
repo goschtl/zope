@@ -3,7 +3,6 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    >
 
-
     <page		
       name="wiki"
       for="zope.app.folder.interfaces.IFolder"
