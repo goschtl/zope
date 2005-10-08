@@ -4,6 +4,12 @@
   <meta:directives namespace="http://namespaces.zope.org/browser">
 
     <meta:directive
+        name="portletManager"
+        schema=".metadirectives.IPortletManagerDirective"
+        handler=".metaconfigure.portletManagerDirective"
+        />
+
+    <meta:directive
         name="portlet"
         schema=".metadirectives.IPortletDirective"
         handler=".metaconfigure.portletDirective"
