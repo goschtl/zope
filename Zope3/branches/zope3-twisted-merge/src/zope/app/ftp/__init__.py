@@ -21,6 +21,7 @@ __docformat__ = 'restructuredtext'
 from zope.interface import implements
 from zope.component import queryAdapter
 from zope.publisher.interfaces.ftp import IFTPPublisher
+from zope.security.proxy import removeSecurityProxy
 
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.filerepresentation.interfaces import IReadDirectory
@@ -121,7 +122,8 @@ class FTPView(object):
         return self._lsinfo(name, self._dir[name])
 
     def _mtime(self, file):
-        dc = IZopeDublinCore(file, None)
+        ## Getting the modification time is not a big security hole
+        dc = IZopeDublinCore(removeSecurityProxy(file), None)
         if dc is not None:
             return dc.modified
 

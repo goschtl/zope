@@ -16,6 +16,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from xml.dom import minidom
+from xml.parsers import expat
 from zope.schema import getFieldNamesInOrder, getFields
 from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
@@ -52,13 +53,16 @@ class PROPFIND(object):
                 _avail_props[ns] = list(oprops.keys())
         self.avail_props = _avail_props
 
+        # The xmldoc attribute will be set later, if needed.
+        self.xmldoc = None
+
     def getDepth(self):
         return self._depth
 
     def setDepth(self, depth):
         self._depth = depth.lower()
 
-    def PROPFIND(self):
+    def PROPFIND(self, xmldoc=None):
         if self.content_type not in ['text/xml', 'application/xml']:
             self.request.response.setStatus(400)
             return ''
@@ -70,11 +74,14 @@ class PROPFIND(object):
         if IReadContainer.providedBy(self.context):
             resource_url += '/'
 
-        self.request.bodyFile.seek(0, 2)
-        size = self.request.bodyFile.tell()
-        self.request.bodyFile.seek(0)
+        if xmldoc is None:
+            try:
+                xmldoc = minidom.parse(self.request.bodyStream)
+            except expat.ExpatError:
+                pass
 
-        xmldoc = size and minidom.parse(self.request.bodyFile) or None
+        self.xmldoc = xmldoc
+            
         resp = minidom.Document()
         ms = resp.createElement('multistatus')
         ms.setAttribute('xmlns', self.default_ns)
@@ -84,7 +91,8 @@ class PROPFIND(object):
         ms.lastChild.lastChild.appendChild(resp.createTextNode(resource_url))
 
         if xmldoc is not None:
-            propname = xmldoc.getElementsByTagNameNS(self.default_ns, 'propname')
+            propname = xmldoc.getElementsByTagNameNS(
+                self.default_ns, 'propname')
             if propname:
                 self._handlePropname(resp)
             else:
@@ -111,7 +119,7 @@ class PROPFIND(object):
             if pfind is None:
                 continue
             pfind.setDepth(subdepth)
-            value = pfind.PROPFIND()
+            value = pfind.PROPFIND(self.xmldoc)
             parsed = minidom.parseString(value)
             responses = parsed.getElementsByTagNameNS(
                 self.default_ns, 'response')

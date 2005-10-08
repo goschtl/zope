@@ -122,6 +122,9 @@ def bootstraptearDown(test):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestBootstrapSubscriber))
+    suite.addTest(doctest.DocTestSuite(
+        'zope.app.appsetup.appsetup',
+        setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown))
     suite.addTest(doctest.DocFileSuite(
         'bootstrap.txt',
         setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,

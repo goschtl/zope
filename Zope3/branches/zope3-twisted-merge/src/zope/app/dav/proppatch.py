@@ -63,8 +63,7 @@ class PROPPATCH(object):
         if IReadContainer.providedBy(self.context):
             resource_url += '/'
 
-        self.request.bodyFile.seek(0)
-        xmldoc = minidom.parse(self.request.bodyFile)
+        xmldoc = minidom.parse(self.request.bodyStream)
         resp = minidom.Document()
         ms = resp.createElement('multistatus')
         ms.setAttribute('xmlns', self.default_ns)
