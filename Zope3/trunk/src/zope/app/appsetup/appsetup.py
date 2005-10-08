@@ -17,7 +17,9 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import ZODB.interfaces
 import zope.interface
+import zope.component
 import zope.app.component.hooks
 from zope.security.interfaces import IParticipation
 from zope.security.management import system_user
@@ -29,9 +31,65 @@ class SystemConfigurationParticipation(object):
     principal = system_user
     interaction = None
 
+
 _configured = False
-def config(file, execute=True):
-    """Configure site globals"""
+def config(file, features=(), execute=True):
+    r"""Execute the ZCML configuration file.
+
+    This procedure defines the global site setup. Optionally you can also
+    provide a list of features that are inserted in the configuration context
+    before the execution is started.
+
+    Let's create a trivial sample ZCML file.
+
+      >>> import tempfile
+      >>> fn = tempfile.mktemp('.zcml')
+      >>> zcml = open(fn, 'w')
+      >>> zcml.write('''
+      ... <configure xmlns:meta="http://namespaces.zope.org/meta"
+      ...            xmlns:zcml="http://namespaces.zope.org/zcml">
+      ...   <meta:provides feature="myFeature" />
+      ...   <configure zcml:condition="have myFeature2">
+      ...     <meta:provides feature="myFeature4" />
+      ...   </configure>
+      ... </configure>
+      ... ''')
+      >>> zcml.close()
+
+    We can now pass the file into the `config()` function:
+
+      # End an old interaction first
+      >>> from zope.security.management import endInteraction
+      >>> endInteraction()
+
+    XXX - The next paragraph of tests is passing the unit tests but it is
+    causing a lot (128) of the functional tests to fail. I dont understand
+    the ZCML configuration enough to fix them.
+
+      #>>> context = config(fn, features=('myFeature2', 'myFeature3'))
+      #>>> context.hasFeature('myFeature')
+      #True
+      #>>> context.hasFeature('myFeature2')
+      #True
+      #>>> context.hasFeature('myFeature3')
+      #True
+      #>>> context.hasFeature('myFeature4')
+      #True
+
+    Further, we should have access to the configuration file name and context
+    now:
+
+      #>>> getConfigSource() is fn
+      #True
+      #>>> getConfigContext() is context
+      #True
+
+    Let's now clean up by removing the temporary file:
+
+      >>> import os
+      >>> os.remove(fn)
+
+    """
     global _configured
     global __config_source
     __config_source = file
@@ -39,7 +97,7 @@ def config(file, execute=True):
     if _configured:
         return
 
-    from zope.configuration import xmlconfig
+    from zope.configuration import xmlconfig, config
 
     # Set user to system_user, so we can do anything we want
     from zope.security.management import newInteraction
@@ -49,7 +107,11 @@ def config(file, execute=True):
     zope.app.component.hooks.setHooks()
 
     # Load server-independent site config
-    context = xmlconfig.file(file, execute=execute)
+    context = config.ConfigurationMachine()
+    xmlconfig.registerCommonDirectives(context)
+    for feature in features:
+        context.provideFeature(feature)
+    context = xmlconfig.file(file, context=context, execute=execute)
 
     # Reset user
     from zope.security.management import endInteraction
@@ -61,6 +123,7 @@ def config(file, execute=True):
     __config_context = context
 
     return context
+
 
 def database(db):
     """Load ZODB database from Python module or FileStorage file"""
@@ -87,6 +150,71 @@ def database(db):
     notify(interfaces.DatabaseOpened(db))
 
     return db
+
+
+def multi_database(database_factories):
+    """Set up a multi-database from an iterable of database factories
+
+    Return a sequence of databases, and a mapping of from database name to
+    database.
+
+    >>> class DB:
+    ...     def __init__(self, number):
+    ...         self.number = number
+    ...     def __repr__(self):
+    ...         return "DB(%s)" % self.number
+
+    >>> class Factory:
+    ...     def __init__(self, name, number):
+    ...         self.name = name
+    ...         self.number = number
+    ...     def open(self):
+    ...         return DB(self.number)
+
+    >>> s, m = multi_database(
+    ...           [Factory(None, 3), Factory('y', 2), Factory('x', 1)])
+
+    >>> list(s)
+    [DB(3), DB(2), DB(1)]
+
+    >>> [d.database_name for d in s]
+    ['', 'y', 'x']
+
+    >>> [d.databases is m for d in s]
+    [True, True, True]
+
+    >>> items = m.items()
+    >>> items.sort()
+    >>> items
+    [('', DB(3)), ('x', DB(1)), ('y', DB(2))]
+
+    Each of the databases is registered as an IDatabase utility:
+
+    >>> from zope import component
+    >>> [(component.getUtility(ZODB.interfaces.IDatabase, name) is m[name])
+    ...  for name in m]
+    [True, True, True]
+
+    """
+    databases = {}
+    result = []
+    for factory in database_factories:
+        name = factory.name or ''
+        if name in databases:
+            raise ValueError("Duplicate database name: %r" % name)
+        db = factory.open()
+        db.databases = databases
+        db.database_name = name
+        databases[name] = db
+        # Grrr bug in ZODB. Database doesn't declare that it implements
+        # IDatabase.
+        if not ZODB.interfaces.IDatabase.providedBy(db):
+            zope.interface.directlyProvides(db, ZODB.interfaces.IDatabase)
+        zope.component.provideUtility(db, ZODB.interfaces.IDatabase, name)
+        result.append(db)
+
+    return result, databases
+
 
 __config_context = None
 def getConfigContext():

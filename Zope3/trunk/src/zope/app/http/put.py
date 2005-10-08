@@ -53,7 +53,7 @@ class NullPUT(object):
                 request.response.setStatus(501)
                 return ''
 
-        body = request.bodyFile
+        body = request.bodyStream
         name = self.context.name
         container = self.context.container
 
@@ -102,7 +102,7 @@ class FilePUT(object):
                 request.response.setStatus(501)
                 return ''
 
-        body = self.request.bodyFile
+        body = self.request.bodyStream
         file = self.context
         adapter = IWriteFile(file)
 
