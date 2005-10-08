@@ -28,6 +28,25 @@ class IPortlet(zope.viewlet.interfaces.IViewlet):
        may be be changed on user interaction.
     """
 
+
 class IPortletManager(zope.interface.Interface):
     """A portlet manager provides one or more portlets.
     """
+
+
+class IStateHandler(zope.interface.Interface):
+    """An adapter responsible for storing the states of portlets.
+    """
+
+    def setState(state, name):
+        """Set the state of the portlet; the name parameter is the name
+           of the portlet in the portlet manager.
+        """
+
+    def getState(name):
+        """Return the state of the portlet; the name parameter is the name
+           of the portlet in the portlet manager.
+        """
+
+
+        

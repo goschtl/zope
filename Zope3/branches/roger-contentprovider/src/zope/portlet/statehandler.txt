@@ -1,0 +1,70 @@
+=====================
+Portlet Statehandlers
+=====================
+
+A state handler is an adapter to portlets that is responsible
+for keeping track of the portlets' states.
+
+It depends on the implementation of the state handler where and how
+the state is stored.
+
+
+Getting Started
+---------------
+
+  >>> from zope.app.testing import ztapi
+  >>> from zope.app import zapi
+  >>> from zope.interface import implements
+  >>> from zope.interface import providedBy
+  
+  >>> from zope.portlet.interfaces import IStateHandler
+  >>> from zope.portlet.interfaces import IPortlet
+
+Let's start with a simple dummy state handler that stores the state
+transiently in itself.
+  
+  >>> class SimpleStateHandler(object):
+  ...     implements(IStateHandler)
+  ...
+  ...     def __init__(self, context):
+  ...         self.context = context
+  ...         self.states = {}
+  ...
+  ...     def setState(self, state, name):
+  ...         cpType = list(providedBy(self.context))[0]
+  ...         cpTypeName = cpType.__module__ + '.' + cpType.__name__
+  ...         self.states[cpTypeName + '/' + name] = state
+  ...
+  ...     def getState(self, name):
+  ...         cpType = list(providedBy(self.context))[0]
+  ...         cpTypeName = cpType.__module__ + '.' + cpType.__name__
+  ...         return self.states[cpTypeName + '/' + name]
+
+We register the state handler as an adapter.
+
+  >>> ztapi.provideAdapter(IPortlet, IStateHandler, SimpleStateHandler)
+
+In addition we need a portlet that wants to store its state in the state
+handler. We provide the portlet with an interface thats specifies itself
+content provider type.
+
+  >>> class ISpecialPortlet(IPortlet):
+  ...     pass
+
+  >>> class Portlet(object):
+  ...     implements(ISpecialPortlet)
+
+  >>> portlet = Portlet()
+
+Now we can retrieve a state handler and store the state for the portlet;
+note that we have to provide the name of the portlet in the portlet manager.
+
+  >>> handler = zapi.getAdapter(portlet, IStateHandler)
+  >>> handler.setState('visible', name='dummy.portlet')
+
+Now we can retrieve the state again:
+
+  >>> handler.getState(name='dummy.portlet')
+  'visible'
+  
+  
