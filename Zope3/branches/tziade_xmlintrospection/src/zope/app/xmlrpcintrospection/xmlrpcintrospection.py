@@ -20,29 +20,43 @@ __docformat__ = 'restructuredtext'
 from zope.interface import providedBy
 from zope.publisher.interfaces.xmlrpc import IXMLRPCRequest
 from zope.app.publisher.xmlrpc import XMLRPCView
-from zope.app.apidoc.presentation import getViews, filterViewRegistrations,\
-                                         SPECIFIC_INTERFACE_LEVEL
+from zope.app.apidoc.presentation import getViews, filterViewRegistrations
 
-class XMLRPCIntrospection(XMLRPCView):
+class XMLRPCIntrospection(object):
 
-    def _getXMLRPCViews(self):
+    _reserved_method_names = (u'', u'listAllMethods', u'methodHelp',
+                              u'methodSignature')
+
+    def _filterXMLRPCRequestRegistrations(self, registrations):
+        for registration in registrations:
+            for required_iface in registration.required:
+                if (required_iface is IXMLRPCRequest and
+                    registration.name.strip() not in
+                    self._reserved_method_names):
+                    yield registration.name
+
+    def _getXMLRPCMethods(self):
         adapter_registrations = []
         interfaces = list(providedBy(self.context))
 
         for interface in interfaces:
-            registrations = list(getView(interface, IXMLRPCRequest))
-            results = filterViewRegistrations(registrations,IXMLRPCRequest,
-                                              level=SPECIFIC_INTERFACE_LEVEL)
-            adapter_registrations.append(list(results))
+            registrations = list(getViews(interface, IXMLRPCRequest))
+            results = list(self._filterXMLRPCRequestRegistrations(registrations))
+            for result in results:
+                if result not in adapter_registrations:
+                    adapter_registrations.append(result)
 
         return adapter_registrations
 
     def listAllMethods(self):
-        return []
+        return self._getXMLRPCMethods()
 
     def methodHelp(self, method_name):
         pass
 
     def methodSignature(self, method_name):
         pass
+
+    def __call__(self, *args, **kw):
+        return self.listAllMethods()
 

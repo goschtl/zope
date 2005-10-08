@@ -116,8 +116,9 @@ the introspection api.
   ...   <include package="zope.app.publisher.xmlrpc" file="meta.zcml" />
   ...   <xmlrpc:view
   ...     for="zope.interface.Interface"
-  ...     methods="listAllMethods methodHelp methodSignature"
+  ...     methods="listAllMethods  methodHelp methodSignature"
   ...     class="zope.app.xmlrpcintrospection.xmlrpcintrospection.XMLRPCIntrospection"
+  ...     permission="zope.Public"
   ...     />
   ... </configure>
   ... """)
@@ -125,12 +126,10 @@ the introspection api.
 They are linked to XMLRPCIntrospection class, that actually
  knows how to lookup to all interfaces
 
-And call our xmlrpc method:
+And call our xmlrpc method, that should list the content method:
 
   >>> print http(r"""
   ... POST / HTTP/1.0
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 102
   ... Content-Type: text/xml
   ...
   ... <?xml version='1.0'?>
@@ -139,7 +138,24 @@ And call our xmlrpc method:
   ... <params>
   ... </params>
   ... </methodCall>
-  ... """)
-  'in process'
+  ... """, handle_errors=False)
+  HTTP/1.0 200 Ok
+  Content-Length: ...
+  Content-Type: text/xml...
+  <BLANKLINE>
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><array><data>
+  <value><string>contents</string></value>
+  </data></array></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+
+
+
 
 
