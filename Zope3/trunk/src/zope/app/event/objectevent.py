@@ -74,7 +74,7 @@ from zope.app.event.interfaces import IObjectModifiedEvent
 from zope.app.event.interfaces import IObjectCopiedEvent
 from zope.app.event.interfaces import IObjectAnnotationsModifiedEvent
 from zope.app.event.interfaces import IObjectContentModifiedEvent
-from zope.app.event.interfaces import IAttributes
+from zope.app.event.interfaces import IAttributes, ISequence
 from zope.interface import implements
 from zope.event import notify
 from zope.component import subscribers
@@ -89,21 +89,23 @@ _marker = object()
 class ObjectEvent(object):
     """Something has happened to an object"""
 
+
     implements(IObjectEvent)
 
     def __init__(self, object):
         self.object = object
 
+
 class ObjectCreatedEvent(ObjectEvent):
     """An object has been created"""
 
     implements(IObjectCreatedEvent)
-    
-    
+
+
 class Attributes(object) :
     """
     Describes modified attributes of an interface.
-    
+
         >>> from zope.app.dublincore.interfaces import IZopeDublinCore
         >>> desc = Attributes(IZopeDublinCore, "title", "description")
         >>> desc.interface == IZopeDublinCore
@@ -112,19 +114,39 @@ class Attributes(object) :
         True
 
     """
-    
+
     implements(IAttributes)
-    
+
     def __init__(self, interface, *attributes) :
         self.interface = interface
         self.attributes = attributes
+
+
+class Sequence(object) :
+    """
+    Describes modified keys of an interface.
+    
+        >>> from zope.app.container.interfaces import IContainer
+        >>> desc = Sequence(IContainer, 'foo', 'bar')
+        >>> desc.interface == IContainer
+        True
+        >>> desc.keys
+        ('foo', 'bar')
+
+    """
+    
+    implements(ISequence)
+    
+    def __init__(self, interface, *keys) :
+        self.interface = interface
+        self.keys = keys
 
 
 class ObjectModifiedEvent(ObjectEvent):
     """An object has been modified"""
 
     implements(IObjectModifiedEvent)
-    
+
     def __init__(self, object, *descriptions) :
         """
         Init with a list of modification descriptions.
@@ -146,7 +168,7 @@ class ObjectModifiedEvent(ObjectEvent):
 
 def modified(object, *descriptions):
     notify(ObjectModifiedEvent(object, *descriptions))
-    
+
 
 class ObjectCopiedEvent(ObjectCreatedEvent):
     """An object has been copied"""
@@ -161,15 +183,13 @@ def objectEventNotify(event):
         pass # getting them does the work
 
 
-
-
 # BBB:  Can go away in 3.3
 
 class ObjectAnnotationsModifiedEvent(ObjectModifiedEvent):
     """An object's annotations have been modified"""
 
     implements(IObjectAnnotationsModifiedEvent)
-    
+
     def __init__(self, object, deprecated_use=True) :
         super(ObjectAnnotationsModifiedEvent, self).__init__(object)
         if deprecated_use :
@@ -179,7 +199,8 @@ class ObjectAnnotationsModifiedEvent(ObjectModifiedEvent):
                 "and modification descriptors instead."
                 % self.__class__.__name__,
                 DeprecationWarning)
-        
+
+
 def annotationModified(object, deprecated_use=True):
     warnings.warn(
                 "annotationModified is deprecated and will no-longer be "
@@ -189,6 +210,7 @@ def annotationModified(object, deprecated_use=True):
                 DeprecationWarning)
                 
     notify(ObjectAnnotationsModifiedEvent(object, deprecated_use=False))
+
 
 class ObjectContentModifiedEvent(ObjectModifiedEvent):
     """An object's content has been modified"""
@@ -205,6 +227,7 @@ class ObjectContentModifiedEvent(ObjectModifiedEvent):
                 % self.__class__.__name__,
                 DeprecationWarning)
 
+
 def contentModified(object, deprecated_use=True):
     warnings.warn(
                 "contentModified is deprecated and will no-longer be "
@@ -214,5 +237,3 @@ def contentModified(object, deprecated_use=True):
                 DeprecationWarning)
 
     notify(ObjectContentModifiedEvent(object, deprecated_use=False))
-
-

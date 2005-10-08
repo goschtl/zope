@@ -10,6 +10,8 @@ Zope Changes
 
     New features
 
+      - Added modified description for sequence-like interfaces.
+
       - Added a test browser. The test browser simulates a real Web browser as
         much as possible as a Python object. This allows us to write
         functional tests the same way the site would be experienced by the
