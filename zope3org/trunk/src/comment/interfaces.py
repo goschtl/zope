@@ -17,7 +17,7 @@ $Id$
 """
 
 from zope.interface import Interface
-from zope.interface.common.sequence import IFiniteSequence
+from zope.interface.common.mapping import IEnumerableMapping
 
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -31,7 +31,7 @@ class IComment(IFile):
 
 
 
-class IReadComments(IFiniteSequence):
+class IReadComments(IEnumerableMapping):
     """Read a comments of a comment collection."""
 
 
@@ -51,8 +51,8 @@ class IAttributeAnnotableComments(IAnnotableComments, IAttributeAnnotatable):
 class IDeleteComments(Interface):
     """Remove a comment from the comment collection."""
 
-    def __delitem__(index):
-        """x.__delitem__(index) <==> del x[index]
+    def __delitem__(key):
+        """x.__delitem__(key) <==> del x[key]
         
         Declaring this interface does not specify whether __delitem__
         supports slice objects."""
@@ -63,9 +63,24 @@ class IAddComments(Interface):
     """Add a comment to the comment collection."""
 
     def addComment(data, contentType='text/plain'):
-        """Create a new comment and add it to the comment collection."""
+        """Create a new comment and add it to the comment collection.
+
+        Return the key of the added comment.
+        """
 
 
 
-class IComments(IReadComments, IAddComments, IDeleteComments):
+class IEditComments(Interface):
+    """Edit a comment of the comment collection."""
+
+    def editComment(key, data, contentType='text/plain'):
+        """Edit a comment.
+
+        Change only modified parameters.
+        Return a tuple of the changed attributes.
+        """
+
+
+
+class IComments(IReadComments, IAddComments, IEditComments, IDeleteComments):
     """A collection of comments."""

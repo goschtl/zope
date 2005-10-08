@@ -19,7 +19,6 @@ $Id$
 import zope.component
 
 import zope.app.testing.placelesssetup
-from zope.component.factory import Factory
 
 
 
@@ -37,9 +36,9 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
             [IAttributeAnnotatable], IAnnotations)
 
         # comment.comments adapter
-        from comment.comments import CommentsForAnnotatable
+        from comment.comments import CommentsForAnnotableComments
         from comment import IComments
-        zope.component.provideAdapter(CommentsForAnnotatable, provides=IComments)
+        zope.component.provideAdapter(CommentsForAnnotableComments, provides=IComments)
 
     def tearDown(self, test=None):
         super(PlacelessSetup, self).tearDown()

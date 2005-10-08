@@ -18,7 +18,7 @@ $Id$
 
 import unittest
 
-from zope.testing import doctest
+from zope.testing import doctest, doctestunit
 
 from zope.app import zapi
 from zope.app.testing import ztapi
@@ -32,7 +32,8 @@ def test_suite():
         doctest.DocFileSuite('README.txt', 
                                 setUp=placelesssetup.setUp, 
                                 tearDown=placelesssetup.tearDown,
-                                globs={'zapi': zapi, 'ztapi': ztapi,},
+                                globs={'zapi': zapi, 'ztapi': ztapi,
+                                    'pprint': doctestunit.pprint},
                                 optionflags=doctest.NORMALIZE_WHITESPACE+
                                             doctest.ELLIPSIS
                              ),

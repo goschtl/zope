@@ -20,7 +20,7 @@
 
 
   <!-- comments -->
-  <class class=".comments.CommentsForAnnotatable">
+  <class class=".comments.CommentsForAnnotableComments">
     <factory id="comment.interfaces.IComments" />
     <require
         permission="zope.Public"
@@ -38,7 +38,7 @@
 
   <adapter
       provides=".IComments"
-      factory=".comments.CommentsForAnnotatable"
+      factory=".comments.CommentsForAnnotableComments"
       trusted="True" />
 
 </configure>
