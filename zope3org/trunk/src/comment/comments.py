@@ -18,12 +18,12 @@ $Id$
 
 import persistent.list
 import zope.component
+from zope.event import notify
 import zope.interface
-import zope.app
-import zope.app.annotation
 
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.file import File
+from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.location import Location
 
 from comment import IAnnotableComments
@@ -72,6 +72,8 @@ class CommentsForAnnotatable(Location):
     def addComment(self, data, contentType='text/plain'):
         """See comment.IAddComments"""
         comment = Comment(data, contentType)
+        # add dc modification data
+        notify(ObjectCreatedEvent(comment))
 
         annot = self._annotations
         annot[commentsKey] = annot.get(commentsKey, ()) + (comment,)

@@ -5,6 +5,9 @@
   <!-- comment -->
   <content class=".comments.Comment">
     <factory id="comment.interfaces.IComment" />
+    <implements 
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
     <require
         permission="zope.Public"
         interface=".IComment"
