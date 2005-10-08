@@ -4,6 +4,8 @@ Portlets
 
 Portlets...
 
+  >>> from zope.portlet.interfaces import IPortlet
+  
 
 Getting Started
 ---------------
@@ -30,7 +32,9 @@ Portlet
 Portlet Managers
 ~~~~~~~~~~~~~~~~
 
+  >>> from zope.portlet.portlet import DefaultPortletManager
 
+      
 Cleanup
 -------
 

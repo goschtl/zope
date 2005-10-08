@@ -17,9 +17,14 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.viewlet.viewlet import ViewletManager
+import zope.interface
+#from zope.viewlet.viewlet import ViewletManager
+from zope.portlet.interfaces import IPortletManager
 
 
-class PortletManager(ViewletManager):
-    """Portlet manager."""
+#class DefaultPortletManager(ViewletManager):
+class DefaultPortletManager(object):
+    """Default portlet manager."""
+
+    zope.interface.implements(IPortletManager)
 
