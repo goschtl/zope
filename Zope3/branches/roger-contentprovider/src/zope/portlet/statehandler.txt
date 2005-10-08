@@ -51,8 +51,8 @@ content provider type.
   >>> class ISpecialPortlet(IPortlet):
   ...     pass
 
-Our content provider must be of IContentProviderType so it can recognized
-during adapter lookup:
+Content provider types must be of IContentProviderType so that they can be
+recognized during adapter lookup:
   
   >>> directlyProvides(ISpecialPortlet, IContentProviderType)
 
@@ -73,10 +73,36 @@ Now we can retrieve the state again:
   'visible'
   
 
-Use preferences for portlat state storage
+Use preferences for portlet state storage
 -----------------------------------------
 
   >>> from zope.portlet.statehandler import PreferencesStateHandler
+  >>> from zope.publisher.browser import TestRequest
+  >>> from zope.publisher.browser import IBrowserRequest
+
   >>> ztapi.provideAdapter(IPortlet, IStateHandler, PreferencesStateHandler)
 
+We need a principal to store preferences with and a corresponding interaction
+to find it.
+
+  >>> class Principal:
+  ...     def __init__(self, id):
+  ...         self.id = id
+  >>> principal = Principal('zope.user')
+
+  >>> class Participation:
+  ...     interaction = None
+  ...     def __init__(self, principal):
+  ...         self.principal = principal
+
+  >>> participation = Participation(principal)
+
+  >>> import zope.security.management
+  >>> zope.security.management.endInteraction()
+  >>> zope.security.management.newInteraction(participation)
+
+  >>> handler = zapi.getAdapter(portlet, IStateHandler)
+  >>> isinstance(handler, PreferencesStateHandler)
+  True
+  >>> handler.setState('visible', name='dummy.portlet')
 

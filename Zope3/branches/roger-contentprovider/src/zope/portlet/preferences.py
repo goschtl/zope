@@ -18,21 +18,21 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
-from zope.schema import Bool
-
+from zope import schema
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 
-
-class IPortletPreference(Interface):
+class IPortletPreferences(Interface):
     """User Preference for a single portlet."""
 
-    expanded = Bool(
+    expanded = schema.Bool(
         title=_(u"Show portlet expanded"),
         description=_(u"Shows portlet in its inital state expanded.")
         )
 
-    state = Choice(
+    state = schema.Choice(
         title=_(u"Portlet state"),
-        description=_(u"Render portlt in the given mode.")
+        description=_(u"Render portlet in the given mode."),
+        values=(_(u"visible"), _(u"hidden"),),
         )
+        

@@ -17,10 +17,13 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.app import zapi
 import zope.interface
+from zope.app.preference import preference
 
+from zope.contentprovider.interfaces import IContentProviderType
 from zope.portlet import interfaces
-
+from zope.portlet.preferences import IPortletPreferences
 
 
 class PreferencesStateHandler(object):
@@ -34,5 +37,12 @@ class PreferencesStateHandler(object):
 
     def setState(self, value, name):
         """xxx"""
-        # self.preferences.portletmanager.%s.state = %s % (portletname, name)
+        cpType = zapi.queryType(self.context, IContentProviderType)
+        cpTypeName = cpType.__module__ + '.' + cpType.__name__
+        settings = preference.PreferenceGroup(
+            cpTypeName,
+            schema=IPortletPreferences,
+            title=u"Portlet User Settings",
+            description=u""
+            )
 
