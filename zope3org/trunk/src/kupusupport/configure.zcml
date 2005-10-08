@@ -2,6 +2,12 @@
     xmlns="http://namespaces.zope.org/zope">
 
 
+  <content class="zope.app.file.File">
+    <implements 
+        interface="kupusupport.interfaces.IKupuEditable"
+        />
+  </content>
+
   <adapter
 	  factory="kupusupport.adapters.KupuEditableFile"
 	  provides="kupusupport.interfaces.IKupuPolicy"

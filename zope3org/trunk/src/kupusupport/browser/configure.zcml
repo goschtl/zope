@@ -25,7 +25,16 @@
           attribute="update"
           />
   </pages>
-  
+
+  <configure package="kupu">
+    <page
+       for="zope.app.folder.interfaces.IFolder"
+       name="kupudrawerstyles.css"
+       template="common\kupudrawerstyles.css"
+       permission="zope.Public"
+       />
+  </configure>
+
   <menuItem
       menu="zmi_views" title="Kupu Editor"
       for="zope.app.file.interfaces.IFile"
