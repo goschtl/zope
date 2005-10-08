@@ -17,9 +17,25 @@ $Id:$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.interface import providedBy
+from zope.publisher.interfaces.xmlrpc import IXMLRPCRequest
 from zope.app.publisher.xmlrpc import XMLRPCView
+from zope.app.apidoc.presentation import getViews, filterViewRegistrations,\
+                                         SPECIFIC_INTERFACE_LEVEL
 
 class XMLRPCIntrospection(XMLRPCView):
+
+    def _getXMLRPCViews(self):
+        adapter_registrations = []
+        interfaces = list(providedBy(self.context))
+
+        for interface in interfaces:
+            registrations = list(getView(interface, IXMLRPCRequest))
+            results = filterViewRegistrations(registrations,IXMLRPCRequest,
+                                              level=SPECIFIC_INTERFACE_LEVEL)
+            adapter_registrations.append(list(results))
+
+        return adapter_registrations
 
     def listAllMethods(self):
         return []

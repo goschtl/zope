@@ -4,9 +4,9 @@
   i18n_domain="zope">
 
   <xmlrpc:view
-      for="zope.interfaces.interfaces.IInterface"
+      for="zope.interface.interfaces.IInterface"
       methods="listAllMethods methodHelp methodSignature"
-      class=".xmlintrospection.XMLRPCIntrospection"
+      class="zope.app.xmlrpcintrospection.xmlrpcintrospection.XMLRPCIntrospection"
       />
 
 </configure>
