@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<kupu:feature
+    name="drawers"
+    implementation="zope3isar"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    >
+
+  <kupu:part name="styles">
+    <link rel="stylesheet" type="text/css" href="kupudrawerstyles.css"
+          tal:attributes="href string:${context/@@absolute_url}/++resource++common/kupudrawerstyles.css" />
+  </kupu:part>
+
+  <kupu:part name="jsincludes">
+	<script type="text/javascript" src="#"
+	    tal:attributes="src string:${context/++resource++common/kupudrawers.js}"> </script>
+  </kupu:part>
+
+  <kupu:part name="xmlconfig">
+    <image_xsl_uri tal:content="string:${context/@@absolute_url}/++resource++drawer.xsl">kupudrawers/drawer.xsl</image_xsl_uri>
+    <link_xsl_uri tal:content="string:${context/@@absolute_url}/++resource++drawer.xsl">kupudrawers/drawer.xsl</link_xsl_uri>
+    <image_libraries_uri tal:content="string:${context/@@absolute_url}/@@imagelibraries.xml">kupudrawers/imagelibrary.xml</image_libraries_uri>
+    <link_libraries_uri tal:content="string:${context/@@absolute_url}/++resource++kupudrawers/linklibrary.xml">kupudrawers/linklibrary.xml</link_libraries_uri>
+    <search_images_uri> </search_images_uri>
+    <search_links_uri> </search_links_uri>
+  </kupu:part>
+
+</kupu:feature>

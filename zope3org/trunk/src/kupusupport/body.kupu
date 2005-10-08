@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<kupu:feature
+    name="body"
+    implementation="zope3isar"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:kupu="http://kupu.oscom.org/namespaces/dist"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    >
+
+  <kupu:part name="body">
+    <kupu:define-slot name="body" />
+  </kupu:part>
+
+  <kupu:part name="editorframe">
+    <div class="kupu-editorframe">
+        <iframe metal:define-slot="editorframe"
+                id="kupu-editor"
+                frameborder="0"
+                scrolling="auto"
+                src="kupucontent.html"
+                tal:attributes="src string:${context/@@absolute_url}/@@kupucontent.html">
+        </iframe>
+        <textarea id="kupu-editor-textarea" style="display: none"> </textarea>
+    </div>
+  </kupu:part>
+
+</kupu:feature>

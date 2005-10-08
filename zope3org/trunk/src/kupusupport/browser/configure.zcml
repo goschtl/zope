@@ -1,0 +1,70 @@
+<zope:configure 
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="kupu"
+    >
+
+  <!-- kupu editor -->
+  <pages
+      for="kupusupport.interfaces.IKupuEditable"
+      class=".views.KupuEditor"
+      allowed_attributes="__getitem__ display"
+      permission="zope.ManageContent">
+
+      <page
+          name="kupueditor.html"
+          template="kupueditor.pt"
+          menu="zmi_views" title="Kupu Editor"
+          />
+      <page
+          name="kupucontent.html"
+          template="kupucontent.pt"
+          />
+      <page
+          name="update.html"
+          attribute="update"
+          />
+  </pages>
+
+  <!-- image drawer: image library -->
+  <pages
+      for="kupusupport.IImageLibrary"
+      class=".views.ImageLibraryInfo"
+      allowed_attributes="imageInfos libraryInfos"
+      permission="zope.ManageContent">
+
+      <page
+          name="imagelibraries.xml"
+          attribute="imagelibraries"
+          />
+      <page
+          name="imagelibrary.xml"
+          template="imagelibrary.pt"
+          />
+  </pages>
+
+  <!-- kupu original resources -->
+  <resourceDirectory
+      name="common" directory="../../common" />
+        
+  <resourceDirectory
+      name="kupuimages" directory="../../common/kupuimages" />
+        
+  <resourceDirectory
+      name="kupupopups" directory="../../common/kupupopups" />
+
+  <resourceDirectory
+      name="kupudrawers" directory="../../common/kupudrawers" />
+
+  <!-- kupu overriden resources -->
+  <resource
+      name="kupustyles.css" file="kupustyles.css" />
+
+  <resource
+      name="imagelibrary1.xml" file="imagelibrary1.xml" />
+
+  <resource
+      name="drawer.xsl" file="drawer.xsl" />
+
+</zope:configure>
+

@@ -1,0 +1,38 @@
+<zope:configure 
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="kupu"
+    >
+
+  <!-- regular registrations -->
+  <addMenuItem
+      class="kupusupport.sample.app.KupuSample"
+      title="Kupu Sample"
+      permission="zope.ManageContent"
+      />
+
+  <icon
+      name="zmi_icon"
+      for="kupusupport.sample.IKupuSample"
+      file="sample.png"
+      />
+
+  <containerViews
+      for="kupusupport.sample.IKupuSample"
+      contents="zope.ManageContent"
+      index="zope.View"
+      add="zope.ManageContent"
+      />
+
+  <!-- optional registrations: control form -->
+  <editform
+      name="edit.html"
+      label="Edit"
+      for="kupusupport.sample.IKupuSample"
+      schema="kupusupport.sample.IKupuSample"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"
+      />
+
+</zope:configure>
+

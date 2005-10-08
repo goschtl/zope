@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<collection>
+    <uri>++resource++imagelibrary1.xml</uri>
+    <icon>++resource++kupuimages/kupulibrary.png</icon>
+    <title>Portal Root</title>
+    <src>++resource++imagelibrary1.xml</src>
+    <items>
+        <resource id="folder.png">
+            <uri>++resource++kupuimages/folder.png</uri>
+            <title>Folder</title>
+            <description>Folder image</description>
+            <size>2.1Kb</size>
+            <height>20</height>
+            <width>20</width>
+            <icon>++resource++kupuimages/folder.png</icon>
+        </resource>
+    </items>
+</collection>

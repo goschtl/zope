@@ -1,0 +1,49 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+ <!-- sample content -->
+  <content class=".app.KupuSample">
+
+    <implements 
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <implements 
+        interface="kupusupport.interfaces.IKupuEditable" />
+
+    <implements 
+        interface="kupusupport.interfaces.IImageLibrary" />
+
+    <require permission="zope.View" 
+        interface=".IKupuSample" />
+
+    <require permission="zope.ManageContent" 
+        set_schema=".IKupuSample" />
+
+    <require 
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+
+  </content>
+
+  <adapter
+      factory=".adapters.KupuSamplePolicy"
+      provides="kupusupport.IKupuPolicy"
+      for=".IKupuSample"
+      />
+
+  <adapter
+      factory="kupusupport.adapters.ImageReadContainer"
+      provides="kupusupport.IImageReadContainer"
+      for=".IKupuSampleContainer"
+      />
+
+  <!-- include the browser package -->
+  <include package=".browser" />
+
+</configure>

@@ -7,7 +7,7 @@
     <page		
       name="wiki"
       for="zope.app.folder.interfaces.IFolder"
-      class="wikification.browser.wikipage.WikiFolderPage"
+      class="wikification.browser.wikipage.WikiContainerPage"
       attribute="wiki"
       permission="zope.View" />
 

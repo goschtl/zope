@@ -1,11 +1,29 @@
+##############################################################################
+#
+# Copyright (c) 2005 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+
+$Id: tests.py 38895 2005-10-07 15:09:36Z dominikhuber $
+"""
+__docformat__ = 'restructuredtext'
+
 import unittest
 
-import zope
-from zope.testing import doctest, doctestunit
-from zope.app.testing import ztapi
-from zope.app.testing.setup import placefulSetUp, placefulTearDown
+import zope.component
+import zope.interface
+import zope.app.testing.setup
 
-from zope.interface import classImplements
+from zope.testing import doctest, doctestunit
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.annotation.interfaces import IAnnotations
@@ -60,38 +78,36 @@ def buildSampleSite() :
 
 def setUpWikification(test) :
    
-    placefulSetUp()
+    zope.app.testing.setup.placefulSetUp()
     
-    classImplements(File, IAnnotatable)
-    classImplements(Folder, IAnnotatable)
-    classImplements(File, IAttributeAnnotatable)
-    classImplements(Folder, IAttributeAnnotatable)
+    zope.interface.classImplements(File, IAnnotatable)
+    zope.interface.classImplements(Folder, IAnnotatable)
+    zope.interface.classImplements(File, IAttributeAnnotatable)
+    zope.interface.classImplements(Folder, IAttributeAnnotatable)
     
-    ztapi.provideAdapter(None, ITraverser, Traverser)
-    ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
-    ztapi.provideAdapter(None, IPhysicallyLocatable,
-                                LocationPhysicallyLocatable)
-    ztapi.provideAdapter(IContainmentRoot, IPhysicallyLocatable, 
-                                RootPhysicallyLocatable)
+    zope.component.provideAdapter(None, [ITraverser], Traverser)
+    zope.component.provideAdapter(None, [ITraversable], DefaultTraversable)
+    zope.component.provideAdapter(None, [IPhysicallyLocatable],
+                                            LocationPhysicallyLocatable)
+    zope.component.provideAdapter(IContainmentRoot, [IPhysicallyLocatable], 
+                                            RootPhysicallyLocatable)
 
     
 def tearDownWikification(test) :
-    placefulTearDown()   
+    zope.app.testing.setup.placefulTearDown()   
 
 
 
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite("README.txt", 
-                                setUp=setUpWikification, 
-                                tearDown=tearDownWikification,
-                                globs={'zapi': zope.app.zapi,
-                                       'pprint': doctestunit.pprint,
-                                       'TestRequest': zope.publisher.browser.TestRequest                                
-                                        },
-                                optionflags=doctest.NORMALIZE_WHITESPACE+
-                                            doctest.ELLIPSIS
-                             ),
+                    setUp=setUpWikification, 
+                    tearDown=tearDownWikification,
+                    globs={'zapi': zope.app.zapi,
+                           'pprint': doctestunit.pprint,
+                           'TestRequest': zope.publisher.browser.TestRequest                                
+                          },
+                    optionflags=doctest.NORMALIZE_WHITESPACE+doctest.ELLIPSIS),
         ))
 
 if __name__ == '__main__':

@@ -35,6 +35,7 @@ The index.html is our starting point and contains the following HTML :
             <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
         </body>
     </html>
+
     
 
 
@@ -52,15 +53,26 @@ one, the resulting HTML could look as follows :
     >>> from wikification.browser.wikipage import WikiFilePage
     >>> page = WikiFilePage(index_page, TestRequest("/index.html"))
     >>> print page.wiki()
+    <html>
+        <body>
+            <p>Wikifiable</p>
+            <p>An <a href="target">existing link</a></p>
+            <p>A <a style="color: red" href="http://127.0.0.1/site/createPage?path=newitem">new page</a></p>
+            <p>A <a style="color: red" href="http://127.0.0.1/site/createPage?path=folder1/newitem">new page in a subfolder</a></p>
+            <p>A [New Subject]</p>
+            <p>An <a href="http://www.google.org">external absolute link</a></p>
+            <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
+        </body>
+    </html>
 
-    The task of creating a new page is delegated to the createLink method of the 
+    The task of creating a new page is delegated to the createFile method of the 
     wiki page. We considered the possibility to adapt the traversal mechanism
     in order to throw add forms in case of TraversalErrors, but a simple
     page method seems to be the simplest solution:
     
     >>> request = TestRequest("/index.html", form={'path':'folder1/newitem', })
     >>> page = WikiFilePage(index_page, request)
-    >>> new_file = page.createLink()  
+    >>> new_file = page.createFile()  
     >>> site[u'folder1'][u'newitem']
     <zope.app.file.file.File object at ...>
 

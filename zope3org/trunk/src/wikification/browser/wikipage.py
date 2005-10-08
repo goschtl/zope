@@ -1,16 +1,37 @@
+##############################################################################
+#
+# Copyright (c) 2005 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+
+$Id: tests.py 38895 2005-10-07 15:09:36Z dominikhuber $
+"""
+__docformat__ = 'restructuredtext'
+
 import re
 from zope.app import zapi
 from zope.interface import implements
 from zope.app.traversing.interfaces import TraversalError
 from zope.app.folder import Folder
 from zope.app.file import File
+from zope.app.file.interfaces import IFile
+from zope.app.container.interfaces import IContainer
 from zope.app.publisher.browser import BrowserView
 
 from wikification.browser.interfaces import IWikiPage
 
 def html_body(html) :
 
-    output = re.compile('<body.*?>(.*?)</body>', re.DOTALL |  re.IGNORECASE).findall(html)
+    output = re.compile('<body.*?>(.*?)</body>', re.DOTALL | re.IGNORECASE).findall(html)
     if len(output) > 1 :
         print "Warning: more than one body tag."
     elif len(output) == 0 :     # hmmh, a html fragment?
@@ -19,7 +40,7 @@ def html_body(html) :
     
 
 class WikiPage(BrowserView) :
-    """ A wiki page that 'wikifies' a folder with ordinary HTML documents.
+    """ A wiki page that 'wikifies' a container with ordinary HTML documents.
     
         See wikification/README.txt for a definition of what 
         'wikification' means and doctests of the methods of this class.
@@ -35,12 +56,12 @@ class WikiPage(BrowserView) :
     def __init__(self, context, request) :
         super(WikiPage, self).__init__(context, request)
         
-        self.folder = self.getFolder()
+        self.container = self.getContainer()
         self.file = self.getFile()
-        self.base = zapi.absoluteURL(self.folder, request)
+        self.base = zapi.absoluteURL(self.container, request)
 
     def wiki(self) :
-        """ Show wikified version of the context. 
+        """ Shows a wikified version of the context. 
              
         """
         
@@ -72,7 +93,7 @@ class WikiPage(BrowserView) :
             
         path = link.split("/")
         try :
-            zapi.traverse(self.folder, path)
+            zapi.traverse(self.container, path)
             return False, link
         except TraversalError :
             return True, self.base + "/createPage?path=" + "/".join(path)
@@ -113,22 +134,31 @@ class WikiPage(BrowserView) :
         return processor.output()
      
       
-    def createLink(self) :
+    def createFile(self) :
         """
-            Creates a wiki page at the given path.
+            Creates a file at the given path. Creates all intermediate
+            folders if necessary.
+            
         """
                
         path = self.request.form['path'].split(u'/')
         
         assert len(path) > 0
         
-        folder = base = self.folder
+        container = base = self.container
         for name in path[:-1] :
-            folder = base[name] = Folder()
-            base = folder
-            
-        file = File()
-        folder[path[-1]] = file
+            try :
+                container = zapi.traverseName(base, name)
+                assert IContainer.providedBy(base)
+            except TraversalError :
+                container = base[name] = Folder()
+            base = container
+             
+        if path[-1] in container :
+            file = container[path[-1]]
+        else :
+            file = File()
+            container[path[-1]] = file
         return file
         
     def saveText(self) :
@@ -138,7 +168,7 @@ class WikiPage(BrowserView) :
         request = self.request
         text = request.form.get("body")        
         if self.create :
-            file = self.createLink()
+            file = self.createFile()
         else :
             file = self.file
         file.data = text        
@@ -150,13 +180,13 @@ class WikiPage(BrowserView) :
 
 
         
-class WikiFolderPage(WikiPage) :
+class WikiContainerPage(WikiPage) :
     """ Wiki view for a container. """
     
     empty = File("""<html><body>Sorry, explanations later.</body></html>""", 
                         "text/html")
     
-    def getFolder(self) :
+    def getContainer(self) :
         return self.context
         
     def getFile(self) :
@@ -166,7 +196,7 @@ class WikiFolderPage(WikiPage) :
 class WikiFilePage(WikiPage) :
     """ Wiki view for a file. """
     
-    def getFolder(self) :
+    def getContainer(self) :
         return self.context.__parent__
         
     def getFile(self) :
@@ -184,7 +214,7 @@ class EditWikiPage(WikiFilePage) :
     body = property(getBody)
     
    
-class CreateWikiPage(WikiFolderPage) :
+class CreateWikiPage(WikiContainerPage) :
 
     editable = True
     create = True
