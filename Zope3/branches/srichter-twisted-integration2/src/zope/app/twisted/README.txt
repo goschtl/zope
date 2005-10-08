@@ -60,7 +60,7 @@ object. The IP address, port and backlog count can be optionally passed to the
 method.
 
   >>> db = 'my database'
-  >>> server = st.create('Example-HTTP', db, port=8080)
+  >>> server = st.create('Example-HTTP', db, port=0)
   ZODB: my database
   >>> server #doctest:+ELLIPSIS
   <zope.app.twisted.server.ZopeTCPServer instance at ...>
@@ -73,22 +73,22 @@ startup.
   >>> print log.getvalue()
   -- Example-HTTP Server started.
      Hostname: localhost
-     Port: 8080
+     Port: 0
 
 You can, of course, create multiple instances of the same server type, and
 bind them to different ports.
 
-  >>> server2 = st.create('Example-HTTP-2', db, port=8081)
+  >>> server2 = st.create('Example-HTTP-2', db, port=0)
   ZODB: my database
 
   >>> server2.startService()
   >>> print log.getvalue()
   -- Example-HTTP Server started.
      Hostname: localhost
-     Port: 8080
+     Port: 0
   -- Example-HTTP-2 Server started.
      Hostname: localhost
-     Port: 8081
+     Port: 0
 
 A special type of server type is the SSL server type; it requires some
 additional information (private key path, certificate path, and TLS flag) to
