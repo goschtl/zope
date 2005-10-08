@@ -206,4 +206,63 @@ Let's try to add another method, to se if it gets listed...
   </methodResponse>
   <BLANKLINE>
 
+No we want to test methodHelp and methodSignature, to check that it returns,
 
+    - The method doc
+
+    - The list of attributes
+
+Let's add a new method that has i all:
+
+  >>> class JacksonFiveRPC:
+  ...     def says(self, a, b, c):
+  ...         return '%s %s, %s, lalalala, you and me, lalalala' % (a, b, c)
+  >>> from zope.configuration import xmlconfig
+  >>> ignored = xmlconfig.string("""
+  ... <configure
+  ...     xmlns="http://namespaces.zope.org/zope"
+  ...     xmlns:xmlrpc="http://namespaces.zope.org/xmlrpc"
+  ...     >
+  ...   <!-- We only need to do this include in this example,
+  ...        Normally the include has already been done for us. -->
+  ...   <include package="zope.app.publisher.xmlrpc" file="meta.zcml" />
+  ...
+  ...   <xmlrpc:view
+  ...       for="zope.app.folder.folder.IFolder"
+  ...       methods="says"
+  ...       class="zope.app.xmlrpcintrospection.README.JacksonFiveRPC"
+  ...       permission="zope.ManageContent"
+  ...       />
+  ... </configure>
+  ... """)
+
+Now let's try to get the attributes for `says()`:
+
+  >>> print http(r"""
+  ... POST / HTTP/1.0
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>methodSignature</methodName>
+  ... <params>
+  ... <param>
+  ... <value>says</value>
+  ... </params>
+  ... </methodCall>
+  ... """, handle_errors=False)
+  HTTP/1.0 200 Ok
+  Content-Length: ...
+  Content-Type: text/xml...
+  <BLANKLINE>
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><string>(a, b, c)</string></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+
+  
