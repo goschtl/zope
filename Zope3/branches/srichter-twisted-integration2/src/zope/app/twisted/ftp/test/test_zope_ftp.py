@@ -130,6 +130,20 @@ class BasicFTPServerTestCase(FTPServerTestCase, test_ftp.BasicFTPServerTestCase)
         responseLines = wait(self.client.queueStringCommand('MKD /newdir'))
         self.assertEqual(['257 "/newdir" created'], responseLines)
 
+    def test_RMD(self):
+        self.rootfs.mkdir_nocheck('/newdir')
+
+        self._authLogin()
+        responseLines = wait(self.client.queueStringCommand('RMD /newdir'))
+        self.assertEqual(['250 Requested File Action Completed OK'], responseLines)
+
+    def test_DELE(self):
+        self.rootfs.writefile_nocheck('/file.txt', StringIO('x' * 20))
+
+        self._authLogin()
+        responseLines = wait(self.client.queueStringCommand('DELE /file.txt'))
+        self.assertEqual(['250 Requested File Action Completed OK'], responseLines)
+
 class FTPServerPasvDataConnectionTestCase(FTPServerTestCase,
                                           test_ftp.FTPServerPasvDataConnectionTestCase):
 
