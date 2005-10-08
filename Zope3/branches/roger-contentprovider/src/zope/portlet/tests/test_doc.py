@@ -24,6 +24,25 @@ from zope.testing import doctest
 from zope.testing.doctestunit import DocTestSuite, DocFileSuite
 from zope.app.testing import setup
 
+from zope.contentprovider.interfaces import IRegion
+
+
+class TestPortlet(object):
+
+    def doSomething(self):
+        return u'something'
+
+
+class TestPortlet2(object):
+
+    def __call__(self):
+        return u'called'
+
+
+class ITestRegion(zope.interface.Interface):
+    """A region for testing purposes."""
+zope.interface.directlyProvides(ITestRegion, IRegion)
+
 
 class TestParticipation(object):
     principal = 'foobar'
@@ -50,10 +69,10 @@ def test_suite():
                      setUp=setUp, tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
-#         DocFileSuite('../directives.txt',
-#                      setUp=setUp, tearDown=tearDown,
-#                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-#                      ),
+         DocFileSuite('../directives.txt',
+                      setUp=setUp, tearDown=tearDown,
+                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                      ),
         ))
 
 if __name__ == '__main__':
