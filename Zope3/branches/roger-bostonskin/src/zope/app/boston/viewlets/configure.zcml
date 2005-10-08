@@ -18,6 +18,7 @@
 -->
 
   <!-- ILeft slot pagelets -->
+  <include package=".addinginfo" />
 <!--
   <include file="zmicookietreebox.zcml" />
   <include file="addbox.zcml" />

@@ -1,0 +1,48 @@
+<html i18n:domain="tiks" tal:omit-tag="">
+<body tal:omit-tag="">
+	<div class="slotbox" id="addinginfobox">
+		<div class="header">
+			<div class="title" i18n:translate=""
+						tal:content="viewlet/getTitle">Adding info</div>
+		</div>
+		<div class="body"
+					tal:define="addingInfo viewlet/addingInfo;
+											nameAllowed viewlet/nameAllowed;
+											baseurl python:request.getURL(1)">
+		<tal:block condition="addingInfo">
+			<tal:block repeat="info addingInfo">
+				<div tal:define="oddrow repeat/info/odd;
+						 						has_custom_add_view python:'has_custom_add_view' in info"
+						 tal:attributes="class python:oddrow and 'content even' or 'content odd'"
+						 class="even">
+					<a href="#"
+						tal:condition="python: not info['action'].startswith('../')
+																	 and nameAllowed and not has_custom_add_view"
+						tal:attributes="href string:${baseurl}/@@contents.html?type_name=${info/action};
+							class info/selected"
+						tal:content="info/title" i18n:translate="">Folder
+					</a>
+					
+					<a href="#"
+						tal:condition="python: not info['action'].startswith('../') 
+											 and (has_custom_add_view or not nameAllowed)"
+						tal:attributes="
+							href string:${baseurl}/@@+/action.html?type_name=${info/action};
+							class info/selected"
+						tal:content="info/title" i18n:translate="">Folder
+					</a>
+		
+					<a href="#"
+						tal:condition="python: info['action'].startswith('../')"
+						tal:attributes="
+							href python: info['action'][3:];
+							class info/selected"
+						tal:content="info/title" i18n:translate="">Folder
+					</a>
+				</div>
+      </tal:block>
+		</tal:block>
+		</div>
+	</div>
+</body>
+</html>

@@ -39,11 +39,9 @@
     <tr class="menu">
       <td colspan="2">
         <!-- toolbar region (zmi_action) -->
-<!--
         <metal:block tal:repeat="provider providers:zope.app.boston.regions.IToolBar">
           <tal:block replace="structure provider" />
         </metal:block>
--->
         <div id="userdetails">
           <metal:block define-macro="logged_user">
             <span tal:omit-tag="" i18n:translate="">User:</span>

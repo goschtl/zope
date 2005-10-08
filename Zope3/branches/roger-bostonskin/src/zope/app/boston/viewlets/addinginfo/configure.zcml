@@ -1,0 +1,7 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    i18n_domain="zope">
+
+  <include package=".browser" />
+
+</configure>
