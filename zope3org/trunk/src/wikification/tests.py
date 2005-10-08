@@ -38,6 +38,9 @@ from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.traversing.adapters import RootPhysicallyLocatable
 from zope.app.traversing.adapters import Traverser
 
+from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+
 from zope.app.folder import rootFolder
 from zope.app.folder import Folder
 from zope.app.file import File
@@ -66,12 +69,25 @@ def buildSampleSite() :
             index.html          (with example1 as content)
             target              (an existing file)
             folder              (a sample folder)
+            
+        Usage :
+        
+        
+        >>> site = buildSampleSite()
+        >>> IZopeDublinCore(site).title
+        u'Wiki site'
+
+        
+        
     """
     root = rootFolder()
+    IZopeDublinCore(root).title = u'Wiki site'
     root.__name__ = u"site"
     root[u"target"] = File()
     folder = root[u"folder"] = Folder()
-    root[u"index.html"] = File(example1, 'text/html')    
+    index = root[u"index.html"] = File(example1, 'text/html')
+    
+    IZopeDublinCore(index).title = u'Wiki page'
     return root    
 
 
@@ -80,18 +96,23 @@ def setUpWikification(test) :
    
     zope.app.testing.setup.placefulSetUp()
     
+    from zope.app.testing import ztapi
+    
     zope.interface.classImplements(File, IAnnotatable)
     zope.interface.classImplements(Folder, IAnnotatable)
     zope.interface.classImplements(File, IAttributeAnnotatable)
     zope.interface.classImplements(Folder, IAttributeAnnotatable)
     
-    zope.component.provideAdapter(None, [ITraverser], Traverser)
-    zope.component.provideAdapter(None, [ITraversable], DefaultTraversable)
-    zope.component.provideAdapter(None, [IPhysicallyLocatable],
+    ztapi.provideAdapter(None, ITraverser, Traverser)
+    ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
+    ztapi.provideAdapter(None, IPhysicallyLocatable,
                                             LocationPhysicallyLocatable)
-    zope.component.provideAdapter(IContainmentRoot, [IPhysicallyLocatable], 
+    ztapi.provideAdapter(IContainmentRoot, IPhysicallyLocatable, 
                                             RootPhysicallyLocatable)
 
+    ztapi.provideAdapter(IAnnotatable, 
+                                    IZopeDublinCore, ZDCAnnotatableAdapter)
+ 
     
 def tearDownWikification(test) :
     zope.app.testing.setup.placefulTearDown()   
@@ -100,6 +121,9 @@ def tearDownWikification(test) :
 
 def test_suite():
     return unittest.TestSuite((
+        doctest.DocTestSuite(setUp=setUpWikification, 
+                                    tearDown=tearDownWikification),
+                                    
         doctest.DocFileSuite("README.txt", 
                     setUp=setUpWikification, 
                     tearDown=tearDownWikification,

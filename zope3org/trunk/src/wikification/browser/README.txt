@@ -5,8 +5,17 @@ namespace.
 >>> from wikification.browser.utils import PageInfo
 >>> template = PageTemplate()
 >>> template.pt_edit(u'<span tal:replace="foo"/>', 'text/html')
->>> context = 'context' 
+
+Let's take our example site ...
+
+>>> from wikification.tests import buildSampleSite
+>>> site = buildSampleSite()
+
+and now we access the index.html document of the site as an example :
+
+>>> context = site[u"index.html"]
 >>> request = TestRequest()
+
 >>> page = PageInfo(context, request, template)
 >>> page.foo = 'bar'
 >>> page.render()
@@ -18,7 +27,7 @@ object for site specific informations.
 >>> from wikification.browser.utils import SiteInfo 
 >>> from wikification.browser.utils import WikiPageInfo
 >>> site = SiteInfo(context)
->>> page = WikiPageInfo(u'Wiki page', site, context, request, template)
+>>> page = WikiPageInfo(context, request, template)
 >>> page.html_title()
 u'Wiki page - Wiki site'
 

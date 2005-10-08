@@ -28,6 +28,7 @@ from zope.app.publisher.browser import BrowserView
 
 from wikification.browser.interfaces import IWikiPage
 
+from zope.pagetemplate.pagetemplatefile  import PageTemplateFile
 
 class WikiPage(BrowserView) :
     """ A wiki page that 'wikifies' a container with ordinary HTML documents.
@@ -42,6 +43,7 @@ class WikiPage(BrowserView) :
     
     implements(IWikiPage)
     
+    main = PageTemplateFile("main_template.pt")
        
     def __init__(self, context, request) :
         super(WikiPage, self).__init__(context, request)
@@ -49,7 +51,8 @@ class WikiPage(BrowserView) :
         self.container = self.getContainer()
         self.file = self.getFile()
         self.base = zapi.absoluteURL(self.container, request)
-
+        self.title = u"Wiki page"
+        
     def wiki(self) :
         """ Shows a wikified version of the context. 
              
@@ -65,6 +68,8 @@ class WikiPage(BrowserView) :
                 body = file.data
             self.request.response.setHeader("Content-Type", "text/html")
             return self.render(body)
+            
+        info = WikPageInfo(body, self.context, self.request, self.main)
         
         return "Sorry, not wikifiable at the moment."
        

@@ -1,6 +1,8 @@
 import unittest
 
 import zope
+import zope.component
+
 from zope.testing import doctest, doctestunit
 from zope.app.testing import ztapi
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
@@ -13,12 +15,18 @@ from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.container.interfaces import IContained
 
+
+import wikification.tests
+
 def setUpBrowserTests(test) :
-    pass
+
+    wikification.tests.setUpWikification(test)
+    
    
     
 def tearDownBrowserTests(test) :
-    pass
+
+    wikification.tests.tearDownWikification(test)
 
 def test_suite():
     return unittest.TestSuite((
