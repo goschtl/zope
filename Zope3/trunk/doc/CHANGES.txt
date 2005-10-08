@@ -10,6 +10,12 @@ Zope Changes
 
     New features
 
+      - The ZServer has been replaced with the Twisted server. The Twisted
+        server supports all that the ZServer supporting has well has HTTP over
+        SSL natively and SFTP (disabled for now because of error handling problems).
+        Also in the future it brings a better chance of other non-HTTP related
+        protocols from being implemented for Zope3, like SMTP-in and IMAP.
+
       - Added modified description for sequence-like interfaces.
 
       - Added a test browser. The test browser simulates a real Web browser as
