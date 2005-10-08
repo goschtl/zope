@@ -11,6 +11,22 @@
       factory=".namespace.portlet"
       />
 
+  <preferenceGroup
+      id="portlet"
+      title="Portlet Settings"
+      description="
+        In this category you will find all preferences related to a
+        specific portlet.
+        "
+      category="true"
+      />
+
+  <preferenceGroup
+      id="portlet.portlet"
+      title="Portlet preference"
+      schema=".interfaces.IPortletPreference"
+      />
+
   <include package=".browser" />
 
 </configure>
