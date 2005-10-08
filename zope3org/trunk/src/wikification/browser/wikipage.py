@@ -17,7 +17,6 @@ $Id: tests.py 38895 2005-10-07 15:09:36Z dominikhuber $
 """
 __docformat__ = 'restructuredtext'
 
-import re
 from zope.app import zapi
 from zope.interface import implements
 from zope.app.traversing.interfaces import TraversalError
@@ -29,15 +28,6 @@ from zope.app.publisher.browser import BrowserView
 
 from wikification.browser.interfaces import IWikiPage
 
-def html_body(html) :
-
-    output = re.compile('<body.*?>(.*?)</body>', re.DOTALL | re.IGNORECASE).findall(html)
-    if len(output) > 1 :
-        print "Warning: more than one body tag."
-    elif len(output) == 0 :     # hmmh, a html fragment?
-        return html  
-    return output[0]
-    
 
 class WikiPage(BrowserView) :
     """ A wiki page that 'wikifies' a container with ordinary HTML documents.
@@ -64,6 +54,8 @@ class WikiPage(BrowserView) :
         """ Shows a wikified version of the context. 
              
         """
+        
+        from kupusupport.adapters import html_body
         
         file = self.getFile()
         if file.contentType in self.supported :

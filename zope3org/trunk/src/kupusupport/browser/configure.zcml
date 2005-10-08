@@ -25,10 +25,17 @@
           attribute="update"
           />
   </pages>
+  
+  <menuItem
+      menu="zmi_views" title="Kupu Editor"
+      for="zope.app.file.interfaces.IFile"
+      action="@@kupueditor.html"
+      filter="python:context.contentType.startswith('text/html')"
+      permission="zope.ManageContent" />
 
   <!-- image drawer: image library -->
   <pages
-      for="kupusupport.IImageLibrary"
+      for="kupusupport.interfaces.IImageLibrary"
       class=".views.ImageLibraryInfo"
       allowed_attributes="imageInfos libraryInfos"
       permission="zope.ManageContent">
@@ -43,18 +50,21 @@
           />
   </pages>
 
-  <!-- kupu original resources -->
+  <!-- kupu original resources 
+    
+       We assume that kup is parallel to kupusupport
+  -->
   <resourceDirectory
-      name="common" directory="../../common" />
+      name="common" directory="../../kupu/common" />
         
   <resourceDirectory
-      name="kupuimages" directory="../../common/kupuimages" />
+      name="kupuimages" directory="../../kupu/common/kupuimages" />
         
   <resourceDirectory
-      name="kupupopups" directory="../../common/kupupopups" />
+      name="kupupopups" directory="../../kupu/common/kupupopups" />
 
   <resourceDirectory
-      name="kupudrawers" directory="../../common/kupudrawers" />
+      name="kupudrawers" directory="../../kupu/common/kupudrawers" />
 
   <!-- kupu overriden resources -->
   <resource
