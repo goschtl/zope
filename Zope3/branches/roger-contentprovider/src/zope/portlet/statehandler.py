@@ -23,26 +23,44 @@ from zope.app.preference import preference
 
 from zope.contentprovider.interfaces import IContentProviderType
 from zope.portlet import interfaces
-from zope.portlet.preferences import IPortletPreferences
+from zope.portlet.preference import IPortletPreference
 
 
-class PreferencesStateHandler(object):
+class PreferenceStateHandler(object):
     """State handler based on preferences."""
 
     zope.interface.implements(interfaces.IStateHandler)
 
     def __init__(self, context):
         self.context = context
-        self.preferences = None
 
     def setState(self, value, name):
-        """xxx"""
+        """Set the state of the portlet; the name parameter is the name
+           of the portlet in the portlet manager.
+        """
         cpType = zapi.queryType(self.context, IContentProviderType)
         cpTypeName = cpType.__module__ + '.' + cpType.__name__
         settings = preference.PreferenceGroup(
-            cpTypeName,
-            schema=IPortletPreferences,
+            cpTypeName + '/' + name,
+            schema=IPortletPreference,
             title=u"Portlet User Settings",
             description=u""
             )
+        settings.state = value
+
+    def getState(self, name):
+        """Return the state of the portlet; the name parameter is the name
+           of the portlet in the portlet manager.
+        """
+        cpType = zapi.queryType(self.context, IContentProviderType)
+        cpTypeName = cpType.__module__ + '.' + cpType.__name__
+        settings = preference.PreferenceGroup(
+            cpTypeName + '/' + name,
+            schema=IPortletPreference,
+            title=u"Portlet User Settings",
+            description=u""
+            )
+        return settings.state
+
+
 

@@ -22,7 +22,7 @@ from zope import schema
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 
-class IPortletPreferences(Interface):
+class IPortletPreference(Interface):
     """User Preference for a single portlet."""
 
     expanded = schema.Bool(

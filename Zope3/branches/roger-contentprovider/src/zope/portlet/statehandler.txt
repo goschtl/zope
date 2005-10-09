@@ -73,17 +73,17 @@ Now we can retrieve the state again:
   'visible'
   
 
-Use preferences for portlet state storage
------------------------------------------
+Use user preferences for portlet state storage
+----------------------------------------------
 
-  >>> from zope.portlet.statehandler import PreferencesStateHandler
+  >>> from zope.portlet.statehandler import PreferenceStateHandler
   >>> from zope.publisher.browser import TestRequest
   >>> from zope.publisher.browser import IBrowserRequest
 
-  >>> ztapi.provideAdapter(IPortlet, IStateHandler, PreferencesStateHandler)
+  >>> ztapi.provideAdapter(IPortlet, IStateHandler, PreferenceStateHandler)
 
 We need a principal to store preferences with and a corresponding interaction
-to find it.
+to find it; and we have to register a PrincipalAnnotationUtility for this.
 
   >>> class Principal:
   ...     def __init__(self, id):
@@ -101,8 +101,27 @@ to find it.
   >>> zope.security.management.endInteraction()
   >>> zope.security.management.newInteraction(participation)
 
-  >>> handler = zapi.getAdapter(portlet, IStateHandler)
-  >>> isinstance(handler, PreferencesStateHandler)
-  True
-  >>> handler.setState('visible', name='dummy.portlet')
+  >>> from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
+  >>> from zope.app.principalannotation import PrincipalAnnotationUtility
+  >>> ztapi.provideUtility(IPrincipalAnnotationUtility, PrincipalAnnotationUtility())
 
+So we are ready to store the portlet's state:
+
+  >>> handler = zapi.getAdapter(portlet, IStateHandler)
+  >>> isinstance(handler, PreferenceStateHandler)
+  True
+  >>> handler.setState('hidden', name='dummy.portlet')
+
+And retrieve it:
+  
+  >>> handler.getState(name='dummy.portlet')
+  'hidden'
+
+If we use a value for the state that is not supported by the preference state
+handler we get an exception:
+
+  >>> handler.setState('exploded', name='dummy.portlet')
+  Traceback (most recent call last):
+  ...
+  ConstraintNotSatisfied: exploded...
+  
