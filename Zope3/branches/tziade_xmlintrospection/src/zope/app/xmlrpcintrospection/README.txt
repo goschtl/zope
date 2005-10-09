@@ -333,3 +333,84 @@ Now let's try to get the signature for says_not_decorated()`:
   </params>
   </methodResponse>
   <BLANKLINE>
+
+Last, but not least, the method help:
+
+  >>> class JacksonFiveRPCDocumented:
+  ...     @xmlrpccallable(str, str, str, str)
+  ...     def says(self, a, b, c):
+  ...         """ this is the help for
+  ...             says()
+  ...         """
+  ...         return '%s %s, %s, lalalala, you and me, lalalala' % (a, b, c)
+  ...     def says_not_documented(self, a, b, c):
+  ...         return '%s %s, %s, lalalala, you and me, lalalala' % (a, b, c)
+  >>> from zope.configuration import xmlconfig
+  >>> ignored = xmlconfig.string("""
+  ... <configure
+  ...     xmlns="http://namespaces.zope.org/zope"
+  ...     xmlns:xmlrpc="http://namespaces.zope.org/xmlrpc"
+  ...     >
+  ...   <!-- We only need to do this include in this example,
+  ...        Normally the include has already been done for us. -->
+  ...   <include package="zope.app.publisher.xmlrpc" file="meta.zcml" />
+  ...
+  ...   <xmlrpc:view
+  ...       for="zope.app.folder.folder.IFolder"
+  ...       methods="says says_not_documented"
+  ...       class="zope.app.xmlrpcintrospection.README.JacksonFiveRPCDocumented"
+  ...       permission="zope.ManageContent"
+  ...       />
+  ... </configure>
+  ... """)
+  >>> print http(r"""
+  ... POST / HTTP/1.0
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>methodHelp</methodName>
+  ... <params>
+  ... <param>
+  ... <value>says</value>
+  ... </params>
+  ... </methodCall>
+  ... """, handle_errors=False)
+  HTTP/1.0 200 Ok
+  ...
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><string> this is the help for
+               says()
+           </string></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+  >>> print http(r"""
+  ... POST / HTTP/1.0
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>methodHelp</methodName>
+  ... <params>
+  ... <param>
+  ... <value>says_not_documented</value>
+  ... </params>
+  ... </methodCall>
+  ... """, handle_errors=False)
+  HTTP/1.0 200 Ok
+  ...
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><string>undef</string></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+

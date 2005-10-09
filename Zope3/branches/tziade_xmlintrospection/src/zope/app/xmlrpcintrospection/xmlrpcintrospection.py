@@ -47,6 +47,10 @@ class XMLRPCIntrospection(object):
         """ returns the method signature """
         return self._getXMLRPCMethodSignature(method_name)
 
+    def methodHelp(self, method_name):
+        """ returns the docstring of the method """
+        return self._getXMLRPCMethodHelp(method_name)
+
     def __call__(self, *args, **kw):
         return self.listAllMethods()
 
@@ -106,6 +110,12 @@ class XMLRPCIntrospection(object):
         # XXX: if defaults are given, we can render their type
         return [['undef'] * (self._getFunctionArgumentSize(func) + 1)]
 
+    def _getFunctionHelp(self, func):
+        if hasattr(func, '__doc__') and func.__doc__ is not None:
+            if func.__doc__.strip() != '':
+                return func.__doc__
+        return 'undef'
+
     #
     # Lookup APIS
     #
@@ -134,6 +144,17 @@ class XMLRPCIntrospection(object):
             if result.name == method_name:
                 method = getattr(result.value, method_name)
                 return self._getFunctionSignature(method)
-        # XXX see RFC here, if we want to raise or no
-        return None
 
+        return 'undef'
+
+    def _getXMLRPCMethodHelp(self, method_name):
+        """ The help of a method is just the doctstring, if given
+        """
+        interfaces = list(providedBy(self.context))
+
+        for result in self._getRegistrationAdapters(interfaces):
+            if result.name == method_name:
+                method = getattr(result.value, method_name)
+                return self._getFunctionHelp(method)
+
+        return 'undef'
