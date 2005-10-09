@@ -71,7 +71,12 @@ Zope Changes
         specified regions of a page. Using this base implementation, one could
         easily implement pagelets and portlets.
 
+      - added a performance tester in zope.app.testing
+
     Restructuring
+
+      - Renamed root test.py file to testrunner.py, to avoid hiding Python test
+        module.
 
     Bug Fixes
 
@@ -93,7 +98,7 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Stephan Richter, Roger Ineichen, Marius Gedminas, Julien Anguenot, Benji
-      York, Gary Poster, Jim Fulton, Michael Kerrin, Torsten Kurbad.
+      York, Gary Poster, Jim Fulton, Michael Kerrin, Torsten Kurbad, Tarek Ziadé.
 
     Note: If you are not listed and contributed, please add yourself. This
           note will be deleted before the release.

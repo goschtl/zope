@@ -25,8 +25,8 @@ from zope.app.testing import dochttp
 sys.modules['zope.app.tests.dochttp'] = deprecate(dochttp)
 from zope.app.testing import functional
 sys.modules['zope.app.tests.functional'] = deprecate(functional)
-from zope.app.testing import test
-sys.modules['zope.app.tests.test'] = deprecate(test)
+from zope.app.testing import testrunner
+sys.modules['zope.app.tests.test'] = deprecate(testrunner)
 from zope.app.testing import ztapi
 sys.modules['zope.app.tests.ztapi'] = deprecate(ztapi)
 #############################################################################

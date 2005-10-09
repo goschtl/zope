@@ -19,10 +19,10 @@ bin/runzope: Makefile
 	chmod +x bin/runzope
 
 test_inplace: inplace
-	$(PYTHON) test.py $(TESTFLAGS) $(TESTOPTS)
+	$(PYTHON) testrunner.py $(TESTFLAGS) $(TESTOPTS)
 
 ftest_inplace: inplace
-	$(PYTHON) test.py -f $(TESTFLAGS) $(TESTOPTS)
+	$(PYTHON) testrunner.py -f $(TESTFLAGS) $(TESTOPTS)
 
 # XXX What should the default be?
 test: test_inplace
