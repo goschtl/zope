@@ -30,7 +30,7 @@
     <page
        for="zope.app.folder.interfaces.IFolder"
        name="kupudrawerstyles.css"
-       template="common\kupudrawerstyles.css"
+       template="common/kupudrawerstyles.css"
        permission="zope.Public"
        />
   </configure>
@@ -61,7 +61,7 @@
 
   <!-- kupu original resources 
     
-       We assume that kup is parallel to kupusupport
+       We assume that kupu is parallel to kupusupport
   -->
   <resourceDirectory
       name="common" directory="../../kupu/common" />

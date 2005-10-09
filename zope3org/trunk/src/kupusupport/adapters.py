@@ -20,9 +20,6 @@ from zope.app.file.interfaces import IImage
 from kupusupport.interfaces import IImageReadContainer
 from kupusupport.interfaces import IKupuPolicy
 
-
-import wikification.browser.wikipage
-
 def html_body(html) :
     import re
     output = re.compile('<body.*?>(.*?)</body>', re.DOTALL |  re.IGNORECASE).findall(html)
