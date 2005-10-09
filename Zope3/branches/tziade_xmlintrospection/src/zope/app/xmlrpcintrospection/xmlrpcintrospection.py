@@ -17,11 +17,22 @@ $Id:$
 """
 __docformat__ = 'restructuredtext'
 
+import types
+import inspect
+
 from zope.interface import providedBy
 from zope.publisher.interfaces.xmlrpc import IXMLRPCRequest
 from zope.app.publisher.xmlrpc import XMLRPCView
 from zope.app.apidoc.presentation import getViews, filterViewRegistrations
-from zope.app.apidoc.utilities import getFunctionSignature
+
+
+def xmlrpccallable(return_type, *parameters_types):
+    def wrapper(func):
+        # adding info on the function object
+        func.return_type = return_type
+        func.parameters_types = parameters_types
+        return func
+    return wrapper
 
 class XMLRPCIntrospection(object):
 
@@ -63,6 +74,32 @@ class XMLRPCIntrospection(object):
             results.extend(filtered_adapters)
         return results
 
+    def _getFunctionArgumentSize(self, func):
+        args, varargs, varkw, defaults = inspect.getargspec(func)
+        num_params = len(args) - 1
+        if varargs is not None:
+            num_params += len(varargs)
+        if varkw is not None:
+            num_params += len(varkw)
+
+        return num_params
+
+    def _getFunctionSignature(self, func):
+        """Return the signature of a function or method."""
+        if not isinstance(func, (types.FunctionType, types.MethodType)):
+            raise TypeError("func must be a function or method")
+
+        # see if the function has been decorated
+        if hasattr(func, 'return_type') and hasattr(func, 'parameters_types'):
+            signature = [func.return_type] + list(func.parameters_types)
+            # we want to return the type name as string
+            # to avoid marshall problems
+            return [[element.__name__ for element in signature]]
+
+        # no decorator, let's just return Nones
+        # XXX: if defaults are given, we can render their type
+        return [[None] * (self._getFunctionArgumentSize(func) + 1)]
+
     #
     # Lookup APIS
     #
@@ -77,16 +114,20 @@ class XMLRPCIntrospection(object):
         adapter_registrations.sort()
         return adapter_registrations
 
-    def _getFunctionAttributesDoc(self, function):
-        return getFunctionSignature(function)
-
     def _getXMLRPCMethodSignature(self, method_name):
+        """ The signature of a method is an array of
+            signatures (if the method returns multiple signatures)
+            and each array contains the return type then the parameters
+            types:
+
+                [[return type, param1 type, param2 type, ...], [...], ...]
+        """
         interfaces = list(providedBy(self.context))
 
         for result in self._getRegistrationAdapters(interfaces):
             if result.name == method_name:
                 method = getattr(result.value, method_name)
-                return self._getFunctionAttributesDoc(method)
+                return self._getFunctionSignature(method)
         # XXX see RFC here, if we want to raise or no
         return None
 

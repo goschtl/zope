@@ -212,10 +212,46 @@ No we want to test methodHelp and methodSignature, to check that it returns,
 
     - The list of attributes
 
-Let's add a new method that has i all:
+In RPC, the list of attributes has to be return in an array of type:
+
+[return type, param1 type, param2 type]
+
+Since in Python we cannot have a static type for the method return type,
+we introduce here a new mechanism based on a decorator, that let the xmlrpcview
+developer add his own signature.
+
+If the signature is not given, a defaut list is returned:
+
+[None, None, None...]
+
+The decorator append to the function objet two new parameters,
+to get back the signature.
+
+  >>> from zope.app.xmlrpcintrospection.xmlrpcintrospection import xmlrpccallable
+  >>> class JacksonFiveRPC:
+  ...     @xmlrpccallable(str, str, str, str)
+  ...     def says(self, a, b, c):
+  ...         return '%s %s, %s, lalalala, you and me, lalalala' % (a, b, c)
+
+Let's try to get back the signature:
+
+  >>> JacksonFiveRPC().says.return_type
+  <type 'str'>
+  >>> JacksonFiveRPC().says.parameters_types
+  (<type 'str'>, <type 'str'>, <type 'str'>)
+
+The method is still callable as needed:
+
+  >>> JacksonFiveRPC().says('a', 'b', 'c')
+  'a b, c, lalalala, you and me, lalalala'
+
+Let's try out decorated and not decorated methods signatures:
 
   >>> class JacksonFiveRPC:
+  ...     @xmlrpccallable(str, str, str, str)
   ...     def says(self, a, b, c):
+  ...         return '%s %s, %s, lalalala, you and me, lalalala' % (a, b, c)
+  ...     def says_not_decorated(self, a, b, c):
   ...         return '%s %s, %s, lalalala, you and me, lalalala' % (a, b, c)
   >>> from zope.configuration import xmlconfig
   >>> ignored = xmlconfig.string("""
@@ -229,14 +265,14 @@ Let's add a new method that has i all:
   ...
   ...   <xmlrpc:view
   ...       for="zope.app.folder.folder.IFolder"
-  ...       methods="says"
+  ...       methods="says says_not_decorated"
   ...       class="zope.app.xmlrpcintrospection.README.JacksonFiveRPC"
   ...       permission="zope.ManageContent"
   ...       />
   ... </configure>
   ... """)
 
-Now let's try to get the attributes for `says()`:
+Now let's try to get the signature for `says()`:
 
   >>> print http(r"""
   ... POST / HTTP/1.0
@@ -252,17 +288,54 @@ Now let's try to get the attributes for `says()`:
   ... </methodCall>
   ... """, handle_errors=False)
   HTTP/1.0 200 Ok
-  Content-Length: ...
-  Content-Type: text/xml...
+  Content-Length: 327
+  Content-Type: text/xml;charset=utf-8
   <BLANKLINE>
   <?xml version='1.0'?>
   <methodResponse>
   <params>
   <param>
-  <value><string>(a, b, c)</string></value>
+  <value><array><data>
+  <value><array><data>
+  <value><string>str</string></value>
+  <value><string>str</string></value>
+  <value><string>str</string></value>
+  <value><string>str</string></value>
+  </data></array></value>
+  </data></array></value>
   </param>
   </params>
   </methodResponse>
   <BLANKLINE>
 
-  
+Now let's try to get the signature for says_not_decorated()`:
+
+  >>> print http(r"""
+  ... POST / HTTP/1.0
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>methodSignature</methodName>
+  ... <params>
+  ... <param>
+  ... <value>says_not_decorated</value>
+  ... </params>
+  ... </methodCall>
+  ... """, handle_errors=False)
+  HTTP/1.0 200 Ok
+  Content-Length: 267
+  Content-Type: text/xml;charset=utf-8
+  <BLANKLINE>
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><array><data>
+  <value><array><data>
+  <value><nil/></value><value><nil/></value><value><nil/></value><value><nil/></value></data></array></value>
+  </data></array></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
