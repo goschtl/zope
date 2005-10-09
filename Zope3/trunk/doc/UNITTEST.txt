@@ -2,11 +2,11 @@ Zope 3 Unit Testing
 
  How to run Zope 3 unit tests
 
-  In the top level directory, run "python test.py".  This runs all unit
+  In the top level directory, run "python testrunner.py".  This runs all unit
   tests silently (unless errors occur).  It is possible to run the
   tests more verbosely or to be more selective about which tests to
   run.  There are also other options.  For information about all this,
-  run "python test.py -h" which prints an extensive usage message.
+  run "python testrunner.py -h" which prints an extensive usage message.
 
  Zope Testing
 
