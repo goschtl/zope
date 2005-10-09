@@ -25,6 +25,7 @@ from zope.app.file import File
 from zope.app.file.interfaces import IFile
 from zope.app.container.interfaces import IContainer
 from zope.app.publisher.browser import BrowserView
+from zope.app.traversing.interfaces import IPhysicallyLocatable
 
 from wikification.browser.interfaces import IWikiPage
 
@@ -43,13 +44,14 @@ class WikiPage(BrowserView) :
     implements(IWikiPage)
 
     supported = 'text/html', 'application/xhtml+xml', 'application/xml', 'text/xml'
+    title = u"Wiki page"
     
     def __init__(self, context, request) :
         super(WikiPage, self).__init__(context, request)
         
         self.container = self.getContainer()
         self.base = zapi.absoluteURL(self.container, request)
-        self.title = u"Wiki page"
+        self.site = IPhysicallyLocatable(context).getNearestSite()
         
 
     def isAbsoluteLink(self, link) :
@@ -63,7 +65,10 @@ class WikiPage(BrowserView) :
             all other links untouched.
         """
         
-        if self.isAbsoluteLink(link) :
+        site_url = zapi.absoluteURL(self.site, self.request)
+        if link.startswith(site_url) :
+            link = link[len(site_url):]
+        elif self.isAbsoluteLink(link) :
             return False, link
             
         path = link.split("/")
@@ -189,9 +194,7 @@ class EditWikiPage(WikiFilePage) :
     
     def getBody(self) :
         return html_body(self.file.data)
-        
-    #body = property(getBody)
-    
+            
    
 class CreateWikiPage(WikiContainerPage) :
 

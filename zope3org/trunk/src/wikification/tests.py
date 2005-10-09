@@ -103,15 +103,17 @@ def setUpWikification(test) :
     zope.interface.classImplements(File, IAttributeAnnotatable)
     zope.interface.classImplements(Folder, IAttributeAnnotatable)
     
-    ztapi.provideAdapter(None, ITraverser, Traverser)
-    ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
-    ztapi.provideAdapter(None, IPhysicallyLocatable,
-                                            LocationPhysicallyLocatable)
-    ztapi.provideAdapter(IContainmentRoot, IPhysicallyLocatable, 
-                                            RootPhysicallyLocatable)
+    zope.component.provideAdapter(Traverser, [None], ITraverser)
+    zope.component.provideAdapter(DefaultTraversable, [None], ITraversable)
+    zope.component.provideAdapter(LocationPhysicallyLocatable,
+                                            [None], IPhysicallyLocatable)
+    zope.component.provideAdapter(RootPhysicallyLocatable,
+                                            [IContainmentRoot], 
+                                            IPhysicallyLocatable)
 
-    ztapi.provideAdapter(IAnnotatable, 
-                                    IZopeDublinCore, ZDCAnnotatableAdapter)
+    zope.component.provideAdapter(ZDCAnnotatableAdapter,
+                                            [IAnnotatable], 
+                                            IZopeDublinCore)
  
     
 def tearDownWikification(test) :
