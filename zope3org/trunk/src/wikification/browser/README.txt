@@ -47,7 +47,8 @@ We can override the title later
 >>> page.html_title()
 u'Custom title - Wiki site'
 
-The html_title and title are available in the page template namespace now.
+The title and html_title are available in the page template namespace.
+The template uses the html_title in <title> and the title in the page headeline.
 
 >>> template.pt_edit(u'<title tal:content="html_title"/>', 'text/html')
 >>> page.render()

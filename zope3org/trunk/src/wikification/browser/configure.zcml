@@ -43,5 +43,11 @@
       class="wikification.browser.wikipage.EditWikiPage"
       attribute="saveText"
       permission="zope.ManageContent" />
+
+    <!-- browser resources -->
+
+    <resourceDirectory name="style" directory="style" />
+    <resourceDirectory name="images" directory="images" />
+    <resourceDirectory name="scripts" directory="scripts" />
       
 </configure>

@@ -3,8 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title tal:content="html_title">Zope 3</title>
-  <link rel="stylesheet" type="text/css" media="print" href="/print.css" />
-  <link rel="stylesheet" type="text/css" media="screen" href="/screen.css" />
+  <link rel="stylesheet" type="text/css" media="print" href="/@@/style/print.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="/@@/style/screen.css" />
 </head>
 <body>
 <div id="layout">
@@ -12,7 +12,7 @@
     <div class="col first">
       <div id="banner">
         <a tal:attributes="href uris/home">
-          <img src="/circle-z.png" alt="" title="circle-z.png" height="32" width="32" />
+          <img src="/@@/images/circle-z.png" alt="(circle-z)" title="" height="36" width="36" />
           Zope 3
         </a>
       </div>
@@ -48,11 +48,11 @@
           <div metal:use-macro="macros/main_body"/>
         </div> <!-- /main --> 
       </div> <!-- /col first -->
-      <hr />
       <div class="col second">
         <div metal:use-macro="macros/navtree"/>
       </div> <!-- /col second -->
     </div> <!-- /bg -->
+    <hr />
     <div metal:use-macro="macros/layout_footer"/>
   </div> <!-- /layout-columns -->
 </div> <!-- /layout -->

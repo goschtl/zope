@@ -1,0 +1,4 @@
+  <div id="breadcrumbs"
+       metal:define-macro="breadcrumbs">
+    home > about > asdf
+  </div>

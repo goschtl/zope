@@ -1,0 +1,35 @@
+html,
+body {
+  background-color: white;
+  color: black;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-size: 100.01%;
+  font-family: Verdana, sans-serif;
+  padding: 0.5em;
+}
+h1, h2, h3 {
+  margin: 1.5em 0 0.5em 0;
+  line-height: 1.3;
+}
+h1 {
+  font-size: 1.667em;
+  letter-spacing: -0.05em;
+}
+h2 {
+  font-size: 1.334em;
+}
+
+h3 {
+  font-size: 1em;
+}
+a {
+  color: #1949cc;
+}
+a:visited {
+  color: #6677aa;
+}
+
+/* vim: set syn=css: */

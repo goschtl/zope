@@ -1,0 +1,151 @@
+/* main styles for zope3.org */
+
+#layout {
+  width: 100%;
+  font-size: 0.751em;
+  min-width: 980px;
+}
+#layout hr {
+  display: none;
+}
+/* ~ ~ ~ ~ ~ ~ ~ ~ */
+#layout-header {
+  background-color: #e6e6fa;
+  margin-bottom: 1em;
+}
+#layout-header .col.first {
+  width: 49%;
+  float: left;
+}
+#layout-header .col.second {
+  width: 49%;
+  float: right;
+  text-align: right;
+}
+#layout-columns.columns {
+  padding-left: 20em;
+}
+#layout-columns .bg {
+  background-color: white;
+}
+.col {
+  position: relative;
+}
+#layout-columns .col.first {
+  width: 100%;
+  float: right;
+  margin-left: -1em;
+  background-color: white;
+}
+* html #layout-columns .col.first {
+  margin-left: 0;
+}
+#layout-columns .col.second {
+  float: left;
+  width: 20em;
+  margin-left: -20em;
+  margin-right: 1em;
+}
+* html #layout-columns .col.second {
+  margin-right: 0;
+  display: inline;
+}
+/* ~ ~ ~ ~ ~ ~ */
+.nl,
+.nl li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.nl .selected a {
+  color: black;
+}
+/* ~ ~ ~ ~ ~ ~ */
+#banner {
+  float: left;
+  padding: 1.75em 1em;
+}
+#banner a {
+  text-decoration: none;
+  color: black;
+  font-size: 2em;
+}
+#banner img {
+  vertical-align: middle;
+  border: none;
+  margin-top: -4px;
+}
+#user {
+  padding: 1em;
+  padding-bottom: 0em;
+}
+#search {
+  padding: 1em;
+  margin: 0;
+}
+#search fieldset {
+  border: 0px solid white;
+  margin: 0;
+  padding: 0;
+}
+#search input.text {
+  width: 9em;
+  vertical-align: middle;
+  margin-right: 0
+}
+#search input.submit {
+  vertical-align: middle;
+}
+#breadcrumbs .separator {
+  color: #555;
+  padding: 0 0.25em;
+}
+h1#main-header {
+}
+#actions {
+  margin: 1em 0;
+}
+#actions li {
+  display: inline;
+  padding-right: 1.5em;
+  height: 1.5em;
+}
+#actions img {
+  border: none;
+  vertical-align: middle;
+}
+#actions a {
+  text-decoration: none;
+}
+#layout-footer {
+  height: 2.5em;
+  position: relative;
+  border: 1px solid blue;
+}
+/* ~ ~ ~ ~ ~ ~ ~ */
+#search label,
+.nl .marker,
+.outer-space {
+  display: none;
+}
+
+/*(x*/
+#layout-header:after,
+#layout-footer:after,
+.bg:after,
+.columns:after,
+.clearfix:after {
+  clear: both; 
+  content: '.'; 
+  display: block; 
+  height: 0; 
+  visibility: hidden;
+}
+* html .bg,
+* html #layout-footer,
+* html #layout-header,
+* html .columns,
+* html .clearfix {
+  height: 1%; /*(x)*/
+}
+/*x)*/
