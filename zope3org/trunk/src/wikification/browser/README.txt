@@ -1,4 +1,4 @@
-For our Wiki we use a PageInfo object. Its like a renderable PageTemplate
+For our Wiki we use a Template object. It's like a renderable PageTemplate
 namespace. 
 
 >>> from zope.pagetemplate.pagetemplate import PageTemplate
@@ -21,13 +21,23 @@ and now we access the index.html document of the site as an example :
 >>> page.render()
 u'bar\n'
 
-A WikiPageInfo is a specialized PageInfo. We also use a SiteInfo
-object for site specific informations.
+Our PageInfo object also has a macro mapping. So we can easily map macros to names.
+
+>>> macro_template = PageTemplate()
+>>> macro_template.pt_edit(u'<div metal:define-macro="foo">bar</div>', 'text/html')
+>>> page.macros.update(macro_template.macros)
+>>> template.pt_edit(u'<div metal:use-macro="macros/foo"/>', 'text/html')
+>>> page.render()
+u'<div>bar</div>\n'
+
+A WikiPageInfo is a specialized PageInfo. It already knows the main template
+so we don't need to pass it to the constructor. We also use a SiteInfo object
+for site specific informations.
 
 >>> from wikification.browser.utils import SiteInfo 
 >>> from wikification.browser.utils import WikiPageInfo
 >>> site = SiteInfo(context)
->>> page = WikiPageInfo(context, request, template)
+>>> page = WikiPageInfo(context, request)
 >>> page.html_title()
 u'Wiki page - Wiki site'
 
@@ -41,16 +51,8 @@ The html_title and title are available in the page template namespace now.
 
 >>> template.pt_edit(u'<title tal:content="html_title"/>', 'text/html')
 >>> page.render()
-u'<title>Custom title - Wiki site</title>\n'
+u'...<title>Custom title - Wiki site</title>...'
 >>> template.pt_edit(u'<h1 tal:content="title"/>', 'text/html')
 >>> page.render()
-u'<h1>Custom title</h1>\n'
+u'...Custom title...'
 
-Our PageInfo object also has a macro mapping. So we can easily map macros to names.
-
->>> macro_template = PageTemplate()
->>> macro_template.pt_edit(u'<div metal:define-macro="foo">bar</div>', 'text/html')
->>> page.macros.update(macro_template.macros)
->>> template.pt_edit(u'<div metal:use-macro="macros/foo"/>', 'text/html')
->>> page.render()
-u'<div>bar</div>\n'

@@ -28,7 +28,9 @@ from zope.app.publisher.browser import BrowserView
 
 from wikification.browser.interfaces import IWikiPage
 
-from zope.pagetemplate.pagetemplatefile  import PageTemplateFile
+from kupusupport.adapters import html_body
+
+from wikification.browser.utils import WikiPageInfo
 
 class WikiPage(BrowserView) :
     """ A wiki page that 'wikifies' a container with ordinary HTML documents.
@@ -38,41 +40,17 @@ class WikiPage(BrowserView) :
         
     """
     
-    editable = False
+    implements(IWikiPage)
+
     supported = 'text/html', 'application/xhtml+xml', 'application/xml', 'text/xml'
     
-    implements(IWikiPage)
-    
-    main = PageTemplateFile("main_template.pt")
-       
     def __init__(self, context, request) :
         super(WikiPage, self).__init__(context, request)
         
         self.container = self.getContainer()
-        self.file = self.getFile()
         self.base = zapi.absoluteURL(self.container, request)
         self.title = u"Wiki page"
         
-    def wiki(self) :
-        """ Shows a wikified version of the context. 
-             
-        """
-        
-        from kupusupport.adapters import html_body
-        
-        file = self.getFile()
-        if file.contentType in self.supported :
-            if self.editable :
-                body = html_body(file.data)
-            else :
-                body = file.data
-            self.request.response.setHeader("Content-Type", "text/html")
-            return self.render(body)
-            
-        info = WikPageInfo(body, self.context, self.request, self.main)
-        
-        return "Sorry, not wikifiable at the moment."
-       
 
     def isAbsoluteLink(self, link) :
         for prefix in 'http:', 'ftp:', 'https:', 'mailto:' :
@@ -96,7 +74,7 @@ class WikiPage(BrowserView) :
             return True, self.base + "/createPage?path=" + "/".join(path)
  
  
-    def render(self, body) :
+    def wikify(self, body) :
         """ 
             Renders HTML with dead relative links as 'wikified' HTML,
             i.e. dead relative links are converted to links that
@@ -131,6 +109,92 @@ class WikiPage(BrowserView) :
         return processor.output()
      
       
+    def nextURL(self) :
+        url = zapi.absoluteURL(self.context, self.request)
+        return url + "/@@wiki"
+
+
+class WikiContainerPage(WikiPage) :
+    """ Wiki view for a container. """
+    
+    empty = File("""<html><body>No index.html found.</body></html>""", 
+                        "text/html")
+    
+    def getContainer(self) :
+        return self.context
+        
+    def getFile(self) :
+        return self.context.get(u"index.html", self.empty)
+
+    def renderBody(self) :
+        
+        file = self.getFile()
+        return WikiFilePage(file, self.request).renderBody()
+
+    def render(self):
+        pass
+        
+        
+class WikiFilePage(WikiPage) :
+    """ Wiki view for a file. """
+    
+    def getContainer(self) :
+        return self.context.__parent__
+        
+    def renderBody(self) :
+        
+        file = self.context
+
+        if file.contentType in self.supported :
+            body = html_body(file.data)
+            #self.request.response.setHeader("Content-Type", "text/html")
+            return self.wikify(body)
+            
+            #info = WikPageInfo(body, self.context, self.request, self.main)
+       
+        # file type not supported
+        return "Sorry, not wikifiable at the moment."
+
+    def __call__(self):
+        page = WikiPageInfo(self.context, self.request) 
+        return page.render()
+        
+class EditWikiPage(WikiFilePage) :
+
+    def renderBody(self) :
+        """ Shows a wikified version of the context. 
+             
+        """
+        
+        file = self.context
+        body = html_body(file.data)
+        #self.request.response.setHeader("Content-Type", "text/html")
+        return self.wikify(body)
+            
+        #info = WikPageInfo(body, self.context, self.request, self.main)
+        
+        # not in supported content types
+
+    def render(self):
+        pass
+
+    def saveText(self) :
+        """
+            Generic store method.           
+        """
+        request = self.request
+        text = request.form.get("body")        
+        self.file.data = text        
+        request.response.redirect(self.nextURL())
+    
+    def getBody(self) :
+        return html_body(self.file.data)
+        
+    #body = property(getBody)
+    
+   
+class CreateWikiPage(WikiContainerPage) :
+
     def createFile(self) :
         """
             Creates a file at the given path. Creates all intermediate
@@ -157,65 +221,14 @@ class WikiPage(BrowserView) :
             file = File()
             container[path[-1]] = file
         return file
-        
+
     def saveText(self) :
         """
             Generic store method.           
         """
         request = self.request
         text = request.form.get("body")        
-        if self.create :
-            file = self.createFile()
-        else :
-            file = self.file
+        file = self.createFile()
         file.data = text        
         request.response.redirect(self.nextURL())
 
-    def nextURL(self) :
-        url = zapi.absoluteURL(self.context, self.request)
-        return url + "/@@wiki"
-
-
-        
-class WikiContainerPage(WikiPage) :
-    """ Wiki view for a container. """
-    
-    empty = File("""<html><body>Sorry, explanations later.</body></html>""", 
-                        "text/html")
-    
-    def getContainer(self) :
-        return self.context
-        
-    def getFile(self) :
-        return self.context.get(u"index.html", self.empty)
-        
-        
-class WikiFilePage(WikiPage) :
-    """ Wiki view for a file. """
-    
-    def getContainer(self) :
-        return self.context.__parent__
-        
-    def getFile(self) :
-        return self.context
-        
-        
-class EditWikiPage(WikiFilePage) :
-
-    editable = True
-    create = False
-    
-    def getBody(self) :
-        return html_body(self.file.data)
-        
-    body = property(getBody)
-    
-   
-class CreateWikiPage(WikiContainerPage) :
-
-    editable = True
-    create = True
-    
-    body = u""
-    
-    

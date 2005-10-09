@@ -2,11 +2,12 @@
 
   <div id="breadcrumbs"
        metal:define-macro="breadcrumbs">
-    breadcrumbs
+    BREADCRUMBS
   </div>
 
   <h1 id="main-header"
-       metal:define-macro="main_header">
+       metal:define-macro="main_header"
+       tal:content="title">
     main header
   </h1>
 

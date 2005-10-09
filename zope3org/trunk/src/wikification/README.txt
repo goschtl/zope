@@ -6,7 +6,7 @@ As a minimal assumption we consider only file and folder content types.
 
 Let's take some example pages :
 
->>> from tests import buildSampleSite
+>>> from wikification.tests import buildSampleSite
 >>> site = buildSampleSite()
 
 The site has the following structure
@@ -51,10 +51,10 @@ one, the resulting HTML could look as follows :
 
 
     >>> from wikification.browser.wikipage import WikiFilePage
+    >>> from wikification.browser.wikipage import CreateWikiPage
     >>> page = WikiFilePage(index_page, TestRequest("/index.html"))
-    >>> print page.wiki()
-    <html>
-        <body>
+    >>> print page.renderBody()
+    <BLANKLINE>
             <p>Wikifiable</p>
             <p>An <a href="target">existing link</a></p>
             <p>A <a style="color: red" href="http://127.0.0.1/site/createPage?path=newitem">new page</a></p>
@@ -62,8 +62,7 @@ one, the resulting HTML could look as follows :
             <p>A [New Subject]</p>
             <p>An <a href="http://www.google.org">external absolute link</a></p>
             <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
-        </body>
-    </html>
+    <BLANKLINE>
 
     The task of creating a new page is delegated to the createFile method of the 
     wiki page. We considered the possibility to adapt the traversal mechanism
@@ -71,7 +70,7 @@ one, the resulting HTML could look as follows :
     page method seems to be the simplest solution:
     
     >>> request = TestRequest("/index.html", form={'path':'folder1/newitem', })
-    >>> page = WikiFilePage(index_page, request)
+    >>> page = CreateWikiPage(site, request)
     >>> new_file = page.createFile()  
     >>> site[u'folder1'][u'newitem']
     <zope.app.file.file.File object at ...>

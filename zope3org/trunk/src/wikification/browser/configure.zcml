@@ -7,29 +7,27 @@
       name="wiki"
       for="zope.app.folder.interfaces.IFolder"
       class="wikification.browser.wikipage.WikiContainerPage"
-      attribute="wiki"
+      attribute="render"
       permission="zope.View" />
 
     <page		
       name="wiki"
       for="zope.app.file.interfaces.IFile"
       class="wikification.browser.wikipage.WikiFilePage"
-      attribute="wiki"
       permission="zope.View" />
-
 
     <page		
       name="editPage"
       for="zope.app.file.interfaces.IFile"
       class="wikification.browser.wikipage.EditWikiPage"
-      template="edit.pt"
+      attribute="render"
       permission="zope.ManageContent" />
     
     <page		
       name="createPage"
       for="zope.app.folder.interfaces.IFolder"
       class="wikification.browser.wikipage.CreateWikiPage"
-      template="edit.pt"
+      attribute="render"
       permission="zope.ManageContent" />
 
     <page		
