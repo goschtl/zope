@@ -94,11 +94,17 @@ class XMLRPCIntrospection(object):
             signature = [func.return_type] + list(func.parameters_types)
             # we want to return the type name as string
             # to avoid marshall problems
-            return [[element.__name__ for element in signature]]
+            str_signature = []
+            for element in signature:
+                if element is None or not hasattr(element, '__name__'):
+                    str_signature.append('undef')
+                else:
+                    str_signature.append(element.__name__)
+            return [str_signature]
 
         # no decorator, let's just return Nones
         # XXX: if defaults are given, we can render their type
-        return [[None] * (self._getFunctionArgumentSize(func) + 1)]
+        return [['undef'] * (self._getFunctionArgumentSize(func) + 1)]
 
     #
     # Lookup APIS

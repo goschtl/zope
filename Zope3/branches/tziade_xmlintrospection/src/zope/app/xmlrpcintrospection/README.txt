@@ -323,7 +323,11 @@ Now let's try to get the signature for says_not_decorated()`:
   <param>
   <value><array><data>
   <value><array><data>
-  <value><nil/></value><value><nil/></value><value><nil/></value><value><nil/></value></data></array></value>
+  <value><string>undef</string></value>
+  <value><string>undef</string></value>
+  <value><string>undef</string></value>
+  <value><string>undef</string></value>
+  </data></array></value>
   </data></array></value>
   </param>
   </params>
