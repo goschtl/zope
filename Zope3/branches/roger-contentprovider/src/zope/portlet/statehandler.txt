@@ -88,14 +88,14 @@ to find it; and we have to register a PrincipalAnnotationUtility for this.
   >>> class Principal:
   ...     def __init__(self, id):
   ...         self.id = id
-  >>> principal = Principal('zope.user')
+  >>> fooPrincipal = Principal('foo')
 
   >>> class Participation:
   ...     interaction = None
   ...     def __init__(self, principal):
   ...         self.principal = principal
 
-  >>> participation = Participation(principal)
+  >>> participation = Participation(fooPrincipal)
 
   >>> import zope.security.management
   >>> zope.security.management.endInteraction()
@@ -125,3 +125,28 @@ handler we get an exception:
   ...
   ConstraintNotSatisfied: exploded...
   
+No try with another principal:
+  
+  >>> barPrincipal = Principal('bar')
+  >>> participation = Participation(barPrincipal)
+  >>> zope.security.management.endInteraction()
+  >>> zope.security.management.newInteraction(participation)
+
+The state does not have a default value:
+  
+  >>> handler.getState(name='dummy.portlet')
+  
+  >>> handler.setState('visible', name='dummy.portlet')
+  >>> handler.getState(name='dummy.portlet')
+  'visible'
+  
+Now switch back to the previous principal:
+
+  >>> participation = Participation(fooPrincipal)
+  >>> zope.security.management.endInteraction()
+  >>> zope.security.management.newInteraction(participation)
+
+  >>> handler.getState(name='dummy.portlet')
+  'hidden'
+
+    

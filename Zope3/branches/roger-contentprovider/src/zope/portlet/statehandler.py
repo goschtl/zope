@@ -38,29 +38,32 @@ class PreferenceStateHandler(object):
         """Set the state of the portlet; the name parameter is the name
            of the portlet in the portlet manager.
         """
-        cpType = zapi.queryType(self.context, IContentProviderType)
-        cpTypeName = cpType.__module__ + '.' + cpType.__name__
-        settings = preference.PreferenceGroup(
-            cpTypeName + '/' + name,
-            schema=IPortletPreference,
-            title=u"Portlet User Settings",
-            description=u""
-            )
+        settings = self.getSettings(getPortletKeyString(self.context, name))
         settings.state = value
 
     def getState(self, name):
         """Return the state of the portlet; the name parameter is the name
            of the portlet in the portlet manager.
         """
-        cpType = zapi.queryType(self.context, IContentProviderType)
-        cpTypeName = cpType.__module__ + '.' + cpType.__name__
-        settings = preference.PreferenceGroup(
-            cpTypeName + '/' + name,
+        settings = self.getSettings(getPortletKeyString(self.context, name))
+        return settings.state
+
+    def getSettings(self, key):
+        """Return the preferences element belonging to the key given.
+        """
+        return preference.PreferenceGroup(
+            key,
             schema=IPortletPreference,
             title=u"Portlet User Settings",
             description=u""
             )
-        return settings.state
 
 
-
+def getPortletKeyString(context, name):
+    """Return a string for a portlet object (context) and name that
+       may be used for accessing a state setting in a mapping.
+    """
+    cpType = zapi.queryType(context, IContentProviderType)
+    cpTypeName = cpType.__module__ + '.' + cpType.__name__
+    key = cpTypeName + '/' + name
+    return key
