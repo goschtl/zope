@@ -136,8 +136,8 @@ an object modified event for the context:
 
     >>> e = events.pop()
     >>> (e.object == subject, e.__class__.__name__ , 
-    ...  e.descriptions[0].interface.__name__, e.descriptions[0].keys)
-    (True, 'ObjectModifiedEvent', 'IComments', (2,))
+    ...  e.descriptions[0].interface.__name__, e.descriptions[0].attributes)
+    (True, 'ObjectModifiedEvent', 'IComments', ())
 
 You can edit a comment passing its key, its data and optionaly its contentType.
 An edition notifies an object modified event for the context and a object

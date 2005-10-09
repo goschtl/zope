@@ -237,6 +237,6 @@ class CommentsForAnnotableComments(Location):
         """See comment.IDeleteComments"""
         if self.comments is not None:
             self.comments.__delitem__(key)
-            notify(ObjectModifiedEvent(self.context, Sequence(IComments, key)))
+            notify(ObjectModifiedEvent(self.context, Attributes(IComments)))
         else:
             raise KeyError(key)
