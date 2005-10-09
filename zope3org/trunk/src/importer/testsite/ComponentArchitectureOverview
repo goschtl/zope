@@ -1,0 +1,677 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"><title>Zope.org - ComponentArchitectureOverview</title>
+
+    
+
+    
+    
+       
+       
+          <!-- base href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview/" --><!-- Basic crude style for Netscape4.x - This can be removed
+         if you don't want the special NS4 look - it will still work,
+	 just be plain text instead. -->
+       
+    
+  
+
+
+    
+    <link rel="Stylesheet" type="text/css" href="ComponentArchitectureOverview_files/ploneNS4.css"><!-- Main style sheets for CSS2 capable browsers -->
+
+    
+    <style type="text/css" media="all"> @import url(http://www.zope.org/plone.css?skin=);</style><!-- Custom style sheet if available -->
+
+    
+    <style type="text/css" media="all">@import url(http://www.zope.org/ploneCustom.css);</style><!-- Style sheet used for printing -->
+
+    
+    <link rel="stylesheet" type="text/css" media="print" href="ComponentArchitectureOverview_files/plonePrint.css"><!-- Style sheet used for presentations (Opera is the only browser supporting this at the moment) -->
+
+    
+    <link rel="stylesheet" type="text/css" media="projection" href="ComponentArchitectureOverview_files/plonePresentation.css">
+
+    <link rel="shortcut icon" href="http://www.zope.org/favicon.ico" type="image/x-icon">
+
+    <link rel="home" href="http://www.zope.org/" title="Front Page">
+    <link rel="search" href="http://www.zope.org/search_form" title="Search this site"><!-- Disable IE6 image toolbar -->
+
+    
+    <meta http-equiv="imagetoolbar" content="no"><!-- Common Plone ECMAScripts -->
+
+    
+    
+  
+
+    
+
+    
+    
+
+    
+  
+
+    
+    
+  
+
+    
+    <script type="text/javascript" src="ComponentArchitectureOverview_files/plone_javascripts"></script>
+
+    
+      
+      
+        <script language="javascript" type="text/javascript">
+          function formtooltip(el,flag){}
+        </script></head>
+
+
+
+<body>
+
+<div>
+
+     
+
+        <div class="top">
+
+            <div class="searchBox">
+                <form name="searchform" action="http://www.zope.org/search">
+
+                    <input id="searchGadget" name="SearchableText" size="20" tabindex="30001" type="text">
+
+                    <input class="context searchButton" value="Search" tabindex="30002" type="submit">
+                </form>
+            </div>
+
+            <a href="http://www.zope.org/">
+                <img src="ComponentArchitectureOverview_files/logo.gif" class="logo" alt="" border="0" height="54" width="201">
+            </a>
+        </div>
+
+        <hr class="netscape4" size="">
+
+        <div class="tabs">
+
+
+        </div>
+
+        <div class="personalBar">&nbsp;
+
+            
+
+            <span>You are not logged in</span>
+
+            
+            <a href="http://www.zope.org/login_form">
+                <img src="ComponentArchitectureOverview_files/linkOpaque.gif" alt="" title="" border="0" height="1" width="1">
+
+                Log in
+            </a>
+            
+            
+            <a href="http://www.zope.org/portal_form/join_form">
+                <img src="ComponentArchitectureOverview_files/linkOpaque.gif" alt="" title="" border="0" height="1" width="1">
+
+                Join
+            </a>
+            
+        </div>
+
+        <div class="pathBar">
+
+            
+	    You are here:
+	        
+                <a href="http://www.zope.org/">Home</a>
+                <strong>»</strong>
+            
+
+            
+
+            <span>
+
+                
+
+                <a href="http://www.zope.org/Wikis">Wikis</a>
+                <strong> » </strong>
+                
+
+            </span>
+            <span>
+
+                
+
+                <a href="http://www.zope.org/Wikis/DevSite">DevSite</a>
+                <strong> » </strong>
+                
+
+            </span>
+            <span>
+
+                
+
+                <a href="http://www.zope.org/Wikis/DevSite/Projects">Projects</a>
+                <strong> » </strong>
+                
+
+            </span>
+            <span>
+
+                
+
+                <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture">ComponentArchitecture</a>
+                <strong> » </strong>
+                
+
+            </span>
+            <span>
+
+                
+
+                
+                
+                <span>ComponentArchitectureOverview</span>
+
+            </span>
+
+        </div>
+
+        <hr class="netscape4" size="">
+
+    </div>
+
+
+<table class="columns">
+
+    <tbody>
+        <tr>
+            <td class="left">
+                
+                
+                    <div class="box">
+        <div class="body">
+        <ul>
+	  <li>
+          <a href="http://www.zope.org/Products/">Download</a>
+	  <ul>
+	     <li>
+               <a href="http://www.zope.org/Products/">Download Zope</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Products/">Zope Products</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Products/CMF/">Zope CMF</a>
+	    </li>
+	  </ul>
+         </li>
+        </ul>
+        <ul>
+	  <li>
+          <a href="http://www.zope.org/Resources/">Resources</a>
+	  <ul>
+	     <li>
+               <a href="http://www.zope.org/Collectors/">Report Bugs</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Resources/MailingLists">Mailing Lists</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Resources/UserGroups/">User Groups</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Resources/License/">License</a>
+	    </li>
+	  </ul>
+         </li>
+        </ul>
+        <ul>
+	  <li>
+          <a href="http://www.zope.org/Documentation/">Documentation</a>
+	  <ul>
+	     <li>
+               <a href="http://www.zope.org/Documentation/Books/ZopeBook/">The Zope Book</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Documentation/Books/ZopeBook/current/AppendixB.stx">API reference</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Documentation/Books/ZopeBook/current/AppendixC.stx">ZPT reference</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Documentation/Books/ZDG/">Developer Guide</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Products/CMF/docs/">CMF Documentation</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Resources/Articles/">Zope Articles</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Documentation/How-To/">Zope How-Tos</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.com/about_us/open_source_community/zope_and_python_books.html">Books In Print</a>
+	    </li>
+	  </ul>
+         </li>
+        </ul>
+        <ul>
+	  <li>
+          <a href="http://www.zope.org/WhatIsZope">About Zope</a>
+	  <ul>
+	     <li>
+               <a href="http://www.zope.org/WhatIsZope">What Is Zope?</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Resources/ZopePowered/">Zope Powered Sites</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/About/">About Zope.org</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Help/">Member FAQ</a>
+	    </li>
+	  </ul>
+         </li>
+        </ul>
+        <ul>
+	  <li>
+          <a href="http://www.zope.org/Resources/ZSP/">Business</a>
+	  <ul>
+	     <li>
+               <a href="http://www.zope.com/">Zope Corporation</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Resources/ZSP/">Solution Providers</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Training/">Zope Training</a>
+	    </li>
+	  </ul>
+         </li>
+        </ul>
+        <ul>
+	  <li>
+          <a href="http://dev.zope.org/">Developers</a>
+	  <ul>
+	     <li>
+               <a href="http://dev.zope.org/Projects/">Zope Projects</a>
+	    </li>
+	     <li>
+               <a href="http://dev.zope.org/Zope3">Zope 3</a>
+	    </li>
+	     <li>
+               <a href="http://dev.zope.org/CVS/">Zope CVS</a>
+	    </li>
+	     <li>
+               <a href="http://dev.zope.org/Subversion/">Zope SVN</a>
+	    </li>
+	  </ul>
+         </li>
+        </ul>
+        <ul>
+	  <li>
+          <a href="http://www.zope.org/">Zope Exits</a>
+	  <ul>
+	     <li>
+               <a href="http://www.zopewiki.org/">ZopeWiki</a>
+	    </li>
+	     <li>
+               <a href="http://www.zopezen.org/">ZopeZen</a>
+	    </li>
+	     <li>
+               <a href="http://www.zopezone.com/">ZopeZone</a>
+	    </li>
+	     <li>
+               <a href="http://www.plone.org/">Plone</a>
+	    </li>
+	     <li>
+               <a href="http://www.zopelabs.com/">ZopeLabs</a>
+	    </li>
+	     <li>
+               <a href="http://www.dzug.org/">Zope Germany</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.it/">Zope Italia</a>
+	    </li>
+	     <li>
+               <a href="http://www.tchezope.org/">Zope Brazil</a>
+	    </li>
+	     <li>
+               <a href="http://www.ozzope.org/">OzZope</a>
+	    </li>
+	     <li>
+               <a href="http://www.zopera.org/">Zopera</a>
+	    </li>
+	     <li>
+               <a href="http://www.zopemag.com/">ZopeMag</a>
+	    </li>
+	     <li>
+               <a href="http://zope.freerecruiting.com/">Zope Jobs</a>
+	    </li>
+	  </ul>
+         </li>
+        </ul>
+        </div>
+   </div>
+                
+                
+                
+                
+                
+                    
+
+    <div class="box">
+
+        <h5>Log in</h5>
+
+        <div class="body">
+        
+            <div class="content odd">
+                <form action="http://www.zope.org/logged_in" id="login_box_form" method="post">
+    
+ 
+                    <strong>Name</strong> <br>
+                    <input name="__ac_name" size="12" alt="Username" title="Username" tabindex="10001" type="text">
+    
+                    <br>
+    
+                    <strong>Password</strong>  <br>
+                    <input name="__ac_password" size="12" alt="Password" title="Password" tabindex="10002" type="password">
+    
+                    <br>
+                    &nbsp;
+                    <br>
+    
+                    <input class="context searchButton" name="submit" value="Log in" tabindex="10003" type="submit">
+
+                   
+    
+                </form>
+<script type="text/javascript" language="javascript"><!--
+
+function getCookie(cname) {
+  var search = cname + "="
+  if (document.cookie.length > 0) {
+    offset = document.cookie.indexOf(search);
+    if (offset != -1) {
+      offset += search.length;
+      end = document.cookie.indexOf(";", offset);
+      if (end == -1){
+          end = document.cookie.length;
+      }
+      var value = unescape(document.cookie.substring(offset, end));
+      if (value.charAt(0) == '"' && value.charAt(value.length -1) == '"') {
+        value = value.substring(1, value.length -1);
+      }
+      return value;
+    }
+  }
+  return '';
+}
+
+window.document.forms.login_box_form.elements[0].value=getCookie('__ac_name');            
+--></script>
+            </div>
+    
+            <div class="content even"> 
+                <a href="http://www.zope.org/mail_password_form">
+                   <img src="ComponentArchitectureOverview_files/linkTransparent.gif" alt="Link icon" title="Link icon" border="0" height="11" width="6">
+                   Forgot your password?
+                </a>
+            </div>
+
+            <div class="content odd">
+          
+                <a href="http://www.zope.org/portal_form/join_form">
+                    <img src="ComponentArchitectureOverview_files/linkTransparent.gif" alt="Link icon" title="Link icon" border="0" height="11" width="6">
+                    New user?
+                </a>
+    
+            </div>
+
+        </div>
+        
+    </div>
+
+
+                
+                
+                
+            </td>
+            <td class="main">
+
+                
+
+                <div id="contentTabs">
+
+                    
+                        <a class="selected" href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview/wikipage_view">
+                            View
+                        </a>
+                    
+                    
+                        <a class="plain" href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview/diff">
+                            History
+                        </a>
+                    
+                    
+                        <a class="plain" href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview/backlinks">
+                            Backlinks
+                        </a>
+                    
+                    
+                        <a class="plain" href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview/subscribeform">
+                            Subscribe
+                        </a>
+                    
+                    
+                        <a class="plain" href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview/dc_view">
+                            DublinCore
+                        </a>
+                    
+
+                </div>
+
+                <div id="contentBar">
+                &nbsp;
+                </div>
+
+                
+
+                <div class="editableDocument">
+
+                    <div id="content">
+
+                        
+
+                        <div class="documentActions">
+
+                            
+
+                            
+
+                            <a href="javascript:this.print();">
+                                <img alt="Print" src="ComponentArchitectureOverview_files/print_icon.gif" title="Print this page">
+                            </a>
+                        </div>
+
+                        
+
+                        <div>
+
+<!-- Commented out header for now, since I can't control its layout ~limi
+    <div tal:condition="not: wiki_header_present|nothing">
+      <span tal:condition="nothing"> In case master has no "header" macro. </span>
+      <div tal:replace="structure here/wikipage_header"> </div>
+    </div>
+-->
+
+    <small>
+    
+        <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview/FrontPage">FrontPage</a> 
+        »
+    
+    </small>
+    
+    
+    <h1>ComponentArchitectureOverview</h1>
+
+    <h2>Component Architecture Overview</h2>
+<p>  The new
+  component architecture seeks to make developing for Zope easier by
+  clarifying and simplifying the task of extending Zope.  Radical as
+  this change may sound, it is in fact more philosophical than
+  architectural. Most of the changes we propose for Zope are just new
+  <em>patterns</em> for developing with Zope.</p>
+<p>  The new component architecture will continue to be backwards compatible
+  with the "old" way of doing things.  While we don't guarantee
+  backward compatibility forever, rest assured that Zope is <em>not</em>
+  changing radically.</p>
+<p>  Here is a brief high level overview of Zope's new component architecture.
+  For more background on why components are a good thing, see <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureApproach" title="last edited 1 year ago by guido1st">ComponentArchitectureApproach</a>.</p>
+<h3>  Components</h3>
+<p>    A <em>component</em> is an object with introspectable interfaces.  An
+    <em>interface</em> is an object that describes how you work with a
+    particular component.  Really, it doesn't matter how the component
+    is <em>implemented</em>, the important part is that it comply with its
+    interface contracts.</p>
+<p>    Because of this, different components can assert the same
+    interface, but be implemented in different ways.  For example, you
+    could have a two different "Document" components, one that stored
+    its contents in a database, and one that stored its contents in a
+    file.  It doesn't matter which kind you use, as long as you
+    implement the "Document" interface.  Any tool
+    designed to work with one component will work seamlessly with the
+    other.</p>
+<h3>  Content Components</h3>
+<p>    The simplest kinds of components are <em>Content Components</em>.
+    Content components are components that are designed to hold data
+    or "content".  For example, <em>Document</em>, and <em>Image</em> are examples
+    of content components.</p>
+<p>    Content components are very simple, they generally only define an
+    interface for controlling their content.  The <em>don't</em> provide
+    interfaces for doing application specific things (like, for
+    example, mailing the content to another person) nor do they
+    provide user interfaces like HTML pages.</p>
+<h3>  Factory Components</h3>
+<p>    Factory components are components that create other components.
+    For the most basic Zope component development, you will only need
+    to create two kinds of components: a content component, and a
+    factory component to create instances of that content component.
+    Factory components are typically easy to implement (after all,
+    their only task is to create another component).</p>
+<p>    Once you have created a content component and a factory component
+    you can begin to immediately use your component in Zope through
+    <em>Python Scripts</em> (which already come with Zope).  Your component
+    will not, however, have any kind of web management interface. For
+    that, you need to create a <em>Presentation Component</em>.</p>
+<h3>  View Components</h3>
+<p>    View components provide a user interface to other
+    components.  The most common pattern is to create a view
+    component that <em>presents</em> (or provides a "user interface" for) a
+    content component.  An example of view components that can
+    be used with Zope are Zope Page Templates (ZPT).  Page templates
+    are <em>only</em> about presentation, and should not contain any kind of
+    application-specific logic.  For example, you could create a
+    "Show" view component that displayed your "Document"
+    content component in HTML.</p>
+<p>    However, view components and content components may not do
+    everything you need to develop your application.  If you wish to
+    extend your content component to have more advanced behavior
+    (other than just storing content) you can extend them with
+    <em>Adapter Components</em>.</p>
+<h3>  Adapter Components</h3>
+<p>    <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/Adapter" title="last edited 2 years ago by srichter">Adapter</a> components sit between content components and view
+    components.  Typically, they are used to provide application
+    specific functionality to your content components.</p>
+<p>    For example, your "Document" content component may have an
+    <code>edit()</code> method, but it does not have a <code>mailToSubscribers()</code>
+    method that you need to satisfy your requirements.  Instead of
+    changing the content component or the view component, new
+    <em>application specific</em> features are added by creating a adapter
+    component.</p>
+<p>    Content, Factory, View and Adapter components are the four
+    most common kinds of components.  There are two other kinds,
+    however, that will be available to you.  These are <em>Utility</em> and
+    <em>Service</em> components.</p>
+<h3>  Utility Components</h3>
+<p>    Utility components are components that serve only one specific
+    function, and are not designed to act <em>on</em> another component.  A
+    good analogy for Python programmers are functions and methods.
+    Utility components, like Python functions, are standalone objects
+    that do not need any other objects to do their work.  Adapter
+    components, like Python methods, require another object to <em>work
+    upon</em>.</p>
+<p>    Utility components will mostly be used for simple, throw-away
+    components that serve one simple task, like an XML parser.</p>
+<h3>  Service Components</h3>
+<p>    The last kind of component is a <em>Service Component</em>.  Services are
+    a small set of core functionality provided by the Zope platform.
+    These can be thought of as the "kernel" that Zope provides for
+    your web applications.  Services we anticipate existing in Zope
+    include user sessions, authentication, workflow, content-type
+    management, and even managing your components themselves.</p>
+<h3>  Conclusion</h3>
+<p>    The new Zope component architecture promises to provide a simple web
+    application environment that is both simple to learn and easy to
+    use.
+<a name="messages"></a></p>
+<p><a name="msg20040414200716EST@dev.zope.org"></a>
+<img src="ComponentArchitectureOverview_files/discussionitem_icon.gif" style="border: medium none ; margin: 0pt;"><b>french translation</b> --[zopeur]<a class="new" href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview/editform?page=zopeur" title="create this page">?</a>,  <a href="http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview#msg20040414200716EST@dev.zope.org">2004/04/14 20:07 EST</a> <a href="http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview?subject=french%20translation&amp;in_reply_to=%3C20040414200716EST%40dev.zope.org%3E#bottom">reply</a><br>
+I have dropped a french translation of this document here : 
+<a href="http://zope.org/Members/zopeur/Document.2004-04-14.5532">http://zope.org/Members/zopeur/Document.2004-04-14.5532</a></p>
+<p><a name="msg20040730085004EST@dev.zope.org"></a>
+<img src="ComponentArchitectureOverview_files/discussionitem_icon.gif" style="border: medium none ; margin: 0pt;"><b>french translation</b> --[davconvent]<a class="new" href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview/editform?page=davconvent" title="create this page">?</a>,  <a href="http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview#msg20040730085004EST@dev.zope.org">2004/07/30 08:50 EST</a> <a href="http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview?subject=french%20translation&amp;in_reply_to=%3C20040730085004EST%40dev.zope.org%3E#bottom">reply</a><br>
+This page is only available to its owner</p>
+<p><a name="msg20041020125602EST@dev.zope.org"></a>
+<img src="ComponentArchitectureOverview_files/discussionitem_icon.gif" style="border: medium none ; margin: 0pt;"><b>it's ok now</b> --[tarek]<a class="new" href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview/editform?page=tarek" title="create this page">?</a>,  <a href="http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview#msg20041020125602EST@dev.zope.org">2004/10/20 12:56 EST</a> <a href="http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ComponentArchitectureOverview?subject=it%27s%20ok%20now&amp;in_reply_to=%3C20041020125602EST%40dev.zope.org%3E#bottom">reply</a><br>
+you can see it now</p>
+
+    
+    <div>
+      
+      <a name="bottom"></a>
+
+
+
+    </div>
+
+</div>
+
+                        
+                        <div>
+    
+</div>
+                        
+                    </div>
+                </div>
+            </td>
+
+            
+        </tr>
+    </tbody>
+</table>
+
+<hr class="netscape4" size="">
+
+<div class="footer">
+
+Copyright (c) 2005 Zope Corporation. All rights reserved.
+<a href="http://www.zope.com/about_us/legal/legal_notice.html">Legal</a> | <a href="mailto:webmaster@zope.org">Contact</a>
+
+<hr class="netscape4" size="">
+
+<strong class="netscape4">
+If you can read this text, it means you are not experiencing the Plone design at its best.
+Plone makes heavy use of CSS, which means it is accessible to any internet browser, 
+but the design needs a 
+<a href="http://www.webstandards.org/upgrade/">standards-compliant browser to look like we intended it</a>. 
+Just so you know ;)
+</strong>
+ 
+</div>
+
+</body></html>

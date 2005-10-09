@@ -1,0 +1,14 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  i18n_domain="zope">
+
+  <page
+      name="import.html"
+      for="book.messageboard.interfaces.IContainer"
+      class=".Importer"
+      template="import.pt"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Import"
+      />
+
+</configure>
