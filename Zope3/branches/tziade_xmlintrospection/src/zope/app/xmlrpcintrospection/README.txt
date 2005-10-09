@@ -2,6 +2,9 @@
 XMLRPC Introspection
 ====================
 
+What's introspection now ?
+--------------------------
+
 This Zope 3 package provides an xmlrpcintrospection mechanism,
 as defined here:
 
@@ -15,9 +18,33 @@ It registers three new xmlrpc methods:
 
     - `methodSignature(method_name)`: Returns the method documentation of the given method.
 
+
+How do I use it ?
+-----------------
+
+Basically, if you want to add introspection into your XMLRPCView, you just
+have to add a decorator for each method of the view, that specifies the return type of the
+method and the argument types.
+
+The decorator is called `xmlrpccallable`
+
+  >>> from zope.app.xmlrpcintrospection.xmlrpcintrospection import xmlrpccallable
+  >>> from zope.app.publisher.xmlrpc import XMLRPCView
+  >>> class MySuperXMLRPCView(XMLRPCView):
+  ...     @xmlrpccallable(str, str, str, str)
+  ...     def myMethod(self, a, b, c):
+  ...         """ my help """
+  ...         return '%s %s, %s, lalalala, you and me, lalalala' % (a, b, c)
+
+`myMethod()` will then be introspectable.
+
+
+How does it works ?
+-------------------
+
 It is based on introspection mechanisms provided by the apidoc package.
 
-***** xmlrpc reminder *****
+***** ripped form xmlrpc doctests *****
 
 Let's write a view that returns a folder listing:
 
@@ -98,7 +125,7 @@ And call our xmlrpc method:
   </methodResponse>
   <BLANKLINE>
 
-***** end of xmlrpc reminder *****
+***** end of ripped form xmlrpc doctests *****
 
 Now we want to provide to that view introspection.
 Let's add three new xmlrcp methods, that published
