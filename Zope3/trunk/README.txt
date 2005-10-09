@@ -32,11 +32,11 @@ Zope 3 includes unit tests based on the Python unittest module.  If you check
 in changes, you should verify that all the tests succeed before you commit
 changes.
 
-To run all the tests, use the script testrunner.py::
+To run all the tests, use the script test.py::
 
-  # python testrunner.py -v
+  # python test.py -v
 
-Use ``testrunner.py -h`` for usage.  The test script can run selected tests, stop
+Use ``test.py -h`` for usage.  The test script can run selected tests, stop
 after the first error, run the tests in a loop, etc.
 
 
