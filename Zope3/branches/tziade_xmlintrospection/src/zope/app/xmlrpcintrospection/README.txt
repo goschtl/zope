@@ -84,9 +84,7 @@ And call our xmlrpc method:
   ... </methodCall>
   ... """)
   HTTP/1.0 200 Ok
-  Content-Length: 208
-  Content-Type: text/xml;charset=utf-8
-  <BLANKLINE>
+  ...
   <?xml version='1.0'?>
   <methodResponse>
   <params>
@@ -140,9 +138,7 @@ And call our xmlrpc method, that should list the content method:
   ... </methodCall>
   ... """, handle_errors=False)
   HTTP/1.0 200 Ok
-  Content-Length: ...
-  Content-Type: text/xml...
-  <BLANKLINE>
+  ...
   <?xml version='1.0'?>
   <methodResponse>
   <params>
@@ -190,9 +186,7 @@ Let's try to add another method, to se if it gets listed...
   ... </methodCall>
   ... """, handle_errors=False)
   HTTP/1.0 200 Ok
-  Content-Length: ...
-  Content-Type: text/xml...
-  <BLANKLINE>
+  ...
   <?xml version='1.0'?>
   <methodResponse>
   <params>
@@ -288,9 +282,7 @@ Now let's try to get the signature for `says()`:
   ... </methodCall>
   ... """, handle_errors=False)
   HTTP/1.0 200 Ok
-  Content-Length: 327
-  Content-Type: text/xml;charset=utf-8
-  <BLANKLINE>
+  ...
   <?xml version='1.0'?>
   <methodResponse>
   <params>
@@ -324,9 +316,7 @@ Now let's try to get the signature for says_not_decorated()`:
   ... </methodCall>
   ... """, handle_errors=False)
   HTTP/1.0 200 Ok
-  Content-Length: 267
-  Content-Type: text/xml;charset=utf-8
-  <BLANKLINE>
+  ...
   <?xml version='1.0'?>
   <methodResponse>
   <params>
