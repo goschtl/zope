@@ -162,6 +162,12 @@
        handler=".fiveconfigure.bridge"
        />
 
+    <meta:directive
+       name="localsite"
+       schema=".fivedirectives.ISiteDirective"
+       handler=".fiveconfigure.installSiteHook"
+       />
+       
   </meta:directives>
 
   <meta:directive
