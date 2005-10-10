@@ -80,7 +80,7 @@ def doctest_RecordingProtocol():
       This is my answer.
 
     Once the request is finished and the response is written, the connection
-    is closed and a recorded request obejct is written:
+    is closed and a recorded request object is written:
 
       >>> recording.connectionLost(None)
 
@@ -89,7 +89,12 @@ def doctest_RecordingProtocol():
       >>> len(recorder.requestStorage)
       1
       >>> rq = iter(recorder.requestStorage).next()
-      >>> rq.timestamp < time.time()
+
+    Especially on Windows, time.time() now may not be strictly greater than
+    an earlier time.time() return value, so we only check for that current
+    time isn't earlier than the timestamp on the request object:
+
+      >>> rq.timestamp <= time.time()
       True
       >>> rq.request_string
       'GET / HTTP/1.1\n\nhello world!\n'
