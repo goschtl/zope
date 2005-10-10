@@ -1,0 +1,59 @@
+====
+TODO
+====
+
+v1.1.1 (...)
+------------
+
+- more tests for browser.adding (faassen?)
+
+- more extensive testing whether event system works with things like
+  Zope 2 folders etc. (faassen?)
+
+- ensuring that the event-sending behavior is as close to Zope 3's as
+  possible.  A lot of edge cases with different behavior likely
+  remain, and things like IObjectModifiedEvents are not sent yet for
+  folders. (faassen?)
+
+
+v2.0 (mid-August, to ship with Zope 2.9)
+----------------------------------------
+
+- Zope 3.1 support
+
+- Drop old-style ExtensionClass support (and all other support for Zope 2.7)
+
+- Possibly: introduce site concept, make rendering of resource urls
+  support sites.  Merge Sidnei's localsitemanager branch (will
+  probably have to be fixed up for component architecture refactoring
+  in Zope 3.1) (sidnei)
+
+- if Zope 2.9 includes the new test runner: convert functional test
+  cases to true ftests (configuration is loaded once before all ftests
+  are run; they're run separately from the unit tests).
+
+
+v2.1 (...)
+----------
+
+- l10n (philikon)
+
+- Allow Zope2 boilerplate context.registerClass be configured through zcml
+
+- Figure out where add-view redirects should go.
+
+- Instructions on using add views.
+
+- HTTP/WebDAV: support dispatching of all HTTP/WebDAV methods to HTTP
+  views.  If lookup fails, fall back to methods on the object (Zope 2
+  style).  Security is implied by HTTP views.
+
+- FTP: allow manage_FTPstat, manage_FTPget, manage_FTPlist to dispatch to
+  filerepresentation adapters.  Make sure to handle security correctly.
+
+- Icons through <browser:icon>?
+
+- Grant security stuff through ZCML (<grant />)?
+
+- top-level <require />, <allow /> directives as a ZCML spelling of
+  allowModule, allowClass
