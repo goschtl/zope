@@ -107,7 +107,6 @@ def doctest_RecordingProtocol():
     Clean up:
 
       >>> recorder.requestStorage.clear()
-
     """
 
 
@@ -148,7 +147,6 @@ def doctest_RequestStorage():
         0
         >>> list(storage)
         []
-
     """
 
 
@@ -186,7 +184,6 @@ def doctest_make_doctest():
         |  <BLANKLINE>
         |  Goodbye, world!
         |
-
     '''
 
 
@@ -218,7 +215,6 @@ def doctest_RecordedSessionsView_skip_urls():
         u'/@@/'
 
         >>> tearDownBrowser()
-
     """
 
 
@@ -260,7 +256,6 @@ def doctest_RecordedSessionsView_skip_urls_as_regexes():
         u'Invalid regex: ++etc++'
 
         >>> tearDownBrowser()
-
     """
 
 
@@ -319,7 +314,6 @@ def doctest_RecordedSessionsView_requests():
 
         >>> tearDownBrowser()
         >>> recorder.requestStorage.clear()
-
     """
 
 
@@ -352,7 +346,6 @@ def doctest_RecordedSessionsView_recordedRequest():
 
         >>> recorder.requestStorage.clear()
         >>> tearDownBrowser()
-
     """
 
 
@@ -385,7 +378,6 @@ def doctest_RecordedSessionsView_recordedResponse():
 
         >>> recorder.requestStorage.clear()
         >>> tearDownBrowser()
-
     """
 
 
@@ -430,7 +422,6 @@ def doctest_RecordedSessionsView_clear():
 
         >>> recorder.requestStorage.clear()
         >>> tearDownBrowser()
-
     """
 
 
@@ -469,7 +460,6 @@ def doctest_RecordedSessionsView_makeFTest():
 
         >>> recorder.requestStorage.clear()
         >>> tearDownBrowser()
-
     """
 
 
@@ -497,8 +487,6 @@ def doctest_RecordedSessionsView_call():
         ...         response_string='HTTP/1.1 404 Not Found\r\n\r\n',
         ...         method='GET', path='/something', status=404,
         ...         ))
-
-        >>> 
 
     Simple rendering:
 
@@ -556,7 +544,6 @@ def doctest_RecordedSessionsView_call():
 
         >>> recorder.requestStorage.clear()
         >>> tearDownBrowser()
-
     """
 
 
@@ -567,10 +554,10 @@ class ChannelRequestStub(object):
 
 
 class TransportStub(object):
-    
+
     def write(self, data):
         pass
-    
+
     def writeSequence(self, data):
         pass
 
