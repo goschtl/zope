@@ -1,10 +1,23 @@
 #! /usr/bin/env python
+##############################################################################
+#
+# Copyright (c) 2005 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 """Helper script for large collections of subversion commits."""
 
 USAGE = """
 Usage:
 
-    %(program)s [file]
+    %prog [file]
 
 Perform a set of subversion commits using a listing of filenames and
 checkin comments specified in 'file'.  If 'file' is not given or is
@@ -24,65 +37,62 @@ status' command:
 and then editing the generated file to include checkin comments.  A
 short example might look like this:
 
-    M src/pkg/foo.py
-    R src/pkg/subpkg/utils.py
+    M      src/pkg/foo.py
+    R      src/pkg/subpkg/utils.py
 
     Replace the foobar helper with an inline implementation; it wasn't
     used anywhere else.
 
-    A src/helpers/fastimpl.c
-    M setup.py
+    +      src/helpers/fastimpl.c
+    M      setup.py
 
-    Add an optimized frobnicator.
+    Add an optimized frobnicator (the ? sign has been changed to a +
+    sign, telling %(program) to call svn add before committing)
 
     Checkin comments can have multiple paragraphs.
 
-    M src/app/myalgorithm.py
+    M      src/app/myalgorithm.py
 
     Use the new optimized frobnicator to get an order of magnitude
     more speed.
 
-This file can then be fed into %(program)s to generate three separate
+This file can then be fed into %(prog)s to generate three separate
 commits, one for each different comment.
 
-    $ %(program)s changes
+    $ %prog changes
 """
 
-import getopt
+import optparse
 import os
 import re
 import sys
 import tempfile
 
 paragraph_sep = re.compile(r"(\n\s*)+\n")
-ops = re.compile(r"^([+ARM] [^\n]+\n)+$").match
-qops = re.compile(r"^([+ARM?] [^\n]+\n)+$").match
+ops = re.compile(r"^([+ARMDS][+ARMDS ]{4}  [^\n]+\n)+$").match
+qops = re.compile(r"^([+ARMDS?]      [^\n]+\n)+$").match
 
-def main(argv):
-
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "h?", ["help"])
-    except getopt.GetoptError, e:
-        print >>sys.stderr, e
-        usage(sys.stderr, 2)
-
-    if opts:
-        print __doc__.strip()
-        usage(sys.stdout, 0)
-
+def main():
+    parser = optparse.OptionParser(usage=USAGE)
+    parser.add_option("-d", "--dry-run", action="store_true", dest="dryrun",
+                      help="Don't actually execute anything, just print "
+                      "the commands that would be executed.")
+    parser.set_defaults(dryrun=False)
+    options, args = parser.parse_args()
+    
     if len(args) > 1:
-        print >>sys.stderr, "too many arguments"
-        usage(sys.stderr, 2)
+        parser.print_usage(sys.stderr)
+        return 2
     elif args:
         # read from stdin by default
-        f = args[0]
+        filename = args[0]
     else:
-        f = '-'
+        filename = '-'
 
-    if f == '-':
+    if filename == '-':
         f = sys.stdin
     else:
-        f = open(f)
+        f = file(filename)
 
     data = f.read().rstrip()
     paragraphs = [(p.strip()+'\n') for p in paragraph_sep.split(data)]
@@ -110,11 +120,12 @@ def main(argv):
     for (p, doc) in checkins:
         for l in p.strip().split('\n'):
             if l[0] == '+':
-                command = 'svn add ' + l[2:]
+                command = 'svn add ' + l[7:]
                 print command
-                os.system(command)
+                if not options.dryrun:
+                    os.system(command)
 
-        files_to_commit = ' '.join([l[2:] for l in p.strip().split('\n')])
+        files_to_commit = ' '.join([l[7:] for l in p.strip().split('\n')])
 
         docfile = open(docfilename, 'w')
         docfile.write(''.join(doc))
@@ -122,17 +133,11 @@ def main(argv):
 
         command = 'svn commit -F %s %s' % (docfilename, files_to_commit)
         print command
-        os.system(command)
+        if not options.dryrun:
+            os.system(command)
 
     os.remove(docfilename)
-
-
-def usage(f, rc):
-    program = os.path.basename(sys.argv[0])
-    message = USAGE % {"program": program}
-    print >>f, message
-    sys.exit(rc)
-
+    return 0
 
 if __name__ == '__main__':
-    main(sys.argv)
+    sys.exit(main())
