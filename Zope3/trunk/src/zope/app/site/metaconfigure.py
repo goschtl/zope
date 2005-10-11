@@ -34,4 +34,4 @@ class LocalServiceDirective(ContentDirective):
 zope.deprecation.deprecated(
     'LocalServiceDirective',
     'The concept of services has been removed. Use utilities instead. '
-    'The reference will be gone in X3.3.')
+    'The reference will be gone in Zope 3.3.')

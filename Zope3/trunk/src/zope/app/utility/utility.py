@@ -26,15 +26,15 @@ from zope.app.container.contained import Contained
 
 deprecated(('getNextUtility', 'queryNextUtility'),
            'This function has been moved to zope.app.component. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')
 
 deprecated('testingNextUtility',
            'This function has been moved to zope.app.component.testing. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')
 
 deprecated('UtilityRegistration',
            'This class has been moved to zope.app.component.site. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')
 
 
 class LocalUtilityService(Persistent, Contained):
@@ -56,4 +56,4 @@ class LocalUtilityService(Persistent, Contained):
 
 deprecated('LocalUtilityService',
            'Services have been removed. Use site manager API. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')

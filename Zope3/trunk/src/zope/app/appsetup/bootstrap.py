@@ -157,8 +157,8 @@ def bootStrapSubscriber(event):
 def checkSecurityPolicy(event):
     """Warn if the configured security policy is ParanoidSecurityPolicy
 
-    Between Zope X3 3.0 and Zope X3 3.1 the security policy got
-    refactored and now it needs to be included from site.zcml.
+    Between Zope X3 3.0 and Zope 3.1, the security policy configuration
+    was refactored and now it needs to be included from site.zcml.
     """
     if getSecurityPolicy() is ParanoidSecurityPolicy:
         logging.getLogger('zope.app.appsetup').warn(

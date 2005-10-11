@@ -30,20 +30,20 @@ deprecated(('RegistrationEvent',
             'RegistrationActivatedEvent', 'RegistrationDeactivatedEvent'),
            'The registration events have moved to '
            'zope.app.component.registration. '
-           'Will be gone in X3.3.')
+           'Will be gone in Zope 3.3.')
 
 RegistrationStatusPropery = registration.RegistrationStatusProperty
 
 deprecated('RegistrationStatusProperty',
            'The status property has moved to zope.app.component.registration. '
-           'Will be gone in X3.3.')
+           'Will be gone in Zope 3.3.')
 
 from zope.app.component.bbb.registration import RegistrationStack
 NotifyingRegistrationStack = RegistrationStack
 
 deprecated(('RegistrationStack', 'NotifyingRegistrationStack'),
            'The registration stack concept has been removed. '
-           'This class will be gone in X3.3.')
+           'This class will be gone in Zope 3.3.')
 
 SimpleRegistrationRemoveSubscriber = \
     registration.SimpleRegistrationRemoveSubscriber
@@ -67,4 +67,4 @@ deprecated(('ComponentRegistration', 'ComponentRegistrationAddSubscriber',
             'RegisterableMoveSubscriber', 'Registered',
             'RegistrationManager', 'RegisterableContainer'),
            'This class has moved to zope.app.component.registration. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')

@@ -47,4 +47,4 @@ from zope.app import servicenames
 
 deprecated('servicenames',
            'The concept of services has been removed. Please use utilities '
-           'instead. This reference will be removed in Zope X3.3.')
+           'instead. This reference will be removed in Zope 3.3.')

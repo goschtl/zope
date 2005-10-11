@@ -23,7 +23,7 @@ from zope.app.component.site import SMFolderFactory
 
 deprecated(('SiteManagementFolder', 'SMFolderFactory'),
            'This class has moved to zope.app.component.site. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')
 
 # I really hope that noone is using this.
 class SiteManagementFolders(BTreeContainer):
@@ -31,4 +31,4 @@ class SiteManagementFolders(BTreeContainer):
 
 deprecated('SiteManagementFolders',
            'This class has been deprecated. It was not used anyways. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')

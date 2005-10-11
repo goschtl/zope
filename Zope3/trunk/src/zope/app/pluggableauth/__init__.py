@@ -196,7 +196,7 @@ PluggableAuthenticationService = PluggableAuthentication
 deprecated('PluggableAuthenticationService',
            'The pluggable authentication service has been deprecated in '
            'favor of authentication (aka PAS). This reference will be gone in '
-           'Zope X3.3.')
+           'Zope 3.3.')
 
 def PluggableAuthenticationAddSubscriber(self, event):
     r"""Generates an earmark if one is not provided.

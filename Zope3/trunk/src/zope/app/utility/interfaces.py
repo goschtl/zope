@@ -23,7 +23,7 @@ from zope.app.component.interfaces.registration import IRegistry
 
 deprecated(('IUtilityRegistration', 'ILocalUtility'),
            'This interface has been moved to zope.app.component.interfaces. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')
 
 class ILocalUtilityService(
         zope.component.interfaces.IUtilityService,
@@ -33,4 +33,4 @@ class ILocalUtilityService(
 
 deprecated('ILocalUtilityService',
            'The concept of services has been removed. Use site manager API. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')

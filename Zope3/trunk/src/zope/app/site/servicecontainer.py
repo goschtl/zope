@@ -25,4 +25,4 @@ ServiceManagerContainer = SiteManagerContainer
 deprecated('ServiceManagerContainer',
            'This class has been moved to zope.app.component.site '
            'and been renamed to SiteManagerContainer. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')

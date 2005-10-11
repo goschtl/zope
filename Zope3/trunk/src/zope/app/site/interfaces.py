@@ -27,14 +27,14 @@ from zope.app.component.interfaces import ISiteManagementFolder
 
 deprecated(('IPossibleSite', 'ISite'),
            'This interface has been moved to zope.app.component.interfaces. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')
 
 ISiteManager = ILocalSiteManager
 
 deprecated('ISiteManager',
            'This interface has been moved to zope.app.component.interfaces '
            'and been renamed ISiteManager. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')
 
 class ILocalService(registration.IRegisterable):
     """A local service isn't a local service if it doesn't implement this.
@@ -54,7 +54,7 @@ class ISimpleService(ILocalService):
 
 deprecated(('ILocalService', 'ISimpleService'),
            'The concept of services has been removed. Use utilities instead. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')
 
 class IComponentManager(Interface):
 
@@ -74,7 +74,7 @@ class IComponentManager(Interface):
 
 deprecated('IComponentManager',
            'This interface has been removed. It was horrible anyways. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')
 
 class IBindingAware(Interface):
 
@@ -94,7 +94,7 @@ class IBindingAware(Interface):
 
 deprecated('IBindingAware',
            'Now that services are gone, we do not need the binding support. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')
 
 class IServiceRegistration(registration.IComponentRegistration):
     """Service Registration
@@ -117,7 +117,7 @@ class IServiceRegistration(registration.IComponentRegistration):
 
 deprecated('IServiceRegistration',
            'The concept of services has been removed. Use utilities instead. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')
 
 class ISiteManagementFolders(IContainer, IComponentManager):
     """A collection of ISiteManagementFolder objects.
@@ -129,4 +129,4 @@ class ISiteManagementFolders(IContainer, IComponentManager):
 
 deprecated('ISiteManagementFolders',
            'This interface has been removed. It was unused. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')

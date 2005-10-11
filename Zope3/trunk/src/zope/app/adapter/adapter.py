@@ -21,4 +21,4 @@ class LocalAdapterService(Persistent):
 
 deprecated('LocalAdapterService',
            'Services have been removed. Use site manager API. '
-           'The reference will be gone in X3.3.')
+           'The reference will be gone in Zope 3.3.')

@@ -31,13 +31,13 @@ zope.deprecation.__show__.on()
 zope.deprecation.deprecated(
     ('SiteManager', 'UtilityRegistration'),
     'This class has been moved to zope.app.component.site. '
-    'The reference will be gone in X3.3.')
+    'The reference will be gone in Zope 3.3.')
 
 zope.deprecation.deprecated(
     'IRegisterableContainerContainer',
     'This interface has been moved to zope.app.component.interfaces '
     'and been renamed to IRegisterableContainerContaining. '
-    'The reference will be gone in X3.3.')
+    'The reference will be gone in Zope 3.3.')
 
 ServiceManager = LocalSiteManager
 SiteManager = LocalSiteManager
@@ -51,4 +51,4 @@ class ServiceRegistration(UtilityRegistration):
 zope.deprecation.deprecated(
     ('ServiceManager', 'ServiceRegistration'),
     'The concept of services has been removed. Use utilities instead. '
-    'The reference will be gone in X3.3.')
+    'The reference will be gone in Zope 3.3.')
