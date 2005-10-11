@@ -15,11 +15,17 @@
 
 $Id$
 """
-
-# Note that this module is slated for deprecation.  Please see messages.txt
-# in this directory for more information.  The short advice is to use 
-# message.Message instead of messageid.MessageID, and message.MessageFactory
-# instead of messageid.MessageIDFactory.
+import zope.deprecation
+zope.deprecation.deprecated('MessageID',
+                            'Mutable i18n messages ("message ids") have been '
+                            'deprecated in favour of immutable ones and will '
+                            'be removed in Zope 3.3.  Please use '
+                            'zope.i18nmessageid.Message instead.')
+zope.deprecation.deprecated('MessageIDFactory',
+                            'Mutable i18n messages ("message ids") have been '
+                            'deprecated in favour of immutable ones and will '
+                            'be removed in Zope 3.3.  Please use '
+                            'use zope.i18nmessageid.MessageFactory instead.')
 
 class MessageID(unicode):
     """Message ID.

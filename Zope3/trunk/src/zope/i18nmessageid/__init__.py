@@ -15,9 +15,24 @@
 
 $Id$
 """
-# this is the old message id implementation; it is on the slate to be
-# deprecated sometime in the future.
-from messageid import MessageID, MessageIDFactory
-# this is the new message id implementation.  It is the one to use if you
-# have a choice.  Please see messages.txt for more details.
-from message import Message, MessageFactory
+##############################################################################
+# BBB 2005/10/10
+#
+import zope.deprecation
+zope.deprecation.__show__.off()
+from zope.i18nmessageid.messageid import MessageID, MessageIDFactory
+zope.deprecation.__show__.on()
+zope.deprecation.deprecated('MessageID',
+                            'Mutable i18n messages ("message ids") have been '
+                            'deprecated in favour of immutable ones and will '
+                            'be removed in Zope 3.3.  Please use '
+                            'zope.i18nmessageid.Message instead.')
+zope.deprecation.deprecated('MessageIDFactory',
+                            'Mutable i18n messages ("message ids") have been '
+                            'deprecated in favour of immutable ones and will '
+                            'be removed in Zope 3.3.  Please use '
+                            'use zope.i18nmessageid.MessageFactory instead.')
+#
+##############################################################################
+
+from zope.i18nmessageid.message import Message, MessageFactory

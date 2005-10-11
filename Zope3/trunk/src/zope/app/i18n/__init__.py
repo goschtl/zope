@@ -17,7 +17,19 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.i18n.messageid import MessageIDFactory
+# BBB 2005/10/10
+import zope.deprecation
+zope.deprecation.__show__.off()
+from zope.i18nmessageid import MessageIDFactory, MessageFactory
+zope.deprecation.__show__.on()
 
-# Import _ to use to create message ids in the zope domain
+# import one of these as _ to create i18n messages in the zope domain
 ZopeMessageIDFactory = MessageIDFactory('zope')
+ZopeMessageFactory = MessageFactory('zope')
+
+zope.deprecation.deprecated('ZopeMessageIDFactory',
+                            'Mutable i18n messages ("message ids") have been '
+                            'deprecated in favour of immutable ones and will '
+                            'be removed in Zope 3.3.  Please use '
+                            'ZopeMessageFactory instead of '
+                            'ZopeMessageIDFactory.')
