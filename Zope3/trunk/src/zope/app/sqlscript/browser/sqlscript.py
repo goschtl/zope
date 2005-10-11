@@ -15,14 +15,12 @@
 
 $Id$
 """
-from zope.app.form.browser.add import AddView
 from zope.app.form.browser.submit import Update
 from zope.app.rdb.interfaces import DatabaseException
-from zope.app.container.interfaces import IAdding
 from zope.app import zapi
 
-from zope.app.sqlscript.sqlscript import SQLScript
 from zope.app.sqlscript.interfaces import ISQLScript
+
 
 class SQLScriptTest(object):
     """Test the SQL inside the SQL Script
@@ -109,7 +107,7 @@ class SQLScriptAdd(object):
         ...         return None
         ...     def nextURL(self):
         ...         return "www.zeomega.com"
-        
+
         >>> class V(SQLScriptAdd, Base):
         ...     pass
         >>> 
@@ -135,12 +133,12 @@ class SQLScriptAdd(object):
 
 class SQLScriptEdit(object):
     """Provide interface to Edit and Test  SQL Script
-    """        
+    """
 
     def update(self):
         """Set the Update variable for Change and Test
         >>> from zope.publisher.browser import TestRequest
-        
+
         >>> rqst = TestRequest()
         >>> class Base(object):
         ...     def __init__(self, request):
@@ -161,7 +159,6 @@ class SQLScriptEdit(object):
         >>> 'UPDATE_SUBMIT' in rqst
         False
         >>>
-        
 
         >>> d = {'change_test': True}
         >>> rqst1 = TestRequest(form = d)
@@ -177,7 +174,7 @@ class SQLScriptEdit(object):
         'test.html'
         >>> rqst1.response.getStatus()
         302
-           
+
         >>> d = {'change_test': True}
         >>> rqst2 = TestRequest(form = d)
         >>> dc2 = V(rqst2)
@@ -187,7 +184,7 @@ class SQLScriptEdit(object):
         >>> 'UPDATE_SUBMIT' in rqst2
         True
         >>> rqst2.response.getHeader('location')
-        
+
         >>> rqst2.response.getStatus()
         599
         """
