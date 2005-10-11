@@ -41,11 +41,11 @@ class OnlineHelp(OnlineHelpTopic):
     >>> path = os.path.join(testdir(), 'help.txt')
 
     Create an `OnlineHelp` instance
-    
+
     >>> onlinehelp = OnlineHelp('Help', path)
 
     First do the interface verifying tests.
-    
+
     >>> from zope.interface.verify import verifyObject
     >>> from zope.app.traversing.interfaces import IContainmentRoot
     >>> verifyObject(IOnlineHelp, onlinehelp)
@@ -126,8 +126,8 @@ class OnlineHelp(OnlineHelpTopic):
 
         if class_ is None:
             class_ = OnlineHelpTopic
-        
-        
+
+
         # Create topic base on the custom class or OnlinHelpTopic
         topic = class_(id, title, doc_path, parent_path, interface, view)
 
