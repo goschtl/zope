@@ -111,13 +111,15 @@ in one implementation.
 
 The proposed solution for backward compatability is to support both
 implementations in parallel, deprecating the mutable one.  A separate
-factory, 'I18nMessageFactory', will instantiate immutable message ids,
-while the deprecated old one will continue to work like before.
+factory, ``MessageFactory``, instantiates immutable messages, while
+the deprecated old one continues to work like before.
 
 The roadmap to immutable-only message ids is proposed as follows:
 
-  X3.1: Immutable message ids are introduced.  Mutable message ids are
-  deprecated.  Security declarations for mutable message ids are
-  provided to make the stripping of security proxies unnecessary.
+  Zope 3.1: Immutable message ids are introduced.  Security
+  declarations for mutable message ids are provided to make the
+  stripping of security proxies unnecessary.
 
-  X3.2: Mutable message ids are removed.
+  Zope 3.2: Mutable message ids are deprecated.
+
+  Zope 3.3: Mutable message ids are removed.
