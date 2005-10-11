@@ -36,7 +36,7 @@ The decorator is called `xmlrpccallable`
   ...         """ my help """
   ...         return '%s %s, %s, lalalala, you and me, lalalala' % (a, b, c)
 
-`myMethod()` will then be introspectable.
+`myMethod()` will then be introspectable. (find a full examples below, grep for (*))
 
 
 How does it works ?
@@ -266,7 +266,7 @@ The method is still callable as needed:
   >>> JacksonFiveRPC().says('a', 'b', 'c')
   'a b, c, lalalala, you and me, lalalala'
 
-Let's try out decorated and not decorated methods signatures:
+Let's try out decorated and not decorated methods signatures (*):
 
   >>> class JacksonFiveRPC:
   ...     @xmlrpccallable(str, str, str, str)
