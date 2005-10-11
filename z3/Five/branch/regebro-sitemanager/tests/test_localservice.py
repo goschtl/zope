@@ -357,7 +357,10 @@ class LocalUtilityServiceTest(ZopeTestCase.FunctionalTestCase):
         dummy = self.utils._getOb('dummy')
         self.assertEquals(utils.getUtility(IDummyUtility, name='dummy'), dummy)
 
-        self.assertEquals(list(utils.getUtilitiesFor(IDummyUtility)), [dummy])
+        self.assertEquals(list(utils.getUtilitiesFor(IDummyUtility)), 
+                          [('',dummy)])
+        self.assertEquals(list(utils.getAllUtilitiesRegisteredFor(
+            IDummyUtility)), [dummy])
 
 def test_suite():
     suite = unittest.TestSuite()
