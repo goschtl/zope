@@ -73,12 +73,8 @@ class PortalUtility(ZopeTestCase.ZopeTestCase):
         self.failUnless(utility.aq_base is dummy2)
         
         # Get both
-        import pdb;pdb.set_trace()
         utilities = service.getUtilitiesFor(IDummyUtility)
-        i = 0
-        for x in utilities.next():
-            i += 1
-        self.failUnlessEqual(i, 2)
+        self.assertEquals(len(list(utilities)), 2)
         
     def test_getUnnamedUtilities(self):
         service = getService(Utilities, self.app.portal)
