@@ -17,16 +17,18 @@ The importer can be retrieved by an adaption to IImporter:
 
 Import the site:
 
-    >>> importer.download(url='file:src/importer/testsite/FrontPage')
+    >>> importer.download(url='file:src/importer/testsite/FrontPage',
+    ...                   base_url='http://www.zope.org/Wikis/DevSite/'
+    ...                            'Projects/ComponentArchitecture')
 
-The site must contain two files:
+The test site contains three files (``Component`` beeing linked relatively):
 
     >>> folder.get('FrontPage', None) is not None
     True
     
-XXX this one is currently failing because recursion is not yet 
-    implemented::
-    
-    >>> folder.get('ComponentArchitecture', None) is not None
+    >>> folder.get('VisionStatement', None) is not None
     True
-
+    
+    >>> file = folder.get('Component', None)
+    >>> file is not None
+    True

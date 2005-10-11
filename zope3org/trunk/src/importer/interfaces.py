@@ -25,11 +25,13 @@ class IImporter(Interface):
     processing is done at import time.
     """
     
-    def download(url):
+    def download(url, base_url=None):
         """Downloads (aka imports) the site at ``url`` recursively
         
-        If the url ends with a slash it addresses an index page.
-        XXX Better comment.
+        ``url`` shall not address an index page implicitely.
+        Set ``base_url`` if absolute urls in the feteched pages are 
+        different than the ``url`` passed. Used if e.g. a site was 
+        downloaded with wget and then parsed from the filesystem.
         """
 
 class IPostProcessor(Interface):

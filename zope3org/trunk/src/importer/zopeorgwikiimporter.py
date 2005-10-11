@@ -31,6 +31,9 @@ from importer import IImporter
 
 index_name = 'index'
 
+protocol = re.compile('.*?://')
+notFound = re.compile('Bobo-Exception-Type:\s*NotFound')
+
 class ImporterForContainer(object):
     """Imports a whole (sub)site into a container
     """
@@ -40,10 +43,16 @@ class ImporterForContainer(object):
     def __init__(self, context):
         self.context = context
 
-    def download(self, url):
+    def download(self, url, base_url=None):
         """See IImporter
         """
-        self.base, relative_url = url.rsplit('/', 1)
+        base_fetch_url, relative_url = url.rsplit('/', 1)
+        if base_url is None:
+            base_url = base_fetch_url
+        
+        self.base_fetch_url = base_fetch_url
+        self.base_url = base_url
+        
         self._recursiveImport(relative_url)
     
     def _recursiveImport(self, relative_url):
@@ -51,9 +60,17 @@ class ImporterForContainer(object):
         
         The ``url`` has to be relative to the base.
         """
-        # parse the wiki page
-        url = "%s/%s" % (self.base, relative_url)
+        url = "%s/%s" % (self.base_fetch_url, relative_url)
+        
+        # retrieve the page
         doc = urllib.urlopen(url)
+        headers = ''.join(doc.info().headers)
+        
+        # check for zope2 NotFound exceptions
+        # XXX this is zope specific, arghh!
+        if notFound.search(headers) is not None:
+            raise IOError('404 NotFound')
+            
         # XXX make a utiliy lookup of this
         parser = ZopeOrgWikiPageExtractor()
         parser.feed(doc.read())
@@ -61,7 +78,7 @@ class ImporterForContainer(object):
         links = parser.getLinks()
         
         # parse the metadata in rdf format
-        if self.base.startswith('file:'):
+        if self.base_fetch_url.startswith('file:'):
             sep = '.'
         else:
             sep = '/'
@@ -91,10 +108,42 @@ class ImporterForContainer(object):
         
         self.context[metadata['title']] = file
         
-        ############# XXX notify ObjectAddedEvent
-        ############### continue here
+        # XXX notify ObjectAddedEvent
+        pass
 
-        # XXX recurse into links (attentions ome ar relative)
+        # filter out all not internal links and duplicates
+        internal_links = {}
+        base_url_len = len(self.base_url) + 1
+        for link in links:
+            # collect absolute internal link
+            if link.startswith(self.base_url):
+                relative_link = link[base_url_len:]
+                # check for not yet written page
+                if relative_link.find('?') != -1:
+                    newPageString = '%s/editform\?page=(.*)' % relative_url
+                    np = re.compile(newPageString).match(relative_link)
+                    if np is None:
+                        pass # log an anomaly
+                    else:
+                        relative_link = np.groups()[0]
+                internal_links[relative_link] = True
+                continue
+
+            # ignore links to anchors and external links
+            if link.startswith('#') or protocol.match(link):
+                continue
+
+            # collect relative internal link
+            internal_links[link] = True
+        
+        internal_links = internal_links.keys()
+
+        # recurse into links (attentions some are relative)
+        for link in internal_links:
+            try:
+                self._recursiveImport(link)
+            except IOError:
+                pass
 
 # matches the following type of data:
 #    <dc:date>2003-08-04</dc:date>

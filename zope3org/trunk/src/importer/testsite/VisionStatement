@@ -1,0 +1,915 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en">
+
+<head>
+    <meta http-equiv="Content-Type"
+          content="text/html;charset=utf-8" />
+
+    <title>
+           Zope.org - VisionStatement</title>
+
+    
+    
+       
+       
+          <base href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/VisionStatement/" />
+       
+    
+  
+
+
+    <!-- Basic crude style for Netscape4.x - This can be removed
+         if you don't want the special NS4 look - it will still work,
+	 just be plain text instead. -->
+
+    <link rel="Stylesheet" type="text/css"
+          href="http://www.zope.org/ploneNS4.css" />
+
+    <!-- Main style sheets for CSS2 capable browsers -->
+    <style type="text/css" media="all"> @import url(http://www.zope.org/plone.css?skin=);</style>
+
+    <!-- Custom style sheet if available -->
+    <style type="text/css" media="all">@import url(http://www.zope.org/ploneCustom.css);</style>
+
+    <!-- Style sheet used for printing -->
+
+    <link rel="stylesheet" type="text/css" media="print"
+          href="http://www.zope.org/plonePrint.css" />
+
+    <!-- Style sheet used for presentations (Opera is the only browser supporting this at the moment) -->
+    <link rel="stylesheet" type="text/css"
+          media="projection"
+          href="http://www.zope.org/plonePresentation.css" />
+
+    <link rel="shortcut icon"
+          href="http://www.zope.org/favicon.ico"
+          type="image/x-icon" />
+
+    <link rel="home" href="http://www.zope.org"
+          title="Front Page" />
+    <link rel="search"
+          href="http://www.zope.org/search_form"
+          title="Search this site" />
+
+    <!-- Disable IE6 image toolbar -->
+
+    <meta http-equiv="imagetoolbar" content="no" />
+
+    
+    
+  
+
+    
+
+    
+    
+
+    
+  
+
+    
+    
+  
+
+    <!-- Common Plone ECMAScripts -->
+    <script type="text/javascript"
+            src="http://www.zope.org/plone_javascripts.js"></script>
+
+    
+      
+      
+        <script language='javascript' type='text/javascript' >
+          function formtooltip(el,flag){}
+        </script>
+      
+
+    
+</head>
+
+<body>
+
+<div>
+
+     
+
+        <div class="top">
+
+            <div class="searchBox">
+                <form name="searchform"
+                      action="http://www.zope.org/search">
+
+                    <input id="searchGadget"
+                           name="SearchableText" type="text"
+                           size="20" tabindex="30001" />
+
+                    <input class="context searchButton"
+                           type="submit" value="Search"
+                           tabindex="30002" />
+                </form>
+
+            </div>
+
+            <a href="http://www.zope.org">
+                <img src="http://www.zope.org/logo.gif" class="logo" width="201" height="54" border="0" alt="" />
+            </a>
+        </div>
+
+        <hr size="" class="netscape4" />
+
+        <div class="tabs">
+
+
+        </div>
+
+        <div class="personalBar">&nbsp;
+
+            
+
+            <span>You are not logged in</span>
+
+            
+            <a href="http://www.zope.org/login_form">
+                <img src="http://www.zope.org/linkOpaque.gif" alt="" title="" height="1" width="1" border="0" />
+
+                Log in
+            </a>
+            
+            
+            <a href="http://www.zope.org/portal_form/join_form">
+                <img src="http://www.zope.org/linkOpaque.gif" alt="" title="" height="1" width="1" border="0" />
+
+                Join
+            </a>
+            
+        </div>
+
+        <div class="pathBar">
+
+            
+	    You are here:
+	        
+                <a href="http://www.zope.org">Home</a>
+                <strong>&raquo;</strong>
+            
+
+            
+
+            <span>
+
+                
+
+                <a href="http://www.zope.org/Wikis">Wikis</a>
+                <strong> &raquo; </strong>
+                
+
+            </span>
+
+            <span>
+
+                
+
+                <a href="http://www.zope.org/Wikis/DevSite">DevSite</a>
+                <strong> &raquo; </strong>
+                
+
+            </span>
+            <span>
+
+                
+
+                <a href="http://www.zope.org/Wikis/DevSite/Projects">Projects</a>
+
+                <strong> &raquo; </strong>
+                
+
+            </span>
+            <span>
+
+                
+
+                <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture">ComponentArchitecture</a>
+                <strong> &raquo; </strong>
+                
+
+            </span>
+
+            <span>
+
+                
+
+                
+                
+                <span>VisionStatement</span>
+
+            </span>
+
+        </div>
+
+        <hr size="" class="netscape4" />
+
+    </div>
+
+
+<table class="columns">
+
+    <tbody>
+        <tr>
+            <td class="left">
+                
+                
+                    <div class="box">
+        <div class="body">
+        <ul>
+	  <li>
+
+          <a href="http://www.zope.org/Products/">Download</a>
+	  <ul>
+	     <li>
+               <a href="http://www.zope.org/Products/">Download Zope</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Products/">Zope Products</a>
+
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Products/CMF/">Zope CMF</a>
+	    </li>
+	  </ul>
+         </li>
+        </ul>
+        <ul>
+
+	  <li>
+          <a href="http://www.zope.org/Resources/">Resources</a>
+	  <ul>
+	     <li>
+               <a href="http://www.zope.org/Collectors/">Report Bugs</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Resources/MailingLists">Mailing Lists</a>
+
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Resources/UserGroups/">User Groups</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Resources/License/">License</a>
+	    </li>
+	  </ul>
+
+         </li>
+        </ul>
+        <ul>
+	  <li>
+          <a href="http://www.zope.org/Documentation/">Documentation</a>
+	  <ul>
+	     <li>
+               <a href="http://www.zope.org/Documentation/Books/ZopeBook/">The Zope Book</a>
+
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Documentation/Books/ZopeBook/current/AppendixB.stx">API reference</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Documentation/Books/ZopeBook/current/AppendixC.stx">ZPT reference</a>
+	    </li>
+	     <li>
+
+               <a href="http://www.zope.org/Documentation/Books/ZDG/">Developer Guide</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Products/CMF/docs/">CMF Documentation</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Resources/Articles/">Zope Articles</a>
+
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Documentation/How-To/">Zope How-Tos</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.com/about_us/open_source_community/zope_and_python_books.html">Books In Print</a>
+	    </li>
+	  </ul>
+
+         </li>
+        </ul>
+        <ul>
+	  <li>
+          <a href="http://www.zope.org/WhatIsZope">About Zope</a>
+	  <ul>
+	     <li>
+               <a href="http://www.zope.org/WhatIsZope">What Is Zope?</a>
+
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Resources/ZopePowered/">Zope Powered Sites</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/About/">About Zope.org</a>
+	    </li>
+	     <li>
+
+               <a href="http://www.zope.org/Help/">Member FAQ</a>
+	    </li>
+	  </ul>
+         </li>
+        </ul>
+        <ul>
+	  <li>
+          <a href="http://www.zope.org/Resources/ZSP/">Business</a>
+
+	  <ul>
+	     <li>
+               <a href="http://www.zope.com">Zope Corporation</a>
+	    </li>
+	     <li>
+               <a href="http://www.zope.org/Resources/ZSP/">Solution Providers</a>
+	    </li>
+	     <li>
+
+               <a href="http://www.zope.org/Training/">Zope Training</a>
+	    </li>
+	  </ul>
+         </li>
+        </ul>
+        <ul>
+	  <li>
+          <a href="http://dev.zope.org/">Developers</a>
+
+	  <ul>
+	     <li>
+               <a href="http://dev.zope.org/Projects/">Zope Projects</a>
+	    </li>
+	     <li>
+               <a href="http://dev.zope.org/Zope3">Zope 3</a>
+	    </li>
+	     <li>
+
+               <a href="http://dev.zope.org/CVS/">Zope CVS</a>
+	    </li>
+	     <li>
+               <a href="http://dev.zope.org/Subversion/">Zope SVN</a>
+	    </li>
+	  </ul>
+         </li>
+        </ul>
+
+        <ul>
+	  <li>
+          <a href="http://www.zope.org">Zope Exits</a>
+	  <ul>
+	     <li>
+               <a href="http://www.zopewiki.org">ZopeWiki</a>
+	    </li>
+	     <li>
+
+               <a href="http://www.zopezen.org">ZopeZen</a>
+	    </li>
+	     <li>
+               <a href="http://www.zopezone.com">ZopeZone</a>
+	    </li>
+	     <li>
+               <a href="http://www.plone.org">Plone</a>
+
+	    </li>
+	     <li>
+               <a href="http://www.zopelabs.com">ZopeLabs</a>
+	    </li>
+	     <li>
+               <a href="http://www.dzug.org">Zope Germany</a>
+	    </li>
+	     <li>
+
+               <a href="http://www.zope.it">Zope Italia</a>
+	    </li>
+	     <li>
+               <a href="http://www.tchezope.org">Zope Brazil</a>
+	    </li>
+	     <li>
+               <a href="http://www.ozzope.org">OzZope</a>
+
+	    </li>
+	     <li>
+               <a href="http://www.zopera.org">Zopera</a>
+	    </li>
+	     <li>
+               <a href="http://www.zopemag.com">ZopeMag</a>
+	    </li>
+	     <li>
+
+               <a href="http://zope.freerecruiting.com">Zope Jobs</a>
+	    </li>
+	  </ul>
+         </li>
+        </ul>
+        </div>
+   </div>
+                
+                
+                
+                
+                
+                    
+
+    <div class="box">
+
+        <h5>Log in</h5>
+
+        <div class="body">
+        
+            <div class="content odd">
+                <form action="http://www.zope.org/logged_in"
+                      id="login_box_form" method="post">
+    
+ 
+                    <strong>Name</strong> <br />
+                    <input type="text" name="__ac_name"
+                           size="12" alt="Username"
+                           title="Username" tabindex="10001" />
+
+    
+                    <br />
+    
+                    <strong>Password</strong>  <br />
+                    <input type="password"
+                           name="__ac_password" size="12"
+                           alt="Password" title="Password"
+                           tabindex="10002" />
+    
+                    <br />
+                    &nbsp;
+                    <br />
+    
+                    <input class="context searchButton"
+                           type="submit" name="submit"
+                           value="Log in" tabindex="10003" />
+
+                   
+    
+                </form>
+<script type="text/javascript" language="javascript"><!--
+
+function getCookie(cname) {
+  var search = cname + "="
+  if (document.cookie.length > 0) {
+    offset = document.cookie.indexOf(search);
+    if (offset != -1) {
+      offset += search.length;
+      end = document.cookie.indexOf(";", offset);
+      if (end == -1){
+          end = document.cookie.length;
+      }
+      var value = unescape(document.cookie.substring(offset, end));
+      if (value.charAt(0) == '"' && value.charAt(value.length -1) == '"') {
+        value = value.substring(1, value.length -1);
+      }
+      return value;
+    }
+  }
+  return '';
+}
+
+window.document.forms.login_box_form.elements[0].value=getCookie('__ac_name');            
+--></script>
+            </div>
+    
+            <div class="content even"> 
+                <a href="http://www.zope.org/mail_password_form">
+                   <img src="http://www.zope.org/linkTransparent.gif" alt="Link icon" title="Link icon" height="11" width="6" border="0" />
+                   Forgot your password?
+                </a>
+            </div>
+
+            <div class="content odd">
+          
+                <a href="http://www.zope.org/portal_form/join_form">
+                    <img src="http://www.zope.org/linkTransparent.gif" alt="Link icon" title="Link icon" height="11" width="6" border="0" />
+                    New user?
+                </a>
+    
+            </div>
+
+        </div>
+        
+    </div>
+
+                
+                
+                
+            </td>
+            <td class="main">
+
+                
+
+                <div id="contentTabs">
+
+                    
+                        <a class="selected"
+                           href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/VisionStatement/wikipage_view">
+                            View
+                        </a>
+                    
+                    
+                        <a class="plain"
+                           href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/VisionStatement/diff">
+                            History
+                        </a>
+
+                    
+                    
+                        <a class="plain"
+                           href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/VisionStatement/backlinks">
+                            Backlinks
+                        </a>
+                    
+                    
+                        <a class="plain"
+                           href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/VisionStatement/subscribeform">
+                            Subscribe
+                        </a>
+                    
+                    
+                        <a class="plain"
+                           href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/VisionStatement/dc_view">
+                            DublinCore
+                        </a>
+                    
+
+                </div>
+
+                <div id="contentBar">
+                &nbsp;
+                </div>
+
+                
+
+                <div class="editableDocument">
+
+                    <div id="content">
+
+                        
+
+                        <div class="documentActions">
+
+                            
+
+                            
+
+                            <a href="javascript:this.print();">
+                                <img alt="Print"
+    src="http://www.zope.org/print_icon.gif"
+    title="Print this page" />
+                            </a>
+                        </div>
+
+                        
+
+                        <div>
+
+<!-- Commented out header for now, since I can't control its layout ~limi
+    <div tal:condition="not: wiki_header_present|nothing">
+      <span tal:condition="nothing"> In case master has no "header" macro. </span>
+      <div tal:replace="structure here/wikipage_header"> </div>
+    </div>
+-->
+
+    <small>
+    
+        <a href="FrontPage">FrontPage</a> 
+        &raquo;
+
+    
+    </small>
+    
+    
+    <h1>VisionStatement</h1>
+
+    <h2>Project Vision</h2>
+<p>  Status: <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/IsDraft" title="last edited 2 years ago by srichter">IsDraft</a></p>
+<p>  For background on a Zope component architecture see the <a href="http://dev.zope.org/Resources/ZopeDirections.html">Zope
+  Directions</a> document. It outlines the
+  goals of a component architecture and talks about how it might be
+  implemented.</p>
+
+<h3>  Problem</h3>
+<h4>    General</h4>
+<p>        Zope can be difficult to develop for.</p>
+<p>        You can't learn Zope development in bite sized chunks; you
+        must learn the entire framework at once. It's hard to use
+        familiar tools and techniques. It's hard to reuse code. The
+        Zope development model (ie Products) often seem too
+        heavy-weight. Zope products don't offer a good separation
+        between logic and content.</p>
+<p>        In short, it is hard to extend Zope and use the framework in a
+        way that's easy to learn and quick to develop and deploy.</p>
+<h4>    Specific problems</h4>
+
+<p>        Zope manages complexity through multiple inheritence.
+        Complexity is divided among many mix-in classes. A class that
+        wants to provide the many standard features of Zope objects
+        must mix-in many different classes.  The mix-in classes may
+        require specific meta data or hooks that must be provided in
+        the custom class. This presents an extremely complex
+        programming model to the Zope developer.</p>
+<p>        Reuse is difficult. </p>
+
+<ul>
+<li>Classes developed outside of Zope are hard
+          to use in Zope because of the heavy framework and inheritence
+          requirements. </li>
+<li>To be reused, classes must provide exactly the needed
+          behavior, which rarely happens. Functionality often needs to
+          be added, removed, or modified. Alternate user interfaces
+          are often desired. The inheritence based model used
+          currently makes this very difficult.</li>
+
+</ul>
+<p>       The Zope <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ContentManagementFramework" title="last edited 2 years ago by tseaver">ContentManagementFramework</a> (CMF) addressed these problems by
+       splitting behavior over many different objects:</p>
+
+<ul>
+<li><a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/CMFContent" title="last edited 2 years ago by tseaver">CMFContent</a> objects have no application-specific
+         behavior. They expect application behavior to br primarily
+         provided by <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/CMFTools" title="last edited 2 years ago by tseaver">CMFTools</a> and expect presentation to be provided
+         by <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/CMFSkins" title="last edited 2 years ago by tseaver">CMFSkins</a>.</li>
+<li><a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/CMFTools" title="last edited 2 years ago by tseaver">CMFTools</a> provide application-specific functionality and
+         meta-data.  </li>
+<li><a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/CMFSkins" title="last edited 2 years ago by tseaver">CMFSkins</a> provide places to collect and override specific
+         presentation templates and logic.</li>
+
+</ul>
+<p>       The CMF knits the various components through Zope acquisition
+       and through meta-data provided in <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/CMFType" title="last edited 1 year ago by jmupopa">CMFType</a> objects.</p>
+<p>       The CMF is a major step forward in Zope development. It provides
+       a much simpler model for developing Zope objects through the
+       separation of concerns among objects. </p>
+<p>       The CMF has a few limitations:</p>
+
+<ul>
+<li>The use of implicit acquisition to knit things together makes things
+         more brittle than desired. Names of acquired objects need to
+         be chosen carefully so as not to conflict with content names,
+         and content names that conflict with tool or skin names must
+         be prevented. Preventing conflicts is problemantic if new
+         tool or skin names are added over time.</li>
+
+<li>Skins are collections of templates and scripts. Templates and
+         scripts that cooperate to provide a user (web) interface for
+         a function are connected only by convention.  Collecting
+         related templates and scripts into objects would provide
+         greater structuring.</li>
+<li>Use of acquisition to knit components together requires that
+         component names include the types of the content they apply to. </li>
+<li><a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/CMFTools" title="last edited 2 years ago by tseaver">CMFTools</a> provide functionality that is 
+<ul>
+<li>applicable to all (or mostly all) content types, and</li>
+<li>centralized in the sense that, to function properly, they
+           must be used by all the content in a site.</li>
+
+</ul>
+<p>         There isn't a general facility in the CMF to provide
+         content-specific application-specific behavior.</p>
+
+<ul>
+<li><a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/CMFContent" title="last edited 2 years ago by tseaver">CMFContent</a> objects have a number of contracts that they must
+         fulfill. They have a much lower burden than most Zope
+         objects, we'd like to reduce the burden further.</li>
+<li>Distributing CMF content-type configurations is harder than it
+         should be. A new content type has associated skins and
+         configuration information that may be spread over many
+         different objects. There aren't automatred ways to distribute
+         this information.</li>
+
+</ul>
+</li>
+
+</ul>
+<h3>  Historical perspective</h3>
+<p>    Zope 2 arose from a commercial product, Principia, that was
+    designed to make it easier for non-technical people to create
+    dynamic web sites.  To this end, it automated as many functions as
+    possible.  The high degree of automation, or "implicitness" often
+    made it harder for developers to learn and reason about the
+    system. As a result, Zope, one of the most widely used Python
+    applications, often actually puts off Python programmers.</p>
+
+<h3>  Opportunities</h3>
+<p>    Despite the problems noted above, Zope 2 has been very successful
+    because it and the systems built on it, such as Plone, help people
+    solve problems more quickly and effectively than other approaches!</p>
+<p>    Over the history of Zope 2, we've learned many things we would
+    like to do differently and many improvements we would like to
+    make. Zope 3 provides us the opportunity to learn from the past
+    and build an even better version of Zope.  To some degree, we can
+    take out time to "get it right", thanks to the fact that we have
+    an excellent system, Zope 2, that we can use while we build the
+    future.</p>
+<h3>  Proposed Solution</h3>
+<p>    This project proposes, at a high level, to do a number of things:</p>
+
+<ul>
+
+<li>Improve the development experience.  We want to provide a much
+      more rational development model that is attractive to Python and
+      other developers.</li>
+<li>Make it much easier to create objects that are usable in Zope:
+<ul>
+<li>Make it possible to use existing Python classes (with little or
+        no change).</li>
+<li>Utilize features of the Zope framework with small incremental
+        changes.</li>
+
+</ul>
+</li>
+<li>Ease the leaning curve for developers</li>
+<li>Facilitate software reuse
+<ul>
+<li>Use existing non-Zope-specific objects</li>
+
+<li>Add, remove, and replace functionality of existing objects.</li>
+<li>Change the user interface of existing objects,</li>
+<li>Provide alternative access methods (e.g. FTP, XML-RPC,
+        wxWindows) to objects.</li>
+
+</ul>
+</li>
+<li>Provide more flexibility for configuring Zope software</li>
+<li>Apply lessons leaned from using and building Zope 2</li>
+<li>Provide ground-up support for internationalization and localizatiopn</li>
+<li>Integrate CMF technology and development patterns into Zope.</li>
+
+</ul>
+<p>    We propose the development of a component architecture. A this
+    would make it easier to use the Zope framework. It would make it
+    easier to develop extensions (ie components) quickly. It would
+    make it easier for developers to use each others components (ie
+    reuse).</p>
+<p>    See the <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/UseCases" title="last edited 2 years ago by jim">UseCases</a> for UserGoals<a class="new" href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/VisionStatement/editform?page=UserGoals" title="create this page">?</a> adressed by this effort.</p>
+<h3>  What is Zope3</h3>
+
+<p>    I (<a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/JimFulton" title="last edited 2 years ago by jim">JimFulton</a>) see Zope 3 as two things:</p>
+
+<ul>
+<li>An application server that provides a platform for
+      creating content-managemnt applications, especially web-based
+      content-management applications.<p>      One of the outputs of the Zope 3 project will be a web-server
+      application that is recognizable as Zope.  There will continue
+      to be the features and capabilities now present in Zope 2.</p>
+</li>
+<li>An component-based architecture for creating a variety of
+      applications. We want an architecture that is robust and can be
+      used for many kinds of applications, including applications that
+      look nothing like the traditional Zope application server. There
+      are two reasons that we want such an architecture:
+<ul>
+<li>We'd like to be able to leverage what we've built to support
+        Zope with other application,</li>
+<li>We believe that making the Zope architecture robust in this
+        way will provide a sounder foundation for the application
+        server.</li>
+
+</ul>
+</li>
+
+</ul>
+<p>    Therefore, when designing the Zope architecture, we will not be
+    limited solely by the needs of the application server, although,
+    as a practical matter, the needs of the application server and
+    it's users will drive development priorities.</p>
+<h3>  Risk Factors</h3>
+<p>    Please see the <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/RiskFactors" title="last edited 2 years ago by srichter">RiskFactors</a> document.</p>
+
+<h3>  Scope</h3>
+<p>    This project will:</p>
+
+<ul>
+<li>Define the basic theory, architecture, and
+      techniques for component-based development in Zope.  </li>
+<li>Update CMF architecture according to the ComponentArchitecture<a class="new" href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/VisionStatement/editform?page=ComponentArchitecture" title="create this page">?</a> and
+      integrate it into Zope.  </li>
+<li>Provide a mechanism for distributing component configurations 
+      and content for the new component-based CMF.  This is specific
+      to the CMF limitation defined above. That is, that CMF content
+      has associated objects that provide presentation and
+      configuration information and we need an easier way of
+      distributing this information together.  </li>
+
+</ul>
+<p>    The project will <em>not</em>:</p>
+
+<ul>
+<li>Make product management decisions such as deciding the
+      relationship between the Zope and CMF products, or deciding
+      what, if any, CMF software will be included in a particular Zope
+      distribution.</li>
+<li>Create new software distribution mechanisms other than the
+      content-packaging mechanism for CMF content menioned above. </li>
+
+</ul>
+<h3>  Deliverables</h3>
+
+<p>    Documentation of the component basic and CMF component
+    architectures.  </p>
+<p>    New Zope software that implements:</p>
+
+<ul>
+<li>ComponentArchitecture<a class="new" href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/VisionStatement/editform?page=ComponentArchitecture" title="create this page">?</a> infrustructure software</li>
+<li>Component-based CMF component infrustructure software.</li>
+<li>Additional CMF products that provide remaining CMF functionality
+      using the new component technology.</li>
+
+</ul>
+<p><hr solid id=comments_below></p>
+<dl>
+<dt>jshell (Dec 3, 2001 9:15 pm; Comment #1) <em>Editor Remark Requested</em></dt>
+<dd>Regarding "Events"....  is there going to be a common way of handling events, 
+ notifications, and observations?  An event channel has been long-planned for
+ the CMF, but remains unseen.  Is that work going to move over to the Component
+ Architecture?<dl>
+<dt> Jim (Dec 5)</dt>
+<dd>I see events as being a part of some layer above
+   the component architecture. I'm not sure that it's in scope
+   for <em>this</em> particular project. Of course, that doesn't mean it
+   won't happen.</dd>
+
+<dt> Jim (January 2004)</dt>
+<dd>Zope 3 now includes an event architecture</dd>
+</dl>
+</dd>
+<dt>wilm (Dec 7, 2001 5:33 pm; Comment #2)</dt>
+<dd>Above, it is stated that "it
+is very unlikely that we will remove the requirement for mixing in
+persistence any time soon." However, the <a href="http://cvs.zope.org/Docs/ZopeComponentArchitecture/PythonProgrammerTutorial/Chapter1/Step1/README.txt?rev=1.3&content-type=text/vnd.viewcvs-markup">component tutorial in
+cvs</a>
+contradicts this: "It is likely that, in the future, it will be
+possible to store objects in Zope without mixing in <code>Persistent</code>,
+however, it will be necessary to make explicit calls when objects are
+modified so that changes can be saved."<dl>
+<dt>  Jim (Jan 2004)</dt>
+
+<dd>Right, we don't require persistence.  It's up to
+  the developer to decide how to manage their data.</dd>
+</dl>
+</dd>
+<dt>zopemaniac (Sep 19, 2002 11:42 am; Comment #3) <em>Editor Remark Requested</em></dt>
+<dd>I was going thru this documentation 
+ <a href="http://dev.zope.org/Resources/ZopeDirections.html">http://dev.zope.org/Resources/ZopeDirections.html</a><p> In this document of the above  link i found a line "A component could
+ be implemented as a function or a class"</p>
+<p> which sounds quite confusing to me.</p>
+<p> Would anyone like to explain, I really need to understand this line.</p>
+
+</dd>
+<dt>fredrik (Sep 27, 2002 3:15 am; Comment #4)</dt>
+<dd>"A component could be implemented as a function or a class" tells us that a component can be implemented as a Python function or a Python class. Read the tutorial at <a href="http://www.python.org/doc/current/tut/tut.html">http://www.python.org/doc/current/tut/tut.html</a> if you don't know the difference.</dd>
+</dl>
+
+    
+    <div>
+      
+      <a name="bottom"></a>
+
+
+
+    </div>
+
+</div>
+
+                        
+                        <div>
+    
+</div>
+                        
+                    </div>
+                </div>
+            </td>
+
+            
+        </tr>
+
+    </tbody>
+</table>
+
+<hr size="" class="netscape4" />
+
+<div class="footer">
+
+Copyright (c) 2005 Zope Corporation. All rights reserved.
+<a href="http://www.zope.com/about_us/legal/legal_notice.html">Legal</a> | <a href="mailto:webmaster@zope.org">Contact</a>
+
+<hr size="" class="netscape4" />
+
+<strong class="netscape4">
+If you can read this text, it means you are not experiencing the Plone design at its best.
+Plone makes heavy use of CSS, which means it is accessible to any internet browser, 
+but the design needs a 
+<a href="http://www.webstandards.org/upgrade/">standards-compliant browser to look like we intended it</a>. 
+Just so you know ;)
+</strong>
+ 
+</div>
+
+</body>
+</html>
