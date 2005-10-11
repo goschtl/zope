@@ -26,14 +26,19 @@ import App
 from zLOG import LOG, ERROR
 
 from zope.interface import classImplements
+from zope.interface.interface import InterfaceClass
 from zope.configuration import xmlconfig
 from zope.configuration.exceptions import ConfigurationError
 from zope.app.component.interface import provideInterface
+from zope.app.component.metaconfigure import adapter
+from zope.app.utility.interfaces import ILocalUtilityService
+from zope.app.site.interfaces import IPossibleSite, ISite
 
 from viewable import Viewable
 from traversable import Traversable
 from bridge import fromZ2Interface
 from browser.metaconfigure import page
+from localsite import FiveSite, SimpleLocalUtilityService
 
 debug_mode = App.config.getConfiguration().debug_mode
 
@@ -234,54 +239,6 @@ def pagesFromDirectory(_context, directory, module, for_=None,
         page(_context, name=name, permission=permission,
              layer=layer, for_=for_, template=fname)
 
-# clean up code
-
-def killMonkey(class_, name, fallback, attr=None):
-    """Die monkey, die!"""
-    method = getattr(class_, name, None)
-    if isFiveMethod(method):
-        original = getattr(class_, fallback, None)
-        if original is None:
-            try:
-                delattr(class_, name)
-            except AttributeError:
-                pass
-        else:                
-            setattr(class_, name, original)
-
-    if attr is not None:
-        try:
-            delattr(class_, attr)
-        except (AttributeError, KeyError):
-            pass
-
-def untraversable(class_):
-    """Restore class's initial state with respect to traversability"""
-    killMonkey(class_, '__bobo_traverse__', '__fallback_traverse__',
-               '__five_traversable__')
-
-def undefaultViewable(class_):
-    """Restore class's initial state with respect to being default
-    viewable."""
-    killMonkey(class_, '__browser_default__', '__fallback_default__',
-               '__five_viewable__')
-
-def cleanUp():
-    for class_ in _traversable_monkies:
-        untraversable(class_)
-    for class_ in _defaultviewable_monkies:
-        undefaultViewable(class_)
-
-from zope.testing.cleanup import addCleanUp
-addCleanUp(cleanUp)
-del addCleanUp
-
-from zope.interface.interface import InterfaceClass
-from zope.app.site.interfaces import IPossibleSite, ISite
-from zope.app.component.metaconfigure import adapter
-from zope.app.utility.interfaces import ILocalUtilityService
-from localsite import FiveSite, SimpleLocalUtilityService
-
 def classSiteHook(class_, site_class):
     setattr(class_, 'getSiteManager',
             site_class.getSiteManager.im_func)
@@ -294,6 +251,7 @@ def next():
     count += 1
     return count
 
+_localsite_monkies = []
 def installSiteHook(_context, class_, site_class=None, utility_service=None):
     if site_class is None:
         if not IPossibleSite.implementedBy(class_):
@@ -333,4 +291,58 @@ def installSiteHook(_context, class_, site_class=None, utility_service=None):
         callable = classImplements,
         args=(class_, iface)
         )
+    _localsite_monkies.append(class_)
+
+# clean up code
+
+def killMonkey(class_, name, fallback, attr=None):
+    """Die monkey, die!"""
+    method = getattr(class_, name, None)
+    if isFiveMethod(method):
+        original = getattr(class_, fallback, None)
+        if original is None:
+            try:
+                delattr(class_, name)
+            except AttributeError:
+                pass
+        else:                
+            setattr(class_, name, original)
+
+    if attr is not None:
+        try:
+            delattr(class_, attr)
+        except (AttributeError, KeyError):
+            pass
+
+def untraversable(class_):
+    """Restore class's initial state with respect to traversability"""
+    killMonkey(class_, '__bobo_traverse__', '__fallback_traverse__',
+               '__five_traversable__')
+
+def undefaultViewable(class_):
+    """Restore class's initial state with respect to being default
+    viewable."""
+    killMonkey(class_, '__browser_default__', '__fallback_default__',
+               '__five_viewable__')
+
+def uinstallSiteHook(class_):
+    delattr(class_, 'getSiteManager')
+    delattr(class_, 'setSiteManager')
+    from zope.interface import implementedBy, classImplementsOnly
+    ifaces = list(implementedBy(class_).interfaces())
+    ifaces = [i for i in ifaces if i is not ISite]
+    classImplementsOnly(class_, ifaces)
+    _localsite_monkies.remove(class_)
+
+def cleanUp():
+    for class_ in _traversable_monkies:
+        untraversable(class_)
+    for class_ in _defaultviewable_monkies:
+        undefaultViewable(class_)
+    for class_ in _localsite_monkies:
+        uinstallSiteHook(class_)
+    
+from zope.testing.cleanup import addCleanUp
+addCleanUp(cleanUp)
+del addCleanUp
 
