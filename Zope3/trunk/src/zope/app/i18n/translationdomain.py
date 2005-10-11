@@ -86,8 +86,9 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
             if domain is not None:
                 return domain.translate(msgid, mapping, context,
                                         target_language, default=default)
-            else:
-                text = default
+            if default is None:
+                default = msgid
+            text = default
 
         # Now we need to do the interpolation
         return interpolate(text, mapping)

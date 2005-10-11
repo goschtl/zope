@@ -69,7 +69,6 @@ class TestILocalTranslationDomain(object):
         languages.sort()
         return languages
 
-
     def testGetAddDeleteLanguage(self):
         domain = self._domain
         langs = self._getLanguages(domain)
@@ -84,24 +83,21 @@ class TestILocalTranslationDomain(object):
         domain.deleteLanguage('fr')
         self.assertEqual(self._getLanguages(domain), langs)
 
-
     def testAddUpdateDeleteMessage(self):
         domain = self._domain
         self.assertEqual(domain.translate('greeting2', target_language='de'),
-                         None)
-        self.assertEqual(domain.translate('greeting2', 
-                                           target_language='de', default=42),
-                         42)
+                         'greeting2')
+        self.assertEqual(domain.translate(
+            'greeting2', target_language='de', default=42), 42)
         domain.addMessage('greeting2', 'Hallo!', 'de')
-        self.assertEqual(domain.translate('greeting2',
-                                           target_language='de'), 'Hallo!')
+        self.assertEqual(domain.translate('greeting2', target_language='de'),
+                         'Hallo!')
         domain.updateMessage('greeting2', 'Hallo Ihr da!', 'de')
-        self.assertEqual(domain.translate('greeting2',
-                                           target_language='de'),
+        self.assertEqual(domain.translate('greeting2', target_language='de'),
                          'Hallo Ihr da!')
         domain.deleteMessage('greeting2', 'de')
-        self.assertEqual(domain.translate('greeting2',
-                                           target_language='de'), None)
+        self.assertEqual(domain.translate('greeting2', target_language='de'),
+                         'greeting2')
 
 
 # A test mixing -- don't add this to the suite
