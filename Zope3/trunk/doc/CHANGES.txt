@@ -74,6 +74,25 @@ Zope Changes
 
     Restructuring
 
+      - Mutable MessageIDs have been deprecated and will be removed in
+        Zope 3.3.  From now on, please use
+
+          zope.i18nmessageid.Message{Factory}
+
+        instead of 
+
+          zope.i18nmessageid.MessageID{Factory}
+
+        and
+
+          zope.app.i18n.ZopeMessageFactory
+
+        instead of
+
+          zope.app.i18n.ZopeMessageIDFactory
+
+        Zope itself now uses immutable messages everywhere.
+
     Bug Fixes
 
       - Fixed issue #450: ignore python level CookieError and report them
@@ -94,7 +113,8 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Stephan Richter, Roger Ineichen, Marius Gedminas, Julien Anguenot, Benji
-      York, Gary Poster, Jim Fulton, Michael Kerrin, Torsten Kurbad.
+      York, Gary Poster, Jim Fulton, Michael Kerrin, Torsten Kurbad,
+      Philipp von Weitershausen
 
     Note: If you are not listed and contributed, please add yourself. This
           note will be deleted before the release.
