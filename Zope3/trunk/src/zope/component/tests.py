@@ -76,7 +76,7 @@ class ConformsToISiteManager(object):
 def testInterfaces():
     """Ensure that the component architecture API is provided by
     `zope.component`.
-    
+
     >>> import zope.component
     >>> verifyObject(IComponentArchitecture, zope.component)
     True
@@ -84,7 +84,7 @@ def testInterfaces():
 
 def test_getGlobalSiteManager():
     """One of the most important functions is to get the global site manager.
-    
+
       >>> from zope.component.site import IGlobalSiteManager, globalSiteManager
 
     Get the global site manager via the CA API function:
@@ -93,14 +93,14 @@ def test_getGlobalSiteManager():
 
     Make sure that the global site manager implements the correct interface
     and is the global site manager instance we expect to get.
-    
+
       >>> IGlobalSiteManager.providedBy(gsm)
       True
       >>> globalSiteManager is gsm
       True
 
     Finally, ensure that we always get the same global site manager, otherwise
-    our component registry will always be reset. 
+    our component registry will always be reset.
 
       >>> zope.component.getGlobalSiteManager() is gsm
       True
@@ -109,7 +109,7 @@ def test_getGlobalSiteManager():
 def test_getSiteManager():
     """Make sure that `getSiteManager()` always returns the correct site
     manager instance.
-    
+
     We don't know anything about the default service manager, except that it
     is an `ISiteManager`.
 
@@ -121,7 +121,7 @@ def test_getSiteManager():
 
       >>> zope.component.getSiteManager() is zope.component.getSiteManager(None)
       True
-      
+
     If the context passed to `getSiteManager()` is not `None`, it is adapted
     to `ISiteManager` and this adapter returned.  So, we create a context that
     can be adapted to `ISiteManager` using the `__conform__` API.
@@ -132,7 +132,7 @@ def test_getSiteManager():
 
     Now create a context that knows how to adapt to our newly created site
     manager.
-    
+
       >>> context = ConformsToISiteManager(sitemanager)
 
     Now make sure that the `getSiteManager()` API call returns the correct
@@ -149,7 +149,7 @@ def test_getSiteManager():
       ComponentLookupError: ('Could not adapt', <instance Ob>,
       <InterfaceClass zope.component.interfaces.ISiteManager>)
     """
-    
+
 def testAdapterInContext(self):
     """The `getAdapterInContext()` and `queryAdapterInContext()` API functions
     do not only use the site manager to look up the adapter, but first tries
@@ -158,7 +158,7 @@ def testAdapterInContext(self):
 
     Let's start by creating a component that support's the PEP 246's
     `__conform__()` method:
-    
+
       >>> class Component(object):
       ...     implements(I1)
       ...     def __conform__(self, iface, default=None):
@@ -166,25 +166,25 @@ def testAdapterInContext(self):
       ...             return 42
       ...     def __repr__(self):
       ...         return '''<Component implementing 'I1'>'''
-      
+
       >>> ob = Component()
-      
+
     We also gave the component a custom representation, so it will be easier
     to use in these tests.
 
     We now have to create a site manager (other than the default global one)
     with which we can register adapters for `I1`.
-      
+
       >>> from zope.component.site import GlobalSiteManager
       >>> sitemanager = GlobalSiteManager()
 
     Now we create a new `context` that knows how to get to our custom site
     manager.
-    
+
       >>> context = ConformsToISiteManager(sitemanager)
 
     We now register an adapter from `I1` to `I3`:
-      
+
       >>> sitemanager.provideAdapter((I1,), I3, '', lambda x: 43)
 
     If an object implements the interface you want to adapt to,
@@ -235,7 +235,7 @@ def testAdapter():
     `{get|query}AdapterInContext()` functions, except that they do not care
     about the `__conform__()` but also handle named adapters. (Actually, the
     name is a required argument.)
-    
+
     If an adapter isn't registered for the given object and interface, and you
     provide no default, raise `ComponentLookupError`...
 
@@ -253,7 +253,7 @@ def testAdapter():
 
     Now get the global site manager and register an adapter from `I1` to `I2`
     without a name:
-      
+
       >>> zope.component.getGlobalSiteManager().provideAdapter(
       ...     (I1,), I2, '', Comp)
 
@@ -273,7 +273,7 @@ def testInterfaceCall():
     do adaptation.
 
     First, we need to register an adapter:
-    
+
       >>> zope.component.getGlobalSiteManager().provideAdapter(
       ...     [I1], I2, '', Comp)
 
@@ -293,7 +293,7 @@ def testInterfaceCall():
       ...
       TypeError: ('Could not adapt', <instance Ob2>,
                   <InterfaceClass zope.component.tests.I1>)
-      
+
     ...unless we specify an alternative adapter:
 
       >>> marker = object()
@@ -317,7 +317,7 @@ def testNamedAdapter():
       ... #doctest: +NORMALIZE_WHITESPACE
       Traceback (most recent call last):
       ...
-      ComponentLookupError: 
+      ComponentLookupError:
       (<instance Ob>, <InterfaceClass zope.component.tests.I2>, 'bar')
 
     ...otherwise, you get the default
@@ -331,7 +331,7 @@ def testNamedAdapter():
       ...     [I1], I2, 'bar', Comp)
 
     so that the lookup succeeds:
-    
+
       >>> adapter = zope.component.getAdapter(ob, I2, 'bar')
       >>> adapter.__class__ is Comp
       True
@@ -345,7 +345,7 @@ def testMultiAdapter():
     Multi-adapters adapt one or more objects to another interface. To make
     this demonstration non-trivial, we need to create a second object to be
     adapted:
-    
+
       >>> ob2 = Ob2()
 
     Like for regular adapters, if an adapter isn't registered for the given
@@ -370,7 +370,7 @@ def testMultiAdapter():
 
     To test multi-adapters, we also have to create an adapter class that
     handles to context objects:
-    
+
       >>> class DoubleAdapter(object):
       ...     implements(I3)
       ...     def __init__(self, first, second):
@@ -378,7 +378,7 @@ def testMultiAdapter():
       ...         self.second = second
 
     Now we can register the multi-adapter using
-    
+
       >>> zope.component.getGlobalSiteManager().provideAdapter(
       ...     (I1, I2), I3, '', DoubleAdapter)
 
@@ -416,14 +416,14 @@ def testAdapterForInterfaceNone():
       >>> adapter.context is something
       True
     """
-    
+
 def testGetAdapters():
     """It is sometimes desireable to get a list of all adapters that are
     registered for a particular output interface, given a set of
     objects.
 
-    Let's register some adapters first: 
-    
+    Let's register some adapters first:
+
       >>> zope.component.getGlobalSiteManager().provideAdapter(
       ...     [I1], I2, '', Comp)
       >>> zope.component.getGlobalSiteManager().provideAdapter(
@@ -431,7 +431,7 @@ def testGetAdapters():
 
     Now we get all the adapters that are registered for `ob` that provide
     `I2`:
-    
+
       >>> adapters = zope.component.getAdapters((ob,), I2)
       >>> adapters.sort()
       >>> [(name, adapter.__class__.__name__) for name, adapter in adapters]
@@ -446,7 +446,6 @@ def testGetAdapters():
       >>> adapters.sort()
       >>> [(name, adapter.__class__.__name__) for name, adapter in adapters]
       [(u'', 'Comp'), (u'foo', 'Comp')]
-      
 
     """
 
@@ -477,7 +476,7 @@ def testUtility():
       >>> zope.component.getGlobalSiteManager().provideUtility(I1, ob)
 
     so that the component is now available:
-    
+
       >>> zope.component.getUtility(I1) is ob
       True
     """
@@ -486,11 +485,11 @@ def testNamedUtility():
     """Like adapters, utilities can be named.
 
     Just because you register an utility having no name
-    
+
       >>> zope.component.getGlobalSiteManager().provideUtility(I1, ob)
 
     does not mean that they are available when you specify a name:
-    
+
       >>> zope.component.getUtility(I1, name='foo') \\
       ... #doctest: +NORMALIZE_WHITESPACE
       Traceback (most recent call last):
@@ -504,7 +503,7 @@ def testNamedUtility():
       >>> zope.component.queryUtility(I1, name='foo', default='<default>')
       '<default>'
 
-    Registering the utility under the correct name 
+    Registering the utility under the correct name
 
       >>> zope.component.getGlobalSiteManager().provideUtility(
       ...     I1, ob, name='foo')
@@ -521,13 +520,13 @@ def test_getAllUtilitiesRegisteredFor():
     providing a derived interface are also listed.
 
     Thus, let's create a derivative interface of `I1`:
-    
+
       >>> class I11(I1):
       ...     pass
 
       >>> class Ob11(Ob):
       ...     implements(I11)
-    
+
       >>> ob11 = Ob11()
       >>> ob_bob = Ob()
 
