@@ -26,24 +26,6 @@ removeSecurityProxy = getObject
 # This import represents part of the API for this module
 from zope.security.checker import ProxyFactory
 
-def trustedRemoveSecurityProxy(object):
-    """Deprecated, use removeSecurityProxy instead"""
-    warn("trustedRemoveSecurityProxy is deprecated."
-         " It will disappear in Zope X3.1. "
-         " Use removeSecurityProxy instead",
-         DeprecationWarning, 2)
-
-    return removeSecurityProxy(object)
-
-def getProxiedObject(object):
-    """Deprecated, use removeSecurityProxy instead"""
-    warn("getProxiedObject is deprecated."
-         " It will disappear in Zope X3.1. "
-         " Use removeSecurityProxy instead",
-         DeprecationWarning, 2)
-
-    return removeSecurityProxy(object)
-
 def getTestProxyItems(proxy):
     """Try to get checker names and permissions for testing
 
