@@ -18,7 +18,7 @@ $Id$
 from zope.app import zapi
 from zope.app.form.browser.editview import EditView
 from zope.app.form.utility import setUpEditWidgets
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.schema.interfaces import IMutableSchema
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
@@ -60,12 +60,16 @@ class EditSchema(BrowserView):
             delta = up and -1 or 1
             names = self.fieldNames()
             if name not in names:
+                #TODO variable insertion must not be expanded until
+                # after the translation... preferably use mapping here
                 self.errors = (_("Invalid field name: %s" % name),)
                 status = _("An error occured.")
             p = names.index(name) + delta
             try:
                 self.context.moveField(name, p)
             except IndexError:
+                #TODO variable insertion must not be expanded until
+                # after the translation... preferably use mapping here
                 self.errors = (_("Invalid position: %s" % p),)
                 status = _("An error occured.")
         self.update_status = status

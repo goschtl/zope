@@ -16,7 +16,7 @@
 $Id$
 """
 from zope.app.form.browser.editview import EditView
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 class PythonPageEval(object):
     """Evaluate the Python Page."""

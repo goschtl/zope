@@ -22,6 +22,7 @@ import zope.interface
 import zope.schema
 from zope.security.proxy import removeSecurityProxy
 from zope.i18n import translate
+from zope.i18nmessageid import Message
 
 from zope.app import zapi
 from zope.app.basicskin.standardmacros import StandardMacros
@@ -30,7 +31,7 @@ from zope.app.form.browser.editview import EditView
 from zope.app.pagetemplate.simpleviewclass import simple
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.tree.browser.cookie import CookieTreeView
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 from zope.app.preference import interfaces
 
@@ -80,9 +81,9 @@ class EditPreferenceGroup(EditView):
             zope.interface.alsoProvides(removeSecurityProxy(context),
                                         NoneInterface)
 
-        self.label = pref_msg
-        self.label.mapping["name"] = translate(context.__title__,
-            context=request, default=context.__title__)
+        name = translate(context.__title__, context=request,
+                         default=context.__title__)
+        self.label = Message(pref_msg, mapping={u'name': name})
         super(EditPreferenceGroup, self).__init__(context, request)
         self.setPrefix(context.__id__)
 

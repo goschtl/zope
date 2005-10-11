@@ -30,7 +30,7 @@ from zope.app.form.interfaces import IInputWidget, WidgetsError
 from zope.app.publisher.browser import BrowserView
 from zope.app import recorder
 from zope.app.testing import dochttp
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.publisher.interfaces import NotFound
 
 
@@ -78,6 +78,9 @@ class RecordedSessionsView(BrowserView):
                 try:
                     yield re.compile(pattern)
                 except re.error:
+                    #TODO variable insertions must not be expanded
+                    # until after the translation... preferably use
+                    # mapping here
                     self.error = _('Invalid regex: %s') % pattern
 
     def _requests(self):

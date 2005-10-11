@@ -31,7 +31,7 @@ from zope.app.fssync import syncer
 from zope.app.fssync.committer import Committer, Checker
 from zope.fssync.metadata import Metadata
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 def snarf_dir(response, dirname):
     """Helper to snarf a directory to the response."""

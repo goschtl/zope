@@ -26,7 +26,7 @@ from zope.app import content_types
 from zope.app.event import objectevent
 from zope.app.file.file import File
 from zope.app.file.interfaces import IFile
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.exception.interfaces import UserError
 
 __docformat__ = 'restructuredtext'
@@ -218,9 +218,8 @@ class FileUpload(FileUpdateView):
             
         formatter = self.request.locale.dates.getFormatter(
             'dateTime', 'medium')
-        status = _("Updated on ${date_time}")
-        status.mapping = {'date_time': formatter.format(datetime.utcnow())}
-        return status
+        return _("Updated on ${date_time}",
+                 mapping={'date_time': formatter.format(datetime.utcnow())})
 
 
 class IFileEditForm(IFile):
@@ -342,13 +341,13 @@ class FileEdit(object):
                     'data': self.context.data.decode(charset)}
         except LookupError:
             msg = _("The character set specified in the content type"
-                    " ($charset) is not supported.")
-            msg.mapping = {'charset': charset}
+                    " ($charset) is not supported.",
+                    mapping={'charset': charset})
             raise UserError(msg)
         except UnicodeDecodeError:
             msg = _("The character set specified in the content type"
-                    " ($charset) does not match file content.")
-            msg.mapping = {'charset': charset}
+                    " ($charset) does not match file content.",
+                    mapping={'charset': charset})
             raise UserError(msg)
 
     def setData(self, data):
@@ -362,22 +361,21 @@ class FileEdit(object):
         self.context.contentType = data['contentType']
         formatter = self.request.locale.dates.getFormatter('dateTime',
                                                            'medium')
-        status = _("Updated on ${date_time}")
-        status.mapping = {'date_time': formatter.format(datetime.utcnow())}
-        return status
+        return _("Updated on ${date_time}",
+                 mapping={'date_time': formatter.format(datetime.utcnow())})
 
     def update(self):
         try:
             return super(FileEdit, self).update()
         except CharsetTooWeak, charset:
             self.update_status = _("The character set you specified ($charset)"
-                                   " cannot encode all characters in text.")
-            self.update_status.mapping = {'charset': charset}
+                                   " cannot encode all characters in text.",
+                                   mapping={'charset': charset})
             return self.update_status
         except UnknownCharset, charset:
             self.update_status = _("The character set you specified ($charset)"
-                                   " is not supported.")
-            self.update_status.mapping = {'charset': charset}
+                                   " is not supported.",
+                                   mapping={'charset': charset})
             return self.update_status
 
 

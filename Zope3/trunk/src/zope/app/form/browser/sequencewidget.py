@@ -26,7 +26,7 @@ from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.form import InputWidget
 from zope.app.form.browser.widget import BrowserWidget
 from zope.app.form.browser.widget import DisplayWidget, renderElement
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 class SequenceWidget(BrowserWidget, InputWidget):
     """A widget baseclass for a sequence of fields.

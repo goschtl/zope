@@ -23,7 +23,7 @@ from zope.app import zapi
 from zope.app.form.browser.submit import Update
 from zope.app.form.utility import setUpWidget, applyWidgetsChanges
 from zope.app.form.interfaces import IInputWidget
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.publisher.browser import BrowserView
 

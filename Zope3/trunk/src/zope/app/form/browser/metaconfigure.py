@@ -29,7 +29,7 @@ from zope.app.container.interfaces import IAdding
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.app.publisher.browser.menumeta import menuItemDirective
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget

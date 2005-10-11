@@ -24,7 +24,7 @@ from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.security.interfaces import ILogout, ILogoutSupported
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 
 search_label = _('search-button', 'Search')

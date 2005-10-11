@@ -386,8 +386,8 @@ class MessageID(schema.Text):
                  u'Hello world!': [('file location', 8),
                                    ('file location', 8)]}}
 
-    >>> from zope.i18n.messageid import MessageID
-    >>> isinstance(context.i18n_strings['testing'].keys()[0], MessageID)
+    >>> from zope.i18nmessageid import Message
+    >>> isinstance(context.i18n_strings['testing'].keys()[0], Message)
     1
 
     Explicit Message IDs
@@ -401,8 +401,8 @@ class MessageID(schema.Text):
     >>> i = field.fromUnicode(u'[] [Some] text')
     >>> i
     u'[Some] text'
-    >>> i.default
-    u'[Some] text'
+    >>> i.default is None
+    True
     """
 
     implements(IFromUnicode)
@@ -432,8 +432,8 @@ class MessageID(schema.Text):
         # Convert to a message id, importing the factory, if necessary
         factory = self.__factories.get(domain)
         if factory is None:
-            import zope.i18n.messageid
-            factory = zope.i18n.messageid.MessageIDFactory(domain)
+            import zope.i18nmessageid
+            factory = zope.i18nmessageid.MessageFactory(domain)
             self.__factories[domain] = factory
 
         msgid = factory(v, default)

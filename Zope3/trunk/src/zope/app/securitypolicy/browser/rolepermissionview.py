@@ -22,7 +22,7 @@ from zope.interface import implements
 
 from zope.app import zapi
 from zope.app.exception.interfaces import UserError
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.security.settings import Unset, Allow, Deny
 from zope.app.security.interfaces import IPermission
 from zope.app.securitypolicy.interfaces import IRole, IRolePermissionManager
@@ -143,10 +143,11 @@ class RolePermissionView(object):
             for permission in self.permissions():
                 rperm = permission.id
                 if rperm in allowed and rperm in denied:
+                    permission_translated = translate(
+                        permission.title, context=self.request)
                     msg = _('You choose both allow and deny for permission'
-                        ' "${permission}". This is not allowed.')
-                    msg.mapping = {'permission': translate(
-                        permission.title, context=self.request)}
+                            ' "${permission}". This is not allowed.',
+                            mapping = {'permission': permission_translated})
                     raise UserError(msg)
                 if rperm in allowed:
                     prm.grantPermissionToRole(rperm, role_id)
@@ -159,8 +160,9 @@ class RolePermissionView(object):
         if changed:
             formatter = self.request.locale.dates.getFormatter(
                 'dateTime', 'medium')
-            status = _("Settings changed at ${date_time}")
-            status.mapping = {'date_time': formatter.format(datetime.utcnow())}
+            status = _("Settings changed at ${date_time}",
+                       mapping={'date_time':
+                                formatter.format(datetime.utcnow())})
 
         return status
 

@@ -33,7 +33,7 @@ from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 import zope.app.container.constraints
 import zope.app.container.interfaces
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 import zope.app.security.vocabulary
 from zope.app.security.interfaces import IAuthenticatedGroup, IEveryoneGroup
 from zope.app.authentication import principalfolder, interfaces

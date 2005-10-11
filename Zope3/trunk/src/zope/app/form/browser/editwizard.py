@@ -24,7 +24,7 @@ from zope.app import zapi
 from zope.event import notify
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event.objectevent import Attributes
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 

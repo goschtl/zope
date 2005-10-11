@@ -29,7 +29,7 @@ from zope.app import zapi
 from zope.event import notify
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event.objectevent import Attributes
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.form.interfaces import WidgetsError
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
@@ -113,9 +113,9 @@ class EditView(BrowserView):
                     self.changed()
                     formatter = self.request.locale.dates.getFormatter(
                         'dateTime', 'medium')
-                    status = _("Updated on ${date_time}")
-                    status.mapping = {'date_time': formatter.format(
-                        datetime.utcnow())}
+                    status = _("Updated on ${date_time}",
+                               mapping={'date_time':
+                                        formatter.format(datetime.utcnow())})
 
         self.update_status = status
         return status

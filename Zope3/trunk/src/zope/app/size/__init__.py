@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.size.interfaces import ISized
 from zope.interface import implements
 
@@ -47,9 +47,5 @@ def byteDisplay(size):
     if size <= 1024:
         return _('1 KB')
     if size > 1048576:
-        size_str = _('${size} MB')
-        size_str.mapping = {'size': '%0.02f' % (size / 1048576.0)}
-        return size_str
-    size_str = _('${size} KB')
-    size_str.mapping = {'size': '%d' % (size / 1024.0)}
-    return size_str
+        return _('${size} MB', mapping={'size': '%0.02f' % (size / 1048576.0)})
+    return _('${size} KB', mapping={'size': '%d' % (size / 1024.0)})

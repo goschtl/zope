@@ -22,7 +22,7 @@ from zope.interface import implements
 from zope.pagetemplate.pagetemplate import PageTemplate
 
 from zope.app.pagetemplate.engine import AppPT
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.size.interfaces import ISized
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.filerepresentation.interfaces import IFileFactory
@@ -107,9 +107,7 @@ class Sized(object):
         'See ISized'
         if self.num_lines == 1:
             return _('1 line')
-        lines  = _('${lines} lines')
-        lines.mapping = {'lines': str(self.num_lines)}
-        return lines
+        return _('${lines} lines', mapping={'lines': str(self.num_lines)})
 
 # File-system access adapters
 

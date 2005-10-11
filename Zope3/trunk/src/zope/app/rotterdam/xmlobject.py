@@ -28,7 +28,7 @@ from zope.app.publisher.browser import BrowserView
 from zope.app.container.interfaces import IReadContainer
 from zope.app.traversing.api import getParents, getParent, traverse
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 
 titleTemplate = _('Contains $${num} item(s)')

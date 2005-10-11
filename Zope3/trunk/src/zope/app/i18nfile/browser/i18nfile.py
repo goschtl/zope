@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from urllib import quote
 from zope.i18n.negotiator import negotiator
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 class I18nFileView(object):
 
@@ -44,7 +44,7 @@ class I18nFileEdit(object):
 
     name = 'editForm'
     title = _('Edit Form')
-    description = _('This edit form allows you to make changes to the ' +
+    description = _('This edit form allows you to make changes to the '
                    'properties of this file.')
 
     def action(self, contentType, data, language, defaultLanguage,

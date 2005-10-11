@@ -22,7 +22,7 @@ import zope.schema
 import zope.app.container
 import zope.app.component.interfaces
 from zope.app.container import constraints
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 
 class IPageRegistration(zope.app.component.interfaces.IAdapterRegistration):

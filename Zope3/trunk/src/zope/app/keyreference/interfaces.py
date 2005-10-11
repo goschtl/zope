@@ -18,7 +18,7 @@ $Id$
 import zope.interface
 from zope.schema import DottedName
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 
 class NotYet(Exception):

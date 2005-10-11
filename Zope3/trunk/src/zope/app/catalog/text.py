@@ -22,7 +22,7 @@ import zope.interface
 import zope.app.catalog.attribute
 import zope.app.catalog.interfaces
 import zope.app.container.contained
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 class ITextIndex(zope.app.catalog.interfaces.IAttributeIndex,
                  zope.app.catalog.interfaces.ICatalogIndex):

@@ -23,7 +23,7 @@ from zope.app import zapi
 from zope.app.location import Location
 from zope.app.security.interfaces import IPermission
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 NULL_ID = _('<permission not activated>')
 
 class Permission(object):

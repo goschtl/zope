@@ -25,7 +25,7 @@ from zope.interface import implements
 from zope.app.size.interfaces import ISized
 from zope.app.size import byteDisplay
 from zope.app.content_types import guess_content_type
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 from file import File
 from interfaces import IImage
@@ -71,10 +71,12 @@ class ImageSized(object):
         bytes = self._image.getSize()
         byte_size = byteDisplay(bytes)
         mapping = byte_size.mapping
-        size = _(byte_size + ' ${width}x${height}')
+        if mapping is None:
+            mapping = {}
         mapping.update({'width': str(w), 'height': str(h)})
-        size.mapping = mapping 
-        return size
+        #TODO the way this message id is defined, it won't be picked up by
+        # i18nextract and never show up in message catalogs
+        return _(byte_size + ' ${width}x${height}', mapping=mapping)
 
 class FileFactory(object):
 

@@ -21,7 +21,7 @@ from datetime import datetime
 from zope.event import notify
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event.objectevent import Attributes
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.dublincore.interfaces import IZopeDublinCore
 
 
@@ -39,8 +39,8 @@ class MetaDataEdit(object):
             dc.description = unicode(request['dcdescription'])
             description = Attributes(IZopeDublinCore, 'title', 'description')
             notify(ObjectModifiedEvent(self.context, description))
-            message = _("Changed data ${datetime}")
-            message.mapping = {'datetime': formatter.format(datetime.utcnow())}
+            message = _("Changed data ${datetime}",
+                        mapping={'datetime': formatter.format(datetime.utcnow())})
 
         return {
             'message': message,

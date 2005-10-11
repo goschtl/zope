@@ -27,7 +27,7 @@ from zope.app.form.browser.widget import DisplayWidget
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 
 def escape(str):

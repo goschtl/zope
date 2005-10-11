@@ -25,7 +25,7 @@ from base64 import encodestring
 from zope.security.proxy import removeSecurityProxy
 
 from zope.app.i18n.browser import BaseView
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 DEFAULT = 'http://localhost:8080/++etc++site/default/zope'
 

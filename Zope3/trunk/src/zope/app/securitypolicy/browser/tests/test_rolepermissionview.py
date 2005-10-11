@@ -17,9 +17,9 @@ $Id$
 """
 import unittest
 
-from zope.i18n.interfaces import ITranslationDomain
-from zope.i18nmessageid import MessageID
 import zope.interface
+from zope.i18n.interfaces import ITranslationDomain
+from zope.i18nmessageid import Message
 from zope.publisher.browser import TestRequest
 
 from zope.app.exception.interfaces import UserError
@@ -68,10 +68,10 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        defineRole('manager', MessageID('Manager', 'testdomain'))
-        defineRole('member',  MessageID('Member', 'testdomain'))
-        definePermission('read', MessageID('Read', 'testdomain'))
-        definePermission('write', MessageID('Write', 'testdomain'))
+        defineRole('manager', Message('Manager', 'testdomain'))
+        defineRole('member',  Message('Member', 'testdomain'))
+        definePermission('read', Message('Read', 'testdomain'))
+        definePermission('write', Message('Write', 'testdomain'))
         site = RolePermissionManager()
         self.view = RolePermissionView(FakeSiteManager(site), None)
         ztapi.provideUtility(ITranslationDomain,

@@ -23,7 +23,7 @@ from zope.app import zapi
 import zope.app.form.interfaces
 import zope.app.form.browser.widget
 import zope.app.form.browser.interfaces
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 

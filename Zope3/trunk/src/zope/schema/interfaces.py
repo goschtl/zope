@@ -20,8 +20,8 @@ from zope.interface import Interface, Attribute
 from zope.schema._bootstrapfields import Container, Iterable
 from zope.schema._bootstrapfields import Field, Text, TextLine, Bool, Int
 
-from zope.i18nmessageid import MessageIDFactory
-_ = MessageIDFactory("zope")
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory("zope")
 
 # Import from _bootstrapinterfaces only because other packages will expect
 # to find these interfaces here.

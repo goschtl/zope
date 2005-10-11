@@ -19,7 +19,7 @@ import zope.schema
 from zope.security.checker import CheckerPublic
 
 from zope.interface import Interface, Attribute
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.workflow.interfaces import IWorkflowEvent
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstance

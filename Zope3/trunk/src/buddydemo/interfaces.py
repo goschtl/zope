@@ -2,8 +2,8 @@ import re
 import zope.interface
 from zope.schema import Text, TextLine
 
-from zope.i18nmessageid import MessageIDFactory
-_ = MessageIDFactory("buddydemo")
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory("buddydemo")
 
 class IBuddy(zope.interface.Interface):
     """Provides access to basic buddy information"""

@@ -25,8 +25,8 @@ from zope.schema.vocabulary import SimpleVocabulary
 import zope.app.annotation.interfaces
 import zope.app.event.interfaces
 
-from zope.i18nmessageid import MessageIDFactory
-_ = MessageIDFactory('zope.app.versioncontrol')
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory('zope.app.versioncontrol')
 
 
 class VersionControlError(Exception):

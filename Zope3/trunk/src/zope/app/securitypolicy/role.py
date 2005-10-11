@@ -22,7 +22,7 @@ from zope.app import zapi
 from zope.app.location import Location
 from zope.app.securitypolicy.interfaces import IRole
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 NULL_ID = _('<role not activated>')
 
 class Role(object):

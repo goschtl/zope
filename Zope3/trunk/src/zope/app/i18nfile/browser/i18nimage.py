@@ -21,7 +21,7 @@ from urllib import quote
 
 from zope.i18n.negotiator import negotiator
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.file.browser.image import ImageData
 from zope.app.size import ISized
 

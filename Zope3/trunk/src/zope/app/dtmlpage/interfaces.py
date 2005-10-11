@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 import zope.schema
 from zope.interface import Interface, Attribute
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 class IDTMLPage(Interface):
     """DTML Pages are a persistent implementation of DTML."""

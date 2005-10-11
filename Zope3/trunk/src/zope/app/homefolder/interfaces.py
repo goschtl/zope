@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 
 from zope.interface import Interface
 from zope.schema import Field, Bool, Choice
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 class IHomeFolder(Interface):
     """Describes the home directory of a principal."""

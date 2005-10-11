@@ -32,7 +32,7 @@ from zope.app.locking.interfaces import ILockTracker
 from zope.app.locking.interfaces import LockingError
 from zope.app.size.interfaces import ISized
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 
 timefunc = time.time
@@ -158,9 +158,7 @@ class Sized(object):
         num_items = self._get_size()
         if num_items == 1:
             return _('1 item')
-        size = _('${items} items')
-        size.mapping = {'items': str(num_items)}
-        return size
+        return _('${items} items', mapping={'items': str(num_items)})
 
     def _get_size(self):
         # We only want to include active locks, so we'd like to simply

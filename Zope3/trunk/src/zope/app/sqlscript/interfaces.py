@@ -18,7 +18,7 @@ $Id$
 import zope.schema
 from zope.app import zapi
 from zope.app.rdb.interfaces import ISQLCommand
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 class MissingInput(Exception):
     pass

@@ -22,7 +22,7 @@ import zope.interface
 import zope.schema
 from zope.tales import interfaces
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.publisher.interfaces.browser import IBrowserView
 
 

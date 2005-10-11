@@ -16,7 +16,7 @@
 $Id$
 """
 from zope.interface import Interface, Attribute
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.container.interfaces import IContainer
 
 

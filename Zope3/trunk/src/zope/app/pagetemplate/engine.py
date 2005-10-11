@@ -36,7 +36,7 @@ from zope.security.untrustedpython.builtins import SafeBuiltins
 from zope.i18n import translate
 
 from zope.app import zapi
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.traversing.adapters import Traverser, traversePathElement
 from zope.app.traversing.interfaces import IPathAdapter, ITraversable
 
@@ -128,8 +128,8 @@ class ZopeContextBase(Context):
         from zope.app.interpreter.interfaces import IInterpreter
         interpreter = zapi.queryUtility(IInterpreter, lang)
         if interpreter is None:
-            error = _('No interpreter named "${lang_name}" was found.')
-            error.mapping = {'lang_name': lang}
+            error = _('No interpreter named "${lang_name}" was found.',
+                      mapping={'lang_name': lang})
             raise InlineCodeError(error)
 
         globals = self.vars.copy()

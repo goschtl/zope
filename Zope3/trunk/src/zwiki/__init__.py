@@ -15,6 +15,5 @@
 
 $Id$
 """
-
-from zope.i18nmessageid import MessageIDFactory
-ZWikiMessageID = MessageIDFactory("zwiki")
+from zope.i18nmessageid import MessageFactory
+ZWikiMessageFactory = MessageFactory("zwiki")

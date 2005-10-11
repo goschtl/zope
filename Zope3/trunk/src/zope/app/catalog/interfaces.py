@@ -22,7 +22,7 @@ import zope.schema
 import zope.app.container.interfaces
 import zope.app.container.constraints
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 class ICatalogQuery(zope.interface.Interface):
     """Provides Catalog Queries."""

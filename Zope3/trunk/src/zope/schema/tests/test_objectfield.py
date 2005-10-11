@@ -17,8 +17,7 @@ $Id$
 """
 from unittest import TestSuite, main, makeSuite
 
-from zope.i18nmessageid import MessageIDFactory
-
+from zope.i18nmessageid import MessageFactory
 from zope.interface import Attribute, Interface, implements
 from zope.schema import Object, TextLine
 from zope.schema.fieldproperty import FieldProperty
@@ -27,7 +26,7 @@ from zope.schema.interfaces import RequiredMissing, WrongContainedType
 from zope.schema.interfaces import WrongType, SchemaNotFullyImplemented
 from zope.schema.tests.test_field import FieldTestBase
 
-_ = MessageIDFactory('zope')
+_ = MessageFactory('zope')
 
 
 class ITestSchema(Interface):

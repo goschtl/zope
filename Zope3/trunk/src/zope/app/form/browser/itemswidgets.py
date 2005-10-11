@@ -30,7 +30,7 @@ from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from zope.app.form.interfaces import ConversionError
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 
 # For choices, we want to make the widget a view of the field and vocabulary.
@@ -71,12 +71,6 @@ class TranslationHook(object):
 
     def translate(self, msgid):
         return translate(msgid, context=self.request, default=msgid)
-
-def message(msgid, default):
-    """Add a default value to a i18n message id."""
-    msgid.default = default
-    return msgid
-
 
 class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
     """Convenience base class for widgets displaying items/choices."""
@@ -222,7 +216,7 @@ class ItemDisplayWidget(SingleDataHelper, ItemsWidgetBase):
         ItemsWidgetBase.__init__(self, *args, **kw)
         self.required = False
 
-    _messageNoValue = message(_("item-missing-single-value-for-display"), "")
+    _messageNoValue = _("item-missing-single-value-for-display", "")
 
     def __call__(self):
         """See IBrowserWidget."""
@@ -241,8 +235,7 @@ class ItemsMultiDisplayWidget(MultiDataHelper, ItemsWidgetBase):
         ItemsWidgetBase.__init__(self, *args, **kw)
         self.required = False
 
-    _messageNoValue = message(
-        _("vocabulary-missing-multiple-value-for-display"), "")
+    _messageNoValue = _("vocabulary-missing-multiple-value-for-display", "")
 
     itemTag = 'li'
     tag = 'ol'
@@ -391,8 +384,8 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
 class SelectWidget(ItemsEditWidgetBase):
     """Provide a selection list for the item."""
 
-    _messageNoValue = message(_("vocabulary-missing-single-value-for-edit"),
-                              "(no value)")
+    _messageNoValue = _("vocabulary-missing-single-value-for-edit",
+                        "(no value)")
 
     def renderValue(self, value):
         rendered_items = self.renderItems(value)
@@ -436,8 +429,8 @@ class RadioWidget(ItemsEditWidgetBase):
     """
     orientation = "vertical"
 
-    _messageNoValue = message(_("vocabulary-missing-single-value-for-edit"),
-                              "(no value)")
+    _messageNoValue = _("vocabulary-missing-single-value-for-edit",
+                        "(no value)")
 
     _joinButtonToMessageTemplate = u"<label>%s&nbsp;%s</label>"
 
@@ -509,8 +502,8 @@ class RadioWidget(ItemsEditWidgetBase):
 class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
     """Items widget supporting multiple selections."""
 
-    _messageNoValue = message(
-        _("vocabulary-missing-multiple-value-for-edit"), "(no values)")
+    _messageNoValue = _("vocabulary-missing-multiple-value-for-edit",
+                        "(no values)")
 
     def renderItems(self, value):
         if value == self.context.missing_value:

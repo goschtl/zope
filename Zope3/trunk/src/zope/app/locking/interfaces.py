@@ -20,12 +20,12 @@ $Id: $
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.event.interfaces import IObjectEvent
 from zope.interface import Interface, Attribute
-from zope.i18nmessageid import MessageIDFactory
+from zope.i18nmessageid import MessageFactory
 from zope.interface.common.mapping import IMapping
 import zope.interface
 import zope.schema
 
-_ = MessageIDFactory('zope.app.locking')
+_ = MessageFactory('zope.app.locking')
 
 
 class ILockable(Interface):

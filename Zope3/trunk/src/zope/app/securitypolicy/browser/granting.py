@@ -25,7 +25,7 @@ from zope.app.form.utility import setUpWidget
 from zope.app.form.browser import RadioWidget
 from zope.app.form.browser.widget import renderElement
 from zope.app.form.interfaces import MissingInputError
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 from zope.app.form.interfaces import IInputWidget
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager

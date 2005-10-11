@@ -24,7 +24,7 @@ from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.size.interfaces import ISized
 from zope.app.filerepresentation.interfaces import IReadDirectory
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 import zope.app.location
 from zope.app.dublincore.interfaces import IWriteZopeDublinCore
@@ -53,9 +53,7 @@ class RobotSize(object):
         return None, None
 
     def sizeForDisplay(self):
-        msg = _(u"${num} robot unit")
-        msg.mapping = {'num': 1}
-        return msg
+        return _(u"${num} robot unit", mapping={'num': 1})
 
 class RobotDirectory(object):
     implements(IReadDirectory)

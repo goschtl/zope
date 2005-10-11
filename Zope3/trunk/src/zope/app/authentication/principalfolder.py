@@ -29,7 +29,7 @@ from zope.app.container.interfaces import DuplicateIDError
 from zope.app.container.contained import Contained
 from zope.app.container.constraints import contains, containers
 from zope.app.container.btree import BTreeContainer
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 from zope.app.authentication import interfaces
 
