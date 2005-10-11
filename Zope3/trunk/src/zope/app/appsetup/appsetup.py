@@ -66,23 +66,23 @@ def config(file, features=(), execute=True):
     causing a lot (128) of the functional tests to fail. I dont understand
     the ZCML configuration enough to fix them.
 
-      #>>> context = config(fn, features=('myFeature2', 'myFeature3'))
-      #>>> context.hasFeature('myFeature')
-      #True
-      #>>> context.hasFeature('myFeature2')
-      #True
-      #>>> context.hasFeature('myFeature3')
-      #True
-      #>>> context.hasFeature('myFeature4')
-      #True
+      >>> context = config(fn, features=('myFeature2', 'myFeature3'))
+      >>> context.hasFeature('myFeature')
+      True
+      >>> context.hasFeature('myFeature2')
+      True
+      >>> context.hasFeature('myFeature3')
+      True
+      >>> context.hasFeature('myFeature4')
+      True
 
     Further, we should have access to the configuration file name and context
     now:
 
-      #>>> getConfigSource() is fn
-      #True
-      #>>> getConfigContext() is context
-      #True
+      >>> getConfigSource() is fn
+      True
+      >>> getConfigContext() is context
+      True
 
     Let's now clean up by removing the temporary file:
 
@@ -223,6 +223,20 @@ def getConfigContext():
 __config_source = None
 def getConfigSource():
     return __config_source
+
+def reset():
+    global _configured
+    _configured = False
+
+    global __config_source
+    __config_source = None
+
+    global __config_context
+    __config_context = None
+
+from zope.testing.cleanup import addCleanUp
+addCleanUp(reset)
+del addCleanUp
 
 
 # BBB
