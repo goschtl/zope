@@ -310,6 +310,14 @@ Contributors
 
 - Philipp von Weitershausen
 
+  Much work on i18n
+
+  Implemented (with Jim Fulton) and introduced immutable i18n messages
+
+  Reworked undo support and the Undo UI
+
+  Implemented a static tree API as used in the APIDoc tool
+
   Fixed lots of HTML bugs in the page templates.
 
   Much work on Zope 3 XML support.
@@ -361,8 +369,8 @@ Contributors
 
 - Tim Peters
 
-  Created the Python datetime time used by Zope 3. A lot of testing of
-  this type was done in Zope 3.
+  Created the Python datetime type used by Zope 3. A lot of testing
+  of this type was done in Zope 3.
 
   Much work on ZODB and, especially, BTrees.
 
