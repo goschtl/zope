@@ -25,32 +25,31 @@ class Message(unicode):
     display when there is no translation.  domain may be None meaning there is
     no translation domain.  default may also be None, in which case the
     message id itself implicitly serves as the default text.
-    
+
     These are the doc tests from message.txt. Note that we have to create the
     message manually since MessageFactory would return the C implementation.
-    
+
     >>> from zope.i18nmessageid.message import pyMessage as Message
     >>> robot = Message(u"robot-message", 'futurama', u"${name} is a robot.")
-    
+
     >>> robot
     u'robot-message'
     >>> isinstance(robot, unicode)
     True
-    
+
     >>> robot.default
     u'${name} is a robot.'
     >>> robot.mapping
-    >>> 
-    
+
     Only the python implementation has a _readonly attribute
     >>> robot._readonly
     True
-  
+
     >>> robot.domain = "planetexpress"
     Traceback (most recent call last):
     ...
     TypeError: readonly attribute
-  
+
     >>> robot.default = u"${name} is not a robot."
     Traceback (most recent call last):
     ...
@@ -60,7 +59,7 @@ class Message(unicode):
     Traceback (most recent call last):
     ...
     TypeError: readonly attribute
-  
+
     >>> new_robot = Message(robot, mapping={u'name': u'Bender'})
     >>> new_robot
     u'robot-message'
@@ -76,7 +75,7 @@ class Message(unicode):
     True
     >>> args
     (u'robot-message', 'futurama', u'${name} is a robot.', {u'name': u'Bender'})
-  
+
     >>> fembot = Message(u'fembot')
     >>> callable, args = fembot.__reduce__()
     >>> callable is Message
@@ -88,7 +87,7 @@ class Message(unicode):
     >>> import zope.i18nmessageid.message
     >>> oldMessage = zope.i18nmessageid.message.Message
     >>> zope.i18nmessageid.message.Message = Message
-    
+
     At first check if pickling and unpicklung from pyMessage to pyMessage works
     >>> from pickle import dumps, loads
     >>> pystate = dumps(new_robot)
@@ -101,7 +100,7 @@ class Message(unicode):
     >>> pickle_bot.__reduce__()[0] is pyMessage
     True
     >>> del pickle_bot
-    
+
     At second check if cMessage is able to load the state of a pyMessage
     >>> from _zope_i18nmessageid_message import Message
     >>> zope.i18nmessageid.message.Message = Message
@@ -114,7 +113,7 @@ class Message(unicode):
     >>> from _zope_i18nmessageid_message import Message as cMessage
     >>> c_bot.__reduce__()[0] is cMessage
     True
-    
+
     At last check if pyMessage can load a state of cMessage
     >>> cstate = dumps(c_bot)
     >>> del c_bot
@@ -127,17 +126,17 @@ class Message(unicode):
     True
     >>> py_bot.__reduce__()[0] is pyMessage
     True
-    
+
     Both pickle states should be equal
     >>> pystate == cstate
     True
-    
+
     Finally restore classes for other unit tests
     >>> zope.i18nmessageid.message.Message = oldMessage
     """
-    
+
     __slots__ = ('domain', 'default', 'mapping', '_readonly')
-    
+
     def __new__(cls, ustr, domain=None, default=None, mapping=None):
         self = unicode.__new__(cls, ustr)
         if isinstance(ustr, self.__class__):
@@ -154,17 +153,17 @@ class Message(unicode):
         self.mapping = mapping
         self._readonly = True
         return self
-    
+
     def __setattr__(self, key, value):
         """Message is immutable
-        
+
         It cannot be changed once the message id is created.
         """
         if getattr(self, '_readonly', False):
             raise TypeError('readonly attribute')
         else:
             return unicode.__setattr__(self, key, value)
-        
+
     def __reduce__(self):
         return self.__class__, self.__getstate__()
 
