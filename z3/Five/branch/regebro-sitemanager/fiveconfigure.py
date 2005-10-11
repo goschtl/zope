@@ -25,7 +25,7 @@ import warnings
 import App
 from zLOG import LOG, ERROR
 
-from zope.interface import classImplements
+from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
 from zope.configuration import xmlconfig
 from zope.configuration.exceptions import ConfigurationError
@@ -328,10 +328,7 @@ def undefaultViewable(class_):
 def uinstallSiteHook(class_):
     delattr(class_, 'getSiteManager')
     delattr(class_, 'setSiteManager')
-    from zope.interface import implementedBy, classImplementsOnly
-    ifaces = list(implementedBy(class_).interfaces())
-    ifaces = [i for i in ifaces if i is not ISite]
-    classImplementsOnly(class_, ifaces)
+    classImplementsOnly(class_, implementedBy(class_)-ISite)
     _localsite_monkies.remove(class_)
 
 def cleanUp():
