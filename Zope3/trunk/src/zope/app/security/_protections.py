@@ -19,9 +19,13 @@ $Id$
 def protect():
     from zope.security.checker import defineChecker, NoProxy
 
+    # BBB 2005/10/10
+    import zope.deprecation
+    zope.deprecation.__show__.off()
+    from zope.i18nmessageid import MessageID, Message
+    zope.deprecation.__show__.on()
+
     # Make sure the message id gets never proxied
-    from zope.i18n.messageid import MessageID
-    from zope.i18nmessageid import Message
     # TODO because MessageIDs are mutable, this is a security hole.  This hole
     # is one of the primary reasons for the development of the Message 
     # replacement.  See zope/i18nmessageid/messages.txt.
