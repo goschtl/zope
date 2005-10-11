@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:dcterms="http://purl.org/dc/terms/">
+
+  <rdf:Description rdf:about="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/Component">
+    <dc:type>Wiki Page</dc:type>
+    <dc:format>text/html</dc:format>
+    <dc:identifier>http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/Component</dc:identifier>
+    <dc:title>Component</dc:title>
+    <dc:date>2003-08-04</dc:date>
+    <dc:creator rdf:resource="http://www.zope.org/Members/Brian"/>
+    
+    <dcterms:created>2003-08-01</dcterms:created>
+    
+    <dcterms:modified>2003-10-10</dcterms:modified>
+    
+  </rdf:Description>
+
+</rdf:RDF>
