@@ -13,7 +13,7 @@
 ##############################################################################
 """OnlineHelp System.
 
-Create the global `OnlineHelp` instance. 
+Create the global `OnlineHelp` instance.
 
 $Id$
 """
