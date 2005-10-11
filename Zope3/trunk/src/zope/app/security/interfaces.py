@@ -19,7 +19,6 @@ $Id$
 import zope.deprecation
 
 from zope.interface import Interface
-from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.schema import Text, TextLine
 from zope.security.interfaces import IPrincipal, IPermission, IGroup
 from zope.schema.interfaces import ISource
