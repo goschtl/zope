@@ -124,6 +124,10 @@ class SimpleLocalUtilityService:
     def queryUtility(self, interface, name='', default=None):
         """See IUtilityService interface
         """
+        if name == '':
+            # Singletons. Only one per interface allowed, so, let's call it
+            # by the interface.
+            name = interface.getName()
         utilities = getattr(self.context, 'utilities')
         utility = utilities._getOb(name, None)
         if utility is None:
@@ -136,10 +140,41 @@ class SimpleLocalUtilityService:
         utilities = getattr(self.context, 'utilities')
         for utility in utilities.objectValues():
             if interface.providedBy(utility):
-                yield utility
+                yield (utility.getId(), utility)
 
     def getAllUtilitiesRegisteredFor(self, interface):
-        return ()
+        # This also supposedly returns "overridden" utilities, but we don't
+        # keep them around. It also does not return the name-value pair that
+        # getUtilitiesFor returns.
+        utilities = getattr(self.context, 'utilities')
+        for utility in utilities.objectValues():
+            if interface.providedBy(utility):
+                yield utility
+
+    def registerUtility(self, interface, utility, name=''):
+        # I think you are *really* supposed to:
+        # 1. Check if there is a "registrations" object for utilities.
+        # 2. If not create one.
+        # 3. Get it.
+        # 4. Create a registration object for the utility.
+        # 5. Rgister the registration object in the registrations.
+        # But that is quite complex, and Jim sais he wants to change that
+        # anyway, and in any case the way you would normally do this in Zope3
+        # and Five would probably differ anyway, so, here is this new 
+        # Five-only, easy to use method!
+        
+        utilities = getattr(self.context, 'utilities', None)
+        if utilities is None:
+            from OFS.Folder import Folder
+            self.context._setObject('utilities', Folder('utilities'))
+            utilities = self.context.utilities
+
+        if name == '':
+            # Singletons. Only one per interface allowed, so, let's call it
+            # by the interface.
+            name = interface.getName()
+            
+        utilities._setObject(name, utility)
 
 
 class FiveSite:
