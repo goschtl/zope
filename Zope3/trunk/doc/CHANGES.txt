@@ -22,7 +22,8 @@ Zope Changes
         much as possible as a Python object. This allows us to write
         functional tests the same way the site would be experienced by the
         user. This greatly simplifies functional tests, makes documentation
-        better and even helps analyzing usability.
+        better and even helps analyzing usability. And of course, in can be
+        used in functional doctests.
 
       - addMenuItem directive supports a `layer` attribute.
 
