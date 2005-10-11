@@ -593,22 +593,7 @@ window.document.forms.login_box_form.elements[0].value=getCookie('__ac_name');
     </small>
     
     
-    <h1>Component</h1>
-
-    <p>A component is defined as an "object with introspectable
-interfaces". Specifically, we define a component to be an object that
-asserts interfaces using the <a href="http://www.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ZopeInterfaces" title="last edited 2 years ago by guido1st">ZopeInterfaces</a>.</p>
-
-<p>The main point of components is composability. Components are hooked
-together to form applications. Interfaces define the way components
-can be hooked together.</p>
-<p>Within the component architecure, we use interfaces, rather than
-classes, to abstractly classify components into different kinds. We
-connect components together based on kind of component.</p>
-<p>In general    a component fosters predictable, extensible component interoperation: general clarity for interconnection, promoting reusability, maintainability, systematic characterization and categorization.</p>
-
-    
-    <div>
+    <h1>Component</h1><p>[...]</p><div>
       
       <a name="bottom"></a>
 

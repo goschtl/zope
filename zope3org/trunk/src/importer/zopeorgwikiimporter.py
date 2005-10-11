@@ -202,16 +202,20 @@ class ZopeOrgWikiPageExtractor(HTMLParser.HTMLParser):
             self._text.append(tag())
 
     def handle_endtag(self, tag):
-        self._text.append("<%s>" % tag)
+        if self.inContent:
+            self._text.append("</%s>" % tag)
     
     def handle_data(self, data):
-        self._text.append(data)
+        if self.inContent:
+            self._text.append(data)
 
     def handle_charref(self, name):
-        self._text.append("&#%s;" % name)
+        if self.inContent:
+            self._text.append("&#%s;" % name)
 
     def handle_entityref(self, name):
-        self._text.append("&%s;" % name)
+        if self.inContent:
+            self._text.append("&%s;" % name)
 
     def getText(self):
         self._text.append('</body></html>')
@@ -282,9 +286,9 @@ class Tag(object):
     def __call__(self):
         """Returns the whole tag
         """
-        tag = ["<%s " % self._tag]
+        tag = ["<%s" % self._tag]
         for keyval in self._attrs:
-            tag.append("%s=%s" % keyval)
+            tag.append(" %s=%s" % keyval)
         tag.append(">")
         return ''.join(tag)
     

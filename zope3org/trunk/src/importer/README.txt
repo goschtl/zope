@@ -32,3 +32,9 @@ The test site contains three files (``Component`` beeing linked relatively):
     >>> file = folder.get('Component', None)
     >>> file is not None
     True
+
+Check the content of a the simplest document:
+
+    >>> file.data
+    '<html><head></head><body><h1>Component</h1><p>[...]</p></body></html>'
+
