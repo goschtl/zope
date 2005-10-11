@@ -12,9 +12,10 @@ Zope Changes
 
       - The ZServer has been replaced with the Twisted server. The Twisted
         server supports all that the ZServer supporting has well has HTTP over
-        SSL natively and SFTP (disabled for now because of error handling problems).
-        Also in the future it brings a better chance of other non-HTTP related
-        protocols from being implemented for Zope3, like SMTP-in and IMAP.
+        SSL natively and SFTP (disabled for now because of error handling
+        problems).  Also in the future it brings a better chance of other
+        non-HTTP related protocols from being implemented for Zope3, like
+        SMTP-in and IMAP.
 
       - Added modified description for sequence-like interfaces.
 
@@ -79,7 +80,7 @@ Zope Changes
 
           zope.i18nmessageid.Message{Factory}
 
-        instead of 
+        instead of
 
           zope.i18nmessageid.MessageID{Factory}
 
@@ -92,6 +93,15 @@ Zope Changes
           zope.app.i18n.ZopeMessageIDFactory
 
         Zope itself now uses immutable messages everywhere.
+
+      - The publisher machinery is now completely pluggable. Publishers can be
+        registered and configured through ZCML (using the new 'publisher' ZCML
+        directive.  see zope/app/publication/configure.zcml). Publishers are
+        registered for a sequence of request methods and a configurable list
+        of mimetypes.  To register multiple publishers for the same request
+        method and the same mimetype (e.g. POST+text/xml: SOAP, XMLRPC)
+        publishers can be priorized and publishers can introspect the request
+        environment to decide if they can handle a request or not.
 
     Bug Fixes
 
@@ -113,8 +123,12 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Stephan Richter, Roger Ineichen, Marius Gedminas, Julien Anguenot, Benji
+<<<<<<< .working
       York, Gary Poster, Jim Fulton, Michael Kerrin, Torsten Kurbad,
       Philipp von Weitershausen
+=======
+      York, Gary Poster, Jim Fulton, Tarek Ziadé, Andreas Jung
+>>>>>>> .merge-right.r39082
 
     Note: If you are not listed and contributed, please add yourself. This
           note will be deleted before the release.

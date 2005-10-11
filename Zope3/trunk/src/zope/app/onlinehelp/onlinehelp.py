@@ -127,7 +127,6 @@ class OnlineHelp(OnlineHelpTopic):
         if class_ is None:
             class_ = OnlineHelpTopic
 
-
         # Create topic base on the custom class or OnlinHelpTopic
         topic = class_(id, title, doc_path, parent_path, interface, view)
 
