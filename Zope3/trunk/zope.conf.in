@@ -33,10 +33,10 @@ interrupt-check-interval 200
 #   address 8081
 # </server>
 
-<server>
-  type FTP
-  address 8021
-</server>
+#<server>
+#  type FTP
+#  address 8021
+#</server>
 
 # You must install pycrypto to use the SFTP server.
 # <sshserver>
