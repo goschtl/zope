@@ -38,3 +38,19 @@ Check the content of a the simplest document:
     >>> file.data
     '<html><head></head><body><h1>Component</h1><p>[...]</p></body></html>'
 
+A selection of the metadata will be copied also:
+
+    >>> from zope.app.dublincore.interfaces import IZopeDublinCore
+    >>> from datetime import datetime
+    
+    >>> dc = IZopeDublinCore(file)
+    >>> dc.title
+    u'Component'
+    >>> dc.format
+    u'text/html'
+    >>> dc.creators
+    (u'http://www.zope.org/Members/Brian',)
+    >>> dc.created
+    datetime.datetime(2003, 8, 1, 0, 0, tzinfo=tzinfo(0))
+    >>> dc.modified
+    datetime.datetime(2003, 10, 10, 0, 0, tzinfo=tzinfo(0))

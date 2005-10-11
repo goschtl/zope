@@ -97,11 +97,13 @@ class ImporterForContainer(object):
         # we don't want the created and modification date to be set
 
         dc = IZopeDublinCore(file)
-        for name in ('title', 'format', 'creator'):
-            setattr(dc, name, metadata[name])
-        for name in ('created', 'modified'):
-            y, m, d = metadata[name].split('-')
-            setattr(dc, name, datetime(int(y), int(m), int(d)))
+        dc.title = metadata['title']
+        dc.format = metadata['format']
+        dc.creators = (metadata['creator'],)
+        y, m, d = metadata['created'].split('-')
+        dc.created = datetime(int(y), int(m), int(d))
+        y, m, d = metadata['modified'].split('-')
+        dc.modified = datetime(int(y), int(m), int(d))
         
         # XXX what data to be set else? (type="Wiki Page")
         # XXX there is also a ``date``, hmmm?
