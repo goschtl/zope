@@ -94,6 +94,8 @@ Zope Changes
 
         Zope itself now uses immutable messages everywhere.
 
+        See zope/i18nmessageid/messages.txt for more information.
+
       - The publisher machinery is now completely pluggable. Publishers can be
         registered and configured through ZCML (using the new 'publisher' ZCML
         directive.  see zope/app/publication/configure.zcml). Publishers are
