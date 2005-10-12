@@ -23,7 +23,7 @@ Zope Changes
         much as possible as a Python object. This allows us to write
         functional tests the same way the site would be experienced by the
         user. This greatly simplifies functional tests, makes documentation
-        better and even helps analyzing usability. And of course, in can be
+        better and even helps analyzing usability. And of course, it can be
         used in functional doctests.
 
       - addMenuItem directive supports a `layer` attribute.
@@ -100,7 +100,7 @@ Zope Changes
         registered for a sequence of request methods and a configurable list
         of mimetypes.  To register multiple publishers for the same request
         method and the same mimetype (e.g. POST+text/xml: SOAP, XMLRPC)
-        publishers can be priorized and publishers can introspect the request
+        publishers can be prioritized and publishers can introspect the request
         environment to decide if they can handle a request or not.
 
     Bug Fixes
@@ -123,12 +123,8 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Stephan Richter, Roger Ineichen, Marius Gedminas, Julien Anguenot, Benji
-<<<<<<< .working
       York, Gary Poster, Jim Fulton, Michael Kerrin, Torsten Kurbad,
-      Philipp von Weitershausen
-=======
-      York, Gary Poster, Jim Fulton, Tarek Ziadé, Andreas Jung
->>>>>>> .merge-right.r39082
+      Philipp von Weitershausen, Tarek Ziadé, Andreas Jung
 
     Note: If you are not listed and contributed, please add yourself. This
           note will be deleted before the release.
