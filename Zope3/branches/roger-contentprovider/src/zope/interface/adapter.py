@@ -46,7 +46,7 @@ $Id$
 #   subscription adapters.
 
 #   'with' is a tuple of specs that is non-empty only in the case
-#   of multi-adapters.  
+#   of multi-adapters.
 
 #   'name' is a unicode adapter name.  Unnamed adapters have an empty
 #   name.
@@ -172,7 +172,7 @@ class Surrogate(object):
         # override less-specific data.
         ancestors.reverse()
         for ancestor in ancestors:
-            
+
             for key, v in ancestor.selfImplied.iteritems():
 
                 # key is specification or ('s', specification)
@@ -184,7 +184,7 @@ class Surrogate(object):
                     oldbyname = implied.get(key)
                     if not oldbyname:
                         implied[key] = oldbyname = {}
-                    
+
                     # v is name -> object
                     oldbyname.update(v)
 
@@ -196,11 +196,11 @@ class Surrogate(object):
                     oldwithobs = implied.get(key)
                     if not oldwithobs:
                         oldwithobs = implied[key] = {}
-                        
+
                     # v is {with -> tuple([object])}
                     for with, objects in v.iteritems():
                         oldwithobs[with] = oldwithobs.get(with, ()) + objects
-                    
+
                 else:
                     oldbyname = implied.get(key)
                     if not oldbyname:
@@ -301,9 +301,9 @@ def orderwith(bywith):
                 break
         else:
             withs.append((with, value))
-            
+
     return withs
-    
+
 
 def withextends(with1, with2):
     for spec1, spec2 in zip(with1, with2):
@@ -349,7 +349,7 @@ class AdapterLookup(object):
                     value = byname.get(name, default)
                 else:
                     return default
-                
+
             return value
 
         elif order == 0:
@@ -391,7 +391,7 @@ class AdapterLookup(object):
                     rank.append(list(spec.__sro__).index(rspec))
                 else:
                     # If the new rank is better than the best previously
-                    # recorded one, make the new adapter the best one found. 
+                    # recorded one, make the new adapter the best one found.
                     rank = tuple(rank)
                     if best is None or rank < best[0]:
                         best = rank, value
@@ -443,7 +443,7 @@ class AdapterLookup(object):
             default = self._default.get(('s', provided))
             if default:
                 result.extend(default)
-                
+
             return result
 
         elif order == 0:
@@ -452,12 +452,12 @@ class AdapterLookup(object):
                 return list(result)
             else:
                 return []
-        
+
         # Multi
         key = 's', provided, order
         with = required[1:]
         result = []
-        
+
         for surrogate in self.get(required[0]), self._default:
             bywith = surrogate.get(key)
             if not bywith:
@@ -473,7 +473,7 @@ class AdapterLookup(object):
 
         return result
 
-        
+
 
     def queryMultiAdapter(self, objects, interface, name='', default=None):
         factory = self.lookup(map(providedBy, objects), interface, name)
@@ -527,7 +527,7 @@ class AdapterRegistry(object):
             except KeyError:
                 pass
         lookup = AdapterLookup(self, surrogates, _remove)
-        
+
         for name in ('lookup', 'lookup1', 'queryAdapter', 'get',
                      'adapter_hook', 'subscriptions',
                      'queryMultiAdapter', 'subscribers',
@@ -546,7 +546,7 @@ class AdapterRegistry(object):
         else:
             with = ()
             required = self._null
-        
+
         if not isinstance(name, basestring):
             raise TypeError("The name provided to provideAdapter "
                             "must be a string or unicode")
@@ -629,7 +629,7 @@ class AdapterRegistry(object):
 
         if provided is None:
             provided = Null
-            
+
         required._subscriptionAdaptTo(provided, value, with)
 
 def mextends(with, rwith):
@@ -679,7 +679,7 @@ def adapterImplied(adapters):
 
 def _add_named_adapter(target, provided, name, implied,
                        registered, value):
-    
+
     ikey = target
     rkey = target, name
 
@@ -711,7 +711,7 @@ def _add_multi_adapter(with, name, target, provided, implied,
     if not bywith:
         bywith = byname[name] = {}
 
-    
+
     rkey = ikey, name, with # The full key has all 4
     if (with not in bywith
         or
@@ -730,7 +730,7 @@ def _add_multi_adapter(with, name, target, provided, implied,
 def _add_named_sub_adapter(target, implied, objects):
     key = ('s', target)
     implied[key] = implied.get(key, ()) + objects
-    
+
     for b in target.__bases__:
         _add_named_sub_adapter(b, implied, objects)
 

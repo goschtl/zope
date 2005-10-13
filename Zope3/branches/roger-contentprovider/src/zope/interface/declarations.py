@@ -22,7 +22,7 @@ There are three flavors of declarations:
 
   - ProvidesDeclarations are used to express interfaces directly
     provided by objects.
-    
+
 
 $Id$
 """
@@ -35,7 +35,7 @@ import exceptions
 from types import ClassType
 from zope.interface.advice import addClassAdvisor
 
-# Registry of class-implementation specifications 
+# Registry of class-implementation specifications
 BuiltinImplementationSpecifications = {}
 
 class Declaration(Specification):

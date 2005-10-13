@@ -97,7 +97,7 @@ def provideInterface(id, interface, iface_type=None, info=''):
         directlyProvides(interface, iface_type, directlyProvidedBy(interface))
     else:
         iface_type = IInterface
-        
+
     gsm = zapi.getGlobalSiteManager()
     gsm.provideUtility(iface_type, interface, id, info)
 
@@ -128,7 +128,7 @@ def getInterface(context, id):
                 """ 'zope.app.component.interface.I4')
     >>> iface.__name__
     'I4'
-    >>> placelesssetup.tearDown()    
+    >>> placelesssetup.tearDown()
     """
     iface = queryInterface(id, None)
     if iface is None:
@@ -154,7 +154,7 @@ def queryInterface(id, default=None):
     >>> IContentType.providedBy(I3)
     False
     >>> queryInterface('zope.app.component.interface.I3')
-    
+
     >>> provideInterface('', I3, IContentType)
     >>> IContentType.providedBy(I3)
     True
