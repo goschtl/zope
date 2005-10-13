@@ -18,19 +18,14 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import time
-import thread
 import threading
-import cStringIO
+from cStringIO import StringIO
 
-import twisted.web2.wsgi
 from twisted.protocols import policies
 
-import transaction
-import ZODB.MappingStorage
-from ZODB.POSException import ConflictError
-from BTrees.IOBTree import IOBTree
-from zope.app import wsgi
+from zope.app.twisted.http import createHTTPFactory
 from zope.app.twisted.server import ServerType
+
 
 class RecordingProtocol(policies.ProtocolWrapper):
     """A special protocol that keeps track of all input and output of an HTTP
@@ -41,8 +36,8 @@ class RecordingProtocol(policies.ProtocolWrapper):
 
     def __init__(self, factory, wrappedProtocol):
         policies.ProtocolWrapper.__init__(self, factory, wrappedProtocol)
-        self.input = cStringIO.StringIO()
-        self.output = cStringIO.StringIO()
+        self.input = StringIO()
+        self.output = StringIO()
         self.chanRequest = None
 
     def dataReceived(self, data):
@@ -78,16 +73,13 @@ class RecordingProtocol(policies.ProtocolWrapper):
             ) )
 
 
-class RecordingFactory(policies.WrappingFactory):
+class RecordingWrapper(policies.WrappingFactory):
     """Special server factory that supports recording."""
     protocol = RecordingProtocol
 
 
 def createRecordingHTTPFactory(db):
-    resource = twisted.web2.wsgi.WSGIResource(
-        wsgi.WSGIPublisherApplication(db))
-
-    return RecordingFactory(twisted.web2.server.Site(resource))
+    return RecordingWrapper(createHTTPFactory(db))
 
 
 class RecordedRequest(object):
