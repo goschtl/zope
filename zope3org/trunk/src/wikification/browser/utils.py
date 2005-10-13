@@ -45,7 +45,7 @@ class WikiPageInfo(PageInfo):
             }
         dc = IZopeDublinCore(self.context)
         self.dc = dc
-       
+        
         self.title = dc.Title() or 'Untitled'
         self.site = SiteInfo(self.context)
         self.site_title = self.site.title or 'No site title'

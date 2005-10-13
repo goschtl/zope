@@ -59,9 +59,9 @@ one, the resulting HTML could look as follows :
             <p>An <a href="target">existing link</a></p>
             <p>A <a style="color: red" href="http://127.0.0.1/site/createPage?path=newitem">new page</a></p>
             <p>A <a style="color: red" href="http://127.0.0.1/site/createPage?path=folder1/newitem">new page in a subfolder</a></p>
-            <p>A [New Subject]</p>
+            <p><a href="http://127.0.0.1/site/createPage?path=NewSubject">[New Subject]</a></p>
             <p>An <a href="http://www.google.org">external absolute link</a></p>
-            <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
+            <p>An <a href="target">internal absolute link</a></p>
     <BLANKLINE>
 
     The task of creating a new page is delegated to the createFile method of the 

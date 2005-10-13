@@ -3,31 +3,50 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    >
 
+
     <page		
-      name="wiki"
+      name="wiki_macros"
+      for="*"
+      template="wiki_macros.pt"
+      permission="zope.Public" />
+   
+   <page		
+      name="kupu_macros"
+      for="*"
+      template="kupu_macros.pt"
+      permission="zope.Public" />
+      
+      
+    <page		
+      name="wiki.html"
       for="zope.app.folder.interfaces.IFolder"
       class="wikification.browser.wikipage.WikiContainerPage"
-      attribute="render"
-      permission="zope.View" />
+      template="view.pt"
+      permission="zope.View"
+      title="Wiki"
+      menu="zmi_views" />
 
     <page		
-      name="wiki"
+      name="wiki.html"
       for="zope.app.file.interfaces.IFile"
       class="wikification.browser.wikipage.WikiFilePage"
-      permission="zope.View" />
+      template="view.pt"
+      permission="zope.View"
+      title="Wiki"
+      menu="zmi_views" />
 
     <page		
-      name="editPage"
+      name="kupu.html"
       for="zope.app.file.interfaces.IFile"
       class="wikification.browser.wikipage.EditWikiPage"
-      attribute="render"
+      template="edit.pt"
       permission="zope.ManageContent" />
     
     <page		
-      name="createPage"
+      name="kupu.html"
       for="zope.app.folder.interfaces.IFolder"
       class="wikification.browser.wikipage.CreateWikiPage"
-      attribute="render"
+      template="edit.pt"
       permission="zope.ManageContent" />
 
     <page		

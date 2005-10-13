@@ -17,6 +17,8 @@ $Id: tests.py 38895 2005-10-07 15:09:36Z dominikhuber $
 """
 __docformat__ = 'restructuredtext'
 
+import re
+
 from zope.app import zapi
 from zope.interface import implements
 from zope.app.traversing.interfaces import TraversalError
@@ -26,12 +28,15 @@ from zope.app.file.interfaces import IFile
 from zope.app.container.interfaces import IContainer
 from zope.app.publisher.browser import BrowserView
 from zope.app.traversing.interfaces import IPhysicallyLocatable
+from zope.app.dublincore.interfaces import IZopeDublinCore
+
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.publisher.browser import TestRequest
 
 from wikification.browser.interfaces import IWikiPage
 
 from kupusupport.adapters import html_body
 
-from wikification.browser.utils import WikiPageInfo
 
 class WikiPage(BrowserView) :
     """ A wiki page that 'wikifies' a container with ordinary HTML documents.
@@ -39,21 +44,55 @@ class WikiPage(BrowserView) :
         See wikification/README.txt for a definition of what 
         'wikification' means and doctests of the methods of this class.
         
+        >>> page = WikiPage(None, TestRequest())
+        >>> page.macros
+        
     """
     
     implements(IWikiPage)
 
     supported = 'text/html', 'application/xhtml+xml', 'application/xml', 'text/xml'
     title = u"Wiki page"
+    action = "/@@wiki.html"      # the action that wikifies
+    uris = {
+            'home': '#',
+            'login': '#',
+            }
     
-    def __init__(self, context, request) :
+    contact_form = {
+            'action_url': '#',
+            }
+            
+   
+    def __init__(self, context, request, container=None) :
+        """ Initializes some usefull instance variables. 
+        
+        
+        """
         super(WikiPage, self).__init__(context, request)
-        
-        self.container = self.getContainer()
+          
+        self.macros = {}
+        if container is None :
+            self.container = self.getContainer()
+        else :
+            self.container = container
         self.base = zapi.absoluteURL(self.container, request)
-        self.site = IPhysicallyLocatable(context).getNearestSite()
+        site = self.site = IPhysicallyLocatable(self.container).getNearestSite()
+           
+        dc = IZopeDublinCore(self.context)
+        self.dc = dc
         
-
+        self.title = dc.Title() or 'Untitled'
+        self.site_title = IZopeDublinCore(site).title or U'No site title'
+        self.html_title = self.getHTMLTitle
+        self.language = dc.Language()
+       
+    def getHTMLTitle(self):
+        if self.title and self.site_title:
+            if self.title != self.site_title:
+                return '%s - %s' % (self.title, self.site_title)
+        return self.title or self.site_title 
+        
     def isAbsoluteLink(self, link) :
         for prefix in 'http:', 'ftp:', 'https:', 'mailto:' :
             if link.startswith(prefix) :
@@ -67,18 +106,34 @@ class WikiPage(BrowserView) :
         
         site_url = zapi.absoluteURL(self.site, self.request)
         if link.startswith(site_url) :
-            link = link[len(site_url):]
+            link = link[len(site_url)+1:]
         elif self.isAbsoluteLink(link) :
             return False, link
             
         path = link.split("/")
         try :
             zapi.traverse(self.container, path)
-            return False, link
+            return False, self.base + "/" + link + self.action
         except TraversalError :
             return True, self.base + "/createPage?path=" + "/".join(path)
  
  
+    def wikifyTextLink(self, text) :
+        """ Modifies dead relative links and leaves
+            all other links untouched.
+        """
+        
+        
+        name = text.replace(" ", "")
+        try :
+            zapi.traverseName(self.container, name)
+            link = name
+            label = text
+        except TraversalError :
+            link = self.base + "/createPage?path=" + name
+            label = '[%s]' % text
+        return '<a href="%s">%s</a>' % (link, label)
+        
     def wikify(self, body) :
         """ 
             Renders HTML with dead relative links as 'wikified' HTML,
@@ -109,6 +164,26 @@ class WikiPage(BrowserView) :
                 else :
                     BaseHTMLProcessor.unknown_starttag(self, tag, attrs)               
  
+            def handle_data(self, text):
+                # called for each block of plain text, i.e. outside of any tag and
+                # not containing any character or entity references
+                
+                text_link = re.compile('\[.*?\]', re.VERBOSE)
+                
+                result = ""
+                end = 0
+                for m in text_link.finditer(text):
+                    
+                    start = m.start()
+                    end = m.end()
+                    result += text[end:start]
+                    between = text[start+1:end-1]
+                    result += self.caller.wikifyTextLink(between)
+                    
+                result += text[end:]
+                self.pieces.append(result)
+        
+        
         processor = LinkProcessor(self)
         processor.feed(body)
         return processor.output()
@@ -132,16 +207,19 @@ class WikiContainerPage(WikiPage) :
         return self.context.get(u"index.html", self.empty)
 
     def renderBody(self) :
+        """ Delegates the rendering to the WikiFilePage of the 
+            index.html doocument.
+            
+        """
         
         file = self.getFile()
-        return WikiFilePage(file, self.request).renderBody()
+        return WikiFilePage(file, self.request, self.container).renderBody()
 
-    def render(self):
-        pass
         
         
 class WikiFilePage(WikiPage) :
     """ Wiki view for a file. """
+    
     
     def getContainer(self) :
         return self.context.__parent__
@@ -160,9 +238,7 @@ class WikiFilePage(WikiPage) :
         # file type not supported
         return "Sorry, not wikifiable at the moment."
 
-    def __call__(self):
-        page = WikiPageInfo(self.context, self.request) 
-        return page.render()
+
         
 class EditWikiPage(WikiFilePage) :
 
@@ -175,10 +251,7 @@ class EditWikiPage(WikiFilePage) :
         body = html_body(file.data)
         #self.request.response.setHeader("Content-Type", "text/html")
         return self.wikify(body)
-            
-        #info = WikPageInfo(body, self.context, self.request, self.main)
-        
-        # not in supported content types
+
 
     def render(self):
         pass

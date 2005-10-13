@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title tal:content="view/html_title">Zope 3</title>
+  <link rel="stylesheet" type="text/css" media="print" href="/@@/style/print.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="/@@/style/screen.css" />
+</head>
+<body>
+<div id="layout" tal:define="uris view/uris">
+	<div id="layout-header" class="columns">
+		<div class="col first">
+			<div id="banner">
+				<a tal:attributes="href uris/home">
+					<img src="/@@/images/circle-z.png" alt="(circle-z)" title="" height="36" width="36" />
+					Zope 3 
+				</a>
+			</div>
+		</div>
+	
+		<div class="col second">
+			<div id="user">
+				<div>
+					Not logged in | 
+					<a tal:attributes="href uris/login">
+						Log in
+					</a>
+				</div>
+			</div>
+			<form id="search" method="get" name="search" tal:define="form view/contact_form" tal:attributes="href form/action_url">
+				<fieldset>
+					<legend>
+						<label for="search-text">
+							Text
+						</label>
+					</legend>
+					<input class="text" name="text" id="search-text" />
+					<input type="submit" class="submit" name="search" value="Search" id="search-search" />
+				</fieldset>
+			</form>
+		</div>		
+    </div>
+    
+    
+
+	<div id="layout-columns" class="columns">
+		<div class="bg">
+			<hr />
+			<div class="col first">
+				<div metal:use-macro="context/@@default_macros/breadcrumbs" />
+				<div id="main">
+					<h1 tal:content="view/html_title">
+						A title
+					</h1>
+					<ul metal:use-macro="context/@@default_macros/actions" />
+					<div tal:content="structure view/renderBody" />
+				</div>
+			</div>
+
+			<div class="col second">
+				<div metal:use-macro="context/@@default_macros/navigation_tree_box" />
+			</div>
+
+		</div>
+		<hr />
+		<div metal:use-macro="context/@@default_macros/layout_footer" />
+	</div>
+	
+</div>
+</body>
+</html>

@@ -29,17 +29,25 @@ def tearDownBrowserTests(test) :
     wikification.tests.tearDownWikification(test)
 
 def test_suite():
+    optionflags = doctest.NORMALIZE_WHITESPACE+doctest.ELLIPSIS
+    globs = {'zapi': zope.app.zapi,
+             'pprint': doctestunit.pprint,
+             'TestRequest': zope.publisher.browser.TestRequest}
+ 
     return unittest.TestSuite((
-        doctest.DocFileSuite("README.txt", 
+    
+        doctest.DocTestSuite("wikification.browser.wikipage", 
                                 setUp=setUpBrowserTests, 
                                 tearDown=tearDownBrowserTests,
-                                globs={'zapi': zope.app.zapi,
-                                       'pprint': doctestunit.pprint,
-                                       'TestRequest': zope.publisher.browser.TestRequest                                
-                                        },
-                                optionflags=doctest.NORMALIZE_WHITESPACE+
-                                            doctest.ELLIPSIS
+                                optionflags=optionflags
                              ),
+                             
+ #        doctest.DocFileSuite("README.txt", 
+#                                 setUp=setUpBrowserTests, 
+#                                 tearDown=tearDownBrowserTests,
+#                                 globs=globs,
+#                                 optionflags=optionflags
+#                              ),
         ))
 
 if __name__ == '__main__':
