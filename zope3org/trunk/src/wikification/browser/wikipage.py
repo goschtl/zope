@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 
 import re
 
+import zope.event
 from zope.app import zapi
 from zope.interface import implements
 from zope.app.traversing.interfaces import TraversalError
@@ -29,6 +30,7 @@ from zope.app.container.interfaces import IContainer
 from zope.app.publisher.browser import BrowserView
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.app.event.objectevent import ObjectModifiedEvent
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.publisher.browser import TestRequest
@@ -36,7 +38,8 @@ from zope.publisher.browser import TestRequest
 from wikification.browser.interfaces import IWikiPage
 
 from kupusupport.adapters import html_body
-
+from kupusupport.browser.views import KupuEditor
+from kupusupport.interfaces import IKupuPolicy
 
 class WikiPage(BrowserView) :
     """ A wiki page that 'wikifies' a container with ordinary HTML documents.
@@ -122,7 +125,6 @@ class WikiPage(BrowserView) :
         """ Modifies dead relative links and leaves
             all other links untouched.
         """
-        
         
         name = text.replace(" ", "")
         try :
@@ -230,8 +232,7 @@ class WikiFilePage(WikiPage) :
 
         if file.contentType in self.supported :
             body = html_body(file.data)
-            #self.request.response.setHeader("Content-Type", "text/html")
-            return self.wikify(body)
+            return unicode(self.wikify(body), encoding="utf-8")
             
             #info = WikPageInfo(body, self.context, self.request, self.main)
        
@@ -240,36 +241,22 @@ class WikiFilePage(WikiPage) :
 
 
         
-class EditWikiPage(WikiFilePage) :
-
-    def renderBody(self) :
-        """ Shows a wikified version of the context. 
-             
-        """
+class EditWikiPage(KupuEditor, WikiFilePage) :
+ 
+     # implementation of kupusupport.IKupuPolicy
+    def update(self, kupu=None):
+        """ Overwrites KupuEditor.update with a new redirect. """
         
-        file = self.context
-        body = html_body(file.data)
-        #self.request.response.setHeader("Content-Type", "text/html")
-        return self.wikify(body)
+        if kupu:
+            policy = IKupuPolicy(self.context)
+            policy.update(kupu)
+            zope.event.notify(ObjectModifiedEvent(self.context))
+
+        self.request.response.redirect("wiki.html")
 
 
-    def render(self):
-        pass
 
-    def saveText(self) :
-        """
-            Generic store method.           
-        """
-        request = self.request
-        text = request.form.get("body")        
-        self.file.data = text        
-        request.response.redirect(self.nextURL())
-    
-    def getBody(self) :
-        return html_body(self.file.data)
-            
-   
-class CreateWikiPage(WikiContainerPage) :
+class CreateWikiPage(KupuEditor, WikiContainerPage) :
 
     def createFile(self) :
         """
@@ -298,7 +285,7 @@ class CreateWikiPage(WikiContainerPage) :
             container[path[-1]] = file
         return file
 
-    def saveText(self) :
+    def update(self, kupu=None):
         """
             Generic store method.           
         """

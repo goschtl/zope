@@ -1,9 +1,19 @@
 /* main styles for zope3.org */
 
+body {
+    font-family:"Trebuchet MS",arial,sans-serif;
+    margin: 0px;
+    padding: 0px;
+    color: black;
+    background-color: white;
+    font-size: 100%;
+    line-height: 1.5em;
+}
+
 #layout {
   width: 100%;
   font-size: 0.751em;
-  min-width: 980px;
+  min-width: 680px;
 }
 #layout hr {
   display: none;
@@ -11,7 +21,6 @@
 /* ~ ~ ~ ~ ~ ~ ~ ~ */
 #layout-header {
   background-color: #e6e6fa;
-  margin-bottom: 1em;
 }
 #layout-header .col.first {
   width: 49%;
@@ -22,11 +31,32 @@
   float: right;
   text-align: right;
 }
+
+#navigation-box {
+  margin: 8px;
+}
+
+#breadcrumbs {
+   font-size: 120%;
+   margin-left: 8px;
+}
+
+#layout-columns {
+  margin: 8px;
+}
+
 #layout-columns.columns {
   padding-left: 20em;
 }
 #layout-columns .bg {
   background-color: white;
+}
+#breadcrumb-navigation {
+  float: left;
+}
+#action-navigation {
+  font-size: 120%;
+  margin: 1em 1em 1em 1em;
 }
 .col {
   position: relative;
@@ -63,7 +93,7 @@
 /* ~ ~ ~ ~ ~ ~ */
 #banner {
   float: left;
-  padding: 1.75em 1em;
+  padding: 1em 1em;
 }
 #banner a {
   text-decoration: none;

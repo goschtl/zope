@@ -32,10 +32,10 @@ class WikiPageInfo(PageInfo):
     htmlTitle = property(getHTMLTitle)
 
     def __init__(self, context, request):
-        template = PageTemplateFile('main_template.pt')
+        template = PageTemplateFile('view.pt')
         super(self.__class__, self).__init__(context, request, template)
-        default_macros = PageTemplateFile('default_macros.pt').macros
-        self.macros.update(default_macros)
+        wiki_macros = PageTemplateFile('wiki_macros.pt').macros
+        self.macros.update(wiki_macros)
         self.uris = {
             'home': '#',
             'login': '#',

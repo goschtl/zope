@@ -7,16 +7,9 @@
     <page		
       name="wiki_macros"
       for="*"
-      template="wiki_macros.pt"
+      template="macros.pt"
       permission="zope.Public" />
-   
-   <page		
-      name="kupu_macros"
-      for="*"
-      template="kupu_macros.pt"
-      permission="zope.Public" />
-      
-      
+         
     <page		
       name="wiki.html"
       for="zope.app.folder.interfaces.IFolder"
@@ -35,33 +28,36 @@
       title="Wiki"
       menu="zmi_views" />
 
-    <page		
-      name="kupu.html"
-      for="zope.app.file.interfaces.IFile"
+    <pages
       class="wikification.browser.wikipage.EditWikiPage"
-      template="edit.pt"
-      permission="zope.ManageContent" />
-    
-    <page		
-      name="kupu.html"
-      for="zope.app.folder.interfaces.IFolder"
-      class="wikification.browser.wikipage.CreateWikiPage"
-      template="edit.pt"
-      permission="zope.ManageContent" />
-
-    <page		
-      name="saveText"
-      for="zope.app.folder.interfaces.IFolder"
-      class="wikification.browser.wikipage.CreateWikiPage"
-      attribute="saveText"
-      permission="zope.ManageContent" />
-
-    <page		
-      name="saveText"
       for="zope.app.file.interfaces.IFile"
-      class="wikification.browser.wikipage.EditWikiPage"
-      attribute="saveText"
-      permission="zope.ManageContent" />
+      permission="zope.ManageContent">
+      
+      <page 
+        name="kupu.html"
+        template="edit.pt" />
+        
+      <page 
+        name="kupuupdate.html"
+        attribute="update" />
+        
+    </pages>
+        
+    <pages
+      class="wikification.browser.wikipage.CreateWikiPage"
+      for="zope.app.folder.interfaces.IFolder"
+      permission="zope.ManageContent">
+      
+      <page 
+        name="kupu.html"
+        template="edit.pt" />
+        
+      <page 
+        name="kupuupdate.html"
+        attribute="update" />
+        
+    </pages>
+       
 
     <!-- browser resources -->
 

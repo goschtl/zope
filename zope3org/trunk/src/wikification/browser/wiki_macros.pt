@@ -22,25 +22,9 @@
            tal:content="view/html_title">
         main header
       </h1>
-    
-      <div id="actions"
-           metal:define-macro="actions">
-          <div class="itemViews">
-              <a href="@@wiki.html" class="selected">View</a> &nbsp; |  &nbsp;
-              <a href="@@kupu.html" class="">Edit</a>
-           </div>
-      </div>
-    
-      <div id="main-body"
-           metal:define-macro="main_body">
-        
-      </div>
-  
+      
      <metal:tree define-macro="navigation_tree_box">
         <div class="box" id="navigationTree">
-            <h4 i18n:translate="">
-                Navigation
-            </h4>
             <table cellspacing="0" cellpadding="0"     
                tal:define="root    context/@@root_cookie_tree;
                            result         root/getFlatDicts;
