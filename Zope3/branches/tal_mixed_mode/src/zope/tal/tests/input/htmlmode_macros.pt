@@ -1,0 +1,3 @@
+<m metal:define-macro='M'>
+  <para>some text</para>
+</m>

@@ -1,0 +1,6 @@
+<?xml version='1.0'?>
+<doc xmlns:metal='http://xml.zope.org/namespaces/metal'>
+  <m metal:define-macro='M'>
+    <para>some text</para>
+  </m>
+</doc>
