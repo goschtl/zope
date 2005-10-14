@@ -23,7 +23,6 @@ from zope.app.site.interfaces import IPossibleSite
 from zope.app.publication.zopepublication import BeforeTraverseEvent
 from zope.component.servicenames import Adapters
 
-from interfaces import IFiveSite
 from ExtensionClass import Base
 from Acquisition import aq_base, aq_inner, aq_parent
 from Products.SiteAccess.AccessRule import AccessRule
@@ -74,7 +73,7 @@ def disableLocalSiteHook(obj):
     obj = aq_base(obj)
     if not ISite.providedBy(obj):
         raise TypeError, 'Must provide ISite'
-    rules = unregisterBeforeTraverse(obj, HOOK_NAME)
+    unregisterBeforeTraverse(obj, HOOK_NAME)
     if hasattr(obj, HOOK_NAME):
         delattr(obj, HOOK_NAME)
 

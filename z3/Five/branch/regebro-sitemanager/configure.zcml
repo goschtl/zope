@@ -6,11 +6,10 @@
   <include file="interfaces.zcml" />
   <include file="permissions.zcml" />
   <include file="i18n.zcml" />
+  <include package=".site" />
   <include package=".browser" />
   <include package=".form" />
   <include package=".skin" />
-  # Localsite registers a page, and must come after browser.
-  <include file="localsite.zcml" />
 
   <include package="zope.app.event" />
   <include package="zope.app.traversing" />

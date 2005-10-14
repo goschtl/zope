@@ -35,10 +35,6 @@ class IMenuItemType(IInterface):
     menu items.
     """
 
-class IFiveSite(ISite):
-    """Five specialization of ISite
-    """
-
 #
 # BBB: Zope core interfaces
 #
