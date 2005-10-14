@@ -27,6 +27,8 @@ import logging
 
 from zope.pagetemplate.pagetemplate import PageTemplate
 
+from typesniffer import sniff_type
+from typesniffer import XML_PREFIX_MAX_LENGTH
 
 DEFAULT_ENCODING = "utf-8"
 
@@ -79,17 +81,17 @@ class PageTemplateFile(PageTemplate):
         except:
             f.close()
             raise
-        type = sniff_type(text)
-        if type == "text/xml":
+        type_ = sniff_type(text)
+        if type_ == "text/xml":
             text += f.read()
         else:
             # For HTML, we really want the file read in text mode:
             f.close()
             f = open(self.filename)
             text = f.read()
-            text, type = self._prepare_html(text)
+            text, type_ = self._prepare_html(text)
         f.close()
-        return text, type
+        return text, type_
 
     def _cook_check(self):
         if self._v_last_read and not __debug__:
@@ -115,22 +117,3 @@ class PageTemplateFile(PageTemplate):
 
     def __getstate__(self):
         raise TypeError("non-picklable object")
-
-
-XML_PREFIXES = [
-    "<?xml",                      # ascii, utf-8
-    "\xef\xbb\xbf<?xml",          # utf-8 w/ byte order mark
-    "\0<\0?\0x\0m\0l",            # utf-16 big endian
-    "<\0?\0x\0m\0l\0",            # utf-16 little endian
-    "\xfe\xff\0<\0?\0x\0m\0l",    # utf-16 big endian w/ byte order mark
-    "\xff\xfe<\0?\0x\0m\0l\0",    # utf-16 little endian w/ byte order mark
-    ]
-
-XML_PREFIX_MAX_LENGTH = max(map(len, XML_PREFIXES))
-
-def sniff_type(text):
-    """Return 'text/xml' if text appears to be XML, otherwise return None."""
-    for prefix in XML_PREFIXES:
-        if text.startswith(prefix):
-            return "text/xml"
-    return None

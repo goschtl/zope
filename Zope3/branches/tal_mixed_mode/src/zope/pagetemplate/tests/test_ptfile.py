@@ -20,7 +20,7 @@ import tempfile
 import unittest
 
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
-
+from zope.pagetemplate.typesniffer import sniff_type
 
 class TypeSniffingTestCase(unittest.TestCase):
 
@@ -165,6 +165,31 @@ class TypeSniffingTestCase(unittest.TestCase):
             u"\u0422\u0435\u0441\u0442"
             u"</title></head></html>\n")
 
+    ##def test_xml_sniffing_from_extension(self):
+    ##    # This checks the extension of the page template
+    ##    this_directory = os.path.split(__file__)[0]
+    ##    filepath = os.path.join(
+    ##        this_directory,
+    ##        'test.xpt')
+    ##    xpt = PageTemplateFile(filepath)
+    ##    self.assert_(os.path.normcase(xpt.filename).endswith('.xpt'))
+    ##    text, type_ = xpt._read_file()
+    ##    self.assertEqual(type_, 'text/xml')
+
+    def test_type_sniffing_based_on_xmlns(self):
+        from zope.pagetemplate.typesniffer import sniff_type
+        self.assertEqual(
+            sniff_type("<doc><element/></doc>"), None)
+        self.assertEqual(
+            sniff_type("<doc xmlns=''><element/></doc>"), 'text/xml')
+        self.assertEqual(
+            sniff_type("<doc><element xmlns=''/></doc>"), 'text/xml')
+        self.assertEqual(
+            sniff_type("<doc xmlns='http://foo/bar'><element/></doc>"),
+            'text/xml')
+        self.assertEqual(
+            sniff_type("<doc ><element xmlns='http://foo/bar'/></doc>"),
+            'text/xml')
 
 def test_suite():
     return unittest.makeSuite(TypeSniffingTestCase)
