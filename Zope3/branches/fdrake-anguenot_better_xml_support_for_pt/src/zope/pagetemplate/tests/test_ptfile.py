@@ -190,6 +190,12 @@ class TypeSniffingTestCase(unittest.TestCase):
         self.assertEqual(
             sniff_type("<doc ><element xmlns='http://foo/bar'/></doc>"),
             'text/xml')
+        self.assertEqual(
+            sniff_type("<doc xmlns:foo='http://foo/'><element/></doc>"),
+            'text/xml')
+        self.assertEqual(
+            sniff_type("<doc ><element xmlns:foo='http://foo/'/></doc>"),
+            'text/xml')
 
 def test_suite():
     return unittest.makeSuite(TypeSniffingTestCase)
