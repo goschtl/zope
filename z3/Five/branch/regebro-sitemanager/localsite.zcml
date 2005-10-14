@@ -1,4 +1,5 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
 
   <!-- enough to bootstrap the machinery to lookup local services -->
   <include package="zope.configuration" file="meta.zcml" />
@@ -28,6 +29,14 @@
   <subscriber
       factory="zope.app.component.localservice.clearThreadSiteSubscriber"
       for="zope.app.publication.interfaces.IEndRequestEvent"
+      />
+
+  <browser:page
+      for="zope.app.site.interfaces.IPossibleSite"
+      name="addServiceManager.html"
+      permission="zope2.Public"
+      class=".localsite.MakeSite"
+      attribute="makeSite"
       />
 
 </configure>

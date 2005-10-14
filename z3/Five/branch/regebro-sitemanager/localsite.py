@@ -73,7 +73,7 @@ def disableLocalSiteHook(obj):
     # We want the original object, not stuff in between, and no acquisition
     obj = aq_base(obj)
     if not ISite.providedBy(obj):
-        raise TypeError, 'Must provide IPossibleSite'
+        raise TypeError, 'Must provide ISite'
     rules = unregisterBeforeTraverse(obj, HOOK_NAME)
     if hasattr(obj, HOOK_NAME):
         delattr(obj, HOOK_NAME)
@@ -187,4 +187,20 @@ class FiveSite:
         return LocalService(self)
 
     def setSiteManager(self, sm):
-        return
+        raise NotImplementedError('This class has a fixed site manager')
+
+
+from Products.Five.browser import BrowserView
+
+class MakeSite(BrowserView):
+    """View for convering a possible site to a site
+    """
+
+    def makeSite(self):
+        """Convert a possible site to a site"""
+        if ISite.providedBy(self.context):
+            raise ValueError('This is already a site')
+
+        enableLocalSiteHook(self.context)
+        return "This object is now a site"
+        

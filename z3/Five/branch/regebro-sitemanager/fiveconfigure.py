@@ -269,9 +269,9 @@ def installSiteHook(_context, class_, site_class=None, utility_service=None):
             args=(class_, site_class)
             )
         _context.action(
-            discriminator = (class_, ISite),
+            discriminator = (class_, IPossibleSite),
             callable = classImplements,
-            args=(class_, ISite)
+            args=(class_, IPossibleSite)
             )
     if utility_service is None:
         utility_service = SimpleLocalUtilityService
@@ -328,7 +328,7 @@ def undefaultViewable(class_):
 def uinstallSiteHook(class_):
     delattr(class_, 'getSiteManager')
     delattr(class_, 'setSiteManager')
-    classImplementsOnly(class_, implementedBy(class_)-ISite)
+    classImplementsOnly(class_, implementedBy(class_)-IPossibleSite)
     _localsite_monkies.remove(class_)
 
 def cleanUp():
