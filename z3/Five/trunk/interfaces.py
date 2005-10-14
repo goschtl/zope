@@ -17,6 +17,7 @@ $Id$
 """
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
+from zope.app.site.interfaces import ISite
 
 class IBrowserDefault(Interface):
     """Provide a hook for deciding about the default view for an object"""
@@ -34,6 +35,9 @@ class IMenuItemType(IInterface):
     menu items.
     """
 
+class IFiveSite(ISite):
+    """Five specialization of ISite
+    """
 
 #
 # BBB: Zope core interfaces

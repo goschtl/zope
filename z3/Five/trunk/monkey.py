@@ -55,3 +55,36 @@ def monkeyPatch():
         import sys
         from Products.Five.bbb import transaction
         sys.modules['transaction'] = transaction
+ 
+    from Acquisition import aq_inner, aq_parent
+    from zope.app.site.interfaces import ISiteManager
+    from zope.component.exceptions import ComponentLookupError
+
+    def getLocalServices(context):
+        """Returns the service manager that contains `context`.
+
+        If `context` is a local service, returns the service manager
+        that contains that service. If `context` is a service manager,
+        returns `context`.
+
+        Otherwise, raises ``ComponentLookupError('Services')``
+
+        XXX Basically, this overrides the one in Zope3 X3.0 so that it
+        uses acquisition instead of looking up __parent__.
+        """
+
+        # IMPORTANT
+        #
+        # This is not allowed to use any services to get its job done!
+
+        while not (context is None or
+                   ISiteManager.providedBy(context)):
+            context = aq_parent(aq_inner(context))
+        if context is None:
+            raise ComponentLookupError('Services')
+        else:
+            return context
+
+    from zope.app.component import localservice
+    localservice.getLocalServices = getLocalServices
+

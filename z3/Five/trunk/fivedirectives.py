@@ -104,3 +104,19 @@ class IPagesFromDirectoryDirective(IBasicResourceInformation):
         description=u"The directory containing the resource data.",
         required=True
         )
+
+class ISiteDirective(Interface):
+    """Make instances of class hookable for Site.
+
+    site_class is an implementation of ISite, which will have it's methods
+    monkey_patched into the the class. If not given a default implementation
+    will be used.
+    """
+    class_ = GlobalObject(
+        title=u"Class",
+        required=True
+        )
+    site_class = GlobalObject(
+        title=u"Site Class",
+        required=False
+        )

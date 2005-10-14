@@ -5,6 +5,14 @@ Five Changes
 Trunk only
 ==========
 
+Features
+--------
+* Local site support: Five has now support for creating local sites and 
+  thereby local utilities. This is mostly needed for allowing CMF to convert
+  it's portal tools into local utilities.
+  See doc/local_sites.txt for more information 
+  (that is, when I have finished that piece of documentation /Regebro).
+
 Restructuring
 -------------
 
