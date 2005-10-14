@@ -192,12 +192,13 @@ def compilefile(file, mode=None):
     if filename.startswith(prefix):
         filename = filename[len(prefix):]
     filename = filename.replace(os.sep, '/') # test files expect slashes
+    generator = TALGenerator(source_file=filename)
     if mode == "html":
         from zope.tal.htmltalparser import HTMLTALParser
-        p = HTMLTALParser(gen=TALGenerator(source_file=filename, xml=0))
+        p = HTMLTALParser(gen=generator)
     else:
         from zope.tal.talparser import TALParser
-        p = TALParser(gen=TALGenerator(source_file=filename))
+        p = TALParser(gen=generator)
     p.parseFile(file)
     return p.getCode()
 

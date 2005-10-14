@@ -37,12 +37,12 @@
 		<Country>CANADA</Country>
 	</InvoiceTo>
 	<ShipTo>
-		<Name/>
+		<Name />
 		<AddressLine>ATTN: PAULINE DEGRASSI</AddressLine>		
-		<City/>
-		<PostCode/>
-		<State/>
-		<Country/>
+		<City />
+		<PostCode />
+		<State />
+		<Country />
 	</ShipTo>
 	<DetailLines>
 		<DetailLine>

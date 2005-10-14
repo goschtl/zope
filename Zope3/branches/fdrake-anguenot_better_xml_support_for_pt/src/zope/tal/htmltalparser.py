@@ -18,6 +18,7 @@ $Id$
 
 from HTMLParser import HTMLParser, HTMLParseError
 
+from zope.tal import taldefs
 from zope.tal.taldefs import ZOPE_METAL_NS, ZOPE_TAL_NS, ZOPE_I18N_NS, \
                              METALError, TALError, I18NError
 from zope.tal.talgenerator import TALGenerator
@@ -108,7 +109,7 @@ class HTMLTALParser(HTMLParser):
     def __init__(self, gen=None):
         HTMLParser.__init__(self)
         if gen is None:
-            gen = TALGenerator(xml=0)
+            gen = TALGenerator()
         self.gen = gen
         self.tagstack = []
         self.nsstack = []
@@ -158,27 +159,30 @@ class HTMLTALParser(HTMLParser):
                 attrlist.remove(type_attr[0])
                 taldict = {'script': type_attr[0][1], 'omit-tag': ''}
         self.tagstack.append(tag)
+        ending = tag in EMPTY_HTML_TAGS
         self.gen.emitStartElement(tag, attrlist, taldict, metaldict, i18ndict,
-                                  self.getpos())
-        if tag in EMPTY_HTML_TAGS:
-            self.implied_endtag(tag, -1)
+                                  self.getpos(), isend=ending)
+        if ending:
+            self.tagstack.pop()
+            self.pop_xmlns()
 
     def handle_startendtag(self, tag, attrs):
         self.close_para_tags(tag)
         self.scan_xmlns(attrs)
         tag, attrlist, taldict, metaldict, i18ndict \
              = self.process_ns(tag, attrs)
+        pos = self.getpos()
         if taldict.get("content"):
             if tag in EMPTY_HTML_TAGS:
                 raise TALError(
                     "empty HTML tags cannot use tal:content: %s" % `tag`,
-                    self.getpos())
+                    pos)
             self.gen.emitStartElement(tag, attrlist, taldict, metaldict,
-                                      i18ndict, self.getpos())
-            self.gen.emitEndElement(tag, implied=-1, position=self.getpos())
+                                      i18ndict, pos)
+            self.gen.emitEndElement(tag, implied=-1, position=pos)
         else:
             self.gen.emitStartElement(tag, attrlist, taldict, metaldict,
-                                      i18ndict, self.getpos(), isend=1)
+                                      i18ndict, pos, isend=1)
         self.pop_xmlns()
 
     def handle_endtag(self, tag):
@@ -324,4 +328,11 @@ class HTMLTALParser(HTMLParser):
             attrlist.append(item)
         if namens in ('metal', 'tal'):
             taldict['tal tag'] = namens
+        if "attributes" in taldict:
+            taldict["attributes"] = taldefs.parseAttributeReplacements(
+                taldict["attributes"], xml=False)
+        i18nattrs = taldefs.parseI18nAttributes(
+            i18ndict.get("attributes"), self.getpos(), xml=False)
+        if i18nattrs:
+            i18ndict["attributes"] = i18nattrs
         return name, attrlist, taldict, metaldict, i18ndict

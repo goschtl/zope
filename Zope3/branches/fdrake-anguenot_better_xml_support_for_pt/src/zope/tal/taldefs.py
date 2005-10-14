@@ -116,6 +116,10 @@ _attr_re = re.compile(r"\s*([^\s]+)\s+([^\s].*)\Z", re.S)
 _subst_re = re.compile(r"\s*(?:(text|structure)\s+)?(.*)\Z", re.S)
 
 def parseAttributeReplacements(arg, xml):
+    if arg:
+        arg = arg.strip()
+    if not arg:
+        return None
     dict = {}
     for part in splitParts(arg):
         m = _attr_re.match(part)
@@ -128,6 +132,36 @@ def parseAttributeReplacements(arg, xml):
             raise TALError("Duplicate attribute name in attributes: %r" % part)
         dict[name] = expr
     return dict
+
+def parseI18nAttributes(i18nattrs, position, xml):
+    if i18nattrs:
+        i18nattrs = i18nattrs.strip()
+    if not i18nattrs:
+        return None
+    d = {}
+    # Filter out empty items, eg:
+    # i18n:attributes="value msgid; name msgid2;"
+    # would result in 3 items where the last one is empty
+    attrs = [spec for spec in i18nattrs.split(";") if spec]
+    for spec in attrs:
+        parts = spec.split()
+        if len(parts) == 2:
+            attr, msgid = parts
+        elif len(parts) == 1:
+            attr = parts[0]
+            msgid = None
+        else:
+            raise TALError("illegal i18n:attributes specification: %r" % spec,
+                           position)
+        if not xml:
+            attr = attr.lower()
+        if attr in d:
+            raise TALError(
+                "attribute may only be specified once in i18n:attributes: %r"
+                % attr,
+                position)
+        d[attr] = msgid
+    return d
 
 def parseSubstitution(arg, position=(None, None)):
     m = _subst_re.match(arg)

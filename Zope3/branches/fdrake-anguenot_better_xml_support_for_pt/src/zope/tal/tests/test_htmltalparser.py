@@ -27,7 +27,7 @@ class TestCaseBase(unittest.TestCase):
 
     prologue = ""
     epilogue = ""
-    initial_program = [('version', taldefs.TAL_VERSION), ('mode', 'html')]
+    initial_program = [('version', taldefs.TAL_VERSION)]
     final_program = []
 
     def _merge(self, p1, p2):

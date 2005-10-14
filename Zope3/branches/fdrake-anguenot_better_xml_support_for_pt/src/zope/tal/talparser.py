@@ -15,6 +15,7 @@
 
 $Id$
 """
+from zope.tal import taldefs
 from zope.tal.taldefs import XML_NS, ZOPE_I18N_NS, ZOPE_METAL_NS, ZOPE_TAL_NS
 from zope.tal.talgenerator import TALGenerator
 from zope.tal.xmlparser import XMLParser
@@ -87,6 +88,13 @@ class TALParser(XMLParser):
             fixedattrlist.append(item)
         if namens in ('metal', 'tal', 'i18n'):
             taldict['tal tag'] = namens
+        if "attributes" in taldict:
+            taldict["attributes"] = taldefs.parseAttributeReplacements(
+                taldict["attributes"], xml=True)
+        i18nattrs = taldefs.parseI18nAttributes(
+            i18ndict.get("attributes"), self.getpos(), xml=True)
+        if i18nattrs:
+            i18ndict["attributes"] = i18nattrs
         return name, fixedattrlist, taldict, metaldict, i18ndict
 
     def xmlnsattrs(self):

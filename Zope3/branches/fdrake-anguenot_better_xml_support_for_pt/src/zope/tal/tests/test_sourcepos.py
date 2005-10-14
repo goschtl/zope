@@ -60,7 +60,7 @@ main_template=main_template (6,14)
 class SourcePosTestCase(unittest.TestCase):
 
     def parse(self, eng, s, fn):
-        gen = TALGenerator(expressionCompiler=eng, xml=0, source_file=fn)
+        gen = TALGenerator(expressionCompiler=eng, source_file=fn)
         parser = HTMLTALParser(gen)
         parser.parseString(s)
         program, macros = parser.getCode()

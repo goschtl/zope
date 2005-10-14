@@ -40,18 +40,6 @@ from zope.tal.translationcontext import TranslationContext
 # Avoid constructing this tuple over and over
 I18nMessageTypes = (MessageID, Message)
 
-# TODO: In Python 2.4 we can use frozenset() instead of dict.fromkeys()
-BOOLEAN_HTML_ATTRS = dict.fromkeys([
-    # List of Boolean attributes in HTML that should be rendered in
-    # minimized form (e.g. <img ismap> rather than <img ismap="">)
-    # From http://www.w3.org/TR/xhtml1/#guidelines (C.10)
-    # TODO: The problem with this is that this is not valid XML and
-    # can't be parsed back!
-    "compact", "nowrap", "ismap", "declare", "noshade", "checked",
-    "disabled", "readonly", "multiple", "selected", "noresize",
-    "defer"
-])
-
 _nulljoin = ''.join
 _spacejoin = ' '.join
 
@@ -64,10 +52,10 @@ def normalize(text):
 
 class AltTALGenerator(TALGenerator):
 
-    def __init__(self, repldict, expressionCompiler=None, xml=0):
+    def __init__(self, repldict, expressionCompiler=None):
         self.repldict = repldict
         self.enabled = 1
-        TALGenerator.__init__(self, expressionCompiler, xml)
+        TALGenerator.__init__(self, expressionCompiler)
 
     def enable(self, enabled):
         self.enabled = enabled
@@ -82,7 +70,7 @@ class AltTALGenerator(TALGenerator):
         taldict = {}
         i18ndict = {}
         if self.enabled and self.repldict:
-            taldict["attributes"] = "x x"
+            taldict["attributes"] = {"x": "x"}
         TALGenerator.emitStartElement(self, name, attrlist,
                                       taldict, metaldict, i18ndict,
                                       position, isend)
@@ -206,9 +194,6 @@ class TALInterpreter(object):
         self.showtal = showtal
         self.strictinsert = strictinsert
         self.stackLimit = stackLimit
-        self.html = 0
-        self.endsep = "/>"
-        self.endlen = len(self.endsep)
         # macroStack entries are MacroStackItem instances;
         # the entries are mutated while on the stack
         self.macroStack = []
@@ -356,16 +341,6 @@ class TALInterpreter(object):
         assert version == TAL_VERSION
     bytecode_handlers["version"] = do_version
 
-    def do_mode(self, mode):
-        assert mode in ("html", "xml")
-        self.html = (mode == "html")
-        if self.html:
-            self.endsep = " />"
-        else:
-            self.endsep = "/>"
-        self.endlen = len(self.endsep)
-    bytecode_handlers["mode"] = do_mode
-
     def do_setSourceFile(self, source_file):
         self.sourceFile = source_file
         self.engine.setSourceFile(source_file)
@@ -381,11 +356,11 @@ class TALInterpreter(object):
     bytecode_handlers["setPosition"] = do_setPosition
 
     def do_startEndTag(self, stuff):
-        self.do_startTag(stuff, self.endsep, self.endlen)
+        self.do_startTag(stuff, " />")
     bytecode_handlers["startEndTag"] = do_startEndTag
 
     def do_startTag(self, (name, attrList),
-                    end=">", endlen=1, _len=len):
+                    end=">", _len=len):
         # The bytecode generator does not cause calls to this method
         # for start tags with no attributes; those are optimized down
         # to rawtext events.  Hence, there is no special "fast path"
@@ -426,7 +401,7 @@ class TALInterpreter(object):
                         col = col + 1 + slen
                     append(s)
             append(end)
-            col = col + endlen
+            col = col + _len(end)
         finally:
             self._stream_write(_nulljoin(L))
             self.col = col
@@ -477,16 +452,7 @@ class TALInterpreter(object):
         name, value, action = item[:3]
         ok = 1
         expr, xlat, msgid = item[3:]
-        if self.html and name.lower() in BOOLEAN_HTML_ATTRS:
-            evalue = self.engine.evaluateBoolean(item[3])
-            if evalue is self.Default:
-                if action == 'insert': # Cancelled insert
-                    ok = 0
-            elif evalue:
-                value = None
-            else:
-                ok = 0
-        elif expr is not None:
+        if expr is not None:
             evalue = self.engine.evaluateText(item[3])
             if evalue is self.Default:
                 if action == 'insert': # Cancelled insert
@@ -674,10 +640,13 @@ class TALInterpreter(object):
                     self.interpret(program)
                 finally:
                     self.popStream()
-                if self.html and self._currentTag == "pre":
-                    value = tmpstream.getvalue()
-                else:
-                    value = normalize(tmpstream.getvalue())
+                # NOTE: This used to check for HTML-mode output and
+                # currentTag=="pre", and avoided normalizing
+                # whitespace in the message ID in that case.  We might
+                # consider adding xml:space to allow this in the
+                # future, but the old difference between HTML and
+                # XHTML seems like a bug anyway.
+                value = normalize(tmpstream.getvalue())
             finally:
                 self.restoreState(state)
         else:
@@ -739,10 +708,13 @@ class TALInterpreter(object):
         # the top of the i18nStack.
         default = tmpstream.getvalue()
         if not msgid:
-            if self.html and currentTag == "pre":
-                msgid = default
-            else:
-                msgid = normalize(default)
+            # NOTE: This used to check for HTML-mode output and
+            # currentTag=="pre", and avoided normalizing whitespace in
+            # the message ID in that case.  We might consider adding
+            # xml:space to allow this in the future, but the old
+            # difference between HTML and XHTML seems like a bug
+            # anyway.
+            msgid = normalize(default)
         self.i18nStack.pop()
         # See if there is was an i18n:data for msgid
         if len(stuff) > 2:
@@ -774,10 +746,7 @@ class TALInterpreter(object):
             # Take a shortcut, no error checking
             self.stream_write(text)
             return
-        if self.html:
-            self.insertHTMLStructure(text, repldict)
-        else:
-            self.insertXMLStructure(text, repldict)
+        self.insertXMLStructure(text, repldict)
 
     def do_insertI18nStructure_tal(self, (expr, repldict, block)):
         # TODO: Code duplication is BAD, we need to fix it later
@@ -795,22 +764,11 @@ class TALInterpreter(object):
             # Take a shortcut, no error checking
             self.stream_write(text)
             return
-        if self.html:
-            self.insertHTMLStructure(text, repldict)
-        else:
-            self.insertXMLStructure(text, repldict)
-
-    def insertHTMLStructure(self, text, repldict):
-        from zope.tal.htmltalparser import HTMLTALParser
-        gen = AltTALGenerator(repldict, self.engine, 0)
-        p = HTMLTALParser(gen) # Raises an exception if text is invalid
-        p.parseString(text)
-        program, macros = p.getCode()
-        self.interpret(program)
+        self.insertXMLStructure(text, repldict)
 
     def insertXMLStructure(self, text, repldict):
         from zope.tal.talparser import TALParser
-        gen = AltTALGenerator(repldict, self.engine, 0)
+        gen = AltTALGenerator(repldict, self.engine)
         p = TALParser(gen)
         gen.enable(0)
         p.parseFragment('<!DOCTYPE foo PUBLIC "foo" "bar"><foo>')
@@ -884,15 +842,10 @@ class TALInterpreter(object):
         macro = self.engine.evaluateMacro(macroExpr)
         if macro is self.Default:
             macro = block
-        else:
-            if not isCurrentVersion(macro):
-                raise METALError("macro %s has incompatible version %s" %
-                                 (`macroName`, `getProgramVersion(macro)`),
-                                 self.position)
-            mode = getProgramMode(macro)
-            if mode != (self.html and "html" or "xml"):
-                raise METALError("macro %s has incompatible mode %s" %
-                                 (`macroName`, `mode`), self.position)
+        elif not isCurrentVersion(macro):
+            raise METALError("macro %s has incompatible version %s" %
+                             (`macroName`, `getProgramVersion(macro)`),
+                             self.position)
         self.pushMacro(macroName, compiledSlots, definingName, extending)
 
         # We want 'macroname' name to be always available as a variable

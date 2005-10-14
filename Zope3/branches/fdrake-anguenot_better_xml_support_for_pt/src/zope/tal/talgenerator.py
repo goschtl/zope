@@ -33,7 +33,7 @@ class TALGenerator(object):
     inMacroDef = 0
     source_file = None
 
-    def __init__(self, expressionCompiler=None, xml=1, source_file=None):
+    def __init__(self, expressionCompiler=None, source_file=None):
         if not expressionCompiler:
             from zope.tal.dummyengine import DummyEngine
             expressionCompiler = DummyEngine()
@@ -53,9 +53,7 @@ class TALGenerator(object):
         # {slot-name --> default content program}
         self.slots = {}
         self.slotStack = []
-        self.xml = xml  # true --> XML, false --> HTML
         self.emit("version", TAL_VERSION)
-        self.emit("mode", xml and "xml" or "html")
         if source_file is not None:
             self.source_file = source_file
             self.emit("setSourceFile", source_file)
@@ -87,8 +85,7 @@ class TALGenerator(object):
                 if self.optimizeStartTag(collect, item[1], item[2], ">"):
                     continue
             if opcode == "startEndTag":
-                endsep = self.xml and "/>" or " />"
-                if self.optimizeStartTag(collect, item[1], item[2], endsep):
+                if self.optimizeStartTag(collect, item[1], item[2], " />"):
                     continue
             if opcode in ("beginScope", "endScope"):
                 # Push *Scope instructions in front of any text instructions;
@@ -232,16 +229,12 @@ class TALGenerator(object):
         self.emit(opcode, name, attrlist)
 
     def emitEndTag(self, name):
-        if self.xml and self.program and self.program[-1][0] == "startTag":
-            # Minimize empty element
-            self.program[-1] = ("startEndTag",) + self.program[-1][1:]
-        else:
-            self.emit("endTag", name)
+        self.emit("endTag", name)
 
     def emitOptTag(self, name, optTag, isend):
         program = self.popProgram() #block
         start = self.popProgram() #start tag
-        if (isend or not program) and self.xml:
+        if isend or not program:
             # Minimize empty element
             start[-1] = ("startEndTag",) + start[-1][1:]
             isend = 1
@@ -515,11 +508,11 @@ class TALGenerator(object):
         repeat = taldict.get("repeat")
         content = taldict.get("content")
         script = taldict.get("script")
-        attrsubst = taldict.get("attributes")
+        repldict = taldict.get("attributes", {})
         onError = taldict.get("on-error")
         omitTag = taldict.get("omit-tag")
         TALtag = taldict.get("tal tag")
-        i18nattrs = i18ndict.get("attributes")
+        i18nattrs = i18ndict.get("attributes", {})
         # Preserve empty string if implicit msgids are used.  We'll generate
         # code with the msgid='' and calculate the right implicit msgid during
         # interpretation phase.
@@ -585,7 +578,6 @@ class TALGenerator(object):
             if defineMacro:
                 self.pushProgram()
                 self.emit("version", TAL_VERSION)
-                self.emit("mode", self.xml and "xml" or "html")
                 # generate a source annotation at the beginning of the macro
                 if self.source_file is not None:
                     if position != (None, None):
@@ -670,17 +662,7 @@ class TALGenerator(object):
         if optTag:
             todo["optional tag"] = omitTag, TALtag
             self.pushProgram()
-        if attrsubst or i18nattrs:
-            if attrsubst:
-                repldict = taldefs.parseAttributeReplacements(attrsubst,
-                                                              self.xml)
-            else:
-                repldict = {}
-            if i18nattrs:
-                i18nattrs = _parseI18nAttributes(i18nattrs, self.position,
-                                                 self.xml)
-            else:
-                i18nattrs = {}
+        if repldict or i18nattrs:
             # Convert repldict's name-->expr mapping to a
             # name-->(compiled_expr, translate) mapping
             for key, value in repldict.items():
@@ -818,32 +800,6 @@ class TALGenerator(object):
                     self.emit("setPosition", position)
                 self.emit("setSourceFile", self.source_file)
 
-
-def _parseI18nAttributes(i18nattrs, position, xml):
-    d = {}
-    # Filter out empty items, eg:
-    # i18n:attributes="value msgid; name msgid2;"
-    # would result in 3 items where the last one is empty
-    attrs = [spec for spec in i18nattrs.split(";") if spec]
-    for spec in attrs:
-        parts = spec.split()
-        if len(parts) == 2:
-            attr, msgid = parts
-        elif len(parts) == 1:
-            attr = parts[0]
-            msgid = None
-        else:
-            raise TALError("illegal i18n:attributes specification: %r" % spec,
-                           position)
-        if not xml:
-            attr = attr.lower()
-        if attr in d:
-            raise TALError(
-                "attribute may only be specified once in i18n:attributes: %r"
-                % attr,
-                position)
-        d[attr] = msgid
-    return d
 
 def test():
     t = TALGenerator()
