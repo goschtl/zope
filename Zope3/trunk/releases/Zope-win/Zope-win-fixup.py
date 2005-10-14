@@ -11,10 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Complete a windows release
+"""distutils --install-script for the Windows installer.
 
-This script does post processing of a windows release
-(and preprocessing of an ununstall of a windows release).
+The path to this script is passed at build-the-Windows-installer time to
+setup.py as the value of the --install-script option.  The installer created
+by distutils then runs this script after installation, and before
+uninstallation.
+
+At present, it does this:
+
+Install:
+
+  - creates mkzopeinstance.bat in Python's Scripts directory
+
+Uninstall:
+
+  - does nothing
 
 $Id$
 """
@@ -34,7 +46,7 @@ def main(argv=None):
 
     scripts = os.path.split(argv[0])[0]
     install = os.path.split(scripts)[0]
-    
+
     f = open(os.path.join(scripts, 'mkzopeinstance.bat'), 'w')
     f.write(mkzopeinstance_bat % (install, scripts))
 
