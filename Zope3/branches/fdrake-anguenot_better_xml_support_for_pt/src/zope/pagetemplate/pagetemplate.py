@@ -134,7 +134,7 @@ class PageTemplate(object):
     def write(self, text):
         # We accept both, since the text can either come from a file (and the
         # parser will take are of the encoding or from a TTW template, in
-        # which case we have already unicode. 
+        # which case we have already unicode.
         assert isinstance(text, (str, unicode))
 
         if text.startswith(_error_start):
@@ -159,7 +159,7 @@ class PageTemplate(object):
             try:
                 # This gets called, if macro expansion is turned on.
                 # Note that an empty dictionary is fine for the context at
-                # this point, since we are not evaluating the template. 
+                # this point, since we are not evaluating the template.
                 return self.pt_render({}, source=1)
             except:
                 return ('%s\n Macro expansion failed\n %s\n-->\n%s' %
@@ -186,6 +186,14 @@ class PageTemplate(object):
         engine = self.pt_getEngine()
         source_file = self.pt_source_file()
         if self.content_type == 'text/html':
+            # Deprecation warnings that should have sense until Zope 3.4
+            from warnings import warn
+            warn("HTML input is deprecated. "
+                 "This will be removed within Zope3.4. "
+                 "The file that needs to be changed before this release is "
+                 "located there %s." % self.pt_source_file(),
+                 DeprecationWarning)
+            # EOF deprecation
             gen = TALGenerator(engine, xml=0, source_file=source_file)
             parser = HTMLTALParser(gen)
         else:
