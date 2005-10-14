@@ -81,7 +81,7 @@ class PageTemplateFile(PageTemplate):
         except:
             f.close()
             raise
-        type_ = sniff_type(text)
+        type_ = sniff_type(text, self.filename)
         if type_ == "text/xml":
             text += f.read()
         else:

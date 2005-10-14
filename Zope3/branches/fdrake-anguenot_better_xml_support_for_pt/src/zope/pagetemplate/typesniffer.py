@@ -16,6 +16,7 @@
 $Id$
 """
 
+import os.path
 import xml.parsers.expat
 
 XML_PREFIXES = [
@@ -38,12 +39,18 @@ def StartNamespaceDeclHandler(prefix, url):
     # Called when an element contains a namespace declaration.
     raise NamespaceFound
 
-def sniff_type(text):
+def sniff_type(text, filename):
     """Return 'text/xml' if text appears to be XML, otherwise return None.
 
+     o if the document has an .xpt explicit extension then it should
+       be processed in XML
      o if the document contains the xml process header <?xml ... ?>
      o if the document contains any namespace declarations
     """
+
+    # Check if the extension of the file is .xpt
+    if os.path.normcase(filename).endswith('.xpt'):
+        return "text/xml"
 
     # Check the xml processing header
     for prefix in XML_PREFIXES:
