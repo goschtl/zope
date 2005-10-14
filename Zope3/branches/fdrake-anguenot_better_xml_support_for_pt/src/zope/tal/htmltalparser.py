@@ -102,9 +102,12 @@ class OpenTagError(NestingError):
         msg = 'Tag <%s> is not allowed in <%s>' % (tag, tagstack[-1])
         HTMLParseError.__init__(self, msg, position)
 
+
 class HTMLTALParser(HTMLParser):
 
     # External API
+
+    # XXX This needs to deal with non-ASCII data properly; it does not now.
 
     def __init__(self, gen=None):
         HTMLParser.__init__(self)
