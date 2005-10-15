@@ -10,6 +10,12 @@ Zope Changes
 
     New features
 
+      - Implemented a new object introspector. Instead of just providing
+        information of the object's class, the new introspector focuses on
+        providing information that is specific to the instance, such as
+        directly provided interfaces and data, for example attribute values
+        and annotation values.
+
       - Implemented the `devmode` switch for `zope.conf`. When turned on a
         ZCML feature called `devmode` is provided. Packages can then register
         functionality based on this feature. In Zope 3 itself, the devmode is
