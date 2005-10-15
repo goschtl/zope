@@ -19,9 +19,8 @@ __docformat__ = 'restructuredtext'
 
 import sys
 import zope.interface
-from zope.viewlet.viewlet import ViewletPageTemplateFile
 from zope.viewlet.viewlet import SimpleAttributeViewlet
-from zope.viewlet.viewlet import SimpleViewlet
+from zope.viewlet.viewlet import ViewletBase
 from zope.portlet import interfaces
 
 from zope.app.pagetemplate.simpleviewclass import simple
@@ -34,7 +33,7 @@ class DefaultPortletManager(object):
     zope.interface.implements(interfaces.IPortletManager)
 
 
-class SimplePortlet(SimpleViewlet):
+class SimplePortlet(ViewletBase):
     """Portlet adapter class used in meta directive as a mixin class."""
 
     zope.interface.implements(interfaces.IPortlet)

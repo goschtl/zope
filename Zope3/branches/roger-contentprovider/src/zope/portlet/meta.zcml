@@ -1,6 +1,7 @@
 <configure
     xmlns:meta="http://namespaces.zope.org/meta">
 
+<!--
   <meta:directives namespace="http://namespaces.zope.org/browser">
 
     <meta:directive
@@ -16,5 +17,6 @@
         />
 
   </meta:directives>
+-->
 
 </configure>

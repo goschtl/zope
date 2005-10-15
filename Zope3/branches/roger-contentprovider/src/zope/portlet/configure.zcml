@@ -3,6 +3,7 @@
     i18n_domain="tiks">
 
   <!-- ++view++ namespace is used as a hook for IControllable objects -->
+<!-- 
   <view
       name="portlet"
       type="*"
@@ -28,5 +29,7 @@
       />
 
   <include package=".browser" />
+
+-->
 
 </configure>

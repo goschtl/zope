@@ -37,7 +37,7 @@ from zope.portlet import interfaces
 
 def portletManagerDirective(_context, name, permission, portletType,
                      for_=Interface, layer=IDefaultBrowserLayer,
-                     class_=None, template=None, boxTemplate=None
+                     class_=None, template=None, boxTemplate=None,
                      allowed_interface=None, allowed_attributes=None):
 
     required = {}
