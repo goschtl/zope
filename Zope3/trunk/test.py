@@ -18,10 +18,12 @@ $Id$
 """
 import sys, os
 
-sys.path[:] = sys.path[1:]
-
 here = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, os.path.join(here, 'src'))
+
+# remove the current directory from the path, otherwise if we try to
+# import the standard library package "test", we get this file instead
+sys.path[:] = [p for p in sys.path if p != here]
 
 import zope.app.testing.test
 
