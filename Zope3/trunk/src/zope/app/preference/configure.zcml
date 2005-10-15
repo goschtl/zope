@@ -6,7 +6,7 @@
   i18n_domain="zope">
 
   <view
-      name="preferences" 
+      name="preferences"
       for="*"
       type="*"
       provides="zope.app.traversing.interfaces.ITraversable"
@@ -29,7 +29,7 @@
   <!-- Root preference group -->
   <preferenceGroup
       id=""
-      title="User Preferences" 
+      title="User Preferences"
       />
 
 
@@ -60,7 +60,7 @@
   </localUtility>
 
   <view
-      name="preferences" 
+      name="preferences"
       for=".interfaces.IDefaultPreferenceProvider"
       type="*"
       provides="zope.interface.Interface"
@@ -90,9 +90,9 @@
       name="preferences_macros"
       permission="zope.View"
       class=".browser.PreferencesMacros"
-      allowed_interface="zope.interface.common.mapping.IItemMapping" 
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
       />
-  
+
   <browser:page
       for="*"
       name="preference_macro_definitions"
@@ -108,12 +108,12 @@
       for=".interfaces.IPreferenceGroup"
       class=".browser.PreferencesTree"
       permission="zope.View"
-      attribute="tree" 
+      attribute="tree"
       />
 
   <!-- Book Chapter -->
 
-  <apidoc:bookchapter 
+  <apidoc:bookchapter
       id="preferences"
       title="User Preferences API"
       doc_path="README.txt"

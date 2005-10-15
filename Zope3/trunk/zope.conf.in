@@ -79,3 +79,12 @@ interrupt-check-interval 200
     path STDOUT
   </logfile>
 </eventlog>
+
+# devmode
+#
+#   Switches the Developer Mode on and off.
+#
+# Default:
+#   devmode off
+#
+devmode on

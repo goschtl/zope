@@ -10,6 +10,13 @@ Zope Changes
 
     New features
 
+      - Implemented the `devmode` switch for `zope.conf`. When turned on a
+        ZCML feature called `devmode` is provided. Packages can then register
+        functionality based on this feature. In Zope 3 itself, the devmode is
+        used to only load the API doc is devmode; turning off the devmode thus
+        closes a potential security hole and increases the start time by more
+        than a second.
+
       - The ZServer has been replaced with the Twisted server. The Twisted
         server supports all that the ZServer supporting has well has HTTP over
         SSL natively and SFTP (disabled for now because of error handling

@@ -1,7 +1,11 @@
-<configure 
+<configure
    xmlns="http://namespaces.zope.org/zope"
+   xmlns:meta="http://namespaces.zope.org/meta"
    i18n_domain="zope"
    >
+
+  <!-- Turn on the devmode -->
+  <meta:provides feature="devmode" />
 
   <!-- This file is the equivalent of site.zcml and it is -->
   <!-- used for functional testing setup -->
@@ -24,17 +28,17 @@
 
   <unauthenticatedGroup
     id="zope.Anybody"
-    title="Unauthenticated Users" 
+    title="Unauthenticated Users"
     />
 
   <authenticatedGroup
     id="zope.Authenticated"
-    title="Authenticated Users" 
+    title="Authenticated Users"
     />
 
   <everybodyGroup
     id="zope.Everybody"
-    title="All Users" 
+    title="All Users"
     />
 
   <!-- Principal that tests generally run as -->

@@ -54,4 +54,17 @@
     </description>
     <metadefault>$softwarehome/src</metadefault>
   </multikey>
+
+  <key name="devmode" datatype="boolean">
+    <description>
+      Switches the Developer Mode on and off.
+
+      In developer mode, the Web UI will provide usefull utilities for
+      developers to work on Zope 3 applications.
+    </description>
+    <example>
+      devmode on
+    </example>
+    <metadefault>off</metadefault>
+  </key>
 </schema>

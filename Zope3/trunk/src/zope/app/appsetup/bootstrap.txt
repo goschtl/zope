@@ -21,7 +21,7 @@ The subscriber makes ure that there is a root folder:
     >>> root = conn.root()[ZopePublication.root_name]
     >>> sm = root.getSiteManager()
     >>> conn.close()
-    
+
 A DatabaseOpenedWithRoot is generated with the database.
 
     >>> from zope.app.event.tests.placelesssetup import getEvents

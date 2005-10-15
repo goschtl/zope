@@ -167,7 +167,7 @@ class ParserInfo(object):
             if lines[0][:column].strip():
                 # Remove text before start if it's noy whitespace
                 lines[0] = lines[0][self.column:]
-                
+
             src = ''.join([u"  "+l for l in lines])
 
         return "%s\n%s" % (`self`, src)
@@ -427,12 +427,12 @@ class IInclude(Interface):
         include:
 
         - ``*`` matches 0 or more characters
-        
+
         - ``?`` matches a single character
-        
-        - ``[<seq>]`` matches any character in seq 
-        
-        - ``[!<seq>]`` matches any character not in seq 
+
+        - ``[<seq>]`` matches any character in seq
+
+        - ``[!<seq>]`` matches any character not in seq
 
         The file names are included in sorted order, where sorting is
         without regard to case.
@@ -476,7 +476,7 @@ def include(_context, file=None, package=None, files=None):
         paths = [path for (l, path) in paths]
     else:
         paths = [context.path(file)]
-    
+
     for path in paths:
         if context.processFile(path):
             f = openInOrPlain(path)
