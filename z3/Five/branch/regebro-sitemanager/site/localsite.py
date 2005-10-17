@@ -15,7 +15,6 @@ from zope.interface import directlyProvides, directlyProvidedBy
 from zope.interface import implements
 from zope.component import getGlobalServices
 from zope.component.interfaces import IServiceService, IUtilityService
-from zope.app.utility.interfaces import ILocalUtilityService
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Utilities
 from zope.app.site.interfaces import ISite
@@ -28,6 +27,8 @@ from Acquisition import aq_base, aq_inner, aq_parent
 from Products.SiteAccess.AccessRule import AccessRule
 from ZPublisher.BeforeTraverse import registerBeforeTraverse
 from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
+
+from interfaces import IFiveUtilityService
 
 def serviceServiceAdapter(ob):
     """An adapter * -> IServiceService.
@@ -103,11 +104,11 @@ class LocalService:
         Raises ComponentLookupError if the service can't be found.
         """
         if name in (Utilities,):
-            return ILocalUtilityService(self.context)
+            return IFiveUtilityService(self.context)
         return getGlobalServices().getService(name)
 
 class SimpleLocalUtilityService:
-    implements(ILocalUtilityService)
+    implements(IFiveUtilityService)
 
     def __init__(self, context):
         self.context = context

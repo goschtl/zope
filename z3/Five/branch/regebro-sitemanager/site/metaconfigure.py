@@ -22,9 +22,9 @@ from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
 from zope.configuration.exceptions import ConfigurationError
 from zope.app.component.metaconfigure import adapter
-from zope.app.utility.interfaces import ILocalUtilityService
 from zope.app.site.interfaces import IPossibleSite, ISite
 
+from interfaces import IFiveUtilityService
 from localsite import FiveSite, SimpleLocalUtilityService
 
 def classSiteHook(class_, site_class):
@@ -64,15 +64,15 @@ def installSiteHook(_context, class_, site_class=None, utility_service=None):
     if utility_service is None:
         utility_service = SimpleLocalUtilityService
     else:
-        if not ILocalUtilityService.implementedBy(utility_service):
+        if not IFiveUtilityService.implementedBy(utility_service):
             raise ConfigurationError('utility_service does not implement '
-                                     'ILocalUtilityService: %s' % utility_service)
+                                     'IFiveUtilityService: %s' % utility_service)
         
     # Generate a marker interface that should be unique, so that
     # we can register the utility service only for this class.
     iface = InterfaceClass('IFiveSite%s' % next())
     adapter(_context, factory=(utility_service,),
-            provides=ILocalUtilityService,
+            provides=IFiveUtilityService,
             for_=(iface,))
     _context.action(
         discriminator = (class_, 'UtilityMarker'),

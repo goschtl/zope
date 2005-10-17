@@ -106,7 +106,7 @@ your site. I'll call this the base site class.
    implementation as well.
    
    LocalSite will get the local utility service by adapting the context (that 
-   is your site object) to ILocalUtilityService. We recommend that you keep 
+   is your site object) to IFiveUtilityService. We recommend that you keep 
    that functionality if you make your own site manager.
    
 4. Lastly, you will need a local utility service.
@@ -115,9 +115,9 @@ your site. I'll call this the base site class.
    It simply keeps the utilities as objects in a folder called 'utilities' in
    your site root.
    
-   If you want to create your own, it needs to implement ILocalUtilityService,
+   If you want to create your own, it needs to implement IFiveUtilityService,
    and it needs to be registered as an adapter between your class and 
-   ILocalUtilityService. Of course, five:localsite will register this for you:
+   IFiveUtilityService. Of course, five:localsite will register this for you:
    
      <five:localsite class=".module.BaseSiteClass"
                      utility_service=".module.MyUtilityService" />
@@ -125,8 +125,11 @@ your site. I'll call this the base site class.
    or, if your class already implements IPossibleSite, you can also use:
    
      <adapter for=".interfaces.IBaseSiteClass"
-              provides="zope.app.utility.interfaces.ILocalUtilityService"
+              provides="zope.app.utility.interfaces.IFiveUtilityService"
               fatory=".utilityservice.MyUtilityService" />
    
+   IFiveUtilityService is an extension of ILocalUtilityService, with a 
+   registerUtility() method for simple registration. We hope that Zope 3
+   will implement something similar in the future.
 
-Thats it, more or less.
+That's it, I think.
