@@ -33,10 +33,10 @@
 
   <browser:page
       for="zope.app.site.interfaces.IPossibleSite"
-      name="addServiceManager.html"
+      name="manage_localsite.html"
       permission="zope2.Public"
-      class=".localsite.MakeSite"
-      attribute="makeSite"
+      class=".localsite.LocalSiteView"
+      template="localsite.pt"
       />
 
 </configure>

@@ -127,7 +127,9 @@ class SimpleLocalUtilityService:
             # Singletons. Only one per interface allowed, so, let's call it
             # by the interface.
             name = interface.getName()
-        utilities = getattr(self.context, 'utilities')
+        utilities = getattr(self.context, 'utilities', None)
+        if utilities is None:
+            return default
         utility = utilities._getOb(name, None)
         if utility is None:
             return default
@@ -191,15 +193,32 @@ class FiveSite:
 
 from Products.Five.browser import BrowserView
 
-class MakeSite(BrowserView):
+class LocalSiteView(BrowserView):
     """View for convering a possible site to a site
     """
+    
+    def update(self):
+        form = self.request.form
+        if form.has_key('UPDATE_MAKESITE'):
+            self.makeSite()
+        elif form.has_key('UPDATE_UNMAKESITE'):
+            self.unmakeSite()
 
+    def isSite(self):
+        return ISite.providedBy(self.context)
+            
     def makeSite(self):
         """Convert a possible site to a site"""
-        if ISite.providedBy(self.context):
+        if self.isSite():
             raise ValueError('This is already a site')
 
         enableLocalSiteHook(self.context)
         return "This object is now a site"
-        
+    
+    def unmakeSite(self):
+        """Convert a site to a possblesite"""
+        if not self.isSite():
+            raise ValueError('This is not a site')
+
+        disableLocalSiteHook(self.context)
+        return "This object is no longer a site"
