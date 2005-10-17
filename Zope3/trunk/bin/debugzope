@@ -43,7 +43,7 @@ def startup():
     sys.path[:] = [os.path.join(INSTANCE_HOME, "lib", "python"),
                    SOFTWARE_HOME] + basepath
 
-    from zope.app.server.main import debug
+    from zope.app.twisted.main import debug
     db = debug(["-C", CONFIG_FILE] + sys.argv[1:])
     if "PYTHONSTARTUP" in os.environ:
         execfile(os.environ["PYTHONSTARTUP"])

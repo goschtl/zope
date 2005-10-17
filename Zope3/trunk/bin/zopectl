@@ -15,5 +15,5 @@ CONFIG_FILE = os.path.join(INSTANCE_HOME, "zdaemon.conf")
 sys.argv[1:1] = ["-C", CONFIG_FILE]
 
 
-from zope.app.server.controller import main
+from zope.app.twisted.controller import main
 main()
