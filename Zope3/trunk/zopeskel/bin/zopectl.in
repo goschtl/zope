@@ -34,9 +34,9 @@ def run():
     sys.path[:] = [os.path.join(INSTANCE_HOME, "lib", "python"),
                    SOFTWARE_HOME] + basepath
 
-    import zope.app.server.controller
-    zope.app.server.controller.INSTANCE_HOME = INSTANCE_HOME
-    zope.app.server.controller.main(["-C", CONFIG_FILE] + sys.argv[1:])
+    import zope.app.twisted.controller
+    zope.app.twisted.controller.INSTANCE_HOME = INSTANCE_HOME
+    zope.app.twisted.controller.main(["-C", CONFIG_FILE] + sys.argv[1:])
 
 
 if __name__ == '__main__':
