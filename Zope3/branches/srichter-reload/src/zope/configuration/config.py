@@ -21,6 +21,7 @@ __docformat__ = 'restructuredtext'
 import os.path
 import sys
 import sets
+import types
 
 import zope.schema
 
@@ -95,11 +96,10 @@ class ConfigurationContext(object):
         self._seen_files = sets.Set()
         self._features = sets.Set()
 
-    def resolve(self, dottedname):
+    def resolve(self, dottedname, doReload=False):
         """Resolve a dotted name to an object
 
         Examples:
-
 
         >>> c = ConfigurationContext()
         >>> import zope, zope.interface
@@ -129,6 +129,41 @@ class ConfigurationContext(object):
         1
         >>> c.resolve('unicode')
         <type 'unicode'>
+
+        Reload support:
+
+        You can also tell the method to reload the imported modules. This will
+        allow for reloading entire ZCML files. First we are testing the reload
+        of a simple function:
+
+        >>> zope.configuration.docutils.wrap # doctest:+ELLIPSIS
+        <function wrap at ...>
+
+        >>> zope.configuration.docutils.wrap = 'overridden'
+        >>> zope.configuration.docutils.wrap
+        'overridden'
+
+        >>> new_docutils = c.resolve('zope.configuration.docutils',
+        ...                          doReload=True)
+
+        >>> new_docutils.wrap # doctest:+ELLIPSIS
+        <function wrap at ...>
+        >>> zope.configuration.docutils.wrap # doctest:+ELLIPSIS
+        <function wrap at ...>
+
+        Note, however, that an overridden module cannot be reloaded, because
+        the link to it is broken:
+
+        >>> docutils = zope.configuration.docutils
+        >>> zope.configuration.docutils = 'overridden'
+
+        >>> new_docutils = c.resolve('zope.configuration.docutils',
+        ...                          doReload=True)
+
+        >>> new_docutils
+        'overridden'
+
+        >>> zope.configuration.docutils = docutils
         """
 
         name = dottedname.strip()
@@ -186,19 +221,27 @@ class ConfigurationContext(object):
             raise ConfigurationError(
                 "Couldn't import %s, %s" % (mname, v)), None, sys.exc_info()[2]
 
+        if doReload:
+            try:
+                mod = reload(mod)
+            except ImportError:
+                raise (
+                    ConfigurationError("Couldn't import %s, %s" % (mname, v)),
+                    None, sys.exc_info()[2])
+
         if not oname:
             # see not mname case above
             return mod
-
 
         try:
             zope.deprecation.__show__.off()
             obj = getattr(mod, oname)
             zope.deprecation.__show__.on()
-            return obj
         except AttributeError:
             zope.deprecation.__show__.on()
             # No such name, maybe it's a module that we still need to import
+            # Note: Thus this scenario will never happen when reload is
+            #       required.
             try:
                 return __import__(mname+'.'+oname, *_import_chickens)
             except ImportError:
@@ -220,6 +263,13 @@ class ConfigurationContext(object):
 
                 raise ConfigurationError(
                     "ImportError: Module %s has no global %s" % (mname, oname))
+
+        if doReload and isinstance(obj, types.ModuleType):
+            obj = reload(obj)
+            setattr(mod, oname, obj)
+
+        return obj
+
 
     def path(self, filename):
         """
@@ -371,7 +421,7 @@ class ConfigurationContext(object):
 
         Finally, we can add an order argument to crudely control the order
         of execution:
-        
+
         >>> c.action(None, order=99999)
         >>> c.actions[-1]
         (None, None, (), {}, ('foo.zcml',), '?', 99999)
