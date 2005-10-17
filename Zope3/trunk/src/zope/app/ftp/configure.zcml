@@ -148,4 +148,14 @@
           "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
+    <view 
+      for="zope.app.container.interfaces.IReadContainer"
+      name="readable"
+      type="zope.publisher.interfaces.ftp.IFTPRequest"
+      factory=".FTPView"
+      permission="zope.Public"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      />
+
 </configure>

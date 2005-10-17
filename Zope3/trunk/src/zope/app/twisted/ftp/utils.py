@@ -139,6 +139,9 @@ class PublisherFileSystem(object):
         'See IWriteFileSystem'
         return self._execute(path, 'writable')
 
+    def readable(self, path):
+        return self._execute(path, 'readable')
+
     def _execute(self, path, command, split=True, **kw):
         env = {}
         env.update(kw)

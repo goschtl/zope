@@ -294,6 +294,19 @@ class DemoFileSystem(object):
         f = d[name]
         return f.type == 'f' and f.accessable(self.user, write)
 
+    def readable(self, path):
+        path, name = posixpath.split(path)
+        try:
+            d = self.getdir(path)
+        except OSError:
+            return False
+
+        if name not in d:
+            return False
+
+        f = d[name]
+        return f.type == 'f' and f.accessable(self.user, read)
+
 ## class DemoFileSystemAccess(object):
 ##     __doc__ = IFileSystemAccess.__doc__
 

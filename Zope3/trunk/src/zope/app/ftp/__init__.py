@@ -22,6 +22,7 @@ from zope.interface import implements
 from zope.component import queryAdapter
 from zope.publisher.interfaces.ftp import IFTPPublisher
 from zope.security.proxy import removeSecurityProxy
+from zope.security.checker import canAccess
 
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.filerepresentation.interfaces import IReadDirectory
@@ -75,7 +76,6 @@ class FTPView(object):
                     if filter(name)]
 
     def _lsinfo(self, name, file):
-
         info = {'name': name,
                 'mtime': self._mtime(file),
                 }
@@ -222,8 +222,18 @@ class FTPView(object):
     def writable(self, name):
         if name in self._dir:
             f = IWriteFile(self._dir[name], None)
-            return hasattr(f, 'write')
+            if f is not None:
+                return canAccess(f, 'write')
+            return False
         d = IWriteDirectory(self.context, None)
-        return hasattr(d, '__setitem__')
+        return canAccess(d, '__setitem__')
 
-
+    def readable(self, name):
+        if name in self._dir:
+            f = IReadFile(self._dir[name], None)
+            if f is not None:
+                return canAccess(f, 'read')
+            d = IReadDirectory(self._dir[name], name)
+            if d is not None:
+                return canAccess(d, 'get')
+        return False

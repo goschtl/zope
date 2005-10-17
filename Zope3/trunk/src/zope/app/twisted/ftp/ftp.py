@@ -50,6 +50,50 @@ class ConsumerObject(object):
         self.buffer.append(bytes)
 
 
+class ReadFileObj(object):
+    implements(ftp.IReadFile)
+
+    def __init__(self, fs, path):
+        self.fs_access = fs
+        self.path = path
+
+    def send(self, consumer):
+        def failed(failure):
+            consumer.unregisterProducer()
+
+        def success(passthrough):
+            consumer.unregisterProducer()
+
+        d = threads.deferToThread(self.fs_access.readfile, self.path, consumer)
+        d.addCallback(success)
+        d.addErrback(failed)
+
+        return d
+
+
+class WriteFileObj(object):
+    implements(ftp.IWriteFile)
+
+    def __init__(self, fs, path):
+        self.fs_access = fs
+        self.path = path
+
+    def receive(self):
+        def accessok(result, fs):
+            if not result:
+                raise ftp.PermissionDeniedError(self.path)
+            return ConsumerObject(fs, self.path)
+
+        def failure(failure):
+            raise ftp.PermissionDeniedError(self.path)
+
+        d = threads.deferToThread(self.fs_access.writable, self.path)
+        d.addCallback(accessok, self.fs_access)
+        d.addErrback(failure)
+
+        return d
+
+
 class ZopeFTPShell(object):
     """An abstraction of the shell commands used by the FTP protocol
     for a given user account
@@ -128,7 +172,6 @@ class ZopeFTPShell(object):
 
     def _stat(self, path, keys):
         if self.fs_access.type(path) == 'd':
-            import pdb; pdb.set_trace()
             raise ftp.WrongFiletype()
         result = self._gotlisting(self.fs_access.lsinfo(path), keys)
         return result[1]
@@ -201,37 +244,36 @@ class ZopeFTPShell(object):
             ret |= 0040000
         return ret
 
-    def send(self, path, consumer):
-        def finished(result, consumer):
-            consumer.transport.loseConnection()
-
-        def failed(failure, consumer):
-            consumer.transport.loseConnection()
-            if failure.type is NotFound:
-                raise ftp.FileNotFoundError(self._path(path))
-            ## Unauthorized error - is there any other errors I should
-            ## be catching.
-            raise ftp.PermissionDeniedError(self._path(path))
-
+    def openForReading(self, path):
         p = self._path(path)
-        d = threads.deferToThread(self.fs_access.readfile, p, consumer)
-        d.addCallback(finished, consumer)
-        d.addErrback(failed, consumer)
+
+        def succeed(result):
+            if not result:
+                raise ftp.PermissionDeniedError(p)
+            return ReadFileObj(self.fs_access, p)
+
+        def failed(failure):
+            raise ftp.PermissionDeniedError(p)
+
+        d = threads.deferToThread(self.fs_access.readable, p)
+        d.addCallback(succeed)
+        d.addErrback(failed)
+
         return d
 
-    def receive(self, path):
-        def accessok(result, fs):
-            if not result:
-                raise ftp.PermissionDeniedError(self._path(path))
-            return ConsumerObject(fs, p)
-
-        def failure(result):
-            ## XXX - should be a better exception
-            raise ftp.PermissionDeniedError(path)
-
+    def openForWriting(self, path):
         p = self._path(path)
+
+        def succeed(result):
+            if result:
+                return WriteFileObj(self.fs_access, p)
+            raise ftp.PermissionDeniedError(p)
+
+        def failed(failure):
+            raise ftp.PermissionDeniedError(p)
+
         d = threads.deferToThread(self.fs_access.writable, p)
-        d.addCallback(accessok, self.fs_access)
-        d.addErrback(failure)
+        d.addCallback(succeed)
+        d.addErrback(failed)
 
         return d

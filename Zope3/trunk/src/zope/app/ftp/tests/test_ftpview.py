@@ -20,6 +20,7 @@ from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.interface import implements
+from zope.security.checker import defineChecker, NamesChecker
 
 from zope.app.testing import ztapi
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
@@ -112,12 +113,21 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
+
+        ## Make objects
+        filechecker = NamesChecker(['write', 'read'])
+        dirchecker = NamesChecker(['__setitem__', 'get'])
+        defineChecker(File, filechecker)
+        defineChecker(Directory, dirchecker)
+
         root = Directory()
         root['test'] = Directory()
         root['test2'] = Directory()
         root['f'] = File('contents of\nf')
         root['g'] = File('contents of\ng')
         self.__view = FTPView(root, None)
+
+        ## declare adapters
         ztapi.provideAdapter(IContainer, IContainerItemRenamer,
             ContainerItemRenamer)
 
@@ -257,6 +267,11 @@ class Test(PlacelessSetup, TestCase):
         self.assert_(self.__view.writable('f'))
         self.assert_(self.__view.writable('notthere'))
         self.assert_(not self.__view.writable('test'))
+
+    def test_readable(self):
+        self.assert_(self.__view.readable('f'))
+        self.assert_(not self.__view.readable('notthere'))
+        self.assert_(self.__view.readable('test'))
 
 def test_suite():
     return TestSuite((

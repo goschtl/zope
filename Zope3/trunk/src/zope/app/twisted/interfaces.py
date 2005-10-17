@@ -255,3 +255,9 @@ class IFileSystem(Interface):
         exist but its directory is writable.
 
         """
+
+    def readable(path):
+        """Return boolean indicating whether a file at path is readable.
+
+        Return False if the file doesn't exist.
+        """

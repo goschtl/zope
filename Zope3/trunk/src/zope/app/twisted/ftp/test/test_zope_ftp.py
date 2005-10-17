@@ -279,8 +279,14 @@ class ZopeFTPPermissionTestCases(FTPServerTestCase):
         filenames.sort()
         self.assertEqual([self.filename], filenames)
 
+    def testRETR_wo_Permission(self):
+        self._michaelLogin()
+
         downloader = self._makeDataConnection()
         d = self.client.queueStringCommand('RETR %s' % self.filename)
         failureResponseLines = self._waitForCommandFailure(d)
-        self.failUnless(failureResponseLines[-1].startswith('426'),
-                        "Response didn't start with 426 i.e. data connection closed error")
+        self.failUnless(failureResponseLines[-1].startswith('550'),
+                        "Response didn't start with 550: %r" %
+                        failureResponseLines[-1])
+        if downloader.transport.connected:
+            downloader.transport.loseConnection()
