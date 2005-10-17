@@ -50,9 +50,6 @@ class MySQLdbAdapter(ZopeDatabaseAdapter):
 
         conn_info = parseDSN(self.dsn)
 
-        print '*'*78
-        print conn_info
-        print '*'*78
         connection = MySQLdb.Connect(db=conn_info['dbname'],
                             host=conn_info['host'],
                             user=conn_info['username'],
