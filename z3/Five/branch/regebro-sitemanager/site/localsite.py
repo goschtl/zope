@@ -103,7 +103,7 @@ class LocalService:
         Raises ComponentLookupError if the service can't be found.
         """
         if name in (Utilities,):
-            return SimpleLocalUtilityService(self.context)
+            return ILocalUtilityService(self.context)
         return getGlobalServices().getService(name)
 
 class SimpleLocalUtilityService:
