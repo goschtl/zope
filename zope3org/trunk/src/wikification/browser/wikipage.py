@@ -17,7 +17,7 @@ $Id: tests.py 38895 2005-10-07 15:09:36Z dominikhuber $
 """
 __docformat__ = 'restructuredtext'
 
-import re
+import re, urllib
 
 import zope.event
 from zope.app import zapi
@@ -30,9 +30,9 @@ from zope.app.container.interfaces import IContainer
 from zope.app.publisher.browser import BrowserView
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
 
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.publisher.browser import TestRequest
 
 from wikification.browser.interfaces import IWikiPage
@@ -46,10 +46,11 @@ class WikiPage(BrowserView) :
     
         See wikification/README.txt for a definition of what 
         'wikification' means and doctests of the methods of this class.
-        
-        >>> page = WikiPage(None, TestRequest())
-        >>> page.macros
-        
+    
+        >>> from wikification.tests import buildSampleSite
+        >>> site = buildSampleSite()
+        >>> page = WikiPage(site, TestRequest())
+         
     """
     
     implements(IWikiPage)
@@ -57,6 +58,7 @@ class WikiPage(BrowserView) :
     supported = 'text/html', 'application/xhtml+xml', 'application/xml', 'text/xml'
     title = u"Wiki page"
     action = "/@@wiki.html"      # the action that wikifies
+    add = "/@@kupuadd.html"
     uris = {
             'home': '#',
             'login': '#',
@@ -76,7 +78,7 @@ class WikiPage(BrowserView) :
           
         self.macros = {}
         if container is None :
-            self.container = self.getContainer()
+            self.container = self.getContainer() or context
         else :
             self.container = container
         self.base = zapi.absoluteURL(self.container, request)
@@ -102,6 +104,10 @@ class WikiPage(BrowserView) :
                 return True
         return False
         
+    def getContainer(self) :
+        """ Returns the base container. Should be overwritten. """
+        return None
+        
     def wikifyLink(self, link) :
         """ Modifies dead relative links and leaves
             all other links untouched.
@@ -118,7 +124,8 @@ class WikiPage(BrowserView) :
             zapi.traverse(self.container, path)
             return False, self.base + "/" + link + self.action
         except TraversalError :
-            return True, self.base + "/createPage?path=" + "/".join(path)
+            appendix = urllib.urlencode({'path': "/".join(path)})
+            return True, self.base + self.add + "?" + appendix
  
  
     def wikifyTextLink(self, text) :
@@ -132,7 +139,8 @@ class WikiPage(BrowserView) :
             link = name
             label = text
         except TraversalError :
-            link = self.base + "/createPage?path=" + name
+            appendix = urllib.urlencode({'path': name})
+            link = self.base + self.add + "?" + appendix
             label = '[%s]' % text
         return '<a href="%s">%s</a>' % (link, label)
         
@@ -193,17 +201,50 @@ class WikiPage(BrowserView) :
       
     def nextURL(self) :
         url = zapi.absoluteURL(self.context, self.request)
-        return url + "/@@wiki"
+        return url + self.action
 
 
 class WikiContainerPage(WikiPage) :
     """ Wiki view for a container. """
     
-    empty = File("""<html><body>No index.html found.</body></html>""", 
-                        "text/html")
+    text = """<html><body>
+              <p>No index.html found.<p>
+              <p>Create a
+                  <a href="index.html">new index page</a>?
+              </p>
+              </body></html>"""
+    
+    new = u"""<html><body>
+              <p>Type something interesting here...<p>
+              </body></html>"""
+    
+    empty = File(text, "text/html")
     
     def getContainer(self) :
         return self.context
+        
+    def getContent(self) :
+        """ Returns the editable content of a container.
+        
+            Returns the content of index.html if available
+            or a dummy message otherwise.
+            
+            >>> from wikification.tests import buildSampleSite
+            >>> site = buildSampleSite()
+            >>> print WikiContainerPage(site, TestRequest()).getContent()
+            <html>
+                <body>
+                    <p>Wikifiable</p>
+                    ...
+                </body>
+            </html>
+            
+        """
+        file = self.context.get(u"index.html")
+        if file is None :
+            return self.new
+        else :
+            return unicode(file.data, encoding="utf-8")
         
     def getFile(self) :
         return self.context.get(u"index.html", self.empty)
@@ -264,9 +305,10 @@ class CreateWikiPage(KupuEditor, WikiContainerPage) :
             folders if necessary.
             
         """
-               
-        path = self.request.form['path'].split(u'/')
         
+        filepath = self.request.form.get('path', 'index.html')
+        path = filepath.split(u'/')
+
         assert len(path) > 0
         
         container = base = self.container
@@ -282,6 +324,7 @@ class CreateWikiPage(KupuEditor, WikiContainerPage) :
             file = container[path[-1]]
         else :
             file = File()
+            zope.event.notify(ObjectCreatedEvent(file))
             container[path[-1]] = file
         return file
 
@@ -290,8 +333,9 @@ class CreateWikiPage(KupuEditor, WikiContainerPage) :
             Generic store method.           
         """
         request = self.request
-        text = request.form.get("body")        
         file = self.createFile()
-        file.data = text        
+        file.contentType = "text/html"
+        file.data = kupu
+        zope.event.notify(ObjectModifiedEvent(file))
         request.response.redirect(self.nextURL())
 

@@ -5,7 +5,7 @@ Importer
 This package can be used to import legacy data from other sites. 
 It's a simple wget reimplementation. It only follows internal links
 at the same or deeper levels. Additionaly it does some 
-prostprocessing.
+postprocessing.
 
     >>> from zope.app.folder import Folder
     >>> folder = Folder()

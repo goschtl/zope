@@ -9,6 +9,13 @@
       for="*"
       template="macros.pt"
       permission="zope.Public" />
+      
+    <page		
+      name="kupucontent.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class="wikification.browser.wikipage.CreateWikiPage"
+      attribute="getContent"
+      permission="zope.Public" />
          
     <page		
       name="wiki.html"
@@ -41,6 +48,10 @@
         name="kupuupdate.html"
         attribute="update" />
         
+      <page 
+        name="kupuadd.html"
+        template="add.pt" />
+        
     </pages>
         
     <pages
@@ -55,6 +66,10 @@
       <page 
         name="kupuupdate.html"
         attribute="update" />
+
+      <page 
+        name="kupuadd.html"
+        template="add.pt" />
         
     </pages>
        

@@ -20,7 +20,6 @@ from zope.app import zapi
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.container.interfaces import IContainer
 from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
 
 from kupusupport.interfaces import IImageReadContainer
@@ -28,6 +27,10 @@ from kupusupport.interfaces import IImageLibrary
 from kupusupport.interfaces import IImageLibraryInfo
 from kupusupport.interfaces import IKupuPolicy
 
+try :
+    from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+except :
+    pass # only needed for tests
 
 class KupuEditor(BrowserView):
     """Kupu editor view
@@ -88,8 +91,11 @@ class KupuEditor(BrowserView):
         #self.strict_output = False
 
     # pagetemplates provided by the ediorview itself
-    _macros = ViewPageTemplateFile('kupumacros.pt')
-
+    try :
+        _macros = ViewPageTemplateFile('kupumacros.pt')
+    except :
+        pass # only needed for test purposes. Examine later on XXX
+        
     def __getitem__(self, key):
         return self._macros.macros[key]
 
@@ -203,7 +209,10 @@ class ImageLibraryInfo(BrowserView):
             return default
 
     # pagetemplates provided by the image library itself
-    imagelibraries = ViewPageTemplateFile('imagelibraries.pt')
+    try :
+        imagelibraries = ViewPageTemplateFile('imagelibraries.pt')
+    except :
+        pass
 
     # implementation of kupusupport.IImageLibraryInfo
     def libraryInfos(self):

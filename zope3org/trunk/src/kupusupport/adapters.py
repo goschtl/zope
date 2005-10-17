@@ -52,7 +52,7 @@ class KupuEditableFile(object) :
     def display(self):
         """Display the kupu specific editor content."""
         
-        return html_body(self.context.data)
+        return unicode(html_body(self.context.data), encoding="utf-8")
         
 
 
