@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Kupu Editor</title>
-           
+         
     <link rel="stylesheet" type="text/css" href="/@@/kupustyles.css" />
     <link rel="stylesheet" type="text/css" media="print" href="/@@/style/print.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/@@/style/screen.css" />
@@ -32,7 +32,7 @@
 	<script type="text/javascript"
          src="/@@/common/kupucontextmenu.js"> </script>
     <link rel="stylesheet" type="text/css"
-          href="/Folder/iwm/index.html/++resource++common/kupudrawerstyles.css" />
+          href="/@@/common/kupudrawerstyles.css" />
 	<script type="text/javascript"
          src="/@@/common/kupudrawers.js"> </script>
 	<script type="text/javascript"
@@ -74,8 +74,6 @@
           <metal:macro use-macro="view/xmlconfig">
             <metal:slot fill-slot="dst"><tal:block replace="string:${context/@@absolute_url}/@@kupuconent.html" /></metal:slot>
           </metal:macro>
-    
-          <!-- include the fulleditor -->
           <metal:macro use-macro="view/fulleditor"></metal:macro>
       </form>
     </div>

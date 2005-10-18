@@ -1,18 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      >
+      xml:lang="en" lang="en">
 
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Kupu Editor</title>
            
-    <link rel="stylesheet" type="text/css" href="/@@/kupustyles.css" />
+    
     <link rel="stylesheet" type="text/css" media="print" href="/@@/style/print.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/@@/style/screen.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/@@/style/main.css" />
-    
+    <link rel="stylesheet" type="text/css" href="/@@/kupustyles.css" />
     <script type="text/javascript"
             src="/@@/common/sarissa.js"> </script>
 	<script type="text/javascript"
@@ -32,7 +33,7 @@
 	<script type="text/javascript"
          src="/@@/common/kupucontextmenu.js"> </script>
     <link rel="stylesheet" type="text/css"
-          href="/Folder/iwm/index.html/++resource++common/kupudrawerstyles.css" />
+          href="/@@/common/kupudrawerstyles.css" />
 	<script type="text/javascript"
          src="/@@/common/kupudrawers.js"> </script>
 	<script type="text/javascript"
@@ -68,7 +69,7 @@
       <form action="" method="POST" tal:attributes="action string:${context/@@absolute_url}/@@kupuupdate.html">
           <!-- include the xmlconfig -->
           <metal:macro use-macro="view/xmlconfig">
-            <metal:slot fill-slot="dst"><tal:block replace="string:${context/@@absolute_url}/@@kupuconent.html" /></metal:slot>
+             <metal:slot fill-slot="dst"><tal:block replace="string:${context/@@absolute_url}/@@kupuconent.html" /></metal:slot>
           </metal:macro>
     
           <!-- include the fulleditor -->

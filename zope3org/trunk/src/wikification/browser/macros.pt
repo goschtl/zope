@@ -78,9 +78,6 @@
         </div>
     </metal:tree>
     
-    
-    
-
    
       <div id="layout-footer"
            metal:define-macro="layout_footer">
