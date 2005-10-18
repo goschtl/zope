@@ -87,18 +87,16 @@ class WikiPage(BrowserView) :
         dc = IZopeDublinCore(self.context)
         self.dc = dc
         
-        self.title = dc.Title() or 'Untitled'
-        self.site_title = IZopeDublinCore(site).title or U'No site title'
-        self.html_title = self.getHTMLTitle
+        self.title = dc.title or 'Untitled'
         self.language = dc.Language()
-       
-    def getHTMLTitle(self):
-        if self.title and self.site_title:
-            if self.title != self.site_title:
-                return '%s - %s' % (self.title, self.site_title)
-        return self.title or self.site_title 
         
-    def isAbsoluteLink(self, link) :
+    def isAbsoluteURL(self, link) :
+        """ Returns true if the link is a complete URL. 
+            
+            Note that an absolute URL in this sense 
+            might point to a local object.
+        """
+        
         for prefix in 'http:', 'ftp:', 'https:', 'mailto:' :
             if link.startswith(prefix) :
                 return True
@@ -116,7 +114,7 @@ class WikiPage(BrowserView) :
         site_url = zapi.absoluteURL(self.site, self.request)
         if link.startswith(site_url) :
             link = link[len(site_url)+1:]
-        elif self.isAbsoluteLink(link) :
+        elif self.isAbsoluteURL(link) :
             return False, link
             
         path = link.split("/")

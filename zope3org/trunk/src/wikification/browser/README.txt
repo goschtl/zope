@@ -1,59 +1,67 @@
-For our Wiki we use a Template object. It's like a renderable PageTemplate
-namespace. 
-
->>> from zope.pagetemplate.pagetemplate import PageTemplate
->>> from wikification.browser.utils import PageInfo
->>> template = PageTemplate()
->>> template.pt_edit(u'<span tal:replace="foo"/>', 'text/html')
+Our Wiki is mainly a matter of representation. Therefore the main implementation
+is found in this package.
 
 Let's take our example site ...
 
->>> from wikification.tests import buildSampleSite
->>> site = buildSampleSite()
+    >>> from wikification.tests import buildSampleSite
+    >>> site = buildSampleSite()
 
-and now we access the index.html document of the site as an example :
+We have special WikiPage implementations for files and folders. Let's take
+the index.html document of the site as an example for a WikiFilePage :
 
->>> context = site[u"index.html"]
->>> request = TestRequest()
+    >>> from wikipage import WikiFilePage
+    >>> context = site[u"index.html"]
+    >>> request = TestRequest()
+    >>> index_page = WikiFilePage(context, request)
 
->>> page = PageInfo(context, request, template)
->>> page.foo = 'bar'
->>> page.render()
-u'bar\n'
+The page renders the content of the index.html document in a "wikified" version.
+We use the renderBody method to include this "wikified" content into our
+navigational structure, which is set aside for the moment :
 
-Our PageInfo object also has a macro mapping. So we can easily map macros to names.
 
->>> macro_template = PageTemplate()
->>> macro_template.pt_edit(u'<div metal:define-macro="foo">bar</div>', 'text/html')
->>> page.macros.update(macro_template.macros)
->>> template.pt_edit(u'<div metal:use-macro="macros/foo"/>', 'text/html')
->>> page.render()
-u'<div>bar</div>\n'
+    >>> print index_page.renderBody()
+    <BLANKLINE>
+        <p>Wikifiable</p>
+        <p>An <a href=".../target/@@wiki.html">existing link</a></p>
+        <p>A <a ... href=".../@@kupuadd.html?path=newitem">new page</a></p>
+        <p>A <a ... href=".../@@kupuadd.html?path=folder1%2Fnewitem">...
+        <p><a href=".../@@kupuadd.html?path=NewSubject">[New Subject]</a></p>
+        <p>An <a href="http://www.google.org">external absolute link</a></p>
+        <p>An <a href=".../target/@@wiki.html">internal absolute link</a></p>
+    <BLANKLINE>
 
-A WikiPageInfo is a specialized PageInfo. It already knows the main template
-so we don't need to pass it to the constructor. We also use a SiteInfo object
-for site specific informations.
+It uses the Dublin Core title (or "Untitled" if the title is not set).
 
->>> from wikification.browser.utils import SiteInfo 
->>> from wikification.browser.utils import WikiPageInfo
->>> site = SiteInfo(context)
->>> page = WikiPageInfo(context, request)
->>> page.html_title()
-u'Wiki page - Wiki site'
+    >>> from zope.app.dublincore.interfaces import IZopeDublinCore
+    >>> index_page.title == IZopeDublinCore(context).title
+    True
 
-We can override the title later
+A user that wents up in the containment hierarchy should not get lost. We use
+the container's index.html as the container content view as it is common :
 
->>> page.title = u'Custom title'
->>> page.html_title()
-u'Custom title - Wiki site'
+    >>> from wikipage import WikiContainerPage
+    >>> folder_page = WikiContainerPage(site, request)
+    >>> folder_page.renderBody() == index_page.renderBody()
+    True
 
-The title and html_title are available in the page template namespace.
-The template uses the html_title in <title> and the title in the page headeline.
+More interesting is the question how one can add new content to an existing
+place. Let's consider an empty folder as quite usual starting point :
 
->>> template.pt_edit(u'<title tal:content="html_title"/>', 'text/html')
->>> page.render()
-u'...<title>Custom title - Wiki site</title>...'
->>> template.pt_edit(u'<h1 tal:content="title"/>', 'text/html')
->>> page.render()
-u'...Custom title...'
+    >>> empty_folder = site[u"folder"]
+    >>> len(empty_folder)
+    0
+    >>> print WikiContainerPage(empty_folder, request).renderBody()
+    <BLANKLINE>
+      <p>No index.html found.<p>
+      <p>Create a
+          <a ... href=".../@@kupuadd.html?path=index.html">new index page</a>?
+      </p>
+    <BLANKLINE>
+    
+We can follow this link and are directed to a Kupu-Editor that allows us to
+create a new index.html document.
+
+
+
+
 

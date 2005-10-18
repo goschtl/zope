@@ -42,12 +42,12 @@ def test_suite():
                                 optionflags=optionflags
                              ),
                              
- #        doctest.DocFileSuite("README.txt", 
-#                                 setUp=setUpBrowserTests, 
-#                                 tearDown=tearDownBrowserTests,
-#                                 globs=globs,
-#                                 optionflags=optionflags
-#                              ),
+        doctest.DocFileSuite("README.txt", 
+                                setUp=setUpBrowserTests, 
+                                tearDown=tearDownBrowserTests,
+                                globs=globs,
+                                optionflags=optionflags
+                             ),
         ))
 
 if __name__ == '__main__':
