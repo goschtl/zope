@@ -148,12 +148,13 @@ class CookieAuthHelper(Folder, BasePlugin):
     security.declarePrivate('manage_afterAdd')
     def manage_afterAdd(self, item, container):
         """ Setup tasks upon instantiation """
-        login_form = ZopePageTemplate( id='login_form'
-                                     , text=BASIC_LOGIN_FORM
-                                     )
-        login_form.title = 'Login Form'
-        login_form.manage_permission(view, roles=['Anonymous'], acquire=1)
-        self._setObject( 'login_form', login_form, set_owner=0 )
+        if not 'login_form' in self.objectIds():
+            login_form = ZopePageTemplate( id='login_form'
+                                           , text=BASIC_LOGIN_FORM
+                                           )
+            login_form.title = 'Login Form'
+            login_form.manage_permission(view, roles=['Anonymous'], acquire=1)
+            self._setObject( 'login_form', login_form, set_owner=0 )
 
 
     security.declarePrivate('unauthorized')
