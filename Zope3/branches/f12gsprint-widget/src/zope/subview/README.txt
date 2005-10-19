@@ -1,5 +1,17 @@
 XXX The intent is to make this a test, as usual.
 
+- settle on one of "initialize" or "update"
+- use "setBrowserState" or "getBrowserState" or similar rather than ZODB
+- clarify "a standard pattern" section
+- discuss why concurrency can happen even without persistence
+- think about possiblility of separating out some functionality
+- think about sufficiency of AJAX and drag and drop baseline
+- "browserState" not "state"
+- "identifier" not "prefix"
+- "__parent__" not "parent"
+- "__name__" not "name"
+- clarify prefix ("identifier" story)
+
 ===============
 Subview package
 ===============
@@ -60,7 +72,9 @@ A Standard Pattern
 
 Based on lessons learned from the Zope 3 form code and from an in-house Zope
 Corporation JSR-168-like portlet system, the subview interfaces encapsulate
-current best practices.  Some of these drive the other two main package goals,
+current best practices.  Some of these best practices drive the approaches
+described in the other two sections below "Rich-Client Browser Support" and 
+"Subview Persistence", main package goals,
 but two others bear highlighting.
 
 First, subviews often require an explicit delineation of
@@ -170,7 +184,7 @@ If the first user submits now, then information intended for one subview will
 be sent to another.
 
 This hints at another problem: what should we do when the parent of the subview
-changes, in a similar story involving concurreny?  This is a thornier problem
+changes, in a similar story involving concurrency?  This is a thornier problem
 for the applications that must address it.  If your application must consider
 this problem, here are two possible solutions.
 
@@ -189,8 +203,7 @@ Rich-Client Browser Support
 ---------------------------
 
 As discussed in the introduction, this package contemplates support for two
-rich-client approaches in subviews: AJAX and drag and
-drop.
+rich-client approaches in subviews: AJAX and drag and drop.
 
 AJAX
 ----
@@ -255,80 +268,11 @@ Subview Persistence
 -------------------
 
 As indicated in the introduction to this file, subview persistence has many
-use cases.  The solution taken by the ISubview interface is simple, at least
-conceptually: make it implement standard ZODB persistence.  If the object is
-not attached to a persistent object, it will be thrown away in normal garbage
-collection.  If code wishes to persist the subview, simply attach it to a
-persistent data structure already part of the ZODB, such as a principal
-annotation.
+use cases.  
 
-Unfortunately, the simple solution is not quite so simple in implementation. 
-If a subview is persisted, it does have some unusual requirements.  The
-majority of these are handled by the default base class.
-
-First, requests and non-IPersistent parents must not be persisted. The parent
-may not be persisted because it may be a transient view, not designed for
-persistence; the request is also not designed for persistence, and the next
-time the view is used it will probably need to be associated with the current
-request, not the original one.  This constraint is met in the default base
-implementation by always getting the request from the interaction, instead of
-making it an actual attribute; and by storing non-persistent parents as
-request annotations.
-
-    >>> from zope.publisher.interfaces import IRequest
-    >>> IRequest.providedBy(Subview().request)
-    True
-    >>> from zope.persistent.interfaces import IPersistent
-    >>> IPersistent.providedBy(s)
-    True
-    >>> IPersistent.providedBy(nested)
-    True
-    >>> IPersistent.providedBy(container)
-    False
-    >>> nested.parent is container
-    True
-    >>> import cPickle
-    >>> getattr(cPickle.loads(cPickle.dumps(nested)), 'parent', None) is None
-    True
-    >>> s.parent = nested
-    >>> cPickle.loads(cPickle.dumps(s)).parent is nested
-    True
-    # XXX maybe do this with a real app, in a functional test wrapper...
-
-Second, when persisted subviews are used again, they must have the correct
-parent and request.  The default implementation gets the request from the
-thread-local security interaction, so only re-updating the subview with the
-current parent should be necessary.  The update method should be careful to
-accomodate new system state, rather than make assumptions.  Note that a subview
-should always have 'update' called whenever it is used with a new request,
-before 'render' is called.  Note that the default implementation also defers
-its context to the parent view, so that may not need to be reset.
-
-    # XXX end transaction, start a new one with a new request, and call update
-    # and render on 's'
-
-Last, if the subview is shared among various users, then essentially spurious
-but very annoying conflict errors may occur when parents (and requests, if the
-default implementation is not used) are tacked on to the subview.  Each
-attribute assignment of 'parent' will tag the view as needing to be persisted,
-and thus cause the ZODB to raise a ConflictError if multiple users set the
-attribute--even though the attribute is not persisted!  Persisted subviews
-sometimes store per-principal customization information in principal
-annotations; this approach might also be used to store the parent, but then
-again the value should not actually be persisted.  The parent might also be
-stored in a request annotation: this might be the easiest approach, since the
-reference will naturally have the correct lifespan: this is taken by the
-default implementation.  A third approach might be to write a __getstate__ that
-does not include parent or request along with conflict resolution
-code that ignores 'imaginary' changes like the ones to parent and request
-(as a reminder to the writer of this file :-), that's
-"def _p_resolveConflict(self, oldState, savedState, newState):...").
-
-    # make another DB copy of s, make a 'conflict' by setting parent, and
-    # show that transaction has no error. XXX
+XXX update/getBrowserState
 
 It is essential for interoperability that subviews do not opt-out of the
 requirements for this part of the interface.  Otherwise, their subviews will
 break intermediate persistent subviews in unpleasant ways (e.g., causing
-database exceptions when a transaction commits, etc.).  Hopefully the shared
-base class will alleviate the annoyance for individual subview writers.
+database exceptions when a transaction commits, etc.).

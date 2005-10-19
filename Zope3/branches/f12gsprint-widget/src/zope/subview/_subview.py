@@ -42,7 +42,7 @@ class SubviewBase(persistent.Persistent):
          # subclases should render now
 
     _initialized=False
-    def update(self, parent=None, name=None):
+    def update(self, parent=None, name=None, state=None):
         self._initialized = True
         if parent is not None:
             self.parent = parent
@@ -59,57 +59,6 @@ def getRequest():
         if IRequest.providedBy(p):
             return p
     raise RuntimeError('No IRequest in interaction')
-
-ANNOTATIONS_KEY = 'zope.subview'
-
-PersistentSubviewBase(persistent.Persistent, SubviewBase):
-
-    interface.implements(interfaces.IPersistentSubview)
-
-    @property
-    def context(self):
-        # avoid persisting possible security wrappers; avoid possible conflict
-        # errors
-        return self.parent.context
-
-    @property
-    def request(self):
-        # avoid persisting the request; avoid possible conflict errors
-        return getRequest()
-
-    _parent = None
-    @apply
-    def parent():
-        # we store persistent parents on this object, only changing when
-        # necessary so as not to invite conflict errors unnecessarily.  we
-        # store non-persistent parents in the request, so that the parent
-        # is not persisted and so that we again do not invite conflict errors.
-        # we use id(self) because a request is not persistent: we are only
-        # stashing the id while the object is in memory, so we should be fine.
-        def get(self):
-            if self._parent is not None:
-                return self._parent
-            else:
-                parents = self.request.annotations.get(ANNOTATIONS_KEY)
-                if parents is not None:
-                    return parents.get(id(self))
-            return None
-        def set(self, value):
-            # parent views should typically be unproxied, but just to be sure:
-            value = zope.security.proxy.removeSecurityProxy(value)
-            # if it is a persistent object...
-            if persistent.interfaces.IPersistent.providedBy(value):
-                # ...and we haven't stored it before (avoid conflict errors)
-                # then 
-                if value is not self._parent:
-                    self._parent = value
-            else:
-                if self._parent is not None: # avoid conflict errors
-                    self._parent = None
-                parents = self.request.annotations.setdefault(
-                    ANNOTATIONS_KEY, [])
-                parents[id(self)] = value
-        return property(get, set)
 
 class IntermediateSubviewMixin(object):
 
@@ -140,7 +89,3 @@ class IntermediateSubviewMixin(object):
 
 class IntermediateSubviewBase(IntermediateSubviewMixin, SubviewBase):
     interface.implements(interfaces.IIntermediateSubview)
-
-class PersistentIntermediateSubviewBase(
-    IntermediateSubviewMixin, PersistentSubviewBase):
-    interface.implements(interfaces.IPersistentIntermediateSubview)
