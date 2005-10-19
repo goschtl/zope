@@ -1,7 +1,5 @@
 A cx_Oracle based Database Adapter for Zope3
 
-Home: http://www2.staff.fh-vorarlberg.ac.at/~bd/
-
 Installation
 
  1. Install the cx_Oracle python package from
