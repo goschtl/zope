@@ -34,7 +34,7 @@ socket style is used. You will need a device, an adapter, that converts from
 the German to the US socket style.
 
 The functionality of adapters is actually natively provided by the
-`zope.interface` package and is thus well decumented there. The `human.txt`
+`zope.interface` package and is thus well documented there. The `human.txt`
 file provides a gentle introduction to adapters, whereby `adapter.txt` is
 aimed at providing a comprehensive insight into adapters, but is too abstract
 for many as an inital read. Thus, we will only explain adapters in the context
