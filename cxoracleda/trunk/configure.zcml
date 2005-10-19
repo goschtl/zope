@@ -1,0 +1,47 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="cxoracleda">
+
+  <content class=".adapter.DatabaseAdapter">
+    <factory id="zope.da.cxOracleDA" />
+    <require
+        permission="zope.app.rdb.Use"
+        interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.rdb.interfaces.IZopeDatabaseAdapterManagement"
+        />
+  </content>
+  
+  <browser:addform
+      name="AddcxOracleDA"
+      schema="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
+      label="Add cx_Oracle Database Adapter"
+      content_factory=".adapter.DatabaseAdapter"
+      arguments="dsn"
+      fields="dsn"
+      permission="zope.ManageContent"
+      />
+
+  <!-- Menu entry for "add utility" menu -->
+  <browser:addMenuItem
+      class=".adapter.DatabaseAdapter"
+      title="cx_Oracle DA"
+      description="A cx_Oracle Database Adapter"
+      permission="zope.ManageApplication"
+      view="AddcxOracleDA"
+      />
+
+  <!-- Menu entry for "add connection" menu -->
+  <browser:menuItem
+      menu="add_connection"
+      for="zope.app.container.interfaces.IAdding"
+      title="cx_Oracle DA"
+      description="A cx_Oracle Database Adapter"
+      action="AddcxOracleDA"
+      />
+
+</configure>
+
