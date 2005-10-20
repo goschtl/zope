@@ -1,0 +1,13 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    >
+
+  <include package=".MailHost"/>
+
+  <include package=".PluginIndexes"/>
+
+  <include package=".ZCatalog"/>
+
+  <include package=".ZCTextIndex"/>
+
+</configure>
