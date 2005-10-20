@@ -50,7 +50,7 @@ class PageRegistration(zope.app.component.site.AdapterRegistration):
     def __init__(self, name, required=None, permission=None,
                  factoryName=None, template=None, attribute=None):
         # An interface coming out of an interface widget is security
-        # proxied which is not pickable, thus remove the proxies here
+        # proxied which is not picklable, thus remove the proxies here
         self.required = removeSecurityProxy(required)
         self.factoryName = factoryName
         self.name = name
