@@ -1,11 +1,26 @@
-Zope Road Map
-=============
+Zope 3 Road Map
+===============
 
-This file lists features or tasks planned for future releases. It is
-roughly the compliment of CHANGES.txt. Over time, entries from this
-file will migrate to CHANGES.txt and then to HISTORY.txt.
+The Zope 3 release road map is pretty much dictated by the time-based
+release cycle.  There will be new major releases of Zope every six
+months (in June and December).
+
+For a list of planned features please check TODOLATER.txt
+
 
 Zope 3.2
 --------
 
-See TODOLATER.txt.
+* Zope 3.2 alpha 1: mid-October, 2005
+
+* Zope 3.2 beta 1: first week in November, 2005
+
+* Zope 3.2 rc 1: mid-December, 2005
+
+* Zope 3.2 final: last week of December, 2005
+
+
+Zope 3.3
+--------
+
+The release cycle will start in May, 2006
