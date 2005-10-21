@@ -33,7 +33,7 @@ def test_zpt_i18n():
       ...   </configure>
       ...   <configure package="Products.Five.browser.tests">
       ...     <browser:page
-      ...         for="Products.Five.interfaces.IFolder"
+      ...         for="OFS.interfaces.IFolder"
       ...         template="i18n.pt"
       ...         name="i18n.html"
       ...         permission="zope2.View"

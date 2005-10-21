@@ -19,13 +19,12 @@ from zope.interface import Attribute
 from zope.interface import Interface
 from zope.schema import Bool, BytesLine, Tuple
 
-from Products.Five.interfaces import IPersistent
-
 from AccessControl_interfaces import IOwned
 from AccessControl_interfaces import IRoleManager
 from Acquisition_interfaces import IAcquirer
 from App_interfaces import INavigation
 from App_interfaces import IUndoSupport
+from persistent.interfaces import IPersistent
 from webdav_interfaces import IDAVCollection
 from webdav_interfaces import IDAVResource
 

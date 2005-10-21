@@ -16,6 +16,10 @@ Features
 Restructuring
 -------------
 
+* Removed backwards compatibility for Five 1.0 Zope core interfaces.
+
+* Removed backwards compatibility for Zope 2.7 and 2.8.0.
+
 * Added a (temporarily) forked copy of the "new-and-improved" test runner
   and supporting 'zope.testing' package, lifted from
   http://svn.zope.org/zope.testing.  This code should be removed for Five

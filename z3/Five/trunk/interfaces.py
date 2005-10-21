@@ -40,37 +40,20 @@ class IFiveSite(ISite):
     """
 
 #
-# BBB: Zope core interfaces
-#
-# The interfaces here are only provided for backwards compatibility and will
-# be removed in Five 1.2. Please import interfaces from the corresponding Zope
-# package instead.
+# BBB: Zope core interfaces for Zope 2.8
 #
 
 try:
-    from persistent.interfaces import IPersistent
-except ImportError:
-    # BBB: for Zope 2.7
-    class IPersistent(Interface):
-        """Persistent object"""
-
-try:
-    from AccessControl.interfaces import *
-    from Acquisition.interfaces import *
-    from App.interfaces import *
-    from OFS.interfaces import *
-    from webdav.interfaces import *
+    import AccessControl.interfaces
+    import Acquisition.interfaces
+    import App.interfaces
+    import OFS.interfaces
+    import webdav.interfaces
 
     def monkey():
         pass
 
 except ImportError:
-    # BBB: for Zope 2.7 and 2.8
-    from Products.Five.bbb.AccessControl_interfaces import *
-    from Products.Five.bbb.Acquisition_interfaces import *
-    from Products.Five.bbb.App_interfaces import *
-    from Products.Five.bbb.OFS_interfaces import *
-    from Products.Five.bbb.webdav_interfaces import *
 
     def monkey():
         import sys
@@ -79,15 +62,9 @@ except ImportError:
         from Products.Five.bbb import App_interfaces
         from Products.Five.bbb import OFS_interfaces
         from Products.Five.bbb import webdav_interfaces
-        from Products.Five.bbb import z3bridge
 
         sys.modules['AccessControl.interfaces'] = AccessControl_interfaces
         sys.modules['Acquisition.interfaces'] = Acquisition_interfaces
         sys.modules['App.interfaces'] = App_interfaces
         sys.modules['OFS.interfaces'] = OFS_interfaces
         sys.modules['webdav.interfaces'] = webdav_interfaces
-        sys.modules['Interface.bridge'] = z3bridge
-
-# BBB: for old names used in Five 1.0
-IAcquisition = IAcquirer
-IPermissionMapping = IPermissionMappingSupport

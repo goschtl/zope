@@ -23,39 +23,10 @@ def monkeyPatch():
     Monkey patches are kept to a minimum level.
     """
 
-    from ZPublisher.HTTPRequest import HTTPRequest
-
-    if not hasattr(HTTPRequest, 'getPresentationSkin'):
-        # BBB: for Zope 2.7
-
-        def getPresentationSkin(self):
-            return getattr(self, '_presentation_skin', None)
-
-        def setPresentationSkin(self, skin):
-            self._presentation_skin = skin
-
-        HTTPRequest.getPresentationSkin = getPresentationSkin
-        HTTPRequest.setPresentationSkin = setPresentationSkin
-
-        HTTPRequest.__contains__ = lambda self, key: self.has_key(key)
-
-    if not hasattr(HTTPRequest, 'getURL'):
-        # BBB: for Zope 2.7, 2.8.0
-        def getURL(self):
-            return self.URL
-        HTTPRequest.getURL = getURL
-
     from Products.Five import interfaces, i18n
     interfaces.monkey()
     i18n.monkey()
 
-    try:
-        import Zope2
-    except ImportError:
-        import sys
-        from Products.Five.bbb import transaction
-        sys.modules['transaction'] = transaction
- 
     from Acquisition import aq_inner, aq_parent
     from zope.app.site.interfaces import ISiteManager
     from zope.component.exceptions import ComponentLookupError
@@ -87,4 +58,3 @@ def monkeyPatch():
 
     from zope.app.component import localservice
     localservice.getLocalServices = getLocalServices
-
