@@ -34,9 +34,13 @@ from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
 
 from zope.publisher.browser import TestRequest
+from zope.i18n import MessageIDFactory
+
+_ = MessageIDFactory("zope3org.wikification")
+
 
 from wikification.browser.interfaces import IWikiPage
-
+from importer import IImporter
 from kupusupport.adapters import html_body
 from kupusupport.browser.views import KupuEditor
 from kupusupport.interfaces import IKupuPolicy
@@ -59,15 +63,12 @@ class WikiPage(BrowserView) :
     title = u"Wiki page"
     action = "/@@wiki.html"      # the action that wikifies
     add = "/@@kupuadd.html"
+    verb = _('View')
     uris = {
             'home': '#',
             'login': '#',
             }
-    
-    contact_form = {
-            'action_url': '#',
-            }
-            
+    untitled = u"Untitled"
    
     def __init__(self, context, request, container=None) :
         """ Initializes some usefull instance variables. 
@@ -87,7 +88,7 @@ class WikiPage(BrowserView) :
         dc = IZopeDublinCore(self.context)
         self.dc = dc
         
-        self.title = dc.title or 'Untitled'
+        self.title = dc.title or self.untitled
         self.language = dc.Language()
         
     def isAbsoluteURL(self, link) :
@@ -140,7 +141,7 @@ class WikiPage(BrowserView) :
             appendix = urllib.urlencode({'path': name})
             link = self.base + self.add + "?" + appendix
             label = '[%s]' % text
-        return '<a href="%s">%s</a>' % (link, label)
+        return '<a href="%s">%s</a>' % (link, label + self.action)
         
     def wikify(self, body) :
         """ 
@@ -164,8 +165,7 @@ class WikiPage(BrowserView) :
                         if key == "href" :
                             new, value = self.caller.wikifyLink(value)
                             if new :
-                                # modified.append(("class", "create-link"))
-                                modified.append(("style", "color: red"))
+                                modified.append(("class", "wiki-link"))
                         modified.append((key, value))
   
                     BaseHTMLProcessor.unknown_starttag(self, tag, modified)
@@ -218,6 +218,9 @@ class WikiContainerPage(WikiPage) :
     
     empty = File(text, "text/html")
     
+    untitled = u"Untitled Folder"
+    
+    
     def getContainer(self) :
         return self.context
         
@@ -261,6 +264,7 @@ class WikiContainerPage(WikiPage) :
 class WikiFilePage(WikiPage) :
     """ Wiki view for a file. """
     
+    untitled = u"Untitled Document"
     
     def getContainer(self) :
         return self.context.__parent__
@@ -282,10 +286,11 @@ class WikiFilePage(WikiPage) :
         
 class EditWikiPage(KupuEditor, WikiFilePage) :
  
+    verb = _('Edit')
+    
      # implementation of kupusupport.IKupuPolicy
     def update(self, kupu=None):
-        """ Overwrites KupuEditor.update with a new redirect. """
-        
+        """ Overwrites KupuEditor.update with a new redirect. """        
         if kupu:
             policy = IKupuPolicy(self.context)
             policy.update(kupu)
@@ -297,6 +302,28 @@ class EditWikiPage(KupuEditor, WikiFilePage) :
 
 class CreateWikiPage(KupuEditor, WikiContainerPage) :
 
+    verb = _('Add')
+ 
+    def importURL(self, url) :
+        """ Imports pages from an URL. """
+        
+        if url == "test" :
+            from importer.tests import testURL
+            url = testURL
+        importer = IImporter(self.context, 1)
+        importer.download(url)
+        self.request.response.redirect(self.nextURL())
+
+    def getContent(self) :
+        return self.new
+    
+    def getAddPath(self) :
+        """ Returns the path that is added to the container if the user
+            creates a new wiki page.
+        """
+        filepath = self.request.form.get('path', 'index.html')
+        return filepath.split(u'/')
+        
     def createFile(self) :
         """
             Creates a file at the given path. Creates all intermediate
@@ -304,8 +331,8 @@ class CreateWikiPage(KupuEditor, WikiContainerPage) :
             
         """
         
-        filepath = self.request.form.get('path', 'index.html')
-        path = filepath.split(u'/')
+        
+        path = self.getAddPath()
 
         assert len(path) > 0
         
@@ -317,23 +344,29 @@ class CreateWikiPage(KupuEditor, WikiContainerPage) :
             except TraversalError :
                 container = base[name] = Folder()
             base = container
-             
-        if path[-1] in container :
-            file = container[path[-1]]
+         
+        name = path[-1]
+        if name in container :
+            file = container[name]
         else :
             file = File()
             zope.event.notify(ObjectCreatedEvent(file))
-            container[path[-1]] = file
+            container[name] = file
+            file = container[name] 
         return file
 
     def update(self, kupu=None):
         """
             Generic store method.           
         """
+        
         request = self.request
         file = self.createFile()
         file.contentType = "text/html"
         file.data = kupu
+       
         zope.event.notify(ObjectModifiedEvent(file))
-        request.response.redirect(self.nextURL())
+        
+        url = zapi.absoluteURL(file, self.request)
+        request.response.redirect(url + self.action)
 

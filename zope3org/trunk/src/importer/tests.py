@@ -18,6 +18,8 @@ $Id:$
 
 import unittest
 
+from os.path import dirname, join
+
 from zope.testing import doctest
 
 from zope.app import zapi
@@ -25,13 +27,16 @@ from zope.app.testing import ztapi
 
 from importer.testing import placelesssetup
 
+testURL = "file:" + join(dirname(__file__), "testsite", "FrontPage")
 
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('README.txt', 
                                 setUp=placelesssetup.setUp, 
                                 tearDown=placelesssetup.tearDown,
-                                globs={'zapi': zapi, 'ztapi': ztapi,},
+                                globs={'zapi': zapi, 
+                                        'ztapi': ztapi, 
+                                        'download_url': testURL},
                                 optionflags=doctest.NORMALIZE_WHITESPACE+
                                             doctest.ELLIPSIS
                              ),

@@ -2,19 +2,20 @@
 
 
       <div id="breadcrumbs" metal:define-macro="breadcrumbs"
-       > <div tal:omit-tag="" i18n:translate="">Location:</div>&nbsp;<tal:block
+       > <div tal:omit-tag="" i18n:translate="" tal:content="view/verb">Location</div>:&nbsp;<tal:block
            repeat="breadcrumb context/@@absolute_url/breadcrumbs"
-          ><a href=""
-              tal:condition="repeat/breadcrumb/start"
-              tal:attributes="
-              href string:${breadcrumb/url}/@@wiki.html"
-              i18n:translate="">[top]</a>
+          >
           <a href=""
              tal:condition="not:repeat/breadcrumb/start"
              tal:content="string:${breadcrumb/name}"
              tal:attributes="
              href string:${breadcrumb/url}/@@wiki.html">
             breadcrumb item</a> / </tal:block>
+            
+          <span tal:condition="view/getAddPath | nothing" 
+                tal:content="python: ' / '.join(view.getAddPath())">
+                extra /path
+          </span>
       </div>
    
      <h1 id="main-header"
@@ -26,7 +27,7 @@
      <metal:tree define-macro="navigation_tree_box">
         <div class="box" id="navigationTree">
             <table cellspacing="0" cellpadding="0"     
-               tal:define="root    context/@@root_cookie_tree;
+               tal:define="root    context/@@site_cookie_tree;
                            result         root/getFlatDicts;
                            nodeDictList   python:result[0];
                            maxDepth       python:result[1]">

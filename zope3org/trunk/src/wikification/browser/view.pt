@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title tal:content="view/html_title">Zope 3</title>
+  <title tal:content="view/title">Zope 3</title>
   <link rel="stylesheet" type="text/css" media="print" href="/@@/style/print.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="/@@/style/screen.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="/@@/style/main.css" />
@@ -34,7 +34,7 @@
                 <div id="breadcrumb-navigation" metal:use-macro="context/@@wiki_macros/breadcrumbs" />
             </td>
             <td width="50%" align="right">
-                <form id="search" method="get" name="search" tal:define="form view/contact_form" tal:attributes="href form/action_url">
+                <form id="search" method="get" name="search" href="search">
                     <fieldset>
                         <legend>
                             <label for="search-text">
@@ -54,7 +54,7 @@
 		<div class="bg">
 			<div class="col first">
 				<div id="main">
-					<h1 tal:content="view/html_title">
+					<h1 tal:content="view/title">
 						A title
 					</h1>
 					<div tal:content="structure view/renderBody" />
@@ -63,13 +63,30 @@
 
 			<div class="col second">
 				<div metal:use-macro="context/@@wiki_macros/navigation_tree_box" />
+                
 			</div>
 
 		</div>
-		<hr />
+		<hr size="2"/>
+		
 		<div metal:use-macro="context/@@wiki_macros/layout_footer" />
+		<form id="import" method="POST" name="import" action="importURL">
+            <fieldset>
+                <legend>
+                    <label>
+                        Import URL:
+                    </label>
+                </legend>
+                <input class="text" name="url" id="url" />
+                <input type="submit" class="submit" name="import" value="Try" id="import-import" />
+            </fieldset>
+        </form>
+                        
 	</div>
 	
+ 
+                
+                
 </div>
 </body>
 </html>

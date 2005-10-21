@@ -11,7 +11,8 @@
   <adapter
 	  factory="kupusupport.adapters.KupuEditableFile"
 	  provides="kupusupport.interfaces.IKupuPolicy"
-     for="zope.app.file.interfaces.IFile"/>
+      for="zope.app.file.interfaces.IFile"
+      />
      
   <adapter
       factory=".adapters.ImageReadContainer"

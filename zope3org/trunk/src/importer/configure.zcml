@@ -2,13 +2,22 @@
   xmlns="http://namespaces.zope.org/zope"
   i18n_domain="zope">
 
+  <!--
   <page
       name="import.html"
-      for="book.messageboard.interfaces.IContainer"
+      for="zope.app.container.interfaces.IContainer"
       class=".Importer"
       template="import.pt"
       permission="zope.ManageContent"
       menu="zmi_views" title="Import"
       />
+      
+      -->
+      
+  <adapter
+      provides=".interfaces.IImporter"
+      factory=".zopeorgwikiimporter.ImporterForContainer"
+      for="zope.app.container.interfaces.IContainer"
+      permission="zope.ManageContent" />
 
 </configure>

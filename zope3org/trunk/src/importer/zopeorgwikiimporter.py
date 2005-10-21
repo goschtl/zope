@@ -17,11 +17,13 @@ $Id: $
 """
 import re
 import urllib
+import transaction
 import HTMLParser
 from datetime import datetime
 
 import zope.component
 import zope.interface
+from zope.exceptions import DuplicationError
 
 from zope.app.file import File
 from zope.app.container.interfaces import IContainer
@@ -40,8 +42,9 @@ class ImporterForContainer(object):
     zope.interface.implements(IImporter)
     zope.component.adapts(IContainer)
     
-    def __init__(self, context):
+    def __init__(self, context, verbosity=0):
         self.context = context
+        self.verbosity = 0
 
     def download(self, url, base_url=None):
         """See IImporter
@@ -91,7 +94,11 @@ class ImporterForContainer(object):
                 continue
             metadata[mdata[0]] = unicode(mdata[1])
         
-        file = File(text, metadata['format'])
+        if metadata.get('format') :
+            file = File(text, metadata['format'])
+        else :
+            # uo: the file has no format, we skip it to be safe
+            return
 
         # we don't notify with a ``ObjectCreatedEvent`` because
         # we don't want the created and modification date to be set
@@ -99,7 +106,8 @@ class ImporterForContainer(object):
         dc = IZopeDublinCore(file)
         dc.title = metadata['title']
         dc.format = metadata['format']
-        dc.creators = (metadata['creator'],)
+        if metadata.get('creator', None) :
+            dc.creators = (metadata['creator'],)
         y, m, d = metadata['created'].split('-')
         dc.created = datetime(int(y), int(m), int(d))
         y, m, d = metadata['modified'].split('-')
@@ -108,11 +116,16 @@ class ImporterForContainer(object):
         # XXX what data to be set else? (type="Wiki Page")
         # XXX there is also a ``date``, hmmm?
         
-        self.context[metadata['title']] = file
+        try :
+            self.context[metadata['title']] = file
+            transaction.commit()
+            if self.verbosity :
+                print "added", self.context.__name__, metadata['title']
+        except DuplicationError :
+            # XXX uo: what does that mean? Is an exit the best solution?
+            return
         
-        # XXX notify ObjectAddedEvent
-        pass
-
+      
         # filter out all not internal links and duplicates
         internal_links = {}
         base_url_len = len(self.base_url) + 1

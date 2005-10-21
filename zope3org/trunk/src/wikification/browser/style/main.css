@@ -10,6 +10,13 @@ body {
     line-height: 1.5em;
 }
 
+.wiki-link
+{
+	color: red;
+	border-width: 1px;
+	border-style: dotted;
+}
+
 #layout {
   width: 100%;
   font-size: 0.751em;
@@ -108,6 +115,19 @@ body {
 #user {
   padding: 1em;
   padding-bottom: 0em;
+}
+#import fieldset {
+  border: 0px solid white;
+  margin: 0;
+  padding: 0;
+}
+#import input.text {
+  width: 30em;
+  vertical-align: middle;
+  margin-right: 0
+}
+#import input.submit {
+  vertical-align: middle;
 }
 #search {
   padding: 1em;

@@ -1,6 +1,7 @@
 <configure 
    xmlns="http://namespaces.zope.org/browser"
    xmlns:zope="http://namespaces.zope.org/zope"
+   i18n_domain="zope"
    >
 
 
@@ -33,7 +34,7 @@
       template="view.pt"
       permission="zope.View"
       title="Wiki"
-      menu="zmi_views" />
+      menu="zmi_views" />      
 
     <pages
       class="wikification.browser.wikipage.EditWikiPage"
@@ -43,14 +44,15 @@
       <page 
         name="kupu.html"
         template="edit.pt" />
-        
+       
       <page 
         name="kupuupdate.html"
         attribute="update" />
         
       <page 
         name="kupuadd.html"
-        template="add.pt" />
+        template="add.pt"
+        />
         
     </pages>
         
@@ -70,6 +72,14 @@
       <page 
         name="kupuadd.html"
         template="add.pt" />
+      
+      <page
+        name="createFile"
+        attribute="createFile" />
+        
+      <page
+        name="importURL"
+        attribute="importURL" />
         
     </pages>
        

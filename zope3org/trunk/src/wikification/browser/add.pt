@@ -63,7 +63,6 @@
     </div>
     <div id="navigation-box">
         <span id="breadcrumb-navigation" metal:use-macro="context/@@wiki_macros/breadcrumbs" />
-        <span>&nbsp;&nbsp;Saving the text creates a file named &quot;<span tal:replace="request/path">Bebop</span>&quot;</span>
     </div>
     
     <div xmlns:metal="http://xml.zope.org/namespaces/metal" >

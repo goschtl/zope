@@ -17,7 +17,7 @@ The importer can be retrieved by an adaption to IImporter:
 
 Import the site:
 
-    >>> importer.download(url='file:src/importer/testsite/FrontPage',
+    >>> importer.download(url=download_url,
     ...                   base_url='http://www.zope.org/Wikis/DevSite/'
     ...                            'Projects/ComponentArchitecture')
 
