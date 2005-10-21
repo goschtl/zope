@@ -1,0 +1,125 @@
+<html metal:use-macro="context/@@standard_macros/page"
+>
+<body>
+
+<metal:slot metal:fill-slot="header"
+            i18n:domain="cmf_default">
+<h1 i18n:translate="">
+ Resource Metadata: <tal:span tal:content="context/Title"
+                              i18n:name="obj_title">Title</tal:span></h1>
+</metal:slot>
+
+<metal:slot metal:fill-slot="body"
+            i18n:domain="cmf_default"
+            tal:define="minfo view/getMetadataInfo;
+                        finfo view/getFormInfo;
+                       ">
+
+<form action="metadata.py" method="post">
+<table class="FormLayout">
+ <tr>
+  <th i18n:translate="">Enable Discussion?</th>
+  <td colspan="3"
+      tal:define="allowed finfo/allow_discussion" >
+   <select name="allow_discussion" >
+    <option value="default"
+            tal:attributes="selected python: allowed is None"
+            i18n:translate="">Default</option>
+    <option value="off"
+            tal:attributes="selected python: allowed is False"
+            i18n:translate="">Off</option>
+    <option value="on"
+            tal:attributes="selected python: allowed is True"
+            i18n:translate="">On</option>
+   </select>
+  </td>
+ </tr>
+ <tr>
+  <th i18n:translate="">Identifier</th>
+  <td colspan="3"> <span tal:replace="minfo/Identifier"></span>
+  </td>
+ </tr>
+ <tr>
+  <th i18n:translate="">Title</th>
+  <td colspan="3">
+   <input type="text" name="title" value="" size="65"
+          tal:attributes="value minfo/Title" />
+  </td>
+ </tr>
+ <tr>
+  <th i18n:translate="">Description</th>
+  <td colspan="3">
+   <textarea name="description:text" rows="5" cols="65" wrap="soft"
+             tal:content="minfo/Description"></textarea>
+  </td>
+ </tr>
+ <tr>
+  <th i18n:translate="">Subject</th>
+  <td>
+   <textarea name="subject:lines" rows="3" cols="20"
+             tal:content="finfo/subject_lines"></textarea>
+  </td>
+  <th i18n:translate="">Contributors</th>
+  <td>
+   <textarea name="contributors:lines" rows="5" cols="30"
+             tal:content="finfo/contributor_lines"></textarea>
+  </td>
+ </tr>
+ <tr>
+  <th i18n:translate="">Creation Date</th>
+  <td> <span tal:replace="minfo/CreationDate"></span>
+  </td>
+  <th i18n:translate="">Last Modified Date</th>
+  <td> <span tal:replace="minfo/ModificationDate"></span>
+  </td>
+ </tr>
+ <tr>
+  <th i18n:translate="">Effective Date</th>
+  <td>
+   <input type="text" name="effective_date" value=""
+          tal:attributes="value minfo/EffectiveDate" />
+  </td>
+  <th i18n:translate="">Expiration Date</th>
+  <td>
+   <input type="text" name="expiration_date" value=""
+          tal:attributes="value minfo/ExpirationDate" />
+  </td>
+ </tr>
+ <tr>
+  <th i18n:translate="">Format</th>
+  <td> <input type="text" name="format" value=""
+              tal:attributes="value minfo/Format" />
+  </td>
+ </tr>
+ <tr>
+  <th i18n:translate="">Language</th>
+  <td> <input type="text" name="language" value=""
+              tal:attributes="value minfo/Language" />
+  </td>
+ </tr>
+ <tr>
+  <th i18n:translate="">Rights</th>
+  <td> <input type="text" name="rights" value=""
+              tal:attributes="value minfo/Rights" />
+  </td>
+ </tr>
+ <tr>
+  <td>&nbsp;</td>
+  <td colspan="3">
+   <div class="FormButtons">
+   <tal:loop tal:repeat="button finfo/buttons"
+   ><input type="submit" name="ButtonName" value="ButtonValue"
+           tal:attributes="name button/name;
+                           value button/value;
+                          "
+           i18n:attributes="value" /></tal:loop>
+  </div>
+ </td>
+ </tr>
+</table>
+</form>
+
+</metal:slot>
+
+</body>
+</html>

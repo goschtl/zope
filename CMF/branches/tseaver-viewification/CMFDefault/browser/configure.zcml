@@ -1,0 +1,24 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
+
+ <browser:page
+    for="Products.CMFCore.interfaces.IMutableDublinCore"
+    class=".metadata.MetadataView"
+    name="metadata.html"
+    template="metadata.pt"
+    permission="cmf.ModifyPortalContent"
+    layer="cmf"
+    />
+
+ <browser:page
+    for="Products.CMFCore.interfaces.IMutableDublinCore"
+    class=".metadata.MetadataView"
+    name="metadata.py"
+    attribute="controller"
+    permission="cmf.ModifyPortalContent"
+    layer="cmf"
+    />
+
+</configure>

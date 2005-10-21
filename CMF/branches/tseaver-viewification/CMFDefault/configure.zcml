@@ -1,0 +1,26 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    >
+
+  <include
+    package=".skin"
+    />
+
+  <include
+    file="configure.zcml"
+    package=".browser"
+    />
+
+  <include
+    file="exportimport.zcml"
+    />
+
+  <!-- XXX: Setting this is required to make the views accessible TTW, but it
+            breaks tests for now.  2005/10/21, TS
+  <five:traversable
+     class="Products.CMFDefault.Document.Document"
+     />
+   -->
+
+</configure>
