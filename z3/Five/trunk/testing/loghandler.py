@@ -13,7 +13,7 @@
 ##############################################################################
 """logging handler for tests that check logging output.
 
-$Id: loghandler.py 27164 2004-08-17 11:16:39Z hdima $
+$Id$
 """
 import logging
 

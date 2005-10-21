@@ -16,7 +16,7 @@
 This module provides a DocTestSuite contructor for converting doctest
 tests to unit tests.
 
-$Id: doctestunit.py 28304 2004-10-31 17:59:45Z jim $
+$Id$
 """
 
 from doctest import DocFileSuite, DocTestSuite

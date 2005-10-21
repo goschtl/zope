@@ -65,7 +65,7 @@ and, sure enough, we still have no output:
   >>> handler.records
   []
 
-$Id: loggingsupport.py 30499 2005-05-25 17:08:28Z tim_one $
+$Id$
 """
 
 import logging

@@ -13,7 +13,7 @@
 ##############################################################################
 """Sample test layers
 
-$Id: samplelayers.py 30501 2005-05-25 17:40:56Z tim_one $
+$Id$
 """
 
 layer = '0' # Internal to samples. Not part of layer API

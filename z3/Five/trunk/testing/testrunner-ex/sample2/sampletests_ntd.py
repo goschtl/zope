@@ -13,7 +13,7 @@
 ##############################################################################
 """Sample tests with a layer that can't be torn down
 
-$Id: sampletests_ntd.py 30971 2005-07-01 17:23:12Z jim $
+$Id$
 """
 
 import unittest

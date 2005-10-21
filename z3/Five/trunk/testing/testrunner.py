@@ -13,7 +13,7 @@
 ##############################################################################
 """Test runner
 
-$Id: testrunner.py 38101 2005-08-26 15:39:41Z benji_york $
+$Id$
 """
 
 # Too bad: For now, we depend on Products.Five.testing.  This is because

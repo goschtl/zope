@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: sampletests_d.py 30942 2005-06-28 13:59:49Z jim $
+$Id$
 """
 
 import unittest

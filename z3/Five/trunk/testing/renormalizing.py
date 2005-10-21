@@ -171,7 +171,7 @@ When we get differencs, we output them with normalized text:
         <BLANKLINE>
     <BLANKLINE>
 
-$Id: renormalizing.py 30915 2005-06-24 22:20:42Z benji_york $
+$Id$
 """
 
 import doctest

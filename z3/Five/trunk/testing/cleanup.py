@@ -35,7 +35,7 @@ addCleanup::
   addCleanUp(pigRegistry._clear)
 
 
-$Id: cleanup.py 29143 2005-02-14 22:43:16Z srichter $
+$Id$
 """
 _cleanups = []
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the testing framework.
 
-$Id: tests.py 30492 2005-05-24 20:28:53Z jim $
+$Id$
 """
 import os
 import sys
