@@ -7,6 +7,12 @@ PAUs that have prefixes.
 
 First we'll create a PAU with a prefix of 'pau1_' and and register:
 
+  >>> from zope.app.testing import ztapi
+  >>> from zope.app.authentication.interfaces import IPasswordManager
+  >>> from zope.app.authentication.password import PlainTextPasswordManager
+  >>> manager = PlainTextPasswordManager()
+  >>> ztapi.provideUtility(IPasswordManager, manager, "Plain Text")
+
   >>> print http(r"""
   ... POST /++etc++site/default/+/AddPluggableAuthentication.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
@@ -133,6 +139,10 @@ and add a principal that we'll later search for:
   ... Content-Disposition: form-data; name="field.login"
   ...
   ... bob
+  ... -----------------------------300171485226567
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ...
+  ... Plain Text
   ... -----------------------------300171485226567
   ... Content-Disposition: form-data; name="field.password"
   ...

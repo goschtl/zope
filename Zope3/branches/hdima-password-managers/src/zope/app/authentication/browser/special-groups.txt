@@ -18,6 +18,12 @@ principal folder, which we'll create first.
 
 Create pluggable authentication utility and register it.
 
+  >>> from zope.app.testing import ztapi
+  >>> from zope.app.authentication.interfaces import IPasswordManager
+  >>> from zope.app.authentication.password import PlainTextPasswordManager
+  >>> manager = PlainTextPasswordManager()
+  >>> ztapi.provideUtility(IPasswordManager, manager, "Plain Text")
+
   >>> print http(r"""
   ... POST /++etc++site/default/@@contents.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
@@ -144,6 +150,10 @@ Add a principal to it:
   ... Content-Disposition: form-data; name="field.login"
   ... 
   ... bob
+  ... -----------------------------5110544421083023415453147877
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ... 
+  ... Plain Text
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.password"
   ... 

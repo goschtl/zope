@@ -18,6 +18,14 @@ Bob.  Initially, attempts to log in as Bob fail:
 
 To allow Bob to log in, we'll start by adding a principal folder to PAU:
 
+First we need create a password manager:
+
+  >>> from zope.app.testing import ztapi
+  >>> from zope.app.authentication.interfaces import IPasswordManager
+  >>> from zope.app.authentication.password import PlainTextPasswordManager
+  >>> manager = PlainTextPasswordManager()
+  >>> ztapi.provideUtility(IPasswordManager, manager, "Plain Text")
+
 We need to create and register a pluggable authentication utility.
 
   >>> print http(r"""
@@ -175,6 +183,10 @@ And we'll add a principal, Bob:
   ... Content-Disposition: form-data; name="field.login"
   ... 
   ... bob
+  ... -----------------------------5110544421083023415453147877
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ... 
+  ... Plain Text
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.password"
   ... 

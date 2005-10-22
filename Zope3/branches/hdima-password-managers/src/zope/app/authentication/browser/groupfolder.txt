@@ -15,6 +15,12 @@ Let's walk through an example.
 
 First, We need to create and register a pluggable authentication utility.
 
+  >>> from zope.app.testing import ztapi
+  >>> from zope.app.authentication.interfaces import IPasswordManager
+  >>> from zope.app.authentication.password import PlainTextPasswordManager
+  >>> manager = PlainTextPasswordManager()
+  >>> ztapi.provideUtility(IPasswordManager, manager, "Plain Text")
+
   >>> print http(r"""
   ... POST /++etc++site/default/@@contents.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
@@ -153,6 +159,10 @@ Next we will add some users.
   ...
   ... bob
   ... -----------------------------5110544421083023415453147877
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ...
+  ... Plain Text
+  ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.password"
   ...
   ... 123
@@ -191,6 +201,10 @@ Next we will add some users.
   ... Content-Disposition: form-data; name="field.login"
   ...
   ... bill
+  ... -----------------------------5110544421083023415453147877
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ...
+  ... Plain Text
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.password"
   ...
@@ -231,6 +245,10 @@ Next we will add some users.
   ...
   ... betty
   ... -----------------------------5110544421083023415453147877
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ...
+  ... Plain Text
+  ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.password"
   ...
   ... 123
@@ -270,6 +288,10 @@ Next we will add some users.
   ...
   ... sally
   ... -----------------------------5110544421083023415453147877
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ...
+  ... Plain Text
+  ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.password"
   ...
   ... 123
@@ -307,6 +329,10 @@ Next we will add some users.
   ... Content-Disposition: form-data; name="field.login"
   ...
   ... george
+  ... -----------------------------5110544421083023415453147877
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ...
+  ... Plain Text
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.password"
   ...
@@ -346,6 +372,10 @@ Next we will add some users.
   ...
   ... mike
   ... -----------------------------5110544421083023415453147877
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ...
+  ... Plain Text
+  ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.password"
   ...
   ... 123
@@ -383,6 +413,10 @@ Next we will add some users.
   ... Content-Disposition: form-data; name="field.login"
   ...
   ... mary
+  ... -----------------------------5110544421083023415453147877
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ...
+  ... Plain Text
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.password"
   ...
