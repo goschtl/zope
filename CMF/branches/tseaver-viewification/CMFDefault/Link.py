@@ -21,13 +21,19 @@ from AccessControl import ClassSecurityInfo
 from Globals import DTMLFile
 from Globals import InitializeClass
 import transaction
+from zope.interface import implements
 
+from Products.CMFCore.interfaces import IMutableDublinCore
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.utils import contributorsplitter
 from Products.CMFCore.utils import keywordsplitter
 
 from DublinCore import DefaultDublinCoreImpl
 from exceptions import ResourceLockedError
+from interfaces import ILink
+from interfaces import IMutableLink
+from interfaces.Link import ILink as z2ILink
+from interfaces.Link import IMutableLink as z2IMutableLink
 from permissions import ModifyPortalContent
 from permissions import View
 from utils import _dtmldir
@@ -86,7 +92,10 @@ class Link( PortalContent
         A Link
     """
 
-    __implements__ = ( PortalContent.__implements__
+    implements(ILink, IMutableLink, IMutableDublinCore)
+    __implements__ = ( z2ILink
+                     , z2IMutableLink
+                     , PortalContent.__implements__
                      , DefaultDublinCoreImpl.__implements__
                      )
 

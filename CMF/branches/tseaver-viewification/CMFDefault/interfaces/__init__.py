@@ -22,10 +22,13 @@ from _tools import *
 #      create zope2 interfaces
 from Interface.bridge import createZope3Bridge
 import Document
+import Link
 import portal_membership
 
 createZope3Bridge(IDocument, Document, 'IDocument')
 createZope3Bridge(IMutableDocument, Document, 'IMutableDocument')
+createZope3Bridge(ILink, Link, 'ILink')
+createZope3Bridge(IMutableLink, Link, 'IMutableLink')
 createZope3Bridge(IMembershipTool, portal_membership, 'portal_membership')
 
 del createZope3Bridge
