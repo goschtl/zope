@@ -7,7 +7,7 @@
     for="Products.CMFCore.interfaces.IMutableDublinCore"
     class=".metadata.MetadataView"
     name="metadata.html"
-    template="metadata.pt"
+    template="templates/metadata.pt"
     permission="cmf.ModifyPortalContent"
     layer="cmf"
     />
@@ -16,6 +16,33 @@
     for="Products.CMFCore.interfaces.IMutableDublinCore"
     class=".metadata.MetadataView"
     name="metadata.py"
+    attribute="controller"
+    permission="cmf.ModifyPortalContent"
+    layer="cmf"
+    />
+
+ <browser:page
+    for="Products.CMFDefault.interfaces.ILink"
+    class=".linkviews.LinkDisplayView"
+    name="view.html"
+    template="templates/content_view.pt"
+    permission="zope2.View"
+    layer="cmf"
+    />
+
+  <browser:page
+    for="Products.CMFDefault.interfaces.IMutableLink"
+    class=".linkviews.LinkEditingView"
+    name="edit.html"
+    template="templates/content_edit.pt"
+    permission="cmf.ModifyPortalContent"
+    layer="cmf"
+    /> 
+
+ <browser:page
+    for="Products.CMFDefault.interfaces.IMutableLink"
+    class=".linkviews.LinkEditingView"
+    name="edit.py"
     attribute="controller"
     permission="cmf.ModifyPortalContent"
     layer="cmf"
