@@ -1,0 +1,30 @@
+<html metal:use-macro="context/@@standard_macros/page">
+  <body>
+  
+    <metal:slot metal:fill-slot="header"
+                i18n:domain="cmf_default">
+      <h1 i18n:translate="">
+        <tal:span tal:content="context/Title"
+             i18n:name="obj_title">Title</tal:span></h1>
+    
+      <div id="DesktopDescription" tal:content="here/Description">
+          Document Description goes here.
+      </div>
+    
+      <div metal:use-macro="here/content_byline/macros/byline">By Me</div>
+    </metal:slot> 
+    
+    <metal:slot metal:fill-slot="body"
+                i18n:domain="cmf_default">
+    
+      <div tal:replace="structure view/renderContent"/>
+    
+      <div class="Discussion">
+         <span tal:replace="structure here/viewThreadsAtBottom"
+               tal:condition="here/viewThreadsAtBottom|nothing"></span>
+      </div>
+    
+    </metal:slot>
+  
+  </body>
+</html>

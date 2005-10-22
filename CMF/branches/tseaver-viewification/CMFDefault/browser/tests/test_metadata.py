@@ -219,8 +219,9 @@ class MetadataViewTests(unittest.TestCase):
 
         view = self._makeOne(context, request)
         view.controller(response)
-        self.assertEqual(response._redirected,
-                         '%s/%s' % (_EXAMPLE_URL, 'metadata.html'))
+        goto = '%s/%s' % (_EXAMPLE_URL, 'metadata.html')
+        qs = 'portal_status_message=Metadata%20updated.'
+        self.assertEqual(response._redirected, '%s?%s' % (goto, qs))
         self.assertEqual(context._Title, NEW_TITLE)
 
 

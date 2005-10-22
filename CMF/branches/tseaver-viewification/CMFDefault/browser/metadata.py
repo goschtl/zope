@@ -14,6 +14,9 @@
 
 $Id$
 """
+
+from urllib import quote
+
 from Globals import InitializeClass
 from Products.Five.browser import BrowserView
 from Products.CMFCore.interfaces import IDublinCore
@@ -134,8 +137,11 @@ class MetadataView(BrowserView):
         for button in _BUTTONS.keys():
             if button in form:
                 self.update(form)
-                redirect = _BUTTONS[button]['redirect']
-                RESPONSE.redirect('%s/%s' % (context.absolute_url(), redirect))
+                qs = 'portal_status_message=%s' % quote('Metadata updated.')
+                goto = '%s/%s' % ( context.absolute_url()
+                                 , _BUTTONS[button]['redirect']
+                                 )
+                RESPONSE.redirect('%s?%s' % (goto, qs))
                 return
 
         return self.index()
