@@ -21,6 +21,9 @@
   <five:traversable
      class="Products.CMFDefault.Document.Document"
      />
-   -->
+  <five:traversable 
+     class="Products.CMFDefault.Link.Link" 
+     />
+  -->
 
 </configure>
