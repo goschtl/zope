@@ -23,7 +23,6 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
-from Acquisition import ExplicitAcquisitionWrapper as aq_wrapper
 
 from AccessControl import getSecurityManager
 from Products.Five.security import newInteraction
@@ -74,9 +73,8 @@ class Traversable:
         newInteraction()
 
         try:
-            obj = ITraverser(self).traverse(
+            return ITraverser(self).traverse(
                 path=[name], request=REQUEST).__of__(self)
-            return obj 
         except (ComponentLookupError, NotFoundError,
                 AttributeError, KeyError, NotFound):
             pass

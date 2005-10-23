@@ -15,16 +15,11 @@
 
 $Id$
 """
-#import Acquisition
-
+import Acquisition
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
-import Acquisition
 
 class BrowserView(Acquisition.Explicit):
-    """
-    doc
-    """
     security = ClassSecurityInfo()
 
     def __init__(self, context, request):
