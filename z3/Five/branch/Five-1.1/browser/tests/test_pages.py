@@ -19,55 +19,60 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-from Testing import ZopeTestCase
-from zope.app.tests.placelesssetup import setUp, tearDown
+def test_ViewAcquisitionWrapping():
+    """
+      >>> import Products.Five.browser.tests
+      >>> from Products.Five import zcml
+      >>> zcml.load_config("configure.zcml", Products.Five)
+      >>> zcml.load_config('pages.zcml', package=Products.Five.browser.tests)
 
-import Products.Five.browser.tests
-from Products.Five import zcml
-from Products.Five.browser.tests.pages import SimpleView
-from Products.Five.testing.simplecontent import manage_addSimpleContent
+      >>> from Products.Five.testing.simplecontent import manage_addSimpleContent
+      >>> manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
+      >>> uf = self.folder.acl_users
+      >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
+      >>> self.login('manager')
 
-from Acquisition import aq_parent, aq_base
+      >>> view = self.folder.unrestrictedTraverse('testoid/eagle.txt')
+      >>> view is not None
+      True
+      >>> from Products.Five.browser.tests.pages import SimpleView
+      >>> isinstance(view, SimpleView)
+      True
+      >>> view()
+      'The eagle has landed'
 
-ZopeTestCase.installProduct('Five')
+    This sucks, but we know it
 
-class TestViewAcquisitionWrapping(ZopeTestCase.ZopeTestCase):
+      >>> from Acquisition import aq_parent, aq_base
+      >>> aq_parent(view.context) is view
+      True
 
-    def afterSetUp(self):
-        #setUp()
-        zcml.load_config("configure.zcml", Products.Five)
-        zcml.load_config('pages.zcml', package=Products.Five.browser.tests)
-        manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
-        uf = self.folder.acl_users
-        uf._doAddUser('manager', 'r00t', ['Manager'], [])
-        self.login('manager')
+    This is the right way to get the context parent
 
-    def test_view_wrapper(self):
-        view = self.folder.unrestrictedTraverse('testoid/eagle.txt')
-        self.assertNotEqual(view, None)
-        self.assertEqual(isinstance(view, SimpleView), True)
-        self.assertEqual(view(), 'The eagle has landed')
+      >>> view.context.aq_inner.aq_parent is not view
+      True
+      >>> view.context.aq_inner.aq_parent is self.folder
+      True
 
-        # this sucks, but we know it
-        self.assertEqual(aq_parent(view.context), view)
+    Clean up:
 
-        # this is the right way to get the context parent
-        self.assertNotEqual(view.context.aq_inner.aq_parent, view)
-        self.assertEqual(view.context.aq_inner.aq_parent, self.folder)
-
+      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> tearDown()
+    """
 
 def test_suite():
     import unittest
-    from Testing.ZopeTestCase import installProduct, ZopeDocFileSuite
+    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
+    from Testing.ZopeTestCase import ZopeDocFileSuite
     from Testing.ZopeTestCase import FunctionalDocFileSuite
     installProduct('PythonScripts')  # for Five.testing.restricted
-    suite = unittest.TestSuite(
-       (ZopeDocFileSuite('pages.txt',
+    return unittest.TestSuite((
+        ZopeDocTestSuite(),
+        ZopeDocFileSuite('pages.txt',
                          package='Products.Five.browser.tests'),
         FunctionalDocFileSuite('pages_ftest.txt',
-                               package='Products.Five.browser.tests'))
-       )
-    suite.addTest(unittest.makeSuite(TestViewAcquisitionWrapping))
+                               package='Products.Five.browser.tests')
+        ))
     return suite
 
 if __name__ == '__main__':
