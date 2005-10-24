@@ -169,9 +169,10 @@ class SimpleTermTest(unittest.TestCase):
         self.assertEqual(self.term.title, 'bar')
 
 
-class UserTermTest(unittest.TestCase):
+class UserTermTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
+        PlacelessSetup.setUp(self)
         principal = Principal('0', 'Stephan', 'blah', 'srichter', 'Nothing')
         self.term = UserTerm(principal)
 

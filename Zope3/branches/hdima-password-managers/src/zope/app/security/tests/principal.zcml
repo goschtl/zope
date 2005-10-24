@@ -9,7 +9,7 @@
       id="zope.p1"
       title="Sir Tim Peters"
       description="Tim Peters"
-      login="tim" password="123" />
+      login="tim" password="123" password_manager="SHA1" />
 
   <principal 
       id="zope.p2"

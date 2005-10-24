@@ -21,6 +21,7 @@ from zope.configuration.fields import Tokens, PythonIdentifier, MessageID
 from zope.schema import InterfaceField, Id, TextLine
 from fields import Permission
 
+
 class ISecurityPolicyDirective(Interface):
     """Defines the security policy that will be used for Zope."""
 
@@ -69,7 +70,7 @@ class IRequire(Interface):
     directly in the attributes attribute or any names defined by
     interfaces listed in the interface attribute.  
     """
-    
+
     permission = Permission(
         title=u"Permission ID",
         description=u"The id of the permission to require.")
@@ -77,7 +78,7 @@ class IRequire(Interface):
 
 class IBaseDefineDirective(Interface):
     """Define a new security object."""
-    
+
     id = Id(
         title=u"Id",
         description=u"Id as which this object will be known and used.",
@@ -99,7 +100,7 @@ class IDefinePermissionDirective(IBaseDefineDirective):
 
 class IBasePrincipalDirective(Interface):
     """Base interface for principal definition directives."""
-    
+
     id = Id(
         title=u"Id",
         description=u"Id as which this object will be known and used.",
@@ -128,6 +129,13 @@ class IDefinePrincipalDirective(IBasePrincipalDirective):
         description=u"Specifies the Principal's Password.",
         required=True)
 
+    password_manager = TextLine(
+        title=u"Password Manager Name",
+        description=(u"Name of the password manager will be used"
+            " for encode/check the password"),
+        default=u"Plain Text"
+        )
+
 class IDefineUnauthenticatedPrincipalDirective(IBasePrincipalDirective):
     """Define a new unauthenticated principal."""
 
@@ -147,7 +155,7 @@ class IRedefinePermission(Interface):
         title=u"Original permission",
         description=u"Original permission id to redefine.",
         required=True)
-    
+
     to = Permission(
         title=u"Substituted permission",
         description=u"Substituted permission id.",

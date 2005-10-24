@@ -20,6 +20,7 @@ There are principals that can log in:
     ...         description="System Manager"
     ...         login="admin"
     ...         password="123"
+    ...         password_manager="SHA1"
     ...         />
     ...
     ...    </configure>
