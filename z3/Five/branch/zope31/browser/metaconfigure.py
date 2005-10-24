@@ -19,6 +19,7 @@ namespace in ZCML known from zope.app.
 $Id$
 """
 import os
+from Globals import InitializeClass as initializeClass
 
 from zope.component import ComponentLookupError
 from zope.configuration.exceptions import ConfigurationError
@@ -26,27 +27,22 @@ from zope.publisher.interfaces.browser import IBrowserRequest,\
      IDefaultBrowserLayer
 
 from zope.app.component.metaconfigure import handler
-
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
 from zope.app.publisher.browser.viewmeta import view as zope_app_view
 from zope.app.publisher.browser.viewmeta import page as zope_app_page
 
+from Products.Five.security import getSecurityInfo, protectClass, protectName
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.Five.browser.resource import FileResourceFactory,\
-     ImageResourceFactory
-from Products.Five.browser.resource import PageTemplateResourceFactory
-from Products.Five.browser.resource import DirectoryResourceFactory
-from Products.Five.security import getSecurityInfo, protectClass,\
-    protectName, initializeClass
+     ImageResourceFactory, PageTemplateResourceFactory, DirectoryResourceFactory
 
-def getNewClass(_context):
-    # now we retrieve the last action from the _context, as we need to do
-    # some extra things to what's there
+def getLastClass(_context):
+    """Retrieve the last action from the ZCML _context and return its
+    class so that we can do some munging with it."""
     last_action = _context.actions[-1]
     args = last_action[2]
-    #import pdb; pdb.set_trace()
-    directive, (for_, layer), dummy, name, new_class, context_info = args
-    return new_class
+    directive, (for_, layer), dummy, name, last_class, context_info = args
+    return last_class
 
 def page(_context, name, permission, for_,
          layer=IDefaultBrowserLayer, template=None, class_=None,
@@ -55,17 +51,26 @@ def page(_context, name, permission, for_,
     zope_app_page(_context, name, permission, for_,
                   layer, template, class_, allowed_interface,
                   allowed_attributes, attribute, menu, title)
-    new_class = getNewClass(_context)
+    last_class = getLastClass(_context)
 
-    # we may need to replace the new class's index with Five's page template
-    # version
+    # replace the class's index with Five's page template version
     if template:
-        new_class.index = ZopeTwoPageTemplateFile(new_class.index.filename)
-        
+        last_class.index = ZopeTwoPageTemplateFile(last_class.index.filename)
+
+    # make class traversing be Zope 2 compliant
+    if class_ and not template:
+        last_class.__browser_default__ = last_class.browserDefault
+        # this is technically not needed because ZPublisher finds our
+        # attribute through __browser_default__; but we also want to
+        # be able to call pages from python modules, PythonScripts or
+        # ZPT
+        last_class.__call__ = lambda *args, **kw: \
+                              getattr(self, attribute)(*args, **kw)
+
     # in case the attribute does not provide a docstring,
     # ZPublisher refuses to publish it. So, as a workaround,
     # we provide a stub docstring
-    func = getattr(new_class, attribute)
+    func = getattr(last_class, attribute)
     if not func.__doc__:
         # cannot test for MethodType/UnboundMethod here
         # because of ExtensionClass
@@ -76,30 +81,33 @@ def page(_context, name, permission, for_,
             # on method objects
             func = func.im_func
         func.__doc__ = "Stub docstring to make ZPublisher work"
+
+    # now squeeze explicit acquisition into the damn thing
+    #if Acquisition.Explicit not in last_class.__mro__:
+    #    last_class.__bases__ = (Acquisition.Explicit,) + last_class.__bases__
     
     # Zope 2 security
     if allowed_attributes is None:
         allowed_attributes = []
     if allowed_interface is not None:
         for interface in allowed_interface:
-            attrs = [n for n, d in interface.namesAndDescriptions(1)]
-            allowed_attributes.extend(attrs)
+            allowed_attributes.extend(interface.names())
     _context.action(
-        discriminator = ('five:protectClass', new_class),
+        discriminator = ('five:protectClass', last_class),
         callable = protectClass,
-        args = (new_class, permission)
+        args = (last_class, permission)
         )
     if allowed_attributes:
         for attr in allowed_attributes:
             _context.action(
-                discriminator = ('five:protectName', new_class, attr),
+                discriminator = ('five:protectName', last_class, attr),
                 callable = protectName,
-                args = (new_class, attr, permission)
+                args = (last_class, attr, permission)
                 )
     _context.action(
-        discriminator = ('five:initialize:class', new_class),
+        discriminator = ('five:initialize:class', last_class),
         callable = initializeClass,
-        args = (new_class,)
+        args = (last_class,)
         )
 
 class pages(zope_app_pages):
@@ -120,11 +128,11 @@ class view(zope_app_view):
     def __call__(self):
         super(view, self).__call__()
         _context = self.args[0]
-        new_class = getNewClass(_context)
+        last_class = getLastClass(_context)
         # override Z3 templates with Five templates
         for pname, attribute, template in self.pages:
             if template:
-                new_class.pname = ZopeTwoPageTemplateFile(template)
+                last_class.pname = ZopeTwoPageTemplateFile(template)
         # XXX probably need to do more patching to make it a ZPublisher
         # compliant view class
 
