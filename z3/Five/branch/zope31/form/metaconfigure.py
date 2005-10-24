@@ -18,14 +18,14 @@ $Id$
 from zope.component import getMultiAdapter
 from zope.app.form.browser.metaconfigure import BaseFormDirective
 
-from zope.app.form.browser.metaconfigure import EditFormDirective as\
+from zope.app.form.browser.metaconfigure import EditFormDirective as \
      zope_app_EditFormDirective
-from zope.app.form.browser.metaconfigure import AddFormDirective as\
+from zope.app.form.browser.metaconfigure import AddFormDirective as \
      zope_app_AddFormDirective
 
-from zope.app.form.browser.editview import EditViewFactory as\
+from zope.app.form.browser.editview import EditViewFactory as \
      zope_app_EditViewFactory
-from zope.app.form.browser.add import AddViewFactory as\
+from zope.app.form.browser.add import AddViewFactory as \
      zope_app_AddViewFactory
 
 from Products.Five.form import EditView, AddView
@@ -41,8 +41,7 @@ def EditViewFactory(name, schema, label, permission, layer,
     # fetch the class by looking up the adapter just registered
     class_ = getMultiAdapter((for_, layer), name=name)
     # patch in Zope 2 page templates
-    class_.index = ZopeTwoPageTemplateFile(
-        class_.index.filename)
+    class_.index = ZopeTwoPageTemplateFile(class_.index.filename)
     class_.generated_form = ZopeTwoPageTemplateFile(
         class_.generated_form.filename)
     # zope 2 security
@@ -98,6 +97,6 @@ class AddFormDirective(zope_app_AddFormDirective):
             discriminator=self._discriminator(),
             callable=AddViewFactory,
             args=self._args()+(self.content_factory, self.arguments,
-                                 self.keyword_arguments,
-                                 self.set_before_add, self.set_after_add),
+                               self.keyword_arguments,
+                               self.set_before_add, self.set_after_add),
             )
