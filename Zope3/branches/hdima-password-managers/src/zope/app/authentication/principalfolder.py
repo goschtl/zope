@@ -113,8 +113,8 @@ class InternalPrincipal(Persistent, Contained):
     def __init__(self, login, password, title, description=u'',
             passwordManagerName="Plain Text"):
         self._login = login
-        self._password = password
         self._passwordManagerName = passwordManagerName
+        self.password = password
         self.title = title
         self.description = description
 

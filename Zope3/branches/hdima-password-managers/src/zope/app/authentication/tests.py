@@ -40,9 +40,6 @@ from zope.app.session.http import CookieClientIdManager
 from zope.publisher import base
 from zope.app.authentication.session import SessionCredentialsPlugin
 
-from zope.app.authentication.interfaces import IPasswordManager
-from zope.app.authentication.password import PlainTextPasswordManager
-
 
 class TestClientId(object):
     implements(IClientId)
@@ -97,11 +94,6 @@ class NonHTTPSessionTestCase(unittest.TestCase):
 
         self.assertEqual(plugin.logout(base.TestRequest('/')), False)
 
-def principalFolderSetUp(test):
-    placelesssetup.setUp()
-    ztapi.provideUtility(IPasswordManager,
-        PlainTextPasswordManager(), "Plain Text")
-
 
 def test_suite():
     return unittest.TestSuite((
@@ -111,10 +103,10 @@ def test_suite():
         doctest.DocTestSuite('zope.app.authentication.httpplugins'),
         doctest.DocTestSuite('zope.app.authentication.ftpplugins'),
         doctest.DocFileSuite('principalfolder.txt',
-                             setUp=principalFolderSetUp,
+                             setUp=placelesssetup.setUp,
                              tearDown=placelesssetup.tearDown),
         doctest.DocTestSuite('zope.app.authentication.principalfolder',
-                             setUp=principalFolderSetUp,
+                             setUp=placelesssetup.setUp,
                              tearDown=placelesssetup.tearDown),
         doctest.DocTestSuite('zope.app.authentication.idpicker'),
         doctest.DocTestSuite('zope.app.authentication.session',
