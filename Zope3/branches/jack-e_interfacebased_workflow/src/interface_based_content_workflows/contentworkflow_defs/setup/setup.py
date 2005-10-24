@@ -1,4 +1,0 @@
-def contentWorkflowSetup(event):
-    """
-    """
-    pass
