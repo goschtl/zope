@@ -85,6 +85,6 @@ interrupt-check-interval 200
 #   Switches the Developer Mode on and off.
 #
 # Default:
-#   devmode off
+#   devmode on
 #
-devmode on
+# devmode off

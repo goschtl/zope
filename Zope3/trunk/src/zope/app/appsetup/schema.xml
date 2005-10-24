@@ -63,8 +63,8 @@
       developers to work on Zope 3 applications.
     </description>
     <example>
-      devmode on
+      devmode off
     </example>
-    <metadefault>off</metadefault>
+    <metadefault>on</metadefault>
   </key>
 </schema>
