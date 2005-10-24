@@ -1,3 +1,20 @@
+##############################################################################
+#
+# Copyright (c) 2005 Zope Corporation and Contributors. All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Browser views for documents.
+
+$Id$
+"""
+
 from Products.CMFDefault.exceptions import EditingConflict
 from Products.CMFDefault.exceptions import IllegalHTML
 from Products.CMFDefault.exceptions import ResourceLockedError
@@ -12,15 +29,33 @@ class DocumentEditView(FormViewBase):
     """ Edit view for IMutableDocument.
     """
 
-    # XXX: _BUTTONS this should become configurable
+    # XXX: _BUTTONS should become configurable
     _BUTTONS = ({'name': 'change',
-                 'value': _('Change'),
+                 'value': _(u'Change'),
                  'transform': ('validateTextFile', 'validateHTML', 'update'),
                  'redirect': ('context', 'object/edit')},
                 {'name': 'change_and_view',
-                 'value': _('Change and View'),
+                 'value': _(u'Change and View'),
                  'transform': ('validateTextFile', 'validateHTML', 'update'),
                  'redirect': ('context', 'object/view')})
+
+    def SafetyBelt(self):
+        if 'SafetyBelt' in self.request.form:
+            return self.request['SafetyBelt']
+        else:
+            return self.context.SafetyBelt()
+
+    def text_format(self):
+        if 'text_format' in self.request.form:
+            return self.request['text_format']
+        else:
+            return self.context.text_format
+
+    def EditableBody(self):
+        if 'text' in self.request.form:
+            return self.request['text']
+        else:
+            return self.context.EditableBody()
 
     def validateTextFile(self, file='', **kw):
         try:
@@ -46,8 +81,8 @@ class DocumentEditView(FormViewBase):
         if text_format != context.text_format or text != context.text:
             try:
                 context.edit(text_format, text, safety_belt=SafetyBelt)
-                return self.setStatus(True, _('Document changed.'))
+                return self.setStatus(True, _(u'Document changed.'))
             except (ResourceLockedError, EditingConflict), errmsg:
                 return self.setStatus(False, errmsg)
         else:
-            return self.setStatus(False, _('Nothing to change.'))
+            return self.setStatus(False, _(u'Nothing to change.'))
