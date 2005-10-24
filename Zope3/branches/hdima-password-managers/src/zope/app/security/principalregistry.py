@@ -153,8 +153,7 @@ class Principal(PrincipalBase):
         super(Principal, self).__init__(id, title, description)
         self.__login = login
         self.__pwManagerName = pwManagerName
-        pwManager = self.__getPasswordManager()
-        self.__pw = pwManager.encodePassword(pw)
+        self.__pw = pw
 
     def __getPasswordManager(self):
         return zapi.getUtility(IPasswordManager, self.__pwManagerName)

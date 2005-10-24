@@ -19,8 +19,8 @@ There are principals that can log in:
     ...         title="Manager"
     ...         description="System Manager"
     ...         login="admin"
-    ...         password="123"
     ...         password_manager="SHA1"
+    ...         password="40bd001563085fc35165329ea1ff5c5ecbdbbeef"
     ...         />
     ...
     ...    </configure>
