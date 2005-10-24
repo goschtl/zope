@@ -61,7 +61,7 @@ def test_traversable():
       ...     for="Products.Five.testing.fancycontent.IFancyContent"
       ...     class="Products.Five.browser.tests.pages.FancyView"
       ...     attribute="view"
-      ...     name="fancy"
+      ...     name="fancyview"
       ...     permission="zope2.Public"
       ...     />
       ... 
@@ -85,7 +85,7 @@ def test_traversable():
     actually works:
 
       >>> print http(r'''
-      ... GET /test_folder_1_/fancy/fancy HTTP/1.1
+      ... GET /test_folder_1_/fancy/fancyview HTTP/1.1
       ... ''')
       HTTP/1.1 200 OK
       ...
