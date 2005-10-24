@@ -27,6 +27,7 @@ from zLOG import LOG, ERROR
 
 from zope.interface import classImplements
 from zope.configuration import xmlconfig
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.app.component.interface import provideInterface
 
 from viewable import Viewable
@@ -215,7 +216,7 @@ def bridge(_context, zope2, package, name=None):
         )
 
 def pagesFromDirectory(_context, directory, module, for_=None,
-                  layer='default', permission='zope.Public'):
+                       layer=IDefaultBrowserLayer, permission='zope.Public'):
 
     if isinstance(module, basestring):
         module = _context.resolve(module)
