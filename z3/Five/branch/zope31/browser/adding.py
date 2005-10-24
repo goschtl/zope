@@ -28,6 +28,8 @@ from zope.app.container.interfaces import IAdding, INameChooser
 from zope.app.container.interfaces import IContainerNamesContainer
 from zope.app.container.constraints import checkFactory, checkObject
 
+from zope.app.publisher.browser.menu import getMenu
+
 from zope.app import zapi
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.event import notify
@@ -169,12 +171,11 @@ class Adding(BasicAdding):
         This is sorted by title.
         """
         container = self.context
-        menu_service = zapi.getService("BrowserMenu")
         result = []
         for menu_id in (self.menu_id, 'zope.app.container.add'):
             if not menu_id:
                 continue
-            for item in menu_service.getMenu(menu_id, self, self.request):
+            for item in getMenu(menu_id, self, self.request):
                 extra = item.get('extra')
                 if extra:
                     factory = extra.get('factory')
