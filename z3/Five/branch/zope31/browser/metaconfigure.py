@@ -60,12 +60,12 @@ def page(_context, name, permission, for_,
     # make class traversing be Zope 2 compliant
     if class_ and not template:
         last_class.__browser_default__ = lambda self, request: \
-                                         self, (self.__page_attribute__,)
+                                         (self, (self.__page_attribute__,))
         # this is technically not needed because ZPublisher finds our
         # attribute through __browser_default__; but we also want to
         # be able to call pages from python modules, PythonScripts or
         # ZPT
-        last_class.__call__ = lambda *args, **kw: \
+        last_class.__call__ = lambda self, *args, **kw: \
                               getattr(self, attribute)(*args, **kw)
 
     # in case the attribute does not provide a docstring,
