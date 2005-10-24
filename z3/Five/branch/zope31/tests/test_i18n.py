@@ -44,9 +44,9 @@ def test_directive():
 
     Now, take an arbitrary message id from that domain:
 
-      >>> from zope.i18nmessageid import MessageIDFactory
+      >>> from zope.i18nmessageid import MessageFactory
       >>> from zope.i18n import translate
-      >>> _ = MessageIDFactory('fivetest')
+      >>> _ = MessageFactory('fivetest')
       >>> msg = _(u'explicit-msg', u'This is an explicit message')
 
     As you can see, both the default functionality and translation to
