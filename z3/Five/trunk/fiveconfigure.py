@@ -22,7 +22,7 @@ import sys
 import glob
 import warnings
 
-import App
+import App.config
 from zLOG import LOG, ERROR
 
 from zope.interface import classImplements, classImplementsOnly, implementedBy
@@ -181,20 +181,6 @@ def defaultViewable(_context, class_):
         discriminator = None,
         callable = classDefaultViewable,
         args = (class_,)
-        )
-
-def viewable(_context, class_):
-    # XXX do not need to mark where this is used, as simple search
-    # should find all instances easily
-    warnings.warn(
-        'The five:viewable directive has been deprecated. '
-        'Please use the five:traversable directive instead.',
-        DeprecationWarning)
-
-    _context.action(
-        discriminator = None,
-        callable = classTraversable,
-        args=(class_,)
         )
 
 def createZope2Bridge(zope2, package, name):
