@@ -24,7 +24,7 @@ from zope.app.security.interfaces import IPermission
 from zope.app import zapi
 
 from AccessControl import ClassSecurityInfo, getSecurityManager
-from Globals import InitializeClass
+from Globals import InitializeClass as initializeClass
 from types import StringTypes
 
 CheckerPublicId = 'zope.Public'
@@ -98,9 +98,6 @@ def newInteraction():
     """
     if getattr(thread_local, 'interaction', None) is None:
         thread_local.interaction = FiveSecurityPolicy()
-
-def initializeClass(klass):
-    InitializeClass(klass)
 
 def _getSecurity(klass):
     # a Zope 2 class can contain some attribute that is an instance
