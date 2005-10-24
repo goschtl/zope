@@ -29,7 +29,7 @@ Simple pages
 A browser page that is a view class's attribute (method):
 
   >>> view = self.folder.unrestrictedTraverse('testoid/eagle.txt')
-  >>> view != None
+  >>> view is not None
   True
   >>> from Products.Five.browser.tests.pages import SimpleView
   >>> isinstance(view, SimpleView)
@@ -213,7 +213,7 @@ evaluated. __roles__ is a imPermissionRole object:
   >>> view_roles
   ('Manager',)
 
-Check to see if view's context properly acquires it's true
+Check to see if view's context properly acquires its true
 parent
 
   >>> from Acquisition import aq_parent, aq_base, aq_inner

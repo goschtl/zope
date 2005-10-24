@@ -68,8 +68,7 @@ def test_suite():
     installProduct('PythonScripts')  # for Five.tests.testing.restricted
     return unittest.TestSuite((
         ZopeDocTestSuite(),
-        ZopeDocFileSuite('pages.txt',
-                         package='Products.Five.browser.tests'),
+        ZopeDocFileSuite('pages.txt', package='Products.Five.browser.tests'),
         FunctionalDocFileSuite('pages_ftest.txt',
                                package='Products.Five.browser.tests')
         ))
