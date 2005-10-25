@@ -18,6 +18,7 @@ $Id$
 from zope.interface import Interface
 from zope.app.publisher.browser.metadirectives import IBasicResourceInformation
 from zope.configuration.fields import GlobalObject, Tokens, PythonIdentifier
+from zope.configuration.fields import Bool
 from zope.schema import TextLine
 
 class IImplementsDirective(Interface):
@@ -56,7 +57,7 @@ class IDefaultViewableDirective(Interface):
         required=True
         )
 
-class ISendEventsDirective(Interface):
+class ISizableDirective(Interface):
     """Make instances of class send events.
     """
 
@@ -64,6 +65,32 @@ class ISendEventsDirective(Interface):
         title=u"Class",
         required=True
         )
+
+class IContainerEventsDirective(Interface):
+    """Global switch to enable container events
+    """
+    transitional = Bool(
+        title=u"Transitional",
+        required=False,
+        default=False,
+        )
+
+class IContainerEventAwareDirective(Interface):
+    """Send events for these contained content classes (transitional).
+    """
+    class_ = GlobalObject(
+        title=u"Class",
+        required=True,
+        )
+
+class IDeprecatedManageAddDeleteDirective(Interface):
+    """Call manage_afterAdd & co for these contained content classes.
+    """
+    class_ = GlobalObject(
+        title=u"Class",
+        required=True,
+        )
+
 
 class IBridgeDirective(Interface):
     """Bridge from a Zope 2 interface to an equivalent Zope3 interface.

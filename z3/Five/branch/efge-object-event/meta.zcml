@@ -128,14 +128,26 @@
        />
 
     <meta:directive
-       name="sendEvents"
-       schema=".fivedirectives.ISendEventsDirective"
-       handler=".eventconfigure.sendEvents"
+       name="containerEvents"
+       schema=".fivedirectives.IContainerEventsDirective"
+       handler=".eventconfigure.containerEvents"
+       />
+
+    <meta:directive
+       name="containerEventAware"
+       schema=".fivedirectives.IContainerEventAwareDirective"
+       handler=".eventconfigure.containerEventAware"
+       />
+
+    <meta:directive
+       name="deprecatedManageAddDelete"
+       schema=".fivedirectives.IDeprecatedManageAddDeleteDirective"
+       handler=".eventconfigure.deprecatedManageAddDelete"
        />
 
     <meta:directive
        name="sizable"
-       schema=".fivedirectives.ISendEventsDirective"
+       schema=".fivedirectives.ISizableDirective"
        handler=".sizeconfigure.sizable"
        />
 

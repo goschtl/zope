@@ -1,0 +1,64 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <adapter
+      for="OFS.interfaces.IObjectManager"
+      provides="zope.app.location.interfaces.ISublocations"
+      factory=".event.ObjectManagerSublocations"
+      />
+
+  <!-- Ordering of the following subscribers is important -->
+
+  <!-- dispatch IObjectWillBeMovedEvent to sublocation before
+       compatibility calls, to have "bottom-up" semantics -->
+
+  <subscriber
+      for="OFS.interfaces.IObjectManager
+           .event.IObjectWillBeMovedEvent"
+      factory="zope.app.container.contained.dispatchToSublocations">
+      Handler dispatches moved events to sublocations of any ObjectManager.
+  </subscriber>
+
+  <!-- manage_beforeDelete compatibility -->
+
+  <subscriber
+      for="OFS.interfaces.ISimpleItem
+           .event.IObjectWillBeMovedEvent"
+      factory=".event.callManageBeforeDelete"
+      />
+
+  <subscriber
+      for="OFS.interfaces.IObjectManager
+           .event.IObjectWillBeMovedEvent"
+      factory=".event.callManageBeforeDelete"
+      />
+
+  <!-- manage_afterAdd compatibility -->
+
+  <subscriber
+      for="OFS.interfaces.ISimpleItem
+           zope.app.container.interfaces.IObjectMovedEvent"
+      factory=".event.callManageAfterAdd"
+      />
+
+  <subscriber
+      for="OFS.interfaces.IObjectManager
+           zope.app.container.interfaces.IObjectMovedEvent"
+      factory=".event.callManageAfterAdd"
+      />
+
+  <!-- dispatch IObjectMovedEvent to sublocations after
+       compatibility calls, to have "top-down" semantics -->
+
+  <subscriber
+      for="OFS.interfaces.IObjectManager
+           zope.app.container.interfaces.IObjectMovedEvent"
+      factory="zope.app.container.contained.dispatchToSublocations">
+      Handler dispatches moved events to sublocations of any ObjectManager.
+  </subscriber>
+
+  <!-- XXX dispatcher for manage_afterClone -->
+
+  <!-- XXX subscriber (not multi) for _notifOfCopyTo and _postCopy -->
+
+
+</configure>

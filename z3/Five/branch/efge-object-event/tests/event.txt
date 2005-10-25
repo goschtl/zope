@@ -1,295 +1,579 @@
-Test events
-===========
+================
+Container events
+================
 
-Before we can start, we need to set up an event subscriber that allows
-us to inspect events that will be thrown during the test:
+Zope 3 container events are used to inform subscribers that an object is
+about to be added/removed from a container, and also after it has been
+done. This is used for bookkeeping and cleaning up in subobjects.
+
+These events replace the Zope 2 manage_afterAdd, manage_beforeDelete and
+manage_afterClone methods.
+
+Phases
+======
+
+There are 4 steps to the migration process of having Zope 2 use Zope 3
+container events.
+
+Phase 1
+-------
+
+Original Zope 2 status, where no events are sent, and manage_afterAdd &
+co are called on the children.
+
+Phase 2
+-------
+
+<five:containerEvents transitional="true"/>
+
+Some content classes have been migrated to using Zope 3 events.
+
+All standard Zope containers send Zope 3 events. Their manage_afterAdd &
+co methods do not do recursion anymore, and send a deprecation warning
+if called. The dispatching to subobjects is done through the standard
+Zope 3 dispatchToSublocations subscriber.
+
+Containers will still call manage_afterAdd & co (with a deprecation
+warning) for content classes not specified in a::
+
+  <five:containerEventAware class="some.content.class"/>
+
+directive.
+
+Phase 3
+-------
+
+<five:containerEvents/>
+
+Most content classes have been migrated to using Zope 3 events.
+
+All standard Zope containers will only call manage_afterAdd & co on
+classes specified in a::
+
+  <five:deprecatedManageAddDelete class="some.content.class"/>
+
+directive. A deprecation warning is sent for these.
+
+<five:containerEventAware/> is deprecated, as it is now the default
+for other classes.
+
+Phase 4
+-------
+
+All content classes use Zope 3 events. <five:containerEvents/> is
+deprecated as it is now the default. <five:deprecatedManageAddDelete/>
+is forbidden.
+
+
+Testing
+=======
+
+Let's see what happens for these phases. There is a bit of setup for the
+tests.
 
   >>> from zope.app.tests.placelesssetup import setUp, tearDown
   >>> setUp()
 
-Add a folder that doesn't verify objects on paste.  We use it as a
-test sandbox:
+Because we'll test copy/paste, we need to work inside a database.
 
-  >>> from Products.Five.tests.testing import manage_addNoVerifyPasteFolder
-  >>> manage_addNoVerifyPasteFolder(self.folder, 'npvf')
-  >>> folder = self.folder.npvf
+  >>> import ZODB.tests.util
+  >>> db = ZODB.tests.util.DB()
+  >>> connection = db.open()
+  >>> root = connection.root()
 
-Finally add a manager user login, give it the right permissions and
-log in using it:
+We'll use two simple classes (defined in python code for picklability)
+and simple folders for our tests.
 
-  >>> uf = self.folder.acl_users
-  >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
-  >>> self.setPermissions(standard_permissions + ['Copy or Move'], 'Manager')
-  >>> self.login('manager')
+  >>> from Products.Five.tests.test_event import MyApp, MyContent
+  >>> from Products.Five.tests.test_event import MyFolder, MyBTreeFolder
 
-  >>> from zope.app.event.tests.placelesssetup import getEvents, clearEvents
+  >>> app = MyApp('')
+  >>> root['app'] = app
+  >>> folder = MyFolder('folder')
+  >>> app._setObject('folder', folder)
+  old manage_afterAdd folder folder
+  'folder'
+  >>> folder = app.folder
+  >>> btfolder = MyBTreeFolder('btfolder')
+  >>> app._setObject('btfolder', btfolder)
+  old manage_afterAdd btfolder btfolder
+  'btfolder'
 
+To observe what object events are dispatched, we'll have some
+subscribers print them. We'll actually do that for a specific interface,
+not for (None, IObjectEvent), and register our subscribers before the
+framework's ones, so ours will be called first. This has the effect that
+printed events will be in their "natural" order.
 
-Sending events
---------------
+  >>> from zope.app.event.interfaces import IObjectEvent
+  >>> from zope.app.container.interfaces import IObjectMovedEvent
+  >>> from Products.Five.event import IObjectWillBeMovedEvent
+  >>> from OFS.interfaces import IObjectManager
+  >>> from OFS.interfaces import ISimpleItem
+  >>> from zope.app.tests import ztapi
+  >>> def printObjectEvent(object, event):
+  ...     print event.__class__.__name__, object.getId()
+  >>> def printObjectEventExceptMoved(object, event):
+  ...     if (IObjectMovedEvent.providedBy(event) or
+  ...         IObjectWillBeMovedEvent.providedBy(event)):
+  ...         return
+  ...     print event.__class__.__name__, object.getId()
+  >>> ztapi.handle([IObjectManager, IObjectMovedEvent], printObjectEvent)
+  >>> ztapi.handle([ISimpleItem, IObjectMovedEvent], printObjectEvent)
+  >>> ztapi.handle([IObjectManager, IObjectWillBeMovedEvent], printObjectEvent)
+  >>> ztapi.handle([ISimpleItem, IObjectWillBeMovedEvent], printObjectEvent)
+  >>> ztapi.handle([None, IObjectEvent], printObjectEventExceptMoved)
 
-Zope 2 classes need to be modified so that they send Zope 3 style
-events.  Our stub class here is such a case.  We can add it to a
-folder, for example, ...
+Phase 1
+-------
 
-  >>> from Products.Five.tests.testing.simplecontent import manage_addSimpleContent
-  >>> manage_addSimpleContent(folder, 'foo', 'Foo')
+Let's test standard folder operations. The methods manage_afterAdd and
+manage_beforeDelete, and several others, are called.
 
-and no event will have been triggered:
+  >>> ob = MyContent('milou')
+  >>> folder._setObject('milou', ob)
+  old manage_afterAdd milou milou folder
+  'milou'
+  >>> folder.manage_delObjects('milou')
+  old manage_beforeDelete milou milou folder
 
-  >>> len(getEvents())
-  0
+We can also move objects.
 
-Clean up:
-
-  >>> folder.manage_delObjects(['foo'])
-
-Now make the class send events:
-
-  >>> from Products.Five.eventconfigure import classSendEvents
-  >>> from Products.Five.tests.testing.simplecontent import SimpleContent
-  >>> classSendEvents(SimpleContent)
-
-
-Added event
-------------
-
-Let's add an object to a folder:
-
-  >>> manage_addSimpleContent(folder, 'foo', 'Foo')
-
-One object event should have been sent with the event's object being
-our foo object:
-
-  >>> events = getEvents()
-  >>> len(events)
-  1
-  >>> foo = folder.foo
-  >>> events[0].object == foo
+  >>> ob = MyContent('tintin')
+  >>> folder._setObject('tintin', ob)
+  old manage_afterAdd tintin tintin folder
+  'tintin'
+  >>> cp = folder.manage_cutObjects('tintin')
+  >>> folder.manage_pasteObjects(cp)
+  old _notifyOfCopyTo tintin folder 1
+  old manage_beforeDelete tintin tintin folder
+  old manage_afterAdd tintin tintin folder
+  old _postCopy tintin folder 1
+  [{'new_id': 'tintin', 'id': 'tintin'}]
+  >>> 'tintin' in folder.objectIds()
   True
 
-That object event should have been an object added event:
+And we can copy them.
 
-  >>> from zope.app.container.interfaces import IObjectAddedEvent
-  >>> events = getEvents(IObjectAddedEvent)
-  >>> len(events)
-  1
-  >>> events[0].object == foo
+  >>> cp = folder.manage_copyObjects('tintin')
+  >>> folder.manage_pasteObjects(cp)
+  old _notifyOfCopyTo tintin folder 0
+  old manage_afterAdd copy_of_tintin copy_of_tintin folder
+  old _postCopy copy_of_tintin folder 0
+  old manage_afterClone copy_of_tintin copy_of_tintin
+  [{'new_id': 'copy_of_tintin', 'id': 'tintin'}]
+  >>> 'tintin' in folder.objectIds()
   True
-  >>> events[0].newParent == foo.aq_parent
-  True
-
-Check that the object's original manage_afterAdd method was also called:
-
-  >>> foo.afterAdd_called
+  >>> 'copy_of_tintin' in folder.objectIds()
   True
 
-Now clean up:
+We can rename objects:
 
-  >>> clearEvents()
+  >>> folder.manage_renameObject('copy_of_tintin', 'haddock')
+  old _notifyOfCopyTo copy_of_tintin folder 1
+  old manage_beforeDelete copy_of_tintin copy_of_tintin folder
+  old manage_afterAdd haddock haddock folder
+  old _postCopy haddock folder 1
+  >>> 'copy_of_tintin' in folder.objectIds()
+  False
+  >>> 'haddock' in folder.objectIds()
+  True
 
+We can also call manage_clone by hand:
 
-Moved event (I) -- Renaming
---------------------------
+  >>> res = folder.manage_clone(folder.tintin, 'tournesol')
+  old _notifyOfCopyTo tintin folder 0
+  old manage_afterAdd tournesol tournesol folder
+  old _postCopy tournesol folder 0
+  old manage_afterClone tournesol tournesol
+  >>> res.getId()
+  'tournesol'
+  >>> 'tournesol' in folder.objectIds()
+  True
 
-Somehow we need to at least commit a subtransaction to make renaming
-succeed:
+Let's also test with a BTreeFolder:
+
+  >>> ob = MyContent('castafiore')
+  >>> btfolder._setObject('castafiore', ob)
+  old manage_afterAdd castafiore castafiore btfolder
+  'castafiore'
+  >>> btfolder.manage_delObjects('castafiore')
+  old manage_beforeDelete castafiore castafiore btfolder
+
+When a tree of objects is affected, the methods are called for all
+levels.
+
+  >>> subfolder = MyFolder('subfolder')
+  >>> folder._setObject('subfolder', subfolder)
+  old manage_afterAdd subfolder subfolder folder
+  'subfolder'
+  >>> subfolder = folder.subfolder
+  >>> ob = MyContent('riri')
+  >>> subfolder._setObject('riri', ob)
+  old manage_afterAdd riri riri subfolder
+  'riri'
+
+Renaming a tree of objects:
+
+  >>> folder.manage_renameObject('subfolder', 'bob')
+  old _notifyOfCopyTo subfolder folder 1
+  old manage_beforeDelete riri subfolder folder
+  old manage_beforeDelete subfolder subfolder folder
+  old manage_afterAdd bob bob folder
+  old manage_afterAdd riri bob folder
+  old _postCopy bob folder 1
+  >>> 'bob' in folder.objectIds()
+  True
+
+Cloning a tree of objects:
+
+  >>> res = folder.manage_clone(folder.bob, 'loulou')
+  old _notifyOfCopyTo bob folder 0
+  old manage_afterAdd loulou loulou folder
+  old manage_afterAdd riri loulou folder
+  old _postCopy loulou folder 0
+  old manage_afterClone loulou loulou
+  old manage_afterClone riri loulou
+  >>> res.getId()
+  'loulou'
+  >>> 'bob' in folder.objectIds()
+  True
+  >>> 'loulou' in folder.objectIds()
+  True
+
+Phase 2
+-------
+
+In this phase, transitional events are in effect.
+
+We need some of the Five setup, to get proper five:interfaces declared
+for Zope 2 classes.
+
+  >>> from Products.Five import zcml
+  >>> import Products.Five
+  >>> zcml.load_config('meta.zcml', Products.Five)
+  >>> zcml.load_config('interfaces.zcml', Products.Five)
+
+Phase 2 is when we're using <five:containerEvents transitional="true"/>
+
+  >>> from Products.Five.event import doMonkies, undoMonkies
+  >>> doMonkies(transitional=True)
+
+When we add an instance of an old class for which we haven't specified
+anything, some events are sent but the old manage_afterAdd method is
+also called.
+
+  >>> ob = MyContent('lassie')
+  >>> folder._setObject('lassie', ob)
+  ObjectWillBeAddedEvent lassie
+  ObjectAddedEvent lassie
+  old manage_afterAdd lassie lassie folder
+  'lassie'
+
+And when we delete the object, manage_beforeDelete is also called and
+events are sent.
+
+  >>> folder.manage_delObjects('lassie')
+  ObjectWillBeRemovedEvent lassie
+  old manage_beforeDelete lassie lassie folder
+  ObjectRemovedEvent lassie
+
+The old behavior happens for a move or a copy, with events too.
+For a move:
+
+  >>> ob = MyContent('blueberry')
+  >>> folder._setObject('blueberry', ob)
+  ObjectWillBeAddedEvent blueberry
+  ObjectAddedEvent blueberry
+  old manage_afterAdd blueberry blueberry folder
+  'blueberry'
+  >>> cp = folder.manage_cutObjects('blueberry')
+  >>> folder.manage_pasteObjects(cp)
+  old _notifyOfCopyTo blueberry folder 1
+  ObjectWillBeMovedEvent blueberry
+  old manage_beforeDelete blueberry blueberry folder
+  ObjectMovedEvent blueberry
+  old manage_afterAdd blueberry blueberry folder
+  old _postCopy blueberry folder 1
+  [{'new_id': 'blueberry', 'id': 'blueberry'}]
+  >>> 'blueberry' in folder.objectIds()
+  True
+
+Old behavior with events for a copy:
+
+  >>> cp = folder.manage_copyObjects('blueberry')
+  >>> folder.manage_pasteObjects(cp)
+  old _notifyOfCopyTo blueberry folder 0
+  ObjectCopiedEvent copy_of_blueberry
+  ObjectWillBeAddedEvent copy_of_blueberry
+  ObjectAddedEvent copy_of_blueberry
+  old manage_afterAdd copy_of_blueberry copy_of_blueberry folder
+  old _postCopy copy_of_blueberry folder 0
+  old manage_afterClone copy_of_blueberry copy_of_blueberry
+  [{'new_id': 'copy_of_blueberry', 'id': 'blueberry'}]
+  >>> 'blueberry' in folder.objectIds()
+  True
+  >>> 'copy_of_blueberry' in folder.objectIds()
+  True
+
+Old behavior with events for a renaming:
+
+  >>> folder.manage_renameObject('copy_of_blueberry', 'myrtille')
+  old _notifyOfCopyTo copy_of_blueberry folder 1
+  ObjectWillBeMovedEvent copy_of_blueberry
+  old manage_beforeDelete copy_of_blueberry copy_of_blueberry folder
+  ObjectMovedEvent myrtille
+  old manage_afterAdd myrtille myrtille folder
+  old _postCopy myrtille folder 1
+  >>> 'copy_of_blueberry' in folder.objectIds()
+  False
+  >>> 'myrtille' in folder.objectIds()
+  True
+
+Old behavior with events for a clone:
+
+  >>> res = folder.manage_clone(folder.blueberry, 'strawberry')
+  old _notifyOfCopyTo blueberry folder 0
+  ObjectCopiedEvent strawberry
+  ObjectWillBeAddedEvent strawberry
+  ObjectAddedEvent strawberry
+  old manage_afterAdd strawberry strawberry folder
+  old _postCopy strawberry folder 0
+  old manage_afterClone strawberry strawberry
+  >>> res.getId()
+  'strawberry'
+  >>> 'strawberry' in folder.objectIds()
+  True
+
+Events are also sent when we work with a BTreeFolder:
+
+  >>> ob = MyContent('luckyluke')
+  >>> btfolder._setObject('luckyluke', ob)
+  ObjectWillBeAddedEvent luckyluke
+  ObjectAddedEvent luckyluke
+  old manage_afterAdd luckyluke luckyluke btfolder
+  'luckyluke'
+
+  >>> btfolder.manage_delObjects('luckyluke')
+  ObjectWillBeRemovedEvent luckyluke
+  old manage_beforeDelete luckyluke luckyluke btfolder
+  ObjectRemovedEvent luckyluke
+
+Here is what happens for a tree of objects. Let's create a simple one.
+
+  >>> subfolder = MyFolder('subfolder')
+  >>> folder._setObject('subfolder', subfolder)
+  ObjectWillBeAddedEvent subfolder
+  ObjectAddedEvent subfolder
+  old manage_afterAdd subfolder subfolder folder
+  'subfolder'
+  >>> subfolder = folder.subfolder
+  >>> ob = MyContent('donald')
+  >>> subfolder._setObject('donald', ob)
+  ObjectWillBeAddedEvent donald
+  ObjectAddedEvent donald
+  old manage_afterAdd donald donald subfolder
+  'donald'
+
+Renaming a tree of objects.
+
+  >>> folder.manage_renameObject('subfolder', 'pluto')
+  old _notifyOfCopyTo subfolder folder 1
+  ObjectWillBeMovedEvent subfolder
+  ObjectWillBeMovedEvent donald
+  old manage_beforeDelete donald subfolder folder
+  old manage_beforeDelete subfolder subfolder folder
+  ObjectMovedEvent pluto
+  old manage_afterAdd pluto pluto folder
+  ObjectMovedEvent donald
+  old manage_afterAdd donald pluto folder
+  old _postCopy pluto folder 1
+  >>> 'pluto' in folder.objectIds()
+  True
+
+Cloning a tree of objects:
+
+  >>> res = folder.manage_clone(folder.pluto, 'mickey')
+  old _notifyOfCopyTo pluto folder 0
+  ObjectCopiedEvent mickey
+  ObjectWillBeAddedEvent mickey
+  ObjectWillBeAddedEvent donald
+  ObjectAddedEvent mickey
+  old manage_afterAdd mickey mickey folder
+  ObjectAddedEvent donald
+  old manage_afterAdd donald mickey folder
+  old _postCopy mickey folder 0
+  old manage_afterClone mickey mickey
+  >>> res.getId()
+  'mickey'
+  >>> 'pluto' in folder.objectIds()
+  True
+  >>> 'mickey' in folder.objectIds()
+  True
+
+XXX there should be more calls to manage_afterClone above
+
+If however we specify using ZCML that our classes can react to events,
+the framework won't call manage_afterAdd and manage_beforeDelete
+anymore.
+
+  >>> from Products.Five.eventconfigure import setContainerEventAware
+  >>> setContainerEventAware(MyContent)
+  >>> setContainerEventAware(MyFolder)
+
+  >>> ob = MyContent('dogbert')
+  >>> folder._setObject('dogbert', ob)
+  ObjectWillBeAddedEvent dogbert
+  ObjectAddedEvent dogbert
+  'dogbert'
+  >>> folder.manage_delObjects('dogbert')
+  ObjectWillBeRemovedEvent dogbert
+  ObjectRemovedEvent dogbert
+
+Now move:
+
+  >>> ob = MyContent('dilbert')
+  >>> folder._setObject('dilbert', ob)
+  ObjectWillBeAddedEvent dilbert
+  ObjectAddedEvent dilbert
+  'dilbert'
+  >>> cp = folder.manage_cutObjects('dilbert')
+  >>> folder.manage_pasteObjects(cp)
+  ObjectWillBeMovedEvent dilbert
+  ObjectMovedEvent dilbert
+  [{'new_id': 'dilbert', 'id': 'dilbert'}]
+  >>> 'dilbert' in folder.objectIds()
+  True
+
+And copy:
+
+  >>> cp = folder.manage_copyObjects('dilbert')
+  >>> folder.manage_pasteObjects(cp)
+  ObjectCopiedEvent copy_of_dilbert
+  ObjectWillBeAddedEvent copy_of_dilbert
+  ObjectAddedEvent copy_of_dilbert
+  [{'new_id': 'copy_of_dilbert', 'id': 'dilbert'}]
+  >>> 'dilbert' in folder.objectIds()
+  True
+  >>> 'copy_of_dilbert' in folder.objectIds()
+  True
+
+Then rename:
+
+  >>> folder.manage_renameObject('copy_of_dilbert', 'wally')
+  ObjectWillBeMovedEvent copy_of_dilbert
+  ObjectMovedEvent wally
+  >>> 'wally' in folder.objectIds()
+  True
+
+Or copy using manage_clone:
+
+  >>> res = folder.manage_clone(folder.dilbert, 'phb')
+  ObjectCopiedEvent phb
+  ObjectWillBeAddedEvent phb
+  ObjectAddedEvent phb
+  >>> res.getId()
+  'phb'
+  >>> 'dilbert' in folder.objectIds()
+  True
+  >>> 'phb' in folder.objectIds()
+  True
+
+Also on a BTreeFolder:
+
+  >>> ob = MyContent('alice')
+  >>> btfolder._setObject('alice', ob)
+  ObjectWillBeAddedEvent alice
+  ObjectAddedEvent alice
+  'alice'
+  >>> btfolder.manage_renameObject('alice', 'rabbit')
+  ObjectWillBeMovedEvent alice
+  ObjectMovedEvent rabbit
+  >>> btfolder.manage_delObjects('rabbit')
+  ObjectWillBeRemovedEvent rabbit
+  ObjectRemovedEvent rabbit
+
+Now for a tree of objects. Let's create a simple one.
+
+  >>> subfolder = MyFolder('subfolder')
+  >>> folder._setObject('subfolder', subfolder)
+  ObjectWillBeAddedEvent subfolder
+  ObjectAddedEvent subfolder
+  'subfolder'
+  >>> subfolder = folder.subfolder
+  >>> ob = MyContent('mel')
+  >>> subfolder._setObject('mel', ob)
+  ObjectWillBeAddedEvent mel
+  ObjectAddedEvent mel
+  'mel'
+
+Renaming a tree of objects.
+
+  >>> folder.manage_renameObject('subfolder', 'firefly')
+  ObjectWillBeMovedEvent subfolder
+  ObjectWillBeMovedEvent mel
+  ObjectMovedEvent firefly
+  ObjectMovedEvent mel
+  >>> 'firefly' in folder.objectIds()
+  True
+
+Cloning a tree of objects:
+
+  >>> res = folder.manage_clone(folder.firefly, 'serenity')
+  ObjectCopiedEvent serenity
+  ObjectWillBeAddedEvent serenity
+  ObjectWillBeAddedEvent mel
+  ObjectAddedEvent serenity
+  ObjectAddedEvent mel
+  >>> res.getId()
+  'serenity'
+  >>> 'firefly' in folder.objectIds()
+  True
+  >>> 'serenity' in folder.objectIds()
+  True
+
+Now cleanup all the monkey patches:
+
+  >>> undoMonkies()
+
+Phase 3
+-------
+
+This is the target phase.
+
+  >>> doMonkies(transitional=False)
+
+By default, events are sent and manage_afterAdd is not called.
+
+  >>> ob = MyContent('droopy')
+  >>> folder._setObject('droopy', ob)
+  ObjectWillBeAddedEvent droopy
+  ObjectAddedEvent droopy
+  'droopy'
+  >>> folder.manage_delObjects('droopy')
+  ObjectWillBeRemovedEvent droopy
+  ObjectRemovedEvent droopy
+
+Old methods are called only for classes where we have specified that
+they are old.
+
+  >>> from Products.Five.eventconfigure import setDeprecatedManageAddDelete
+  >>> setDeprecatedManageAddDelete(MyContent)
+
+  >>> ob = MyContent('rantanplan')
+  >>> folder._setObject('rantanplan', ob)
+  ObjectWillBeAddedEvent rantanplan
+  ObjectAddedEvent rantanplan
+  old manage_afterAdd rantanplan rantanplan folder
+  'rantanplan'
+  >>> folder.manage_delObjects('rantanplan')
+  ObjectWillBeRemovedEvent rantanplan
+  old manage_beforeDelete rantanplan rantanplan folder
+  ObjectRemovedEvent rantanplan
+
+Now cleanup:
 
   >>> import transaction
-  >>> transaction.commit(1)
-
-Let's rename the object we created before:
-
-  >>> folder.manage_renameObject('foo', 'bar')
-
-We should get two events...
-
-  >>> events = getEvents()
-  >>> len(events)
-  2
-
-the removed event...
-
-  >>> event = events[0]
-  >>> from zope.app.container.interfaces import IObjectRemovedEvent
-  >>> IObjectRemovedEvent.providedBy(event)
-  True
-  >>> event.object == foo
-  True
-  >>> event.oldName, event.newName
-  ('foo', None)
-  >>> event.oldParent == folder
-  True
-  >>> event.newParent is None
-  True
-
-and the moved event:
-
-  >>> event = events[1]
-  >>> event.object == foo
-  True
-  >>> event.oldName, event.newName
-  ('foo', 'bar')
-  >>> event.oldParent == folder
-  True
-  >>> event.newParent == folder
-  True
-
-Now clean up:
-
-  >>> folder.manage_delObjects(['bar'])
-  >>> clearEvents()
-
-We don't delete the stub object just yet because it's being used in
-the next part of the test.
-
-
-Moved event (II) -- Cut and paste
----------------------------------
-
-Let's move from one folder to another:
-
-  >>> manage_addNoVerifyPasteFolder(folder, 'folder1', 'Folder1')
-  >>> folder1 = folder.folder1
-  >>> manage_addNoVerifyPasteFolder(folder, 'folder2', 'Folder2')
-  >>> folder2 = folder.folder2
-  >>> manage_addSimpleContent(folder1, 'foo', 'Foo')
-  >>> foo = folder1.foo
-
-We need to trigger a subtransaction before cut/paste can work:
-
-  >>> transaction.commit(1)
-  >>> cb = folder1.manage_cutObjects(['foo'])
-  >>> info = folder2.manage_pasteObjects(cb)
-
-Apart from the added event we triggerred when we added the stub object
-to the folder, we expect two events...
-
-  >>> events = getEvents()
-  >>> len(events)
-  3
-  >>> len(getEvents(IObjectAddedEvent))
-  1
-
-a removed event...
-
-  >>> event = events[1]
-  >>> from zope.app.container.interfaces import IObjectRemovedEvent
-  >>> IObjectRemovedEvent.providedBy(event)
-  True
-  >>> event.oldParent == folder1
-  True
-  >>> event.newParent is None
-  True
-
-and a moved event:
-
-  >>> event = events[2]
-  >>> event.object == foo
-  True
-  >>> event.oldName, event.newName
-  ('foo', 'foo')
-  >>> event.oldParent == folder1
-  True
-  >>> event.newParent == folder2
-  True
-
-Now clean up:
-
-  >>> folder.manage_delObjects(['folder1'])
-  >>> folder.manage_delObjects(['folder2'])
-  >>> clearEvents()
-
-
-Copied event
-------------
-
-  >>> manage_addSimpleContent(folder, 'foo', 'Foo')
-  >>> manage_addNoVerifyPasteFolder(folder, 'folder1')
-  >>> folder1 = folder.folder1
-
-We need to trigger subtransaction before copy/paste can work
-
-  >>> transaction.commit(1)
-  >>> cb = folder.manage_copyObjects(['foo'])
-  >>> info = folder1.manage_pasteObjects(cb)
-  >>> foo = folder1.foo
-
-Apart from the added event we triggerred when we added the stub object
-to the folder, we expect two events...
-
-  >>> events = getEvents()
-  >>> len(events)
-  3
-
-a copied event...
-
-  >>> event = events[1]
-  >>> from zope.app.event.interfaces import IObjectCopiedEvent
-  >>> IObjectCopiedEvent.providedBy(event)
-  True
-  >>> events[1].object == foo
-  True
-
-and an added event:
-
-  >>> event = events[2]
-  >>> IObjectAddedEvent.providedBy(event)
-  True
-  >>> event.object == foo
-  True
-  >>> event.newName
-  'foo'
-  >>> event.newParent == folder1
-  True
-
-Now clean up:
-
-  >>> folder.manage_delObjects(['folder1'])
-  >>> folder.manage_delObjects(['foo'])
-  >>> clearEvents()
-
-
-Removed event
--------------
-
-  >>> manage_addSimpleContent(folder, 'foo', 'Foo')
-  >>> foo = folder.foo
-  >>> foo.beforeDelete_called
-  False
-  >>> folder.manage_delObjects(['foo'])
-
-  >>> events = getEvents()
-  >>> len(events)
-  2
-
-  >>> events[1].object.id
-  'foo'
-
-Check that the object's original manage_beforeDelete method was also called:
-
-  >>> foo.beforeDelete_called
-  True
-
-  >>> clearEvents()
-
-
-Clean up
---------
-
-Finally, we need to put our stub class back the way it was before we
-monkeyed with it:
-
-  >>> from Products.Five.eventconfigure import cleanUp
-  >>> cleanUp()
-
-Now adding an object won't trigger an event anymore:
-
-  >>> from Products.Five.tests.testing.simplecontent import manage_addSimpleContent
-  >>> manage_addSimpleContent(folder, 'foo', 'Foo')
-  >>> len(getEvents())
-  0
-
-Finally, we need to tear down everything else (services, etc.)
-
+  >>> transaction.abort()
+  >>> undoMonkies()
   >>> tearDown()
