@@ -1,3 +1,20 @@
+##############################################################################
+#
+# Copyright (c) 2005 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Test local sites
+
+$Id$
+"""
 import os, sys
 
 if __name__ == '__main__':
@@ -5,7 +22,6 @@ if __name__ == '__main__':
 
 import unittest
 from Testing import ZopeTestCase
-#ZopeTestCase.installProduct('Five')
 
 from zope.interface import implements
 from zope.interface import directlyProvides, directlyProvidedBy
@@ -293,7 +309,7 @@ class BeforeTraversalTest(ZopeTestCase.FunctionalTestCase):
         tearDown()
 
     def test_before_traversal_event_and_hook(self):
-        return
+        return #XXX disabled test -- why? /philiKON
         from Products.Five.site.localsite import enableLocalSiteHook
         f1 = Folder()
         f1.id = 'f1'

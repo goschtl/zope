@@ -1,26 +1,31 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Five Contributors. All rights reserved.
+# Copyright (c) 2005 Zope Corporation and Contributors.
+# All Rights Reserved.
 #
-# This software is distributed under the terms of the Zope Public
-# License (ZPL) v2.1. See COPYING.txt for more information.
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: traversable.py 9776 2005-03-15 09:18:43Z dreamcatcher $
-"""
+"""Local sites
 
+$Id$
+"""
 from zope.event import notify
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.interface import implements
 from zope.component import getGlobalServices
 from zope.component.interfaces import IServiceService, IUtilityService
 from zope.component.exceptions import ComponentLookupError
-from zope.component.servicenames import Utilities
+from zope.component.servicenames import Utilities, Adapters
+
 from zope.app.site.interfaces import ISite
 from zope.app.site.interfaces import IPossibleSite
 from zope.app.publication.zopepublication import BeforeTraverseEvent
-from zope.component.servicenames import Adapters
 
 from ExtensionClass import Base
 from Acquisition import aq_base, aq_inner, aq_parent
