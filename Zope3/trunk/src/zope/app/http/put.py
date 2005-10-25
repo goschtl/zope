@@ -47,12 +47,6 @@ class NullPUT(object):
     def PUT(self):
         request = self.request
 
-        for name in request:
-            if name.startswith('HTTP_CONTENT_'):
-                # Unimplemented content header
-                request.response.setStatus(501)
-                return ''
-
         body = request.bodyStream
         name = self.context.name
         container = self.context.container
@@ -95,12 +89,6 @@ class FilePUT(object):
 
     def PUT(self):
         request = self.request
-
-        for name in request:
-            if name.startswith('HTTP_CONTENT_'):
-                # Unimplemented content header
-                request.response.setStatus(501)
-                return ''
 
         body = self.request.bodyStream
         file = self.context

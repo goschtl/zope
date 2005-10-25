@@ -71,6 +71,10 @@ class TestNullPUT(PlacelessSetup, TestCase):
         self.assertEqual(request.response.getStatus(), 201)
 
     def test_bad_content_header(self):
+        ## The previous behavour of the PUT method was to fail if the request
+        ## object had a key beginning with 'HTTP_CONTENT_' with a status of 501.
+        ## This was breaking the new Twisted server, so I am now allowing this
+        ## this type of request to be valid.
         container = Container()
         content = "some content\n for testing"
         request = TestRequest(StringIO(content),
@@ -85,7 +89,7 @@ class TestNullPUT(PlacelessSetup, TestCase):
         request.response.setResult('')
 
         # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 501)
+        self.assertEqual(request.response.getStatus(), 201)
 
 class TestFilePUT(PlacelessSetup, TestCase):
 
@@ -102,6 +106,10 @@ class TestFilePUT(PlacelessSetup, TestCase):
         self.assertEqual(file.data, content)
 
     def test_bad_content_header(self):
+        ## The previous behavour of the PUT method was to fail if the request
+        ## object had a key beginning with 'HTTP_CONTENT_' with a status of 501.
+        ## This was breaking the new Twisted server, so I am now allowing this
+        ## this type of request to be valid.
         file = File("thefile", "text/x", "initial content")
         content = "some content\n for testing"
         request = TestRequest(StringIO(content),
@@ -112,10 +120,10 @@ class TestFilePUT(PlacelessSetup, TestCase):
         put = zope.app.http.put.FilePUT(file, request)
         self.assertEqual(put.PUT(), '')
         request.response.setResult('')
-        self.assertEqual(file.data, "initial content")
+        self.assertEqual(file.data, content)
 
         # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 501)
+        self.assertEqual(request.response.getStatus(), 200)
 
 def test_suite():
     return TestSuite((
