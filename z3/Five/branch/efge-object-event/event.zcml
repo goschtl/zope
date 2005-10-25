@@ -77,7 +77,4 @@
       factory="zope.app.container.contained.dispatchToSublocations"
       />
 
-  <!-- XXX subscriber (not multi) for _notifOfCopyTo and _postCopy -->
-
-
 </configure>

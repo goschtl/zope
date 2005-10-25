@@ -34,10 +34,6 @@ class NotifyBase(object):
         return True
     def cb_isCopyable(self):
         return True
-    def _notifyOfCopyTo(self, container, op):
-        print 'old _notifyOfCopyTo', self.getId(), container.getId(), op
-    def _postCopy(self, container, op):
-        print 'old _postCopy', self.getId(), container.getId(), op
     def manage_afterAdd(self, item, container):
         print 'old manage_afterAdd %s %s %s' % (self.getId(), item.getId(),
                                                 container.getId())

@@ -162,10 +162,12 @@ class ObjectManagerSublocations(object):
 def callManageAfterAdd(ob, event):
     """Compatibility subscriber for manage_afterAdd.
     """
+    # used for ISimpleItem/IObjectManager, IObjectMovedEvent
     if not hasDeprecatedMethods(ob):
         return
     container = event.newParent
     if container is None:
+        # this is a remove
         return
     if not isFiveMethod(ob.manage_afterAdd):
         warnings.warn(
@@ -179,10 +181,12 @@ def callManageAfterAdd(ob, event):
 def callManageBeforeDelete(ob, event):
     """Compatibility subscriber for manage_beforeDelete.
     """
+    # used for ISimpleItem/IObjectManager, IObjectMovedEvent
     if not hasDeprecatedMethods(ob):
         return
     container = event.oldParent
     if container is None:
+        # this is an add
         return
     if not isFiveMethod(ob.manage_beforeDelete):
         warnings.warn(
@@ -207,6 +211,7 @@ def callManageBeforeDelete(ob, event):
 def callManageAfterClone(ob, event):
     """Compatibility subscriber for manage_afterClone.
     """
+    # used for ISimpleItem/IObjectManager, IObjectMovedEvent
     if not hasDeprecatedMethods(ob):
         return
     if not isFiveMethod(ob.manage_afterClone):
@@ -218,6 +223,7 @@ def callManageAfterClone(ob, event):
             DeprecationWarning)
     item = event.object
     ob.manage_afterClone(item)
+
 
 ##################################################
 # Monkey patches
@@ -239,17 +245,6 @@ def manage_afterClone(self, item):
     # Don't do recursion anymore, a subscriber does that.
     # A warning is sent by the subscriber
     pass
-
-# From CopyContainer
-def _notifyOfCopyTo(self, container, op=0):
-    # A warning is sent by the caller
-    pass
-
-# From CopyContainer
-def _postCopy(self, container, op=0):
-    # A warning is sent by the caller
-    pass
-
 
 # XXX other recursive dispatching:
 # changeOwnership (called by manage_takeOwnership)
@@ -411,21 +406,15 @@ def manage_renameObject(self, id, new_id, REQUEST=None):
         raise CopyError, eNotSupported % escape(id)
     self._verifyObjectPaste(ob)
 
-    if hasDeprecatedMethods(ob):
-        # BBB
-        if not isFiveMethod(ob._notifyOfCopyTo):
-            warnings.warn(
-                "Calling %s._notifyOfCopyTo is deprecated when using Five, "
-                "use an IObjectWillBeMovedEvent subscriber "
-                "instead." % ob.__class__.__name__,
-                DeprecationWarning, stacklevel=2)
-        try:
-            ob._notifyOfCopyTo(self, op=1)
-        except:
-            raise CopyError, MessageDialog(
-                title='Rename Error',
-                message=sys.exc_info()[1],
-                action ='manage_main')
+    try:
+        ob._notifyOfCopyTo(self, op=1)
+    except ConflictError:
+        raise
+    except:
+        raise CopyError, MessageDialog(
+            title="Rename Error",
+            message=sys.exc_info()[1],
+            action ='manage_main')
 
     notify(ObjectWillBeMovedEvent(ob, self, id, self, new_id))
 
@@ -440,15 +429,7 @@ def manage_renameObject(self, id, new_id, REQUEST=None):
 
     notify(ObjectMovedEvent(ob, self, id, self, new_id))
 
-    if hasDeprecatedMethods(ob):
-        # BBB
-        if not isFiveMethod(ob._postCopy):
-            warnings.warn(
-                "Calling %s._postCopy(op=1) is deprecated when using Five, "
-                "use an IObjectMovedEvent subscriber instead."
-                % ob.__class__.__name__,
-                DeprecationWarning, stacklevel=2)
-        ob._postCopy(self, op=1)
+    ob._postCopy(self, op=1)
 
     if REQUEST is not None:
         return self.manage_main(self, REQUEST, update_menu=1)
@@ -501,16 +482,7 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
                 raise CopyError, eNotSupported % escape(orig_id)
 
             try:
-                if hasDeprecatedMethods(ob):
-                    # BBB
-                    if not isFiveMethod(ob._notifyOfCopyTo):
-                        warnings.warn(
-                            "Calling %s._notifyOfCopyTo is deprecated "
-                            "when using Five, use an IObjectCopiedEvent or "
-                            "IObjectWillBeAddedEvent subscriber instead."
-                            % ob.__class__.__name__,
-                            DeprecationWarning, stacklevel=2)
-                    ob._notifyOfCopyTo(self, op=0)
+                ob._notifyOfCopyTo(self, op=0)
             except ConflictError:
                 raise
             except:
@@ -530,16 +502,7 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
             ob = self._getOb(id)
             ob.wl_clearLocks()
 
-            if hasDeprecatedMethods(ob):
-                # BBB
-                if not isFiveMethod(ob._postCopy):
-                    warnings.warn(
-                        "Calling %s._postCopy(op=0) is deprecated "
-                        "when using Five, "
-                        "use an IObjectCopiedEvent subscriber instead."
-                        % ob.__class__.__name__,
-                        DeprecationWarning, stacklevel=2)
-                ob._postCopy(self, op=0)
+            ob._postCopy(self, op=0)
 
             notify(FiveObjectClonedEvent(ob))
 
@@ -555,16 +518,7 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
                 raise CopyError, eNotSupported % escape(orig_id)
 
             try:
-                if hasDeprecatedMethods(ob):
-                    # BBB
-                    if not isFiveMethod(ob._notifyOfCopyTo):
-                        warnings.warn(
-                            "Calling %s._notifyOfCopyTo is deprecated "
-                            "when using Five, "
-                            "use an IObjectWillBeMovedEvent subscriber "
-                            "instead." % ob.__class__.__name__,
-                            DeprecationWarning, stacklevel=2)
-                    ob._notifyOfCopyTo(self, op=1)
+                ob._notifyOfCopyTo(self, op=1)
             except ConflictError:
                 raise
             except:
@@ -572,6 +526,7 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
                     title="Move Error",
                     message=sys.exc_info()[1],
                     action='manage_main')
+
             if not sanity_check(self, ob):
                 raise CopyError, "This object cannot be pasted into itself"
 
@@ -599,16 +554,7 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
             notify(ObjectMovedEvent(ob, orig_container, orig_id,
                                     self, id))
 
-            if hasDeprecatedMethods(ob):
-                # BBB
-                if not isFiveMethod(ob._postCopy):
-                    warnings.warn(
-                        "Calling %s._postCopy(op=1) is deprecated "
-                        "when using Five, "
-                        "use an IObjectMovedEvent subscriber instead."
-                        % ob.__class__.__name__,
-                        DeprecationWarning, stacklevel=2)
-                ob._postCopy(self, op=1)
+            ob._postCopy(self, op=1)
 
             # try to make ownership implicit if possible
             ob.manage_changeOwnershipType(explicit=0) # XXX event?
@@ -639,21 +585,15 @@ def manage_clone(self, ob, id, REQUEST=None):
 
     self._verifyObjectPaste(ob)
 
-    if hasDeprecatedMethods(ob):
-        # BBB
-        if not isFiveMethod(ob._notifyOfCopyTo):
-            warnings.warn(
-                "Calling %s._notifyOfCopyTo is deprecated when using Five, "
-                "use an IObjectCopiedEvent or IObjectWillBeAddedEvent "
-                "subscriber instead." % ob.__class__.__name__,
-                DeprecationWarning, stacklevel=2)
-        try:
-            ob._notifyOfCopyTo(self, op=0)
-        except:
-            raise CopyError, MessageDialog(
-                title='Clone Error',
-                message=sys.exc_info()[1],
-                action ='manage_main')
+    try:
+        ob._notifyOfCopyTo(self, op=0)
+    except ConflictError:
+        raise
+    except:
+        raise CopyError, MessageDialog(
+            title="Clone Error",
+            message=sys.exc_info()[1],
+            action='manage_main')
 
     ob = ob._getCopy(self)
     ob._setId(id)
@@ -662,15 +602,7 @@ def manage_clone(self, ob, id, REQUEST=None):
     self._setObject(id, ob)
     ob = self._getOb(id)
 
-    if hasDeprecatedMethods(ob):
-        # BBB
-        if not isFiveMethod(ob._postCopy):
-            warnings.warn(
-                "Calling %s._postCopy(op=0) is deprecated when using Five, "
-                "use an IObjectCopiedEvent subscriber instead."
-                % ob.__class__.__name__,
-                DeprecationWarning, stacklevel=2)
-        ob._postCopy(self, op=0)
+    ob._postCopy(self, op=0)
 
     notify(FiveObjectClonedEvent(ob))
 
@@ -712,10 +644,6 @@ def doMonkies(transitional):
     patchMethod(BTreeFolder2Base, '_delObject',
                 BT_delObject)
 
-    patchMethod(CopyContainer, '_notifyOfCopyTo',
-                _notifyOfCopyTo)
-    patchMethod(CopyContainer, '_postCopy',
-                _postCopy)
     patchMethod(CopyContainer, 'manage_renameObject',
                 manage_renameObject)
     # XXX also fix OrderSupport._old_manage_renameObject
