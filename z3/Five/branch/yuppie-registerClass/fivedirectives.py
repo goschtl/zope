@@ -152,3 +152,9 @@ class IRegisterClassDirective(Interface):
         title=u'Icon ID',
         required=False
         )
+
+    scope = ASCII(
+        title=u'Scope',
+        description=u'\'Global\' or \'Interface\'',
+        required=False
+        )

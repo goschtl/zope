@@ -282,7 +282,9 @@ def installSiteHook(_context, class_, site_class=None, utility_service=None):
         )
     _localsite_monkies.append(class_)
 
-def _registerClass(class_, meta_type, permission, addform, icon):
+_register_monkies = []
+_meta_type_regs = []
+def _registerClass(class_, meta_type, permission, addform, icon, scope):
     setattr(class_, 'meta_type', meta_type)
 
     permission_obj = zapi.getUtility(IPermission, permission)
@@ -292,22 +294,29 @@ def _registerClass(class_, meta_type, permission, addform, icon):
 
     interfaces = tuple(implementedBy(class_))
 
+    if not scope == 'Global':
+        scope = None 
+
     info = {'name': meta_type,
-            'action': '+/%s' % addform,
-            'product': '', # XXX: is this used somewhere?
+            'action': addform and ('+/%s' % addform) or '',
+            'product': class_.__module__.split('.')[1],
             'permission': str(permission_obj.title),
-            'visibility': 'Global', # XXX: should become configurable
+            'visibility': scope,
             'interfaces': interfaces,
             'instance': class_,
             'container_filter': None}
 
     Products.meta_types += (info,)
 
-def registerClass(_context, class_, meta_type, permission, addform='', icon=None):
+    _register_monkies.append(class_)
+    _meta_type_regs.append(meta_type)
+
+def registerClass(_context, class_, meta_type, permission, addform='',
+                  icon=None, scope='Global'):
     _context.action(
         discriminator = ('registerClass', meta_type),
         callable = _registerClass,
-        args = (class_, meta_type, permission, addform, icon)
+        args = (class_, meta_type, permission, addform, icon, scope)
         )
 
 # clean up code
@@ -348,6 +357,14 @@ def uinstallSiteHook(class_):
     classImplementsOnly(class_, implementedBy(class_)-ISite)
     _localsite_monkies.remove(class_)
 
+def unregisterClass(class_):
+    delattr(class_, 'meta_type')
+    try:
+        delattr(class_, 'icon')
+    except AttributeError:
+        pass
+    _register_monkies.remove(class_)
+
 def cleanUp():
     for class_ in _traversable_monkies:
         untraversable(class_)
@@ -355,7 +372,18 @@ def cleanUp():
         undefaultViewable(class_)
     for class_ in _localsite_monkies:
         uinstallSiteHook(class_)
-    
+    for class_ in _register_monkies[:]:
+        unregisterClass(class_)
+
+    meta_types = list(Products.meta_types)
+    for meta_type in _meta_type_regs[:]:
+        for i in range(len(meta_types)):
+            if meta_types[i]['name'] == meta_type:
+                del meta_types[i]
+                break
+        _meta_type_regs.remove(meta_type)
+    Products.meta_types = tuple(meta_types)
+
 from zope.testing.cleanup import addCleanUp
 addCleanUp(cleanUp)
 del addCleanUp
