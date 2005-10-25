@@ -1,2 +1,0 @@
-The UI offers powerful tools to build applications using Zope 3. The UI is
-aimed at Site Developers and not hard-core developers and content managers.
