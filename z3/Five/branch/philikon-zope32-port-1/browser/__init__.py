@@ -16,17 +16,10 @@
 $Id$
 """
 import Acquisition
-from AccessControl import ClassSecurityInfo
-from Globals import InitializeClass
+import zope.app.publisher.browser
 
-class BrowserView(Acquisition.Explicit):
-    security = ClassSecurityInfo()
+class BrowserView(Acquisition.Explicit, zope.app.publisher.browser.BrowserView):
+    """Five browser view
 
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
-    # XXX do not create any methods on the subclass called index_html,
-    # as this makes Zope 2 traverse into that first!
-
-InitializeClass(BrowserView)
+    Mixes in explicit acquisition so that security can be acquired for
+    views"""

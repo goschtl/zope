@@ -33,16 +33,6 @@ redefinePermission
 
 Redefine a permission in included ZCML as another one.
 
-service
--------
-
-Declare a global service
-
-serviceType
------------
-
-Declare a type of service.
-
 skin
 ----
 
