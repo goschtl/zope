@@ -2,7 +2,6 @@
            xmlns:browser="http://namespaces.zope.org/browser">
 
   <!-- enough to bootstrap the machinery to lookup local services -->
-  <include package="zope.configuration" file="meta.zcml" />
   <hook
       module="zope.component"
       name="getServices"
@@ -16,9 +15,9 @@
       />
 
   <adapter
-      factory=".localsite.serviceServiceAdapter"
+      for="*"
       provides="zope.component.IServiceService"
-      for="zope.interface.Interface"
+      factory=".localsite.serviceServiceAdapter"
       />
 
   <subscriber
