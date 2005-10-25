@@ -51,7 +51,7 @@ def monkeyPatch():
 
         while not (context is None or
                    ISiteManager.providedBy(context)):
-            context = aq_parent(aq_inner(context))
+            context = getattr(context, '__parent__', aq_parent(aq_inner(context)))
         if context is None:
             raise ComponentLookupError('Services')
         else:
