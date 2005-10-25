@@ -121,6 +121,7 @@ from webdav.Lockable import ResourceLockedError
 FIVE_ORIGINAL_PREFIX = '__five_original_'
 
 
+previousConfigInfos = []
 containerEventsTransitional = None
 containerEventAwareClasses = []
 deprecatedManageAddDeleteClasses = []
@@ -619,10 +620,21 @@ from OFS.CopySupport import CopyContainer
 from OFS.OrderSupport import OrderSupport
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
 
-def doMonkies(transitional):
+def doMonkies(transitional, info=None):
     """Monkey patch various methods to provide container events.
+
+    If passed, ``info`` is a zconfig information about where the
+    declaration was made.
     """
     global containerEventsTransitional
+    if containerEventsTransitional is not None:
+        if containerEventsTransitional != transitional:
+            from zope.configuration.config import ConfigurationConflictError
+            conflicts = {'five:containerEvents': previousConfigInfos}
+            raise ConfigurationConflictError(conflicts)
+    if info is not None:
+        previousConfigInfos.append(info)
+
     containerEventsTransitional = transitional
 
     patchMethod(ObjectManager, '_setObject',
@@ -667,7 +679,10 @@ def patchMethod(class_, name, new_method):
 def undoMonkies():
     """Undo monkey patches.
     """
+    global containerEventsTransitional
     for class_, name in _monkied:
         killMonkey(class_, name, FIVE_ORIGINAL_PREFIX + name)
+    containerEventsTransitional = None
     containerEventAwareClasses[:] = []
     deprecatedManageAddDeleteClasses[:] = []
+    previousConfigInfos[:] = []

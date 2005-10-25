@@ -72,7 +72,6 @@ class IContainerEventsDirective(Interface):
     transitional = Bool(
         title=u"Transitional",
         required=False,
-        default=False,
         )
 
 class IContainerEventAwareDirective(Interface):

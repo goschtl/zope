@@ -22,8 +22,8 @@ from event import doMonkies
 from event import containerEventAwareClasses
 from event import deprecatedManageAddDeleteClasses
 
-def setContainerEvents(transitional):
-    doMonkies(transitional)
+def setContainerEvents(transitional, info):
+    doMonkies(transitional, info)
 
 def setContainerEventAware(class_):
     """Instances of the class will receive object events."""
@@ -33,11 +33,14 @@ def setDeprecatedManageAddDelete(class_):
     """Instances of the class will still see their old methods called."""
     deprecatedManageAddDeleteClasses.append(class_)
 
-def containerEvents(_context, transitional):
+def containerEvents(_context, transitional=False):
+    # Remember context info to be able to provide information
+    # when resolving conflicts about this directive.
+    info = getattr(_context, 'info', '')
     _context.action(
-        discriminator=('five:containerEvents',),
+        discriminator=None, # conflict resolution is done "by hand"
         callable=setContainerEvents,
-        args=(transitional,),
+        args=(transitional, info),
         )
 
 def containerEventAware(_context, class_):
