@@ -27,6 +27,7 @@
     id="zope.manager"
     title="Manager"
     login="<<USERNAME>>"
+    password_manager="<<PASSWORD_MANAGER>>"
     password="<<PASSWORD>>"
     />
 

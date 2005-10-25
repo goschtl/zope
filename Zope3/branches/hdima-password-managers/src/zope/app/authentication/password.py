@@ -95,3 +95,10 @@ class SHA1PasswordManager(PlainTextPasswordManager):
 
     def encodePassword(self, password):
         return sha.new(password).hexdigest()
+
+# Simply registry used by mkzopeinstance script
+managers = [
+    ("Plain Text", PlainTextPasswordManager()),
+    ("MD5", MD5PasswordManager()),
+    ("SHA1", SHA1PasswordManager()),
+]
