@@ -81,10 +81,12 @@ Zope Changes
         like unicode strings with respect to security proxying.  This
         implementation will replace the old one in upcoming versions.
 
-      - Implemented the concept of viewlets, formerly known as
-        pagelets. Viewlets allow you to insert pieces of content into
-        specified regions of a page. Using this base implementation, one could
-        easily implement pagelets and portlets.
+      - Implemented content providers, a new method of constructing
+        pages. Content providers will be used to develop high-level packages
+        providing many useful features.
+
+      - Implemented viewlets, an extension of content providers. Viewlets
+        allow one to easily develop component-driven UIs.
 
     Restructuring
 

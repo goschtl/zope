@@ -16,7 +16,7 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
-
+import os.path
 import unittest
 import zope.interface
 import zope.security
@@ -24,54 +24,44 @@ from zope.testing import doctest
 from zope.testing.doctestunit import DocTestSuite, DocFileSuite
 from zope.app.testing import setup
 
-from zope.app.viewlet import interfaces
-
-
-class TestViewlet(object):
-
-    def doSomething(self):
-        return u'something'
-
-
-class TestViewlet2(object):
-
-    def __call__(self):
-        return u'called'
-
-
-class ITestRegion(zope.interface.Interface):
-    '''A region for testing purposes.'''
-zope.interface.directlyProvides(ITestRegion, interfaces.IRegion)
+from zope.contentprovider import interfaces
 
 
 class TestParticipation(object):
     principal = 'foobar'
     interaction = None
 
+counter = 0
+mtime_func = None
 
 def setUp(test):
     setup.placefulSetUp()
 
     from zope.app.pagetemplate import metaconfigure
-    from zope.app.viewlet import tales
-    metaconfigure.registerType('viewlets', tales.TALESViewletsExpression)
-    metaconfigure.registerType('viewlet', tales.TALESViewletExpression)
+    from zope.contentprovider import tales
+    metaconfigure.registerType('provider', tales.TALESProviderExpression)
 
     zope.security.management.getInteraction().add(TestParticipation())
+
+    # Make sure we are always reloading page template files ;-)
+    global mtime_func
+    mtime_func = os.path.getmtime
+    def number(x):
+        global counter
+        counter += 1
+        return counter
+    os.path.getmtime = number
 
 
 def tearDown(test):
     setup.placefulTearDown()
-
+    os.path.getmtime = mtime_func
+    global counter
+    counter = 0
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.viewlet.tales'),
-        DocFileSuite('../README.txt',
-                     setUp=setUp, tearDown=tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                     ),
-        DocFileSuite('../directives.txt',
+        DocFileSuite('README.txt',
                      setUp=setUp, tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
