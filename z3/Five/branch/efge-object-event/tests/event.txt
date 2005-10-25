@@ -108,21 +108,25 @@ printed events will be in their "natural" order.
   >>> from zope.app.event.interfaces import IObjectEvent
   >>> from zope.app.container.interfaces import IObjectMovedEvent
   >>> from Products.Five.event import IObjectWillBeMovedEvent
+  >>> from Products.Five.event import IFiveObjectClonedEvent
   >>> from OFS.interfaces import IObjectManager
   >>> from OFS.interfaces import ISimpleItem
   >>> from zope.app.tests import ztapi
   >>> def printObjectEvent(object, event):
   ...     print event.__class__.__name__, object.getId()
-  >>> def printObjectEventExceptMoved(object, event):
+  >>> def printObjectEventExceptSome(object, event):
   ...     if (IObjectMovedEvent.providedBy(event) or
-  ...         IObjectWillBeMovedEvent.providedBy(event)):
+  ...         IObjectWillBeMovedEvent.providedBy(event) or
+  ...         IFiveObjectClonedEvent.providedBy(event)):
   ...         return
   ...     print event.__class__.__name__, object.getId()
   >>> ztapi.handle([IObjectManager, IObjectMovedEvent], printObjectEvent)
   >>> ztapi.handle([ISimpleItem, IObjectMovedEvent], printObjectEvent)
   >>> ztapi.handle([IObjectManager, IObjectWillBeMovedEvent], printObjectEvent)
   >>> ztapi.handle([ISimpleItem, IObjectWillBeMovedEvent], printObjectEvent)
-  >>> ztapi.handle([None, IObjectEvent], printObjectEventExceptMoved)
+  >>> ztapi.handle([IObjectManager, IFiveObjectClonedEvent], printObjectEvent)
+  >>> ztapi.handle([ISimpleItem, IFiveObjectClonedEvent], printObjectEvent)
+  >>> ztapi.handle([None, IObjectEvent], printObjectEventExceptSome)
 
 Phase 1
 -------
@@ -150,8 +154,6 @@ We can also move objects.
   old manage_afterAdd tintin tintin folder
   old _postCopy tintin folder 1
   [{'new_id': 'tintin', 'id': 'tintin'}]
-  >>> 'tintin' in folder.objectIds()
-  True
 
 And we can copy them.
 
@@ -162,10 +164,6 @@ And we can copy them.
   old _postCopy copy_of_tintin folder 0
   old manage_afterClone copy_of_tintin copy_of_tintin
   [{'new_id': 'copy_of_tintin', 'id': 'tintin'}]
-  >>> 'tintin' in folder.objectIds()
-  True
-  >>> 'copy_of_tintin' in folder.objectIds()
-  True
 
 We can rename objects:
 
@@ -174,10 +172,6 @@ We can rename objects:
   old manage_beforeDelete copy_of_tintin copy_of_tintin folder
   old manage_afterAdd haddock haddock folder
   old _postCopy haddock folder 1
-  >>> 'copy_of_tintin' in folder.objectIds()
-  False
-  >>> 'haddock' in folder.objectIds()
-  True
 
 We can also call manage_clone by hand:
 
@@ -188,8 +182,6 @@ We can also call manage_clone by hand:
   old manage_afterClone tournesol tournesol
   >>> res.getId()
   'tournesol'
-  >>> 'tournesol' in folder.objectIds()
-  True
 
 Let's also test with a BTreeFolder:
 
@@ -213,7 +205,8 @@ levels.
   old manage_afterAdd riri riri subfolder
   'riri'
 
-Renaming a tree of objects:
+Renaming a tree of objects. Note that manage_beforeDelete is called
+bottom-up.
 
   >>> folder.manage_renameObject('subfolder', 'bob')
   old _notifyOfCopyTo subfolder folder 1
@@ -309,6 +302,7 @@ Old behavior with events for a copy:
   ObjectAddedEvent copy_of_blueberry
   old manage_afterAdd copy_of_blueberry copy_of_blueberry folder
   old _postCopy copy_of_blueberry folder 0
+  FiveObjectClonedEvent copy_of_blueberry
   old manage_afterClone copy_of_blueberry copy_of_blueberry
   [{'new_id': 'copy_of_blueberry', 'id': 'blueberry'}]
   >>> 'blueberry' in folder.objectIds()
@@ -339,6 +333,7 @@ Old behavior with events for a clone:
   ObjectAddedEvent strawberry
   old manage_afterAdd strawberry strawberry folder
   old _postCopy strawberry folder 0
+  FiveObjectClonedEvent strawberry
   old manage_afterClone strawberry strawberry
   >>> res.getId()
   'strawberry'
@@ -375,7 +370,8 @@ Here is what happens for a tree of objects. Let's create a simple one.
   old manage_afterAdd donald donald subfolder
   'donald'
 
-Renaming a tree of objects.
+Renaming a tree of objects. Note that manage_beforeDelete is called
+bottom-up.
 
   >>> folder.manage_renameObject('subfolder', 'pluto')
   old _notifyOfCopyTo subfolder folder 1
@@ -403,15 +399,16 @@ Cloning a tree of objects:
   ObjectAddedEvent donald
   old manage_afterAdd donald mickey folder
   old _postCopy mickey folder 0
+  FiveObjectClonedEvent mickey
   old manage_afterClone mickey mickey
+  FiveObjectClonedEvent donald
+  old manage_afterClone donald mickey
   >>> res.getId()
   'mickey'
   >>> 'pluto' in folder.objectIds()
   True
   >>> 'mickey' in folder.objectIds()
   True
-
-XXX there should be more calls to manage_afterClone above
 
 If however we specify using ZCML that our classes can react to events,
 the framework won't call manage_afterAdd and manage_beforeDelete
@@ -452,6 +449,7 @@ And copy:
   ObjectCopiedEvent copy_of_dilbert
   ObjectWillBeAddedEvent copy_of_dilbert
   ObjectAddedEvent copy_of_dilbert
+  FiveObjectClonedEvent copy_of_dilbert
   [{'new_id': 'copy_of_dilbert', 'id': 'dilbert'}]
   >>> 'dilbert' in folder.objectIds()
   True
@@ -472,6 +470,7 @@ Or copy using manage_clone:
   ObjectCopiedEvent phb
   ObjectWillBeAddedEvent phb
   ObjectAddedEvent phb
+  FiveObjectClonedEvent phb
   >>> res.getId()
   'phb'
   >>> 'dilbert' in folder.objectIds()
@@ -525,6 +524,8 @@ Cloning a tree of objects:
   ObjectWillBeAddedEvent mel
   ObjectAddedEvent serenity
   ObjectAddedEvent mel
+  FiveObjectClonedEvent serenity
+  FiveObjectClonedEvent mel
   >>> res.getId()
   'serenity'
   >>> 'firefly' in folder.objectIds()
