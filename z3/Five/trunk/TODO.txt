@@ -2,39 +2,32 @@
 TODO
 ====
 
-v1.1.1 (...)
-------------
+v1.2
+----
 
-- more tests for browser.adding (faassen?)
+* five:registerClass (yuppie)
 
-- more extensive testing whether event system works with things like
-  Zope 2 folders etc. (faassen?)
+* event overhaul (efge)
 
-- ensuring that the event-sending behavior is as close to Zope 3's as
-  possible.  A lot of edge cases with different behavior likely
-  remain, and things like IObjectModifiedEvents are not sent yet for
-  folders. (faassen?)
+* marker utility (whit, gotcha)
+
+* make rendering of resource urls support sites?
 
 
-v2.0 (mid-August, to ship with Zope 2.9)
-----------------------------------------
+v1.3
+----
 
-- Zope 3.1 support
+* port to Zope 3.2 (philikon)
 
-- Drop old-style ExtensionClass support (and all other support for Zope 2.7)
+* remove testrunner (philikon)
 
-- Possibly: introduce site concept, make rendering of resource urls
-  support sites.  Merge Sidnei's localsitemanager branch (will
-  probably have to be fixed up for component architecture refactoring
-  in Zope 3.1) (sidnei)
+* integrate into Zope 2.9
 
-- if Zope 2.9 includes the new test runner: convert functional test
-  cases to true ftests (configuration is loaded once before all ftests
-  are run; they're run separately from the unit tests).
+* drop zope 2.8 support (yuppie)
 
 
-v2.1 (...)
-----------
+v1.4
+----
 
 - l10n (philikon)
 
