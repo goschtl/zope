@@ -23,8 +23,9 @@ if __name__ == '__main__':
 # These classes aren't defined in the doctest because otherwise
 # they wouldn't be picklable, and we need that to test copy/paste.
 
-from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
+from OFS.Folder import Folder
+from OFS.OrderedFolder import OrderedFolder
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2
 
 class NotifyBase(object):
@@ -51,6 +52,9 @@ class MyApp(Folder):
         return self
 
 class MyFolder(NotifyBase, Folder):
+    pass
+
+class MyOrderedFolder(NotifyBase, OrderedFolder):
     pass
 
 class MyBTreeFolder(NotifyBase, BTreeFolder2):

@@ -86,6 +86,7 @@ and simple folders for our tests.
 
   >>> from Products.Five.tests.test_event import MyApp, MyContent
   >>> from Products.Five.tests.test_event import MyFolder, MyBTreeFolder
+  >>> from Products.Five.tests.test_event import MyOrderedFolder
 
   >>> app = MyApp('')
   >>> root['app'] = app
@@ -466,6 +467,31 @@ Cloning a tree of objects:
   FiveObjectClonedEvent mel
   >>> res.getId()
   'serenity'
+
+OrderedFolder has the same renaming behavior than before:
+
+  >>> ofolder = MyOrderedFolder('ofolder')
+  >>> app._setObject('ofolder', ofolder)
+  ObjectWillBeAddedEvent ofolder
+  ObjectAddedEvent ofolder
+  old manage_afterAdd ofolder ofolder
+  'ofolder'
+  >>> ob1 = MyContent('ob1')
+  >>> ofolder._setObject('ob1', ob1)
+  ObjectWillBeAddedEvent ob1
+  ObjectAddedEvent ob1
+  'ob1'
+  >>> ob2 = MyContent('ob2')
+  >>> ofolder._setObject('ob2', ob2)
+  ObjectWillBeAddedEvent ob2
+  ObjectAddedEvent ob2
+  'ob2'
+  >>> ofolder.manage_renameObject('ob1', 'ob4')
+  ObjectWillBeMovedEvent ob1
+  ObjectMovedEvent ob4
+  >>> ofolder.objectIds()
+  ['ob4', 'ob2']
+
 
 Now cleanup all the monkey patches:
 

@@ -620,6 +620,7 @@ _monkied = []
 
 from OFS.ObjectManager import ObjectManager
 from OFS.CopySupport import CopyContainer
+from OFS.OrderSupport import OrderSupport
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
 
 def doMonkies(transitional):
@@ -646,11 +647,13 @@ def doMonkies(transitional):
 
     patchMethod(CopyContainer, 'manage_renameObject',
                 manage_renameObject)
-    # XXX also fix OrderSupport._old_manage_renameObject
     patchMethod(CopyContainer, 'manage_pasteObjects',
                 manage_pasteObjects)
     patchMethod(CopyContainer, 'manage_clone',
                 manage_clone)
+
+    patchMethod(OrderSupport, '_old_manage_renameObject',
+                manage_renameObject)
 
     zcml.load_config('event.zcml', Products.Five)
 
@@ -660,7 +663,7 @@ def patchMethod(class_, name, new_method):
     method = getattr(class_, name, None)
     if isFiveMethod(method):
         return
-    setattr(class_, '__five_original_' + name, method)
+    setattr(class_, FIVE_ORIGINAL_PREFIX + name, method)
     setattr(class_, name, new_method)
     new_method.__five_method__ = True
     _monkied.append((class_, name))
