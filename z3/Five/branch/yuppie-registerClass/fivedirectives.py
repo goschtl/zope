@@ -120,3 +120,34 @@ class ISiteDirective(Interface):
         title=u"Site Class",
         required=False
         )
+
+
+class IRegisterClassDirective(Interface):
+
+    """registerClass directive schema.
+    """
+
+    class_ = GlobalObject(
+        title=u'Instance Class',
+        required=True
+        )
+
+    meta_type = TextLine(
+        title=u'Meta Type',
+        required=True
+        )
+
+    addform = TextLine(
+        title=u'Add Form ID',
+        required=False
+        )
+
+    permission = TextLine(
+        title=u'Add Permission',
+        required=False
+        )
+
+    icon = TextLine(
+        title=u'Icon ID',
+        required=False
+        )

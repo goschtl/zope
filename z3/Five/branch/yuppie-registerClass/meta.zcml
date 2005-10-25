@@ -155,7 +155,13 @@
        schema=".fivedirectives.ISiteDirective"
        handler=".fiveconfigure.installSiteHook"
        />
-       
+
+    <meta:directive
+       name="registerClass"
+       schema=".fivedirectives.IRegisterClassDirective"
+       handler=".fiveconfigure.registerClass"
+       />
+
   </meta:directives>
 
   <meta:directive

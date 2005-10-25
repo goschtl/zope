@@ -23,6 +23,8 @@ import glob
 import warnings
 
 import App.config
+import Products
+from AccessControl.Permission import registerPermissions
 from zLOG import LOG, ERROR
 
 from zope.interface import classImplements, classImplementsOnly, implementedBy
@@ -279,6 +281,38 @@ def installSiteHook(_context, class_, site_class=None, utility_service=None):
         )
     _localsite_monkies.append(class_)
 
+def _registerClass(class_, meta_type, addform, permission, icon):
+    setattr(class_, 'meta_type', meta_type)
+
+    if icon:
+        setattr(class_, 'icon', '++resource++%s' % icon)
+
+    if permission is None:
+        permission = "Add %ss" % meta_type
+    registerPermissions(((permission, (), ('Manager',)),))
+
+    interfaces = tuple(implementedBy(class_))
+
+    info = {'name': meta_type,
+            'action': '+/%s' % addform,
+            'product': '', # XXX: is this used somewhere?
+            'permission': permission,
+            'visibility': 'Global', # XXX: should become configurable
+            'interfaces': interfaces,
+            'instance': class_,
+            'container_filter': None}
+
+    Products.meta_types += (info,)
+
+def registerClass(_context, class_, meta_type, addform='', permission=None,
+                 icon=None):
+    _context.action(
+        discriminator = ('registerClass', meta_type),
+        callable = _registerClass,
+        args = (class_, str(meta_type), str(addform), str(permission),
+                str(icon))
+        )
+
 # clean up code
 
 def killMonkey(class_, name, fallback, attr=None):
@@ -328,4 +362,3 @@ def cleanUp():
 from zope.testing.cleanup import addCleanUp
 addCleanUp(cleanUp)
 del addCleanUp
-
