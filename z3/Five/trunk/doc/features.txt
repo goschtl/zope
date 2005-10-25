@@ -103,4 +103,3 @@ creating one are:
 
     from Products.Five.localsite import enableLocalSiteHook
     enableLocalSiteHook(obj)
-
