@@ -5,7 +5,7 @@ if __name__ == '__main__':
 
 import unittest
 from Testing import ZopeTestCase
-ZopeTestCase.installProduct('Five')
+#ZopeTestCase.installProduct('Five')
 
 from zope.interface import implements
 from zope.interface import directlyProvides, directlyProvidedBy
@@ -103,7 +103,8 @@ class Test(ZopeTestCase.ZopeTestCase):
         self.unparented_folder = Folder()
         self.unrooted_subfolder = Wrapper(Folder(), self.unparented_folder)
         zcml.load_config("meta.zcml", Products.Five)
-        zcml.load_config("localsite.zcml", Products.Five)
+        zcml.load_config("permissions.zcml", Products.Five)
+        zcml.load_config("configure.zcml", Products.Five.site)
         zcml_text = """<configure 
           xmlns="http://namespaces.zope.org/zope"
           xmlns:five="http://namespaces.zope.org/five">
@@ -223,7 +224,7 @@ class Test(ZopeTestCase.ZopeTestCase):
                           getLocalServices, unrooted_subfolder)
 
     def test_serviceServiceAdapter(self):
-        from Products.Five.localsite import serviceServiceAdapter
+        from Products.Five.site.localsite import serviceServiceAdapter
 
         # If it is a site, return the service service.
         ss = ServiceServiceStub()
@@ -279,7 +280,8 @@ class BeforeTraversalTest(ZopeTestCase.FunctionalTestCase):
     def afterSetUp(self):
         setUp()
         zcml.load_config("meta.zcml", Products.Five)
-        zcml.load_config("localsite.zcml", Products.Five)
+        zcml.load_config("permissions.zcml", Products.Five)
+        zcml.load_config("configure.zcml", Products.Five.site)
         zcml_text = """<configure xmlns:five="http://namespaces.zope.org/five">
         <five:localsite class="Products.Five.testing.localsite.DummySite" />
         </configure>"""
@@ -292,7 +294,7 @@ class BeforeTraversalTest(ZopeTestCase.FunctionalTestCase):
 
     def test_before_traversal_event_and_hook(self):
         return
-        from Products.Five.localsite import enableLocalSiteHook
+        from Products.Five.site.localsite import enableLocalSiteHook
         f1 = Folder()
         f1.id = 'f1'
         self.folder._setObject('f1', f1)
@@ -313,10 +315,11 @@ class LocalUtilityServiceTest(ZopeTestCase.FunctionalTestCase):
 
     def afterSetUp(self):
         setUp()
-        from Products.Five.localsite import enableLocalSiteHook
+        from Products.Five.site.localsite import enableLocalSiteHook
         from Products.Five.testing.localsite import manage_addDummySite
         zcml.load_config("meta.zcml", Products.Five)
-        zcml.load_config("localsite.zcml", Products.Five)
+        zcml.load_config("permissions.zcml", Products.Five)
+        zcml.load_config("configure.zcml", Products.Five.site)
         zcml_text = """<configure xmlns:five="http://namespaces.zope.org/five">
         <five:localsite class="Products.Five.testing.localsite.DummySite" />
         </configure>"""
@@ -337,7 +340,7 @@ class LocalUtilityServiceTest(ZopeTestCase.FunctionalTestCase):
         tearDown()
 
     def test_getServicesHook(self):
-        from Products.Five.localsite import LocalService
+        from Products.Five.site.localsite import LocalService
         local_sm = getServices(None)
         self.failIf(local_sm is serviceManager)
         self.failUnless(isinstance(local_sm, LocalService))
@@ -347,7 +350,7 @@ class LocalUtilityServiceTest(ZopeTestCase.FunctionalTestCase):
         self.failUnless(isinstance(local_sm, LocalService))
 
     def test_getUtilityService(self):
-        from Products.Five.localsite import SimpleLocalUtilityService
+        from Products.Five.site.localsite import SimpleLocalUtilityService
         utils = getService(Utilities)
         self.failUnless(isinstance(utils, SimpleLocalUtilityService))
 

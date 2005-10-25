@@ -51,11 +51,6 @@ def page(_context, name, permission, for_,
          attribute='__call__', menu=None, title=None,
          ):
 
-    try:
-        s = getGlobalService(Presentation)
-    except ComponentLookupError, err:
-        pass
-
     _handle_menu(_context, menu, title, [for_], name, permission)
 
     if not (class_ or template):

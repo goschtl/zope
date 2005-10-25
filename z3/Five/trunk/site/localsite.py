@@ -7,7 +7,7 @@
 #
 ##############################################################################
 """
-$Id$
+$Id: traversable.py 9776 2005-03-15 09:18:43Z dreamcatcher $
 """
 
 from zope.event import notify
@@ -15,7 +15,6 @@ from zope.interface import directlyProvides, directlyProvidedBy
 from zope.interface import implements
 from zope.component import getGlobalServices
 from zope.component.interfaces import IServiceService, IUtilityService
-from zope.app.utility.interfaces import ILocalUtilityService
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Utilities
 from zope.app.site.interfaces import ISite
@@ -23,12 +22,13 @@ from zope.app.site.interfaces import IPossibleSite
 from zope.app.publication.zopepublication import BeforeTraverseEvent
 from zope.component.servicenames import Adapters
 
-from interfaces import IFiveSite
 from ExtensionClass import Base
 from Acquisition import aq_base, aq_inner, aq_parent
 from Products.SiteAccess.AccessRule import AccessRule
 from ZPublisher.BeforeTraverse import registerBeforeTraverse
 from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
+
+from interfaces import IFiveUtilityService
 
 def serviceServiceAdapter(ob):
     """An adapter * -> IServiceService.
@@ -73,8 +73,8 @@ def disableLocalSiteHook(obj):
     # We want the original object, not stuff in between, and no acquisition
     obj = aq_base(obj)
     if not ISite.providedBy(obj):
-        raise TypeError, 'Must provide IPossibleSite'
-    rules = unregisterBeforeTraverse(obj, HOOK_NAME)
+        raise TypeError, 'Must provide ISite'
+    unregisterBeforeTraverse(obj, HOOK_NAME)
     if hasattr(obj, HOOK_NAME):
         delattr(obj, HOOK_NAME)
 
@@ -104,11 +104,11 @@ class LocalService:
         Raises ComponentLookupError if the service can't be found.
         """
         if name in (Utilities,):
-            return SimpleLocalUtilityService(self.context)
+            return IFiveUtilityService(self.context)
         return getGlobalServices().getService(name)
 
 class SimpleLocalUtilityService:
-    implements(ILocalUtilityService)
+    implements(IFiveUtilityService)
 
     def __init__(self, context):
         self.context = context
@@ -128,7 +128,9 @@ class SimpleLocalUtilityService:
             # Singletons. Only one per interface allowed, so, let's call it
             # by the interface.
             name = interface.getName()
-        utilities = getattr(self.context, 'utilities')
+        utilities = getattr(self.context, 'utilities', None)
+        if utilities is None:
+            return default
         utility = utilities._getOb(name, None)
         if utility is None:
             return default
@@ -187,4 +189,37 @@ class FiveSite:
         return LocalService(self)
 
     def setSiteManager(self, sm):
-        return
+        raise NotImplementedError('This class has a fixed site manager')
+
+
+from Products.Five.browser import BrowserView
+
+class LocalSiteView(BrowserView):
+    """View for convering a possible site to a site
+    """
+    
+    def update(self):
+        form = self.request.form
+        if form.has_key('UPDATE_MAKESITE'):
+            self.makeSite()
+        elif form.has_key('UPDATE_UNMAKESITE'):
+            self.unmakeSite()
+
+    def isSite(self):
+        return ISite.providedBy(self.context)
+            
+    def makeSite(self):
+        """Convert a possible site to a site"""
+        if self.isSite():
+            raise ValueError('This is already a site')
+
+        enableLocalSiteHook(self.context)
+        return "This object is now a site"
+    
+    def unmakeSite(self):
+        """Convert a site to a possblesite"""
+        if not self.isSite():
+            raise ValueError('This is not a site')
+
+        disableLocalSiteHook(self.context)
+        return "This object is no longer a site"

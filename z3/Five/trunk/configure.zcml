@@ -6,7 +6,7 @@
   <include file="interfaces.zcml" />
   <include file="permissions.zcml" />
   <include file="i18n.zcml" />
-  <include file="localsite.zcml" />
+  <include package=".site" />
   <include package=".browser" />
   <include package=".form" />
   <include package=".skin" />
