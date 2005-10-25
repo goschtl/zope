@@ -228,6 +228,8 @@ def callManageAfterClone(ob, event):
 ##################################################
 # Monkey patches
 
+_marker = object()
+
 # From ObjectManager
 def manage_afterAdd(self, item, container):
     # Don't do recursion anymore, a subscriber does that.
@@ -246,12 +248,6 @@ def manage_afterClone(self, item):
     # A warning is sent by the subscriber
     pass
 
-# XXX other recursive dispatching:
-# changeOwnership (called by manage_takeOwnership)
-# manage_fixupOwnershipAfterAdd
-# _deleteOwnershipAfterAdd (called by manage_fixupOwnershipAfterAdd)
-
-
 # From ObjectManager
 def _setObject(self, id, object, roles=None, user=None, set_owner=1,
                suppress_events=False):
@@ -259,10 +255,11 @@ def _setObject(self, id, object, roles=None, user=None, set_owner=1,
 
     Also sends IObjectAddedEvent.
     """
+    ob = object # better name, keep original function signature
     v = self._checkId(id)
     if v is not None:
         id = v
-    t = getattr(object, 'meta_type', None)
+    t = getattr(ob, 'meta_type', None)
 
     # If an object by the given id already exists, remove it.
     for object_info in self._objects:
@@ -271,29 +268,29 @@ def _setObject(self, id, object, roles=None, user=None, set_owner=1,
             break
 
     if not suppress_events:
-        notify(ObjectWillBeAddedEvent(object, self, id))
+        notify(ObjectWillBeAddedEvent(ob, self, id))
 
     self._objects = self._objects + ({'id': id, 'meta_type': t},)
-    self._setOb(id, object)
-    object = self._getOb(id)
+    self._setOb(id, ob)
+    ob = self._getOb(id)
+
+    if set_owner:
+        # TODO: eventify manage_fixupOwnershipAfterAdd
+        # This will be called for a copy/clone, or a normal _setObject.
+        ob.manage_fixupOwnershipAfterAdd()
+
+    if set_owner:
+        # Try to give user the local role "Owner", but only if
+        # no local roles have been set on the object yet.
+        if getattr(ob, '__ac_local_roles__', _marker) is None:
+            user = getSecurityManager().getUser()
+            if user is not None:
+                userid = user.getId()
+                if userid is not None:
+                    ob.manage_setLocalRoles(userid, ['Owner'])
 
     if not suppress_events:
-        notify(ObjectAddedEvent(object, self, id))
-
-    # XXX eventify manage_fixupOwnershipAfterAdd and local role Owner
-    if 0:
-        if set_owner:
-            object.manage_fixupOwnershipAfterAdd()
-
-            # Try to give user the local role "Owner", but only if
-            # no local roles have been set on the object yet.
-            if hasattr(object, '__ac_local_roles__'):
-                if object.__ac_local_roles__ is None:
-                    user = getSecurityManager().getUser()
-                    if user is not None:
-                        userid = user.getId()
-                        if userid is not None:
-                            object.manage_setLocalRoles(userid, ['Owner'])
+        notify(ObjectAddedEvent(ob, self, id))
 
     # manage_afterAdd was here
 
@@ -303,6 +300,7 @@ def _setObject(self, id, object, roles=None, user=None, set_owner=1,
 # From BTreeFolder2
 def BT_setObject(self, id, object, roles=None, user=None, set_owner=1,
                  suppress_events=False):
+    ob = object # better name, keep original function signature
     v = self._checkId(id)
     if v is not None:
         id = v
@@ -312,28 +310,28 @@ def BT_setObject(self, id, object, roles=None, user=None, set_owner=1,
         self._delObject(id)
 
     if not suppress_events:
-        notify(ObjectWillBeAddedEvent(object, self, id))
+        notify(ObjectWillBeAddedEvent(ob, self, id))
 
-    self._setOb(id, object)
-    object = self._getOb(id)
+    self._setOb(id, ob)
+    ob = self._getOb(id)
+
+    if set_owner:
+        # TODO: eventify manage_fixupOwnershipAfterAdd
+        # This will be called for a copy/clone, or a normal _setObject.
+        ob.manage_fixupOwnershipAfterAdd()
+
+    if set_owner:
+        # Try to give user the local role "Owner", but only if
+        # no local roles have been set on the object yet.
+        if getattr(ob, '__ac_local_roles__', _marker) is None:
+            user = getSecurityManager().getUser()
+            if user is not None:
+                userid = user.getId()
+                if userid is not None:
+                    ob.manage_setLocalRoles(userid, ['Owner'])
 
     if not suppress_events:
-        notify(ObjectAddedEvent(object, self, id))
-
-    # XXX eventify manage_fixupOwnershipAfterAdd and local role Owner
-    if 0:
-        if set_owner:
-            object.manage_fixupOwnershipAfterAdd()
-
-            # Try to give user the local role "Owner", but only if
-            # no local roles have been set on the object yet.
-            if hasattr(object, '__ac_local_roles__'):
-                if object.__ac_local_roles__ is None:
-                    user = getSecurityManager().getUser()
-                    if user is not None:
-                        userid = user.getId()
-                        if userid is not None:
-                            object.manage_setLocalRoles(userid, ['Owner'])
+        notify(ObjectAddedEvent(ob, self, id))
 
     # manage_afterAdd was here
 
@@ -542,7 +540,7 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
 
             # try to make ownership explicit so that it gets carried
             # along to the new location if needed.
-            ob.manage_changeOwnershipType(explicit=1) # XXX event?
+            ob.manage_changeOwnershipType(explicit=1)
 
             orig_container._delObject(orig_id, suppress_events=True)
             ob = aq_base(ob)
@@ -551,13 +549,11 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
             self._setObject(id, ob, set_owner=0, suppress_events=True)
             ob = self._getOb(id)
 
-            notify(ObjectMovedEvent(ob, orig_container, orig_id,
-                                    self, id))
+            notify(ObjectMovedEvent(ob, orig_container, orig_id, self, id))
 
             ob._postCopy(self, op=1)
-
             # try to make ownership implicit if possible
-            ob.manage_changeOwnershipType(explicit=0) # XXX event?
+            ob.manage_changeOwnershipType(explicit=0)
 
         if REQUEST is not None:
             REQUEST['RESPONSE'].setCookie('__cp', 'deleted',
