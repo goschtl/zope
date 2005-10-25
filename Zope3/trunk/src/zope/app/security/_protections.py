@@ -17,7 +17,7 @@ $Id$
 """
 
 def protect():
-    from zope.security.checker import defineChecker, NoProxy
+    from zope.security.checker import NoProxy
 
     # BBB 2005/10/10 -- MessageIDs are to be removed for Zope 3.3
     import zope.deprecation
@@ -25,16 +25,22 @@ def protect():
     from zope.i18nmessageid import MessageID, Message
     zope.deprecation.__show__.on()
 
+    # Add message id types to the basic types, so their setting cannot be
+    # overridden, once set. `protect()` was not guranteed to run after
+    # zope.security.checker._clear, so that sometimes the proxies were not set.
+    # This is not the ideal solution, but it is effective.
+
     # Make sure the message id gets never proxied
     # TODO because MessageIDs are mutable, this is a security hole.  This hole
     # is one of the primary reasons for the development of the Message 
     # replacement.  See zope/i18nmessageid/messages.txt.
-    defineChecker(MessageID, NoProxy)
+    zope.security.checker.BasicTypes[MessageID] = NoProxy
     # this, however, is not a security hole, because Messages are immutable.
-    defineChecker(Message, NoProxy)
+    zope.security.checker.BasicTypes[Message] = NoProxy
 
     # add __parent__ and __name__ to always available names
     import zope.security.checker
     for name in ['__name__', '__parent__']:
         if name not in zope.security.checker._available_by_default:
             zope.security.checker._available_by_default.append(name)
+
