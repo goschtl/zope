@@ -47,7 +47,6 @@
 
     </meta:complexDirective>
 
-<!--
     <meta:directive
         name="resource"
         schema="zope.app.publisher.browser.metadirectives.IResourceDirective"
@@ -59,7 +58,6 @@
         schema="zope.app.publisher.browser.metadirectives.IResourceDirectoryDirective"
         handler=".metaconfigure.resourceDirectory"
         />
--->
 
     <meta:directive
         name="menu"

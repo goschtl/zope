@@ -25,7 +25,6 @@ from zope.schema.interfaces import ValidationError
 from zope.publisher.browser import isCGI_NAME
 from zope.i18n.interfaces import IUserPreferredCharsets
 
-from zope.app.form.browser.editview import EditView as zope_app_EditView
 from zope.app.location.interfaces import ILocation
 from zope.app.location import LocationProxy
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
@@ -39,13 +38,38 @@ from zope.app.i18n import ZopeMessageFactory as _
 from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 
-class EditView(zope_app_EditView):
+class EditView(BrowserView):
+    """Simple edit-view base class
+
+    Subclasses should provide a schema attribute defining the schema
+    to be edited.
+    """
+
+    errors = ()
+    update_status = None
+    label = ''
+    charsets = None
+
+    # Fall-back field names computes from schema
+    fieldNames = property(lambda self: getFieldNamesInOrder(self.schema))
+    # Fall-back template
     generated_form = ZopeTwoPageTemplateFile('edit.pt')
 
     def __init__(self, context, request):
+        BrowserView.__init__(self, context, request)
         self._processInputs()
         self._setPageEncoding()
-        super(EditView, self).__init__(context, request)
+        self._setUpWidgets()
+
+    def _setUpWidgets(self):
+        adapted = self.schema(self.context)
+        if adapted is not self.context:
+            if not ILocation.providedBy(adapted):
+                adapted = LocationProxy(adapted)
+            adapted.__parent__ = self.context
+        self.adapted = adapted
+        setUpEditWidgets(self, self.schema, source=self.adapted,
+                         names=self.fieldNames)
 
     # taken from zope.publisher.browser.BrowserRequest
     def _decode(self, text):
@@ -60,7 +84,7 @@ class EditView(zope_app_EditView):
             except UnicodeError:
                 pass
         return text
-    
+
     def _processInputs(self):
         request = self.request
         for name, value in request.form.items():
@@ -76,6 +100,60 @@ class EditView(zope_app_EditView):
         charsets = envadapter.getPreferredCharsets() or ['utf-8']
         self.request.RESPONSE.setHeader(
             'Content-Type', 'text/html; charset=%s' % charsets[0])
+
+    def setPrefix(self, prefix):
+        for widget in self.widgets():
+            widget.setPrefix(prefix)
+
+    def widgets(self):
+        return [getattr(self, name+'_widget')
+                for name in self.fieldNames]
+
+    def changed(self):
+        # This method is overridden to execute logic *after* changes
+        # have been made.
+        pass
+
+    def update(self):
+        if self.update_status is not None:
+            # We've been called before. Just return the status we previously
+            # computed.
+            return self.update_status
+
+        status = ''
+
+        content = self.adapted
+
+        if Update in self.request.form.keys():
+            changed = False
+            try:
+                changed = applyWidgetsChanges(self, self.schema,
+                    target=content, names=self.fieldNames)
+                # We should not generate events when an adapter is used.
+                # That's the adapter's job.
+                if changed and self.context is self.adapted:
+                    notify(ObjectModifiedEvent(content))
+            except WidgetsError, errors:
+                self.errors = errors
+                status = _("An error occured.")
+                transaction.abort()
+            else:
+                setUpEditWidgets(self, self.schema, source=self.adapted,
+                                 ignoreStickyValues=True,
+                                 names=self.fieldNames)
+                if changed:
+                    self.changed()
+                    # XXX: Needs locale support:
+                    #formatter = self.request.locale.dates.getFormatter(
+                    #    'dateTime', 'medium')
+                    #status = _("Updated on ${date_time}",
+                    #           mapping={'date_time':
+                    #                    formatter.format(datetime.utcnow())})
+                    status = _("Updated on ${date_time}",
+                               mapping={'date_time': str(datetime.utcnow())})
+
+        self.update_status = status
+        return status
 
 class AddView(EditView):
     """Simple edit-view base class.
