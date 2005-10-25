@@ -11,6 +11,7 @@ from Globals import DevelopmentMode
 
 from Products.CMFCore.tests.base.dummy import DummyFolder
 from Products.CMFCore.tests.base.testcase import _prefix
+from Products.CMFCore.tests.base.testcase import EggTestsBase
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import WarningInterceptor
 
@@ -259,6 +260,34 @@ class DirectoryViewFolderTests(FSDVTest):
         testfolder = self.ob.fake_skin.test_directory
         self.failUnless(isinstance(testfolder, DummyDirectoryViewSurrogate))
 
+class DirectoryViewEggTests( EggTestsBase ):
+
+    def test_resource_listdir_works_with_egg(self):
+        from pkg_resources import Requirement
+        from pkg_resources import require
+        from pkg_resources import resource_listdir
+
+        require('rotten')
+        import Products.Rotten
+        found = resource_listdir('Products.Rotten', 'skins/rotten')
+        self.assertEqual(len(found), 1, found)
+        self.assertEqual(found[0], 'rotten.pt')
+
+    def test_registerDirectory_in_egg(self):
+        from pkg_resources import require
+        require('rotten')
+        from Products.CMFCore.DirectoryView import registerDirectory
+        from Products.CMFCore.DirectoryView import _dirreg
+
+        before = _dirreg._directories.copy()
+        registerDirectory('skins', {'__name__': 'Products.Rotten'})
+        after = _dirreg._directories.copy()
+
+        added = [x for x in after.keys() if x not in before]
+        self.assertEqual(len(added), 2)
+        self.failUnless('Products/Rotten/skins' in added)
+        self.failUnless('Products/Rotten/skins/rotten' in added)
+
 
 if DevelopmentMode:
 
@@ -337,6 +366,7 @@ def test_suite():
         makeSuite(DirectoryViewTests),
         makeSuite(DirectoryViewIgnoreTests),
         makeSuite(DirectoryViewFolderTests),
+        makeSuite(DirectoryViewEggTests),
         makeSuite(DebugModeTests),
         ))
 

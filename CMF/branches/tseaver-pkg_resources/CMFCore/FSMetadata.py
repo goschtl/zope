@@ -15,13 +15,13 @@
 $Id$
 """
 
-from zLOG import LOG, ERROR
-from sys import exc_info
-from os.path import exists
 from ConfigParser import ConfigParser
+from pkg_resources import resource_stream
+import re
+import sys
 from warnings import warn
 
-import re
+from zLOG import LOG, ERROR
 
 class CMFConfigParser(ConfigParser):
     """ This our wrapper around ConfigParser to
@@ -44,20 +44,30 @@ class CMFConfigParser(ConfigParser):
 
 class FSMetadata:
     # public API
-    def __init__(self, filename):
-        self._filename = filename
+    _package = None
+    _entry_subpath = None
+    _filename = None
+    def __init__(self, package=None, entry_subpath=None, filename=None):
+        MESSAGE = ("Either 'filename' or 'package' + 'entry_subpath' must "
+                   "be supplied.")
+        if filename is None:
+            if package is None or entry_subpath is None:
+                raise ValueError(MESSAGE)
+            self._package = package
+            self._entry_subpath = entry_subpath
+        else:
+            if package is not None or entry_subpath is not None:
+                raise ValueError(MESSAGE)
+            self._filename = filename
 
     def read(self):
-        """ Find the files to read, either the old security and
-        properties type or the new metadata type """
-        filename = self._filename + '.metadata'
-        if exists(filename):
-            # found the new type, lets use that
-            self._readMetadata()
-        else:
-            # not found so try the old ones
-            self._properties = self._old_readProperties()
-            self._security = self._old_readSecurity()
+        """ Find the file(s) and read them.
+        
+        o Prefer new '.metdata' file.
+        
+        o Fall back to '.properties' and '.security' files.
+        """
+        self._readMetadata()
 
     def getProxyRoles(self):
         """ Returns the proxy roles """
@@ -82,24 +92,46 @@ class FSMetadata:
         self._security = {}
 
         try:
+            stream = self._getStream()
+            if stream is None:
+                return
+
             cfg = CMFConfigParser()
-            cfg.read(self._filename + '.metadata')
+            cfg.readfp(stream)
 
             # the two sections we care about
-            self._properties = self._getSectionDict(cfg, 'default')
-            self._security = self._getSectionDict(cfg, 'security',
+            self._properties = self._getSectionDict(cfg, 'Default')
+            self._security = self._getSectionDict(cfg, 'Security',
                                                   self._securityParser)
         except:
             LOG('FSMetadata',
                  ERROR,
                 'Error parsing .metadata file',
-                 error=exc_info())
+                 error=sys.exc_info())
 
         # to add in a new value such as proxy roles,
         # just add in the section, call it using getSectionDict
         # if you need a special parser for some whacky
         # config, then just pass through a special parser
 
+
+    def _getStream(self):
+        """ Return a stream opened against our .metadata file
+        
+        o File may be found either via 'pkg_resoruces' or via direct
+          file access.
+        """
+        if self._package is not None:
+            try:
+                filename = '%s%s' % (self._entry_subpath, '.metadata')
+                return resource_stream(self._package, filename)
+            except IOError:
+                return None
+        try:
+            return open(self._filename + '.metadata', 'r')
+        except IOError:
+            return None
+            
     def _nullParser(self, data):
         """
         This is the standard rather boring null parser that does very little
@@ -145,72 +177,3 @@ class FSMetadata:
         # we need to return None if we have none to be compatible
         # with existing API
         return None
-
-    def _old_readProperties(self):
-        """
-        Reads the properties file next to an object.
-
-        Moved from DirectoryView.py to here with only minor
-        modifications. Old and deprecated in favour of .metadata now
-        """
-        fp = self._filename + '.properties'
-        try:
-            f = open(fp, 'rt')
-        except IOError:
-            return None
-        else:
-            warn('.properties objects will disappear in CMF 1.7 - Use '
-                 '.metadata objects instead.', DeprecationWarning)
-            lines = f.readlines()
-            f.close()
-            props = {}
-            for line in lines:
-                kv = line.split('=', 1)
-                if len(kv) == 2:
-                    props[kv[0].strip()] = kv[1].strip()
-                else:
-                    LOG('FSMetadata',
-                        ERROR,
-                        'Error parsing .properties file',
-                        error=exc_info())
-
-            return props
-
-    def _old_readSecurity(self):
-        """
-        Reads the security file next to an object.
-
-        Moved from DirectoryView.py to here with only minor
-        modifications. Old and deprecated in favour of .metadata now
-        """
-        fp = self._filename + '.security'
-        try:
-            f = open(fp, 'rt')
-        except IOError:
-            return None
-        else:
-            warn('.security objects will disappear in CMF 1.7 - Use '
-                 '.metadata objects instead.', DeprecationWarning)
-            lines = f.readlines()
-            f.close()
-            prm = {}
-            for line in lines:
-                try:
-                    c1 = line.index(':')+1
-                    c2 = line.index(':',c1)
-                    permission = line[:c1-1]
-                    acquire = bool(line[c1:c2])
-                    proles = line[c2+1:].split(',')
-                    roles=[]
-                    for role in proles:
-                        role = role.strip()
-                        if role:
-                            roles.append(role)
-                except:
-                    LOG('DirectoryView',
-                        ERROR,
-                        'Error reading permission from .security file',
-                        error=exc_info())
-                        # warning use of exc_info is deprecated
-                prm[permission]=(acquire,roles)
-            return prm

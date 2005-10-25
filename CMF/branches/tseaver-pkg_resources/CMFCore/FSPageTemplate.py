@@ -15,6 +15,7 @@
 $Id$
 """
 
+from pkg_resources import resource_string
 import re
 
 import Globals
@@ -63,8 +64,10 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     # Declare security for unprotected PageTemplate methods.
     security.declarePrivate('pt_edit', 'write')
 
-    def __init__(self, id, filepath, fullname=None, properties=None):
-        FSObject.__init__(self, id, filepath, fullname, properties)
+    def __init__(self, id, filepath=None, package=None, entry_subpath=None,
+                 fullname=None, properties=None):
+        FSObject.__init__(self, id, filepath, package, entry_subpath,
+                          fullname, properties)
         self.ZBindings_edit(self._default_bindings)
 
     def _createZODBClone(self):
@@ -78,12 +81,15 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 #        return 0
 
     def _readFile(self, reparse):
-        fp = expandpath(self._filepath)
-        file = open(fp, 'r')    # not 'rb', as this is a text file!
-        try:
-            data = file.read()
-        finally:
-            file.close()
+        if self._filepath is None:
+            data = resource_string(self._package, self._entry_subpath)
+        else:
+            fp = expandpath(self._filepath)
+            file = open(fp, 'r')    # not 'rb', as this is a text file!
+            try:
+                data = file.read()
+            finally:
+                file.close()
 
         if reparse:
             # If we already have a content_type set it must come from a
@@ -100,7 +106,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                     encoding = xml_info.group(1) or 'utf-8'
                     self.content_type = 'text/xml; charset=%s' % encoding
 
-            self.write(data)
+        self.write(data)
 
     security.declarePrivate('read')
     def read(self):

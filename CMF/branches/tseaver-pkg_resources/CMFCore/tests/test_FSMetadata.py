@@ -20,9 +20,11 @@ import Zope2
 Zope2.startup()
 
 from test_FSSecurity import FSSecurityBase
+from base.testcase import EggTestsBase
+from base.dummy import DummyFolder
 
 
-class FSMetadata(FSSecurityBase):
+class FSMetadataDirectoryTests(FSSecurityBase):
 
     def _checkProxyRoles(self, obj, roles):
         # Test proxy roles on the object
@@ -84,9 +86,30 @@ class FSMetadata(FSSecurityBase):
         self._checkProxyRoles(ob, ['Manager', 'Anonymous'])
 
 
+class FSMetadataEggTests(EggTestsBase):
+
+    def test_fsmetadata_from_egg(self):
+        from pkg_resources import require
+        from Products.CMFCore.DirectoryView import addDirectoryViews
+        from Products.CMFCore.DirectoryView import registerDirectory
+
+        faux_globals = {'__name__': 'Products.Rotten'}
+        require('rotten')
+        registerDirectory('skins', faux_globals)
+
+        ob =  DummyFolder()
+        self.failIf('rotten' in ob.__dict__)
+        addDirectoryViews(ob, 'skins', faux_globals)
+        self.failUnless('rotten' in ob.__dict__)
+
+        rotten = ob.rotten
+        template = rotten._getOb('rotten')
+        self.assertEqual(template.title, 'Rotten Template')
+
 def test_suite():
     return TestSuite((
-        makeSuite(FSMetadata),
+        makeSuite(FSMetadataDirectoryTests),
+        makeSuite(FSMetadataEggTests),
         ))
 
 if __name__ == '__main__':

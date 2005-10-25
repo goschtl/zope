@@ -51,10 +51,31 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
 
+    _filepath = None
+    _package = None
+    _entry_subpath = None
     _file_mod_time = 0
     _parsed = 0
 
-    def __init__(self, id, filepath, fullname=None, properties=None):
+    def __init__(self, id, filepath=None, package=None, entry_subpath=None,
+                 fullname=None, properties=None):
+        MESSAGE = ("Either 'filepath' or 'package' + 'entry_subpath' must "
+                   "be supplied.")
+        if filepath is None:
+            if package is None or entry_subpath is None:
+                raise ValueError(MESSAGE)
+            self._package = package
+            self._entry_subpath = entry_subpath
+        else:
+            if package is not None or entry_subpath is not None:
+                raise ValueError(MESSAGE)
+            self._filepath = filepath
+            fp = expandpath(self._filepath)
+            try:
+                self._file_mod_time = stat(fp)[8]
+            except:
+                pass
+
         if properties:
             # Since props come from the filesystem, this should be
             # safe.
@@ -68,11 +89,6 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
 
         self.id = id
         self.__name__ = id # __name__ is used in traceback reporting
-        self._filepath = filepath
-        fp = expandpath(self._filepath)
-
-        try: self._file_mod_time = stat(fp)[8]
-        except: pass
         self._readFile(0)
 
     security.declareProtected(ViewManagementScreens, 'manage_doCustomize')

@@ -227,3 +227,50 @@ class FSDVTest( TestCase, WarningInterceptor ):
         # kill the copy
         self._free_warning_output()
         rmtree(self.tempname)
+
+class EggTestsBase( FSDVTest ):
+    """ Base class for tests of skins inside .egg files.
+    """
+    _skinname = 'not_a_package'
+
+    def setUp(self):
+        import os
+        from pkg_resources import working_set
+        import sys
+        import Products
+        FSDVTest.setUp(self)
+        self._entry_name = os.path.join(self.tempname, self._skinname)
+        self._oldpath = sys.path[:]
+        self._oldmodules = {}
+        self._oldmodules.update(sys.modules)
+        self._saveWorkingSet()
+        self._products_path = Products.__path__[:]
+        working_set.entries.insert(0, self._entry_name)
+        sys.path.insert(0, os.path.join(self.tempname,
+                                        self._skinname,
+                                       ))
+
+    def tearDown(self):
+        import sys
+        from pkg_resources import working_set
+        import Products
+        sys.path[:] = self._oldpath
+        sys.modules.clear()
+        sys.modules.update(self._oldmodules)
+        Products.__path__[:] = self._products_path
+        self._restoreWorkingSet()
+        FSDVTest.tearDown(self)
+
+    def _saveWorkingSet(self):
+        from pkg_resources import working_set
+        self._ws_entries = working_set.entries[:]
+        self._ws_entry_keys = dict(working_set.entry_keys)
+        self._ws_by_key = dict(working_set.by_key)
+
+    def _restoreWorkingSet(self):
+        from pkg_resources import working_set
+        working_set.entries[:] = self._ws_entries
+        working_set.entry_keys.clear()
+        working_set.entry_keys.update(self._ws_entry_keys)
+        working_set.by_key.clear() 
+        working_set.by_key.update(self._ws_by_key)
