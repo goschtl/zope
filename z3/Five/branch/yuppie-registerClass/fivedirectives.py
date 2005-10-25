@@ -17,8 +17,9 @@ $Id$
 """
 from zope.interface import Interface
 from zope.app.publisher.browser.metadirectives import IBasicResourceInformation
+from zope.app.security.fields import Permission
 from zope.configuration.fields import GlobalObject, Tokens, PythonIdentifier
-from zope.schema import TextLine
+from zope.schema import ASCII, TextLine
 
 class IImplementsDirective(Interface):
     """State that a class implements something.
@@ -132,22 +133,22 @@ class IRegisterClassDirective(Interface):
         required=True
         )
 
-    meta_type = TextLine(
+    meta_type = ASCII(
         title=u'Meta Type',
         required=True
         )
 
-    addform = TextLine(
+    permission = Permission(
+        title=u'Add Permission',
+        required=True
+        )
+
+    addform = ASCII(
         title=u'Add Form ID',
         required=False
         )
 
-    permission = TextLine(
-        title=u'Add Permission',
-        required=False
-        )
-
-    icon = TextLine(
+    icon = ASCII(
         title=u'Icon ID',
         required=False
         )

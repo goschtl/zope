@@ -24,16 +24,17 @@ import warnings
 
 import App.config
 import Products
-from AccessControl.Permission import registerPermissions
 from zLOG import LOG, ERROR
 
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
 from zope.configuration import xmlconfig
 from zope.configuration.exceptions import ConfigurationError
+from zope.app import zapi
 from zope.app.component.interface import provideInterface
 from zope.app.component.metaconfigure import adapter
 from zope.app.utility.interfaces import ILocalUtilityService
+from zope.app.security.interfaces import IPermission
 from zope.app.site.interfaces import IPossibleSite, ISite
 
 from viewable import Viewable
@@ -281,22 +282,20 @@ def installSiteHook(_context, class_, site_class=None, utility_service=None):
         )
     _localsite_monkies.append(class_)
 
-def _registerClass(class_, meta_type, addform, permission, icon):
+def _registerClass(class_, meta_type, permission, addform, icon):
     setattr(class_, 'meta_type', meta_type)
+
+    permission_obj = zapi.getUtility(IPermission, permission)
 
     if icon:
         setattr(class_, 'icon', '++resource++%s' % icon)
-
-    if permission is None:
-        permission = "Add %ss" % meta_type
-    registerPermissions(((permission, (), ('Manager',)),))
 
     interfaces = tuple(implementedBy(class_))
 
     info = {'name': meta_type,
             'action': '+/%s' % addform,
             'product': '', # XXX: is this used somewhere?
-            'permission': permission,
+            'permission': str(permission_obj.title),
             'visibility': 'Global', # XXX: should become configurable
             'interfaces': interfaces,
             'instance': class_,
@@ -304,13 +303,11 @@ def _registerClass(class_, meta_type, addform, permission, icon):
 
     Products.meta_types += (info,)
 
-def registerClass(_context, class_, meta_type, addform='', permission=None,
-                 icon=None):
+def registerClass(_context, class_, meta_type, permission, addform='', icon=None):
     _context.action(
         discriminator = ('registerClass', meta_type),
         callable = _registerClass,
-        args = (class_, str(meta_type), str(addform), str(permission),
-                str(icon))
+        args = (class_, meta_type, permission, addform, icon)
         )
 
 # clean up code
