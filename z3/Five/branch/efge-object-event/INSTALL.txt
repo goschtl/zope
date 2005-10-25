@@ -1,0 +1,17 @@
+How to install Five
+-------------------
+
+Requirements for Five 1.2
+=========================
+
+* Zope 2.8.1+ with Python 2.3.x.
+
+Note that Five 1.0 is already part of Zope 2.8.  This doesn't matter,
+though, you can still install Five 1.2 into your Zope 2.8 instances.
+It will override Zope's older version of Five.
+
+Running the tests
+=================
+
+For information on how to install the automatic Five tests, please see
+``tests/README.txt``.
