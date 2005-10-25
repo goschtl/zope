@@ -19,11 +19,13 @@ v1.3
 
 * port to Zope 3.2 (philikon)
 
+* test whether request with skin works properly (use ++skin++, applySkin, etc.)
+
 * remove testrunner (philikon)
 
-* integrate into Zope 2.9
-
 * drop zope 2.8 support (yuppie)
+
+* integrate into Zope 2.9 (philikon)
 
 
 v1.4
