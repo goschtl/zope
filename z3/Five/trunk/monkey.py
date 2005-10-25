@@ -40,10 +40,11 @@ def monkeyPatch():
 
         Otherwise, raises ``ComponentLookupError('Services')``
 
-        XXX Basically, this overrides the one in Zope3 X3.0 so that it
-        uses acquisition instead of looking up __parent__.
-        """
-
+        Basically, this overrides the one in Zope X3 3.0 so that it
+        uses acquisition instead of looking up __parent__.  Monkey
+        patching Zope 3 sucks, but X3 3.0 leaves us no choice, really.
+        Fortunately, this will disappear in Zope 3.2, so we won't wet
+        our pants about this now..."""
         # IMPORTANT
         #
         # This is not allowed to use any services to get its job done!
