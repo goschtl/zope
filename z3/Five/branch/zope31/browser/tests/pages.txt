@@ -194,8 +194,10 @@ high-level security tests).  Let's manually look up a protected view:
 
   >>> from Products.Five.traversable import FakeRequest
   >>> from zope.app import zapi
+  >>> from zope.app.publication.browser import setDefaultSkin
   >>> request = FakeRequest()
-  >>> view = zapi.getView(self.folder.testoid, 'eagle.txt', request)
+  >>> setDefaultSkin(request)
+  >>> view = zapi.getMultiAdapter((self.folder.testoid, request), name=u'eagle.txt')
 
 It's protecting the object with the permission, and not the attribute,
 so we get ('',) instead of ('eagle',):
