@@ -7,7 +7,7 @@ utility which is local to a part of the site, and whose configuration
 is persistent.
 
 Fives support for local sites are partial, the only part we are
-interested in is createing local utilities (services are gone in Zope
+interested in is creating local utilities (services are gone in Zope
 3.1, so we are not interested in creating local services, as that
 would just mean we have to make them into utilities in the near
 future).
