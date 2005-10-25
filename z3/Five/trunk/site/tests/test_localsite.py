@@ -23,16 +23,14 @@ if __name__ == '__main__':
 import unittest
 from Testing import ZopeTestCase
 
-from zope.interface import implements
+from zope.interface import implements, Interface
 from zope.interface import directlyProvides, directlyProvidedBy
-from zope.interface import Interface
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IServiceService
 from zope.component.service import serviceManager
 from zope.component.servicenames import Utilities
 from zope.component import getGlobalServices, getServices, getService
-from zope.app.component.hooks import getServices_hook
-from zope.app.component.hooks import setSite, getSite
+from zope.app.component.hooks import getServices_hook, setSite, getSite
 from zope.app.site.interfaces import IPossibleSite, ISite, ISiteManager
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.tests.placelesssetup import setUp, tearDown
@@ -121,11 +119,10 @@ class Test(ZopeTestCase.ZopeTestCase):
         zcml.load_config("meta.zcml", Products.Five)
         zcml.load_config("permissions.zcml", Products.Five)
         zcml.load_config("configure.zcml", Products.Five.site)
-        zcml_text = """<configure 
-          xmlns="http://namespaces.zope.org/zope"
-          xmlns:five="http://namespaces.zope.org/five">
-          <five:localsite class="Products.Five.testing.localsite.DummySite" />
-        </configure>"""
+        zcml_text = """\
+        <five:localsite
+            xmlns:five="http://namespaces.zope.org/five"
+            class="Products.Five.testing.localsite.DummySite" />"""
         zcml.load_string(zcml_text)
 
     def beforeTearDown(self):
@@ -298,9 +295,10 @@ class BeforeTraversalTest(ZopeTestCase.FunctionalTestCase):
         zcml.load_config("meta.zcml", Products.Five)
         zcml.load_config("permissions.zcml", Products.Five)
         zcml.load_config("configure.zcml", Products.Five.site)
-        zcml_text = """<configure xmlns:five="http://namespaces.zope.org/five">
-        <five:localsite class="Products.Five.testing.localsite.DummySite" />
-        </configure>"""
+        zcml_text = """\
+        <five:localsite
+            xmlns:five="http://namespaces.zope.org/five"
+            class="Products.Five.testing.localsite.DummySite" />"""
         zcml.load_string(zcml_text)
 
     def beforeTearDown(self):
@@ -336,9 +334,10 @@ class LocalUtilityServiceTest(ZopeTestCase.FunctionalTestCase):
         zcml.load_config("meta.zcml", Products.Five)
         zcml.load_config("permissions.zcml", Products.Five)
         zcml.load_config("configure.zcml", Products.Five.site)
-        zcml_text = """<configure xmlns:five="http://namespaces.zope.org/five">
-        <five:localsite class="Products.Five.testing.localsite.DummySite" />
-        </configure>"""
+        zcml_text = """\
+        <five:localsite
+            xmlns:five="http://namespaces.zope.org/five"
+            class="Products.Five.testing.localsite.DummySite" />"""
         zcml.load_string(zcml_text)
         manage_addDummySite(self.folder, 'site')
         self.site = self.folder.site

@@ -29,10 +29,12 @@ class ILocalSiteDirective(Interface):
         title=u"Class",
         required=True
         )
+
     site_class = GlobalObject(
         title=u"Site Class",
         required=False
         )
+
     utility_service = GlobalObject(
         title=u"Utility Service Class",
         required=False
