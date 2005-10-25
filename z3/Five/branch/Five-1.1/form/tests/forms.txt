@@ -47,7 +47,7 @@ which incorrectly ignored its 'handle_errors' argument):
 
   >>> print http(r"""
   ... GET /test_folder_1_/ftf/+/protectedaddform.html HTTP/1.1
-  ... """, handle_errors=False)
+  ... """, handle_errors=True)
   HTTP/1.1 401 Unauthorized
   ...
 
