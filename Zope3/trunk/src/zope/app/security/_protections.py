@@ -37,6 +37,9 @@ def protect():
     zope.security.checker.BasicTypes[MessageID] = NoProxy
     # this, however, is not a security hole, because Messages are immutable.
     zope.security.checker.BasicTypes[Message] = NoProxy
+    zope.security.checker._clear() # XXX The BasicTypes approach requires
+    # _clear be called.  This is not a good idea.  This should be addressed
+    # before release.
 
     # add __parent__ and __name__ to always available names
     import zope.security.checker
