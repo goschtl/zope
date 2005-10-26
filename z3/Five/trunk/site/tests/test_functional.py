@@ -38,8 +38,9 @@ def test_beforeAndAfterTraversal():
     for us, a look up of the local site will yield nothing:
 
       >>> from zope.app.component.hooks import getSite
-      >>> path = '/'.join(self.folder.getPhysicalPath())
-      >>> response = self.publish(path)
+      >>> response = http(r'''
+      ... GET /test_folder_1_ HTTP/1.1
+      ... ''')
       >>> getSite() is None
       True
 
@@ -65,7 +66,9 @@ def test_beforeAndAfterTraversal():
     Now getServices() will return the stub site manager:
 
       >>> path = '/'.join(f1.getPhysicalPath())
-      >>> response = self.publish(path)
+      >>> response = http(r'''
+      ... GET /test_folder_1_/f1 HTTP/1.1
+      ... ''')
       >>> getServices() is sm
       True
 
