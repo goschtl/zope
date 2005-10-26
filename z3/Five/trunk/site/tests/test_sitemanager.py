@@ -114,7 +114,7 @@ class SiteManagerTest(ZopeTestCase.ZopeTestCase):
         zcml_text = """\
         <five:localsite
             xmlns:five="http://namespaces.zope.org/five"
-            class="Products.Five.testing.localsite.DummySite" />"""
+            class="Products.Five.site.tests.dummy.DummySite" />"""
         zcml.load_string(zcml_text)
 
     def beforeTearDown(self):
