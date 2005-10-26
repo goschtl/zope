@@ -1,0 +1,82 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.app.component" file="meta.zcml" />
+
+  <adapter
+      for="OFS.interfaces.IObjectManager"
+      provides="zope.app.location.interfaces.ISublocations"
+      factory=".event.ObjectManagerSublocations"
+      />
+
+  <!-- Ordering of the following subscribers is important -->
+
+  <!-- dispatch IObjectWillBeMovedEvent to sublocation before
+       compatibility calls, to have "bottom-up" semantics -->
+
+  <subscriber
+      for="OFS.interfaces.IObjectManager
+           .event.IObjectWillBeMovedEvent"
+      factory="zope.app.container.contained.dispatchToSublocations"
+      />
+
+  <!-- manage_beforeDelete compatibility -->
+
+  <subscriber
+      for="OFS.interfaces.ISimpleItem
+           .event.IObjectWillBeMovedEvent"
+      factory=".event.callManageBeforeDelete"
+      />
+
+  <subscriber
+      for="OFS.interfaces.IObjectManager
+           .event.IObjectWillBeMovedEvent"
+      factory=".event.callManageBeforeDelete"
+      />
+
+  <!-- manage_afterAdd compatibility -->
+
+  <subscriber
+      for="OFS.interfaces.ISimpleItem
+           zope.app.container.interfaces.IObjectMovedEvent"
+      factory=".event.callManageAfterAdd"
+      />
+
+  <subscriber
+      for="OFS.interfaces.IObjectManager
+           zope.app.container.interfaces.IObjectMovedEvent"
+      factory=".event.callManageAfterAdd"
+      />
+
+  <!-- dispatch IObjectMovedEvent to sublocations after
+       compatibility calls, to have "top-down" semantics -->
+
+  <subscriber
+      for="OFS.interfaces.IObjectManager
+           zope.app.container.interfaces.IObjectMovedEvent"
+      factory="zope.app.container.contained.dispatchToSublocations"
+      />
+
+  <!-- manage_afterClone compatibility -->
+
+  <subscriber
+      for="OFS.interfaces.ISimpleItem
+           .event.IFiveObjectClonedEvent"
+      factory=".event.callManageAfterClone"
+      />
+
+  <subscriber
+      for="OFS.interfaces.IObjectManager
+           .event.IFiveObjectClonedEvent"
+      factory=".event.callManageAfterClone"
+      />
+
+  <!-- dispatch IFiveObjectClonedEvent to sublocations after
+       compatibility calls, to have "top-down" semantics -->
+
+  <subscriber
+      for="OFS.interfaces.IObjectManager
+           .event.IFiveObjectClonedEvent"
+      factory="zope.app.container.contained.dispatchToSublocations"
+      />
+
+</configure>

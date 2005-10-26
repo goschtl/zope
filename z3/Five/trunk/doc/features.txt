@@ -103,3 +103,10 @@ creating one are:
 
     from Products.Five.localsite import enableLocalSiteHook
     enableLocalSiteHook(obj)
+
+Object events
+=============
+
+Five supports sending Zope 3 object events when objects are added,
+moved, renamed, copied and deleted. The use of ``manage_afterAdd`` & co
+methods is deprecated.
