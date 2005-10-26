@@ -49,18 +49,16 @@ def test_beforeAndAfterTraversal():
       >>> f1 = Folder()
       >>> f1.id = 'f1'
       >>> nothing = self.folder._setObject('f1', f1)
-      >>> f1 = self.folder._getOb('f1')
       >>> sm = ServiceServiceStub()
-      >>> f1.setSiteManager(sm)
+      >>> self.folder.f1.setSiteManager(sm)
 
     ... and enable the site traversal hook:
 
       >>> from Products.Five.site.localsite import enableLocalSiteHook
-      >>> enableLocalSiteHook(f1)
+      >>> enableLocalSiteHook(self.folder.f1)
 
     Now getServices() will return the stub site manager:
 
-      >>> path = '/'.join(f1.getPhysicalPath())
       >>> response = http(r'''
       ... GET /test_folder_1_/f1 HTTP/1.1
       ... ''')
