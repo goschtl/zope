@@ -1,0 +1,111 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    >
+
+  <localUtility class=".catalog.Catalog">
+    <factory
+        id="zope.app.catalog"
+        />
+    <require
+        interface="zope.app.catalog.interfaces.ICatalogQuery"
+        permission="zope.Public"
+        />
+    <require
+        interface="zope.app.catalog.interfaces.ICatalogEdit"
+        permission="zope.ManageServices"
+        />
+    <require
+        interface="zope.app.container.interfaces.IContainer"
+        permission="zope.ManageServices"
+        />
+  </localUtility>
+  
+  <content class=".catalog.ResultSet">
+    <require
+        attributes="__iter__ __len__"
+        permission="zope.Public"/>
+  </content>
+  
+  <subscriber
+      handler=".catalog.indexAdded"
+      for=".interfaces.ICatalogIndex
+           zope.app.container.interfaces.IObjectAddedEvent"
+      />
+  
+  <subscriber
+      handler=".catalog.indexDocSubscriber"
+      for="zope.app.intid.interfaces.IIntIdAddedEvent"
+      />
+  
+  <subscriber
+      handler=".catalog.reindexDocSubscriber"
+      for="zope.app.event.objectevent.IObjectModifiedEvent"
+      />
+  
+  <subscriber
+      handler=".catalog.unindexDocSubscriber"
+      for="zope.app.intid.interfaces.IIntIdRemovedEvent"
+      />
+  
+  
+  <content class=".field.FieldIndex">
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IAttributeIndex
+                   zope.index.interfaces.IStatistics
+                  "
+        set_schema=".interfaces.IAttributeIndex"
+        />
+  </content>
+  
+  <content class=".text.TextIndex">
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IAttributeIndex
+                   zope.index.interfaces.IStatistics
+                  "
+        set_schema=".interfaces.IAttributeIndex"
+        />
+  </content>
+  
+  <include package=".browser" />
+
+  <interface interface="zope.index.text.interfaces.ISearchableText" />
+
+  <!-- Registering documentation with API doc -->
+  <configure
+      xmlns:apidoc="http://namespaces.zope.org/apidoc"
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+        id="indexcatalog"
+        title="Indexes and Catalogs"
+        />
+    <apidoc:bookchapter
+        id="catalog"
+        title="Catalog"
+        doc_path="README.txt"
+        parent="indexcatalog"
+        />
+
+    <configure package="zope.index">
+      <apidoc:bookchapter
+          id="fieldindex"
+          title="Field Indexes"
+          doc_path="field/README.txt"
+          parent="indexcatalog"
+          />
+      <apidoc:bookchapter
+          id="testindex"
+          title="Text Indexes"
+          doc_path="text/textindex.txt"
+          parent="indexcatalog"
+          />
+    </configure>
+
+  </configure>
+
+</configure>
