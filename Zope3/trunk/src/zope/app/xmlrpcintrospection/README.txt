@@ -298,6 +298,7 @@ Now let's try to get the signature for `says()`:
   ... <params>
   ... <param>
   ... <value>says</value>
+  ... </param>
   ... </params>
   ... </methodCall>
   ... """, handle_errors=False)
@@ -332,6 +333,7 @@ Now let's try to get the signature for says_not_decorated()`:
   ... <params>
   ... <param>
   ... <value>says_not_decorated</value>
+  ... </param>
   ... </params>
   ... </methodCall>
   ... """, handle_errors=False)
