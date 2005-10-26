@@ -18,11 +18,14 @@ $Id$
 from zope.interface import implements
 from zope.i18n import interpolate
 from zope.i18n.interfaces import ITranslationDomain, IUserPreferredLanguages
-from zope.i18nmessageid import MessageID
 from zope.app import zapi
 from zope.publisher.browser import BrowserLanguages
 
-from Products.PageTemplates import GlobalTranslationService as GTS
+# BBB 2005/10/10 -- MessageIDs are to be removed for Zope 3.3
+import zope.deprecation
+zope.deprecation.__show__.off()
+from zope.i18nmessageid import MessageID, Message
+zope.deprecation.__show__.on()
 
 class FiveTranslationService:
     """Translation service that delegates to ``zope.i18n`` machinery.
@@ -31,7 +34,7 @@ class FiveTranslationService:
     # regarding fallback and Zope 2 compatability
     def translate(self, domain, msgid, mapping=None,
                   context=None, target_language=None, default=None):
-        if isinstance(msgid, MessageID):
+        if isinstance(msgid, (Message, MessageID)):
             domain = msgid.domain
             default = msgid.default
             mapping = msgid.mapping
@@ -85,28 +88,3 @@ class PTSLanguages(object):
     def getPreferredLanguages(self):
         from Products.PlacelessTranslationService.Negotiator import getLangPrefs
         return getLangPrefs(self.context)
-
-# these are needed for the monkey
-_fallback_translation_service = GTS.DummyTranslationService()
-fiveTranslationService = FiveTranslationService()
-
-def getGlobalTranslationService():
-    return fiveTranslationService
-
-def setGlobalTranslationService(newservice):
-    global _fallback_translation_service
-    oldservice, _fallback_translation_service = \
-        _fallback_translation_service, newservice
-    return oldservice
-
-def monkey():
-    # get the services that has been registered so far and plug in our
-    # new one
-    global _fallback_translation_service
-    _fallback_translation_service = \
-        GTS.setGlobalTranslationService(fiveTranslationService)
-
-    # now override the getter/setter so that noone else can mangle
-    # with it anymore
-    GTS.getGlobalTranslationService = getGlobalTranslationService
-    GTS.setGlobalTranslationService = setGlobalTranslationService

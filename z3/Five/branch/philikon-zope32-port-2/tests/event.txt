@@ -71,7 +71,7 @@ Testing
 Let's see what happens for these phases. There is a bit of setup for the
 tests.
 
-  >>> from zope.app.tests.placelesssetup import setUp, tearDown
+  >>> from zope.app.testing.placelesssetup import setUp, tearDown
   >>> setUp()
 
 Because we'll test copy/paste, we need to work inside a database.
@@ -111,7 +111,7 @@ printed events will be in their "natural" order.
   >>> from Products.Five.event import IObjectWillBeMovedEvent
   >>> from Products.Five.event import IFiveObjectClonedEvent
   >>> from OFS.interfaces import IItem
-  >>> from zope.app.tests import ztapi
+  >>> from zope.app.testing import ztapi
   >>> def printObjectEvent(object, event):
   ...     print event.__class__.__name__, object.getId()
   >>> def printObjectEventExceptSome(object, event):

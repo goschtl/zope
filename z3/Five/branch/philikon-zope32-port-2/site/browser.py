@@ -16,7 +16,7 @@
 $Id$
 """
 from zope.app.site.interfaces import ISite
-from zope.app.component.localservice import clearSite
+from zope.app.component.hooks import clearSite
 
 from Products.Five.browser import BrowserView
 from Products.Five.site.localsite import enableLocalSiteHook, \

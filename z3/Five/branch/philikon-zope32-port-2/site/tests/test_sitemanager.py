@@ -30,7 +30,7 @@ from zope.component.interfaces import IServiceService
 from zope.component.service import serviceManager
 from zope.component import getGlobalServices, getServices
 from zope.app.component.hooks import getServices_hook, setSite, getSite
-from zope.app.site.interfaces import IPossibleSite, ISite, ISiteManager
+from zope.app.component.interfaces import IPossibleSite, ISite, ISiteManager
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.tests.placelesssetup import setUp, tearDown
 

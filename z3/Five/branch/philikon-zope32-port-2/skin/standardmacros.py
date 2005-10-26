@@ -15,15 +15,15 @@
 
 $Id$
 """
-from zope.interface.common.mapping import IItemMapping
-from zope.interface import implements
-from zope.component import getView
+import zope.interface
+
+from zope.app import zapi
 from Products.Five.browser import BrowserView
 
 # this is a verbatim copy of zope.app.basicskin except that it doesn't
 # derive from ``object``
 class Macros:
-    implements(IItemMapping)
+    zope.interface.implements(zope.interface.common.mapping.IItemMapping)
 
     macro_pages = ()
     aliases = {
@@ -37,7 +37,7 @@ class Macros:
         context = self.context
         request = self.request
         for name in self.macro_pages:
-            page = getView(context, name, request)
+            page = zapi.getMultiAdapter((context, request), name=name)
             try:
                 v = page[key]
             except KeyError:

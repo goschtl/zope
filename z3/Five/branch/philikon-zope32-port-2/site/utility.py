@@ -19,10 +19,10 @@ from zope.interface import implements
 from zope.component.exceptions import ComponentLookupError
 
 from OFS.Folder import Folder
-from Products.Five.site.interfaces import IFiveUtilityService
+from Products.Five.site.interfaces import IFiveUtilityRegistry
 
 class SimpleLocalUtilityService:
-    implements(IFiveUtilityService)
+    implements(IFiveUtilityRegistry)
 
     def __init__(self, context):
         self.context = context
