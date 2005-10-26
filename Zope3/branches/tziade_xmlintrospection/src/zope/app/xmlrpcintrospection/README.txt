@@ -1,6 +1,7 @@
 ====================
 XMLRPC Introspection
 ====================
+$Id:$
 
 What's introspection now ?
 --------------------------
