@@ -27,7 +27,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         super(Test, self).setUp()
 
     def testInstance(self):
-        ob = xmlrpcintrospection.XMLRPCIntrospection(None, None)
+        ob = xmlrpcintrospection.XMLRPCIntrospection()
         self.assertNotEquals(ob, None)
 
 
