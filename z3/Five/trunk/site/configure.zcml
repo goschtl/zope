@@ -23,7 +23,7 @@
   <adapter
       for="zope.app.site.interfaces.ISite"
       provides=".interfaces.IFiveUtilityService"
-      factory=".utility.SimpleLocalUtilityService"
+      factory=".localsite.SimpleLocalUtilityService"
       />
 
   <subscriber
