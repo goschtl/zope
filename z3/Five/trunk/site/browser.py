@@ -15,7 +15,10 @@
 
 $Id$
 """
+from zope.app.site.interfaces import ISite
+
 from Products.Five.browser import BrowserView
+from Products.Five.site.localsite import enableLocalSiteHook
 
 class LocalSiteView(BrowserView):
     """View for convering a possible site to a site

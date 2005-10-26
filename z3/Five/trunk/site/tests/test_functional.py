@@ -20,6 +20,34 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
+import pprint
+from zope.app import zapi
+from Products.Five import BrowserView
+from Products.Five.site.interfaces import IFiveUtilityService
+from Products.Five.site.localsite import FiveSiteManager
+from Products.Five.site.tests.dummy import IDummyUtility
+
+class CheckServicesView(BrowserView):
+
+    def __call__(self):
+        utility_service = zapi.getService(zapi.servicenames.Utilities)
+        result = {
+            'zapi.getServices() is zapi.getGlobalServices()':
+            zapi.getServices() is zapi.getGlobalServices(),
+            'IFiveUtilityService.providedBy(utility_service)':
+            IFiveUtilityService.providedBy(utility_service),
+            'isinstance(zapi.getServices(), FiveSiteManager)':
+            isinstance(zapi.getServices(), FiveSiteManager),
+            }
+        return pprint.pformat(result)
+
+class LookupUtilitiesView(BrowserView):
+
+    def __call__(self):
+        dummy = getattr(self.context.utilities, IDummyUtility.getName())
+        return "zapi.getUtility(IDummyUtility) == dummy: %s" % \
+               (zapi.getUtility(IDummyUtility) == dummy)
+
 def test_beforeAndAfterTraversal():
     """Test component lookup before and after traversal
 
@@ -29,47 +57,121 @@ def test_beforeAndAfterTraversal():
       >>> from Products.Five import zcml
       >>> zcml.load_config("configure.zcml", Products.Five)
 
-    Before we set up the traversal hook that sends the traversal event
-    for us, a look up of the local site will yield nothing:
+    First we turn our DummySite class into a site in ZCML (and
+    register some views that will provide us with some test info),
+
+      >>> zcml_text = '''\\
+      ... <configure xmlns="http://namespaces.zope.org/zope"
+      ...            xmlns:meta="http://namespaces.zope.org/meta"
+      ...            xmlns:five="http://namespaces.zope.org/five"
+      ...            xmlns:browser="http://namespaces.zope.org/browser">
+      ... 
+      ...   <!-- make the zope2.Public permission work -->
+      ...   <meta:redefinePermission from="zope2.Public" to="zope.Public" />
+      ... 
+      ...   <five:localsite class="Products.Five.site.tests.dummy.DummySite" />
+      ...
+      ...   <browser:page
+      ...       for="Products.Five.site.tests.dummy.IDummySite"
+      ...       name="checkServices.html"
+      ...       class="Products.Five.site.tests.test_functional.CheckServicesView"
+      ...       permission="zope2.Public"
+      ...       />
+      ...
+      ...   <browser:page
+      ...       for="Products.Five.site.tests.dummy.IDummySite"
+      ...       name="lookupUtilities.html"
+      ...       class="Products.Five.site.tests.test_functional.LookupUtilitiesView"
+      ...       permission="zope2.Public"
+      ...       />
+      ... 
+      ... </configure>'''
+      >>> zcml.load_string(zcml_text)
+
+    then we add an instance to our folder:
+
+      >>> from Products.Five.site.tests.dummy import manage_addDummySite
+      >>> nothing = manage_addDummySite(self.folder, 'site')
+
+    Now we check what the info view tells us about local component
+    lookup:
+
+      >>> print http(r'''
+      ... GET /test_folder_1_/site/@@checkServices.html HTTP/1.1
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+      {'IFiveUtilityService.providedBy(utility_service)': False,
+       'isinstance(zapi.getServices(), FiveSiteManager)': False,
+       'zapi.getServices() is zapi.getGlobalServices()': True}
+
+    We see that we have no local component lookup yet, because we
+    haven't set the site.  Therefore, enable the traversal hook by
+    using the view that's provided for this task (we first need to
+    create a manager account in order to be able to access it):
+
+      >>> uf = self.folder.acl_users
+      >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
+
+      >>> print http(r'''
+      ... POST /test_folder_1_/site/@@manage_localsite.html HTTP/1.1
+      ... Authorization: Basic manager:r00t
+      ... Content-Length: 25
+      ... 
+      ... UPDATE_MAKESITE=Make site''')
+      HTTP/1.1 200 OK
+      ...
+
+    Now we call the info view again and find that local component
+    lookup is working:
+
+      >>> print http(r'''
+      ... GET /test_folder_1_/site/@@checkServices.html HTTP/1.1
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+      {'IFiveUtilityService.providedBy(utility_service)': True,
+       'isinstance(zapi.getServices(), FiveSiteManager)': True,
+       'zapi.getServices() is zapi.getGlobalServices()': False}
+
+    Of course, sites are only active *during* traversal; after
+    traversal they're gone:
 
       >>> from zope.app.component.hooks import getSite
-      >>> response = http(r'''
-      ... GET /test_folder_1_ HTTP/1.1
-      ... ''')
       >>> getSite() is None
       True
 
-      >>> from zope.component import getServices, getGlobalServices
-      >>> getServices() is getGlobalServices()
-      True
 
-    Now we add a site with a stub site manager...
+    We can also register utilities now:
 
-      >>> from Products.Five.site.tests.test_sitemanager import Folder, ServiceServiceStub
-      >>> f1 = Folder()
-      >>> f1.id = 'f1'
-      >>> nothing = self.folder._setObject('f1', f1)
-      >>> sm = ServiceServiceStub()
-      >>> self.folder.f1.setSiteManager(sm)
+      >>> from zope.app import zapi
+      >>> utility_service = self.folder.site.getSiteManager().getService(
+      ...     zapi.servicenames.Utilities)
 
-    ... and enable the site traversal hook:
+      >>> from Products.Five.site.tests.dummy import IDummyUtility, DummyUtility
+      >>> dummy = DummyUtility()
+      >>> utility_service.registerUtility(IDummyUtility, dummy)
 
-      >>> from Products.Five.site.localsite import enableLocalSiteHook
-      >>> enableLocalSiteHook(self.folder.f1)
+    and find them being looked up just fine:
 
-    Now getServices() will return the stub site manager:
-
-      >>> response = http(r'''
-      ... GET /test_folder_1_/f1 HTTP/1.1
+      >>> print http(r'''
+      ... GET /test_folder_1_/site/@@lookupUtilities.html HTTP/1.1
       ... ''')
-      >>> getServices() is sm
-      True
+      HTTP/1.1 200 OK
+      ...
+      zapi.getUtility(IDummyUtility) == dummy: True
 
+    Of course, we can't look it up once the request has ended, because
+    we lose the local site setup:
 
-    Finally, clean up the traversal hook as well as global services:
+      >>> zapi.getUtility(IDummyUtility)
+      Traceback (most recent call last):
+      ...
+      ComponentLookupError: (<InterfaceClass Products.Five.site.tests.dummy.IDummyUtility>, '')
 
-      >>> from zope.app.component.localservice import clearSite
-      >>> clearSite()
+    Let's clean up the current site
+
+    Finally, global services and the monkeys:
 
       >>> from zope.app.tests.placelesssetup import tearDown
       >>> tearDown()
