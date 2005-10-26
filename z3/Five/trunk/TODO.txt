@@ -5,6 +5,8 @@ TODO
 v1.2
 ----
 
+* cleanup: reset cleanup lists
+
 * five:registerClass (yuppie)
 
   - scope should probably be a Choice; default should naybe be None?
@@ -45,8 +47,6 @@ v1.4
 
 - l10n (philikon)
 
-- Allow Zope2 boilerplate context.registerClass be configured through zcml
-
 - Figure out where add-view redirects should go.
 
 - Instructions on using add views.
@@ -57,8 +57,6 @@ v1.4
 
 - FTP: allow manage_FTPstat, manage_FTPget, manage_FTPlist to dispatch to
   filerepresentation adapters.  Make sure to handle security correctly.
-
-- Icons through <browser:icon>?
 
 - Grant security stuff through ZCML (<grant />)?
 
