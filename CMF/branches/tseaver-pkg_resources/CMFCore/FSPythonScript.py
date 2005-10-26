@@ -87,12 +87,8 @@ class FSPythonScript (FSObject, Script):
         Read the file (indicated by exandpath(self._filepath), and parse the
         data if necessary.
         """
-        fp = expandpath(self._filepath)
-        file = open(fp, 'r')
-        try: data = file.read()
-        finally: file.close()
-        if reparse:
-            self._write(data, reparse)
+        data = self._readFileAsResourceOrDirect()
+        self._write(data, reparse)
 
     def _validateProxy(self, roles=None):
         pass

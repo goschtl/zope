@@ -20,7 +20,8 @@ from DateTime import DateTime
 from AccessControl import ClassSecurityInfo
 from webdav.common import rfc1123_date
 from OFS.Cache import Cacheable
-from OFS.Image import Image, getImageInfo
+from OFS.Image import Image
+from OFS.Image import getImageInfo
 
 from permissions import FTPAccess
 from permissions import View
@@ -29,8 +30,8 @@ from DirectoryView import registerFileExtension
 from DirectoryView import registerMetaType
 from FSObject import FSObject
 from utils import _dtmldir
-from utils import _setCacheHeaders, _ViewEmulator
-from utils import expandpath
+from utils import _ViewEmulator
+from utils import _setCacheHeaders
 
 
 class FSImage(FSObject):
@@ -63,12 +64,7 @@ class FSImage(FSObject):
         return Image(self.getId(), '', self._readFile(1))
 
     def _readFile(self, reparse):
-        fp = expandpath(self._filepath)
-        file = open(fp, 'rb')
-        try:
-            data = self._data = file.read()
-        finally:
-            file.close()
+        data = self._readFileAsResourceOrDirect()
         if reparse or self.content_type == 'unknown/unknown':
             self.ZCacheable_invalidate()
             ct, width, height = getImageInfo( data )

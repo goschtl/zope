@@ -32,7 +32,6 @@ from permissions import FTPAccess
 from permissions import View
 from permissions import ViewManagementScreens
 from utils import _setCacheHeaders, _checkConditionalGET
-from utils import expandpath
 
 xml_detect_re = re.compile('^\s*<\?xml\s+(?:[^>]*?encoding=["\']([^"\'>]+))?')
 _marker = []  # Create a new marker object.
@@ -81,15 +80,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 #        return 0
 
     def _readFile(self, reparse):
-        if self._filepath is None:
-            data = resource_string(self._package, self._entry_subpath)
-        else:
-            fp = expandpath(self._filepath)
-            file = open(fp, 'r')    # not 'rb', as this is a text file!
-            try:
-                data = file.read()
-            finally:
-                file.close()
+        data = self._readFileAsResourceOrDirect()
 
         if reparse:
             # If we already have a content_type set it must come from a

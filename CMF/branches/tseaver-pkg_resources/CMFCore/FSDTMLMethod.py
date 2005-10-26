@@ -31,7 +31,6 @@ from permissions import View
 from permissions import ViewManagementScreens
 from utils import _dtmldir
 from utils import _setCacheHeaders
-from utils import expandpath
 
 
 _marker = []  # Create a new marker object.
@@ -79,16 +78,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
         return DTMLMethod(self.read(), __name__=self.getId())
 
     def _readFile(self, reparse):
-        if self._filepath is None:
-            data = resource_string(self._package, self._entry_subpath)
-        else:
-            fp = expandpath(self._filepath)
-            file = open(fp, 'r')    # not 'rb', as this is a text file!
-            try:
-                data = file.read()
-            finally:
-                file.close()
-        self.raw = data
+        self.raw = self._readFileAsResourceOrDirect()
         if reparse:
             self._reading = 1  # Avoid infinite recursion
             try:

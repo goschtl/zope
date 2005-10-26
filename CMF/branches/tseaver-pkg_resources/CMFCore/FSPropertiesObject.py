@@ -26,8 +26,6 @@ from DirectoryView import registerMetaType
 from FSObject import FSObject
 from permissions import ViewManagementScreens
 from utils import _dtmldir
-from utils import expandpath
-
 
 class FSPropertiesObject (FSObject, PropertyManager):
     """FSPropertiesObjects simply hold properties."""
@@ -89,13 +87,8 @@ class FSPropertiesObject (FSObject, PropertyManager):
         Read the file (indicated by exandpath(self._filepath), and parse the
         data if necessary.
         """
-        fp = expandpath(self._filepath)
-
-        file = open(fp, 'r')    # not 'rb', as this is a text file!
-        try:
-            lines = file.readlines()
-        finally:
-            file.close()
+        data = self._readFileAsResourceOrDirect()
+        lines = data.splitlines()
 
         map = []
         lino=0

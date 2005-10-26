@@ -15,7 +15,9 @@
 $Id$
 """
 
-from os import path, stat
+from os import path
+from os import stat
+from pkg_resources import resource_string
 
 import Globals
 from AccessControl import ClassSecurityInfo
@@ -207,6 +209,20 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         """Return the path of the file we represent"""
         self._updateFromFS()
         return self._filepath
+
+    security.declarePrivate('_readFileAsResourceOrDirect')
+    def _readFileAsResourceOrDirect(self):
+        """ Return our file's bits, looking in the appropriate place.
+        """
+        if self._filepath is None:
+            return resource_string(self._package, self._entry_subpath)
+        else:
+            fp = expandpath(self._filepath)
+            file = open(fp, 'r')    # not 'rb', as this is a text file!
+            try:
+                return file.read()
+            finally:
+                file.close()
 
 Globals.InitializeClass(FSObject)
 

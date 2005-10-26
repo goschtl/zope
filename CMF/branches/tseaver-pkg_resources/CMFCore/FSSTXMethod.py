@@ -65,16 +65,7 @@ class FSSTXMethod( FSObject ):
 
     def _readFile( self, reparse ):
 
-        fp = expandpath( self._filepath )
-        file = open( fp, 'r' )  # not binary, we want CRLF munging here.
-
-        try:
-            data = file.read()
-        finally:
-            file.close()
-
-        self.raw = data
-
+        self.raw = self._readFileAsResourceOrDirect()
         if reparse:
             self.cook()
 

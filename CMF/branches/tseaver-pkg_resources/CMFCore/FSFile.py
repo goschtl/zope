@@ -31,7 +31,6 @@ from permissions import View
 from permissions import ViewManagementScreens
 from utils import _dtmldir
 from utils import _setCacheHeaders, _ViewEmulator
-from utils import expandpath
 
 
 class FSFile(FSObject):
@@ -85,10 +84,7 @@ class FSFile(FSObject):
         return content_type
 
     def _readFile(self, reparse):
-        fp = expandpath(self._filepath)
-        file = open(fp, 'rb')
-        try: data = file.read()
-        finally: file.close()
+        data = self._readFileAsResourceOrDirect()
         if reparse or self.content_type == 'unknown/unknown':
             self.ZCacheable_invalidate()
             self.content_type=self._get_content_type(file, data, self.id)

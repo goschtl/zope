@@ -27,8 +27,6 @@ from FSObject import FSObject
 from permissions import View
 from permissions import ViewManagementScreens
 from utils import _dtmldir
-from utils import expandpath
-
 
 class FSZSQLMethod(SQL, FSObject):
     """FSZSQLMethods act like Z SQL Methods but are not directly
@@ -80,11 +78,7 @@ class FSZSQLMethod(SQL, FSObject):
         return s
 
     def _readFile(self, reparse):
-        fp = expandpath(self._filepath)
-        file = open(fp, 'r')    # not 'rb', as this is a text file!
-        try:
-            data = file.read()
-        finally: file.close()
+        data = self._readFileAsResourceOrDirect()
 
         # parse parameters
         parameters={}
