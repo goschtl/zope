@@ -34,6 +34,7 @@ from zope.app.container.contained import ObjectMovedEvent
 from zope.app.container.contained import ObjectAddedEvent
 from zope.app.container.contained import ObjectRemovedEvent
 from zope.app.event.objectevent import ObjectCopiedEvent
+from zope.app.container.contained import dispatchToSublocations
 
 from Products.Five.fiveconfigure import isFiveMethod
 
@@ -159,13 +160,52 @@ class ObjectManagerSublocations(object):
     def sublocations(self):
         for ob in self.container.objectValues():
             yield ob
+        # XXX also want to provide opaqueItems's values
+
+# The following subscribers should really be defined in ZCML
+# but we don't have enough control over subscriber ordering for
+# that to work exactly right.
+# (Sometimes IItem comes before IObjectManager, sometimes after,
+# depending on some of Zope's classes.)
+# This code can be simplified when Zope is completely rid of
+# manage_afterAdd & co, then IItem wouldn't be relevant anymore and we
+# could have a simple subscriber for IObjectManager that directly calls
+# dispatchToSublocations.
+
+def dispatchObjectWillBeMovedEvent(ob, event):
+    """Multi-subscriber for IItem + IObjectWillBeMovedEvent.
+    """
+    # First, dispatch to sublocations
+    if IObjectManager.providedBy(ob):
+        dispatchToSublocations(ob, event)
+    # Next, do the manage_beforeDelete dance
+    if hasDeprecatedMethods(ob):
+        callManageBeforeDelete(ob, event)
+
+def dispatchObjectMovedEvent(ob, event):
+    """Multi-subscriber for IItem + IObjectMovedEvent.
+    """
+    # First, do the manage_afterAdd dance
+    if hasDeprecatedMethods(ob):
+        callManageAfterAdd(ob, event)
+    # Next, dispatch to sublocations
+    if IObjectManager.providedBy(ob):
+        dispatchToSublocations(ob, event)
+
+def dispatchFiveObjectClonedEvent(ob, event):
+    """Multi-subscriber for IItem + IFiveObjectClonedEvent.
+    """
+    # First, do the manage_afterClone dance
+    if hasDeprecatedMethods(ob):
+        callManageAfterClone(ob, event)
+    # Next, dispatch to sublocations
+    if IObjectManager.providedBy(ob):
+        dispatchToSublocations(ob, event)
+
 
 def callManageAfterAdd(ob, event):
     """Compatibility subscriber for manage_afterAdd.
     """
-    # used for ISimpleItem/IObjectManager, IObjectMovedEvent
-    if not hasDeprecatedMethods(ob):
-        return
     container = event.newParent
     if container is None:
         # this is a remove
@@ -182,9 +222,6 @@ def callManageAfterAdd(ob, event):
 def callManageBeforeDelete(ob, event):
     """Compatibility subscriber for manage_beforeDelete.
     """
-    # used for ISimpleItem/IObjectManager, IObjectMovedEvent
-    if not hasDeprecatedMethods(ob):
-        return
     container = event.oldParent
     if container is None:
         # this is an add
@@ -212,9 +249,6 @@ def callManageBeforeDelete(ob, event):
 def callManageAfterClone(ob, event):
     """Compatibility subscriber for manage_afterClone.
     """
-    # used for ISimpleItem/IObjectManager, IObjectMovedEvent
-    if not hasDeprecatedMethods(ob):
-        return
     if not isFiveMethod(ob.manage_afterClone):
         warnings.warn(
             "Calling %s.manage_afterClone is deprecated when using Five, "
@@ -620,7 +654,7 @@ from OFS.CopySupport import CopyContainer
 from OFS.OrderSupport import OrderSupport
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
 
-def doMonkies(transitional, info=None):
+def doMonkies(transitional, info=None, register_cleanup=True):
     """Monkey patch various methods to provide container events.
 
     If passed, ``info`` is a zconfig information about where the
@@ -663,9 +697,11 @@ def doMonkies(transitional, info=None):
     patchMethod(OrderSupport, '_old_manage_renameObject',
                 manage_renameObject)
 
+    # XXX remove this for Five 1.3, and put it in configure.zcml
     zcml.load_config('event.zcml', Products.Five)
 
-    addCleanUp(undoMonkies)
+    if register_cleanup:
+        addCleanUp(undoMonkies)
 
 def patchMethod(class_, name, new_method):
     method = getattr(class_, name, None)

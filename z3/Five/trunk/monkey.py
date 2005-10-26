@@ -59,3 +59,10 @@ def monkeyPatch():
 
     from zope.app.component import localservice
     localservice.getLocalServices = getLocalServices
+
+    # XXX in Five 1.3, call this from here:
+    if False: # XXX
+        from Products.Five import event
+        event.doMonkies(transitional=False,
+                        info='Five/monkey.py',
+                        register_cleanup=False)
