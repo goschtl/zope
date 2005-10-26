@@ -258,7 +258,7 @@ def _registerClass(class_, meta_type, permission, addform, icon, global_):
     _register_monkies.append(class_)
     _meta_type_regs.append(meta_type)
 
-def registerClass(_context, class_, meta_type, permission, addform='',
+def registerClass(_context, class_, meta_type, permission, addform=None,
                   icon=None, global_=True):
     _context.action(
         discriminator = ('registerClass', meta_type),

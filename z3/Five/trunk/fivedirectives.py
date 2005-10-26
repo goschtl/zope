@@ -136,34 +136,46 @@ class IPagesFromDirectoryDirective(IBasicResourceInformation):
 class IRegisterClassDirective(Interface):
 
     """registerClass directive schema.
+
+    Register Five content with Zope 2.
     """
 
     class_ = GlobalObject(
         title=u'Instance Class',
+        description=u'Dotted name of the class that is registered.',
         required=True
         )
 
     meta_type = ASCII(
         title=u'Meta Type',
+        description=u'A human readable unique identifier.',
         required=True
         )
 
     permission = Permission(
         title=u'Add Permission',
+        description=u'The permission for adding objects of this class.',
         required=True
         )
 
     addform = ASCII(
         title=u'Add Form ID',
+        description=u'The ID of the add form used in the ZMI.',
+        default=None,
         required=False
         )
 
     icon = ASCII(
         title=u'Icon ID',
+        description=u'The ID of the icon used in the ZMI.',
+        default=None,
         required=False
         )
 
     global_ = Bool(
         title=u'Global scope?',
+        description=u'If "global" is False the class is only available in '
+                    u'containers that explicitly allow one of its interfaces.',
+        default=True,
         required=False
         )

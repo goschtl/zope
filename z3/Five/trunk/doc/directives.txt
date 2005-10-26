@@ -182,3 +182,8 @@ pagesFromDirectory
 ------------------
 
 Loads all files with .pt extension in a directory as pages.
+
+registerClass
+-------------
+
+Registers Five content with Zope 2.
