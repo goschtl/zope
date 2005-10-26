@@ -1,0 +1,7 @@
+<metal:block>
+<!--
+<metal:block tal:replace="structure view/context/@@zmi_icon"/>
+-->
+ <metal:block tal:content="structure view/content"/>
+</metal:block>
+

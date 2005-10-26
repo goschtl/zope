@@ -1,0 +1,6 @@
+TODOs for Table package
+
+
+
+batching
+action management

@@ -1,0 +1,107 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:i18n="http://namespaces.zope.org/i18n"
+           i18n_domain="zope"
+           >
+
+ <browser:page
+  for="zope.app.container.interfaces.IReadContainer"
+  name="tablecontents.html"
+  permission="zope.Public"
+  class=".view.ContainerView"
+  template="contents.pt"
+  title="Table"
+  menu="zmi_views"/>
+
+
+ <tableconfig id="table.container.config"
+              colNames="__name__ title size created modified"
+              sortBy="title">
+ <action name="Edit" title="Edit"/>
+ <action name="Cut" title="Cut"/>
+ <action name="Copy" title="Copy"/>
+ <action name="Paste" title="Paste"/>
+ <action name="Delete" title="Delete"/>
+ <action name="Apply" title="Apply"/>
+ <action name="Cancel" title="Cancel"/>
+<!--
+  <action name="rename" title="Rename"/>
+  <action name="cut" title="Cut"/>
+  <action name="copy" title="Copy"/>
+  <action name="delete" title="delete"/>
+  <action name="edit" title="Edit"/>
+  <action name="save" title="Save"/>
+  -->
+   <column name="__name__" title="Name" field="__name__"
+           schema="zope.app.location.interfaces.ILocation"
+           />
+   
+   <column name="title" title="Title"
+           schema="zope.app.dublincore.interfaces.IZopeDublinCore"
+           />
+   
+   <column name="size" title="Size"
+            schema="zope.app.size.interfaces.ISized"
+            field="sizeForSorting"/>
+   
+   <column name="modified" title="Modified"
+           schema="zope.app.dublincore.interfaces.IZopeDublinCore"/>
+   
+   <column name="created" title="Created"
+           schema="zope.app.dublincore.interfaces.IZopeDublinCore"/>
+  
+ </tableconfig>
+
+ <browser:tableview name="table.container.table"
+            for="zope.app.container.interfaces.IReadContainer"
+            config="table.container.config"
+            class=".view.ContainerTableView"
+            permission="zope.View"
+            template="table.pt">
+  
+ </browser:tableview>
+
+ <browser:rowview
+  for="zope.app.container.interfaces.IContained"
+  name=""
+  template="row.pt"
+  permission="zope.Public"
+  />
+ 
+ <browser:cellview
+  for="zope.interface.Interface"
+  name="__name__"
+  class=".view.NameView"
+  template="namecell.pt"
+  permission="zope.Public"
+  />
+
+ <browser:cellview
+  for="zope.interface.Interface"
+  name="size"
+  permission="zope.Public"
+  field="sizeForDisplay"
+  />
+
+  <browser:cellview
+  for="zope.interface.Interface"
+  name="title"
+  useForm="True"
+  permission="zope.Public"
+  />
+
+  <browser:cellview
+  for="zope.interface.Interface"
+  name="created"
+  permission="zope.Public"
+  />
+
+   <browser:cellview
+  for="zope.interface.Interface"
+  name="modified"
+  permission="zope.Public"
+  />
+
+
+
+</configure>

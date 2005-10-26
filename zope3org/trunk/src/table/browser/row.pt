@@ -1,0 +1,2 @@
+<td tal:repeat="cell view/getCells"
+    tal:content="structure cell"/>

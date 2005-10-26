@@ -1,0 +1,72 @@
+<div tal:content="view/table/config/sortBy"/>
+
+
+<table id="sortable" class="listing"
+       tal:define="prefix view/table/config/prefix">
+
+ 
+  
+  <thead tal:define="sortBy view/table/config/sortBy;
+                    sortReverse view/table/config/sortReverse;
+                    reReverse python:not sortReverse">
+    <input type="hidden" tal:attributes="name string:${prefix}sortBy;
+                                         id string:${prefix}sortBy;
+                                         value sortBy"/>
+    <input type="hidden" tal:attributes="name string:${prefix}sortReverse;
+                                         id string:${prefix}sortReverse;
+                                         value sortReverse"/>
+    
+  <th>&nbsp;</th>
+  
+  <th tal:repeat="col view/table/getColumns">
+   <a tal:condition="python:col.name!=sortBy"
+      tal:attributes="href string:javascript:document.getElementById('${prefix}sortBy').value='${col/name}';; document.getElementById('${prefix}sortBy').form.submit();;;">
+   <span class="selected" tal:content="col/title"/>
+   </a>
+
+   <a tal:condition="python:col.name==sortBy"
+      tal:attributes="href string:javascript:document.getElementById('${prefix}sortReverse').value='${reReverse}';; document.getElementById('${prefix}sortReverse').form.submit();;;">
+   <span class="selected" tal:content="col/title"/>
+   </a>
+
+
+  </th>
+ </thead>
+  <tbody>
+   
+   <metal:block tal:repeat="row view/getRows">
+    <tr tal:define="oddrow repeat/row/odd"
+        tal:attributes="class python:oddrow and 'even' or 'odd'"
+        tal:content="structure row">
+    </tr>
+   </metal:block>
+  </tbody>  
+ </table>
+
+ <!--
+ <div tal:define="actions python:view.table.config.actions.values();
+                  name string:${view/table/config/prefix}action">
+
+  <div tal:content="nocall:view/table/config/action"/>
+  
+  <input type="hidden"
+         value=""
+         tal:attributes="name name;id name;"/>
+  <metal:block tal:repeat="action actions">
+   <button type="button"
+          tal:attributes="value action/title;
+          onClick string:javascript:document.getElementById('${name}').value='${action/name}';;this.form.submit();;"
+          tal:content="action/title"
+          />
+   
+  </metal:block>
+
+ </div>
+
+ -->
+
+ <input tal:repeat="action view/getActions"
+        tal:replace="structure action/render" />
+
+ <span tal:repeat="error view/table/form/errors" i18n:translate=""
+       tal:content="error"/>

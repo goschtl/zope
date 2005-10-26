@@ -1,0 +1,11 @@
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="zope">
+
+ <body metal:fill-slot="body">
+
+
+  <div tal:content="structure view/table/@@index"/>
+ 
+
+</body>
+</html>

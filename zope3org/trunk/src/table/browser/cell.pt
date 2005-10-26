@@ -1,0 +1,41 @@
+<!--
+<metal:block tal:condition="view/useForm"
+             tal:define="form nocall:view/cell/table/form;">
+<metal:block tal:define="rowForm python:form.forms[view.cell.row.key];
+                         widget python:rowForm.widgets[view.cell.column.name]">
+-->
+<metal:block tal:condition="view/useForm">
+<metal:block tal:define="widget view/content">
+
+ <div class="field" tal:define="hint widget/hint"
+      metal:define-macro="widgetcell">
+  <div class="form-fields-help"
+       i18n:translate=""
+       tal:content="hint"
+       tal:condition="hint"
+       tal:attributes="id string:field-help-for-${widget/name}"
+       onclick="this.style.visibility='hidden';"
+       style="visibility: hidden; position: absolute;"
+       >Title of this content object.</div>
+  <div class="widget" tal:content="structure widget">
+  <input type="text" /></div>
+  <div class="error"
+       tal:condition="widget/error"
+       >
+   <span tal:replace="structure widget/error">error</span>
+          </div>
+        </div>
+
+</metal:block>
+ <!--
+<span  tal:content="structure view/content"/>
+form
+-->
+</metal:block>
+<metal:block tal:condition="not:view/useForm">
+<span  tal:condition="view/useWidget"
+       tal:content="structure view/content"/>
+<span  tal:condition="not:view/useWidget"
+       tal:content="view/content"/>
+</metal:block>
+

@@ -1,0 +1,11 @@
+ <table id="sortable" class="listing">
+  <tbody>
+   
+   <metal:block tal:repeat="row view/getRows">
+    <tr tal:define="oddrow repeat/row/odd"
+        tal:attributes="class python:oddrow and 'even' or 'odd'"
+        tal:content="structure row">
+    </tr>
+   </metal:block>
+  </tbody>
+ </table>

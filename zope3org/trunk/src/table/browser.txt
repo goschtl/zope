@@ -1,0 +1,106 @@
+================================
+Tables displayed in Browserviews
+================================
+
+
+XXX not working
+
+    In order to get a browser view for cells ...
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.publisher.interfaces.browser import IBrowserRequest
+    >>> from zope.app.testing import ztapi
+    >>> from table.interfaces import IRow,ICell
+    >>> from table.browser.views import TableView,CellView,RowView
+    >>> from table.browser.interfaces import IRowView,ICellView
+    >>> ztapi.provideView(IRow,IBrowserRequest, IRowView,u'',RowView)
+
+    The class below defines a simple cell view which just returns the
+    value of the cell.
+
+    >>> class SimpleCellView(object):
+    ...     def __init__(self,context,cell,request):
+    ...         self.context = context
+    ...         self.request = request
+    ...         self.cell = cell
+    ...     def __call__(self,*args,**kw):
+    ...         return self.cell()
+
+    In order for the view to be registered it has to be registered as
+    a named multiview providing ICellView. The name has to match the
+    column name in the table.
+
+    >>> ztapi.provideMultiView((Interface,ICell),IBrowserRequest,
+    ...       ICellView,u'priority',SimpleCellView)
+    >>> request = TestRequest()
+    >>> view = TableView(table,request)
+    >>> print view()
+    <table id="sortable" class="listing">
+      <tbody>
+    <BLANKLINE>
+    <BLANKLINE>
+        <tr class="even"><td>4</td>
+    </tr>...
+
+    In order to get a configuration from the request we have to adapt
+    an ITableConfig with our request and table. But at first we need
+    to set the name of the table in order to get a unique prefix on
+    the page (we'll see below).
+
+    >>> table.name = u'nameoftable'
+
+    >>> requestConfig = zapi.getMultiAdapter((table,request),ITableConfig)
+    >>> print requestConfig
+    <table.table.RequestTableConfig object at ...>
+
+    Now that we have a request config we can apply it to the
+    table. This will override settings that are redefined in the
+    request and keep the existing settings from the already applied
+    config of the table
+
+    >>> table.applyConfig(requestConfig)
+    >>> table.config.sortBy
+    u'priority'
+
+    Ok, now that the request has no form values, we actually have no
+    overrides, so let's redifine the 'colNames' setting which defines
+    which columns are shown and in which order.
+
+    >>> form = {}
+    >>> form[u'table.%s.colNames' % table.name] = [u'name',u'priority']
+    >>> request = TestRequest(form=form)
+    >>> requestConfig = zapi.getMultiAdapter((table,request),ITableConfig)
+
+    We set the name of the table above so we have a unique prefix on
+    the config.
+
+    >>> requestConfig.prefix
+    u'table.nameoftable.'
+
+    Now we apply the new config to our table and get the new settings
+
+    >>> table.applyConfig(requestConfig)
+    >>> table.config.colNames
+    [u'name', u'priority']
+
+    >>> view = TableView(table,request)
+    >>> view()
+    Traceback (most recent call last):
+    ...
+    ComponentLookupError: ...ICellView>, u'name')
+
+    Ups, now we have a lookup error. This is because we have not
+    defined a named cell view for our 'name' column. Let's take the
+    same as we took for 'priority' above.
+
+    >>> ztapi.provideMultiView((Interface,ICell),IBrowserRequest,
+    ...       ICellView,u'name',SimpleCellView)
+    >>> print view()
+    <table id="sortable" class="listing">
+      <tbody>
+    <BLANKLINE>
+    <BLANKLINE>
+        <tr class="even"><td>name 0 </td><td>4</td>
+    </tr>...
+
+

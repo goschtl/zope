@@ -1,0 +1,9 @@
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="zope">
+<body metal:fill-slot="body">
+ <div>testing</div>
+<form tal:attributes="action view/@@absolute_url">
+ <metal:block tal:replace="structure view/table"/>
+</form>
+</body>
+</html>

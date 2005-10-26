@@ -1,0 +1,26 @@
+<zope:configure xmlns="http://namespaces.zope.org/meta"
+                xmlns:zope="http://namespaces.zope.org/zope">
+ 
+ <directives namespace="http://namespaces.zope.org/browser">
+  
+  <groupingDirective
+   name="tableview"
+   schema=".metadirectives.ITableViewDirective"
+   handler=".metaconfigure.TableViewDirective"/>
+
+  <groupingDirective
+   name="cellview"
+   schema=".metadirectives.ICellViewDirective"
+   handler=".metaconfigure.CellViewDirective"/>
+
+  <groupingDirective
+   name="rowview"
+   schema=".metadirectives.IRowViewDirective"
+   handler=".metaconfigure.RowViewDirective"/>
+
+  
+  
+ </directives>
+   
+</zope:configure>
+

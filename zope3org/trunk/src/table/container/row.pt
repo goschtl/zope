@@ -1,0 +1,9 @@
+<td>
+ <input class="noborder" name="selection:list" type="checkbox"
+        tal:attributes="value view/row/key;
+                        id view/row/key;
+                        checked python:view.row.selected and 'checked' or '';
+                        name string:${view/row/table/config/prefix}selection:list;"/>
+</td>
+<td tal:repeat="cell view/getCells"
+    tal:content="structure cell"/>
