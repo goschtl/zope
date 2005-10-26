@@ -1,7 +1,7 @@
 ====================
 XMLRPC Introspection
 ====================
-$Id:$
+$Id$
 
 What's introspection now ?
 --------------------------
@@ -169,13 +169,9 @@ And call our xmlrpc method, that should list the content method:
   ...
   <?xml version='1.0'?>
   <methodResponse>
-  <params>
-  <param>
-  <value><array><data>
+  ...
   <value><string>contents</string></value>
-  </data></array></value>
-  </param>
-  </params>
+  ...
   </methodResponse>
   <BLANKLINE>
 
@@ -217,14 +213,10 @@ Let's try to add another method, to se if it gets listed...
   ...
   <?xml version='1.0'?>
   <methodResponse>
-  <params>
-  <param>
-  <value><array><data>
+  ...
   <value><string>contents</string></value>
   <value><string>contents2</string></value>
-  </data></array></value>
-  </param>
-  </params>
+  ...
   </methodResponse>
   <BLANKLINE>
 
