@@ -23,16 +23,11 @@ if __name__ == '__main__':
 def test_beforeAndAfterTraversal():
     """Test component lookup before and after traversal
 
-    Set up:
+    Set up Five:
 
       >>> import Products.Five
       >>> from Products.Five import zcml
       >>> zcml.load_config("configure.zcml", Products.Five)
-      >>> zcml_text = '''\\
-      ... <five:localsite
-      ...   xmlns:five="http://namespaces.zope.org/five"
-      ...   class="Products.Five.testing.localsite.DummySite" />'''
-      >>> zcml.load_string(zcml_text)
 
     Before we set up the traversal hook that sends the traversal event
     for us, a look up of the local site will yield nothing:
