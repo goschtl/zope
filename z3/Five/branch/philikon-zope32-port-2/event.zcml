@@ -1,0 +1,40 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- needed to call this during init code -->
+  <!-- XXX not needed in Five 1.3, when included by configure.zcml -->
+  <include package="zope.app.component" file="meta.zcml" />
+
+  <!-- Adapter giving sublocations for ObjectManagers, used
+       by dispatchToSublocations -->
+
+  <adapter
+      for="OFS.interfaces.IObjectManager"
+      provides="zope.app.location.interfaces.ISublocations"
+      factory=".event.ObjectManagerSublocations"
+      />
+
+  <!-- dispatch IObjectWillBeMovedEvent with "bottom-up" semantics -->
+
+  <subscriber
+      for="OFS.interfaces.IItem
+           .event.IObjectWillBeMovedEvent"
+      factory=".event.dispatchObjectWillBeMovedEvent"
+      />
+
+  <!-- dispatch IObjectMovedEvent with "top-down" semantics -->
+
+  <subscriber
+      for="OFS.interfaces.IItem
+           zope.app.container.interfaces.IObjectMovedEvent"
+      factory=".event.dispatchObjectMovedEvent"
+      />
+
+  <!-- dispatch IFiveObjectClonedEvent with "top-down" semantics -->
+
+  <subscriber
+      for="OFS.interfaces.IItem
+           .event.IFiveObjectClonedEvent"
+      factory=".event.dispatchFiveObjectClonedEvent"
+      />
+
+</configure>
