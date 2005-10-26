@@ -26,7 +26,16 @@ def monkeyPatch():
     from Products.Five import interfaces, i18n
     interfaces.monkey()
     i18n.monkey()
+    localsites_monkey()
 
+    # XXX in Five 1.3, call this from here:
+    if False: # XXX
+        from Products.Five import event
+        event.doMonkies(transitional=False,
+                        info='Five/monkey.py',
+                        register_cleanup=False)
+
+def localsites_monkey():
     from Acquisition import aq_inner, aq_parent
     from zope.app.site.interfaces import ISiteManager
     from zope.component.exceptions import ComponentLookupError
@@ -60,9 +69,12 @@ def monkeyPatch():
     from zope.app.component import localservice
     localservice.getLocalServices = getLocalServices
 
-    # XXX in Five 1.3, call this from here:
-    if False: # XXX
-        from Products.Five import event
-        event.doMonkies(transitional=False,
-                        info='Five/monkey.py',
-                        register_cleanup=False)
+    from zope.event import notify
+    from zope.app.publication.interfaces import EndRequestEvent
+    def close(self):
+        self.other.clear()
+        self._held=None
+        notify(EndRequestEvent(None, self))
+
+    from ZPublisher.BaseRequest import BaseRequest
+    BaseRequest.close = close
