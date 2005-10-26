@@ -17,8 +17,10 @@ $Id$
 """
 from zope.interface import Interface
 from zope.app.publisher.browser.metadirectives import IBasicResourceInformation
+from zope.app.security.fields import Permission
 from zope.configuration.fields import GlobalObject, Tokens, PythonIdentifier
 from zope.configuration.fields import Bool
+from zope.schema import ASCII
 from zope.schema import TextLine
 
 class IImplementsDirective(Interface):
@@ -131,3 +133,37 @@ class IPagesFromDirectoryDirective(IBasicResourceInformation):
         required=True
         )
 
+class IRegisterClassDirective(Interface):
+
+    """registerClass directive schema.
+    """
+
+    class_ = GlobalObject(
+        title=u'Instance Class',
+        required=True
+        )
+
+    meta_type = ASCII(
+        title=u'Meta Type',
+        required=True
+        )
+
+    permission = Permission(
+        title=u'Add Permission',
+        required=True
+        )
+
+    addform = ASCII(
+        title=u'Add Form ID',
+        required=False
+        )
+
+    icon = ASCII(
+        title=u'Icon ID',
+        required=False
+        )
+
+    global_ = Bool(
+        title=u'Global scope?',
+        required=False
+        )

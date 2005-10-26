@@ -162,7 +162,13 @@
        schema=".fivedirectives.IBridgeDirective"
        handler=".fiveconfigure.bridge"
        />
-       
+
+    <meta:directive
+       name="registerClass"
+       schema=".fivedirectives.IRegisterClassDirective"
+       handler=".fiveconfigure.registerClass"
+       />
+
   </meta:directives>
 
   <meta:directive

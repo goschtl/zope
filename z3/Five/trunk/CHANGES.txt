@@ -7,6 +7,11 @@ Trunk only
 
 Features
 --------
+
+* five:registerClass directive: This does the necessary Zope 2 registration
+  for Five content. It is no longer necessary to add a initialize method to
+  the product's __init__. New objects can be added through the ZMI.
+
 * Local site support: Five has now support for creating local sites and 
   thereby local utilities. This is mostly needed for allowing CMF to convert
   it's portal tools into local utilities.

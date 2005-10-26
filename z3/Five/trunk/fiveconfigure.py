@@ -23,14 +23,17 @@ import glob
 import warnings
 
 import App.config
+import Products
 from zLOG import LOG, ERROR
 
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
 from zope.configuration import xmlconfig
 from zope.configuration.exceptions import ConfigurationError
+from zope.app import zapi
 from zope.app.component.interface import provideInterface
 from zope.app.component.metaconfigure import adapter
+from zope.app.security.interfaces import IPermission
 
 from viewable import Viewable
 from traversable import Traversable
@@ -223,6 +226,46 @@ def pagesFromDirectory(_context, directory, module, for_=None,
              layer=layer, for_=for_, template=fname)
 
 
+_register_monkies = []
+_meta_type_regs = []
+def _registerClass(class_, meta_type, permission, addform, icon, global_):
+    setattr(class_, 'meta_type', meta_type)
+
+    permission_obj = zapi.getUtility(IPermission, permission)
+
+    path = class_.__module__.split('.')
+    if path[0] == 'Products':
+        product = path[1]
+    else:
+        product = ''
+
+    if icon:
+        setattr(class_, 'icon', '++resource++%s' % icon)
+
+    interfaces = tuple(implementedBy(class_))
+
+    info = {'name': meta_type,
+            'action': addform and ('+/%s' % addform) or '',
+            'product': product,
+            'permission': str(permission_obj.title),
+            'visibility': global_ and 'Global' or None,
+            'interfaces': interfaces,
+            'instance': class_,
+            'container_filter': None}
+
+    Products.meta_types += (info,)
+
+    _register_monkies.append(class_)
+    _meta_type_regs.append(meta_type)
+
+def registerClass(_context, class_, meta_type, permission, addform='',
+                  icon=None, global_=True):
+    _context.action(
+        discriminator = ('registerClass', meta_type),
+        callable = _registerClass,
+        args = (class_, meta_type, permission, addform, icon, global_)
+        )
+
 # clean up code
 
 def killMonkey(class_, name, fallback, attr=None):
@@ -255,13 +298,34 @@ def undefaultViewable(class_):
     killMonkey(class_, '__browser_default__', '__fallback_default__',
                '__five_viewable__')
 
+def unregisterClass(class_):
+    delattr(class_, 'meta_type')
+    try:
+        delattr(class_, 'icon')
+    except AttributeError:
+        pass
+
 def cleanUp():
+    global _traversable_monkies
     for class_ in _traversable_monkies:
         untraversable(class_)
+    _traversable_monkies = []
+
+    global _defaultviewable_monkies
     for class_ in _defaultviewable_monkies:
         undefaultViewable(class_)
-    
+    _defaultviewable_monkies = []
+
+    global _register_monkies
+    for class_ in _register_monkies:
+        unregisterClass(class_)
+    _register_monkies = []
+
+    global _meta_type_regs
+    Products.meta_types = tuple([ info for info in Products.meta_types
+                                  if info['name'] not in _meta_type_regs ])
+    _meta_type_regs = []
+
 from zope.testing.cleanup import addCleanUp
 addCleanUp(cleanUp)
 del addCleanUp
-
