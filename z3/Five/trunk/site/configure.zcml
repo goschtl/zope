@@ -16,7 +16,7 @@
 
   <adapter
       for="*"
-      provides="zope.component.IServiceService"
+      provides="zope.component.interfaces.IServiceService"
       factory=".localsite.serviceServiceAdapter"
       />
 
@@ -27,13 +27,13 @@
       />
 
   <subscriber
-      factory="zope.app.component.localservice.threadSiteSubscriber"
       for="zope.app.publication.interfaces.IBeforeTraverseEvent"
+      factory="zope.app.component.localservice.threadSiteSubscriber"
       />
 
   <subscriber
-      factory="zope.app.component.localservice.clearThreadSiteSubscriber"
       for="zope.app.publication.interfaces.IEndRequestEvent"
+      factory="zope.app.component.localservice.clearThreadSiteSubscriber"
       />
 
   <browser:page
