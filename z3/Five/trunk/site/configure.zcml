@@ -39,7 +39,7 @@
   <browser:page
       for="zope.app.site.interfaces.IPossibleSite"
       name="manage_localsite.html"
-      permission="zope2.Public"
+      permission="five.ManageSite"
       class=".localsite.LocalSiteView"
       template="localsite.pt"
       />
