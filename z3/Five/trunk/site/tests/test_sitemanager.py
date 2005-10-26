@@ -23,13 +23,12 @@ if __name__ == '__main__':
 import unittest
 from Testing import ZopeTestCase
 
-from zope.interface import implements, Interface
+from zope.interface import implements
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IServiceService
 from zope.component.service import serviceManager
-from zope.component.servicenames import Utilities
-from zope.component import getGlobalServices, getServices, getService
+from zope.component import getGlobalServices, getServices
 from zope.app.component.hooks import getServices_hook, setSite, getSite
 from zope.app.site.interfaces import IPossibleSite, ISite, ISiteManager
 from zope.app.traversing.interfaces import IContainmentRoot
@@ -37,7 +36,6 @@ from zope.app.tests.placelesssetup import setUp, tearDown
 
 from Acquisition import Implicit
 from OFS.ObjectManager import ObjectManager
-from OFS.SimpleItem import SimpleItem
 
 import Products.Five
 from Products.Five import zcml
@@ -82,13 +80,7 @@ class ServiceServiceStub(object):
 def Wrapper(ob, container):
     return ob.__of__(container)
 
-class IDummyUtility(Interface):
-    pass
-
-class DummyUtility(SimpleItem):
-    implements(IDummyUtility)
-
-class Test(ZopeTestCase.ZopeTestCase):
+class SiteManagerTest(ZopeTestCase.ZopeTestCase):
 
     def afterSetUp(self):
         setUp()
@@ -288,103 +280,9 @@ class Test(ZopeTestCase.ZopeTestCase):
 
         self.assertEqual(getSite(), None)
 
-class BeforeTraversalTest(ZopeTestCase.FunctionalTestCase):
-
-    def afterSetUp(self):
-        setUp()
-        zcml.load_config("meta.zcml", Products.Five)
-        zcml.load_config("permissions.zcml", Products.Five)
-        zcml.load_config("configure.zcml", Products.Five.site)
-        zcml_text = """\
-        <five:localsite
-            xmlns:five="http://namespaces.zope.org/five"
-            class="Products.Five.testing.localsite.DummySite" />"""
-        zcml.load_string(zcml_text)
-
-    def beforeTearDown(self):
-        from zope.app.component.localservice import clearSite
-        clearSite()
-        tearDown()
-
-    def test_before_traversal_event_and_hook(self):
-        return #XXX disabled test -- why? /philiKON
-        from Products.Five.site.localsite import enableLocalSiteHook
-        f1 = Folder()
-        f1.id = 'f1'
-        self.folder._setObject('f1', f1)
-        f1 = self.folder._getOb('f1')
-        ss = ServiceServiceStub()
-        f1.setSiteManager(ss)
-        enableLocalSiteHook(f1)
-        path = '/'.join(f1.getPhysicalPath())
-        response = self.publish(path)
-        self.assertEqual(getServices(), ss)
-
-    def test_no_before_traversal_event(self):
-        path = '/'.join(self.folder.getPhysicalPath())
-        response = self.publish(path)
-        self.assertEqual(getSite(), None)
-
-class LocalUtilityServiceTest(ZopeTestCase.FunctionalTestCase):
-
-    def afterSetUp(self):
-        setUp()
-        from Products.Five.site.localsite import enableLocalSiteHook
-        from Products.Five.testing.localsite import manage_addDummySite
-        zcml.load_config("meta.zcml", Products.Five)
-        zcml.load_config("permissions.zcml", Products.Five)
-        zcml.load_config("configure.zcml", Products.Five.site)
-        zcml_text = """\
-        <five:localsite
-            xmlns:five="http://namespaces.zope.org/five"
-            class="Products.Five.testing.localsite.DummySite" />"""
-        zcml.load_string(zcml_text)
-        manage_addDummySite(self.folder, 'site')
-        self.site = self.folder.site
-        self.site.manage_addFolder('utilities')
-        self.utils = self.site.utilities
-        enableLocalSiteHook(self.site)
-        self.path = '/'.join(self.site.getPhysicalPath())
-        # Traverse to the site so that the local-thread site gets
-        # setup correctly.
-        self.publish(self.path)
-
-    def beforeTearDown(self):
-        from zope.app.component.localservice import clearSite
-        clearSite()
-        tearDown()
-
-    def test_getServicesHook(self):
-        from Products.Five.site.localsite import LocalService
-        local_sm = getServices(None)
-        self.failIf(local_sm is serviceManager)
-        self.failUnless(isinstance(local_sm, LocalService))
-
-        local_sm = getServices(self.site)
-        self.failIf(local_sm is serviceManager)
-        self.failUnless(isinstance(local_sm, LocalService))
-
-    def test_getUtilityService(self):
-        from Products.Five.site.localsite import SimpleLocalUtilityService
-        utils = getService(Utilities)
-        self.failUnless(isinstance(utils, SimpleLocalUtilityService))
-
-        self.assertRaises(ComponentLookupError, utils.getUtility, IDummyUtility)
-
-        self.utils._setObject('dummy', DummyUtility('dummy'))
-        dummy = self.utils._getOb('dummy')
-        self.assertEquals(utils.getUtility(IDummyUtility, name='dummy'), dummy)
-
-        self.assertEquals(list(utils.getUtilitiesFor(IDummyUtility)), 
-                          [('',dummy)])
-        self.assertEquals(list(utils.getAllUtilitiesRegisteredFor(
-            IDummyUtility)), [dummy])
-
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(Test))
-    suite.addTest(unittest.makeSuite(BeforeTraversalTest))
-    suite.addTest(unittest.makeSuite(LocalUtilityServiceTest))
+    suite.addTest(unittest.makeSuite(SiteManagerTest))
     return suite
 
 if __name__ == '__main__':

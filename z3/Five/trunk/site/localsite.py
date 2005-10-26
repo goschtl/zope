@@ -19,12 +19,11 @@ from zope.event import notify
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.interface import implements
 from zope.component import getGlobalServices
-from zope.component.interfaces import IServiceService, IUtilityService
+from zope.component.interfaces import IServiceService
 from zope.component.exceptions import ComponentLookupError
-from zope.component.servicenames import Utilities, Adapters
+from zope.component.servicenames import Utilities
 
-from zope.app.site.interfaces import ISite
-from zope.app.site.interfaces import IPossibleSite
+from zope.app.site.interfaces import ISite, IPossibleSite
 from zope.app.publication.zopepublication import BeforeTraverseEvent
 
 from ExtensionClass import Base
@@ -33,7 +32,7 @@ from Products.SiteAccess.AccessRule import AccessRule
 from ZPublisher.BeforeTraverse import registerBeforeTraverse
 from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
 
-from interfaces import IFiveUtilityService
+from Products.Five.site.interfaces import IFiveUtilityService
 
 def serviceServiceAdapter(ob):
     """An adapter * -> IServiceService.
@@ -85,7 +84,7 @@ def disableLocalSiteHook(obj):
 
     directlyProvides(obj, directlyProvidedBy(obj) - ISite)
 
-class LocalService:
+class FiveSiteManager(object):
     implements(IServiceService)
 
     def __init__(self, context):
@@ -112,119 +111,11 @@ class LocalService:
             return IFiveUtilityService(self.context)
         return getGlobalServices().getService(name)
 
-class SimpleLocalUtilityService:
-    implements(IFiveUtilityService)
-
-    def __init__(self, context):
-        self.context = context
-
-    def getUtility(self, interface, name=''):
-        """See IUtilityService interface
-        """
-        c = self.queryUtility(interface, name)
-        if c is not None:
-            return c
-        raise ComponentLookupError(interface, name)
-
-    def queryUtility(self, interface, name='', default=None):
-        """See IUtilityService interface
-        """
-        if name == '':
-            # Singletons. Only one per interface allowed, so, let's call it
-            # by the interface.
-            name = interface.getName()
-        utilities = getattr(self.context, 'utilities', None)
-        if utilities is None:
-            return default
-        utility = utilities._getOb(name, None)
-        if utility is None:
-            return default
-        if not interface.providedBy(utility):
-            return default
-        return utility
-
-    def getUtilitiesFor(self, interface):
-        utilities = getattr(self.context, 'utilities')
-        for utility in utilities.objectValues():
-            if interface.providedBy(utility):
-                yield (utility.getId(), utility)
-
-    def getAllUtilitiesRegisteredFor(self, interface):
-        # This also supposedly returns "overridden" utilities, but we don't
-        # keep them around. It also does not return the name-value pair that
-        # getUtilitiesFor returns.
-        utilities = getattr(self.context, 'utilities')
-        for utility in utilities.objectValues():
-            if interface.providedBy(utility):
-                yield utility
-
-    def registerUtility(self, interface, utility, name=''):
-        # I think you are *really* supposed to:
-        # 1. Check if there is a "registrations" object for utilities.
-        # 2. If not create one.
-        # 3. Get it.
-        # 4. Create a registration object for the utility.
-        # 5. Rgister the registration object in the registrations.
-        # But that is quite complex, and Jim sais he wants to change that
-        # anyway, and in any case the way you would normally do this in Zope3
-        # and Five would probably differ anyway, so, here is this new 
-        # Five-only, easy to use method!
-        
-        utilities = getattr(self.context, 'utilities', None)
-        if utilities is None:
-            from OFS.Folder import Folder
-            self.context._setObject('utilities', Folder('utilities'))
-            utilities = self.context.utilities
-
-        if name == '':
-            # Singletons. Only one per interface allowed, so, let's call it
-            # by the interface.
-            name = interface.getName()
-            
-        utilities._setObject(name, utility)
-
-
 class FiveSite:
     implements(IPossibleSite)
 
-    def __init__(self, context):
-        self.context = context
-
     def getSiteManager(self):
-        return LocalService(self)
+        return FiveSiteManager(self)
 
     def setSiteManager(self, sm):
         raise NotImplementedError('This class has a fixed site manager')
-
-
-from Products.Five.browser import BrowserView
-
-class LocalSiteView(BrowserView):
-    """View for convering a possible site to a site
-    """
-    
-    def update(self):
-        form = self.request.form
-        if form.has_key('UPDATE_MAKESITE'):
-            self.makeSite()
-        elif form.has_key('UPDATE_UNMAKESITE'):
-            self.unmakeSite()
-
-    def isSite(self):
-        return ISite.providedBy(self.context)
-            
-    def makeSite(self):
-        """Convert a possible site to a site"""
-        if self.isSite():
-            raise ValueError('This is already a site')
-
-        enableLocalSiteHook(self.context)
-        return "This object is now a site"
-    
-    def unmakeSite(self):
-        """Convert a site to a possblesite"""
-        if not self.isSite():
-            raise ValueError('This is not a site')
-
-        disableLocalSiteHook(self.context)
-        return "This object is no longer a site"

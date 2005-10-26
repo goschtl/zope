@@ -23,7 +23,7 @@
   <adapter
       for="zope.app.site.interfaces.ISite"
       provides=".interfaces.IFiveUtilityService"
-      factory=".localsite.SimpleLocalUtilityService"
+      factory=".utility.SimpleLocalUtilityService"
       />
 
   <subscriber
@@ -40,7 +40,7 @@
       for="zope.app.site.interfaces.IPossibleSite"
       name="manage_localsite.html"
       permission="five.ManageSite"
-      class=".localsite.LocalSiteView"
+      class=".browser.LocalSiteView"
       template="localsite.pt"
       />
 
