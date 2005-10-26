@@ -16,9 +16,11 @@
 $Id$
 """
 from zope.app.site.interfaces import ISite
+from zope.app.component.localservice import clearSite
 
 from Products.Five.browser import BrowserView
-from Products.Five.site.localsite import enableLocalSiteHook
+from Products.Five.site.localsite import enableLocalSiteHook, \
+     disableLocalSiteHook
 
 class LocalSiteView(BrowserView):
     """View for convering a possible site to a site
@@ -48,4 +50,12 @@ class LocalSiteView(BrowserView):
             raise ValueError('This is not a site')
 
         disableLocalSiteHook(self.context)
+
+        # disableLocalSiteHook circumcised our context so that it's
+        # not an ISite anymore.  That can mean that certain things for
+        # it can't be found anymore.  So, for the rest of this request
+        # (which will be over in about 20 CPU cycles), already clear
+        # the local site from the thread local.
+        clearSite()
+
         return "This object is no longer a site"

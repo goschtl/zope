@@ -118,6 +118,30 @@ lose the local site setup:
   ...
   ComponentLookupError: (<InterfaceClass Products.Five.site.tests.dummy.IDummyUtility>, '')
 
+At last we can "unmake" the site using the browser view provided by
+Five:
+
+  >>> print http(r'''
+  ... POST /test_folder_1_/site/@@manage_localsite.html HTTP/1.1
+  ... Authorization: Basic manager:r00t
+  ... Content-Length: 29
+  ... 
+  ... UPDATE_UNMAKESITE=Unmake site''')
+  HTTP/1.1 200 OK
+  ...
+
+And everything is back to normal with respect to local component
+lookup:
+
+  >>> print http(r'''
+  ... GET /test_folder_1_/site/@@checkServices.html HTTP/1.1
+  ... ''')
+  HTTP/1.1 200 OK
+  ...
+  {'IFiveUtilityService.providedBy(utility_service)': False,
+   'isinstance(zapi.getServices(), FiveSiteManager)': False,
+   'zapi.getServices() is zapi.getGlobalServices()': True}
+
 Finally, global services and the monkeys:
 
   >>> from zope.app.tests.placelesssetup import tearDown
