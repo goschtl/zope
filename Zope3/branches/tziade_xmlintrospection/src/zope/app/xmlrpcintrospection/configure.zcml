@@ -1,6 +1,6 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
-  xmlns:apidoc="http://namespaces.zope.org/xmlrpcintrospection"
+  xmlns:xmlrpc="http://namespaces.zope.org/xmlrpc"
   i18n_domain="zope">
 
   <xmlrpc:view
