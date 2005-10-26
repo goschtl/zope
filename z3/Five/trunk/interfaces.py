@@ -17,7 +17,6 @@ $Id$
 """
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
-from zope.app.site.interfaces import ISite
 
 class IBrowserDefault(Interface):
     """Provide a hook for deciding about the default view for an object"""
