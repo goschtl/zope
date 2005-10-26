@@ -289,7 +289,11 @@ def _registerClass(class_, meta_type, permission, addform, icon, global_):
 
     permission_obj = zapi.getUtility(IPermission, permission)
 
-    product = class_.__module__.split('.')
+    path = class_.__module__.split('.')
+    if path[0] == 'Products':
+        product = path[1]
+    else:
+        product = ''
 
     if icon:
         setattr(class_, 'icon', '++resource++%s' % icon)
@@ -298,7 +302,7 @@ def _registerClass(class_, meta_type, permission, addform, icon, global_):
 
     info = {'name': meta_type,
             'action': addform and ('+/%s' % addform) or '',
-            'product': (product[0] == 'Products') and product[1] or '',
+            'product': product,
             'permission': str(permission_obj.title),
             'visibility': global_ and 'Global' or None,
             'interfaces': interfaces,
