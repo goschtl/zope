@@ -7,7 +7,16 @@ v1.2
 
 * five:registerClass (yuppie)
 
-* event overhaul (efge)
+  - scope should probably be a Choice; default should naybe be None?
+
+  - cleanup can be an elegant list comprehension
+
+  - test the clean up in the doctest (see if it really cleans up)
+
+  - 'product': class_.__module__.split('.')[1] could throw a key error...?
+
+  - functional test that checks the ZMI if there really is an entry in
+    the add menu?
 
 * marker utility (whit, gotcha)
 
@@ -17,13 +26,16 @@ v1.2
 v1.3
 ----
 
+* remove certain entries from interfaces.zcml that are outdated (yuppie)
+
+* implement an IPhysicallyLocatable adapter for Zope 2 objects, make
+  OFS.Application.Application implement IContainmentRoot (in Zope 2.9)
+
 * port to Zope 3.2 (philikon)
 
 * test whether request with skin works properly (use ++skin++, applySkin, etc.)
 
 * remove testrunner (philikon)
-
-* drop zope 2.8 support (yuppie)
 
 * integrate into Zope 2.9 (philikon)
 
