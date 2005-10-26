@@ -20,54 +20,68 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import unittest
-from Testing import ZopeTestCase
+def test_beforeAndAfterTraversal():
+    """Test component lookup before and after traversal
 
-from zope.component import getServices
-from zope.app.component.localservice import clearSite
-from zope.app.tests.placelesssetup import tearDown
-from zope.app.component.hooks import getSite
+    Set up:
 
-import Products.Five
-from Products.Five import zcml
-from Products.Five.site.localsite import enableLocalSiteHook
-from Products.Five.site.tests.test_sitemanager import Folder, ServiceServiceStub
+      >>> import Products.Five
+      >>> from Products.Five import zcml
+      >>> zcml.load_config("configure.zcml", Products.Five)
+      >>> zcml_text = '''\\
+      ... <five:localsite
+      ...   xmlns:five="http://namespaces.zope.org/five"
+      ...   class="Products.Five.testing.localsite.DummySite" />'''
+      >>> zcml.load_string(zcml_text)
 
-class BeforeTraversalTest(ZopeTestCase.FunctionalTestCase):
+    Before we set up the traversal hook that sends the traversal event
+    for us, a look up of the local site will yield nothing:
 
-    def afterSetUp(self):
-        zcml.load_config("configure.zcml", Products.Five)
-        zcml_text = """\
-        <five:localsite
-            xmlns:five="http://namespaces.zope.org/five"
-            class="Products.Five.testing.localsite.DummySite" />"""
-        zcml.load_string(zcml_text)
+      >>> from zope.app.component.hooks import getSite
+      >>> path = '/'.join(self.folder.getPhysicalPath())
+      >>> response = self.publish(path)
+      >>> getSite() is None
+      True
 
-    def beforeTearDown(self):
-        clearSite()
-        tearDown()
+      >>> from zope.component import getServices, getGlobalServices
+      >>> getServices() is getGlobalServices()
+      True
 
-    def test_before_traversal_event_and_hook(self):
-        f1 = Folder()
-        f1.id = 'f1'
-        self.folder._setObject('f1', f1)
-        f1 = self.folder._getOb('f1')
-        ss = ServiceServiceStub()
-        f1.setSiteManager(ss)
-        enableLocalSiteHook(f1)
-        path = '/'.join(f1.getPhysicalPath())
-        response = self.publish(path)
-        self.assertEqual(getServices(), ss)
+    Now we add a site with a stub site manager...
 
-    def test_no_before_traversal_event(self):
-        path = '/'.join(self.folder.getPhysicalPath())
-        response = self.publish(path)
-        self.assertEqual(getSite(), None)
+      >>> from Products.Five.site.tests.test_sitemanager import Folder, ServiceServiceStub
+      >>> f1 = Folder()
+      >>> f1.id = 'f1'
+      >>> nothing = self.folder._setObject('f1', f1)
+      >>> f1 = self.folder._getOb('f1')
+      >>> sm = ServiceServiceStub()
+      >>> f1.setSiteManager(sm)
+
+    ... and enable the site traversal hook:
+
+      >>> from Products.Five.site.localsite import enableLocalSiteHook
+      >>> enableLocalSiteHook(f1)
+
+    Now getServices() will return the stub site manager:
+
+      >>> path = '/'.join(f1.getPhysicalPath())
+      >>> response = self.publish(path)
+      >>> getServices() is sm
+      True
+
+
+    Finally, clean up the traversal hook as well as global services:
+
+      >>> from zope.app.component.localservice import clearSite
+      >>> clearSite()
+
+      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> tearDown()
+    """
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(BeforeTraversalTest))
-    return suite
+    from Testing.ZopeTestCase import FunctionalDocTestSuite
+    return FunctionalDocTestSuite()
 
 if __name__ == '__main__':
     framework()
