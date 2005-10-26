@@ -1,1 +1,1 @@
-<include package="zope.app.xmlintrospection" />
+<include package="zope.app.xmlrpcintrospection" />
