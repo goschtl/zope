@@ -20,6 +20,12 @@
       factory=".localsite.serviceServiceAdapter"
       />
 
+  <adapter
+      for="zope.app.site.interfaces.ISite"
+      provides=".interfaces.IFiveUtilityService"
+      factory=".utility.SimpleLocalUtilityService"
+      />
+
   <subscriber
       factory="zope.app.component.localservice.threadSiteSubscriber"
       for="zope.app.publication.interfaces.IBeforeTraverseEvent"

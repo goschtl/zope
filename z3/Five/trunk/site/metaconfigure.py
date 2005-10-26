@@ -17,30 +17,22 @@ These directives are specific to Five and have no equivalents in Zope 3.
 
 $Id: fiveconfigure.py 18581 2005-10-14 16:54:25Z regebro $
 """
-
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
 from zope.configuration.exceptions import ConfigurationError
 from zope.app.component.metaconfigure import adapter
 from zope.app.site.interfaces import IPossibleSite, ISite
 
-from interfaces import IFiveUtilityService
-from localsite import FiveSite, SimpleLocalUtilityService
+from Products.Five.site.localsite import FiveSite
 
 def classSiteHook(class_, site_class):
     setattr(class_, 'getSiteManager',
             site_class.getSiteManager.im_func)
     setattr(class_, 'setSiteManager',
             site_class.setSiteManager.im_func)
- 
-count = 0
-def next():
-    global count
-    count += 1
-    return count
 
 _localsite_monkies = []
-def installSiteHook(_context, class_, site_class=None, utility_service=None):
+def installSiteHook(_context, class_, site_class=None):
     if site_class is None:
         if not IPossibleSite.implementedBy(class_):
             # This is not a possible site, we need to monkey-patch it so that
@@ -61,34 +53,17 @@ def installSiteHook(_context, class_, site_class=None, utility_service=None):
             callable = classImplements,
             args=(class_, IPossibleSite)
             )
-    if utility_service is None:
-        utility_service = SimpleLocalUtilityService
-    else:
-        if not IFiveUtilityService.implementedBy(utility_service):
-            raise ConfigurationError('utility_service does not implement '
-                                     'IFiveUtilityService: %s' % utility_service)
-        
-    # Generate a marker interface that should be unique, so that
-    # we can register the utility service only for this class.
-    iface = InterfaceClass('IFiveSite%s' % next())
-    adapter(_context, factory=(utility_service,),
-            provides=IFiveUtilityService,
-            for_=(iface,))
-    _context.action(
-        discriminator = (class_, 'UtilityMarker'),
-        callable = classImplements,
-        args=(class_, iface)
-        )
     _localsite_monkies.append(class_)
 
-def uinstallSiteHooks():
+# clean up code
+
+def uninstallSiteHooks():
     for class_ in _localsite_monkies:
         delattr(class_, 'getSiteManager')
         delattr(class_, 'setSiteManager')
         classImplementsOnly(class_, implementedBy(class_)-IPossibleSite)
         _localsite_monkies.remove(class_)
-    
-from zope.testing.cleanup import addCleanUp
-addCleanUp(uinstallSiteHooks)
-del addCleanUp
 
+from zope.testing.cleanup import addCleanUp
+addCleanUp(uninstallSiteHooks)
+del addCleanUp
