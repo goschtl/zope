@@ -10,6 +10,16 @@ Zope Changes
 
     New features
 
+      - Implemented the language namespace proposal. Now you can override
+        the browser preferred language through the URL, like this:
+
+          http://site.org/++lang++ru/path
+
+        Note: If you want to use a custom IUserPreferredLanguages adapter and
+        the '++lang++' feature together you should use
+        zope.app.publisher.browser.CacheableBrowserLanguages adapter as a base
+        class or at least as example.
+
       - Implemented a new object introspector. Instead of just providing
         information of the object's class, the new introspector focuses on
         providing information that is specific to the instance, such as
@@ -40,11 +50,6 @@ Zope Changes
         used in functional doctests.
 
       - addMenuItem directive supports a `layer` attribute.
-
-      - Fixed issue 390. Deprecated ``IBaseRequest.body`` and
-        ``IBaseRequest.bodyFile``. The latter was simply renamed to
-        ``IBaseRequest.bodyStream``. No code assumes anymore that the input
-        streams are seekable.
 
       - Formalized the Publisher Response API.
 
@@ -122,6 +127,11 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #390: Deprecated ``IBaseRequest.body`` and
+        ``IBaseRequest.bodyFile``. The latter was simply renamed to
+        ``IBaseRequest.bodyStream``. No code assumes anymore that the input
+        streams are seekable.
+
       - Fixed issue #450: ignore python level CookieError and report them
         to the log file.
 
@@ -141,7 +151,7 @@ Zope Changes
 
       Stephan Richter, Roger Ineichen, Marius Gedminas, Julien Anguenot, Benji
       York, Gary Poster, Jim Fulton, Michael Kerrin, Torsten Kurbad,
-      Philipp von Weitershausen, Tarek Ziadé, Andreas Jung
+      Philipp von Weitershausen, Tarek Ziadé, Andreas Jung, Dmitry Vasiliev
 
     Note: If you are not listed and contributed, please add yourself. This
           note will be deleted before the release.
