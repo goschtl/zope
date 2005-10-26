@@ -4,9 +4,17 @@
 
   <browser:page
       for="*"
-      class=".markerview.MarkerView"
-      template="edit_marker.pt"
-      name="marker"
+      class="Products.Five.utilities.browser.marker.EditView"
+      template="www/edit_markers.pt"
+      name="edit-markers.html"
+      permission="zope2.ManageProperties"
+      />
+
+  <browser:page
+      for="*"
+      class="Products.Five.utilities.browser.marker.ViewsDetails"
+      template="www/views_details.pt"
+      name="views-details.html"
       permission="zope2.ManageProperties"
       />
 

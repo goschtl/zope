@@ -43,5 +43,6 @@ class IWriteInterface(Interface):
         """ remove interfaces from interfaces an object directly provides"""
 
 class IMarkerUtility(IReadInterface, IWriteInterface):
-    """This utility exposes part of the IIntrospector interface from Zope3.
+    """This utility exposes part of the IIntrospector interface from Zope3. And provides
+       'mark' and 'erase' methods to add and remove marker interfaces
     """

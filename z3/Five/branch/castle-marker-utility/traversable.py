@@ -29,14 +29,11 @@ from Products.Five.security import newInteraction
 
 _marker = object
 
-class FakeRequest:
+class FakeRequest(dict):
     implements(IBrowserRequest)
 
     def getPresentationSkin(self):
         return None
-
-    def has_key(self, key):
-        return False
 
     def getURL(self):
         return "http://codespeak.net/z3/five"
