@@ -393,6 +393,7 @@ Last, but not least, the method help:
   ... <params>
   ... <param>
   ... <value>says</value>
+  ... </param>
   ... </params>
   ... </methodCall>
   ... """, handle_errors=False)
@@ -419,6 +420,7 @@ Last, but not least, the method help:
   ... <params>
   ... <param>
   ... <value>says_not_documented</value>
+  ... </param>
   ... </params>
   ... </methodCall>
   ... """, handle_errors=False)
