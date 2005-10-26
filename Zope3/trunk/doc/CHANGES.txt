@@ -93,6 +93,10 @@ Zope Changes
       - Implemented viewlets, an extension of content providers. Viewlets
         allow one to easily develop component-driven UIs.
 
+      - Implemented XML-RPC Introspection. XML-RPC Views can therefore
+        be used by the client for API discovering, through three 
+        methods: listAllMethods, methodHelp and methodSignature 
+
     Restructuring
 
       - Mutable MessageIDs have been deprecated and will be removed in
