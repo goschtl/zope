@@ -16,13 +16,13 @@
 $Id$
 """
 from zope.interface import implements, Interface
-from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
+from Products.Five.tests.testing import FiveTraversableFolder
 
 class IDummySite(Interface):
     pass
 
-class DummySite(Folder):
+class DummySite(FiveTraversableFolder):
     """A very dummy Site
     """
     implements(IDummySite)
