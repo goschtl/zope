@@ -1,37 +1,24 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser">
 
-  <!-- enough to bootstrap the machinery to lookup local services -->
-  <hook
-      module="zope.component"
-      name="getServices"
-      implementation="zope.app.component.hooks.getServices_hook"
-      />
-
-  <hook
-      module="zope.component"
-      name="adapter_hook"
-      implementation="zope.app.component.hooks.adapter_hook"
-      />
-
   <adapter
       for="*"
-      provides="zope.component.IServiceService"
-      factory=".localsite.serviceServiceAdapter"
+      provides="zope.component.interfaces.ISiteManager"
+      factory=".localsite.siteManagerAdapter"
       />
 
   <subscriber
-      factory="zope.app.component.localservice.threadSiteSubscriber"
       for="zope.app.publication.interfaces.IBeforeTraverseEvent"
+      handler="zope.app.component.site.threadSiteSubscriber"
       />
 
   <subscriber
-      factory="zope.app.component.localservice.clearThreadSiteSubscriber"
       for="zope.app.publication.interfaces.IEndRequestEvent"
+      handler="zope.app.component.site.clearThreadSiteSubscriber"
       />
 
   <browser:page
-      for="zope.app.site.interfaces.IPossibleSite"
+      for="zope.app.component.interfaces.IPossibleSite"
       name="manage_localsite.html"
       permission="zope2.Public"
       class=".localsite.LocalSiteView"
