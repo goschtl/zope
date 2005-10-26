@@ -18,13 +18,11 @@ $Id$
 from zope.event import notify
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.interface import implements
-from zope.component import getGlobalServices
-from zope.component.interfaces import IServiceService, IUtilityService
+from zope.component import getGlobalSiteManager
+from zope.component.interfaces import ISiteManager
 from zope.component.exceptions import ComponentLookupError
-from zope.component.servicenames import Utilities, Adapters
 
-from zope.app.site.interfaces import ISite
-from zope.app.site.interfaces import IPossibleSite
+from zope.app.component.interfaces import ISite, IPossibleSite
 from zope.app.publication.zopepublication import BeforeTraverseEvent
 
 from ExtensionClass import Base
@@ -33,10 +31,10 @@ from Products.SiteAccess.AccessRule import AccessRule
 from ZPublisher.BeforeTraverse import registerBeforeTraverse
 from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
 
-from interfaces import IFiveUtilityService
+from Products.Five.site.interfaces import IFiveUtilityRegistry
 
-def serviceServiceAdapter(ob):
-    """An adapter * -> IServiceService.
+def siteManagerAdapter(ob):
+    """An adapter * -> ISiteManager.
 
     This is registered in place of the one in Zope 3 so that we lookup
     using acquisition instead of ILocation.
@@ -48,7 +46,7 @@ def serviceServiceAdapter(ob):
         current = aq_parent(aq_inner(current))
         if current is None:
             raise ComponentLookupError("Could not adapt %r to"
-                                       " IServiceService" % (ob, ))
+                                       " ISiteManager" % (ob, ))
 
 HOOK_NAME = '__local_site_hook__'
 
@@ -85,35 +83,45 @@ def disableLocalSiteHook(obj):
 
     directlyProvides(obj, directlyProvidedBy(obj) - ISite)
 
-class LocalService:
-    implements(IServiceService)
+class LocalService(object):
+    implements(ISiteManager)
 
     def __init__(self, context):
         self.context = context
 
-    def getServiceDefinitions(self):
-        """Retrieve all Service Definitions
+    @property
+    def adapters(self):
+        pass #XXX delegate to global site manager here
 
-        Should return a list of tuples (name, interface)
-        """
-        return getGlobalServices().getServiceDefinitions()
+    @property
+    def utilities(self):
+        return IFiveUtilityRegistry(self.context)
 
-    def getInterfaceFor(self, name):
-        """Retrieve the service interface for the given name
-        """
-        return getGlobalServices().getInterfaceFor(name)
+    def queryAdapter(object, interface, name, default=None):
+        pass #XXX delegate to global site manager here
 
-    def getService(self, name):
-        """Retrieve a service implementation
+    def queryMultiAdapter(objects, interface, name, default=None):
+        pass #XXX delegate to global site manager here
 
-        Raises ComponentLookupError if the service can't be found.
-        """
-        if name in (Utilities,):
-            return IFiveUtilityService(self.context)
-        return getGlobalServices().getService(name)
+    def getAdapters(objects, provided):
+        pass #XXX delegate to global site manager here
+
+    def subscribers(required, provided): 
+        pass #XXX delegate to global site manager here
+
+    def queryUtility(interface, name='', default=None):
+        return IFiveUtilityRegistry(self.context).queryUtility(
+            interface, name, default)
+
+    def getUtilitiesFor(interface):
+        return IFiveUtilityRegistry(self.context).getUtilitiesFor(interface)
+
+    def getAllUtilitiesRegisteredFor(interface):
+        return IFiveUtilityRegistry(
+            self.context).getAllUtilitiesRegisteredFor(interface)
 
 class SimpleLocalUtilityService:
-    implements(IFiveUtilityService)
+    implements(IFiveUtilityRegistry)
 
     def __init__(self, context):
         self.context = context
