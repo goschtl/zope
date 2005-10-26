@@ -29,6 +29,7 @@ from zope.component.exceptions import ComponentLookupError
 from zope.component.service import serviceManager
 from zope.component.servicenames import Utilities
 from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.component.hooks import setSite
 
 import Products.Five
 from Products.Five import zcml
@@ -36,7 +37,7 @@ from Products.Five.site.localsite import enableLocalSiteHook
 from Products.Five.site.tests.dummy import manage_addDummySite, \
      IDummyUtility, ISuperDummyUtility, DummyUtility
 
-class LocalUtilityServiceTest(ZopeTestCase.FunctionalTestCase):
+class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
 
     def afterSetUp(self):
         setUp()
@@ -49,12 +50,8 @@ class LocalUtilityServiceTest(ZopeTestCase.FunctionalTestCase):
             class="Products.Five.site.tests.dummy.DummySite" />"""
         zcml.load_string(zcml_text)
         manage_addDummySite(self.folder, 'site')
-        self.site = self.folder.site
-        enableLocalSiteHook(self.site)
-        self.path = '/'.join(self.site.getPhysicalPath())
-        # Traverse to the site so that the local-thread site gets
-        # setup correctly.
-        self.publish(self.path)
+        enableLocalSiteHook(self.folder.site)
+        setSite(self.folder.site)
 
     def beforeTearDown(self):
         from zope.app.component.localservice import clearSite
@@ -67,7 +64,7 @@ class LocalUtilityServiceTest(ZopeTestCase.FunctionalTestCase):
         self.failIf(local_sm is serviceManager)
         self.failUnless(isinstance(local_sm, FiveSiteManager))
 
-        local_sm = getServices(self.site)
+        local_sm = getServices(self.folder.site)
         self.failIf(local_sm is serviceManager)
         self.failUnless(isinstance(local_sm, FiveSiteManager))
 
