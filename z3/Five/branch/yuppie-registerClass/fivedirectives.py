@@ -19,7 +19,7 @@ from zope.interface import Interface
 from zope.app.publisher.browser.metadirectives import IBasicResourceInformation
 from zope.app.security.fields import Permission
 from zope.configuration.fields import GlobalObject, Tokens, PythonIdentifier
-from zope.schema import ASCII, TextLine
+from zope.schema import ASCII, Bool, TextLine
 
 class IImplementsDirective(Interface):
     """State that a class implements something.
@@ -153,8 +153,7 @@ class IRegisterClassDirective(Interface):
         required=False
         )
 
-    scope = ASCII(
-        title=u'Scope',
-        description=u'\'Global\' or \'Interface\'',
+    global_ = Bool(
+        title=u'Global scope?',
         required=False
         )

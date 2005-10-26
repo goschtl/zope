@@ -284,24 +284,23 @@ def installSiteHook(_context, class_, site_class=None, utility_service=None):
 
 _register_monkies = []
 _meta_type_regs = []
-def _registerClass(class_, meta_type, permission, addform, icon, scope):
+def _registerClass(class_, meta_type, permission, addform, icon, global_):
     setattr(class_, 'meta_type', meta_type)
 
     permission_obj = zapi.getUtility(IPermission, permission)
+
+    product = class_.__module__.split('.')
 
     if icon:
         setattr(class_, 'icon', '++resource++%s' % icon)
 
     interfaces = tuple(implementedBy(class_))
 
-    if not scope == 'Global':
-        scope = None 
-
     info = {'name': meta_type,
             'action': addform and ('+/%s' % addform) or '',
-            'product': class_.__module__.split('.')[1],
+            'product': (product[0] == 'Products') and product[1] or '',
             'permission': str(permission_obj.title),
-            'visibility': scope,
+            'visibility': global_ and 'Global' or None,
             'interfaces': interfaces,
             'instance': class_,
             'container_filter': None}
@@ -312,11 +311,11 @@ def _registerClass(class_, meta_type, permission, addform, icon, scope):
     _meta_type_regs.append(meta_type)
 
 def registerClass(_context, class_, meta_type, permission, addform='',
-                  icon=None, scope='Global'):
+                  icon=None, global_=True):
     _context.action(
         discriminator = ('registerClass', meta_type),
         callable = _registerClass,
-        args = (class_, meta_type, permission, addform, icon, scope)
+        args = (class_, meta_type, permission, addform, icon, global_)
         )
 
 # clean up code
@@ -355,7 +354,6 @@ def uinstallSiteHook(class_):
     delattr(class_, 'getSiteManager')
     delattr(class_, 'setSiteManager')
     classImplementsOnly(class_, implementedBy(class_)-ISite)
-    _localsite_monkies.remove(class_)
 
 def unregisterClass(class_):
     delattr(class_, 'meta_type')
@@ -363,26 +361,32 @@ def unregisterClass(class_):
         delattr(class_, 'icon')
     except AttributeError:
         pass
-    _register_monkies.remove(class_)
 
 def cleanUp():
+    global _traversable_monkies
     for class_ in _traversable_monkies:
         untraversable(class_)
+    _traversable_monkies = []
+
+    global _defaultviewable_monkies
     for class_ in _defaultviewable_monkies:
         undefaultViewable(class_)
+    _defaultviewable_monkies = []
+
+    global _localsite_monkies
     for class_ in _localsite_monkies:
         uinstallSiteHook(class_)
-    for class_ in _register_monkies[:]:
-        unregisterClass(class_)
+    _localsite_monkies = []
 
-    meta_types = list(Products.meta_types)
-    for meta_type in _meta_type_regs[:]:
-        for i in range(len(meta_types)):
-            if meta_types[i]['name'] == meta_type:
-                del meta_types[i]
-                break
-        _meta_type_regs.remove(meta_type)
-    Products.meta_types = tuple(meta_types)
+    global _register_monkies
+    for class_ in _register_monkies:
+        unregisterClass(class_)
+    _register_monkies = []
+
+    global _meta_type_regs
+    Products.meta_types = tuple([ info for info in Products.meta_types
+                                  if info['name'] not in _meta_type_regs ])
+    _meta_type_regs = []
 
 from zope.testing.cleanup import addCleanUp
 addCleanUp(cleanUp)

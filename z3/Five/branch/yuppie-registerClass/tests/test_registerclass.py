@@ -46,7 +46,7 @@ def test_registerClass():
       ...       permission="foo.add"
       ...       addform="addfoo.html"
       ...       icon="foo_icon.png"
-      ...       scope="Interface"
+      ...       global="false"
       ...       />
       ... </configure>'''
       >>> zcml.load_config('meta.zcml', Products.Five)
@@ -135,6 +135,12 @@ def test_registerClass():
     Clean up:
 
       >>> tearDown()
+      >>> SimpleContent.meta_type
+      'simple item'
+      >>> SimpleContent.icon
+      ''
+      >>> [info for info in Products.meta_types if info['name'] == 'Bar Type']
+      []
     """
 
 def test_suite():
