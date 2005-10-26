@@ -64,9 +64,9 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     # Declare security for unprotected PageTemplate methods.
     security.declarePrivate('pt_edit', 'write')
 
-    def __init__(self, id, filepath=None, package=None, entry_subpath=None,
+    def __init__(self, id, package=None, entry_subpath=None, filepath=None,
                  fullname=None, properties=None):
-        FSObject.__init__(self, id, filepath, package, entry_subpath,
+        FSObject.__init__(self, id, package, entry_subpath, filepath,
                           fullname, properties)
         self.ZBindings_edit(self._default_bindings)
 

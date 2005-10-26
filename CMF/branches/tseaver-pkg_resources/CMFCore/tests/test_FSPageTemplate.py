@@ -36,10 +36,11 @@ from Products.CMFCore.tests.base.testcase import SecurityTest
 class FSPTMaker(FSDVTest):
 
     def _makeOne( self, id, filename ):
-        path = path_join(self.skin_path_name, filename)
-        metadata = FSMetadata(path)
+        path = path_join( self.skin_path_name, filename )
+        metadata = FSMetadata( filepath=path )
         metadata.read()
-        return FSPageTemplate( id, path, properties=metadata.getProperties() )
+        return FSPageTemplate( id, filepath=path
+                             , properties=metadata.getProperties() )
 
 
 class FSPageTemplateTests( RequestTest, FSPTMaker ):

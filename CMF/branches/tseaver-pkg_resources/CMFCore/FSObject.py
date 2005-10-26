@@ -57,7 +57,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
     _file_mod_time = 0
     _parsed = 0
 
-    def __init__(self, id, filepath=None, package=None, entry_subpath=None,
+    def __init__(self, id, package=None, entry_subpath=None, filepath=None,
                  fullname=None, properties=None):
         MESSAGE = ("Either 'filepath' or 'package' + 'entry_subpath' must "
                    "be supplied.")

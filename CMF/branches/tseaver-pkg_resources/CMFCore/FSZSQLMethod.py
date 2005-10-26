@@ -56,8 +56,10 @@ class FSZSQLMethod(SQL, FSObject):
     security.declareProtected(ViewManagementScreens, 'manage_customise')
     manage_customise = Globals.DTMLFile('custzsql', _dtmldir)
 
-    def __init__(self, id, filepath, fullname=None, properties=None):
-        FSObject.__init__(self, id, filepath, fullname, properties)
+    def __init__(self, id, package=None, entry_subpath=None, filepath=None,
+                 fullname=None, properties=None):
+        FSObject.__init__(self, id, package, entry_subpath, filepath,
+                          fullname, properties)
 
     def _createZODBClone(self):
         """Create a ZODB (editable) equivalent of this object."""

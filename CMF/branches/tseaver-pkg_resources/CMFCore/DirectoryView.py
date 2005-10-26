@@ -236,7 +236,7 @@ class DirectoryInformation(DirectoryInformationBase):
                     t = registry.getTypeByMetaType(mt)
                     if t is None:
                         t = DirectoryView
-                    metadata = FSMetadata(filename=entry_filepath)
+                    metadata = FSMetadata(filepath=entry_filepath)
                     metadata.read()
                     ob = t( entry
                           , entry_minimal_fp
@@ -270,11 +270,14 @@ class DirectoryInformation(DirectoryInformationBase):
                     t = registry.getTypeByExtension(ext)
 
                 if t is not None:
-                    metadata = FSMetadata(filename=entry_filepath)
+                    metadata = FSMetadata(filepath=entry_filepath)
                     metadata.read()
                     try:
-                        ob = t(name, entry_minimal_fp, fullname=entry,
-                               properties=metadata.getProperties())
+                        ob = t(name,
+                               filepath=entry_minimal_fp,
+                               fullname=entry,
+                               properties=metadata.getProperties(),
+                              )
                     except:
                         import traceback
                         typ, val, tb = exc_info()

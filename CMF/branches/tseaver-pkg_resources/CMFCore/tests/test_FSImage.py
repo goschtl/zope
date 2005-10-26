@@ -40,7 +40,7 @@ class FSImageTests( RequestTest, FSDVTest):
 
         from Products.CMFCore.FSImage import FSImage
 
-        return FSImage( id, path_join(self.skin_path_name, filename) )
+        return FSImage( id, filepath=path_join(self.skin_path_name, filename) )
 
     def _extractFile( self ):
 

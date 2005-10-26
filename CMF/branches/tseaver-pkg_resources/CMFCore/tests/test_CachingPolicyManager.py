@@ -607,7 +607,8 @@ class CachingPolicyManager304Tests(RequestTest, FSDVTest):
         # This is a FSPageTemplate that will be used as the View for 
         # our content objects. It doesn't matter what it returns.
         path = os.path.join(self.skin_path_name, 'testPT2.pt')
-        self.portal._setObject('dummy_view', FSPageTemplate('dummy_view', path))
+        self.portal._setObject('dummy_view',
+                               FSPageTemplate('dummy_view', filepath=path))
 
         uf = self.root.acl_users
         password = 'secret'

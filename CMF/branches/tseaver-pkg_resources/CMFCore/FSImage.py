@@ -49,9 +49,11 @@ class FSImage(FSObject):
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
 
-    def __init__(self, id, filepath, fullname=None, properties=None):
+    def __init__(self, id, package=None, entry_subpath=None, filepath=None,
+                 fullname=None, properties=None):
         id = fullname or id # Use the whole filename.
-        FSObject.__init__(self, id, filepath, fullname, properties)
+        FSObject.__init__(self, id, package, entry_subpath, filepath,
+                          fullname, properties)
 
     security.declareProtected(ViewManagementScreens, 'manage_main')
     manage_main = Globals.DTMLFile('custimage', _dtmldir)

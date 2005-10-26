@@ -46,11 +46,11 @@ class FSMetadata:
     # public API
     _package = None
     _entry_subpath = None
-    _filename = None
-    def __init__(self, package=None, entry_subpath=None, filename=None):
-        MESSAGE = ("Either 'filename' or 'package' + 'entry_subpath' must "
+    _filepath = None
+    def __init__(self, package=None, entry_subpath=None, filepath=None):
+        MESSAGE = ("Either 'filepath' or 'package' + 'entry_subpath' must "
                    "be supplied.")
-        if filename is None:
+        if filepath is None:
             if package is None or entry_subpath is None:
                 raise ValueError(MESSAGE)
             self._package = package
@@ -58,7 +58,7 @@ class FSMetadata:
         else:
             if package is not None or entry_subpath is not None:
                 raise ValueError(MESSAGE)
-            self._filename = filename
+            self._filepath = filepath
 
     def read(self):
         """ Find the file(s) and read them.
@@ -128,7 +128,7 @@ class FSMetadata:
             except IOError:
                 return None
         try:
-            return open(self._filename + '.metadata', 'r')
+            return open(self._filepath + '.metadata', 'r')
         except IOError:
             return None
             
@@ -151,7 +151,7 @@ class FSMetadata:
         """
         if data.find(':') < 1:
             raise ValueError, "The security declaration of file " + \
-                  "%r is in the wrong format" % self._filename
+                  "%r is in the wrong format" % self._filepath
 
         acquire, roles = data.split(':')
         roles = [r.strip() for r in roles.split(',') if r.strip()]

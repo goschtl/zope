@@ -42,10 +42,10 @@ class FSFileTests( RequestTest, FSDVTest):
         from Products.CMFCore.FSMetadata import FSMetadata
 
         full_path = path_join(self.skin_path_name, filename)
-        metadata = FSMetadata(full_path)
+        metadata = FSMetadata(filepath=full_path)
         metadata.read()
-        fsfile_ob = FSFile(id, full_path, properties=metadata.getProperties())
-
+        fsfile_ob = FSFile(id, filepath=full_path,
+                           properties=metadata.getProperties())
         return fsfile_ob
 
     def _extractFile( self, filename ):

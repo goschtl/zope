@@ -35,9 +35,10 @@ class FSDTMLMaker(FSDVTest):
 
     def _makeOne( self, id, filename ):
         path = path_join(self.skin_path_name, filename)
-        metadata = FSMetadata(path)
+        metadata = FSMetadata(filepath=path)
         metadata.read()
-        return FSDTMLMethod( id, path, properties=metadata.getProperties() )
+        return FSDTMLMethod( id, filepath=path
+                           , properties=metadata.getProperties() )
 
 
 class FSDTMLMethodTests( RequestTest, FSDTMLMaker ):

@@ -14,6 +14,7 @@
 
 $Id$
 """
+from pkg_resources import resource_string
 
 import Globals
 from AccessControl import ClassSecurityInfo, getSecurityManager
@@ -65,8 +66,10 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
 
     _reading = 0
 
-    def __init__(self, id, filepath, fullname=None, properties=None):
-        FSObject.__init__(self, id, filepath, fullname, properties)
+    def __init__(self, id, package=None, entry_subpath=None, filepath=None,
+                 fullname=None, properties=None):
+        FSObject.__init__(self, id, package, entry_subpath, filepath,
+                          fullname, properties)
         # Normally called via HTML.__init__ but we don't need the rest that
         # happens there.
         self.initvars(None, {})
@@ -76,12 +79,15 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
         return DTMLMethod(self.read(), __name__=self.getId())
 
     def _readFile(self, reparse):
-        fp = expandpath(self._filepath)
-        file = open(fp, 'r')    # not 'rb', as this is a text file!
-        try:
-            data = file.read()
-        finally:
-            file.close()
+        if self._filepath is None:
+            data = resource_string(self._package, self._entry_subpath)
+        else:
+            fp = expandpath(self._filepath)
+            file = open(fp, 'r')    # not 'rb', as this is a text file!
+            try:
+                data = file.read()
+            finally:
+                file.close()
         self.raw = data
         if reparse:
             self._reading = 1  # Avoid infinite recursion

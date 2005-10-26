@@ -16,7 +16,7 @@ class FSPOMaker(FSDVTest):
 
     def _makeOne( self, id, filename ):
         path = join(self.skin_path_name, filename)
-        return FSPropertiesObject( id, path ) 
+        return FSPropertiesObject( id, filepath=path ) 
 
 
 class FSPropertiesObjectCustomizationTests(SecurityTest, FSPOMaker):

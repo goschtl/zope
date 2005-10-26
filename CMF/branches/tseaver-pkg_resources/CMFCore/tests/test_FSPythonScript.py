@@ -36,10 +36,11 @@ from Products.CMFCore.tests.base.testcase import SecurityTest
 class FSPSMaker(FSDVTest):
 
     def _makeOne( self, id, filename ):
-        path = join(self.skin_path_name, filename)
-        metadata = FSMetadata(path)
+        path = join( self.skin_path_name, filename )
+        metadata = FSMetadata( filepath=path )
         metadata.read()
-        return FSPythonScript( id, path, properties=metadata.getProperties() ) 
+        return FSPythonScript( id, filepath=path,
+                               properties=metadata.getProperties() ) 
 
 
 class FSPythonScriptTests(FSPSMaker):

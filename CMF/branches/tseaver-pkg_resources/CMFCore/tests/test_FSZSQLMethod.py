@@ -15,10 +15,11 @@ from Products.CMFCore.tests.base.testcase import SecurityTest
 class FSZSQLMaker(FSDVTest):
 
     def _makeOne( self, id, filename ):
-        path = join(self.skin_path_name, filename)
-        metadata = FSMetadata(path)
+        path = join( self.skin_path_name, filename )
+        metadata = FSMetadata( filepath=path )
         metadata.read()
-        return FSZSQLMethod( id, path, properties=metadata.getProperties() )
+        return FSZSQLMethod( id, filepath=path,
+                             properties=metadata.getProperties() )
 
 class FSZSQLMethodTests( FSDVTest ):
 
