@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id:$
+$Id$
 """
 
-from zorg.importer.interfaces import *
+from zorg.comment.interfaces import *

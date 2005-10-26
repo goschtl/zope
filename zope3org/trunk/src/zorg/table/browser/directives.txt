@@ -1,0 +1,127 @@
+================================
+The ``tableview`` Directive
+================================
+
+The ``tableview`` directive allows you to quickly register a new
+table view for a specific object.
+
+  >>> from zope.configuration import xmlconfig
+  >>> from zope.app import zapi
+  >>> from zope.publisher.browser import TestRequest
+  >>> from zope.app.testing import ztapi
+  >>> from zorg.table.testing import Container,Simple
+  >>> from zorg.table.interfaces import ITable,ITableConfig
+  >>> from zorg.table.browser.interfaces import ITableView,IRowView,ICellView
+  >>> request = TestRequest()
+  >>> container=Container()
+  >>> for i in range(3):
+  ...     container[unicode(i)] = Simple(u'name %s ' % i,4-i)
+
+  >>> context = xmlconfig.string('''
+  ... <configure i18n_domain="zope">
+  ...   <include package="zorg.table" file="meta.zcml" />
+  ...   <include package="zorg.table.browser" file="meta.zcml" />
+  ... </configure>
+  ... ''')
+
+Now we can register a table view by providing a tableconfig definition
+and a tableview definition.
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser"
+  ...    xmlns:zope="http://namespaces.zope.org/zope"
+  ...   package="zorg.table.browser" i18n_domain="zope">
+  ...   <zope:tableconfig id="simple.br.config"
+  ...    colNames="name priority"
+  ...    sortBy="name" sortReverse="True">
+  ...    <zope:column name="name" schema="zorg.table.testing.ISimple"/>
+  ...    <zope:column name="priority" schema="zorg.table.testing.ISimple"/>
+  ...    <zope:action name="save" title="Save"/>
+  ...    <zope:action name="edit" title="Edit"/>
+  ...   </zope:tableconfig>
+  ...   <tableview name="simple"
+  ...   for="zope.interface.common.mapping.IReadMapping"
+  ...   config="simple.br.config"
+  ...   permission="zope.View"
+  ...   template="table.pt">
+  ...   </tableview>
+  ... </configure>
+  ... ''', context=context)
+
+
+  >>> view =zapi.getMultiAdapter((container,request),
+  ...                            ITableView,u'simple')
+  >>> view
+  <...views.SimpleTableViewClass from ...table.pt object at ...>
+  
+The table object is stored in the view.
+
+  >>> view.table.name
+  u'simple'
+
+And the config is applied
+
+  >>> view.table.config.colNames
+  [u'name', u'priority']
+
+
+Then we register an unnamed rowview, so that the default
+implementation of rendering has a view rows.
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser"
+  ...   i18n_domain="zope">
+  ...   <rowview for="zorg.table.testing.ISimple"  name=""
+  ...   permission="zope.Public"/>
+  ...   </configure>''',context=context)
+  >>> row = list(view.table.getRows())[0]
+  >>> zapi.getMultiAdapter((row.context,row,request),IRowView,u'')
+  <...SimpleTableViewClass from row.pt object at ...>
+
+
+
+Now we can register the two cell views for our Simple class
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser"
+  ...   package="zorg.table.browser" i18n_domain="zope">
+  ...   <cellview name="name" for="zorg.table.testing.ISimple"
+  ...   permission="zope.Public"/>
+  ...   <cellview name="priority" for="zorg.table.testing.ISimple"
+  ...   permission="zope.Public"/>
+  ... </configure>
+  ... ''', context=context)
+  >>> for cell in row.getCells():
+  ...      print zapi.getMultiAdapter((cell.context,cell,request),
+  ...                                ICellView,cell.column.name)
+  <...views.SimpleTableViewClass from cell.pt object ...>
+  <...views.SimpleTableViewClass from cell.pt object ...>
+
+  >>> print view()
+  <table ...>...
+
+The name of the view is also used as the name for the table by default.
+
+  >>> view.table.name
+  u'simple'
+
+The getRows method of the Table view returns adapted IRowView objects,
+which have all have a unique prefix.
+
+  >>> sorted(rowview.prefix for rowview in view.getRows())
+  [u'table.simple.row.0', u'table.simple.row.1', u'table.simple.row.2']
+
+Also each rowview returns all cells by calling getCells and all
+cellviews then have their own prefix
+
+  >>> for rowview in view.getRows():
+  ...     print list(cellview.prefix for cellview in rowview.getCells())
+  [u'table.simple.cell.2.name', u'table.simple.cell.2.priority']
+  [u'table.simple.cell.1.name', u'table.simple.cell.1.priority']
+  [u'table.simple.cell.0.name', u'table.simple.cell.0.priority']
+
+An action on a table can be called, the current defined action is
+stored in the TableConfiguration.
+
+
+

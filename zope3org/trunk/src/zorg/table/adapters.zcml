@@ -1,0 +1,39 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           i18n_domain="zope">
+
+ <adapter for="zope.interface.common.mapping.IReadMapping"
+          factory="zorg.table.table.ReadMappingTable"
+          provides="zorg.table.interfaces.ITable"/>
+
+ 
+ <adapter for="zope.interface.Interface
+               zope.interface.interfaces.IMethod"
+          factory="zorg.table.sort.MethodSorter"
+          provides="zorg.table.interfaces.ISorter"/>
+
+ <adapter for="zope.interface.Interface
+               zope.schema.interfaces.IField"
+          factory="zorg.table.sort.SchemaSorter"
+          provides="zorg.table.interfaces.ISorter"/>
+
+
+ 
+ <adapter for="zope.interface.Interface
+               zope.interface.common.mapping.IReadMapping
+               .interfaces.ITable"
+          factory=".table.Row"
+          provides=".interfaces.IRow"/>
+
+ <adapter for="zope.interface.Interface
+               .interfaces.IColumn
+               .interfaces.IRow
+               .interfaces.ITable"
+          factory=".table.SchemaCell"
+          provides=".interfaces.ICell"/>
+
+ <adapter for=".interfaces.ITable
+               zope.publisher.interfaces.browser.IBrowserRequest"
+          factory=".table.RequestTableConfig"
+          provides=".interfaces.ITableConfig"/>
+
+</configure>

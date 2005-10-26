@@ -1,0 +1,26 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+
+  <content class="zope.app.file.File">
+    <implements 
+        interface=".interfaces.IKupuEditable"
+        />
+  </content>
+
+  <adapter
+	  factory=".adapters.KupuEditableFile"
+	  provides=".interfaces.IKupuPolicy"
+      for="zope.app.file.interfaces.IFile"
+      />
+     
+  <adapter
+      factory=".adapters.ImageReadContainer"
+      provides=".interfaces.IImageReadContainer"
+      for=".interfaces.IImageLibrary"
+      />
+
+  <!-- include the browser package -->
+  <include package=".browser" />
+
+</configure>

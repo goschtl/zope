@@ -1,0 +1,64 @@
+================================
+The ``tableconfig`` Directive
+================================
+
+The ``tableconfig`` directive allows you to quickly register a new
+table configuration.
+
+  >>> from zope.configuration import xmlconfig
+  >>> context = xmlconfig.string('''
+  ... <configure i18n_domain="zope">
+  ...   <include package="table" file="meta.zcml" />
+  ... </configure>
+  ... ''')
+
+Now we can register a table configuration
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/zope" i18n_domain="zope">
+  ...   <tableconfig id="simple.config"
+  ...   colNames="name priority"
+  ...   sortBy="name" sortReverse="True">
+  ...   <column name="name" schema="zorg.table.testing.ISimple"/>
+  ...   <column name="priority" schema="zorg.table.testing.ISimple"/>
+  ...   <action name="select" title="Select"
+  ...   class="zorg.table.testing.SelectAction"/>
+  ...   <action name="save" title="Save"/>
+  ...   </tableconfig>
+  ... </configure>
+  ... ''', context=context)
+
+Let's make sure the directive has really created a utility
+
+  >>> from zope.app import zapi
+  >>> from zorg.table.interfaces import ITableConfig,ITable
+  >>> config = zapi.getUtility(ITableConfig,u'simple.config')
+  >>> config
+  <zorg.table.table.TableConfig object at ...>
+
+We now have the config set up
+
+  >>> config.sortBy
+  u'name'
+  >>> config.sortReverse
+  True
+  >>> config.colNames
+  [u'name', u'priority']
+  >>> config.columns.values()
+  [<zorg.table.table.Column object at ...>, <zorg.table...>]
+  >>> sorted(config.actions.keys())
+  [u'save', u'select']
+  
+Now the config can be applied to a table
+
+  >>> from zorg.table.testing import Container,Simple
+  >>> container = Container()
+  >>> for i in range(3):
+  ...     container[unicode(i)] = Simple(u'name %s ' % i,4-i)
+  >>> table = ITable(container)
+  >>> table.applyConfig(config)
+  >>> for row in table.getRows():
+  ...     print list(cell() for cell in row.getCells())
+  [u'name 2 ', 2]
+  [u'name 1 ', 3]
+  [u'name 0 ', 4]
