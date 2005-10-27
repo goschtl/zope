@@ -33,6 +33,9 @@ Five contributors
 
 - Tarek Ziadé (tziade@nuxeo.com)
 
+- Whit Morriss (whit@longnow.org)
+
+
 Thank you
 ---------
 
