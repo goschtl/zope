@@ -521,7 +521,7 @@ class IBaseVocabulary(ISource):
         """
 
 
-class IIterableSource(Interface):
+class IIterableSource(ISource):
     """Source which supports iteration over allowed values.
 
     The objects iteration provides must be values from the source.
