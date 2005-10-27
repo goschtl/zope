@@ -20,14 +20,14 @@ from unittest import TestCase, TestSuite, main, makeSuite
 import MySQLdb
 
 class TestStringConversion(TestCase):
-	def test_testStringConversion(self):
-		from mysqldbda.adapter import MySQLStringConverter
-		converter = MySQLStringConverter('latin-1')
-		b =converter('yè yè ü ü ä ä ö ö')
-		self.assertEquals(type(b), unicode)
-		converter = MySQLStringConverter('utf8')
-		b =converter(u'Hi mom!')
-		self.assertEquals(type(b),unicode)
+    def test_testStringConversion(self):
+       from mysqldbda.adapter import MySQLStringConverter
+       converter = MySQLStringConverter('latin-1')
+       b =converter('yè yè ü ü ä ä ö ö')
+       self.assertEquals(type(b), unicode)
+       converter = MySQLStringConverter('utf8')
+       b =converter(u'Hi mom!')
+       self.assertEquals(type(b),unicode)
 
 def test_suite():
     return TestSuite((
