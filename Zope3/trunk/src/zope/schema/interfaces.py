@@ -505,9 +505,6 @@ class IContextSourceBinder(Interface):
         """
     
 
-# TODO, define iterable sources.  For now, we'll just use vocabularies.
-# Eventually, we'll replace vocabularies with iterable sources.
-    
 class IBaseVocabulary(ISource):
     """Representation of a vocabulary.
 
@@ -537,7 +534,7 @@ class IIterableSource(Interface):
         """Return the number of valid values, or sys.maxint."""
 
 
-# BBB vocabularies are pending deprecation, hopefully in 3.2
+# BBB vocabularies are pending deprecation, hopefully in 3.3
 class IIterableVocabulary(Interface):
     """Vocabulary which supports iteration over allowed values.
 
