@@ -25,9 +25,11 @@ from Testing import ZopeTestCase
 
 from zope.interface import directlyProvides
 from zope.component.exceptions import ComponentLookupError
+from zope.component import provideUtility
 
 from zope.app import zapi
 from zope.app.testing.placelesssetup import setUp, tearDown
+from zope.app.component import getNextUtility
 from zope.app.component.hooks import setSite, clearSite, setHooks
 from zope.app import zapi
 
@@ -107,6 +109,34 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         self.assertEquals(zapi.getUtility(IDummyUtility, 'dummy'), dummy)
         self.assertEquals(zapi.getUtility(ISuperDummyUtility, 'dummy'),
                           superdummy)
+
+    def test_getNextUtility(self):
+        # test local site vs. global site
+        global_dummy = DummyUtility()
+        provideUtility(global_dummy, IDummyUtility)
+
+        local_dummy = DummyUtility()
+        sm = zapi.getSiteManager()
+        sm.registerUtility(IDummyUtility, local_dummy)
+
+        self.assertEquals(zapi.getUtility(IDummyUtility), local_dummy)
+        self.assertEquals(getNextUtility(self.folder.site, IDummyUtility),
+                          global_dummy)
+
+        # test local site vs. nested local site
+        manage_addDummySite(self.folder.site, 'subsite')
+        enableLocalSiteHook(self.folder.site.subsite)
+        setSite(self.folder.site.subsite)
+
+        sublocal_dummy = DummyUtility()
+        sm = zapi.getSiteManager()
+        sm.registerUtility(IDummyUtility, sublocal_dummy)
+
+        self.assertEquals(zapi.getUtility(IDummyUtility), sublocal_dummy)
+        self.assertEquals(getNextUtility(self.folder.site.subsite, IDummyUtility),
+                          local_dummy)
+        self.assertEquals(getNextUtility(self.folder.site, IDummyUtility),
+                          global_dummy)
 
 def test_suite():
     suite = unittest.TestSuite()

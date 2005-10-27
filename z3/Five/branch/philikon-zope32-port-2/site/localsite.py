@@ -102,6 +102,14 @@ class FiveSiteManager(object):
     def utilities(self):
         return IFiveUtilityRegistry(self.context)
 
+    @property
+    def next(self):
+        obj = self.context
+        while obj is not None:
+            obj = aq_parent(aq_inner(obj))
+            if ISite.providedBy(obj):
+                return obj.getSiteManager()
+
     def queryAdapter(self, object, interface, name, default=None):
         return self.adapters.queryAdapter(object, interface, name, default)
 

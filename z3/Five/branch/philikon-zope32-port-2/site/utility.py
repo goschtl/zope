@@ -18,6 +18,7 @@ $Id$
 from zope.interface import implements
 from zope.component.exceptions import ComponentLookupError
 
+from Acquisition import aq_base
 from OFS.Folder import Folder
 from Products.Five.site.interfaces import IFiveUtilityRegistry
 
@@ -85,7 +86,7 @@ class SimpleLocalUtilityRegistry:
         # and Five would probably differ anyway, so, here is this new
         # Five-only, easy to use method!
 
-        utilities = getattr(self.context, 'utilities', None)
+        utilities = getattr(aq_base(self.context), 'utilities', None)
         if utilities is None:
             self.context._setObject('utilities', Folder('utilities'))
             utilities = self.context.utilities
