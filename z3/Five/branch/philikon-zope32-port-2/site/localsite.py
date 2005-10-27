@@ -33,6 +33,10 @@ from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
 
 from Products.Five.site.interfaces import IFiveUtilityRegistry
 
+# Hook up custom component architecture calls
+import zope.app.component.hooks
+zope.app.component.hooks.setHooks()
+
 def siteManagerAdapter(ob):
     """An adapter * -> ISiteManager.
 
@@ -45,8 +49,9 @@ def siteManagerAdapter(ob):
             return current.getSiteManager()
         current = aq_parent(aq_inner(current))
         if current is None:
-            raise ComponentLookupError("Could not adapt %r to"
-                                       " ISiteManager" % (ob, ))
+            # It does not support acquisition or has no parent, so we
+            # return the global site
+            return getGlobalSiteManager()
 
 HOOK_NAME = '__local_site_hook__'
 
@@ -91,34 +96,35 @@ class FiveSiteManager(object):
 
     @property
     def adapters(self):
-        pass #XXX delegate to global site manager here
+        return getGlobalSiteManager().adapters
 
     @property
     def utilities(self):
         return IFiveUtilityRegistry(self.context)
 
-    def queryAdapter(object, interface, name, default=None):
-        pass #XXX delegate to global site manager here
+    def queryAdapter(self, object, interface, name, default=None):
+        return self.adapters.queryAdapter(object, interface, name, default)
 
-    def queryMultiAdapter(objects, interface, name, default=None):
-        pass #XXX delegate to global site manager here
+    def queryMultiAdapter(self, objects, interface, name, default=None):
+        return self.adapters.queryMultiAdapter(objects, interface, name, default)
 
-    def getAdapters(objects, provided):
-        pass #XXX delegate to global site manager here
+    def getAdapters(self, objects, provided):
+        return self.adapters.getAdapters(objects, provided)
 
-    def subscribers(required, provided): 
-        pass #XXX delegate to global site manager here
+    def subscribers(self, required, provided):
+        return self.adapters.subscribers(required, provided)
 
-    def queryUtility(interface, name='', default=None):
-        return IFiveUtilityRegistry(self.context).queryUtility(
-            interface, name, default)
+    def queryUtility(self, interface, name='', default=None):
+        return self.utilities.queryUtility(interface, name, default)
 
-    def getUtilitiesFor(interface):
-        return IFiveUtilityRegistry(self.context).getUtilitiesFor(interface)
+    def getUtilitiesFor(self, interface):
+        return self.utilities.getUtilitiesFor(interface)
 
-    def getAllUtilitiesRegisteredFor(interface):
-        return IFiveUtilityRegistry(
-            self.context).getAllUtilitiesRegisteredFor(interface)
+    def getAllUtilitiesRegisteredFor(self, interface):
+        return self.utilities.getAllUtilitiesRegisteredFor(interface)
+
+    def registerUtility(self, interface, utility, name=''):
+        return self.utilities.registerUtility(interface, utility, name)
 
 class FiveSite:
     implements(IPossibleSite)
