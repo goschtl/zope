@@ -29,7 +29,7 @@ from Products.Five.security import newInteraction
 
 _marker = object
 
-class FakeRequest:
+class FakeRequest(dict):
     implements(IBrowserRequest)
 
     def getPresentationSkin(self):
