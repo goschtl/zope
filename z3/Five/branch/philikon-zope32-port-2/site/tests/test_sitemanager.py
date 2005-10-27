@@ -25,14 +25,13 @@ from Testing import ZopeTestCase
 
 from zope.interface import implements
 from zope.interface import directlyProvides, directlyProvidedBy
+from zope.component import getGlobalSiteManager, getSiteManager
 from zope.component.exceptions import ComponentLookupError
-from zope.component.interfaces import IServiceService
-from zope.component.service import serviceManager
-from zope.component import getGlobalServices, getServices
-from zope.app.component.hooks import getServices_hook, setSite, getSite
-from zope.app.component.interfaces import IPossibleSite, ISite, ISiteManager
+from zope.component.interfaces import ISiteManager
+from zope.app.component.hooks import setSite, getSite, setHooks
+from zope.app.component.interfaces import IPossibleSite, ISite
 from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.testing.placelesssetup import setUp, tearDown
 
 from Acquisition import Implicit
 from OFS.ObjectManager import ObjectManager
@@ -40,16 +39,8 @@ from OFS.ObjectManager import ObjectManager
 import Products.Five
 from Products.Five import zcml
 
-class ServiceManager(Implicit):
+class SiteManager(Implicit):
     implements(ISiteManager)
-
-    def __init__(self):
-        self.dummy_service = object()
-
-    def getService(self, name):
-        if name == 'dummy':
-            return self.dummy_service
-        raise ComponentLookupError(name)
 
 class Folder(ObjectManager):
     implements(IPossibleSite)
@@ -72,10 +63,10 @@ class Package(Implicit):
 class Root(Folder):
     implements(IContainmentRoot, ISite)
     def getSiteManager(self):
-        return getGlobalServices()
+        return getGlobalSiteManager()
 
-class ServiceServiceStub(object):
-    implements(IServiceService)
+class SiteManagerStub(object):
+    implements(ISiteManager)
 
 def Wrapper(ob, container):
     return ob.__of__(container)
@@ -87,16 +78,16 @@ class SiteManagerTest(ZopeTestCase.ZopeTestCase):
         root = Wrapper(self.folder, Root())
 
         f1 = Wrapper(Folder(), root)
-        sm1 = ServiceManager()
+        sm1 = SiteManager()
         f1.setSiteManager(sm1)
         p1 = Wrapper(Package(), sm1)
 
         f2 = Wrapper(Folder(), f1)
-        sm2 = ServiceManager()
+        sm2 = SiteManager()
         f2.setSiteManager(sm2)
         p2 = Wrapper(Package(), sm2)
 
-        sm1.next = serviceManager
+        sm1.next = getGlobalSiteManager()
         sm2.next = sm1
 
         self.root = root
@@ -117,167 +108,116 @@ class SiteManagerTest(ZopeTestCase.ZopeTestCase):
             class="Products.Five.site.tests.dummy.DummySite" />"""
         zcml.load_string(zcml_text)
 
+        # Hook up custom component architecture calls; we need to do
+        # this here because zope.app.component.hooks registers a
+        # cleanup with the testing cleanup framework, so the hooks get
+        # torn down by placelesssetup each time.
+        setHooks()
+
     def beforeTearDown(self):
         setSite()
         tearDown()
 
-    def test_getServices(self):
-        self.assertEqual(getServices_hook(None), serviceManager)
-        self.assertEqual(getServices_hook(self.root), serviceManager)
-        self.assertEqual(getServices_hook(self.f1), self.sm1)
-        self.assertEqual(getServices_hook(self.f2), self.sm2)
+    def test_getSiteManager(self):
+        self.assertEqual(getSiteManager(None), getGlobalSiteManager())
+        self.assertEqual(getSiteManager(self.root), getGlobalSiteManager())
+        self.assertEqual(getSiteManager(self.f1), self.sm1)
+        self.assertEqual(getSiteManager(self.f2), self.sm2)
         setSite(self.f2)
-        self.assertEqual(getServices_hook(None), self.sm2)
+        self.assertEqual(getSiteManager(None), self.sm2)
 
-    def test_queryNextService(self):
-        from zope.app.component.localservice import queryNextService
-        self.assert_(queryNextService(self.sm2, 'dummy') is
-                     self.sm1.dummy_service)
-        self.assert_(queryNextService(self.p2, 'dummy') is
-                     self.sm1.dummy_service)
+    def test_queryNextSiteManager(self):
+        from zope.app.component import queryNextSiteManager
         marker = object()
-        self.assert_(queryNextService(self.p1, 'dummy', marker) is marker)
+        self.assert_(queryNextSiteManager(self.root, marker) is marker)
+        self.assert_(queryNextSiteManager(self.f1, marker) is getGlobalSiteManager())
+        #XXX the following used to be
+        #self.assertEqual(queryNextSiteManager(self.f2, marker), marker)
+        self.assertEqual(queryNextSiteManager(self.f2, marker), self.sm1)
+        self.assertEqual(queryNextSiteManager(self.sm1), getGlobalSiteManager())
+        self.assertEqual(queryNextSiteManager(self.sm2), self.sm1)
+        #XXX the following used to be
+        #self.assert_(queryNextSiteManager(self.p1) is getGlobalSiteManager())
+        self.assert_(queryNextSiteManager(self.p1, marker) is marker)
+        #XXX the following used to be
+        #self.assertEqual(queryNextSiteManager(self.p2), self.sm1)
+        self.assert_(queryNextSiteManager(self.p2, marker) is marker)
 
-    def test_getNextService(self):
-        from zope.app.component.localservice import getNextService
-        self.assert_(getNextService(self.sm2, 'dummy') is
-                     self.sm1.dummy_service)
-        self.assert_(getNextService(self.p2, 'dummy') is
-                     self.sm1.dummy_service)
-        self.assertRaises(ComponentLookupError,
-                          getNextService, self.p1, 'dummy')
-
-
-    def test_queryNextServices(self):
-        from zope.app.component.localservice import queryNextServices
-        marker = object()
-        self.assert_(queryNextServices(self.root, marker) is marker)
-        self.assert_(queryNextServices(self.f1, marker) is marker)
-        self.assert_(queryNextServices(self.f2, marker) is marker)
-        self.assertEqual(queryNextServices(self.sm1), serviceManager)
-        self.assertEqual(queryNextServices(self.sm2), self.sm1)
-        self.assertEqual(queryNextServices(self.p1), serviceManager)
-        self.assertEqual(queryNextServices(self.p2), self.sm1)
-
-        self.assert_(queryNextServices(self.unparented_folder, marker)
+        self.assert_(queryNextSiteManager(self.unparented_folder, marker)
                      is marker)
-        self.assert_(queryNextServices(self.unrooted_subfolder, marker)
+        self.assert_(queryNextSiteManager(self.unrooted_subfolder, marker)
                      is marker)
 
-    def test_getNextServices(self):
-        from zope.app.component.localservice import getNextServices
-        self.assertRaises(ComponentLookupError,
-                          getNextServices, self.root)
-        self.assertRaises(ComponentLookupError,
-                          getNextServices, self.f1)
-        self.assertRaises(ComponentLookupError,
-                          getNextServices, self.f2)
-        self.assertEqual(getNextServices(self.sm1), serviceManager)
-        self.assertEqual(getNextServices(self.sm2), self.sm1)
-        self.assertEqual(getNextServices(self.p1), serviceManager)
-        self.assertEqual(getNextServices(self.p2), self.sm1)
+    def test_getNextSiteManager(self):
+        from zope.app.component import getNextSiteManager
+        self.assertRaises(ComponentLookupError, getNextSiteManager, self.root)
+        self.assertEqual(getNextSiteManager(self.f1), getGlobalSiteManager())
+        #XXX the following used to be
+        #self.assertRaises(ComponentLookupError, getNextSiteManager, self.f2)
+        self.assertEqual(getNextSiteManager(self.f2), self.sm1)
+        self.assertEqual(getNextSiteManager(self.sm1), getGlobalSiteManager())
+        self.assertEqual(getNextSiteManager(self.sm2), self.sm1)
+        #XXX the following used to be
+        #self.assert_(getNextSiteManager(self.p1) is getGlobalSiteManager())
+        self.assertRaises(ComponentLookupError, getNextSiteManager, self.p1)
+        #XXX the following used to be
+        #self.assertEqual(getNextSiteManager(self.p2), self.sm1)
+        self.assertRaises(ComponentLookupError, getNextSiteManager, self.p2)
 
         self.assertRaises(ComponentLookupError,
-                          getNextServices, self.unparented_folder)
+                          getNextSiteManager, self.unparented_folder)
         self.assertRaises(ComponentLookupError,
-                          getNextServices, self.unrooted_subfolder)
+                          getNextSiteManager, self.unrooted_subfolder)
 
 # XXX Maybe we need to test this with RestrictedPython in the context
 # of Zope2? Maybe we just don't care.
 #
-#     def test_getNextServices_security(self):
-#         from zope.app.component.localservice import getNextServices
+#     def test_getNextSiteManager_security(self):
+#         from zope.app.component import getNextSiteManager
 #         from zope.security.checker import ProxyFactory, NamesChecker
 #         sm = ProxyFactory(self.sm1, NamesChecker(('next',)))
-#         # Check that serviceManager is not proxied
-#         self.assert_(getNextServices(sm) is serviceManager)
+#         # Check that getGlobalSiteManager() is not proxied
+#         self.assert_(getNextSiteManager(sm) is getGlobalSiteManager())
 
-    def test_queryLocalServices(self):
-        from zope.app.component.localservice import queryLocalServices
-        marker = object()
-        self.assert_(queryLocalServices(self.root, marker) is marker)
-        self.assert_(queryLocalServices(self.f1, marker) is marker)
-        self.assert_(queryLocalServices(self.f2, marker) is marker)
-        self.assertEqual(queryLocalServices(self.sm1), self.sm1)
-        self.assertEqual(queryLocalServices(self.sm2), self.sm2)
-        self.assertEqual(queryLocalServices(self.p1), self.sm1)
-        self.assertEqual(queryLocalServices(self.p2), self.sm2)
-
-        self.assert_(queryLocalServices(self.unparented_folder, marker)
-                     is marker)
-        self.assert_(queryLocalServices(self.unrooted_subfolder, marker)
-                     is marker)
-
-    def test_getLocalServices(self):
-        from zope.app.component.localservice import getLocalServices
-        self.assertRaises(ComponentLookupError,
-                          getLocalServices, self.root)
-        self.assertRaises(ComponentLookupError,
-                          getLocalServices, self.f1)
-        self.assertRaises(ComponentLookupError,
-                          getLocalServices, self.f2)
-        self.assertEqual(getLocalServices(self.sm1), self.sm1)
-        self.assertEqual(getLocalServices(self.sm2), self.sm2)
-        self.assertEqual(getLocalServices(self.p1), self.sm1)
-        self.assertEqual(getLocalServices(self.p2), self.sm2)
-
-        unparented_folder = Folder()
-        self.assertRaises(ComponentLookupError,
-                          getLocalServices, unparented_folder)
-        unrooted_subfolder = Wrapper(Folder(), unparented_folder)
-        self.assertRaises(ComponentLookupError,
-                          getLocalServices, unrooted_subfolder)
-
-    def test_serviceServiceAdapter(self):
-        from Products.Five.site.localsite import serviceServiceAdapter
+    def test_siteManagerAdapter(self):
+        from Products.Five.site.localsite import siteManagerAdapter
 
         # If it is a site, return the service service.
-        ss = ServiceServiceStub()
+        sm = SiteManagerStub()
         site = Folder()
-        site.setSiteManager(ss)
-        self.assertEqual(serviceServiceAdapter(site), ss)
+        site.setSiteManager(sm)
+        self.assertEqual(siteManagerAdapter(site), sm)
 
         # If it has an acquisition context, "acquire" the site
         # and return the service service
         ob = Folder()
         ob = ob.__of__(site)
-        self.assertEqual(serviceServiceAdapter(ob), ss)
+        self.assertEqual(siteManagerAdapter(ob), sm)
         ob2 = Folder()
         ob2 = ob2.__of__(ob)
-        self.assertEqual(serviceServiceAdapter(ob2), ss)
+        self.assertEqual(siteManagerAdapter(ob2), sm)
 
         # If it does we are unable to find a service service, raise
         # ComponentLookupError
         orphan = Folder()
-        self.assertRaises(ComponentLookupError, serviceServiceAdapter, orphan)
+        self.failUnless(siteManagerAdapter(orphan) is getGlobalSiteManager())
 
     def test_setThreadSite_clearThreadSite(self):
-        from zope.app.component.localservice import threadSiteSubscriber
-        from zope.app.component.localservice import clearSite
+        from zope.app.component.site import threadSiteSubscriber, clearSite
         from zope.app.publication.zopepublication import BeforeTraverseEvent
 
         self.assertEqual(getSite(), None)
 
-        # A non-site is traversed
-        ob = object()
-        request = object()
-        ev = BeforeTraverseEvent(ob, request)
-        threadSiteSubscriber(ev)
-
-        self.assertEqual(getSite(), None)
-
         # A site is traversed
-        ss = ServiceServiceStub()
+        sm = SiteManagerStub()
         site = Folder()
-        site.setSiteManager(ss)
+        site.setSiteManager(sm)
 
-        ev = BeforeTraverseEvent(site, request)
-        threadSiteSubscriber(ev)
-
+        ev = BeforeTraverseEvent(site, object())
+        threadSiteSubscriber(site, ev)
         self.assertEqual(getSite(), site)
 
         clearSite()
-
         self.assertEqual(getSite(), None)
 
 def test_suite():
