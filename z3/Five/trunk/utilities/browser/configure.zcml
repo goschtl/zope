@@ -7,7 +7,7 @@
   <browser:page
       for="*"
       class="Products.Five.utilities.browser.marker.EditView"
-      template="www/edit_markers.pt"
+      template="edit_markers.pt"
       name="edit-markers.html"
       permission="zope2.ManageProperties"
       />
@@ -15,7 +15,7 @@
   <browser:page
       for="*"
       class="Products.Five.utilities.browser.marker.ViewsDetails"
-      template="www/views_details.pt"
+      template="views_details.pt"
       name="views-details.html"
       permission="zope2.ManageProperties"
       />

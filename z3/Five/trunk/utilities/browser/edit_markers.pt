@@ -2,8 +2,7 @@
       lang="en"
       i18n:domain="five">
 <body>
-<!-- span tal:replace="structure here/manage_tabs"  -->
-  <body>
+  <span tal:replace="structure context/manage_tabs" />
     <div>
 
       <h1 i18n:translate="heading_edit_marker">
