@@ -560,7 +560,28 @@ _setChecker = NamesChecker(['__iter__', '__len__', '__str__', '__contains__',
                             '__eq__', '__ne__', '__lt__', '__gt__',
                             '__le__', '__ge__'])
 
-BasicTypes = {
+class BasicTypes(dict):
+    """Basic Types Dictionary
+
+    Make sure that the checkers a really updated, when a new type is added.
+    """
+    def __setitem__(self, name, value):
+        super(BasicTypes.__class__, self).__setitem__(name, value)
+        _checkers[name] = value
+
+    def __delitem__(self, name):
+        super(BasicTypes.__class__, self).__delitem__(name)
+        del _checkers[name]
+
+    def clear(self):
+        # Make sure you cannot clear the values
+        raise NotImplementedError
+
+    def update(self, d):
+        super(BasicTypes.__class__, self).update(d)
+        _checkers.update(d)
+
+BasicTypes = BasicTypes({
     object: NoProxy,
     int: NoProxy,
     float: NoProxy,
@@ -569,14 +590,14 @@ BasicTypes = {
     types.NoneType: NoProxy,
     str: NoProxy,
     unicode: NoProxy,
-    type(True): NoProxy, # Boolean, if available :)
+    bool: NoProxy,
     datetime.timedelta: NoProxy,
     datetime.datetime: NoProxy,
     datetime.date: NoProxy,
     datetime.time: NoProxy,
     datetime.tzinfo: NoProxy,
     type(pytz.UTC): NoProxy,
-}
+})
 
 # Available for tests. Located here so it can be kept in sync with BasicTypes.
 BasicTypes_examples = {
@@ -588,7 +609,7 @@ BasicTypes_examples = {
     types.NoneType: None,
     str: 'abc',
     unicode: u'uabc',
-    type(True): True,
+    bool: True,
     datetime.timedelta: datetime.timedelta(3),
     datetime.datetime: datetime.datetime(2003, 1, 1),
     datetime.date: datetime.date(2003, 1, 1),

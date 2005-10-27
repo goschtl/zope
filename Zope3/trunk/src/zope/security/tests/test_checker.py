@@ -28,9 +28,10 @@ from zope.security.management import setSecurityPolicy, newInteraction
 from zope.security.management import endInteraction, getInteraction
 from zope.security.proxy import removeSecurityProxy
 from zope.security.proxy import getChecker
+from zope.security.proxy import Proxy
 from zope.security.checker import defineChecker, ProxyFactory
 from zope.security.checker import canWrite, canAccess
-from zope.security.proxy import Proxy
+from zope.security.checker import BasicTypes, _checkers, NoProxy, _clear
 import types, pickle
 
 class SecurityPolicy(object):
@@ -525,7 +526,8 @@ class TestCombinedChecker(TestMixinDecoratedChecker, TestCase):
         self.interaction.permissions['dc_get_permission'] = False
         cc.check_getattr(self.obj, 'both_get_set')
         self.assert_(
-            self.interaction.checkChecked(['dc_get_permission', 'get_permission'])
+            self.interaction.checkChecked(['dc_get_permission',
+                                           'get_permission'])
             )
 
         # This should raise Unauthorized instead of ForbiddenAttribute, since
@@ -539,11 +541,62 @@ class TestCombinedChecker(TestMixinDecoratedChecker, TestCase):
         dc = CombinedChecker(self.overridingChecker, self.originalChecker)
         verifyObject(IChecker, dc)
 
+
+class TestBasicTypes(TestCase):
+
+    def test(self):
+        class MyType(object): pass
+        class MyType2(object): pass
+
+        # When an item is added to the basic types, it should also be added to
+        # the list of checkers.
+        BasicTypes[MyType] = NoProxy
+        self.assert_(MyType in _checkers)
+
+        # If we clear the checkers, the type should still be there
+        _clear()
+        self.assert_(MyType in BasicTypes)
+        self.assert_(MyType in _checkers)
+
+        # Now delete the type from the dictionary, will also delete it from
+        # the checkers
+        del BasicTypes[MyType]
+        self.assert_(MyType not in BasicTypes)
+        self.assert_(MyType not in _checkers)
+
+        # The quick way of adding new types is using update
+        BasicTypes.update({MyType: NoProxy, MyType2: NoProxy})
+        self.assert_(MyType in BasicTypes)
+        self.assert_(MyType2 in BasicTypes)
+        self.assert_(MyType in _checkers)
+        self.assert_(MyType2 in _checkers)
+
+        # Let's remove the two new types
+        del BasicTypes[MyType]
+        del BasicTypes[MyType2]
+
+        # Of course, BasicTypes is a full dictionary. This dictionary is by
+        # default filled with several entries:
+        keys = BasicTypes.keys()
+        keys.sort()
+        self.assert_(bool in keys)
+        self.assert_(int in keys)
+        self.assert_(float in keys)
+        self.assert_(str in keys)
+        self.assert_(unicode in keys)
+        self.assert_(object in keys)
+        # ...
+
+        # Finally, the ``clear()`` method has been deactivated to avoid
+        # unwanted deletions.
+        self.assertRaises(NotImplementedError, BasicTypes.clear)
+
 def test_suite():
     return TestSuite((
         makeSuite(Test),
         makeSuite(TestCheckerPublic),
         makeSuite(TestCombinedChecker),
+        makeSuite(TestBasicTypes),
         ))
 
 if __name__=='__main__':

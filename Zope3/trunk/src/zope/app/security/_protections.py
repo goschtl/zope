@@ -32,14 +32,11 @@ def protect():
 
     # Make sure the message id gets never proxied
     # TODO because MessageIDs are mutable, this is a security hole.  This hole
-    # is one of the primary reasons for the development of the Message 
+    # is one of the primary reasons for the development of the Message
     # replacement.  See zope/i18nmessageid/messages.txt.
     zope.security.checker.BasicTypes[MessageID] = NoProxy
     # this, however, is not a security hole, because Messages are immutable.
     zope.security.checker.BasicTypes[Message] = NoProxy
-    zope.security.checker._clear() # XXX The BasicTypes approach requires
-    # _clear be called.  This is not a good idea.  This should be addressed
-    # before release.
 
     # add __parent__ and __name__ to always available names
     import zope.security.checker

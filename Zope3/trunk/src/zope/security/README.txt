@@ -226,23 +226,23 @@ authentication token against the given permission in the home of the object
 being accessed::
 
   class SimulationSecurityPolicy:
-  
+
       implements(ISecurityPolicy)
-  
+
       createInteraction = staticmethod(simpleinteraction.createInteraction)
-  
+
       def checkPermission(self, permission, object, interaction):
-  
+
           home = object.getHome()
           db = getattr(SimulationSecurityDatabase, home.getId(), None)
-  
+
           if db is None:
               return False
-  
+
           allowed = db.get('any', ())
           if permission in allowed or ALL in allowed:
               return True
-  
+
           if interaction is None:
               return False
           if not interaction.participations:
@@ -252,7 +252,7 @@ being accessed::
               allowed = db.get(token, ())
               if permission not in allowed:
                   return False
-  
+
           return True
 
 There are no specific requirements for the interaction class, so we can just
