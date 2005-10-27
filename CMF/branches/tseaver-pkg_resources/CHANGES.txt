@@ -2,6 +2,11 @@ HEAD only (unreleased)
 
   New Features
 
+    - CMFCore:  Make "filesystem skins" use the "pkg_resource" API for
+      loading product-relative data files (e.g. templates, python scripts,
+      etc.), in order to enable distribution of CMF-based products as
+      Python eggs.
+
     - CMFDefault and CMFTopic: Split off CMFTopic profile.
       CMFTopic support is now configured by an optional extension profile.
       CMFDefault no longer depends on CMFTopic.
@@ -130,6 +135,10 @@ HEAD only (unreleased)
       if no default view could be found for a piece of content.
 
   Others
+
+    - CMFCore.DirectoryView:  Dropped long-deprecated support for '.security'
+      and '.properties' files;  use the all-singing, all-dancing '.metadata'
+      file instead.
 
     - CMFDefault: Removed PortalGenerator and manage_addCMFSite.
 
