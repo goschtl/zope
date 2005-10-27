@@ -21,7 +21,7 @@ from zope.component.exceptions import ComponentLookupError
 from OFS.Folder import Folder
 from Products.Five.site.interfaces import IFiveUtilityRegistry
 
-class SimpleLocalUtilityService:
+class SimpleLocalUtilityRegistry:
     implements(IFiveUtilityRegistry)
 
     def __init__(self, context):
@@ -98,3 +98,11 @@ class SimpleLocalUtilityService:
             name = interface.getName() + '-' + name
 
         utilities._setObject(name, utility)
+
+# BBB 2005/11/01 -- gone in Five 1.5.
+SimpleLocalUtilityService = SimpleLocalUtilityRegistry
+import zope.deprecation
+zope.deprecation.deprecated(
+    'SimpleLocalUtilityService', "'SimpleLocalUtilityService' has been renamed to "
+    "'SimpleLocalUtilityRegistry' and will disappear in Five 1.5."
+    )

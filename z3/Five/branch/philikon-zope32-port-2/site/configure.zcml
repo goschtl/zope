@@ -9,8 +9,8 @@
 
   <adapter
       for="zope.app.site.interfaces.ISite"
-      provides=".interfaces.IFiveUtilityService"
-      factory=".utility.SimpleLocalUtilityService"
+      provides=".interfaces.IFiveUtilityRegistry"
+      factory=".utility.SimpleLocalUtilityRegistry"
       />
 
   <subscriber
