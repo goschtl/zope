@@ -19,7 +19,6 @@ from zope.event import notify
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.interface import implements
 from zope.component import getGlobalServices
-from zope.component.interfaces import IServiceService
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Utilities
 
@@ -32,7 +31,7 @@ from Products.SiteAccess.AccessRule import AccessRule
 from ZPublisher.BeforeTraverse import registerBeforeTraverse
 from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
 
-from Products.Five.site.interfaces import IFiveUtilityService
+from Products.Five.site.interfaces import IFiveSiteManager, IFiveUtilityService
 
 def serviceServiceAdapter(ob):
     """An adapter * -> IServiceService.
@@ -85,7 +84,7 @@ def disableLocalSiteHook(obj):
     directlyProvides(obj, directlyProvidedBy(obj) - ISite)
 
 class FiveSiteManager(object):
-    implements(IServiceService)
+    implements(IFiveSiteManager)
 
     def __init__(self, context):
         self.context = context
@@ -107,9 +106,14 @@ class FiveSiteManager(object):
 
         Raises ComponentLookupError if the service can't be found.
         """
-        if name in (Utilities,):
+        if name == Utilities:
             return IFiveUtilityService(self.context)
         return getGlobalServices().getService(name)
+
+    def registerUtility(self, interface, utility, name=''):
+        """See Products.Five.site.interfaces.IRegisterUtilitySimply"""
+        return IFiveUtilityService(self.context).registerUtility(
+            interface, utility, name)
 
 class FiveSite:
     implements(IPossibleSite)

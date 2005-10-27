@@ -94,12 +94,11 @@ they're gone:
 We can also register utilities now:
 
   >>> from zope.app import zapi
-  >>> utility_service = self.folder.site.getSiteManager().getService(
-  ... zapi.servicenames.Utilities)
+  >>> sm = self.folder.site.getSiteManager()
 
   >>> from Products.Five.site.tests.dummy import IDummyUtility, DummyUtility
   >>> dummy = DummyUtility()
-  >>> utility_service.registerUtility(IDummyUtility, dummy)
+  >>> sm.registerUtility(IDummyUtility, dummy)
 
 and find them being looked up just fine:
 

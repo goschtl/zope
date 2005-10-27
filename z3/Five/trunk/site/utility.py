@@ -98,3 +98,6 @@ class SimpleLocalUtilityService:
             name = interface.getName() + '-' + name
 
         utilities._setObject(name, utility)
+
+# forwards compatability with Five 1.3
+SimpleLocalUtilityRegistry = SimpleLocalUtilityService
