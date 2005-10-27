@@ -83,6 +83,7 @@ def page(_context, name, permission, for_,
                     "The provided class doesn't have the specified attribute "
                     )
         cdict = getSecurityInfo(class_)
+        cdict['__name__'] = name
         if template:
             new_class = makeClassForTemplate(template, bases=(class_, ),
                                              cdict=cdict, name=name)
@@ -90,8 +91,7 @@ def page(_context, name, permission, for_,
             # we're supposed to make a page for an attribute (read:
             # method) and it's not __call__.  We thus need to create a
             # new class using our mixin for attributes.
-            cdict.update({'__page_attribute__': attribute,
-                          '__name__': name})
+            cdict.update({'__page_attribute__': attribute})
             new_class = makeClass(class_.__name__,
                                   (class_, ViewMixinForAttributes),
                                   cdict)
