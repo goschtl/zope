@@ -91,7 +91,7 @@ def importToolset(context):
         tool_class = _resolveDottedName(info['class'])
 
         existing = getattr(site, tool_id, None)
-        new_tool = tool_class()
+        new_tool = tool_class() # XXX: new_tool = mapply(tool_class, info)
 
         try:
             new_tool._setId(tool_id)
