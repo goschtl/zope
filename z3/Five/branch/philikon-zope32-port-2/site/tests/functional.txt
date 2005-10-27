@@ -144,5 +144,5 @@ lookup:
 
 Finally, global services and the monkeys:
 
-  >>> from zope.app.tests.placelesssetup import tearDown
+  >>> from zope.app.testing.placelesssetup import tearDown
   >>> tearDown()
