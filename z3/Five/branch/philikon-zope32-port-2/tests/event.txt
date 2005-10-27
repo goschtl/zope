@@ -224,7 +224,6 @@ for Zope 2 classes.
   >>> from Products.Five import zcml
   >>> import Products.Five
   >>> zcml.load_config('meta.zcml', Products.Five)
-  >>> zcml.load_config('interfaces.zcml', Products.Five)
 
 Phase 2 is when we're using <five:containerEvents transitional="true"/>
 
