@@ -60,9 +60,11 @@ class FSSecurityBase( RequestTest, FSDVTest, LogInterceptor ):
         # set up ZODB
         RequestTest.setUp(self)
         # put object in ZODB
-        root=self.root
-        try: root._delObject('fake_skin')
-        except AttributeError: pass
+        root = self.root
+        try:
+            root._delObject('fake_skin')
+        except AttributeError:
+            pass
         root._setObject( 'fake_skin', self.ob.fake_skin )
 
     def tearDown( self ):
@@ -78,8 +80,10 @@ class FSSecurityTests( FSSecurityBase, LogInterceptor ):
         # check a normal method is as we'd expect
         self._checkSettings(self.ob.fake_skin.test1,'View',1,[])
         # now do some checks on the method with FS permissions
-        self._checkSettings(self.ob.fake_skin.test4,'View',1,['Manager','Owner'])
-        self._checkSettings(self.ob.fake_skin.test4,'Access contents information',0,[])
+        self._checkSettings(self.ob.fake_skin.test4,
+                            'View',1,['Manager','Owner'])
+        self._checkSettings(self.ob.fake_skin.test4,
+                            'Access contents information',0,[])
 
     def test_invalidPermissionNames( self ):
         import zLOG

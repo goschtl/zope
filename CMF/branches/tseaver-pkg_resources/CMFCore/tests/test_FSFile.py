@@ -44,8 +44,10 @@ class FSFileTests( RequestTest, FSDVTest):
         full_path = path_join(self.skin_path_name, filename)
         metadata = FSMetadata(filepath=full_path)
         metadata.read()
-        fsfile_ob = FSFile(id, filepath=full_path,
-                           properties=metadata.getProperties())
+        fsfile_ob = FSFile(id,
+                           filepath=full_path,
+                           properties=metadata.getProperties(),
+                          )
         return fsfile_ob
 
     def _extractFile( self, filename ):
@@ -95,7 +97,7 @@ class FSFileTests( RequestTest, FSDVTest):
         self.assertEqual( self.RESPONSE.getHeader( 'Content-Length'.lower() )
                         , str(len(ref)) )
         self.assertEqual( self.RESPONSE.getHeader( 'Content-Type'.lower() )
-                        , 'application/octet-stream' )
+                        , 'application/x-shockwave-flash' )
         self.assertEqual( self.RESPONSE.getHeader( 'Last-Modified'.lower() )
                         , rfc1123_date( mod_time ) )
 

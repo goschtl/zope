@@ -341,7 +341,7 @@ class ResourceDirectoryInformation(DirectoryInformationBase):
 
     def _listEntries(self):
         for entry in resource_listdir(self._pname, self._name):
-            if entry not in self.ignore:
+            if entry not in self.ignore and not ignore_re.match(entry):
                 yield entry
 
     def _getEntrySubpath(self, entry):

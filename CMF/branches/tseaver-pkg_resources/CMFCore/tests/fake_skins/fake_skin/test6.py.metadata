@@ -1,11 +1,8 @@
-[default]
+[Default]
 title = Test object
 cache = Default cache manager
 proxy = Manager,Anonymous
 
-[security]
+[Security]
 Access contents information = 1:Manager,Anonymous
 View management screens = 0:Manager
-
-# [local]
-# local roles, not implemented yet

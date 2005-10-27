@@ -236,7 +236,8 @@ class FSPythonScript (FSObject, Script):
                 self.func_defaults = None
         self._body = ps._body
         self._params = ps._params
-        self.title = ps.title
+        if not self.title:
+            self.title = ps.title
         self._setupBindings(ps.getBindingAssignments().getAssignedNames())
         self._source = ps.read()  # Find out what the script sees.
 

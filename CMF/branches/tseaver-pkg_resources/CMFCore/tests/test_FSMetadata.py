@@ -36,7 +36,7 @@ class FSMetadataDirectoryTests(FSSecurityBase):
     def test_basicPermissions(self):
         # Test basic FS permissions
         # check it has a title
-        assert(self.ob.fake_skin.test6.title == 'Test object')
+        self.assertEqual(self.ob.fake_skin.test6.title, 'Test object')
         self._checkSettings(
             self.ob.fake_skin.test6,
             'Access contents information',
@@ -54,7 +54,7 @@ class FSMetadataDirectoryTests(FSSecurityBase):
     def test_basicPermissionsOnImage(self):
         # Test basic FS permissions on Image
         test_image = getattr(self.ob.fake_skin, 'test_image.gif')
-        assert(test_image.title == 'Test image')
+        self.assertEqual(test_image.title, 'Test image')
         self._checkSettings(
             test_image,
             'Access contents information',
@@ -69,7 +69,7 @@ class FSMetadataDirectoryTests(FSSecurityBase):
     def test_basicPermissionsOnFile(self):
         # Test basic FS permissions on File
         test_file = getattr(self.ob.fake_skin, 'test_file.swf')
-        assert(test_file.title == 'Test file')
+        self.assertEqual(test_file.title, 'Test file')
         self._checkSettings(
             test_file,
             'Access contents information',

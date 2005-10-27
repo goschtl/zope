@@ -14,6 +14,7 @@
 
 $Id$
 """
+import os
 
 import Globals
 from AccessControl import ClassSecurityInfo
@@ -49,7 +50,8 @@ class FSFile(FSObject):
 
     def __init__(self, id, package=None, entry_subpath=None, filepath=None,
                  fullname=None, properties=None):
-        id = fullname or id # Use the whole filename.
+        if fullname:
+            id = fullname # Use the whole filename.
         FSObject.__init__(self, id, package, entry_subpath, filepath,
                           fullname, properties)
 
@@ -60,7 +62,7 @@ class FSFile(FSObject):
     def _createZODBClone(self):
         return File(self.getId(), '', self._readFile(1))
 
-    def _get_content_type(self, file, body, id, content_type=None):
+    def _get_content_type(self, filename, body, id, content_type=None):
         # Consult self.content_type first, this is either
         # the default (unknown/unknown) or it got a value from a
         # .metadata file
@@ -68,26 +70,27 @@ class FSFile(FSObject):
         if getattr(self, 'content_type', default_type) != default_type:
             return self.content_type
 
-        # Next, look at file headers
-        headers=getattr(file, 'headers', None)
-        if headers and headers.has_key('content-type'):
-            content_type=headers['content-type']
-        else:
-            # Last resort: Use the (imperfect) content type guessing
-            # mechanism from OFS.Image, which ultimately uses the
-            # Python mimetypes module.
-            if not isinstance(body, basestring):
-                body = body.data
-            content_type, enc=guess_content_type(
-                getattr(file, 'filename',id), body, content_type)
+        # Use the (imperfect) content type guessing
+        # mechanism from OFS.Image, which ultimately uses the
+        # Python mimetypes module.
+        if not isinstance(body, basestring):
+            body = body.data
+
+        content_type, enc = guess_content_type(filename, body, content_type)
 
         return content_type
+
+    def _getFilename(self):
+        path = self._filepath or self._entry_subpath
+        dir, fn = os.path.split(self._filepath)
+        return fn
 
     def _readFile(self, reparse):
         data = self._readFileAsResourceOrDirect()
         if reparse or self.content_type == 'unknown/unknown':
             self.ZCacheable_invalidate()
-            self.content_type=self._get_content_type(file, data, self.id)
+            filename = self._getFilename()
+            self.content_type = self._get_content_type(filename, data, self.id)
         return data
 
     #### The following is mainly taken from OFS/File.py ###

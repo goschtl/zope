@@ -165,8 +165,9 @@ class DirectoryViewTests( FSDVTest ):
         # Check if DirectoryView method works
         self.assertEqual(self.ob.fake_skin.test1(),'test1')
 
-    def test_properties(self):
-        # Make sure the directory view is reading properties
+    def test_metadata(self):
+        # Make sure the directory view is reading .metadata files and
+        # assigning their values to subobjects.
         self.assertEqual(self.ob.fake_skin.testPT.title, 'Zope Pope')
 
     def test_ignored(self):
@@ -270,8 +271,9 @@ class DirectoryViewEggTests( EggTestsBase ):
         require('rotten')
         import Products.Rotten
         found = resource_listdir('Products.Rotten', 'skins/rotten')
-        self.assertEqual(len(found), 1, found)
-        self.assertEqual(found[0], 'rotten.pt')
+        self.assertEqual(len(found), 2, found)
+        self.failUnless('rotten.pt' in found)
+        self.failUnless('rotten.pt.metadata' in found)
 
     def test_registerDirectory_in_egg(self):
         from pkg_resources import require

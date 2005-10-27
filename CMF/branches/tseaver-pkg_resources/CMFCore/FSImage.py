@@ -64,7 +64,7 @@ class FSImage(FSObject):
         return Image(self.getId(), '', self._readFile(1))
 
     def _readFile(self, reparse):
-        data = self._readFileAsResourceOrDirect()
+        data = self._data = self._readFileAsResourceOrDirect()
         if reparse or self.content_type == 'unknown/unknown':
             self.ZCacheable_invalidate()
             ct, width, height = getImageInfo( data )

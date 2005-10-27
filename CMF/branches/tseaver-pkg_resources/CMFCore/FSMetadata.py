@@ -62,10 +62,6 @@ class FSMetadata:
 
     def read(self):
         """ Find the file(s) and read them.
-        
-        o Prefer new '.metdata' file.
-        
-        o Fall back to '.properties' and '.security' files.
         """
         self._readMetadata()
 

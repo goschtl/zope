@@ -221,7 +221,10 @@ class FSDVTest( TestCase, WarningInterceptor ):
             for name in files:
                 chmod(join(root, name), S_IREAD+S_IWRITE)
         # store the skin path name
-        self.skin_path_name = join(self.tempname,self._skinname,self._layername)
+        self.skin_path_name = join(self.tempname,
+                                   self._skinname,
+                                   self._layername,
+                                  )
 
     def tearDown(self):
         # kill the copy

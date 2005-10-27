@@ -18,6 +18,8 @@ $Id$
 from os import path
 from os import stat
 from pkg_resources import resource_string
+from pkg_resources import get_provider
+import time
 
 import Globals
 from AccessControl import ClassSecurityInfo
@@ -57,6 +59,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
     _package = None
     _entry_subpath = None
     _file_mod_time = 0
+    _file_size = 0
     _parsed = 0
 
     def __init__(self, id, package=None, entry_subpath=None, filepath=None,
@@ -72,11 +75,6 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
             if package is not None or entry_subpath is not None:
                 raise ValueError(MESSAGE)
             self._filepath = filepath
-            fp = expandpath(self._filepath)
-            try:
-                self._file_mod_time = stat(fp)[8]
-            except:
-                pass
 
         if properties:
             # Since props come from the filesystem, this should be
@@ -91,7 +89,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
 
         self.id = id
         self.__name__ = id # __name__ is used in traceback reporting
-        self._readFile(0)
+        self._updateFromFS(reparse=1)
 
     security.declareProtected(ViewManagementScreens, 'manage_doCustomize')
     def manage_doCustomize(self, folder_path, RESPONSE=None):
@@ -147,7 +145,8 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
             obj = folder._getOb(id)
             if RESPONSE is not None:
                 RESPONSE.redirect('%s/manage_main?manage_tabs_message=%s' % (
-                    obj.absolute_url(), html_quote("An object with this id already exists")
+                    obj.absolute_url(),
+                    html_quote("An object with this id already exists")
                     ))
         else:
             folder._verifyObjectPaste(obj, validate_src=0)
@@ -176,24 +175,36 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
 
     # Refresh our contents from the filesystem if that is newer and we are
     # running in debug mode.
-    def _updateFromFS(self):
+    def _updateFromFS(self, reparse=1):
         parsed = self._parsed
-        if not parsed or Globals.DevelopmentMode:
+
+        if parsed and not Globals.DevelopmentMode:
+            return
+
+        if self._filepath:
             fp = expandpath(self._filepath)
-            try:    mtime=stat(fp)[8]
-            except: mtime=0
-            if not parsed or mtime != self._file_mod_time:
-                # if we have to read the file again, remove the cache
-                self.ZCacheable_invalidate()
-                self._readFile(1)
-                self._file_mod_time = mtime
-                self._parsed = 1
+            try:
+                statinfo = stat(fp)
+                size, mtime = statinfo[6], statinfo[8]
+            except:
+                size = mtime = 0
+        else:
+            size, mtime = _getZipStatInfo(self._package, self._entry_subpath)
+
+        if not parsed or mtime != self._file_mod_time:
+            # if we have to read the file again, remove the cache
+            self.ZCacheable_invalidate()
+            data = self._readFile(reparse)
+            self._file_mod_time = mtime
+            self._file_size = size
+            self._parsed = 1
 
     security.declareProtected(View, 'get_size')
     def get_size(self):
-        """Get the size of the underlying file."""
-        fp = expandpath(self._filepath)
-        return path.getsize(fp)
+        """Get the size of the underlying file.
+        """
+        self._updateFromFS()
+        return self._file_size
 
     security.declareProtected(View, 'getModTime')
     def getModTime(self):
@@ -208,7 +219,9 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
     def getObjectFSPath(self):
         """Return the path of the file we represent"""
         self._updateFromFS()
-        return self._filepath
+        if self._filepath is not None:
+            return self._filepath
+        return '<zipimport: %s, %s>' % self._package, self._entry_subpath
 
     security.declarePrivate('_readFileAsResourceOrDirect')
     def _readFileAsResourceOrDirect(self):
@@ -272,25 +285,6 @@ class BadFile( FSObject ):
         """
         return self.showError( self, REQUEST )
 
-    security.declarePrivate( '_readFile' )
-    def _readFile( self, reparse ):
-        """Read the data from the filesystem.
-
-        Read the file indicated by exandpath(self._filepath), and parse the
-        data if necessary.  'reparse' is set when reading the second
-        time and beyond.
-        """
-        try:
-            fp = expandpath(self._filepath)
-            file = open(fp, 'rb')
-            try:
-                data = self.file_contents = file.read()
-            finally:
-                file.close()
-        except:  # No errors of any sort may propagate
-            data = self.file_contents = None #give up
-        return data
-
     security.declarePublic( 'getFileContents' )
     def getFileContents( self ):
         """
@@ -307,3 +301,22 @@ class BadFile( FSObject ):
         return self.exc_str
 
 Globals.InitializeClass( BadFile )
+
+def _getZipStatInfo(package, subpath):
+    provider = get_provider(package)
+    zip_stat = provider.zipinfo.get(subpath)
+    if zip_stat is None:
+        return None, None
+    path, compression, csize, size, date, time, crc = zip_stat
+    date_time = ((date >> 9) + 1980,    # year
+                 (date >> 5) & 0xF,     # month
+                 date & 0x1F,           # day
+                 (time & 0xFFFF) >> 11, # hour
+                 (time >> 5) & 0x3F,    # minute
+                 (time & 0x1F) * 2,     # second
+                 0,                     # ?
+                 0,                     # ?
+                 -1,                    # ?
+                )
+    return size, time.mktime(date_time) 
+
