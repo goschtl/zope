@@ -3,7 +3,7 @@ from zope.interface import implements, Interface
 from zope.app.component.interface import getInterface
 
 from zope.app.apidoc.viewmodule.browser import ViewsDetails as _ViewsDetails
-from Products.Five.browser import BrowserView 
+from Products.Five.browser import BrowserView
 from Products.Five.utilities.interfaces import IMarkerUtility
 from zope.component import getView, ComponentLookupError
 
@@ -20,7 +20,7 @@ class EditView(BrowserView):
     def __init__(self, context, request):
         self.utility = zapi.getUtility(IMarkerUtility)
         self.context = context
-        self.request = request        
+        self.request = request
         self.processForm()
 
         self.name = ''
@@ -35,9 +35,9 @@ class EditView(BrowserView):
 
     def name(self):
         return self.name
-    
+
     def _getLinkToInterfaceDetailsView(self, interfaceName):
-        return (self.context_url + 
+        return (self.context_url +
             '/views-details.html?iface=%s&type=zope.publisher.interfaces.browser.IBrowserRequest' % interfaceName)
 
     def _getNameLinkDicts(self, interfaceNames):
@@ -62,5 +62,3 @@ class EditView(BrowserView):
         ifaces = self.request.get('add', ()), self.request.get('remove', ())
         add, remove = [self.utility.dottedToInterfaces(self.context, seq) for seq in ifaces]
         self.utility.update(self.context, add=add, remove=remove)
-
-

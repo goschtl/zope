@@ -1,7 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       lang="en"
       i18n:domain="five">
-  <head><title></title></head>
 <body>
 <!-- span tal:replace="structure here/manage_tabs"  -->
   <body>
@@ -24,8 +23,8 @@
             tal:attributes="action string:${context_id}/${name}"
             tal:define="provided view/getDirectlyProvidedNames;
                         impl view/getProvidedNames;
-			context_id view/context/getId;
-			name view/name"	>
+                        context_id view/context/getId;
+                        name view/name">
 
         <fieldset>
 
@@ -86,7 +85,7 @@
                      tabindex=""
                      tal:attributes="value iface/name;
                                      id iface/name;
-				     checked python:id in add and 'checked' or None"
+                                     checked python:id in add and 'checked' or None"
                      />
 
               <label for=""

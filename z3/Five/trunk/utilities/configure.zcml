@@ -1,12 +1,13 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:five="http://namespaces.zope.org/five">
 
-  <include package=".browser" />
-  <utility 
-   provides=".interfaces.IMarkerUtility"
-   factory=".marker.getMarkerUtility" 
-   permission="zope2.ManageProperties"
-   />	
+  <include package=".browser"/>
+
+  <utility
+      provides=".interfaces.IMarkerUtility"
+      factory=".marker.getMarkerUtility"
+      permission="zope2.ManageProperties"
+      />
 
   <adapter
       for='*'

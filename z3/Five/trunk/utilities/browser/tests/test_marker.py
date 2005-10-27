@@ -1,4 +1,4 @@
-# this test will be converted to a doctest 
+# this test will be converted to a doctest
 import os, sys
 
 if __name__ == '__main__':
@@ -8,7 +8,7 @@ import unittest
 
 from sets import Set
 from zope.app import zapi
-        
+
 from Testing import ZopeTestCase
 
 from zope.app.tests.placelesssetup import setUp, tearDown
@@ -31,10 +31,10 @@ def dummy(key):
 _marker = object()
 
 class Base(ZopeTestCase.FunctionalTestCase):
-    
+
     def beforeTearDown(self):
         tearDown()
-    
+
     def afterSetUp(self):
         #setUp()
         zcml.load_config('meta.zcml', Products.Five)
@@ -53,10 +53,10 @@ class Base(ZopeTestCase.FunctionalTestCase):
         self.login('manager')
 
 class TestKlasses(Base):
-    
+
     def afterSetUp(self):
         super(Test, self).afterSetUp()
-    
+
 class Test(Base):
     """
     These are integration tests for making sure the component
@@ -65,7 +65,7 @@ class Test(Base):
     def afterSetUp(self):
         super(Test, self).afterSetUp()
         self.path = '/'.join(self.test_folder.getPhysicalPath())
-        
+
     def test_viewsdetails(self):
         request = FakeRequest()
         iface = IContainmentRoot
@@ -80,7 +80,6 @@ class Test(Base):
 ##         import pdb; pdb.set_trace()
 ##         print resp.getBody()
 
-        
     def test_editview(self):
         request = FakeRequest()
         view = zapi.getView(self.folder.test_folder, 'edit-markers.html', request)
@@ -92,7 +91,6 @@ class Test(Base):
 ##         print resp.getBody()
 
 
-        
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))

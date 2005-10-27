@@ -14,7 +14,7 @@
 """
 MarkerUtility allows for arbitrary application of marker interfaces to objects.
 
-$Id: $
+$Id$
 """
 from sets import Set
 
@@ -36,7 +36,7 @@ def interfaceStringCheck(f):
 
 def mark(ob, interface):
     directlyProvides(ob, directlyProvidedBy(ob), interface)
-    
+
 def erase(ob, interface):
     directlyProvides(ob, directlyProvidedBy(ob)-interface)
 
@@ -50,7 +50,7 @@ class MarkerUtility(object):
     mark = staticmethod(mark)
     erase = staticmethod(erase)
     dottedToInterfaces=staticmethod(dottedToInterfaces)
-    
+
     def getDirectlyProvided(self, obj):
         return IIntrospector(obj).getDirectlyProvided()
 

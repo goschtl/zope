@@ -12,7 +12,7 @@ class IReadInterface(Interface):
     def erase(object, interface):
         """Remove a marker interface to an object
         """
-        
+
     def getDirectlyProvided(context):
         """See IIntrospector"""
 
