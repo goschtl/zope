@@ -43,7 +43,7 @@ class ZopeTranslator(HTMLTranslator):
     - Outputs *only* the 'body' parts of the document tree, using the
       internal docutils structure.
     """
-    
+
     def astext(self):
         """
         This is where we join the document parts that we want in
@@ -62,7 +62,7 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
       >>> from zope.publisher.browser import TestRequest
       >>> source = ReStructuredTextSourceFactory(u'''
       ... This is source.
-      ... 
+      ...
       ... Header 3
       ... --------
       ... This is more source.
@@ -74,7 +74,7 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
       <h3><a name="header-3">Header 3</a></h3>
       <p>This is more source.</p>
       </div>
-    """ 
+    """
 
 
     implements(IHTMLRenderer)

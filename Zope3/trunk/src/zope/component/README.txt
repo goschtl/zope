@@ -206,14 +206,14 @@ a callable object adapts some interfaces (or classes):
     >>> personJob = interface.implementer(IJob)(personJob)
     >>> personJob = component.adapter(IPerson)(personJob)
 
-(In Python 2.4, the example can be written::
+In Python 2.4, the example can be written:
 
-    @interface.implementer(IJob)
-    @component.adapter(IPerson)
-    def personJob(person):
-        return getattr(person, 'job', None)
+    >>> @interface.implementer(IJob)
+    ... @component.adapter(IPerson)
+    ... def personJob(person):
+    ...     return getattr(person, 'job', None)
 
-which looks a bit nicer.)
+which looks a bit nicer.
 
 In this example, the personJob function simply returns the person's
 `job` attribute if present, or None if it's not present.  An adapter
@@ -228,7 +228,7 @@ Let's register this adapter and try it out:
     TypeError: ('Could not adapt', ...
 
 The adaptation failed because sally didn't have a job.  Let's give her
-one: 
+one:
 
     >>> job = Job()
     >>> sally.job = job
@@ -248,7 +248,7 @@ interface:
     >>> class IValidate(interface.Interface):
     ...     def validate(ob):
     ...         """Determine whether the object is valid
-    ...         
+    ...
     ...         Return a string describing a validation problem.
     ...         An empty string is returned to indicate that the
     ...         object is valid.
@@ -351,7 +351,7 @@ called.  We call subscribers that don't actually create anything
 "handlers".  There are special APIs for registering and calling
 them.
 
-To register the subscriber above, we define a document-created event: 
+To register the subscriber above, we define a document-created event:
 
     >>> class IDocumentCreated(interface.Interface):
     ...     doc = interface.Attribute("The document that was created")
@@ -369,12 +369,11 @@ We'll also change our handler definition to:
 
     >>> documentCreated = component.adapter(IDocumentCreated)(documentCreated)
 
-(Note that in Python 2.4, this can be written:
+Note that in Python 2.4, this can be written:
 
-     @component.adapter(IDocumentCreated)
-     def documentCreated(event):
-         event.doc.created = datetime.datetime.utcnow()
-)
+    >>> @component.adapter(IDocumentCreated)
+    ... def documentCreated(event):
+    ...     event.doc.created = datetime.datetime.utcnow()
 
 This marks the handler as an adapter of `IDocumentCreated` events.
 
