@@ -757,6 +757,9 @@ def expandpath(p):
     if os_path.isabs(p):
         return p
 
+    if p.startswith('Products'):
+        p = p[len('Products/'):]
+
     for ppath in ProductsPath:
         abs = os_path.join(ppath, p)
         if os_path.exists(abs):

@@ -82,7 +82,7 @@ class FSFile(FSObject):
 
     def _getFilename(self):
         path = self._filepath or self._entry_subpath
-        dir, fn = os.path.split(self._filepath)
+        dir, fn = os.path.split(path)
         return fn
 
     def _readFile(self, reparse):

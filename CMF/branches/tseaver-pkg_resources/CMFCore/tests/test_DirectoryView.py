@@ -60,6 +60,8 @@ class DirectoryViewPathTests( TestCase, WarningInterceptor ):
         skin.manage_properties(r'Products\CMFCore\tests\fake_skins\fake_skin')
         self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
+        self.assertEqual(skin._dirpath, 
+                         'Products/CMFCore/tests/fake_skins/fake_skin')
 
     # windows SOFTWARE_HOME
     def test_getDirectoryInfo2(self):
@@ -68,6 +70,8 @@ class DirectoryViewPathTests( TestCase, WarningInterceptor ):
                   r'C:\Zope\2.5.1\Products\CMFCore\tests\fake_skins\fake_skin')
         self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
+        self.assertEqual(skin._dirpath, 
+                         'Products/CMFCore/tests/fake_skins/fake_skin')
 
     # *nix INSTANCE_HOME
     def test_getDirectoryInfo3(self):
@@ -75,6 +79,8 @@ class DirectoryViewPathTests( TestCase, WarningInterceptor ):
         skin.manage_properties('Products/CMFCore/tests/fake_skins/fake_skin')
         self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
+        self.assertEqual(skin._dirpath, 
+                         'Products/CMFCore/tests/fake_skins/fake_skin')
 
     # *nix SOFTWARE_HOME
     def test_getDirectoryInfo4(self):
@@ -83,6 +89,8 @@ class DirectoryViewPathTests( TestCase, WarningInterceptor ):
            '/usr/local/zope/2.5.1/Products/CMFCore/tests/fake_skins/fake_skin')
         self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
+        self.assertEqual(skin._dirpath, 
+                         'Products/CMFCore/tests/fake_skins/fake_skin')
 
     # windows PRODUCTS_PATH
     def test_getDirectoryInfo5(self):
@@ -91,6 +99,8 @@ class DirectoryViewPathTests( TestCase, WarningInterceptor ):
                                r'\Products\CMFCore\tests\fake_skins\fake_skin')
         self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
+        self.assertEqual(skin._dirpath, 
+                         'Products/CMFCore/tests/fake_skins/fake_skin')
 
     # linux PRODUCTS_PATH
     def test_getDirectoryInfo6(self):
@@ -99,6 +109,8 @@ class DirectoryViewPathTests( TestCase, WarningInterceptor ):
                                 '/Products/CMFCore/tests/fake_skins/fake_skin')
         self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
+        self.assertEqual(skin._dirpath, 
+                         'Products/CMFCore/tests/fake_skins/fake_skin')
 
     # second 'Products' in path
     def test_getDirectoryInfo7(self):
@@ -107,6 +119,17 @@ class DirectoryViewPathTests( TestCase, WarningInterceptor ):
            r'C:\CoolProducts\Zope\Products\CMFCore\tests\fake_skins\fake_skin')
         self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
+        self.assertEqual(skin._dirpath, 
+                         'Products/CMFCore/tests/fake_skins/fake_skin')
+
+    # *No* 'Products' in path (typical for sites upgraded from 1.5.x)
+    def test_getDirectoryInfo8(self):
+        skin = self.ob.fake_skin
+        skin.manage_properties('CMFCore/tests/fake_skins/fake_skin')
+        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
+                         self.ob.fake_skin.getDirPath() )
+        self.assertEqual(skin._dirpath, 
+                         'Products/CMFCore/tests/fake_skins/fake_skin')
 
     # Test we do nothing if given a really wacky path
     def test_UnhandleableExpandPath( self ):
@@ -137,10 +160,11 @@ class DirectoryViewPathTests( TestCase, WarningInterceptor ):
     def test_registerDirectoryMinimalPath(self):
         from Products.CMFCore.DirectoryView import _dirreg
         dirs = _dirreg._directories
-        self.failUnless( dirs.has_key('CMFCore/tests/fake_skins/fake_skin'),
+        self.failUnless( dirs.has_key(
+                            'Products/CMFCore/tests/fake_skins/fake_skin'),
                          dirs.keys() )
         self.assertEqual( self.ob.fake_skin.getDirPath(),
-                          'CMFCore/tests/fake_skins/fake_skin' )
+                          'Products/CMFCore/tests/fake_skins/fake_skin' )
 
 
 class DirectoryViewTests( FSDVTest ):
@@ -290,6 +314,51 @@ class DirectoryViewEggTests( EggTestsBase ):
         self.failUnless('Products/Rotten/skins' in added)
         self.failUnless('Products/Rotten/skins/rotten' in added)
 
+class Test_normalizeDirPath( TestCase ):
+
+    def _check(self, before, after):
+        from Products.CMFCore.DirectoryView import _normalizeDirPath
+        self.assertEqual(_normalizeDirPath(before), after)
+
+    def test__nDP_already_normalized(self):
+        BEFORE = 'Products/CMFCore/skins/foo'
+        AFTER = 'Products/CMFCore/skins/foo'
+        self._check(BEFORE, AFTER)
+
+    def test__nDP_product_but_backward_slashes(self):
+        BEFORE = r'Products\CMFCore\skins\foo'
+        AFTER = 'Products/CMFCore/skins/foo'
+        self._check(BEFORE, AFTER)
+
+    def test__nDP_no_Products_forward_slashes(self):
+        BEFORE = 'CMFCore/skins/foo'
+        AFTER = 'Products/CMFCore/skins/foo'
+        self._check(BEFORE, AFTER)
+
+    def test__nDP_no_Products_backward_slashes(self):
+        BEFORE = r'CMFCore\skins\foo'
+        AFTER = 'Products/CMFCore/skins/foo'
+        self._check(BEFORE, AFTER)
+
+    def test__nDP_leading_path_forward_slashes(self):
+        BEFORE = '/var/zope_instance/Products/CMFCore/skins/foo'
+        AFTER = 'Products/CMFCore/skins/foo'
+        self._check(BEFORE, AFTER)
+
+    def test__nDP_leading_path_backward_slashes(self):
+        BEFORE = r'C:\zope_instance\Products\CMFCore\skins\foo'
+        AFTER = 'Products/CMFCore/skins/foo'
+        self._check(BEFORE, AFTER)
+
+    def test__nDP_abs_path_no_products_forward_slashes(self):
+        BEFORE = '/var/zope_instance/CMFCore/skins/foo'
+        AFTER = '/var/zope_instance/CMFCore/skins/foo'
+        self._check(BEFORE, AFTER)
+
+    def test__nDP_abs_path_backward_slashes(self):
+        BEFORE = r'C:\zope_instance\CMFCore\skins\foo'
+        AFTER = r'C:/zope_instance/CMFCore/skins/foo'
+        self._check(BEFORE, AFTER)
 
 if DevelopmentMode:
 
@@ -369,6 +438,7 @@ def test_suite():
         makeSuite(DirectoryViewIgnoreTests),
         makeSuite(DirectoryViewFolderTests),
         makeSuite(DirectoryViewEggTests),
+        makeSuite(Test_normalizeDirPath),
         makeSuite(DebugModeTests),
         ))
 

@@ -41,7 +41,6 @@ from FSObject import BadFile
 from permissions import AccessContentsInformation
 from permissions import ManagePortal
 from utils import _dtmldir
-from utils import minimalpath
 from utils import normalize
 
 
@@ -288,10 +287,11 @@ class DirectoryInformation(DirectoryInformationBase):
                             LOG( 'DirectoryView', ERROR,
                                  '\n'.join(exc_lines) )
 
-                            ob = BadFile( name,
-                                          entry_minimal_fp,
-                                          exc_str='\r\n'.join(exc_lines),
-                                          fullname=entry )
+                            ob = BadFile( name
+                                        , filepath=entry_minimal_fp
+                                        , fullname=entry
+                                        , exc_str='\r\n'.join(exc_lines)
+                                        )
                         finally:
                             tb = None   # Avoid leaking frame!
 
@@ -328,19 +328,19 @@ class ResourceDirectoryInformation(DirectoryInformationBase):
     """ DI for directories read using pkg_resources API.
     """
 
-    def __init__(self, pname, name, ignore=ignore):
-        self._pname = pname
+    def __init__(self, package, name, ignore=ignore):
+        self._package = package
         self._name = name
         self.ignore = base_ignore + tuple(ignore)
         subdirs = []
         for entry in self._listEntries():
             entry_subpath = self._getEntrySubpath(entry)
-            if resource_isdir(pname, entry_subpath):
+            if resource_isdir(package, entry_subpath):
                subdirs.append(entry)
         self.subdirs = tuple(subdirs)
 
     def _listEntries(self):
-        for entry in resource_listdir(self._pname, self._name):
+        for entry in resource_listdir(self._package, self._name):
             if entry not in self.ignore and not ignore_re.match(entry):
                 yield entry
 
@@ -349,8 +349,8 @@ class ResourceDirectoryInformation(DirectoryInformationBase):
 
     def readFile(self, filename, mode='ignored'):
         try:
-            return resource_string(self._pname, '%s/%s' % (self._name,
-                                                           filename))
+            return resource_string(self._package, '%s/%s'
+                                                    % (self._name, filename))
         except IOError:
             return None
 
@@ -358,11 +358,11 @@ class ResourceDirectoryInformation(DirectoryInformationBase):
         # Creates objects for each file.
         data = {}
         objects = []
-        pname = self._pname
+        package = self._package
         types = self._readTypesFile()
-        faux_path_prefix = pname.split('.')
+        faux_path_prefix = package.split('.')
 
-        for entry in resource_listdir(self._pname, self._name):
+        for entry in resource_listdir(self._package, self._name):
 
             if not self._isAllowableFilename(entry):
                 continue
@@ -379,7 +379,7 @@ class ResourceDirectoryInformation(DirectoryInformationBase):
                     # Register unknown subdirs
                     registry.registerDirectoryByGlobals(entry_subpath, 
                                                         {'__name__' :
-                                                            self._pname },
+                                                            self._package },
                                                         ignore=self.ignore,
                                                        )
                     info = registry.getDirectoryInfo(faux_path)
@@ -395,11 +395,12 @@ class ResourceDirectoryInformation(DirectoryInformationBase):
                     t = registry.getTypeByMetaType(mt)
                     if t is None:
                         t = DirectoryView
-                    metadata = FSMetadata(package=pname,
+                    metadata = FSMetadata(package=package,
                                           entry_subpath=entry_subpath)
                     metadata.read()
                     ob = t( entry
-                          , entry_minimal_fp
+                          , package=package
+                          , entry_subpath=entry_subpath
                           , properties=metadata.getProperties()
                           )
                     ob_id = ob.getId()
@@ -430,12 +431,12 @@ class ResourceDirectoryInformation(DirectoryInformationBase):
                     t = registry.getTypeByExtension(ext)
 
                 if t is not None:
-                    metadata = FSMetadata(package=pname,
+                    metadata = FSMetadata(package=package,
                                           entry_subpath=entry_subpath)
                     metadata.read()
                     try:
                         ob = t(name,
-                               package=pname,
+                               package=package,
                                entry_subpath=entry_subpath,
                                fullname=entry,
                                properties=metadata.getProperties(),
@@ -451,7 +452,8 @@ class ResourceDirectoryInformation(DirectoryInformationBase):
                                  '\n'.join(exc_lines) )
 
                             ob = BadFile( name,
-                                          entry_minimal_fp,
+                                          package=package,
+                                          entry_subpath=entry_subpath,
                                           exc_str='\r\n'.join(exc_lines),
                                           fullname=entry )
                         finally:
@@ -517,18 +519,18 @@ class DirectoryRegistry:
 
     def registerDirectoryByGlobals(self, name, pglobals,
                                    subdirs=1, ignore=ignore):
-        pname = pglobals['__name__']
-        faux_path_elements = pname.split('.')
+        package = pglobals['__name__']
+        faux_path_elements = package.split('.')
         faux_path_elements.append(name)
         faux_path = '/'.join(faux_path_elements)
-        info = ResourceDirectoryInformation(pname, name, ignore=ignore)
+        info = ResourceDirectoryInformation(package, name, ignore=ignore)
         self._directories[faux_path] = info
         if subdirs:
-            for entry in resource_listdir(pname, name):
+            for entry in resource_listdir(package, name):
                 if entry in ignore:
                     continue
                 sub_name = '%s/%s' % (name, entry)
-                if resource_isdir(pname, sub_name):
+                if resource_isdir(package, sub_name):
                     self.registerDirectoryByGlobals( sub_name
                                                    , pglobals
                                                    , subdirs
@@ -542,7 +544,7 @@ class DirectoryRegistry:
         # The idea is that the registry will only contain
         # small paths that are likely to work across platforms
         # and SOFTWARE_HOME, INSTANCE_HOME and PRODUCTS_PATH setups
-        minimal_fp = minimalpath(filepath)
+        minimal_fp = _normalizeDirPath(filepath)
         info = DirectoryInformation(filepath, minimal_fp, ignore=ignore)
         self._directories[minimal_fp] = info
         if subdirs:
@@ -640,6 +642,9 @@ class DirectoryView (Persistent):
             if index != -1:
                 dirpath = dirpath[index+len('products/'):]
             info = _dirreg.getDirectoryInfo(dirpath)
+            if info is None and not dirpath.startswith('/'):  #BBB
+                dirpath = 'Products/%s' % dirpath
+                info = _dirreg.getDirectoryInfo(dirpath)
             if info is not None:
                 # update the directory view with a corrected path
                 self._dirpath = dirpath
@@ -661,6 +666,16 @@ class DirectoryView (Persistent):
 
 InitializeClass(DirectoryView)
 
+def _normalizeDirPath(dirpath):
+    dirpath = normalize(dirpath)
+    index = dirpath.rfind('Products')
+    if index == -1:
+        index = dirpath.rfind('products')
+    if index != -1:
+        dirpath = dirpath[index+len('products/'):]
+    if not dirpath.startswith('/') and ':' not in dirpath:
+        dirpath = 'Products/%s' % dirpath
+    return dirpath
 
 class DirectoryViewSurrogate (Folder):
     """ Folderish DirectoryView.
@@ -696,7 +711,7 @@ class DirectoryViewSurrogate (Folder):
     def manage_properties( self, dirpath, REQUEST=None ):
         """ Update the directory path of the DirectoryView.
         """
-        self.__dict__['_real']._dirpath = dirpath
+        self.__dict__['_real']._dirpath = _normalizeDirPath(dirpath)
         if REQUEST is not None:
             REQUEST['RESPONSE'].redirect( '%s/manage_propertiesForm'
                                         % self.absolute_url() )
@@ -735,6 +750,9 @@ def createDirectoryView(parent, minimal_fp, id=None):
     """ Add either a DirectoryView or a derivative object.
     """
     info = _dirreg.getDirectoryInfo(minimal_fp)
+    if info is None:    # maybe old data
+        minimal_fp = _normalizeDirPath(minimal_fp)
+        info = _dirreg.getDirectoryInfo(minimal_fp)
     if info is None:
         raise ValueError('Not a registered directory: %s' % minimal_fp)
     if not id:
@@ -753,16 +771,16 @@ def addDirectoryViews(ob, name, _prefix):
     """
     if isinstance(_prefix, basestring):
         filepath = path.join(_prefix, name)
-        adjusted = minimalpath(filepath)
+        adjusted = _normalizeDirPath(filepath)
     else:
-        pname = _prefix['__name__']
-        elements = pname.split('.') + [name]
+        package = _prefix['__name__']
+        elements = package.split('.') + [name]
         adjusted = '/'.join(elements)
 
     info = _dirreg.getDirectoryInfo(adjusted)
 
     if info is None:
-        raise ValueError('Not a registered directory: %s' % minimal_fp)
+        raise ValueError('Not a registered directory: %s' % adjusted)
 
     for entry in info.getSubdirs():
         entry_subname = '%s/%s' % (adjusted, entry)

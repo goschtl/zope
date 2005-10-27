@@ -15,11 +15,19 @@
 $Id$
 """
 
-from os import path
-from os import stat
-from pkg_resources import resource_string
-from pkg_resources import get_provider
+import os
+import sys
 import time
+
+try:
+    from pkg_resources import resource_string
+    from pkg_resources import get_provider
+    from pkg_resources import ZipProvider
+    _HAS_PKG_RESOURCES = True
+except ImportError:
+    _HAS_PKG_RESOURCES = False
+    class ZipProvider:  # silence!
+        pass
 
 import Globals
 from AccessControl import ClassSecurityInfo
@@ -184,12 +192,13 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         if self._filepath:
             fp = expandpath(self._filepath)
             try:
-                statinfo = stat(fp)
+                statinfo = os.stat(fp)
                 size, mtime = statinfo[6], statinfo[8]
             except:
                 size = mtime = 0
         else:
-            size, mtime = _getZipStatInfo(self._package, self._entry_subpath)
+            size, mtime = _getResourceStatInfo(self._package,
+                                               self._entry_subpath)
 
         if not parsed or mtime != self._file_mod_time:
             # if we have to read the file again, remove the cache
@@ -253,6 +262,11 @@ class BadFile( FSObject ):
 <dtml-var manage_tabs>
 <h2> Bad Filesystem Object: &dtml-getId; </h2>
 
+<h3> File Path </h3>
+<pre>
+<dtml-var getFilePath>
+</pre>
+
 <h3> File Contents </h3>
 <pre>
 <dtml-var getFileContents>
@@ -269,21 +283,42 @@ class BadFile( FSObject ):
         {'label':'Error', 'action':'manage_showError'},
         )
 
-    def __init__( self, id, filepath, exc_str=''
-                , fullname=None, properties=None):
+    def __init__( self, id, package=None, entry_subpath=None, filepath=None
+                , fullname=None, properties=None, exc_str=''
+                ):
         id = fullname or id # Use the whole filename.
         self.exc_str = exc_str
         self.file_contents = ''
-        FSObject.__init__(self, id, filepath, fullname, properties)
+        FSObject.__init__(self, id, package, entry_subpath, filepath,
+                          fullname, properties)
 
     security = ClassSecurityInfo()
 
+    security.declarePrivate('showError')
     showError = Globals.HTML( BAD_FILE_VIEW )
+
+    security.declarePrivate('_readFile')
+    def _readFile(self, reparse):
+        """ Stub this out.
+        """
+        pass
+
     security.declareProtected(ManagePortal, 'manage_showError')
     def manage_showError( self, REQUEST ):
-        """
+        """ Render the error page.
         """
         return self.showError( self, REQUEST )
+
+    security.declarePublic( 'getFilePath' )
+    def getFilePath( self ):
+        """
+            Return the path to the file.
+        """
+        if self._filepath:
+            return self._filepath
+        else:
+            return 'package: %s, subpath: %s' % (self._package,
+                                                 self._entry_subpath)
 
     security.declarePublic( 'getFileContents' )
     def getFileContents( self ):
@@ -302,21 +337,33 @@ class BadFile( FSObject ):
 
 Globals.InitializeClass( BadFile )
 
-def _getZipStatInfo(package, subpath):
+def _getResourceStatInfo(package, subpath):
     provider = get_provider(package)
-    zip_stat = provider.zipinfo.get(subpath)
-    if zip_stat is None:
-        return None, None
-    path, compression, csize, size, date, time, crc = zip_stat
-    date_time = ((date >> 9) + 1980,    # year
-                 (date >> 5) & 0xF,     # month
-                 date & 0x1F,           # day
-                 (time & 0xFFFF) >> 11, # hour
-                 (time >> 5) & 0x3F,    # minute
-                 (time & 0x1F) * 2,     # second
-                 0,                     # ?
-                 0,                     # ?
-                 -1,                    # ?
-                )
-    return size, time.mktime(date_time) 
 
+    if _HAS_PKG_RESOURCES and isinstance(provider, ZipProvider):
+        zip_stat = provider.zipinfo.get(subpath)
+        if zip_stat is None:
+            return None, None
+        path, compression, csize, size, date, time, crc = zip_stat
+        date_time = ((date >> 9) + 1980,    # year
+                    (date >> 5) & 0xF,     # month
+                    date & 0x1F,           # day
+                    (time & 0xFFFF) >> 11, # hour
+                    (time >> 5) & 0x3F,    # minute
+                    (time & 0x1F) * 2,     # second
+                    0,                     # ?
+                    0,                     # ?
+                    -1,                    # ?
+                    )
+        return size, time.mktime(date_time)
+
+    module = sys.modules[package]
+    path = os.path.split(module.__file__)
+
+    try:
+        statinfo = os.stat(path)
+        size, mtime = statinfo[6], statinfo[8]
+    except:
+        size = mtime = 0
+
+    return size, mtime

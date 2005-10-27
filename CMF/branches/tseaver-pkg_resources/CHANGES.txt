@@ -136,6 +136,9 @@ HEAD only (unreleased)
 
   Others
 
+    - Skin paths now normalize to include 'Products/' prefix;  old skin
+      directories will be upgraded in place.
+
     - {CMFCalendar,CMFActionIcons,CMFDefault,CMFTopic}/__init__.py:
       Don't register skin directories when being imported by the testrunner
       without 'Products' in our package name.
