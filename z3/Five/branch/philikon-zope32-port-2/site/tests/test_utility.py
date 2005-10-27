@@ -24,12 +24,12 @@ import unittest
 from Testing import ZopeTestCase
 
 from zope.interface import directlyProvides
-from zope.component import getService, getServices
 from zope.component.exceptions import ComponentLookupError
-from zope.component.service import serviceManager
-from zope.component.servicenames import Utilities
-from zope.app.tests.placelesssetup import setUp, tearDown
-from zope.app.component.hooks import setSite
+
+from zope.app import zapi
+from zope.app.testing.placelesssetup import setUp, tearDown
+from zope.app.component.hooks import setSite, clearSite, setHooks
+from zope.app import zapi
 
 import Products.Five
 from Products.Five import zcml
@@ -53,53 +53,59 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         enableLocalSiteHook(self.folder.site)
         setSite(self.folder.site)
 
+        # Hook up custom component architecture calls; we need to do
+        # this here because zope.app.component.hooks registers a
+        # cleanup with the testing cleanup framework, so the hooks get
+        # torn down by placelesssetup each time.
+        setHooks()
+
     def beforeTearDown(self):
-        from zope.app.component.localservice import clearSite
         clearSite()
         tearDown()
 
-    def test_getServicesHook(self):
+    def test_getSiteManagerHook(self):
         from Products.Five.site.localsite import FiveSiteManager
-        local_sm = getServices(None)
-        self.failIf(local_sm is serviceManager)
+        from Products.Five.site.utility import SimpleLocalUtilityRegistry
+
+        local_sm = zapi.getSiteManager(None)
+        self.failIf(local_sm is zapi.getGlobalSiteManager)
         self.failUnless(isinstance(local_sm, FiveSiteManager))
 
-        local_sm = getServices(self.folder.site)
-        self.failIf(local_sm is serviceManager)
+        local_sm = zapi.getSiteManager(self.folder.site)
+        self.failIf(local_sm is zapi.getGlobalSiteManager)
         self.failUnless(isinstance(local_sm, FiveSiteManager))
 
-    def test_getUtilityService(self):
-        from Products.Five.site.utility import SimpleLocalUtilityService
-        utils = getService(Utilities)
-        self.failUnless(isinstance(utils, SimpleLocalUtilityService))
+        sm = zapi.getSiteManager()
+        self.failUnless(isinstance(sm.utilities, SimpleLocalUtilityRegistry))
 
     def test_getUtilitiesNoUtilitiesFolder(self):
-        utils = getService(Utilities)
-        self.assertRaises(ComponentLookupError, utils.getUtility, IDummyUtility)
-        self.assertEquals(list(utils.getUtilitiesFor(IDummyUtility)), [])
-        self.assertEquals(list(utils.getAllUtilitiesRegisteredFor(IDummyUtility)), [])
+        sm = zapi.getSiteManager()
+        #XXX test whether sm really is a local site...
+        self.failUnless(sm.queryUtility(IDummyUtility) is None)
+        self.assertEquals(list(sm.getUtilitiesFor(IDummyUtility)), [])
+        self.assertEquals(list(sm.getAllUtilitiesRegisteredFor(IDummyUtility)), [])
 
     def test_registerUtility(self):
-        utils = getService(Utilities)
+        sm = zapi.getSiteManager()
         dummy = DummyUtility()
-        utils.registerUtility(IDummyUtility, dummy, 'dummy')
+        sm.registerUtility(IDummyUtility, dummy, 'dummy')
 
-        self.assertEquals(utils.getUtility(IDummyUtility, name='dummy'), dummy)
-        self.assertEquals(list(utils.getUtilitiesFor(IDummyUtility)), 
+        self.assertEquals(zapi.getUtility(IDummyUtility, name='dummy'), dummy)
+        self.assertEquals(list(sm.getUtilitiesFor(IDummyUtility)), 
                           [('',dummy)])
-        self.assertEquals(list(utils.getAllUtilitiesRegisteredFor(
+        self.assertEquals(list(sm.getAllUtilitiesRegisteredFor(
             IDummyUtility)), [dummy])
 
     def test_registerTwoUtilitiesWithSameNameDifferentInterface(self):
-        utils = getService(Utilities)
+        sm = zapi.getSiteManager()
         dummy = DummyUtility()
         superdummy = DummyUtility()
         directlyProvides(superdummy, ISuperDummyUtility)
-        utils.registerUtility(IDummyUtility, dummy, 'dummy')
-        utils.registerUtility(ISuperDummyUtility, superdummy, 'dummy')
+        sm.registerUtility(IDummyUtility, dummy, 'dummy')
+        sm.registerUtility(ISuperDummyUtility, superdummy, 'dummy')
 
-        self.assertEquals(utils.getUtility(IDummyUtility, 'dummy'), dummy)
-        self.assertEquals(utils.getUtility(ISuperDummyUtility, 'dummy'),
+        self.assertEquals(zapi.getUtility(IDummyUtility, 'dummy'), dummy)
+        self.assertEquals(zapi.getUtility(ISuperDummyUtility, 'dummy'),
                           superdummy)
 
 def test_suite():
