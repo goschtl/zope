@@ -136,6 +136,10 @@ HEAD only (unreleased)
 
   Others
 
+    - {CMFCalendar,CMFActionIcons,CMFDefault,CMFTopic}/__init__.py:
+      Don't register skin directories when being imported by the testrunner
+      without 'Products' in our package name.
+
     - CMFCore.DirectoryView:  Dropped long-deprecated support for '.security'
       and '.properties' files;  use the all-singing, all-dancing '.metadata'
       file instead.

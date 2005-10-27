@@ -90,8 +90,9 @@ z_tool_bases = initializeBasesPhase1( tools, this_module )
 cmfdefault_globals=globals()
 
 # Make the skins available as DirectoryViews.
-registerDirectory('skins', globals())
-registerDirectory('help', globals())
+if __name__.startswith('Products'):  # testrunner may import w/o 'Products'
+    registerDirectory('skins', globals())
+    registerDirectory('help', globals())
 
 def initialize( context ):
 

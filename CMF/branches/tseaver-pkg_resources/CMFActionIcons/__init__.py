@@ -29,7 +29,8 @@ import ActionIconsTool
 
 actionicons_globals = globals()
 
-registerDirectory( 'skins', actionicons_globals )
+if __name__.startswith('Products'):  # testrunner may import w/o 'Products'
+    registerDirectory('skins', actionicons_globals)
 
 def initialize( context ):
 

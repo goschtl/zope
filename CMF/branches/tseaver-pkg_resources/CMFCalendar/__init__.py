@@ -42,7 +42,8 @@ z_bases = utils.initializeBasesPhase1( contentClasses, this_module )
 event_globals=globals()
 
 # Make the skins available as DirectoryViews
-registerDirectory('skins', globals())
+if __name__.startswith('Products'):  # testrunner may import w/o 'Products'
+    registerDirectory('skins', globals())
 
 def initialize( context ):
     utils.ToolInit('CMF Calendar Tool', tools=tools, icon='tool.gif',

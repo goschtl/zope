@@ -45,7 +45,8 @@ for base in bases:
 topic_globals = globals()
 
 # Make the skins available as DirectoryViews
-registerDirectory( 'skins', globals() )
+if __name__.startswith('Products'):  # testrunner may import w/o 'Products'
+    registerDirectory( 'skins', globals() )
 
 def initialize( context ):
 
