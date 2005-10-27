@@ -51,6 +51,7 @@ class ImporterForContainer(object):
     def __init__(self, context):
         self.context = context
         self.count = 0
+        self.imported = set()
         
     def download(self, url, target_url, base_url=None):
         """See IImporter
@@ -97,7 +98,12 @@ class ImporterForContainer(object):
         The ``url`` has to be relative to the base.
         """
         url = "%s/%s" % (self.base_fetch_url, relative_url)
-        
+       
+        if relative_url in self.imported :
+            return
+        else :
+            self.imported.add(relative_url)
+            
         self.count += 1
         if self.limit is not None and self.count > self.limit :
             return
@@ -120,10 +126,15 @@ class ImporterForContainer(object):
         # XXX make a utiliy lookup of this
         parser = ZopeOrgWikiPageExtractor()
         parser.prepare(self.base_url, relative_url, self.target_url)
-        parser.feed(doc.read())
+        try :
+            parser.feed(doc.read())
+        except :
+            if self.verbosity :
+                print "HTMLParseError in", relative_url
+     
         text = parser.getText()
         links = parser.getLinks()
-            
+
         # parse the metadata in rdf format
         if self.base_fetch_url.startswith('file:'):
             sep = '.'

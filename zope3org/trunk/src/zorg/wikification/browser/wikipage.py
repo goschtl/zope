@@ -106,25 +106,70 @@ class WikiPage(BrowserView) :
     def getContainer(self) :
         """ Returns the base container. Should be overwritten. """
         return None
-        
+                   
     def wikifyLink(self, link) :
-        """ Modifies dead relative links and leaves
-            all other links untouched.
+        """
+        Modifies dead relative links and leaves all other links untouched.
+        
+        Returns a tuple of a boolean indicating a modification and the 
+        resulting link.
+                
+        >>> from zorg.wikification.tests import buildSampleSite
+        >>> site = buildSampleSite()
+        >>> request = TestRequest()
+        >>> wiki = WikiPage(site, request)
+        
+        Anchors and absolute external links are left unmodified :
+        
+        >>> wiki.wikifyLink('#anchor')
+        (False, '#anchor')
+        >>> wiki.wikifyLink('http://www.zope.org')
+        (False, 'http://www.zope.org')   
+        
+        Relative and internal absolute links are treated the same. If 
+        a link can be traversed successfully only the specific wiki
+        view is added to ensure that we remain in the wiki navigation :
+       
+        >>> wiki.wikifyLink('http://127.0.0.1/site')
+        (False, 'http://127.0.0.1/site/@@wiki.html')
+        >>> wiki.wikifyLink('http://127.0.0.1/site/folder/subfolder')
+        (False, 'http://127.0.0.1/site/folder/subfolder/@@wiki.html')
+        
+        If the path cannot completely be resolved the link is changed to
+        an add view call :
+        
+        >>> wiki.wikifyLink('http://127.0.0.1/site/folder/wikify.html')
+        (True, 'http://127.0.0.1/site/folder/@@kupuadd.html?path=wikify.html')
+        
         """
 
         site_url = zapi.absoluteURL(self.site, self.request)
         if link.startswith(site_url) :
             link = link[len(site_url)+1:]
+            node = self.site
+            url = site_url
         elif self.isAbsoluteURL(link) :
             return False, link
-            
-        path = link.split("/")
-        try :
-            zapi.traverse(self.site, path)
-            return False, self.base + "/" + link + self.action
-        except TraversalError :
+        elif link.startswith("#") :
+            return False, link
+        else :
+            node = self.container
+            url = zapi.absoluteURL(node, self.request)
+        
+        path = [x for x in link.split("/") if x]        
+        while path :         
+            try :
+                name = path[0]
+                node = zapi.traverseName(node, name)
+                url += "/" + name
+                name = path.pop(0)
+            except TraversalError :
+                break
+        if path :
             appendix = urllib.urlencode({'path': "/".join(path)})
-            return True, self.base + self.add + "?" + appendix
+            return True, url + self.add + "?" + appendix
+        
+        return False, url + self.action
  
  
     def wikifyTextLink(self, text) :
@@ -312,7 +357,6 @@ class CreateWikiPage(KupuEditor, WikiContainerPage) :
             url = testURL
         importer = IImporter(self.context)
         importer.verbosity = 1
-        importer.limit = 10
         target = zapi.absoluteURL(self.context, self.request)
         importer.download(url, target)
         self.request.response.redirect(self.nextURL())

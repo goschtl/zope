@@ -69,6 +69,7 @@ def buildSampleSite() :
             index.html          (with example1 as content)
             target              (an existing file)
             folder              (a sample folder)
+                subfolder       (a sub folder)
             
         Usage :
         
@@ -85,6 +86,7 @@ def buildSampleSite() :
     root.__name__ = u"site"
     root[u"target"] = File()
     folder = root[u"folder"] = Folder()
+    folder[u"subfolder"] = Folder()
     index = root[u"index.html"] = File(example1, 'text/html')
     
     IZopeDublinCore(index).title = u'Wiki page'
