@@ -1,0 +1,24 @@
+<div class="ToolBarContainer">
+	<table cellspacing="0" cellpadding="0" id="toolbar" class="ToolBar">
+		<tr>
+			<td><img src="/++resource++toolbarGrip.gif" width="5" height="18"
+								tal:attributes="src string:${context/++resource++toolbarGrip.gif}" /></td>
+			<td tal:repeat="menuitem python:view.menus('zmi_actions')">
+				<metal:block use-macro="python:view.macros('topmenu')" />
+			</td>
+			<!--
+			<td>
+				<tal:block content="python:view.menus('zmi_actions')" />
+			</td>
+			-->
+		</tr>
+	</table>
+</div>
+<script type="text/javascript"
+        tal:attributes="language string:JavaScript"
+        tal:content="structure string:
+  var toolbar = new DivMenu('toolbar');
+  toolbar.divMenuArrow = '${context/++resource++toolbarArrow.gif}';
+  toolbar.divMenuArrowOver = '${context/++resource++toolbarArrowOver.gif}';
+  toolbar.init();">
+</script>

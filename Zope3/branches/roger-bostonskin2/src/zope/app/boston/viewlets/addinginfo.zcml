@@ -1,0 +1,17 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <viewlet
+      name="addinginfo"
+      for="zope.app.container.interfaces.IWriteContainer"
+      manager="zope.app.boston.ILeft"
+      permission="zope.ManageContent"
+      class=".addinginfo.browser.views.AddingInfoViewlet"
+      template="addinginfo/browser/viewlet.pt"
+      layer="zope.app.boston.boston"
+      weight="3"
+      />
+
+</configure>

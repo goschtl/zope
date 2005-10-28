@@ -1,0 +1,57 @@
+<metal:block define-macro="toolbar">
+<div class="ToolBarContainer">
+	<table cellspacing="0" cellpadding="0" id="toolbar" class="ToolBar">
+		<tr>
+			<td><img src="/++resource++toolbarGrip.gif" width="5" height="18"
+								tal:attributes="src string:${context/++resource++toolbarGrip.gif}" /></td>
+			<td tal:repeat="menuitem context/@@view_get_menu/zmi_actions">
+<!--				<metal:block use-macro="pagelet:zope.app.skintools.toolbar.IToolBarLayout/toolbar-button" /> -->
+			</td>
+		</tr>
+	</table>
+</div>
+<script type="text/javascript"
+        tal:attributes="language string:JavaScript"
+        tal:content="structure string:
+  var toolbar = new DivMenu('toolbar');
+  toolbar.divMenuArrow = '${context/++resource++toolbarArrow.gif}';
+  toolbar.divMenuArrowOver = '${context/++resource++toolbarArrowOver.gif}';
+  toolbar.init();">
+</script>
+</metal:block>
+
+<!-- render first level items with class name 'button' -->
+<!--
+<metal:block define-macro="toolbar-button">
+	<a href="" class="topmenu"
+		 tal:attributes="href menuitem/action"
+		 tal:content="menuitem/title"
+		 i18n:translate="">
+	</a>
+  <div tal:condition="menuitem/submenu">
+    <tal:block tal:repeat="subitem menuitem/submenu">
+			<tal:block define="menuitem subitem">
+				<metal:block use-macro="pagelet:zope.app.skintools.toolbar.IToolBarLayout/toolbar-item" />
+			</tal:block>
+		</tal:block>
+	</div>
+</metal:block>
+-->
+
+<!-- render all except first level items with class name 'item' -->
+<!--
+<metal:block define-macro="toolbar-item">
+	<a href="" class="submenu"
+		 tal:attributes="href menuitem/action"
+		 tal:content="menuitem/title"
+		 i18n:translate="">
+	</a>
+  <div tal:condition="menuitem/submenu">
+    <tal:block tal:repeat="subitem menuitem/submenu">
+			<tal:block define="menuitem subitem">
+				<metal:block use-macro="pagelet:zope.app.skintools.toolbar.IToolBarLayout/toolbar-item" />
+			</tal:block>
+		</tal:block>
+	</div>
+</metal:block>
+-->

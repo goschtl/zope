@@ -1,0 +1,51 @@
+<!-- topemnu -->
+	<a href="" class="topmenu"
+		 tal:attributes="href menuitem/action"
+		 tal:content="menuitem/title"
+		 i18n:translate="">
+	</a>
+  <div tal:condition="menuitem/submenu">
+    <tal:block tal:repeat="subitem menuitem/submenu">
+			<tal:block define="menuitem subitem">
+				<!--<metal:block use-macro="pagelet:zope.app.skintools.toolbar.IToolBarLayout/toolbar-item" />-->
+			</tal:block>
+		</tal:block>
+	</div>
+<!-- topmenu -->
+
+
+<!-- render first level items with class name 'button' -->
+<!--
+<metal:block define-macro="toolbar-button">
+	<a href="" class="topmenu"
+		 tal:attributes="href menuitem/action"
+		 tal:content="menuitem/title"
+		 i18n:translate="">
+	</a>
+  <div tal:condition="menuitem/submenu">
+    <tal:block tal:repeat="subitem menuitem/submenu">
+			<tal:block define="menuitem subitem">
+				<metal:block use-macro="pagelet:zope.app.skintools.toolbar.IToolBarLayout/toolbar-item" />
+			</tal:block>
+		</tal:block>
+	</div>
+</metal:block>
+-->
+
+<!-- render all except first level items with class name 'item' -->
+<!--
+<metal:block define-macro="toolbar-item">
+	<a href="" class="submenu"
+		 tal:attributes="href menuitem/action"
+		 tal:content="menuitem/title"
+		 i18n:translate="">
+	</a>
+  <div tal:condition="menuitem/submenu">
+    <tal:block tal:repeat="subitem menuitem/submenu">
+			<tal:block define="menuitem subitem">
+				<metal:block use-macro="pagelet:zope.app.skintools.toolbar.IToolBarLayout/toolbar-item" />
+			</tal:block>
+		</tal:block>
+	</div>
+</metal:block>
+-->
