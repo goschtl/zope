@@ -492,3 +492,77 @@ class SourceListInputWidget(SourceInputWidget):
 
     def hasInput(self):
         return self.name+'.displayed' in self.request.form
+
+
+# Input widgets for IIterableSource:
+
+class SourceSelectWidget(zope.app.form.browser.SelectWidget):
+    """Select-box widget for iterable vocabularies."""
+
+    # This is a very thin veneer over the vocabulary widget, but deals
+    # with the only differences in retrieving information about values
+    # that existing between sources and vocabularies.
+
+    def __init__(self, field, source, request):
+        super(SourceSelectWidget, self).__init__(field, source, request)
+        self.terms = zapi.getMultiAdapter(
+            (self.vocabulary, self.request),
+            zope.app.form.browser.interfaces.ITerms,
+            )
+
+    def convertTokensToValues(self, tokens):
+        """Convert term tokens to the terms themselves.
+
+        Tokens are used in the HTML form to represent terms. This method takes
+        the form tokens and converts them back to terms.
+        """
+        values = []
+        for token in tokens:
+            try:
+                value = self.terms.getValue(token)
+            except LookupError, error:
+                pass
+            else:
+                values.append(value)
+        return values
+
+    def renderItemsWithValues(self, values):
+        """Render the list of possible values, with those found in
+        `values` being marked as selected."""
+
+        cssClass = self.cssClass
+
+        # multiple items with the same value are not allowed from a
+        # vocabulary, so that need not be considered here
+        rendered_items = []
+        count = 0
+        for value in self.vocabulary:
+            term = self.terms.getTerm(value)
+            item_text = self.textForValue(term)
+
+            if value in values:
+                rendered_item = self.renderSelectedItem(count,
+                                                        item_text,
+                                                        term.token,
+                                                        self.name,
+                                                        cssClass)
+            else:
+                rendered_item = self.renderItem(count,
+                                                item_text,
+                                                term.token,
+                                                self.name,
+                                                cssClass)
+
+            rendered_items.append(rendered_item)
+            count += 1
+
+        return rendered_items
+
+    def textForValue(self, term):
+        return term.title
+
+
+class SourceDropdownWidget(SourceSelectWidget):
+    """Variant of the SourceSelectWidget that uses a drop-down list."""
+
+    size = 1

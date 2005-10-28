@@ -382,6 +382,17 @@
       permission="zope.Public"
       />
 
+  <!-- Default Multi-Views for fields and iterable sources -->
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IChoice
+           zope.schema.interfaces.IIterableSource"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".source.SourceDropdownWidget"
+      permission="zope.Public"
+      />
+
   <!-- These widgets are minimal and only support lists with unique members,
        without ordering capabilities -->
 
