@@ -87,12 +87,14 @@ DivMenu.prototype.getMaxWidth = function(nodes) {
 
 /* Set width for submenu elements */
 DivMenu.prototype.setMaxWidth = function(nodes, maxWidth) {
+    
     for (var i = 0; i < nodes.length; i++) {
+        alert("nodes[i].tagName: " + nodes[i].outerHTML)
         if (nodes[i].nodeType == 1 && /submenu/.test(nodes[i].className) && nodes[i].currentStyle) {
             if (this.browser.ie5) {
                 nodes[i].style.width = (maxWidth) + "px";
             } else {
-                nodes[i].style.width = (maxWidth - parseInt(nodes[i].currentStyle.paddingLeft) - parseInt(nodes[i].currentStyle.paddingRight)) + "px";
+                nodes[i].style.width = (maxWidth - parseInt(nodes[i].currentStyle.paddingLeft) - parseInt(nodes[i].currentStyle.paddingRight)) + "px"
             }
         }
     }

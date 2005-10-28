@@ -57,7 +57,7 @@
         for="*"
         manager="zope.app.boston.IToolBar"
         class=".views.ToolBarViewlet"
-        template="template.pt"
+        template="viewlet.pt"
         permission="zope.View"
         layer="zope.app.boston.boston"
         weight="1"
@@ -65,7 +65,12 @@
 
   <menu 
       id="standalone"
-      title="Standalone" />
+      title="Standalone"
+      />
+
+  <menu 
+      id="foo"
+      title="Foo" />
 
   <subMenuItem
       menu="zmi_actions"
@@ -75,33 +80,30 @@
       for="zope.interface.Interface"
       />
 
+  <subMenuItem
+      menu="standalone"
+      submenu="foo"
+      title="Foo" 
+      permission="zope.Public"
+      for="zope.interface.Interface"
+      />
+
+  <menu 
+      id="bar"
+      title="Bar" />
+
   <menuItems 
       menu="zmi_actions"
       for="zope.interface.Interface">
 
     <subMenuItem 
-        submenu="file2"
-        title="File" 
-        permission="zope.Public"
-        />
-
-    <subMenuItem 
-        submenu="edit"
-        title="Edit" 
-        permission="zope.Public"
-        />
-
-    <subMenuItem 
-        submenu="help"
-        title="Help" 
+        submenu="bar"
+        title="Bar sub" 
         permission="zope.Public"
         />
 
   </menuItems>
-
-  <menu 
-      id="file2"
-      title="File" />
+<!--
 
   <menuItems 
       menu="file2"
@@ -122,7 +124,7 @@
         />
 
   </menuItems>
-
+-->
   </configure>
 
 </configure>
