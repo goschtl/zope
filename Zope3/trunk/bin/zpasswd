@@ -1,3 +1,4 @@
+#!/usr/bin/env python2.4
 ##############################################################################
 #
 # Copyright (c) 2004 Zope Corporation and Contributors.
@@ -11,18 +12,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Simple script for creation of a principal.
+
 $Id$
 """
-import unittest
-from zope.testing.doctestunit import DocTestSuite
 
+import os
+import sys
 
-def test_suite():
-    return unittest.TestSuite((
-        DocTestSuite('zope.app.security.adapter'),
-        ))
+here = os.path.dirname(os.path.realpath(__file__))
+srcdir = os.path.join(os.path.dirname(here), "src")
 
+if srcdir not in sys.path:
+    sys.path.insert(0, srcdir)
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+from zope.app.server.zpasswd import main
+
+sys.exit(main())

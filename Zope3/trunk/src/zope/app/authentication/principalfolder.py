@@ -21,10 +21,11 @@ from persistent import Persistent
 from zope import interface
 from zope import component
 from zope.event import notify
-from zope.schema import Text, TextLine, Password
+from zope.schema import Text, TextLine, Password, Choice
 from zope.publisher.interfaces import IRequest
 from zope.security.interfaces import IGroupAwarePrincipal
 
+from zope.app import zapi
 from zope.app.container.interfaces import DuplicateIDError
 from zope.app.container.contained import Contained
 from zope.app.container.constraints import contains, containers
@@ -42,9 +43,23 @@ class IInternalPrincipal(interface.Interface):
         description=_("The Login/Username of the principal. "
                       "This value can change."))
 
+    def setPassword(password, passwordManagerName=None):
+        pass
+
     password = Password(
-        title=_(u"Password"),
+        title=_("Password"),
         description=_("The password for the principal."))
+
+    passwordManagerName = Choice(
+        title=_("Password Manager"),
+        vocabulary="Password Manager Names",
+        description=_("The password manager will be used"
+            " for encode/check the password"),
+        default="Plain Text",
+        # TODO: The password manager name may be changed only
+        # if the password changed
+        readonly=True
+        )
 
     title = TextLine(
         title=_("Title"),
@@ -95,11 +110,40 @@ class InternalPrincipal(Persistent, Contained):
 
     interface.implements(IInternalPrincipal, IInternalPrincipalContained)
 
-    def __init__(self, login, password, title, description=u''):
+    def __init__(self, login, password, title, description=u'',
+            passwordManagerName="Plain Text"):
         self._login = login
+        self._passwordManagerName = passwordManagerName
         self.password = password
         self.title = title
         self.description = description
+
+    def getPasswordManagerName(self):
+        return self._passwordManagerName
+
+    passwordManagerName = property(getPasswordManagerName)
+
+    def _getPasswordManager(self):
+        return zapi.getUtility(
+            interfaces.IPasswordManager, self.passwordManagerName)
+
+    def getPassword(self):
+        return self._password
+
+    def setPassword(self, password, passwordManagerName=None):
+        if passwordManagerName is not None:
+            self._passwordManagerName = passwordManagerName
+        passwordManager = self._getPasswordManager()
+        self._password = passwordManager.encodePassword(password)
+
+    password = property(getPassword, setPassword)
+
+    def checkPassword(self, password):
+        passwordManager = self._getPasswordManager()
+        return passwordManager.checkPassword(self.password, password)
+
+    def getPassword(self):
+        return self._password
 
     def getLogin(self):
         return self._login
@@ -226,7 +270,7 @@ class PrincipalFolder(BTreeContainer):
         if id is None:
             return None
         internal = self[id]
-        if internal.password != credentials['password']:
+        if not internal.checkPassword(credentials["password"]):
             return None
         return PrincipalInfo(self.prefix + id, internal.login, internal.title,
                              internal.description)

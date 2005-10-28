@@ -176,6 +176,10 @@ And we'll add a principal, Bob:
   ... 
   ... bob
   ... -----------------------------5110544421083023415453147877
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ... 
+  ... SHA1
+  ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.password"
   ... 
   ... bob

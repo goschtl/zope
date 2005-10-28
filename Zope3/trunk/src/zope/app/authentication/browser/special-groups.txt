@@ -145,6 +145,10 @@ Add a principal to it:
   ... 
   ... bob
   ... -----------------------------5110544421083023415453147877
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ... 
+  ... Plain Text
+  ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.password"
   ... 
   ... bob

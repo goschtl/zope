@@ -40,6 +40,7 @@ from zope.app.session.http import CookieClientIdManager
 from zope.publisher import base
 from zope.app.authentication.session import SessionCredentialsPlugin
 
+
 class TestClientId(object):
     implements(IClientId)
     def __new__(cls, request):
@@ -93,13 +94,17 @@ class NonHTTPSessionTestCase(unittest.TestCase):
 
         self.assertEqual(plugin.logout(base.TestRequest('/')), False)
 
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite('zope.app.authentication.interfaces'),
+        doctest.DocTestSuite('zope.app.authentication.password'),
         doctest.DocTestSuite('zope.app.authentication.generic'),
         doctest.DocTestSuite('zope.app.authentication.httpplugins'),
         doctest.DocTestSuite('zope.app.authentication.ftpplugins'),
-        doctest.DocFileSuite('principalfolder.txt'),
+        doctest.DocFileSuite('principalfolder.txt',
+                             setUp=placelesssetup.setUp,
+                             tearDown=placelesssetup.tearDown),
         doctest.DocTestSuite('zope.app.authentication.principalfolder',
                              setUp=placelesssetup.setUp,
                              tearDown=placelesssetup.tearDown),

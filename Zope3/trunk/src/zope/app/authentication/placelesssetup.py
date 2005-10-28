@@ -11,22 +11,23 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Zope Application Server Generations
+"""Pluggable Authentication Service Placeless Setup
 
 $Id$
 """
 __docformat__ = "reStructuredText"
-from zope.app.generations.generations import SchemaManager
-from zope.app.publication.zopepublication import ZopePublication
 
-key = 'zope.app.zopeappgenerations'
-
-
-ZopeAppSchemaManager = SchemaManager(
-    minimum_generation=0,
-    generation=2,
-    package_name=key)
+from zope.app.testing import ztapi
+from zope.app.authentication.interfaces import IPasswordManager
+from zope.app.authentication.password import PlainTextPasswordManager
+from zope.app.authentication.password import MD5PasswordManager
+from zope.app.authentication.password import SHA1PasswordManager
 
 
-def getRootFolder(context):
-    return context.connection.root().get(ZopePublication.root_name, None)
+class PlacelessSetup(object):
+
+    def setUp(self):
+        ztapi.provideUtility(IPasswordManager, PlainTextPasswordManager(),
+            "Plain Text")
+        ztapi.provideUtility(IPasswordManager, MD5PasswordManager(), "MD5")
+        ztapi.provideUtility(IPasswordManager, SHA1PasswordManager(), "SHA1")

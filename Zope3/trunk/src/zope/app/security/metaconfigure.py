@@ -28,6 +28,7 @@ from zope.app.security.permission import Permission
 from zope.app.security import principalregistry
 from zope.app.security import interfaces
 
+
 def securityPolicy(_context, component):
 
     _context.action(
@@ -104,11 +105,12 @@ def _principal():
     if group is not None:
         _everybodyGroup(group.id)
 
-def principal(_context, id, title, login, password, description=''):
+def principal(_context, id, title, login,
+        password, description='', password_manager="Plain Text"):
     _context.action(
         discriminator = ('principal', id),
         callable = principalregistry.principalRegistry.definePrincipal,
-        args = (id, title, description, login, password) )
+        args = (id, title, description, login, password, password_manager) )
     _context.action(discriminator = None, callable = _principal, args = ())
 
 

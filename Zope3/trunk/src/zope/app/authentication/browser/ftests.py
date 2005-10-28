@@ -31,6 +31,7 @@ from zope.app.authentication.principalfolder import IInternalPrincipal
 
 from zope.app.exception.interfaces import UserError
 
+
 class FunkTest(functional.BrowserTestCase):
 
     def test_copypaste_duplicated_id_object(self):
@@ -110,6 +111,7 @@ class FunkTest(functional.BrowserTestCase):
         else:
             # test failed !
             self.asserEqual(1, 0)
+
 
 def test_suite():
     return unittest.TestSuite((

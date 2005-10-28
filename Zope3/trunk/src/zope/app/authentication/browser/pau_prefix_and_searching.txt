@@ -134,6 +134,10 @@ and add a principal that we'll later search for:
   ...
   ... bob
   ... -----------------------------300171485226567
+  ... Content-Disposition: form-data; name="field.passwordManagerName"
+  ...
+  ... Plain Text
+  ... -----------------------------300171485226567
   ... Content-Disposition: form-data; name="field.password"
   ...
   ... bob

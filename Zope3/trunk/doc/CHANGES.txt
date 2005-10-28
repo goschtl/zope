@@ -10,6 +10,23 @@ Zope Changes
 
     New features
 
+      - Implemented the password managers proposal. Main idea beside the
+        proposal is a standard way to implement password encoders/checkers, see
+        zope.app.authentication.interfaces.IPasswordManager for details.
+
+        + Added basic password managers: Plain Text, MD5, SHA1.
+
+        + Support for password managers added for ZCML principals and
+          principals saved in local PrincipalFolers.
+
+        + Added bin/zpasswd command line script which helps to create ZCML
+          principals.
+
+        + Password managers support integrated into bin/mkzopeinstance.
+
+        + New database generation created for convert local principals to new
+          format.
+
       - Implemented the language namespace proposal. Now you can override
         the browser preferred language through the URL, like this:
 

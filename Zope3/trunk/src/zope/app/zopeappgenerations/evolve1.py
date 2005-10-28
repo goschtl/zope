@@ -55,7 +55,7 @@ def evolve(context):
       the component's path. Now it stores the component directly. All
       registrations are updated to this new format.
 
-    - Conerts all service registrations to utility registrations providing
+    - Converts all service registrations to utility registrations providing
       IService, which is the method used to simulate the old service API.
 
     - Remove 'RegistrationManager' object from all site management folders.

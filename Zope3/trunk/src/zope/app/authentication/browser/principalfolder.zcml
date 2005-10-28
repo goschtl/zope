@@ -24,7 +24,8 @@
       label="Add Principal Information"
       content_factory="..principalfolder.InternalPrincipal"
       arguments="login password title"
-      keyword_arguments="description"
+      keyword_arguments="passwordManagerName description"
+      fields="login passwordManagerName password title description"
       name="AddPrincipalInformation.html"
       permission="zope.ManageServices"
       />
@@ -40,7 +41,7 @@
       schema="..principalfolder.IInternalPrincipal"
       label="Change Internal Principal"
       name="edit.html"
-      fields="login password title description"
+      fields="login passwordManagerName password title description"
       permission="zope.ManageServices"
       menu="zmi_views" title="Edit" />
 

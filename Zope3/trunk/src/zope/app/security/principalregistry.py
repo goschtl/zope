@@ -16,11 +16,14 @@
 $Id$
 """
 from zope.interface import implements
+
+from zope.app.authentication.interfaces import IPasswordManager
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app import zapi
 from zope.security.interfaces import IPrincipal, IGroupAwarePrincipal
 from zope.app.security import interfaces
 from zope.app.container.contained import Contained, contained
+
 
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass
@@ -92,7 +95,7 @@ class PrincipalRegistry(object):
         self.__principalsByLogin = {}
 
     def definePrincipal(self, principal, title, description='',
-                        login='', password=''):
+            login='', password='', passwordManagerName='Plain Text'):
         id=principal
         if login in self.__principalsByLogin:
             raise DuplicateLogin(login)
@@ -100,7 +103,8 @@ class PrincipalRegistry(object):
         if id in self.__principalsById or id == self.__defaultid:
             raise DuplicateId(id)
 
-        p = Principal(id, title, description, login, password)
+        p = Principal(id, title, description,
+            login, password, passwordManagerName)
         p = contained(p, self, id)
 
         self.__principalsByLogin[login] = p
@@ -144,16 +148,22 @@ class Principal(PrincipalBase):
 
     implements(IGroupAwarePrincipal)
 
-    def __init__(self, id, title, description, login, pw):
+    def __init__(self, id, title, description, login,
+            pw, pwManagerName="Plain Text"):
         super(Principal, self).__init__(id, title, description)
         self.__login = login
+        self.__pwManagerName = pwManagerName
         self.__pw = pw
+
+    def __getPasswordManager(self):
+        return zapi.getUtility(IPasswordManager, self.__pwManagerName)
 
     def getLogin(self):
         return self.__login
 
     def validate(self, pw):
-        return pw == self.__pw
+        pwManager = self.__getPasswordManager()
+        return pwManager.checkPassword(self.__pw, pw)
 
 
 class UnauthenticatedPrincipal(PrincipalBase):

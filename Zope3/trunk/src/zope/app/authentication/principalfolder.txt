@@ -7,7 +7,8 @@ information. We create an internal principal using the `InternalPrincipal`
 class:
 
   >>> from zope.app.authentication.principalfolder import InternalPrincipal
-  >>> p1 = InternalPrincipal('login1', '123', "Principal 1")
+  >>> p1 = InternalPrincipal('login1', '123', "Principal 1",
+  ...     passwordManagerName="SHA1")
   >>> p2 = InternalPrincipal('login2', '456', "The Other One")
 
 and add then in map fashion to a principal folder:
@@ -25,7 +26,7 @@ provide suitable credentials:
   >>> from zope.testing.doctestunit import pprint
   >>> principals.authenticateCredentials({'login': 'login1', 'password': '123'})
   PrincipalInfo(u'principal.p1')
-   
+
 We get back a principal id and supplementary information, including the
 principal title and description.  Note that the principal id is a concatenation
 of the principal-folder prefix and the name of the principal-information object
