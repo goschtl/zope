@@ -148,7 +148,7 @@ class IRegisterClassDirective(Interface):
 
     meta_type = ASCII(
         title=u'Meta Type',
-        description=u'A human readable unique identifier.',
+        description=u'A human readable unique identifier for the class.',
         required=True
         )
 
@@ -160,7 +160,8 @@ class IRegisterClassDirective(Interface):
 
     addform = ASCII(
         title=u'Add Form ID',
-        description=u'The ID of the add form used in the ZMI.',
+        description=u'The ID of the add form used in the ZMI. Consider this '
+                    u'required unless you know exactly what you do.',
         default=None,
         required=False
         )

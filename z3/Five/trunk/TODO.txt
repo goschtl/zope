@@ -5,22 +5,16 @@ TODO
 v1.2
 ----
 
-* cleanup: reset cleanup lists
-
 * five:registerClass (yuppie)
-
-  - scope should probably be a Choice; default should naybe be None?
-
-  - cleanup can be an elegant list comprehension
-
-  - test the clean up in the doctest (see if it really cleans up)
-
-  - 'product': class_.__module__.split('.')[1] could throw a key error...?
 
   - functional test that checks the ZMI if there really is an entry in
     the add menu?
 
+  - update ViewsTutorial
+
 * marker utility (whit, gotcha)
+
+  - resolve testing conflict and re-enable five:traversable for Folder
 
 * make rendering of resource urls support sites?
 
