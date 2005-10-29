@@ -90,21 +90,12 @@ class CellView(BrowserView):
         self.prefix = self.cell.table.config.prefix + 'cell.' + \
                       u'.'.join(self.cell.key)
         
-        self._action = self._action_default
-        if self.cell.table.config.action:
-            name = '_action_' + self.cell.table.config.action.name
-            action =  getattr(self,name,None)
-            if callable(action):
-                self._action = action
         self.adapted = self.schema(self.context)
         self.viewType = IDisplayWidget
         if IMethod.providedBy(self.field):
             # no widget available
             self.useWidget = False
 
-    def _action_default(self):
-        self.viewType=IDisplayWidget
-        self.setUpWidget()
 
     def setUpWidget(self):
         setUpWidget(self, self.cell.column.name, self.field, self.viewType,
@@ -113,26 +104,10 @@ class CellView(BrowserView):
                     context=self.adapted)
         self.widget_name = '%s_widget'%self.cell.column.name
 
-    def _action_save(self):
-
-        """updates the data if we are in editMode and the request
-        data does not match the context data"""
-        self.viewType = IInputWidget
-        self.setUpWidget()
-        widget=getattr(self,self.widget_name)
-        changed = False
-        if IInputWidget.providedBy(widget) and widget.hasInput():
-            changed = widget.applyChanges(self.adapted)
-        return changed
-
     def _value(self):
         field=self.field.bind(self.adapted)
         v = field.get(self.adapted)
         return v
-
-    def _action_edit(self):
-        self.viewType = IInputWidget
-        self.setUpWidget()
 
     def content(self):
 
@@ -148,10 +123,6 @@ class CellView(BrowserView):
             else:
                 # no widget available
                 return getattr(self.adapted,self.field.__name__)()
-#        if not self.useForm:
-#            return self._value()
-#        self._action()
-#        return getattr(self,self.widget_name)()
 
     def __call__(self,*args,**kw):
         return self.template(*args,**kw)

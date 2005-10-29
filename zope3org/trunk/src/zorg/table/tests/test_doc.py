@@ -25,8 +25,6 @@ from zope.app.testing import setup
 from zope.configuration import xmlconfig
 from zope.app.testing import ztapi
 
-import table
-
 class TestParticipation(object):
     principal = 'foobar'
     interaction = None
@@ -41,7 +39,7 @@ def setUp(test):
     <include package="zope.app.component" file="meta.zcml" />
     <include package="zope.app.security" />
     <include package="zope.app.component" />
-    <include package="table" file="adapters.zcml"/>
+    <include package="zorg.table" file="adapters.zcml"/>
     </configure>
     """)
 

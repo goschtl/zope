@@ -8,7 +8,7 @@ table configuration.
   >>> from zope.configuration import xmlconfig
   >>> context = xmlconfig.string('''
   ... <configure i18n_domain="zope">
-  ...   <include package="table" file="meta.zcml" />
+  ...   <include package="zorg.table" file="meta.zcml" />
   ... </configure>
   ... ''')
 
@@ -21,8 +21,7 @@ Now we can register a table configuration
   ...   sortBy="name" sortReverse="True">
   ...   <column name="name" schema="zorg.table.testing.ISimple"/>
   ...   <column name="priority" schema="zorg.table.testing.ISimple"/>
-  ...   <action name="select" title="Select"
-  ...   class="zorg.table.testing.SelectAction"/>
+  ...   <action name="select" title="Select"/>
   ...   <action name="save" title="Save"/>
   ...   </tableconfig>
   ... </configure>
