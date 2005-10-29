@@ -44,7 +44,7 @@ def test_registerClass():
       ...       class="Products.Five.tests.testing.simplecontent.SimpleContent"
       ...       meta_type="Foo Type"
       ...       permission="foo.add"
-      ...       addform="addfoo.html"
+      ...       addview="addfoo.html"
       ...       icon="foo_icon.png"
       ...       global="false"
       ...       />

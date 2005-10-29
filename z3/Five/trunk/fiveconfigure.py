@@ -228,7 +228,7 @@ def pagesFromDirectory(_context, directory, module, for_=None,
 
 _register_monkies = []
 _meta_type_regs = []
-def _registerClass(class_, meta_type, permission, addform, icon, global_):
+def _registerClass(class_, meta_type, permission, addview, icon, global_):
     setattr(class_, 'meta_type', meta_type)
 
     permission_obj = zapi.getUtility(IPermission, permission)
@@ -245,7 +245,7 @@ def _registerClass(class_, meta_type, permission, addform, icon, global_):
     interfaces = tuple(implementedBy(class_))
 
     info = {'name': meta_type,
-            'action': addform and ('+/%s' % addform) or '',
+            'action': addview and ('+/%s' % addview) or '',
             'product': product,
             'permission': str(permission_obj.title),
             'visibility': global_ and 'Global' or None,
@@ -258,12 +258,12 @@ def _registerClass(class_, meta_type, permission, addform, icon, global_):
     _register_monkies.append(class_)
     _meta_type_regs.append(meta_type)
 
-def registerClass(_context, class_, meta_type, permission, addform=None,
+def registerClass(_context, class_, meta_type, permission, addview=None,
                   icon=None, global_=True):
     _context.action(
         discriminator = ('registerClass', meta_type),
         callable = _registerClass,
-        args = (class_, meta_type, permission, addform, icon, global_)
+        args = (class_, meta_type, permission, addview, icon, global_)
         )
 
 # clean up code

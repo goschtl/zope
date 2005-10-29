@@ -158,9 +158,9 @@ class IRegisterClassDirective(Interface):
         required=True
         )
 
-    addform = ASCII(
-        title=u'Add Form ID',
-        description=u'The ID of the add form used in the ZMI. Consider this '
+    addview = ASCII(
+        title=u'Add View ID',
+        description=u'The ID of the add view used in the ZMI. Consider this '
                     u'required unless you know exactly what you do.',
         default=None,
         required=False
