@@ -118,7 +118,6 @@ class SiteManagerTest(ZopeTestCase.ZopeTestCase):
         zcml.load_string(zcml_text)
 
     def beforeTearDown(self):
-        setSite()
         tearDown()
 
     def test_getServices(self):

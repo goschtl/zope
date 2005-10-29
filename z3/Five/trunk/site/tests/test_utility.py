@@ -56,8 +56,6 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         setSite(self.folder.site)
 
     def beforeTearDown(self):
-        from zope.app.component.localservice import clearSite
-        clearSite()
         tearDown()
 
     def test_getServicesHook(self):
