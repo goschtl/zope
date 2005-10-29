@@ -32,7 +32,7 @@ from zope.component import getGlobalServices, getServices
 from zope.app.component.hooks import getServices_hook, setSite, getSite
 from zope.app.site.interfaces import IPossibleSite, ISite, ISiteManager
 from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.tests.placelesssetup import PlacelessSetup
 
 from Acquisition import Implicit
 from OFS.ObjectManager import ObjectManager
@@ -77,10 +77,10 @@ class Root(Folder):
 class ServiceServiceStub(object):
     implements(IServiceService)
 
-class SiteManagerTest(ZopeTestCase.ZopeTestCase):
+class SiteManagerTest(PlacelessSetup, unittest.TestCase):
 
-    def afterSetUp(self):
-        setUp()
+    def setUp(self):
+        super(SiteManagerTest, self).setUp()
         self.root = root = Root()
 
         self.f1 = f1 = Folder().__of__(root)
@@ -106,9 +106,6 @@ class SiteManagerTest(ZopeTestCase.ZopeTestCase):
             xmlns:five="http://namespaces.zope.org/five"
             class="Products.Five.site.tests.dummy.DummySite" />"""
         zcml.load_string(zcml_text)
-
-    def beforeTearDown(self):
-        tearDown()
 
     def test_getServices(self):
         self.assertEqual(getServices_hook(None), serviceManager)
