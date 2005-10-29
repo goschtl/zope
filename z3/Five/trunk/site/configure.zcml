@@ -38,10 +38,10 @@
 
   <browser:page
       for="zope.app.site.interfaces.IPossibleSite"
-      name="manage_localsite.html"
+      name="manage_site.html"
       permission="five.ManageSite"
       class=".browser.LocalSiteView"
-      template="localsite.pt"
+      template="managesite.pt"
       />
 
 </configure>

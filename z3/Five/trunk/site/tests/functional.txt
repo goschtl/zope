@@ -63,7 +63,7 @@ account in order to be able to access it):
   >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
 
   >>> print http(r'''
-  ... POST /test_folder_1_/site/@@manage_localsite.html HTTP/1.1
+  ... POST /test_folder_1_/site/@@manage_site.html HTTP/1.1
   ... Authorization: Basic manager:r00t
   ... Content-Length: 25
   ... 
@@ -121,7 +121,7 @@ At last we can "unmake" the site using the browser view provided by
 Five:
 
   >>> print http(r'''
-  ... POST /test_folder_1_/site/@@manage_localsite.html HTTP/1.1
+  ... POST /test_folder_1_/site/@@manage_site.html HTTP/1.1
   ... Authorization: Basic manager:r00t
   ... Content-Length: 29
   ... 
