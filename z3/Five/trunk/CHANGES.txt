@@ -11,7 +11,8 @@ Features
 * Added the five:registerClass directive: This does the necessary Zope 2
   registration for Five-based content. It is no longer necessary to add an
   ``initialize()`` function to the product's __init__ in order to register
-  a meta type to be addable through the ZMI.
+  a meta type to be addable through the ZMI. See doc/products/ViewsTutorial
+  for an example how to use the directive.
 
 * Local site support: Five has now support for creating local sites
   and thereby local utilities. This is mostly needed for allowing CMF
