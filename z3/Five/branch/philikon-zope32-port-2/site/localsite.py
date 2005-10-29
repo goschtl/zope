@@ -110,6 +110,13 @@ class FiveSiteManager(object):
             if ISite.providedBy(obj):
                 return obj.getSiteManager()
 
+        # In Zope 3.1+, returning None here is understood by
+        # getNextSiteManager as that our next site manager is the
+        # global one. If we returned the global one, it would be
+        # understood as a lookup error. Yeah, it's weird, tell me
+        # about it.
+        return None
+
     def queryAdapter(self, object, interface, name, default=None):
         return self.adapters.queryAdapter(object, interface, name, default)
 
