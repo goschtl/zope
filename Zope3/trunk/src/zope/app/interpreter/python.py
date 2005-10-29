@@ -41,9 +41,9 @@ class PythonInterpreter(object):
             code.exec_(globals,
                        {}, # we don't want to get local assignments saved.
                        )
-            
+
         return tmp.getvalue()
-        
+
 
     def evaluateRawCode(self, code, globals):
         """See `zope.app.interfaces.IInterpreter`"""
@@ -59,7 +59,7 @@ class PythonInterpreter(object):
         if code.startswith(' ') or code.startswith('\t'):
             code = 'if 1 == 1:\n' + code
         return self.evaluate(code, globals)
-        
+
 
 # It's a singelton for now.
 PythonInterpreter = PythonInterpreter()

@@ -39,35 +39,35 @@ class OnlineHelpTopicTreeView(BrowserView):
         Iterate this dict oan build from the level info
         a navigation tree in the page tmeplate.
         Each time you get a level 0 means this is a subitem of the
-        Onlinehelp itself.
+        Onlinehelp itself::
 
-        info = [('id',{infoDict}),(),()]
+          >>> info = [('id',{infoDict}),(),()]
 
-        <ul class="tree" id="tree">
-          <li><a href="#">items</a>
-            <ul>
-              <li><a href="#">item</a></li>
-            </ul>
-          </li>
-          <li><a href="#">items</a>
-            <ul>
-              <li><a href="#">items</a>
-                <ul>
-                  <li><a href="#">item</a></li>
-                  <li><a href="#">item</a></li>
-                  <li><a href="#">item</a></li>
-                </ul>
-              </li>
-              <li><a href="#">items</a>
-                <ul>
-                  <li><a href="#">item</a></li>
-                  <li id="activeTreeNode"><a href="#">active item</a></li>
-                  <li><a href="#">item</a></li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-        <ul>
+          <ul class="tree" id="tree">
+            <li><a href="#">items</a>
+              <ul>
+                <li><a href="#">item</a></li>
+              </ul>
+            </li>
+            <li><a href="#">items</a>
+              <ul>
+                <li><a href="#">items</a>
+                  <ul>
+                    <li><a href="#">item</a></li>
+                    <li><a href="#">item</a></li>
+                    <li><a href="#">item</a></li>
+                  </ul>
+                </li>
+                <li><a href="#">items</a>
+                  <ul>
+                    <li><a href="#">item</a></li>
+                    <li id="activeTreeNode"><a href="#">active item</a></li>
+                    <li><a href="#">item</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          <ul>
         """
         return self.renderTree(self.onlinehelp)
 
