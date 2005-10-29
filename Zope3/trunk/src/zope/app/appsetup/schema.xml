@@ -55,7 +55,7 @@
     <metadefault>$softwarehome/src</metadefault>
   </multikey>
 
-  <key name="devmode" datatype="boolean">
+  <key name="devmode" datatype="boolean" default="on">
     <description>
       Switches the Developer Mode on and off.
 
