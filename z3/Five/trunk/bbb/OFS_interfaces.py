@@ -18,6 +18,7 @@ $Id$
 from zope.interface import Attribute
 from zope.interface import Interface
 from zope.schema import Bool, BytesLine, Tuple
+from zope.app.traversing.interfaces import IContainmentRoot
 
 from AccessControl_interfaces import IOwned
 from AccessControl_interfaces import IRoleManager
@@ -681,7 +682,7 @@ class IOrderedFolder(IOrderedContainer, IFolder):
 # XXX: might contain non-API methods and outdated comments;
 #      not synced with ZopeBook API Reference;
 #      based on OFS.Application.Application
-class IApplication(IFolder):
+class IApplication(IFolder, IContainmentRoot):
 
     """Top-level system object"""
 
