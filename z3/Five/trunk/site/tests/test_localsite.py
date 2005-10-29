@@ -81,28 +81,21 @@ class SiteManagerTest(ZopeTestCase.ZopeTestCase):
 
     def afterSetUp(self):
         setUp()
-        root = self.folder.__of__(Root())
+        self.root = root = Root()
 
-        f1 = Folder().__of__(root)
-        sm1 = ServiceManager()
+        self.f1 = f1 = Folder().__of__(root)
+        self.sm1 = sm1 = ServiceManager()
         f1.setSiteManager(sm1)
-        p1 = Package().__of__(sm1)
+        self.p1 = p1 = Package().__of__(sm1)
 
-        f2 = Folder().__of__(f1)
-        sm2 = ServiceManager()
+        self.f2 = f2 = Folder().__of__(f1)
+        self.sm2 = sm2 = ServiceManager()
         f2.setSiteManager(sm2)
-        p2 = Package().__of__(sm2)
+        self.p2 = p2 = Package().__of__(sm2)
 
         sm1.next = serviceManager
         sm2.next = sm1
 
-        self.root = root
-        self.f1 = f1
-        self.f2 = f2
-        self.sm1 = sm1
-        self.sm2 = sm2
-        self.p1 = p1
-        self.p2 = p2
         self.unparented_folder = Folder()
         self.unrooted_subfolder = Folder().__of__(self.unparented_folder)
         zcml.load_config("meta.zcml", Products.Five)
