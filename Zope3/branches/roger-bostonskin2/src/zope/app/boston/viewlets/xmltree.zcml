@@ -53,6 +53,7 @@
       template="xmltree/browser/viewlet.pt"
       permission="zope.View"
       layer="zope.app.boston.boston"
+      weight="1"
       />
 
   <pages

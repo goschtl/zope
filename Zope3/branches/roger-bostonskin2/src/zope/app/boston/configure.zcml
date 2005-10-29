@@ -60,7 +60,7 @@
   <configure zcml:condition="have onlinehelp">
     <help:register
         id="boston"
-        title="Boston Skin (experimental)"
+        title="Boston Skin"
         doc_path="README.txt"
         class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
         />

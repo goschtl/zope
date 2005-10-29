@@ -6,14 +6,9 @@
 			<td tal:repeat="menuitem python:view.menus('zmi_actions')">
 				<metal:block use-macro="python:view.macros('topmenu')" />
 			</td>
+			<td tal:repeat="menuitem python:view.menus('help_actions')">
+				<metal:block use-macro="python:view.macros('helpmenu')" />
+			</td>
 		</tr>
 	</table>
 </div>
-<script type="text/javascript"
-        tal:attributes="language string:JavaScript"
-        tal:content="structure string:
-  var toolbar = new DivMenu('ToolBar');
-  toolbar.divMenuArrow = '${context/++resource++toolbarArrow.gif}';
-  toolbar.divMenuArrowOver = '${context/++resource++toolbarArrowOver.gif}';
-  toolbar.init();">
-</script>

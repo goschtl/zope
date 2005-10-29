@@ -35,21 +35,19 @@
       <td colspan="2">
         <!-- toolbar region (zmi_action) -->
         <tal:block replace="structure provider:zope.app.boston.IToolBar" />
-        <div id="userdetails">
-          <metal:block define-macro="logged_user">
-            <span tal:omit-tag="" i18n:translate="">User:</span>
-            <tal:block replace="request/principal/title">User</tal:block>
-          </metal:block>
-          <a href="" 
-             tal:attributes="href string:@@logout.html?nextURL=${request/URL}"
-             tal:condition="python: hasattr(view.request.principal, 'getLogin')"
-             i18n:translate="">[Logout]</a>
-          <a href="" 
-             tal:attributes="href string:@@login.html?nextURL=${request/URL}"
-             tal:condition="python: not hasattr(view.request.principal, 
-                                                'getLogin')"
-             i18n:translate="">[Login]</a>
-        </div>
+        <div id="userDetails" metal:define-slot="user_details">
+					<metal:block define-macro="logged_user">
+						<span tal:omit-tag="" i18n:translate="">User:</span>
+						<tal:block replace="request/principal/title">
+							User
+						</tal:block>
+					</metal:block>
+					<metal:block define-slot="login_logout">
+						<metal:macro define-macro="login_logout">
+						<tal:block content="structure context/@@login_logout" />
+						</metal:macro>
+					</metal:block>
+      </div>
       </td>
     </tr>
     <tr class="head">
@@ -77,19 +75,25 @@
         </div>
       </td>
     </tr>
-    <tr>
-      <td id="navigation">
+    <tr class="content">
+      <td id="navigation" class="navigation">
         <div id="slotbox">
         	<tal:block replace="structure provider:zope.app.boston.ILeft" />
         </div>
       </td>
       <td id="content">
         <!-- context menu (zmi_views) just visible in view template -->
-<!--
-        <div id="contextmenu" tal:condition="python: macroname == 'view'">
-          <tal:block replace="structure provider:zope.app.boston.IContextMenu" />
-        </div>
--->
+				<div id="contextmenu"
+							tal:define="views context/@@view_get_menu/zmi_views"
+							tal:condition="views">
+					<span tal:repeat="view views">
+						<a href="" 
+							 tal:attributes="href view/action;
+															 class view/selected;"
+							 tal:content="view/title"
+							 i18n:translate="">label</a>
+					</span>
+				</div>
         <!-- content area -->
         <div metal:define-slot="message" id="message" />
         <div id="body" metal:define-slot="body">

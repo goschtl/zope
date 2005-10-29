@@ -5,12 +5,6 @@
 
   <configure package="zope.app.boston.viewlets.toolbar.browser">
     <resource 
-        name="divmenu.js"
-        file="divmenu.js"
-        layer="zope.app.boston.boston"
-        />
-
-    <resource 
         name="toolbar.css"
         file="toolbar.css"
         layer="zope.app.boston.boston"
@@ -22,33 +16,12 @@
         layer="zope.app.boston.boston"
         />
 
-    <resource
-        name="toolbarArrow.gif"
-        file="toolbarArrow.gif"
-        layer="zope.app.boston.boston"
-        />
-
-    <resource
-        name="toolbarArrowOver.gif"
-        file="toolbarArrowOver.gif"
-        layer="zope.app.boston.boston"
-        />
-
-    <viewlet
-        for="*"
-        manager="zope.app.boston.IJavaScript"
-        name="toolbar-js"
-        permission="zope.Public"
-        template="javascript.pt"
-        layer="zope.app.boston.boston"
-        />
-
     <viewlet
         name="toolbar-css"
         for="*"
         manager="zope.app.boston.ICSS"
+        class="zope.app.boston.BostonToolBarCSSViewlet"
         permission="zope.Public"
-        template="css.pt"
         layer="zope.app.boston.boston"
         />
 
@@ -60,71 +33,8 @@
         template="viewlet.pt"
         permission="zope.View"
         layer="zope.app.boston.boston"
-        weight="1"
         />
 
-  <menu 
-      id="standalone"
-      title="Standalone"
-      />
-
-  <menu 
-      id="foo"
-      title="Foo" />
-
-  <subMenuItem
-      menu="zmi_actions"
-      submenu="standalone"
-      title="Standalone" 
-      permission="zope.Public"
-      for="zope.interface.Interface"
-      />
-
-  <subMenuItem
-      menu="standalone"
-      submenu="foo"
-      title="Foo" 
-      permission="zope.Public"
-      for="zope.interface.Interface"
-      />
-
-  <menu 
-      id="bar"
-      title="Bar" />
-
-  <menuItems 
-      menu="zmi_actions"
-      for="zope.interface.Interface">
-
-    <subMenuItem 
-        submenu="bar"
-        title="Bar sub" 
-        permission="zope.Public"
-        />
-
-  </menuItems>
-<!--
-
-  <menuItems 
-      menu="file2"
-      for="zope.interface.Interface">
-
-    <menuItem 
-        action="javascript:alert('New')" 
-        title="New" 
-        permission="zope.Public"
-        icon="/@@/filenew.png"
-        />
-
-    <menuItem 
-        action="javascript:alert('Open')" 
-        title="Open" 
-        permission="zope.Public"
-        icon="/@@/fileopen.png"
-        />
-
-  </menuItems>
--->
   </configure>
 
 </configure>

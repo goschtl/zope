@@ -49,10 +49,6 @@ class IToolBar(IViewletManager):
     """Toolbar viewlet manager."""
 
 
-class IToolBarTopMenu(IViewletManager):
-    """Toolbar viewlet manager."""
-
-
 class ILeft(IViewletManager):
     """Left viewlet manager."""
 
@@ -63,7 +59,6 @@ BostonWidgetCSSViewlet = viewlet.CSSViewlet('widget.css', 'all')
 
 BostonXMLTreeCSSViewlet = viewlet.CSSViewlet('xmltree.css', 'all')
 
-ToolBarCSSViewlet = viewlet.CSSViewlet('toolbar.css', 'all')
-
+BostonToolBarCSSViewlet = viewlet.CSSViewlet('toolbar.css', 'all')
 
 BostonJavascriptViewlet = viewlet.JavaScriptViewlet('boston.js')

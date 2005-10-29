@@ -11,7 +11,7 @@
       class=".addinginfo.browser.views.AddingInfoViewlet"
       template="addinginfo/browser/viewlet.pt"
       layer="zope.app.boston.boston"
-      weight="3"
+      weight="11"
       />
 
 </configure>

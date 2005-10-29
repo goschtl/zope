@@ -47,7 +47,7 @@ class ToolBarViewletManager(object):
 
     def render(self):
         """See zope.contentprovider.interfaces.IContentProvider"""
-        # Now render the view without to use the template
+        # Now render the view without the template
         return u'\n'.join([viewlet.render() for viewlet in self.viewlets])
 
 
@@ -56,20 +56,8 @@ class ToolBarViewlet(object):
 
     implements(IToolBarViewlet)
 
-#    def __getitem__(self, menuId):
-#        return getMenu(menuId, self.context, self.request)
-
     def macros(self, name):
-        print ""
-        print "macros name ", name
         return self.manager.macros(name)
 
     def menus(self, menuId):
-        print ""
-        print "menus menuId ", menuId
-        menu = getMenu(menuId, self.context, self.request)
-        for submenu in menu:
-            print submenu
-        return menu
-
-
+        return getMenu(menuId, self.context, self.request)
