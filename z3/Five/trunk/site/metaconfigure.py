@@ -21,7 +21,7 @@ from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
 from zope.configuration.exceptions import ConfigurationError
 from zope.app.component.metaconfigure import adapter
-from zope.app.site.interfaces import IPossibleSite, ISite
+from zope.app.site.interfaces import IPossibleSite
 
 from Products.Five.site.localsite import FiveSite
 
