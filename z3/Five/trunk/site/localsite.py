@@ -109,10 +109,14 @@ class FiveSiteManager(object):
         """
         return getNextServices(self).getServiceDefinitions()
 
-    def getInterfaceFor(self, name):
+    def getInterfaceFor(self, service_type):
         """Retrieve the service interface for the given name
         """
-        return getNextServices(self).getInterfaceFor(name)
+        for type, interface in self.getServiceDefinitions():
+            if type == service_type:
+                return interface
+
+        raise NameError(service_type)
 
     def getService(self, name):
         """Retrieve a service implementation
