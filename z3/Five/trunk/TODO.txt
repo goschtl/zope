@@ -10,8 +10,6 @@ v1.2
   - functional test that checks the ZMI if there really is an entry in
     the add menu?
 
-  - update ViewsTutorial
-
 * marker utility (whit, gotcha)
 
   - resolve testing conflict and re-enable five:traversable for Folder

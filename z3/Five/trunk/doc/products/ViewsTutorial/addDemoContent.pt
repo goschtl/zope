@@ -1,13 +1,14 @@
-<h1 tal:replace="structure here/manage_page_header">Header</h1>
+<h1 tal:replace="structure context/manage_page_header">Header</h1>
 
 <h2 tal:define="form_title string:Add Demo Content"
-    tal:replace="structure here/manage_form_title">Form Title</h2>
+    tal:replace="structure context/manage_form_title">Form Title</h2>
 
 <p class="form-help">
 Add Demo Content
 </p>
 
-<form action="manage_addDemoContent" method="post">
+<form action="." method="post"
+   tal:attributes="action request/ACTUAL_URL">
 <table cellspacing="0" cellpadding="2" border="0">
   <tr>
     <td align="left" valign="top">
@@ -16,7 +17,7 @@ Add Demo Content
     </div>
     </td>
     <td align="left" valign="top">
-    <input type="text" name="id" size="40" />
+    <input type="text" name="add_input_name" size="40" />
     </td>
   </tr>
   <tr>
@@ -34,12 +35,12 @@ Add Demo Content
     </td>
     <td align="left" valign="top">
     <div class="form-element">
-    <input class="form-element" type="submit" name="submit_add" 
-     value=" Add " /> 
+    <input class="form-element" type="submit" name="submit_add"
+     value=" Add " />
     </div>
     </td>
   </tr>
 </table>
 </form>
 
-<h1 tal:replace="structure here/manage_page_footer">Footer</h1>
+<h1 tal:replace="structure context/manage_page_footer">Footer</h1>
