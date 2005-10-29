@@ -77,24 +77,21 @@ class Root(Folder):
 class ServiceServiceStub(object):
     implements(IServiceService)
 
-def Wrapper(ob, container):
-    return ob.__of__(container)
-
 class SiteManagerTest(ZopeTestCase.ZopeTestCase):
 
     def afterSetUp(self):
         setUp()
-        root = Wrapper(self.folder, Root())
+        root = self.folder.__of__(Root())
 
-        f1 = Wrapper(Folder(), root)
+        f1 = Folder().__of__(root)
         sm1 = ServiceManager()
         f1.setSiteManager(sm1)
-        p1 = Wrapper(Package(), sm1)
+        p1 = Package().__of__(sm1)
 
-        f2 = Wrapper(Folder(), f1)
+        f2 = Folder().__of__(f1)
         sm2 = ServiceManager()
         f2.setSiteManager(sm2)
-        p2 = Wrapper(Package(), sm2)
+        p2 = Package().__of__(sm2)
 
         sm1.next = serviceManager
         sm2.next = sm1
@@ -107,7 +104,7 @@ class SiteManagerTest(ZopeTestCase.ZopeTestCase):
         self.p1 = p1
         self.p2 = p2
         self.unparented_folder = Folder()
-        self.unrooted_subfolder = Wrapper(Folder(), self.unparented_folder)
+        self.unrooted_subfolder = Folder().__of__(self.unparented_folder)
         zcml.load_config("meta.zcml", Products.Five)
         zcml.load_config("permissions.zcml", Products.Five)
         zcml.load_config("configure.zcml", Products.Five.site)
@@ -223,7 +220,7 @@ class SiteManagerTest(ZopeTestCase.ZopeTestCase):
         unparented_folder = Folder()
         self.assertRaises(ComponentLookupError,
                           getLocalServices, unparented_folder)
-        unrooted_subfolder = Wrapper(Folder(), unparented_folder)
+        unrooted_subfolder = Folder().__of__(unparented_folder)
         self.assertRaises(ComponentLookupError,
                           getLocalServices, unrooted_subfolder)
 
