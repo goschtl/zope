@@ -152,6 +152,18 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         self.assertEqual(list(zapi.getUtilitiesFor(IDummyUtility)),
                          [('', subdummy)])
 
+    def test_registeringTwiceIsConflict(self):
+        dummy1 = DummyUtility()
+        dummy2 = DummyUtility()
+        sm = zapi.getServices()
+        sm.registerUtility(IDummyUtility, dummy1)
+        self.assertRaises(ValueError, sm.registerUtility,
+                          IDummyUtility, dummy2)
+
+        sm.registerUtility(IDummyUtility, dummy1, 'dummy')
+        self.assertRaises(ValueError, sm.registerUtility,
+                          IDummyUtility, dummy2, 'dummy')
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(LocalUtilityServiceTest))

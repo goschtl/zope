@@ -114,11 +114,15 @@ class SimpleLocalUtilityService(object):
         if name == '':
             # Singletons. Only one per interface allowed, so, let's call it
             # by the interface.
-            name = interface.getName()
+            id = interface.getName()
         else:
-            name = interface.getName() + '-' + name
+            id = interface.getName() + '-' + name
 
-        utilities._setObject(name, utility)
+        if id in utilities.objectIds():
+            raise ValueError("There is already a utility registered for "
+                             "%s with the name '%s'" % (interface.getName(),
+                                                        name))
+        utilities._setObject(id, utility)
 
 # forwards compatability with Five 1.3
 SimpleLocalUtilityRegistry = SimpleLocalUtilityService
