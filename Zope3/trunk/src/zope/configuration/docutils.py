@@ -43,7 +43,7 @@ def wrap(text, width=78, indent=0):
     new_paras = []
     for par in paras:
         words= filter(None, whitespace.split(par))
-        
+
         lines = []
         line = []
         length = indent
@@ -57,7 +57,7 @@ def wrap(text, width=78, indent=0):
                 length = len(word) + 1 + indent
 
         lines.append(' '*indent + ' '.join(line))
-        
+
         new_paras.append('\n'.join(lines))
 
     return '\n\n'.join(new_paras) + '\n\n'
@@ -84,4 +84,4 @@ def makeDocStructures(context):
         else:
             sd_entry = subdirs.setdefault((parent.namespace, parent.name), [])
             sd_entry.append((namespace, name, schema, handler, info))
-    return namespaces, subdirs    
+    return namespaces, subdirs

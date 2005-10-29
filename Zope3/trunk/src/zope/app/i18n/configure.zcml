@@ -24,7 +24,7 @@
 
   <!-- Register the Translation Domain as a content object -->
   <localUtility class=".translationdomain.TranslationDomain">
-    <factory 
+    <factory
          id="zope.app.i18n.TranslationDomain"
          />
     <allow interface="zope.i18n.interfaces.ITranslationDomain"
@@ -55,10 +55,10 @@
   <!-- Setup Message Catalogs -->
   <content class=".messagecatalog.MessageCatalog">
     <factory id="zope.app.MessageCatalog" />
-    <implements 
+    <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
-    <require permission="zope.View" 
+    <require permission="zope.View"
         interface="zope.i18n.interfaces.IMessageCatalog" />
     <require permission="zope.ManageSite"
         attributes="setMessage getMessageIds" />
@@ -66,13 +66,13 @@
 
 
   <!-- Setup Export and Import Filters -->
-  <adapter 
+  <adapter
       factory=".filters.GettextExportFilter"
       for=".interfaces.ILocalTranslationDomain"
       provides="zope.i18n.interfaces.IMessageExportFilter"
       />
 
-  <adapter 
+  <adapter
       factory=".filters.GettextImportFilter"
       for=".interfaces.ILocalTranslationDomain"
       provides="zope.i18n.interfaces.IMessageImportFilter"
