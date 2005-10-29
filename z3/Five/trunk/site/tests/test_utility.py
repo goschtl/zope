@@ -21,6 +21,7 @@ if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
 import unittest
+import sets
 from Testing import ZopeTestCase
 
 from zope.interface import directlyProvides
@@ -88,7 +89,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
 
         self.assertEquals(zapi.getUtility(IDummyUtility, name='dummy'), dummy)
         self.assertEquals(list(zapi.getUtilitiesFor(IDummyUtility)), 
-                          [('',dummy)])
+                          [('dummy', dummy)])
         self.assertEquals(list(zapi.getAllUtilitiesRegisteredFor(
             IDummyUtility)), [dummy])
 
@@ -100,7 +101,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
 
         self.assertEquals(zapi.getUtility(IDummyUtility, name='dummy'), dummy)
         self.assertEquals(list(zapi.getUtilitiesFor(IDummyUtility)), 
-                          [('',dummy)])
+                          [('dummy', dummy)])
         self.assertEquals(list(zapi.getAllUtilitiesRegisteredFor(
             IDummyUtility)), [dummy])
 
@@ -116,6 +117,42 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         self.assertEquals(zapi.getUtility(IDummyUtility, 'dummy'), dummy)
         self.assertEquals(zapi.getUtility(ISuperDummyUtility, 'dummy'),
                           superdummy)
+
+    def test_nestedSitesDontConflictButStillAcquire(self):
+        # let's register a dummy utility in the dummy site
+        dummy = DummyUtility()
+        sm = zapi.getServices()
+        sm.registerUtility(IDummyUtility, dummy)
+
+        # let's also create a subsite and make that our site
+        manage_addDummySite(self.folder.site, 'subsite')
+        enableLocalSiteHook(self.folder.site.subsite)
+        setSite(self.folder.site.subsite)
+
+        # we should still be able to lookup the original utility from
+        # the site one level above
+        self.assertEqual(zapi.getUtility(IDummyUtility), dummy)
+
+        # now we register a dummy utility in the subsite and see that
+        # its registration doesn't conflict
+        subdummy = DummyUtility()
+        sm = zapi.getServices()
+        sm.registerUtility(IDummyUtility, subdummy)
+
+        # when we look it up we get the more local one now because the
+        # more local one shadows the less local one
+        self.assertEqual(zapi.getUtility(IDummyUtility), subdummy)
+
+        # getAllUtilitiesFor gives us both the more local and the less
+        # local utility (XXX not sure if this is the right semantics
+        # for getAllUtilitiesFor)
+        self.assertEqual(sets.Set(zapi.getAllUtilitiesRegisteredFor(IDummyUtility)),
+                         sets.Set([subdummy, dummy]))
+
+        # getUtilitiesFor will only find one, because the more local
+        # one shadows the less local one
+        self.assertEqual(list(zapi.getUtilitiesFor(IDummyUtility)),
+                         [('', subdummy)])
 
 def test_suite():
     suite = unittest.TestSuite()

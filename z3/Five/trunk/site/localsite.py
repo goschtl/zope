@@ -23,6 +23,7 @@ from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Utilities
 
 from zope.app.site.interfaces import ISite, IPossibleSite
+from zope.app.component.localservice import getNextServices, getNextService
 from zope.app.publication.zopepublication import BeforeTraverseEvent
 
 from ExtensionClass import Base
@@ -89,17 +90,29 @@ class FiveSiteManager(object):
     def __init__(self, context):
         self.context = context
 
+    def next(self):
+        obj = self.context
+        while obj is not None:
+            obj = aq_parent(aq_inner(obj))
+            if ISite.providedBy(obj):
+                return obj.getSiteManager()
+        # only with Zope X3 3.0 always return something else than None
+        # in Zope 3.1+, returning None means global site manager will
+        # be used
+        return getGlobalServices()
+    next = property(next)
+
     def getServiceDefinitions(self):
         """Retrieve all Service Definitions
 
         Should return a list of tuples (name, interface)
         """
-        return getGlobalServices().getServiceDefinitions()
+        return getNextServices(self).getServiceDefinitions()
 
     def getInterfaceFor(self, name):
         """Retrieve the service interface for the given name
         """
-        return getGlobalServices().getInterfaceFor(name)
+        return getNextServices(self).getInterfaceFor(name)
 
     def getService(self, name):
         """Retrieve a service implementation
@@ -108,7 +121,7 @@ class FiveSiteManager(object):
         """
         if name == Utilities:
             return IFiveUtilityService(self.context)
-        return getGlobalServices().getService(name)
+        return getNextService(self, name)
 
     def registerUtility(self, interface, utility, name=''):
         """See Products.Five.site.interfaces.IRegisterUtilitySimply"""

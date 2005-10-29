@@ -15,7 +15,7 @@
 
 $Id: interfaces.py 18584 2005-10-14 17:13:27Z regebro $
 """
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 from zope.component.interfaces import IServiceService
 from zope.app.utility.interfaces import ILocalUtilityService
 
@@ -38,6 +38,11 @@ class IRegisterUtilitySimply(Interface):
         """Registers a utility in the local context"""
         # TODO Define an exception than is to be thrown when a local
         # utility of that interface and name is already registered.
+
+    next = Attribute("The next local registry in the tree. This attribute "
+                     "represents the parent of this registry node. If the "
+                     "value is ``None``, then this registry represents the "
+                     "root of the tree")
 
 class IFiveSiteManager(IServiceService, IRegisterUtilitySimply):
     """Five site manager

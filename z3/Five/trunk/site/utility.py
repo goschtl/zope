@@ -16,16 +16,29 @@
 $Id$
 """
 from zope.interface import implements
+from zope.component import getGlobalService
+from zope.component.servicenames import Utilities
 from zope.component.exceptions import ComponentLookupError
+from zope.app.component.localservice import getNextService
 
+from Acquisition import aq_base
 from OFS.Folder import Folder
 from Products.Five.site.interfaces import IFiveUtilityService
 
-class SimpleLocalUtilityService:
+class SimpleLocalUtilityService(object):
     implements(IFiveUtilityService)
 
     def __init__(self, context):
         self.context = context
+        # make {get|query}NextService() work
+        self.__parent__ = self.context.getSiteManager()
+
+    def next(self):
+        try:
+            return getNextService(self, Utilities)
+        except ComponentLookupError:
+            return getGlobalService(Utilities)
+    next = property(next)
 
     def getUtility(self, interface, name=''):
         """See IUtilityService interface
@@ -41,37 +54,45 @@ class SimpleLocalUtilityService:
         if name == '':
             # Singletons. Only one per interface allowed, so, let's call it
             # by the interface.
-            name = interface.getName()
+            id = interface.getName()
         else:
-            name = interface.getName() + '-' + name
-        utilities = getattr(self.context, 'utilities', None)
-        if utilities is None:
-            return default
-        utility = utilities._getOb(name, None)
-        if utility is None:
-            return default
-        if not interface.providedBy(utility):
-            return default
-        return utility
+            id = interface.getName() + '-' + name
+
+        utilities = getattr(aq_base(self.context), 'utilities', None)
+        if utilities is not None:
+            utility = utilities._getOb(id, None)
+            if utility is not None:
+                return utility
+        return self.next.queryUtility(interface, name, default)
 
     def getUtilitiesFor(self, interface):
-        utilities = getattr(self.context, 'utilities', None)
-        if utilities is None:
-            raise StopIteration
-        for utility in utilities.objectValues():
-            if interface.providedBy(utility):
-                yield (utility.getId(), utility)
+        utilities = getattr(aq_base(self.context), 'utilities', None)
+        names = []
+        prefix = interface.getName() + '-'
+        if utilities is not None:
+            for name, utility in utilities.objectItems():
+                if name == interface.getName():
+                    names.append('')
+                    yield '', utility
+                elif name.startswith(prefix):
+                    name = name[len(prefix):]
+                    names.append(name)
+                    yield (name, utility)
+        for name, utility in self.next.getUtilitiesFor(interface):
+            if name not in names:
+                yield name, utility
 
     def getAllUtilitiesRegisteredFor(self, interface):
         # This also supposedly returns "overridden" utilities, but we don't
         # keep them around. It also does not return the name-value pair that
         # getUtilitiesFor returns.
-        utilities = getattr(self.context, 'utilities', None)
-        if utilities is None:
-            raise StopIteration
-        for utility in utilities.objectValues():
-            if interface.providedBy(utility):
-                yield utility
+        utilities = getattr(aq_base(self.context), 'utilities', None)        
+        if utilities is not None:
+            for utility in utilities.objectValues():
+                if interface.providedBy(utility):
+                    yield utility
+        for utility in self.next.getAllUtilitiesRegisteredFor(interface):
+            yield utility
 
     def registerUtility(self, interface, utility, name=''):
         # I think you are *really* supposed to:
@@ -85,7 +106,7 @@ class SimpleLocalUtilityService:
         # and Five would probably differ anyway, so, here is this new
         # Five-only, easy to use method!
 
-        utilities = getattr(self.context, 'utilities', None)
+        utilities = getattr(aq_base(self.context), 'utilities', None)
         if utilities is None:
             self.context._setObject('utilities', Folder('utilities'))
             utilities = self.context.utilities
