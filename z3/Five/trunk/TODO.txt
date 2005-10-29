@@ -5,9 +5,15 @@ TODO
 v1.2
 ----
 
-* properly test FiveSiteManager
+* i18n domain of site/managesite.pt?
+
+* i18n and translation of utilities/browser/*pt
 
 * can we stop using zLOG and use the logging package? please?
+
+* events (efge)
+
+  - get rid of deprecation warnings
 
 * five:registerClass (yuppie)
 
