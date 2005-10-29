@@ -5,6 +5,10 @@ TODO
 v1.2
 ----
 
+* properly test FiveSiteManager
+
+* can we stop using zLOG and use the logging package? please?
+
 * five:registerClass (yuppie)
 
   - functional test that checks the ZMI if there really is an entry in
@@ -12,18 +16,20 @@ v1.2
 
 * marker utility (whit, gotcha)
 
+  - why is it bound to be a ZMI view? --> reuse of markup through ZPT
+    macros?
+
+  - shouldn't the views not rather use context/@@standard_macros/view
+    instead of the ZMI manage_* crap?
+
   - resolve testing conflict and re-enable five:traversable for Folder
+    XXX why should Folder be traversable at all by default? /philiKON
 
 * make rendering of resource urls support sites?
 
 
 v1.3
 ----
-
-* remove certain entries from interfaces.zcml that are outdated (yuppie)
-
-* implement an IPhysicallyLocatable adapter for Zope 2 objects, make
-  OFS.Application.Application implement IContainmentRoot (in Zope 2.9)
 
 * port to Zope 3.2 (philikon)
 
