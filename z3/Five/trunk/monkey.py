@@ -37,7 +37,7 @@ def monkeyPatch():
 
 def localsites_monkey():
     from Acquisition import aq_inner, aq_parent
-    from zope.app.site.interfaces import ISiteManager
+    from zope.component.interfaces import IServiceService
     from zope.component.exceptions import ComponentLookupError
 
     def getLocalServices(context):
@@ -59,7 +59,7 @@ def localsites_monkey():
         # This is not allowed to use any services to get its job done!
 
         while not (context is None or
-                   ISiteManager.providedBy(context)):
+                   IServiceService.providedBy(context)):
             context = getattr(context, '__parent__', aq_parent(aq_inner(context)))
         if context is None:
             raise ComponentLookupError('Services')
