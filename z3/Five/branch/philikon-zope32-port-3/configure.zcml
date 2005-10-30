@@ -12,7 +12,7 @@
   <include package=".browser" />
   <include package=".form" />
   <include package=".skin" />
-  <!--include package=".utilities" /-->
+  <include package=".utilities" />
 
   <include package="zope.app.event" />
   <include package="zope.app.traversing" />
