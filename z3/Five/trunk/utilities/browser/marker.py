@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2005 Zope Corporation and Contributors.
+# Copyright (c) 2004, 2005 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -16,20 +16,14 @@
 $Id$
 """
 from zope.app import zapi
-from zope.interface import implements, Interface
-from zope.app.component.interface import getInterface
 
-from zope.app.apidoc.viewmodule.browser import ViewsDetails as _ViewsDetails
-from Products.Five.browser import BrowserView
 from Products.Five.utilities.interfaces import IMarkerUtility
-from zope.component import getView, ComponentLookupError
 
-class ViewsDetails(_ViewsDetails, BrowserView):
-    # BBB: wrap ViewsDetails to work in Z2
-    def __init__(self, content, request):
-        super(ViewsDetails, self).__init__(content, request)
 
-class EditView(BrowserView):
+class EditView:
+
+    """Marker interface edit view.
+    """
 
     def __init__(self, context, request):
         self.utility = zapi.getUtility(IMarkerUtility)
@@ -67,9 +61,9 @@ class EditView(BrowserView):
         return self._getNameLinkDicts(
             self.utility.getDirectlyProvidedNames(self.context))
 
-    def getProvidedNames(self):
+    def getInterfaceNames(self):
         return self._getNameLinkDicts(
-            self.utility.getProvidedNames(self.context))
+            self.utility.getInterfaceNames(self.context))
 
     def processForm(self):
         # this could return errors

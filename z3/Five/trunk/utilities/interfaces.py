@@ -37,6 +37,14 @@ class IReadInterface(Interface):
         """List the names of marker interfaces available for this object.
         """
 
+    def getInterfaces(obj):
+        """List interfaces provided by the class.
+        """
+
+    def getInterfaceNames(obj):
+        """List the names of interfaces provided by the class.
+        """
+
     def getProvided(obj):
         """List interfaces provided by an object.
         """

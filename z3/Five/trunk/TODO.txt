@@ -68,3 +68,5 @@ v1.4
 
 - top-level <require />, <allow /> directives as a ZCML spelling of
   allowModule, allowClass
+
+- marker utility: re-add 'views_details' that didn't make it in 1.2/1.3

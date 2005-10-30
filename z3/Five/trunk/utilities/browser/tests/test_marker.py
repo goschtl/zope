@@ -1,99 +1,39 @@
-# this test will be converted to a doctest
-import os, sys
+##############################################################################
+#
+# Copyright (c) 2004, 2005 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Unit tests for marker interface views.
 
+$Id$
+"""
+import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import unittest
-
-from sets import Set
-from zope.app import zapi
-
-from Testing import ZopeTestCase
-
-from zope.app.tests.placelesssetup import setUp, tearDown
-
-import Products.Five
-from Products.Five import zcml
-from Products.Five.tests.testing import manage_addFiveTraversableFolder
-
-from Products.Five.traversable import FakeRequest
-from Products.Five.utilities.browser.marker import EditView
-from zope.app.apidoc.viewmodule.browser import ViewsDetails
-
-from zope.app.traversing.interfaces import IContainmentRoot
-from Products.Five.utilities.interfaces import IMarkerUtility
-from zope.app.component.interface import provideInterface
-
-def dummy(key):
-    return key
-
-_marker = object()
-
-class Base(ZopeTestCase.FunctionalTestCase):
-
-    def beforeTearDown(self):
-        tearDown()
-
-    def afterSetUp(self):
-        #setUp()
-        zcml.load_config('meta.zcml', Products.Five)
-        zcml.load_config('configure.zcml', Products.Five)
-        zcml.load_config('permissions.zcml', Products.Five)
-        zcml.load_config('configure.zcml', Products.Five.utilities)
-        zcml.load_string('''<configure xmlns="http://namespaces.zope.org/zope"
-                             xmlns:five="http://namespaces.zope.org/five">
-                             <five:traversable class="OFS.Folder.Folder"/>
-                             </configure>
-                             ''')
-        manage_addFiveTraversableFolder(self.folder, 'test_folder', "")
-        self.test_folder = self.folder.test_folder
-        uf = self.folder.acl_users
-        uf._doAddUser('manager', 'r00t', ['Manager'], [])
-        self.login('manager')
-
-class TestKlasses(Base):
-
-    def afterSetUp(self):
-        super(Test, self).afterSetUp()
-
-class Test(Base):
-    """
-    These are integration tests for making sure the component
-    architecture and parts are working in a basic fashion
-    """
-    def afterSetUp(self):
-        super(Test, self).afterSetUp()
-        self.path = '/'.join(self.test_folder.getPhysicalPath())
-
-    def test_viewsdetails(self):
-        request = FakeRequest()
-        iface = IContainmentRoot
-        self.marker_util = zapi.getUtility(IMarkerUtility)
-        provideInterface(iface.__name__, iface)
-        self.marker_util.mark(self.folder.test_folder, iface)
-        request['iface'] = request['all'] = request['type'] = iface.__name__
-        view = zapi.getView(self.folder.test_folder, 'views-details.html', request)
-        assert view
-        assert isinstance(view.getViewsByLayers(), list)
-##         resp = self.publish('%s/views-details.html?iface=%s' %(self.path, iface.__name__))
-##         import pdb; pdb.set_trace()
-##         print resp.getBody()
-
-def test_editview(self):
+def test_editview():
     """
     Set everything up:
 
       >>> from zope.app.tests.placelesssetup import setUp, tearDown
       >>> setUp()
       >>> import Products.Five
+      >>> import Products.Five.utilities
       >>> from Products.Five import zcml
       >>> zcml.load_config('meta.zcml', Products.Five)
       >>> zcml.load_config('permissions.zcml', Products.Five)
       >>> zcml.load_config('configure.zcml', Products.Five.utilities)
       >>> from Products.Five.utilities.browser.marker import EditView
-      >>> from OFS.SimpleItem import SimpleItem
-      >>> obj = SimpleItem().__of__(self.folder)
+      >>> from Products.Five.tests.testing.simplecontent import SimpleContent
+      >>> obj = SimpleContent('foo', 'Foo').__of__(self.folder)
 
     Create an EditView:
 
@@ -107,8 +47,8 @@ def test_editview(self):
       []
       >>> view.getDirectlyProvidedNames()
       []
-      >>> view.getProvidedNames()
-      [...IPersistent...]
+      >>> view.getInterfaceNames()
+      [...ISimpleContent...]
 
     Try to add a marker interface that doesn't exist:
 
@@ -120,8 +60,8 @@ def test_editview(self):
 
     Now create the marker interface:
 
-      >>> from OFS.interfaces import ISimpleItem
-      >>> class IFooMarker(ISimpleItem): pass
+      >>> from Products.Five.tests.testing.simplecontent import ISimpleContent
+      >>> class IFooMarker(ISimpleContent): pass
       >>> from zope.app.component.interface import provideInterface
       >>> provideInterface('', IFooMarker)
       >>> view.getAvailableInterfaceNames()
@@ -129,7 +69,7 @@ def test_editview(self):
       >>> view.getDirectlyProvidedNames()
       []
 
-    And try again to add it do the object:
+    And try again to add it to the object:
 
       >>> view.request = {'add': ('__builtin__.IFooMarker',)}
       >>> view.processForm()
@@ -152,13 +92,9 @@ def test_editview(self):
       >>> tearDown()
     """
 
-
 def test_suite():
     from Testing.ZopeTestCase import ZopeDocTestSuite
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(Test))
-    suite.addTest(ZopeDocTestSuite())
-    return suite
+    return ZopeDocTestSuite()
 
 if __name__ == '__main__':
     framework()

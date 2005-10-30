@@ -18,12 +18,16 @@ $Id$
 """
 from sets import Set
 
-from zope.interface import providedBy, implements
-from zope.interface import directlyProvides, directlyProvidedBy
+from zope.interface import implements
+from zope.interface import implementedBy
+from zope.interface import directlyProvidedBy
+from zope.interface import providedBy
+from zope.interface import directlyProvides
 from zope.interface.interfaces import IInterface
 from zope.app.component.interface import getInterface
 from zope.app.component.interface import searchInterface
-from Products.Five.utilities.interfaces import IMarkerUtility
+
+from interfaces import IMarkerUtility
 
 def dottedToInterfaces(obj, seq):
     return [getInterface(obj, dotted) for dotted in seq]
@@ -81,6 +85,12 @@ class MarkerUtility(object):
     def getAvailableInterfaceNames(self, obj):
         return self._getInterfaceNames(self.getAvailableInterfaces(obj))
 
+    def getInterfaces(self, obj):
+        return tuple(implementedBy(obj.__class__))
+
+    def getInterfaceNames(self, obj):
+        return self._getInterfaceNames(self.getInterfaces(obj))
+
     def getProvided(self, obj):
         return providedBy(obj)
 
@@ -88,8 +98,7 @@ class MarkerUtility(object):
         return self._getInterfaceNames(self.getProvided(obj))
 
     def update(self, obj, add=(), remove=()):
-        """
-        Currently update adds and then removes, rendering duplicate null
+        """Currently update adds and then removes, rendering duplicate null.
         """
         marker_ifaces = self.getAvailableInterfaces(obj)
         if len(add):
@@ -107,7 +116,7 @@ class MarkerUtility(object):
         return names
 
     def _getDirectMarkersOf(self, base):
-        """Returns empty interfaces directly inheriting from the given one
+        """Get empty interfaces directly inheriting from the given one.
         """
         results = []
         interfaces = searchInterface(None, base=base)
@@ -126,8 +135,9 @@ _utility = MarkerUtility()
 def getMarkerUtility():
     return _utility
 
-# TODO: This method should go away and only registered interface utilities
-# should be used.
+
+# BBB: for Zope 2.8/3.0, will be replaced in Five 1.3 by
+#      from zope.app.component.interface import interfaceToName
 def interfaceToName(context, interface):
     if interface is None:
         return 'None'
@@ -135,7 +145,7 @@ def interfaceToName(context, interface):
     ids = [('%s.%s' %(iface.__module__, iface.__name__))
            for iface in items
            if iface == interface]
-    
+
     if not ids:
         # Do not fail badly, instead resort to the standard
         # way of getting the interface name, cause not all interfaces

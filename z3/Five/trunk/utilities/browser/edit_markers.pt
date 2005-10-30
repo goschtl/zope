@@ -21,7 +21,7 @@
             enctype="multipart/form-data"
             tal:attributes="action string:${context_id}/${name}"
             tal:define="provided view/getDirectlyProvidedNames;
-                        impl view/getProvidedNames;
+                        impl view/getInterfaceNames;
                         context_id view/context/getId;
                         name view/name">
 
@@ -53,11 +53,6 @@
                      i18n:translate=""
                      tal:attributes="for iface/name"
                      tal:content="iface/name" />
-
-              [<a href=""
-                   tal:attributes="href iface/link">
-                  Views
-              </a>]
 
               <br />
 
@@ -93,11 +88,6 @@
                      tal:content="iface/name"
                      />
 
-              [<a href=""
-                   tal:attributes="href iface/link">
-                  Views
-              </a>]
-
               <br />
 
             </tal:block>
@@ -124,8 +114,7 @@
             <label for="id" i18n:translate="label_marker_implemented">Implemented Interfaces</label>
 
             <div class="formHelp" i18n:translate="help_marker_implemented">
-              Those are the interfaces this object provides, either
-              directly or through its base classes.
+              Those are the interfaces this object provides through its base classes.
             </div>
 
             <tal:block tal:repeat="iface impl">
@@ -134,11 +123,6 @@
                      i18n:translate=""
                      tal:attributes="for iface/name"
                      tal:content="iface/name" />
-
-              [<a href=""
-                   tal:attributes="href iface/link">
-                  Views
-              </a>]
 
               <br />
 
