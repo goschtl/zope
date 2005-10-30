@@ -16,8 +16,7 @@
 $Id: interfaces.py 18584 2005-10-14 17:13:27Z regebro $
 """
 from zope.interface import Interface, Attribute
-from zope.component.interfaces import IServiceService
-from zope.app.utility.interfaces import ILocalUtilityService
+from zope.component.interfaces import ISiteManager
 
 class IRegisterUtilitySimply(Interface):
     """Register utilities simply
@@ -44,7 +43,40 @@ class IRegisterUtilitySimply(Interface):
                      "value is ``None``, then this registry represents the "
                      "root of the tree")
 
-class IFiveSiteManager(IServiceService, IRegisterUtilitySimply):
+class IFiveUtilityRegistry(IRegisterUtilitySimply):
+    """Look up and register utilities"""
+     
+    def getUtility(interface, name='', context=None):
+        """Get the utility that provides interface
+
+        Returns the nearest utility to the context that implements the
+        specified interface.  If one is not found, raises
+        ComponentLookupError.
+        """
+
+    def queryUtility(interface, name='', default=None, context=None):
+        """Look for the utility that provides interface
+
+        Returns the nearest utility to the context that implements
+        the specified interface.  If one is not found, returns default.
+        """
+
+    def getUtilitiesFor(interface, context=None):
+        """Return the utilities that provide an interface
+
+        An iterable of utility name-value pairs is returned.
+        """
+
+    def getAllUtilitiesRegisteredFor(interface, context=None):
+        """Return all registered utilities for an interface
+
+        This includes overridden utilities.
+
+        An iterable of utility instances is returned.  No names are
+        returned.
+        """
+
+class IFiveSiteManager(ISiteManager, IRegisterUtilitySimply):
     """Five site manager
 
     For the sake of forward-portability, registering utilities can be
@@ -53,8 +85,11 @@ class IFiveSiteManager(IServiceService, IRegisterUtilitySimply):
     site managers).  An implementation of this interface will probably
     delegate the work to an IFiveUtilityService component, though."""
 
-class IFiveUtilityService(ILocalUtilityService, IRegisterUtilitySimply):
-    """Five local utility service"""
 
-# forwards compatability with Five 1.3
-IFiveUtilityRegistry = IFiveUtilityService
+# BBB 2005/11/01 -- gone in Five 1.5.
+IFiveUtilityService = IFiveUtilityRegistry
+import zope.deprecation
+zope.deprecation.deprecated(
+    'IFiveUtilityService', "'IFiveUtilityService' has been renamed to "
+    "'IFiveUtilityRegistry' and will disappear in Five 1.5."
+    )

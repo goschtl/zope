@@ -16,13 +16,17 @@
 $Id$
 """
 from zExceptions import NotFound
-from zope.exceptions import NotFoundError
-from zope.component import getView, ComponentLookupError
-from zope.interface import implements
+
+from zope.component import getMultiAdapter, ComponentLookupError
+from zope.interface import implements, Interface
+from zope.publisher.interfaces import ILayer
 from zope.publisher.interfaces.browser import IBrowserRequest
+
 from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
+from zope.app.publication.browser import setDefaultSkin
+from zope.app.interface import queryType
 
 from AccessControl import getSecurityManager
 from Products.Five.security import newInteraction
@@ -31,9 +35,6 @@ _marker = object
 
 class FakeRequest(dict):
     implements(IBrowserRequest)
-
-    def getPresentationSkin(self):
-        return None
 
     def has_key(self, key):
         return False
@@ -69,12 +70,18 @@ class Traversable:
             REQUEST = getattr(self, 'REQUEST', None)
             if not IBrowserRequest.providedBy(REQUEST):
                 REQUEST = FakeRequest()
+
+        # set the default skin on the request if it doesn't have any
+        # layers set on it yet
+        if queryType(REQUEST, ILayer) is None:
+            setDefaultSkin(REQUEST)
+
         # con Zope 3 into using Zope 2's checkPermission
         newInteraction()
         try:
             return ITraverser(self).traverse(
                 path=[name], request=REQUEST).__of__(self)
-        except (ComponentLookupError, NotFoundError,
+        except (ComponentLookupError, LookupError,
                 AttributeError, KeyError, NotFound):
             pass
         try:
@@ -98,8 +105,9 @@ class FiveTraversable(DefaultTraversable):
         REQUEST = getattr(context, 'REQUEST', None)
         if not IBrowserRequest.providedBy(REQUEST):
             REQUEST = FakeRequest()
+            setDefaultSkin(REQUEST)
         # Try to lookup a view
         try:
-            return getView(context, name, REQUEST)
+            return getMultiAdapter((context, REQUEST), Interface, name)
         except ComponentLookupError:
             pass

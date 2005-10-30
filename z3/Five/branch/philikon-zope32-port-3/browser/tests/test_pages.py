@@ -56,7 +56,7 @@ def test_ViewAcquisitionWrapping():
 
     Clean up:
 
-      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> from zope.app.testing.placelesssetup import tearDown
       >>> tearDown()
     """
 

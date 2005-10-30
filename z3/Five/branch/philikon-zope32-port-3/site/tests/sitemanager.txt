@@ -4,7 +4,7 @@ Five Site Manager
 In this test we want to test Five's implementation of a site manager.
 First, we need to set a few things up...
 
-  >>> from zope.app.tests.placelesssetup import setUp, tearDown
+  >>> from zope.app.testing.placelesssetup import setUp, tearDown
   >>> setUp()
 
   >>> import Products.Five
@@ -35,54 +35,59 @@ Let's make the possible site a real site:
 
 and tell Zope 3 about it:
 
-  >>> from zope.app.component.hooks import setSite
+  >>> from zope.app.component.hooks import setSite, setHooks
   >>> setSite(dummysite)
+
+Also hook up custom component architecture calls; we need to do this
+here because zope.app.component.hooks registers a cleanup with the
+testing cleanup framework, so the hooks get torn down by
+placelesssetup each time.
+
+  >>> setHooks()
 
 That seems to have worked (we test this by using the context property
 of FiveSiteManager):
 
   >>> from zope.app import zapi
-  >>> zapi.getServices().context == dummysite
+  >>> zapi.getSiteManager().context == dummysite
   True
 
 Since there's no other local site in between this one and the global
-one, the next site manager is the global one:
+one, the next one should be the global one.  FiveSiteManager indicates
+that to us by return ``None``:
 
   >>> from zope.app import zapi
-  >>> zapi.getServices().next is zapi.getGlobalServices()
+  >>> zapi.getSiteManager().next is None
   True
 
-The Zope 3 API agrees with that:
+To the the Zope 3 API, this means the next site manager should be the
+global one:
 
-  >>> from zope.app.component.localservice import getNextServices
-  >>> getNextServices(dummysite.getSiteManager()) is zapi.getGlobalServices()
+  >>> from zope.app.component import getNextSiteManager
+  >>> getNextSiteManager(dummysite.getSiteManager()) is zapi.getGlobalSiteManager()
   True
 
 
-IServiceService API
--------------------
+ISiteManager API
+----------------
 
-Test the IServiceService API here.  It isn't really important because
-it's going to go away anyways, but still...
+Site managers are supposed to have an ``adapters`` and a ``utilities``
+attribute.  Five's site manager simply passes through the global
+adapter registry:
 
-  >>> from pprint import pprint
-  >>> pprint(zapi.getServices().getServiceDefinitions())
-  [('Services', <InterfaceClass zope.component.interfaces.IServiceService>),
-   ('Presentation',
-   <InterfaceClass zope.component.interfaces.IPresentationService>),
-   ('Adapters', <InterfaceClass zope.component.interfaces.IAdapterService>),
-   ('Utilities', <InterfaceClass zope.component.interfaces.IUtilityService>)]
-
-  >>> zapi.getServices().getInterfaceFor(zapi.servicenames.Utilities)
-  <InterfaceClass zope.component.interfaces.IUtilityService>
-
-  >>> zapi.getService(zapi.servicenames.Adapters) is \
-  ...     zapi.getGlobalService(zapi.servicenames.Adapters)
+  >>> zapi.getSiteManager().adapters is zapi.getGlobalSiteManager().adapters
   True
 
-  >>> from Products.Five.site.interfaces import IFiveUtilityService
-  >>> IFiveUtilityService.providedBy(zapi.getService(zapi.servicenames.Utilities))
+The utility registry, however, is an ``IFiveUtilityRegistry``:
+
+  >>> from Products.Five.site.interfaces import IFiveUtilityRegistry
+  >>> IFiveUtilityRegistry.providedBy(zapi.getSiteManager().utilities)
   True
+
+The methods on registering and looking up utilities are covered by the
+utility tests in depth.  The methods on adapter look up are indirectly
+covered in the functional test; view look up, for example, is adapter
+look up.
 
 
 Nesting sites
@@ -100,17 +105,17 @@ Now we set the current site to the ``subsite``:
 
 When we call getServices() now, we get the correct site manager:
 
-  >>> zapi.getServices().context == subsite
+  >>> zapi.getSiteManager().context == subsite
   True
 
 The "next" site is the less local one:
 
-  >>> zapi.getServices().next.context == dummysite
+  >>> zapi.getSiteManager().next.context == dummysite
   True
 
 The Zope 3 API for this agrees with that:
 
-  >>> getNextServices(subsite.getSiteManager()).context == dummysite
+  >>> getNextSiteManager(subsite.getSiteManager()).context == dummysite
   True
 
 
