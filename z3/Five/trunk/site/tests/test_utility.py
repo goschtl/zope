@@ -164,6 +164,27 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         self.assertRaises(ValueError, sm.registerUtility,
                           IDummyUtility, dummy2, 'dummy')
 
+    def test_utilitiesHaveProperAcquisitionContext(self):
+        dummy = DummyUtility()
+        sm = zapi.getServices()
+        sm.registerUtility(IDummyUtility, dummy)
+
+        # let's see if we can acquire something all the way from the
+        # root (Application) object; we need to be careful to choose
+        # something that's only available from the root object
+        from Acquisition import aq_acquire
+        dummy = zapi.getUtility(IDummyUtility)
+        acquired = aq_acquire(dummy, 'ZopeAttributionButton', None)
+        self.failUnless(acquired is not None)
+
+        name, dummy = zapi.getUtilitiesFor(IDummyUtility).next()
+        acquired = aq_acquire(dummy, 'ZopeAttributionButton', None)
+        self.failUnless(acquired is not None)
+
+        dummy = zapi.getAllUtilitiesRegisteredFor(IDummyUtility).next()
+        acquired = aq_acquire(dummy, 'ZopeAttributionButton', None)
+        self.failUnless(acquired is not None)        
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(LocalUtilityServiceTest))

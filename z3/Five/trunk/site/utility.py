@@ -58,19 +58,17 @@ class SimpleLocalUtilityService(object):
         else:
             id = interface.getName() + '-' + name
 
-        utilities = getattr(aq_base(self.context), 'utilities', None)
-        if utilities is not None:
-            utility = utilities._getOb(id, None)
+        if getattr(aq_base(self.context), 'utilities', None) is not None:
+            utility = self.context.utilities._getOb(id, None)
             if utility is not None:
                 return utility
         return self.next.queryUtility(interface, name, default)
 
     def getUtilitiesFor(self, interface):
-        utilities = getattr(aq_base(self.context), 'utilities', None)
         names = []
         prefix = interface.getName() + '-'
-        if utilities is not None:
-            for name, utility in utilities.objectItems():
+        if getattr(aq_base(self.context), 'utilities', None) is not None:
+            for name, utility in self.context.utilities.objectItems():
                 if name == interface.getName():
                     names.append('')
                     yield '', utility
@@ -86,9 +84,8 @@ class SimpleLocalUtilityService(object):
         # This also supposedly returns "overridden" utilities, but we don't
         # keep them around. It also does not return the name-value pair that
         # getUtilitiesFor returns.
-        utilities = getattr(aq_base(self.context), 'utilities', None)        
-        if utilities is not None:
-            for utility in utilities.objectValues():
+        if getattr(aq_base(self.context), 'utilities', None) is not None:
+            for utility in self.context.utilities.objectValues():
                 if interface.providedBy(utility):
                     yield utility
         for utility in self.next.getAllUtilitiesRegisteredFor(interface):
@@ -106,10 +103,9 @@ class SimpleLocalUtilityService(object):
         # and Five would probably differ anyway, so, here is this new
         # Five-only, easy to use method!
 
-        utilities = getattr(aq_base(self.context), 'utilities', None)
-        if utilities is None:
+        if getattr(aq_base(self.context), 'utilities', None) is None:
             self.context._setObject('utilities', Folder('utilities'))
-            utilities = self.context.utilities
+        utilities = self.context.utilities
 
         if name == '':
             # Singletons. Only one per interface allowed, so, let's call it
