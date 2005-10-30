@@ -44,7 +44,7 @@ def serviceServiceAdapter(ob):
     while True:
         if ISite.providedBy(current):
             return current.getSiteManager()
-        current = aq_parent(aq_inner(current))
+        current = getattr(current, '__parent__', aq_parent(aq_inner(current)))
         if current is None:
             raise ComponentLookupError("Could not adapt %r to"
                                        " IServiceService" % (ob, ))
@@ -88,7 +88,9 @@ class FiveSiteManager(object):
     implements(IFiveSiteManager)
 
     def __init__(self, context):
-        self.context = context
+        # make {get|query}NextServices() work without having to
+        # resort to Zope 2 acquisition
+        self.context = self.__parent__ = context
 
     def next(self):
         obj = self.context

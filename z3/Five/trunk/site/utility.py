@@ -30,7 +30,8 @@ class SimpleLocalUtilityService(object):
 
     def __init__(self, context):
         self.context = context
-        # make {get|query}NextService() work
+        # make {get|query}NextServices() work without having to
+        # resort to Zope 2 acquisition
         self.__parent__ = self.context.getSiteManager()
 
     def next(self):
