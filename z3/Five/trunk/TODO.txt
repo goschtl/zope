@@ -24,14 +24,7 @@ v1.2
 
 * marker utility (whit, gotcha)
 
-  - why is it bound to be a ZMI view? --> reuse of markup through ZPT
-    macros?
-
-  - shouldn't the views not rather use context/@@standard_macros/view
-    instead of the ZMI manage_* crap?
-
-  - resolve testing conflict and re-enable five:traversable for Folder
-    XXX why should Folder be traversable at all by default? /philiKON
+  - add CHANGES.txt entry
 
 * make rendering of resource urls support sites?
 
@@ -47,6 +40,11 @@ v1.3
 
 * integrate into Zope 2.9 (philikon)
 
+* marker utility
+
+  - replace interfaceToName by import (see BBB note)
+
+  - add 'manage_interfaces' to ZMI tabs in Zope 2.9 (yuppie)
 
 v1.4
 ----

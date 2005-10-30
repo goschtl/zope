@@ -79,11 +79,12 @@ class MarkerUtility(object):
                     and not interface.providedBy(obj)):
                     results.append(interface)
             todo += markers
-        results.sort()
         return tuple(results)
 
     def getAvailableInterfaceNames(self, obj):
-        return self._getInterfaceNames(self.getAvailableInterfaces(obj))
+        names = self._getInterfaceNames(self.getAvailableInterfaces(obj))
+        names.sort()
+        return names
 
     def getInterfaces(self, obj):
         return tuple(implementedBy(obj.__class__))
@@ -111,9 +112,7 @@ class MarkerUtility(object):
              for interface in Set(direct_ifaces) & Set(remove)]
 
     def _getInterfaceNames(self, interfaces):
-        names = [interfaceToName(self, iface) for iface in interfaces]
-        names.sort()
-        return names
+        return [interfaceToName(self, iface) for iface in interfaces]
 
     def _getDirectMarkersOf(self, base):
         """Get empty interfaces directly inheriting from the given one.

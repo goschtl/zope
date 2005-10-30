@@ -26,23 +26,17 @@ class EditView:
     """
 
     def __init__(self, context, request):
-        self.utility = zapi.getUtility(IMarkerUtility)
         self.context = context
         self.request = request
-        self.processForm()
-
-        self.name = ''
-        if request:
-            path = request.environ['PATH_INFO'].split('/')
-            self.name = path[-1]
-
+        self.utility = zapi.getUtility(IMarkerUtility)
         self.context_url = self.context.absolute_url()
 
-    def add(self):
-        return self.request.get('add', ())
-
-    def name(self):
-        return self.name
+    def __call__(self, SAVE=None, add=(), remove=()):
+        if SAVE:
+            self.update(add, remove)
+            self.request.response.redirect(self.request.ACTUAL_URL)
+            return ''
+        return self.index()
 
     def _getLinkToInterfaceDetailsView(self, interfaceName):
         return (self.context_url +
@@ -65,8 +59,8 @@ class EditView:
         return self._getNameLinkDicts(
             self.utility.getInterfaceNames(self.context))
 
-    def processForm(self):
+    def update(self, add, remove):
         # this could return errors
-        ifaces = self.request.get('add', ()), self.request.get('remove', ())
-        add, remove = [self.utility.dottedToInterfaces(self.context, seq) for seq in ifaces]
+        add = self.utility.dottedToInterfaces(self.context, add)
+        remove = self.utility.dottedToInterfaces(self.context, remove)
         self.utility.update(self.context, add=add, remove=remove)

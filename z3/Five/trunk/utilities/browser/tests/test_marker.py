@@ -37,12 +37,11 @@ def test_editview():
 
     Create an EditView:
 
-      >>> req = {}
-      >>> view = EditView(obj, req)
+      >>> view = EditView(obj, {})
       >>> view.context.aq_inner is obj
       True
-      >>> view.request is req
-      True
+      >>> view.request
+      {}
       >>> view.getAvailableInterfaceNames()
       []
       >>> view.getDirectlyProvidedNames()
@@ -52,8 +51,7 @@ def test_editview():
 
     Try to add a marker interface that doesn't exist:
 
-      >>> view.request = {'add': ('__builtin__.IFooMarker',)}
-      >>> view.processForm()
+      >>> view.update(('__builtin__.IFooMarker',), ())
       Traceback (most recent call last):
       ...
       ComponentLookupError...
@@ -71,8 +69,7 @@ def test_editview():
 
     And try again to add it to the object:
 
-      >>> view.request = {'add': ('__builtin__.IFooMarker',)}
-      >>> view.processForm()
+      >>> view.update(('__builtin__.IFooMarker',), ())
       >>> view.getAvailableInterfaceNames()
       []
       >>> view.getDirectlyProvidedNames()
@@ -80,8 +77,7 @@ def test_editview():
 
     And remove it again:
 
-      >>> view.request = {'remove': ('__builtin__.IFooMarker',)}
-      >>> view.processForm()
+      >>> view.update((), ('__builtin__.IFooMarker',))
       >>> view.getAvailableInterfaceNames()
       [...IFooMarker...]
       >>> view.getDirectlyProvidedNames()
