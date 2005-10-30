@@ -179,9 +179,11 @@ class EditWizardView(EditView):
         return not changed
 
     def renderHidden(self):
-        ''' Render state as hidden fields. Also render hidden fields to
-            propagate self.storage if we are not using the session to do this.
-        '''
+        """Render state as hidden fields.
+
+        Also render hidden fields to propagate self.storage if we are not
+        using the session to do this.
+        """
         olist = []
         out = olist.append
 

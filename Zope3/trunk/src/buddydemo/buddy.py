@@ -1,3 +1,5 @@
+__docformat__ = 'restructuredtext'
+
 import persistent
 import zope.interface
 from buddydemo.interfaces import IBuddy
@@ -22,13 +24,12 @@ class Buddy(persistent.Persistent):
     def name(self):
         return "%s %s" % (self.first, self.last)
 
+
 from zope.app.container.btree import BTreeContainer
 from buddydemo.interfaces import IBuddyFolder
 
 class BuddyFolder(BTreeContainer):
     zope.interface.implements(IBuddyFolder)
-
-
 
 
 class BuddyCityState:
@@ -78,4 +79,3 @@ class BuddyCityState:
             self.city, self.state = '', ''
         else:
             self.city, self.state = info.city, info.state
-        

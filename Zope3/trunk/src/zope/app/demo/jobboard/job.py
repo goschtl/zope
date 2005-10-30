@@ -23,7 +23,7 @@ from zope.interface import implements
 
 
 class Job(Persistent):
-    """ Job Class
+    """Job Class
 
     >>> myJob = Job(submitter='my name', summary='my summary',
     ...             description='my description',contact='my contact',
@@ -36,10 +36,8 @@ class Job(Persistent):
     >>> myJob.state
     'approved'
     """
-    
     implements(IJob)
-   
-        
+
     def __init__(self, submitter, summary, description,
                  contact, salary=None, startdate=None):
         self.submitter = submitter
@@ -63,7 +61,7 @@ class Job(Persistent):
 from persistent.dict import PersistentDict
 
 class JobList(Persistent):
-    """ the Joblist class manages the creation, deletion of job list and
+    """The Joblist class manages the creation, deletion of job list and
     can display the object ids which are in specific states
 
     >>> from job import Job
@@ -90,7 +88,6 @@ class JobList(Persistent):
     ['1']
     """
     implements(IJobList)
-
 
     def __init__(self):
         self._lastid = 0
@@ -131,8 +128,7 @@ class JobList(Persistent):
 
     def getPendingIds(self):
         return self.query(JobState.PendingApproval)
-        
-        
+
     def allIds(self):
         return  self._jobs.items()
         #ids.sort()

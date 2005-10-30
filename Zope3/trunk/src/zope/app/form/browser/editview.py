@@ -65,7 +65,7 @@ class EditView(BrowserView):
 
     def _setUpWidgets(self):
         self.adapted = self.schema(self.context)
-        setUpEditWidgets(self, self.schema, source=self.adapted, 
+        setUpEditWidgets(self, self.schema, source=self.adapted,
                          names=self.fieldNames)
 
     def setPrefix(self, prefix):

@@ -1,8 +1,8 @@
-<zope:configure 
+<zope:configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
-  <page 
+  <page
       for="zope.interface.common.interfaces.IException"
       name="index.html"
       template="systemerror.pt"
@@ -15,7 +15,7 @@
       name="index.html"
       permission="zope.Public"
       template="unauthorized.pt"
-      class=".unauthorized.Unauthorized" 
+      class=".unauthorized.Unauthorized"
       />
 
   <page
@@ -23,7 +23,7 @@
       name="index.html"
       permission="zope.Public"
       template="user.pt"
-      class=".user.UserErrorView" 
+      class=".user.UserErrorView"
       />
 
   <page

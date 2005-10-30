@@ -73,23 +73,23 @@ class IWriteTranslationDomain(Interface):
 
 class ISyncTranslationDomain(Interface):
     """This interface allows translation domains to be synchronized. The
-       following four synchronization states can exist::
+    following four synchronization states can exist:
 
-       0 - uptodate: The two messages are in sync.
-                Default Action: Do nothing.
+    0 - uptodate: The two messages are in sync.
+             Default Action: Do nothing.
 
-       1 - new: The message exists on the foreign TS, but is locally unknown.
-                Default Action: Add the message to the local catalog.
+    1 - new: The message exists on the foreign TS, but is locally unknown.
+             Default Action: Add the message to the local catalog.
 
-       2 - older: The local version of the message is older than the one on
-                the server.
-                Default Action: Update the local message.
+    2 - older: The local version of the message is older than the one on
+             the server.
+             Default Action: Update the local message.
 
-       3 - newer: The local version is newer than the foreign version.
-                Default Action: Do nothing.
+    3 - newer: The local version is newer than the foreign version.
+             Default Action: Do nothing.
 
-       4 - deleted: The message does not exist in the foreign TS.
-                Default Action: Delete local version of message/
+    4 - deleted: The message does not exist in the foreign TS.
+             Default Action: Delete local version of message.
     """
 
     def getMessagesMapping(languages, foreign_messages):

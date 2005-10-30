@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import re
 from persistent import Persistent
 from zope.app import zapi
@@ -49,8 +51,8 @@ class IPythonPage(Interface):
     def __call__(request, **kw):
         """Execute the script.
 
-        The script will insert the 'request' and all '**kw' as global
-        variables. Furthermore, the variables 'script' and 'context' (which is
+        The script will insert the `request` and all `**kw` as global
+        variables. Furthermore, the variables `script` and `context` (which is
         the container of the script) will be added.
         """
 
@@ -58,7 +60,7 @@ class IPythonPage(Interface):
 class PythonPage(Contained, Persistent):
     r"""Persistent Python Page - Content Type
 
-    Examples::
+    Examples:
 
       >>> from tests import Root
 
@@ -183,7 +185,7 @@ class PythonPage(Contained, Persistent):
         # compile() don't accept '\r' altogether
         source = source.replace("\r\n", "\n")
         source = source.replace("\r", "\n")
-        
+
         if isinstance(source, unicode):
 
             # Use special conversion function to work around
@@ -226,6 +228,3 @@ def _print_usrc(match):
     if raw:
         return match.group(1)+'print '+`string`
     return match.group(1)+'print u'+match.group(3).encode('unicode-escape')
-
-    
-    

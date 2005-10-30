@@ -1,18 +1,19 @@
+===================================================
 Internationalization (I18n) and Localization (L10n)
-=====================================================
+===================================================
 
 Creating/Updating Message Catalog Template (POT) Files
 ------------------------------------------------------
 
-1. Install 'zwiki' in 'ZOPE3/src'. See INSTALL.txt for details.
+1. Install `zwiki` in `ZOPE3/src`. See `INSTALL.txt` for details.
 
 2. Set the the Python path::
 
     export PYTHONPATH=ZOPE3/src
 
-3. Go into the 'locales' directory and execute i18nextract.py::
+3. Go into the `locales` directory and execute `i18nextract.py`::
 
-  python2.4 utilities/i18nextract.py -d zwiki -p ..
+    python2.4 utilities/i18nextract.py -d zwiki -p ..
 
 
 Updating Message Catalog (PO) Files
@@ -29,7 +30,7 @@ Updating Message Catalog (PO) Files
 Compiling Message Catalogs (PO) to binary (MO) Files
 ----------------------------------------------------
 
-1. Go to the right directory, such as '<zwiki>/locales/de/LC_MESSAGES'.
+1. Go to the right directory, such as `<zwiki>/locales/de/LC_MESSAGES`.
 
 2. Run the following command::
 

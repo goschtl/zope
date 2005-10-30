@@ -44,8 +44,7 @@ class IUserSchemafied(IPrincipal):
 
 
 class IPrincipalSource(Interface):
-    """A read-only source of `IPrincipals`.
-    """
+    """A read-only source of `IPrincipals`."""
 
     def getPrincipal(id):
         """Get principal meta-data.
@@ -81,7 +80,7 @@ class IPluggableAuthentication(IAuthentication, IContainer):
     def __setitem__(id, principal_source):
         """Add to object"""
     __setitem__.precondition = ItemTypePrecondition(IPrincipalSource)
-  
+
     def removePrincipalSource(id):
         """Remove a `PrincipalSource`.
 
@@ -90,11 +89,11 @@ class IPluggableAuthentication(IAuthentication, IContainer):
 
 
 class ILoginPasswordPrincipalSource(IPrincipalSource):
-    """ A principal source which can authenticate a user given a
+    """A principal source which can authenticate a user given a
     login and a password """
 
     def authenticate(login, password):
-        """ Return a principal matching the login/password pair.
+        """Return a principal matching the login/password pair.
 
         If there is no principal in this principal source which
         matches the login/password pair, return ``None``.
@@ -109,7 +108,7 @@ class ILoginPasswordPrincipalSource(IPrincipalSource):
 class IContainerPrincipalSource(IContainer):
     """This is a marker interface for specifying principal sources that are
     also containers. """
-    
+
 
 class IContainedPrincipalSource(IPrincipalSource, IContained):
     """This is a marker interface for principal sources that can be directly

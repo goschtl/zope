@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Schemas for the ``help`` ZCML namespace 
+"""Schemas for the ``help`` ZCML namespace
 
 $Id$
 """
@@ -64,13 +64,14 @@ class IOnlineHelpTopicDirective(Interface):
 
     class_ = GlobalObject(
         title=u"Factory",
-        description=u"The factory is the topic class used for initializeing the topic",
+        description=u"""
+        The factory is the topic class used for initializeing the topic""",
         required=False,
         )
 
     resources = Tokens(
         title=u"A list of resources.",
-        description=u"""\
+        description=u"""
         A list of resources which shall be user for the Help Topic.
         The resources must be located in the same directory as
         the Help Topic definition.

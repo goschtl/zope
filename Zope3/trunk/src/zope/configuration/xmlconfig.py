@@ -20,6 +20,7 @@ test_includeOverrides in tests/text_xmlconfig.py
 $Id$
 """
 __docformat__ = 'restructuredtext'
+
 import errno
 import os
 import sys
@@ -420,7 +421,7 @@ class IInclude(Interface):
 
     files = schema.BytesLine(
         title=u"Configuration file name pattern",
-        description=u"""\
+        description=u"""
         The names of multiple configuration files to be included,
         expressed as a file-name pattern, relative to the directive
         containing the including configuration file.  The pattern can
@@ -442,9 +443,9 @@ class IInclude(Interface):
 
     package = config.fields.GlobalObject(
         title=u"Include package",
-        description=u"""\
-        Include the named file (or configure.zcml)
-        from the directory of this package.
+        description=u"""
+        Include the named file (or configure.zcml) from the directory of this
+        package.
         """,
         required=False,
         )

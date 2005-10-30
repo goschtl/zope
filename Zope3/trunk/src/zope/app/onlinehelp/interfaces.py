@@ -24,14 +24,14 @@ from zope.configuration.fields import GlobalInterface
 from zope.app.container.interfaces import IContainer
 from zope.app.publication.interfaces import IFileContent
 from zope.app.file.interfaces import IFile
-from zope.app.i18n import ZopeMessageFactory as _ 
+from zope.app.i18n import ZopeMessageFactory as _
 
 class IOnlineHelpTopic(IContainer):
     """A Topic is a single help page that you can view. Topics are able to
     contain other Topics and so on.
 
     You can also associate a Topic with a particular view.
-    
+
     The Topic's content can be in the following four formats:
      - Plain Text,
      - HTML,
@@ -40,13 +40,13 @@ class IOnlineHelpTopic(IContainer):
 
     The Content is stored in a file and not the Topic itself.
     The file is only read when required.
-    
+
     Note that all the Sub-Topic management is done via the utility service.
     The topic itself is stored in the IContainer implementation after add
-    the right parent topic of a child. This mechanism ensures that we don't 
-    have to take care on the registration order. 
-    The topic resources are stroed in the `IContainer` implementation of 
-    the topic too. 
+    the right parent topic of a child. This mechanism ensures that we don't
+    have to take care on the registration order.
+    The topic resources are stroed in the `IContainer` implementation of
+    the topic too.
     """
 
     id = TextLine(
@@ -87,13 +87,15 @@ class IOnlineHelpTopic(IContainer):
         required = True)
 
     def addResources(resources):
-        """ Add resources to this Help Topic.
+        """Add resources to this Help Topic.
+
         The resources must be located in the same directory
-        as the Help Topic itself."""
+        as the Help Topic itself.
+        """
 
     def getTopicPath():
-        """ return the presumed path to the topic, even the topic is not
-        traversable from the onlinehelp. """
+        """Return the presumed path to the topic, even the topic is not
+        traversable from the onlinehelp."""
 
     def getSubTopics():
         """Returns IOnlineHelpTopic provided childs."""
@@ -131,36 +133,37 @@ class IZPTOnlineHelpTopic(IOnlineHelpTopic):
 
 class IOnlineHelp(ISourceTextOnlineHelpTopic):
     """The root of an onlinehelp hierarchy.
+
     Manages the registration of new topics.
     """
 
-    def registerHelpTopic(parent_path, id, title, doc_path,  
+    def registerHelpTopic(parent_path, id, title, doc_path,
                           interface=None, view=None, resources=None):
         """This method registers a topic at the correct place.
 
-           `parent_path` -- Location of this topic's parent in the OnlineHelp
-           tree. Need not to exist at time of creation. 
+        `parent_path` -- Location of this topic's parent in the OnlineHelp
+        tree. Need not to exist at time of creation.
 
-           `id` -- Specifies the id of the topic 
+        `id` -- Specifies the id of the topic
 
-           `title` -- Specifies title of the topic. This title will be used in
-           the tree as Identification.
+        `title` -- Specifies title of the topic. This title will be used in
+        the tree as Identification.
 
-           `doc_path` -- Specifies where the file that contains the topic
-           content is located.
+        `doc_path` -- Specifies where the file that contains the topic content
+        is located.
 
-           `interface` -- Name of the interface for which the help topic is
-           being registered. This can be optional, since not all topics must
-           be bound to a particular interface.
+        `interface` -- Name of the interface for which the help topic is being
+        registered. This can be optional, since not all topics must be bound
+        to a particular interface.
 
-           `view` -- This attribute specifies the name of the view for which
-           this topic is registered. Note that this attribute is also
-           optional.
+        `view` -- This attribute specifies the name of the view for which this
+        topic is registered. Note that this attribute is also optional.
 
-           `resources` -- Specifies a list of resources for the topic,
-           for example images that are included by the rendered topic content.
-           Optional.
+        `resources` -- Specifies a list of resources for the topic, for
+        example images that are included by the rendered topic content.
+        Optional.
         """
+
 
 class IOnlineHelpResource(IFile, IFileContent):
     """A resource, which can be used in a help topic """

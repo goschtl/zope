@@ -199,7 +199,7 @@ class IDBICursor(Interface):
         """
 
     def fetchall():
-        """ Fetch all (remaining) rows of a query result, returning them as a
+        """Fetch all (remaining) rows of a query result, returning them as a
         sequence of sequences (e.g. a list of tuples). Note that the cursor's
         arraysize attribute can affect the performance of this operation.
 

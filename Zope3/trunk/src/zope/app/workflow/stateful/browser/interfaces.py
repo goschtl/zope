@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 from zope.interface import Interface
 
 class IContentFilterAdapter(Interface):
@@ -22,10 +23,18 @@ class IContentFilterAdapter(Interface):
     def filterListByState(objList, state, workflow='default'):
         """Filter a list of objects according to given workflow and state
 
-        objList  ... list of objects
-        state    ... name of a state (of the given workflow) in which the result
-                      objects must be
-        workflow ... name of a workflow to which result objects must be attached
+        ``objList``
+
+          list of objects
+
+        ``state``
+
+          name of a state (of the given workflow) in which the result objects
+          must be
+
+        ``workflow``
+
+          name of a workflow to which result objects must be attached
         """
 
     def filterObjectByState(object, state, workflow='default'):

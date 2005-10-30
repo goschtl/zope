@@ -30,32 +30,36 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 class ObjectWidgetView:
 
     template = ViewPageTemplateFile('objectwidget.pt')
-    
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        
+
     def __call__(self):
         return self.template()
-    
-    
+
+
 class ObjectWidget(BrowserWidget, InputWidget):
     """A widget over an Interface that contains Fields.
 
-    "factory"  - factory used to create content that this widget (field)
-                 represents
-    *_widget   - Optional CustomWidgets used to generate widgets for the
-                 fields in this widget
+    ``factory``
+
+      factory used to create content that this widget (field) represents
+
+    ``*_widget``
+
+      Optional CustomWidgets used to generate widgets for the fields in this
+      widget
     """
 
     implements(IInputWidget)
-    
+
     _object = None      # the object value (from setRenderedValue & request)
     _request_parsed = False
 
     def __init__(self, context, request, factory, **kw):
         super(ObjectWidget, self).__init__(context, request)
-        
+
         # define view that renders the widget
         self.view = ObjectWidgetView(self, request)
 
@@ -79,18 +83,18 @@ class ObjectWidget(BrowserWidget, InputWidget):
     def _setUpEditWidgets(self):
         # subwidgets need a new name
         setUpWidgets(self, self.context.schema, IInputWidget,
-                         prefix=self.name, names=self.names, 
+                         prefix=self.name, names=self.names,
                          context=self.context)
 
     def __call__(self):
         return self.view()
-        
+
     def legendTitle(self):
         return self.context.title or self.context.__name__
 
     def getSubWidget(self, name):
         return getattr(self, '%s_widget' % name)
-            
+
     def subwidgets(self):
         return [self.getSubWidget(name) for name in self.names]
 
@@ -134,7 +138,7 @@ class ObjectWidget(BrowserWidget, InputWidget):
             field.set(content, value)
         # TODO: If value implements ILocation, set name to field name and
         # parent to content
-        
+
         return changes
 
     def hasInput(self):
@@ -157,5 +161,3 @@ class ObjectWidget(BrowserWidget, InputWidget):
         self._setUpEditWidgets()
         for name in self.names:
             self.getSubWidget(name).setRenderedValue(getattr(value, name, None))
-            
-

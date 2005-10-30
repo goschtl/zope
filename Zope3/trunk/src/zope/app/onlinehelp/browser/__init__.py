@@ -65,13 +65,13 @@ class ContextHelpView(BrowserView):
         self.topic = None
 
     def getContextualTopicView(self):
-        """ retrieve and render the source of a context help topic """
+        """Retrieve and render the source of a context help topic """
         topic = self.getContextHelpTopic()
         view = zapi.getMultiAdapter((topic, self.request), name='index.html')
         return view.renderTopic()
 
     def getContextHelpTopic(self):
-        """ Retrieve a help topic based on the context of the
+        """Retrieve a help topic based on the context of the
         help namespace.
 
         If the context is a view, try to find
@@ -83,7 +83,6 @@ class ContextHelpView(BrowserView):
         based on the context.
 
         If nothing is found, return the onlinehelp root topic
-
         """
         if self.topic is not None:
             return self.topic

@@ -18,6 +18,8 @@ additional features.
 
 $Id$
 """
+__docformat__ = "reStructuredText"
+
 from zope.proxy import getProxiedObject, ProxyBase
 from zope.security.checker import selectChecker, CombinedChecker
 from zope.security.proxy import Proxy, getChecker
@@ -93,18 +95,19 @@ class DecoratedSecurityCheckerDescriptor(object):
       ...     b = 'b'
       ...     __Security_checker__ = DecoratedSecurityCheckerDescriptor()
 
-    Next we'll create and register a checker for Foo:
+    Next we'll create and register a checker for `Foo`:
 
       >>> from zope.security.checker import NamesChecker, defineChecker
       >>> fooChecker = NamesChecker(['a'])
       >>> defineChecker(Foo, fooChecker)
 
-    along with a checker for Wrapper:
+    along with a checker for `Wrapper`:
 
       >>> wrapperChecker = NamesChecker(['b'])
       >>> defineChecker(Wrapper, wrapperChecker)
 
-    Using selectChecker, we can confirm that a Foo object uses fooChecker:
+    Using `selectChecker()`, we can confirm that a `Foo` object uses
+    `fooChecker`:
 
       >>> foo = Foo()
       >>> selectChecker(foo) is fooChecker
@@ -114,7 +117,7 @@ class DecoratedSecurityCheckerDescriptor(object):
       Traceback (most recent call last):
       ForbiddenAttribute: ('b', <zope.app.decorator.Foo object ...>)
 
-    and that a Wrapper object uses wrappeChecker:
+    and that a `Wrapper` object uses `wrappeChecker`:
 
       >>> wrapper = Wrapper(foo)
       >>> selectChecker(wrapper) is wrapperChecker
@@ -124,10 +127,10 @@ class DecoratedSecurityCheckerDescriptor(object):
       Traceback (most recent call last):
       ForbiddenAttribute: ('a', <zope.app.decorator.Foo object ...>)
 
-    (Note that the object description says 'Foo' because the object is a
+    (Note that the object description says `Foo` because the object is a
     proxy and generally looks and acts like the object it's proxying.)
 
-    When we access wrapper's __Security_checker__ attribute, we invoke
+    When we access wrapper's ``__Security_checker__`` attribute, we invoke
     the decorated security checker descriptor. The decorator's job is to make
     sure checkers from both objects are used when available. In this case,
     because both objects have checkers, we get a combined checker:
@@ -139,7 +142,7 @@ class DecoratedSecurityCheckerDescriptor(object):
       >>> checker.check(wrapper, 'b')
 
     The decorator checker will work even with security proxied objects. To
-    illustrate, we'll proxify foo:
+    illustrate, we'll proxify `foo`:
 
       >>> from zope.security.proxy import ProxyFactory
       >>> secure_foo = ProxyFactory(foo)
@@ -149,7 +152,7 @@ class DecoratedSecurityCheckerDescriptor(object):
       Traceback (most recent call last):
       ForbiddenAttribute: ('b', <zope.app.decorator.Foo object ...>)
 
-    when we wrap the secured foo:
+    when we wrap the secured `foo`:
 
       >>> wrapper = Wrapper(secure_foo)
 
@@ -235,8 +238,7 @@ class DecoratedSecurityCheckerDescriptor(object):
 
 
 class Decorator(ProxyBase):
-    """Decorator base class
-    """
+    """Decorator base class"""
 
     __providedBy__ = DecoratorSpecificationDescriptor()
     __Security_checker__ = DecoratedSecurityCheckerDescriptor()

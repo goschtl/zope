@@ -29,13 +29,13 @@ class IElement(Interface):
     __doc__  = Attribute('__doc__', 'The object doc string')
 
     def getTaggedValue(tag):
-        """Returns the value associated with 'tag'.
+        """Returns the value associated with `tag`.
 
-        Raise a KeyError of the tag isn't set
+        Raise a `KeyError` of the tag isn't set.
         """
 
     def queryTaggedValue(tag, default=None):
-        """Returns the value associated with 'tag'.
+        """Returns the value associated with `tag`.
 
         Return the default value of the tag isn't set.
         """
@@ -44,7 +44,7 @@ class IElement(Interface):
         """Returns a list of all tags."""
 
     def setTaggedValue(tag, value):
-        """Associates 'value' with 'key'."""
+        """Associates `value` with `key`."""
 
 
 class IAttribute(IElement):
@@ -56,8 +56,7 @@ class IAttribute(IElement):
 
 
 class IMethod(IAttribute):
-    """Method attributes
-    """
+    """Method attributes"""
 
     def getSignatureInfo():
         """Returns the signature information.
@@ -70,7 +69,7 @@ class IMethod(IAttribute):
 
         o `optional` - A list of all optional arguments.
 
-        o `varargs' - The name of the varargs argument.
+        o `varargs` - The name of the varargs argument.
 
         o `kwargs` - The name of the kwargs argument.
         """
@@ -84,8 +83,7 @@ class IMethod(IAttribute):
         """
 
 class ISpecification(Interface):
-    """Object Behavioral specifications
-    """
+    """Object Behavioral specifications"""
 
     def extends(other, strict=True):
         """Test whether a specification extends another
@@ -94,7 +92,6 @@ class ISpecification(Interface):
         interface or if one of it's bases extends other.
 
         If strict is false, then the specification extends itself.
-        
         """
 
     def isOrExtends(other):
@@ -133,7 +130,7 @@ class ISpecification(Interface):
         returned.
         """
 
-        
+
 class IInterface(ISpecification, IElement):
     """Interface objects
 
@@ -151,10 +148,10 @@ class IInterface(ISpecification, IElement):
 
       o Descriptions of methods.  Method descriptions can include:
 
-        o Prose "doc string" documentation about the method and its
+        - Prose "doc string" documentation about the method and its
           usage.
 
-        o A description of the methods arguments; how many arguments
+        - A description of the methods arguments; how many arguments
           are expected, optional arguments and their default values,
           the position or arguments in the signature, whether the
           method accepts arbitrary arguments and whether the method
@@ -179,29 +176,25 @@ class IInterface(ISpecification, IElement):
       from zope.interface import Interface
 
       class IMyInterface(Interface):
-        '''Interface documentation
-        '''
+        '''Interface documentation'''
 
         def meth(arg1, arg2):
-            '''Documentation for meth
-            '''
+            '''Documentation for meth'''
 
         # Note that there is no self argument
 
      class IMySubInterface(IMyInterface):
-        '''Interface documentation
-        '''
+        '''Interface documentation'''
 
         def meth2():
-            '''Documentation for meth2
-            '''
+            '''Documentation for meth2'''
 
     You use interfaces in two ways:
 
     o You assert that your object implement the interfaces.
 
       There are several ways that you can assert that an object
-      implements an interface::
+      implements an interface:
 
       1. Call zope.interface.implements in your class definition.
 
@@ -276,7 +269,7 @@ class IInterface(ISpecification, IElement):
 
         If the interface doesn't define the name, returns None.
         """
-    
+
     def validateInvariants(obj, errors=None):
         """Validate invariants
 
@@ -302,7 +295,6 @@ class IDeclaration(ISpecification):
 
     Declarations are used to express the interfaces implemented by
     classes or provided by objects.
-    
     """
 
     def __contains__(interface):
@@ -423,7 +415,6 @@ class IInterfaceDeclaration(Interface):
 
         A callable is returned that makes an implements declaration on
         objects passed to it.
-        
         """
 
     def classImplementsOnly(class_, *interfaces):
@@ -634,8 +625,7 @@ class IAdapterRegistry(Interface):
     No specific semantics are assumed for the registered objects,
     however, the most common application will be to register factories
     that adapt objects providing required specifications to a provided
-    interface. 
-    
+    interface.
     """
 
     def register(required, provided, name, value):
@@ -678,4 +668,3 @@ class IAdapterRegistry(Interface):
         Subscribers for a *sequence* of required interfaces, and a provided
         interface are returned.
         """
-    

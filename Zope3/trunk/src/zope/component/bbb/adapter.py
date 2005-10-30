@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = "reStructuredText"
+
 import sys
 import warnings
 from types import ClassType
@@ -33,7 +35,7 @@ class IGlobalAdapterService(IAdapterService, IRegistry):
 
         :Parameters:
           - `required`: a sequence of specifications for objects to be
-             adapted. 
+             adapted.
           - `provided`: The interface provided by the adapter
           - `name`: The adapter name
           - `factory`: The object used to compute the adapter
@@ -45,7 +47,7 @@ class IGlobalAdapterService(IAdapterService, IRegistry):
 
         :Parameters:
           - `required`: a sequence of specifications for objects to be
-             adapted. 
+             adapted.
           - `provided`: The interface provided by the adapter
           - `name`: The adapter name
           - `factory`: The object used to compute the subscriber
@@ -54,7 +56,7 @@ class IGlobalAdapterService(IAdapterService, IRegistry):
 
 class AdapterService(object):
     """Base implementation of an adapter service, implementing only the
-    'IAdapterService' interface.
+    `IAdapterService` interface.
 
     No write-methods were implemented.
     """

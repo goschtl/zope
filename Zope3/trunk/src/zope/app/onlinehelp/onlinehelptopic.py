@@ -50,7 +50,6 @@ class OnlineHelpResource(Persistent):
     >>> resource._fileMode
     'rb'
 
-    
     >>> path = os.path.join(testdir(), 'help2.txt')
 
     >>> resource = OnlineHelpResource(path)
@@ -58,7 +57,6 @@ class OnlineHelpResource(Persistent):
     'text/plain'
     >>> resource._fileMode
     'r'
-    
     """
     implements(IOnlineHelpResource)
 
@@ -89,34 +87,35 @@ class OnlineHelpResource(Persistent):
 
 
 class BaseOnlineHelpTopic(SampleContainer):
-    """
-    Base class for custom Help Topic implementations.
-    
-    >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
-    >>> path = os.path.join(testdir(), 'help.txt')
+    """Base class for custom Help Topic implementations.
+
+      >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
+      >>> path = os.path.join(testdir(), 'help.txt')
 
     Create a Help Topic from a file
-    
-    >>> topic = BaseOnlineHelpTopic('help','Help',path,'')
+
+      >>> topic = BaseOnlineHelpTopic('help','Help',path,'')
 
     Test the title
-    
-    >>> topic.title
-    'Help'
+
+      >>> topic.title
+      'Help'
 
     Test the topic path
-    >>> topic.getTopicPath()
-    'help'
-    >>> topic.parentPath = 'parent'
-    >>> topic.getTopicPath()
-    'parent/help'
+
+      >>> topic.getTopicPath()
+      'help'
+      >>> topic.parentPath = 'parent'
+      >>> topic.getTopicPath()
+      'parent/help'
 
     Resources can be added to an online help topic.
-    >>> topic.addResources(['test1.png', 'test2.png'])
-    >>> topic['test1.png'].contentType
-    'image/png'
-    >>> topic['test2.png'].contentType
-    'image/png'
+
+      >>> topic.addResources(['test1.png', 'test2.png'])
+      >>> topic['test1.png'].contentType
+      'image/png'
+      >>> topic['test2.png'].contentType
+      'image/png'
     """
 
     id = u""
@@ -125,7 +124,7 @@ class BaseOnlineHelpTopic(SampleContainer):
     parentPath = u""
     interface = None
     view = None
-    
+
     def __init__(self, id, title, path, parentPath, interface=None, view=None):
         """Initialize object."""
         self.id = id
@@ -151,7 +150,7 @@ class BaseOnlineHelpTopic(SampleContainer):
                 self[resource] = OnlineHelpResource(resource_path)
 
     def getTopicPath(self):
-        """ see IOnlineHelpTopic """
+        """See IOnlineHelpTopic"""
         if self.parentPath:
             return self.parentPath+'/'+self.id
         else:
@@ -162,7 +161,7 @@ class BaseOnlineHelpTopic(SampleContainer):
         for item in self.values():
             if IOnlineHelpTopic.providedBy(item):
                 res.append(item)
-        
+
         return res
 
 
@@ -181,75 +180,81 @@ class OnlineHelpTopic(SourceTextOnlineHelpTopic, SampleContainer):
     """
     Represents a Help Topic. This generic implementation uses the filename
     extension for guess the type. This topic implementation supports plain
-    text topics, restructured and structured text topics. HTML topics get 
-    rendered as structured text. If a file doesn't have the right file 
+    text topics, restructured and structured text topics. HTML topics get
+    rendered as structured text. If a file doesn't have the right file
     extension, use a explicit topic class for representing the right format.
-    
-    >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
-    >>> path = os.path.join(testdir(), 'help.txt')
+
+      >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
+      >>> path = os.path.join(testdir(), 'help.txt')
 
     Create a Help Topic from a file
-    
-    >>> topic = OnlineHelpTopic('help','Help',path,'')
+
+      >>> topic = OnlineHelpTopic('help','Help',path,'')
 
     Test the title
-    
-    >>> topic.title
-    'Help'
+
+      >>> topic.title
+      'Help'
 
     Test the topic path
-    >>> topic.getTopicPath()
-    'help'
-    >>> topic.parentPath = 'parent'
-    >>> topic.getTopicPath()
-    'parent/help'
+
+      >>> topic.getTopicPath()
+      'help'
+      >>> topic.parentPath = 'parent'
+      >>> topic.getTopicPath()
+      'parent/help'
 
     The type should be set to plaintext, since
     the file extension is 'txt'
-    
-    >>> topic.type
-    'zope.source.plaintext'
+
+      >>> topic.type
+      'zope.source.plaintext'
 
     Test the help content.
 
-    >>> topic.source
-    'This is a help!'
+      >>> topic.source
+      'This is a help!'
 
-    >>> path = os.path.join(testdir(), 'help.stx')
-    >>> topic = OnlineHelpTopic('help','Help',path,'')
+      >>> path = os.path.join(testdir(), 'help.stx')
+      >>> topic = OnlineHelpTopic('help','Help',path,'')
 
     The type should now be structured text
-    >>> topic.type
-    'zope.source.stx'
+
+      >>> topic.type
+      'zope.source.stx'
 
     HTML files are treated as structured text files
-    >>> path = os.path.join(testdir(), 'help.html')
-    >>> topic = OnlineHelpTopic('help','Help',path,'')
+
+      >>> path = os.path.join(testdir(), 'help.html')
+      >>> topic = OnlineHelpTopic('help','Help',path,'')
 
     The type should still be structured text
-    >>> topic.type
-    'zope.source.stx'
 
-    >>> path = os.path.join(testdir(), 'help.rst')
-    >>> topic = OnlineHelpTopic('help','Help',path,'')
+      >>> topic.type
+      'zope.source.stx'
+
+      >>> path = os.path.join(testdir(), 'help.rst')
+      >>> topic = OnlineHelpTopic('help','Help',path,'')
 
     The type should now be restructured text
-    >>> topic.type
-    'zope.source.rest'
+
+      >>> topic.type
+      'zope.source.rest'
 
     Resources can be added to an online help topic.
-    >>> topic.addResources(['test1.png', 'test2.png'])
-    >>> topic['test1.png'].contentType
-    'image/png'
-    >>> topic['test2.png'].contentType
-    'image/png'
+
+      >>> topic.addResources(['test1.png', 'test2.png'])
+      >>> topic['test1.png'].contentType
+      'image/png'
+      >>> topic['test2.png'].contentType
+      'image/png'
     """
 
     implements(ISourceTextOnlineHelpTopic)
 
     def __init__(self, id, title, path, parentPath, interface=None, view=None):
         """Initialize object."""
-        super(OnlineHelpTopic, self).__init__(id, title, path, parentPath, 
+        super(OnlineHelpTopic, self).__init__(id, title, path, parentPath,
               interface, view)
 
         filename = os.path.basename(path.lower())
@@ -267,163 +272,168 @@ class OnlineHelpTopic(SourceTextOnlineHelpTopic, SampleContainer):
 
 class RESTOnlineHelpTopic(SourceTextOnlineHelpTopic):
     """
-    Represents a restructed text based Help Topic which has other 
+    Represents a restructed text based Help Topic which has other
     filename extension then '.rst' or 'rest'.
-    
-    >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
-    >>> path = os.path.join(testdir(), 'help.rst')
+
+      >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
+      >>> path = os.path.join(testdir(), 'help.rst')
 
     Create a Help Topic from a file
-    
-    >>> topic = RESTOnlineHelpTopic('help','Help',path,'')
+
+      >>> topic = RESTOnlineHelpTopic('help','Help',path,'')
 
     Test the title
-    
-    >>> topic.title
-    'Help'
+
+      >>> topic.title
+      'Help'
 
     Test the topic path
-    >>> topic.getTopicPath()
-    'help'
-    >>> topic.parentPath = 'parent'
-    >>> topic.getTopicPath()
-    'parent/help'
+
+      >>> topic.getTopicPath()
+      'help'
+      >>> topic.parentPath = 'parent'
+      >>> topic.getTopicPath()
+      'parent/help'
 
     The type should be set to rest, since the file extension is 'rest'
-    
-    >>> topic.type
-    'zope.source.rest'
+
+      >>> topic.type
+      'zope.source.rest'
 
     Test the help content.
 
-    >>> topic.source
-    'This is a ReST help!'
+      >>> topic.source
+      'This is a ReST help!'
 
     Resources can be added to an online help topic.
-    >>> topic.addResources(['test1.png', 'test2.png'])
-    >>> topic['test1.png'].contentType
-    'image/png'
-    >>> topic['test2.png'].contentType
-    'image/png'
+
+      >>> topic.addResources(['test1.png', 'test2.png'])
+      >>> topic['test1.png'].contentType
+      'image/png'
+      >>> topic['test2.png'].contentType
+      'image/png'
     """
 
     implements(IRESTOnlineHelpTopic)
 
     type = 'zope.source.rest'
-    
+
     def __init__(self, id, title, path, parentPath, interface=None, view=None):
         """Initialize object."""
-        super(RESTOnlineHelpTopic, self).__init__(id, title, path, parentPath, 
+        super(RESTOnlineHelpTopic, self).__init__(id, title, path, parentPath,
               interface, view)
 
 
 class STXOnlineHelpTopic(SourceTextOnlineHelpTopic):
     """
-    Represents a restructed text based Help Topic which has other 
+    Represents a restructed text based Help Topic which has other
     filename extension then '.stx'.
-    
-    >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
-    >>> path = os.path.join(testdir(), 'help.stx')
+
+      >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
+      >>> path = os.path.join(testdir(), 'help.stx')
 
     Create a Help Topic from a file
-    
-    >>> topic = STXOnlineHelpTopic('help','Help',path,'')
+
+      >>> topic = STXOnlineHelpTopic('help','Help',path,'')
 
     Test the title
-    
-    >>> topic.title
-    'Help'
+
+      >>> topic.title
+      'Help'
 
     Test the topic path
-    >>> topic.getTopicPath()
-    'help'
-    >>> topic.parentPath = 'parent'
-    >>> topic.getTopicPath()
-    'parent/help'
+
+      >>> topic.getTopicPath()
+      'help'
+      >>> topic.parentPath = 'parent'
+      >>> topic.getTopicPath()
+      'parent/help'
 
     The type should be set to stx, since the file extension is 'stx'
-    
-    >>> topic.type
-    'zope.source.stx'
+
+      >>> topic.type
+      'zope.source.stx'
 
     Test the help content.
 
-    >>> topic.source
-    'This is a STX help!'
+      >>> topic.source
+      'This is a STX help!'
 
     Resources can be added to an online help topic.
-    >>> topic.addResources(['test1.png', 'test2.png'])
-    >>> topic['test1.png'].contentType
-    'image/png'
-    >>> topic['test2.png'].contentType
-    'image/png'
+
+      >>> topic.addResources(['test1.png', 'test2.png'])
+      >>> topic['test1.png'].contentType
+      'image/png'
+      >>> topic['test2.png'].contentType
+      'image/png'
     """
 
     implements(ISTXOnlineHelpTopic)
-    
+
     type = 'zope.source.stx'
-    
+
     def __init__(self, id, title, path, parentPath, interface=None, view=None):
         """Initialize object."""
-        super(STXOnlineHelpTopic, self).__init__(id, title, path, parentPath, 
+        super(STXOnlineHelpTopic, self).__init__(id, title, path, parentPath,
               interface, view)
 
 
 class ZPTOnlineHelpTopic(BaseOnlineHelpTopic):
     """
-    Represents a page template based Help Topic which has other 
+    Represents a page template based Help Topic which has other
     filename extension then '.pt'.
-    
-    
-    >>> from zope.publisher.browser import TestRequest
-    >>> from zope.app.publisher.browser import BrowserView
-    >>> from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-    >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
-    >>> path = os.path.join(testdir(), 'help.pt')
+
+      >>> from zope.publisher.browser import TestRequest
+      >>> from zope.app.publisher.browser import BrowserView
+      >>> from zope.app.pagetemplate.viewpagetemplatefile import \
+      ...     ViewPageTemplateFile
+      >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
+      >>> path = os.path.join(testdir(), 'help.pt')
 
     Create a page template bsed Help Topic from a file
-    
-    >>> topic = ZPTOnlineHelpTopic('help','Help',path,'')
+
+      >>> topic = ZPTOnlineHelpTopic('help','Help',path,'')
 
     Test the title
-    
-    >>> topic.title
-    'Help'
+
+      >>> topic.title
+      'Help'
 
     Test the topic path
-    >>> topic.getTopicPath()
-    'help'
-    >>> topic.parentPath = 'parent'
-    >>> topic.getTopicPath()
-    'parent/help'
+
+      >>> topic.getTopicPath()
+      'help'
+      >>> topic.parentPath = 'parent'
+      >>> topic.getTopicPath()
+      'parent/help'
 
     Test the help content.
 
-    >>> class TestView(BrowserView):
-    ...     def index(self):
-    ...         path = self.context.path
-    ...         view = ViewPageTemplateFile(path)
-    ...         return view(self)
-    >>> request = TestRequest()
-    >>> view = TestView(topic, request)
-    >>> res = view.index()
-    >>> str(res).find('<body>This is a ZPT help!</body>') > 0
-    True
+      >>> class TestView(BrowserView):
+      ...     def index(self):
+      ...         path = self.context.path
+      ...         view = ViewPageTemplateFile(path)
+      ...         return view(self)
+      >>> request = TestRequest()
+      >>> view = TestView(topic, request)
+      >>> res = view.index()
+      >>> str(res).find('<body>This is a ZPT help!</body>') > 0
+      True
 
     Resources can be added to an online help topic.
 
-    >>> topic.addResources(['test1.png', 'test2.png'])
-    >>> topic['test1.png'].contentType
-    'image/png'
-    >>> topic['test2.png'].contentType
-    'image/png'
+      >>> topic.addResources(['test1.png', 'test2.png'])
+      >>> topic['test1.png'].contentType
+      'image/png'
+      >>> topic['test2.png'].contentType
+      'image/png'
     """
 
     implements(IZPTOnlineHelpTopic)
 
     def __init__(self, id, title, path, parentPath, interface=None, view=None):
         """Initialize object."""
-        super(ZPTOnlineHelpTopic, self).__init__(id, title, path, parentPath, 
+        super(ZPTOnlineHelpTopic, self).__init__(id, title, path, parentPath,
               interface, view)
 
 

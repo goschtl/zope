@@ -27,7 +27,7 @@ from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.event.interfaces import IObjectEvent
 
-from zwiki import ZWikiMessageFactory as _ 
+from zwiki import ZWikiMessageFactory as _
 
 class IComment(Interface):
     """A simple Wiki Page comment.
@@ -80,7 +80,7 @@ class IWikiPage(IContainer):
         default=u"zope.source.rest",
         required = True,
         vocabulary = "SourceTypes")
-        
+
 
 class IWikiPageContained(IContained):
     """Objects that can be contained by Wiki Pages should implement this
@@ -88,7 +88,7 @@ class IWikiPageContained(IContained):
     __parent__ = Field(
         constraint = ContainerTypesConstraint(IWikiPage))
 
-    
+
 class IWikiPageHierarchy(Interface):
     """This interface supports the virtual hierarchical structure of the Wiki
     Pages."""
@@ -122,7 +122,7 @@ class IWikiPageHierarchy(Interface):
         argument set to False, only the first level of children will be
         returned.
         """
-    
+
 class IWiki(IContainer):
     """A simple container that manages Wikis inside itself."""
 
@@ -139,7 +139,7 @@ class IWikiContained(IContained):
 
 
 class IWikiPageEditEvent(IObjectEvent):
-    """ an object event containing the old source in addition
+    """An object event containing the old source in addition
     to the changed object
     """
 
@@ -161,5 +161,3 @@ class IMailSubscriptions(Interface):
 
     def removeSubscriptions(emails):
         """Remove a set of subscriptions."""
-        
-

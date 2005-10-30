@@ -31,7 +31,7 @@ def createHTTPFactory(db):
     resource = twisted.web2.wsgi.WSGIResource(
         wsgi.WSGIPublisherApplication(db))
     resource = twisted.web2.log.LogWrapperResource(resource)
-    
+
     return HTTPFactory(twisted.web2.server.Site(resource))
 
 
@@ -44,7 +44,7 @@ def createPMHTTPFactory(db):
     resource = twisted.web2.wsgi.WSGIResource(
         wsgi.PMDBWSGIPublisherApplication(db))
     resource = twisted.web2.log.LogWrapperResource(resource)
-    
+
     return HTTPFactory(twisted.web2.server.Site(resource))
 
 pmhttp = ServerType(createPMHTTPFactory, 8080)

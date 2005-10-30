@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = "reStructuredText"
 
 from zope.interface import Interface, Attribute
 from zope.schema._bootstrapfields import Container, Iterable
@@ -136,7 +137,7 @@ class IField(Interface):
 
     order = Int(
         title=_(u"Field Order"),
-        description=_(u"""\
+        description=_(u"""
         The order attribute can be used to determine the order in
         which fields in a schema were defined. If one field is created
         after another (in the same thread), its order will be
@@ -184,23 +185,23 @@ class IIterable(IField):
     u"""Fields with a value that can be iterated over.
 
     The value needs to support iteration; the implementation mechanism
-    is not constrained.  (Either __iter__() or __getitem__() may be
+    is not constrained.  (Either `__iter__()` or `__getitem__()` may be
     used.)
     """
 
 class IContainer(IField):
-    u"""Fields whose value allows an 'x in value' check.
+    u"""Fields whose value allows an ``x in value`` check.
 
-    The Value needs to support the 'in' operator, but is not
-    constrained in how it does so (whether it defines __contains__()
-    or __getitem__() is immaterial).
+    The value needs to support the `in` operator, but is not
+    constrained in how it does so (whether it defines `__contains__()`
+    or `__getitem__()` is immaterial).
     """
 
 class IOrderable(IField):
     u"""Field requiring its value to be orderable.
 
     The set of value needs support a complete ordering; the
-    implementation mechanism is not constrained.  Either __cmp__() or
+    implementation mechanism is not constrained.  Either `__cmp__()` or
     'rich comparison' methods may be used.
     """
 
@@ -234,10 +235,10 @@ class IMinMaxLen(ILen):
 
     min_length = Int(
         title=_(u"Minimum length"),
-        description=_(u"""\
+        description=_(u"""
         Value after whitespace processing cannot have less than
-        min_length characters (if a string type) or elements (if
-        another sequence type). If min_length is None, there is
+        `min_length` characters (if a string type) or elements (if
+        another sequence type). If `min_length` is ``None``, there is
         no minimum.
         """),
         required=False,
@@ -246,11 +247,11 @@ class IMinMaxLen(ILen):
 
     max_length = Int(
         title=_(u"Maximum length"),
-        description=_(u"""\
+        description=_(u"""
         Value after whitespace processing cannot have greater
-        or equal than max_length characters (if a string type) or 
-        elements (if another sequence type). If max_length is
-        None, there is no maximum."""),
+        or equal than `max_length` characters (if a string type) or
+        elements (if another sequence type). If `max_length` is
+        ``None``, there is no maximum."""),
         required=False,
         min=0, # needs to be a positive number
         default=None)
