@@ -5,6 +5,8 @@ TODO
 v1.2
 ----
 
+* revisit the test_localsite/test_{get|query}NextSiteManager tests
+
 * i18n domain of site/managesite.pt?
 
 * i18n and translation of utilities/browser/*pt
