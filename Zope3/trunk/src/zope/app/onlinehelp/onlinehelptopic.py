@@ -379,9 +379,8 @@ class STXOnlineHelpTopic(SourceTextOnlineHelpTopic):
 
 
 class ZPTOnlineHelpTopic(BaseOnlineHelpTopic):
-    """
-    Represents a page template based Help Topic which has other
-    filename extension then '.pt'.
+    r"""Represents a page template based Help Topic which has other
+    filename extension then `.pt`.
 
       >>> from zope.publisher.browser import TestRequest
       >>> from zope.app.publisher.browser import BrowserView
