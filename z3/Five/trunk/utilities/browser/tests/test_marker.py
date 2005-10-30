@@ -80,20 +80,84 @@ class Test(Base):
 ##         import pdb; pdb.set_trace()
 ##         print resp.getBody()
 
-    def test_editview(self):
-        request = FakeRequest()
-        view = zapi.getView(self.folder.test_folder, 'edit-markers.html', request)
-        assert view
-        assert isinstance(view.getDirectlyProvidedNames(), list)
-        assert isinstance(view.getProvidedNames(), list)
-##         resp = self.publish('%s/edit-markers.html' %self.path)
-##         import pdb; pdb.set_trace()
-##         print resp.getBody()
+def test_editview(self):
+    """
+    Set everything up:
+
+      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> setUp()
+      >>> import Products.Five
+      >>> from Products.Five import zcml
+      >>> zcml.load_config('meta.zcml', Products.Five)
+      >>> zcml.load_config('permissions.zcml', Products.Five)
+      >>> zcml.load_config('configure.zcml', Products.Five.utilities)
+      >>> from Products.Five.utilities.browser.marker import EditView
+      >>> from OFS.SimpleItem import SimpleItem
+      >>> obj = SimpleItem().__of__(self.folder)
+
+    Create an EditView:
+
+      >>> req = {}
+      >>> view = EditView(obj, req)
+      >>> view.context.aq_inner is obj
+      True
+      >>> view.request is req
+      True
+      >>> view.getAvailableInterfaceNames()
+      []
+      >>> view.getDirectlyProvidedNames()
+      []
+      >>> view.getProvidedNames()
+      [...IPersistent...]
+
+    Try to add a marker interface that doesn't exist:
+
+      >>> view.request = {'add': ('__builtin__.IFooMarker',)}
+      >>> view.processForm()
+      Traceback (most recent call last):
+      ...
+      ComponentLookupError...
+
+    Now create the marker interface:
+
+      >>> from OFS.interfaces import ISimpleItem
+      >>> class IFooMarker(ISimpleItem): pass
+      >>> from zope.app.component.interface import provideInterface
+      >>> provideInterface('', IFooMarker)
+      >>> view.getAvailableInterfaceNames()
+      [...IFooMarker...]
+      >>> view.getDirectlyProvidedNames()
+      []
+
+    And try again to add it do the object:
+
+      >>> view.request = {'add': ('__builtin__.IFooMarker',)}
+      >>> view.processForm()
+      >>> view.getAvailableInterfaceNames()
+      []
+      >>> view.getDirectlyProvidedNames()
+      [...IFooMarker...]
+
+    And remove it again:
+
+      >>> view.request = {'remove': ('__builtin__.IFooMarker',)}
+      >>> view.processForm()
+      >>> view.getAvailableInterfaceNames()
+      [...IFooMarker...]
+      >>> view.getDirectlyProvidedNames()
+      []
+
+    Finally tear down:
+
+      >>> tearDown()
+    """
 
 
 def test_suite():
+    from Testing.ZopeTestCase import ZopeDocTestSuite
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
+    suite.addTest(ZopeDocTestSuite())
     return suite
 
 if __name__ == '__main__':

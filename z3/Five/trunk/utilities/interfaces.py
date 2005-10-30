@@ -18,37 +18,37 @@ $Id$
 """
 from zope.interface import Interface
 
+
 class IReadInterface(Interface):
 
-    def mark(object, interface):
-        """Add a marker interface to an object
+    def getDirectlyProvided(obj):
+        """List the interfaces directly implemented by an object.
         """
 
-    def erase(object, interface):
-        """Remove a marker interface to an object
+    def getDirectlyProvidedNames(obj):
+        """List the names of interfaces directly implemented by an object.
         """
 
-    def getDirectlyProvided(context):
-        """See IIntrospector"""
+    def getAvailableInterfaces(obj):
+        """List the marker interfaces available for this object.
+        """
 
-    def getDirectlyProvidedNames(context):
-        """See IIntrospector"""
+    def getAvailableInterfaceNames(obj):
+        """List the names of marker interfaces available for this object.
+        """
 
-    def getAvailableInterfaces(context):
-        """See IIntrospector"""
+    def getProvided(obj):
+        """List interfaces provided by an object.
+        """
 
-    def getAvailableInterfaceNames(context):
-        """See IIntrospector"""
+    def getDirectlyProvidedNames(obj):
+        """List the names of interfaces provided by an object.
+        """
 
-    def getProvided(context):
-        """Interfaces provided by context"""
-
-    def getDirectlyProvidedNames(context):
-        """Names of interfaces provided by context"""
 
 class IWriteInterface(Interface):
 
-    def update(obj, add=[], remove=[]):
+    def update(obj, add=(), remove=()):
         """Update directly provided interfaces for an instance."""
 
     def mark(obj, interface):
@@ -57,7 +57,8 @@ class IWriteInterface(Interface):
     def erase(obj, interface):
         """ remove interfaces from interfaces an object directly provides"""
 
+
 class IMarkerUtility(IReadInterface, IWriteInterface):
-    """This utility exposes part of the IIntrospector interface from Zope3. And provides
+    """This utility provides methods for inspecting interfaces. And provides
        'mark' and 'erase' methods to add and remove marker interfaces
     """

@@ -9,11 +9,4 @@
       permission="zope2.ManageProperties"
       />
 
-  <adapter
-      for='*'
-      factory="zope.app.introspector.Introspector"
-      permission="zope2.View"
-      provides="zope.app.introspector.interfaces.IIntrospector"
-      />
-
 </configure>
