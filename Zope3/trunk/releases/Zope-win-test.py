@@ -14,9 +14,9 @@ os.chdir('Zope-win-0.0.0')
 do('./configure --prefix `pwd`/z')
 do('make install')
 os.chdir('z')
-do("bin/zopetest '!(ZEO|ZODB|BTrees)'")
-do("bin/mkzopeinstance -d`pwd`/../i -uadmin:123")
+do("bin/zopetest -vp '!(ZEO|ZODB|BTrees)'")
+do("bin/mkzopeinstance -d`pwd`/../i -uadmin:123 -m SHA1")
 os.chdir('../i')
-do("bin/test")
+do("bin/test --testzope -vp")
 
 
