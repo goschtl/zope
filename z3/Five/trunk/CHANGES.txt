@@ -2,8 +2,34 @@
 Five Changes
 ============
 
-Five 1.2b (2005-XXX-XXX)
-========================
+Five 1.3b (2005-11-01)
+======================
+
+This version is also included in Zope 2.9b1.
+
+Restructuring
+-------------
+
+* Support for Zope 3.2 was added. Five now requires Zope 2.9 (which
+  ships with Zope 3.2).
+
+* As scheduled, the temporary fork of the new test runner
+  (``zope.testing``) at ``Five.testing`` was removed.  So was the
+  ``runtests.py`` script.  Use the regular Zope test runner
+  (``test.py`` or ``bin/zopectl test``) to run tests.
+
+* To reflect the Component Architecture simplification in Zope 3 since
+  the X3 3.0 release, ``IFiveUtilityService`` was renamed to
+  ``IFiveUtilityRegistry`` and ``SimpleLocalUtilityService`` was
+  renamed to ``SimpleLocalUtilityRegistry``.  The old names are still
+  available for a short period of time.
+
+* XXX ObjectWidget (to be used instead of the Zope 3.2 one)
+
+* XXX mention interface BBB? Let yuppie decide
+
+Five 1.2b (2005-11-01)
+======================
 
 Features
 --------
@@ -23,6 +49,9 @@ Features
   and thereby local utilities. This is mostly needed for allowing CMF
   to convert it's portal tools into local utilities.  See
   doc/localsite.txt for more information
+
+* XXX Florent's event stuff (better put this under restructuring?
+  Florent decides.)
 
 Restructuring
 -------------
