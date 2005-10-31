@@ -48,6 +48,9 @@ v1.3
 
 * revisit the test_localsite/test_{get|query}NextSiteManager tests
 
+* correctly treat ZCatalog.Catalog(Path)Awareness.CatalogAware w.r.t
+  events (efge)
+
 v1.4
 ----
 

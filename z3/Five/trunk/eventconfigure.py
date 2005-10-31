@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004, 2005 Zope Corporation and Contributors.
+# Copyright (c) 2005 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -18,8 +18,13 @@ Zope 2 objects.
 $Id$
 """
 
-from event import doMonkies
-from event import deprecatedManageAddDeleteClasses
+import warnings
+from subscribers import deprecatedManageAddDeleteClasses
+
+def setContainerEvents():
+    warnings.warn("Using <five:containerEvents/> is deprecated (it is now "
+                  "the default), it will be removed in Zope 2.11",
+                  DeprecationWarning)
 
 def setDeprecatedManageAddDelete(class_):
     """Instances of the class will still see their old methods called."""
@@ -28,7 +33,7 @@ def setDeprecatedManageAddDelete(class_):
 def containerEvents(_context):
     _context.action(
         discriminator=None,
-        callable=doMonkies,
+        callable=setContainerEvents,
         args=(),
         )
 

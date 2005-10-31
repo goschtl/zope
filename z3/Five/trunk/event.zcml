@@ -10,7 +10,7 @@
   <adapter
       for="OFS.interfaces.IObjectManager"
       provides="zope.app.location.interfaces.ISublocations"
-      factory=".event.ObjectManagerSublocations"
+      factory=".subscribers.ObjectManagerSublocations"
       />
 
   <!-- dispatch IObjectWillBeMovedEvent with "bottom-up" semantics -->
@@ -18,7 +18,7 @@
   <subscriber
       for="OFS.interfaces.IItem
            .event.IObjectWillBeMovedEvent"
-      handler=".event.dispatchObjectWillBeMovedEvent"
+      handler=".subscribers.dispatchObjectWillBeMovedEvent"
       />
 
   <!-- dispatch IObjectMovedEvent with "top-down" semantics -->
@@ -26,7 +26,7 @@
   <subscriber
       for="OFS.interfaces.IItem
            zope.app.container.interfaces.IObjectMovedEvent"
-      handler=".event.dispatchObjectMovedEvent"
+      handler=".subscribers.dispatchObjectMovedEvent"
       />
 
   <!-- dispatch IFiveObjectClonedEvent with "top-down" semantics -->
@@ -34,7 +34,7 @@
   <subscriber
       for="OFS.interfaces.IItem
            .event.IFiveObjectClonedEvent"
-      handler=".event.dispatchFiveObjectClonedEvent"
+      handler=".subscribers.dispatchFiveObjectClonedEvent"
       />
 
 </configure>

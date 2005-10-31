@@ -24,6 +24,8 @@ Restructuring
   renamed to ``SimpleLocalUtilityRegistry``.  The old names are still
   available for a short period of time.
 
+* Event support: ``<five:containerEvents/>`` is the default.
+
 * XXX ObjectWidget (to be used instead of the Zope 3.2 one)
 
 * XXX mention interface BBB? Let yuppie decide
@@ -50,8 +52,13 @@ Features
   to convert it's portal tools into local utilities.  See
   doc/localsite.txt for more information
 
-* XXX Florent's event stuff (better put this under restructuring?
-  Florent decides.)
+* Event support: When ``<five:containerEvents/>`` is specified, Five
+  makes the standard Zope 2 containers send events instead of using
+  manage_afterAdd, manage_beforeDelete and manage_afterClone. These
+  methods are still called for a class declared
+  ``<five:deprecatedManageAddDelete class=.../>``, and are called in
+  compatibility mode with a deprecation warning for classes that don't
+  use this directive.
 
 Restructuring
 -------------

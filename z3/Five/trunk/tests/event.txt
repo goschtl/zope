@@ -6,12 +6,8 @@ Zope 3 container events are used to inform subscribers that an object is
 about to be added/removed from a container, and also after it has been
 done. This is used for bookkeeping and cleaning up in subobjects.
 
-These events replace the Zope 2 manage_afterAdd, manage_beforeDelete and
-manage_afterClone methods.
-
-To enable events, use::
-
-  <five:containerEvents/>
+These events replace the old Zope 2 manage_afterAdd, manage_beforeDelete
+and manage_afterClone methods.
 
 All standard Zope containers will only call manage_afterAdd & co on
 classes specified with the directive::
@@ -82,112 +78,14 @@ printed events will be in their "natural" order::
   >>> provideHandler(printObjectEvent, (IItem, IFiveObjectClonedEvent))
   >>> provideHandler(printObjectEventExceptSome, (None, IObjectEvent))
 
-Original behavior
-=================
-
-Let's test standard folder operations. The methods manage_afterAdd and
-manage_beforeDelete, and several others, are called::
-
-  >>> ob = MyContent('milou')
-  >>> folder._setObject('milou', ob)
-  old manage_afterAdd milou milou folder
-  'milou'
-  >>> folder.manage_delObjects('milou')
-  old manage_beforeDelete milou milou folder
-
-We can also move objects::
-
-  >>> ob = MyContent('tintin')
-  >>> folder._setObject('tintin', ob)
-  old manage_afterAdd tintin tintin folder
-  'tintin'
-  >>> cp = folder.manage_cutObjects('tintin')
-  >>> folder.manage_pasteObjects(cp)
-  old manage_beforeDelete tintin tintin folder
-  old manage_afterAdd tintin tintin folder
-  [{'new_id': 'tintin', 'id': 'tintin'}]
-
-And we can copy them::
-
-  >>> cp = folder.manage_copyObjects('tintin')
-  >>> folder.manage_pasteObjects(cp)
-  old manage_afterAdd copy_of_tintin copy_of_tintin folder
-  old manage_afterClone copy_of_tintin copy_of_tintin
-  [{'new_id': 'copy_of_tintin', 'id': 'tintin'}]
-
-We can rename objects::
-
-  >>> folder.manage_renameObject('copy_of_tintin', 'haddock')
-  old manage_beforeDelete copy_of_tintin copy_of_tintin folder
-  old manage_afterAdd haddock haddock folder
-
-We can also call manage_clone by hand::
-
-  >>> res = folder.manage_clone(folder.tintin, 'tournesol')
-  old manage_afterAdd tournesol tournesol folder
-  old manage_afterClone tournesol tournesol
-  >>> res.getId()
-  'tournesol'
-
-Let's also test with a BTreeFolder::
-
-  >>> ob = MyContent('castafiore')
-  >>> btfolder._setObject('castafiore', ob)
-  old manage_afterAdd castafiore castafiore btfolder
-  'castafiore'
-  >>> btfolder.manage_delObjects('castafiore')
-  old manage_beforeDelete castafiore castafiore btfolder
-
-When a tree of objects is affected, the methods are called for all
-levels::
-
-  >>> subfolder = MyFolder('subfolder')
-  >>> folder._setObject('subfolder', subfolder)
-  old manage_afterAdd subfolder subfolder folder
-  'subfolder'
-  >>> subfolder = folder.subfolder
-  >>> ob = MyContent('riri')
-  >>> subfolder._setObject('riri', ob)
-  old manage_afterAdd riri riri subfolder
-  'riri'
-
-Renaming a tree of objects. Note that manage_beforeDelete is called
-bottom-up::
-
-  >>> folder.manage_renameObject('subfolder', 'bob')
-  old manage_beforeDelete riri subfolder folder
-  old manage_beforeDelete subfolder subfolder folder
-  old manage_afterAdd bob bob folder
-  old manage_afterAdd riri bob folder
-
-Cloning a tree of objects::
-
-  >>> res = folder.manage_clone(folder.bob, 'loulou')
-  old manage_afterAdd loulou loulou folder
-  old manage_afterAdd riri loulou folder
-  old manage_afterClone loulou loulou
-  old manage_afterClone riri loulou
-  >>> res.getId()
-  'loulou'
-
-
-With events
-===========
-
-We need some of the Five setup, to get proper five:interfaces declared
-for Zope 2 classes::
+Finally we need to load the subscribers configuration::
 
   >>> from Products.Five import zcml
   >>> import Products.Five
-  >>> zcml.load_config('meta.zcml', Products.Five)
-
-Now execute the directive enabling events::
-
-  >>> from Products.Five.event import doMonkies, undoMonkies
-  >>> doMonkies(transitional=False)
+  >>> zcml.load_config('event.zcml', Products.Five)
 
 Old class
----------
+=========
 
 If we use an instance of an old class for which we haven't specified
 anything, events are sent and the manage_afterAdd & co methods are
@@ -213,7 +111,7 @@ events are sent::
   ObjectRemovedEvent dog
 
 Old class with deprecatedManageAddDelete
-----------------------------------------
+========================================
 
 We specifiy that our class is deprecated (using zcml in real life)::
 
@@ -349,7 +247,7 @@ Cloning a tree of objects::
   'mickey'
 
 New class
----------
+=========
 
 If we use classes that don't have any manage_afterAdd & co method,
 everything happens correctly::
@@ -486,9 +384,8 @@ OrderedFolder has the same renaming behavior than before::
   ['ob4', 'ob2']
 
 
-Now cleanup all the monkey patches::
+Now cleanup::
 
   >>> import transaction
   >>> transaction.abort()
-  >>> undoMonkies()
   >>> tearDown()
