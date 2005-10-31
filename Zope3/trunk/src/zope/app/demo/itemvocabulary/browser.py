@@ -32,4 +32,3 @@ class DefaultItemFolder(Folder):
     implements(IDefaultItem)
 
     default = None
-    

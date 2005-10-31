@@ -1,13 +1,14 @@
+==============================
 HTTP request/response recorder
 ==============================
 
-zope.app.recorder lets you create functional doctests without relying on
+`zope.app.recorder` lets you create functional doctests without relying on
 third-party tools such as tcpwatch.
 
 Quick Start
 -----------
 
-Add the following section to your zope.conf:
+Add the following section to your `zope.conf`::
 
   <server>
     type RecordingHTTP

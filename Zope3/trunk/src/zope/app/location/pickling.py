@@ -33,7 +33,7 @@ def locationCopy(loc):
     location, then the copies of the objects in the location refer to
     the same outside objects.
 
-    For example, suppose we have an object (location) hierarchy like this:
+    For example, suppose we have an object (location) hierarchy like this::
 
            o1
           /  \

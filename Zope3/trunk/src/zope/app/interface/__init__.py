@@ -105,7 +105,7 @@ def queryType(object, interface):
     >>> obj3 = C3()
 
     If Interface doesn't provide `IContentType`, `queryType` returns ``None``.
-    
+
     >>> c3_ctype = queryType(obj3, IContentType)
     >>> c3_ctype
     >>> c3_ctype is None
@@ -128,5 +128,5 @@ def queryType(object, interface):
     for iface in object_iro:
         if interface.providedBy(iface):
             return iface
-        
+
     return None

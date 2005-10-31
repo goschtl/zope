@@ -22,11 +22,12 @@ There are three flavors of declarations:
 
   - ProvidesDeclarations are used to express interfaces directly
     provided by objects.
-    
+
 
 $Id$
 """
 __docformat__ = 'restructuredtext'
+
 import sys
 import weakref
 from zope.interface.interface import InterfaceClass, Specification
@@ -35,13 +36,11 @@ import exceptions
 from types import ClassType
 from zope.interface.advice import addClassAdvisor
 
-# Registry of class-implementation specifications 
+# Registry of class-implementation specifications
 BuiltinImplementationSpecifications = {}
 
 class Declaration(Specification):
-    """Interface declarations
-
-    """
+    """Interface declarations"""
 
     def __init__(self, *interfaces):
         Specification.__init__(self, _normalizeargs(interfaces))
@@ -56,7 +55,7 @@ class Declaration(Specification):
     def __contains__(self, interface):
         """Test whether an interface is in the specification
 
-        for example::
+        for example:
 
           >>> from zope.interface import Interface
           >>> class I1(Interface): pass
@@ -83,7 +82,7 @@ class Declaration(Specification):
     def __iter__(self):
         """Return an iterator for the interfaces in the specification
 
-        for example::
+        for example:
 
           >>> from zope.interface import Interface
           >>> class I1(Interface): pass
@@ -111,7 +110,7 @@ class Declaration(Specification):
     def flattened(self):
         """Return an iterator of all included and extended interfaces
 
-        for example::
+        for example:
 
           >>> from zope.interface import Interface
           >>> class I1(Interface): pass
@@ -144,7 +143,7 @@ class Declaration(Specification):
     def __sub__(self, other):
         """Remove interfaces from a specification
 
-        Examples::
+        Examples:
 
           >>> from zope.interface import Interface
           >>> class I1(Interface): pass
@@ -183,12 +182,11 @@ class Declaration(Specification):
                         if i.extends(j, 0)]
                 ]
                 )
-    
+
     def __add__(self, other):
         """Add two specifications or a specification and an interface
 
-
-        Examples::
+        Examples:
 
           >>> from zope.interface import Interface
           >>> class I1(Interface): pass
@@ -266,8 +264,7 @@ class Implements(Declaration):
 
     def __repr__(self):
         return '<implementedBy %s>' % (self.__name__)
-    
-        
+
 
 def implementedByFallback(cls):
     """Return the interfaces implemented for a class' instances
@@ -298,7 +295,7 @@ def implementedByFallback(cls):
     try:
         spec = cls.__dict__.get('__implemented__')
     except AttributeError:
-        
+
         # we can't get the class dict. This is probably due to a
         # security proxy.  If this is the case, then probably no
         # descriptor was installed for the class.
@@ -316,7 +313,7 @@ def implementedByFallback(cls):
             if spec is not None:
                 return spec
             return _empty
-        
+
         if spec.__class__ == Implements:
             # we defaulted to _empty or there was a spec. Good enough.
             # Return it.
@@ -326,7 +323,7 @@ def implementedByFallback(cls):
         # Hm, there's an __implemented__, but it's not a spec. Must be
         # an old-style declaration. Just compute a spec for it
         return Declaration(*_normalizeargs((spec, )))
-        
+
     if isinstance(spec, Implements):
         return spec
 
@@ -369,7 +366,7 @@ def implementedByFallback(cls):
                 cls,
                 getattr(cls, '__class__', type(cls)),
                 )
-                        
+
     except TypeError:
         if not isinstance(cls, type):
             raise TypeError("ImplementedBy called for non-type", cls)
@@ -382,36 +379,35 @@ implementedBy = implementedByFallback
 def classImplementsOnly(cls, *interfaces):
     """Declare the only interfaces implemented by instances of a class
 
-      The arguments after the class are one or more interfaces or
-      interface specifications (IDeclaration objects).
+      The arguments after the class are one or more interfaces or interface
+      specifications (``IDeclaration`` objects).
 
-      The interfaces given (including the interfaces in the
-      specifications) replace any previous declarations.
+      The interfaces given (including the interfaces in the specifications)
+      replace any previous declarations.
 
-      Consider the following example::
+      Consider the following example:
 
-          >>> from zope.interface import Interface
-          >>> class I1(Interface): pass
-          ...
-          >>> class I2(Interface): pass
-          ...
-          >>> class I3(Interface): pass
-          ...
-          >>> class I4(Interface): pass
-          ...
-          >>> class A(object):
-          ...   implements(I3)
-          >>> class B(object):
-          ...   implements(I4)
-          >>> class C(A, B):
-          ...   pass
-          >>> classImplementsOnly(C, I1, I2)
-          >>> [i.getName() for i in implementedBy(C)]
-          ['I1', 'I2']
+        >>> from zope.interface import Interface
+        >>> class I1(Interface): pass
+        ...
+        >>> class I2(Interface): pass
+        ...
+        >>> class I3(Interface): pass
+        ...
+        >>> class I4(Interface): pass
+        ...
+        >>> class A(object):
+        ...   implements(I3)
+        >>> class B(object):
+        ...   implements(I4)
+        >>> class C(A, B):
+        ...   pass
+        >>> classImplementsOnly(C, I1, I2)
+        >>> [i.getName() for i in implementedBy(C)]
+        ['I1', 'I2']
 
       Instances of ``C`` provide only ``I1``, ``I2``, and regardless of
       whatever interfaces instances of ``A`` and ``B`` implement.
-
       """
     spec = implementedBy(cls)
     spec.__bases__ = tuple(_normalizeargs(interfaces))
@@ -421,44 +417,39 @@ def classImplements(cls, *interfaces):
     """Declare additional interfaces implemented for instances of a class
 
       The arguments after the class are one or more interfaces or
-      interface specifications (IDeclaration objects).
+      interface specifications (``IDeclaration`` objects).
 
-      The interfaces given (including the interfaces in the
-      specifications) are added to any interfaces previously
-      declared.
+      The interfaces given (including the interfaces in the specifications)
+      are added to any interfaces previously declared.
 
-      Consider the following example::
+      Consider the following example:
 
-
-      for example:
-
-      >>> from zope.interface import Interface
-      >>> class I1(Interface): pass
-      ...
-      >>> class I2(Interface): pass
-      ...
-      >>> class I3(Interface): pass
-      ...
-      >>> class I4(Interface): pass
-      ...
-      >>> class I5(Interface): pass
-      ...
-      >>> class A(object):
-      ...   implements(I3)
-      >>> class B(object):
-      ...   implements(I4)
-      >>> class C(A, B):
-      ...   pass
-      >>> classImplements(C, I1, I2)
-      >>> [i.getName() for i in implementedBy(C)]
-      ['I1', 'I2', 'I3', 'I4']
-      >>> classImplements(C, I5)
-      >>> [i.getName() for i in implementedBy(C)]
-      ['I1', 'I2', 'I5', 'I3', 'I4']
+        >>> from zope.interface import Interface
+        >>> class I1(Interface): pass
+        ...
+        >>> class I2(Interface): pass
+        ...
+        >>> class I3(Interface): pass
+        ...
+        >>> class I4(Interface): pass
+        ...
+        >>> class I5(Interface): pass
+        ...
+        >>> class A(object):
+        ...   implements(I3)
+        >>> class B(object):
+        ...   implements(I4)
+        >>> class C(A, B):
+        ...   pass
+        >>> classImplements(C, I1, I2)
+        >>> [i.getName() for i in implementedBy(C)]
+        ['I1', 'I2', 'I3', 'I4']
+        >>> classImplements(C, I5)
+        >>> [i.getName() for i in implementedBy(C)]
+        ['I1', 'I2', 'I5', 'I3', 'I4']
 
       Instances of ``C`` provide ``I1``, ``I2``, ``I5``, and whatever
       interfaces instances of ``A`` and ``B`` provide.
-
       """
 
     spec = implementedBy(cls)
@@ -479,7 +470,7 @@ def classImplements(cls, *interfaces):
             if b not in seen:
                 seen[b] = 1
                 bases.append(b)
-        
+
     spec.__bases__ = tuple(bases)
 
 def _implements_advice(cls):
@@ -666,12 +657,12 @@ class Provides(Declaration):  # Really named ProvidesClass
     def __get__(self, inst, cls):
         """Make sure that a class __provides__ doesn't leak to an instance
 
-        For example::
+        For example:
 
           >>> from zope.interface import Interface
           >>> class IFooFactory(Interface): pass
           ...
-          
+
           >>> class C(object):
           ...   pass
 
@@ -699,17 +690,15 @@ InstanceDeclarations = weakref.WeakValueDictionary()
 def Provides(*interfaces):
     """Cache instance declarations
 
-      Instance declarations are shared among instances that have the
-      same declaration.  The declarations are cached in a weak value
-      dictionary.
+      Instance declarations are shared among instances that have the same
+      declaration. The declarations are cached in a weak value dictionary.
 
-      (Note that, in the examples below, we are going to make
-       assertions about the size of the weakvalue dictionary.  For the
-       assertions to be meaningful, we need to force garbage
-       collection to make sure garbage objects are, indeed, removed
-       from the system. Depending on how Python is run, we may need to
-       make multiple calls to be sure.  We provide a collect function
-       to help with this:
+      (Note that, in the examples below, we are going to make assertions about
+       the size of the weakvalue dictionary.  For the assertions to be
+       meaningful, we need to force garbage collection to make sure garbage
+       objects are, indeed, removed from the system. Depending on how Python
+       is run, we may need to make multiple calls to be sure.  We provide a
+       collect function to help with this:
 
        >>> import gc
        >>> def collect():
@@ -717,7 +706,7 @@ def Provides(*interfaces):
        ...         gc.collect()
 
       )
-      
+
       >>> collect()
       >>> before = len(InstanceDeclarations)
 
@@ -727,7 +716,7 @@ def Provides(*interfaces):
       >>> from zope.interface import Interface
       >>> class I(Interface):
       ...    pass
-      
+
       >>> c1 = C()
       >>> c2 = C()
 
@@ -751,9 +740,8 @@ def Provides(*interfaces):
       >>> collect()
       >>> len(InstanceDeclarations) == before
       1
-      
       """
-    
+
     spec = InstanceDeclarations.get(interfaces)
     if spec is None:
         spec = ProvidesClass(*interfaces)
@@ -767,14 +755,13 @@ DescriptorAwareMetaClasses = ClassType, type
 def directlyProvides(object, *interfaces):
     """Declare interfaces declared directly for an object
 
-      The arguments after the object are one or more interfaces or
-      interface specifications (IDeclaration objects).
+      The arguments after the object are one or more interfaces or interface
+      specifications (``IDeclaration`` objects).
 
-      The interfaces given (including the interfaces in the
-      specifications) replace interfaces previously
-      declared for the object.
+      The interfaces given (including the interfaces in the specifications)
+      replace interfaces previously declared for the object.
 
-      Consider the following example::
+      Consider the following example:
 
         >>> from zope.interface import Interface
         >>> class I1(Interface): pass
@@ -816,7 +803,7 @@ def directlyProvides(object, *interfaces):
       instances have been declared for instances of ``C``.
 
       To remove directly provided interfaces, use ``directlyProvidedBy`` and
-      subtract the unwanted interfaces. For example::
+      subtract the unwanted interfaces. For example:
 
         >>> directlyProvides(ob, directlyProvidedBy(ob)-I2)
         >>> int(I1 in providedBy(ob))
@@ -824,19 +811,18 @@ def directlyProvides(object, *interfaces):
         >>> int(I2 in providedBy(ob))
         0
 
-      removes I2 from the interfaces directly provided by
-      ``ob``. The object, ``ob`` no longer directly provides ``I2``,
-      although it might still provide ``I2`` if it's class
-      implements ``I2``.
+      removes I2 from the interfaces directly provided by ``ob``. The object,
+      ``ob`` no longer directly provides ``I2``, although it might still
+      provide ``I2`` if it's class implements ``I2``.
 
       To add directly provided interfaces, use ``directlyProvidedBy`` and
-      include additional interfaces.  For example::
+      include additional interfaces.  For example:
 
         >>> int(I2 in providedBy(ob))
         0
         >>> directlyProvides(ob, directlyProvidedBy(ob), I2)
 
-      adds I2 to the interfaces directly provided by ob::
+      adds ``I2`` to the interfaces directly provided by ob::
 
         >>> int(I2 in providedBy(ob))
         1
@@ -868,73 +854,72 @@ def directlyProvides(object, *interfaces):
         object.__provides__ = ClassProvides(object, cls, *interfaces)
     else:
         object.__provides__ = Provides(cls, *interfaces)
-        
-    
+
+
 def alsoProvides(object, *interfaces):
     """Declare interfaces declared directly for an object
 
-      The arguments after the object are one or more interfaces or
-      interface specifications (IDeclaration objects).
+    The arguments after the object are one or more interfaces or interface
+    specifications (``IDeclaration`` objects).
 
-      The interfaces given (including the interfaces in the
-      specifications) are added to the interfaces previously
-      declared for the object.
-      
-      Consider the following example::
+    The interfaces given (including the interfaces in the specifications) are
+    added to the interfaces previously declared for the object.
 
-        >>> from zope.interface import Interface
-        >>> class I1(Interface): pass
-        ...
-        >>> class I2(Interface): pass
-        ...
-        >>> class IA1(Interface): pass
-        ...
-        >>> class IA2(Interface): pass
-        ...
-        >>> class IB(Interface): pass
-        ...
-        >>> class IC(Interface): pass
-        ...
-        >>> class A(object): implements(IA1, IA2)
-        ...
-        >>> class B(object): implements(IB)
-        ...
+    Consider the following example:
 
-        >>> class C(A, B):
-        ...    implements(IC)
+      >>> from zope.interface import Interface
+      >>> class I1(Interface): pass
+      ...
+      >>> class I2(Interface): pass
+      ...
+      >>> class IA1(Interface): pass
+      ...
+      >>> class IA2(Interface): pass
+      ...
+      >>> class IB(Interface): pass
+      ...
+      >>> class IC(Interface): pass
+      ...
+      >>> class A(object): implements(IA1, IA2)
+      ...
+      >>> class B(object): implements(IB)
+      ...
 
-        >>> ob = C()
-        >>> directlyProvides(ob, I1)
-        >>> int(I1 in providedBy(ob))
-        1
-        >>> int(I2 in providedBy(ob))
-        0
-        >>> int(IA1 in providedBy(ob))
-        1
-        >>> int(IA2 in providedBy(ob))
-        1
-        >>> int(IB in providedBy(ob))
-        1
-        >>> int(IC in providedBy(ob))
-        1
-        
-        >>> alsoProvides(ob, I2)
-        >>> int(I1 in providedBy(ob))
-        1
-        >>> int(I2 in providedBy(ob))
-        1
-        >>> int(IA1 in providedBy(ob))
-        1
-        >>> int(IA2 in providedBy(ob))
-        1
-        >>> int(IB in providedBy(ob))
-        1
-        >>> int(IC in providedBy(ob))
-        1
-        
-      The object, ``ob`` provides ``I1``, ``I2``, and whatever interfaces
-      instances have been declared for instances of ``C``. Notice that the
-      alsoProvides just extends the provided interfaces.
+      >>> class C(A, B):
+      ...    implements(IC)
+
+      >>> ob = C()
+      >>> directlyProvides(ob, I1)
+      >>> int(I1 in providedBy(ob))
+      1
+      >>> int(I2 in providedBy(ob))
+      0
+      >>> int(IA1 in providedBy(ob))
+      1
+      >>> int(IA2 in providedBy(ob))
+      1
+      >>> int(IB in providedBy(ob))
+      1
+      >>> int(IC in providedBy(ob))
+      1
+
+      >>> alsoProvides(ob, I2)
+      >>> int(I1 in providedBy(ob))
+      1
+      >>> int(I2 in providedBy(ob))
+      1
+      >>> int(IA1 in providedBy(ob))
+      1
+      >>> int(IA2 in providedBy(ob))
+      1
+      >>> int(IB in providedBy(ob))
+      1
+      >>> int(IC in providedBy(ob))
+      1
+
+    The object, ``ob`` provides ``I1``, ``I2``, and whatever interfaces
+    instances have been declared for instances of ``C``. Notice that the
+    alsoProvides just extends the provided interfaces.
     """
     directlyProvides(object, directlyProvidedBy(object), *interfaces)
 
@@ -943,7 +928,7 @@ class ClassProvidesBasePy(object):
     def __get__(self, inst, cls):
         if cls is self._cls:
             # We only work if called on the class we were defined for
-            
+
             if inst is None:
                 # We were accessed through a class, so we are the class'
                 # provides spec. Just return this object as is:
@@ -971,23 +956,21 @@ class ClassProvides(Declaration, ClassProvidesBase):
     we can get declarations for objects without instance-specific
     interfaces a bit quicker.
 
-        For example::
+    For example:
 
-          >>> from zope.interface import Interface
-          >>> class IFooFactory(Interface):
-          ...     pass
-          >>> class IFoo(Interface):
-          ...     pass
-          >>> class C(object):
-          ...     implements(IFoo)
-          ...     classProvides(IFooFactory)
-          >>> [i.getName() for i in C.__provides__]
-          ['IFooFactory']
+      >>> from zope.interface import Interface
+      >>> class IFooFactory(Interface):
+      ...     pass
+      >>> class IFoo(Interface):
+      ...     pass
+      >>> class C(object):
+      ...     implements(IFoo)
+      ...     classProvides(IFooFactory)
+      >>> [i.getName() for i in C.__provides__]
+      ['IFooFactory']
 
-          >>> [i.getName() for i in C().__provides__]
-          ['IFoo']
-
-    
+      >>> [i.getName() for i in C().__provides__]
+      ['IFoo']
     """
 
     def __init__(self, cls, metacls, *interfaces):
@@ -1005,8 +988,7 @@ class ClassProvides(Declaration, ClassProvidesBase):
 def directlyProvidedBy(object):
     """Return the interfaces directly provided by the given object
 
-    The value returned is an IDeclaration.
-
+    The value returned is an ``IDeclaration``.
     """
     provides = getattr(object, "__provides__", None)
     if (provides is None # no spec
@@ -1026,22 +1008,20 @@ def classProvides(*interfaces):
 
       This function is called in a class definition.
 
-      The arguments are one or more interfaces or interface
-      specifications (IDeclaration objects).
+      The arguments are one or more interfaces or interface specifications
+      (``IDeclaration`` objects).
 
-      The given interfaces (including the interfaces in the
-      specifications) are used to create the class's direct-object
-      interface specification.  An error will be raised if the module
-      class has an direct interface specification.  In other words, it is
-      an error to call this function more than once in a class
-      definition.
+      The given interfaces (including the interfaces in the specifications)
+      are used to create the class's direct-object interface specification.
+      An error will be raised if the module class has an direct interface
+      specification. In other words, it is an error to call this function more
+      than once in a class definition.
 
-      Note that the given interfaces have nothing to do with the
-      interfaces implemented by instances of the class.
+      Note that the given interfaces have nothing to do with the interfaces
+      implemented by instances of the class.
 
-      This function is provided for convenience. It provides a more
-      convenient way to call directlyProvidedByProvides for a class. For
-      example::
+      This function is provided for convenience. It provides a more convenient
+      way to call directlyProvidedByProvides for a class. For example::
 
         classProvides(I1)
 
@@ -1051,37 +1031,35 @@ def classProvides(*interfaces):
 
       after the class has been created.
 
-      For example::
+      For example:
 
-            >>> from zope.interface import Interface
-            >>> class IFoo(Interface): pass
-            ...
-            >>> class IFooFactory(Interface): pass
-            ...
-            >>> class C(object):
-            ...   implements(IFoo)
-            ...   classProvides(IFooFactory)
-            >>> [i.getName() for i in C.__providedBy__]
-            ['IFooFactory']
-            >>> [i.getName() for i in C().__providedBy__]
-            ['IFoo']
+        >>> from zope.interface import Interface
+        >>> class IFoo(Interface): pass
+        ...
+        >>> class IFooFactory(Interface): pass
+        ...
+        >>> class C(object):
+        ...   implements(IFoo)
+        ...   classProvides(IFooFactory)
+        >>> [i.getName() for i in C.__providedBy__]
+        ['IFooFactory']
+        >>> [i.getName() for i in C().__providedBy__]
+        ['IFoo']
 
-      if equivalent to::
+      if equivalent to:
 
-            >>> from zope.interface import Interface
-            >>> class IFoo(Interface): pass
-            ...
-            >>> class IFooFactory(Interface): pass
-            ...
-            >>> class C(object):
-            ...   implements(IFoo)
-            >>> directlyProvides(C, IFooFactory)
-            >>> [i.getName() for i in C.__providedBy__]
-            ['IFooFactory']
-            >>> [i.getName() for i in C().__providedBy__]
-            ['IFoo']
-
-
+        >>> from zope.interface import Interface
+        >>> class IFoo(Interface): pass
+        ...
+        >>> class IFooFactory(Interface): pass
+        ...
+        >>> class C(object):
+        ...   implements(IFoo)
+        >>> directlyProvides(C, IFooFactory)
+        >>> [i.getName() for i in C.__providedBy__]
+        ['IFooFactory']
+        >>> [i.getName() for i in C().__providedBy__]
+        ['IFoo']
       """
     frame = sys._getframe(1)
     locals = frame.f_locals
@@ -1109,25 +1087,23 @@ def moduleProvides(*interfaces):
 
     This function is used in a module definition.
 
-    The arguments are one or more interfaces or interface
-    specifications (IDeclaration objects).
+    The arguments are one or more interfaces or interface specifications
+    (``IDeclaration`` objects).
 
-    The given interfaces (including the interfaces in the
-    specifications) are used to create the module's direct-object
-    interface specification.  An error will be raised if the module
-    already has an interface specification.  In other words, it is
-    an error to call this function more than once in a module
-    definition.
+    The given interfaces (including the interfaces in the specifications) are
+    used to create the module's direct-object interface specification.  An
+    error will be raised if the module already has an interface specification.
+    In other words, it is an error to call this function more than once in a
+    module definition.
 
-    This function is provided for convenience. It provides a more
-    convenient way to call directlyProvides. For example::
+    This function is provided for convenience. It provides a more convenient
+    way to call directlyProvides. For example::
 
       moduleImplements(I1)
 
     is equivalent to::
 
       directlyProvides(sys.modules[__name__], I1)
-
     """
     frame = sys._getframe(1)
     locals = frame.f_locals
@@ -1155,92 +1131,89 @@ def ObjectSpecification(direct, cls):
 
     These combine information for the object and for it's classes.
 
-    For example::
+    For example:
 
-        >>> from zope.interface import Interface
-        >>> class I1(Interface): pass
-        ...
-        >>> class I2(Interface): pass
-        ...
-        >>> class I3(Interface): pass
-        ...
-        >>> class I31(I3): pass
-        ...
-        >>> class I4(Interface): pass
-        ...
-        >>> class I5(Interface): pass
-        ...
-        >>> class A(object): implements(I1)
-        ...
-        >>> class B(object): __implemented__ = I2
-        ...
-        >>> class C(A, B): implements(I31)
-        ...
-        >>> c = C()
-        >>> directlyProvides(c, I4)
-        >>> [i.getName() for i in providedBy(c)]
-        ['I4', 'I31', 'I1', 'I2']
-        >>> [i.getName() for i in providedBy(c).flattened()]
-        ['I4', 'I31', 'I3', 'I1', 'I2', 'Interface']
-        >>> int(I1 in providedBy(c))
-        1
-        >>> int(I3 in providedBy(c))
-        0
-        >>> int(providedBy(c).extends(I3))
-        1
-        >>> int(providedBy(c).extends(I31))
-        1
-        >>> int(providedBy(c).extends(I5))
-        0
-        >>> class COnly(A, B): implementsOnly(I31)
-        ...
-        >>> class D(COnly): implements(I5)
-        ...
-        >>> c = D()
-        >>> directlyProvides(c, I4)
-        >>> [i.getName() for i in providedBy(c)]
-        ['I4', 'I5', 'I31']
-        >>> [i.getName() for i in providedBy(c).flattened()]
-        ['I4', 'I5', 'I31', 'I3', 'Interface']
-        >>> int(I1 in providedBy(c))
-        0
-        >>> int(I3 in providedBy(c))
-        0
-        >>> int(providedBy(c).extends(I3))
-        1
-        >>> int(providedBy(c).extends(I1))
-        0
-        >>> int(providedBy(c).extends(I31))
-        1
-        >>> int(providedBy(c).extends(I5))
-        1
+      >>> from zope.interface import Interface
+      >>> class I1(Interface): pass
+      ...
+      >>> class I2(Interface): pass
+      ...
+      >>> class I3(Interface): pass
+      ...
+      >>> class I31(I3): pass
+      ...
+      >>> class I4(Interface): pass
+      ...
+      >>> class I5(Interface): pass
+      ...
+      >>> class A(object): implements(I1)
+      ...
+      >>> class B(object): __implemented__ = I2
+      ...
+      >>> class C(A, B): implements(I31)
+      ...
+      >>> c = C()
+      >>> directlyProvides(c, I4)
+      >>> [i.getName() for i in providedBy(c)]
+      ['I4', 'I31', 'I1', 'I2']
+      >>> [i.getName() for i in providedBy(c).flattened()]
+      ['I4', 'I31', 'I3', 'I1', 'I2', 'Interface']
+      >>> int(I1 in providedBy(c))
+      1
+      >>> int(I3 in providedBy(c))
+      0
+      >>> int(providedBy(c).extends(I3))
+      1
+      >>> int(providedBy(c).extends(I31))
+      1
+      >>> int(providedBy(c).extends(I5))
+      0
+      >>> class COnly(A, B): implementsOnly(I31)
+      ...
+      >>> class D(COnly): implements(I5)
+      ...
+      >>> c = D()
+      >>> directlyProvides(c, I4)
+      >>> [i.getName() for i in providedBy(c)]
+      ['I4', 'I5', 'I31']
+      >>> [i.getName() for i in providedBy(c).flattened()]
+      ['I4', 'I5', 'I31', 'I3', 'Interface']
+      >>> int(I1 in providedBy(c))
+      0
+      >>> int(I3 in providedBy(c))
+      0
+      >>> int(providedBy(c).extends(I3))
+      1
+      >>> int(providedBy(c).extends(I1))
+      0
+      >>> int(providedBy(c).extends(I31))
+      1
+      >>> int(providedBy(c).extends(I5))
+      1
 
+      nonzero:
 
-        nonzero:
-
-        >>> from zope.interface import Interface
-        >>> class I1(Interface):
-        ...     pass
-        >>> class I2(Interface):
-        ...     pass
-        >>> class C(object):
-        ...     implements(I1)
-        >>> c = C()
-        >>> int(bool(providedBy(c)))
-        1
-        >>> directlyProvides(c, I2)
-        >>> int(bool(providedBy(c)))
-        1
-        >>> class C(object):
-        ...     pass
-        >>> c = C()
-        >>> int(bool(providedBy(c)))
-        0
-        >>> directlyProvides(c, I2)
-        >>> int(bool(providedBy(c)))
-        1
-
-
+      >>> from zope.interface import Interface
+      >>> class I1(Interface):
+      ...     pass
+      >>> class I2(Interface):
+      ...     pass
+      >>> class C(object):
+      ...     implements(I1)
+      >>> c = C()
+      >>> int(bool(providedBy(c)))
+      1
+      >>> directlyProvides(c, I2)
+      >>> int(bool(providedBy(c)))
+      1
+      >>> class C(object):
+      ...     pass
+      >>> c = C()
+      >>> int(bool(providedBy(c)))
+      0
+      >>> directlyProvides(c, I2)
+      >>> int(bool(providedBy(c)))
+      1
     """
 
     return Provides(cls, direct)
@@ -1250,7 +1223,7 @@ def getObjectSpecification(ob):
     provides = getattr(ob, '__provides__', None)
     if provides is not None:
         return provides
-    
+
     try:
         cls = ob.__class__
     except AttributeError:
@@ -1270,7 +1243,6 @@ def providedBy(ob):
     except AttributeError:
         # Not set yet. Fall back to lower-level thing that computes it
         return getObjectSpecification(ob)
-    
 
     try:
         # We might have gotten a descriptor from an instance of a
@@ -1311,16 +1283,16 @@ def providedBy(ob):
     return r
 
 class ObjectSpecificationDescriptorPy(object):
-    """Implement the __providedBy__ attribute
+    """Implement the `__providedBy__` attribute
 
-    The __providedBy__ attribute computes the interfaces peovided by
+    The `__providedBy__` attribute computes the interfaces peovided by
     an object.
     """
 
     def __get__(self, inst, cls):
         """Get an object specification for an object
 
-        For example::
+        For example:
 
           >>> from zope.interface import Interface
           >>> class IFoo(Interface): pass
@@ -1339,7 +1311,7 @@ class ObjectSpecificationDescriptorPy(object):
 
         # Get an ObjectSpecification bound to either an instance or a class,
         # depending on how we were accessed.
-        
+
         if inst is None:
             return getObjectSpecification(cls)
 
@@ -1370,7 +1342,7 @@ def _normalizeargs(sequence, output = None):
     else:
         for v in sequence:
             _normalizeargs(v, output)
-            
+
     return output
 
 _empty = Declaration()
@@ -1385,4 +1357,3 @@ else:
     from _zope_interface_coptimizations import ObjectSpecificationDescriptor
 
 objectSpecificationDescriptor = ObjectSpecificationDescriptor()
-    
