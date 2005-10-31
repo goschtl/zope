@@ -371,7 +371,7 @@ class ConfigurationContext(object):
 
         Finally, we can add an order argument to crudely control the order
         of execution:
-        
+
         >>> c.action(None, order=99999)
         >>> c.actions[-1]
         (None, None, (), {}, ('foo.zcml',), '?', 99999)

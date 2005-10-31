@@ -6,15 +6,15 @@
 <browser:layer name="wiki" />
 <browser:skin name="wiki" layers="wiki zope.app.rotterdam.rotterdam default" />
 
-<browser:resource 
+<browser:resource
     name="wiki.css" file="wiki.css" layer="wiki" />
 
-<browser:page 
+<browser:page
     for="*"
     name="skin_macros"
     permission="zope.View"
     layer="wiki"
-    template="template.pt" 
+    template="template.pt"
     />
 
 <browser:page

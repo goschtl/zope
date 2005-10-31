@@ -735,6 +735,7 @@ and we'll get the pluggable authentication utility:
 
 Finally we'll get Betty and see that she is in the admin and
 power-user groups:
+
   >>> betty = principals.getPrincipal(u'users3')
   >>> betty.groups.sort()
   >>> betty.groups

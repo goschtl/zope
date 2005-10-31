@@ -13,7 +13,6 @@
 
     <factory
         id="zope.app.workflow.TestObject"
-        permission="zope.ManageContent"
         title="Test Object"
         description="Test Object" />
 

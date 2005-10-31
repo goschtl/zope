@@ -73,7 +73,7 @@ class HomeFolderManager(Persistent, Contained):
                 self.assignHomeFolder(principalId, create=True)
             else:
                 return None
-        
+
         return self.homeFolderBase.get(self.assignments[principalId], None)
 
 

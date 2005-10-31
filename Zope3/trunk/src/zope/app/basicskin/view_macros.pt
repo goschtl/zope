@@ -2,7 +2,7 @@
          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html metal:define-macro="page" i18n:domain="zope">
 <head metal:define-macro="head">
-  <title 
+  <title
     metal:define-slot="title"
     tal:content="options/getTitle|view/getTitle|context/getTitle|default"
     >Zope</title>
@@ -31,7 +31,7 @@
   </div>
 
   <div metal:define-macro="logged_user">
-  <p i18n:translate="">User: 
+  <p i18n:translate="">User:
     <span tal:replace="request/principal/title"
           i18n:name="user_title">User</span>
   </p>

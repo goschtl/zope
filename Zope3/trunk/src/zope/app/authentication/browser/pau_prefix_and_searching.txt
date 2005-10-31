@@ -5,7 +5,7 @@ Using a PAU Prefix and Searching
 This test confirms that both principals and groups can be searched for in
 PAUs that have prefixes.
 
-First we'll create a PAU with a prefix of 'pau1_' and and register:
+First we'll create a PAU with a prefix of `pau1_` and and register:
 
   >>> print http(r"""
   ... POST /++etc++site/default/+/AddPluggableAuthentication.html%3D HTTP/1.1
@@ -328,7 +328,7 @@ principals:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 255
   ... Content-Type: application/x-www-form-urlencoded
-  ... 
+  ...
   ... field.principal.displayed=y&"""
   ... "field.principal.MC5Hcm91cHM_.field.search=&"
   ... "field.principal.MC5Hcm91cHM_.selection=cGF1MV9ncm91cHNfbmljZQ__&"

@@ -10,12 +10,12 @@
       factory=".homefolder.HomeFolder"
       />
 
-  <adapter 
+  <adapter
       for="zope.security.interfaces.IPrincipal"
-      provides="zope.app.traversing.interfaces.IPathAdapter" 
-      factory=".homefolder.getHomeFolder" 
+      provides="zope.app.traversing.interfaces.IPathAdapter"
+      factory=".homefolder.getHomeFolder"
       name="homefolder" />
- 
+
   <localUtility class=".homefolder.HomeFolderManager">
 
     <require
@@ -38,12 +38,12 @@
 
     <browser:widget
       field="homeFolderBase"
-      class=".browser.PathWidget" /> 
+      class=".browser.PathWidget" />
 
   </browser:addform>
 
   <browser:addMenuItem
-      title="Home Folder Manager" 
+      title="Home Folder Manager"
       class=".homefolder.HomeFolderManager"
       permission="zope.ManageServices"
       view="AddHomeFolderManagerForm.html"
@@ -58,7 +58,7 @@
 
     <browser:widget
       field="homeFolderBase"
-      class=".browser.PathWidget" /> 
+      class=".browser.PathWidget" />
 
   </browser:editform>
 
