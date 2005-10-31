@@ -76,10 +76,10 @@ printed events will be in their "natural" order::
   ...         IFiveObjectClonedEvent.providedBy(event)):
   ...         return
   ...     print event.__class__.__name__, object.getId()
-  >>> ztapi.handle([IItem, IObjectMovedEvent], printObjectEvent)
-  >>> ztapi.handle([IItem, IObjectWillBeMovedEvent], printObjectEvent)
-  >>> ztapi.handle([IItem, IFiveObjectClonedEvent], printObjectEvent)
-  >>> ztapi.handle([None, IObjectEvent], printObjectEventExceptSome)
+  >>> ztapi.handle((IItem, IObjectMovedEvent), printObjectEvent)
+  >>> ztapi.handle((IItem, IObjectWillBeMovedEvent), printObjectEvent)
+  >>> ztapi.handle((IItem, IFiveObjectClonedEvent), printObjectEvent)
+  >>> ztapi.handle((None, IObjectEvent), printObjectEventExceptSome)
 
 
 Original behavior
