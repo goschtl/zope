@@ -27,32 +27,14 @@ instance_lib = os.path.join(here, "lib", "python")
 
 sys.path[:0] = [instance_lib, SOFTWARE_HOME]
 
+from zope.testing import testrunner
 
-from zope.app.tests import test
+defaults = ['--tests-pattern', '^f?tests$']
 
-
-testzope = "--testzope" in sys.argv[1:]
-if testzope:
+if "--testzope" in sys.argv[1:]:
     sys.argv.remove("--testzope")
-    test_lib = SOFTWARE_HOME
+    defaults += ['--test-path', SOFTWARE_HOME]
 else:
-    test_lib = instance_lib
+    defaults += ['--test-path', instance_lib]
 
-ftesting = os.path.join(here, "etc", "ftesting.zcml")
-
-test.FTESTING = ftesting
-
-args = sys.argv[:1] + ["-l", test_lib] + sys.argv[1:]
-test.__doc__ += """
-
-One additional option is supported:
-
---testzope
-    When specified, the tests for the installed Zope software are run
-    instead of the tests for the software installed in the instance.
-    This is useful to determine the effects of additional software
-    installation and configuration changes on the base Zope software.
-    Unlike other options, this cannot be abbreviated.
-
-"""
-test.process_args(args)
+sys.exit(testrunner.run(defaults))

@@ -18,14 +18,17 @@ $Id$
 """
 import sys, os
 
-here = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0, os.path.join(here, 'src'))
+here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
-# remove the current directory from the path, otherwise if we try to
-# import the standard library package "test", we get this file instead
-sys.path[:] = [p for p in sys.path if p != here]
+# Remove this directory from path:
+sys.path[:] = [p for p in sys.path if os.path.abspath(p) != here]
 
-import zope.app.testing.test
+# add src to path
+src = os.path.join(here, 'src')
+sys.path.insert(0, src) # put at beginning to avoid one in site_packages
 
-if __name__ == '__main__':
-    zope.app.testing.test.process_args()
+from zope.testing import testrunner
+
+defaults = ['--tests-pattern', '^f?tests$', '--test-path', src]
+
+sys.exit(testrunner.run(defaults))
