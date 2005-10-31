@@ -22,7 +22,7 @@ from zope.i18nmessageid import MessageFactory
 from zope.interface import implements, Interface
 from zope.schema import TextLine, Text, Object, Int, List
 from zope.app.form import CustomWidgetFactory
-from zope.app.form.browser import ObjectWidget
+from Products.Five.form.objectwidget import ObjectWidget
 
 _ = MessageFactory('formtest')
 
