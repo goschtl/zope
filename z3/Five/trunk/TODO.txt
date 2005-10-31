@@ -28,10 +28,6 @@ v1.2
 v1.3
 ----
 
-* fix site traversal issue (philikon)
-
-* fix object widget, list widget
-
 * test whether request with skin works properly (use ++skin++, applySkin, etc.)
 
 * integrate into Zope 2.9 (philikon)
