@@ -2,19 +2,19 @@
     xmlns:zope="http://namespaces.zope.org/zope"
     xmlns="http://namespaces.zope.org/browser">
 
-  <resource 
+  <resource
       name="boston.js"
       file="boston.js"
       layer="zope.app.boston.boston"
       />
 
-  <resource 
+  <resource
       name="skin.css"
       file="skin.css"
       layer="zope.app.boston.boston"
       />
 
-  <resource 
+  <resource
       name="widget.css"
       file="widget.css"
       layer="zope.app.boston.boston"
@@ -57,7 +57,7 @@
       layer="zope.app.boston.boston"
       />
 
-  <resource 
+  <resource
       name="logo.gif"
       file="img/zopelogo.gif"
       layer="zope.app.boston.boston"
@@ -69,10 +69,10 @@
       permission="zope.View"
       class=".standardmacros.StandardMacros"
       allowed_interface="zope.interface.common.mapping.IItemMapping"
-      layer="zope.app.boston.boston" 
+      layer="zope.app.boston.boston"
       />
 
-  <page 
+  <page
       for="*"
       name="skin_macros"
       permission="zope.View"

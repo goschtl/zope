@@ -4,24 +4,24 @@
     i18n_domain="zope">
 
   <configure package="zope.app.rotterdam">
-    <resource 
-        name="xmltree.js" 
-        file="xmltree.js" 
+    <resource
+        name="xmltree.js"
+        file="xmltree.js"
         layer="zope.app.boston.boston"
         />
 
-    <resource 
-        name="pl.gif" 
-        file="pl.gif" 
+    <resource
+        name="pl.gif"
+        file="pl.gif"
         layer="zope.app.boston.boston" />
-    
-    <resource 
-        name="mi.gif" 
+
+    <resource
+        name="mi.gif"
         file="mi.gif"
         layer="zope.app.boston.boston" />
   </configure>
 
-  <resource 
+  <resource
       name="xmltree.css"
       file="xmltree.css"
       layer="zope.app.boston.boston"
@@ -73,12 +73,12 @@
   </pages>
 
   <page
-      name="singleBranchTree.xml" 
+      name="singleBranchTree.xml"
       for="zope.interface.interface.Interface"
       permission="zope.View"
       class="zope.app.rotterdam.xmlobject.XmlObjectView"
       attribute="singleBranchTree"
-      layer="zope.app.boston.boston" 
+      layer="zope.app.boston.boston"
       />
 
 </configure>

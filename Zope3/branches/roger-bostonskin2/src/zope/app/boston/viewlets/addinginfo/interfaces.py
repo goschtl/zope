@@ -11,15 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Boston skin
+"""Boston skin - Adding Info Viewlet
 
 $Id$
 """
-
 __docformat__ = "reStructuredText"
 
 from zope.viewlet.interfaces import IViewlet
-
 
 
 class IAddingInfoViewlet(IViewlet):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional Tests for Boston skin.
 
-$Id:$
+$Id$
 """
 import unittest
 

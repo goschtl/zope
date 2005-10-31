@@ -4,7 +4,7 @@ The Boston Skin
 
 The Boston skin is a new UI for the Zope Management Interface called ZMI.
 Feel free to write comments, ideas and wishes to the zope3-dev mailinglist.
- 
+
     >>> from zope.testbrowser import Browser
     >>> browser = Browser()
     >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')

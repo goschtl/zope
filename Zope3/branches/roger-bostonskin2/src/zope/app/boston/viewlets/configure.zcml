@@ -3,10 +3,10 @@
     xmlns:browser="http://namespaces.zope.org/browser">
 
   <!-- ToolBar viewlets -->
-  <include file="toolbar.zcml" />
-  
+  <include package=".toolbar" />
+
   <!-- Left viewlets -->
-  <include file="xmltree.zcml" />
-  <include file="addinginfo.zcml" />
+  <include package=".xmltree" />
+  <include package=".addinginfo" />
 
 </configure>

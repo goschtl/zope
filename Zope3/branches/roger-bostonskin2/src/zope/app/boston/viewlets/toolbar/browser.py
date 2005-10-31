@@ -30,17 +30,17 @@ class ToolBarViewletManager(object):
 
     def macros(self, name):
         """Use macros in the template as layout components.
-        
+
         Macros are the fastest way to render page templates, they ensure that
         everything get procesed at once in the TAL engine. Aloso offer macros
         in this implementation different layout parts where we use in different
         places, even in a iteration do we use layout macros. All this can't  be
         really done in viewlets itself. Btw, macros are a base concept for
         apply layout to different page template areas. They are developed for
-        this usecase. Viewlets are used for apply the strucutre. 
-        The combination of macros and viewlets is the best way I can think 
-        about right now. It will offer at least a minimum of overhead and a 
-        maximum of flexibility for complex structure and layout task like 
+        this usecase. Viewlets are used for apply the strucutre.
+        The combination of macros and viewlets is the best way I can think
+        about right now. It will offer at least a minimum of overhead and a
+        maximum of flexibility for complex structure and layout task like
         render this nested menu structure.
         """
         return self.template.macros[name]
