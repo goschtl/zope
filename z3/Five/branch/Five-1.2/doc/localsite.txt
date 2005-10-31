@@ -1,0 +1,147 @@
+Local sites in Five
+===================
+
+Zope 3 supports a concept of local sites and site managers.  This is
+mainly to support local services and utilities, that is a service and
+utility which is local to a part of the site, and whose configuration
+is persistent.
+
+Fives support for local sites are partial, the only part we are
+interested in is creating local utilities (services are gone in Zope
+3.1, so we are not interested in creating local services, as that
+would just mean we have to make them into utilities in the near
+future).
+
+There are several steps involved in making a local site.  Several of
+these steps can be performed by the five:localsite directive::
+
+   <five:localsite class=".module.MyClass" />
+
+You then need to make the inctance of your class into a site, by going
+to the instances new manage_localsite.html page (automatically put
+there by the statement above) and press the "Make site" button.
+
+If the page does not appear, make sure the class is Five-traversable::
+
+   <five:traversable class=".module.MyClass" />
+
+
+Detailed instructions
+--------------------- 
+
+If the default actions of five:localsite is not to your liking, you
+can do them all by yourself.  Let's start with the class you want to
+use as a base for your site.  I'll call this the base site class.
+
+1. Make an IPossibleSite class.
+
+   First you need to make the base site class an IPossibleSite.  The
+   interface zope.app.site.interfaces.IPossibleSite defines the
+   methods a local site needs (which is just setSiteManager and
+   getSiteManager).  This enables different sites to have different
+   site managers if needed.
+   
+   You can make it an IPossibleSite in three ways: Direct
+   implementation, inheriting from an IPossibleSite implementation, or
+   structured monkeypatching with the five:localsite statement.
+   
+   a. For direct implementation, just add your implementations if the
+      setSiteManager and getSiteManager methods to your class, and add
+      an implements(IPossibleSite) statement to it.  This makes most
+      sense when the implementation you need are tightly connected to
+      the rest of the class.
+      
+   b. You can inherit from an IPossibleSite implementation, either
+      your own, or the default one
+      (Products.Five.site.localsite.FiveSite).  This makes sense when
+      your class doens't work without being a site.  See the FiveSite
+      implementation for a basic example.
+      
+      class BaseSite(OFS.Folder, Products.Five.site.localsite.FiveSite):
+          pass
+      
+   c. Monkeypatch the class with five:localsite.  You specify wich
+      IPossibeSite implementation to use.  If you don't specify any
+      class, the default FiveSite will be used.  This makes most sense
+      when the class you want to make a site is from some third-party
+      product.
+      
+        <five:localsite class=".module.BaseSiteClass"
+                        site_class=".myown.PossibleSite" />
+
+2. Make the instance an ISite.   
+
+   The marker interface zope.app.site.interfaces.ISite is used to tell
+   that a specific instance is a site.  The IPossibleSite only defines
+   the interface a site needs, but not all instances need to be sites.
+   
+   You can either make your instances sites on a instance by instance
+   basis.  This is done by going to the objects manage_localsite.html.
+   This page is automatically added to all objects that are both
+   IPossibleSites and ITraversable.  (The object needs to be
+   ITraversable to get Five views at all).
+   
+   Press the "Make Site" button, and violà, your object is a site.
+   
+   You can also make it a site by implementing the ISite interface
+   directly on the class.  This makes sense when your class does not
+   work without being an site.  That way, all instances of your class
+   will be sites.
+   
+3. You need a site manager.  A site manager should really implement
+   ISiteManager, but for Five we are only interested in one aspect of
+   sites, namely the services, and in fact only the utility service.
+   Therefore, the site manager only needs to implement
+   IServiceService.
+   
+   There is a default site manager, it's called LocalService, and it's
+   the one used by FiveSite.  Most likely, you want to use that site
+   manager, and that means you probably want to use the FiveSite
+   implementation of IPossibleSite as well.
+   
+   Five in itself uses only one call on LocalService::
+   
+     getService('Utilities')
+     
+   Other getService calls will be redirected to a global service
+   manager and the same goes for getServiceDefinitions() and
+   getInterfaceFor().  The reason for this is that services are
+   deprecated.  You shouldn't create any local services, create local
+   utilities instead. Future versions if Five (like Zope 3.1) will not
+   have any support for services.
+   
+   If you need to have some other functionality from the site manager,
+   you need to write your own.  And you need to write your own
+   IPossibleSite implementation as well.
+   
+   LocalSite will get the local utility service by adapting the
+   context (that is your site object) to IFiveUtilityService.  We
+   recommend that you keep that functionality if you make your own
+   site manager.
+   
+4. Lastly, you will need a local utility service.  This service keeps
+   track of your local utilities.  As usual, a default one exists:
+   Products.Five.site.localsite.SimpleLocalUtilityService.  It simply
+   keeps the utilities as objects in a folder called 'utilities' in
+   your site root.
+   
+   If you want to create your own, it needs to implement
+   IFiveUtilityService, and it needs to be registered as an adapter
+   between your class and IFiveUtilityService.  Of course,
+   five:localsite will register this for you::
+   
+     <five:localsite class=".module.BaseSiteClass"
+                     utility_service=".module.MyUtilityService" />
+
+   or, if your class already implements IPossibleSite, you can also
+   use::
+   
+     <adapter for=".interfaces.IBaseSiteClass"
+              provides="zope.app.utility.interfaces.IFiveUtilityService"
+              fatory=".utilityservice.MyUtilityService" />
+   
+   IFiveUtilityService is an extension of ILocalUtilityService, with a
+   registerUtility() method for simple registration.  We hope that
+   Zope 3 will implement something similar in the future.
+
+That's it, I think.
