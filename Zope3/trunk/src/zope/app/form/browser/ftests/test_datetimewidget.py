@@ -26,6 +26,7 @@ from zope.interface import Interface
 from zope.interface import implements
 
 from zope.schema import Datetime, Choice
+import zope.security.checker
 
 from support import *
 from zope.app.traversing.api import traverse
@@ -50,9 +51,6 @@ class IDatetimeTest(Interface):
         min=datetime(2003, 1, 1, tzinfo=tzinfo(0)),
         max=datetime(2020, 12, 31, tzinfo=tzinfo(0)))
 
-registerEditForm(IDatetimeTest)
-
-
 class DatetimeTest(Persistent):
 
     implements(IDatetimeTest)
@@ -61,9 +59,6 @@ class DatetimeTest(Persistent):
         self.d1 = datetime(2003, 4, 6, tzinfo=tzinfo(0))
         self.d2 = datetime(2003, 8, 6, tzinfo=tzinfo(0))
         self.d3 = None
-
-defineSecurity(DatetimeTest, IDatetimeTest)
-
 
 def getDateForField(field, source):
     """Returns a datetime object for the specified field in source.
@@ -91,6 +86,10 @@ def getDateForField(field, source):
 
 class Test(BrowserTestCase):
 
+    def setUp(self):
+        BrowserTestCase.setUp(self)
+        registerEditForm(IDatetimeTest)
+        defineSecurity(DatetimeTest, IDatetimeTest)
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = DatetimeTest()

@@ -23,6 +23,7 @@ from zope.interface import Interface
 from zope.interface import implements
 
 from zope.schema import Bool
+import zope.security.checker
 from zope.app.form.browser import CheckBoxWidget
 
 from support import *
@@ -39,10 +40,6 @@ class IBoolTest(Interface):
     b2 = Bool(
         required=False)
 
-
-registerEditForm(IBoolTest)
-
-
 class BoolTest(Persistent):
 
     implements(IBoolTest)
@@ -51,11 +48,13 @@ class BoolTest(Persistent):
         self.b1 = True
         self.b2 = False
 
-defineSecurity(BoolTest, IBoolTest)
-
-
 class Test(BrowserTestCase):
 
+
+    def setUp(self):
+        BrowserTestCase.setUp(self)
+        registerEditForm(IBoolTest)
+        defineSecurity(BoolTest, IBoolTest)
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = BoolTest()

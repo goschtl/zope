@@ -25,6 +25,7 @@ from zope.interface import Interface
 from zope.interface import implements
 
 from zope.schema import Int, Choice
+import zope.security.checker
 
 from zope.app.traversing.api import traverse
 
@@ -46,8 +47,6 @@ class IIntTest(Interface):
         min=1,
         max=10)
 
-registerEditForm(IIntTest)
-
 
 class IIntTest2(Interface):
     """Used to test an unusual care where missing_value is -1 and
@@ -57,8 +56,6 @@ class IIntTest2(Interface):
         required=False,
         missing_value=-1,
         values=(10, 20, 30))
-
-registerEditForm(IIntTest2)
 
 
 class IntTest(Persistent):
@@ -70,8 +67,6 @@ class IntTest(Persistent):
         self.i2 = 1
         self.i3 = 2
 
-defineSecurity(IntTest, IIntTest)
-
 
 class IntTest2(Persistent):
 
@@ -80,11 +75,15 @@ class IntTest2(Persistent):
     def __init__(self):
         self.i1 = 10
 
-defineSecurity(IntTest2, IIntTest2)
-
 
 class Test(BrowserTestCase):
 
+    def setUp(self):
+        BrowserTestCase.setUp(self)
+        registerEditForm(IIntTest)
+        registerEditForm(IIntTest2)
+        defineSecurity(IntTest, IIntTest)
+        defineSecurity(IntTest2, IIntTest2)
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = IntTest()

@@ -25,6 +25,7 @@ from zope.interface import implements
 
 from zope.schema.interfaces import IField
 from zope.schema import Field
+import zope.security.checker
 
 from zope.app.form.browser.textwidgets import FileWidget
 
@@ -42,17 +43,10 @@ class FileField(Field):
 
     implements(IFileField)
 
-
-defineWidgetView(IFileField, FileWidget, IInputWidget)
-
-
 class IFileTest(Interface):
 
     f1 = FileField(required=True)
     f2 = FileField(required=False)
-
-registerEditForm(IFileTest)
-
 
 class FileTest(Persistent):
 
@@ -61,8 +55,6 @@ class FileTest(Persistent):
     def __init__(self):
         self.f1 = None
         self.f2 = 'foo'
-
-defineSecurity(FileTest, IFileTest)
 
 
 class SampleTextFile(StringIO):
@@ -80,6 +72,11 @@ class Test(BrowserTestCase):
     emptyFileName = 'empty.txt'
     emptyFile = SampleTextFile('', emptyFileName)
 
+    def setUp(self):
+        BrowserTestCase.setUp(self)
+        defineWidgetView(IFileField, FileWidget, IInputWidget)
+        registerEditForm(IFileTest)
+        defineSecurity(FileTest, IFileTest)
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = FileTest()

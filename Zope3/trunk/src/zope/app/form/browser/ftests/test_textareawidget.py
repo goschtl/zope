@@ -23,6 +23,7 @@ from zope.interface import Interface
 from zope.interface import implements
 
 from zope.schema import Text
+import zope.security.checker
 
 from support import *
 from zope.app.traversing.api import traverse
@@ -44,8 +45,6 @@ class ITextTest(Interface):
         min_length=2,
         max_length=10)
 
-registerEditForm(ITextTest)
-
 
 class TextTest(Persistent):
 
@@ -56,11 +55,13 @@ class TextTest(Persistent):
         self.s2 = u'foo'
         self.s3 = None
 
-defineSecurity(TextTest, ITextTest)
-
 
 class Test(BrowserTestCase):
 
+    def setUp(self):
+        BrowserTestCase.setUp(self)
+        registerEditForm(ITextTest)
+        defineSecurity(TextTest, ITextTest)
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = TextTest()

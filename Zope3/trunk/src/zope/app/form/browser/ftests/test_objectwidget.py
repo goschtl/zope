@@ -20,6 +20,7 @@ import unittest, doctest
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.schema import Object, TextLine
+import zope.security.checker
 from zope.app.form.browser import ObjectWidget
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.form.browser.tests import support

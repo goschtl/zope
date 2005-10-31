@@ -21,6 +21,7 @@ import transaction
 
 from zope.interface import Interface, implements
 from zope.schema import TextLine, Choice
+import zope.security.checker
 
 from support import *
 from zope.app.traversing.api import traverse
@@ -43,8 +44,6 @@ class ITextLineTest(Interface):
         min_length=2,
         max_length=10)
 
-registerEditForm(ITextLineTest)
-
 
 class TextLineTest(Persistent):
 
@@ -55,10 +54,14 @@ class TextLineTest(Persistent):
         self.s2 = u'foo'
         self.s3 = None
 
-defineSecurity(TextLineTest, ITextLineTest)
-
 
 class Test(BrowserTestCase):
+
+
+    def setUp(self):
+        BrowserTestCase.setUp(self)
+        registerEditForm(ITextLineTest)
+        defineSecurity(TextLineTest, ITextLineTest)
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = TextLineTest()

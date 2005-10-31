@@ -25,6 +25,7 @@ from zope.interface import Interface
 from zope.interface import implements
 
 from zope.schema import Bool
+import zope.security.checker
 
 from zope.app.traversing.api import traverse
 
@@ -35,10 +36,6 @@ class IFoo(Interface):
 
     bar = Bool(title=u'Bar')
 
-registerEditForm(IFoo, widgets={
-    'bar': { 'class': 'zope.app.form.browser.BooleanRadioWidget' }})
-
-
 class Foo(Persistent):
 
     implements(IFoo)
@@ -46,11 +43,13 @@ class Foo(Persistent):
     def __init__(self):
         self.bar = True
 
-defineSecurity(Foo, IFoo)
-
-
 class Test(BrowserTestCase):
 
+    def setUp(self):
+        BrowserTestCase.setUp(self)
+        registerEditForm(IFoo, widgets={
+            'bar': { 'class': 'zope.app.form.browser.BooleanRadioWidget' }})
+        defineSecurity(Foo, IFoo)
 
     def test_display_editform(self):
         self.getRootFolder()['foo'] = Foo()

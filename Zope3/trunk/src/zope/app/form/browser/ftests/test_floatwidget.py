@@ -25,6 +25,7 @@ from zope.interface import Interface
 from zope.interface import implements
 
 from zope.schema import Float, Choice
+import zope.security.checker
 
 from zope.app.traversing.api import traverse
 
@@ -46,8 +47,6 @@ class IFloatTest(Interface):
         values=(0.0, 1.1, 2.1, 3.1, 5.1, 7.1, 11.1),
         missing_value=0)
 
-registerEditForm(IFloatTest)
-
 
 class FloatTest(Persistent):
 
@@ -58,11 +57,13 @@ class FloatTest(Persistent):
         self.f2 = 1.1
         self.f3 = 2.1
 
-defineSecurity(FloatTest, IFloatTest)
-
 
 class Test(BrowserTestCase):
 
+    def setUp(self):
+        BrowserTestCase.setUp(self)
+        registerEditForm(IFloatTest)
+        defineSecurity(FloatTest, IFloatTest)
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = FloatTest()

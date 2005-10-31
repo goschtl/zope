@@ -29,7 +29,7 @@ from zope.security.management import endInteraction, getInteraction
 from zope.security.proxy import removeSecurityProxy
 from zope.security.proxy import getChecker
 from zope.security.proxy import Proxy
-from zope.security.checker import defineChecker, ProxyFactory
+from zope.security.checker import defineChecker, undefineChecker, ProxyFactory
 from zope.security.checker import canWrite, canAccess
 from zope.security.checker import BasicTypes, _checkers, NoProxy, _clear
 import types, pickle
@@ -368,6 +368,19 @@ class Test(TestCase, CleanUp):
         proxy = ProxyFactory(obj, specific_checker)
         self.assert_(type(proxy) is Proxy)
         self.assert_(getChecker(proxy) is specific_checker)
+
+    def test_define_and_undefineChecker(self):
+        class SomeClass(object):
+            pass
+        obj = SomeClass()
+
+        checker = NamesChecker()
+        from zope.security.checker import _defaultChecker, selectChecker
+        self.assert_(selectChecker(obj) is _defaultChecker)
+        defineChecker(SomeClass, checker)
+        self.assert_(selectChecker(obj) is checker)
+        undefineChecker(SomeClass)
+        self.assert_(selectChecker(obj) is _defaultChecker)
 
     def test_ProxyFactory_using_proxy(self):
         class SomeClass(object):

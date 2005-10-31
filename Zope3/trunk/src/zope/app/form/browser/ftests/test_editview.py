@@ -23,6 +23,7 @@ from zope.interface import Interface
 from zope.interface import implements
 
 from zope.schema import TextLine
+import zope.security.checker
 
 from support import *
 from zope.app.traversing.api import traverse
@@ -35,20 +36,16 @@ class IFoo(Interface):
     optional_text = TextLine(required=False)
     required_text = TextLine(required=True)
 
-
-registerEditForm(IFoo)
-
-
 class Foo(Persistent):
 
     implements(IFoo)
 
-
-defineSecurity(Foo, IFoo)
-
-
 class Test(BrowserTestCase):
 
+    def setUp(self):
+        BrowserTestCase.setUp(self)
+        registerEditForm(IFoo)
+        defineSecurity(Foo, IFoo)
 
     def test_rollback_on_error(self):
         """Tests rollback when a widget error occurs.
