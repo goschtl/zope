@@ -114,6 +114,15 @@ Zope Changes
         be used by the client for API discovering, through three 
         methods: listAllMethods, methodHelp and methodSignature 
 
+      - The publisher machinery is now completely pluggable. Publishers can be
+        registered and configured through ZCML (using the new 'publisher' ZCML
+        directive.  see zope/app/publication/configure.zcml). Publishers are
+        registered for a sequence of request methods and a configurable list
+        of mimetypes.  To register multiple publishers for the same request
+        method and the same mimetype (e.g. POST+text/xml: SOAP, XMLRPC)
+        publishers can be prioritized and publishers can introspect the request
+        environment to decide if they can handle a request or not.
+
     Restructuring
 
       - Mutable MessageIDs have been deprecated and will be removed in
@@ -137,14 +146,6 @@ Zope Changes
 
         See zope/i18nmessageid/messages.txt for more information.
 
-      - The publisher machinery is now completely pluggable. Publishers can be
-        registered and configured through ZCML (using the new 'publisher' ZCML
-        directive.  see zope/app/publication/configure.zcml). Publishers are
-        registered for a sequence of request methods and a configurable list
-        of mimetypes.  To register multiple publishers for the same request
-        method and the same mimetype (e.g. POST+text/xml: SOAP, XMLRPC)
-        publishers can be prioritized and publishers can introspect the request
-        environment to decide if they can handle a request or not.
 
     Bug Fixes
 
