@@ -17,9 +17,9 @@ Run tests with the (temporarily) forked new-and-improved test runner
 and supporting 'zope.testing' package, now located at
 Products.Five.testing.
 
-To run tests, use the ``zopectl`` script:
+To run tests, use the ``zopectl`` script::
 
-  $ bin/zopectl run Products/Five/runtests.py -s Products/Five
+  $ bin/zopectl run Products/Five/runtests.py -v -s Products.Five
 
 $Id$
 """
