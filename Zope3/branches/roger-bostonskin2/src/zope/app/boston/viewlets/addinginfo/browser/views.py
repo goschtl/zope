@@ -22,11 +22,12 @@ from zope.app.container.interfaces import IAdding
 from zope.app.zapi import queryMultiAdapter
 
 from zope.app.i18n import ZopeMessageFactory as _
+from zope.app.boston import OrderedViewlet
 from zope.app.boston.viewlets.addinginfo.interfaces import IAddingInfoViewlet
 
 
 
-class AddingInfoViewlet(object):
+class AddingInfoViewlet(OrderedViewlet):
     """I18n info viewlet."""
 
     implements(IAddingInfoViewlet)

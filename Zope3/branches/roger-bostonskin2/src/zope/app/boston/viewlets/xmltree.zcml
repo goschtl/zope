@@ -23,7 +23,7 @@
 
   <resource 
       name="xmltree.css"
-      file="xmltree/browser/xmltree.css"
+      file="xmltree.css"
       layer="zope.app.boston.boston"
       />
 
@@ -31,8 +31,8 @@
       name="xmltree.css"
       for="*"
       manager="zope.app.boston.ICSS"
-      permission="zope.Public"
       class="..BostonXMLTreeCSSViewlet"
+      permission="zope.Public"
       layer="zope.app.boston.boston"
       weight="0"
       />
@@ -41,7 +41,7 @@
       name="xmltree"
       for="*"
       manager="zope.app.boston.IJavaScript"
-      template="xmltree/browser/javascript.pt"
+      class="..BostonXMLTreeJavaScriptViewlet"
       permission="zope.View"
       layer="zope.app.boston.boston"
       />
@@ -50,7 +50,8 @@
       name="xmltree"
       for="*"
       manager="zope.app.boston.ILeft"
-      template="xmltree/browser/viewlet.pt"
+      class="zope.app.boston.OrderedViewlet"
+      template="xmltree.pt"
       permission="zope.View"
       layer="zope.app.boston.boston"
       weight="1"

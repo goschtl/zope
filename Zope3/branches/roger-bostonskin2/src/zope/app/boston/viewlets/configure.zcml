@@ -2,8 +2,11 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser">
 
+  <!-- ToolBar viewlets -->
+  <include file="toolbar.zcml" />
+  
+  <!-- Left viewlets -->
   <include file="xmltree.zcml" />
   <include file="addinginfo.zcml" />
-  <include file="toolbar.zcml" />
 
 </configure>

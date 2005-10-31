@@ -48,6 +48,7 @@
   <viewletManager
       name="zope.app.boston.ILeft"
       provides="zope.app.boston.ILeft"
+      class="zope.app.boston.LeftViewletManager"
       layer="zope.app.boston.boston"
       permission="zope.Public"
       />

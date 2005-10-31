@@ -1,3 +1,0 @@
-<script type="text/javascript" src="xmltree.js"
-        tal:attributes="src string:${context/++resource++xmltree.js}" >
-</script>

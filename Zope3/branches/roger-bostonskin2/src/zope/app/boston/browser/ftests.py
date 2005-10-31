@@ -57,13 +57,13 @@ class TestBostonSkin(BrowserTestCase):
     def test_css_pagelets(self):
         response = self.publish('/++skin++Boston/', basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(response.getBody().find('@import url(http://localhost/++skin++Boston/@@/skin.css)') != -1)
-        self.assert_(response.getBody().find('@import url(http://localhost/++skin++Boston/@@/widget.css)') != -1)
+        self.assert_(response.getBody().find('href="http://localhost/++skin++Boston/@@/skin.css"') != -1)
+        self.assert_(response.getBody().find('href="http://localhost/++skin++Boston/@@/widget.css"') != -1)
 
     def test_javascrip_pagelets(self):
         response = self.publish('/++skin++Boston/', basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(response.getBody().find('src="http://localhost/++skin++Boston/@@/toggle.js') != -1)
+        self.assert_(response.getBody().find('src="http://localhost/++skin++Boston/@@/boston.js"') != -1)
 
     def test_left_boxes(self):
         # Add a folder
@@ -76,17 +76,11 @@ class TestBostonSkin(BrowserTestCase):
         response = self.publish('/++skin++Boston/', basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
 
-        # test zmitree cookie box
-        self.assert_(response.getBody().find('id="zmicookietreebox"') != -1)
+        # test xmltree box
+        self.assert_(response.getBody().find('id="xmltree"') != -1)
 
-        # test add box
-        self.assert_(response.getBody().find('id="addbox"') != -1)
-
-        # test tooltip box. Ah I found one in the role permission view
-        response = self.publish('/++skin++Boston/++etc++site/@@AllRolePermissions.html',
-                                basic='mgr:mgrpw')
-        self.assertEqual(response.getStatus(), 200)
-        self.assert_(response.getBody().find('id="tooltipbox"') != -1)
+        # test addinginfo box
+        self.assert_(response.getBody().find('id="addinginfo"') != -1)
 
 
 

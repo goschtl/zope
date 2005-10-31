@@ -18,6 +18,7 @@ $Id$
 
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.viewlet import manager
 from zope.viewlet import viewlet
 from zope.viewlet.interfaces import IViewletManager
 
@@ -53,6 +54,22 @@ class ILeft(IViewletManager):
     """Left viewlet manager."""
 
 
+class LeftViewletManager(manager.ViewletManagerBase):
+    """Ordered viewlet."""
+
+    def sort(self, viewlets):
+        """Sort the viewlets on their weight."""
+        return sorted(viewlets, lambda x, y: cmp(x[1].getWeight(), y[1].getWeight()))
+
+
+class OrderedViewlet(viewlet.ViewletBase):
+    """Ordered viewlet."""
+
+    def getWeight(self):
+        """REturns the weight of the viewlet."""
+        return int(self.weight)
+
+
 BostonSkinCSSViewlet = viewlet.CSSViewlet('skin.css', 'all')
 
 BostonWidgetCSSViewlet = viewlet.CSSViewlet('widget.css', 'all')
@@ -62,3 +79,5 @@ BostonXMLTreeCSSViewlet = viewlet.CSSViewlet('xmltree.css', 'all')
 BostonToolBarCSSViewlet = viewlet.CSSViewlet('toolbar.css', 'all')
 
 BostonJavascriptViewlet = viewlet.JavaScriptViewlet('boston.js')
+
+BostonXMLTreeJavaScriptViewlet = viewlet.JavaScriptViewlet('xmltree.js')

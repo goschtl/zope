@@ -1,4 +1,0 @@
-<style type="text/css" media="all" 
-       tal:content="string: @import url(${context/++resource++toolbar.css});">
-  @import url(toolbar.css);
-</style>

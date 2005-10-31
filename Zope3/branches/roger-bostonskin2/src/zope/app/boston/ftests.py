@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2005 Zope Corporation and Contributors.
+# Copyright (c) 2003, 2004,2005 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,8 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Boston skin viewlet
+"""Functional Tests for Boston skin.
 
-$Id$
+$Id:$
 """
-    
+import unittest
+
+from zope.testing import doctest
+from zope.app.testing.functional import FunctionalDocFileSuite
+
+
+def test_suite():
+    return unittest.TestSuite((
+        FunctionalDocFileSuite(
+            "README.txt",
+            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE),
+        ))
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')
