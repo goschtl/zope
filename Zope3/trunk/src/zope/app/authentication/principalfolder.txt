@@ -20,7 +20,7 @@ and add then in map fashion to a principal folder:
 
 Authentication
 --------------
-Principal folders provide the `IAuthenticationPlugin` interface. When we 
+Principal folders provide the `IAuthenticatorPlugin` interface. When we
 provide suitable credentials:
 
   >>> from zope.testing.doctestunit import pprint
@@ -34,7 +34,7 @@ within the folder.
 
 None is returned if the credentials are invalid:
 
-  >>> principals.authenticateCredentials({'login': 'login1', 
+  >>> principals.authenticateCredentials({'login': 'login1',
   ...                                     'password': '1234'})
   >>> principals.authenticateCredentials(42)
 
@@ -125,10 +125,10 @@ Credentials can be changed by modifying principal-information objects:
   >>> principals.authenticateCredentials({'login': 'bob', 'password': 'eek'})
   PrincipalInfo(u'principal.p1')
 
-  >>> principals.authenticateCredentials({'login': 'login1', 
+  >>> principals.authenticateCredentials({'login': 'login1',
   ...                                     'password': 'eek'})
 
-  >>> principals.authenticateCredentials({'login': 'bob', 
+  >>> principals.authenticateCredentials({'login': 'bob',
   ...                                     'password': '123'})
 
 
@@ -146,8 +146,8 @@ If such an attempt is made, the data are unchanged:
 
 Removing principals
 -------------------
-If course, if a principal is removed, we can no-longer authenticate it:
+Of course, if a principal is removed, we can no-longer authenticate it:
 
   >>> del principals['p1']
-  >>> principals.authenticateCredentials({'login': 'bob', 
+  >>> principals.authenticateCredentials({'login': 'bob',
   ...                                     'password': 'eek'})
