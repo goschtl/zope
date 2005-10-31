@@ -71,18 +71,6 @@ class ISizableDirective(Interface):
 class IContainerEventsDirective(Interface):
     """Global switch to enable container events
     """
-    transitional = Bool(
-        title=u"Transitional",
-        required=False,
-        )
-
-class IContainerEventAwareDirective(Interface):
-    """Send events for these contained content classes (transitional).
-    """
-    class_ = GlobalObject(
-        title=u"Class",
-        required=True,
-        )
 
 class IDeprecatedManageAddDeleteDirective(Interface):
     """Call manage_afterAdd & co for these contained content classes.

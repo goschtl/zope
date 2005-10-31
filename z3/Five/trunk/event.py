@@ -116,31 +116,47 @@ from ZODB.POSException import ConflictError
 from OFS.ObjectManager import BeforeDeleteException
 from OFS import Moniker
 from OFS.CopySupport import CopyError # Yuck, a string exception
-from OFS.CopySupport import eNoData, eNotFound, eInvalid, _cb_decode
-from OFS.CopySupport import cookie_path, sanity_check
+from OFS.CopySupport import eNoData, eNotFound, eInvalid, eNotSupported
+from OFS.CopySupport import cookie_path, sanity_check, _cb_decode
 from webdav.Lockable import ResourceLockedError
 FIVE_ORIGINAL_PREFIX = '__five_original_'
 
 
-previousConfigInfos = []
-containerEventsTransitional = None
-containerEventAwareClasses = []
+hasContainerEvents = False
 deprecatedManageAddDeleteClasses = []
 
 
 def hasDeprecatedMethods(ob):
     """Do we need to call the deprecated methods?
     """
-    if containerEventsTransitional:
-        for class_ in containerEventAwareClasses:
-            if isinstance(ob, class_):
-                return False
-        return True
-    else:
-        for class_ in deprecatedManageAddDeleteClasses:
-            if isinstance(ob, class_):
-                return True
-        return False
+    for class_ in deprecatedManageAddDeleteClasses:
+        if isinstance(ob, class_):
+            return True
+    return False
+
+def maybeCallDeprecated(method_name, ob, *args):
+    """Call a deprecated method, if the framework doesn't call it already.
+    """
+    if hasDeprecatedMethods(ob):
+        # Already deprecated through zcml
+        return
+    method = getattr(ob, method_name)
+    if isFiveMethod(method):
+        # Monkey-patched method
+        return
+    if deprecatedManageAddDeleteClasses:
+        # Not deprecated through zcml and directives fully loaded
+        class_ = ob.__class__
+        warnings.warn(
+            "Calling %s.%s.%s is deprecated when using Five, "
+            "instead use event subscribers or "
+            "mark the class with <five:deprecatedManageAddDelete/>"
+            % (class_.__module__, class_.__name__, method_name),
+            DeprecationWarning)
+    # Note that calling the method can lead to incorrect behavior
+    # but in the most common case that's better than not calling it.
+    method(ob, *args)
+
 
 ##################################################
 # Adapters and subscribers
@@ -210,14 +226,7 @@ def callManageAfterAdd(ob, event):
     if container is None:
         # this is a remove
         return
-    if not isFiveMethod(ob.manage_afterAdd):
-        warnings.warn(
-            "Calling %s.manage_afterAdd is deprecated when using Five, "
-            "use an IObjectAddedEvent subscriber instead."
-            % ob.__class__.__name__,
-            DeprecationWarning)
-    item = event.object
-    ob.manage_afterAdd(item, container)
+    ob.manage_afterAdd(event.object, container)
 
 def callManageBeforeDelete(ob, event):
     """Compatibility subscriber for manage_beforeDelete.
@@ -226,15 +235,8 @@ def callManageBeforeDelete(ob, event):
     if container is None:
         # this is an add
         return
-    if not isFiveMethod(ob.manage_beforeDelete):
-        warnings.warn(
-            "Calling %s.manage_beforeDelete is deprecated when using Five, "
-            "use an IObjectWillBeRemovedEvent subscriber instead."
-            % ob.__class__.__name__,
-            DeprecationWarning)
-    item = event.object
     try:
-        ob.manage_beforeDelete(item, container)
+        ob.manage_beforeDelete(event.object, container)
     except BeforeDeleteException:
         raise
     except ConflictError:
@@ -249,15 +251,7 @@ def callManageBeforeDelete(ob, event):
 def callManageAfterClone(ob, event):
     """Compatibility subscriber for manage_afterClone.
     """
-    if not isFiveMethod(ob.manage_afterClone):
-        warnings.warn(
-            "Calling %s.manage_afterClone is deprecated when using Five, "
-            "use an IFiveObjectClonedEvent subscriber instead, or "
-            "better, an IObjectCopiedEvent or IObjectAddedEvent subscriber."
-            % ob.__class__.__name__,
-            DeprecationWarning)
-    item = event.object
-    ob.manage_afterClone(item)
+    ob.manage_afterClone(event.object)
 
 
 ##################################################
@@ -265,23 +259,36 @@ def callManageAfterClone(ob, event):
 
 _marker = object()
 
-# From ObjectManager
+# From ObjectManager / Item
 def manage_afterAdd(self, item, container):
     # Don't do recursion anymore, a subscriber does that.
-    # A warning is sent by the subscriber
     pass
 
-# From ObjectManager
+# From ObjectManager / Item
 def manage_beforeDelete(self, item, container):
     # Don't do recursion anymore, a subscriber does that.
-    # A warning is sent by the subscriber
     pass
 
-# From ObjectManager
+# From ObjectManager / Item
 def manage_afterClone(self, item):
     # Don't do recursion anymore, a subscriber does that.
-    # A warning is sent by the subscriber
     pass
+
+# From CatalogAware / CatalogPathAware
+def CA_manage_afterAdd(self, item, container):
+    # Don't do recursion anymore, a subscriber does that.
+    self.index_object()
+
+# From CatalogAware / CatalogPathAware
+def CA_manage_beforeDelete(self, item, container):
+    # Don't do recursion anymore, a subscriber does that.
+    self.unindex_object()
+
+# From CatalogAware / CatalogPathAware
+def CA_manage_afterClone(self, item):
+    # Don't do recursion anymore, a subscriber does that.
+    self.index_object()
+
 
 # From ObjectManager
 def _setObject(self, id, object, roles=None, user=None, set_owner=1,
@@ -327,7 +334,7 @@ def _setObject(self, id, object, roles=None, user=None, set_owner=1,
     if not suppress_events:
         notify(ObjectAddedEvent(ob, self, id))
 
-    # manage_afterAdd was here
+    maybeCallDeprecated('manage_afterAdd', ob, self)
 
     return id
 
@@ -368,7 +375,7 @@ def BT_setObject(self, id, object, roles=None, user=None, set_owner=1,
     if not suppress_events:
         notify(ObjectAddedEvent(ob, self, id))
 
-    # manage_afterAdd was here
+    maybeCallDeprecated('manage_afterAdd', ob, self)
 
     return id
 
@@ -381,7 +388,7 @@ def _delObject(self, id, dp=1, suppress_events=False):
     """
     ob = self._getOb(id)
 
-    # manage_beforeDelete was here
+    maybeCallDeprecated('manage_beforeDelete', ob, self)
 
     if not suppress_events:
         notify(ObjectWillBeRemovedEvent(ob, self, id))
@@ -408,7 +415,7 @@ def _delObject(self, id, dp=1, suppress_events=False):
 def BT_delObject(self, id, dp=1, suppress_events=False):
     ob = self._getOb(id)
 
-    # manage_beforeDelete was here
+    maybeCallDeprecated('manage_beforeDelete', ob, self)
 
     if not suppress_events:
         notify(ObjectWillBeRemovedEvent(ob, self, id))
@@ -537,6 +544,8 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
 
             ob._postCopy(self, op=0)
 
+            maybeCallDeprecated('manage_afterClone', ob)
+
             notify(FiveObjectClonedEvent(ob))
 
         if REQUEST is not None:
@@ -635,9 +644,78 @@ def manage_clone(self, ob, id, REQUEST=None):
 
     ob._postCopy(self, op=0)
 
+    maybeCallDeprecated('manage_afterClone', ob)
+
     notify(FiveObjectClonedEvent(ob))
 
     return ob
+
+##################################################
+# Fix OFS.Application's creation of some objects.
+#
+# The application object creates root objects like error_log,
+# browser_id_manager, session_data_manager
+#
+# They all expects their manage_afterAdd to be called, but they are
+# created before Five 1.2 is initialized and has had a chance to do its
+# patches. So we call manage_afterAddd by hand.
+#
+# Remove this in Five 1.3, where subscribers and implements()
+# will be setup correctly earlier.
+
+def install_errorlog(self):
+    app = self.getApp()
+    if app._getInitializerFlag('error_log'):
+        # do nothing if we've already installed one
+        return
+    # Install an error_log
+    if not hasattr(app, 'error_log'):
+        from Products.SiteErrorLog.SiteErrorLog import SiteErrorLog
+        error_log = SiteErrorLog()
+        app._setObject('error_log', error_log)
+        # Added for Five 1.2:
+        error_log = app.error_log
+        error_log.manage_afterAdd(error_log, app)
+        # End added
+        app._setInitializerFlag('error_log')
+        self.commit('Added site error_log at /error_log')
+
+def install_browser_id_manager(self):
+    app = self.getApp()
+    if app._getInitializerFlag('browser_id_manager'):
+        # do nothing if we've already installed one
+        return
+    # Ensure that a browser ID manager exists
+    if not hasattr(app, 'browser_id_manager'):
+        from Products.Sessions.BrowserIdManager import BrowserIdManager
+        bid = BrowserIdManager('browser_id_manager', 'Browser Id Manager')
+        app._setObject('browser_id_manager', bid)
+        # Added for Five 1.2:
+        browser_id_manager = app.browser_id_manager
+        browser_id_manager.manage_afterAdd(browser_id_manager, app)
+        # End added
+        app._setInitializerFlag('browser_id_manager')
+        self.commit('Added browser_id_manager')
+
+def install_session_data_manager(self):
+    app = self.getApp()
+    if app._getInitializerFlag('session_data_manager'):
+        # do nothing if we've already installed one
+        return
+    # Ensure that a session data manager exists
+    if not hasattr(app, 'session_data_manager'):
+        from Products.Sessions.SessionDataManager import SessionDataManager
+        sdm = SessionDataManager('session_data_manager',
+            title='Session Data Manager',
+            path='/temp_folder/session_data',
+            requestName='SESSION')
+        app._setObject('session_data_manager', sdm)
+        # Added for Five 1.2:
+        session_data_manager = app.session_data_manager
+        session_data_manager.manage_afterAdd(session_data_manager, app)
+        # End added
+        app._setInitializerFlag('session_data_manager')
+        self.commit('Added session_data_manager')
 
 ##################################################
 # Structured monkey-patching
@@ -649,27 +727,19 @@ from zope.testing.cleanup import addCleanUp
 
 _monkied = []
 
+from OFS.SimpleItem import Item
 from OFS.ObjectManager import ObjectManager
 from OFS.CopySupport import CopyContainer
 from OFS.OrderSupport import OrderSupport
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
+from OFS.Application import AppInitializer
+from Products.ZCatalog import CatalogAwareness, CatalogPathAwareness
 
-def doMonkies(transitional, info=None, register_cleanup=True):
+def doMonkies(transitional, register_cleanup=True):
     """Monkey patch various methods to provide container events.
-
-    If passed, ``info`` is a zconfig information about where the
-    declaration was made.
     """
-    global containerEventsTransitional
-    if containerEventsTransitional is not None:
-        if containerEventsTransitional != transitional:
-            from zope.configuration.config import ConfigurationConflictError
-            conflicts = {'five:containerEvents': previousConfigInfos}
-            raise ConfigurationConflictError(conflicts)
-    if info is not None:
-        previousConfigInfos.append(info)
-
-    containerEventsTransitional = transitional
+    global hasContainerEvents
+    hasContainerEvents = True
 
     patchMethod(ObjectManager, '_setObject',
                 _setObject)
@@ -680,6 +750,13 @@ def doMonkies(transitional, info=None, register_cleanup=True):
     patchMethod(ObjectManager, 'manage_beforeDelete',
                 manage_beforeDelete)
     patchMethod(ObjectManager, 'manage_afterClone',
+                manage_afterClone)
+
+    patchMethod(Item, 'manage_afterAdd',
+                manage_afterAdd)
+    patchMethod(Item, 'manage_beforeDelete',
+                manage_beforeDelete)
+    patchMethod(Item, 'manage_afterClone',
                 manage_afterClone)
 
     patchMethod(BTreeFolder2Base, '_setObject',
@@ -696,6 +773,26 @@ def doMonkies(transitional, info=None, register_cleanup=True):
 
     patchMethod(OrderSupport, '_old_manage_renameObject',
                 manage_renameObject)
+
+    patchMethod(AppInitializer, 'install_errorlog',
+                install_errorlog)
+    patchMethod(AppInitializer, 'install_browser_id_manager',
+                install_browser_id_manager)
+    patchMethod(AppInitializer, 'install_session_data_manager',
+                install_session_data_manager)
+
+    patchMethod(CatalogAwareness.CatalogAware, 'manage_afterAdd',
+                CA_manage_afterAdd)
+    patchMethod(CatalogAwareness.CatalogAware, 'manage_beforeDelete',
+                CA_manage_beforeDelete)
+    patchMethod(CatalogAwareness.CatalogAware, 'manage_afterClone',
+                CA_manage_afterClone)
+    patchMethod(CatalogPathAwareness.CatalogAware, 'manage_afterAdd',
+                CA_manage_afterAdd)
+    patchMethod(CatalogPathAwareness.CatalogAware, 'manage_beforeDelete',
+                CA_manage_beforeDelete)
+    patchMethod(CatalogPathAwareness.CatalogAware, 'manage_afterClone',
+                CA_manage_afterClone)
 
     # XXX remove this for Five 1.3, and put it in configure.zcml
     zcml.load_config('event.zcml', Products.Five)
@@ -715,10 +812,8 @@ def patchMethod(class_, name, new_method):
 def undoMonkies():
     """Undo monkey patches.
     """
-    global containerEventsTransitional
+    global hasContainerEvents
     for class_, name in _monkied:
         killMonkey(class_, name, FIVE_ORIGINAL_PREFIX + name)
-    containerEventsTransitional = None
-    containerEventAwareClasses[:] = []
+    hasContainerEvents = False
     deprecatedManageAddDeleteClasses[:] = []
-    previousConfigInfos[:] = []

@@ -28,13 +28,15 @@ from OFS.Folder import Folder
 from OFS.OrderedFolder import OrderedFolder
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2
 
-class NotifyBase(object):
+class DontComplain(object):
     def _verifyObjectPaste(self, object, validate_src=1):
         pass
     def cb_isMoveable(self):
         return True
     def cb_isCopyable(self):
         return True
+
+class NotifyBase(DontComplain):
     def manage_afterAdd(self, item, container):
         print 'old manage_afterAdd %s %s %s' % (self.getId(), item.getId(),
                                                 container.getId())
@@ -64,6 +66,15 @@ class MyBTreeFolder(NotifyBase, BTreeFolder2):
 class MyContent(NotifyBase, SimpleItem):
     def __init__(self, id):
         self._setId(id)
+
+# These don't have manage_beforeDelete & co methods
+
+class MyNewContent(DontComplain, SimpleItem):
+    def __init__(self, id):
+        self._setId(id)
+
+class MyNewFolder(DontComplain, Folder):
+    pass
 
 
 def test_suite():
