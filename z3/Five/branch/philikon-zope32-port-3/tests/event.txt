@@ -111,7 +111,6 @@ printed events will be in their "natural" order.
   >>> from Products.Five.event import IObjectWillBeMovedEvent
   >>> from Products.Five.event import IFiveObjectClonedEvent
   >>> from OFS.interfaces import IItem
-  >>> from zope.app.testing import ztapi
   >>> def printObjectEvent(object, event):
   ...     print event.__class__.__name__, object.getId()
   >>> def printObjectEventExceptSome(object, event):
@@ -120,10 +119,12 @@ printed events will be in their "natural" order.
   ...         IFiveObjectClonedEvent.providedBy(event)):
   ...         return
   ...     print event.__class__.__name__, object.getId()
-  >>> ztapi.handle([IItem, IObjectMovedEvent], printObjectEvent)
-  >>> ztapi.handle([IItem, IObjectWillBeMovedEvent], printObjectEvent)
-  >>> ztapi.handle([IItem, IFiveObjectClonedEvent], printObjectEvent)
-  >>> ztapi.handle([None, IObjectEvent], printObjectEventExceptSome)
+
+  >>> from zope.component import provideHandler
+  >>> provideHandler(printObjectEvent, (IItem, IObjectMovedEvent))
+  >>> provideHandler(printObjectEvent, (IItem, IObjectWillBeMovedEvent))
+  >>> provideHandler(printObjectEvent, (IItem, IFiveObjectClonedEvent))
+  >>> provideHandler(printObjectEventExceptSome, (None, IObjectEvent))
 
 Phase 1
 -------
