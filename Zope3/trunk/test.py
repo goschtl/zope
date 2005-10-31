@@ -16,7 +16,7 @@
 
 $Id$
 """
-import sys, os
+import sys, os, warnings
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
@@ -30,5 +30,9 @@ sys.path.insert(0, src) # put at beginning to avoid one in site_packages
 from zope.testing import testrunner
 
 defaults = ['--tests-pattern', '^f?tests$', '--test-path', src]
+
+# Get rid of twisted.conch.ssh warning
+warnings.filterwarnings(
+    'ignore', 'PyCrypto', RuntimeWarning, 'twisted[.]conch[.]ssh')
 
 sys.exit(testrunner.run(defaults))

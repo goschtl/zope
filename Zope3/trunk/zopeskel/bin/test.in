@@ -16,7 +16,7 @@
 
 $Id$
 """
-import sys, os
+import sys, os, warnings
 
 here = os.path.dirname(os.path.realpath(__file__))
 here = os.path.dirname(here)
@@ -36,5 +36,9 @@ if "--testzope" in sys.argv[1:]:
     defaults += ['--test-path', SOFTWARE_HOME]
 else:
     defaults += ['--test-path', instance_lib]
+
+# Get rid of twisted.conch.ssh warning
+warnings.filterwarnings(
+    'ignore', 'PyCrypto', RuntimeWarning, 'twisted[.]conch[.]ssh')
 
 sys.exit(testrunner.run(defaults))
