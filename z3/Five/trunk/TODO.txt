@@ -17,14 +17,12 @@ v1.2
 
   - get rid of deprecation warnings
 
+  - add CHANGES.txt entry
+
 * five:registerClass (yuppie)
 
   - functional test that checks the ZMI if there really is an entry in
     the add menu?
-
-* marker utility (whit, gotcha)
-
-  - add CHANGES.txt entry
 
 * make rendering of resource urls support sites?
 
@@ -42,7 +40,7 @@ v1.3
 
 * marker utility
 
-  - replace interfaceToName by import (see BBB note)
+  - import interfaceToName from zope.app.component.interface
 
   - add 'manage_interfaces' to ZMI tabs in Zope 2.9 (yuppie)
 
@@ -67,4 +65,11 @@ v1.4
 - top-level <require />, <allow /> directives as a ZCML spelling of
   allowModule, allowClass
 
-- marker utility: re-add 'views_details' that didn't make it in 1.2/1.3
+* marker interfaces
+
+  - re-add 'views_details' that didn't make it into 1.2/1.3
+
+  - add interface for ordering marker interfaces
+
+  - improve the way available marker interfaces are detected. It should be
+    possible to declare interfaces explicitly as marker interfaces.

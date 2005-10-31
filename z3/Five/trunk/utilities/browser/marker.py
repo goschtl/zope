@@ -11,13 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Marker utility views
+"""Marker interfaces adapter views.
 
 $Id$
 """
-from zope.app import zapi
-
-from Products.Five.utilities.interfaces import IMarkerUtility
+from Products.Five.utilities.interfaces import IMarkerInterfaces
 
 
 class EditView:
@@ -28,7 +26,7 @@ class EditView:
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        self.utility = zapi.getUtility(IMarkerUtility)
+        self.adapted = IMarkerInterfaces(context)
         self.context_url = self.context.absolute_url()
 
     def __call__(self, SAVE=None, add=(), remove=()):
@@ -49,18 +47,16 @@ class EditView:
 
     def getAvailableInterfaceNames(self):
         return self._getNameLinkDicts(
-            self.utility.getAvailableInterfaceNames(self.context))
+            self.adapted.getAvailableInterfaceNames())
 
     def getDirectlyProvidedNames(self):
-        return self._getNameLinkDicts(
-            self.utility.getDirectlyProvidedNames(self.context))
+        return self._getNameLinkDicts(self.adapted.getDirectlyProvidedNames())
 
     def getInterfaceNames(self):
-        return self._getNameLinkDicts(
-            self.utility.getInterfaceNames(self.context))
+        return self._getNameLinkDicts(self.adapted.getInterfaceNames())
 
     def update(self, add, remove):
         # this could return errors
-        add = self.utility.dottedToInterfaces(self.context, add)
-        remove = self.utility.dottedToInterfaces(self.context, remove)
-        self.utility.update(self.context, add=add, remove=remove)
+        add = self.adapted.dottedToInterfaces(add)
+        remove = self.adapted.dottedToInterfaces(remove)
+        self.adapted.update(add=add, remove=remove)

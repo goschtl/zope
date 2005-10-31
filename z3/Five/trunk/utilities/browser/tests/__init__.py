@@ -1,4 +1,1 @@
-"""
-tests for views that expose basic
-marker utility functionality
-"""
+# make this directory a package

@@ -11,8 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-MarkerUtility allows for arbitrary application of marker interfaces to objects.
+"""Marker interfaces adapter.
+
+Allows for arbitrary application of marker interfaces to objects.
 
 $Id$
 """
@@ -21,16 +22,14 @@ from sets import Set
 from zope.interface import implements
 from zope.interface import implementedBy
 from zope.interface import directlyProvidedBy
-from zope.interface import providedBy
 from zope.interface import directlyProvides
+from zope.interface import providedBy
 from zope.interface.interfaces import IInterface
 from zope.app.component.interface import getInterface
+from zope.app.introspector import interfaceToName
 from zope.app.component.interface import searchInterface
 
-from interfaces import IMarkerUtility
-
-def dottedToInterfaces(obj, seq):
-    return [getInterface(obj, dotted) for dotted in seq]
+from interfaces import IMarkerInterfaces
 
 def interfaceStringCheck(f):
     def wrapper(ob, interface):
@@ -49,23 +48,28 @@ mark = interfaceStringCheck(mark)
 erase = interfaceStringCheck(erase)
 
 
-class MarkerUtility(object):
+class MarkerInterfacesAdapter(object):
 
-    implements(IMarkerUtility)
+    implements(IMarkerInterfaces)
 
     mark = staticmethod(mark)
     erase = staticmethod(erase)
-    dottedToInterfaces=staticmethod(dottedToInterfaces)
 
-    def getDirectlyProvided(self, obj):
-        return directlyProvidedBy(obj)
+    def __init__(self, context):
+        self.context = context
 
-    def getDirectlyProvidedNames(self, obj):
-        return self._getInterfaceNames(self.getDirectlyProvided(obj))
+    def dottedToInterfaces(self, seq):
+        return [getInterface(self.context, dotted) for dotted in seq]
 
-    def getAvailableInterfaces(self, obj):
+    def getDirectlyProvided(self):
+        return directlyProvidedBy(self.context)
+
+    def getDirectlyProvidedNames(self):
+        return self._getInterfaceNames(self.getDirectlyProvided())
+
+    def getAvailableInterfaces(self):
         results = []
-        todo = list(providedBy(obj))
+        todo = list(providedBy(self.context))
         done = []
         while todo:
             interface = todo.pop()
@@ -76,39 +80,39 @@ class MarkerUtility(object):
             markers = self._getDirectMarkersOf(interface)
             for interface in markers:
                 if (interface not in results
-                    and not interface.providedBy(obj)):
+                    and not interface.providedBy(self.context)):
                     results.append(interface)
             todo += markers
         return tuple(results)
 
-    def getAvailableInterfaceNames(self, obj):
-        names = self._getInterfaceNames(self.getAvailableInterfaces(obj))
+    def getAvailableInterfaceNames(self):
+        names = self._getInterfaceNames(self.getAvailableInterfaces())
         names.sort()
         return names
 
-    def getInterfaces(self, obj):
-        return tuple(implementedBy(obj.__class__))
+    def getInterfaces(self):
+        return tuple(implementedBy(self.context.__class__))
 
-    def getInterfaceNames(self, obj):
-        return self._getInterfaceNames(self.getInterfaces(obj))
+    def getInterfaceNames(self):
+        return self._getInterfaceNames(self.getInterfaces())
 
-    def getProvided(self, obj):
-        return providedBy(obj)
+    def getProvided(self):
+        return providedBy(self.context)
 
-    def getProvidedNames(self, obj):
-        return self._getInterfaceNames(self.getProvided(obj))
+    def getProvidedNames(self):
+        return self._getInterfaceNames(self.getProvided())
 
-    def update(self, obj, add=(), remove=()):
+    def update(self, add=(), remove=()):
         """Currently update adds and then removes, rendering duplicate null.
         """
-        marker_ifaces = self.getAvailableInterfaces(obj)
+        marker_ifaces = self.getAvailableInterfaces()
         if len(add):
-            [mark(obj, interface)
+            [mark(self.context, interface)
              for interface in Set(marker_ifaces) & Set(add)]
 
-        direct_ifaces = self.getDirectlyProvided(obj)
+        direct_ifaces = self.getDirectlyProvided()
         if len(remove):
-            [erase(obj, interface)
+            [erase(self.context, interface)
              for interface in Set(direct_ifaces) & Set(remove)]
 
     def _getInterfaceNames(self, interfaces):
@@ -128,28 +132,3 @@ class MarkerUtility(object):
                 results.append(interface)
         results.sort()
         return tuple(results)
-
-
-_utility = MarkerUtility()
-def getMarkerUtility():
-    return _utility
-
-
-# BBB: for Zope 2.8/3.0, will be replaced in Five 1.3 by
-#      from zope.app.component.interface import interfaceToName
-def interfaceToName(context, interface):
-    if interface is None:
-        return 'None'
-    items = searchInterface(context, base=interface)
-    ids = [('%s.%s' %(iface.__module__, iface.__name__))
-           for iface in items
-           if iface == interface]
-
-    if not ids:
-        # Do not fail badly, instead resort to the standard
-        # way of getting the interface name, cause not all interfaces
-        # may be registered as utilities.
-        return interface.__module__ + '.' + interface.__name__
-
-    assert len(ids) == 1, "Ambiguous interface names: %s" % ids
-    return ids[0]

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2005 Zope Corporation and Contributors.
+# Copyright (c) 2004, 2005 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,8 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Utility Interface Definitions
+"""Utility Interface Definitions.
 
 $Id$
 """
@@ -21,52 +20,55 @@ from zope.interface import Interface
 
 class IReadInterface(Interface):
 
-    def getDirectlyProvided(obj):
-        """List the interfaces directly implemented by an object.
+    def getDirectlyProvided():
+        """List the interfaces directly implemented by the object.
         """
 
-    def getDirectlyProvidedNames(obj):
-        """List the names of interfaces directly implemented by an object.
+    def getDirectlyProvidedNames():
+        """List the names of interfaces directly implemented by the object.
         """
 
-    def getAvailableInterfaces(obj):
-        """List the marker interfaces available for this object.
+    def getAvailableInterfaces():
+        """List the marker interfaces available for the object.
         """
 
-    def getAvailableInterfaceNames(obj):
-        """List the names of marker interfaces available for this object.
+    def getAvailableInterfaceNames():
+        """List the names of marker interfaces available for the object.
         """
 
-    def getInterfaces(obj):
-        """List interfaces provided by the class.
+    def getInterfaces():
+        """List interfaces provided by the class of the object.
         """
 
-    def getInterfaceNames(obj):
-        """List the names of interfaces provided by the class.
+    def getInterfaceNames():
+        """List the names of interfaces provided by the class of the object.
         """
 
-    def getProvided(obj):
-        """List interfaces provided by an object.
+    def getProvided():
+        """List interfaces provided by the object.
         """
 
-    def getDirectlyProvidedNames(obj):
-        """List the names of interfaces provided by an object.
+    def getDirectlyProvidedNames():
+        """List the names of interfaces provided by the object.
         """
 
 
 class IWriteInterface(Interface):
 
-    def update(obj, add=(), remove=()):
-        """Update directly provided interfaces for an instance."""
+    def update(add=(), remove=()):
+        """Update directly provided interfaces of the object.
+        """
 
-    def mark(obj, interface):
-        """ add interface to interfaces an object directly provides"""
+    def mark(interface):
+        """Add interface to interfaces the object directly provides.
+        """
 
-    def erase(obj, interface):
-        """ remove interfaces from interfaces an object directly provides"""
+    def erase(interface):
+        """Remove interfaces from interfaces the object directly provides.
+        """
 
 
-class IMarkerUtility(IReadInterface, IWriteInterface):
-    """This utility provides methods for inspecting interfaces. And provides
-       'mark' and 'erase' methods to add and remove marker interfaces
+class IMarkerInterfaces(IReadInterface, IWriteInterface):
+
+    """Provides methods for inspecting and assigning marker interfaces.
     """

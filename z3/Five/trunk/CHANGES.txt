@@ -8,6 +8,11 @@ Five 1.2b (2005-XXX-XXX)
 Features
 --------
 
+* Added IMarkerInterfaces adapter: This adapter provides methods for
+  inspecting and assigning marker interfaces. 'edit-markers.html' (or
+  'manage_interfaces' in the ZMI) allows to change the behavior of specific
+  objects by adding or removing marker interfaces TTW.
+
 * Added the five:registerClass directive: This does the necessary Zope 2
   registration for Five-based content. It is no longer necessary to add an
   ``initialize()`` function to the product's __init__ in order to register

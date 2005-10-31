@@ -2,9 +2,10 @@
 
   <include package=".browser"/>
 
-  <utility
-      provides=".interfaces.IMarkerUtility"
-      factory=".marker.getMarkerUtility"
+  <adapter
+      for="*"
+      provides=".interfaces.IMarkerInterfaces"
+      factory=".marker.MarkerInterfacesAdapter"
       permission="zope2.ManageProperties"
       />
 
