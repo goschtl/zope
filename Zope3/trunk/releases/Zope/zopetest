@@ -16,7 +16,7 @@
 
 $Id$
 """
-import sys, os
+import sys, os, warnings
 
 here = os.path.dirname(os.path.realpath(__file__))
 here = os.path.dirname(here)
@@ -27,12 +27,13 @@ else:
     lib = os.path.join(here, "lib", "python")
 sys.path.append(lib)
 
-ftesting = os.path.join(here, "zopeskel", "etc", "ftesting.zcml")
+from zope.testing import testrunner
 
-import zope.app.tests.test
+defaults = ['--tests-pattern', '^f?tests$',
+            '--test-path', lib]
 
-zope.app.tests.test.FTESTING = ftesting
+# Get rid of twisted.conch.ssh warning
+warnings.filterwarnings(
+    'ignore', 'PyCrypto', RuntimeWarning, 'twisted[.]conch[.]ssh')
 
-if __name__ == '__main__':
-    args = sys.argv[:1] + ["-l", lib] + sys.argv[1:]
-    zope.app.tests.test.process_args(args)
+sys.exit(testrunner.run(defaults))
