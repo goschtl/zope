@@ -15,6 +15,7 @@
 
 $Id$
 """
+from Acquisition import aq_acquire
 from zope.interface import implements
 from zope.i18n import interpolate
 from zope.i18n.interfaces import ITranslationDomain, IUserPreferredLanguages
@@ -48,7 +49,7 @@ class FiveTranslationService:
         # in Zope3, context is adapted to IUserPreferredLanguages,
         # which means context should be the request in this case.
         if context is not None:
-            context = context.REQUEST
+            context = aq_acquire(context, 'REQUEST', None)
         return util.translate(msgid, mapping=mapping, context=context,
                               target_language=target_language, default=default)
 
