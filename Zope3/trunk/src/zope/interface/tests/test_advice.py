@@ -28,6 +28,7 @@ Visit the PEAK home page at http://peak.telecommunity.com for more information.
 $Id$
 """
 
+import unittest
 from unittest import TestCase, makeSuite, TestSuite
 from zope.interface.advice import *
 from types import ClassType
@@ -174,4 +175,4 @@ def test_suite():
     return TestSuite([makeSuite(t,'check') for t in TestClasses])
 
 if __name__ == '__main__':
-    unittest.main(defaultTest=test_suite)
+    unittest.main(defaultTest='test_suite')

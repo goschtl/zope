@@ -33,12 +33,8 @@ _decorator_non_return = object()
 
 def invariant(call):
     f_locals = sys._getframe(1).f_locals
-    tags = f_locals.get(TAGGED_DATA)
-    if tags is None:
-        tags = f_locals[TAGGED_DATA] = {}
-    invariants = tags.get('invariants')
-    if invariants is None:
-        invariants = tags['invariants'] = []
+    tags = f_locals.setdefault(TAGGED_DATA, {})
+    invariants = tags.setdefault('invariants', [])
     invariants.append(call)
     return _decorator_non_return
 
@@ -357,11 +353,7 @@ class Specification(SpecificationBase):
                 )
 
     def weakref(self, callback=None):
-        if callback is None:
-            return weakref.ref(self)
-        else:
-            return weakref.ref(self, callback)
-
+        return weakref.ref(self, callback)
 
     def get(self, name, default=None):
         """Query for an attribute description
@@ -394,15 +386,14 @@ class InterfaceClass(Element, Specification):
     def __init__(self, name, bases=(), attrs=None, __doc__=None,
                  __module__=None):
 
+        if attrs is None:
+            attrs = {}
+
         if __module__ is None:
-            if (attrs is not None and
-                ('__module__' in attrs) and
-                isinstance(attrs['__module__'], str)
-                ):
-                __module__ = attrs['__module__']
+            __module__ = attrs.get('__module__')
+            if isinstance(__module__, str):
                 del attrs['__module__']
             else:
-
                 try:
                     # Figure out what module defined the interface.
                     # This is how cPython figures out the module of
@@ -412,9 +403,6 @@ class InterfaceClass(Element, Specification):
                     pass
 
         self.__module__ = __module__
-
-        if attrs is None:
-            attrs = {}
 
         d = attrs.get('__doc__')
         if d is not None:
@@ -428,11 +416,7 @@ class InterfaceClass(Element, Specification):
 
         Element.__init__(self, name, __doc__)
 
-        if attrs.has_key(TAGGED_DATA):
-            tagged_data = attrs[TAGGED_DATA]
-            del attrs[TAGGED_DATA]
-        else:
-            tagged_data = None
+        tagged_data = attrs.pop(TAGGED_DATA, None)
         if tagged_data is not None:
             for key, val in tagged_data.items():
                 self.setTaggedValue(key, val)
@@ -455,7 +439,7 @@ class InterfaceClass(Element, Specification):
             elif attr is _decorator_non_return:
                 del attrs[name]
             else:
-                raise InvalidInterface("Concrete attribute, %s" %name)
+                raise InvalidInterface("Concrete attribute, " + name)
 
         self.__attrs = attrs
 
@@ -478,28 +462,23 @@ class InterfaceClass(Element, Specification):
         """
         yield self
 
-
-
     def getBases(self):
         return self.__bases__
 
     def isEqualOrExtendedBy(self, other):
         """Same interface or extends?"""
-        if self == other:
-            return True
-        return other.extends(self)
+        return self == other or other.extends(self)
 
     def names(self, all=False):
         """Return the attribute names defined by the interface."""
         if not all:
             return self.__attrs.keys()
 
-        r = {}
-        for name in self.__attrs.keys():
-            r[name] = 1
+        r = self.__attrs.copy()
+
         for base in self.__bases__:
-            for name in base.names(all):
-                r[name] = 1
+            r.update(dict.fromkeys(base.names(all)))
+
         return r.keys()
 
     def __iter__(self):
@@ -511,13 +490,10 @@ class InterfaceClass(Element, Specification):
             return self.__attrs.items()
 
         r = {}
-        for name, d in self.__attrs.items():
-            r[name] = d
+        for base in self.__bases__[::-1]:
+            r.update(dict(base.namesAndDescriptions(all)))
 
-        for base in self.__bases__:
-            for name, d in base.namesAndDescriptions(all):
-                if name not in r:
-                    r[name] = d
+        r.update(self.__attrs)
 
         return r.items()
 
@@ -570,7 +546,6 @@ class InterfaceClass(Element, Specification):
             except Invalid:
                 if errors is None:
                     raise
-                pass
         if errors:
             raise Invalid(errors)
 
@@ -584,31 +559,27 @@ class InterfaceClass(Element, Specification):
             if isinstance(v, Method) and not (k in dict):
                 dict[k]=v
 
-        for b in self.__bases__: b.__d(dict)
+        for b in self.__bases__:
+            b.__d(dict)
 
     def __repr__(self):
-        r = getattr(self, '_v_repr', self)
-        if r is self:
+        try:
+            return self._v_repr
+        except AttributeError:
             name = self.__name__
             m = self.__module__
             if m:
                 name = '%s.%s' % (m, name)
             r = "<%s %s>" % (self.__class__.__name__, name)
             self._v_repr = r
-        return r
+            return r
 
     def __call__():
-        # TRICK! Create the call method
+        # Mind the closure. It serves to keep a unique marker around to
+        # allow for an optional argument to __call__ without resorting
+        # to a global marker.
         #
-        # An embedded function is used to allow an optional argument to
-        # __call__ without resorting to a global marker.
-        #
-        # The evility of this trick is a reflection of the underlying
-        # evility of "optional" arguments, arguments whose presense or
-        # absense changes the behavior of the methods.
-        # 
-        # I think the evil is necessary, and perhaps desireable to
-        # provide some consistencey with the PEP 246 adapt method.
+        # This provides some consistency with the PEP 246 adapt method.
 
         marker = object()
         
@@ -697,17 +668,16 @@ class InterfaceClass(Element, Specification):
 
             adapter = self.__adapt__(obj)
 
-            if adapter is None:
-                if alternate is not marker:
-                    return alternate
-                
+            if adapter is not None:
+                return adapter
+            elif alternate is not marker:
+                return alternate
+            else:
                 raise TypeError("Could not adapt", obj, self)
-
-            return adapter
 
         return __call__
 
-    __call__ = __call__() # TRICK! Make the *real* __call__ method
+    __call__ = __call__() # Make the closure the *real* __call__ method.
 
     def __adapt__(self, obj):
         """Adapt an object to the reciever
@@ -800,7 +770,6 @@ class InterfaceClass(Element, Specification):
         if o2 is None:
             return -1
 
-
         n1 = (getattr(o1, '__name__', ''),
               getattr(getattr(o1,  '__module__', None), '__name__', ''))
         n2 = (getattr(o2, '__name__', ''),
@@ -859,23 +828,17 @@ class Method(Attribute):
                 }
 
     def getSignatureString(self):
-        sig = "("
+        sig = []
         for v in self.positional:
-            sig = sig + v
+            sig.append(v)
             if v in self.optional.keys():
-                sig = sig + "=%s" % `self.optional[v]`
-            sig = sig + ", "
+                sig[-1] += "=" + `self.optional[v]`
         if self.varargs:
-            sig = sig + ("*%s, " % self.varargs)
+            sig.append("*" + self.varargs)
         if self.kwargs:
-            sig = sig + ("**%s, " % self.kwargs)
+            sig.append("**" + self.kwargs)
 
-        # slice off the last comma and space
-        if self.positional or self.varargs or self.kwargs:
-            sig = sig[:-2]
-
-        sig = sig + ")"
-        return sig
+        return "(%s)" % ", ".join(sig)
 
 
 def fromFunction(func, interface=None, imlevel=0, name=None):
@@ -894,8 +857,7 @@ def fromFunction(func, interface=None, imlevel=0, name=None):
         nr = 0
 
     # Determine the optional arguments.
-    for i in range(len(defaults)):
-        opt[names[i+nr]] = defaults[i]
+    opt.update(dict(zip(names[nr:], defaults)))
 
     method.positional = names[:na]
     method.required = names[:nr]
