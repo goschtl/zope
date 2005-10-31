@@ -330,7 +330,7 @@ Principal Searching
 
 As a component that provides IAuthentication, a PAU lets you lookup a
 principal with a principal ID. The PAU looks up a principal by delegating to
-its authenticators. In out example, none of the authenticators implement this
+its authenticators. In our example, none of the authenticators implement this
 search capability, so when we look for a principal:
 
   >>> print pau.getPrincipal('xyz_bob')
@@ -716,7 +716,7 @@ We can use this queriable to search for our principal:
   >>> list(queriable.search('not-used'))
   ['mypau_foo']
 
-Note that the resulting principal ID includes the PAU prefix. Were we to sarch
+Note that the resulting principal ID includes the PAU prefix. Were we to search
 the plugin directly:
 
   >>> list(plugin.search('not-used'))
