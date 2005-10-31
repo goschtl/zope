@@ -39,8 +39,8 @@
   <viewletManager
       name="zope.app.boston.IToolBar"
       provides="zope.app.boston.IToolBar"
-      class=".viewlets.toolbar.browser.views.ToolBarViewletManager"
-      template="viewlets/toolbar/browser/macros.pt"
+      class=".viewlets.toolbar.browser.ToolBarViewletManager"
+      template="viewlets/toolbar/macros.pt"
       layer="zope.app.boston.boston"
       permission="zope.Public"
       />

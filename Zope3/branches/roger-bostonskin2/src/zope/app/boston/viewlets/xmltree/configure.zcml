@@ -31,7 +31,7 @@
       name="xmltree.css"
       for="*"
       manager="zope.app.boston.ICSS"
-      class="..BostonXMLTreeCSSViewlet"
+      class="zope.app.boston.BostonXMLTreeCSSViewlet"
       permission="zope.Public"
       layer="zope.app.boston.boston"
       weight="0"
@@ -41,7 +41,7 @@
       name="xmltree"
       for="*"
       manager="zope.app.boston.IJavaScript"
-      class="..BostonXMLTreeJavaScriptViewlet"
+      class="zope.app.boston.BostonXMLTreeJavaScriptViewlet"
       permission="zope.View"
       layer="zope.app.boston.boston"
       />
