@@ -23,8 +23,8 @@ some views that will provide us with some test info),
   ...
   ...   <browser:page
   ...       for="Products.Five.site.tests.dummy.IDummySite"
-  ...       name="checkServices.html"
-  ...       class="Products.Five.site.tests.test_functional.CheckServicesView"
+  ...       name="checkSiteManager.html"
+  ...       class="Products.Five.site.tests.test_functional.CheckSiteManagerView"
   ...       permission="zope2.Public"
   ...       />
   ...
@@ -46,13 +46,13 @@ then we add an instance to our folder:
 Now we check what the info view tells us about local component lookup:
 
   >>> print http(r'''
-  ... GET /test_folder_1_/site/@@checkServices.html HTTP/1.1
+  ... GET /test_folder_1_/site/@@checkSiteManager.html HTTP/1.1
   ... ''')
   HTTP/1.1 200 OK
   ...
-  {'IFiveUtilityService.providedBy(utility_service)': False,
-   'isinstance(zapi.getServices(), FiveSiteManager)': False,
-   'zapi.getServices() is zapi.getGlobalServices()': True}
+  {'IFiveUtilityRegistry.providedBy(utility_service)': False,
+   'isinstance(zapi.getSiteManager(), FiveSiteManager)': False,
+   'zapi.getSiteManager() is zapi.getGlobalSiteManager()': True}
 
 We see that we have no local component lookup yet, because we haven't
 set the site.  Therefore, enable the traversal hook by using the view
@@ -75,13 +75,13 @@ Now we call the info view again and find that local component lookup
 is working:
 
   >>> print http(r'''
-  ... GET /test_folder_1_/site/@@checkServices.html HTTP/1.1
+  ... GET /test_folder_1_/site/@@checkSiteManager.html HTTP/1.1
   ... ''')
   HTTP/1.1 200 OK
   ...
-  {'IFiveUtilityService.providedBy(utility_service)': True,
-   'isinstance(zapi.getServices(), FiveSiteManager)': True,
-   'zapi.getServices() is zapi.getGlobalServices()': False}
+  {'IFiveUtilityRegistry.providedBy(utility_service)': True,
+   'isinstance(zapi.getSiteManager(), FiveSiteManager)': True,
+   'zapi.getSiteManager() is zapi.getGlobalSiteManager()': False}
 
 Of course, sites are only active *during* traversal; after traversal
 they're gone:
@@ -133,15 +133,15 @@ And everything is back to normal with respect to local component
 lookup:
 
   >>> print http(r'''
-  ... GET /test_folder_1_/site/@@checkServices.html HTTP/1.1
+  ... GET /test_folder_1_/site/@@checkSiteManager.html HTTP/1.1
   ... ''')
   HTTP/1.1 200 OK
   ...
-  {'IFiveUtilityService.providedBy(utility_service)': False,
-   'isinstance(zapi.getServices(), FiveSiteManager)': False,
-   'zapi.getServices() is zapi.getGlobalServices()': True}
+  {'IFiveUtilityRegistry.providedBy(utility_service)': False,
+   'isinstance(zapi.getSiteManager(), FiveSiteManager)': False,
+   'zapi.getSiteManager() is zapi.getGlobalSiteManager()': True}
 
 Finally, global services and the monkeys:
 
-  >>> from zope.app.tests.placelesssetup import tearDown
+  >>> from zope.app.testing.placelesssetup import tearDown
   >>> tearDown()

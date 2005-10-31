@@ -33,33 +33,3 @@ class IMenuItemType(IInterface):
     Menu item types are interfaces that define classes of
     menu items.
     """
-
-#
-# BBB: Zope core interfaces for Zope 2.8
-#
-
-try:
-    import AccessControl.interfaces
-    import Acquisition.interfaces
-    import App.interfaces
-    import OFS.interfaces
-    import webdav.interfaces
-
-    def monkey():
-        pass
-
-except ImportError:
-
-    def monkey():
-        import sys
-        from Products.Five.bbb import AccessControl_interfaces
-        from Products.Five.bbb import Acquisition_interfaces
-        from Products.Five.bbb import App_interfaces
-        from Products.Five.bbb import OFS_interfaces
-        from Products.Five.bbb import webdav_interfaces
-
-        sys.modules['AccessControl.interfaces'] = AccessControl_interfaces
-        sys.modules['Acquisition.interfaces'] = Acquisition_interfaces
-        sys.modules['App.interfaces'] = App_interfaces
-        sys.modules['OFS.interfaces'] = OFS_interfaces
-        sys.modules['webdav.interfaces'] = webdav_interfaces

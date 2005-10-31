@@ -23,21 +23,21 @@ if __name__ == '__main__':
 import pprint
 from zope.app import zapi
 from Products.Five import BrowserView
-from Products.Five.site.interfaces import IFiveUtilityService
+from Products.Five.site.interfaces import IFiveUtilityRegistry
 from Products.Five.site.localsite import FiveSiteManager
 from Products.Five.site.tests.dummy import IDummyUtility
 
-class CheckServicesView(BrowserView):
+class CheckSiteManagerView(BrowserView):
 
     def __call__(self):
-        utility_service = zapi.getService(zapi.servicenames.Utilities)
+        sm = zapi.getSiteManager()
         result = {
-            'zapi.getServices() is zapi.getGlobalServices()':
-            zapi.getServices() is zapi.getGlobalServices(),
-            'IFiveUtilityService.providedBy(utility_service)':
-            IFiveUtilityService.providedBy(utility_service),
-            'isinstance(zapi.getServices(), FiveSiteManager)':
-            isinstance(zapi.getServices(), FiveSiteManager),
+            'zapi.getSiteManager() is zapi.getGlobalSiteManager()':
+            sm is zapi.getGlobalSiteManager(),
+            'IFiveUtilityRegistry.providedBy(utility_service)':
+            IFiveUtilityRegistry.providedBy(sm.utilities),
+            'isinstance(zapi.getSiteManager(), FiveSiteManager)':
+            isinstance(sm, FiveSiteManager),
             }
         return pprint.pformat(result)
 

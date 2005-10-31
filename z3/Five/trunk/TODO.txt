@@ -34,8 +34,6 @@ v1.3
 
 * marker utility
 
-  - import interfaceToName from zope.app.component.interface
-
   - add 'manage_interfaces' to ZMI tabs in Zope 2.9 (yuppie)
 
 * revisit the test_localsite/test_{get|query}NextSiteManager tests

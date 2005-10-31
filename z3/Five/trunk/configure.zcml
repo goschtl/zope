@@ -2,8 +2,6 @@
            xmlns:five="http://namespaces.zope.org/five">
 
   <include file="meta.zcml" />
-  <include file="services.zcml" />
-  <include file="interfaces.zcml" />
   <include file="permissions.zcml" />
   <include file="i18n.zcml" />
   <!-- XXX in Five 1.3, include this -->

@@ -25,8 +25,7 @@ from zope.interface import directlyProvidedBy
 from zope.interface import directlyProvides
 from zope.interface import providedBy
 from zope.interface.interfaces import IInterface
-from zope.app.component.interface import getInterface
-from zope.app.introspector import interfaceToName
+from zope.app.component.interface import getInterface, interfaceToName
 from zope.app.component.interface import searchInterface
 
 from interfaces import IMarkerInterfaces

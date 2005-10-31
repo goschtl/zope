@@ -16,33 +16,32 @@
 $Id$
 """
 from zope.interface import implements
-from zope.component import getGlobalService
-from zope.component.servicenames import Utilities
+from zope.component import getGlobalSiteManager
 from zope.component.exceptions import ComponentLookupError
-from zope.app.component.localservice import getNextService
+from zope.app.component import getNextSiteManager
 
 from Acquisition import aq_base
 from OFS.Folder import Folder
-from Products.Five.site.interfaces import IFiveUtilityService
+from Products.Five.site.interfaces import IFiveUtilityRegistry
 
-class SimpleLocalUtilityService(object):
-    implements(IFiveUtilityService)
+class SimpleLocalUtilityRegistry(object):
+    implements(IFiveUtilityRegistry)
 
     def __init__(self, context):
         self.context = context
-        # make {get|query}NextServices() work without having to
+        # make {get|query}NextSiteManager() work without having to
         # resort to Zope 2 acquisition
         self.__parent__ = self.context.getSiteManager()
 
+    @property
     def next(self):
         try:
-            return getNextService(self, Utilities)
+            return getNextSiteManager(self)
         except ComponentLookupError:
-            return getGlobalService(Utilities)
-    next = property(next)
+            return getGlobalSiteManager()
 
     def getUtility(self, interface, name=''):
-        """See IUtilityService interface
+        """See IFiveUtilityRegistry interface
         """
         c = self.queryUtility(interface, name)
         if c is not None:
@@ -50,7 +49,7 @@ class SimpleLocalUtilityService(object):
         raise ComponentLookupError(interface, name)
 
     def queryUtility(self, interface, name='', default=None):
-        """See IUtilityService interface
+        """See IFiveUtilityRegistry interface
         """
         if name == '':
             # Singletons. Only one per interface allowed, so, let's call it
@@ -121,5 +120,10 @@ class SimpleLocalUtilityService(object):
                                                         name))
         utilities._setObject(id, utility)
 
-# forwards compatability with Five 1.3
-SimpleLocalUtilityRegistry = SimpleLocalUtilityService
+# BBB 2005/11/01 -- gone in Five 1.5.
+SimpleLocalUtilityService = SimpleLocalUtilityRegistry
+import zope.deprecation
+zope.deprecation.deprecated(
+    'SimpleLocalUtilityService', "'SimpleLocalUtilityService' has been renamed to "
+    "'SimpleLocalUtilityRegistry' and will disappear in Five 1.5."
+    )

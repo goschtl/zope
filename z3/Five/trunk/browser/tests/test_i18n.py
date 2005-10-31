@@ -80,7 +80,7 @@ def test_zpt_i18n():
 
     Clean up:
 
-      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> from zope.app.testing.placelesssetup import tearDown
       >>> tearDown()
     """
 

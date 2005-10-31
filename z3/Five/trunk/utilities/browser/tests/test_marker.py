@@ -23,7 +23,7 @@ def test_editview():
     """
     Set everything up:
 
-      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> setUp()
       >>> import Products.Five
       >>> import Products.Five.utilities

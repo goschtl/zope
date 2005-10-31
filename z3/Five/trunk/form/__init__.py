@@ -33,7 +33,7 @@ from zope.app.form.interfaces import WidgetsError, MissingInputError
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.form.interfaces import IInputWidget, WidgetsError
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.i18n import ZopeMessageFactory as _
 
 from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
@@ -144,12 +144,13 @@ class EditView(BrowserView):
                 if changed:
                     self.changed()
                     # XXX: Needs locale support:
-                    # formatter = self.request.locale.dates.getFormatter(
-                    #     'dateTime', 'medium')
-                    status = _("Updated on ${date_time}")
-                    # status.mapping = {'date_time': formatter.format(
-                    #     datetime.utcnow())}
-                    status.mapping = {'date_time': str(datetime.utcnow())}
+                    #formatter = self.request.locale.dates.getFormatter(
+                    #    'dateTime', 'medium')
+                    #status = _("Updated on ${date_time}",
+                    #           mapping={'date_time':
+                    #                    formatter.format(datetime.utcnow())})
+                    status = _("Updated on ${date_time}",
+                               mapping={'date_time': str(datetime.utcnow())})
 
         self.update_status = status
         return status
