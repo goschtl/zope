@@ -37,18 +37,9 @@ class SimpleContent(Traversable, SimpleItem):
     meta_type = 'Five SimpleContent'
     security = ClassSecurityInfo()
 
-    afterAdd_called = False
-    beforeDelete_called = False
-
     def __init__(self, id, title):
         self.id = id
         self.title = title
-
-    def manage_afterAdd(self, item, container):
-        self.afterAdd_called = True
-
-    def manage_beforeDelete(self, item, container):
-        self.beforeDelete_called = True
 
     security.declarePublic('mymethod')
     def mymethod(self):
