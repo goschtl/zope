@@ -26,7 +26,11 @@ Restructuring
 
 * Event support: ``<five:containerEvents/>`` is the default.
 
-* XXX ObjectWidget (to be used instead of the Zope 3.2 one)
+* Due to an incompatability with Zope 3.2's ObjectWidget and Zope 2's
+  Page Templates, Five now ships with its own ObjectWidget
+  implementation (which is just a thin wrapper around Zope's one to
+  make it work in Zope 2).  If you use the ObjectWidget, please change
+  your imports to ``Products.Five.form.objectwidget.ObjectWidget``.
 
 * XXX mention interface BBB? Let yuppie decide
 
