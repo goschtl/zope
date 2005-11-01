@@ -25,6 +25,9 @@ def setDeprecatedManageAddDelete(class_):
     """Instances of the class will still see their old methods called."""
     deprecatedManageAddDeleteClasses.append(class_)
 
+def cleanUp():
+    deprecatedManageAddDeleteClasses[:] = []
+
 def containerEvents(_context):
     _context.action(
         discriminator=None,
@@ -38,3 +41,7 @@ def deprecatedManageAddDelete(_context, class_):
         callable=setDeprecatedManageAddDelete,
         args=(class_,),
         )
+
+from zope.testing.cleanup import addCleanUp
+addCleanUp(cleanUp)
+del addCleanUp

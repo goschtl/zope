@@ -221,6 +221,7 @@ We specifiy that our class is deprecated (using zcml in real life)::
   >>> from Products.Five.eventconfigure import setDeprecatedManageAddDelete
   >>> setDeprecatedManageAddDelete(MyContent)
   >>> setDeprecatedManageAddDelete(MyFolder)
+  >>> setDeprecatedManageAddDelete(MyOrderedFolder)
 
 Now some events are sent but the old manage_afterAdd method is also
 called correctly::
