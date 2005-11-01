@@ -43,12 +43,12 @@ for our tests.
   >>> app = MyApp('')
   >>> root['app'] = app
   >>> folder = MyFolder('folder')
-  >>> app._setObject('folder', folder)
+  >>> app._setObject('folder', folder) # doctest: +NORMALIZE_WHITESPACE
   old manage_afterAdd folder folder
   'folder'
   >>> folder = app.folder
   >>> btfolder = MyBTreeFolder('btfolder')
-  >>> app._setObject('btfolder', btfolder)
+  >>> app._setObject('btfolder', btfolder) # doctest: +NORMALIZE_WHITESPACE
   old manage_afterAdd btfolder btfolder
   'btfolder'
 
@@ -363,7 +363,7 @@ Cloning a tree of objects::
 OrderedFolder has the same renaming behavior than before::
 
   >>> ofolder = MyOrderedFolder('ofolder')
-  >>> app._setObject('ofolder', ofolder)
+  >>> app._setObject('ofolder', ofolder) # doctest: +NORMALIZE_WHITESPACE
   ObjectWillBeAddedEvent ofolder
   ObjectAddedEvent ofolder
   old manage_afterAdd ofolder ofolder
