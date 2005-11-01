@@ -2,8 +2,8 @@
 Five Changes
 ============
 
-Five 1.2b (2005-XXX-XXX)
-========================
+Five 1.2b (2005-11-01)
+======================
 
 Features
 --------
@@ -23,6 +23,14 @@ Features
   and thereby local utilities. This is mostly needed for allowing CMF
   to convert it's portal tools into local utilities.  See
   doc/localsite.txt for more information
+
+* Event support: When ``<five:containerEvents/>`` is specified, Five
+  makes the standard Zope 2 containers send events instead of using
+  manage_afterAdd, manage_beforeDelete and manage_afterClone. These
+  methods are still called for a class declared
+  ``<five:deprecatedManageAddDelete class=.../>``, and are called in
+  compatibility mode with a deprecation warning for classes that don't
+  use this directive.
 
 Restructuring
 -------------

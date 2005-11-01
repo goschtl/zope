@@ -28,13 +28,6 @@ def monkeyPatch():
     i18n.monkey()
     localsites_monkey()
 
-    # XXX in Five 1.3, call this from here:
-    if False: # XXX
-        from Products.Five import event
-        event.doMonkies(transitional=False,
-                        info='Five/monkey.py',
-                        register_cleanup=False)
-
 def localsites_monkey():
     from Acquisition import aq_inner, aq_parent
     from zope.component.interfaces import IServiceService

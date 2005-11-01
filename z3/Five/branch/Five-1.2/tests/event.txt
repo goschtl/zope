@@ -185,7 +185,7 @@ for Zope 2 classes::
 Now execute the directive enabling events::
 
   >>> from Products.Five.event import doMonkies, undoMonkies
-  >>> doMonkies(transitional=False)
+  >>> doMonkies()
 
 Old class
 ---------

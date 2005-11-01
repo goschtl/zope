@@ -162,21 +162,16 @@ def maybeCallDeprecated(method_name, ob, *args):
 # Adapters and subscribers
 
 from OFS.interfaces import IObjectManager
-from zope.app.location.interfaces import ISublocations
 
 class ObjectManagerSublocations(object):
     """Get the sublocations for an ObjectManager.
     """
-    #__used_for__ = IObjectManager
-    #implements(ISublocations)
-
     def __init__(self, container):
         self.container = container
 
     def sublocations(self):
         for ob in self.container.objectValues():
             yield ob
-        # XXX also want to provide opaqueItems's values
 
 # The following subscribers should really be defined in ZCML
 # but we don't have enough control over subscriber ordering for
@@ -659,9 +654,6 @@ def manage_clone(self, ob, id, REQUEST=None):
 # They all expects their manage_afterAdd to be called, but they are
 # created before Five 1.2 is initialized and has had a chance to do its
 # patches. So we call manage_afterAddd by hand.
-#
-# Remove this in Five 1.3, where subscribers and implements()
-# will be setup correctly earlier.
 
 def install_errorlog(self):
     app = self.getApp()
@@ -735,7 +727,7 @@ from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
 from OFS.Application import AppInitializer
 from Products.ZCatalog import CatalogAwareness, CatalogPathAwareness
 
-def doMonkies(transitional, register_cleanup=True):
+def doMonkies():
     """Monkey patch various methods to provide container events.
     """
     global hasContainerEvents
@@ -794,11 +786,9 @@ def doMonkies(transitional, register_cleanup=True):
     patchMethod(CatalogPathAwareness.CatalogAware, 'manage_afterClone',
                 CA_manage_afterClone)
 
-    # XXX remove this for Five 1.3, and put it in configure.zcml
     zcml.load_config('event.zcml', Products.Five)
 
-    if register_cleanup:
-        addCleanUp(undoMonkies)
+    addCleanUp(undoMonkies)
 
 def patchMethod(class_, name, new_method):
     method = getattr(class_, name, None)

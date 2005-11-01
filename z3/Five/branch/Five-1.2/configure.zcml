@@ -6,9 +6,6 @@
   <include file="interfaces.zcml" />
   <include file="permissions.zcml" />
   <include file="i18n.zcml" />
-  <!-- XXX in Five 1.3, include this -->
-  <!-- <include file="event.zcml"/> -->
-  <!-- XXX in Five 1.3, fix these deprecations in core Zope instead -->
   <include file="deprecated.zcml"/>
   <include package=".site" />
   <include package=".browser" />
