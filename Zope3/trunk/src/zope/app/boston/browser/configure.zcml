@@ -1,0 +1,91 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser">
+
+  <resource
+      name="boston.js"
+      file="boston.js"
+      layer="zope.app.boston.boston"
+      />
+
+  <resource
+      name="skin.css"
+      file="skin.css"
+      layer="zope.app.boston.boston"
+      />
+
+  <resource
+      name="widget.css"
+      file="widget.css"
+      layer="zope.app.boston.boston"
+      />
+
+  <viewlet
+      name="boston.js"
+      for="*"
+      manager="zope.app.boston.IJavaScript"
+      permission="zope.Public"
+      class="..BostonJavascriptViewlet"
+      layer="zope.app.boston.boston"
+      weight="1"
+      />
+
+  <viewlet
+      name="skin.css"
+      for="*"
+      manager="zope.app.boston.ICSS"
+      permission="zope.Public"
+      class="..BostonSkinCSSViewlet"
+      layer="zope.app.boston.boston"
+      weight="0"
+      />
+
+  <viewlet
+      name="widget.css"
+      for="*"
+      manager="zope.app.boston.ICSS"
+      permission="zope.Public"
+      class="..BostonWidgetCSSViewlet"
+      layer="zope.app.boston.boston"
+      weight="1"
+      />
+
+  <!-- layout img -->
+  <resource
+      name="favicon.png"
+      file="img/favicon.png"
+      layer="zope.app.boston.boston"
+      />
+
+  <resource
+      name="logo.gif"
+      file="img/zopelogo.gif"
+      layer="zope.app.boston.boston"
+      />
+
+  <page
+      for="*"
+      name="standard_macros"
+      permission="zope.View"
+      class=".standardmacros.StandardMacros"
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
+      layer="zope.app.boston.boston"
+      />
+
+  <page
+      for="*"
+      name="skin_macros"
+      permission="zope.View"
+      template="template.pt"
+      layer="zope.app.boston.boston"
+      />
+
+  <page
+      for="*"
+      name="widget_macros"
+      permission="zope.Public"
+      template="widget_macros.pt"
+      layer="zope.app.boston.boston"
+      />
+
+</configure>
