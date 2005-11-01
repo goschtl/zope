@@ -187,3 +187,11 @@ registerClass
 -------------
 
 Registers Five content with Zope 2.
+
+localsite
+---------
+
+Turns a class into an implementation of ``IPossibleSite`` so that its
+instances can be serve as local sites.  Unless otherwise specified, a
+default implementation's methods will be used to make the class comply
+with the ``IPossibleSite`` interface.
