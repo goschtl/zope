@@ -7,12 +7,6 @@ v1.2
 
 * update docs
 
-  - doc/localsite.txt
-
-  - doc/features.txt (local sites)
-
-  - doc/directives.txt (five:localsite)
-
   - on the trunk: INSTALL.txt (Zope 2.9, Zope 3.2, Python 2.4.1)
 
 * i18n domain of site/managesite.pt?
