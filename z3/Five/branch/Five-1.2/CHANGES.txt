@@ -2,6 +2,40 @@
 Five Changes
 ============
 
+Five 1.3b (2005-11-01)
+======================
+
+This version is also included in Zope 2.9b1.
+
+Restructuring
+-------------
+
+* Support for Zope 3.2 was added. Five now requires Zope 2.9 (which
+  ships with Zope 3.2).
+
+* As scheduled, the temporary fork of the new test runner
+  (``zope.testing``) at ``Five.testing`` was removed.  So was the
+  ``runtests.py`` script.  Use the regular Zope test runner
+  (``test.py`` or ``bin/zopectl test``) to run tests.
+
+* To reflect the Component Architecture simplification in Zope 3 since
+  the X3 3.0 release, ``IFiveUtilityService`` was renamed to
+  ``IFiveUtilityRegistry`` and ``SimpleLocalUtilityService`` was
+  renamed to ``SimpleLocalUtilityRegistry``.  The old names are still
+  available for a short period of time.
+
+* Event support: ``<five:containerEvents/>`` is the default.
+
+* Due to an incompatability with Zope 3.2's ObjectWidget and Zope 2's
+  Page Templates, Five now ships with its own ObjectWidget
+  implementation (which is just a thin wrapper around Zope's one to
+  make it work in Zope 2).  If you use the ObjectWidget, please change
+  your imports to ``Products.Five.form.objectwidget.ObjectWidget``.
+
+* Backwards compatability for Zope 3-style interfaces of Zope 2
+  components has been removed as that functionality is now in the Zope
+  2 core as of Zope 2.9.
+
 Five 1.2b (2005-11-01)
 ======================
 

@@ -1,1 +1,1 @@
-Five 1.2 unreleased
+Five 1.2b
