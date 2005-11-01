@@ -32,7 +32,9 @@ Restructuring
   make it work in Zope 2).  If you use the ObjectWidget, please change
   your imports to ``Products.Five.form.objectwidget.ObjectWidget``.
 
-* XXX mention interface BBB? Let yuppie decide
+* Backwards compatability for Zope 3-style interfaces of Zope 2
+  components has been removed as that functionality is now in the Zope
+  2 core as of Zope 2.9.
 
 Five 1.2b (2005-11-01)
 ======================
