@@ -16,6 +16,8 @@ HTML 4.01 Specification, W3C Recommendation 24 December 1999
 
 
 Copyright 2002-2005 John J. Lee <jjl@pobox.com>
+Copyright 2005 Gary Poster
+Copyright 2005 Zope Corporation
 Copyright 1998-2000 Gisle Aas.
 
 This code is free software; you can redistribute it and/or modify it
@@ -25,53 +27,44 @@ the distribution).
 """
 
 # XXX
-# Add some functional tests
+# Add some more functional tests
 #  Especially single and multiple file upload on the internet.
 #  Does file upload work when name is missing?  Sourceforge tracker form
 #   doesn't like it.  Check standards, and test with Apache.  Test
 #   binary upload with Apache.
+# There have been reports that some servers are very picky about MIME
+#  boundaries, so file uploads may fail with those servers.  Should
+#  copy what IE does religiously.
 # Unicode: see Wichert Akkerman's 2004-01-22 message to c.l.py.
-# Controls can have name=None (eg. forms constructed partly with
+# Controls can have name=None (e.g. forms constructed partly with
 #  JavaScript), but find_control can't be told to find a control
 #  with that name, because None there means 'unspecified'.  Can still
 #  get at by nr, but would be nice to be able to specify something
 #  equivalent to name=None, too.
-# Support for list item ids.  How to handle missing ids? (How do I deal
-#  with duplicate OPTION labels ATM?  Can't remember...)
 # Deal with character sets properly.  Not sure what the issues are here.
 #  Do URL encodings need any attention?
 #  I don't *think* any encoding of control names, filenames or data is
 #   necessary -- HTML spec. doesn't require it, and Mozilla Firebird 0.6
 #   doesn't seem to do it.
 #  Add charset parameter to Content-type headers?  How to find value??
+# mailto submission & enctype text/plain
 # I'm not going to fix this unless somebody tells me what real servers
 #  that want this encoding actually expect: If enctype is
 #  application/x-www-form-urlencoded and there's a FILE control present.
 #  Strictly, it should be 'name=data' (see HTML 4.01 spec., section
 #  17.13.2), but I send "name=" ATM.  What about multiple file upload??
-# Get rid of MapBase, AList and MimeWriter.
+# Get rid of MimeWriter.
 # Should really use sgmllib, not htmllib.
-# Factor out multiple-selection list code?  May not be easy.  Maybe like
-#  this:
 
-#         ListControl
-#             ^
-#             |       MultipleListControlMixin
-#             |             ^
-#        SelectControl     /
-#             ^           /
-#              \         /
-#          MultiSelectControl
-
-
-# Plan
-# ----
-# Maybe a 0.2.x, cleaned up a bit and with id support for list items?
-# Not sure it's worth it...
+# Would be nice, but I'm not going to do it myself:
+# -------------------------------------------------
+# Maybe a 0.3.x?
+#   Replace by_label etc. with moniker / selector concept. Allows, eg.,
+#    a choice between selection by value / id / label / element
+#    contents.  Or choice between matching labels exactly or by
+#    substring.  Etc.
+#   Remove deprecated methods.
 #   action should probably be an absolute URI, like DOMForm.
-#   Replace by_label with choice between value / id / label /
-#    element contents (see discussion with Gisle about labels on
-#    libwww-perl list).
 #   ...what else?
 # Work on DOMForm.
 # XForms?  Don't know if there's a need here.
@@ -88,16 +81,10 @@ except NameError:
         if expr: return True
         else: return False
 
-import sys, urllib, urllib2, types, string, mimetools, copy, urlparse, \
+import sys, urllib, urllib2, types, mimetools, copy, urlparse, \
        htmlentitydefs, re
 from urlparse import urljoin
 from cStringIO import StringIO
-try:
-    from types import UnicodeType
-except ImportError:
-    UNICODE = False
-else:
-    UNICODE = True
 
 try:
     import warnings
@@ -108,12 +95,12 @@ else:
     def deprecation(message):
         warnings.warn(message, DeprecationWarning, stacklevel=2)
 
-VERSION = "0.1.18"
+VERSION = "0.2.1a"
 
 CHUNK = 1024  # size of chunks fed to parser, in bytes
 
 _compress_re = re.compile(r"\s+")
-compressText = lambda text: _compress_re.sub(' ', text.strip())
+def compress_text(text): return _compress_re.sub(" ", text.strip())
 
 # This version of urlencode is from my Python 1.5.2 back-port of the
 # Python 2.1 CVS maintenance branch of urllib.  It will accept a sequence
@@ -164,7 +151,7 @@ string.
             if type(v) == types.StringType:
                 v = urllib.quote_plus(v)
                 l.append(k + '=' + v)
-            elif UNICODE and type(v) == types.UnicodeType:
+            elif type(v) == types.UnicodeType:
                 # is there a reasonable way to convert to ASCII?
                 # encode generates a string, but "replace" or "ignore"
                 # lose information and "strict" can raise UnicodeError
@@ -182,22 +169,16 @@ string.
                     # loop over the sequence
                     for elt in v:
                         l.append(k + '=' + urllib.quote_plus(str(elt)))
-    return string.join(l, '&')
+    return '&'.join(l)
 
 def unescape(data, entities):
     if data is None or '&' not in data:
         return data
-
-    def replace_entities(match):
+    def replace_entities(match, entities=entities):
         ent = match.group()
         repl = entities.get(ent, ent)
         return repl
-
-    return re.sub(r'&\S+;', replace_entities, data)
-
-def startswith(string, initial):
-    if len(initial) > len(string): return False
-    return string[:len(initial)] == initial
+    return re.sub(r'&\S+?;', replace_entities, data)
 
 def issequence(x):
     try:
@@ -214,159 +195,11 @@ def isstringlike(x):
     else: return True
 
 
-# XXX don't really want to drag this along (MapBase, AList, MimeWriter,
-#  _choose_boundary)
-
-# This is essentially the same as UserDict.DictMixin.  I wrote this before
-# that, and DictMixin isn't available in 1.5.2 anyway.
-class MapBase:
-    """Mapping designed to be easily derived from.
-
-    Subclass it and override __init__, __setitem__, __getitem__, __delitem__
-    and keys.  Nothing else should need to be overridden, unlike UserDict.
-    This significantly simplifies dictionary-like classes.
-
-    Also different from UserDict in that it has a redonly flag, and can be
-    updated (and initialised) with a sequence of pairs (key, value).
-
-    """
-    def __init__(self, init=None):
-        self._data = {}
-        self.readonly = False
-        if init is not None: self.update(init)
-
-    def __getitem__(self, key):
-        return self._data[key]
-
-    def __setitem__(self, key, item):
-        if not self.readonly:
-            self._data[key] = item
-        else:
-            raise TypeError("object doesn't support item assignment")
-
-    def __delitem__(self, key):
-        if not self.readonly:
-            del self._data[key]
-        else:
-            raise TypeError("object doesn't support item deletion")
-
-    def keys(self):
-        return self._data.keys()
-
-    # now the internal workings, there should be no need to override these:
-
-    def clear(self):
-        for k in self.keys():
-            del self[k]
-
-    def __repr__(self):
-        rep = []
-        for k, v in self.items():
-            rep.append("%s: %s" % (repr(k), repr(v)))
-        return self.__class__.__name__+"{"+(string.join(rep, ", "))+"}"
-
-    def copy(self):
-        return copy.copy(self)
-
-    def __cmp__(self, dict):
-        # note: return value is *not* boolean
-        for k, v in self.items():
-            if not (dict.has_key(k) and dict[k] == v):
-                return 1  # different
-        return 0  # the same
-
-    def __len__(self):
-        return len(self.keys())
-
-    def values(self):
-        r = []
-        for k in self.keys():
-            r.append(self[k])
-        return r
-
-    def items(self):
-        keys = self.keys()
-        vals = self.values()
-        r = []
-        for i in len(self):
-            r.append((keys[i], vals[i]))
-        return r
-
-    def has_key(self, key):
-        return key in self.keys()
-
-    def update(self, map):
-        if issequence(map) and not isstringlike(map):
-            items = map
-        else:
-            items = map.items()
-        for tup in items:
-            if not isinstance(tup, TupleType):
-                raise TypeError(
-                    "MapBase.update requires a map or a sequence of pairs")
-            k, v = tup
-            self[k] = v
-
-    def get(self, key, failobj=None):
-        if key in self.keys():
-            return self[key]
-        else:
-            return failobj
-
-    def setdefault(self, key, failobj=None):
-        if not self.has_key(key):
-            self[key] = failobj
-        return self[key]
-
-
-class AList(MapBase):
-    """Read-only ordered mapping."""
-    def __init__(self, seq=[]):
-        self.readonly = True
-        self._inverted = False
-        self._data = list(seq[:])
-        self._keys = []
-        self._values = []
-        for key, value in seq:
-            self._keys.append(key)
-            self._values.append(value)
-
-    def set_inverted(self, inverted):
-        if (inverted and not self._inverted) or (
-            not inverted and self._inverted):
-            self._keys, self._values = self._values, self._keys
-        if inverted: self._inverted = True
-        else: self._inverted = False
-
-    def __getitem__(self, key):
-        try:
-            i = self._keys.index(key)
-        except ValueError:
-            raise KeyError(key)
-        return self._values[i]
-
-    def __delitem__(self, key):
-        try:
-            i = self._keys.index[key]
-        except ValueError:
-            raise KeyError(key)
-        del self._values[i]
-
-    def keys(self): return list(self._keys[:])
-    def values(self): return list(self._values[:])
-    def items(self):
-        data = self._data[:]
-        if not self._inverted:
-            return data
-        else:
-            newdata = []
-            for k, v in data:
-                newdata.append((v, k))
-            return newdata
+# XXX don't really want to drag this along (MimeWriter, choose_boundary)
 
 # --------------------------------------------------------------------
 # grabbed from Python standard library mimetools module and tweaked to
-# avoid socket.gaierror
+# avoid socket.gaierror and to avoid dots ('.') in MIME boundaries
 try:
     import thread
     _thread = thread; del thread
@@ -387,7 +220,7 @@ def _get_next_counter():
 
 _prefix = None
 
-def _choose_boundary():
+def choose_boundary():
     """Return a string usable as a multipart boundary.
 
     The string chosen is unique within a single program run, and
@@ -421,16 +254,11 @@ def _choose_boundary():
             pid = repr(os.getpid())
         except AttributeError:
             pid = '1'
-        _prefix = hostid + '.' + uid + '.' + pid
-    return "%s.%.3f.%d" % (_prefix, time.time(), _get_next_counter())
+        _prefix = hostid + uid + pid
+    return "%s%d%d" % (_prefix, long(time.time()*100), _get_next_counter())
 
 # end of code from mimetools module
 # --------------------------------------------------------------------
-
-def choose_boundary():
-    b = _choose_boundary()
-    b = string.replace(b, ".", "")
-    return b
 
 # This cut-n-pasted MimeWriter from standard library is here so can add
 # to HTTP headers rather than message body when appropriate.  It also uses
@@ -517,16 +345,16 @@ class MimeWriter:
         """
         prefix is ignored if add_to_http_hdrs is true.
         """
-        lines = string.split(value, "\r\n")
+        lines = value.split("\r\n")
         while lines and not lines[-1]: del lines[-1]
         while lines and not lines[0]: del lines[0]
         if add_to_http_hdrs:
-            value = string.join(lines, "")
+            value = "".join(lines)
             self._http_hdrs.append((key, value))
         else:
             for i in range(1, len(lines)):
-                lines[i] = "    " + string.strip(lines[i])
-            value = string.join(lines, "\r\n") + "\r\n"
+                lines[i] = "    " + lines[i].strip()
+            value = "\r\n".join(lines) + "\r\n"
             line = key + ": " + value
             if prefix:
                 self._headers.insert(0, line)
@@ -578,9 +406,13 @@ class MimeWriter:
         self._fp.write("\r\n--" + boundary + "--\r\n")
 
 
-class ControlNotFoundError(ValueError): pass
-class ItemNotFoundError(ValueError): pass
+class LocateError(ValueError): pass
+class AmbiguityError(LocateError): pass
+class ControlNotFoundError(LocateError): pass
+class ItemNotFoundError(LocateError): pass
+
 class ItemCountError(ValueError): pass
+
 
 class ParseError(Exception): pass
 
@@ -628,9 +460,9 @@ class _AbstractFormParser:
             elif key == "action":
                 action = value
             elif key == "method":
-                method = string.upper(value)
+                method = value.upper()
             elif key == "enctype":
-                enctype = string.lower(value)
+                enctype = value.lower()
             d[key] = value
         controls = []
         self._current_form = (name, action, method, enctype), d, controls
@@ -651,7 +483,8 @@ class _AbstractFormParser:
         if self._textarea is not None:
             raise ParseError("SELECT inside TEXTAREA")
         d = {}
-        d.update(attrs)
+        for key, val in attrs:
+            d[key] = val
 
         self._select = d
         self._add_label(d)
@@ -673,7 +506,8 @@ class _AbstractFormParser:
         if self._select is None:
             raise ParseError("OPTGROUP outside of SELECT")
         d = {}
-        d.update(attrs)
+        for key, val in attrs:
+            d[key] = val
 
         self._optgroup = d
 
@@ -688,8 +522,12 @@ class _AbstractFormParser:
         if self._option is not None:
             self._end_option()
 
+        d = {}
+        for key, val in attrs:
+            d[key] = val
+
         self._option = {}
-        self._option.update(attrs)
+        self._option.update(d)
         if (self._optgroup and self._optgroup.has_key("disabled") and
             not self._option.has_key("disabled")):
             self._option["disabled"] = None
@@ -698,7 +536,7 @@ class _AbstractFormParser:
         if self._option is None:
             raise ParseError("end of OPTION before start")
 
-        contents = string.strip(self._option.get("contents", ""))
+        contents = self._option.get("contents", "").strip()
         self._option["contents"] = contents
         if not self._option.has_key("value"):
             self._option["value"] = contents
@@ -723,7 +561,8 @@ class _AbstractFormParser:
         if self._select is not None:
             raise ParseError("TEXTAREA inside SELECT")
         d = {}
-        d.update(attrs)
+        for key, val in attrs:
+            d[key] = val
         self._add_label(d)
 
         self._textarea = d
@@ -741,13 +580,15 @@ class _AbstractFormParser:
     def start_label(self, attrs):
         if self._current_label:
             self.end_label()
-        attrs = dict(attrs)
-        taken = bool(attrs.get('for')) # empty id is invalid
-        attrs['__text'] = ''
-        attrs['__taken'] = taken
+        d = {}
+        for key, val in attrs:
+            d[key] = val
+        taken = bool(d.get("for"))  # empty id is invalid
+        d["__text"] = ""
+        d["__taken"] = taken
         if taken:
-            self.labels.append(attrs)
-        self._current_label = attrs
+            self.labels.append(d)
+        self._current_label = d
 
     def end_label(self):
         label = self._current_label
@@ -755,16 +596,17 @@ class _AbstractFormParser:
             # something is ugly in the HTML, but we're ignoring it
             return
         self._current_label = None
-        label['__text'] = label['__text']
-        del label['__taken'] # if it is staying around, it is True in all cases
+        label["__text"] = label["__text"]
+        # if it is staying around, it is True in all cases
+        del label["__taken"]
 
     def _add_label(self, d):
         if self._current_label is not None:
-            if self._current_label['__taken']:
-                self.end_label() # be fuzzy
+            if self._current_label["__taken"]:
+                self.end_label()  # be fuzzy
             else:
-                self._current_label['__taken'] = True
-                d['__label'] = self._current_label
+                self._current_label["__taken"] = True
+                d["__label"] = self._current_label
 
     def handle_data(self, data):
         if self._option is not None:
@@ -777,8 +619,8 @@ class _AbstractFormParser:
         elif self._textarea is not None:
             map = self._textarea
             key = "value"
-        elif self._current_label is not None: # not if within option or
-            # textarea
+        # not if within option or textarea
+        elif self._current_label is not None:
             map = self._current_label
             key = "__text"
         else:
@@ -794,14 +636,15 @@ class _AbstractFormParser:
             raise ParseError("start of BUTTON before start of FORM")
         d = {}
         d["type"] = "submit"  # default
-        d.update(attrs)
+        for key, val in attrs:
+            d[key] = val
         controls = self._current_form[2]
 
         type = d["type"]
         name = d.get("name")
         # we don't want to lose information, so use a type string that
         # doesn't clash with INPUT TYPE={SUBMIT,RESET,BUTTON}
-        # eg. type for BUTTON/RESET is "resetbutton"
+        # e.g. type for BUTTON/RESET is "resetbutton"
         #     (type for INPUT/RESET is "reset")
         type = type+"button"
         self._add_label(d)
@@ -812,7 +655,8 @@ class _AbstractFormParser:
             raise ParseError("start of INPUT before start of FORM")
         d = {}
         d["type"] = "text"  # default
-        d.update(attrs)
+        for key, val in attrs:
+            d[key] = val
         controls = self._current_form[2]
 
         type = d["type"]
@@ -824,7 +668,8 @@ class _AbstractFormParser:
         if self._current_form is None:
             raise ParseError("start of ISINDEX before start of FORM")
         d = {}
-        d.update(attrs)
+        for key, val in attrs:
+            d[key] = val
         controls = self._current_form[2]
 
         self._add_label(d)
@@ -833,7 +678,7 @@ class _AbstractFormParser:
 
     def handle_entityref(self, name):
         table = self._entitydefs
-        fullname = '&%s;' % name
+        fullname = "&%s;" % name
         if table.has_key(fullname):
             self.handle_data(table[fullname])
         else:
@@ -851,12 +696,12 @@ class _AbstractFormParser:
             except AttributeError:
                 escaped_attrs[key] = self.unescape_attr(val)
             else:
-                # eg. "__select" -- yuck!
+                # e.g. "__select" -- yuck!
                 escaped_attrs[key] = self.unescape_attrs(val)
         return escaped_attrs
 
-    def unknown_entityref(self, ref): self.handle_data('&%s;' % ref)
-    def unknown_charref(self, ref): self.handle_data('&#%s;' % ref)
+    def unknown_entityref(self, ref): self.handle_data("&%s;" % ref)
+    def unknown_charref(self, ref): self.handle_data("&#%s;" % ref)
 
 
 # HTMLParser.HTMLParser is recent, so live without it if it's not available
@@ -883,12 +728,12 @@ else:
 
         def handle_starttag(self, tag, attrs):
             try:
-                method = getattr(self, 'start_' + tag)
+                method = getattr(self, "start_" + tag)
             except AttributeError:
                 try:
-                    method = getattr(self, 'do_' + tag)
+                    method = getattr(self, "do_" + tag)
                 except AttributeError:
-                    pass # unknown tag
+                    pass  # unknown tag
                 else:
                     method(attrs)
             else:
@@ -896,9 +741,9 @@ else:
 
         def handle_endtag(self, tag):
             try:
-                method = getattr(self, 'end_' + tag)
+                method = getattr(self, "end_" + tag)
             except AttributeError:
-                pass # unknown tag
+                pass  # unknown tag
             else:
                 method()
 
@@ -951,7 +796,7 @@ def ParseResponse(response, select_default=False,
                   ignore_errors=False,  # ignored!
                   form_parser_class=FormParser,
                   request_class=urllib2.Request,
-                  entitydefs=None):
+                  entitydefs=None, backwards_compat=True):
     """Parse HTTP response and return a list of HTMLForm instances.
 
     The return value of urllib2.urlopen can be conveniently passed to this
@@ -968,6 +813,24 @@ def ParseResponse(response, select_default=False,
      urllib2.Request)
     entitydefs: mapping like {'&amp;': '&', ...} containing HTML entity
      definitions (a sensible default is used)
+
+    backwards_compat: boolean that determines whether the returned HTMLForm
+     objects are backwards-compatible with old code.  If backwards_compat is True:
+
+     - ClientForm 0.1 code will continue to work as before.
+
+     - Label searches that do not specify a nr (number or count) will always
+       get the first match, even if other controls match.  If
+       backwards_compat is False, label searches that have ambiguous results
+       will raise an AmbiguityError.
+
+     - Item label matching is done by strict string comparison rather than
+       substring matching.
+
+     - De-selecting individual list items is allowed even if the Item is
+       disabled.
+
+    The backwards_compat argument will be deprecated in a future release.
 
     Pass a true value for select_default if you want the behaviour specified by
     RFC 1866 (the HTML 2.0 standard), which is to select the first item in a
@@ -991,13 +854,13 @@ def ParseResponse(response, select_default=False,
                      False,
                      form_parser_class,
                      request_class,
-                     entitydefs)
+                     entitydefs, backwards_compat)
 
 def ParseFile(file, base_uri, select_default=False,
               ignore_errors=False,  # ignored!
               form_parser_class=FormParser,
               request_class=urllib2.Request,
-              entitydefs=None):
+              entitydefs=None, backwards_compat=True):
     """Parse HTML and return a list of HTMLForm instances.
 
     ClientForm.ParseError is raised on parse errors.
@@ -1011,6 +874,8 @@ def ParseFile(file, base_uri, select_default=False,
     For the other arguments and further details, see ParseResponse.__doc__.
 
     """
+    if backwards_compat:
+        deprecation("operating in backwards-compatibility mode")
     fp = form_parser_class(entitydefs)
     while 1:
         data = file.read(CHUNK)
@@ -1023,12 +888,12 @@ def ParseFile(file, base_uri, select_default=False,
     if fp.base is not None:
         # HTML BASE element takes precedence over document URI
         base_uri = fp.base
-    labels = [] # Label(label) for label in fp.labels]
+    labels = []  # Label(label) for label in fp.labels]
     id_to_labels = {}
     for l in fp.labels:
         label = Label(l)
         labels.append(label)
-        for_id = l['for']
+        for_id = l["for"]
         coll = id_to_labels.get(for_id)
         if coll is None:
             id_to_labels[for_id] = [label]
@@ -1043,56 +908,78 @@ def ParseFile(file, base_uri, select_default=False,
         action = fp.unescape_attr_if_required(action)
         name = fp.unescape_attr_if_required(name)
         attrs = fp.unescape_attrs_if_required(attrs)
-        form = HTMLForm( # would be nice to make class (form builder) pluggable
+        # would be nice to make HTMLForm class (form builder) pluggable
+        form = HTMLForm(
             action, method, enctype, name, attrs, request_class,
-            forms, labels, id_to_labels)
-        for type, name, attrs in controls:
+            forms, labels, id_to_labels, backwards_compat)
+        for ii in range(len(controls)):
+            type, name, attrs = controls[ii]
             attrs = fp.unescape_attrs_if_required(attrs)
             name = fp.unescape_attr_if_required(name)
-            form.new_control(type, name, attrs, select_default=select_default)
+            form.new_control(type, name, attrs, select_default=select_default,
+                             index=ii)
         forms.append(form)
     for form in forms:
         form.fixup()
     return forms
 
-class Label(object):
+
+class Label:
     def __init__(self, attrs):
-        self.id = attrs.get('for')
-        self.text = compressText(attrs.get('__text'))
+        self.id = attrs.get("for")
+        self._text = attrs.get("__text").strip()
+        self._ctext = compress_text(self._text)
         self.attrs = attrs
+        self._backwards_compat = False  # maintaned by HTMLForm
+
+    def __getattr__(self, name):
+        if name == "text":
+            if self._backwards_compat:
+                return self._text
+            else:
+                return self._ctext
+        return getattr(Label, name)
+
+    def __setattr__(self, name, value):
+        if name == "text":
+            # don't see any need for this
+            raise AttributeError("text attribute is read-only")
+        self.__dict__[name] = value
+
+    def __str__(self):
+        return '<Label(id=%r, text=%r)>' % (self.id, self.text)
+
 
 def _getLabel(attrs):
-    label = attrs.get('__label')
-    if label is not None:
-        label = Label(label)
-    return label
+    text = attrs.get("__label")
+    if text is not None:
+        return Label(text)
+    else:
+        return None
 
 class Control:
     """An HTML form control.
 
-    An HTMLForm contains a sequence of Controls.  HTMLForm delegates lots of
-    things to Control objects, and most of Control's methods are, in effect,
-    documented by the HTMLForm docstrings.
-
-    The Controls in an HTMLForm can be got at via the HTMLForm.find_control
-    method or the HTMLForm.controls attribute.
+    An HTMLForm contains a sequence of Controls.  The Controls in an HTMLForm
+    are accessed using the HTMLForm.find_control method or the
+    HTMLForm.controls attribute.
 
     Control instances are usually constructed using the ParseFile /
-    ParseResponse functions, so you can probably ignore the rest of this
-    paragraph.  A Control is only properly initialised after the fixup method
-    has been called.  In fact, this is only strictly necessary for ListControl
-    instances.  This is necessary because ListControls are built up from
-    ListControls each containing only a single item, and their initial value(s)
-    can only be known after the sequence is complete.
+    ParseResponse functions.  If you use those functions, you can ignore the
+    rest of this paragraph.  A Control is only properly initialised after the
+    fixup method has been called.  In fact, this is only strictly necessary for
+    ListControl instances.  This is necessary because ListControls are built up
+    from ListControls each containing only a single item, and their initial
+    value(s) can only be known after the sequence is complete.
 
     The types and values that are acceptable for assignment to the value
     attribute are defined by subclasses.
 
     If the disabled attribute is true, this represents the state typically
-    represented by browsers by `greying out' a control.  If the disabled
+    represented by browsers by 'greying out' a control.  If the disabled
     attribute is true, the Control will raise AttributeError if an attempt is
     made to change its value.  In addition, the control will not be considered
-    `successful' as defined by the W3C HTML 4 standard -- ie. it will
+    'successful' as defined by the W3C HTML 4 standard -- ie. it will
     contribute no data to the return value of the HTMLForm.click* methods.  To
     enable a control, set the disabled attribute to a false value.
 
@@ -1122,7 +1009,7 @@ class Control:
     id: value of id HTML attribute
 
     """
-    def __init__(self, type, name, attrs):
+    def __init__(self, type, name, attrs, index=None):
         """
         type: string describing type of control (see the keys of the
          HTMLForm.type2class dictionary for the allowable values)
@@ -1151,6 +1038,15 @@ class Control:
     def pairs(self):
         """Return list of (key, value) pairs suitable for passing to urlencode.
         """
+        return [(k, v) for (i, k, v) in self._totally_ordered_pairs()]
+
+    def _totally_ordered_pairs(self):
+        """Return list of (key, value, index) tuples.
+
+        Like pairs, but allows preserving correct ordering even where several
+        controls are involved.
+
+        """
         raise NotImplementedError()
 
     def _write_mime_data(self, mw):
@@ -1166,7 +1062,14 @@ class Control:
     def __str__(self):
         raise NotImplementedError()
 
-    def getLabels(self):
+    def get_labels(self):
+        """Return all labels (Label instances) for this control.
+        
+        If the control was surrounded by a <label> tag, that will be the first
+        label; all other labels, connected by 'for' and 'id', are in the order
+        that appear in the HTML.
+
+        """
         res = []
         if self._label:
             res.append(self._label)
@@ -1188,9 +1091,10 @@ class ScalarControl(Control):
      control to their values
 
     """
-    def __init__(self, type, name, attrs):
+    def __init__(self, type, name, attrs, index=None):
+        self._index = index
         self._label = _getLabel(attrs)
-        self.__dict__["type"] = string.lower(type)
+        self.__dict__["type"] = type.lower()
         self.__dict__["name"] = name
         self._value = attrs.get("value")
         self.disabled = attrs.has_key("disabled")
@@ -1222,12 +1126,12 @@ class ScalarControl(Control):
         else:
             self.__dict__[name] = value
 
-    def pairs(self):
+    def _totally_ordered_pairs(self):
         name = self.name
         value = self.value
         if name is None or value is None or self.disabled:
             return []
-        return [(name, value)]
+        return [(self._index, name, value)]
 
     def clear(self):
         if self.readonly:
@@ -1243,7 +1147,7 @@ class ScalarControl(Control):
         infos = []
         if self.disabled: infos.append("disabled")
         if self.readonly: infos.append("readonly")
-        info = string.join(infos, ", ")
+        info = ", ".join(infos)
         if info: info = " (%s)" % info
 
         return "<%s(%s=%s)%s>" % (self.__class__.__name__, name, value, info)
@@ -1262,8 +1166,8 @@ class TextControl(ScalarControl):
     TEXTAREA
 
     """
-    def __init__(self, type, name, attrs):
-        ScalarControl.__init__(self, type, name, attrs)
+    def __init__(self, type, name, attrs, index=None):
+        ScalarControl.__init__(self, type, name, attrs, index)
         if self.type == "hidden": self.readonly = True
         if self._value is None:
             self._value = ""
@@ -1280,8 +1184,8 @@ class FileControl(ScalarControl):
 
     """
 
-    def __init__(self, type, name, attrs):
-        ScalarControl.__init__(self, type, name, attrs)
+    def __init__(self, type, name, attrs, index=None):
+        ScalarControl.__init__(self, type, name, attrs, index)
         self._value = None
         self._upload_data = []
 
@@ -1309,11 +1213,11 @@ class FileControl(ScalarControl):
             content_type = "application/octet-stream"
         self._upload_data.append((file_object, content_type, filename))
 
-    def pairs(self):
+    def _totally_ordered_pairs(self):
         # XXX should it be successful even if unnamed?
         if self.name is None or self.disabled:
             return []
-        return [(self.name, "")]
+        return [(self._index, self.name, "")]
 
     def _write_mime_data(self, mw):
         # called by HTMLForm
@@ -1321,7 +1225,7 @@ class FileControl(ScalarControl):
             # single file
             file_object, content_type, filename = self._upload_data[0]
             mw2 = mw.nextpart()
-            fn_part = filename and ('; filename="%s"' % filename) or ''
+            fn_part = filename and ('; filename="%s"' % filename) or ""
             disp = 'form-data; name="%s"%s' % (self.name, fn_part)
             mw2.addheader("Content-disposition", disp, prefix=1)
             fh = mw2.startbody(content_type, prefix=0)
@@ -1334,8 +1238,8 @@ class FileControl(ScalarControl):
             fh = mw2.startmultipartbody("mixed", prefix=0)
             for file_object, content_type, filename in self._upload_data:
                 mw3 = mw2.nextpart()
-                fn_part = filename and ('; filename="%s"' % filename) or ''
-                disp = 'file%s' % fn_part
+                fn_part = filename and ('; filename="%s"' % filename) or ""
+                disp = "file%s" % fn_part
                 mw3.addheader("Content-disposition", disp, prefix=1)
                 fh2 = mw3.startbody(content_type, prefix=0)
                 fh2.write(file_object.read())
@@ -1354,12 +1258,12 @@ class FileControl(ScalarControl):
                     value.append("<Unnamed file>")
                 else:
                     value.append(filename)
-            value = string.join(value, ", ")
+            value = ", ".join(value)
 
         info = []
         if self.disabled: info.append("disabled")
         if self.readonly: info.append("readonly")
-        info = string.join(info, ", ")
+        info = ", ".join(info)
         if info: info = " (%s)" % info
 
         return "<%s(%s=%s)%s>" % (self.__class__.__name__, name, value, info)
@@ -1393,14 +1297,14 @@ class IsindexControl(ScalarControl):
     result = urllib2.urlopen(url)
 
     """
-    def __init__(self, type, name, attrs):
-        ScalarControl.__init__(self, type, name, attrs)
+    def __init__(self, type, name, attrs, index=None):
+        ScalarControl.__init__(self, type, name, attrs, index)
         if self._value is None:
             self._value = ""
 
     def is_of_kind(self, kind): return kind in ["text", "clickable"]
 
-    def pairs(self):
+    def _totally_ordered_pairs(self):
         return []
 
     def _click(self, form, coord, return_type, request_class=urllib2.Request):
@@ -1429,7 +1333,7 @@ class IsindexControl(ScalarControl):
         infos = []
         if self.disabled: infos.append("disabled")
         if self.readonly: infos.append("readonly")
-        info = string.join(infos, ", ")
+        info = ", ".join(infos)
         if info: info = " (%s)" % info
 
         return "<%s(%s)%s>" % (self.__class__.__name__, value, info)
@@ -1454,8 +1358,8 @@ class IgnoreControl(ScalarControl):
     The value attribute of IgnoreControl is always None.
 
     """
-    def __init__(self, type, name, attrs):
-        ScalarControl.__init__(self, type, name, attrs)
+    def __init__(self, type, name, attrs, index=None):
+        ScalarControl.__init__(self, type, name, attrs, index)
         self._value = None
 
     def is_of_kind(self, kind): return False
@@ -1475,84 +1379,97 @@ class IgnoreControl(ScalarControl):
 
 # helpers and subsidiary classes
 
-class Item(object):
-    def __init__(self, control, attrs):
+class Item:
+    def __init__(self, control, attrs, index=None):
         label = _getLabel(attrs)
         self.__dict__.update({
-            'value': attrs['value'],
-            '_labels': label and [label] or [],
-            'attrs': attrs,
-            'control': control,
-            '_disabled': attrs.has_key("disabled"),
-            '_selected': False,
-            'id': attrs.get('id'),
+            "name": attrs["value"],
+            "_labels": label and [label] or [],
+            "attrs": attrs,
+            "_control": control,
+            "disabled": attrs.has_key("disabled"),
+            "_selected": False,
+            "id": attrs.get("id"),
+            "_index": index,
             })
+        control.items.append(self)
 
-    def getLabels(self):
+    def get_labels(self):
+        """Return all labels (Label instances) for this item.
+        
+        For items that represent radio buttons or checkboxes, if the item was
+        surrounded by a <label> tag, that will be the first label; all other
+        labels, connected by 'for' and 'id', are in the order that appear in
+        the HTML.
+        
+        For items that represent select options, if the option had a label
+        attribute, that will be the first label.  If the option has contents
+        (text within the option tags) and it is not the same as the label
+        attribute (if any), that will be a label.  There is nothing in the
+        spec to my knowledge that makes an option with an id unable to be the
+        target of a label's for attribute, so those are included, if any, for
+        the sake of consistency and completeness.
+
+        """
         res = []
         res.extend(self._labels)
         if self.id:
-            res.extend(self.control._form._id_to_labels.get(self.id, ()))
+            res.extend(self._control._form._id_to_labels.get(self.id, ()))
         return res
 
-    # selected and disabled properties
     def __getattr__(self, name):
-        if name=='selected':
+        if name=="selected":
             return self._selected
-        elif name=='disabled':
-            return self._disabled
         raise AttributeError(name)
 
     def __setattr__(self, name, value):
-        if name == 'selected':
-            if bool(value) != bool(self._selected):
-                self.control._set_selected_state(self, value)
-        elif name == 'disabled':
-            if bool(value) != bool(self._disabled):
-                self.control._set_item_disabled(self, value)
+        if name == "selected":
+            self._control._set_selected_state(self, value)
+        elif name == "disabled":
+            self.__dict__["disabled"] = bool(value)
         else:
             raise AttributeError(name)
 
     def __str__(self):
-        res = self.value
+        res = self.name
         if self.selected:
-            res = '*' + res
+            res = "*" + res
         if self.disabled:
-            res = '(%s)' % res
+            res = "(%s)" % res
         return res
 
     def __repr__(self):
-        return "<%s value=%r id=%r>" % (
-            self.__class__.__name__, self.value, self.id)
+        attrs = [("name", self.name), ("id", self.id)]+self.attrs.items()
+        return "<%s %s>" % (
+            self.__class__.__name__,
+            " ".join(["%s=%r" % (k, v) for k, v in attrs])
+            )
 
-# how to remove items from a list container: delete them as usual
-# ("del control.items[:]", for instance).
-# how to add items to a list container: instantiate Item with control, and add
-# to list ("control.items.append(Item(control, {...attrs...}))", for instance).
-# You never want an item to have an incorrect reference to its control (and
-# thus you never want an item to be in more than one control).
-
-class AmbiguityError(Exception):
-    pass
-
-def disambiguate(items, count, value):
+def disambiguate(items, nr, **kwds):
+    msgs = []
+    for key, value in kwds.items():
+        msgs.append("%s=%r" % (key, value))
+    msg = " ".join(msgs)
     if not items:
-        raise ItemNotFoundError(value)
-    if count is None:
+        raise ItemNotFoundError(msg)
+    if nr is None:
         if len(items) > 1:
-            raise AmbiguityError(value)
-        return items[0]
-    else:
-        return items[count]
+            raise AmbiguityError(msg)
+        nr = 0
+    if len(items) <= nr:
+        raise ItemNotFoundError(msg)
+    return items[nr]
 
 class ListControl(Control):
     """Control representing a sequence of items.
 
-    The value attribute of a ListControl represents the selected list items in
-    the control.
+    The value attribute of a ListControl represents the successful list items
+    in the control.  The successful list items are those that are selected and
+    not disabled.
 
-    ListControl implements both list controls that take a single value and
-    those that take multiple values.
+    ListControl implements both list controls that take a length-1 value
+    (single-selection) and those that take length >1 values
+    (multiple-selection).
 
     ListControls accept sequence values only.  Some controls only accept
     sequences of length 0 or 1 (RADIO, and single-selection SELECT).
@@ -1569,8 +1486,8 @@ class ListControl(Control):
     in the order they were listed in the HTML.
 
     ListControl items can also be referred to by their labels instead of names.
-    Use the by_label argument, and the set_value_by_label, get_value_by_label
-    methods.
+    Use the label argument to .get(), and the .set_value_by_label(),
+    .get_value_by_label() methods.
 
     Note that, rather confusingly, though SELECT controls are represented in
     HTML by SELECT elements (which contain OPTION elements, representing
@@ -1619,7 +1536,7 @@ class ListControl(Control):
     _label = None
 
     def __init__(self, type, name, attrs={}, select_default=False,
-                 called_as_base_class=False):
+                 called_as_base_class=False, index=None):
         """
         select_default: for RADIO and multiple-selection SELECT controls, pick
          the first item as the default if no 'selected' HTML attribute is
@@ -1629,7 +1546,7 @@ class ListControl(Control):
         if not called_as_base_class:
             raise NotImplementedError()
 
-        self.__dict__["type"] = string.lower(type)
+        self.__dict__["type"] = type.lower()
         self.__dict__["name"] = name
         self._value = attrs.get("value")
         self.disabled = False
@@ -1641,6 +1558,7 @@ class ListControl(Control):
         # control.  Each merged-in Control instance corresponds to a single
         # list item: see ListControl.__doc__.
         self.items = []
+        self._form = None
 
         self._select_default = select_default
         self._clicked = False
@@ -1658,80 +1576,144 @@ class ListControl(Control):
         else:
             return False
 
-    def items_from_label(self, label, exclude_disabled=False):
-        if not isstringlike(label): # why not isinstance basestring?
+    def get_items(self, name=None, label=None, id=None,
+                  exclude_disabled=False):
+        """Return matching items by name or label.
+
+        For argument docs, see the docstring for .get()
+
+        """
+        if name is not None and not isstringlike(name):
+            raise TypeError("item name must be string-like")
+        if label is not None and not isstringlike(label):
             raise TypeError("item label must be string-like")
-        # check all labels on the items, then if any of the values have
-        # an id, go through all the collected labels on self._form._labels and
-        # see if any of them match.
-        items = [] # order is important
-        mapping = self._form._id_to_labels
+        if id is not None and not isstringlike(id):
+            raise TypeError("item id must be string-like")
+        items = []  # order is important
+        compat = self._form.backwards_compat
         for o in self.items:
-            if not exclude_disabled or not o.disabled:
-                for l in o.getLabels():
-                    if label in l.text:
-                        items.append(o)
+            if exclude_disabled and o.disabled:
+                continue
+            if name is not None and o.name != name:
+                continue
+            if label is not None:
+                for l in o.get_labels():
+                    if ((compat and l.text == label) or
+                        (not compat and l.text.find(label) > -1)):
                         break
+                else:
+                    continue
+            if id is not None and o.id != id:
+                continue
+            items.append(o)
         return items
 
-    def items_from_value(self, value, exclude_disabled=False):
-        if not isstringlike(value):
-            raise TypeError("item value must be string-like")
-        return [o for o in self.items if
-                o.value == value and (not exclude_disabled or not o.disabled)]
+    def get(self, name=None, label=None, id=None, nr=None,
+            exclude_disabled=False):
+        """Return item by name or label, disambiguating if necessary with nr.
 
-    def get(self, name, by_label=False, count=None, exclude_disabled=False):
+        All arguments must be passed by name, with the exception of 'name',
+        which may be used as a positional argument.
+
+        If name is specified, then the item must have the indicated name.
+
+        If label is specified, then the item must have a label whose
+        whitespace-compressed, stripped, text substring-matches the indicated
+        label string (eg. label="please choose" will match
+        "  Do  please  choose an item ").
+
+        If id is specified, then the item must have the indicated id.
+
+        nr is an optional 0-based index of the items matching the query.
+
+        If nr is the default None value and more than item is found, raises
+        AmbiguityError (unless the HTMLForm instance's backwards_compat
+        attribute is true).
+
+        If no item is found, or if items are found but nr is specified and not
+        found, raises ItemNotFoundError.
+
+        Optionally excludes disabled items.
+
+        """
+        if nr is None and self._form.backwards_compat:
+            nr = 0  # :-/
+        items = self.get_items(name, label, id, exclude_disabled)
+        return disambiguate(items, nr, name=name, label=label, id=id)
+
+    def _get(self, name, by_label=False, nr=None, exclude_disabled=False):
+        # strictly for use by deprecated methods
         if by_label:
-            method = self.items_from_label
+            name, label = None, name
         else:
-            method = self.items_from_value
-        return disambiguate(method(name, exclude_disabled), count, name)
+            name, label = name, None
+        return self.get(name, label, nr, exclude_disabled)
 
-    def toggle(self, name, by_label=False, count=None):
+    def toggle(self, name, by_label=False, nr=None):
+        """Deprecated: given a name or label and optional disambiguating index
+        nr, toggle the matching item's selection.
+
+        Selecting items follows the behavior described in the docstring of the
+        'get' method.
+
+        if the item is disabled, or this control is disabled or readonly,
+        raise AttributeError.
+
+        """
         deprecation(
             "item = control.get(...); item.selected = not item.selected")
-        o = self.get(name, by_label, count)
+        o = self._get(name, by_label, nr)
         self._set_selected_state(o, not o.selected)
 
-    def set(self, selected, name, by_label=False, count=None):
+    def set(self, selected, name, by_label=False, nr=None):
+        """Deprecated: given a name or label and optional disambiguating index
+        nr, set the matching item's selection to the bool value of selected.
+
+        Selecting items follows the behavior described in the docstring of the
+        'get' method.
+
+        if the item is disabled, or this control is disabled or readonly,
+        raise AttributeError.
+
+        """
         deprecation(
             "control.get(...).selected = <boolean>")
-        self._set_selected_state(self.get(name, by_label, count), selected)
+        self._set_selected_state(self._get(name, by_label, nr), selected)
 
     def _set_selected_state(self, item, action):
-        """
-        index: index of item
-        action:
-         bool False: off
-         bool True: on
-        """
+        # action:
+        # bool False: off
+        # bool True: on
         if self.disabled:
             raise AttributeError("control '%s' is disabled" % self.name)
         if self.readonly:
             raise AttributeError("control '%s' is readonly" % self.name)
         action == bool(action)
-        if item.disabled:
-            # I'd prefer ValueError
+        compat = self._form.backwards_compat
+        if not compat and item.disabled:
             raise AttributeError("item is disabled")
-        elif action != item.selected:
+        else:
+            if compat and item.disabled and action:
+                raise AttributeError("item is disabled")
             if self.multiple:
-                item.__dict__['_selected'] = action
+                item.__dict__["_selected"] = action
             else:
                 if not action:
-                    item.__dict__['_selected'] = action
+                    item.__dict__["_selected"] = False
                 else:
-                    selected = [o for o in self.items
-                                if o.selected and not o.disabled]
-                    # disabled items are not changeable but also
-                    # not 'successful': their values should not be sent to
-                    # the server, so they are effectively invisible,
-                    # whether or not the control considers itself to be
-                    # selected
-                    for s in selected:
-                        s.__dict__['_selected'] = False
-                    item.__dict__['_selected'] = True
+                    for o in self.items:
+                        o.__dict__["_selected"] = False
+                    item.__dict__["_selected"] = True
 
     def toggle_single(self, by_label=None):
+        """Deprecated: toggle the selection of the single item in this control.
+        
+        Raises ItemCountError if the control does not contain only one item.
+        
+        by_label argument is ignored, and included only for backwards
+        compatibility.
+
+        """
         deprecation(
             "control.items[0].selected = not control.items[0].selected")
         if len(self.items) != 1:
@@ -1741,6 +1723,14 @@ class ListControl(Control):
         self._set_selected_state(item, not item.selected)
 
     def set_single(self, selected, by_label=None):
+        """Deprecated: set the selection of the single item in this control.
+        
+        Raises ItemCountError if the control does not contain only one item.
+        
+        by_label argument is ignored, and included only for backwards
+        compatibility.
+
+        """
         deprecation(
             "control.items[0].selected = <boolean>")
         if len(self.items) != 1:
@@ -1748,13 +1738,13 @@ class ListControl(Control):
                 "'%s' is not a single-item control" % self.name)
         self._set_selected_state(self.items[0], selected)
 
-    def get_item_disabled(self, name, by_label=False, count=None):
+    def get_item_disabled(self, name, by_label=False, nr=None):
         """Get disabled state of named list item in a ListControl."""
         deprecation(
             "control.get(...).disabled")
-        return self.get(name, by_label, count).disabled
+        return self._get(name, by_label, nr).disabled
 
-    def set_item_disabled(self, disabled, name, by_label=False, count=None):
+    def set_item_disabled(self, disabled, name, by_label=False, nr=None):
         """Set disabled state of named list item in a ListControl.
 
         disabled: boolean disabled state
@@ -1762,12 +1752,7 @@ class ListControl(Control):
         """
         deprecation(
             "control.get(...).disabled = <boolean>")
-        self.get(name, by_label, count).disabled = disabled
-
-    def _set_item_disabled(self, item, disabled):
-        if not self.multiple and item.selected and self.value:
-            item.__dict__['_selected'] = False
-        item.__dict__['_disabled'] = bool(disabled)
+        self._get(name, by_label, nr).disabled = disabled
 
     def set_all_items_disabled(self, disabled):
         """Set disabled state of all list items in a ListControl.
@@ -1775,25 +1760,10 @@ class ListControl(Control):
         disabled: boolean disabled state
 
         """
-        disabled = bool(disabled)
-        if not self.multiple: # make sure that re-emerging items don't
-            # make single-choice controls insane
-            value = bool(self.value)
-            for o in self.items:
-                if not disabled and o.disabled:
-                    o.__dict__['_disabled'] = disabled
-                    if not self.multiple and o.selected:
-                        if value:
-                            o.selected = False
-                        else:
-                            value = True
-                else:
-                    o.__dict__['_disabled'] = disabled
-        else:
-            for o in self.items:
-                o.__dict__['_disabled'] = disabled
+        for o in self.items:
+            o.disabled = disabled
 
-    def get_item_attrs(self, name, by_label=False, count=None):
+    def get_item_attrs(self, name, by_label=False, nr=None):
         """Return dictionary of HTML attributes for a single ListControl item.
 
         The HTML element types that describe list items are: OPTION for SELECT
@@ -1804,12 +1774,15 @@ class ListControl(Control):
 
         The returned dictionary maps HTML attribute names to values.  The names
         and values are taken from the original HTML.
+
         """
         deprecation(
             "control.get(...).attrs")
-        return self.get(name, by_label, count).attrs
+        return self._get(name, by_label, nr).attrs
 
     def add_to_form(self, form):
+        assert self._form is None or form == self._form, (
+            "can't add control to more than one form")
         self._form = form
         try:
             control = form.find_control(self.name, self.type)
@@ -1820,7 +1793,7 @@ class ListControl(Control):
 
     def merge_control(self, control):
         assert bool(control.multiple) == bool(self.multiple)
-        assert isinstance(control, self.__class__)
+        #assert isinstance(control, self.__class__)
         self.items.extend(control.items)
 
     def fixup(self):
@@ -1857,12 +1830,13 @@ class ListControl(Control):
         
         for o in self.items: 
             # set items' controls to self, now that we've merged
-            o.__dict__['control'] = self
+            o.__dict__["_control"] = self
 
     def __getattr__(self, name):
         if name == "value":
-            return [o.value for o in self.items if
-                    not o.disabled and o.selected]
+            compat = self._form.backwards_compat
+            return [o.name for o in self.items if o.selected and
+                    (not o.disabled or compat)]
         else:
             raise AttributeError("%s instance has no attribute '%s'" %
                                  (self.__class__.__name__, name))
@@ -1883,8 +1857,9 @@ class ListControl(Control):
         if value is None or isstringlike(value):
             raise TypeError("ListControl, must set a sequence")
         if not value:
+            compat = self._form.backwards_compat
             for o in self.items:
-                if not o.disabled:
+                if not o.disabled or compat:
                     o.selected = False
         elif self.multiple:
             self._multiple_set_value(value)
@@ -1895,15 +1870,16 @@ class ListControl(Control):
         else:
             self._single_set_value(value)
 
-    def _get_items(self, value, target=1):
-        all_items = self.items_from_value(value)
+    def _get_items(self, name, target=1):
+        all_items = self.get_items(name)
         items = [o for o in all_items if not o.disabled]
         if len(items) < target:
             if len(all_items) < target:
                 raise ItemNotFoundError(
-                    "insufficient items with value %r" % value)
+                    "insufficient items with name %r" % name)
             else:
-                raise AttributeError('disabled item with value %s' % value)
+                raise AttributeError(
+                    "insufficient non-disabled items with name %s" % name)
         on = []
         off = []
         for o in items:
@@ -1914,54 +1890,79 @@ class ListControl(Control):
         return on, off
 
     def _single_set_value(self, value):
+        assert len(value) == 1
         on, off = self._get_items(value[0])
+        assert len(on) <= 1
         if not on:
             off[0].selected = True
 
     def _multiple_set_value(self, value):
-        turn_on = [] # transactional-ish
-        turn_off = [o for o in self.items if o.selected and not o.disabled]
-        values = {}
-        for v in value:
-            if v in values:
-                values[v] += 1
+        compat = self._form.backwards_compat
+        turn_on = []  # transactional-ish
+        turn_off = [item for item in self.items if
+                    item.selected and (not item.disabled or compat)]
+        names = {}
+        for nn in value:
+            if nn in names.keys():
+                names[nn] += 1
             else:
-                values[v] = 1
-        for value, count in values.items():
-            on, off = self._get_items(value, count)
+                names[nn] = 1
+        for name, count in names.items():
+            on, off = self._get_items(name, count)
             for i in range(count):
                 if on:
-                    o = on[0]
+                    item = on[0]
                     del on[0]
-                    del turn_off[turn_off.index(o)]
+                    del turn_off[turn_off.index(item)]
                 else:
-                    o = off[0]
+                    item = off[0]
                     del off[0]
-                    turn_on.append(o)
-        for o in turn_off:
-            o.selected = False
-        for o in turn_on:
-            o.selected = True
+                    turn_on.append(item)
+        for item in turn_off:
+            item.selected = False
+        for item in turn_on:
+            item.selected = True
 
     def set_value_by_label(self, value):
-        if isinstance(value, (str, unicode)):
+        """Set the value of control by item labels.
+
+        value is expected to be an iterable of strings that are substrings of
+        the item labels that should be selected.  Before substring matching is
+        performed, the original label text is whitespace-compressed
+        (consecutive whitespace characters are converted to a single space
+        character) and leading and trailing whitespace is stripped.  Ambiguous
+        labels are accepted without complaint if the form's backwards_compat is
+        True; otherwise, it will not complain as long as all ambiguous labels
+        share the same item name (e.g. OPTION value).
+
+        """
+        if isstringlike(value):
             raise TypeError(value)
+        if not self.multiple and len(value) > 1:
+            raise ItemCountError(
+                "single selection list, must set sequence of "
+                "length 0 or 1")
         items = []
-        for v in value:
-            found = self.items_from_label(v)
+        for nn in value:
+            found = self.get_items(label=nn)
             if len(found) > 1:
-                # ambiguous labels are fine as long as values are same
-                opt_value = found[0].value
-                if [o for o in found[1:] if o != opt_value]:
-                    raise AmbiguityError(v)
-            for o in found: # for the multiple-item case, we could try to
-                # be smarter, saving them up and trying to resolve, but that's
-                # too much.
-                if o not in items:
+                if not self._form.backwards_compat:
+                    # ambiguous labels are fine as long as item names (e.g.
+                    # OPTION values) are same
+                    opt_name = found[0].name
+                    if [o for o in found[1:] if o.name != opt_name]:
+                        raise AmbiguityError(nn)
+                else:
+                    # OK, we'll guess :-(  Assume first available item.
+                    found = found[:1]
+            for o in found:
+                # For the multiple-item case, we could try to be smarter,
+                # saving them up and trying to resolve, but that's too much.
+                if self._form.backwards_compat or o not in items:
                     items.append(o)
                     break
-            else: # all of them are used
-                raise ItemNotFoundError(v)
+            else:  # all of them are used
+                raise ItemNotFoundError(nn)
         # now we have all the items that should be on
         # let's just turn everything off and then back on.
         self.value = []
@@ -1969,10 +1970,12 @@ class ListControl(Control):
             o.selected = True
 
     def get_value_by_label(self):
+        """Return the value of the control as given by normalized labels."""
         res = []
+        compat = self._form.backwards_compat
         for o in self.items:
-            if not o.disabled and o.selected:
-                for l in o.getLabels():
+            if (not o.disabled or compat) and o.selected:
+                for l in o.get_labels():
                     if l.text:
                         res.append(l.text)
                         break
@@ -1980,26 +1983,31 @@ class ListControl(Control):
                     res.append(None)
         return res
 
-    def possible_items(self, by_label=False): # disabled are not possible
+    def possible_items(self, by_label=False):
+        """Deprecated: return the names or labels of all possible items.
+
+        Includes disabled items, which may be misleading for some use cases.
+
+        """
         deprecation(
-            "[o.value for o in self.items]")
+            "[item.name for item in self.items]")
         if by_label:
             res = []
             for o in self.items:
-                for l in o.getLabels():
+                for l in o.get_labels():
                     if l.text:
                         res.append(l.text)
                         break
                 else:
                     res.append(None)
             return res
-        return [o.value for o in self.items]
+        return [o.name for o in self.items]
 
-    def pairs(self):
+    def _totally_ordered_pairs(self):
         if self.disabled:
             return []
         else:
-            return [(self.name, o.value) for o in self.items
+            return [(o._index, self.name, o.name) for o in self.items
                     if o.selected and not o.disabled]
 
     def __str__(self):
@@ -2011,11 +2019,11 @@ class ListControl(Control):
         infos = []
         if self.disabled: infos.append("disabled")
         if self.readonly: infos.append("readonly")
-        info = string.join(infos, ", ")
+        info = ", ".join(infos)
         if info: info = " (%s)" % info
 
         return "<%s(%s=[%s])%s>" % (self.__class__.__name__,
-                                    name, string.join(display, ", "), info)
+                                    name, ", ".join(display), info)
 
 
 class RadioControl(ListControl):
@@ -2025,14 +2033,13 @@ class RadioControl(ListControl):
     INPUT/RADIO
 
     """
-    def __init__(self, type, name, attrs, select_default=False):
-        attrs.setdefault('value', 'on')
+    def __init__(self, type, name, attrs, select_default=False, index=None):
+        attrs.setdefault("value", "on")
         ListControl.__init__(self, type, name, attrs, select_default,
-                             called_as_base_class=True)
+                             called_as_base_class=True, index=index)
         self.__dict__["multiple"] = False
-        o = Item(self, attrs)
-        o.__dict__['_selected'] = attrs.has_key("checked")
-        self.items.append(o)
+        o = Item(self, attrs, index)
+        o.__dict__["_selected"] = attrs.has_key("checked")
 
     def fixup(self):
         ListControl.fixup(self)
@@ -2043,11 +2050,13 @@ class RadioControl(ListControl):
                     if not o.disabled:
                         o.selected = True
                         break
-        else: # eliminate any duplicate selected.  Choose the last one.
+        else:
+            # Ensure only one item selected.  Choose the last one,
+            # following IE and Firefox.
             for o in found[:-1]:
                 o.selected = False
 
-    def getLabels(self):
+    def get_labels(self):
         return []
 
 class CheckboxControl(ListControl):
@@ -2057,16 +2066,15 @@ class CheckboxControl(ListControl):
     INPUT/CHECKBOX
 
     """
-    def __init__(self, type, name, attrs, select_default=False):
-        attrs.setdefault('value', 'on')
+    def __init__(self, type, name, attrs, select_default=False, index=None):
+        attrs.setdefault("value", "on")
         ListControl.__init__(self, type, name, attrs, select_default,
-                             called_as_base_class=True)
+                             called_as_base_class=True, index=index)
         self.__dict__["multiple"] = True
-        o = Item(self, attrs)
-        o.__dict__['_selected'] = attrs.has_key("checked")
-        self.items.append(o)
+        o = Item(self, attrs, index)
+        o.__dict__["_selected"] = attrs.has_key("checked")
 
-    def getLabels(self):
+    def get_labels(self):
         return []
 
 
@@ -2110,7 +2118,8 @@ class SelectControl(ListControl):
     <OPTION>this bit</OPTION>
 
     """
-    # HTML attributes here are treated slightly from other list controls:
+    # HTML attributes here are treated slightly differently from other list
+    # controls:
     # -The SELECT HTML attributes dictionary is stuffed into the OPTION
     #  HTML attributes dictionary under the "__select" key.
     # -The content of each OPTION element is stored under the special
@@ -2123,52 +2132,55 @@ class SelectControl(ListControl):
     # -Subsequent SelectControls have both OPTION HTML-attribute in attrs and
     #  the __select dictionary containing the SELECT HTML-attributes.
 
-    def __init__(self, type, name, attrs, select_default=False):
+    def __init__(self, type, name, attrs, select_default=False, index=None):
         # fish out the SELECT HTML attributes from the OPTION HTML attributes
         # dictionary
         self.attrs = attrs["__select"].copy()
-        self.__dict__['_label'] = _getLabel(self.attrs)
-        self.__dict__['id'] = self.attrs.get('id')
+        self.__dict__["_label"] = _getLabel(self.attrs)
+        self.__dict__["id"] = self.attrs.get("id")
         self.__dict__["multiple"] = self.attrs.has_key("multiple")
         # the majority of the contents, label, and value dance already happened
-        contents = attrs.get('contents')
+        contents = attrs.get("contents")
         attrs = attrs.copy()
         del attrs["__select"]
 
         ListControl.__init__(self, type, name, self.attrs, select_default,
-                             called_as_base_class=True)
+                             called_as_base_class=True, index=index)
         self.disabled = self.attrs.has_key("disabled")
         self.readonly = self.attrs.has_key("readonly")
-        if attrs.has_key('value'):
+        if attrs.has_key("value"):
             # otherwise it is a marker 'select started' token
-            o = Item(self, attrs)
-            o.__dict__['_selected'] = attrs.has_key("selected")
+            o = Item(self, attrs, index)
+            o.__dict__["_selected"] = attrs.has_key("selected")
             # add 'label' label and contents label, if different.  If both are
             # provided, the 'label' label is used for display in HTML 
             # 4.0-compliant browsers (and any lower spec? not sure) while the
             # contents are used for display in older or less-compliant
             # browsers.  We make label objects for both, if the values are
             # different.
-            label = attrs.get('label')
+            label = attrs.get("label")
             if label:
-                o._labels.append(Label({'__text': label}))
+                o._labels.append(Label({"__text": label}))
                 if contents and contents != label:
-                    o._labels.append(Label({'__text': contents}))
+                    o._labels.append(Label({"__text": contents}))
             elif contents:
-                o._labels.append(Label({'__text': contents}))
-            self.items.append(o)
+                o._labels.append(Label({"__text": contents}))
 
     def fixup(self):
         ListControl.fixup(self)
-        found = [o for o in self.items if o.selected and not o.disabled]
+        # Firefox doesn't exclude disabled items from those considered here
+        # (i.e. from 'found', for both brances of the if below).  Note that IE
+        # doesn't support the disabled attribute on OPTIONs at all.
+        found = [o for o in self.items if o.selected]
         if not found:
             if not self.multiple or self._select_default:
                 for o in self.items:
                     if not o.disabled:
                         o.selected = True
                         break
-        elif not self.multiple: # eliminate any duplicate selected.
-            # Choose the last one.
+        elif not self.multiple:
+            # Ensure only one item selected.  Choose the last one,
+            # following IE and Firefox.
             for o in found[:-1]:
                 o.selected = False
 
@@ -2182,19 +2194,19 @@ class SubmitControl(ScalarControl):
     BUTTON/SUBMIT
 
     """
-    def __init__(self, type, name, attrs):
-        ScalarControl.__init__(self, type, name, attrs)
+    def __init__(self, type, name, attrs, index=None):
+        ScalarControl.__init__(self, type, name, attrs, index)
         # IE5 defaults SUBMIT value to "Submit Query"; Firebird 0.6 leaves it
         # blank, Konqueror 3.1 defaults to "Submit".  HTML spec. doesn't seem
         # to define this.
         if self.value is None: self.value = ""
         self.readonly = True
 
-    def getLabels(self):
+    def get_labels(self):
         res = []
         if self.value:
-            res.append(Label({'__text': self.value}))
-        res.extend(ScalarControl.getLabels(self))
+            res.append(Label({"__text": self.value}))
+        res.extend(ScalarControl.get_labels(self))
         return res
 
     def is_of_kind(self, kind): return kind == "clickable"
@@ -2205,10 +2217,10 @@ class SubmitControl(ScalarControl):
         self._clicked = False
         return r
 
-    def pairs(self):
+    def _totally_ordered_pairs(self):
         if not self._clicked:
             return []
-        return ScalarControl.pairs(self)
+        return ScalarControl._totally_ordered_pairs(self)
 
 
 #---------------------------------------------------
@@ -2221,26 +2233,26 @@ class ImageControl(SubmitControl):
     Coordinates are specified using one of the HTMLForm.click* methods.
 
     """
-    def __init__(self, type, name, attrs):
-        SubmitControl.__init__(self, type, name, attrs)
+    def __init__(self, type, name, attrs, index=None):
+        SubmitControl.__init__(self, type, name, attrs, index)
         self.readonly = False
 
-    def pairs(self):
+    def _totally_ordered_pairs(self):
         clicked = self._clicked
         if self.disabled or not clicked:
             return []
         name = self.name
         if name is None: return []
         pairs = [
-            ("%s.x" % name, str(clicked[0])),
-            ("%s.y" % name, str(clicked[1])),
+            (self._index, "%s.x" % name, str(clicked[0])),
+            (self._index, "%s.y" % name, str(clicked[1])),
             ]
         value = self._value
         if value:
-            pairs.append((name, value))
+            pairs.append((self._index, name, value))
         return pairs
 
-    getLabels = ScalarControl.getLabels
+    get_labels = ScalarControl.get_labels
 
 # aliases, just to make str(control) and str(form) clearer
 class PasswordControl(TextControl): pass
@@ -2272,7 +2284,7 @@ class HTMLForm:
     form = forms[0]
 
     form["query"] = "Python"
-    form.set("lots", "nr_results")
+    form.find_control("nr_results").get("lots").selected = True
 
     response = urllib2.urlopen(form.click())
 
@@ -2311,16 +2323,17 @@ class HTMLForm:
     named "1" and "2" (because the OPTION element's value HTML attribute
     defaults to the element contents).
 
-    To set, clear or toggle individual list items, use the set and toggle
-    methods.  To set the whole value, do as for any other control:use indexing
-    or the set_/get_value methods.
+    To select, deselect or otherwise manipulate individual list items, use the
+    HTMLForm.find_control() and ListControl.get() methods.  To set the whole
+    value, do as for any other control:use indexing or the set_/get_value
+    methods.
 
     Example:
 
     # select *only* the item named "cheddar"
     form["cheeses"] = ["cheddar"]
     # select "cheddar", leave other items unaffected
-    form.set("cheddar", "cheeses")
+    form.find_control("cheeses").get("cheddar").selected = True
 
     Some controls (RADIO and SELECT without the multiple attribute) can only
     have zero or one items selected at a time.  Some controls (CHECKBOX and
@@ -2333,10 +2346,12 @@ class HTMLForm:
     If the ListControl is not multiple-selection, the assigned list must be of
     length one.
 
-    To check whether a control has an item, or whether an item is selected,
-    respectively:
+    To check if a control has an item, if an item is selected, or if an item is
+    successful (selected and not disabled), respectively:
 
-    "cheddar" in form.possible_items("cheeses")
+    "cheddar" in [item.name for item in form.find_control("cheeses").items]
+    "cheddar" in [item.name for item in form.find_control("cheeses").items and
+                  item.selected]
     "cheddar" in form["cheeses"]  # (or "cheddar" in form.get_value("cheeses"))
 
     Note that some list items may be disabled (see below).
@@ -2350,11 +2365,8 @@ class HTMLForm:
     in the order they were listed in the HTML.
 
     List items (hence list values, too) can be referred to in terms of list
-    item labels rather than list item names.  Currently, this is only possible
-    for SELECT controls (this is a bug).  To use this feature, use the by_label
-    arguments to the various HTMLForm methods.  Note that it is *item* names
-    (hence ListControl values also), not *control* names, that can be referred
-    to by label.
+    item labels rather than list item names using the appropriate label
+    arguments.  Note that each item may have several labels.
 
     The question of default values of OPTION contents, labels and values is
     somewhat complicated: see SelectControl.__doc__ and
@@ -2362,13 +2374,12 @@ class HTMLForm:
 
     Controls can be disabled or readonly.  In either case, the control's value
     cannot be changed until you clear those flags (see example below).
-    Disabled is the state typically represented by browsers by `greying out' a
-    control.  Disabled controls are not `successful' -- they don't cause data
+    Disabled is the state typically represented by browsers by 'greying out' a
+    control.  Disabled controls are not 'successful' -- they don't cause data
     to get returned to the server.  Readonly controls usually appear in
     browsers as read-only text boxes.  Readonly controls are successful.  List
-    items can also be disabled.  Attempts to select disabled items (with
-    form[name] = value, or using the ListControl.set method, for example) fail.
-    Attempts to clear disabled items are allowed.
+    items can also be disabled.  Attempts to select or deselect disabled items
+    fail with AttributeError.
 
     If a lot of controls are readonly, it can be useful to do this:
 
@@ -2379,21 +2390,17 @@ class HTMLForm:
 
     form.clear("cheeses")
 
-    When you want to do several things with a single control, or want to do
-    less common things, like changing which controls and items are disabled,
-    you can get at a particular control:
+    More examples:
 
     control = form.find_control("cheeses")
     control.disabled = False
     control.readonly = False
-    control.set_item_disabled(False, "gruyere")
-    control.set("gruyere")
+    control.get("gruyere").disabled = True
+    control.items[0].selected = True
 
-    Most methods on HTMLForm just delegate to the contained controls, so see
-    the docstrings of the various Control classes for further documentation.
-    Most of these delegating methods take name, type, kind, id and nr arguments
-    to specify the control to be operated on: see
-    HTMLForm.find_control.__doc__.
+    See the various Control classes for further documentation.  Many methods
+    take name, type, kind, id, label and nr arguments to specify the control to
+    be operated on: see HTMLForm.find_control.__doc__.
 
     ControlNotFoundError (subclass of ValueError) is raised if the specified
     control can't be found.  This includes occasions where a non-ListControl
@@ -2430,53 +2437,40 @@ class HTMLForm:
     -------------------------
 
     Most of the these methods have very similar arguments.  See
-    HTMLForm.find_control.__doc__ for details of the name, type, kind and nr
-    arguments.  See above for a description of by_label.
+    HTMLForm.find_control.__doc__ for details of the name, type, kind, label
+    and nr arguments.
 
     def find_control(self,
                      name=None, type=None, kind=None, id=None, predicate=None,
-                     nr=None)
+                     nr=None, label=None)
 
     get_value(name=None, type=None, kind=None, id=None, nr=None,
-              by_label=False)
+              by_label=False,  # by_label is deprecated
+              label=None)
     set_value(value,
               name=None, type=None, kind=None, id=None, nr=None,
-              by_label=False)
+              by_label=False,  # by_label is deprecated
+              label=None)
+
+    clear_all()
+    clear(name=None, type=None, kind=None, id=None, nr=None, label=None)
 
     set_all_readonly(readonly)
-
-
-    Methods applying only to ListControls:
-
-    possible_items(name=None, type=None, kind=None, id=None, nr=None,
-                   by_label=False)
-
-    set(selected, item_name,
-        name=None, type=None, kind=None, id=None, nr=None,
-        by_label=False)
-    toggle(item_name,
-           name=None, type=None, id=None, nr=None,
-           by_label=False)
-
-    set_single(selected,
-               name=None, type=None, kind=None, id=None, nr=None,
-               by_label=False)
-    toggle_single(name=None, type=None, kind=None, id=None, nr=None,
-                  by_label=False)
 
 
     Method applying only to FileControls:
 
     add_file(file_object,
              content_type="application/octet-stream", filename=None,
-             name=None, id=None, nr=None)
+             name=None, id=None, nr=None, label=None)
 
 
     Methods applying only to clickable controls:
 
-    click(name=None, type=None, id=None, nr=0, coord=(1,1))
-    click_request_data(name=None, type=None, id=None, nr=0, coord=(1,1))
-    click_pairs(name=None, type=None, id=None, nr=0, coord=(1,1))
+    click(name=None, type=None, id=None, nr=0, coord=(1,1), label=None)
+    click_request_data(name=None, type=None, id=None, nr=0, coord=(1,1),
+                       label=None)
+    click_pairs(name=None, type=None, id=None, nr=0, coord=(1,1), label=None)
 
     """
 
@@ -2511,7 +2505,8 @@ class HTMLForm:
                  enctype="application/x-www-form-urlencoded",
                  name=None, attrs=None,
                  request_class=urllib2.Request,
-                 forms=None, labels=None, id_to_labels=None):
+                 forms=None, labels=None, id_to_labels=None,
+                 backwards_compat=True):
         """
         In the usual case, use ParseResponse (or ParseFile) to create new
         HTMLForm objects.
@@ -2533,12 +2528,37 @@ class HTMLForm:
             self.attrs = {}
         self.controls = []
         self._request_class = request_class
-        self._forms = forms # this is a semi-public API!
-        self._labels = labels # this is a semi-public API!
-        self._id_to_labels = id_to_labels # this is a semi-public API!
+
+        # these attributes are used by zope.testbrowser
+        self._forms = forms  # this is a semi-public API!
+        self._labels = labels  # this is a semi-public API!
+        self._id_to_labels = id_to_labels  # this is a semi-public API!
+
+        self.backwards_compat = backwards_compat  # note __setattr__
+
+    def __getattr__(self, name):
+        if name == "backwards_compat":
+            return self._backwards_compat
+        return getattr(HTMLForm, name)
+
+    def __setattr__(self, name, value):
+        # yuck
+        if name == "backwards_compat":
+            name = "_backwards_compat"
+            value = bool(value)
+            for cc in self.controls:
+                try:
+                    items = cc.items 
+                except AttributeError:
+                    continue
+                else:
+                    for ii in items:
+                        for ll in ii.get_labels():
+                            ll._backwards_compat = value
+        self.__dict__[name] = value
 
     def new_control(self, type, name, attrs,
-                    ignore_unknown=False, select_default=False):
+                    ignore_unknown=False, select_default=False, index=None):
         """Adds a new control to the form.
 
         This is usually called by ParseFile and ParseResponse.  Don't call it
@@ -2556,9 +2576,11 @@ class HTMLForm:
          the first item as the default if no 'selected' HTML attribute is
          present (this defaulting happens when the HTMLForm.fixup method is
          called)
+        index: index of corresponding element in HTML (see
+         MoreFormTests.test_interspersed_controls for motivation)
 
         """
-        type = string.lower(type)
+        type = type.lower()
         klass = self.type2class.get(type)
         if klass is None:
             if ignore_unknown:
@@ -2568,9 +2590,9 @@ class HTMLForm:
 
         a = attrs.copy()
         if issubclass(klass, ListControl):
-            control = klass(type, name, a, select_default)
+            control = klass(type, name, a, select_default, index)
         else:
-            control = klass(type, name, a)
+            control = klass(type, name, a, index)
         control.add_to_form(self)
 
     def fixup(self):
@@ -2585,6 +2607,7 @@ class HTMLForm:
         """
         for control in self.controls:
             control.fixup()
+        self.backwards_compat = self._backwards_compat
 
 #---------------------------------------------------
     def __str__(self):
@@ -2592,13 +2615,15 @@ class HTMLForm:
         rep = [header]
         for control in self.controls:
             rep.append("  %s" % str(control))
-        return "<%s>" % string.join(rep, "\n")
+        return "<%s>" % "\n".join(rep)
 
 #---------------------------------------------------
 # Form-filling methods.
 
     def __getitem__(self, name):
         return self.find_control(name).value
+    def __contains__(self, name):
+        return bool(self.find_control(name))
     def __setitem__(self, name, value):
         control = self.find_control(name)
         try:
@@ -2608,7 +2633,8 @@ class HTMLForm:
 
     def get_value(self,
                   name=None, type=None, kind=None, id=None, nr=None,
-                  by_label=False):
+                  by_label=False,  # by_label is deprecated
+                  label=None):
         """Return value of control.
 
         If only name and value arguments are supplied, equivalent to
@@ -2616,7 +2642,9 @@ class HTMLForm:
         form[name]
 
         """
-        c = self.find_control(name, type, kind, id, nr=nr)
+        if by_label:
+            deprecation("form.get_value_by_label(...)")
+        c = self.find_control(name, type, kind, id, label=label, nr=nr)
         if by_label:
             try:
                 meth = c.get_value_by_label
@@ -2629,7 +2657,8 @@ class HTMLForm:
             return c.value
     def set_value(self, value,
                   name=None, type=None, kind=None, id=None, nr=None,
-                  by_label=False):
+                  by_label=False,  # by_label is deprecated
+                  label=None):
         """Set value of control.
 
         If only name and value arguments are supplied, equivalent to
@@ -2637,7 +2666,9 @@ class HTMLForm:
         form[name] = value
 
         """
-        c = self.find_control(name, type, kind, id, nr=nr)
+        if by_label:
+            deprecation("form.get_value_by_label(...)")
+        c = self.find_control(name, type, kind, id, label=label, nr=nr)
         if by_label:
             try:
                 meth = c.set_value_by_label
@@ -2648,6 +2679,26 @@ class HTMLForm:
                 meth(value)
         else:
             c.value = value
+    def get_value_by_label(
+        self, name=None, type=None, kind=None, id=None, label=None, nr=None):
+        """
+
+        All arguments should be passed by name.
+
+        """
+        c = self.find_control(name, type, kind, id, label=label, nr=nr)
+        return c.get_value_by_label()
+
+    def set_value_by_label(
+        self, value,
+        name=None, type=None, kind=None, id=None, label=None, nr=None):
+        """
+
+        All arguments should be passed by name.
+
+        """
+        c = self.find_control(name, type, kind, id, label=label, nr=nr)
+        c.set_value_by_label(value)
 
     def set_all_readonly(self, readonly):
         for control in self.controls:
@@ -2663,30 +2714,30 @@ class HTMLForm:
             control.clear()
 
     def clear(self,
-              name=None, type=None, kind=None, id=None, nr=None):
-        """Clear the value attributes of all controls in the form.
+              name=None, type=None, kind=None, id=None, nr=None, label=None):
+        """Clear the value attribute of a control.
 
-        As a result, the affected controls will not be successful until a value
+        As a result, the affected control will not be successful until a value
         is subsequently set.  AttributeError is raised on readonly controls.
 
         """
-        c = self.find_control(name, type, kind, id, nr=nr)
+        c = self.find_control(name, type, kind, id, label=label, nr=nr)
         c.clear()
 
 
 #---------------------------------------------------
 # Form-filling methods applying only to ListControls.
 
-    def possible_items(self, # deprecated
-                       name=None, type=None, kind=None, id=None, label=None,
-                       nr=None, by_label=False):
+    def possible_items(self,  # deprecated
+                       name=None, type=None, kind=None, id=None,
+                       nr=None, by_label=False, label=None):
         """Return a list of all values that the specified control can take."""
         c = self._find_list_control(name, type, kind, id, label, nr)
         return c.possible_items(by_label)
 
-    def set(self, selected, item_name, # deprecated
-            name=None, type=None, kind=None, id=None, label=None, nr=None,
-            by_label=False):
+    def set(self, selected, item_name,  # deprecated
+            name=None, type=None, kind=None, id=None, nr=None,
+            by_label=False, label=None):
         """Select / deselect named list item.
 
         selected: boolean selected state
@@ -2694,16 +2745,16 @@ class HTMLForm:
         """
         self._find_list_control(name, type, kind, id, label, nr).set(
             selected, item_name, by_label)
-    def toggle(self, item_name, # deprecated
-               name=None, type=None, kind=None, id=None, label=None, nr=None,
-               by_label=False):
+    def toggle(self, item_name,  # deprecated
+               name=None, type=None, kind=None, id=None, nr=None,
+               by_label=False, label=None):
         """Toggle selected state of named list item."""
         self._find_list_control(name, type, kind, id, label, nr).toggle(
             item_name, by_label)
 
-    def set_single(self, selected, # deprecated
-                   name=None, type=None, kind=None, id=None, label=None,
-                   nr=None, by_label=None):
+    def set_single(self, selected,  # deprecated
+                   name=None, type=None, kind=None, id=None,
+                   nr=None, by_label=None, label=None):
         """Select / deselect list item in a control having only one item.
 
         If the control has multiple list items, ItemCountError is raised.
@@ -2718,23 +2769,23 @@ class HTMLForm:
         control.toggle("on")
         control.toggle_single()
 
-        """ # by_label ignored and deprecated
+        """  # by_label ignored and deprecated
         self._find_list_control(
             name, type, kind, id, label, nr).set_single(selected)
     def toggle_single(self, name=None, type=None, kind=None, id=None,
-                      label=None, nr=None, by_label=None): # deprecated
+                      nr=None, by_label=None, label=None):  # deprecated
         """Toggle selected state of list item in control having only one item.
 
         The rest is as for HTMLForm.set_single.__doc__.
 
-        """ # by_label ignored and deprecated
+        """  # by_label ignored and deprecated
         self._find_list_control(name, type, kind, id, label, nr).toggle_single()
 
 #---------------------------------------------------
 # Form-filling method applying only to FileControls.
 
     def add_file(self, file_object, content_type=None, filename=None,
-                 name=None, id=None, label=None, nr=None):
+                 name=None, id=None, nr=None, label=None):
         """Add a file to be uploaded.
 
         file_object: file-like object (with read method) from which to read
@@ -2768,8 +2819,9 @@ class HTMLForm:
 #---------------------------------------------------
 # Form submission methods, applying only to clickable controls.
 
-    def click(self, name=None, type=None, id=None, label=None, nr=0, coord=(1,1),
-              request_class=urllib2.Request):
+    def click(self, name=None, type=None, id=None, nr=0, coord=(1,1),
+              request_class=urllib2.Request,
+              label=None):
         """Return request that would result from clicking on a control.
 
         The request object is a urllib2.Request instance, which you can pass to
@@ -2795,9 +2847,10 @@ class HTMLForm:
                            self._request_class)
 
     def click_request_data(self,
-                           name=None, type=None, id=None, label=None, 
+                           name=None, type=None, id=None,
                            nr=0, coord=(1,1),
-                           request_class=urllib2.Request):
+                           request_class=urllib2.Request,
+                           label=None):
         """As for click method, but return a tuple (url, data, headers).
 
         You can use this data to send a request to the server.  This is useful
@@ -2827,8 +2880,9 @@ class HTMLForm:
         return self._click(name, type, id, label, nr, coord, "request_data",
                            self._request_class)
 
-    def click_pairs(self, name=None, type=None, id=None, label=None,
-                    nr=0, coord=(1,1)):
+    def click_pairs(self, name=None, type=None, id=None,
+                    nr=0, coord=(1,1),
+                    label=None):
         """As for click_request_data, but returns a list of (key, value) pairs.
 
         You can use this list as an argument to ClientForm.urlencode.  This is
@@ -2854,8 +2908,9 @@ class HTMLForm:
 #---------------------------------------------------
 
     def find_control(self,
-                     name=None, type=None, kind=None, id=None, label=None,
-                     predicate=None, nr=None):
+                     name=None, type=None, kind=None, id=None,
+                     predicate=None, nr=None,
+                     label=None):
         """Locate and return some specific control within the form.
 
         At least one of the name, type, kind, predicate and nr arguments must
@@ -2884,7 +2939,12 @@ class HTMLForm:
         nr, if supplied, is the sequence number of the control (where 0 is the
         first).  Note that control 0 is the first control matching all the
         other arguments (if supplied); it is not necessarily the first control
-        in the form.
+        in the form.  If no nr is supplied, AmbiguityError is raised if
+        multiple controls match the other arguments (unless the
+        .backwards-compat attribute is true).
+
+        If label is specified, then the control must have this label.  Note
+        that radio controls and checkboxes never have labels: their items do.
 
         """
         if ((name is None) and (type is None) and (kind is None) and
@@ -2892,8 +2952,6 @@ class HTMLForm:
             (nr is None)):
             raise ValueError(
                 "at least one argument must be supplied to specify control")
-        if nr is None: nr = 0
-
         return self._find_control(name, type, kind, id, label, predicate, nr)
 
 #---------------------------------------------------
@@ -2906,7 +2964,6 @@ class HTMLForm:
             (id is None) and (label is None) and (nr is None)):
             raise ValueError(
                 "at least one argument must be supplied to specify control")
-        if nr is None: nr = 0
 
         return self._find_control(name, type, kind, id, label, 
                                   is_listcontrol, nr)
@@ -2924,10 +2981,14 @@ class HTMLForm:
             raise TypeError("control label must be string-like")
         if (predicate is not None) and not callable(predicate):
             raise TypeError("control predicate must be callable")
-        if nr < 0: raise ValueError("control number must be a positive "
-                                    "integer")
+        if (nr is not None) and nr < 0:
+            raise ValueError("control number must be a positive integer")
 
         orig_nr = nr
+        found = None
+        ambiguous = False
+        if nr is None and self.backwards_compat:
+            nr = 0
 
         for control in self.controls:
             if name is not None and name != control.name:
@@ -2941,15 +3002,23 @@ class HTMLForm:
             if predicate and not predicate(control):
                 continue
             if label:
-                for l in control.getLabels():
+                for l in control.get_labels():
                     if l.text.find(label) > -1:
                         break
                 else:
                     continue
-            if nr:
-                nr = nr - 1
+            if nr is not None:
+                if nr == 0:
+                    return control  # early exit: unambiguous due to nr
+                nr -= 1
                 continue
-            return control
+            if found:
+                ambiguous = True
+                break
+            found = control
+
+        if found and not ambiguous:
+            return found
 
         description = []
         if name is not None: description.append("name '%s'" % name)
@@ -2960,8 +3029,13 @@ class HTMLForm:
         if predicate is not None:
             description.append("predicate %s" % predicate)
         if orig_nr: description.append("nr %d" % orig_nr)
-        description = string.join(description, ", ")
-        raise ControlNotFoundError("no control matching "+description)
+        description = ", ".join(description)
+
+        if ambiguous:
+            raise AmbiguityError("more than one control matching "+description)
+        elif not found:
+            raise ControlNotFoundError("no control matching "+description)
+        assert False
 
     def _click(self, name, type, id, label, nr, coord, return_type,
                request_class=urllib2.Request):
@@ -2980,14 +3054,23 @@ class HTMLForm:
 
     def _pairs(self):
         """Return sequence of (key, value) pairs suitable for urlencoding."""
-        pairs = []
+        opairs = []
         for control in self.controls:
-            pairs.extend(control.pairs())
+            opairs.extend(control._totally_ordered_pairs())
+
+        # stable sort by ONLY first item in tuple
+        sorter = []
+        for jj in range(len(opairs)):
+            ii, key, val = opairs[jj]
+            sorter.append((ii, jj, key, val))
+        sorter.sort()
+        pairs = [(key, val) for (ii, jj, key, val) in sorter]
+
         return pairs
 
     def _request_data(self):
         """Return a tuple (url, data, headers)."""
-        method = string.upper(self.method)
+        method = self.method.upper()
         #scheme, netloc, path, parameters, query, frag = urlparse.urlparse(self.action)
         parts = urlparse.urlparse(self.action)
         rest, (query, frag) = parts[:-2], parts[-2:]
@@ -3032,5 +3115,12 @@ class HTMLForm:
             req_data = self._request_data()
             req = request_class(req_data[0], req_data[1])
             for key, val in req_data[2]:
-                req.add_header(key, val)
+                add_hdr = req.add_header
+                if key.lower() == 'content-type':
+                    try:
+                        add_hdr = req.add_unredirected_header
+                    except AttributeError:
+                        # pre-2.4 and not using ClientCookie
+                        pass
+                add_hdr(key, val)
             return req

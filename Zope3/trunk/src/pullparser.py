@@ -103,13 +103,11 @@ def caller():
 def unescape(data, entities):
     if data is None or '&' not in data:
         return data
-
     def replace_entities(match):
         ent = match.group()
         repl = entities.get(ent, ent)
         return repl
-
-    return re.sub(r'&\S+;', replace_entities, data)
+    return re.sub(r'&\S+?;', replace_entities, data)
 
 def get_entitydefs():
     entitydefs = {}
@@ -267,8 +265,10 @@ class _AbstractParser:
                     t = "&%s;" % name
                 text.append(t)
             elif tok.type == "charref":
-                name = tok.data
-                t = unichr(int(name)).encode(self.encoding)
+                name, base = tok.data, 10
+                if name.startswith('x'):
+                    name, base= name[1:], 16
+                t = unichr(int(name, base)).encode(self.encoding)
                 text.append(t)
             elif tok.type in ["starttag", "endtag", "startendtag"]:
                 tag_name = tok.data

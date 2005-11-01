@@ -501,7 +501,7 @@ class seek_wrapper:
                 (self.__class__.__name__, `id(self)`, `self.wrapped`))
 
     def close(self):
-        self._cache = None
+        self.__cache = None
         self.read = None
         self.readline = None
         self.readlines = None
@@ -510,20 +510,39 @@ class seek_wrapper:
         self.wrapped = None
 
 class eoffile:
-    # file-like object that always claims to be at end-of-file
+    # file-like object that always claims to be at end-of-file...
     def read(self, size=-1): return ""
     def readline(self, size=-1): return ""
+    # ...and also supports these response methods
+    def info(self):
+        return self.headers
+    def geturl(self):
+        return self.url
+
 
 class response_seek_wrapper(seek_wrapper):
-    """Avoids unnecessarily clobbering methods on .close().
+    """Avoids unnecessarily clobbering urllib.addinfourl methods on .close().
+
+    After .close():
+    , the following methods are supported:
+
+    .read()
+    .readline()
+    .readlines()
+    .seek()
+    .tell()
+    .info()
+    .geturl()
+    .__iter__()
+    .next()
 
     Also supports pickling.
-
-    Class name is for historical reasons.
 
     """
 
     def close(self):
+        self.headers = self.wrapped.headers
+        self.url = self.wrapped.url
         self.wrapped.close()
         self.wrapped = eoffile()
 

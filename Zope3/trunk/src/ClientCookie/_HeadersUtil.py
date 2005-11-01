@@ -24,6 +24,23 @@ except NameError:
     True = 1
     False = 0
 
+def is_html(ct_headers, url):
+    """
+    ct_headers: Sequence of Content-Type headers
+    url: Response URL
+
+    """
+    if not ct_headers:
+        # guess
+        return (url.endswith('.htm') or url.endswith('.html') or
+                url.endswith('.xhtml'))
+    # use first header
+    ct = split_header_words(ct_headers)[0][0][0]
+    return ct in [
+        "text/html", "text/xhtml", "text/xml",
+        "application/xml", "application/xhtml+xml",
+        ]
+
 def unmatched(match):
     """Return unmatched part of re.Match object."""
     start, end = match.span(0)

@@ -13,10 +13,11 @@ distribution).
 
 import copy, time, tempfile
 
+import ClientCookie
 from _ClientCookie import CookieJar, request_host
 from _Util import isstringlike, startswith, getheaders
+from _HeadersUtil import is_html
 from _Debug import getLogger
-info = getLogger("ClientCookie").info
 
 try: True
 except NameError:
@@ -32,6 +33,7 @@ except ImportError:
     pass
 else:
     import urlparse, urllib2, urllib, httplib
+    import htmllib, sgmllib, formatter
     from urllib2 import URLError, HTTPError
     import types, string, socket
     from cStringIO import StringIO
@@ -173,17 +175,153 @@ else:
 
         https_request = http_request
 
+
+   # XXX would self.reset() work, instead of raising this exception?
+    class EndOfHeadError(Exception): pass
+    class AbstractHeadParser:
+        # only these elements are allowed in or before HEAD of document
+        head_elems = ("html", "head",
+                      "title", "base",
+                      "script", "style", "meta", "link", "object")
+
+        def __init__(self):
+            self.http_equiv = []
+        def start_meta(self, attrs):
+            http_equiv = content = None
+            for key, value in attrs:
+                if key == "http-equiv":
+                    http_equiv = value
+                elif key == "content":
+                    content = value
+            if http_equiv is not None:
+                self.http_equiv.append((http_equiv, content))
+
+        def end_head(self):
+            raise EndOfHeadError()
+
+    try:
+        import HTMLParser
+    except ImportError:
+        pass
+    else:
+        class XHTMLCompatibleHeadParser(AbstractHeadParser,
+                                        HTMLParser.HTMLParser):
+            def __init__(self):
+                HTMLParser.HTMLParser.__init__(self)
+                AbstractHeadParser.__init__(self)
+
+            def handle_starttag(self, tag, attrs):
+                if tag not in self.head_elems:
+                    raise EndOfHeadError()
+                try:
+                    method = getattr(self, 'start_' + tag)
+                except AttributeError:
+                    try:
+                        method = getattr(self, 'do_' + tag)
+                    except AttributeError:
+                        pass # unknown tag
+                    else:
+                        method(attrs)
+                else:
+                    method(attrs)
+
+            def handle_endtag(self, tag):
+                if tag not in self.head_elems:
+                    raise EndOfHeadError()
+                try:
+                    method = getattr(self, 'end_' + tag)
+                except AttributeError:
+                    pass # unknown tag
+                else:
+                    method()
+
+            # handle_charref, handle_entityref and default entitydefs are taken
+            # from sgmllib
+            def handle_charref(self, name):
+                try:
+                    n = int(name)
+                except ValueError:
+                    self.unknown_charref(name)
+                    return
+                if not 0 <= n <= 255:
+                    self.unknown_charref(name)
+                    return
+                self.handle_data(chr(n))
+
+            # Definition of entities -- derived classes may override
+            entitydefs = \
+                    {'lt': '<', 'gt': '>', 'amp': '&', 'quot': '"', 'apos': '\''}
+
+            def handle_entityref(self, name):
+                table = self.entitydefs
+                if name in table:
+                    self.handle_data(table[name])
+                else:
+                    self.unknown_entityref(name)
+                    return
+
+            def unknown_entityref(self, ref):
+                self.handle_data("&%s;" % ref)
+
+            def unknown_charref(self, ref):
+                self.handle_data("&#%s;" % ref)
+
+    class HeadParser(AbstractHeadParser, htmllib.HTMLParser):
+        def __init__(self):
+            htmllib.HTMLParser.__init__(self, formatter.NullFormatter())
+            AbstractHeadParser.__init__(self)
+
+        def handle_starttag(self, tag, method, attrs):
+            if tag in self.head_elems:
+                method(attrs)
+            else:
+                raise EndOfHeadError()
+
+        def handle_endtag(self, tag, method):
+            if tag in self.head_elems:
+                method()
+            else:
+                raise EndOfHeadError()
+
+    def parse_head(fileobj, parser):
+        """Return a list of key, value pairs."""
+        while 1:
+            data = fileobj.read(CHUNK)
+            try:
+                parser.feed(data)
+            except EndOfHeadError:
+                break
+            if len(data) != CHUNK:
+                # this should only happen if there is no HTML body, or if
+                # CHUNK is big
+                break
+        return parser.http_equiv
+
     class HTTPEquivProcessor(BaseHandler):
         """Append META HTTP-EQUIV headers to regular HTTP headers."""
+
+        def __init__(self, head_parser_class=HeadParser):
+            self.head_parser_class = head_parser_class
+
         def http_response(self, request, response):
             if not hasattr(response, "seek"):
                 response = response_seek_wrapper(response)
-            # grab HTTP-EQUIV headers and add them to the true HTTP headers
             headers = response.info()
-            for hdr, val in parse_head(response):
-                # rfc822.Message interprets this as appending, not clobbering
-                headers[hdr] = val
-            response.seek(0)
+            url = response.geturl()
+            ct_hdrs = getheaders(response.info(), "content-type")
+            if is_html(ct_hdrs, url):
+                try:
+                    try:
+                        html_headers = parse_head(response, self.head_parser_class())
+                    finally:
+                        response.seek(0)
+                except (HTMLParser.HTMLParseError,
+                        sgmllib.SGMLParseError):
+                    pass
+                else:
+                    for hdr, val in html_headers:
+                        # rfc822.Message interprets this as appending, not clobbering
+                        headers[hdr] = val
             return response
 
         https_response = http_response
@@ -304,9 +442,12 @@ else:
         def http_response(self, request, response):
             if not hasattr(response, "seek"):
                 response = response_seek_wrapper(response)
-            info(response.read())
+            info = getLogger("ClientCookie.http_responses").info
+            try:
+                info(response.read())
+            finally:
+                response.seek(0)
             info("*****************************************************")
-            response.seek(0)
             return response
 
         https_response = http_response
@@ -314,6 +455,7 @@ else:
     class HTTPRedirectDebugProcessor(BaseHandler):
         def http_request(self, request):
             if hasattr(request, "redirect_dict"):
+                info = getLogger("ClientCookie.http_redirects").info
                 info("redirecting to %s", request.get_full_url())
             return request
 
@@ -475,133 +617,6 @@ else:
             resp.code = r.status
             resp.msg = r.reason
             return resp
-
-
-    # XXX would self.reset() work, instead of raising this exception?
-    class EndOfHeadError(Exception): pass
-    class AbstractHeadParser:
-        # only these elements are allowed in or before HEAD of document
-        head_elems = ("html", "head",
-                      "title", "base",
-                      "script", "style", "meta", "link", "object")
-
-        def __init__(self):
-            self.http_equiv = []
-        def start_meta(self, attrs):
-            http_equiv = content = None
-            for key, value in attrs:
-                if key == "http-equiv":
-                    http_equiv = value
-                elif key == "content":
-                    content = value
-            if http_equiv is not None:
-                self.http_equiv.append((http_equiv, content))
-
-        def end_head(self):
-            raise EndOfHeadError()
-
-    # use HTMLParser if we have it (it does XHTML), htmllib otherwise
-    try:
-        import HTMLParser
-    except ImportError:
-        import htmllib, formatter
-        class HeadParser(AbstractHeadParser, htmllib.HTMLParser):
-            def __init__(self):
-                htmllib.HTMLParser.__init__(self, formatter.NullFormatter())
-                AbstractHeadParser.__init__(self)
-
-            def handle_starttag(self, tag, method, attrs):
-                if tag in self.head_elems:
-                    method(attrs)
-                else:
-                    raise EndOfHeadError()
-
-            def handle_endtag(self, tag, method):
-                if tag in self.head_elems:
-                    method()
-                else:
-                    raise EndOfHeadError()
-
-        HEAD_PARSER_CLASS = HeadParser
-    else:
-        class XHTMLCompatibleHeadParser(AbstractHeadParser,
-                                        HTMLParser.HTMLParser):
-            def __init__(self):
-                HTMLParser.HTMLParser.__init__(self)
-                AbstractHeadParser.__init__(self)
-
-            def handle_starttag(self, tag, attrs):
-                if tag not in self.head_elems:
-                    raise EndOfHeadError()
-                try:
-                    method = getattr(self, 'start_' + tag)
-                except AttributeError:
-                    try:
-                        method = getattr(self, 'do_' + tag)
-                    except AttributeError:
-                        pass # unknown tag
-                    else:
-                        method(attrs)
-                else:
-                    method(attrs)
-
-            def handle_endtag(self, tag):
-                if tag not in self.head_elems:
-                    raise EndOfHeadError()
-                try:
-                    method = getattr(self, 'end_' + tag)
-                except AttributeError:
-                    pass # unknown tag
-                else:
-                    method()
-
-            # handle_charref, handle_entityref and default entitydefs are taken
-            # from sgmllib
-            def handle_charref(self, name):
-                try:
-                    n = int(name)
-                except ValueError:
-                    self.unknown_charref(name)
-                    return
-                if not 0 <= n <= 255:
-                    self.unknown_charref(name)
-                    return
-                self.handle_data(chr(n))
-
-            # Definition of entities -- derived classes may override
-            entitydefs = \
-                    {'lt': '<', 'gt': '>', 'amp': '&', 'quot': '"', 'apos': '\''}
-
-            def handle_entityref(self, name):
-                table = self.entitydefs
-                if name in table:
-                    self.handle_data(table[name])
-                else:
-                    self.unknown_entityref(name)
-                    return
-
-            def unknown_entityref(self, ref):
-                self.handle_data("&%s;" % ref)
-
-            def unknown_charref(self, ref):
-                self.handle_data("&#%s;" % ref)
-
-        HEAD_PARSER_CLASS = XHTMLCompatibleHeadParser
-
-    def parse_head(fileobj):
-        """Return a list of key, value pairs."""
-        hp = HEAD_PARSER_CLASS()
-        while 1:
-            data = fileobj.read(CHUNK)
-            try:
-                hp.feed(data)
-            except EndOfHeadError:
-                break
-            if len(data) != CHUNK:
-                # this should only happen if there is no HTML body, or if
-                # CHUNK is big
-                break
-        return hp.http_equiv
 
 
     class HTTPHandler(AbstractHTTPHandler):
