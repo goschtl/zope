@@ -306,7 +306,7 @@ class Browser(UserAgent, OpenerMixin):
         """
         if self._response is not None:
             self._response.close()
-        while n:
+        while n > 0 or self._response is None:
             try:
                 self.request, self._response = self._history.pop()
             except IndexError:

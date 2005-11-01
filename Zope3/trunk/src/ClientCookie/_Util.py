@@ -541,10 +541,13 @@ class response_seek_wrapper(seek_wrapper):
     """
 
     def close(self):
-        self.headers = self.wrapped.headers
-        self.url = self.wrapped.url
-        self.wrapped.close()
-        self.wrapped = eoffile()
+        if not isinstance(self.wrapped, eoffile):
+            headers = self.wrapped.headers
+            url = self.wrapped.url
+            self.wrapped.close()
+            self.wrapped = eoffile()
+            self.wrapped.headers = headers
+            self.wrapped.url = url
 
     def __getstate__(self):
         # There are three obvious options here:
