@@ -40,14 +40,11 @@ class NotifyBase(DontComplain):
     def manage_afterAdd(self, item, container):
         print 'old manage_afterAdd %s %s %s' % (self.getId(), item.getId(),
                                                 container.getId())
-        super(NotifyBase, self).manage_afterAdd(item, container)
     def manage_beforeDelete(self, item, container):
-        super(NotifyBase, self).manage_beforeDelete(item, container)
         print 'old manage_beforeDelete %s %s %s' % (self.getId(), item.getId(),
                                                     container.getId())
     def manage_afterClone(self, item):
         print 'old manage_afterClone %s %s' % (self.getId(), item.getId())
-        super(NotifyBase, self).manage_afterClone(item)
 
 class MyApp(Folder):
     def getPhysicalRoot(self):
