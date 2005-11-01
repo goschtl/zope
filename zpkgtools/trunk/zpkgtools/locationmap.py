@@ -174,7 +174,7 @@ class MapLoader:
         except ValueError:
             self.cvsbase = None
 
-    def add(self, resource, url):
+    def add(self, resource, url, lineno='<unknown>'):
         urlparts = url.split()
         if len(urlparts) != 1:
             raise MapLoadingError("malformed package specification",
@@ -188,8 +188,8 @@ class MapLoader:
 
         if resource in self.local_entries:
             _logger.warn(
-                "found duplicate entry for resource %r in %s at line %d",
-                resource, self.filename)
+                "found duplicate entry for resource %r in %s at line %s",
+                resource, self.filename, lineno)
         elif resource.endswith(".*"):
             # Deal with wildcarded resources;
             # need to check if it's already there
@@ -240,7 +240,8 @@ def load(f, base, mapping):
             raise MapLoadingError("malformed package specification",
                                   filename, lineno)
         try:
-            maploader.add(*parts)
+            kw = dict(lineno=lineno)
+            maploader.add(*parts, **kw)
         except MapLoadingError, e:
             e.lineno = lineno
             raise
