@@ -89,3 +89,6 @@ class PTSLanguages(object):
     def getPreferredLanguages(self):
         from Products.PlacelessTranslationService.Negotiator import getLangPrefs
         return getLangPrefs(self.context)
+
+# Hook that will be used by Products.PageTemplates.GlobalTranslationService
+_fallback_translation_service = None
