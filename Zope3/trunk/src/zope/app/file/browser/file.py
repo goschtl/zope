@@ -127,14 +127,14 @@ class FileAdd(FileUpdateView):
 class FileUpload(FileUpdateView):
     """View that updates an existing File object with a new upload.
         Fires an ObjectModifiedEvent.
-        
+
 
     >>> from zope.publisher.browser import TestRequest
     >>> import StringIO
     >>> sio = StringIO.StringIO("some data")
     >>> sio.filename = 'abc.txt'
 
-    >>> def eventLog(event) : 
+    >>> def eventLog(event):
     ...     print 'ModifiedEvent:', event.descriptions[0].attributes
     >>> zope.event.subscribers.append(eventLog)
 
@@ -154,7 +154,7 @@ class FileUpload(FileUpdateView):
     specified by the user, and can use the content type when
     specified.
 
-    
+
     >>> request = TestRequest(form={'field.data': sio,
     ...                             'field.contentType': 'text/foobar',
     ...                             'UPDATE_SUBMIT': 'Update'})
@@ -182,10 +182,10 @@ class FileUpload(FileUpdateView):
     u'Updated on ${date_time}'
     >>> file.contentType
     'text/plain'
-    
+
     The ObjectModifiedEvent lists only the contentType if the data
     are omitted:
-    
+
     >>> request = TestRequest(form={'field.data': None,
     ...                             'field.contentType': '',
     ...                             'add_input_name': 'splat.txt',
@@ -195,27 +195,27 @@ class FileUpload(FileUpdateView):
     >>> view.errors()
     ModifiedEvent: ('contentType',)
     u'Updated on ${date_time}'
-    
-    
+
+
     Cleanup:
-    
+
     >>> zope.event.subscribers.remove(eventLog)
 
     """
 
     def update_object(self, data, contenttype):
         self.context.contentType = contenttype
-        
+
         descriptor = objectevent.Attributes(IFile, "contentType")
-        
+
         # Update *only* if a new value is specified
         if data:
             self.context.data = data
             descriptor.attributes += "data",
-         
+
         event = objectevent.ObjectModifiedEvent(self.context, descriptor)
-        zope.event.notify(event)   
-            
+        zope.event.notify(event)
+
         formatter = self.request.locale.dates.getFormatter(
             'dateTime', 'medium')
         return _("Updated on ${date_time}",

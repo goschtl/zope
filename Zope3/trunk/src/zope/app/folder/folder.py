@@ -137,7 +137,6 @@ class FolderSublocations(object):
       >>> subs.remove(sm)
       >>> subs
       []
-    
     """
 
     def __init__(self, folder):
