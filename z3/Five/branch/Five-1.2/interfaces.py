@@ -56,10 +56,14 @@ except ImportError:
         from Products.Five.bbb import Acquisition_interfaces
         from Products.Five.bbb import App_interfaces
         from Products.Five.bbb import OFS_interfaces
+        from Products.Five.bbb import OFS_event
+        from Products.Five.bbb import OFS_subscribers
         from Products.Five.bbb import webdav_interfaces
 
         sys.modules['AccessControl.interfaces'] = AccessControl_interfaces
         sys.modules['Acquisition.interfaces'] = Acquisition_interfaces
         sys.modules['App.interfaces'] = App_interfaces
         sys.modules['OFS.interfaces'] = OFS_interfaces
+        sys.modules['OFS.event'] = OFS_event
+        sys.modules['OFS.subscribers'] = OFS_subscribers
         sys.modules['webdav.interfaces'] = webdav_interfaces

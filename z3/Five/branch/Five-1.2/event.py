@@ -12,242 +12,43 @@
 #
 ##############################################################################
 """
-Five event definitions.
-
-May eventually be folded back into Zope 3 proper.
+Five event monkey patches.
 
 $Id$
 """
 
 import warnings
-
-from zope.event import notify
-from zope.interface import implements
-from zope.interface import Attribute
-
-from zope.app.event.interfaces import IObjectEvent
-from zope.app.container.interfaces import IObjectAddedEvent
-from zope.app.container.interfaces import IObjectRemovedEvent
-
-from zope.app.event.objectevent import ObjectEvent
-from zope.app.container.contained import ObjectMovedEvent
-from zope.app.container.contained import ObjectAddedEvent
-from zope.app.container.contained import ObjectRemovedEvent
-from zope.app.event.objectevent import ObjectCopiedEvent
-from zope.app.container.contained import dispatchToSublocations
-
-from Products.Five.fiveconfigure import isFiveMethod
-
-
-class IObjectWillBeMovedEvent(IObjectEvent):
-    """An object will be moved."""
-    oldParent = Attribute("The old location parent for the object.")
-    oldName = Attribute("The old location name for the object.")
-    newParent = Attribute("The new location parent for the object.")
-    newName = Attribute("The new location name for the object.")
-
-class IObjectWillBeAddedEvent(IObjectWillBeMovedEvent):
-    """An object will be added to a container."""
-
-class IObjectWillBeRemovedEvent(IObjectWillBeMovedEvent):
-    """An object will be removed from a container"""
-
-class IFiveObjectClonedEvent(IObjectEvent):
-    """An object has been cloned (a la Zope 2).
-
-    This is for Zope 2 compatibility, subscribers should really use
-    IObjectCopiedEvent or IObjectAddedEvent, depending on their use
-    cases.
-
-    event.object is the copied object, already added to its container.
-    Note that this event is dispatched to all sublocations.
-    """
-
-
-class ObjectWillBeMovedEvent(ObjectEvent):
-    """An object will be moved"""
-    implements(IObjectWillBeMovedEvent)
-
-    def __init__(self, object, oldParent, oldName, newParent, newName):
-        ObjectEvent.__init__(self, object)
-        self.oldParent = oldParent
-        self.oldName = oldName
-        self.newParent = newParent
-        self.newName = newName
-
-class ObjectWillBeAddedEvent(ObjectWillBeMovedEvent):
-    """An object will be added to a container"""
-    implements(IObjectWillBeAddedEvent)
-
-    def __init__(self, object, newParent=None, newName=None):
-        #if newParent is None:
-        #    newParent = object.__parent__
-        #if newName is None:
-        #    newName = object.__name__
-        ObjectWillBeMovedEvent.__init__(self, object, None, None,
-                                        newParent, newName)
-
-class ObjectWillBeRemovedEvent(ObjectWillBeMovedEvent):
-    """An object will be removed from a container"""
-    implements(IObjectWillBeRemovedEvent)
-
-    def __init__(self, object, oldParent=None, oldName=None):
-        #if oldParent is None:
-        #    oldParent = object.__parent__
-        #if oldName is None:
-        #    oldName = object.__name__
-        ObjectWillBeMovedEvent.__init__(self, object, oldParent, oldName,
-                                        None, None)
-
-class FiveObjectClonedEvent(ObjectEvent):
-    implements(IFiveObjectClonedEvent)
-
-
-##################################################
-
 import sys
 from cgi import escape
-from zLOG import LOG, ERROR
 from Acquisition import aq_base, aq_parent, aq_inner
-from App.config import getConfiguration
 from App.Dialogs import MessageDialog
 from AccessControl import getSecurityManager
 from ZODB.POSException import ConflictError
-from OFS.ObjectManager import BeforeDeleteException
 from OFS import Moniker
 from OFS.CopySupport import CopyError # Yuck, a string exception
 from OFS.CopySupport import eNoData, eNotFound, eInvalid, eNotSupported
 from OFS.CopySupport import cookie_path, sanity_check, _cb_decode
 from webdav.Lockable import ResourceLockedError
+
+from zope.event import notify
+from zope.app.container.contained import ObjectMovedEvent
+from zope.app.container.contained import ObjectAddedEvent
+from zope.app.container.contained import ObjectRemovedEvent
+from zope.app.event.objectevent import ObjectCopiedEvent
+from OFS.event import ObjectWillBeMovedEvent
+from OFS.event import ObjectWillBeAddedEvent
+from OFS.event import ObjectWillBeRemovedEvent
+from OFS.event import ObjectClonedEvent
+from OFS.subscribers import deprecatedManageAddDeleteClasses
+from OFS.subscribers import hasDeprecatedMethods
+from OFS.subscribers import maybeCallDeprecated
+from Products.Five.fiveconfigure import isFiveMethod
+
+
 FIVE_ORIGINAL_PREFIX = '__five_original_'
 
 
 hasContainerEvents = False
-deprecatedManageAddDeleteClasses = []
-
-
-def hasDeprecatedMethods(ob):
-    """Do we need to call the deprecated methods?
-    """
-    for class_ in deprecatedManageAddDeleteClasses:
-        if isinstance(ob, class_):
-            return True
-    return False
-
-def maybeCallDeprecated(method_name, ob, *args):
-    """Call a deprecated method, if the framework doesn't call it already.
-    """
-    if hasDeprecatedMethods(ob):
-        # Already deprecated through zcml
-        return
-    method = getattr(ob, method_name)
-    if isFiveMethod(method):
-        # Monkey-patched method
-        return
-    if deprecatedManageAddDeleteClasses:
-        # Not deprecated through zcml and directives fully loaded
-        class_ = ob.__class__
-        warnings.warn(
-            "Calling %s.%s.%s is deprecated when using Five, "
-            "instead use event subscribers or "
-            "mark the class with <five:deprecatedManageAddDelete/>"
-            % (class_.__module__, class_.__name__, method_name),
-            DeprecationWarning)
-    # Note that calling the method can lead to incorrect behavior
-    # but in the most common case that's better than not calling it.
-    method(ob, *args)
-
-
-##################################################
-# Adapters and subscribers
-
-from OFS.interfaces import IObjectManager
-
-class ObjectManagerSublocations(object):
-    """Get the sublocations for an ObjectManager.
-    """
-    def __init__(self, container):
-        self.container = container
-
-    def sublocations(self):
-        for ob in self.container.objectValues():
-            yield ob
-
-# The following subscribers should really be defined in ZCML
-# but we don't have enough control over subscriber ordering for
-# that to work exactly right.
-# (Sometimes IItem comes before IObjectManager, sometimes after,
-# depending on some of Zope's classes.)
-# This code can be simplified when Zope is completely rid of
-# manage_afterAdd & co, then IItem wouldn't be relevant anymore and we
-# could have a simple subscriber for IObjectManager that directly calls
-# dispatchToSublocations.
-
-def dispatchObjectWillBeMovedEvent(ob, event):
-    """Multi-subscriber for IItem + IObjectWillBeMovedEvent.
-    """
-    # First, dispatch to sublocations
-    if IObjectManager.providedBy(ob):
-        dispatchToSublocations(ob, event)
-    # Next, do the manage_beforeDelete dance
-    if hasDeprecatedMethods(ob):
-        callManageBeforeDelete(ob, event)
-
-def dispatchObjectMovedEvent(ob, event):
-    """Multi-subscriber for IItem + IObjectMovedEvent.
-    """
-    # First, do the manage_afterAdd dance
-    if hasDeprecatedMethods(ob):
-        callManageAfterAdd(ob, event)
-    # Next, dispatch to sublocations
-    if IObjectManager.providedBy(ob):
-        dispatchToSublocations(ob, event)
-
-def dispatchFiveObjectClonedEvent(ob, event):
-    """Multi-subscriber for IItem + IFiveObjectClonedEvent.
-    """
-    # First, do the manage_afterClone dance
-    if hasDeprecatedMethods(ob):
-        callManageAfterClone(ob, event)
-    # Next, dispatch to sublocations
-    if IObjectManager.providedBy(ob):
-        dispatchToSublocations(ob, event)
-
-
-def callManageAfterAdd(ob, event):
-    """Compatibility subscriber for manage_afterAdd.
-    """
-    container = event.newParent
-    if container is None:
-        # this is a remove
-        return
-    ob.manage_afterAdd(event.object, container)
-
-def callManageBeforeDelete(ob, event):
-    """Compatibility subscriber for manage_beforeDelete.
-    """
-    container = event.oldParent
-    if container is None:
-        # this is an add
-        return
-    try:
-        ob.manage_beforeDelete(event.object, container)
-    except BeforeDeleteException:
-        raise
-    except ConflictError:
-        raise
-    except:
-        LOG('Zope', ERROR, '_delObject() threw', error=sys.exc_info())
-        # In debug mode when non-Manager, let exceptions propagate.
-        if getConfiguration().debug_mode:
-            if not getSecurityManager().getUser().has_role('Manager'):
-                raise
-
-def callManageAfterClone(ob, event):
-    """Compatibility subscriber for manage_afterClone.
-    """
-    ob.manage_afterClone(event.object)
-
 
 ##################################################
 # Monkey patches
@@ -541,7 +342,7 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
 
             maybeCallDeprecated('manage_afterClone', ob)
 
-            notify(FiveObjectClonedEvent(ob))
+            notify(ObjectClonedEvent(ob))
 
         if REQUEST is not None:
             return self.manage_main(self, REQUEST, update_menu=1,
@@ -641,7 +442,7 @@ def manage_clone(self, ob, id, REQUEST=None):
 
     maybeCallDeprecated('manage_afterClone', ob)
 
-    notify(FiveObjectClonedEvent(ob))
+    notify(ObjectClonedEvent(ob))
 
     return ob
 

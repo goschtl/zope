@@ -19,7 +19,7 @@ $Id$
 """
 
 from Products.Five.event import doMonkies
-from Products.Five.event import deprecatedManageAddDeleteClasses
+from OFS.subscribers import deprecatedManageAddDeleteClasses
 
 def setDeprecatedManageAddDelete(class_):
     """Instances of the class will still see their old methods called."""
