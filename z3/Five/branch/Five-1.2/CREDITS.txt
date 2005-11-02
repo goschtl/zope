@@ -9,7 +9,7 @@ Five contributors
 
 - Lennart Regebro (regebro@nuxeo.com)
 
-- Tres Seaver (tseaver@palladoin.com)
+- Tres Seaver (tseaver@palladion.com)
 
 - Jan-Wijbrand Kolman (jw@infrae.com)
 
