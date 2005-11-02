@@ -50,8 +50,10 @@ class LookupUtilitiesView(BrowserView):
 
 def test_suite():
     from Testing.ZopeTestCase import FunctionalDocFileSuite
-    return FunctionalDocFileSuite('functional.txt',
-                                  package='Products.Five.site.tests')
+    suite = FunctionalDocFileSuite('functional.txt',
+                                   package='Products.Five.site.tests')
+    suite.level = 2
+    return suite
 
 if __name__ == '__main__':
     framework()
