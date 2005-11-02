@@ -18,7 +18,7 @@ $Id$
 import inspect
 from zExceptions import NotFound
 from zope.exceptions import NotFoundError
-from zope.component import getView, getDefaultViewName, ComponentLookupError
+from zope.component import getDefaultViewName, ComponentLookupError
 from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserRequest
 
