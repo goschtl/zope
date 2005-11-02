@@ -75,7 +75,7 @@ class MyNewFolder(DontComplain, Folder):
 
 
 def test_suite():
-    from doctest import DocFileSuite
+    from zope.testing.doctest import DocFileSuite
     return DocFileSuite('event.txt', package="Products.Five.tests")
 
 if __name__ == '__main__':
