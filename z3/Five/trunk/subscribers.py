@@ -28,6 +28,7 @@ import OFS.ObjectManager
 import OFS.interfaces
 
 from zope.interface import implements
+from zope.component import adapts
 from zope.app.container.contained import dispatchToSublocations
 from zope.app.location.interfaces import ISublocations
 
@@ -71,7 +72,7 @@ def maybeCallDeprecated(method_name, ob, *args):
 class ObjectManagerSublocations(object):
     """Get the sublocations for an ObjectManager.
     """
-    __used_for__ = OFS.interfaces.IObjectManager
+    adapts(OFS.interfaces.IObjectManager)
     implements(ISublocations)
 
     def __init__(self, container):
