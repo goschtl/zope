@@ -18,8 +18,8 @@ Zope 2 objects.
 $Id$
 """
 
-from event import doMonkies
-from event import deprecatedManageAddDeleteClasses
+from Products.Five.event import doMonkies
+from Products.Five.event import deprecatedManageAddDeleteClasses
 
 def setDeprecatedManageAddDelete(class_):
     """Instances of the class will still see their old methods called."""
