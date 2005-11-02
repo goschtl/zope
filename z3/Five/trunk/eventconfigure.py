@@ -19,7 +19,7 @@ $Id$
 """
 
 import warnings
-from Products.Five.subscribers import deprecatedManageAddDeleteClasses
+from OFS.subscribers import deprecatedManageAddDeleteClasses
 
 def setContainerEvents():
     warnings.warn("Using <five:containerEvents/> is deprecated (it is now "

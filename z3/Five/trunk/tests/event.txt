@@ -60,28 +60,30 @@ printed events will be in their "natural" order::
 
   >>> from zope.app.event.interfaces import IObjectEvent
   >>> from zope.app.container.interfaces import IObjectMovedEvent
-  >>> from Products.Five.event import IObjectWillBeMovedEvent
-  >>> from Products.Five.event import IFiveObjectClonedEvent
+  >>> from OFS.interfaces import IObjectWillBeMovedEvent
+  >>> from OFS.interfaces import IObjectClonedEvent
   >>> from OFS.interfaces import IItem
   >>> def printObjectEvent(object, event):
   ...     print event.__class__.__name__, object.getId()
   >>> def printObjectEventExceptSome(object, event):
   ...     if (IObjectMovedEvent.providedBy(event) or
   ...         IObjectWillBeMovedEvent.providedBy(event) or
-  ...         IFiveObjectClonedEvent.providedBy(event)):
+  ...         IObjectClonedEvent.providedBy(event)):
   ...         return
   ...     print event.__class__.__name__, object.getId()
 
   >>> from zope.component import provideHandler
   >>> provideHandler(printObjectEvent, (IItem, IObjectMovedEvent))
   >>> provideHandler(printObjectEvent, (IItem, IObjectWillBeMovedEvent))
-  >>> provideHandler(printObjectEvent, (IItem, IFiveObjectClonedEvent))
+  >>> provideHandler(printObjectEvent, (IItem, IObjectClonedEvent))
   >>> provideHandler(printObjectEventExceptSome, (None, IObjectEvent))
 
 Finally we need to load the subscribers configuration::
 
   >>> from Products.Five import zcml
   >>> import Products.Five
+  >>> import zope.app.component
+  >>> zcml.load_config('meta.zcml', zope.app.component)
   >>> zcml.load_config('event.zcml', Products.Five)
 
 Old class
@@ -163,7 +165,7 @@ Old behavior with events for a copy::
   ObjectWillBeAddedEvent copy_of_blueberry
   ObjectAddedEvent copy_of_blueberry
   old manage_afterAdd copy_of_blueberry copy_of_blueberry folder
-  FiveObjectClonedEvent copy_of_blueberry
+  ObjectClonedEvent copy_of_blueberry
   old manage_afterClone copy_of_blueberry copy_of_blueberry
   [{'new_id': 'copy_of_blueberry', 'id': 'blueberry'}]
 
@@ -182,7 +184,7 @@ Old behavior with events for a clone::
   ObjectWillBeAddedEvent strawberry
   ObjectAddedEvent strawberry
   old manage_afterAdd strawberry strawberry folder
-  FiveObjectClonedEvent strawberry
+  ObjectClonedEvent strawberry
   old manage_afterClone strawberry strawberry
   >>> res.getId()
   'strawberry'
@@ -240,9 +242,9 @@ Cloning a tree of objects::
   old manage_afterAdd mickey mickey folder
   ObjectAddedEvent donald
   old manage_afterAdd donald mickey folder
-  FiveObjectClonedEvent mickey
+  ObjectClonedEvent mickey
   old manage_afterClone mickey mickey
-  FiveObjectClonedEvent donald
+  ObjectClonedEvent donald
   old manage_afterClone donald mickey
   >>> res.getId()
   'mickey'
@@ -292,7 +294,7 @@ And copy::
   ObjectCopiedEvent copy_of_dilbert
   ObjectWillBeAddedEvent copy_of_dilbert
   ObjectAddedEvent copy_of_dilbert
-  FiveObjectClonedEvent copy_of_dilbert
+  ObjectClonedEvent copy_of_dilbert
   [{'new_id': 'copy_of_dilbert', 'id': 'dilbert'}]
 
 Then rename::
@@ -307,7 +309,7 @@ Or copy using manage_clone::
   ObjectCopiedEvent phb
   ObjectWillBeAddedEvent phb
   ObjectAddedEvent phb
-  FiveObjectClonedEvent phb
+  ObjectClonedEvent phb
   >>> res.getId()
   'phb'
 
@@ -355,8 +357,8 @@ Cloning a tree of objects::
   ObjectWillBeAddedEvent mel
   ObjectAddedEvent serenity
   ObjectAddedEvent mel
-  FiveObjectClonedEvent serenity
-  FiveObjectClonedEvent mel
+  ObjectClonedEvent serenity
+  ObjectClonedEvent mel
   >>> res.getId()
   'serenity'
 
