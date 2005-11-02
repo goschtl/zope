@@ -189,7 +189,7 @@ Restructuring
 * The former test product, ``FiveTest``, was converted into separate
   modules that provide the mock objects for the corresponding tests
   and are located right next to them.  Common test helpers have been
-  moved to the Five.tests.testing package.  Overall, the testing framework
+  moved to the Five.testing package.  Overall, the testing framework
   was much simplified and the individual tests clean up after
   themselves much like they do in Zope 3.
 
