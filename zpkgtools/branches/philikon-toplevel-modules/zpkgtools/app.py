@@ -214,7 +214,8 @@ class BuilderApplication(Application):
             source = self.ip.loader.load(location)
             if os.path.isfile(source):
                 return ModuleComponent(resource, location, source, self.ip)
-            return PackageComponent(resource, location, source, self.ip)
+            else:
+                return PackageComponent(resource, location, source, self.ip)
         except zpkgtools.Error, e:
             self.error(str(e), rc=1)
 
@@ -388,7 +389,7 @@ class BuilderApplication(Application):
 
 
 class PackageComponent:
-    """Regular Python package
+    """Regular Python package or non-code component.
     """
 
     def __init__(self, name, url, source, ip):
