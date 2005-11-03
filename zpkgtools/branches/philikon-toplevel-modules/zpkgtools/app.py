@@ -211,7 +211,10 @@ class BuilderApplication(Application):
 
     def get_component(self, resource, location):
         try:
-            return Component(resource, location, self.ip)
+            source = self.ip.loader.load(location)
+            if os.path.isfile(source):
+                return ModuleComponent(resource, location, source, self.ip)
+            return PackageComponent(resource, location, source, self.ip)
         except zpkgtools.Error, e:
             self.error(str(e), rc=1)
 
@@ -384,8 +387,11 @@ class BuilderApplication(Application):
             raise
 
 
-class Component:
-    def __init__(self, name, url, ip):
+class PackageComponent:
+    """Regular Python package
+    """
+
+    def __init__(self, name, url, source, ip):
         self.name = name
         self.url = url
         self.ip = ip
@@ -393,7 +399,7 @@ class Component:
         self.destination = None
         self.pkginfo = None
         self.pubinfo = None
-        self.source = self.ip.loader.load(self.url)
+        self.source = source
         specs = include.load(self.source)
         if specs.loads:
             source = self.ip.loader.load_mutable_copy(self.url)
@@ -465,7 +471,7 @@ class Component:
         return self.pubinfo
 
     def is_python_package(self):
-        """Return True iff this component represents a Python package."""
+        """Return True if this component represents a Python package."""
         if self.destination:
             dir = os.path.join(self.destination, self.name)
         else:
@@ -473,7 +479,7 @@ class Component:
         return os.path.isfile(os.path.join(dir, "__init__.py"))
 
     def has_packaging_data(self):
-        """Return True iff this component contains packaging metadata."""
+        """Return True if this component contains packaging metadata."""
         # Should PUBLICATION.cfg count toword this?
         dir = self.source
         for fn in (package.PACKAGE_CONF,
@@ -538,6 +544,111 @@ class Component:
             print >>f, "    %r)" % distclass
         else:
             print >>f, "    %r, %r, __file__)" % (self.name, version)
+        print >>f
+        print >>f, "context.initialize()"
+        print >>f, "context.setup()"
+        f.close()
+
+
+class ModuleComponent:
+    """Component representing a top-level module
+    """
+
+    def __init__(self, name, url, source, ip):
+        self.name = name
+        self.url = url
+        self.ip = ip
+        self.dependencies = None
+        self.destination = None
+        self.pkginfo = None
+        self.pubinfo = None
+        self.source = source
+        self.filename = os.path.basename(source)
+        specs = include.load(self.source)
+        specs.collection.cook()
+        specs.distribution.cook()
+        self.collection = specs.collection
+        self.distribution = specs.distribution
+        #
+        # Check that this package is valid:
+        #
+        if not self.is_python_package():
+            raise zpkgtools.Error(
+                "%r is an invalid distribution component: all components must"
+                " either be a Python package or provide a %s file"
+                % (name, package.PACKAGE_CONF))
+
+    def get_dependencies(self):
+        """Get the direct dependencies of this component.
+
+        :return: A set of the dependencies.
+        :rtype: `sets.Set`
+
+        We simply rule that top-level modules have no dependencies.
+        At least we have no way of knowing.
+        """
+        self.dependencies = sets.Set()
+        return self.dependencies
+
+    def get_package_info(self):
+        return self.pkginfo
+
+    def get_publication_info(self):
+        return self.pubinfo
+
+    def is_python_package(self):
+        """Return True if this component represents a Python package."""
+        if self.destination:
+            filename = os.path.join(self.destination, self.filename)
+        else:
+            filename = self.source
+        return os.path.isfile(filename)
+
+    def has_packaging_data(self):
+        """Return True if this component contains packaging metadata.
+
+        For top-level modules, we simply rule that the have no
+        packaging metadata. They just want to be installed, basta."""
+        return False
+
+    def write_package(self, destination):
+        self.destination = destination
+        if not os.path.exists(destination):
+            os.mkdir(destination)
+        self.ip.addIncludes(destination, self.distribution)
+        self.ip.copy_file(self.source, destination)
+
+    def write_setup_cfg(self):
+        setup_cfg = os.path.join(self.destination, "setup.cfg")
+        self.ip.add_output(setup_cfg)
+        f = open(setup_cfg, "w")
+        f.write("# THIS IS A GENERATED FILE.\n")
+        f.write("\n")
+        f.write("[install_lib]\n")
+        # generate .pyc files
+        f.write("compile = 1\n")
+        # generate .pyo files using "python -O"
+        f.write("optimize = 1\n")
+        f.close()
+
+    def write_setup_py(self, filename="setup.py", version=None, pathparts=[],
+                       distclass=None):
+        # simply assume that the filename ends in '.py'
+        module_name = self.filename[:-3]
+        setup_py = os.path.join(self.destination, filename)
+        self.ip.add_output(setup_py)
+        f = open(setup_py, "w")
+        if pathparts:
+            extrapath = ", ".join([""] + [repr(pp) for pp in pathparts])
+        else:
+            extrapath = ""
+        print >>f, SETUP_HEADER % extrapath
+        print >>f, "context = zpkgsetup.setup.SetupContext("
+        if distclass:
+            print >>f, "    %r, %r, __file__," % (module_name, version)
+            print >>f, "    %r)" % distclass
+        else:
+            print >>f, "    %r, %r, __file__)" % (module_name, version)
         print >>f
         print >>f, "context.initialize()"
         print >>f, "context.setup()"
