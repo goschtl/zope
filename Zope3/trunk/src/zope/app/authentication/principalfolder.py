@@ -110,6 +110,8 @@ class InternalPrincipal(Persistent, Contained):
 
     interface.implements(IInternalPrincipal, IInternalPrincipalContained)
 
+    _passwordManagerName = "Plain Text"
+
     def __init__(self, login, password, title, description=u'',
             passwordManagerName="Plain Text"):
         self._login = login
