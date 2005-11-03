@@ -16,7 +16,7 @@
 
 $Id$
 """
-import sys, os, warnings
+import logging, os, sys, warnings
 
 here = os.path.abspath(os.path.dirname(sys.argv[0]))
 
@@ -30,9 +30,36 @@ sys.path.insert(0, src) # put at beginning to avoid one in site_packages
 from zope.testing import testrunner
 
 defaults = ['--tests-pattern', '^f?tests$', '--test-path', src]
+defaults += ['-m',
+             '!^('
+             'ZConfig'
+             '|'
+             'BTrees'
+             '|'
+             'persistent'
+             '|'
+             'ThreadedAsync'
+             '|'
+             'transaction'
+             '|'
+             'ZEO'
+             '|'
+             'ZODB'
+             '|'
+             'twisted'
+             '|'
+             'zdaemon'
+             '|'
+             'zope[.]testing'
+             '|'
+             ')[.]']
 
 # Get rid of twisted.conch.ssh warning
 warnings.filterwarnings(
     'ignore', 'PyCrypto', RuntimeWarning, 'twisted[.]conch[.]ssh')
 
-sys.exit(testrunner.run(defaults))
+result = testrunner.run(defaults)
+
+# Avoid spurious error during exit. Some thing is trying to log
+# something after the files used by the logger have been closed.
+logging.disable(999999999)
