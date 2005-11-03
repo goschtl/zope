@@ -1,0 +1,62 @@
+========
+Overview
+========
+
+The Zope Packaging Tool, or |zpkg|_, is a tool used to build software
+distributions based on the Python ``distutils`` package.  The
+generated distributions can be used like any other ``distuils``-based
+distribution.
+
+There are several terms used in this documentation that have specific
+meanings when we use them with regard to packaging.  These are the
+definitions we care about here:
+
+**module distribution**
+  A collection of Python modules distributed together as a single
+  downloadable resource and meant to be installed en masse.  Examples
+  of some well-known module distributions are Numeric Python, PyXML,
+  PIL (the Python Imaging Library), or mxBase.  (This would be called
+  a package, except that term is already taken in the Python context:
+  a single module distribution may contain zero, one, or many Python
+  packages.)  (This term is defined in the ``distutils``
+  documentation.)
+
+**collection distribution**
+  A distribution that exists primarily to express a collection of
+  other distributions through dependencies.  May include modules or
+  other files, such as documentation or utility scripts.
+
+**application distribution**
+  A distribution that installs an application rather than a set of
+  packages.  This distribution does not use the normal distutils
+  setup.py interface, but provides a more conventional **configure** /
+  **make** / **make install** installation pattern (for Unix), or
+  perhaps a platform-specific installer application.  This will
+  install the software into an application home (what Zope 2 called
+  the "Zope home").
+
+**package distribution**
+  A distribution that is based on a package, package-contained meta
+  data, and some of the package's sub-packages.  This is a
+  package-centric special case of "module distributions", as defined
+  by the distutils documentation.  In particular, we will make more
+  assumptions than does distutils, about the arrangement of the
+  information that defines a package distribution.
+
+**resource**
+  A directory containing files that should be packaged as a unit.
+  Packaging metadata for the resource is included within the resource.
+  The directory need not be available on the local filesystem, but may
+  require access to a version control repository.
+
+**primary resource**
+  A resource which defines the contents of a distribution.  Any given
+  resource may be primary or not, based on its use by |zpkg|_.  There
+  are some additional metadata requirements for a primary resource.
+
+The task of |zpkg|_ is to create distributions based on resource
+metadata that can install the resource and the resources it depends
+on, such that they can actually be used.
+
+
+.. include:: links.rst
