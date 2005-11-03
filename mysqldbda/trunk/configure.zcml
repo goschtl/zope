@@ -14,7 +14,7 @@
         interface="zope.app.rdb.interfaces.IZopeDatabaseAdapterManagement"
         />
   </content>
-  
+
   <browser:addform
       name="AddMySQLdbDA"
       schema="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
@@ -44,4 +44,3 @@
       />
 
 </configure>
-
