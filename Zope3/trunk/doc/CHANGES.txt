@@ -149,6 +149,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #455: tal:content="" does not get translated
+        by i18n:translate=""
+
       - Fixed issue #390: Deprecated ``IBaseRequest.body`` and
         ``IBaseRequest.bodyFile``. The latter was simply renamed to
         ``IBaseRequest.bodyStream``. No code assumes anymore that the input
