@@ -33,7 +33,7 @@ The scripts and documentation files are listed very simply::
   documentation  *.txt
   documentation  apiref.pdf
 
-  script  scritps/*
+  script  scripts/*
 
 The value to the right of the identifying keyword is a portable glob
 pattern, where *portable* here means the pattern uses the POSIX
