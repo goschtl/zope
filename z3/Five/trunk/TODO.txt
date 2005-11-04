@@ -36,10 +36,6 @@ v1.3
 
 * integrate into Zope 2.9 (philikon)
 
-* marker utility
-
-  - add 'manage_interfaces' to ZMI tabs in Zope 2.9 (yuppie)
-
 * revisit the test_localsite/test_{get|query}NextSiteManager tests
 
 * correctly treat ZCatalog.Catalog(Path)Awareness.CatalogAware w.r.t
