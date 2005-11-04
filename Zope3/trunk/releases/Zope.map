@@ -12,9 +12,10 @@ zope.*         ../src/zope/
 # Dependencies of testbrowser
 ClientCookie    ../src/ClientCookie
 mechanize       ../src/mechanize
-pullparser      ../pullparser.py
-ClientForm      ../ClientForm.py # XXX not supported by zpkg yet, but it
-                                 # appears that philiKON is on the case - jinty
+pullparser      ../src/pullparser.py
+ClientForm      ../src/ClientForm.py
+# XXX toplevel modules are not supported by zpkg yet, but it
+# appears that philiKON is on the case - jinty
 
 # Related components for use with Zope 3:
 buddydemo      ../src/buddydemo
