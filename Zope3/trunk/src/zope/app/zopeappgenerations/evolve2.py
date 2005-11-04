@@ -36,8 +36,8 @@ def evolve(context):
     for site in findObjectsProviding(root, ISite):
         sm = site.getSiteManager()
         for principal in findObjectsProviding(sm, IInternalPrincipal):
-            if not hasattr(principal, "passwordManagerName"):
-                principal.passwordManagerName = "Plain Text"
+            if not hasattr(principal, "_passwordManagerName"):
+                principal._passwordManagerName = "Plain Text"
             if not hasattr(principal, "_password"):
                 principal._password = principal.__dict__["password"]
                 del principal.__dict__["password"]

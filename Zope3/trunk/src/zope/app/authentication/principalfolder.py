@@ -110,7 +110,12 @@ class InternalPrincipal(Persistent, Contained):
 
     interface.implements(IInternalPrincipal, IInternalPrincipalContained)
 
-    _passwordManagerName = "Plain Text"
+    # If you're searching for self._passwordManagerName, or self._password
+    # probably you just need to evolve the database to new generation
+    # at /++etc++process/@@generations.html
+
+    # NOTE: All changes needs to be synchronized with the evolver at
+    # zope.app.zopeappgenerations.evolve2
 
     def __init__(self, login, password, title, description=u'',
             passwordManagerName="Plain Text"):
