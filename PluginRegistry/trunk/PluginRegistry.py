@@ -25,11 +25,19 @@ from AccessControl.Permissions import manage_users as ManageUsers
 from Persistence import PersistentMapping
 from OFS.SimpleItem import SimpleItem
 from App.class_init import default__class_init__ as InitializeClass
+from webdav.WriteLockInterface import WriteLockInterface
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
 
 from interfaces.plugins import IPluginRegistry
+try:
+    from exportimport import _updatePluginRegistry
+except ImportError:
+    _HAS_GENERIC_SETUP = False
+else:
+    _HAS_GENERIC_SETUP = True
+
 from utils import _wwwdir
 
 class PluginRegistry( SimpleItem ):
@@ -38,7 +46,7 @@ class PluginRegistry( SimpleItem ):
 
     o Each plugin type holds an ordered list of ( id, wrapper ) tuples.
     """
-    __implements__ = ( IPluginRegistry, )
+    __implements__ = ( IPluginRegistry, WriteLockInterface )
 
     security = ClassSecurityInfo()
 
@@ -314,6 +322,48 @@ class PluginRegistry( SimpleItem ):
                      )
                    + SimpleItem.manage_options
                    )
+
+    if _HAS_GENERIC_SETUP:
+        security.declareProtected( ManageUsers, 'manage_exportImportForm' )
+        manage_exportImportForm = PageTemplateFile( 'export_import', _wwwdir )
+
+        security.declareProtected( ManageUsers, 'getConfigAsXML' )
+        def getConfigAsXML(self):
+            """ Return XML representing the registry's configuration.
+            """
+            from exportimport import PluginRegistryExporter
+            pre = PluginRegistryExporter(self).__of__(self)
+            return pre.generateXML()
+
+        security.declareProtected( ManageUsers, 'manage_exportImport' )
+        def manage_exportImport(self, updated_xml, should_purge, RESPONSE):
+            """ Parse XML and update the registry.
+            """
+            #XXX encoding?
+            _updatePluginRegistry(self, updated_xml, should_purge)
+            RESPONSE.redirect('%s/manage_exportImportForm'
+                              '?manage_tabs_message=Registry+updated.'
+                                % self.absolute_url())
+
+        security.declareProtected( ManageUsers, 'manage_FTPget' )
+        def manage_FTPget(self, REQUEST, RESPONSE):
+            """
+            """
+            return self.getConfigAsXML()
+
+        security.declareProtected( ManageUsers, 'PUT' )
+        def PUT(self, REQUEST, RESPONSE):
+            """
+            """
+            xml = REQUEST['BODYFILE'].read()
+            _updatePluginRegistry(self, xml, True)
+
+        manage_options = ( manage_options[:2]
+                         + ( { 'label' : 'Export / Import'
+                             , 'action' : 'manage_exportImportForm'
+                             },)
+                         + manage_options[2:]
+                         )
 
     #
     #   Helper methods

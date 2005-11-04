@@ -59,17 +59,9 @@ def exportPluginRegistry(context):
 
     return 'Plugin registry exported.'
 
-def importPluginRegistry(context):
-    """ Import plugin registry from an XML file.
-    """
-    registry = _getRegistry(context.getSite())
-    encoding = context.getEncoding()
+def _updatePluginRegistry(registry, xml, should_purge, encoding=None):
 
-    xml = context.readDataFile(_FILENAME)
-    if xml is None:
-        return 'Site properties: Nothing to import.'
-
-    if context.shouldPurge():
+    if should_purge:
 
         registry._plugin_types = []
         registry._plugin_type_info = PersistentMapping()
@@ -86,6 +78,18 @@ def importPluginRegistry(context):
                                              'description': info['description'],
                                             }
         registry._plugins[iface] = tuple([x['id'] for x in info['plugins']])
+
+def importPluginRegistry(context):
+    """ Import plugin registry from an XML file.
+    """
+    registry = _getRegistry(context.getSite())
+    encoding = context.getEncoding()
+
+    xml = context.readDataFile(_FILENAME)
+    if xml is None:
+        return 'Site properties: Nothing to import.'
+
+    _updatePluginRegistry(registry, xml, context.shouldPurge(), encoding)
 
     return 'Plugin registry imported.'
 

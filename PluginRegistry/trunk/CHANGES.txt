@@ -3,6 +3,9 @@ PluginRegistry Product Changelog
 
   After PluginRegistry-1.0.2
 
+    - Wired in DAV / FTP / ExternalEditor support for the registry,
+      along with a ZMI form for updating it as XML.
+
     - Added support for exporting / importing registry via GenericSetup.
       
     - Saner version name
