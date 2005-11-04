@@ -85,7 +85,7 @@ status.
 
   >>> print http(r"""
   ... GET /%s/test_script HTTP/1.1
-  ... """ % (folder_name), handle_errors=False)
+  ... """ % (folder_name), handle_errors=True)
   HTTP/1.1 401 Unauthorized...
 
 With the right credentials though the request should succeed:
@@ -93,7 +93,7 @@ With the right credentials though the request should succeed:
   >>> print http(r"""
   ... GET /%s/test_script HTTP/1.1
   ... Authorization: Basic %s:%s
-  ... """ % (folder_name, username, password), handle_errors=False)
+  ... """ % (folder_name, username, password), handle_errors=True)
   HTTP/1.1 200 OK
   ...
   Access Granted
@@ -103,7 +103,7 @@ should be challenged with a 401 response status:
 
   >>> print http(r"""
   ... PROPFIND /%s/test_script HTTP/1.1
-  ... """ % (folder_name), handle_errors=False)
+  ... """ % (folder_name), handle_errors=True)
   HTTP/1.1 401 Unauthorized...
 
 And with the right credentials the request should succeed:
@@ -111,13 +111,13 @@ And with the right credentials the request should succeed:
   >>> print http(r"""
   ... PROPFIND /%s/test_script HTTP/1.1
   ... Authorization: Basic %s:%s
-  ... """ % (folder_name, username, password), handle_errors=False)
+  ... """ % (folder_name, username, password), handle_errors=True)
   HTTP/1.1 207 Multi-Status...
 
   >>> print http(r"""
   ... GET /%s/test_script/manage_DAVget HTTP/1.1
   ... Authorization: Basic %s:%s
-  ... """ % (folder_name, username, password), handle_errors=False)
+  ... """ % (folder_name, username, password), handle_errors=True)
   HTTP/1.1 200 OK...
 
 And a XML-RPC Request. Again, Anonymous user should be challenged with
@@ -130,7 +130,7 @@ a 401 response status.
   ... <methodCall>
   ... <methodName>test_script</methodName>
   ... </methodCall>
-  ... """ % (folder_name), handle_errors=False)
+  ... """ % (folder_name), handle_errors=True)
   HTTP/1.1 401 Unauthorized...
 
 And with valid credentials the reqeuest should succeed:
@@ -143,7 +143,7 @@ And with valid credentials the reqeuest should succeed:
   ... <methodCall>
   ... <methodName>test_script</methodName>
   ... </methodCall>
-  ... """ % (folder_name, username, password), handle_errors=False)
+  ... """ % (folder_name, username, password), handle_errors=True)
   HTTP/1.1 200 OK
   Content-Length: 140
   Content-Type: text/xml
@@ -180,19 +180,19 @@ normal (eg: browser) request:
 
   >>> print http(r"""
   ... GET /%s/test_script HTTP/1.1
-  ... """ % (folder_name), handle_errors=False)
+  ... """ % (folder_name), handle_errors=True)
   HTTP/1.1 302 Moved Temporarily...
 
 And the same for a WebDAV request:
 
   >>> print http(r"""
   ... PROPFIND /%s/test_script HTTP/1.1
-  ... """ % (folder_name), handle_errors=False)
+  ... """ % (folder_name), handle_errors=True)
   HTTP/1.1 302 Moved Temporarily...
 
   >>> print http(r"""
   ... GET /%s/test_script/manage_DAVget HTTP/1.1
-  ... """ % (folder_name), handle_errors=False)
+  ... """ % (folder_name), handle_errors=True)
   HTTP/1.1 302 Moved Temporarily...
 
 And for a XML-RPC request:
@@ -204,7 +204,7 @@ And for a XML-RPC request:
   ... <methodCall>
   ... <methodName>test_script</methodName>
   ... </methodCall>
-  ... """ % (folder_name), handle_errors=False)
+  ... """ % (folder_name), handle_errors=True)
   HTTP/1.1 302 Moved Temporarily...
 
 However, not all WebDAV and XML-RPC clients understand the
@@ -240,19 +240,19 @@ normal (eg: browser) request:
 
   >>> print http(r"""
   ... GET /%s/test_script HTTP/1.1
-  ... """ % (folder_name), handle_errors=False)
+  ... """ % (folder_name), handle_errors=True)
   HTTP/1.1 302 Moved Temporarily...
 
 A WebDAV request should result in a 401 response status:
 
   >>> print http(r"""
   ... PROPFIND /%s/test_script HTTP/1.1
-  ... """ % (folder_name), handle_errors=False)
+  ... """ % (folder_name), handle_errors=True)
   HTTP/1.1 401 Unauthorized...
 
   >>> print http(r"""
   ... GET /%s/test_script/manage_DAVget HTTP/1.1
-  ... """ % (folder_name), handle_errors=False)
+  ... """ % (folder_name), handle_errors=True)
   HTTP/1.1 401 Unauthorized...
 
 And a XML-RPC request should also result in a 401 response status:
@@ -264,5 +264,5 @@ And a XML-RPC request should also result in a 401 response status:
   ... <methodCall>
   ... <methodName>test_script</methodName>
   ... </methodCall>
-  ... """ % (folder_name), handle_errors=False)
+  ... """ % (folder_name), handle_errors=True)
   HTTP/1.1 401 Unauthorized...
