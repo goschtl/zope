@@ -3,6 +3,8 @@ PluginRegistry Product Changelog
 
   After PluginRegistry-1.0.2
 
+    - Added support for exporting / importing registry via GenericSetup.
+      
     - Saner version name
 
     - Added a new ZMI tab offering a simple overview over active/available
