@@ -31,16 +31,17 @@ ZEO             ../src/ZEO
 ZODB            ../src/ZODB
 
 RestrictedPython ../src/RestrictedPython
-ZConfig        ../src/ZConfig
-zdaemon        ../src/zdaemon
+ZConfig          ../src/ZConfig
+zdaemon          ../src/zdaemon
 
 # These packages are the release collections based on the Zope 3
 # project; they define what goes into the Zope X3 and related
 # releases.
 #
-Zope-win       ../releases/Zope-win
-Zope           ../releases/Zope
-Zope-src       ../releases/Zope
-ZopeInterface  ../releases/ZopeInterface
-Workflow       ../releases/Workflow
-ZPT            ../releases/ZPT
+Zope-win         ../releases/Zope-win
+Zope             ../releases/Zope
+Zope-src         ../releases/Zope
+ZopeInterface    ../releases/ZopeInterface
+ZopeTestbrowser  ../releases/ZopeTestbrowser
+Workflow         ../releases/Workflow
+ZPT              ../releases/ZPT
