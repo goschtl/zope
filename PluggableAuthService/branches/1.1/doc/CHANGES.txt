@@ -1,5 +1,9 @@
 PluggableAuthService changelog
 
+  PluggableAuthService 1.1b2 (2005/07/14)
+
+    - Missed a 'nocall:' in the Interfaces activation form.
+
   PluggableAuthService 1.1b1 (2005/07/06)
 
     - PAS-level id mangling is no more. All (optional) mangling is now
