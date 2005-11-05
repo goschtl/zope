@@ -1,30 +1,41 @@
 PluginRegistry Product Changelog
-================================
 
   After PluginRegistry-1.0.2
 
+    - SVN tag:  svn+ssh://svn.zope.org/repos/main/PluginRegistry/trunk
+
     - Wired in DAV / FTP / ExternalEditor support for the registry,
       along with a ZMI form for updating it as XML.
-
+ 
     - Added support for exporting / importing registry via GenericSetup.
-      
-    - Saner version name
 
-    - Added a new ZMI tab offering a simple overview over active/available
-      plugins for each known plugin type.
+    - Moved from CVS to subversion (2005/10/14).
 
-    - Removed deprecation warnings under Zope 2.8.x.
+    - Removed deprecation warings under Zope 2.8.x.
 
-  PluginRegistry-1.0.2 (2005/08/30)
+  PluginRegistry-1.0.2 (2005/01/31)
 
-    - CVS tag, 'PluginRegistry-1_0_2'.
+    - SVN tag:  svn+ssh://svn.zope.org/repos/main/PluginRegistry/tags/1.0.2
 
-    - Added release management files.
+    - CVS tag:  PluginRegistry-1_0_2
 
-    - Repaired product directory computation.
+    - Simplified package directory computation using 'package_home'.
+
+    - Added 'test_suite' to registry tests to improve testability under
+      'zopectl test'.
 
   PluginRegistry-1.0.1 (2004/04/28)
 
-    - CVS tag, 'PluginRegistry-1_0_1'.
+    - SVN tag:  svn+ssh://svn.zope.org/repos/main/PluginRegistry/tags/1.0.1
 
-    - Initial public release
+    - CVS tag:  PluginRegistry-1_0_1
+
+    - Initial public release.
+
+  PluginRegistry-1.0 (2004/04/28)
+
+    - SVN tag:  svn+ssh://svn.zope.org/repos/main/PluginRegistry/tags/1.0
+
+    - CVS tag:  PluginRegistry-1_0
+
+    - Vendor import from ZC repository.
