@@ -5,7 +5,7 @@
 
   <xmlrpc:view
       for="zope.interface.Interface"
-      methods="listAllMethods methodHelp methodSignature"
+      methods="listMethods methodHelp methodSignature"
       class=".xmlrpcintrospection.XMLRPCIntrospection"
       permission="zope.Public"
       />

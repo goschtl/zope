@@ -13,7 +13,7 @@
 ##############################################################################
 """XML-RPC Introspection mechanism
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -36,7 +36,7 @@ def xmlrpccallable(return_type, *parameters_types):
 
 class XMLRPCIntrospection(object):
 
-    def listAllMethods(self):
+    def listMethods(self):
         """ lists all methods available """
         return self._getXMLRPCMethods()
 
@@ -49,12 +49,12 @@ class XMLRPCIntrospection(object):
         return self._getXMLRPCMethodHelp(method_name)
 
     def __call__(self, *args, **kw):
-        return self.listAllMethods()
+        return self.listMethods()
 
     #
     # Introspection APIS
     #
-    _reserved_method_names = (u'', u'listAllMethods', u'methodHelp',
+    _reserved_method_names = (u'', u'listMethods', u'methodHelp',
                               u'methodSignature')
 
     def _filterXMLRPCRequestRegistrations(self, registrations):

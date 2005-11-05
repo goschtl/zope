@@ -142,7 +142,7 @@ the introspection api.
   ...   <include package="zope.app.publisher.xmlrpc" file="meta.zcml" />
   ...   <xmlrpc:view
   ...     for="zope.interface.Interface"
-  ...     methods="listAllMethods  methodHelp methodSignature"
+  ...     methods="listMethods  methodHelp methodSignature"
   ...     class="zope.app.xmlrpcintrospection.xmlrpcintrospection.XMLRPCIntrospection"
   ...     permission="zope.Public"
   ...     />
@@ -160,7 +160,7 @@ And call our xmlrpc method, that should list the content method:
   ...
   ... <?xml version='1.0'?>
   ... <methodCall>
-  ... <methodName>listAllMethods</methodName>
+  ... <methodName>listMethods</methodName>
   ... <params>
   ... </params>
   ... </methodCall>
@@ -204,7 +204,7 @@ Let's try to add another method, to se if it gets listed...
   ...
   ... <?xml version='1.0'?>
   ... <methodCall>
-  ... <methodName>listAllMethods</methodName>
+  ... <methodName>listMethods</methodName>
   ... <params>
   ... </params>
   ... </methodCall>
