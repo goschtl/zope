@@ -39,6 +39,15 @@ PluggableAuthService changelog
     - Interfaces used by PAS are now usable in both Zope 2.7 and 2.8
       (Five compatible)
 
+  PluggableAuthService 1.0.5 (2005/01/31)
+
+    Bugs Fixed
+
+      - Simplified detection of the product directory using 'package_home'.
+
+      - Set a default value for the 'login' attribute of a PAS, to avoid
+        UnboundLocalError.
+
   PluggableAuthService 1.0.4 (2005/01/27)
 
     Features Added
