@@ -63,6 +63,11 @@
 
   <!-- WikiPage browser configuration -->
 
+  <browser:containerViews
+      for="zwiki.interfaces.IWikiPage"
+      add="zwiki.CommentWikiPage"
+      />
+
   <browser:addform
       label="Add Wiki Page"
       name="AddWikiPage.html"
@@ -142,7 +147,7 @@
       name="AddComment.html"
       schema="zwiki.interfaces.IComment"
       content_factory="zwiki.comment.Comment"
-      permission="zwiki.AddWikiPage"
+      permission="zwiki.CommentWikiPage"
       fields="title source type"
       class=".wikipage.AddComment" />
 
@@ -150,7 +155,7 @@
       class="zwiki.comment.Comment"
       title="Comment"
       description="A Comment"
-      permission="zwiki.AddWikiPage"
+      permission="zwiki.CommentWikiPage"
       view="AddComment.html" />
 
   <!-- Make a special WikiPage menu -->
