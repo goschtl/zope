@@ -11,7 +11,8 @@
       permission="zope.Public"
       template="unauthorized.pt"
       class="zope.app.exception.browser.unauthorized.Unauthorized"
-      layer="debug" />
+      layer="debug" 
+      />
 
   <page 
       name="index.html"
@@ -19,6 +20,21 @@
       for="zope.interface.common.interfaces.IException"
       class=".exceptions.ExceptionDebugView"
       permission="zope.Public"
-      layer="debug" />
+      layer="debug" 
+      />
+
+  <!-- Need to repeat for NotFound to override default view -->
+  <!-- There is a functional test for NotFound. Did it really
+       mean to test the IException registration?
+        --> 
+  <page 
+      name="index.html"
+      template="error_debug.pt"
+      for="zope.publisher.interfaces.INotFound"
+      class=".exceptions.ExceptionDebugView"
+      permission="zope.Public"
+      layer="debug" 
+      />
+
 
 </configure>

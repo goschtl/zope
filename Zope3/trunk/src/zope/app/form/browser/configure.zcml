@@ -268,6 +268,30 @@
       permission="zope.Public"
       />
 
+  <!-- 
+
+       Need to repeat the above for Sequence to avoid being overridden by a
+       DAV widget.  This suggests that we should be getting something
+       more specific than IInputWidget.
+
+       -->
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.ISequence"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".CollectionDisplayWidget"
+      permission="zope.Public"
+      />
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.ISequence"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".CollectionInputWidget"
+      permission="zope.Public"
+      />
+
+
+
   <!-- non-choice collection fields should register for the field + value type
        so as to allow specific field + value_type widgets such as the Choice
        pattern -->
