@@ -149,6 +149,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fix: OnlineHelp source files and textual resources now
+        use UTF-8 as default encoding.
+
       - Fixed issue #455: tal:content="" does not get translated
         by i18n:translate=""
 

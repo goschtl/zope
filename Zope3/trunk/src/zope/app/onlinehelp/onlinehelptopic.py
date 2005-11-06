@@ -36,8 +36,10 @@ from zope.app.onlinehelp.interfaces import IZPTOnlineHelpTopic
 from zope.app.onlinehelp.interfaces import IOnlineHelpResource
 
 
+DEFAULT_ENCODING = "utf-8"
+
 class OnlineHelpResource(Persistent):
-    """
+    r"""
     Represents a resource that is used inside
     the rendered Help Topic - for example a screenshot.
 
@@ -57,14 +59,19 @@ class OnlineHelpResource(Persistent):
     'text/plain'
     >>> resource._fileMode
     'r'
+    >>> resource.data.splitlines()[0]
+    u'This is another help!'
+    >>> u'\u0444\u0430\u0439\u043b' in resource.data
+    True
     """
     implements(IOnlineHelpResource)
 
     def __init__(self, path='', contentType=''):
         self.path = path
         _data = open(os.path.normpath(self.path), 'rb').read()
-        self._size=len(path)
+        self._size = len(_data)
         self._fileMode = 'rb'
+        self._encoding = DEFAULT_ENCODING
 
         if contentType=='':
             content_type, encoding = guess_content_type(self.path, _data, '')
@@ -75,9 +82,14 @@ class OnlineHelpResource(Persistent):
 
         if self.contentType.startswith('text/'):
             self._fileMode = 'r'
+            if encoding:
+                self._encoding = encoding
 
     def _getData(self):
-        return open(os.path.normpath(self.path), self._fileMode).read()
+        data = open(os.path.normpath(self.path), self._fileMode).read()
+        if self.contentType.startswith('text/'):
+            data = unicode(data, self._encoding)
+        return data
 
     data = property(_getData)
 
@@ -171,7 +183,8 @@ class SourceTextOnlineHelpTopic(BaseOnlineHelpTopic):
     type = None
 
     def _getSource(self):
-        return open(os.path.normpath(self.path)).read()
+        source = open(os.path.normpath(self.path)).read()
+        return unicode(source, DEFAULT_ENCODING)
 
     source = property(_getSource)
 
@@ -213,7 +226,7 @@ class OnlineHelpTopic(SourceTextOnlineHelpTopic, SampleContainer):
     Test the help content.
 
       >>> topic.source
-      'This is a help!'
+      u'This is a help!'
 
       >>> path = os.path.join(testdir(), 'help.stx')
       >>> topic = OnlineHelpTopic('help','Help',path,'')
@@ -271,7 +284,7 @@ class OnlineHelpTopic(SourceTextOnlineHelpTopic, SampleContainer):
 
 
 class RESTOnlineHelpTopic(SourceTextOnlineHelpTopic):
-    """
+    r"""
     Represents a restructed text based Help Topic which has other
     filename extension then '.rst' or 'rest'.
 
@@ -302,8 +315,10 @@ class RESTOnlineHelpTopic(SourceTextOnlineHelpTopic):
 
     Test the help content.
 
-      >>> topic.source
-      'This is a ReST help!'
+      >>> topic.source.splitlines()[0]
+      u'This is a ReST help!'
+      >>> u'\u0444\u0430\u0439\u043b' in topic.source
+      True
 
     Resources can be added to an online help topic.
 
@@ -318,14 +333,9 @@ class RESTOnlineHelpTopic(SourceTextOnlineHelpTopic):
 
     type = 'zope.source.rest'
 
-    def __init__(self, id, title, path, parentPath, interface=None, view=None):
-        """Initialize object."""
-        super(RESTOnlineHelpTopic, self).__init__(id, title, path, parentPath,
-              interface, view)
-
 
 class STXOnlineHelpTopic(SourceTextOnlineHelpTopic):
-    """
+    r"""
     Represents a restructed text based Help Topic which has other
     filename extension then '.stx'.
 
@@ -356,8 +366,10 @@ class STXOnlineHelpTopic(SourceTextOnlineHelpTopic):
 
     Test the help content.
 
-      >>> topic.source
-      'This is a STX help!'
+      >>> topic.source.splitlines()[0]
+      u'This is a STX help!'
+      >>> u'\u0444\u0430\u0439\u043b' in topic.source
+      True
 
     Resources can be added to an online help topic.
 
@@ -371,11 +383,6 @@ class STXOnlineHelpTopic(SourceTextOnlineHelpTopic):
     implements(ISTXOnlineHelpTopic)
 
     type = 'zope.source.stx'
-
-    def __init__(self, id, title, path, parentPath, interface=None, view=None):
-        """Initialize object."""
-        super(STXOnlineHelpTopic, self).__init__(id, title, path, parentPath,
-              interface, view)
 
 
 class ZPTOnlineHelpTopic(BaseOnlineHelpTopic):
@@ -416,7 +423,9 @@ class ZPTOnlineHelpTopic(BaseOnlineHelpTopic):
       >>> request = TestRequest()
       >>> view = TestView(topic, request)
       >>> res = view.index()
-      >>> str(res).find('<body>This is a ZPT help!</body>') > 0
+      >>> u'<span>This is a ZPT help!</span>' in res
+      True
+      >>> u'\u0444\u0430\u0439\u043b' in res
       True
 
     Resources can be added to an online help topic.
@@ -429,11 +438,6 @@ class ZPTOnlineHelpTopic(BaseOnlineHelpTopic):
     """
 
     implements(IZPTOnlineHelpTopic)
-
-    def __init__(self, id, title, path, parentPath, interface=None, view=None):
-        """Initialize object."""
-        super(ZPTOnlineHelpTopic, self).__init__(id, title, path, parentPath,
-              interface, view)
 
 
 def OnlineHelpTopicFactory(name, schema, label, permission, layer,
