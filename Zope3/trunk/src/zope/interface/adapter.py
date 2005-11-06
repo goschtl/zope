@@ -51,7 +51,7 @@ $Id$
 #   'name' is a unicode adapter name.  Unnamed adapters have an empty
 #   name.
 
-#   'specification' is the interface being adapted to.
+#   'specification' is the interface being adapted to, the provided interface.
 
 #   'factories' is normally a tuple of factories, but can be anything.
 #   (See the "raw" option to the query-adapter calls.)  For subscription
@@ -172,6 +172,7 @@ class Surrogate(object):
         # override less-specific data.
         ancestors.reverse()
         for ancestor in ancestors:
+            ancestor_spec = ancestor.spec()
             
             for key, v in ancestor.selfImplied.iteritems():
 
@@ -206,8 +207,20 @@ class Surrogate(object):
                     if not oldbyname:
                         implied[key] = oldbyname = {}
 
+                        
                     # v is {name -> {with -> ?}}
                     for name, withobs in v.iteritems():
+
+                        # withobs is {with -> value}
+
+                        # If ancestor is not the default, 
+                        # add in ancestor so we can get ordering right
+                        if ancestor_spec is not Default:
+                            withobs = dict([
+                                (((ancestor_spec,) + with), value)
+                                for (with, value) in withobs.iteritems()
+                                ])
+                        
                         oldwithobs = oldbyname.get(name)
                         if not oldwithobs:
                             oldwithobs = oldbyname[name] = {}
@@ -227,8 +240,8 @@ class Surrogate(object):
                     for name, value in byname.iteritems():
                         if isinstance(value, dict):
                             # We have {with -> value}
-                            # convert it to sorted [(with, value]
-                            byname[name] = orderwith(value)
+                            # convert it to [(with, value]
+                            byname[name] = value.items()
 
         self.get = implied.get
 
@@ -287,32 +300,6 @@ class Surrogate(object):
     def __repr__(self):
         return '<%s(%s)>' % (self.__class__.__name__, self.spec())
 
-def orderwith(bywith):
-
-    # Convert {with -> adapter} to withs, [(with, value)]
-    # such that there are no i, j, i < j, such that
-    #           withs[j][0] extends withs[i][0].
-
-    withs = []
-    for with, value in bywith.iteritems():
-        for i, (w, v) in enumerate(withs):
-            if withextends(with, w):
-                withs.insert(i, (with, value))
-                break
-        else:
-            withs.append((with, value))
-            
-    return withs
-    
-
-def withextends(with1, with2):
-    for spec1, spec2 in zip(with1, with2):
-        if spec1.extends(spec2):
-            return True
-        if spec1 != spec2:
-            break
-    return False
-
 
 class AdapterLookup(object):
     # Adapter lookup support
@@ -362,42 +349,45 @@ class AdapterLookup(object):
 
         # Multi adapter
 
-        with = required[1:]
+        with = required
         key = provided, order
 
         for surrogate in self.get(required[0]), self._default:
             byname = surrogate.get(key)
-            if not byname:
-                continue
+            if byname:
+                bywith = byname.get(name)
+                if bywith:
+                    # Selecting multi-adapters is not just a matter of
+                    # matching the required interfaces of the adapter
+                    # to the ones passed. Several adapters might
+                    # match, but we only want the best one. We use a
+                    # ranking algorithm to determine the best match.
+                    # `best` carries the rank and value of the best
+                    # found adapter.
+                    best = None
+                    for rwith, value in bywith:
+                        # the `rank` describes how well the found
+                        # adapter matches.
+                        rank = []
+                        for rspec, spec in zip(rwith, with):
+                            if not spec.isOrExtends(rspec):
+                                break # This one is no good
 
-            bywith = byname.get(name)
-            if not bywith:
-                continue
+                            # Determine the rank of this particular
+                            # specification.
+                            rank.append(list(spec.__sro__).index(rspec))
+                        else:
+                            # If the new rank is better than the best
+                            # previously recorded one, make the new
+                            # adapter the best one found.
+                            rank = tuple(rank)
+                            if best is None or rank < best[0]:
+                                best = rank, value
+                    # If any match was found, return the best one.
+                    if best:
+                        return best[1]
 
-            # Selecting multi-adapters is not just a matter of matching the
-            # required interfaces of the adapter to the ones passed. Several
-            # adapters might match, but we only want the best one. We use a
-            # ranking algorithm to determine the best match.
-
-            # `best` carries the rank and value of the best found adapter.
-            best = None
-            for rwith, value in bywith:
-                # the `rank` describes how well the found adapter matches.
-                rank = []
-                for rspec, spec in zip(rwith, with):
-                    if not spec.isOrExtends(rspec):
-                        break # This one is no good
-                    # Determine the rank of this particular specification.
-                    rank.append(list(spec.__sro__).index(rspec))
-                else:
-                    # If the new rank is better than the best previously
-                    # recorded one, make the new adapter the best one found. 
-                    rank = tuple(rank)
-                    if best is None or rank < best[0]:
-                        best = rank, value
-            # If any match was found, return the best one.
-            if best:
-                return best[1]
+            with = with[1:] # on second pass through, don't use first spec
 
         return default
 
@@ -584,41 +574,45 @@ class AdapterRegistry(object):
 
         # Multi adapter
 
-        with = required[1:]
+        with = required
         key = provided, order
         first = ()
 
         for surrogate in self.get(required[0]), self._default:
             byname = surrogate.get(key)
-            if not byname:
-                continue
+            if byname:
+                for name, bywith in byname.iteritems():
+                    if not bywith or name in first:
+                        continue
 
-            for name, bywith in byname.iteritems():
-                if not bywith or name in first:
-                    continue
+                    # See comments on lookup() above
+                    best  = None
+                    for rwith, value in bywith:
+                        # the `rank` describes how well the found
+                        # adapter matches.
+                        rank = []
+                        for rspec, spec in zip(rwith, with):
+                            if not spec.isOrExtends(rspec):
+                                break # This one is no good
+                            
+                            # Determine the rank of this particular
+                            # specification.
+                            rank.append(list(spec.__sro__).index(rspec))
+                        else:
+                            # If the new rank is better than the best
+                            # previously recorded one, make the new
+                            # adapter the best one found.
+                            rank = tuple(rank)
+                            if best is None or rank < best[0]:
+                                best = rank, value
 
-                # See comments on lookup() above
-                best  = None
-                for rwith, value in bywith:
-                    # the `rank` describes how well the found adapter matches.
-                    rank = []
-                    for rspec, spec in zip(rwith, with):
-                        if not spec.isOrExtends(rspec):
-                            break # This one is no good
-                        # Determine the rank of this particular specification.
-                        rank.append(list(spec.__sro__).index(rspec))
-                    else:
-                        # If the new rank is better than the best previously
-                        # recorded one, make the new adapter the best one found.
-                        rank = tuple(rank)
-                        if best is None or rank < best[0]:
-                            best = rank, value
+                    # If any match was found, return the best one.
+                    if best:
+                        yield name, best[1]
 
-                # If any match was found, return the best one.
-                if best:
-                    yield name, best[1]
+                first = byname
 
-            first = byname
+            with = with[1:] # on second pass through, don't use first spec
 
     def subscribe(self, required, provided, value):
         if required:
