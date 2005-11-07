@@ -149,6 +149,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed bug 396, http://www.zope.org/Collectors/Zope3-dev/396.
+        When doing multi-adapter lookups, the interface of the first
+        object wan't given adequate weight.
+
       - Fix: OnlineHelp source files and textual resources now
         use UTF-8 as default encoding.
 
