@@ -168,7 +168,7 @@ class DummyCounterChallenger( DummyChallenger ):
         self.count += 1
         return True
 
-class FauxRequest:
+class FauxRequest( object ):
 
     def __init__( self, steps=(), **kw ):
 
@@ -475,7 +475,8 @@ class PluggableAuthServiceTests( unittest.TestCase
         plugins.activatePlugin( IExtractionPlugin, 'login' )
         plugins.activatePlugin( IAuthenticationPlugin, 'login' )
 
-        request = FauxRequest( form={ 'login' : 'foo', 'password' : 'bar' } )
+        request = self._makeRequest( form={ 'login' : 'foo'
+                                          , 'password' : 'bar' } )
 
         user_ids = zcuf._extractUserIds( request=request
                                        , plugins=zcuf.plugins
@@ -511,7 +512,8 @@ class PluggableAuthServiceTests( unittest.TestCase
         plugins.activatePlugin( IAuthenticationPlugin, 'always' )
         plugins.activatePlugin( IAuthenticationPlugin, 'login' )
 
-        request = FauxRequest( form={ 'login' : 'foo', 'password' : 'bar' } )
+        request = self._makeRequest( form={ 'login' : 'foo'
+                                          , 'password' : 'bar' } )
 
         user_ids = zcuf._extractUserIds( request=request
                                        , plugins=zcuf.plugins
@@ -550,7 +552,8 @@ class PluggableAuthServiceTests( unittest.TestCase
         plugins.activatePlugin( IAuthenticationPlugin, 'extra' )
         plugins.activatePlugin( IAuthenticationPlugin, 'login' )
 
-        request = FauxRequest( form={ 'login' : 'foo', 'password' : 'bar' } )
+        request = self._makeRequest( form={ 'login' : 'foo'
+                                          , 'password' : 'bar' } )
 
         user_ids = zcuf._extractUserIds( request=request
                                        , plugins=zcuf.plugins
@@ -596,7 +599,8 @@ class PluggableAuthServiceTests( unittest.TestCase
         plugins.activatePlugin( IExtractionPlugin, 'login' )
         plugins.activatePlugin( IAuthenticationPlugin, 'login' )
 
-        request = FauxRequest( form={ 'login' : 'foo', 'password' : 'bar' } )
+        request = self._makeRequest( form={ 'login' : 'foo'
+                                          , 'password' : 'bar' } )
 
         user_ids = zcuf._extractUserIds( request=request
                                        , plugins=zcuf.plugins
@@ -633,8 +637,8 @@ class PluggableAuthServiceTests( unittest.TestCase
 
         plugins.activatePlugin( IExtractionPlugin, 'borked' )
 
-        request = FauxRequest( form={ 'login' : eu.getUserName()
-                                    , 'password' : eu._getPassword() } )
+        request = self._makeRequest( form={ 'login' : eu.getUserName()
+                                          , 'password' : eu._getPassword() } )
 
         user_ids = zcuf._extractUserIds( request=request
                                        , plugins=zcuf.plugins
@@ -672,7 +676,8 @@ class PluggableAuthServiceTests( unittest.TestCase
         plugins.activatePlugin( IAuthenticationPlugin, 'borked' )
         plugins.activatePlugin( IAuthenticationPlugin, 'login' )
 
-        request = FauxRequest( form={ 'login' : 'foo', 'password' : 'bar' } )
+        request = self._makeRequest( form={ 'login' : 'foo'
+                                          , 'password' : 'bar' } )
 
         user_ids = zcuf._extractUserIds( request=request
                                        , plugins=zcuf.plugins
@@ -684,7 +689,7 @@ class PluggableAuthServiceTests( unittest.TestCase
     def test__getObjectContext_no_steps( self ):
 
         zcuf = self._makeOne()
-        request = FauxRequest( (), RESPONSE=FauxResponse() )
+        request = self._makeRequest( (), RESPONSE=FauxResponse() )
 
         self.assertRaises( FauxNotFoundError
                          , zcuf._getObjectContext, zcuf, request )
@@ -697,10 +702,10 @@ class PluggableAuthServiceTests( unittest.TestCase
 
         local_index = FauxObject( 'index_html' ).__of__( object )
 
-        request = FauxRequest( ( 'folder', 'object', 'index_html' )
-                             , RESPONSE=FauxResponse()
-                             , PARENTS=[ object, folder, root ]
-                             )
+        request = self._makeRequest( ( 'folder', 'object', 'index_html' )
+                                   , RESPONSE=FauxResponse()
+                                   , PARENTS=[ object, folder, root ]
+                                   )
 
         published = local_index
 
@@ -719,10 +724,10 @@ class PluggableAuthServiceTests( unittest.TestCase
 
         acquired_index = FauxObject( 'index_html' ).__of__( folder )
 
-        request = FauxRequest( ( 'folder', 'object', 'index_html' )
-                             , RESPONSE=FauxResponse()
-                             , PARENTS=[ object, folder, root ]
-                             )
+        request = self._makeRequest( ( 'folder', 'object', 'index_html' )
+                                   , RESPONSE=FauxResponse()
+                                   , PARENTS=[ object, folder, root ]
+                                   )
 
         published = acquired_index.__of__( object )
 
@@ -741,10 +746,10 @@ class PluggableAuthServiceTests( unittest.TestCase
 
         acquired_index = FauxObject( 'index_html' ).__of__( root )
 
-        request = FauxRequest( ( 'folder', 'object', 'index_html' )
-                             , RESPONSE=FauxResponse()
-                             , PARENTS=[ object, folder, root ]
-                             )
+        request = self._makeRequest( ( 'folder', 'object', 'index_html' )
+                                   , RESPONSE=FauxResponse()
+                                   , PARENTS=[ object, folder, root ]
+                                   )
 
         published = acquired_index.__of__( object )
 
@@ -764,10 +769,10 @@ class PluggableAuthServiceTests( unittest.TestCase
 
         acquired_index = FauxObject( 'index_html' ).__of__( rc )
 
-        request = FauxRequest( ( 'folder', 'object', 'index_html' )
-                             , RESPONSE=FauxResponse()
-                             , PARENTS=[ object, folder, root ]
-                             )
+        request = self._makeRequest( ( 'folder', 'object', 'index_html' )
+                                   , RESPONSE=FauxResponse()
+                                   , PARENTS=[ object, folder, root ]
+                                   )
 
         published = acquired_index.__of__( object )
 
@@ -1300,12 +1305,13 @@ class PluggableAuthServiceTests( unittest.TestCase
         index.__roles__ = ( 'Hamlet', )
         acquired_index = index.__of__( root ).__of__( object )
 
-        request = FauxRequest( ( 'folder', 'object', 'index_html' )
-                             , RESPONSE=FauxResponse()
-                             , PARENTS=[ object, folder, root ]
-                             , PUBLISHED=acquired_index
-                             , form={ 'login' : 'foo', 'password' : 'bar' }
-                             )
+        request = self._makeRequest( ( 'folder', 'object', 'index_html' )
+                                   , RESPONSE=FauxResponse()
+                                   , PARENTS=[ object, folder, root ]
+                                   , PUBLISHED=acquired_index
+                                   , form={ 'login' : 'foo'
+                                          , 'password' : 'bar' }
+                                   )
 
 
         wrapped = zcuf.__of__( root )
@@ -1347,12 +1353,12 @@ class PluggableAuthServiceTests( unittest.TestCase
         index.__roles__ = ( 'Anonymous', )
         acquired_index = index.__of__( root ).__of__( object )
 
-        request = FauxRequest( ( 'folder', 'object', 'index_html' )
-                             , RESPONSE=FauxResponse()
-                             , PARENTS=[ object, folder, root ]
-                             , PUBLISHED=acquired_index
-                             , form={}
-                             )
+        request = self._makeRequest( ( 'folder', 'object', 'index_html' )
+                                   , RESPONSE=FauxResponse()
+                                   , PARENTS=[ object, folder, root ]
+                                   , PUBLISHED=acquired_index
+                                   , form={}
+                                   )
 
 
         wrapped = zcuf.__of__( root )
@@ -1396,14 +1402,14 @@ class PluggableAuthServiceTests( unittest.TestCase
         index.__roles__ = ( 'Hamlet', )
         acquired_index = index.__of__( root ).__of__( object )
 
-        request = FauxRequest( ( 'folder', 'object', 'index_html' )
-                             , RESPONSE=FauxResponse()
-                             , PARENTS=[ object, folder, root ]
-                             , PUBLISHED=acquired_index.__of__( object )
-                             , form={ 'login' : 'olivier'
-                                    , 'password' : 'arras'
-                                    }
-                             )
+        request = self._makeRequest( ( 'folder', 'object', 'index_html' )
+                                   , RESPONSE=FauxResponse()
+                                   , PARENTS=[ object, folder, root ]
+                                   , PUBLISHED=acquired_index.__of__( object )
+                                   , form={ 'login' : 'olivier'
+                                          , 'password' : 'arras'
+                                          }
+                                   )
 
 
         wrapped = zcuf.__of__( root )
@@ -1441,12 +1447,12 @@ class PluggableAuthServiceTests( unittest.TestCase
         index.__roles__ = ( 'Anonymous', )
         acquired_index = index.__of__( root ).__of__( object )
 
-        request = FauxRequest( ( 'folder', 'object', 'index_html' )
-                             , RESPONSE=FauxResponse()
-                             , PARENTS=[ object, folder, root ]
-                             , PUBLISHED=acquired_index
-                             , form={}
-                             )
+        request = self._makeRequest( ( 'folder', 'object', 'index_html' )
+                                   , RESPONSE=FauxResponse()
+                                   , PARENTS=[ object, folder, root ]
+                                   , PUBLISHED=acquired_index
+                                   , form={}
+                                   )
 
         root._setObject( 'acl_users', zcuf )
         root_users = root.acl_users
@@ -1598,7 +1604,7 @@ class PluggableAuthServiceTests( unittest.TestCase
         plugins = self._makePlugins()
         zcuf = self._makeOne(plugins)
         response = FauxResponse()
-        request = FauxRequest(RESPONSE=response)
+        request = self._makeRequest(RESPONSE=response)
         zcuf.REQUEST = request
 
         # First call the userfolders before_traverse hook, to set things up:
@@ -1621,7 +1627,7 @@ class PluggableAuthServiceTests( unittest.TestCase
         plugins.activatePlugin( IChallengePlugin, 'challenger' )
 
         response = FauxResponse()
-        request = FauxRequest(RESPONSE=response)
+        request = self._makeRequest(RESPONSE=response)
         zcuf.REQUEST = request
 
         # First call the userfolders before_traverse hook, to set things up:
@@ -1641,7 +1647,7 @@ class PluggableAuthServiceTests( unittest.TestCase
              import IChallengePlugin
         rc, root, folder, object = self._makeTree()
         response = FauxResponse()
-        request = FauxRequest(RESPONSE=response)
+        request = self._makeRequest(RESPONSE=response)
         root.REQUEST =  request
 
         plugins = self._makePlugins()
@@ -1703,7 +1709,7 @@ class PluggableAuthServiceTests( unittest.TestCase
         plugins.activatePlugin( IChallengePlugin, 'rudolph' )
 
         response = FauxResponse()
-        request = FauxRequest(RESPONSE=response)
+        request = self._makeRequest(RESPONSE=response)
         zcuf.REQUEST = request
 
         # First call the userfolders before_traverse hook, to set things up:
@@ -1732,7 +1738,7 @@ class PluggableAuthServiceTests( unittest.TestCase
         plugins.activatePlugin( IChallengePlugin, 'counter' )
 
         response = FauxResponse()
-        request = FauxRequest(RESPONSE=response)
+        request = self._makeRequest(RESPONSE=response)
         zcuf.REQUEST = request
 
         zcuf(self, request)
@@ -1763,7 +1769,7 @@ class PluggableAuthServiceTests( unittest.TestCase
         plugins.activatePlugin(ICredentialsResetPlugin, 'creds')
 
         response = FauxResponse()
-        request = FauxRequest(RESPONSE=response)
+        request = self._makeRequest(RESPONSE=response)
         zcuf.REQUEST = request
 
         # Put a user in the credentials store
