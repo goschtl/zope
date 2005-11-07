@@ -173,3 +173,22 @@ class IRequestTypeSniffer_conformance:
             import IRequestTypeSniffer
 
         verifyClass( IRequestTypeSniffer, self._getTargetClass() )
+
+class IUserFolder_conformance:
+
+    def test_conformance_IUserFolder( self ):
+
+        from Products.PluggableAuthService.interfaces.authservice \
+            import IUserFolder
+
+        verifyClass( IUserFolder, self._getTargetClass() )
+
+
+class IPropertySheet_conformance:
+
+    def test_conformance_IPropertySheet( self ):
+
+        from Products.PluggableAuthService.interfaces.propertysheets \
+            import IPropertySheet
+
+        verifyClass( IPropertySheet, self._getTargetClass() )

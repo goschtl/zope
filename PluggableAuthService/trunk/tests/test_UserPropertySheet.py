@@ -15,7 +15,11 @@
 import unittest
 from DateTime.DateTime import DateTime
 
-class UserPropertySheetTests( unittest.TestCase ):
+from conformance import IPropertySheet_conformance
+
+class UserPropertySheetTests( unittest.TestCase
+                            , IPropertySheet_conformance
+                            ):
 
     _SCHEMA = ( ( 's', 'string'  )
               , ( 'i', 'int'     )
@@ -44,15 +48,6 @@ class UserPropertySheetTests( unittest.TestCase ):
     def _makeOne( self, *args, **kw ):
 
         return self._getTargetClass()( *args, **kw )
-
-    def test_conformance_IPropertySheet( self ):
-
-        from Products.PluggableAuthService.interfaces.propertysheets \
-            import IPropertySheet
-
-        from Interface.Verify import verifyClass
-
-        verifyClass( IPropertySheet, self._getTargetClass() )
 
     def test_ctor_id_noscehma_novalues( self ):
 

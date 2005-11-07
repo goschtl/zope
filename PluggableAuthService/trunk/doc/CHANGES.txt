@@ -2,42 +2,52 @@ PluggableAuthService changelog
 
   After PluggableAuthService 1.1b2
 
-    - Made ZODBRoleManager plugin check grants to the principal's groups,
-      as well as those made to the principal directly.
+    New Features
 
-    - Repaired unit test breakage (unittest.TestCase instances have
-      'failUnless'/'failIf', rather than 'assertTrue'/'assertFalse').
+      - Made ZODBRoleManager plugin check grants to the principal's groups,
+        as well as those made to the principal directly.
 
-    - Added two new interfaces, IChallengeProtocolChooser and
-      IRequestTypeSniffer. Those are used to select the 'authorization
-      protocol' or 'challenger protocol' to be used for challenging
-      according to the incoming request type.
+      - Added two new interfaces, IChallengeProtocolChooser and
+        IRequestTypeSniffer. Those are used to select the 'authorization
+        protocol' or 'challenger protocol' to be used for challenging
+        according to the incoming request type.
 
-    - Fixed a couple more places where Zope 2-style ``__implements__``
-      where being used to standardize on using ``classImplements``.
+    Bugs Fixed
 
-    - Fixed fallback implementations of ``providedBy`` and
-      ``implementedBy`` to always return a tuple.
+      - Repaired DeprecationWarnings due to use of Zope2 interface verification.
 
-    - Make sure challenge doesn't break if existing instances of the
-      PluginRegistry don't yet have ``IChallengeProtocolChooser`` as a
-      registered interface. (Would be nice to have some sort of
-      migration for the PluginRegistry between PAS releases)
+      - Repaired unit test breakage (unittest.TestCase instances have
+        'failUnless'/'failIf', rather than 'assertTrue'/'assertFalse').
 
-    - Don't assume that just because zope.interface can be imported
-      that Five is present.
+      - Fixed a couple more places where Zope 2-style ``__implements__``
+        were being used to standardize on using ``classImplements``.
+
+      - Fixed fallback implementations of ``providedBy`` and
+        ``implementedBy`` to always return a tuple.
+
+      - Make sure challenge doesn't break if existing instances of the
+        PluginRegistry don't yet have ``IChallengeProtocolChooser`` as a
+        registered interface. (Would be nice to have some sort of
+        migration for the PluginRegistry between PAS releases)
+
+      - Don't assume that just because zope.interface can be imported
+        that Five is present.
 
   PluggableAuthService 1.1b2 (2005/07/14)
 
-    - Missed a 'nocall:' in the Interfaces activation form.
+    Bugs Fixed
+
+      - Repaired a missing 'nocall:' in the Interfaces activation form.
 
   PluggableAuthService 1.1b1 (2005/07/06)
 
-    - PAS-level id mangling is no more. All (optional) mangling is now
-      done on a per-plugin basis.
+    New Features
 
-    - Interfaces used by PAS are now usable in both Zope 2.7 and 2.8
-      (Five compatible)
+      - PAS-level id mangling is no more. All (optional) mangling is now
+        done on a per-plugin basis.
+
+      - Interfaces used by PAS are now usable in both Zope 2.7 and 2.8
+        (Five compatible)
 
   PluggableAuthService 1.0.5 (2005/01/31)
 

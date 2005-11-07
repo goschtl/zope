@@ -24,6 +24,8 @@ from zExceptions import Unauthorized, Redirect
 
 from Products.PluggableAuthService.utils import directlyProvides
 
+from conformance import IUserFolder_conformance
+
 class DummyPlugin(Implicit):
     pass
 
@@ -322,11 +324,28 @@ def _authExtra( credentials ):
     return ( credentials.get( 'salt' ) == 'pepper'
          and (credentials[ 'user' ], credentials[ 'user' ]) or None )
 
-class PluggableAuthServiceTests( unittest.TestCase ):
+class RequestCleaner:
+
+    _request = None
+
+    def _makeRequest( self, *args, **kw ):
+        request = self._request = FauxRequest( *args, **kw )
+        return request
+
+    def _clearRequest( self ):
+        if self._request is not None:
+            self._request._held = []
+
+class PluggableAuthServiceTests( unittest.TestCase
+                               , IUserFolder_conformance
+                               , RequestCleaner
+                               ):
 
     _oldSecurityPolicy = None
 
     def tearDown( self ):
+
+        self._clearRequest()
 
         if self._oldSecurityPolicy is not None:
             setSecurityPolicy( self._oldSecurityPolicy )
@@ -421,15 +440,6 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         cp = klass(id)
         directlyProvides( cp, IChallengePlugin )
         return cp
-
-    def test_conformance_IUserFolder( self ):
-
-        from Products.PluggableAuthService.interfaces.authservice \
-            import IUserFolder
-
-        from Interface.Verify import verifyClass
-
-        verifyClass( IUserFolder, self._getTargetClass() )
 
     def test_empty( self ):
 
