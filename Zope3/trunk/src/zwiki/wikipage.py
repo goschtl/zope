@@ -46,7 +46,7 @@ HierarchyKey = 'http://www.zope.org/zwiki#1.0/PageHierarchy/parents'
 SubscriberKey = 'http://www.zope.org/zwiki#1.0/MailSubscriptions/emails'
 
 
-class WikiPage(BTreeContainer, Contained):
+class WikiPage(BTreeContainer):
     """A persistent Wiki Page implementation."""
 
     implements(IWikiPage, IWikiContained)

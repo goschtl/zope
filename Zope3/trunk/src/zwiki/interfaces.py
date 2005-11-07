@@ -20,11 +20,9 @@ $Id$
 from zope.interface import Interface
 from zope.schema import TextLine, List, SourceText, Choice
 
-from zope.schema import Field
 from zope.app.container.interfaces import IContained
 from zope.app.container.interfaces import IContainer
-from zope.app.container.constraints import ContainerTypesConstraint
-from zope.app.container.constraints import ItemTypePrecondition
+from zope.app.container.constraints import contains, containers
 from zope.app.event.interfaces import IObjectEvent
 
 from zwiki import ZWikiMessageFactory as _
@@ -63,10 +61,7 @@ class IWikiPage(IContainer):
     (source) and the source type of the wiki page.
     """
 
-    def __setitem__(name, object):
-        """Add a comment object."""
-
-    __setitem__.precondition = ItemTypePrecondition(IComment)
+    contains(IComment)
 
     source = SourceText(
         title=_(u"Source Text"),
@@ -85,8 +80,8 @@ class IWikiPage(IContainer):
 class IWikiPageContained(IContained):
     """Objects that can be contained by Wiki Pages should implement this
     interface."""
-    __parent__ = Field(
-        constraint = ContainerTypesConstraint(IWikiPage))
+
+    containers(IWikiPage)
 
 
 class IWikiPageHierarchy(Interface):
@@ -126,16 +121,13 @@ class IWikiPageHierarchy(Interface):
 class IWiki(IContainer):
     """A simple container that manages Wikis inside itself."""
 
-    def __setitem__(name, object):
-        """Add a wiki page object."""
-
-    __setitem__.precondition = ItemTypePrecondition(IWikiPage)
+    contains(IWikiPage)
 
 
 class IWikiContained(IContained):
     """Objects that contain Wikis should implement this interface."""
-    __parent__ = Field(
-        constraint = ContainerTypesConstraint(IWiki))
+
+    containers(IWiki)
 
 
 class IWikiPageEditEvent(IObjectEvent):
