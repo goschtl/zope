@@ -13,4 +13,8 @@
   <include file="securitypolicy.zcml" />
   <include file="principals.zcml" />
 
+  <!-- Load a "default" i18n domain for debugging purposes
+       production sites shouldn't do this -->
+  <include package="zope.app.i18n.tests" />
+
 </configure>
