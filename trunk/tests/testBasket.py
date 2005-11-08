@@ -299,17 +299,16 @@ class TestEggProductContext(unittest.TestCase):
         from OFS.Folder import Folder
         self.assert_( ('aPermission', (),)  in Folder.__ac_permissions__)
 
-    def test_meta_types_set(self):
+    def test_module_meta_types_munged(self):
         app = DummyApp()
         package = DummyPackage()
         package.meta_types = ( {'name':'grabass', 'action':'amethod'}, )
         context = self._makeOne('DummyProduct', dummy_initializer, app, package)
-        meta_types = []
         data = context.install()
         from OFS.Folder import Folder
-        self.assert_({'action': 'amethod', 'product': 'abaz',
-                       'name': 'grabass', 'visibility': 'Global'}
-                      in meta_types)
+        self.assertEqual(({'action': 'amethod', 'product': 'DummyProduct',
+                          'name': 'grabass', 'visibility': 'Global'},),
+                         package.meta_types)
 
     def test_methods_set(self):
         app = DummyApp()

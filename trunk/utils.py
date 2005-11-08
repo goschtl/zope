@@ -421,7 +421,7 @@ class EggProductContext(object):
         return Z
 
 
-    def set_module_aliases(self):
+    def set_package_module_aliases(self):
         product_pkg = self.package
         if hasattr(product_pkg, '__module_aliases__'):
             for k, v in product_pkg.__module_aliases__:
@@ -430,7 +430,7 @@ class EggProductContext(object):
                         v = sys.modules[v]
                     sys.modules[k] = v
 
-    def set_misc_attrs(self):
+    def set_package_misc_attrs(self):
         # Install items into the misc_ namespace, used by products
         # and the framework itself to store common static resources
         # like icon images.
@@ -440,7 +440,7 @@ class EggProductContext(object):
                 misc_ = Misc_(self.productname, misc_)
             Application.misc_.__dict__[self.productname]=misc_
 
-    def set_ac_permissions(self):
+    def set_package_ac_permissions(self):
         # Support old-old-style product metadata. Older products may
         # define attributes to name their permissions, meta_types,
         # constructors, etc.
@@ -453,7 +453,7 @@ class EggProductContext(object):
             elif not folder_permissions.has_key(permission):
                 self.new_permissions[permission]=()
 
-    def set_meta_types(self):
+    def munge_package_meta_types(self):
         for meta_type in pgetattr(self.package, 'meta_types', ()):
             # Modern product initialization via a ProductContext
             # adds 'product' and 'permission' keys to the meta_type
@@ -461,10 +461,10 @@ class EggProductContext(object):
             pname = self.permissions.get(meta_type['action'], None)
             if pname is not None:
                 meta_type['permission']=pname
-            meta_type['product']=productObject.id
+            meta_type['product']=self.productname
             meta_type['visibility'] = 'Global'
 
-    def set_methods(self):
+    def set_package_methods(self):
         for name, method in pgetattr(self.package, 'methods', {}).items():
             if not hasattr(Folder, name):
                 setattr(Folder, name, method)
@@ -490,12 +490,12 @@ class EggProductContext(object):
         init_data = None
 
         try:
-            self.set_module_aliases()
-            self.set_misc_attrs()
+            self.set_package_module_aliases()
+            self.set_package_misc_attrs()
             init_data = initializer(self)
-            self.set_ac_permissions()
-            self.set_meta_types()
-            self.set_methods()
+            self.set_package_ac_permissions()
+            self.munge_package_meta_types()
+            self.set_package_methods()
 
             if self.new_permissions:
                 new_permissions = self.new_permissions.items()
