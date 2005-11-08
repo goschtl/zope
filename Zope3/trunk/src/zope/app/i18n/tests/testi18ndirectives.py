@@ -52,7 +52,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
                             'locale', 'en',
                             'LC_MESSAGES', 'zope-i18n.mo')
         util = zapi.getUtility(ITranslationDomain, 'zope-i18n')
-        eq(util._catalogs, {'en': [unicode(path)]})
+        eq(util._catalogs, {'test': ['test'], 'en': [unicode(path)]})
 
 
 def test_suite():

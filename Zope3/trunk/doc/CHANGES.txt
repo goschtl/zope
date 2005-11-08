@@ -123,6 +123,11 @@ Zope Changes
         publishers can be prioritized and publishers can introspect the request
         environment to decide if they can handle a request or not.
 
+      - Added "test" message catalog for testing i18n.  If you specify
+        ++lang++test in a URL, then all translated strings will be
+        translates to [[domain][message_id], as in "[[zope][Preview]]".
+        Text without the domain marker isn't translated.
+
     Restructuring
 
       - Mutable MessageIDs have been deprecated and will be removed in

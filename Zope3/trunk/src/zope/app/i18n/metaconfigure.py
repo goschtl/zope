@@ -21,6 +21,7 @@ import os
 
 from zope.app.component.metaconfigure import utility
 from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
+from zope.i18n.testmessagecatalog import TestMessageCatalog
 from zope.i18n.translationdomain import TranslationDomain
 from zope.i18n.interfaces import ITranslationDomain
 
@@ -46,6 +47,11 @@ def registerTranslations(_context, directory):
     # Now create TranslationDomain objects and add them as utilities
     for name, langs in domains.items():
         domain = TranslationDomain(name)
+
         for lang, file in langs.items():
             domain.addCatalog(GettextMessageCatalog(lang, name, file))
+
+        # make sure we have a TEST catalog for each domain:
+        domain.addCatalog(TestMessageCatalog(name))
+
         utility(_context, ITranslationDomain, domain, name=name)
