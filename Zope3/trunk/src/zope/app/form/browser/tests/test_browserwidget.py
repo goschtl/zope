@@ -35,6 +35,7 @@ from zope.schema import Text
 from zope.app.form.browser.tests import support
 import zope.app.form.browser.tests
 
+
 class BrowserWidgetTest(PlacelessSetup,
                         support.VerifyResults,
                         unittest.TestCase):
@@ -104,16 +105,6 @@ class SimpleInputWidgetTest(BrowserWidgetTest):
     def testHint(self):
         self.setUpContent(desc=u'Foo Description')
         self.assertEqual(self._widget.hint, u'Foo Description')
-
-    def testTranslatedLabel(self):
-        path = os.path.dirname(zope.app.form.browser.tests.__file__)
-        catalog = GettextMessageCatalog(
-            'pl', 'zope', os.path.join(path, 'testlabeltranslation.mo'))
-        domain = TranslationDomain('zope')
-        domain.addCatalog(catalog)
-        ztapi.provideUtility(ITranslationDomain, domain, 'zope')
-        ztapi.provideUtility(INegotiator, negotiator)
-        self.assertEqual(self._widget.label, 'oofay itletay')
 
 
 class TestWidget(SimpleInputWidget):

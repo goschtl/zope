@@ -38,14 +38,12 @@ class Widget(object):
         self.request = request
         self.name = self._prefix + context.__name__
 
-    label = property(lambda self: self._translate(
-        self.context.title))
+    label = property(lambda self: self.context.title)
 
-    hint = property(lambda self: self._translate(
-        self.context.description))
+    hint = property(lambda self: self.context.description)
 
     def _translate(self, text):
-        return translate(text, "zope", context=self.request, default=text)
+        return translate(text, context=self.request, default=text)
 
     def _renderedValueSet(self):
         """Returns ``True`` if the the widget's rendered value has been set.
