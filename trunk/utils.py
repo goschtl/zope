@@ -446,7 +446,7 @@ class EggProductContext(object):
         # constructors, etc.
         folder_permissions = get_folder_permissions()
         for p in pgetattr(self.package, '__ac_permissions__', ()):
-            permission, names, default = tuple(p) + ('Manager',)[:3]
+            permission, names, default = (tuple(p) + ('Manager',))[:3]
             if names:
                 for name in names:
                     self.permissions[name] = permission
