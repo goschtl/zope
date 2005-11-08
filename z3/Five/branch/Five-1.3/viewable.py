@@ -48,6 +48,8 @@ class Viewable:
     def __browser_default__(self, request):
         obj = self
         path = None
+        if request['REQUEST_METHOD'] not in ('GET', 'POST'):
+            return obj, [request['REQUEST_METHOD']]
         try:
             obj, path = IBrowserDefault(self).defaultView(request)
         except ComponentLookupError:
