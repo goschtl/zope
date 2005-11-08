@@ -5,6 +5,9 @@ Five Changes
 Five 1.0.3 (...)
 ================
 
+* Fixed bug that broke WebDAV access for five:defaultViewable objects. The
+  __browser_default__ now modifies only GET and POST requests.
+
 * FiveTraversable should only do a view lookup and not call the traverse 
   method of its superclass.
 

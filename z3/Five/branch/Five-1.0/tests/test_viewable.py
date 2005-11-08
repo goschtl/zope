@@ -67,8 +67,14 @@ def test_defaultView():
     """
 
 def test_suite():
+    import unittest
     from Testing.ZopeTestCase import ZopeDocTestSuite
-    return ZopeDocTestSuite()
+    from Testing.ZopeTestCase import FunctionalDocFileSuite
+    return unittest.TestSuite((
+            ZopeDocTestSuite(),
+            FunctionalDocFileSuite('viewable.txt',
+                                   package="Products.Five.tests",),
+            ))
 
 if __name__ == '__main__':
     framework()
