@@ -36,6 +36,15 @@ Restructuring
   components has been removed as that functionality is now in the Zope
   2 core as of Zope 2.9.
 
+Five 1.2 (unreleased)
+=====================
+
+Bugfixes
+--------
+
+* Fixed bug that broke WebDAV access for five:defaultViewable objects. The
+  __browser_default__ now modifies only GET and POST requests.
+
 Five 1.2b (2005-11-02)
 ======================
 

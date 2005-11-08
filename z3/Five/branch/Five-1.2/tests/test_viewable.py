@@ -80,8 +80,14 @@ def test_defaultView():
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import ZopeDocTestSuite
-    return ZopeDocTestSuite()
+    import unittest
+    from Products.Five.testing.doctest import DocTestSuite
+    from Testing.ZopeTestCase import FunctionalDocFileSuite
+    return unittest.TestSuite((
+            DocTestSuite(),
+            FunctionalDocFileSuite('viewable.txt',
+                                   package="Products.Five.tests",),
+            ))
 
 if __name__ == '__main__':
     framework()
