@@ -285,9 +285,6 @@ class Path(schema.Text):
 
     def fromUnicode(self, u):
         u = u.strip()
-        if os.path.isabs(u):
-            return os.path.normpath(u)
-
         return self.context.path(u)
 
 

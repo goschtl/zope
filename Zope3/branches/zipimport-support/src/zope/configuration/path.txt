@@ -1,0 +1,159 @@
+====================================
+Package-relative resource references
+====================================
+
+The `zope.configuration.path` module provides a way to refer to and
+open a file using a package-relative path.  This is especially useful
+for packages imported from ZIP files (including eggs).  Such files are
+considered resources, and may only be opened in read-only mode.
+
+Resource references have a dual personality:  They are both strings
+and objects with interesting non-string methods.  The string behavior
+is intended to help support compatibility for code that was written
+before this API existed, while new code can use the extended API for
+more flexibility.
+
+There are two functions which are used::
+
+  >>> from zope.configuration.path import newReference, openResource
+
+`newReference()` is used to construct a new path reference, and
+`openResource()` is used to open the resource as a file-like object.
+
+`newReference()` takes three arguments: a path, a package, and a base
+path.  Only the first is required; passing `None` for the `package`
+and `basepath` arguments is equivalent to omitting them.
+
+The idea of the resource references is that they can carry along
+additional information that allows them to retain package-relative
+information, so they are most interesting when the `package` argument
+to the constructor is non-`None`.  Let's take a look at what this
+provides::
+
+  >>> import os
+  >>> import zope.configuration
+
+  >>> ref = newReference("path.txt", package=zope.configuration)
+
+If we examine the reference as a string, we get a path that points
+into the package::
+
+  >>> directory = os.path.dirname(zope.configuration.__file__)
+  >>> ref == os.path.join(directory, "path.txt")
+  True
+
+The resource can be opened using the `openResource()` function (which
+also accepts simple strings)::
+
+  >>> f = openResource(ref)
+  >>> f.readline()
+  '====================================\n'
+  >>> f.close()
+
+While this looks little different from using a simple string to refer
+to the resource file, it provides more functionality if the resource
+being referenced is part of a package contained in a ZIP archive.
+Let's add a convenient ZIP file containing a Python package to the
+module search path::
+
+  >>> import sys
+
+  >>> here = os.path.normpath(os.path.dirname(__file__))
+  >>> zipfile = os.path.join(here, "tests", "zippitysample.zip")
+  >>> sys.path.append(zipfile)
+
+We can now import the package contained in the zipfile and load
+resources from it::
+
+  >>> import zippity.sample
+  >>> ref = newReference("configure.zcml", package=zippity.sample)
+
+  >>> f = openResource(ref)
+  >>> f.readline()
+  '<configure\n'
+  >>> f.close()
+
+Note that only read modes are supported::
+
+  >>> openResource(ref, "w")
+  Traceback (most recent call last):
+    ...
+  ValueError: `mode` must be a read-only mode
+
+  >>> openResource(ref, "w+")
+  Traceback (most recent call last):
+    ...
+  ValueError: `mode` must be a read-only mode
+
+  >>> openResource(ref, "a")
+  Traceback (most recent call last):
+    ...
+  ValueError: `mode` must be a read-only mode
+
+  >>> openResource(ref, "a+")
+  Traceback (most recent call last):
+    ...
+  ValueError: `mode` must be a read-only mode
+
+
+Use in ZCML
+-----------
+
+The ZCML loading machinery uses these functions to deal with
+references to files that should be loaded.  This allows including ZCML
+files from ZIP archives using <include/> directives.
+
+Our example ZIP file includes an example ZCML file; let's see how we
+can load it using <include/>::
+
+  >>> from StringIO import StringIO
+  >>> from zope.configuration import config, xmlconfig
+
+  >>> context = config.ConfigurationMachine()
+  >>> xmlconfig.registerCommonDirectives(context)
+
+  >>> f = StringIO('<include package="zippity.sample"/>')
+  >>> xmlconfig.processxmlfile(f, context, testing=True)
+  >>> f.close()
+
+We can now check that the "feature" provided by our sample
+configuration has been defined::
+
+  >>> context.hasFeature("sample")
+  True
+
+We can also include one ZCML file from another in the ZIP archive.
+We'll create a new context so the provided feature is no longer
+known::
+
+  >>> context = config.ConfigurationMachine()
+  >>> xmlconfig.registerCommonDirectives(context)
+
+  >>> context.hasFeature("sample")
+  False
+
+Loading an alternate configuration file that includes the first should
+cause the "sample" feature to be provided::
+
+  >>> f = StringIO('<include package="zippity.sample" file="including.zcml"/>')
+  >>> xmlconfig.processxmlfile(f, context, testing=True)
+  >>> f.close()
+
+  >>> context.hasFeature("sample")
+  True
+
+One oddball feature of the ZCML machinery is that if a ZCML file being
+loaded doesn't exist, but a file of the same name with '.in' appended
+does, that will be loaded instead.  In this example, the sample
+package provides a 'silliness.zcml.in', but we're going to request
+'silliness.zcml'::
+
+  >>> context = config.ConfigurationMachine()
+  >>> xmlconfig.registerCommonDirectives(context)
+
+  >>> f = StringIO('<include package="zippity.sample" file="silliness.zcml"/>')
+  >>> xmlconfig.processxmlfile(f, context, testing=True)
+  >>> f.close()
+
+  >>> context.hasFeature("silliness")
+  True

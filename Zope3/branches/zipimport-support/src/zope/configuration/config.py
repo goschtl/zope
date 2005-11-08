@@ -34,6 +34,7 @@ from zope.interface import Interface, implements, directlyProvides, providedBy
 from zope.interface.interfaces import IInterface
 from zope.schema.interfaces import WrongType
 from zope.configuration import fields
+from zope.configuration.path import newReference
 
 
 zopens = 'http://namespaces.zope.org/zope'
@@ -244,25 +245,12 @@ class ConfigurationContext(object):
         >>> c.path("y/../z") == d + os.path.normpath("/z")
         1
         """
-
-        filename = os.path.normpath(filename)
-        if os.path.isabs(filename):
-            return filename
-
-        # Got a relative path, combine with base path.
-        # If we have no basepath, compute the base path from the package
-        # path.
-
         basepath = getattr(self, 'basepath', '')
-
-        if not basepath:
-            if self.package is None:
-                basepath = os.getcwd()
-            else:
-                basepath = os.path.dirname(self.package.__file__)
-            self.basepath = basepath
-
-        return os.path.join(basepath, filename)
+        if basepath or os.path.isabs(filename):
+            package = getattr(self, 'package', None)
+        else:
+            package = self.package
+        return newReference(filename, package, basepath)
 
     def checkDuplicate(self, filename):
         """Check for duplicate imports of the same file.
@@ -305,7 +293,7 @@ class ConfigurationContext(object):
         Return True if processing is needed and False otherwise. If
         the file needs to be processed, it will be marked as
         processed, assuming that the caller will procces the file if
-        it needs to be procssed.
+        it needs to be processed.
 
         >>> c = ConfigurationContext()
         >>> c.processFile('/foo.zcml')
@@ -392,17 +380,17 @@ class ConfigurationContext(object):
     def hasFeature(self, feature):
         """Check whether a named feature has been provided.
 
-        Initially no features are provided
+        Initially no features are provided:
 
         >>> c = ConfigurationContext()
         >>> c.hasFeature('onlinehelp')
         False
 
-        You can declare that a feature is provided
+        You can declare that a feature is provided:
 
         >>> c.provideFeature('onlinehelp')
 
-        and it becomes available
+        and it becomes available:
 
         >>> c.hasFeature('onlinehelp')
         True

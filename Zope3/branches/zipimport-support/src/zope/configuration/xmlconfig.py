@@ -34,6 +34,7 @@ from xml.sax.handler import ContentHandler, feature_namespaces
 from xml.sax import SAXParseException
 from zope import schema
 from zope.configuration.exceptions import ConfigurationError
+from zope.configuration.path import openResource
 from zope.configuration.zopeconfigure import IZopeConfigure, ZopeConfigure
 from zope.interface import Interface
 
@@ -391,16 +392,17 @@ def openInOrPlain(filename):
 
     """
     try:
-        fp = open(filename)
-    except IOError, (code, msg):
+        fp = openResource(filename)
+    except IOError, e:
+        code, msg = e
         if code == errno.ENOENT:
             fn = filename + ".in"
-            if os.path.exists(fn):
-                fp = open(fn)
-            else:
-                raise
+            try:
+                fp = openResource(fn)
+            except IOError:
+                raise e
         else:
-            raise
+            raise e
     return fp
 
 class IInclude(Interface):

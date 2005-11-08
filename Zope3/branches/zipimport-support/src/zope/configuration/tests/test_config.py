@@ -18,7 +18,7 @@ $Id$
 
 import sys
 import unittest
-from zope.testing.doctestunit import DocTestSuite
+from zope.testing.doctestunit import DocTestSuite, DocFileSuite
 from zope.configuration.config import metans, ConfigurationMachine
 from zope.configuration import config
 
@@ -266,8 +266,18 @@ def test_bad_import():
     ...        del sys.modules[name]
     """
 
+
+def sys_path_setUp(self):
+    self.__old_path = sys.path[:]
+
+def sys_path_tearDown(self):
+    sys.path[:] = self.__old_path
+
+
 def test_suite():
     return unittest.TestSuite((
+        DocFileSuite('../path.txt',
+                     setUp=sys_path_setUp, tearDown=sys_path_tearDown),
         DocTestSuite('zope.configuration.fields'),
         DocTestSuite('zope.configuration.config'),
         DocTestSuite(),
