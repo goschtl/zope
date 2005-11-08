@@ -8,6 +8,7 @@ from Products.Basket.utils import EggProductContext
 from Products.Basket import get_containing_package
 from OFS.ObjectManager import ObjectManager
 from OFS.SimpleItem import SimpleItem
+from OFS.Folder import Folder
 
 here = os.path.dirname(__file__)
 
@@ -17,8 +18,8 @@ class DummyProduct:
 		self.id = id
 
 class DummyPackage:
-	__name__ = 'Products.Basket'
-        __path__ = os.path.split(here)[:-2]
+	__name__ = 'Products.Basket.tests'
+        __path__ = os.path.split(here)[:-1]
 
 class DummyApp(ObjectManager):
 
@@ -27,7 +28,12 @@ class DummyApp(ObjectManager):
 		self.Control_Panel.id = 'Control_Panel'
 		self.Control_Panel.Products = ObjectManager()
 		self.Control_Panel.Products.id = 'Products'
-	
+
+        def _manage_remove_product_meta_type(self, product):
+            # hahahahahaha
+            # hahahahahahahaahaha
+            pass
+
 class DummyProductContext:
 
 	def __init__(self, product_name):
@@ -318,6 +324,53 @@ class TestEggProductContext(unittest.TestCase):
         data = context.install()
         from OFS.Folder import Folder
         self.assertEqual(Folder.amethod.im_func, dummy_initializer)
+
+    def test_create_product_object(self):
+        import Globals
+        app = DummyApp()
+        products = app.Control_Panel.Products
+        package = DummyPackage()
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        product = products.DummyProduct
+        self.assertEqual(product.__class__.__name__, 'EggProduct')
+        self.assertEqual(product.id, 'DummyProduct')
+        self.assertEqual(product.title,
+            'Installed egg product DummyProduct (0.1-this-is-a-test-fixture)')
+        self.assertEqual(product.version, '0.1-this-is-a-test-fixture')
+        self.assertEqual(product.icon, 'p_/InstalledProduct_icon')
+        self.failUnless(product.home.find('Basket') > -1)
+        self.assertEqual(product.manage_options[:-1],
+                (Folder.manage_options[0],) + tuple(Folder.manage_options[2:]))
+        self.assertEqual(product._distribution, None)
+        self.assertEqual(product.manage_distribution, None)
+        self.assertEqual(product.thisIsAnInstalledProduct, 1)
+        self.assertEqual(product.manage_options[-1],
+                         {'label':'README', 'action':'manage_readme'})
+        self.assertEqual(Globals.__disk_product_installed__, 1)
+        self.assertEqual(product.name, 'DummyProduct')
+
+    def test_create_product_object_twice_returns_same(self):
+        from Acquisition import aq_base
+        app = DummyApp()
+        products = app.Control_Panel.Products
+        package = DummyPackage()
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        product = products.DummyProduct
+        ob = context.create_product_object()
+        self.assertEqual(id(aq_base(product)), id(aq_base(ob)))
+
+    def test_product_with_error_recreation(self):
+        import Globals
+        from Acquisition import aq_base
+        app = DummyApp()
+        products = app.Control_Panel.Products
+        package = DummyPackage()
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        product = products.DummyProduct
+        package.__import_error__ = 'yup'
+        del Globals.__disk_product_installed__
+        ob = context.create_product_object()
+        self.failIfEqual(id(aq_base(product)), id(aq_base(ob)))
 
 def test_suite():
     from unittest import TestSuite, makeSuite

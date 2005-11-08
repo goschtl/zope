@@ -31,8 +31,7 @@ from AccessControl.PermissionRole import PermissionRole
 from Interface.Implements import instancesOfObjectImplements
 import Products
 
-from zLOG import LOG
-from zLOG import ERROR
+import zLOG
 
 _marker = ()
 
@@ -133,8 +132,8 @@ class DTMLResource(DTMLFile):
 
 class EggProduct(Product):
     def __init__(self, id, title):
-        self.id=id
-        self.title=title
+        self.id = id
+        self.title = title
 
     def manage_get_product_readme__(self):
         for fname in ('README.txt', 'README.TXT', 'readme.txt'):
@@ -159,12 +158,12 @@ class EggProductContext(object):
         self.initializer = initializer
         self.app = app
         self.package = package
-        self.product = self.createProductObject()
+        self.product = self.create_product_object()
         self.permissions = {}
         self.new_permissions = {}
         self.meta_types = {}
         
-    def createProductObject(self):
+    def create_product_object(self):
         # Create a persistent object in the ControlPanel.Products area
         # representing a product packaged as an egg and set it as self.product
         products = self.app.Control_Panel.Products
@@ -173,65 +172,63 @@ class EggProductContext(object):
         packagename = self.package.__name__
         productname = self.productname
 
-        if hasattr(self.package, '__import_error__'):
-            ie = self.package.__import_error__
-        else:
-            ie = None
+        ie = getattr(self.package, '__import_error__', None)
 
         # Retrieve version number from any suitable version.txt
         for fname in ('version.txt', 'VERSION.txt', 'VERSION.TXT'):
             if pkg_resources.resource_exists(packagename, fname):
-                fver = pkg_resources.resource_string(packagename, fname)
+                fver = pkg_resources.resource_string(packagename, fname).strip()
                 break
 
         old = None
 
-        try:
-            if ihasattr(products, productname):
-                old = getattr(products, productname)
-                if ( ihasattr(old, 'version') and old.version == fver ):
-                    if hasattr(old, 'import_error_') and \
-                       old.import_error_==ie:
-                        # Version hasn't changed. Don't reinitialize.
-                        return old
-        except ConflictError:
-            raise
-        except:
-            pass
+        if ihasattr(products, productname):
+            old = getattr(products, productname)
+            if ihasattr(old, 'version') and old.version == fver:
+                old_ie = getattr(old, 'import_error_', None)
+                if old_ie == ie:
+                    # Version hasn't changed. Don't reinitialize.
+                    return old
 
         f = fver and (" (%s)" % fver)
-        product = EggProduct(productname, 'Installed product %s%s' %
+        product = EggProduct(productname, 'Installed egg product %s%s' %
                              (productname, f))
 
         if old is not None:
-            app._manage_remove_product_meta_type(product)
+            assert hasattr(self.app, '_manage_remove_product_meta_type')
+            self.app._manage_remove_product_meta_type(product)
             products._delObject(productname)
             for id, v in old.objectItems():
-                try: product._setObject(id, v)
-                except: pass
+                try:
+                    product._setObject(id, v)
+                except:
+                    zLOG.LOG('EggProductContext Initialization', zLOG.INFO,
+                             ('Error when cleaning old persistent data from '
+                              'Control Panel for %s.%s' % (productname, id)),
+                             error=sys.exc_info())
 
         products._setObject(productname, product)
-        product.icon='p_/InstalledProduct_icon'
-        product.version=fver
-        product.home=str(self.package.__path__)
+        product.icon = 'p_/InstalledProduct_icon'
+        product.version = fver
+        product.home = str(self.package.__path__)
 
-        product.manage_options=(Folder.manage_options[0],) + \
-                                tuple(Folder.manage_options[2:])
-        product._distribution=None
-        product.manage_distribution=None
-        product.thisIsAnInstalledProduct=1
+        product.manage_options = (Folder.manage_options[0],) + \
+                             tuple(Folder.manage_options[2:])
+        product._distribution = None
+        product.manage_distribution = None
+        product.thisIsAnInstalledProduct = 1
 
         if ie:
-            product.import_error_=ie
-            product.title='Broken product %s' % productname
-            product.icon='p_/BrokenProduct_icon'
-            product.manage_options=(
+            product.import_error_ = ie
+            product.title = 'Broken product %s' % productname
+            product.icon = 'p_/BrokenProduct_icon'
+            product.manage_options = (
                 {'label':'Traceback', 'action':'manage_traceback'},
                 )
 
         for fname in ('README.txt', 'README.TXT', 'readme.txt'):
             if pkg_resources.resource_exists(packagename, fname):
-                product.manage_options=product.manage_options+(
+                product.manage_options = product.manage_options+(
                     {'label':'README', 'action':'manage_readme'},
                     )
                 break
@@ -241,7 +238,7 @@ class EggProductContext(object):
             return product
 
         # Give the ZClass fixup code in Application
-        Globals.__disk_product_installed__=1
+        Globals.__disk_product_installed__ = 1
         product.name = productname
         return product
     
