@@ -80,6 +80,7 @@ def test_defaultView():
     """
 
 def test_suite():
+    import unittest
     from Products.Five.testing.doctest import DocTestSuite
     from Testing.ZopeTestCase import FunctionalDocFileSuite
     return unittest.TestSuite((
