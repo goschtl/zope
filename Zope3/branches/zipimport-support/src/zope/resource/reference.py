@@ -93,19 +93,11 @@ class PackagePathReference(str):
         return self.__class__(value, self._package, relpath)
 
     def open_pkg_resources(self, mode="rb"):
-        try:
-            data = pkg_resources.resource_string(
-                self._package.__name__, self._relpath)
-        except IOError, e:
-            if len(e.args) == 1:
-                # zipimport raises IOError w/ insufficient arguments
-                raise IOError(errno.ENOENT, "file not found", self)
-            else:
-                raise
-        f = StringIO.StringIO(data)
-        f.name = self
-        f.mode = mode
-        return f
+        return self._open_packaged_resource(
+            mode,
+            pkg_resources.resource_string,
+            self._package.__name__,
+            self._relpath)
 
     def open_path_or_loader(self, mode="rb"):
         try:
@@ -119,9 +111,23 @@ class PackagePathReference(str):
         else:
             dir = os.path.dirname(self._package.__file__)
             filename = os.path.join(dir, self._relpath)
-            return loader.get_data(self._package.__name__)
+            return self._open_packaged_resource(
+                mode, loader.get_data, filename)
 
     if pkg_resources:
         open = open_pkg_resources
     else:
         open = open_path_or_loader
+
+    def _open_packaged_resource(self, mode, opener, *args):
+        try:
+            data = opener(*args)
+        except IOError, e:
+            if len(e.args) == 1:
+                raise IOError(errno.ENOENT, "file not found", self)
+            else:
+                raise
+        f = StringIO.StringIO(data)
+        f.name = self
+        f.mode = mode
+        return f
