@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002, 2003 Zope Corporation and Contributors.
+# Copyright (c) 2005 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -16,6 +16,7 @@
 """
 __docformat__ = "reStructuredText"
 
+import __builtin__
 import errno
 import os
 import StringIO
@@ -30,16 +31,16 @@ except ImportError:
     pkg_resources = None
 
 
-def openResource(path, mode="rb"):
+def open(path, mode="rb"):
     if not mode.startswith("r"):
         raise ValueError("`mode` must be a read-only mode")
     if IResourceReference.providedBy(path):
         return path.open(mode)
     else:
-        return open(path, mode)
+        return __builtin__.open(path, mode)
 
 
-def newReference(path, package=None, basepath=None):
+def new(path, package=None, basepath=None):
 
     if os.path.isabs(path):
         return PathReference(path)
@@ -73,7 +74,7 @@ class PathReference(str):
         return self.__class__(path)
 
     def open(self, mode="rb"):
-        return open(self, mode)
+        return __builtin__.open(self, mode)
 
 
 class PackagePathReference(str):
@@ -107,7 +108,7 @@ class PackagePathReference(str):
                 filename = os.path.join(dir, self._relpath)
                 if os.path.exists(filename):
                     break
-            return open(filename, mode)
+            return __builtin__.open(filename, mode)
         else:
             dir = os.path.dirname(self._package.__file__)
             filename = os.path.join(dir, self._relpath)

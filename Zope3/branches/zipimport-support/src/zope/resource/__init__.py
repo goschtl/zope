@@ -17,5 +17,4 @@
 __docformat__ = "reStructuredText"
 
 
-from reference import newReference as new
-from reference import openResource as open
+from reference import open, new
