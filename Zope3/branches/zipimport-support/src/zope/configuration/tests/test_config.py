@@ -276,11 +276,12 @@ def sys_path_tearDown(self):
 
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite('../path.txt',
+        DocFileSuite('resources.txt',
                      setUp=sys_path_setUp, tearDown=sys_path_tearDown),
         DocTestSuite('zope.configuration.fields'),
         DocTestSuite('zope.configuration.config'),
         DocTestSuite(),
         ))
 
-if __name__ == '__main__': unittest.main()
+if __name__ == '__main__':
+    unittest.main()

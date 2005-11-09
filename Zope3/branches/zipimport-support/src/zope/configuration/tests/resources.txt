@@ -1,0 +1,67 @@
+===========================
+Resource references in ZCML
+===========================
+
+The ZCML loading machinery uses the `zope.resource` facilities to deal
+with references to files that should be loaded.  This allows including
+ZCML files from ZIP archives using <include/> directives, and allows
+ZCML directives that have Path schema attributes as arguments to use
+the `zope.resource` facilities as well.
+
+We'll use the sample ZIP archive provided for the `zope.resource`
+tests::
+
+  >>> import os
+  >>> import sys
+  >>> import zope.resource
+
+  >>> directory = os.path.normpath(os.path.dirname(zope.resource.__file__))
+  >>> zipfile = os.path.join(directory, "zippitysample.zip")
+  >>> sys.path.append(zipfile)
+
+Our example ZIP file includes an example ZCML file; let's see how we
+can load it using <include/>::
+
+  >>> from StringIO import StringIO
+  >>> from zope.configuration import config, xmlconfig
+
+  >>> def zcml(text):
+  ...     context = config.ConfigurationMachine()
+  ...     xmlconfig.registerCommonDirectives(context)
+  ...     f = StringIO(text)
+  ...     xmlconfig.processxmlfile(f, context, testing=True)
+  ...     f.close()
+  ...     return context
+
+  >>> context = zcml('<include package="zippity.sample"/>')
+
+We can now check that the "feature" provided by our sample
+configuration has been defined::
+
+  >>> context.hasFeature("sample")
+  True
+
+We can also include one ZCML file from another in the ZIP archive.
+Loading an alternate configuration file that includes the first should
+cause the "sample" feature to be provided::
+
+  >>> context = zcml(
+  ...     '<include package="zippity.sample" file="including.zcml"/>')
+
+  >>> context.hasFeature("sample")
+  True
+
+One oddball feature of the ZCML machinery is that if a ZCML file being
+loaded doesn't exist, but a file of the same name with '.in' appended
+does, that will be loaded instead.  In this example, the sample
+package provides a 'silliness.zcml.in', but we're going to request
+'silliness.zcml'::
+
+  >>> context = config.ConfigurationMachine()
+  >>> xmlconfig.registerCommonDirectives(context)
+
+  >>> context = zcml(
+  ...     '<include package="zippity.sample" file="silliness.zcml"/>')
+
+  >>> context.hasFeature("silliness")
+  True

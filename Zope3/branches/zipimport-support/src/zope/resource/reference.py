@@ -1,4 +1,18 @@
-"""Path reference to package-relative resources.
+##############################################################################
+#
+# Copyright (c) 2001, 2002, 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""References to package-relative resources.
+
 """
 __docformat__ = "reStructuredText"
 
@@ -8,20 +22,21 @@ import StringIO
 
 import zope.interface
 
+from zope.resource.interfaces import IResourceReference
+
 try:
     import pkg_resources
 except ImportError:
     pkg_resources = None
 
 
-class IResourceReference(zope.interface.Interface):
-
-    def open(mode="rb"):
-        """Open the referenced resource, returning a file-like object.
-
-        Only 'read' modes are supported.
-
-        """
+def openResource(path, mode="rb"):
+    if not mode.startswith("r"):
+        raise ValueError("`mode` must be a read-only mode")
+    if IResourceReference.providedBy(path):
+        return path.open(mode)
+    else:
+        return open(path, mode)
 
 
 def newReference(path, package=None, basepath=None):
@@ -110,12 +125,3 @@ class PackagePathReference(str):
         open = open_pkg_resources
     else:
         open = open_path_or_loader
-
-
-def openResource(path, mode="rb"):
-    if not mode.startswith("r"):
-        raise ValueError("`mode` must be a read-only mode")
-    if IResourceReference.providedBy(path):
-        return path.open(mode)
-    else:
-        return open(path, mode)

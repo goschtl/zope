@@ -26,6 +26,7 @@ import zope.schema
 
 from keyword import iskeyword
 import zope.deprecation
+import zope.resource
 from zope.configuration.exceptions import ConfigurationError
 from zope.configuration.interfaces import IConfigurationContext
 from zope.configuration.interfaces import IGroupingContext
@@ -34,7 +35,6 @@ from zope.interface import Interface, implements, directlyProvides, providedBy
 from zope.interface.interfaces import IInterface
 from zope.schema.interfaces import WrongType
 from zope.configuration import fields
-from zope.configuration.path import newReference
 
 
 zopens = 'http://namespaces.zope.org/zope'
@@ -250,7 +250,7 @@ class ConfigurationContext(object):
             package = getattr(self, 'package', None)
         else:
             package = self.package
-        return newReference(filename, package, basepath)
+        return zope.resource.new(filename, package, basepath)
 
     def checkDuplicate(self, filename):
         """Check for duplicate imports of the same file.

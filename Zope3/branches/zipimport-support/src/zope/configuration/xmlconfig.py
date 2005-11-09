@@ -26,6 +26,7 @@ import os
 import sys
 import logging
 import zope.configuration.config as config
+import zope.resource
 
 from glob import glob
 from xml.sax import make_parser
@@ -34,7 +35,6 @@ from xml.sax.handler import ContentHandler, feature_namespaces
 from xml.sax import SAXParseException
 from zope import schema
 from zope.configuration.exceptions import ConfigurationError
-from zope.configuration.path import openResource
 from zope.configuration.zopeconfigure import IZopeConfigure, ZopeConfigure
 from zope.interface import Interface
 
@@ -392,13 +392,12 @@ def openInOrPlain(filename):
 
     """
     try:
-        fp = openResource(filename)
+        fp = zope.resource.open(filename)
     except IOError, e:
-        code, msg = e
-        if code == errno.ENOENT:
+        if e.errno == errno.ENOENT:
             fn = filename + ".in"
             try:
-                fp = openResource(fn)
+                fp = zope.resource.open(fn)
             except IOError:
                 raise e
         else:
