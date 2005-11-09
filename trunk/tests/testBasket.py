@@ -9,6 +9,7 @@ from Products.Basket import get_containing_package
 from OFS.ObjectManager import ObjectManager
 from OFS.SimpleItem import SimpleItem
 from OFS.Folder import Folder
+import OFS
 from Interface import Interface
 
 here = os.path.dirname(__file__)
@@ -19,8 +20,10 @@ class DummyProduct:
 		self.id = id
 
 class DummyPackage:
-	__name__ = 'Products.Basket.tests'
-        __path__ = os.path.split(here)[:-1]
+    def __init__(self):
+        # need to be in __dict__
+	self.__name__ = 'Products.Basket.tests'
+        self.__path__ = os.path.split(here)[:-1]
 
 class DummyApp(ObjectManager):
 
@@ -412,9 +415,12 @@ class TestEggProductContext(unittest.TestCase):
             pass
         def constructor2(self, id):
             pass
+        def container_filter(foo):
+            pass
         constructors = (constructor, constructor2)
         context.registerClass(DummyRegisterableClass,
-                              constructors = constructors)
+                              constructors = constructors,
+                              container_filter=container_filter)
         from Globals import ApplicationDefaultPermissions as g
         self.assertEqual(
             g._Add_Dummy_Registerable_Classs_Permission, ('Manager',))
@@ -433,12 +439,12 @@ class TestEggProductContext(unittest.TestCase):
                 found = True
                 eq = self.assertEqual
                 eq(product['name'], 'Dummy Registerable Class')
-                eq(product['permission'], 'Add Dummy Registerable Classes')
+                eq(product['permission'], 'Add Dummy Registerable Classs')
                 eq(product['interfaces'][0], IDummyRegisterableClass)
                 eq(product['visibility'], 'Global')
                 eq(product['action'],
                    'manage_addProduct/DummyProduct/constructor')
-                eq(product['container_filter'], None)
+                eq(product['container_filter'], container_filter)
         if not found:
             raise AssertionError, 'Dummy Product not found'
 
@@ -492,6 +498,42 @@ class TestEggProductContext(unittest.TestCase):
         from Globals import ApplicationDefaultPermissions as g
         self.assertEqual(
             g._Appease_This_Stupid_Machinery_Permission, ('Manager',))
+
+    def test_registerClass_with_interfaces(self):
+        app = DummyApp()
+        products = app.Control_Panel.Products
+        package = DummyPackage()
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        def constructor(self, id):
+            pass
+        constructors = (constructor,)
+        class IFooInterface(Interface):
+            pass
+        context.registerClass(DummyRegisterableClass,
+                              constructors = constructors,
+                              interfaces = (IFooInterface,))
+
+        found = False
+        import Products
+        for product in Products.meta_types:
+            if product['product'] == 'DummyProduct':
+                found = True
+                self.assertEqual(product['interfaces'][0], IFooInterface)
+        if not found:
+            raise AssertionError, 'Dummy Product not found'
+
+    def test_registerClass_with_icon(self):
+        app = DummyApp()
+        products = app.Control_Panel.Products
+        package = DummyPackage()
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        def constructor(self, id):
+            pass
+        context.registerClass(DummyRegisterableClass,
+                              constructors = (constructor,),
+                              icon = 'fixtures/new.gif')
+        misc = getattr(OFS.misc_.misc_, 'DummyProduct')
+        self.assertEqual(misc['new.gif'].__class__.__name__, 'ImageResource')
 
 class TestEggProduct(unittest.TestCase):
     def _getTargetClass(self):

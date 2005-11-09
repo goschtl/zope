@@ -13,6 +13,7 @@ from OFS.content_types import guess_content_type
 from App.Common import rfc1123_date
 from App.special_dtml import defaultBindings
 from OFS.misc_ import Misc_
+import OFS
 
 from OFS.Application import pgetattr
 from OFS.Application import get_folder_permissions
@@ -31,6 +32,7 @@ from AccessControl.Permission import registerPermissions
 from AccessControl.PermissionRole import PermissionRole
 from Interface.Implements import instancesOfObjectImplements
 import Products
+import ZClasses
 
 import zLOG
 
@@ -301,8 +303,6 @@ class EggProductContext(object):
         package = self.package
         product = self.product
 
-        initial = constructors[0]
-
         if icon and instance_class is not None:
             setattr(instance_class, 'icon', 'misc_/%s/%s' %
                     (product.id, os.path.split(icon)[1]))
@@ -310,17 +310,12 @@ class EggProductContext(object):
         if permissions:
             self.register_additional_permissions(permissions)
 
-        pr = self.register_constructor_permission(permission, meta_type,
-                                                  instance_class)
+        pr, permission = self.register_constructor_permission(
+                                     permission, meta_type, instance_class)
         self.pr = pr # for unit tests
 
         if legacy:
             self.register_legacy(legacy, pr)
-
-        if isinstance(initial, tuple):
-            cname, initial = initial
-        else:
-            cname = initial.__name__
 
         fd = self.get_factory_dispatcher(package)
 
@@ -333,15 +328,15 @@ class EggProductContext(object):
             else:
                 interfaces = instancesOfObjectImplements(instance_class)
 
+        cname = self.register_constructors(constructors, package._m, pr)
+
         self.register_product_meta_type(meta_type, instance_class,
                                         product.id, cname, permission,
                                         visibility, interfaces,
                                         container_filter)
 
-        self.register_constructors(cname, constructors, package._m, pr)
-
         if icon:
-            self.register_icon(icon, productname, cname)
+            self.register_icon(icon, product.id, cname)
 
     def register_additional_permissions(self, permissions):
         if isinstance(permissions, basestring): # You goofed it!
@@ -366,7 +361,7 @@ class EggProductContext(object):
 
         pr = PermissionRole(permission,default)
         registerPermissions(((permission, (), default),))
-        return pr
+        return pr, permission
 
     def register_legacy(self, legacy, pr):
         for method in legacy:
@@ -400,31 +395,31 @@ class EggProductContext(object):
               'interfaces': interfaces,
               'instance': instance_class,
               'container_filter': container_filter,
-              'test_chicken': True # to allow unit tests to clean up efficiently
+              'test_chicken': True, # to allow unit tests to clean up
               },)
 
     def register_icon(self, icon_path, productname, cname):
-        name = os.path.split(icon_path)[1]
+        name = os.path.basename(icon_path)
         icon = ImageResource(icon_path, self.package.__dict__)
         icon.__roles__ = None
         if not hasattr(OFS.misc_.misc_, productname):
             setattr(OFS.misc_.misc_, productname,
                     OFS.misc_.Misc_(productname, {}))
-        getattr(OFS.misc_.misc_, productname)[cname] = icon
+        getattr(OFS.misc_.misc_, productname)[name] = icon
 
-    def register_constructors(self, cname, constructors, misc, pr):
-        initial = constructors[0]
-        misc[cname] = initial
-        misc[cname+'__roles__'] = pr
-
-        for method in constructors[1:]:
+    def register_constructors(self, constructors, misc, pr):
+        cname = None
+        for method in constructors:
             if isinstance(method, tuple):
                 name, method = method
             else:
                 name = os.path.split(method.__name__)[-1]
+            if cname is None:
+                cname = name
             if not self.product.__dict__.has_key(name):
                 misc[name] = method
                 misc[name+'__roles__'] = pr
+        return cname
 
     def get_factory_dispatcher(self, package):
         fd = getattr(package, '__FactoryDispatcher__', None)
