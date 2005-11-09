@@ -31,7 +31,7 @@ class DummyApp(ObjectManager):
         self.Control_Panel.id = 'Control_Panel'
         self.Control_Panel.Products = ObjectManager()
         self.Control_Panel.Products.id = 'Products'
-	
+        
     def _manage_remove_product_meta_type(self, product):
          # hahahahahaha
          # hahahahahahahaahaha
@@ -46,7 +46,7 @@ class DummyProductContext:
 
     def registerClass(self, *arg, **kw):
          self.arg = arg
-	 self.kw = kw
+         self.kw = kw
 
 class IDummyRegisterableClass(Interface):
     pass
@@ -135,7 +135,7 @@ class TestBasket(unittest.TestCase):
 
         basket.require(distro_str='product1>=0.1')
         basket.require(distro_str='product2>=0.1')
-		
+                
         result = basket.initialize(DummyProductContext('Basket'))
         self.assertEqual(result, ['product1 initialized',
                                   'product2 initialized'])
