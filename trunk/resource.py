@@ -111,6 +111,14 @@ class ImageResource(ImageFile):
             self.lmt=time.time()
         self.lmh=rfc1123_date(self.lmt)
 
+        if DevelopmentMode:
+            # In development mode, a shorter time is handy
+            max_age = 60 # One minute
+        else:
+            # A longer time reduces latency in production mode
+            max_age = 3600 # One hour
+        self.cch = 'public,max-age=%d' % max_age
+
     def read(self):
         return pkg_resources.resource_string(self.module, self.path)
 
@@ -162,11 +170,11 @@ class DTMLResource(DTMLFile):
         self.ZBindings_edit(defaultBindings)
         self._setFuncSignature()
 
+        path = path + '.dtml'
+
         #from ClassicHTMLFile.__init__(self, name, _prefix, **kw)
         if not kw.has_key('__name__'):
             kw['__name__'] = os.path.basename(path)
-
-        path = path + '.dtml'
 
         #from FileMixin.__init__(self, *args, **kw)
         self.raw = (module, path)
