@@ -23,7 +23,7 @@ import StringIO
 
 import zope.interface
 
-from zope.resource.interfaces import IResourceReference
+from zope.filereference.interfaces import IResourceReference
 
 try:
     import pkg_resources

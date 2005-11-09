@@ -1,21 +1,21 @@
-===========================
-Resource references in ZCML
-===========================
+=======================
+File references in ZCML
+=======================
 
-The ZCML loading machinery uses the `zope.resource` facilities to deal
-with references to files that should be loaded.  This allows including
-ZCML files from ZIP archives using <include/> directives, and allows
-ZCML directives that have Path schema attributes as arguments to use
-the `zope.resource` facilities as well.
+The ZCML loading machinery uses the `zope.filereference` facilities to
+deal with references to files that should be loaded.  This allows
+including ZCML files from ZIP archives using <include/> directives,
+and allows ZCML directives that have Path schema attributes as
+arguments to use the `zope.filereference` facilities as well.
 
-We'll use the sample ZIP archive provided for the `zope.resource`
+We'll use the sample ZIP archive provided for the `zope.filereference`
 tests::
 
   >>> import os
   >>> import sys
-  >>> import zope.resource
+  >>> import zope.filereference
 
-  >>> directory = os.path.dirname(zope.resource.__file__)
+  >>> directory = os.path.dirname(zope.filereference.__file__)
   >>> zipfile = os.path.join(directory, "zippitysample.zip")
   >>> sys.path.append(zipfile)
 

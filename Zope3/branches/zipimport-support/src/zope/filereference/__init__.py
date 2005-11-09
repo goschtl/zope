@@ -11,7 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Resource references.
+"""References to file-like things, including files inside zipped packages.
+
+This supports referencing files within Python eggs.
 
 """
 __docformat__ = "reStructuredText"

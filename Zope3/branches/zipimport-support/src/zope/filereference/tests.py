@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test resource machinery.
+"""Test filereference machinery.
 
 """
 __docformat__ = "reStructuredText"
@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 import sys
 import unittest
 
-import zope.resource.reference
+import zope.filereference.reference
 
 from zope.testing import doctest
 
@@ -37,17 +37,17 @@ def sys_path_tearDown(self):
 
 
 # If the pkg_resources module is available, this setUp/tearDown pair
-# can be used to hack zope.resource to think it isn't.  This is done
-# to ensure test coverage even when the module is present.
+# can be used to hack zope.filereference to think it isn't.  This is
+# done to ensure test coverage even when the module is present.
 
 def pkg_resources_setUp(self):
     sys_path_setUp(self)
     self.__old_pkg_resources = pkg_resources
-    zope.resource.reference.pkg_resources = None
+    zope.filereference.reference.pkg_resources = None
 
 def pkg_resources_tearDown(self):
     sys_path_tearDown(self)
-    zope.resource.pkg_resources = self.__old_pkg_resources
+    zope.filereference.pkg_resources = self.__old_pkg_resources
 
 
 def test_suite():

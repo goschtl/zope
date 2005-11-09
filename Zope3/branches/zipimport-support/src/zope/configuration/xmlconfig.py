@@ -26,7 +26,7 @@ import os
 import sys
 import logging
 import zope.configuration.config as config
-import zope.resource
+import zope.filereference
 
 from glob import glob
 from xml.sax import make_parser
@@ -392,12 +392,12 @@ def openInOrPlain(filename):
 
     """
     try:
-        fp = zope.resource.open(filename)
+        fp = zope.filereference.open(filename)
     except IOError, e:
         if e.errno == errno.ENOENT:
             fn = filename + ".in"
             try:
-                fp = zope.resource.open(fn)
+                fp = zope.filereference.open(fn)
             except IOError:
                 raise e
         else:
