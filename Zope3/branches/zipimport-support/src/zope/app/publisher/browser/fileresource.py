@@ -18,6 +18,7 @@ $Id$
 
 import time
 
+from zope import filereference
 from zope.publisher.interfaces import NotFound
 
 from zope.app.publisher.browser import BrowserView
@@ -48,7 +49,7 @@ class FileResource(BrowserView, Resource):
 
     # for unit tests
     def _testData(self):
-        f = open(self.context.path, 'rb')
+        f = filereference.open(self.context.path, 'rb')
         data = f.read()
         f.close()
         return data
@@ -93,7 +94,7 @@ class FileResource(BrowserView, Resource):
         response.setHeader('Last-Modified', file.lmh)
 
         setCacheControl(response)
-        f = open(file.path,'rb')
+        f = filereference.open(file.path,'rb')
         data = f.read()
         f.close()
 

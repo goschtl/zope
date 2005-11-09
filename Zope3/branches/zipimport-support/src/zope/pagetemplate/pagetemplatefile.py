@@ -25,6 +25,7 @@ import sys
 import re
 import logging
 
+from zope import filereference
 from zope.pagetemplate.pagetemplate import PageTemplate
 
 DEFAULT_ENCODING = "utf-8"
@@ -72,7 +73,7 @@ class PageTemplateFile(PageTemplate):
 
     def _read_file(self):
         __traceback_info__ = self.filename
-        f = open(self.filename, "rb")
+        f = filereference.open(self.filename, "rb")
         try:
             text = f.read(XML_PREFIX_MAX_LENGTH)
         except:
@@ -84,7 +85,7 @@ class PageTemplateFile(PageTemplate):
         else:
             # For HTML, we really want the file read in text mode:
             f.close()
-            f = open(self.filename)
+            f = filereference.open(self.filename)
             text = f.read()
             text, type_ = self._prepare_html(text)
         f.close()
