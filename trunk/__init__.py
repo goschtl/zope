@@ -1,8 +1,12 @@
 import sys
 import os
 import pkg_resources
-from utils import EggProductContext
-from utils import EggProduct
+import traceback
+
+from Products.Basket.utils import EggProductContext
+from Products.Basket.utils import EggProduct
+import zLOG
+import App
 
 entrypoint_group = 'zope2.initialize'
 
@@ -25,6 +29,9 @@ class Basket(object):
     def initialize(self, context):
         context.registerClass(EggProduct, constructors = (('dummy',None),),
                               visibility=None, icon='icon_egg.gif')
+        app = context._ProductContext__app
+        debug_mode = App.config.getConfiguration().debug_mode
+
         if not self.pre_initialized:
             try:
                 home = INSTANCE_HOME
@@ -33,23 +40,22 @@ class Basket(object):
                 etc = ''
             pdist_fname = os.path.join(etc, 'PRODUCT_DISTRIBUTIONS.txt')
             self.preinitialize(pdist_fname)
+
         data = []
         points = pkg_resources.iter_entry_points(entrypoint_group)
         # Grab app from Zope product context
         # It's a "protected" attribute, hence the name mangling
-        app = context._ProductContext__app
         meta_types = []
         for point in points:
             # XXX deal with duplicate product names by raising an exception
             # somewhere in here.
-            # XXX test by creating a broken product and see what happens
             product_pkg = get_containing_package(point.module_name)
             productname = product_pkg.__name__.split('.')[-1]
-            initializer = point.load()
+            initializer = get_initializer(point, productname, debug_mode)
             context = EggProductContext(productname, initializer, app,
                                         product_pkg)
             # XXX debug mode conditions raise_exc, log_exc
-            returned = context.install()
+            returned = context.install(debug_mode)
             data.append(returned)
         return data
 
@@ -94,6 +100,23 @@ def get_containing_package(module_name):
     if new == module_name:
         return None
     return get_containing_package(new)
+
+def get_initializer(point, productname, debug_mode):
+    initializer = None
+    try:
+        # this will raise an import error if the initializer can't
+        # be imported (presumably because of a module-scope error)
+        initializer = point.load()
+    except:
+        exc = sys.exc_info()
+        zLOG.LOG('Zope', zLOG.ERROR, 'Could not import %s' % productname,
+                 error=exc)
+        f = StringIO()
+        traceback.print_exc(100, f)
+        product_pkg.__import_error__ = f.getvalue()
+        if debug_mode:
+            raise exc[0], exc[1], exc[2]
+    return initializer
 
 basket = Basket()
 initialize = basket.initialize
