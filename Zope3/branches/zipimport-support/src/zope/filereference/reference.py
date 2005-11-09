@@ -53,7 +53,7 @@ def isfile(path):
         return os.path.isfile(path)
 
 
-def open(path, mode="rb"):
+def open(path, mode="r"):
     if not mode.startswith("r"):
         raise ValueError("`mode` must be a read-only mode")
     if IResourceReference.providedBy(path):
@@ -99,7 +99,7 @@ class PathReference(str):
         path = str(self) + other
         return self.__class__(path)
 
-    def open(self, mode="rb"):
+    def open(self, mode="r"):
         return __builtin__.open(self, mode)
 
     def isfile(self):
@@ -131,7 +131,7 @@ class PackagePathReference(PackageStr):
         self._relpath = relpath
         return self
 
-    def open_pkg_resources(self, mode="rb"):
+    def open_pkg_resources(self, mode="r"):
         return _open_packaged_resource(
             self,
             mode,
@@ -139,7 +139,7 @@ class PackagePathReference(PackageStr):
             self._package.__name__,
             self._relpath)
 
-    def open_path_or_loader(self, mode="rb"):
+    def open_path_or_loader(self, mode="r"):
         try:
             loader = self._package.__loader__
         except AttributeError:
@@ -154,7 +154,7 @@ class PackagePathReference(PackageStr):
             return _open_packaged_resource(
                 self, mode, loader.get_data, filename)
 
-    def open(self, mode="rb"):
+    def open(self, mode="r"):
         #
         # This separate wrapper method is used so that this can always
         # be tested for the case when pkg_resources is not available.
@@ -242,7 +242,7 @@ class ZipImporterPackagePathReference(PackageStr):
         self._loader = package.__loader__
         return self
 
-    def open(self, mode="rb"):
+    def open(self, mode="r"):
         dir = os.path.dirname(self._package.__file__)
         filename = os.path.join(dir, self._relpath)
         return _open_packaged_resource(
@@ -282,6 +282,8 @@ def _open_packaged_resource(self, mode, opener, *args):
             raise IOError(errno.ENOENT, "file not found", self)
         else:
             raise
+    if ("b" not in mode) and os.linesep != "\n":
+        data = data.replace(os.linesep, "\n")
     f = StringIO.StringIO(data)
     f.name = self
     f.mode = mode

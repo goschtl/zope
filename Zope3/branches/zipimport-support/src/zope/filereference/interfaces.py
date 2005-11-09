@@ -21,7 +21,7 @@ import zope.interface
 
 class IResourceReference(zope.interface.Interface):
 
-    def open(mode="rb"):
+    def open(mode="r"):
         """Open the referenced resource, returning a file-like object.
 
         Only 'read' modes are supported.
