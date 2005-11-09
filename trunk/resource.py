@@ -166,6 +166,8 @@ class DTMLResource(DTMLFile):
         if not kw.has_key('__name__'):
             kw['__name__'] = os.path.basename(path)
 
+        path = path + '.dtml'
+
         #from FileMixin.__init__(self, *args, **kw)
         self.raw = (module, path)
         self.initvars(None, kw)

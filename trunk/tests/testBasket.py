@@ -581,7 +581,7 @@ class TestResource(unittest.TestCase):
                     'Should not be able to import %s from Basket.resource')
 
     def test_dtml_resource(
-        self, path='www/test_dtml.dtml', module='Products.product1'):
+        self, path='www/test_dtml', module='Products.product1'):
         from Globals import DTMLResource
         dtml = DTMLResource(path, module=module)
         self.assertEqual(dtml.__name__, os.path.basename(path))

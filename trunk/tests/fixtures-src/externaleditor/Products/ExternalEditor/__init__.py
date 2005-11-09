@@ -14,8 +14,8 @@
 
 # Zope External Editor Product by Casey Duncan
 
-from Products.Basket.utils import ImageResource
-from Products.Basket.utils import DTMLResource
+from Globals import ImageResource
+from Globals import DTMLResource
 
 from OFS.ObjectManager import ObjectManager
 from OFS.FindSupport import FindSupport
@@ -38,3 +38,6 @@ FindSupport.manage_findResult=DTMLResource('findResult', globals(),
 
 # Add external editor icon in breadcrumbs under tabs
 Tabs.manage_tabs = DTMLResource('manage_tabs', globals())
+
+def initialize(context):
+    pass
