@@ -65,9 +65,10 @@ class EggProduct(Product):
 InitializeClass(EggProduct)
 
 class EggProductContext(object):
-    def __init__(self, productname, initializer, app, package):
+    def __init__(self, productname, initializer, app, package, eggname):
         self.productname = productname
         self.initializer = initializer
+        self.eggname = eggname
         self.app = app
         self.package = package
         self.product = self.create_product_object()
@@ -102,9 +103,11 @@ class EggProductContext(object):
                     # Version hasn't changed. Don't reinitialize.
                     return old
 
-        f = fver and (" (%s)" % fver)
-        product = EggProduct(productname, 'Installed egg product %s%s' %
-                             (productname, f), packagename)
+        f = fver and ("(%s)" % fver)
+        product = EggProduct(
+            productname,
+            'Installed egg product %s %s from %s' %
+            (productname, f, self.eggname), packagename)
 
         if old is not None:
             self.app._manage_remove_product_meta_type(product)

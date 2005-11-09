@@ -390,7 +390,8 @@ class TestEggProductContext(unittest.TestCase):
     def test_constructor(self):
         app = DummyApp()
         package = DummyPackage()
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         data = context.install()
         self.assertEqual(data, 'initializer called')
         self.assertEqual(context.productname, 'DummyProduct')
@@ -405,7 +406,8 @@ class TestEggProductContext(unittest.TestCase):
             ('Dummy.Foo', 'Products.Basket'),
             ('Dummy.Bar', 'Products.Basket')
             )
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         data = context.install()
         self.assertEqual(data, 'initializer called')
         self.assertEqual(sys.modules['Dummy.Foo'].__name__,
@@ -419,7 +421,8 @@ class TestEggProductContext(unittest.TestCase):
         def afunction():
             pass
         package.misc_ = {'afunction':afunction}
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         data = context.install()
         from OFS import Application
         self.assertEqual(
@@ -430,7 +433,8 @@ class TestEggProductContext(unittest.TestCase):
         app = DummyApp()
         package = DummyPackage()
         package.__ac_permissions__ = ( ('aPermission', (), () ), )
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         data = context.install()
         from OFS.Folder import Folder
         self.assert_( ('aPermission', (),)  in Folder.__ac_permissions__)
@@ -439,7 +443,8 @@ class TestEggProductContext(unittest.TestCase):
         app = DummyApp()
         package = DummyPackage()
         package.meta_types = ( {'name':'grabass', 'action':'amethod'}, )
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         data = context.install()
         from OFS.Folder import Folder
         self.assertEqual(({'action': 'amethod', 'product': 'DummyProduct',
@@ -450,7 +455,8 @@ class TestEggProductContext(unittest.TestCase):
         app = DummyApp()
         package = DummyPackage()
         package.methods = {'amethod':dummy_initializer}
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         data = context.install()
         from OFS.Folder import Folder
         self.assertEqual(Folder.amethod.im_func, dummy_initializer)
@@ -460,12 +466,14 @@ class TestEggProductContext(unittest.TestCase):
         app = DummyApp()
         products = app.Control_Panel.Products
         package = DummyPackage()
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         product = products.DummyProduct
         self.assertEqual(product.__class__.__name__, 'EggProduct')
         self.assertEqual(product.id, 'DummyProduct')
         self.assertEqual(product.title,
-            'Installed egg product DummyProduct (0.1-this-is-a-test-fixture)')
+            'Installed egg product DummyProduct (0.1-this-is-a-test-fixture) '
+                         'from eggname')
         self.assertEqual(product.version, '0.1-this-is-a-test-fixture')
         self.assertEqual(product.icon, 'misc_/Basket/icon_egg.gif')
         self.failUnless(product.home.find('Basket') > -1)
@@ -484,7 +492,8 @@ class TestEggProductContext(unittest.TestCase):
         app = DummyApp()
         products = app.Control_Panel.Products
         package = DummyPackage()
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         product = products.DummyProduct
         ob = context.create_product_object()
         self.assertEqual(id(aq_base(product)), id(aq_base(ob)))
@@ -495,7 +504,8 @@ class TestEggProductContext(unittest.TestCase):
         app = DummyApp()
         products = app.Control_Panel.Products
         package = DummyPackage()
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         product = products.DummyProduct
         package.__import_error__ = 'yup'
         del Globals.__disk_product_installed__
@@ -508,7 +518,8 @@ class TestEggProductContext(unittest.TestCase):
         app = DummyApp()
         products = app.Control_Panel.Products
         package = DummyPackage()
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         def constructor(self, id):
             pass
         def constructor2(self, id):
@@ -551,7 +562,8 @@ class TestEggProductContext(unittest.TestCase):
         app = DummyApp()
         products = app.Control_Panel.Products
         package = DummyPackage()
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         legacy = [('legacymethod2', legacymethod)]
         def constructor(self):
             pass
@@ -567,7 +579,8 @@ class TestEggProductContext(unittest.TestCase):
         app = DummyApp()
         products = app.Control_Panel.Products
         package = DummyPackage()
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         def constructor(self, id):
             pass
         def constructor2(self, id):
@@ -586,7 +599,8 @@ class TestEggProductContext(unittest.TestCase):
         app = DummyApp()
         products = app.Control_Panel.Products
         package = DummyPackage()
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         def constructor(self, id):
             pass
         constructors = (constructor,)
@@ -601,7 +615,8 @@ class TestEggProductContext(unittest.TestCase):
         app = DummyApp()
         products = app.Control_Panel.Products
         package = DummyPackage()
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         def constructor(self, id):
             pass
         constructors = (constructor,)
@@ -624,7 +639,8 @@ class TestEggProductContext(unittest.TestCase):
         app = DummyApp()
         products = app.Control_Panel.Products
         package = DummyPackage()
-        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
         def constructor(self, id):
             pass
         context.registerClass(DummyRegisterableClass,

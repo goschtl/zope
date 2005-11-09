@@ -2,6 +2,7 @@ import sys
 import os
 import pkg_resources
 import traceback
+import textwrap
 
 from Products.Basket.utils import EggProductContext
 from Products.Basket.utils import EggProduct
@@ -50,22 +51,23 @@ class Basket(object):
         for point in points:
             # XXX deal with duplicate product names by raising an exception
             # somewhere in here.
+            eggname = ' '.join(textwrap.wrap(point.dist.location, 80))
             try:
                 product_pkg = get_containing_package(point.module_name)
             except:
+                zLOG.LOG('Egg Product Init', zLOG.ERROR,
+                         'Problem initializing product with entry point '
+                         '"%s" in module "%s"' % (point.name,point.module_name),
+                         error=sys.exc_info())
                 if debug_mode:
                     raise
                 else:
-                    zLOG.LOG('Egg Product Init', zLOG.ERROR,
-                             'Problem initializing product with entry point '
-                             '%s in module %s' % (point.name,point.module_name),
-                             error=sys.exc_info())
                     continue
                 
             productname = product_pkg.__name__.split('.')[-1]
             initializer = get_initializer(point, productname, debug_mode)
             context = EggProductContext(productname, initializer, app,
-                                        product_pkg)
+                                        product_pkg, eggname)
             # XXX debug mode conditions raise_exc, log_exc
             returned = context.install(debug_mode)
             data.append(returned)
