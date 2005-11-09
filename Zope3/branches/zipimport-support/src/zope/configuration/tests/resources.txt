@@ -15,7 +15,7 @@ tests::
   >>> import sys
   >>> import zope.resource
 
-  >>> directory = os.path.normpath(os.path.dirname(zope.resource.__file__))
+  >>> directory = os.path.dirname(zope.resource.__file__)
   >>> zipfile = os.path.join(directory, "zippitysample.zip")
   >>> sys.path.append(zipfile)
 
