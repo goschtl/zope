@@ -170,14 +170,13 @@ class DTMLResource(DTMLFile):
         self.ZBindings_edit(defaultBindings)
         self._setFuncSignature()
 
-        path = path + '.dtml'
-
         #from ClassicHTMLFile.__init__(self, name, _prefix, **kw)
+        path_with_ext = path + '.dtml'
         if not kw.has_key('__name__'):
             kw['__name__'] = os.path.basename(path)
 
         #from FileMixin.__init__(self, *args, **kw)
-        self.raw = (module, path)
+        self.raw = (module, path_with_ext)
         self.initvars(None, kw)
         self.setName(kw['__name__'])
         self.zipped = is_zipped(module)

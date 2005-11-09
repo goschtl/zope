@@ -328,7 +328,7 @@ class TestEggProductContext(unittest.TestCase):
         data = context.install()
         from OFS import Application
         self.assertEqual(
-            Application.misc_.__dict__['DummyProduct']['afunction'],
+            Application.misc_.misc_.__dict__['DummyProduct']['afunction'],
             afunction)
 
     def test__ac_permissions__set(self):
@@ -588,7 +588,7 @@ class TestResource(unittest.TestCase):
         from Globals import DTMLResource
         dtml = DTMLResource(path, module=module)
         self.assertEqual(dtml.__name__, os.path.basename(path))
-        expected = pkg_resources.resource_string(module, path)
+        expected = pkg_resources.resource_string(module, path + '.dtml')
         self.assertEqual(dtml.read_raw(), expected)
 
     def test_disk_dtml_resource(self):
