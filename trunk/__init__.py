@@ -110,5 +110,19 @@ class Jackboot(object):
         raise DeprecationWarning('This package is deprecated, do not import '
                                  'it directly!')
 
+# Poke the resource classes into the Zope package tree where they will 
+# wind up in a future zope version, maybe
+import resource
 
+import Globals
+Globals.ImageResource = resource.ImageResource
+Globals.DTMLResource = resource.DTMLResource
+
+from Products import PageTemplates
+PageTemplates.PageTemplateResource = resource.PageTemplateResource
+
+# Prevent anyone from importing from here
+del resource.ImageResource
+del resource.DTMLResource
+del resource.PageTemplateResource
 

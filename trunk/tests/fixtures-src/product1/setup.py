@@ -7,6 +7,7 @@ setup(
     namespace_packages=['Products'],
     entry_points = {'zope2.initialize':
                     ['initialize=Products.product1:initialize']},
+    package_data = {'':['www/*.dtml', 'www/*.zpt', 'www/*.jpg', 'www/*.gif']},
     url = 'http://www.example.com/product1',
     author = 'Joe Bloggs',
     author_email = 'bloggs@example.com',

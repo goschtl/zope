@@ -22,7 +22,7 @@ class DummyProduct:
 class DummyPackage:
     def __init__(self):
         # need to be in __dict__
-	self.__name__ = 'Products.Basket.tests'
+        self.__name__ = 'Products.Basket.tests'
         self.__path__ = os.path.split(here)[:-1]
 
 class DummyApp(ObjectManager):
@@ -549,10 +549,65 @@ class TestEggProduct(unittest.TestCase):
         self.assertEqual(product.manage_get_product_readme__().strip(),
                          'This is a test fixture, beeyotch!')
 
+
+class TestResource(unittest.TestCase):
+
+    def test_is_zipped(self):
+        from Products.Basket.resource import is_zipped
+        self.failUnless(is_zipped('Products.product1'))
+        self.failUnless(is_zipped('Products.product2'))
+        self.failIf(is_zipped('Products.diskproduct1'))
+        self.failIf(is_zipped('Products.Basket'))
+
+    def test_page_template_resource(
+        self, path='www/test_zpt.zpt',  module='Products.product1'):
+        from Products.PageTemplates import PageTemplateResource
+        zpt = PageTemplateResource(path, module=module)
+        self.assertEqual(zpt.__name__, os.path.basename(path))
+        expected = pkg_resources.resource_string(module, path)
+        self.assertEqual(zpt.read(), expected)
+
+    def test_disk_page_template_resource(self):
+        self.test_page_template_resource(module='Products.diskproduct1')
+
+    def test_cant_import_resources_from_basket(self):
+        for cls in ('PageTemplateResource', 'DTMLResource', 'ImageResource'):
+            try:
+                exec 'from Products.Basket.resource import %s' % cls
+            except ImportError:
+                pass
+            else:
+                self.fail(
+                    'Should not be able to import %s from Basket.resource')
+
+    def test_dtml_resource(
+        self, path='www/test_dtml.dtml', module='Products.product1'):
+        from Globals import DTMLResource
+        dtml = DTMLResource(path, module=module)
+        self.assertEqual(dtml.__name__, os.path.basename(path))
+        expected = pkg_resources.resource_string(module, path)
+        self.assertEqual(dtml.read_raw(), expected)
+
+    def test_disk_dtml_resource(self):
+        self.test_dtml_resource(module='Products.diskproduct1')
+
+    def test_image_resource(
+        self, path='www/test_image.jpg', module='Products.product1'):
+        from Globals import ImageResource
+        img = ImageResource(path, module=module)
+        self.assertEqual(img.content_type, 'image/jpeg')
+        expected = pkg_resources.resource_string(module, path)
+        self.assertEqual(img.read(), expected)
+
+    def test_disk_image_resource(self):
+        self.test_image_resource(module='Products.diskproduct1')
+
+
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
     suite.addTest(makeSuite(TestBasket))
     suite.addTest(makeSuite(TestEggProductContext))
+    suite.addTest(makeSuite(TestResource))
     suite.addTest(makeSuite(TestEggProduct))
     return suite
