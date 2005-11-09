@@ -114,10 +114,17 @@ class PackagePathReference(str):
             return self._open_packaged_resource(
                 mode, loader.get_data, filename)
 
-    if pkg_resources:
-        open = open_pkg_resources
-    else:
-        open = open_path_or_loader
+    def open(self, mode="rb"):
+        #
+        # This separate wrapper method is used so that this can always
+        # be tested for the case when pkg_resources is not available.
+        # See tests.py for how the pkg_resources global is
+        # manipulated.
+        #
+        if pkg_resources:
+            return self.open_pkg_resources(mode)
+        else:
+            return self.open_path_or_loader(mode)
 
     def _open_packaged_resource(self, mode, opener, *args):
         try:
