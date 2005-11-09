@@ -15,9 +15,8 @@ from Interface import Interface
 here = os.path.dirname(__file__)
 
 class DummyProduct:
-
-	def __init__(self, id):
-		self.id = id
+    def __init__(self, id):
+        self.id = id
 
 class DummyPackage:
     def __init__(self):
@@ -27,23 +26,27 @@ class DummyPackage:
 
 class DummyApp(ObjectManager):
 
-	def __init__(self):
-		self.Control_Panel = SimpleItem()
-		self.Control_Panel.id = 'Control_Panel'
-		self.Control_Panel.Products = ObjectManager()
-		self.Control_Panel.Products.id = 'Products'
-
-        def _manage_remove_product_meta_type(self, product):
-            # hahahahahaha
-            # hahahahahahahaahaha
-            pass
+    def __init__(self):
+        self.Control_Panel = SimpleItem()
+        self.Control_Panel.id = 'Control_Panel'
+        self.Control_Panel.Products = ObjectManager()
+        self.Control_Panel.Products.id = 'Products'
+	
+    def _manage_remove_product_meta_type(self, product):
+         # hahahahahaha
+         # hahahahahahahaahaha
+         pass
 
 class DummyProductContext:
 
-	def __init__(self, product_name):
-		self._ProductContext__app = DummyApp()
-		self._ProductContext__prod = DummyProduct(product_name)
-		self._ProductContext__pack = DummyPackage()
+    def __init__(self, product_name):
+        self._ProductContext__app = DummyApp()
+        self._ProductContext__prod = DummyProduct(product_name)
+        self._ProductContext__pack = DummyPackage()
+
+    def registerClass(self, *arg, **kw):
+         self.arg = arg
+	 self.kw = kw
 
 class IDummyRegisterableClass(Interface):
     pass
@@ -369,7 +372,7 @@ class TestEggProductContext(unittest.TestCase):
         self.assertEqual(product.title,
             'Installed egg product DummyProduct (0.1-this-is-a-test-fixture)')
         self.assertEqual(product.version, '0.1-this-is-a-test-fixture')
-        self.assertEqual(product.icon, 'p_/InstalledProduct_icon')
+        self.assertEqual(product.icon, 'misc_/Basket/icon_egg.gif')
         self.failUnless(product.home.find('Basket') > -1)
         self.assertEqual(product.manage_options[:-1],
                 (Folder.manage_options[0],) + tuple(Folder.manage_options[2:]))

@@ -107,7 +107,6 @@ class EggProductContext(object):
                              (productname, f), packagename)
 
         if old is not None:
-            assert hasattr(self.app, '_manage_remove_product_meta_type')
             self.app._manage_remove_product_meta_type(product)
             products._delObject(productname)
             for id, v in old.objectItems():
@@ -213,7 +212,7 @@ class EggProductContext(object):
 
         if icon and instance_class is not None:
             setattr(instance_class, 'icon', 'misc_/%s/%s' %
-                    (product.id, os.basename(icon)))
+                    (product.id, os.path.basename(icon)))
 
         if permissions:
             self.register_additional_permissions(permissions)
