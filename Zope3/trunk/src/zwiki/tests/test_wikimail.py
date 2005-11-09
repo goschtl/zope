@@ -15,6 +15,9 @@
 
 $Id$
 """
+import email
+from email.Header import decode_header
+
 import unittest
 
 from zope.event import subscribers
@@ -36,6 +39,7 @@ from zwiki.wiki import Wiki
 SubscriberKey = 'http://www.zope.org/zwiki#1.0/MailSubscriptions/emails'
 
 mail_result=[]
+
 
 class MailSubscriptionTest(PlacelessSetup):
 
@@ -86,7 +90,7 @@ class MailSubscriptionTest(PlacelessSetup):
         self._sub.removeSubscriptions(('blah@bar.com', 'doh@bar.com'))
         self.assertEqual((),
                          self._sub.context.__annotations__[SubscriberKey])
-        
+
 
 class WikiPageMailSubscriptionTest(MailSubscriptionTest, unittest.TestCase):
 
@@ -101,7 +105,7 @@ class WikiMailSubscriptionTest(MailSubscriptionTest, unittest.TestCase):
 
 
 class MailDeliveryStub(object):
-  
+
     implements(IMailDelivery)
 
     def send(self, fromaddr, toaddrs, message):
@@ -156,21 +160,29 @@ class WikiMailerTest(PlacefulSetup, unittest.TestCase):
         self.assertEqual('wiki@zope3.org', 
                          mail_result[-1][0])
         self.assertEqual(('blah@bar.com', 'foo@bar.com'), mail_result[-1][1])
-        self.assertEqual(
-            u'''Subject: Modified: page1\n\n\n\n??changed:\n'''
-            u'''-\n'''
-            u'''+Hello World!\n''',
-            mail_result[-1][2])
+
+        message = email.message_from_string(mail_result[-1][2])
+        self.assert_(len(message) >= 3)
+        self.assertEqual(decode_header(message["Subject"])[0][0],
+            "Modified: page1")
+        self.assertEqual(message["From"], "wiki@zope3.org")
+        self.assertEqual(message["To"], "wiki@zope3.org")
+        self.assertEqual(message.get_payload(decode=True),
+            "\n??changed:\n-\n+Hello World!\n")
+
         page.source = 'Hello New World!'
         self.assertEqual('wiki@zope3.org', 
                          mail_result[-1][0])
         self.assertEqual(('blah@bar.com', 'foo@bar.com'), mail_result[-1][1])
-        self.assertEqual(
-            u'''Subject: Modified: page1\n\n\n\n??changed:\n'''
-            u'''-Hello World!\n'''
-            u'''+Hello New World!\n''',
-            mail_result[-1][2])
-  
+
+        message = email.message_from_string(mail_result[-1][2])
+        self.assert_(len(message) >= 3)
+        self.assertEqual(decode_header(message["Subject"])[0][0],
+            "Modified: page1")
+        self.assertEqual(message["From"], "wiki@zope3.org")
+        self.assertEqual(message["To"], "wiki@zope3.org")
+        self.assertEqual(message.get_payload(decode=True),
+            "\n??changed:\n-Hello World!\n+Hello New World!\n")
 
 
 def test_suite():

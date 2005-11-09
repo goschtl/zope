@@ -17,6 +17,9 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from email.MIMEText import MIMEText
+from email.Header import Header
+
 from persistent import Persistent
 
 from zope.interface import implements
@@ -284,7 +287,7 @@ class ContentFile:
             vocab = getVocabularyRegistry().get(self.context, 'SourceTypes')
             if type in [term.value for term in vocab]:
                 self.context.type = unicode(type)
-                
+
         self.context.source = unicode(data)
 
 
@@ -317,7 +320,7 @@ class MailSubscriptions:
     def getSubscriptions(self):
         "See zwiki.interfaces.IMailSubscriptions"
         return self._annotations[SubscriberKey]
-        
+
     def addSubscriptions(self, emails):
         "See zwiki.interfaces.IMailSubscriptions"
         subscribers = list(self._annotations[SubscriberKey])
@@ -325,7 +328,7 @@ class MailSubscriptions:
             if email not in subscribers:
                 subscribers.append(email.strip())
         self._annotations[SubscriberKey] = tuple(subscribers)
-                
+
     def removeSubscriptions(self, emails):
         "See zwiki.interfaces.IMailSubscriptions"
         subscribers = list(self._annotations[SubscriberKey])
@@ -333,11 +336,13 @@ class MailSubscriptions:
             if email in subscribers:
                 subscribers.remove(email)
         self._annotations[SubscriberKey] = tuple(subscribers)
-                
 
 
-class WikiMailer:
+class WikiMailer(object):
     """Class to handle all outgoing mail."""
+
+    fromaddr = "wiki@zope3.org"
+    encoding = "utf-8"
 
     def __call__(self, event):
         if IWikiPage.providedBy(event.object):
@@ -354,7 +359,7 @@ class WikiMailer:
         subject = 'Added: '+zapi.name(object)
         emails = self.getAllSubscribers(object)
         body = object.source
-        self.mail(emails, subject, body)        
+        self.mail(emails, subject, body)
 
     def handleModified(self, event):
         object = event.object
@@ -382,10 +387,17 @@ class WikiMailer:
         """Mail out the Wiki change message."""
         if not emails:
             return
-        msg = 'Subject: %s\n\n\n%s' %(subject, body)
+        msg = self._getMessage(subject, body)
         mail_delivery = zapi.getUtility(IMailDelivery,
                                        'wiki-delivery')
-        mail_delivery.send('wiki@zope3.org' , emails, msg)
+        mail_delivery.send(self.fromaddr, emails, msg)
+
+    def _getMessage(self, subject, body):
+        message = MIMEText(body.encode("utf-8"), "plain", self.encoding)
+        message["Subject"] = Header(subject.encode("utf-8"), self.encoding)
+        message["From"] = self.fromaddr
+        message["To"] = self.fromaddr
+        return message.as_string()
 
 # Create a global mailer object.
 mailer = WikiMailer()
