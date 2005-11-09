@@ -361,11 +361,13 @@ class EggProductContext(object):
         # Install items into the misc_ namespace, used by products
         # and the framework itself to store common static resources
         # like icon images.
-        misc_=pgetattr(self.package, 'misc_', {})
-        if misc_:
-            if isinstance(misc_, dict):
-                misc_ = Misc_(self.productname, misc_)
-            Application.misc_.__dict__[self.productname]=misc_
+        miscattr = pgetattr(self.package, 'misc_', {})
+        if miscattr:
+            if isinstance(miscattr, dict):
+                miscob = Misc_(self.productname, miscattr)
+            else:
+                miscob = miscattr
+            Application.misc_.misc_.__dict__[self.productname] = miscob
 
     def set_package_ac_permissions(self):
         # Support old-old-style product metadata. Older products may
@@ -405,7 +407,7 @@ class EggProductContext(object):
                         else:
                             self.new_permissions[permission]=[name]
 
-    def install(self, raise_exc=1, log_exc=1):
+    def install(self, raise_exc=True, log_exc=True):
         __traceback_info__ = self.productname
 
         package = self.package
