@@ -16,25 +16,20 @@ Locking interfaces
 
 $Id: $
 """
+from zope import interface, schema
 
-from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.event.interfaces import IObjectEvent
-from zope.interface import Interface, Attribute
-from zope.i18nmessageid import MessageFactory
 from zope.interface.common.mapping import IMapping
-import zope.interface
-import zope.schema
+from zope.app.event.objectevent import ObjectEvent
+from zope.app.i18n import ZopeMessageFactory as _
 
-_ = MessageFactory('zope.app.locking')
-
-
-class ILockable(Interface):
+class ILockable(interface.Interface):
     """
     The ILockable interface defines the locking operations that are
     supported for lockable objects.
     """
 
-    def lock(timeout=None):
+    def lock(principal=None, timeout=None):
         """
         Lock the object in the name of the current principal. This method
         raises a LockingError if the object cannot be locked by the current
@@ -49,7 +44,9 @@ class ILockable(Interface):
 
     def breaklock():
         """
-        Break all existing locks on an object for all principals.
+        Break the lock on the object, regardless of whether the current
+        principal created the lock.  Raises a LockingError if there is not a
+        lock on the object
         """
 
     def locked():
@@ -63,10 +60,9 @@ class ILockable(Interface):
         the object, or None if the object is not locked.
         """
 
-    def getLockInfo(obj):
+    def getLockInfo():
         """
-        Return a (possibly empty) sequence of ILockInfo objects describing
-        the current locks on the object.
+        Return an ILockInfo describing the current lock or None.
         """
 
     def ownLock():
@@ -81,7 +77,7 @@ class ILockable(Interface):
         """
 
 
-class ILockTracker(Interface):
+class ILockTracker(interface.Interface):
     """
     An ILockTracker implementation is responsible for tracking what
     objects are locked within its scope.
@@ -103,29 +99,53 @@ class ILockInfo(IMapping):
     An ILockInfo implementation is responsible for 
     """
 
-    def getObject():
-        """Return the actual locked object."""
+    target = interface.Attribute("""the actual locked object.""")
 
-    creator = zope.schema.TextLine(
+    principal_id = schema.TextLine(
         description=_("id of the principal owning the lock")
         )
 
-    created = zope.schema.Float(
+    created = schema.Float(
         description=_("time value indicating the creation time"),
         required=False
         )
 
-    timeout = zope.schema.Float(
+    timeout = schema.Float(
         description=_("time value indicating the lock timeout from creation"),
         required=False
         )
 
+class ILockStorage(interface.Interface):
+    """
+    A lock storage lets you store information about locks in a central place
+    """
+                    
+    def getLock(object):
+        """
+        Get the current lock for an object.
+        """
 
+    def setLock(object, lock):
+        """
+        Set the current lock for an object.
+        """
+
+    def delLock(object):
+        """
+        Delete the current lock for an object.
+        """
+
+    def cleanup():
+        """We occasionally want to clean up expired locks to keep them
+        from accumulating over time and slowing things down.
+        """
+
+# event interfaces
 
 class ILockedEvent(IObjectEvent):
     """An object has been locked"""
 
-    lock = Attribute("The lock set on the object")
+    lock = interface.Attribute("The lock set on the object")
     
 class IUnlockedEvent(IObjectEvent):
     """An object has been unlocked"""
@@ -133,7 +153,27 @@ class IUnlockedEvent(IObjectEvent):
 class IBreakLockEvent(IUnlockedEvent):
     """Lock has been broken on an object"""
 
+# events
 
+class EventBase(ObjectEvent):
+    def __repr__(self):
+        return '%s for %s' % (self.__class__.__name__, `self.object`)
+
+class LockedEvent(EventBase):
+    interface.implements(ILockedEvent)
+
+    def __init__(self, object, lock):
+        self.object = object
+        self.lock = lock
+
+
+class UnlockedEvent(EventBase):
+    interface.implements(IUnlockedEvent)
+
+class BreakLockEvent(UnlockedEvent):
+    interface.implements(IBreakLockEvent)
+
+# exceptions
 
 class LockingError(Exception):
     """

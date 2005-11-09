@@ -82,6 +82,8 @@ def setUp(test):
 
 
 def tearDown(test):
+    import zope.app.locking.storage
+    import time
     del sys.modules[name]
     abort()
     db = test.globs.get('db')
@@ -90,6 +92,7 @@ def tearDown(test):
     ps.tearDown()
     del test._storage
     zope.event.subscribers.pop()
+    zope.app.locking.storage.timefunc = time.time
 
 def test_suite():
     return doctest.DocFileSuite('README.txt', setUp=setUp, tearDown=tearDown,

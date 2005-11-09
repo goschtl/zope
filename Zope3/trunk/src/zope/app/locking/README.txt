@@ -20,7 +20,7 @@ that:
     provide fields that higher-level application components can use
     to implement and enforce such semantics
 
-  - can potentially be be used to build more ambitious locking
+  - can potentially be used to build more ambitious locking
     mechanisms (such as WebDAV locking equivalent to Zope 2)
 
   - supports common use cases that have been uncovered in several years
@@ -140,7 +140,9 @@ Now, let's look at basic locking. To perform locking operations, we first
 have to adapt an object to `ILockable`:
 
   >>> obj = ILockable(item1)
-
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(ILockable, obj)
+  True
 
 We can ask if the object is locked:
 
@@ -158,7 +160,7 @@ Now let's lock the object. Note that the lock method return an instance
 of an object that implements `ILockInfo` on success:
 
   >>> info = obj.lock()
-  >>> ILockInfo.providedBy(info)
+  >>> verifyObject(ILockInfo, info)
   True
 
   >>> obj.locked()
@@ -240,9 +242,7 @@ created.
   >>> obj.locked()
   False
 
-  >>> # undo our time hack
-  >>> zope.app.locking.storage.timefunc = time.time
-
+(Note that we undo our time hack in the tearDown of this module.)
 
 Finally, it is possible to explicitly get an `ILockInfo` object that
 contains the lock information for the object. Note that locks that do
@@ -300,6 +300,8 @@ the current locks for a principal, or all current locks:
   >>> from zope.app.locking.interfaces import ILockTracker
   >>> from zope.app.zapi import getUtility
   >>> util = getUtility(ILockTracker)
+  >>> verifyObject(ILockTracker, util)
+  True
 
   >>> items = util.getLocksForPrincipal('britney')
   >>> len(items) == 1
@@ -322,6 +324,16 @@ performs unlocking or breaking of locks on sets of objects:
   >>> len(items)
   0
 
+The lock storage utility provides further capabilities, and is a part of the
+standard lock adapter implementation, but the ILockable interface does not
+depend on ILockStorage.  Other implementations of ILockable may not use
+ILockStorage.  However, if used by the adapter, it provides useful
+capabilties.
+
+  >>> from zope.app.locking.interfaces import ILockStorage
+  >>> util = getUtility(ILockStorage)
+  >>> verifyObject(ILockStorage, util)
+  True
 
 Locking events
 --------------

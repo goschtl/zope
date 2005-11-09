@@ -24,12 +24,12 @@ import persistent
 from BTrees.OOBTree import OOBTree
 from BTrees.IOBTree import IOBTree
 
-import zope.component
-import zope.interface
+from zope import component, interface
 
 from zope.app.keyreference.interfaces import IKeyReference
-from zope.app.locking.interfaces import ILockTracker
-from zope.app.locking.interfaces import LockingError
+from zope.app.locking import interfaces
+# for backwards compatibility:
+from zope.app.locking.interfaces import ILockStorage
 from zope.app.size.interfaces import ISized
 
 from zope.app.i18n import ZopeMessageFactory as _
@@ -37,13 +37,6 @@ from zope.app.i18n import ZopeMessageFactory as _
 
 timefunc = time.time
 
-
-class ILockStorage(zope.interface.Interface):
-    """
-    This interface is internal to the default locking implementation. It
-    lets us store lock information in a central place rather than store
-    it on individual objects.
-    """
 
 
 class LockStorage(object):
@@ -67,7 +60,7 @@ class LockStorage(object):
 
     """
 
-    zope.interface.implements(ILockStorage, ILockTracker)
+    interface.implements(interfaces.ILockStorage, interfaces.ILockTracker)
     
     def __init__(self):
         self.timeouts = IOBTree()
@@ -81,15 +74,15 @@ class LockStorage(object):
     # ILockTracker implementation
     
     def getLocksForPrincipal(self, principal_id):
-        return self.currentLocks(principal_id)
+        return self._currentLocks(principal_id)
 
     def getAllLocks(self):
-        return self.currentLocks()
+        return self._currentLocks()
 
-    # ILockStorage implementation
-
-    def currentLocks(self, principal_id=None):
+    def _currentLocks(self, principal_id=None):
         """
+        Helper method for getAllLocks and getLocksForPrincipal.
+        
         Return the currently active locks, possibly filtered by principal.
         """
         result = []
@@ -100,6 +93,8 @@ class LockStorage(object):
                     ):
                     result.append(lock)
         return result
+
+    # ILockStorage implementation
                     
     def getLock(self, object):
         """
@@ -145,8 +140,8 @@ class LockStorage(object):
 
 class Sized(object):
 
-    zope.interface.implements(ISized)
-    zope.component.adapts(ILockStorage)
+    interface.implements(ISized)
+    component.adapts(interfaces.ILockStorage)
 
     def __init__(self, context):
         self.context = context

@@ -17,22 +17,16 @@ Locking adapter implementation.
 $Id: $
 """
 
-from zope.app.locking.interfaces import ILockable, ILockedEvent
-from zope.app.locking.interfaces import IUnlockedEvent, IBreakLockEvent
-from zope.app.keyreference.interfaces import IKeyReference
-from zope.component.exceptions import ComponentLookupError
-from zope.app.event.objectevent import ObjectEvent
-from zope.app.locking.interfaces import LockingError
-from zope.app.locking.storage import ILockStorage
-from zope.app.locking.lockinfo import LockInfo
-from zope.app.locking.interfaces import _
-from zope.component import getUtility
+from zope import interface, component, event
 import zope.security.management
-from zope.event import notify
-import zope.interface
+from zope.app.keyreference.interfaces import IKeyReference
+from zope.app.i18n import ZopeMessageFactory as _
 
+from zope.app.locking.lockinfo import LockInfo
+from zope.app.locking import interfaces
 
-
+@component.adapter(interface.Interface)
+@interface.implementer(interfaces.ILockable)
 def LockingAdapterFactory(target):
     """
     Return target adapted to ILockable, or None. This should be registered
@@ -41,21 +35,20 @@ def LockingAdapterFactory(target):
     if IKeyReference(target, None) is None:
         return None
     return LockingAdapter(target)
-    
 
 class LockingAdapter(object):
     """
     Default ILockable adapter implementation.
     """
 
-    zope.interface.implements(ILockable)
+    # this MUST be a trusted adapter!!
+
+    interface.implements(interfaces.ILockable)
     
     def __init__(self, context):
-        try:
-            self.storage = getUtility(ILockStorage, context=context)
-        except ComponentLookupError:
-            self.storage = getUtility(ILockStorage)
+        self.storage = component.getUtility(interfaces.ILockStorage)
         self.context = context
+        self.__parent__ = context
 
     def _findPrincipal(self):
         # Find the current principal. Note that it is possible for there
@@ -66,39 +59,39 @@ class LockingAdapter(object):
             if principal is None:
                 principal = p.principal
             else:
-                raise LockingError(_("Multiple principals found"))
+                raise interfaces.LockingError(_("Multiple principals found"))
         if principal is None:
-            raise LockingError(_("No principal found"))
+            raise interfaces.LockingError(_("No principal found"))
         return principal
 
-    def lock(self, principal=None, timeout=None):
+    def lock(self, timeout=None, principal=None):
         if principal is None:
             principal = self._findPrincipal()
         principal_id = principal.id
         lock = self.storage.getLock(self.context)
         if lock is not None:
-            raise LockingError(_("Object is already locked"))
+            raise interfaces.LockingError(_("Object is already locked"))
         lock = LockInfo(self.context, principal_id, timeout)
         self.storage.setLock(self.context, lock)
-        notify(LockedEvent(self.context, lock))
+        event.notify(interfaces.LockedEvent(self.context, lock))
         return lock
 
     def unlock(self):
         lock = self.storage.getLock(self.context)
         if lock is None:
-            raise LockingError(_("Object is not locked"))
+            raise interfaces.LockingError(_("Object is not locked"))
         principal = self._findPrincipal()
         if lock.principal_id != principal.id:
-            raise LockingError(_("Principal is not lock owner"))
+            raise interfaces.LockingError(_("Principal is not lock owner"))
         self.storage.delLock(self.context)
-        notify(UnlockedEvent(self.context))
+        event.notify(interfaces.UnlockedEvent(self.context))
 
     def breaklock(self):
         lock = self.storage.getLock(self.context)
         if lock is None:
-            raise LockingError(_("Object is not locked"))
+            raise interfaces.LockingError(_("Object is not locked"))
         self.storage.delLock(self.context)
-        notify(BreakLockEvent(self.context))
+        event.notify(interfaces.BreakLockEvent(self.context))
 
     def locked(self):
         lock = self.storage.getLock(self.context)
@@ -130,30 +123,9 @@ class LockingAdapter(object):
     def __repr__(self):
         return '<Locking adapter for %s>' % repr(self.context)
 
-
-
-class EventBase(ObjectEvent):
-    def __repr__(self):
-        return '%s for %s' % (self.__class__.__name__, `self.object`)
-
-class LockedEvent(EventBase):
-    zope.interface.implements(ILockedEvent)
-
-    def __init__(self, object, lock):
-        self.object = object
-        self.lock = lock
-
-
-class UnlockedEvent(EventBase):
-    zope.interface.implements(IUnlockedEvent)
-
-class BreakLockEvent(UnlockedEvent):
-    zope.interface.implements(IBreakLockEvent)
-
-
 class LockingPathAdapter(object):
 
-    zope.interface.implements(
+    interface.implements(
         zope.app.traversing.interfaces.IPathAdapter)
 
     def __init__(self, target):

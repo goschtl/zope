@@ -1,8 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            i18n_domain="zope.app.locking">
 
-  <permission id="zope.app.locking.UseLocking" title="Use locking" />
-
   <!-- Registering documentation with API doc -->
   <configure
       xmlns:apidoc="http://namespaces.zope.org/apidoc"
@@ -16,6 +14,30 @@
         />
 
   </configure>
+
+  <class class=".adapter.LockingAdapter">
+    <allow attributes="locked ownLock isLockedOut getLockInfo" />
+    <require permission="zope.View"
+      attributes="locker" />
+    <require permission="zope.ManageContent"
+      attributes="lock unlock" />
+    <require permission="zope.Security"
+      attributes="breaklock" />
+  </class>
+
+  <class class=".lockinfo.LockInfo">
+    <allow attributes="getLockInfo" />
+    <require permission="zope.View"
+      attributes="principal_id created timeout" />
+    <require permission="zope.View"
+      interface="zope.interface.common.mapping.IEnumerableMapping" 
+      />
+    <require permission="zope.View"
+      interface="zope.interface.common.mapping.IWriteMapping"
+      />
+  </class>
+
+  <adapter factory=".adapter.LockingAdapterFactory" trusted="1" />
 
   <adapter
       factory=".storage.Sized"
