@@ -1,9 +1,10 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:i18n="http://namespaces.zope.org/i18n"
     >
 
   <!-- Default (empty) Translations -->
-  <i18n:registerTranslations directory="locales" />
+  <utility
+      component="zope.i18n.testmessagecatalog.TestMessageFallbackDomain"
+      />
 
 </configure>
