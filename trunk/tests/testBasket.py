@@ -11,8 +11,38 @@ from OFS.SimpleItem import SimpleItem
 from OFS.Folder import Folder
 import OFS
 from Interface import Interface
+import App.config
+import zLOG
 
 here = os.path.dirname(__file__)
+
+class LogInterceptor:
+
+    _old_log_write = None
+    logged = None
+
+    def _catch_log_errors( self, ignored_level=zLOG.PROBLEM ):
+
+        if self._old_log_write is not None:
+            return
+
+        def log_write(subsystem, severity, summary, detail, error):
+            if severity > ignored_level:
+                assert 0, "%s(%s): %s" % (subsystem, severity, summary)
+            if self.logged is None:
+                self.logged = []
+            self.logged.append( ( subsystem, severity, summary, detail ) )
+
+        self._old_log_write = zLOG.log_write
+        zLOG.log_write = log_write
+
+    def _ignore_log_errors( self ):
+
+        if self._old_log_write is None:
+            return
+
+        zLOG.log_write = self._old_log_write
+        del self._old_log_write
 
 class DummyProduct:
     def __init__(self, id):
@@ -62,7 +92,7 @@ def dummy_initializer(context):
 def legacymethod(self):
     pass
 
-class TestBasket(unittest.TestCase):
+class TestBasket(unittest.TestCase, LogInterceptor):
 
     def setUp(self):
         self.working_set = pkg_resources.working_set
@@ -74,6 +104,8 @@ class TestBasket(unittest.TestCase):
         self.old_callbacks = self.working_set.callbacks[:]
         self.oldproductpath = Products.__path__
         self.fixtures = os.path.join(here, 'fixtures')
+        self.old_debug_mode = App.config.getConfiguration().debug_mode
+        self.logged = []
 
     def tearDown(self):
         sys.path[:] = self.oldsyspath
@@ -87,6 +119,7 @@ class TestBasket(unittest.TestCase):
         working_set.entry_keys.update(self.oldentry_keys)
         working_set.callbacks[:] = self.old_callbacks
         Products.__path__[:] = self.oldproductpath
+        App.config.getConfiguration().debug_mode = self.old_debug_mode
 
     def _getTargetClass(self):
         from Products.Basket import Basket
@@ -141,6 +174,68 @@ class TestBasket(unittest.TestCase):
                                   'product2 initialized'])
         self.failUnless(sys.modules.has_key('Products.product1'))
         self.failUnless(sys.modules.has_key('Products.product2'))
+
+    def test_initialize_of_broken_at_import_in_debug_mode(self):
+        basket = self._makeOne()
+        basket.pre_initialized = True
+        App.config.getConfiguration().debug_mode = True
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        basket.require(distro_str='brokenatimport>=0.1')
+                
+        self.assertRaises(ImportError, basket.initialize,
+                          DummyProductContext('Basket'))
+
+    def test_initialize_of_broken_at_import_no_debug_mode(self):
+        basket = self._makeOne()
+        basket.pre_initialized = True
+        App.config.getConfiguration().debug_mode = False
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        basket.require(distro_str='brokenatimport>=0.1')
+                
+        self._catch_log_errors(zLOG.ERROR)
+        try:
+            basket.initialize(DummyProductContext('Basket'))
+        finally:
+            self._ignore_log_errors()
+
+        self.assertEqual(len(self.logged), 1)
+        warning = self.logged[0]
+        self.assertEqual(warning[1], zLOG.ERROR)
+        self.failUnless(warning[2].startswith('Problem initializing'))
+
+    def test_initialize_of_broken_at_initialize_debug_mode(self):
+        basket = self._makeOne()
+        basket.pre_initialized = True
+        App.config.getConfiguration().debug_mode = True
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        basket.require(distro_str='brokenatinitialize>=0.1')
+                
+        self.assertRaises(ValueError, basket.initialize,
+                          DummyProductContext('Basket'))
+
+    def test_initialize_of_broken_at_initialize_no_debug_mode(self):
+        basket = self._makeOne()
+        basket.pre_initialized = True
+        App.config.getConfiguration().debug_mode = False
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        basket.require(distro_str='brokenatinitialize>=0.1')
+        self._catch_log_errors(zLOG.ERROR)
+        try:
+            basket.initialize(DummyProductContext('Basket'))
+        finally:
+            self._ignore_log_errors()
+        self.assertEqual(len(self.logged), 1)
+        warning = self.logged[0]
+        self.assertEqual(warning[1], zLOG.ERROR)
+        self.failUnless(warning[2].startswith('Couldn\'t install'))
 
     def test_parse_product_distributions_file(self):
         from StringIO import StringIO

@@ -446,8 +446,8 @@ class EggProductContext(object):
 
         except:
             if log_exc:
-                LOG('Zope',ERROR,'Couldn\'t install %s' % productname,
-                    error=sys.exc_info())
+                zLOG.LOG('Zope',zLOG.ERROR,'Couldn\'t install %s' % productname,
+                         error=sys.exc_info())
             transaction.abort()
             if raise_exc:
                 raise

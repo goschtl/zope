@@ -29,6 +29,8 @@ class Basket(object):
     def initialize(self, context):
         context.registerClass(EggProduct, constructors = (('dummy',None),),
                               visibility=None, icon='icon_egg.gif')
+        # Grab app from Zope product context
+        # It's a "protected" attribute, hence the name mangling
         app = context._ProductContext__app
         debug_mode = App.config.getConfiguration().debug_mode
 
@@ -43,13 +45,23 @@ class Basket(object):
 
         data = []
         points = pkg_resources.iter_entry_points(entrypoint_group)
-        # Grab app from Zope product context
-        # It's a "protected" attribute, hence the name mangling
         meta_types = []
+
         for point in points:
             # XXX deal with duplicate product names by raising an exception
             # somewhere in here.
-            product_pkg = get_containing_package(point.module_name)
+            try:
+                product_pkg = get_containing_package(point.module_name)
+            except:
+                if debug_mode:
+                    raise
+                else:
+                    zLOG.LOG('Egg Product Init', zLOG.ERROR,
+                             'Problem initializing product with entry point '
+                             '%s in module %s' % (point.name,point.module_name),
+                             error=sys.exc_info())
+                    continue
+                
             productname = product_pkg.__name__.split('.')[-1]
             initializer = get_initializer(point, productname, debug_mode)
             context = EggProductContext(productname, initializer, app,
