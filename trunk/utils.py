@@ -3,10 +3,12 @@ import pkg_resources
 import os
 import re
 import sys
+import resource
 
 import Globals
 from Globals import package_home
 from Globals import InitializeClass
+from Globals import ImageResource
 from OFS.content_types import guess_content_type
 from App.Common import rfc1123_date
 from App.special_dtml import defaultBindings
