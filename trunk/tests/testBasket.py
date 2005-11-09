@@ -2,10 +2,10 @@ import unittest
 import os
 import sys
 import copy
-import pkg_resources
 import Products
 from Products.Basket.utils import EggProductContext
 from Products.Basket import get_containing_package
+from Products.Basket import pkg_resources
 from OFS.ObjectManager import ObjectManager
 from OFS.SimpleItem import SimpleItem
 from OFS.Folder import Folder
@@ -171,7 +171,7 @@ class TestBasket(unittest.TestCase):
         # don't consider other eggs that happen to be on the path, only
         # test that we find the things that are in our fixture dir
         actual = [ dist.key for dist in distributions if dist.key in expected ]
-        self.assertEqual(expected, actual)
+        self.assertEqual(sorted(expected), sorted(actual))
 
     def test_preinitalize_pdist_file_success(self):
         basket = self._makeOne()
@@ -603,6 +603,10 @@ class TestResource(unittest.TestCase):
         self.test_image_resource(module='Products.diskproduct1')
 
 
+def sorted(L):
+    L.sort()
+    return L
+
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
@@ -611,3 +615,4 @@ def test_suite():
     suite.addTest(makeSuite(TestResource))
     suite.addTest(makeSuite(TestEggProduct))
     return suite
+

@@ -39,6 +39,9 @@ import zLOG
 _marker = ()
 
 class EggProduct(Product):
+
+    meta_type = 'Egg Product'
+
     def __init__(self, id, title, packagename):
         self.id = id
         self.title = title
@@ -117,7 +120,7 @@ class EggProductContext(object):
                              error=sys.exc_info())
 
         products._setObject(productname, product)
-        product.icon = 'p_/InstalledProduct_icon'
+        product.icon = 'misc_/Basket/icon_egg.gif'
         product.version = fver
         product.home = str(self.package.__path__)
 
@@ -210,7 +213,7 @@ class EggProductContext(object):
 
         if icon and instance_class is not None:
             setattr(instance_class, 'icon', 'misc_/%s/%s' %
-                    (product.id, os.path.split(icon)[1]))
+                    (product.id, os.basename(icon)))
 
         if permissions:
             self.register_additional_permissions(permissions)
@@ -417,7 +420,11 @@ class EggProductContext(object):
         try:
             self.set_package_module_aliases()
             self.set_package_misc_attrs()
-            init_data = initializer(self)
+            # allow entry points that are "dummies" (e.g. just the module)
+            # in case the product doesn't have an initialize function that
+            # needs to be called
+            if callable(initializer): 
+                init_data = initializer(self)
             self.set_package_ac_permissions()
             self.munge_package_meta_types()
             self.set_package_methods()

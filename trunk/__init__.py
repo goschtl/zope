@@ -1,8 +1,8 @@
 import sys
 import os
 import pkg_resources
-import inspect
 from utils import EggProductContext
+from utils import EggProduct
 
 entrypoint_group = 'zope2.initialize'
 
@@ -23,6 +23,8 @@ class Basket(object):
         return L
 
     def initialize(self, context):
+        context.registerClass(EggProduct, constructors = (('dummy',None),),
+                              visibility=None, icon='icon_egg.gif')
         if not self.pre_initialized:
             try:
                 home = INSTANCE_HOME
@@ -34,7 +36,7 @@ class Basket(object):
         data = []
         points = pkg_resources.iter_entry_points(entrypoint_group)
         # Grab app from Zope product context
-        # It's a "protected" attributes, hence the name mangling
+        # It's a "protected" attribute, hence the name mangling
         app = context._ProductContext__app
         meta_types = []
         for point in points:
