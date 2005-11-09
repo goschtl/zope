@@ -9,6 +9,7 @@ from Products.Basket import get_containing_package
 from OFS.ObjectManager import ObjectManager
 from OFS.SimpleItem import SimpleItem
 from OFS.Folder import Folder
+from Interface import Interface
 
 here = os.path.dirname(__file__)
 
@@ -41,8 +42,19 @@ class DummyProductContext:
 		self._ProductContext__prod = DummyProduct(product_name)
 		self._ProductContext__pack = DummyPackage()
 
+class IDummyRegisterableClass(Interface):
+    pass
+
+class DummyRegisterableClass:
+    icon = 'p_/foo'
+    meta_type = 'Dummy Registerable Class'
+    __implements__ = IDummyRegisterableClass
+
 def dummy_initializer(context):
     return 'initializer called'
+
+def legacymethod(self):
+    pass
 
 class TestBasket(unittest.TestCase):
 
@@ -248,6 +260,23 @@ class TestEggProductContext(unittest.TestCase):
             del sys.modules['Dummy.Foo']
         if sys.modules.has_key('Dummy.Bar'):
             del sys.modules['Dummy.Bar']
+        import Products
+        L = []
+        if hasattr(Products, 'meta_types'):
+            for thing in Products.meta_types:
+                if not thing.has_key('test_chicken'):
+                    L.append(thing)
+            Products.meta_types = tuple(L)
+        Products.__ac_permissions__ = ()
+        from Globals import ApplicationDefaultPermissions as g
+        for k, v in g.__dict__.items():
+            if (k.startswith('_') and k.endswith('_Permission') and
+                k.find('Dummy') > -1):
+                delattr(g, k)
+        from OFS.ObjectManager import ObjectManager as o
+        for k, v in o.__dict__.items():
+            if k.find('legacy') > -1:
+                delattr(o, k)
 
     def _getTargetClass(self):
         from Products.Basket.utils import EggProductContext
@@ -371,10 +400,117 @@ class TestEggProductContext(unittest.TestCase):
         del Globals.__disk_product_installed__
         ob = context.create_product_object()
         self.failIfEqual(id(aq_base(product)), id(aq_base(ob)))
+        self.assertEqual(ob.manage_options[0],
+                         {'label':'Traceback', 'action':'manage_traceback'})
+
+    def test_registerClass_commonargs(self):
+        app = DummyApp()
+        products = app.Control_Panel.Products
+        package = DummyPackage()
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        def constructor(self, id):
+            pass
+        def constructor2(self, id):
+            pass
+        constructors = (constructor, constructor2)
+        context.registerClass(DummyRegisterableClass,
+                              constructors = constructors)
+        from Globals import ApplicationDefaultPermissions as g
+        self.assertEqual(
+            g._Add_Dummy_Registerable_Classs_Permission, ('Manager',))
+
+        # hahahahahaha <loud bang>
+        misc = dict(package._m.__dict__['ob'].__dict__)
+        self.assertEqual(misc['constructor'], constructor)
+        self.assertEqual(misc['constructor__roles__'], context.pr)
+        self.assertEqual(misc['constructor2'], constructor2)
+        self.assertEqual(misc['constructor2__roles__'], context.pr)
+        
+        found = False
+        import Products
+        for product in Products.meta_types:
+            if product['product'] == 'DummyProduct':
+                found = True
+                eq = self.assertEqual
+                eq(product['name'], 'Dummy Registerable Class')
+                eq(product['permission'], 'Add Dummy Registerable Classes')
+                eq(product['interfaces'][0], IDummyRegisterableClass)
+                eq(product['visibility'], 'Global')
+                eq(product['action'],
+                   'manage_addProduct/DummyProduct/constructor')
+                eq(product['container_filter'], None)
+        if not found:
+            raise AssertionError, 'Dummy Product not found'
+
+    def test_registerClass_legacy_aliased(self):
+        from OFS.ObjectManager import ObjectManager
+        app = DummyApp()
+        products = app.Control_Panel.Products
+        package = DummyPackage()
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        legacy = [('legacymethod2', legacymethod)]
+        def constructor(self):
+            pass
+        context.registerClass(DummyRegisterableClass,
+                              constructors = (constructor,),
+                              legacy = legacy)
+        self.assertEqual(ObjectManager.legacymethod.im_func, legacymethod)
+        self.assertEqual(ObjectManager.legacymethod2.im_func, legacymethod)
+        self.assertEqual(ObjectManager.legacymethod__roles__, context.pr)
+        self.assertEqual(ObjectManager.legacymethod2__roles__, context.pr)
+
+    def test_registerClass_constructor_tuples(self):
+        app = DummyApp()
+        products = app.Control_Panel.Products
+        package = DummyPackage()
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        def constructor(self, id):
+            pass
+        def constructor2(self, id):
+            pass
+        constructors = (('constructora', constructor),
+                        ('constructorb',constructor2))
+        context.registerClass(DummyRegisterableClass,
+                              constructors = constructors)
+        misc = dict(package._m.__dict__['ob'].__dict__)
+        self.assertEqual(misc['constructora'], constructor)
+        self.assertEqual(misc['constructora__roles__'], context.pr)
+        self.assertEqual(misc['constructorb'], constructor2)
+        self.assertEqual(misc['constructorb__roles__'], context.pr)
+
+    def test_registerClass_with_permission(self):
+        app = DummyApp()
+        products = app.Control_Panel.Products
+        package = DummyPackage()
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package)
+        def constructor(self, id):
+            pass
+        constructors = (constructor,)
+        context.registerClass(DummyRegisterableClass,
+                              permission = 'Appease This Stupid Machinery',
+                              constructors = constructors)
+        from Globals import ApplicationDefaultPermissions as g
+        self.assertEqual(
+            g._Appease_This_Stupid_Machinery_Permission, ('Manager',))
+
+class TestEggProduct(unittest.TestCase):
+    def _getTargetClass(self):
+        from Products.Basket.utils import EggProduct
+        return EggProduct
+
+    def _makeOne(self, *arg, **kw):
+        klass = self._getTargetClass()
+        return klass(*arg, **kw)
+
+    def test_manage_get_product_readme__(self):
+        product = self._makeOne('foo', 'foo product', 'Products.Basket.tests')
+        self.assertEqual(product.manage_get_product_readme__().strip(),
+                         'This is a test fixture, beeyotch!')
 
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
     suite.addTest(makeSuite(TestBasket))
     suite.addTest(makeSuite(TestEggProductContext))
+    suite.addTest(makeSuite(TestEggProduct))
     return suite

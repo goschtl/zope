@@ -18,10 +18,11 @@ from OFS.Application import pgetattr
 from OFS.Application import get_folder_permissions
 from OFS import Application
 from App.ProductContext import ProductContext
+from App.ProductContext import AttrDict
 from App.Product import Product
 from App.Product import ihasattr
 from App.Product import doInstall
-from ZODB.POSException import ConflictError
+from App.FactoryDispatcher import FactoryDispatcher
 from OFS.Folder import Folder
 import transaction
 
@@ -131,14 +132,15 @@ class DTMLResource(DTMLFile):
                 self.__changed__(0)
 
 class EggProduct(Product):
-    def __init__(self, id, title):
+    def __init__(self, id, title, packagename):
         self.id = id
         self.title = title
+        self.packagename = packagename
 
     def manage_get_product_readme__(self):
         for fname in ('README.txt', 'README.TXT', 'readme.txt'):
-            if pkg_resources.resource_exists(self.productname, fname):
-                return pkg_resources.resource_string(self.productname, fname)
+            if pkg_resources.resource_exists(self.packagename, fname):
+                return pkg_resources.resource_string(self.packagename, fname)
         return ''
 
     def _readRefreshTxt(self, pid=None):
@@ -192,7 +194,7 @@ class EggProductContext(object):
 
         f = fver and (" (%s)" % fver)
         product = EggProduct(productname, 'Installed egg product %s%s' %
-                             (productname, f))
+                             (productname, f), packagename)
 
         if old is not None:
             assert hasattr(self.app, '_manage_remove_product_meta_type')
@@ -254,9 +256,6 @@ class EggProductContext(object):
 
         instance_class -- The class of the object that will be created.
 
-          This is not currently used, but may be used in the future to
-          increase object mobility.
-
         meta_type -- The kind of object being created
            This appears in add lists.  If not specified, then the class
            meta_type will be used.
@@ -266,10 +265,10 @@ class EggProductContext(object):
            meta type will be used.
 
         constructors -- A list of constructor methods
-          A method can me a callable object with a __name__
+          A method can be a callable object with a __name__
           attribute giving the name the method should have in the
           product, or the method may be a tuple consisting of a
-          name and a callable object.  The method must be picklable.
+          name and a callable object.  The method must be pickleable.
 
           The first method will be used as the initial method called
           when creating an object.
@@ -298,77 +297,35 @@ class EggProductContext(object):
            before calling an object's constructor.
 
         """
-        app=self.app
-        pack=self.package
-        productObject=self.product
+        app = self.app
+        package = self.package
+        product = self.product
 
-        initial=constructors[0]
-        pid=productObject.id
+        initial = constructors[0]
 
         if icon and instance_class is not None:
             setattr(instance_class, 'icon', 'misc_/%s/%s' %
-                    (pid, os.path.split(icon)[1]))
-
-        OM=ObjectManager
+                    (product.id, os.path.split(icon)[1]))
 
         if permissions:
-            if isinstance(permissions, basestring): # You goofed it!
-                raise TypeError, ('Product context permissions should be a '
-                    'list of permissions not a string', permissions)
-            for p in permissions:
-                if isinstance(p, tuple):
-                    p, default= p
-                    registerPermissions(((p, (), default),))
-                else:
-                    registerPermissions(((p, ()),))
+            self.register_additional_permissions(permissions)
 
-        ############################################################
-        # Constructor permission setup
-        if permission is None:
-            permission="Add %ss" % (meta_type or instance_class.meta_type)
+        pr = self.register_constructor_permission(permission, meta_type,
+                                                  instance_class)
+        self.pr = pr # for unit tests
 
-        if isinstance(permission, tuple):
-            permission, default = permission
-        else:
-            default = ('Manager',)
-
-        pr=PermissionRole(permission,default)
-        registerPermissions(((permission, (), default),))
-        ############################################################
-
-        for method in legacy:
-            if isinstance(method, tuple):
-                name, method = method
-                aliased = 1
-            else:
-                name=method.__name__
-                aliased = 0
-            if not OM.__dict__.has_key(name):
-                setattr(OM, name, method)
-                setattr(OM, name+'__roles__', pr)
-                if aliased:
-                    # Set the unaliased method name and its roles
-                    # to avoid security holes.  XXX: All "legacy"
-                    # methods need to be eliminated.
-                    setattr(OM, method.__name__, method)
-                    setattr(OM, method.__name__+'__roles__', pr)
+        if legacy:
+            self.register_legacy(legacy, pr)
 
         if isinstance(initial, tuple):
-            name, initial = initial
+            cname, initial = initial
         else:
-            name = initial.__name__
+            cname = initial.__name__
 
-        fd=getattr(pack, '__FactoryDispatcher__', None)
-        if fd is None:
-            class __FactoryDispatcher__(FactoryDispatcher):
-                "Factory Dispatcher for a Specific Product"
+        fd = self.get_factory_dispatcher(package)
 
-            fd = pack.__FactoryDispatcher__ = __FactoryDispatcher__
-
-        if not hasattr(pack, '_m'):
-            pack._m = AttrDict(fd)
-
-        m = pack._m
+        if not hasattr(package, '_m'):
+            package._m = AttrDict(fd)
 
         if interfaces is _marker:
             if instance_class is None:
@@ -376,36 +333,107 @@ class EggProductContext(object):
             else:
                 interfaces = instancesOfObjectImplements(instance_class)
 
-        Products.meta_types=Products.meta_types+(
+        self.register_product_meta_type(meta_type, instance_class,
+                                        product.id, cname, permission,
+                                        visibility, interfaces,
+                                        container_filter)
+
+        self.register_constructors(cname, constructors, package._m, pr)
+
+        if icon:
+            self.register_icon(icon, productname, cname)
+
+    def register_additional_permissions(self, permissions):
+        if isinstance(permissions, basestring): # You goofed it!
+            raise TypeError, ('Product context permissions should be a '
+                'list of permissions not a string', permissions)
+        for p in permissions:
+            if isinstance(p, tuple):
+                p, default= p
+                registerPermissions(((p, (), default),))
+            else:
+                registerPermissions(((p, ()),))
+
+    def register_constructor_permission(self, permission, meta_type,
+                                        instance_class):
+        if permission is None:
+            permission = "Add %ss" % (meta_type or instance_class.meta_type)
+
+        if isinstance(permission, tuple):
+            permission, default = permission
+        else:
+            default = ('Manager',)
+
+        pr = PermissionRole(permission,default)
+        registerPermissions(((permission, (), default),))
+        return pr
+
+    def register_legacy(self, legacy, pr):
+        for method in legacy:
+            if isinstance(method, tuple):
+                name, method = method
+                aliased = 1
+            else:
+                name = method.__name__
+                aliased = 0
+            if not ObjectManager.__dict__.has_key(name):
+                setattr(ObjectManager, name, method)
+                setattr(ObjectManager, name + '__roles__', pr)
+                if aliased:
+                    # Set the unaliased method name and its roles
+                    # to avoid security holes.  XXX: All "legacy"
+                    # methods need to be eliminated.
+                    setattr(ObjectManager, method.__name__, method)
+                    setattr(ObjectManager, method.__name__+'__roles__', pr)
+
+    def register_product_meta_type(self, meta_type,instance_class, productname,
+                                   cname, permission, visibility, interfaces,
+                                   container_filter):
+        if not hasattr(Products, 'meta_types'):
+            Products.meta_types = ()
+        Products.meta_types = Products.meta_types+(
             { 'name': meta_type or instance_class.meta_type,
-              'action': ('manage_addProduct/%s/%s' % (pid, name)),
-              'product': pid,
+              'action': ('manage_addProduct/%s/%s' % (productname, cname)),
+              'product': productname,
               'permission': permission,
               'visibility': visibility,
               'interfaces': interfaces,
               'instance': instance_class,
-              'container_filter': container_filter
+              'container_filter': container_filter,
+              'test_chicken': True # to allow unit tests to clean up efficiently
               },)
 
-        m[name]=initial
-        m[name+'__roles__']=pr
+    def register_icon(self, icon_path, productname, cname):
+        name = os.path.split(icon_path)[1]
+        icon = ImageResource(icon_path, self.package.__dict__)
+        icon.__roles__ = None
+        if not hasattr(OFS.misc_.misc_, productname):
+            setattr(OFS.misc_.misc_, productname,
+                    OFS.misc_.Misc_(productname, {}))
+        getattr(OFS.misc_.misc_, productname)[cname] = icon
+
+    def register_constructors(self, cname, constructors, misc, pr):
+        initial = constructors[0]
+        misc[cname] = initial
+        misc[cname+'__roles__'] = pr
 
         for method in constructors[1:]:
             if isinstance(method, tuple):
                 name, method = method
             else:
-                name=os.path.split(method.__name__)[-1]
-            if not productObject.__dict__.has_key(name):
-                m[name]=method
-                m[name+'__roles__']=pr
+                name = os.path.split(method.__name__)[-1]
+            if not self.product.__dict__.has_key(name):
+                misc[name] = method
+                misc[name+'__roles__'] = pr
 
-        if icon:
-            name=os.path.split(icon)[1]
-            icon=ImageResource(icon, self.__pack.__dict__)
-            icon.__roles__=None
-            if not hasattr(OFS.misc_.misc_, pid):
-                setattr(OFS.misc_.misc_, pid, OFS.misc_.Misc_(pid, {}))
-            getattr(OFS.misc_.misc_, pid)[name]=icon
+    def get_factory_dispatcher(self, package):
+        fd = getattr(package, '__FactoryDispatcher__', None)
+        if fd is None:
+            class __FactoryDispatcher__(FactoryDispatcher):
+                "Factory Dispatcher for a Specific Product"
+
+            fd = package.__FactoryDispatcher__ = __FactoryDispatcher__
+        return fd
 
     def registerBaseClass(self, base_class, meta_type=None):
         #
@@ -414,7 +442,7 @@ class EggProductContext(object):
         #   module import time, passing 'globals()', so that the
         #   ZClass will be available immediately.
         #
-        Z = ZClasses.createZClassForBase( base_class, self.__pack )
+        Z = ZClasses.createZClassForBase( base_class, self.package )
         return Z
 
 
