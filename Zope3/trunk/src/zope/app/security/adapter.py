@@ -50,15 +50,15 @@ class LocatingTrustedAdapterFactory(object):
     """Adapt an adapter factory to provide trusted and (locatable) adapters.
 
     Trusted adapters always adapt unproxied objects. If asked to
-    adapt any proxied objects, it will unproxy them and then 
+    adapt any proxied objects, it will unproxy them and then
     security-proxy the resulting adapter (S) unless the objects where not
     security-proxied before (N).
 
     Further locating trusted adapters provide a location for protected
     adapters only (S). If such a protected adapter itself does not provide
-    ILocation it is wrapped within a location proxy and it parent will 
+    ILocation it is wrapped within a location proxy and it parent will
     be set. If the adapter does provide ILocation and it's __parent__ is None,
-    we set the __parent__ to the adapter's context: 
+    we set the __parent__ to the adapter's context:
 
     see adapter.txt
     """
@@ -90,12 +90,12 @@ class LocatingTrustedAdapterFactory(object):
         return adapter
 
 
-# BBB, entire class gone in 3.2 
+# BBB, entire class gone in 3.2
 class TrustedAdapterFactory(LocatingTrustedAdapterFactory):
     """Adapt an adapter factory to provide trusted adapters.
 
     Trusted adapters always adapt unproxied objects. If asked to
-    adapt any proxied objects, it will unproxy them and then 
+    adapt any proxied objects, it will unproxy them and then
     security-proxy the resulting adapter unless the objects where not
     security-proxied before.
 
@@ -117,7 +117,7 @@ class LocatingUntrustedAdapterFactory(object):
     correctly.
 
     If the adapter does not provide ILocation, we location proxy it and
-    set the parent. If the adapter does provide ILocation and 
+    set the parent. If the adapter does provide ILocation and
     it's __parent__ is None, we set the __parent__ to the adapter's
     context only:
 
