@@ -13,9 +13,11 @@ is intended to help support compatibility for code that was written
 before this API existed, while new code can use the extended API for
 more flexibility.
 
-There are two interesting functions: `new()` is used to construct a
-new path reference, and `open()` is used to open the resource as a
-file-like object.
+There are several interesting functions: `new()` is used to construct
+a new path reference, and `open()` is used to open the resource as a
+file-like object.  Additional functions correlate to the common
+functions `os.path.exists()`, `os.path.isdir()`, and
+`os.path.isfile()`.
 
 `new()` takes three arguments: a path, a package, and a base path.
 Only the first is required; passing `None` for the `package` and
@@ -47,6 +49,15 @@ also accepts simple strings)::
   '====================================\n'
   >>> f.close()
 
+We can also ask whether the reference points to a file that exists::
+
+  >>> zope.filereference.exists(ref)
+  True
+  >>> zope.filereference.isfile(ref)
+  True
+  >>> zope.filereference.isdir(ref)
+  False
+
 While this looks little different from using a simple string to refer
 to the referenced file, it provides more functionality if the file
 being referenced is part of a package contained in a ZIP archive.
@@ -70,6 +81,15 @@ resources from it::
   '<configure\n'
   >>> f.close()
 
+The query methods provide the expected results as well::
+
+  >>> zope.filereference.exists(ref)
+  True
+  >>> zope.filereference.isdir(ref)
+  False
+  >>> zope.filereference.isfile(ref)
+  True
+
 Note that only read modes are supported::
 
   >>> zope.filereference.open(ref, "w")
@@ -91,3 +111,25 @@ Note that only read modes are supported::
   Traceback (most recent call last):
     ...
   ValueError: `mode` must be a read-only mode
+
+References to directories in ZIP files work as well::
+
+  >>> ref = zope.filereference.new("sample", package=zippity)
+  >>> zope.filereference.exists(ref)
+  True
+  >>> zope.filereference.isdir(ref)
+  True
+  >>> zope.filereference.isfile(ref)
+  False
+  
+If we refer to a resource in a ZIP archive that doesn't exist, we get
+the expected results::
+
+  >>> ref = zope.filereference.new("MISSING.txt", package=zippity.sample)
+
+  >>> zope.filereference.exists(ref)
+  False
+  >>> zope.filereference.isfile(ref)
+  False
+  >>> zope.filereference.isdir(ref)
+  False

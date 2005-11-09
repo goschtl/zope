@@ -19,4 +19,4 @@ This supports referencing files within Python eggs.
 __docformat__ = "reStructuredText"
 
 
-from reference import open, new
+from reference import open, new, exists, isdir, isfile

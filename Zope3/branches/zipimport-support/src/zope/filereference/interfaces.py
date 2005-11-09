@@ -27,3 +27,12 @@ class IResourceReference(zope.interface.Interface):
         Only 'read' modes are supported.
 
         """
+
+    def isfile():
+        """Returns True iff the resource exists and is a file."""
+
+    def isdir():
+        """Returns True iff the resource exists and is a directory."""
+
+    def exists():
+        """Returns True iff the resource exists."""

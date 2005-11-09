@@ -52,11 +52,14 @@ def pkg_resources_tearDown(self):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocFileSuite(
+    suite.addTest(doctest.DocFileTest(
         "README.txt",
         setUp=sys_path_setUp, tearDown=sys_path_tearDown))
     if pkg_resources is not None:
-        suite.addTest(doctest.DocFileSuite(
+        name_prefix = zope.filereference.__name__ + "/README.txt - "
+        test = doctest.DocFileTest(
             "README.txt",
-            setUp=pkg_resources_setUp, tearDown=pkg_resources_tearDown))
+            setUp=pkg_resources_setUp, tearDown=pkg_resources_tearDown)
+        test._dt_test.name = name_prefix + "without pkg_resources"
+        suite.addTest(test)
     return suite

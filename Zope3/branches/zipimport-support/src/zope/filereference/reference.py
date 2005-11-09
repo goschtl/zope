@@ -20,6 +20,7 @@ import __builtin__
 import errno
 import os
 import StringIO
+import zipimport
 
 import zope.interface
 
@@ -29,6 +30,27 @@ try:
     import pkg_resources
 except ImportError:
     pkg_resources = None
+
+
+def exists(path):
+    if IResourceReference.providedBy(path):
+        return path.exists()
+    else:
+        return os.path.exists(path)
+
+
+def isdir(path):
+    if IResourceReference.providedBy(path):
+        return path.isdir()
+    else:
+        return os.path.isdir(path)
+
+
+def isfile(path):
+    if IResourceReference.providedBy(path):
+        return path.isfile()
+    else:
+        return os.path.isfile(path)
 
 
 def open(path, mode="rb"):
@@ -60,7 +82,11 @@ def new(path, package=None, basepath=None):
     p = os.path.abspath(p)
 
     if package:
-        return PackagePathReference(p, package, path)
+        loader = getattr(package, "__loader__", None)
+        if isinstance(loader, zipimport.zipimporter):
+            return ZipImporterPackagePathReference(p, package, path)
+        else:
+            return PackagePathReference(p, package, path)
     else:
         return PathReference(p)
 
@@ -76,10 +102,27 @@ class PathReference(str):
     def open(self, mode="rb"):
         return __builtin__.open(self, mode)
 
+    def isfile(self):
+        return os.path.isfile(self)
 
-class PackagePathReference(str):
+    def isdir(self):
+        return os.path.isdir(self)
+
+    def exists(self):
+        return os.path.exists(self)
+
+
+class PackageStr(str):
 
     zope.interface.implements(IResourceReference)
+
+    def __add__(self, other):
+        value = str(self) + other
+        relpath = self._relpath + other
+        return self.__class__(value, self._package, relpath)
+
+
+class PackagePathReference(PackageStr):
 
     def __new__(cls, value, package, relpath):
         assert package
@@ -88,13 +131,9 @@ class PackagePathReference(str):
         self._relpath = relpath
         return self
 
-    def __add__(self, other):
-        value = str(self) + other
-        relpath = self._relpath + other
-        return self.__class__(value, self._package, relpath)
-
     def open_pkg_resources(self, mode="rb"):
-        return self._open_packaged_resource(
+        return _open_packaged_resource(
+            self,
             mode,
             pkg_resources.resource_string,
             self._package.__name__,
@@ -112,8 +151,8 @@ class PackagePathReference(str):
         else:
             dir = os.path.dirname(self._package.__file__)
             filename = os.path.join(dir, self._relpath)
-            return self._open_packaged_resource(
-                mode, loader.get_data, filename)
+            return _open_packaged_resource(
+                self, mode, loader.get_data, filename)
 
     def open(self, mode="rb"):
         #
@@ -127,15 +166,123 @@ class PackagePathReference(str):
         else:
             return self.open_path_or_loader(mode)
 
-    def _open_packaged_resource(self, mode, opener, *args):
+    def isfile(self):
         try:
-            data = opener(*args)
-        except IOError, e:
-            if len(e.args) == 1:
-                raise IOError(errno.ENOENT, "file not found", self)
+            f = self.open()
+        except IOError:
+            return False
+        f.close()
+        return True
+
+    def isdir(self):
+        if pkg_resources:
+            return pkg_resources.resource_isdir(
+                self._package.__name__, self._relpath)
+        else:
+            try:
+                loader = self._package.__loader__
+            except AttributeError:
+                for dir in self._package.__path__:
+                    filename = os.path.join(dir, self._relpath)
+                    if os.path.isdir(filename):
+                        return True
+                return False
             else:
-                raise
-        f = StringIO.StringIO(data)
-        f.name = self
-        f.mode = mode
-        return f
+                dir = os.path.dirname(self._package.__file__)
+                path = os.path.join(dir, self._relpath)
+                try:
+                    if loader.is_package(path):
+                        return True
+                except zipimport.ZipImportError:
+                    pass
+                try:
+                    loader.get_data(path)
+                except IOError:
+                    pass
+                else:
+                    return False
+
+    def exists(self):
+        if pkg_resources:
+            return pkg_resources.resource_exists(
+                self._package.__name__, self._relpath)
+        else:
+            try:
+                loader = self._package.__loader__
+            except AttributeError:
+                for dir in self._package.__path__:
+                    filename = os.path.join(dir, self._relpath)
+                    if os.path.exists(filename):
+                        return True
+                return False
+            else:
+                dir = os.path.dirname(self._package.__file__)
+                path = os.path.join(dir, self._relpath)
+                try:
+                    if loader.is_package(path):
+                        return True
+                except zipimport.ZipImportError:
+                    pass
+                try:
+                    loader.get_data(path)
+                except IOError:
+                    pass
+                else:
+                    return True
+
+
+class ZipImporterPackagePathReference(PackageStr):
+
+    def __new__(cls, value, package, relpath):
+        assert package
+        assert isinstance(package.__loader__, zipimport.zipimporter)
+        self = str.__new__(cls, value)
+        self._package = package
+        self._relpath = relpath
+        self._loader = package.__loader__
+        return self
+
+    def open(self, mode="rb"):
+        dir = os.path.dirname(self._package.__file__)
+        filename = os.path.join(dir, self._relpath)
+        return _open_packaged_resource(
+            self, mode, self._loader.get_data, filename)
+
+    def exists(self):
+        relpath = self._getpath()
+        if relpath in self._loader._files:
+            return True
+        relpath += os.path.sep
+        return relpath in self._loader._files
+
+    def isdir(self):
+        relpath = self._getpath()
+        return (relpath + os.sep) in self._loader._files
+
+    def isfile(self):
+        relpath = self._getpath()
+        return relpath in self._loader._files
+
+    def _getpath(self):
+        relpath = self._relpath.replace("/", os.sep)
+        if os.altsep:
+            relpath = relpath.replace(os.altsep, os.sep)
+        while relpath.endswith(os.sep):
+            relpath = relpath[:-len(os.sep)]
+        pkglastname = self._package.__name__.split(".")[-1]
+        relpath = os.path.join(self._loader.prefix, pkglastname, relpath)
+        return relpath
+
+
+def _open_packaged_resource(self, mode, opener, *args):
+    try:
+        data = opener(*args)
+    except IOError, e:
+        if len(e.args) == 1:
+            raise IOError(errno.ENOENT, "file not found", self)
+        else:
+            raise
+    f = StringIO.StringIO(data)
+    f.name = self
+    f.mode = mode
+    return f
