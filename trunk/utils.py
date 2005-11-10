@@ -336,6 +336,24 @@ class EggProductContext(object):
             fd = package.__FactoryDispatcher__ = __FactoryDispatcher__
         return fd
 
+    def registerZClass(self, Z, meta_type=None):
+        """ Deprecated """
+        base_class = Z._zclass_
+        module = base_class.__module__
+        name = base_class.__name__
+
+        key = "%s/%s" % (module, name)
+
+        if module.startswith('Products.'):
+            module = module.split('.')[1]
+        else:
+            module = module.split('.')[0]
+
+        info = "%s: %s" % (module, name)
+
+        Products.meta_class_info[key] = info
+        Products.meta_classes[key] = Z
+
     def registerBaseClass(self, base_class, meta_type=None):
         #
         #   Convenience method, now deprecated -- clients should

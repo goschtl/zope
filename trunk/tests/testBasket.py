@@ -63,8 +63,6 @@ class DummyApp(ObjectManager):
         self.Control_Panel.Products.id = 'Products'
         
     def _manage_remove_product_meta_type(self, product):
-         # hahahahahaha
-         # hahahahahahahaahaha
          pass
 
 class DummyProductContext:
@@ -77,6 +75,17 @@ class DummyProductContext:
     def registerClass(self, *arg, **kw):
          self.arg = arg
          self.kw = kw
+
+class DummyZClassModule:
+    
+    def __init__(self, meta_type=None):
+        if meta_type:
+            self.meta_type = meta_type
+        self.__name__ = 'DummyZClassName'
+
+class DummyZClass:
+    def __init__(self, module):
+        self._zclass_ = module
 
 class IDummyRegisterableClass(Interface):
     pass
@@ -436,6 +445,16 @@ class TestEggProductContext(unittest.TestCase):
                 if not thing.has_key('test_chicken'):
                     L.append(thing)
             Products.meta_types = tuple(L)
+        if hasattr(Products, 'meta_classes'):
+            dummyzs = [ x[0] for x in Products.meta_classes if
+                       x.startswith('Dummy') ]
+            for key in dummyzs:
+                del Products.meta_classes[dummy]
+        if hasattr(Products, 'meta_class_info'):
+            dummyzs = [x for x in Products.meta_class_info if
+                       x.startswith('Dummy') ]
+            for key in dummyzs:
+                del Products.meta_class_info[dummy]
         Products.__ac_permissions__ = ()
         from Globals import ApplicationDefaultPermissions as g
         for k, v in g.__dict__.items():
@@ -716,6 +735,20 @@ class TestEggProductContext(unittest.TestCase):
                               icon = 'fixtures/new.gif')
         misc = getattr(OFS.misc_.misc_, 'DummyProduct')
         self.assertEqual(misc['new.gif'].__class__.__name__, 'ImageResource')
+
+    def test_registerZClass(self):
+        app = DummyApp()
+        products = app.Control_Panel.Products
+        package = DummyPackage()
+        context = self._makeOne('DummyProduct', dummy_initializer, app, package,
+                                'eggname')
+        dummyz = DummyZClass(DummyZClassModule())
+        context.registerZClass(dummyz)
+        key = 'Basket.tests.testBasket/DummyZClassName'
+        self.assertEqual(Products.meta_classes[key].__class__, DummyZClass)
+        self.assertEqual(Products.meta_class_info[key],
+                         'Basket: DummyZClassName')
+
 
 class TestEggProduct(unittest.TestCase):
     def _getTargetClass(self):
