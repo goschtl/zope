@@ -60,10 +60,10 @@ class FieldContent(Persistent):
     implements(IFieldContent)
 
 def test_suite():
-    return unittest.TestSuite((
+    return unittest.TestSuite([
         FunctionalDocFileSuite('i18n.txt', package='zope.app.form.browser',
                                optionflags=doctest.ELLIPSIS)
-        ))
+        ])
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
