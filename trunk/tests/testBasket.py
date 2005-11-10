@@ -447,12 +447,12 @@ class TestEggProductContext(unittest.TestCase):
             Products.meta_types = tuple(L)
         if hasattr(Products, 'meta_classes'):
             dummyzs = [ x[0] for x in Products.meta_classes if
-                       x.startswith('Dummy') ]
+                       x.startswith('Basket') ]
             for key in dummyzs:
                 del Products.meta_classes[dummy]
         if hasattr(Products, 'meta_class_info'):
             dummyzs = [x for x in Products.meta_class_info if
-                       x.startswith('Dummy') ]
+                       x.startswith('Basket') ]
             for key in dummyzs:
                 del Products.meta_class_info[dummy]
         Products.__ac_permissions__ = ()
