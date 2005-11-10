@@ -17,12 +17,12 @@ $Id$
 
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from Products.CMFCore.utils import PageTemplateResource
 
 from permissions import ManagePortal
-from utils import _xmldir
 from utils import ConfiguratorBase
-from utils import DEFAULT, KEY
+from utils import DEFAULT
+from utils import KEY
 
 
 #
@@ -88,7 +88,7 @@ class SitePropertiesConfigurator(ConfiguratorBase):
 
     def _getExportTemplate(self):
 
-        return PageTemplateFile('spcExport.xml', _xmldir)
+        return PageTemplateResource('xml/spcExport.xml', globals())
 
     def _getImportMapping(self):
 

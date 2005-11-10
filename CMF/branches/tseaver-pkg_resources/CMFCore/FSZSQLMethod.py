@@ -15,22 +15,26 @@
 $Id$
 """
 
-import Globals
+from Globals import DevelopmentMode
+from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 from Acquisition import ImplicitAcquisitionWrapper
 from Products.ZSQLMethods.SQL import SQL
-from zLOG import LOG, ERROR
+from zLOG import ERROR
+from zLOG import LOG
 
 from DirectoryView import registerFileExtension
 from DirectoryView import registerMetaType
 from FSObject import FSObject
 from permissions import View
 from permissions import ViewManagementScreens
-from utils import _dtmldir
+from utils import DTMLResource
 
 class FSZSQLMethod(SQL, FSObject):
-    """FSZSQLMethods act like Z SQL Methods but are not directly
-    modifiable from the management interface."""
+    """ FSZSQLMethods act like Z SQL Methods loaded from the filesystem.
+    
+    o They are not, however, directly modifiable from the management interface.
+    """
 
     meta_type = 'Filesystem Z SQL Method'
 
@@ -48,11 +52,15 @@ class FSZSQLMethod(SQL, FSObject):
     security.declareObjectProtected(View)
 
     # Make mutators private
-    security.declarePrivate('manage_main','manage_edit','manage_advanced','manage_advancedForm')
-    manage=None
+    security.declarePrivate('manage_main',
+                            'manage_edit',
+                            'manage_advanced',
+                            'manage_advancedForm',
+                           )
+    manage = None
 
     security.declareProtected(ViewManagementScreens, 'manage_customise')
-    manage_customise = Globals.DTMLFile('custzsql', _dtmldir)
+    manage_customise = DTMLResource('dtml/custzsql', globals())
 
     def __init__(self, id, package=None, entry_subpath=None, filepath=None,
                  fullname=None, properties=None):
@@ -125,7 +133,7 @@ class FSZSQLMethod(SQL, FSObject):
         # do we need to do anything on reparse?
 
 
-    if Globals.DevelopmentMode:
+    if DevelopmentMode:
         # Provide an opportunity to update the properties.
         def __of__(self, parent):
             try:
@@ -140,7 +148,7 @@ class FSZSQLMethod(SQL, FSObject):
                     error=sys.exc_info())
                 raise
 
-Globals.InitializeClass(FSZSQLMethod)
+InitializeClass(FSZSQLMethod)
 
 registerFileExtension('zsql', FSZSQLMethod)
 registerMetaType('Z SQL Method', FSZSQLMethod)

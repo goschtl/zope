@@ -2,6 +2,11 @@ HEAD only (unreleased)
 
   New Features
 
+    - Use the "resource" loaders from the Basket product to find product-
+      relative data files: ImageFile -> ImageResource; 
+      DTMLFile -> DTMLResource; o PageTemplateFile -> PageTemplateResource.
+      (falling back to the originals if egg support is not present).
+
     - CMFCore:  Make "filesystem skins" use the "pkg_resource" API for
       loading product-relative data files (e.g. templates, python scripts,
       etc.), in order to enable distribution of CMF-based products as

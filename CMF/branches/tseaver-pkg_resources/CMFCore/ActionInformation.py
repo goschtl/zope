@@ -24,10 +24,10 @@ from Globals import InitializeClass
 from OFS.ObjectManager import IFAwareObjectManager
 from OFS.OrderedFolder import OrderedFolder
 from OFS.SimpleItem import SimpleItem
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.i18nmessageid import MessageID
 from zope.interface import implements
 
+from Products.CMFCore.utils import PageTemplateResource
 from Products.GenericSetup.interfaces import INodeImporter
 
 from Expression import Expression
@@ -37,7 +37,6 @@ from interfaces import IActionInfo
 from interfaces.portal_actions import ActionInfo as z2IActionInfo
 from permissions import View
 from utils import _checkPermission
-from utils import _wwwdir
 from utils import getToolByName
 from utils import SimpleItemWithProperties
 
@@ -74,8 +73,8 @@ class ActionCategory(IFAwareObjectManager, OrderedFolder):
 
 InitializeClass(ActionCategory)
 
-manage_addActionCategoryForm = PageTemplateFile('addActionCategory.zpt',
-                                                _wwwdir)
+manage_addActionCategoryForm = PageTemplateResource(
+                                   'www/addActionCategory.zpt', globals())
 
 def manage_addActionCategory(self, id, REQUEST=None):
     """Add a new CMF Action Category object with ID *id*.
@@ -195,7 +194,8 @@ def manage_addActionForm(self):
                              'title': info['title'],
                              'action_paths': tuple(action_paths)})
 
-    template = PageTemplateFile('addAction.zpt', _wwwdir).__of__(self)
+    template = PageTemplateResource('www/addAction.zpt',
+                                    globals()).__of__(self)
     return template(profiles=tuple(profiles))
 
 def _extractChildren(node):

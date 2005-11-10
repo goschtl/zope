@@ -20,7 +20,6 @@ from AccessControl.User import nobody
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Globals import DTMLFile
 from Globals import InitializeClass
 from Globals import MessageDialog
 from Globals import PersistentMapping
@@ -42,10 +41,10 @@ from permissions import ManageUsers
 from permissions import SetOwnPassword
 from permissions import View
 from utils import _checkPermission
-from utils import _dtmldir
 from utils import _getAuthenticatedUser
 from utils import getToolByName
 from utils import UniqueObject
+from utils import DTMLResource
 
 
 class MembershipTool(UniqueObject, Folder, ActionProviderBase):
@@ -78,13 +77,13 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainMembershipTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainMembershipTool', globals() )
 
     #
     #   'portal_membership' interface methods
     #
     security.declareProtected(ManagePortal, 'manage_mapRoles')
-    manage_mapRoles = DTMLFile('membershipRolemapping', _dtmldir )
+    manage_mapRoles = DTMLResource('dtml/membershipRolemapping', globals() )
 
     security.declareProtected(SetOwnPassword, 'setPassword')
     def setPassword(self, password, domains=None):

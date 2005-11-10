@@ -16,9 +16,10 @@ $Id$
 """
 
 from AccessControl import ClassSecurityInfo
-from Acquisition import aq_inner, aq_parent, aq_base
+from Acquisition import aq_inner
+from Acquisition import aq_parent
+from Acquisition import aq_base
 from BTrees.OOBTree import OOBTree
-from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
@@ -35,9 +36,9 @@ from interfaces.portal_memberdata \
 from permissions import ManagePortal
 from permissions import SetOwnProperties
 from permissions import ViewManagementScreens
-from utils import _dtmldir
 from utils import getToolByName
 from utils import UniqueObject
+from utils import DTMLResource
 
 
 _marker = []  # Create a new marker object.
@@ -75,10 +76,10 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager,
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainMemberDataTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainMemberDataTool', globals() )
 
     security.declareProtected(ViewManagementScreens, 'manage_showContents')
-    manage_showContents = DTMLFile('memberdataContents', _dtmldir )
+    manage_showContents = DTMLResource( 'dtml/memberdataContents', globals() )
 
 
     def __init__(self):

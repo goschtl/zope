@@ -23,7 +23,6 @@ from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 from Globals import InitializeClass
 from OFS.Folder import Folder
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.interface import implements
 from zope.interface import implementedBy
 
@@ -39,9 +38,8 @@ from registry import ImportStepRegistry
 from registry import ExportStepRegistry
 from registry import ToolsetRegistry
 from registry import _profile_registry
-
 from utils import _resolveDottedName
-from utils import _wwwdir
+from utils import PageTemplateResource
 
 IMPORT_STEPS_XML = 'import_steps.xml'
 EXPORT_STEPS_XML = 'export_steps.xml'
@@ -370,7 +368,7 @@ class SetupTool(Folder):
                      )
 
     security.declareProtected(ManagePortal, 'manage_tool')
-    manage_tool = PageTemplateFile('sutProperties', _wwwdir)
+    manage_tool = PageTemplateResource('www/sutProperties', globals())
 
     security.declareProtected(ManagePortal, 'manage_updateToolProperties')
     def manage_updateToolProperties(self, context_id, RESPONSE):
@@ -382,7 +380,7 @@ class SetupTool(Folder):
                          % (self.absolute_url(), 'Properties+updated.'))
 
     security.declareProtected(ManagePortal, 'manage_importSteps')
-    manage_importSteps = PageTemplateFile('sutImportSteps', _wwwdir)
+    manage_importSteps = PageTemplateResource('www/sutImportSteps', globals())
 
     security.declareProtected(ManagePortal, 'manage_importSelectedSteps')
     def manage_importSelectedSteps(self,
@@ -418,7 +416,7 @@ class SetupTool(Folder):
                          % (self.absolute_url(), message))
 
     security.declareProtected(ManagePortal, 'manage_exportSteps')
-    manage_exportSteps = PageTemplateFile('sutExportSteps', _wwwdir)
+    manage_exportSteps = PageTemplateResource('www/sutExportSteps', globals())
 
     security.declareProtected(ManagePortal, 'manage_exportSelectedSteps')
     def manage_exportSelectedSteps(self, ids, RESPONSE):
@@ -447,7 +445,7 @@ class SetupTool(Folder):
         return result['tarball']
 
     security.declareProtected(ManagePortal, 'manage_snapshots')
-    manage_snapshots = PageTemplateFile('sutSnapshots', _wwwdir)
+    manage_snapshots = PageTemplateResource('www/sutSnapshots', globals())
 
     security.declareProtected(ManagePortal, 'listSnapshotInfo')
     def listSnapshotInfo(self):
@@ -526,7 +524,7 @@ class SetupTool(Folder):
                          % (self.absolute_url(), 'Snapshot+created.'))
 
     security.declareProtected(ManagePortal, 'manage_showDiff')
-    manage_showDiff = PageTemplateFile('sutCompare', _wwwdir)
+    manage_showDiff = PageTemplateResource('www/sutCompare', globals())
 
     def manage_downloadDiff(self,
                             lhs,
@@ -722,7 +720,7 @@ Comparing configurations: '%s' and '%s'
 
 _TOOL_ID = 'setup_tool'
 
-addSetupToolForm = PageTemplateFile('toolAdd.zpt', _wwwdir)
+addSetupToolForm = PageTemplateResource('www/toolAdd.zpt', globals())
 
 def addSetupTool(dispatcher, RESPONSE):
     """

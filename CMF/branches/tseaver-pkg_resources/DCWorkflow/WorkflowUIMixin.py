@@ -17,16 +17,15 @@ $Id$
 
 import os
 
-from Globals import DTMLFile
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_get
 
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from Products.CMFCore.utils import DTMLResource
+from Products.CMFCore.utils import PageTemplateResource
 
 from permissions import ManagePortal
 from Guard import Guard
-from utils import _dtmldir
 
 try:
     #
@@ -49,8 +48,8 @@ class WorkflowUIMixin:
     security = ClassSecurityInfo()
 
     security.declareProtected(ManagePortal, 'manage_properties')
-    manage_properties = DTMLFile('workflow_properties', _dtmldir)
-    manage_groups = PageTemplateFile('workflow_groups.pt', _dtmldir)
+    manage_properties = DTMLResource('dtml/workflow_properties', globals())
+    manage_groups = PageTemplateResource('dtml/workflow_groups.pt', globals())
 
     security.declareProtected(ManagePortal, 'setProperties')
     def setProperties(self, title, manager_bypass=0, props=None, REQUEST=None):
@@ -67,7 +66,7 @@ class WorkflowUIMixin:
             return self.manage_properties(
                 REQUEST, manage_tabs_message='Properties changed.')
 
-    _permissions_form = DTMLFile('workflow_permissions', _dtmldir)
+    _permissions_form = DTMLResource('dtml/workflow_permissions', globals())
 
     security.declareProtected(ManagePortal, 'manage_permissions')
     def manage_permissions(self, REQUEST, manage_tabs_message=None):

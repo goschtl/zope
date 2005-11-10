@@ -21,17 +21,18 @@ import re
 
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import minimalpath
+from Products.CMFCore.utils import PageTemplateResource
 from Products.CMFCore.DirectoryView import createDirectoryView
 from Products.CMFCore.DirectoryView import DirectoryView
 
 from permissions import ManagePortal
-from utils import _xmldir
 from utils import ConfiguratorBase
-from utils import CONVERTER, DEFAULT, KEY
+from utils import CONVERTER
+from utils import DEFAULT
+from utils import KEY
 
 
 #
@@ -263,7 +264,7 @@ class SkinsToolConfigurator(ConfiguratorBase):
 
     def _getExportTemplate(self):
 
-        return PageTemplateFile('stcExport.xml', _xmldir)
+        return PageTemplateResource('xml/stcExport.xml', globals())
 
     def _getImportMapping(self):
 

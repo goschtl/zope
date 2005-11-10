@@ -24,14 +24,13 @@ import zLOG
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 from Globals import InitializeClass
-from Globals import package_home
 from OFS.SimpleItem import SimpleItem
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.interface import implements
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import PageTemplateResource
 from Products.CMFCore.utils import UniqueObject
 
 from Products.CMFUid.interfaces import IUniqueIdBrainQuery
@@ -40,9 +39,6 @@ from Products.CMFUid.interfaces import IUniqueIdUnrestrictedQuery
 from Products.CMFUid.interfaces import UniqueIdError
 
 UID_ATTRIBUTE_NAME = 'cmf_uid'
-
-_wwwdir = os.path.join( package_home( globals() ), 'www' )
-
 
 class UniqueIdHandlerTool(UniqueObject, SimpleItem, ActionProviderBase):
 
@@ -258,6 +254,6 @@ class UniqueIdHandlerTool(UniqueObject, SimpleItem, ActionProviderBase):
             return default
 
     security.declareProtected(ManagePortal, 'manage_queryObject')
-    manage_queryObject = PageTemplateFile('queryUID.pt', _wwwdir)
+    manage_queryObject = PageTemplateResource('www/queryUID.pt', globals())
 
 InitializeClass(UniqueIdHandlerTool)

@@ -18,16 +18,14 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
+from Products.CMFCore.utils import DTMLResource
 
 from ContainerTab import ContainerTab
 from Expression import Expression
 from Guard import Guard
 from permissions import ManagePortal
-from utils import _dtmldir
-
 
 class VariableDefinition(SimpleItem):
     """Variable definition"""
@@ -70,7 +68,7 @@ class VariableDefinition(SimpleItem):
             res = self.info_guard.getSummary()
         return res
 
-    _properties_form = DTMLFile('variable_properties', _dtmldir)
+    _properties_form = DTMLResource('dtml/variable_properties', globals())
 
     def manage_properties(self, REQUEST, manage_tabs_message=None):
         '''
@@ -117,7 +115,7 @@ class Variables(ContainerTab):
                        'action':'addVariable',
                        },)
 
-    _manage_variables = DTMLFile('variables', _dtmldir)
+    _manage_variables = DTMLResource('dtml/variables', globals())
 
     def manage_main(self, REQUEST, manage_tabs_message=None):
         '''

@@ -23,18 +23,12 @@ from cgi import escape
 from sgmllib import SGMLParser
 
 from AccessControl import ModuleSecurityInfo
-from Globals import package_home
 from zope.i18nmessageid import MessageIDFactory
 from ZTUtils.Zope import complex_marshal
 
 from exceptions import IllegalHTML
 
-
 security = ModuleSecurityInfo( 'Products.CMFDefault.utils' )
-
-security.declarePrivate('_dtmldir')
-_dtmldir = os.path.join( package_home( globals() ), 'dtml' )
-_wwwdir = os.path.join( package_home( globals() ), 'www' )
 
 security.declarePublic('formatRFC822Headers')
 def formatRFC822Headers( headers ):

@@ -28,9 +28,20 @@ import Products
 from AccessControl import ClassSecurityInfo
 from Acquisition import Implicit
 from Globals import InitializeClass
-from Globals import package_home
 from TAL.TALDefs import attrEscape
 from zope.interface import implements
+
+try:
+    import Products.Basket
+except ImportError: # no egg support :-<
+    from Globals import ImageFile as ImageResource
+    from Globals import DTMLFile as DTMLResource
+    from Products.PageTemplates.PageTemplateFile \
+        import PageTemplateFile as PageTemplateResource
+else:
+    from Globals import ImageResource
+    from Globals import DTMLResource
+    from Products.PageTemplates import PageTemplateResource
 
 from exceptions import BadRequest
 from interfaces import INodeExporter
@@ -38,10 +49,6 @@ from interfaces import INodeImporter
 from interfaces import PURGE
 from permissions import ManagePortal
 
-
-_pkgdir = package_home( globals() )
-_wwwdir = os.path.join( _pkgdir, 'www' )
-_xmldir = os.path.join( _pkgdir, 'xml' )
 
 CONVERTER, DEFAULT, KEY = range(3)
 I18NURI = 'http://xml.zope.org/namespaces/i18n'

@@ -19,7 +19,6 @@ import re
 from random import choice
 
 from AccessControl import ClassSecurityInfo
-from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
@@ -32,11 +31,11 @@ from permissions import AddPortalMember
 from permissions import MailForgottenPassword
 from permissions import ManagePortal
 from utils import _checkPermission
-from utils import _dtmldir
 from utils import _limitGrantedRoles
 from utils import getToolByName
 from utils import MessageID as _
 from utils import UniqueObject
+from utils import DTMLResource
 
 
 class RegistrationTool(UniqueObject, SimpleItem, ActionProviderBase):
@@ -64,10 +63,11 @@ class RegistrationTool(UniqueObject, SimpleItem, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainRegistrationTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainRegistrationTool', globals() )
 
     security.declareProtected(ManagePortal, 'manage_configuration')
-    manage_configuration = DTMLFile('configureRegistrationTool', _dtmldir)
+    manage_configuration = DTMLResource( 'dtml/configureRegistrationTool'
+                                       , globals())
 
     security.declareProtected(ManagePortal, 'manage_editIDPattern')
     def manage_editIDPattern(self, pattern, REQUEST=None):

@@ -17,7 +17,7 @@ $Id$
 
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_inner, aq_parent
-from Globals import InitializeClass, DTMLFile
+from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
 
@@ -26,10 +26,9 @@ from Products.CMFCore.interfaces import IPropertiesTool
 from Products.CMFCore.interfaces.portal_properties \
         import portal_properties as z2IPropertiesTool
 from Products.CMFCore.utils import UniqueObject
+from Products.CMFCore.utils import DTMLResource
 
 from permissions import ManagePortal
-from utils import _dtmldir
-
 
 class PropertiesTool(UniqueObject, SimpleItem, ActionProviderBase):
 
@@ -51,7 +50,7 @@ class PropertiesTool(UniqueObject, SimpleItem, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainPropertiesTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainPropertiesTool', globals() )
 
     #
     #   'portal_properties' interface methods

@@ -18,15 +18,14 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Globals import DTMLFile
 from Globals import InitializeClass
 from Globals import PersistentMapping
 from OFS.SimpleItem import SimpleItem
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from Products.CMFCore.utils import DTMLResource
+from Products.CMFCore.utils import PageTemplateResource
 
 from ContainerTab import ContainerTab
 from permissions import ManagePortal
-from utils import _dtmldir
 
 
 class StateDefinition(SimpleItem):
@@ -104,7 +103,7 @@ class StateDefinition(SimpleItem):
             return self.group_roles.get(group, ())
         return ()
 
-    _properties_form = DTMLFile('state_properties', _dtmldir)
+    _properties_form = DTMLResource('dtml/state_properties', globals())
 
     def manage_properties(self, REQUEST, manage_tabs_message=None):
         """Show state properties ZMI form."""
@@ -122,7 +121,7 @@ class StateDefinition(SimpleItem):
             return self.manage_properties(REQUEST, 'Properties changed.')
 
 
-    _variables_form = DTMLFile('state_variables', _dtmldir)
+    _variables_form = DTMLResource('dtml/state_variables', globals())
 
     def manage_variables(self, REQUEST, manage_tabs_message=None):
         """Show State variables ZMI form."""
@@ -187,7 +186,7 @@ class StateDefinition(SimpleItem):
 
 
 
-    _permissions_form = DTMLFile('state_permissions', _dtmldir)
+    _permissions_form = DTMLResource('dtml/state_permissions', globals())
 
     def manage_permissions(self, REQUEST, manage_tabs_message=None):
         """Present TTW UI for managing this State's permissions."""
@@ -225,7 +224,7 @@ class StateDefinition(SimpleItem):
             roles = tuple(roles)
         pr[permission] = roles
 
-    manage_groups = PageTemplateFile('state_groups.pt', _dtmldir)
+    manage_groups = PageTemplateResource('dtml/state_groups.pt', globals())
 
     def setGroups(self, REQUEST, RESPONSE=None):
         """Set the group to role mappings in REQUEST for this State.
@@ -263,7 +262,7 @@ class States(ContainerTab):
                        'action':'addState',
                        },)
 
-    _manage_states = DTMLFile('states', _dtmldir)
+    _manage_states = DTMLResource('dtml/states', globals())
 
     def manage_main(self, REQUEST, manage_tabs_message=None):
         '''

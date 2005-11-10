@@ -18,15 +18,14 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Globals import DTMLFile
 from Globals import InitializeClass
 from Globals import PersistentMapping
 from OFS.SimpleItem import SimpleItem
+from Products.CMFCore.utils import DTMLResource
 
 from ContainerTab import ContainerTab
 from Guard import Guard
 from permissions import ManagePortal
-from utils import _dtmldir
 
 
 class WorklistDefinition(SimpleItem):
@@ -96,7 +95,7 @@ class WorklistDefinition(SimpleItem):
         values = self.getVarMatch(id)
         return '; '.join(values)
 
-    _properties_form = DTMLFile('worklist_properties', _dtmldir)
+    _properties_form = DTMLResource('dtml/worklist_properties', globals())
 
     def manage_properties(self, REQUEST, manage_tabs_message=None):
         '''
@@ -152,7 +151,7 @@ class Worklists(ContainerTab):
                        'action':'addWorklist',
                        },)
 
-    _manage_worklists = DTMLFile('worklists', _dtmldir)
+    _manage_worklists = DTMLResource('dtml/worklists', globals())
 
     def manage_main(self, REQUEST, manage_tabs_message=None):
         '''

@@ -16,7 +16,6 @@ $Id$
 """
 
 from AccessControl import ClassSecurityInfo
-from Globals import DTMLFile
 from Globals import InitializeClass
 from zope.interface import implements
 
@@ -28,7 +27,7 @@ from Expression import getExprContext
 from interfaces import IActionProvider
 from interfaces.portal_actions import ActionProvider as z2IActionProvider
 from permissions import ManagePortal
-from utils import _dtmldir
+from utils import DTMLResource
 
 
 class ActionProviderBase:
@@ -42,7 +41,7 @@ class ActionProviderBase:
 
     _actions = ()
 
-    _actions_form = DTMLFile( 'editToolsActions', _dtmldir )
+    _actions_form = DTMLResource( 'dtml/editToolsActions', globals() )
 
     manage_options = ( { 'label'  : 'Actions'
                        , 'action' : 'manage_editActionsForm'

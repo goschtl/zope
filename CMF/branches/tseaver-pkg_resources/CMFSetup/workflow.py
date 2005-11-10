@@ -21,9 +21,9 @@ from xml.dom.minidom import parseString as domParseString
 from AccessControl import ClassSecurityInfo
 from Acquisition import Implicit
 from Globals import InitializeClass
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import PageTemplateResource
 from Products.DCWorkflow.DCWorkflow import DCWorkflowDefinition
 
 from permissions import ManagePortal
@@ -32,7 +32,6 @@ from utils import _extractDescriptionNode
 from utils import _getNodeAttribute
 from utils import _getNodeAttributeBoolean
 from utils import _queryNodeAttribute
-from utils import _xmldir
 from utils import ConfiguratorBase
 from utils import CONVERTER, DEFAULT, KEY
 
@@ -264,7 +263,7 @@ class WorkflowToolConfigurator(ConfiguratorBase):
 
     def _getExportTemplate(self):
 
-        return PageTemplateFile('wtcToolExport.xml', _xmldir)
+        return PageTemplateResource('xml/wtcToolExport.xml', globals())
 
     def _getImportMapping(self):
 
@@ -411,10 +410,10 @@ class WorkflowDefinitionConfigurator( Implicit ):
                )
 
     security.declarePrivate( '_workflowConfig' )
-    _workflowConfig = PageTemplateFile( 'wtcWorkflowExport.xml'
-                                      , _xmldir
-                                      , __name__='workflowConfig'
-                                      )
+    _workflowConfig = PageTemplateResource( 'xml/wtcWorkflowExport.xml'
+                                          , globals()
+                                          , __name__='workflowConfig'
+                                          )
 
     security.declarePrivate( '_extractDCWorkflowInfo' )
     def _extractDCWorkflowInfo( self, workflow, workflow_info ):

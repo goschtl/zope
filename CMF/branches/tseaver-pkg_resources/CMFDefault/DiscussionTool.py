@@ -17,7 +17,6 @@ $Id$
 
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
-from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
@@ -31,6 +30,7 @@ from Products.CMFCore.interfaces.portal_discussion \
         import portal_discussion as z2IDiscussionTool
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import UniqueObject
+from Products.CMFCore.utils import DTMLResource
 
 from DiscussionItem import DiscussionItemContainer
 from exceptions import AccessControl_Unauthorized
@@ -38,7 +38,6 @@ from exceptions import DiscussionNotAllowed
 from permissions import ManagePortal
 from permissions import ModifyPortalContent
 from permissions import ReplyToItem
-from utils import _dtmldir
 
 
 class DiscussionTool( UniqueObject, SimpleItem, ActionProviderBase ):
@@ -63,7 +62,7 @@ class DiscussionTool( UniqueObject, SimpleItem, ActionProviderBase ):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainDiscussionTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainDiscussionTool', globals() )
 
     #
     #   'portal_discussion' interface methods

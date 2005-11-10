@@ -22,9 +22,9 @@ from AccessControl import ClassSecurityInfo
 from DateTime import DateTime
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.CMFCore.utils import UniqueObject
+from Products.CMFCore.utils import PageTemplateResource
 
 from permissions import ManagePortal
 
@@ -48,12 +48,16 @@ class CalendarTool (UniqueObject, SimpleItem):
     #   ZMI methods
     #
     security.declareProtected( ManagePortal, 'manage_overview' )
-    manage_overview = PageTemplateFile('www/explainCalendarTool', globals(),
-                                   __name__='manage_overview')
+    manage_overview = PageTemplateResource( 'www/explainCalendarTool'
+                                          , globals()
+                                          , __name__='manage_overview'
+                                          )
 
     security.declareProtected( ManagePortal, 'manage_configure' )
-    manage_configure = PageTemplateFile('www/configureCalendarTool', globals(),
-                                   __name__='manage_configure')
+    manage_configure = PageTemplateResource( 'www/configureCalendarTool'
+                                           , globals()
+                                           , __name__='manage_configure'
+                                           )
 
     security.declareProtected( ManagePortal, 'edit_configuration' )
     def edit_configuration(self, show_types, use_session, show_states=None):

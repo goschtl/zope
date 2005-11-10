@@ -20,7 +20,6 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 from DateTime import DateTime
-from Globals import HTMLFile
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 
@@ -28,12 +27,12 @@ from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.PortalFolder import PortalFolderBase
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import UniqueObject
+from Products.CMFCore.utils import DTMLResource
 
 from exceptions import AccessControl_Unauthorized
 from permissions import ManagePortal
 from permissions import ManageProperties
 from SyndicationInfo import SyndicationInformation
-from utils import _dtmldir
 
 
 class SyndicationTool(UniqueObject, SimpleItem, ActionProviderBase):
@@ -83,16 +82,16 @@ class SyndicationTool(UniqueObject, SimpleItem, ActionProviderBase):
                      )
 
     security.declareProtected(ManagePortal, 'overview')
-    overview = HTMLFile('synOverview', _dtmldir)
+    overview = DTMLResource('dtml/synOverview', globals())
 
     security.declareProtected(ManagePortal, 'propertiesForm')
-    propertiesForm = HTMLFile('synProps', _dtmldir)
+    propertiesForm = DTMLResource('dtml/synProps', globals())
 
     security.declareProtected(ManagePortal, 'policiesForm')
-    policiesForm = HTMLFile('synPolicies', _dtmldir)
+    policiesForm = DTMLResource('dtml/synPolicies', globals())
 
     security.declareProtected(ManagePortal, 'reportForm')
-    reportForm = HTMLFile('synReports', _dtmldir)
+    reportForm = DTMLResource('dtml/synReports', globals())
 
     security.declareProtected(ManagePortal, 'editProperties')
     def editProperties( self

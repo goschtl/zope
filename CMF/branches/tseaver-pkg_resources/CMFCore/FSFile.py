@@ -16,7 +16,7 @@ $Id$
 """
 import os
 
-import Globals
+from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 from DateTime import DateTime
 from OFS.Cache import Cacheable
@@ -30,8 +30,9 @@ from FSObject import FSObject
 from permissions import FTPAccess
 from permissions import View
 from permissions import ViewManagementScreens
-from utils import _dtmldir
-from utils import _setCacheHeaders, _ViewEmulator
+from utils import _setCacheHeaders
+from utils import _ViewEmulator
+from utils import DTMLResource
 
 
 class FSFile(FSObject):
@@ -56,7 +57,7 @@ class FSFile(FSObject):
                           fullname, properties)
 
     security.declareProtected(ViewManagementScreens, 'manage_main')
-    manage_main = Globals.DTMLFile('custfile', _dtmldir)
+    manage_main = DTMLResource('dtml/custfile', globals())
     content_type = 'unknown/unknown'
 
     def _createZODBClone(self):
@@ -165,7 +166,7 @@ class FSFile(FSObject):
     security.declareProtected(FTPAccess, 'manage_FTPget')
     manage_FTPget = index_html
 
-Globals.InitializeClass(FSFile)
+InitializeClass(FSFile)
 
 registerFileExtension('doc', FSFile)
 registerFileExtension('pdf', FSFile)

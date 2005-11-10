@@ -16,7 +16,9 @@ $Id$
 """
 
 import re
-from os import path, listdir, stat
+from os import path
+from os import listdir
+from os import stat
 from pkg_resources import resource_listdir
 from pkg_resources import resource_isdir
 from pkg_resources import resource_string
@@ -26,10 +28,7 @@ from sys import platform
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_inner, aq_parent
 from Globals import DevelopmentMode
-from Globals import DTMLFile
-from Globals import HTMLFile
 from Globals import InitializeClass
-from Globals import package_home
 from Globals import Persistent
 from OFS.Folder import Folder
 from OFS.ObjectManager import bad_id
@@ -40,8 +39,8 @@ from FSMetadata import FSMetadata
 from FSObject import BadFile
 from permissions import AccessContentsInformation
 from permissions import ManagePortal
-from utils import _dtmldir
 from utils import normalize
+from utils import DTMLResource
 
 
 __reload_module__ = 0
@@ -705,7 +704,8 @@ class DirectoryViewSurrogate (Folder):
         delattr(d['_real'], name)
 
     security.declareProtected(ManagePortal, 'manage_propertiesForm')
-    manage_propertiesForm = DTMLFile( 'dirview_properties', _dtmldir )
+    manage_propertiesForm = DTMLResource( 'dtml/dirview_properties'
+                                        , globals() )
 
     security.declareProtected(ManagePortal, 'manage_properties')
     def manage_properties( self, dirpath, REQUEST=None ):
@@ -744,7 +744,8 @@ class DirectoryViewSurrogate (Folder):
 InitializeClass(DirectoryViewSurrogate)
 
 
-manage_addDirectoryViewForm = HTMLFile('dtml/addFSDirView', globals())
+#manage_addDirectoryViewForm = HTMLFile('dtml/addFSDirView', globals())
+manage_addDirectoryViewForm = DTMLResource('dtml/addFSDirView', globals())
 
 def createDirectoryView(parent, minimal_fp, id=None):
     """ Add either a DirectoryView or a derivative object.

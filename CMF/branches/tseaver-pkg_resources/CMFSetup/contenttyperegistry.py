@@ -18,9 +18,9 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from AccessControl.Permission import Permission
 from Globals import InitializeClass
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import PageTemplateResource
 
 from permissions import ManagePortal
 from utils import CONVERTER
@@ -28,7 +28,6 @@ from utils import DEFAULT
 from utils import ExportConfiguratorBase
 from utils import ImportConfiguratorBase
 from utils import KEY
-from utils import _xmldir
 
 #
 #   Configurator entry points
@@ -111,7 +110,7 @@ class ContentTypeRegistryExportConfigurator(ExportConfiguratorBase):
     security.declarePrivate('_getExportTemplate')
     def _getExportTemplate(self):
 
-        return PageTemplateFile('ctrExport.xml', _xmldir)
+        return PageTemplateResource('xml/ctrExport.xml', globals())
 
 InitializeClass(ContentTypeRegistryExportConfigurator)
 

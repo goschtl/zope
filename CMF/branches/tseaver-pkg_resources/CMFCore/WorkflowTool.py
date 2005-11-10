@@ -19,8 +19,9 @@ import sys
 from warnings import warn
 
 from AccessControl import ClassSecurityInfo
-from Acquisition import aq_base, aq_inner, aq_parent
-from Globals import DTMLFile
+from Acquisition import aq_base
+from Acquisition import aq_inner
+from Acquisition import aq_parent
 from Globals import InitializeClass
 from Globals import PersistentMapping
 from OFS.Folder import Folder
@@ -30,9 +31,9 @@ from ActionProviderBase import ActionProviderBase
 from interfaces import IWorkflowTool
 from interfaces.portal_workflow import portal_workflow as z2IWorkflowTool
 from permissions import ManagePortal
-from utils import _dtmldir
 from utils import getToolByName
 from utils import UniqueObject
+from utils import DTMLResource
 from WorkflowCore import ObjectDeleted
 from WorkflowCore import ObjectMoved
 from WorkflowCore import WorkflowException
@@ -88,9 +89,9 @@ class WorkflowTool(UniqueObject, Folder, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected( ManagePortal, 'manage_overview' )
-    manage_overview = DTMLFile( 'explainWorkflowTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainWorkflowTool', globals() )
 
-    _manage_addWorkflowForm = DTMLFile('addWorkflow', _dtmldir)
+    _manage_addWorkflowForm = DTMLResource('dtml/addWorkflow', globals())
 
     security.declareProtected( ManagePortal, 'manage_addWorkflowForm')
     def manage_addWorkflowForm(self, REQUEST):
@@ -121,7 +122,7 @@ class WorkflowTool(UniqueObject, Folder, ActionProviderBase):
              'action': 'manage_addWorkflowForm',
              'permission': ManagePortal },)
 
-    _manage_selectWorkflows = DTMLFile('selectWorkflows', _dtmldir)
+    _manage_selectWorkflows = DTMLResource('dtml/selectWorkflows', globals())
 
     security.declareProtected( ManagePortal, 'manage_selectWorkflows')
     def manage_selectWorkflows(self, REQUEST, manage_tabs_message=None):

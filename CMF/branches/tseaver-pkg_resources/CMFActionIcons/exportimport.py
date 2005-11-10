@@ -19,10 +19,9 @@ import os
 from AccessControl import ClassSecurityInfo
 from AccessControl.Permission import Permission
 from Globals import InitializeClass
-from Globals import package_home
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import PageTemplateResource
 
 from Products.CMFSetup.utils import CONVERTER
 from Products.CMFSetup.utils import DEFAULT
@@ -31,9 +30,6 @@ from Products.CMFSetup.utils import ImportConfiguratorBase
 from Products.CMFSetup.utils import KEY
 
 from permissions import ManagePortal
-
-_pkgdir = package_home( globals() )
-_xmldir = os.path.join( _pkgdir, 'xml' )
 
 #
 #   Configurator entry points
@@ -96,7 +92,7 @@ class ActionIconsToolExportConfigurator(ExportConfiguratorBase):
     security.declarePrivate('_getExportTemplate')
     def _getExportTemplate(self):
 
-        return PageTemplateFile('aitExport.xml', _xmldir)
+        return PageTemplateResource('xml/aitExport.xml', globals())
 
 InitializeClass(ActionIconsToolExportConfigurator)
 

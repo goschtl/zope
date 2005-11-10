@@ -19,18 +19,17 @@ import urlparse
 
 import transaction
 from AccessControl import ClassSecurityInfo
-from Globals import DTMLFile
 from Globals import InitializeClass
 
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.utils import contributorsplitter
 from Products.CMFCore.utils import keywordsplitter
+from Products.CMFCore.utils import DTMLResource
 
 from DublinCore import DefaultDublinCoreImpl
 from exceptions import ResourceLockedError
 from permissions import ModifyPortalContent
 from permissions import View
-from utils import _dtmldir
 from utils import formatRFC822Headers
 from utils import parseHeadersBody
 
@@ -77,7 +76,7 @@ class Link(PortalContent, DefaultDublinCoreImpl):
         self.format=self.URL_FORMAT
 
     security.declareProtected(ModifyPortalContent, 'manage_edit')
-    manage_edit = DTMLFile( 'zmi_editLink', _dtmldir )
+    manage_edit = DTMLResource( 'dtml/zmi_editLink', globals() )
 
     security.declareProtected(ModifyPortalContent, 'manage_editLink')
     def manage_editLink( self, remote_url, REQUEST=None ):

@@ -20,18 +20,20 @@ from xml.dom.minidom import parseString
 import Products
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import PageTemplateResource
 from Products.GenericSetup.interfaces import INodeExporter
 from Products.GenericSetup.interfaces import INodeImporter
-from Products.GenericSetup.interfaces import PURGE, UPDATE
+from Products.GenericSetup.interfaces import PURGE
+from Products.GenericSetup.interfaces import UPDATE
 from Products.GenericSetup.utils import PrettyDocument
 
 from permissions import ManagePortal
-from utils import _xmldir
 from utils import ImportConfiguratorBase, ExportConfiguratorBase
-from utils import CONVERTER, DEFAULT, KEY
+from utils import CONVERTER
+from utils import DEFAULT
+from utils import KEY
 
 _FILENAME = 'typestool.xml'
 
@@ -184,7 +186,7 @@ class TypesToolExportConfigurator(ExportConfiguratorBase):
 
     def _getExportTemplate(self):
 
-        return PageTemplateFile('ticToolExport.xml', _xmldir)
+        return PageTemplateResource('xml/ticToolExport.xml', globals())
 
 InitializeClass(TypesToolExportConfigurator)
 

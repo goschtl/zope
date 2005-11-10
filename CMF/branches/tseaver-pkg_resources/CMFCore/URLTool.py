@@ -18,7 +18,6 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
@@ -28,8 +27,8 @@ from interfaces import IURLTool
 from interfaces.portal_url import portal_url as z2IURLTool
 from permissions import ManagePortal
 from permissions import View
-from utils import _dtmldir
 from utils import UniqueObject
+from utils import DTMLResource
 
 
 class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
@@ -58,7 +57,7 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile('explainURLTool', _dtmldir)
+    manage_overview = DTMLResource('dtml/explainURLTool', globals())
 
     #
     #   'portal_url' interface methods

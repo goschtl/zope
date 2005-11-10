@@ -18,7 +18,6 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from AccessControl.PermissionRole import rolesForPermissionOn
 from DateTime import DateTime
-from Globals import DTMLFile
 from Globals import InitializeClass
 from Products.ZCatalog.ZCatalog import ZCatalog
 from zope.interface import implements
@@ -33,11 +32,11 @@ from permissions import AccessInactivePortalContent
 from permissions import ManagePortal
 from permissions import View
 from utils import _checkPermission
-from utils import _dtmldir
 from utils import _getAuthenticatedUser
 from utils import _mergedLocalRoles
 from utils import getToolByName
 from utils import UniqueObject
+from utils import DTMLResource
 
 
 class IndexableObjectWrapper:
@@ -101,7 +100,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainCatalogTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainCatalogTool', globals() )
 
     #
     #   'portal_catalog' interface methods
@@ -201,7 +200,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
     def __url(self, ob):
         return '/'.join( ob.getPhysicalPath() )
 
-    manage_catalogFind = DTMLFile( 'catalogFind', _dtmldir )
+    manage_catalogFind = DTMLResource( 'dtml/catalogFind', globals() )
 
     def catalog_object(self, obj, uid=None, idxs=None, update_metadata=1,
                        pghandler=None):

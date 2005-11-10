@@ -16,7 +16,6 @@ $Id$
 """
 
 from AccessControl import ClassSecurityInfo
-from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.ObjectManager import IFAwareObjectManager
 from OFS.OrderedFolder import OrderedFolder
@@ -29,8 +28,8 @@ from interfaces import IActionsTool
 from interfaces.portal_actions import ActionProvider as z2IActionProvider
 from interfaces.portal_actions import portal_actions as z2IActionsTool
 from permissions import ManagePortal
-from utils import _dtmldir
 from utils import UniqueObject
+from utils import DTMLResource
 
 
 class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
@@ -64,8 +63,9 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainActionsTool', _dtmldir )
-    manage_actionProviders = DTMLFile('manageActionProviders', _dtmldir)
+    manage_overview = DTMLResource( 'dtml/explainActionsTool', globals() )
+    manage_actionProviders = DTMLResource( 'dtml/manageActionProviders'
+                                         , globals())
 
     security.declareProtected(ManagePortal, 'manage_aproviders')
     def manage_aproviders(self

@@ -18,7 +18,6 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 from DateTime.DateTime import DateTime
-from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.PropertyManager import PropertyManager
 from zope.interface import implements
@@ -33,11 +32,11 @@ from Products.CMFCore.interfaces.DublinCore \
 from Products.CMFCore.interfaces.DublinCore \
         import MutableDublinCore as z2IMutableDublinCore
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import DTMLResource
 
 from permissions import ModifyPortalContent
 from permissions import View
 from utils import tuplize
-from utils import _dtmldir
 from utils import semi_split
 
 _marker=[]
@@ -451,7 +450,7 @@ class DefaultDublinCoreImpl( PropertyManager ):
             self.setRights( rights )
 
     security.declareProtected(ModifyPortalContent, 'manage_metadata')
-    manage_metadata = DTMLFile( 'zmi_metadata', _dtmldir )
+    manage_metadata = DTMLResource( 'dtml/zmi_metadata', globals() )
 
     security.declareProtected(ModifyPortalContent, 'manage_editMetadata')
     def manage_editMetadata( self

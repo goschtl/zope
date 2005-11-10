@@ -15,23 +15,21 @@
 $Id$
 """
 
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import PageTemplateResource
 from Products.GenericSetup import EXTENSION
 from Products.GenericSetup import profile_registry
 from Products.GenericSetup.tool import SetupTool
 
 from Portal import CMFSite
-from utils import _wwwdir
 
 _TOOL_ID = 'portal_setup'
-
 
 def addConfiguredSiteForm(dispatcher):
     """ Wrap the PTF in 'dispatcher', including 'profile_registry' in options.
     """
-    wrapped = PageTemplateFile( 'siteAddForm', _wwwdir ).__of__( dispatcher )
+    wrapped = PageTemplateResource( 'www/siteAddForm', globals()
+                                  ).__of__( dispatcher )
 
     base_profiles = []
     extension_profiles = []

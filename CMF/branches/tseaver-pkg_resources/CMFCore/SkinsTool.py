@@ -18,7 +18,6 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 from DateTime import DateTime
-from Globals import DTMLFile
 from Globals import InitializeClass
 from Globals import PersistentMapping
 from OFS.DTMLMethod import DTMLMethod
@@ -39,9 +38,9 @@ from permissions import AccessContentsInformation
 from permissions import ManagePortal
 from permissions import View
 from SkinsContainer import SkinsContainer
-from utils import _dtmldir
 from utils import getToolByName
 from utils import UniqueObject
+from utils import DTMLResource
 
 
 def modifiedOptions():
@@ -96,20 +95,22 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainSkinsTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainSkinsTool', globals() )
 
     security.declareProtected(ManagePortal, 'manage_propertiesForm')
-    manage_propertiesForm = DTMLFile('dtml/skinProps', globals())
+    manage_propertiesForm = DTMLResource( 'dtml/skinProps', globals() )
 
     # the following two methods override those in FindSupport, to
     # support marking of objects used in specific skins
     security.declareProtected(ManagePortal, 'manage_findResult')
-    manage_findResult = DTMLFile('findResult', _dtmldir,
-                                 management_view='Find')
+    manage_findResult = DTMLResource( 'dtml/findResult', globals()
+                                    , management_view='Find'
+                                    )
 
     security.declareProtected(ManagePortal, 'manage_findForm')
-    manage_findForm = DTMLFile('findForm', _dtmldir,
-                               management_view='Find')
+    manage_findForm = DTMLResource( 'dtml/findForm', globals()
+                                  , management_view='Find'
+                                  )
 
 
 
@@ -145,14 +146,17 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
 
         if REQUEST is not None:
             return self.manage_propertiesForm(
-                self, REQUEST, management_view='Properties', manage_tabs_message='Skins changed.')
+                            self
+                          , REQUEST
+                          , management_view='Properties'
+                          , manage_tabs_message='Skins changed.'
+                          )
 
 
     security.declareProtected(ManagePortal, 'isFirstInSkin')
     def isFirstInSkin(self, template_path, skin=None):
-        """
-        Is the specified template the one that would get returned from the current
-        skin?
+        """ Is the specified template the one that would get returned
+            from the current skin?
         """
         if skin is None or skin == 'None':
             skin = self.getDefaultSkin()
@@ -190,7 +194,11 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         self.cookie_persistence = cookie_persistence and 1 or 0
         if REQUEST is not None:
             return self.manage_propertiesForm(
-                self, REQUEST, management_view='Properties', manage_tabs_message='Properties changed.')
+                            self
+                          , REQUEST
+                          , management_view='Properties'
+                          , manage_tabs_message='Properties changed.'
+                          )
 
     security.declarePrivate('PUT_factory')
 

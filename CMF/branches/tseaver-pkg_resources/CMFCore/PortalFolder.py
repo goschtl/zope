@@ -21,8 +21,9 @@ import re
 
 from AccessControl import ClassSecurityInfo
 from AccessControl import getSecurityManager
-from Acquisition import aq_parent, aq_inner, aq_base
-from Globals import DTMLFile
+from Acquisition import aq_parent
+from Acquisition import aq_inner
+from Acquisition import aq_base
 from Globals import InitializeClass
 from OFS.OrderSupport import OrderSupport
 from OFS.Folder import Folder
@@ -44,6 +45,7 @@ from permissions import ManageProperties
 from permissions import View
 from utils import _checkPermission
 from utils import getToolByName
+from utils import DTMLResource
 
 
 class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
@@ -621,4 +623,4 @@ class ContentFilter:
         return '; '.join(self.description)
 
 manage_addPortalFolder = PortalFolder.manage_addPortalFolder.im_func
-manage_addPortalFolderForm = DTMLFile( 'folderAdd', globals() )
+manage_addPortalFolderForm = DTMLResource( 'folderAdd', globals() )

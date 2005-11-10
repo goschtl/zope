@@ -16,7 +16,6 @@ $Id$
 """
 
 from AccessControl import ClassSecurityInfo
-from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
@@ -28,9 +27,9 @@ from interfaces.portal_undo import portal_undo as z2IUndoTool
 from permissions import ListUndoableChanges
 from permissions import ManagePortal
 from utils import _checkPermission
-from utils import _dtmldir
 from utils import _getAuthenticatedUser
 from utils import UniqueObject
+from utils import DTMLResource
 
 
 class UndoTool(UniqueObject, SimpleItem, ActionProviderBase):
@@ -55,7 +54,7 @@ class UndoTool(UniqueObject, SimpleItem, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainUndoTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainUndoTool', globals() )
 
     #
     #   'portal_undo' interface methods

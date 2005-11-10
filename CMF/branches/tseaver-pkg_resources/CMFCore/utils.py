@@ -34,10 +34,8 @@ from Acquisition import Implicit
 from DateTime import DateTime
 from ExtensionClass import Base
 from Globals import HTMLFile
-from Globals import ImageFile
 from Globals import InitializeClass
 from Globals import MessageDialog
-from Globals import package_home
 from Globals import UNIQUE
 from OFS.misc_ import misc_ as misc_images
 from OFS.misc_ import Misc_ as MiscImage
@@ -53,11 +51,19 @@ from exceptions import AccessControl_Unauthorized
 from exceptions import NotFound
 from warnings import warn
 
+try:
+    import Products.Basket
+except ImportError: # no egg support :-<
+    from Globals import ImageFile as ImageResource
+    from Globals import DTMLFile as DTMLResource
+    from Products.PageTemplates.PageTemplateFile \
+        import PageTemplateFile as PageTemplateResource
+else:
+    from Globals import ImageResource
+    from Globals import DTMLResource
+    from Products.PageTemplates import PageTemplateResource
 
 security = ModuleSecurityInfo( 'Products.CMFCore.utils' )
-
-_dtmldir = os_path.join( package_home( globals() ), 'dtml' )
-_wwwdir = os_path.join( package_home( globals() ), 'www' )
 
 #
 #   Simple utility functions, callable from restricted code.
@@ -695,7 +701,7 @@ def registerIcon(klass, iconspec, _prefix=None):
     pid = modname.split('.')[1]
     name = os_path.split(iconspec)[1]
     klass.icon = 'misc_/%s/%s' % (pid, name)
-    icon = ImageFile(iconspec, _prefix)
+    icon = ImageResource(iconspec, _prefix)
     icon.__roles__=None
     if not hasattr(misc_images, pid):
         setattr(misc_images, pid, MiscImage(pid, {}))

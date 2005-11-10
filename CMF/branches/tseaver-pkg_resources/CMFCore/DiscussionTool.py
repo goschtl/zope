@@ -15,10 +15,10 @@
 $Id$
 """
 
-from OFS.SimpleItem import SimpleItem
-from Globals import InitializeClass, DTMLFile
-from Acquisition import Implicit
 from AccessControl import ClassSecurityInfo
+from Acquisition import Implicit
+from Globals import InitializeClass
+from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
 
 from ActionProviderBase import ActionProviderBase
@@ -31,9 +31,9 @@ from interfaces import IOldstyleDiscussionTool
 from interfaces.Discussions import OldDiscussable as z2IOldstyleDiscussable
 from interfaces.portal_discussion \
         import oldstyle_portal_discussion as z2IOldstyleDiscussionTool
-from utils import _dtmldir
 from utils import getToolByName
 from utils import UniqueObject
+from utils import DTMLResource
 
 
 class OldDiscussable(Implicit):
@@ -136,7 +136,7 @@ class DiscussionTool(UniqueObject, SimpleItem, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainDiscussionTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainDiscussionTool', globals() )
 
     #
     #   'portal_discussion' interface methods

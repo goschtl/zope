@@ -18,12 +18,13 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from AccessControl.Permission import Permission
 from Globals import InitializeClass
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from permissions import ManagePortal
-from utils import _xmldir
 from utils import ConfiguratorBase
-from utils import CONVERTER, DEFAULT, KEY
+from utils import CONVERTER
+from utils import DEFAULT
+from utils import KEY
+from utils import PageTemplateResource
 
 
 #
@@ -190,7 +191,7 @@ class RolemapConfigurator(ConfiguratorBase):
 
     def _getExportTemplate(self):
 
-        return PageTemplateFile('rmeExport.xml', _xmldir)
+        return PageTemplateResource('xml/rmeExport.xml', globals())
 
     def _getImportMapping(self):
 

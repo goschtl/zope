@@ -16,17 +16,16 @@ $Id$
 """
 
 from OFS.SimpleItem import SimpleItem
-from Globals import DTMLFile
 from Globals import PersistentMapping
 from Globals import InitializeClass
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from AccessControl import ClassSecurityInfo
+from Products.CMFCore.utils import DTMLResource
 
 from ContainerTab import ContainerTab
 from Guard import Guard
 from permissions import ManagePortal
-from utils import _dtmldir
 from Expression import Expression
 
 TRIGGER_AUTOMATIC = 0
@@ -98,7 +97,8 @@ class TransitionDefinition (SimpleItem):
     def getAvailableVarIds(self):
         return self.getWorkflow().variables.keys()
 
-    _properties_form = DTMLFile('transition_properties', _dtmldir)
+    _properties_form = DTMLResource('dtml/transition_properties',
+                                    globals())
 
     def manage_properties(self, REQUEST, manage_tabs_message=None):
         '''
@@ -133,7 +133,7 @@ class TransitionDefinition (SimpleItem):
         if REQUEST is not None:
             return self.manage_properties(REQUEST, 'Properties changed.')
 
-    _variables_form = DTMLFile('transition_variables', _dtmldir)
+    _variables_form = DTMLResource('dtml/transition_variables', globals())
 
     def manage_variables(self, REQUEST, manage_tabs_message=None):
         '''
@@ -229,7 +229,7 @@ class Transitions (ContainerTab):
                        'action':'addTransition',
                        },)
 
-    _manage_transitions = DTMLFile('transitions', _dtmldir)
+    _manage_transitions = DTMLResource('dtml/transitions', globals())
 
     def manage_main(self, REQUEST, manage_tabs_message=None):
         '''

@@ -18,7 +18,6 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from App.Common import rfc1123_date
 from DateTime.DateTime import DateTime
-from Globals import DTMLFile
 from Globals import InitializeClass
 from Globals import PersistentMapping
 from OFS.SimpleItem import SimpleItem
@@ -32,8 +31,8 @@ from Expression import Expression
 from interfaces import ICachingPolicyManager
 from interfaces.CachingPolicyManager \
         import CachingPolicyManager as z2ICachingPolicyManager
-from utils import _dtmldir
 from utils import getToolByName
+from utils import DTMLResource
 
 
 def createCPContext( content, view_method, keywords, time=None ):
@@ -426,7 +425,7 @@ class CachingPolicyManager( SimpleItem ):
                      )
 
     security.declareProtected( ManagePortal, 'manage_cachingPolicies' )
-    manage_cachingPolicies = DTMLFile( 'cachingPolicies', _dtmldir )
+    manage_cachingPolicies = DTMLResource( 'dtml/cachingPolicies', globals() )
 
     security.declarePublic( 'listPolicies' )
     def listPolicies( self ):

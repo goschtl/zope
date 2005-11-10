@@ -14,9 +14,10 @@
 
 $Id$
 """
-import Globals
 from AccessControl import ClassSecurityInfo
 from Acquisition import ImplicitAcquisitionWrapper
+from Globals import DevelopmentMode
+from Globals import InitializeClass
 from OFS.Folder import Folder
 from OFS.PropertyManager import PropertyManager
 from ZPublisher.Converters import get_converter
@@ -25,7 +26,7 @@ from DirectoryView import registerFileExtension
 from DirectoryView import registerMetaType
 from FSObject import FSObject
 from permissions import ViewManagementScreens
-from utils import _dtmldir
+from utils import DTMLResource
 
 class FSPropertiesObject (FSObject, PropertyManager):
     """FSPropertiesObjects simply hold properties."""
@@ -37,7 +38,7 @@ class FSPropertiesObject (FSObject, PropertyManager):
     security = ClassSecurityInfo()
 
     security.declareProtected(ViewManagementScreens, 'manage_main')
-    manage_main = Globals.DTMLFile('custprops', _dtmldir)
+    manage_main = DTMLResource('dtml/custprops', globals())
 
     # Declare all (inherited) mutating methods private.
     security.declarePrivate('manage_addProperty')
@@ -123,14 +124,14 @@ class FSPropertiesObject (FSObject, PropertyManager):
                                   % (lino,fp,line) )
         self._properties = tuple(map)
 
-    if Globals.DevelopmentMode:
+    if DevelopmentMode:
         # Provide an opportunity to update the properties.
         def __of__(self, parent):
             self = ImplicitAcquisitionWrapper(self, parent)
             self._updateFromFS()
             return self
 
-Globals.InitializeClass(FSPropertiesObject)
+InitializeClass(FSPropertiesObject)
 
 registerFileExtension('props', FSPropertiesObject)
 registerMetaType('Properties Object', FSPropertiesObject)

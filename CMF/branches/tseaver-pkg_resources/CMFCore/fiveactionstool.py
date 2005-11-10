@@ -17,7 +17,6 @@ $Id$
 
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
-from Globals import DTMLFile
 from OFS.SimpleItem import SimpleItem
 
 from ActionInformation import ActionInformation
@@ -25,7 +24,7 @@ from ActionProviderBase import ActionProviderBase
 from Expression import Expression
 from permissions import ManagePortal
 from utils import UniqueObject
-from utils import _dtmldir
+from utils import DTMLResource
 
 from zope.app.publisher.browser.globalbrowsermenuservice import \
      globalBrowserMenuService
@@ -55,7 +54,7 @@ class FiveActionsTool(UniqueObject, SimpleItem, ActionProviderBase):
     #
 
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile('explainFiveActionsTool', _dtmldir)
+    manage_overview = DTMLResource('dtml/explainFiveActionsTool', globals())
 
     #
     # ActionProvider

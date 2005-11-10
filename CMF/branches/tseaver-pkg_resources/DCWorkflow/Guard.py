@@ -17,20 +17,19 @@ $Id$
 
 from cgi import escape
 
-from Globals import DTMLFile
 from Globals import InitializeClass
 from Globals import Persistent
 from AccessControl import ClassSecurityInfo
 from Acquisition import Explicit
 from Acquisition import aq_base
 
+from Products.CMFCore.utils import DTMLResource
 from Products.CMFCore.utils import _checkPermission
 
 from Expression import Expression
 from Expression import StateChangeInfo
 from Expression import createExprContext
 from permissions import ManagePortal
-from utils import _dtmldir
 
 
 class Guard (Persistent, Explicit):
@@ -42,7 +41,7 @@ class Guard (Persistent, Explicit):
     security = ClassSecurityInfo()
     security.declareObjectProtected(ManagePortal)
 
-    guardForm = DTMLFile('guard', _dtmldir)
+    guardForm = DTMLResource('dtml/guard', globals())
 
     def check(self, sm, wf_def, ob, **kw):
         """Checks conditions in this guard.

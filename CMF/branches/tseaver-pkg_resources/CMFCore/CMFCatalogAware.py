@@ -15,19 +15,19 @@
 $Id$
 """
 
-from zLOG import LOG, PROBLEM
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 from ExtensionClass import Base
-from Globals import DTMLFile
 from Globals import InitializeClass
+from zLOG import LOG
+from zLOG import PROBLEM
 
 from permissions import AccessContentsInformation
 from permissions import ManagePortal
 from permissions import ModifyPortalContent
-from utils import _dtmldir
 from utils import _getAuthenticatedUser
 from utils import getToolByName
+from utils import DTMLResource
 
 from interfaces import ICallableOpaqueItem
 from interfaces.IOpaqueItems \
@@ -242,7 +242,7 @@ class CMFCatalogAware(Base):
                        },
                        )
 
-    _manage_workflowsTab = DTMLFile('zmi_workflows', _dtmldir)
+    _manage_workflowsTab = DTMLResource('dtml/zmi_workflows', globals())
 
     security.declareProtected(ManagePortal, 'manage_workflowsTab')
     def manage_workflowsTab(self, REQUEST, manage_tabs_message=None):

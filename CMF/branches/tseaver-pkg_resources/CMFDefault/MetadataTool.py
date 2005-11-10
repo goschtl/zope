@@ -17,7 +17,6 @@ $Id$
 
 from AccessControl import ClassSecurityInfo
 from AccessControl import getSecurityManager
-from Globals import DTMLFile
 from Globals import InitializeClass
 from Globals import PersistentMapping
 from OFS.SimpleItem import SimpleItem
@@ -28,12 +27,12 @@ from Products.CMFCore.interfaces import IMetadataTool
 from Products.CMFCore.interfaces.portal_metadata \
         import portal_metadata as z2IMetadataTool
 from Products.CMFCore.utils import UniqueObject
+from Products.CMFCore.utils import DTMLResource
 
 from exceptions import MetadataError
 from permissions import ManagePortal
 from permissions import ModifyPortalContent
 from permissions import View
-from utils import _dtmldir
 
 
 class MetadataElementPolicy( SimpleItem ):
@@ -260,10 +259,10 @@ class MetadataTool( UniqueObject, SimpleItem, ActionProviderBase ):
                      )
 
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainMetadataTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainMetadataTool', globals() )
 
     security.declareProtected(ManagePortal, 'propertiesForm')
-    propertiesForm = DTMLFile( 'metadataProperties', _dtmldir )
+    propertiesForm = DTMLResource( 'dtml/metadataProperties', globals() )
 
     security.declareProtected(ManagePortal, 'editProperties')
     def editProperties( self
@@ -289,7 +288,8 @@ class MetadataTool( UniqueObject, SimpleItem, ActionProviderBase ):
                                         )
 
     security.declareProtected(ManagePortal, 'elementPoliciesForm')
-    elementPoliciesForm = DTMLFile( 'metadataElementPolicies', _dtmldir )
+    elementPoliciesForm = DTMLResource( 'dtml/metadataElementPolicies'
+                                      , globals() )
 
     security.declareProtected(ManagePortal, 'addElementPolicy')
     def addElementPolicy( self

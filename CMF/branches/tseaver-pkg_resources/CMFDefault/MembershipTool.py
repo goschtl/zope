@@ -19,12 +19,12 @@ from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Globals import DTMLFile
 from Globals import InitializeClass
 from zope.interface import implements
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.MembershipTool import MembershipTool as BaseTool
+from Products.CMFCore.utils import DTMLResource
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import _getAuthenticatedUser
 from Products.CMFCore.utils import getToolByName
@@ -37,7 +37,6 @@ from permissions import ListPortalMembers
 from permissions import ManagePortal
 from permissions import ManageUsers
 from permissions import View
-from utils import _dtmldir
 
 
 DEFAULT_MEMBER_CONTENT = """\
@@ -68,10 +67,10 @@ class MembershipTool( BaseTool ):
     #   ZMI methods
     #
     security.declareProtected( ManagePortal, 'manage_overview' )
-    manage_overview = DTMLFile( 'explainMembershipTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainMembershipTool', globals() )
 
     security.declareProtected(ManagePortal, 'manage_mapRoles')
-    manage_mapRoles = DTMLFile('membershipRolemapping', _dtmldir )
+    manage_mapRoles = DTMLResource('dtml/membershipRolemapping', globals() )
 
     security.declareProtected(ManagePortal, 'manage_setMembersFolderById')
     def manage_setMembersFolderById(self, id='', REQUEST=None):

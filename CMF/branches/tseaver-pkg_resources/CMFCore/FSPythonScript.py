@@ -20,7 +20,6 @@ import new
 from AccessControl import ClassSecurityInfo
 from AccessControl import getSecurityManager
 from ComputedAttribute import ComputedAttribute
-from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.Cache import Cacheable
 from Products.PythonScripts.PythonScript import PythonScript
@@ -32,8 +31,8 @@ from FSObject import FSObject
 from permissions import FTPAccess
 from permissions import View
 from permissions import ViewManagementScreens
-from utils import _dtmldir
 from utils import expandpath
+from utils import DTMLResource
 
 _marker = []
 
@@ -73,7 +72,7 @@ class FSPythonScript (FSObject, Script):
                             'ZBindingsHTML_editAction')
 
     security.declareProtected(ViewManagementScreens, 'manage_main')
-    manage_main = DTMLFile('custpy', _dtmldir)
+    manage_main = DTMLResource('dtml/custpy', globals())
 
     def _createZODBClone(self):
         """Create a ZODB (editable) equivalent of this object."""

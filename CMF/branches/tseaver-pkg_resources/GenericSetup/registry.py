@@ -20,7 +20,6 @@ from xml.sax import parseString
 from AccessControl import ClassSecurityInfo
 from Acquisition import Implicit
 from Globals import InitializeClass
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.interface import implements
 
 from interfaces import BASE
@@ -29,11 +28,11 @@ from interfaces import IExportStepRegistry
 from interfaces import IToolsetRegistry
 from interfaces import IProfileRegistry
 from permissions import ManagePortal
-from utils import HandlerBase
-from utils import _xmldir
 from utils import _getDottedName
 from utils import _resolveDottedName
 from utils import _extractDocstring
+from utils import HandlerBase
+from utils import PageTemplateResource
 
 
 class ImportStepRegistry( Implicit ):
@@ -251,7 +250,7 @@ class ImportStepRegistry( Implicit ):
         return result
 
     security.declarePrivate( '_exportTemplate' )
-    _exportTemplate = PageTemplateFile( 'isrExport.xml', _xmldir )
+    _exportTemplate = PageTemplateResource( 'xml/isrExport.xml', globals() )
 
 InitializeClass( ImportStepRegistry )
 
@@ -396,7 +395,7 @@ class ExportStepRegistry( Implicit ):
     #   Helper methods
     #
     security.declarePrivate( '_exportTemplate' )
-    _exportTemplate = PageTemplateFile( 'esrExport.xml', _xmldir )
+    _exportTemplate = PageTemplateResource( 'xml/esrExport.xml', globals() )
 
 InitializeClass( ExportStepRegistry )
 
@@ -510,10 +509,10 @@ class ToolsetRegistry( Implicit ):
     #   Helper methods.
     #
     security.declarePrivate( '_toolsetConfig' )
-    _toolsetConfig = PageTemplateFile( 'tscExport.xml'
-                                     , _xmldir
-                                     , __name__='toolsetConfig'
-                                     )
+    _toolsetConfig = PageTemplateResource( 'xml/tscExport.xml'
+                                         , globals()
+                                         , __name__='toolsetConfig'
+                                         )
 
 InitializeClass( ToolsetRegistry )
 

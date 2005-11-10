@@ -23,15 +23,11 @@ from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 from Acquisition import Implicit
 from Globals import InitializeClass
-from Globals import package_home
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from Products.CMFCore.utils import PageTemplateResource
 
 from exceptions import BadRequest
 from permissions import ManagePortal
 
-
-_pkgdir = package_home( globals() )
-_xmldir = os.path.join( _pkgdir, 'xml' )
 
 CONVERTER, DEFAULT, KEY = range(3)
 
@@ -243,8 +239,8 @@ class ExportConfiguratorBase(Implicit):
     #
     #   generic object and property support
     #
-    _ob_nodes = PageTemplateFile('object_nodes.xml', _xmldir)
-    _prop_nodes = PageTemplateFile('property_nodes.xml', _xmldir)
+    _ob_nodes = PageTemplateResource('xml/object_nodes.xml', globals())
+    _prop_nodes = PageTemplateResource('xml/property_nodes.xml', globals())
 
     security.declareProtected(ManagePortal, 'generateObjectNodes')
     def generateObjectNodes(self, obj_infos):

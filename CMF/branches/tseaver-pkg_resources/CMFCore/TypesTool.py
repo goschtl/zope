@@ -24,11 +24,9 @@ from AccessControl import ClassSecurityInfo
 from AccessControl import getSecurityManager
 from Acquisition import aq_base
 from Acquisition import aq_get
-from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.Folder import Folder
 from OFS.ObjectManager import IFAwareObjectManager
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zLOG import LOG, ERROR
 from zope.i18nmessageid import MessageID
 from zope.interface import implements
@@ -48,13 +46,13 @@ from permissions import AccessContentsInformation
 from permissions import ManagePortal
 from permissions import View
 from utils import _checkPermission
-from utils import _dtmldir
-from utils import _wwwdir
 from utils import cookString
 from utils import getActionContext
 from utils import getToolByName
 from utils import SimpleItemWithProperties
 from utils import UniqueObject
+from utils import DTMLResource
+from utils import PageTemplateResource
 
 
 _marker = []  # Create a new marker.
@@ -163,7 +161,8 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_aliases')
-    manage_aliases = PageTemplateFile( 'typeinfoAliases.zpt', _wwwdir )
+    manage_aliases = PageTemplateResource( 'www/typeinfoAliases.zpt'
+                                         , globals() )
 
     security.declareProtected(ManagePortal, 'manage_setMethodAliases')
     def manage_setMethodAliases(self, REQUEST):
@@ -618,7 +617,7 @@ class ScriptableTypeInformation( TypeInformation ):
 InitializeClass( ScriptableTypeInformation )
 
 
-_addTypeInfo_template = PageTemplateFile('addTypeInfo.zpt', _wwwdir)
+_addTypeInfo_template = PageTemplateResource('addTypeInfo.zpt', globals())
 
 def manage_addFactoryTIForm(dispatcher, REQUEST):
     """ Get the add form for factory-based type infos.
@@ -735,10 +734,10 @@ class TypesTool(UniqueObject, IFAwareObjectManager, Folder,
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainTypesTool', _dtmldir )
+    manage_overview = DTMLResource( 'dtml/explainTypesTool', globals() )
 
     security.declareProtected(ManagePortal, 'manage_aliases')
-    manage_aliases = PageTemplateFile( 'typesAliases.zpt', _wwwdir )
+    manage_aliases = PageTemplateResource( 'typesAliases.zpt', globals() )
 
     #
     #   ObjectManager methods

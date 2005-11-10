@@ -341,7 +341,7 @@ class IContentTypeRegistryPredicate(Interface):
     def predicateWidget():
         """ Return a snippet of HTML suitable for editing the predicate.
 
-        o This method may be defined via DTMLFile or PageTemplateFile
+        o This method may be defined via DTMLResource or PageTemplateResource
           (the tool will call it appropriately, if it is DTML).
 
         o The snippet should arrange for values to be marshalled by

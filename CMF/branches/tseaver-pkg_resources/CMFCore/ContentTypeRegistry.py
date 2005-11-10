@@ -18,7 +18,6 @@ $Id$
 import re, os, urllib
 
 from AccessControl import ClassSecurityInfo
-from Globals import DTMLFile
 from Globals import InitializeClass
 from Globals import PersistentMapping
 from OFS.SimpleItem import SimpleItem
@@ -32,8 +31,8 @@ from interfaces.ContentTypeRegistry \
 from interfaces.ContentTypeRegistry \
         import ContentTypeRegistryPredicate as z2IContentTypeRegistryPredicate
 from permissions import ManagePortal
-from utils import _dtmldir
 from utils import getToolByName
+from utils import DTMLResource
 
 
 class MajorMinorPredicate( SimpleItem ):
@@ -120,7 +119,7 @@ class MajorMinorPredicate( SimpleItem ):
         return self.PREDICATE_TYPE
 
     security.declareProtected( ManagePortal, 'predicateWidget' )
-    predicateWidget = DTMLFile( 'majorMinorWidget', _dtmldir )
+    predicateWidget = DTMLResource( 'dtml/majorMinorWidget', globals() )
 
 InitializeClass( MajorMinorPredicate )
 
@@ -183,7 +182,7 @@ class ExtensionPredicate( SimpleItem ):
         return self.PREDICATE_TYPE
 
     security.declareProtected( ManagePortal, 'predicateWidget' )
-    predicateWidget = DTMLFile( 'extensionWidget', _dtmldir )
+    predicateWidget = DTMLResource( 'dtml/extensionWidget', globals() )
 
 InitializeClass( ExtensionPredicate )
 
@@ -240,7 +239,7 @@ class MimeTypeRegexPredicate( SimpleItem ):
         return self.PREDICATE_TYPE
 
     security.declareProtected( ManagePortal, 'predicateWidget' )
-    predicateWidget = DTMLFile( 'patternWidget', _dtmldir )
+    predicateWidget = DTMLResource( 'dtml/patternWidget', globals() )
 
 InitializeClass( MimeTypeRegexPredicate )
 
@@ -300,7 +299,7 @@ class NameRegexPredicate( SimpleItem ):
         return self.PREDICATE_TYPE
 
     security.declareProtected( ManagePortal, 'predicateWidget' )
-    predicateWidget = DTMLFile( 'patternWidget', _dtmldir )
+    predicateWidget = DTMLResource( 'dtml/patternWidget', globals() )
 
 InitializeClass( NameRegexPredicate )
 
@@ -356,7 +355,7 @@ class ContentTypeRegistry( SimpleItem ):
         return map( lambda x: x[0], _predicate_types )
 
     security.declareProtected( ManagePortal, 'manage_predicates' )
-    manage_predicates = DTMLFile( 'registryPredList', _dtmldir )
+    manage_predicates = DTMLResource( 'dtml/registryPredList', globals() )
 
     security.declareProtected( ManagePortal, 'doAddPredicate' )
     def doAddPredicate( self, predicate_id, predicate_type, REQUEST ):
@@ -426,7 +425,7 @@ class ContentTypeRegistry( SimpleItem ):
                               )
 
     security.declareProtected( ManagePortal, 'manage_testRegistry' )
-    manage_testRegistry = DTMLFile( 'registryTest', _dtmldir )
+    manage_testRegistry = DTMLResource( 'dtml/registryTest', globals() )
 
     security.declareProtected( ManagePortal, 'doTestRegistry' )
     def doTestRegistry( self, name, content_type, body, REQUEST ):

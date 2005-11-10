@@ -20,7 +20,6 @@ from AccessControl import ClassSecurityInfo
 from AccessControl import getSecurityManager
 from Acquisition import aq_base
 from DocumentTemplate.DT_Util import html_quote
-from Globals import DTMLFile
 from Globals import InitializeClass
 from StructuredText.StructuredText import HTML
 from zope.interface import implements
@@ -28,6 +27,7 @@ from zope.interface import implements
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.utils import contributorsplitter
 from Products.CMFCore.utils import keywordsplitter
+from Products.CMFCore.utils import DTMLResource
 
 from DublinCore import DefaultDublinCoreImpl
 from exceptions import EditingConflict
@@ -38,7 +38,6 @@ from interfaces.Document import IDocument as z2IDocument
 from interfaces.Document import IMutableDocument as z2IMutableDocument
 from permissions import ModifyPortalContent
 from permissions import View
-from utils import _dtmldir
 from utils import bodyfinder
 from utils import formatRFC822Headers
 from utils import html_headcheck
@@ -86,7 +85,7 @@ class Document(PortalContent, DefaultDublinCoreImpl):
         self.setFormat( text_format )
 
     security.declareProtected(ModifyPortalContent, 'manage_edit')
-    manage_edit = DTMLFile('zmi_editDocument', _dtmldir)
+    manage_edit = DTMLResource('dtml/zmi_editDocument', globals())
 
     security.declareProtected(ModifyPortalContent, 'manage_editDocument')
     def manage_editDocument( self, text, text_format, file='', REQUEST=None ):

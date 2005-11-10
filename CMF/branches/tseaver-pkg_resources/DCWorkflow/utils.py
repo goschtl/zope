@@ -16,9 +16,6 @@ $Id$
 """
 
 import os
-from App.Common import package_home
-
-_dtmldir = os.path.join( package_home( globals() ), 'dtml' )
 
 from AccessControl.Role import gather_permissions
 from AccessControl.Permission import Permission

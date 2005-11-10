@@ -16,11 +16,12 @@ $Id$
 """
 from pkg_resources import resource_string
 
-import Globals
 from AccessControl import ClassSecurityInfo, getSecurityManager
 from AccessControl.DTML import RestrictedDTML
 from AccessControl.Role import RoleManager
 from OFS.Cache import Cacheable
+from Globals import HTML
+from Globals import InitializeClass
 from OFS.DTMLMethod import DTMLMethod, decapitate, guess_content_type
 
 from DirectoryView import registerFileExtension
@@ -29,14 +30,14 @@ from FSObject import FSObject
 from permissions import FTPAccess
 from permissions import View
 from permissions import ViewManagementScreens
-from utils import _dtmldir
 from utils import _setCacheHeaders
+from utils import DTMLResource
 
 
 _marker = []  # Create a new marker object.
 
 
-class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
+class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
     """FSDTMLMethods act like DTML methods but are not directly
     modifiable from the management interface."""
 
@@ -61,7 +62,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
     security.declareObjectProtected(View)
 
     security.declareProtected(ViewManagementScreens, 'manage_main')
-    manage_main = Globals.DTMLFile('custdtml', _dtmldir)
+    manage_main = DTMLResource('dtml/custdtml', globals())
 
     _reading = 0
 
@@ -91,7 +92,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
     def read_raw(self):
         if not self._reading:
             self._updateFromFS()
-        return Globals.HTML.read_raw(self)
+        return HTML.read_raw(self)
 
     #### The following is mainly taken from OFS/DTMLMethod.py ###
 
@@ -121,7 +122,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
         security=getSecurityManager()
         security.addContext(self)
         try:
-            r = Globals.HTML.__call__(self, client, REQUEST, **kw)
+            r = HTML.__call__(self, client, REQUEST, **kw)
 
             if client is None:
                 # Called as subtemplate, so don't need error propagation!
@@ -189,7 +190,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
     security.declareProtected(ViewManagementScreens, 'manage_haveProxy')
     manage_haveProxy = DTMLMethod.manage_haveProxy.im_func
 
-Globals.InitializeClass(FSDTMLMethod)
+InitializeClass(FSDTMLMethod)
 
 registerFileExtension('dtml', FSDTMLMethod)
 registerMetaType('DTML Method', FSDTMLMethod)

@@ -18,18 +18,15 @@ $Id$
 import os
 
 from Globals import InitializeClass
-from Globals import package_home
 from AccessControl import ClassSecurityInfo
 from OFS.SimpleItem import SimpleItem
 
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.CMFCore.Expression import Expression
 from Products.CMFCore.utils import UniqueObject
+from Products.CMFCore.utils import PageTemplateResource
 
 from permissions import ManagePortal
 from permissions import View
-
-_wwwdir = os.path.join( package_home( globals() ), 'www' )
 
 class ActionIcon( SimpleItem ):
 
@@ -356,7 +353,7 @@ class ActionIconsTool( UniqueObject, SimpleItem ):
                       ) + SimpleItem.manage_options
 
     security.declareProtected( ManagePortal, 'manage_editActionIcons' )
-    manage_editActionIcons = PageTemplateFile( 'aitEdit', _wwwdir )
+    manage_editActionIcons = PageTemplateResource( 'www/aitEdit', globals() )
 
     security.declareProtected( ManagePortal, 'manage_addActionIcon' )
     def manage_addActionIcon( self

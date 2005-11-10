@@ -15,7 +15,8 @@
 $Id$
 """
 
-import Globals
+from Globals import HTML
+from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 from StructuredText.StructuredText import HTML
 
@@ -25,8 +26,8 @@ from permissions import ViewManagementScreens
 from DirectoryView import registerFileExtension
 from DirectoryView import registerMetaType
 from FSObject import FSObject
-from utils import _dtmldir
 from utils import expandpath
+from utils import DTMLResource
 
 
 class FSSTXMethod( FSObject ):
@@ -52,7 +53,7 @@ class FSSTXMethod( FSObject ):
     security.declareObjectProtected( View )
 
     security.declareProtected( ViewManagementScreens, 'manage_main')
-    manage_main = Globals.DTMLFile( 'custstx', _dtmldir )
+    manage_main = DTMLResource( 'dtml/custstx', globals() )
 
     #
     #   FSObject interface
@@ -92,7 +93,7 @@ class FSSTXMethod( FSObject ):
             self._v_cooked = HTML(self.raw, level=1, header=0)
         return self._v_cooked
 
-    _default_template = Globals.HTML( """\
+    _default_template = HTML( """\
 <dtml-var standard_html_header>
 <div class="Desktop">
 <dtml-var cooked>
@@ -145,7 +146,7 @@ class FSSTXMethod( FSObject ):
         """
         return self.raw
 
-Globals.InitializeClass( FSSTXMethod )
+InitializeClass( FSSTXMethod )
 
 registerFileExtension( 'stx', FSSTXMethod )
 registerMetaType( 'STX Method', FSSTXMethod )

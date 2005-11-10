@@ -15,13 +15,13 @@
 $Id$
 """
 
-import Globals
-from DateTime import DateTime
 from AccessControl import ClassSecurityInfo
-from webdav.common import rfc1123_date
+from DateTime import DateTime
+from Globals import InitializeClass
 from OFS.Cache import Cacheable
 from OFS.Image import Image
 from OFS.Image import getImageInfo
+from webdav.common import rfc1123_date
 
 from permissions import FTPAccess
 from permissions import View
@@ -29,9 +29,9 @@ from permissions import ViewManagementScreens
 from DirectoryView import registerFileExtension
 from DirectoryView import registerMetaType
 from FSObject import FSObject
-from utils import _dtmldir
 from utils import _ViewEmulator
 from utils import _setCacheHeaders
+from utils import DTMLResource
 
 
 class FSImage(FSObject):
@@ -57,7 +57,7 @@ class FSImage(FSObject):
                           fullname, properties)
 
     security.declareProtected(ViewManagementScreens, 'manage_main')
-    manage_main = Globals.DTMLFile('custimage', _dtmldir)
+    manage_main = DTMLResource('dtml/custimage', globals())
     content_type = 'unknown/unknown'
 
     def _createZODBClone(self):
@@ -158,7 +158,7 @@ class FSImage(FSObject):
     security.declareProtected(FTPAccess, 'manage_FTPget')
     manage_FTPget = index_html
 
-Globals.InitializeClass(FSImage)
+InitializeClass(FSImage)
 
 registerFileExtension('gif', FSImage)
 registerFileExtension('jpg', FSImage)
