@@ -433,6 +433,9 @@ class TestBasket(unittest.TestCase, LogInterceptor):
 
 class TestEggProductContext(unittest.TestCase):
 
+    def setUp(self):
+        self.oldacperms = copy.copy(Products.__ac_permissions__)
+
     def tearDown(self):
         if sys.modules.has_key('Dummy.Foo'):
             del sys.modules['Dummy.Foo']
@@ -446,16 +449,16 @@ class TestEggProductContext(unittest.TestCase):
                     L.append(thing)
             Products.meta_types = tuple(L)
         if hasattr(Products, 'meta_classes'):
-            dummyzs = [ x[0] for x in Products.meta_classes if
+            dummyzs = [ x for x in Products.meta_classes if
                        x.startswith('Basket') ]
             for key in dummyzs:
-                del Products.meta_classes[dummy]
+                del Products.meta_classes[key]
         if hasattr(Products, 'meta_class_info'):
-            dummyzs = [x for x in Products.meta_class_info if
+            dummyzs = [ x for x in Products.meta_class_info if
                        x.startswith('Basket') ]
             for key in dummyzs:
-                del Products.meta_class_info[dummy]
-        Products.__ac_permissions__ = ()
+                del Products.meta_class_info[key]
+        Products.__ac_permissions__ = self.oldacperms
         from Globals import ApplicationDefaultPermissions as g
         for k, v in g.__dict__.items():
             if (k.startswith('_') and k.endswith('_Permission') and
