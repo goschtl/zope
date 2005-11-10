@@ -17,7 +17,7 @@ $Id$
 
 import os
 import re
-import StringIO
+from StringIO import StringIO
 import rfc822
 from cgi import escape
 from sgmllib import SGMLParser
@@ -89,7 +89,7 @@ def parseHeadersBody( body, headers=None, rc=re.compile( r'\n|\r\n' ) ):
 
         Allow passing initial dictionary as headers.
     """
-    buffer = StringIO.StringIO(body)
+    buffer = StringIO(body)
     message = rfc822.Message(buffer)
 
     headers = headers and headers.copy() or {}
