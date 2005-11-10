@@ -554,7 +554,11 @@ class ToolInit:
 
     def initialize(self, context):
         # Add only one meta type to the folder add list.
-        productObject = context._ProductContext__prod
+        try:
+            productObject = context._ProductContext__prod
+        except AttributeError:
+            productObject = context.product
+
         self.product_name = productObject.id
         context.registerClass(
             meta_type = self.meta_type,
@@ -689,38 +693,6 @@ def manage_addContent( self, id, type, REQUEST=None ):
     self._setObject( id, obj )
     if REQUEST is not None:
         return self.manage_main(self, REQUEST)
-
-
-def initializeBasesPhase1(base_classes, module):
-
-    """ Execute the first part of initialization of ZClass base classes.
-
-    Stuffs a _ZClass_for_x class in the module for each base.
-    """
-    rval = []
-    for base_class in base_classes:
-        d={}
-        zclass_name = '_ZClass_for_%s' % base_class.__name__
-        exec 'class %s: pass' % zclass_name in d
-        Z = d[ zclass_name ]
-        Z.propertysheets = PropertySheets()
-        Z._zclass_ = base_class
-        Z.manage_options = ()
-        Z.__module__ = module.__name__
-        setattr( module, zclass_name, Z )
-        rval.append(Z)
-    return rval
-
-def initializeBasesPhase2(zclasses, context):
-
-    """ Finishes ZClass base initialization.
-
-    o 'zclasses' is the list returned by initializeBasesPhase1().
-
-    o 'context' is a ProductContext object.
-    """
-    for zclass in zclasses:
-        context.registerZClass(zclass)
 
 def registerIcon(klass, iconspec, _prefix=None):
 
