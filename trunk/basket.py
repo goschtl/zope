@@ -124,9 +124,13 @@ class Basket(object):
             if is_zip_safe_distribution(distribution):
                 working_set.add(distribution)
             else:
-                # if it's not zip-safe, blast it out to a tempdir and create
-                # new distro out of the file-based egg; we delete the
-                # tempdir at system exit
+                if os.path.isdir(distribution.location):
+                    # already a directory
+                    working_set.add(distribution)
+                    continue
+                # if it's not zip-safe and not already a directory, blast
+                # it out to a tempdir and create new distro out of the
+                # file-based egg; we delete the tempdir at system exit
                 if by_require: # these get added to the working set in req mode
                     remove_distribution_from_working_set(distribution)
                 tempdir = tempfile.mkdtemp()
@@ -193,4 +197,5 @@ def remove_distribution_from_working_set(distribution):
     working_set.entries.remove(distribution.location)
     del working_set.by_key[distribution.key]
     working_set.entry_keys[distribution.location] = []
+    self.old_callbacks = self.working_set.callbacks[:]
     sys.path.remove(distribution.location)
