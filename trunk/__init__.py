@@ -47,8 +47,7 @@ class Basket(object):
 
         if not self.pre_initialized:
             try:
-                home = INSTANCE_HOME
-                etc = os.path.join(home, 'etc')
+                etc = os.path.join(INSTANCE_HOME, 'etc')
             except NameError: # INSTANCE_HOME may not be available
                 etc = ''
             pdist_fname = os.path.join(etc, 'PRODUCT_DISTRIBUTIONS.txt')
@@ -83,35 +82,43 @@ class Basket(object):
         return data
 
     def product_distributions_by_dwim(self):
-        """ Find all product distributions which have an appropriate
+        """ Return all product distributions which have an appropriate
         entry point group on sys.path """
         environment = pkg_resources.Environment()
-        ns_meta = 'entry_points.txt'
         product_distros = []
         for project_name in environment:
             distributions = environment[project_name]
             for distribution in distributions:
-                if distribution.has_metadata(ns_meta):
-                    inifile = distribution.get_metadata(ns_meta)
-                    sections = pkg_resources.split_sections(inifile)
-                    for section, content in sections:
-                        if section == entrypoint_group:
-                            product_distros.append(distribution)
-                            break
+                if is_product_distribution(distribution):
+                    product_distros.append(distribution)
+        return product_distros
+
+    def product_distributions_by_require(self, pdist_fname):
+        """ Return all product distributions which are listed in the
+        product distributions file """
+        pdist_file = open(pdist_fname, 'r')
+        strings = self.parse_product_distributions_file(pdist_file)
+        product_distros = []
+        for string in strings:
+            distribution = pkg_resources.get_distribution(string)
+            if is_product_distribution(distribution):
+                product_distros.append(distribution)
+            else:
+                zLOG.LOG('Egg Product Init',
+                         zLOG.ERROR,
+                         'A requirement was listed in %s that is not a Zope '
+                         'product package: %s' % (pdist_fname, string))
         return product_distros
 
     def preinitialize(self, pdist_fname=None):
         if pdist_fname and os.path.exists(pdist_fname):
-            # do the explicit only-include-named-distributions behavior
-            pdist_file = open(pdist_fname, 'r')
-            strings = self.parse_product_distributions_file(pdist_file)
-            for string in strings:
-                self.require(string) # this calls 'add' for the distribution
+            distributions = self.product_distributions_by_require(pdist_fname)
         else:
-            # do the implicit look-up-all-products-on-my-path behavior
             distributions = self.product_distributions_by_dwim()
-            for distribution in distributions:
-                pkg_resources.working_set.add(distribution)
+
+        for distribution in distributions:
+            pkg_resources.working_set.add(distribution)
+
         self.pre_initialized = True
 
 def get_containing_package(module_name):
@@ -140,6 +147,20 @@ def get_initializer(point, productname, debug_mode):
         if debug_mode:
             raise exc[0], exc[1], exc[2]
     return initializer
+
+def is_product_distribution(distribution): 
+    entry_meta = 'entry_points.txt'
+    if distribution.has_metadata(entry_meta):
+        inifile = distribution.get_metadata(entry_meta)
+        sections = pkg_resources.split_sections(inifile)
+        for section, content in sections:
+            if section == entrypoint_group:
+                return True
+
+def is_zip_safe_distribution(distribution):
+    zip_safe_meta = 'zip-safe'
+    if distribution.has_metadata(zip_safe_meta):
+        return True
 
 basket = Basket()
 initialize = basket.initialize

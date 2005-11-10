@@ -288,6 +288,24 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         actual = [ dist.key for dist in distributions if dist.key in expected ]
         self.assertEqual(sorted(expected), sorted(actual))
 
+    def test_product_distribution_not_a_zope_product(self):
+        basket = self._makeOne()
+        basket.pre_initialized = True
+
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        self._catch_log_errors(zLOG.ERROR)
+        try:
+            basket.require('notazopeproduct')
+        finally:
+            self._ignore_log_errors()
+
+        self.assertEqual(len(self.logged), 1)
+        warning = self.logged[0]
+        self.assertEqual(warning[1], zLOG.ERROR)
+        self.failUnless(warning[2].startswith('A requirement'))
+
     def test_preinitalize_pdist_file_success(self):
         basket = self._makeOne()
         sys.path.append(self.fixtures)
