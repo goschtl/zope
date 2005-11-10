@@ -293,7 +293,7 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         self.failUnless(os.path.isfile(os.path.join(pkgdir, 'test_image.jpg')))
         self.failUnless(os.path.realpath(eggdir) in sys.path)
         basket.cleanup()
-        self.failIf(os.path.isdir(tempdir))
+        self.failIf(os.path.exists(tempdir))
 
     def test_product_distributions_by_dwim(self):
         basket = self._makeOne()
