@@ -1,7 +1,4 @@
 import sys
-import os
-import traceback
-import textwrap
 
 # pkg_resource monkeypatching (if necessary) needs to happen before
 # Products.Basket.utils is imported
@@ -14,153 +11,7 @@ except ImportError:
     import pkg_resources_0_6a7 as pkg_resources
     sys.modules['pkg_resources'] = pkg_resources
 
-from Products.Basket.utils import EggProductContext
-from Products.Basket.utils import EggProduct
-import zLOG
-import App
-
-entrypoint_group = 'zope2.initialize'
-
-class Basket(object):
-    def __init__(self):
-        self.pre_initialized = False
-        
-    def require(self, distro_str):
-        """ Specifically require a distribution specification """
-        pkg_resources.require(distro_str)
-
-    def parse_product_distributions_file(self, fp):
-        L = []
-        for distro_str in fp:
-            distro_str = distro_str.strip()
-            if distro_str:
-                L.append(distro_str)
-        return L
-
-    def initialize(self, context):
-        context.registerClass(EggProduct, constructors = (('dummy',None),),
-                              visibility=None, icon='icon_egg.gif')
-        # Grab app from Zope product context
-        # It's a "protected" attribute, hence the name mangling
-        app = context._ProductContext__app
-        debug_mode = App.config.getConfiguration().debug_mode
-
-        if not self.pre_initialized:
-            try:
-                etc = os.path.join(INSTANCE_HOME, 'etc')
-            except NameError: # INSTANCE_HOME may not be available
-                etc = ''
-            pdist_fname = os.path.join(etc, 'PRODUCT_DISTRIBUTIONS.txt')
-            self.preinitialize(pdist_fname)
-
-        data = []
-        points = pkg_resources.iter_entry_points(entrypoint_group)
-        meta_types = []
-
-        for point in points:
-            # XXX deal with duplicate product names by raising an exception
-            # somewhere in here.
-            eggname = ' '.join(textwrap.wrap(point.dist.location, 80))
-            try:
-                product_pkg = get_containing_package(point.module_name)
-            except:
-                zLOG.LOG('Egg Product Init', zLOG.ERROR,
-                         'Problem initializing product with entry point '
-                         '"%s" in module "%s"' % (point.name,point.module_name),
-                         error=sys.exc_info())
-                if debug_mode:
-                    raise
-                else:
-                    continue
-                
-            productname = product_pkg.__name__.split('.')[-1]
-            initializer = get_initializer(point, productname, debug_mode)
-            context = EggProductContext(productname, initializer, app,
-                                        product_pkg, eggname)
-            returned = context.install(debug_mode)
-            data.append(returned)
-        return data
-
-    def product_distributions_by_dwim(self):
-        """ Return all product distributions which have an appropriate
-        entry point group on sys.path """
-        environment = pkg_resources.Environment()
-        product_distros = []
-        for project_name in environment:
-            distributions = environment[project_name]
-            for distribution in distributions:
-                if is_product_distribution(distribution):
-                    product_distros.append(distribution)
-        return product_distros
-
-    def product_distributions_by_require(self, pdist_fname):
-        """ Return all product distributions which are listed in the
-        product distributions file """
-        pdist_file = open(pdist_fname, 'r')
-        strings = self.parse_product_distributions_file(pdist_file)
-        product_distros = []
-        for string in strings:
-            distribution = pkg_resources.get_distribution(string)
-            if is_product_distribution(distribution):
-                product_distros.append(distribution)
-            else:
-                zLOG.LOG('Egg Product Init',
-                         zLOG.ERROR,
-                         'A requirement was listed in %s that is not a Zope '
-                         'product package: %s' % (pdist_fname, string))
-        return product_distros
-
-    def preinitialize(self, pdist_fname=None):
-        if pdist_fname and os.path.exists(pdist_fname):
-            distributions = self.product_distributions_by_require(pdist_fname)
-        else:
-            distributions = self.product_distributions_by_dwim()
-
-        for distribution in distributions:
-            pkg_resources.working_set.add(distribution)
-
-        self.pre_initialized = True
-
-def get_containing_package(module_name):
-    __import__(module_name)
-    thing = sys.modules[module_name]
-    if hasattr(thing, '__path__'):
-        return thing
-    new = '.'.join(module_name.split('.')[:-1])
-    if new == module_name:
-        return None
-    return get_containing_package(new)
-
-def get_initializer(point, productname, debug_mode):
-    initializer = None
-    try:
-        # this will raise an import error if the initializer can't
-        # be imported (presumably because of a module-scope error)
-        initializer = point.load()
-    except:
-        exc = sys.exc_info()
-        zLOG.LOG('Zope', zLOG.ERROR, 'Could not import %s' % productname,
-                 error=exc)
-        f = StringIO()
-        traceback.print_exc(100, f)
-        product_pkg.__import_error__ = f.getvalue()
-        if debug_mode:
-            raise exc[0], exc[1], exc[2]
-    return initializer
-
-def is_product_distribution(distribution): 
-    entry_meta = 'entry_points.txt'
-    if distribution.has_metadata(entry_meta):
-        inifile = distribution.get_metadata(entry_meta)
-        sections = pkg_resources.split_sections(inifile)
-        for section, content in sections:
-            if section == entrypoint_group:
-                return True
-
-def is_zip_safe_distribution(distribution):
-    zip_safe_meta = 'zip-safe'
-    if distribution.has_metadata(zip_safe_meta):
-        return True
+from Products.Basket.basket import Basket
 
 basket = Basket()
 initialize = basket.initialize
@@ -180,4 +31,3 @@ PageTemplates.PageTemplateResource = resource.PageTemplateResource
 del resource.ImageResource
 del resource.DTMLResource
 del resource.PageTemplateResource
-

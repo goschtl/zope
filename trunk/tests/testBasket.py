@@ -4,7 +4,7 @@ import sys
 import copy
 import Products
 from Products.Basket.utils import EggProductContext
-from Products.Basket import get_containing_package
+from Products.Basket.basket import get_containing_package
 import pkg_resources
 from OFS.ObjectManager import ObjectManager
 from OFS.SimpleItem import SimpleItem
@@ -122,7 +122,7 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         App.config.getConfiguration().debug_mode = self.old_debug_mode
 
     def _getTargetClass(self):
-        from Products.Basket import Basket
+        from Products.Basket.basket import Basket
         return Basket
 
     def _makeOne(self, *arg, **kw):
@@ -274,6 +274,27 @@ class TestBasket(unittest.TestCase, LogInterceptor):
                          ['multiproduct1 initialized',
                           'multiproduct2 initialized'])
 
+    def test_not_zip_safe_exploded(self):
+        basket = self._makeOne()
+        basket.pdist_fname = os.path.join(self.fixtures, 'pdist-notzipsafe.txt')
+        
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        result = basket.initialize(DummyProductContext('Basket'))
+        self.assertEqual(len(basket.tempdirs), 1)
+        tempdir = basket.tempdirs[0]
+        self.failUnless(os.path.isdir(tempdir))
+        eggdir = os.path.join(tempdir, 'notzipsafe-0.1-py2.3.egg')
+        pkgdir = os.path.join(eggdir, 'notzipsafe')
+        self.failUnless(os.path.isdir(eggdir))
+        self.failUnless(os.path.isdir(pkgdir))
+        self.failUnless(os.path.isfile(os.path.join(pkgdir, '__init__.py')))
+        self.failUnless(os.path.isfile(os.path.join(pkgdir, 'test_image.jpg')))
+        self.failUnless(os.path.realpath(eggdir) in sys.path)
+        basket.cleanup()
+        self.failIf(os.path.isdir(tempdir))
+
     def test_product_distributions_by_dwim(self):
         basket = self._makeOne()
         basket.pre_initialized = True
@@ -290,14 +311,16 @@ class TestBasket(unittest.TestCase, LogInterceptor):
 
     def test_product_distribution_not_a_zope_product(self):
         basket = self._makeOne()
-        basket.pre_initialized = True
-
         sys.path.append(self.fixtures)
         self.working_set.add_entry(self.fixtures)
 
+        basket.pre_initialized = False
+        pdist = os.path.join(self.fixtures, 'pdist-notproduct.txt')
+        basket.pdist_fname = pdist
+
         self._catch_log_errors(zLOG.ERROR)
         try:
-            basket.require('notazopeproduct')
+            basket.preinitialize()
         finally:
             self._ignore_log_errors()
 
@@ -313,7 +336,8 @@ class TestBasket(unittest.TestCase, LogInterceptor):
 
         pdist = os.path.join(self.fixtures, 'pdist-ok.txt')
         self.assertEqual(basket.pre_initialized, False)
-        basket.preinitialize(pdist)
+        basket.pdist_fname = pdist
+        basket.preinitialize()
         self.assertEqual(basket.pre_initialized, True)
 
         import Products.product1
@@ -333,9 +357,9 @@ class TestBasket(unittest.TestCase, LogInterceptor):
 
         pdist = os.path.join(self.fixtures, 'pdist-fail.txt')
         self.assertEqual(basket.pre_initialized, False)
+        basket.pdist_fname = pdist
         self.assertRaises(pkg_resources.DistributionNotFound,
-                          basket.preinitialize,
-                          pdist)
+                          basket.preinitialize)
         self.assertEqual(basket.pre_initialized, False)
 
         self.failIf(sys.modules.has_key('Products.product1'))
@@ -366,7 +390,8 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         # falls back to dwim mode
 
         self.assertEqual(basket.pre_initialized, False)
-        basket.preinitialize(pdist)
+        basket.pdist_fname = pdist
+        basket.preinitialize()
         self.assertEqual(basket.pre_initialized, True)
 
         import Products.product1
