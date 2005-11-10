@@ -353,7 +353,8 @@ class ActionIconsTool( UniqueObject, SimpleItem ):
                       ) + SimpleItem.manage_options
 
     security.declareProtected( ManagePortal, 'manage_editActionIcons' )
-    manage_editActionIcons = PageTemplateResource( 'www/aitEdit', globals() )
+    manage_editActionIcons = PageTemplateResource( 'www/aitEdit.zpt'
+                                                 , globals() )
 
     security.declareProtected( ManagePortal, 'manage_addActionIcon' )
     def manage_addActionIcon( self

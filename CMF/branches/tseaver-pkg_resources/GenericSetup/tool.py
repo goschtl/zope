@@ -368,7 +368,7 @@ class SetupTool(Folder):
                      )
 
     security.declareProtected(ManagePortal, 'manage_tool')
-    manage_tool = PageTemplateResource('www/sutProperties', globals())
+    manage_tool = PageTemplateResource('www/sutProperties.zpt', globals())
 
     security.declareProtected(ManagePortal, 'manage_updateToolProperties')
     def manage_updateToolProperties(self, context_id, RESPONSE):
@@ -380,7 +380,8 @@ class SetupTool(Folder):
                          % (self.absolute_url(), 'Properties+updated.'))
 
     security.declareProtected(ManagePortal, 'manage_importSteps')
-    manage_importSteps = PageTemplateResource('www/sutImportSteps', globals())
+    manage_importSteps = PageTemplateResource('www/sutImportSteps.zpt',
+                                              globals())
 
     security.declareProtected(ManagePortal, 'manage_importSelectedSteps')
     def manage_importSelectedSteps(self,
@@ -416,7 +417,8 @@ class SetupTool(Folder):
                          % (self.absolute_url(), message))
 
     security.declareProtected(ManagePortal, 'manage_exportSteps')
-    manage_exportSteps = PageTemplateResource('www/sutExportSteps', globals())
+    manage_exportSteps = PageTemplateResource('www/sutExportSteps.zpt',
+                                              globals())
 
     security.declareProtected(ManagePortal, 'manage_exportSelectedSteps')
     def manage_exportSelectedSteps(self, ids, RESPONSE):
@@ -445,7 +447,8 @@ class SetupTool(Folder):
         return result['tarball']
 
     security.declareProtected(ManagePortal, 'manage_snapshots')
-    manage_snapshots = PageTemplateResource('www/sutSnapshots', globals())
+    manage_snapshots = PageTemplateResource('www/sutSnapshots.zpt',
+                                            globals())
 
     security.declareProtected(ManagePortal, 'listSnapshotInfo')
     def listSnapshotInfo(self):
@@ -524,7 +527,7 @@ class SetupTool(Folder):
                          % (self.absolute_url(), 'Snapshot+created.'))
 
     security.declareProtected(ManagePortal, 'manage_showDiff')
-    manage_showDiff = PageTemplateResource('www/sutCompare', globals())
+    manage_showDiff = PageTemplateResource('www/sutCompare.zpt', globals())
 
     def manage_downloadDiff(self,
                             lhs,

@@ -28,7 +28,7 @@ _TOOL_ID = 'portal_setup'
 def addConfiguredSiteForm(dispatcher):
     """ Wrap the PTF in 'dispatcher', including 'profile_registry' in options.
     """
-    wrapped = PageTemplateResource( 'www/siteAddForm', globals()
+    wrapped = PageTemplateResource( 'www/siteAddForm.zpt', globals()
                                   ).__of__( dispatcher )
 
     base_profiles = []

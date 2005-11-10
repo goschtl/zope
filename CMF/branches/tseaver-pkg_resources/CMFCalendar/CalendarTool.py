@@ -48,13 +48,13 @@ class CalendarTool (UniqueObject, SimpleItem):
     #   ZMI methods
     #
     security.declareProtected( ManagePortal, 'manage_overview' )
-    manage_overview = PageTemplateResource( 'www/explainCalendarTool'
+    manage_overview = PageTemplateResource( 'www/explainCalendarTool.zpt'
                                           , globals()
                                           , __name__='manage_overview'
                                           )
 
     security.declareProtected( ManagePortal, 'manage_configure' )
-    manage_configure = PageTemplateResource( 'www/configureCalendarTool'
+    manage_configure = PageTemplateResource( 'www/configureCalendarTool.zpt'
                                            , globals()
                                            , __name__='manage_configure'
                                            )
