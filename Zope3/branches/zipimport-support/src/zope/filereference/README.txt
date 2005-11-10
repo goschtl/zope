@@ -34,6 +34,13 @@ provides::
 
   >>> ref = zope.filereference.new("README.txt", package=zope.filereference)
 
+When a file reference is passed to `new()`, it is returned instead of
+generating a new reference::
+
+  >>> ref2 = zope.filereference.new(ref)
+  >>> ref2 is ref
+  True
+
 If we examine the reference as a string, we get a path that points
 into the package::
 

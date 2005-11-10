@@ -71,6 +71,9 @@ def open(path, mode="r"):
 
 def new(path, package=None, basepath=None):
 
+    if IFileReference.providedBy(path):
+        return path
+
     if os.path.isabs(path):
         return PathReference(os.path.normpath(path))
 
