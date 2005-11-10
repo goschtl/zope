@@ -1,17 +1,12 @@
-import time
-import pkg_resources
 import os
-import re
 import sys
-import resource
+import pkg_resources
+import resource # needs to be up here to monkeypatch
 
 import Globals
 from Globals import package_home
 from Globals import InitializeClass
 from Globals import ImageResource
-from OFS.content_types import guess_content_type
-from App.Common import rfc1123_date
-from App.special_dtml import defaultBindings
 from OFS.misc_ import Misc_
 import OFS
 
@@ -77,8 +72,10 @@ class EggProductContext(object):
         self.meta_types = {}
         
     def create_product_object(self):
-        # Create a persistent object in the ControlPanel.Products area
-        # representing a product packaged as an egg and set it as self.product
+        """
+        Create a persistent object in the ControlPanel.Products area
+        representing a product packaged as an egg and return it
+        """
         products = self.app.Control_Panel.Products
         fver = ''
 
@@ -286,8 +283,7 @@ class EggProductContext(object):
                 setattr(ObjectManager, name + '__roles__', pr)
                 if aliased:
                     # Set the unaliased method name and its roles
-                    # to avoid security holes.  XXX: All "legacy"
-                    # methods need to be eliminated.
+                    # to avoid security holes.
                     setattr(ObjectManager, method.__name__, method)
                     setattr(ObjectManager, method.__name__+'__roles__', pr)
 
@@ -479,43 +475,3 @@ class EggProductContext(object):
         pass
 
 
-def import_product(product_dir, productname, raise_exc=0, log_exc=1):
-    path_join=os.path.join
-    isdir=os.path.isdir
-    exists=os.path.exists
-    _st=type('')
-    global_dict=globals()
-    silly=('__doc__',)
-    modules=sys.modules
-    have_module=modules.has_key
-
-    try:
-        package_dir=path_join(product_dir, productname)
-        if not isdir(package_dir): return
-        if not exists(path_join(package_dir, '__init__.py')):
-            if not exists(path_join(package_dir, '__init__.pyc')):
-                if not exists(path_join(package_dir, '__init__.pyo')):
-                    return
-
-        pname="Products.%s" % productname
-        try:
-            product=__import__(pname, global_dict, global_dict, silly)
-            if hasattr(product, '__module_aliases__'):
-                for k, v in product.__module_aliases__:
-                    if not have_module(k):
-                        if type(v) is _st and have_module(v): v=modules[v]
-                        modules[k]=v
-        except:
-            exc = sys.exc_info()
-            if log_exc:
-                LOG('Zope', ERROR, 'Could not import %s' % pname,
-                    error=exc)
-            f=StringIO()
-            traceback.print_exc(100,f)
-            f=f.getvalue()
-            try: modules[pname].__import_error__=f
-            except: pass
-            if raise_exc:
-                raise exc[0], exc[1], exc[2]
-    finally:
-        exc = None

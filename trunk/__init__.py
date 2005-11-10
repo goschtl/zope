@@ -78,7 +78,6 @@ class Basket(object):
             initializer = get_initializer(point, productname, debug_mode)
             context = EggProductContext(productname, initializer, app,
                                         product_pkg, eggname)
-            # XXX debug mode conditions raise_exc, log_exc
             returned = context.install(debug_mode)
             data.append(returned)
         return data

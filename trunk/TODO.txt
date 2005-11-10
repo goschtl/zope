@@ -10,3 +10,5 @@
 - Tracebacks from egg products don't include code from inside the egg.
   Investigate this more (check if this is a known bug).
 
+- Figure out what to do about products with the same name while
+  iterating over their entry points.
