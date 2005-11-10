@@ -17,6 +17,7 @@ $Id$
 """
 import os
 
+from zope import filereference
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IDefaultViewName
 from zope.interface import implements, classImplements, Interface
@@ -124,8 +125,7 @@ def page(_context, name, permission, for_,
                 "A class must be provided if attribute is used")
 
     if template:
-        template = os.path.abspath(str(_context.path(template)))
-        if not os.path.isfile(template):
+        if not filereference.isfile(template):
             raise ConfigurationError("No such file", template)
         required['__getitem__'] = permission
 
@@ -236,8 +236,7 @@ class view(object):
 
     def page(self, _context, name, attribute=None, template=None):
         if template:
-            template = os.path.abspath(_context.path(template))
-            if not os.path.isfile(template):
+            if not filereference.isfile(template):
                 raise ConfigurationError("No such file", template)
         else:
             if not attribute:
