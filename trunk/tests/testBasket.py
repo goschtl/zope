@@ -261,6 +261,19 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         result = basket.initialize(DummyProductContext('Basket'))
         self.assertEqual(result, ['diskproduct1 initialized'])
 
+    def test_multiproduct(self):
+        basket = self._makeOne()
+        basket.pre_initialized = True
+
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        basket.require(distro_str='multiproduct')
+        result = basket.initialize(DummyProductContext('Basket'))
+        self.assertEqual(result,
+                         ['multiproduct1 initialized',
+                          'multiproduct2 initialized'])
+
     def test_product_distributions_by_dwim(self):
         basket = self._makeOne()
         basket.pre_initialized = True
