@@ -144,20 +144,6 @@ def get_initializer(point, productname, debug_mode):
 basket = Basket()
 initialize = basket.initialize
 
-class Jackboot(object):
-    """
-    Nazi-like proxy for an object to replace this package in
-    sys.modules... Basket is born deprecated, and nothing but the
-    Zope core should try to use it... if you can get around this,
-    you DESERVE TO LOSE! ;-)
-    """
-    def __setattr__(self, k, v):
-        raise DeprecationWarning('This package is deprecated, '
-                                 'do not monkey-patch it!')
-    def __getattribute__(self, k):
-        raise DeprecationWarning('This package is deprecated, do not import '
-                                 'it directly!')
-
 # Poke the resource classes into the Zope package tree where they will 
 # wind up in a future zope version, maybe
 import resource
