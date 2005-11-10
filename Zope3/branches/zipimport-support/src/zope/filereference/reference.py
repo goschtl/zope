@@ -72,7 +72,7 @@ def open(path, mode="r"):
 def new(path, package=None, basepath=None):
 
     if os.path.isabs(path):
-        return PathReference(path)
+        return PathReference(os.path.normpath(path))
 
     # Got a relative path, combine with base path.
     # If we have no basepath, compute the base path from the package
