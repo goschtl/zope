@@ -1,14 +1,18 @@
 import sys
 import os
-import pkg_resources
 import traceback
 import textwrap
 
-# until it's part of Python, this needs to happen before Products.Basket.utils
-# is imported
-sys.modules['pkg_resources'] = pkg_resources
-sys.modules['Products.Basket.pkg_resources'] = pkg_resources
-sys.modules['Basket.pkg_resources'] = pkg_resources
+# pkg_resource monkeypatching (if necessary) needs to happen before
+# Products.Basket.utils is imported
+try:
+    # use the system-installed pkg_resources if possible
+    import pkg_resources
+except ImportError:
+    # else use our "hardcoded" version if it doesn't exist in the user's
+    # Python installation and stick it into sys.modules
+    import pkg_resources_0_6a7 as pkg_resources
+    sys.modules['pkg_resources'] = pkg_resources
 
 from Products.Basket.utils import EggProductContext
 from Products.Basket.utils import EggProduct
