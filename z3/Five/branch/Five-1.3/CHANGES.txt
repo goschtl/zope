@@ -2,6 +2,11 @@
 Five Changes
 ============
 
+Five 1.3b2 (2005-11-10)
+=======================
+
+This version is included in Zope 2 trunk as of this date.
+
 Five 1.3b (2005-11-02)
 ======================
 
@@ -44,6 +49,8 @@ Bugfixes
 
 * Fixed bug that broke WebDAV access for five:defaultViewable objects. The
   __browser_default__ now modifies only GET and POST requests.
+
+* Fixed some event recursion compatibility modes.
 
 Five 1.2b (2005-11-02)
 ======================
