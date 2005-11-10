@@ -110,7 +110,6 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         self.oldentries = self.working_set.entries[:]
         self.oldby_key = copy.copy(self.working_set.by_key)
         self.oldentry_keys = copy.copy(self.working_set.entry_keys)
-        self.old_callbacks = self.working_set.callbacks[:]
         self.oldproductpath = Products.__path__
         self.fixtures = os.path.join(here, 'fixtures')
         self.old_debug_mode = App.config.getConfiguration().debug_mode
@@ -126,7 +125,6 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         working_set.by_key.update(self.oldby_key)
         working_set.entry_keys.clear()
         working_set.entry_keys.update(self.oldentry_keys)
-        working_set.callbacks[:] = self.old_callbacks
         Products.__path__[:] = self.oldproductpath
         App.config.getConfiguration().debug_mode = self.old_debug_mode
 
@@ -764,8 +762,28 @@ class TestEggProduct(unittest.TestCase):
         self.assertEqual(product.manage_get_product_readme__().strip(),
                          'This is a test fixture, beeyotch!')
 
-
 class TestResource(unittest.TestCase):
+    def setUp(self):
+        self.fixtures = os.path.join(here, 'fixtures')
+        sys.path.append(self.fixtures)
+        pkg_resources.working_set.add_entry(self.fixtures)
+        pkg_resources.require('diskproduct1')
+        pkg_resources.require('product1')
+        pkg_resources.require('product2')
+        self.oldproductspath = copy.copy(Products.__path__)
+        self.oldsysmodules = copy.copy(sys.modules)
+
+    def tearDown(self):
+        working_set = pkg_resources.working_set
+        for thing in ('diskproduct1', 'product1', 'product2'):
+            distribution = pkg_resources.get_distribution(thing)
+            working_set.entries.remove(distribution.location)
+            del working_set.by_key[distribution.key]
+            working_set.entry_keys[distribution.location] = []
+            sys.path.remove(distribution.location)
+        Products.__path__[:] = self.oldproductspath
+        sys.modules.clear()
+        sys.modules.update(self.oldsysmodules)
 
     def test_is_zipped(self):
         from Products.Basket.resource import is_zipped
