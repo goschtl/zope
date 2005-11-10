@@ -63,6 +63,39 @@ else:
     from Globals import DTMLResource
     from Products.PageTemplates import PageTemplateResource
 
+try:
+    from pkg_resources import resource_string
+    from pkg_resources import resource_listdir
+    from pkg_resources import resource_isdir
+    from pkg_resources import get_provider
+    from pkg_resources import ZipProvider
+    _HAS_PKG_RESOURCES = True
+
+except ImportError:
+    _HAS_PKG_RESOURCES = False
+
+    class ZipProvider:  # silence!
+        pass
+
+    def resource_string(pkg_globals, relative_path):
+        from Globals import package_home
+        filename = os.path.join(package_home(pkg_globals), relative_path)
+        f = open(filename, 'rb')
+        try:
+            return f.read()
+        finally:
+            f.close()
+
+    def resource_listdir(pkg_globals, relative_path):
+        from Globals import package_home
+        dirname = os.path.join(package_home(pkg_globals), relative_path)
+        return os.listdir(dirname)
+
+    def resource_isdir(pkg_globals, relative_path):
+        from Globals import package_home
+        dirname = os.path.join(package_home(pkg_globals), relative_path)
+        return os.path.isdir(dirname)
+
 security = ModuleSecurityInfo( 'Products.CMFCore.utils' )
 
 #

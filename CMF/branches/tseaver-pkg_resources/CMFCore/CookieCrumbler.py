@@ -420,13 +420,10 @@ def _create_forms(ob):
     ''' Create default forms inside ob '''
     import os
     from OFS.DTMLMethod import addDTMLMethod
-    dtmldir = os.path.join(os.path.dirname(__file__), 'dtml')
+    from utils import resource_string
     for fn in ('index_html', 'logged_in', 'logged_out', 'login_form',
                 'standard_login_footer', 'standard_login_header'):
-        filename = os.path.join(dtmldir, fn + '.dtml')
-        f = open(filename, 'rt')
-        try: data = f.read()
-        finally: f.close()
+        data = resource_string('dtml/%s' % fn, globals())
         addDTMLMethod(ob, fn, file=data)
 
 def manage_addCC(dispatcher, id, create_forms=0, REQUEST=None):

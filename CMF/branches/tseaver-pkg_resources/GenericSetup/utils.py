@@ -43,6 +43,18 @@ else:
     from Globals import DTMLResource
     from Products.PageTemplates import PageTemplateResource
 
+try:
+    from pkg_resources import resource_string
+except ImportError:
+    def resource_string(pkg_name, relative_path):
+        from Globals import package_home
+        filename = os.path.join(package_home(pkg_globals), relative_path)
+        f = open(filename, 'rb')
+        try:
+            return f.read()
+        finally:
+            f.close()
+
 from exceptions import BadRequest
 from interfaces import INodeExporter
 from interfaces import INodeImporter

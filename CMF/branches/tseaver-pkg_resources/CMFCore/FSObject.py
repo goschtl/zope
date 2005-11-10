@@ -19,16 +19,6 @@ import os
 import sys
 import time
 
-try:
-    from pkg_resources import resource_string
-    from pkg_resources import get_provider
-    from pkg_resources import ZipProvider
-    _HAS_PKG_RESOURCES = True
-except ImportError:
-    _HAS_PKG_RESOURCES = False
-    class ZipProvider:  # silence!
-        pass
-
 import Globals
 from AccessControl import ClassSecurityInfo
 from AccessControl.Role import RoleManager
@@ -47,6 +37,10 @@ from permissions import View
 from permissions import ViewManagementScreens
 from utils import expandpath
 from utils import getToolByName
+from utils import get_provider
+from utils import resource_string
+from utils import ZipProvider
+from utils import _HAS_PKG_RESOURCES
 
 
 class FSObject(Implicit, Item, RoleManager, Cacheable):

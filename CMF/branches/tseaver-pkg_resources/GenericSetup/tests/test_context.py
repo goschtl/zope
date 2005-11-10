@@ -757,13 +757,10 @@ class SnapshotExportContextTests( SecurityRequestTest
     def test_writeDataFile_simple_image( self ):
 
         from OFS.Image import Image
+        from Products.GenericSetup.utils import resource_string
         FILENAME = 'simple.txt'
         CONTENT_TYPE = 'image/png'
-        png_filename = os.path.join( os.path.split( __file__ )[0]
-                                   , 'simple.png' )
-        png_file = open( png_filename, 'rb' )
-        png_data = png_file.read()
-        png_file.close()
+        png_data = resource_string(__name__, 'simple.png')
 
         site = DummySite( 'site' ).__of__( self.root )
         site.setup_tool = DummyTool( 'setup_tool' )

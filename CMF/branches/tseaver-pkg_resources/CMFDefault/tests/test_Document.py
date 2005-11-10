@@ -406,6 +406,9 @@ class DocumentTests(RequestTestBase):
 class DocumentFTPGetTests(RequestTestBase):
 
     def testHTML( self ):
+        from Products.CMFCore.utils import resource_string
+        import Products.CMFDefault
+
         self.REQUEST['BODY']=BASIC_HTML
 
         ttool = self.site._setObject( 'portal_types', TypesTool() )
@@ -415,9 +418,8 @@ class DocumentFTPGetTests(RequestTestBase):
 
         zpt = self.site._setObject( 'source_html',
                                     ZopePageTemplate('source_html') )
-        dir = abspath( dirname(utils.__file__) )
-        _file = path_join(dir, 'skins', 'zpt_content', 'source_html.pt')
-        data = open(_file, 'r').read()
+        data = resource_string(Products.CMFDefault.__name__,
+                               'skins/zpt_content/source_html.pt')
         zpt.write(data)
 
         d = self._makeOne('foo')

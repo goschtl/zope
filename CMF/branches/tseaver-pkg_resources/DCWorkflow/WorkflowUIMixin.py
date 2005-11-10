@@ -23,6 +23,7 @@ from Acquisition import aq_get
 
 from Products.CMFCore.utils import DTMLResource
 from Products.CMFCore.utils import PageTemplateResource
+from Products.CMFCore.utils import resource_string
 
 from permissions import ManagePortal
 from Guard import Guard
@@ -206,13 +207,7 @@ class WorkflowUIMixin:
     def guardExprDocs(self):
         """Returns documentation on guard expressions.
         """
-        here = os.path.dirname(__file__)
-        fn = os.path.join(here, 'doc', 'expressions.stx')
-        f = open(fn, 'rt')
-        try:
-            text = f.read()
-        finally:
-            f.close()
+        text = resource_string('doc/expressions.stx', globals())
         from DocumentTemplate.DT_Var import structured_text
         return structured_text(text)
 
