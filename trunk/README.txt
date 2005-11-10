@@ -61,7 +61,7 @@ How Does Basket Determine Which Products To Install?
     detects a situation in which two distinct Product distributions
     contain a Product that has the same name (a case which is not
     caught by pkg_resources), Basket will prevent startup by raising
-    an exception.
+    an exception if Zope is in debug mode.
 
 How Do I Create Eggs that are Compatible with Basket?
 
@@ -93,7 +93,7 @@ How Do I Create Eggs that are Compatible with Basket?
   for legacy Zope API methods which expect to be able to use a Product
   name to access constructor functions.  Note that the behavior of
   Products packaged within Product distributions differs slightly from
-  that of "legacy" Products inasmuch as "egg Products" are not
+  that of "legacy" Products inasmuch as "egg Products" will not be
   imported at Zope startup time and will not show up in the
   ControlPanel list unless their packaging specifies a
   'zope2.initialize' entry point.
@@ -226,9 +226,49 @@ Building a Product Distribution
  'python setup.py bdist_egg'
 
  The ".egg" file created in dist is the Product distribution.  Refer
- to the setuptools documentation for advanced options.
+ to the "setuptools
+ documentation":http://peak.telecommunity.com/DevCenter/setuptools for
+ advanced options.
+
+Replacements for File-Bound Classes
+
+  The following Zope classes may not be sucessfully used within a
+  Product packaged as a 'zip-safe' egg::
+
+   Globals.DTMLFile
+   Globals.ImageFile
+   Products.PageTemplates.PageTemplateFile.PageTemplateFile
+
+  Instead, use these replacement classes (which have compatible constructors
+  and are monkey-patched into place by Basket)::
+
+   Globals.DTMLResource
+   Globals.ImageResource
+   Products.PageTemplates.PageTemplateResource
+
+  CMF's "Filesystem Directory View" and its supporting classes like
+  "FSFile", "FSPageTemplate", et. al may also not be used in Products
+  packaged as zipfiles.  Work to make the CMF filesystem skin
+  machinery understand zipfiles is underway in a SVN branch at the
+  time of this writing but is not yet released.
+
+  Custom code within your product that expects to be able to use
+  package resources as files on a filesystem (e.g. by using
+  "os.listdir", "open", "os.stat", etc.) against files in the product
+  package will fail.  Replace this code with the equivalent calls from
+  the "pkg_resources" module (which may be imported via "import
+  pkg_resources" when Basket is installed).  See the "pkg_resources
+  documentation":http://peak.telecommunity.com/DevCenter/setuptools
+  for more information.
 
 Forward Compatibility Notices
+
+  Basket ships with a Python 2.3-compatible version of setuptools'
+  pkg_resources module.  At Basket initialization time, this module is
+  inserted into sys.modules as "pkg_resources" (possibly shadowing
+  another pkg_resources module you've imported).  This is necessary
+  unless we want to require people to install setuptools before using
+  Basket.
 
   Note that the use of PRODUCT_DISTRIBUTIONS.txt may vanish in a later
   release of Basket in favor of a special section within the Zope 2
@@ -240,7 +280,8 @@ Forward Compatibility Notices
 
   The "Basket" product is a stopgap solution to the problem of being
   able to package Zope products as Python eggs.  Its functionality
-  will be foldeed into a later Zope release, at which point it will
-  cease to be useful and disappear.  Therefore, you should not depend
-  on importing or otherwise using the "Products.Basket" package or its
-  contents anywhere in your own Zope code.
+  will be folded into a later Zope release, at which point it will
+  cease to be useful and disappear (although eggs created which make
+  use of its facilities will continue to work).  Therefore, you should
+  not depend on importing or otherwise using the "Products.Basket"
+  package or its contents anywhere in your own Zope code.

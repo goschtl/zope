@@ -4,6 +4,12 @@ import pkg_resources
 import traceback
 import textwrap
 
+# until it's part of Python, this needs to happen before Products.Basket.utils
+# is imported
+sys.modules['pkg_resources'] = pkg_resources
+sys.modules['Products.Basket.pkg_resources'] = pkg_resources
+sys.modules['Basket.pkg_resources'] = pkg_resources
+
 from Products.Basket.utils import EggProductContext
 from Products.Basket.utils import EggProduct
 import zLOG

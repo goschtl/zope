@@ -5,7 +5,7 @@ import copy
 import Products
 from Products.Basket.utils import EggProductContext
 from Products.Basket import get_containing_package
-from Products.Basket import pkg_resources
+import pkg_resources # must come after some import of something in Basket
 from OFS.ObjectManager import ObjectManager
 from OFS.SimpleItem import SimpleItem
 from OFS.Folder import Folder
@@ -128,6 +128,11 @@ class TestBasket(unittest.TestCase, LogInterceptor):
     def _makeOne(self, *arg, **kw):
         klass = self._getTargetClass()
         return klass(*arg, **kw)
+
+    def test_pkg_resources_monkeypatch(self):
+        self.assertEqual(sys.modules['pkg_resources'],
+                         sys.modules['Basket.pkg_resources'],
+                         sys.modules['Products.Basket.pkg_resources'])
 
     def test_require_success(self):
         basket = self._makeOne()
