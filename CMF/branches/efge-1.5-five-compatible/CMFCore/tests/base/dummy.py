@@ -97,12 +97,12 @@ class DummyContent( PortalContent, Item ):
     def manage_afterAdd( self, item, container ):
         self.after_add_called = 1
         if self.catalog:
-            PortalContent.manage_afterAdd( self, item, container )
+            super(DummyContent, self).manage_afterAdd(item, container)
 
     def manage_beforeDelete( self, item, container ):
         self.before_delete_called = 1
         if self.catalog:
-            PortalContent.manage_beforeDelete( self, item, container )
+            super(DummyContent, self).manage_beforeDelete(item, container)
 
     def absolute_url(self):
        return self.url

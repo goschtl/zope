@@ -105,10 +105,7 @@ def addFile( self
     self._getOb(id).manage_upload(file)
 
 
-class File( OFS.Image.File
-          , PortalContent
-          , DefaultDublinCoreImpl
-          ):
+class File(PortalContent, OFS.Image.File, DefaultDublinCoreImpl):
     """
         A Portal-managed File
     """
@@ -154,6 +151,8 @@ class File( OFS.Image.File
                 ):
         OFS.Image.File.__init__( self, id, title, file
                                , content_type, precondition )
+        self._setId(id)
+        delattr(self, '__name__')
 
         # If no file format has been passed in, rely on what OFS.Image.File
         # detected. Unlike Images, which have code to try and pick the content
@@ -166,6 +165,12 @@ class File( OFS.Image.File
                                , contributors, effective_date, expiration_date
                                , format, language, rights )
 
+    # For old instances where bases had OFS.Image.File first,
+    # the id was actually stored in __name__.
+    # getId() will do the correct thing here, as id() is callable
+    def id(self):
+        return self.__name__
+
     security.declareProtected(View, 'SearchableText')
     def SearchableText(self):
         """
@@ -173,24 +178,6 @@ class File( OFS.Image.File
         should return a concatenation of all useful text.
         """
         return "%s %s" % (self.title, self.description)
-
-    security.declarePrivate('manage_afterAdd')
-    def manage_afterAdd(self, item, container):
-        """Both of my parents have an afterAdd method"""
-        OFS.Image.File.manage_afterAdd(self, item, container)
-        PortalContent.manage_afterAdd(self, item, container)
-
-    security.declarePrivate('manage_afterClone')
-    def manage_afterClone(self, item):
-        """Both of my parents have an afterClone method"""
-        OFS.Image.File.manage_afterClone(self, item)
-        PortalContent.manage_afterClone(self, item)
-
-    security.declarePrivate('manage_beforeDelete')
-    def manage_beforeDelete(self, item, container):
-        """Both of my parents have a beforeDelete method"""
-        PortalContent.manage_beforeDelete(self, item, container)
-        OFS.Image.File.manage_beforeDelete(self, item, container)
 
     security.declarePrivate('_isNotEmpty')
     def _isNotEmpty(self, file):

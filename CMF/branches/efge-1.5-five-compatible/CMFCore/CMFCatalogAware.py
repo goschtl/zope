@@ -226,14 +226,14 @@ class CMFCatalogAware(Base):
         """
             Recurse in both normal and opaque subobjects.
         """
-        values = self.objectValues()
-        opaque_values = self.opaqueValues()
-        for subobjects in values, opaque_values:
-            for ob in subobjects:
-                s = getattr(ob, '_p_changed', 0)
-                if hasattr(aq_base(ob), name):
-                    getattr(ob, name)(*args)
-                if s is None: ob._p_deactivate()
+        # Call the base class to recurse in normal objectValues
+        getattr(super(CMFCatalogAware, self), name)(*args)
+        # Recurse in opaqueValues
+        for ob in self.opaqueValues():
+            s = getattr(ob, '_p_changed', 0)
+            if hasattr(aq_base(ob), name):
+                getattr(ob, name)(*args)
+            if s is None: ob._p_deactivate()
 
     # ZMI
     # ---
