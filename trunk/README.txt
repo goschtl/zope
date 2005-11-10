@@ -72,13 +72,19 @@ How Do I Create Eggs that are Compatible with Basket?
   includes one or more initialization functions which Zope will call
   during its startup process.
 
-  If your Product needs to be imported and initialized during Zope
-  startup (e.g. to register meta types or to show up in the Control
-  Panel Product list), you will need to define one or more "entry
-  points" of type 'zope2.initialize' in your setup.py 'setup' call
-  indicating which functions should be called during initialization.
-  If your product distribution contains only one Product, this "entry
-  point" is conventionally just 'SomePackageName:initialize'.
+  For your egg to be recognized as a Zope Product, you will need to
+  define one or more "entry points" of type 'zope2.initialize' in your
+  setup.py 'setup' call indicating which functions should be called
+  during initialization.  If your product distribution contains only
+  one Product, this "entry point" is conventionally just
+  'SomePackageName:initialize'.  If the object that the entry point
+  definition points to is a callable, it will be called with a
+  "ProductContext" instance during Zope startup.  However, the object
+  that the entry point definition "points" to needn't be a callable.
+  If it is not a callable, Basket will not attempt to call it.  For
+  Zope products that don't implement an "initialize" function,
+  something like "SomePackageName:__name__" is a good "dummy" entry
+  point definition.
 
   Products that are packaged as 'zip-safe' egg files must not attempt
   to use Zope API functions that expect Product files to exist within
