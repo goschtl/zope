@@ -6,5 +6,6 @@
 
 <include package=".container.browser.ftests" />
 <include package=".pagetemplate.ftests" />
+<include package=".form.browser.ftests" file="i18n.zcml" />
 
 </configure>
