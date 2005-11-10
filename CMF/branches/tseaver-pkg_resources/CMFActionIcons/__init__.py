@@ -16,28 +16,27 @@ Define tool for mapping CMF actions onto icons.
 
 $Id$
 """
-from Products.CMFCore.DirectoryView import registerDirectory
-from Products.CMFCore.utils import ToolInit
-try:
-    from Products.CMFSetup import EXTENSION
-    from Products.CMFSetup import profile_registry
-    has_profile_registry = True
-except ImportError:
-    has_profile_registry = False
 
-import ActionIconsTool
-
-actionicons_globals = globals()
-
-if __name__.startswith('Products'):  # testrunner may import w/o 'Products'
-    registerDirectory('skins', actionicons_globals)
+cmfactionicons_globals = globals()
 
 def initialize( context ):
+    from Products.CMFCore.DirectoryView import registerDirectory
+    from Products.CMFCore.utils import ToolInit
+    try:
+        from Products.CMFSetup import EXTENSION
+        from Products.CMFSetup import profile_registry
+        has_profile_registry = True
+    except ImportError:
+        has_profile_registry = False
+
+    import ActionIconsTool
 
     ToolInit( meta_type='CMF Action Icons Tool'
             , tools=( ActionIconsTool.ActionIconsTool, )
             , icon="tool.gif"
             ).initialize( context )
+
+    registerDirectory('skins', cmfactionicons_globals)
 
     if has_profile_registry:
         profile_registry.registerProfile('actionicons',

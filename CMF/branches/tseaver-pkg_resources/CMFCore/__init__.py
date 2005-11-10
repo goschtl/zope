@@ -15,76 +15,12 @@
 $Id$
 """
 
-from sys import modules
-
-import PortalObject, PortalContent, PortalFolder
-import MembershipTool, WorkflowTool, CatalogTool, DiscussionTool
-import ActionsTool, UndoTool, RegistrationTool, SkinsTool
-import MemberDataTool, TypesTool
-import URLTool
-import fiveactionstool
-import DirectoryView, FSImage, FSFile, FSPropertiesObject
-import FSDTMLMethod, FSPythonScript, FSSTXMethod
-import FSPageTemplate
-import FSZSQLMethod
-import ActionInformation
-import CookieCrumbler
-import ContentTypeRegistry
-import CachingPolicyManager
-import CMFBTreeFolder
-import utils
-
-from interfaces import IAction
-from interfaces import IActionCategory
-from interfaces import ITypeInformation
-from permissions import AddPortalFolders
-from permissions import ManagePortal
-
-
-bases = (
-    PortalObject.PortalObjectBase,
-    PortalFolder.PortalFolder,
-    PortalContent.PortalContent,
-    )
-
-tools = (
-    MembershipTool.MembershipTool,
-    RegistrationTool.RegistrationTool,
-    WorkflowTool.WorkflowTool,
-    CatalogTool.CatalogTool,
-    DiscussionTool.DiscussionTool,
-    ActionsTool.ActionsTool,
-    UndoTool.UndoTool,
-    SkinsTool.SkinsTool,
-    MemberDataTool.MemberDataTool,
-    TypesTool.TypesTool,
-    URLTool.URLTool,
-    fiveactionstool.FiveActionsTool,
-    )
-
-this_module = modules[ __name__ ]
-
-z_bases = utils.initializeBasesPhase1(bases, this_module)
-z_tool_bases = utils.initializeBasesPhase1(tools, this_module)
-
-FolderConstructorForm = ( 'manage_addPortalFolderForm'
-                        , PortalFolder.manage_addPortalFolderForm
-                        )
-
-cmfcore_globals=globals()
-
-_CONTENT_TYPES = ( PortalFolder.PortalFolder
-                 ,  CMFBTreeFolder.CMFBTreeFolder
-                 )
-
-_EXTRA_CONSTRUCTORS = ( PortalFolder.manage_addPortalFolder
-                      ,  CMFBTreeFolder.manage_addCMFBTreeFolder
-                      )
-
+cmfcore_globals = globals()
 
 # Because persistent objects may be out there which were
 # created when the module was in that product, we need
 # __module_aliases__ . 
+import CMFBTreeFolder
 __module_aliases__ = ( ( 'Products.BTreeFolder2.CMFBTreeFolder'
                        , 'Products.CMFCore.CMFBTreeFolder'
                        )
@@ -93,8 +29,69 @@ __module_aliases__ = ( ( 'Products.BTreeFolder2.CMFBTreeFolder'
 
 def initialize(context):
 
-    utils.initializeBasesPhase2(z_bases, context)
-    utils.initializeBasesPhase2(z_tool_bases, context)
+    import ActionInformation
+    import ActionsTool
+    import CachingPolicyManager
+    import CatalogTool
+    import ContentTypeRegistry
+    import CookieCrumbler
+    import DirectoryView
+    import DiscussionTool
+    import fiveactionstool
+    import FSDTMLMethod
+    import FSFile
+    import FSImage
+    import FSPageTemplate
+    import FSPropertiesObject
+    import FSPythonScript
+    import FSSTXMethod
+    import FSZSQLMethod
+    import MemberDataTool
+    import MembershipTool
+    import PortalContent
+    import PortalFolder
+    import PortalObject
+    import RegistrationTool
+    import SkinsTool
+    import TypesTool
+    import UndoTool
+    import URLTool
+    import utils
+    import WorkflowTool
+
+    from interfaces import IAction
+    from interfaces import IActionCategory
+    from interfaces import ITypeInformation
+    from permissions import AddPortalFolders
+    from permissions import ManagePortal
+
+
+    tools = (
+        MembershipTool.MembershipTool,
+        RegistrationTool.RegistrationTool,
+        WorkflowTool.WorkflowTool,
+        CatalogTool.CatalogTool,
+        DiscussionTool.DiscussionTool,
+        ActionsTool.ActionsTool,
+        UndoTool.UndoTool,
+        SkinsTool.SkinsTool,
+        MemberDataTool.MemberDataTool,
+        TypesTool.TypesTool,
+        URLTool.URLTool,
+        fiveactionstool.FiveActionsTool,
+        )
+
+    FolderConstructorForm = ( 'manage_addPortalFolderForm'
+                            , PortalFolder.manage_addPortalFolderForm
+                            )
+
+    _CONTENT_TYPES = ( PortalFolder.PortalFolder
+                    ,  CMFBTreeFolder.CMFBTreeFolder
+                    )
+
+    _EXTRA_CONSTRUCTORS = ( PortalFolder.manage_addPortalFolder
+                        ,  CMFBTreeFolder.manage_addCMFBTreeFolder
+                        )
 
     context.registerClass(
         DirectoryView.DirectoryViewSurrogate,
@@ -162,19 +159,19 @@ def initialize(context):
         interfaces=(ITypeInformation,))
 
     utils.registerIcon(FSDTMLMethod.FSDTMLMethod,
-                       'images/fsdtml.gif', globals())
+                       'images/fsdtml.gif', cmfcore_globals)
     utils.registerIcon(FSPythonScript.FSPythonScript,
-                       'images/fspy.gif', globals())
+                       'images/fspy.gif', cmfcore_globals)
     utils.registerIcon(FSImage.FSImage,
-                       'images/fsimage.gif', globals())
+                       'images/fsimage.gif', cmfcore_globals)
     utils.registerIcon(FSFile.FSFile,
-                       'images/fsfile.gif', globals())
+                       'images/fsfile.gif', cmfcore_globals)
     utils.registerIcon(FSPageTemplate.FSPageTemplate,
-                       'images/fspt.gif', globals())
+                       'images/fspt.gif', cmfcore_globals)
     utils.registerIcon(FSPropertiesObject.FSPropertiesObject,
-                       'images/fsprops.gif', globals())
+                       'images/fsprops.gif', cmfcore_globals)
     utils.registerIcon(FSZSQLMethod.FSZSQLMethod,
-                       'images/fssqlmethod.gif', globals())
+                       'images/fssqlmethod.gif', cmfcore_globals)
 
     utils.ToolInit( 'CMF Core Tool'
                   , tools=tools
@@ -187,14 +184,15 @@ def initialize(context):
                      , extra_constructors=_EXTRA_CONSTRUCTORS
                      ).initialize( context )
 
-    # make registerHelp work with 2 directories
-    help = context.getProductHelp()
-    lastRegistered = help.lastRegistered
-    context.registerHelp(directory='help', clear=1)
-    context.registerHelp(directory='interfaces', clear=1)
-    if help.lastRegistered != lastRegistered:
-        help.lastRegistered = None
+    if 0:   # XXX: comment this out for now
+        # make registerHelp work with 2 directories
+        help = context.getProductHelp()
+        lastRegistered = help.lastRegistered
         context.registerHelp(directory='help', clear=1)
-        help.lastRegistered = None
-        context.registerHelp(directory='interfaces', clear=0)
-    context.registerHelpTitle('CMF Core Help')
+        context.registerHelp(directory='interfaces', clear=1)
+        if help.lastRegistered != lastRegistered:
+            help.lastRegistered = None
+            context.registerHelp(directory='help', clear=1)
+            help.lastRegistered = None
+            context.registerHelp(directory='interfaces', clear=0)
+        context.registerHelpTitle('CMF Core Help')

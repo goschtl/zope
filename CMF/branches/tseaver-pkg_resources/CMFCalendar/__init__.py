@@ -15,48 +15,34 @@
 $Id$
 """
 
-import sys
-
-import utils
-from Products.CMFCore import utils
-from Products.CMFCore.DirectoryView import registerDirectory
-from Products.GenericSetup import EXTENSION
-from Products.GenericSetup import profile_registry
-
-import Event
-import CalendarTool
-from permissions import AddPortalContent
-
-
-this_module = sys.modules[ __name__ ]
-
-contentConstructors = (Event.addEvent,)
-contentClasses = (Event.Event,)
-
-tools = ( CalendarTool.CalendarTool, )
-
-z_bases = utils.initializeBasesPhase1( contentClasses, this_module )
-
 # This is used by a script (external method) that can be run
 # to set up Events in an existing CMF Site instance.
-event_globals=globals()
-
-# Make the skins available as DirectoryViews
-if __name__.startswith('Products'):  # testrunner may import w/o 'Products'
-    registerDirectory('skins', globals())
+cmfcalendar_globals = globals()
 
 def initialize( context ):
-    utils.ToolInit('CMF Calendar Tool', tools=tools, icon='tool.gif',
-                   ).initialize( context )
+    from Products.CMFCore.utils import ContentInit
+    from Products.CMFCore.utils import ToolInit
+    from Products.CMFCore.DirectoryView import registerDirectory
+    from Products.GenericSetup import EXTENSION
+    from Products.GenericSetup import profile_registry
 
-    utils.initializeBasesPhase2( z_bases, context )
-    context.registerHelpTitle('CMF Calendar Help')
-    context.registerHelp(directory='help')
-    utils.ContentInit( 'CMF Event'
-                     , content_types = contentClasses
-                     , permission = AddPortalContent
-                     , extra_constructors = contentConstructors
-                     ).initialize( context )
+    import Event
+    import CalendarTool
+    from permissions import AddPortalContent
+
+
+    tools = ( CalendarTool.CalendarTool, )
+    ToolInit( 'CMF Calendar Tool'
+            , tools=tools, icon='tool.gif'
+            ).initialize( context )
+
+    contentConstructors = (Event.addEvent,)
+    contentClasses = (Event.Event,)
+    ContentInit( 'CMF Event'
+               , content_types = contentClasses
+               , permission = AddPortalContent
+               , extra_constructors = contentConstructors
+               ).initialize( context )
 
     profile_registry.registerProfile('default',
                                      'CMFCalendar',
@@ -64,3 +50,7 @@ def initialize( context ):
                                      'profiles/default',
                                      'CMFCalendar',
                                      EXTENSION)
+    registerDirectory('skins', cmfcalendar_globals)
+
+    context.registerHelpTitle('CMF Calendar Help')
+    context.registerHelp(directory='help')

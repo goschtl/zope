@@ -15,40 +15,25 @@
 $Id$
 """
 
-import sys
-
-from ZClasses import createZClassForBase
-
-from Products.CMFCore.utils import ContentInit
-from Products.CMFCore.DirectoryView import registerDirectory
-from Products.GenericSetup import EXTENSION
-from Products.GenericSetup import profile_registry
-
-import Topic
-import SimpleStringCriterion
-import SimpleIntCriterion
-import ListCriterion
-import DateCriteria
-import SortCriterion
-from permissions import AddTopics
-
-
-bases = ( Topic.Topic, )
-
-this_module = sys.modules[ __name__ ]
-
-for base in bases:
-    createZClassForBase( base, this_module )
 
 # This is used by a script (external method) that can be run
 # to set up Topics in an existing CMF Site instance.
-topic_globals = globals()
-
-# Make the skins available as DirectoryViews
-if __name__.startswith('Products'):  # testrunner may import w/o 'Products'
-    registerDirectory( 'skins', globals() )
+cmftopic_globals = globals()
 
 def initialize( context ):
+
+    from Products.CMFCore.utils import ContentInit
+    from Products.CMFCore.DirectoryView import registerDirectory
+    from Products.GenericSetup import EXTENSION
+    from Products.GenericSetup import profile_registry
+
+    import Topic
+    import SimpleStringCriterion
+    import SimpleIntCriterion
+    import ListCriterion
+    import DateCriteria
+    import SortCriterion
+    from permissions import AddTopics
 
     context.registerHelpTitle( 'CMF Topic Help' )
     context.registerHelp( directory='help' )
@@ -59,6 +44,8 @@ def initialize( context ):
                , permission = AddTopics
                , extra_constructors = (Topic.addTopic,)
                ).initialize( context )
+
+    registerDirectory( 'skins', cmftopic_globals )
 
     profile_registry.registerProfile('default',
                                      'CMFTopic',

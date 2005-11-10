@@ -15,40 +15,32 @@
 $Id$
 """
 
-from sys import modules
-
-from Products.CMFCore import utils
-from Products.GenericSetup import EXTENSION
-from Products.GenericSetup import profile_registry
-
-import UniqueIdAnnotationTool
-import UniqueIdGeneratorTool
-import UniqueIdHandlerTool
-
-tools = (
-    UniqueIdAnnotationTool.UniqueIdAnnotationTool,
-    UniqueIdGeneratorTool.UniqueIdGeneratorTool,
-    UniqueIdHandlerTool.UniqueIdHandlerTool,
-)
-
-this_module = modules[ __name__ ]
-
-z_tool_bases = utils.initializeBasesPhase1(tools, this_module)
-
-my_globals=globals()
+cmfuid_globals = globals()
 
 def initialize(context):
 
-    utils.initializeBasesPhase2(z_tool_bases, context)
+    from Products.CMFCore.utils import ToolInit
+    from Products.GenericSetup import EXTENSION
+    from Products.GenericSetup import profile_registry
 
-    utils.ToolInit( 'CMF Unique Id Tool'
-                  , tools=tools
-                  , icon='tool.gif'
-                  ).initialize(context)
+    import UniqueIdAnnotationTool
+    import UniqueIdGeneratorTool
+    import UniqueIdHandlerTool
 
-    profile_registry.registerProfile('default',
-                                     'CMFUid',
-                                     'Adds UID support.',
-                                     'profiles/default',
-                                     'CMFUid',
-                                     EXTENSION)
+    tools = ( UniqueIdAnnotationTool.UniqueIdAnnotationTool
+            , UniqueIdGeneratorTool.UniqueIdGeneratorTool
+            , UniqueIdHandlerTool.UniqueIdHandlerTool
+            )
+
+    ToolInit( 'CMF Unique Id Tool'
+            , tools=tools
+            , icon='tool.gif'
+            ).initialize(context)
+
+    profile_registry.registerProfile( 'default'
+                                     , 'CMFUid'
+                                     , 'Adds UID support.'
+                                     , 'profiles/default'
+                                     , 'CMFUid'
+                                     , EXTENSION
+                                     )

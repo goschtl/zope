@@ -17,7 +17,8 @@ $Id$
 
 from AccessControl import ModuleSecurityInfo
 
-from Products.GenericSetup import BASE, EXTENSION
+from Products.GenericSetup import BASE
+from Products.GenericSetup import EXTENSION
 from Products.GenericSetup import ManagePortal
 from Products.GenericSetup import profile_registry
 

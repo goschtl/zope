@@ -15,94 +15,70 @@
 $Id$
 """
 
-from Products.CMFCore.DirectoryView import registerDirectory
-from Products.CMFCore.utils import initializeBasesPhase1
-from Products.CMFCore.utils import initializeBasesPhase2
-from Products.CMFCore.utils import ToolInit
-from Products.CMFCore.utils import ContentInit
-from Products.CMFCore.utils import registerIcon
-from Products.GenericSetup import BASE
-from Products.GenericSetup import EXTENSION
-from Products.GenericSetup import profile_registry
 
-import factory
-import utils
-from permissions import AddPortalContent
-
-import Portal
-import Document
-import Link
-import NewsItem
-import File
-import Image
-import Favorite
-import SkinnedFolder
-
-import DiscussionItem
-import PropertiesTool
-import MembershipTool
-import MetadataTool
-import RegistrationTool
-import DublinCore
-import DiscussionTool
-import SyndicationTool
-import DefaultWorkflow
-
-contentClasses = ( Document.Document
-                 , File.File
-                 , Image.Image
-                 , Link.Link
-                 , Favorite.Favorite
-                 , NewsItem.NewsItem
-                 , SkinnedFolder.SkinnedFolder
-                 )
-
-contentConstructors = ( Document.addDocument
-                      , File.addFile
-                      , Image.addImage
-                      , Link.addLink
-                      , Favorite.addFavorite
-                      , NewsItem.addNewsItem
-                      , SkinnedFolder.addSkinnedFolder
-                      )
-
-bases = ( ( Portal.CMFSite
-          , DublinCore.DefaultDublinCoreImpl
-          , DiscussionItem.DiscussionItem
-          )
-          + contentClasses
-        )
-
-tools = ( DiscussionTool.DiscussionTool
-        , MembershipTool.MembershipTool
-        , RegistrationTool.RegistrationTool
-        , PropertiesTool.PropertiesTool
-        , MetadataTool.MetadataTool
-        , SyndicationTool.SyndicationTool
-        )
-
-import sys
-this_module = sys.modules[ __name__ ]
-
-z_bases = initializeBasesPhase1( bases, this_module )
-z_tool_bases = initializeBasesPhase1( tools, this_module )
-
-cmfdefault_globals=globals()
-
-# Make the skins available as DirectoryViews.
-if __name__.startswith('Products'):  # testrunner may import w/o 'Products'
-    registerDirectory('skins', globals())
-    registerDirectory('help', globals())
+cmfdefault_globals = globals()
 
 def initialize( context ):
 
-    initializeBasesPhase2( z_bases, context )
-    initializeBasesPhase2( z_tool_bases, context )
+    from Products.CMFCore.DirectoryView import registerDirectory
+    from Products.CMFCore.utils import ToolInit
+    from Products.CMFCore.utils import ContentInit
+    from Products.CMFCore.utils import registerIcon
+    from Products.GenericSetup import BASE
+    from Products.GenericSetup import EXTENSION
+    from Products.GenericSetup import profile_registry
+
+    import DefaultWorkflow
+    import DiscussionItem
+    import DiscussionTool
+    import Document
+    import DublinCore
+    import Favorite
+    import File
+    import Image
+    import Link
+    import MembershipTool
+    import MetadataTool
+    import NewsItem
+    import Portal
+    import PropertiesTool
+    import RegistrationTool
+    import SkinnedFolder
+    import SyndicationTool
+    import factory
+    import utils
+    from permissions import AddPortalContent
+
+    tools = ( DiscussionTool.DiscussionTool
+            , MembershipTool.MembershipTool
+            , RegistrationTool.RegistrationTool
+            , PropertiesTool.PropertiesTool
+            , MetadataTool.MetadataTool
+            , SyndicationTool.SyndicationTool
+            )
 
     ToolInit( 'CMF Default Tool'
             , tools=tools
             , icon='tool.gif'
             ).initialize( context )
+
+    contentClasses = ( Document.Document
+                    , File.File
+                    , Image.Image
+                    , Link.Link
+                    , Favorite.Favorite
+                    , NewsItem.NewsItem
+                    , SkinnedFolder.SkinnedFolder
+                    )
+
+    contentConstructors = ( Document.addDocument
+                        , File.addFile
+                        , Image.addImage
+                        , Link.addLink
+                        , Favorite.addFavorite
+                        , NewsItem.addNewsItem
+                        , SkinnedFolder.addSkinnedFolder
+                        )
 
     ContentInit( 'CMF Default Content'
                , content_types=contentClasses
@@ -130,19 +106,25 @@ def initialize( context ):
                          , icon='images/portal.gif'
                          )
 
+    registerDirectory('skins', cmfdefault_globals)
+    registerDirectory('help', cmfdefault_globals)
+
     registerIcon( DefaultWorkflow.DefaultWorkflowDefinition
                 , 'images/workflow.gif'
-                , globals()
+                , cmfdefault_globals
                 )
 
-    # make registerHelp work with 2 directories
-    help = context.getProductHelp()
-    lastRegistered = help.lastRegistered
-    context.registerHelp(directory='help', clear=1)
-    context.registerHelp(directory='interfaces', clear=1)
-    if help.lastRegistered != lastRegistered:
-        help.lastRegistered = None
+    if 0:   # XXX: comment this out for now
+        # make registerHelp work with 2 directories
+        help = context.getProductHelp()
+        lastRegistered = help.lastRegistered
         context.registerHelp(directory='help', clear=1)
-        help.lastRegistered = None
-        context.registerHelp(directory='interfaces', clear=0)
-    context.registerHelpTitle('CMF Default Help')
+        context.registerHelp(directory='interfaces', clear=1)
+
+        if help.lastRegistered != lastRegistered:
+            help.lastRegistered = None
+            context.registerHelp(directory='help', clear=1)
+            help.lastRegistered = None
+            context.registerHelp(directory='interfaces', clear=0)
+
+        context.registerHelpTitle('CMF Default Help')

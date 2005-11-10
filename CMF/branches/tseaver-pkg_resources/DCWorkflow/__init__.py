@@ -15,29 +15,36 @@
 $Id$
 """
 
-from Products.CMFCore.utils import registerIcon
-import DCWorkflow, States, Transitions, Variables, Worklists, Scripts
-import Default
-
+dcworkflow_globals = globals()
 
 def initialize(context):
+
+    from Products.CMFCore.utils import registerIcon
+
+    import DCWorkflow
+    import States
+    import Transitions
+    import Variables
+    import Worklists
+    import Scripts
+    import Default
     
     context.registerHelp(directory='help')
     context.registerHelpTitle('DCWorkflow')
     
     registerIcon(DCWorkflow.DCWorkflowDefinition,
-                 'images/workflow.gif', globals())
+                 'images/workflow.gif', dcworkflow_globals)
     registerIcon(States.States,
-                 'images/state.gif', globals())
+                 'images/state.gif', dcworkflow_globals)
     States.StateDefinition.icon = States.States.icon
     registerIcon(Transitions.Transitions,
-                 'images/transition.gif', globals())
+                 'images/transition.gif', dcworkflow_globals)
     Transitions.TransitionDefinition.icon = Transitions.Transitions.icon
     registerIcon(Variables.Variables,
-                 'images/variable.gif', globals())
+                 'images/variable.gif', dcworkflow_globals)
     Variables.VariableDefinition.icon = Variables.Variables.icon
     registerIcon(Worklists.Worklists,
-                 'images/worklist.gif', globals())
+                 'images/worklist.gif', dcworkflow_globals)
     Worklists.WorklistDefinition.icon = Worklists.Worklists.icon
     registerIcon(Scripts.Scripts,
-                 'images/script.gif', globals())
+                 'images/script.gif', dcworkflow_globals)
