@@ -40,8 +40,7 @@ from OFS.event import ObjectWillBeAddedEvent
 from OFS.event import ObjectWillBeRemovedEvent
 from OFS.event import ObjectClonedEvent
 from OFS.subscribers import deprecatedManageAddDeleteClasses
-from OFS.subscribers import hasDeprecatedMethods
-from OFS.subscribers import maybeCallDeprecated
+from OFS.subscribers import compatibilityCall
 from Products.Five.fiveconfigure import isFiveMethod
 
 
@@ -130,7 +129,7 @@ def _setObject(self, id, object, roles=None, user=None, set_owner=1,
     if not suppress_events:
         notify(ObjectAddedEvent(ob, self, id))
 
-    maybeCallDeprecated('manage_afterAdd', ob, self)
+    compatibilityCall('manage_afterAdd', ob, ob, self)
 
     return id
 
@@ -171,7 +170,7 @@ def BT_setObject(self, id, object, roles=None, user=None, set_owner=1,
     if not suppress_events:
         notify(ObjectAddedEvent(ob, self, id))
 
-    maybeCallDeprecated('manage_afterAdd', ob, self)
+    compatibilityCall('manage_afterAdd', ob, ob, self)
 
     return id
 
@@ -184,7 +183,7 @@ def _delObject(self, id, dp=1, suppress_events=False):
     """
     ob = self._getOb(id)
 
-    maybeCallDeprecated('manage_beforeDelete', ob, self)
+    compatibilityCall('manage_beforeDelete', ob, ob, self)
 
     if not suppress_events:
         notify(ObjectWillBeRemovedEvent(ob, self, id))
@@ -211,7 +210,7 @@ def _delObject(self, id, dp=1, suppress_events=False):
 def BT_delObject(self, id, dp=1, suppress_events=False):
     ob = self._getOb(id)
 
-    maybeCallDeprecated('manage_beforeDelete', ob, self)
+    compatibilityCall('manage_beforeDelete', ob, ob, self)
 
     if not suppress_events:
         notify(ObjectWillBeRemovedEvent(ob, self, id))
@@ -340,7 +339,7 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
 
             ob._postCopy(self, op=0)
 
-            maybeCallDeprecated('manage_afterClone', ob)
+            compatibilityCall('manage_afterClone', ob, ob)
 
             notify(ObjectClonedEvent(ob))
 
@@ -440,7 +439,7 @@ def manage_clone(self, ob, id, REQUEST=None):
 
     ob._postCopy(self, op=0)
 
-    maybeCallDeprecated('manage_afterClone', ob)
+    compatibilityCall('manage_afterClone', ob, ob)
 
     notify(ObjectClonedEvent(ob))
 

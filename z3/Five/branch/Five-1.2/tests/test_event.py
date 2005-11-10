@@ -41,13 +41,16 @@ class NotifyBase(DontComplain):
         print 'old manage_afterAdd %s %s %s' % (self.getId(), item.getId(),
                                                 container.getId())
         super(NotifyBase, self).manage_afterAdd(item, container)
+    manage_afterAdd.__five_method__ = True # Shut up deprecation warnings
     def manage_beforeDelete(self, item, container):
         super(NotifyBase, self).manage_beforeDelete(item, container)
         print 'old manage_beforeDelete %s %s %s' % (self.getId(), item.getId(),
                                                     container.getId())
+    manage_beforeDelete.__five_method__ = True # Shut up deprecation warnings
     def manage_afterClone(self, item):
         print 'old manage_afterClone %s %s' % (self.getId(), item.getId())
         super(NotifyBase, self).manage_afterClone(item)
+    manage_afterClone.__five_method__ = True # Shut up deprecation warnings
 
 class MyApp(Folder):
     def getPhysicalRoot(self):
@@ -78,8 +81,8 @@ class MyNewFolder(DontComplain, Folder):
 
 
 def test_suite():
-    from Testing.ZopeTestCase import ZopeDocFileSuite
-    return ZopeDocFileSuite('event.txt', package="Products.Five.tests")
+    from zope.testing.doctest import DocFileSuite
+    return DocFileSuite('event.txt', package="Products.Five.tests")
 
 if __name__ == '__main__':
     framework()

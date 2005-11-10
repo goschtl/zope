@@ -17,15 +17,15 @@ Five subscriber definitions.
 $Id$
 """
 
-##################################################
-
+import warnings
 import sys
+
 from zLOG import LOG, ERROR
+from Acquisition import aq_base
 from App.config import getConfiguration
 from AccessControl import getSecurityManager
 from ZODB.POSException import ConflictError
 from OFS.ObjectManager import BeforeDeleteException
-from Products.Five.fiveconfigure import isFiveMethod
 from zope.app.container.contained import dispatchToSublocations
 from OFS_interfaces import IObjectManager
 
@@ -33,36 +33,42 @@ from OFS_interfaces import IObjectManager
 deprecatedManageAddDeleteClasses = []
 
 
-def hasDeprecatedMethods(ob):
-    """Do we need to call the deprecated methods?
-    """
-    for class_ in deprecatedManageAddDeleteClasses:
-        if isinstance(ob, class_):
-            return True
-    return False
+def compatibilityCall(method_name, *args):
+    """Call a method if events have not been setup yet.
 
-def maybeCallDeprecated(method_name, ob, *args):
-    """Call a deprecated method, if the framework doesn't call it already.
+    This is the case for some unit tests that have not been converted to
+    use the component architecture.
     """
-    if hasDeprecatedMethods(ob):
-        # Already deprecated through zcml
-        return
-    method = getattr(ob, method_name)
-    if isFiveMethod(method):
-        # Monkey-patched method
-        return
     if deprecatedManageAddDeleteClasses:
-        # Not deprecated through zcml and directives fully loaded
-        class_ = ob.__class__
-        warnings.warn(
-            "Calling %s.%s.%s is deprecated when using Five, "
-            "instead use event subscribers or "
-            "mark the class with <five:deprecatedManageAddDelete/>"
-            % (class_.__module__, class_.__name__, method_name),
-            DeprecationWarning)
-    # Note that calling the method can lead to incorrect behavior
-    # but in the most common case that's better than not calling it.
-    method(ob, *args)
+        # Events initialized, don't do compatibility call
+        return
+    if method_name == 'manage_afterAdd':
+        callManageAfterAdd(*args)
+    elif method_name == 'manage_beforeDelete':
+        callManageBeforeDelete(*args)
+    else:
+        callManageAfterClone(*args)
+
+def maybeWarnDeprecated(ob, method_name):
+    """Send a warning if a method is deprecated.
+    """
+    if not deprecatedManageAddDeleteClasses:
+        # Directives not fully loaded
+        return
+    for cls in deprecatedManageAddDeleteClasses:
+        if isinstance(ob, cls):
+            # Already deprecated through zcml
+            return
+    if getattr(getattr(ob, method_name), '__five_method__', False):
+        # Method knows it's deprecated
+        return
+    class_ = ob.__class__
+    warnings.warn(
+        "%s.%s.%s is deprecated and will be removed in Zope 2.11, "
+        "you should use event subscribers instead, and meanwhile "
+        "mark the class with <five:deprecatedManageAddDelete/>"
+        % (class_.__module__, class_.__name__, method_name),
+        DeprecationWarning)
 
 
 ##################################################
@@ -95,15 +101,13 @@ def dispatchObjectWillBeMovedEvent(ob, event):
     if IObjectManager.providedBy(ob):
         dispatchToSublocations(ob, event)
     # Next, do the manage_beforeDelete dance
-    if hasDeprecatedMethods(ob):
-        callManageBeforeDelete(ob, event)
+    callManageBeforeDelete(ob, event.object, event.oldParent)
 
 def dispatchObjectMovedEvent(ob, event):
     """Multi-subscriber for IItem + IObjectMovedEvent.
     """
     # First, do the manage_afterAdd dance
-    if hasDeprecatedMethods(ob):
-        callManageAfterAdd(ob, event)
+    callManageAfterAdd(ob, event.object, event.newParent)
     # Next, dispatch to sublocations
     if IObjectManager.providedBy(ob):
         dispatchToSublocations(ob, event)
@@ -112,31 +116,32 @@ def dispatchObjectClonedEvent(ob, event):
     """Multi-subscriber for IItem + IObjectClonedEvent.
     """
     # First, do the manage_afterClone dance
-    if hasDeprecatedMethods(ob):
-        callManageAfterClone(ob, event)
+    callManageAfterClone(ob, event.object)
     # Next, dispatch to sublocations
     if IObjectManager.providedBy(ob):
         dispatchToSublocations(ob, event)
 
 
-def callManageAfterAdd(ob, event):
+def callManageAfterAdd(ob, item, container):
     """Compatibility subscriber for manage_afterAdd.
     """
-    container = event.newParent
     if container is None:
-        # this is a remove
         return
-    ob.manage_afterAdd(event.object, container)
+    if getattr(aq_base(ob), 'manage_afterAdd', None) is None:
+        return
+    maybeWarnDeprecated(ob, 'manage_afterAdd')
+    ob.manage_afterAdd(item, container)
 
-def callManageBeforeDelete(ob, event):
+def callManageBeforeDelete(ob, item, container):
     """Compatibility subscriber for manage_beforeDelete.
     """
-    container = event.oldParent
     if container is None:
-        # this is an add
         return
+    if getattr(aq_base(ob), 'manage_beforeDelete', None) is None:
+        return
+    maybeWarnDeprecated(ob, 'manage_beforeDelete')
     try:
-        ob.manage_beforeDelete(event.object, container)
+        ob.manage_beforeDelete(item, container)
     except BeforeDeleteException:
         raise
     except ConflictError:
@@ -148,7 +153,10 @@ def callManageBeforeDelete(ob, event):
             if not getSecurityManager().getUser().has_role('Manager'):
                 raise
 
-def callManageAfterClone(ob, event):
+def callManageAfterClone(ob, item):
     """Compatibility subscriber for manage_afterClone.
     """
-    ob.manage_afterClone(event.object)
+    if getattr(aq_base(ob), 'manage_afterClone', None) is None:
+        return
+    maybeWarnDeprecated(ob, 'manage_afterClone')
+    ob.manage_afterClone(item)
