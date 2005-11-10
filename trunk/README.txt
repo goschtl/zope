@@ -88,7 +88,14 @@ How Do I Create Eggs that are Compatible with Basket?
 
   Products that are packaged as 'zip-safe' egg files must not attempt
   to use Zope API functions that expect Product files to exist within
-  a filesystem structure.
+  a filesystem structure.  If your Zope product does this (either
+  directly or indirectly by use of a library which attempts to access
+  Product files), you must ensure that you package your Product as
+  "non-zip-safe".  This means that you must add a 'zip_safe = False'
+  argument to your setup.py's setup call.  By doing this, your product
+  will still be packaged as a zipfile and can be distributed as one,
+  but Basket will know that it needs to uncompress the zipfile to a
+  temporary directory at startup to make use of it.
 
   A Product distribution may include a "Products" namespace package,
   but it is not required.  Each package within a Product distribution
@@ -226,6 +233,41 @@ Multiple Products In A Single Distribution
      # this is a product initializer
      def initialize(self):
         return "product2 initialized"
+
+Non-Zip-Safe Product
+
+  filesystem layout::
+
+    |
+    |-- setup.py
+    |
+    |-- product -- 
+                  |
+                  |-- __init__.py
+
+  setup.py::
+
+    from setuptools import setup, find_packages
+    import ez_setup
+    ez_setup.use_setuptools()
+
+    setup(
+        name = 'product',
+        version = '0.1',
+        packages = find_packages(),
+        entry_points = {'zope2.initialize':
+                        ['initialize=product:initialize']},
+        url = 'http://www.example.com/product1',
+        author = 'Joe Bloggs',
+        author_email = 'bloggs@example.com',
+        zip_safe = False,
+        )
+
+  product/__init__.py::
+
+     # this is a product initializer
+     def initialize(self):
+        return "non-zip-safe product initialized"
 
 Building a Product Distribution
 
