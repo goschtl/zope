@@ -1,7 +1,3 @@
-- For non-zip-safe Products, unpack the entire source tree into
-  a temporary location and put it on the path (removing the zipfile
-  from the path).
-
 - When an egg distribution is uninstalled, its persistent object
   sticks around in the control panel.  It should go away.
 
