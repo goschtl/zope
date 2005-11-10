@@ -39,5 +39,3 @@ FindSupport.manage_findResult=DTMLResource('findResult', globals(),
 # Add external editor icon in breadcrumbs under tabs
 Tabs.manage_tabs = DTMLResource('manage_tabs', globals())
 
-def initialize(context):
-    pass

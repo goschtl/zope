@@ -7,7 +7,7 @@ setup(
     namespace_packages = ['Products'],
     entry_points = {
       'zope2.initialize':
-      ['initialize=Products.ExternalEditor:initialize']
+      ['initialize=Products.ExternalEditor:__name__']
       },
     package_data = {
         'Products.ExternalEditor': ['*.gif','*.txt','*.dtml', 'man/zopeedit*',
@@ -18,5 +18,5 @@ setup(
     author = 'Casey Duncan',
     maintainer = 'Chris McDonough',
     maintainer_email = 'chrism@plope.com',
-    zip_safe = False,
+    zip_safe = True,
     )
