@@ -20,7 +20,7 @@ import Testing
 import Zope2
 Zope2.startup()
 
-import cStringIO
+from StringIO import StringIO
 
 from AccessControl import SecurityManager
 from AccessControl import Unauthorized
@@ -866,7 +866,7 @@ class PortalFolderCopySupportTests( TestCase ):
             a = Application()
             r['Application'] = a
             self.root = a
-            responseOut = self.responseOut = cStringIO.StringIO()
+            responseOut = self.responseOut = StringIO()
             self.app = makerequest( self.root, stdout=responseOut )
             self.app._setObject( 'folder1', PortalFolder( 'folder1' ) )
             self.app._setObject( 'folder2', PortalFolder( 'folder2' ) )

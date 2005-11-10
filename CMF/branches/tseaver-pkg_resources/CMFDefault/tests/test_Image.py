@@ -21,7 +21,7 @@ import Zope2
 Zope2.startup()
 
 from os.path import join as path_join
-from cStringIO import StringIO
+from StringIO import StringIO
 
 import Products
 import transaction

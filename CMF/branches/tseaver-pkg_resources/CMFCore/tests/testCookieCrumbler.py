@@ -16,7 +16,7 @@ $Id$
 """
 
 import base64
-from cStringIO import StringIO
+from StringIO import StringIO
 import unittest
 import urllib
 
