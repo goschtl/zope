@@ -24,7 +24,7 @@ import zipimport
 
 import zope.interface
 
-from zope.filereference.interfaces import IResourceReference
+from zope.filereference.interfaces import IFileReference
 
 try:
     import pkg_resources
@@ -33,30 +33,37 @@ except ImportError:
 
 
 def exists(path):
-    if IResourceReference.providedBy(path):
+    if IFileReference.providedBy(path):
         return path.exists()
     else:
         return os.path.exists(path)
 
 
 def isdir(path):
-    if IResourceReference.providedBy(path):
+    if IFileReference.providedBy(path):
         return path.isdir()
     else:
         return os.path.isdir(path)
 
 
 def isfile(path):
-    if IResourceReference.providedBy(path):
+    if IFileReference.providedBy(path):
         return path.isfile()
     else:
         return os.path.isfile(path)
 
 
+def getmtime(path):
+    if IFileReference.providedBy(path):
+        return path.getmtime()
+    else:
+        return os.path.getmtime(path)
+
+
 def open(path, mode="r"):
     if not mode.startswith("r"):
         raise ValueError("`mode` must be a read-only mode")
-    if IResourceReference.providedBy(path):
+    if IFileReference.providedBy(path):
         return path.open(mode)
     else:
         return __builtin__.open(path, mode)
@@ -93,7 +100,7 @@ def new(path, package=None, basepath=None):
 
 class PathReference(str):
 
-    zope.interface.implements(IResourceReference)
+    zope.interface.implements(IFileReference)
 
     def __add__(self, other):
         path = str(self) + other
@@ -102,19 +109,22 @@ class PathReference(str):
     def open(self, mode="r"):
         return __builtin__.open(self, mode)
 
-    def isfile(self):
-        return os.path.isfile(self)
+    def exists(self):
+        return os.path.exists(self)
 
     def isdir(self):
         return os.path.isdir(self)
 
-    def exists(self):
-        return os.path.exists(self)
+    def isfile(self):
+        return os.path.isfile(self)
+
+    def getmtime(self):
+        return os.path.getmtime(self)
 
 
 class PackageStr(str):
 
-    zope.interface.implements(IResourceReference)
+    zope.interface.implements(IFileReference)
 
     def __add__(self, other):
         value = str(self) + other
@@ -166,13 +176,33 @@ class PackagePathReference(PackageStr):
         else:
             return self.open_path_or_loader(mode)
 
-    def isfile(self):
-        try:
-            f = self.open()
-        except IOError:
-            return False
-        f.close()
-        return True
+    def exists(self):
+        if pkg_resources:
+            return pkg_resources.resource_exists(
+                self._package.__name__, self._relpath)
+        else:
+            try:
+                loader = self._package.__loader__
+            except AttributeError:
+                for dir in self._package.__path__:
+                    filename = os.path.join(dir, self._relpath)
+                    if os.path.exists(filename):
+                        return True
+                return False
+            else:
+                dir = os.path.dirname(self._package.__file__)
+                path = os.path.join(dir, self._relpath)
+                try:
+                    if loader.is_package(path):
+                        return True
+                except zipimport.ZipImportError:
+                    pass
+                try:
+                    loader.get_data(path)
+                except IOError:
+                    pass
+                else:
+                    return True
 
     def isdir(self):
         if pkg_resources:
@@ -202,33 +232,25 @@ class PackagePathReference(PackageStr):
                 else:
                     return False
 
-    def exists(self):
-        if pkg_resources:
-            return pkg_resources.resource_exists(
-                self._package.__name__, self._relpath)
+    def isfile(self):
+        try:
+            f = self.open()
+        except IOError:
+            return False
+        f.close()
+        return True
+
+    def getmtime(self):
+        try:
+            self._package.__loader__
+        except AttributeError:
+            for dir in self._package.__path__:
+                filename = os.path.join(dir, self._relpath)
+                if os.path.exists(filename):
+                    return os.path.getmtime(filename)
+            raise OSError(errno.ENOENT, "No such file or directory", self)
         else:
-            try:
-                loader = self._package.__loader__
-            except AttributeError:
-                for dir in self._package.__path__:
-                    filename = os.path.join(dir, self._relpath)
-                    if os.path.exists(filename):
-                        return True
-                return False
-            else:
-                dir = os.path.dirname(self._package.__file__)
-                path = os.path.join(dir, self._relpath)
-                try:
-                    if loader.is_package(path):
-                        return True
-                except zipimport.ZipImportError:
-                    pass
-                try:
-                    loader.get_data(path)
-                except IOError:
-                    pass
-                else:
-                    return True
+            return 0
 
 
 class ZipImporterPackagePathReference(PackageStr):
@@ -262,6 +284,21 @@ class ZipImporterPackagePathReference(PackageStr):
     def isfile(self):
         relpath = self._getpath()
         return relpath in self._loader._files
+
+    def getmtime(self):
+        relpath = self._getpath()
+        if relpath not in self._loader._files:
+            relpath += os.sep
+        try:
+            info = self._loader._files[relpath]
+        except KeyError:
+            raise OSError(errno.ENOENT, "No such file or directory", self)
+        d = info[5]
+        t = info[4]
+        # This next is taken from the zipfile module:
+        dt = ( (d>>9)+1980, (d>>5)&0xF, d&0x1F,
+               t>>11, (t>>5)&0x3F, (t&0x1F) * 2 )
+        return dt
 
     def _getpath(self):
         relpath = self._relpath.replace("/", os.sep)

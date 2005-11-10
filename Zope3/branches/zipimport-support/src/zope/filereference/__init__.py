@@ -18,5 +18,11 @@ This supports referencing files within Python eggs.
 """
 __docformat__ = "reStructuredText"
 
+import zope.interface
 
-from reference import open, new, exists, isdir, isfile
+
+from reference import open, new, exists, isdir, isfile, getmtime
+
+
+from interfaces import IFileReferenceAPI
+zope.interface.moduleProvides(IFileReferenceAPI)

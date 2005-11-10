@@ -38,7 +38,14 @@ If we examine the reference as a string, we get a path that points
 into the package::
 
   >>> directory = os.path.dirname(zope.filereference.__file__)
-  >>> ref == os.path.join(directory, "README.txt")
+  >>> filename = os.path.join(directory, "README.txt")
+  >>> ref == filename
+  True
+
+The `getmtime()` function can be used to get the modification time for
+a referenced file if it's available::
+
+  >>> zope.filereference.getmtime(ref) == os.path.getmtime(filename)
   True
 
 The reference can be opened using the `open()` function (which
