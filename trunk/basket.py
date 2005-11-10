@@ -59,7 +59,7 @@ class Basket(object):
         for point in points:
             # XXX deal with duplicate product names by raising an exception
             # somewhere in here.
-            eggname = ' '.join(textwrap.wrap(point.dist.location, 80))
+            eggtitle = ' '.join(textwrap.wrap(point.dist.location, 80))
             try:
                 product_pkg = get_containing_package(point.module_name)
             except:
@@ -76,7 +76,7 @@ class Basket(object):
             productname = product_pkg.__name__.split('.')[-1]
             initializer = get_initializer(point, productname, debug_mode)
             context = EggProductContext(productname, initializer, app,
-                                        product_pkg, eggname)
+                                        product_pkg, eggtitle)
             returned = context.install(debug_mode)
             data.append(returned)
 
@@ -127,7 +127,7 @@ class Basket(object):
                 # if it's not zip-safe, blast it out to a tempdir and create
                 # new distro out of the file-based egg; we delete the
                 # tempdir at system exit
-                if by_require: # these get added to the working set above
+                if by_require: # these get added to the working set in req mode
                     remove_distribution_from_working_set(distribution)
                 tempdir = tempfile.mkdtemp()
                 eggname = os.path.basename(distribution.location)
@@ -136,7 +136,10 @@ class Basket(object):
                 self.tempdirs.append(tempdir)
                 un = unzip.unzip()
                 un.extract(distribution.location, eggdir)
-                new_distro = pkg_resources.Distribution.from_filename(eggdir)
+                metadata = pkg_resources.PathMetadata(eggdir,
+                                        os.path.join(eggdir, 'EGG-INFO'))
+                new_distro = pkg_resources.Distribution.from_filename(
+                    eggdir, metadata=metadata)
                 working_set.add(new_distro)
 
         self.pre_initialized = True

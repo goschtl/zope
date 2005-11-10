@@ -292,6 +292,12 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         self.failUnless(os.path.isfile(os.path.join(pkgdir, '__init__.py')))
         self.failUnless(os.path.isfile(os.path.join(pkgdir, 'test_image.jpg')))
         self.failUnless(os.path.realpath(eggdir) in sys.path)
+        self.failUnless(os.path.realpath(eggdir) in self.working_set.entries)
+
+        points = list(pkg_resources.iter_entry_points('zope2.initialize'))
+        self.assertEqual(len(points), 1)
+        self.assertEqual(points[0].module_name, 'notzipsafe')
+
         basket.cleanup()
         self.failIf(os.path.exists(tempdir))
 
@@ -303,7 +309,7 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         self.working_set.add_entry(self.fixtures)
 
         distributions = basket.product_distributions_by_dwim()
-        expected = [ 'diskproduct1', 'product1', 'product2' ]
+        expected = [ 'diskproduct1', 'product1', 'product2', 'notzipsafe']
         # don't consider other eggs that happen to be on the path, only
         # test that we find the things that are in our fixture dir
         actual = [ dist.key for dist in distributions if dist.key in expected ]
@@ -397,10 +403,12 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         import Products.product1
         import Products.product2
         import Products.diskproduct1
+        import notzipsafe
 
         self.failUnless(sys.modules.has_key('Products.product1'))
         self.failUnless(sys.modules.has_key('Products.product2'))
         self.failUnless(sys.modules.has_key('Products.diskproduct1'))
+        self.failUnless(sys.modules.has_key('notzipsafe'))
 
     def test_get_containing_package(self):
         self.assertEqual(
