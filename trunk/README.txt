@@ -309,6 +309,18 @@ Replacements for File-Bound Classes
   documentation":http://peak.telecommunity.com/DevCenter/setuptools
   for more information.
 
+Broken Objects
+
+  If objects in your root folder show up as "Broken" that are
+  instances of classes which are defined in an egg, put the following
+  statement in your instance's etc/zope.conf file::
+
+    %import Products.Basket
+
+  This causes the Basket product to "pre-initialize" much earlier than
+  it would have otherwise done so, hopefully preventing the machinery
+  which marks things as broken from doing so for egg-based objects.
+
 Forward Compatibility Notices
 
   Basket ships with a Python 2.3-compatible version of setuptools'

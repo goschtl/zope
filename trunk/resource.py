@@ -4,6 +4,7 @@ import os
 import re
 import sys
 
+import Globals
 from App.ImageFile import ImageFile, guess_content_type
 from App.Common import rfc1123_date
 from App.special_dtml import DTMLFile, defaultBindings
@@ -191,7 +192,7 @@ class DTMLResource(DTMLFile):
         return data
         
     def _cook_check(self):
-        if Globals.DevelopmentMode and not self.zipped:
+        if DevelopmentMode and not self.zipped:
             __traceback_info__ = str(self.raw)
             package, path = self.raw
             f = pkg_resources.resource_stream(package, path)
@@ -208,14 +209,6 @@ class DTMLResource(DTMLFile):
             self.cook()
             if not changed:
                 self.__changed__(0)
-
-# Poke these objects into the Zope package tree where they will wind up in a
-# future zope version
-
-import Globals
-Globals.ImageResource = ImageResource
-Globals.DTMLResource = DTMLResource
-
 
 def is_zipped(package_name):
     """Return true if the given named package is zipped, false if it is a

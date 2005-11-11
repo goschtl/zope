@@ -8,10 +8,10 @@ import tempfile
 import unzip
 
 import zLOG
-from App.config import getConfiguration
 
-from utils import EggProductContext
 from utils import EggProduct
+from utils import EggProductContext
+from App.config import getConfiguration
 
 import pkg_resources
 
@@ -197,5 +197,4 @@ def remove_distribution_from_working_set(distribution):
     working_set.entries.remove(distribution.location)
     del working_set.by_key[distribution.key]
     working_set.entry_keys[distribution.location] = []
-    self.old_callbacks = self.working_set.callbacks[:]
     sys.path.remove(distribution.location)

@@ -1,4 +1,5 @@
 import sys
+import Globals # this has side effects that require it to be imported early
 
 # pkg_resource monkeypatching (if necessary) needs to happen before
 # Products.Basket.utils is imported
@@ -11,16 +12,10 @@ except ImportError:
     import pkg_resources_0_6a7 as pkg_resources
     sys.modules['pkg_resources'] = pkg_resources
 
-from Products.Basket.basket import Basket
-
-basket = Basket()
-initialize = basket.initialize
-
 # Poke the resource classes into the Zope package tree where they will 
 # wind up in a future zope version, maybe
 import resource
 
-import Globals
 Globals.ImageResource = resource.ImageResource
 Globals.DTMLResource = resource.DTMLResource
 
@@ -31,3 +26,10 @@ PageTemplates.PageTemplateResource = resource.PageTemplateResource
 del resource.ImageResource
 del resource.DTMLResource
 del resource.PageTemplateResource
+
+from Products.Basket.basket import Basket
+
+the_basket = Basket()
+the_basket.preinitialize()
+initialize = the_basket.initialize
+

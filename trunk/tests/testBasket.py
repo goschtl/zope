@@ -181,7 +181,7 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         basket.require(distro_str='product2>=0.1')
                 
         result = basket.initialize(DummyProductContext('Basket'))
-        expected = [ x for x in result if x.startswith('product') ]
+        expected = [ x for x in result if (x and x.startswith('product')) ]
         self.failUnless(sys.modules.has_key('Products.product1'))
         self.failUnless(sys.modules.has_key('Products.product2'))
 
@@ -265,7 +265,7 @@ class TestBasket(unittest.TestCase, LogInterceptor):
 
         basket.require(distro_str='diskproduct1')
         result = basket.initialize(DummyProductContext('Basket'))
-        result = [ x for x in result if x.startswith('diskproduct') ]
+        result = [ x for x in result if (x and x.startswith('diskproduct')) ]
         self.assertEqual(result, ['diskproduct1 initialized'])
 
     def test_multiproduct(self):
@@ -277,21 +277,30 @@ class TestBasket(unittest.TestCase, LogInterceptor):
 
         basket.require(distro_str='multiproduct')
         result = basket.initialize(DummyProductContext('Basket'))
-        result = [ x for x in result if x.startswith('multiproduct') ]
+        result = [ x for x in result if (x and x.startswith('multiproduct')) ]
         self.assertEqual(result,
                          ['multiproduct1 initialized',
                           'multiproduct2 initialized'])
 
     def test_not_zip_safe_exploded(self):
         basket = self._makeOne()
+        basket.preinitialized = False
         basket.pdist_fname = os.path.join(self.fixtures, 'pdist-notzipsafe.txt')
         
         sys.path.append(self.fixtures)
         self.working_set.add_entry(self.fixtures)
 
         result = basket.initialize(DummyProductContext('Basket'))
-        self.assertEqual(len(basket.tempdirs), 1)
-        tempdir = basket.tempdirs[0]
+        self.failUnless(len(basket.tempdirs) > 0)
+        found = False
+        for tempdir in basket.tempdirs:
+            files = os.listdir(tempdir)
+            for file in files:
+                if file.startswith('notzipsafe'):
+                    found = tempdir
+            if found:
+                break
+        tempdir = found
         self.failUnless(os.path.isdir(tempdir))
         eggdir = os.path.join(tempdir, 'notzipsafe-0.1-py2.3.egg')
         pkgdir = os.path.join(eggdir, 'notzipsafe')
@@ -303,9 +312,14 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         self.failUnless(os.path.realpath(eggdir) in self.working_set.entries)
 
         points = list(pkg_resources.iter_entry_points('zope2.initialize'))
-        self.assertEqual(len(points), 1)
-        self.assertEqual(points[0].module_name, 'notzipsafe')
+        self.failUnless(len(points) > 0)
+        done = False
+        for point in points:
+            if point.module_name == 'notzipsafe':
+                done = True
 
+        self.failUnless(done)
+            
         basket.cleanup()
         self.failIf(os.path.exists(tempdir))
 
