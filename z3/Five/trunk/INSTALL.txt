@@ -18,9 +18,9 @@ The following table shows which Five version can and should be used
 with which Zope 2 and Zope 3 versions.
 
 =========== ======================= =========== ========
-                    Zope 2.7         Zope 2.8   Zope 2.9
+.                   Zope 2.7         Zope 2.8   Zope 2.9
 ----------- ----------------------- ----------- --------
-            Zope X3 3.0 (not incl.) Zope X3 3.0 Zope 3.2
+.           Zope X3 3.0 (not incl.) Zope X3 3.0 Zope 3.2
 =========== ======================= =========== ========
 Five 1.0               X             included
 Five 1.1[#]            X                 X
