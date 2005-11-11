@@ -55,6 +55,14 @@ a referenced file if it's available::
   >>> zope.filereference.getmtime(ref) == os.path.getmtime(filename)
   True
 
+File modification times reported by Python can be either integers or
+floating-point numbers; let's make sure we can convert this to a
+float::
+
+  >>> mtime = float(zope.filereference.getmtime(ref))
+  >>> type(mtime)
+  <type 'float'>
+
 The reference can be opened using the `open()` function (which
 also accepts simple strings)::
 
@@ -104,7 +112,14 @@ The query methods provide the expected results as well::
   >>> zope.filereference.isfile(ref)
   True
 
-Note that only read modes are supported::
+The `getmtime()` function still returns a numeric value that can be
+converted to a float::
+
+  >>> mtime = float(zope.filereference.getmtime(ref))
+  >>> type(mtime)
+  <type 'float'>
+
+Note that only read modes are supported by `open()`::
 
   >>> zope.filereference.open(ref, "w")
   Traceback (most recent call last):

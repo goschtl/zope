@@ -21,6 +21,7 @@ import errno
 import os
 import StringIO
 import sys
+import time
 import zipimport
 
 import zope.interface
@@ -325,12 +326,21 @@ class ZipImporterPackagePathReference(PackageStr):
             info = self._loader._files[relpath]
         except KeyError:
             raise OSError(errno.ENOENT, "No such file or directory", self)
-        d = info[5]
-        t = info[4]
+
+        # Note these indexes; the comments in the zipimport module's C
+        # source code were wrong in Python 2.4.2 and earlier.
+        d = info[6]
+        t = info[5]
+
         # This next is taken from the zipfile module:
-        dt = ( (d>>9)+1980, (d>>5)&0xF, d&0x1F,
-               t>>11, (t>>5)&0x3F, (t&0x1F) * 2 )
-        return dt
+        dt = (d>>9)+1980, (d>>5)&0xF, d&0x1F, t>>11, (t>>5)&0x3F, (t&0x1F)*2
+
+        # Convert to seconds since the epoch.  This isn't ideal, since
+        # we don't know if the time was UTC or local (or what local
+        # referred to at the time), but the most important thing in
+        # practice is to be able to compare two values for equality,
+        # so this is "good enough".
+        return time.mktime(dt + (0, 0, -1))
 
     def _getpath(self):
         relpath = self._relpath.replace("/", os.sep)
