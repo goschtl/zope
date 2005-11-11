@@ -1,0 +1,3 @@
+<dtml-var standard_html_header>
+How do you write this crap again?
+<dtml-var standard_html_footer>
