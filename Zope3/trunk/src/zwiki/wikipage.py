@@ -356,7 +356,7 @@ class WikiMailer(object):
                 self.handleRemoved(event.object)
 
     def handleAdded(self, object):
-        subject = 'Added: '+zapi.name(object)
+        subject = 'Added: ' + zapi.name(object)
         emails = self.getAllSubscribers(object)
         body = object.source
         self.mail(emails, subject, body)
@@ -364,13 +364,13 @@ class WikiMailer(object):
     def handleModified(self, event):
         object = event.object
         if zapi.name(object) is not None:
-            subject = 'Modified: '+zapi.name(object)
+            subject = 'Modified: ' + zapi.name(object)
             emails = self.getAllSubscribers(object)
             body = textdiff(event.oldSource, object.source)
             self.mail(emails, subject, body)
 
     def handleRemoved(self, object):
-        subject = 'Removed: '+zapi.name(object)
+        subject = 'Removed: ' + zapi.name(object)
         emails = self.getAllSubscribers(object)
         body = subject
         self.mail(emails, subject, body)
@@ -385,16 +385,15 @@ class WikiMailer(object):
 
     def mail(self, emails, subject, body):
         """Mail out the Wiki change message."""
-        if not emails:
-            return
-        msg = self._getMessage(subject, body)
-        mail_delivery = zapi.getUtility(IMailDelivery,
-                                       'wiki-delivery')
-        mail_delivery.send(self.fromaddr, emails, msg)
+        if emails:
+            msg = self._getMessage(subject, body)
+            mail_delivery = zapi.getUtility(IMailDelivery, 'wiki-delivery')
+            mail_delivery.send(self.fromaddr, emails, msg)
 
     def _getMessage(self, subject, body):
-        message = MIMEText(body.encode("utf-8"), "plain", self.encoding)
-        message["Subject"] = Header(subject.encode("utf-8"), self.encoding)
+        message = MIMEText(body.encode(self.encoding), "plain", self.encoding)
+        message["Subject"] = Header(
+            subject.encode(self.encoding), self.encoding)
         message["From"] = self.fromaddr
         message["To"] = self.fromaddr
         return message.as_string()
