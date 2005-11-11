@@ -16,25 +16,25 @@
 $Id$
 """
 import os
-import posixpath
 
 from time import time
 
+from zope import filereference
 from zope.app.content_types import guess_content_type
 from zope.app.datetimeutils import rfc1123_date
 
 
 class File(object):
-    
+
     def __init__(self, path, name):
         self.path = path
 
-        f = open(path, 'rb')
+        f = filereference.open(path, 'rb')
         data = f.read()
         f.close()
         self.content_type, enc = guess_content_type(path, data)
         self.__name__ = name
-        self.lmt = float(os.path.getmtime(path)) or time()
+        self.lmt = float(filereference.getmtime(path)) or time()
         self.lmh = rfc1123_date(self.lmt)
 
 
