@@ -34,8 +34,6 @@ v1.3
 
 * test whether request with skin works properly (use ++skin++, applySkin, etc.)
 
-* integrate into Zope 2.9 (philikon)
-
 * revisit the test_localsite/test_{get|query}NextSiteManager tests
 
 * correctly treat ZCatalog.Catalog(Path)Awareness.CatalogAware w.r.t
