@@ -23,6 +23,7 @@ import os
 from persistent import Persistent
 from zope.interface import implements
 from zope.configuration.exceptions import ConfigurationError
+from zope import filereference
 
 from zope.app.container.sample import SampleContainer
 from zope.app.content_types import guess_content_type
@@ -68,12 +69,12 @@ class OnlineHelpResource(Persistent):
 
     def __init__(self, path='', contentType=''):
         self.path = path
-        _data = open(os.path.normpath(self.path), 'rb').read()
+        _data = filereference.open(self.path, 'rb').read()
         self._size = len(_data)
         self._fileMode = 'rb'
         self._encoding = DEFAULT_ENCODING
 
-        if contentType=='':
+        if contentType == '':
             content_type, encoding = guess_content_type(self.path, _data, '')
         if content_type.startswith('image/'):
             self.contentType, width, height = getImageInfo(_data)
@@ -86,7 +87,7 @@ class OnlineHelpResource(Persistent):
                 self._encoding = encoding
 
     def _getData(self):
-        data = open(os.path.normpath(self.path), self._fileMode).read()
+        data = filereference.open(self.path, self._fileMode).read()
         if self.contentType.startswith('text/'):
             data = unicode(data, self._encoding)
         return data
@@ -146,7 +147,7 @@ class BaseOnlineHelpTopic(SampleContainer):
         self.interface = interface
         self.view = view
 
-        if not os.path.exists(self.path):
+        if not filereference.exists(self.path):
             raise ConfigurationError(
                 "Help Topic definition %s does not exist" % self.path
                 )
@@ -155,16 +156,17 @@ class BaseOnlineHelpTopic(SampleContainer):
 
     def addResources(self, resources):
         """ see IOnlineHelpTopic """
+        # TODO: does not support ZIP archives yet
         dirname = os.path.dirname(self.path)
         for resource in resources:
-            resource_path=dirname+'/'+resource
-            if os.path.exists(resource_path):
+            resource_path = dirname + '/' + resource
+            if filereference.exists(resource_path):
                 self[resource] = OnlineHelpResource(resource_path)
 
     def getTopicPath(self):
         """See IOnlineHelpTopic"""
         if self.parentPath:
-            return self.parentPath+'/'+self.id
+            return self.parentPath + '/' + self.id
         else:
             return self.id
 
@@ -183,7 +185,7 @@ class SourceTextOnlineHelpTopic(BaseOnlineHelpTopic):
     type = None
 
     def _getSource(self):
-        source = open(os.path.normpath(self.path)).read()
+        source = filereference.open(self.path).read()
         return unicode(source, DEFAULT_ENCODING)
 
     source = property(_getSource)
@@ -270,16 +272,13 @@ class OnlineHelpTopic(SourceTextOnlineHelpTopic, SampleContainer):
         super(OnlineHelpTopic, self).__init__(id, title, path, parentPath,
               interface, view)
 
-        filename = os.path.basename(path.lower())
-        file_ext = 'txt'
-        if len(filename.split('.'))>1:
-            file_ext = filename.split('.')[-1]
+        file_ext = os.path.splitext(path)[1].lower()
 
         self.type = 'zope.source.plaintext'
 
-        if file_ext in ('rst', 'rest') :
+        if file_ext in ('.rst', '.rest'):
             self.type = 'zope.source.rest'
-        elif file_ext in ('stx', 'html', 'htm'):
+        elif file_ext in ('.stx', '.html', '.htm'):
             self.type = 'zope.source.stx'
 
 

@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:help="http://namespaces.zope.org/help"
+    i18n_domain="zope"
+    >
+
+  <include package="zope.app"/>
+  <help:register
+      id="onlinehelp_test"
+      title="Online Help Test Topic"
+      doc_path="docs.txt"
+      />
+
+</configure>

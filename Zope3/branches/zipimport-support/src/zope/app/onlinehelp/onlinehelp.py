@@ -25,6 +25,7 @@ import os
 from zope.interface import implements
 from zope.configuration.exceptions import ConfigurationError
 
+from zope import filereference
 from zope.app import zapi
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.onlinehelp.interfaces import IOnlineHelp, IOnlineHelpTopic
@@ -119,7 +120,7 @@ class OnlineHelp(OnlineHelpTopic):
                           class_=None, resources=None):
         "See zope.app.onlineHelp.interfaces.IOnlineHelp"
 
-        if not os.path.exists(doc_path):
+        if not filereference.exists(doc_path):
             raise ConfigurationError(
                 "Help Topic definition %s does not exist" % doc_path
                 )

@@ -1,0 +1,24 @@
+=====================================
+Loading help topics from ZIP archives
+=====================================
+
+Help topics, like many types of resources, can be offered by packages
+imported from ZIP archives.  The harness for this test adds a ZIP file
+containing the "onlinehelp_test" package, which provides a single help
+topic.  We'll load the topic via the help system to demonstrate that
+this works::
+
+  >>> print http("""
+  ... GET /++help++/@@contexthelp.html HTTP/1.1
+  ... """, handle_errors=False)
+  HTTP/1.1 200 ...
+  ...<a href="/++help++/onlinehelp_test">Online Help Test Topic</a...
+
+We can now select our topic to see our sample help text::
+
+  >>> print http("""
+  ... GET /++help++/onlinehelp_test HTTP/1.1
+  ... """)
+  HTTP/1.1 200 ...
+  ...This is the test online help topic...
+  ...There isn't much text here...
