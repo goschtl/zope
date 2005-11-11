@@ -11,19 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""References to file-like things, including files inside zipped packages.
+"""Example use of the packageReference() function.
 
-This supports referencing files within Python eggs.
+This is referenced from the tests.
 
 """
 __docformat__ = "reStructuredText"
 
-import zope.interface
+from zope.filereference import packageReference
 
-
-from reference import open, new, packageReference
-from reference import exists, isdir, isfile, getmtime
-
-
-from interfaces import IFileReferenceAPI
-zope.interface.moduleProvides(IFileReferenceAPI)
+ref = packageReference("__init__.py")

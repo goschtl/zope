@@ -147,3 +147,43 @@ the expected results::
   False
   >>> zope.filereference.isdir(ref)
   False
+
+Getting a local package-relative reference
+------------------------------------------
+
+It's easy to create package-relative references from within a
+package, or to files in other packages.  Let's start by specifying the
+package we're interested in.  We'll need a candidate package and the
+file name we're expecting to see::
+
+  >>> import xml.sax
+  >>> initfile = os.path.join(os.path.dirname(xml.sax.__file__), "__init__.py")
+
+Let's start by specifying the package using the package module::
+
+  >>> ref = zope.filereference.packageReference(
+  ...     "__init__.py", package=xml.sax)
+
+  >>> ref == initfile
+  True
+
+This will also work when we specify the context package using a
+string::
+
+  >>> ref = zope.filereference.packageReference(
+  ...     "__init__.py", package="xml.sax")
+
+  >>> ref == initfile
+  True
+
+To demonstrate this function from the context of a real package, we're
+going to use the `testmodule` module in this package.  We'll import
+the reference created there and check that it produces the reference
+we expect::
+
+  >>> initfile = os.path.join(
+  ...     os.path.dirname(zope.filereference.__file__), "__init__.py")
+
+  >>> from zope.filereference.testmodule import ref
+  >>> ref == initfile
+  True

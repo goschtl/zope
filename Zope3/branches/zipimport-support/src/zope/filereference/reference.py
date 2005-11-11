@@ -20,6 +20,7 @@ import __builtin__
 import errno
 import os
 import StringIO
+import sys
 import zipimport
 
 import zope.interface
@@ -99,6 +100,34 @@ def new(path, package=None, basepath=None):
             return PackagePathReference(p, package, path)
     else:
         return PathReference(p)
+
+
+def packageReference(path, package=None):
+    """Return a package-relative reference.
+
+    If `package` is None, this uses the context of the caller to generate
+    a package-relative reference to `path`, which should be a relative
+    path name.
+
+    If `package` is not None, it may be either a package name (as a string)
+    or a package module.  That package will be used instead of the caller's
+    package context.
+
+    """
+    if package is None:
+        globals = sys._getframe(1).f_globals
+        if "__path__" in globals:
+            # it's a package
+            package = globals["__name__"]
+        else:
+            name = globals["__name__"]
+            if "." in name:
+                package = name[:name.rfind(".")]
+            else:
+                raise ValueError("not called from a package context")
+    if isinstance(package, basestring):
+        package = sys.modules[package]
+    return new(path, package=package)
 
 
 class PathReference(str):
