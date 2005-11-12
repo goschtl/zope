@@ -1,0 +1,10 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    i18n_domain="zope">
+
+  <resourceDirectory
+      name="selenium-driver"
+      directory="../selenium/javascript" />
+
+</configure>

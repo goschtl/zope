@@ -1,0 +1,14 @@
+<configure
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <meta:directive
+      namespace="http://namespaces.zope.org/zope"
+      name="tutorial"
+      schema=".metadirectives.ITutorialDirective"
+      handler=".metaconfigure.tutorial" />
+
+  <meta:provides feature="tutorials" />
+
+</configure>

@@ -1,0 +1,65 @@
+##############################################################################
+#
+# Copyright (c) 2005 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Tutorial Manager Implementation
+
+$Id$
+"""
+__docformat__ = "reStructuredText"
+
+import zope.interface
+from zope.app.apidoc import utilities
+from zope.app import location
+
+from zope.tutorial import interfaces
+
+
+class TutorialManager(utilities.ReadContainerBase):
+    """TutorialManager"""
+
+    zope.interface.implements(interfaces.ITutorialManager,
+                              location.interfaces.ILocation)
+
+    def __init__(self, parent):
+        self.__parent__ = parent
+        self.__name__ = '++tutorials++'
+
+    def get(self, key, default=None):
+        """See zope.app.container.interfaces.IReadContainer"""
+        utility = zapi.queryUtility(ITutorial, key, default)
+        if utility != default:
+            location.locate(utility, self, key)
+        return utility
+
+    def items(self):
+        """See zope.app.container.interfaces.IReadContainer"""
+        items = list(zapi.getUtilitiesFor(ITutorial))
+        items.sort()
+        utils = []
+        for key, value in items:
+            location.locate(value, self, key)
+            utils.append((key, value))
+        return utils
+
+
+class tutorialsNamespace(object):
+    """Used to traverse the `++tutorials++` namespace"""
+
+    def __init__(self, ob, request=None):
+        self.tutorialManager = TutorialManager(ob)
+
+    def traverse(self, name, ignore):
+        if name == '':
+            return self.tutorialManager
+        else:
+            return self.tutorialManager[key]

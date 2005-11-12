@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope">
+
+  <!-- ++tutorials++ Namespace Registration -->
+
+  <view
+      name="tutorials" type="*"
+      provides="zope.app.traversing.interfaces.ITraversable" for="*"
+      factory=".tutorial.tutorialsNamespace"
+      />
+
+  <adapter
+      name="tutorials"
+      provides="zope.app.traversing.interfaces.ITraversable" for="*"
+      factory=".tutorial.tutorialsNamespace"
+      />
+
+  <include package=".browser" />
+
+</configure>

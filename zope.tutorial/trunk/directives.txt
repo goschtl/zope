@@ -1,0 +1,37 @@
+=============================
+The `zope:tutorial` Directive
+=============================
+
+This directive allows you to register new tutorials with the tutorial
+manager. Before we can register a new tutoral, we need to load the
+meta-configuration:
+
+  >>> from zope.configuration import xmlconfig
+  >>> import zope.tutorial
+  >>> context = xmlconfig.file('meta.zcml', zope.tutorial)
+
+Now we can run the directive. First, let's make sure that no tutorials have
+been registered yet:
+
+  >>> from zope.app import zapi
+  >>> from zope.tutorial import interfaces
+  >>> list(zapi.getUtilitiesFor(interfaces.ITutorial))
+  []
+
+Now run the registration code:
+
+  >>> context = xmlconfig.string('''
+  ...     <configure
+  ...         xmlns="http://namespaces.zope.org/zope">
+  ...       <tutorial
+  ...           name="zope_tutorial_directive"
+  ...           title="zope:tutorial Directive"
+  ...           path="directives.txt"
+  ...           />
+  ...     </configure>''', context)
+
+Note that this file is not really a functional test-browser test, so it would
+not actually work in the Web interface. Now the tutorial is available:
+
+  >>> list(zapi.getUtilitiesFor(interfaces.ITutorial))
+  [(u'zope_tutorial_directive', )]

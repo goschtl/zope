@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope">
+
+  <configure package="zope.testbrowser">
+
+    <tutorial
+        name="testbrowser"
+        title="Test Browser Features"
+        path="README.txt" />
+
+  </configure>
+
+</configure>

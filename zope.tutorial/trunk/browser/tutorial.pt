@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+      <title>Online Tutorial Viewer</title>
+      <link rel="stylesheet" type="text/css" href="selenium.css" />
+      <script
+          language="JavaScript" type="text/javascript"
+          src="jsunit/app/jsUnitCore.js"></script>
+      <script
+          language="JavaScript" type="text/javascript"
+          src="xmlextras.js"></script>
+      <script
+          language="JavaScript" type="text/javascript"
+          src="selenium-browserbot.js"></script>
+      <script
+          language="JavaScript" type="text/javascript"
+          src="selenium-api.js"></script>
+      <script
+          language="JavaScript" type="text/javascript"
+          src="selenium-commandhandlers.js"></script>
+      <script
+          language="JavaScript" type="text/javascript"
+          src="selenium-executionloop.js"></script>
+      <script
+          language="JavaScript" type="text/javascript"
+          src="selenium-seleneserunner.js"></script>
+      <script
+          language="JavaScript" type="text/javascript"
+          src="selenium-logging.js"></script>
+      <script
+          language="JavaScript" type="text/javascript"
+          src="htmlutils.js"></script>
+      <script
+          language="JavaScript" type="text/javascript"
+          src="xpath.js"></script>
+      <script
+          language="JavaScript" type="text/javascript"
+          src="user-extensions.js"></script>
+  </head>
+
+  <body onLoad="runTest()">
+
+    <table border="1" style="height: 100%;">
+      <tr>
+        <td width="50%" height="30%">
+          <form action="">
+            <label id="context" name="context"></label>
+          </form>
+        </td>
+        <td width="50%" height="30%">
+          <b>Last Four Commands</b><br/>
+          <div id="commandList"></div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" height="70%">
+          <iframe name="myiframe" id="myiframe" src=""
+                  height="100%" width="100%"></iframe>
+        </td>
+      </tr>
+    </table>
+
+  </body>
+</html>
