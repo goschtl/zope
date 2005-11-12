@@ -2,6 +2,16 @@
 Extrinsic References
 ====================
 
+Objects can refer to other objects intrinsically or extrinsically.
+If a reference is part of the object's model, it is intrinsic.
+A car's references to it's wheels would be intrinsic.  A book's
+reference to it's first chapter would be intrinsic.  Intrinsic
+references are used to satisfy an objects "concerns", the things that
+motivated it's design.  Extrinsic references exist to meet system
+concerns.  We prefer using simple Python references to implement
+intrinsic references.  This package provides a tool that can be used
+to provide extrinsic references. 
+
 Extrinsic registries record a key and one or more values to which they
 refer.  The key and all values must be adaptable to 
 zope.app.keyreference.interfaces.IKeyReference.
