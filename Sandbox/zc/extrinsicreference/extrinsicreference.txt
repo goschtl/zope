@@ -8,9 +8,26 @@ A car's references to it's wheels would be intrinsic.  A book's
 reference to it's first chapter would be intrinsic.  Intrinsic
 references are used to satisfy an objects "concerns", the things that
 motivated it's design.  Extrinsic references exist to meet system
-concerns.  We prefer using simple Python references to implement
+concerns.  For examples, a system might use extrinsic references to
+keep track of link dependencies (e.g. backlinks).
+We prefer using simple Python references to implement
 intrinsic references.  This package provides a tool that can be used
 to provide extrinsic references. 
+
+We originally developed this package to manage "shortcuts".  Shortcuts
+are a bit like windows shortcuts or unix symbolic links.  Shortcuts
+hold direct references to their targets.  These were intrinsis to
+shortcuts. It wouldn't make sense to have shortcuts without targets.
+We also wanted to keep track of shortcuts to to objects. That is,
+given an object, we wanted to find all of the shortcuts to it.  This
+was a system/application choice. We used extrinsic references for
+this.
+
+The above example illustrates that it is often useful to use different
+kinds of references for different directions of an association.  We
+often use intrinsic references for one direction and use extrinsic
+references to go the other way.  Of course two-way
+associations/relationships could be build on a mechanism like this.
 
 Extrinsic registries record a key and one or more values to which they
 refer.  The key and all values must be adaptable to 
