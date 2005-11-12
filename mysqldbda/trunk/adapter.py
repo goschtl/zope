@@ -16,9 +16,15 @@
 $Id: Adapter.py,v 1.1 2004/10/10 mriya3
 """
 
+from zope.interface import directlyProvides
+from zope.app.rdb.interfaces import IZopeConnection
 from zope.app.rdb import ZopeDatabaseAdapter, parseDSN
 
 import MySQLdb
+
+
+class IMySQLZopeConnection(IZopeConnection):
+    """A marker interface stating that this connection uses the MySQL SQL."""
 
 
 class MySQLStringConverter:
@@ -66,3 +72,8 @@ class MySQLdbAdapter(ZopeDatabaseAdapter):
 
     def identity(self, x):
         return x
+
+    def __call__(self):
+        connection = ZopeDatabaseAdapter.__call__(self)
+        directlyProvides(connection, IMySQLZopeConnection)
+        return connection
