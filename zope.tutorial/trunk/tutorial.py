@@ -16,34 +16,34 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-
+import os
 import zope.interface
 from zope.app.apidoc import utilities
 from zope.app import location
+from zope.app import zapi
 
 from zope.tutorial import interfaces
 
 
 class TutorialManager(utilities.ReadContainerBase):
     """TutorialManager"""
-
     zope.interface.implements(interfaces.ITutorialManager,
                               location.interfaces.ILocation)
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         self.__parent__ = parent
         self.__name__ = '++tutorials++'
 
     def get(self, key, default=None):
         """See zope.app.container.interfaces.IReadContainer"""
-        utility = zapi.queryUtility(ITutorial, key, default)
+        utility = zapi.queryUtility(interfaces.ITutorial, key, default)
         if utility != default:
             location.locate(utility, self, key)
         return utility
 
     def items(self):
         """See zope.app.container.interfaces.IReadContainer"""
-        items = list(zapi.getUtilitiesFor(ITutorial))
+        items = list(zapi.getUtilitiesFor(interfaces.ITutorial))
         items.sort()
         utils = []
         for key, value in items:
@@ -52,14 +52,27 @@ class TutorialManager(utilities.ReadContainerBase):
         return utils
 
 
+class Tutorial(object):
+    """Tutorial"""
+    zope.interface.implements(interfaces.ITutorial)
+
+    def __init__(self, title, path):
+        self.title = title
+        self.path = path
+
+    def __repr__(self):
+        return '<%s title=%r, file=%r>' %(
+            self.__class__.__name__, self.title, os.path.split(self.path)[-1])
+
+
 class tutorialsNamespace(object):
     """Used to traverse the `++tutorials++` namespace"""
 
-    def __init__(self, ob, request=None):
+    def __init__(self, ob=None, request=None):
         self.tutorialManager = TutorialManager(ob)
 
-    def traverse(self, name, ignore):
+    def traverse(self, name, ignore=None):
         if name == '':
             return self.tutorialManager
         else:
-            return self.tutorialManager[key]
+            return self.tutorialManager[name]

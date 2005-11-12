@@ -16,6 +16,12 @@
       factory=".tutorial.tutorialsNamespace"
       />
 
+  <!-- Setup of initial tutorials -->
+
+  <include file="tutorials.zcml" />
+
+  <!-- Browser Configuration -->
+
   <include package=".browser" />
 
 </configure>

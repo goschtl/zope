@@ -22,7 +22,8 @@ Now run the registration code:
 
   >>> context = xmlconfig.string('''
   ...     <configure
-  ...         xmlns="http://namespaces.zope.org/zope">
+  ...         xmlns="http://namespaces.zope.org/zope"
+  ...         i18n_domain="zope">
   ...       <tutorial
   ...           name="zope_tutorial_directive"
   ...           title="zope:tutorial Directive"
@@ -34,4 +35,5 @@ Note that this file is not really a functional test-browser test, so it would
 not actually work in the Web interface. Now the tutorial is available:
 
   >>> list(zapi.getUtilitiesFor(interfaces.ITutorial))
-  [(u'zope_tutorial_directive', )]
+  [(u'zope_tutorial_directive',
+    <Tutorial title=u'zope:tutorial Directive', file=u'directives.txt'>)]

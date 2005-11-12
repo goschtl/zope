@@ -20,12 +20,19 @@ __docformat__ = 'restructuredtext'
 import unittest
 from zope.testing import doctest
 from zope.testing.doctestunit import DocFileSuite
-from zope.app.testing import setup
+from zope.app.testing import placelesssetup
+
 
 def test_suite():
     return unittest.TestSuite((
+        DocFileSuite('README.txt',
+                     setUp=placelesssetup.setUp,
+                     tearDown=placelesssetup.tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
         DocFileSuite('directives.txt',
-                     setUp=setup.SetUp, tearDown=setup.TearDown,
+                     setUp=placelesssetup.setUp,
+                     tearDown=placelesssetup.tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         ))

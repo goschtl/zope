@@ -42,7 +42,7 @@ class ITutorial(zope.interface.Interface):
         description=u'The title of the tutorial.',
         required=True)
 
-    filename = zope.schema.URI(
-        title=u'File name',
+    path = zope.schema.URI(
+        title=u'File Path',
         description=u'Path to the file used for the tutorial',
         required=True)

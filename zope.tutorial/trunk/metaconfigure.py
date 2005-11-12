@@ -17,7 +17,8 @@ $Id: $
 """
 __docformat__ = 'restructuredtext'
 
-from zope.tutorial import tutorial, interfaces
+from zope.tutorial import interfaces
+from zope.tutorial.tutorial import Tutorial
 from zope.app.component import metaconfigure
 
 def tutorial(_context, name, title, path):
@@ -26,5 +27,5 @@ def tutorial(_context, name, title, path):
     metaconfigure.utility(
         _context,
         provides = interfaces.ITutorial,
-        component = tutorial.Tutorial(title, path),
+        component = Tutorial(title, path),
         name = name)
