@@ -154,6 +154,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed bug 402, http://www.zope.org/Collectors/Zope3-dev/402
+        classImplements after classImplementsOnly lost the interfaces
+        declated in classImplementsOnly.
+
       - Fixed bug 396, http://www.zope.org/Collectors/Zope3-dev/396.
         When doing multi-adapter lookups, the interface of the first
         object wan't given adequate weight.

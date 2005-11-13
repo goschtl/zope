@@ -258,8 +258,13 @@ class Declaration(Specification):
 # These specify interfaces implemented by instances of classes
 
 class Implements(Declaration):
+
+    # class whose specification should be used as additional base
     inherit = None
+
+    # interfaces actually declared for a class
     declared = ()
+    
     __name__ = '?'
 
     def __repr__(self):
@@ -410,8 +415,9 @@ def classImplementsOnly(cls, *interfaces):
       whatever interfaces instances of ``A`` and ``B`` implement.
       """
     spec = implementedBy(cls)
-    spec.__bases__ = tuple(_normalizeargs(interfaces))
+    spec.declared = ()
     spec.inherit = None
+    classImplements(cls, *interfaces)
 
 def classImplements(cls, *interfaces):
     """Declare additional interfaces implemented for instances of a class

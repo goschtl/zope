@@ -358,6 +358,38 @@ def test_declaration_get():
         True
     """
 
+def test_classImplements_after_classImplementsOnly_issue_402():
+    """http://www.zope.org/Collectors/Zope3-dev/402
+
+>>> from zope.interface import *
+>>> class I1(Interface):
+...     pass
+>>> class I2(Interface):
+...     pass
+>>> class C:
+...     implements(I1)
+>>> class C2:
+...     implementsOnly(I2)
+>>> class I3(Interface):
+...     pass
+
+>>> [i.__name__ for i in providedBy(C2()).__iro__]
+['I2', 'Interface']
+
+>>> classImplements(C2, I3)
+>>> [i.__name__ for i in providedBy(C2()).__iro__]
+['I2', 'I3', 'Interface']
+
+>>> class I4(Interface):
+...     pass
+>>> classImplements(C2, I4)
+>>> [i.__name__ for i in providedBy(C2()).__iro__]
+['I2', 'I3', 'I4', 'Interface']
+
+
+"""
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
