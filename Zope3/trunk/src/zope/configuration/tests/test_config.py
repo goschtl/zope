@@ -92,7 +92,7 @@ def test_config_extended_example():
     >>> machine((ns, "factory"), factory=u".f")
     >>> pprint(machine.actions[-1:])
     [(('factory', 1, 2), f)]
-    
+
     Define and try a complex directive:
 
     >>> machine.begin((metans, "complexDirective"),
@@ -146,7 +146,7 @@ def test_config_extended_example():
       'third')]
 
     Done with the package
-    
+
     >>> machine.end()
 
 
@@ -162,7 +162,7 @@ def test_config_extended_example():
     ...
     ConfigurationError: ('Invalid value for', 'factory',""" \
        """ "Can't use leading dots in dotted names, no package has been set.")
-    
+
     >>> pprint(machine.actions)
     [(('simple', u'aa', u'xxx', 'cc'),
       f,
@@ -230,6 +230,20 @@ def test_keyword_handling():
     >>> machine.actions
     [(('k', 'f'), f, ('f', 'c', 'x'), {}, (), 'yee ha')]
     """
+
+def test_basepath_absolute():
+    """Path must always return an absolute path.
+
+    >>> import os
+    >>> class stub:
+    ...     __file__ = os.path.join('relative', 'path')
+    >>> c = config.ConfigurationContext()
+    >>> c.package = stub()
+
+    >>> os.path.isabs(c.path('y/z'))
+    True
+    """
+
 
 def test_trailing_dot_in_resolve():
     """Dotted names are no longer allowed to end in dots

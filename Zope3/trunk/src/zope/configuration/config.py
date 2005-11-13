@@ -260,6 +260,7 @@ class ConfigurationContext(object):
                 basepath = os.getcwd()
             else:
                 basepath = os.path.dirname(self.package.__file__)
+                basepath = os.path.abspath(basepath)
             self.basepath = basepath
 
         return os.path.join(basepath, filename)
