@@ -1,0 +1,77 @@
+====================
+The Tutorial Session
+====================
+
+A tutorial session is created whenever a user watches or takes a tutorial. A
+session is an adapter to a tutorial, so we have to create that first:
+
+  >>> import os, tempfile
+  >>> temp_dir = tempfile.mkdtemp()
+  >>> sample_txt = os.path.join(temp_dir, 'sample.txt')
+
+  >>> open(sample_txt, 'w').write('''
+  ... Sample Documentation
+  ... ====================
+  ...
+  ... Here is a simple print statement:
+  ...
+  ...   >>> print 'sample'
+  ...   sample
+  ...
+  ... And now a variable assignment with a return value:
+  ...
+  ...   >>> id = 5
+  ...   >>> id
+  ...   5
+  ...
+  ... That's it!
+  ... ''')
+
+  >>> from zope.tutorial import tutorial
+  >>> sample = tutorial.Tutorial('Sample Documentation', sample_txt)
+
+Now that we have the tutorial, we can create a session:
+
+  >>> session = tutorial.TutorialSession(sample)
+  >>> session.initialize()
+
+Nothing is setup until ``initialize()`` is called. Once the session is
+prepared, we can choose a controller that knows about the input and output
+interfaces. The simplest controller is the `SimpleCLIController`, which simply
+displays the text and examples:
+
+  >>> from zope.tutorial import cli
+  >>> controller = cli.SimpleCLIController(session)
+
+Since we are in a unit test file already, the Python prompt needs to be
+changed, so that the test does not get confused:
+
+  >>> controller.PYTHON_PROMPT = 'Py: '
+
+We can now write a simple function that runs the tutorial for us:
+
+  >>> def run():
+  ...     controller.start()
+  ...     while controller.running:
+  ...         controller.doNextStep()
+
+  >>> run()
+  Starting Tutorial: Sample Documentation
+  <BLANKLINE>
+  Sample Documentation
+  ====================
+  <BLANKLINE>
+  Here is a simple print statement:
+  <BLANKLINE>
+    Py: print 'sample'
+    sample
+  <BLANKLINE>
+  And now a variable assignment with a return value:
+  <BLANKLINE>
+    Py: id = 5
+    Py: id
+    5
+  <BLANKLINE>
+  That's it!
+  <BLANKLINE>
+  ---------- The End ----------

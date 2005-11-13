@@ -13,7 +13,7 @@ Let's imagine we could use those documentation files to create fully generated
 tutorials. This package provides the necessary framework to run testbrowser
 tests inside a real browser in a tutorial style:
 
-  >>> from zope.tutorial import tutorial
+  >>> from zope.tutorial import tutorial, manager
 
 Tutorial
 --------
@@ -28,12 +28,12 @@ Tutorial Manager
 All tutorials are managed by the tutorial manager, which also serves as an
 entrance point in the Web UI.
 
-  >>> manager = tutorial.TutorialManager()
+  >>> tm = manager.TutorialManager()
 
 The tutorial manager implements the `IReadContainer` interface to query for
 tutorials. Initially there are no tutorials:
 
-  >>> manager.keys()
+  >>> tm.keys()
   []
 
 Once we add some tutorials by registering soem utilities,
@@ -48,7 +48,7 @@ Once we add some tutorials by registering soem utilities,
 
 we have some results:
 
-  >>> manager.items()
+  >>> tm.items()
   [(u'tut1', <Tutorial title='Tutorial 1', file='tut1.txt'>),
    (u'tut2', <Tutorial title='Tutorial 2', file='tut2.txt'>)]
 
@@ -60,13 +60,13 @@ For URLs and TALES expression, a namespace is provided that provides you with
 an entrance point to the tutorial application. Once the namespace is created.
 
   >>> parent = object()
-  >>> namespace = tutorial.tutorialsNamespace(parent)
+  >>> namespace = manager.tutorialsNamespace(parent)
 
 you can traverse the parent to the tutorial manager. If an empty name is
 passed into the namespace, the manager is returned:
 
   >>> namespace.traverse('')
-  <zope.tutorial.tutorial.TutorialManager object at ...>
+  <zope.tutorial.manager.TutorialManager object at ...>
 
 If a name is provided, then the actual tutorial is looked up:
 

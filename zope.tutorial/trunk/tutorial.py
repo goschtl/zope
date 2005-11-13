@@ -11,45 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tutorial Manager Implementation
+"""Tutorial Implementation
 
 $Id$
 """
 __docformat__ = "reStructuredText"
+import doctest
 import os
+import persistent
+import types
+import zope.component
 import zope.interface
-from zope.app.apidoc import utilities
-from zope.app import location
-from zope.app import zapi
 
 from zope.tutorial import interfaces
-
-
-class TutorialManager(utilities.ReadContainerBase):
-    """TutorialManager"""
-    zope.interface.implements(interfaces.ITutorialManager,
-                              location.interfaces.ILocation)
-
-    def __init__(self, parent=None):
-        self.__parent__ = parent
-        self.__name__ = '++tutorials++'
-
-    def get(self, key, default=None):
-        """See zope.app.container.interfaces.IReadContainer"""
-        utility = zapi.queryUtility(interfaces.ITutorial, key, default)
-        if utility != default:
-            location.locate(utility, self, key)
-        return utility
-
-    def items(self):
-        """See zope.app.container.interfaces.IReadContainer"""
-        items = list(zapi.getUtilitiesFor(interfaces.ITutorial))
-        items.sort()
-        utils = []
-        for key, value in items:
-            location.locate(value, self, key)
-            utils.append((key, value))
-        return utils
 
 
 class Tutorial(object):
@@ -65,14 +39,35 @@ class Tutorial(object):
             self.__class__.__name__, self.title, os.path.split(self.path)[-1])
 
 
-class tutorialsNamespace(object):
-    """Used to traverse the `++tutorials++` namespace"""
+class TutorialSession(persistent.Persistent):
+    """Tutorial Session"""
 
-    def __init__(self, ob=None, request=None):
-        self.tutorialManager = TutorialManager(ob)
+    zope.component.adapts(interfaces.ITutorial)
+    #zope.interface.implements(interfaces.ITutorialSession)
 
-    def traverse(self, name, ignore=None):
-        if name == '':
-            return self.tutorialManager
-        else:
-            return self.tutorialManager[name]
+    def __init__(self, tutorial):
+        self.tutorial = tutorial
+
+
+    def initialize(self):
+        """See interfaces.ITutorialSession"""
+        text = open(self.tutorial.path, 'r').read()
+        parser = doctest.DocTestParser()
+        self.parts = parser.parse(text)
+        # Clean up the parts by removing empty strings
+        self.parts = [part for part in self.parts
+                      if (not isinstance(part, types.StringTypes) or
+                          part.strip())]
+        # Create a parts stack
+        self.parts.reverse()
+
+        # Set some runtime variables
+        self.globs = {}
+
+
+    def getNextStep(self):
+        """See interfaces.ITutorialSession"""
+        try:
+            return self.parts.pop()
+        except IndexError:
+            return None

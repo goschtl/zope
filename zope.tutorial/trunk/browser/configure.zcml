@@ -3,8 +3,37 @@
     xmlns:zope="http://namespaces.zope.org/zope"
     i18n_domain="zope">
 
+  <resource
+      name="tutorial.css"
+      file="tutorial.css"
+      />
+
+  <page
+      for="*"
+      name="tutorial_macros"
+      permission="zope.View"
+      class=".tutorial.TutorialMacros"
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
+      />
+
+  <page
+      for="*"
+      name="runner_macros"
+      permission="zope.View"
+      template="runner_macros.pt"
+      />
+
+  <page
+      name="index.html"
+      for="..interfaces.ITutorialManager"
+      class=".tutorial.TutorialsRunner"
+      template="index.pt"
+      permission="zope.View"
+      />
+
+  <!-- Make Selenium available -->
   <resourceDirectory
-      name="selenium-driver"
+      name="selenium"
       directory="../selenium/javascript" />
 
 </configure>
