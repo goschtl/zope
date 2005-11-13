@@ -154,6 +154,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed bug 405, http://www.zope.org/Collectors/Zope3-dev/405
+        Needed check for common bug when calling apply on field indexes.
+
       - Fixed bug 402, http://www.zope.org/Collectors/Zope3-dev/402
         classImplements after classImplementsOnly lost the interfaces
         declated in classImplementsOnly.
