@@ -97,12 +97,26 @@ def endInteraction():
     try:
         thread_local.previous_interaction = thread_local.interaction
     except AttributeError:
-        pass
+        # if someone does a restore later, it should be restored to not having
+        # an interaction.  If there was a previous interaction from a previous
+        # call to endInteraction, it should be removed.
+        try:
+            del thread_local.previous_interaction
+        except AttributeError:
+            pass
     else:
         del thread_local.interaction
 
 def restoreInteraction():
-    thread_local.interaction = thread_local.previous_interaction
+    try:
+        previous = thread_local.previous_interaction
+    except AttributeError:
+        try:
+            del thread_local.interaction
+        except AttributeError:
+            pass
+    else:
+        thread_local.interaction = previous
 
 def checkPermission(permission, object, interaction=None):
     """Return whether security policy allows permission on object.

@@ -41,7 +41,7 @@ class Test(CleanUp, unittest.TestCase):
         setSecurityPolicy(policy)
         self.assert_(getSecurityPolicy() is policy)
 
-    def test_query_new_end_Interaction(self):
+    def test_query_new_end_restore_Interaction(self):
         from zope.security.management import queryInteraction
         self.assertEquals(queryInteraction(), None)
 
@@ -49,15 +49,29 @@ class Test(CleanUp, unittest.TestCase):
 
         newInteraction()
 
-        self.assert_(queryInteraction() is not None)
+        interaction = queryInteraction()
+        self.assert_(interaction is not None)
         self.assertRaises(AssertionError, newInteraction)
 
         from zope.security.management import endInteraction
+        endInteraction()
+        self.assertEquals(queryInteraction(), None)
+
+        from zope.security.management import restoreInteraction
+        restoreInteraction()
+        self.assert_(interaction is queryInteraction())
 
         endInteraction()
         self.assertEquals(queryInteraction(), None)
+
         endInteraction()
         self.assertEquals(queryInteraction(), None)
+
+        newInteraction()
+        self.assert_(queryInteraction() is not None)
+        
+        restoreInteraction() # restore to no interaction
+        self.assert_(queryInteraction() is None)
 
     def test_checkPermission(self):
         from zope.security import checkPermission
