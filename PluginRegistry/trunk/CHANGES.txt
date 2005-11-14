@@ -4,6 +4,9 @@ PluginRegistry Product Changelog
 
     - SVN tag:  svn+ssh://svn.zope.org/repos/main/PluginRegistry/trunk
 
+    - Moved interfaces into a top-level module (no need for a package),
+      and made them forward-compatible with Z3 interfaces.
+
     - Wired in DAV / FTP / ExternalEditor support for the registry,
       along with a ZMI form for updating it as XML.
  

@@ -16,8 +16,15 @@
 
 $Id$
 """
-from Persistence import PersistentMapping
+from StringIO import StringIO
 
+from Persistence import PersistentMapping
+from zope.interface import implements
+
+from Products.GenericSetup.interfaces import IFilesystemExporter
+from Products.GenericSetup.interfaces import IFilesystemImporter
+from Products.GenericSetup.content import FauxDAVRequest
+from Products.GenericSetup.content import FauxDAVResponse
 from Products.GenericSetup.utils import ExportConfiguratorBase
 from Products.GenericSetup.utils import ImportConfiguratorBase
 from Products.GenericSetup.utils import _getDottedName
@@ -27,7 +34,7 @@ from Products.GenericSetup.utils import DEFAULT
 from Products.GenericSetup.utils import KEY
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from interfaces.plugins import IPluginRegistry
+from interfaces import IPluginRegistry
 
 def _providedBy(obj, iface):
     try:
@@ -51,6 +58,8 @@ def _getRegistry(site):
 
 def exportPluginRegistry(context):
     """ Export plugin registry as an XML file.
+
+    o Designed for use as a GenericSetup export step.
     """
     registry = _getRegistry(context.getSite())
     pre = PluginRegistryExporter(registry).__of__(registry)
@@ -81,6 +90,8 @@ def _updatePluginRegistry(registry, xml, should_purge, encoding=None):
 
 def importPluginRegistry(context):
     """ Import plugin registry from an XML file.
+
+    o Designed for use as a GenericSetup import step.
     """
     registry = _getRegistry(context.getSite())
     encoding = context.getEncoding()
@@ -132,3 +143,44 @@ class PluginRegistryImporter(ImportConfiguratorBase):
             {'id':          {KEY: 'id'},
             },
          }
+
+class PluginRegistryFileExportImportAdapter(object):
+    """ Designed for ues when exporting / importing PR's within a container.
+    """
+    implements(IFilesystemExporter, IFilesystemImporter)
+
+    def __init__(self, context):
+        self.context = context
+
+    def export(self, export_context, subdir, root=False):
+        """ See IFilesystemExporter.
+        """
+        context = self.context
+        pre = PluginRegistryExporter(context).__of__(context)
+        xml = pre.generateXML()
+        export_context.writeDataFile(_FILENAME,
+                                     xml,
+                                     'text/xml',
+                                     subdir,
+                                    )
+
+    def listExportableItems(self):
+        """ See IFilesystemExporter.
+        """
+        return ()
+
+    def import_(self, import_context, subdir, root=False):
+        """ See IFilesystemImporter.
+        """
+        data = import_context.readDataFile(_FILENAME, subdir)
+        if data is None:
+            import_context.note('SGAIFA',
+                                'no pluginregistry.xml in %s' % subdir)
+        else:
+            request = FauxDAVRequest(BODY=data, BODYFILE=StringIO(data))
+            response = FauxDAVResponse()
+            _updatePluginRegistry(self.context,
+                                  data,
+                                  import_context.shouldPurge(),
+                                  import_context.getEncoding(),
+                                 )

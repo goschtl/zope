@@ -12,19 +12,23 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-""" Interfaces:  IPluginRegistry
+""" PluginRegistry interface declarations
 
 $Id$
 """
-
-from Interface import Interface
+try:
+    from zope.interface import Interface
+except:  # BBB?
+    from Interface import Interface
+    _HAS_Z3_INTERFACES = False
+else:
+    _HAS_Z3_INTERFACES = True
 
 class IPluginRegistry( Interface ):
 
 
     """ Manage a set of plugin definitions, grouped by type.
     """
-
     def listPluginTypeInfo():
 
         """ Return a sequence of mappings describing our plugin types.

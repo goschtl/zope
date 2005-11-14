@@ -57,12 +57,15 @@ class PluginRegistryTests( unittest.TestCase ):
 
         return self._getTargetClass()( plugin_info, *args, **kw )
 
-    def test_conformance_IPluginRegistry( self ):
+    def test_conformance_to_IPluginRegistry( self ):
 
-        from Products.PluginRegistry.interfaces.plugins \
-            import IPluginRegistry
+        from Products.PluginRegistry.interfaces import IPluginRegistry
+        from Products.PluginRegistry.interfaces import _HAS_Z3_INTERFACES
 
-        from Interface.Verify import verifyClass
+        if _HAS_Z3_INTERFACES:
+            from zope.interface.verify import verifyClass
+        else:
+            from Interface.Verify import verifyClass
 
         verifyClass( IPluginRegistry, self._getTargetClass() )
 

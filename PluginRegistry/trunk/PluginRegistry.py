@@ -25,12 +25,29 @@ from AccessControl.Permissions import manage_users as ManageUsers
 from Persistence import PersistentMapping
 from OFS.SimpleItem import SimpleItem
 from App.class_init import default__class_init__ as InitializeClass
-from webdav.WriteLockInterface import WriteLockInterface
+
+try:
+    from webdav.interfaces import IWriteLock
+except ImportError:
+    try:
+        from Products.Five.interfaces import IWriteLock
+    except ImportError:
+        _HAS_Z3_DAV_INTERFACES = False
+        from webdav.WriteLockInterface import WriteLockInterface
+    else:
+        _HAS_Z3_DAV_INTERFACES = True
+else:
+    _HAS_Z3_DAV_INTERFACES = True
+
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
 
-from interfaces.plugins import IPluginRegistry
+from interfaces import IPluginRegistry
+from interfaces import _HAS_Z3_INTERFACES
+if _HAS_Z3_INTERFACES:
+    from zope.interface import implements
+
 try:
     from exportimport import _updatePluginRegistry
 except ImportError:
@@ -46,7 +63,14 @@ class PluginRegistry( SimpleItem ):
 
     o Each plugin type holds an ordered list of ( id, wrapper ) tuples.
     """
-    __implements__ = ( IPluginRegistry, WriteLockInterface )
+    if _HAS_Z3_INTERFACES:
+        if _HAS_Z3_DAV_INTERFACES:
+            implements(IPluginRegistry, IWriteLock)
+        else:
+            implements(IPluginRegistry)
+            __implements__ = (WriteLockInterface,)
+    else:
+        __implements__ = (IPluginRegistry, WriteLockInterface,)
 
     security = ClassSecurityInfo()
 
