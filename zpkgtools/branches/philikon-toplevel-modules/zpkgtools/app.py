@@ -617,43 +617,25 @@ class ModuleComponent:
         if not os.path.exists(destination):
             os.mkdir(destination)
         self.ip.addIncludes(destination, self.distribution)
-        self.ip.copy_file(self.source, destination)
+        self.write_module_cfg()
+        module_dest = os.path.join(destination, '..', '..', 'Modules')
+        if not os.path.exists(module_dest):
+            os.mkdir(module_dest)
+        self.ip.copy_file(self.source, module_dest)
+
+    def write_module_cfg(self):
+        module_cfg = os.path.join(self.destination, 'MODULE.cfg')
+        self.ip.add_output(module_cfg)
+        f = file(module_cfg, 'w')
+        print >>f, "module %s" % self.filename
+        f.close()
 
     def write_setup_cfg(self):
-        setup_cfg = os.path.join(self.destination, "setup.cfg")
-        self.ip.add_output(setup_cfg)
-        f = open(setup_cfg, "w")
-        f.write("# THIS IS A GENERATED FILE.\n")
-        f.write("\n")
-        f.write("[install_lib]\n")
-        # generate .pyc files
-        f.write("compile = 1\n")
-        # generate .pyo files using "python -O"
-        f.write("optimize = 1\n")
-        f.close()
+        pass
 
     def write_setup_py(self, filename="setup.py", version=None, pathparts=[],
                        distclass=None):
-        # simply assume that the filename ends in '.py'
-        module_name = self.filename[:-3]
-        setup_py = os.path.join(self.destination, filename)
-        self.ip.add_output(setup_py)
-        f = open(setup_py, "w")
-        if pathparts:
-            extrapath = ", ".join([""] + [repr(pp) for pp in pathparts])
-        else:
-            extrapath = ""
-        print >>f, SETUP_HEADER % extrapath
-        print >>f, "context = zpkgsetup.setup.SetupContext("
-        if distclass:
-            print >>f, "    %r, %r, __file__," % (module_name, version)
-            print >>f, "    %r)" % distclass
-        else:
-            print >>f, "    %r, %r, __file__)" % (module_name, version)
-        print >>f
-        print >>f, "context.initialize()"
-        print >>f, "context.setup()"
-        f.close()
+        pass
 
 
 SETUP_HEADER = """\

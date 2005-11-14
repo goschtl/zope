@@ -67,6 +67,7 @@ from zpkgsetup import urlutils
 
 
 PACKAGE_CONF = "SETUP.cfg"
+MODULE_CONF = "MODULE.cfg"
 
 get_schema = cfgparser.cachedSchemaLoader("package.xml")
 
@@ -124,6 +125,14 @@ def loadCollectionInfo(directory, reldir):
                                for path in pkginfo.header]
     return pkginfo
 
+def read_module_info(directory):
+    module_schema = cfgparser.cachedSchemaLoader("module.xml")
+    module_cfg = os.path.join(directory, MODULE_CONF)
+    f = file(module_cfg)
+    url = urlutils.file_url(urllib.pathname2url(module_cfg))
+    pkginfo, _ = cfgparser.loadConfigFile(module_schema(), f, url)
+    f.close()
+    return pkginfo
 
 def read_package_info(directory, reldir=None):
     """Read the package information file from a specified directory.
