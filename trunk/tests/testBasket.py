@@ -282,6 +282,16 @@ class TestBasket(unittest.TestCase, LogInterceptor):
                          ['multiproduct1 initialized',
                           'multiproduct2 initialized'])
 
+    def test_depends_on_missing(self):
+        basket = self._makeOne()
+        basket.pre_initialized = True
+
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        self.assertRaises(pkg_resources.DistributionNotFound,
+                          basket.require, 'depends_on_missing')
+        
     def test_not_zip_safe_exploded(self):
         basket = self._makeOne()
         basket.preinitialized = False
