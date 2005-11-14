@@ -1,0 +1,242 @@
+<metal:block define-macro="page"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xml:lang="en"
+    lang="en"
+    i18n:domain="bugtracker">
+
+  <head>
+    <title
+        metal:define-slot="title"
+        tal:content="context/title|default"
+        >Zope 3 Bug Tracker</title>
+
+
+    <style type="text/css"
+           media="all"
+           tal:content=
+               "string: @import url(${context/++resource++zope3.css});"
+           >
+      @import url(zope3.css);
+    </style>
+
+    <style type="text/css" media="all">
+      body {
+        font: 85% Verdana, Arial, Helvetica, sans-serif;
+        background: white;
+        color: black;
+        margin: 0;
+        padding: 0;
+      }
+
+      #title {
+        font-size: 30px; 
+        vertical-align: middle;
+      }
+
+      #actions div.user {
+        color: white;
+        float: right;
+      }
+
+      #workspace {
+        width: 97%;
+        float: left;
+        padding: 1em;
+      }
+
+      #context_information {
+        padding-top: 1em;
+        width: 15%;
+        float: left;
+        padding-left: 0.5em;
+      }
+
+      #content { 
+        float: left; 
+        width: 82%;
+      }
+      #footer {
+        border: 0px;
+        text-align: center;  
+        clear: both;
+        width: 100%;
+        color: #808080;
+      }
+
+      div.clear { 
+        clear: both; 
+      }
+    </style>
+
+    <meta http-equiv="Content-Type"
+          content="text/html;charset=utf-8" />
+
+    <metal:block define-slot="headers" />
+    <metal:block define-slot="style_slot" />
+    <metal:block define-slot="ecmascript_slot" />
+
+    <!-- Popup script for the OnlineHelp -->
+    <script type="text/javascript" src="onlinehelp.js"
+            tal:attributes="src string:${context/++resource++onlinehelp.js}" >
+    </script>
+
+    <link rel="icon" type="image/png"
+          tal:attributes="href context/++resource++favicon.png" />
+  </head>
+
+  <body>
+
+    <div id="global" i18n:domain="bugtracker">
+      <img tal:attributes="src context/++resource++zope3logo.gif" />
+      <span id="title" i18n:translate="">&nbsp;Bug Tracker</span>
+    </div>
+
+    <div id="workspace">
+
+      <div id="breadcrumbs"
+           tal:condition="python: macroname == 'view'"
+           metal:define-macro="breadcrumbs"
+       > Location:&nbsp;<tal:block
+           repeat="breadcrumb context/@@absolute_url/breadcrumbs"
+          ><a href=""
+              tal:condition="repeat/breadcrumb/start"
+              tal:content="string:[top]"
+              tal:attributes="
+              href string:${breadcrumb/url}/@@SelectedManagementView.html"
+              >XXX should not hardcode root folder name string</a
+             ><a href=""
+                 tal:condition="not:repeat/breadcrumb/start"
+                 tal:content="string:${breadcrumb/name}"
+                 tal:attributes="
+                 href string:${breadcrumb/url}/@@SelectedManagementView.html"
+                  >breadcrumb item</a> / </tal:block>
+      </div>
+
+      <div class="itemViews"
+           tal:condition="python: macroname == 'view'"
+           metal:define-slot="tabs">
+        <tal:block repeat="view context/@@view_get_menu/zmi_views">
+          <a href=""
+            tal:attributes="href view/action;
+                            class view/selected;"
+            tal:content="view/title">
+            label
+          </a>
+        </tal:block>
+      </div>
+
+      <div id="actions" 
+           tal:condition="python: macroname == 'view'"
+           tal:define="help_actions context/@@view_get_menu/help_actions"
+           metal:define-slot="actions">
+        <span tal:condition="help_actions"
+              tal:repeat="help_info help_actions"
+              tal:omit-tag="">
+          <a href="#"
+               tal:define="url string:'${view/__name__}/${help_info/action}';
+                           name string:'Online Help';
+                           settings string:'height=400
+                                           ,width=700
+                                           ,resizable=1
+                                           ,scrollbars=yes
+                                           ,location=no
+                                           ,status=no
+                                           ,toolbar=no
+                                           ,menubar=no'"
+               tal:attributes="href python:'javascript:popup('
+                                           + url + ','
+                                           + name + ','
+                                           + settings +')'"
+               tal:content="help_info/title" >
+              Action name
+          </a>
+        </span>
+        <a href="" 
+          tal:attributes="href string:@@logout.html"
+          tal:condition="python: hasattr(view.request.principal, 'getLogin')"
+          i18n:translate="">
+          Logout</a>
+        <a href="" 
+          tal:attributes="href string:@@login.html"
+          tal:condition="python: not hasattr(view.request.principal, 'getLogin')"
+          i18n:translate="">
+          Login</a>          
+        <div class="user" i18n:domain="bugtracker" i18n:translate="">
+          You are logged in as 
+          <d tal:replace="request/principal/title" i18n:name="user_title"/>.
+        </div>
+        &nbsp;
+      </div>
+
+      <div id="viewspace">
+
+        <div metal:define-slot="message" id="message">
+        </div>
+
+        <div id="content">
+          <metal:block define-slot="body">
+            <table class="listing">
+              <thead>
+                <th>Test</th>
+                <th>Another</th>
+              </thead>
+              <tbody>
+                      <tr>
+                        <td>content</td>
+                        <td>thingy</td>
+                      </tr>
+                      <tr class="even">
+                        <td>more</td>
+                        <td>data</td>
+                      </tr>
+              </tbody>
+            </table>
+          </metal:block>
+        </div>
+
+
+        <div id="context_information">
+
+          <div id="helpers">
+
+            <div class="box" id="itemHelp" tal:condition="pagetip|nothing">
+              <h4 i18n:translate="">Tip</h4>
+              <div class="body">
+                <div class="content odd">
+                  <metal:block define-slot="pagetip"
+                               tal:replace="structure pagetip">
+                    A short tip goes here
+                  </metal:block>
+                </div>
+              </div>
+            </div>
+
+            <div class="spacer">
+              &nbsp;
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="spacer">
+          &nbsp;
+        </div>
+
+      </div>
+    </div>
+
+    <div id="footer" metal:define-macro="footer"
+         i18n:translate="">
+      Powered by Zope 3. Written by Stephan Richter in 2003.
+    </div>
+
+    <div id="logger" />
+
+  </body>
+
+</html>
+
+</metal:block>
+
