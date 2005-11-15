@@ -1,5 +1,0 @@
-[Default]
-
-[Security]
-View = 1:Manager,Owner
-Access contents information = 0:
