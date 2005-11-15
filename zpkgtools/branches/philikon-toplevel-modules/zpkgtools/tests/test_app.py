@@ -309,25 +309,30 @@ class ComponentTestCase(unittest.TestCase):
     def test_validation_of_package_without_setup_cfg(self):
         self.write_app_file("__init__.py", "# make this a package\n")
         #
-        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        source = self.ip.loader.load(self.mypkg_url)
+        c = app.PackageComponent("mypkg", self.mypkg_url, source, self.ip)
         self.assert_(c.is_python_package())
 
     def test_validation_of_package_with_setup_cfg(self):
         self.write_app_file("SETUP.cfg", "# this is a simple package\n")
         self.write_app_file("__init__.py", "# make this a package\n")
         #
-        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        source = self.ip.loader.load(self.mypkg_url)
+        c = app.PackageComponent("mypkg", self.mypkg_url, source, self.ip)
         self.assert_(c.is_python_package())
 
     def test_validation_of_nonpackage_with_setup_cfg(self):
         self.write_app_file("SETUP.cfg", "# this is a simple package\n")
         #
-        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        source = self.ip.loader.load(self.mypkg_url)
+        c = app.PackageComponent("mypkg", self.mypkg_url, source, self.ip)
         self.assert_(not c.is_python_package())
 
     def test_non_validation_of_nonpackage_without_setup_cfg(self):
+        source = self.ip.loader.load(self.mypkg_url)
         self.assertRaises(zpkgtools.Error,
-                          app.Component, "mypkg", self.mypkg_url, self.ip)
+                          app.PackageComponent,
+                          "mypkg", self.mypkg_url, source, self.ip)
 
     def test_component_metadata_is_copied_by_default(self):
         self.write_app_file(publication.PUBLICATION_CONF,
@@ -338,7 +343,8 @@ class ComponentTestCase(unittest.TestCase):
         self.write_app_file(package.PACKAGE_CONF,
                             "# nothing to specify\n")
         #
-        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        source = self.ip.loader.load(self.mypkg_url)
+        c = app.PackageComponent("mypkg", self.mypkg_url, source, self.ip)
         dest = tempfile.mkdtemp(prefix="test-app-dest-")
         try:
             c.write_package(dest)
@@ -367,7 +373,8 @@ class ComponentTestCase(unittest.TestCase):
         self.write_app_file("README",
                             "some text\n")
         #
-        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        source = self.ip.loader.load(self.mypkg_url)
+        c = app.PackageComponent("mypkg", self.mypkg_url, source, self.ip)
         dest = tempfile.mkdtemp(prefix="test-app-dest-")
         try:
             c.write_package(dest)
