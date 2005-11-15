@@ -13,11 +13,23 @@ is intended to help support compatibility for code that was written
 before this API existed, while new code can use the extended API for
 more flexibility.
 
-There are several interesting functions: `new()` is used to construct
-a new path reference, and `open()` is used to open the resource as a
-file-like object.  Additional functions correlate to the common
-functions `os.path.exists()`, `os.path.isdir()`, and
-`os.path.isfile()`.
+There are several interesting functions: `new()` and
+`packageReference()` are used to construct a new path reference, and
+`open()` is used to open the resource as a file-like object.
+Additional functions correlate to the common functions
+`os.path.exists()`, `os.path.isdir()`, and `os.path.isfile()`.
+
+The `zope.filereference` package implements the `IFileReferenceAPI`
+interface::
+
+  >>> import zope.filereference
+  >>> import zope.filereference.interfaces
+  >>> import zope.interface.verify
+
+  >>> zope.interface.verify.verifyObject(
+  ...     zope.filereference.interfaces.IFileReferenceAPI,
+  ...     zope.filereference)
+  True
 
 `new()` takes three arguments: a path, a package, and a base path.
 Only the first is required; passing `None` for the `package` and
@@ -28,9 +40,6 @@ additional information that allows them to retain package-relative
 information, so they are most interesting when the `package` argument
 to the constructor is non-`None`.  Let's take a look at what this
 provides::
-
-  >>> import os
-  >>> import zope.filereference
 
   >>> ref = zope.filereference.new("README.txt", package=zope.filereference)
 
@@ -43,6 +52,8 @@ generating a new reference::
 
 If we examine the reference as a string, we get a path that points
 into the package::
+
+  >>> import os
 
   >>> directory = os.path.dirname(zope.filereference.__file__)
   >>> filename = os.path.join(directory, "README.txt")

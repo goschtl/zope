@@ -57,6 +57,19 @@ class IFileReferenceAPI(zope.interface.Interface):
     def new(path, package=None, basepath=None):
         """Return a new `IFileReference` object."""
 
+    def packageReference(path, package=None):
+        """Return a package-relative reference.
+
+        If `package` is None, this uses the context of the caller to
+        generate a package-relative reference to `path`, which should
+        be a relative path name.
+
+        If `package` is not None, it may be either a package name (as
+        a string) or a package module.  That package will be used
+        instead of the caller's package context.
+
+        """
+
     def open(ref, mode="r"):
         """Open the referenced resource, returning a file-like object.
 
