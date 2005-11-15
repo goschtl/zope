@@ -42,6 +42,16 @@ from Products.StandardCacheManagers.RAMCacheManager import RAMCacheManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from ZTUtils import Batch
 from App.class_init import default__class_init__ as InitializeClass
+
+try:
+    from OFS.interfaces import IObjectManager
+    from OFS.interfaces import ISimpleItem
+    from OFS.interfaces import IPropertyManager
+except ImportError: # BBB
+    from Products.Five.interfaces import IObjectManager
+    from Products.Five.interfaces import ISimpleItem
+    from Products.Five.interfaces import IPropertyManager
+
 from Products.PluginRegistry.PluginRegistry import PluginRegistry
 import Products
 
@@ -1098,7 +1108,7 @@ class PluggableAuthService( Folder, Cacheable ):
                 resetter.resetCredentials(request, response)
 
 classImplements( PluggableAuthService
-               , IPluggableAuthService
+               , (IPluggableAuthService, IObjectManager, IPropertyManager)
                )
 
 InitializeClass( PluggableAuthService )

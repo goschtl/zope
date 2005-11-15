@@ -4,6 +4,9 @@ PluggableAuthService changelog
 
     New Features
 
+      - Added suppport for exporting / importing a PAS and its content via
+        the GenericSetup file export framework.
+
       - Made ZODBRoleManager plugin check grants to the principal's groups,
         as well as those made to the principal directly.
 
