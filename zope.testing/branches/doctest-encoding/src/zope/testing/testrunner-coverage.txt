@@ -1,0 +1,38 @@
+Test Runner
+===========
+Code Coverage
+-------------
+
+If the --coverage option is used, test coverage reports will be generated.  The
+directory name given as the parameter will be used to hold the reports.
+
+
+    >>> import os.path, sys
+    >>> directory_with_tests = os.path.join(this_directory, 'testrunner-ex')
+    >>> defaults = [
+    ...     '--path', directory_with_tests,
+    ...     '--tests-pattern', '^sampletestsf?$',
+    ...     ]
+
+    >>> sys.argv = 'test --coverage=coverage_dir'.split()
+
+    >>> from zope.testing import testrunner
+    >>> testrunner.run(defaults)
+    Running unit tests:
+    ...
+    lines   cov%   module   (path)
+    ...   ...%   zope.testing.testrunner   (src/zope/testing/testrunner.py)
+    ...
+
+The directory specified with the --coverage option will have been created and
+will hold the coverage reports.
+
+    >>> os.path.exists('coverage_dir')
+    True
+    >>> os.listdir('coverage_dir')
+    [...]
+
+(We should clean up after ouselves.)
+
+    >>> import shutil
+    >>> shutil.rmtree('coverage_dir')
