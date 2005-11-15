@@ -1,0 +1,11 @@
+<configure xmlns="http://namespaces.zope.org/browser">
+
+  <page
+      for="Products.CMFCore.interfaces.IFolderish"
+      name="folder_contents"
+      class=".folder_contents.FolderContents"
+      template="../skins/zpt_generic/folder_contents_template.pt"
+      permission="zope2.View"
+      />
+
+</configure>

@@ -1,0 +1,4 @@
+Zope >= 2.8.1
+CMFCore
+CMFSetup
+CMFTopic

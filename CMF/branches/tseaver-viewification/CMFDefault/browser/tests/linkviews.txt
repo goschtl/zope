@@ -1,0 +1,85 @@
+Link Views
+==========
+
+Display View
+------------
+
+First, let's create a "dummy" link class, to avoid dependencies on the
+actual content object.
+
+  >>> from Products.CMFDefault.interfaces import ILink
+  >>> class FauxLink:
+  ...     def __init__(self, remote_url, title):
+  ...         self._edit(remote_url)
+  ...         self.title = title
+  ...     def _edit(self, remote_url):
+  ...         self.remote_url = remote_url
+  ...     def edit(self, remote_url):
+  ...         self._edit(remote_url)
+  ...     def Title(self):
+  ...         return self.title
+  ...     def getRemoteUrl(self):
+  ...         return self.remote_url
+
+Now, let's exercise the standard display view against an instance of
+our link class.  Note that because views depend on both their content objects
+and on the request, we need a dummy request as well:
+
+  >>> link = FauxLink(remote_url='http://www.zope.org/', title='Zope.org')
+  >>> from Products.Five.traversable import FakeRequest
+  >>> display_request = FakeRequest()
+  >>> from Products.CMFDefault.browser.linkviews import LinkDisplayView
+  >>> display = LinkDisplayView(link, display_request)
+
+Rather than render the whole page (which would bring in lots of noise and
+unwanted dependencies), let's just exercise the conventional 'renderContent'
+method of the view, which is used to fill the "content well" slot of the
+page:
+
+  >>> print display.renderContent()
+  <p>...
+   <a href="http://www.zope.org/" alt="Zope.org">http://www.zope.org/</a>
+  ...
+
+Editing View
+------------
+
+Let's try editing our link, using the editing view.  First, let's render
+the form in the "content well" slot:
+
+  >>> from Products.CMFDefault.browser.linkviews import LinkEditingView
+  >>> editing_request = FakeRequest()
+  >>> editing = LinkEditingView(link, editing_request)
+  >>> print editing.renderContent()
+  <form...
+  ...
+  ...<input type="text" name="remote_url" size="40"...value="http://www.zope.org/" />...
+  ...
+
+Now, let's edit the object.  Because the editing handler
+needs to redirect the browser (to avoid spoofing the back button, etc.)
+we have to pass a response.  Let's make one up which will allow us to
+test the redirection:
+
+  >>> link.absolute_url = lambda: 'http://example.com/path/to/link'
+  >>> class FauxResponse:
+  ...    _redirected = None
+  ...    def redirect(self, redirect_url):
+  ...        self._redirected = redirect_url
+  >>> response = FauxResponse()
+
+The editing controller expects to get a HTML form, so we need to stuff one
+into the request already present in the LinkEditingView class:
+
+  >>> editing.request.form = { 'remote_url' : 'http://svn.zope.org/' 
+  ...                        , 'change' : '1'
+  ...                        }
+
+Finally, call the editing handler.
+
+  >>> editing.controller(RESPONSE=response)
+  >>> print link.remote_url
+  http://svn.zope.org/
+  >>> print response._redirected
+  http://example.com/path/to/link/edit.html?portal_status_message=Link%20updated.
+

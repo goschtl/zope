@@ -1,0 +1,33 @@
+??
+
+  New Features
+
+    - (__future__) Exposed role management for manager users on
+      the default roster:  managers can now "promote" members
+      without going to the ZMI.
+
+    - (__future__) Added "custom schema" mechanism for content
+      objetcts:  site managers can now define additional
+      propertysheets for a content type, which will then be
+      reflected in instances created from the type.
+
+    - (__future__) Added simple link extraction / checking for
+      textual content.  Link checking also works for Link objects.
+
+    - (__future__) Added "composite content" types (see the
+      "dogbowl proposal",
+      (http://cmf.zope.org/rqmts/proposals/compounds/compoundproposal.txt).
+
+    - (__future__) Added DCWorkflow (through-the-web configurable
+      workflows) to the core set of CMF products.
+
+    - Enabled querying actions from workflow tool in absence
+      of actions tool (Tracker #401).
+
+  Bug Fixes
+
+    - Made links emitted by 'topic_view' play nice with virtual hosting
+      (Tracker #433).
+
+    - Ensure that package initialization files are non-empty, to prevent
+      suspicion that they were corrupted in download (Tracker #426).
