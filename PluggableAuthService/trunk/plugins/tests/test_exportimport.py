@@ -468,11 +468,100 @@ else:
             self.assertEqual(len(plugin._roles), 0)
             self.assertEqual(plugin.title, None)
 
+    class CookieAuthHelperExportImportTests(_TestBase):
+
+        def _getTargetClass(self):
+            from Products.PluggableAuthService.plugins.exportimport \
+                import CookieAuthHelperExportImport
+            return CookieAuthHelperExportImport
+
+        def _makePlugin(self, id, *args, **kw):
+            from Products.PluggableAuthService.plugins.CookieAuthHelper \
+                import CookieAuthHelper
+            return CookieAuthHelper(id, *args, **kw)
+
+        def test_listExportableItems(self):
+            plugin = self._makePlugin('lEI').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+            plugin.cookie_name = 'COOKIE_NAME'
+            plugin.login_path = 'LOGIN_PATH'
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+
+        def test__getExportInfo_default(self):
+            from Products.PluggableAuthService.plugins.CookieAuthHelper \
+                import CookieAuthHelper
+            plugin = self._makePlugin('default').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], None)
+            self.assertEqual(info['cookie_name'], CookieAuthHelper.cookie_name)
+            self.assertEqual(info['login_path'], CookieAuthHelper.login_path)
+
+        def test_export_default(self):
+            from Products.PluggableAuthService.plugins.CookieAuthHelper \
+                import CookieAuthHelper as CAH
+            plugin = self._makePlugin('default').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual(len(context._wrote), 1)
+            filename, text, content_type = context._wrote[0]
+            self.assertEqual(filename, 'plugins/default.xml' )
+            self._compareDOM(text,
+                             _COOKIE_AUTH_TEMPLATE_NO_TITLE % (CAH.cookie_name,
+                                                               CAH.login_path,
+                                                              ))
+            self.assertEqual( content_type, 'text/xml' )
+
+        def test__getExportInfo_explicitly_set(self):
+            TITLE = 'Plugin Title'
+            COOKIE_NAME = 'COOKIE_NAME'
+            LOGIN_PATH = 'LOGIN_PATH'
+            plugin = self._makePlugin('explicit').__of__(self.root)
+            plugin.title = TITLE
+            plugin.cookie_name = COOKIE_NAME
+            plugin.login_path = LOGIN_PATH
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], TITLE)
+            self.assertEqual(info['cookie_name'], COOKIE_NAME)
+            self.assertEqual(info['login_path'], LOGIN_PATH)
+
+        def test_export_explicitly_set(self):
+            TITLE = 'Plugin Title'
+            COOKIE_NAME = 'COOKIE_NAME'
+            LOGIN_PATH = 'LOGIN_PATH'
+            plugin = self._makePlugin('explicit').__of__(self.root)
+            plugin.title = TITLE
+            plugin.cookie_name = COOKIE_NAME
+            plugin.login_path = LOGIN_PATH
+            adapter = self._makeOne(plugin)
+
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual(len(context._wrote), 1)
+            filename, text, content_type = context._wrote[0]
+            self.assertEqual(filename, 'plugins/explicit.xml' )
+            self._compareDOM(text,
+                             _COOKIE_AUTH_TEMPLATE % (TITLE,
+                                                      COOKIE_NAME,
+                                                      LOGIN_PATH,
+                                                     ))
+            self.assertEqual( content_type, 'text/xml' )
+
     def test_suite():
         suite = unittest.TestSuite((
             unittest.makeSuite(ZODBUserManagerExportImportTests),
             unittest.makeSuite(ZODBGroupManagerExportImportTests),
             unittest.makeSuite(ZODBRoleManagerExportImportTests),
+            unittest.makeSuite(CookieAuthHelperExportImportTests),
                         ))
         return suite
 
@@ -566,6 +655,16 @@ _FILLED_ZODB_ROLES = """\
 <principal principal_id="principal3" />
 </role>
 </zodb-roles>
+"""
+
+_COOKIE_AUTH_TEMPLATE_NO_TITLE = """\
+<?xml version="1.0" ?>
+<cookie-auth cookie_name="%s" login_path="%s" />
+"""
+
+_COOKIE_AUTH_TEMPLATE = """\
+<?xml version="1.0" ?>
+<cookie-auth title="%s" cookie_name="%s" login_path="%s" />
 """
 
 if __name__ == '__main__':

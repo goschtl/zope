@@ -223,3 +223,36 @@ class ZODBRoleManagerExportImport(SimpleXMLExportImport):
                 result.append(k)
         return tuple(result)
 
+class CookieAuthHelperExportImport(SimpleXMLExportImport):
+    """ Adapter for dumping / loading CookieAuthHelper to an XML file.
+    """
+    _FILENAME = 'cookieauth.xml'
+    _ROOT_TAGNAME = 'cookie-auth'
+
+    def _purgeContext(self):
+        pass
+
+    def _updateFromDOM(self, root):
+        cookie_name = root.attributes.get('cookie_name')
+        if cookie_name is not None:
+            self.context.cookie_name = cookie_name.value
+        else:
+            try:
+                del self.context.cookie_name
+            except AttributeError:
+                pass
+
+        login_path = root.attributes.get('login_path')
+        if login_path is not None:
+            self.context.login_path = login_path.value
+        else:
+            try:
+                del self.context.login_path
+            except AttributeError:
+                pass
+
+    def _getExportInfo(self):
+        return {'title': self.context.title,
+                'cookie_name': self.context.cookie_name,
+                'login_path': self.context.login_path,
+               }
