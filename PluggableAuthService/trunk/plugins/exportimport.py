@@ -42,13 +42,13 @@ TODO:
 
    - [X] SessionAuthHelper (TitleOnlyExportImport)
 
-   - [/] ScriptablePlugin (stock GenericSetup folderish support?)
+   - [?] ScriptablePlugin (stock GenericSetup folderish support?)
 
    - [X] DelegatingMultiPlugin (DelegatePathExportImport)
 
    - [X] SearchPrincipalsPlugin (DelegatePathExportImport)
 
-   - [_] DynamicGroupsPlugin (use folderish support, w/ handler for
+   - [X] DynamicGroupsPlugin (use folderish support, w/ handler for
          DynamicGroupDefinition?  or use a single XML file?)
 
  o Review BasePlugin to ensure we haven't left anything out.
@@ -86,6 +86,7 @@ class SimpleXMLExportImport(Implicit):
       '_updateFromDOM' -- a method taking the root node of the DOM.
     """
     implements(IFilesystemExporter, IFilesystemImporter)
+    encoding = None
 
     def __init__(self, context):
         self.context = context
@@ -110,6 +111,8 @@ class SimpleXMLExportImport(Implicit):
     def import_(self, import_context, subdir, root=False):
         """ See IFilesystemImporter
         """
+        self.encoding = import_context.getEncoding()
+
         if import_context.shouldPurge():
             self._purgeContext()
 
@@ -122,14 +125,17 @@ class SimpleXMLExportImport(Implicit):
             root = dom.firstChild
             assert root.tagName == self._ROOT_TAGNAME
 
-            title = root.attributes.get('title')
-
-            if title is not None:
-                title = title.value
-
-            self.context.title = title
-
+            self.context.title = self._getNodeAttr(root, 'title', None)
             self._updateFromDOM(root)
+
+    def _getNodeAttr(self, node, attrname, default=None):
+        attr = node.attributes.get(attrname)
+        if attr is None:
+            return default
+        value = attr.value
+        if isinstance(value, unicode) and self.encoding is not None:
+            value = value.encode(self.encoding)
+        return value
 
 class ZODBUserManagerExportImport(SimpleXMLExportImport):
     """ Adapter for dumping / loading ZODBUSerManager to an XML file.
@@ -144,9 +150,12 @@ class ZODBUserManagerExportImport(SimpleXMLExportImport):
 
     def _updateFromDOM(self, root):
         for user in root.getElementsByTagName('user'):
-            user_id = user.attributes['user_id'].value
-            login_name = user.attributes['login_name'].value
-            password_hash = user.attributes['password_hash'].value
+            user_id = self._getNodeAttr(user, 'user_id', None)
+            login_name = self._getNodeAttr(user, 'login_name', None)
+            password_hash = self._getNodeAttr(user, 'password_hash', None)
+
+            if user_id is None or login_name is None or password_hash is None:
+                raise ValueError, 'Invalid user record'
 
             self.context.addUser(user_id, login_name, 'x')
             self.context._user_passwords[user_id] = password_hash
@@ -181,14 +190,14 @@ class ZODBGroupManagerExportImport(SimpleXMLExportImport):
     def _updateFromDOM(self, root):
 
         for group in root.getElementsByTagName('group'):
-            group_id = group.attributes['group_id'].value
-            title = group.attributes['title'].value
-            description = group.attributes['description'].value
+            group_id = self._getNodeAttr(group, 'group_id', None)
+            title = self._getNodeAttr(group, 'title', None)
+            description = self._getNodeAttr(group, 'description', None)
 
             self.context.addGroup(group_id, title, description)
 
             for principal in group.getElementsByTagName('principal'):
-                principal_id = principal.attributes['principal_id'].value
+                principal_id = self._getNodeAttr(principal, 'principal_id', None)
                 self.context.addPrincipalToGroup(principal_id, group_id)
 
     def _getExportInfo(self):
@@ -227,14 +236,14 @@ class ZODBRoleManagerExportImport(SimpleXMLExportImport):
 
     def _updateFromDOM(self, root):
         for role in root.getElementsByTagName('role'):
-            role_id = role.attributes['role_id'].value
-            title = role.attributes['title'].value
-            description = role.attributes['description'].value
+            role_id = self._getNodeAttr(role, 'role_id', None)
+            title = self._getNodeAttr(role, 'title', None)
+            description = self._getNodeAttr(role, 'description', None)
 
             self.context.addRole(role_id, title, description)
 
             for principal in role.getElementsByTagName('principal'):
-                principal_id = principal.attributes['principal_id'].value
+                principal_id = self._getNodeAttr(principal, 'principal_id', None)
                 self.context.assignRoleToPrincipal(role_id, principal_id)
 
     def _getExportInfo(self):
@@ -272,18 +281,18 @@ class CookieAuthHelperExportImport(SimpleXMLExportImport):
         pass
 
     def _updateFromDOM(self, root):
-        cookie_name = root.attributes.get('cookie_name')
+        cookie_name = self._getNodeAttr(root, 'cookie_name', None)
         if cookie_name is not None:
-            self.context.cookie_name = cookie_name.value
+            self.context.cookie_name = cookie_name
         else:
             try:
                 del self.context.cookie_name
             except AttributeError:
                 pass
 
-        login_path = root.attributes.get('login_path')
+        login_path = self._getNodeAttr(root, 'login_path', None)
         if login_path is not None:
-            self.context.login_path = login_path.value
+            self.context.login_path = login_path
         else:
             try:
                 del self.context.login_path
@@ -307,13 +316,13 @@ class DomainAuthHelperExportImport(SimpleXMLExportImport):
 
     def _updateFromDOM(self, root):
         for user in root.getElementsByTagName('user'):
-            user_id = user.attributes['user_id'].value
+            user_id = self._getNodeAttr(user, 'user_id', None)
 
             for match in user.getElementsByTagName('match'):
-                username = match.attributes['username'].value
-                match_type = match.attributes['match_type'].value
-                match_string = match.attributes['match_string'].value
-                role_tokens = match.attributes['roles'].value
+                username = self._getNodeAttr(match, 'username', None)
+                match_type = self._getNodeAttr(match, 'match_type', None)
+                match_string = self._getNodeAttr(match, 'match_string', None)
+                role_tokens = self._getNodeAttr(match, 'roles', None)
                 roles = role_tokens.split(',')
 
                 self.context.manage_addMapping(user_id=user_id,
@@ -362,9 +371,9 @@ class DelegatePathExportImport(SimpleXMLExportImport):
         pass
 
     def _updateFromDOM(self, root):
-        delegate_path = root.attributes.get('delegate_path')
+        delegate_path = self._getNodeAttr(root, 'delegate_path', None)
         if delegate_path is not None:
-            self.context.delegate_path = delegate_path.value
+            self.context.delegate_path = delegate_path
         else:
             try:
                 del self.context.delegate_path
@@ -374,4 +383,45 @@ class DelegatePathExportImport(SimpleXMLExportImport):
     def _getExportInfo(self):
         return {'title': self.context.title,
                 'delegate_path': self.context.delegate_path,
+               }
+
+class DynamicGroupsPluginExportImport(SimpleXMLExportImport):
+    """ Adapter for dumping / loading DynamicGroupsPlugin to an XML file.
+    """
+    _FILENAME = 'dynamicgroups.xml'
+    _ROOT_TAGNAME = 'dynamic-groups'
+
+    def _purgeContext(self):
+        for group_id in self.context.listGroupIds():
+            self.context.removeGroup(group_id)
+
+    def _updateFromDOM(self, root):
+        for group in root.getElementsByTagName('group'):
+            group_id = self._getNodeAttr(group, 'group_id', None)
+            predicate = self._getNodeAttr(group, 'predicate', None)
+            title = self._getNodeAttr(group, 'title', None)
+            description = self._getNodeAttr(group, 'description', None)
+            active = self._getNodeAttr(group, 'active', None)
+
+            self.context.addGroup(group_id,
+                                  predicate,
+                                  title,
+                                  description,
+                                  active == 'True',
+                                 )
+    def _getExportInfo(self):
+        group_info = []
+
+        for ginfo in self.context.listGroupInfo():
+            group_id = ginfo['id']
+            info = {'group_id': group_id,
+                    'predicate': ginfo['predicate'],
+                    'title': ginfo['title'],
+                    'description': ginfo['description'],
+                    'active': ginfo['active'],
+                   }
+            group_info.append(info)
+
+        return {'title': self.context.title,
+                'groups': group_info,
                }

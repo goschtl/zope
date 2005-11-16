@@ -998,6 +998,163 @@ else:
             self.assertEqual( plugin.title, None )
             self.assertEqual( plugin.delegate_path, DELEGATE_PATH )
 
+    class DynamicGroupsPluginExportImportTests(_TestBase):
+
+        def _getTargetClass(self):
+            from Products.PluggableAuthService.plugins.exportimport \
+                import DynamicGroupsPluginExportImport
+            return DynamicGroupsPluginExportImport
+
+        def _makePlugin(self, id, *args, **kw):
+            from Products.PluggableAuthService.plugins.DynamicGroupsPlugin \
+                import DynamicGroupsPlugin
+
+            return DynamicGroupsPlugin(id, *args, **kw)
+
+        def test_listExportableItems(self):
+            plugin = self._makePlugin('lEI').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+            plugin.addGroup('group_id', 'python:1', 'Group Title' )
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+
+        def test__getExportInfo_empty(self):
+            plugin = self._makePlugin('empty', None).__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], None)
+            self.assertEqual(len(info['groups']), 0)
+
+        def test_export_empty(self):
+            plugin = self._makePlugin('empty', None).__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual( len( context._wrote ), 1 )
+            filename, text, content_type = context._wrote[ 0 ]
+            self.assertEqual( filename, 'plugins/empty.xml' )
+            self._compareDOM( text, _EMPTY_DYNAMIC_GROUPS )
+            self.assertEqual( content_type, 'text/xml' )
+
+        def test__getExportInfo_with_groups(self):
+
+            plugin = self._makePlugin('with_groups').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for g in _DYNAMIC_GROUP_INFO:
+                plugin.addGroup(g['group_id'],
+                                g['predicate'],
+                                g['title'],
+                                g['description'],
+                                g['active'],
+                               )
+
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], 'Plugin Title')
+            self.assertEqual(len(info['groups']), len(_DYNAMIC_GROUP_INFO))
+
+            for x, y in zip(info['groups'], _DYNAMIC_GROUP_INFO):
+                self.assertEqual(x, y)
+
+        def test_export_with_groups(self):
+
+            plugin = self._makePlugin('with_groups').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for g in _DYNAMIC_GROUP_INFO:
+                plugin.addGroup(g['group_id'],
+                                g['predicate'],
+                                g['title'],
+                                g['description'],
+                                g['active'],
+                               )
+
+            adapter = self._makeOne(plugin)
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual( len(context._wrote), 1)
+            filename, text, content_type = context._wrote[ 0 ]
+            self.assertEqual(filename, 'plugins/with_groups.xml')
+            self._compareDOM(text, _FILLED_DYNAMIC_GROUPS)
+            self.assertEqual(content_type, 'text/xml')
+
+        def test_import_empty(self):
+            plugin = self._makePlugin('empty', None).__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin, encoding='ascii')
+            context._files['plugins/empty.xml'] = _FILLED_DYNAMIC_GROUPS
+            self.assertEqual(plugin.title, None)
+
+            adapter.import_(context, 'plugins', False)
+
+            found = plugin.listGroupInfo()
+            self.assertEqual(len(found), len(_DYNAMIC_GROUP_INFO))
+            self.assertEqual(plugin.title, 'Plugin Title')
+
+            for finfo, ginfo in zip(found, _DYNAMIC_GROUP_INFO):
+                self.assertEqual(finfo['id'], ginfo['group_id'])
+                self.assertEqual(finfo['predicate'], ginfo['predicate'])
+                self.assertEqual(finfo['title'], ginfo['title'])
+                self.assertEqual(finfo['description'], ginfo['description'])
+                self.assertEqual(finfo['active'], ginfo['active'])
+
+        def test_import_without_purge_leaves_existing_users(self):
+
+            plugin = self._makePlugin('with_groups').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for g in _DYNAMIC_GROUP_INFO:
+                plugin.addGroup(g['group_id'],
+                                g['predicate'],
+                                g['title'],
+                                g['description'],
+                                g['active'],
+                               )
+
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin, purge=False)
+            context._files['plugins/with_groups.xml'] = _EMPTY_DYNAMIC_GROUPS
+
+            self.assertEqual(len(plugin.listGroupIds()),
+                             len(_DYNAMIC_GROUP_INFO))
+            adapter.import_(context, 'plugins', False)
+            self.assertEqual(len(plugin.listGroupIds()),
+                             len(_DYNAMIC_GROUP_INFO))
+            self.assertEqual(plugin.title, None)
+
+        def test_import_with_purge_wipes_existing_users(self):
+
+            plugin = self._makePlugin('with_groups').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for g in _DYNAMIC_GROUP_INFO:
+                plugin.addGroup(g['group_id'],
+                                g['predicate'],
+                                g['title'],
+                                g['description'],
+                                g['active'],
+                               )
+
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin, purge=True)
+            context._files['plugins/with_groups.xml'] = _EMPTY_DYNAMIC_GROUPS
+
+            self.assertEqual(len(plugin.listGroupIds()),
+                             len(_DYNAMIC_GROUP_INFO))
+            adapter.import_(context, 'plugins', False)
+            self.assertEqual(len(plugin.listGroupIds()), 0)
+            self.assertEqual(plugin.title, None)
+
     def test_suite():
         suite = unittest.TestSuite((
             unittest.makeSuite(ZODBUserManagerExportImportTests),
@@ -1007,6 +1164,7 @@ else:
             unittest.makeSuite(DomainAuthHelperExportImportTests),
             unittest.makeSuite(TitleOnlyExportImportTests),
             unittest.makeSuite(DelegatePathExportImportTests),
+            unittest.makeSuite(DynamicGroupsPluginExportImportTests),
                         ))
         return suite
 
@@ -1145,6 +1303,46 @@ _DELEGATE_PATH_TEMPLATE_NO_TITLE = """\
 _DELEGATE_PATH_TEMPLATE = """\
 <?xml version="1.0" ?>
 <delegating-plugin title="%s" delegate_path="%s" />
+"""
+
+_DYNAMIC_GROUP_INFO = ({'group_id': 'group_1',
+                        'title': 'Group 1',
+                        'predicate': 'python:1',
+                        'description': 'First Group',
+                        'active': True,
+                       },
+                       {'group_id': 'group_2',
+                        'title': 'Group 2',
+                        'predicate': 'python:0',
+                        'description': 'Second Group',
+                        'active': False,
+                       },
+                      )
+
+_EMPTY_DYNAMIC_GROUPS = """\
+<?xml version="1.0" ?>
+<dynamic-groups>
+</dynamic-groups>
+"""
+
+_FILLED_DYNAMIC_GROUPS = """\
+<?xml version="1.0" ?>
+<dynamic-groups title="Plugin Title">
+<group
+    group_id="group_1"
+    predicate="python:1"
+    title="Group 1"
+    description="First Group"
+    active="True"
+    />
+<group
+    group_id="group_2"
+    predicate="python:0"
+    title="Group 2"
+    description="Second Group"
+    active="False"
+    />
+</dynamic-groups>
 """
 
 if __name__ == '__main__':
