@@ -63,6 +63,15 @@ registerMultiPlugin(DGP.DynamicGroupsPlugin.meta_type)
 registerMultiPlugin(CPC.ChallengeProtocolChooser.meta_type)
 registerMultiPlugin(RTS.RequestTypeSniffer.meta_type)
 
+try:
+    from Products.GenericSetup import profile_registry
+    from Products.GenericSetup import BASE
+    from Products.GenericSetup.tool import SetupTool
+except ImportError:
+    profile_registry = None
+else:
+    registerMultiPlugin(SetupTool.meta_type)
+
 # monkey patch Zope to cause zmi logout to be PAS-aware
 from App.Management import Navigation
 from interfaces.authservice import IPluggableAuthService
@@ -247,3 +256,11 @@ def initialize(context):
                          , visibility=None
                          , icon='plugins/www/DelegatingMultiPlugin.png'
                          )
+
+    if profile_registry is not None:
+        profile_registry.registerProfile('simple',
+                                         'Simple PAS Content Profile',
+                                         'Content for a simple PAS.',
+                                         'profiles/simple',
+                                         'PluggableAuthService',
+                                         BASE)
