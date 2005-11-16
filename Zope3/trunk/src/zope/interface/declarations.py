@@ -29,6 +29,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import sys
+import types
 import weakref
 from zope.interface.interface import InterfaceClass, Specification
 from ro import mergeOrderings, ro
@@ -264,7 +265,7 @@ class Implements(Declaration):
 
     # interfaces actually declared for a class
     declared = ()
-    
+
     __name__ = '?'
 
     def __repr__(self):
@@ -293,8 +294,20 @@ def implementedByFallback(cls):
         ...   implements(I3)
         >>> [i.getName() for i in implementedBy(C2)]
         ['I3', 'I2']
-      """
 
+      Really, any object should be able to receive a successful answer, even
+      an instance:
+
+        >>> class Callable(object):
+        ...     def __call__(self):
+        ...         return self
+
+        >>> implementedBy(Callable())
+        <implementedBy zope.interface.declarations.?>
+
+      Note that the name of the spec ends with a '?', because the `Callable`
+      instance does not have a `__name__` attribute.
+      """
     # This also manages storage of implementation specifications
 
     try:
@@ -356,7 +369,7 @@ def implementedByFallback(cls):
         spec.inherit = cls
 
     spec.__name__ = (getattr(cls, '__module__', '?') or '?') + \
-                    '.' + cls.__name__
+                    '.' + (getattr(cls, '__name__', '?') or '?')
 
     try:
         cls.__implemented__ = spec
