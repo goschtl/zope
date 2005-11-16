@@ -44,9 +44,9 @@ TODO:
 
    - [/] ScriptablePlugin (stock GenericSetup folderish support?)
 
-   - [_] DelegatingMultiPlugin (DelegatePathExportImport)
+   - [X] DelegatingMultiPlugin (DelegatePathExportImport)
 
-   - [_] SearchPrincipalsPlugin (DelegatePathExportImport)
+   - [X] SearchPrincipalsPlugin (DelegatePathExportImport)
 
    - [_] DynamicGroupsPlugin (use folderish support, w/ handler for
          DynamicGroupDefinition?  or use a single XML file?)
@@ -350,4 +350,28 @@ class TitleOnlyExportImport(SimpleXMLExportImport):
 
     def _getExportInfo(self):
         return {'title': self.context.title,
+               }
+
+class DelegatePathExportImport(SimpleXMLExportImport):
+    """ Adapter for dumping / loading plugins with 'delegate_path' via XML.
+    """
+    _FILENAME = 'delegatepath.xml'
+    _ROOT_TAGNAME = 'delegating-plugin'
+
+    def _purgeContext(self):
+        pass
+
+    def _updateFromDOM(self, root):
+        delegate_path = root.attributes.get('delegate_path')
+        if delegate_path is not None:
+            self.context.delegate_path = delegate_path.value
+        else:
+            try:
+                del self.context.delegate_path
+            except AttributeError:
+                pass
+
+    def _getExportInfo(self):
+        return {'title': self.context.title,
+                'delegate_path': self.context.delegate_path,
                }

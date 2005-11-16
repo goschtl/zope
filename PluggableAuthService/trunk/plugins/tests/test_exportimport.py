@@ -884,6 +884,120 @@ else:
 
             self.assertEqual( plugin.title, None )
 
+    class DelegatePathExportImportTests(_TestBase):
+
+        def _getTargetClass(self):
+            from Products.PluggableAuthService.plugins.exportimport \
+                import DelegatePathExportImport
+            return DelegatePathExportImport
+
+        def _makePlugin(self, id, *args, **kw):
+            from OFS.SimpleItem import SimpleItem
+
+            class _Plugin(SimpleItem):
+                title = None
+                delegate_path = ''
+
+                def __init__(self, id, title=None):
+                    self._setId(id)
+                    if title is not None:
+                        self.title = title
+
+            return _Plugin(id, *args, **kw)
+
+        def test_listExportableItems(self):
+            plugin = self._makePlugin('lEI').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+            plugin.delegate_path = 'path/to/delegate'
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+
+        def test__getExportInfo_default(self):
+            plugin = self._makePlugin('default').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], None)
+            self.assertEqual(info['delegate_path'], '')
+
+        def test_export_default(self):
+            plugin = self._makePlugin('default').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual(len(context._wrote), 1)
+            filename, text, content_type = context._wrote[0]
+            self.assertEqual(filename, 'plugins/default.xml' )
+            self._compareDOM(text, _DELEGATE_PATH_TEMPLATE_NO_TITLE % "")
+            self.assertEqual( content_type, 'text/xml' )
+
+        def test__getExportInfo_explicitly_set(self):
+            TITLE = 'Plugin Title'
+            DELEGATE_PATH = 'path/to/delegate'
+            plugin = self._makePlugin('explicit').__of__(self.root)
+            plugin.title = TITLE
+            plugin.delegate_path = DELEGATE_PATH
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], TITLE)
+            self.assertEqual(info['delegate_path'], DELEGATE_PATH)
+
+        def test_export_explicitly_set(self):
+            TITLE = 'Plugin Title'
+            DELEGATE_PATH = 'path/to/delegate'
+            plugin = self._makePlugin('explicit').__of__(self.root)
+            plugin.title = TITLE
+            plugin.delegate_path = DELEGATE_PATH
+            adapter = self._makeOne(plugin)
+
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual(len(context._wrote), 1)
+            filename, text, content_type = context._wrote[0]
+            self.assertEqual(filename, 'plugins/explicit.xml' )
+            self._compareDOM(text,
+                             _DELEGATE_PATH_TEMPLATE % (TITLE,
+                                                        DELEGATE_PATH,
+                                                       ))
+            self.assertEqual( content_type, 'text/xml' )
+
+        def test_import_with_title(self):
+            TITLE = 'Plugin Title'
+            DELEGATE_PATH = 'path/to/delegate'
+            plugin = self._makePlugin('with_title').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin)
+            context._files['plugins/with_title.xml'
+                          ] = _DELEGATE_PATH_TEMPLATE % (TITLE,
+                                                         DELEGATE_PATH,
+                                                        )
+            adapter.import_(context, 'plugins', False)
+
+            self.assertEqual( plugin.title, TITLE )
+            self.assertEqual( plugin.delegate_path, DELEGATE_PATH )
+
+        def test_import_no_title(self):
+            TITLE = 'Plugin Title'
+            DELEGATE_PATH = 'path/to/delegate'
+            plugin = self._makePlugin('no_title').__of__(self.root)
+            plugin.title = TITLE
+            plugin.delegate_path = DELEGATE_PATH
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin)
+            context._files['plugins/no_title.xml'
+                          ] = _DELEGATE_PATH_TEMPLATE_NO_TITLE % DELEGATE_PATH
+            adapter.import_(context, 'plugins', False)
+
+            self.assertEqual( plugin.title, None )
+            self.assertEqual( plugin.delegate_path, DELEGATE_PATH )
+
     def test_suite():
         suite = unittest.TestSuite((
             unittest.makeSuite(ZODBUserManagerExportImportTests),
@@ -892,6 +1006,7 @@ else:
             unittest.makeSuite(CookieAuthHelperExportImportTests),
             unittest.makeSuite(DomainAuthHelperExportImportTests),
             unittest.makeSuite(TitleOnlyExportImportTests),
+            unittest.makeSuite(DelegatePathExportImportTests),
                         ))
         return suite
 
@@ -1020,6 +1135,16 @@ _TITLE_ONLY_TEMPLATE_NO_TITLE = """\
 _TITLE_ONLY_TEMPLATE = """\
 <?xml version="1.0" ?>
 <plug-in title="%s" />
+"""
+
+_DELEGATE_PATH_TEMPLATE_NO_TITLE = """\
+<?xml version="1.0" ?>
+<delegating-plugin delegate_path="%s" />
+"""
+
+_DELEGATE_PATH_TEMPLATE = """\
+<?xml version="1.0" ?>
+<delegating-plugin title="%s" delegate_path="%s" />
 """
 
 if __name__ == '__main__':
