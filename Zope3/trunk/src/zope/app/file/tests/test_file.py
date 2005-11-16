@@ -20,7 +20,7 @@ from zope.testing.doctestunit import DocTestSuite
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.file.file'),        
+        DocTestSuite('zope.app.file.file'),
         ))
 
 if __name__ == '__main__':
