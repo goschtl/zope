@@ -87,6 +87,7 @@ class IPluggableAuthentication(IAuthentication, IContainer):
         If id is not present, raise ``KeyError``.
         """
 
+IPluggableAuthenticationService = IPluggableAuthentication
 
 class ILoginPasswordPrincipalSource(IPrincipalSource):
     """A principal source which can authenticate a user given a
