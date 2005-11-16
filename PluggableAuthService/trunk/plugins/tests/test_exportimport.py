@@ -556,12 +556,202 @@ else:
                                                      ))
             self.assertEqual( content_type, 'text/xml' )
 
+    class DomainAuthHelperExportImportTests(_TestBase):
+
+        def _getTargetClass(self):
+            from Products.PluggableAuthService.plugins.exportimport \
+                import DomainAuthHelperExportImport
+            return DomainAuthHelperExportImport
+
+        def _makePlugin(self, id, *args, **kw):
+            from Products.PluggableAuthService.plugins.DomainAuthHelper \
+                import DomainAuthHelper
+            return DomainAuthHelper(id, *args, **kw)
+
+        def test_listExportableItems(self):
+            plugin = self._makePlugin('lEI').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+            plugin.cookie_name = 'COOKIE_NAME'
+            plugin.login_path = 'LOGIN_PATH'
+            plugin.manage_addMapping(user_id='user_id',
+                                     match_type='equals',
+                                     match_string='host.example.com',
+                                     roles=['foo', 'bar'],
+                                    )
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+
+        def test__getExportInfo_empty(self):
+            plugin = self._makePlugin('empty', None).__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], None)
+            self.assertEqual(len(info['map']), 0)
+
+        def test_export_empty(self):
+            plugin = self._makePlugin('empty', None).__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual( len( context._wrote ), 1 )
+            filename, text, content_type = context._wrote[ 0 ]
+            self.assertEqual( filename, 'plugins/empty.xml' )
+            self._compareDOM( text, _EMPTY_DOMAIN_AUTH )
+            self.assertEqual( content_type, 'text/xml' )
+
+        def test__getExportInfo_with_map(self):
+            TITLE = 'With Map'
+            USER_ID = 'some_user_id'
+            DOMAIN = 'host.example.com'
+            ROLES = ['foo', 'bar']
+            plugin = self._makePlugin('with_map', TITLE).__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            plugin.manage_addMapping(user_id=USER_ID,
+                                     match_type='equals',
+                                     match_string=DOMAIN,
+                                     roles=ROLES,
+                                    )
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], TITLE)
+            user_map = info['map']
+            self.assertEqual(len(user_map), 1)
+            self.failUnless(USER_ID in user_map)
+            match_list = user_map[USER_ID]
+            self.assertEqual(len(match_list), 1)
+            match = match_list[0]
+            self.assertEqual(match['username'], USER_ID)
+            self.assertEqual(match['match_type'], 'equals')
+            self.assertEqual(match['match_string'], DOMAIN)
+            self.assertEqual(match['roles'], ','.join(ROLES))
+
+        def test_export_with_map(self):
+            TITLE = 'With Map'
+            USER_ID = 'some_user_id'
+            DOMAIN = 'host.example.com'
+            ROLES = ['foo', 'bar']
+            plugin = self._makePlugin('with_map', TITLE).__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            plugin.manage_addMapping(user_id=USER_ID,
+                                     match_type='equals',
+                                     match_string=DOMAIN,
+                                     roles=ROLES,
+                                    )
+
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual(len(context._wrote), 1)
+            filename, text, content_type = context._wrote[0]
+            self.assertEqual(filename, 'plugins/with_map.xml' )
+            self._compareDOM(text,
+                             _FILLED_DOMAIN_AUTH %
+                              (TITLE,
+                               USER_ID,
+                               DOMAIN,
+                               'equals',
+                               ','.join(ROLES),
+                               USER_ID,
+                              ))
+            self.assertEqual( content_type, 'text/xml' )
+
+        def test_import_empty(self):
+            TITLE = 'With Map'
+            USER_ID = 'some_user_id'
+            DOMAIN = 'host.example.com'
+            ROLES = ['foo', 'bar']
+            plugin = self._makePlugin('empty').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin)
+            context._files['plugins/empty.xml'
+                          ] = _FILLED_DOMAIN_AUTH % (TITLE,
+                                                     USER_ID,
+                                                     DOMAIN,
+                                                     'equals',
+                                                     ','.join(ROLES),
+                                                     USER_ID,
+                                                    )
+            self.assertEqual(plugin.title, '')
+
+            adapter.import_(context, 'plugins', False)
+
+            self.assertEqual(len(plugin._domain_map), 1)
+            self.assertEqual(plugin.title, TITLE)
+
+            username, match_list = plugin._domain_map.items()[0]
+            self.assertEqual(username, USER_ID)
+            self.assertEqual(len(match_list), 1)
+            match = match_list[0]
+            self.assertEqual(match['username'], USER_ID)
+            self.assertEqual(match['match_string'], DOMAIN)
+            self.assertEqual(match['match_real'], DOMAIN)
+            self.assertEqual(match['match_type'], 'equals')
+            self.assertEqual(len(match['roles']), len(ROLES))
+            for role in ROLES:
+                self.failUnless(role in match['roles'])
+
+        def test_import_without_purge_leaves_existing_users(self):
+            TITLE = 'With Map'
+            USER_ID = 'some_user_id'
+            DOMAIN = 'host.example.com'
+            ROLES = ['foo', 'bar']
+            plugin = self._makePlugin('with_map', TITLE).__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            plugin.manage_addMapping(user_id=USER_ID,
+                                     match_type='equals',
+                                     match_string=DOMAIN,
+                                     roles=ROLES,
+                                    )
+
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin, purge=False)
+            context._files['plugins/with_map.xml'] = _EMPTY_DOMAIN_AUTH
+
+            self.assertEqual(len(plugin._domain_map), 1)
+            adapter.import_(context, 'plugins', False)
+            self.assertEqual(len(plugin._domain_map), 1)
+            self.assertEqual(plugin.title, None)
+
+        def test_import_with_purge_wipes_existing_users(self):
+            TITLE = 'With Map'
+            USER_ID = 'some_user_id'
+            DOMAIN = 'host.example.com'
+            ROLES = ['foo', 'bar']
+            plugin = self._makePlugin('with_map', TITLE).__of__(self.root)
+
+            adapter = self._makeOne(plugin)
+
+            plugin.manage_addMapping(user_id=USER_ID,
+                                     match_type='equals',
+                                     match_string=DOMAIN,
+                                     roles=ROLES,
+                                    )
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin, purge=True)
+            context._files['plugins/with_map.xml'] = _EMPTY_DOMAIN_AUTH
+
+            self.assertEqual(len(plugin._domain_map), 1)
+            adapter.import_(context, 'plugins', False)
+            self.assertEqual(len(plugin._domain_map), 0)
+            self.assertEqual(plugin.title, None)
+
     def test_suite():
         suite = unittest.TestSuite((
             unittest.makeSuite(ZODBUserManagerExportImportTests),
             unittest.makeSuite(ZODBGroupManagerExportImportTests),
             unittest.makeSuite(ZODBRoleManagerExportImportTests),
             unittest.makeSuite(CookieAuthHelperExportImportTests),
+            unittest.makeSuite(DomainAuthHelperExportImportTests),
                         ))
         return suite
 
@@ -665,6 +855,21 @@ _COOKIE_AUTH_TEMPLATE_NO_TITLE = """\
 _COOKIE_AUTH_TEMPLATE = """\
 <?xml version="1.0" ?>
 <cookie-auth title="%s" cookie_name="%s" login_path="%s" />
+"""
+
+_EMPTY_DOMAIN_AUTH = """\
+<?xml version="1.0" ?>
+<domain-auth>
+</domain-auth>
+"""
+
+_FILLED_DOMAIN_AUTH = """\
+<?xml version="1.0" ?>
+<domain-auth title="%s">
+ <user user_id="%s">
+  <match match_string="%s" match_type="%s" roles="%s" username="%s"/>
+ </user>
+</domain-auth>
 """
 
 if __name__ == '__main__':

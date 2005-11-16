@@ -256,3 +256,43 @@ class CookieAuthHelperExportImport(SimpleXMLExportImport):
                 'cookie_name': self.context.cookie_name,
                 'login_path': self.context.login_path,
                }
+
+class DomainAuthHelperExportImport(SimpleXMLExportImport):
+    """ Adapter for dumping / loading DomainAuthHelper to an XML file.
+    """
+    _FILENAME = 'domainauth.xml'
+    _ROOT_TAGNAME = 'domain-auth'
+
+    def _purgeContext(self):
+        self.context.__init__(self.context.id, self.context.title)
+
+    def _updateFromDOM(self, root):
+        for user in root.getElementsByTagName('user'):
+            user_id = user.attributes['user_id'].value
+
+            for match in user.getElementsByTagName('match'):
+                username = match.attributes['username'].value
+                match_type = match.attributes['match_type'].value
+                match_string = match.attributes['match_string'].value
+                role_tokens = match.attributes['roles'].value
+                roles = role_tokens.split(',')
+
+                self.context.manage_addMapping(user_id=user_id,
+                                               match_type=match_type,
+                                               match_string=match_string,
+                                               username=username,
+                                               roles=roles,
+                                              )
+
+    def _getExportInfo(self):
+        user_map = {}
+        for k, v in self.context._domain_map.items():
+            user_map[k] = matches = []
+            for match in v:
+                match = match.copy()
+                match['roles'] = ','.join(match['roles'])
+                matches.append(match)
+
+        return {'title': self.context.title,
+                'map': user_map
+               }
