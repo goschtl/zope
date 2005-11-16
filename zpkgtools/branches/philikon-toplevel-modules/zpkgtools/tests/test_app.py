@@ -18,6 +18,7 @@ import shutil
 import sys
 import unittest
 import urllib
+import re
 
 from StringIO import StringIO
 
@@ -651,6 +652,34 @@ class BuilderApplicationTestCase(unittest.TestCase):
         finally:
             os.chdir(orig_pwd)
 
+    def test_toplevel_module_as_a_dependency(self):
+        # Test that a top-level module which is loaded as a dependency
+        # (we don't really support top-level modules as the primary
+        # collection) is properly set up.
+        config = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              "input", "module.conf")
+        package_map = self.createPackageMap()
+        app = self.createApplication(
+            ["-C", config, "-t", "-m", package_map])
+        app.run()
+
+        # test that the module file is copied to the right location
+        modules_dir = os.path.join(app.destination, "Modules")
+        self.assert_(os.path.exists(modules_dir))
+        module_py = os.path.join(app.destination, "Modules", 'module.py')
+        self.assert_(os.path.exists(module_py))
+        orig_module_py = os.path.join(os.path.dirname(__file__), "input",
+                                      "module.py")
+        self.assertEqual(file(module_py).read(), file(orig_module_py).read())
+
+        # test that MODULE.cfg exists and points to the module file
+        depdir = os.path.join(app.destination, "Dependencies",
+                              "module-collection-1-0.0.0")
+        self.assert_(os.path.exists(depdir))
+        module_cfg = os.path.join(depdir, "MODULE.cfg")
+        self.assert_(os.path.exists(module_cfg))
+        self.assert_(re.match(r"module(\s+)module.py", file(module_cfg).read()))
+        shutil.rmtree(app.destination)
 
 class DelayedCleanupBuilderApplication(app.BuilderApplication):
 
