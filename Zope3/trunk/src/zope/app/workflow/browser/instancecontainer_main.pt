@@ -1,5 +1,4 @@
-<html metal:use-macro="context/@@standard_macros/page"
-    i18n:domain="zope">
+<html metal:use-macro="context/@@standard_macros/page">
 <body>
 <div metal:fill-slot="body">
 

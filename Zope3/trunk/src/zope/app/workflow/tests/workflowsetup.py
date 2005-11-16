@@ -15,23 +15,44 @@
 
 $Id$
 """
+from zope.interface import implements
+from zope.component.interfaces import IUtilityService
+
 from zope.app import zapi
-from zope.app.component.testing import PlacefulSetup
-from zope.app.testing import setup
+from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.security.interfaces import IAuthenticationService
+from zope.app.security.principalregistry import principalRegistry
+from zope.app.servicenames import Authentication, Utilities
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.utility import LocalUtilityService
+from zope.app.tests import setup
 
 
 class WorkflowSetup(PlacefulSetup):
 
     def setUp(self):
-        self.root_sm = zapi.getSiteManager()
+        #getGlobalServices has been moved 
+        #self.root_sm = zapi.getGlobalServices()
+        self.root_sm = zapi.getGlobalSiteManager()
 
         self.sm = PlacefulSetup.setUp(self, site=True)
+        setup.addService(self.sm, Utilities, LocalUtilityService())
 
         self.default = zapi.traverse(self.sm, "default")
+        #moved to registrationManager
+        #self.cm = self.default.getRegistrationManager()
         self.cm = self.default.registrationManager
 
         self.sm1 = self.makeSite('folder1')
+        setup.addService(self.sm1, Utilities, LocalUtilityService())
 
         self.default1 = zapi.traverse(self.sm1, "default")
+        #moved to registrationManager
+        #self.cm1 = self.default1.getRegistrationManager()
         self.cm1 = self.default1.registrationManager
+
+
+    def setupAuthService(self):
+        self.root_sm.defineService(Authentication, IAuthenticationService)
+        self.root_sm.provideService(Authentication, principalRegistry)
+        return zapi.getService(Authentication, self.rootFolder)

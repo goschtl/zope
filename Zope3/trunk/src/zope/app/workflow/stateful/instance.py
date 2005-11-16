@@ -18,10 +18,8 @@ $Id$
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
-from zope.event import notify
-
 from zope.app import zapi
-from zope.app.module import resolve
+from zope.event import notify
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.stateful.interfaces import AUTOMATIC
 from zope.app.workflow.stateful.interfaces import IAfterTransitionEvent
@@ -181,7 +179,6 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         if schema:
             # create relevant-data
             self._data = RelevantData(schema, clean_pd.schemaPermissions)
-            self._data.__parent__ = self
         else:
             self._data = None
         # setup permission on data
@@ -276,8 +273,10 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         if not script:
             return True
         if isinstance(script, (str, unicode)):
-            # TODO: not tested!
-            script = resolve(script)
+            #removed getServices in exchange for getSiteManager
+            #sm = zapi.getServices(self)
+            sm = zapi.getSiteManager(self)
+            script = sm.resolve(script)
         return script(contexts)
 
     def _outgoingTransitions(self, clean_pd):
