@@ -1,5 +1,4 @@
-<html metal:use-macro="context/@@standard_macros/view"
-    i18n:domain="zope">
+<html metal:use-macro="context/@@standard_macros/view">
 <body>
 <div metal:fill-slot="body">
 
@@ -7,7 +6,7 @@
   <p tal:define="success request/success | nothing"
      tal:condition="success"
      i18n:translate="">
-    Import was successful!
+    Import was successfull!
   </p>
 
   <p i18n:translate="">Import / Export Process Definitions:</p>
