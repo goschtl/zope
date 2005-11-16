@@ -26,6 +26,11 @@ def tuplize(value):
     return (value,)
 
 try:
+    from zope.interface import Interface
+except ImportError:
+    from Interface import Interface
+
+try:
     from zope.interface import providedBy
 except ImportError:
     def providedBy(obj):
