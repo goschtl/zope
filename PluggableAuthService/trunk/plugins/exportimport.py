@@ -297,11 +297,11 @@ class DomainAuthHelperExportImport(SimpleXMLExportImport):
                 'map': user_map
                }
 
-class HTTPBasicAuthHelperExportImport(SimpleXMLExportImport):
-    """ Adapter for dumping / loading HTTPBasicAuthHelper to an XML file.
+class TitleOnlyExportImport(SimpleXMLExportImport):
+    """ Adapter for dumping / loading title-only plugins to an XML file.
     """
-    _FILENAME = 'basicauth.xml'
-    _ROOT_TAGNAME = 'basic-auth'
+    _FILENAME = 'titleonly.xml'
+    _ROOT_TAGNAME = 'plug-in'
 
     def _purgeContext(self):
         pass

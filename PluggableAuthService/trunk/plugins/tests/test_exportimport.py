@@ -789,17 +789,25 @@ else:
             self.assertEqual(len(plugin._domain_map), 0)
             self.assertEqual(plugin.title, None)
 
-    class HTTPBasicAuthHelperExportImportTests(_TestBase):
+    class TitleOnlyExportImportTests(_TestBase):
 
         def _getTargetClass(self):
             from Products.PluggableAuthService.plugins.exportimport \
-                import HTTPBasicAuthHelperExportImport
-            return HTTPBasicAuthHelperExportImport
+                import TitleOnlyExportImport
+            return TitleOnlyExportImport
 
         def _makePlugin(self, id, *args, **kw):
-            from Products.PluggableAuthService.plugins.HTTPBasicAuthHelper \
-                import HTTPBasicAuthHelper
-            return HTTPBasicAuthHelper(id, *args, **kw)
+            from OFS.SimpleItem import SimpleItem
+
+            class _Plugin(SimpleItem):
+                title = None
+
+                def __init__(self, id, title=None):
+                    self._setId(id)
+                    if title is not None:
+                        self.title = title
+
+            return _Plugin(id, *args, **kw)
 
         def test_listExportableItems(self):
             plugin = self._makePlugin('lEI').__of__(self.root)
@@ -832,7 +840,7 @@ else:
             self.assertEqual( len( context._wrote ), 1 )
             filename, text, content_type = context._wrote[ 0 ]
             self.assertEqual( filename, 'plugins/no_title.xml' )
-            self._compareDOM( text, _BASIC_AUTH_TEMPLATE_NO_TITLE )
+            self._compareDOM( text, _TITLE_ONLY_TEMPLATE_NO_TITLE )
             self.assertEqual( content_type, 'text/xml' )
 
         def test_export_with_title(self):
@@ -847,7 +855,7 @@ else:
             self.assertEqual( len( context._wrote ), 1 )
             filename, text, content_type = context._wrote[ 0 ]
             self.assertEqual( filename, 'plugins/with_title.xml' )
-            self._compareDOM( text, _BASIC_AUTH_TEMPLATE % TITLE )
+            self._compareDOM( text, _TITLE_ONLY_TEMPLATE % TITLE )
             self.assertEqual( content_type, 'text/xml' )
 
         def test_import_with_title(self):
@@ -857,8 +865,7 @@ else:
 
             context = DummyImportContext(plugin)
             context._files['plugins/with_title.xml'
-                          ] = _BASIC_AUTH_TEMPLATE % (TITLE,
-                                                      )
+                          ] = _TITLE_ONLY_TEMPLATE % TITLE
             adapter.import_(context, 'plugins', False)
 
             self.assertEqual( plugin.title, TITLE )
@@ -871,7 +878,7 @@ else:
 
             context = DummyImportContext(plugin)
             context._files['plugins/no_title.xml'
-                          ] = _BASIC_AUTH_TEMPLATE_NO_TITLE
+                          ] = _TITLE_ONLY_TEMPLATE_NO_TITLE
 
             adapter.import_(context, 'plugins', False)
 
@@ -884,7 +891,7 @@ else:
             unittest.makeSuite(ZODBRoleManagerExportImportTests),
             unittest.makeSuite(CookieAuthHelperExportImportTests),
             unittest.makeSuite(DomainAuthHelperExportImportTests),
-            unittest.makeSuite(HTTPBasicAuthHelperExportImportTests),
+            unittest.makeSuite(TitleOnlyExportImportTests),
                         ))
         return suite
 
@@ -1005,14 +1012,14 @@ _FILLED_DOMAIN_AUTH = """\
 </domain-auth>
 """
 
-_BASIC_AUTH_TEMPLATE_NO_TITLE = """\
+_TITLE_ONLY_TEMPLATE_NO_TITLE = """\
 <?xml version="1.0" ?>
-<basic-auth />
+<plug-in />
 """
 
-_BASIC_AUTH_TEMPLATE = """\
+_TITLE_ONLY_TEMPLATE = """\
 <?xml version="1.0" ?>
-<basic-auth title="%s" />
+<plug-in title="%s" />
 """
 
 if __name__ == '__main__':
