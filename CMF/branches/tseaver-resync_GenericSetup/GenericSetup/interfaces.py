@@ -60,6 +60,26 @@ class ISetupContext( Interface ):
           general annotation.
         """
 
+    def note(component, message):
+
+        """ Record a message about the state of the operation.
+
+        o 'component' is a string identifying the subcomponent recording
+          the message.
+
+        o 'message' is the message text.
+        """
+
+    def listNotes():
+        """ Return notes recorded by this context.
+        
+        o Result a sequence of (component, message) tuples
+        """
+
+    def clearNotes():
+        """ Clear all notes recorded by this context.
+        """
+
 class IImportContext( ISetupContext ):
 
     def readDataFile( filename, subdir=None ):

@@ -180,6 +180,7 @@ class DummyExportContext:
         self._site = site
         self._tool = tool
         self._wrote = []
+        self._notes = []
 
     def getSite( self ):
         return self._site
@@ -191,6 +192,10 @@ class DummyExportContext:
         if subdir is not None:
             filename = '%s/%s' % ( subdir, filename )
         self._wrote.append( ( filename, text, content_type ) )
+
+    def note( self, component, message ):
+
+        self._notes.append( ( component, message ) )
 
 class DummyImportContext:
 

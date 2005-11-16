@@ -50,7 +50,7 @@ class BaseContext( Implicit ):
 
         self._tool = tool
         self._site = aq_parent( aq_inner( tool ) )
-        self._notes = []
+        self._messages = []
         self._encoding = encoding
 
     security.declareProtected( ManagePortal, 'getSite' )
@@ -75,11 +75,27 @@ class BaseContext( Implicit ):
         return self._encoding
 
     security.declareProtected( ManagePortal, 'notes' )
-    def note( self, category, message ):
+    def note( self, component, message ):
 
         """ See ISetupContext.
         """
-        self._notes.append( ( category, message ) )
+        import zLOG
+        zLOG.LOG('GenericSetup', zLOG.INFO, '%s: %s' % (component, message))
+        self._messages.append((component, message))
+
+    security.declareProtected( ManagePortal, 'listNotes' )
+    def listNotes(self):
+
+        """ See ISetupContext.
+        """
+        return self._messages[:]
+
+    security.declareProtected( ManagePortal, 'clearNotes' )
+    def clearNotes(self):
+
+        """ See ISetupContext.
+        """
+        self._messages[:] = []
 
 class DirectoryImportContext( BaseContext ):
 
