@@ -296,3 +296,19 @@ class DomainAuthHelperExportImport(SimpleXMLExportImport):
         return {'title': self.context.title,
                 'map': user_map
                }
+
+class HTTPBasicAuthHelperExportImport(SimpleXMLExportImport):
+    """ Adapter for dumping / loading HTTPBasicAuthHelper to an XML file.
+    """
+    _FILENAME = 'basicauth.xml'
+    _ROOT_TAGNAME = 'basic-auth'
+
+    def _purgeContext(self):
+        pass
+
+    def _updateFromDOM(self, root):
+        pass
+
+    def _getExportInfo(self):
+        return {'title': self.context.title,
+               }

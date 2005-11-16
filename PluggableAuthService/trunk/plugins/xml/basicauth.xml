@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<basic-auth xmlns:tal="http://xml.zope.org/namespaces/tal"
+            title="%s"
+            tal:define="info options/info"
+            tal:attributes="title info/title;
+                           "/>

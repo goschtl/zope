@@ -12,6 +12,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+""" Unit tests for plugin.exportimport
+
+$Id$
+"""
 
 import unittest
 
@@ -556,6 +560,46 @@ else:
                                                      ))
             self.assertEqual( content_type, 'text/xml' )
 
+        def test_import_with_title(self):
+            TITLE = 'Plugin Title'
+            COOKIE_NAME = 'COOKIE_NAME'
+            LOGIN_PATH = 'LOGIN_PATH'
+            plugin = self._makePlugin('with_title').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin)
+            context._files['plugins/with_title.xml'
+                          ] = _COOKIE_AUTH_TEMPLATE % (TITLE,
+                                                       COOKIE_NAME,
+                                                       LOGIN_PATH,
+                                                      )
+            adapter.import_(context, 'plugins', False)
+
+            self.assertEqual( plugin.title, TITLE )
+            self.assertEqual( plugin.cookie_name, COOKIE_NAME )
+            self.assertEqual( plugin.login_path, LOGIN_PATH )
+
+        def test_import_no_title(self):
+            TITLE = 'Plugin Title'
+            COOKIE_NAME = 'COOKIE_NAME'
+            LOGIN_PATH = 'LOGIN_PATH'
+            plugin = self._makePlugin('no_title').__of__(self.root)
+            plugin.title = TITLE
+            plugin.cookie_name = COOKIE_NAME
+            plugin.login_path = LOGIN_PATH
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin)
+            context._files['plugins/no_title.xml'
+                          ] = _COOKIE_AUTH_TEMPLATE_NO_TITLE % (COOKIE_NAME,
+                                                                LOGIN_PATH,
+                                                               )
+            adapter.import_(context, 'plugins', False)
+
+            self.assertEqual( plugin.title, None )
+            self.assertEqual( plugin.cookie_name, COOKIE_NAME )
+            self.assertEqual( plugin.login_path, LOGIN_PATH )
+
     class DomainAuthHelperExportImportTests(_TestBase):
 
         def _getTargetClass(self):
@@ -745,6 +789,94 @@ else:
             self.assertEqual(len(plugin._domain_map), 0)
             self.assertEqual(plugin.title, None)
 
+    class HTTPBasicAuthHelperExportImportTests(_TestBase):
+
+        def _getTargetClass(self):
+            from Products.PluggableAuthService.plugins.exportimport \
+                import HTTPBasicAuthHelperExportImport
+            return HTTPBasicAuthHelperExportImport
+
+        def _makePlugin(self, id, *args, **kw):
+            from Products.PluggableAuthService.plugins.HTTPBasicAuthHelper \
+                import HTTPBasicAuthHelper
+            return HTTPBasicAuthHelper(id, *args, **kw)
+
+        def test_listExportableItems(self):
+            plugin = self._makePlugin('lEI').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+
+        def test__getExportInfo_no_title(self):
+            plugin = self._makePlugin('simple', None).__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], None)
+
+        def test__getExportInfo_with_title(self):
+            plugin = self._makePlugin('simple', None).__of__(self.root)
+            plugin.title = 'Plugin Title'
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], 'Plugin Title')
+
+        def test_export_no_title(self):
+            plugin = self._makePlugin('no_title', None).__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual( len( context._wrote ), 1 )
+            filename, text, content_type = context._wrote[ 0 ]
+            self.assertEqual( filename, 'plugins/no_title.xml' )
+            self._compareDOM( text, _BASIC_AUTH_TEMPLATE_NO_TITLE )
+            self.assertEqual( content_type, 'text/xml' )
+
+        def test_export_with_title(self):
+            TITLE = 'Plugin Title'
+            plugin = self._makePlugin('with_title', None).__of__(self.root)
+            plugin.title = TITLE
+            adapter = self._makeOne(plugin)
+
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual( len( context._wrote ), 1 )
+            filename, text, content_type = context._wrote[ 0 ]
+            self.assertEqual( filename, 'plugins/with_title.xml' )
+            self._compareDOM( text, _BASIC_AUTH_TEMPLATE % TITLE )
+            self.assertEqual( content_type, 'text/xml' )
+
+        def test_import_with_title(self):
+            TITLE = 'Plugin Title'
+            plugin = self._makePlugin('with_title').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin)
+            context._files['plugins/with_title.xml'
+                          ] = _BASIC_AUTH_TEMPLATE % (TITLE,
+                                                      )
+            adapter.import_(context, 'plugins', False)
+
+            self.assertEqual( plugin.title, TITLE )
+
+        def test_import_no_title(self):
+            TITLE = 'Plugin Title'
+            plugin = self._makePlugin('no_title').__of__(self.root)
+            plugin.title = TITLE
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin)
+            context._files['plugins/no_title.xml'
+                          ] = _BASIC_AUTH_TEMPLATE_NO_TITLE
+
+            adapter.import_(context, 'plugins', False)
+
+            self.assertEqual( plugin.title, None )
+
     def test_suite():
         suite = unittest.TestSuite((
             unittest.makeSuite(ZODBUserManagerExportImportTests),
@@ -752,6 +884,7 @@ else:
             unittest.makeSuite(ZODBRoleManagerExportImportTests),
             unittest.makeSuite(CookieAuthHelperExportImportTests),
             unittest.makeSuite(DomainAuthHelperExportImportTests),
+            unittest.makeSuite(HTTPBasicAuthHelperExportImportTests),
                         ))
         return suite
 
@@ -870,6 +1003,16 @@ _FILLED_DOMAIN_AUTH = """\
   <match match_string="%s" match_type="%s" roles="%s" username="%s"/>
  </user>
 </domain-auth>
+"""
+
+_BASIC_AUTH_TEMPLATE_NO_TITLE = """\
+<?xml version="1.0" ?>
+<basic-auth />
+"""
+
+_BASIC_AUTH_TEMPLATE = """\
+<?xml version="1.0" ?>
+<basic-auth title="%s" />
 """
 
 if __name__ == '__main__':
