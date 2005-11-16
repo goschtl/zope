@@ -291,7 +291,7 @@ class CommandLineTestCase(unittest.TestCase):
             sys.stderr = old_stderr
 
 
-class ComponentTestCase(unittest.TestCase):
+class PackageComponentTestCase(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp(prefix="test-app-")
@@ -676,7 +676,7 @@ def isfile(path, *args):
 
 def test_suite():
     suite = unittest.makeSuite(CommandLineTestCase)
-    suite.addTest(unittest.makeSuite(ComponentTestCase))
+    suite.addTest(unittest.makeSuite(PackageComponentTestCase))
     suite.addTest(unittest.makeSuite(BuilderApplicationTestCase))
     return suite
 
