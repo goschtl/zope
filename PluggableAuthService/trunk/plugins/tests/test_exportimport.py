@@ -1,0 +1,572 @@
+##############################################################################
+#
+# Copyright (c) 2005 Zope Corporation and Contributors. All Rights
+# Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this
+# distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+
+import unittest
+
+try:
+    import Products.GenericSetup
+except ImportError:  # No GenericSetup, so no tests
+
+    print 'XXXX:  No GenericSetup!'
+    def test_suite():
+        return unittest.TestSuite()
+
+else:
+
+    from Products.GenericSetup.tests.conformance \
+            import ConformsToIFilesystemExporter
+    from Products.GenericSetup.tests.conformance \
+            import ConformsToIFilesystemImporter
+
+    from Products.GenericSetup.tests.common import SecurityRequestTest
+    from Products.GenericSetup.tests.common import DOMComparator
+    from Products.GenericSetup.tests.common import DummyExportContext
+    from Products.GenericSetup.tests.common import DummyImportContext
+
+    class _TestBase(SecurityRequestTest,
+                    DOMComparator,
+                    ConformsToIFilesystemExporter,
+                    ConformsToIFilesystemImporter,
+                    ):
+
+        def _makeOne(self, context, *args, **kw):
+            return self._getTargetClass()(context, *args, **kw)
+
+    class ZODBUserManagerExportImportTests(_TestBase):
+
+        def _getTargetClass(self):
+            from Products.PluggableAuthService.plugins.exportimport \
+                import ZODBUserManagerExportImport
+            return ZODBUserManagerExportImport
+
+        def _makePlugin(self, id='zodbusers', *args, **kw):
+            from Products.PluggableAuthService.plugins.ZODBUserManager \
+                import ZODBUserManager
+            return ZODBUserManager(id, *args, **kw)
+
+        def test_listExportableItems(self):
+            plugin = self._makePlugin('lEI').__of__(self.root)
+            adapter = self._makeOne(plugin)
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+            plugin.addUser('foo', 'bar', 'baz')
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+
+        def test__getExportInfo_empty(self):
+            plugin = self._makePlugin('empty').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], None)
+            self.assertEqual(len(info['users']), 0)
+
+        def test_export_empty(self):
+            plugin = self._makePlugin('empty').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual( len( context._wrote ), 1 )
+            filename, text, content_type = context._wrote[ 0 ]
+            self.assertEqual( filename, 'plugins/empty.xml' )
+            self._compareDOM( text, _EMPTY_ZODB_USERS )
+            self.assertEqual( content_type, 'text/xml' )
+
+        def test__getExportInfo_with_users(self):
+
+            plugin = self._makePlugin('with_users').__of__(self.root)
+            plugin.title = 'Plugin Title'
+            source_info = []
+
+            for info in _ZODB_USER_INFO:
+                info = info.copy()
+                plugin.addUser(**info)
+                hash = plugin._user_passwords[info['user_id']]
+                info['password_hash'] = hash
+                source_info.append(info)
+
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], 'Plugin Title')
+            self.assertEqual(len(info['users']), len(source_info))
+
+            for x, y in zip(info['users'], source_info):
+                self.assertEqual(x['user_id'], y['user_id'])
+                self.assertEqual(x['login_name'], y['login_name'])
+                self.assertEqual(x['password_hash'], y['password_hash'])
+
+        def test_export_with_users(self):
+
+            plugin = self._makePlugin('with_users').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            hashes = []
+            for info in _ZODB_USER_INFO:
+                plugin.addUser(**info)
+                hash = plugin._user_passwords[info['user_id']]
+                hashes.append(hash)
+
+            adapter = self._makeOne(plugin)
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual( len(context._wrote), 1)
+            filename, text, content_type = context._wrote[ 0 ]
+            self.assertEqual(filename, 'plugins/with_users.xml')
+            self._compareDOM(text, _FILLED_ZODB_USERS % tuple(hashes))
+            self.assertEqual(content_type, 'text/xml')
+
+        def test_import_empty(self):
+            HASHES = ('abcde', 'wxyz')
+            plugin = self._makePlugin('empty').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin)
+            context._files['plugins/empty.xml'] = _FILLED_ZODB_USERS % HASHES
+            self.assertEqual(plugin.title, None)
+
+            adapter.import_(context, 'plugins', False)
+
+            self.assertEqual(len(plugin._user_passwords), len(_ZODB_USER_INFO))
+            self.assertEqual(plugin.title, 'Plugin Title')
+
+            for info, hash in zip(_ZODB_USER_INFO, HASHES):
+                user_id = info['user_id']
+                self.assertEqual(plugin.getLoginForUserId(user_id),
+                                info['login_name'])
+                self.assertEqual(plugin._user_passwords[user_id], hash)
+
+        def test_import_without_purge_leaves_existing_users(self):
+
+            plugin = self._makePlugin('with_users').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for info in _ZODB_USER_INFO:
+                plugin.addUser(**info)
+
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin, purge=False)
+            context._files['plugins/with_users.xml'] = _EMPTY_ZODB_USERS
+
+            self.assertEqual(len(plugin._user_passwords), len(_ZODB_USER_INFO))
+            adapter.import_(context, 'plugins', False)
+            self.assertEqual(len(plugin._user_passwords), len(_ZODB_USER_INFO))
+            self.assertEqual(plugin.title, None)
+
+        def test_import_with_purge_wipes_existing_users(self):
+
+            plugin = self._makePlugin('with_users').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for info in _ZODB_USER_INFO:
+                plugin.addUser(**info)
+
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin, purge=True)
+            context._files['plugins/with_users.xml'] = _EMPTY_ZODB_USERS
+
+            self.assertEqual(len(plugin._user_passwords), len(_ZODB_USER_INFO))
+            adapter.import_(context, 'plugins', False)
+            self.assertEqual(len(plugin._user_passwords), 0)
+            self.assertEqual(plugin.title, None)
+
+    class ZODBGroupManagerExportImportTests(_TestBase):
+
+        def _getTargetClass(self):
+            from Products.PluggableAuthService.plugins.exportimport \
+                import ZODBGroupManagerExportImport
+            return ZODBGroupManagerExportImport
+
+        def _makePlugin(self, id, *args, **kw):
+            from Products.PluggableAuthService.plugins.ZODBGroupManager \
+                import ZODBGroupManager
+            return ZODBGroupManager(id, *args, **kw)
+
+        def test_listExportableItems(self):
+            plugin = self._makePlugin('lEI').__of__(self.root)
+            adapter = self._makeOne(plugin)
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+            plugin.addGroup('group_id', 'title', 'description')
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+
+        def test__getExportInfo_empty(self):
+            plugin = self._makePlugin('empty').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], None)
+            self.assertEqual(len(info['groups']), 0)
+
+        def test_export_empty(self):
+            plugin = self._makePlugin('empty').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual( len( context._wrote ), 1 )
+            filename, text, content_type = context._wrote[ 0 ]
+            self.assertEqual( filename, 'plugins/empty.xml' )
+            self._compareDOM( text, _EMPTY_ZODB_GROUPS )
+            self.assertEqual( content_type, 'text/xml' )
+
+        def test__getExportInfo_with_groups(self):
+
+            plugin = self._makePlugin('with_groups').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for g in _ZODB_GROUP_INFO:
+                plugin.addGroup(g['group_id'], g['title'], g['description'])
+                for principal in g['principals']:
+                    plugin.addPrincipalToGroup(principal, g['group_id'])
+
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], 'Plugin Title')
+            self.assertEqual(len(info['groups']), len(_ZODB_GROUP_INFO))
+
+            for x, y in zip(info['groups'], _ZODB_GROUP_INFO):
+                self.assertEqual(x, y)
+
+        def test_export_with_groups(self):
+
+            plugin = self._makePlugin('with_groups').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for g in _ZODB_GROUP_INFO:
+                plugin.addGroup(g['group_id'], g['title'], g['description'])
+                for principal in g['principals']:
+                    plugin.addPrincipalToGroup(principal, g['group_id'])
+
+            adapter = self._makeOne(plugin)
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual( len(context._wrote), 1)
+            filename, text, content_type = context._wrote[ 0 ]
+            self.assertEqual(filename, 'plugins/with_groups.xml')
+            self._compareDOM(text, _FILLED_ZODB_GROUPS)
+            self.assertEqual(content_type, 'text/xml')
+
+        def test_import_empty(self):
+            plugin = self._makePlugin('empty').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin)
+            context._files['plugins/empty.xml'] = _FILLED_ZODB_GROUPS
+            self.assertEqual(plugin.title, None)
+
+            adapter.import_(context, 'plugins', False)
+
+            found = plugin.listGroupInfo()
+            self.assertEqual(len(found), len(_ZODB_GROUP_INFO))
+            self.assertEqual(plugin.title, 'Plugin Title')
+
+            for finfo, ginfo in zip(found, _ZODB_GROUP_INFO):
+                self.assertEqual(finfo['id'], ginfo['group_id'])
+                self.assertEqual(finfo['title'], ginfo['title'])
+                self.assertEqual(finfo['description'], ginfo['description'])
+                for principal_id in ginfo['principals']:
+                    groups = plugin._principal_groups[principal_id]
+                    self.failUnless(ginfo['group_id'] in groups)
+
+        def test_import_without_purge_leaves_existing_users(self):
+
+            plugin = self._makePlugin('with_groups').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for g in _ZODB_GROUP_INFO:
+                plugin.addGroup(g['group_id'], g['title'], g['description'])
+                for principal in g['principals']:
+                    plugin.addPrincipalToGroup(principal, g['group_id'])
+
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin, purge=False)
+            context._files['plugins/with_groups.xml'] = _EMPTY_ZODB_GROUPS
+
+            self.assertEqual(len(plugin._groups), len(_ZODB_GROUP_INFO))
+            adapter.import_(context, 'plugins', False)
+            self.assertEqual(len(plugin._groups), len(_ZODB_GROUP_INFO))
+            self.assertEqual(plugin.title, None)
+
+        def test_import_with_purge_wipes_existing_users(self):
+
+            plugin = self._makePlugin('with_groups').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for g in _ZODB_GROUP_INFO:
+                plugin.addGroup(g['group_id'], g['title'], g['description'])
+                for principal in g['principals']:
+                    plugin.addPrincipalToGroup(principal, g['group_id'])
+
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin, purge=True)
+            context._files['plugins/with_groups.xml'] = _EMPTY_ZODB_GROUPS
+
+            self.assertEqual(len(plugin._groups), len(_ZODB_GROUP_INFO))
+            adapter.import_(context, 'plugins', False)
+            self.assertEqual(len(plugin._groups), 0)
+            self.assertEqual(plugin.title, None)
+
+    class ZODBRoleManagerExportImportTests(_TestBase):
+
+        def _getTargetClass(self):
+            from Products.PluggableAuthService.plugins.exportimport \
+                import ZODBRoleManagerExportImport
+            return ZODBRoleManagerExportImport
+
+        def _makePlugin(self, id, *args, **kw):
+            from Products.PluggableAuthService.plugins.ZODBRoleManager \
+                import ZODBRoleManager
+            return ZODBRoleManager(id, *args, **kw)
+
+        def test_listExportableItems(self):
+            plugin = self._makePlugin('lEI').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+            plugin.addRole('role_id', 'title', 'description')
+            self.assertEqual(len(adapter.listExportableItems()), 0)
+
+        def test__getExportInfo_empty(self):
+            plugin = self._makePlugin('empty').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], None)
+            self.assertEqual(len(info['roles']), 0)
+
+        def test_export_empty(self):
+            plugin = self._makePlugin('empty').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual( len( context._wrote ), 1 )
+            filename, text, content_type = context._wrote[ 0 ]
+            self.assertEqual( filename, 'plugins/empty.xml' )
+            self._compareDOM( text, _EMPTY_ZODB_ROLES )
+            self.assertEqual( content_type, 'text/xml' )
+
+        def test__getExportInfo_with_roles(self):
+
+            plugin = self._makePlugin('with_roles').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for r in _ZODB_ROLE_INFO:
+                plugin.addRole(r['role_id'], r['title'], r['description'])
+                for principal in r['principals']:
+                    plugin.assignRoleToPrincipal(r['role_id'], principal)
+
+            adapter = self._makeOne(plugin)
+
+            info = adapter._getExportInfo()
+            self.assertEqual(info['title'], 'Plugin Title')
+            self.assertEqual(len(info['roles']), len(_ZODB_ROLE_INFO))
+
+            for x, y in zip(info['roles'], _ZODB_ROLE_INFO):
+                self.assertEqual(x, y)
+
+        def test_export_with_roles(self):
+
+            plugin = self._makePlugin('with_roles').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for r in _ZODB_ROLE_INFO:
+                plugin.addRole(r['role_id'], r['title'], r['description'])
+                for principal in r['principals']:
+                    plugin.assignRoleToPrincipal(r['role_id'], principal)
+
+            adapter = self._makeOne(plugin)
+            context = DummyExportContext(plugin)
+            adapter.export(context, 'plugins', False)
+
+            self.assertEqual( len(context._wrote), 1)
+            filename, text, content_type = context._wrote[ 0 ]
+            self.assertEqual(filename, 'plugins/with_roles.xml')
+            self._compareDOM(text, _FILLED_ZODB_ROLES)
+            self.assertEqual(content_type, 'text/xml')
+
+        def test_import_empty(self):
+            plugin = self._makePlugin('empty').__of__(self.root)
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin)
+            context._files['plugins/empty.xml'] = _FILLED_ZODB_ROLES
+            self.assertEqual(plugin.title, None)
+
+            adapter.import_(context, 'plugins', False)
+
+            found = plugin.listRoleInfo()
+            self.assertEqual(len(found), len(_ZODB_ROLE_INFO))
+            self.assertEqual(plugin.title, 'Plugin Title')
+
+            for finfo, rinfo in zip(found, _ZODB_ROLE_INFO):
+                self.assertEqual(finfo['id'], rinfo['role_id'])
+                self.assertEqual(finfo['title'], rinfo['title'])
+                self.assertEqual(finfo['description'], rinfo['description'])
+                for principal_id in rinfo['principals']:
+                    roles = plugin._principal_roles[principal_id]
+                    self.failUnless(rinfo['role_id'] in roles)
+
+        def test_import_without_purge_leaves_existing_users(self):
+
+            plugin = self._makePlugin('with_roles').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for r in _ZODB_ROLE_INFO:
+                plugin.addRole(r['role_id'], r['title'], r['description'])
+                for principal in r['principals']:
+                    plugin.assignRoleToPrincipal(r['role_id'], principal)
+
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin, purge=False)
+            context._files['plugins/with_roles.xml'] = _EMPTY_ZODB_ROLES
+
+            self.assertEqual(len(plugin._roles), len(_ZODB_ROLE_INFO))
+            adapter.import_(context, 'plugins', False)
+            self.assertEqual(len(plugin._roles), len(_ZODB_ROLE_INFO))
+            self.assertEqual(plugin.title, None)
+
+        def test_import_with_purge_wipes_existing_users(self):
+
+            plugin = self._makePlugin('with_roles').__of__(self.root)
+            plugin.title = 'Plugin Title'
+
+            for r in _ZODB_ROLE_INFO:
+                plugin.addRole(r['role_id'], r['title'], r['description'])
+                for principal in r['principals']:
+                    plugin.assignRoleToPrincipal(r['role_id'], principal)
+
+            adapter = self._makeOne(plugin)
+
+            context = DummyImportContext(plugin, purge=True)
+            context._files['plugins/with_roles.xml'] = _EMPTY_ZODB_ROLES
+
+            self.assertEqual(len(plugin._roles), len(_ZODB_ROLE_INFO))
+            adapter.import_(context, 'plugins', False)
+            self.assertEqual(len(plugin._roles), 0)
+            self.assertEqual(plugin.title, None)
+
+    def test_suite():
+        suite = unittest.TestSuite((
+            unittest.makeSuite(ZODBUserManagerExportImportTests),
+            unittest.makeSuite(ZODBGroupManagerExportImportTests),
+            unittest.makeSuite(ZODBRoleManagerExportImportTests),
+                        ))
+        return suite
+
+_EMPTY_ZODB_USERS = """\
+<?xml version="1.0" ?>
+<zodb-users>
+</zodb-users>
+"""
+
+_ZODB_USER_INFO = ({'user_id': 'user_1',
+                    'login_name': 'user1@example.com',
+                    'password': 'password1',
+                   },
+                   {'user_id': 'user_2',
+                    'login_name': 'user2@example.com',
+                    'password': 'password2',
+                   },
+                  )
+
+_FILLED_ZODB_USERS = """\
+<?xml version="1.0" ?>
+<zodb-users title="Plugin Title">
+<user user_id="user_1"
+login_name="user1@example.com"
+password_hash="%s" />
+<user user_id="user_2"
+login_name="user2@example.com"
+password_hash="%s" />
+</zodb-users>
+"""
+
+_EMPTY_ZODB_GROUPS = """\
+<?xml version="1.0" ?>
+<zodb-groups>
+</zodb-groups>
+"""
+
+_ZODB_GROUP_INFO = ({'group_id': 'group_1',
+                     'title': 'Group 1',
+                     'description': 'First Group',
+                     'principals': ('principal1', 'principal2'),
+                    },
+                    {'group_id': 'group_2',
+                     'title': 'Group 2',
+                     'description': 'Second Group',
+                     'principals': ('principal1', 'principal3'),
+                    },
+                   )
+
+_FILLED_ZODB_GROUPS = """\
+<?xml version="1.0" ?>
+<zodb-groups title="Plugin Title">
+<group group_id="group_1" title="Group 1" description="First Group">
+<principal principal_id="principal1" />
+<principal principal_id="principal2" />
+</group>
+<group group_id="group_2" title="Group 2" description="Second Group">
+<principal principal_id="principal1" />
+<principal principal_id="principal3" />
+</group>
+</zodb-groups>
+"""
+
+_EMPTY_ZODB_ROLES = """\
+<?xml version="1.0" ?>
+<zodb-roles>
+</zodb-roles>
+"""
+
+_ZODB_ROLE_INFO = ({'role_id': 'role_1',
+                    'title': 'Role 1',
+                    'description': 'First Role',
+                    'principals': ('principal1', 'principal2'),
+                   },
+                   {'role_id': 'role_2',
+                    'title': 'Role 2',
+                    'description': 'Second Role',
+                    'principals': ('principal1', 'principal3'),
+                   },
+                  )
+
+_FILLED_ZODB_ROLES = """\
+<?xml version="1.0" ?>
+<zodb-roles title="Plugin Title">
+<role role_id="role_1" title="Role 1" description="First Role">
+<principal principal_id="principal1" />
+<principal principal_id="principal2" />
+</role>
+<role role_id="role_2" title="Role 2" description="Second Role">
+<principal principal_id="principal1" />
+<principal principal_id="principal3" />
+</role>
+</zodb-roles>
+"""
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')
