@@ -10,7 +10,7 @@
      >
 
     <p tal:condition="data/message"
-       tal:content="data/message" 
+       tal:content="data/message"
        i18n:translate="">Message here</p>
 
     <div class="row">
@@ -24,7 +24,7 @@
     <div class="row">
       <div class="label" i18n:translate="">Description</div>
       <div class="field">
-        <textarea name="dcdescription" rows="12" cols="45" 
+        <textarea name="dcdescription" rows="12" cols="45"
                   tal:content="data/dcdescription">Blah Blah</textarea>
       </div>
     </div>
@@ -47,9 +47,9 @@
 
     <div class="row">
       <div class="controls">
-        <input type="submit" value="Refresh" 
+        <input type="reset" value="Refresh"
             i18n:attributes="value refresh-button" />
-        <input type="submit" name="save" value="Save" 
+        <input type="submit" name="save" value="Save"
             i18n:attributes="value save-changes-button"/>
       </div>
     </div>
