@@ -26,11 +26,21 @@ from App.class_init import default__class_init__ as InitializeClass
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import manage_addPageTemplate
 
-from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
-        ILoginPasswordHostExtractionPlugin, IChallengePlugin,  \
-        ICredentialsUpdatePlugin, ICredentialsResetPlugin
+        ILoginPasswordHostExtractionPlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+        IChallengePlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+        ICredentialsUpdatePlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+        ICredentialsResetPlugin
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
+
+class IInlineAuthHelper(Interface):
+    """ Marker interface.
+    """
 
 
 manage_addInlineAuthHelperForm = PageTemplateFile(
@@ -116,6 +126,7 @@ class InlineAuthHelper(Folder, BasePlugin):
         pass
 
 classImplements( InlineAuthHelper
+               , IInlineAuthHelper
                , ILoginPasswordHostExtractionPlugin
                , IChallengePlugin
                )

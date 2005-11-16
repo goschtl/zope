@@ -25,13 +25,23 @@ from ZPublisher import xmlrpc
 
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins \
     import IRequestTypeSniffer
-
 from Products.PluggableAuthService.interfaces.request \
-    import IBrowserRequest, IWebDAVRequest, IFTPRequest, IXMLRPCRequest
+    import IBrowserRequest
+from Products.PluggableAuthService.interfaces.request \
+    import IWebDAVRequest
+from Products.PluggableAuthService.interfaces.request \
+    import IFTPRequest
+from Products.PluggableAuthService.interfaces.request \
+    import IXMLRPCRequest
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
+
+class IRequestTypeSnifferPlugin(Interface):
+    """ Marker interface.
+    """
 
 _sniffers = ()
 
@@ -82,7 +92,9 @@ class RequestTypeSniffer( BasePlugin ):
             return found
 
 classImplements(RequestTypeSniffer,
-                IRequestTypeSniffer)
+                IRequestTypeSnifferPlugin,
+                IRequestTypeSniffer,
+               )
 
 InitializeClass(RequestTypeSniffer)
 

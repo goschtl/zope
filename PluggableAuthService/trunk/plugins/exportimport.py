@@ -18,15 +18,15 @@ TODO:
 
  o Add export / import adapters for all stock plugin types:
 
-   - [X] ZODBUserManager (ZODBUserManagerExportImport)
-
-   - [X] ZODBGroupsManager (ZODBGroupManagerExportImport)
-
-   - [X] ZODBRolesManager (ZODBRoleManagerExportImport)
+   - [X] ChallengeProtocolChooser (TitleOnlyExportImport)
 
    - [X] CookieAuthHelper (CookieAuthHelperExportImport)
 
+   - [X] DelegatingMultiPlugin (DelegatePathExportImport)
+
    - [X] DomainAuthHelper (DomainAuthHelperExportImport)
+
+   - [X] DynamicGroupsPlugin (DynamicGroupsPluginExportImport)
 
    - [X] HTTPBasicAuthHelper (TitleOnlyExportImport)
 
@@ -36,20 +36,19 @@ TODO:
 
    - [X] RecursiveGroupsPlugin (TitleOnlyExportImport)
 
-   - [X] ChallengeProtocolChooser (TitleOnlyExportImport)
-
    - [X] RequestTypeSniffer (TitleOnlyExportImport)
-
-   - [X] SessionAuthHelper (TitleOnlyExportImport)
 
    - [?] ScriptablePlugin (stock GenericSetup folderish support?)
 
-   - [X] DelegatingMultiPlugin (DelegatePathExportImport)
-
    - [X] SearchPrincipalsPlugin (DelegatePathExportImport)
 
-   - [X] DynamicGroupsPlugin (use folderish support, w/ handler for
-         DynamicGroupDefinition?  or use a single XML file?)
+   - [X] SessionAuthHelper (TitleOnlyExportImport)
+
+   - [X] ZODBGroupsManager (ZODBGroupManagerExportImport)
+
+   - [X] ZODBRolesManager (ZODBRoleManagerExportImport)
+
+   - [X] ZODBUserManager (ZODBUserManagerExportImport)
 
  o Review BasePlugin to ensure we haven't left anything out.
 

@@ -23,7 +23,6 @@ from Globals import InitializeClass
 
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.interfaces.plugins \
     import IRolesPlugin
 from Products.PluggableAuthService.interfaces.plugins \
@@ -32,8 +31,13 @@ from Products.PluggableAuthService.interfaces.plugins \
     import IRoleAssignerPlugin
 
 from Products.PluggableAuthService.permissions import ManageUsers
-
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
+
+class IZODBRoleManager(Interface):
+    """ Marker interface.
+    """
 
 manage_addZODBRoleManagerForm = PageTemplateFile(
     'www/zrAdd', globals(), __name__='manage_addZODBRoleManagerForm' )
@@ -443,6 +447,7 @@ class ZODBRoleManager( BasePlugin ):
                          )
 
 classImplements( ZODBRoleManager
+               , IZODBRoleManager
                , IRolesPlugin
                , IRoleEnumerationPlugin
                , IRoleAssignerPlugin

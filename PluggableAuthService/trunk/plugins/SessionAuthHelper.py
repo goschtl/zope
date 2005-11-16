@@ -21,12 +21,19 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import default__class_init__ as InitializeClass
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
-        ILoginPasswordHostExtractionPlugin, \
-        ICredentialsUpdatePlugin, \
+        ILoginPasswordHostExtractionPlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+        ICredentialsUpdatePlugin
+from Products.PluggableAuthService.interfaces.plugins import \
         ICredentialsResetPlugin
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
+
+class ISessionAuthHelper(Interface):
+    """ Marker interface.
+    """
 
 
 manage_addSessionAuthHelperForm = PageTemplateFile(
@@ -101,6 +108,7 @@ class SessionAuthHelper(BasePlugin):
         request.SESSION.set('__ac_password', '')
 
 classImplements( SessionAuthHelper
+               , ISessionAuthHelper
                , ILoginPasswordHostExtractionPlugin
                , ICredentialsUpdatePlugin
                , ICredentialsResetPlugin

@@ -22,14 +22,19 @@ from Globals import InitializeClass
 from BTrees.OOBTree import OOBTree
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins \
     import IGroupEnumerationPlugin
 from Products.PluggableAuthService.interfaces.plugins \
     import IGroupsPlugin
 
 from Products.PluggableAuthService.permissions import ManageGroups
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
+
+class IZODBGroupManager(Interface):
+    """ Marker interface.
+    """
 
 manage_addZODBGroupManagerForm = PageTemplateFile(
     'www/zgAdd', globals(), __name__='manage_addZODBGroupManagerForm' )
@@ -443,6 +448,7 @@ class ZODBGroupManager( BasePlugin ):
                              )
 
 classImplements( ZODBGroupManager
+               , IZODBGroupManager
                , IGroupEnumerationPlugin
                , IGroupsPlugin
                )

@@ -29,10 +29,17 @@ from AccessControl.Permissions import manage_users
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 # PluggableAuthService imports
-from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
-    IAuthenticationPlugin, IRolesPlugin
+    IAuthenticationPlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+    IRolesPlugin
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
+
+class IDomainAuthHelper(Interface):
+    """ Marker interface.
+    """
 
 _MATCH_EQUALS = 'equals'
 _MATCH_ENDSWITH = 'endswith'
@@ -292,6 +299,7 @@ class DomainAuthHelper(BasePlugin):
                 return self.manage_genericmap(manage_tabs_message=msg)
 
 classImplements( DomainAuthHelper
+               , IDomainAuthHelper
                , IAuthenticationPlugin
                , IRolesPlugin
                )

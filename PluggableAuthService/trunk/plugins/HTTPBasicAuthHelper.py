@@ -21,19 +21,25 @@ from zExceptions import Unauthorized
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import default__class_init__ as InitializeClass
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import \
-        ILoginPasswordHostExtractionPlugin, \
-        IChallengePlugin,  \
+        ILoginPasswordHostExtractionPlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+        IChallengePlugin
+from Products.PluggableAuthService.interfaces.plugins import \
         ICredentialsResetPlugin
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import Interface
+from Products.PluggableAuthService.utils import classImplements
 
 
 manage_addHTTPBasicAuthHelperForm = PageTemplateFile(
     'www/hbAdd', globals(), __name__='manage_addHTTPBasicAuthHelperForm' )
 
+class IHTTPBasicAuthHelper(Interface):
+    """ Marker interface.
+    """
 
 def addHTTPBasicAuthHelper( dispatcher, id, title=None, REQUEST=None ):
 
@@ -114,6 +120,7 @@ class HTTPBasicAuthHelper( BasePlugin ):
         response.unauthorized()
 
 classImplements( HTTPBasicAuthHelper
+               , IHTTPBasicAuthHelper
                , ILoginPasswordHostExtractionPlugin
                , IChallengePlugin
                , ICredentialsResetPlugin

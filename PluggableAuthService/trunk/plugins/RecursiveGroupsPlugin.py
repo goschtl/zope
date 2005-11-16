@@ -22,13 +22,18 @@ from Globals import InitializeClass
 from BTrees.OOBTree import OOBTree
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.PropertiedUser import PropertiedUser
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins \
     import IGroupsPlugin
 
+from Products.PluggableAuthService.PropertiedUser import PropertiedUser
 from Products.PluggableAuthService.permissions import ManageGroups
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
+
+class IRecursiveGroupsPlugin(Interface):
+    """ Marker interface.
+    """
 
 manage_addRecursiveGroupsPluginForm = PageTemplateFile(
     'www/rgpAdd', globals(), __name__='manage_addRecursiveGroupsPluginForm' )
@@ -96,6 +101,9 @@ class RecursiveGroupsPlugin( BasePlugin ):
 
         return tuple( seen )
 
-classImplements( RecursiveGroupsPlugin, IGroupsPlugin )
+classImplements( RecursiveGroupsPlugin
+               , IRecursiveGroupsPlugin
+               , IGroupsPlugin
+               )
 
 InitializeClass(RecursiveGroupsPlugin)

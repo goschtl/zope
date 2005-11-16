@@ -24,17 +24,28 @@ from Globals import InitializeClass
 
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins \
     import IRequestTypeSniffer
 from Products.PluggableAuthService.interfaces.plugins \
     import IChallengeProtocolChooser
 from Products.PluggableAuthService.interfaces.plugins \
      import IChallengePlugin
-
 from Products.PluggableAuthService.interfaces.request \
-    import IBrowserRequest, IWebDAVRequest, IFTPRequest, IXMLRPCRequest
+    import IBrowserRequest
+from Products.PluggableAuthService.interfaces.request \
+    import IWebDAVRequest
+from Products.PluggableAuthService.interfaces.request \
+    import IFTPRequest
+from Products.PluggableAuthService.interfaces.request \
+    import IXMLRPCRequest
+
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
+
+class IChallengeProtocolChooserPlugin(Interface):
+    """ Marker interface.
+    """
 
 _request_types = ()
 _request_type_bmap = {}
@@ -179,7 +190,9 @@ class ChallengeProtocolChooser( BasePlugin ):
                 % self.absolute_url())
 
 classImplements(ChallengeProtocolChooser,
-                IChallengeProtocolChooser)
+                IChallengeProtocolChooserPlugin,
+                IChallengeProtocolChooser,
+               )
 
 InitializeClass(ChallengeProtocolChooser)
 

@@ -32,15 +32,17 @@ from Products.PageTemplates.Expressions import getEngine
 
 from Products.PluggableAuthService.interfaces.plugins \
     import IGroupsPlugin
-
 from Products.PluggableAuthService.interfaces.plugins \
     import IGroupEnumerationPlugin
-
 from Products.PluggableAuthService.permissions import ManageGroups
-
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import createViewName
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
 
-from Products.PluggableAuthService.utils import createViewName, classImplements
+class IDynamicGroupsPlugin(Interface):
+    """ Marker interface.
+    """
 
 
 manage_addDynamicGroupsPluginForm = PageTemplateFile(
@@ -509,6 +511,7 @@ class DynamicGroupsPlugin( Folder, BasePlugin, Cacheable ):
                              )
 
 classImplements( DynamicGroupsPlugin
+               , IDynamicGroupsPlugin
                , IGroupsPlugin
                , IGroupEnumerationPlugin
                )

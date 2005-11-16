@@ -26,8 +26,6 @@ from BTrees.OOBTree import OOBTree
 from OFS.Cache import Cacheable
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
-from Products.PluggableAuthService.utils import createViewName, classImplements
 from Products.PluggableAuthService.interfaces.plugins \
     import IAuthenticationPlugin
 from Products.PluggableAuthService.interfaces.plugins \
@@ -37,6 +35,14 @@ from Products.PluggableAuthService.interfaces.plugins \
 
 from Products.PluggableAuthService.permissions import ManageUsers
 from Products.PluggableAuthService.permissions import SetOwnPassword
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import createViewName
+from Products.PluggableAuthService.utils import Interface
+
+class IZODBUserManager(Interface):
+    """ Marker interface.
+    """
 
 
 manage_addZODBUserManagerForm = PageTemplateFile(
@@ -470,6 +476,7 @@ class ZODBUserManager( BasePlugin, Cacheable ):
                              )
 
 classImplements( ZODBUserManager
+               , IZODBUserManager
                , IAuthenticationPlugin
                , IUserEnumerationPlugin
                , IUserAdderPlugin

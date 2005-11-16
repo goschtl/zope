@@ -27,12 +27,22 @@ from App.class_init import default__class_init__ as InitializeClass
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 
-from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
-        ILoginPasswordHostExtractionPlugin, IChallengePlugin,  \
-        ICredentialsUpdatePlugin, ICredentialsResetPlugin
+        ILoginPasswordHostExtractionPlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+        IChallengePlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+        ICredentialsUpdatePlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+        ICredentialsResetPlugin
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
 
+
+class ICookieAuthHelper(Interface):
+    """ Marker interface.
+    """
 
 manage_addCookieAuthHelperForm = PageTemplateFile(
     'www/caAdd', globals(), __name__='manage_addCookieAuthHelperForm')
@@ -238,6 +248,7 @@ class CookieAuthHelper(Folder, BasePlugin):
         return response.redirect(came_from)
 
 classImplements( CookieAuthHelper
+               , ICookieAuthHelper
                , ILoginPasswordHostExtractionPlugin
                , IChallengePlugin
                , ICredentialsUpdatePlugin

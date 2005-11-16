@@ -22,10 +22,13 @@ from Globals import InitializeClass
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.interfaces.plugins import IRolesPlugin
-
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
-
 from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
+
+class ILocalRolePlugin(Interface):
+    """ Marker interface.
+    """
 
 manage_addLocalRolePluginForm = PageTemplateFile(
     'www/lrpAdd', globals(), __name__='manage_addLocalRolePluginForm' )
@@ -69,6 +72,9 @@ class LocalRolePlugin( BasePlugin ):
             return None
         return local_roles.get( principal.getId() )
 
-classImplements( LocalRolePlugin, IRolesPlugin )
+classImplements( LocalRolePlugin
+               , ILocalRolePlugin
+               , IRolesPlugin
+               )
 
 InitializeClass( LocalRolePlugin )

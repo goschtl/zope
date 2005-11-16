@@ -23,9 +23,17 @@ from AccessControl import ClassSecurityInfo
 from AccessControl.Permissions import manage_users as ManageUsers
 from App.class_init import default__class_init__ as InitializeClass
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from BasePlugin import BasePlugin
-from Products.PluggableAuthService.utils import \
-     directlyProvides, classImplements, providedBy, implementedBy
+
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import directlyProvides
+from Products.PluggableAuthService.utils import providedBy
+from Products.PluggableAuthService.utils import implementedBy
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
+
+class IScriptablePlugin(Interface):
+    """ Marker interface.
+    """
 
 import Products
 
@@ -142,10 +150,13 @@ class ScriptablePlugin(Folder, BasePlugin):
 try:
     from Products.Five.bridge import fromZ2Interface
 except ImportError:
-    ScriptablePlugin.__implements__ = (
-        Folder.__implements__ + BasePlugin.__implements__)
+    ScriptablePlugin.__implements__ = ( (IScriptablePlugin,)
+                                      + Folder.__implements__
+                                      + BasePlugin.__implements__
+                                      )
 else:
     classImplements( ScriptablePlugin
+                   , IScriptablePlugin
                    , *(implementedBy(Folder) + implementedBy(BasePlugin))
                    )
 

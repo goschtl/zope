@@ -29,10 +29,17 @@ from AccessControl import ClassSecurityInfo
 from AccessControl.SpecialUsers import emergency_user
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
-     IUserEnumerationPlugin, IGroupEnumerationPlugin
+     IUserEnumerationPlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+     IGroupEnumerationPlugin
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import Interface
+
+class ISearchPrincipalsPlugin(Interface):
+    """ Marker interface.
+    """
 
 addSearchPrincipalsPluginForm = PageTemplateFile(
     'www/sppAdd', globals(), __name__='addSearchPrincipalsPluginForm' )
@@ -127,6 +134,7 @@ class SearchPrincipalsPlugin(BasePlugin):
                                , **kw )
 
 classImplements( SearchPrincipalsPlugin
+               , ISearchPrincipalsPlugin
                , IUserEnumerationPlugin
                , IGroupEnumerationPlugin
                )
