@@ -110,7 +110,7 @@ class SpecificationBasePy(object):
           >>> directlyProvides(C, I1)
           >>> I1.providedBy(C)
           True
-        
+
         """
         spec = providedBy(ob)
         return self in spec._implied
@@ -199,7 +199,7 @@ class Specification(SpecificationBase):
 
     >>> I3.extends(I1)
     0
-        
+
     """
 
     # Copy some base class methods for speed
@@ -241,16 +241,16 @@ class Specification(SpecificationBase):
         # Register ourselves as a dependent of our old bases
         for b in self.__bases__:
             b.unsubscribe(self)
-        
+
         # Register ourselves as a dependent of our bases
         self.__dict__['__bases__'] = bases
         for b in bases:
             b.subscribe(self)
-        
+
         self.changed()
 
     __bases__ = property(
-        
+
         lambda self: self.__dict__.get('__bases__', ()),
         __setBases,
         )
@@ -309,7 +309,7 @@ class Specification(SpecificationBase):
                 if interface not in seen:
                     seen[interface] = 1
                     yield interface
-        
+
 
     def extends(self, interface, strict=True):
         """Does the specification extend the given interface?
@@ -377,7 +377,7 @@ class Specification(SpecificationBase):
                 if attr is not None:
                     attrs[name] = attr
                     break
-            
+
         if attr is None:
             return default
         else:
@@ -469,7 +469,7 @@ class InterfaceClass(Element, Specification):
           >>> from zope.interface import Interface
           >>> class I1(Interface): pass
           ...
-          >>> 
+          >>>
           >>> i = I1.interfaces()
           >>> i.next().getName()
           'I1'
@@ -611,7 +611,7 @@ class InterfaceClass(Element, Specification):
         # provide some consistencey with the PEP 246 adapt method.
 
         marker = object()
-        
+
         def __call__(self, obj, alternate=marker):
             """Adapt an object to the interface
 
@@ -714,7 +714,7 @@ class InterfaceClass(Element, Specification):
 
            This method is normally not called directly. It is called by
            the PEP 246 adapt framework and by the interface __call__
-           operator. 
+           operator.
 
            The adapt method is responsible for adapting an object to
            the reciever.

@@ -22,12 +22,13 @@ There are three flavors of declarations:
 
   - ProvidesDeclarations are used to express interfaces directly
     provided by objects.
-    
+
 
 $Id$
 """
 __docformat__ = 'restructuredtext'
 import sys
+import types
 import weakref
 from zope.interface.interface import InterfaceClass, Specification
 from ro import mergeOrderings, ro
@@ -35,7 +36,7 @@ import exceptions
 from types import ClassType
 from zope.interface.advice import addClassAdvisor
 
-# Registry of class-implementation specifications 
+# Registry of class-implementation specifications
 BuiltinImplementationSpecifications = {}
 
 class Declaration(Specification):
@@ -183,7 +184,7 @@ class Declaration(Specification):
                         if i.extends(j, 0)]
                 ]
                 )
-    
+
     def __add__(self, other):
         """Add two specifications or a specification and an interface
 
@@ -266,8 +267,8 @@ class Implements(Declaration):
 
     def __repr__(self):
         return '<implementedBy %s>' % (self.__name__)
-    
-        
+
+
 
 def implementedByFallback(cls):
     """Return the interfaces implemented for a class' instances
@@ -291,14 +292,26 @@ def implementedByFallback(cls):
         ...   implements(I3)
         >>> [i.getName() for i in implementedBy(C2)]
         ['I3', 'I2']
-      """
 
+      Really, any object should be able to receive a successful answer, even
+      an instance:
+
+        >>> class Callable(object):
+        ...     def __call__(self):
+        ...         return self
+
+        >>> implementedBy(Callable())
+        <implementedBy zope.interface.declarations.?>
+
+      Note that the name of the spec ends with a '?', because the `Callable`
+      instance does not have a `__name__` attribute.
+      """
     # This also manages storage of implementation specifications
 
     try:
         spec = cls.__dict__.get('__implemented__')
     except AttributeError:
-        
+
         # we can't get the class dict. This is probably due to a
         # security proxy.  If this is the case, then probably no
         # descriptor was installed for the class.
@@ -316,7 +329,7 @@ def implementedByFallback(cls):
             if spec is not None:
                 return spec
             return _empty
-        
+
         if spec.__class__ == Implements:
             # we defaulted to _empty or there was a spec. Good enough.
             # Return it.
@@ -326,7 +339,7 @@ def implementedByFallback(cls):
         # Hm, there's an __implemented__, but it's not a spec. Must be
         # an old-style declaration. Just compute a spec for it
         return Declaration(*_normalizeargs((spec, )))
-        
+
     if isinstance(spec, Implements):
         return spec
 
@@ -354,7 +367,7 @@ def implementedByFallback(cls):
         spec.inherit = cls
 
     spec.__name__ = (getattr(cls, '__module__', '?') or '?') + \
-                    '.' + cls.__name__
+                    '.' + (getattr(cls, '__name__', '?') or '?')
 
     try:
         cls.__implemented__ = spec
@@ -369,7 +382,7 @@ def implementedByFallback(cls):
                 cls,
                 getattr(cls, '__class__', type(cls)),
                 )
-                        
+
     except TypeError:
         if not isinstance(cls, type):
             raise TypeError("ImplementedBy called for non-type", cls)
@@ -479,7 +492,7 @@ def classImplements(cls, *interfaces):
             if b not in seen:
                 seen[b] = 1
                 bases.append(b)
-        
+
     spec.__bases__ = tuple(bases)
 
 def _implements_advice(cls):
@@ -671,7 +684,7 @@ class Provides(Declaration):  # Really named ProvidesClass
           >>> from zope.interface import Interface
           >>> class IFooFactory(Interface): pass
           ...
-          
+
           >>> class C(object):
           ...   pass
 
@@ -717,7 +730,7 @@ def Provides(*interfaces):
        ...         gc.collect()
 
       )
-      
+
       >>> collect()
       >>> before = len(InstanceDeclarations)
 
@@ -727,7 +740,7 @@ def Provides(*interfaces):
       >>> from zope.interface import Interface
       >>> class I(Interface):
       ...    pass
-      
+
       >>> c1 = C()
       >>> c2 = C()
 
@@ -751,9 +764,9 @@ def Provides(*interfaces):
       >>> collect()
       >>> len(InstanceDeclarations) == before
       1
-      
+
       """
-    
+
     spec = InstanceDeclarations.get(interfaces)
     if spec is None:
         spec = ProvidesClass(*interfaces)
@@ -868,8 +881,8 @@ def directlyProvides(object, *interfaces):
         object.__provides__ = ClassProvides(object, cls, *interfaces)
     else:
         object.__provides__ = Provides(cls, *interfaces)
-        
-    
+
+
 def alsoProvides(object, *interfaces):
     """Declare interfaces declared directly for an object
 
@@ -879,7 +892,7 @@ def alsoProvides(object, *interfaces):
       The interfaces given (including the interfaces in the
       specifications) are added to the interfaces previously
       declared for the object.
-      
+
       Consider the following example::
 
         >>> from zope.interface import Interface
@@ -917,7 +930,7 @@ def alsoProvides(object, *interfaces):
         1
         >>> int(IC in providedBy(ob))
         1
-        
+
         >>> alsoProvides(ob, I2)
         >>> int(I1 in providedBy(ob))
         1
@@ -931,7 +944,7 @@ def alsoProvides(object, *interfaces):
         1
         >>> int(IC in providedBy(ob))
         1
-        
+
       The object, ``ob`` provides ``I1``, ``I2``, and whatever interfaces
       instances have been declared for instances of ``C``. Notice that the
       alsoProvides just extends the provided interfaces.
@@ -943,7 +956,7 @@ class ClassProvidesBasePy(object):
     def __get__(self, inst, cls):
         if cls is self._cls:
             # We only work if called on the class we were defined for
-            
+
             if inst is None:
                 # We were accessed through a class, so we are the class'
                 # provides spec. Just return this object as is:
@@ -987,7 +1000,7 @@ class ClassProvides(Declaration, ClassProvidesBase):
           >>> [i.getName() for i in C().__provides__]
           ['IFoo']
 
-    
+
     """
 
     def __init__(self, cls, metacls, *interfaces):
@@ -1250,7 +1263,7 @@ def getObjectSpecification(ob):
     provides = getattr(ob, '__provides__', None)
     if provides is not None:
         return provides
-    
+
     try:
         cls = ob.__class__
     except AttributeError:
@@ -1270,7 +1283,7 @@ def providedBy(ob):
     except AttributeError:
         # Not set yet. Fall back to lower-level thing that computes it
         return getObjectSpecification(ob)
-    
+
 
     try:
         # We might have gotten a descriptor from an instance of a
@@ -1339,7 +1352,7 @@ class ObjectSpecificationDescriptorPy(object):
 
         # Get an ObjectSpecification bound to either an instance or a class,
         # depending on how we were accessed.
-        
+
         if inst is None:
             return getObjectSpecification(cls)
 
@@ -1370,7 +1383,7 @@ def _normalizeargs(sequence, output = None):
     else:
         for v in sequence:
             _normalizeargs(v, output)
-            
+
     return output
 
 _empty = Declaration()
@@ -1385,4 +1398,4 @@ else:
     from _zope_interface_coptimizations import ObjectSpecificationDescriptor
 
 objectSpecificationDescriptor = ObjectSpecificationDescriptor()
-    
+
