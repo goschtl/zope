@@ -63,7 +63,8 @@ def manage_addDelegatingMultiPlugin( self
 
 
 class DelegatingMultiPlugin(Folder, BasePlugin):
-    """ The adapter that mediates between the PAS and the DelegatingUserFolder """
+    """ The adapter that mediates between the PAS and the DelegatingUserFolder
+    """
     security = ClassSecurityInfo()
     meta_type = 'Delegating Multi Plugin'
 
