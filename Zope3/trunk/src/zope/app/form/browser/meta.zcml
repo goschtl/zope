@@ -6,34 +6,6 @@
   <meta:directives namespace="http://namespaces.zope.org/browser">
 
     <meta:complexDirective
-        name="addwizard"
-        schema=".metadirectives.IAddWizardDirective"
-        handler=".metaconfigure.AddWizardDirective"
-        >
-
-      <meta:subdirective
-          name="pane"
-          schema=".metadirectives.IPaneSubdirective"
-          />
-
-    </meta:complexDirective>
-
-
-    <meta:complexDirective
-        name="editwizard"
-        schema=".metadirectives.IEditWizardDirective"
-        handler=".metaconfigure.EditWizardDirective"
-        >
-
-      <meta:subdirective
-          name="pane"
-          schema=".metadirectives.IPaneSubdirective"
-          />
-
-    </meta:complexDirective>
-
-
-    <meta:complexDirective
         name="form"
         schema=".metadirectives.IFormDirective"
         handler=".metaconfigure.FormDirective"

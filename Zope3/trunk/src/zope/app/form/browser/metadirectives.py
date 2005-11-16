@@ -124,49 +124,10 @@ class ICommonFormInformation(ICommonInformation):
         value_type=PythonIdentifier()
         )
 
-class ICommonWizardInformation(ICommonInformation):
-    """
-    Common information for browser wizards
-    """
-
-    menu = MenuField(
-        title=u"The browser menu to include the form in.",
-        description=u"""
-        Many views are included in menus. It's convenient to name the
-        menu in the page directive, rather than having to give a
-        separate menuItem directive.""",
-        required=False
-        )
-
-    title = MessageID(
-        title=u"Menu title",
-        description=u"The browser menu label for the form.",
-        required=False
-        )
-
-    description = MessageID(
-        title=u"A longer description of the add form.",
-        description=u"""
-        A UI may display this with the item or display it when the
-        user requests more assistance.""",
-        required=False
-        )
-
-    use_session = Bool(
-        title=u"Use session",
-        description=u"""
-        If 'no', hidden input controls are used to maintain state
-        between panes in the wizard. Only simple data types can
-        be propagated with this method.
-
-        Defaults to 'no'.""",
-        default=False,
-        required=False
-        )
 
 class ICommonAddInformation(Interface):
     """
-    Common information for add forms/wizards
+    Common information for add forms
     """
 
     content_factory = GlobalObject(
@@ -221,52 +182,6 @@ class ICommonAddInformation(Interface):
         value_type=PythonIdentifier()
         )
 
-class IAddWizardDirective(ICommonWizardInformation, ICommonAddInformation):
-    """
-    Define an automatically generated add wizard (multi-page form)
-
-    The addwizard directive creates and registers a view for adding an
-    object based on a schema.
-
-    Adding an object is a bit trickier than editing an object, because
-    the object the schema applies to isn't available when forms are
-    being rendered.  The addwizard directive provides a customization
-    interface to overcome this difficulty.
-
-    See zope.app.browser.form.interfaces.IAddFormCustomization.
-    """
-
-class IEditWizardDirective(ICommonWizardInformation):
-    """
-    Define an automatically generated edit wizard (multi-page form).
-
-    The editwizard directive creates and registers a view for editing
-    an object based on a schema.
-    """
-
-    title = MessageID(
-        title=u"The browser menu label for the edit form",
-        description=u"This attribute defaults to 'Edit'.",
-        required=False
-        )
-
-class IPaneSubdirective(Interface):
-    """
-    Define a Pane (page) of the wizard
-    """
-
-    label = MessageID(
-        title=u"Label",
-        description=u"The label used as the heading on this pane",
-        required=False,
-        )
-
-    fields = Tokens(
-        title=u"Fields",
-        description=u"The fields to display on this pane of the wizard",
-        required=True,
-        value_type=PythonIdentifier()
-        )
 
 class IFormDirective(ICommonFormInformation):
     """
@@ -358,8 +273,8 @@ class IWidgetSubdirective(Interface):
 
     This directive allows you to quickly generate custom widget directives for
     a form.
-    
-    Besides the two required arguments, field and class, you can specify any 
+
+    Besides the two required arguments, field and class, you can specify any
     amount of keyword arguments, e.g. style='background-color:#fefefe;'.
     The keywords will be stored as attributes on the widget instance. To see
     which keywords are sensible, you should look at the code of the specified

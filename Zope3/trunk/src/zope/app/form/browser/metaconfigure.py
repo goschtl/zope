@@ -36,8 +36,6 @@ from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from add import AddView, AddViewFactory
 from editview import EditView, EditViewFactory
 from formview import FormView
-from addwizard import AddWizardView, AddWizardViewFactory
-from editwizard import EditWizardView, EditWizardViewFactory
 from schemadisplay import DisplayView, DisplayViewFactory
 
 class BaseFormDirective(object):
@@ -72,7 +70,7 @@ class BaseFormDirective(object):
         class_ = attrs.pop("class_", None)
         # Try to do better than accepting the string value by looking through
         # the interfaces and trying to find the field, so that we can use
-        # 'fromUnicode()' 
+        # 'fromUnicode()'
         if isinstance(class_, type):
             ifaces = implementedBy(class_)
             for name, value in kw.items():
@@ -86,12 +84,12 @@ class BaseFormDirective(object):
             # attribute.  This can be used to override some of the
             # presentational attributes of the widget implementation.
             class_ = self._default_widget_factory
-        self._widgets[field+'_widget'] = CustomWidgetFactory(class_, **attrs) 
+        self._widgets[field+'_widget'] = CustomWidgetFactory(class_, **attrs)
 
     def _processWidgets(self):
         if self._widgets:
             customWidgetsObject = type('CustomWidgetsMixin', (object,),
-                                       self._widgets) 
+                                       self._widgets)
             self.bases = self.bases + (customWidgetsObject,)
 
     def _normalize(self):
@@ -133,42 +131,6 @@ class BaseFormDirective(object):
         return ('view', self.for_, self.name, IBrowserRequest,
                 self.layer)
 
-
-class Pane(object):
-    ''' Holder for information about a Pane of a wizard '''
-    # TODO: Add more funky stuff to each pane, such as a validator
-    def __init__(self, field_names, label):
-        self.names = field_names
-        self.label = label
-
-
-class BaseWizardDirective(BaseFormDirective):
-
-    # default wizard information
-    description = None
-    use_session = False
-
-    def __init__(self, _context, **kwargs):
-        super(BaseWizardDirective, self).__init__(_context, **kwargs)
-        self.panes = []
-
-    def _args(self):
-        permission = self.permission
-        if permission == 'zope.Public':
-            # Translate public permission to CheckerPublic
-            permission = CheckerPublic
-        return (self.name, self.schema, permission, self.layer,
-                self.panes, self.fields, self.template, self.default_template,
-                self.bases, self.for_)
-
-    def pane(self, _context, fields, label=''):
-        for f in fields:
-            if f not in self.fields:
-                raise ValueError(
-                    'Field name is not in schema',
-                    f, self.schema
-                    )
-        self.panes.append(Pane(fields, label))
 
 class AddFormDirective(BaseFormDirective):
 
@@ -336,43 +298,6 @@ class SubeditFormDirective(EditFormDirectiveBase):
             args = self._args()+(self.fulledit_path, self.fulledit_label),
             )
 
-class AddWizardDirective(BaseWizardDirective, AddFormDirective):
-
-    view = AddWizardView
-    default_template = 'addwizard.pt'
-
-    def __call__(self):
-        self._handle_menu()
-        self._handle_content_factory()
-
-        all_fields = self.fields
-        leftover = []
-        for pane in self.panes:
-            leftover.extend(pane.names)
-        self.fields = leftover[:]
-        self._handle_arguments(leftover)
-        self.fields = all_fields
-
-        self._context.action(
-            discriminator = self._discriminator(),
-            callable = AddWizardViewFactory,
-            args = self._args()+(self.content_factory, self.arguments,
-                                 self.keyword_arguments, self.set_before_add,
-                                 self.set_after_add, self.use_session)
-            )
-
-class EditWizardDirective(BaseWizardDirective, EditFormDirective):
-
-    view = EditWizardView
-    default_template = 'editwizard.pt'
-
-    def __call__(self):
-        self._handle_menu()
-        self._context.action(
-            discriminator = self._discriminator(),
-            callable = EditWizardViewFactory,
-            args = self._args()+(self.menu, self.use_session)
-            )
 
 class SchemaDisplayDirective(EditFormDirective):
 
