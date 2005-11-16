@@ -14,6 +14,45 @@
 ##############################################################################
 """ Export / import adapters for stock PAS plugins.
 
+TODO:
+
+ o Add export / import adapters for all stock plugin types:
+
+   - [X] ZODBUserManager (ZODBUserManagerExportImport)
+
+   - [X] ZODBGroupsManager (ZODBGroupManagerExportImport)
+
+   - [X] ZODBRolesManager (ZODBRoleManagerExportImport)
+
+   - [X] CookieAuthHelper (CookieAuthHelperExportImport)
+
+   - [X] DomainAuthHelper (DomainAuthHelperExportImport)
+
+   - [X] HTTPBasicAuthHelper (TitleOnlyExportImport)
+
+   - [X] InlineAuthHelper (TitleOnlyExportImport)
+
+   - [X] LocalRolePlugin (TitleOnlyExportImport)
+
+   - [X] RecursiveGroupsPlugin (TitleOnlyExportImport)
+
+   - [X] ChallengeProtocolChooser (TitleOnlyExportImport)
+
+   - [X] RequestTypeSniffer (TitleOnlyExportImport)
+
+   - [X] SessionAuthHelper (TitleOnlyExportImport)
+
+   - [/] ScriptablePlugin (stock GenericSetup folderish support?)
+
+   - [_] DelegatingMultiPlugin (DelegatePathExportImport)
+
+   - [_] SearchPrincipalsPlugin (DelegatePathExportImport)
+
+   - [_] DynamicGroupsPlugin (use folderish support, w/ handler for
+         DynamicGroupDefinition?  or use a single XML file?)
+
+ o Review BasePlugin to ensure we haven't left anything out.
+
 $Id$
 """
 from xml.dom.minidom import parseString
