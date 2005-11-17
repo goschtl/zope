@@ -28,12 +28,19 @@ class TestIZAPI(unittest.TestCase):
         """
         Ensure that the zapi module provides the IZAPI interface
         """
+        
         from zope.app import zapi
         # deprecation proxies don't seem to always work with
         # verifyObject, so remove any proxies
         if isProxy(zapi):
             zapi = removeAllProxies(zapi)
+
+        # we don't want to generate warnings for deprecated
+        # attrs
+        import zope.deprecation
+        zope.deprecation.__show__.off()
         verifyObject(IZAPI, zapi)
+        zope.deprecation.__show__.on()
         
 
 def setUp(test):
