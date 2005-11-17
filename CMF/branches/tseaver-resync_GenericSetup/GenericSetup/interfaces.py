@@ -48,26 +48,8 @@ class ISetupContext( Interface ):
         o Return None if the data should not be encoded.
         """
 
-    def note(category, message):
-
-        """ Record a logging message from within a handler.
-
-        o 'category' is a string defining the source of the message.
-
-        o 'message' is the text of the message itself.
-
-        o XXX This API may disappear soon, to be replaced by a more
-          general annotation.
-        """
-
-    def note(component, message):
-
-        """ Record a message about the state of the operation.
-
-        o 'component' is a string identifying the subcomponent recording
-          the message.
-
-        o 'message' is the message text.
+    def getLogger(name):
+        """ Get a logger with the specified name, creating it if necessary.
         """
 
     def listNotes():
@@ -543,6 +525,40 @@ class ISetupTool( Interface ):
 
         o If 'ignore_whitespace', then suppress diffs due only to whitespace
           (c.f:  'diff -wbB')
+        """
+
+
+class IWriteLogger(Interface):
+
+    """Write methods used by the python logging Logger.
+    """
+
+    def debug(msg, *args, **kwargs):
+        """Log 'msg % args' with severity 'DEBUG'.
+        """
+
+    def info(msg, *args, **kwargs):
+        """Log 'msg % args' with severity 'INFO'.
+        """
+
+    def warning(msg, *args, **kwargs):
+        """Log 'msg % args' with severity 'WARNING'.
+        """
+
+    def error(msg, *args, **kwargs):
+        """Log 'msg % args' with severity 'ERROR'.
+        """
+
+    def exception(msg, *args):
+        """Convenience method for logging an ERROR with exception information.
+        """
+
+    def critical(msg, *args, **kwargs):
+        """Log 'msg % args' with severity 'CRITICAL'.
+        """
+
+    def log(level, msg, *args, **kwargs):
+        """Log 'msg % args' with the integer severity 'level'.
         """
 
 

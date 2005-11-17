@@ -17,9 +17,8 @@ $Id$
 
 import unittest
 import Testing
-import Zope2
-Zope2.startup()
 
+import logging
 import os
 import time
 from StringIO import StringIO
@@ -46,7 +45,8 @@ class DummySite( Folder ):
 class DummyTool( Folder ):
 
     pass
-        
+
+
 class DirectoryImportContextTests( FilesystemTestBase
                                  , ConformsToISetupContext
                                  , ConformsToIImportContext
@@ -59,16 +59,18 @@ class DirectoryImportContextTests( FilesystemTestBase
         from Products.GenericSetup.context import DirectoryImportContext
         return DirectoryImportContext
 
-    def test_note( self ):
+    def test_getLogger( self ):
 
         site = DummySite( 'site' ).__of__( self.root )
         ctx = self._makeOne( site, self._PROFILE_PATH )
         self.assertEqual( len( ctx.listNotes() ), 0 )
 
-        ctx.note( 'foo', 'bar' )
+        logger = ctx.getLogger('foo')
+        logger.info('bar')
 
         self.assertEqual( len( ctx.listNotes() ), 1 )
-        component, message = ctx.listNotes()[0]
+        level, component, message = ctx.listNotes()[0]
+        self.assertEqual( level, logging.INFO )
         self.assertEqual( component, 'foo' )
         self.assertEqual( message, 'bar' )
 
@@ -330,6 +332,7 @@ class DirectoryImportContextTests( FilesystemTestBase
         self.failUnless( 'CVS' in names )
         self.failUnless( '.svn' in names )
 
+
 class DirectoryExportContextTests( FilesystemTestBase
                                  , ConformsToISetupContext
                                  , ConformsToIExportContext
@@ -342,16 +345,18 @@ class DirectoryExportContextTests( FilesystemTestBase
         from Products.GenericSetup.context import DirectoryExportContext
         return DirectoryExportContext
 
-    def test_note( self ):
+    def test_getLogger( self ):
 
         site = DummySite( 'site' ).__of__( self.root )
         ctx = self._makeOne( site, self._PROFILE_PATH )
         self.assertEqual( len( ctx.listNotes() ), 0 )
 
-        ctx.note( 'foo', 'bar' )
+        logger = ctx.getLogger('foo')
+        logger.info('bar')
 
         self.assertEqual( len( ctx.listNotes() ), 1 )
-        component, message = ctx.listNotes()[0]
+        level, component, message = ctx.listNotes()[0]
+        self.assertEqual( level, logging.INFO )
         self.assertEqual( component, 'foo' )
         self.assertEqual( message, 'bar' )
 
@@ -470,15 +475,17 @@ class TarballImportContextTests( SecurityRequestTest
 
         return site, tool, ctx.__of__( tool )
 
-    def test_note( self ):
+    def test_getLogger( self ):
 
         site, tool, ctx = self._makeOne()
         self.assertEqual( len( ctx.listNotes() ), 0 )
 
-        ctx.note( 'foo', 'bar' )
+        logger = ctx.getLogger('foo')
+        logger.info('bar')
 
         self.assertEqual( len( ctx.listNotes() ), 1 )
-        component, message = ctx.listNotes()[0]
+        level, component, message = ctx.listNotes()[0]
+        self.assertEqual( level, logging.INFO )
         self.assertEqual( component, 'foo' )
         self.assertEqual( message, 'bar' )
 
@@ -737,17 +744,19 @@ class TarballExportContextTests( FilesystemTestBase
         from Products.GenericSetup.context import TarballExportContext
         return TarballExportContext
 
-    def test_note( self ):
+    def test_getLogger( self ):
 
         site = DummySite( 'site' ).__of__( self.root )
         ctx = self._getTargetClass()( site )
 
         self.assertEqual( len( ctx.listNotes() ), 0 )
 
-        ctx.note( 'foo', 'bar' )
+        logger = ctx.getLogger('foo')
+        logger.info('bar')
 
         self.assertEqual( len( ctx.listNotes() ), 1 )
-        component, message = ctx.listNotes()[0]
+        level, component, message = ctx.listNotes()[0]
+        self.assertEqual( level, logging.INFO )
         self.assertEqual( component, 'foo' )
         self.assertEqual( message, 'bar' )
 
@@ -818,7 +827,7 @@ class SnapshotExportContextTests( SecurityRequestTest
 
         return self._getTargetClass()( *args, **kw )
 
-    def test_note( self ):
+    def test_getLogger( self ):
 
         site = DummySite( 'site' ).__of__( self.root )
         site.setup_tool = DummyTool( 'setup_tool' )
@@ -827,10 +836,12 @@ class SnapshotExportContextTests( SecurityRequestTest
 
         self.assertEqual( len( ctx.listNotes() ), 0 )
 
-        ctx.note( 'foo', 'bar' )
+        logger = ctx.getLogger('foo')
+        logger.info('bar')
 
         self.assertEqual( len( ctx.listNotes() ), 1 )
-        component, message = ctx.listNotes()[0]
+        level, component, message = ctx.listNotes()[0]
+        self.assertEqual( level, logging.INFO )
         self.assertEqual( component, 'foo' )
         self.assertEqual( message, 'bar' )
 
@@ -1107,17 +1118,19 @@ class SnapshotImportContextTests( SecurityRequestTest
 
         return folder._getOb( filename )
 
-    def test_note( self ):
+    def test_getLogger( self ):
 
         SNAPSHOT_ID = 'note'
         site, tool, ctx = self._makeOne( SNAPSHOT_ID )
 
         self.assertEqual( len( ctx.listNotes() ), 0 )
 
-        ctx.note( 'foo', 'bar' )
+        logger = ctx.getLogger('foo')
+        logger.info('bar')
 
         self.assertEqual( len( ctx.listNotes() ), 1 )
-        component, message = ctx.listNotes()[0]
+        level, component, message = ctx.listNotes()[0]
+        self.assertEqual( level, logging.INFO )
         self.assertEqual( component, 'foo' )
         self.assertEqual( message, 'bar' )
 

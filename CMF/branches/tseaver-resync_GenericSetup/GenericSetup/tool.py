@@ -53,6 +53,7 @@ def exportStepRegistries(context):
     """ Built-in handler for exporting import / export step registries.
     """
     setup_tool = context.getSetupTool()
+    logger = context.getLogger('registries')
 
     import_steps_xml = setup_tool.getImportStepRegistry().generateXML()
     context.writeDataFile('import_steps.xml', import_steps_xml, 'text/xml')
@@ -60,7 +61,7 @@ def exportStepRegistries(context):
     export_steps_xml = setup_tool.getExportStepRegistry().generateXML()
     context.writeDataFile('export_steps.xml', export_steps_xml, 'text/xml')
 
-    return 'Step registries exported'
+    logger.info('Step registries exported.')
 
 def importToolset(context):
 
@@ -68,10 +69,12 @@ def importToolset(context):
     """
     site = context.getSite()
     encoding = context.getEncoding()
+    logger = context.getLogger('toolset')
 
     xml = context.readDataFile(TOOLSET_XML)
     if xml is None:
-        return 'Toolset: Nothing to import.'
+        logger.info('Nothing to import.')
+        return
 
     setup_tool = context.getSetupTool()
     toolset = setup_tool.getToolsetRegistry()
@@ -108,7 +111,7 @@ def importToolset(context):
                 site._delObject(tool_id)
                 site._setObject(tool_id, tool_class())
 
-    return 'Toolset imported.'
+    logger.info('Toolset imported.')
 
 def exportToolset(context):
 
@@ -116,11 +119,12 @@ def exportToolset(context):
     """
     setup_tool = context.getSetupTool()
     toolset = setup_tool.getToolsetRegistry()
+    logger = context.getLogger('toolset')
 
     xml = toolset.generateXML()
     context.writeDataFile(TOOLSET_XML, xml, 'text/xml')
 
-    return 'Toolset exported.'
+    logger.info('Toolset exported.')
 
 
 class SetupTool(Folder):
@@ -221,7 +225,7 @@ class SetupTool(Folder):
 
         message = self._doRunImportStep(step_id, context)
         message_list = filter(None, [message])
-        message_list.extend( ['%s: %s' % x for x in context.listNotes()] )
+        message_list.extend( ['%s: %s' % x[1:] for x in context.listNotes()] )
         messages[step_id] = '\n'.join(message_list)
         steps.append(step_id)
 
@@ -240,7 +244,8 @@ class SetupTool(Folder):
         for step in steps:
             message = self._doRunImportStep(step, context)
             message_list = filter(None, [message])
-            message_list.extend( ['%s: %s' % x for x in context.listNotes()] )
+            message_list.extend( ['%s: %s' % x[1:]
+                                  for x in context.listNotes()] )
             messages[step] = '\n'.join(message_list)
             context.clearNotes()
 
