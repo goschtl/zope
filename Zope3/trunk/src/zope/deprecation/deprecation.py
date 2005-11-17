@@ -22,7 +22,6 @@ __docformat__ = "reStructuredText"
 import sys
 import types
 import warnings
-import zope.proxy
 
 import zope.deprecation
 
@@ -49,30 +48,48 @@ class ShowSwitch(object):
         return '<ShowSwitch %s>' %(self() and 'on' or 'off')
 
 
-class DeprecationProxy(zope.proxy.ProxyBase):
-
-    __slots__ = ('_deprecated',)
+ogetattr = object.__getattribute__
+class DeprecationProxy(object):
 
     def __init__(self, module):
-        super(DeprecationProxy, self).__init__(module)
-        self._deprecated = {}
+        self.__original_module = module
+        self.__deprecated = {}
 
     def deprecate(self, names, message):
         """Deprecate the given names."""
         if not isinstance(names, (tuple, list)):
             names = (names,)
         for name in names:
-            self._deprecated[name] = message
+            self.__deprecated[name] = message
 
     def __getattribute__(self, name):
-        if name != '_deprecated' and name in self._deprecated:
+        if name == 'deprecate' or name.startswith('_DeprecationProxy__'):
+            return ogetattr(self, name)
+
+        if name == '__class__':
+            return types.ModuleType
+        
+        if name in ogetattr(self, '_DeprecationProxy__deprecated'):
             if zope.deprecation.__show__():
                 warnings.warn(
-                    name + ': ' + self._deprecated[name],
+                    name + ': ' + self.__deprecated[name],
                     DeprecationWarning, 2)
 
-        return super(DeprecationProxy, self).__getattribute__(name)
+        return getattr(ogetattr(self, '_DeprecationProxy__original_module'),
+                       name)
 
+    def __setattr__(self, name, value):
+        if name.startswith('_DeprecationProxy__'):
+            return object.__setattr__(self, name, value)
+
+        setattr(self.__original_module, name, value)
+
+    def __delattr__(self, name):
+        if name.startswith('_DeprecationProxy__'):
+            return object.__delattr__(self, name)
+
+        delattr(self.__original_module, name)
+        
 
 class DeprecatedGetProperty(object):
 
