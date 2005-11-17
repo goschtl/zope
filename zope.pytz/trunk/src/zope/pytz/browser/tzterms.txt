@@ -5,10 +5,10 @@ When displaying lists of time zones to users, Time-Zone Terms
 are used to get time-zone descriptions.  The time-zone descriptions
 simply wrap the original time-zone identifiers in message ids.
 
-    >>> import zope.pytz.browser.terms
+    >>> import zope.pytz.browser.tzterms
     >>> import zope.pytz.source
     >>> import zope.publisher.browser
-    >>> terms = import zope.pytz.browser.terms.TimeZoneTerms(
+    >>> terms = import zope.pytz.browser.tzterms.TimeZoneTerms(
     ...     zope.pytz.source.AvailableTimeZones(),
     ...     zope.publisher.browser.TestRequest,
     ...     )
