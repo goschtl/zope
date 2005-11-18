@@ -14,18 +14,18 @@
 ##############################################################################
 """Convenience test script for Jim.
 
-$Id: test.py,v 1.1 2004/06/11 02:15:49 fdrake Exp $
+$Id$
 """
 import os.path
 import sys
 
 try:
-    from zope.app.testing.test import process_args
+    from zope.testing import testrunner
 except ImportError:
     if sys.argv[1:]:
         # We got args, but we're not about to support them here.
         print >>sys.stderr, \
-              "arguments only supported when zope.app.tests is available"
+              "arguments only supported when zope.testing is available"
         sys.exit(2)
 
     def test_suite():
@@ -41,5 +41,5 @@ else:
     # 1. search for tests in starting in this directory
     # 2. there are only unit tests, not functional tests
     here = os.path.dirname(os.path.realpath(__file__))
-    sys.argv[1:1] = ["-l", here, "-u"]
-    process_args()
+    defaults = ['--tests-pattern', '^tests$', "--test-path", here, '-v']
+    result = testrunner.run(defaults)
