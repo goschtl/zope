@@ -53,7 +53,8 @@ def run(argv=list(sys.argv)):
 
     here = os.path.dirname(os.path.abspath(program))
     srcdir = os.path.abspath(src)
-    sys.path = [srcdir, here] + basepath
+    sys.path = [srcdir] + basepath
+    sys.path[:] = [p for p in sys.path if os.path.abspath(p) != here]
 
     from zope.app.twisted.main import main
     main(argv[1:])
