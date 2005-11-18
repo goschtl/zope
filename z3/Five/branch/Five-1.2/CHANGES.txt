@@ -60,6 +60,8 @@ Bugfixes
 
 * Fixed some event recursion compatibility modes.
 
+* Fixed loops in zcml loading due to events in some cases.
+
 Five 1.2b (2005-11-02)
 ======================
 

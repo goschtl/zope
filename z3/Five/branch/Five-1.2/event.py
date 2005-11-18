@@ -586,7 +586,7 @@ def doMonkies():
     patchMethod(CatalogPathAwareness.CatalogAware, 'manage_afterClone',
                 CA_manage_afterClone)
 
-    zcml.load_config('event.zcml', Products.Five)
+    zcml.load_config('event.zcml', Products.Five, execute=False)
 
     addCleanUp(undoMonkies)
 
