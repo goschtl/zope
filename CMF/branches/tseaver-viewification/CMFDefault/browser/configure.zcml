@@ -49,6 +49,15 @@
     />
 
   <browser:page
+      for="Products.CMFDefault.interfaces.IMutableLink"
+      name="link_edit_form"
+      class=".linkviews.LinkEditView"
+      template="templates/link_edit.pt"
+      permission="cmf.ModifyPortalContent"
+      layer="cmf"
+      />
+
+  <browser:page
       for="Products.CMFDefault.interfaces.IMutableDocument"
       name="document_edit_form"
       class=".documentviews.DocumentEditView"

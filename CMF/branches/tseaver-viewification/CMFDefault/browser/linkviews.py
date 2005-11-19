@@ -133,3 +133,77 @@ class LinkEditingView(BrowserView):
     
 InitializeClass(LinkEditingView)
 
+#
+#   XXX:  Try out Yuppie's style here
+#
+import urlparse
+
+from Products.CMFDefault.exceptions import EditingConflict
+from Products.CMFDefault.exceptions import ResourceLockedError
+from Products.CMFDefault.utils import MessageID as _
+
+from utils import FormViewBase
+
+class IllegalURL(ValueError):
+    pass
+
+class LinkEditView(FormViewBase):
+
+    """ Edit view for IMutableDocument.
+    """
+
+    # XXX: _BUTTONS should become configurable
+    _BUTTONS = ({'name': 'change',
+                 'value': _(u'Change'),
+                 'transform': ('validateURL', 'update'),
+                 'redirect': ('context', 'object/edit'),
+                },
+                {'name': 'change_and_view',
+                 'value': _(u'Change and View'),
+                 'transform': ('validateURL', 'update'),
+                 'redirect': ('context', 'object/view'),
+                },
+               )
+
+    def remote_url(self):
+        if 'remote_url' in self.request.form:
+            return self.request['remote_url']
+        else:
+            return self.context.remote_url
+
+    def validateURL(self, remote_url='', **kw):
+        try:
+            remote_url = self._normalizeURL(remote_url)
+        except IllegalURL, errmsg:
+            return self.setStatus(False, errmsg)
+        else:
+            return self.setStatus(True, remote_url=remote_url)
+
+    def _normalizeURL(self, remote_url):
+        tokens = urlparse.urlparse( remote_url, 'http' )
+        if tokens[0] == 'http':
+            if tokens[1]:
+                # We have a nethost. All is well.
+                url = urlparse.urlunparse(tokens)
+            elif tokens[2:] == ('', '', '', ''):
+                # Empty URL
+                url = ''
+            else:
+                # Relative URL, keep it that way, without http:
+                tokens = ('', '') + tokens[2:]
+                url = urlparse.urlunparse(tokens)
+        else:
+            # Other scheme, keep original
+            url = urlparse.urlunparse(tokens)
+        return url
+
+    def update(self, remote_url, **kw):
+        context = self.context
+        if remote_url != context.remote_url:
+            try:
+                context.remote_url = remote_url
+                return self.setStatus(True, _(u'Link changed.'))
+            except (ResourceLockedError, EditingConflict), errmsg:
+                return self.setStatus(False, errmsg)
+        else:
+            return self.setStatus(False, _(u'Nothing to change.'))

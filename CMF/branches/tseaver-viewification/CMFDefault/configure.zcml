@@ -14,12 +14,12 @@
 
   <!-- XXX: Setting this is required to make the views accessible TTW, but it
             breaks tests for now.  2005/10/21, TS
+  -->
   <five:traversable
      class="Products.CMFDefault.Document.Document"
      />
   <five:traversable 
      class="Products.CMFDefault.Link.Link" 
      />
-  -->
 
 </configure>
