@@ -2,10 +2,19 @@
 Five Changes
 ============
 
-Five 1.3b2 (2005-11-10)
+Five 1.3b3 (2005-11-19)
 =======================
 
 This version is also included in Zope 2.9b1.
+
+Bugfixes
+--------
+
+* Made the creation of custom skins work again.  It was broken in the
+  port to Zope 3.2.
+
+Five 1.3b2 (2005-11-10)
+=======================
 
 Changes compared to Five 1.3b:
 
