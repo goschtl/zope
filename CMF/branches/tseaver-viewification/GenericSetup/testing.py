@@ -24,10 +24,18 @@ from interfaces import INodeExporter
 from interfaces import INodeImporter
 from utils import PrettyDocument
 
+try:
+    from zope.app.testing.placelesssetup import PlacelessSetup
+except ImportError:  # BBB, Zope3 < 3.1
+    from zope.app.tests.placelesssetup import PlacelessSetup
+
 
 class NodeAdapterTestCase(unittest.TestCase):
 
     def _populate(self, obj):
+        pass
+
+    def _verifyImport(self, obj):
         pass
 
     def test_z3interfaces(self):
@@ -42,5 +50,6 @@ class NodeAdapterTestCase(unittest.TestCase):
     def test_importNode(self):
         node = parseString(self._XML).documentElement
         self.assertEqual(INodeImporter(self._obj).importNode(node), None)
+        self._verifyImport(self._obj)
         node = INodeExporter(self._obj).exportNode(PrettyDocument())
         self.assertEqual(node.toprettyxml(' '), self._XML)

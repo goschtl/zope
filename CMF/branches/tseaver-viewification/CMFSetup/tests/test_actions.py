@@ -26,17 +26,16 @@ from Acquisition import aq_parent
 from OFS.Folder import Folder
 from OFS.OrderedFolder import OrderedFolder
 from Products.Five import zcml
-from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces.portal_actions \
     import ActionProvider as IActionProvider
 from Products.CMFCore.interfaces import IActionsTool
-
-from common import BaseRegistryTests
-from common import DummyExportContext
-from common import DummyImportContext
+from Products.CMFCore.tests.base.testcase import PlacelessSetup
+from Products.GenericSetup.tests.common import BaseRegistryTests
+from Products.GenericSetup.tests.common import DummyExportContext
+from Products.GenericSetup.tests.common import DummyImportContext
 
 
 class DummyTool( OrderedFolder, ActionProviderBase ):
@@ -124,7 +123,7 @@ class _ActionSetup(PlacelessSetup, BaseRegistryTests):
         PlacelessSetup.setUp(self)
         BaseRegistryTests.setUp(self)
         zcml.load_config('meta.zcml', Products.Five)
-        zcml.load_config('configure.zcml', Products.CMFCore)
+        zcml.load_config('configure.zcml', Products.CMFCore.exportimport)
 
     def tearDown(self):
         BaseRegistryTests.tearDown(self)

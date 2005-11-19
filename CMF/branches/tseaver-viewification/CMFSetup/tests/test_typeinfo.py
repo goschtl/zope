@@ -23,18 +23,17 @@ Zope2.startup()
 import Products
 from OFS.Folder import Folder
 from Products.Five import zcml
-from zope.app.tests.placelesssetup import PlacelessSetup
 
 from Products.CMFCore.permissions import View
 from Products.CMFCore.permissions import AccessContentsInformation
 from Products.CMFCore.permissions import ModifyPortalContent
+from Products.CMFCore.tests.base.testcase import PlacelessSetup
 from Products.CMFCore.TypesTool import FactoryTypeInformation
 from Products.CMFCore.TypesTool import ScriptableTypeInformation
 from Products.CMFCore.TypesTool import TypesTool
-
-from common import BaseRegistryTests
-from common import DummyExportContext
-from common import DummyImportContext
+from Products.GenericSetup.tests.common import BaseRegistryTests
+from Products.GenericSetup.tests.common import DummyExportContext
+from Products.GenericSetup.tests.common import DummyImportContext
 
 
 class _TypeInfoSetup(PlacelessSetup, BaseRegistryTests):

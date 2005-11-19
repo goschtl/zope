@@ -448,7 +448,7 @@ class SetupToolTests( FilesystemTestBase
         self.assertEqual( len( result[ 'steps' ] ), 1 )
         self.assertEqual( result[ 'steps' ][ 0 ], 'step_registries' )
         self.assertEqual( result[ 'messages' ][ 'step_registries' ]
-                        , 'Step registries exported'
+                        , None
                         )
         fileish = StringIO( result[ 'tarball' ] )
 
@@ -473,7 +473,7 @@ class SetupToolTests( FilesystemTestBase
         self.assertEqual( len( result[ 'steps' ] ), 1 )
         self.assertEqual( result[ 'steps' ][ 0 ], 'step_registries' )
         self.assertEqual( result[ 'messages' ][ 'step_registries' ]
-                        , 'Step registries exported'
+                        , None
                         )
         fileish = StringIO( result[ 'tarball' ] )
 
@@ -516,7 +516,7 @@ class SetupToolTests( FilesystemTestBase
 
         self.failUnless( 'step_registries' in result[ 'steps' ] )
         self.assertEqual( result[ 'messages' ][ 'step_registries' ]
-                        , 'Step registries exported'
+                        , None
                         )
 
         fileish = StringIO( result[ 'tarball' ] )
@@ -553,7 +553,7 @@ class SetupToolTests( FilesystemTestBase
         self.assertEqual( len( result[ 'steps' ] ), 1 )
         self.assertEqual( result[ 'steps' ][ 0 ], 'step_registries' )
         self.assertEqual( result[ 'messages' ][ 'step_registries' ]
-                        , 'Step registries exported'
+                        , None
                         )
 
         snapshot = result[ 'snapshot' ]
@@ -844,6 +844,41 @@ class Test_importToolset( _ToolsetSetup ):
         importToolset( context )
 
         self.assertEqual( len( site.objectIds() ), 3 )
+
+        self.failIf( aq_base( site._getOb( 'mandatory' ) ) is mandatory )
+        self.failUnless( isinstance( aq_base( site._getOb( 'mandatory' ) )
+                                   , DummyTool ) )
+
+        self.failIf( aq_base( site._getOb( 'obligatory' ) ) is obligatory )
+        self.failUnless( isinstance( aq_base( site._getOb( 'obligatory' ) )
+                                   , DummyTool ) )
+
+    def test_required_tools_missing_acquired_nofail( self ):
+
+        from Products.GenericSetup.tool import TOOLSET_XML
+        from Products.GenericSetup.tool import importToolset
+
+        site = self._initSite()
+        parent_site = Folder()
+
+        mandatory = AnotherDummyTool()
+        mandatory._setId( 'mandatory' )
+        parent_site._setObject( 'mandatory', mandatory )
+
+        obligatory = AnotherDummyTool()
+        obligatory._setId( 'obligatory' )
+        parent_site._setObject( 'obligatory', obligatory )
+
+        site = site.__of__(parent_site)
+
+        # acquiring subobjects of a different class during import
+        # should not prevent new objects from being created if they
+        # don't exist in the site
+
+        context = DummyImportContext( site, tool=site.setup_tool )
+        context._files[ TOOLSET_XML ] = _REQUIRED_TOOLSET_XML
+
+        importToolset( context )
 
         self.failIf( aq_base( site._getOb( 'mandatory' ) ) is mandatory )
         self.failUnless( isinstance( aq_base( site._getOb( 'mandatory' ) )

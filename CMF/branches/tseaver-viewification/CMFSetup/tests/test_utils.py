@@ -23,7 +23,8 @@ Zope2.startup()
 from DateTime.DateTime import DateTime
 from OFS.Folder import Folder
 
-from common import BaseRegistryTests
+from Products.CMFCore.tests.base.testcase import WarningInterceptor
+from Products.GenericSetup.tests.common import BaseRegistryTests
 
 
 _NORMAL_PROPERTY_NODES = """\
@@ -166,6 +167,11 @@ _SPECIAL_IMPORT = """\
 </dummy>
 """
 
+_EMPTY_ATTR_IMPORT = """\
+<?xml version="1.0"?>
+<dummy title="">
+</dummy>
+"""
 
 class DummyObject(Folder):
 
@@ -173,7 +179,7 @@ class DummyObject(Folder):
     _properties = ()
 
 
-class _ConfiguratorBaseTests(BaseRegistryTests):
+class _ConfiguratorBaseTests(WarningInterceptor, BaseRegistryTests):
 
     def _initSite(self, foo=2):
 
@@ -213,6 +219,14 @@ class _ConfiguratorBaseTests(BaseRegistryTests):
             site.dummy.foo_boolean0 = 0
 
         return site
+
+    def setUp(self):
+        BaseRegistryTests.setUp(self)
+        self._trap_warning_output()
+
+    def tearDown(self):
+        self._free_warning_output()
+        BaseRegistryTests.tearDown(self)
 
 
 class ExportConfiguratorBaseTests(_ConfiguratorBaseTests):
@@ -292,7 +306,10 @@ class ImportConfiguratorBaseTests(_ConfiguratorBaseTests):
                 return {
                   'dummy':
                     { 'property':    {KEY: 'properties', DEFAULT: ()},
-                      'description': {CONVERTER: self._convertToUnique} } }
+                      'description': {CONVERTER: self._convertToUnique},
+                      'title': {},
+                      '#text': {KEY: 'text'},
+                      } }
 
         return Configurator
 
@@ -395,9 +412,19 @@ class ImportConfiguratorBaseTests(_ConfiguratorBaseTests):
             self.fail('CMF Collector issue #352 (comment or empty '
                       'description bug): KeyError raised')
 
-        self.assertEqual( len(site_info), 2 )
+        self.assertEqual( len(site_info), 3 )
         self.assertEqual( site_info['description'], '' )
         self.assertEqual( len(site_info['properties']), 0 )
+        self.assertEqual( site_info['text'], '' )
+
+    def test_parseXML_empty_with_encoding(self):
+        site = self._initSite()
+        configurator = self._makeOne(site, encoding='latin-1')
+        site_info = configurator.parseXML(_EMPTY_ATTR_IMPORT)
+        self.assertEqual(site_info['title'], '')
+        self.assertEqual(type(site_info['title']), str)
+        self.assertEqual(site_info['text'], '')
+        self.assertEqual(type(site_info['text']), str)
 
     def test_initProperty_normal(self):
 

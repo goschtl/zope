@@ -17,16 +17,18 @@ $Id$
 
 import urlparse
 
+import transaction
 from AccessControl import ClassSecurityInfo
 from Globals import DTMLFile
 from Globals import InitializeClass
-import transaction
+from zope.interface import implements
 from zope.interface import implements
 
 from Products.CMFCore.interfaces import IMutableDublinCore
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.utils import contributorsplitter
 from Products.CMFCore.utils import keywordsplitter
+from Products.GenericSetup.interfaces import IDAVAware
 
 from DublinCore import DefaultDublinCoreImpl
 from exceptions import ResourceLockedError
@@ -40,37 +42,6 @@ from utils import _dtmldir
 from utils import formatRFC822Headers
 from utils import parseHeadersBody
 
-factory_type_information = (
-  { 'id'             : 'Link'
-  , 'meta_type'      : 'Link'
-  , 'description'    : """\
-Link items are annotated URLs.
-"""
-  , 'icon'           : 'link_icon.gif'
-  , 'product'        : 'CMFDefault'
-  , 'factory'        : 'addLink'
-  , 'immediate_view' : 'metadata_edit_form'
-  , 'aliases'        : {'(Default)':'link_view',
-                        'view':'link_view'}
-  , 'actions'        : ( { 'id'            : 'view'
-                         , 'name'          : 'View'
-                         , 'action': 'string:${object_url}/link_view'
-                         , 'permissions'   : (View,)
-                         }
-                       , { 'id'            : 'edit'
-                         , 'name'          : 'Edit'
-                         , 'action': 'string:${object_url}/link_edit_form'
-                         , 'permissions'   : (ModifyPortalContent,)
-                         }
-                       , { 'id'            : 'metadata'
-                         , 'name'          : 'Metadata'
-                         , 'action': 'string:${object_url}/metadata_edit_form'
-                         , 'permissions'   : (ModifyPortalContent,)
-                         }
-                       )
-  }
-,
-)
 
 def addLink( self
            , id
@@ -78,21 +49,22 @@ def addLink( self
            , remote_url=''
            , description=''
            ):
-    """
-        Add a Link instance to 'self'.
+    """Add a Link instance to 'self'.
     """
     o=Link( id, title, remote_url, description )
     self._setObject(id,o)
 
 
-class Link( PortalContent
-          , DefaultDublinCoreImpl
-          ):
-    """
-        A Link
+class Link(PortalContent, DefaultDublinCoreImpl):
+
+    """A Link.
     """
 
-    implements(ILink, IMutableLink, IMutableDublinCore)
+    implements( ILink
+              , IMutableLink
+              , IMutableDublinCore
+              , IDAVAware
+              )
     __implements__ = ( z2ILink
                      , z2IMutableLink
                      , PortalContent.__implements__
@@ -238,4 +210,4 @@ class Link( PortalContent
         """
         return len(self.manage_FTPget())
 
-InitializeClass( Link )
+InitializeClass(Link)

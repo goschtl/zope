@@ -16,6 +16,7 @@ $Id$
 """
 
 import os
+from warnings import warn
 from xml.dom.minidom import parseString as domParseString
 
 import Products
@@ -73,7 +74,8 @@ class ImportConfiguratorBase(Implicit):
 
         for name, val in node.attributes.items():
             key = node_map[name].get( KEY, str(name) )
-            val = self._encoding and val.encode(self._encoding) or val
+            if self._encoding is not None:
+                val = val.encode(self._encoding)
             info[key] = val
 
         for child in node.childNodes:
@@ -90,7 +92,8 @@ class ImportConfiguratorBase(Implicit):
             elif '#text' in node_map:
                 key = node_map['#text'].get(KEY, 'value')
                 val = child.nodeValue.lstrip()
-                val = self._encoding and val.encode(self._encoding) or val
+                if self._encoding is not None:
+                    val = val.encode(self._encoding)
                 info[key] = info.setdefault(key, '') + val
 
         for k, v in node_map.items():
@@ -149,6 +152,9 @@ class ImportConfiguratorBase(Implicit):
 
     security.declareProtected(ManagePortal, 'initObject')
     def initObject(self, parent, o_info):
+        warn('CMFSetup.utils including ImportConfiguratorBase is deprecated. '
+             'Please use NodeAdapterBase from GenericSetup.utils instead.',
+             DeprecationWarning)
 
         obj_id = str(o_info['id'])
         if obj_id not in parent.objectIds():
@@ -189,6 +195,9 @@ class ImportConfiguratorBase(Implicit):
 
     security.declareProtected(ManagePortal, 'initProperty')
     def initProperty(self, obj, p_info):
+        warn('CMFSetup.utils including ImportConfiguratorBase is deprecated. '
+             'Please use NodeAdapterBase from GenericSetup.utils instead.',
+             DeprecationWarning)
 
         prop_id = p_info['id']
         prop_map = obj.propdict().get(prop_id, None)
@@ -250,6 +259,10 @@ class ExportConfiguratorBase(Implicit):
     def generateObjectNodes(self, obj_infos):
         """ Pseudo API.
         """
+        warn('CMFSetup.utils including ExportConfiguratorBase is deprecated. '
+             'Please use NodeAdapterBase from GenericSetup.utils instead.',
+             DeprecationWarning)
+
         lines = self._ob_nodes(objects=obj_infos).splitlines()
         return '\n'.join(lines)
 
@@ -257,10 +270,17 @@ class ExportConfiguratorBase(Implicit):
     def generatePropertyNodes(self, prop_infos):
         """ Pseudo API.
         """
+        warn('CMFSetup.utils including ExportConfiguratorBase is deprecated. '
+             'Please use NodeAdapterBase from GenericSetup.utils instead.',
+             DeprecationWarning)
+
         lines = self._prop_nodes(properties=prop_infos).splitlines()
         return '\n'.join(lines)
 
     def _extractObject(self, obj):
+        warn('CMFSetup.utils including ExportConfiguratorBase is deprecated. '
+             'Please use NodeAdapterBase from GenericSetup.utils instead.',
+             DeprecationWarning)
 
         properties = []
         subobjects = []
@@ -285,6 +305,9 @@ class ExportConfiguratorBase(Implicit):
                  'subobjects': tuple(subobjects) }
 
     def _extractProperty(self, obj, prop_map):
+        warn('CMFSetup.utils including ExportConfiguratorBase is deprecated. '
+             'Please use NodeAdapterBase from GenericSetup.utils instead.',
+             DeprecationWarning)
 
         prop_id = prop_map['id']
         prop = obj.getProperty(prop_id)
@@ -317,7 +340,7 @@ class ExportConfiguratorBase(Implicit):
 InitializeClass(ExportConfiguratorBase)
 
 
-# BBB: old class mixing the two, will be removed in CMF 1.7
+# BBB: old class mixing the two, will be removed in CMF 2.0
 class ConfiguratorBase(ImportConfiguratorBase, ExportConfiguratorBase):
     """ Synthesize XML description.
     """
@@ -361,7 +384,7 @@ def _getNodeAttribute( node, attr_name, encoding=None ):
     value = _queryNodeAttribute( node, attr_name, _marker, encoding )
 
     if value is _marker:
-        raise ValueError, 'Invaid attribute: %s' % attr_name
+        raise ValueError, 'Invalid attribute: %s' % attr_name
 
     return value
 

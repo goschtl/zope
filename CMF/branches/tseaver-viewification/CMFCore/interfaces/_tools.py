@@ -225,6 +225,92 @@ class IActionInfo(Interface):
 #
 #   Caching policy tool interfaces
 #
+class ICachingPolicy(Interface):
+
+    def getPolicyId():
+        """
+        """
+
+    def getPredicate():
+        """
+        """
+
+    def getMTimeFunc():
+        """
+        """
+
+    def getMaxAgeSecs():
+        """
+        """
+
+    def getSMaxAgeSecs():
+        """
+        """
+
+    def getNoCache():
+        """
+        """
+
+    def getNoStore():
+        """
+        """
+
+    def getMustRevalidate():
+        """
+        """
+
+    def getProxyRevalidate():
+        """
+        """
+
+    def getPublic():
+        """
+        """
+
+    def getPrivate():
+        """
+        """
+
+    def getNoTransform():
+        """
+        """
+
+    def getVary():
+        """
+        """
+
+    def getETagFunc():
+        """
+        """
+
+    def getEnable304s():
+        """
+        """
+
+    def getLastModified():
+        """Should we set the last modified header?
+        """
+
+    def getPreCheck():
+        """
+        """
+
+    def getPostCheck():
+        """
+        """
+    
+    def testPredicate(expr_context):
+        """Does this request match our predicate?
+        """
+
+    def getHeaders(expr_context):
+        """Does this request match our predicate?
+
+        If so, return a sequence of caching headers as (key, value) tuples.
+        Otherwise, return an empty sequence.
+        """
+
+
 class ICachingPolicyManager(Interface):
 
     """ Compute HTTP cache headers for skin methods.
@@ -1425,17 +1511,6 @@ class IWorkflowTool(Interface):
           status, making it possible to implement queues.
 
         o Permission:  Private (Python only)
-        """
-
-    def getActionsFor(ob):
-        """ Return a list of action dictionaries for 'ob'
-
-        o Generate the list as though queried via
-          'ActionsTool.listFilteredActionsFor'.
-
-        o This method is deprecated and will be removed in CMF 1.7.
-
-        o Permission:  Public
         """
 
     def doActionFor(ob, action, wf_id=None, *args, **kw):

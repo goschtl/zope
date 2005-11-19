@@ -15,10 +15,8 @@
 $Id$
 """
 
-from unittest import TestCase, TestSuite, makeSuite, main
+import unittest
 import Testing
-import Zope2
-Zope2.startup()
 
 from os.path import join as path_join
 from cStringIO import StringIO
@@ -29,20 +27,28 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
 from AccessControl.User import UnrestrictedUser
 from Products.Five import zcml
-from zope.app.tests.placelesssetup import PlacelessSetup
 
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
+from Products.CMFCore.tests.base.testcase import PlacelessSetup
 from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFDefault import tests
-from Products.CMFDefault.File import File
-from Products.CMFDefault.Image import Image
+
+from common import ConformsToContent
 
 TESTS_HOME = tests.__path__[0]
 TEST_JPG = path_join(TESTS_HOME, 'TestImage.jpg')
 
 
-class TestImageElement(TestCase):
+class TestImageElement(ConformsToContent, unittest.TestCase):
+
+    def _getTargetClass(self):
+        from Products.CMFDefault.Image import Image
+
+        return Image
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
 
     def setUp(self):
         self.site = DummySite('site')
@@ -50,7 +56,7 @@ class TestImageElement(TestCase):
 
     def test_EditWithEmptyFile(self):
         # Test handling of empty file uploads
-        image = self.site._setObject( 'testimage', Image('testimage') )
+        image = self.site._setObject('testimage', self._makeOne('testimage'))
 
         testfile = open(TEST_JPG, 'rb')
         image.edit(file=testfile)
@@ -66,18 +72,9 @@ class TestImageElement(TestCase):
         assert image.get_size() > 0
         assert image.get_size() == testfilesize
 
-    def test_File_setFormat(self):
-        # Setting the DC.format must also set the content_type property
-        file = File('testfile', format='image/jpeg')
-        self.assertEqual(file.Format(), 'image/jpeg')
-        self.assertEqual(file.content_type, 'image/jpeg')
-        file.setFormat('image/gif')
-        self.assertEqual(file.Format(), 'image/gif')
-        self.assertEqual(file.content_type, 'image/gif')
- 
     def test_Image_setFormat(self):
         # Setting the DC.format must also set the content_type property
-        image = Image('testimage', format='image/jpeg')
+        image = self._makeOne('testimage', format='image/jpeg')
         self.assertEqual(image.Format(), 'image/jpeg')
         self.assertEqual(image.content_type, 'image/jpeg')
         image.setFormat('image/gif')
@@ -88,22 +85,10 @@ class TestImageElement(TestCase):
         # Test the content type after calling the constructor with the
         # file object being passed in (http://www.zope.org/Collectors/CMF/370)
         testfile = open(TEST_JPG, 'rb')
-        image = Image('testimage', file=testfile)
+        image = self._makeOne('testimage', file=testfile)
         testfile.close()
         self.assertEqual(image.Format(), 'image/jpeg')
         self.assertEqual(image.content_type, 'image/jpeg')
-
-    def test_FileContentTypeUponConstruction(self):
-        # Test the content type after calling the constructor with the
-        # file object being passed in (http://www.zope.org/Collectors/CMF/370)
-        testfile = open(TEST_JPG, 'rb')
-        # Notice the cheat? File objects lack the extra intelligence that
-        # picks content types from the actual file data, so it needs to be
-        # helped along with a file extension...
-        file = File('testfile.jpg', file=testfile)
-        testfile.close()
-        self.assertEqual(file.Format(), 'image/jpeg')
-        self.assertEqual(file.content_type, 'image/jpeg')
 
 
 class TestImageCopyPaste(PlacelessSetup, RequestTest):
@@ -129,7 +114,7 @@ class TestImageCopyPaste(PlacelessSetup, RequestTest):
             self.site.invokeFactory('Folder', id='subfolder')
             self.subfolder = self.site.subfolder
             self.workflow = self.site.portal_workflow
-            transaction.commit(1) # Make sure we have _p_jars
+            transaction.savepoint(optimistic=True) # Make sure we have _p_jars
         except:
             self.tearDown()
             raise
@@ -193,11 +178,10 @@ class TestImageCopyPaste(PlacelessSetup, RequestTest):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(TestImageElement),
-        makeSuite(TestImageCopyPaste),
+    return unittest.TestSuite((
+        unittest.makeSuite(TestImageElement),
+        unittest.makeSuite(TestImageCopyPaste),
         ))
-    return suite
 
 if __name__ == '__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

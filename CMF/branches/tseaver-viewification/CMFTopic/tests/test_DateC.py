@@ -20,8 +20,9 @@ import Testing
 import Zope2
 Zope2.startup()
 
+import Products
 from DateTime.DateTime import DateTime
-
+from Products.CMFCore.tests.base.testcase import PlacelessSetup
 from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFTopic.Topic import Topic
@@ -149,7 +150,7 @@ class FriendlyDateCriterionTests(CriterionTestCase):
         self.assertEqual( expect_now.Date(), DateTime().Date() )
         self.assertEqual( result[0][1]['range'], 'min:max' )
 
-class FriendlyDateCriterionFunctionalTests(RequestTest):
+class FriendlyDateCriterionFunctionalTests(PlacelessSetup, RequestTest):
     # Test the date criterion using a "real CMF" with catalog etc.
     selectable_diffs = [0, 1, 2, 5, 7, 14, 31, 93, 186, 365, 730]
     nonzero_diffs = [1, 2, 5, 7, 14, 31, 93, 186, 365, 730]
@@ -157,7 +158,16 @@ class FriendlyDateCriterionFunctionalTests(RequestTest):
     day_diffs.extend(selectable_diffs)
 
     def setUp(self):
+        import Products.CMFCore
+        import Products.Five
+        from Products.Five import zcml
+        import Products.GenericSetup
+        PlacelessSetup.setUp(self)
         RequestTest.setUp(self)
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('configure.zcml', Products.GenericSetup)
+        zcml.load_config('configure.zcml', Products.CMFCore)
+
         factory = self.root.manage_addProduct['CMFDefault'].addConfiguredSite
         factory('site', 'CMFDefault:default', snapshot=False)
         self.site = self.root.site
@@ -179,6 +189,9 @@ class FriendlyDateCriterionFunctionalTests(RequestTest):
             dummy_ob.modified_date = self.now + i
             dummy_ob.reindexObject()
 
+    def tearDown(self):
+        RequestTest.tearDown(self)
+        PlacelessSetup.tearDown(self)
 
     def test_Harness(self):
         # Make sure the test harness is set up OK

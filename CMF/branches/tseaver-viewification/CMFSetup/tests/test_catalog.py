@@ -25,13 +25,12 @@ from Products.ZCTextIndex.Lexicon import CaseNormalizer
 from Products.ZCTextIndex.Lexicon import Splitter
 from Products.ZCTextIndex.Lexicon import StopWordRemover
 from Products.ZCTextIndex.ZCTextIndex import PLexicon
-from zope.app.tests.placelesssetup import PlacelessSetup
 
 from Products.CMFCore.CatalogTool import CatalogTool
-
-from common import BaseRegistryTests
-from common import DummyExportContext
-from common import DummyImportContext
+from Products.CMFCore.tests.base.testcase import PlacelessSetup
+from Products.GenericSetup.tests.common import BaseRegistryTests
+from Products.GenericSetup.tests.common import DummyExportContext
+from Products.GenericSetup.tests.common import DummyImportContext
 
 
 class _extra:

@@ -46,12 +46,16 @@ from OFS.PropertySheets import PropertySheets
 from OFS.SimpleItem import SimpleItem
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
-from zope.i18nmessageid import MessageIDFactory
 from thread import allocate_lock
 
 from exceptions import AccessControl_Unauthorized
 from exceptions import NotFound
 from warnings import warn
+
+try:
+    from zope.i18nmessageid import MessageFactory
+except ImportError: # BBB
+    from zope.i18nmessageid import MessageIDFactory as MessageFactory
 
 
 security = ModuleSecurityInfo( 'Products.CMFCore.utils' )
@@ -594,11 +598,11 @@ class ContentInit:
                 , extra_constructors=()
                 , fti=()
                 ):
+        # BBB: fti argument is ignored
         self.meta_type = meta_type
         self.content_types = content_types
         self.permission = permission
         self.extra_constructors = extra_constructors
-        self.fti = fti
 
     def initialize(self, context):
         # Add only one meta type to the folder add list.
@@ -609,9 +613,7 @@ class ContentInit:
             # manage_addContentType() can then grab it.
             , constructors = ( manage_addContentForm
                                , manage_addContent
-                               , self
-                               , ('factory_type_information', self.fti)
-                               ) + self.extra_constructors
+                               , self ) + self.extra_constructors
             , permission = self.permission
             )
 
@@ -794,4 +796,4 @@ class SimpleRecord:
 
 
 security.declarePublic('MessageID')
-MessageID = MessageIDFactory('cmf_default')
+MessageID = MessageFactory('cmf_default')

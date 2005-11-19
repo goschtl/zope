@@ -4,6 +4,7 @@ HEAD only (unreleased)
 
     - CMFDefault and CMFTopic: Split off CMFTopic profile.
       CMFTopic support is now configured by an optional extension profile.
+      CMFDefault no longer depends on CMFTopic.
 
     - TypesTool: Improved add form for type info objects.
       Presettings can now be loaded from type info settings in setup profiles.
@@ -93,6 +94,15 @@ HEAD only (unreleased)
 
   Bug Fixes
 
+    - CMFSetup: fixed empty attribute parsing when an encoding is
+      defined.
+
+    - ActionProviderBase: getActionObject did stumble over newstyle Actions.
+
+    - CMFCore.exportimport.content:  Ensure that BODYFILE in our "faux"
+      request is a file-like object, FBO objects which expect to call its
+      'read' method.
+
     - Got rid of the "CMF Site" and "Configured CMF Site" duality in the ZMI
       add list by removing the "CMF Site" class registration in CMFDefault
       and moving the "Configured CMF Site" registration from CMFSetup into
@@ -129,6 +139,24 @@ HEAD only (unreleased)
       if no default view could be found for a piece of content.
 
   Others
+
+    - Workflow: Removed deprecated WorkflowInformation and getActionsFor.
+
+    - CMFCore and GenericSetup: Moved mechanisms for content export / import
+      to GenericSetup/content.py, and made more generic.
+
+    - CMFDefault: Removed PortalGenerator and manage_addCMFSite.
+
+    - Portal Types: Removed factory_type_information data.
+      TypesTool.listDefaultTypeInformation was removed, the 'fti' argument of
+      utils.ContentInit and the 'typeinfo_name' argument of
+      TypesTool.manage_addTypeInformation are ignored.
+
+    - CatalogTool: A new portal_catalog is now empty.
+      Removed enumerateIndexes, enumerateLexicons, enumerateColumns and
+      _initIndexes. Please use the setup tool to populate the catalog.
+
+    - CMFActionIcons, CMFCalendar and CMFTopic: Removed old install scripts.
 
     - Refactored and extended CMFDefault.tests.test_join so it can be easily 
       subclassed and reused for alternative membership implementations. All
