@@ -4,7 +4,7 @@ Overview
 
 The Zope Packaging Tool, or |zpkg|_, is a tool used to build software
 distributions based on the Python ``distutils`` package.  The
-generated distributions can be used like any other ``distuils``-based
+generated distributions can be used like any other ``distutils``-based
 distribution.
 
 There are several terms used in this documentation that have specific
