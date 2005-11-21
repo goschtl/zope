@@ -19,8 +19,14 @@ __docformat__ = 'restructuredtext'
 
 from zope.app.form.interfaces import IWidget, InputErrors
 from zope.component.interfaces import IViewFactory
+from zope.deprecation import deprecated
 from zope.interface import implements
 from zope.i18n import translate
+from zope.schema.interfaces import IChoice, ICollection
+
+deprecated('CustomSequenceWidgetFactory',
+           'Use CustomWidgetFactory instead. '
+           'The reference will be gone in Zope 3.3.')
 
 class Widget(object):
     """Mixin class providing functionality common across widget types."""
@@ -62,6 +68,7 @@ class Widget(object):
     def setRenderedValue(self, value):
         self._data = value
 
+
 class InputWidget(Widget):
     """Mixin class providing some default input widget methods."""
 
@@ -81,6 +88,7 @@ class InputWidget(Widget):
         else:
             return False
 
+
 class CustomWidgetFactory(object):
     """Custom Widget Factory."""
     implements(IViewFactory)
@@ -90,25 +98,34 @@ class CustomWidgetFactory(object):
         self.args = args
         self.kw = kw
 
-    def __call__(self, context, request):
-        args = (context, request) + self.args
+    def _create(self, args):
         instance = self._widget_factory(*args)
         for name, value in self.kw.items():
             setattr(instance, name, value)
         return instance
 
-class CustomSequenceWidgetFactory(object):
-    """Custom Widget Factory."""
-    implements(IViewFactory)
+    def __call__(self, context, request):
+        # Sequence widget factory
+        if ICollection.providedBy(context):
+            args = (context, context.value_type, request) + self.args
 
-    def __init__(self, widget_factory, *args, **kw):
-        self._widget_factory = widget_factory
-        self.args = args
-        self.kw = kw
+        # Vocabulary widget factory
+        elif IChoice.providedBy(context):
+            args = (context, context.vocabulary, request) + self.args
+
+        # Regular widget factory
+        else:
+            args = (context, request) + self.args
+
+        return self._create(args)
+
+
+# BBB: Gone in 3.3 (does not satify IViewFactory)
+class CustomSequenceWidgetFactory(CustomWidgetFactory):
+    """Custom sequence widget factory."""
 
     def __call__(self, context, field, request):
-        args = (context, field, request) + self.args
-        instance = self._widget_factory(*args)
-        for name, value in self.kw.items():
-            setattr(instance, name, value)
-        return instance
+        if not ICollection.providedBy(context):
+            raise TypeError, "Provided field does not provide ICollection."
+
+        return super(CustomSequenceWidgetFactory, self).__call__(context, request)

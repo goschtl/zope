@@ -24,7 +24,7 @@ from zope.publisher.browser import TestRequest
 from zope.schema import Text
 
 from zope.app.form import Widget
-from zope.app.form import CustomWidgetFactory, CustomSequenceWidgetFactory
+from zope.app.form import CustomWidgetFactory
 from zope.app.form.interfaces import IWidget
 from zope.app.testing.placelesssetup import setUp, tearDown
 
@@ -139,7 +139,15 @@ class TestCustomWidgetFactory(object):
     """Tests the custom widget factory.
 
     Custom widgets can be created using a custom widget factory. Factories
-    are used to assign attribute values to widgets they create:
+    are used to assign attribute values to widgets they create.
+
+    The custom widget factory can be used for three widget types:
+
+        -   Regular widgets
+        -   Sequence widgets
+        -   Vocabulary widgets
+
+    Test regular widget:
 
         >>> factory = CustomWidgetFactory(FooWidget, bar='baz')
         >>> widget = factory(context, request)
@@ -147,8 +155,53 @@ class TestCustomWidgetFactory(object):
         True
         >>> widget.bar
         'baz'
+
+    Test sequence widget:
+
+        >>> from zope.schema import TextLine, List
+        >>> from zope.app.form.browser import ListSequenceWidget
+        >>> value_type = TextLine(__name__=u'bar')
+        >>> field = List( __name__=u'foo', value_type=value_type )
+
+        >>> factory = CustomWidgetFactory(ListSequenceWidget, 
+        ...     subwidget=CustomWidgetFactory(FooWidget, bar='baz'))
+
+        >>> widget = factory(field, request)
+        >>> widget.context.value_type is value_type
+        True
+        >>> isinstance(widget, ListSequenceWidget)
+        True
+
+        >>> isinstance(widget.subwidget, CustomWidgetFactory)
+        True
+        >>> subwidget = widget.subwidget(context, request)
+        >>> isinstance(subwidget, FooWidget)
+        True
+        >>> subwidget.bar
+        'baz'
+
+    Test vocabulary widget:
+
+        >>> from zope.schema import Choice
+        >>> from zope.app.form.browser import RadioWidget
+        >>> field = Choice( __name__=u'foo', values=['1', '2', '3'] )
+        >>> bound = field.bind(context)
+
+        >>> factory = CustomWidgetFactory(RadioWidget, 
+        ...      orientation = 'vertical')
+
+        >>> widget = factory(bound, request)
+        >>> [term.value for term in widget.context.vocabulary]
+        ['1', '2', '3']
+
+        >>> isinstance(widget, RadioWidget)
+        True
+        >>> widget.orientation
+        'vertical'
+
     """
 
+# BBB: Gone in 3.3 (does not satify IViewFactory)
 class TestCustomSequenceWidgetFactory(object):
     """Tests the custom sequence widget factory.
 
@@ -158,10 +211,17 @@ class TestCustomSequenceWidgetFactory(object):
 
         >>> from zope.schema import TextLine, List
         >>> from zope.app.form.browser import ListSequenceWidget
+        
+        
         >>> value_type = TextLine(__name__=u'bar')
         >>> field = List( __name__=u'foo', value_type=value_type )
 
         >>> ow = CustomWidgetFactory(FooWidget, bar='baz')
+        
+        >>> import zope.deprecation
+        >>> zope.deprecation.__show__.off()
+        >>> from zope.app.form import CustomSequenceWidgetFactory
+        >>> zope.deprecation.__show__.on()
         >>> sw = CustomSequenceWidgetFactory(ListSequenceWidget, subwidget=ow)
         >>> widget = sw(field, TextLine(), request)
         >>> isinstance(widget, ListSequenceWidget)

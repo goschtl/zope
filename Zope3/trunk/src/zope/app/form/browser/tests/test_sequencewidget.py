@@ -32,7 +32,6 @@ from zope.app.form.browser import SequenceWidget
 from zope.app.form.interfaces import IDisplayWidget
 from zope.app.form.interfaces import IInputWidget, MissingInputError
 from zope.app.form import CustomWidgetFactory
-from zope.app.form import CustomSequenceWidgetFactory
 
 from zope.app.form.browser.tests.support import VerifyResults
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
@@ -98,16 +97,16 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
         request = TestRequest()
 
         # set up the custom widget factory and verify that it works
-        sw = CustomSequenceWidgetFactory(ListSequenceWidget)
-        widget = sw(self.field, TextLine(), request)
+        sw = CustomWidgetFactory(ListSequenceWidget)
+        widget = sw(self.field, request)
         assert widget.subwidget is None
         assert widget.context.value_type is value_type
 
         # set up a variant that specifies the subwidget to use and verify it
         class PollOption(object) : pass
         ow = CustomWidgetFactory(ObjectWidget, PollOption)
-        sw = CustomSequenceWidgetFactory(ListSequenceWidget, subwidget=ow)
-        widget = sw(self.field, TextLine(), request)
+        sw = CustomWidgetFactory(ListSequenceWidget, subwidget=ow)
+        widget = sw(self.field, request)
         assert widget.subwidget is ow
         assert widget.context.value_type is value_type
 

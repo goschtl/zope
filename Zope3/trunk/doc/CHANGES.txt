@@ -154,6 +154,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed bug 451, http://www.zope.org/Collectors/Zope3-dev/451
+        Invoke widget factories adequately. Deprecate 
+        CustomSequenceWidgetFactory because it does not satisfy IViewFactory.
+
       - zope.tales.expressions.simpleTraverse would raise NameError if the
         object at hand did not implement __getitem__. Changed to raise
         AttributeError instead. AttributeError is included in Undefs whereas
@@ -211,7 +215,7 @@ Zope Changes
       Stephan Richter, Roger Ineichen, Marius Gedminas, Julien Anguenot, Benji
       York, Gary Poster, Jim Fulton, Michael Kerrin, Torsten Kurbad,
       Philipp von Weitershausen, Tarek Ziadé, Andreas Jung, Dmitry Vasiliev,
-      Juergen Kartnaller, Stefan Holek
+      Juergen Kartnaller, Stefan Holek, Dominik Huber
 
     Note: If you are not listed and contributed, please add yourself. This
           note will be deleted before the release.

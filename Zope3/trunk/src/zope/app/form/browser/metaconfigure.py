@@ -22,6 +22,7 @@ import os
 import zope.component
 from zope.security.checker import CheckerPublic
 from zope.interface import implementedBy
+from zope.component.interfaces import IViewFactory
 from zope.configuration.exceptions import ConfigurationError
 
 from zope.schema import getFieldNamesInOrder
@@ -84,7 +85,14 @@ class BaseFormDirective(object):
             # attribute.  This can be used to override some of the
             # presentational attributes of the widget implementation.
             class_ = self._default_widget_factory
-        self._widgets[field+'_widget'] = CustomWidgetFactory(class_, **attrs)
+        
+        # don't wrap a factory into a factory
+        if IViewFactory.providedBy(class_):
+            factory = class_
+        else:
+            factory = CustomWidgetFactory(class_, **attrs)
+
+        self._widgets[field+'_widget'] = factory
 
     def _processWidgets(self):
         if self._widgets:

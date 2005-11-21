@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 from zope.interface import implements
 from zope.schema import getFieldNamesInOrder
 
+from zope.app import zapi
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form import InputWidget
 from zope.app.form.browser.widget import BrowserWidget
@@ -105,6 +106,18 @@ class ObjectWidget(BrowserWidget, InputWidget):
             result.append(getSubwidget(name).hidden())
         return "".join(result)
 
+    def error(self):
+        if self._error:
+            errormessages = []
+            keys = self._error.keys(); keys.sort()
+            for key in keys:
+                errormessages.append(str(key) + ': ')
+                errormessages.append( zapi.getMultiAdapter((self._error[key], self.request),
+                                        IWidgetInputErrorView).snippet())
+                errormessages.append(str(key) + ', ')
+            return ''.join(errormessages[0:-1])
+        return ""
+
     def getInputValue(self):
         """Return converted and validated widget data.
 
@@ -114,10 +127,25 @@ class ObjectWidget(BrowserWidget, InputWidget):
         object (note that the default EditView calls `applyChanges`, which
         does this).
         """
+
+        errors = []
         content = self.factory()
         for name in self.names:
-            setattr(content, name, self.getSubWidget(name).getInputValue())
+            try:
+                setattr(content, name, self.getSubWidget(name).getInputValue())
+            except Exception, e:
+                errors.append(e)
+                if self._error is None:
+                    self._error = {}
+                
+                if name not in self._error:
+                    self._error[name] = e
+
+        if errors:
+            raise errors[0]
+
         return content
+
 
     def applyChanges(self, content):
         field = self.context
