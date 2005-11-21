@@ -2,11 +2,16 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="zope">
 
+    <tutorial
+        name="sample_tutorial"
+        title="Sample Tutorial"
+        path="sample_tutorial.txt" />
+
   <configure package="zope.testbrowser">
 
     <tutorial
         name="testbrowser"
-        title="Test Browser Features"
+        title="The Test Browser"
         path="README.txt" />
 
   </configure>

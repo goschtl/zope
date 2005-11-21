@@ -1,11 +1,22 @@
 <configure
     xmlns="http://namespaces.zope.org/browser"
     xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:jsonrpc="http://namespaces.zope.org/jsonrpc"
     i18n_domain="zope">
 
   <resource
       name="tutorial.css"
       file="tutorial.css"
+      />
+
+  <resource
+      name="tutorials-runner.js"
+      file="tutorials-runner.js"
+      />
+
+  <resource
+      name="tutorial-browser.js"
+      file="tutorial-browser.js"
       />
 
   <page
@@ -28,6 +39,22 @@
       for="..interfaces.ITutorialManager"
       class=".tutorial.TutorialsRunner"
       template="index.pt"
+      permission="zope.View"
+      />
+
+  <!-- JSON Methods -->
+
+  <jsonrpc:view
+      for="..interfaces.ITutorialSessionManager"
+      methods="createSession deleteSession"
+      class=".tutorial.TutorialSessionManager"
+      permission="zope.View"
+      />
+
+  <jsonrpc:view
+      for="..interfaces.ITutorialSession"
+      methods="getNextStep setCommandResult keepGoing"
+      class=".tutorial.TutorialSession"
       permission="zope.View"
       />
 

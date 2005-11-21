@@ -6,39 +6,30 @@
           href="/@@/tutorial.css" />
     <script
         language="JavaScript" type="text/javascript"
-        src="/@@/selenium/jsunit/app/jsUnitCore.js"></script>
-    <script
-        language="JavaScript" type="text/javascript"
-        src="/@@/selenium/xmlextras.js"></script>
+        src="/@@/selenium/htmlutils.js"></script>
     <script
         language="JavaScript" type="text/javascript"
         src="/@@/selenium/selenium-browserbot.js"></script>
     <script
         language="JavaScript" type="text/javascript"
-        src="/@@/selenium/selenium-api.js"></script>
-    <script
-        language="JavaScript" type="text/javascript"
-        src="/@@/selenium/selenium-commandhandlers.js"></script>
-    <script
-        language="JavaScript" type="text/javascript"
-        src="/@@/selenium/selenium-executionloop.js"></script>
-    <script
-        language="JavaScript" type="text/javascript"
-        src="/@@/selenium/selenium-seleneserunner.js"></script>
-    <script
-        language="JavaScript" type="text/javascript"
-        src="/@@/selenium/selenium-logging.js"></script>
-    <script
-        language="JavaScript" type="text/javascript"
-        src="/@@/selenium/htmlutils.js"></script>
-    <script
-        language="JavaScript" type="text/javascript"
         src="/@@/selenium/xpath.js"></script>
     <script
         language="JavaScript" type="text/javascript"
-        src="/@@/selenium/user-extensions.js"></script>
+        src="/@@/jsolait/init.js"></script>
+    <script
+        language="JavaScript" type="text/javascript"
+        src="/@@/jsolait/lib/urllib.js"></script>
+    <script
+        language="JavaScript" type="text/javascript"
+        src="/@@/jsolait/lib/jsonrpc.js"></script>
+    <script
+        language="JavaScript" type="text/javascript"
+        src="/@@/tutorial-browser.js"></script>
+    <script
+        language="JavaScript" type="text/javascript"
+        src="/@@/tutorials-runner.js"></script>
   </head>
-  <body>
+  <body onload="javascript:initializeTutorialRunner()">
 
     <table width="100%" style="height: 100%;">
       <tr>
@@ -46,13 +37,12 @@
           <metal:block use-macro="context/@@tutorial_macros/runner" />
         </td>
         <td width="70%" height="30%">
-          <b>Last Four Commands</b><br/>
-          <div id="commandList"></div>
+          <div id="tutorial-text"></div>
         </td>
       </tr>
       <tr>
         <td colspan="2" height="70%">
-          <iframe name="myiframe" id="myiframe" src=""
+          <iframe name="tutorial-content" id="tutorial-content" src=""
                   height="100%" width="100%"></iframe>
         </td>
       </tr>

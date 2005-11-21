@@ -20,8 +20,8 @@ session is an adapter to a tutorial, so we have to create that first:
   ...
   ... And now a variable assignment with a return value:
   ...
-  ...   >>> id = 5
-  ...   >>> id
+  ...   >>> num = 5
+  ...   >>> num
   ...   5
   ...
   ... That's it!
@@ -68,8 +68,43 @@ We can now write a simple function that runs the tutorial for us:
   <BLANKLINE>
   And now a variable assignment with a return value:
   <BLANKLINE>
-    Py: id = 5
-    Py: id
+    Py: num = 5
+    Py: num
+    5
+  <BLANKLINE>
+  That's it!
+  <BLANKLINE>
+  ---------- The End ----------
+
+Next let's try a little bit more interesting. There is also a CLI controller
+that actually executes the examples:
+
+  >>> session = tutorial.TutorialSession(sample)
+  >>> session.initialize()
+
+  >>> controller = cli.ExecutingCLIController(session)
+  >>> controller.PYTHON_PROMPT = 'Py: '
+
+  >>> def run():
+  ...     controller.start()
+  ...     while controller.running:
+  ...         controller.doNextStep()
+
+  >>> run()
+  Starting Tutorial: Sample Documentation
+  <BLANKLINE>
+  Sample Documentation
+  ====================
+  <BLANKLINE>
+  Here is a simple print statement:
+  <BLANKLINE>
+    Py: print 'sample'
+    sample
+  <BLANKLINE>
+  And now a variable assignment with a return value:
+  <BLANKLINE>
+    Py: num = 5
+    Py: num
     5
   <BLANKLINE>
   That's it!

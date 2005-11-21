@@ -1,0 +1,16 @@
+Hello World
+===========
+
+Hi there.
+
+  >>> from zope.testbrowser import Browser
+  >>> browser = Browser()
+  >>> browser.open('http://localhost:8080/manage')
+  >>> browser.url
+  >>> browser.title
+  >>> browser.contents
+  >>> browser.reload()
+  >>> browser.getLink('Buddy Folder').click()
+  >>> browser.goBack()
+
+That's it!

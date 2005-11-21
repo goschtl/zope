@@ -2,23 +2,78 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="zope">
 
+  <!-- Tutorial Configuration -->
+
+  <content class=".tutorial.Tutorial">
+    <require
+        permission="zope.View"
+        interface=".interfaces.ITutorial"
+        />
+  </content>
+
+  <!-- Tutorial Manager Configuration -->
+
+  <content class=".manager.TutorialManager">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+  </content>
+
   <!-- ++tutorials++ Namespace Registration -->
 
   <view
       name="tutorials" type="*"
       provides="zope.app.traversing.interfaces.ITraversable" for="*"
-      factory=".tutorial.tutorialsNamespace"
+      factory=".manager.tutorialsNamespace"
       />
 
   <adapter
       name="tutorials"
       provides="zope.app.traversing.interfaces.ITraversable" for="*"
-      factory=".tutorial.tutorialsNamespace"
+      factory=".manager.tutorialsNamespace"
+      />
+
+  <!-- Tutorial Session Configuration -->
+
+  <content class=".tutorial.TutorialSession">
+    <require
+        permission="zope.View"
+        interface=".interfaces.ITutorialSession"
+        />
+  </content>
+
+  <!-- Tutorial Session Manager Configuration -->
+
+  <content class=".tutorial.TutorialSessionManager">
+    <require
+        permission="zope.View"
+        interface=".interfaces.ITutorialSessionManager"
+        />
+  </content>
+
+  <!-- ++sessions++ Namespace Registration -->
+
+  <view
+      name="sessions" type="*"
+      for=".interfaces.ITutorial"
+      provides="zope.app.traversing.interfaces.ITraversable"
+      factory=".tutorial.sessionsNamespace"
+      />
+
+  <adapter
+      name="sessions"
+      for=".interfaces.ITutorial"
+      provides="zope.app.traversing.interfaces.ITraversable"
+      factory=".tutorial.sessionsNamespace"
       />
 
   <!-- Setup of initial tutorials -->
 
-  <!--include file="tutorials.zcml" /-->
+  <include file="tutorials.zcml" />
 
   <!-- Browser Configuration -->
 

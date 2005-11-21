@@ -37,18 +37,15 @@ class TutorialManager(utilities.ReadContainerBase):
         """See zope.app.container.interfaces.IReadContainer"""
         utility = zapi.queryUtility(interfaces.ITutorial, key, default)
         if utility != default:
-            location.locate(utility, self, key)
+            utility = location.LocationProxy(utility, self, key)
         return utility
 
     def items(self):
         """See zope.app.container.interfaces.IReadContainer"""
         items = list(zapi.getUtilitiesFor(interfaces.ITutorial))
         items.sort()
-        utils = []
-        for key, value in items:
-            location.locate(value, self, key)
-            utils.append((key, value))
-        return utils
+        return [(name, location.LocationProxy(tutorial, self, name))
+                for name, tutorial in items]
 
 
 class tutorialsNamespace(object):

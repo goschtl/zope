@@ -1,0 +1,30 @@
+<metal:block define-macro="runner">
+
+  <h1 class="main">Tutorials Runner</h1>
+
+  <div style="padding: 3px">
+    <p>
+      Please select one of the tutorials:
+    </p>
+
+    <div style="text-align: center">
+      <select id="tutorial-selector" style="width: 80%">
+        <option tal:repeat="tutorial context/values"
+                tal:attributes="value tutorial/zope:name"
+                tal:content="tutorial/title">
+          Tutorial 1
+        </option>
+      </select>
+    </div>
+
+    <p style="text-align: center">
+      <input type="submit" id="start-button" name="START" value="Start"
+             onclick="javascript:startTutorial()"/>
+      <input type="submit" id="stop-button" name="STOP" value="Stop"
+             style="display: None" onclick="javascript:stopTutorial()"/>
+      <input type="submit" id="next-button" name="NEXT" value="Next"
+             style="display: None" onclick="javascript:runNextStep()"/>
+    </p>
+  </div>
+
+</metal:block>

@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 import types
 import zope.interface
 
-from zope.tutorial import interfaces
+from zope.tutorial import interfaces, runner
 
 class SimpleCLIController(object):
     """A dummy Command-line based controller.
@@ -77,3 +77,15 @@ class SimpleCLIController(object):
             self.end()
         else:
             self.run(step)
+
+
+class ExecutingCLIController(SimpleCLIController):
+
+    def __init__(self, session):
+        super(ExecutingCLIController, self).__init__(session)
+        self.erunner = runner.ExampleRunner(session.globs)
+
+    def run(self, example):
+        """See interfaces.ITutorialController"""
+        super(ExecutingCLIController, self).run(example)
+        self.erunner.run(example)

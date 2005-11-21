@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 import zope.schema
-from zope.app.container import interfaces
+from zope.app.container import interfaces, constraints
 
 
 class ITutorialManager(interfaces.IReadContainer):
@@ -46,3 +46,38 @@ class ITutorial(zope.interface.Interface):
         title=u'File Path',
         description=u'Path to the file used for the tutorial',
         required=True)
+
+
+class ITutorialSessionManager(interfaces.IContainer):
+    """Tutorial Session Manager
+
+    The tutorial sessoin manager keeps track of all sessions for a given
+    tutorial.
+    """
+    constraints.contains('.ITutorialSession')
+
+    def createSession():
+        """Create a session and return its name."""
+
+    def deleteSession(name):
+        """Delete a session for the given name."""
+
+
+class ITutorialSession(interfaces.IContained):
+    """Tutorial Session
+
+    The session keeps track of the state of the tutorial for the user.
+    """
+    constraints.containers(ITutorialSessionManager)
+
+    def initialize():
+        """Initialize the session."""
+
+    def getNextStep():
+        """Return the next step in the tutorial.
+
+        Can be text or an example.
+        """
+
+    def keepGoing():
+        """ """

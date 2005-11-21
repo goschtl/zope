@@ -1,0 +1,47 @@
+html {
+    height: 100%;
+}
+
+body {
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size: 0.8em;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+}
+
+div, p {
+    font-size: 0.8em;
+}
+
+td {
+    padding: 0;
+    margin: 0;
+    position: static;
+    border: 2px solid #2475BB;
+}
+
+tr {
+    vertical-align: top;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: white;
+    overflow: auto;
+}
+
+/* --- Style --- */
+
+h1.main {
+  color: white;
+  font-size: 100%;
+  background-color: #2475BB;
+  padding: 2px;
+}
+
+#tutorial-text {
+  padding: 1em;
+}
