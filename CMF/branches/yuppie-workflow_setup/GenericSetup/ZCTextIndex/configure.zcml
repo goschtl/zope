@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    >
+
+  <adapter
+      factory=".exportimport.ZCLexiconNodeAdapter"
+      provides="Products.GenericSetup.interfaces.INodeExporter"
+      for="Products.ZCTextIndex.interfaces.IZCLexicon"
+      />
+
+  <adapter
+      factory=".exportimport.ZCLexiconNodeAdapter"
+      provides="Products.GenericSetup.interfaces.INodeImporter"
+      for="Products.ZCTextIndex.interfaces.IZCLexicon"
+      />
+
+  <adapter
+      factory=".exportimport.ZCTextIndexNodeAdapter"
+      provides="Products.GenericSetup.interfaces.INodeExporter"
+      for="Products.ZCTextIndex.interfaces.IZCTextIndex"
+      />
+
+  <adapter
+      factory=".exportimport.ZCTextIndexNodeAdapter"
+      provides="Products.GenericSetup.interfaces.INodeImporter"
+      for="Products.ZCTextIndex.interfaces.IZCTextIndex"
+      />
+
+</configure>
