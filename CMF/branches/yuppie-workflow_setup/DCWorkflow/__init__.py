@@ -16,8 +16,10 @@ $Id$
 """
 
 from Products.CMFCore.utils import registerIcon
+from Products.GenericSetup import EXTENSION
+from Products.GenericSetup import profile_registry
+
 import DCWorkflow, States, Transitions, Variables, Worklists, Scripts
-import Default
 
 
 def initialize(context):
@@ -41,3 +43,10 @@ def initialize(context):
     Worklists.WorklistDefinition.icon = Worklists.Worklists.icon
     registerIcon(Scripts.Scripts,
                  'images/script.gif', globals())
+
+    profile_registry.registerProfile('revision2',
+                                     'CMF Default Workflow [Revision 2]',
+                                     'Adds revision 2 of default workflow.',
+                                     'profiles/revision2',
+                                     'DCWorkflow',
+                                     EXTENSION)

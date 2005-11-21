@@ -302,6 +302,8 @@ class WorkflowToolConfigurator(ConfiguratorBase):
         return val
 
     def _convertBindings(self, val):
+        if not val[0]:
+            return {}
 
         result = {}
 

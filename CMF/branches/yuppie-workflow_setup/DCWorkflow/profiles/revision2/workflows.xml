@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<workflow-tool>
+ <workflow workflow_id="default_workflow"
+           meta_type="Workflow"
+           filename="workflows/default_workflow/definition.xml"/>
+ <bindings>
+ </bindings>
+</workflow-tool>
