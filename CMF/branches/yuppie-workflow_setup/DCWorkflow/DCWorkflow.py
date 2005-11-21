@@ -35,7 +35,6 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import ObjectDeleted
 from Products.CMFCore.WorkflowCore import ObjectMoved
 from Products.CMFCore.WorkflowCore import WorkflowException
-from Products.CMFCore.WorkflowTool import addWorkflowFactory
 
 # DCWorkflow
 from permissions import ManagePortal
@@ -66,7 +65,6 @@ class DCWorkflowDefinition(WorkflowUIMixin, Folder):
     implements(IWorkflowDefinition)
     __implements__ = z2IWorkflowDefinition
 
-    meta_type = 'Workflow'
     title = 'DC Workflow Definition'
     _isAWorkflow = 1
 
@@ -537,7 +535,3 @@ class DCWorkflowDefinition(WorkflowUIMixin, Folder):
             return new_sdef
 
 InitializeClass(DCWorkflowDefinition)
-
-
-addWorkflowFactory(DCWorkflowDefinition, id='dc_workflow',
-                   title='Web-configurable workflow')
