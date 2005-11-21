@@ -263,4 +263,6 @@ def initialize(context):
                                          'Content for a simple PAS.',
                                          'profiles/simple',
                                          'PluggableAuthService',
-                                         BASE)
+                                         BASE,
+                                         IPluggableAuthService,
+                                        )
