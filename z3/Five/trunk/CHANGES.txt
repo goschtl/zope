@@ -2,6 +2,14 @@
 Five Changes
 ============
 
+Five 1.3 branch
+===============
+
+Restructuring
+-------------
+
+* Cleaned up security test.
+
 Five 1.3b3 (2005-11-19)
 =======================
 
