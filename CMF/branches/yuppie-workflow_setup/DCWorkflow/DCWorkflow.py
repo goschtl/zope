@@ -37,6 +37,7 @@ from Products.CMFCore.WorkflowCore import ObjectMoved
 from Products.CMFCore.WorkflowCore import WorkflowException
 
 # DCWorkflow
+from interfaces import IDCWorkflowDefinition
 from permissions import ManagePortal
 from utils import modifyRolesForPermission
 from utils import modifyRolesForGroup
@@ -62,7 +63,7 @@ class DCWorkflowDefinition(WorkflowUIMixin, Folder):
     UI methods are in WorkflowUIMixin.
     '''
 
-    implements(IWorkflowDefinition)
+    implements(IDCWorkflowDefinition, IWorkflowDefinition)
     __implements__ = z2IWorkflowDefinition
 
     title = 'DC Workflow Definition'

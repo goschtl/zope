@@ -16,13 +16,14 @@ $Id$
 """
 
 import os
+
+from AccessControl.Permission import Permission
+from AccessControl.Role import gather_permissions
+from Acquisition import aq_base
 from App.Common import package_home
 
 _dtmldir = os.path.join( package_home( globals() ), 'dtml' )
-
-from AccessControl.Role import gather_permissions
-from AccessControl.Permission import Permission
-from Acquisition import aq_base
+_xmldir = os.path.join( package_home( globals() ), 'xml' )
 
 
 def ac_inherited_permissions(ob, all=0):
