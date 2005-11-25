@@ -95,7 +95,10 @@ How Do I Create Eggs that are Compatible with Basket?
   argument to your setup.py's setup call.  By doing this, your product
   will still be packaged as a zipfile and can be distributed as one,
   but Basket will know that it needs to uncompress the zipfile to a
-  temporary directory at startup to make use of it.
+  temporary directory at startup to make use of it.  CMF/Plone
+  products which use CMF versions up to 1.6 (and perhaps beyond) need
+  to be packaged as non-zip-safe because they use libraries that
+  access the filesystem (such as filesystem directory views).
 
   A Product distribution may include a "Products" namespace package,
   but it is not required.  Each package within a Product distribution
