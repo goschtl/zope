@@ -10,6 +10,11 @@ Zope Changes
 
     New features
 
+      - For containers, IObjectModifiedEvent has been specialized as
+        IContainerModifiedEvent, to better isolate "containerness"
+        changes (changes where subobjects are added, removed or
+        reordered).
+
       - IObjectCopiedEvent now also carries the original from which the
         copy was made (http://www.zope.org/Collectors/Zope3-dev/478)
 
@@ -156,6 +161,8 @@ Zope Changes
 
 
     Bug Fixes
+
+      - Made OrderedContainer.updateOrder send an IContainerModifiedEvent.
 
       - Fixed bug 451, http://www.zope.org/Collectors/Zope3-dev/451
         Invoke widget factories adequately. Deprecate 
