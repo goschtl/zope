@@ -18,7 +18,11 @@ $Id$
 import Acquisition
 from Globals import INSTANCE_HOME
 
+import monkey # BBB: goes away when Zope 3.2 >= r40368 is stiched in
 import zcml
+
+# trigger monkey patches
+monkey.monkeyPatch()
 
 # public API provided by Five
 # usage: from Products.Five import <something>
