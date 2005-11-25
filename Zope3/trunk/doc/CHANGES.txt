@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - IObjectCopiedEvent now also carries the original from which the
+        copy was made (http://www.zope.org/Collectors/Zope3-dev/478)
+
       - Implemented the password managers proposal. Main idea beside the
         proposal is a standard way to implement password encoders/checkers, see
         zope.app.authentication.interfaces.IPasswordManager for details.

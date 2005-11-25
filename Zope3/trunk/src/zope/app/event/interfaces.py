@@ -39,6 +39,8 @@ class IObjectCreatedEvent(IObjectEvent):
 class IObjectCopiedEvent(IObjectCreatedEvent):
     """An object has been copied"""
 
+    original = Attribute("The original from which the copy was made")
+
 
 class IObjectModifiedEvent(IObjectEvent):
     """An object has been modified"""

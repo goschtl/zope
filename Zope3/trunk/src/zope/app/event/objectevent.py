@@ -175,6 +175,17 @@ class ObjectCopiedEvent(ObjectCreatedEvent):
 
     implements(IObjectCopiedEvent)
 
+    def __init__(self, object, original=None):
+        super(ObjectCopiedEvent, self).__init__(object)
+        self.original = original
+        # BBB goes away in 3.3
+        if original is None:
+            warnings.warn(
+                "%s with no original is deprecated and will no-longer "
+                "be supported starting in Zope 3.3."
+                % self.__class__.__name__,
+                DeprecationWarning, stacklevel=2)
+
 
 def objectEventNotify(event):
     """Event subscriber to dispatch ObjectEvents to interested adapters."""

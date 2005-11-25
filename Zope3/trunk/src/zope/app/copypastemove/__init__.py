@@ -407,7 +407,7 @@ class ObjectCopier(object):
 
         copy = locationCopy(obj)
         copy.__parent__ = copy.__name__ = None
-        notify(ObjectCopiedEvent(copy))
+        notify(ObjectCopiedEvent(copy, obj))
 
         target[new_name] = copy
         return new_name
@@ -699,7 +699,7 @@ def dispatchToSublocations(object, event):
 
     When we notify that our root object has been copied:
 
-      >>> notify(ObjectCopiedEvent(c))
+      >>> notify(ObjectCopiedEvent(c, L('')))
 
     we see that our handler has seen all of the subobjects:
 
