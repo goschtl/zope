@@ -27,6 +27,7 @@ def monkeyPatch():
     interfaces.monkey()
     i18n.monkey()
     localsites_monkey()
+    zope3_monkey()
 
 def localsites_monkey():
     from Acquisition import aq_inner, aq_parent
@@ -71,3 +72,49 @@ def localsites_monkey():
 
     from ZPublisher.BaseRequest import BaseRequest
     BaseRequest.close = close
+
+def zope3_monkey():
+    """Fix Zope 3 to have the proper ContainerModifiedEvent that has
+    been added for 3.2.
+    """
+    try:
+        from zope.app.container.contained import notifyContainerModified
+    except ImportError:
+        pass
+    else:
+        return
+
+    # BBB: goes away when Zope 3.2 >= r40368 is stiched in
+
+    from zope.event import notify
+    from zope.interface import implements
+    import zope.app.container.contained
+    import zope.app.container.interfaces
+    from zope.app.event.objectevent import ObjectModifiedEvent
+    from zope.app.event.interfaces import IObjectModifiedEvent
+
+    class IContainerModifiedEvent(IObjectModifiedEvent):
+        """The container has been modified.
+
+        This event is specific to "containerness" modifications, which
+        means addition, removal or reordering of sub-objects.
+        """
+
+    zope.app.container.interfaces.IContainerModifiedEvent = \
+        IContainerModifiedEvent
+
+
+    class ContainerModifiedEvent(ObjectModifiedEvent):
+        """The container has been modified."""
+        implements(IContainerModifiedEvent)
+
+    zope.app.container.contained.ContainerModifiedEvent = \
+        ContainerModifiedEvent
+
+
+    def notifyContainerModified(object, *descriptions):
+        """Notify that the container was modified."""
+        notify(ContainerModifiedEvent(object, *descriptions))
+
+    zope.app.container.contained.notifyContainerModified = \
+        notifyContainerModified

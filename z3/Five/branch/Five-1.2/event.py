@@ -25,6 +25,7 @@ from App.Dialogs import MessageDialog
 from AccessControl import getSecurityManager
 from ZODB.POSException import ConflictError
 from OFS import Moniker
+from OFS.CopySupport import CopyContainer
 from OFS.CopySupport import CopyError # Yuck, a string exception
 from OFS.CopySupport import eNoData, eNotFound, eInvalid, eNotSupported
 from OFS.CopySupport import cookie_path, sanity_check, _cb_decode
@@ -34,6 +35,7 @@ from zope.event import notify
 from zope.app.container.contained import ObjectMovedEvent
 from zope.app.container.contained import ObjectAddedEvent
 from zope.app.container.contained import ObjectRemovedEvent
+from zope.app.container.contained import notifyContainerModified
 from zope.app.event.objectevent import ObjectCopiedEvent
 from OFS.event import ObjectWillBeMovedEvent
 from OFS.event import ObjectWillBeAddedEvent
@@ -128,6 +130,7 @@ def _setObject(self, id, object, roles=None, user=None, set_owner=1,
 
     if not suppress_events:
         notify(ObjectAddedEvent(ob, self, id))
+        notifyContainerModified(self)
 
     compatibilityCall('manage_afterAdd', ob, ob, self)
 
@@ -169,6 +172,7 @@ def BT_setObject(self, id, object, roles=None, user=None, set_owner=1,
 
     if not suppress_events:
         notify(ObjectAddedEvent(ob, self, id))
+        notifyContainerModified(self)
 
     compatibilityCall('manage_afterAdd', ob, ob, self)
 
@@ -204,6 +208,7 @@ def _delObject(self, id, dp=1, suppress_events=False):
 
     if not suppress_events:
         notify(ObjectRemovedEvent(ob, self, id))
+        notifyContainerModified(self)
 
 
 # From BTreeFolder2
@@ -219,6 +224,7 @@ def BT_delObject(self, id, dp=1, suppress_events=False):
 
     if not suppress_events:
         notify(ObjectRemovedEvent(ob, self, id))
+        notifyContainerModified(self)
 
 # From CopyContainer
 def manage_renameObject(self, id, new_id, REQUEST=None):
@@ -263,6 +269,7 @@ def manage_renameObject(self, id, new_id, REQUEST=None):
     ob = self._getOb(new_id)
 
     notify(ObjectMovedEvent(ob, self, id, self, new_id))
+    notifyContainerModified(self)
 
     ob._postCopy(self, op=1)
 
@@ -389,6 +396,9 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
             ob = self._getOb(id)
 
             notify(ObjectMovedEvent(ob, orig_container, orig_id, self, id))
+            notifyContainerModified(orig_container)
+            if aq_base(orig_container) is not aq_base(self):
+                notifyContainerModified(self)
 
             ob._postCopy(self, op=1)
             # try to make ownership implicit if possible
@@ -444,6 +454,31 @@ def manage_clone(self, ob, id, REQUEST=None):
     notify(ObjectClonedEvent(ob))
 
     return ob
+
+# From OrderSupport
+def moveObjectsByDelta(self, ids, delta, subset_ids=None,
+                       suppress_events=False):
+    """ Move specified sub-objects by delta.
+    """
+    res = self.__five_original_moveObjectsByDelta(ids, delta, subset_ids)
+    if not suppress_events:
+        notifyContainerModified(self)
+    return res
+
+def moveObjectToPosition(self, id, position, suppress_events=False):
+    """ Move specified object to absolute position.
+    """
+    delta = position - self.getObjectPosition(id)
+    return self.moveObjectsByDelta(id, delta, suppress_events=suppress_events)
+
+def OS_manage_renameObject(self, id, new_id, REQUEST=None):
+    """ Rename a particular sub-object without changing its position.
+    """
+    old_position = self.getObjectPosition(id)
+    res = CopyContainer.manage_renameObject(self, id, new_id, REQUEST)
+    self.moveObjectToPosition(new_id, old_position, suppress_events=True)
+    return res
+
 
 ##################################################
 # Fix OFS.Application's creation of some objects.
@@ -521,7 +556,6 @@ _monkied = []
 
 from OFS.SimpleItem import Item
 from OFS.ObjectManager import ObjectManager
-from OFS.CopySupport import CopyContainer
 from OFS.OrderSupport import OrderSupport
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
 from OFS.Application import AppInitializer
@@ -563,8 +597,12 @@ def doMonkies():
     patchMethod(CopyContainer, 'manage_clone',
                 manage_clone)
 
-    patchMethod(OrderSupport, '_old_manage_renameObject',
-                manage_renameObject)
+    patchMethod(OrderSupport, 'moveObjectsByDelta',
+                moveObjectsByDelta)
+    patchMethod(OrderSupport, 'moveObjectToPosition',
+                moveObjectToPosition)
+    patchMethod(OrderSupport, 'manage_renameObject',
+                OS_manage_renameObject)
 
     patchMethod(AppInitializer, 'install_errorlog',
                 install_errorlog)
