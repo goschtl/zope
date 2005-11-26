@@ -14,6 +14,8 @@ from Interface import Interface
 import App.config
 import zLOG
 
+from zope.app.tests.placelesssetup import PlacelessSetup
+
 here = os.path.dirname(__file__)
 
 class LogInterceptor:
@@ -101,7 +103,7 @@ def dummy_initializer(context):
 def legacymethod(self):
     pass
 
-class TestBasket(unittest.TestCase, LogInterceptor):
+class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
 
     def setUp(self):
         self.working_set = pkg_resources.working_set
@@ -184,6 +186,26 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         expected = [ x for x in result if (x and x.startswith('product')) ]
         self.failUnless(sys.modules.has_key('Products.product1'))
         self.failUnless(sys.modules.has_key('Products.product2'))
+
+    def test_externalmethod(self):
+        basket = self._makeOne()
+        from Products.Basket import monkeypatches
+        monkeypatches.patch_externalmethod(basket)
+        basket.preinitialized = False
+        basket.pdist_fname = os.path.join(self.fixtures,
+                                          'pdist-externalmethod.txt')
+        
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        result = basket.initialize(DummyProductContext('Basket'))
+        basket.cleanup()
+
+        print result
+
+        expected = [x for x in result if (x and x.startswith('external method')
+                                          )]
+        self.assertEqual(expected[0], 'external method')
 
     def test_initialize_of_broken_at_import_in_debug_mode(self):
         basket = self._makeOne()
@@ -451,6 +473,62 @@ class TestBasket(unittest.TestCase, LogInterceptor):
         self.assertEqual(
             get_containing_package('Shared.DC.ZRDB').__name__,
             'Shared.DC.ZRDB')
+
+    def test_five_product(self):
+        basket = self._makeOne()
+
+        basket.pdist_fname = os.path.join(self.fixtures,'pdist-fiveproduct.txt')
+        
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        self.failIf(sys.modules.has_key('Products.fiveproduct'))
+
+        result = basket.initialize(DummyProductContext('Basket'))
+
+        import Products.fiveproduct
+
+        self.failUnless(sys.modules.has_key('Products.fiveproduct'))
+
+        from Products.Five.fiveconfigure import findProducts
+        from Products.Five.fiveconfigure import loadProducts
+        from zope.configuration import xmlconfig
+
+        products = findProducts()
+        self.assert_(Products.fiveproduct in products)
+
+        try:
+            # do what Five.loadProduct does
+            sitezcml = """\
+            <configure xmlns="http://namespaces.zope.org/zope"
+               xmlns:five="http://namespaces.zope.org/five">
+               <include package="Products.Five" />
+               <redefinePermission from="zope2.Public" to="zope.Public" />
+               <include package="Products.fiveproduct"/>
+            </configure>"""
+
+            xmlconfig.string(sitezcml)
+
+            # verify that the zcml had the correct effect
+
+            from Products.fiveproduct.module import SampleAdapter
+            from Products.fiveproduct.module import ISampleAdapter
+            from Products.fiveproduct.module import ExtraSampleAdapter
+            from Products.fiveproduct.module import IExtraSampleAdapter
+
+            context = None
+
+            adapter = ISampleAdapter(context)
+            self.assertEqual(adapter.__class__, SampleAdapter)
+            self.assertEqual(adapter.context, context)
+
+            adapter = IExtraSampleAdapter(context)
+            self.assertEqual(adapter.__class__, ExtraSampleAdapter)
+            self.assertEqual(adapter.context, context)
+
+        finally:
+            # clean up
+            PlacelessSetup.tearDown(self)
 
     def _importProduct(self, name):
         __import__(name)

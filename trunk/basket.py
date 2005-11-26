@@ -6,6 +6,7 @@ import atexit
 import shutil
 import tempfile
 import unzip
+from StringIO import StringIO
 
 import zLOG
 
@@ -74,7 +75,8 @@ class Basket(object):
                     continue
                 
             productname = product_pkg.__name__.split('.')[-1]
-            initializer = get_initializer(point, productname, debug_mode)
+            initializer = get_initializer(point, productname, product_pkg,
+                                          debug_mode)
             context = EggProductContext(productname, initializer, app,
                                         product_pkg, eggtitle)
             returned = context.install(debug_mode)
@@ -162,7 +164,7 @@ def get_containing_package(module_name):
         return None
     return get_containing_package(new)
 
-def get_initializer(point, productname, debug_mode):
+def get_initializer(point, productname, product_pkg, debug_mode):
     initializer = None
     try:
         # this will raise an import error if the initializer can't
@@ -173,7 +175,8 @@ def get_initializer(point, productname, debug_mode):
                  error = sys.exc_info())
         f = StringIO()
         limit = 100 # limit to 100 stack trace entries
-        product_pkg.__import_error__ = traceback.print_exc(limit, f).getvalue()
+        traceback.print_exc(limit, f)
+        product_pkg.__import_error__ = f.getvalue()
         if debug_mode:
             raise
     return initializer
