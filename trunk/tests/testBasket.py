@@ -201,8 +201,6 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
         result = basket.initialize(DummyProductContext('Basket'))
         basket.cleanup()
 
-        print result
-
         expected = [x for x in result if (x and x.startswith('external method')
                                           )]
         self.assertEqual(expected[0], 'external method')
