@@ -77,19 +77,8 @@ def zope3_monkey():
     """Fix Zope 3 to have the proper ContainerModifiedEvent that has
     been added for 3.2.
     """
-    try:
-        from zope.app.container.contained import notifyContainerModified
-    except ImportError:
-        pass
-    else:
-        return
-
-    # BBB: goes away when Zope 3.2 >= r40368 is stiched in
-
     from zope.event import notify
     from zope.interface import implements
-    import zope.app.container.contained
-    import zope.app.container.interfaces
     from zope.app.event.objectevent import ObjectModifiedEvent
     from zope.app.event.interfaces import IObjectModifiedEvent
 
@@ -100,21 +89,16 @@ def zope3_monkey():
         means addition, removal or reordering of sub-objects.
         """
 
-    zope.app.container.interfaces.IContainerModifiedEvent = \
-        IContainerModifiedEvent
-
-
     class ContainerModifiedEvent(ObjectModifiedEvent):
         """The container has been modified."""
         implements(IContainerModifiedEvent)
-
-    zope.app.container.contained.ContainerModifiedEvent = \
-        ContainerModifiedEvent
-
 
     def notifyContainerModified(object, *descriptions):
         """Notify that the container was modified."""
         notify(ContainerModifiedEvent(object, *descriptions))
 
-    zope.app.container.contained.notifyContainerModified = \
-        notifyContainerModified
+    from zope.app.container import contained
+    from zope.app.container import interfaces
+    interfaces.IContainerModifiedEvent = IContainerModifiedEvent
+    contained.ContainerModifiedEvent = ContainerModifiedEvent
+    contained.notifyContainerModified = notifyContainerModified
