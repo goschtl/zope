@@ -53,7 +53,7 @@ function startTutorial() {
     /* Create a new server connection to the session */
     var addr = document.URL + CurrentTutorial + '/++sessions++' + SessionId
         ServerConnection = new jsonrpc.ServiceProxy(
-        addr, ['getNextStep', 'setCommandResult', 'keepGoing']);
+        addr, ['getCommand', 'addResult', 'keepGoing']);
 }
 
 function stopTutorial() {
@@ -74,9 +74,13 @@ function stopTutorial() {
 function runNextStep() {
     var keepGoing = true;
     while (keepGoing) {
-        command = ServerConnection.getNextStep();
+        answer = ServerConnection.getCommand();
+        id = answer[0];
+        command = answer[1];
         result = commands[command.action].apply(null, command.params);
-        answer = ServerConnection.setCommandResult(result);
-        keepGoing = ServerConnection.keepGoing();
+        if (result) {
+            ServerConnection.addResult(id, result);
+        }
+        keepGoing = ServerConnection.keepGoing()
     }
 }

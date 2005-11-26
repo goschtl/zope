@@ -39,7 +39,7 @@
 
   <!-- Tutorial Session Configuration -->
 
-  <content class=".tutorial.TutorialSession">
+  <content class=".session.TutorialSession">
     <require
         permission="zope.View"
         interface=".interfaces.ITutorialSession"
@@ -48,7 +48,7 @@
 
   <!-- Tutorial Session Manager Configuration -->
 
-  <content class=".tutorial.TutorialSessionManager">
+  <content class=".session.TutorialSessionManager">
     <require
         permission="zope.View"
         interface=".interfaces.ITutorialSessionManager"
@@ -61,14 +61,14 @@
       name="sessions" type="*"
       for=".interfaces.ITutorial"
       provides="zope.app.traversing.interfaces.ITraversable"
-      factory=".tutorial.sessionsNamespace"
+      factory=".session.sessionsNamespace"
       />
 
   <adapter
       name="sessions"
       for=".interfaces.ITutorial"
       provides="zope.app.traversing.interfaces.ITraversable"
-      factory=".tutorial.sessionsNamespace"
+      factory=".session.sessionsNamespace"
       />
 
   <!-- Setup of initial tutorials -->

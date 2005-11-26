@@ -16,17 +16,10 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-import thread
-import types
-import time
 import zope.proxy
 
 from jsonserver.jsonrpc import MethodPublisher
 from zope.app.basicskin.standardmacros import StandardMacros
-from zope.app.apidoc.utilities import renderText
-
-from zope.tutorial import testbrowser
-import zope.testbrowser
 
 class TutorialMacros(StandardMacros):
     """Page Template METAL macros for Tutorial"""
@@ -42,45 +35,21 @@ class TutorialSessionManager(MethodPublisher):
 
     def createSession(self):
         name = self.context.createSession()
-        self.context[name].initialize()
+        import zope.proxy
+        zope.proxy.removeAllProxies(self.context[name]).initialize()
         return name
 
     def deleteSession(self, id):
         self.context.deleteSession(id)
 
 
-def run(tutorial, example):
-    OldBrowser = zope.testbrowser.Browser
-    zope.testbrowser.Browser = testbrowser.Browser
-    exec compile(example.source, '<string>', "single") in tutorial.globs
-    # Eek, gotta remove the __builtins__
-    del tutorial.globs['__builtins__']
-    tutorial.locked = False
-    zope.testbrowser.Browser = OldBrowser
-
-
 class TutorialSession(MethodPublisher):
 
-    def getNextStep(self):
-        tutorial = zope.proxy.removeAllProxies(self.context)
-        step = tutorial.getNextStep()
-        if isinstance(step, types.StringTypes):
-            text = renderText(step, format='zope.source.rest')
-            return {'action': 'displayText',
-                    'params': (text,)}
-        elif step is None:
-            return {'action': 'finishTutorial',
-                    'params': ()}
-        else:
-            tutorial.locked = True
-            testbrowser.State.reset()
-            thread.start_new_thread(run, (tutorial, step))
-            while tutorial.locked and not testbrowser.State.hasAction():
-                time.sleep(0.1)
-            return testbrowser.State.action
+    def getCommand(self):
+        return self.context.getCommand()
 
-    def setCommandResult(self, result):
-        testbrowser.State.result = result
+    def addResult(self, id, result):
+        self.context.addResult(id, result)
         return True
 
     def keepGoing(self):

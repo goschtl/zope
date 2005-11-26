@@ -1,0 +1,151 @@
+================
+The Test Browser
+================
+
+Since the tutorial uses ``zope.testbrowser``-based tests to generate its
+content, it is necessary to create an alternative implementation of the
+``zope.testbrowser.interfaces.IBrowser`` interface. This implementation uses a
+broker object to communicate with the real browser to execute the
+commands. For the purposes of this demonstration, let's implement a dummy
+broker:
+
+  >>> class Broker(object):
+  ...     pass
+  >>> broker = Broker()
+
+We will complete the API of the broker as the test progresses. As you might
+know from reading the documentation of the ``zope.testbrowser`` package, the
+test browser implements several classes. The content of this document is
+organized by classes and methods.
+
+Furthermore, this document implicitely also documents the broker API, since
+all broker methods must be correctly implemented in order to document the
+testbrowser.
+
+The ``Browser`` class
+---------------------
+
+The constructor
+~~~~~~~~~~~~~~~
+
+Let's now create a browser instance that uses the broker:
+
+  >>> from zope.tutorial import testbrowser
+  >>> browser = testbrowser.Browser(broker)
+  >>> browser.broker
+  <Broker object at ...>
+  >>> browser.timer
+  <zope.testbrowser.browser.PystoneTimer object at ...>
+
+Additionally you can instantiate the object by also providing a URL that is
+immediately opened:
+
+  >>> def openUrl(self, url, data=None):
+  ...     self.url, self.data = url, data
+  ...     return url
+  >>> Broker.openUrl = openUrl
+
+  >>> browser = testbrowser.Browser(broker, 'http://www.zope.org')
+  >>> broker.url
+  'http://www.zope.org'
+  >>> broker.data
+
+
+The ``url`` property
+~~~~~~~~~~~~~~~~~~~~
+
+Once a page is opened, you can always ask for the URL.
+
+  >>> def getUrl(self):
+  ...     return self.url
+  >>> Broker.getUrl = getUrl
+
+  >>> browser.url
+  'http://www.zope.org'
+
+Initially you might think this is obvious, but you often deal with redirects
+and form clicks and the URL might not be easily guessable.
+
+
+The ``isHtml`` property
+~~~~~~~~~~~~~~~~~~~~~~~
+
+This property tests whether the current URL's content is HTML:
+
+  >>> def isHtml(self):
+  ...     return getattr(self, 'html', True)
+  >>> Broker.isHtml = isHtml
+
+  >>> browser.isHtml
+  True
+
+The ``title`` property
+~~~~~~~~~~~~~~~~~~~~~~
+
+Report the HTML title of the current page.
+
+  >>> def getTitle(self):
+  ...     return self.title
+  >>> Broker.getTitle = getTitle
+  >>> broker.title = 'Zope 3'
+
+  >>> browser.title
+  'Zope 3'
+
+
+The ``contents`` property
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Return the full page source.
+
+  >>> def getContent(self):
+  ...     return self.content
+  >>> Broker.getContent = getContent
+  >>> broker.content = '<html>...</html>'
+
+  >>> browser.contents
+  '<html>...</html>'
+
+
+The ``headers`` property
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Return a list of all response headers.
+
+XXX: TO BE DONE!!!
+
+
+The ``handleErrors`` property
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When set to true, errors should not be converted to error pages.
+
+XXX: TO BE DONE!!!
+
+
+The ``open(url, data=None)`` method
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+At any time, you can simply open a new page by specifying a URL.
+
+  >>> browser.open('http://localhost:8080', 'some data')
+  >>> broker.url
+  'http://localhost:8080'
+  >>> broker.data
+  'some data'
+
+
+The ``getLink(text=None, url=None, id=None)`` method
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+One of the more advanced features of the test browser is the retrieval of a
+link using either the link text, url or id. Here we simply return a ``Link``
+object instance:
+
+  >>> link = browser.getLink('Folder')
+  >>> link
+  <Link text='Folder' url=None id=None>
+
+The ``Link`` API is documented in the next section.
+
+

@@ -53,7 +53,7 @@
 
   <jsonrpc:view
       for="..interfaces.ITutorialSession"
-      methods="getNextStep setCommandResult keepGoing"
+      methods="getCommand addResult keepGoing"
       class=".tutorial.TutorialSession"
       permission="zope.View"
       />

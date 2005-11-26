@@ -1,6 +1,6 @@
-====================
-The Tutorial Session
-====================
+=================
+Tutorial Sessions
+=================
 
 A tutorial session is created whenever a user watches or takes a tutorial. A
 session is an adapter to a tutorial, so we have to create that first:
@@ -18,11 +18,12 @@ session is an adapter to a tutorial, so we have to create that first:
   ...   >>> print 'sample'
   ...   sample
   ...
-  ... And now a variable assignment with a return value:
+  ... Let's now create a testbrowser instance and open a ficticious URL:
   ...
-  ...   >>> num = 5
-  ...   >>> num
-  ...   5
+  ...   >>> from zope.testbrowser import Browser
+  ...   >>> browser = Browser('www.zope.org')
+  ...   >>> browser.url
+  ...   'http://www.zope.org'
   ...
   ... That's it!
   ... ''')
@@ -30,83 +31,150 @@ session is an adapter to a tutorial, so we have to create that first:
   >>> from zope.tutorial import tutorial
   >>> sample = tutorial.Tutorial('Sample Documentation', sample_txt)
 
-Now that we have the tutorial, we can create a session:
+  >>> import zope.component
+  >>> zope.component.provideUtility(sample, name=u'sample')
 
-  >>> session = tutorial.TutorialSession(sample)
-  >>> session.initialize()
+  >>> from zope.app.location import location
+  >>> location.locate(sample, None, u'sample')
 
-Nothing is setup until ``initialize()`` is called. Once the session is
-prepared, we can choose a controller that knows about the input and output
-interfaces. The simplest controller is the `SimpleCLIController`, which simply
-displays the text and examples:
+Now that we have the tutorial, we can access the session manager using the
+'sessions' namespace:
 
-  >>> from zope.tutorial import cli
-  >>> controller = cli.SimpleCLIController(session)
+  >>> from zope.tutorial import session
+  >>> ns = session.sessionsNamespace(sample)
+  >>> manager = ns.traverse('')
+  >>> manager
+  <zope.tutorial.session.TutorialSessionManager object at ...>
 
-Since we are in a unit test file already, the Python prompt needs to be
-changed, so that the test does not get confused:
+Since the session contains a lot of non-pickable data and uses threads in
+unorthodox ways, they are stored in a global variable cache:
 
-  >>> controller.PYTHON_PROMPT = 'Py: '
+  >>> session.SESSIONMANAGER_CACHE[u'sample']
+  <zope.tutorial.session.TutorialSessionManager object at ...>
 
-We can now write a simple function that runs the tutorial for us:
+You can now use the session manager to create a new session:
 
-  >>> def run():
-  ...     controller.start()
-  ...     while controller.running:
-  ...         controller.doNextStep()
+  >>> name = manager.createSession()
+  >>> name
+  u'session'
 
-  >>> run()
-  Starting Tutorial: Sample Documentation
-  <BLANKLINE>
-  Sample Documentation
-  ====================
-  <BLANKLINE>
-  Here is a simple print statement:
-  <BLANKLINE>
-    Py: print 'sample'
-    sample
-  <BLANKLINE>
-  And now a variable assignment with a return value:
-  <BLANKLINE>
-    Py: num = 5
-    Py: num
-    5
-  <BLANKLINE>
-  That's it!
-  <BLANKLINE>
-  ---------- The End ----------
+  >>> mysession = manager[name]
 
-Next let's try a little bit more interesting. There is also a CLI controller
-that actually executes the examples:
+Nothing is setup until ``initialize()`` is called.
 
-  >>> session = tutorial.TutorialSession(sample)
-  >>> session.initialize()
+  >>> mysession.initialize()
 
-  >>> controller = cli.ExecutingCLIController(session)
-  >>> controller.PYTHON_PROMPT = 'Py: '
+Since the session runs other interactive browser code that in turn drives an
+external Web browser, the session provides a fairly sophisticated command
+distribution and result retrieval system. Let's first look at a simple sample
+run. The executing code first adds a command to be executed in the external
+browser:
 
-  >>> def run():
-  ...     controller.start()
-  ...     while controller.running:
-  ...         controller.doNextStep()
+  >>> name = mysession.addCommand(
+  ...     {'action': 'sampleAction', 'params': ('value',)})
+  >>> name
+  u'command-0'
 
-  >>> run()
-  Starting Tutorial: Sample Documentation
-  <BLANKLINE>
-  Sample Documentation
-  ====================
-  <BLANKLINE>
-  Here is a simple print statement:
-  <BLANKLINE>
-    Py: print 'sample'
-    sample
-  <BLANKLINE>
-  And now a variable assignment with a return value:
-  <BLANKLINE>
-    Py: num = 5
-    Py: num
-    5
-  <BLANKLINE>
-  That's it!
-  <BLANKLINE>
-  ---------- The End ----------
+The command can be really anything. But commands that are supposed to work
+with this package's Web browser driver must have the command form demonstrated
+above. The returned ``name`` variable of the command is later used to identify
+the result. The Web server now gets the command for processing ...
+
+  >>> mysession.getCommand()
+  (u'command-0', {'action': 'sampleAction', 'params': ('value',)})
+
+and then sends the result:
+
+  >>> mysession.addResult(name, {'data': 42})
+
+Once the result is available, the executable code will pick it up:
+
+  >>> mysession.getResult(name)
+  {'data': 42}
+
+
+A Complete Run
+--------------
+
+However, the command generation is often not that easy. When the session was
+initialized, it generated a list of parts. Parts are either a simple string
+representing the text snippets in a test file or an ``Example`` instance that
+can be executed. If no command is available when calling ``getCommand()`` then
+the next part is retrieved and commands are generated. In our example above,
+the first generated command is a text display:
+
+  >>> mysession.getCommand()
+  (u'command-1', {'action': 'displayText', 'params': (u'...Sample Doc...',)})
+
+Next there is a simple example to execute. Since it does not generate a
+command itself, the null-action is returned:
+
+  >>> mysession.getCommand()
+  sample
+  (None, {'action': 'nullAction', 'params': ()})
+
+The next command is again some text:
+
+  >>> mysession.getCommand()
+  (u'command-2', {'action': 'displayText', 'params': (u"...testbrowser...",)})
+
+Finally we are at the last code example. The first statement is just an
+import, so we get a null action:
+
+  >>> mysession.getCommand()
+  (None, {'action': 'nullAction', 'params': ()})
+
+Then we create a test browser instance and open the URL at the same time:
+
+  >>> pprint(mysession.globals)
+  {'Browser': <function BrowserFactory at ...>,
+   '__builtins__': {...}}
+
+  >>> mysession.getCommand()
+  (u'command-3', {'action': 'openUrl', 'params': ('www.zope.org', None)})
+
+Now that a command has been sent, the real browser has to provide a response:
+
+  >>> mysession.addResult(u'command-3', 'www.zope.org')
+
+  # Wait a little bit so that the result can be picked up:
+  >>> import time
+  >>> time.sleep(0.5)
+
+The session should now have testbrowser instance:
+
+  >>> pprint(mysession.globals)
+  {'Browser': <function BrowserFactory at ...>,
+   '__builtins__': {...},
+   'browser': <zope.tutorial.testbrowser.Browser object at ...>}
+
+Once a site is opened, we can ask for the URL, which creates a respective
+command:
+
+  >>> mysession.getCommand()
+  (u'command-4', {'action': 'getUrl', 'params': ()})
+
+The real browser sends back the answer:
+
+  >>> mysession.addResult(u'command-4', 'http://www.zope.org')
+
+  # Wait a little bit so that the result can be picked up:
+  >>> time.sleep(0.5)
+  'http://www.zope.org'
+
+The final command is just a closing text remark.
+
+  >>> mysession.getCommand()
+  (u'command-5', {'action': 'displayText', 'params': (u"<p>That's it!</p>\n",)})
+
+Now that the tutorial is over, asking for the next command will always return
+the finish command:
+
+  >>> mysession.getCommand()
+  (u'command-6', {'action': 'finishTutorial', 'params': ()})
+
+  >>> mysession.getCommand()
+  (u'command-7', {'action': 'finishTutorial', 'params': ()})
+
+This completes a session and the Web tutorial driver should allow the user to
+select another tutorial.

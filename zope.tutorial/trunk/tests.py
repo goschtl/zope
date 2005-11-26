@@ -18,24 +18,47 @@ $Id: tests.py 39461 2005-10-15 10:45:13Z srichter $
 __docformat__ = 'restructuredtext'
 
 import unittest
-from zope.testing import doctest
-from zope.testing.doctestunit import DocFileSuite
-from zope.app.testing import placelesssetup
+import zope.component.interfaces
+import zope.interface
+from zope.testing import doctest, doctestunit
 
+from zope.app.container import contained
+from zope.app.renderer import rest
+from zope.app.testing import placelesssetup, setup, ztapi
+
+
+def setUp(test):
+    setup.placefulSetUp(True)
+    zope.component.provideAdapter(contained.NameChooser,
+                                  (zope.interface.Interface,))
+    # Register Renderer Components
+    ztapi.provideUtility(zope.component.interfaces.IFactory,
+                         rest.ReStructuredTextSourceFactory,
+                         'zope.source.rest')
+    ztapi.browserView(rest.IReStructuredTextSource, '',
+                      rest.ReStructuredTextToHTMLRenderer)
+
+def tearDown(test):
+    setup.placefulTearDown()
 
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite('README.txt',
+        doctestunit.DocFileSuite('README.txt',
                      setUp=placelesssetup.setUp,
                      tearDown=placelesssetup.tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
-        DocFileSuite('session.txt',
-                     setUp=placelesssetup.setUp,
-                     tearDown=placelesssetup.tearDown,
+        doctestunit.DocFileSuite('session.txt',
+                     setUp=setUp, tearDown=tearDown,
+                     globs={'pprint': doctestunit.pprint},
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
-        DocFileSuite('directives.txt',
+        doctestunit.DocFileSuite('testbrowser.txt',
+                     setUp=setUp, tearDown=tearDown,
+                     globs={'pprint': doctestunit.pprint},
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
+        doctestunit.DocFileSuite('directives.txt',
                      setUp=placelesssetup.setUp,
                      tearDown=placelesssetup.tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,

@@ -22,43 +22,6 @@ import zope.interface
 from zope import testbrowser
 
 
-NORESULT = object()
-NOACTION = {'action': 'nullAction', 'params': ()}
-
-# TODO: Make this user specific later; this should be really stored in the
-# session, but the test browser does not know about the session :-(
-class State(object):
-    __slots__ = ('result', 'action')
-
-    def __init__(self):
-        self.reset()
-
-    def reset(self):
-        self.result = NORESULT
-        self.action = NOACTION
-
-    def hasAction(self):
-        return self.action is not NOACTION
-
-    def hasResult(self):
-        return self.result is not NORESULT
-
-    def executeAction(self, action, *args):
-        self.result = None
-        self.action = {'action': action, 'params': args}
-        # wait for the answer to come in
-        while self.result is NORESULT:
-            time.sleep(0.5)
-        return self.result
-
-    def __getattr__(self, name):
-        def action(*args):
-            return self.executeAction(name, *args)
-        return action
-
-State = State()
-
-
 class Browser(testbrowser.browser.SetattrErrorsMixin):
     """ """
     zope.interface.implements(testbrowser.interfaces.IBrowser)
@@ -66,7 +29,8 @@ class Browser(testbrowser.browser.SetattrErrorsMixin):
     _contents = None
     _counter = 0
 
-    def __init__(self, url=None):
+    def __init__(self, broker, url=None):
+        self.broker = broker
         self.timer = testbrowser.browser.PystoneTimer()
         if url:
             self.open(url)
@@ -74,24 +38,23 @@ class Browser(testbrowser.browser.SetattrErrorsMixin):
     @property
     def url(self):
         """See zope.testbrowser.interfaces.IBrowser"""
-        return State.getUrl()
+        return self.broker.getUrl()
 
     @property
     def isHtml(self):
         """See zope.testbrowser.interfaces.IBrowser"""
-        # TODO: It is always HTML for now ;-)
-        return True
+        return self.broker.isHtml()
 
     @property
     def title(self):
         """See zope.testbrowser.interfaces.IBrowser"""
-        return State.getTitle()
+        return self.broker.getTitle()
 
     @property
     def contents(self):
         """See zope.testbrowser.interfaces.IBrowser"""
         if self._contents is None:
-            self._contents = State.getContent()
+            self._contents = self.broker.getContent()
         return self._contents
 
     @property
@@ -107,7 +70,7 @@ class Browser(testbrowser.browser.SetattrErrorsMixin):
     def open(self, url, data=None):
         """See zope.testbrowser.interfaces.IBrowser"""
         self._start_timer()
-        State.openUrl(url, data)
+        self.broker.openUrl(url, data)
         self._stop_timer()
         self._changed()
 
@@ -128,14 +91,14 @@ class Browser(testbrowser.browser.SetattrErrorsMixin):
     def reload(self):
         """See zope.testbrowser.interfaces.IBrowser"""
         self._start_timer()
-        State.reload()
+        self.broker.reload()
         self._stop_timer()
         self._changed()
 
     def goBack(self, count=1):
         """See zope.testbrowser.interfaces.IBrowser"""
         self._start_timer()
-        State.goBack(count)
+        self.broker.goBack(count)
         self._stop_timer()
         self._changed()
 
@@ -186,11 +149,12 @@ class Link(object):
         self._info = None
 
     def click(self):
-        return State.executeAction('clickLink', self._text, self._url, self._id)
+        return self.browser.broker.executeAction(
+            'clickLink', self._text, self._url, self._id)
 
     def getInfo(self):
         if self._info is None:
-            self._info = State.executeAction(
+            self._info = self.browser.broker.executeAction(
                 'getLinkInfo', self._text, self._url, self._id)
         return self._info
 
@@ -224,4 +188,4 @@ class Control(object):
         self._index = index
 
     def click(self):
-        return State.executeAction('clickControl', self._text, self._url, self._id)
+        return self.browser.broker.executeAction('clickControl', self._text, self._url, self._id)

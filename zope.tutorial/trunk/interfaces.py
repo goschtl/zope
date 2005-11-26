@@ -70,14 +70,46 @@ class ITutorialSession(interfaces.IContained):
     """
     constraints.containers(ITutorialSessionManager)
 
+    locked = zope.schema.Bool(
+        title=u'Locked',
+        description=u'Specifies whether the session is locked.',
+        default=False)
+
     def initialize():
         """Initialize the session."""
 
-    def getNextStep():
-        """Return the next step in the tutorial.
+    def addCommand(command):
+        """Add a command to the commands queue.
 
-        Can be text or an example.
+        This method should also create and return a unique command id that is
+        used to associate the result with.
+        """
+
+    def getCommand():
+        """Return the next command in the queue.
+
+        This method returns the command id and the command itself. The
+        returned command must be removed from the queue. ``(None, None)`` is
+        returned, if no command is in the queue.
+        """
+
+    def addResult(id, result):
+        """Add a result for a command.
+
+        The id identifies the command this result is for.
+        """
+
+    def getResult(id):
+        """Get result for a given command id.
         """
 
     def keepGoing():
-        """ """
+        """Return whether the system should keep going processing events.
+
+        The method should return False, when the parts switch from a string to
+        an example and vice versa.
+        """
+
+    def setTimeout(seconds):
+        """Set a timeout for a result to be returned or the next command to be
+        retrieved."""
