@@ -9,6 +9,10 @@
    Fix missing imports and missing function parameters which exposed
    failures only during certain error condidions.
 
+   Fixed a bug where inspecting a zipfile distribution which was later
+   blown out to a tempdir caused inappropriate turds to be left on
+   that distributions' namespace packages' __path__(s).
+
 0.1
 
    Initial release
