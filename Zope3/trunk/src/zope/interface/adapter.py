@@ -268,10 +268,16 @@ class Surrogate(object):
     multiImplied = ReadProperty(multiImplied)
 
     def subscribe(self, dependent):
-        self.dependents[dependent] = 1
+        self.dependents[dependent] = self.dependents.get(dependent, 0) + 1
 
     def unsubscribe(self, dependent):
-        del self.dependents[dependent]
+        n = self.dependents.get(dependent, 0) - 1
+        if not n:
+            del self.dependents[dependent]
+        elif n > 0:
+            self.dependents[dependent] = n
+        else:
+            raise KeyError(dependent)
 
     def _adaptTo(self, specification, object, name='', with=()):
         if object is None:

@@ -162,6 +162,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed a bug in adapter registrations that caused errors and
+        lookup failures when specifications had multiple base
+        specifications.
+
       - Made OrderedContainer.updateOrder send an IContainerModifiedEvent.
 
       - Fixed bug 451, http://www.zope.org/Collectors/Zope3-dev/451

@@ -300,6 +300,28 @@ def test_correct_multi_adapter_lookup():
     >>> registry.lookup((IF1, IB1), IR0, '')
     'A10'
     """
+
+def test_duplicate_bases():
+    """
+There was a bug that caused problems if a spec had multiple bases:
+
+    >>> class I(zope.interface.Interface):
+    ...     pass
+    >>> class I2(I, I):
+    ...     pass
+    >>> registry = AdapterRegistry()
+    >>> registry.register([I2], IR0, 'x', 'X')
+    >>> registry.lookup((I2, ), IR0, 'x')
+    'X'
+    >>> registry.register([I2], IR0, 'y', 'Y')
+    >>> registry.lookup((I2, ), IR0, 'x')
+    'X'
+    >>> registry.lookup((I2, ), IR0, 'y')
+    'Y'
+
+    
+
+"""
     
 def test_suite():
     from zope.testing import doctest, doctestunit

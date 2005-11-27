@@ -228,10 +228,16 @@ class Specification(SpecificationBase):
         self.__bases__ = tuple(bases)
 
     def subscribe(self, dependent):
-        self.dependents[dependent] = 1
+        self.dependents[dependent] = self.dependents.get(dependent, 0) + 1
 
     def unsubscribe(self, dependent):
-        del self.dependents[dependent]
+        n = self.dependents.get(dependent, 0) - 1
+        if not n:
+            del self.dependents[dependent]
+        elif n > 0:
+            self.dependents[dependent] = n
+        else:
+            raise KeyError(dependent)
 
     def __setBases(self, bases):
         # Register ourselves as a dependent of our old bases

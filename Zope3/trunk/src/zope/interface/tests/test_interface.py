@@ -311,6 +311,22 @@ if sys.version_info >= (2, 4):
 
         """
 
+def duplicate_bases_management():
+    """
+There was a bug that surfaced when an interface was repeated in
+a set of bases and the bases were changed:
+
+    >>> class I(interface.Interface):
+    ...     pass
+
+    >>> class I2(I, I):
+    ...     pass
+
+    >>> I2.__bases__ = (I,)
+    
+
+"""
+
 
 def test_suite():
     from zope.testing import doctest
