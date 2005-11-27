@@ -7,7 +7,7 @@
    per-process temp directory (thanks to Rocky Burt).
 
    Fix missing imports and missing function parameters which exposed
-   failures only during certain error condidions.
+   failures only during certain error condidions (thanks to Rocky Burt).
 
    Fixed a bug where inspecting a zipfile distribution which was later
    blown out to a tempdir caused inappropriate turds to be left on
