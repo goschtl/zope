@@ -63,3 +63,5 @@ result = testrunner.run(defaults)
 # Avoid spurious error during exit. Some thing is trying to log
 # something after the files used by the logger have been closed.
 logging.disable(999999999)
+
+sys.exit(result)
