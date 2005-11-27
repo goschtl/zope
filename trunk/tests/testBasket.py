@@ -358,7 +358,7 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
         basket = self._makeOne()
         
         # make the basket use temp dirs
-        basket.usingTempDirs = True
+        basket.using_temp_dirs = True
         
         basket.preinitialized = False
         basket.pdist_fname = os.path.join(self.fixtures, 'pdist-notzipsafe.txt')

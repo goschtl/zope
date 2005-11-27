@@ -23,12 +23,12 @@ class Basket(object):
         self.pre_initialized = False
         self.exploded_dirs = []
         atexit.register(self.cleanup)
-        self.usingTempDirs = False
+        self.using_temp_dirs = False
         try:
             etc = os.path.join(INSTANCE_HOME, 'etc')
         except NameError: # INSTANCE_HOME may not be available?
             etc = ''
-            self.usingTempDirs = True
+            self.using_temp_dirs = True
         self.pdist_fname = os.path.join(etc, 'PRODUCT_DISTRIBUTIONS.txt')
         
     def require(self, distro_str):
@@ -119,7 +119,7 @@ class Basket(object):
         return product_distros
 
     def ensureExplodedDir(self, project_name):
-        if self.usingTempDirs:
+        if self.using_temp_dirs:
             return tempfile.mkdtemp('', 'Basket_')
         
         var = os.path.join(INSTANCE_HOME, 'var')
@@ -188,7 +188,7 @@ class Basket(object):
         self.pre_initialized = True
 
     def cleanup(self, emptyCacheDir=False):
-        if self.usingTempDirs or emptyCacheDir:
+        if self.using_temp_dirs or emptyCacheDir:
             for explodedDir in self.exploded_dirs:
                 shutil.rmtree(explodedDir, ignore_errors=True)
             
