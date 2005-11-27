@@ -93,7 +93,10 @@ class Basket(object):
         product_distros = []
         for project_name in environment:
             distributions = environment[project_name]
-            for distribution in distributions:
+            # no point in checking older versions of the same project, the
+            # first item will be the highst numbered version
+            if len(distributions) > 0:
+                distribution = distributions[0]
                 if is_product_distribution(distribution):
                     product_distros.append(distribution)
         return product_distros
