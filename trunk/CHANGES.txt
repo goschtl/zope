@@ -1,0 +1,15 @@
+0.2
+
+   Monkey-patch Zope's external method machinery to look for external
+   method files in exploded tempdirs (thanks to Rocky Burt).
+
+   Unpack non-zip-safe eggs into a cache directory instead of a
+   per-process temp directory (thanks to Rocky Burt).
+
+   Fix missing imports and missing function parameters which exposed
+   failures only during certain error condidions.
+
+0.1
+
+   Initial release
+
