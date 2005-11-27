@@ -562,7 +562,11 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
 
         self.failIf(sys.modules.has_key('Products.fiveproduct'))
 
-        result = basket.initialize(DummyProductContext('Basket'))
+        productcontext = DummyProductContext('Basket')
+
+        basket.preinitialize()
+
+        result = basket.initialize(productcontext)
 
         import Products.fiveproduct
 
@@ -608,6 +612,46 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
             # clean up
             PlacelessSetup.tearDown(self)
 
+
+    def test_remove_product_distribution_from_working_set_fixes_ns_pkgs(self):
+        basket = self._makeOne()
+
+        # we use fiveproduct because it has a namespace package and is non
+        # zip-safe.  
+
+        basket.pdist_fname = os.path.join(self.fixtures,'pdist-fiveproduct.txt')
+        
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        self.failIf(sys.modules.has_key('Products.fiveproduct'))
+
+        productcontext = DummyProductContext('Basket')
+
+        basket.preinitialize()
+
+        result = basket.initialize(productcontext)
+
+        import Products.fiveproduct
+
+        self.failUnless(sys.modules.has_key('Products.fiveproduct'))
+
+        import Products
+
+        wrongpath = os.path.join(self.fixtures, 'fiveproduct-0.1-py2.3.egg',
+                                 'Products')
+        # this should have been removed during remove_product_d_f_w_s
+        self.failIf(wrongpath in Products.__path__)
+
+        # and should have been replaced with a tempfile path
+        ok = False
+        for path in Products.__path__:
+            if path.find('fiveproduct') > -1:
+                if path.endswith('Products'):
+                    ok = True
+
+        self.assertEqual(ok, True)
+        
     def _importProduct(self, name):
         __import__(name)
 

@@ -108,6 +108,9 @@ class Basket(object):
         strings = self.parse_product_distributions_file(pdist_file)
         product_distros = []
         for string in strings:
+            # get_distribution adds the egg to all namespace packages'
+            # __path__'s; we need to fix this up later if it's a
+            # nonzipsafe egg.
             distribution = pkg_resources.get_distribution(string)
             if is_product_distribution(distribution):
                 product_distros.append(distribution)
@@ -229,6 +232,17 @@ def is_product_distribution(distribution):
             if section == entrypoint_group:
                 return True
 
+def get_namespace_packages(distribution):
+    L = []
+    entry_meta = 'namespace_packages.txt'
+    if distribution.has_metadata(entry_meta):
+        inifile = distribution.get_metadata(entry_meta)
+        for line in inifile.split('\n'):
+            if line:
+                package = __import__(line)
+                L.append((line, package))
+    return L
+
 def is_zip_safe_distribution(distribution):
     return not distribution.has_metadata('not-zip-safe')
 
@@ -240,3 +254,17 @@ def remove_distribution_from_working_set(distribution):
     del working_set.by_key[distribution.key]
     working_set.entry_keys[distribution.location] = []
     sys.path.remove(distribution.location)
+
+    # fix up namespace packages' __path__ attributes, lord this is nasty
+    ns_packages = get_namespace_packages(distribution)
+    for packagename, package in ns_packages:
+        nspath = getattr(package, '__path__', None)
+        if nspath is None:
+            continue
+        L = []
+        for name in nspath:
+            wrongpath = os.path.join(distribution.location, packagename)
+            if not name.startswith(wrongpath):
+                L.append(name)
+        package.__path__ = L
+
