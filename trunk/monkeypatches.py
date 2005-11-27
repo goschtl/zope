@@ -40,7 +40,7 @@ def getEggedPath(basket, prefix, name, suffixes):
         realName = name[l + 1:]
 
         # lets check all of the recorded tempdirs for exploded eggs
-        for tempdir in basket.tempdirs:
+        for tempdir in basket.exploded_dirs:
             # now lets check the actual exploded egg dirs
             for product_dir in os.listdir(tempdir):
                 product_dir = os.path.join(tempdir, product_dir)

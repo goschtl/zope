@@ -1,3 +1,4 @@
+import shutil
 import unittest
 import os
 import sys
@@ -13,6 +14,7 @@ import OFS
 from Interface import Interface
 import App.config
 import zLOG
+import tempfile
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 
@@ -321,18 +323,18 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
         self.working_set.add_entry(self.fixtures)
 
         result = basket.initialize(DummyProductContext('Basket'))
-        self.failUnless(len(basket.tempdirs) > 0)
+        self.failUnless(len(basket.exploded_dirs) > 0)
         found = False
-        for tempdir in basket.tempdirs:
-            files = os.listdir(tempdir)
+        for explodedDir in basket.exploded_dirs:
+            files = os.listdir(explodedDir)
             for file in files:
                 if file.startswith('notzipsafe'):
-                    found = tempdir
+                    found = explodedDir
             if found:
                 break
-        tempdir = found
-        self.failUnless(os.path.isdir(tempdir))
-        eggdir = os.path.join(tempdir, 'notzipsafe-0.1-py2.3.egg')
+        explodedDir = found
+        self.failUnless(os.path.isdir(explodedDir))
+        eggdir = os.path.join(explodedDir, 'notzipsafe-0.1-py2.3.egg')
         pkgdir = os.path.join(eggdir, 'notzipsafe')
         self.failUnless(os.path.isdir(eggdir))
         self.failUnless(os.path.isdir(pkgdir))
@@ -351,7 +353,85 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
         self.failUnless(done)
             
         basket.cleanup()
-        self.failIf(os.path.exists(tempdir))
+
+    def test_temp_cache_dirs(self):
+        basket = self._makeOne()
+        
+        # make the basket use temp dirs
+        basket.usingTempDirs = True
+        
+        basket.preinitialized = False
+        basket.pdist_fname = os.path.join(self.fixtures, 'pdist-notzipsafe.txt')
+        
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        result = basket.initialize(DummyProductContext('Basket'))
+        self.failUnless(len(basket.exploded_dirs) > 0)
+        found = False
+        for explodedDir in basket.exploded_dirs:
+            files = os.listdir(explodedDir)
+            for file in files:
+                if file.startswith('notzipsafe'):
+                    found = explodedDir
+            if found:
+                break
+        explodedDir = found
+        self.failUnless(os.path.isdir(explodedDir))
+            
+        basket.cleanup()
+        self.failIf(os.path.exists(explodedDir))
+
+    # This test REQUIRES INSTANCE_HOME to be present
+    def test_cache_cleanup(self):
+        basket = self._makeOne()
+        basket.preinitialized = False
+        basket.pdist_fname = os.path.join(self.fixtures, 'pdist-notzipsafe.txt')
+        
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        result = basket.initialize(DummyProductContext('Basket'))
+        basket.cleanup(True)
+        
+        var = os.path.join(INSTANCE_HOME, 'var')
+        cacheDir = os.path.join(var, 'Basket', 'cache')
+        distDir = os.path.join(cacheDir, 'notzipsafe')
+        
+        self.failUnless(not os.path.isdir(distDir))
+
+    # This test REQUIRES INSTANCE_HOME to be present
+    def test_cache_timestamp(self):
+        basket = self._makeOne()
+        basket.preinitialized = False
+        basket.pdist_fname = os.path.join(self.fixtures, 'pdist-notzipsafe.txt')
+        
+        # we're going to use our own dir and copy the egg there so we can
+        # control the mtime
+        eggName = 'notzipsafe-0.1-py2.3.egg'
+        testDir = tempfile.mkdtemp()
+        egg = os.path.join(self.fixtures, eggName)
+        shutil.copy(egg, testDir)
+        testEgg = os.path.join(testDir, eggName)
+
+        sys.path.append(testDir)
+        self.working_set.add_entry(testDir)
+
+        result = basket.initialize(DummyProductContext('Basket'))
+
+        var = os.path.join(INSTANCE_HOME, 'var')
+        cacheDir = os.path.join(var, 'Basket', 'cache')
+        distDir = os.path.join(cacheDir, 'notzipsafe')
+        timestampFile = os.path.join(distDir, 'timestamp-%s' % eggName)
+        
+        self.failUnless(os.path.isdir(distDir))
+        timestamp = (os.path.getatime(timestampFile), os.path.getmtime(timestampFile))
+
+        self.failUnless(os.path.getatime(testEgg) == timestamp[0])
+        self.failUnless(os.path.getmtime(testEgg) == timestamp[1])
+
+        basket.cleanup()
+        shutil.rmtree(testDir, ignore_errors=True)            
 
     def test_product_distributions_by_dwim(self):
         basket = self._makeOne()

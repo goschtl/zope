@@ -21,12 +21,14 @@ entrypoint_group = 'zope2.initialize'
 class Basket(object):
     def __init__(self):
         self.pre_initialized = False
-        self.tempdirs = []
+        self.exploded_dirs = []
         atexit.register(self.cleanup)
+        self.usingTempDirs = False
         try:
             etc = os.path.join(INSTANCE_HOME, 'etc')
         except NameError: # INSTANCE_HOME may not be available?
             etc = ''
+            self.usingTempDirs = True
         self.pdist_fname = os.path.join(etc, 'PRODUCT_DISTRIBUTIONS.txt')
         
     def require(self, distro_str):
@@ -113,6 +115,25 @@ class Basket(object):
                          'product package: %s' % (self.pdist_fname, string))
         return product_distros
 
+    def ensureExplodedDir(self, project_name):
+        if self.usingTempDirs:
+            return tempfile.mkdtemp('', 'Basket_')
+        
+        var = os.path.join(INSTANCE_HOME, 'var')
+        if not os.path.isdir(var):
+            raise IOError, "With a instance home, a '%s' directory must exist" % var
+            
+        cacheDir = os.path.join(var, 'Basket', 'cache')
+        if not os.path.isdir(cacheDir):
+            os.makedirs(cacheDir)
+        
+        distDir = os.path.join(cacheDir, project_name)
+        if not os.path.isdir(distDir):
+            os.mkdir(distDir)
+
+        return distDir
+        
+
     def preinitialize(self):
         by_require = self.pdist_fname and os.path.exists(self.pdist_fname)
         if by_require:
@@ -131,17 +152,30 @@ class Basket(object):
                     working_set.add(distribution)
                     continue
                 # if it's not zip-safe and not already a directory, blast
-                # it out to a tempdir and create new distro out of the
-                # file-based egg; we delete the tempdir at system exit
+                # it out to a dir and create new distro out of the
+                # file-based egg
                 if by_require: # these get added to the working set in req mode
                     remove_distribution_from_working_set(distribution)
-                tempdir = tempfile.mkdtemp()
+                explodedDir = self.ensureExplodedDir(distribution.project_name)
+                self.exploded_dirs.append(explodedDir)
                 eggname = os.path.basename(distribution.location)
-                eggdir = os.path.join(tempdir, eggname)
-                os.makedirs(eggdir)
-                self.tempdirs.append(tempdir)
-                un = unzip.unzip()
-                un.extract(distribution.location, eggdir)
+                eggdir = os.path.join(explodedDir, eggname)
+                
+                if not os.path.isdir(eggdir):
+                    os.makedirs(eggdir)
+                
+                timestamp = os.path.join(explodedDir, 'timestamp-%s' % eggname)
+                if not os.path.isfile(timestamp) or \
+                        os.path.getmtime(distribution.location) > os.path.getmtime(timestamp):
+                    
+                    un = unzip.unzip()
+                    un.extract(distribution.location, eggdir)
+                    f = open(timestamp, 'w')
+                    f.close()
+                    atime = os.path.getatime(distribution.location)
+                    mtime = os.path.getmtime(distribution.location)
+                    os.utime(timestamp, (atime, mtime))
+
                 metadata = pkg_resources.PathMetadata(eggdir,
                                         os.path.join(eggdir, 'EGG-INFO'))
                 new_distro = pkg_resources.Distribution.from_filename(
@@ -150,9 +184,11 @@ class Basket(object):
 
         self.pre_initialized = True
 
-    def cleanup(self):
-        for tempdir in self.tempdirs:
-            shutil.rmtree(tempdir, ignore_errors=True)
+    def cleanup(self, emptyCacheDir=False):
+        if self.usingTempDirs or emptyCacheDir:
+            for explodedDir in self.exploded_dirs:
+                shutil.rmtree(explodedDir, ignore_errors=True)
+            
 
 def get_containing_package(module_name):
     __import__(module_name)
