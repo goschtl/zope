@@ -13,4 +13,12 @@
     factory=".module.SampleAdapter"
     />
 
+  <browser:page
+    for="*"
+    name="example_view"
+    class=".exampleview.ExampleView"
+    permission="zope.Public"
+    template="exampleviewtemplate.pt"
+    />
+
 </configure>

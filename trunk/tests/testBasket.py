@@ -15,9 +15,11 @@ from Interface import Interface
 import App.config
 import zLOG
 import tempfile
+from Products.Five.traversable import FakeRequest
 
 from zope.app.tests.placelesssetup import PlacelessSetup
-
+from zope.component import getView
+            
 here = os.path.dirname(__file__)
 
 class LogInterceptor:
@@ -608,6 +610,9 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
             self.assertEqual(adapter.__class__, ExtraSampleAdapter)
             self.assertEqual(adapter.context, context)
 
+            view = getView(object(), 'example_view', FakeRequest())
+
+            self.failUnless(view is not None)
         finally:
             # clean up
             PlacelessSetup.tearDown(self)

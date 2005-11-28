@@ -4,7 +4,7 @@ setup(
     name = 'fiveproduct',
     version = '0.1',
     packages = find_packages(),
-    package_data = {'':['*.zcml']},
+    package_data = {'':['*.zcml', '*.pt']},
     namespace_packages=['Products'],
     entry_points = {'zope2.initialize':
                     ['initialize=Products.fiveproduct:initialize']},
