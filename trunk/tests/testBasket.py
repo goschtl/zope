@@ -587,7 +587,6 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
             <configure xmlns="http://namespaces.zope.org/zope"
                xmlns:five="http://namespaces.zope.org/five">
                <include package="Products.Five" />
-               <redefinePermission from="zope2.Public" to="zope.Public" />
                <include package="Products.fiveproduct"/>
             </configure>"""
 
