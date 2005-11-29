@@ -1,1 +1,0 @@
-/* Dummy public API header for the C extension. */

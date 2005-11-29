@@ -1,3 +1,0 @@
-<schema prefix="zpkgsetup">
-  <key name="module" datatype=".package.path_ref"/>
-</schema>

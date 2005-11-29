@@ -1,1 +1,0 @@
-Sample file needed to test that a file can be ignored.

@@ -1,1 +1,0 @@
-/* Dummy internal header for the C extension. */
