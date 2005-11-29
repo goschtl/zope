@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for zpkgtools.publication
 
-$Id: test_publication.py,v 1.1 2004/06/14 20:46:41 fdrake Exp $
+$Id$
 """
 import unittest
 

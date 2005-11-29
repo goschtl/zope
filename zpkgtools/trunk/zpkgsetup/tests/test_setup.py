@@ -69,8 +69,17 @@ class SetupContextTestCase(unittest.TestCase):
         #
         #context.packages.sort()
         #self.assertEqual(context.packages, ["package", "package2"])
-        
 
+    def test_modules(self):
+        input2 = os.path.join(os.path.dirname(__file__), "input2")
+        context = setup.SetupContext("collection", "0.0.0",
+                                     os.path.join(input2, "setup.py"))
+        context.initialize()
+        self.assertEqual(context.py_modules, ['module'])
+        self.assertEqual(context.package_dir[''], 'Modules')
 
 def test_suite():
     return unittest.makeSuite(SetupContextTestCase)
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

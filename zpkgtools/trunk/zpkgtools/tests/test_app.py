@@ -18,6 +18,7 @@ import shutil
 import sys
 import unittest
 import urllib
+import re
 
 from StringIO import StringIO
 
@@ -291,7 +292,7 @@ class CommandLineTestCase(unittest.TestCase):
             sys.stderr = old_stderr
 
 
-class ComponentTestCase(unittest.TestCase):
+class PackageComponentTestCase(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp(prefix="test-app-")
@@ -309,25 +310,30 @@ class ComponentTestCase(unittest.TestCase):
     def test_validation_of_package_without_setup_cfg(self):
         self.write_app_file("__init__.py", "# make this a package\n")
         #
-        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        source = self.ip.loader.load(self.mypkg_url)
+        c = app.PackageComponent("mypkg", self.mypkg_url, source, self.ip)
         self.assert_(c.is_python_package())
 
     def test_validation_of_package_with_setup_cfg(self):
         self.write_app_file("SETUP.cfg", "# this is a simple package\n")
         self.write_app_file("__init__.py", "# make this a package\n")
         #
-        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        source = self.ip.loader.load(self.mypkg_url)
+        c = app.PackageComponent("mypkg", self.mypkg_url, source, self.ip)
         self.assert_(c.is_python_package())
 
     def test_validation_of_nonpackage_with_setup_cfg(self):
         self.write_app_file("SETUP.cfg", "# this is a simple package\n")
         #
-        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        source = self.ip.loader.load(self.mypkg_url)
+        c = app.PackageComponent("mypkg", self.mypkg_url, source, self.ip)
         self.assert_(not c.is_python_package())
 
     def test_non_validation_of_nonpackage_without_setup_cfg(self):
+        source = self.ip.loader.load(self.mypkg_url)
         self.assertRaises(zpkgtools.Error,
-                          app.Component, "mypkg", self.mypkg_url, self.ip)
+                          app.PackageComponent,
+                          "mypkg", self.mypkg_url, source, self.ip)
 
     def test_component_metadata_is_copied_by_default(self):
         self.write_app_file(publication.PUBLICATION_CONF,
@@ -338,7 +344,8 @@ class ComponentTestCase(unittest.TestCase):
         self.write_app_file(package.PACKAGE_CONF,
                             "# nothing to specify\n")
         #
-        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        source = self.ip.loader.load(self.mypkg_url)
+        c = app.PackageComponent("mypkg", self.mypkg_url, source, self.ip)
         dest = tempfile.mkdtemp(prefix="test-app-dest-")
         try:
             c.write_package(dest)
@@ -367,7 +374,8 @@ class ComponentTestCase(unittest.TestCase):
         self.write_app_file("README",
                             "some text\n")
         #
-        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        source = self.ip.loader.load(self.mypkg_url)
+        c = app.PackageComponent("mypkg", self.mypkg_url, source, self.ip)
         dest = tempfile.mkdtemp(prefix="test-app-dest-")
         try:
             c.write_package(dest)
@@ -644,6 +652,34 @@ class BuilderApplicationTestCase(unittest.TestCase):
         finally:
             os.chdir(orig_pwd)
 
+    def test_toplevel_module_as_a_dependency(self):
+        # Test that a top-level module which is loaded as a dependency
+        # (we don't really support top-level modules as the primary
+        # collection) is properly set up.
+        config = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              "input", "module.conf")
+        package_map = self.createPackageMap()
+        app = self.createApplication(
+            ["-C", config, "-t", "-m", package_map])
+        app.run()
+
+        # test that the module file is copied to the right location
+        modules_dir = os.path.join(app.destination, "Modules")
+        self.assert_(os.path.exists(modules_dir))
+        module_py = os.path.join(app.destination, "Modules", 'module.py')
+        self.assert_(os.path.exists(module_py))
+        orig_module_py = os.path.join(os.path.dirname(__file__), "input",
+                                      "module.py")
+        self.assertEqual(file(module_py).read(), file(orig_module_py).read())
+
+        # test that MODULE.cfg exists and points to the module file
+        depdir = os.path.join(app.destination, "Dependencies",
+                              "module-collection-1-0.0.0")
+        self.assert_(os.path.exists(depdir))
+        module_cfg = os.path.join(depdir, "MODULE.cfg")
+        self.assert_(os.path.exists(module_cfg))
+        self.assert_(re.match(r"module(\s+)module.py", file(module_cfg).read()))
+        shutil.rmtree(app.destination)
 
 class DelayedCleanupBuilderApplication(app.BuilderApplication):
 
@@ -669,7 +705,7 @@ def isfile(path, *args):
 
 def test_suite():
     suite = unittest.makeSuite(CommandLineTestCase)
-    suite.addTest(unittest.makeSuite(ComponentTestCase))
+    suite.addTest(unittest.makeSuite(PackageComponentTestCase))
     suite.addTest(unittest.makeSuite(BuilderApplicationTestCase))
     return suite
 

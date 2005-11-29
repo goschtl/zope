@@ -19,7 +19,7 @@ code doesn't fall over.
 
 This isn't sufficient to support building packages with Python 2.2.
 
-$Id: loggingapi.py,v 1.1 2004/06/11 19:24:35 fdrake Exp $
+$Id$
 """
 
 try:

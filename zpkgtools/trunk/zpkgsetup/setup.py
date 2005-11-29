@@ -67,6 +67,7 @@ class SetupContext:
         self.package_data = {}
         self.package_dir = {}
         self.package_headers = []
+        self.py_modules = []
         self.ext_modules = []
         self.scripts = []
         self.platforms = None
@@ -82,6 +83,10 @@ class SetupContext:
         pkgdir = os.path.join(self._working_dir, self._pkgname)
         self.scan(self._pkgname, pkgdir, self._pkgname)
         depsdir = os.path.join(self._working_dir, "Dependencies")
+        modsdir = os.path.join(self._working_dir, "Modules")
+        if os.path.isdir(modsdir):
+            # we do the following so that top-level modules can be installed
+            self.package_dir[""] = 'Modules'
         if os.path.isdir(depsdir):
             depnames = os.listdir(depsdir)
             suffix = "-%s-%s" % (self._pkgname, self.version)
@@ -97,9 +102,22 @@ class SetupContext:
                     print >>sys.stderr, \
                           "unexpected file in Dependencies/: %r" % name
                     continue
+
                 depname = name[:-len(suffix)]
-                pkgdir = os.path.join(depdir, depname)
                 reldir = posixpath.join("Dependencies", name, depname)
+                pkgdir = os.path.join(depdir, depname)
+
+                # quick hack to see if we're dealing with a top-level
+                # module or not. If we are, slightly adjust the
+                # dependency name etc. according to the value supplied
+                # in SETUP.cfg.
+                if os.path.exists(os.path.join(depdir, package.MODULE_CONF)):
+                    pkginfo = package.read_module_info(depdir)
+                    if pkginfo.module:
+                        depname = pkginfo.module[:-3]
+                        reldir = "Modules"
+                        pkgdir = os.path.join(modsdir, depname)
+
                 self.scan(depname, pkgdir, reldir)
 
     def setup(self):
@@ -163,7 +181,6 @@ class SetupContext:
         #
         parts = root.split("/")
         local_root = os.path.join(*parts)
-        self.package_dir[""] = root
         if os.path.isfile(os.path.join(local_root, package.PACKAGE_CONF)):
             # There's a SETUP.cfg at the top level; load it:
             pkginfo = package.loadCollectionInfo(
@@ -186,11 +203,17 @@ class SetupContext:
                 self.scan_package(pkgname, local_full_path, relative_path)
 
     def scan(self, name, directory, reldir):
+        module_py = directory + '.py'
         init_py = os.path.join(directory, "__init__.py")
-        if os.path.isfile(init_py):
+        if os.path.isfile(module_py):
+            self.scan_module(name, module_py, reldir)
+        elif os.path.isfile(init_py):
             self.scan_package(name, directory, reldir)
         else:
             self.scan_collection(name, directory, reldir)
+
+    def scan_module(self, name, filename, reldir):
+        self.py_modules.append(name)
 
     def scan_collection(self, name, directory, reldir):
         # load the collection metadata
