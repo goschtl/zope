@@ -352,9 +352,10 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
             id = self._get_id(orig_id)
             result.append({'id': orig_id, 'new_id': id})
 
+            orig_ob = ob
             ob = ob._getCopy(self)
             ob._setId(id)
-            notify(ObjectCopiedEvent(ob))
+            notify(ObjectCopiedEvent(ob, orig_ob))
 
             self._setObject(id, ob)
             ob = self._getOb(id)
@@ -472,9 +473,10 @@ def manage_clone(self, ob, id, REQUEST=None):
             message=sys.exc_info()[1],
             action='manage_main')
 
+    orig_ob = ob
     ob = ob._getCopy(self)
     ob._setId(id)
-    notify(ObjectCopiedEvent(ob))
+    notify(ObjectCopiedEvent(ob, orig_ob))
 
     self._setObject(id, ob)
     ob = self._getOb(id)

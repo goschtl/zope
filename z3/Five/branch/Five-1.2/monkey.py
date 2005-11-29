@@ -74,12 +74,17 @@ def localsites_monkey():
     BaseRequest.close = close
 
 def zope3_monkey():
-    """Fix Zope 3 to have the proper ContainerModifiedEvent that has
-    been added for 3.2.
+    """Zope 3 monkeys to get some Zope 3.2 features.
+
+    - Added ContainerModifiedEvent.
+
+    - Added `original` parameter to ObjectCopiedEvent.
     """
+    import warnings
     from zope.event import notify
     from zope.interface import implements
     from zope.app.event.objectevent import ObjectModifiedEvent
+    from zope.app.event.objectevent import ObjectCopiedEvent
     from zope.app.event.interfaces import IObjectModifiedEvent
 
     class IContainerModifiedEvent(IObjectModifiedEvent):
@@ -97,8 +102,20 @@ def zope3_monkey():
         """Notify that the container was modified."""
         notify(ContainerModifiedEvent(object, *descriptions))
 
+    def ObjectCopiedEvent_init(self, object, original=None):
+        super(ObjectCopiedEvent, self).__init__(object)
+        self.original = original
+        # BBB goes away in 3.3
+        if original is None:
+            warnings.warn(
+                "%s with no original is deprecated and will no-longer "
+                "be supported starting in Zope 3.3."
+                % self.__class__.__name__,
+                DeprecationWarning, stacklevel=2)
+
     from zope.app.container import contained
     from zope.app.container import interfaces
     interfaces.IContainerModifiedEvent = IContainerModifiedEvent
     contained.ContainerModifiedEvent = ContainerModifiedEvent
     contained.notifyContainerModified = notifyContainerModified
+    ObjectCopiedEvent.__init__ = ObjectCopiedEvent_init
