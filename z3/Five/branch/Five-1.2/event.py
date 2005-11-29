@@ -259,13 +259,29 @@ def manage_renameObject(self, id, new_id, REQUEST=None):
 
     notify(ObjectWillBeMovedEvent(ob, self, id, self, new_id))
 
-    self._delObject(id, suppress_events=True)
+    try:
+        self._delObject(id, suppress_events=True)
+    except TypeError:
+        # BBB: removed in Zope 2.11
+        self._delObject(id)
+        warnings.warn(
+            "%s._delObject without suppress_events is deprecated "
+            "and will be removed in Zope 2.11." %
+            self.__class__.__name__, DeprecationWarning)
     ob = aq_base(ob)
     ob._setId(new_id)
 
     # Note - because a rename always keeps the same context, we
     # can just leave the ownership info unchanged.
-    self._setObject(new_id, ob, set_owner=0, suppress_events=True)
+    try:
+        self._setObject(new_id, ob, set_owner=0, suppress_events=True)
+    except TypeError:
+        # BBB: removed in Zope 2.11
+        self._setObject(new_id, ob, set_owner=0)
+        warnings.warn(
+            "%s._setObject without suppress_events is deprecated "
+            "and will be removed in Zope 2.11." %
+            self.__class__.__name__, DeprecationWarning)
     ob = self._getOb(new_id)
 
     notify(ObjectMovedEvent(ob, self, id, self, new_id))
@@ -388,11 +404,27 @@ def manage_pasteObjects(self, cb_copy_data=None, REQUEST=None):
             # along to the new location if needed.
             ob.manage_changeOwnershipType(explicit=1)
 
-            orig_container._delObject(orig_id, suppress_events=True)
+            try:
+                orig_container._delObject(orig_id, suppress_events=True)
+            except TypeError:
+                # BBB: removed in Zope 2.11
+                orig_container._delObject(orig_id)
+                warnings.warn(
+                    "%s._delObject without suppress_events is deprecated "
+                    "and will be removed in Zope 2.11." %
+                    orig_container.__class__.__name__, DeprecationWarning)
             ob = aq_base(ob)
             ob._setId(id)
 
-            self._setObject(id, ob, set_owner=0, suppress_events=True)
+            try:
+                self._setObject(id, ob, set_owner=0, suppress_events=True)
+            except TypeError:
+                # BBB: removed in Zope 2.11
+                self._setObject(id, ob, set_owner=0)
+                warnings.warn(
+                    "%s._setObject without suppress_events is deprecated "
+                    "and will be removed in Zope 2.11." %
+                    self.__class__.__name__, DeprecationWarning)
             ob = self._getOb(id)
 
             notify(ObjectMovedEvent(ob, orig_container, orig_id, self, id))
@@ -476,7 +508,15 @@ def OS_manage_renameObject(self, id, new_id, REQUEST=None):
     """
     old_position = self.getObjectPosition(id)
     res = CopyContainer.manage_renameObject(self, id, new_id, REQUEST)
-    self.moveObjectToPosition(new_id, old_position, suppress_events=True)
+    try:
+        self.moveObjectToPosition(new_id, old_position, suppress_events=True)
+    except TypeError:
+        # BBB: removed in Zope 2.11
+        self.moveObjectToPosition(new_id, old_position)
+        warnings.warn(
+            "%s.moveObjectToPosition without suppress_events is "
+            "deprecated and will be removed in Zope 2.11." %
+            self.__class__.__name__, DeprecationWarning)
     return res
 
 

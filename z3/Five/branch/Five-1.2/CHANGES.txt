@@ -17,6 +17,9 @@ Restructuring
 Bugfixes
 --------
 
+* (b6) Added backward compatibility for old _setObject and _delObject
+  implementations without suppress_events.
+
 * (b3) Made the creation of custom skins work again.  It was broken in
   the port to Zope 3.2.
 
