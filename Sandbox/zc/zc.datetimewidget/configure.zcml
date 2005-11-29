@@ -1,0 +1,39 @@
+<configure 
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:zc='http://namespaces.zope.com/zc'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    >
+
+  <!-- Register the Javascript snippets used by the datetime widgets. -->
+  <zc:snippet
+      for = "zc.snippetlibrary.interfaces.IGlobalJavascriptSnippetLibrary"
+      file = "snippets/calendar-setup.js"
+      priority = "300"
+      />
+
+  <zc:snippet
+      for = "zc.snippetlibrary.interfaces.IGlobalJavascriptSnippetLibrary"
+      file = "snippets/lang/calendar-en.js"
+      priority = "200"
+      />
+
+  <zc:snippet
+      for = "zc.snippetlibrary.interfaces.IGlobalJavascriptSnippetLibrary"
+      file = "snippets/calendar.js"
+      priority = "100"
+      />
+
+  <!-- Register the CSS snippets used by the datetime widgets. -->
+
+  <zc:snippet
+      for = "zc.snippetlibrary.interfaces.IGlobalCssSnippetLibrary"
+      file = "snippets/calendar-system.css"
+      />
+
+  <browser:resourceDirectory
+      name="zc.datetimewidget"
+      directory="resources"
+      layer="default"
+      />
+
+</configure>
