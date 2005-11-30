@@ -75,7 +75,7 @@ class FormView(EditView):
                     self, self.schema, target=self.data, names=self.fieldNames)
             except WidgetsError, errors:
                 self.errors = errors
-                status = _("An error occured.")
+                status = _("An error occurred.")
                 transaction.abort()
             else:
                 if changed:

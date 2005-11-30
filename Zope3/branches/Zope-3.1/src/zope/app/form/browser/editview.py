@@ -103,7 +103,7 @@ class EditView(BrowserView):
                     notify(ObjectModifiedEvent(content, description))
             except WidgetsError, errors:
                 self.errors = errors
-                status = _("An error occured.")
+                status = _("An error occurred.")
                 transaction.abort()
             else:
                 setUpEditWidgets(self, self.schema, source=self.adapted,

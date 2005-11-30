@@ -208,7 +208,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         # change status
         self._status = transition.destinationState
 
-        # Send an event after the transition occured.
+        # Send an event after the transition occurred.
         notify(AfterTransitionEvent(obj, self, transition))
 
         # check for automatic transitions and fire them if necessary

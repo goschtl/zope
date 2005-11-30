@@ -24,6 +24,9 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
 from zope.schema import getFieldNamesInOrder, getFieldsInOrder
 
+
+_msg_anErrorOccurred = _("An error occurred")
+
 class EditSchema(BrowserView):
 
     edit = ViewPageTemplateFile('schema_edit.pt')
@@ -50,7 +53,7 @@ class EditSchema(BrowserView):
         if 'DELETE' in request:
             if not 'ids' in request:
                 self.errors = (_("Must select a field to delete"),)
-                status = _("An error occured.")
+                status = _msg_anErrorOccurred
             for id in request.get('ids', []):
                 del container[id]
         elif 'MOVE_UP' in request or 'MOVE_DOWN' in request:
@@ -61,13 +64,13 @@ class EditSchema(BrowserView):
             names = self.fieldNames()
             if name not in names:
                 self.errors = (_("Invalid field name: %s" % name),)
-                status = _("An error occured.")
+                status = _msg_anErrorOccurred
             p = names.index(name) + delta
             try:
                 self.context.moveField(name, p)
             except IndexError:
                 self.errors = (_("Invalid position: %s" % p),)
-                status = _("An error occured.")
+                status = _msg_anErrorOccurred
         self.update_status = status
         return status
 
