@@ -186,7 +186,7 @@ class Try:
                 md._pop(1)
 
         else:
-            # No errors have occured, render the optional else block
+            # No errors have occurred, render the optional else block
             if (self.elseBlock is None):
                 return result
             else:

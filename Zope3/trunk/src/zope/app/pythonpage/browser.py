@@ -40,7 +40,7 @@ class PythonPageEditView(EditView):
             status = super(PythonPageEditView, self).update()
         except SyntaxError, err:
             self.syntaxError = err
-            status = _('A syntax error occured.')
+            status = _('A syntax error occurred.')
             self.update_status = status
 
         return status
