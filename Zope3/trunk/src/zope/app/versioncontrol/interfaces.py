@@ -284,7 +284,7 @@ class INonVersionedData(zope.interface.Interface):
         """
 
     def restoreNonVersionedData(data):
-        """Restores non-versioned data to this objecti
+        """Restores non-versioned data to this object.
 
         The version repository uses this method after reverting an
         object to a revision.  `data` is a value provided by the
