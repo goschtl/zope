@@ -55,7 +55,7 @@ Zope 3: analyze the Accept-Language HTTP header and nothing more.  In
 addition, Five providees ``IUserPreferredLanguages`` adapters for
 Localizer and PTS that choose languages the exact same way Localizer
 or PTS would.  So, if you're using Five in a Localizer-environment,
-you need this in your product's ``overrides.zcml``:
+you need this in your product's ``overrides.zcml``::
 
     <adapter
         for="zope.publisher.interfaces.http.IHTTPRequest"
@@ -63,7 +63,7 @@ you need this in your product's ``overrides.zcml``:
         factory="Products.Five.i18n.LocalizerLanguages"
         />
 
-If you're using PTS:
+If you're using PTS::
 
     <adapter
         for="zope.publisher.interfaces.http.IHTTPRequest"
