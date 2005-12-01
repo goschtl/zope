@@ -257,6 +257,15 @@ def testAdapter():
       >>> zope.component.getGlobalSiteManager().provideAdapter(
       ...     (I1,), I2, '', Comp)
 
+    You should get a sensible error message if you forget that the 'requires'
+    argument is supposed to be a sequence
+
+      >>> zope.component.getGlobalSiteManager().provideAdapter(
+      ...     I1, I2, '', Comp)
+      Traceback (most recent call last):
+        ...
+      TypeError: the required argument should be a list of interfaces, not a single interface
+
     You can now simply access the adapter using the `getAdapter()` API
     function:
 

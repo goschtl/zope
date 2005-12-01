@@ -164,6 +164,9 @@ class GlobalSiteManager(SiteManager):
         >>> registry.queryMultiAdapter((O1(), O2()), R1, '').__class__
         <class 'zope.component.site.O3'>
         """
+        if IInterface.providedBy(required):
+            raise TypeError('the required argument should be a list of'
+                            ' interfaces, not a single interface')
         ifaces = []
         for iface in required:
             if not IInterface.providedBy(iface) and iface is not None:
