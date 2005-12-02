@@ -27,6 +27,7 @@ def monkeyPatch():
     interfaces.monkey()
     i18n.monkey()
     localsites_monkey()
+    skins_monkey()
     zope3_monkey()
 
 def localsites_monkey():
@@ -72,6 +73,15 @@ def localsites_monkey():
 
     from ZPublisher.BaseRequest import BaseRequest
     BaseRequest.close = close
+
+def skins_monkey():
+    """Monkey HTTPRequest, from Zope > 2.8.4
+    """
+    def shiftNameToApplication(self):
+        """see zope.publisher.interfaces.http.IVirtualHostRequest"""
+        # this is needed for ++skin++
+    from ZPublisher.HTTPRequest import HTTPRequest
+    HTTPRequest.shiftNameToApplication = shiftNameToApplication
 
 def zope3_monkey():
     """Zope 3 monkeys to get some Zope 3.2 features.

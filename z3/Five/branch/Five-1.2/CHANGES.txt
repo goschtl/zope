@@ -99,6 +99,8 @@ Restructuring
 
 * Cleaned up security test.
 
+* Added monkey so that ++skin++ works with Zope <= 2.8.4.
+
 Five 1.2b (2005-11-02)
 ======================
 
