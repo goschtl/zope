@@ -36,6 +36,11 @@ from zope.app.twisted import log
 
 CONFIG_FILENAME = "zope.conf"
 
+RESTART_ON_SHUTDOWN = False # We need some out-of-band communication between 
+                            # twisteds reactor and the zdaemon.
+                            # XXX ctheune: Can someone verify that this isn't 
+                            # totally ugly?
+
 class ZopeOptions(zdoptions.ZDOptions):
 
     logsectionname = None
@@ -61,6 +66,7 @@ class ZopeService(service.MultiService):
 
 
 def main(args=None):
+    global RESTART_ON_SHUTDOWN
     # Record start times (real time and CPU time)
     t0 = time.time()
     c0 = time.clock()
@@ -74,7 +80,11 @@ def main(args=None):
     logging.info("Startup time: %.3f sec real, %.3f sec CPU", t1-t0, c1-c0)
 
     reactor.run()
-    sys.exit(0)
+
+    if RESTART_ON_SHUTDOWN:
+        sys.exit(1)
+    else:
+        sys.exit(0)
 
 
 def debug(args=None):

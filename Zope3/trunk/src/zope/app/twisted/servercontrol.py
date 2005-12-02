@@ -15,9 +15,13 @@
 
 $Id$
 """
-from ThreadedAsync import LoopCallback
+
+from twisted.internet import reactor
+
 from zope.app.applicationcontrol.interfaces import IServerControl
+from zope.app.twisted import main
 from zope.interface import implements
+
 
 class ServerControl(object):
 
@@ -25,20 +29,14 @@ class ServerControl(object):
 
     def shutdown(self, time=0):
         """See zope.app.applicationcontrol.interfaces.IServerControl"""
-        # TODO: Graceful shutdown does not work yet.
-
-        # This will work for servers started directly and by zdaemon. Passing
-        # an exit status of 0 causes zdaemon to not restart the process.
-        LoopCallback.exit_status = 0
+        # This will work for servers started directly and by zdaemon.
+        reactor.callLater(time, reactor.stop)
 
     def restart(self, time=0):
         """See zope.app.applicationcontrol.interfaces.IServerControl"""
-        # TODO: Graceful restart does not work yet.
-
         # TODO: Make sure this is only called if we are running via zdaemon.
-
-        # Passing an exit status of 1 causes zdaemon to restart the process.
-        LoopCallback.exit_status = 1
-
+        # Setting the module global variable in the main module signals zdaemon to restart
+        main.RESTART_ON_SHUTDOWN = True
+        reactor.callLater(time, reactor.stop)
 
 serverControl = ServerControl()
