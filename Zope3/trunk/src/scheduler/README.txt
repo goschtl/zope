@@ -11,7 +11,7 @@ The API
 -------
 
 From a high-level point of view, the developer starts out by developing their
-own or us an existing task component:
+own or use an existing task component:
 
   >>> from scheduler import task
   >>> from twisted.internet import reactor
@@ -24,10 +24,10 @@ own or us an existing task component:
   >>> mytask = MyTask(callable, ('arg1', 'arg2'), {'kw1': 1, 'kw2': 2})
 
 As you can see, you only need to implement the ``computeDelayToNextCall()``
-method that used by the rescheduling mechism to determine the next time of
-execution. It is up to the developer to compute the delay, which is specified
-in seconds. Based on the system you are running on, a float for the delay
-allows you to specify sub-second intervals.
+method that is used by the rescheduling mechanism to determine the next time
+of execution. It is up to the developer to compute the delay, which is
+specified in seconds. Based on the system you are running on, a float for the
+delay allows you to specify sub-second intervals.
 
 So, now we have a task, but it has not been started:
 
