@@ -1,0 +1,30 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  i18n_domain="zope">
+
+  <!-- seen -->
+  
+
+  <class class=".seen.SeenForAnnotableObjects">
+    <factory id="seen.interfaces.ISeen" />
+    <require
+        permission="zope.Public"
+        interface="zope.interface.common.mapping.IEnumerableMapping"
+        />
+    <require
+        permission="zope.View"
+        interface="zope.interface.common.mapping.IWriteMapping"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.ISeen"
+        />
+  </class>
+
+  <adapter
+      provides=".interfaces.ISeen"
+      for="zope.app.annotation.interfaces.IAnnotatable"
+      factory=".seen.SeenForAnnotableObjects"
+      trusted="True" />
+
+</configure>

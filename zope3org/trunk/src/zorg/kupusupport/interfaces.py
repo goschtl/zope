@@ -13,11 +13,11 @@ $Id: interfaces.py 7083 2004-10-21 15:56:05Z dhuber $
 """
 
 from zope.interface import Interface
-from zope.i18nmessageid import MessageIDFactory
+from zope.i18nmessageid import MessageFactory
 
 from zope.app.container.interfaces import IReadContainer
 
-_ = MessageIDFactory("kupu")
+_ = MessageFactory("kupu")
 
 
 class IKupuEditable(Interface):
