@@ -13,7 +13,7 @@
 
   <addMenuItem
       title="Principal Folder"
-      description="A Pluggable Authentication Persistent Authentication Plugin"
+      description="A Pluggable Persistent Authentication Plugin"
       class="..principalfolder.PrincipalFolder"
       permission="zope.ManageServices"
       view="AddPrincipalFolder.html"
