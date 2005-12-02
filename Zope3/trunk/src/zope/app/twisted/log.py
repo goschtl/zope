@@ -24,7 +24,6 @@ import logging
 import twisted.web2.log
 from twisted import web2
 
-
 class CommonAccessLoggingObserver(web2.log.BaseCommonAccessLoggingObserver):
     """Writes common access log to python's logging framework."""
 
@@ -50,3 +49,36 @@ class CommonFTPActivityLoggingObserver(CommonAccessLoggingObserver):
                                        )
 
         self.output.logRequest(task.channel.addr[0], message)
+
+class PythonLoggingObserver:
+    """Bridges twisted's log messages for the event log.
+    """
+    
+    def __init__(self): 
+        # Twisted gets it's own system
+        self.logger = logging.getLogger("twisted") 
+
+    def __call__(self, log_entry):
+        """Receive a twisted log entry, format it and bridge it to python."""
+        message = log_entry['message']
+        if not message:
+            if log_entry['isError'] and log_entry.has_key('failure'):
+                text = log_entry['failure'].getTraceback()
+            elif log_entry.has_key('format'):
+                try:
+                    text = log_entry['format'] % eventDict
+                except KeyboardInterrupt:
+                    raise
+                except:
+                    try:
+                        text = ('Invalid format string in log message: %s'
+                                % log_entry)
+                    except:
+                        text = 'UNFORMATTABLE OBJECT WRITTEN TO LOG, MESSAGE LOST'
+            else:
+                # we don't know how to log this
+                return
+        else:
+            text = '\n\t'.join(map(str, message))
+        self.logger.debug(text)
+

@@ -162,6 +162,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed bug 152 and 114: "redirects with large HML" and "logging http
+        disconnects". Added an observer for twisted's log that routes error
+        messages to the python logging facility for "twisted" on DEBUG level.
+
       - Fixed bug 185: Keyword Index isinstance check fails on security proxy
 
       - Improved bug 199: ZPTPage macro expansion

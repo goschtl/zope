@@ -118,6 +118,7 @@ def setup(options):
     options.accesslog()
 
     # Setup the logs. Eventually this might be better done using utilities.
+    twisted.python.log.addObserver(log.PythonLoggingObserver())
     observer = log.CommonAccessLoggingObserver()
     observer.start()
 
