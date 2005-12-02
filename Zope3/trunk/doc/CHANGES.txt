@@ -162,6 +162,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed bug 185: Keyword Index isinstance check fails on security proxy
+
       - Improved bug 199: ZPTPage macro expansion
         Changed label text to match the corresponding label in Zope 2 and
         activated the name spaces for macro expansion in read().
