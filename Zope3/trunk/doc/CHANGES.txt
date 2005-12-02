@@ -162,6 +162,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Improved bug 199: ZPTPage macro expansion
+        Changed label text to match the corresponding label in Zope 2 and
+        activated the name spaces for macro expansion in read().
+
       - Fixed bug 489: Template Parse Errors Do Not Report the Filename
 
       - Fixed bug 485: ServerControlForm.html / Restart, Shutdown does not

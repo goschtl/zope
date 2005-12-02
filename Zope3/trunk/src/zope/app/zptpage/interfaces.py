@@ -38,8 +38,8 @@ class IZPTPage(Interface):
         required=True)
 
     expand = Bool(
-        title=_("Expand macros"),
-        description=_("Expand Macros so that they all are shown in the "
+        title=_("Expand macros when editing"),
+        description=_("Expand macros so that they all are shown in the "
                       "code."),
         default=False,
         required=True)
