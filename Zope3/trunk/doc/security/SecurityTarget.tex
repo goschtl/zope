@@ -461,7 +461,7 @@ to as ``subjects'' in the TOE.
 
 \section{Operations}
 
-Operations are performed on objects. They are defined in an objects class. A
+Operations are performed on objects. They are defined in an object's class. A
 class is defined in the Python programming language and is identified by a
 fully qualified name.
 
@@ -487,10 +487,10 @@ The following assumptions need to be made about the TOE environment:
   Assumption Name & Description \\
   \midrule
 
-  A.OS & 
-  The machine and the operating system Zope is running on is physically secure.
-  The system is administrated such that the system is free from malicious
-  software like viruses and Trojan horses.  \\
+  A.OS & The machine and the operating system Zope is running on is physically
+  secure. The system is administrated such that the system is free from
+  malicious software like viruses and Trojan horses. The operating system
+  provides a true system clock. \\
 
   A.Admin & 
   The ``system-administrator'' of the above
@@ -507,7 +507,7 @@ The following assumptions need to be made about the TOE environment:
   A.Client & 
   The connection between client and Zope server is
   secure in a sense that the identification and
-  authentication data is not monitored or interfered.
+  authentication data is not monitored or interfered with.
    \\
 
   A.Credential & 
@@ -695,11 +695,15 @@ The following security objectives have been defined for the TOE:
 
   O.Delegation
    & 
-  Provide the ability to securely delegate control. Users can
-  delegate the ability to control access to selected
-  operations to others. To delegate a permission, a meta permission
-  that allows you to delegate this permission must be granted.
-   \\
+
+  Provide the ability to securely delegate control. Principals that are granted
+  the zope.Security permission shall be able to grant (or deny) permissions to
+  other principals.
+  
+  By default the zope.Manager role is granted all permissions thus including
+  zope.Security for all managers.
+
+  \\
 
   O.Audit
    & 
@@ -763,7 +767,8 @@ The following security objectives have been defined for the TOE environment:
 
 \begin{longtable}[c]{lp{10cm}}
   \toprule
-  Assumption Name  &  Description \\
+   Objective for the environment & Description \\
+  
   \midrule\endhead
 
   OE.OS
@@ -1860,13 +1865,16 @@ role.
 
 \subsection{Configuration}
 
-\begin{itemize}
-  \item assigning roles/permissions/etc via zcml
-  \item assigning permissions/roles/users via management interface
-  \item assigning permissions/roles/users via API
-\end{itemize}
+The configuration system is used to provide definitions for security
+attributes. It is used to define permissions, roles, principals and other
+security policy relevant data.
 
-- only allow consistent configurations to be accepted
+It can be accessed via the Python API, the Zope management interface and
+through ZCML configuration files.
+
+The configuration system takes care that any operation made to the security
+relevant data (e.g. adding or deleting a principal) does not compromise the
+systems integrity, especially in respect to residual information protection.
 
 \subsection{Auditing}
 
@@ -2334,7 +2342,7 @@ All dependencies required by the chosen SFRs are covered. See table XXX.
 
     Providing an ACID compatible transaction management system that allows
     secure rollback from a failed transaction satisfies the objective to have
-    the system stay in an integer state. (FDP\_ROL.2\_Transactions, FPT\_FLS.1)
+    the system keep its integrity. (FDP\_ROL.2\_Transactions, FPT\_FLS.1)
 
     The rollback is performed by the TOE automatically as soon as an error is
     encountered and not handled by any application logic.
@@ -2630,6 +2638,7 @@ Zope as a free software project receives by it's users.
   \item[SFR] Security Functional Requirement
   \item[ST] Security Targets
   \item[TOE] Target of Evaluation
+  \item[SVN] Subversion; A source code management system, used for managing the Zope source code.
   \item[TSF] TOE Security Functions
 
 \end{description} 
