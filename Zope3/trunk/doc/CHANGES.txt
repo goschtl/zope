@@ -162,6 +162,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed bug 489: Template Parse Errors Do Not Report the Filename
+
       - Fixed bug 485: ServerControlForm.html / Restart, Shutdown does not
         work. This uses twisted's reactor now, implements the countdown
         feature and provides sensible user feedback with a real page.
