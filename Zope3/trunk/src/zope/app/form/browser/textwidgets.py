@@ -35,12 +35,6 @@ def escape(str):
         str = saxutils.escape(str)
     return str
 
-def unescape(str):
-    if str is not None:
-        str = saxutils.unescape(str)
-    return str
-
-
 class TextWidget(SimpleInputWidget):
     """Text widget.
 
@@ -94,7 +88,7 @@ class TextWidget(SimpleInputWidget):
     Check that HTML is correctly encoded and decoded:
 
     >>> request = TestRequest(
-    ...     form={'field.foo': u'&lt;h1&gt;&amp;copy;&lt;/h1&gt;'})
+    ...     form={'field.foo': u'<h1>&copy;</h1>'})
     >>> widget = TextWidget(field, request)
     >>> widget.getInputValue()
     u'<h1>&copy;</h1>'
@@ -152,7 +146,7 @@ class TextWidget(SimpleInputWidget):
                 value = unicode(input)
             except ValueError, v:
                 raise ConversionError(_("Invalid text data"), v)
-        return unescape(value)
+        return value
 
 
 class Bytes(SimpleInputWidget):
@@ -280,7 +274,7 @@ class TextAreaWidget(SimpleInputWidget):
     Check that HTML is correctly encoded and decoded:
 
     >>> request = TestRequest(
-    ...     form={'field.foo': u'&lt;h1&gt;&amp;copy;&lt;/h1&gt;'})
+    ...     form={'field.foo': u'<h1>&copy;</h1>'})
     >>> widget = TextAreaWidget(field, request)
     >>> widget.getInputValue()
     u'<h1>&copy;</h1>'
@@ -308,7 +302,6 @@ class TextAreaWidget(SimpleInputWidget):
             except ValueError, v:
                 raise ConversionError(_("Invalid unicode data"), v)
             else:
-                value = unescape(value)
                 value = value.replace("\r\n", "\n")                
         return value
 

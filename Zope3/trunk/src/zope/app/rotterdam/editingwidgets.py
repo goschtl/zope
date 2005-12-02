@@ -75,7 +75,7 @@ class SimpleEditingWidget(TextAreaWidget):
     Check that HTML is correctly encoded and decoded:
 
     >>> request = TestRequest(
-    ...     form={'field.foo': u'&lt;h1&gt;&amp;copy;&lt;/h1&gt;'})
+    ...     form={'field.foo': u'<h1>&copy;</h1>'})
     >>> widget = SimpleEditingWidget(field, request)
     >>> widget.style = ''
     >>> widget.getInputValue()
