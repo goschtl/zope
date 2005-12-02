@@ -21,7 +21,7 @@ from xml.dom.minidom import _nssplit
 from xml.dom.minidom import Document
 from xml.dom.minidom import Element
 from xml.dom.minidom import Node
-from xml.dom.minidom import parseString as domParseString
+from xml.dom.minidom import parseString
 from xml.sax.handler import ContentHandler
 
 import Products
@@ -29,13 +29,22 @@ from AccessControl import ClassSecurityInfo
 from Acquisition import Implicit
 from Globals import InitializeClass
 from Globals import package_home
+try:
+    from OFS.interfaces import IOrderedContainer
+except:
+    #BBB: for Zope 2.8
+    from Products.Five.bbb.OFS_interfaces import IOrderedContainer
 from TAL.TALDefs import attrEscape
+from zope.app import zapi
 from zope.interface import implements
+from zope.interface import providedBy
 
 from exceptions import BadRequest
+from interfaces import IBody
 from interfaces import INodeExporter
 from interfaces import INodeImporter
-from interfaces import PURGE
+from interfaces import ISetupContext
+from interfaces import PURGE, UPDATE
 from permissions import ManagePortal
 
 
@@ -161,7 +170,7 @@ class ImportConfiguratorBase(Implicit):
         if reader is not None:
             xml = reader()
 
-        dom = domParseString(xml)
+        dom = parseString(xml)
         root = dom.documentElement
 
         return self._extractNode(root)
@@ -394,6 +403,36 @@ class PrettyDocument(Document):
             node.writexml(writer, indent, addindent, newl)
 
 
+class BodyAdapterBase(object):
+
+    """Body im- and exporter base.
+    """
+
+    implements(IBody)
+
+    _LOGGER_ID = ''
+
+    def __init__(self, context, environ):
+        self.context = context
+        self.environ = environ
+        self._logger = environ.getLogger(self._LOGGER_ID)
+
+    def _exportBody(self):
+        """Export the object as a file body.
+        """
+        return ''
+
+    def _importBody(self, body):
+        """Import the object from the file body.
+        """
+
+    body = property(_exportBody, _importBody)
+
+    mime_type = 'text/plain'
+
+    suffix = ''
+
+
 class NodeAdapterBase(object):
 
     """Node im- and exporter base.
@@ -436,6 +475,32 @@ class NodeAdapterBase(object):
     def _convertToBoolean(self, val):
         return val.lower() in ('true', 'yes', '1')
 
+
+class XMLAdapterBase(BodyAdapterBase, NodeAdapterBase):
+
+    """XML im- and exporter base.
+    """
+
+    def _exportBody(self):
+        """Export the object as a file body.
+        """
+        doc = PrettyDocument()
+        doc.appendChild(self.exportNode(doc))
+        return doc.toprettyxml(' ')
+
+    def _importBody(self, body):
+        """Import the object from the file body.
+        """
+        mode = self.environ.shouldPurge() and PURGE or UPDATE
+        self.importNode(parseString(body).documentElement, mode=mode)
+
+    body = property(_exportBody, _importBody)
+
+    mime_type = 'text/xml'
+
+    suffix = '.xml'
+
+
 class ObjectManagerHelpers(object):
 
     """ObjectManager im- and export helpers.
@@ -443,11 +508,21 @@ class ObjectManagerHelpers(object):
 
     def _extractObjects(self):
         fragment = self._doc.createDocumentFragment()
-        for obj in self.context.objectValues():
+        objects = self.context.objectValues()
+        if not IOrderedContainer.providedBy(self.context):
+            objects.sort(lambda x,y: cmp(x.getId(), y.getId()))
+        for obj in objects:
             exporter = INodeExporter(obj, None)
-            if exporter is None:
-                continue
-            fragment.appendChild(exporter.exportNode(self._doc))
+            if exporter:
+                node = exporter.exportNode(self._doc)
+                fragment.appendChild(node)
+            else:
+                adapters = zapi.getService(zapi.servicenames.Adapters)
+                if adapters.lookup((providedBy(obj), ISetupContext), IBody):
+                    node = self._doc.createElement('object')
+                    node.setAttribute('name', obj.getId())
+                    node.setAttribute('meta_type', obj.meta_type)
+                    fragment.appendChild(node)
         return fragment
 
     def _purgeObjects(self):
@@ -470,7 +545,7 @@ class ObjectManagerHelpers(object):
                         parent._setObject(obj_id, mt_info['instance'](obj_id))
                         break
                 else:
-                    raise ValueError('unknown meta_type \'%s\'' % obj_id)
+                    raise ValueError('unknown meta_type \'%s\'' % meta_type)
 
             if child.hasAttribute('insert-before'):
                 insert_before = child.getAttribute('insert-before')
@@ -494,7 +569,9 @@ class ObjectManagerHelpers(object):
                         pass
 
             obj = getattr(self.context, obj_id)
-            INodeImporter(obj).importNode(child, mode)
+            importer = INodeImporter(obj, None)
+            if importer:
+                importer.importNode(child, mode)
 
 
 class PropertyManagerHelpers(object):
@@ -588,3 +665,36 @@ class PropertyManagerHelpers(object):
                 prop_value = self._getNodeText(child).encode('utf-8')
 
             obj._updateProperty(prop_id, prop_value)
+
+
+def exportObjects(parent, parent_path, context):
+    """ Export subobjects recursively.
+    """
+    for obj in parent.objectValues():
+        path = '%s/%s' % (parent_path, obj.getId().replace(' ', '_'))
+
+        exporter = zapi.queryMultiAdapter((obj, context), IBody)
+        if exporter:
+            filename = '%s%s' % (path, exporter.suffix)
+            body = exporter.body
+            if body is not None:
+                context.writeDataFile(filename, body, exporter.mime_type)
+
+        if getattr(obj, 'objectValues', False):
+            exportObjects(obj, path, context)
+
+def importObjects(parent, parent_path, context):
+    """ Import subobjects recursively.
+    """
+    for obj in parent.objectValues():
+        path = '%s/%s' % (parent_path, obj.getId().replace(' ', '_'))
+
+        importer = zapi.queryMultiAdapter((obj, context), IBody)
+        if importer:
+            filename = '%s%s' % (path, importer.suffix)
+            body = context.readDataFile(filename)
+            if body is not None:
+                importer.body = body
+
+        if getattr(obj, 'objectValues', False):
+            importObjects(obj, path, context)

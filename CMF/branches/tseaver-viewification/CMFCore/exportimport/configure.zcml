@@ -1,7 +1,5 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:five="http://namespaces.zope.org/five"
-    i18n_domain="cmf"
     >
 
   <adapter
@@ -29,15 +27,10 @@
       />
 
   <adapter
-      factory=".actions.ActionsToolNodeAdapter"
-      provides="Products.GenericSetup.interfaces.INodeExporter"
-      for="Products.CMFCore.interfaces.IActionsTool"
-      />
-
-  <adapter
-      factory=".actions.ActionsToolNodeAdapter"
-      provides="Products.GenericSetup.interfaces.INodeImporter"
-      for="Products.CMFCore.interfaces.IActionsTool"
+      factory=".actions.ActionsToolXMLAdapter"
+      provides="Products.GenericSetup.interfaces.IBody"
+      for="Products.CMFCore.interfaces.IActionsTool
+           Products.GenericSetup.interfaces.ISetupContext"
       />
 
   <adapter
@@ -53,15 +46,10 @@
       />
 
   <adapter
-      factory=".cachingpolicymgr.CachingPolicyManagerNodeAdapter"
-      provides="Products.GenericSetup.interfaces.INodeExporter"
-      for="Products.CMFCore.interfaces.ICachingPolicyManager"
-      />
-
-  <adapter
-      factory=".cachingpolicymgr.CachingPolicyManagerNodeAdapter"
-      provides="Products.GenericSetup.interfaces.INodeImporter"
-      for="Products.CMFCore.interfaces.ICachingPolicyManager"
+      factory=".cachingpolicymgr.CachingPolicyManagerXMLAdapter"
+      provides="Products.GenericSetup.interfaces.IBody"
+      for="Products.CMFCore.interfaces.ICachingPolicyManager
+           Products.GenericSetup.interfaces.ISetupContext"
       />
 
   <adapter
@@ -77,51 +65,64 @@
       />
 
   <adapter
-      factory=".contenttyperegistry.ContentTypeRegistryNodeAdapter"
+      factory=".contenttyperegistry.ContentTypeRegistryXMLAdapter"
+      provides="Products.GenericSetup.interfaces.IBody"
+      for="Products.CMFCore.interfaces.IContentTypeRegistry
+           Products.GenericSetup.interfaces.ISetupContext"
+      />
+
+  <adapter
+      factory=".cookieauth.CookieCrumblerXMLAdapter"
+      provides="Products.GenericSetup.interfaces.IBody"
+      for="Products.CMFCore.interfaces.ICookieCrumbler
+           Products.GenericSetup.interfaces.ISetupContext"
+      />
+
+  <adapter
+      factory=".properties.PropertiesXMLAdapter"
+      provides="Products.GenericSetup.interfaces.IBody"
+      for="Products.CMFCore.interfaces.ISiteRoot
+           Products.GenericSetup.interfaces.ISetupContext"
+      />
+
+  <adapter
+      factory=".skins.DirectoryViewNodeAdapter"
       provides="Products.GenericSetup.interfaces.INodeExporter"
-      for="Products.CMFCore.interfaces.IContentTypeRegistry"
+      for="Products.CMFCore.interfaces.IDirectoryView"
       />
 
   <adapter
-      factory=".contenttyperegistry.ContentTypeRegistryNodeAdapter"
+      factory=".skins.DirectoryViewNodeAdapter"
       provides="Products.GenericSetup.interfaces.INodeImporter"
-      for="Products.CMFCore.interfaces.IContentTypeRegistry"
+      for="Products.CMFCore.interfaces.IDirectoryView"
       />
 
   <adapter
-      factory=".cookieauth.CookieCrumblerNodeAdapter"
-      provides="Products.GenericSetup.interfaces.INodeExporter"
-      for="Products.CMFCore.interfaces.ICookieCrumbler"
+      factory=".skins.SkinsToolXMLAdapter"
+      provides="Products.GenericSetup.interfaces.IBody"
+      for="Products.CMFCore.interfaces.ISkinsTool
+           Products.GenericSetup.interfaces.ISetupContext"
       />
 
   <adapter
-      factory=".cookieauth.CookieCrumblerNodeAdapter"
-      provides="Products.GenericSetup.interfaces.INodeImporter"
-      for="Products.CMFCore.interfaces.ICookieCrumbler"
+      factory=".typeinfo.TypeInformationXMLAdapter"
+      provides="Products.GenericSetup.interfaces.IBody"
+      for="Products.CMFCore.interfaces.ITypeInformation
+           Products.GenericSetup.interfaces.ISetupContext"
       />
 
   <adapter
-      factory=".properties.PropertiesNodeAdapter"
-      provides="Products.GenericSetup.interfaces.INodeExporter"
-      for="Products.CMFCore.interfaces.ISiteRoot"
+      factory=".typeinfo.TypesToolXMLAdapter"
+      provides="Products.GenericSetup.interfaces.IBody"
+      for="Products.CMFCore.interfaces.ITypesTool
+           Products.GenericSetup.interfaces.ISetupContext"
       />
 
   <adapter
-      factory=".properties.PropertiesNodeAdapter"
-      provides="Products.GenericSetup.interfaces.INodeImporter"
-      for="Products.CMFCore.interfaces.ISiteRoot"
-      />
-
-  <adapter
-      factory=".typeinfo.TypeInformationNodeAdapter"
-      provides="Products.GenericSetup.interfaces.INodeExporter"
-      for="Products.CMFCore.interfaces.ITypeInformation"
-      />
-
-  <adapter
-      factory=".typeinfo.TypeInformationNodeAdapter"
-      provides="Products.GenericSetup.interfaces.INodeImporter"
-      for="Products.CMFCore.interfaces.ITypeInformation"
+      factory=".workflow.WorkflowToolXMLAdapter"
+      provides="Products.GenericSetup.interfaces.IBody"
+      for="Products.CMFCore.interfaces.IWorkflowTool
+           Products.GenericSetup.interfaces.ISetupContext"
       />
 
 </configure>

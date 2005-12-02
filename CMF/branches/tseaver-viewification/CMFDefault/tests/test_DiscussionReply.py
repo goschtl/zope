@@ -15,16 +15,15 @@
 $Id$
 """
 
-from unittest import TestSuite, makeSuite, main
+import unittest
 import Testing
-import Zope2
-Zope2.startup()
 
 import Products
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
 from Products.Five import zcml
 
+from Products.CMFCore.tests.base.testcase import _TRAVERSE_ZCML
 from Products.CMFCore.tests.base.testcase import PlacelessSetup
 from Products.CMFCore.tests.base.testcase import RequestTest
 
@@ -35,8 +34,11 @@ class DiscussionReplyTest(PlacelessSetup, RequestTest):
         PlacelessSetup.setUp(self)
         RequestTest.setUp(self)
         zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('permissions.zcml', Products.Five)
         zcml.load_config('configure.zcml', Products.GenericSetup)
         zcml.load_config('configure.zcml', Products.CMFCore)
+        zcml.load_config('configure.zcml', Products.DCWorkflow)
+        zcml.load_string(_TRAVERSE_ZCML)
         try:
             factory = self.root.manage_addProduct['CMFDefault'].addConfiguredSite
             factory('cmf', 'CMFDefault:default', snapshot=False)
@@ -90,10 +92,10 @@ class DiscussionReplyTestMember(DiscussionReplyTest):
 
 
 def test_suite():
-    suite = TestSuite()
-    suite.addTest(makeSuite(DiscussionReplyTest))
-    suite.addTest(makeSuite(DiscussionReplyTestMember))
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(DiscussionReplyTest))
+    suite.addTest(unittest.makeSuite(DiscussionReplyTestMember))
     return suite
 
 if __name__ == '__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

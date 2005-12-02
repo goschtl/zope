@@ -7,6 +7,8 @@ Display View
 First, let's create a "dummy" link class, to avoid dependencies on the
 actual content object.
 
+  >>> from zope.app.tests.placelesssetup import setUp, tearDown
+  >>> setUp()
   >>> from Products.CMFDefault.interfaces import ILink
   >>> class FauxLink:
   ...     def __init__(self, remote_url, title):
@@ -83,3 +85,6 @@ Finally, call the editing handler.
   >>> print response._redirected
   http://example.com/path/to/link/edit.html?portal_status_message=Link%20updated.
 
+And clean up at the end:
+
+  >>> tearDown()

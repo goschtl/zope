@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
-<workflow-tool>
+<object name="portal_workflow" meta_type="CMF Workflow Tool">
  <bindings>
-  <type type_id="Topic">
-
-  </type>
+  <type type_id="Topic"/>
  </bindings>
-</workflow-tool>
+</object>
