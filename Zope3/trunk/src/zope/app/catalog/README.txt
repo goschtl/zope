@@ -217,6 +217,14 @@ We can update all of the indexes:
     >>> list(cat.apply({'color': 'red'}))
     [2]
 
+WARNING: There is an issue here: The updateIndexes() method will include all
+objects that are registered with the next reachable IntId utility. If no IntId
+utility exists in the same site as the catalog, you will end up with objects
+not belonging to the site of the catalog. A work around is to add an IntId
+utility parallel to your catalog. See
+http://www.zope.org/Collectors/Zope3-dev/466 for the current status of this
+issue.
+
 There's an alternate search interface that returns "result sets".
 Result sets provide access to objects, rather than object ids:
 

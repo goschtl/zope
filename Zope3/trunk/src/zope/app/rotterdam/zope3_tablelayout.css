@@ -653,3 +653,14 @@ div.page_error {
     padding: 0.5em 1em;
     vertical-align: middle;
 }
+
+div.bug {
+    background: #FFCE7B;
+    border: 1px solid #FFA500;
+    color: Black;
+    font: bold 80% Verdana, Helvetica, Arial, sans-serif;
+    margin: 2em 1em 1em 0em;
+    padding: 0.5em 1em;
+    vertical-align: middle;
+}
+

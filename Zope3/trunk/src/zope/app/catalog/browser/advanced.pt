@@ -5,7 +5,7 @@
 
 <h2 i18n:translate="">Catalog statistics</h2>
 
-<table border="0">
+<table class="listing" summary="Indexes">
    <tr><th i18n:translate="">Index</th>
        <th i18n:translate="">Document Count</th>
        <th i18n:translate="">Word Count</th>
@@ -22,6 +22,13 @@
     <input type="submit" value="Reindex"
            i18n:attributes="value reindex-button"/>
 </form>
+
+<div class="bug">
+  Please make sure to install an IntId utility before using the reindex
+  function. This is a known issue that will be removed in Zope 3.3. See <a
+    href="http://www.zope.org/Collectors/Zope3-dev/466">Issue 466</a> for a
+  detailed description and the current status.  
+</div>
 
 </div>
 </body>

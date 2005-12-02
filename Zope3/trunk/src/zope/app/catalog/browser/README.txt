@@ -261,7 +261,7 @@ words have been eliminated.
   ... """)
   HTTP/1.1 200 Ok
   ...
-  <table border="0">
+  <table class="listing" summary="Indexes">
      <tr><th>Index</th>
          <th>Document Count</th>
          <th>Word Count</th>
@@ -357,7 +357,7 @@ documents have been indexed and that the word count has increased to 30:
   ... """)
   HTTP/1.1 200 Ok
   ...
-  <table border="0">
+  <table class="listing" summary="Indexes">
      <tr><th>Index</th>
          <th>Document Count</th>
          <th>Word Count</th>
