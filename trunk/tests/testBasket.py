@@ -208,6 +208,18 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
         expected = [x for x in result if (x and x.startswith('external method')
                                           )]
         self.assertEqual(expected[0], 'external method')
+        
+    def test_directoryview(self):
+        basket = self._makeOne()
+        basket.preinitialized = False
+        basket.pdist_fname = os.path.join(self.fixtures,
+                                          'pdist-directoryview.txt')
+        
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        result = basket.initialize(DummyProductContext('Basket'))
+        basket.cleanup()
 
     def test_initialize_of_broken_at_import_in_debug_mode(self):
         basket = self._makeOne()
