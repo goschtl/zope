@@ -46,7 +46,7 @@ $Id$
 #   subscription adapters.
 
 #   'with' is a tuple of specs that is non-empty only in the case
-#   of multi-adapters.  
+#   of multi-adapters.
 
 #   'name' is a unicode adapter name.  Unnamed adapters have an empty
 #   name.
@@ -173,7 +173,7 @@ class Surrogate(object):
         ancestors.reverse()
         for ancestor in ancestors:
             ancestor_spec = ancestor.spec()
-            
+
             for key, v in ancestor.selfImplied.iteritems():
 
                 # key is specification or ('s', specification)
@@ -185,7 +185,7 @@ class Surrogate(object):
                     oldbyname = implied.get(key)
                     if not oldbyname:
                         implied[key] = oldbyname = {}
-                    
+
                     # v is name -> object
                     oldbyname.update(v)
 
@@ -197,30 +197,30 @@ class Surrogate(object):
                     oldwithobs = implied.get(key)
                     if not oldwithobs:
                         oldwithobs = implied[key] = {}
-                        
+
                     # v is {with -> tuple([object])}
                     for with, objects in v.iteritems():
                         oldwithobs[with] = oldwithobs.get(with, ()) + objects
-                    
+
                 else:
                     oldbyname = implied.get(key)
                     if not oldbyname:
                         implied[key] = oldbyname = {}
 
-                        
+
                     # v is {name -> {with -> ?}}
                     for name, withobs in v.iteritems():
 
                         # withobs is {with -> value}
 
-                        # If ancestor is not the default, 
+                        # If ancestor is not the default,
                         # add in ancestor so we can get ordering right
                         if ancestor_spec is not Default:
                             withobs = dict([
                                 (((ancestor_spec,) + with), value)
                                 for (with, value) in withobs.iteritems()
                                 ])
-                        
+
                         oldwithobs = oldbyname.get(name)
                         if not oldwithobs:
                             oldwithobs = oldbyname[name] = {}
@@ -342,7 +342,7 @@ class AdapterLookup(object):
                     value = byname.get(name, default)
                 else:
                     return default
-                
+
             return value
 
         elif order == 0:
@@ -439,7 +439,7 @@ class AdapterLookup(object):
             default = self._default.get(('s', provided))
             if default:
                 result.extend(default)
-                
+
             return result
 
         elif order == 0:
@@ -448,12 +448,12 @@ class AdapterLookup(object):
                 return list(result)
             else:
                 return []
-        
+
         # Multi
         key = 's', provided, order
         with = required[1:]
         result = []
-        
+
         for surrogate in self.get(required[0]), self._default:
             bywith = surrogate.get(key)
             if not bywith:
@@ -468,8 +468,6 @@ class AdapterLookup(object):
                     result.extend(values)
 
         return result
-
-        
 
     def queryMultiAdapter(self, objects, interface, name='', default=None):
         factory = self.lookup(map(providedBy, objects), interface, name)
@@ -523,7 +521,7 @@ class AdapterRegistry(object):
             except KeyError:
                 pass
         lookup = AdapterLookup(self, surrogates, _remove)
-        
+
         for name in ('lookup', 'lookup1', 'queryAdapter', 'get',
                      'adapter_hook', 'subscriptions',
                      'queryMultiAdapter', 'subscribers',
@@ -542,7 +540,7 @@ class AdapterRegistry(object):
         else:
             with = ()
             required = self._null
-        
+
         if not isinstance(name, basestring):
             raise TypeError("The name provided to provideAdapter "
                             "must be a string or unicode")
@@ -600,7 +598,7 @@ class AdapterRegistry(object):
                         for rspec, spec in zip(rwith, with):
                             if not spec.isOrExtends(rspec):
                                 break # This one is no good
-                            
+
                             # Determine the rank of this particular
                             # specification.
                             rank.append(list(spec.__sro__).index(rspec))
@@ -629,7 +627,7 @@ class AdapterRegistry(object):
 
         if provided is None:
             provided = Null
-            
+
         required._subscriptionAdaptTo(provided, value, with)
 
 def mextends(with, rwith):
@@ -679,7 +677,7 @@ def adapterImplied(adapters):
 
 def _add_named_adapter(target, provided, name, implied,
                        registered, value):
-    
+
     ikey = target
     rkey = target, name
 
@@ -711,7 +709,7 @@ def _add_multi_adapter(with, name, target, provided, implied,
     if not bywith:
         bywith = byname[name] = {}
 
-    
+
     rkey = ikey, name, with # The full key has all 4
     if (with not in bywith
         or
@@ -730,7 +728,7 @@ def _add_multi_adapter(with, name, target, provided, implied,
 def _add_named_sub_adapter(target, implied, objects):
     key = ('s', target)
     implied[key] = implied.get(key, ()) + objects
-    
+
     for b in target.__bases__:
         _add_named_sub_adapter(b, implied, objects)
 

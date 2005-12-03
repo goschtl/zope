@@ -43,6 +43,6 @@ class NotFoundError(KeyError, LookupError):
     Eventually, when this exception type is used as a base class, it
     will become an alias for LookupError.  Client code should not depend
     on it extnding KeyError.
-    
+
     """
     implements(INotFoundError)
