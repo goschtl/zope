@@ -162,6 +162,11 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed Bug 484: Viewmeta directive bug. The browser:view and page:view
+        directives did not apply the 'allowed_attributes' attribute and the
+        unit test checking this was broken because the 'attribute' will always
+        be available regardless of 'allowed_attributes'.
+
       - Fixed bug 152 and 114: "redirects with large HML" and "logging http
         disconnects". Added an observer for twisted's log that routes error
         messages to the python logging facility for "twisted" on DEBUG level.
