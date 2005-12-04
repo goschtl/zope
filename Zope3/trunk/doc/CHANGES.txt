@@ -162,6 +162,9 @@ Zope Changes
 
     Bug Fixes
 
+      - zope.configuration doesn't hide import errors inside python
+        modules anymore.
+
       - Fixed Bug 484: Viewmeta directive bug. The browser:view and page:view
         directives did not apply the 'allowed_attributes' attribute and the
         unit test checking this was broken because the 'attribute' will always

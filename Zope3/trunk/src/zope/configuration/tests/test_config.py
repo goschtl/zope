@@ -261,16 +261,67 @@ def test_trailing_dot_in_resolve():
     ValueError: The given name is blank
     """
 
-def test_bad_import():
+def test_bad_dotted_last_import():
     """
-
     >>> c = config.ConfigurationContext()
 
-    >>> c.resolve('zope.configuration.tests.victim.x')
+    Import error caused by a bad last component in the dotted name.
+
+    >>> c.resolve('zope.configuration.tests.nosuch')
     Traceback (most recent call last):
     ...
-    ConfigurationError: Couldn't import zope.configuration.tests.victim,""" \
-                                       """ No module named bad_to_the_bone
+    ConfigurationError: ImportError: Module zope.configuration.tests""" \
+                                               """ has no global nosuch
+    """
+
+def test_bad_dotted_import():
+    """
+    >>> c = config.ConfigurationContext()
+
+    Import error caused by a totally wrong dotted name.
+
+    >>> c.resolve('zope.configuration.nosuch.noreally')
+    Traceback (most recent call last):
+    ...
+    ConfigurationError: ImportError: Couldn't import""" \
+                   """ zope.configuration.nosuch, No module named nosuch
+    """
+
+def test_bad_sub_last_import():
+    """
+    >>> c = config.ConfigurationContext()
+
+    Import error caused by a bad sub import inside the referenced
+    dotted name. Here we keep the standard traceback.
+
+    >>> c.resolve('zope.configuration.tests.victim')
+    Traceback (most recent call last):
+    ...
+      File "...bad.py", line 3 in ?
+       import bad_to_the_bone
+    ImportError: No module named bad_to_the_bone
+
+    Cleanup:
+
+    >>> for name in ('zope.configuration.tests.victim',
+    ...              'zope.configuration.tests.bad'):
+    ...    if name in sys.modules:
+    ...        del sys.modules[name]
+    """
+
+def test_bad_sub_import():
+    """
+    >>> c = config.ConfigurationContext()
+
+    Import error caused by a bad sub import inside part of the referenced
+    dotted name. Here we keep the standard traceback.
+
+    >>> c.resolve('zope.configuration.tests.victim.nosuch')
+    Traceback (most recent call last):
+    ...
+      File "...bad.py", line 3 in ?
+       import bad_to_the_bone
+    ImportError: No module named bad_to_the_bone
 
     Cleanup:
 

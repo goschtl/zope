@@ -183,8 +183,11 @@ class ConfigurationContext(object):
         try:
             mod = __import__(mname, *_import_chickens)
         except ImportError, v:
+            if sys.exc_info()[2].tb_next is not None:
+                # ImportError was caused deeper
+                raise
             raise ConfigurationError(
-                "Couldn't import %s, %s" % (mname, v)), None, sys.exc_info()[2]
+                "ImportError: Couldn't import %s, %s" % (mname, v))
 
         if not oname:
             # see not mname case above
@@ -202,22 +205,9 @@ class ConfigurationContext(object):
             try:
                 return __import__(mname+'.'+oname, *_import_chickens)
             except ImportError:
-
-                # We need to try to figure out what module the import
-                # error is complaining about.  If the import failed
-                # due to a failure to import some other module
-                # imported by the module we are importing, we want to
-                # know it. Unfortunately, the value of the import
-                # error is just a string error message. :( We can't
-                # pull it apart directly to see what module couldn't
-                # be imported. The only thing we can really do is to
-                # try to "screen scrape" the error message:
-
-                if str(sys.exc_info()[1]).find(oname) < 0:
-                    # There seems to have been an error further down,
-                    # so reraise the exception so as not to hide it.
+                if sys.exc_info()[2].tb_next is not None:
+                    # ImportError was caused deeper
                     raise
-
                 raise ConfigurationError(
                     "ImportError: Module %s has no global %s" % (mname, oname))
 
