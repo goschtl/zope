@@ -32,6 +32,8 @@ RestrictedPython ../src/RestrictedPython
 ZConfig          ../src/ZConfig
 zdaemon          ../src/zdaemon
 
+twisted          ../src/twisted
+
 # These packages are the release collections based on the Zope 3
 # project; they define what goes into the Zope X3 and related
 # releases.
