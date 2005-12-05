@@ -12,7 +12,7 @@ experiences of Zope 2.
 Requirements
 ------------
 
-Zope 3 requires that Python 2.4.1 or newer be installed.
+Zope 3 requires that Python 2.4.2 or newer be installed.
 
 Building the Zope 3 software requires a C compiler supported by the distutils.
 
@@ -35,10 +35,9 @@ use with Zope::
 
   Testing for an acceptable Python interpreter...
 
-  Python version 2.3.5 found at /usr/local/bin/python
-  Python version 2.4.1 found at /usr/local/bin/python2.4
+  Python version 2.4.2 found at /usr/local/bin/python2.4
 
-  The optimum Python version (2.4.1) was found at /usr/local/bin/python2.4.
+  The optimum Python version (2.4.2) was found at /usr/local/bin/python2.4.
 
 If you want to specify which Python should be used with Zope, use the
 `--with-python` option to indicate the specific Python interpreter to use::
@@ -61,10 +60,9 @@ alternate location:
 
   Testing for an acceptable Python interpreter...
 
-  Python version 2.3.5 found at /usr/local/bin/python
-  Python version 2.4.1 found at /usr/local/bin/python2.4
+  Python version 2.4.2 found at /usr/local/bin/python2.4
 
-  The optimum Python version (2.4.1) was found at /usr/local/bin/python2.4.
+  The optimum Python version (2.4.2) was found at /usr/local/bin/python2.4.
 
 If you want to use the same prefix as a previous installation, you need to
 remove the original installation first.  Instances created using one
@@ -92,14 +90,6 @@ optional step, and can take a while to complete.  The tests can be run using
 
   OK
 
-  Running FUNCTIONAL tests at level 1
-  Running FUNCTIONAL tests from /home/user/Zope-3.2.0/build/lib.linux-i686-2.3
-  [...lots of dots, one per test...]
-  ----------------------------------------------------------------------
-  Ran 385 tests in 106.901s
-
-  OK
-
 The line before the final "OK" tells how many individual tests were run, and
 long it took to run them.  These numbers will vary based on release, operating
 system, and host platform.
@@ -110,7 +100,8 @@ To install the software, run ``make`` again::
   python2.4 install.py -q build
   python2.4 install.py -q install --home "/opt/Zope-3.2.0"
 
-You now have a complete Zope 3 installation.
+You now have a complete Zope 3 installation.  You can test it by
+changing to the install directory and running bin/zopetest
 
 
 Windows (installer)
