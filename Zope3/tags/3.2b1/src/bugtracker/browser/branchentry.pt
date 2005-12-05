@@ -1,9 +1,0 @@
-<li>
-  <a class="" href="" 
-      tal:attributes="href string:../${view/name};
-                      class string:node ${context/status} ${context/priority}">
-    <span tal:replace="string:${context/title} (${view/name})">
-      Bug Title (bugid)
-    </span>
-  </a>
-</li>
