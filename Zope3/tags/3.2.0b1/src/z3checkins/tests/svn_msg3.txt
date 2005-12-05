@@ -1,0 +1,15 @@
+To: checkins@lists.schooltool.org
+From: Albertas Agejevas <alga@pov.lt>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-Id: <20030909101551.6F900C32F@mail.pov.lt>
+Date: Mon,  8 Sep 2003 13:15:51 +0300 (EEST)
+Subject: [schooltool-checkins] rev 10 had a bug in it
+
+Blah blah blah
+
+_______________________________________________
+Checkins mailing list
+Checkins@lists.schooltool.org
+http://lists.schooltool.org/mailman/listinfo/checkins
+
