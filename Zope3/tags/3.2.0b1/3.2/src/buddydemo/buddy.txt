@@ -1,0 +1,39 @@
+Buddies
+=======
+
+Buddies provide basic contact information:
+
+- First name
+- Last name
+- Email address
+- Street adress, and
+- postal code
+
+Buddies can be created by calling the `Buddy` class:
+
+  >>> from buddydemo.buddy import Buddy
+  >>> bud = Buddy('Bob', 'Smith', 'bob@smith.org',
+  ...             '513 Princess Ann Street', '22401')
+
+You can access the information via attributes:
+
+  >>> bud.first, bud.last, bud.email
+  ('Bob', 'Smith', 'bob@smith.org')
+  >>> bud.address, bud.postal_code
+  ('513 Princess Ann Street', '22401')
+
+Any data not passed to the class are initialized to
+empty strings:
+
+  >>> bud = Buddy()
+  >>> bud.first, bud.last, bud.email
+  ('', '', '')
+  >>> bud.address, bud.postal_code
+  ('', '')
+
+You can get the full name of a buddy by calling its name
+method:
+
+  >>> bud = Buddy('Bob', 'Smith')
+  >>> bud.name()
+  'Bob Smith'
