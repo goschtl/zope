@@ -55,7 +55,7 @@ def handleBrokenProduct(product):
     # in the control panel. However, all attempts to do so has failed from my 
     # side. //regebro
     exc = sys.exc_info()
-    LOG('Five', ERROR, 'Could not import Product %s' % name, error=exc)
+    LOG('Five', ERROR, 'Could not import Product %s' % product, error=exc)
 
 def loadProducts(_context):
     products = findProducts()
