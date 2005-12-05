@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      metal:use-macro="views/onlinehelp_macros/page">
+
+<head>
+<title metal:fill-slot="title" 
+             i18n:translate="">Z3 CSS: Styles</title>
+
+<!-- load styles in onlinehelp -->
+<metal:block fill-slot="style_slot">
+<style type="text/css" media="all"
+             tal:content="string:@import url(${context/++resource++zope3.css});">
+  @import url(../../css/zope3.css);
+</style>
+<style type="text/css" media="all"
+             tal:content="string:@import url(${context/++resource++styleguide.css});">
+  @import url("../styleguide.css");
+</style>
+</metal:block>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body metal:fill-slot="body" tal:omit-tag="">
+<!-- we have to define the styles here because the get lost in the header in online help -->
+
+
+<h1>Zope3 - Cascading Style Sheets - Style Guide</h1>
+<h2>Introduction</h2>
+<p>
+See the proposal at: <a
+href="http://dev.zope.org/Zope3/CascadingStyleSheetStyleGuide"
+target="_blank"
+>http://dev.zope.org/Zope3/CascadingStyleSheetStyleGuide</a></p>
+<h2> Used styles in forms and widgets</h2>
+<table class="samples" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <th class="number">No.</th>
+    <th>Tag</th>
+    <th>Class</th>
+    <th>Description</th>
+    <th>Sample HTML code</th>
+    <th>Rendered result</th>
+  </tr>
+  <tr>
+    <td colspan="6" class="header">HTML elements</td>
+  </tr>
+  <tr>
+    <td colspan="6" class="abstract">These elements are declared for
+    use in standard page templates used in ZCML directives. Schema
+    widgets also use these styles.</td>
+  </tr>
+  <tr valign="top">
+    <td class="number">1</td>
+    <td class="tag">a</td>
+    <td class="class">--</td>
+    <td class="description">Link</td>
+    <td nowrap="nowrap" class="sample">&lt;a href=&quot;#&quot;&gt;a link&lt;/a&gt;</td>
+    <td class="code"><a href="#">a link</a></td>
+  </tr>
+  <tr valign="top">
+    <td class="number">2</td>
+    <td class="tag">p</td>
+    <td class="class">--</td>
+    <td class="description">Block text</td>
+    <td nowrap="nowrap" class="sample">&lt;p&gt;block text&lt;/p&gt;</td>
+    <td class="code">
+      <p>block text</p>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="6" class="header">Form elements</td>
+  </tr>
+  <tr valign="top">
+    <td class="number">1</td>
+    <td class="tag">form</td>
+    <td class="class">--</td>
+    <td class="description">form</td>
+    <td nowrap="nowrap" class="sample">&lt;form&gt;some text&lt;/form&gt;</td>
+    <td class="code">
+      <form>
+        some text
+      </form>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td class="number">2</td>
+    <td class="tag">div</td>
+    <td class="class">row</td>
+    <td class="description">Contains a input field with label</td>
+    <td nowrap="nowrap" class="sample">
+      &lt;div class=&quot;row&quot;&gt;<br />
+      &nbsp;&nbsp; label and input field<br />
+      &lt;/div&gt;
+    </td>
+    <td class="code">
+      <div class="row">
+        label and input field</div>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td class="number">2.1</td>
+    <td class="tag">div</td>
+    <td class="class">row div.label</td>
+    <td class="description">Contains a input field with label</td>
+    <td nowrap="nowrap" class="sample">
+      &lt;div class=&quot;row&quot;&gt;<br />
+      &nbsp;&nbsp; &lt;div class=&quot;label&quot;&gt;<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=&quot;yx&quot; title=&quot;xy&quot;&gt;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Label text<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/label&gt;<br />
+      &nbsp;&nbsp;&nbsp;&lt;/div&gt;<br />
+      &lt;/div&gt;
+    </td>
+    <td class="code">
+      <div class="row">
+        <div class="label">
+          <label for="yx" title="xy">
+            Label text
+          </label>
+				</div>
+      </div>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td class="number">2.2</td>
+    <td class="tag">div</td>
+    <td class="class">row div.field</td>
+    <td class="description">Contains a input field with label</td>
+    <td nowrap="nowrap" class="sample">
+      &lt;div class=&quot;row&quot;&gt;<br />
+      &nbsp;&nbsp;&nbsp;&lt;div class=&quot;field&quot;&gt;<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;input type=text&quot; id=&quot;xy&quot;&gt;<br />
+      &nbsp;&nbsp; &lt;/div&gt;<br />
+      &lt;/div&gt;
+    </td>
+    <td class="code">
+      <div class="row">
+        <div class="field">
+          <input type="text" id="xy" />
+        </div>
+      </div>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td class="number">2.3</td>
+    <td class="tag">div</td>
+    <td class="class">row div.label div.field</td>
+    <td class="description">Contains a input field with label</td>
+    <td nowrap="nowrap" class="sample">
+      &lt;div class=&quot;row&quot;&gt;<br />
+      &nbsp;&nbsp;&nbsp;&lt;div class=&quot;field&quot;&gt;<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=&quot;yx&quot; title=&quot;xy&quot;&gt;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Label text<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/label&gt;<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;input type=text&quot; id=&quot;xy&quot;&gt;<br />
+      &nbsp;&nbsp; &lt;/div&gt;<br />
+      &lt;/div&gt;
+    </td>
+    <td class="code">
+      <div class="row">
+			  <div class="label">
+          <label for="yx" title="xy">
+            Label text
+          </label>
+				</div>
+        <div class="field">
+          <input type="text" id="xy" />
+        </div>
+      </div>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td class="number">&nbsp;</td>
+    <td class="tag">&nbsp;</td>
+    <td class="class">&nbsp;</td>
+    <td class="description">&nbsp;</td>
+    <td nowrap="nowrap" class="sample">&nbsp;</td>
+    <td class="code">&nbsp;</td>
+  </tr>
+
+</table>
+<h2>Formating rules</h2>
+<table class="samples" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <th class="number">No.</th>
+    <th>Description</th>
+    <th>Sample HTML code</th>
+  </tr>
+  <tr>
+    <td colspan="3" class="header">Form rules</td>
+  </tr>
+  <tr>
+    <td colspan="3" class="abstract">Form fields</td>
+  </tr>
+  <tr valign="top">
+    <td class="number">1</td>
+    <td class="description">
+      <p>Use the following coding style to define form fields and labels.</p>
+    </td>
+    <td nowrap="nowrap" class="sample">
+      &lt;div class=&quot;row&quot;&gt;<br />
+      &nbsp;&nbsp; &lt;div class=&quot;label&quot;&gt;<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;label for=&quot;yx&quot; title=&quot;xy&quot;&gt;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Label text<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/label&gt;<br />
+      &nbsp;&nbsp;&nbsp;&lt;/div&gt;<br />
+      &nbsp;&nbsp;&nbsp;&lt;div class=&quot;field&quot;&gt;<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;input type=text&quot; id=&quot;xy&quot;...&gt;<br />
+      &nbsp;&nbsp; &lt;/div&gt;<br />
+      &lt;/div&gt;<br />
+      </td>
+  </tr>
+  <tr>
+    <td colspan="3" class="abstract">Associate labels explicitly with
+    their controls</td>
+  </tr>
+  <tr valign="top">
+    <td class="number">3</td>
+    <td class="description">
+      <p><br />
+      In other words it means: use &lt;label&gt; along with your &lt;input type=&quot;text&quot;/&gt;, 
+      your &lt;input type=&quot;checkbox&quot;/&gt; and your &lt;input type=&quot;radio&quot;/&gt; elements.</p>
+      <p>
+      Using labels makes it possible to use the pointer on the label
+      (by clicking on the label) to activate the input field, so that
+      it is easier to focus a text input, a check box or a radio box,
+      just like it is in heavy client applications such as Firefox.
+      </p>
+      <p>More information about &quot;Labeling form controls&quot;:<br />
+        <a href="http://www.w3.org/tr/wcag10-html-techs/#forms-labels" target="_blank">http://www.w3.org/TR/WCAG10-HTML-TECHS/#forms-labels</a></p>
+      <p>&nbsp;</p>
+    </td>
+    <td nowrap="nowrap" class="sample">
+      <p>&lt;div class=&quot;row&quot;&gt;<br />
+         &nbsp;&nbsp; &lt;div class=&quot;label&quot;&gt;<br />
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;label for=&quot;yx&quot; title=&quot;xy&quot;&gt;<br />
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Label text<br />
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/label&gt;<br />
+         &nbsp;&nbsp;&nbsp;&lt;/div&gt;<br />
+         &nbsp;&nbsp;&nbsp;&lt;div class=&quot;field&quot;&gt;<br />
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;input type=text&quot; id=&quot;xy&quot;...&gt;<br />
+         &nbsp;&nbsp; &lt;/div&gt;<br />
+         &lt;/div&gt;</p>
+    </td>
+  </tr>
+
+</table>
+</body>
+</html>
