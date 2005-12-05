@@ -1,0 +1,14 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:fssync="http://namespaces.zope.org/fssync">
+
+  <include package="zope.app.fssync" file="meta.zcml"/>
+
+  <fssync:adapter
+      class="zope.app.fssync.tests.sampleclass.C1"
+      factory="zope.app.fssync.tests.sampleclass.CDirAdapter" />
+        
+  <fssync:adapter
+      class="zope.app.fssync.tests.sampleclass.C1"
+      factory="zope.app.fssync.tests.sampleclass.CFileAdapter" />
+
+</configure>
