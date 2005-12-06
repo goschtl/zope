@@ -1,0 +1,14 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:five="http://namespaces.zope.org/five"
+           >
+
+  <browser:page
+    for="*"
+    name="example_view"
+    class=".exampleview.ExampleView"
+    permission="zope.Public"
+    template="exampleviewtemplate.pt"
+    />
+
+</configure>

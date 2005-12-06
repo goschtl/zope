@@ -628,6 +628,56 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
             # clean up
             PlacelessSetup.tearDown(self)
 
+    def test_five_product_with_no_Products_namespace(self):
+        basket = self._makeOne()
+
+        basket.pdist_fname = os.path.join(self.fixtures,'pdist-fiveproduct2.txt')
+        
+        sys.path.append(self.fixtures)
+        self.working_set.add_entry(self.fixtures)
+
+        self.failIf(sys.modules.has_key('fiveproduct2'))
+
+        productcontext = DummyProductContext('Basket')
+
+        basket.preinitialize()
+
+        result = basket.initialize(productcontext)
+
+        import fiveproduct2
+
+        self.failUnless(sys.modules.has_key('fiveproduct2'))
+
+        from Products.Five.fiveconfigure import findProducts
+        from Products.Five.fiveconfigure import loadProducts
+        from zope.configuration import xmlconfig
+
+        products = findProducts()
+        self.assert_(fiveproduct2 in products)
+
+        try:
+            # do what Five.loadProduct does
+            sitezcml = """\
+            <configure xmlns="http://namespaces.zope.org/zope"
+               xmlns:five="http://namespaces.zope.org/five">
+               <include package="Products.Five" />
+               <include package="fiveproduct2"/>
+            </configure>"""
+
+            xmlconfig.string(sitezcml)
+
+            # verify that the zcml had the correct effect
+
+            context = None
+
+            view = getView(object(), 'example_view', FakeRequest())
+
+            self.failUnless(view is not None)
+        finally:
+            # clean up
+            PlacelessSetup.tearDown(self)
+
+
 
     def test_remove_product_distribution_from_working_set_fixes_ns_pkgs(self):
         basket = self._makeOne()
