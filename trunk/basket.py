@@ -85,7 +85,7 @@ class Basket(object):
             data.append(returned)
 
         return data
-
+    
     def product_distributions_by_dwim(self):
         """ Return all product distributions which have an appropriate
         entry point group on sys.path """
@@ -138,14 +138,20 @@ class Basket(object):
             os.mkdir(distDir)
 
         return distDir
-        
 
-    def preinitialize(self):
+    def product_distributions(self):
         by_require = self.pdist_fname and os.path.exists(self.pdist_fname)
         if by_require:
             distributions = self.product_distributions_by_require()
         else:
             distributions = self.product_distributions_by_dwim()
+            
+        return distributions
+        
+
+    def preinitialize(self):
+        by_require = self.pdist_fname and os.path.exists(self.pdist_fname)
+        distributions = self.product_distributions()
 
         working_set = pkg_resources.working_set
 

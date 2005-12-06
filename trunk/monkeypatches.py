@@ -1,5 +1,47 @@
 from App import Extensions
+from Products.Five import fiveconfigure
 import os
+
+def patch_findProducts(thebasket):
+    """By default five's loading logic only checks the Products package
+    for products.  This needs to be fixed.
+    """
+    _originalFindProducts = fiveconfigure.findProducts
+    
+
+    def product_packages():
+        results = []
+        
+        for dist in thebasket.product_distributions():
+            entry = dist.get_entry_map().get('zope2.initialize', None)
+            if entry:
+                entryPoint = entry.get('initialize', None)
+                if entryPoint:
+                    try:
+                        m = __import__(entryPoint.module_name)
+                        results.append(m)
+                    except ImportError, e:
+                        pass
+        
+        return results    
+    
+    def findProducts():
+        """This findProducts checks the original findProducts for results
+        and then checks the basket for more initialized products.
+        """
+        
+        originalProducts = _originalFindProducts()
+        all = list(originalProducts)
+        moreProducts = product_packages()
+        
+        for product in moreProducts:
+            if product not in all:
+                all.append(product)
+        
+        return all
+
+    fiveconfigure.findProducts = findProducts
+    
 
 def patch_externalmethod(thebasket):
     """In an effort to make External Methods work with Basket, this function

@@ -32,6 +32,7 @@ from Products.Basket.basket import Basket
 the_basket = Basket()
 # do required monkeypatches
 import monkeypatches
+monkeypatches.patch_findProducts(the_basket)
 monkeypatches.patch_externalmethod(the_basket)
 
 the_basket.preinitialize()

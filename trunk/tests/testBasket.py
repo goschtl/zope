@@ -630,6 +630,8 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
 
     def test_five_product_with_no_Products_namespace(self):
         basket = self._makeOne()
+        from Products.Basket import monkeypatches
+        monkeypatches.patch_findProducts(basket)
 
         basket.pdist_fname = os.path.join(self.fixtures,'pdist-fiveproduct2.txt')
         
@@ -649,7 +651,6 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
         self.failUnless(sys.modules.has_key('fiveproduct2'))
 
         from Products.Five.fiveconfigure import findProducts
-        from Products.Five.fiveconfigure import loadProducts
         from zope.configuration import xmlconfig
 
         products = findProducts()
