@@ -5,10 +5,9 @@ setup(name='zope.ucol',
       ext_modules=[
           Extension('zope.ucol._zope_ucol',
                     ['src/zope/ucol/_zope_ucol.c'],
-                    libraries=['icui18n'],
+                    libraries=['icui18n', 'icuuc', 'icudata'],
            )
           ],
       packages=["zope", "zope.ucol"],
       package_dir = {'': 'src'},
       )
-
