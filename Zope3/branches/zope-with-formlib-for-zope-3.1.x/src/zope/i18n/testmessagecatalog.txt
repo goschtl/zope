@@ -1,0 +1,45 @@
+Test Message Catalog
+====================
+
+The test message catalog "translates" test by simply outputing the
+domain and message id in square-bracket markers:
+
+    >>> import zope.i18n.testmessagecatalog
+    >>> cat = zope.i18n.testmessagecatalog.TestMessageCatalog('foo.bar')
+
+    >>> cat.language, cat.domain
+    ('test', 'foo.bar')
+
+    >>> cat.queryMessage('eek')
+    u'[[foo.bar][eek]]'
+
+    >>> cat.getMessage('eek')
+    u'[[foo.bar][eek]]'
+
+    >>> cat.getIdentifier()
+    'test'
+
+    >>> cat.reload()
+
+Normally, the catalog's domain overrides the message id's domain:
+
+    >>> import zope.i18nmessageid
+    >>> id = zope.i18nmessageid.MessageFactory('baz.splat')('eek')
+
+    >>> cat.queryMessage(id)
+    u'[[foo.bar][eek]]'
+
+    >>> cat.getMessage(id)
+    u'[[foo.bar][eek]]'
+
+However, if the catalog's domain is '', indicating a fallback domain,
+then the id's domain is used:
+
+    >>> cat = zope.i18n.testmessagecatalog.TestMessageCatalog('')
+
+    >>> cat.queryMessage(id)
+    u'[[baz.splat][eek]]'
+
+    >>> cat.getMessage(id)
+    u'[[baz.splat][eek]]'
+    
