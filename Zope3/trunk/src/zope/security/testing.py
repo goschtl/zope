@@ -40,8 +40,3 @@ class Participation:
     def __init__(self, principal):
         self.principal = principal
         self.interaction = None
-
-
-        
-
-    
