@@ -3,6 +3,8 @@
 $Id$
 """
 import unittest
+import Zope2
+Zope2.startup()
 
 def test_suite():
     from Testing.ZopeTestCase import ZopeDocFileSuite
