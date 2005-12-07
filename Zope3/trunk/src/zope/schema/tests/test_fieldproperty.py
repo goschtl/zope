@@ -28,16 +28,19 @@ class I(Interface):
     title = Text(description=u"Short summary", default=u'say something')
     weight = Float(min=0.0)
     code = Bytes(min_length=6, max_length=6, default='xxxxxx')
+    date = Float(title=u'Date', readonly=True)
+
 
 class C(object):
 
     title = FieldProperty(I['title'])
     weight = FieldProperty(I['weight'])
     code = FieldProperty(I['code'])
+    date = FieldProperty(I['date'])
 
 class Test(TestCase):
 
-    def test(self):
+    def test_basic(self):
         c = C()
         self.assertEqual(c.title, u'say something')
         self.assertEqual(c.weight, None)
@@ -58,6 +61,12 @@ class Test(TestCase):
         self.assertEqual(c.weight, 10)
         self.assertEqual(c.code, 'abcdef')
 
+    def test_readonly(self):
+        c = C()
+        # The date should be only settable once
+        c.date = 0.0
+        # Setting the value a second time should fail.
+        self.assertRaises(ValueError, setattr, c, 'date', 1.0)
 
 
 def test_suite():
