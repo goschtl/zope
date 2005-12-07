@@ -43,18 +43,20 @@ def startup():
     sys.path[:] = [os.path.join(INSTANCE_HOME, "lib", "python"),
                    SOFTWARE_HOME] + basepath
 
-    from zope.app.twisted.main import debug
-    db = debug(["-C", CONFIG_FILE] + sys.argv[1:])
+    from zope.app.server.main import debug
+    db = debug(["-C", CONFIG_FILE])
     if "PYTHONSTARTUP" in os.environ:
         execfile(os.environ["PYTHONSTARTUP"])
     return db
 
 
 if __name__ == '__main__':
-    db = startup()
-    del startup
     from zope.app.debug import Debugger
-    debugger = app = Debugger.fromDatabase(db)
-    root = app.root()
-    del db
-    del Debugger
+
+    db = startup()
+    root = Debugger.fromDatabase(db).root()
+    del startup, db, Debugger
+
+    script = sys.argv[1]
+    execfile(script)
+    sys.exit()
