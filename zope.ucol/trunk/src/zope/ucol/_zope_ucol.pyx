@@ -132,17 +132,15 @@ cdef class KeyFactory:
         size = ucol_getSortKey(self.collator,
                                (<UCharString>icutext).data,
                                (<UCharString>icutext).length,
-                               buffer, bufsize)
-        if size > bufsize:
+                               <uint8_t*>buffer, bufsize)
+        while size > bufsize:
             bufsize = size
             PyMem_Free(buffer)
             buffer = <char*>PyMem_Malloc(bufsize)
             size = ucol_getSortKey(self.collator,
                                    (<UCharString>icutext).data,
                                    (<UCharString>icutext).length,
-                                   buffer, bufsize)
-            assert size == bufsize, ("size from ucol_getSortKey changed %d %d"
-                                     % (size, bufsize))
+                                   <uint8_t*>buffer, bufsize)
 
         result = PyString_FromStringAndSize(buffer, size)
         PyMem_Free(buffer)
