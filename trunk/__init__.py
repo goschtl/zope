@@ -34,6 +34,8 @@ the_basket = Basket()
 import monkeypatches
 monkeypatches.patch_findProducts(the_basket)
 monkeypatches.patch_externalmethod(the_basket)
+monkeypatches.patch_listDefaultTypeInformation(the_basket)
+monkeypatches.patch_ProductDispatcher__bobo_traverse__(the_basket)
 
 the_basket.preinitialize()
 initialize = the_basket.initialize
