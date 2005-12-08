@@ -121,11 +121,11 @@
                     <!-- OnlineHelp with popup support -->
                     <!-- note, we reverse the actions list 'cos they're packed to the
                              screen from the right -->
-                    <div tal:condition="python: macroname == 'view'" id="action"
-                             tal:define="
-                                     help_actions context/@@view_get_menu/help_actions|nothing;
-                                     actions context/@@view_get_menu/zmi_actions">
-                        <ul>
+                    <div tal:condition="python: macroname == 'view'" id="action">
+                        <ul tal:define="
+                              help_actions context/@@view_get_menu/help_actions|nothing;
+                              actions context/@@view_get_menu/zmi_actions"
+                              >
                             <li tal:condition="actions" tal:repeat="info actions"
                                 ><a href="#"
                                          tal:attributes="href info/action"
