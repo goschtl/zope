@@ -201,6 +201,36 @@ class Basket(object):
             for explodedDir in self.exploded_dirs:
                 shutil.rmtree(explodedDir, ignore_errors=True)
             
+    def product_container_dirs(self):
+        """Returns all product container directories handled by this 
+        Basket instance
+        """
+        
+        dirs = getattr(self, '_product_container_dirs', None)
+        if dirs is not None:
+            return dirs
+
+        dirs = []
+        
+        # start with all exploded dirs
+        for x in self.exploded_dirs:
+            for y in os.listdir(x):
+                full = os.path.join(x, y)
+                if os.path.isdir(full):
+                    dirs.append(full)
+
+        # now lets add the eggs which are actually dirs themselves
+        for distribution in self.product_distributions():
+            if os.path.isdir(distribution.location) \
+                    and distribution.location not in dirs:
+                dirs.append(distribution.location)
+
+        self._product_container_dirs = dirs
+        
+        return self._product_container_dirs
+    
+    product_container_dirs = property(product_container_dirs)
+
 
 def get_containing_package(module_name):
     __import__(module_name)

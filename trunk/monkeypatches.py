@@ -166,16 +166,10 @@ def getEggedPath(basket, prefix, name, suffixes):
         realPrefix = os.path.join(name[:l], prefix)
         realName = name[l + 1:]
 
-        # lets check all of the recorded tempdirs for exploded eggs
-        for tempdir in basket.exploded_dirs:
-            # now lets check the actual exploded egg dirs
-            for product_dir in os.listdir(tempdir):
-                product_dir = os.path.join(tempdir, product_dir)
-                
-                result = Extensions._getPath(product_dir, realPrefix, 
-                                             realName, suffixes)
-                if result is not None:
-                    break
+        # lets check all basket's product_container_dir's
+        for product_container_dir in basket.product_container_dirs:
+            result = Extensions._getPath(product_container_dir, realPrefix, 
+                                         realName, suffixes)
             if result is not None:
                 break
     
