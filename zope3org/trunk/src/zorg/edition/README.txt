@@ -248,7 +248,7 @@ We have a look if the version history grows with a checkin:
   [u'001', u'002']
 
   >>> [v.name for v in repo.listVersions(sample)]
-  ['Version 1', 'Version 2']
+  [u'Edition 1', u'Edition 2']
 
 XXX For now the current implementation is not able to revert the root.
 It is possible to handle that but time sliped away at the Isar Sprint.

@@ -59,6 +59,7 @@ from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.app.container.interfaces import IContainer
+from zope.app.container.btree import BTreeContainer
 from zope.app.file.interfaces import IFile
 from zope.app.file.file import File
 from zope.app.folder.folder import Folder
@@ -112,7 +113,7 @@ def setUp(test, name) :
  
     classImplements(File, IAttributeAnnotatable)
     classImplements(Folder, IAttributeAnnotatable)
-    
+    classImplements(BTreeContainer, IAttributeAnnotatable)
 
     ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations, AttributeAnnotations)
     ztapi.provideAdapter(None, ITraverser, Traverser)

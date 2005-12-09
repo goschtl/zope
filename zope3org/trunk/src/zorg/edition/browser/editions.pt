@@ -4,15 +4,14 @@
 
   <h1 i18n:translate="">Edition informations</h1>
   <form action="saveVersion.html" method="post">
-    <input type="submit" name="submit" value="save Version" />
+    <input type="submit" name="submit" value="Make Edition" />
   </form>
   <table class="listing">
-    <caption i18n:translate="">Edition list</caption>
     <tr>
-      <th i18n:translate="">name</th>
-      <th i18n:translate="">timestamp</th>
-      <th i18n:translate="">principal</th>
-      <th i18n:translate="">comment</th>
+      <th i18n:translate="">Name</th>
+      <th i18n:translate="">When</th>
+      <th i18n:translate="">Who</th>
+      <th i18n:translate="">Comment</th>
       <th i18n:translate="">Revert</th>
     </tr>
     <tr tal:repeat="version view/listVersions">

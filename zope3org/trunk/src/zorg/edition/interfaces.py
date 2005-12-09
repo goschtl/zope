@@ -38,7 +38,7 @@ used backend generates its own versions.
 import persistent, zope
 from zope.interface import Interface, Attribute
 
-from zope.app.container.interfaces import INameChooser, IContained
+from zope.app.container.interfaces import INameChooser, IContained, IContainer
 
 
 class RepositoryError(Exception):
@@ -274,7 +274,7 @@ class IVersionHistory(INameChooser) :
     """
     
 
-class IHistoryStorage(Interface) : # IHistoriesStorage?
+class IHistoryStorage(IContainer) : # IHistoriesStorage?
     """ Minimal interface for a pluggable storage that stores a new version
     of an object into an object history.
     

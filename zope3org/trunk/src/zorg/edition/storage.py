@@ -19,14 +19,16 @@ from zope.interface import implements
 from persistent.dict import PersistentDict
 
 from zope.app import zapi
-from zope.app.folder import Folder
+from zope.app.container.btree import BTreeContainer
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.exception.interfaces import UserError
 from zope.app.copypastemove.interfaces import IObjectCopier 
 from zope.app.container.interfaces import INameChooser
 from zope.app.annotation.interfaces import IAnnotations
-from zope.app.servicenames import Authentication
 from zope.app.keyreference.interfaces import IKeyReference
+
+from zope.security.management import queryInteraction
+
 from zorg.edition.interfaces import IVersionHistory
 from zorg.edition.interfaces import IHistoryStorage
 from zorg.edition.interfaces import IVersion
@@ -36,10 +38,14 @@ from zorg.edition.interfaces import ICheckoutAware
 class VersionPrincipalNotFound(Exception):
     pass
     
+    
+from zope.app.intid import IntIds
 
+class TestHistoryStorage(IntIds) :
+    pass
 
-class VersionHistory(Folder) :
-    """ A simple folder implementation where each version
+class VersionHistory(BTreeContainer) :
+    """ A simple container implementation where each version
         is labeled '001', '002' etc.
     """
     
@@ -72,13 +78,16 @@ class VersionHistory(Folder) :
          
          
          
-class SimpleHistoryStorage(Folder) :
+class SimpleHistoryStorage(BTreeContainer) :
     """
         Implements the probably most simple way of version control in Zope3.
         It uses the following existing Zope mechanisms :
             
-           a unique id as an identification ticket for objects and their versions
-           a Folder as a container for histories were each History is itself a Folder
+           a unique id as an identification ticket for objects and their 
+           versions
+           
+           a BTreeContainer as a container for histories were each History 
+           is itself a BTreeContainer
            
         >>> from zorg.edition.policies import VersionableAspectsAdapter
         >>> from zope.app.testing.setup import buildSampleFolderTree
@@ -90,6 +99,11 @@ class SimpleHistoryStorage(Folder) :
     
     implements(IHistoryStorage, IAnnotatable)
      
+#     def __init__(self) :
+#         super(SimpleHistoryStorage, self).__init__()
+#         import pdb; pdb.set_trace()
+        
+        
     def register(self, obj):
         """ Register an obj for version control.
             Creates a new version history for a resource."""
@@ -149,17 +163,17 @@ class Version(object) :
         return self.__name__
     
     def getName(self):
-        return 'Version %d' % int(self.getLabel())
-        
+        return u'Edition %d' % int(self.getLabel())
         
     def getComment(self):
         return 'no comment'
     
     def getPrincipal(self):
         """ Returns the id of the principal that is versioning the data. """  
-        auth = zapi.getService(Authentication)
-        for principal in auth.getPrincipals('') :
-            return principal.getLogin()
+        interaction = queryInteraction()
+        if interaction is not None:
+            for participation in interaction.participations:
+                return participation.principal.id
         return VersionPrincipalNotFound
  
     

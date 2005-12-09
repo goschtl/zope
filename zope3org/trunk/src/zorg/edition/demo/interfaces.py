@@ -1,7 +1,7 @@
 import zope.interface
 from zope.schema import Text, TextLine
-from zope.i18nmessageid import MessageIDFactory
-_ = MessageIDFactory("vproposal")
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory("vproposal")
  
  
 class IVProposal(zope.interface.Interface):

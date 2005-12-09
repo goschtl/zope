@@ -1,26 +1,53 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns="http://namespaces.zope.org/browser"
     i18n_domain="zorg"
     >
     
-    
-  <browser:pages
+  <tool
+     interface="zorg.edition.interfaces.IHistoryStorage"
+     title="Version History Storage"
+     description="A Storage for version histories"
+     />
+      
+  <addMenuItem
+     title="History Storage" 
+     description="A Storage for version histories"
+     class="zorg.edition.storage.SimpleHistoryStorage"
+     permission="zope.ManageSite"
+  />
+ 
+  <page
+      for="zorg.edition.interfaces.IHistoryStorage"
+      permission="zope.ManageSite" 
+      class="zope.app.container.browser.contents.JustContents"
+      name="index.html" attribute="index" 
+      />
+
+  <page
+      name="contents.html"
+      for="zorg.edition.interfaces.IHistoryStorage"
+      menu="zmi_views" title="Contents"
+      permission="zope.ManageSite"
+      class="zope.app.container.browser.contents.Contents"
+      attribute="contents" 
+      />
+      
+  <pages
       for="..interfaces.IVersioned"
       permission="zope.View"
-      class=".defaultVersionControl.VersionControlView"
+      class=".view.VersionControlView"
       >
-    <browser:page
-        name="VersionControlInfo.html"
+  <page
+        name="editions.html"
         menu="zmi_views" 
-        title="VersionControl"
-        template="versionControlInfo.pt"
+        title="Editions"
+        template="editions.pt"
         />
-    <browser:page
+  <page
         name="saveVersion.html"
         attribute="saveVersion"
         />        
-  </browser:pages>
+  </pages>
 
     
 </configure>    

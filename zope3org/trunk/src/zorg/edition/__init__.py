@@ -13,6 +13,8 @@
 ##############################################################################
 """edition package for zope3org"""
 
+import transaction
+
 from zorg.edition.interfaces import IVersionable
 from zorg.edition.interfaces import IVersioned
 from zorg.edition.interfaces import IHistoryStorage
@@ -25,5 +27,5 @@ def registerVersionControl(event):
         history = zapi.getUtility(IHistoryStorage)
         if history is not None and not IVersioned.providedBy(event.object):
             rep = ICopyModifyMergeRepository(history)
-            get_transaction().commit()
+            transaction.savepoint()     # we need the p_oids for the tickets
             rep.applyVersionControl(event.object)
