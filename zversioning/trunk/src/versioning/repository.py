@@ -25,7 +25,7 @@ from versioning import interfaces
 # doc tests imports
 import unittest
 from zope.testing import doctest
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 
 
 class CopyModifyMergeRepository(object):

@@ -1,9 +1,9 @@
 import unittest
 from zope.testing.doctest import DocFileSuite, DocTestSuite
-from zope.app.tests import placelesssetup
-from zope.app.tests import ztapi
+from zope.app.testing import placelesssetup
+from zope.app.testing import ztapi
 
-from zope.app.tests.setup import setUpAnnotations
+from zope.app.testing.setup import setUpAnnotations
 from zope.app.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter

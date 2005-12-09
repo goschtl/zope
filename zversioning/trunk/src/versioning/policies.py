@@ -30,7 +30,7 @@ class VersionableAspectsAdapter(object) :
         
         It further assumes that we only version objects
         that have been persistently stored and thus are
-        able to be adapted to zope.app.uniqueid.IReference.
+        able to be adapted to zope.app.keyreference.interfaces.IKeyReference.
         
     """
     
@@ -41,7 +41,7 @@ class VersionableAspectsAdapter(object) :
             version history of an object.
           
             >>> from storage import SimpleHistoryStorage
-            >>> from zope.app.tests.setup import buildSampleFolderTree
+            >>> from zope.app.testing.setup import buildSampleFolderTree
             >>> sample = buildSampleFolderTree()
             >>> histories = SimpleHistoryStorage()
             >>> a = sample["folder1"]

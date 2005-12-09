@@ -25,9 +25,8 @@ from zope.app.exception.interfaces import UserError
 from zope.app.copypastemove.interfaces import IObjectCopier 
 from zope.app.container.interfaces import INameChooser
 from zope.app.annotation.interfaces import IAnnotations
-from zope.app.uniqueid.interfaces import IUniqueIdUtility
 from zope.app.servicenames import Authentication
-
+from zope.app.keyreference.interfaces import IKeyReference
 from versioning.interfaces import IVersionHistory
 from versioning.interfaces import IHistoryStorage
 from versioning.interfaces import IVersion
@@ -82,7 +81,7 @@ class SimpleHistoryStorage(Folder) :
            a Folder as a container for histories were each History is itself a Folder
            
         >>> from versioning.policies import VersionableAspectsAdapter
-        >>> from zope.app.tests.setup import buildSampleFolderTree
+        >>> from zope.app.testing.setup import buildSampleFolderTree
         >>> sample = buildSampleFolderTree()
         >>> histories = SimpleHistoryStorage()
         >>> sample.keys()
@@ -90,12 +89,7 @@ class SimpleHistoryStorage(Folder) :
     """
     
     implements(IHistoryStorage, IAnnotatable)
-    
-    def __init__(self) :
-        super(SimpleHistoryStorage, self).__init__()
-        #self.unique_ids = zapi.getUtility(IUniqueIdUtility)
-        
- 
+     
     def register(self, obj):
         """ Register an obj for version control.
             Creates a new version history for a resource."""
@@ -105,16 +99,11 @@ class SimpleHistoryStorage(Folder) :
         return ticket
   
     def getTicket(self, obj) :
-        """ Returns a unique id of an object as
-            a ticket that remains stable across time.
+        """ Returns an identifier of an object as
+            a ticket that remains stable across time. The ticket must be
+            a unicode string.
         """
-        if obj._p_oid is None :
-            raise RuntimeError("cannot version uncommited object")
-        return unicode(obj._p_oid, "iso-8859-1")
-        
-        # XXX unique id utility is broken
-        return str(self.unique_ids.register(obj))
-    
+        return unicode(hash(IKeyReference(obj)))
   
     def getVersion(self, obj, selector) :
         """ Returns the version of an object that is specified by selector. """

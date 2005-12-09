@@ -39,7 +39,6 @@ import persistent, zope
 from zope.interface import Interface, Attribute
 
 from zope.app.container.interfaces import INameChooser, IContained
-from zope.app.uniqueid.interfaces import IReference
 
 
 class RepositoryError(Exception):
@@ -314,7 +313,7 @@ class IHistoryStorage(Interface) : # IHistoriesStorage?
         """
 
 
-class IVersionable(IReference):
+class IVersionable(Interface):
     """Version control is allowed for objects that provide this."""
 
 class IVersioned(IVersionable):

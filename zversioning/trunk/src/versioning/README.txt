@@ -88,7 +88,7 @@ as an example :
   >>> import zope.app.versioncontrol.interfaces
   >>> from zope.interface import directlyProvides
   >>> from zope.app.folder import Folder, rootFolder
-  >>> from zope.app.tests.setup import setUpTraversal
+  >>> from zope.app.testing.setup import setUpTraversal
   >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
   >>> from ZODB.tests import util
   >>> from versioning.tests.test_versioncontrol import buildRepository, buildDatabaseRoot
@@ -127,21 +127,18 @@ CopyModifyMergeRepository without check in and check out as an example.
 First lets configure the various component needed (what 'configure.zcml' 
 usually does for us):
 
-  >>> from zope.app.tests import ztapi
+  >>> from zope.app.testing import ztapi
   >>> from zope.app import zapi
   >>> import persistent
   >>> from versioning import interfaces, repository, policies, storage
 
   
-Configure a unique id utility. In this case we use the one provided by
-zope and enable this utility to adapt all persistent object into
-unique references:     
+We need a way to adapt all persistent object into unique references for later
+access:
 
-  >>> ztapi.provideUtility(zope.app.uniqueid.interfaces.IUniqueIdUtility,
-  ...                           zope.app.uniqueid.UniqueIdUtility())
   >>> ztapi.provideAdapter(persistent.interfaces.IPersistent, 
-  ...                           zope.app.uniqueid.interfaces.IReference,
-  ...                           zope.app.uniqueid.ReferenceToPersistent)    
+  ...            zope.app.keyreference.interfaces.IKeyReference,
+  ...            zope.app.keyreference.persistent.KeyReferenceToPersistent)    
 
 Configure the 'IHistoryStorage' utility being responsible for the storage 
 of the objects histories:

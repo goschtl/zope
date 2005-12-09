@@ -21,8 +21,8 @@ import unittest, sys
 from transaction import abort
 from zope.interface import implements
 from zope.app.container.sample import SampleContainer
-from zope.app.tests import placelesssetup
-from zope.app.tests import ztapi
+from zope.app.testing import placelesssetup
+from zope.app.testing import ztapi
 from persistent.interfaces import IPersistent
 
 
@@ -41,8 +41,8 @@ import zope.app.versioncontrol.repository
 import zope.interface.verify
 
 from zope.app.versioncontrol import interfaces
-from zope.app.tests import ztapi
-from zope.app.tests.setup import setUpTraversal
+from zope.app.testing import ztapi
+from zope.app.testing.setup import setUpTraversal
 from zope.interface import classImplements
 
 from zope.app.traversing.interfaces import ITraversable, ITraverser
@@ -63,10 +63,8 @@ from zope.app.file.interfaces import IFile
 from zope.app.file.file import File
 from zope.app.folder.folder import Folder
 
-from zope.app.uniqueid.interfaces import IUniqueIdUtility
-from zope.app.uniqueid.interfaces import IReference
-from zope.app.uniqueid import UniqueIdUtility
-from zope.app.uniqueid import ReferenceToPersistent
+from zope.app.keyreference.interfaces import IKeyReference
+from zope.app.keyreference.persistent import KeyReferenceToPersistent
  
 from zope.app.copypastemove.interfaces import IObjectCopier
 from zope.app.copypastemove import ObjectCopier
@@ -126,8 +124,7 @@ def setUp(test, name) :
     # for copy and moves
     ztapi.provideAdapter(None, IObjectCopier, ObjectCopier)
     ztapi.provideAdapter(IWriteContainer, INameChooser, NameChooser)
-    ztapi.provideUtility(IUniqueIdUtility, UniqueIdUtility())
-    ztapi.provideAdapter(IPersistent, IReference, ReferenceToPersistent) 
+    ztapi.provideAdapter(IPersistent, IKeyReference, KeyReferenceToPersistent) 
     ztapi.provideAdapter(None, IVersion, Version)
    
 
@@ -178,10 +175,7 @@ def buildRepository(factory=zope.app.versioncontrol.repository.Repository, inter
     """
     import zope
     repository = factory()
-    assert zope.interface.verify.verifyObject(
-               interfaces.IVersionControl,
-               repository)
-               
+    
     if interaction :
 
         # In order to actually use version control, there must be an

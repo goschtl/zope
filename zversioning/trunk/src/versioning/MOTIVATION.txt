@@ -60,7 +60,7 @@ by specializing the standard adapter that removes nothing:
     ...     attrs = ("__name__", "__parent__")   # remove __name__ and __parent from versioning
   
   
-    >>> from zope.app.tests import ztapi
+    >>> from zope.app.testing import ztapi
     >>> ztapi.provideAdapter(zope.app.versioncontrol.interfaces.IVersionable,
     ...                       zope.app.versioncontrol.interfaces.INonVersionedData,
     ...                       NonVersionedAdapter)
