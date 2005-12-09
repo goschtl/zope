@@ -1,0 +1,13 @@
+div.field {
+  display:block;
+}
+
+div.cblock {
+  border-width:1px; 
+  border-style:solid;margin-top:6px; 
+  padding:2px;
+} 
+
+div.actions {
+  background:#EFEFEF;
+}

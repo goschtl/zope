@@ -1,0 +1,159 @@
+<configure 
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    i18n_domain="vproposal"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    >
+
+<browser:page
+    for="..interfaces.IVProposal"
+    name="index.html"
+    class=".view.RenderReST"
+    template="info.pt"
+    permission="zope.View"
+    menu="zmi_views"
+    title="View"
+    />
+
+<browser:addform
+    schema="..interfaces.IVProposal"
+    label="Add an Proposal"
+    content_factory="..vproposal.VProposal"
+    fields = "title usecase"
+    name="AddProposal.html"
+    permission="zope.ManageContent"
+    />
+
+
+<browser:editform
+    schema="..interfaces.IVProposal"
+    label="Edit Proposal"
+    name="EditProposal.html"
+    menu="zmi_views"
+    title="Edit"
+    permission="zope.ManageContent"
+    >
+
+  <browser:widget
+      field="usecase"
+      class="zope.app.form.browser.TextAreaWidget"
+      height = "5"
+      style="width: 100%"/>
+
+  <browser:widget
+      field="concept"
+      class="zope.app.form.browser.TextAreaWidget"
+      height = "10"
+      style="width: 100%"/>
+
+  <browser:widget
+      field="todo"
+      class="zope.app.form.browser.TextAreaWidget"
+      height = "5"
+      style="width: 100%"/>
+
+  <browser:widget
+      field="issues"
+      class="zope.app.form.browser.TextAreaWidget"
+      height = "5"
+      style="width: 100%"/>
+
+
+</browser:editform>
+
+
+<browser:editform
+    schema="..interfaces.IVProposal"
+    label="Edit UseCase"
+    name="EditUseCase.html"
+    title="Edit Use Case"
+    template="edit.pt"
+    fields = "usecase"
+    permission="zope.ManageContent"
+    >
+
+  <browser:widget
+      field="usecase"
+      class="zope.app.form.browser.TextAreaWidget"
+      height = "20"
+      width = "80"
+      style="width: 100%"/>
+
+</browser:editform>
+
+
+<browser:editform
+    schema="..interfaces.IVProposal"
+    label="Edit Concept"
+    name="EditConcept.html"
+    title="Edit Concept"
+    template="edit.pt"
+    fields = "concept"
+    permission="zope.ManageContent"
+    >
+
+  <browser:widget
+      field="concept"
+      class="zope.app.form.browser.TextAreaWidget"
+      height = "20"
+      width = "80"
+      style="width: 100%"/>
+
+</browser:editform>
+
+<browser:editform
+    schema="..interfaces.IVProposal"
+    label="Edit Todo"
+    name="EditTodo.html"
+    title="Edit Todo"
+    template="edit.pt"
+    fields = "todo"
+    permission="zope.ManageContent"
+    >
+
+  <browser:widget
+      field="todo"
+      class="zope.app.form.browser.TextAreaWidget"
+      height = "20"
+      width = "80"
+      style="width: 100%"/>
+
+</browser:editform>
+
+<browser:editform
+    schema="..interfaces.IVProposal"
+    label="Edit Issues"
+    name="EditIssues.html"
+    title="Edit Issues"
+    template="edit.pt"
+    fields = "issues"
+    permission="zope.ManageContent"
+    >
+
+  <browser:widget
+      field="issues"
+      class="zope.app.form.browser.TextAreaWidget"
+      height = "20"
+      width = "80"
+      style="width: 100%"/>
+
+</browser:editform>
+
+<browser:addMenuItem
+    class="..vproposal.VProposal"
+    title="Proposal"
+    permission="zope.ManageContent"
+    view="AddProposal.html"
+    />
+
+<browser:resource 
+    name="proposal.css" 
+    file="proposal.css" 
+    />
+
+<browser:icon
+    name="zmi_icon"
+    for="..interfaces.IVProposal"
+    file="proposal.gif" />
+
+</configure>  

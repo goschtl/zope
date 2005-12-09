@@ -1,0 +1,45 @@
+##############################################################################
+#
+# Copyright (c) 2003-2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+msgid ""
+msgstr ""
+"Project-Id-Version: Development/Revision: 27939\n"
+"POT-Creation-Date: Mon Oct 11 16:39:41 2004\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: zope/app/locales/extract.py\n"
+
+#: src/versioning/demo/interfaces.py:10
+msgid "Title"
+msgstr ""
+
+#: src/versioning/demo/interfaces.py:11
+msgid "Use Case"
+msgstr ""
+
+#: src/versioning/demo/interfaces.py:12
+msgid "Concept"
+msgstr ""
+
+#: src/versioning/demo/interfaces.py:13
+msgid "Todo"
+msgstr ""
+
+#: src/versioning/demo/interfaces.py:14
+msgid "Open Issues"
+msgstr ""
+
