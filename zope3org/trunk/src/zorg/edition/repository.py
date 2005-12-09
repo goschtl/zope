@@ -20,7 +20,7 @@ import zope.interface
 from zope.interface import Interface
 from zope.app import zapi
 
-from versioning import interfaces
+from zorg.edition import interfaces
 
 # doc tests imports
 import unittest

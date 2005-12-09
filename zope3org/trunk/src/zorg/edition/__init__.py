@@ -11,12 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""versioning package for zope3"""
+"""edition package for zope3org"""
 
-from versioning.interfaces import IVersionable
-from versioning.interfaces import IVersioned
-from versioning.interfaces import IHistoryStorage
-from versioning.interfaces import ICopyModifyMergeRepository
+from zorg.edition.interfaces import IVersionable
+from zorg.edition.interfaces import IVersioned
+from zorg.edition.interfaces import IHistoryStorage
+from zorg.edition.interfaces import ICopyModifyMergeRepository
 from zope.app import zapi
 
 

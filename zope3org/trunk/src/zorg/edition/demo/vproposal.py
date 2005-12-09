@@ -1,7 +1,7 @@
 import persistent
 import zope.interface
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from versioning.demo.interfaces import IVProposal
+from zorg.edition.demo.interfaces import IVProposal
 
 class VProposal(persistent.Persistent):
     """A versionable Proposal"""

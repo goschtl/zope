@@ -73,8 +73,8 @@ from zope.app.container.interfaces import IWriteContainer, INameChooser
 from zope.app.container.contained import NameChooser
 from zope.component.tests.placelesssetup import PlacelessSetup
 
-from versioning.interfaces import IVersion
-from versioning.storage import Version
+from zorg.edition.interfaces import IVersion
+from zorg.edition.storage import Version
 
 
 class FakeModule:
@@ -130,16 +130,16 @@ def setUp(test, name) :
 
 
 def setUpReadMe(test) :
-    setUp(test, "versioning.README")
+    setUp(test, "zorg.edition.README")
 
 def tearDownReadMe(test) :
-    tearDown(test, "versioning.README")
+    tearDown(test, "zorg.edition.README")
 
 def setUpMotivation(test) :
-    setUp(test, "versioning.MOTIVATION")
+    setUp(test, "zorg.edition.MOTIVATION")
 
 def tearDownMotivation(test) :
-    tearDown(test, "versioning.MOTIVATION")
+    tearDown(test, "zorg.edition.MOTIVATION")
 
     
 def instanceProvides(obj, interface) :

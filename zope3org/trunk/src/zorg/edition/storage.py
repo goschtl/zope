@@ -27,10 +27,10 @@ from zope.app.container.interfaces import INameChooser
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.servicenames import Authentication
 from zope.app.keyreference.interfaces import IKeyReference
-from versioning.interfaces import IVersionHistory
-from versioning.interfaces import IHistoryStorage
-from versioning.interfaces import IVersion
-from versioning.interfaces import ICheckoutAware
+from zorg.edition.interfaces import IVersionHistory
+from zorg.edition.interfaces import IHistoryStorage
+from zorg.edition.interfaces import IVersion
+from zorg.edition.interfaces import ICheckoutAware
 
 
 class VersionPrincipalNotFound(Exception):
@@ -80,7 +80,7 @@ class SimpleHistoryStorage(Folder) :
            a unique id as an identification ticket for objects and their versions
            a Folder as a container for histories were each History is itself a Folder
            
-        >>> from versioning.policies import VersionableAspectsAdapter
+        >>> from zorg.edition.policies import VersionableAspectsAdapter
         >>> from zope.app.testing.setup import buildSampleFolderTree
         >>> sample = buildSampleFolderTree()
         >>> histories = SimpleHistoryStorage()
@@ -186,7 +186,7 @@ class DefaultCheckoutAware(object):
     implements(ICheckoutAware)
     __used_for__ = IHistoryStorage
     
-    namespace_key = 'versioning.interfaces.ICheckoutAware'
+    namespace_key = 'zorg.edition.interfaces.ICheckoutAware'
     
     def getCheckedOutList(self):
         return self.annotations.get(self.namespace_key)
@@ -201,19 +201,19 @@ class DefaultCheckoutAware(object):
             anno[self.namespace_key] = PersistentDict()
     
     def markAsCheckedOut(self, obj):
-        """See versioning.interfaces.ICheckoutAware
+        """See zorg.edition.interfaces.ICheckoutAware
         """
         ticket = self.histories.getTicket(obj)
         self.checkedOutDict[ticket] = datetime.now()
         
     def markAsCheckedIn(self, obj):
-        """See versioning.interfaces.ICheckoutAware
+        """See zorg.edition.interfaces.ICheckoutAware
         """
         ticket = self.histories.getTicket(obj)
         del self.checkedOutDict[ticket]
         
     def isCheckedOut(self, obj):
-        """See versioning.interfaces.ICheckoutAware
+        """See zorg.edition.interfaces.ICheckoutAware
         """
         ticket = self.histories.getTicket(obj)
         return self.checkedOutDict.has_key(ticket)

@@ -10,7 +10,7 @@ from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.interface.declarations import classImplements
 
 
-from versioning.demo.vproposal import VProposal
+from zorg.edition.demo.vproposal import VProposal
 
 
 def setUp(test):

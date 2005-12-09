@@ -10,7 +10,7 @@ VProposal contains a title an some content blocks
 
 You create it calling the 'VProposal' class:
 
-  >>> from versioning.demo.vproposal import VProposal
+  >>> from zorg.edition.demo.vproposal import VProposal
   >>> myproposal = VProposal('Titel','Concept')
  
 Access the content and title via attributes:

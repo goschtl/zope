@@ -1,7 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain="versioning"
+    i18n_domain="zorg"
     >
 
     
@@ -18,7 +18,7 @@
        IVersionable objects to the version control
   -->
   <subscriber
-      factory="versioning.registerVersionControl"
+      factory="zorg.edition.registerVersionControl"
       for="zope.app.container.interfaces.IObjectAddedEvent"
   />
 
@@ -41,10 +41,10 @@
   -->
 
   <adapter
-       factory="versioning.policies.VersionableAspectsAdapter"
-       provides="versioning.interfaces.IVersionableAspects"
-       for="versioning.interfaces.IVersionable 
-            versioning.interfaces.IHistoryStorage"
+       factory="zorg.edition.policies.VersionableAspectsAdapter"
+       provides="zorg.edition.interfaces.IVersionableAspects"
+       for="zorg.edition.interfaces.IVersionable 
+            zorg.edition.interfaces.IHistoryStorage"
        />
        
        
@@ -53,8 +53,8 @@
   -->
   <!--adapter
       factory=".storage.DefaultCheckoutAware"
-      provides="versioning.interfaces.ICheckoutAware"
-      for="versioning.interfaces.IHistoryStorage"
+      provides="zorg.edition.interfaces.ICheckoutAware"
+      for="zorg.edition.interfaces.IHistoryStorage"
       /-->
 
   <!-- Register a CopyModifyMergeRepository as a adapter
@@ -84,7 +84,7 @@
        interface=".interfaces.IVersionable" />
 </content>      
 
-<content class="versioning.demo.vproposal.VProposal">
+<content class="zorg.edition.demo.vproposal.VProposal">
    <implements 
        interface=".interfaces.IVersionable" />
 </content>     

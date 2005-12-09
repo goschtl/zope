@@ -16,7 +16,7 @@
 $Id$
 """
 
-from versioning import interfaces
+from zorg.edition import interfaces
 
 from zope.app import zapi
 from zope.security.proxy import removeSecurityProxy

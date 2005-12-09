@@ -12,8 +12,8 @@ folder tree with the following structure as our sample :
          |--> c
      
 
-    >>> from versioning.tests.test_versioncontrol import buildRepository, buildDatabaseRoot
-  
+    >>> from zorg.edition.tests.test_versioncontrol \
+    ...     import buildRepository, buildDatabaseRoot
 
     >>> from zope.interface import directlyProvides
     >>> from ZODB.tests import util
@@ -132,7 +132,7 @@ information to the versioned objects and keeps the necessary bookeeping informat
 encapsulated in the storage of object histories.
 
 
-    >>> from versioning.storage import SimpleHistoryStorage
+    >>> from zorg.edition.storage import SimpleHistoryStorage
     >>> histories = SimpleHistoryStorage()
     
 The versioning system that puts object under versioning control must register
@@ -154,9 +154,9 @@ managed by a multi adapter that implements a versioning policy, i.e. determines
 how and what is versioned. The implementation here uses zope.app.copypastemove 
 to save each version as a normal copy of the original content object.
     
-    >>> import versioning.policies
+    >>> import zorg.edition.policies
     >>> def saveAsVersion(obj, histories) :       # a helper method XXX remove later
-    ...     adapter = versioning.policies.ReplaceWithCopyPolicy(obj, histories)
+    ...     adapter = zorg.edition.policies.ReplaceWithCopyPolicy(obj, histories)
     ...     return adapter.writeAspects()
     >>> saveAsVersion(sample, histories)
     '001'
@@ -199,7 +199,7 @@ of the policy. The simple implementation here replaces the original data
 with a copy of the versioned data. 
     
     >>> def revertToVersionCopy(obj, histories, selector) :
-    ...     adapter = versioning.policies.ReplaceWithCopyPolicy(obj, histories)
+    ...     adapter = zorg.edition.policies.ReplaceWithCopyPolicy(obj, histories)
     ...     adapter.updateAspects(selector)
     >>> revertToVersionCopy(c, histories, '001')
 
@@ -245,7 +245,7 @@ with the versioned values.
 
     
     >>> def revertToVersionState(obj, histories, selector) :
-    ...     adapter = versioning.policies.UpdateStatusPolicy(obj, histories)
+    ...     adapter = zorg.edition.policies.UpdateStatusPolicy(obj, histories)
     ...     adapter.updateAspects(selector)
     >>> new_a = a
     >>> a.text

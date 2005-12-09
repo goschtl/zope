@@ -8,9 +8,9 @@ solution for all the problems that are related to the history of evolving data.
 Therefore we want to provide a flexible framework that is pluggable in its
 most important parts and reduces the problem of different versioning schemes
 to a few reusable patterns. These patterns as we conceive them are implemented 
-in versioning.repository.
+in zorg.edition.repository.
 
-The main API is defined in versioning.interfaces.IVersionControl.
+The main API is defined in zorg.edition.interfaces.IVersionControl.
 
 The pattern common to all implementation variants is roughly as follows:
 
@@ -91,7 +91,7 @@ as an example :
   >>> from zope.app.testing.setup import setUpTraversal
   >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
   >>> from ZODB.tests import util
-  >>> from versioning.tests.test_versioncontrol import buildRepository, buildDatabaseRoot
+  >>> from zorg.edition.tests.test_versioncontrol import buildRepository, buildDatabaseRoot
   >>> db_root = buildDatabaseRoot()
 
   >>> class TestFolder(Folder) :
@@ -130,7 +130,7 @@ usually does for us):
   >>> from zope.app.testing import ztapi
   >>> from zope.app import zapi
   >>> import persistent
-  >>> from versioning import interfaces, repository, policies, storage
+  >>> from zorg.edition import interfaces, repository, policies, storage
 
   
 We need a way to adapt all persistent object into unique references for later
@@ -196,7 +196,7 @@ Applying version control should raise an exception:
 So let us attach marker interfaces to the object before putting them
 under version control:
 
-  >>> from versioning.tests.test_versioncontrol import instanceProvides
+  >>> from zorg.edition.tests.test_versioncontrol import instanceProvides
   >>> instanceProvides(sample, interfaces.IVersionable)
   >>> instanceProvides(a, interfaces.IVersionable)
   >>> instanceProvides(b, interfaces.IVersionable)
