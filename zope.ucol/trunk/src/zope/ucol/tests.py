@@ -60,8 +60,9 @@ And you can't pass a non-string:
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(optionflags=doctest.NORMALIZE_WHITESPACE),
-        doctest.DocTestSuite('zope.ucol',
+        doctest.DocFileSuite('README.txt',
                              optionflags=doctest.NORMALIZE_WHITESPACE),
+        doctest.DocTestSuite('zope.ucol.localeadapter')
         ))
 
 if __name__ == '__main__':
