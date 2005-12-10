@@ -15,6 +15,7 @@
 
 $Id: $
 """
+import os.path
 import re
 import urllib
 import transaction
@@ -35,6 +36,15 @@ from zope.app.traversing.interfaces import TraversalError
 from zorg.importer import IImporter
 
 index_name = 'index'
+protocols_to_ignore = ("mailto:", )
+extensions_to_ignore = (
+    ".pdf",  # the Zope3Org package can't handle files yet
+    ".html", # parser can't handle chapters of Stefans book yet
+    )
+names_to_ignore = (
+    "map", # the wikis table of contents (has a format problem)
+    "diff",
+    )
 
 protocol = re.compile('.*?://')
 notFound = re.compile('Bobo-Exception-Type:\s*NotFound')
@@ -45,27 +55,40 @@ class ImporterForContainer(object):
     zope.interface.implements(IImporter)
     zope.component.adapts(IContainer)
     
-    verbosity=0     # print infos if > 0
+    verbosity = 0   # print infos if > 0
     limit = None    # can be set to limit the number of imported pages
     
     def __init__(self, context):
         self.context = context
         self.count = 0
         self.imported = set()
+        self.externalLinks = set()
         
     def download(self, url, target_url, base_url=None):
         """See IImporter
         """
-                
-        base_fetch_url, relative_url = url.rsplit('/', 1)
+        base_fetch_url, relative_url = os.path.split(url)
         if base_url is None:
             base_url = base_fetch_url
         
         self.base_fetch_url = base_fetch_url
         self.base_url = base_url
         self.target_url = target_url
+        
         self._recursiveImport(relative_url)
         
+        if self.verbosity:
+            print "Downloaded %s pages:" % self.count
+            for url in self.imported:
+                print "    - %s" % url
+            if self.externalLinks:
+                print "Left untouched the following external links:"
+                for link in self.externalLinks:
+                    print "    - %s" % link
+            else:
+                print "No external links found"
+            
+        return self.count, self.imported, self.externalLinks
    
     def resolvePath(self, relative_url) :
         """
@@ -83,6 +106,9 @@ class ImporterForContainer(object):
         
         container = base = self.context
         for name in path[:-1] :
+            if not name:
+                # ignore empty names caused by path/to//something
+                continue
             try :
                 container = zapi.traverseName(base, name)
                 assert IContainer.providedBy(base)
@@ -98,31 +124,42 @@ class ImporterForContainer(object):
         The ``url`` has to be relative to the base.
         """
         url = "%s/%s" % (self.base_fetch_url, relative_url)
-       
-        if relative_url in self.imported :
+        
+        if relative_url in self.imported:
             return
-        else :
-            self.imported.add(relative_url)
+        
+        name = os.path.split(relative_url)[1]
+        if name in names_to_ignore:
+            return
+        
+        extension = os.path.splitext(relative_url)[1]
+        if extension in extensions_to_ignore:
+            return
             
-        self.count += 1
+        protocol = relative_url.split(":", 1)[0]
+        if protocol in protocols_to_ignore:
+            return
+
+        self.imported.add(relative_url)
+        
         if self.limit is not None and self.count > self.limit :
             return
             
         if self.verbosity :
-            print "import", url
+            print relative_url
+        
         # retrieve the page
         doc = urllib.urlopen(url)
         headers = ''.join(doc.info().headers)
         
-        
         if self.verbosity :
-            print "connected", url
+            print "    - downloaded data"
             
         # check for zope2 NotFound exceptions
         # XXX this is zope specific, arghh!
         if notFound.search(headers) is not None:
             raise IOError('404 NotFound')
-            
+        
         # XXX make a utiliy lookup of this
         parser = ZopeOrgWikiPageExtractor()
         parser.prepare(self.base_url, relative_url, self.target_url)
@@ -130,11 +167,15 @@ class ImporterForContainer(object):
             parser.feed(doc.read())
         except :
             if self.verbosity :
-                print "HTMLParseError in", relative_url
+                print "    - HTML parse error"
      
         text = parser.getText()
         links = parser.getLinks()
+        self.externalLinks.union(parser.externalLinks)
 
+        if self.verbosity :
+            print "    - parsed data"
+            
         # parse the metadata in rdf format
         if self.base_fetch_url.startswith('file:'):
             sep = '.'
@@ -149,12 +190,17 @@ class ImporterForContainer(object):
                 continue
             metadata[mdata[0]] = unicode(mdata[1])
         
+        if self.verbosity :
+            print "    - parsed metadata"
+        
         if metadata.get('format') :
             file = File(text, metadata['format'])
+            if self.verbosity :
+                print "    - added file"
         else :
             # uo: the file has no format, we skip it to be safe
             if self.verbosity :
-                print "no format found, skipping", relative_url
+                print "    - skipped (no format found)"
             return
 
         # we don't notify with a ``ObjectCreatedEvent`` because
@@ -173,20 +219,29 @@ class ImporterForContainer(object):
         # XXX what data to be set else? (type="Wiki Page")
         # XXX there is also a ``date``, hmmm?
         
-        
         container, name = self.resolvePath(relative_url)
         try :
             container[name] = file
+            self.count += 1
             transaction.commit()
             if self.verbosity :
-                print "added", relative_url
+                print "    - commited"
         except DuplicationError :
             # XXX uo: what does that mean? Is an exit the best solution?
             if self.verbosity :
-                print "already exists", relative_url
+                print "    - already exists"
             return
         
 
+        if self.verbosity :
+            if links:
+                print "    - recursing into links:",
+            else:
+                print "    - no links to recurse in",
+            for link in links:
+                print link,
+            print
+            
         # recurse into links (attentions some are relative)
         for link in links:
             try:
@@ -223,6 +278,7 @@ class ZopeOrgWikiPageExtractor(HTMLParser.HTMLParser):
         self.inMain = False
         self.inContent = False
         self.done = False
+        self.externalLinks = set()
         
     def prepare(self, base_url, relative_url, target_url) :
         self.base_url = base_url
@@ -251,8 +307,9 @@ class ZopeOrgWikiPageExtractor(HTMLParser.HTMLParser):
                         return np.groups()[0]
                 else :
                     return relative_link
+            # log external links
+            self.externalLinks.add(link)
             return None
-                    
         return link
         
     def absolute_link(self, link) :
@@ -286,8 +343,9 @@ class ZopeOrgWikiPageExtractor(HTMLParser.HTMLParser):
                 relative = self.relative_link(link)
                 if relative is not None :
                     self._links.add(relative)
-                    absolute = self.absolute_link(relative)
-                    tag.setAttribute('href', absolute)
+#                    absolute = self.absolute_link(relative)
+#                    tag.setAttribute('href', absolute)
+                    tag.setAttribute('href', "../%s" % relative)
                     
         # add content to the result
         if self.inContent:

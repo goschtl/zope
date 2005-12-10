@@ -52,3 +52,4 @@ A selection of the metadata will be copied also:
     datetime.datetime(2003, 8, 1, 0, 0, tzinfo=tzinfo(0))
     >>> dc.modified
     datetime.datetime(2003, 10, 10, 0, 0, tzinfo=tzinfo(0))
+
