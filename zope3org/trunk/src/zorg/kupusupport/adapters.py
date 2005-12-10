@@ -41,18 +41,54 @@ class KupuEditableFile(object) :
         self.context = context
         
         
-    def update(self, kupu=None):
-        """Update the content object using the kupu editor output.
+    def update(self, content, contentType="text/html", asContentType=None):
+        """Update the content object using the editor output.
+        
+           contentType describes the provided content
+           targetContentType prescribes in which format the content should be
+           saved.
 
         """
-        if kupu is not None :
-            self.context.data = html_body(kupu)
-            self.context.contentType = "text/html"
+        if asContentType is None :
+            asContentType = self.context.contentType
+        else :
+            self.context.contentType = targetContentType
             
-    def display(self):
-        """Display the kupu specific editor content."""
+        assert contentType in "text/html", "text/plain"
         
-        return unicode(html_body(self.context.data), encoding="utf-8")
+        if asContentType == "text/html" :
+            data = RestToHTML(content)
+        elif asContentType == "text/plain" :
+            data = content
+            
+        self.context.data = data
+            
+            
+    def display(self, asContentType=None):
+        """Display the specific editor content as text/html
+           or rest text/plain
+        """
+        
+        if asContentType is None :
+            asContentType = self.context.contentType
+         
+        assert asContentType in "text/html", "text/plain"
+        
+        if asContentType == "text/html" :
+        
+            if self.context.contentType == "text/html" :
+                return unicode(html_body(self.context.data), encoding="utf-8")
+                
+            if self.context.contentType == "text/plain" :
+                return RestToHTML(self.context.data)
+                
+        elif asContentType == "text/plain" :
+        
+            if self.context.contentType == "text/html" :
+                return HTMLToRest(html_body(self.context.data))
+            if self.context.contentType == "text/plain" :
+                return self.context.data   
+        
         
 
 

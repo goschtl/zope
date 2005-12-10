@@ -17,7 +17,7 @@ $Id: tests.py 38895 2005-10-07 15:09:36Z dominikhuber $
 """
 __docformat__ = 'restructuredtext'
 
-import re, urllib
+import re, urllib, cgi
 
 import zope.event
 from zope.app import zapi
@@ -32,12 +32,15 @@ from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.session.interfaces import ISession
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 from zope.publisher.browser import TestRequest
 from zope.i18n import MessageIDFactory
 
 _ = MessageIDFactory("zorg.wikification")
 
+from persistent import Persistent
 
 from zorg.wikification.browser.interfaces import IWikiPage
 from zorg.importer import IImporter
@@ -45,7 +48,94 @@ from zorg.kupusupport.adapters import html_body
 from zorg.kupusupport.browser.views import KupuEditor
 from zorg.kupusupport.interfaces import IKupuPolicy
 
-class WikiPage(BrowserView) :
+from zorg.restsupport import rest2html
+from zorg.restsupport import html2rest
+
+
+class SettingsStorage(Persistent) :
+    """ A persistent object for user specific settings. Can be stored
+        in the session or principal annotations.
+    """
+
+class AbstractPage(BrowserView) :
+    """ A handy base class for wiki pages. """
+
+    
+    def __init__(self, context, request) :
+        super(AbstractPage, self).__init__(context, request)
+        self.args = self.parseQuery()
+        self.session = self.getSessionStorage()
+        
+    def parseQuery(self) :
+        """ Parses the query string. """
+        if 'QUERY_STRING' in self.request :
+            return cgi.parse_qs(self.request['QUERY_STRING'])
+        return {}
+        
+    def getSessionStorage(self) :
+        """ Returns a session storage. """
+        
+        session = ISession(self.request)['zorg.wikification']
+        if session.get("storage") is None :
+            session["storage"] = SettingsStorage()
+        return session["storage"]
+
+    def parameter(self, key, type=None, default=None, storage=None) :
+        """ Extract parameter from request or storage. 
+        
+        >>> from zorg.wikification.tests import buildSampleSite
+        >>> site = buildSampleSite()
+        >>> request = TestRequest()
+        >>> view = AbstractPage(site, request)
+        >>> view.parameter("query") is None
+        True
+        
+        The parameter is either extracted from the query string
+        or the form data:
+        
+        >>> view = AbstractPage(None, TestRequest(QUERY_STRING='query=xyz'))
+        >>> view.parameter("query")
+        u'xyz'
+        
+        If you expect something different from a string you must provide
+        a converter / factory, otherwise the parameter is returned
+        as a unicode string.
+  
+        Note that the value is persistent between calls if a 
+        session data container is provided :
+        
+        >>> view = AbstractPage(None, TestRequest(form={'num': '42'}))
+        >>> session = view.getSessionStorage()
+        >>> view.parameter("num", int, storage=session)
+        42
+        
+        >>> view = AbstractPage(None, TestRequest())
+        >>> view.parameter("num", int, storage=session)
+        42
+        
+        """
+        
+        value = None
+        if key in self.request :
+            value = self.request[key]
+        elif key in self.args :
+            value = self.args[key][0]
+        if value is None :
+            if storage is not None :
+                return getattr(storage, key, default)
+            return default
+        if type is None :
+            if isinstance(value, str) :
+                value = unicode(value, encoding="utf-8")
+        else :
+            value = type(value)
+        if storage is not None :
+            if getattr(storage, key, default) != value :
+                setattr(storage, key, value)
+        return value
+        
+
+class WikiPage(AbstractPage) :
     """ A wiki page that 'wikifies' a container with ordinary HTML documents.
     
         See wikification/README.txt for a definition of what 
@@ -328,24 +418,125 @@ class WikiFilePage(WikiPage) :
         return "Sorry, not wikifiable at the moment."
 
 
+class EditOptions(WikiPage) :
+    """ An editor were the user can switch between Kupu, Rest and 
+        other edit options. 
         
-class EditWikiPage(KupuEditor, WikiFilePage) :
+    """
+
+    actions = dict(rest="./restedit.html", kupu="./kupuedit.html")
+    
+    _choose = ViewPageTemplateFile("./edit.pt")
+            
+    def __call__(self) :
+        """ Redirect the user to the selected editor. """
+        
+        session = self.getSessionStorage()
+        editor = self.parameter('editor', storage=session)
+        if editor in self.actions :
+            self.request.response.redirect(self.actions[editor])
+            
+        return self._choose()        
+
+
+class WikiEditor(WikiPage) :   
+    """ Base class for a wiki edit page. Provides methods that
+        access and update file content.
+        
+        >>> from zorg.wikification.tests import buildSampleSite
+        >>> site = buildSampleSite()
+        >>> request = TestRequest("/", form=dict(rest="ReSt", editor="rest"))
+        >>> editor = WikiEditor(site, request)
+        >>> editor.getDataAndContentTypes()
+        (u'ReSt', 'text/plain')
+      
+    """
+    
+    def __init__(self, context, request) :
+        super(WikiEditor, self).__init__(context, request)  
+        self.editor = self.parameter('editor', storage=self.session)
+        
+    def getDataAndContentTypes(self) :
+        """ Extracts data and content type from request."""
+        editor = self.editor
+        request = self.request
+        if editor == "rest" : # add named adapter or utility later
+            data = self.parameter('rest')
+            isType = "text/plain"
+            asType = "text/plain"
+        else :
+            data = self.parameter('kupu')
+            isType = "text/html"
+            asType = "text/html"
+        return data, isType, asType   
+                
+    def updateFile(self, file, content, contentType="text/html", asContentType=None):
+        """Update the content object using the editor output.
+        
+           contentType describes the provided content
+           targetContentType prescribes in which format the content should be
+           saved.
+
+        """
+        if asContentType is None :
+            asContentType = file.contentType
+        else :
+            file.contentType = asContentType
+            
+        assert asContentType in "text/html", "text/plain"
+        
+        if asContentType == "text/html" :
+            data = rest2html(content)
+        elif asContentType == "text/plain" :
+            data = content
+            
+        file.data = data
+        zope.event.notify(ObjectModifiedEvent(file))    
+            
+    def displayFile(self, file, asContentType=None):
+        """Display the specific editor content as text/html
+           or rest text/plain
+        """
+        
+        if asContentType is None :
+            asContentType = file.contentType
+         
+        assert asContentType in "text/html", "text/plain"
+        
+        if asContentType == "text/html" :
+        
+            if file.contentType == "text/html" :
+                return unicode(html_body(file.data), encoding="utf-8")
+                
+            if file.contentType == "text/plain" :
+                return RestToHTML(file.data)
+                
+        elif asContentType == "text/plain" :
+        
+            if file.contentType == "text/html" :
+                return HTMLToRest(html_body(file.data))
+            if file.contentType == "text/plain" :
+                return file.data   
+        
+        
+      
+class EditWikiPage(WikiEditor, WikiFilePage) :
  
     verb = _('Edit')
     
-     # implementation of zorg.kupusupport.IKupuPolicy
-    def update(self, kupu=None):
-        """ Overwrites KupuEditor.update with a new redirect. """        
-        if kupu:
-            policy = IKupuPolicy(self.context)
-            policy.update(kupu)
-            zope.event.notify(ObjectModifiedEvent(self.context))
-
+    def display(self) :
+        """ Returns the data that should be edited. """
+        return self.displayFile(self.context)
+    
+    def update(self, editor=None):
+        """ Saves the edited content and redirects to the wiki view. """
+        
+        data, isType, asType = self.getDataAndContentTypes()
+        self.updateFile(self, context, data, isType, asType)
         self.request.response.redirect("wiki.html")
+        
 
-
-
-class CreateWikiPage(KupuEditor, WikiContainerPage) :
+class CreateWikiPage(WikiEditor, WikiContainerPage) :
 
     verb = _('Add')
  
@@ -376,9 +567,7 @@ class CreateWikiPage(KupuEditor, WikiContainerPage) :
             Creates a file at the given path. Creates all intermediate
             folders if necessary.
             
-        """
-        
-        
+        """        
         path = self.getAddPath()
 
         assert len(path) > 0
@@ -402,18 +591,14 @@ class CreateWikiPage(KupuEditor, WikiContainerPage) :
             file = container[name] 
         return file
 
-    def update(self, kupu=None):
+    def update(self, editor=None):
         """
             Generic store method.           
         """
-        
         request = self.request
+        data, isType, asType = self.getDataAndContentTypes()
         file = self.createFile()
-        file.contentType = "text/html"
-        file.data = kupu
-       
-        zope.event.notify(ObjectModifiedEvent(file))
-        
+        self.updateFile(file, data, isType, asType)        
         url = zapi.absoluteURL(file, self.request)
         request.response.redirect(url + self.action)
 

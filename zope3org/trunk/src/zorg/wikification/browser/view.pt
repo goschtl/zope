@@ -23,7 +23,7 @@
             <div id="action-navigation" class="itemViews">
 			  <a href="@@login.html">Login</a> &nbsp; |  &nbsp;
               View&nbsp; |  &nbsp;
-              <a href="@@kupu.html">Edit</a> &nbsp;&nbsp;&nbsp;&nbsp;
+              <a href="@@wikiedit.html">Edit</a> &nbsp;&nbsp;&nbsp;&nbsp;
            </div>
 		</div>		
     </div>

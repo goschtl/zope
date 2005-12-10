@@ -38,6 +38,15 @@ from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.traversing.adapters import RootPhysicallyLocatable
 from zope.app.traversing.adapters import Traverser
 
+from zope.app.session.session import ClientId, Session
+from zope.app.session.session import PersistentSessionDataContainer
+from zope.publisher.interfaces import IRequest
+from zope.app.session.http import CookieClientIdManager
+from zope.app.session.interfaces import ISessionDataContainer
+from zope.app.session.interfaces import IClientId
+from zope.app.session.interfaces import IClientIdManager, ISession
+
+from zope.publisher.browser import TestRequest
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 
@@ -92,13 +101,29 @@ def buildSampleSite() :
     IZopeDublinCore(index).title = u'Wiki page'
     return root    
 
-
-
+def sessionSetUp(test=None) :
+    """
+        >>> request = TestRequest()
+        >>> ISession(request)   #doctest: +ELLIPSIS
+        <zope.app.session.session.Session object at ...>
+    """
+    
+    zope.interface.classImplements(TestRequest, IRequest)
+    
+    zope.component.provideAdapter(ClientId, [IRequest], IClientId, )
+    zope.component.provideAdapter(Session, [IRequest], ISession)
+    zope.component.provideUtility(CookieClientIdManager(), IClientIdManager)
+    sdc = PersistentSessionDataContainer()
+    zope.component.provideUtility(sdc, ISessionDataContainer, 'zorg.wikification')
+    
+    
 def setUpWikification(test) :
    
     zope.app.testing.setup.placefulSetUp()
     
     from zope.app.testing import ztapi
+    
+    sessionSetUp(test) 
     
     zope.interface.classImplements(File, IAnnotatable)
     zope.interface.classImplements(Folder, IAnnotatable)
