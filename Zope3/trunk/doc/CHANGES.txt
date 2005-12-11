@@ -6,6 +6,13 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
+  After Zope 3.2.0
+
+    Restructuring
+
+      - zope.app.content_types is now a package (code backported from Zope 2)
+     
+
   Some future release Zope 3.2.0
 
     New features
