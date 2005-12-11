@@ -73,7 +73,7 @@ interrupt-check-interval 200
 # uncomment this if you want to connect to a local ZEO server
 # instead:
 #  <zeoclient>
-#    server localhost:9999
+#    server localhost:8100
 #    storage 1
 #    # ZEO client cache, in bytes
 #    cache-size 20MB
