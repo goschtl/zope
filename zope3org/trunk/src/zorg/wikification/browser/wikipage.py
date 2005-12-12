@@ -48,13 +48,14 @@ from zorg.kupusupport.adapters import html_body
 from zorg.kupusupport.browser.views import KupuEditor
 from zorg.kupusupport.interfaces import IKupuPolicy
 
+from zorg.ajax.page import AjaxPage
 from zorg.restsupport import rest2html
 from zorg.restsupport import html2rest
 
 
     
 
-class WikiPage(AbstractPage) :
+class WikiPage(AjaxPage) :
     """ A wiki page that 'wikifies' a container with ordinary HTML documents.
     
         See wikification/README.txt for a definition of what 
@@ -86,6 +87,7 @@ class WikiPage(AbstractPage) :
         """
         super(WikiPage, self).__init__(context, request)
           
+        self.session = self.getSessionStorage()
         self.macros = {}
         if container is None :
             self.container = self.getContainer() or context
@@ -367,7 +369,7 @@ class WikiEditor(WikiPage) :
         >>> request = TestRequest("/", form=dict(rest="ReSt", editor="rest"))
         >>> editor = WikiEditor(site, request)
         >>> editor.getDataAndContentTypes()
-        (u'ReSt', 'text/plain')
+        (u'ReSt', 'text/plain', 'text/plain')
       
     """
     

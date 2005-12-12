@@ -46,7 +46,7 @@ from zope.app.folder import rootFolder
 from zope.app.folder import Folder
 from zope.app.file import File
 
-from zorg.ajax import sessionSetUp
+from zorg.ajax.tests import sessionSetUp
 
 
 example1 = u"""<html>

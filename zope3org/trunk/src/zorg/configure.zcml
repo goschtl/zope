@@ -3,7 +3,8 @@
     xmlns:i18n="http://namespaces.zope.org/i18n"
     i18n_domain="zope"
     >
-    
+  
+  <include package=".ajax" />
   <include package=".comment" />
   <include package=".seen" />
   <include package=".edition" />

@@ -892,38 +892,38 @@ def convert_page(src_dir, dest_dir, pagename):
 
 trace = noop
 verbose = noop
-options, args = option_parser.parse_args()
-
-if __name__ == '__main__':
-    try:
-        verbose = noop
-        if options.verbose:
-            verbose = warn
-    
-        trace = noop
-        if options.trace:
-            trace = warn
-    
-        if len(args) != 3:
-            option_parser.error("invalid number of arguments: %d"%(len(args)))
-    
-        base_url, src_dir, dest_dir = tuple(args)
-        if base_url[-1] == '/':
-            base_url = base_url[:-1]
-    
-        pages = os.listdir(src_dir)
-    
-        if options.zwiki:
-            context = ZwikiContext(base_url, pages)
-    
-        for pagename in pages:
-            convert_page(src_dir, dest_dir, pagename)
-    except:
-        if options.debug:
-            import traceback
-            traceback.print_exc()
-        else:
-            warn('Error: %s\n'%(sys.exc_info()[1]))
+# options, args = option_parser.parse_args()
+#
+# if __name__ == '__main__':
+#     try:
+#         verbose = noop
+#         if options.verbose:
+#             verbose = warn
+#     
+#         trace = noop
+#         if options.trace:
+#             trace = warn
+#     
+#         if len(args) != 3:
+#             option_parser.error("invalid number of arguments: %d"%(len(args)))
+#     
+#         base_url, src_dir, dest_dir = tuple(args)
+#         if base_url[-1] == '/':
+#             base_url = base_url[:-1]
+#     
+#         pages = os.listdir(src_dir)
+#     
+#         if options.zwiki:
+#             context = ZwikiContext(base_url, pages)
+#     
+#         for pagename in pages:
+#             convert_page(src_dir, dest_dir, pagename)
+#     except:
+#         if options.debug:
+#             import traceback
+#             traceback.print_exc()
+#         else:
+#             warn('Error: %s\n'%(sys.exc_info()[1]))
 
 #  Local Variables: ***
 #  mode: python ***
