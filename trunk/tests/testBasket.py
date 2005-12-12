@@ -210,6 +210,12 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
         self.assertEqual(expected[0], 'external method')
         
     def test_directoryview(self):
+        try:
+            from Products.CMFCore.TypesTool import TypesTool
+        except ImportError, e:
+            # don't continue trying to test CMF stuff
+            return
+        
         basket = self._makeOne()
         basket.preinitialized = False
         basket.pdist_fname = os.path.join(self.fixtures,
