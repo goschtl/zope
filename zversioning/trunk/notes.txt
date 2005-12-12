@@ -1,3 +1,12 @@
+This was the place where we started our work on versioning at the IsarSprint.
+Gregoire and I (Uwe) continued this works some weeks after the NeckarSprint
+and moved the stuff to zope3org, resp. zorg.edition.
+
+This directory is now obsolete and the following note is only kept for
+documentary purposes.
+
+
+
 What we did at the IsarSprint
 -----------------------------
 
