@@ -1,0 +1,57 @@
+<configure 
+   xmlns="http://namespaces.zope.org/browser"
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:event="http://namespaces.zope.org/event"
+   i18n_domain="zorg"
+   >
+    
+  <resourceDirectory
+		name="zorgajax"
+		directory="./javascript"
+		/>
+
+  <pages
+        for="*"
+        class="zorg.ajax.livepage.LivePage"
+        permission="zope.Public">
+                    
+        <page 
+            name="nevow_glue.js"
+            attribute="renderGlue" />
+        <page 
+            name="renderBody"
+            attribute="renderBody" />
+        <page 
+            name="liveChanges"
+            attribute="this" />
+            
+  </pages>
+ 
+  <zope:adapter factory="zorg.ajax.livepage.LivePageResult" />
+  
+  <zope:content class="zope.publisher.http.DirectResult">
+    
+	<require
+		permission="zope.Public"
+		interface="zope.publisher.interfaces.http.IResult"/>   
+			
+  </zope:content>
+
+  <zope:content class="zorg.ajax.livepage.IterBuffer">
+    
+	<require
+		permission="zope.Public"
+		attributes="next __iter__"/>   
+			
+  </zope:content>
+  
+
+ <zope:content class="twisted.web2.wsgi.FileWrapper">
+    
+	<require
+		permission="zope.Public"
+		attributes="next __iter__"/>   
+			
+  </zope:content>
+  
+</configure>
