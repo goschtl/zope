@@ -17,7 +17,8 @@ import zLOG
 import tempfile
 from Products.Five.traversable import FakeRequest
 
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.component.tests.placelesssetup import PlacelessSetup as \
+     CAPlacelessSetup
 from zope.component import getView
             
 here = os.path.dirname(__file__)
@@ -107,9 +108,17 @@ def dummy_initializer(context):
 def legacymethod(self):
     pass
 
-class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
+class TestBasket(unittest.TestCase, LogInterceptor):
 
     def setUp(self):
+        # we don't derive from PlacelessSetup because we want to be able
+        # to directly execute zcml as opposed to emulating an environment
+        # with provideAdapter and friends.  The below just does what that
+        # might have done (and has mirror code in tearDown)
+        from zope.app.schema.vocabulary import ZopeVocabularyRegistry
+        import zope.app.schema.vocabulary
+        zope.app.schema.vocabulary.vocabularyService = ZopeVocabularyRegistry()
+
         self.working_set = pkg_resources.working_set
         self.oldsyspath = sys.path[:]
         self.oldsysmodules = copy.copy(sys.modules)
@@ -133,6 +142,12 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
         working_set.entry_keys.update(self.oldentry_keys)
         Products.__path__[:] = self.oldproductpath
         App.config.getConfiguration().debug_mode = self.old_debug_mode
+
+        from zope.app.schema.vocabulary import ZopeVocabularyRegistry
+        import zope.app.schema.vocabulary
+        zope.app.schema.vocabulary.vocabularyService = ZopeVocabularyRegistry()
+        from zope.component.service import serviceManager
+        serviceManager._clear()
 
     def _getTargetClass(self):
         from Products.Basket.basket import Basket
@@ -445,13 +460,14 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
         timestampFile = os.path.join(distDir, 'timestamp-%s' % eggName)
         
         self.failUnless(os.path.isdir(distDir))
-        timestamp = (os.path.getatime(timestampFile), os.path.getmtime(timestampFile))
+        timestamp = (os.path.getatime(timestampFile),
+                     os.path.getmtime(timestampFile))
 
         self.failUnless(os.path.getatime(testEgg) == timestamp[0])
         self.failUnless(os.path.getmtime(testEgg) == timestamp[1])
 
         basket.cleanup()
-        shutil.rmtree(testDir, ignore_errors=True)            
+        shutil.rmtree(testDir, ignore_errors=True)
 
     def test_product_distributions_by_dwim(self):
         basket = self._makeOne()
@@ -599,47 +615,44 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
         products = findProducts()
         self.assert_(Products.fiveproduct in products)
 
-        try:
-            # do what Five.loadProduct does
-            sitezcml = """\
-            <configure xmlns="http://namespaces.zope.org/zope"
-               xmlns:five="http://namespaces.zope.org/five">
-               <include package="Products.Five" />
-               <include package="Products.fiveproduct"/>
-            </configure>"""
+        # do what Five.loadProduct does
+        sitezcml = """\
+        <configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:five="http://namespaces.zope.org/five">
+           <include package="Products.Five" />
+           <include package="Products.fiveproduct"/>
+        </configure>"""
 
-            xmlconfig.string(sitezcml)
+        xmlconfig.string(sitezcml)
 
-            # verify that the zcml had the correct effect
+        # verify that the zcml had the correct effect
 
-            from Products.fiveproduct.module import SampleAdapter
-            from Products.fiveproduct.module import ISampleAdapter
-            from Products.fiveproduct.module import ExtraSampleAdapter
-            from Products.fiveproduct.module import IExtraSampleAdapter
+        from Products.fiveproduct.module import SampleAdapter
+        from Products.fiveproduct.module import ISampleAdapter
+        from Products.fiveproduct.module import ExtraSampleAdapter
+        from Products.fiveproduct.module import IExtraSampleAdapter
 
-            context = None
+        context = None
 
-            adapter = ISampleAdapter(context)
-            self.assertEqual(adapter.__class__, SampleAdapter)
-            self.assertEqual(adapter.context, context)
+        adapter = ISampleAdapter(context)
+        self.assertEqual(adapter.__class__, SampleAdapter)
+        self.assertEqual(adapter.context, context)
 
-            adapter = IExtraSampleAdapter(context)
-            self.assertEqual(adapter.__class__, ExtraSampleAdapter)
-            self.assertEqual(adapter.context, context)
+        adapter = IExtraSampleAdapter(context)
+        self.assertEqual(adapter.__class__, ExtraSampleAdapter)
+        self.assertEqual(adapter.context, context)
 
-            view = getView(object(), 'example_view', FakeRequest())
+        view = getView(object(), 'example_view', FakeRequest())
 
-            self.failUnless(view is not None)
-        finally:
-            # clean up
-            PlacelessSetup.tearDown(self)
+        self.failUnless(view is not None)
 
     def test_five_product_with_no_Products_namespace(self):
         basket = self._makeOne()
         from Products.Basket import monkeypatches
         monkeypatches.patch_findProducts(basket)
 
-        basket.pdist_fname = os.path.join(self.fixtures,'pdist-fiveproduct2.txt')
+        basket.pdist_fname = os.path.join(self.fixtures,
+                                          'pdist-fiveproduct2.txt')
         
         sys.path.append(self.fixtures)
         self.working_set.add_entry(self.fixtures)
@@ -662,29 +675,23 @@ class TestBasket(unittest.TestCase, PlacelessSetup, LogInterceptor):
         products = findProducts()
         self.assert_(fiveproduct2 in products)
 
-        try:
-            # do what Five.loadProduct does
-            sitezcml = """\
-            <configure xmlns="http://namespaces.zope.org/zope"
-               xmlns:five="http://namespaces.zope.org/five">
-               <include package="Products.Five" />
-               <include package="fiveproduct2"/>
-            </configure>"""
+        # do what Five.loadProduct does
+        sitezcml = """\
+        <configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:five="http://namespaces.zope.org/five">
+           <include package="Products.Five" />
+           <include package="fiveproduct2"/>
+        </configure>"""
 
-            xmlconfig.string(sitezcml)
+        xmlconfig.string(sitezcml)
 
-            # verify that the zcml had the correct effect
+        # verify that the zcml had the correct effect
 
-            context = None
+        context = None
 
-            view = getView(object(), 'example_view', FakeRequest())
+        view = getView(object(), 'example_view', FakeRequest())
 
-            self.failUnless(view is not None)
-        finally:
-            # clean up
-            PlacelessSetup.tearDown(self)
-
-
+        self.failUnless(view is not None)
 
     def test_remove_product_distribution_from_working_set_fixes_ns_pkgs(self):
         basket = self._makeOne()
