@@ -1,0 +1,42 @@
+- Investigate using easy_install instead of exploding non-zip-safe
+  zipfiles at runtime.  Phillip Eby comments:
+
+  """
+  In general, it seems to me that your scan and setup process is more
+  complex than necessary.  I tend to feel as though you should just
+  have people use easy_install to install their eggs in the target
+  directory, and tell it that the egg direcotry is a "site" directory
+  (i.e., can use .pth files).  E.g., using:
+
+    easy_install -d eggdir --site-dirs=eggdir myproject.egg
+
+  This will copy in any non-product eggs required by the project that
+  aren't already in sys.path, *and* extract any non-zipsafe eggs, as
+  well as select active versions in the .pth file.  Then, your
+  preinitialization code could be as simple as:
+
+    # process the .pth file
+    import site; site.addsitedir(eggdir)
+
+    # update the working set with added eggs
+    for entry in sys.path:
+        if entry not in working_set.entries:
+            working_set.add_entry(entry)
+
+  This would be a lot simpler than all of the hoops you're currently
+  jumping through to get the working_set configured.  You would only
+  need to document one installation technique, not two.  And you can
+  always wrap easy_install with a more convenient interface, if
+  desired.
+  """
+
+- When an egg distribution is uninstalled, its persistent object
+  sticks around in the control panel.  It should go away.
+
+- Hurt system files aren't registered or displayed.
+
+- Tracebacks from zipfile egg products don't include code from inside
+  the egg.  Investigate this more (check if this is a known bug).
+
+- Figure out what to do about products with the same name while
+  iterating over their entry points.

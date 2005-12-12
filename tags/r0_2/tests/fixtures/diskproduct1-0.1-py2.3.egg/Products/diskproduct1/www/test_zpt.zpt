@@ -1,0 +1,10 @@
+<html>
+    <body>
+        <ul>
+            <li tal:repeat="somthin here/objectValues"
+                tal:content="somthin/title">
+                Somthin's Title
+            </li>
+        </ul>
+    </body>
+</html>
