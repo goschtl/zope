@@ -24,7 +24,7 @@ from zope.app import zapi
 
 def registerVersionControl(event):
     if IVersionable.providedBy(event.object):
-        history = zapi.getUtility(IHistoryStorage)
+        history = zapi.queryUtility(IHistoryStorage)
         if history is not None and not IVersioned.providedBy(event.object):
             rep = ICopyModifyMergeRepository(history)
             transaction.savepoint()     # we need the p_oids for the tickets

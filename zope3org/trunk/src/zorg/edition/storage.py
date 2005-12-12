@@ -98,12 +98,7 @@ class SimpleHistoryStorage(BTreeContainer) :
     """
     
     implements(IHistoryStorage, IAnnotatable)
-     
-#     def __init__(self) :
-#         super(SimpleHistoryStorage, self).__init__()
-#         import pdb; pdb.set_trace()
-        
-        
+             
     def register(self, obj):
         """ Register an obj for version control.
             Creates a new version history for a resource."""
