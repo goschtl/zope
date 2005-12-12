@@ -1,0 +1,11 @@
+Developers
+
+Chris McDonough (chrism@plope.com)
+Rocky Burt (rocky@serverzen.com)
+Casey Duncan
+
+Funders
+
+  Cignex Corporation provided initial funding for Basket as part of the Goldegg
+  Initiative
+
