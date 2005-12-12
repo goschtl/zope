@@ -1,13 +1,25 @@
 0.2
+   Added support allowing for CMF based applications to not have to use the
+   'Products' namespace.
+
+   Monkey-patch Five's findProducts method to not just look in the Products
+   module but also in all product packages made available by Basket.
+   
+   Monkey-patch CMF's TypesTool (if CMF is available) so that it is able
+   to find product packages exposed by Basket as well.
+   
+   Monkey-patch Zope's ProductDispatcher so that it can look for factory
+   methods/info that are exposed by product packages that are not just in the
+   'Products' namespace.
 
    Monkey-patch Zope's external method machinery to look for external
-   method files in exploded tempdirs (thanks to Rocky Burt).
+   method files in exploded tempdirs.
 
    Unpack non-zip-safe eggs into a cache directory instead of a
-   per-process temp directory (thanks to Rocky Burt).
+   per-process temp directory.
 
    Fix missing imports and missing function parameters which exposed
-   failures only during certain error condidions (thanks to Rocky Burt).
+   failures only during certain error condidions.
 
    Fixed a bug where inspecting a zipfile distribution which was later
    blown out to a tempdir caused inappropriate turds to be left on
