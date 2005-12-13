@@ -170,6 +170,36 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 432: ``zope/server/trigger.py`` buggy on Windows
+
+        Copied the latest ``trigger.py`` from ``ZEO.zrpc``. This is okay,
+        since we are fading out the ``zope.server`` code. I think that a
+        dependency on ZEO would have been a bit heavy.
+
+      - Fixed bug 457: Workflow-3.0.0 to Zope3.1
+
+        baldtrol submitted some patches to make ``zope.app.workflow`` work with
+        Zope 3.1 and up again.
+
+      - Fixed issue 467: Metadata: [Refresh] button should reset your input
+                         data
+
+      - Addressed issue 469: xmlrpc directive without permission attribute error
+
+        Solved the issue by requiring the permission attribute, like it is
+        done in the browser directives.
+
+      - Fixed issue 470: ``implementedBy`` can raise undocumented exception
+                         ``AttributeError``
+
+        Make sure that the ``implementedBy(interface, obj)`` call always
+        succeeds. An attribute error was raised, if ``obj`` did not have an
+        attribute called ``__name__``.
+
+      - Fixed issue 475: zope.app.component.browser has no tests
+
+        Reactivated the commented tests and updated them to the new API.
+
       - zope.configuration doesn't hide import errors inside python
         modules anymore.
 
@@ -204,7 +234,7 @@ Zope Changes
       - Made OrderedContainer.updateOrder send an IContainerModifiedEvent.
 
       - Fixed bug 451, http://www.zope.org/Collectors/Zope3-dev/451
-        Invoke widget factories adequately. Deprecate 
+        Invoke widget factories adequately. Deprecate
         CustomSequenceWidgetFactory because it does not satisfy IViewFactory.
 
       - zope.tales.expressions.simpleTraverse would raise NameError if the

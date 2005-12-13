@@ -2,7 +2,7 @@
 Using the Adapter Registry
 ==========================
 
-This is a small demonstration of the zope.interface package including its
+This is a small demonstration of the ``zope.interface`` package including its
 adapter registry. It is intended to provide a concrete but narrow example on
 how to use interfaces and adapters outside of Zope 3.
 
