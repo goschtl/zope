@@ -13,6 +13,9 @@ Zope Changes
       - In zopeskel/etc/zope.conf.in, use the same default port number
         as the one in ZEO/mkzeoinst.py.
 
+      - zope.app.content_types is now a packages (backported most
+        recent code from Zope 2 trunk to Zope 3)
+
   Zope 3.2.0b1 (2005/12/06)
 
     New features
