@@ -143,11 +143,19 @@ specified in a ZConfig ``<server>`` section.
     >>> sf = ServerFactory(my_section)
 
 The server factory object knows how to create a server, given a ZODB database
-object.
+object.  The name is a combination of type, ip, and port, so that the Twisted
+code can distinguish between the different HTTP servers.
 
     >>> db = 'my db'
     >>> print sf.create(db)
-    HTTP server on *:8080, registered with my db, backlog 30
+    HTTP:localhost:8080 server on *:8080, registered with my db, backlog 30
+
+It can create more than one, using different ports.
+
+    >>> my_section.address = ('', 8081)
+    >>> sf = ServerFactory(my_section)
+    >>> print sf.create(db)
+    HTTP:localhost:8081 server on *:8081, registered with my db, backlog 30
 
 The settings should actually work with FTP as well.
 
@@ -155,5 +163,5 @@ The settings should actually work with FTP as well.
     >>> my_section.address = ('127.0.0.1', 8021)
     >>> sf = ServerFactory(my_section)
     >>> print sf.create(db)
-    FTP server on 127.0.0.1:8021, registered with my db, backlog 30
+    FTP:127.0.0.1:8021 server on 127.0.0.1:8021, registered with my db, backlog 30
 
