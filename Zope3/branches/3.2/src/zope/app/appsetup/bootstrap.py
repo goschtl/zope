@@ -101,8 +101,7 @@ def configureUtility(
     reg.status = initial_status
 
 def getSiteManagerDefault(root_folder):
-    package_name = '/++etc++site/default'
-    package = traverse(root_folder, package_name)
+    package = traverse(root_folder.getSiteManager(), 'default')
     return package
 
 def getInformationFromEvent(event):

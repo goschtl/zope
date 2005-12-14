@@ -16,6 +16,9 @@ Zope Changes
       - zope.app.content_types is now a packages (backported most
         recent code from Zope 2 trunk to Zope 3)
 
+      - Fixed bug 486: Made function getSiteManagerDefault compatible with
+        sub-sites.
+
   Zope 3.2.0b1 (2005/12/06)
 
     New features
