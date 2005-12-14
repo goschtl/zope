@@ -150,12 +150,12 @@ class ServerFactory(object):
         """Return a server based on the server types defined via ZCML."""
 
         servertype = zapi.getUtility(IServerType, self.type)
-
+        ip, port = self.address
         return servertype.create(
-            self.type,
+            '%s:%s:%d' % (self.type, ip or 'localhost', port),
             database,
-            ip=self.address[0],
-            port=self.address[1],
+            ip=ip,
+            port=port,
             backlog=self.backlog)
 
 
