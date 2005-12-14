@@ -33,7 +33,6 @@ import zope.app.appsetup
 import zope.app.appsetup.interfaces
 from zope.app import wsgi
 from zope.app.twisted import log
-from zope.app.twisted import asyncore_main_loop
 
 CONFIG_FILENAME = "zope.conf"
 
@@ -79,14 +78,6 @@ def main(args=None):
     t1 = time.time()
     c1 = time.clock()
     logging.info("Startup time: %.3f sec real, %.3f sec CPU", t1-t0, c1-c0)
-
-    # Start the ThreadedAsync main loop.  This will either end immediately,
-    # or keep going if ZEO is around.  We don't actually care which.
-    def failed():
-        global RESTART_ON_SHUTDOWN
-        RESTART_ON_SHUTDOWN = True
-        reactor.callFromThread(reactor.stop)
-    reactor.callWhenRunning(asyncore_main_loop.run_in_thread, failed)
 
     reactor.run()
 
