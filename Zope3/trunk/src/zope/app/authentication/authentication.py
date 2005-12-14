@@ -58,6 +58,8 @@ class PluggableAuthentication(SiteManagementFolder):
                 info = authplugin.authenticateCredentials(credentials)
                 if info is None:
                     continue
+                info.credentialsPlugin = credplugin
+                info.authenticatorPlugin = authplugin
                 principal = component.getMultiAdapter((info, request),
                     interfaces.IAuthenticatedPrincipalFactory)(self)
                 principal.id = self.prefix + info.id
@@ -79,6 +81,8 @@ class PluggableAuthentication(SiteManagementFolder):
             info = authplugin.principalInfo(id)
             if info is None:
                 continue
+            info.credentialsPlugin = None
+            info.authenticatorPlugin = authplugin
             principal = interfaces.IFoundPrincipalFactory(info)(self)
             principal.id = self.prefix + info.id
             return principal

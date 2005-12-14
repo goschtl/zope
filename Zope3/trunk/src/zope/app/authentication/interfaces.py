@@ -30,7 +30,15 @@ class IPlugin(zope.interface.Interface):
 
 
 class IPluggableAuthentication(ILogout, IContainer):
-    """Provides authentication services with the help of various plugins."""
+    """Provides authentication services with the help of various plugins.
+    
+    IPluggableAuthentication implementations will also implement
+    zope.app.security.interfaces.IAuthentication.  The `authenticate` method
+    of this interface in an IPluggableAuthentication should annotate the
+    IPrincipalInfo with the credentials plugin and authentication plugin used.
+    The `getPrincipal` method should annotate the IPrincipalInfo with the
+    authentication plugin used.
+    """
 
     contains(IPlugin)
 
@@ -132,6 +140,19 @@ class IPrincipalInfo(zope.interface.Interface):
     title = zope.interface.Attribute("The principal title.")
 
     description = zope.interface.Attribute("A description of the principal.")
+
+    credentialsPlugin = zope.interface.Attribute(
+        """Plugin used to generate the credentials for this principal info.
+        
+        Optional.  Should be set in IPluggableAuthentication.authenticate.
+        """)
+
+    authenticatorPlugin = zope.interface.Attribute(
+        """Plugin used to authenticate the credentials for this principal info.
+        
+        Optional.  Should be set in IPluggableAuthentication.authenticate and
+        IPluggableAuthentication.getPrincipal.
+        """)
 
 
 class IPrincipalFactory(zope.interface.Interface):
