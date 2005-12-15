@@ -1,0 +1,28 @@
+<!-- topmenu macro, render first level items with class name 'topmenu' -->
+<metal:block define-macro="topmenu">
+	<a href="#" class="topmenu"
+			tal:attributes="href menuitem/action"
+			tal:content="menuitem/title"
+			i18n:translate="">
+	</a>
+</metal:block>
+
+<!-- helpmenu macro, render first level items with class name 'topmenu' -->
+<metal:block define-macro="helpmenu">
+  <a href="#" class="topmenu"
+     tal:define="url string:'${view/__name__}/${menuitem/action}';
+                 name string:'OnlineHelp';
+                 settings string:'height=500
+                                  ,width=950
+                                  ,resizable=1
+                                  ,scrollbars=yes
+                                  ,location=no
+                                  ,status=no
+                                  ,toolbar=no
+                                  ,menubar=no'"
+     tal:attributes="
+         href python:'javascript:popup('+ url + ',' + name + ','+ settings +')'"
+     tal:content="menuitem/title" i18n:translate="">
+    Action name
+  </a>
+</metal:block>

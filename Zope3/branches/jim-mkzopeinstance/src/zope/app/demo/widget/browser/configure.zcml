@@ -1,0 +1,37 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <addMenuItem
+      title="Demo Widgets" 
+      class="zope.app.demo.widget.app.DemoWidgetContainer"
+      permission="zope.ManageContent"
+      />
+  
+  <containerViews
+       for="zope.app.demo.widget.interfaces.IDemoWidgetContainer"
+       contents="zope.ManageContent"
+       index="zope.View"
+       add="zope.ManageContent"
+       />
+
+  <icon
+      name="zmi_icon"
+      for="zope.app.demo.widget.interfaces.IDemoWidgetContainer"
+      file="demowidgetcontainer.gif"
+      />
+
+  <!-- popup edit view -->
+  <menuItem
+      title="Popup Edit" menu="zmi_views" 
+      for="zope.app.demo.widget.interfaces.IDemoWidget"
+      permission="zope.ManageContent"
+      action="javascript:popup('./popupEdit.html', 'popup', 'height=460,width=500,resizable=1,scrollbars=yes,location=no,status=no,toolbar=no,menubar=no')"
+      />
+
+  <include file="boolwidget.zcml" />
+  <include file="intwidget.zcml" />
+  <include file="textwidget.zcml" />
+  <include file="textareawidget.zcml" />
+
+</configure>
