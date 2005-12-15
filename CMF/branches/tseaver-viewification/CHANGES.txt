@@ -45,14 +45,14 @@ HEAD only (unreleased)
 
     - CMFCore and GenericSetup: Added catalog tool setup handlers.
       This includes node adapters for PluginIndexes, ZCTextIndex and ZCatalog.
-      Support for additional indexes can be added by providing INodeExporter
-      and INodeImporter adapters. All indexes are cleared by this handler, so
-      please make sure to re-catalog existing content if necessary.
+      Support for additional indexes can be added by providing INode adapters.
+      All indexes are cleared by this handler, so please make sure to
+      re-catalog existing content if necessary.
 
     - GenericSetup.utils: Added new sub-framework for XML im- and export.
       Instead of using ConfiguratorBase configurators should now implement
-      INodeExporter and INodeImporter. These node adapters should subclass
-      from NodeAdapterBase and mix in ObjectManagerHelpers and / or
+      IBody or INode. These adapters should subclass from XMLAdapterBase or
+      NodeAdapterBase and mix in ObjectManagerHelpers and / or
       PropertyManagerHelpers if needed.
 
     - CMFCore.exportimport:  Added framework and interfaces for exporting
@@ -117,6 +117,10 @@ HEAD only (unreleased)
 
   Bug Fixes
 
+    - PortalFolder: Synced _verifyObjectPaste code with OFS.CopySupport.
+      The behavior is almost the same as before, but the code is less tolerant
+      if content types are not registered properly.
+
     - ActionProviderBase: getActionObject did stumble over newstyle Actions.
 
     - CMFCore.exportimport.content:  Ensure that BODYFILE in our "faux"
@@ -159,6 +163,11 @@ HEAD only (unreleased)
       if no default view could be found for a piece of content.
 
   Others
+
+    - TypeInformation: Removed support for old setting formats.
+      If TypeInformation objects are initialized with keyword arguments,
+      'actions' and 'aliases' keys have to use the format introduced in
+      CMF 1.5.
 
     - CMFSetup and GenericSetup: Removed obsolete CMFSetup product.
       Added __module_aliases__ to support setup tools created with CMFSetup. 
