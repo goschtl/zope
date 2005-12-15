@@ -22,7 +22,7 @@ import zope.event
 
 from zope.publisher import contenttype
 from zope.schema import Text
-from zope.app import content_types
+from zope.app import contenttypes
 from zope.app.event import objectevent
 from zope.app.file.file import File
 from zope.app.file.interfaces import IFile
@@ -59,7 +59,7 @@ class FileUpdateView(object):
             contenttype = form.get("field.contentType")
             if filename:
                 if not contenttype:
-                    contenttype = content_types.guess_content_type(filename)[0]
+                    contenttype = contenttypes.guess_content_type(filename)[0]
                 if not form.get("add_input_name"):
                     form["add_input_name"] = filename
             return self.update_object(form["field.data"], contenttype)

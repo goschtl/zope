@@ -10,10 +10,11 @@ Zope Changes
 
     Restructuring
 
-      - zope.app.content_types is now a package (code backported from Zope 2)
+      - zope.app.content_types is now the package zope.app.contenttypes
+        (code backported from Zope 2)
 
   ------------------------------------------------------------------
-     
+
   Zope 3.2.0b1 (2005/12/06)
 
     New features
@@ -127,8 +128,8 @@ Zope Changes
         allow one to easily develop component-driven UIs.
 
       - Implemented XML-RPC Introspection. XML-RPC Views can therefore
-        be used by the client for API discovering, through three 
-        methods: listAllMethods, methodHelp and methodSignature 
+        be used by the client for API discovering, through three
+        methods: listAllMethods, methodHelp and methodSignature
 
       - The publisher machinery is now completely pluggable. Publishers can be
         registered and configured through ZCML (using the new 'publisher' ZCML
@@ -1183,7 +1184,7 @@ Zope Changes
       - Fixed issue 334 (Failing RuntimeInfo tests).
 
       - Fix SequenceWidgets
-        Added a CustomSequenceWidgetFactory for using object widgets within a 
+        Added a CustomSequenceWidgetFactory for using object widgets within a
         sequence. Added a howto for ObjectWidget
 
       - Fixed issue 293 (sequence widget).

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests of the content_types extension mechanism.
+"""Tests of the contenttypes extension mechanism.
 
 $Id: testContentTypes.py 24763 2004-05-17 05:59:28Z philikon $
 """
@@ -21,7 +21,7 @@ import os.path
 import sys
 import unittest
 
-from zope.app import content_types
+from zope.app import contenttypes
 
 try:
     __file__
@@ -49,22 +49,22 @@ class ContentTypesTestCase(unittest.TestCase):
 
     def test_add_one_file(self):
         ntypes = len(mimetypes.types_map)
-        content_types.add_files([MIME_TYPES_1])
-        ctype, encoding = content_types.guess_content_type("foo.ztmt-1")
+        contenttypes.add_files([MIME_TYPES_1])
+        ctype, encoding = contenttypes.guess_content_type("foo.ztmt-1")
         self.assert_(encoding is None)
         self.assertEqual(ctype, "text/x-vnd.zope.test-mime-type-1")
-        ctype, encoding = content_types.guess_content_type("foo.ztmt-1.gz")
+        ctype, encoding = contenttypes.guess_content_type("foo.ztmt-1.gz")
         self.assertEqual(encoding, "gzip")
         self.assertEqual(ctype, "text/x-vnd.zope.test-mime-type-1")
         self.check_types_count(1)
 
     def test_add_two_files(self):
         ntypes = len(mimetypes.types_map)
-        content_types.add_files([MIME_TYPES_1, MIME_TYPES_2])
-        ctype, encoding = content_types.guess_content_type("foo.ztmt-1")
+        contenttypes.add_files([MIME_TYPES_1, MIME_TYPES_2])
+        ctype, encoding = contenttypes.guess_content_type("foo.ztmt-1")
         self.assert_(encoding is None)
         self.assertEqual(ctype, "text/x-vnd.zope.test-mime-type-1")
-        ctype, encoding = content_types.guess_content_type("foo.ztmt-2")
+        ctype, encoding = contenttypes.guess_content_type("foo.ztmt-2")
         self.assert_(encoding is None)
         self.assertEqual(ctype, "text/x-vnd.zope.test-mime-type-2")
         self.check_types_count(2)

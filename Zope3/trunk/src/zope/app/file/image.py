@@ -24,7 +24,7 @@ from zope.interface import implements
 
 from zope.app.size.interfaces import ISized
 from zope.app.size import byteDisplay
-from zope.app.content_types import guess_content_type
+from zope.app.contenttypes import guess_content_type
 from zope.app.i18n import ZopeMessageFactory as _
 
 from file import File
