@@ -21,10 +21,12 @@ from zope.testing import doctest
 
 from ZODB.tests.util import DB
 
+from zope.app import zapi
+from zope.app.component import hooks
 from zope.app.component.testing import PlacefulSetup
 from zope.app.error.error import ErrorReportingUtility
 from zope.app.error.interfaces import IErrorReportingUtility
-from zope.app.folder import rootFolder
+from zope.app.folder import rootFolder, Folder
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.component.site import LocalSiteManager
@@ -70,6 +72,12 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         root[ZopePublication.root_name] = self.root_folder
         self.site_manager = LocalSiteManager(self.root_folder)
         self.root_folder.setSiteManager(self.site_manager)
+
+        sub_folder = Folder()
+        self.root_folder["sub_folder"] = sub_folder
+        sub_site_manager = LocalSiteManager(sub_folder)
+        sub_folder.setSiteManager(sub_site_manager)
+
         transaction.commit()
         cx.close()
 
@@ -85,10 +93,27 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         package = traverse(root_folder, package_name)
         cx.close()
 
+    def test_ensureUtilityForSubSite(self):
+        self.createRFAndSM()
+
+        db, connection, root, root_folder = getInformationFromEvent(
+            EventStub(self.db))
+
+        sub_folder = root_folder['sub_folder']
+        ensureUtility(sub_folder, IErrorReportingUtility,
+                     'ErrorReporting', ErrorReportingUtility,
+                     'ErrorReporting')
+    
+        # Make sure it was created on the sub folder, not the root folder
+        got_utility = zapi.getUtility(IErrorReportingUtility, name='ErrorReporting',
+                context=sub_folder)
+        got_path = zapi.getPath(got_utility)
+        self.assertEquals("/sub_folder/++etc++site/default/ErrorReporting", got_path)
+
     def test_ensureUtility(self):
         self.createRFAndSM()
 
-        db, connection ,root, root_folder = getInformationFromEvent(
+        db, connection, root, root_folder = getInformationFromEvent(
             EventStub(self.db))
 
         # TODO: check EventSub
