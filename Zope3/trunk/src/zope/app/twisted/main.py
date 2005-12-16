@@ -37,10 +37,9 @@ from zope.app.twisted import asyncore_main_loop
 
 CONFIG_FILENAME = "zope.conf"
 
-RESTART_ON_SHUTDOWN = False # We need some out-of-band communication between 
-                            # twisteds reactor and the zdaemon.
-                            # XXX ctheune: Can someone verify that this isn't 
-                            # totally ugly?
+# We need some out-of-band communication between twisteds reactor and the
+# zdaemon.
+should_restart = False
 
 class ZopeOptions(zdoptions.ZDOptions):
 
@@ -67,7 +66,7 @@ class ZopeService(service.MultiService):
 
 
 def main(args=None):
-    global RESTART_ON_SHUTDOWN
+    global should_restart
     # Record start times (real time and CPU time)
     t0 = time.time()
     c0 = time.clock()
@@ -90,7 +89,8 @@ def main(args=None):
 
     reactor.run()
 
-    if RESTART_ON_SHUTDOWN:
+    # zdaemon will restart the process if it exits with an error
+    if should_restart:
         sys.exit(1)
     else:
         sys.exit(0)

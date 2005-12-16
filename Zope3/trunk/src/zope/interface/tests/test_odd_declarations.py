@@ -169,7 +169,7 @@ class Test(unittest.TestCase):
         self.assertRaises(TypeError, directlyProvides, C, I5)
 
     # see above
-    def XXX_test_classProvides_fails_for_odd_class(self):
+    def TODO_test_classProvides_fails_for_odd_class(self):
         try:
             class A(Odd):
                 classProvides(I1)

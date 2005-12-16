@@ -58,7 +58,7 @@ class XMLRPCIntrospection(object):
                               u'methodSignature')
 
     def _filterXMLRPCRequestRegistrations(self, registrations):
-        """ XXX might be outsourced in some utility """
+        # TODO might be outsourced to some utility
         for registration in registrations:
             for required_iface in registration.required:
                 if (required_iface is IXMLRPCRequest and
@@ -67,7 +67,7 @@ class XMLRPCIntrospection(object):
                     yield registration
 
     def _getRegistrationAdapters(self, interfaces):
-        """ XXX might be outsourced in some utility """
+        # TODO might be outsourced to some utility
         results = []
         for interface in interfaces:
             registrations = list(getViews(interface, IXMLRPCRequest))
@@ -104,7 +104,7 @@ class XMLRPCIntrospection(object):
             return [str_signature]
 
         # no decorator, let's just return Nones
-        # XXX: if defaults are given, we can render their type
+        # TODO if defaults are given, render their type
         return [['undef'] * (self._getFunctionArgumentSize(func) + 1)]
 
     def _getFunctionHelp(self, func):
