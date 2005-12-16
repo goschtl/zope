@@ -17,6 +17,9 @@ Zope Changes
         attributes were ignored if you didn't explicitly specify a
         class for the viewlet.
 
+      - Fixed issue 497: HTTP DELETE now returns 405 Method Not Allowed
+        when the container cannot be adapted to IWriteDirectory.
+
   ------------------------------------------------------------------
 
   Zope 3.2.0b1 (2005/12/06)

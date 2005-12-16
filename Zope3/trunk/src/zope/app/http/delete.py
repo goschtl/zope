@@ -16,6 +16,8 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.filerepresentation.interfaces import IWriteDirectory
+from zope.app.publication.http import MethodNotAllowed
+
 
 class DELETE(object):
     """Delete handler for all objects
@@ -34,7 +36,9 @@ class DELETE(object):
 
 
         # Get a "directory" surrogate for the container
-        dir = IWriteDirectory(container)
+        dir = IWriteDirectory(container, None)
+        if dir is None:
+            raise MethodNotAllowed(self.context, self.request)
 
         del dir[name]
 
