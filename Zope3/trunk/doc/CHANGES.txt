@@ -22,6 +22,15 @@ Zope Changes
 
   ------------------------------------------------------------------
 
+  Zope 3.2.0b2
+
+    Bug Fixes
+
+      - ZEO didn't work properly with teh twisted server.
+
+      - Non-management pages were slowed by a bug in the page-macro
+        template in the rotterdam skin.
+
   Zope 3.2.0b1 (2005/12/06)
 
     New features
