@@ -99,8 +99,6 @@ class Debugger(object):
         getStatus = getattr(request.response, 'getStatus', lambda: None)
         _publish(request)
 
-        # XXX need to stop writing things like this!!!
-
         headers = request.response.getHeaders()
         headers.sort()
         print 'Status %s\r\n%s\r\n\r\n%s' % (

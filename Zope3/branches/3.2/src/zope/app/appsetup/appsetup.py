@@ -62,10 +62,6 @@ def config(file, features=(), execute=True):
       >>> from zope.security.management import endInteraction
       >>> endInteraction()
 
-    XXX - The next paragraph of tests is passing the unit tests but it is
-    causing a lot (128) of the functional tests to fail. I dont understand
-    the ZCML configuration enough to fix them.
-
       >>> context = config(fn, features=('myFeature2', 'myFeature3'))
       >>> context.hasFeature('myFeature')
       True

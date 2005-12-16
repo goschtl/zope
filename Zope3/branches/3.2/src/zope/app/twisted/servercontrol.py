@@ -36,7 +36,7 @@ class ServerControl(object):
         """See zope.app.applicationcontrol.interfaces.IServerControl"""
         # TODO: Make sure this is only called if we are running via zdaemon.
         # Setting the module global variable in the main module signals zdaemon to restart
-        main.RESTART_ON_SHUTDOWN = True
+        main.should_restart = True
         reactor.callLater(time, reactor.stop)
 
 serverControl = ServerControl()
