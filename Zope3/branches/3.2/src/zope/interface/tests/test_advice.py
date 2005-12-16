@@ -101,7 +101,7 @@ class AdviceTests(TestCase):
 
         self.assertEquals(log, [(1, Foo), (2, [Foo]), (3, [[Foo]])])
 
-    def XXXcheckOutside(self):
+    def TODOcheckOutside(self):
         # Disabled because the check does not work with doctest tests.
         try:
             ping([], 1)
