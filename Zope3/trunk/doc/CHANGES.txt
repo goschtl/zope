@@ -13,6 +13,10 @@ Zope Changes
       - zope.app.content_types is now the package zope.app.contenttypes
         (code backported from Zope 2)
 
+      - Fixed a bug in the <viewlet> directive handler: extra string
+        attributes were ignored if you didn't explicitly specify a
+        class for the viewlet.
+
   ------------------------------------------------------------------
 
   Zope 3.2.0b1 (2005/12/06)
