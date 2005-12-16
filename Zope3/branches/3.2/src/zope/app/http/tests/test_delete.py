@@ -22,6 +22,12 @@ from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.interface import implements
 from zope.app.container.contained import contained
+from zope.app.publication.http import MethodNotAllowed
+
+
+class UnwritableContainer(object):
+    pass
+
 
 class Container(object):
 
@@ -43,6 +49,15 @@ class TestDelete(PlacelessSetup, TestCase):
         self.assert_(hasattr(container, 'a'))
         self.assertEqual(delete.DELETE(), '')
         self.assert_(not hasattr(container, 'a'))
+
+    def test_not_deletable(self):
+        container = UnwritableContainer()
+        container.a = 'spam'
+        item = contained(UnwritableContainer(), container, name='a')
+        request = TestRequest()
+        delete = zope.app.http.delete.DELETE(item, request)
+        self.assertRaises(MethodNotAllowed, delete.DELETE)
+
 
 def test_suite():
     return TestSuite((
