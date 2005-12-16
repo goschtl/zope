@@ -6,9 +6,20 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  After Zope 3.2.0b1
+  Zope 3.2.0b2
+
+    New features
+
+      - Added an option to mkzopeinstance to create instances that use
+        ZServer, rather than Twisted.  The Twisted integration needs
+        some more work and testing before it's ready for production
+        use.
 
     Bug Fixes
+
+      - Uodated to a new version of twisted that fixes a bug in
+        calling request bidy stream read methods without passing
+        arguments. http://www.zope.org/Collectors/Zope3-dev/521.
 
       - In zopeskel/etc/zope.conf.in, use the same default port number
         as the one in ZEO/mkzeoinst.py.
