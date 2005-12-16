@@ -26,9 +26,9 @@
   <principal
     id="zope.manager"
     title="Manager"
-    login="<<USERNAME>>"
+    login=<<USERNAME-XMLATTR>>
     password_manager="<<PASSWORD_MANAGER>>"
-    password="<<PASSWORD>>"
+    password=<<PASSWORD-XMLATTR>>
     />
 
   <grant
