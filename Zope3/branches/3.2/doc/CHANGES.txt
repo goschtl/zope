@@ -19,6 +19,10 @@ Zope Changes
       - Fixed bug 486: Made function getSiteManagerDefault compatible with
         sub-sites.
 
+      - Fixed a bug in the <viewlet> directive handler: extra string
+        attributes were ignored if you didn't explicitly specify a
+        class for the viewlet.
+
   Zope 3.2.0b1 (2005/12/06)
 
     New features
