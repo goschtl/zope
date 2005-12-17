@@ -82,8 +82,8 @@ def main(args=None):
     # Start the ThreadedAsync main loop.  This will either end immediately,
     # or keep going if ZEO is around.  We don't actually care which.
     def failed():
-        global RESTART_ON_SHUTDOWN
-        RESTART_ON_SHUTDOWN = True
+        global should_restart
+        should_restart = True
         reactor.callFromThread(reactor.stop)
     reactor.callWhenRunning(asyncore_main_loop.run_in_thread, failed)
 
