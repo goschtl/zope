@@ -16,6 +16,9 @@ PluginRegistry Product Changelog
 
     - Removed deprecation warings under Zope 2.8.x.
 
+    - Repaired warings appearing in Zope 2.8.5 due to a couple typos
+      in security declarations.
+
   PluginRegistry-1.0.2 (2005/01/31)
 
     - SVN tag:  svn+ssh://svn.zope.org/repos/main/PluginRegistry/tags/1.0.2

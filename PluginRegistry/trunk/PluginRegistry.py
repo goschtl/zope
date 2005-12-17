@@ -133,7 +133,7 @@ class PluginRegistry( SimpleItem ):
         plugin_type = self._getInterfaceFromName( plugin_type )
         return self._plugin_type_info[plugin_type]
 
-    security.declareProtected( ManageUsers, 'listPluginInfo' )
+    security.declareProtected( ManageUsers, 'listPluginIds' )
     def listPluginIds( self, plugin_type ):
 
         """ See IPluginRegistry.
