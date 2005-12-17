@@ -17,6 +17,9 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - Repaired warings appearing in Zope 2.8.5 due to a couple typos
+        in security declarations.
+
       - Repaired DeprecationWarnings due to use of Zope2 interface verification.
 
       - Repaired unit test breakage (unittest.TestCase instances have

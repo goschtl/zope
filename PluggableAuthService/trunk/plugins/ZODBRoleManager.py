@@ -371,7 +371,7 @@ class ZODBRoleManager( BasePlugin ):
                          % ( self.absolute_url(), role_id, message )
                          )
 
-    security.declareProtected( ManageUsers, 'manage_removeRole' )
+    security.declareProtected( ManageUsers, 'manage_removeRoles' )
     def manage_removeRoles( self
                           , role_ids
                           , RESPONSE
@@ -394,7 +394,7 @@ class ZODBRoleManager( BasePlugin ):
                          % ( self.absolute_url(), message )
                          )
 
-    security.declareProtected( ManageUsers, 'manage_assignRoleToPrincipal' )
+    security.declareProtected( ManageUsers, 'manage_assignRoleToPrincipals' )
     def manage_assignRoleToPrincipals( self
                                      , role_id
                                      , principal_ids
