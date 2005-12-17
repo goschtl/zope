@@ -1,0 +1,47 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <addMenuItem
+      title="TextWidget"
+      description="Add a Demo TextWidget"
+      class="..textwidget.DemoTextWidget"
+      permission="zope.ManageContent"
+      view="addDemoTextWidget.html"
+      />
+
+  <addform
+      name="addDemoTextWidget.html"
+      label="Add a Demo TextWidget"
+      schema="..interfaces.IWriteDemoTextWidget"
+      content_factory="..textwidget.DemoTextWidget"
+      permission="zope.ManageContent"
+      />
+
+  <schemadisplay
+      name="index.html"
+      schema="..interfaces.IDemoTextWidget"
+      label="TextWidget Index"
+      permission="zope.View"
+      menu="zmi_views" title="View"
+      />
+
+  <editform
+      name="edit.html"
+      label="Edit"
+      for="..interfaces.IDemoTextWidget"
+      schema="..interfaces.IWriteDemoTextWidget"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"
+      />
+
+  <editform
+      name="popupEdit.html"
+      label="Popup Edit"
+      for="..interfaces.IDemoTextWidget"
+      schema="..interfaces.IWriteDemoTextWidget"
+      permission="zope.ManageContent"
+      template="popup.pt"
+      />
+
+</configure>
