@@ -4,29 +4,62 @@
 
   <meta:directives namespace="http://namespaces.zope.org/browser">
 
-    <meta:directive
-        name="layer"
-        schema="zope.app.publisher.browser.metadirectives.ILayerDirective"
-        handler="zope.app.publisher.browser.metaconfigure.layer"
-        />
+    <!-- browser menus -->
 
     <meta:directive
-        name="skin"
-        schema="zope.app.publisher.browser.metadirectives.ISkinDirective"
-        handler="zope.app.publisher.browser.metaconfigure.skin"
+        name="menu"
+        schema="zope.app.publisher.browser.metadirectives.IMenuDirective"
+        handler="zope.app.publisher.browser.menumeta.menuDirective"
         />
 
+    <meta:complexDirective
+        name="menuItems"
+        schema="zope.app.publisher.browser.metadirectives.IMenuItemsDirective"
+        handler="zope.app.publisher.browser.menumeta.menuItemsDirective"
+        >
+
+      <meta:subdirective
+          name="menuItem"
+          schema="zope.app.publisher.browser.metadirectives.IMenuItemSubdirective"
+          />
+
+    </meta:complexDirective>
+
     <meta:directive
-        name="defaultSkin"
-        schema="zope.app.publisher.browser.metadirectives.IDefaultSkinDirective"
-        handler="zope.app.publisher.browser.metaconfigure.defaultSkin"
+        name="menuItem"
+        schema="zope.app.publisher.browser.metadirectives.IMenuItemDirective"
+        handler="zope.app.publisher.browser.menumeta.menuItemDirective"
         />
+
+
+    <!-- browser views -->
+
+    <meta:complexDirective
+        name="view"
+        schema="zope.app.publisher.browser.metadirectives.IViewDirective"
+        handler=".metaconfigure.view"
+        >
+
+      <meta:subdirective
+          name="page"
+          schema="zope.app.publisher.browser.metadirectives.IViewPageSubdirective"
+          />
+
+      <meta:subdirective
+          name="defaultPage"
+          schema="zope.app.publisher.browser.metadirectives.IViewDefaultPageSubdirective"
+          />
+
+    </meta:complexDirective>
 
     <meta:directive
         name="defaultView"
         schema="zope.app.publisher.browser.metadirectives.IDefaultViewDirective"
         handler="zope.app.publisher.browser.metaconfigure.defaultView"
         />
+
+
+    <!-- browser pages -->
 
     <meta:directive
         name="page"
@@ -47,6 +80,9 @@
 
     </meta:complexDirective>
 
+
+    <!-- browser resources -->
+
     <meta:directive
         name="resource"
         schema="zope.app.publisher.browser.metadirectives.IResourceDirective"
@@ -59,48 +95,26 @@
         handler=".metaconfigure.resourceDirectory"
         />
 
+
+    <!-- misc. directives -->
+
     <meta:directive
-        name="menu"
-        schema="zope.app.publisher.browser.metadirectives.IMenuDirective"
-        handler="zope.app.publisher.browser.menumeta.menuDirective"
+        name="layer"
+        schema="zope.app.publisher.browser.metadirectives.ILayerDirective"
+        handler="zope.app.publisher.browser.metaconfigure.layer"
         />
 
     <meta:directive
-        name="menuItem"
-        schema="zope.app.publisher.browser.metadirectives.IMenuItemDirective"
-        handler="zope.app.publisher.browser.menumeta.menuItemDirective"
+        name="skin"
+        schema="zope.app.publisher.browser.metadirectives.ISkinDirective"
+        handler="zope.app.publisher.browser.metaconfigure.skin"
         />
 
-    <meta:complexDirective
-        name="menuItems"
-        schema="zope.app.publisher.browser.metadirectives.IMenuItemsDirective"
-        handler="zope.app.publisher.browser.menumeta.menuItemsDirective"
-        >
-
-      <meta:subdirective
-          name="menuItem"
-          schema="zope.app.publisher.browser.metadirectives.IMenuItemSubdirective"
-          />
-
-    </meta:complexDirective>
-
-    <meta:complexDirective
-        name="view"
-        schema="zope.app.publisher.browser.metadirectives.IViewDirective"
-        handler=".metaconfigure.view"
-        >
-
-      <meta:subdirective
-          name="page"
-          schema="zope.app.publisher.browser.metadirectives.IViewPageSubdirective"
-          />
-
-      <meta:subdirective
-          name="defaultPage"
-          schema="zope.app.publisher.browser.metadirectives.IViewDefaultPageSubdirective"
-          />
-
-    </meta:complexDirective>
+    <meta:directive
+        name="defaultSkin"
+        schema="zope.app.publisher.browser.metadirectives.IDefaultSkinDirective"
+        handler="zope.app.publisher.browser.metaconfigure.defaultSkin"
+        />
 
   </meta:directives>
 
