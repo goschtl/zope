@@ -5,6 +5,7 @@ Zuite instances are collections of Zelenium test cases.
 $Id$
 """
 import glob
+import logging
 import os
 import re
 from urllib import unquote
@@ -26,6 +27,8 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from permissions import ManageSeleniumTestCases
 from permissions import View
+
+logger = logging.getLogger('event.Zelenium')
 
 _NOW = None   # set only for testing
 
@@ -422,6 +425,13 @@ class Zuite( OrderedFolder ):
 
             elif os.path.isdir( fqfn ):
                 info[ 'subdirs' ][ name ] = self._grubFilesystem( fqfn )
+
+            else:
+
+                logger.warning(
+                    '%r was neither a file nor directory and so has been ignored',
+                    fqfn
+                    )
 
         return info
 
