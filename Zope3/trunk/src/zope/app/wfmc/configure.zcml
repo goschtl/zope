@@ -13,7 +13,6 @@
       <apidoc:bookchapter
           id="wfmc"
           title="WfMC Workflows"
-          doc_path="README.txt"
           />
       <apidoc:bookchapter
           id="xpdl"
