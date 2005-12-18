@@ -2,6 +2,14 @@
 Five Changes
 ============
 
+Five 1.4 (unreleased)
+=====================
+
+Features
+--------
+
+* Port browser:addMenuItem directive from zope.app.publisher.browser/meta.zcml
+
 Five 1.3c (2005-12-06)
 ======================
 

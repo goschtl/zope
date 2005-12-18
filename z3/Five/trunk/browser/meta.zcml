@@ -31,6 +31,12 @@
         handler="zope.app.publisher.browser.menumeta.menuItemDirective"
         />
 
+    <meta:directive
+        name="addMenuItem"
+        schema="zope.app.publisher.browser.metadirectives.IAddMenuItemDirective"
+        handler="zope.app.publisher.browser.menumeta.addMenuItem"
+        />
+
 
     <!-- browser views -->
 
