@@ -119,6 +119,7 @@ class Zuite( OrderedFolder ):
                           )
     filesystem_path = ''
     filename_glob = ''
+    testsuite_name = ''
     _v_filesystem_objects = None
 
     _properties = ( { 'id' : 'test_case_metatypes'
@@ -130,6 +131,10 @@ class Zuite( OrderedFolder ):
                     , 'mode' : 'w'
                     }
                   , { 'id' : 'filename_glob'
+                    , 'type' : 'string'
+                    , 'mode' : 'w'
+                    }
+                  , { 'id' : 'testsuite_name'
                     , 'type' : 'string'
                     , 'mode' : 'w'
                     }
@@ -398,8 +403,9 @@ class Zuite( OrderedFolder ):
 
         info = { 'testcases' : (), 'subdirs' : {} }
 
-        # Look for a '.objects' file with an explicit manifiest
-        manifest = os.path.join( path, '.objects' )
+        # Look for a specified test suite
+        # or a '.objects' file with an explicit manifiest
+        manifest = os.path.join( path, self.testsuite_name or '.objects' )
 
         if os.path.isfile( manifest ):
             filenames = [ x.strip() for x in open( manifest ).readlines() ]

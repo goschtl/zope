@@ -70,7 +70,14 @@ Zelenium Product README
     The list of files to be included is computed via the following
     rules:
 
-     - If the directory contains a file, '.objects', it is presumed to
+     - If the testsuite_name property contains the name of a file that
+       exists in the directory, it is presumed to contain a list of
+       files containing tests, one per line. The test cases will be
+       presented in the order indicated in the file, and test cases
+       may be included more than once.
+
+     - If the testsuite_name property is empty but the directory
+       contains  a file, '.objects', it is presumed to
        contain a list of files to be included, one per line;  only those
        files / subdirectories (if present) will be included.  In this case,
        the test cases will be presented in the order indicated in the file,

@@ -2,6 +2,10 @@ Zelenium Product Changelog
 
   After Zelenium-0.7
 
+    - Added the testsuite_name property that allows multiple test
+      suites to be built up from test cases within a single filesystem
+      directory.
+
     - Upgrade to selenium version 0.6
 
     - Suites now recurse through all "folderish" subobjects, looking
