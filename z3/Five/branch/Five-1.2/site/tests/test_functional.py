@@ -31,15 +31,13 @@ class CheckServicesView(BrowserView):
 
     def __call__(self):
         utility_service = zapi.getService(zapi.servicenames.Utilities)
-        result = {
-            'zapi.getServices() is zapi.getGlobalServices()':
-            zapi.getServices() is zapi.getGlobalServices(),
-            'IFiveUtilityService.providedBy(utility_service)':
-            IFiveUtilityService.providedBy(utility_service),
-            'isinstance(zapi.getServices(), FiveSiteManager)':
-            isinstance(zapi.getServices(), FiveSiteManager),
-            }
-        return pprint.pformat(result)
+        result = ('zapi.getServices() is zapi.getGlobalServices(): %s\n'
+                  'IFiveUtilityService.providedBy(utility_service): %s\n'
+                  'isinstance(zapi.getServices(), FiveSiteManager): %s\n'
+                  % (zapi.getServices() is zapi.getGlobalServices(),
+                     IFiveUtilityService.providedBy(utility_service),
+                     isinstance(zapi.getServices(), FiveSiteManager)))
+        return result
 
 class LookupUtilitiesView(BrowserView):
 

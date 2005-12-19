@@ -1,13 +1,17 @@
 Functional test for local sites
 ===============================
 
-Set up all of Five:
+This tests how local site managers are found during traversal and how
+that affects component lookup (depending on whether a site is
+traversed or not, local components might or might not be found).
+
+First, we set up all of Five:
 
   >>> import Products.Five
   >>> from Products.Five import zcml
   >>> zcml.load_config("configure.zcml", Products.Five)
 
-First we turn our DummySite class into a site in ZCML (and register
+Next we turn our DummySite class into a site in ZCML (and register
 some views that will provide us with some test info),
 
   >>> zcml_text = """
@@ -50,9 +54,9 @@ Now we check what the info view tells us about local component lookup:
   ... ''')
   HTTP/1.1 200 OK
   ...
-  {'IFiveUtilityService.providedBy(utility_service)': False,
-   'isinstance(zapi.getServices(), FiveSiteManager)': False,
-   'zapi.getServices() is zapi.getGlobalServices()': True}
+  zapi.getServices() is zapi.getGlobalServices(): True
+  IFiveUtilityService.providedBy(utility_service): False
+  isinstance(zapi.getServices(), FiveSiteManager): False
 
 We see that we have no local component lookup yet, because we haven't
 set the site.  Therefore, enable the traversal hook by using the view
@@ -79,9 +83,9 @@ is working:
   ... ''')
   HTTP/1.1 200 OK
   ...
-  {'IFiveUtilityService.providedBy(utility_service)': True,
-   'isinstance(zapi.getServices(), FiveSiteManager)': True,
-   'zapi.getServices() is zapi.getGlobalServices()': False}
+  zapi.getServices() is zapi.getGlobalServices(): False
+  IFiveUtilityService.providedBy(utility_service): True
+  isinstance(zapi.getServices(), FiveSiteManager): True
 
 Of course, sites are only active *during* traversal; after traversal
 they're gone:
@@ -137,9 +141,9 @@ lookup:
   ... ''')
   HTTP/1.1 200 OK
   ...
-  {'IFiveUtilityService.providedBy(utility_service)': False,
-   'isinstance(zapi.getServices(), FiveSiteManager)': False,
-   'zapi.getServices() is zapi.getGlobalServices()': True}
+  zapi.getServices() is zapi.getGlobalServices(): True
+  IFiveUtilityService.providedBy(utility_service): False
+  isinstance(zapi.getServices(), FiveSiteManager): False
 
 Finally, global services and the monkeys:
 
