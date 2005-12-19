@@ -97,8 +97,26 @@ def canWrite(obj, name):
         checker.check_setattr(obj, name)
     except Unauthorized:
         return False
-    # if it is Forbidden (or anything else), let it be raised: it probably
-    # indicates a programming or configuration error
+    except ForbiddenAttribute:
+        # we are going to be a bit DWIM-y here: see
+        # http://www.zope.org/Collectors/Zope3-dev/506
+        
+        # generally, if the check is ForbiddenAttribute we want it to be
+        # raised: it probably indicates a programming or configuration error.
+        # However, we special case a write ForbiddenAttribute when one can
+        # actually read the attribute: this represents a reasonable
+        # configuration of a readonly attribute, and returning False (meaning
+        # "no, you can't write it") is arguably more useful than raising the
+        # exception.
+        try:
+            checker.check_getattr(obj, name)
+            # we'll let *this* ForbiddenAttribute fall through, if any.  It
+            # means that both read and write are forbidden.
+        except Unauthorized:
+            pass
+        return False
+    # all other exceptions, other than Unauthorized and ForbiddenAttribute,
+    # should be passed through uncaught, as they indicate programmer error
     return True
 
 def canAccess(obj, name):

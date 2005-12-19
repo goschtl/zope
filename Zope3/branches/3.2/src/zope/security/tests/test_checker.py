@@ -435,11 +435,12 @@ class Test(TestCase, CleanUp):
         # write is not merely unauthorized but forbidden--including write access
         # for baz.
         checker = Checker(
-            {'foo':'test_allowed',
+            {'foo':'test_allowed', # these are the read settings
              'bar':'test_allowed',
              'baz':'you_will_not_have_this_permission'},
-            {'foo':'test_allowed',
-             'bar':'you_will_not_have_this_permission'})
+            {'foo':'test_allowed', # these are the write settings
+             'bar':'you_will_not_have_this_permission',
+             'bing':'you_will_not_have_this_permission'})
         defineChecker(SomeClass, checker)
 
         # so, our hapless interaction may write and access foo...
@@ -453,12 +454,27 @@ class Test(TestCase, CleanUp):
         # ...and may access baz.
         self.assert_(not canAccess(obj, 'baz'))
 
-        # there are no security assertions for writing baz or accessing
-        # anything else, so these actually raise Forbidden.  The rationale
-        # behind exposing the Forbidden exception is primarily that it is
-        # usually indicative of programming or configuration errors.
-        self.assertRaises(Forbidden, canWrite, obj, 'baz')
+        # there are no security assertions for writing or reading shazam, so
+        # checking these actually raises Forbidden.  The rationale behind
+        # exposing the Forbidden exception is primarily that it is usually
+        # indicative of programming or configuration errors.
         self.assertRaises(Forbidden, canAccess, obj, 'shazam')
+        self.assertRaises(Forbidden, canWrite, obj, 'shazam')
+
+        # However, we special-case canWrite when an attribute has a Read
+        # setting but no Write setting.  Consider the 'baz' attribute from the
+        # checker above: it is readonly.  All users are forbidden to write
+        # it.  This is a very reasonable configuration.  Therefore, canWrite
+        # will hide the Forbidden exception if and only if there is a
+        # setting for accessing the attribute.
+        self.assert_(not canWrite(obj, 'baz'))
+
+        # The reverse is not true at the moment: an unusal case like the
+        # write-only 'bing' attribute will return a boolean for canWrite,
+        # but canRead will simply raise a Forbidden exception, without checking
+        # write settings.
+        self.assert_(not canWrite(obj, 'bing'))
+        self.assertRaises(Forbidden, canAccess, obj, 'bing')
 
 class TestCheckerPublic(TestCase):
 
