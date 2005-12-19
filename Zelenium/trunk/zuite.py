@@ -408,7 +408,7 @@ class Zuite( OrderedFolder ):
         manifest = os.path.join( path, self.testsuite_name or '.objects' )
 
         if os.path.isfile( manifest ):
-            filenames = [ x.strip() for x in open( manifest ).readlines() ]
+            filenames = filter(None,[ x.strip() for x in open( manifest ).readlines() ])
 
         elif self.filename_glob:
             globbed = glob.glob( os.path.join( path, self.filename_glob ) )
