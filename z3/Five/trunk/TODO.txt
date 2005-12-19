@@ -28,10 +28,6 @@ v1.2
 v1.3
 ----
 
-* make site/tests/functional.txt pass when run together with other
-  Zope 2 and Five tests (it passes when run alone and among Five.site
-  tests); then remove level=2.
-
 * test whether request with skin works properly (use ++skin++, applySkin, etc.)
 
 * revisit the test_localsite/test_{get|query}NextSiteManager tests
