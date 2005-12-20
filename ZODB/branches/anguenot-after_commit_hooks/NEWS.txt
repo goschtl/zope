@@ -1,0 +1,35 @@
+What's new in ZODB3 3.7a1?
+==========================
+Release date: DD-MMM-200Y
+
+
+Following is combined news from internal releases (to support ongoing
+Zope development).  These are the dates of the internal releases:
+
+- 3.7a1 DD-MMM-200Y
+
+
+Documentation
+-------------
+
+- (3.7a1) Thanks to Stephan Richter for converting many of the doctest
+  files to ReST format.  These are now chapters in the Zope 3 apidoc too.
+
+IPersistent
+-----------
+
+- (3.7a1) The documentation for ``_p_oid`` now specifies the concrete
+  type of oids (in short, an oid is either None or a non-empty string).
+
+Tools
+-----
+
+- (3.7a1) The changeover from zLOG to the logging module means that some
+  tools need to perform minimal logging configuration themselves. Changed
+  the zeoup script to do so and thus enable it to emit error messages.
+
+Connection
+----------
+
+- (3.7a1) An optimization for loading non-current data (MVCC) was
+  inadvertently disabled in ``_setstate()``; this has been repaired.
