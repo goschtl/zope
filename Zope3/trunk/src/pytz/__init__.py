@@ -219,6 +219,18 @@ class _FixedOffset(datetime.tzinfo):
     def __repr__(self):
         return 'pytz.FixedOffset(%d)' % self._minutes
 
+    def localize(self, dt, is_dst=False):
+        '''Convert naive time to local time'''
+        if dt.tzinfo is not None:
+            raise ValueError, 'Not naive datetime (tzinfo is already set)'
+        return dt.replace(tzinfo=self)
+
+    def normalize(self, dt, is_dst=False):
+        '''Correct the timezone information on the given datetime'''
+        if dt.tzinfo is None:
+            raise ValueError, 'Naive time - no tzinfo set'
+        return dt.replace(tzinfo=self)
+
 def FixedOffset(offset, _tzinfos = {}):
     """return a fixed-offset timezone based off a number of minutes.
     
@@ -283,7 +295,7 @@ def FixedOffset(offset, _tzinfos = {}):
 
     return info
 
-tzinfo.__safe_for_unpickling__ = True
+FixedOffset.__safe_for_unpickling__ = True
 
 def _test():
     import doctest, os, sys
