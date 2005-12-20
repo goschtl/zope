@@ -17,6 +17,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed the plumbing in ZServer so that attempts to return large
+        output efficiently using iterators can actually succeed.
+
       - Uodated to a new version of twisted that fixes a bug in
         calling request bidy stream read methods without passing
         arguments. http://www.zope.org/Collectors/Zope3-dev/521.
