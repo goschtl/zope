@@ -93,13 +93,13 @@
 
     <meta:directive
        name="loadProducts"
-       schema="zope.interface.Interface"
+       schema=".fivedirectives.IInclude"
        handler=".fiveconfigure.loadProducts"
        />
 
     <meta:directive
        name="loadProductsOverrides"
-       schema="zope.interface.Interface"
+       schema=".fivedirectives.IInclude"
        handler=".fiveconfigure.loadProductsOverrides"
        />
 

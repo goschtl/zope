@@ -65,32 +65,28 @@ def handleBrokenProduct(product):
     exc = sys.exc_info()
     LOG('Five', ERROR, 'Could not import Product %s' % product.__name__, error=exc)
 
-def loadProducts(_context):
-    products = findProducts()
+def loadProducts(_context, file=None):
+    if file is None:
+        # set the default
+        file = 'configure.zcml'
     
-    # first load meta.zcml files
-    for product in products:
-        zcml = os.path.join(os.path.dirname(product.__file__), 'meta.zcml')
-        if os.path.isfile(zcml):
-            try:
-                xmlconfig.include(_context, zcml, package=product)
-            except: # Yes, really, *any* kind of error.
-                handleBrokenProduct(product)
-                
-    # now load their configure.zcml
-    for product in products:
-        zcml = os.path.join(os.path.dirname(product.__file__),
-                            'configure.zcml')
+    # now load the files if they exist
+    for product in findProducts():
+        zcml = os.path.join(os.path.dirname(product.__file__), file)
         if os.path.isfile(zcml):
             try:
                 xmlconfig.include(_context, zcml, package=product)
             except: # Yes, really, *any* kind of error.
                 handleBrokenProduct(product)
 
-def loadProductsOverrides(_context):
+def loadProductsOverrides(_context, file=None):
+    if file is None:
+        # set the default
+        file = 'overrides.zcml'
+    
+    # now load the files if they exist
     for product in findProducts():
-        zcml = os.path.join(os.path.dirname(product.__file__),
-                            'overrides.zcml')
+        zcml = os.path.join(os.path.dirname(product.__file__), file)
         if os.path.isfile(zcml):
             try:
                 xmlconfig.includeOverrides(_context, zcml, package=product)

@@ -7,10 +7,21 @@
   <include package="Products.Five" />
   <meta:redefinePermission from="zope2.Public" to="zope.Public" />
 
-  <include files="package-includes/*-meta.zcml" />
-  <include files="package-includes/*-configure.zcml" />
 
+  <!-- Load the meta -->
+
+  <include files="package-includes/*-meta.zcml" />
+  <five:loadProducts file="meta.zcml"/>
+
+
+  <!-- Load the configuration -->
+
+  <include files="package-includes/*-configure.zcml" />
   <five:loadProducts />
+
+
+  <!-- Load the configuration overrides-->
+
   <five:loadProductsOverrides />
 
 </configure>

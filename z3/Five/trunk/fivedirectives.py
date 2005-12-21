@@ -22,6 +22,7 @@ from zope.configuration.fields import GlobalObject, Tokens, PythonIdentifier
 from zope.configuration.fields import Bool
 from zope.schema import ASCII
 from zope.schema import TextLine
+from zope.schema import BytesLine
 
 class IImplementsDirective(Interface):
     """State that a class implements something.
@@ -168,3 +169,12 @@ class IRegisterClassDirective(Interface):
         default=True,
         required=False
         )
+
+class IInclude(Interface):
+
+    file = BytesLine(
+        title=u'Configuration file name',
+        description=u'Name of a configuration file to be included for each '
+                    u'installed Product. If the file does not exist, for a '
+                    u'particular product, no error is raised.',
+        required=False)
