@@ -15,36 +15,65 @@
 
 $Id$
 """
-import twisted.web2.wsgi
-import twisted.web2.server
-import twisted.web2.log
-try:
-    from twisted.web2.http import HTTPFactory
-except ImportError:
-    from twisted.web2.channel.http import HTTPFactory
+
+from cStringIO import StringIO
+import tempfile
+
+from twisted.web2 import iweb, log, resource, server, stream, wsgi
+from twisted.web2.channel.http import HTTPFactory
 
 from zope.app.twisted.server import ServerType, SSLServerType
-from zope.app import wsgi
+from zope.app.wsgi import WSGIPublisherApplication
+from zope.app.wsgi import PMDBWSGIPublisherApplication
 
+max_stringio = 100*1000 # Should this be configurable?
+
+class Prebuffer(resource.WrapperResource):
+    def hook(self, ctx):
+        req = iweb.IRequest(ctx)
+
+        content_length = req.headers.getHeader('content-length')
+        if content_length is not None and int(content_length) > max_stringio:
+            temp = tempfile.TemporaryFile()
+            def done(_):
+                temp.seek(0)
+                # Replace the request's stream object with the tempfile
+                req.stream = stream.FileStream(temp)
+                # Hm, this shouldn't be required:
+                req.stream.doStartReading = None
+
+        else:
+            temp = StringIO()
+            def done(_):
+                # Replace the request's stream object with the tempfile
+                req.stream = stream.MemoryStream(temp.getvalue())
+                # Hm, this shouldn't be required:
+                req.stream.doStartReading = None
+            
+        return stream.readStream(req.stream, temp.write).addCallback(done)
+
+    # Oops, fix missing () in lambda in WrapperResource
+    def locateChild(self, ctx, segments):
+        x = self.hook(ctx)
+        if x is not None:
+            return x.addCallback(lambda data: (self.res, segments))
+        return self.res, segments
 
 def createHTTPFactory(db):
-    resource = twisted.web2.wsgi.WSGIResource(
-        wsgi.WSGIPublisherApplication(db))
-    resource = twisted.web2.log.LogWrapperResource(resource)
+    resource = wsgi.WSGIResource(WSGIPublisherApplication(db))
+    resource = log.LogWrapperResource(resource)
+    resource = Prebuffer(resource)
 
-    return HTTPFactory(twisted.web2.server.Site(resource))
-
+    return HTTPFactory(server.Site(resource))
 
 http = ServerType(createHTTPFactory, 8080)
-
 https = SSLServerType(createHTTPFactory, 8443)
 
-
 def createPMHTTPFactory(db):
-    resource = twisted.web2.wsgi.WSGIResource(
-        wsgi.PMDBWSGIPublisherApplication(db))
-    resource = twisted.web2.log.LogWrapperResource(resource)
+    resource = wsgi.WSGIResource(PMDBWSGIPublisherApplication(db))
+    resource = log.LogWrapperResource(resource)
+    resource = Prebuffer(resource)
 
-    return HTTPFactory(twisted.web2.server.Site(resource))
+    return HTTPFactory(server.Site(resource))
 
 pmhttp = ServerType(createPMHTTPFactory, 8080)
