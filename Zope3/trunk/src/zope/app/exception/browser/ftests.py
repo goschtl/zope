@@ -17,6 +17,13 @@ $Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
 """
 import unittest
 from zope.app.testing import functional
+from zope.component.interfaces import ComponentLookupError
+
+class RaiseComponentLookupError(object):
+
+    def __call__(self):
+        raise ComponentLookupError()
+
 
 class TestNotFound(functional.BrowserTestCase):
 
@@ -27,6 +34,7 @@ class TestNotFound(functional.BrowserTestCase):
         body = response.getBody()
         self.assert_(
             'The page that you are trying to access is not available' in body)
+
 
 def test_suite():
     return unittest.TestSuite((

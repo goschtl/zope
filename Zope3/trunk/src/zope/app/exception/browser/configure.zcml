@@ -11,6 +11,14 @@
       />
 
   <page
+      for="zope.exceptions.INotFoundError"
+      name="index.html"
+      template="systemerror.pt"
+      class="..systemerror.SystemErrorView"
+      permission="zope.Public"
+      />
+
+  <page
       for="zope.security.interfaces.IUnauthorized"
       name="index.html"
       permission="zope.Public"

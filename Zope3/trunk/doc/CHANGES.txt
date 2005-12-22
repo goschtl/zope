@@ -26,6 +26,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed a nasty bug that was hiding ``INotFoundError`` exceptions behind
+        an empty page.
+
       - ZEO didn't work properly with teh twisted server.
 
       - Non-management pages were slowed by a bug in the page-macro

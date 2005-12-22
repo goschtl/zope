@@ -59,4 +59,17 @@ the URL:
     A system error occurred.
   ...
 
+Another way of getting a system error is the occurrence of an
+``INotFoundError``, such as ``ComponentLookupError``. I have registered a
+simple view in ``exception-ftesting.zcml`` that will raise a component lookup
+error. So if we call ``componentlookuperror.html``, we should get the error
+message:
+
+  >>> print http(r"""
+  ... GET /componentlookuperror.html HTTP/1.1
+  ... """)
+  HTTP/1.1 500 Internal Server Error
+  ...
+    A system error occurred.
+  ...
 
