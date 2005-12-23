@@ -15,7 +15,13 @@ Zope Changes
         some more work and testing before it's ready for production
         use.
 
+      - Changed the way returning large results is
+        handled. Applications can now simply return files to the
+        publisher.
+
     Bug Fixes
+
+      - Added input buffering to the twisted integration      
 
       - Fixed the plumbing in ZServer so that attempts to return large
         output efficiently using iterators can actually succeed.
