@@ -67,7 +67,7 @@ class Test(PlacelessSetup, TestCase):
             raise exception
         except:
             pass
-        request = TestRequest('/')
+        request = TestRequest()
         request.setPrincipal(DummyPrincipal(23))
         u = Unauthorized(exception, request)
         u.issueChallenge()
@@ -85,7 +85,7 @@ class Test(PlacelessSetup, TestCase):
             raise exception
         except:
             pass
-        request = TestRequest('/')
+        request = TestRequest()
         psrc = DummyPrincipalSource()
         request.setPrincipal(DummyPrincipal(23))
         u = Unauthorized(exception, request)
