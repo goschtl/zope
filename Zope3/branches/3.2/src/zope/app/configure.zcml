@@ -71,6 +71,7 @@
   <include package="zope.app.applicationcontrol" />
   <include package="zope.app.dublincore" />
   <include package="zope.app.introspector" />
+  <include package="zope.app.wsgi" />
 
 
   <!-- Content types -->
