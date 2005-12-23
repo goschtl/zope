@@ -11,9 +11,7 @@ Zope Changes
     New features
 
       - Added an option to mkzopeinstance to create instances that use
-        ZServer, rather than Twisted.  The Twisted integration needs
-        some more work and testing before it's ready for production
-        use.
+        ZServer, rather than Twisted.
 
       - Changed the way returning large results is
         handled. Applications can now simply return files to the
