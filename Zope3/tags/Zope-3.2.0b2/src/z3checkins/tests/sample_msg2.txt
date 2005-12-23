@@ -1,0 +1,21 @@
+From: Foo Bar <foo.bar@bar.com>
+Subject: [Zope3-checkins] CVS: Zope3/src/foo/bar - baz.py:1.2
+Date: Fri, 28 Mar 2003 11:58:05 +03:00
+Message-Id: <42@bar.com>
+
+Update of /cvs-repository/Zope3/src/foo/bar
+In directory cvs.zope.org:/tmp/cvs-serv12345
+
+Added files:
+      Tag: foo-branch
+        baz.py
+Log Message:
+Ipsum suum dolores quantum est er nonsensicum textum writum esmum inum tuum
+lineum furum testum logum messageum.
+
+
+=== Added File Zope3/src/foo/bar/baz.py 1.1 ===
+lalala
+burbur
+barbar
+
