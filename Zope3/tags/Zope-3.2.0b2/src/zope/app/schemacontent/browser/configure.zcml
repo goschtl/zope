@@ -1,0 +1,81 @@
+<zope:configure
+  xmlns:zope="http://namespaces.zope.org/zope"
+  xmlns="http://namespaces.zope.org/browser">
+
+  <tool
+      interface="zope.app.schemacontent.interfaces.IContentComponentDefinition"
+      title="Content Component Definition"
+      description="Content Component Definitions are used to declare
+      schema-based content objects."
+      />
+
+<!-- Content Component Definition -->
+
+  <!-- Menu entry for "Add Utility" menu -->
+  <addMenuItem
+      class="zope.app.schemacontent.content.ContentComponentDefinition"
+      title="Content Component Definition"
+      description="A Persistent Content Component Definition"
+      permission="zope.ManageServices"
+      />
+
+  <editform
+      for="zope.app.schemacontent.interfaces.IContentComponentDefinition"
+      schema=
+          "zope.app.schemacontent.interfaces.IContentComponentDefinition"
+      name="edit.html"
+      fields="schema copySchema"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"/>
+
+  <editform
+      for="zope.app.schemacontent.interfaces.IContentComponentDefinition"
+      schema=
+          "zope.app.schemacontent.interfaces.IContentComponentDefinition"
+      name="editpermissions.html"
+      template="permission_edit.pt"
+      class=".ContentComponentPermissionEdit"
+      menu="zmi_views" title="Define Permissions"
+      permission="zope.ManageContent"/>
+
+  <defaultView
+      for="zope.app.schemacontent.interfaces.IContentComponentDefinition"
+      name="edit.html" />
+
+
+<!-- Content Component Instance -->
+
+  <page
+      name="AddContentComponent"
+      for="zope.app.container.interfaces.IAdding"
+      permission="zope.ManageContent"
+      class=".AddContentComponentInstanceView"
+      attribute="generated_form" />
+
+  <page
+      name="edit.html"
+      menu="zmi_views" title="Edit"
+      for="zope.app.schemacontent.interfaces.IContentComponentInstance"
+      permission="zope.ManageContent"
+      class=".EditContentComponentInstanceView"
+      attribute="generated_form" />
+
+  <!-- Directives to test the Content Component Instance -->
+  <addform
+      label="New Content Component Instance"
+      name="AddContentComponentInstance.html"
+      schema="zope.app.schemacontent.interfaces.IContentComponentInstance"
+      permission="zope.ManageContent"
+      content_factory="zope.app.schemacontent.content.ContentComponentInstance"
+      arguments="__name__ __schema__"
+      fields="__name__ __schema__" />
+
+  <addMenuItem
+      class="zope.app.schemacontent.content.ContentComponentInstance"
+      title="Schema-based Content"
+      description="Schema-based Content Component Instance"
+      permission="zope.ManageContent"
+      view="AddContentComponentInstance.html"
+      />
+
+</zope:configure>
