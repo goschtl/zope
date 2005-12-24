@@ -49,4 +49,5 @@ class OnlineHelpTopicDirective(object):
             discriminator=self._discriminator(),
             callable=globalhelp.registerHelpTopic,
             args=self._args(),
+            order=666666,
         )
