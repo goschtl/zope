@@ -123,6 +123,10 @@ Zope Changes
 
       - addMenuItem directive supports a `layer` attribute.
 
+      - Added a new API, zope.publisher.interfaces.http.IResult. See
+        the file httpresults.txt in the zope.publisher package for
+        details.
+
       - Formalized the Publisher Response API.
 
         + Until now the publisher made assumptions about the form of ouput of
