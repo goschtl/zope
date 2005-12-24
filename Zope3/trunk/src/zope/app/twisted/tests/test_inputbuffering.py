@@ -191,6 +191,7 @@ class Instance:
             )
         response = connection.getresponse()
         connection.close()
+        self.waittodie()
 
     def main_page(self):
         connection = httplib.HTTPConnection('localhost', self.port)
@@ -215,6 +216,20 @@ class Instance:
                 if e[0] not in (errno.ECONNREFUSED, errno.ECONNRESET):
                     raise
                 s.close()
+
+    def waittodie(self):
+        addr = 'localhost', self.port
+        for i in range(120):
+            time.sleep(0.25)
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.connect(addr)
+                s.close()
+            except socket.error, e:
+                if e[0] not in (errno.ECONNREFUSED, errno.ECONNRESET):
+                    raise
+                s.close()
+                break
 
     url = property(lambda self: 'http://localhost:%d/' % self.port)
     
