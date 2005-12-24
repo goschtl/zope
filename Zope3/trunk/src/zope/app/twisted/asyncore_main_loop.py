@@ -68,7 +68,15 @@ $Id$
 
 import logging
 import sys
-import threading
+
+# We're using thread, rather than threading because there seem to be
+# some end-of-process cleanup problems with the threading module that
+# cause weird unhelpful messages to get written to standard error
+# intermittently when Python is exiting.  We'll leave the old threading
+# code around in case it's helpful later.
+
+## import threading 
+import thread
 
 import ThreadedAsync
 logger = logging.getLogger('ZEO.twisted')
@@ -97,11 +105,13 @@ def run(onerror):
             pass
     
 def run_in_thread(reactor):
-    thread = threading.Thread(
-        target=run,
-        args=(reactor, ),
-        )
-    thread.setDaemon(True)
-    thread.start()
+# see note above
+##     thread = threading.Thread(
+##         target=run,
+##         args=(reactor, ),
+##         )
+##     thread.setDaemon(True)
+##     thread.start()
+    thread.start_new_thread(run, (reactor, ))
 
         
