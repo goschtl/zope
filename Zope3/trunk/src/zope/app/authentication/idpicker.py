@@ -17,8 +17,11 @@ $Id$
 """
 
 from zope.app.container.contained import NameChooser
+from zope.app.exception.interfaces import UserError
+from zope.app.i18n import ZopeMessageFactory as _
+import re
 
-
+ok = re.compile('[!-~]+$').match
 class IdPicker(NameChooser):
     """Helper base class that picks principal ids.
 
@@ -54,3 +57,52 @@ class IdPicker(NameChooser):
 
         self.checkName(name, object)
         return name
+
+    def checkName(self, name, object):
+        """Limit ids
+
+        Ids can only contain printable, non-space, 7-bit ASCII strings:
+
+        >>> from zope.app.authentication.idpicker import IdPicker
+        >>> IdPicker({}).checkName(u'1', None)
+        True
+
+        >>> IdPicker({}).checkName(u'bob', None)
+        True
+
+        >>> IdPicker({}).checkName(u'bob\xfa', None)
+        ... # doctest: +NORMALIZE_WHITESPACE
+        Traceback (most recent call last):
+        ...
+        UserError: Ids must contain only printable
+        7-bit non-space ASCII characters
+
+        >>> IdPicker({}).checkName(u'big bob', None)
+        ... # doctest: +NORMALIZE_WHITESPACE
+        Traceback (most recent call last):
+        ...
+        UserError: Ids must contain only printable
+        7-bit non-space ASCII characters
+
+        Ids also can't be over 100 characters long:
+
+        >>> IdPicker({}).checkName(u'x' * 100, None)
+        True
+
+        >>> IdPicker({}).checkName(u'x' * 101, None)
+        Traceback (most recent call last):
+        ...
+        UserError: Ids can't be more than 100 characters long.
+
+        """
+        NameChooser.checkName(self, name, object)
+        if not ok(name):
+            raise UserError(
+                _("Ids must contain only printable 7-bit non-space"
+                  " ASCII characters")
+                )
+        if len(name) > 100:
+            raise UserError(
+                _("Ids can't be more than 100 characters long.")
+                )
+        return True
