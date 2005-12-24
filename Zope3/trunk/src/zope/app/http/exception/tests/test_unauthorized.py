@@ -28,7 +28,7 @@ class Test(TestCase):
             raise exception
         except:
             pass
-        request = TestRequest('/')
+        request = TestRequest()
         u = Unauthorized(exception, request)
 
         # Chech that we implement the right interface

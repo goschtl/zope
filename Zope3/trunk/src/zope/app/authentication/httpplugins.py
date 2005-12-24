@@ -69,7 +69,7 @@ class HTTPBasicAuthCredentialsPlugin(Persistent, Contained):
 
         Also, this plugin can *only* handle basic authentication.
 
-          >>> request = TestRequest({'HTTP_AUTHORIZATION': 'foo bar'})
+          >>> request = TestRequest(environ={'HTTP_AUTHORIZATION': 'foo bar'})
           >>> print plugin.extractCredentials(TestRequest())
           None
 
