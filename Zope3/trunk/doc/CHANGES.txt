@@ -10,6 +10,8 @@ Zope Changes
 
     Restructuring
 
+    Bug Fixes
+
       - zope.app.content_types is now the package zope.app.contenttypes
         (code backported from Zope 2)
 
@@ -24,7 +26,21 @@ Zope Changes
 
   Zope 3.2.0b2
 
+    New features
+
+      - Added an option to mkzopeinstance to create instances that use
+        ZServer, rather than Twisted.  The Twisted integration needs
+        some more work and testing before it's ready for production
+        use.
+
     Bug Fixes
+
+      - Uodated to a new version of twisted that fixes a bug in
+        calling request bidy stream read methods without passing
+        arguments. http://www.zope.org/Collectors/Zope3-dev/521.
+
+      - In zopeskel/etc/zope.conf.in, use the same default port number
+        as the one in ZEO/mkzeoinst.py.
 
       - Fixed a nasty bug that was hiding ``INotFoundError`` exceptions behind
         an empty page.
