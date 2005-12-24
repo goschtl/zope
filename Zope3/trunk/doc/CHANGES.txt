@@ -123,31 +123,18 @@ Zope Changes
 
       - addMenuItem directive supports a `layer` attribute.
 
-      - Added a new API, zope.publisher.interfaces.http.IResult. See
-        the file httpresults.txt in the zope.publisher package for
-        details.
+      - Changed the Publisher Response API.
 
-      - Formalized the Publisher Response API.
+        + Large results can now ne handled efeciently by returning
+          files rather than strings.  See the file httpresults.txt in
+          the zope.publisher package.
 
-        + Until now the publisher made assumptions about the form of ouput of
-          a publishing process. Either the called method returned a string
-          (regular or unicode) or the response's write() method was used
-          directly to write the data. Those models do not work well with some
-          protocols. Thus, now the publisher deals with result objects. Those
-          are generally not well defined, but for HTTP they must implement the
-          IResult interface.
+        + The unused response.write method is no-longer supported.
 
         + HTTP responses provide two new methods that make reading the output
           easier: `consumeBody()` and `consumeBodyIter()`. Either method can
           be only called once. After that the output iterator is used and
           empty.
-
-        + The WSGI specification specifically has some provisions in it that
-          supported our use of writing directly to the output stream. However,
-          this method of providing an output is strongly discouraged. Instead,
-          the application should return an iterable. Using the new IResult
-          implementation in the HTTP publisher, we can now return such an
-          iterable.
 
         + When a retry is issued in the publisher, then a new request is
           created. This means that the request (including its response) that
