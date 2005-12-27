@@ -6,6 +6,13 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
+  since Zope 3.2.0b2
+
+    Bug Fixes
+
+      - Make zopetest insert rather than append the library path
+        (fix spurious test failures from packages in site-packages)
+
   Zope 3.2.0b2
 
     New features
