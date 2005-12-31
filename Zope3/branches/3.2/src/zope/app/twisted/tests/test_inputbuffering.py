@@ -13,8 +13,10 @@
 ##############################################################################
 r"""Meke sure that input is buffered
 
-Meke sure that input is buffered, so that a slow client doesn't block an application thread.
+Meke sure that input is buffered, so that a slow client doesn't block
+an application thread.
 
+Also, test that both small and (somewhat) large inputs are handled correctly.
 
     >>> instance = Instance()
     >>> instance.start()
@@ -29,7 +31,7 @@ Now, we'll open a socket to it and send a partial request:
     >>> bad.sendall('Content-Length: 10\r\n')
     >>> bad.sendall('Content-Type: text/plain\r\n')
     >>> bad.sendall('\r\n')
-    >>> bad.sendall('x')
+    >>> bad.sendall('x\r\n')
 
 At this point, the request shouldn't be in a thread yet, so we should be
 able to make another request:
@@ -39,22 +41,22 @@ able to make another request:
     >>> s.connect(('localhost', instance.port))
     >>> s.sendall('GET http://localhost:%s/echo HTTP/1.1\r\n'
     ...           % instance.port)
-    >>> s.sendall('Content-Length: 10\r\n')
+    >>> s.sendall('Content-Length: 120005\r\n')
     >>> s.sendall('Content-Type: text/plain\r\n')
     >>> s.sendall('\r\n')
-    >>> s.sendall('xxxxxxxxxxxxxxx\n')
+    >>> s.sendall('xxxxxxxxxx\r\n' * 10000 + 'end\r\n')
     >>> f = s.makefile()
     >>> f.readline()
     'HTTP/1.1 200 OK\r\n'
 
     >>> message = rfc822.Message(f)
     >>> message['content-length']
-    '10'
+    '120000'
 
     >>> s.close()
 
 
-    >>> bad.sendall('xxxxxxxxxx\n')
+    >>> bad.sendall('end\r\n' + 'xxxxxxxxxx\n')
     >>> bad.close()
     >>> instance.stop()
     >>> shutil.rmtree(instance.dir)
@@ -81,7 +83,17 @@ class Echo:
         self.request = request
 
     def echo(self):
-        return self.request.bodyStream.read()
+        s = 0
+        result = []
+        while 1:
+            l = self.request.bodyStream.readline()
+            s += len(l)
+            if l and l != 'end\r\n':
+                result.append(l)
+            else:
+                break
+            
+        return ''.join(result)
     
 
 
