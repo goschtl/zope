@@ -26,6 +26,10 @@ Zope Changes
 
     Bug Fixes
 
+      - The test-runner --coverage option didn't work when tested code
+        was installed in Python's site-packages, which is the case for
+        Zope 3 on windows.
+
       - Added input buffering to the twisted integration      
 
       - Fixed the plumbing in ZServer so that attempts to return large
