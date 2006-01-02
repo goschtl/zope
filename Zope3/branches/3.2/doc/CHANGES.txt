@@ -6,9 +6,18 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  since Zope 3.2.0b2
+  since Zope 3.2.0b3
+
+  Zope 3.2.0b3
 
     Bug Fixes
+
+      - The test-runner --coverage option didn't work when tested code
+        was installed in Python's site-packages, which is the case for
+        Zope 3 on windows.
+
+      - Input buffering failed and caused Zope to hang when uploading
+        large files and using the Twisted server. 
 
       - Make zopetest insert rather than append the library path
         (fix spurious test failures from packages in site-packages)
@@ -25,10 +34,6 @@ Zope Changes
         publisher.
 
     Bug Fixes
-
-      - The test-runner --coverage option didn't work when tested code
-        was installed in Python's site-packages, which is the case for
-        Zope 3 on windows.
 
       - Added input buffering to the twisted integration      
 
