@@ -5,7 +5,7 @@
    >
 
     <zope:adapter
-	  factory="wikilink.JavaScriptLinkProcessor"
+	  factory=".wikilink.JavaScriptLinkProcessor"
 	  provides=".interfaces.ILinkProcessor"
       for=".interfaces.IWikiPage"
       />
