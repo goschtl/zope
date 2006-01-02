@@ -1,0 +1,28 @@
+<div id="main">
+    <p>
+        Please choose your prefered editor: 
+    </p>
+    <br />
+    <ul>
+        <li>
+            <a href="./wikiedit.html?editor=tinymce">
+                TinyMCE WYSIWYG 
+            </a>
+            Runs on IE, Firefox, Mozilla, and to a limited degree on Safari.
+            Uses popup windows.
+        </li>
+        
+        <li>
+            <a href="./wikiedit.html?editor=kupu">
+                Kupu WYSIWYG 
+            </a>
+            Runs on IE, Firefox, and Mozilla. 
+        </li>
+        <li>
+            <a href="./wikiedit.html?editor=rest">
+                ReStructured Text 
+            </a>
+            Runs on any browser. 
+        </li>
+    </ul>
+</div>

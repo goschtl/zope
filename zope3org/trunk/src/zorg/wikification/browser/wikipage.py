@@ -44,18 +44,18 @@ from persistent import Persistent
 
 from zorg.wikification.browser.interfaces import IWikiPage
 from zorg.importer import IImporter
-from zorg.kupusupport.adapters import html_body
-from zorg.kupusupport.browser.views import KupuEditor
+from zorg.kupusupport.adapters import html_body, get_title, get_description
+from zorg.kupusupport.browser.views import KupuEditor as _KupuEditor
 from zorg.kupusupport.interfaces import IKupuPolicy
 
-from zorg.ajax.page import AjaxPage
+from zorg.ajax.page import ComposedAjaxPage, PageElement
 from zorg.restsupport import rest2html
 from zorg.restsupport import html2rest
 
 
     
 
-class WikiPage(AjaxPage) :
+class WikiPage(ComposedAjaxPage) :
     """ A wiki page that 'wikifies' a container with ordinary HTML documents.
     
         See wikification/README.txt for a definition of what 
@@ -72,8 +72,7 @@ class WikiPage(AjaxPage) :
     supported = 'text/html', 'application/xhtml+xml', 'application/xml', 'text/xml'
     title = u"Wiki page"
     action = "/@@wiki.html"      # the action that wikifies
-    add = "/@@kupuadd.html"
-    verb = _('View')
+    add = "/@@wikiedit.html"
     uris = {
             'home': '#',
             'login': '#',
@@ -101,6 +100,10 @@ class WikiPage(AjaxPage) :
         
         self.title = dc.title or self.untitled
         self.language = dc.Language()
+        
+    def verb(self) :
+        """ Returns a descriptive verb. """
+        return _('View')
         
     def isAbsoluteURL(self, link) :
         """ Returns true if the link is a complete URL. 
@@ -150,7 +153,7 @@ class WikiPage(AjaxPage) :
         an add view call :
         
         >>> wiki.wikifyLink('http://127.0.0.1/site/folder/wikify.html')
-        (True, 'http://127.0.0.1/site/folder/@@kupuadd.html?path=wikify.html')
+        (True, 'http://127.0.0.1/site/folder/@@wikiedit.html?path=wikify.html')
         
         """
 
@@ -204,6 +207,22 @@ class WikiPage(AjaxPage) :
             Renders HTML with dead relative links as 'wikified' HTML,
             i.e. dead relative links are converted to links that
             enable the user to add new pages.
+            
+            >>> from zorg.wikification.tests import buildSampleSite
+            >>> site = buildSampleSite()
+            >>> request = TestRequest()
+            >>> wiki = WikiPage(site, request)
+            >>> html = '''<html><body>
+            ... <a href="http://127.0.0.1/site/folder/wiki.html">Link</a>
+            ... </body><html>'''
+            
+            
+            >>> print wiki.wikify(html)
+            <html><body>
+            <a href="...wikiedit.html?path=wiki.html" class="wiki-link">Link</a>
+            </body><html>
+ 
+        
         """
     
         from zorg.wikification.parser import BaseHTMLProcessor
@@ -214,19 +233,34 @@ class WikiPage(AjaxPage) :
                 BaseHTMLProcessor.__init__(self)
                 self.caller = caller
                 
+            def update_link_class(self, attrs) :
+                """ Mark link css. """
+                result = []
+                _class = False
+                for key, value in attrs :
+                    if key == "class" :
+                        value += " wiki-link"
+                        _class = True
+                    result.append((key, value))
+                if not _class :
+                    result.append(("class", "wiki-link"))
+                return result
+                                    
             def unknown_starttag(self, tag, attrs):
                 if tag == "a" :
+                    new = False
                     modified = []
                     for key, value in attrs :
                         if key == "href" :
                             new, value = self.caller.wikifyLink(value)
-                            if new :
-                                modified.append(("class", "wiki-link"))
                         modified.append((key, value))
-  
-                    BaseHTMLProcessor.unknown_starttag(self, tag, modified)
-                else :
-                    BaseHTMLProcessor.unknown_starttag(self, tag, attrs)               
+                            
+                    if new :
+                        result = self.update_link_class(modified)
+                        BaseHTMLProcessor.unknown_starttag(self, tag, result)
+                        return
+                        
+                BaseHTMLProcessor.unknown_starttag(self, tag, attrs)               
  
             def handle_data(self, text):
                 # called for each block of plain text, i.e. outside of any tag and
@@ -261,24 +295,17 @@ class WikiPage(AjaxPage) :
 class WikiContainerPage(WikiPage) :
     """ Wiki view for a container. """
     
-    text = """<html><body>
-              <p>No index.html found.<p>
-              <p>Create a
-                  <a href="index.html">new index page</a>?
-              </p>
-              </body></html>"""
-    
-    new = u"""<html><body>
-              <p>Type something interesting here...<p>
-              </body></html>"""
-    
-    empty = File(text, "text/html")
-    
+    _noindex = ViewPageTemplateFile("./templates/noindex.pt")  
+    _new = ViewPageTemplateFile("./templates/new.pt")
+        
     untitled = u"Untitled Folder"
     
     
     def getContainer(self) :
         return self.context
+        
+    def isEmpty(self) :
+        return not len(self.context)
         
     def getContent(self) :
         """ Returns the editable content of a container.
@@ -299,12 +326,12 @@ class WikiContainerPage(WikiPage) :
         """
         file = self.context.get(u"index.html")
         if file is None :
-            return self.new
+            return self._new()
         else :
             return unicode(file.data, encoding="utf-8")
         
     def getFile(self) :
-        return self.context.get(u"index.html", self.empty)
+        return self.context.get(u"index.html")
 
     def renderBody(self) :
         """ Delegates the rendering to the WikiFilePage of the 
@@ -313,7 +340,9 @@ class WikiContainerPage(WikiPage) :
         """
         
         file = self.getFile()
-        return WikiFilePage(file, self.request, self.container).renderBody()
+        if file :
+            return WikiFilePage(file, self.request, self.container).renderBody()
+        return self._noindex()
 
         
         
@@ -322,8 +351,14 @@ class WikiFilePage(WikiPage) :
     
     untitled = u"Untitled Document"
     
+    def isEmpty(self) :
+        return False
+        
     def getContainer(self) :
         return self.context.__parent__
+        
+    def getFile(self) :
+        return self.context
         
     def renderBody(self) :
         
@@ -332,34 +367,221 @@ class WikiFilePage(WikiPage) :
         if file.contentType in self.supported :
             body = html_body(file.data)
             return unicode(self.wikify(body), encoding="utf-8")
-            
-            #info = WikPageInfo(body, self.context, self.request, self.main)
-       
-        # file type not supported
+  
         return "Sorry, not wikifiable at the moment."
 
 
-class EditOptions(WikiPage) :
-    """ An editor were the user can switch between Kupu, Rest and 
+class EditOptions(PageElement) :
+    """ Allows the user to switch between Kupu, Rest and 
         other edit options. 
         
     """
-
-    actions = dict(rest="./restedit.html", kupu="./kupuedit.html")
     
-    _choose = ViewPageTemplateFile("./edit.pt")
+    _choose = ViewPageTemplateFile("./templates/choose.pt")
             
-    def __call__(self) :
-        """ Redirect the user to the selected editor. """
-        
-        session = self.getSessionStorage()
-        editor = self.parameter('editor', storage=session)
-        if editor in self.actions :
-            self.request.response.redirect(self.actions[editor])
-            
+    def render(self) :
+        """ Allows the user to the select an editor editor. """
         return self._choose()        
 
 
+class Editor(PageElement) :
+    """ Base class for Editor page elements. """
+ 
+    isType = "text/plain"
+    asType = "text/plain"
+    
+    title = description = None
+
+    def toHTML(self) :
+        if self.isType == "text/plain" :
+            return rest2html(self.data)
+        elif self.isType == "text/html" :
+            return self.data
+        return _("unknown format: cannot convert file content. """)
+        
+    def toRest(self) :
+        if self.isType == "text/plain" :
+            return self.data
+        elif self.isType == "text/html" :
+            return html2rest(self.data) 
+        return _("unknown format: cannot convert file content. """)
+        
+    def saveTo(self, file) :
+        """ 
+        Save method that stores the main content and sets
+        the title and description if available.
+        
+        >>> editor = Editor(None)
+        >>> editor.data = 'Some text'
+        >>> from zope.app.file import File
+        >>> file = File()
+        >>> editor.saveTo(file)
+        >>> file.data
+        'Some text'
+        
+        We can save in different formats :
+        
+        >>> editor.asType = "text/html"
+        >>> editor.saveTo(file)
+        >>> print file.data
+        <p>Some text</p>
+        
+        """
+        
+        if self.asType is None :
+            self.asType = file.contentType
+        elif self.asType != file.contentType :
+            file.contentType = self.asType
+            
+        if self.asType == "text/html" :
+            data = self.toHTML()
+        elif self.asType == "text/plain" :
+            data = self.toRest()
+
+        file.data = data
+        
+        dc = IZopeDublinCore(self.context)
+        if self.title is not None :
+            dc.title = self.title
+        if self.description is not None :
+            dc.description = self.description
+        
+        zope.event.notify(ObjectModifiedEvent(file))
+        
+    def editableHTML(self, html) :
+        """ A method that extracts the editable HTML parts.
+            Returns the body as a default that can be overwritten.
+        """
+        return html_body(html)
+        
+    def readFile(self, file) :
+        """ Read method. 
+        
+        >>> editor = Editor(None)
+        >>> from zope.app.file import File
+        >>> file = File()
+        >>> file.data = 'Some text'
+        >>> file.contentType = 'text/plain'
+        >>> print editor.readFile(file)
+        Some text
+        
+        If the text type deviates from the stored one the text is
+        converted automatically :
+        
+        >>> editor.isType = "text/html"
+        >>> result = editor.readFile(file)
+        >>> isinstance(result, unicode)
+        True
+        >>> print result
+        <p>Some text</p>
+        
+        This works in both directions, from text to html and vice versa:
+        
+        >>> file.data = '<p>Some text</p>'
+        >>> file.contentType = 'text/html'
+        >>> print editor.readFile(file)
+        <p>Some text</p>
+        
+        >>> editor.isType = "text/plain"
+        >>> print editor.readFile(file)
+        Some text
+        
+        """
+        
+        if self.isType is None :
+            self.isType  = file.contentType
+                 
+        if self.isType == "text/html" :
+        
+            if file.contentType == "text/html" :
+                html = self.editableHTML(file.data)
+                return unicode(html, encoding="utf-8")
+                
+            if file.contentType == "text/plain" :
+                return rest2html(file.data)
+                
+        elif self.isType == "text/plain" :
+        
+            if file.contentType == "text/html" :
+                body = html_body(file.data)
+                html = "<html><body>%s</body></html>" % body
+                return unicode(html2rest(html), encoding="utf-8")
+            if file.contentType == "text/plain" :
+                return unicode(file.data, encoding="utf-8")   
+        
+        return _("unknown format: cannot show file content. """)
+        
+    
+class RestEditor(Editor) :
+    """ Main page element that shows a ReST editor. """
+    
+    _rest = ViewPageTemplateFile("./templates/rest.pt")
+
+    def __init__(self, parent) :
+        super(RestEditor, self).__init__(parent)
+        
+        self.data = parent.parameter('rest')
+        self.title = parent.parameter('title')
+        self.description = parent.parameter('description')
+        
+        self.isType = "text/plain"
+        self.asType = "text/plain"
+    
+    def render(self) :
+        """ Presents the rest editor to the user. """
+        return self._rest()    
+
+
+class TinyMCEEditor(Editor) :
+    """ Main page element that shows a TineMCE editor. """
+    
+    _tinymce = ViewPageTemplateFile("./templates/tinymce.pt")
+
+    def __init__(self, parent) :
+        super(TinyMCEEditor, self).__init__(parent)
+        
+        self.data = parent.parameter('tinyhtml')
+        self.title = parent.parameter('title')
+        self.description = parent.parameter('description')
+        
+        self.isType = "text/html"
+        self.asType = "text/html"
+        
+        print "TinyMCEEditor", self.data
+        
+    
+    def render(self) :
+        """ Presents the rest editor to the user. """
+        return self._tinymce()    
+  
+          
+class KupuEditor(Editor, _KupuEditor) :
+    """ Main page element that shows the Kupu editor. """
+    
+    _kupu = ViewPageTemplateFile("./templates/kupu.pt")
+
+    def __init__(self, parent) :
+        super(KupuEditor, self).__init__(parent)
+                
+        self.data = self.parameter('kupu')
+        self.isType = "text/html"
+        self.asType = "text/html"
+        
+        if self.data :
+            self.title = get_title(self.data)
+            self.description = get_description(self.data)
+                
+    def editableHTML(self, html) :
+        """ A method that extracts the editable HTML parts.
+            Kupu uses the full data.
+        """
+        return html
+        
+    def render(self) :
+        """ Presents the rest editor to the user. """
+        return self._kupu()    
+   
+        
 class WikiEditor(WikiPage) :   
     """ Base class for a wiki edit page. Provides methods that
         access and update file content.
@@ -367,129 +589,67 @@ class WikiEditor(WikiPage) :
         >>> from zorg.wikification.tests import buildSampleSite
         >>> site = buildSampleSite()
         >>> request = TestRequest("/", form=dict(rest="ReSt", editor="rest"))
-        >>> editor = WikiEditor(site, request)
-        >>> editor.getDataAndContentTypes()
-        (u'ReSt', 'text/plain', 'text/plain')
+        >>> page = WikiEditor(site, request)
+        >>> page.main
+        <zorg.wikification.browser.wikipage.RestEditor object at ...>
+
       
     """
-    
+   
+    factory = dict(rest=RestEditor, kupu=KupuEditor, tinymce=TinyMCEEditor)
+    chooser = EditOptions
+
     def __init__(self, context, request) :
         super(WikiEditor, self).__init__(context, request)  
         self.editor = self.parameter('editor', storage=self.session)
-        
-    def getDataAndContentTypes(self) :
-        """ Extracts data and content type from request."""
-        editor = self.editor
-        request = self.request
-        if editor == "rest" : # add named adapter or utility later
-            data = self.parameter('rest')
-            isType = "text/plain"
-            asType = "text/plain"
-        else :
-            data = self.parameter('kupu')
-            isType = "text/html"
-            asType = "text/html"
-        return data, isType, asType   
+        self.main = self.factory.setdefault(self.editor, self.chooser)(self)
+        self.main.asType = "text/html" # default: because we are using .html extension         
                 
-    def updateFile(self, file, content, contentType="text/html", asContentType=None):
-        """Update the content object using the editor output.
-        
-           contentType describes the provided content
-           targetContentType prescribes in which format the content should be
-           saved.
-
-        """
-        if asContentType is None :
-            asContentType = file.contentType
-        else :
-            file.contentType = asContentType
-            
-        assert asContentType in "text/html", "text/plain"
-        
-        if asContentType == "text/html" :
-            data = rest2html(content)
-        elif asContentType == "text/plain" :
-            data = content
-            
-        file.data = data
-        zope.event.notify(ObjectModifiedEvent(file))    
-            
-    def displayFile(self, file, asContentType=None):
-        """Display the specific editor content as text/html
-           or rest text/plain
-        """
-        
-        if asContentType is None :
-            asContentType = file.contentType
-         
-        assert asContentType in "text/html", "text/plain"
-        
-        if asContentType == "text/html" :
-        
-            if file.contentType == "text/html" :
-                return unicode(html_body(file.data), encoding="utf-8")
-                
-            if file.contentType == "text/plain" :
-                return RestToHTML(file.data)
-                
-        elif asContentType == "text/plain" :
-        
-            if file.contentType == "text/html" :
-                return HTMLToRest(html_body(file.data))
-            if file.contentType == "text/plain" :
-                return file.data   
-        
-        
       
 class EditWikiPage(WikiEditor, WikiFilePage) :
- 
-    verb = _('Edit')
+    """ An edit view for wiki pages. """
+    
+    def verb(self) :
+        return _('Edit')
     
     def display(self) :
         """ Returns the data that should be edited. """
-        return self.displayFile(self.context)
+        file = self.getFile()
+        return self.main.readFile(file)
     
     def update(self, editor=None):
         """ Saves the edited content and redirects to the wiki view. """
-        
-        data, isType, asType = self.getDataAndContentTypes()
-        self.updateFile(self, context, data, isType, asType)
+        file = self.getFile()
+        self.main.saveTo(file)
         self.request.response.redirect("wiki.html")
-        
 
-class CreateWikiPage(WikiEditor, WikiContainerPage) :
+class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
+    """ A specialization that edits the index.html if available. """ 
 
-    verb = _('Add')
- 
-    def importURL(self, url) :
-        """ Imports pages from an URL. """
-        
-        if url == "test" :
-            from importer.tests import testURL
-            url = testURL
-        importer = IImporter(self.context)
-        importer.verbosity = 1
-        target = zapi.absoluteURL(self.context, self.request)
-        importer.download(url, target)
-        self.request.response.redirect(self.nextURL())
-
-    def getContent(self) :
-        return self.new
+    def getExtraPath(self) :
+        return [u'index.html']
     
-    def getAddPath(self) :
-        """ Returns the path that is added to the container if the user
-            creates a new wiki page.
-        """
-        filepath = self.request.form.get('path', 'index.html')
-        return filepath.split(u'/')
+    def verb(self) :
+        file = self.getFile()
+        if file is None :
+            return _('Add')
+        else :
+            return _('Edit')
         
+    def display(self) :
+        """ Returns the data that should be edited. """
+        file = self.getFile()
+        if file is None :
+            return self._new()
+        return self.main.readFile(file)
+
     def createFile(self) :
         """
             Creates a file at the given path. Creates all intermediate
             folders if necessary.
             
         """        
-        path = self.getAddPath()
+        path = self.getExtraPath()
 
         assert len(path) > 0
         
@@ -517,9 +677,39 @@ class CreateWikiPage(WikiEditor, WikiContainerPage) :
             Generic store method.           
         """
         request = self.request
-        data, isType, asType = self.getDataAndContentTypes()
         file = self.createFile()
-        self.updateFile(file, data, isType, asType)        
+        self.main.saveTo(file)
         url = zapi.absoluteURL(file, self.request)
         request.response.redirect(url + self.action)
+
+        
+
+class CreateWikiPage(EditWikiContainerPage) :
+    """ Creates a wiki page. """
+    
+    def verb(self) :
+        return _('Add')
+
+    def getExtraPath(self) :
+        """ Returns the path that is added to the container if the user
+            creates a new wiki page.
+        """
+        filepath = self.request.form.get('path', 'index.html')
+        return filepath.split(u'/')
+ 
+    def importURL(self, url) :
+        """ Imports pages from an URL. """
+        
+        if url == "test" :
+            from importer.tests import testURL
+            url = testURL
+        importer = IImporter(self.context)
+        importer.verbosity = 1
+        target = zapi.absoluteURL(self.context, self.request)
+        importer.download(url, target)
+        self.request.response.redirect(self.nextURL())
+
+    def display(self) :
+        return self._new()
+        
 

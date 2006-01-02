@@ -48,7 +48,6 @@
            </td>
          </tr>
     </table>
-
     
 	<div id="layout-columns" class="columns">
 		<div class="bg">
@@ -67,7 +66,7 @@
 		<hr size="2"/>
 		
 		<div metal:use-macro="context/@@wiki_macros/layout_footer" />
-		<form id="import" method="POST" name="import" action="importURL">
+		<form tal:condition="view/isEmpty" id="import" method="POST" name="import" action="importURL">
             <fieldset>
                 <legend>
                     <label>

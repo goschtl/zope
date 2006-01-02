@@ -1,0 +1,17 @@
+<div id="main">
+     <h2>Welcome to the Zope3.org Wiki</h2>
+     <p>This Wiki allows you to create pages by
+        entering links that point to placeholders  <br/> that are not filled at the moment.
+        Such placeholders are marked by red dotted borders.<br/>
+        If you click on a such a link you will be led to an edit view where<br/>
+        you can upload or type a new page.
+     </p>
+  
+     <p>You are looking currently at a folder without index.html file.</p>
+     <p>Do you want to create a
+          <a class="wiki-link" href="./@@wikiedit.html?path=index.html">new index page</a>?
+     </p>
+     <p>The link above is an example of a placeholder.<br/>It is intended as
+     a starting point for filling the folder with HTML pages.
+     </p>
+</div>
