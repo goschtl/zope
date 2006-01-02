@@ -58,6 +58,7 @@ example1 = u"""<html>
         <p>A [New Subject]</p>
         <p>An <a href="http://www.google.org">external absolute link</a></p>
         <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
+        <p>An <a href="http://127.0.0.1/site/newitem">new absolute link</a></p>
     </body>
 </html>"""
 

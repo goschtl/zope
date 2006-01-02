@@ -29,14 +29,6 @@
  
   <zope:adapter factory="zorg.ajax.livepage.LivePageResult" />
   
-  <zope:content class="zope.publisher.http.DirectResult">
-    
-	<require
-		permission="zope.Public"
-		interface="zope.publisher.interfaces.http.IResult"/>   
-			
-  </zope:content>
-
   <zope:content class="zorg.ajax.livepage.IterBuffer">
     
 	<require

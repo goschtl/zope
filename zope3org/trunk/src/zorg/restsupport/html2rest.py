@@ -17,6 +17,17 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
+###############################################################################
+# XXX bugs fixed, should be posted to Laurent Pelecq
+#
+#   def get_prefixes(self):
+#         if self.parent.is_enum:
+#             first_line_prefix = '%d. '%(self.index + 1)   # uo: added a blank
+#         ...
+
+
+
+
 import sys, os
 import optparse
 
@@ -192,7 +203,7 @@ class ListItemFormatter(Formatter):
 
     def get_prefixes(self):
         if self.parent.is_enum:
-            first_line_prefix = '%d.'%(self.index + 1)
+            first_line_prefix = '%d. '%(self.index + 1)
         else:
             bullet = self.bullets[self.parent.level % len(self.bullets)]
             first_line_prefix = '%s '%(bullet)
@@ -928,3 +939,4 @@ verbose = noop
 #  Local Variables: ***
 #  mode: python ***
 #  End: ***
+

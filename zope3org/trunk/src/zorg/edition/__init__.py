@@ -19,13 +19,32 @@ from zorg.edition.interfaces import IVersionable
 from zorg.edition.interfaces import IVersioned
 from zorg.edition.interfaces import IHistoryStorage
 from zorg.edition.interfaces import ICopyModifyMergeRepository
+from zorg.edition.interfaces import RepositoryError
+
 from zope.app import zapi
 
 
-def registerVersionControl(event):
-    if IVersionable.providedBy(event.object):
+def registerEdition(object):
+    """ Register an object for version control and editions. """
+    if IVersionable.providedBy(object):
         history = zapi.queryUtility(IHistoryStorage)
-        if history is not None and not IVersioned.providedBy(event.object):
+        if history is not None and not IVersioned.providedBy(object):
             rep = ICopyModifyMergeRepository(history)
-            transaction.savepoint()     # we need the p_oids for the tickets
-            rep.applyVersionControl(event.object)
+            rep.applyVersionControl(object)
+    else :
+        raise RepositoryError(
+                'The resource is not versionable.'
+                )
+                
+def saveEdition(object) :
+    """ The main function that creates a new edition of an object. """
+    if IVersionable.providedBy(object):
+        history = zapi.queryUtility(IHistoryStorage)
+        if history is not None and not IVersioned.providedBy(object):
+            rep = ICopyModifyMergeRepository(history)
+            rep.saveAsVersion(object)
+    else :
+        raise RepositoryError(
+                'The resource is not versionable.'
+                )
+    

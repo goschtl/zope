@@ -11,5 +11,6 @@
   <include package=".wikification" />
   <include package=".importer" />
   <include package=".kupusupport" />
+  <include package=".tinymcesupport" />
  
 </configure>

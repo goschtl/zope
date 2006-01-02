@@ -13,15 +13,6 @@
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
   </localUtility>   
   
-  <!-- register a subriber to the ObjectCreatedEvent to add all 
-       IVersionable objects to the version control
-  -->
-  <subscriber
-      handler="zorg.edition.registerVersionControl"
-      for="zope.app.container.interfaces.IObjectAddedEvent"
-  />
-
-  
   <!-- We also need a 'IVersionableAspects' multi adapter beeing responsible
        for the versioning policy (what is versioned and how (not storage)).
   -->
@@ -59,7 +50,10 @@
   />
 
 
-      
+  <utility 
+      provides=".interfaces.IUUIDGenerator"
+      factory=".uuid.UUIDGenerator" />
+  
 <!-- demo content -->
   <include package=".demo" />
     
@@ -73,6 +67,14 @@
 			interface="zorg.edition.interfaces.IHistoryStorage"/>
         
   </content>  
+  
+  <content class="zorg.edition.storage.VersionHistory">
+   
+    <require
+			permission="zope.ManageSite"
+			interface="zorg.edition.interfaces.IVersionHistory"/>
+        
+  </content> 
   
         
   <content class="buddydemo.buddy.Buddy">

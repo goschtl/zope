@@ -64,9 +64,6 @@ from zope.app.file.interfaces import IFile
 from zope.app.file.file import File
 from zope.app.folder.folder import Folder
 
-from zope.app.keyreference.interfaces import IKeyReference
-from zope.app.keyreference.persistent import KeyReferenceToPersistent
- 
 from zope.app.copypastemove.interfaces import IObjectCopier
 from zope.app.copypastemove import ObjectCopier
 
@@ -74,8 +71,9 @@ from zope.app.container.interfaces import IWriteContainer, INameChooser
 from zope.app.container.contained import NameChooser
 from zope.component.tests.placelesssetup import PlacelessSetup
 
-from zorg.edition.interfaces import IVersion
-from zorg.edition.storage import Version
+from zorg.edition.interfaces import IVersion, IUUIDGenerator, ITicketOwner
+from zorg.edition.uuid import UUIDGenerator
+from zorg.edition.storage import Version, TicketOwner
 
 
 class FakeModule:
@@ -125,9 +123,10 @@ def setUp(test, name) :
     # for copy and moves
     ztapi.provideAdapter(None, IObjectCopier, ObjectCopier)
     ztapi.provideAdapter(IWriteContainer, INameChooser, NameChooser)
-    ztapi.provideAdapter(IPersistent, IKeyReference, KeyReferenceToPersistent) 
     ztapi.provideAdapter(None, IVersion, Version)
    
+    ztapi.provideAdapter(IAnnotatable, ITicketOwner, TicketOwner)
+    ztapi.provideUtility(IUUIDGenerator, UUIDGenerator())
 
 
 def setUpReadMe(test) :

@@ -200,7 +200,7 @@ class LiveChanges(AjaxPage) :
  
         """
         
-        from zope.publisher.interfaces.http import IResult
+        from zope.publisher.http import IResult
         from zope.publisher.http import DirectResult
         
         from twisted.web2.wsgi import FileWrapper
@@ -368,7 +368,7 @@ class Contextual(object) :
 class LivePageResult(Contextual) :
     """ An adapter that converts a LivePage into an IResult. """
 
-    from zope.publisher.interfaces.http import IResult
+    from zope.publisher.http import IResult
     
     implements(IResult)
     adapts(LivePage)

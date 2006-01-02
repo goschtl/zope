@@ -15,8 +15,11 @@
 import unittest, doctest
 from datetime import datetime
 
+import zope.component
+
 from zope.interface import implements
 from persistent.dict import PersistentDict
+from persistent import Persistent
 
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
@@ -33,16 +36,57 @@ from zorg.edition.interfaces import IVersionHistory
 from zorg.edition.interfaces import IHistoryStorage
 from zorg.edition.interfaces import IVersion
 from zorg.edition.interfaces import ICheckoutAware
-
+from zorg.edition.interfaces import ITicket, ITicketOwner
+from zorg.edition.interfaces import IUUIDGenerator
 
 class VersionPrincipalNotFound(Exception):
     pass
     
-    
-from zope.app.intid import IntIds
 
-class TestHistoryStorage(IntIds) :
-    pass
+TicketKey = "zorg.edition.storage"
+
+class TicketOwner(object) :
+    """ An adapter that allows to access the ticket of an object. 
+    
+        The ticket is stored as an annotation of the object.
+    """
+    
+    implements(ITicketOwner)
+    zope.component.adapts(IAnnotatable)
+
+    def __init__(self, context):
+        self.context = context
+        annotations = IAnnotations(self.context)
+        data = annotations.get(TicketKey)
+        if data is None:
+            uuid = zapi.getUtility(IUUIDGenerator)
+            annotations[TicketKey] = PersistentDict({'ticket': uuid()})
+
+    def _getTicket(self) :
+        """ Returns a unique id that is persistently 
+            associated with the context.
+        """
+        return IAnnotations(self.context).get(TicketKey)['ticket']
+
+    def _setTicket(self, uuid) :
+        """ Sets the unique id that is persistently 
+            associated with the context.
+        """
+        IAnnotations(self.context).get(TicketKey)['ticket'] = uuid
+        
+    ticket = property(_getTicket, _setTicket)
+     
+    def hasTicket(self) :
+        """ Returns True iff the adapted object has a ticket. """
+        return IAnnotations(self.context).get(TicketKey).has_key('ticket')
+        
+    def renewTicket(self) :
+        """ Sets a new unique id. Needed for true copies. """
+        if self.hasTicket() :
+            uuid = zapi.getUtility(IUUIDGenerator)
+            self._setTicket(uuid())
+    
+
 
 class VersionHistory(BTreeContainer) :
     """ A simple container implementation where each version
@@ -67,9 +111,7 @@ class VersionHistory(BTreeContainer) :
 
         """
         return "%03d" % (len(self)+1)
-          
-    # del verbieten
-    
+             
     def __setitem__(self, key, obj):
         """
         """
@@ -93,7 +135,6 @@ class SimpleHistoryStorage(BTreeContainer) :
         >>> from zope.app.testing.setup import buildSampleFolderTree
         >>> sample = buildSampleFolderTree()
         >>> histories = SimpleHistoryStorage()
-        >>> sample.keys()
         
     """
     
@@ -112,7 +153,7 @@ class SimpleHistoryStorage(BTreeContainer) :
             a ticket that remains stable across time. The ticket must be
             a unicode string.
         """
-        return unicode(hash(IKeyReference(obj)))
+        return ITicketOwner(obj).ticket
   
     def getVersion(self, obj, selector) :
         """ Returns the version of an object that is specified by selector. """
@@ -136,8 +177,8 @@ class SimpleHistoryStorage(BTreeContainer) :
         return history
 
 
-class Version(object) :
-    """An adapter for versionable data. 
+class Version(Persistent) :
+    """A persistent adapter for versionable data. 
     """
     
     implements(IVersion)

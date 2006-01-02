@@ -299,7 +299,7 @@ class ComposedAjaxPage(AjaxPage) :
             '<p>A title</p>'
             
             
-            If path is not provided the methods tries to extract it from the
+            If path is not provided renderPart tries to extract it from the
             request. Note that the path is encoded as a dotted name :
             
             >>> page.request = TestRequest(form=dict(part='header.title'))
@@ -360,7 +360,7 @@ class ComposedAjaxPage(AjaxPage) :
                                 onComplete=None,
                                 onLoading=None,
                                 returnFalse=True) :
-        """ Returns the javascript that is necessary update a part
+        """ Returns the javascript that is necessary to update a part
             of the DOM tree.
             
         >>> request = TestRequest()

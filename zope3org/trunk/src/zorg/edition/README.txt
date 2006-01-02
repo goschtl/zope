@@ -74,8 +74,8 @@ Within this overall pattern the following components are pluggable :
     
          
 
-General Setup Stuff
--------------------
+General Setup
+-------------
 
 In the following we take a simple folder tree with the following structure
 as an example :
@@ -133,12 +133,12 @@ usually does for us):
   >>> from zorg.edition import interfaces, repository, policies, storage
 
   
-We need a way to adapt all persistent object into unique references for later
+We need a way to adapt all objects into unique references for later
 access:
-
-  >>> ztapi.provideAdapter(persistent.interfaces.IPersistent, 
-  ...            zope.app.keyreference.interfaces.IKeyReference,
-  ...            zope.app.keyreference.persistent.KeyReferenceToPersistent)    
+ztapi.provideAdapter(IAnnotatable, ITicketOwner, TicketOwner)
+  >>> ztapi.provideAdapter(zope.app.annotation.interfaces.IAnnotatable, 
+  ...                                   interfaces.ITicketOwner,
+  ...                                   storage.TicketOwner)    
 
 Configure the 'IHistoryStorage' utility being responsible for the storage 
 of the objects histories:
@@ -266,15 +266,9 @@ So now we work on another objects
   >>> repo.checkin(a)
   >>> repo.revertToVersion(a, u'001')
 
-XXX Why does thsi raise an exception?
+XXX Why does this raise an exception?
 
   #>>> repo.checkin(a)
   #>>> repo.checkout(a)
   #>>> repo.revertToVersion(a, u'001')
 
-
-Notes
------
-
-- During our testing we changed the implementation of the repository
-  and therefore had to throw away the historie storage

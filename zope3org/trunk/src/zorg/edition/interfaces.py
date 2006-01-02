@@ -214,16 +214,29 @@ class ICheckoutAware(Interface):
 
    
 class ITicket(Interface) :
-    """ A marker interface for access information for versioned data.
+    """ Access key for versioned data.
     
-        A must provide sufficient information to get back these data.  
+        Provides sufficient information to get back versioned data.  
         A ticket is created when some versionable data have been accepted 
         and successfully stored in the repository.
     
         XXX: Special case IDelayedTicket for asynchronous storages needed?
       
     """
+    
+class ITicketOwner(Interface) :
+    """ An object that keeps its own ticket as annotation or whatever.
+    
+        A ticketowner must keep its ticket when it is copied.
+    """
+    
+    ticket = Attribute("The ticket that allows to retrieve editions.")
 
+    def hasTicket() :
+        """ Returns true if the object has a ticket. """
+        
+    def renewTicket() :
+        """ Creates a new ticket. """
 
 class IVersion(IContained) :
     """ Versions are snapshots of data that change over time. 
@@ -268,7 +281,7 @@ class IVersionNode(IVersion):
     
     
     
-class IVersionHistory(INameChooser) :
+class IVersionHistory(IContainer, INameChooser) :
     """ A version history of a single object should be able to
         generate unique names for each version within the version history.
     """
@@ -339,6 +352,10 @@ class IMultiClientStorage(Interface) :
         If ticket is None all changes should be described.   
         """
 
-
+class IUUIDGenerator(Interface) :
+    """ A utility that generates a universal unique id. """
+    
+    def __call__() :
+        """ Returns a new uuid. """
 
 # XXX describe generated events here

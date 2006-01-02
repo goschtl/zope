@@ -33,6 +33,7 @@ The index.html is our starting point and contains the following HTML :
             <p>A [New Subject]</p>
             <p>An <a href="http://www.google.org">external absolute link</a></p>
             <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
+            <p>An <a href="http://127.0.0.1/site/newitem">new absolute link</a></p>
         </body>
     </html>
 
@@ -49,18 +50,21 @@ one, the resulting HTML could look as follows :
 
     >>> from zorg.wikification.browser.wikipage import WikiFilePage
     >>> from zorg.wikification.browser.wikipage import CreateWikiPage
-    >>> page = WikiFilePage(index_page, TestRequest("/index.html"))
+    >>> url = "http://127.0.0.1/site/index.html"
+    >>> page = WikiFilePage(index_page, TestRequest(url))
     >>> print page.renderBody()
     <BLANKLINE>
             <p>Wikifiable</p>
-            <p>An <a href="http://127.0.0.1/site/target/@@wiki.html">existing link</a></p>
-            <p>A <a class="wiki-link" href="http://127.0.0.1/site/@@kupuadd.html?path=newitem">new page</a></p>
-            <p>A <a class="wiki-link" href="http://127.0.0.1/site/@@kupuadd.html?path=folder1%2Fnewitem">new page in a subfolder</a></p>
-            <p><a href="http://127.0.0.1/site/@@kupuadd.html?path=NewSubject">[New Subject]</a></p>
+            <p>An <a href="target">existing link</a></p>
+            <p>A <a href="http://127.0.0.1/site/@@wikiedit.html?path=newitem" class="wiki-link">new page</a></p>
+            <p>A <a href="http://127.0.0.1/site/@@wikiedit.html?path=folder1%2Fnewitem" class="wiki-link">new page in a subfolder</a></p>
+            <p><a href="http://127.0.0.1/site/@@wikiedit.html?path=NewSubject">[New Subject]</a></p>
             <p>An <a href="http://www.google.org">external absolute link</a></p>
-            <p>An <a href="http://127.0.0.1/site/target/@@wiki.html">internal absolute link</a></p>
+            <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
+            <p>An <a href="http://127.0.0.1/site/@@wikiedit.html?path=newitem" class="wiki-link">new absolute link</a></p>
     <BLANKLINE>
 
+    
     The task of creating a new page is delegated to the createFile method of the 
     wiki page. We considered the possibility to adapt the traversal mechanism
     in order to throw add forms in case of TraversalErrors, but a simple
