@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html tal:define="dc nocall:modules/zope/app/dublincore/interfaces/IZopeDublinCore">
  <head>
- <title>Test Content Document</title>
+ <title tal:content="python: dc(context).title or 'Untitled'">Test Content Document</title>
 
  <!-- headers to prevent the browser from caching, these *must* be provided,
         either in meta-tag form or as HTTP headers -->
@@ -13,7 +13,7 @@
         edit more of them -->
  <meta name="Subject" content="" />
  <meta name="Publisher" content="No publisher" />
- <meta name="Description" content="Document-centric editing overview." />
+ <meta name="Description" content="Document-centric editing overview." tal:attributes="content python: dc(context).description"/>
  <meta name="Contributors" content="" />
  <meta name="Effective_date" content="None" />
  <meta name="Expiration_date" content="None" />

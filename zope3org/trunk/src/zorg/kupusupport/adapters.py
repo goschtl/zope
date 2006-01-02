@@ -12,6 +12,7 @@
 $Id: app.py 6924 2004-10-14 09:57:19Z rineichen $
 """
 
+import re
 from zope.interface import implements
 
 from zope.app.container.interfaces import IContainer
@@ -20,13 +21,30 @@ from zope.app.file.interfaces import IImage
 from zorg.kupusupport.interfaces import IImageReadContainer
 from zorg.kupusupport.interfaces import IKupuPolicy
 
+options = re.DOTALL |  re.IGNORECASE
+
 def html_body(html) :
-    import re
-    output = re.compile('<body.*?>(.*?)</body>', re.DOTALL |  re.IGNORECASE).findall(html)
+    output = re.compile('<body.*?>(.*?)</body>', options).findall(html)
     if len(output) > 1 :
         print "Warning: more than one body tag."
     elif len(output) == 0 :     # hmmh, a html fragment?
         return html  
+    return output[0]
+
+def get_title(html) :
+    output = re.compile('<title.*?>(.*?)</title>', options).findall(html)
+    if len(output) > 1 :
+        print "Warning: more than one title tag."
+    elif len(output) == 0 :
+        return None
+    return output[0]
+    
+def get_description(html) :
+    output = re.compile('<meta name="description" content="(.*?)".*?/>', options).findall(html)
+    if len(output) > 1 :
+        print "Warning: more than one description tag."
+    elif len(output) == 0 :
+        return None 
     return output[0]
     
     
