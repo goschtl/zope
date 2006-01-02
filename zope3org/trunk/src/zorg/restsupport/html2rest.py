@@ -479,7 +479,8 @@ class CharStyler(Styler):
     markers = {
         'strong': '**', 'b': '**',
         'em': '*', 'i': '*',
-        'code': '`'
+        'code': '`',
+        'span':''                   # uo: let spans go through
     }
 
     def __init__(self, marker):
@@ -684,6 +685,8 @@ class Html2ReStructuredTextParser(HTMLParser.HTMLParser):
         'ul': ListFormatter,
         'ol': ListFormatter,
         'li': ListItemFormatter,
+        'div': VerbatimFormatter,       # uo: no better idea at the moment
+                                        # keep divs as they are
         'pre': VerbatimFormatter,
         'hr': HorizontalRuleFormatter,
         'table': TableFormatter,
@@ -710,6 +713,7 @@ class Html2ReStructuredTextParser(HTMLParser.HTMLParser):
         'em': CharStyler,
         'i': CharStyler,
         'code': CharStyler,
+        'span': CharStyler,             # uo: allow spans
         'img': ImageStyler
     }
 

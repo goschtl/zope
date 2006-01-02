@@ -43,6 +43,7 @@ _ = MessageIDFactory("zorg.wikification")
 from persistent import Persistent
 
 from zorg.wikification.browser.interfaces import IWikiPage
+from zorg.wikification.browser.interfaces import ILinkProcessor
 from zorg.importer import IImporter
 from zorg.kupusupport.adapters import html_body, get_title, get_description
 from zorg.kupusupport.browser.views import KupuEditor as _KupuEditor
@@ -224,65 +225,8 @@ class WikiPage(ComposedAjaxPage) :
  
         
         """
-    
-        from zorg.wikification.parser import BaseHTMLProcessor
         
-        class LinkProcessor(BaseHTMLProcessor) :
-            
-            def __init__(self, caller) :
-                BaseHTMLProcessor.__init__(self)
-                self.caller = caller
-                
-            def update_link_class(self, attrs) :
-                """ Mark link css. """
-                result = []
-                _class = False
-                for key, value in attrs :
-                    if key == "class" :
-                        value += " wiki-link"
-                        _class = True
-                    result.append((key, value))
-                if not _class :
-                    result.append(("class", "wiki-link"))
-                return result
-                                    
-            def unknown_starttag(self, tag, attrs):
-                if tag == "a" :
-                    new = False
-                    modified = []
-                    for key, value in attrs :
-                        if key == "href" :
-                            new, value = self.caller.wikifyLink(value)
-                        modified.append((key, value))
-                            
-                    if new :
-                        result = self.update_link_class(modified)
-                        BaseHTMLProcessor.unknown_starttag(self, tag, result)
-                        return
-                        
-                BaseHTMLProcessor.unknown_starttag(self, tag, attrs)               
- 
-            def handle_data(self, text):
-                # called for each block of plain text, i.e. outside of any tag and
-                # not containing any character or entity references
-                
-                text_link = re.compile('\[.*?\]', re.VERBOSE)
-                
-                result = ""
-                end = 0
-                for m in text_link.finditer(text):
-                    
-                    start = m.start()
-                    end = m.end()
-                    result += text[end:start]
-                    between = text[start+1:end-1]
-                    result += self.caller.wikifyTextLink(between)
-                    
-                result += text[end:]
-                self.pieces.append(result)
-        
-        
-        processor = LinkProcessor(self)
+        processor = ILinkProcessor(self)
         processor.feed(body)
         return processor.output()
      
@@ -411,10 +355,14 @@ class Editor(PageElement) :
         Save method that stores the main content and sets
         the title and description if available.
         
-        >>> editor = Editor(None)
-        >>> editor.data = 'Some text'
         >>> from zope.app.file import File
+        >>> from zorg.wikification.tests import buildSampleSite
+        >>> site = buildSampleSite()
+        >>> page = WikiEditor(site, TestRequest())
         >>> file = File()
+        
+        >>> editor = Editor(page)
+        >>> editor.data = 'Some text'
         >>> editor.saveTo(file)
         >>> file.data
         'Some text'

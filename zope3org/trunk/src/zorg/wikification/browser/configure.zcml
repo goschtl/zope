@@ -4,7 +4,12 @@
    i18n_domain="zope"
    >
 
-
+    <zope:adapter
+	  factory="wikilink.JavaScriptLinkProcessor"
+	  provides=".interfaces.ILinkProcessor"
+      for=".interfaces.IWikiPage"
+      />
+      
     <page		
       name="wiki_macros"
       for="*"

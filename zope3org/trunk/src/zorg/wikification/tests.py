@@ -48,6 +48,10 @@ from zope.app.file import File
 
 from zorg.ajax.tests import sessionSetUp
 
+from zorg.wikification.browser.interfaces import ILinkProcessor
+from zorg.wikification.browser.interfaces import IWikiPage
+from zorg.wikification.browser.wikilink import BaseLinkProcessor
+
 
 example1 = u"""<html>
     <body>
@@ -121,6 +125,11 @@ def setUpWikification(test) :
                                             IZopeDublinCore)
  
     
+    zope.component.provideAdapter(BaseLinkProcessor,
+                                            [IWikiPage], 
+                                            ILinkProcessor)
+                                            
+                                            
 def tearDownWikification(test) :
     zope.app.testing.setup.placefulTearDown()   
 

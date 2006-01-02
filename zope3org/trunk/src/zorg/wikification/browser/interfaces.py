@@ -26,6 +26,15 @@ from zope.i18n import MessageIDFactory
 _ = MessageIDFactory("zorg.wikification")
           
 
+class ILinkProcessor(Interface) :
+    """ A parser that transforms HTML links into wikified links. """
+    
+    def feed(html) :
+        """ Feed method of the parser. """
+        
+    def output() :
+        """ Returns the modified HTML with wikified links. """
+        
 
 class IWikiPage(Interface) :
     """ A wiki page that 'wikifies' a folder with ordinary HTML documents.
