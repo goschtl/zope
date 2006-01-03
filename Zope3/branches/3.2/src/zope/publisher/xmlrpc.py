@@ -42,7 +42,7 @@ class XMLRPCRequest(HTTPRequest):
         'See IPublisherRequest'
         # Parse the request XML structure
 
-        # XXX using readlines() instead of lines()
+        # using readlines() instead of lines()
         # as twisted's BufferedStream sends back
         # an empty stream here for read() (bug)
         lines = ''.join(self._body_instream.readlines())
