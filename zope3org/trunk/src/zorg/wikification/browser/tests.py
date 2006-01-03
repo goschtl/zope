@@ -41,6 +41,12 @@ def test_suite():
                                 tearDown=tearDownBrowserTests,
                                 optionflags=optionflags
                              ),
+       
+        doctest.DocTestSuite("zorg.wikification.browser.wikilink", 
+                                setUp=setUpBrowserTests, 
+                                tearDown=tearDownBrowserTests,
+                                optionflags=optionflags
+                             ),
                              
         doctest.DocFileSuite("README.txt", 
                                 setUp=setUpBrowserTests, 

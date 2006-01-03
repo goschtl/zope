@@ -27,13 +27,15 @@ The index.html is our starting point and contains the following HTML :
     <html>
         <body>
             <p>Wikifiable</p>
-            <p>An <a href="target">existing link</a></p>
+            <p>An <a href="target">existing file</a></p>
+            <p>An <a href="folder">existing folder</a></p>
+            <p>An <a href="index.html">existing page</a></p>
             <p>A <a href="newitem">new page</a></p>
             <p>A <a href="folder1/newitem">new page in a subfolder</a></p>
             <p>A [New Subject]</p>
             <p>An <a href="http://www.google.org">external absolute link</a></p>
             <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
-            <p>An <a href="http://127.0.0.1/site/newitem">new absolute link</a></p>
+            <p>A <a href="http://127.0.0.1/site/newitem">new absolute link</a></p>
         </body>
     </html>
 
@@ -55,13 +57,15 @@ one, the resulting HTML could look as follows :
     >>> print page.renderBody()
     <BLANKLINE>
             <p>Wikifiable</p>
-            <p>An <a href="target">existing link</a></p>
-            <p>A <a href="http://127.0.0.1/site/@@wikiedit.html?path=newitem" class="wiki-link">new page</a></p>
-            <p>A <a href="http://127.0.0.1/site/@@wikiedit.html?path=folder1%2Fnewitem" class="wiki-link">new page in a subfolder</a></p>
-            <p><a href="http://127.0.0.1/site/@@wikiedit.html?path=NewSubject">[New Subject]</a></p>
+            <p>An <a href="http://127.0.0.1/site/target">existing file</a></p>
+            <p>An <a href="http://127.0.0.1/site/folder/@@wiki.html">existing folder</a></p>
+            <p>An <a href="http://127.0.0.1/site/index.html/@@wiki.html">existing page</a></p>
+            <p>A <a href="http://127.0.0.1/site/@@wikiedit.html?add=newitem" class="wiki-link">new page</a></p>
+            <p>A <a href="http://127.0.0.1/site/@@wikiedit.html?add=folder1%2Fnewitem" class="wiki-link">new page in a subfolder</a></p>
+            <p>A <a class="wiki-link" href="http://127.0.0.1/site/@@wikiedit.html?add=NewSubject">[New Subject]</a></p>
             <p>An <a href="http://www.google.org">external absolute link</a></p>
             <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
-            <p>An <a href="http://127.0.0.1/site/@@wikiedit.html?path=newitem" class="wiki-link">new absolute link</a></p>
+            <p>A <a href="http://127.0.0.1/site/@@wikiedit.html?add=newitem" class="wiki-link">new absolute link</a></p>
     <BLANKLINE>
 
     
@@ -70,7 +74,7 @@ one, the resulting HTML could look as follows :
     in order to throw add forms in case of TraversalErrors, but a simple
     page method seems to be the simplest solution:
     
-    >>> request = TestRequest("/index.html", form={'path':'folder1/newitem', })
+    >>> request = TestRequest("/index.html", form={'add':'folder1/newitem', })
     >>> page = CreateWikiPage(site, request)
     >>> new_file = page.createFile()  
     >>> site[u'folder1'][u'newitem']

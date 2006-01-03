@@ -7,7 +7,8 @@
                 <input type="hidden" id="editor" value="rest" />
                 
                 <h4>Title</h4>
-    			<input class="title" id="version_title" name="version[title]" size="30" type="text" value="Test" />
+    			<input class="title" id="version_title" name="version[title]" size="30" type="text" value="Test" 
+    			             tal:attributes="value string:${view/editableTitle}"/>
                 <h4>Body</h4>
 
                 <textarea class="edit-area" tal:content="view/display" 

@@ -1,0 +1,102 @@
+<span>
+    <div class="anylinkcss" tal:attributes="id view/menu_id" >
+        <span class="anylinkheader">Edit this Link</span>
+        <div class="anylinkitem" onclick="editPlaceholderLabel();"
+             tal:attributes="onclick string:editPlaceholderLabel('${view/link_id}', '${view/menu_id}', '${view/editableLabel}');">
+            Rename
+        </div>
+        <a class="anylinkitem" href="#" tal:attributes="href view/link">
+            Add Page
+        </a>
+        <div class="anylinkitem" tal:attributes="onclick string:Toggle.display('create_folder${view/index}');">
+            Create Folder
+        </div>
+        <div class="anylinkitem" tal:attributes="onclick string:Toggle.display('upload_form${view/index}');">
+            Upload File
+        </div>
+    </div>
+    <div class="inline_form" tal:attributes="id string:upload_form${view/index}" style="display:none;">
+        <form method="post"
+               enctype="multipart/form-data"
+               action="uploadFile"
+               tal:attributes="onreset string:Toggle.display('upload_form${view/index}');">
+            <h4>Upload File</h4>
+            <input name="link_id" type="hidden" tal:attributes="value string:${view/link_id}" />
+            <table>
+                <tr>
+                    <td valign="top" class="form-title">
+                        Title:
+                    </td>
+                    <td valign="top" >
+                        <input id="file_title" name="title" type="text" size="40" value=""/>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" class="form-title">
+                        Description: 
+                    </td>
+                    <td valign="top" >
+                        <textarea id="description" name="description"
+                                       cols="37" rows="8" value="123"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" class="form-title">
+                        File: 
+                    </td>
+                    <td>
+                        <input id="data" name="data" size="20" type="file" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;		
+                    </td>
+                    <td>
+                        <input name="entry_submit" type="submit" value="Submit">
+                        <input name="cancel_submit" type="reset" value="Cancel"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="inline_form" tal:attributes="id string:create_folder${view/index}" style="display:none;">
+        <form method="post"
+               enctype="multipart/form-data"
+               onsubmit="new Ajax.Updater('main', './@@modifyLink', {parameters:Form.serialize(this)}); return false;"  
+               tal:attributes="onreset string:Toggle.display('create_folder${view/index}');">
+            <h4>Create Folder</h4>
+            <input name="link_id" type="hidden" tal:attributes="value string:${view/link_id}" />
+            <input name="cmd" type="hidden" value="folder" />
+            <table>
+                <tr>
+                    <td valign="top" class="form-title">
+                        Name:
+                    </td>
+                    <td valign="top" >
+                        <input id="folder_name" name="name" type="text" size="40" value="FolderName" tal:attributes="value string:${view/editableLabel}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" class="form-title">
+                        Description: 
+                    </td>
+                    <td valign="top" >
+                        <textarea id="description" name="description"
+                                       cols="37" rows="8" value="123"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;		
+                    </td>
+                    <td>
+                        <input name="entry_submit" type="submit" value="Submit">
+                        <input name="cancel_submit" type="reset" value="Cancel"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</span>
+
+
+

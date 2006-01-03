@@ -5,7 +5,7 @@
    >
 
     <zope:adapter
-	  factory=".wikilink.JavaScriptLinkProcessor"
+	  factory=".wikilink.AjaxLinkProcessor"
 	  provides=".interfaces.ILinkProcessor"
       for=".interfaces.IWikiPage"
       />
@@ -46,6 +46,14 @@
       for="zope.app.file.interfaces.IFile"
       permission="zope.ManageContent">
        
+      <page
+        name="modifyLink"
+        attribute="modifyLink" />
+      
+      <page
+        name="uploadFile"
+        attribute="uploadFile" />
+        
       <page 
         name="wikiupdate.html"
         attribute="update" />
@@ -62,6 +70,14 @@
       for="zope.app.folder.interfaces.IFolder"
       permission="zope.ManageContent">
        
+      <page
+        name="modifyLink"
+        attribute="modifyLink" />
+
+      <page
+        name="uploadFile"
+        attribute="uploadFile" />
+        
       <page 
         name="wikiupdate.html"
         attribute="update" />

@@ -30,6 +30,9 @@ from zope.app.annotation.interfaces import IAnnotations
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.container.interfaces import IContained
+from zope.app.container.contained import NameChooser
+from zope.app.container.interfaces import INameChooser
+from zope.app.folder.interfaces import IFolder
 from zope.app.traversing.interfaces import ITraversable, ITraverser
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.traversing.interfaces import IContainmentRoot
@@ -56,17 +59,24 @@ from zorg.wikification.browser.wikilink import BaseLinkProcessor
 example1 = u"""<html>
     <body>
         <p>Wikifiable</p>
-        <p>An <a href="target">existing link</a></p>
+        <p>An <a href="target">existing file</a></p>
+        <p>An <a href="folder">existing folder</a></p>
+        <p>An <a href="index.html">existing page</a></p>
         <p>A <a href="newitem">new page</a></p>
         <p>A <a href="folder1/newitem">new page in a subfolder</a></p>
         <p>A [New Subject]</p>
         <p>An <a href="http://www.google.org">external absolute link</a></p>
         <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
-        <p>An <a href="http://127.0.0.1/site/newitem">new absolute link</a></p>
+        <p>A <a href="http://127.0.0.1/site/newitem">new absolute link</a></p>
     </body>
 </html>"""
 
-
+example2 = u"""<html>
+    <body>
+        <p>Wikifiable</p>
+        <p>A [New Subject]</p>
+    </body>
+</html>"""
 
 def buildSampleSite() :
     """ Build a sample structure
@@ -92,8 +102,10 @@ def buildSampleSite() :
     root.__name__ = u"site"
     root[u"target"] = File()
     folder = root[u"folder"] = Folder()
-    folder[u"subfolder"] = Folder()
+    filledsubfolder = folder[u"filledsubfolder"] = Folder()
+    folder[u"emptysubfolder"] = Folder()
     index = root[u"index.html"] = File(example1, 'text/html')
+    filledsubfolder[u"index.html"] = File(example2, 'text/html')
     
     IZopeDublinCore(index).title = u'Wiki page'
     return root    
@@ -111,7 +123,8 @@ def setUpWikification(test) :
     zope.interface.classImplements(Folder, IAnnotatable)
     zope.interface.classImplements(File, IAttributeAnnotatable)
     zope.interface.classImplements(Folder, IAttributeAnnotatable)
-    
+
+    zope.component.provideAdapter(NameChooser, [IFolder], INameChooser)
     zope.component.provideAdapter(Traverser, [None], ITraverser)
     zope.component.provideAdapter(DefaultTraversable, [None], ITraversable)
     zope.component.provideAdapter(LocationPhysicallyLocatable,

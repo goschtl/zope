@@ -13,11 +13,9 @@
 ##############################################################################
 """
 
-$Id: tests.py 38895 2005-10-07 15:09:36Z dominikhuber $
+$Id: wikipage.py 38895 2005-10-07 15:09:36Z dominikhuber $
 """
 __docformat__ = 'restructuredtext'
-
-import re, urllib, cgi
 
 import zope.event
 from zope.app import zapi
@@ -54,8 +52,7 @@ from zorg.restsupport import rest2html
 from zorg.restsupport import html2rest
 
 
-    
-
+            
 class WikiPage(ComposedAjaxPage) :
     """ A wiki page that 'wikifies' a container with ordinary HTML documents.
     
@@ -79,6 +76,7 @@ class WikiPage(ComposedAjaxPage) :
             'login': '#',
             }
     untitled = u"Untitled"
+
    
     def __init__(self, context, request, container=None) :
         """ Initializes some usefull instance variables. 
@@ -102,107 +100,15 @@ class WikiPage(ComposedAjaxPage) :
         self.title = dc.title or self.untitled
         self.language = dc.Language()
         
+        
     def verb(self) :
         """ Returns a descriptive verb. """
         return _('View')
         
-    def isAbsoluteURL(self, link) :
-        """ Returns true if the link is a complete URL. 
-            
-            Note that an absolute URL in this sense 
-            might point to a local object.
-        """
-        
-        for prefix in 'http:', 'ftp:', 'https:', 'mailto:' :
-            if link.startswith(prefix) :
-                return True
-        return False
-        
     def getContainer(self) :
         """ Returns the base container. Should be overwritten. """
         return None
-                   
-    def wikifyLink(self, link) :
-        """
-        Modifies dead relative links and leaves all other links untouched.
-        
-        Returns a tuple of a boolean indicating a modification and the 
-        resulting link.
-                
-        >>> from zorg.wikification.tests import buildSampleSite
-        >>> site = buildSampleSite()
-        >>> request = TestRequest()
-        >>> wiki = WikiPage(site, request)
-        
-        Anchors and absolute external links are left unmodified :
-        
-        >>> wiki.wikifyLink('#anchor')
-        (False, '#anchor')
-        >>> wiki.wikifyLink('http://www.zope.org')
-        (False, 'http://www.zope.org')   
-        
-        Relative and internal absolute links are treated the same. If 
-        a link can be traversed successfully only the specific wiki
-        view is added to ensure that we remain in the wiki navigation :
-       
-        >>> wiki.wikifyLink('http://127.0.0.1/site')
-        (False, 'http://127.0.0.1/site/@@wiki.html')
-        >>> wiki.wikifyLink('http://127.0.0.1/site/folder/subfolder')
-        (False, 'http://127.0.0.1/site/folder/subfolder/@@wiki.html')
-        
-        If the path cannot completely be resolved the link is changed to
-        an add view call :
-        
-        >>> wiki.wikifyLink('http://127.0.0.1/site/folder/wikify.html')
-        (True, 'http://127.0.0.1/site/folder/@@wikiedit.html?path=wikify.html')
-        
-        """
-
-        site_url = zapi.absoluteURL(self.site, self.request)
-        if link.startswith(site_url) :
-            link = link[len(site_url)+1:]
-            node = self.site
-            url = site_url
-        elif self.isAbsoluteURL(link) :
-            return False, link
-        elif link.startswith("#") :
-            return False, link
-        else :
-            node = self.container
-            url = zapi.absoluteURL(node, self.request)
-        
-        path = [x for x in link.split("/") if x]        
-        while path :         
-            try :
-                name = path[0]
-                node = zapi.traverseName(node, name)
-                url += "/" + name
-                name = path.pop(0)
-            except TraversalError :
-                break
-        if path :
-            appendix = urllib.urlencode({'path': "/".join(path)})
-            return True, url + self.add + "?" + appendix
-        
-        return False, url + self.action
- 
- 
-    def wikifyTextLink(self, text) :
-        """ Modifies dead relative links and leaves
-            all other links untouched.
-        """
-        
-        name = text.replace(" ", "")
-        try :
-            zapi.traverseName(self.container, name)
-            link = name
-            label = text
-        except TraversalError :
-            appendix = urllib.urlencode({'path': name})
-            link = self.base + self.add + "?" + appendix
-            label = '[%s]' % text
-        return '<a href="%s">%s</a>' % (link, label)
-        
+                           
     def wikify(self, body) :
         """ 
             Renders HTML with dead relative links as 'wikified' HTML,
@@ -220,7 +126,7 @@ class WikiPage(ComposedAjaxPage) :
             
             >>> print wiki.wikify(html)
             <html><body>
-            <a href="...wikiedit.html?path=wiki.html" class="wiki-link">Link</a>
+            <a href="...wikiedit.html?add=wiki.html" class="wiki-link">Link</a>
             </body><html>
  
         
@@ -235,7 +141,7 @@ class WikiPage(ComposedAjaxPage) :
         url = zapi.absoluteURL(self.context, self.request)
         return url + self.action
 
-
+        
 class WikiContainerPage(WikiPage) :
     """ Wiki view for a container. """
     
@@ -277,18 +183,34 @@ class WikiContainerPage(WikiPage) :
     def getFile(self) :
         return self.context.get(u"index.html")
 
-    def renderBody(self) :
+    def getBody(self) :
+        file = self.getFile()
+        if file :
+            page = WikiFilePage(file, self.request, self.getContainer())
+            return page.getBody()
+            
+            
+    def renderBody(self, debug=False) :
         """ Delegates the rendering to the WikiFilePage of the 
             index.html doocument.
             
         """
+                
+    #     file = self.getFile()
+#         if file :
+#             page = WikiFilePage(file, self.request, self.getContainer())
+#             result = page.renderBody()
+#             return result
         
-        file = self.getFile()
-        if file :
-            return WikiFilePage(file, self.request, self.container).renderBody()
+ #        if debug :
+#             import pdb; pdb.set_trace()
+#             
+        body = self.getBody()
+        if body is not None :
+            return self.wikify(unicode(body, encoding="utf-8"))
+            
         return self._noindex()
-
-        
+       
         
 class WikiFilePage(WikiPage) :
     """ Wiki view for a file. """
@@ -304,16 +226,19 @@ class WikiFilePage(WikiPage) :
     def getFile(self) :
         return self.context
         
-    def renderBody(self) :
-        
+    def getBody(self) :
+        """ Returns the body as a unicode string. """
         file = self.context
-
         if file.contentType in self.supported :
-            body = html_body(file.data)
-            return unicode(self.wikify(body), encoding="utf-8")
+            return html_body(file.data)
+            
+    def renderBody(self) :
+        body = self.getBody()
+        if body is not None :
+            return self.wikify(unicode(body, encoding="utf-8"))
   
-        return "Sorry, not wikifiable at the moment."
-
+        return u"Sorry, not wikifiable at the moment."
+            
 
 class EditOptions(PageElement) :
     """ Allows the user to switch between Kupu, Rest and 
@@ -546,20 +471,54 @@ class WikiEditor(WikiPage) :
    
     factory = dict(rest=RestEditor, kupu=KupuEditor, tinymce=TinyMCEEditor)
     chooser = EditOptions
-
+    
     def __init__(self, context, request) :
         super(WikiEditor, self).__init__(context, request)  
         self.editor = self.parameter('editor', storage=self.session)
         self.main = self.factory.setdefault(self.editor, self.chooser)(self)
         self.main.asType = "text/html" # default: because we are using .html extension         
-                
+
+
+    def _modifyLink(self, cmd, link_id) :
+        """ Help method that modified a link and saves the result into
+            the file.
+        """
+        processor = ILinkProcessor(self)
+        processor.command = cmd
+        processor.link_id = link_id
+        
+        body = self.getBody()
+        processor.feed(body)
+        file = self.getFile()
+        file.data = processor.output()
+        
+    def uploadFile(self, link_id) :
+        """ Uploads a file for a wikified link and redirects 
+            to the view again.
+        """
+        self._modifyLink('upload', link_id)
+        self.request.response.redirect(self.nextURL())
+        
+        
+    def modifyLink(self, cmd, link_id, verbose=True) :
+        """ Modify a single link dynamically and return the new
+            body.
+        """
+        self._modifyLink(cmd, link_id)
+        return u'<div id="main">%s</div>' % self.renderBody()
+
       
 class EditWikiPage(WikiEditor, WikiFilePage) :
     """ An edit view for wiki pages. """
     
     def verb(self) :
         return _('Edit')
-    
+
+    def editableTitle(self) :
+        """ Returns the title that should be edited. """
+        file = self.getFile()
+        return IZopeDublinCore(file).title or u"Untitled"
+                
     def display(self) :
         """ Returns the data that should be edited. """
         file = self.getFile()
@@ -570,26 +529,40 @@ class EditWikiPage(WikiEditor, WikiFilePage) :
         file = self.getFile()
         self.main.saveTo(file)
         self.request.response.redirect("wiki.html")
-
+                
+        
 class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
     """ A specialization that edits the index.html if available. """ 
 
     def getExtraPath(self) :
-        return [u'index.html']
-    
-    def verb(self) :
-        file = self.getFile()
-        if file is None :
-            return _('Add')
+        """ Returns the path that is added to the container if the user
+            creates a new wiki page.
+        """
+        if self.isAddView() :
+            filepath = self.request.form.get('add', '')
+            return filepath.split(u'/')
         else :
-            return _('Edit')
+            return ['index.html']
+    
+    def isAddView(self) :
+        return self.request.form.get('add', None) is not None
+        
+    def verb(self) :
+        if self.isAddView() :
+            return _('Add')
+        return _('Edit')
+
+    def editableTitle(self) :
+        """ Returns the title that should be edited. """
+        if self.isAddView() :
+            return u"Untitled"
+        return IZopeDublinCore(self.getFile()).title
         
     def display(self) :
         """ Returns the data that should be edited. """
-        file = self.getFile()
-        if file is None :
+        if self.isAddView() :
             return self._new()
-        return self.main.readFile(file)
+        return self.main.readFile(self.getFile())
 
     def createFile(self) :
         """
@@ -634,16 +607,6 @@ class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
 
 class CreateWikiPage(EditWikiContainerPage) :
     """ Creates a wiki page. """
-    
-    def verb(self) :
-        return _('Add')
-
-    def getExtraPath(self) :
-        """ Returns the path that is added to the container if the user
-            creates a new wiki page.
-        """
-        filepath = self.request.form.get('path', 'index.html')
-        return filepath.split(u'/')
  
     def importURL(self, url) :
         """ Imports pages from an URL. """

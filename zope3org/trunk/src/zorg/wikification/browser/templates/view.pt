@@ -6,6 +6,13 @@
   <link rel="stylesheet" type="text/css" media="print" href="/@@/style/print.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="/@@/style/screen.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="/@@/style/main.css" />
+  <script type="text/javascript" src="anylink.js"
+        tal:attributes="src string:${context/++resource++zorgajax/prototype.js}" />
+  <script type="text/javascript" src="anylink.js"
+        tal:attributes="src string:${context/++resource++zorgajax/anylink.js}" />
+  <script type="text/javascript" src="link.js"
+        tal:attributes="src string:${context/++resource++wikiscripts/link.js}" />
+                
 </head>
 <body>
 <div id="layout" tal:define="uris view/uris">
@@ -21,7 +28,6 @@
 	
 		<div class="col second">
             <div id="action-navigation" class="itemViews">
-			  <a href="@@login.html">Login</a> &nbsp; |  &nbsp;
               View&nbsp; |  &nbsp;
               <a href="@@wikiedit.html">Edit</a> &nbsp;&nbsp;&nbsp;&nbsp;
            </div>
@@ -34,6 +40,7 @@
                 <div id="breadcrumb-navigation" metal:use-macro="context/@@wiki_macros/breadcrumbs" />
             </td>
             <td width="50%" align="right">
+                <!--
                 <form id="search" method="get" name="search" href="search">
                     <fieldset>
                         <legend>
@@ -45,6 +52,8 @@
                         <input type="submit" class="submit" name="search" value="Search" id="search-search" />
                     </fieldset>
                 </form>
+                
+                -->
            </td>
          </tr>
     </table>
@@ -78,10 +87,7 @@
             </fieldset>
         </form>
                         
-	</div>
-	
- 
-                
+	</div>      
                 
 </div>
 </body>

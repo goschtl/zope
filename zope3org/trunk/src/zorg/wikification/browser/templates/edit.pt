@@ -48,10 +48,6 @@
 				</div>
 				<div class="col second">
 					<div id="action-navigation" class="itemViews">
-						<a href="@@login.html">
-							Login 
-						</a>
-						&nbsp; | &nbsp; 
 						<a href="@@wiki.html">
 							View 
 						</a>

@@ -15,7 +15,78 @@ body {
 	color: red;
 	border-width: 1px;
 	border-style: dotted;
+	cursor: pointer;
 }
+
+.inline_form {
+    position:absolute;
+    border: 1px solid #666666;
+    padding: 4px;
+    font:normal 10px Verdana;
+    line-height: 18px;
+    z-index: 100;
+    background-color: #EDF0F4;
+    width: 400px;
+}
+
+.anylinkcss {
+    position:absolute;
+    visibility: hidden;
+    border:1px solid #666666;
+    border-bottom-width: 0;
+    font:normal 10px Verdana;
+    line-height: 18px;
+    z-index: 100;
+    background-color: #EDF0F4;
+    width: 100px;
+}
+
+.anylinkheader {
+    width: 100%;
+    display: block;
+    text-indent: 3px;
+    border-bottom: 1px solid #666666;
+    padding: 1px 0;
+    text-decoration: none;
+    font-weight: normal;
+    text-indent: 5px;
+    color: #666666;
+}
+
+.anylinkitem {
+    width: 100%;
+    display: block;
+    text-indent: 3px;
+    border-bottom: 1px solid #666666;
+    padding: 1px 0;
+    text-decoration: none;
+    font-weight: normal;
+    text-indent: 5px;
+    color: black;
+}
+
+.anylinkcss div:hover { /*hover background color*/
+    background-color: #FFFFFF;
+    color: blue;
+    font-weight: normal;
+}
+
+.anylinkcss div:visited {
+    font-weight: normal;
+}
+
+.anylinkcss a:hover { /*hover background color*/
+    background-color: #FFFFFF;
+    color: blue;
+    font-weight: normal;
+}
+
+.anylinkcss a:visited {
+    font-weight: normal;
+}
+
+
+
 
 #layout {
   width: 100%;
