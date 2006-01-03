@@ -8,6 +8,13 @@ Zope Changes
 
   After Zope 3.2.0 (trunk only)
 
+    New features
+
+      - Added a new API for collating text.  You can now adapt 
+        a locale to zope.i18n.interfaces.ILocales.ICollator.  You can
+        then use that to sort strings, such as menu entries, in a
+        locale-specific fashion.
+
     Restructuring
 
     Bug Fixes
