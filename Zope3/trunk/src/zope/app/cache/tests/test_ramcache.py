@@ -238,6 +238,21 @@ class TestStorage(TestCase):
             raise "ExpectedKeyError"
         self.assertEqual(s._misses[object2], 1)
 
+    def test_getEntry_do_cleanup(self):
+         from zope.app.cache.ram import Storage
+
+         s = Storage(cleanupInterval=300, maxAge=300)
+         object = 'object'
+         key = ('view', (), ('answer', 42))
+         value = 'yes'
+
+         s.setEntry(object, key, value)
+
+         s._data[object][key][1] = time() - 400
+         s.lastCleanup = time() - 400
+
+         self.assertRaises(KeyError, s.getEntry, object, key)
+
     def test_setEntry(self):
         from zope.app.cache.ram import Storage
 

@@ -180,6 +180,10 @@ class Storage(object):
             self.cleanupInterval = cleanupInterval
 
     def getEntry(self, ob, key):
+
+        if self.lastCleanup <= time() - self.cleanupInterval:
+            self.cleanup()
+
         try:
             data = self._data[ob][key]
         except KeyError:
