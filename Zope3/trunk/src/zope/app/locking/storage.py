@@ -111,6 +111,9 @@ class LockStorage(object):
         """
         Set the current lock for an object.
         """
+        ## call cleanup first so that if there is already a lock that
+        ## has timed out for the object then we don't delete it.
+        self.cleanup()
         keyref = IKeyReference(object)
         self.locks[keyref] = lock
         pid = lock.principal_id
@@ -119,7 +122,6 @@ class LockStorage(object):
             value = self.timeouts.get(ts, [])
             value.append(keyref)
             self.timeouts[ts] = value
-        self.cleanup()
 
     def delLock(self, object):
         """
@@ -130,7 +132,7 @@ class LockStorage(object):
 
     def cleanup(self):
         # We occasionally want to clean up expired locks to keep them
-        # from accumulating over time and slowing things down. 
+        # from accumulating over time and slowing things down.
         for key in self.timeouts.keys(max=int(timefunc())):
             for keyref in self.timeouts[key]:
                 if self.locks.get(keyref, None) is not None:
