@@ -38,7 +38,7 @@ class Prebuffer(resource.WrapperResource):
             def done(_):
                 temp.seek(0)
                 # Replace the request's stream object with the tempfile
-                req.stream = stream.FileStream(temp)
+                req.stream = stream.FileStream(temp, useMMap=False)
                 # Hm, this shouldn't be required:
                 req.stream.doStartReading = None
 
