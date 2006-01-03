@@ -17,6 +17,9 @@ Zope Changes
 
     Restructuring
 
+      - Removed unused menus and made previous titles, the description, 
+	since they were awefully long. Then I created new, short titles.
+
     Bug Fixes
 
       - Fixed storage bug reported, fixed and tested by Zhiyun (Simon) Hang.
