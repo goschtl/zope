@@ -100,7 +100,7 @@ class ObjectWidget(BrowserWidget, InputWidget):
         return [self.getSubWidget(name) for name in self.names]
 
     def hidden(self):
-        """Render the list as hidden fields."""
+        """Render the object as hidden fields."""
         result = []
         for name in self.names:
             result.append(getSubwidget(name).hidden())
