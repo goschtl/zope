@@ -50,7 +50,9 @@ class GadflyAdapter(ZopeDatabaseAdapter):
     """A Gadfly adapter for Zope3"""
 
     # The registerable object needs to have a container
-    __name__ = __parent__ = None 
+    __name__ = __parent__ = None
+    _v_connection = None
+    paramstyle = 'qmark'
 
     def _connection_factory(self):
         """Create a Gadfly DBI connection based on the DSN.

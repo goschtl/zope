@@ -12,6 +12,11 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed storage bug reported, fixed and tested by Zhiyun (Simon) Hang.
+
+      - Fixed a Gadfly DB Adapter bug that was reported, fixed and tested by
+        Tadashi Matsumoto.
+
       - zope.app.content_types is now the package zope.app.contenttypes
         (code backported from Zope 2)
 
@@ -21,6 +26,12 @@ Zope Changes
 
       - Fixed issue 497: HTTP DELETE now returns 405 Method Not Allowed
         when the container cannot be adapted to IWriteDirectory.
+
+    Much thanks to everyone who contributed to this release:
+
+      Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dimitry
+      Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
+      (Simon) Hang, Tadashi Matsumoto
 
   ------------------------------------------------------------------
 
