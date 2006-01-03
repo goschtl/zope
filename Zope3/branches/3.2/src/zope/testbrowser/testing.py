@@ -77,7 +77,7 @@ class PublisherConnection(object):
         """
         real_response = self.response._response
         status = real_response.getStatus()
-        reason = real_response._reason # XXX add a getReason method
+        reason = real_response._reason # TODO add a getReason method
 
         headers = real_response.getHeaders()
         headers.sort()
