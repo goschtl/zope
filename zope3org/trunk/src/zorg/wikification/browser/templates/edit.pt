@@ -55,9 +55,32 @@
 					</div>
 				</div>
 			</div>
-			<div id="navigation-box">
-				<div id="breadcrumb-navigation" metal:use-macro="context/@@wiki_macros/breadcrumbs" />
-			</div>
+			
+            <table border="0" width="100%">
+                <tr>
+                    <td width="50%" align="left">
+                        <div id="breadcrumb-navigation" metal:use-macro="context/@@wiki_macros/breadcrumbs" />
+                    </td>
+                    <td width="50%" align="right">
+                        <span tal:condition="python: view.editor == 'rest'">ReST</span>
+                        <a tal:condition="python: view.editor != 'rest'" 
+                                href="./wikiedit.html?editor=rest"
+                                tal:attributes="href python: './wikiedit.html?editor=rest&add' + request.get('add', '')"
+                                >ReST</a>&nbsp;|&nbsp;
+                        <span tal:condition="python: view.editor == 'tinymce'">Tiny MCE</span>
+                        <a tal:condition="python: view.editor != 'tinymce'" 
+                                href="./wikiedit.html?editor=tinymce"
+                                tal:attributes="href python: './wikiedit.html?editor=tinymce&add' + request.get('add', '')"
+                                >Tiny MCE</a>&nbsp;|&nbsp;
+                        <span tal:condition="python: view.editor == 'kupu'">Kupu</span>
+                        <a tal:condition="python: view.editor != 'kupu'"
+                                href="./wikiedit.html?editor=kupu"
+                                tal:attributes="href python: './wikiedit.html?editor=kupu&add' + request.get('add', '')"
+                                >Kupu</a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                   </td>
+                 </tr>
+            </table>
 			<div id="layout-columns" class="columns">
 				<div class="bg">
 					<div class="col first">

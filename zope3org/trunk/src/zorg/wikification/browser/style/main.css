@@ -10,6 +10,10 @@ body {
     line-height: 1.5em;
 }
 
+p.intro {
+    width: 40em;
+}
+
 .wiki-link
 {
 	color: red;

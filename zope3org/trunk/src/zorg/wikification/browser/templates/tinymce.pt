@@ -6,7 +6,7 @@
             <form action="" method="POST" tal:attributes="action string:${context/@@absolute_url}/@@wikiupdate.html">
                 <input type="hidden" id="asContentType" value="text/plain" />
                 <input type="hidden" id="editor" value="rest" />
-                <input type="hidden" id="add" name="add" tal:attributes="value string:${request/add}" />
+                <input type="hidden" id="add" name="add" tal:attributes="value python: request.get('add', '')" />
                 <h4>Title</h4>
     			<input class="title" id="version_title" name="version[title]" size="30" type="text" value="Test" 
     			             tal:attributes="value string:${view/editableTitle}"/>
@@ -14,11 +14,9 @@
 
                 <textarea class="edit-area" tal:content="view/display" 
                         id="version_body" name="tinyhtml" cols="68" rows="22" value=""></textarea>
-                <br/>
+              
                 <p><input name="text_submit" type="submit" value="Save">
                 or <a href="./wiki.html">Cancel</a></p>
-                <p>Switch to <a href="./wikiedit.html?editor=kupu">Kupu</a>
-                or <a href="./wikiedit.html?editor=rest">Rest</a>
             </form>
         </div>
     </div>

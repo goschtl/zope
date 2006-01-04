@@ -5,7 +5,8 @@
     <br />
     <ul>
         <li>
-            <a href="./wikiedit.html?editor=tinymce">
+            <a href="./wikiedit.html?editor=tinymce" 
+                        tal:attributes="href python: './wikiedit.html?editor=tinymce&add=' + request.get('add', '')">
                 TinyMCE WYSIWYG 
             </a>
             Runs on IE, Firefox, Mozilla, and to a limited degree on Safari.
@@ -13,13 +14,15 @@
         </li>
         
         <li>
-            <a href="./wikiedit.html?editor=kupu">
+            <a href="./wikiedit.html?editor=kupu"
+                        tal:attributes="href python: './wikiedit.html?editor=kupu&add=' + request.get('add', '')">
                 Kupu WYSIWYG 
             </a>
             Runs on IE, Firefox, and Mozilla. 
         </li>
         <li>
-            <a href="./wikiedit.html?editor=rest">
+            <a href="./wikiedit.html?editor=rest"
+                        tal:attributes="href python: './wikiedit.html?editor=rest&add=' + request.get('add', '')">
                 ReStructured Text 
             </a>
             Runs on any browser. 

@@ -40,7 +40,33 @@ from zorg.wikification.parser import BaseHTMLProcessor
 from zorg.wikification.browser.interfaces import IWikiPage
 from zorg.wikification.browser.interfaces import ILinkProcessor
 
+class Placeholder(PageElement) :
+    """ A base placeholder that renders a wikified link without id but
+        with a special css.
+    """
+    
+    def __init__(self, processor, index, label, link, textlink=False) :
+        super(Placeholder, self).__init__(processor.page)
+        self.page = processor.page
+        self.index = index
+        self.label = label
+        self.link = link
+        self.textlink = textlink
+        self.link_id = processor.createLinkId(index)    
+ 
+    def __call__(self) :
+        pattern = u'<a class="wiki-link" href="%s">%s</a>'
+        return pattern % (self.link, self.label)
 
+    def editableLabel(self) :
+        label = self.label.strip()
+        if label.startswith('[') :
+            label = label[1:]
+        if label.endswith(']') :
+            label = label[:-1]
+        return label
+        
+        
 class BaseLinkProcessor(BaseHTMLProcessor) :
     """ A link processor that wikifies the links by modifying the
         href of a link.
@@ -62,14 +88,15 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
     def createMenuId(self, index) :
         return "wiki-menu%s" % index
        
-    def createPlaceholder(self, label, link, textlink=False) :
+    def createPlaceholder(self, label, link, 
+                                    textlink=False, factory=Placeholder) :
         """
         Creates a placeholder page element and stores it for later
         access in a dict with placeholder ids as keys and the placeholders
         as values.
         """
         index = len(self.placeholders)
-        placeholder = Placeholder(self, index, label, link, textlink)
+        placeholder = factory(self, index, label, link, textlink)
         self.placeholders[placeholder.link_id] = placeholder
         return placeholder        
         
@@ -172,7 +199,12 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
                                
         return False, url + page.action
  
- 
+    def getWikiURL(self, node) :
+        page = self.page
+        if IFile.providedBy(node) and node.contentType not in page.supported :
+                return zapi.absoluteURL(node, page.request)
+        return zapi.absoluteURL(node, page.request) + page.action
+        
     def wikifyTextLink(self, text) :
         """ Modifies dead relative links and leaves
             all other links untouched.
@@ -180,10 +212,11 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         page = self.page
         name = text.replace(" ", "")
         try :
-            zapi.traverseName(page.container, name)
-            link = name
+            node = zapi.traverseName(page.container, name)
+            link = self.getWikiURL(node)
             label = text
-            placeholder = NoopPlaceholder(label, link)
+            placeholder = self.createPlaceholder(label, link, 
+                                                    factory=NoopPlaceholder)
             
         except TraversalError :
             appendix = urllib.urlencode({'add': name})
@@ -265,31 +298,7 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
 
 
 
-class Placeholder(PageElement) :
-    """ A base placeholder that renders a wikified link without id but
-        with a special css.
-    """
-    
-    def __init__(self, processor, index, label, link, textlink=False) :
-        super(Placeholder, self).__init__(processor.page)
-        self.page = processor.page
-        self.index = index
-        self.label = label
-        self.link = link
-        self.textlink = textlink
-        self.link_id = processor.createLinkId(index)    
- 
-    def __call__(self) :
-        pattern = u'<a class="wiki-link" href="%s">%s</a>'
-        return pattern % (self.link, self.label)
 
-    def editableLabel(self) :
-        label = self.label.strip()
-        if label.startswith('[') :
-            label = label[1:]
-        if label.endswith(']') :
-            label = label[:-1]
-        return label
 
           
 class MenuPlaceholder(Placeholder) :
@@ -410,13 +419,13 @@ class CreatePagePlaceholder(Placeholder) :
     pass
 
 class NoopPlaceholder(Placeholder) :
-    """ A placeholder with a changed label. """
+    """ An unmodified placeholder. """
     
     def __call__(self) :
         if self.textlink :
             return self.label
         else :
-            return '<a href="%s">%s</a>' % (self.link, label)
+            return '<a href="%s">%s</a>' % (self.link, self.label)
 
 
 
@@ -435,7 +444,8 @@ class AjaxLinkProcessor(BaseLinkProcessor) :
     link_id = None
     
     
-    def createPlaceholder(self, label, link, textlink=False) :
+    def createPlaceholder(self, label, link, textlink=False, 
+                                                    factory=MenuPlaceholder) :
         """
         Creates a placeholder page element and stores it for later
         access in a dict with placeholder ids as keys and the placeholders
@@ -443,6 +453,7 @@ class AjaxLinkProcessor(BaseLinkProcessor) :
         """
         
         index = len(self.placeholders)
+       
         if self.command :
             if self.link_id == self.createLinkId(index) :
                 factory = self.cmds[self.command]
@@ -451,7 +462,7 @@ class AjaxLinkProcessor(BaseLinkProcessor) :
                 placeholder = NoopPlaceholder(self, index, label, 
                                                             link, textlink)
         else :
-            placeholder = MenuPlaceholder(self, index, label, link, textlink)
+            placeholder = factory(self, index, label, link, textlink)
         self.placeholders[placeholder.link_id] = placeholder
         return placeholder            
     

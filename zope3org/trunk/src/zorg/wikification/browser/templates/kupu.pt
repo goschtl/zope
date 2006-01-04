@@ -57,10 +57,6 @@
           <metal:macro use-macro="view/fulleditor"></metal:macro>
           
           <br/>
-                
-         <p>Switch to <a href="./wikiedit.html?editor=tinymce">Tiny MCE</a>
-         or <a href="./wikiedit.html?editor=rest">Rest</a>
-                
       </form>
     </div>
 </div>

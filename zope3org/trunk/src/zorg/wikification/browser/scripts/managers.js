@@ -59,11 +59,11 @@ var windowManager = {
     
     
 
-    /* the +20 is due to some padding at the bottom of the page that I can't
+    /* the +32 is due to some padding at the bottom of the page that I can't
      * quite figure out how to measure programmatically. */
     var fixed_height = windowManager.offset('col').top +
                        windowManager.size('col').height -
-                       windowManager.size(body).height + 20
+                       windowManager.size(body).height + 40
 
     /* Due to the shadow on the right of the box, 8 pixels should be enough
      * to compensate (and is, for Safari), but firefox seems to want 3

@@ -517,7 +517,8 @@ class EditWikiPage(WikiEditor, WikiFilePage) :
     def editableTitle(self) :
         """ Returns the title that should be edited. """
         file = self.getFile()
-        return IZopeDublinCore(file).title or u"Untitled"
+        dc = IZopeDublinCore(file, None)
+        return (dc and dc.title) or u"Untitled"
                 
     def display(self) :
         """ Returns the data that should be edited. """
@@ -545,7 +546,7 @@ class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
             return ['index.html']
     
     def isAddView(self) :
-        return self.request.form.get('add', None) is not None
+        return bool(self.request.form.get('add', None))
         
     def verb(self) :
         if self.isAddView() :
