@@ -21,6 +21,7 @@ cdef extern from  "unicode/utypes.h":
 
     cdef enum UErrorCode:
         U_USING_DEFAULT_WARNING = -127
+        U_USING_FALLBACK_WARNING = -128
     ctypedef int int32_t
     ctypedef char uint8_t
     int U_FAILURE(UErrorCode status)
@@ -141,7 +142,9 @@ cdef class Collator:
             raise ValueError("Couldn't create a collator")
         self.collator = collator
         self.locale = locale
-        if status == U_USING_DEFAULT_WARNING:
+        if (status == U_USING_DEFAULT_WARNING
+            or
+            status == U_USING_FALLBACK_WARNING):
             status = 1
         self.used_default_information = status
 
