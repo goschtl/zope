@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-r"""Meke sure that input is buffered
+r"""Make sure that input is buffered
 
-Meke sure that input is buffered, so that a slow client doesn't block
+Make sure that input is buffered, so that a slow client doesn't block
 an application thread.
 
 Also, test that both small and (somewhat) large inputs are handled correctly.
@@ -63,6 +63,7 @@ able to make another request:
 
 $Id$
 """
+
 import errno
 import httplib
 import os
@@ -76,6 +77,7 @@ import unittest
 from zope.testing import doctest
 import ZEO.tests.testZEO # we really need another library
 import ZEO.tests.forker
+
 
 class Echo:
 
@@ -92,10 +94,7 @@ class Echo:
                 result.append(l)
             else:
                 break
-            
         return ''.join(result)
-    
-
 
 class Instance:
 
@@ -139,11 +138,11 @@ class Instance:
         <include package="zope.app.twisted" />
         <securityPolicy
            component="zope.security.simplepolicies.PermissiveSecurityPolicy" />
-        
+
         <unauthenticatedPrincipal
             id="zope.anybody"
             title="Unauthenticated User" />
-        
+
         <principal
             id="zope.manager"
             title="Manager"
@@ -158,7 +157,7 @@ class Instance:
             attribute="echo"
             permission="zope.Public"
             />
-        
+
         </configure>
         """
         mkfile(self.dir, "site.zcml", template, self.__dict__)
@@ -192,7 +191,7 @@ class Instance:
         os.spawnv(os.P_NOWAIT, sys.executable,
                   (sys.executable, os.path.join(self.dir, "runzope"), ),
                   )
-                  
+
     def stop(self):
         connection = httplib.HTTPConnection('localhost', self.port)
         connection.request(
@@ -244,17 +243,17 @@ class Instance:
                 break
 
     url = property(lambda self: 'http://localhost:%d/' % self.port)
-    
+
 def mkfile(dir, name, template, kw):
     f = open(os.path.join(dir, name), 'w')
     f.write(template % kw)
     f.close()
-    
+
 def test_suite():
     suite = doctest.DocTestSuite()
     suite.level = 2
     return suite
 
+
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
-
