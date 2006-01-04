@@ -10,14 +10,17 @@ Zope Changes
 
     New features
 
-      - Added a new API for collating text.  You can now adapt 
-        a locale to zope.i18n.interfaces.ILocales.ICollator.  You can
+      - Added ``-x dirs`` option to i18nextract that allows to exclude
+        particular directories from being searched.
+
+      - Added a new API for collating text.  You can now adapt
+        a locale to ``zope.i18n.interfaces.ILocales.ICollator``.  You can
         then use that to sort strings, such as menu entries, in a
         locale-specific fashion.
 
     Restructuring
 
-      - Removed unused menus and made previous titles, the description, 
+      - Removed unused menus and made previous titles, the description,
 	since they were awefully long. Then I created new, short titles.
 
     Bug Fixes
@@ -27,10 +30,10 @@ Zope Changes
       - Fixed a Gadfly DB Adapter bug that was reported, fixed and tested by
         Tadashi Matsumoto.
 
-      - zope.app.content_types is now the package zope.app.contenttypes
-        (code backported from Zope 2)
+      - ``zope.app.content_types`` is now the package
+        ``zope.app.contenttypes`` (code backported from Zope 2)
 
-      - Fixed a bug in the <viewlet> directive handler: extra string
+      - Fixed a bug in the ``<viewlet>`` directive handler: extra string
         attributes were ignored if you didn't explicitly specify a
         class for the viewlet.
 
@@ -41,7 +44,7 @@ Zope Changes
 
       Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dimitry
       Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
-      (Simon) Hang, Tadashi Matsumoto
+      (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute
 
   ------------------------------------------------------------------
 
@@ -52,7 +55,7 @@ Zope Changes
         Zope 3 on windows.
 
       - Input buffering failed and caused Zope to hang when uploading
-        large files and using the Twisted server. 
+        large files and using the Twisted server.
 
       - Make zopetest insert rather than append the library path
         (fix spurious test failures from packages in site-packages)
@@ -70,7 +73,7 @@ Zope Changes
 
     Bug Fixes
 
-      - Added input buffering to the twisted integration      
+      - Added input buffering to the twisted integration
 
       - Fixed the plumbing in ZServer so that attempts to return large
         output efficiently using iterators can actually succeed.
