@@ -8,6 +8,10 @@ Zope Changes
 
   since Zope 3.2.0b3
 
+    Bug Fixes
+
+      - Fixed a bug in FieldProperty to honor the readonly field.
+
   Zope 3.2.0b3
 
     Bug Fixes
