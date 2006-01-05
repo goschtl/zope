@@ -28,4 +28,10 @@
       description="Menu of objects to be added to site management folders"
       />
 
+  <menu
+      id="add_registration"
+      title="Add Registration"
+      description="Menu of addable configuration objects"
+      />
+
 </configure>
