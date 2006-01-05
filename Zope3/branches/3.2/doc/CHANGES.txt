@@ -10,6 +10,14 @@ Zope Changes
 
     Bug Fixes
 
+      - zope.i18n.interpolate:
+
+        + now if the variable wasn't found in the mapping no substitution
+          will happens.
+
+        + fixed interpolation in case "$name $$name", only the first variable
+          will be substituted.
+
       - Fixed a bug in FieldProperty to honor the readonly field.
 
   Zope 3.2.0b3
