@@ -196,15 +196,6 @@ class WikiContainerPage(WikiPage) :
             
         """
                 
-    #     file = self.getFile()
-#         if file :
-#             page = WikiFilePage(file, self.request, self.getContainer())
-#             result = page.renderBody()
-#             return result
-        
- #        if debug :
-#             import pdb; pdb.set_trace()
-#             
         body = self.getBody()
         if body is not None :
             return self.wikify(unicode(body, encoding="utf-8"))

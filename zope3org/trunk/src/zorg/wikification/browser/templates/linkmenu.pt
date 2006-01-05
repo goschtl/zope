@@ -25,6 +25,14 @@
             <table>
                 <tr>
                     <td valign="top" class="form-title">
+                        Name:
+                    </td>
+                    <td valign="top" >
+                        <input id="folder_name" name="name" type="text" size="40" value="FileName" tal:attributes="value string:${view/upload_name}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" class="form-title">
                         Title:
                     </td>
                     <td valign="top" >
@@ -73,7 +81,15 @@
                         Name:
                     </td>
                     <td valign="top" >
-                        <input id="folder_name" name="name" type="text" size="40" value="FolderName" tal:attributes="value string:${view/editableLabel}" />
+                        <input id="folder_name" name="name" type="text" size="40" value="FolderName" tal:attributes="value python: view.upload_name or view.editableLabel()" />
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" class="form-title">
+                        Title:
+                    </td>
+                    <td valign="top" >
+                        <input id="file_title" name="title" type="text" size="40" value=""/>
                     </td>
                 </tr>
                 <tr>

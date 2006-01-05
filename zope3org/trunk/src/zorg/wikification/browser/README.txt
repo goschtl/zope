@@ -84,22 +84,21 @@ place. Let's consider an empty folder as quite usual starting point :
     0
     >>> print WikiContainerPage(empty_folder, request).renderBody()
     <div id="main">
-         <p>This Wiki allows you to create pages by
-            entering links that point to placeholders  <br /> that are not filled at the moment.
-            Such placeholders are marked by red dotted borders.<br />
-            If you click on a such a link you will be led to an edit view where<br />
-            you can upload or type a new page.
+         <p class="intro">This Wiki allows you to create pages and upload files by clicking placeholders.
+            Such placeholders are marked by red dotted borders.
+            If you click a placeholder you will be led to
+            a page editor and other edit options.
          </p>
     <BLANKLINE>
-         <p>You are looking currently at a folder without index.html file.</p>
-         <p>Do you want to create a
-              <a class="wiki-link" href="./@@wikiedit.html?add=index.html">new index page</a>?
-         </p>
-         <p>The link above is an example of a placeholder.<br />It is intended as
-         a starting point for filling the folder with HTML pages.
+         <p class="intro">You are looking currently at a folder without index.html file.</p>
+         <p class="intro">Do you want to create a 
+            <a class="wiki-link" href="./@@wikiedit.html?add=index.html">
+                new index page
+             </a>?
          </p>
     </div>
     <BLANKLINE>
+    
     
 We can follow this link and are directed to a WYSIWYG-Editor that allows us to
 create a new index.html document.
@@ -116,40 +115,47 @@ is mainly a matter of registering a different ILinkProcessor :
     ...                                                     ILinkProcessor)
     
 The resulting HTML is more complex since it contains additional JavaScript
-calls and menu items:
+calls and menu items. The additional menu is rendered for text links in 
+brackets and HTML links ...
 
     >>> print index_page.renderBody()
     <BLANKLINE>
     ...
-    ...dropdownlinkmenu...[New Subject]...
+    ...dropdownlinkmenu...>new page</a>...
+    ...
+    ...dropdownlinkmenu...>[New Subject]</a>...
     ...
     </div>
-    ...
-    
+    ...   
+   
+   
 Some of the menu items allow the user to edit the link within the view page.
-Let's take the "Change Label" command as an example:
 
     >>> from zorg.wikification.browser.wikipage import EditWikiPage
     >>> edit_page = EditWikiPage(site[u"index.html"], request)
+
+The "Change Label" command shows that we can change a page without editor 
+quite easily:
+
     >>> request.form = dict(label='New Label')
-    >>> print edit_page.modifyLink(cmd='rename', link_id='wiki-link0')
+    >>> print edit_page.modifyLink(cmd='rename', link_id='wiki-link5')
     <BLANKLINE>
     ...
     ...dropdownlinkmenu...[New Label]...
     ...
     </div>
-    ...    
-
-Another usefull option is to upload a new file in one step:
-
+    ...      
+    
+One of the most usefull options is to upload a new file in one step:
+        
     >>> request.form = dict(data='Some Content')
-    >>> edit_page.uploadFile(link_id='wiki-link0')
+    >>> edit_page.uploadFile(link_id='wiki-link5')
     >>> print edit_page.renderBody()
     <BLANKLINE>
     ...
     <p>A <a href="http://127.0.0.1/site/New%20Label">New Label</a></p>
     ...
 
-
+  
 
 

@@ -1,15 +1,14 @@
 <div id="main">
      <p class="intro">This Wiki allows you to create pages and upload files by clicking placeholders.
         Such placeholders are marked by red dotted borders.
-        If you click a placeholder in the &quot;View&quot; mode you will be led to
-        new page editor and offered other edit options.
+        If you click a placeholder you will be led to
+        a page editor and other edit options.
      </p>
   
      <p class="intro">You are looking currently at a folder without index.html file.</p>
-     <p class="intro">Do you want to create a
-          <a class="wiki-link" href="./@@wikiedit.html?add=index.html">new index page</a>?
-     </p>
-     <p class="intro">The link above is an example of a placeholder.<br/>It is intended as
-     a starting point for filling the folder with HTML pages.
+     <p class="intro">Do you want to create a 
+        <a class="wiki-link" href="./@@wikiedit.html?add=index.html">
+            new index page
+         </a>?
      </p>
 </div>

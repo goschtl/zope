@@ -45,18 +45,54 @@ class Placeholder(PageElement) :
         with a special css.
     """
     
-    def __init__(self, processor, index, label, link, textlink=False) :
+    def __init__(self, processor, index, label, link) :
         super(Placeholder, self).__init__(processor.page)
+        self.processor = processor
         self.page = processor.page
         self.index = index
         self.label = label
+        if self.label :                 # with a label we are in text mode
+                                        # and it's up to the user to provide
+                                        # an additional upload target name
+            self.upload_name = ""
+        else :
+            self.upload_name = link
         self.link = link
-        self.textlink = textlink
-        self.link_id = processor.createLinkId(index)    
+        self.link_id = processor.createLinkId(index)
+        self.nested = 0
  
-    def __call__(self) :
-        pattern = u'<a class="wiki-link" href="%s">%s</a>'
-        return pattern % (self.link, self.label)
+    def textLink(self) :
+        wikified, link = self.processor.wikifyLink(self.link)
+        if wikified :
+            pattern = u'<a class="wiki-link" href="%s">[%s]</a>'
+        else :
+            pattern = u'<a class="wiki-link" href="%s">%s</a>'
+        return pattern % (link, self.label)
+   
+    def _tagAttrs(self, attrs) :
+        result = ""
+        for key, value in attrs :
+            if key.lower() not in ("class", "href") :
+                result += ' %s="%s"' % (key, value)
+        return result
+                
+    def startTag(self, attrs) :
+        """ Called when a starttag for a placeholder is detected. """
+     
+        wikified, link = self.processor.wikifyLink(self.link)
+        if wikified :
+            pattern = u'<a href="%s" class="wiki-link"%s>'
+            return pattern % (link, self._tagAttrs(attrs))
+        else :
+            pattern = u'<a href="%s"%s>'
+            return pattern % (link, self._tagAttrs(attrs))
+            
+            
+    def afterCloseTag(self) :
+        """ Handler that is called after a closed </a> tag.
+            The default implementation returns None.
+        """
+        return None
 
     def editableLabel(self) :
         label = self.label.strip()
@@ -69,7 +105,8 @@ class Placeholder(PageElement) :
         
 class BaseLinkProcessor(BaseHTMLProcessor) :
     """ A link processor that wikifies the links by modifying the
-        href of a link.
+        href and other attributes of a link.
+        
     """
     
     implements(ILinkProcessor)
@@ -81,6 +118,7 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         BaseHTMLProcessor.__init__(self)
         self.page = page
         self.placeholders = {}
+        self.placeholder = None     # current placeholder
         
     def createLinkId(self, index) :
         return "wiki-link%s" % index
@@ -88,16 +126,16 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
     def createMenuId(self, index) :
         return "wiki-menu%s" % index
        
-    def createPlaceholder(self, label, link, 
-                                    textlink=False, factory=Placeholder) :
+    def createPlaceholder(self, label, link, factory=Placeholder) :
         """
         Creates a placeholder page element and stores it for later
         access in a dict with placeholder ids as keys and the placeholders
         as values.
         """
         index = len(self.placeholders)
-        placeholder = factory(self, index, label, link, textlink)
+        placeholder = factory(self, index, label, link)
         self.placeholders[placeholder.link_id] = placeholder
+        self.placeholder = placeholder
         return placeholder        
         
     def isAbsoluteURL(self, link) :
@@ -161,7 +199,7 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         
         
         """
-
+        
         page = self.page
         site_url = zapi.absoluteURL(page.site, page.request)
         if link.startswith(site_url) :
@@ -198,65 +236,45 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
                 url = zapi.absoluteURL(node, page.request)
                                
         return False, url + page.action
- 
-    def getWikiURL(self, node) :
-        page = self.page
-        if IFile.providedBy(node) and node.contentType not in page.supported :
-                return zapi.absoluteURL(node, page.request)
-        return zapi.absoluteURL(node, page.request) + page.action
-        
-    def wikifyTextLink(self, text) :
-        """ Modifies dead relative links and leaves
-            all other links untouched.
-        """
-        page = self.page
-        name = text.replace(" ", "")
-        try :
-            node = zapi.traverseName(page.container, name)
-            link = self.getWikiURL(node)
-            label = text
-            placeholder = self.createPlaceholder(label, link, 
-                                                    factory=NoopPlaceholder)
-            
-        except TraversalError :
-            appendix = urllib.urlencode({'add': name})
-            base = zapi.absoluteURL(page.container, page.request)
-            link = base + page.add + "?" + appendix
-            label = '[%s]' % text
-            placeholder = self.createPlaceholder(label, link, textlink=True)
-        
-        return placeholder()
-       
-       
-    def update_link(self, attrs) :
-        """ Mark link css. """
-        result = []
-        _class = False
-        for key, value in attrs :
-            if key == "class" :
-                value += " wiki-link"
-                _class = True
-            result.append((key, value))
-        if not _class :
-            result.append(("class", "wiki-link"))
-        return result
-                            
+         
+         
     def unknown_starttag(self, tag, attrs):
         """ Called for each tag. Wikifies links. """
-        if tag == "a" and self.command is None :
-            wikified = False
-            modified = []
-            for key, value in attrs :
-                if key == "href" :
-                    wikified, value = self.wikifyLink(value)
-                modified.append((key, value))
-            if wikified :
-                modified = self.update_link(modified)
-            BaseHTMLProcessor.unknown_starttag(self, tag, modified)
-            return True
+        
+        if self.placeholder is None :
+            if tag == "a" :
+                href = ""
+                others = []
+                for key, value in attrs :
+                    if key == "href" :
+                        href = value
+                    else :
+                        others.append((key, value))
+                self.createPlaceholder("", href)
+                self.pieces.append(self.placeholder.startTag(others))
+                return True
+        else :
+            self.placeholder.nested += 1
             
         BaseHTMLProcessor.unknown_starttag(self, tag, attrs)               
 
+    def unknown_endtag(self, tag) :
+        """ Called for each tag. Looks for pending placeholders and
+            asks the existing placeholder for additional HTML that
+            is rendered after the tag is closed.
+        """
+        
+        BaseHTMLProcessor.unknown_endtag(self, tag)
+        if self.placeholder is not None :
+            if self.placeholder.nested == 0 :
+                after = self.placeholder.afterCloseTag()
+                if after is not None :
+                    self.pieces.append(after)
+                self.placeholder = None
+            else :
+                self.placeholder.nested -= 1
+            
+        
     def handle_data(self, text):
         """
         Called for each block of plain text, i.e. outside of any tag and
@@ -280,6 +298,11 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         
         
         """
+        
+        if self.placeholder is not None :
+            self.placeholder.label += text
+            self.pieces.append(text)
+            return
 
         text_link = re.compile('\[.*?\]', re.VERBOSE)
         
@@ -291,14 +314,15 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
             result += text[end:start]
             end = m.end()
             between = text[start+1:end-1]
-            result += self.wikifyTextLink(between)
+            
+            name = between.replace(" ", "")
+            placeholder = self.createPlaceholder(between, name)
+            result += placeholder.textLink()
+            self.placeholder = None
             
         result += text[end:]
         self.pieces.append(result)
-
-
-
-
+        
 
           
 class MenuPlaceholder(Placeholder) :
@@ -322,40 +346,86 @@ class MenuPlaceholder(Placeholder) :
     """
     
     _menu = ViewPageTemplateFile("./templates/linkmenu.pt")
-    _link = '<a class="wiki-link" id="%s" href="%s" onmouseover="%s" onclick="return clickreturnvalue()">%s</a>'
+    _link = '<a class="wiki-link" href="%s" onmouseover="%s" onclick="return clickreturnvalue()"%s>'
     
-    def __init__(self, processor, index, label, link, textlink=False) :
-        super(MenuPlaceholder, self).__init__(processor, index, 
-                                                        label, link, textlink)
+    wikified = False
+    
+    def __init__(self, processor, index, label, link) :
+        super(MenuPlaceholder, self).__init__(processor, index, label, link)
         self.menu_id = processor.createMenuId(index)
         
         self.onMouseOver = "dropdownlinkmenu(this, event, '%s');" % self.menu_id
+       
+    def startTag(self, attrs) :
+        """ Called when a starttag for a placeholder is detected. """
         
+        wikified, link = self.processor.wikifyLink(self.link)
+        self.link = link
+        if wikified :
+            self.wikified = True
+            attrs.append(("id", self.link_id))
+            return self._link % (link, self.onMouseOver, self._tagAttrs(attrs))
+        else :
+            pattern = u'<a href="%s"%s>'
+            return pattern % (self.link, self._tagAttrs(attrs))
         
-    def __call__(self) :
-        link = self.renderLink()
-        menu = self._menu()
-        return link + menu.encode("utf-8")
-        
-    def renderLink(self) :
-        return self._link % (self.link_id, self.link,
-                                                    self.onMouseOver,
-                                                    self.label)
+    def textLink(self) :
+        start = self.startTag([])
+        menu = self.afterCloseTag() or ''
+        if self.wikified :
+            return "%s[%s]</a>%s" % (start, self.label, menu)
+        else :
+            return "%s%s</a>%s" % (start, self.label, menu)
+            
+    def afterCloseTag(self) :
+        if self.wikified :
+            menu = self._menu()
+            return menu.encode("utf-8")
+        return None
                 
 
-class RenamedPlaceholder(Placeholder) :
+class SavingPlaceholder(Placeholder) :
+    """ A placeholder that saves the result to disk. """
+    
+    def startTag(self, attrs) :
+        """ Called when a starttag for a placeholder is detected. """
+        pattern = u'<a href="%s"%s>'
+        return pattern % (self.link, self._tagAttrs(attrs))
+
+class RenamedPlaceholder(SavingPlaceholder) :
     """ A placeholder with a changed label. """
     
-    def __call__(self) :
+    fired = False
+            
+    def textLink(self) :
+        """ Replaces the label in text mode. """
+        
         label = self.page.parameter("label").encode("utf-8")
+        self.fired = True
         return '[' + label + ']'
+        
+    def afterCloseTag(self) :
+        """ Replaces the label after the tag has been closed. """
+        
+        if self.nested == 0 and not self.fired :
+            label = self.page.parameter("label").encode("utf-8")
+            self.processor.pieces[-2] = label
+            
+        
 
  
-class AddObjectPlaceholder(Placeholder) :
+class AddObjectPlaceholder(SavingPlaceholder) :
     """ A convenient base class for placeholders that add objects. """
     
-    def addObject(self, name, obj) :
-        """ Adds an object and returns the new link. """
+    def addObject(self) :
+        """ Main method that adds the object and returns the new url.
+            Must be specialized.
+        """
+        pass
+    
+    
+    def _addObject(self, name, obj) :
+        """ Help method that adds an object and returns the new name. """
         
         zope.event.notify(ObjectCreatedEvent(obj))
         
@@ -374,16 +444,23 @@ class AddObjectPlaceholder(Placeholder) :
         if description :
             dc.description = description
          
-        url = zapi.absoluteURL(contained, self.page.request)
-        return '<a href="%s">%s</a>' % (url, self.editableLabel())   
+        return name # zapi.absoluteURL(contained, self.page.request)
         
+    def textLink(self) :
+        name = self.addObject()
+        return '<a href="%s">%s</a>' % (name, self.editableLabel())
+        
+    def startTag(self, attrs) :
+        name = self.addObject()
+        pattern = u'<a href="%s"%s>'
+        return pattern % (name, self._tagAttrs(attrs))
+
         
 class UploadFilePlaceholder(AddObjectPlaceholder) :
     """ A placeholder that points to an uploaded file. """
     
-    def __call__(self) :
-        """ Upload a file and return the modified link that points to the
-            new uploaded file.
+    def addObject(self) :
+        """ Upload a file. Returns the name of the new file.
         """
         
         label = self.editableLabel()
@@ -391,28 +468,25 @@ class UploadFilePlaceholder(AddObjectPlaceholder) :
         contenttype = self.page.parameter('contenttype')
 
         filename = self.filename("data", label)
-        name = unicode(filename, encoding="utf-8")
+        name = self.page.parameter('name') or unicode(filename, encoding="utf-8")
 
         if not contenttype :
             contenttype = contenttypes.guess_content_type(filename)[0]
      
-        return self.addObject(name, File(data, contenttype) )
+        return self._addObject(name, File(data, contenttype))
         
  
 class CreateFolderPlaceholder(AddObjectPlaceholder) :
     """ A placeholder that points to a new folder. """
     
-    def __call__(self) :
-        """ Upload a file and return the modified link that points to the
-            new uploaded file.
+    def addObject(self) :
+        """ Creates a new folder. Returns the name of the folder.
         """
         
         label = self.editableLabel()
-        name = self.page.parameter('name')
+        name = self.page.parameter('name') or unicode(label, encoding="utf-8")
         
-        return self.addObject(name, Folder())
-       
-    
+        return self._addObject(name, Folder())
     
 
 class CreatePagePlaceholder(Placeholder) :
@@ -421,13 +495,15 @@ class CreatePagePlaceholder(Placeholder) :
 class NoopPlaceholder(Placeholder) :
     """ An unmodified placeholder. """
     
-    def __call__(self) :
-        if self.textlink :
-            return self.label
+    def textLink(self) :
+        return "[%s]" % self.label
+     
+    def startTag(self, attrs) :
+        if self.link.endswith(self.page.action) :
+            link = self.link[:-len(self.page.action)]
         else :
-            return '<a href="%s">%s</a>' % (self.link, self.label)
-
-
+            link = self.link
+        return '<a href="%s">' % (link)
 
 class AjaxLinkProcessor(BaseLinkProcessor) :
     """ A link processor that wikifies the links by modifying the
@@ -444,8 +520,7 @@ class AjaxLinkProcessor(BaseLinkProcessor) :
     link_id = None
     
     
-    def createPlaceholder(self, label, link, textlink=False, 
-                                                    factory=MenuPlaceholder) :
+    def createPlaceholder(self, label, link, factory=MenuPlaceholder) :
         """
         Creates a placeholder page element and stores it for later
         access in a dict with placeholder ids as keys and the placeholders
@@ -457,13 +532,13 @@ class AjaxLinkProcessor(BaseLinkProcessor) :
         if self.command :
             if self.link_id == self.createLinkId(index) :
                 factory = self.cmds[self.command]
-                placeholder = factory(self, index, label, link, textlink)
+                placeholder = factory(self, index, label, link)
             else :
-                placeholder = NoopPlaceholder(self, index, label, 
-                                                            link, textlink)
+                placeholder = NoopPlaceholder(self, index, label, link)
         else :
-            placeholder = factory(self, index, label, link, textlink)
+            placeholder = factory(self, index, label, link)
         self.placeholders[placeholder.link_id] = placeholder
+        self.placeholder = placeholder
         return placeholder            
     
      
