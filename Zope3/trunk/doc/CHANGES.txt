@@ -21,9 +21,17 @@ Zope Changes
     Restructuring
 
       - Removed unused menus and made previous titles, the description,
-	since they were awefully long. Then I created new, short titles.
+        since they were awefully long. Then I created new, short titles.
 
     Bug Fixes
+
+      - zope.i18n.interpolate:
+
+        + now if the variable wasn't found in the mapping no substitution
+          will happens.
+
+        + fixed interpolation in case "$name $$name", only the first variable
+          will be substituted.
 
       - Fixed storage bug reported, fixed and tested by Zhiyun (Simon) Hang.
 
@@ -42,7 +50,7 @@ Zope Changes
 
     Much thanks to everyone who contributed to this release:
 
-      Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dimitry
+      Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dmitry
       Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
       (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute
 
