@@ -1,0 +1,189 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zwiki">
+
+  <include package=".skin" />
+
+  <browser:addform
+      label="Add Wiki"
+      name="AddWiki.html"
+      schema="zwiki.interfaces.IWiki"
+      content_factory="zwiki.wiki.Wiki"
+      permission="zwiki.AddWikiPage"
+      class=".wiki.AddWiki"
+      template="wiki_add.pt" />
+
+  <browser:addMenuItem
+      class="zwiki.wiki.Wiki"
+      title="Wiki"
+      description="A Wiki"
+      permission="zope.ManageContent"
+      view="AddWiki.html" />
+
+  <browser:containerViews
+      for="zwiki.interfaces.IWiki"
+      contents="zwiki.AddWikiPage"
+      add="zwiki.AddWikiPage"
+      />
+
+  <browser:page
+      name="toc.html"
+      for="zwiki.interfaces.IWiki"
+      class=".wiki.TableOfContents"
+      template="wiki_toc.pt"
+      permission="zwiki.ViewWikiPage"
+      menu="zmi_views" title="TOC" />
+
+  <browser:page
+      name="search.html" 
+      for="zwiki.interfaces.IWiki"
+      class=".wiki.WikiSearch"
+      template="wiki_search.pt"
+      permission="zwiki.ViewWikiPage"
+      menu="zmi_views" title="Search" />
+
+  <browser:pages
+      for="zwiki.interfaces.IWiki"
+      class=".wikipage.MailSubscriptions"
+      permission="zwiki.EditWikiPage">
+      <browser:page name="subscriptions.html" template="subscriptions.pt"
+          menu="zmi_views" title="Subscriptions" />
+      <browser:page name="changeSubscriptions.html" attribute="change" />
+  </browser:pages>
+
+  <browser:defaultView
+      name="toc.html"
+      for="zwiki.interfaces.IWiki" />
+
+  <browser:icon
+      name="zmi_icon"
+      for="zwiki.interfaces.IWiki"
+      file="wiki_icon.gif" />
+
+  <!-- WikiPage browser configuration -->
+
+  <browser:addform
+      label="Add Wiki Page"
+      name="AddWikiPage.html"
+      schema="zwiki.interfaces.IWikiPage"
+      content_factory="zwiki.wikipage.WikiPage"
+      permission="zwiki.AddWikiPage"
+      fields="source type"
+      class=".wikipage.AddWikiPage" />
+
+  <browser:addMenuItem
+      class="zwiki.wikipage.WikiPage"
+      title="Wiki Page"
+      description="A Wiki Page"
+      permission="zwiki.AddWikiPage"
+      view="AddWikiPage.html" />
+
+  <browser:editform
+      schema="zwiki.interfaces.IWikiPage"
+      for="zwiki.interfaces.IWikiPage"
+      label="Change Wiki Page"
+      name="edit.html"
+      permission="zwiki.EditWikiPage"
+      fields="source type"
+      class=".wikipage.EditWikiPage"
+      menu="zmi_views" title="Edit" />
+
+  <browser:pages
+      for="zwiki.interfaces.IWikiPage"
+      class=".wikipage.GenericWikiPageViews"
+      permission="zwiki.ViewWikiPage">
+      <browser:page name="breadcrumbs" attribute="breadcrumbs" />
+      <browser:page name="author" attribute="author" />
+      <browser:page name="modified" attribute="modified" />
+      <browser:page name="jumpto.html" attribute="jumpTo" />
+      <browser:page name="toc.html" attribute="toc" />
+  </browser:pages>
+
+  <browser:pages
+      for="zwiki.interfaces.IWikiPage"
+      class=".wikipage.ViewWikiPage"
+      permission="zwiki.ViewWikiPage">
+      <browser:page name="view.html" template="view_page.pt"
+          menu="zmi_views" title="View" />
+  </browser:pages>
+
+  <browser:pages
+      for="zwiki.interfaces.IWikiPage"
+      class=".wikipage.EditWikiParents"
+      permission="zwiki.ReparentWikiPage">
+      <browser:page name="parents.html" template="parents_page.pt"
+          menu="zmi_views" title="Parents" />
+      <browser:page name="setParents.html" attribute="setParents" />
+  </browser:pages>
+
+  <browser:pages
+      for="zwiki.interfaces.IWikiPage"
+      class=".wikipage.MailSubscriptions"
+      permission="zwiki.EditWikiPage">
+      <browser:page name="subscriptions.html" template="subscriptions.pt"
+          menu="zmi_views" title="Subscriptions" />
+      <browser:page name="changeSubscriptions.html" attribute="change" />
+  </browser:pages>
+
+  <browser:defaultView
+      name="view.html"
+      for="zwiki.interfaces.IWikiPage"/>
+
+  <browser:icon
+      name="zmi_icon"
+      for="zwiki.interfaces.IWikiPage"
+      file="wikipage_icon.gif" />
+
+  <!-- Comment browser configuration -->
+
+  <browser:addform
+      label="Comment"
+      name="AddComment.html"
+      schema="zwiki.interfaces.IComment"
+      content_factory="zwiki.comment.Comment"
+      permission="zwiki.AddWikiPage"
+      fields="title source type"
+      class=".wikipage.AddComment" />
+
+  <browser:addMenuItem
+      class="zwiki.comment.Comment"
+      title="Comment"
+      description="A Comment"
+      permission="zwiki.AddWikiPage"
+      view="AddComment.html" />
+
+  <!-- Make a special WikiPage menu -->
+
+  <browser:menu 
+       id="wikipage_actions" 
+       title="Menu for Wiki Page related actions." />
+
+  <browser:menuItems menu="wikipage_actions" 
+      for="zwiki.interfaces.IWikiPage">
+    <browser:menuItem title="View" action="@@view.html"/>
+    <browser:menuItem title="Comment" action="./+/AddComment.html="/>
+    <browser:menuItem title="Edit" action="@@edit.html"/>
+    <browser:menuItem title="Parents" action="@@parents.html"/>
+    <browser:menuItem title="TOC" action="@@toc.html"/>
+    <browser:menuItem title="Subscriptions" action="@@subscriptions.html"/>
+  </browser:menuItems>
+
+  <browser:menuItems menu="wikipage_actions" 
+      for="zwiki.interfaces.IWiki">
+    <browser:menuItem title="Table of Contents" action="@@toc.html"/>
+    <browser:menuItem title="Search" action="@@search.html"/>
+    <browser:menuItem title="Subscriptions" action="@@subscriptions.html"/>
+  </browser:menuItems>
+
+  <!-- Register a browser-specific traverser --> 
+
+  <view
+      for="zwiki.interfaces.IWikiPage"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.publisher.interfaces.IPublishTraverse"
+      factory="zwiki.traversal.WikiPageTraverser"
+      permission="zope.Public"
+      />
+
+</configure>

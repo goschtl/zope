@@ -1,0 +1,13 @@
+<html>
+<body>
+
+<metal:block define-macro="toolbar_layout">
+  <div class="actions">
+    <metal:block define-slot="toolbar">
+      zmi actions
+    </metal:block>
+  </div>
+</metal:block>
+
+</body>
+</html>

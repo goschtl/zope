@@ -1,0 +1,49 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:tales="http://namespaces.zope.org/tales"
+    i18n_domain="zope"
+    >
+
+  <!-- tal:pagelets expression --> 
+  <interface interface=".interfaces.ITALESPageletsExpression" />
+  <interface interface=".interfaces.IMacrosCollector" />
+
+  <adapter
+      for="zope.interface.Interface
+           zope.publisher.interfaces.browser.IBrowserRequest
+           zope.component.interfaces.IView
+           .interfaces.IPageletSlot"
+      factory=".collector.MacrosCollector"
+      provides=".interfaces.IMacrosCollector" />
+
+  <tales:expressiontype
+      name="pagelets"
+      handler=".tales.TALESPageletsExpression"
+      />
+
+  <!-- tal:pagelet expression --> 
+  <interface interface=".interfaces.ITALESPageletExpression" />
+  <interface interface=".interfaces.IMacroCollector" />
+
+  <adapter
+      for="zope.interface.Interface
+           zope.publisher.interfaces.browser.IBrowserRequest
+           zope.component.interfaces.IView
+           .interfaces.IPageletSlot"
+      factory=".collector.MacroCollector"
+      provides=".interfaces.IMacroCollector" />
+
+  <tales:expressiontype
+      name="pagelet"
+      handler=".tales.TALESPageletExpression"
+      />
+
+  <!-- tal:pagedata expression --> 
+  <interface interface=".interfaces.ITALESPageDataExpression" />
+
+  <tales:expressiontype
+      name="pagedata"
+      handler=".tales.TALESPageDataExpression"
+      />
+
+</configure>

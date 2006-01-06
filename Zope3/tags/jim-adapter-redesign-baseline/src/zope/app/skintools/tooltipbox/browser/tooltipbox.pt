@@ -1,0 +1,27 @@
+<html>
+<body>
+
+<metal:block define-macro="tooltipbox"
+		tal:condition="pagetip|nothing"
+		tal:repeat="pagelet pagelets:zope.app.skintools.tooltipbox.IToolTipBoxLayout">
+
+	<tal:block metal:use-macro="pagelet">
+
+		<metal:block fill-slot="header">
+			<div class="title" i18n:translate="">Tip</div>
+		</metal:block>
+
+		<metal:block fill-slot="body">
+			<div class="tip">
+				<metal:block define-slot="pagetip"
+          	         tal:replace="structure pagetip">
+      		A short tip goes here
+      	</metal:block>
+			</div>
+		</metal:block>
+	</tal:block>
+
+</metal:block>
+
+</body>
+</html>
