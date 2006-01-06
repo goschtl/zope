@@ -18,14 +18,23 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app import zapi
+from zope.formlib import page
+from zope.formlib import namedtemplate
+from zope.app.pagetemplate import ViewPageTemplateFile
 
+class Unauthorized(page.Page):
 
-class Unauthorized(object):
-
-    def issueChallenge(self):
+    def __call__(self):
         # Set the error status to 403 (Forbidden) in the case when we don't
         # challenge the user
         self.request.response.setStatus(403)
         principal = self.request.principal
         auth = zapi.principals()
         auth.unauthorized(principal.id, self.request)
+        if self.request.response.getStatus() not in (302, 303):
+            return self.template()
+
+    template = namedtemplate.NamedTemplate('default')
+
+default_template = namedtemplate.NamedTemplateImplementation(
+    ViewPageTemplateFile('unauthorized.pt'), Unauthorized)

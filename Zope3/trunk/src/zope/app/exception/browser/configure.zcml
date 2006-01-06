@@ -22,9 +22,10 @@
       for="zope.security.interfaces.IUnauthorized"
       name="index.html"
       permission="zope.Public"
-      template="unauthorized.pt"
       class=".unauthorized.Unauthorized"
       />
+
+  <zope:adapter factory=".unauthorized.default_template" name="default" />
 
   <page
       for="zope.app.exception.interfaces.IUserError"

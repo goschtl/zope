@@ -16,23 +16,17 @@
 $Id$
 """
 from unittest import TestCase, main, makeSuite
-from zope.interface import implements
+from zope import component, interface
+import zope.formlib.namedtemplate
 from zope.publisher.browser import TestRequest
+import zope.publisher.interfaces.browser
 from zope.app.testing import ztapi
 from zope.app.security.interfaces import IAuthentication, IPrincipal
 from zope.app.exception.browser.unauthorized import Unauthorized
 from zope.app.testing.placelesssetup import PlacelessSetup
 
-class Unauthorized(Unauthorized):
-    """Unusually done by ZCML."""
-
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
-
 class DummyPrincipal(object):
-    implements(IPrincipal)  # this is a lie
+    interface.implements(IPrincipal)  # this is a lie
 
     def __init__(self, id):
         self.id = id
@@ -41,15 +35,26 @@ class DummyPrincipal(object):
         return self.id
 
 class DummyAuthUtility(object):
-    implements(IAuthentication)  # this is a lie
+    interface.implements(IAuthentication)  # this is a lie
+
+    status = None
 
     def unauthorized(self, principal_id, request):
         self.principal_id = principal_id
         self.request = request
+        if self.status is not None:
+            self.request.response.setStatus(self.status)
 
+class DummyTemplate (object):
 
-class DummyPrincipalSource(object):
-    pass
+    def __init__(self, context):
+        self.context = context
+
+    component.adapts(Unauthorized)
+    interface.implements(zope.formlib.namedtemplate.INamedTemplate)
+
+    def __call__(self):
+        return 'You are not authorized'
 
 class Test(PlacelessSetup, TestCase):
 
@@ -62,6 +67,7 @@ class Test(PlacelessSetup, TestCase):
         super(Test, self).tearDown()
 
     def testUnauthorized(self):
+        component.provideAdapter(DummyTemplate, name="default")
         exception = Exception()
         try:
             raise exception
@@ -70,7 +76,10 @@ class Test(PlacelessSetup, TestCase):
         request = TestRequest()
         request.setPrincipal(DummyPrincipal(23))
         u = Unauthorized(exception, request)
-        u.issueChallenge()
+        res = u()
+
+        # Make sure that we rendered the expected template
+        self.assertEqual("You are not authorized", res)
 
         # Make sure the response status was set
         self.assertEqual(request.response.getStatus(), 403)
@@ -79,20 +88,25 @@ class Test(PlacelessSetup, TestCase):
         self.failUnless(self.auth.request is request)
         self.assertEqual(self.auth.principal_id, 23)
 
-    def testPluggableAuthUtility(self):
-        exception = Exception()
+    def testRedirect(self):
+        exception= Exception()
         try:
             raise exception
         except:
             pass
         request = TestRequest()
-        psrc = DummyPrincipalSource()
         request.setPrincipal(DummyPrincipal(23))
         u = Unauthorized(exception, request)
-        u.issueChallenge()
+        
+        self.auth.status = 303
+        
+        res = u()
 
-        # Make sure the response status was set
-        self.assertEqual(request.response.getStatus(), 403)
+        # Make sure that the template was not rendered
+        self.assert_(res is None)
+
+        # Make sure the auth's redirect is honored
+        self.assertEqual(request.response.getStatus(), 303)
 
         # Make sure the auth utility was called
         self.failUnless(self.auth.request is request)
