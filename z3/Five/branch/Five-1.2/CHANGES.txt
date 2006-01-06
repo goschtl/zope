@@ -17,6 +17,8 @@ Bugfixes
 
 * Made Five send a ContainerModifiedEvent when appropriate.
 
+* Fix cleanup of five:traversable.
+
 Restructuring
 -------------
 
