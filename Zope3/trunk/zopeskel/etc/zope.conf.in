@@ -27,8 +27,8 @@ interrupt-check-interval 200
 # <sslserver>
 #   type HTTPS
 #   address 8443
-#   privatekeypath server.pem
-#   certificatepath server.pem
+#   privatekeypath $CONFDIR/server.pem
+#   certificatepath $CONFDIR/server.pem
 # </sslserver>
 
 # A special HTTP server that records HTTP session that can be converted to
