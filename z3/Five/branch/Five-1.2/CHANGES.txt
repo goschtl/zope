@@ -2,7 +2,7 @@
 Five Changes
 ============
 
-Five 1.2 (unreleased)
+Five 1.2 (2006-01-07)
 =====================
 
 Bugfixes
