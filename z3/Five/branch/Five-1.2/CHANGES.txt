@@ -19,6 +19,10 @@ Bugfixes
 
 * Fix cleanup of five:traversable.
 
+* If one class was set to have a localsite hook twice, removing the
+  hook would be attempted twice during the cleanup of unit tests, and
+  the tests would fail.
+
 Restructuring
 -------------
 
