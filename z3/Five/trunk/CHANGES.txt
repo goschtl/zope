@@ -10,17 +10,17 @@ Features
 
 * Port browser:addMenuItem directive from zope.app.publisher.browser/meta.zcml
 
-Bugfixes
---------
+* Add a file argument to the five:loadProducts and
+  five:loadProductOverrides directives. Use this in the Five site.zcml
+  to load all the Product meta before any Product configure.
 
-* Add a file argument to the five:loadProducts and five:loadProductOverrides
-  directives. Use this in the Five site.zcml to load all the Product meta before
-  any Product configure. 
-  NOTE: Anyone who copied the Five site.zcml to their ${instance}/etc/ directory
-  is going to need to update it.
+  NOTE: Anyone who copied the Five site.zcml to their
+  $INSTANCE_HOME/etc/ directory is going to need to update it.
 
-Five 1.3 (unreleased)
+Five 1.3 (2006-01-07)
 =====================
+
+This version is also included in Zope 2.9.0.
 
 Bugfixes
 --------
@@ -94,7 +94,7 @@ Restructuring
   components has been removed as that functionality is now in the Zope
   2 core as of Zope 2.9.
 
-Five 1.2 (unreleased)
+Five 1.2 (2006-01-07)
 =====================
 
 Bugfixes
@@ -108,6 +108,12 @@ Bugfixes
 * Fixed loops in zcml loading due to events in some cases.
 
 * Made Five send a ContainerModifiedEvent when appropriate.
+
+* Fix cleanup of five:traversable.
+
+* If one class was set to have a localsite hook twice, removing the
+  hook would be attempted twice during the cleanup of unit tests, and
+  the tests would fail.
 
 Restructuring
 -------------
