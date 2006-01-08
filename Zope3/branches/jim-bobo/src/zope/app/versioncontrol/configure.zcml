@@ -1,7 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope"
-           i18n_domain="zope.app.versioncontrol">
-
-  <permission id="zope.app.versioncontrol.UseVersionControl"
-              title="Use version control" />
-
-</configure>

@@ -1,6 +1,0 @@
-<html>
-<body>
-
-<div metal:define-macro="testpagelet">testpagelet macro content</div>
-
-</body></html>

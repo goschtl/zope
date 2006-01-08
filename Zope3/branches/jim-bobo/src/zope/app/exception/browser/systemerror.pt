@@ -1,5 +1,0 @@
-<html><title>System Error</title>
-<body tal:define="ignored python:request.response.setStatus(500)">
-  A system error occurred.
-</body>
-</html>
