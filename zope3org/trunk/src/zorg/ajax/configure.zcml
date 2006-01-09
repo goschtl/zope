@@ -23,12 +23,23 @@
             attribute="renderBody" />
         <page 
             name="liveChanges"
-            attribute="this" />
-            
+            attribute="liveChanges" />
+                        
   </pages>
- 
-  <zope:adapter factory="zorg.ajax.livepage.LivePageResult" />
   
+  <pages
+        for="*"
+        class="zorg.ajax.livepage.LiveChanges"
+        permission="zope.Public">
+    
+        <page 
+            name="streamEvents"
+            attribute="streamEvents" />
+                        
+  </pages>
+  
+  
+ 
   <zope:content class="zorg.ajax.livepage.IterBuffer">
     
 	<require

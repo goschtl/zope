@@ -39,6 +39,10 @@ class IAjaxLiveSearchPage(IAjaxPage) :
     
 class ILiveChanges(IAjaxPage) :
     """ A web page with a periodical subscriber to server events. """
+
+class ILivePage(IAjaxPage) :
+    """ A web page with a subscriber to streamed server events. """
+
     
 class IAjaxUpdateable(Interface) :
     """ An updatable part that produces HTML that can be used to update

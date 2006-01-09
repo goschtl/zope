@@ -13,11 +13,11 @@
 ##############################################################################
 """
 
-$Id: view.py 39651 2005-10-26 18:36:17Z oestermeier $
+$Id: livepage.py 39651 2005-10-26 18:36:17Z oestermeier $
 """
 __docformat__ = 'restructuredtext'
 
-import os, itertools, unittest
+import os, itertools, unittest, time
 from string import Template
 
 from zope.testing import doctest
@@ -30,6 +30,7 @@ from zope.publisher.interfaces import IRequest
 from zope.app.session.interfaces import ISession
 from zope.security.proxy import removeSecurityProxy
 from zope.security.checker import defineChecker, NoProxy
+from zope.security.checker import ProxyFactory
 
 from zope.app.traversing.interfaces import TraversalError
 from zope.app.traversing.interfaces import ITraversable
@@ -37,12 +38,17 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
 from zope.app.publisher.browser import BrowserView
 
+
 from zope.interface import implements
 from zope.interface import Interface
 from zorg.ajax.page import AjaxPage
 
 
 from zorg.ajax.interfaces import ILiveChanges
+from zorg.ajax.interfaces import ILivePage
+from zope.publisher.http import DirectResult
+
+from twisted.web2.wsgi import FileWrapper
 
 
 ### Experimental Stuff ###
@@ -58,6 +64,9 @@ class FileBuffer(object):
     """ A buffer for shared read and write operations. """
     closed = False
     count = 0
+    
+    newline = '\n<p>.</p>'
+    end = "</body></html>"
     
     def __init__(self):
         self.buf = ''
@@ -78,8 +87,7 @@ class FileBuffer(object):
             
         self.count += 1
         time.sleep(0.1)
-        print "."
-        return '\n<p>.</p>'
+        return self.newline
         
     def __iter__(self) :
         data = self.read(100)
@@ -88,58 +96,18 @@ class FileBuffer(object):
         return data
             
     def close(self) :
-        self.write("</body></html>")
+        self.write(self.end)
         self.closed = True
   
     def open(self) :
         self.closed = False
         self.count = 0
 
-from zope.interface import Interface
-
-class IIterable(Interface) :
-    
-    def __iter__() :
-        """ Defines an iterable. """
         
-class IterBuffer(object) :
+class IterBuffer(FileBuffer) :
 
-    implements(IIterable)
-    
-    count = 0
-    stop = False
-    
-    def __init__(self):
-        self.buf = ''
-
-    def write(self, str):
-        self.buf += str
-
-    def close(self) :
-        self.write("</body></html>")
-        self.stop = True
-         
-    def __iter__(self) :
-        data = self.buf
-        if data :
-            self.buf = ''
-            return data
-        self.count += 1
-        time.sleep(0.1)
-        
-        if self.count > 100 :
-            self.close()
-            
-        if self.stop :
-            raise StopIteration
-            
-    def next(self) :
-        try :
-            return self.__iter__()
-        except StopIteration :
-            return None
-        
-            
+    newline = '\n'
+    end = ""
     
 class LiveChanges(AjaxPage) :
     """ Base class that implements live changes.
@@ -226,78 +194,144 @@ class LiveChanges(AjaxPage) :
         self.buffer.close()
 
 
+# A global caches dictionary shared between threads
+globalClients = {}
+from thread import allocate_lock
+
+# A writelock for clients dictionary
+writelock = allocate_lock()
+
+# A counter for client ids and its lock
+client_id_counter = 0
+client_id_writelock = allocate_lock()
+            
+
 class LivePageClient(object):
-    """An object which represents the client-side webbrowser.
+    """An object which represents the client-side webbrowser of a LivePage.
     """
 
     refreshInterval = 30
     targetTimeoutCount = 3
     
     def __init__(self, livepage) :
-        self.livepage = livepage
-        self.handleid = str(itertools.count().next())
-        livepage.clients[self.handleid] = self
+       
+        client_id_writelock.acquire()
+        try:
+            global client_id_counter
+            self.handleid = str(client_id_counter)
+            client_id_counter +=1
+        finally:
+            client_id_writelock.release()
+      
+        writelock.acquire()
+        try:
+            global globalClients
+            if self.handleid not in globalClients:
+                globalClients[self.handleid] = self
+        finally:
+            writelock.release()
+      
+        self.output = [] # IterBuffer()
+        
         
 class LivePage(AjaxPage) :
     """ A Zope3 substitute for the newov.livepage.LivePage    
     
-        The page is called by the javascript glue as follows
-        
-        liveChanges/livepage_client/0/output?
-        
-        liveChanges/livepage_client/0/input?handler-path=&handler-name=change&arguments=sadas
+    The initial call of a LivePage without parameters returns an
+    iterable ILivePageResult that allows the browser to ask for a new client:
     
-        >>> request = TestRequest()
-        >>> page = LivePage(None, request)
+    >>> request = TestRequest()
+    >>> page = LivePage(None, request)
+    >>> print page.liveChanges()
+    <html>
+        <head>
+            <script type="text/javascript">var nevow_clientHandleId = '0';</script>
+            <script src="http://127.0.0.1/nevow_glue.js" type="text/javascript"></script>
+        </head>
+        <body>
+        <p>Input some text.</p>
+        <input onchange="server.handle('alert', this.value)" type="text" />
+        </body>
+    </html>
+    
+    >>> page = LivePage(None, request)
+    >>> print page.liveChanges()
+    <html>
+        <head>
+            <script type="text/javascript">var nevow_clientHandleId = '1';</script>
+            <script src="http://127.0.0.1/nevow_glue.js" type="text/javascript"></script>
+        </head>
+        <body>
+        <p>Input some text.</p>
+        <input onchange="server.handle('alert', this.value)" type="text" />
+        </body>
+    </html>
+  
+    After that the page can be called by the javascript glue as follows
         
-        The renderBody method creates a new client:
+    -  liveChanges?livepage_client=new
+    
+       This creates a new client object on the server side.
+    
+    -  liveChanges?livepage_client=0&mode=output&outputNum=0
+    
+       Call the output method and ask for special output that is intended
+       for the specified client
+   
+    -  liveChanges?livepage_client=0&mode=input&handler-path=
+        &handler-name=change&arguments=42
         
-        >>> print page.renderBody()
-        <html>
-            <head>
-                <script type="text/javascript">var nevow_clientHandleId = '0';</script>
-                <script src="http://127.0.0.1/nevow_glue.js" type="text/javascript"></script>
-            </head>
-            <body>
-            <p>Input some text.</p>
-            <input onchange="server.handle('change', this.value)" type="text" />
-            </body>
-        </html>
-       
-        After that we can access the new client's input and output resources :
+       Call an input method that produces output for various clients.
+      
+
+    Immediately after that we open an output stream :
+    
+    >>> args=dict(livepage_client=0, mode='output', outputNum=0)
+    >>> request = TestRequest(form=args)
+    >>> page = LivePage(None, request)
+    >>> output = page.liveChanges(debug=False)
+  
+    Let's try the new client's input and output methods :
+    
+    >>> args=dict(livepage_client=0, mode='input', handler_name='alert',
+    ...                 arguments=42)
+    
+    >>> request = TestRequest(form=args)
+    >>> page = LivePage(None, request)
+    >>> page.liveChanges(debug=False)
+    'ok'
+    
+    The iterable output returns javascript snippets:
         
-        >>> clients = page.publishTraverse(request, u'livepage_client')
-        >>> resources = clients.publishTraverse(request, u'0')
-        >>> output = resources.publishTraverse(request, u'output')
-        >>> input = resources.publishTraverse(request, u'output')
-        
-        The output resource returns javascript snippets:
-        
-        /liveChanges/livepage_client/0/output?outputNum=0
-        
-        
-        
+    >>> for chunk in output.body :
+    ...     print chunk
+    <script type="text/javascript">alert(42)</script>
+
+    And this again and again if we provide new input :
+    
+    >>> args=dict(livepage_client=0, mode='input', handler_name='alert',
+    ...                 arguments=43)
+    >>> request = TestRequest(form=args)
+    >>> page = LivePage(None, request)
+    >>> page.liveChanges(debug=False)
+    'ok'
+    
+    >>> for chunk in output.body :
+    ...     print chunk
+    <script type="text/javascript">alert(43)</script>
 
     """
     
     path = os.path.join(os.path.dirname(__file__), "javascript", "nevow_glue.js")    
         
     
-    implements(IPublishTraverse)
+    implements(ILivePage)
   
-    clientFactory = LivePageClient
-    clients = {}
     
-    def __init__(self, context, request) :    
-        self.context = context
-        self.request = request
-        
-    def publishTraverse(self, request, name) :
-        if name == u'livepage_client' :
-            return LivePageClients(self)
-            
-        raise NotFound(self, name, request)
-        
+
+    clientFactory = LivePageClient
+    answer = None              # special object for input and output requests
+                                               
     def renderGlue(self) :
         """ Returns the JavaScript glue.         
         """       
@@ -315,25 +349,64 @@ class LivePage(AjaxPage) :
         """ Returns a new client id. """
         
         return self.clientFactory(self).handleid
-                
+                 
+    def liveChanges(self, debug=False) :
+        """ The main response method: returns the HTML that is necessary
+            to build up a browser client.
+           
+            Returns input or output call results if a client and interaction 
+            mode is specified.
+       
+        """
+        global globalClients
+        if debug :
+            import pdb; pdb.set_trace()
+            
+        client = self.parameter('livepage_client')
+        if client is not None :
+          
+            client = globalClients[str(client)]
+            mode = self.parameter('mode')
+            if mode == 'input' :
+                handler = self.parameter('handler_name')
+                arguments = self.parameter('arguments')
+                return self.processInput(handler, arguments)
+            elif mode == 'output' :
+                num = self.parameter('outputNum', type=int)
+                return self.processOutput(client, num)
+                # output = client.output
+#                     output.open()
+#                     headers = [('content-type', 'text/html')]
+#                     body = FileWrapper(output, 300)
+#                     return DirectResult(body, headers)
+            else :
+                raise RuntimeError, "undefined client mode"
+                    
+        return self.renderBody()
+
+    def processOutput(self, client, num) :
+        end = time.time() + client.refreshInterval
+        while time.time() < end :
+            if client.output :
+                return "alert('output %s')" % client.output.pop()
+            time.sleep(0.1)
+        return ""
+        
+    def processInput(self, handler, arguments) :
+        global globalClients
+        js = getattr(self, handler)(arguments)
+        output = js # u'<script type="text/javascript">%s</script>' % js
+        for client in globalClients.values() :
+            client.output.append(output)
+            #client.output.write(output)
+        return "alert('input');"
+        
+    def alert(self, arguments) :
+        return "alert(%s)" % arguments
+    
     
     def renderBody(self) :
         """ A test method that calls nevow.
-        
-        >>> page = LivePage(None, TestRequest())
-        >>> print page.renderBody()
-        <html>
-            <head>
-                <script type="text/javascript">var nevow_clientHandleId = '0';</script>
-                <script src="http://127.0.0.1/nevow_glue.js" type="text/javascript"></script>
-            </head>
-            <body>
-            <p>Input some text.</p>
-            <input onchange="server.handle('change', this.value)" type="text" />
-            </body>
-        </html>
-        
-        
         """
         
         template = Template("""<html>
@@ -343,87 +416,33 @@ class LivePage(AjaxPage) :
     </head>
     <body>
     <p>Input some text.</p>
-    <input onchange="server.handle('change', this.value)" type="text" />
+    <input onchange="server.handle('alert', this.value)" type="text" />
     </body>
 </html>""")      
                                                 
         return template.substitute(id=self.nextClientId(), glue=self.glueURL())
  
- 
-    def this(self) :
-        return self
-              
-    def handle_change(self, ctx, value):
-        import pdb; pdb.set_trace()
-        
-        return livepage.alert(value)
 
 defineChecker(LivePage, NoProxy)
-
-class Contextual(object) :
-    """  Convenient super class for wrapper and adapter. """
-    def __init__(self, context) :
-        self.context = removeSecurityProxy(context)
         
-class LivePageResult(Contextual) :
-    """ An adapter that converts a LivePage into an IResult. """
+class LiveOutputStream(object) :
+    """ The iterable output stream. """
 
-    from zope.publisher.http import IResult
+    counter = 0
+    limit = 100  
     
-    implements(IResult)
-    adapts(LivePage)
-    
-    headers = ()
+    def __init__(self, channel, client) :
+        self.channel = channel
+        self.client = client
         
-    def getBody(self) :
-        return (self.context.renderBody(),)  # returns the body
-        
-    body = property(getBody)
+    def __iter__(self) :
+        if self.client.output :
+            result = self.client.output.pop()
+            yield result
+       
+        self.counter += 1
+        if self.counter > self.limit :
+            raise StopIteration
+              
 
-defineChecker(LivePageResult, NoProxy)
-
-class LivePageClients(Contextual) :
-    """ A traverser that traverses a dict of clients. """
-    
-    implements(IPublishTraverse)
-           
-    def publishTraverse(self, request, name) :  
-        try :
-            client = self.context.clients[str(name)]
-            return ClientResources(client)
-        except KeyError :
-            raise NotFound(self, name, request)
-
-defineChecker(LivePageClients, NoProxy)
-
-class InputResource(Contextual) :
-    pass
-
-defineChecker(InputResource, NoProxy)
-
-class OutputResource(Contextual) :
-    
-    
-    def __call__(self, *args) :
-        print args
-        return "ok"
-
-defineChecker(OutputResource, NoProxy)
-
-
-class ClientResources(Contextual) :
-    """ A traverser that returns an input or an output resource. """
-    
-    implements(IPublishTraverse)
-     
-    clientResources = dict(input=InputResource, output=OutputResource)
-    
-    def publishTraverse(self, request, name) :       
-        try :   
-            resource = self.clientResources[name]
-            return resource(self.context)
-        except KeyError :
-            raise NotFound(self, name, request)
-
-defineChecker(ClientResources, NoProxy)
-
+defineChecker(LiveOutputStream, NoProxy)
