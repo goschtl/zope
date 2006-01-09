@@ -9,7 +9,7 @@ on how to use these modules.
 '''
 
 # The Olson database has historically been updated about 4 times a year
-OLSON_VERSION = '2005m'
+OLSON_VERSION = '2005r'
 VERSION = OLSON_VERSION
 #VERSION = OLSON_VERSION + '.2'
 __version__ = OLSON_VERSION
@@ -18,11 +18,25 @@ OLSEN_VERSION = OLSON_VERSION # Old releases had this misspelling
 
 __all__ = [
     'timezone', 'all_timezones', 'common_timezones', 'utc',
-    'AmbiguousTimeError', 'country_timezones',
+    'AmbiguousTimeError', 'country_timezones', '_',
     ]
 
-import sys, datetime, os.path
+import sys, datetime, os.path, gettext
 from tzinfo import AmbiguousTimeError, unpickler
+
+# Enable this when we get some translations?
+# We want an i18n API that is useful to programs using Python's gettext
+# module, as well as the Zope3 i18n package. Perhaps we should just provide
+# the POT file and translations, and leave it up to callers to make use
+# of them.
+# 
+# t = gettext.translation(
+#         'pytz', os.path.join(os.path.dirname(__file__), 'locales'),
+#         fallback=True
+#         )
+# def _(timezone_name):
+#     """Translate a timezone name using the current locale, returning Unicode"""
+#     return t.ugettext(timezone_name)
 
 def timezone(zone):
     ''' Return a datetime.tzinfo implementation for the given timezone 
@@ -1262,19 +1276,6 @@ all_timezones = \
  'ROC',
  'ROK',
  'Singapore',
- 'SystemV/AST4',
- 'SystemV/AST4ADT',
- 'SystemV/CST6',
- 'SystemV/CST6CDT',
- 'SystemV/EST5',
- 'SystemV/EST5EDT',
- 'SystemV/HST10',
- 'SystemV/MST7',
- 'SystemV/MST7MDT',
- 'SystemV/PST8',
- 'SystemV/PST8PDT',
- 'SystemV/YST9',
- 'SystemV/YST9YDT',
  'Turkey',
  'UCT',
  'US/Alaska',
