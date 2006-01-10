@@ -148,6 +148,7 @@ Evaluating expressions without rendering results
 $Id$
 """
 from zope.documenttemplate.dt_util import parse_params, name_param, html_quote
+from zope.structuredtext import stx2htmlWithReferences
 import re, sys
 from urllib import quote, quote_plus
 
@@ -372,12 +373,8 @@ def len_comma(v, name='(Unknown name)', md={}):
     return thousands_commas(str(len(v)))
 
 
-StructuredText = None
 def structured_text(v, name='(Unknown name)', md={}):
-    global StructuredText
-    if StructuredText is None:
-        import StructuredText
-    return str(StructuredText.html_with_references(str(v), 3))
+    return stx2htmlWithReferences(str(v), level=3, header=0)
 
 
 def sql_quote(v, name='(Unknown name)', md={}):
@@ -395,10 +392,9 @@ special_formats={
     'whole-dollars': whole_dollars,
     'dollars-and-cents': dollars_and_cents,
     'collection-length': len_format,
-    # TODO: Gone for now
-    # 'structured-text': structured_text,
+    'structured-text': structured_text,
 
-    # The rest are depricated:
+    # The rest are deprecated:
     'sql-quote': sql_quote,
     'html-quote': html_quote,
     'url-quote': url_quote,
