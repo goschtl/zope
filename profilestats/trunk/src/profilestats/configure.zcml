@@ -1,0 +1,63 @@
+<configure 
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    i18n_domain="profilestats"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    >
+
+<content class=".stats.Stats">
+   <implements 
+       interface="zope.app.annotation.IAttributeAnnotatable" />
+   <require permission="zope.View" attributes="stats" />
+</content>
+
+<browser:page
+    for="zope.app.container.interfaces.IAdding"
+    name="AddProfileStats.html"
+    class=".browser.Add"
+    permission="zope.ManageContent"
+    />
+
+<browser:addMenuItem
+    class=".stats.Stats"
+    title="Profiler Statistics"
+    permission="zope.ManageContent"
+    view="AddProfileStats.html"
+    />
+
+<browser:page
+    for=".stats.IStats"
+    name="index.html"
+    menu="zmi_views" title="By File"
+    class=".browser.StatsView"
+    attribute="tree"
+    permission="zope.ManageContent"
+    />
+
+<browser:page
+    for=".stats.IStats"
+    name="byTime.html"
+    menu="zmi_views" title="By Time"
+    class=".browser.StatsView"
+    attribute="byTime"
+    permission="zope.ManageContent"
+    />
+
+<browser:page
+    for=".stats.IStats"
+    name="byCumulative.html"
+    menu="zmi_views" title="By Cummulative Time"
+    class=".browser.StatsView"
+    attribute="byCumulative"
+    permission="zope.ManageContent"
+    />
+
+<browser:page
+    for=".stats.IStats"
+    name="detail.html"
+    class=".browser.StatsView"
+    attribute="detail"
+    permission="zope.ManageContent"
+    />
+
+</configure> 

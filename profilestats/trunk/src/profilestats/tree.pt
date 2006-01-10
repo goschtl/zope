@@ -1,0 +1,41 @@
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="buddydemo">
+<head>
+<div metal:fill-slot="headers">
+  <script type="text/javascript" language="JavaScript1.3">
+    function toggle_visibility(element) {
+        element.normalize();
+        var label = element.childNodes[0]
+        if (label.data == '+') {
+           label.data = '-';
+        } else {
+           label.data = '+';
+        }
+
+        var lower = element.nextSibling.nextSibling.nextSibling.nextSibling
+
+        // if this is a leaf node, there is nothing to do
+        if (lower == undefined) return;
+
+        lower = lower.childNodes;
+        for (var i=0; i < lower.length; i++) {
+          child = lower[i];
+          if (child.style != undefined) {
+            if (child.style.display == 'none') {
+                child.style.display = '';
+            } else {
+                child.style.display = 'none';
+            }
+          }
+        }
+      }
+  </script>
+</div>
+</head>
+<body>
+<div metal:fill-slot="body">
+  <h2>Profile results organized by file and function</h2>
+  Total time is 
+  <div tal:replace="structure options/tree" />
+</div>
+</body></html>

@@ -1,0 +1,30 @@
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="buddydemo">
+<body>
+<div metal:fill-slot="body">
+  <h2>Profile results sorted by 
+      <span tal:content="options/sortby">time</span></h2>
+
+  <p>Total time: <span tal:content="options/total">100.2</span></p>
+
+  <table border=1>
+    <tr>
+      <th>calls</th>
+      <th>time</th>
+      <th>time per call &mu;s</th>
+      <th>cummulative time</th>
+      <th>cummulative time per call &mu;s</th>
+      <th>function</th>
+    </tr>
+    <tr tal:repeat="row options/data">
+      <td class="calls" tal:content="row/calls">100/10</td>
+      <td class="time" tal:content="row/time">1.3</td>
+      <td class="timeper" tal:content="row/timeper">1300</td>
+      <td class="cummulative" tal:content="row/cummulative">4.5</td>
+      <td class="cummunlativeper" tal:content="row/cummulativeper">4500</td>
+      <td class="link" tal:content="structure row/link">%s</td>
+    </tr>
+  </table>
+
+</div>
+</body></html>

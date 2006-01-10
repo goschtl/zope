@@ -1,0 +1,55 @@
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="buddydemo">
+<body>
+<div metal:fill-slot="body">
+  <h2>Details for 
+      <span tal:content="options/filename">src/foo.py</span>(<span 
+          tal:content="options/lineno" >10</span>) 
+      <span tal:content="options/func">foo</span>
+  </h2>
+
+  <table>
+    <tr><td>Calls:</td>
+        <td><span tal:content="options/scalls">100/10</span></td></tr>
+    <tr><td>Time:</td>
+        <td><span tal:content="options/time">1.2</span></td></tr>
+    <tr><td>Time per call &mu;s:</td>
+        <td><span tal:content="options/timeper">1200</span></td></tr>
+    <tr><td>Cummulative time:</td>
+        <td><span tal:content="options/cummulative">4.5</span></td></tr>
+    <tr><td>Cummulative time per call &mu;s:</td>
+        <td><span tal:content="options/cummulativeper">4500</span></td></tr>
+  </table>
+
+  <div tal:condition="options/callers">
+    <h3>Callers</h3>',
+    <table border=1>
+      <tr>
+      <th>function</th>
+      <th>calls</th>
+      <th>time credited to function</th>
+      <th>cummulative time credited to function</th>
+      </tr>
+      <tr tal:repeat="row options/callers">
+          <td tal:repeat="value row" tal:content="structure value" />
+      </tr>
+    </table>
+  </div>
+
+  <div tal:condition="options/callees">
+    <h3>Callees</h3>',
+    <table border=1>
+      <tr>
+      <th>function</th>
+      <th>calls</th>
+      <th>time credited to function</th>
+      <th>cummulative time credited to function</th>
+      </tr>
+      <tr tal:repeat="row options/callees">
+          <td tal:repeat="value row" tal:content="structure value" />
+      </tr>
+    </table>
+  </div>
+
+</div>
+</body></html>
