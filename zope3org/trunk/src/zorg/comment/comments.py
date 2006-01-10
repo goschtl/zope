@@ -56,13 +56,15 @@ class Comments(Location, Persistent):
 
     implements(IComments)
 
+    __nextKey__ = 0
+    
     def __init__(self):
         self.comments = PersistentDict()
 
     # private methods
     def _get_nextKey(self):
-        key = self.__dict__.get('_nextKey', 0)
-        self.__dict__['_nextKey'] = nextKey = key + 1
+        key = self.__nextKey__
+        self.__nextKey__ = nextKey = key + 1
         return nextKey 
 
     _nextKey = property(_get_nextKey)
