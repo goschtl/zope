@@ -34,6 +34,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import re
+from string import letters
 from zope.structuredtext import stng, document, html
 
 def stx2html(aStructuredString, level=1, header=1):
