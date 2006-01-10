@@ -18,12 +18,13 @@ $Id$
 import re
 
 from types import ListType, StringType, TupleType
+from cgi import escape
 
 # These imports are for the use of clients of this module, as this
 # module is the canonical place to get them. 
 from zope.documenttemplate.pdocumenttemplate import TemplateDict, InstanceDict
 from zope.documenttemplate.pdocumenttemplate import render_blocks
-
+from zope.documenttemplate.ustr import ustr
 
 class ParseError(Exception):
     '''Document Template Parse Error'''
@@ -32,17 +33,9 @@ class ValidationError(Exception):
     '''Unauthorized'''
 
 
-def html_quote(v, name='(Unknown name)', md={},
-               character_entities=(
-                       (('&'),    '&amp;'),
-                       (('<'),    '&lt;' ),
-                       (('>'),    '&gt;' ),
-                       (('"'),    '&quot;'))): #"
-    text = str(v)
-    for re, name in character_entities:
-        text = text.replace(re, name)
-    return text
 
+def html_quote(v, name='(Unknown name)', md={}):
+    return escape(ustr(v), 1)
 
 def int_param(params, md, name, default=0):
     try:
