@@ -17,13 +17,17 @@ __docformat__ = 'restructuredtext'
 
 from xml.dom import minidom
 from xml.parsers import expat
+
 from zope.schema import getFieldNamesInOrder, getFields
+from zope.publisher.http import status_reasons
+
 from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
-from zope.app.form.utility import setUpWidgets
+from zope.app.form.utility import setUpWidget
 
 from interfaces import IDAVWidget, IDAVNamespace
 from opaquenamespaces import IDAVOpaqueNamespaces
+from common import MultiStatus
 
 class PROPFIND(object):
     """PROPFIND handler for all objects"""
@@ -41,20 +45,20 @@ class PROPFIND(object):
             self.content_type = ct.lower()
             self.content_type_params = None
         self.default_ns = 'DAV:'
-        self.oprops = IDAVOpaqueNamespaces(self.context, None)
 
+        self.oprops = IDAVOpaqueNamespaces(self.context, None)
         _avail_props = {}
         # List all *registered* DAV interface namespaces and their properties
         for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
             _avail_props[ns] = getFieldNamesInOrder(iface)
+
         # List all opaque DAV namespaces and the properties we know of
         if self.oprops:
             for ns, oprops in self.oprops.items():
                 _avail_props[ns] = list(oprops.keys())
         self.avail_props = _avail_props
 
-        # The xmldoc attribute will be set later, if needed.
-        self.xmldoc = None
+        self.responsedoc = MultiStatus()
 
     def getDepth(self):
         return self._depth
@@ -62,17 +66,13 @@ class PROPFIND(object):
     def setDepth(self, depth):
         self._depth = depth.lower()
 
-    def PROPFIND(self, xmldoc=None):
-        if self.content_type not in ['text/xml', 'application/xml']:
+    def PROPFIND(self, xmldoc = None):
+        if self.content_type not in ('text/xml', 'application/xml'):
             self.request.response.setStatus(400)
             return ''
         if self.getDepth() not in ['0', '1', 'infinity']:
             self.request.response.setStatus(400)
             return ''
-
-        resource_url = zapi.absoluteURL(self.context, self.request)
-        if IReadContainer.providedBy(self.context):
-            resource_url += '/'
 
         if xmldoc is None:
             try:
@@ -80,15 +80,18 @@ class PROPFIND(object):
             except expat.ExpatError:
                 pass
 
-        self.xmldoc = xmldoc
-            
-        resp = minidom.Document()
-        ms = resp.createElement('multistatus')
-        ms.setAttribute('xmlns', self.default_ns)
-        resp.appendChild(ms)
-        ms.appendChild(resp.createElement('response'))
-        ms.lastChild.appendChild(resp.createElement('href'))
-        ms.lastChild.lastChild.appendChild(resp.createTextNode(resource_url))
+        self.handlePropfind(xmldoc)
+
+        body = self.responsedoc.body.toxml('utf-8')
+        self.request.response.setResult(body)
+        self.request.response.setStatus(207)
+        self.request.response.setHeader('content-type', 'text/xml')
+
+        return body
+
+    def handlePropfind(self, xmldoc):
+        resp = self.resp = \
+               self.responsedoc.addResponse(self.context, self.request)
 
         if xmldoc is not None:
             propname = xmldoc.getElementsByTagNameNS(
@@ -97,196 +100,140 @@ class PROPFIND(object):
                 self._handlePropname(resp)
             else:
                 source = xmldoc.getElementsByTagNameNS(self.default_ns, 'prop')
-                self._handlePropvalues(source, resp)
+                self._handlePropvalues(source)
         else:
-            self._handlePropvalues(None, resp)
+            self._handlePropvalues(None)
 
-        self._depthRecurse(ms)
+        self._depthRecurse(xmldoc)
 
-        body = resp.toxml('utf-8')
-        self.request.response.setResult(body)
-        self.request.response.setStatus(207)
-        self.request.response.setHeader('content-type', 'text/xml')
-        return body
-
-    def _depthRecurse(self, ms):
+    def _depthRecurse(self, xmldoc):
         depth = self.getDepth()
         if depth == '0' or not IReadContainer.providedBy(self.context):
             return
+
         subdepth = (depth == '1') and '0' or 'infinity'
+
         for id, obj in self.context.items():
-            pfind = zapi.queryMultiAdapter((obj, self.request), name='PROPFIND')
-            if pfind is None:
-                continue
+            pfind = PROPFIND(obj, self.request)
             pfind.setDepth(subdepth)
-            value = pfind.PROPFIND(self.xmldoc)
-            parsed = minidom.parseString(value)
-            responses = parsed.getElementsByTagNameNS(
-                self.default_ns, 'response')
+            pfind.handlePropfind(xmldoc)
+
+            subrespdoc = pfind.responsedoc.body
+            responses = subrespdoc.getElementsByTagNameNS(self.default_ns,
+                                                          'response')
             for r in responses:
-                ms.appendChild(ms.ownerDocument.importNode(r, True))
+                ## print "obj: %s, %s" %(zapi.getPath(obj), r.toxml('utf-8'))
+                self.responsedoc.appendResponse(r)
 
     def _handleProp(self, source):
         props = {}
         source = source[0]
-        childs = [e for e in source.childNodes
-                  if e.nodeType == e.ELEMENT_NODE]
-        for node in childs:
+
+        for node in source.childNodes:
+            if node.nodeType != node.ELEMENT_NODE:
+                continue
+
             ns = node.namespaceURI
             iface = zapi.queryUtility(IDAVNamespace, ns)
             value = props.get(ns, {'iface': iface, 'props': []})
             value['props'].append(node.localName)
             props[ns] = value
+
         return props
 
     def _handleAllprop(self):
         props = {}
+
         for ns, properties in self.avail_props.items():
             iface = zapi.queryUtility(IDAVNamespace, ns)
             props[ns] = {'iface': iface, 'props': properties}
+
         return props
 
     def _handlePropname(self, resp):
-        re = resp.lastChild.lastChild
-        re.appendChild(resp.createElement('propstat'))
-        prop = resp.createElement('prop')
-        re.lastChild.appendChild(prop)
         count = 0
         for ns, props in self.avail_props.items():
             attr_name = 'a%s' % count
+            ns_prefix = None
             if ns is not None and ns != self.default_ns:
                 count += 1
-                prop.setAttribute('xmlns:%s' % attr_name, ns)
+                ns_prefix = attr_name
             for p in props:
-                el = resp.createElement(p)
-                prop.appendChild(el)
-                if ns is not None and ns != self.default_ns:
-                    el.setAttribute('xmlns', attr_name)
-        re.lastChild.appendChild(resp.createElement('status'))
-        re.lastChild.lastChild.appendChild(
-            resp.createTextNode('HTTP/1.1 200 OK'))
+                el = resp.createEmptyElement(ns, ns_prefix, p)
+                resp.addPropertyByStatus(ns, ns_prefix, el)
 
-    def _handlePropvalues(self, source, resp):
+    def _handlePropvalues(self, source):
         if not source:
             _props = self._handleAllprop()
         else:
             _props = self._handleProp(source)
 
-        avail, not_avail = self._propertyResolver(_props)
-        if avail:
-            self._renderAvail(avail, resp, _props)
-        if not_avail:
-            self._renderNotAvail(not_avail, resp)
+        self._renderResponse(self.resp, _props)
 
-    def _propertyResolver(self, _props):
-        avail = {}
-        not_avail = {}
-        for ns in _props.keys():
-            iface = _props[ns]['iface']
-            for p in _props[ns]['props']:
-                if iface is None:
-                    # The opaque property case
-                    if (self.oprops is not None and
-                        self.oprops.get(ns, {}).has_key(p)):
-                        l = avail.setdefault(ns, [])
-                        l.append(p)
-                    else:
-                        l = not_avail.setdefault(ns, [])
-                        l.append(p)
-                    continue
-                # The registered namespace case
-                adapter = iface(self.context, None)
-                if adapter is None:
-                    # Registered interface but no adapter? Maybe log this?
-                    l = not_avail.setdefault(ns, [])
-                    l.append(p)
-                    continue
-                l = avail.setdefault(ns, [])
-                l.append(p)
-
-        return avail, not_avail
-
-    def _renderAvail(self, avail, resp, _props):
-        re = resp.lastChild.lastChild
-        re.appendChild(resp.createElement('propstat'))
-        prop = resp.createElement('prop')
-        re.lastChild.appendChild(prop)
-        re.lastChild.appendChild(resp.createElement('status'))
-        re.lastChild.lastChild.appendChild(
-            resp.createTextNode('HTTP/1.1 200 OK'))
+    def _renderResponse(self, re, _props):
         count = 0
-        for ns, props in avail.items():
+        # ns - the full namespace for this object.
+        for ns, ifaceprops in _props.items():
             attr_name = 'a%s' % count
+            ns_prefix = None
             if ns is not None and ns != self.default_ns:
                 count += 1
-                prop.setAttribute('xmlns:%s' % attr_name, ns)
-            iface = _props[ns]['iface']
+                ns_prefix = attr_name
 
+            iface = ifaceprops['iface']
+            props = ifaceprops['props']
+
+            # adapted - the current view through which all properties are
+            # reterived this should be moved to using the widget framework.
             if not iface:
-                # The opaque properties case, hand it off
                 for name in props:
-                    self.oprops.renderProperty(ns, attr_name, name, prop)
+                    if self.oprops:
+                        el = self.oprops.renderProperty(ns, ns_prefix, name)
+                        re.addPropertyByStatus(ns, ns_prefix, el, 200)
+                    else:
+                        el = re.createEmptyElement(ns, ns_prefix, name)
+                        re.addPropertyByStatus(ns, ns_prefix, el, 404)
                 continue
 
-            # The registered namespace case
-            initial = {}
-            adapted = iface(self.context)
-            for name, field in getFields(iface).items():
-                try:
-                    value = field.get(adapted)
-                except AttributeError:
-                    # Interface says the attribute exists but it
-                    # couldn't be found on the adapted object.
-                    value = field.missing_value
-                if value is not field.missing_value:
-                    initial[name] = value
-            setUpWidgets(self, iface, IDAVWidget, ignoreStickyValues=True,
-                         initial=initial, names=initial.keys())
+            adapted = iface(self.context, None)
+            if adapted is None:
+                # XXX - maybe these properties are unavailable for a reason.
+                # render unavailable properties
+                for propname in props:
+                    el = re.createEmptyElement(ns, ns_prefix, propname)
+                    re.addPropertyByStatus(ns, ns_prefix, el, 404)
+                    continue
 
-            for p in props:
-                el = resp.createElement('%s' % p )
-                if ns is not None and ns != self.default_ns:
-                    el.setAttribute('xmlns', attr_name)
-                prop.appendChild(el)
-                widget = getattr(self, p + '_widget', None)
-                if widget is None:
+            for propname in props:
+                status = 200
+                el = None # property DOM fragment
+                field = None
+
+                try:
+                    field = iface[propname]
+                except KeyError:
                     # A widget wasn't generated for this property
                     # because the attribute was missing on the adapted
                     # object, which actually means that the adapter
                     # didn't fully implement the interface ;(
-                    el.appendChild(resp.createTextNode(''))
+                    el = re.createEmptyElement(ns, ns_prefix, propname)
+                    status = 404
+
+                    re.addPropertyByStatus(ns, ns_prefix, el, status)
                     continue
-                value = widget()
 
-                if isinstance(value, (unicode, str)):
-                    # Get the widget value here
-                    el.appendChild(resp.createTextNode(value))
-                else:
-                    if zapi.isinstance(value, minidom.Node):
-                        el.appendChild(
-                            el.ownerDocument.importNode(value, True))
-                    else:
-                        # Try to string-ify
-                        value = str(widget)
-                        # Get the widget value here
-                        el.appendChild(resp.createTextNode(value))
+                try:
+                    setUpWidget(self, propname, field, IDAVWidget,
+                                value = field.get(adapted),
+                                ignoreStickyValues = False)
+                    widget = getattr(self, propname + '_widget', None)
+                    assert widget is not None
+                    el = widget.renderProperty(ns, ns_prefix)
+                    if widget.getErrors():
+                        status = 500
+                except:
+                    # Internal Server Error - status 500
+                    el = re.createEmptyElement(ns, ns_prefix, propname)
+                    status = 500
 
-    def _renderNotAvail(self, not_avail, resp):
-        re = resp.lastChild.lastChild
-        re.appendChild(resp.createElement('propstat'))
-        prop = resp.createElement('prop')
-        re.lastChild.appendChild(prop)
-        re.lastChild.appendChild(resp.createElement('status'))
-        re.lastChild.lastChild.appendChild(
-            resp.createTextNode('HTTP/1.1 404 Not Found'))
-        count = 0
-        for ns, props in not_avail.items():
-            attr_name = 'a%s' % count
-            if ns is not None and ns != self.default_ns:
-                count += 1
-                prop.setAttribute('xmlns:%s' % attr_name, ns)
-            for p in props:
-                el = resp.createElement('%s' % p )
-                prop.appendChild(el)
-                if ns is not None and ns != self.default_ns:
-                    el.setAttribute('xmlns', attr_name)
+                re.addPropertyByStatus(ns, ns_prefix, el, status)

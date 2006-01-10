@@ -42,12 +42,14 @@ class TestPROPFIND(DAVTestCase):
                           prop='title', expect='Test Title', basic='mgr:mgrpw')
 
     def test_dccreated(self):
+        # XXX - this test is failing because the creatation property is not
+        # being rendered correctly to the specifications
         self.addPage('/pt', u'<span />')
         pt = traverse(self.getRootFolder(), '/pt')
         adapted = IZopeDublinCore(pt)
         adapted.created = datetime.utcnow()
         transaction.commit()
-        expect = str(adapted.created)
+        expect = adapted.created.strftime('%a, %d %b %Y %H:%M:%S %z').rstrip()
         self.verifyPropOK(path='/pt', ns='http://purl.org/dc/1.1',
                           prop='created', expect=expect, basic='mgr:mgrpw')
 
@@ -84,18 +86,32 @@ class TestPROPFIND(DAVTestCase):
                               request_body=body)
         self.assertEquals(result.getStatus(), 207)
         s1 = normalize_xml(result.getBody())
-        s2 = normalize_xml("""<?xml version="1.0" encoding="utf-8"?>
-        <multistatus xmlns="DAV:">
-        <response>
-        <href>http://localhost/pt</href>
-        <propstat>
-        <prop xmlns:a0="%(ns)s">
-        <%(prop)s xmlns="a0">%(expect)s</%(prop)s>
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        </multistatus>""" % {'ns':ns, 'prop':prop, 'expect':expect})
+        if expect:
+            s2 = normalize_xml("""<?xml version="1.0" encoding="utf-8"?>
+            <multistatus xmlns="DAV:">
+            <response>
+            <href>http://localhost/pt</href>
+            <propstat>
+            <prop xmlns:a0="%(ns)s">
+            <%(prop)s xmlns="a0">%(expect)s</%(prop)s>
+            </prop>
+            <status>HTTP/1.1 200 OK</status>
+            </propstat>
+            </response>
+            </multistatus>""" % {'ns':ns, 'prop':prop, 'expect':expect})
+        else:
+            s2 = normalize_xml("""<?xml version="1.0" encoding="utf-8"?>
+            <multistatus xmlns="DAV:">
+            <response>
+            <href>http://localhost/pt</href>
+            <propstat>
+            <prop xmlns:a0="%(ns)s">
+            <%(prop)s xmlns="a0"/>
+            </prop>
+            <status>HTTP/1.1 200 OK</status>
+            </propstat>
+            </response>
+            </multistatus>""" % {'ns':ns, 'prop':prop})
         self.assertEquals(s1, s2)
 
 

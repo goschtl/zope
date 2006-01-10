@@ -41,7 +41,7 @@ from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.dublincore.zopedublincore import ScalarProperty
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.app.annotation.attribute import AttributeAnnotations
-from zope.schema.interfaces import IText, ISequence
+from zope.schema.interfaces import IText, ISequence, ITuple
 
 import zope.app.dav.tests
 from zope.app.dav.tests.unitfixtures import File, Folder, FooZPT
@@ -50,7 +50,7 @@ from zope.app.dav import proppatch
 from zope.app.dav.interfaces import IDAVSchema
 from zope.app.dav.interfaces import IDAVNamespace
 from zope.app.dav.interfaces import IDAVWidget
-from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
+from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget, TupleDAVWidget
 from zope.app.dav.opaquenamespaces import DAVOpaqueNamespacesAdapter
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
 
@@ -146,18 +146,21 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         root['folder'] = folder
         self.zpt = traverse(root, 'zpt')
         self.file = traverse(root, 'file')
+
         ztapi.provideView(None, IHTTPRequest, Interface,
                           'absolute_url', AbsoluteURL)
         ztapi.provideView(None, IHTTPRequest, Interface,
                           'PROPPATCH', proppatch.PROPPATCH)
         ztapi.browserViewProviding(IText, TextDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(ISequence, SequenceDAVWidget, IDAVWidget)
+        ztapi.browserViewProviding(ITuple, TupleDAVWidget, IDAVWidget)
         ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
         ztapi.provideAdapter(IAnnotatable, IZopeDublinCore,
                              ZDCAnnotatableAdapter)
         ztapi.provideAdapter(IAnnotatable, IDAVOpaqueNamespaces,
                              DAVOpaqueNamespacesAdapter)
         ztapi.provideAdapter(IAnnotatable, ITestSchema, TestSchemaAdapter)
+
         sm = zapi.getGlobalSiteManager()
         directlyProvides(IDAVSchema, IDAVNamespace)
         sm.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
@@ -166,6 +169,7 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
                              'http://www.purl.org/dc/1.1')
         directlyProvides(ITestSchema, IDAVNamespace)
         sm.provideUtility(IDAVNamespace, ITestSchema, TestURI)
+
         self.db = DB()
         self.conn = self.db.open()
         root = self.conn.root()

@@ -33,8 +33,28 @@
       factory=".mkcol.MKCOL"
       permission="zope.ManageContent"
       allowed_attributes="MKCOL" />
-  
-  
+
+  <!--
+      locking
+    -->
+  <view
+     for="zope.interface.Interface"
+     name="LOCK"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     factory=".locking.LOCKMethodFactory"
+     permission="zope.ManageContent"
+     allowed_attributes="LOCK"
+     />
+
+  <view
+     for="zope.interface.Interface"
+     name="UNLOCK"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     factory=".locking.UNLOCKMethodFactory"
+     permission="zope.ManageContent"
+     allowed_attributes="UNLOCK"
+     />
+
   <!-- Disabled for now. Need to write tests before checking in. 
   <view
       for="*"
@@ -43,87 +63,54 @@
       factory=".move.MOVE"
       permission="zope.ManageContent"
       allowed_attributes="MOVE" />
-  
-  <view
-      for="*"
-      name="COPY"
-      type="zope.publisher.interfaces.http.IHTTPRequest"
-      factory=".copy.COPY"
-      permission="zope.ManageContent"
-      allowed_attributes="COPY" />
-  
   -->
-  
-  <view
-      type="zope.publisher.interfaces.http.IHTTPRequest"
-      for="zope.schema.interfaces.IText"
-      provides="zope.app.dav.interfaces.IDAVWidget"
-      factory="zope.app.dav.widget.TextDAVWidget"
-      permission="zope.Public"
-      />
-  
-  <view
-      type="zope.publisher.interfaces.http.IHTTPRequest"
-      for=".interfaces.IXMLText"
-      provides="zope.app.dav.interfaces.IDAVWidget"
-      factory="zope.app.dav.widget.XMLDAVWidget"
-      permission="zope.Public"
-      />
 
   <view
-      type="zope.publisher.interfaces.http.IHTTPRequest"
-      for="zope.schema.interfaces.IBytes"
-      provides="zope.app.dav.interfaces.IDAVWidget"
-      factory="zope.app.dav.widget.TextDAVWidget"
-      permission="zope.Public"
-      />
-  
-  <view
-      type="zope.publisher.interfaces.http.IHTTPRequest"
-      for="zope.schema.interfaces.IInt"
-      provides="zope.app.dav.interfaces.IDAVWidget"
-      factory="zope.app.dav.widget.TextDAVWidget"
-      permission="zope.Public"
-      />
+     for="zope.interface.Interface"
+     name="COPY"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     factory=".copy.COPY"
+     permission="zope.ManageContent"
+     allowed_attributes="COPY"
+     />
 
-  <view
-      type="zope.publisher.interfaces.http.IHTTPRequest"
-      for="zope.schema.interfaces.IFloat"
-      provides="zope.app.dav.interfaces.IDAVWidget"
-      factory="zope.app.dav.widget.TextDAVWidget"
-      permission="zope.Public"
-      />
-
-  <view
-      type="zope.publisher.interfaces.http.IHTTPRequest"
-      for="zope.schema.interfaces.IDatetime"
-      provides="zope.app.dav.interfaces.IDAVWidget"
-      factory="zope.app.dav.widget.TextDAVWidget"
-      permission="zope.Public"
-      />
-  
-  <view
-      type="zope.publisher.interfaces.http.IHTTPRequest"
-      for="zope.schema.interfaces.ISequence"
-      provides="zope.app.dav.interfaces.IDAVWidget"
-      factory="zope.app.dav.widget.SequenceDAVWidget"
-      permission="zope.Public"
-      />
-  
   <adapter
-      provides="zope.app.dav.interfaces.IDAVSchema"
-      for="*"
-      permission="zope.Public"
-      factory=".adapter.DAVSchemaAdapter" />
+     provides="zope.app.dav.interfaces.IDAVSchema"
+     for="zope.interface.Interface"
+     permission="zope.Public"
+     factory=".adapter.DAVSchemaAdapter"
+     />
+
+  <adapter
+     provides="zope.app.dav.interfaces.IDAVActiveLock"
+     for="zope.interface.Interface"
+     permission="zope.Public"
+     factory=".adapter.ActiveLock"
+     />
+
+  <adapter
+     provides="zope.app.dav.interfaces.IDAVLockEntry"
+     for="zope.interface.Interface"
+     permission="zope.Public"
+     factory=".adapter.LockEntry"
+     />
+
+  <adapter
+     for="zope.interface.Interface
+          zope.publisher.interfaces.http.IHTTPRequest"
+     provides=".interfaces.IIfHeader"
+     factory=".ifhandler.IfParser"
+     />
 
   <!-- TODO: This interface needs to be split up so we can apply seperate 
        permissions for reading and writing -->
   <adapter
-      factory=".opaquenamespaces.DAVOpaqueNamespacesAdapter"
-      provides=".opaquenamespaces.IDAVOpaqueNamespaces"
-      for="zope.app.annotation.interfaces.IAnnotatable"
-      trusted="true"
-      />
+     factory=".opaquenamespaces.DAVOpaqueNamespacesAdapter"
+     provides=".opaquenamespaces.IDAVOpaqueNamespaces"
+     for="zope.app.annotation.interfaces.IAnnotatable"
+     permission="zope.Public"
+     trusted="true"
+     />
       
   <class class=".opaquenamespaces.DAVOpaqueNamespacesAdapter">
     <require
@@ -132,12 +119,111 @@
         />
   </class>
 
+  <!--
+      Define all the DAV widgets.
+    -->
+  <view
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     for="zope.schema.interfaces.IText"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.TextDAVWidget"
+     permission="zope.Public"
+     />
+
+  <view
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     for="zope.schema.interfaces.IBytes"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.TextDAVWidget"
+     permission="zope.Public"
+     />
+  
+  <view
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     for="zope.schema.interfaces.IInt"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.TextDAVWidget"
+     permission="zope.Public"
+     />
+
+  <view
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     for="zope.schema.interfaces.IFloat"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.TextDAVWidget"
+     permission="zope.Public"
+     />
+
+  <view
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     for="zope.schema.interfaces.IDatetime"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.DatetimeDAVWidget"
+     permission="zope.Public"
+     />
+
+  <view
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     for="zope.schema.interfaces.IDate"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.DateDAVWidget"
+     permission="zope.Public"
+     />
+
+  <view
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     for="zope.schema.interfaces.ITuple"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.TupleDAVWidget"
+     permission="zope.Public"
+     />
+
+  <view
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     for="zope.schema.interfaces.ISequence"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.SequenceDAVWidget"
+     permission="zope.Public"
+     />
+
+  <view
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     for="zope.schema.interfaces.IList"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.ListDAVWidget"
+     permission="zope.Public"
+     />
+
+  <view
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     for="zope.app.dav.fields.IXMLEmptyElementList"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.XMLEmptyElementListDAVWidget"
+     permission="zope.Public"
+     />
+
+  <view
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     for="zope.app.dav.fields.IDAVXMLSubProperty"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.DAVXMLSubPropertyWidget"
+     permission="zope.Public"
+     />
+
+  <view
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     for="zope.app.dav.fields.DAVOpaqueField"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.DAVOpaqueWidget"
+     permission="zope.Public"
+     />
+
   <dav:provideInterface
-      for="http://purl.org/dc/1.1"
-      interface="zope.app.dublincore.interfaces.IZopeDublinCore" />
+     for="http://purl.org/dc/1.1"
+     interface="zope.app.dublincore.interfaces.IZopeDublinCore" />
   
   <dav:provideInterface
-      for="DAV:"
-      interface="zope.app.dav.interfaces.IDAVSchema" />
+     for="DAV:"
+     interface="zope.app.dav.interfaces.IDAVSchema" />
 
 </configure>

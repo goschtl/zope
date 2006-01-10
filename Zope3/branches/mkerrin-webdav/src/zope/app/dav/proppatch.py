@@ -48,10 +48,12 @@ class PROPPATCH(object):
         # List all *registered* DAV interface namespaces and their properties
         for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
             _avail_props[ns] = getFieldNamesInOrder(iface)
+
         # List all opaque DAV namespaces and the properties we know of
         if self.oprops:
             for ns, oprops in self.oprops.items():
                 _avail_props[ns] = list(oprops.keys())
+
         self.avail_props = _avail_props
 
     def PROPPATCH(self):
@@ -103,6 +105,7 @@ class PROPPATCH(object):
                     status = self._handleSet(node)
                 else:
                     status = self._handleRemove(node)
+                ## _propresults doesn't seems to be set correctly.
                 results = _propresults.setdefault(status, {})
                 props = results.setdefault(node.namespaceURI, [])
                 if node.localName not in props:
@@ -164,19 +167,21 @@ class PROPPATCH(object):
         if field.readonly:
             return 409 # RFC 2518 specifies 409 for readonly props
 
-        value = field.get(iface(self.context))
+        adapted = iface(self.context)
+
+        value = field.get(adapted)
         if value is field.missing_value:
             value = no_value
         setUpWidget(self, prop.localName, field, IDAVWidget,
-            value=value, ignoreStickyValues=True)
+            value = value, ignoreStickyValues = True)
 
         widget = getattr(self, prop.localName + '_widget')
-        widget.setRenderedValue(prop)
+        widget.setProperty(prop)
 
         if not widget.hasValidInput():
             return 409 # Didn't match the widget validation
 
-        if widget.applyChanges(iface(self.context)):
+        if widget.applyChanges(adapted):
             return 200
 
         return 422 # Field didn't accept the value

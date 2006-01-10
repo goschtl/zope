@@ -37,6 +37,7 @@ class OPTIONS(object):
         # are not in the lists above.
         for m in _allowed_methods:
             view = zapi.queryMultiAdapter((self.context, self.request), name=m)
+            view = getattr(view, m, None)
             if view is not None:
                 allowed.append(m)
 

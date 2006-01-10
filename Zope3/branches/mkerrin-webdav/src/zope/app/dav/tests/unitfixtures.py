@@ -17,6 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from BTrees.OOBTree import OOBTree
 from persistent import Persistent
 from zope.interface import implements
 
@@ -37,16 +38,24 @@ class Folder(zope.app.location.Location, Persistent):
         self.level=level
         self.__parent__ = parent
 
-    def items(self):
-        if self.level == 2:
-            return (('last', File('last', 'text/plain', 'blablabla', self)),)
-        result = []
+        self.data = OOBTree()
+        if level in (0, 1):
+            self._setUp()
+        else:
+            self.data['last'] = File('last', 'text/plain', 'blablabla', self)
+
+    def _setUp(self):
         for i in range(1, 3):
-            result.append((str(i),
-                           File(str(i), 'text/plain', 'blablabla', self)))
-        result.append(('sub1',
-                       Folder('sub1', level=self.level+1, parent=self)))
-        return tuple(result)
+            self.data[str(i)] = File(str(i), 'text/plain', 'blablabla', self)
+        sub1 = Folder('sub1', level = self.level + 1, parent = self)
+        self.data['sub1'] = sub1
+
+    def items(self):
+        items = list(self.data.items())
+        items.sort()
+
+        return tuple(items)
+
 
 class File(zope.app.location.Location, Persistent):
 

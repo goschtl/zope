@@ -28,6 +28,7 @@ from zope import component, interface
 
 from zope.app.keyreference.interfaces import IKeyReference
 from zope.app.locking import interfaces
+from zope.app.location.interfaces import ILocation
 # for backwards compatibility:
 from zope.app.locking.interfaces import ILockStorage
 from zope.app.size.interfaces import ISized
@@ -176,3 +177,7 @@ class PersistentLockStorage(persistent.Persistent, LockStorage):
     # This is the class that should generally be used with Zope 3.
     # Alternate subclasses can be used, but LockStorage can't be used
     # directly.  Subclasses are responsible for providing persistence.
+
+    interface.implements(ILocation)
+
+    __parent__ = __name__ = None

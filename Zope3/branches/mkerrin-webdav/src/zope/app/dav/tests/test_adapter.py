@@ -83,9 +83,9 @@ def test_DAVSchemaAdapter():
     >>> dav.displayname
     u'bender'
     >>> dav.creationdate, dav.resourcetype, dav.getcontentlength
-    ('', '', '')
+    (None, None, None)
     >>> dav.getlastmodified, dav.executable
-    ('', '')
+    (None, None)
 
     Now, after that dull test, let's provide some actual meta-data.
     First, we have to set up the necessary adapter:
@@ -107,11 +107,11 @@ def test_DAVSchemaAdapter():
 
     >>> dav.displayname
     u'bender'
-    >>> dav.creationdate == y2k.strftime('%Y-%m-%d %TZ')
+    >>> dav.creationdate.strftime('%Y-%m-%d %TZ') == y2k.strftime('%Y-%m-%d %TZ')
     True
     >>> dav.resourcetype, dav.getcontentlength
-    ('', '')
-    >>> dav.getlastmodified == y3k.strftime('%a, %d %b %Y %H:%M:%S GMT')
+    (None, None)
+    >>> dav.getlastmodified.strftime('%a, %d %b %Y %H:%M:%S GMT') == y3k.strftime('%a, %d %b %Y %H:%M:%S GMT')
     True
 
     To make `getcontentlength` work, we can provide our adapter to
@@ -119,7 +119,6 @@ def test_DAVSchemaAdapter():
 
     >>> ztapi.provideAdapter(IRobot, ISized, RobotSize)
     >>> dav.getcontentlength
-    ''
 
     And if robots were directories:
 
@@ -130,11 +129,12 @@ def test_DAVSchemaAdapter():
     >>> dav.displayname
     u'bender/'
 
-    >>> import xml.dom.minidom
-    >>> isinstance(dav.resourcetype, xml.dom.minidom.Element)
+    >>> isinstance(dav.resourcetype, list)
     True
-    >>> dav.resourcetype.localName
-    'collection'
+    >>> len(dav.resourcetype) == 1
+    True
+    >>> dav.resourcetype[0] == u'collection'
+    True
 
     All there is now to it is cleaning up after ourselves:
 

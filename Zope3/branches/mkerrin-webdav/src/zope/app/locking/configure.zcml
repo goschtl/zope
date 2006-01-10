@@ -1,4 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
            i18n_domain="zope.app.locking">
 
   <!-- Registering documentation with API doc -->
@@ -27,13 +28,18 @@
 
   <class class=".lockinfo.LockInfo">
     <allow attributes="getLockInfo" />
+
     <require permission="zope.View"
-      attributes="principal_id created timeout" />
+             attributes="principal_id created timeout" />
+
+    <require permission="zope.ManageContent"
+             set_attributes="timeout" />
+
     <require permission="zope.View"
-      interface="zope.interface.common.mapping.IEnumerableMapping" 
+             interface="zope.interface.common.mapping.IEnumerableMapping" 
       />
     <require permission="zope.View"
-      interface="zope.interface.common.mapping.IWriteMapping"
+             interface="zope.interface.common.mapping.IWriteMapping"
       />
   </class>
 
@@ -64,5 +70,29 @@
         attributes="lockable locked lockedOut ownLock"
         />
   </class>
+
+  <localUtility class=".storage.PersistentLockStorage">
+    <factory
+       id="zope.app.locking.storage.PersistentLockStorage"
+       />
+
+    <require
+       permission="zope.ManageContent"
+       interface=".interfaces.ILockStorage"
+       />
+  </localUtility>
+
+  <browser:tool
+     interface="zope.app.locking.interfaces.ILockStorage"
+     title="Lock Storage"
+     description=""
+     />
+
+  <browser:addMenuItem
+     title="Lock Storage"
+     description=""
+     class="zope.app.locking.storage.PersistentLockStorage"
+     permission="zope.ManageSite"
+     />
 
 </configure>
