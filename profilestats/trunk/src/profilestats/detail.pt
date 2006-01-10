@@ -6,6 +6,7 @@
       <span tal:content="options/filename">src/foo.py</span>(<span 
           tal:content="options/lineno" >10</span>) 
       <span tal:content="options/func">foo</span>
+      in profile results <span tal:content="context/filename">mydata</span>
   </h2>
 
   <table>

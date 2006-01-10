@@ -27,5 +27,7 @@ class Stats(Persistent):
 
     interface.implements(IStats)
 
-    def __init__(self, stats):
+    def __init__(self, stats, filename='', delimiter='/'):
         self.stats = stats
+        self.filename = filename
+        self.delimiter = delimiter

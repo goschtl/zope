@@ -6,9 +6,8 @@
     >
 
 <content class=".stats.Stats">
-   <implements 
-       interface="zope.app.annotation.IAttributeAnnotatable" />
-   <require permission="zope.View" attributes="stats" />
+   <implements interface="zope.app.annotation.IAttributeAnnotatable" />
+   <require permission="zope.View" attributes="stats filename delimiter" />
 </content>
 
 <browser:page

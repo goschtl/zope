@@ -34,7 +34,8 @@
 </head>
 <body>
 <div metal:fill-slot="body">
-  <h2>Profile results organized by file and function</h2>
+  <h2>Profile results, <span tal:content="context/filename">mydata</span>,
+      organized by file and function</h2>
   Total time is 
   <div tal:replace="structure options/tree" />
 </div>

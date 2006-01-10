@@ -2,8 +2,8 @@
       i18n:domain="buddydemo">
 <body>
 <div metal:fill-slot="body">
-  <h2>Profile results sorted by 
-      <span tal:content="options/sortby">time</span></h2>
+  <h2>Profile results, <span tal:content="context/filename">mydata</span>, 
+      sorted by <span tal:content="options/sortby">time</span></h2>
 
   <p>Total time: <span tal:content="options/total">100.2</span></p>
 

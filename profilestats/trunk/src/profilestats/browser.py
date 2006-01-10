@@ -24,20 +24,53 @@ from zope import schema, interface
 
 import profilestats.stats
 
+class FileWidget(zope.app.form.browser.FileWidget):
+
+    def _toFieldValue(self, input):
+        if input is None or input == '':
+            return self.context.missing_value
+
+        try:
+            seek = input.seek
+            read = input.read
+        except AttributeError, e:
+            raise ConversionError(_('Form input is not a file object'), e)
+        else:
+            seek(0)
+            data = read()
+            if data or getattr(input, 'filename', ''):
+                return data, getattr(input, 'filename', '')
+            else:
+                return self.context.missing_value
+
 
 class Add(form.AddForm):
 
     form_fields = (
         form.Field(
-            schema.Bytes(__name__='file',
-                         title=u"profile stats file"),
-            custom_widget = zope.app.form.browser.FileWidget,
+            schema.Field(__name__='file',
+                         title=u"Profile statistics file"),
+            custom_widget = FileWidget,
+            ),
+        form.Field(
+            schema.Bytes(__name__='delimiter',
+                         title=u"File path delimiter",
+                         min_length=1,
+                         max_length=1,
+                         required=False,
+                         missing_value='/',
+                         ),
             ),
         )
 
     def create(self, data):
-        return profilestats.stats.Stats(marshal.loads(data['file']))
-        
+        delimiter = data['delimiter']
+        data, filename = data['file']
+        return profilestats.stats.Stats(
+            marshal.loads(data),
+            filename,
+            delimiter,
+            )
         
 class StatsView:
 
@@ -47,7 +80,6 @@ class StatsView:
 
     def __init__(self, stats, request):
         self.context = stats
-        self.stats = stats.stats
         self.request = request
 
     def tree(self):
@@ -60,16 +92,17 @@ class StatsView:
                 self.name = name
                 self.time = time
 
+        delimiter = self.context.delimiter
         tree = Tree()
         for ((filename, lineno, func),
              (direct_calls, calls, time, cummulative, callers)
-             ) in self.stats.iteritems():
+             ) in self.context.stats.iteritems():
             if not calls:
                 continue
             
             t = tree
             t.time += time
-            for n in filename.split('/'):
+            for n in filename.split(delimiter):
                 tn = t.get(n)
                 if tn is None:
                     tn = t[n] = Tree(n)
@@ -92,7 +125,7 @@ class StatsView:
             while len(tree) == 1:
                 k = tree.keys()[0]
                 v = tree.pop(k)
-                tree.name += '/' + k
+                tree.name += delimiter + k
                 tree.update(v)
 
             for t in tree.itervalues():
@@ -127,7 +160,7 @@ class StatsView:
         total = 0
         for ((filename, lineno, func),
              (direct_calls, calls, time, cummulative, callers)
-             ) in self.stats.iteritems():
+             ) in self.context.stats.iteritems():
 
             if calls < 1:
                 continue
@@ -161,7 +194,7 @@ class StatsView:
             )
 
     def detail_data(self, filename, lineno, func):
-        stats = self.stats
+        stats = self.context.stats
         key = (filename, int(lineno), func)
         direct_calls, calls, time, cummulative, callers = stats[key]
 
