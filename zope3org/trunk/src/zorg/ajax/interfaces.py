@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 from zope.interface import Attribute
+from zope.interface.common.mapping import IEnumerableMapping
 
 from zope.schema import Bytes, BytesLine
 
@@ -41,7 +42,33 @@ class ILiveChanges(IAjaxPage) :
     """ A web page with a periodical subscriber to server events. """
 
 class ILivePage(IAjaxPage) :
-    """ A web page with a subscriber to streamed server events. """
+    """ A web page that is able to subcribe to server events and updates
+        automatically via javascript calls.
+    """
+
+    def notify(event) :
+        """ An event handler that informs clients about changes. """
+               
+    def nextClientId() :
+        """ Returns a new client id. """
+        
+    def output(livepage_client, outputNum) :
+        """ Returns the output (descriptions of changes) of a single client. """
+        
+    def input(livepage_client, handler_name, arguments) :
+        """ Sends input to livepages. """
+        
+    def sendResponse(response) :
+        """ Sends a livepage response to all clients. 
+            A response consits of a leading command line 
+            and optional html body data.
+            
+            Should be implemented as a classmethod
+        """
+    
+    def render() :
+        """ Renders the HTML representation of the client. """
+
 
     
 class IAjaxUpdateable(Interface) :
@@ -63,3 +90,10 @@ class ISettingsStorage(Interface) :
     """ A persistent object for user specific settings. Can be stored
         in the session or principal annotations.
     """
+
+class ILivePageClients(IEnumerableMapping) :
+    """ A mapping of client ids as keys and ILivePageClients as values. """
+    
+class ILivePageClient(Interface) :
+    """ The server side internal representation of a livepage client. """
+    

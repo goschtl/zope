@@ -28,14 +28,16 @@ from zope.interface import implements
 from zope.component import adapts
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces import IRequest
-from zope.app.session.interfaces import ISession
+from zope.publisher.interfaces import IPublishTraverse
+from zope.publisher.interfaces import NotFound
+
 from zope.security.proxy import removeSecurityProxy
 from zope.security.checker import defineChecker, NoProxy
 
+from zope.app.session.interfaces import ISession
+from zope.app.datetimeutils import rfc1123_date
 from zope.app.traversing.interfaces import TraversalError
 from zope.app.traversing.interfaces import ITraversable
-from zope.publisher.interfaces import IPublishTraverse
-from zope.publisher.interfaces import NotFound
 from zope.app.publisher.browser import BrowserView
 
 
@@ -251,7 +253,7 @@ class ComposedAjaxPage(AjaxPage) :
         if "." in part :
             path = part.split(".")
         else :
-            path = list(part)   
+            path = [part]   
         node = self
         for name in path :
             node = getattr(node, name, None)
@@ -339,11 +341,11 @@ class ComposedAjaxPage(AjaxPage) :
             
             We access the part exactly as in renderPart :
             
-            >>> page.innerPart(['header'])
+            >>> page.innerPart('header')
             'A <b>structured</b> paragraph.'
             
             
-            >>> page.innerPart(['header'], method='onClick')
+            >>> page.innerPart('header', method='onClick')
             'clicked'
             
        

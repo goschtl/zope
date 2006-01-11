@@ -16,14 +16,24 @@
         permission="zope.Public">
                     
         <page 
-            name="nevow_glue.js"
+            name="livepage.js"
             attribute="renderGlue" />
+            
         <page 
-            name="renderBody"
-            attribute="renderBody" />
+            name="livepage"
+            attribute="render" />
+            
         <page 
-            name="liveChanges"
-            attribute="liveChanges" />
+            name="livepageoutput"
+            attribute="output" />
+        
+        <page 
+            name="livepageinput"
+            attribute="input" />
+            
+        <page 
+            name="liveExample"
+            attribute="render" />
                         
   </pages>
   
@@ -57,4 +67,11 @@
 			
   </zope:content>
   
+  
+  <zope:subscriber
+        for="zope.app.event.interfaces.IObjectEvent"
+        handler="zorg.ajax.livepage.livePageSubscriber"
+        />
+              
+              
 </configure>
