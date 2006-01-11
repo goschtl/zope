@@ -51,7 +51,8 @@
 						<a href="@@wiki.html">
 							View 
 						</a>
-						&nbsp; | &nbsp; Edit &nbsp;&nbsp;&nbsp;&nbsp; 
+						&nbsp; | &nbsp; Edit &nbsp;|&nbsp
+						<a href="@@wikicomment.html">Comments</a>&nbsp;&nbsp;&nbsp;&nbsp;
 					</div>
 				</div>
 			</div>

@@ -39,8 +39,43 @@
       template="./templates/view.pt"
       permission="zope.View"
       title="Wiki"
-      menu="zmi_views" />      
-        
+      menu="zmi_views" />  
+      
+    <pages  
+      for="zorg.comment.IAttributeAnnotableComments"
+      class=".comment.LiveComments"
+      permission="zope.View">
+      
+      <page 
+          name="livepage.js"
+          attribute="renderGlue" />
+                    
+      <page 
+            name="wikicomment.html"
+            attribute="render"
+            title="Comments"
+            menu="zmi_views" />
+            
+            
+    </pages>
+      
+    <pages		
+     
+      for="zorg.comment.IAttributeAnnotableComments"
+      class="zorg.wikification.browser.comment.AddComment"
+      permission="zope.View">
+      
+      <page  
+            name="wikiaddcomment.html"
+            template="./templates/add_comment.pt" />
+            
+      <page
+            name="wikisubmitcomment.html"
+            attribute="addComment" />
+            
+    </pages>
+      
+               
     <pages
       class=".wikipage.EditWikiPage"
       for="zope.app.file.interfaces.IFile"

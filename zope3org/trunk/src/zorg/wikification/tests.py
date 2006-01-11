@@ -50,7 +50,8 @@ from zope.app.folder import Folder
 from zope.app.file import File
 
 from zorg.ajax.tests import sessionSetUp
-
+from zorg.comment.testing import commentSetUp
+from zorg.comment import IAttributeAnnotableComments
 from zorg.wikification.browser.interfaces import ILinkProcessor
 from zorg.wikification.browser.interfaces import IWikiPage
 from zorg.wikification.browser.wikilink import BaseLinkProcessor
@@ -118,11 +119,14 @@ def setUpWikification(test) :
     from zope.app.testing import ztapi
     
     sessionSetUp(test) 
+    commentSetUp(test)
     
     zope.interface.classImplements(File, IAnnotatable)
     zope.interface.classImplements(Folder, IAnnotatable)
     zope.interface.classImplements(File, IAttributeAnnotatable)
     zope.interface.classImplements(Folder, IAttributeAnnotatable)
+    zope.interface.classImplements(File, IAttributeAnnotableComments)
+    zope.interface.classImplements(Folder, IAttributeAnnotableComments)
 
     zope.component.provideAdapter(NameChooser, [IFolder], INameChooser)
     zope.component.provideAdapter(Traverser, [None], ITraverser)
@@ -141,7 +145,8 @@ def setUpWikification(test) :
     zope.component.provideAdapter(BaseLinkProcessor,
                                             [IWikiPage], 
                                             ILinkProcessor)
-                                            
+    
+    
                                             
 def tearDownWikification(test) :
     zope.app.testing.setup.placefulTearDown()   

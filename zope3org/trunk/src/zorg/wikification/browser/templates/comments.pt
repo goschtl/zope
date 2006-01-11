@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title tal:content="view/title">Zope 3</title>
+  <link rel="stylesheet" type="text/css" media="print" href="/@@/style/print.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="/@@/style/screen.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="/@@/style/main.css" />
+  <script type="text/javascript" tal:content="string:var livePageClientId = '${view/nextClientId}';">var nevow_clientHandleId = '0';</script>  
+  <script type="text/javascript" src="prototype.js" 
+                tal:attributes="src string:${context/++resource++zorgajax/prototype.js}"></script>
+   <script type="text/javascript" src="livepage.js" 
+                tal:attributes="src string:${context/++resource++zorgajax/livepage.js}"></script>
+                
+  <script type="text/javascript" src="comment.js"
+        tal:attributes="src string:${context/++resource++wikiscripts/comment.js}" />
+
+</head>
+<body onload="startClient()">
+<div id="layout" tal:define="uris view/uris">
+    <a name="top"></a>
+	<div id="layout-header" class="columns" tal:define="uris view/uris">
+		<div class="col first">
+			<div id="banner">
+				<a tal:attributes="href uris/home">
+					<img src="/@@/images/circle-z.png" alt="(circle-z)" title="" height="36" width="36" />
+					Zope 3 
+				</a>
+			</div>
+		</div>
+	
+		<div class="col second">
+            <div id="action-navigation" class="itemViews">
+              <a href="@@wiki.html">View</a>&nbsp; | &nbsp;
+              <a href="@@wikiedit.html">Edit</a>&nbsp;|&nbsp;
+              Comments&nbsp;&nbsp;&nbsp;&nbsp;
+           </div>
+		</div>		
+    </div>
+    
+    <table border="0" width="100%">
+        <tr>
+            <td width="50%" align="left">
+                <div id="breadcrumb-navigation" metal:use-macro="context/@@wiki_macros/breadcrumbs" />
+            </td>
+            <td width="50%" align="right">
+                <a href="#bottom" onclick="showAddCommentWindow();">Add Comment</a> 
+           </td>
+         </tr>
+    </table>
+ 
+    <p>LivePage updates</p>
+ 	<div id="livepage_updates">
+	
+	</div>
+
+    
+	<div id="layout-columns" class="columns">
+		<div class="bg">
+			<div class="col first">
+	            <p tal:condition="view/comments/comments"><span tal:content="python: len(view.comments.comments)">X</span> Comments</p>
+                <p tal:condition="not: view/comments/comments">Add the First Comment</p>
+			    <div id="comments" tal:replace="structure view/comments/render" />
+			    <hr/>
+                <a href="#bottom" onclick="showAddCommentWindow();">Add Comment</a>
+			</div>
+            
+            
+			<div class="col second">
+				<div metal:use-macro="context/@@wiki_macros/navigation_tree_box" />
+                
+			</div>
+
+		</div>
+		<a name="bottom"></a>
+		<hr size="2"/>                        
+	</div> 
+	
+
+</div>
+</body>
+</html>

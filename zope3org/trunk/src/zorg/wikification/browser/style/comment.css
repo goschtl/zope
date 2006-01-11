@@ -1,0 +1,15 @@
+/* styles for comments */
+
+
+.inner-box
+{
+	padding: 8px;
+}
+
+#comment-textarea
+{
+	width: 100%;
+	border-color: silver;
+	border-width: 1px;
+	border-style: solid;
+}

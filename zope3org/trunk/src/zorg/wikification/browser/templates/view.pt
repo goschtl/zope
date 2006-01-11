@@ -29,7 +29,8 @@
 		<div class="col second">
             <div id="action-navigation" class="itemViews">
               View&nbsp; |  &nbsp;
-              <a href="@@wikiedit.html">Edit</a> &nbsp;&nbsp;&nbsp;&nbsp;
+              <a href="@@wikiedit.html">Edit</a>&nbsp;|&nbsp
+              <a href="@@wikicomment.html">Comments</a>&nbsp;&nbsp;&nbsp;&nbsp;
            </div>
 		</div>		
     </div>
