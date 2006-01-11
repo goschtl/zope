@@ -28,6 +28,10 @@
         />
     <require
         permission="zope.View"
+        interface=".IAddComments"
+        />
+    <require
+        permission="zope.View"
         interface=".IDeleteComments"
         />
     <require
@@ -35,10 +39,27 @@
         set_schema=".IComment"
         />
   </class>
+  
+  <content class="zope.app.file.File">
+    <implements 
+        interface="zorg.comment.IAttributeAnnotableComments"
+        />
+        
+  </content>
 
+  <content class="zope.app.folder.Folder">
+    <implements 
+        interface="zorg.comment.IAttributeAnnotableComments"
+        />
+  </content>
+  
   <adapter
       provides=".IComments"
       factory=".comments.CommentsForAnnotableComments"
+      for="zope.app.annotation.interfaces.IAnnotatable"
       trusted="True" />
+      
 
+   <include package=".browser" />
+   
 </configure>
