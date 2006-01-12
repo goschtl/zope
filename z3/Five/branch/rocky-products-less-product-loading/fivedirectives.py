@@ -178,3 +178,10 @@ class IInclude(Interface):
                     u'installed Product. If the file does not exist, for a '
                     u'particular product, no error is raised.',
         required=False)
+
+class IRegisterProductDirective(Interface):
+
+    package = GlobalObject(
+        title=u"Target package",
+        required=True
+        )

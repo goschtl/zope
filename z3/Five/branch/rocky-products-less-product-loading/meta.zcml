@@ -157,6 +157,12 @@
        handler=".fiveconfigure.registerClass"
        />
 
+    <meta:directive
+       name="registerProduct"
+       schema=".fivedirectives.IRegisterProductDirective"
+       handler=".pythonproducts.registerProduct"
+       />
+
   </meta:directives>
 
   <meta:directive

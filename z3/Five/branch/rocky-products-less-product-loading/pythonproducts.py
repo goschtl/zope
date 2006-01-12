@@ -17,18 +17,68 @@ regular python packages for zope2 products
 $Id$
 """
 __author__ = "Rocky Burt"
-__all__ = ('setup_python_products',)
+__all__ = ('setup_python_products', 'register_python_product')
 
 import Products
 import os
+import types
 from types import ModuleType
 
+_zope_app = None
+
+def registerProduct(_context, package):
+    """ZCML directive function for registering a python package product
+    """
+    
+    _context.action(
+        discriminator = ('registerProduct',),
+        callable = register_python_product,
+        args = (package,)
+        )
+
+
+def register_python_product(package):
+    """Registers the given python package as a Zope 2 style product
+    """
+    
+    if isinstance(package, basestring):
+        module_ = __import__(package)
+    elif isinstance(package, types.ModuleType):
+        module_ = package
+    else:
+        raise TypeError("The package argument must either be an instance of " \
+                        +"basestring or types.ModuleType")
+
+    if not hasattr(module_, 'initialize'):
+        raise ValueError("The module '%s' requires a Zope 2 style " \
+                         +"initialize function" % module_.__name__)
+
+    product = initializeProduct(module_, 
+                                module_.__name__, 
+                                module_.__path__[0], 
+                                _zope_app)
+
+    product.package_name = module_.__name__
+
+    newContext = ProductContext(product, _zope_app, module_)
+    module_.initialize(newContext)
+
 def setup_python_products(context):
-    app = context._ProductContext__app
-    apply_patches(app)
+    """Initialize the python-packages-as-products logic
+    """
+    
+    _zope_app = context._ProductContext__app
+    global _zope_app
+    apply_patches(_zope_app)
 
 
 def apply_patches(app):
+    """Apply necessary monkey patches to force Zope 2 to be capable of
+    handling "products" that are not necessarily located under the Products
+    package.  Ultimately all functionality provided by these patches should
+    be folded into Zope 2 core.
+    """
+    
     patch_ProductDispatcher__bobo_traverse__(app)
     patch_listDefaultTypeInformation(app)
     patch_externalmethod(app)

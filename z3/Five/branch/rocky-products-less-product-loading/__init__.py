@@ -19,6 +19,7 @@ import Acquisition
 from Globals import INSTANCE_HOME
 
 import zcml
+import pythonproducts
 
 # public API provided by Five
 # usage: from Products.Five import <something>
@@ -26,4 +27,6 @@ from browser import BrowserView
 from skin.standardmacros import StandardMacros
 
 def initialize(context):
+    pythonproducts.setup_python_products(context)
+
     zcml.load_site()
