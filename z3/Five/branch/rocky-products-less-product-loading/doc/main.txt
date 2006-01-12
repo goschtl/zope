@@ -28,13 +28,16 @@ system for us all.
 Download
 --------
 
-We have released Five 1.2 and 1.3 on 7 January 2006. You may download
-Five 1.2 here:
+We have released Five 1.2 on 7 January 2006.  You may download it
+here:
 
 http://codespeak.net/z3/five/release/Five-1.2.tgz
 
-We aren't providing a tarball of Five 1.3 because it is included in
-Zope 2.9.
+We have released Five 1.3.1 on 8 January 2006.  This is a bugfix
+release for Five 1.3 and will be included in the next Zope 2.9 bugfix
+release.  You may download it here:
+
+http://codespeak.net/z3/five/release/Five-1.3.1.tgz
 
 Joining the project
 -------------------
