@@ -25,13 +25,17 @@ from zope.app.component.interfaces import IPossibleSite
 
 from Products.Five.site.localsite import FiveSite
 
+from zLOG import LOG, WARNING
+
 _localsite_monkies = []
 def classSiteHook(class_, site_class):
-    setattr(class_, 'getSiteManager',
-            site_class.getSiteManager.im_func)
-    setattr(class_, 'setSiteManager',
-            site_class.setSiteManager.im_func)
-    _localsite_monkies.append(class_)
+    if class_ in _localsite_monkies:
+        LOG('Five', WARNING, "Class %s already has a site hook" % class_)        
+    else:
+        _localsite_monkies.append(class_)
+    setattr(class_, 'getSiteManager', site_class.getSiteManager.im_func)
+    setattr(class_, 'setSiteManager', site_class.setSiteManager.im_func)
+    
 
 def installSiteHook(_context, class_, site_class=None):
     if site_class is None:
@@ -59,10 +63,10 @@ def installSiteHook(_context, class_, site_class=None):
 
 def uninstallSiteHooks():
     for class_ in _localsite_monkies:
+        _localsite_monkies.remove(class_)
         delattr(class_, 'getSiteManager')
         delattr(class_, 'setSiteManager')
         classImplementsOnly(class_, implementedBy(class_)-IPossibleSite)
-        _localsite_monkies.remove(class_)
 
 from zope.testing.cleanup import addCleanUp
 addCleanUp(uninstallSiteHooks)
