@@ -147,6 +147,7 @@ def patch_externalmethod(app):
     """
     
     from App import Extensions, FactoryDispatcher
+    from Products.ExternalMethod import ExternalMethod
     
     _originalGetPath = Extensions.getPath
     global _originalGetPath
@@ -177,4 +178,5 @@ def patch_externalmethod(app):
             pass
     
     Extensions.getPath = getPath
+    ExternalMethod.getPath = getPath
 
