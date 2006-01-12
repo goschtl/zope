@@ -21,7 +21,6 @@ __all__ = ('setup_python_products', 'register_python_product')
 
 import os
 import types
-from types import ModuleType
 
 import Products
 from App.Product import initializeProduct
@@ -99,7 +98,7 @@ def product_packages(app):
     old_product_packages = {}
     for x in dir(Products):
         m = getattr(Products, x)
-        if isinstance(m, ModuleType):
+        if isinstance(m, types.ModuleType):
             old_product_packages[x] = m
     
     packages = {}
