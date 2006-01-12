@@ -19,10 +19,13 @@ $Id$
 __author__ = "Rocky Burt"
 __all__ = ('setup_python_products', 'register_python_product')
 
-import Products
 import os
 import types
 from types import ModuleType
+
+import Products
+from App.Product import initializeProduct
+from App.ProductContext import ProductContext
 
 _zope_app = None
 
