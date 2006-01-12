@@ -49,11 +49,16 @@ def register_python_product(package):
         module_ = package
     else:
         raise TypeError("The package argument must either be an instance of " \
-                        +"basestring or types.ModuleType")
+                        "basestring or types.ModuleType")
 
+    if not hasattr(module_, '__path__'):
+        raise ValueError("Registering a python package currently only " \
+                         "supports filesystem based pure python packages")
+
+    
     if not hasattr(module_, 'initialize'):
-        raise ValueError("The module '%s' requires a Zope 2 style " \
-                         +"initialize function" % module_.__name__)
+        raise AttributeError("The module '%s' requires a Zope 2 style " \
+                             "initialize function" % module_.__name__)
 
     product = initializeProduct(module_, 
                                 module_.__name__, 
