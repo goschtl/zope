@@ -179,4 +179,3 @@ def patch_externalmethod(app):
     
     Extensions.getPath = getPath
     ExternalMethod.getPath = getPath
-
