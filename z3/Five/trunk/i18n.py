@@ -65,6 +65,9 @@ class LocalizerLanguages(object):
         self.context = context
 
     def getPreferredLanguages(self):
+        if not hasattr(self.context, 'AcceptLanguage'):
+            return []
+            
         accept_language = self.context.AcceptLanguage
         langs = []
         for lang, node in accept_language.children.items():
