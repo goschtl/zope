@@ -107,9 +107,6 @@ class LOCK(object):
     def getDepth(self):
         return self._depth
 
-    def setDepth(self, depth):
-        self._depth = depth
-
     def getTimeout(self):
         timeoutheader = self.request.getHeader('timeout', 'infinity')
 

@@ -500,6 +500,44 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         %s</prop>''' % expect
         self._checkPropfind(zpt, req, expect)
 
+    def test_propfind_opaque_without_property(self):
+        # test opaque properties when requested property is not in the current
+        # opaque annotation
+        root = self.rootFolder
+        zpt = traverse(root, 'zpt')
+        oprops = IDAVOpaqueNamespaces(zpt)
+        oprops[u'http://foo/bar'] = {u'egg': '<egg>spam</egg>'}
+
+        ## self._checkPropfind(zpt, req, expect)
+        body = '''<?xml version="1.0" ?>
+        <propfind xmlns="DAV:">
+        <prop xmlns:foo="http://foo/bar"><foo:srambleegg /></prop>
+        </propfind>
+        '''
+        depth = '0'
+        request = _createRequest(body = body,
+                                 headers = {'Content-type': 'text/xml',
+                                            'Depth': depth})
+        resource_url = zapi.absoluteURL(zpt, request)
+        resp = '''<?xml version="1.0" encoding="utf-8"?>
+        <multistatus xmlns="DAV:"><response>
+        <href>%(resource_url)s</href>
+        <propstat>
+        <prop xmlns:a0="http://foo/bar"><srambleegg xmlns="a0"/>
+        </prop>
+        <status>HTTP/1.1 404 Not Found</status>
+        </propstat></response></multistatus>
+        ''' % {'resource_url': resource_url}
+
+        pfind = propfind.PROPFIND(zpt, request)
+        pfind.PROPFIND()
+
+        self.assertEqual(request.response.getStatus(), 207)
+        self.assertEqual(pfind.getDepth(), depth)
+        s1 = normalize_xml(request.response.consumeBody())
+        s2 = normalize_xml(resp)
+        self.assertEqual(s1, s2)
+
     def test_propfind_opaque_simple(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')

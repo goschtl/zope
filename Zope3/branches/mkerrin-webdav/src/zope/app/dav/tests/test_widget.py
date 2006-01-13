@@ -11,18 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""XXX - the tests in this file should be made a lot clearer.
+
 $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from datetime import datetime
+import datetime
 from xml.dom import minidom
 from unittest import TestSuite, main, makeSuite, TestCase
 
 from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
-from zope.schema import Text, Datetime, List
+from zope.schema import Text, Datetime, Date, List, Tuple
 from zope.schema import ValidationError
 from zope.publisher.browser import TestRequest
 from zope.testing.doctest import DocTestSuite
@@ -32,7 +33,7 @@ from zope.app.testing import placelesssetup
 
 from zope.app.dav.interfaces import IDAVWidget
 from zope.app.dav.widget import DAVWidget, TextDAVWidget, DatetimeDAVWidget, \
-     XMLEmptyElementListDAVWidget
+     DateDAVWidget, XMLEmptyElementListDAVWidget, TupleDAVWidget
 
 
 class DAVWidgetTest(placelesssetup.PlacelessSetup, TestCase):
@@ -62,10 +63,6 @@ class DAVWidgetTest(placelesssetup.PlacelessSetup, TestCase):
 
     def test_widget_input(self):
         content = self.test_content
-        # try multiple bad content
-        bad_contents = self.test_bad_contents
-        if not isinstance(bad_contents, list):
-            bad_contents = [bad_contents]
 
         self.failIf(self._widget.hasInput())
         self._widget.setRenderedValue(content)
@@ -73,11 +70,11 @@ class DAVWidgetTest(placelesssetup.PlacelessSetup, TestCase):
         self.assert_(self._widget.hasValidInput())
         self.assertEqual(self._widget.getInputValue(), content)
 
-        for bad_content in bad_contents:
-            self._widget.setRenderedValue(bad_content)
-            self.assert_(self._widget.hasInput())
-            self.failIf(self._widget.hasValidInput())
-            self.assertRaises(WidgetInputError, self._widget.getInputValue)
+    def _test_widget_bad_input(self, propel):
+        self._widget.setProperty(propel)
+        self.assert_(self._widget.hasInput())
+        self.failIf(self._widget.hasValidInput())
+        self.assertRaises(WidgetInputError, self._widget.getInputValue)
 
     def test_widget_apply_content(self):
         content = self.test_content
@@ -92,25 +89,63 @@ class TextDAVWidgetTest(DAVWidgetTest):
     _WidgetFactory = TextDAVWidget
 
     test_content = u'This is some text content'
-    test_bad_contents = 10
-
 
 class DatetimeDAVWidgetTest(DAVWidgetTest):
     _WidgetFactory = DatetimeDAVWidget
     _FieldFactory = Datetime
 
-    test_content = datetime.fromtimestamp(1131234842)
-    test_bad_contents = [10, u'This is bad content']
+    test_content = datetime.datetime.fromtimestamp(1131234842)
 
     def test_widget_input(self):
-        date = datetime(1999, 12, 31, 23, 59, 59)
+        date = datetime.datetime(1999, 12, 31, 23, 59, 59)
+        # date.strftime = '1999-12-31 23:59:59Z'
+
+        doc = minidom.Document()
+        propel = doc.createElement('foo')
+        propel.appendChild(doc.createTextNode(date.strftime('%F')))
+        self._widget.setProperty(propel)
+        value = self._widget.getInputValue()
+        fmt = '%y%m%d-000000'
+        self.assertEqual(date.strftime(fmt), value.strftime(fmt))
+
+        doc = minidom.Document()
+        propel = doc.createElement('foo')
+        propel.appendChild(
+            doc.createTextNode(date.strftime('%a,  %d  %b %Y %H:%M:%S')))
+        self._widget.setProperty(propel)
+        value = self._widget.getInputValue()
+        fmt = '%y%m%d-%H%M%S'
+        self.assertEqual(date.strftime(fmt), value.strftime(fmt))
+
+    def test_widget_bad_input(self):
+        doc = minidom.Document()
+        propel = doc.createElement('foo')
+        propel.appendChild(doc.createTextNode('invalid datetime content'))
+        super(DatetimeDAVWidgetTest, self)._test_widget_bad_input(propel)
+
+
+class DateDAVWidgetTest(DAVWidgetTest):
+    _WidgetFactory = DateDAVWidget
+    _FieldFactory  = Date
+
+    test_content = datetime.date.fromtimestamp(1131234842)
+
+    def test_widget_input(self):
+        dateinst = datetime.datetime(1999, 12, 31, 23, 59, 59).date()
         doc = minidom.Document()
         propel = doc.createElement('foo')
         # date.strftime = '1999-12-31 23:59:59Z'
-        propel.appendChild(doc.createTextNode(date.strftime('%F')))
+        propel.appendChild(doc.createTextNode(dateinst.strftime('%F')))
         self._widget.setProperty(propel)
-        ## self._widget._value == date
-        ## TypeError: can't compare offset-naive and offset-aware datetimes
+
+        value = self._widget.getInputValue()
+        self.assertEqual(value, dateinst)
+
+    def test_widget_bad_input(self):
+        doc = minidom.Document()
+        propel = doc.createElement('foo')
+        propel.appendChild(doc.createTextNode('invalid date content'))
+        super(DateDAVWidgetTest, self)._test_widget_bad_input(propel)
 
 
 class XMLEmptyElementListDAVWidgetTest(DAVWidgetTest):
@@ -121,11 +156,21 @@ class XMLEmptyElementListDAVWidgetTest(DAVWidgetTest):
     test_bad_contents = [10, u'hello']
 
 
+class TupleDAVWidgetTest(DAVWidgetTest):
+    _WidgetFactory = TupleDAVWidget
+    _FieldFactory = Tuple
+
+    test_content = (u'hello', u'there')
+    test_bad_contents = [10, u'hello']
+
+
 def test_suite():
     return TestSuite((
         makeSuite(TextDAVWidgetTest),
         makeSuite(DatetimeDAVWidgetTest),
+        makeSuite(DateDAVWidgetTest),
         makeSuite(XMLEmptyElementListDAVWidgetTest),
+        makeSuite(TupleDAVWidgetTest),
         DocTestSuite('zope.app.dav.widget'),
         ))
 

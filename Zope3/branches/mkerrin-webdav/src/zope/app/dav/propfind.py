@@ -188,8 +188,15 @@ class PROPFIND(object):
             if not iface:
                 for name in props:
                     if self.oprops:
+                        status = 200
                         el = self.oprops.renderProperty(ns, ns_prefix, name)
-                        re.addPropertyByStatus(ns, ns_prefix, el, 200)
+                        if el is None:
+                            # We can't add a None property in the MultiStatus
+                            # utility so add an empty property registered has
+                            # a 404 stats not found property.
+                            status = 404
+                            el = re.createEmptyElement(ns, ns_prefix, name)
+                        re.addPropertyByStatus(ns, ns_prefix, el, status)
                     else:
                         el = re.createEmptyElement(ns, ns_prefix, name)
                         re.addPropertyByStatus(ns, ns_prefix, el, 404)

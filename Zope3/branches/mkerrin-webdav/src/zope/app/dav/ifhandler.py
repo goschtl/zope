@@ -109,12 +109,13 @@ class IfParser(object):
 
     def __call__(self):
         ifhdr = self.request.getHeader('if', None)
-        if ifhdr is None:
-            return True
 
         lockable = ILockable(self.context)
         if not lockable.locked():
             return True
+
+        if ifhdr is None:
+            return False
 
         lockinfo = lockable.getLockInfo()
 

@@ -30,7 +30,8 @@ from zope.app.container.directory import Cloner
 
 from zope.app.http.put import NullResource
 from zope.app.dav import mkcol
-from zope.app.dav.tests.test_propfind import _createRequest, File
+from zope.app.dav.tests.test_propfind import _createRequest
+from unitfixtures import File
 
 class TestPlacefulMKCOL(PlacefulSetup, TestCase):
 

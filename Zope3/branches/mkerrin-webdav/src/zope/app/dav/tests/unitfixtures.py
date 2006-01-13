@@ -19,13 +19,15 @@ __docformat__ = 'restructuredtext'
 
 from BTrees.OOBTree import OOBTree
 from persistent import Persistent
-from zope.interface import implements
+from zope.interface import Interface, implements
 
 from zope.app.filerepresentation.interfaces import IWriteFile
 from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.container.interfaces import IReadContainer
+from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.file.interfaces import IFile
+from zope.app.folder.folder import Folder as ZopeFolder
 
 import zope.app.location
 
@@ -41,7 +43,7 @@ class Folder(zope.app.location.Location, Persistent):
         self.data = OOBTree()
         if level in (0, 1):
             self._setUp()
-        else:
+        elif level > 0:
             self.data['last'] = File('last', 'text/plain', 'blablabla', self)
 
     def _setUp(self):
@@ -55,6 +57,19 @@ class Folder(zope.app.location.Location, Persistent):
         items.sort()
 
         return tuple(items)
+
+
+class INoFileContainer(Interface):
+    """Don't allow any File's within this folder
+    """
+
+    def __setitem__(name, object):
+        """Add a directory to object to this folder."""
+    __setitem__.precondition = ItemTypePrecondition(IReadDirectory)
+
+
+class ConstraintFolder(ZopeFolder):
+    implements(INoFileContainer)
 
 
 class File(zope.app.location.Location, Persistent):

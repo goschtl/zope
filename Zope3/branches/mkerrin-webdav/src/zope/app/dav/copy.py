@@ -19,13 +19,14 @@ __docformat__ = 'restructuredtext'
 
 from urlparse import urlsplit
 
-from zope.publisher.interfaces import NotFound
 from zope.app import zapi
 from zope.app.copypastemove.interfaces import IObjectMover, IObjectCopier
 from zope.app.publication.http import MethodNotAllowed
 
 from zope.app.traversing.api import traverse, getRoot
 from zope.app.traversing.interfaces import TraversalError
+
+from interfaces import IIfHeader
 
 class COPY(object):
     def __init__(self, context, request):
@@ -61,7 +62,7 @@ class COPY(object):
         elif overwrite == 'f':
             overwrite = False
         else:
-            self.requset.response.setStatus(400)
+            self.request.response.setStatus(400)
             return ''
 
         # find destination if it exists and if it
@@ -70,9 +71,6 @@ class COPY(object):
         try:
             destob = traverse(getRoot(self.context), destpath)
             exists = True
-        except NotFound:
-            destob = None
-            exists = False
         except TraversalError:
             destob = None
             exists = False
@@ -80,21 +78,24 @@ class COPY(object):
         if destob is not None and not overwrite:
             self.request.response.setStatus(412)
             return ''
+        elif destob is not None and destob is self.context:
+            self.request.response.setStatus(403)
+            return ''            
         elif destob is not None:
             ifparser = zapi.queryMultiAdapter((destob, self.request), IIfHeader)
             if ifparser is not None and not ifparser():
                 self.request.response.setStatus(423)
                 return ''
+
             # we need to delete this object
-            raise NotImplementedError, "please delete the destination object"
+            parent = destob.__parent__
+            del parent[destob.__name__]
 
         # check parent
         parentpath = destpath.split('/')
         destname   = parentpath.pop()
         try:
             parent = traverse(getRoot(self.context), parentpath)
-        except NotFound:
-            parent = None
         except TraversalError:
             parent = None
         if parent is None:
@@ -102,7 +103,6 @@ class COPY(object):
             return ''
 
         if not copier.copyableTo(parent):
-            # XXX - should this be 405 ???
             self.request.response.setStatus(409)
             return ''
 

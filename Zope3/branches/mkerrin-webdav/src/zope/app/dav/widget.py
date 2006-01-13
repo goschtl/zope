@@ -48,6 +48,8 @@ class DAVWidget(InputWidget):
         self._xmldoc = minidom.Document()
         # field value
         self._value  = self._missing_value
+        # input value has a xml dom node
+        self._xmldom_value = self._missing_value
 
         self._error = None
 
@@ -62,13 +64,15 @@ class DAVWidget(InputWidget):
         self.ns_prefix = ns_prefix
 
     def setRenderedValue(self, value):
+        # don't use this
         self._value = value
 
     def applyChanges(self, content):
         return super(DAVWidget, self).applyChanges(content)
 
     def hasInput(self):
-        return self._value is not self._missing_value
+        return self._value is not self._missing_value or \
+               self._xmldom_value is not self._missing_value
 
     def _getAndValidateInput(self):
         """get the input value contained within this widget in a valid format
@@ -79,7 +83,10 @@ class DAVWidget(InputWidget):
         if not self.hasInput():
             raise MissingInputError(self.name, self.label, None)
 
-        value = self._value
+        if self._xmldom_value is not self._missing_value:
+            value = self._setFieldValue(self._xmldom_value)
+        else:
+            value = self._value
 
         # allow missing values only for non-required fields
         if value == field.missing_value: ## and not field.required:
@@ -105,7 +112,8 @@ class DAVWidget(InputWidget):
         try:
             value = self._getAndValidateInput()
         except ConversionError, error:
-            self._error = error
+            self._error = WidgetInputError(
+                self.context.__name__, self.label, error)
             raise self._error
         except ValidationError, error:
             self._error = WidgetInputError(
@@ -163,7 +171,7 @@ class DAVWidget(InputWidget):
         return text
 
     def setProperty(self, propel):
-        self._value = self._setFieldValue(propel)
+        self._xmldom_value = propel # self._setFieldValue(propel)
 
 
 class TextDAVWidget(DAVWidget):

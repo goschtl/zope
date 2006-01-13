@@ -143,6 +143,13 @@ class TestIfParser(unittest.TestCase):
         # context not locked -> true
         self.assertEqual(ifparser(), True)
 
+    def test_on_locked_file_no_header(self):
+        request = TestRequest()
+        context = File('some content', 'text/plain')
+        lockinfo = self._lockcontent(context)
+        ifparser = IfParser(context, request)
+        self.assertEqual(ifparser(), False)
+
     def test_on_locked_file_no_token(self):
         request = TestRequest(**{'IF': '(<%s>)' % self.token})
         context = File('some content', 'text/plain')
