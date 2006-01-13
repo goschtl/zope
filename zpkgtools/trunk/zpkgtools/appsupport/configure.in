@@ -211,7 +211,7 @@ else
     out ""
 fi
 
-if [ -e "$prefix" -a ! "$FORCE_APP_HOME" ] ; then
+if [ -d "$prefix" -a ! "$FORCE_APP_HOME" ] ; then
     echo 2>&1 "Installation directory $prefix already exists."
     echo 2>&1 "Specify a directory that isn't being used, or"
     echo 2>&1 "use --force to use it anyway."
