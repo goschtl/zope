@@ -1,9 +1,7 @@
-
 var livePageClientId;       /* This variable must be defined in your HTML. */
  
 livepageScriptFragmentMatch = /<script.*?>((?:\n|.)*?)<\/script>/img;
-livepageScriptStart = /<script.*?>/img;
-livepageScriptEnd = /<\/script>/img;
+livepageScriptTags = /<script.*?>|<\/script>/img;
 
 function evalResponse(request) {
     var response = request.responseText;
@@ -18,9 +16,13 @@ function evalResponse(request) {
             var body = lines.join('\n');
             
             id = parameter[0];
-            $(id).innerHTML = body;
+            
             var scripts = body.match(livepageScriptFragmentMatch);
-            evalScripts(scripts)}).bind(this);     
+            var script = scripts.join('');
+            script = script.replace(livepageScriptTags, '');
+        
+            $(id).innerHTML = body;
+            eval(script);
             return;
             }
         case 'javascript' : {
@@ -28,15 +30,6 @@ function evalResponse(request) {
             eval(expr);
             return;
             }
-        }
-}
-
-function evalScripts(scripts) {
-     for (var i=0;i<scripts.length;i++) {
-        var script = scripts[i];
-        var sans_start = script.replace(livepageScriptStart, '');
-        var sans_end = sans_start.replace(livepageScriptEnd, '');
-        eval(sans_end);
         }
 }
 
@@ -50,10 +43,13 @@ function checkOutput(outputNum) {
             asynchronous:true, 
             onComplete: function(request) { evalResponse(request); checkOutput(outputNum+1); }
         });
-    }
+}
          
 function startClient() {
-   
     setTimeout("checkOutput(0)", 500);
     return true;
+}
+
+function idleClient() {
+    $("livepage_updates").innerHTML = "idle";
 }

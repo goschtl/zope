@@ -43,7 +43,7 @@
       
     <pages  
       for="zorg.comment.IAttributeAnnotableComments"
-      class=".comment.LiveComments"
+      class="zorg.wikification.browser.comment.LiveComments"
       permission="zope.View">
       
       <page 
