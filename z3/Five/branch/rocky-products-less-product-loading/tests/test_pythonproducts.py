@@ -39,11 +39,6 @@ def test_registerProduct():
       ...
       TypeError: The package argument must either be an instance of basestring or types.ModuleType
 
-      >>> pythonproducts.register_python_product('Products.Five.tests.adapters')
-      Traceback (most recent call last):
-      ...
-      AttributeError: The module 'Products' requires a Zope 2 style initialize function
-    
       >>> pythonproducts.register_python_product(zope2module)
       Traceback (most recent call last):
       ...

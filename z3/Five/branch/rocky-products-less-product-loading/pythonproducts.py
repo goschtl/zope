@@ -56,10 +56,6 @@ def register_python_product(package):
                          "supports filesystem based pure python packages")
 
     
-    if not hasattr(module_, 'initialize'):
-        raise AttributeError("The module '%s' requires a Zope 2 style " \
-                             "initialize function" % module_.__name__)
-
     product = initializeProduct(module_, 
                                 module_.__name__, 
                                 module_.__path__[0], 
@@ -67,8 +63,10 @@ def register_python_product(package):
 
     product.package_name = module_.__name__
 
-    newContext = ProductContext(product, _zope_app, module_)
-    module_.initialize(newContext)
+    if hasattr(module_, 'initialize') and \
+            hasattr(module_.initialize, '__call__'):
+        newContext = ProductContext(product, _zope_app, module_)
+        module_.initialize(newContext)
 
 def setup_python_products(context):
     """Initialize the python-packages-as-products logic
