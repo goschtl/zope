@@ -33,7 +33,7 @@ def registerProduct(_context, package):
     """
     
     _context.action(
-        discriminator = ('registerProduct',),
+        discriminator = ('registerProduct', package),
         callable = register_python_product,
         args = (package,)
         )
