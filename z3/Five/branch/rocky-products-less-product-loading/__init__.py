@@ -27,6 +27,6 @@ from browser import BrowserView
 from skin.standardmacros import StandardMacros
 
 def initialize(context):
-    pythonproducts.setup_python_products(context)
+    pythonproducts.setupPythonProducts(context)
 
     zcml.load_site()

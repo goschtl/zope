@@ -19,9 +19,9 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-def test_registerProduct():
+def test_registerPackage():
     """
-    Testing registerProduct
+    Testing registerPackage
 
       >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> setUp()
@@ -30,20 +30,7 @@ def test_registerProduct():
       >>> import Products.Five.tests
       >>> import Products.Five.tests.testing
       >>> from Products.Five.tests.testing import zope2module
-      >>> from Products.Five import pythonproducts
-    
-    Make sure registerProduct only handles appropriate types::
-    
-      >>> pythonproducts.register_python_product(None)
-      Traceback (most recent call last):
-      ...
-      TypeError: The package argument must either be an instance of basestring or types.ModuleType
-
-      >>> pythonproducts.register_python_product(zope2module)
-      Traceback (most recent call last):
-      ...
-      ValueError: Registering a python package currently only supports filesystem based pure python packages
-                  
+      >>> from Products.Five import pythonproducts                 
     
     Clean up:
 

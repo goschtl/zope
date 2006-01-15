@@ -17,7 +17,6 @@ regular python packages for zope2 products
 $Id$
 """
 __author__ = "Rocky Burt"
-__all__ = ('setup_python_products', 'register_python_product')
 
 import os
 import types
@@ -28,33 +27,24 @@ from App.ProductContext import ProductContext
 
 _zope_app = None
 
-def registerProduct(_context, package):
+def registerPackage(_context, package, initialize=None):
     """ZCML directive function for registering a python package product
     """
     
     _context.action(
-        discriminator = ('registerProduct', package),
-        callable = register_python_product,
-        args = (package,)
+        discriminator = ('registerPackage', package),
+        callable = _registerPackage,
+        args = (package,initialize)
         )
 
 
-def register_python_product(package):
+def _registerPackage(module_, initFunc=None):
     """Registers the given python package as a Zope 2 style product
     """
     
-    if isinstance(package, basestring):
-        module_ = __import__(package)
-    elif isinstance(package, types.ModuleType):
-        module_ = package
-    else:
-        raise TypeError("The package argument must either be an instance of " \
-                        "basestring or types.ModuleType")
-
     if not hasattr(module_, '__path__'):
         raise ValueError("Registering a python package currently only " \
                          "supports filesystem based pure python packages")
-
     
     product = initializeProduct(module_, 
                                 module_.__name__, 
@@ -63,21 +53,21 @@ def register_python_product(package):
 
     product.package_name = module_.__name__
 
-    if hasattr(module_, 'initialize') and \
-            hasattr(module_.initialize, '__call__'):
+    if initFunc is not None:
         newContext = ProductContext(product, _zope_app, module_)
-        module_.initialize(newContext)
+        initFunc(newContext)
 
-def setup_python_products(context):
+
+def setupPythonProducts(context):
     """Initialize the python-packages-as-products logic
     """
     
     _zope_app = context._ProductContext__app
     global _zope_app
-    apply_patches(_zope_app)
+    applyPatches(_zope_app)
 
 
-def apply_patches(app):
+def applyPatches(app):
     """Apply necessary monkey patches to force Zope 2 to be capable of
     handling "products" that are not necessarily located under the Products
     package.  Ultimately all functionality provided by these patches should
