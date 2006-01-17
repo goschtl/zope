@@ -34,13 +34,4 @@
       view="AddPsycopgDA"
       />
 
-  <!-- Menu entry for "add connection" menu -->
-  <browser:menuItem
-      menu="add_connection"
-      for="zope.app.container.interfaces.IAdding"
-      title="Psycopg DA"
-      description="A PostgreSQL Database Adapter using the Psycopg driver"
-      action="AddPsycopgDA"
-      />
-
 </configure>
