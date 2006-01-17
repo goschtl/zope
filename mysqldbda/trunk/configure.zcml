@@ -34,13 +34,4 @@
       view="AddMySQLdbDA"
       />
 
-  <!-- Menu entry for "add connection" menu -->
-  <browser:menuItem
-      menu="add_connection"
-      for="zope.app.container.interfaces.IAdding"
-      title="MySQL DA"
-      description="A MySQL Database Adapter"
-      action="AddMySQLdbDA"
-      />
-
 </configure>
