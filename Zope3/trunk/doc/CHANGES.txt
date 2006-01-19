@@ -18,6 +18,9 @@ Zope Changes
         then use that to sort strings, such as menu entries, in a
         locale-specific fashion.
 
+      - By default, persistent logs now contain the same extra
+        traceback information that's visible through the web.
+
     Restructuring
 
       - Removed unused menus and made previous titles, the description,
@@ -48,11 +51,14 @@ Zope Changes
       - Fixed issue 497: HTTP DELETE now returns 405 Method Not Allowed
         when the container cannot be adapted to IWriteDirectory.
 
+      - Fixed a NameError in bin/static-apidoc.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dmitry
       Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
-      (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute
+      (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute,
+      Shane Hathaway
 
   ------------------------------------------------------------------
 
