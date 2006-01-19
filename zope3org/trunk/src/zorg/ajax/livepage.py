@@ -54,6 +54,8 @@ from twisted.web2.wsgi import FileWrapper
 from interfaces import ILivePageClients
 from interfaces import ILivePageClient
 
+from zorg.edition.interfaces import IUUIDGenerator
+
 class LivePageClients(dict) :
     """ A dictionary of LivePageClients with ids as keys and clienst as values.
         Makes all write operations thread safe.
@@ -63,28 +65,22 @@ class LivePageClients(dict) :
     implements(ILivePageClients)
     
     writelock = allocate_lock()     # A writelock for clients
-    client_id_counter = 0           # A counter for client ids
+   
 
-    def register(self, client) :
+    def register(self, client, uuid=None) :
+        if uuid is None :
+            uuid = zapi.getUtility(IUUIDGenerator)()    
         self.writelock.acquire()
         try:
-            client.handleid = str(self.client_id_counter)
-            self.client_id_counter +=1
-            if client.handleid not in self:
-                self[client.handleid] = client
-                
+            client.handleid = uuid
+            self[client.handleid] = client
         finally:
             self.writelock.release()
-      
+                  
     def addOutput(self, output, who="all") :
-        self.writelock.acquire()
-        try:
-            if who == "all" :
-                for client in clients.values() :
-                    if output not in client.output :
-                        client.output.append(output)
-        finally:
-            self.writelock.release()
+        if who == "all" :
+            for client in clients.values() :
+                client.addOutput(output)
             
     def whoIsOnline(self) :
         """ Returns the ids of the principals that are using livepages. """
@@ -119,16 +115,38 @@ class LivePageClient(object):
     refreshInterval = 30
     targetTimeoutCount = 3
     
-    def __init__(self, page) :
+    def __init__(self, page, uuid=None) :
         global clients
-        clients.register(self)
+        if uuid is None :
+            clients.register(self)
         self.page_class = page.__class__
         self.output = []
         self.principal = page.request.principal
+        self.writelock = allocate_lock()
         
     def notify(self, event) :
         self.page_class.notify(event)
-        
+   
+    def popOutput(self) :
+        self.writelock.acquire()
+        try :
+            if self.output :
+                result = self.output.pop()
+            else :
+                result = None
+        finally :
+            self.writelock.release()
+        return result
+    
+    def addOutput(self, output) :
+        self.writelock.acquire()
+        try:
+            if output not in self.output :
+                self.output.append(output)
+        finally:
+            self.writelock.release()
+
+
         
 class LivePage(ComposedAjaxPage) :
     """ A Zope3 substitute for the newov.livepage.LivePage    
@@ -154,7 +172,7 @@ class LivePage(ComposedAjaxPage) :
     >>> print page.render()
     <html>
         <head>
-            <script type="text/javascript">var livePageClientId = '0';</script>
+            <script type="text/javascript">var livePageUUID = 'uuid1';</script>
             <script src="http://127.0.0.1/livepage.js" type="text/javascript"></script>
         </head>
         <body>
@@ -168,7 +186,7 @@ class LivePage(ComposedAjaxPage) :
     >>> print page.render()
     <html>
         <head>
-            <script type="text/javascript">var livePageClientId = '1';</script>
+            <script type="text/javascript">var livePageUUID = 'uuid2';</script>
             <script src="http://127.0.0.1/livepage.js" type="text/javascript"></script>
         </head>
         <body>
@@ -191,12 +209,12 @@ class LivePage(ComposedAjaxPage) :
   
     After that the page can be called by the javascript glue as follows
     
-    -  livepageoutput?livepage_client=0&outputNum=0
+    -  livepageoutput?uuid=uuid0&outputNum=0
     
        Call the output method and ask for special output that is intended
        for the specified client
    
-    -  livepageinput?livepage_client=0&handler-name=change&arguments=42
+    -  livepageinput?uuid=uuid0&handler-name=change&arguments=42
         
        Call an input method that produces output for various clients.
       
@@ -204,26 +222,26 @@ class LivePage(ComposedAjaxPage) :
     output is 'idle':
     
     >>> page1 = LivePage(None, TestRequest())
-    >>> page1.output(livepage_client=0, outputNum=0)
+    >>> page1.output(uuid='uuid1', outputNum=0)
     'idle'
   
     Now we can send some input :
     
     >>> page2 = LivePage(None, TestRequest())
-    >>> page2.input(livepage_client=0, handler_name='alert', arguments=42)
+    >>> page2.input(uuid='uuid1', handler_name='alert', arguments=42)
     ''
     
     After that the next call of the output returns javascript snippets:
         
-    >>> page1.output(livepage_client=0, outputNum=1)
+    >>> page1.output(uuid='uuid1', outputNum=1)
     "javascript alert('42')"
 
     And this again and again if we provide new input :
     
-    >>> page2.input(livepage_client=0, handler_name='alert', arguments=43)
+    >>> page2.input(uuid='uuid1', handler_name='alert', arguments=43)
     ''
     
-    >>> page1.output(livepage_client=0, outputNum=2)
+    >>> page1.output(uuid='uuid1', outputNum=2)
     "javascript alert('43')"
 
     """
@@ -248,29 +266,29 @@ class LivePage(ComposedAjaxPage) :
 
     def glueURL(self) :
         return zapi.absoluteURL(self.context, self.request) + "/livepage.js"
-    
-    def clientDict(self) :
-        """ Returns a traversable dict of clients. """
-        return ITraversable(self.clientFactory)
-               
+                   
     def nextClientId(self) :
         """ Returns a new client id. """
         
         return self.clientFactory(self).handleid
 
-    def output(self, livepage_client, outputNum) :
+    def output(self, uuid, outputNum) :
         """ Returns the output of a single client. """
         global clients
-        client = clients[str(livepage_client)]
+        client = clients.get(uuid)
+        if client is None :
+            client = self.clientFactory(self, uuid)
+            clients.register(client, uuid)
         
         end = time.time() + client.refreshInterval
         while time.time() < end :
-            if client.output :
-                return client.output.pop()
+            output = client.popOutput()
+            if output :
+                return output
             time.sleep(0.1)
         return "idle"
         
-    def input(self, livepage_client, handler_name, arguments) :
+    def input(self, uuid, handler_name, arguments) :
         return self.sendResponse(getattr(self, handler_name)(arguments))
         
     def sendResponse(self, response) :
@@ -300,7 +318,7 @@ class LivePage(ComposedAjaxPage) :
         
         template = Template("""<html>
     <head>
-        <script type="text/javascript">var livePageClientId = '$id';</script>
+        <script type="text/javascript">var livePageUUID = '$id';</script>
         <script src="$glue" type="text/javascript"></script>
     </head>
     <body>

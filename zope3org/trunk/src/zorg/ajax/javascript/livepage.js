@@ -1,10 +1,9 @@
-var livePageClientId;       /* This variable must be defined in your HTML. */
+var livePageUUID;       /* This variable must be defined in your HTML. */
  
-livepageScriptFragmentMatch = /<script.*?>((?:\n|.)*?)<\/script>/img;
-livepageScriptTags = /<script.*?>|<\/script>/img;
-
-livepageImageFragmentMatch = /<img.+src[ ]*=[ ]*\"(.*?)\"/img;
-livepageImageTag = /<img.+src[ ]*=[ ]*\"|\"(?:\n|.)*?\/>/
+function debugEval(str) {
+    alert(str);
+    eval(str);
+}
 
 function evalResponse(request) {
     var response = request.responseText;
@@ -16,56 +15,18 @@ function evalResponse(request) {
         
         switch(cmd) {
             case 'update': {
-                var body = lines.join('\n');
+                var html = lines.join('\n');
                 var id = parameter[0];
-                
-                var scripts = body.match(livepageScriptFragmentMatch);
-               
-                if (scripts) {
-                    var script = scripts.join('');
-                    script = script.replace(livepageScriptTags, '');
-                
-                    $(id).innerHTML = body;
-                    eval(script);
-                    }
-                else {
-                    $(id).innerHTML = body;
-                    }
-               
+                $(id).innerHTML = html.stripScripts();
+                html.evalScripts();
                 return;
                 }
                 
-            case 'update': {
-                var body = lines.join('\n');
+            case 'append': {
+                var html = lines.join('\n');
                 var id = parameter[0];
-                
-                var scripts = body.match(livepageScriptFragmentMatch);
-               
-                if (scripts) {
-                    var script = scripts.join('');
-                    script = script.replace(livepageScriptTags, '');
-                
-                    $(id).innerHTML = body;
-                    eval(script);
-                    }
-                else {
-                    $(id).innerHTML = body;
-                    }
-               
-                return;
-                }
-                
-            
-            case 'update_map': {
-                var body = lines.join('\n');
-                var id = parameter[0];
-                $(id).src = parameter[1];
-                var map_id = parameter[2];
-                var map_name = parameter[3];
-                var map = $(map_id);
-                map.innerHTML = body;
-               
-                $(id).usemap = "#" + map_name;
+                 $(id).innerHTML += html.stripScripts();
+                html.evalScripts();
                 return;
                 }
                 
@@ -86,7 +47,7 @@ function evalResponse(request) {
 
 function checkOutput(outputNum) {
     var base_url = "./@@livepageoutput";
-    var params = "livepage_client=" + livePageClientId + "&outputNum=" + outputNum;
+    var params = "uuid=" + livePageUUID + "&outputNum=" + outputNum;
     
     new Ajax.Request(base_url, 
         { method: 'get',

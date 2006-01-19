@@ -52,10 +52,10 @@ class ILivePage(IAjaxPage) :
     def nextClientId() :
         """ Returns a new client id. """
         
-    def output(livepage_client, outputNum) :
+    def output(uuid, outputNum) :
         """ Returns the output (descriptions of changes) of a single client. """
         
-    def input(livepage_client, handler_name, arguments) :
+    def input(uuid, handler_name, arguments) :
         """ Sends input to livepages. """
         
     def sendResponse(response) :

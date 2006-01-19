@@ -19,6 +19,7 @@ $Id: tests.py 39651 2005-10-26 18:36:17Z oestermeier $
 import unittest
 import zope
 
+from zope.interface import implements
 from zope.testing import doctest
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
 from zope.app.session.session import ClientId, Session
@@ -34,6 +35,9 @@ from zope.app.folder import Folder
 from zope.app.file import File
 
 from zope.publisher.browser import TestRequest
+
+from zorg.edition.interfaces import IUUIDGenerator
+from zorg.edition.uuid import UUIDGenerator
 
 def sessionSetUp(test=None) :
     """
@@ -51,9 +55,28 @@ def sessionSetUp(test=None) :
     zope.component.provideUtility(sdc, ISessionDataContainer, 'zorg.ajax')
 
 
+class TestUUIDGenerator(object) :
+    """ A generator that produces always the same sequence of uuids for test
+        purposes.
+    """
+    implements(IUUIDGenerator)
+    
+    def __init__(self) :
+        self.count = 0
+        
+    def __call__(self) :
+        self.count += 1
+        return "uuid%s" % self.count
+    
+def livePageSetUp(test=None) :
+    zope.component.provideUtility(TestUUIDGenerator(), IUUIDGenerator)
+
+
+
 def ajaxSetUp(test) :
     placefulSetUp()
     sessionSetUp(test)
+    livePageSetUp(test)
     
 def ajaxTearDown(test) :
     placefulTearDown()

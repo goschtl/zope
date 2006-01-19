@@ -1,506 +1,283 @@
-/*----------------------------------------------------------------------------\
-|                                Slider 1.02                                  |
-|-----------------------------------------------------------------------------|
-|                         Created by Erik Arvidsson                           |
-|                  (http://webfx.eae.net/contact.html#erik)                   |
-|                      For WebFX (http://webfx.eae.net/)                      |
-|-----------------------------------------------------------------------------|
-| A slider control that degrades to an input control for non supported        |
-| browsers.                                                                   |
-|-----------------------------------------------------------------------------|
-|                  Copyright (c) 1999 - 2002 Erik Arvidsson                   |
-|-----------------------------------------------------------------------------|
-| This software is provided "as is", without warranty of any kind, express or |
-| implied, including  but not limited  to the warranties of  merchantability, |
-| fitness for a particular purpose and noninfringement. In no event shall the |
-| authors or  copyright  holders be  liable for any claim,  damages or  other |
-| liability, whether  in an  action of  contract, tort  or otherwise, arising |
-| from,  out of  or in  connection with  the software or  the  use  or  other |
-| dealings in the software.                                                   |
-| - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-| This  software is  available under the  three different licenses  mentioned |
-| below.  To use this software you must chose, and qualify, for one of those. |
-| - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-| The WebFX Non-Commercial License          http://webfx.eae.net/license.html |
-| Permits  anyone the right to use the  software in a  non-commercial context |
-| free of charge.                                                             |
-| - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-| The WebFX Commercial license           http://webfx.eae.net/commercial.html |
-| Permits the  license holder the right to use  the software in a  commercial |
-| context. Such license must be specifically obtained, however it's valid for |
-| any number of  implementations of the licensed software.                    |
-| - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
-| GPL - The GNU General Public License    http://www.gnu.org/licenses/gpl.txt |
-| Permits anyone the right to use and modify the software without limitations |
-| as long as proper  credits are given  and the original  and modified source |
-| code are included. Requires  that the final product, software derivate from |
-| the original  source or any  software  utilizing a GPL  component, such  as |
-| this, is also licensed under the GPL license.                               |
-|-----------------------------------------------------------------------------|
-| 2002-10-14 | Original version released                                      |
-| 2003-03-27 | Added a test in the constructor for missing oElement arg       |
-| 2003-11-27 | Only use mousewheel when focused                               |
-|-----------------------------------------------------------------------------|
-| Dependencies: timer.js - an OO abstraction of timers                        |
-|               range.js - provides the data model for the slider             |
-|               winclassic.css or any other css file describing the look      |
-|-----------------------------------------------------------------------------|
-| Created 2002-10-14 | All changes are in the log above. | Updated 2003-1-27 |
-\----------------------------------------------------------------------------*/
+// Copyright (c) 2005 Marty Haught, Thomas Fuchs 
+//
+// See http://script.aculo.us for more info
+// 
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+if(!Control) var Control = {};
+Control.Slider = Class.create();
 
-Slider.isSupported = typeof document.createElement != "undefined" &&
-	typeof document.documentElement != "undefined" &&
-	typeof document.documentElement.offsetWidth == "number";
+// options:
+//  axis: 'vertical', or 'horizontal' (default)
+//
+// callbacks:
+//  onChange(value)
+//  onSlide(value)
+Control.Slider.prototype = {
+  initialize: function(handle, track, options) {
+    var slider = this;
+    
+    if(handle instanceof Array) {
+      this.handles = handle.collect( function(e) { return $(e) });
+    } else {
+      this.handles = [$(handle)];
+    }
+    
+    this.track   = $(track);
+    this.options = options || {};
 
+    this.axis      = this.options.axis || 'horizontal';
+    this.increment = this.options.increment || 1;
+    this.step      = parseInt(this.options.step || '1');
+    this.range     = this.options.range || $R(0,1);
+    
+    this.value     = 0; // assure backwards compat
+    this.values    = this.handles.map( function() { return 0 });
+    this.spans     = this.options.spans ? this.options.spans.map(function(s){ return $(s) }) : false;
+    this.options.startSpan = $(this.options.startSpan || null);
+    this.options.endSpan   = $(this.options.endSpan || null);
 
-function Slider(oElement, oInput, sOrientation) {
-	if (!oElement) return;
-	this._orientation = sOrientation || "horizontal";
-	this._range = new Range();
-	this._range.setExtent(0);
-	this._blockIncrement = 10;
-	this._unitIncrement = 1;
-	this._timer = new Timer(100);
+    this.restricted = this.options.restricted || false;
 
+    this.maximum   = this.options.maximum || this.range.end;
+    this.minimum   = this.options.minimum || this.range.start;
 
-	if (Slider.isSupported && oElement) {
+    // Will be used to align the handle onto the track, if necessary
+    this.alignX = parseInt(this.options.alignX || '0');
+    this.alignY = parseInt(this.options.alignY || '0');
+    
+    this.trackLength = this.maximumOffset() - this.minimumOffset();
+    this.handleLength = this.isVertical() ? this.handles[0].offsetHeight : this.handles[0].offsetWidth;
 
-		this.document = oElement.ownerDocument || oElement.document;
+    this.active   = false;
+    this.dragging = false;
+    this.disabled = false;
 
-		this.element = oElement;
-		this.element.slider = this;
-		this.element.unselectable = "on";
+    if(this.options.disabled) this.setDisabled();
 
-		// add class name tag to class name
-		this.element.className = this._orientation + " " + this.classNameTag + " " + this.element.className;
+    // Allowed values array
+    this.allowedValues = this.options.values ? this.options.values.sortBy(Prototype.K) : false;
+    if(this.allowedValues) {
+      this.minimum = this.allowedValues.min();
+      this.maximum = this.allowedValues.max();
+    }
 
-		// create line
-		this.line = this.document.createElement("DIV");
-		this.line.className = "line";
-		this.line.unselectable = "on";
-		this.line.appendChild(this.document.createElement("DIV"));
-		this.element.appendChild(this.line);
+    this.eventMouseDown = this.startDrag.bindAsEventListener(this);
+    this.eventMouseUp   = this.endDrag.bindAsEventListener(this);
+    this.eventMouseMove = this.update.bindAsEventListener(this);
 
-		// create handle
-		this.handle = this.document.createElement("DIV");
-		this.handle.className = "handle";
-		this.handle.unselectable = "on";
-		this.handle.appendChild(this.document.createElement("DIV"));
-		this.handle.firstChild.appendChild(
-			this.document.createTextNode(String.fromCharCode(160)));
-		this.element.appendChild(this.handle);
-	}
-
-	this.input = oInput;
-
-	// events
-	var oThis = this;
-	this._range.onchange = function () {
-		oThis.recalculate();
-		if (typeof oThis.onchange == "function")
-			oThis.onchange();
-	};
-
-	if (Slider.isSupported && oElement) {
-		this.element.onfocus		= Slider.eventHandlers.onfocus;
-		this.element.onblur			= Slider.eventHandlers.onblur;
-		this.element.onmousedown	= Slider.eventHandlers.onmousedown;
-		this.element.onmouseover	= Slider.eventHandlers.onmouseover;
-		this.element.onmouseout		= Slider.eventHandlers.onmouseout;
-		this.element.onkeydown		= Slider.eventHandlers.onkeydown;
-		this.element.onkeypress		= Slider.eventHandlers.onkeypress;
-		this.element.onmousewheel	= Slider.eventHandlers.onmousewheel;
-		this.handle.onselectstart	=
-		this.element.onselectstart	= function () { return false; };
-
-		this._timer.ontimer = function () {
-			oThis.ontimer();
-		};
-
-		// extra recalculate for ie
-		window.setTimeout(function() {
-			oThis.recalculate();
-		}, 1);
-	}
-	else {
-		this.input.onchange = function (e) {
-			oThis.setValue(oThis.input.value);
-		};
-	}
+    // Initialize handles in reverse (make sure first handle is active)
+    this.handles.each( function(h,i) {
+      i = slider.handles.length-1-i;
+      slider.setValue(parseFloat(
+        (slider.options.sliderValue instanceof Array ? 
+          slider.options.sliderValue[i] : slider.options.sliderValue) || 
+         slider.range.start), i);
+      Element.makePositioned(h); // fix IE
+      Event.observe(h, "mousedown", slider.eventMouseDown);
+    });
+    
+    Event.observe(this.track, "mousedown", this.eventMouseDown);
+    Event.observe(document, "mouseup", this.eventMouseUp);
+    Event.observe(document, "mousemove", this.eventMouseMove);
+    
+    this.initialized = true;
+  },
+  dispose: function() {
+    var slider = this;    
+    Event.stopObserving(this.track, "mousedown", this.eventMouseDown);
+    Event.stopObserving(document, "mouseup", this.eventMouseUp);
+    Event.stopObserving(document, "mousemove", this.eventMouseMove);
+    this.handles.each( function(h) {
+      Event.stopObserving(h, "mousedown", slider.eventMouseDown);
+    });
+  },
+  setDisabled: function(){
+    this.disabled = true;
+  },
+  setEnabled: function(){
+    this.disabled = false;
+  },  
+  getNearestValue: function(value){
+    if(this.allowedValues){
+      if(value >= this.allowedValues.max()) return(this.allowedValues.max());
+      if(value <= this.allowedValues.min()) return(this.allowedValues.min());
+      
+      var offset = Math.abs(this.allowedValues[0] - value);
+      var newValue = this.allowedValues[0];
+      this.allowedValues.each( function(v) {
+        var currentOffset = Math.abs(v - value);
+        if(currentOffset <= offset){
+          newValue = v;
+          offset = currentOffset;
+        } 
+      });
+      return newValue;
+    }
+    if(value > this.range.end) return this.range.end;
+    if(value < this.range.start) return this.range.start;
+    return value;
+  },
+  setValue: function(sliderValue, handleIdx){
+    if(!this.active) {
+      this.activeHandle    = this.handles[handleIdx];
+      this.activeHandleIdx = handleIdx;
+      this.updateStyles();
+    }
+    handleIdx = handleIdx || this.activeHandleIdx || 0;
+    if(this.initialized && this.restricted) {
+      if((handleIdx>0) && (sliderValue<this.values[handleIdx-1]))
+        sliderValue = this.values[handleIdx-1];
+      if((handleIdx < (this.handles.length-1)) && (sliderValue>this.values[handleIdx+1]))
+        sliderValue = this.values[handleIdx+1];
+    }
+    sliderValue = this.getNearestValue(sliderValue);
+    this.values[handleIdx] = sliderValue;
+    this.value = this.values[0]; // assure backwards compat
+    
+    this.handles[handleIdx].style[this.isVertical() ? 'top' : 'left'] = 
+      this.translateToPx(sliderValue);
+    
+    this.drawSpans();
+    if(!this.dragging || !this.event) this.updateFinished();
+  },
+  setValueBy: function(delta, handleIdx) {
+    this.setValue(this.values[handleIdx || this.activeHandleIdx || 0] + delta, 
+      handleIdx || this.activeHandleIdx || 0);
+  },
+  translateToPx: function(value) {
+    return Math.round(
+      ((this.trackLength-this.handleLength)/(this.range.end-this.range.start)) * 
+      (value - this.range.start)) + "px";
+  },
+  translateToValue: function(offset) {
+    return ((offset/(this.trackLength-this.handleLength) * 
+      (this.range.end-this.range.start)) + this.range.start);
+  },
+  getRange: function(range) {
+    var v = this.values.sortBy(Prototype.K); 
+    range = range || 0;
+    return $R(v[range],v[range+1]);
+  },
+  minimumOffset: function(){
+    return(this.isVertical() ? this.alignY : this.alignX);
+  },
+  maximumOffset: function(){
+    return(this.isVertical() ?
+      this.track.offsetHeight - this.alignY : this.track.offsetWidth - this.alignX);
+  },  
+  isVertical:  function(){
+    return (this.axis == 'vertical');
+  },
+  drawSpans: function() {
+    var slider = this;
+    if(this.spans)
+      $R(0, this.spans.length-1).each(function(r) { slider.setSpan(slider.spans[r], slider.getRange(r)) });
+    if(this.options.startSpan)
+      this.setSpan(this.options.startSpan,
+        $R(0, this.values.length>1 ? this.getRange(0).min() : this.value ));
+    if(this.options.endSpan)
+      this.setSpan(this.options.endSpan, 
+        $R(this.values.length>1 ? this.getRange(this.spans.length-1).max() : this.value, this.maximum));
+  },
+  setSpan: function(span, range) {
+    if(this.isVertical()) {
+      span.style.top = this.translateToPx(range.start);
+      span.style.height = this.translateToPx(range.end - range.start);
+    } else {
+      span.style.left = this.translateToPx(range.start);
+      span.style.width = this.translateToPx(range.end - range.start);
+    }
+  },
+  updateStyles: function() {
+    this.handles.each( function(h){ Element.removeClassName(h, 'selected') });
+    Element.addClassName(this.activeHandle, 'selected');
+  },
+  startDrag: function(event) {
+    if(Event.isLeftClick(event)) {
+      if(!this.disabled){
+        this.active = true;
+        
+        var handle = Event.element(event);
+        var pointer  = [Event.pointerX(event), Event.pointerY(event)];
+        if(handle==this.track) {
+          var offsets  = Position.cumulativeOffset(this.track); 
+          this.event = event;
+          this.setValue(this.translateToValue( 
+           (this.isVertical() ? pointer[1]-offsets[1] : pointer[0]-offsets[0])-(this.handleLength/2)
+          ));
+          var offsets  = Position.cumulativeOffset(this.activeHandle);
+          this.offsetX = (pointer[0] - offsets[0]);
+          this.offsetY = (pointer[1] - offsets[1]);
+        } else {
+          // find the handle (prevents issues with Safari)
+          while((this.handles.indexOf(handle) == -1) && handle.parentNode) 
+            handle = handle.parentNode;
+        
+          this.activeHandle    = handle;
+          this.activeHandleIdx = this.handles.indexOf(this.activeHandle);
+          this.updateStyles();
+        
+          var offsets  = Position.cumulativeOffset(this.activeHandle);
+          this.offsetX = (pointer[0] - offsets[0]);
+          this.offsetY = (pointer[1] - offsets[1]);
+        }
+      }
+      Event.stop(event);
+    }
+  },
+  update: function(event) {
+   if(this.active) {
+      if(!this.dragging) this.dragging = true;
+      this.draw(event);
+      // fix AppleWebKit rendering
+      if(navigator.appVersion.indexOf('AppleWebKit')>0) window.scrollBy(0,0);
+      Event.stop(event);
+   }
+  },
+  draw: function(event) {
+    var pointer = [Event.pointerX(event), Event.pointerY(event)];
+    var offsets = Position.cumulativeOffset(this.track);
+    pointer[0] -= this.offsetX + offsets[0];
+    pointer[1] -= this.offsetY + offsets[1];
+    this.event = event;
+    this.setValue(this.translateToValue( this.isVertical() ? pointer[1] : pointer[0] ));
+    if(this.initialized && this.options.onSlide)
+      this.options.onSlide(this.values.length>1 ? this.values : this.value, this);
+  },
+  endDrag: function(event) {
+    if(this.active && this.dragging) {
+      this.finishDrag(event, true);
+      Event.stop(event);
+    }
+    this.active = false;
+    this.dragging = false;
+  },  
+  finishDrag: function(event, success) {
+    this.active = false;
+    this.dragging = false;
+    this.updateFinished();
+  },
+  updateFinished: function() {
+    if(this.initialized && this.options.onChange) 
+      this.options.onChange(this.values.length>1 ? this.values : this.value, this);
+    this.event = null;
+  }
 }
-
-Slider.eventHandlers = {
-
-	// helpers to make events a bit easier
-	getEvent:	function (e, el) {
-		if (!e) {
-			if (el)
-				e = el.document.parentWindow.event;
-			else
-				e = window.event;
-		}
-		if (!e.srcElement) {
-			var el = e.target;
-			while (el != null && el.nodeType != 1)
-				el = el.parentNode;
-			e.srcElement = el;
-		}
-		if (typeof e.offsetX == "undefined") {
-			e.offsetX = e.layerX;
-			e.offsetY = e.layerY;
-		}
-
-		return e;
-	},
-
-	getDocument:	function (e) {
-		if (e.target)
-			return e.target.ownerDocument;
-		return e.srcElement.document;
-	},
-
-	getSlider:	function (e) {
-		var el = e.target || e.srcElement;
-		while (el != null && el.slider == null)	{
-			el = el.parentNode;
-		}
-		if (el)
-			return el.slider;
-		return null;
-	},
-
-	getLine:	function (e) {
-		var el = e.target || e.srcElement;
-		while (el != null && el.className != "line")	{
-			el = el.parentNode;
-		}
-		return el;
-	},
-
-	getHandle:	function (e) {
-		var el = e.target || e.srcElement;
-		var re = /handle/;
-		while (el != null && !re.test(el.className))	{
-			el = el.parentNode;
-		}
-		return el;
-	},
-	// end helpers
-
-	onfocus:	function (e) {
-		var s = this.slider;
-		s._focused = true;
-		s.handle.className = "handle hover";
-	},
-
-	onblur:	function (e) {
-		var s = this.slider
-		s._focused = false;
-		s.handle.className = "handle";
-	},
-
-	onmouseover:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		var s = this.slider;
-		if (e.srcElement == s.handle)
-			s.handle.className = "handle hover";
-	},
-
-	onmouseout:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		var s = this.slider;
-		if (e.srcElement == s.handle && !s._focused)
-			s.handle.className = "handle";
-	},
-
-	onmousedown:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		var s = this.slider;
-		if (s.element.focus)
-			s.element.focus();
-
-		Slider._currentInstance = s;
-		var doc = s.document;
-
-		if (doc.addEventListener) {
-			doc.addEventListener("mousemove", Slider.eventHandlers.onmousemove, true);
-			doc.addEventListener("mouseup", Slider.eventHandlers.onmouseup, true);
-		}
-		else if (doc.attachEvent) {
-			doc.attachEvent("onmousemove", Slider.eventHandlers.onmousemove);
-			doc.attachEvent("onmouseup", Slider.eventHandlers.onmouseup);
-			doc.attachEvent("onlosecapture", Slider.eventHandlers.onmouseup);
-			s.element.setCapture();
-		}
-
-		if (Slider.eventHandlers.getHandle(e)) {	// start drag
-			Slider._sliderDragData = {
-				screenX:	e.screenX,
-				screenY:	e.screenY,
-				dx:			e.screenX - s.handle.offsetLeft,
-				dy:			e.screenY - s.handle.offsetTop,
-				startValue:	s.getValue(),
-				slider:		s
-			};
-		}
-		else {
-			var lineEl = Slider.eventHandlers.getLine(e);
-			s._mouseX = e.offsetX + (lineEl ? s.line.offsetLeft : 0);
-			s._mouseY = e.offsetY + (lineEl ? s.line.offsetTop : 0);
-			s._increasing = null;
-			s.ontimer();
-		}
-	},
-
-	onmousemove:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-
-		if (Slider._sliderDragData) {	// drag
-			var s = Slider._sliderDragData.slider;
-
-			var boundSize = s.getMaximum() - s.getMinimum();
-			var size, pos, reset;
-
-			if (s._orientation == "horizontal") {
-				size = s.element.offsetWidth - s.handle.offsetWidth;
-				pos = e.screenX - Slider._sliderDragData.dx;
-				reset = Math.abs(e.screenY - Slider._sliderDragData.screenY) > 100;
-			}
-			else {
-				size = s.element.offsetHeight - s.handle.offsetHeight;
-				pos = s.element.offsetHeight - s.handle.offsetHeight -
-					(e.screenY - Slider._sliderDragData.dy);
-				reset = Math.abs(e.screenX - Slider._sliderDragData.screenX) > 100;
-			}
-			s.setValue(reset ? Slider._sliderDragData.startValue :
-						s.getMinimum() + boundSize * pos / size);
-			return false;
-		}
-		else {
-			var s = Slider._currentInstance;
-			if (s != null) {
-				var lineEl = Slider.eventHandlers.getLine(e);
-				s._mouseX = e.offsetX + (lineEl ? s.line.offsetLeft : 0);
-				s._mouseY = e.offsetY + (lineEl ? s.line.offsetTop : 0);
-			}
-		}
-
-	},
-
-	onmouseup:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		var s = Slider._currentInstance;
-		var doc = s.document;
-		if (doc.removeEventListener) {
-			doc.removeEventListener("mousemove", Slider.eventHandlers.onmousemove, true);
-			doc.removeEventListener("mouseup", Slider.eventHandlers.onmouseup, true);
-		}
-		else if (doc.detachEvent) {
-			doc.detachEvent("onmousemove", Slider.eventHandlers.onmousemove);
-			doc.detachEvent("onmouseup", Slider.eventHandlers.onmouseup);
-			doc.detachEvent("onlosecapture", Slider.eventHandlers.onmouseup);
-			s.element.releaseCapture();
-		}
-
-		if (Slider._sliderDragData) {	// end drag
-			Slider._sliderDragData = null;
-		}
-		else {
-			s._timer.stop();
-			s._increasing = null;
-		}
-		Slider._currentInstance = null;
-	},
-
-	onkeydown:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		//var s = Slider.eventHandlers.getSlider(e);
-		var s = this.slider;
-		var kc = e.keyCode;
-		switch (kc) {
-			case 33:	// page up
-				s.setValue(s.getValue() + s.getBlockIncrement());
-				break;
-			case 34:	// page down
-				s.setValue(s.getValue() - s.getBlockIncrement());
-				break;
-			case 35:	// end
-				s.setValue(s.getOrientation() == "horizontal" ?
-					s.getMaximum() :
-					s.getMinimum());
-				break;
-			case 36:	// home
-				s.setValue(s.getOrientation() == "horizontal" ?
-					s.getMinimum() :
-					s.getMaximum());
-				break;
-			case 38:	// up
-			case 39:	// right
-				s.setValue(s.getValue() + s.getUnitIncrement());
-				break;
-
-			case 37:	// left
-			case 40:	// down
-				s.setValue(s.getValue() - s.getUnitIncrement());
-				break;
-		}
-
-		if (kc >= 33 && kc <= 40) {
-			return false;
-		}
-	},
-
-	onkeypress:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		var kc = e.keyCode;
-		if (kc >= 33 && kc <= 40) {
-			return false;
-		}
-	},
-
-	onmousewheel:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		var s = this.slider;
-		if (s._focused) {
-			s.setValue(s.getValue() + e.wheelDelta / 120 * s.getUnitIncrement());
-			// windows inverts this on horizontal sliders. That does not
-			// make sense to me
-			return false;
-		}
-	}
-};
-
-
-
-Slider.prototype.classNameTag = "dynamic-slider-control",
-
-Slider.prototype.setValue = function (v) {
-	this._range.setValue(v);
-	this.input.value = this.getValue();
-};
-
-Slider.prototype.getValue = function () {
-	return this._range.getValue();
-};
-
-Slider.prototype.setMinimum = function (v) {
-	this._range.setMinimum(v);
-	this.input.value = this.getValue();
-};
-
-Slider.prototype.getMinimum = function () {
-	return this._range.getMinimum();
-};
-
-Slider.prototype.setMaximum = function (v) {
-	this._range.setMaximum(v);
-	this.input.value = this.getValue();
-};
-
-Slider.prototype.getMaximum = function () {
-	return this._range.getMaximum();
-};
-
-Slider.prototype.setUnitIncrement = function (v) {
-	this._unitIncrement = v;
-};
-
-Slider.prototype.getUnitIncrement = function () {
-	return this._unitIncrement;
-};
-
-Slider.prototype.setBlockIncrement = function (v) {
-	this._blockIncrement = v;
-};
-
-Slider.prototype.getBlockIncrement = function () {
-	return this._blockIncrement;
-};
-
-Slider.prototype.getOrientation = function () {
-	return this._orientation;
-};
-
-Slider.prototype.setOrientation = function (sOrientation) {
-	if (sOrientation != this._orientation) {
-		if (Slider.isSupported && this.element) {
-			// add class name tag to class name
-			this.element.className = this.element.className.replace(this._orientation,
-									sOrientation);
-		}
-		this._orientation = sOrientation;
-		this.recalculate();
-
-	}
-};
-
-Slider.prototype.recalculate = function() {
-	if (!Slider.isSupported || !this.element) return;
-
-	var w = this.element.offsetWidth;
-	var h = this.element.offsetHeight;
-	var hw = this.handle.offsetWidth;
-	var hh = this.handle.offsetHeight;
-	var lw = this.line.offsetWidth;
-	var lh = this.line.offsetHeight;
-
-	// this assumes a border-box layout
-
-	if (this._orientation == "horizontal") {
-		this.handle.style.left = (w - hw) * (this.getValue() - this.getMinimum()) /
-			(this.getMaximum() - this.getMinimum()) + "px";
-		this.handle.style.top = (h - hh) / 2 + "px";
-
-		this.line.style.top = (h - lh) / 2 + "px";
-		this.line.style.left = hw / 2 + "px";
-		//this.line.style.right = hw / 2 + "px";
-		this.line.style.width = Math.max(0, w - hw - 2)+ "px";
-		this.line.firstChild.style.width = Math.max(0, w - hw - 4)+ "px";
-	}
-	else {
-		this.handle.style.left = (w - hw) / 2 + "px";
-		this.handle.style.top = h - hh - (h - hh) * (this.getValue() - this.getMinimum()) /
-			(this.getMaximum() - this.getMinimum()) + "px";
-
-		this.line.style.left = (w - lw) / 2 + "px";
-		this.line.style.top = hh / 2 + "px";
-		this.line.style.height = Math.max(0, h - hh - 2) + "px";	//hard coded border width
-		//this.line.style.bottom = hh / 2 + "px";
-		this.line.firstChild.style.height = Math.max(0, h - hh - 4) + "px";	//hard coded border width
-	}
-};
-
-Slider.prototype.ontimer = function () {
-	var hw = this.handle.offsetWidth;
-	var hh = this.handle.offsetHeight;
-	var hl = this.handle.offsetLeft;
-	var ht = this.handle.offsetTop;
-
-	if (this._orientation == "horizontal") {
-		if (this._mouseX > hl + hw &&
-			(this._increasing == null || this._increasing)) {
-			this.setValue(this.getValue() + this.getBlockIncrement());
-			this._increasing = true;
-		}
-		else if (this._mouseX < hl &&
-			(this._increasing == null || !this._increasing)) {
-			this.setValue(this.getValue() - this.getBlockIncrement());
-			this._increasing = false;
-		}
-	}
-	else {
-		if (this._mouseY > ht + hh &&
-			(this._increasing == null || !this._increasing)) {
-			this.setValue(this.getValue() - this.getBlockIncrement());
-			this._increasing = false;
-		}
-		else if (this._mouseY < ht &&
-			(this._increasing == null || this._increasing)) {
-			this.setValue(this.getValue() + this.getBlockIncrement());
-			this._increasing = true;
-		}
-	}
-
-	this._timer.start();
-};
