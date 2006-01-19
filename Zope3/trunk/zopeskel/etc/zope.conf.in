@@ -103,10 +103,12 @@ interrupt-check-interval 200
 
   <logfile>
     path $LOGDIR/z3.log
+    formatter zope.exceptions.log.Formatter
   </logfile>
 
   <logfile>
     path STDOUT
+    formatter zope.exceptions.log.Formatter
   </logfile>
 </eventlog>
 
