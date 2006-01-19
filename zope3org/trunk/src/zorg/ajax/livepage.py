@@ -56,8 +56,11 @@ from interfaces import ILivePageClient
 
 from zorg.edition.interfaces import IUUIDGenerator
 
-class LivePageClients(dict) :
-    """ A dictionary of LivePageClients with ids as keys and clienst as values.
+class LivePageClients(object) :
+    """ A collection of LivePages.
+    
+        Holds a dictionary of LivePageClients with ids as keys and 
+        clients as values.
         Makes all write operations thread safe.
         
     """
@@ -66,26 +69,52 @@ class LivePageClients(dict) :
     
     writelock = allocate_lock()     # A writelock for clients
    
+    def __init__(self) :
+        self.online = {}
+        
 
     def register(self, client, uuid=None) :
-        if uuid is None :
-            uuid = zapi.getUtility(IUUIDGenerator)()    
         self.writelock.acquire()
         try:
+            if uuid is None :
+                uuid = zapi.getUtility(IUUIDGenerator)()    
             client.handleid = uuid
-            self[client.handleid] = client
+            self.online[client.handleid] = client
         finally:
             self.writelock.release()
-                  
+     
+    def unregister(self, client) :
+        self.writelock.acquire()
+        try:
+            del self.online[client.handleid]
+            print "***Info: unregistered client for %s." % client.principal.title
+        finally:
+            self.writelock.release()
+    
+    def get(self, uuid, default=None) :
+        return self.online.get(uuid, default)
+        
+    def __iter__(self) :
+        """ Iterates over all clients which are still alive.
+            Unregisters all unnecessary clients.
+        """
+      
+        for client in self.online.values() :
+            if time.time() > client.touched + client.targetTimeout :
+                self.unregister(client)
+            else :
+                yield client
+                
+
     def addOutput(self, output, who="all") :
         if who == "all" :
-            for client in clients.values() :
+            for client in self :
                 client.addOutput(output)
             
     def whoIsOnline(self) :
         """ Returns the ids of the principals that are using livepages. """
         online = set()
-        for client in self.values() :
+        for client in self :
             online.add(client.principal.id)
         return sorted(online)
         
@@ -94,16 +123,25 @@ class LivePageClients(dict) :
 def livePageSubscriber(event) :
     """ A subscriber that allows the clients to respond to
         Zope3 events.
+        
+        It checkes whether the clients are still alive (via
+        the __iter__ method of the clients).
+        
+        The events are send to the notify **classmethod**
+        of the page classes.
+        
     """
     global clients
-    for client in clients.values() :
-        client.notify(event)
+    page_classes = set()
+    for client in clients :
+        page_classes.add(client.page_class)
+    for page_class in page_classes :
+        page_class.notify(event)
 
                      
        
 # A global dictionary shared between threads
 clients = LivePageClients()
-
 
 
 class LivePageClient(object):
@@ -112,33 +150,44 @@ class LivePageClient(object):
 
     implements(ILivePageClients)
     
-    refreshInterval = 30
-    targetTimeoutCount = 3
+    refreshInterval = 10
+    targetTimeout = 20
     
     def __init__(self, page, uuid=None) :
         global clients
-        if uuid is None :
-            clients.register(self)
+        
         self.page_class = page.__class__
         self.output = []
         self.principal = page.request.principal
         self.writelock = allocate_lock()
-        
-    def notify(self, event) :
-        self.page_class.notify(event)
-   
+        self.touched = time.time()
+        if uuid is None :
+            clients.register(self)
+            
     def popOutput(self) :
+        """ Returns an output block for processing in the browser side client.
+            Touches the client to indicate that the connection is still alive.
+        """
         self.writelock.acquire()
         try :
             if self.output :
                 result = self.output.pop()
             else :
                 result = None
+            self.touched = time.time()      
         finally :
             self.writelock.release()
         return result
     
+        
     def addOutput(self, output) :
+        """ Adds a output block for further client side processing to the
+            clients message queue.
+            
+            Checks whether the client is still a live, i.e. has been touched
+            by browser requests for fresh output.
+        """
+
         self.writelock.acquire()
         try:
             if output not in self.output :
@@ -204,8 +253,7 @@ class LivePage(ComposedAjaxPage) :
     For test purposes we set the refresh interval (i.e. the interval in which
     output calls are renewed) to 0.1 seconds :
     
-    >>> for client in clients.values() : 
-    ...     client.refreshInterval = 0.1
+    >>> LivePageClient.refreshInterval = 0.1
   
     After that the page can be called by the javascript glue as follows
     
@@ -263,6 +311,8 @@ class LivePage(ComposedAjaxPage) :
     def notify(self, event) :
         """ Default implementation of an event handler. Must be specialized. """
         pass
+        
+    notify = classmethod(notify)
 
     def glueURL(self) :
         return zapi.absoluteURL(self.context, self.request) + "/livepage.js"
@@ -275,7 +325,7 @@ class LivePage(ComposedAjaxPage) :
     def output(self, uuid, outputNum) :
         """ Returns the output of a single client. """
         global clients
-        client = clients.get(uuid)
+        client = clients.online.get(uuid)
         if client is None :
             client = self.clientFactory(self, uuid)
             clients.register(client, uuid)
