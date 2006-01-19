@@ -19,6 +19,7 @@ $Id$
 import sys
 import cgi
 import linecache
+import traceback
 
 DEBUG_EXCEPTION_FORMATTER = 1
 
@@ -27,36 +28,21 @@ class TextExceptionFormatter(object):
     line_sep = '\n'
     show_revisions = 0
 
-    def __init__(self, limit=None):
+    def __init__(self, limit=None, with_filenames=False):
         self.limit = limit
+        self.with_filenames = with_filenames
 
     def escape(self, s):
         return s
 
     def getPrefix(self):
-        return 'Traceback (innermost last):'
+        return 'Traceback (most recent call last):'
 
     def getLimit(self):
         limit = self.limit
         if limit is None:
-            limit = getattr(sys, 'tracebacklimit', None)
+            limit = getattr(sys, 'tracebacklimit', 200)
         return limit
-
-    def getRevision(self, globals):
-        if not self.show_revisions:
-            return None
-        revision = globals.get('__revision__', None)
-        if revision is None:
-            # Incorrect but commonly used spelling
-            revision = globals.get('__version__', None)
-
-        if revision is not None:
-            try:
-                revision = str(revision).strip()
-            except (ValueError, AttributeError):
-                # Just in case revisions cannot be converted to strings.
-                revision = '???'
-        return revision
 
     def formatSupplementLine(self, line):
         return '   - %s' % line
@@ -122,13 +108,12 @@ class TextExceptionFormatter(object):
         name = co.co_name
         locals = f.f_locals
         globals = f.f_globals
-        modname = globals.get('__name__', filename)
 
-        s = '  Module %s, line %d' % (modname, lineno)
-
-        revision = self.getRevision(globals)
-        if revision:
-            s = s + ', rev. %s' % revision
+        if self.with_filenames:
+            s = '  File "%s", line %d' % (filename, lineno)
+        else:
+            modname = globals.get('__name__', filename)
+            s = '  Module %s, line %d' % (modname, lineno)
 
         s = s + ', in %s' % name
 
@@ -158,7 +143,6 @@ class TextExceptionFormatter(object):
                 result.extend(self.formatSupplement(supp, tb))
             except:
                 if DEBUG_EXCEPTION_FORMATTER:
-                    import traceback
                     traceback.print_exc()
                 # else just swallow the exception.
 
@@ -168,14 +152,12 @@ class TextExceptionFormatter(object):
                 result.append(self.formatTracebackInfo(tbi))
         except:
             if DEBUG_EXCEPTION_FORMATTER:
-                import traceback
                 traceback.print_exc()
             # else just swallow the exception.
 
         return self.line_sep.join(result)
 
     def formatExceptionOnly(self, etype, value):
-        import traceback
         return self.line_sep.join(
             traceback.format_exception_only(etype, value))
 
@@ -210,7 +192,7 @@ class HTMLExceptionFormatter(TextExceptionFormatter):
         return cgi.escape(s)
 
     def getPrefix(self):
-        return '<p>Traceback (innermost last):\r\n<ul>'
+        return '<p>Traceback (most recent call last):\r\n<ul>'
 
     def formatSupplementLine(self, line):
         return '<b>%s</b>' % self.escape(str(line))
@@ -228,18 +210,31 @@ class HTMLExceptionFormatter(TextExceptionFormatter):
         return '</ul>%s</p>' % self.escape(exc_line)
 
 
-limit = 200
+def format_exception(t, v, tb, limit=None, as_html=False,
+                     with_filenames=False):
+    """Format a stack trace and the exception information.
 
-if hasattr(sys, 'tracebacklimit'):
-    limit = min(limit, sys.tracebacklimit)
-
-text_formatter = TextExceptionFormatter(limit)
-html_formatter = HTMLExceptionFormatter(limit)
-
-
-def format_exception(t, v, tb, limit=None, as_html=0):
+    Similar to 'traceback.format_exception', but adds supplemental
+    information to the traceback and accepts two options, 'as_html'
+    and 'with_filenames'.
+    """
     if as_html:
-        fmt = html_formatter
+        fmt = HTMLExceptionFormatter(limit, with_filenames)
     else:
-        fmt = text_formatter
+        fmt = TextExceptionFormatter(limit, with_filenames)
     return fmt.formatException(t, v, tb)
+
+
+def print_exception(t, v, tb, limit=None, file=None, as_html=False,
+                    with_filenames=True):
+    """Print exception up to 'limit' stack trace entries from 'tb' to 'file'.
+
+    Similar to 'traceback.print_exception', but adds supplemental
+    information to the traceback and accepts two options, 'as_html'
+    and 'with_filenames'.
+    """
+    if file is None:
+        file = sys.stderr
+    lines = format_exception(t, v, tb, limit, as_html, with_filenames)
+    for line in lines:
+        file.write(line)
