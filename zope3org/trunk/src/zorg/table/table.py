@@ -52,8 +52,10 @@ class Column(object):
         else:
             self.field = self.schema[field]
         self.title = title or getattr(self.field,'title',None) or self.name
-#        print "getMultiAdapter((%s,%s),ISorter)" % (self.schema,self.field)
-        self.sorter = getMultiAdapter((self.schema,self.field),ISorter)
+
+    def _sorter(self):
+        return getMultiAdapter((self.schema,self.field),ISorter)
+    sorter = property(_sorter)
 
 
 class TableConfig(object):
