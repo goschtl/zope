@@ -114,6 +114,10 @@ class FTPView(object):
         if start:
             data = data[start:]
 
+        ## Some output streams don't support unicode data.
+        if isinstance(data, unicode):
+            data = data.encode('utf-8')
+
         outstream.write(data)
 
     def lsinfo(self, name=None):

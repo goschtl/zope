@@ -109,6 +109,16 @@ def norm_info(info):
     d.update(info)
     return d
 
+class UnicodeStringIO(StringIO):
+    # We can't write unicode data directly to a socket stream so make sure
+    # that none of the tests below those this.
+    
+    def write(self, str):
+        if isinstance(str, unicode):
+            raise TypeError, "Data must not be unicode"
+        return StringIO.write(self, str)
+
+
 class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
@@ -120,7 +130,7 @@ class Test(PlacelessSetup, TestCase):
         defineChecker(File, filechecker)
         defineChecker(Directory, dirchecker)
 
-        root = Directory()
+        root = self.root = Directory()
         root['test'] = Directory()
         root['test2'] = Directory()
         root['f'] = File('contents of\nf')
@@ -272,6 +282,16 @@ class Test(PlacelessSetup, TestCase):
         self.assert_(self.__view.readable('f'))
         self.assert_(not self.__view.readable('notthere'))
         self.assert_(self.__view.readable('test'))
+
+    def test_read_unicode(self):
+        root = self.root
+        root['uf'] = File(u'unicode contents of\nuf')
+        f = UnicodeStringIO()
+        self.__view.readfile('uf', f)
+        ## the value of f a non-unicode value - since it got encoded in the
+        ## readfile method.
+        self.assertEqual(f.getvalue(), 'unicode contents of\nuf')
+
 
 def test_suite():
     return TestSuite((
