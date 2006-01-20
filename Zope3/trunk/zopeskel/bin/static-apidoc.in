@@ -22,7 +22,8 @@ import sys
 SOFTWARE_HOME = r"<<SOFTWARE_HOME>>"
 
 here = os.path.dirname(__file__)
-instance_lib = os.path.join(here, "lib", "python")
+instance_lib = os.path.abspath(os.path.join(os.path.split(here)[0],
+                                            "lib", "python"))
 
 sys.path[:0] = [instance_lib, SOFTWARE_HOME]
 
