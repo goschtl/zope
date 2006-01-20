@@ -27,8 +27,6 @@ The table package provides tabular data handling by using schema information.
     >>> print container.values()
     [<zorg.table.testing.Simple object at ...>]
 
-    XXX The ITableConfig utility registration should be done in zcml.
-
     >>> from zorg.table.table import Column,TableConfig
     >>> from zorg.table.interfaces import ITable,ITableConfig
     >>> colName = Column(ISimple,u'name')
@@ -59,7 +57,7 @@ The table package provides tabular data handling by using schema information.
 
     >>> table.applyConfig(config)
     >>> print list(table.getColumns())
-    [<zorg.table.table.Column object at ...>, <zorg.table.table.Column object at...>]
+    [<zorg.table.table.Column object at ...>, ...]
 
     Sorting by the 'name' attribute
 
@@ -178,20 +176,21 @@ Selectons on Tables
     2 [True, False]
     4 [True, False]
     
-#Actions on tables.
-#
-#A table Config holds the action attribute and applies it at first to
-#itself and when the config is applied to a table it is also applied to
-#the table. Let us define a simple action that just selects the
-#'priority' column
-#
-#    >>> from zorg.table.table import TableAction
-#    >>> from zorg.table.interfaces import ITableAction
-#    >>> class SelectAction(TableAction):
-#    ...     def applyToConfig(self,config):
-#    ...         config.selection['priority'] = config.all
-#
-#    >>> selectAction = SelectAction(u'select',u'Select')
+Actions on tables.
+
+    A table Config holds the action attribute and applies it at first
+    to itself and when the config is applied to a table it is also
+    applied to the table. Let us define a simple action that just
+    selects the 'priority' column
+
+
+    >>> from zorg.table.table import TableAction
+    >>> from zorg.table.interfaces import ITableAction
+    >>> class SelectAction(TableAction):
+    ...     def applyToConfig(self,config):
+    ...         config.selection['priority'] = config.all
+
+#>>> selectAction = SelectAction(u'select',u'Select')
 #    >>> ITableAction.providedBy(selectAction)
 #    True
 #    >>> config = TableConfig(columns=[colName,colPriority],

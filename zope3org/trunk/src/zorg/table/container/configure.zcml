@@ -2,7 +2,12 @@
            xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:i18n="http://namespaces.zope.org/i18n"
            i18n_domain="zope">
-<!--
+
+ <adapter for="zope.app.location.interfaces.ILocation"
+          factory=".adapters.MovableLocation"
+          provides=".interfaces.IMovableLocation"/>
+
+ 
   <browser:page
       for="zope.app.container.interfaces.IReadContainer"
       name="tablecontents.html"
@@ -12,11 +17,17 @@
       title="Table"
       menu="zmi_views"
       />
--->
+
   <tableconfig
       id="table.container.config"
       colNames="__name__ title size created modified"
       sortBy="__name__">
+    <action
+     name="MoveUp"
+     label="Move Up"
+     forRow="True"
+     permission="zope.ManageContent"
+     />
     <action
         name="Edit"
         label="Edit"
@@ -54,7 +65,7 @@
         />
     <column
         name="__name__" title="Name" field="__name__"
-        schema="zope.app.location.interfaces.ILocation"
+        schema=".interfaces.IMovableLocation"
         />
     <column
         name="title" title="Title"
@@ -100,6 +111,7 @@
   <browser:cellview
       for="zope.interface.Interface"
       name="__name__"
+      useForm="True"
       class=".view.CellNameView"
       template="cell_name.pt"
       permission="zope.Public"
@@ -116,8 +128,7 @@
       for="zope.interface.Interface"
       name="title"
       useForm="True"
-      class=".view.CellNameView"
-      template="cell_name.pt"
+      template="cell.pt"
       permission="zope.Public"
       />
 

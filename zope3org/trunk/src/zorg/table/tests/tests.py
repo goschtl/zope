@@ -105,33 +105,22 @@ class BaseTestCase(unittest.TestCase):
 
         colA = Column(ISimple,u'a')
         colB = Column(ISimple,u'b')
-#        colSize = Column(ISized,u'size',field=ISized[u'sizeForSorting'])
-
-#        table = ReadMappingTable(self.container,u'testtable',[colA,colB]) #,colSize])
         table = ReadMappingTable(self.container,name=u'testtable')
-
         for row in table.getRows():
             self.failUnless(IRow.providedBy(row))
             for cell in row.getCells():
                 self.failUnless(ICell.providedBy(cell))
                 self.failUnless(cell())
 
-        table.config = TableConfig(colNames=[u'a',u'b'],sortBy=u'b',columns=[colA,colB])
+        table.config = TableConfig(colNames=[u'a',u'b'],
+                                   sortBy=u'b',columns=[colA,colB])
         self.assertEqual(
             list(r.context.b for r in  table.getRows()),[2,4])
 
         table.config.sortReverse=True
         self.assertEqual(
             list(r.context.b for r in  table.getRows()),[4,2])
-#        table.config.sortBy = u'size'
-#        self.assertEqual(
-#            list(r.context.b for r in  table.getRows()),[4,2])
         request = TestRequest()
-
-        view =  TableView(table,request)
-        print "-"*80
-        print view()
-        print "-"*80
 
 
 def test_suite():

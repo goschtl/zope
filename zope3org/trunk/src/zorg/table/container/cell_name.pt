@@ -1,6 +1,5 @@
 <metal:block tal:condition="view/hasInputWidget">
-<img tal:replace="structure view/icon"/>
-<span class="containercell" tal:content="view/cell"/>
+<span class="containercell" tal:content="structure view/content"/>
 </metal:block>
 <a href=""
    tal:condition="not:view/hasInputWidget"

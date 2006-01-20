@@ -5,7 +5,7 @@ from zope.app import zapi
 from zope.configuration import xmlconfig
 from zope.app.testing import ztapi
 import zope
-import table
+from zorg import table
 basic = 'mgr:mgrpw'
 
 class RootTestCase(BrowserTestCase):

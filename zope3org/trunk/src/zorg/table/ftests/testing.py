@@ -4,7 +4,7 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.interface import Interface, implements
 from zope.app import zapi
 from zope.app.location.interfaces import ILocation
-from zorg.table.table import Table,Column
+from zorg.table.table import TableConfig
 
 class TestView(BrowserView):
 

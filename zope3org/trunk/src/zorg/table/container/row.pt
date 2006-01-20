@@ -5,9 +5,11 @@
                         checked python:view.row.selected and 'checked' or '';
                         name string:${view/row/table/config/prefix}selection:list;"/>
 </td>
+
 <td tal:repeat="cell view/getCells"
     tal:content="structure cell"/>
-<td>
+
+<td tal:condition="view/getActions">
  <metal:block tal:repeat="action view/getActions">
    <input tal:replace="structure action" /> 
  </metal:block>
