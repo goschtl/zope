@@ -103,20 +103,20 @@ class LiveComments(WikiPage, LivePage) :
         >>> request.setPrincipal(user1)
         >>> page1 = SampleLiveComments(file, request)
         >>> page1.render()
-        '<html>client 0</html>'
-        >>> client1 = clients['0']
+        '<html>client uuid1</html>'
+        >>> client1 = clients.get('uuid1')
         
         >>> request = TestRequest()
         >>> request.setPrincipal(user2)
         >>> page2 = SampleLiveComments(file, request)
         >>> page2.render()
-        '<html>client 1</html>'
-        >>> client2 = clients['1']
+        '<html>client uuid2</html>'
+        >>> client2 = clients.get('uuid2')
         
         For test purposes we set the refresh interval (i.e. the interval in which
         output calls are renewed) to 0.1 seconds :
         
-        >>> for client in clients.values() : 
+        >>> for client in clients : 
         ...     client.refreshInterval = 0.1
     
         Both users can see that they are online :
@@ -127,15 +127,19 @@ class LiveComments(WikiPage, LivePage) :
         If one of them adds a comment the other client is immediately informed:
         
         >>> AddComment(file, TestRequest()).addComment("My comments")
-        >>> print page1.output(0, 0)
+        >>> print page1.output('uuid1', 0)
         update comments
         <a name="comment1"></a>
         ...
         
-        >>> print page2.output(1, 0)
+        >>> print page2.output('uuid2', 0)
         update comments
         <a name="comment1"></a>
         ...
+        
+        Clean up all created clients
+        
+        >>> clients.online = {}
        
     """
     
@@ -148,7 +152,7 @@ class LiveComments(WikiPage, LivePage) :
     def online(self) :
         global clients
         members = set()
-        for client in clients.values() :
+        for client in clients :
             members.add(client.principal.title)
         return sorted(members)
                                     

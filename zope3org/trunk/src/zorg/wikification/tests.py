@@ -50,6 +50,8 @@ from zope.app.folder import Folder
 from zope.app.file import File
 
 from zorg.ajax.tests import sessionSetUp
+from zorg.ajax.tests import TestUUIDGenerator
+from zorg.edition.interfaces import IUUIDGenerator
 from zorg.comment.testing import commentSetUp
 from zorg.comment import IAttributeAnnotableComments
 from zorg.wikification.browser.interfaces import ILinkProcessor
@@ -146,7 +148,8 @@ def setUpWikification(test) :
                                             [IWikiPage], 
                                             ILinkProcessor)
     
-    
+    zope.component.provideUtility(TestUUIDGenerator(), IUUIDGenerator)
+   
                                             
 def tearDownWikification(test) :
     zope.app.testing.setup.placefulTearDown()   
