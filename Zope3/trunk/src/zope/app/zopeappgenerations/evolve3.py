@@ -82,7 +82,7 @@ def evolve(context):
                                 # pau.keys()...
                                 ct = 0
                                 nm = '%s_%d' % (util.__name__, ct)
-                                while (nm in pau.authenticatorPlugins and
+                                while (nm in pau.authenticatorPlugins or
                                        nm in pau):
                                     ct += 1
                                     nm = '%s_%d' % (util.__name__, ct)
