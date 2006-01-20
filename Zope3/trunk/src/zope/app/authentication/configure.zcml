@@ -22,22 +22,14 @@
     provides=".interfaces.IQueriableAuthenticator"
     factory=".authentication.QuerySchemaSearchAdapter" />
 
-  <!-- This explicit declaration is needed indirectly by vocabulary to make
-    the interface available as an IInterface utility. This is bogus...the
-    vocabulary directive should make sure this registration happens. -->
-  <interface interface=".interfaces.IAuthenticatorPlugin" />
   <vocabulary
     name="CredentialsPlugins"
-    factory="zope.app.component.vocabulary.UtilityVocabulary"
-    interface="zope.app.authentication.interfaces.ICredentialsPlugin"
-    nameOnly="True"
+    factory=".vocabulary.credentialsPlugins"
    />
 
   <vocabulary
     name="AuthenticatorPlugins"
-    factory="zope.app.component.vocabulary.UtilityVocabulary"
-    interface="zope.app.authentication.interfaces.IAuthenticatorPlugin"
-    nameOnly="True"
+    factory=".vocabulary.authenticatorPlugins"
    />
 
   <utility

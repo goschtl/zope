@@ -17,14 +17,14 @@
           />
   </content>
 
-  <localUtility class=".groupfolder.GroupFolder">
+  <content class=".groupfolder.GroupFolder">
     <implements
         interface=".groupfolder.IGroupFolder" />
     <require
         permission="zope.ManageServices"
         interface="zope.app.container.interfaces.IContainer
                  zope.app.container.interfaces.INameChooser" />
-  </localUtility>
+  </content>
 
   <adapter
       provides="zope.app.container.interfaces.INameChooser"
@@ -41,6 +41,8 @@
       for=".interfaces.IPrincipalCreated"
       handler=".groupfolder.setGroupsForPrincipal"
       />
+
+  <subscriber handler=".groupfolder.setMemberSubscriber" />
 
   <include package=".browser" file="groupfolder.zcml" />
 

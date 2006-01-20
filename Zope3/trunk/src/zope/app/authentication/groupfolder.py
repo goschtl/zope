@@ -16,18 +16,13 @@
 $Id$
 
 """
-
-try:
-    set
-except NameError:
-    from sets import Set as set
-
 import BTrees.OOBTree
 import persistent
 
 from zope import interface, event, schema, component
 from zope.interface import alsoProvides
-from zope.security.interfaces import IGroup, IGroupAwarePrincipal
+from zope.security.interfaces import (
+    IGroup, IGroupAwarePrincipal, IMemberAwareGroup)
 
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
@@ -81,7 +76,6 @@ class IGroupContained(zope.app.container.interfaces.IContained):
 
     zope.app.container.constraints.containers(IGroupFolder)
 
-
 class IGroupSearchCriteria(interface.Interface):
 
     search = schema.TextLine(
@@ -90,13 +84,25 @@ class IGroupSearchCriteria(interface.Interface):
         missing_value=u'',
         )
 
+class IGroupPrincipalInfo(interfaces.IPrincipalInfo):
+    members = interface.Attribute('an iterable of members of the group')
 
 class GroupInfo(object):
     """An implementation of IPrincipalInfo used by the group folder.
 
     A group info is created with id, title, and description:
 
-      >>> info = GroupInfo('groups.managers', 'Managers', 'Taskmasters')
+      >>> class DemoGroupInformation(object):
+      ...     interface.implements(IGroupInformation)
+      ...     def __init__(self, title, description, principals):
+      ...         self.title = title
+      ...         self.description = description
+      ...         self.principals = principals
+      ...
+      >>> i = DemoGroupInformation(
+      ...     'Managers', 'Taskmasters', ('joe', 'jane'))
+      ...
+      >>> info = GroupInfo('groups.managers', i)
       >>> info
       GroupInfo('groups.managers')
       >>> info.id
@@ -105,14 +111,34 @@ class GroupInfo(object):
       'Managers'
       >>> info.description
       'Taskmasters'
+      >>> info.members
+      ('joe', 'jane')
+      >>> info.members = ('joe', 'jane', 'jaime')
+      >>> info.members
+      ('joe', 'jane', 'jaime')
 
     """
-    interface.implements(interfaces.IPrincipalInfo)
+    interface.implements(IGroupPrincipalInfo)
 
-    def __init__(self, id, title, description):
+    def __init__(self, id, information):
         self.id = id
-        self.title = title
-        self.description = description
+        self._information = information
+
+    @property
+    def title(self):
+        return self._information.title
+
+    @property
+    def description(self):
+        return self._information.description
+
+    @apply
+    def members():
+        def get(self):
+            return self._information.principals
+        def set(self, value):
+            self._information.principals = value
+        return property(get, set)
 
     def __repr__(self):
         return 'GroupInfo(%r)' % self.id
@@ -136,35 +162,43 @@ class GroupFolder(BTreeContainer):
     def __setitem__(self, name, value):
         BTreeContainer.__setitem__(self, name, value)
         group_id = self._groupid(value)
-        for principal_id in value.principals:
-            self._addPrincipalToGroup(principal_id, group_id)
+        self._addPrincipalsToGroup(value.principals, group_id)
+        if value.principals:
+            event.notify(
+                interfaces.PrincipalsAddedToGroup(
+                    value.principals, self.__parent__.prefix + group_id))
         group = principalfolder.Principal(self.prefix + name)
         event.notify(interfaces.GroupAdded(group))
 
     def __delitem__(self, name):
         value = self[name]
         group_id = self._groupid(value)
-        for principal_id in value.principals:
-            self._removePrincipalFromGroup(principal_id, group_id)
+        self._removePrincipalsFromGroup(value.principals, group_id)
+        if value.principals:
+            event.notify(
+                interfaces.PrincipalsRemovedFromGroup(
+                    value.principals, self.__parent__.prefix + group_id))
         BTreeContainer.__delitem__(self, name)
 
     def _groupid(self, group):
         return self.prefix+group.__name__
 
-    def _addPrincipalToGroup(self, principal_id, group_id):
-        self.__inverseMapping[principal_id] = (
-            self.__inverseMapping.get(principal_id, ())
-            + (group_id,))
+    def _addPrincipalsToGroup(self, principal_ids, group_id):
+        for principal_id in principal_ids:
+            self.__inverseMapping[principal_id] = (
+                self.__inverseMapping.get(principal_id, ())
+                + (group_id,))
 
-    def _removePrincipalFromGroup(self, principal_id, group_id):
-        groups = self.__inverseMapping.get(principal_id)
-        if groups is None:
-            return
-        new = tuple([id for id in groups if id != group_id])
-        if new:
-            self.__inverseMapping[principal_id] = new
-        else:
-            del self.__inverseMapping[principal_id]
+    def _removePrincipalsFromGroup(self, principal_ids, group_id):
+        for principal_id in principal_ids:
+            groups = self.__inverseMapping.get(principal_id)
+            if groups is None:
+                return
+            new = tuple([id for id in groups if id != group_id])
+            if new:
+                self.__inverseMapping[principal_id] = new
+            else:
+                del self.__inverseMapping[principal_id]
 
     def getGroupsForPrincipal(self, principalid):
         """Get groups the given principal belongs to"""
@@ -200,7 +234,7 @@ class GroupFolder(BTreeContainer):
             info = self.get(id)
             if info is not None:
                 return GroupInfo(
-                    self.prefix+id, info.title, info.description)
+                    self.prefix+id, info)
 
 class GroupCycle(Exception):
     """There is a cyclic relationship among groups
@@ -236,6 +270,7 @@ class GroupInformation(persistent.Persistent):
         self.description = description
 
     def setPrincipals(self, prinlist, check=True):
+        # method is not a part of the interface
         parent = self.__parent__
         old = self._principals
         self._principals = tuple(prinlist)
@@ -244,18 +279,17 @@ class GroupInformation(persistent.Persistent):
             oldset = set(old)
             new = set(prinlist)
             group_id = parent._groupid(self)
+            removed = oldset - new
+            added = new - oldset
+            try:
+                parent._removePrincipalsFromGroup(removed, group_id)
+            except AttributeError:
+                removed = None
 
-            for principal_id in oldset - new:
-                try:
-                    parent._removePrincipalFromGroup(principal_id, group_id)
-                except AttributeError:
-                    pass
-
-            for principal_id in new - oldset:
-                try:
-                    parent._addPrincipalToGroup(principal_id, group_id)
-                except AttributeError:
-                    pass
+            try:
+                parent._addPrincipalsToGroup(added, group_id)
+            except AttributeError:
+                added = None
 
             if check:
                 try:
@@ -264,7 +298,15 @@ class GroupInformation(persistent.Persistent):
                     # abort
                     self.setPrincipals(old, False)
                     raise
-
+            # now that we've gotten past the checks, fire the events.
+            if removed:
+                event.notify(
+                    interfaces.PrincipalsRemovedFromGroup(
+                        removed, self.__parent__.__parent__.prefix + group_id))
+            if added:
+                event.notify(
+                    interfaces.PrincipalsAddedToGroup(
+                        added, self.__parent__.__parent__.prefix + group_id))
 
     principals = property(lambda self: self._principals, setPrincipals)
 
@@ -293,8 +335,7 @@ def setGroupsForPrincipal(event):
 
     authentication = event.authentication
 
-    plugins = zapi.getUtilitiesFor(interfaces.IAuthenticatorPlugin)
-    for name, plugin in plugins:
+    for name, plugin in authentication.getAuthenticatorPlugins():
         if not IGroupFolder.providedBy(plugin):
             continue
         groupfolder = plugin
@@ -306,3 +347,16 @@ def setGroupsForPrincipal(event):
         prefix = authentication.prefix + groupfolder.prefix
         if id.startswith(prefix) and id[len(prefix):] in groupfolder:
             alsoProvides(principal, IGroup)
+
+@component.adapter(interfaces.IFoundPrincipalCreated)
+def setMemberSubscriber(event):
+    """adds `getMembers`, `setMembers` to groups made from IGroupPrincipalInfo.
+    """
+    info = event.info
+    if IGroupPrincipalInfo.providedBy(info):
+        principal = event.principal
+        principal.getMembers = lambda : info.members
+        def setMembers(value):
+            info.members = value
+        principal.setMembers = setMembers
+        alsoProvides(principal, IMemberAwareGroup)

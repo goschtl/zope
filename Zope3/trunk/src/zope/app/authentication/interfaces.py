@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 import zope.schema
+import zope.security.interfaces
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.security.interfaces import ILogout
 from zope.app.container.constraints import contains, containers
@@ -44,15 +45,37 @@ class IPluggableAuthentication(ILogout, IContainer):
 
     credentialsPlugins = zope.schema.List(
         title=_('Credentials Plugins'),
+        description=_("""Used for extracting credentials.
+        Names may be of ids of non-utility ICredentialsPlugins contained in
+        the IPluggableAuthentication, or names of registered
+        ICredentialsPlugins utilities.  Contained non-utility ids mask 
+        utility names."""),
         value_type=zope.schema.Choice(vocabulary='CredentialsPlugins'),
         default=[],
         )
 
     authenticatorPlugins = zope.schema.List(
         title=_('Authenticator Plugins'),
+        description=_("""Used for converting credentials to principals.
+        Names may be of ids of non-utility IAuthenticatorPlugins contained in
+        the IPluggableAuthentication, or names of registered
+        IAuthenticatorPlugins utilities.  Contained non-utility ids mask 
+        utility names."""),
         value_type=zope.schema.Choice(vocabulary='AuthenticatorPlugins'),
         default=[],
         )
+
+    def getCredentialsPlugins():
+        """Return iterable of (plugin name, actual credentials plugin) pairs.
+        Looks up names in credentialsPlugins as contained ids of non-utility
+        ICredentialsPlugins first, then as registered ICredentialsPlugin
+        utilities.  Names that do not resolve are ignored."""
+
+    def getAuthenticatorPlugins():
+        """Return iterable of (plugin name, actual authenticator plugin) pairs.
+        Looks up names in authenticatorPlugins as contained ids of non-utility
+        IAuthenticatorPlugins first, then as registered IAuthenticatorPlugin
+        utilities.  Names that do not resolve are ignored."""
 
     prefix = zope.schema.TextLine(
         title=_('Prefix'),
@@ -62,7 +85,7 @@ class IPluggableAuthentication(ILogout, IContainer):
         )
 
     def logout(request):
-        """Performs a logout by delegating to its authentictor plugins."""
+        """Performs a logout by delegating to its authenticator plugins."""
 
 
 class ICredentialsPlugin(IPlugin):
@@ -154,6 +177,21 @@ class IPrincipalInfo(zope.interface.Interface):
         IPluggableAuthentication.getPrincipal.
         """)
 
+class IPrincipal(zope.security.interfaces.IGroupClosureAwarePrincipal):
+
+    groups = zope.schema.List(
+        title=_("Groups"),
+        description=_(
+            """ids of groups to which the principal directly belongs.
+
+            Plugins may append to this list.  Mutating the list only affects
+            the life of the principal object, and does not persist (so
+            persistently adding groups to a principal should be done by working
+            with a plugin that mutates this list every time the principal is
+            created, like the group folder in this package.)
+            """),
+        value_type=zope.schema.TextLine(),
+        required=False)
 
 class IPrincipalFactory(zope.interface.Interface):
     """A principal factory."""
@@ -281,3 +319,31 @@ class GroupAdded:
 
     def __repr__(self):
         return "<GroupAdded %r>" % self.group.id
+
+class IPrincipalsAddedToGroup(zope.interface.Interface):
+    group_id = zope.interface.Attribute(
+        'the id of the group to which the principal was added')
+    principal_ids = zope.interface.Attribute(
+        'an iterable of one or more ids of principals added')
+
+class IPrincipalsRemovedFromGroup(zope.interface.Interface):
+    group_id = zope.interface.Attribute(
+        'the id of the group from which the principal was removed')
+    principal_ids = zope.interface.Attribute(
+        'an iterable of one or more ids of principals removed')
+
+class AbstractMembersChanged(object):
+
+    def __init__(self, principal_ids, group_id):
+        self.principal_ids = principal_ids
+        self.group_id = group_id
+
+    def __repr__(self):
+        return "<%s %r %r>" % (
+            self.__class__.__name__, sorted(self.principal_ids), self.group_id)
+
+class PrincipalsAddedToGroup(AbstractMembersChanged):
+    zope.interface.implements(IPrincipalsAddedToGroup)
+
+class PrincipalsRemovedFromGroup(AbstractMembersChanged):
+    zope.interface.implements(IPrincipalsRemovedFromGroup)

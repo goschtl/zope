@@ -2,7 +2,8 @@
 Group Folders
 =============
 
-Group folders provide support for groups information stored in the ZODB.
+Group folders provide support for groups information stored in the ZODB.  They
+are persistent, and must be contained within the PAUs that use them.
 
 Like other principals, groups are created when they are needed.
 
@@ -57,8 +58,14 @@ we'll create a sample authentication service:
   ...         self.principals = {
   ...            'p1': principalfolder.PrincipalInfo('p1', '', '', ''),
   ...            'p2': principalfolder.PrincipalInfo('p2', '', '', ''),
+  ...            'p3': principalfolder.PrincipalInfo('p3', '', '', ''),
+  ...            'p4': principalfolder.PrincipalInfo('p4', '', '', ''),
   ...            }
   ...         self.groups = groups
+  ...         groups.__parent__ = self
+  ...
+  ...     def getAuthenticatorPlugins(self):
+  ...         return [('principals', self.principals), ('groups', self.groups)]
   ...
   ...     def getPrincipal(self, id):
   ...         if not id.startswith(self.prefix):
@@ -96,7 +103,12 @@ Now we can set the principals on the group:
   >>> g1.principals
   ('auth.p1', 'auth.p2')
 
-This allows us to look up groups for the principals:
+Adding principals fires an event.
+
+  >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
+  <PrincipalsAddedToGroup ['auth.p1', 'auth.p2'] u'auth.group.g1'>
+
+We can now look up groups for the principals:
 
   >>> groups.getGroupsForPrincipal('auth.p1')
   (u'group.g1',)
@@ -119,6 +131,12 @@ but the principal information on the group is unchanged:
   >>> g1.principals
   ('auth.p1', 'auth.p2')
 
+It also fires an event showing that the principals are removed from the group
+(g1 is group information, not a zope.security.interfaces.IGroup).
+
+  >>> getEvents(interfaces.IPrincipalsRemovedFromGroup)[-1]
+  <PrincipalsRemovedFromGroup ['auth.p1', 'auth.p2'] u'auth.group.g1'>
+
 Adding the group sets the folder principal information.  Let's use a
 different group name:
 
@@ -129,6 +147,29 @@ different group name:
 
 Here we see that the new name is reflected in the group information.
 
+An event is fired, as usual.
+
+  >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
+  <PrincipalsAddedToGroup ['auth.p1', 'auth.p2'] u'auth.group.G1'>
+
+In terms of member events (principals added and removed from groups), we have
+now seen that events are fired when a group information object is added and
+when it is removed from a group folder; and we have seen that events are fired
+when a principal is added to an already-registered group.  Events are also
+fired when a principal is removed from an already-registered group.  Let's
+quickly see some more examples.
+
+  >>> g1.principals = ('auth.p1', 'auth.p3', 'auth.p4')
+  >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
+  <PrincipalsAddedToGroup ['auth.p3', 'auth.p4'] u'auth.group.G1'>
+  >>> getEvents(interfaces.IPrincipalsRemovedFromGroup)[-1]
+  <PrincipalsRemovedFromGroup ['auth.p2'] u'auth.group.G1'>
+  >>> g1.principals = ('auth.p1', 'auth.p2')
+  >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
+  <PrincipalsAddedToGroup ['auth.p2'] u'auth.group.G1'>
+  >>> getEvents(interfaces.IPrincipalsRemovedFromGroup)[-1]
+  <PrincipalsRemovedFromGroup ['auth.p3', 'auth.p4'] u'auth.group.G1'>
+
 Groups can contain groups:
 
   >>> g2 = zope.app.authentication.groupfolder.GroupInformation("Group Two")
@@ -138,6 +179,10 @@ Groups can contain groups:
   >>> groups.getGroupsForPrincipal('auth.group.G1')
   (u'group.G2',)
 
+  >>> old = getEvents(interfaces.IPrincipalsAddedToGroup)[-1]
+  >>> old
+  <PrincipalsAddedToGroup ['auth.group.G1'] u'auth.group.G2'>
+
 Groups cannot contain cycles:
 
   >>> g1.principals = ('auth.p1', 'auth.p2', 'auth.group.G2')
@@ -146,6 +191,11 @@ Groups cannot contain cycles:
   ...
   GroupCycle: (u'auth.group.G1', 
                ['auth.p2', u'auth.group.G1', u'auth.group.G2'])
+
+Trying to do so does not fire an event.
+
+  >>> getEvents(interfaces.IPrincipalsAddedToGroup)[-1] is old
+  True
 
 They need not be hierarchical:
 
@@ -296,6 +346,58 @@ And they are only added to group aware principals:
   >>> prin.groups
   []
 
+Member-aware groups
+-------------------
+The groupfolder includes a subscriber that gives group principals the
+zope.security.interfaces.IGroupAware interface and an implementation thereof.
+This allows groups to be able to get and set their members.
+
+Given an info object and a group...
+
+    >>> class DemoGroupInformation(object):
+    ...     interface.implements(
+    ...         zope.app.authentication.groupfolder.IGroupInformation)
+    ...     def __init__(self, title, description, principals):
+    ...         self.title = title
+    ...         self.description = description
+    ...         self.principals = principals
+    ...
+    >>> i = DemoGroupInformation(
+    ...     'Managers', 'Taskmasters', ('joe', 'jane'))
+    ...
+    >>> info = zope.app.authentication.groupfolder.GroupInfo(
+    ...     'groups.managers', i)
+    >>> class DummyGroup(object):
+    ...     interface.implements(IGroupAwarePrincipal)
+    ...     def __init__(self, id, title=u'', description=u''):
+    ...         self.id = id
+    ...         self.title = title
+    ...         self.description = description
+    ...         self.groups = []
+    ...
+    >>> principal = DummyGroup('foo')
+    >>> zope.security.interfaces.IMemberAwareGroup.providedBy(principal)
+    False
+
+...when you call the subscriber, it adds the two pseudo-methods to the
+principal and makes the principal provide the IMemberAwareGroup interface.
+
+    >>> zope.app.authentication.groupfolder.setMemberSubscriber(
+    ...     interfaces.FoundPrincipalCreated(
+    ...         'dummy auth (ignored)', principal, info))
+    >>> principal.getMembers()
+    ('joe', 'jane')
+    >>> principal.setMembers(('joe', 'jane', 'jaimie'))
+    >>> principal.getMembers()
+    ('joe', 'jane', 'jaimie')
+    >>> zope.security.interfaces.IMemberAwareGroup.providedBy(principal)
+    True
+
+The two methods work with the value on the IGroupInformation object.
+
+    >>> i.principals == principal.getMembers()
+    True
+
 Limitation
 ==========
 
@@ -313,7 +415,7 @@ o If a principal is from a higher authentication utility, the user
 
 o It is impossible to assign users from lower authentication
   utilities because they can't be seen when managing the group,
-  from the site cntaining the group.
+  from the site containing the group.
 
 A better design might be to store user-role assignments independent of
 the group definitions and to look for assignments during (url)

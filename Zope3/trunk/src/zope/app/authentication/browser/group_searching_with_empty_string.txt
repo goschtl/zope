@@ -77,45 +77,6 @@ Next, we'll add the group folder:
   ...
 
 
-Register group folder pulgin.
-
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU/groups/addRegistration.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 807
-  ... Content-Type: multipart/form-data; boundary=---------------------------6689874747253728091673221069
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/groups/addRegistration.html
-  ... 
-  ... -----------------------------6689874747253728091673221069
-  ... Content-Disposition: form-data; name="field.name"
-  ... 
-  ... groups
-  ... -----------------------------6689874747253728091673221069
-  ... Content-Disposition: form-data; name="field.status"
-  ... 
-  ... Active
-  ... -----------------------------6689874747253728091673221069
-  ... Content-Disposition: form-data; name="field.status-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------6689874747253728091673221069
-  ... Content-Disposition: form-data; name="field.permission"
-  ... 
-  ... 
-  ... -----------------------------6689874747253728091673221069
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------6689874747253728091673221069
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------6689874747253728091673221069--
-  ... """)
-  HTTP/1.1 303 See Other
-  ...
-
-
 And add some groups:
 
 
@@ -191,7 +152,7 @@ group folder:
   ... -----------------------------1786480431902757372789659730
   ... Content-Disposition: form-data; name="field.credentialsPlugins.to"
   ... 
-  ... Session Credentials
+  ... U2Vzc2lvbiBDcmVkZW50aWFscw==
   ... -----------------------------1786480431902757372789659730
   ... Content-Disposition: form-data; name="field.credentialsPlugins-empty-marker"
   ... 
@@ -199,7 +160,7 @@ group folder:
   ... -----------------------------1786480431902757372789659730
   ... Content-Disposition: form-data; name="field.authenticatorPlugins.to"
   ... 
-  ... groups
+  ... Z3JvdXBz
   ... -----------------------------1786480431902757372789659730
   ... Content-Disposition: form-data; name="field.authenticatorPlugins-empty-marker"
   ... 
@@ -211,11 +172,11 @@ group folder:
   ... -----------------------------1786480431902757372789659730
   ... Content-Disposition: form-data; name="field.credentialsPlugins"
   ... 
-  ... Session Credentials
+  ... U2Vzc2lvbiBDcmVkZW50aWFscw==
   ... -----------------------------1786480431902757372789659730
   ... Content-Disposition: form-data; name="field.authenticatorPlugins"
   ... 
-  ... groups
+  ... Z3JvdXBz
   ... -----------------------------1786480431902757372789659730--
   ... """)
   HTTP/1.1 200 Ok

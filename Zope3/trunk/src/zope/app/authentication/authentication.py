@@ -41,16 +41,25 @@ class PluggableAuthentication(SiteManagementFolder):
         super(PluggableAuthentication, self).__init__()
         self.prefix = prefix
 
+    def _plugins(self, names, interface):
+        for name in names:
+            plugin = self.get(name)
+            if not interface.providedBy(plugin):
+                plugin = component.queryUtility(interface, name, context=self)
+            if plugin is not None:
+                yield name, plugin
+
+    def getAuthenticatorPlugins(self):
+        return self._plugins(
+            self.authenticatorPlugins, interfaces.IAuthenticatorPlugin)
+
+    def getCredentialsPlugins(self):
+        return self._plugins(
+            self.credentialsPlugins, interfaces.ICredentialsPlugin)
+
     def authenticate(self, request):
-        authenticatorPlugins = [
-            component.queryUtility(interfaces.IAuthenticatorPlugin,
-                                  name, context=self)
-            for name in self.authenticatorPlugins]
-        for name in self.credentialsPlugins:
-            credplugin = component.queryUtility(
-                interfaces.ICredentialsPlugin, name, context=self)
-            if credplugin is None:
-                continue
+        authenticatorPlugins = [p for n, p in self.getAuthenticatorPlugins()]
+        for name, credplugin in self.getCredentialsPlugins():
             credentials = credplugin.extractCredentials(request)
             for authplugin in authenticatorPlugins:
                 if authplugin is None:
@@ -73,11 +82,7 @@ class PluggableAuthentication(SiteManagementFolder):
                 raise PrincipalLookupError(id)
             return next.getPrincipal(id)
         id = id[len(self.prefix):]
-        for name in self.authenticatorPlugins:
-            authplugin = component.queryUtility(
-                interfaces.IAuthenticatorPlugin, name, context=self)
-            if authplugin is None:
-                continue
+        for name, authplugin in self.getAuthenticatorPlugins():
             info = authplugin.principalInfo(id)
             if info is None:
                 continue
@@ -92,11 +97,7 @@ class PluggableAuthentication(SiteManagementFolder):
         raise PrincipalLookupError(id)
 
     def getQueriables(self):
-        for name in self.authenticatorPlugins:
-            authplugin = component.queryUtility(
-                interfaces.IAuthenticatorPlugin, name, context=self)
-            if authplugin is None:
-                continue
+        for name, authplugin in self.getAuthenticatorPlugins():
             queriable = component.queryMultiAdapter((authplugin, self),
                 interfaces.IQueriableAuthenticator)
             if queriable is not None:
@@ -108,11 +109,7 @@ class PluggableAuthentication(SiteManagementFolder):
     def unauthorized(self, id, request):
         challengeProtocol = None
 
-        for name in self.credentialsPlugins:
-            credplugin = component.queryUtility(interfaces.ICredentialsPlugin,
-                                                name)
-            if credplugin is None:
-                continue
+        for name, credplugin in self.getCredentialsPlugins():
             protocol = getattr(credplugin, 'challengeProtocol', None)
             if challengeProtocol is None or protocol == challengeProtocol:
                 if credplugin.challenge(request):
@@ -129,11 +126,7 @@ class PluggableAuthentication(SiteManagementFolder):
     def logout(self, request):
         challengeProtocol = None
 
-        for name in self.credentialsPlugins:
-            credplugin = component.queryUtility(interfaces.ICredentialsPlugin,
-                                                name)
-            if credplugin is None:
-                continue
+        for name, credplugin in self.getCredentialsPlugins():
             protocol = getattr(credplugin, 'challengeProtocol', None)
             if challengeProtocol is None or protocol == challengeProtocol:
                 if credplugin.logout(request):

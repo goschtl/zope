@@ -224,7 +224,7 @@ select any one credentials.
   ... -----------------------------6519411471194050603270010787
   ... Content-Disposition: form-data; name="field.credentialsPlugins.to"
   ... 
-  ... Session Credentials
+  ... U2Vzc2lvbiBDcmVkZW50aWFscw==
   ... -----------------------------6519411471194050603270010787
   ... Content-Disposition: form-data; name="field.credentialsPlugins-empty-marker"
   ... 
@@ -232,7 +232,7 @@ select any one credentials.
   ... -----------------------------6519411471194050603270010787
   ... Content-Disposition: form-data; name="field.authenticatorPlugins.to"
   ... 
-  ... users
+  ... dXNlcnM=
   ... -----------------------------6519411471194050603270010787
   ... Content-Disposition: form-data; name="field.authenticatorPlugins-empty-marker"
   ... 
@@ -244,11 +244,11 @@ select any one credentials.
   ... -----------------------------6519411471194050603270010787
   ... Content-Disposition: form-data; name="field.credentialsPlugins"
   ... 
-  ... Session Credentials
+  ... U2Vzc2lvbiBDcmVkZW50aWFscw==
   ... -----------------------------6519411471194050603270010787
   ... Content-Disposition: form-data; name="field.authenticatorPlugins"
   ... 
-  ... users
+  ... dXNlcnM=
   ... -----------------------------6519411471194050603270010787--
   ... """)
   HTTP/1.1 200 Ok

@@ -277,16 +277,30 @@ class IGroupAwarePrincipal(IPrincipal):
     Extends IPrincipal to contain group information.
     """
     
-    groups = List(
-        title=_("Groups"),
-        description=_("List of ids of groups the principal belongs to"),
-        value_type=TextLine(),
-        required=False)
+    groups = Attribute(
+        'An iterable of groups to which the principal directly belongs')
+
+class IGroupClosureAwarePrincipal(IGroupAwarePrincipal):
+
+    allGroups = Attribute(
+        "An iterable of the full closure of the principal's groups.")
 
 class IGroup(IPrincipal):
     """Group of principals
     """
-                
+
+class IMemberGetterGroup(IGroup):
+    """a group that can get its members"""
+
+    def getMembers():
+        """return an iterable of the members of the group"""
+
+class IMemberAwareGroup(IMemberGetterGroup):
+    """a group that can both set and get its members."""
+
+    def setMembers(value):
+        """set members of group to the principal ids in the iterable value"""
+
 class IPermission(Interface):
     """A permission object."""
 

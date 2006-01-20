@@ -187,41 +187,6 @@ Next, we'll add and register a group folder:
   HTTP/1.1 303 See Other
   ...
 
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU1/Groups/addRegistration.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 709
-  ... Content-Type: multipart/form-data; boundary=---------------------------27244279644818
-  ...
-  ... -----------------------------27244279644818
-  ... Content-Disposition: form-data; name="field.name"
-  ...
-  ... Groups
-  ... -----------------------------27244279644818
-  ... Content-Disposition: form-data; name="field.status"
-  ...
-  ... Active
-  ... -----------------------------27244279644818
-  ... Content-Disposition: form-data; name="field.status-empty-marker"
-  ...
-  ... 1
-  ... -----------------------------27244279644818
-  ... Content-Disposition: form-data; name="field.permission"
-  ...
-  ...
-  ... -----------------------------27244279644818
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
-  ...
-  ... 1
-  ... -----------------------------27244279644818
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------27244279644818--
-  ... """)
-  HTTP/1.1 303 See Other
-  ...
-
 and add a group to search for:
 
   >>> print http(r"""
@@ -270,11 +235,11 @@ PAU:
   ... -----------------------------610310492754
   ... Content-Disposition: form-data; name="field.authenticatorPlugins.to"
   ...
-  ... Groups
+  ... R3JvdXBz
   ... -----------------------------610310492754
   ... Content-Disposition: form-data; name="field.authenticatorPlugins.to"
   ...
-  ... Users
+  ... VXNlcnM=
   ... -----------------------------610310492754
   ... Content-Disposition: form-data; name="field.authenticatorPlugins-empty-marker"
   ...
@@ -286,11 +251,11 @@ PAU:
   ... -----------------------------610310492754
   ... Content-Disposition: form-data; name="field.authenticatorPlugins"
   ...
-  ... Groups
+  ... R3JvdXBz
   ... -----------------------------610310492754
   ... Content-Disposition: form-data; name="field.authenticatorPlugins"
   ...
-  ... Users
+  ... VXNlcnM=
   ... -----------------------------610310492754--
   ... """)
   HTTP/1.1 200 Ok
