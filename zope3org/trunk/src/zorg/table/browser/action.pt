@@ -1,0 +1,6 @@
+<input type="submit" id="#" name="#" value="#" class="button"
+       tal:define="action view/action;
+                   actionid string:${view/prefix}"
+       tal:attributes="id actionid;
+                       name actionid;
+                       value action/label" />
