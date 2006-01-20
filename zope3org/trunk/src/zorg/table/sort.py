@@ -35,7 +35,7 @@ class SchemaSorter(object):
             v = field.get(o)
             if hasattr(field,'vocabulary'):
                 # XXX maybe this is an adapter issue
-                v = field.vocabulary.getTermByToken(v).value
+                v = field.vocabulary.getTerm(v).token
             return v
         def _cmp(a,b):
             # none comparison

@@ -11,7 +11,7 @@ table view for a specific object.
   >>> from zope.app.testing import ztapi
   >>> from zorg.table.testing import Container,Simple
   >>> from zorg.table.interfaces import ITable,ITableConfig
-  >>> from zorg.table.browser.interfaces import ITableView,IRowView,ICellView
+  >>> from zorg.table.browser.interfaces import ITableView,IRowView,ICellView,IActionView
   >>> request = TestRequest()
   >>> container=Container()
   >>> for i in range(3):
@@ -36,8 +36,8 @@ and a tableview definition.
   ...    sortBy="name" sortReverse="True">
   ...    <zope:column name="name" schema="zorg.table.testing.ISimple"/>
   ...    <zope:column name="priority" schema="zorg.table.testing.ISimple"/>
-  ...    <zope:action name="save" title="Save"/>
-  ...    <zope:action name="edit" title="Edit"/>
+  ...    <zope:action name="save" label="Save"/>
+  ...    <zope:action name="edit" label="Edit"/>
   ...   </zope:tableconfig>
   ...   <tableview name="simple"
   ...   for="zope.interface.common.mapping.IReadMapping"
@@ -48,9 +48,7 @@ and a tableview definition.
   ... </configure>
   ... ''', context=context)
 
-
-  >>> view =zapi.getMultiAdapter((container,request),
-  ...                            ITableView,u'simple')
+  >>> view =zapi.getMultiAdapter((container,request),ITableView,u'simple')
   >>> view
   <...views.SimpleTableViewClass from ...table.pt object at ...>
   
@@ -75,8 +73,11 @@ implementation of rendering has a view rows.
   ...   permission="zope.Public"/>
   ...   </configure>''',context=context)
   >>> row = list(view.table.getRows())[0]
+  >>> row
+  <zorg.table.table.Row ...>
+  
   >>> zapi.getMultiAdapter((row.context,row,request),IRowView,u'')
-  <...SimpleTableViewClass from row.pt object at ...>
+  <....table.browser.views.SimpleTableViewClass ...row.pt...>
 
 
 
@@ -94,11 +95,8 @@ Now we can register the two cell views for our Simple class
   >>> for cell in row.getCells():
   ...      print zapi.getMultiAdapter((cell.context,cell,request),
   ...                                ICellView,cell.column.name)
-  <...views.SimpleTableViewClass from cell.pt object ...>
-  <...views.SimpleTableViewClass from cell.pt object ...>
-
-  >>> print view()
-  <table ...>...
+  <....table.browser.views.SimpleTableViewClass ...cell.pt...>
+  <....table.browser.views.SimpleTableViewClass ...cell.pt...>
 
 The name of the view is also used as the name for the table by default.
 
@@ -123,5 +121,24 @@ cellviews then have their own prefix
 An action on a table can be called, the current defined action is
 stored in the TableConfiguration.
 
+Now we can register a action view for the interface of the container
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser"
+  ...   package="zorg.table.browser" i18n_domain="zope">
+  ...   <actionview name="" for="zope.interface.common.mapping.IReadMapping"
+  ...   permission="zope.Public"/>
+  ... </configure>
+  ... ''', context=context)
+  >>> action = view.table.getActions(
+  ...                   view.table.config.availableActions(view.context)
+  ...                   )['Edit']
+  >>> action
+  <...table.TableAction...>
+  
+  >>> actionview = zapi.getMultiAdapter((view.context,action,request),
+  ...                                IActionView,name=u"")
+  >>> actionview
+  <....table.browser.views.SimpleTableViewClass ...action.pt...>
 
 

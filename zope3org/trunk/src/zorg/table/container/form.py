@@ -16,23 +16,30 @@ from zope.app.copypastemove.interfaces import IPrincipalClipboard
 from zope.app.copypastemove.interfaces import IObjectCopier
 from zope.app.copypastemove.interfaces import IObjectMover
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
+from zope.app.container.interfaces import DuplicateIDError
 
 from zope.formlib import form
 from zope.formlib.i18n import _
 
 from zorg.table.browser.form import TableFormBase, RowFormBase
-
-
-def isEditMode(form, action):
-    return form.mode == 'edit' and action.label in form.table.config.actions
-
-def isDisplayMode(form, action):
-    return form.mode == 'display' and action.label in form.table.config.actions
+from zorg.table.browser.form import tableAction, rowAction
+from zorg.table.browser.form import TableAction, RowAction
+from zorg.table.browser.form import isFormDisplayMode, isFormEditMode
+from zorg.table.browser.form import isRowDisplayMode, isRowEditMode
 
 
 class RowForm(RowFormBase):    
 
-    @form.action("Apply", condition=isEditMode)
+    containerRow_actions = form.Actions()
+
+    def actions():
+        def _getActions(self):
+            return (self.baseRow_actions + self.containerRow_actions)
+        return property(_getActions)
+    
+    actions = actions()
+
+    @rowAction("Apply", actions=containerRow_actions, condition=isRowEditMode)
     def handle_apply_action(self, action, data):
         if form.applyChanges(self.context, self.form_fields, data, self.adapters):
             notify(ObjectModifiedEvent(self.context))
@@ -48,13 +55,14 @@ class RowForm(RowFormBase):
             self.status = (_("Updated on ${date_time}", mapping=m),)
         else:
             self.status = (_('No changes'),)
+        self.newmode = 'display'
 
 
 def hasClipboardContents(form, action):
     """ interogates the `PrinicipalAnnotation` to see if
        clipboard contents exist """
 
-    if not isDisplayMode(form, action):
+    if not isFormDisplayMode(form, action):
         return False
 
     if not form.pasteable():
@@ -76,15 +84,18 @@ def hasClipboardContents(form, action):
 
 class TableForm(TableFormBase):
 
-    def setUpForms(self, ignore_request=False):
-        self.forms = {}
-        for row in self.view.getRows():
-                kwargs = {
-                    'omit_readonly':False,
-                    'render_context':True}
-                self.forms[row.row.key] = (
-                    RowForm(row, self.mode, **kwargs))
+    container_actions = form.Actions()
 
+    def actions():
+        def _getActions(self):
+            return (self.base_actions + self.container_actions)
+        return property(_getActions)
+    
+    actions = actions()
+
+    def rowForm(self, row, **kwargs):
+        return RowForm(row, self.mode, **kwargs)
+        
     def safe_getattr(self, obj, attr, default):
         """Attempts to read the attr, returning default if Unauthorized."""
         try:
@@ -118,7 +129,7 @@ class TableForm(TableFormBase):
 
         return True
 
-    @form.action("Edit", condition=isDisplayMode)
+    @tableAction("Edit", actions=container_actions, condition=isFormDisplayMode)
     def handle_edit_action(self, action, data):
         """edit objects specified in a list of object ids"""
 
@@ -132,8 +143,7 @@ class TableForm(TableFormBase):
         else:
             self.errors = (_("You didn't specify any ids to edit."),)
 
-
-    @form.action("Cut", condition=isDisplayMode)
+    @tableAction("Cut", actions=container_actions, condition=isFormDisplayMode)
     def handle_cut_action(self, action, data):
         """move objects specified in a list of object ids"""
 
@@ -171,8 +181,7 @@ class TableForm(TableFormBase):
             clipboard.clearContents()
             clipboard.addItems('cut', items)
 
-
-    @form.action("Copy", condition=isDisplayMode)
+    @tableAction("Copy", actions=container_actions, condition=isFormDisplayMode)
     def handle_copy_action(self, action, data):
         """Copy objects specified in a list of object ids"""
 
@@ -211,7 +220,7 @@ class TableForm(TableFormBase):
             clipboard.clearContents()
             clipboard.addItems('copy', items)
 
-    @form.action("Paste", condition=hasClipboardContents)
+    @tableAction("Paste", actions=container_actions, condition=hasClipboardContents)
     def handle_paste_action(self, action, data):
         """Paste ojects in the user clipboard to the container"""
         self.form_reset = True
@@ -259,7 +268,7 @@ class TableForm(TableFormBase):
                 _("The given name(s) %s is / are already being used" %(
                 str(not_pasteable_ids))),)
 
-    @form.action("Delete", condition=isDisplayMode)
+    @tableAction("Delete", actions=container_actions, condition=isFormDisplayMode)
     def handle_delete_action(self, action, data):
         """Delete objects specified in a list of object ids"""
 
@@ -277,16 +286,13 @@ class TableForm(TableFormBase):
         else:
             self.errors = (_("You didn't specify any ids to delete."),)            
 
-    @form.action("Apply", condition=isEditMode)
+    @tableAction("Apply", actions=container_actions, condition=isFormEditMode)
     def handle_apply_action(self, action, data):
-        for fo in self.forms.values():
-            # hand over submit of apply to all forms
-            name = "%s.actions.apply" % fo.prefix
-            self.request.form[name] = "Apply"
+        self.handOverAction('apply', 'Apply')
         self.newmode = 'display'
         self.form_reset = True
 
-    @form.action("Cancel", condition=isEditMode)
+    @tableAction("Cancel", actions=container_actions, condition=isFormEditMode)
     def handle_cancel_action(self, action, data):
         self.newmode = 'display'
         self.form_reset = True

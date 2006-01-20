@@ -6,20 +6,20 @@ from zope.app.traversing.interfaces import ITraversable
 from zope.schema import Int
 from zope.schema.interfaces import IField
 from zope.app.container.interfaces import IReadContainer
-from zope.containerview.table import Table,SchemaCell,Row,Column,TableConfig
-from zope.containerview.table import SchemaSorter,MethodSorter
-from zope.containerview.table import IRow,ITable,ICell,IColumn,ISorter
+from zorg.table.table import ReadMappingTable,SchemaCell,Row,Column,TableConfig
+from zorg.table.sort import SchemaSorter,MethodSorter
+from zorg.table.table import IRow,ITable,ICell,IColumn,ISorter
 from zope.component import provideAdapter,provideUtility
 from zope.app.size.interfaces import ISized
 from zope.app.size import DefaultSized
 from zope.interface.interfaces import IMethod
 from zope.publisher.browser import TestRequest
 from zope.app.testing import ztapi
-from zope.containerview.table.browser import CellView,TableView
+from zorg.table.browser.views import CellView,TableView
 from zope.configuration import xmlconfig
 from zope.app.traversing.interfaces import IContainmentRoot
 import zope
-
+import zorg.table.tests
 
 
 class ISimple(Interface):
@@ -39,7 +39,7 @@ class BaseTestCase(unittest.TestCase):
     
     def setUp(self):
         setup.placefulSetUp()
-        xmlconfig.file('test.zcml',zope.containerview.table)
+        xmlconfig.file('test.zcml',zorg.table.tests)
         self.container = SampleContainer()
         self.container.__name__ = u'testcontainer'
         directlyProvides(self.container, IContainmentRoot)
@@ -58,35 +58,36 @@ class BaseTestCase(unittest.TestCase):
         <configure xmlns="http://namespaces.zope.org/zope">
           <include package="zope.app.component" file="meta.zcml" />
           <view
-            for="zope.interface.Interface zope.containerview.table.ICell"
+            for="zope.interface.Interface zorg.table.interfaces.ICell"
             type="zope.publisher.interfaces.browser.IBrowserRequest"
-            factory="zope.containerview.table.browser.CellView"
-            provides="zope.containerview.table.browser.ICellView"
+            factory="zorg.table.browser.views.CellView"
+            provides="zorg.table.browser.interfaces.ICellView"
             permission="zope.Public"
             name="a"
             />
             <view
-            for="zope.interface.Interface zope.containerview.table.ICell"
+            for="zope.interface.Interface zorg.table.interfaces.ICell"
             type="zope.publisher.interfaces.browser.IBrowserRequest"
-            factory="zope.containerview.table.browser.CellView"
-            provides="zope.containerview.table.browser.ICellView"
+            factory="zorg.table.browser.views.CellView"
+            provides="zorg.table.browser.interfaces.ICellView"
             permission="zope.Public"
             name="b"
             />
 
             <view
-            for="zope.containerview.table.IRow"
+            for="zorg.table.interfaces.IRow"
             type="zope.publisher.interfaces.browser.IBrowserRequest"
-            factory="zope.containerview.table.browser.RowView"
-            provides="zope.containerview.table.browser.IRowView"
+            factory="zorg.table.browser.views.RowView"
+            provides="zorg.table.browser.interfaces.IRowView"
             permission="zope.Public"
             />
             <view
-            for="zope.containerview.table.ITable"
+            for="zorg.table.interfaces.ITable"
             type="zope.publisher.interfaces.browser.IBrowserRequest"
-            factory="zope.containerview.table.browser.TableView"
-            provides="zope.containerview.table.browser.ITableView"
+            factory="zorg.table.browser.views.TableView"
+            provides="zorg.table.browser.interfaces.ITableView"
             permission="zope.Public"
+            name="testtable"
             />
         </configure>
         """)
@@ -104,9 +105,10 @@ class BaseTestCase(unittest.TestCase):
 
         colA = Column(ISimple,u'a')
         colB = Column(ISimple,u'b')
-        colSize = Column(ISized,u'size',field=ISized[u'sizeForSorting'])
+#        colSize = Column(ISized,u'size',field=ISized[u'sizeForSorting'])
 
-        table = Table(self.container,u'testtable',[colA,colB,colSize])
+#        table = ReadMappingTable(self.container,u'testtable',[colA,colB]) #,colSize])
+        table = ReadMappingTable(self.container,name=u'testtable')
 
         for row in table.getRows():
             self.failUnless(IRow.providedBy(row))
@@ -114,16 +116,16 @@ class BaseTestCase(unittest.TestCase):
                 self.failUnless(ICell.providedBy(cell))
                 self.failUnless(cell())
 
-        table.config = TableConfig([u'a',u'b'],sortBy=u'b')
+        table.config = TableConfig(colNames=[u'a',u'b'],sortBy=u'b',columns=[colA,colB])
         self.assertEqual(
             list(r.context.b for r in  table.getRows()),[2,4])
 
         table.config.sortReverse=True
         self.assertEqual(
             list(r.context.b for r in  table.getRows()),[4,2])
-        table.config.sortBy = u'size'
-        self.assertEqual(
-            list(r.context.b for r in  table.getRows()),[4,2])
+#        table.config.sortBy = u'size'
+#        self.assertEqual(
+#            list(r.context.b for r in  table.getRows()),[4,2])
         request = TestRequest()
 
         view =  TableView(table,request)

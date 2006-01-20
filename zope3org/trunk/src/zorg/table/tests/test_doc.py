@@ -25,6 +25,8 @@ from zope.app.testing import setup
 from zope.configuration import xmlconfig
 from zope.app.testing import ztapi
 
+import zorg.table
+
 class TestParticipation(object):
     principal = 'foobar'
     interaction = None

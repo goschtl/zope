@@ -10,9 +10,9 @@ XXX not working
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.publisher.interfaces.browser import IBrowserRequest
     >>> from zope.app.testing import ztapi
-    >>> from zorg.table.interfaces import IRow,ICell
-    >>> from zorg.table.browser.views import TableView,CellView,RowView
-    >>> from zorg.table.browser.interfaces import IRowView,ICellView
+    >>> from table.interfaces import IRow,ICell
+    >>> from table.browser.views import TableView,CellView,RowView
+    >>> from table.browser.interfaces import IRowView,ICellView
     >>> ztapi.provideView(IRow,IBrowserRequest, IRowView,u'',RowView)
 
     The class below defines a simple cell view which just returns the
@@ -51,7 +51,7 @@ XXX not working
 
     >>> requestConfig = zapi.getMultiAdapter((table,request),ITableConfig)
     >>> print requestConfig
-    <zorg.table.table.RequestTableConfig object at ...>
+    <table.table.RequestTableConfig object at ...>
 
     Now that we have a request config we can apply it to the
     table. This will override settings that are redefined in the

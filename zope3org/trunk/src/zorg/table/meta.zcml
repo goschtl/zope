@@ -1,32 +1,35 @@
-<zope:configure xmlns="http://namespaces.zope.org/meta"
-                xmlns:zope="http://namespaces.zope.org/zope">
+<configure xmlns:meta="http://namespaces.zope.org/meta"
+           xmlns="http://namespaces.zope.org/zope">
 
  <include package=".browser" file="meta.zcml"/>   
 
- <directives namespace="http://namespaces.zope.org/zope">
+ <meta:directives namespace="http://namespaces.zope.org/zope">
   
-  <groupingDirective
+ <meta:groupingDirective
    name="tableconfig"
    schema=".metadirectives.ITableConfigDirective"
    handler=".metaconfigure.TableConfigDirective"/>
 
-  <directive
+ <meta:directive
    name="column"
    schema=".metadirectives.IColumnDirective"
    usedIn=".metaconfigure.ITableConfigDirective"
    handler=".metaconfigure.columnHandler"/>
 
-  <directive
+ <meta:directive
    name="action"
    schema=".metadirectives.IActionDirective"
    usedIn=".metaconfigure.ITableConfigDirective"
    handler=".metaconfigure.actionHandler"/>
 
+ <meta:directive
+   name="filter"
+   schema=".metadirectives.IFilterDirective"
+   usedIn=".metaconfigure.ITableConfigDirective"
+   handler=".metaconfigure.filterHandler"/>
 
+ </meta:directives>
 
- </directives>
+  <include package=".browser" file="meta.zcml"/>   
 
-
- 
-</zope:configure>
-
+</configure>

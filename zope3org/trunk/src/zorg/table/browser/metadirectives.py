@@ -1,12 +1,12 @@
+
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject,PythonIdentifier
 from zope.configuration.fields import GlobalInterface,Tokens,Path,Bool
 from zope.app.security.fields import Permission
 from zope.app.component.fields import LayerField
-from zope.schema import TextLine,Id,Bool
+from zope.schema import TextLine,Id,Bool, Choice
+from zope.schema.vocabulary import SimpleVocabulary
 
-
-                     
 
 class ICommonInformation(Interface):
 
@@ -70,8 +70,8 @@ class ICellViewDirective(ICommonInformation):
 
     schema = GlobalInterface(
         title=u"Alternative Schema",
-        description=u"""
-        If defined the cell view  adapts its context to this schama to
+        description=u"""\
+        If defined the cell view adapts its context to this schama to
         get the attribute of the content, by default it uses the
         schema of the cell""",
         required=False
@@ -79,17 +79,50 @@ class ICellViewDirective(ICommonInformation):
     
     field = TextLine(
         title=u"Alternative Fieldname",
-        description=u"""
+        description=u"""\
         If defined the cell view uses this value to get the field of
         the schema to get the content value, by default the field
         defined in the cell is used.""",
         required=False
         )
 
-    useForm = Bool(title=u'Use Widget',
-                     description=u"""Use a widget for display,instead
-                     of the raw value, this defaults to True""",
-                     required=False,default=False)
+    useForm = Bool(
+        title=u"Use Form",
+        description=u"""Use form to handle display and input.""",
+        default=False,
+        required=False)
+
+    widget = GlobalObject(
+        title=u"Widget Class",
+        description=u"""The class that will create the widget.""",
+        required=False)
+
 
 class IRowViewDirective(ICommonInformation):
+    pass
+
+
+ACTION_DISPLAY_TOP = u"Top"
+ACTION_DISPLAY_ROW = u"Row"
+ACTION_DISPLAY_BOTTOM = u"Bottom"
+    
+class IActionViewDirective(ICommonInformation):
+
+    useForm = Bool(
+        title=u"Use Form",
+        description=u"""Use form to handle input.""",
+        default=True,
+        required=False)
+    
+    display = Choice(
+        title=u"Display",
+        description=u"Select display position",
+        vocabulary=SimpleVocabulary.fromItems(
+        [(u"Top", ACTION_DISPLAY_TOP),
+         (u"Row", ACTION_DISPLAY_ROW),
+         (u"Bottom", ACTION_DISPLAY_BOTTOM)]),
+        default=ACTION_DISPLAY_BOTTOM)
+
+
+class IFilterViewDirective(ICommonInformation):
     pass

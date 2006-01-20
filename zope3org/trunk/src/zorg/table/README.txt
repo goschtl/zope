@@ -59,7 +59,7 @@ The table package provides tabular data handling by using schema information.
 
     >>> table.applyConfig(config)
     >>> print list(table.getColumns())
-    [<zorg.table.table.Column object at ...>, <zorg.table.tab...>]
+    [<zorg.table.table.Column object at ...>, <zorg.table.table.Column object at...>]
 
     Sorting by the 'name' attribute
 
@@ -178,7 +178,38 @@ Selectons on Tables
     2 [True, False]
     4 [True, False]
     
-Batching
+#Actions on tables.
+#
+#A table Config holds the action attribute and applies it at first to
+#itself and when the config is applied to a table it is also applied to
+#the table. Let us define a simple action that just selects the
+#'priority' column
+#
+#    >>> from zorg.table.table import TableAction
+#    >>> from zorg.table.interfaces import ITableAction
+#    >>> class SelectAction(TableAction):
+#    ...     def applyToConfig(self,config):
+#    ...         config.selection['priority'] = config.all
+#
+#    >>> selectAction = SelectAction(u'select',u'Select')
+#    >>> ITableAction.providedBy(selectAction)
+#    True
+#    >>> config = TableConfig(columns=[colName,colPriority],
+#    ...                       actions=[selectAction],action='select')
+#    >>> table.applyConfig(config)
+#    >>> for row in table.getRows():
+#    ...     print row.key,
+#    ...     print list(cell.selected for cell in row.getCells())
+#    1 [True, False]
+#    0 [True, False]
+#    3 [True, False]
+#    2 [True, False]
+#    4 [True, False]
+
+#The action attribute is available in the config
+#
+#    >>> table.config.action.name,table.config.action
+#    (u'select', <SelectAction object at ...>)
 
     Batching rows is also defined in the table config by the use of
     batchStart and batchSize. batchStart is an index starting by

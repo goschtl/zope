@@ -7,3 +7,8 @@
 </td>
 <td tal:repeat="cell view/getCells"
     tal:content="structure cell"/>
+<td>
+ <metal:block tal:repeat="action view/getActions">
+   <input tal:replace="structure action" /> 
+ </metal:block>
+</td>

@@ -5,7 +5,6 @@
           factory="zorg.table.table.ReadMappingTable"
           provides="zorg.table.interfaces.ITable"/>
 
- 
  <adapter for="zope.interface.Interface
                zope.interface.interfaces.IMethod"
           factory="zorg.table.sort.MethodSorter"
@@ -16,8 +15,7 @@
           factory="zorg.table.sort.SchemaSorter"
           provides="zorg.table.interfaces.ISorter"/>
 
-
- 
+  
  <adapter for="zope.interface.Interface
                zope.interface.common.mapping.IReadMapping
                .interfaces.ITable"
@@ -35,5 +33,17 @@
                zope.publisher.interfaces.browser.IBrowserRequest"
           factory=".table.RequestTableConfig"
           provides=".interfaces.ITableConfig"/>
+
+ <adapter for="zope.interface.Interface
+               zope.interface.common.mapping.IReadMapping
+               .interfaces.ITable"
+          factory=".table.TableAction"
+          provides=".interfaces.ITableAction"/>
+
+ <adapter for="zope.interface.Interface
+               zope.interface.common.mapping.IReadMapping
+               .interfaces.ITable"
+          factory=".table.TableFilter"
+          provides=".interfaces.ITableFilter"/>
 
 </configure>

@@ -21,8 +21,6 @@ Now we can register a table configuration
   ...   sortBy="name" sortReverse="True">
   ...   <column name="name" schema="zorg.table.testing.ISimple"/>
   ...   <column name="priority" schema="zorg.table.testing.ISimple"/>
-  ...   <action name="select" title="Select"/>
-  ...   <action name="save" title="Save"/>
   ...   </tableconfig>
   ... </configure>
   ... ''', context=context)
@@ -44,9 +42,7 @@ We now have the config set up
   >>> config.colNames
   [u'name', u'priority']
   >>> config.columns.values()
-  [<zorg.table.table.Column object at ...>, <zorg.table...>]
-  >>> sorted(config.actions.keys())
-  [u'save', u'select']
+  [<zorg.table.table.Column object at ...>, <zorg.table.table.Column object at...>]
   
 Now the config can be applied to a table
 

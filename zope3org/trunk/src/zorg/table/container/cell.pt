@@ -1,2 +1,1 @@
 <span class="containercell" tal:content="view/cell"/>
-

@@ -25,6 +25,7 @@ from zope.app.testing import setup
 from zope.configuration import xmlconfig
 
 
+import zorg.table
 
 class TestParticipation(object):
     principal = 'foobar'
@@ -35,15 +36,12 @@ def setUp(test):
     zope.security.management.getInteraction().add(TestParticipation())
     xmlconfig.string("""
     <configure xmlns="http://namespaces.zope.org/zope">
-    <include package="zope.app" file="meta.zcml" />
     <include package="zope.app.schema" file="meta.zcml" />
     <include package="zope.app.security" file="meta.zcml" />
     <include package="zope.app.component" file="meta.zcml" />
     <include package="zope.app.security" />
     <include package="zope.app.component" />
     <include package="zorg.table" file="adapters.zcml"/>
-
-    <include package="zope.app.form.browser"/>
     </configure>
     """)
 

@@ -1,26 +1,34 @@
-<zope:configure xmlns="http://namespaces.zope.org/meta"
-                xmlns:zope="http://namespaces.zope.org/zope">
- 
- <directives namespace="http://namespaces.zope.org/browser">
+<configure xmlns:meta="http://namespaces.zope.org/meta"
+           xmlns="http://namespaces.zope.org/zope">
+
+ <meta:directives namespace="http://namespaces.zope.org/browser">
   
-  <groupingDirective
+  <meta:groupingDirective
    name="tableview"
    schema=".metadirectives.ITableViewDirective"
    handler=".metaconfigure.TableViewDirective"/>
 
-  <groupingDirective
+  <meta:groupingDirective
    name="cellview"
    schema=".metadirectives.ICellViewDirective"
    handler=".metaconfigure.CellViewDirective"/>
 
-  <groupingDirective
+  <meta:groupingDirective
    name="rowview"
    schema=".metadirectives.IRowViewDirective"
    handler=".metaconfigure.RowViewDirective"/>
 
-  
-  
- </directives>
-   
-</zope:configure>
+  <meta:groupingDirective
+   name="actionview"
+   schema=".metadirectives.IActionViewDirective"
+   handler=".metaconfigure.ActionViewDirective"/>
+
+  <meta:groupingDirective
+   name="filterview"
+   schema=".metadirectives.IFilterViewDirective"
+   handler=".metaconfigure.FilterViewDirective"/>
+
+ </meta:directives>
+
+</configure>
 

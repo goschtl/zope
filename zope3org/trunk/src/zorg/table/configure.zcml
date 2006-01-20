@@ -4,11 +4,10 @@
            xmlns:i18n="http://namespaces.zope.org/i18n"
            i18n_domain="zope"
            >
+<!--
+  <include file="adapters.zcml"/>
+-->
+  <include package=".browser" />
+  <include package=".container" />
 
- <include file="adapters.zcml"/>
- <include package=".browser"/>
-
- <include package=".container"/>
-
- <include package=".schedule" />
 </configure>

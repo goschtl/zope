@@ -21,13 +21,13 @@ class RootTestCase(BrowserTestCase):
         xmlns="http://namespaces.zope.org/browser"
         xmlns:i18n="http://namespaces.zope.org/i18n"
         i18n_domain="zope"
-        package="zorg.table.ftests"
+        package="table.ftests"
         >
         <include package="zope.app.publisher.browser"
         file="meta.zcml"/>
 
         <page
-        class="zorg.table.ftests.testing.TestView"
+        class="table.ftests.testing.TestView"
         for="zope.app.container.interfaces.IReadContainer"
         name="table.html"
         template="test.pt"
