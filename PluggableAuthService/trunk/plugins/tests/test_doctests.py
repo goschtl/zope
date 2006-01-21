@@ -19,6 +19,7 @@ from Testing import ZopeTestCase
 ZopeTestCase.installProduct('PythonScripts')
 ZopeTestCase.installProduct('PluginRegistry')
 ZopeTestCase.installProduct('PluggableAuthService')
+ZopeTestCase.installProduct('GenericSetup')
 
 def test_suite():
     suite = unittest.TestSuite()

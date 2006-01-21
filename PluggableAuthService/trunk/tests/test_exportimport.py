@@ -31,7 +31,6 @@ except ImportError:  # No GenericSetup, so no tests
 
 else:
     from Products.GenericSetup.tests.common import BaseRegistryTests
-    from Products.GenericSetup.utils import _getDottedName
 
     from zope.interface import Interface
     from zope.app.tests.placelesssetup import PlacelessSetup
