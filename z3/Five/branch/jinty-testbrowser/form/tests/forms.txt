@@ -20,6 +20,11 @@ get to to do its view lookup:
   >>> from Products.Five.tests.testing import manage_addFiveTraversableFolder
   >>> manage_addFiveTraversableFolder(self.folder, 'ftf')
 
+Let's set up a testbrowser:
+
+  >>> from Products.Five.testbrowser import Browser
+  >>> browser = Browser()
+  >>> browser.addHeader('Accept-Language', 'en-US')
 
 Add forms
 ---------
@@ -27,69 +32,41 @@ Add forms
 We can add objects to containers (object managers) through add forms.
 An unprotected form can be accessed with anonymously:
 
-  >>> print http(r"""
-  ... GET /test_folder_1_/ftf/+/addfieldcontent.html HTTP/1.1
-  ... """, handle_errors=False)
-  HTTP/1.1 200 OK
+  >>> browser.open("http://localhost/test_folder_1_/ftf/+/addfieldcontent.html")
+  >>> print browser.headers
+  Status: 200 OK
   ...
+
+We don't have access, we will not be able to get to the protected add form:
+
+  >>> browser.open("http://localhost/test_folder_1_/ftf/+/protectedaddform.html")
+  Traceback (most recent call last):
+      ...
+  HTTPError: HTTP Error 401: Unauthorized
 
 For a protected one we need a manager account:
 
-  >>> print http(r"""
-  ... GET /test_folder_1_/ftf/+/protectedaddform.html HTTP/1.1
-  ... Authorization: Basic manager:r00t
-  ... """, handle_errors=False)
-  HTTP/1.1 200 OK
+  >>> browser.addHeader('Authorization', 'Basic manager:r00t')
+  >>> browser.open("http://localhost/test_folder_1_/ftf/+/protectedaddform.html")
+  >>> print browser.headers
+  Status: 200 OK
   ...
 
-otherwise we will fail to access it (N.B: this test will fail on Zope 2.8.1,
-which incorrectly ignored its 'handle_errors' argument):
-
-  >>> print http(r"""
-  ... GET /test_folder_1_/ftf/+/protectedaddform.html HTTP/1.1
-  ... """, handle_errors=False)
-  Traceback (most recent call last):
-  ...
-  Unauthorized: ...
 
 Now let's add a piece of our sample content object to test more things
 on it:
 
-  >>> print http(r"""
-  ... POST /test_folder_1_/ftf/+/addfieldcontent.html HTTP/1.1
-  ... Authorization: Basic manager:r00t
-  ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
-  ... Content-Length: 527
-  ... 
-  ... -----------------------------968064918930967154199105236
-  ... Content-Disposition: form-data; name="field.title"
-  ... 
-  ... title
-  ... -----------------------------968064918930967154199105236
-  ... Content-Disposition: form-data; name="field.description"
-  ... 
-  ... 
-  ... -----------------------------968064918930967154199105236
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------968064918930967154199105236
-  ... Content-Disposition: form-data; name="add_input_name"
-  ... 
-  ... edittest
-  ... -----------------------------968064918930967154199105236--
-  ... """, handle_errors=False)
-  HTTP/1.1 302 Moved Temporarily
-  ...
-  Location: http://localhost/test_folder_1_/ftf/manage_main
-  ...
+  >>> ctl = browser.getControl(name="field.title")
+  >>> ctl.value = 'title'
+  >>> ctl = browser.getControl(name="add_input_name")
+  >>> ctl.value = 'edittest'
+  >>> browser.getControl(name="UPDATE_SUBMIT").click()
 
 Having added this piece of content, we can access it under its URL:
 
-  >>> print http(r"""
-  ... GET /test_folder_1_/ftf/edittest HTTP/1.1
-  ... """, handle_errors=False)
-  HTTP/1.1 200 OK
+  >>> browser.open("http://localhost/test_folder_1_/ftf/edittest")
+  >>> print browser.headers
+  Status: 200 OK
   ...
 
 We can also verify that the title was set correctly, and the not
@@ -107,27 +84,17 @@ Edit forms
 First, it's important to note that forms validate user input.
 Therefore, if we specify invalid data, our object won't change:
 
-  >>> print http(r"""
-  ... POST /test_folder_1_/ftf/edittest/@@edit.html HTTP/1.1
-  ... Authorization: Basic manager:r00t
-  ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
-  ... Content-Length: 418
-  ... 
-  ... -----------------------------968064918930967154199105236
-  ... Content-Disposition: form-data; name="field.title"
-  ... 
-  ... 
-  ... -----------------------------968064918930967154199105236
-  ... Content-Disposition: form-data; name="field.description"
-  ... 
-  ... BarDescription
-  ... -----------------------------968064918930967154199105236
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Change
-  ... -----------------------------968064918930967154199105236--
-  ... """, handle_errors=False)
-  HTTP/1.1 200 OK
+  >>> browser.open("http://localhost/test_folder_1_/ftf/edittest/@@edit.html")
+  >>> ctl = browser.getControl(name="field.title")
+  >>> ctl.value = ''
+  >>> ctl = browser.getControl(name="field.description")
+  >>> ctl.value = 'BarDescription'
+  >>> browser.getControl(name="UPDATE_SUBMIT").click()
+  >>> print browser.headers
+  Status: 200 OK
+  ...
+  >>> print browser.contents
+  <html>
   ...
             There are <strong>1</strong> input errors.
   ...
@@ -140,30 +107,17 @@ We will see that nothing has changed:
 
 However, when we specify the correct fields:
 
-  >>> print http(r"""
-  ... POST /test_folder_1_/ftf/edittest/@@edit.html HTTP/1.1
-  ... Authorization: Basic manager:r00t
-  ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
-  ... Content-Length: 426
-  ... 
-  ... -----------------------------968064918930967154199105236
-  ... Content-Disposition: form-data; name="field.title"
-  ... 
-  ... FooTitle
-  ... -----------------------------968064918930967154199105236
-  ... Content-Disposition: form-data; name="field.description"
-  ... 
-  ... FooDescription
-  ... -----------------------------968064918930967154199105236
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Change
-  ... -----------------------------968064918930967154199105236--
-  ... """, handle_errors=False)
-  HTTP/1.1 200 OK
+  >>> browser.open("http://localhost/test_folder_1_/ftf/edittest/@@edit.html")
+  >>> ctl = browser.getControl(name="field.title")
+  >>> ctl.value = 'FooTitle'
+  >>> ctl = browser.getControl(name="field.description")
+  >>> ctl.value = 'FooDescription'
+  >>> browser.getControl(name="UPDATE_SUBMIT").click()
+  >>> print browser.headers
+  Status: 200 OK
   ...
 
-We will see that nothing has changed:
+We will see that something has changed:
 
   >>> edittest.title
   u'FooTitle'
@@ -191,26 +145,26 @@ phrases in the integer field:
   ... Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
   ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
   ... Content-Length: 418
-  ... 
+  ...
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.title"
-  ... 
+  ...
   ... ChineseTitle
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.description"
-  ... 
+  ...
   ... ChineseDescription
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.somenumber"
-  ... 
+  ...
   ... %s
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
+  ...
   ... Add
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="add_input_name"
-  ... 
+  ...
   ... unicodetest
   ... -----------------------------968064918930967154199105236--
   ... """ % ni_hao, handle_errors=False)
@@ -228,26 +182,26 @@ the form will submit correctly and create the object:
   ... Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
   ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
   ... Content-Length: 418
-  ... 
+  ...
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.title"
-  ... 
+  ...
   ... %s
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.description"
-  ... 
+  ...
   ... %s
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.somenumber"
-  ... 
+  ...
   ... 0
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
+  ...
   ... Add
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="add_input_name"
-  ... 
+  ...
   ... unicodetest
   ... -----------------------------968064918930967154199105236--
   ... """ % (ni_hao, wo_hen_hao), handle_errors=False)
@@ -276,22 +230,22 @@ again make the mistake of entering unicode data in the integer field:
   ... Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
   ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
   ... Content-Length: 418
-  ... 
+  ...
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.title"
-  ... 
+  ...
   ... ChineseTitle
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.description"
-  ... 
+  ...
   ... ChineseDescription
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.somenumber"
-  ... 
+  ...
   ... %s
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
+  ...
   ... Change
   ... -----------------------------968064918930967154199105236--
   ... """ % ni_hao, handle_errors=False)
@@ -317,22 +271,22 @@ Now we provide some valid form data:
   ... Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
   ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
   ... Content-Length: 418
-  ... 
+  ...
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.title"
-  ... 
+  ...
   ... %s
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.description"
-  ... 
+  ...
   ... %s
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.somenumber"
-  ... 
+  ...
   ... 1
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
+  ...
   ... Change
   ... -----------------------------968064918930967154199105236--
   ... """ % (wo_hen_hao, ni_hao), handle_errors=False)
@@ -357,26 +311,26 @@ element to the list:
   ... Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
   ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
   ... Content-Length: 418
-  ... 
+  ...
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.title"
-  ... 
+  ...
   ... %s
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.description"
-  ... 
+  ...
   ... %s
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.somenumber"
-  ... 
+  ...
   ... 1
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.somelist.add"
-  ... 
+  ...
   ... Add Some item
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.somelist.count"
-  ... 
+  ...
   ... 0
   ... -----------------------------968064918930967154199105236--
   ... """ % (wo_hen_hao, ni_hao), handle_errors=False)
@@ -388,37 +342,37 @@ element to the list:
 Now, let's enter some more Chinese:
 
   >>> de_guo = '\345\276\267\345\233\275'
-  
+
   >>> print http(r"""
   ... POST /test_folder_1_/ftf/unicodetest/@@edit.html HTTP/1.1
   ... Authorization: Basic manager:r00t
   ... Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
   ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
   ... Content-Length: 418
-  ... 
+  ...
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.title"
-  ... 
+  ...
   ... %s
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.description"
-  ... 
+  ...
   ... %s
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.somenumber"
-  ... 
+  ...
   ... 1
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.somelist.0."
-  ... 
+  ...
   ... %s
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="field.somelist.count"
-  ... 
+  ...
   ... 1
   ... -----------------------------968064918930967154199105236
   ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
+  ...
   ... Change
   ... -----------------------------968064918930967154199105236--
   ... """ % (wo_hen_hao, ni_hao, de_guo), handle_errors=False)
@@ -451,14 +405,18 @@ that the edit form works:
 i18n:
 -----
 
+Let's set up a German testbrowser:
+
+  >>> from Products.Five.testbrowser import Browser
+  >>> browser = Browser()
+  >>> browser.addHeader('Accept-Language', 'de')
+  >>> browser.addHeader('Authorization', 'Basic manager:r00t')
+
 And now the add form in German:
 
-  >>> print http(r"""
-  ... GET /test_folder_1_/ftf/+/addfieldcontent.html HTTP/1.1
-  ... Accept-Language: de
-  ... Authorization: Basic manager:r00t
-  ... """, handle_errors=False)
-  HTTP/1.1 200 OK
+  >>> browser.open("http://localhost/test_folder_1_/ftf/+/addfieldcontent.html")
+  >>> print browser.contents
+  <html>
   ...Felderinhalt hinzuf...
   ...Eine kurz...Titel...
   ...Eine ausf...Beschreibung...
@@ -471,36 +429,11 @@ And now the add form in German:
 
 The same with an input error:
 
-  >>> print http(r"""
-  ... POST /test_folder_1_/ftf/+/addfieldcontent.html HTTP/1.1
-  ... Accept-Language: de
-  ... Authorization: Basic manager:r00t
-  ... Content-Length: 670
-  ... Content-Type: multipart/form-data; boundary=---------------------------19588947601368617292863650127
-  ... 
-  ... -----------------------------19588947601368617292863650127
-  ... Content-Disposition: form-data; name="field.title"
-  ... 
-  ... 
-  ... -----------------------------19588947601368617292863650127
-  ... Content-Disposition: form-data; name="field.description"
-  ... 
-  ... 
-  ... -----------------------------19588947601368617292863650127
-  ... Content-Disposition: form-data; name="field.somenumber"
-  ... 
-  ... 0
-  ... -----------------------------19588947601368617292863650127
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Hinzufxgen
-  ... -----------------------------19588947601368617292863650127
-  ... Content-Disposition: form-data; name="add_input_name"
-  ... 
-  ... 
-  ... -----------------------------19588947601368617292863650127--
-  ... """, handle_errors=False)
-  HTTP/1.1 200 OK
+  >>> ctl = browser.getControl(name="field.somenumber")
+  >>> ctl.value = '0'
+  >>> browser.getControl(name="UPDATE_SUBMIT").click()
+  >>> print browser.contents
+  <html>
   ...Felderinhalt hinzuf...
   ...Ein Fehler ist aufgetreten...
   ...Es gab <strong>1</strong> Eingabefehler...
@@ -520,12 +453,9 @@ And now the translated edit form:
   ...     manage_addFieldContent
   >>> dummy = manage_addFieldContent(self.folder.ftf, 'i18ntest', 'titel')
 
-  >>> print http(r"""
-  ... GET /test_folder_1_/ftf/i18ntest/edit.html HTTP/1.1
-  ... Accept-Language: de
-  ... Authorization: Basic manager:r00t
-  ... """, handle_errors=False)
-  HTTP/1.1 200 OK
+  >>> browser.open("http://localhost/test_folder_1_/ftf/i18ntest/edit.html")
+  >>> print browser.contents
+  <html>
   ...Felderinhalt bearbeiten...
   ...Eine kurz...Titel...
   ...Eine ausf...Beschreibung...
@@ -537,32 +467,11 @@ And now the translated edit form:
 
 Again with an input error:
 
-  >>> print http(r"""
-  ... POST /test_folder_1_/ftf/i18ntest/edit.html HTTP/1.1
-  ... Accept-Language: de
-  ... Authorization: Basic manager:r00t
-  ... Content-Length: 550
-  ... Content-Type: multipart/form-data; boundary=---------------------------13070562555632576681565633754
-  ... 
-  ... -----------------------------13070562555632576681565633754
-  ... Content-Disposition: form-data; name="field.title"
-  ... 
-  ... 
-  ... -----------------------------13070562555632576681565633754
-  ... Content-Disposition: form-data; name="field.description"
-  ... 
-  ... 
-  ... -----------------------------13070562555632576681565633754
-  ... Content-Disposition: form-data; name="field.somenumber"
-  ... 
-  ... 0
-  ... -----------------------------13070562555632576681565633754
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Abschicken
-  ... -----------------------------13070562555632576681565633754--
-  ... """, handle_errors=False)
-  HTTP/1.1 200 OK
+  >>> ctl = browser.getControl(name="field.title")
+  >>> ctl.value = ''
+  >>> browser.getControl(name="UPDATE_SUBMIT").click()
+  >>> print browser.contents
+  <html>
   ...Felderinhalt bearbeiten...
   ...Ein Fehler ist aufgetreten...
   ...Es gab <strong>1</strong> Eingabefehler...
