@@ -137,15 +137,46 @@ class LocalUtilityRegistry(adapter.LocalAdapterRegistry):
     """Custom local adapter registry for utilities, since utilities do not
     just register themselves as null adapters, but also as subscribers."""
 
-    def _updateAdaptersFromRegistration(self, radapters, registration):
-        # Register as null adapter
-        key = (False, registration.with, registration.name,
-               registration.provided)
-        radapters[key] = removeSecurityProxy(registration.component)
-        # Register as subscriber
-        key = (True, registration.with, '', registration.provided)
-        radapters[key] = radapters.get(key, ()) + (
-            removeSecurityProxy(registration.component), )
+
+    def register(self, registration):
+        """See zope.app.component.interfaces.registration.IRegistry"""
+        self._registrations += (registration,)
+
+        zope.interface.adapter.AdapterRegistry.register(
+            self,
+            (),
+            registration.provided, registration.name,
+            registration.component,
+            )
+
+        # XXX need test that this second part happens
+        zope.interface.adapter.AdapterRegistry.subscribe(
+            self,
+            (),
+            registration.provided,
+            registration.component,
+            )
+
+    def unregister(self, registration):
+        """See zope.app.component.interfaces.registration.IRegistry"""
+        self._registrations = tuple([reg for reg in self._registrations
+                                     if reg is not registration])
+
+        zope.interface.adapter.AdapterRegistry.unregister(
+            self,
+            (),
+            registration.provided, registration.name,
+            registration.component,
+            )
+
+
+        # XXX need test that this second part happens
+        zope.interface.adapter.AdapterRegistry.unsubscribe(
+            self,
+            (),
+            registration.provided,
+            registration.component,
+            )
 
 
 class LocalSiteManager(BTreeContainer,
@@ -283,12 +314,6 @@ class UtilityRegistration(bbb.site.BBBUtilityRegistration,
     be utilities.
     """
     zope.interface.implements(interfaces.IUtilityRegistration)
-
-    ############################################################
-    # Make the adapter code happy.
-    required = zope.interface.adapter.Null
-    with = ()
-    ############################################################
 
     def __init__(self, name, provided, component, permission=None):
         super(UtilityRegistration, self).__init__(component, permission)

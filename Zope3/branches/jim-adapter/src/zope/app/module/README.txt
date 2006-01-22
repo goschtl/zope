@@ -113,7 +113,7 @@ module names:
   >>> ZopeModuleRegistry.findModule('mymodule') is module
   True
   >>> ZopeModuleRegistry.modules()
-  ['mymodule']
+  [u'mymodule']
 
 Additionally, the package provides two API functions that look up a module in
 the registry and then in `sys.modules`:

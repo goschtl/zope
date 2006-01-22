@@ -26,15 +26,7 @@ import registration
 
 class ILocalAdapterRegistry(registration.IRegistry,
                             registration.ILocatedRegistry):
-
-    def adaptersChanged():
-        """Update the adapter surrogates, since the registrations changed."""
-
-    def baseChanged():
-        """Someone changed the base registry
-
-        This should only happen during testing
-        """
+    pass
 
 class IPossibleSite(zope.interface.Interface):
     """An object that could be a site

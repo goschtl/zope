@@ -115,13 +115,13 @@ def test_local_adapter():
 
    >>> G.lookup([IF0], IB1)
 
-   Note that it doesn't override the non-local adapter:
+   Note that it overrides the non-local adapter:
 
    >>> L1.lookup([IF2], IB1)
-   'A11G'
+   'A011'
    
    >>> L2.lookup([IF2], IB1)
-   'A11G'
+   'A011'
    
    because it was more specific.
 
@@ -137,18 +137,13 @@ def test_local_adapter():
    >>> L2.lookup([IF2], IB1)
    'A112'
    
-   But we still get the old one in L1
-
-   >>> L1.lookup([IF2], IB1)
-   'A11G'
-   
    Note that we can ask for less specific interfaces and still get the adapter:
 
    >>> L2.lookup([IF2], IB0)
    'A112'
 
    >>> L1.lookup([IF2], IB0)
-   'A11G'
+   'A011'
 
    We get the more specific adapter even if there is a less-specific
    adapter to B0:
@@ -177,12 +172,12 @@ def test_local_adapter():
    'A102'
 
    >>> L2.lookup([IF2], IB1)
-   'A10G'
+   'A011'
 
    >>> ra102.status = interfaces.registration.InactiveStatus
 
    >>> L2.lookup([IF2], IB0)
-   'A10G'
+   'A011'
 
    We can ask for all of the registrations :
 
@@ -247,15 +242,15 @@ def test_named_adapters():
 
     >>> G.lookup([IF0], IB1, 'bob')
 
-    Note that it doesn't override the non-local adapter:
+    Note that it overrides the non-local adapter:
 
     >>> L1.lookup([IF2], IB1)
     >>> L1.lookup([IF2], IB1, 'bob')
-    'A11G'
+    'A011'
 
     >>> L2.lookup([IF2], IB1)
     >>> L2.lookup([IF2], IB1, 'bob')
-    'A11G'
+    'A011'
 
     because it was more specific.
 
@@ -273,13 +268,8 @@ def test_named_adapters():
     >>> L2.lookup([IF2], IB1, 'bob')
     'A112'
 
-    But we still get thye old one in L1
-
-    >>> L1.lookup([IF2], IB1)
-    >>> L1.lookup([IF2], IB1, 'bob')
-    'A11G'
-
-    Note that we can ask for less specific interfaces and still get the adapter:
+    Note that we can ask for less specific interfaces and still get
+    the adapter:
 
     >>> L2.lookup([IF2], IB0)
     >>> L2.lookup([IF2], IB0, 'bob')
@@ -287,7 +277,7 @@ def test_named_adapters():
 
     >>> L1.lookup([IF2], IB0)
     >>> L1.lookup([IF2], IB0, 'bob')
-    'A11G'
+    'A011'
 
     We get the more specific adapter even if there is a less-specific
     adapter to B0:
@@ -321,13 +311,13 @@ def test_named_adapters():
 
     >>> L2.lookup([IF2], IB1)
     >>> L2.lookup([IF2], IB1, 'bob')
-    'A10G'
+    'A011'
 
     >>> ra102.status = interfaces.registration.InactiveStatus
 
     >>> L2.lookup([IF2], IB0)
     >>> L2.lookup([IF2], IB0, 'bob')
-    'A10G'
+    'A011'
     """
 
 def test_multi_adapters():
@@ -375,13 +365,13 @@ def test_multi_adapters():
 
     >>> G.lookup((IF0, IR1), IB1, 'bob')
 
-    Note that it doesn't override the non-local adapter:
+    Note that overridea the non-local adapter:
 
     >>> L1.lookup([IF2, IR1], IB1, 'bob')
-    'A11G'
+    'A011'
 
     >>> L2.lookup((IF2, IR1), IB1, 'bob')
-    'A11G'
+    'A011'
 
     because it was more specific.
 
@@ -398,11 +388,6 @@ def test_multi_adapters():
     >>> L2.lookup((IF2, IR1), IB1, 'bob')
     'A112'
 
-    But we still get the old one in L1
-
-    >>> L1.lookup((IF2, IR1), IB1, 'bob')
-    'A11G'
-
     Note that we can ask for less specific interfaces and still get
     the adapter:
 
@@ -410,7 +395,7 @@ def test_multi_adapters():
     'A112'
 
     >>> L1.lookup((IF2, IR1), IB0, 'bob')
-    'A11G'
+    'A011'
 
     We get the more specific adapter even if there is a less-specific
     adapter to B0:
@@ -439,13 +424,13 @@ def test_multi_adapters():
     'A102'
 
     >>> L2.lookup((IF2, IR1), IB1, 'bob')
-    'A10G'
+    'A011'
 
     >>> ra102.status = interfaces.registration.InactiveStatus
 
     >>> L2.lookup([IF2], IB0)
     >>> L2.lookup((IF2, IR1), IB0, 'bob')
-    'A10G'
+    'A011'
     """
 
 def test_persistence():
@@ -490,15 +475,15 @@ def test_persistence():
 
     >>> G.lookup([IF0], IB1)
 
-    Note that it doesn't override the non-local adapter:
+    Note that it overrides the non-local adapter:
 
     >>> L1.lookup([IF2], IB1)
     >>> L1.lookup([IF2], IB1, 'bob')
-    'A11G'
+    'A011'
 
     >>> L2.lookup([IF2], IB1)
     >>> L2.lookup([IF2], IB1, 'bob')
-    'A11G'
+    'A011'
 
     because it was more specific.
 
@@ -516,12 +501,6 @@ def test_persistence():
     >>> L2.lookup([IF2], IB1, 'bob')
     'A112'
 
-    But we still get the old one in L1
-
-    >>> L1.lookup([IF2], IB1)
-    >>> L1.lookup([IF2], IB1, 'bob')
-    'A11G'
-
     Note that we can ask for less specific interfaces and still get
     the adapter:
 
@@ -531,7 +510,7 @@ def test_persistence():
 
     >>> L1.lookup([IF2], IB0)
     >>> L1.lookup([IF2], IB0, 'bob')
-    'A11G'
+    'A011'
 
     We get the more specific adapter even if there is a less-specific
     adapter to B0:
@@ -555,9 +534,9 @@ def test_persistence():
     'A102'
 
     >>> L1.lookup([IF2], IB0, 'bob')
-    'A11G'
+    'A011'
     >>> L1.lookup([IF2], IB1, 'bob')
-    'A11G'
+    'A011'
     >>> L2.lookup([IF2], IB0, 'bob')
     'A102'
     >>> L2.lookup([IF2], IB1, 'bob')
@@ -577,9 +556,9 @@ def test_persistence():
     We should get the same outputs:
 
     >>> L1.lookup([IF2], IB0, 'bob')
-    'A11G'
+    'A011'
     >>> L1.lookup([IF2], IB1, 'bob')
-    'A11G'
+    'A011'
     >>> L2.lookup([IF2], IB0, 'bob')
     'A102'
     >>> L2.lookup([IF2], IB1, 'bob')
@@ -592,13 +571,13 @@ def test_persistence():
     >>> ra102.status = interfaces.registration.InactiveStatus
 
     >>> L1.lookup([IF2], IB0, 'bob')
-    'A11G'
+    'A011'
     >>> L1.lookup([IF2], IB1, 'bob')
-    'A11G'
+    'A011'
     >>> L2.lookup([IF2], IB0, 'bob')
-    'A11G'
+    'A011'
     >>> L2.lookup([IF2], IB1, 'bob')
-    'A11G'
+    'A011'
 
     >>> transaction.commit()
 
@@ -611,13 +590,13 @@ def test_persistence():
     We should see the result of the deactivations:
     
     >>> L1.lookup([IF2], IB0, 'bob')
-    'A11G'
+    'A011'
     >>> L1.lookup([IF2], IB1, 'bob')
-    'A11G'
+    'A011'
     >>> L2.lookup([IF2], IB0, 'bob')
-    'A11G'
+    'A011'
     >>> L2.lookup([IF2], IB1, 'bob')
-    'A11G'
+    'A011'
 
     Cleanup:
     >>> G.__init__()

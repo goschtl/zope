@@ -134,7 +134,7 @@ class SpecificationBasePy(object):
           ...
           >>> spec = Declaration()
           >>> int(spec.extends(Interface))
-          0
+          1
           >>> spec = Declaration(I2)
           >>> int(spec.extends(Interface))
           1
@@ -156,6 +156,8 @@ try:
     from _zope_interface_coptimizations import SpecificationBase
 except ImportError:
     pass
+
+
 
 class Specification(SpecificationBase):
     """Specifications
@@ -265,10 +267,17 @@ class Specification(SpecificationBase):
         implied.clear()
 
         ancestors = ro(self)
+
+        try:
+            if Interface not in ancestors:
+                ancestors.append(Interface)
+        except NameError:
+            pass # defining Interface itself
+
         self.__sro__ = tuple(ancestors)
         self.__iro__ = tuple([ancestor for ancestor in ancestors
                               if isinstance(ancestor, InterfaceClass)
-                             ])
+                              ])
 
         for ancestor in ancestors:
             # We directly imply our ancestors:
@@ -333,7 +342,7 @@ class Specification(SpecificationBase):
           ...
           >>> spec = Declaration()
           >>> int(spec.extends(Interface))
-          0
+          1
           >>> spec = Declaration(I2)
           >>> int(spec.extends(Interface))
           1
@@ -907,8 +916,9 @@ def _wire():
     from zope.interface.interfaces import IMethod
     classImplements(Method, IMethod)
 
-    from zope.interface.interfaces import IInterface
+    from zope.interface.interfaces import IInterface, ISpecification
     classImplements(InterfaceClass, IInterface)
+    classImplements(Specification, ISpecification)
 
 # We import this here to deal with module dependencies.
 from zope.interface.declarations import providedBy, implementedBy
