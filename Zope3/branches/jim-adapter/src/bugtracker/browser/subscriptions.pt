@@ -1,0 +1,48 @@
+<html metal:use-macro="context/@@standard_macros/view">
+<body>
+<div metal:fill-slot="body" i18n:domain="bugtracker">
+
+  <p tal:define="status view/update"
+    tal:condition="status"
+    tal:content="status" />
+
+  <form method="post">
+
+    <div class="row">
+        <div class="label" i18n:translate="">Current Subscriptions</div>
+        <div class="field">
+          <div class="row" tal:repeat="email view/subscriptions">
+            <input type="checkbox" name="remails:list" 
+                   value="" tal:attributes="value email">
+            <div tal:replace="email">zope3@zope3.org</div>
+          </div>
+          <div class="row">
+            <input type="submit" name="REMOVE" value="Remove" 
+                 i18n:attributes="value remove-button">
+          </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="label" i18n:translate="">
+          Enter new Users (separate by 'Return')
+        </div>
+        <div class="field">
+          <textarea name="emails" cols="40" rows="10"></textarea>
+        </div>
+    </div>
+
+  	<div class="row">
+  	  <div class="controls">
+  	    <input type="submit" value="Refresh" 
+            i18n:attributes="value refresh-button" />
+  	    <input type="submit" name="ADD" value="Add" 
+  		i18n:attributes="value add-button" />
+  	  </div>
+  	</div>
+
+  </form>
+
+</div>
+</body>
+</html>
