@@ -157,6 +157,9 @@ class GlobalSiteManager(SiteManager):
         >>> registry.queryMultiAdapter((O1(), O2()), R1, '').__class__
         <class 'zope.component.site.O3'>
         """
+        if ISpecification.providedBy(required):
+            raise TypeError('the required argument should be a list of'
+                            ' interfaces, not a single interface')
         required = tuple(map(_spec, required))
         self._registrations.append(
             AdapterRegistration(required, provided, name, factory, info),
@@ -192,6 +195,9 @@ class GlobalSiteManager(SiteManager):
         SubscriptionRegistration(('R1',), 'P2', 'c1', 'd1')
         SubscriptionRegistration(('R1',), 'P2', 'c2', 'd2')
         """
+        if ISpecification.providedBy(required):
+            raise TypeError('the required argument should be a list of'
+                            ' interfaces, not a single interface')
 
         required = tuple(map(_spec, required))
 
