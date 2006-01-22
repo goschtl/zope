@@ -437,10 +437,3 @@ def subscribers(components, objects, provided, result):
             result == None
 
         _subscribers(components, required, 0, len(required), objects, result)
-
-try:
-    from _zope_interface_coptimizations import lookup, lookup1
-    from _zope_interface_coptimizations import subscribers, subscriptions
-except ImportError:
-    pass
-    
