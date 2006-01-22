@@ -623,7 +623,6 @@ BasicTypes = BasicTypes({
     complex: NoProxy,
     types.NoneType: NoProxy,
     str: NoProxy,
-    tuple: NoProxy,
     unicode: NoProxy,
     bool: NoProxy,
     datetime.timedelta: NoProxy,
@@ -677,9 +676,9 @@ _default_checkers = {
     sets.ImmutableSet: _setChecker,
 
     # YAGNI: () a rock
-##     tuple: NamesChecker(['__getitem__', '__getslice__', '__add__', '__radd__',
-##                          '__contains__', '__len__', '__iter__',
-##                          '__str__']),
+    tuple: NamesChecker(['__getitem__', '__getslice__', '__add__', '__radd__',
+                         '__contains__', '__len__', '__iter__',
+                         '__str__']),
     types.InstanceType: _instanceChecker,
     Proxy: NoProxy,
     type(weakref.ref(_Sequence())): NamesChecker(['__call__']),
