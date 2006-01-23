@@ -16,12 +16,15 @@ Features
 
   NOTE: Anyone who copied the Five site.zcml to their
   $INSTANCE_HOME/etc/ directory is going to need to update it.
-  
+
+* Port zope.testbrowser to Zope2, you can now use
+  Products.Five.testbrowser.Browser in functional tests.
+
 Bugs
 ----
 
-* Unit tests that did i18n via Localizer would fail because the request 
-  attribute that keeps Localizers list of preferred languages did not exist. 
+* Unit tests that did i18n via Localizer would fail because the request
+  attribute that keeps Localizers list of preferred languages did not exist.
 
 Five 1.3.1 (2006-01-08)
 =======================
@@ -200,18 +203,18 @@ Features
 
 * When Zope was not in debug mode, an error in a ZCML file would cause Five to
   stop loading ZCML completely, making all subsequent products "dead". The
-  effect would typically be that objects appeared to have no views at all. 
-  Now a ZCML error will only stop the ZCML loading for that product, but the 
-  rest of the products will load as usual. A traceback will still be printed 
+  effect would typically be that objects appeared to have no views at all.
+  Now a ZCML error will only stop the ZCML loading for that product, but the
+  rest of the products will load as usual. A traceback will still be printed
   in the event log.
 
-  In debug mode the behaviour has not changed; a ZCML error will stop Zope 
+  In debug mode the behaviour has not changed; a ZCML error will stop Zope
   startup completely, and print a traceback if running in foreground mode.
-  
+
 Restructuring
 -------------
 
-* The deprecated FivePageTemplateFile was removed, and the erroneous use of 
+* The deprecated FivePageTemplateFile was removed, and the erroneous use of
   this by EditView was changed.
 
 Bugfixes
@@ -222,7 +225,7 @@ Bugfixes
   Note that this test fails on Zope 2.8.1, which incorrectly ignored
   'handle_errors'.
 
-* FiveTraversable should only do a view lookup and not call the traverse 
+* FiveTraversable should only do a view lookup and not call the traverse
   method of its superclass.
 
 * Fixed manage_beforeDelete triggering for classes using five:sendEvents.
@@ -237,13 +240,13 @@ Bugfixes
 
 * 'zope' domain translations are now set up by default. Form i18n needs them.
 
-* Added backwards compatibility for some moved classes (AddForm, EditForm, 
+* Added backwards compatibility for some moved classes (AddForm, EditForm,
   ContentAdding)
 
 * The ZPT variable 'container' makes little sense in Zope3/Five, but is now
   always set to be the same as 'here' which is normal Zope2 behaviour.
   It is in Five 1.0.x set to be the same as 'view' which breaks some templates.
-  
+
 * In some hard to replicate cases, using the "modules" variable in ZPT cause
   an AuthenticationError. Using the secure module importer fixes this.
 

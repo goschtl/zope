@@ -35,6 +35,7 @@ Five contributors
 
 - Whit Morriss (whit@longnow.org)
 
+- Brian Sutherland (jinty@web.de)
 
 Thank you
 ---------
@@ -42,7 +43,7 @@ Thank you
 Infrae for the initial development and continuing support.
 
 Martijn Faassen would like to thank ETH Zurich for their support and
-encouragement during the initial development of Five. 
+encouragement during the initial development of Five.
 
 Nuxeo for significant contributions to making Five usable in the real
 world.
