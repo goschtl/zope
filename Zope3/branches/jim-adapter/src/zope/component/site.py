@@ -107,7 +107,12 @@ class GlobalSiteManager(SiteManager):
 
     def __init__(self, name=None):
         self.__name__ = name
-        self._registrations = []
+
+        # we use a dict for registrations so that overriding
+        # registrations for adapters and utilities make us forget
+        # overridden registrations
+        self._registrations = {}
+
         self.adapters = GlobalAdapterRegistry(self, 'adapters')
         self.utilities = GlobalAdapterRegistry(self, 'utilities')
 
@@ -161,9 +166,8 @@ class GlobalSiteManager(SiteManager):
             raise TypeError('the required argument should be a list of'
                             ' interfaces, not a single interface')
         required = tuple(map(_spec, required))
-        self._registrations.append(
-            AdapterRegistration(required, provided, name, factory, info),
-            )
+        self._registrations[(required, provided, name)] = AdapterRegistration(
+            required, provided, name, factory, info)
         self.adapters.register(required, provided, name, factory)
 
     def subscribe(self, required, provided, factory, info=''):
@@ -201,9 +205,11 @@ class GlobalSiteManager(SiteManager):
 
         required = tuple(map(_spec, required))
 
-        self._registrations.append(
-            SubscriptionRegistration(required, provided, factory, info),
-            )
+        # Note that subscriptions of the same time can be repeated
+        # so we just use the rgistration itself as the key.
+        registration = SubscriptionRegistration(
+            required, provided, factory, info)
+        self._registrations[registration] = registration
 
         self.adapters.subscribe(required, provided, factory)
 
@@ -219,12 +225,11 @@ class GlobalSiteManager(SiteManager):
         # Also subscribe to support getAllUtilitiesRegisteredFor:
         self.utilities.subscribe((), providedInterface, component)
 
-        self._registrations.append(
-            UtilityRegistration(providedInterface, name, component, info),
-            )
+        self._registrations[(providedInterface, name)] = UtilityRegistration(
+            providedInterface, name, component, info)
 
     def registrations(self):
-        return iter(self._registrations)
+        return self._registrations.itervalues()
 
     def __reduce__(self):
         # Global site managers are pickled as global objects
