@@ -40,6 +40,10 @@
       field="homeFolderBase"
       class=".browser.PathWidget" />
 
+    <browser:widget
+      field="containerObject"
+      class=".browser.DottedNameWidget" />
+
   </browser:addform>
 
   <browser:addMenuItem
@@ -59,6 +63,11 @@
     <browser:widget
       field="homeFolderBase"
       class=".browser.PathWidget" />
+
+    <browser:widget
+      field="containerObject"
+      class=".browser.DottedNameWidget" />
+    
 
   </browser:editform>
 

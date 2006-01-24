@@ -63,6 +63,15 @@ class IHomeFolderManager(Interface):
         vocabulary="Role Ids",
         default=u'zope.Manager'
         )
+    
+    containerObject = Field(
+        title=_("Container Type to create"),
+        description=_("The container type that will be created upon first "
+                      "call of getHomeFolder (if autoCreate is on)"),
+        required=True,
+        default=u'zope.app.folder.Folder'
+        )
+                      
 
     def assignHomeFolder(principalId, folderName=None, create=None):
         """Assigns a particular folder as the home folder of a principal.

@@ -23,8 +23,8 @@ from zope.interface import implements
 
 from zope.app import zapi
 from zope.app.container.contained import Contained
-from zope.app.folder import Folder
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.dottedname.resolve import resolve
 
 from zope.app.homefolder.interfaces import IHomeFolder, IHomeFolderManager
 
@@ -37,6 +37,7 @@ class HomeFolderManager(Persistent, Contained):
     createHomeFolder = True
     autoCreateAssignment = False
     homeFolderRole = u'zope.Manager'
+    containerObject = u'zope.app.folder.Folder'
 
     def __init__(self):
         self.assignments = OOBTree()
@@ -52,7 +53,8 @@ class HomeFolderManager(Persistent, Contained):
         # Create a home folder instance, if the correct flags are set.
         if (create is True) or (create is None and self.createHomeFolder):
             if name not in self.homeFolderBase:
-                self.homeFolderBase[name] = Folder()
+                objectToCreate = resolve(self.containerObject)
+                self.homeFolderBase[name] = objectToCreate()
             principal_roles = IPrincipalRoleManager(self.homeFolderBase[name])
             principal_roles.assignRoleToPrincipal(
                 self.homeFolderRole, principalId)

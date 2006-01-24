@@ -137,7 +137,7 @@ has an assignment, but not a folder:
   >>> homeFolder = manager.getHomeFolder('dreamcatcher')
   >>> homeFolder is None
   True
-  
+
 However, if autoCreateAssignment is True and you try to get a home folder
 of a principal which has no assignment, the assignment and the folder
 will be automatically created. The folder will always be created, regardless
@@ -150,6 +150,22 @@ to the principalId:
   True
   >>> 'florian' in baseFolder
   True
+
+Sometimes you want to create a homefolder which is not a zope.app.Folder.
+You can change the object type that is being created by changing the
+containerObject property. It defaults to 'zope.app.folder.Folder'.
+Let's create a homefile.
+
+  >>> manager.containerObject = 'zope.app.file.File'
+  >>> manager.assignHomeFolder('fileuser', create=True)
+  >>> homeFolder = manager.getHomeFolder('fileuser')
+  >>> print homeFolder #doctest: +ELLIPSIS
+  <zope.app.file.file.File object at ...>
+
+  You see that now a File object has been created. We reset containerObject
+  to zope,folder.Folder to not confuse the follow tests.
+
+  >>> manager.containerObject = 'zope.folder.Folder'
 
 Accessing the Home Folder
 -------------------------
