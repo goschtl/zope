@@ -72,7 +72,6 @@ class LivePageClients(object) :
     def __init__(self) :
         self.online = {}
         
-
     def register(self, client, uuid=None) :
         self.writelock.acquire()
         try:
@@ -132,17 +131,18 @@ def livePageSubscriber(event) :
         
     """
     global clients
+    
     page_classes = set()
     for client in clients :
         page_classes.add(client.page_class)
-    for page_class in page_classes :
-        page_class.notify(event)
+        
+    for cls in page_classes :
+        cls.notify(event)
 
                      
        
 # A global dictionary shared between threads
 clients = LivePageClients()
-
 
 class LivePageClient(object):
     """An object which represents the client-side webbrowser of a LivePage.
@@ -150,14 +150,13 @@ class LivePageClient(object):
 
     implements(ILivePageClients)
     
-    refreshInterval = 10
+    refreshInterval = 3
     targetTimeout = 20
     
     def __init__(self, page, uuid=None) :
         global clients
-        
         self.page_class = page.__class__
-        self.output = []
+        self.outbox = []
         self.principal = page.request.principal
         self.writelock = allocate_lock()
         self.touched = time.time()
@@ -170,8 +169,8 @@ class LivePageClient(object):
         """
         self.writelock.acquire()
         try :
-            if self.output :
-                result = self.output.pop()
+            if self.outbox :
+                result = self.outbox.pop()
             else :
                 result = None
             self.touched = time.time()      
@@ -190,11 +189,31 @@ class LivePageClient(object):
 
         self.writelock.acquire()
         try:
-            if output not in self.output :
-                self.output.append(output)
+            if output not in self.outbox :
+                self.outbox.append(output)
         finally:
-            self.writelock.release()
+            self.writelock.release()        
+ 
+    def output(self, outputNum=0) :
+        end = time.time() + self.refreshInterval
+        while time.time() < end :
+            output = self.popOutput()
+            if output :
+                return output
+            time.sleep(0.1)
+        return "idle"
+        
+    def input(self, handler_name, arguments) :
+        js = getattr(self, handler_name)(arguments)
+        global clients
+        clients.addOutput(js)
+        return ''
 
+    def alert(self, arguments) :
+        return "javascript alert('%s')" % arguments
+        
+    def update(self, arguments) :
+        return "javascript update('%s')" % arguments
 
         
 class LivePage(ComposedAjaxPage) :
@@ -205,7 +224,12 @@ class LivePage(ComposedAjaxPage) :
     asks again and again for new available output. The output consists of 
     JavaScript snippets that are evaluated by the browser.
     
-    Here we simulate the startup of two clients:
+    Here we simulate the startup of two clients of the same factory type:
+    
+    >>> factory='zorg.ajax.livepage.LivePage'
+    
+    Note that the factory must be application specific because
+    the access and notification method build their own instances.
     
     >>> class Principal(object) :
     ...     def __init__(self, id, title) :
@@ -257,12 +281,12 @@ class LivePage(ComposedAjaxPage) :
   
     After that the page can be called by the javascript glue as follows
     
-    -  livepageoutput?uuid=uuid0&outputNum=0
+    -  @@livepage.html/@@client/uuid0/output?outputNum=0
     
        Call the output method and ask for special output that is intended
        for the specified client
    
-    -  livepageinput?uuid=uuid0&handler-name=change&arguments=42
+    -  @@livepage.html/@@client/uuid0/input?handler-name=change&arguments=42
         
        Call an input method that produces output for various clients.
       
@@ -300,20 +324,18 @@ class LivePage(ComposedAjaxPage) :
     implements(ILivePage)
   
     clientFactory = LivePageClient
-
-                                               
+    
     def renderGlue(self) :
         """ Returns the JavaScript glue.         
         """       
-        
         return open(self.path).read()
-        
+    
     def notify(self, event) :
         """ Default implementation of an event handler. Must be specialized. """
         pass
         
     notify = classmethod(notify)
-
+        
     def glueURL(self) :
         return zapi.absoluteURL(self.context, self.request) + "/livepage.js"
                    
@@ -321,26 +343,23 @@ class LivePage(ComposedAjaxPage) :
         """ Returns a new client id. """
         
         return self.clientFactory(self).handleid
-
+            
     def output(self, uuid, outputNum) :
-        """ Returns the output of a single client. """
-        global clients
-        client = clients.online.get(uuid)
-        if client is None :
-            client = self.clientFactory(self, uuid)
-            clients.register(client, uuid)
+        """ Convenience function that accesses a specific client.
         
-        end = time.time() + client.refreshInterval
-        while time.time() < end :
-            output = client.popOutput()
-            if output :
-                return output
-            time.sleep(0.1)
-        return "idle"
-        
+        """
+        request = self.request
+        method = Output(self, request).publishTraverse(request, uuid)
+        return method(outputNum)
+
     def input(self, uuid, handler_name, arguments) :
-        return self.sendResponse(getattr(self, handler_name)(arguments))
+        """ Convenience function that accesses a specific client.
         
+        """
+        request = self.request
+        method = Input(self, request).publishTraverse(request, uuid)
+        return method(handler_name, arguments)
+ 
     def sendResponse(self, response) :
         """ Sends a livepage response to all clients. 
             A response consits of a leading command line 
@@ -349,15 +368,9 @@ class LivePage(ComposedAjaxPage) :
         global clients
         clients.addOutput(response)
         return ''
-        
-    sendResponse = classmethod(sendResponse)  
     
-    def alert(self, arguments) :
-        return "javascript alert('%s')" % arguments
-        
-    def update(self, arguments) :
-        return "javascript update('%s')" % arguments
-    
+    sendResponse = classmethod(sendResponse)
+            
     def render(self) :
         """ A test method that calls the livepage. 
             
@@ -381,7 +394,51 @@ class LivePage(ComposedAjaxPage) :
  
 
 defineChecker(LivePage, NoProxy)
+  
+
+class ClientIO(BrowserView) :
+    """ A view that represents the input and 
+        output of a single client. """  
+
+    def __init__(self, context, request) :
+        super(BrowserView, self).__init__(context, request)
+        self.view = removeSecurityProxy(context)
+
+    def traverseClient(self, request, uuid) :
+        global clients
+               
+        client = clients.online.get(uuid)
+        if client is None :
+            client = self.view.clientFactory(self.view, uuid)
+            clients.register(client, uuid)    
+        return client       
+            
+class Output(ClientIO) :
+    """ A view of a LivePage view that allows to traverse to a specific
+        client.
         
+    """
+    
+    implements(IPublishTraverse)
+      
+    def publishTraverse(self, request, uuid) :
+        client = self.traverseClient(request, uuid)
+        return client.output
+        
+class Input(ClientIO) :
+    """ A view of a LivePage view that allows to traverse to a specific
+        client.
+        
+    """
+    
+    implements(IPublishTraverse)
+      
+    def publishTraverse(self, request, uuid) :
+        client = self.traverseClient(request, uuid)
+        return client.input
+
+
+
 class LiveOutputStream(object) :
     """ The iterable output stream. """
 

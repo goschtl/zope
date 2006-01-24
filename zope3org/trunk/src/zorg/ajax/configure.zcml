@@ -9,7 +9,24 @@
 		name="zorgajax"
 		directory="./javascript"
 		/>
+	
+  
+  <page
+        name="input"
+        for="zorg.ajax.interfaces.ILivePage"
+        class="zorg.ajax.livepage.Input"
+        permission="zope.Public">
 
+  </page>
+  
+  <page
+        name="output"
+        for="zorg.ajax.interfaces.ILivePage"
+        class="zorg.ajax.livepage.Output"
+        permission="zope.Public">
+
+  </page>
+  
   <pages
         for="*"
         class="zorg.ajax.livepage.LivePage"
@@ -22,15 +39,7 @@
         <page 
             name="livepage"
             attribute="render" />
-            
-        <page 
-            name="livepageoutput"
-            attribute="output" />
-        
-        <page 
-            name="livepageinput"
-            attribute="input" />
-            
+                        
         <page 
             name="liveExample"
             attribute="render" />

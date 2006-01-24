@@ -1,5 +1,5 @@
 var livePageUUID;       /* This variable must be defined in your HTML. */
- 
+
 function debugEval(str) {
     alert(str);
     eval(str);
@@ -46,9 +46,9 @@ function evalResponse(request) {
 }
 
 function checkOutput(outputNum) {
-    var base_url = "./@@livepageoutput";
-    var params = "uuid=" + livePageUUID + "&outputNum=" + outputNum;
-    
+    var base_url = window.location + "/@@output/" + livePageUUID;
+    var params = "outputNum=" + outputNum;
+   
     new Ajax.Request(base_url, 
         { method: 'get',
             parameters: params, 
