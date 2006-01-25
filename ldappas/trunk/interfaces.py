@@ -19,7 +19,7 @@ import re
 import zope.interface
 import zope.schema
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from i18n import MessageFactory as _
 
 
 class ILDAPAuthentication(zope.interface.Interface):
