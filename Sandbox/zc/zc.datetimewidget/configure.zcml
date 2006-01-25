@@ -4,36 +4,18 @@
     xmlns:browser='http://namespaces.zope.org/browser'
     >
 
-  <!-- Register the Javascript snippets used by the datetime widgets. -->
-  <zc:snippet
-      for = "zc.snippetlibrary.interfaces.IGlobalJavascriptSnippetLibrary"
-      file = "snippets/calendar-setup.js"
-      priority = "300"
-      />
-
-  <zc:snippet
-      for = "zc.snippetlibrary.interfaces.IGlobalJavascriptSnippetLibrary"
-      file = "snippets/lang/calendar-en.js"
-      priority = "200"
-      />
-
-  <zc:snippet
-      for = "zc.snippetlibrary.interfaces.IGlobalJavascriptSnippetLibrary"
-      file = "snippets/calendar.js"
-      priority = "100"
-      />
-
-  <!-- Register the CSS snippets used by the datetime widgets. -->
-
-  <zc:snippet
-      for = "zc.snippetlibrary.interfaces.IGlobalCssSnippetLibrary"
-      file = "snippets/calendar-system.css"
-      />
+  <resourceLibrary name="zc.datetimewidget.jscalendar">
+   <directory source="jscalendar"
+              include="calendar.js
+                       lang/calendar-en.js
+                       calendar-setup.js
+                       calendar-system.css"/>
+  </resourceLibrary>  
 
   <browser:resourceDirectory
-      name="zc.datetimewidget"
-      directory="resources"
-      layer="default"
-      />
+   name="zc.datetimewidget"
+   directory="resources"
+   layer="default"
+   />
 
 </configure>

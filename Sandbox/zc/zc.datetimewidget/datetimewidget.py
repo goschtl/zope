@@ -18,6 +18,7 @@ $Id$
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
 from zope.app.form.browser import textwidgets
+import zc
 
 template = """
 %(widget_html)s
@@ -39,6 +40,7 @@ class DatetimeBase(object):
 
     def __call__(self):
         widget_html = super(DatetimeBase, self).__call__()
+        zc.resourcelibrary.need('zc.datetimewidget.jscalendar')
         return template % {"widget_html": widget_html,
                            "name": self.name,
                            "showsTime": self._showsTime,
