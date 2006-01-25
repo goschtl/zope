@@ -25,9 +25,7 @@ from zope.schema.interfaces import InvalidURI
 from zope.schema._bootstrapinterfaces import ValidationError
 from zope.schema import URI
 
-from zope.i18nmessageid import MessageIDFactory
-_ = MessageIDFactory("ldapadapter")
-
+from i18n import MessageFactory as _
 
 """
 From RFC 952:

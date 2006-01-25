@@ -17,7 +17,6 @@ $Id:$
 """
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
-from zope.app.i18n import ZopeMessageIDFactory as _
 
 from ldapadapter.interfaces import IManageableLDAPAdapter
 from ldapadapter.interfaces import ICheckLDAPAdapter

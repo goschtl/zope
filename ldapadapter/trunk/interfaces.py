@@ -19,9 +19,7 @@ import zope.interface
 import zope.schema
 
 from ldapadapter.field import LDAPURI
-
-from zope.i18nmessageid import MessageIDFactory
-_ = MessageIDFactory("ldapadapter")
+from i18n import MessageFactory as _
 
 
 # LDAP Adapter management errors
