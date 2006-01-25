@@ -284,7 +284,6 @@ Get adapters where this interface is required.
   >>> pprint(details.getSpecificRequiredAdapters())
   []
 
-
 `getExtendedRequiredAdapters()`
 -------------------------------
 
@@ -293,14 +292,104 @@ Get adapters where this interface is required.
   >>> pprint(details.getExtendedRequiredAdapters())
   []
 
+Note that this includes all interfaces registered for
+interface.Interface.
+
 
 `getGenericRequiredAdapters()`
 ------------------------------
 
 Get adapters where this interface is required.
 
-  >>> pprint(details.getGenericRequiredAdapters())
-  []
+  >>> pprint(sorted(details.getGenericRequiredAdapters()))
+  [{'doc': '',
+    'factory': 'None.append',
+    'factory_url': None,
+    'name': u'<subscription>',
+    'provided': None,
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.location.traversing.LocationPhysicallyLocatable',
+    'factory_url': 'zope/app/location/traversing/LocationPhysicallyLocatable',
+    'name': '',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'IPhysicallyLocatable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.adapters.DefaultTraversable',
+    'factory_url': 'zope/app/traversing/adapters/DefaultTraversable',
+    'name': '',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraversable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.adapters.Traverser',
+    'factory_url': 'zope/app/traversing/adapters/Traverser',
+    'name': '',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraverser'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.namespace.etc',
+    'factory_url': 'zope/app/traversing/namespace/etc',
+    'name': 'etc',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraversable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.namespace.etc',
+    'factory_url': 'zope/app/traversing/namespace/etc',
+    'name': 'etc',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraversable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'},
+                 {'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.namespace.etc',
+    'factory_url': 'zope/app/traversing/namespace/etc',
+    'name': 'etc',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraversable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'},
+                 {'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.namespace.etc',
+    'factory_url': 'zope/app/traversing/namespace/etc',
+    'name': 'etc',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraversable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'},
+                 {'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None},
+   {'doc': '',
+    'factory': 'zope.app.traversing.namespace.etc',
+    'factory_url': 'zope/app/traversing/namespace/etc',
+    'name': 'etc',
+    'provided': {'module': 'zope.app.traversing.interfaces',
+                 'name': 'ITraversable'},
+    'required': [{'module': 'zope.interface',
+                  'name': 'Interface'},
+                 {'module': 'zope.interface',
+                  'name': 'Interface'}],
+    'zcml': None}]
 
 
 `getProvidedAdapters()`
