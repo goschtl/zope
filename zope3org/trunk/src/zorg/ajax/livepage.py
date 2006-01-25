@@ -68,21 +68,40 @@ class LivePageClients(object) :
     implements(ILivePageClients)
     
     writelock = allocate_lock()     # A writelock for clients
-   
+    checkInterval = 10              # check for dead clients in seconds
+    maxClients = 3                  # max clients per user
+    
     def __init__(self) :
         self.groups = {}
+        self.lastCheck = 0
         
     def _group(self, group_id) :
         return self.groups.setdefault(group_id, {})
         
     def register(self, client, uuid=None) :
+        print "***Registering client for uuid", [uuid]
         self.writelock.acquire()
         try:
             if uuid is None :
                 uuid = zapi.getUtility(IUUIDGenerator)()
+            else :
+                # an existing uuid indicates a renewed registration of an
+                # old page. We do not know what happened so a reload
+                # would make sense
+                client.addOutput("reload")
+             
+            existing = self.getClientsFor(client.principal.id)
+            if len(existing) > self.maxClients :
+                for c in existing :
+                    self.unregister(c)
+                client.addOutput("limited")
+                
             group_id = client.group_id
             client.handleid = uuid
-            self._group(group_id)[uuid] = client
+            if uuid in self._group(group_id) :
+                print "***WARNING: already registered"
+            else :
+                self._group(group_id)[uuid] = client
         finally:
             self.writelock.release()
      
@@ -90,40 +109,83 @@ class LivePageClients(object) :
         self.writelock.acquire()
         try:
             group_id = client.group_id
-            del self._group(group_id)[client.handleid]
-            print "***Info: unregistered client for %s." % client.principal.title
+            try :
+                del self._group(group_id)[client.handleid]
+                print "***Info: unregistered client for %s." % client.principal.title
+            except KeyError :
+                print "***Info: client already unregistered."
         finally:
             self.writelock.release()
     
+    def getClientsFor(self, user_id) :
+        """ Get clients for a specific user.
+        """
+        return [c for c in self._iterClients() if c.principal.id == user_id]
+ 
     def get(self, uuid, default=None) :
         for mapping in self.groups.values() :
             if uuid in mapping :
-                return mapping[uuid]
+                client = mapping[uuid]
+                self.writelock.acquire()
+                try :
+                    client.touched = time.time()
+                finally :
+                    self.writelock.release()    
+                return client
         return default
+        
+    def checkAlive(self, verbose=True) :
+        """ Checks whether clients are alive. """
+        if time.time() < self.lastCheck + self.checkInterval :
+            return
+            
+        if verbose :
+            for mapping in self.groups.values() :
+                for client in mapping.values() :
+                    print "Client", client.principal.id
+                    
+        for mapping in self.groups.values() :
+            for client in mapping.values() :
+                if time.time() > client.touched + client.targetTimeout :
+                    self.unregister(client)
+        self.writelock.acquire()
+        try :
+            self.lastCheck = time.time()
+        finally :
+            self.writelock.release()    
+    
+    def _iterClients(self) :
+        for mapping in self.groups.values() :
+            for client in mapping.values() :
+                yield client
         
     def __iter__(self) :
         """ Iterates over all clients which are still alive.
             Unregisters all unnecessary clients.
         """
-        for mapping in self.groups.values() :
-            for client in mapping.values() :
-                if time.time() > client.touched + client.targetTimeout :
-                    self.unregister(client)
-                else :
-                    yield client
+        self.checkAlive()
+        return self._iterClients()  
+        
                 
-
-    def addOutput(self, output, who="all", group_id=None) :
-        if who == "all" :
+    def addOutput(self, output, recipients="all", group_id=None) :
+        self.checkAlive()
+        if recipients == "all" :
             if group_id is None :
                 selected= self
             else :
                 selected = self._group(group_id).values()
             for client in selected :
                 client.addOutput(output)
+        else :
+            for user_id in recipients :
+                for client in self :
+                    if client.principal.id == user_id :
+                        client.addOutput(output)    
+                
             
     def whoIsOnline(self, group_id) :
         """ Returns the ids of the principals that are using livepages. """
+        self.checkAlive()
         online = set()
         for client in self._group(group_id).values() :
             online.add(client.principal.id)
@@ -162,7 +224,7 @@ class LivePageClient(object):
 
     implements(ILivePageClients)
     
-    refreshInterval = 3
+    refreshInterval = 10    # seconds
     targetTimeout = 20
     
     def __init__(self, page, uuid=None) :
@@ -173,8 +235,7 @@ class LivePageClient(object):
         self.principal = page.request.principal
         self.writelock = allocate_lock()
         self.touched = time.time()
-        if uuid is None :
-            clients.register(self)
+        clients.register(self, uuid)
             
     def popOutput(self) :
         """ Returns an output block for processing in the browser side client.
@@ -356,7 +417,7 @@ class LivePage(ComposedAjaxPage) :
                    
     def nextClientId(self) :
         """ Returns a new client id. """
-        
+        print "***nextClientId called"
         return self.clientFactory(self).handleid
         
     def getGroupId(self) :
@@ -386,13 +447,13 @@ class LivePage(ComposedAjaxPage) :
         method = Input(self, request).publishTraverse(request, uuid)
         return method(handler_name, arguments)
  
-    def sendResponse(self, response) :
+    def sendResponse(self, response, recipients="all") :
         """ Sends a livepage response to all clients. 
             A response consits of a leading command line 
             and optional html body data.
         """
         global clients
-        clients.addOutput(response)
+        clients.addOutput(response, recipients)
         return ''
     
     sendResponse = classmethod(sendResponse)
@@ -440,7 +501,6 @@ class ClientIO(BrowserView) :
         client = clients.get(uuid)
         if client is None :
             client = self.view.clientFactory(self.view, uuid)
-            clients.register(client, uuid)    
         return client       
             
 class Output(ClientIO) :
@@ -452,6 +512,7 @@ class Output(ClientIO) :
     implements(IPublishTraverse)
       
     def publishTraverse(self, request, uuid) :
+        print "Output call", request.URL, uuid
         client = self.traverseClient(request, uuid)
         return client.output
         

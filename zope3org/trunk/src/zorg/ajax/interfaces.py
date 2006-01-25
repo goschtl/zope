@@ -58,7 +58,7 @@ class ILivePage(IAjaxPage) :
     def input(uuid, handler_name, arguments) :
         """ Sends input to livepages. """
         
-    def sendResponse(response) :
+    def sendResponse(response, recipients="all") :
         """ Sends a livepage response to all clients. 
             A response consits of a leading command line 
             and optional html body data.
