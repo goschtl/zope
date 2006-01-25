@@ -270,21 +270,13 @@ should be returned:
    AdapterRegistration(('IFoo', 'IHTTPRequest'), 'Interface',
                        'foo', None, ''),
    AdapterRegistration(('Interface', 'IHTTPRequest'), 'Interface',
-                       'bar', None, ''),
-   AdapterRegistration((None, 'IDefaultBrowserLayer'), 'IAbsoluteURL',
-                       '', <class '...browser.absoluteurl.AbsoluteURL'>, ''),
-   AdapterRegistration((None, 'IDefaultBrowserLayer'), 'Interface',
-                       'absolute_url', <class ...absoluteurl.AbsoluteURL'>, '')]
+                       'bar', None, '')]
 
   >>> regs = list(presentation.getViews(Interface, IHTTPRequest))
   >>> regs.sort()
   >>> regs #doctest:+ELLIPSIS
   [AdapterRegistration(('Interface', 'IHTTPRequest'), 'Interface',
-                       'bar', None, ''),
-   AdapterRegistration((None, 'IDefaultBrowserLayer'), 'IAbsoluteURL',
-                       '', <class '...browser.absoluteurl.AbsoluteURL'>, ''),
-   AdapterRegistration((None, 'IDefaultBrowserLayer'), 'Interface',
-                       'absolute_url', <class ...absoluteurl.AbsoluteURL'>, '')]
+                       'bar', None, '')]
 
 
 `filterViewRegistrations(regs, iface, level=SPECIFC_INTERFACE_LEVEL)`
