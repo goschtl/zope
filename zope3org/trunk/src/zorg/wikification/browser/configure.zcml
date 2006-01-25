@@ -45,11 +45,7 @@
       for="zorg.comment.IAttributeAnnotableComments"
       class="zorg.wikification.browser.comment.LiveComments"
       permission="zope.View">
-      
-      <page 
-          name="livepage.js"
-          attribute="renderGlue" />
-                    
+                        
       <page 
             name="wikicomment.html"
             attribute="render"
