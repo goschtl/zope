@@ -21,6 +21,10 @@ Zope Changes
       - By default, persistent logs now contain the same extra
         traceback information that's visible through the web.
 
+      - Declare the "zope" top-level package as a namespace package if
+        "pkg_resources" is available. This will enable distribution of
+        "zope.*" packages as individual eggs.
+
     Restructuring
 
       - Removed unused menus and made previous titles, the description,
