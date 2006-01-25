@@ -66,6 +66,22 @@ function idleClient() {
     $("livepage_updates").innerHTML = "idle";
 }
 
+function sendLivePage(handler_name, arguments)
+{
+    var args = "";
+    for(i=1;i<arguments.length;i++) {
+        args += arguments[i] + ",";
+        }
+    var base_url = window.location + "/@@input/" + livePageUUID;
+    var params = "handler_name=" + handler_name + "&arguments=" + args;
+  
+    new Ajax.Request(base_url, 
+        { method: 'get',
+            parameters: params
+        });
+}
+
+
 function switchElements(a, b) {
     for(i=0;i<$(b).childNodes.length;i++) {
         var child = $(b).childNodes[i];

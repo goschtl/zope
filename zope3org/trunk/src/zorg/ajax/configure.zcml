@@ -31,10 +31,6 @@
         for="*"
         class="zorg.ajax.livepage.LivePage"
         permission="zope.Public">
-                    
-        <page 
-            name="livepage.js"
-            attribute="renderGlue" />
             
         <page 
             name="livepage"

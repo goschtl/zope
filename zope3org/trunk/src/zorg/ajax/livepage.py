@@ -38,7 +38,7 @@ from zope.app.traversing.interfaces import ITraversable
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
 from zope.app.publisher.browser import BrowserView
-
+from zope.app.keyreference.interfaces import IKeyReference
 
 from zope.interface import implements
 from zope.interface import Interface
@@ -57,12 +57,12 @@ from interfaces import ILivePageClient
 from zorg.edition.interfaces import IUUIDGenerator
 
 class LivePageClients(object) :
-    """ A collection of LivePages.
+    """ Groups collections of LivePages.
     
-        Holds a dictionary of LivePageClients with ids as keys and 
-        clients as values.
-        Makes all write operations thread safe.
+        Holds a dict of dict of LivePageClients with group_ids and
+        client uuids as keys and clients as values.
         
+        Makes all write operations thread safe.
     """
     
     implements(ILivePageClients)
@@ -70,50 +70,62 @@ class LivePageClients(object) :
     writelock = allocate_lock()     # A writelock for clients
    
     def __init__(self) :
-        self.online = {}
+        self.groups = {}
+        
+    def _group(self, group_id) :
+        return self.groups.setdefault(group_id, {})
         
     def register(self, client, uuid=None) :
         self.writelock.acquire()
         try:
             if uuid is None :
-                uuid = zapi.getUtility(IUUIDGenerator)()    
+                uuid = zapi.getUtility(IUUIDGenerator)()
+            group_id = client.group_id
             client.handleid = uuid
-            self.online[client.handleid] = client
+            self._group(group_id)[uuid] = client
         finally:
             self.writelock.release()
      
     def unregister(self, client) :
         self.writelock.acquire()
         try:
-            del self.online[client.handleid]
+            group_id = client.group_id
+            del self._group(group_id)[client.handleid]
             print "***Info: unregistered client for %s." % client.principal.title
         finally:
             self.writelock.release()
     
     def get(self, uuid, default=None) :
-        return self.online.get(uuid, default)
+        for mapping in self.groups.values() :
+            if uuid in mapping :
+                return mapping[uuid]
+        return default
         
     def __iter__(self) :
         """ Iterates over all clients which are still alive.
             Unregisters all unnecessary clients.
         """
-      
-        for client in self.online.values() :
-            if time.time() > client.touched + client.targetTimeout :
-                self.unregister(client)
-            else :
-                yield client
+        for mapping in self.groups.values() :
+            for client in mapping.values() :
+                if time.time() > client.touched + client.targetTimeout :
+                    self.unregister(client)
+                else :
+                    yield client
                 
 
-    def addOutput(self, output, who="all") :
+    def addOutput(self, output, who="all", group_id=None) :
         if who == "all" :
-            for client in self :
+            if group_id is None :
+                selected= self
+            else :
+                selected = self._group(group_id).values()
+            for client in selected :
                 client.addOutput(output)
             
-    def whoIsOnline(self) :
+    def whoIsOnline(self, group_id) :
         """ Returns the ids of the principals that are using livepages. """
         online = set()
-        for client in self :
+        for client in self._group(group_id).values() :
             online.add(client.principal.id)
         return sorted(online)
         
@@ -155,6 +167,7 @@ class LivePageClient(object):
     
     def __init__(self, page, uuid=None) :
         global clients
+        self.group_id = page.getGroupId()
         self.page_class = page.__class__
         self.outbox = []
         self.principal = page.request.principal
@@ -182,9 +195,6 @@ class LivePageClient(object):
     def addOutput(self, output) :
         """ Adds a output block for further client side processing to the
             clients message queue.
-            
-            Checks whether the client is still a live, i.e. has been touched
-            by browser requests for fresh output.
         """
 
         self.writelock.acquire()
@@ -210,10 +220,16 @@ class LivePageClient(object):
         return ''
 
     def alert(self, arguments) :
-        return "javascript alert('%s')" % arguments
+        args = arguments.split(",")
+        return "javascript alert('%s')" % args[0]
         
     def update(self, arguments) :
-        return "javascript update('%s')" % arguments
+        args = arguments.split(",")
+        return "javascript update('%s')" % args[0]
+        
+    def append(self, arguments) :
+        args = arguments.split(",")
+        return "append %s\n%s" % (args[0], args[1])
 
         
 class LivePage(ComposedAjaxPage) :
@@ -242,37 +258,42 @@ class LivePage(ComposedAjaxPage) :
     >>> request = TestRequest()
     >>> request.setPrincipal(user1)
     >>> page = LivePage(None, request)
+    >>> group_id = page.getGroupId()
     >>> print page.render()
     <html>
         <head>
+            <script src="http://127.0.0.1/++resource++zorgajax/prototype.js" type="text/javascript"></script>
             <script type="text/javascript">var livePageUUID = 'uuid1';</script>
-            <script src="http://127.0.0.1/livepage.js" type="text/javascript"></script>
+            <script src="http://127.0.0.1/++resource++zorgajax/livepage.js" type="text/javascript"></script>
         </head>
-        <body>
+        <body onload="startClient()">
         <p>Input some text.</p>
-        <input onchange="sendLivePage('alert', this.value)" type="text" />
+        <input onchange="sendLivePage('append', 'target', this.value)" type="text" />
+        <p id="target">Text goes here:</p>
         </body>
     </html>
+
     
     >>> request.setPrincipal(user2)
     >>> page = LivePage(None, request)
     >>> print page.render()
     <html>
         <head>
+            <script src="http://127.0.0.1/++resource++zorgajax/prototype.js" type="text/javascript"></script>
             <script type="text/javascript">var livePageUUID = 'uuid2';</script>
-            <script src="http://127.0.0.1/livepage.js" type="text/javascript"></script>
+            <script src="http://127.0.0.1/++resource++zorgajax/livepage.js" type="text/javascript"></script>
         </head>
-        <body>
+        <body onload="startClient()">
         <p>Input some text.</p>
-        <input onchange="sendLivePage('alert', this.value)" type="text" />
+        <input onchange="sendLivePage('append', 'target', this.value)" type="text" />
+        <p id="target">Text goes here:</p>
         </body>
     </html>
-    
+   
     The global clients dictionary can be asked for all online users:
     
-    >>> clients.whoIsOnline()
+    >>> clients.whoIsOnline(group_id)
     ['zorg.member.dominik', 'zorg.member.uwe']
-    
     
     For test purposes we set the refresh interval (i.e. the interval in which
     output calls are renewed) to 0.1 seconds :
@@ -300,49 +321,54 @@ class LivePage(ComposedAjaxPage) :
     Now we can send some input :
     
     >>> page2 = LivePage(None, TestRequest())
-    >>> page2.input(uuid='uuid1', handler_name='alert', arguments=42)
+    >>> page2.input(uuid='uuid1', handler_name='append', arguments="target,42")
     ''
     
     After that the next call of the output returns javascript snippets:
         
-    >>> page1.output(uuid='uuid1', outputNum=1)
-    "javascript alert('42')"
+    >>> print page1.output(uuid='uuid1', outputNum=1)
+    append target
+    42
+
 
     And this again and again if we provide new input :
     
-    >>> page2.input(uuid='uuid1', handler_name='alert', arguments=43)
+    >>> page2.input(uuid='uuid1', handler_name='append', arguments="target,43")
     ''
     
-    >>> page1.output(uuid='uuid1', outputNum=2)
-    "javascript alert('43')"
+    >>> print page1.output(uuid='uuid1', outputNum=2)
+    append target
+    43
+   
 
     """
-    
-    path = os.path.join(os.path.dirname(__file__), "javascript", "livepage.js")    
         
-    
     implements(ILivePage)
-  
+    
     clientFactory = LivePageClient
-    
-    def renderGlue(self) :
-        """ Returns the JavaScript glue.         
-        """       
-        return open(self.path).read()
-    
+        
     def notify(self, event) :
         """ Default implementation of an event handler. Must be specialized. """
         pass
         
     notify = classmethod(notify)
         
-    def glueURL(self) :
-        return zapi.absoluteURL(self.context, self.request) + "/livepage.js"
                    
     def nextClientId(self) :
         """ Returns a new client id. """
         
         return self.clientFactory(self).handleid
+        
+    def getGroupId(self) :
+        """ Returns a group id that allows to share different livepages
+            in different contexts.
+            
+            The default implementation returns the IKeyReference of the
+            LivePage context.
+        """
+        
+        return IKeyReference(self.context, None) or 0
+        
             
     def output(self, uuid, outputNum) :
         """ Convenience function that accesses a specific client.
@@ -379,18 +405,23 @@ class LivePage(ComposedAjaxPage) :
             
         """
         
+        url = zapi.absoluteURL(self.context, self.request) 
+        url += "/++resource++zorgajax"
+
         template = Template("""<html>
     <head>
+        <script src="$url/prototype.js" type="text/javascript"></script>
         <script type="text/javascript">var livePageUUID = '$id';</script>
-        <script src="$glue" type="text/javascript"></script>
+        <script src="$url/livepage.js" type="text/javascript"></script>
     </head>
-    <body>
+    <body onload="startClient()">
     <p>Input some text.</p>
-    <input onchange="sendLivePage('alert', this.value)" type="text" />
+    <input onchange="sendLivePage('append', 'target', this.value)" type="text" />
+    <p id="target">Text goes here:</p>
     </body>
 </html>""")      
                                                 
-        return template.substitute(id=self.nextClientId(), glue=self.glueURL())
+        return template.substitute(id=self.nextClientId(), url=url)
  
 
 defineChecker(LivePage, NoProxy)
@@ -406,8 +437,7 @@ class ClientIO(BrowserView) :
 
     def traverseClient(self, request, uuid) :
         global clients
-               
-        client = clients.online.get(uuid)
+        client = clients.get(uuid)
         if client is None :
             client = self.view.clientFactory(self.view, uuid)
             clients.register(client, uuid)    
