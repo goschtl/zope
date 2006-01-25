@@ -8,12 +8,6 @@ Zope Changes
 
   since Zope 3.2.0b3
 
-    New features
-
-      - Declare the "zope" top-level package as a namespace package if
-        "pkg_resources" is available. This will enable distribution of
-        "zope.*" packages as individual eggs.
-
     Bug Fixes
 
       - zope.i18n.interpolate:
