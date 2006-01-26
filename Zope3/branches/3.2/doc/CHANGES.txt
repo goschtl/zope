@@ -6,6 +6,15 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
+  since Zope 3.2.0
+
+    Bug fixes
+
+      - zope.app.testing.functional.defineLayer
+
+        + Use the method param instead of an hardcoded value for the
+        zcml filename
+
   since Zope 3.2.0b3
 
     Bug Fixes
