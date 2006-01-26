@@ -84,7 +84,8 @@ function checkOutput(outputNum) {
                             }
                         }
                     else {
-                        checkOutput(outputNum+1);
+                        outputNum += 1
+                        setTimeout("checkOutput(" + outputNum + ")", 300);
                         }
                 }
         });

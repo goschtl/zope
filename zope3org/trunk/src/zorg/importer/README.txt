@@ -21,6 +21,7 @@ Import the site:
     ...                   target_url='http://localhost/site',
     ...                   base_url='http://www.zope.org/Wikis/DevSite/'
     ...                            'Projects/ComponentArchitecture')
+    (3, set(['AddOnPackages', 'RiskFactors', ...
 
 The test site contains three wiki pages (``Component`` beeing linked relatively):
 

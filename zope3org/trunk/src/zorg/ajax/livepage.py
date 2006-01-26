@@ -17,7 +17,7 @@ $Id: livepage.py 39651 2005-10-26 18:36:17Z oestermeier $
 """
 __docformat__ = 'restructuredtext'
 
-import os, itertools, unittest, time
+import os, itertools, unittest, time, transaction
 from string import Template
 from thread import allocate_lock
 
@@ -209,7 +209,7 @@ def livePageSubscriber(event) :
     page_classes = set()
     for client in clients :
         page_classes.add(client.page_class)
-        
+      
     for cls in page_classes :
         cls.notify(event)
 
@@ -270,6 +270,13 @@ class LivePageClient(object):
         while time.time() < end :
             output = self.popOutput()
             if output :
+                time.sleep(0.5)
+                #enforce that the URLs with dummy timestamps are really reloaded
+                #we add the dummy as late as possible to avoid redundant calls
+                if output.endswith("timestamp=")  :
+                    output += "%s\n" % time.time()
+                    
+                print "sending", output
                 return output
             time.sleep(0.1)
         return "idle"
