@@ -14,6 +14,21 @@
 """ITracebackSupplement interface definition.
 
 $Id$
+
+When zope.exceptionformatter generates a traceback, it looks for local
+variables named __traceback_info__ or __traceback_supplement__.  It
+includes the information provided by those local variables in the
+traceback.
+
+__traceback_info__ is for arbitrary information.
+repr(__traceback_info__) gets dumped to the traceback.
+
+__traceback_supplement__ is more structured.  It should be a tuple.
+The first item of the tuple is a callable that produces an object that
+implements ITracebackSupplement, and the rest of the tuple contains
+arguments to pass to the factory.  The traceback formatter makes an
+effort to clearly present the information provided by the
+ITracebackSupplement.
 """
 
 
