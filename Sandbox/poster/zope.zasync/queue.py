@@ -115,6 +115,9 @@ class CompositePersistentQueue(Persistent):
     interface.implements(IQueue)
 
     def __init__(self, compositeSize=15, subfactory=PersistentQueue):
+        # the compositeSize value is a ballpark.  Because of the merging
+        # policy, a composite queue might get as big as 2n under unusual
+        # circumstances.
         self.subfactory = subfactory
         self._data = ()
         self.compositeSize = compositeSize

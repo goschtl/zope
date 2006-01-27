@@ -46,7 +46,6 @@ class ConflictResolvingMappingStorage(
                     else:
                         data = rdata
             self._tindex[oid] = self._tid + data
-            self._old.setdefault(oid, {})[self._tid] = data
         finally:
             self._lock_release()
         return self._tid
@@ -54,6 +53,8 @@ class ConflictResolvingMappingStorage(
     def _finish(self, tid, user, desc, ext):
         self._index.update(self._tindex)
         self._ltid = self._tid
+        for oid, record in self._tindex.items():
+            self._old.setdefault(oid, {})[self._tid] = record[8:]
 
 def test_suite():
     return unittest.TestSuite((
