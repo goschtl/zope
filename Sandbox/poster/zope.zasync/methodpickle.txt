@@ -1,0 +1,25 @@
+Given a method of a newstyle class, normally trying to pickle a method results
+in an exception.
+
+    >>> import cPickle
+    >>> class Foo(object):
+    ...     def __init__(self, name):
+    ...         self.name = name
+    ...     def bar(self):
+    ...         print "hi", self.name
+    ...
+    >>> foo = Foo('gary')
+    >>> cPickle.dumps(foo.bar)
+    Traceback (most recent call last):
+    ...
+    TypeError: can't pickle instancemethod objects
+
+If you register methodpickle's pickler, it works like a charm.
+
+    >>> from zope.zasync import methodpickle
+    >>> methodpickle.register()
+    >>> cPickle.loads(cPickle.dumps(foo.bar))()
+    hi gary
+
+The approach is simpleminded, and produces bigger pickles than it could, but
+it works.
