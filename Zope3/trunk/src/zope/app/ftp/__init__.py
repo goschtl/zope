@@ -237,7 +237,7 @@ class FTPView(object):
             f = IReadFile(self._dir[name], None)
             if f is not None:
                 return canAccess(f, 'read')
-            d = IReadDirectory(self._dir[name], name)
+            d = IReadDirectory(self._dir[name], None)
             if d is not None:
                 return canAccess(d, 'get')
         return False
