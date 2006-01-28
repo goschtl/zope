@@ -31,6 +31,7 @@ from zope.app.traversing.interfaces import TraversalError
 
 from zope.dottedname.resolve import resolve
 
+
 class PathWidget(TextWidget):
 
     def _toFieldValue(self, input):
@@ -47,17 +48,17 @@ class PathWidget(TextWidget):
         if value is None:
             return ''
         return zapi.getPath(value)
-    
+
 class DottedNameWidget(TextWidget):
-    """ Checks if the input is a resolvable class. """        
+    """ Checks if the input is a resolvable class. """
     def _toFieldValue(self, input):
         try:
             objectToCreate = resolve(input)
         except ImportError, e:
-            raise  ConversionError(_('dotted name is not is not correct !'), e)
+            raise  ConversionError(_('dotted name is not correct !'), e)
         else:
             return input
-        
+
 class AssignHomeFolder(object):
 
     def setupWidgets(self):
