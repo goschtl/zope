@@ -171,8 +171,6 @@ class ZopeFTPShell(object):
         return result['name'].encode('utf-8'), ent
 
     def _stat(self, path, keys):
-        if self.fs_access.type(path) == 'd':
-            raise ftp.WrongFiletype()
         result = self._gotlisting(self.fs_access.lsinfo(path), keys)
         return result[1]
 
@@ -244,22 +242,23 @@ class ZopeFTPShell(object):
             ret |= 0040000
         return ret
 
+    def _checkFileReadAccess(self, fs_access, p):
+        # run all these methods within the one thread.
+        readable = fs_access.readable(p)
+        if not readable:
+            raise ftp.PermissionDeniedError(p)
+
+        filetype = fs_access.type(p)
+        if filetype == 'd':
+            raise ftp.FileNotFoundError(p)
+
+        return ReadFileObj(fs_access, p)
+
     def openForReading(self, path):
         p = self._path(path)
 
-        def succeed(result):
-            if not result:
-                raise ftp.PermissionDeniedError(p)
-            return ReadFileObj(self.fs_access, p)
-
-        def failed(failure):
-            raise ftp.PermissionDeniedError(p)
-
-        d = threads.deferToThread(self.fs_access.readable, p)
-        d.addCallback(succeed)
-        d.addErrback(failed)
-
-        return d
+        return threads.deferToThread(self._checkFileReadAccess,
+                                     self.fs_access, p)
 
     def openForWriting(self, path):
         p = self._path(path)

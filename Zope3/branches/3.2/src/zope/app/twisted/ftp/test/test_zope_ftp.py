@@ -109,7 +109,8 @@ class FTPServerTestCase(test_ftp.FTPServerTestCase):
             responseLines
         )
 
-class BasicFTPServerTestCase(FTPServerTestCase, test_ftp.BasicFTPServerTestCase):
+class BasicFTPServerTestCase(FTPServerTestCase,
+                             test_ftp.BasicFTPServerTestCase):
     def _authLogin(self):
         responseLines = wait(self.client.queueStringCommand('USER root'))
         self.assertEquals(
@@ -135,17 +136,32 @@ class BasicFTPServerTestCase(FTPServerTestCase, test_ftp.BasicFTPServerTestCase)
 
         self._authLogin()
         responseLines = wait(self.client.queueStringCommand('RMD /newdir'))
-        self.assertEqual(['250 Requested File Action Completed OK'], responseLines)
+        self.assertEqual(
+            ['250 Requested File Action Completed OK'], responseLines)
 
     def test_DELE(self):
         self.rootfs.writefile_nocheck('/file.txt', StringIO('x' * 20))
 
         self._authLogin()
         responseLines = wait(self.client.queueStringCommand('DELE /file.txt'))
-        self.assertEqual(['250 Requested File Action Completed OK'], responseLines)
+        self.assertEqual(
+            ['250 Requested File Action Completed OK'], responseLines)
+
+    def test_SIZE(self):
+        self.rootfs.writefile_nocheck('/file.txt', StringIO('x' * 20))
+
+        self._anonymousLogin()
+        responseLines = wait(self.client.queueStringCommand('SIZE /file.txt'))
+        self.assertEqual(['213 20'], responseLines)
+
+    def test_SIZE_on_dir(self):
+        self._anonymousLogin()
+        responseLines = wait(self.client.queueStringCommand('SIZE /'))
+        self.assertEqual(['213 0'] , responseLines)
+
 
 class FTPServerPasvDataConnectionTestCase(FTPServerTestCase,
-                                          test_ftp.FTPServerPasvDataConnectionTestCase):
+                                  test_ftp.FTPServerPasvDataConnectionTestCase):
 
     def testLIST(self):
         # Login
@@ -203,7 +219,8 @@ class FTPServerPasvDataConnectionTestCase(FTPServerTestCase,
 
         # Download a range of different size files
         for size in range(100000, 110000, 500):
-            self.rootfs.writefile_nocheck('/%d.txt' % (size,), StringIO('x' * size))
+            self.rootfs.writefile_nocheck('/%d.txt' % (size,),
+                                          StringIO('x' * size))
 
             downloader = self._makeDataConnection()
             d = self.client.queueStringCommand('RETR %d.txt' % (size,))
@@ -211,7 +228,8 @@ class FTPServerPasvDataConnectionTestCase(FTPServerTestCase,
             self.assertEqual('x' * size, downloader.buffer)
 
 
-class FTPServerPortDataConnectionTestCaes(FTPServerPasvDataConnectionTestCase, test_ftp.FTPServerPortDataConnectionTestCase):
+class FTPServerPortDataConnectionTestCaes(FTPServerPasvDataConnectionTestCase,
+                                  test_ftp.FTPServerPortDataConnectionTestCase):
     def setUp(self):
         FTPServerPasvDataConnectionTestCase.setUp(self)
         self.dataPorts = []
@@ -264,7 +282,8 @@ class ZopeFTPPermissionTestCases(FTPServerTestCase):
         deferred = self.client.queueStringCommand('CWD /nosuchdir')
         failureResponseLines = self._waitForCommandFailure(deferred)
         self.failUnless(failureResponseLines[-1].startswith('550'),
-                        "Response didn't start with 550: %r" % failureResponseLines[-1])
+                        "Response didn't start with 550: %r" %
+                              failureResponseLines[-1])
 
     def testListNonPermission(self):
         self._michaelLogin()

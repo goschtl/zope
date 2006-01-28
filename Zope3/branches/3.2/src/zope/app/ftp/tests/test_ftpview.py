@@ -70,6 +70,12 @@ class Directory(demofs.Directory, Contained):
             return r
         return Directory()
 
+
+# Very simple container that is not adaptable to IReadDirectory
+class NonDirectoryContainer(demofs.Directory):
+    implements(IContainer)
+
+
 class File(demofs.File):
 
     implements(IReadFile, IWriteFile, IZopeDublinCore)
@@ -282,6 +288,9 @@ class Test(PlacelessSetup, TestCase):
         self.assert_(self.__view.readable('f'))
         self.assert_(not self.__view.readable('notthere'))
         self.assert_(self.__view.readable('test'))
+        root = self.root
+        root['nondir'] = NonDirectoryContainer()
+        self.assertEqual(self.__view.readable('nondir'), False)
 
     def test_read_unicode(self):
         root = self.root
