@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - Allow ``zmi_views`` actions like: ``javascript:popup()``, 
+        ``../parentview.html`` or ``++namespace++foobar`` as first menu items.
+
       - Added ``-x dirs`` option to i18nextract that allows to exclude
         particular directories from being searched.
 
