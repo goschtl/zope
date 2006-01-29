@@ -18,16 +18,30 @@ $Id$
 
 from zope.interface import providedBy, Interface, ro
 
+class readproperty(object):
+
+    def __init__(self, func):
+        self.func = func
+
+    def __get__(self, inst, class_):
+        if inst is None:
+            return self
+
+        func = self.func
+        return func(inst)
+    
+
 _marker = object
 class AdapterRegistry(object):
 
     def __init__(self, bases=()):
-        self._unnamed_adapters = [] # [{ provided -> components }]
-        self._named_adapters = {} # { name -> [{ provided -> components }] }
-        self._unnamed_subscriptions = [] # ditto
-        self._named_subscriptions = {} # ditto
+        self._adapters = []
+        self._provided = {}
+        self._unnamed_subscriptions = []
+        self._named_subscriptions = {}
         self.__bases__ = bases
 
+    @apply
     def __bases__():
         def get(self):
             return self.__dict__['__bases__']
@@ -36,59 +50,99 @@ class AdapterRegistry(object):
             self.ro = ro.ro(self)
             
         return property(get, set)
-    __bases__ = __bases__()
-        
+
+
+    @readproperty
+    def _v_extendors(self):
+        _v_extendors = {}
+        for provided in self._provided:
+            for i in provided.__iro__:
+                extendors = _v_extendors.get(i, ())
+                if provided not in extendors:
+                    _v_extendors[i] = (
+                        [e for e in extendors if provided.isOrExtends(e)]
+                        +
+                        [provided]
+                        + 
+                        [e for e in extendors if not provided.isOrExtends(e)]
+                        )
+        self._v_extendors = _v_extendors
+        return self._v_extendors
+
     def register(self, required, provided, name, value):
         if value is None:
             self.unregister(required, provided, name, value)
             return
 
-        if name:
-            name = _normalize_name(name)
-            byorder = self._named_adapters.get(name)
-            if byorder is None:
-                self._named_adapters[name] = byorder = []
-        else:
-            byorder = self._unnamed_adapters
-
+        required = tuple(map(_convert_None_to_Interface, required))
+        name = _normalize_name(name)
         order = len(required)
+        byorder = self._adapters
         while len(byorder) <= order:
-            byorder.append(Adapters())
-
+            byorder.append({})
         components = byorder[order]
-        components.register(required, provided, value)
+        key = required + (provided,)
+        
+        for k in key:
+            d = components.get(k)
+            if d is None:
+                d = {}
+                components[k] = d
+            components = d
+
+        if components.get(name) == value:
+            return
+        
+        components[name] = value
+
+        n = self._provided.get(provided, 0) + 1
+        self._provided[provided] = n
+        if n == 1 and '_v_extendors' in self.__dict__:
+            del self.__dict__['_v_extendors']
         
     def unregister(self, required, provided, name, value=None):
-        if name:
-            name = _normalize_name(name)
-            byorder = self._named_adapters.get(name)
-            if byorder is None:
-                return
-        else:
-            byorder = self._unnamed_adapters
-
+        required = tuple(map(_convert_None_to_Interface, required))
         order = len(required)
+        byorder = self._adapters
         if order >= len(byorder):
-            return
+            return False
         components = byorder[order]
-        components.unregister(required, provided, value)
+        key = required + (provided,)
+        
+        for k in key:
+            d = components.get(k)
+            if d is None:
+                return
+            components = d
 
+        old = components.get(name)
+        if old is None:
+            return
+        if value is not None and old != value:
+            return
+
+        del components[name]
+        n = self._provided[provided] - 1
+        if n == 0:
+            del self._provided[provided]
+            if '_v_extendors' in self.__dict__:
+                del self.__dict__['_v_extendors']
+
+        return
 
     def lookup(self, required, provided, name=u'', default=None):
+        order = len(required)
         for self in self.ro:
-            if name:
-                byorder = self._named_adapters.get(name)
-                if byorder is None:
-                    continue
-            else:
-                byorder = self._unnamed_adapters
-
-            order = len(required)
+            byorder = self._adapters
             if order >= len(byorder):
                 continue
 
+            extendors = self._v_extendors.get(provided)
+            if not extendors:
+                continue
+            
             components = byorder[order]
-            result = lookup(components.components, required, provided)
+            result = _lookup(components, required, extendors, name, 0, order)
             if result is not None:
                 return result
 
@@ -106,23 +160,7 @@ class AdapterRegistry(object):
         return result        
 
     def lookup1(self, required, provided, name=u'', default=None):
-        for self in self.ro:
-            if name:
-                byorder = self._named_adapters.get(name)
-                if byorder is None:
-                    continue
-            else:
-                byorder = self._unnamed_adapters
-
-            if 1 >= len(byorder):
-                continue
-
-            components = byorder[1]
-            result = lookup1(components.components, required, provided)
-            if result is not None:
-                return result
-
-        return default
+        return self.lookup((required, ), provided, name, default)
 
     def queryAdapter(self, object, provided, name=u'', default=None):
         return self.adapter_hook(provided, object, name, default)
@@ -137,20 +175,19 @@ class AdapterRegistry(object):
         return default
 
     def lookupAll(self, required, provided):
-        for self in self.ro:
-            order = len(required)
-            if order < len(self._unnamed_adapters):
-                result = lookup(self._unnamed_adapters[order].components,
-                                required, provided)
-                if result is not None:
-                    yield (u'', result)
+        order = len(required)
+        result = {}
+        for self in reversed(self.ro):
+            byorder = self._adapters
+            if order >= len(byorder):
+                continue
+            extendors = self._v_extendors.get(provided)
+            if not extendors:
+                continue
+            components = byorder[order]
+            _lookupAll(components, required, extendors, result, 0, order)
 
-            for name, byorder in self._named_adapters.iteritems():
-                if order < len(byorder):
-                    result = lookup(byorder[order].components,
-                                    required, provided)
-                    if result is not None:
-                        yield (name, result)
+        return result.iteritems()
 
     def names(self, required, provided):
         return [c[0] for c in self.lookupAll(required, provided)]
@@ -247,7 +284,11 @@ class AdapterRegistry(object):
             selfImplied = {}
         return XXXTwistedFakeOut
     
-
+def _convert_None_to_Interface(x):
+    if x is None:
+        return Interface
+    else:
+        return x
 
 def _normalize_name(name):
     if isinstance(name, basestring):
@@ -276,6 +317,7 @@ class Adapters(object):
             registered = self.provided.get(provided)
             if registered is None:
                 self.provided[provided] = registered = provided.__iro__, []
+                # XXX where is changed?  Where is unsubscribe on unregister?
                 provided.subscribe(self)
             registered[1].append((required, value))
 
@@ -371,40 +413,41 @@ class Subscriptions(Adapters):
     def _add(self, components, provided, value):
         return components + ((value, provided), )
 
-def _lookup(components, specs, i, l):
+def _lookup(components, specs, provided, name, i, l):
     if i < l:
         for spec in specs[i].__sro__:
             comps = components.get(spec)
-            if comps is not None:
-                r = _lookup(comps, specs, i+1, l)
+            if comps:
+                r = _lookup(comps, specs, provided, name, i+1, l)
                 if r is not None:
                     return r
-        return None
-    
-    return components
-
-def lookup(components, required, provided):
-    components = components.get(provided)
-    if components:
-
-        if required:
-            components = _lookup(components, required, 0, len(required))
-            if not components:
-                return None
-
-        return components[0][0]
-
-    return None
-
-def lookup1(components, required, provided):
-    components = components.get(provided)
-    if components:
-        for s in required.__sro__:
-            comps = components.get(s)
+    else:
+        for iface in provided:
+            comps = components.get(iface)
             if comps:
-                return comps[0][0]
-
+                r = comps.get(name)
+                if r is not None:
+                    return r
+                
     return None
+
+def _lookupAll(components, specs, provided, result, i, l):
+    if i < l:
+        for spec in reversed(specs[i].__sro__):
+            comps = components.get(spec)
+            if comps:
+                r = _lookupAll(comps, specs, provided, result, i+1, l)
+                if r is not None:
+                    return r
+    else:
+        for iface in reversed(provided):
+            comps = components.get(iface)
+            if comps:
+                result.update(comps)
+
+
+
+
 
 def _subscribers(components, specs, i, l, objects, result):
     if i < l:
