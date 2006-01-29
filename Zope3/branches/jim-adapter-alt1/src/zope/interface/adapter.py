@@ -16,6 +16,7 @@
 $Id$
 """
 
+import weakref
 from zope.interface import providedBy, Interface, ro
 
 class readproperty(object):
@@ -31,6 +32,9 @@ class readproperty(object):
         return func(inst)
     
 
+_delegated = ('lookup', 'queryMultiAdapter', 'lookup1', 'queryAdapter',
+              'adapter_hook', 'lookupAll', 'names')
+
 _marker = object
 class AdapterRegistry(object):
 
@@ -39,19 +43,64 @@ class AdapterRegistry(object):
         self._provided = {}
         self._unnamed_subscriptions = []
         self._named_subscriptions = {}
+        self._init_non_persistent()
         self.__bases__ = bases
+
+    def _init_non_persistent(self):
+        self._v_subregistries = weakref.WeakKeyDictionary()
+        self._v_lookup = lookup = AdapterLookup(self)
+        for name in _delegated:
+            self.__dict__[name] = getattr(lookup, name)
+
+    def __getstate__(self):
+        state = super(AdapterRegistry, self).__getstate__().copy()
+        for name in _delegated:
+            state.pop(name, 0)
+        return state
+
+    def __setstate__(self, state):
+        super(AdapterRegistry, self).__setstate__(state)
+        self._init_non_persistent()
 
     @apply
     def __bases__():
+        
         def get(self):
             return self.__dict__['__bases__']
+
         def set(self, v):
+            old = self.__dict__.get('__bases__', ())
+            for r in old:
+                if r not in v:
+                    r._removeSubregistry(self)
+            for r in v:
+                if r not in old:
+                    r._addSubregistry(self)
+            
             self.__dict__['__bases__'] = v
             self.ro = ro.ro(self)
+            self.changed()
             
         return property(get, set)
 
+    def _addSubregistry(self, r):
+        self._v_subregistries[r] = 1
 
+    def _removeSubregistry(self, r):
+        if r in self._v_subregistries:
+            del self._v_subregistries[r]
+
+    def changed(self):
+        try:
+            lookup = self._v_lookup
+        except AttributeError:
+            pass
+        else:
+            lookup.changed()
+
+        for sub in self._v_subregistries.keys():
+            sub.changed()
+       
     @readproperty
     def _v_extendors(self):
         _v_extendors = {}
@@ -99,6 +148,8 @@ class AdapterRegistry(object):
         self._provided[provided] = n
         if n == 1 and '_v_extendors' in self.__dict__:
             del self.__dict__['_v_extendors']
+
+        self.changed()
         
     def unregister(self, required, provided, name, value=None):
         required = tuple(map(_convert_None_to_Interface, required))
@@ -128,69 +179,10 @@ class AdapterRegistry(object):
             if '_v_extendors' in self.__dict__:
                 del self.__dict__['_v_extendors']
 
+        self.changed()
+
         return
 
-    def lookup(self, required, provided, name=u'', default=None):
-        order = len(required)
-        for self in self.ro:
-            byorder = self._adapters
-            if order >= len(byorder):
-                continue
-
-            extendors = self._v_extendors.get(provided)
-            if not extendors:
-                continue
-            
-            components = byorder[order]
-            result = _lookup(components, required, extendors, name, 0, order)
-            if result is not None:
-                return result
-
-        return default
-
-    def queryMultiAdapter(self, objects, provided, name=u'', default=None):
-        factory = self.lookup(map(providedBy, objects), provided, name)
-        if factory is None:
-            return default
-
-        result = factory(*objects)
-        if result is None:
-            return default
-
-        return result        
-
-    def lookup1(self, required, provided, name=u'', default=None):
-        return self.lookup((required, ), provided, name, default)
-
-    def queryAdapter(self, object, provided, name=u'', default=None):
-        return self.adapter_hook(provided, object, name, default)
-
-    def adapter_hook(self, provided, object, name=u'', default=None):
-        factory = self.lookup1(providedBy(object), provided, name)
-        if factory is not None:
-            result = factory(object)
-            if result is not None:
-                return result
-
-        return default
-
-    def lookupAll(self, required, provided):
-        order = len(required)
-        result = {}
-        for self in reversed(self.ro):
-            byorder = self._adapters
-            if order >= len(byorder):
-                continue
-            extendors = self._v_extendors.get(provided)
-            if not extendors:
-                continue
-            components = byorder[order]
-            _lookupAll(components, required, extendors, result, 0, order)
-
-        return result.iteritems()
-
-    def names(self, required, provided):
-        return [c[0] for c in self.lookupAll(required, provided)]
 
     def subscribe(self, required, provided, value):
 
@@ -283,6 +275,146 @@ class AdapterRegistry(object):
         class XXXTwistedFakeOut:
             selfImplied = {}
         return XXXTwistedFakeOut
+
+
+
+
+_not_in_mapping = object()
+class AdapterLookup(object):
+
+    def __init__(self, registry):
+        self._registry = registry
+        self._cache = {}
+        self._mcache = {}
+        self._required = {}
+
+    def changed(self):
+        self._cache.clear()
+        self._mcache.clear()
+        for r in self._required.keys():
+            r = r()
+            if r is not None:
+                r.unsubscribe(self)
+        self._required.clear()
+        
+    def _getcache(self, provided, name):
+        cache = self._cache.get(provided)
+        if cache is None:
+            cache = {}
+            self._cache[provided] = cache
+        if name:
+            c = cache.get(name)
+            if c is None:
+                c = {}
+                cache[name] = c
+            cache = c
+        return cache
+
+    def _subscribe(self, *required):
+        _refs = self._required
+        for r in required:
+            ref = r.weakref()
+            if ref not in _refs:
+                r.subscribe(self)
+                _refs[ref] = 1
+
+    def lookup(self, required, provided, name=u'', default=None):
+        cache = self._getcache(provided, name)
+        if len(required) == 1:
+            result = cache.get(required[0], _not_in_mapping)
+        else:
+            result = cache.get(tuple(required), _not_in_mapping)
+
+        if result is _not_in_mapping:
+            result = None
+            order = len(required)
+            for registry in self._registry.ro:
+                byorder = registry._adapters
+                if order >= len(byorder):
+                    continue
+
+                extendors = registry._v_extendors.get(provided)
+                if not extendors:
+                    continue
+
+                components = byorder[order]
+                result = _lookup(components, required, extendors, name, 0,
+                                 order)
+                if result is not None:
+                    break
+
+            self._subscribe(*required)
+            if len(required) == 1:
+                cache[required[0]] = result
+            else:
+                cache[tuple(required)] = result
+
+        if result is None:
+            return default
+
+        return result
+
+    def queryMultiAdapter(self, objects, provided, name=u'', default=None):
+        factory = self.lookup(map(providedBy, objects), provided, name)
+        if factory is None:
+            return default
+
+        result = factory(*objects)
+        if result is None:
+            return default
+
+        return result        
+    
+    def lookup1(self, required, provided, name=u'', default=None):
+        return self.lookup((required, ), provided, name, default)
+    
+    def queryAdapter(self, object, provided, name=u'', default=None):
+        return self.adapter_hook(provided, object, name, default)
+
+    def adapter_hook(self, provided, object, name=u'', default=None):
+        factory = self.lookup1(providedBy(object), provided, name)
+        if factory is not None:
+            result = factory(object)
+            if result is not None:
+                return result
+
+        return default
+
+    def lookupAll(self, required, provided):
+        cache = self._mcache.get(provided)
+        if cache is None:
+            cache = {}
+            self._mcache[provided] = cache
+
+        required = tuple(required)
+        result = cache.get(required, _not_in_mapping)
+        if result is _not_in_mapping:
+
+            order = len(required)
+            result = {}
+            for registry in reversed(self._registry.ro):
+                byorder = registry._adapters
+                if order >= len(byorder):
+                    continue
+                extendors = registry._v_extendors.get(provided)
+                if not extendors:
+                    continue
+                components = byorder[order]
+                _lookupAll(components, required, extendors, result, 0, order)
+
+            self._subscribe(*required)
+            cache[required] = result
+
+        return result.iteritems()
+
+    def names(self, required, provided):
+        return [c[0] for c in self.lookupAll(required, provided)]
+
+
+
+
+
+
     
 def _convert_None_to_Interface(x):
     if x is None:
