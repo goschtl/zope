@@ -33,16 +33,16 @@ class readproperty(object):
     
 
 _delegated = ('lookup', 'queryMultiAdapter', 'lookup1', 'queryAdapter',
-              'adapter_hook', 'lookupAll', 'names')
+              'adapter_hook', 'lookupAll', 'names',
+              'subscriptions', 'subscribers')
 
 _marker = object
 class AdapterRegistry(object):
 
     def __init__(self, bases=()):
         self._adapters = []
+        self._subscribers = []
         self._provided = {}
-        self._unnamed_subscriptions = []
-        self._named_subscriptions = {}
         self._init_non_persistent()
         self.__bases__ = bases
 
@@ -185,88 +185,62 @@ class AdapterRegistry(object):
 
 
     def subscribe(self, required, provided, value):
-
-# XXX when we are ready to support named subscribers, we'll add a name
-# argument and uncomment the following.
-##         if name:
-##             name = _normalize_name(name)
-##             byorder = self._named_subscriptions.get(name)
-##             if byorder is None:
-##                 self._named_subscriptions[name] = byorder = []
-##         else:
-##             byorder = self._unnamed_subscriptions
-
-        byorder = self._unnamed_subscriptions
-
+        required = tuple(map(_convert_None_to_Interface, required))
+        name = u''
         order = len(required)
+        byorder = self._subscribers
         while len(byorder) <= order:
-            byorder.append(Subscriptions())
-
+            byorder.append({})
         components = byorder[order]
-        components.register(required, provided, value)
+        key = required + (provided,)
+        
+        for k in key:
+            d = components.get(k)
+            if d is None:
+                d = {}
+                components[k] = d
+            components = d
+
+        components[name] = components.get(name, ()) + (value, )
+
+        if provided is not None:
+            n = self._provided.get(provided, 0) + 1
+            self._provided[provided] = n
+            if n == 1 and '_v_extendors' in self.__dict__:
+                del self.__dict__['_v_extendors']
+
+        self.changed()
 
     def unsubscribe(self, required, provided, value):
-
-# XXX when we are ready to support named subscribers, we'll add a name
-# argument and uncomment the following.
-##         if name:
-##             name = _normalize_name(name)
-##             byorder = self._named_subscriptions.get(name)
-##             if byorder is None:
-##                 self._named_subscriptions[name] = byorder = []
-##         else:
-##             byorder = self._unnamed_subscriptions
-
-        byorder = self._unnamed_subscriptions
-
+        required = tuple(map(_convert_None_to_Interface, required))
         order = len(required)
-        if len(byorder) <= order:
-            return
-
+        byorder = self._subscribers
+        if order >= len(byorder):
+            return False
         components = byorder[order]
-        components.unregister(required, provided, value)
+        key = required + (provided,)
+        
+        for k in key:
+            d = components.get(k)
+            if d is None:
+                return
+            components = d
 
-    def subscriptions(self, required, provided, name=u''):
-        result = []
-        # XXX should we traverse ro in reverse?
-        for self in self.ro:
-            if name:
-                byorder = self._named_subscriptions.get(name)
-                if byorder is None:
-                    continue
-            else:
-                byorder = self._unnamed_subscriptions
+        components[u''] = tuple([
+            v for v in components.get(u'', ())
+            if v != value
+            ])
 
-            order = len(required)
-            if order >= len(byorder):
-                continue
-            
-            subscriptions(byorder[order].components, required, provided,
-                          result)
+        if provided is not None:
+            n = self._provided[provided] - 1
+            if n == 0:
+                del self._provided[provided]
+                if '_v_extendors' in self.__dict__:
+                    del self.__dict__['_v_extendors']
 
-        return result
+        self.changed()
 
-    def subscribers(self, objects, provided, name=u''):
-        if provided is None:
-            result = ()
-        else:
-            result = []
-            
-        for self in self.ro:
-            if name:
-                byorder = self._named_subscriptions.get(name)
-                if byorder is None:
-                    continue
-            else:
-                byorder = self._unnamed_subscriptions
-
-            order = len(objects)
-            if order >= len(byorder):
-                continue
-
-            subscribers(byorder[order].components, objects, provided, result)
-
-        return result
+        return
 
     # XXX hack to fake out twisted's use of a private api.  We'll need
     # to add a public api to mean twisted's needs and get them to use
@@ -286,11 +260,13 @@ class AdapterLookup(object):
         self._registry = registry
         self._cache = {}
         self._mcache = {}
+        self._scache = {}
         self._required = {}
 
     def changed(self):
         self._cache.clear()
         self._mcache.clear()
+        self._scache.clear()
         for r in self._required.keys():
             r = r()
             if r is not None:
@@ -389,7 +365,6 @@ class AdapterLookup(object):
         required = tuple(required)
         result = cache.get(required, _not_in_mapping)
         if result is _not_in_mapping:
-
             order = len(required)
             result = {}
             for registry in reversed(self._registry.ro):
@@ -410,11 +385,47 @@ class AdapterLookup(object):
     def names(self, required, provided):
         return [c[0] for c in self.lookupAll(required, provided)]
 
+    def subscriptions(self, required, provided):
+        cache = self._scache.get(provided)
+        if cache is None:
+            cache = {}
+            self._scache[provided] = cache
 
+        required = tuple(required)
+        result = cache.get(required, _not_in_mapping)
+        if result is _not_in_mapping:
+            order = len(required)
+            result = []
+            for registry in reversed(self._registry.ro):
+                byorder = registry._subscribers
+                if order >= len(byorder):
+                    continue
 
+                if provided is None:
+                    extendors = (provided, )
+                else:
+                    extendors = registry._v_extendors.get(provided)
+                    if extendors is None:
+                        continue
 
+                _subscriptions(byorder[order], required, extendors, u'',
+                               result, 0, order)
 
+        return result
 
+    def subscribers(self, objects, provided):
+        subscriptions = self.subscriptions(map(providedBy, objects), provided)
+        if provided is None:
+            result = ()
+            for subscription in subscriptions:
+                subscription(*objects)
+        else:
+            result = []
+            for subscription in subscriptions:
+                subscriber = subscription(*objects)
+                if subscriber is not None:
+                    result.append(subscriber)
+        return result
     
 def _convert_None_to_Interface(x):
     if x is None:
@@ -427,123 +438,6 @@ def _normalize_name(name):
         return unicode(name)
 
     raise TypeError("name must be a regular or unicode string")
-
-        
-class Next:
-
-    def __init__(self, spec, basis):
-        sro = spec.__sro__
-        self.__sro__ = sro[sro.index(basis)+1:]
-
-
-class Adapters(object):
-
-    def __init__(self):
-        self.components = {}
-        self.provided = {} # {iface -> (iro, [(required, value)])}
-
-    def register(self, required, provided, value):
-        if (provided is None) or (provided is Interface):
-            self._register(required, provided, provided, value)
-        else:
-            registered = self.provided.get(provided)
-            if registered is None:
-                self.provided[provided] = registered = provided.__iro__, []
-                # XXX where is changed?  Where is unsubscribe on unregister?
-                provided.subscribe(self)
-            registered[1].append((required, value))
-
-            for p in provided.__iro__:
-                self._register(required, provided, p, value)
-
-    def _register(self, required, provided, p, value):
-        d = self.components
-        k = p
-        for r in required:
-            if r is None:
-                r = Interface
-            v = d.get(k)
-            if v is None:
-                d[k] = v = {}
-            d = v
-            k = r
-
-        components = d.get(k, ())
-        d[k] = self._add(components, provided, value)
-
-    def _add(self, components, provided, value):
-        if provided is None:
-            return components + ((value, provided), )
-        
-        return (
-            tuple([c for c in components if provided.extends(c[1])])
-            +
-            ((value, provided), )
-            +
-            tuple([c for c in components if not provided.extends(c[1])])
-            )
-        
-    def unregister(self, required, provided, value):
-        if (provided is None) or (provided is Interface):
-            self._unregister(required, provided, provided, value)
-        else:
-            registered = self.provided.get(provided)
-            if registered is None:
-                return
-            if value is None:
-                rv = [r for r in registered[1] if r[0] != required]
-            else:
-                rv = [r for r in registered[1] if r != (required, value)]
-
-            if rv:
-                self.provided[provided] = registered[0], rv
-            else:
-                del self.provided[provided]
-
-            for p in provided.__iro__:
-                self._unregister(required, provided, p, value)
-
-    def _unregister(self, required, provided, p, value):
-        items = []
-        d = self.components
-        k = p
-        for r in required:
-            if r is None:
-                r = Interface
-            v = d.get(k)
-            if v is None:
-                return
-            items.append((d, k))
-            d = v
-            k = r
-
-        components = d.get(k, None)
-        if components is None:
-            return
-
-        if value is None:
-            # unregister all
-            components = [c for c in components
-                          if c[1] != provided]
-        else:
-            # unregister just this one
-            components = [c for c in components
-                          if c != (value, provided)]
-
-        if components:
-            d[k] = tuple(components)
-        else:
-            del d[k]
-
-            items.reverse()
-            for d, k in items:
-                if not d[k]:
-                    del d[k]
-
-class Subscriptions(Adapters):
-
-    def _add(self, components, provided, value):
-        return components + ((value, provided), )
 
 def _lookup(components, specs, provided, name, i, l):
     if i < l:
@@ -568,47 +462,23 @@ def _lookupAll(components, specs, provided, result, i, l):
         for spec in reversed(specs[i].__sro__):
             comps = components.get(spec)
             if comps:
-                r = _lookupAll(comps, specs, provided, result, i+1, l)
-                if r is not None:
-                    return r
+                _lookupAll(comps, specs, provided, result, i+1, l)
     else:
         for iface in reversed(provided):
             comps = components.get(iface)
             if comps:
                 result.update(comps)
 
-
-
-
-
-def _subscribers(components, specs, i, l, objects, result):
+def _subscriptions(components, specs, provided, name, result, i, l):
     if i < l:
-        sro = list(specs[i].__sro__)
-        sro.reverse()
-        for spec in sro:
+        for spec in reversed(specs[i].__sro__):
             comps = components.get(spec)
-            if comps is not None:
-                _subscribers(comps, specs, i+1, l, objects, result)
+            if comps:
+                _subscriptions(comps, specs, provided, name, result, i+1, l)
     else:
-        if objects is None:
-            result.extend([c[0] for c in components])
-        else:
-            for c in components:
-                c = c[0](*objects)
-                if c is not None and result is not None:
-                    result.append(c)
-
-def subscriptions(components, required, provided, result):
-    components = components.get(provided)
-    if components:
-        _subscribers(components, required, 0, len(required), None, result)
-
-def subscribers(components, objects, provided, result):
-    components = components.get(provided)
-    if components:
-        required = map(providedBy, objects)
-
-        if provided is None:
-            result == None
-
-        _subscribers(components, required, 0, len(required), objects, result)
+        for iface in reversed(provided):
+            comps = components.get(iface)
+            if comps:
+                comps = comps.get(name)
+                if comps:
+                    result.extend(comps)
