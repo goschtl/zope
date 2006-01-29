@@ -658,7 +658,9 @@ class _Sequence(object):
 _Declaration_checker = InterfaceChecker(
     IDeclaration,
     _implied=CheckerPublic,
-    subscribe=CheckerPublic)
+    subscribe=CheckerPublic,
+    unsubscribe=CheckerPublic,
+    )
 
 def f():
     yield f
