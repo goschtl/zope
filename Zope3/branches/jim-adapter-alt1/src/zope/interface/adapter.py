@@ -411,6 +411,9 @@ class AdapterLookup(object):
                 _subscriptions(byorder[order], required, extendors, u'',
                                result, 0, order)
 
+            self._subscribe(*required)
+            cache[required] = result
+
         return result
 
     def subscribers(self, objects, provided):
