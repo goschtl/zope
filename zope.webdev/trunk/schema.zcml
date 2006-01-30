@@ -1,0 +1,51 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:apidoc="http://namespaces.zope.org/apidoc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="webdev"
+    >
+
+  <!-- Permission Definitions -->
+
+  <permission
+      id="webdev.CreateSchema"
+      title="Create Schema"
+      />
+
+  <permission
+      id="webdev.ManageSchema"
+      title="Manage Schema"
+      />
+
+  <permission
+      id="webdev.ViewSchema"
+      title="View Schema"
+      />
+
+  <!-- Security Declarations -->
+
+  <content class=".schema.Schema">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="webdev.ViewSchema"
+        interface="zope.app.schema.interfaces.IReadMutableSchema"
+        attributes="name dostring bases getBases"/>
+    <require
+        permission="webdev.ManageSchema"
+        interface="zope.app.schema.interfaces.IWriteMutableSchema"
+        set_attributes="name docstring bases" />
+  </content>
+
+  <!-- Registration of Documentation with apidoc -->
+
+  <apidoc:bookchapter
+      id="schema"
+      title="The Schema"
+      parent="webdev"
+      doc_path="schema.txt"
+      zcml:condition="have apidoc"
+      />
+
+</configure>

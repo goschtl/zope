@@ -1,0 +1,53 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:apidoc="http://namespaces.zope.org/apidoc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="webdev"
+    >
+
+  <!-- Permission Definitions -->
+
+  <permission
+      id="webdev.CreatePackage"
+      title="Create Package"
+      />
+
+  <permission
+      id="webdev.ManagePackage"
+      title="Manage Package"
+      />
+
+  <permission
+      id="webdev.ViewPackage"
+      title="View Package"
+      />
+
+  <!-- Security Declarations -->
+
+  <content class="zope.webdev.package.Package">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="webdev.ViewPackage"
+        interface="zope.app.container.interfaces.IReadContainer"
+        attributes="name docstring version license author registrationManager"
+        />
+    <require
+        permission="webdev.ManagePackage"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        set_attributes="docstring version license author registrationManager"
+        />
+  </content>
+
+  <!-- Registration of Documentation with apidoc -->
+
+  <apidoc:bookchapter
+      id="package"
+      title="The Package"
+      parent="webdev"
+      doc_path="package.txt"
+      zcml:condition="have apidoc"
+      />
+
+</configure>

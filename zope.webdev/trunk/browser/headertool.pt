@@ -1,0 +1,8 @@
+<div class="headertool">
+  <a href=""
+     tal:attributes="href view/url">
+    <img src="" border="0"
+         tal:attributes="src view/icon_url" />
+    <span tal:content="view/title">Exit</span>
+  </a>
+</div>

@@ -1,0 +1,67 @@
+========
+The Page
+========
+
+First we create a site:
+
+  >>> from zope.app.testing import setup
+  >>> from zope.app.folder import rootFolder
+  >>> site = rootFolder()
+  >>> setup.createSiteManager(site, setsite=True)
+  <zope.app.component.site.LocalSiteManager object at ...>
+
+  >>> site['image.gif'] = object()
+  >>> site['file.txt'] = object()
+
+  >>> from zope.webdev.page import Page
+  >>> names_html = Page('names.html')
+  >>> site.getSiteManager()['default']['names.html'] = names_html
+  >>> names_html.register()
+
+defaults are: for=Interface, layers=(IDefaultLayer,),
+              permission=CheckerPublic, template=zptpage.ZPTPage(),
+              module=ModuleManager(), className=None)
+
+is automatically registered.
+
+  >>> names_html.templateSource = u'''
+  ... <html>
+  ...   <body>
+  ...     <h1>Folder contents</h1>
+  ...     <ul>
+  ...       <li tal:repeat="name view/names"
+  ...           tal:content="name" />
+  ...     </ul>
+  ...   </body>
+  ... </html>
+  ... '''
+
+  >>> names_html.moduleSource = '''
+  ... class FolderContents(object):
+  ...     @property
+  ...     def names(self):
+  ...         return sorted(self.context.keys())
+  ... '''
+  >>> names_html.className = 'FolderContents'
+
+Now the page is setup and it should be available for any folder:
+
+  >>> import zope.component
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+  >>> page = zope.component.getMultiAdapter(
+  ...     (site, request), name='names.html')
+
+Now render the page:
+
+  >>> print page()
+  <html>
+    <body>
+      <h1>Folder contents</h1>
+      <ul>
+        <li>file.txt</li>
+        <li>image.gif</li>
+      </ul>
+    </body>
+  </html>

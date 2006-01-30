@@ -1,0 +1,92 @@
+===========
+The Package
+===========
+
+The package is the WebDev version of a traditional Python package. It is very
+similar to a site-management folder that manages the package's "code".
+
+  >>> from zope.webdev import package
+
+Every package has a name that must be a Python identifier. While the name does
+not have to be set during initialization, it is very important to specify it
+always:
+
+  >>> person = package.Package('person')
+  >>> person
+  <Package 'person'>
+
+  >>> person.name
+  'person'
+
+Note: The reason it is not required is because of the Web interface. There the
+name is assigned when the package is added to the container.
+
+Additionally, the package supports a docstring, version, license and author
+field.
+
+  >>> person.docstring
+  >>> person.docstring = u'A package for defining and managing people.'
+  >>> person.docstring
+  u'A package for defining and managing people.'
+
+  >>> person.version
+  >>> person.version = u'0.1'
+  >>> person.version
+  u'0.1'
+
+  >>> person.license
+  >>> person.license = u'ZPL 2.1'
+  >>> person.license
+  u'ZPL 2.1'
+
+  >>> person.author
+  >>> person.author = u'Stephan Richter'
+  >>> person.author
+  u'Stephan Richter'
+
+Of course, all those parameters can also be passed into the constructor:
+
+  >>> pp = package.Package('person', u'A people package',
+  ...                      u'0.1', u'ZPL 2.1', u'Stephan Richter')
+
+  >>> pp.name
+  'person'
+  >>> pp.docstring
+  u'A people package'
+  >>> pp.version
+  u'0.1'
+  >>> pp.license
+  u'ZPL 2.1'
+  >>> pp.author
+  u'Stephan Richter'
+
+Also note that the ``name`` attribute is read-only.
+
+  >>> pp.name = 'newperson'
+  Traceback (most recent call last):
+  ...
+  AttributeError: can't set attribute
+
+This is because the naming of the package should only be controlled by the
+container, in this case the site manager. The site manager sets the
+``__name__`` attribute,
+
+  >>> pp.__name__ = 'newperson'
+
+which sets the name:
+
+  >>> pp.name
+  'newperson'
+
+Now, a package is not really a site-management folder, but just another
+component implementing ``IRegisterableContainer``. Let's make sure the at
+interface is provided,
+
+  >>> from zope.app.component import interfaces
+  >>> interfaces.registration.IRegisterableContainer.providedBy(person)
+  True
+
+and that the package provides the registration manager:
+
+  >>> person.registrationManager
+  <zope.app.component.registration.RegistrationManager ...>

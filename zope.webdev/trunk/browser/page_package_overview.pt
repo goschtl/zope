@@ -1,0 +1,14 @@
+<ul class="content-listing">
+  <li tal:repeat="page view/pages">
+    <div class="name">
+      <a href=""
+         tal:content="page/name">
+        index.html
+      </a>
+    </div>
+    <div class="details">
+      for:
+        <span tal:replace="page/for" />
+    </div>
+  </li>
+</ul>

@@ -1,0 +1,65 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    >
+
+  <icon
+      name="zmi_icon"
+      for="..interfaces.IPage"
+      file="icons/page.png"
+      />
+
+  <resource
+      name="page.png"
+      image="icons/page.png" />
+
+  <!-- Register the addform -->
+
+  <page
+      for="zope.app.container.interfaces.IAdding"
+      name="AddPage.html"
+      class=".page.AddForm"
+      permission="webdev.CreatePage"
+      />
+
+  <menuItem
+      menu="webdev_browser"
+      for="..interfaces.IPackage"
+      permission="webdev.CreatePage"
+      icon="/@@/page.png"
+      title="Page"
+      action="+/AddPage.html="
+      />
+
+  <!-- Package Overview Viewlet -->
+
+  <viewlet
+      name="webdev.package.Overview.Page"
+      for="..interfaces.IPackage"
+      manager=".package.IPackageOverviewManager"
+      class=".page.PackageOverview"
+      template="page_package_overview.pt"
+      permission="webdev.ViewPage"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="40"
+      />
+
+
+  <!-- Definition Overview -->
+
+  <!--page
+      for="..interfaces.ISchema"
+      permission="webdev.Schema"
+      name="overview.html"
+      class=".content.Overview"
+      template="content_overview.pt"
+      layer="zope.webdev.browser.skin.webdev"
+      menu="webdev_views"
+      title="Overview"
+      /-->
+
+  <defaultView
+      for="..interfaces.IPage"
+      name="overview.html"
+      />
+
+</configure>

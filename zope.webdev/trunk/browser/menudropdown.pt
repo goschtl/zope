@@ -1,0 +1,15 @@
+<span tal:repeat="menuitem view/menuItems" tal:omit-tag="">
+  <div class="even"
+       tal:define="oddrow repeat/menuitem/odd"
+       tal:attributes="class python:oddrow and 'content even' or 'content odd'">
+    <a href=""
+      tal:attributes="href menuitem/action;
+                      class menuitem/selected;">
+      <img class="itemicon"
+           tal:condition="menuitem/icon"
+           tal:attributes="src menuitem/icon" />
+      &nbsp;
+      <span tal:content="menuitem/title" />
+    </a>
+  </div>
+</span>

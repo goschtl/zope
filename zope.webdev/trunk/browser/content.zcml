@@ -1,0 +1,65 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    >
+
+  <icon
+      name="zmi_icon"
+      for="..interfaces.IContentComponentDefinition"
+      file="icons/content.png"
+      />
+
+  <resource
+      name="content.png"
+      image="icons/content.png" />
+
+  <!-- Register the addform -->
+
+  <page
+      for="zope.app.container.interfaces.IAdding"
+      name="AddContentComponentDefinition.html"
+      class=".content.AddForm"
+      permission="webdev.CreateContentComponentDefinition"
+      />
+
+  <menuItem
+      menu="webdev_components"
+      for="..interfaces.IPackage"
+      permission="webdev.CreateContentComponentDefinition"
+      icon="/@@/content.png"
+      title="Content Component Definition"
+      action="+/AddContentComponentDefinition.html="
+      />
+
+  <!-- Package Overview Viewlet -->
+
+  <viewlet
+      name="webdev.package.Overview.ContentComponents"
+      for="..interfaces.IPackage"
+      manager=".package.IPackageOverviewManager"
+      class=".content.PackageOverview"
+      template="content_package_overview.pt"
+      permission="webdev.ViewContentComponentDefinition"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="20"
+      />
+
+
+  <!-- Definition Overview -->
+
+  <!--page
+      for="..interfaces.IContentComponentDefinition"
+      permission="webdev.ViewContentComponentDefinition"
+      name="overview.html"
+      class=".content.Overview"
+      template="content_overview.pt"
+      layer="zope.webdev.browser.skin.webdev"
+      menu="webdev_views"
+      title="Overview"
+      /-->
+
+  <defaultView
+      for="..interfaces.IContentComponentDefinition"
+      name="overview.html"
+      />
+
+</configure>

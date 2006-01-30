@@ -1,0 +1,95 @@
+<metal:block define-macro="page"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en" lang="en"
+      i18n:domain="webdev">
+<head>
+  <title metal:define-slot="title">
+    Zope 3 WebDev
+  </title>
+
+  <script type="text/javascript" src="webdev.js"
+          tal:attributes="src string:${context/++resource++webdev.js}" >
+  </script>
+
+  <style type="text/css" media="all"
+         tal:content="string:@import url(${context/++resource++webdev.css});">
+    @import url(webdev.css);
+  </style>
+
+  <style type="text/css" media="all"
+         tal:content="string:@import url(${context/++resource++widget.css});">
+    @import url(widget.css);
+  </style>
+
+  <link rel="icon" type="image/png"
+        tal:attributes="href context/++resource++favicon.png" />
+</head>
+
+<body>
+
+  <table id="layout">
+    <tr class="head">
+      <td class="logo">
+        <img width="107" height="38"
+             tal:attributes="src context/++resource++logo.png" />
+      </td>
+      <td align="center">
+        <div id="page-title">
+          <span metal:define-slot="pagetitle">
+            Page Title
+          </span>
+        </div>
+        <div id="breadcrumbs" metal:define-slot="breadcrumbs">
+          <span tal:repeat="crumb context/@@breadcrumbs/allcrumbs">
+            <span tal:replace="structure crumb/icon|default" />
+            <a href=""
+                tal:attributes="href string:${crumb/url}/">
+              <span tal:replace="crumb/name" />
+            </a>
+            <span class="separator" tal:condition="not:repeat/crumb/end">
+              &raquo;
+            </span>
+          </span>
+        </div>
+      </td>
+      <td id="headertools" class="headertools" width="10%">
+        <tal:block replace="structure provider:webdev.HeaderTools" />
+      </td>
+    </tr>
+    <tr class="content">
+      <td class="navigation">
+        <div id="slotbox">
+          <tal:block replace="structure provider:webdev.LeftColumn" />
+        </div>
+        <div id="credits">
+          Zope 3 WebDev User Interface <br />
+          Version: pre-alpha
+        </div>
+      </td>
+      <td id="content" colspan="2">
+        <!-- context menu (webdev_views) just visible in view template -->
+        <div id="contextmenu"
+             tal:define="views context/@@view_get_menu/webdev_views"
+             tal:condition="views">
+          <span tal:repeat="view views">
+            <a href=""
+               tal:attributes="href view/action;
+                               class view/selected;"
+               tal:content="view/title"
+               i18n:translate="">label</a>
+          </span>
+        </div>
+        <!-- content area -->
+        <div metal:define-slot="message" id="message" />
+        <div id="content-body">
+          <div metal:define-slot="body">Page Content</div>
+        </div>
+        <div id="footer" metal:define-macro="footer" />
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
+</metal:block>

@@ -1,0 +1,32 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:apidoc="http://namespaces.zope.org/apidoc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="webdev"
+    >
+
+  <!-- Permission Definitions -->
+
+  <permission
+      id="webdev.CreateDatabaseAdapter"
+      title="Create Database Adapter"
+      />
+
+  <permission
+      id="webdev.ManageDatabaseAdapter"
+      title="Manage Database Adapter"
+      />
+
+  <permission
+      id="webdev.ViewDatabaseAdapter"
+      title="View Database Adapter"
+      />
+
+  <!-- Database adapter factory vocabulary -->
+  <vocabulary
+     name="WebDev Database Adapter Factories"
+     factory="zope.webdev.vocabulary.FactoryVocabulary"
+     interface="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
+     />
+
+</configure>

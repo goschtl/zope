@@ -1,0 +1,50 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:apidoc="http://namespaces.zope.org/apidoc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <!-- Permission Definitions -->
+
+  <permission
+      id="webdev.CreatePage"
+      title="Create PAge"
+      />
+
+  <permission
+      id="webdev.ManagePage"
+      title="Manage Page"
+      />
+
+  <permission
+      id="webdev.ViewPage"
+      title="View Page"
+      />
+
+  <!-- Security Declarations -->
+
+  <content class="zope.webdev.page.Page">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="webdev.ViewPage"
+        interface=".interfaces.IPage"
+        />
+    <require
+        permission="webdev.ManagePage"
+        set_schema=".interfaces.IPage"
+        />
+  </content>
+
+  <!-- Registration of Documentation with apidoc -->
+
+  <apidoc:bookchapter
+      id="page"
+      title="The Page"
+      parent="webdev"
+      doc_path="page.txt"
+      zcml:condition="have apidoc"
+      />
+
+</configure>

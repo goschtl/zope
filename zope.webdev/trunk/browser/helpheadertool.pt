@@ -1,0 +1,20 @@
+<div class="headertool">
+  <a href="#" class="topmenu"
+     tal:define="url string:'${view/url}';
+                 name string:'OnlineHelp';
+                 settings string:'height=500
+                                  ,width=950
+                                  ,resizable=1
+                                  ,scrollbars=yes
+                                  ,location=no
+                                  ,status=no
+                                  ,toolbar=no
+                                  ,menubar=no'"
+     tal:attributes="
+  href python:'javascript:window.open('+ url + ',' + name + ','+ settings +')'"
+     >
+    <img src="" border="0"
+         tal:attributes="src view/icon_url" />
+    <span tal:content="view/title">Help</span>
+  </a>
+</div>

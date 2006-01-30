@@ -1,0 +1,102 @@
+=============================================
+The Content Component Definition and Instance
+=============================================
+
+Content component definitions and instances are used to implement
+Web-developed classes and instances. However, they are very simple "classes",
+since they only implement one schema. Thus, the first task is to create a
+schema:
+
+  >>> import zope.interface
+  >>> import zope.schema
+  >>> class IPerson(zope.interface.Interface):
+  ...     last = zope.schema.TextLine(title=u"Last Name")
+  ...     first = zope.schema.TextLine(title=u"First Name")
+
+Now that we have a schema, we can create a content component definition for
+it:
+
+  >>> from zope.webdev import content
+  >>> Person = content.ContentComponentDefinition('Person', IPerson)
+  >>> Person
+  <ContentComponentDefinition 'Person'>
+
+Another feature of the definition is the management of the security
+declarations for each field in the schema. In our case I would like to make
+the access of the attributes public (i.e. use the ``zope.Public`` permission),
+but create a new edit permission for setting them:
+
+  >>> from zope.security.checker import CheckerPublic
+  >>> from zope.app.security import permission
+  >>> edit = permission.Permission('Edit')
+
+Now we set the permissions:
+
+  >>> Person.permissions = {'last': (CheckerPublic, edit),
+  ...                       'first': (CheckerPublic, edit),}
+
+Usually, content component definitions are added to packages:
+
+  >>> from zope.webdev import package
+  >>> person = package.Package('person')
+
+  >>> person['Person'] = Person
+
+Then the representation of the person changes slightly to incorporate the
+package name:
+
+  >>> Person
+  <ContentComponentDefinition 'person.Person'>
+
+Once our definition is created, we can create instances from the definition by
+simply calling it:
+
+  >>> stephan = Person(first=u'Stephan', last=u'Richter')
+  >>> stephan
+  <Instance of <ContentComponentDefinition 'person.Person'>>
+
+  >>> stephan.first
+  u'Stephan'
+  >>> stephan.last
+  u'Richter'
+
+Of course, the instance provides the schema:
+
+  >>> IPerson.providedBy(stephan)
+  True
+
+We can also see that the security checker is properly set during
+initialization:
+
+  >>> stephan.__Security_checker__
+  <zope.security.checker.Checker object at ...>
+
+  >>> stephan.__Security_checker__.get_permissions
+  {'last': Global(CheckerPublic,zope.security.checker),
+   'first': Global(CheckerPublic,zope.security.checker)}
+
+  >>> stephan.__Security_checker__.set_permissions
+  {'last': <zope.app.security.permission.Permission object at ...>,
+   'first': <zope.app.security.permission.Permission object at ...>}
+
+Finally, during development it is very likely that you are constantly changing
+the schema and update the permissions. It would be cumbersome to cosntantly
+remove and recreate the test instances. Thus the instance can be updated:
+
+  >>> class IPersonExtended(IPerson):
+  ...     phone = zope.schema.TextLine(title=u'Phone', default=u'555-776-6333')
+  >>> Person.schema = IPersonExtended
+  >>> Person.permissions['phone'] = (CheckerPublic, edit)
+
+  >>> stephan.phone
+  Traceback (most recent call last):
+  ...
+  AttributeError: 'ContentComponentInstance' object has no attribute 'phone'
+
+  >>> stephan.__update__()
+
+  >>> stephan.phone
+  u'555-776-6333'
+
+  >>> IPersonExtended.providedBy(stephan)
+  True

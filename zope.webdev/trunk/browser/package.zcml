@@ -1,0 +1,69 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    >
+
+  <icon
+      name="zmi_icon"
+      for="..interfaces.IPackage"
+      file="icons/package.png"
+      />
+
+  <!-- Provide an adding view for the package -->
+
+  <containerViews
+      for="..interfaces.IPackage"
+      add="webdev.ManagePackage"
+      />
+
+  <icon
+      name="zmi_icon"
+      for="zope.app.container.interfaces.IAdding"
+      file="icons/add.png"
+      />
+
+  <!-- Register the addform -->
+
+  <addform
+      label="WebDev Package"
+      name="AddWebDevPackage.html"
+      schema="..interfaces.IPackage"
+      fields="docstring version license author"
+      content_factory="..package.Package"
+      permission="webdev.CreatePackage"
+      />
+
+  <addMenuItem
+      class="..package.Package"
+      title="WebDev Package"
+      description="Add a WebDev Package"
+      permission="webdev.CreatePackage"
+      view="AddWebDevPackage.html"
+      />
+
+  <!-- Package Overview -->
+
+  <viewletManager
+      name="webdev.package.Overview"
+      provides=".package.IPackageOverviewManager"
+      class=".package.PackageOverviewManager"
+      template="package_overview_manager.pt"
+      layer="zope.webdev.browser.skin.webdev"
+      permission="zope.Public"
+      />
+
+  <page
+      for="..interfaces.IPackage"
+      permission="webdev.ViewPackage"
+      name="overview.html"
+      class=".package.Overview"
+      layer="zope.webdev.browser.skin.webdev"
+      menu="webdev_views"
+      title="Overview"
+      />
+
+  <defaultView
+      for="..interfaces.IPackage"
+      name="overview.html"
+      />
+
+</configure>

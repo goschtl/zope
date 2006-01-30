@@ -1,0 +1,54 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    >
+
+  <!-- TODO: we sould move this to the zope.app.rdb package or use a layer
+       otherwise we could run into a duplicated registration -->
+  <icon
+      name="zmi_icon"
+      for="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
+      file="icons/rdb.png"
+      />
+
+  <resource
+      name="rdb.png"
+      image="icons/rdb.png" />
+
+  <!-- Register the addform -->
+
+  <page
+      for="zope.app.container.interfaces.IAdding"
+      name="AddDatabaseAdapter.html"
+      class=".rdb.AddForm"
+      permission="webdev.CreateDatabaseAdapter"
+      />
+
+  <menuItem
+      menu="webdev_utilities"
+      for="..interfaces.IPackage"
+      permission="webdev.CreateDatabaseAdapter"
+      icon="/@@/rdb.png"
+      title="Database adapter"
+      action="+/AddDatabaseAdapter.html="
+      />
+
+  <!-- Package Overview Viewlet -->
+
+  <viewlet
+      name="webdev.package.Overview.DatabaseAdapter"
+      for="..interfaces.IPackage"
+      manager=".package.IPackageOverviewManager"
+      class=".rdb.PackageOverview"
+      template="rdb_package_overview.pt"
+      permission="webdev.ViewDatabaseAdapter"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="20"
+      />
+
+  <defaultView
+      for="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
+      name="overview.html"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+</configure>

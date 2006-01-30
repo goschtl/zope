@@ -1,0 +1,46 @@
+<tal:block repeat="viewlet view/viewlets">
+<div class="slotbox"
+     tal:define="
+         show viewlet/state/expanded|nothing;
+         url request/URL;
+         managerName view/__name__;
+         viewletName viewlet/__name__;
+         elementId string:${managerName}*${viewletName}">
+
+  <div class="header">
+    <div class="title" tal:content="viewlet/title">Tools</div>
+    <div class="controller">
+
+      <img src="expanded.png" id=".switcher" onClick=""
+           tal:condition="show"
+           tal:attributes="
+               id string:${elementId}.switcher;
+               src context/++resource++expanded.png;
+               onClick string:javascript:switchDisplay('${elementId}', '$url')"
+               />
+
+      <img src="collapsed.png" id=".switcher" onClick=""
+           tal:condition="not:show"
+           tal:attributes="
+               id string:${elementId}.switcher;
+               src context/++resource++collapsed.png;
+               onClick string:javascript:switchDisplay('${elementId}', '$url')"
+           />
+
+    </div>
+  </div>
+
+  <div id="name" class="body" style="display:;"
+       tal:condition="show"
+       tal:attributes="id elementId">
+    <div tal:replace="structure viewlet">Contents</div>
+  </div>
+
+  <div id="name" class="body" style="display: none;"
+       tal:condition="not:show"
+       tal:attributes="id elementId">
+    <div tal:replace="structure viewlet">Contents</div>
+  </div>
+
+</div>
+</tal:block>

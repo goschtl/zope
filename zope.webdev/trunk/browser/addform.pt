@@ -1,0 +1,49 @@
+<html metal:use-macro="context/@@standard_macros/page">
+<body>
+
+<span metal:fill-slot="pagetitle" i18n:translate="">
+  Add <span tal:replace="view/label" />
+</span>
+
+<div metal:fill-slot="body">
+
+  <div class="error"
+       tal:condition="view/status"
+       tal:content="view/status" />
+
+  <form action="." tal:attributes="action request/URL" method="post"
+        enctype="multipart/form-data">
+
+    <input type="hidden" name="doEdit" value="1"
+           tal:condition="request/form/doEdit|nothing" />
+
+    <table id="form">
+      <tr tal:repeat="widget view/widgets">
+        <th class="label">
+          <label for="form.field" title="Widget's Hint"
+              tal:attributes="for widget/name;
+                              title widget/hint"
+              tal:content="widget/label" />
+        </th>
+        <td class="field">
+          <div tal:replace="structure widget" />
+        </td>
+      </tr>
+    </table>
+
+    <br />
+
+    <div id="actionsView">
+      <span class="actionButtons">
+        <input tal:repeat="action view/actions"
+               tal:replace="structure action/render"
+               />
+      </span>
+    </div>
+
+  </form>
+
+</div>
+
+</body>
+</html>

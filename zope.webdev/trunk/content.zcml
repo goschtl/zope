@@ -1,0 +1,51 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:apidoc="http://namespaces.zope.org/apidoc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="webdev"
+    >
+
+  <!-- Permission Definitions -->
+
+  <permission
+      id="webdev.CreateContentComponentDefinition"
+      title="Create Content Component Definition"
+      />
+
+  <permission
+      id="webdev.ManageContentComponentDefinition"
+      title="Manage Content Component Definition"
+      />
+
+  <permission
+      id="webdev.ViewContentComponentDefinition"
+      title="View Content Component Definition"
+      />
+
+  <!-- Security Declarations -->
+
+  <content class=".content.ContentComponentDefinition">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="webdev.ViewContentComponentDefinition"
+        interface=".interfaces.IContentComponentDefinition"
+        />
+    <require
+        permission="webdev.ManageContentComponentDefinition"
+        set_schema=".interfaces.IContentComponentDefinition"
+        />
+  </content>
+
+  <!-- Registration of Documentation with apidoc -->
+
+  <apidoc:bookchapter
+      id="content"
+      title="The Content Component Definition/Instance"
+      parent="webdev"
+      doc_path="content.txt"
+      zcml:condition="have apidoc"
+      />
+
+</configure>

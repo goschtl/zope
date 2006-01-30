@@ -1,0 +1,49 @@
+==============================
+Package Browser User Interface
+==============================
+
+Let's first connect to the site and log in as a manager, since this role has
+all permissions.
+
+  >>> from zope.testbrowser import Browser
+  >>> browser = Browser()
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> browser.open('http://localhost/manage')
+
+Since packages manage non-content components, they are developed in the
+site-management section.
+
+  >>> browser.getLink('Manage Site').click()
+
+However, packages are not site-management folder, but registerable containers
+in their own right. Thus, you should now be able to add a new pacakge:
+
+  >>> browser.getLink('WebDev Package')
+  <Link text='WebDev Package' url='...ion.html?type_name=AddWebDevPackage.html'>
+
+By clicking the above link,
+
+  >>> browser.getLink('WebDev Package').click()
+
+you will be presented with the package add-form. All of the fields you are
+seeing are optional. Really, the most important field is the object name,
+since it will be the package name.
+
+  >>> browser.getControl('Docstring').value = u'My first package.'
+  >>> browser.getControl('Version').value = u'pre-alpha'
+  >>> browser.getControl('License').value = u'GPL'
+  >>> browser.getControl('Author').value = u'Stephan Richter'
+
+  >>> browser.getControl(name='add_input_name').value = u'first'
+
+  >>> browser.getControl('Add').click()
+
+You are now brought back to the site manager contents screen and you should
+see your package:
+
+  >>> browser.getLink('first')
+  <Link text='first' url='.../++etc++site/first/@@SelectedManagementView.html'>
+
+
+Overview Screen
+---------------

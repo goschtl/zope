@@ -1,0 +1,21 @@
+<div class="overview" tal:repeat="viewlet view/viewlets">
+  <div class="header">
+    <img src="" style="vertical-align: bottom"
+         tal:attributes="src viewlet/icon" />
+
+    <span tal:content="viewlet/title">Utilities</span>
+
+    <img src="expanded.png" style="vertical-align: bottom; float: right"
+         tal:attributes="src context/++resource++expanded.png" />
+
+  </div>
+  <div class="body">
+    <div tal:replace="structure viewlet">Contents</div>
+
+    <div style="margin-top: 0.8em">
+      <input type="submit" value="Rename" />
+      <input type="submit" value="Delete" />
+    </div>
+  </div>
+  <br/>
+</div>

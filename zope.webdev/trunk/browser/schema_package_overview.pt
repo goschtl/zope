@@ -1,0 +1,22 @@
+<ul class="content-listing">
+  <li tal:repeat="schema view/schemas">
+    <div class="name">
+      <a href=""
+         tal:content="schema/name">
+        IPerson
+      </a>
+      (
+      <tal:block repeat="base schema/bases">
+        <span tal:content="base" />
+        <tal:block condition="not:repeat/base/end">,</tal:block>
+      </tal:block>
+      )
+    </div>
+    <div class="details">
+      fields:
+      <tal:block repeat="field schema/fields">
+        <span tal:replace="field/name" /> (<span tal:replace="field/type"/>)
+      </tal:block>
+    </div>
+  </li>
+</ul>

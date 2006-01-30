@@ -1,0 +1,293 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    >
+
+  <!-- Pagelet Framework Setup -->
+
+  <zope:view
+      name="pagelets"
+      for="zope.app.publisher.interfaces.browser.IBrowserView"
+      provides="zope.app.traversing.interfaces.ITraversable"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      factory=".pagelet.pageletsNamespace"
+      />
+
+  <zope:adapter
+      name="pagelets"
+      for="zope.app.publisher.interfaces.browser.IBrowserView"
+      provides="zope.app.traversing.interfaces.ITraversable"
+      factory=".pagelet.pageletsNamespace"
+      />
+
+  <!-- Skin Configuration -->
+
+  <layer
+      name="webdev"
+      interface="zope.webdev.browser.skin.webdev"
+      />
+
+  <skin
+      name="WebDev"
+      interface="zope.webdev.browser.skin.WebDev"
+      />
+
+  <menu
+      id="webdev_views"
+      title="Web Development Component Views" />
+
+  <menu
+      id="webdev_actions"
+      title="Web Development Actions" />
+
+  <resource
+      name="webdev.js"
+      file="webdev.js"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+  <resource
+      name="webdev.css"
+      file="webdev.css"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+  <resource
+      name="widget.css"
+      file="widget.css"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+   <resource
+      name="favicon.png"
+      file="icons/favicon.png"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+   <resource
+      name="logo.png"
+      file="icons/zope_webdev_logo.png"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+   <resource
+      name="expanded.png"
+      file="icons/expanded.png"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+   <resource
+      name="collapsed.png"
+      file="icons/collapsed.png"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+  <!-- Macros -->
+
+  <page
+      for="*"
+      name="standard_macros"
+      permission="zope.View"
+      class=".skin.StandardMacros"
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+  <page
+      for="*"
+      name="main_template_macros"
+      permission="zope.View"
+      template="main_template.pt"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+  <!-- Viewlet and Pagelet Managers -->
+
+  <viewletManager
+      name="webdev.LeftColumn"
+      provides=".skin.ILeftColumn"
+      class=".skin.LeftColumn"
+      template="leftcolumn.pt"
+      layer="zope.webdev.browser.skin.webdev"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="webdev.HeaderTools"
+      provides=".skin.IHeaderTools"
+      class=".skin.HeaderTools"
+      layer="zope.webdev.browser.skin.webdev"
+      permission="zope.Public"
+      />
+
+  <!-- Standard Header Tools -->
+
+  <resource
+      name="exit.png"
+      file="icons/exit.png"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+  <viewlet
+      name="exit"
+      manager=".skin.IHeaderTools"
+      class=".skin.ExitHeaderTool"
+      template="headertool.pt"
+      permission="zope.Public"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="100"
+      />
+
+  <resource
+      name="help.png"
+      file="icons/help.png"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+  <viewlet
+      name="help"
+      manager=".skin.IHeaderTools"
+      class=".skin.HelpHeaderTool"
+      template="helpheadertool.pt"
+      permission="zope.Public"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="70"
+      />
+
+  <!-- Breadcrumbs -->
+
+  <zope:view
+      for="*"
+      name="breadcrumbs"
+      factory=".skin.Breadcrumbs"
+      type="zope.webdev.browser.skin.webdev"
+      permission="zope.Public"
+      />
+
+  <!-- Standard Left Column viewlets -->
+
+  <page
+      for=".pagelet.IPagelet"
+      name="switch.html"
+      permission="zope.View"
+      class=".skin.Switch"
+      attribute="switch"
+      layer="zope.webdev.browser.skin.webdev"
+      />
+
+  <viewlet
+      name="tools"
+      manager=".skin.ILeftColumn"
+      class=".skin.MenuDropDown"
+      template="menudropdown.pt"
+      permission="zope.Public"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="0"
+      menu_id="zmi_actions"
+      />
+
+  <menu
+      id="webdev_components"
+      title="Components" />
+
+  <viewlet
+      name="webdev_components"
+      for="..interfaces.IPackage"
+      manager=".skin.ILeftColumn"
+      class=".skin.MenuDropDown"
+      template="menudropdown.pt"
+      permission="zope.Public"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="10"
+      menu_id="webdev_components"
+      />
+
+  <menu
+      id="webdev_browser"
+      title="Browser" />
+
+  <viewlet
+      name="webdev_browser"
+      for="..interfaces.IPackage"
+      manager=".skin.ILeftColumn"
+      class=".skin.MenuDropDown"
+      template="menudropdown.pt"
+      permission="zope.Public"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="20"
+      menu_id="webdev_browser"
+      />
+
+  <menu
+      id="webdev_forms"
+      title="Forms" />
+
+  <viewlet
+      name="webdev_forms"
+      for="..interfaces.IPackage"
+      manager=".skin.ILeftColumn"
+      class=".skin.MenuDropDown"
+      template="menudropdown.pt"
+      permission="zope.Public"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="30"
+      menu_id="webdev_forms"
+      />
+
+  <menu
+      id="webdev_menus"
+      title="Menus" />
+
+  <viewlet
+      name="webdev_menus"
+      for="..interfaces.IPackage"
+      manager=".skin.ILeftColumn"
+      class=".skin.MenuDropDown"
+      template="menudropdown.pt"
+      permission="zope.Public"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="40"
+      menu_id="webdev_menus"
+      />
+
+  <menu
+      id="webdev_utilities"
+      title="Utilities" />
+
+  <viewlet
+      name="webdev_utilities"
+      for="..interfaces.IPackage"
+      manager=".skin.ILeftColumn"
+      class=".skin.MenuDropDown"
+      template="menudropdown.pt"
+      permission="zope.Public"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="50"
+      menu_id="webdev_utilities"
+      />
+
+  <menu
+      id="webdev_testing"
+      title="Testing" />
+
+  <viewlet
+      name="webdev_testing"
+      for="..interfaces.IPackage"
+      manager=".skin.ILeftColumn"
+      class=".skin.MenuDropDown"
+      template="menudropdown.pt"
+      permission="zope.Public"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="60"
+      menu_id="webdev_testing"
+      />
+
+  <!-- Link in other configuration -->
+
+  <include file="package.zcml" />
+  <include file="schema.zcml" />
+  <include file="content.zcml" />
+  <include file="page.zcml" />
+  <include file="rdb.zcml" />
+
+</configure>

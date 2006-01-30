@@ -1,0 +1,13 @@
+<ul class="content-listing">
+  <li tal:repeat="definition view/definitions">
+    <div class="name">
+      <a href=""
+         tal:content="definition/name">
+        Name
+      </a>
+    </div>
+    <div class="details">
+      dsn <tal:block replace="definition/dsn" />
+    </div>
+  </li>
+</ul>

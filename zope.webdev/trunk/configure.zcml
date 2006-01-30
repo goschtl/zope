@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:apidoc="http://namespaces.zope.org/apidoc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="webdev"
+    >
+
+  <!-- Registration of Documentation with apidoc -->
+
+  <apidoc:bookchapter
+      id="webdev"
+      title="Web Components Development"
+      doc_path="README.txt"
+      zcml:condition="have apidoc"
+      />
+
+  <!-- Link in other configuration -->
+
+  <include file="package.zcml" />
+  <include file="schema.zcml" />
+  <include file="content.zcml" />
+  <include file="page.zcml" />
+  <include file="rdb.zcml" />
+
+  <include package=".browser" />
+
+</configure>
