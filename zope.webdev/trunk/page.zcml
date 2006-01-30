@@ -53,4 +53,8 @@
       zcml:condition="have apidoc"
       />
 
+  <class class="zodbcode.class_.PersistentMethod">
+    <allow attributes="__call__" />
+  </class>
+
 </configure>
