@@ -342,13 +342,27 @@ class AdapterLookup(object):
         return result        
     
     def lookup1(self, required, provided, name=u'', default=None):
-        return self.lookup((required, ), provided, name, default)
+        cache = self._getcache(provided, name)
+        result = cache.get(required, _not_in_mapping)
+        if result is _not_in_mapping:
+            return self.lookup((required, ), provided, name, default)
+
+        if result is None:
+            return default
+
+        return result
+
     
     def queryAdapter(self, object, provided, name=u'', default=None):
         return self.adapter_hook(provided, object, name, default)
 
     def adapter_hook(self, provided, object, name=u'', default=None):
-        factory = self.lookup1(providedBy(object), provided, name)
+        required = providedBy(object)
+        cache = self._getcache(provided, name)
+        factory = cache.get(required, _not_in_mapping)
+        if factory is _not_in_mapping:
+            factory = self.lookup((required, ), provided, name)
+
         if factory is not None:
             result = factory(object)
             if result is not None:
