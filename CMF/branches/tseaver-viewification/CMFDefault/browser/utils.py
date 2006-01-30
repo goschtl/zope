@@ -5,7 +5,7 @@ from Products.CMFCore.utils import getToolByName
 
 class FormViewBase:
 
-    def __call__(self, change='', change_and_view=''):
+    def __call__(self, **kw):
         form = self.request.form
         for button in self._BUTTONS:
             if button['name'] in form:
