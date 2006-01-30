@@ -245,6 +245,10 @@ class LivePageClient(object):
         try :
             if self.outbox :
                 result = self.outbox.pop()
+                if result.endswith("timestamp=")  :
+                    result += "%s\n" % time.time()
+                #enforce that the URLs with dummy timestamps are really reloaded
+                #we add the dummy as late as possible to avoid redundant calls
             else :
                 result = None
             self.touched = time.time()      
@@ -271,11 +275,6 @@ class LivePageClient(object):
             output = self.popOutput()
             if output :
                 time.sleep(0.5)
-                #enforce that the URLs with dummy timestamps are really reloaded
-                #we add the dummy as late as possible to avoid redundant calls
-                if output.endswith("timestamp=")  :
-                    output += "%s\n" % time.time()
-                    
                 print "sending", output
                 return output
             time.sleep(0.1)
