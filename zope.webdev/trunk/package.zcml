@@ -40,6 +40,13 @@
         />
   </content>
 
+  <!-- name chooser for named objects -->
+  <adapter
+    factory=".package.PackageNameChooser"
+    provides="zope.app.container.interfaces.INameChooser"
+    for=".interfaces.IPackage"
+    /> 
+  
   <!-- Registration of Documentation with apidoc -->
 
   <apidoc:bookchapter

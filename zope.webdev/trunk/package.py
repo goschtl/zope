@@ -21,7 +21,7 @@ from zope.schema import fieldproperty
 from zope.app.component import registration
 from zope.app.container import btree, contained
 from zope.webdev import interfaces
-
+from zope.app.container.contained import NameChooser
 
 class Package(registration.RegisterableContainer,
               btree.BTreeContainer,
@@ -50,3 +50,17 @@ class Package(registration.RegisterableContainer,
 
     def __repr__(self):
         return '<%s %r>' %(self.__class__.__name__, self.name)
+
+
+class PackageNameChooser(NameChooser):
+
+    def chooseName(self, name, object):
+        "See zope.app.container.interfaces.INameChooser"
+        
+        container = self.context
+        if not name:
+            name = object.name
+        # Make sure the name is valid.  We may have started with
+        # something bad.
+        self.checkName(name, object)
+        return name

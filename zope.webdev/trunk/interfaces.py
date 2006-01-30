@@ -179,3 +179,7 @@ class IPage(interfaces.registration.IRegisterable):
         title=_("Class Name"),
         description=_("The name of the class defined in the module."),
         required=True)
+
+    def getTemplate():
+
+        """returns the template"""

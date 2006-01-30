@@ -5,6 +5,13 @@
     i18n_domain="webdev"
     >
 
+ <!-- Vocabulary definitions -->
+ 
+ <vocabulary
+  name="Layers"
+  factory="zope.app.component.vocabulary.UtilityVocabulary"
+  interface="zope.publisher.interfaces.ILayer"/>
+
   <!-- Registration of Documentation with apidoc -->
 
   <apidoc:bookchapter

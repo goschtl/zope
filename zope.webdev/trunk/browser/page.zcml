@@ -43,7 +43,24 @@
       weight="40"
       />
 
+  <page
+   for="..interfaces.IPage"
+   permission="webdev.ViewPage"
+   name="overview.html"
+   class=".page.Overview"
+   layer="zope.webdev.browser.skin.webdev"
+   menu="webdev_views"
+   title="Overview"
+   />
 
+
+<!--
+  <editForm
+   name="edit.html"
+   for="..interfaces.IPage"
+   layer="zope.webdev.browser.skin.webdev"
+   />
+  -->
   <!-- Definition Overview -->
 
   <!--page

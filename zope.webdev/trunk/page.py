@@ -28,7 +28,6 @@ from zope.app.publisher.interfaces.browser import IBrowserView
 from zope.app import zapi
 from zope.app import publisher
 from zope.app.presentation import zpt, registration
-
 from zope.webdev import interfaces
 
 
@@ -43,7 +42,7 @@ class Page(persistent.Persistent, zope.app.container.contained.Contained):
                  templateSource=None, moduleSource=None, className=None):
 
         self._template = zpt.ZPTTemplate()
-        self._module = zope.app.module.manager.ModuleManager()
+
 
         self.name = name
         self.for_ = for_
@@ -51,8 +50,7 @@ class Page(persistent.Persistent, zope.app.container.contained.Contained):
         self.permission = permission
         if templateSource is not None:
             self.templateSource = templateSource
-        if moduleSource is not None:
-            self.moduleSource = moduleSource
+        self.moduleSource = moduleSource
         self.className = className
 
     @apply
@@ -68,19 +66,25 @@ class Page(persistent.Persistent, zope.app.container.contained.Contained):
     @apply
     def moduleSource():
         def get(self):
-            return self._module.source
+            return getattr(self,'_moduleSource',u'')
 
         def set(self, value):
-            self._module.source = value
-
+            self._moduleSource=value
+            if hasattr(self,'_v_module'):
+                del(self._v_module)
         return property(get, set)
 
+    @apply
+    def _module():
+        def get(self):
+            if not hasattr(self,'_v_module'):
+                self._v_module = \
+                        zope.app.module.manager.ModuleManager(self.moduleSource)
+            return self._v_module
+        return property(get)
 
-    def register(self):
-        reg = PageRegistration(self)
-        package = zapi.getParent(self)
-        package.registrationManager.addRegistration(reg)
-        reg.status = zope.app.component.interfaces.registration.ActiveStatus
+    def getTemplate(self):
+        return self._template
 
 
 class PageRegistration(zope.app.component.site.AdapterRegistration):
@@ -88,6 +92,7 @@ class PageRegistration(zope.app.component.site.AdapterRegistration):
     provided = zope.interface.Interface
 
     def __init__(self, page):
+
         self.page = page
 
     @property
@@ -104,19 +109,31 @@ class PageRegistration(zope.app.component.site.AdapterRegistration):
 
     @property
     def component(self):
-
-        def makeViewClass(context, request):
-            if self.page._module and self.page.className:
-                class_ = getattr(self.page._module.getModule(),
-                                 self.page.className)
-            else:
-                class_  = publisher.browser.BrowserView
-
-            if not IBrowserView.implementedBy(class_):
-                class_ = type(class_.__name__,
-                              (class_, publisher.browser.BrowserView), {})
-
-            return class_(context, request)
+        makeViewClass = MakeViewClass(self.page)
 
         return registration.TemplateViewFactory(
-            makeViewClass, self.page._template, self.page.permission)
+            makeViewClass, self.page.getTemplate(), self.page.permission)
+
+
+class MakeViewClass(object):
+
+    def __init__(self,page):
+        self.page = page
+
+    def __call__(self,context,request):
+        if self.page._module and self.page.className:
+            class_ = getattr(self.page._module.getModule(),
+                             self.page.className)
+        else:
+            class_  = publisher.browser.BrowserView
+
+        if not IBrowserView.implementedBy(class_):
+            class_ = type(class_.__name__,
+                          (class_, publisher.browser.BrowserView), {})
+        return class_(context, request)
+
+def registerPage(page):
+    package = zapi.getParent(page)
+    reg = PageRegistration(page)
+    package.registrationManager.addRegistration(reg)
+    reg.status = zope.app.component.interfaces.registration.ActiveStatus

@@ -13,10 +13,11 @@ First we create a site:
   >>> site['image.gif'] = object()
   >>> site['file.txt'] = object()
 
-  >>> from zope.webdev.page import Page
+  >>> from zope.webdev.page import Page,registerPage
   >>> names_html = Page('names.html')
   >>> site.getSiteManager()['default']['names.html'] = names_html
-  >>> names_html.register()
+  >>> registerPage(names_html)
+
 
 defaults are: for=Interface, layers=(IDefaultLayer,),
               permission=CheckerPublic, template=zptpage.ZPTPage(),
@@ -65,3 +66,32 @@ Now render the page:
       </ul>
     </body>
   </html>
+
+  >>> del(page)
+  >>> names_html.moduleSource = '''
+  ... class FolderContents(object):
+  ...     @property
+  ...     def names(self):
+  ...         return sorted(self.context.keys(),reverse=True)
+  ... '''
+  >>> request = TestRequest()
+  >>> page = zope.component.getMultiAdapter(
+  ...     (site, request), name='names.html')
+
+
+  >>> print page()
+  <html>
+    <body>
+      <h1>Folder contents</h1>
+      <ul>
+        <li>image.gif</li>
+        <li>file.txt</li>
+      </ul>
+    </body>
+  </html>
+
+  >>> names_html.templateSource=u"""abc"""
+  >>> print page()
+  abc
+
+  

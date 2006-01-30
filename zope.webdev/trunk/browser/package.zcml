@@ -13,6 +13,7 @@
   <containerViews
       for="..interfaces.IPackage"
       add="webdev.ManagePackage"
+      contents="zope.ManageContent"
       />
 
   <icon

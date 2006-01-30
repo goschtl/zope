@@ -37,6 +37,12 @@
         />
   </content>
 
+  <class class=".page.PageRegistration">
+   <require like_class="zope.app.component.site.AdapterRegistration"/>
+  </class>
+
+
+  
   <!-- Registration of Documentation with apidoc -->
 
   <apidoc:bookchapter
