@@ -46,20 +46,31 @@
 
   <!-- Definition Overview -->
 
-  <!--page
+  <page
       for="..interfaces.IContentComponentDefinition"
       permission="webdev.ViewContentComponentDefinition"
       name="overview.html"
       class=".content.Overview"
-      template="content_overview.pt"
       layer="zope.webdev.browser.skin.webdev"
       menu="webdev_views"
       title="Overview"
-      /-->
+      />
 
   <defaultView
       for="..interfaces.IContentComponentDefinition"
       name="overview.html"
+      />
+
+  <!-- Definition Permissions -->
+
+  <page
+      for="..interfaces.IContentComponentDefinition"
+      permission="webdev.ManageContentComponentDefinition"
+      name="permissions.html"
+      class=".content.Permissions"
+      layer="zope.webdev.browser.skin.webdev"
+      menu="webdev_views"
+      title="Permissions"
       />
 
 </configure>

@@ -2,6 +2,7 @@
   <li tal:repeat="definition view/definitions">
     <div class="name">
       <a href=""
+         tal:attributes="href definition/url"
          tal:content="definition/name">
         Person
       </a>

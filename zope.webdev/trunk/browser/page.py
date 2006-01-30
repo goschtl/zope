@@ -33,13 +33,6 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.interface.common import idatetime
 
 
-
-def haveEditFlag(form, action):
-    if 'doEdit' in form.request:
-        return True
-    return False
-
-
 class AddForm(base.UtilityAddFormBase):
 
     label = _('Page')
@@ -81,64 +74,10 @@ class PackageOverview(object):
         return pages
 
 
-class Overview(form.EditForm):
+class Overview(base.EditFormBase):
     """Page Overview."""
-
     form_fields = form.Fields(interfaces.IPage).select(
         'name', 'for_', 'layer', 'permission','templateSource',
         'moduleSource','className')
     template = ViewPageTemplateFile('package_overview.pt')
-
-#    def fixUpWidgets(self):
-#        self.widgets.get('docstring').height = 3
-
-    def setUpWidgets(self, ignore_request=False):
-        for_display = True
-        if 'doEdit' in self.request:
-            for_display = False
-
-        self.adapters = {}
-        self.widgets = form.setUpEditWidgets(
-            self.form_fields, self.prefix, self.context, self.request,
-            adapters=self.adapters, for_display=for_display,
-            ignore_request=ignore_request
-            )
-#        if not for_display:
-#            self.fixUpWidgets()
-
-    @form.action(_("Edit"), condition=lambda *args: not haveEditFlag(*args))
-    def handleStartEditAction(self, action, data):
-        self.request.form['doEdit'] = True
-        self.setUpWidgets()
-
-    @form.action(_("Apply"), condition=haveEditFlag)
-    def handleEditAction(self, action, data):
-        del self.request.form['doEdit']
-
-        if form.applyChanges(self.context, self.form_fields,
-                             data, self.adapters):
-            zope.event.notify(
-                zope.app.event.objectevent.ObjectModifiedEvent(self.context))
-            formatter = self.request.locale.dates.getFormatter(
-                'dateTime', 'medium')
-
-            try:
-                time_zone = idatetime.ITZInfo(self.request)
-            except TypeError:
-                time_zone = pytz.UTC
-
-            status = _("Updated on ${date_time}",
-                       mapping={'date_time':
-                                formatter.format(
-                                   datetime.datetime.now(time_zone)
-                                   )
-                        }
-                       )
-            self.status = status
-        else:
-            self.status = _('No changes')
-
-    @form.action(_("Cancel"), condition=haveEditFlag)
-    def handleCancelAction(self, action, data):
-        del self.request.form['doEdit']
 
