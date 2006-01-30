@@ -29,7 +29,6 @@ class DocumentEditView(FormViewBase):
     """ Edit view for IMutableDocument.
     """
 
-    # XXX: _BUTTONS should become configurable
     _BUTTONS = ({'name': 'change',
                  'value': _(u'Change'),
                  'transform': ('validateTextFile', 'validateHTML', 'update'),
@@ -39,23 +38,20 @@ class DocumentEditView(FormViewBase):
                  'transform': ('validateTextFile', 'validateHTML', 'update'),
                  'redirect': ('context', 'object/view')})
 
+    def title(self):
+        return self.context.Title()
+
+    def description(self):
+        return self.context.Description()
+
     def SafetyBelt(self):
-        if 'SafetyBelt' in self.request.form:
-            return self.request['SafetyBelt']
-        else:
-            return self.context.SafetyBelt()
+        return self.request.form.get('SafetyBelt', self.context.SafetyBelt())
 
     def text_format(self):
-        if 'text_format' in self.request.form:
-            return self.request['text_format']
-        else:
-            return self.context.text_format
+        return self.request.form.get('text_format', self.context.text_format)
 
-    def EditableBody(self):
-        if 'text' in self.request.form:
-            return self.request['text']
-        else:
-            return self.context.EditableBody()
+    def text(self):
+        return self.request.form.get('text', self.context.EditableBody())
 
     def validateTextFile(self, file='', **kw):
         try:
