@@ -138,47 +138,38 @@ InitializeClass(LinkEditingView)
 #
 import urlparse
 
-from Products.CMFDefault.exceptions import EditingConflict
 from Products.CMFDefault.exceptions import ResourceLockedError
 from Products.CMFDefault.utils import MessageID as _
 
+from utils import decode
 from utils import FormViewBase
+from utils import memoize
+
 
 class IllegalURL(ValueError):
     pass
 
+
 class LinkEditView(FormViewBase):
 
-    """ Edit view for IMutableDocument.
+    """ Edit view for IMutableLink.
     """
 
-    # XXX: _BUTTONS should become configurable
-    _BUTTONS = ({'name': 'change',
-                 'value': _(u'Change'),
-                 'transform': ('validateURL', 'update'),
+    _BUTTONS = ({'id': 'change',
+                 'title': _(u'Change'),
+                 'transform': ('validateURL', 'link_edit_control'),
                  'redirect': ('context', 'object/edit'),
                 },
-                {'name': 'change_and_view',
-                 'value': _(u'Change and View'),
-                 'transform': ('validateURL', 'update'),
+                {'id': 'change_and_view',
+                 'title': _(u'Change and View'),
+                 'transform': ('validateURL', 'link_edit_control'),
                  'redirect': ('context', 'object/view'),
                 },
                )
 
-    def remote_url(self):
-        if 'remote_url' in self.request.form:
-            return self.request['remote_url']
-        else:
-            return self.context.remote_url
+    # helpers
 
-    def validateURL(self, remote_url='', **kw):
-        try:
-            remote_url = self._normalizeURL(remote_url)
-        except IllegalURL, errmsg:
-            return self.setStatus(False, errmsg)
-        else:
-            return self.setStatus(True, remote_url=remote_url)
-
+    @memoize
     def _normalizeURL(self, remote_url):
         tokens = urlparse.urlparse( remote_url, 'http' )
         if tokens[0] == 'http':
@@ -197,13 +188,33 @@ class LinkEditView(FormViewBase):
             url = urlparse.urlunparse(tokens)
         return url
 
-    def update(self, remote_url, **kw):
+    # interface
+
+    @memoize
+    @decode
+    def remote_url(self):
+        return self.request.form.get('remote_url', self.context.remote_url)
+
+    # validators
+
+    def validateURL(self, remote_url='', **kw):
+        try:
+            remote_url = self._normalizeURL(remote_url)
+        except IllegalURL, errmsg:
+            return False, errmsg
+        else:
+            self.request.form[remote_url] = remote_url
+            return True
+
+    # controllers
+
+    def link_edit_control(self, remote_url, **kw):
         context = self.context
         if remote_url != context.remote_url:
             try:
-                context.remote_url = remote_url
-                return self.setStatus(True, _(u'Link changed.'))
-            except (ResourceLockedError, EditingConflict), errmsg:
-                return self.setStatus(False, errmsg)
+                context.edit(remote_url=remote_url)
+                return True, _(u'Link changed.')
+            except ResourceLockedError, errmsg:
+                return False, errmsg
         else:
-            return self.setStatus(False, _(u'Nothing to change.'))
+            return False, _(u'Nothing to change.')

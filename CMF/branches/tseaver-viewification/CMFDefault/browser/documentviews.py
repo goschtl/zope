@@ -21,7 +21,9 @@ from Products.CMFDefault.exceptions import ResourceLockedError
 from Products.CMFDefault.utils import MessageID as _
 from Products.CMFDefault.utils import scrubHTML
 
+from utils import decode
 from utils import FormViewBase
+from utils import memoize
 
 
 class DocumentEditView(FormViewBase):
@@ -29,56 +31,66 @@ class DocumentEditView(FormViewBase):
     """ Edit view for IMutableDocument.
     """
 
-    _BUTTONS = ({'name': 'change',
-                 'value': _(u'Change'),
-                 'transform': ('validateTextFile', 'validateHTML', 'update'),
+    _BUTTONS = ({'id': 'change',
+                 'title': _(u'Change'),
+                 'transform': ('validateTextFile', 'validateHTML',
+                               'document_edit_control'),
                  'redirect': ('context', 'object/edit')},
-                {'name': 'change_and_view',
-                 'value': _(u'Change and View'),
-                 'transform': ('validateTextFile', 'validateHTML', 'update'),
+                {'id': 'change_and_view',
+                 'title': _(u'Change and View'),
+                 'transform': ('validateTextFile', 'validateHTML',
+                               'document_edit_control'),
                  'redirect': ('context', 'object/view')})
 
-    def title(self):
-        return self.context.Title()
+    #helpers
 
-    def description(self):
-        return self.context.Description()
+    @memoize
+    def _getHiddenVars(self):
+        belt = self.request.form.get('SafetyBelt', self.context.SafetyBelt())
+        return {'SafetyBelt': belt}
 
-    def SafetyBelt(self):
-        return self.request.form.get('SafetyBelt', self.context.SafetyBelt())
+    # interface
 
+    @memoize
     def text_format(self):
         return self.request.form.get('text_format', self.context.text_format)
 
+    @memoize
+    @decode
     def text(self):
         return self.request.form.get('text', self.context.EditableBody())
+
+    # validators
 
     def validateTextFile(self, file='', **kw):
         try:
             upload = file.read()
         except AttributeError:
-            return self.setStatus(True)
+            return True
         else:
             if upload:
-                return self.setStatus(True, text=upload)
+                self.request.form['text'] = upload
+                return True
             else:
-                return self.setStatus(True)
+                return True
 
     def validateHTML(self, text, description='', **kw):
         try:
-            description = scrubHTML(description)
-            text = scrubHTML(text)
-            return self.setStatus(True, text=text, description=description)
+            self.request.form['description'] = scrubHTML(description)
+            self.request.form['text'] = scrubHTML(text)
+            return True
         except IllegalHTML, errmsg:
-            return self.setStatus(False, errmsg)
+            return False, errmsg
 
-    def update(self, text_format, text, SafetyBelt='', **kw):
+    # controllers
+
+    def document_edit_control(self, text_format, text, SafetyBelt='', **kw):
         context = self.context
         if text_format != context.text_format or text != context.text:
             try:
                 context.edit(text_format, text, safety_belt=SafetyBelt)
-                return self.setStatus(True, _(u'Document changed.'))
+                return True, _(u'Document changed.')
             except (ResourceLockedError, EditingConflict), errmsg:
-                return self.setStatus(False, errmsg)
+                return False, errmsg
         else:
-            return self.setStatus(False, _(u'Nothing to change.'))
+            return False, _(u'Nothing to change.')
