@@ -61,6 +61,8 @@ def haveEditFlag(form, action):
 class EditFormBase(form.EditForm):
     '''A base class for display forms that are also edit forms.'''
 
+    form_edit_widgets = None
+
     def fixUpWidgets(self):
         pass
 
@@ -68,6 +70,9 @@ class EditFormBase(form.EditForm):
         for_display = True
         if 'doEdit' in self.request:
             for_display = False
+            if self.form_edit_widgets:
+                for key, value in self.form_edit_widgets.items():
+                    self.form_fields[key].custom_widget = value
 
         self.adapters = {}
         self.widgets = form.setUpEditWidgets(

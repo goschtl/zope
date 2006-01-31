@@ -59,6 +59,42 @@ Confirm that mypage.html was created properly by looking at the overview page.
   >>> browser.open('http://localhost/++skin++WebDev/++etc++site/first')
   >>> browser.getLink('mypage.html').click()
 
+Go to the edit form.
+
   >>> browser.getControl('Edit').click()
+  
+Edit the important values of the actual page such as the template source, etc
+and save them.
+
+  >>> browser.getControl('Template Source').value = u'''
+  ... <html><body>
+  ... <ul>
+  ...  <li tal:repeat="candy view/candies"
+  ...      tal:content="candy"/>
+  ... </ul>
+  ... </body></html>'''
+  >>> browser.getControl('Module Source').value = u'''
+  ... class CandyCollector(object):
+  ...     @property
+  ...     def candies(self):
+  ...         return ('blue', 'green', 'red')'''
+  >>> browser.getControl('Class Name').value = u'CandyCollector'
+  >>> browser.getControl('Apply').click()
+  
+Since we have created the new page and registered it, it is automatically
+setup as a registered view (we haven't explicitly done this).
+
+Now we will test the actual output of a use of the page/view from the root
+folder.
+
+  >>> browser.open('http://localhost/++skin++WebDev/@@mypage.html')
+  >>> print browser.contents
+  <html><body>
+  <ul>
+   <li>blue</li>
+   <li>green</li>
+   <li>red</li>
+  </ul>
+  </body></html>
   
   
