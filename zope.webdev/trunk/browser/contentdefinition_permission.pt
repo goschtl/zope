@@ -1,0 +1,49 @@
+<html metal:use-macro="context/@@standard_macros/view">
+<body>
+
+<span metal:fill-slot="pagetitle">Content Component Definition  Overview</span>
+
+<div metal:fill-slot="body">
+
+  <div class="error"
+       tal:condition="view/status"
+       tal:content="view/status" />
+
+  <form action="." tal:attributes="action request/URL" method="post"
+        enctype="multipart/form-data">
+
+    <tal:block define="widgets view/getPermissionWidgets"
+               condition="widgets">
+      <h1 i18n:translate="">Map permissions to Schema fields</h1>
+
+      <tal:block repeat="pwidget widgets">
+        <h5 tal:content="string:${pwidget/fieldTitle} (${pwidget/fieldName})">
+          FieldName (Field Title)
+        </h5>
+
+        <div class="row" tal:define="widget nocall:pwidget/getter">
+          <metal:block use-macro="context/@@form_macros/widget_row" />
+        </div>
+
+        <div class="row" tal:define="widget nocall:pwidget/setter">
+          <metal:block use-macro="context/@@form_macros/widget_row" />
+        </div>
+
+        <br />
+      </tal:block>
+    </tal:block>
+
+    <div id="actionsView" class="row">
+      <span class="actionButtons">
+        <input tal:repeat="action view/actions"
+               tal:replace="structure action/render"
+               />
+      </span>
+    </div>
+
+  </form>
+
+</div>
+
+</body>
+</html>
