@@ -18,6 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 import persistent
 import zope.interface
+from zope.app.component.interfaces.registration import IRegisterable, IRegistered
 import zope.security.checker
 import zope.app.component.site
 import zope.app.component.interfaces.registration
@@ -29,7 +30,7 @@ from zope.app import zapi
 from zope.app import publisher
 from zope.app.presentation import zpt, registration
 from zope.webdev import interfaces
-
+from zope.app.component.interfaces.registration import IComponentRegistration
 
 class Page(persistent.Persistent, zope.app.container.contained.Contained):
     """Local page."""
@@ -86,13 +87,11 @@ class Page(persistent.Persistent, zope.app.container.contained.Contained):
     def getTemplate(self):
         return self._template
 
-
 class PageRegistration(zope.app.component.site.AdapterRegistration):
 
     provided = zope.interface.Interface
 
     def __init__(self, page):
-
         self.page = page
 
     @property
@@ -111,9 +110,9 @@ class PageRegistration(zope.app.component.site.AdapterRegistration):
     def component(self):
         makeViewClass = MakeViewClass(self.page)
 
-        return registration.TemplateViewFactory(
+        factory = registration.TemplateViewFactory(
             makeViewClass, self.page.getTemplate(), self.page.permission)
-
+        return factory
 
 class MakeViewClass(object):
 
@@ -137,3 +136,28 @@ def registerPage(page):
     reg = PageRegistration(page)
     package.registrationManager.addRegistration(reg)
     reg.status = zope.app.component.interfaces.registration.ActiveStatus
+
+def reregisterPage(page):
+    registered = IRegistered(page)
+    for reg in registered.registrations():
+        reg.status = zope.app.component.interfaces.registration.InactiveStatus
+        reg.status = zope.app.component.interfaces.registration.ActiveStatus
+        
+
+def handlePageModification(event, page):
+    reregisterPage(page)
+
+
+class PageRegistered(zope.app.component.registration.Registered):
+    """Default Registered adapter compares the component which would normally
+    be the TemplateViewFactory to self.registerable which is a Page instance.
+    Because we do magic to return the TemplateviewFactory dynamically because
+    of TTW code, we have changed to comparison in the adapter by overriding.
+    """
+    
+    def registrations(self):
+        rm = zapi.getParent(self.registerable).registrationManager
+        return [reg for reg in rm.values()
+                if (IComponentRegistration.providedBy(reg) and
+                    reg.component.cls.page is self.registerable)]    
+                    

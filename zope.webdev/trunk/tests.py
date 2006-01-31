@@ -22,7 +22,15 @@ from zope.testing import doctest
 from zope.testing.doctestunit import DocTestSuite, DocFileSuite
 from zope.app.testing import setup
 
-
+from zope.app.testing import ztapi
+from zope.app.event.interfaces import IObjectModifiedEvent
+from zope.webdev.page import handlePageModification
+from zope.webdev.interfaces import IPage
+from zope.webdev.page import PageRegistered
+from zope.app.component.interfaces.registration import IRegisterable, IRegistered
+from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.event.objectevent import objectEventNotify
+  
 def setUp(test):
     setup.placefulSetUp()
 
@@ -30,6 +38,13 @@ def setUp(test):
 def tearDown(test):
     setup.placefulTearDown()
 
+def pageTestSetUp(test):
+     setup.placefulSetUp()
+
+     ztapi.subscribe([IObjectModifiedEvent, IPage], None, handlePageModification)
+     ztapi.provideAdapter(IPage, IRegistered, PageRegistered)
+     ztapi.subscribe([IObjectModifiedEvent], None, objectEventNotify)
+    
 
 def test_suite():
     return unittest.TestSuite((
@@ -42,7 +57,7 @@ def test_suite():
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         DocFileSuite('page.txt',
-                     setUp=setUp, tearDown=tearDown,
+                     setUp=pageTestSetUp, tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         DocTestSuite('zope.webdev.vocabulary',

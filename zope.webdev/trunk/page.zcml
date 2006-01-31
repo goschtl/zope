@@ -56,5 +56,11 @@
   <class class="zodbcode.class_.PersistentMethod">
     <allow attributes="__call__" />
   </class>
-
+  
+  <adapter
+    factory=".page.PageRegistered"
+    provides="zope.app.component.interfaces.registration.IRegistered"
+    for=".interfaces.IPage"
+    /> 
+    
 </configure>

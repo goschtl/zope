@@ -13,10 +13,14 @@ First we create a site:
   >>> site['image.gif'] = object()
   >>> site['file.txt'] = object()
 
-  >>> from zope.webdev.page import Page,registerPage
-  >>> names_html = Page('names.html')
+  >>> from zope.webdev.page import Page,registerPage,reregisterPage
+  >>> from zope.webdev.interfaces import IPage
+  >>> from zope.app.container.interfaces import IReadContainer
+  >>> names_html = Page('names.html', for_=IPage)
   >>> site.getSiteManager()['default']['names.html'] = names_html
   >>> registerPage(names_html)
+  >>> names_html.for_ = IReadContainer
+  >>> reregisterPage(names_html)
 
 
 defaults are: for=Interface, layers=(IDefaultLayer,),
@@ -53,6 +57,7 @@ Now the page is setup and it should be available for any folder:
 
   >>> page = zope.component.getMultiAdapter(
   ...     (site, request), name='names.html')
+  
 
 Now render the page:
 
@@ -94,4 +99,19 @@ Now render the page:
   >>> print page()
   abc
 
+  Test event callback to ensure view is reloaded.
   
+  >>> reregisterPage(names_html)
+
+  Make sure the event is being fired properly and the view no longer looks up
+  properly after we change for_.
+
+  >>> from zope.app.event.objectevent import ObjectModifiedEvent
+  >>> from zope.event import notify
+  >>> notify(ObjectModifiedEvent(names_html))
+  >>> names_html.for_ = IReadContainer
+  >>> reregisterPage(names_html)
+  >>> page = zope.component.getMultiAdapter(
+  ...     (site, request), name='names.html')
+  
+
