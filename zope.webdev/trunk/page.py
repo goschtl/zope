@@ -31,10 +31,14 @@ from zope.app import publisher
 from zope.app.presentation import zpt, registration
 from zope.webdev import interfaces
 from zope.app.component.interfaces.registration import IComponentRegistration
+from zope.schema.fieldproperty import FieldProperty
+
 
 class Page(persistent.Persistent, zope.app.container.contained.Contained):
     """Local page."""
     zope.interface.implements(interfaces.IPage)
+
+    #layers = FieldProperty(interfaces.IPage['layers'])
 
     def __init__(self, name,
                  for_=zope.interface.Interface,
@@ -100,7 +104,7 @@ class PageRegistration(zope.app.component.site.AdapterRegistration):
 
     @property
     def with(self):
-        return self.page.layers
+        return tuple(self.page.layers)
 
     @property
     def required(self):
