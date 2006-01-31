@@ -74,4 +74,12 @@
       layer="cmf"
       />
 
+  <browser:page
+      for="*"
+      name="batch_widget"
+      template="templates/batch_widgets.pt"
+      permission="zope2.View"
+      layer="cmf"
+      />
+
 </configure>

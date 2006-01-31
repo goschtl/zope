@@ -15,6 +15,7 @@
 $Id$
 """
 
+from ZTUtils import Batch
 from ZTUtils import make_query
 
 from Products.CMFCore.utils import getToolByName
@@ -159,3 +160,63 @@ class FormViewBase(ViewBase):
         vars = [ {'name': name, 'value': value}
                  for name, value in html_marshal(**kw) ]
         return tuple(vars)
+
+
+class BatchViewBase(ViewBase):
+
+    # helpers
+
+    _BATCH_SIZE = 25
+
+    @memoize
+    def _getBatchStart(self):
+        return self.request.form.get('b_start', 0)
+
+    @memoize
+    def _getBatchObj(self):
+        b_start = self._getBatchStart()
+        items = self._getItems()
+        return Batch(items, self._BATCH_SIZE, b_start, orphan=0)
+
+    @memoize
+    def _getNavigationURL(self, b_start):
+        target = self._getViewURL()
+        kw = self._getHiddenVars()
+
+        kw['b_start'] = b_start
+        for k, v in kw.items():
+            if not v or k == 'portal_status_message':
+                del kw[k]
+
+        query = kw and ('?%s' % make_query(kw)) or ''
+        return u'%s%s' % (target, query)
+
+    # interface
+
+    @memoize
+    def navigation_previous(self):
+        batch_obj = self._getBatchObj().previous
+        if batch_obj is None:
+            return None
+
+        length = len(batch_obj)
+        url = self._getNavigationURL(batch_obj.first)
+        if length == 1:
+            title = _(u'Previous item')
+        else:
+            title = _(u'Previous ${count} items', mapping={'count': length})
+        return {'title': title, 'url': url}
+
+    @memoize
+    def navigation_next(self):
+        batch_obj = self._getBatchObj().next
+        if batch_obj is None:
+            return None
+
+        length = len(batch_obj)
+        url = self._getNavigationURL(batch_obj.first)
+        if length == 1:
+            title = _(u'Next item')
+        else:
+            title = _(u'Next ${count} items', mapping={'count': length})
+        return {'title': title, 'url': url}
