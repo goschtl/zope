@@ -168,7 +168,7 @@ class LivePageClients(object) :
         
                 
     def addOutput(self, output, recipients="all", group_id=None) :
-        self.checkAlive()
+        #self.checkAlive()
         if recipients == "all" :
             if group_id is None :
                 selected= self
@@ -178,8 +178,9 @@ class LivePageClients(object) :
                 client.addOutput(output)
         else :
             for user_id in recipients :
-                for client in self :
+                for client in self._iterClients() :
                     if client.principal.id == user_id :
+                        print "adding output for", user_id, client.handleid
                         client.addOutput(output)    
                 
             
@@ -453,12 +454,13 @@ class LivePage(ComposedAjaxPage) :
         method = Input(self, request).publishTraverse(request, uuid)
         return method(handler_name, arguments)
  
-    def sendResponse(self, response, recipients="all") :
+    def sendResponse(cls, response, recipients="all") :
         """ Sends a livepage response to all clients. 
             A response consits of a leading command line 
             and optional html body data.
         """
         global clients
+        assert isinstance(response, str)
         clients.addOutput(response, recipients)
         return ''
     
