@@ -149,12 +149,15 @@ class IPage(interfaces.registration.IRegisterable):
         vocabulary="Interfaces",
         required=True)
 
-    layer = zope.schema.Choice(
-        title=_('Layer'),
-        description=_("The layer in which the page will be available."),
-        vocabulary="Layers",
+    layers = zope.schema.List(
+        title=_('Layers'),
+        description=_("The layers in which the page will be available."),
         required=True,
-        default=IDefaultBrowserLayer)
+        default=[IDefaultBrowserLayer],
+        value_type=zope.schema.Choice(
+            vocabulary="Layers",
+            )
+        )
 
     permission = zope.schema.Choice(
         title=_(u"Permission"),

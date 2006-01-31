@@ -31,8 +31,6 @@ from zope.webdev.page import registerPage
 from zope.security.proxy import removeSecurityProxy
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.interface.common import idatetime
-from zope.app.form import CustomWidgetFactory
-from zope.app.form.browser import MultiCheckBoxWidget
 
 
 class AddForm(base.UtilityAddFormBase):
@@ -81,7 +79,6 @@ class PackageOverview(object):
 class Overview(base.EditFormBase):
     """Page Overview."""
     form_fields = form.Fields(interfaces.IPage).select(
-        'name', 'for_', 'layer', 'permission','templateSource',
+        'name', 'for_', 'layers', 'permission','templateSource',
         'moduleSource','className')
-    form_edit_widgets = {'layer': CustomWidgetFactory(MultiCheckBoxWidget)}
     template = ViewPageTemplateFile('package_overview.pt')

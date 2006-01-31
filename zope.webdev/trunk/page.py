@@ -38,7 +38,7 @@ class Page(persistent.Persistent, zope.app.container.contained.Contained):
 
     def __init__(self, name,
                  for_=zope.interface.Interface,
-                 layer=IDefaultBrowserLayer,
+                 layers=(IDefaultBrowserLayer,),
                  permission=zope.security.checker.CheckerPublic,
                  templateSource=None, moduleSource=None, className=None):
 
@@ -47,7 +47,7 @@ class Page(persistent.Persistent, zope.app.container.contained.Contained):
 
         self.name = name
         self.for_ = for_
-        self.layer = layer
+        self.layers = layers
         self.permission = permission
         if templateSource is not None:
             self.templateSource = templateSource
@@ -100,7 +100,7 @@ class PageRegistration(zope.app.component.site.AdapterRegistration):
 
     @property
     def with(self):
-        return (self.page.layer, )
+        return self.page.layers
 
     @property
     def required(self):
