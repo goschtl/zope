@@ -1,8 +1,0 @@
-<metal:block define-macro="javascript">
-  <script type="text/javascript" src="boston.js"
-          tal:attributes="src string:${context/++resource++boston.js}">
-    <!-- Using a separate end tag instead of a single empty tag is
-         necessary to support some browsers (Firefox 1.0, for example).
-         -->
-  </script>
-</metal:block>

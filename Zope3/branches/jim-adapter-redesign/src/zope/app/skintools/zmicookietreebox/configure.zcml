@@ -1,8 +1,0 @@
-<configure
-    xmlns="http://namespaces.zope.org/zope">
-
-  <interface
-      interface="zope.app.skintools.zmicookietreebox.IZMICookieTreeBoxLayout"
-      />
-
-</configure>
