@@ -12,23 +12,19 @@ First we create a site:
 
   >>> site['image.gif'] = object()
   >>> site['file.txt'] = object()
+  
+  >>> import zope.interface
+  >>> class IFaux(zope.interface.Interface):
+  ...     pass
+  
+  >>> class Faux(object):
+  ...     zope.interface.implements(IFaux)
 
   >>> from zope.webdev.page import Page,registerPage,reregisterPage
   >>> from zope.webdev.interfaces import IPage
   >>> from zope.app.container.interfaces import IReadContainer
-  >>> names_html = Page('names.html', for_=IPage)
-  >>> site.getSiteManager()['default']['names.html'] = names_html
-  >>> registerPage(names_html)
-  >>> names_html.for_ = IReadContainer
-  >>> reregisterPage(names_html)
-
-
-defaults are: for=Interface, layers=(IDefaultLayer,),
-              permission=CheckerPublic, template=zptpage.ZPTPage(),
-              module=ModuleManager(), className=None)
-
-is automatically registered.
-
+  >>> names_html = Page('names.html', for_=IFaux)
+  
   >>> names_html.templateSource = u'''
   ... <html>
   ...   <body>
@@ -48,6 +44,46 @@ is automatically registered.
   ...         return sorted(self.context.keys())
   ... '''
   >>> names_html.className = 'FolderContents'
+    
+  >>> site.getSiteManager()['default']['names.html'] = names_html
+  >>> registerPage(names_html)
+
+First we do a lookup on contextg we know should not have this view since we
+accidentially registered it for IFaux instead of IReadContainer.
+
+  >>> import zope.component
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+  >>> zope.component.getMultiAdapter(
+  ...     (site, request), name='names.html')
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: ...
+  
+We create an instance of Faux and work with that one and do a view lookup
+on it.  It should succeed.
+
+  >>> zope.component.getMultiAdapter(
+  ...     (Faux(), request), name='names.html')  
+  <zope.app.presentation.registration.BoundTemplate ...>
+  
+Now we correct the registration by making it a view for IReadContainer.
+
+  >>> names_html.for_ = IReadContainer
+  >>> reregisterPage(names_html)
+  >>> zope.component.getMultiAdapter(
+  ...     (site, request), name='names.html')
+  <zope.app.presentation.registration.BoundTemplate ...>
+
+Since we have registered the component with a different for_ interface, trying
+to look it up on Faux should now fail again.
+
+  >>> zope.component.getMultiAdapter(
+  ...     (Faux(), request), name='names.html')  
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: ...
+  
 
 Now the page is setup and it should be available for any folder:
 
@@ -98,20 +134,3 @@ Now render the page:
   >>> names_html.templateSource=u"""abc"""
   >>> print page()
   abc
-
-  Test event callback to ensure view is reloaded.
-  
-  >>> reregisterPage(names_html)
-
-  Make sure the event is being fired properly and the view no longer looks up
-  properly after we change for_.
-
-  >>> from zope.app.event.objectevent import ObjectModifiedEvent
-  >>> from zope.event import notify
-  >>> notify(ObjectModifiedEvent(names_html))
-  >>> names_html.for_ = IReadContainer
-  >>> reregisterPage(names_html)
-  >>> page = zope.component.getMultiAdapter(
-  ...     (site, request), name='names.html')
-  
-
