@@ -67,9 +67,11 @@ class PackageOverview(object):
         pages = []
         for page in self.context.values():
             if interfaces.IPage.providedBy(page):
-                pages.append(
-                    {'name': page.name,
-                     'for':  apidoc.utilities.getPythonPath(page.for_)})
+                pages.append({
+                    'name': page.name,
+                    'for':  apidoc.utilities.getPythonPath(page.for_),
+                    'absolute_url': zapi.getView(page, 'absolute_url', self.request)(),
+                    })
 
         return pages
 

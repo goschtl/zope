@@ -2,7 +2,8 @@
   <li tal:repeat="page view/pages">
     <div class="name">
       <a href=""
-         tal:content="page/name">
+         tal:content="page/name"
+         tal:attributes="href page/absolute_url">
         index.html
       </a>
     </div>
