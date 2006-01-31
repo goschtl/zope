@@ -1,0 +1,64 @@
+===========================
+Page Browser User Interface
+===========================
+
+Let's first connect to the site and log in as a manager, since this role has
+all permissions.
+
+  >>> from zope.testbrowser import Browser
+  >>> browser = Browser()
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> browser.open('http://localhost/manage')
+
+Since packages manage non-content components, they are developed in the
+site-management section.
+
+  >>> browser.getLink('Manage Site').click()
+
+However, packages are not site-management folder, but registerable containers
+in their own right. Thus, you should now be able to add a new pacakge:
+
+  >>> browser.getLink('WebDev Package')
+  <Link text='WebDev Package' url='...ion.html?type_name=AddWebDevPackage.html'>
+
+By clicking the above link,
+
+  >>> browser.getLink('WebDev Package').click()
+
+you will be presented with the package add-form. All of the fields you are
+seeing are optional. Really, the most important field is the object name,
+since it will be the package name.
+
+  >>> browser.getControl('Docstring').value = u'My first package.'
+  >>> browser.getControl('Version').value = u'pre-alpha'
+  >>> browser.getControl('License').value = u'GPL'
+  >>> browser.getControl('Author').value = u'Stephan Richter'
+
+  >>> browser.getControl(name='add_input_name').value = u'first'
+
+  >>> browser.getControl('Add').click()
+
+Switch to the package overview in the WebDev skin.
+
+  >>> browser.open('http://localhost/++skin++WebDev/++etc++site/first/@@contents.html')
+
+Go directly to the add page form since the javascript cannot be used to open 
+the viewlet.
+XXX: figure this out
+
+  >>> browser.open('http://localhost/++skin++WebDev/++etc++site/first/+/AddPage.html=')
+
+Fill out the add new page form and submit.
+
+  >>> browser.getControl('Page Name').value = u'mypage.html'
+  >>> browser.getControl('For').value = [u'zope.app.container.interfaces.IReadContainer']
+  >>> browser.getControl('Add').click()
+  
+Confirm that mypage.html was created properly by looking at the overview page.
+
+  >>> browser.open('http://localhost/++skin++WebDev/++etc++site/first')
+  >>> browser.getLink('mypage.html').click()
+
+  >>> browser.getControl('Edit').click()
+  
+  

@@ -25,6 +25,10 @@ def test_suite():
             'package.txt',
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
+        FunctionalDocFileSuite(
+            'page.txt',
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
         ))
 
 if __name__ == '__main__':
