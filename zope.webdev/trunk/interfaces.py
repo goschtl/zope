@@ -27,6 +27,9 @@ from zope.app import schema
 from zope.app.component import interfaces
 from zope.app.container import constraints
 
+from zope.app.container.interfaces import IContainer
+from zope.app.file.interfaces import IFile
+
 _ = zope.i18nmessageid.MessageFactory('zope.webdev')
 
 class IPackage(interfaces.registration.IRegisterableContainer):
@@ -186,3 +189,9 @@ class IPage(interfaces.registration.IRegisterable):
     def getTemplate():
 
         """returns the template"""
+
+class IResourceContainer(IContainer):
+    """An interface for a resource container
+    """
+    
+    constraints.contains(IFile)

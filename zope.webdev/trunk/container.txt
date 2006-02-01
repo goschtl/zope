@@ -1,0 +1,13 @@
+========================
+Resource Container Tests
+========================
+
+Instantiate resource containers.
+
+  >>> from zope.webdev.container import ResourceContainer
+  >>> from zope.webdev.interfaces import IResourceContainer
+  >>> from zope.interface.verify import verifyObject
+  >>> aContainer = ResourceContainer()
+  >>> verifyObject(IResourceContainer, aContainer)
+  True
+  

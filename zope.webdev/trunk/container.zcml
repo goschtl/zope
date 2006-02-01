@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:apidoc="http://namespaces.zope.org/apidoc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="webdev"
+    >
+
+  <permission
+      id="webdev.CreateResourceContainer"
+      title="Create Resource Container"
+      />
+
+  <permission
+      id="webdev.ManageResourceContainer"
+      title="Manage Resource Container"
+      />
+
+  <permission
+      id="webdev.ViewResourceContainer"
+      title="View Resource Container"
+      />
+      
+  <content class=".container.ResourceContainer">
+  
+    <implements interface="zope.app.annotation.interfaces.IAnnotatable" />
+    
+    <require
+        permission="webdev.ViewResourceContainer"
+        interface=".interfaces.IResourceContainer"
+        />
+    <require
+        permission="webdev.ManageResourceContainer"
+        set_schema=".interfaces.IResourceContainer"
+        />  
+  </content>  
+
+
+</configure>
