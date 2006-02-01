@@ -13,6 +13,9 @@
     />
 
   <five:traversable
+     class="Products.CMFCore.PortalFolder.PortalFolder"
+     />
+  <five:traversable
      class="Products.CMFDefault.Document.Document"
      />
   <five:traversable 

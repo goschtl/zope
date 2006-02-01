@@ -37,7 +37,7 @@
     template="templates/content_edit.pt"
     permission="cmf.ModifyPortalContent"
     layer="cmf"
-    /> 
+    />
 
  <browser:page
     for="Products.CMFDefault.interfaces.IMutableLink"
@@ -63,6 +63,15 @@
       class=".documentviews.DocumentEditView"
       template="templates/document_edit.pt"
       permission="cmf.ModifyPortalContent"
+      layer="cmf"
+      />
+
+  <browser:page
+      for="Products.CMFCore.interfaces.IFolderish"
+      name="folder_contents"
+      class=".folderviews.FolderContentsView"
+      template="templates/folder_contents.pt"
+      permission="cmf.ListFolderContents"
       layer="cmf"
       />
 
