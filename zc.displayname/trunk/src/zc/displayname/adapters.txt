@@ -1,0 +1,221 @@
+Adapters
+========
+
+Default Display Name Generator
+------------------------------
+
+The default display name generator simply takes a Dublin Core title or a
+__name__ and returns it, truncated if desired.  It uses a helper function
+intended to make writing other display name generators easier, convertName.
+
+No help is offered yet for using HTML with the IBrowserDisplayNameGenerator
+interface.
+
+Given an ILocation that can be adapted to 
+zope.app.dublincore.interfaces.IDCDescriptiveProperties, and that actually has
+a value for it, it returns the DC title; otherwise, it uses __name__.
+
+    >>> import zope.app.dublincore.interfaces
+    >>> import zope.app.location.interfaces
+    >>> from zc.displayname import interfaces, adapters
+    >>> from zope.interface import verify
+    >>> from zope import interface
+    >>> class Dummy(object):
+    ...     interface.implements(zope.app.location.interfaces.ILocation)
+    ...     def __init__(self, parent, name):
+    ...         self.__parent__ = parent
+    ...         self.__name__ = name
+    ...
+    >>> d = Dummy('parent', 'a name')
+    >>> from zope.publisher.browser import TestRequest
+    >>> g = adapters.DefaultDisplayNameGenerator(d, TestRequest())
+    >>> verify.verifyObject(interfaces.IDisplayNameGenerator, g)
+    True
+    >>> g()
+    'a name'
+    >>> g('foo')
+    Traceback (most recent call last):
+    ...
+    TypeError: ('maxlength must be int', 'foo')
+    >>> g(-1)
+    Traceback (most recent call last):
+    ...
+    ValueError: ('maxlength must be 0 or greater', -1)
+    >>> g(4)
+    'a...'
+    >>> g(6)
+    'a name'
+    >>> g(2)
+    '??'
+    >>> interface.directlyProvides(
+    ...     d, zope.app.dublincore.interfaces.IDCDescriptiveProperties)
+    >>> d.title = 'My Special Dummy'
+    >>> d.description = 'My interface said I had to have this'
+    >>> verify.verifyObject(
+    ...     zope.app.dublincore.interfaces.IDCDescriptiveProperties, d)
+    True
+    >>> g()
+    'My Special Dummy'
+    >>> g(0)
+    ''
+    >>> g(100)
+    'My Special Dummy'
+    >>> g(16)
+    'My Special Dummy'
+    >>> g(15)
+    'My Special D...'
+
+Breadcrumbs
+===========
+
+zc.displayname also provides an interface and some basic adapters that provide
+breadcrumb functionality.  This breadcrumb functionality is notably different
+from the standard Zope 3 breadcrumbs in two ways: the breadcrumbs are not 
+connected to the IAbsoluteURL interface, and the breadcrumbs take advantage
+of the display name generator.
+
+To use the breadcrumbs, register the appropriate adapters, and get breadcrumbs
+for an ILocation within a hierarchy with an IContainmentRoot as a root node.
+
+
+    >>> from zope.app.traversing.interfaces import IContainmentRoot
+    >>> class DummyContainmentRoot(object):
+    ...     zope.interface.implements(IContainmentRoot)
+    ...
+    >>> root = DummyContainmentRoot()
+    >>> child = Dummy(root, 'foo')
+    >>> grandchild = Dummy(child, 'bar baz bing')
+    >>> d.__parent__ = grandchild
+    >>> from zope import component
+    >>> component.provideAdapter(adapters.Breadcrumbs)
+    >>> component.provideAdapter(adapters.TerminalBreadcrumbs)
+    >>> component.provideAdapter(adapters.DefaultDisplayNameGenerator)
+    >>> component.provideAdapter(adapters.SiteDisplayNameGenerator)
+    >>> from zope.publisher.interfaces.http import IHTTPRequest
+    >>> from zope.app.traversing.browser.interfaces import IAbsoluteURL
+    >>> from zope.app.traversing import browser
+    >>> component.provideAdapter(
+    ...     browser.AbsoluteURL, adapts=(None, IHTTPRequest), 
+    ...     provides=IAbsoluteURL)
+    >>> component.provideAdapter(
+    ...     browser.SiteAbsoluteURL, adapts=(IContainmentRoot, IHTTPRequest), 
+    ...     provides=IAbsoluteURL)
+    >>> component.provideAdapter(
+    ...     browser.AbsoluteURL, adapts=(None, IHTTPRequest),
+    ...     provides=interface.Interface, name='absolute_url')
+    >>> component.provideAdapter(
+    ...     browser.SiteAbsoluteURL, adapts=(IContainmentRoot, IHTTPRequest), 
+    ...     provides=interface.Interface, name='absolute_url')
+    >>> from zope.publisher.browser import TestRequest
+    >>> request = TestRequest()
+    >>> bc = component.getMultiAdapter((d, request), interfaces.IBreadcrumbs)
+    >>> import pprint
+    >>> pprint.pprint(bc()) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    ({'name': u'[root]',
+      'name_gen': <...SiteDisplayNameGenerator...>,
+      'object': <DummyContainmentRoot...>,
+      'url': 'http://127.0.0.1'},
+     {'name': 'foo',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...
+      'url': 'http://127.0.0.1/foo'},
+     {'name': 'bar baz bing',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...>,
+      'url': 'http://127.0.0.1/foo/bar%20baz%20bing'},
+     {'name': 'My Special Dummy',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...>,
+      'url': 'http://127.0.0.1/foo/bar%20baz%20bing/a%20name'})
+    >>> pprint.pprint(bc(6)) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    ({'name': u'[root]',
+      'name_gen': <...SiteDisplayNameGenerator...>,
+      'object': <DummyContainmentRoot...>,
+      'url': 'http://127.0.0.1'},
+     {'name': 'foo',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...
+      'url': 'http://127.0.0.1/foo'},
+     {'name': 'bar...',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...>,
+      'url': 'http://127.0.0.1/foo/bar%20baz%20bing'},
+     {'name': 'My ...',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...>,
+      'url': 'http://127.0.0.1/foo/bar%20baz%20bing/a%20name'})
+
+The package also offers a hidden breadcrumb implementation. This enables
+usecases that involve objects that are in the traversal path but are for which
+no breadcrumbs are desired.  For some sites, an IAdding is such an object. 
+Here is an example of hiding the IAdding from the breadcrumbs.
+
+    >>> import zope.app.container.interfaces
+    >>> component.provideAdapter(
+    ...     adapters.HiddenBreadcrumbs, 
+    ...     adapts=(zope.app.container.interfaces.IAdding, IHTTPRequest))
+    >>> from zope.app.container.browser.adding import Adding
+    >>> adding = Adding(d, request)
+    >>> bc = component.getMultiAdapter(
+    ...     (adding, request), interfaces.IBreadcrumbs)
+    >>> pprint.pprint(bc()) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    ({'name': u'[root]',
+      'name_gen': <...SiteDisplayNameGenerator...>,
+      'object': <DummyContainmentRoot...>,
+      'url': 'http://127.0.0.1'},
+     {'name': 'foo',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...
+      'url': 'http://127.0.0.1/foo'},
+     {'name': 'bar baz bing',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...>,
+      'url': 'http://127.0.0.1/foo/bar%20baz%20bing'},
+     {'name': 'My Special Dummy',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...>,
+      'url': 'http://127.0.0.1/foo/bar%20baz%20bing/a%20name'})
+
+For ease of use within page templates, the adapters module also offers two
+views that can be used to get breadcrumbs directly.  They simply get the 
+adapter and call it, either with no argument, or with the maxlength argument of
+20.  Register one of these, or another one with a similar pattern, for
+your application's `breadcrumbs` view.
+
+    >>> pprint.pprint(adapters.breadcrumbs(adding, request))
+    ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    ({'name': u'[root]',
+      'name_gen': <...SiteDisplayNameGenerator...>,
+      'object': <DummyContainmentRoot...>,
+      'url': 'http://127.0.0.1'},
+     {'name': 'foo',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...
+      'url': 'http://127.0.0.1/foo'},
+     {'name': 'bar baz bing',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...>,
+      'url': 'http://127.0.0.1/foo/bar%20baz%20bing'},
+     {'name': 'My Special Dummy',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...>,
+      'url': 'http://127.0.0.1/foo/bar%20baz%20bing/a%20name'})
+    >>> d.title = "My Special Dummy With a Really Long Title"
+    >>> pprint.pprint(adapters.breadcrumbs20char(adding, request))
+    ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    ({'name': u'[root]',
+      'name_gen': <...SiteDisplayNameGenerator...>,
+      'object': <DummyContainmentRoot...>,
+      'url': 'http://127.0.0.1'},
+     {'name': 'foo',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...
+      'url': 'http://127.0.0.1/foo'},
+     {'name': 'bar baz bing',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...>,
+      'url': 'http://127.0.0.1/foo/bar%20baz%20bing'},
+     {'name': 'My Special Dummy ...',
+      'name_gen': <...DefaultDisplayNameGenerator...>,
+      'object': <Dummy...>,
+      'url': 'http://127.0.0.1/foo/bar%20baz%20bing/a%20name'})
