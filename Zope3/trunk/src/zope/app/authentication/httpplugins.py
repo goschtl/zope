@@ -109,7 +109,9 @@ class HTTPBasicAuthCredentialsPlugin(Persistent, Contained):
           >>> response._status
           401
           >>> response.getHeader('WWW-Authenticate', literal=True)
-          'basic realm=Zope'
+          'basic realm="Zope"'
+
+        Notice that the realm is quoted, as per RFC 2617.
 
         The plugin only works with HTTP requests.
 
@@ -123,7 +125,8 @@ class HTTPBasicAuthCredentialsPlugin(Persistent, Contained):
         if not IHTTPRequest.providedBy(request):
             return False
         request.response.setHeader("WWW-Authenticate",
-                                   "basic realm=%s" % self.realm, literal=True)
+                                   'basic realm="%s"' % self.realm,
+                                   literal=True)
         request.response.setStatus(401)
         return True
 
