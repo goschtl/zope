@@ -35,6 +35,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 536: ErrorLogUtility has UnboundLocalError.
+
       - zope.i18n.interpolate:
 
         + now if the variable wasn't found in the mapping no substitution
