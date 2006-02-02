@@ -1,3 +1,4 @@
+
 ========================
 Resource Container Tests
 ========================
@@ -7,7 +8,46 @@ Instantiate resource containers.
   >>> from zope.webdev.container import ResourceContainer
   >>> from zope.webdev.interfaces import IResourceContainer
   >>> from zope.interface.verify import verifyObject
-  >>> aContainer = ResourceContainer()
-  >>> verifyObject(IResourceContainer, aContainer)
+  >>> from zope.app import zapi
+  >>> rc = ResourceContainer(u'resources')
+  >>> verifyObject(IResourceContainer, rc)
   True
-  
+
+
+First we create a site:
+
+  >>> from zope.app.testing import setup
+  >>> from zope.app.folder import rootFolder
+  >>> from zope.app.file.file import File
+  >>> from zope.interface import Interface
+  >>> from zope.webdev.container import registerResourceDirectory
+  >>> site = rootFolder()
+  >>> manager = setup.createSiteManager(site, setsite=True)
+  >>> from zope.webdev.package import Package
+  >>> package = Package('package')
+  >>> manager['default']['package'] = package
+  >>> package['resources'] = rc
+  >>> f1 = File('abc',contentType="text/plain")
+  >>> rc['abc.txt']=f1
+  >>> rc['abc.txt']
+  <zope.app.file.file.File object at ...>
+
+  >>> registerResourceDirectory(rc)
+  >>> import zope
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+  >>> res = zope.component.getAdapter(request, name='resources')
+  >>> print res
+  <zope.webdev.container.DirectoryResource object at ...>
+
+  >>> print res()
+  http://127.0.0.1/@@/resources
+
+  >>> fr = res.get('abc.txt')
+  >>> print fr
+  <zope.webdev.container.ZODBFileResource object at ...>
+
+  >>> print fr()
+  http://127.0.0.1/@@/resources/abc.txt
+
+

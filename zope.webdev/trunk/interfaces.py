@@ -193,5 +193,28 @@ class IPage(interfaces.registration.IRegisterable):
 class IResourceContainer(IContainer):
     """An interface for a resource container
     """
-    
     constraints.contains(IFile)
+    
+    name = zope.schema.TextLine(
+        title=_("Page Name"),
+        description=_("This is the name of the page."),
+        required=True,
+        readonly=True)
+
+    permission = zope.schema.Choice(
+        title=_(u"Permission"),
+        description=_(u"The permission required to view the directory"),
+        vocabulary="Permission Ids",
+        required = True,
+        )
+
+
+    layers = zope.schema.List(
+        title=_('Layers'),
+        description=_("The layers in which the resource directory will be available."),
+        required=True,
+        default=[IDefaultBrowserLayer],
+        value_type=zope.schema.Choice(
+            vocabulary="Layers",
+            )
+        )
