@@ -33,6 +33,7 @@ from zope.app.container.contained import Contained
 from zope.app.error.interfaces import IErrorReportingUtility
 from zope.app.error.interfaces import ILocalErrorReportingUtility
 
+
 #Restrict the rate at which errors are sent to the Event Log
 _rate_restrict_pool = {}
 
@@ -50,7 +51,7 @@ _temp_logs = {}  # { oid -> [ traceback string ] }
 
 cleanup_lock = allocate_lock()
 
-log = logging.getLogger('SiteError')
+logger = logging.getLogger('SiteError')
 
 class ErrorReportingUtility(Persistent, Contained):
     """Error Reporting Utility"""
@@ -130,7 +131,7 @@ class ErrorReportingUtility(Persistent, Contained):
             # We'll ignore these errors, and print something
             # useful instead, but also log the error.
             except:
-                log.exception(
+                logger.exception(
                     'Error in ErrorReportingUtility while getting a str '
                     'representation of an object')
                 strv = '<unprintable %s object>' % (
@@ -175,7 +176,7 @@ class ErrorReportingUtility(Persistent, Contained):
             try:
                 raise info[0], info[1], info[2]
             except:
-                log.exception(str(url))
+                logger.exception(str(url))
 
     def getProperties(self):
         return {

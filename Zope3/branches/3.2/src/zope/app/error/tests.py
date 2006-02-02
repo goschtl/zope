@@ -24,12 +24,17 @@ from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.error.error import ErrorReportingUtility
 
+class Error(Exception):
+
+    def __str__(self):
+        return u"Error (\u0410)"
 
 class C1(object):
+
     def getAnErrorInfo(self):
         exc_info = None
         try:
-            someerror()
+            raise Error()
         except:
             exc_info = sys.exc_info()
         return exc_info
