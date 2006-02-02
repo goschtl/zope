@@ -190,28 +190,28 @@ class IPage(interfaces.registration.IRegisterable):
 
         """returns the template"""
 
-class IResourceContainer(IContainer):
+class IResourceContainer(IContainer,
+                         interfaces.registration.IRegisterable):
     """An interface for a resource container
     """
     constraints.contains(IFile)
     
     name = zope.schema.TextLine(
-        title=_("Page Name"),
+        title=_("Name"),
         description=_("This is the name of the page."),
         required=True,
         readonly=True)
 
     permission = zope.schema.Choice(
         title=_(u"Permission"),
-        description=_(u"The permission required to view the directory"),
+        description=_(u"The permission required to view resources"),
         vocabulary="Permission Ids",
         required = True,
         )
 
-
     layers = zope.schema.List(
         title=_('Layers'),
-        description=_("The layers in which the resource directory will be available."),
+        description=_("The layers in which the resources will be available."),
         required=True,
         default=[IDefaultBrowserLayer],
         value_type=zope.schema.Choice(

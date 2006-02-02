@@ -1,0 +1,11 @@
+<ul class="content-listing">
+  <li tal:repeat="container view/containers">
+    <div class="name">
+      <a href=""
+         tal:content="container/name"
+         tal:attributes="href container/absolute_url">
+        index.html
+      </a>
+    </div>
+  </li>
+</ul>

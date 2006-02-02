@@ -20,9 +20,10 @@
       title="View Resource Container"
       />
       
-  <content class=".container.ResourceContainer">
+  <content class=".resourcecontainer.ResourceContainer">
   
-    <implements interface="zope.app.annotation.interfaces.IAnnotatable" />
+    <implements
+     interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
     
     <require
         permission="webdev.ViewResourceContainer"

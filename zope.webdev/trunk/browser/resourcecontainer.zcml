@@ -1,0 +1,62 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    >
+
+  <icon
+      name="zmi_icon"
+      for="..interfaces.IResourceContainer"
+      file="icons/resourcecontainer.png"
+      />
+
+  <resource
+      name="resourcecontainer.png"
+      image="icons/resourcecontainer.png" />
+
+  <!-- Register the addform -->
+
+  <page
+      for="zope.app.container.interfaces.IAdding"
+      name="AddResourceContainer.html"
+      class=".resourcecontainer.AddForm"
+      permission="webdev.CreateResourceContainer"
+      />
+
+  <menuItem
+      menu="webdev_browser"
+      for="..interfaces.IPackage"
+      permission="webdev.CreateResourceContainer"
+      icon="/@@/resourcecontainer.png"
+      title="Resource Container"
+      action="+/AddResourceContainer.html="
+      />
+
+  <!-- Package Overview Viewlet -->
+
+  <viewlet
+      name="webdev.package.Overview.ResourceContainer"
+      for="..interfaces.IPackage"
+      manager=".package.IPackageOverviewManager"
+      class=".resourcecontainer.PackageOverview"
+      template="resourcecontainer_package_overview.pt"
+      permission="webdev.ViewResourceContainer"
+      layer="zope.webdev.browser.skin.webdev"
+      weight="40"
+      />
+
+  <page
+   for="..interfaces.IResourceContainer"
+   permission="webdev.ViewResourceContainer"
+   name="overview.html"
+   class=".resourcecontainer.Overview"
+   layer="zope.webdev.browser.skin.webdev"
+   menu="webdev_views"
+   title="Overview"
+   />
+
+
+  <defaultView
+      for="..interfaces.IResourceContainer"
+      name="overview.html"
+      />
+
+</configure>

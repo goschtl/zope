@@ -86,10 +86,9 @@ class DirectoryResource(Resource):
 
     implements(IBrowserPublisher)
 
-    def __init__(self, container, request,checker):
+    def __init__(self, container, request):
         
         self.__container = container
-        self.__checker = checker
         self.request = request
         self.__name__ = self.__container.__name__
 
@@ -110,8 +109,7 @@ class DirectoryResource(Resource):
     def get(self, name, default=_marker):
         rname = posixpath.join(self.__name__, name)
         resource = ResourceFactory(name,
-            self.__container,
-            self.__checker,rname)(self.request)
+            self.__container,rname)(self.request)
         resource.__parent__ = self
         return resource
 
@@ -120,11 +118,9 @@ class DirectoryResourceFactory(object):
 
     def __init__(self, container):
         self.__container = container
-        self.__checker = NamesChecker(
-            allowed_names + ('__getitem__', 'get'),container.permission)
 
     def __call__(self, request):
-        resource = DirectoryResource(self.__container, request, self.__checker)
+        resource = DirectoryResource(self.__container, request)
         return resource
 
 
@@ -164,9 +160,10 @@ class ZODBFileResource(FileResource):
 
 class ResourceFactory(object):
 
-    def __init__(self, name, container, checker, path):
+    def __init__(self, name, container, path):
         self.__file = container[name]
-        self.__checker = checker
+        self.__checker = NamesChecker(
+            allowed_names + ('__getitem__', 'get'),container.permission)
         self.__name = path
 
     def __call__(self, request):

@@ -289,5 +289,6 @@
   <include file="content.zcml" />
   <include file="page.zcml" />
   <include file="rdb.zcml" />
+  <include file="resourcecontainer.zcml" />
 
 </configure>
