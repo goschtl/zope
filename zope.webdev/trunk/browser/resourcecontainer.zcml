@@ -59,4 +59,13 @@
       name="overview.html"
       />
 
+  <!-- temporary container views -->
+
+  <containerViews
+   for="..interfaces.IResourceContainer"
+   add="webdev.ManageResourceContainer"
+   contents="zope.ManageContent"
+   />
+
+  
 </configure>

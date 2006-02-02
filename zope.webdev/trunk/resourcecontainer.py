@@ -38,7 +38,18 @@ from zope.security.checker import NamesChecker
 from zope.interface import Interface
 import zope.app.component.interfaces.registration
 from zope.app import zapi
+
 _marker = object()
+
+def empty():
+    return ''
+
+def dt2ts(dt):
+    import datetime
+    import time
+    dt = dt.timetuple()
+    return time.mktime(dt)
+
 
 class ResourceContainer(BTreeContainer):
     """A content type for holding resources.
@@ -121,6 +132,11 @@ class DirectoryResourceFactory(object):
 
     def __call__(self, request):
         resource = DirectoryResource(self.__container, request)
+        checker = NamesChecker(
+            allowed_names + ('__getitem__', 'get'),
+            self.__container.permission)
+        resource.__Security_checker__ = checker
+        resource.__name__ = self.__container.name
         return resource
 
 
@@ -144,7 +160,7 @@ class ZODBFileResource(FileResource):
         #XXX maybe set expires etc. headers
         response = self.request.response
         lastModified = IZopeDublinCore(self.context).modified
-        lmh = rfc1123_date(self.lmt)
+        lmh = rfc1123_date(dt2ts(lastModified))
         response.setHeader('Content-Type', self.context.contentType)
         response.setHeader('Last-Modified', lmh)
         
@@ -162,13 +178,15 @@ class ResourceFactory(object):
 
     def __init__(self, name, container, path):
         self.__file = container[name]
-        self.__checker = NamesChecker(
-            allowed_names + ('__getitem__', 'get'),container.permission)
         self.__name = path
+        self.__container = container
 
     def __call__(self, request):
         resource = ZODBFileResource(self.__file, request)
-        resource.__Security_checker__ = self.__checker
+        checker = NamesChecker(
+            allowed_names + ('__getitem__', 'get'),
+            self.__container.permission)
+        resource.__Security_checker__ = checker
         resource.__name__ = self.__name
         return resource
 
