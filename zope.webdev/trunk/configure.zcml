@@ -28,7 +28,7 @@
   <include file="content.zcml" />
   <include file="page.zcml" />
   <include file="rdb.zcml" />
-  <include file="container.zcml" />
+  <include file="resourcecontainer.zcml" />
 
   <include package=".browser" />
   

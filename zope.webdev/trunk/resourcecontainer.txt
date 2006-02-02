@@ -5,7 +5,7 @@ Resource Container Tests
 
 Instantiate resource containers.
 
-  >>> from zope.webdev.container import ResourceContainer
+  >>> from zope.webdev.resourcecontainer import ResourceContainer
   >>> from zope.webdev.interfaces import IResourceContainer
   >>> from zope.interface.verify import verifyObject
   >>> from zope.app import zapi
@@ -20,7 +20,7 @@ First we create a site:
   >>> from zope.app.folder import rootFolder
   >>> from zope.app.file.file import File
   >>> from zope.interface import Interface
-  >>> from zope.webdev.container import registerResourceDirectory
+  >>> from zope.webdev.resourcecontainer import registerResourceDirectory
   >>> site = rootFolder()
   >>> manager = setup.createSiteManager(site, setsite=True)
   >>> from zope.webdev.package import Package
@@ -38,14 +38,14 @@ First we create a site:
   >>> request = TestRequest()
   >>> res = zope.component.getAdapter(request, name='resources')
   >>> print res
-  <zope.webdev.container.DirectoryResource object at ...>
+  <zope.webdev.resourcecontainer.DirectoryResource object at ...>
 
   >>> print res()
   http://127.0.0.1/@@/resources
 
   >>> fr = res.get('abc.txt')
   >>> print fr
-  <zope.webdev.container.ZODBFileResource object at ...>
+  <zope.webdev.resourcecontainer.ZODBFileResource object at ...>
 
   >>> print fr()
   http://127.0.0.1/@@/resources/abc.txt

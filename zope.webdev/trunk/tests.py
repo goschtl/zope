@@ -60,7 +60,7 @@ def test_suite():
                      setUp=pageTestSetUp, tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
-        DocFileSuite('container.txt',
+        DocFileSuite('resourcecontainer.txt',
                      setUp=setUp, tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
