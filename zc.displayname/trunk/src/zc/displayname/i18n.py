@@ -10,7 +10,9 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################  """I18N support for the site package.
+##############################################################################  
+
+"""I18N support for the site package.
 
 This defines a `MessageFactory` for the I18N domain for the
 `zc.displayname` package.  This is normally used with this import::

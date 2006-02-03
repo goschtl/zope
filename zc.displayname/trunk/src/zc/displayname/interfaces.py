@@ -10,7 +10,9 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################  """site interfaces
+##############################################################################  
+
+"""site interfaces
 
 $Id: interfaces.py 3161 2005-07-27 21:49:58Z fred $
 """

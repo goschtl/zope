@@ -10,7 +10,9 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################  """zc.displayname package test runner
+##############################################################################  
+
+"""zc.displayname package test runner
 
 $Id:$
 """
