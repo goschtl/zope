@@ -104,7 +104,7 @@ class IContentComponentDefinition(interfaces.ILocalUtility):
     schema = zope.schema.Choice(
         title=_('Schema'),
         description=_("Specifies the schema that characterizes the component."),
-        vocabulary="Interfaces",
+        vocabulary="Contenttype Vocabulary",
         required=True)
 
     permissions = zope.interface.Attribute(
@@ -149,7 +149,7 @@ class IPage(interfaces.registration.IRegisterable):
     for_ = zope.schema.Choice(
         title=_('For'),
         description=_("The interface the page is for."),
-        vocabulary="Interfaces",
+        vocabulary="Contenttype Vocabulary",
         required=True)
 
     layers = zope.schema.List(

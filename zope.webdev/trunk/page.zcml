@@ -62,5 +62,11 @@
     provides="zope.app.component.interfaces.registration.IRegistered"
     for=".interfaces.IPage"
     /> 
-    
+
+  <vocabulary
+   interface="zope.app.content.interfaces.IContentType"
+   factory="zope.app.component.vocabulary.UtilityVocabulary"
+   nameOnly="true"
+   name="Contenttype Vocabulary"/>
+  
 </configure>
