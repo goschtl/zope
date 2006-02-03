@@ -1,0 +1,15 @@
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:zc='http://namespaces.zope.com/zc'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    >
+
+  <!-- Register the Javascript used by the datetime widgets. -->
+  <resourceLibrary name="zc.datetimewidget" layer="default">
+    <directory
+        source="resources"
+        include="calendar-system.css calendar.js lang/calendar-en.js 
+                 calendar-setup.js"/>
+  </resourceLibrary>
+
+</configure>
