@@ -1,0 +1,544 @@
+========
+Adapters
+========
+
+Adapters are provided to allow a shortcut to act as the target would when
+traversed.
+
+ITraversable
+============
+
+First we have to import the interfaces we'll be working with::
+
+    >>> from zope.publisher.interfaces import IRequest
+    >>> from zope.publisher.interfaces.browser import IBrowserPublisher
+    >>> from zope.app.traversing.interfaces import ITraversable
+    >>> from zc.shortcut.interfaces import IShortcut
+    >>> from zope.app.location.interfaces import ILocation
+    >>> from zc.shortcut import interfaces
+
+If we have a target object with a root::
+
+    >>> from zope import interface, component
+    >>> class ISpam(interface.Interface):
+    ...     pass
+
+    >>> class Spam:
+    ...     interface.implements(ISpam, ILocation)
+    ...     def __init__(self, parent, name):
+    ...         self.__parent__ = parent
+    ...         self.__name__ = name
+    
+    >>> from zope.app.traversing.interfaces import IContainmentRoot
+    >>> class DummyContainmentRoot(object):
+    ...     __parent__ = __name__ = None
+    ...     interface.implements(IContainmentRoot)
+    ...
+    >>> root = DummyContainmentRoot()
+
+    >>> real_parent = Spam(root, 'real_parent')
+    >>> target = Spam(real_parent, 'target')
+
+The target object provides a multiadapter for the target and request to an
+ITraversable so it can be traversed::
+
+    >>> class SpamTraversableAdapter:
+    ...     interface.implements(ITraversable)
+    ...     component.adapts(ISpam, IRequest)
+    ...     def __init__(self, spam, request):
+    ...         self.spam = spam
+    >>> component.provideAdapter(SpamTraversableAdapter, name='view')
+
+There is an adapter to return the target object adapted to ITraversable when
+a shortcut and request is adapted to ITraversable.  For example if we create
+a shortcut to our target::
+
+    >>> from zc.shortcut.shortcut import Shortcut
+    >>> shortcut = Shortcut(target)
+    >>> shortcut_parent = Spam(root, 'shortcut_parent')
+    >>> shortcut.__parent__ = shortcut_parent
+    >>> shortcut.__name__ = 'shortcut'
+
+And call the adapter with a request::
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zc.shortcut.adapters import ShortcutTraversalAdapterFactory
+
+    >>> request = TestRequest()
+    >>> adapter = ShortcutTraversalAdapterFactory(shortcut, request)
+
+The result is the target's ITraversal adapter::
+
+    >>> adapter
+    <...SpamTraversableAdapter instance at...>
+
+    >>> adapter.spam
+    <...Spam instance at...>
+
+Shortcut traversal
+==================
+
+Shortcut traversal is unpleasantly tricky.  First consider the case of 
+traversing a shortcut and then traversing to get the default view 
+('index.html').  In that case, the shortcut will be available to the view,
+and breadcrumbs and other view elements that care about how the object was
+traversed will merely need to look at the shortcut's __parent__, or the
+target proxy's __traversed_parent__.  This is not too bad.
+
+It becomes more interesting if one traverses through a shortcut to another
+content object.  A naive implementation will traverse the shortcut by 
+converting it to its target, and then traversing the target to get the 
+contained content object.  However, views for the content object will have no
+idea of the traversal path used to get to the content object: they will only
+have the __parent__ of the content object, which is the shortcut's target
+*without any target proxy*.  From there they will be able to find the target's
+parent, but not the traversed shortcut's parent.  Breadcrumbs and other
+components that care about traversed path will be broken.
+
+In order to solve this use case, traversing a shortcut needs to traverse the 
+target and then wrap the resulting object in another target proxy that 
+holds a reference to the shortcut's target proxy as its traversed parent.
+
+Traversing a shortcut and finding another shortcut is slightly trickier again.
+In this case, the shortcut's target's proxy should have a parent which is the
+shortcut's proxy's parent.
+
+Two adapters are available for IPublishTraverse: one for shortcuts, and one
+for traversal proxies. If a traversal target doesn't provide IPublishTraverse,
+then it should provide an adapter::
+
+    >>> from zc.shortcut import adapters
+    >>> from zope.publisher.interfaces import IPublishTraverse
+    >>> child_spam = Spam(real_parent, 'child_spam')
+    >>> child_shortcut = Shortcut(child_spam)
+    >>> child_shortcut.__parent__ = shortcut
+    >>> child_shortcut.__name__ = 'child_shortcut'
+    >>> class SpamPublishTraverseAdapter:
+    ...     interface.implements(IPublishTraverse)
+    ...     component.adapts(ISpam, IRequest)
+    ...     def __init__(self, spam, request):
+    ...         self.spam = spam
+    ...     def publishTraverse(self, request, name):
+    ...         print 'SpamPublishTraverseAdapter has been traversed.'
+    ...         return {'child_spam': child_spam,
+    ...                 'child_shortcut': child_shortcut}[name]
+    >>> component.provideAdapter(SpamPublishTraverseAdapter)
+
+If it does, the adapter will be used to do the traversal::
+
+    >>> adapter = adapters.ShortcutPublishTraverseAdapter(shortcut, request)
+    >>> adapter
+    <...ShortcutPublishTraverseAdapter object at...>
+    >>> from zope.interface.verify import verifyObject
+    >>> verifyObject(IPublishTraverse, adapter)
+    True
+    >>> res = adapter.publishTraverse(request, 'child_spam')
+    SpamPublishTraverseAdapter has been traversed.
+
+Notice that the traversed object has a traversal proxy (but not a target
+proxy).
+
+    >>> interfaces.ITraversalProxy.providedBy(res)
+    True
+    >>> interfaces.ITargetProxy.providedBy(res)
+    False
+    >>> res.__traversed_parent__ == shortcut.target
+    True
+    >>> res.__traversed_name__ 
+    'child_spam'
+    >>> res.__traversed_parent__.__shortcut__ is shortcut
+    True
+    >>> res.__traversed_parent__.__traversed_parent__ is shortcut_parent
+    True
+
+To traverse further down and still keep the traversal information, we need to
+register the ProxyPublishTraverseAdapter.  Notice that we will also traverse
+to a shortcut this time, and look at the traversal trail up from the shortcut
+and from its target.
+
+    >>> component.provideAdapter(adapters.ProxyPublishTraverseAdapter)
+    >>> from zope import component
+    >>> adapter = component.getMultiAdapter((res, request), IPublishTraverse)
+    >>> res = adapter.publishTraverse(request, 'child_shortcut')
+    SpamPublishTraverseAdapter has been traversed.
+    >>> res.__traversed_parent__ == child_spam
+    True
+    >>> res.__traversed_name__
+    'child_shortcut'
+    >>> res.__traversed_parent__.__traversed_parent__ == shortcut.target
+    True
+    >>> res.target.__traversed_parent__.__traversed_parent__ == shortcut.target
+    True
+
+If, instead, the target implements IPublishTraverse itself...::
+
+    >>> class SpamWithPublishTraverse(Spam):
+    ...     interface.implements(IPublishTraverse)
+    ...     def publishTraverse(self, request, name):
+    ...         print 'SpamWithPublishTraverse has been traversed.'
+    ...         return {'child_spam': child_spam,
+    ...                 'child_shortcut': child_shortcut}[name]
+
+...then it's `publishTraverse()` will be called directly::
+
+    >>> spam = SpamWithPublishTraverse(real_parent, 'special_spam')
+    >>> shortcut = Shortcut(spam)
+    >>> shortcut.__parent__ = shortcut_parent
+    >>> shortcut.__name__ = 'special_spam_shortcut'
+    >>> adapter = adapters.ShortcutPublishTraverseAdapter(shortcut, request)
+    >>> adapter
+    <...ShortcutPublishTraverseAdapter object at...>
+
+    >>> another = adapter.publishTraverse(request, 'child_spam')
+    SpamWithPublishTraverse has been traversed.
+
+Ending traversal at a shortcut
+------------------------------
+
+When a shortcut is the target of a URL traversal, rather than a node
+along the way, the leaf-node handling of the target object must be
+invoked so that the shortcut behaves in the same way as the would
+would when accessed directly.
+
+When a URL from a request represents an object (rather than a view),
+the publisher uses the `browserDefault()` method of the
+`IBrowserPublisher` interface to determine how the object should be
+handled.  This method returns an object and a sequences of path
+elements that should be traversed.
+
+For shortcuts, this is handled by delegating to the target of the
+shortcut, substituting a proxy for the target so the traversedURL view
+and breadcrumbs still work correctly.
+
+Let's start by defining an `IBrowserPublisher` for `ISpam` objects::
+
+    >>> class SpamBrowserPublisherAdapter(SpamPublishTraverseAdapter):
+    ...     interface.implements(IBrowserPublisher)
+    ...     def browserDefault(self, request):
+    ...         print "browserDefault for", repr(self.spam)
+    ...         return self.spam, ("@@foo.html",)
+    >>> component.provideAdapter(SpamBrowserPublisherAdapter,
+    ...                          provides=IBrowserPublisher)
+
+    >>> adapter.browserDefault(request)  # doctest: +ELLIPSIS
+    browserDefault for <...SpamWithPublishTraverse instance at 0x...>
+    (<...SpamWithPublishTraverse instance at 0x...>, ('@@foo.html',))
+
+
+traversedURL
+============
+
+If shortcuts are traversed, an absolute url can lead a user to unexpected
+locations--to the real location of the object, rather than to the traversed
+location.  In order to get the traversed url, the adapters module provides a
+traversedURL function, and the shortcut package also offers it from its
+__init__.py.  
+
+Given the result of the next-to-last shortcut traversal described
+above, for instance, traversedURL returns a URL that behaves similarly to
+absoluteURL except when it encounters target proxies, at which point the 
+traversal parents are used rather than the actual parents.
+
+    >>> component.provideAdapter(adapters.TraversedURL)
+    >>> component.provideAdapter(adapters.FallbackTraversedURL)
+    >>> component.provideAdapter(adapters.RootTraversedURL)
+    >>> adapters.traversedURL(res, request)
+    'http://127.0.0.1/shortcut_parent/shortcut/child_spam/child_shortcut'
+
+Like absoluteURL, the returned value is html escaped.
+
+    >>> shortcut_parent.__name__ = 'shortcut parent'
+    >>> adapters.traversedURL(res, request)
+    'http://127.0.0.1/shortcut%20parent/shortcut/child_spam/child_shortcut'
+
+Also like absoluteURL, traversedURL is registered as a view so it can be used
+within page templates (as in context/@@traversedURL).
+
+    >>> component.provideAdapter(adapters.traversedURL, name="traversedURL")
+    >>> component.getMultiAdapter((res, request), name='traversedURL')
+    'http://127.0.0.1/shortcut%20parent/shortcut/child_spam/child_shortcut'
+
+Breadcrumbs
+===========
+
+The zc.displayname package provides a way to obtain breadcrumbs that is not tied to
+the zope IAbsoluteURL interface and that takes advantage of zc.displayname features 
+like the display name generator.  The zc.shortcut package includes a breadcrumb
+adapter for the zc.displayname interface that is aware of the traversal proxies that
+are part of the shortcut package.
+
+    >>> import zc.displayname.adapters
+    >>> component.provideAdapter(zc.displayname.adapters.Breadcrumbs)
+    >>> component.provideAdapter(zc.displayname.adapters.TerminalBreadcrumbs)
+    >>> component.provideAdapter(zc.displayname.adapters.DefaultDisplayNameGenerator)
+    >>> component.provideAdapter(zc.displayname.adapters.SiteDisplayNameGenerator)
+    >>> from zope.publisher.interfaces.http import IHTTPRequest
+    >>> from zope.app.traversing.browser.interfaces import IAbsoluteURL
+    >>> from zope.app.traversing import browser
+    >>> component.provideAdapter(
+    ...     browser.AbsoluteURL, adapts=(None, IHTTPRequest), 
+    ...     provides=IAbsoluteURL)
+    >>> component.provideAdapter(
+    ...     browser.SiteAbsoluteURL, adapts=(IContainmentRoot, IHTTPRequest), 
+    ...     provides=IAbsoluteURL)
+    >>> component.provideAdapter(
+    ...     browser.AbsoluteURL, adapts=(None, IHTTPRequest),
+    ...     provides=interface.Interface, name='absolute_url')
+    >>> component.provideAdapter(
+    ...     browser.SiteAbsoluteURL, adapts=(IContainmentRoot, IHTTPRequest), 
+    ...     provides=interface.Interface, name='absolute_url')
+    >>> component.provideAdapter(adapters.Breadcrumbs)
+    >>> from zc.displayname.interfaces import IBreadcrumbs
+    >>> bc = component.getMultiAdapter((res, request), IBreadcrumbs)
+    >>> import pprint
+    >>> pprint.pprint(bc()) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    ({'name': u'[root]',
+      'name_gen': <zc.displayname.adapters.SiteDisplayNameGenerator object at ...>,
+      'object': <...DummyContainmentRoot object at ...>,
+      'url': 'http://127.0.0.1'},
+     {'name': 'shortcut parent',
+      'name_gen': <zc.displayname.adapters.DefaultDisplayNameGenerator object at ...>,
+      'object': <...Spam instance at ...>,
+      'url': 'http://127.0.0.1/shortcut%20parent'},
+     {'name': 'target',
+      'name_gen': <zc.displayname.adapters.DefaultDisplayNameGenerator object at ...>,
+      'object': <...Spam instance at ...>,
+      'url': 'http://127.0.0.1/shortcut%20parent/shortcut'},
+     {'name': 'child_spam',
+      'name_gen': <zc.displayname.adapters.DefaultDisplayNameGenerator object at ...>,
+      'object': <...Spam instance at ...>,
+      'url': 'http://127.0.0.1/shortcut%20parent/shortcut/child_spam'},
+     {'name': 'child_shortcut',
+      'name_gen': <zc.displayname.adapters.DefaultDisplayNameGenerator object at ...>,
+      'object': <zc.shortcut.shortcut.Shortcut object at ...>,
+      'url': 'http://127.0.0.1/shortcut%20parent/shortcut/child_spam/child_shortcut'})
+    >>> pprint.pprint(bc(6)) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    ({'name': u'[root]',
+      'name_gen': <zc.displayname.adapters.SiteDisplayNameGenerator object at ...>,
+      'object': <...DummyContainmentRoot object at ...>,
+      'url': 'http://127.0.0.1'},
+     {'name': 'sho...',
+      'name_gen': <zc.displayname.adapters.DefaultDisplayNameGenerator object at ...>,
+      'object': <...Spam instance at ...>,
+      'url': 'http://127.0.0.1/shortcut%20parent'},
+     {'name': 'target',
+      'name_gen': <zc.displayname.adapters.DefaultDisplayNameGenerator object at ...>,
+      'object': <...Spam instance at ...>,
+      'url': 'http://127.0.0.1/shortcut%20parent/shortcut'},
+     {'name': 'chi...',
+      'name_gen': <zc.displayname.adapters.DefaultDisplayNameGenerator object at ...>,
+      'object': <...Spam instance at ...>,
+      'url': 'http://127.0.0.1/shortcut%20parent/shortcut/child_spam'},
+     {'name': 'chi...',
+      'name_gen': <zc.displayname.adapters.DefaultDisplayNameGenerator object at ...>,
+      'object': <zc.shortcut.shortcut.Shortcut object at ...>,
+      'url': 'http://127.0.0.1/shortcut%20parent/shortcut/child_spam/child_shortcut'})
+
+Copy and Link
+=============
+
+The zope.app.copypastemove package provides a number of interfaces to provide
+copy, move, rename, and other similar operations.  The shortcut package 
+provides a replacement implementation of copy for objects that looks up a 
+repository and uses it if available; an implementation of
+copy that actually makes shortcuts (useful for immutable objects stored in a
+repository); and an interface and two implementations, one for shortcuts and 
+one for other objects, for a new `link` operation, which makes a shortcut to
+the selected object.
+
+Copying an Object
+-----------------
+
+If you want copying an object to use repositories if they are available, this
+adapter provides the functionality.  It is installed for all objects by 
+default, but could also be configured only for certain interfaces.
+
+In the example below, first we set up the dummy content objects, then we 
+register the necessary adapters, and then we set up some event listener code
+that we use to show what events are being fired.
+
+    >>> class IDummy(interface.Interface):
+    ...     pass
+    ...
+    >>> import zope.app.container.interfaces
+    >>> class Dummy(object):
+    ...     interface.implements(
+    ...         IDummy, zope.app.container.interfaces.IContained)
+    >>> class DummyContainer(dict):
+    ...     interface.implements(zope.app.container.interfaces.IContainer)
+    ...     __parent__ = __name__ = None
+    ...     def __repr__(self):
+    ...         return "<%s at %d>" % (self.__class__.__name__, id(self))
+    ...
+    >>> repo = DummyContainer()
+    >>> folder = DummyContainer()
+    >>> @component.adapter(IDummy)
+    ... @interface.implementer(zope.app.container.interfaces.IContainer)
+    ... def DummyRepoGetter(content):
+    ...     return repo
+    ... 
+    >>> component.provideAdapter(
+    ...     DummyRepoGetter, name=interfaces.REPOSITORY_NAME)
+    >>> from zope.app.container.contained import NameChooser
+    >>> component.provideAdapter(NameChooser, adapts=(interface.Interface,))
+    >>> # now, before we actually actually run the adding machinery, we'll
+    >>> # set up some machinery that will let us look at events firing
+    ...
+    >>> heard_events = [] # we'll collect the events here
+    >>> from zope import event
+    >>> event.subscribers.append(heard_events.append)
+    >>> import pprint
+    >>> from zope import interface
+    >>> showEventsStart = 0
+    >>> def iname(ob):
+    ...     return iter(interface.providedBy(ob)).next().__name__
+    ...
+    >>> def getId(ob):
+    ...     if ob is None or isinstance(ob, (int, float, basestring, tuple)):
+    ...         return "(%r)" % (ob,)
+    ...     id = getattr(ob, 'id', getattr(ob, '__name__', None))
+    ...     if not id:
+    ...         id = "a %s (%s)" % (ob.__class__.__name__, iname(ob))
+    ...     return id
+    ...
+    >>> def showEvents(start=None): # to generate a friendly view of events
+    ...     global showEventsStart
+    ...     if start is None:
+    ...         start = showEventsStart
+    ...     res = [
+    ...         '%s fired for %s.' % (iname(ev), getId(ev.object))
+    ...         for ev in heard_events[start:]]
+    ...     res.sort()
+    ...     pprint.pprint(res)
+    ...     showEventsStart = len(heard_events)
+    ...
+    >>> component.provideAdapter(adapters.ObjectCopier)
+    >>> from zope.app.container.contained import NameChooser
+    >>> component.provideAdapter(NameChooser, adapts=(interface.Interface,))
+    >>> dummy = Dummy()
+    >>> repo['dummy'] = dummy
+    >>> dummy.__parent__ = repo
+    >>> dummy.__name__ = 'dummy'
+    >>> dummy.id = 'foo'
+    >>> from zope.app import copypastemove
+    >>> copier = copypastemove.IObjectCopier(dummy)
+    >>> verifyObject(copypastemove.IObjectCopier, copier)
+    True
+    >>> copier.copyTo(folder)
+    'dummy'
+    >>> showEvents()
+    ['IObjectCopiedEvent fired for foo.',
+     'IObjectCreatedEvent fired for a Shortcut (IShortcut).']
+    >>> folder['dummy'].raw_target is not dummy
+    True
+    >>> folder['dummy'].raw_target is repo['dummy-2']
+    True
+    
+    >>> folder['dummy'].raw_target.id
+    'foo'
+    >>> folder.clear() # prepare for next test
+
+Linking
+-------
+
+In addition to the copy and move operations, the shortcut package offers up a
+new 'link' operation: this creates a shortcut to the selected object.  In the
+case of linking a shortcut, the provided adapter links instead to the original
+shortcut's target.
+
+    >>> from zope.app.container.constraints import contains
+    >>> class INoDummyContainer(interface.Interface):
+    ...     contains(ISpam) # won't contain shortcuts
+    ...
+    >>> badcontainer = DummyContainer()
+    >>> interface.alsoProvides(badcontainer, INoDummyContainer)
+    >>> component.provideAdapter(adapters.ObjectLinkerAdapter)
+    >>> component.provideAdapter(adapters.ShortcutLinkerAdapter)
+    >>> dummy_linker = interfaces.IObjectLinker(dummy)
+    >>> shortcut_linker = interfaces.IObjectLinker(shortcut)
+    >>> verifyObject(interfaces.IObjectLinker, dummy_linker)
+    True
+    >>> verifyObject(interfaces.IObjectLinker, shortcut_linker)
+    True
+    >>> dummy_linker.linkable()
+    True
+    >>> shortcut_linker.linkable()
+    True
+    >>> dummy_linker.linkableTo(badcontainer)
+    False
+    >>> shortcut_linker.linkableTo(badcontainer)
+    False
+    >>> dummy_linker.linkableTo(folder)
+    True
+    >>> shortcut_linker.linkableTo(folder)
+    True
+    >>> dummy_linker.linkTo(badcontainer)
+    Traceback (most recent call last):
+    ...
+    Invalid: ('Not linkableTo target with name', <DummyContainer...>, 'dummy')
+    >>> shortcut_linker.linkTo(badcontainer)
+    Traceback (most recent call last):
+    ...
+    Invalid: ('Not linkableTo target with name', <DummyContainer...>, 'special_spam_shortcut')
+    >>> dummy_linker.linkTo(folder)
+    'dummy'
+    >>> showEvents()
+    ['IObjectCreatedEvent fired for a Shortcut (IShortcut).']
+    >>> folder['dummy'].raw_target is dummy
+    True
+    >>> shortcut_linker.linkTo(folder)
+    'special_spam_shortcut'
+    >>> showEvents()
+    ['IObjectCopiedEvent fired for a Shortcut (IShortcut).']
+    >>> folder['special_spam_shortcut'].raw_target is spam
+    True
+    >>> dummy_linker.linkTo(folder, 'dummy2')
+    'dummy2'
+    >>> showEvents()
+    ['IObjectCreatedEvent fired for a Shortcut (IShortcut).']
+    >>> folder['dummy2'].raw_target is dummy
+    True
+    >>> shortcut_linker.linkTo(folder, 'shortcut2')
+    'shortcut2'
+    >>> showEvents()
+    ['IObjectCopiedEvent fired for a Shortcut (IShortcut).']
+    >>> folder['shortcut2'].raw_target is spam
+    True
+
+Copying as Linking
+------------------
+
+For some objects--immutable objects that are primarily stored in a repository,
+for instance--having a copy gesture actually create a link may be desirable.
+The adapters module provides an ObjectCopierLinkingAdapter for these use cases.
+Whenever a copy is requested, a link is made instead.  This adapter is not
+registered for any interfaces by default: it is expected to be installed
+selectively.
+
+    >>> class IImmutableDummy(IDummy):
+    ...     pass
+    ...
+    >>> immutable_dummy = Dummy()
+    >>> interface.directlyProvides(immutable_dummy, IImmutableDummy)
+    >>> originalcontainer = DummyContainer()
+    >>> originalcontainer['immutable_dummy'] = immutable_dummy
+    >>> immutable_dummy.__name__ = 'immutable_dummy'
+    >>> immutable_dummy.__parent__ = originalcontainer
+    >>> component.provideAdapter(
+    ...     adapters.ObjectCopierLinkingAdapter, adapts=(IImmutableDummy,))
+    >>> copier = copypastemove.IObjectCopier(immutable_dummy)
+    >>> copier.copyable()
+    True
+    >>> copier.copyableTo(badcontainer)
+    False
+    >>> copier.copyableTo(folder)
+    True
+    >>> copier.copyTo(folder)
+    'immutable_dummy'
+    >>> showEvents()
+    ['IObjectCreatedEvent fired for a Shortcut (IShortcut).']
+    >>> folder['immutable_dummy'].raw_target is immutable_dummy
+    True
+
+    >>> event.subscribers.pop() is not None # cleanup
+    True

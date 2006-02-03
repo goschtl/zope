@@ -1,0 +1,53 @@
+=========
+Shortcuts
+=========
+
+Shortcuts are objects that allow other objects (their ``target``) to appear to
+be located in places other than the target's actual location.  They are
+somewhat like a symbolic link in Unix-like operating systems.
+
+Creating a shortcut
+===================
+
+Shortcuts are created by calling the ``Shortcut`` class's constructor with a
+target, parent, and name::
+
+    >>> from zc.shortcut.shortcut import Shortcut
+    >>> class MyTarget:
+    ...     attr = 'hi'
+    ...     __parent__ = 'Original Parent'
+    ...     __name__ = 'Original Name'
+    >>> target = MyTarget()
+    >>> sc = Shortcut(target)
+    >>> sc.__parent__ = 'My Parent'
+    >>> sc.__name__ = 'My Name'
+
+A shortcut provides an attribute to access its target::
+
+    >>> sc.target
+    <__builtin__.MyTarget instance at ...>
+
+A shortcut's __parent__ and __name__ are independent of their target::
+
+    >>> sc.__parent__
+    'My Parent'
+    >>> sc.target.__parent__
+    'Original Parent'
+
+    >>> sc.__name__
+    'My Name'
+    >>> sc.target.__name__
+    'Original Name'
+
+But the target knows the traversal parent, the traversal name, and the
+shortcut.  This allows the shortcut to have annotations that may be accessed
+by views and other components that render or use the target.
+
+    >>> sc.target.__traversed_parent__
+    'My Parent'
+    >>> sc.target.__traversed_name__
+    'My Name'
+    >>> sc.target.__shortcut__ is sc
+    True
+
+See proxy.txt and adapters.txt for more details

@@ -1,0 +1,143 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zc.shortcut"
+    >
+
+  <adapter
+      for=".interfaces.IShortcut"
+      provides="zope.app.size.ISized"
+      factory=".adapters.ShortcutSizedAdapterFactory"
+      />
+
+  <adapter
+      for=".interfaces.IShortcut"
+      provides="zope.app.dublincore.interfaces.IZopeDublinCore"
+      factory=".adapters.ShortcutZopeDoublinCoreAdapterFactory"
+      />
+
+  <adapter
+      name="view"
+      for=".interfaces.IShortcut
+           zope.publisher.interfaces.IRequest"
+      factory=".adapters.ShortcutTraversalAdapterFactory"
+      provides="zope.app.traversing.interfaces.ITraversable"
+      />
+  <adapter factory=".adapters.ShortcutZMIIconFactory" name="zmi_icon" />
+  <adapter factory=".adapters.TraversedURL" />
+  <adapter factory=".adapters.FallbackTraversedURL" />
+  <adapter factory=".adapters.RootTraversedURL" />
+  <adapter factory=".adapters.traversedURL" name="traversedURL" />
+  <adapter factory=".adapters.Breadcrumbs" />
+  <adapter factory=".adapters.ShortcutDisplayNameGenerator" />
+  <adapter factory=".adapters.ObjectCopier" 
+           permission="zope.ManageContent"
+           trusted="y"/>
+  <adapter factory=".adapters.ObjectLinkerAdapter" 
+           permission="zope.ManageContent"
+           trusted="y"/>
+  <adapter factory=".adapters.ShortcutLinkerAdapter" 
+           permission="zope.ManageContent"
+           trusted="y"/>
+
+  <subscriber
+      for=".interfaces.IShortcut
+           zope.app.publication.interfaces.IBeforeTraverseEvent"
+      handler=".subscribers.redirectShortcutObjectEvents"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for=".interfaces.IShortcut"
+      factory=".adapters.ShortcutPublishTraverseAdapter"
+      provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+      permission="zope.Public"
+      allowed_interface="zope.publisher.interfaces.IPublishTraverse"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for=".interfaces.ITargetProxy"
+      factory=".adapters.ProxyPublishTraverseAdapter"
+      provides="zope.publisher.interfaces.IPublishTraverse"
+      permission="zope.Public"
+      allowed_interface="zope.publisher.interfaces.IPublishTraverse"
+      />
+
+  <content class=".shortcut.Shortcut">
+    <require
+        permission="zope.Public"
+        attributes="target raw_target"
+        />
+  </content>
+
+  <class class=".proxy.TargetProxy">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.ITargetProxy"
+        />
+  </class>
+
+  <class class=".proxy.Proxy">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.ITraversalProxy"
+        />
+  </class>
+
+  <class class=".proxy.ShortcutProxy">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.ITraversalProxy"
+        />
+    <require permission="zope.Public" attributes="target" />
+  </class>
+
+  <content class=".constraints.ShortcutTypePrecondition">
+    <allow interface=".interfaces.IShortcutTypePrecondition" />
+  </content>
+
+  <configure
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    zcml:condition="have apidoc"
+    xmlns="http://namespaces.zope.org/apidoc"
+    >
+
+    <bookchapter
+      id="zcshortcut.txt"
+      title="Shortcuts"
+      />
+    <bookchapter
+      parent="zcshortcut.txt"
+      id="zcshortcutshortcut.txt"
+      title="Shortcut API"
+      doc_path="shortcut.txt"
+      />
+    <bookchapter
+      id="zcshortcutadapter.txt"
+      parent="zcshortcut.txt"
+      title="Shortcut Adapters (Traversal and More)"
+      doc_path="adapters.txt"
+      />
+    <bookchapter
+      parent="zcshortcut.txt"
+      id="zcshortcutproxy.txt"
+      title="Traversal and Shortcut Proxies"
+      doc_path="proxy.txt"
+      />
+    <bookchapter
+      parent="zcshortcut.txt"
+      id="zcshortcutadding.txt"
+      title="Shortcut-Aware IAdding"
+      doc_path="adding.txt"
+      />
+    <bookchapter
+      parent="zcshortcut.txt"
+      id="zcshortcutfactories.txt"
+      title="Shortcut Factories"
+      doc_path="factory.txt"
+      />
+
+  </configure> 
+
+</configure>

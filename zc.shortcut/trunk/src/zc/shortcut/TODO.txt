@@ -1,0 +1,3 @@
+We suddenly stopped using shortcuts before I got around to tests for
+traversedURL and friends and the new breadcrumb code.  Needs to be fixed and 
+re-hooked up.

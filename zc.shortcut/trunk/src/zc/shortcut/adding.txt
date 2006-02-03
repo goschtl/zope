@@ -1,0 +1,95 @@
+The shortcut adding has a couple of different behaviors than the standard Zope
+3 adding.  The differences are to support traversal proxies; and to provide
+more flexibility for choosing the nextURL after an add.
+
+Supporting Traversal Proxies
+----------------------------
+
+Both the action method and the nextURL method redirect to the absoluteURL of
+the container in the zope.app implementation.  In the face of shortcuts and
+traversal proxies, this can generate surprising behavior for users, directing
+their URL to a location other than where they thought they were working.  The
+shortcut adding changes both of these methods to use traversedURL instead.  As
+a result, adding to a shortcut of a container returns the user to the
+shortcut, not the absolute path of the container's real location; and 
+submitting the form of the default view of the adding redirects to within the 
+context of the traversed shorcut(s), not the absoluteURL.
+
+The action method changes are pertinent to redirecting to an adding view.
+
+    >>> from zc.shortcut import adding, interfaces
+    >>> from zope import interface, component
+    >>> from zope.app.location.interfaces import ILocation
+    >>> class ISpam(interface.Interface):
+    ...     pass
+    ...
+    >>> class Spam(dict):
+    ...     interface.implements(ISpam, ILocation)
+    ...     def __init__(self, parent, name):
+    ...         self.__parent__ = parent
+    ...         self.__name__ = name
+    ...
+    >>> from zope.app.traversing.interfaces import IContainmentRoot
+    >>> class DummyContainmentRoot(object):
+    ...     interface.implements(IContainmentRoot)
+    ...
+    >>> root = DummyContainmentRoot()
+    >>> real_parent = Spam(root, 'real_parent')
+    >>> target = Spam(real_parent, 'target')
+    >>> from zc.shortcut.shortcut import Shortcut
+    >>> shortcut = Shortcut(target)
+    >>> shortcut_parent = Spam(root, 'shortcut_parent')
+    >>> shortcut.__parent__ = shortcut_parent
+    >>> shortcut.__name__ = 'shortcut'
+    >>> from zc.shortcut import adapters
+    >>> component.provideAdapter(adapters.TraversedURL)
+    >>> component.provideAdapter(adapters.FallbackTraversedURL)
+    >>> component.provideAdapter(adapters.RootTraversedURL)
+    >>> from zope.publisher.interfaces import IRequest
+    >>> @component.adapter(interfaces.IAdding, IRequest)
+    ... @interface.implementer(interface.Interface)
+    ... def dummyAddingView(adding, request):
+    ...     return 'this is a view'
+    ...
+    >>> component.provideAdapter(dummyAddingView, name='foo_type')
+    >>> from zope.publisher.browser import TestRequest
+    >>> request = TestRequest()
+    >>> adder = adding.Adding(shortcut.target, request)
+    >>> adder.action('foo_type', 'foo_id')
+    >>> request.response.getHeader('Location')
+    'http://127.0.0.1/shortcut_parent/shortcut/@@+/foo_type=foo_id'
+
+The nextURL method changes are pertinent to the default behavior.
+
+    >>> adder.contentName = 'foo_id'
+    >>> target['foo_id'] = Spam(target, 'foo_id')
+    >>> adder.nextURL()
+    'http://127.0.0.1/shortcut_parent/shortcut/@@contents.html'
+
+Adding Flexibility to 'nextURL'
+-------------------------------
+
+The nextURL method in the zope.app implementation of an adding defines 
+precisely what the nextURL should be: the @@contents.html view of the context.
+The shortcut adding recreates this behavior, but only after seeing if different
+behavior has been registered.
+
+nextURL tries to find an adapter named with the constant in
+zc.shortcut.interfaces.NEXT_URL_NAME, providing nothing, for the adding, the
+new content as found in the container (so it may be a shortcut), and the
+context.  If an adapter is registered, it should be a string of the nextURL to
+be used; this value will be returned. If no adapter is registered or the
+registered adapter returns None, the @@contents.html view of the context is
+returned.
+
+    >>> @component.adapter(interfaces.IAdding, ISpam, ISpam)
+    ... @interface.implementer(interface.Interface)
+    ... def sillyNextURL(adding, content, container):
+    ...     return '%s class added "%s" to "%s"' % (
+    ...         adding.__class__.__name__,
+    ...         content.__name__,
+    ...         container.__name__)
+    ...
+    >>> component.provideAdapter(sillyNextURL, name=interfaces.NEXT_URL_NAME)
+    >>> adder.nextURL()
+    'Adding class added "foo_id" to "target"'

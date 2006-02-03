@@ -1,0 +1,137 @@
+Shortcut factories
+==================
+
+Shortcut factories are factories that place objects in a configured folder and
+then return a shortcut to the new object.  Because they create objects and
+place them in containers, they fire an object creation event, and usually the
+configured folder fires an object added event.
+
+    >>> from zc.shortcut import factory, interfaces, Shortcut
+    >>> from zope import interface, component, event
+    >>> class IDummy(interface.Interface):
+    ...     pass
+    ...
+    >>> from zope.app.location.interfaces import ILocation
+    >>> class Dummy(object):
+    ...     interface.implements(IDummy, ILocation)
+    ...     def __init__(self, *args, **kwargs):
+    ...         self.args = args
+    ...         self.kwargs = kwargs
+    ...
+    >>> f = factory.Factory(Dummy, 'title', 'description')
+    >>> from zope.interface import verify
+    >>> verify.verifyObject(interfaces.IShortcutFactory, f)
+    True
+
+The factory always returns an interface declaration for a shortcut from
+getInterfaces, while getTargetInterfaces returns the declaration for the
+created object.
+
+    >>> f.getInterfaces() == interface.implementedBy(Shortcut)
+    True
+    >>> f.getTargetInterfaces() == interface.implementedBy(Dummy)
+    True
+
+factories will fail to create an object if a container has not been 
+registered as a repository.
+
+    >>> f() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+    ...
+    ComponentLookupError: (<Dummy...>, <...IContainer>, 'shortcutTargetRepository') 
+
+If we register a repository then the factory will fire a creation event, add 
+the object to the repository, and return a shortcut to the new object.
+
+    >>> import zope.app.container.interfaces
+    >>> class DummyContainer(dict):
+    ...     interface.implements(zope.app.container.interfaces.IContainer)
+    ...
+    >>> repo = DummyContainer()
+    >>> @component.adapter(IDummy)
+    ... @interface.implementer(zope.app.container.interfaces.IContainer)
+    ... def DummyRepoGetter(content):
+    ...     return repo
+    ... 
+    >>> component.provideAdapter(
+    ...     DummyRepoGetter, name=interfaces.REPOSITORY_NAME)
+    >>> from zope.app.container.contained import NameChooser
+    >>> component.provideAdapter(NameChooser, adapts=(interface.Interface,))
+    >>> # now, before we actually actually run the adding machinery, we'll
+    >>> # set up some machinery that will let us look at events firing
+    ...
+    >>> heard_events = [] # we'll collect the events here
+    >>> event.subscribers.append(heard_events.append)
+    >>> import pprint
+    >>> from zope import interface
+    >>> showEventsStart = 0
+    >>> def iname(ob):
+    ...     return iter(interface.providedBy(ob)).next().__name__
+    ...
+    >>> def getId(ob):
+    ...     if ob is None or isinstance(ob, (int, float, basestring, tuple)):
+    ...         return "(%r)" % (ob,)
+    ...     id = getattr(ob, 'id', getattr(ob, '__name__', None))
+    ...     if not id:
+    ...         id = "a %s (%s)" % (ob.__class__.__name__, iname(ob))
+    ...     return id
+    ...
+    >>> def showEvents(start=None): # to generate a friendly view of events
+    ...     global showEventsStart
+    ...     if start is None:
+    ...         start = showEventsStart
+    ...     res = [
+    ...         '%s fired for %s.' % (iname(ev), getId(ev.object))
+    ...         for ev in heard_events[start:]]
+    ...     res.sort()
+    ...     pprint.pprint(res)
+    ...     showEventsStart = len(heard_events)
+    ...
+    >>> sc = f(12, 'foo', 'barbaz', sloop=19)
+    >>> showEvents()
+    ['IObjectCreatedEvent fired for a Dummy (IDummy).']
+    >>> repo['Dummy'].args
+    (12, 'foo', 'barbaz')
+    >>> repo['Dummy'].kwargs
+    {'sloop': 19}
+    >>> sc.raw_target is repo['Dummy']
+    True
+
+    >>> event.subscribers.pop() is not None # cleanup
+    True
+
+Using alternate shortcut implementations
+----------------------------------------
+
+The shortcut factory takes an optional keyword parameter to specify
+the factory used to create the shortcut.  By default,
+`zc.shortcut.Shortcut` is used, but more specialized shortcuts may be
+needed for some applications.  This allows the factory to be used
+regardless of the specific shortcut implementation.
+
+Let's create an alternate class that can be used as a shortcut (it
+doesn't really matter that the example class isn't useful)::
+
+    >>> class AlternateShortcut(object):
+    ...     interface.implements(interfaces.IShortcut)
+    ...     def __init__(self, object):
+    ...         self.raw_target = object
+    ...         self.target = object
+
+Now we can create a factory that creates instances of this class
+instead of the default shortcut class::
+
+    >>> f = factory.Factory(Dummy, 'title', 'description',
+    ...                     shortcut_factory=AlternateShortcut)
+
+Using the factory returns an instance of our alternate shortcut
+implementation::
+
+    >>> sc = f(1, 2, 3)
+
+    >>> isinstance(sc, AlternateShortcut)
+    True
+    >>> isinstance(sc.raw_target, Dummy)
+    True
+    >>> sc.target.args
+    (1, 2, 3)
