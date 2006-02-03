@@ -27,8 +27,10 @@ from zope.component.interfaces import IFactory
 
 from zope.app import zapi
 from zope.app.component.vocabulary import UtilityVocabulary
-
-
+from zope.security.management import getInteraction
+from zope.app import zapi
+from zope.app.schema.vocabulary import IVocabularyFactory 
+from zope.schema.vocabulary import SimpleVocabulary,SimpleTerm
 
 # TODO: this vocabulary should go to zope.app.component where the IFactory 
 # is located.
@@ -62,6 +64,7 @@ class FactoryTerm(object):
     def __repr__(self):
         return '<FactoryTerm %s, instance of %s>' %(
             self.token, self.value)
+
 
 
 # TODO: Cut the too long test output
@@ -175,6 +178,8 @@ class FactoryVocabulary(UtilityVocabulary):
         factories = []
         for name, factory in utils:
             if interface in factory.getInterfaces():
+                if name.startswith('BrowserAdd__'):
+                    continue
                 factories.append((name, factory))
         self._terms = dict([(name, FactoryTerm(nameOnly and name or util, name))
                             for name, util in factories])
