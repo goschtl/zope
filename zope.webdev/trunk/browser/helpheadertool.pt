@@ -11,7 +11,7 @@
                                   ,toolbar=no
                                   ,menubar=no'"
      tal:attributes="
-  href python:'javascript:window.open('+ url + ',' + name + ','+ settings +')'"
+  href python:'javascript:window.open('+ url + ',' + name + ','+ settings +');;void(0)'"
      >
     <img src="" border="0"
          tal:attributes="src view/icon_url" />
