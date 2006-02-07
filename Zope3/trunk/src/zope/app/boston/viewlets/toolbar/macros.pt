@@ -10,7 +10,7 @@
 <!-- helpmenu macro, render first level items with class name 'topmenu' -->
 <metal:block define-macro="helpmenu">
   <a href="#" class="topmenu"
-     tal:define="url string:'${view/__name__}/${menuitem/action}';
+     tal:define="url string:'/${menuitem/action}';
                  name string:'OnlineHelp';
                  settings string:'height=500
                                   ,width=950
