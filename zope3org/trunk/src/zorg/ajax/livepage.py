@@ -56,6 +56,53 @@ from interfaces import ILivePageClient
 
 from zorg.edition.interfaces import IUUIDGenerator
 
+
+class Cache(object) :
+    """ Simple cache that uses least recently accessed time to trim size """
+
+    def __init__(self, size=100):
+        self.data = {}
+        self.size = size
+
+    def resize(self):
+        """ trim cache to no more than 95% of desired size """
+        trim = max(0, int(len(self.data)-0.95*self.size))
+        if trim:
+            # don't want self.items() because we must sort list by access time
+            values = map(None, self.data.values(), self.data.keys())
+            values.sort()
+            for val,k in values[0:trim]:
+                try :
+                    del self.data[k]
+                except KeyError:
+                    pass
+                    
+    def __delitem__(self, key) :
+        try :
+            del self.data[key]
+        except KeyError:
+            pass
+
+    def __setitem__(self,key,val):
+        if (not self.data.has_key(key) and
+        len(self.data) >= self.size):
+            self.resize()
+        self.data[key] = (time.time(), val)
+
+    def __getitem__(self,key):
+        """ like normal __getitem__ but updates time of fetched entry """
+        val = self.data[key][1]
+        self.data[key] = (time.time(),val)
+        return val
+
+    def get(self,key,default=None):
+        """ like normal __getitem__ but updates time of fetched entry """
+        try :
+            return self[key]
+        except KeyError:
+            return default
+
+
 class LivePageClients(object) :
     """ Groups collections of LivePages.
     
@@ -74,12 +121,60 @@ class LivePageClients(object) :
     def __init__(self) :
         self.groups = {}
         self.lastCheck = 0
+        self.results = Cache(size=200)
+        
+    def cacheResult(self, result) :
+        """ Caches a result for efficient access. 
+        
+        Returns a UUID which can be used to retrive the result.
+        
+        >>> clients = LivePageClients()
+        >>> uuid = clients.cacheResult(42)
+        >>> clients.fetchResult(uuid)
+        42
+            
+        """
+        
+        uuid = zapi.getUtility(IUUIDGenerator)()
+        self.writelock.acquire()
+        try :
+            self.results[uuid] = result
+        finally:
+            self.writelock.release()
+        return uuid
+        
+    def fetchResult(self, uuid, clear=True) :
+        """ Accesses the result and clears the memory
+
+        >>> clients = LivePageClients()
+        >>> uuid = clients.cacheResult(42)
+        >>> clients.fetchResult(uuid)
+        42
+
+        """
+        result = self.results.get(uuid, None)
+        if clear :
+            del self.results[uuid]
+        return result
         
     def _group(self, group_id) :
+        """ Internal method that returns a dict of uuid, client tuples
+            that belong to a group specified by a group id.
+            
+        >>> clients = LivePageClients()
+        >>> clients._group(42)
+        {}
+        
+        """
+        
         return self.groups.setdefault(group_id, {})
         
     def register(self, client, uuid=None) :
-        print "***Registering client for uuid", [uuid]
+        """ Register a client. Uses the provided uuid or generates a new one.
+      
+        """
+        
+        
         self.writelock.acquire()
         try:
             if uuid is None :
@@ -117,10 +212,10 @@ class LivePageClients(object) :
         finally:
             self.writelock.release()
     
-    def getClientsFor(self, user_id) :
+    def getClientsFor(self, user_id, group_id=None) :
         """ Get clients for a specific user.
         """
-        return [c for c in self._iterClients() if c.principal.id == user_id]
+        return [c for c in self._iterClients(group_id) if c.principal.id == user_id]
  
     def get(self, uuid, default=None) :
         for mapping in self.groups.values() :
@@ -134,7 +229,7 @@ class LivePageClients(object) :
                 return client
         return default
         
-    def checkAlive(self, verbose=True) :
+    def checkAlive(self, verbose=False) :
         """ Checks whether clients are alive. """
         if time.time() < self.lastCheck + self.checkInterval :
             return
@@ -154,10 +249,19 @@ class LivePageClients(object) :
         finally :
             self.writelock.release()    
     
-    def _iterClients(self) :
-        for mapping in self.groups.values() :
-            for client in mapping.values() :
+    def _iterClients(self, group_id=None) :
+        """ 
+        
+        
+        """
+        if group_id is None :
+            for mapping in self.groups.values() :
+                for client in mapping.values() :
+                    yield client
+        else :
+            for client in self._group(group_id).values() :
                 yield client
+        
         
     def __iter__(self) :
         """ Iterates over all clients which are still alive.
@@ -167,28 +271,18 @@ class LivePageClients(object) :
         return self._iterClients()  
         
                 
-    def addOutput(self, output, recipients="all", group_id=None) :
-        #self.checkAlive()
-        if recipients == "all" :
-            if group_id is None :
-                selected= self
-            else :
-                selected = self._group(group_id).values()
-            for client in selected :
-                client.addOutput(output)
-        else :
-            for user_id in recipients :
-                for client in self._iterClients() :
-                    if client.principal.id == user_id :
-                        print "adding output for", user_id, client.handleid
-                        client.addOutput(output)    
-                
-            
+    def addOutput(self, output, group_id=None, recipients="all") :
+        self.checkAlive()
+        for client in self._iterClients(group_id) :
+            if recipients == "all" or client.principal.id in recipients :
+                client.addOutput(output)    
+
     def whoIsOnline(self, group_id) :
         """ Returns the ids of the principals that are using livepages. """
         self.checkAlive()
         online = set()
-        for client in self._group(group_id).values() :
+        for client in self._iterClients(group_id) :
+            print "whoIsOnline", group_id, client.principal.id
             online.add(client.principal.id)
         return sorted(online)
         
@@ -276,7 +370,7 @@ class LivePageClient(object):
             output = self.popOutput()
             if output :
                 time.sleep(0.5)
-                print "sending", output
+                #print "sending", output
                 return output
             time.sleep(0.1)
         return "idle"
@@ -360,6 +454,11 @@ class LivePage(ComposedAjaxPage) :
    
     The global clients dictionary can be asked for all online users:
     
+    >>> for client in clients :
+    ...     print client.principal.id
+    zorg.member.dominik
+    zorg.member.uwe
+    
     >>> clients.whoIsOnline(group_id)
     ['zorg.member.dominik', 'zorg.member.uwe']
     
@@ -424,7 +523,7 @@ class LivePage(ComposedAjaxPage) :
                    
     def nextClientId(self) :
         """ Returns a new client id. """
-        print "***nextClientId called"
+        #print "***nextClientId called"
         return self.clientFactory(self).handleid
         
     def getGroupId(self) :
@@ -454,14 +553,14 @@ class LivePage(ComposedAjaxPage) :
         method = Input(self, request).publishTraverse(request, uuid)
         return method(handler_name, arguments)
  
-    def sendResponse(cls, response, recipients="all") :
+    def sendResponse(cls, response, group_id, recipients="all") :
         """ Sends a livepage response to all clients. 
             A response consits of a leading command line 
             and optional html body data.
         """
         global clients
         assert isinstance(response, str)
-        clients.addOutput(response, recipients)
+        clients.addOutput(response, group_id, recipients)
         return ''
     
     sendResponse = classmethod(sendResponse)
@@ -520,7 +619,7 @@ class Output(ClientIO) :
     implements(IPublishTraverse)
       
     def publishTraverse(self, request, uuid) :
-        print "Output call", request.URL, uuid
+        #print "Output call", request.URL, uuid
         client = self.traverseClient(request, uuid)
         return client.output
         

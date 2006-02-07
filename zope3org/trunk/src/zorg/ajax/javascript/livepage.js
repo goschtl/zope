@@ -30,17 +30,7 @@ function evalResponse(request) {
                 html.evalScripts();
                 return;
                 }
-                
-            case 'append_comments': {
-                var html = lines.join('\n');
-                var id = parameter[0];
-                alert(cmdline + "Rest:" + html);
-                $(id).innerHTML += html;  /* .stripScripts(); */
-                /* We must eval all scripts again. Arrgh! */
-                $(id).innerHTML.evalScripts();
-                return;
-                }
-                
+      
             case 'append': {
                 var html = lines.join('\n');
                 var id = parameter[0];
