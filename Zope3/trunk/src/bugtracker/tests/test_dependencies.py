@@ -13,7 +13,7 @@
 ##############################################################################
 """Bug Dependencies Tests
 
-$Id: test_dependencies.py,v 1.3 2003/08/28 05:22:32 srichter Exp $
+$Id$
 """
 import unittest
 

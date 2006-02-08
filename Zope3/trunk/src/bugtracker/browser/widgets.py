@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets for bug tracker
 
-$Id: textwidgets.py 25318 2004-06-09 21:00:59Z garrett $
+$Id$
 """
 from zope.proxy import removeAllProxies
 from zope.schema import Choice

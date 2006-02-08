@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Views for IMessage
 
-$Id: mail.py,v 1.2 2003/08/01 11:14:10 srichter Exp $
+$Id$
 """
 from bugtracker import TrackerMessageID as _
 from bugtracker.interfaces import IBug, IMailSubscriptions

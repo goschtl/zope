@@ -13,7 +13,7 @@
 ##############################################################################
 """Mail Support
 
-$Id: mail.py,v 1.3 2003/08/28 05:22:30 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Bug Tracker Mail Subscription and Mailer Tests
 
-$Id: tests.py,v 1.3 2004/04/29 15:43:47 fdrake dead $
+$Id$
 """
 import unittest
 

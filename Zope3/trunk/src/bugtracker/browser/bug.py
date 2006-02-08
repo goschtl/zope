@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser View Components for Bugs
 
-$Id: bug.py,v 1.14 2004/03/18 18:04:54 philikon Exp $
+$Id$
 """
 import docutils.core
 import re

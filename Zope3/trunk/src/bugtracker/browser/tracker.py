@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser View Components for Bug Trackers
 
-$Id: tracker.py,v 1.13 2004/03/18 18:04:54 philikon Exp $
+$Id$
 """
 from zope.app import zapi
 from zope.app.container.browser.adding import Adding

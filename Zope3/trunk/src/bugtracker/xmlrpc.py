@@ -15,7 +15,7 @@
 
 XML-RPC might be the best method to support mail-input. 
 
-$Id: xmlrpc.py,v 1.1 2003/07/28 10:21:06 srichter Exp $
+$Id$
 """
 import base64
 

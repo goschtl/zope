@@ -13,7 +13,7 @@
 ##############################################################################
 """Bug Tracker Vocabulary Tests
 
-$Id: test_vocabularies.py,v 1.3 2003/07/28 17:13:48 srichter Exp $
+$Id$
 """
 import unittest
 

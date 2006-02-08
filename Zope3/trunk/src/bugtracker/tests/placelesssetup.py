@@ -17,7 +17,7 @@ Since it requires **a lot** of basic setup for the simplest integration unit
 tests between Bug Tracker and Bu, a seperate setup mixin seems very
 appropriate.
 
-$Id: placelesssetup.py,v 1.3 2003/07/28 20:38:38 srichter Exp $
+$Id$
 """
 from datetime import datetime
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """XML-RPC Representation Tests
 
-$Id: test_xmlrpc.py,v 1.4 2003/07/28 20:38:38 srichter Exp $
+$Id$
 """
 import unittest
 import base64

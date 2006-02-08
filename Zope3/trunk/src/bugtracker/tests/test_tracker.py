@@ -13,7 +13,7 @@
 ##############################################################################
 """Bug Tracker Mail Subscription and Mailer Tests
 
-$Id: test_tracker.py,v 1.5 2003/07/28 17:13:48 srichter Exp $
+$Id$
 """
 import unittest
 

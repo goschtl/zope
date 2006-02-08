@@ -13,7 +13,7 @@
 ##############################################################################
 """Vocabularies for the Bug Tracker
 
-$Id: vocabulary.py,v 1.7 2004/03/18 18:04:54 philikon Exp $
+$Id$
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict

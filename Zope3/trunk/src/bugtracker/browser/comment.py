@@ -13,7 +13,7 @@
 ##############################################################################
 """Structured Text Renderer Classes
 
-$Id: comment.py,v 1.2 2003/08/12 22:50:57 srichter Exp $
+$Id$
 """
 import re
 

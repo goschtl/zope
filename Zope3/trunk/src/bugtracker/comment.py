@@ -13,7 +13,7 @@
 ##############################################################################
 """A simple Comment
 
-$Id: comment.py,v 1.1 2003/07/24 18:08:03 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 

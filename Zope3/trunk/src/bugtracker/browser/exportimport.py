@@ -13,7 +13,7 @@
 ##############################################################################
 """XML Import/Export views
 
-$Id: exportimport.py,v 1.1 2003/07/26 13:40:47 srichter Exp $
+$Id$
 """
 from bugtracker.exportimport import XMLExport, XMLImport
 

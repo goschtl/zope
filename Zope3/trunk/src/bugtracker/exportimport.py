@@ -13,7 +13,7 @@
 ##############################################################################
 """XML Import/Export facility
 
-$Id: exportimport.py,v 1.6 2003/08/29 22:59:52 srichter Exp $
+$Id$
 """
 VERSION = '1.0'
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """XML Export/Import Tests
 
-$Id: test_xmlexportimport.py,v 1.4 2003/07/28 17:13:48 srichter Exp $
+$Id$
 """
 import unittest, os
 from datetime import datetime
