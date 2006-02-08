@@ -110,17 +110,15 @@ class SOAPTests(unittest.TestCase):
         self.app.folder.item2 = Item2()
 
 
-    def _createRequest(self, extra_env={}, body="", outstream=None):
+    def _createRequest(self, extra_env={}, body=""):
         env = self._testEnv.copy()
         env.update(extra_env)
         if len(body):
             env['CONTENT_LENGTH'] = str(len(body))
 
         publication = Publication(self.app)
-        if outstream is None:
-            outstream = StringIO()
         instream = StringIO(body)
-        request = TestSOAPRequest(instream, outstream, env)
+        request = TestSOAPRequest(instream, env)
         request.setPublication(publication)
         return request
 

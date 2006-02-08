@@ -35,7 +35,7 @@ from StringIO import StringIO
 
 class TestRequest(SOAPRequest):
 
-    def __init__(self, body_instream=None, outstream=None, environ=None,
+    def __init__(self, body_instream=None, environ=None,
                  response=None, **kw):
 
         _testEnv =  {
@@ -52,11 +52,8 @@ class TestRequest(SOAPRequest):
         if body_instream is None:
             body_instream = StringIO('')
 
-        if outstream is None:
-            outstream = StringIO()
-
         super(TestRequest, self).__init__(
-            body_instream, outstream, _testEnv, response)
+            body_instream, _testEnv, response)
 
 
 class SimpleObject(object):

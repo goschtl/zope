@@ -61,9 +61,9 @@ class SOAPRequest(HTTPRequest):
     def _getPositionalArguments(self):
         return self._args
 
-    def _createResponse(self, outstream):
+    def _createResponse(self):
         """Create a specific SOAP response object."""
-        return SOAPResponse(outstream)
+        return SOAPResponse()
 
     def _setError(self, error):
         self._getResponse()._error = error
