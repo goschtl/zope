@@ -146,7 +146,7 @@ class SOAPPublicationTests(BasePublicationTests):
             def getSiteManager(self):
                 return SimpleObject(1)
         ob = C()
-        r = self._createRequest('/++etc++site',pub)
+        r = self._createRequest('/++etc++site', pub)
         ob2 = pub.traverseName(r, ob, '++etc++site')
         self.assertEqual(removeAllProxies(ob2).v, 1)
 
