@@ -162,8 +162,8 @@ Let's create a homefile.
   >>> print homeFolder #doctest: +ELLIPSIS
   <zope.app.file.file.File object at ...>
 
-  You see that now a File object has been created. We reset containerObject
-  to zope,folder.Folder to not confuse the follow tests.
+You see that now a File object has been created. We reset containerObject
+to zope,folder.Folder to not confuse the follow tests.
 
   >>> manager.containerObject = 'zope.folder.Folder'
 
