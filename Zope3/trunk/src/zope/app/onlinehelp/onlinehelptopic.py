@@ -189,7 +189,7 @@ class SourceTextOnlineHelpTopic(BaseOnlineHelpTopic):
     source = property(_getSource)
 
 
-class OnlineHelpTopic(SourceTextOnlineHelpTopic, SampleContainer):
+class OnlineHelpTopic(SourceTextOnlineHelpTopic):
     """
     Represents a Help Topic. This generic implementation uses the filename
     extension for guess the type. This topic implementation supports plain
@@ -387,7 +387,7 @@ class STXOnlineHelpTopic(SourceTextOnlineHelpTopic):
 
 class ZPTOnlineHelpTopic(BaseOnlineHelpTopic):
     r"""Represents a page template based Help Topic which has other
-    filename extension then `.pt`.
+    filename extension than `.pt`.
 
       >>> from zope.publisher.browser import TestRequest
       >>> from zope.app.publisher.browser import BrowserView
@@ -396,7 +396,7 @@ class ZPTOnlineHelpTopic(BaseOnlineHelpTopic):
       >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
       >>> path = os.path.join(testdir(), 'help.pt')
 
-    Create a page template bsed Help Topic from a file
+    Create a page template based Help Topic from a file
 
       >>> topic = ZPTOnlineHelpTopic('help','Help',path,'')
 
@@ -508,4 +508,3 @@ def SimpleViewClass(src, offering=None, used_for=None, bases=()):
         class_.__used_for__ = used_for
 
     return class_
-
