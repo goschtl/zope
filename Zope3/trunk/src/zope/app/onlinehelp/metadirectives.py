@@ -72,7 +72,7 @@ class IOnlineHelpTopicDirective(Interface):
     resources = Tokens(
         title=u"A list of resources.",
         description=u"""
-        A list of resources which shall be user for the Help Topic.
+        A list of resources which shall be used for the Help Topic.
         The resources must be located in the same directory as
         the Help Topic definition.
         """,
