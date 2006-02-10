@@ -224,7 +224,7 @@ class TableFormBase(object):
             result = action.success(data)
         else:
             result = None
-        result = None     
+#        result = None     
 
         self.form_result = result
 
@@ -252,19 +252,19 @@ class TableFormBase(object):
           
     def render(self):
         # if the form has been updated, it will already have a result
-        if self.form_result is None:
-            if self.form_reset:
-                # we reset, in case data has changed in a way that
-                # causes the widgets to have different data
-                self.resetForm()
-                for fo in self.forms.values():
-                    fo.form_reset = True
-                self.form_reset = False
-            for fo in self.forms.values():
-                fo.render()
-            self.form_result = self.template()
-
         return self.form_result
+#        if self.form_result is None:
+#            if self.form_reset:
+#                # we reset, in case data has changed in a way that
+#                # causes the widgets to have different data
+#                self.resetForm()
+#                for fo in self.forms.values():
+#                    fo.form_reset = True
+#                self.form_reset = False
+#            for fo in self.forms.values():
+#                fo.render()
+#            self.form_result = self.template()
+#        return self.form_result
 
     def error_views(self):
         for error in self.errors:

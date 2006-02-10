@@ -17,6 +17,13 @@ class ContainerView(BrowserView):
         self.table = zapi.getMultiAdapter((context,request),
                                           ITableView,u'table.container.table')
 
+    def __call__(self, *args, **kw):
+        self.table.update()
+        if self.table.hasTableResult():
+            return self.table.render(*args, **kw)
+        else:
+            return super(ContainerView,self).__call__(*args, **kw)
+
 
 class ContainerTableView(BrowserView):
 

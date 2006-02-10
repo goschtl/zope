@@ -2,7 +2,7 @@
       i18n:domain="zope">
 <body metal:fill-slot="body">
 <form tal:attributes="action view/@@absolute_url">
- <metal:block tal:replace="structure view/table"/>
+ <metal:block tal:replace="structure view/table/render"/>
 </form>
 </body>
 </html>

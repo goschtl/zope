@@ -38,12 +38,30 @@ class TableView(BrowserView):
         self.table.applyConfig(requestConfig)
         if self.formClass:
             self.table.form = self.formClass(self)
-            self.table.form.update()
+#            self.table.form.update()
         else:
             self.table.form = None
 
+    def update(self):
+        if self.formClass:
+            self.table.form.update()
+
+    def hasTableResult(self):
+        return self.formClass and (self.table.form.form_result is not None)
+    
+    def render(self,*args,**kw):
+        if self.formClass:
+            if self.table.form.form_result is None:
+                return self.template(*args,**kw)
+            else:
+                # hand over form_result (data and manipulation of response)
+                return self.table.form.form_result
+        else:
+            return self.template(*args,**kw)
+        
     def __call__(self,*args,**kw):
-        return self.template(*args,**kw)
+        self.update()
+        self.render(*args,**kw)
 
     def getActionsBase(self, formActions=None):
         """get (specific) available actions of table."""
@@ -94,7 +112,6 @@ class TableView(BrowserView):
                           )
             result.append(adapt)
         return result        
-
 
     def getRows(self):
         """get objects of table."""

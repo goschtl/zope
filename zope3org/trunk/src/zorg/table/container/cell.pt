@@ -1,1 +1,1 @@
-<span class="containercell" tal:content="structure view/content"/>
+<span class="containercell" tal:content="view/cell"/>
