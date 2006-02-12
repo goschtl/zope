@@ -18,8 +18,8 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from time import time
-from thread import allocate_lock
-from pickle import dumps
+from threading import Lock
+from cPickle import dumps
 from persistent import Persistent
 
 from zope.interface import implements
@@ -31,11 +31,11 @@ from zope.app.cache.interfaces.ram import IRAMCache
 caches = {}
 
 # A writelock for caches dictionary
-writelock = allocate_lock()
+writelock = Lock()
 
 # A counter for cache ids and its lock
 cache_id_counter = 0
-cache_id_writelock = allocate_lock()
+cache_id_writelock = Lock()
 
 class RAMCache(Persistent, Contained):
     """RAM Cache
@@ -127,10 +127,9 @@ class RAMCache(Persistent, Contained):
             if cacheId not in caches:
                 caches[cacheId] = Storage(self.maxEntries, self.maxAge,
                                           self.cleanupInterval)
-            self._v_storage = caches[cacheId]
+            return caches[cacheId]
         finally:
             writelock.release()
-        return self._v_storage
 
     def _buildKey(kw):
         "Build a tuple which can be used as an index for a cached value"
@@ -162,7 +161,7 @@ class Storage(object):
         self.maxEntries = maxEntries
         self.maxAge = maxAge
         self.cleanupInterval = cleanupInterval
-        self.writelock = allocate_lock()
+        self.writelock = Lock()
         self.lastCleanup = time()
 
     def update(self, maxEntries=None, maxAge=None, cleanupInterval=None):
@@ -226,7 +225,7 @@ class Storage(object):
                 self._misses[ob] = 0
             else:
                 del self._data[ob][key]
-                if len(self._data[ob]) < 1:
+                if not self._data[ob]:
                     del self._data[ob]
         except KeyError:
             pass
@@ -234,7 +233,7 @@ class Storage(object):
     def _invalidate_queued(self):
         """This method should be called after each writelock release."""
 
-        while len(self._invalidate_queue):
+        while self._invalidate_queue:
             obj, key = self._invalidate_queue.pop()
             self.invalidate(obj, key)
 
@@ -252,7 +251,7 @@ class Storage(object):
                 self.writelock.release()
                 # self._invalidate_queued() not called to avoid a recursion
         else:
-            self._invalidate_queue.append((ob,key))
+            self._invalidate_queue.append((ob, key))
 
     def invalidateAll(self):
         """Drop all the cached values.
@@ -272,12 +271,13 @@ class Storage(object):
             punchline = time() - self.maxAge
             self.writelock.acquire()
             try:
-                for object, dict in self._data.items():
-                    for key, val in self._data[object].items():
-                        if self._data[object][key][1] < punchline:
-                            del self._data[object][key]
-                            if len(self._data[object]) < 1:
-                                del self._data[object]
+                data = self._data
+                for object, dict in data.items():
+                    for key in dict.keys():
+                        if dict[key][1] < punchline:
+                            del dict[key]
+                            if not dict:
+                                del data[object]
             finally:
                 self.writelock.release()
                 self._invalidate_queued()
@@ -292,26 +292,25 @@ class Storage(object):
 
         self.writelock.acquire()
         try:
-            keys = [(ob, k) for ob, v in self._data.iteritems() for k in v]
+            data = self._data
+            keys = [(ob, k) for ob, v in data.iteritems() for k in v]
 
             if len(keys) > self.maxEntries:
-                def cmpByCount(x,y):
-                    ob1, key1 = x
-                    ob2, key2 = y
-                    return cmp(self._data[ob1][key1],
-                               self._data[ob2][key2])
-                keys.sort(cmpByCount)
+                def getKey(item):
+                    ob, key = item
+                    return data[ob][key]
+                keys.sort(key=getKey)
 
                 ob, key = keys[self.maxEntries]
-                maxDropCount = self._data[ob][key][2]
+                maxDropCount = data[ob][key][2]
 
                 keys.reverse()
 
                 for ob, key in keys:
-                    if self._data[ob][key][2] <= maxDropCount:
-                        del self._data[ob][key]
-                        if len(self._data[ob]) < 1:
-                            del self._data[ob]
+                    if data[ob][key][2] <= maxDropCount:
+                        del data[ob][key]
+                        if not data[ob]:
+                            del data[ob]
 
                 self._clearAccessCounters()
         finally:
@@ -319,9 +318,9 @@ class Storage(object):
             self._invalidate_queued()
 
     def _clearAccessCounters(self):
-        for ob in self._data:
-            for key in self._data[ob]:
-                self._data[ob][key][2] = 0
+        for dict in self._data.itervalues():
+            for val in dict.itervalues():
+                val[2] = 0
         for k in self._misses:
             self._misses[k] = 0
 
@@ -336,9 +335,7 @@ class Storage(object):
 
         for ob in objects:
             size = len(dumps(self._data[ob]))
-            hits = 0
-            for entry in self._data[ob].values():
-                hits += entry[2]
+            hits = sum(entry[2] for entry in self._data[ob].itervalues())
             result.append({'path': ob,
                            'hits': hits,
                            'misses': self._misses[ob],

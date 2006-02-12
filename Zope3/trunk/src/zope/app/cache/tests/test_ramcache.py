@@ -502,8 +502,8 @@ class TestStorage(TestCase):
         self.assertEqual(s._misses, clearMisses, "misses counter not cleared")
 
     def test_getStatistics(self):
-        from zope.app.cache.ram import Storage
-        from pickle import dumps
+        from zope.app.cache.ram import Storage, dumps
+
         s = Storage(maxEntries=3)
         object = 'object'
         object2 = 'object2'
@@ -538,7 +538,7 @@ class TestStorage(TestCase):
 
         result = s.getStatistics()
 
-        self.assertEqual(result, expected, "got unexpected stats")
+        self.assertEqual(result, expected)
 
 
 class TestModule(TestCase):
