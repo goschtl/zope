@@ -56,18 +56,14 @@ class Folder(Persistent, SiteManagerContainer, Contained):
         return self.data.items()
 
     def __getitem__(self, name):
-        """Return the named object, or the value of the default
-           argument if given and the named object is not found.
-           If no default is given and the object is not found a
-           ``KeyError`` is raised.
+        """Return the named object, or raise ``KeyError`` if the object
+           is not found.
         """
         return self.data[name]
 
     def get(self, name, default=None):
         """Return the named object, or the value of the `default`
-           argument if given and the named object is not found.
-           If no `default` is given and the object is not found a
-           ``KeyError`` is raised.
+           argument if the object is not found.
         """
         return self.data.get(name, default)
 
