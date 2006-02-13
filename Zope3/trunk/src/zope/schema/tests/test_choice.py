@@ -60,7 +60,6 @@ class Value_ChoiceFieldTests(unittest.TestCase):
         choice.validate((0.2,))
         self.assertRaises(ConstraintNotSatisfied, choice.validate, '1')
         self.assertRaises(ConstraintNotSatisfied, choice.validate, 0.2)
-    
 
 class Vocabulary_ChoiceFieldTests(unittest.TestCase):
     """Tests of the Choice Field using vocabularies."""
@@ -108,6 +107,10 @@ class Vocabulary_ChoiceFieldTests(unittest.TestCase):
         bound = field.bind(o)
         self.assertEqual([term.value for term in bound.vocabulary],
                          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+    def test_undefined_vocabulary(self):
+        choice = Choice(vocabulary="unknown")
+        self.assertRaises(ValueError, choice.validate, "value")
 
 
 def test_suite():

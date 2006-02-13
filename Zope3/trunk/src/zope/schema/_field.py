@@ -15,13 +15,14 @@
 
 $Id$
 """
+
 __docformat__ = 'restructuredtext'
-import warnings
+
 import re
 from datetime import datetime, date, timedelta
 from sets import Set as SetType
 
-from zope.interface import classImplements, implements, directlyProvides
+from zope.interface import classImplements, implements
 from zope.interface.interfaces import IInterface, IMethod
 
 from zope.schema.interfaces import IField
@@ -41,15 +42,15 @@ from zope.schema.interfaces import WrongType, WrongContainedType, NotUnique
 from zope.schema.interfaces import SchemaNotProvided, SchemaNotFullyImplemented
 from zope.schema.interfaces import InvalidURI, InvalidId, InvalidDottedName
 from zope.schema.interfaces import ConstraintNotSatisfied
-from zope.schema.interfaces import Unbound
 
 from zope.schema._bootstrapfields import Field, Container, Iterable, Orderable
-from zope.schema._bootstrapfields import MinMaxLen
 from zope.schema._bootstrapfields import Text, TextLine, Bool, Int, Password
-from zope.schema._bootstrapfields import MinMaxLen, ValidatedProperty
+from zope.schema._bootstrapfields import MinMaxLen
 from zope.schema.fieldproperty import FieldProperty
 from zope.schema.vocabulary import getVocabularyRegistry
-from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
+from zope.schema.vocabulary import VocabularyRegistryError
+from zope.schema.vocabulary import SimpleVocabulary
+
 
 # Fix up bootstrap field types
 Field.title       = FieldProperty(IField['title'])
@@ -455,6 +456,7 @@ _isuri = re.compile(
     r"[a-zA-z0-9+.-]+:"   # scheme
     r"\S*$"               # non space (should be pickier)
     ).match
+
 class URI(BytesLine):
     """URI schema field
     """
@@ -651,7 +653,7 @@ class DottedName(BytesLine):
             raise InvalidDottedName("too few dots; %d required" % self.min_dots,
                                     value)
         if self.max_dots is not None and dots > self.max_dots:
-            raise InvalidDottedName("too many dots; no more than %d allowed" % 
+            raise InvalidDottedName("too many dots; no more than %d allowed" %
                                     self.max_dots, value)
 
     def fromUnicode(self, value):
