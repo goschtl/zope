@@ -24,9 +24,10 @@ from zope.app.location import ILocation, Location, LocationProxy
 def assertLocation(adapter, parent):
     """Assert locatable adapters.
 
-    This function asserts that the adapter get location-proxied unless it does
-    not provide ILocation itself. Further more the returned locatable adapter
-    get its parent set unless its __parent__ attribute is not None.
+    This function asserts that the adapter get location-proxied if
+    it doesn't provide ILocation itself. Further more the returned
+    locatable adapter get its parent set if its __parent__ attribute
+    is currently None.
 
     see adapter.txt
     """
