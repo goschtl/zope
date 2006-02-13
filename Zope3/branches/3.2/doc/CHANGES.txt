@@ -10,6 +10,10 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 544: VocabularyRegistryError missing import.
+
+      - Fixed issue 536: ErrorLogUtility has UnboundLocalError.
+
       - zope.app.testing.functional.defineLayer
 
         + Use the method param instead of an hardcoded value for the
@@ -18,8 +22,6 @@ Zope Changes
   since Zope 3.2.0b3
 
     Bug Fixes
-
-      - Fixed issue 536: ErrorLogUtility has UnboundLocalError.
 
       - zope.i18n.interpolate:
 
