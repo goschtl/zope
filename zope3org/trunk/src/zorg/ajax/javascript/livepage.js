@@ -15,7 +15,7 @@ function evalResponse(request) {
         var cmdline = lines.shift();
         var parameter = cmdline.split(" ");
         var cmd = parameter.shift();
-        
+
         switch(cmd) {
         
             case 'reload' : {
@@ -34,9 +34,22 @@ function evalResponse(request) {
             case 'append': {
                 var html = lines.join('\n');
                 var id = parameter[0];
+                var act = parameter[1];
                 $(id).innerHTML += html;  /* .stripScripts(); */
                 /* We must eval all scripts again. Arrgh! */
                 $(id).innerHTML.evalScripts();
+                if (act) {
+                    switch(act) {
+                        case 'scroll' : {
+                            scrollToLast();
+                            return;
+                            }
+                        case 'sound' : {
+                            playFlash("ping");
+                            return;
+                            }
+                        }
+                    }
                 return;
                 }
                 
