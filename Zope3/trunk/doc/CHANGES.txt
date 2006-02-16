@@ -33,6 +33,9 @@ Zope Changes
 
     Restructuring
 
+      - Removed 'Adding.renderAddButton' method which had been
+        deprecated 2 years ago.
+
       - Removed unused menus and made previous titles, the description,
         since they were awefully long. Then I created new, short titles.
 
