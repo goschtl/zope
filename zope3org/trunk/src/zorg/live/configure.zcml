@@ -2,10 +2,19 @@
   xmlns="http://namespaces.zope.org/zope"
   i18n_domain="zope">
 
+    <include package="zorg.live.page" />
+    <include package="zorg.live.demo.comment" />
+    
     <utility
       name="LiveServerHTTP"
       component="zorg.live.server.liveServerType"
       provides="zope.app.twisted.interfaces.IServerType"
       />
-
+      
+    <utility
+      component="zorg.live.page.manager.livePageManager"
+      provides="zorg.live.page.interfaces.ILivePageManager"
+      />
+      
+    
 </configure>

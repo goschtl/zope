@@ -36,8 +36,9 @@ function evalResponse(request) {
                 var id = parameter[0];
                 var act = parameter[1];
                 $(id).innerHTML += html;  /* .stripScripts(); */
-                /* We must eval all scripts again. Arrgh! */
+                /* We must eval all scripts again. Arrgh!   */
                 $(id).innerHTML.evalScripts();
+
                 if (act) {
                     switch(act) {
                         case 'scroll' : {
@@ -100,7 +101,7 @@ function checkOutput(outputNum) {
                         }
                     else {
                         outputNum += 1
-                        setTimeout("checkOutput(" + outputNum + ")", 300);
+                        setTimeout("checkOutput(" + outputNum + ")", 500);
                         }
                 }
         });

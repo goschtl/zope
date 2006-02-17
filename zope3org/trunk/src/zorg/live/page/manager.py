@@ -219,7 +219,8 @@ class LivePageManager(object) :
             online.add(client.principal.id)
         return sorted(online)
         
-            
+
+livePageManager = LivePageManager()            
 
 def livePageSubscriber(event) :
     """ A subscriber that allows the clients to respond to

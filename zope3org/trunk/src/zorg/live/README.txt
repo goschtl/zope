@@ -39,8 +39,8 @@ users this might lead to massive concurrent requests, which start nearly
 at the same time.
 
 
-Basic problem
--------------
+Main problem
+------------
 
 Zope is not well-suited for this performance model since each request is handled
 in a seperate thread with its own database connections and object cache. 
@@ -117,12 +117,7 @@ Now we simulate the startup of two clients.
     </html>
    
 The global utility can be asked for all online users:
-    
-    >>> for client in manager :
-    ...     print client.principal.id
-    zorg.member.dominik
-    zorg.member.uwe
-    
+        
     >>> manager.whoIsOnline(group_id)
     ['zorg.member.dominik', 'zorg.member.uwe']
     

@@ -99,9 +99,12 @@ class LivePageClient(object):
         return "idle"
         
     def input(self, handler_name, arguments) :
-        js = getattr(self, handler_name)(arguments)
+        message = getattr(self, handler_name)(arguments)
+        
+        if isinstance(message, unicode) :
+            message = message.encode('utf-8')
         manager = zapi.getUtility(ILivePageManager)
-        manager.addOutput(js)
+        manager.addOutput(message)
         return ''
 
     def alert(self, arguments) :
@@ -110,7 +113,7 @@ class LivePageClient(object):
         
     def update(self, arguments) :
         args = arguments.split(",")
-        return "javascript update('%s')" % args[0]
+        return "update %s\n%s" % (args[0], args[1])
         
     def append(self, arguments) :
         args = arguments.split(",")
