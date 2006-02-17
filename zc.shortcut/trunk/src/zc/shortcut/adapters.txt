@@ -28,7 +28,7 @@ If we have a target object with a root::
     ...     def __init__(self, parent, name):
     ...         self.__parent__ = parent
     ...         self.__name__ = name
-    
+
     >>> from zope.app.traversing.interfaces import IContainmentRoot
     >>> class DummyContainmentRoot(object):
     ...     __parent__ = __name__ = None
@@ -78,16 +78,16 @@ The result is the target's ITraversal adapter::
 Shortcut traversal
 ==================
 
-Shortcut traversal is unpleasantly tricky.  First consider the case of 
-traversing a shortcut and then traversing to get the default view 
+Shortcut traversal is unpleasantly tricky.  First consider the case of
+traversing a shortcut and then traversing to get the default view
 ('index.html').  In that case, the shortcut will be available to the view,
 and breadcrumbs and other view elements that care about how the object was
 traversed will merely need to look at the shortcut's __parent__, or the
 target proxy's __traversed_parent__.  This is not too bad.
 
 It becomes more interesting if one traverses through a shortcut to another
-content object.  A naive implementation will traverse the shortcut by 
-converting it to its target, and then traversing the target to get the 
+content object.  A naive implementation will traverse the shortcut by
+converting it to its target, and then traversing the target to get the
 contained content object.  However, views for the content object will have no
 idea of the traversal path used to get to the content object: they will only
 have the __parent__ of the content object, which is the shortcut's target
@@ -95,8 +95,8 @@ have the __parent__ of the content object, which is the shortcut's target
 parent, but not the traversed shortcut's parent.  Breadcrumbs and other
 components that care about traversed path will be broken.
 
-In order to solve this use case, traversing a shortcut needs to traverse the 
-target and then wrap the resulting object in another target proxy that 
+In order to solve this use case, traversing a shortcut needs to traverse the
+target and then wrap the resulting object in another target proxy that
 holds a reference to the shortcut's target proxy as its traversed parent.
 
 Traversing a shortcut and finding another shortcut is slightly trickier again.
@@ -144,7 +144,7 @@ proxy).
     False
     >>> res.__traversed_parent__ == shortcut.target
     True
-    >>> res.__traversed_name__ 
+    >>> res.__traversed_name__
     'child_spam'
     >>> res.__traversed_parent__.__shortcut__ is shortcut
     True
@@ -232,11 +232,11 @@ If shortcuts are traversed, an absolute url can lead a user to unexpected
 locations--to the real location of the object, rather than to the traversed
 location.  In order to get the traversed url, the adapters module provides a
 traversedURL function, and the shortcut package also offers it from its
-__init__.py.  
+__init__.py.
 
 Given the result of the next-to-last shortcut traversal described
 above, for instance, traversedURL returns a URL that behaves similarly to
-absoluteURL except when it encounters target proxies, at which point the 
+absoluteURL except when it encounters target proxies, at which point the
 traversal parents are used rather than the actual parents.
 
     >>> component.provideAdapter(adapters.TraversedURL)
@@ -262,7 +262,7 @@ Breadcrumbs
 ===========
 
 The zc.displayname package provides a way to obtain breadcrumbs that is not tied to
-the zope IAbsoluteURL interface and that takes advantage of zc.displayname features 
+the zope IAbsoluteURL interface and that takes advantage of zc.displayname features
 like the display name generator.  The zc.shortcut package includes a breadcrumb
 adapter for the zc.displayname interface that is aware of the traversal proxies that
 are part of the shortcut package.
@@ -276,16 +276,16 @@ are part of the shortcut package.
     >>> from zope.app.traversing.browser.interfaces import IAbsoluteURL
     >>> from zope.app.traversing import browser
     >>> component.provideAdapter(
-    ...     browser.AbsoluteURL, adapts=(None, IHTTPRequest), 
+    ...     browser.AbsoluteURL, adapts=(None, IHTTPRequest),
     ...     provides=IAbsoluteURL)
     >>> component.provideAdapter(
-    ...     browser.SiteAbsoluteURL, adapts=(IContainmentRoot, IHTTPRequest), 
+    ...     browser.SiteAbsoluteURL, adapts=(IContainmentRoot, IHTTPRequest),
     ...     provides=IAbsoluteURL)
     >>> component.provideAdapter(
     ...     browser.AbsoluteURL, adapts=(None, IHTTPRequest),
     ...     provides=interface.Interface, name='absolute_url')
     >>> component.provideAdapter(
-    ...     browser.SiteAbsoluteURL, adapts=(IContainmentRoot, IHTTPRequest), 
+    ...     browser.SiteAbsoluteURL, adapts=(IContainmentRoot, IHTTPRequest),
     ...     provides=interface.Interface, name='absolute_url')
     >>> component.provideAdapter(adapters.Breadcrumbs)
     >>> from zc.displayname.interfaces import IBreadcrumbs
@@ -338,11 +338,11 @@ Copy and Link
 =============
 
 The zope.app.copypastemove package provides a number of interfaces to provide
-copy, move, rename, and other similar operations.  The shortcut package 
-provides a replacement implementation of copy for objects that looks up a 
+copy, move, rename, and other similar operations.  The shortcut package
+provides a replacement implementation of copy for objects that looks up a
 repository and uses it if available; an implementation of
 copy that actually makes shortcuts (useful for immutable objects stored in a
-repository); and an interface and two implementations, one for shortcuts and 
+repository); and an interface and two implementations, one for shortcuts and
 one for other objects, for a new `link` operation, which makes a shortcut to
 the selected object.
 
@@ -350,10 +350,10 @@ Copying an Object
 -----------------
 
 If you want copying an object to use repositories if they are available, this
-adapter provides the functionality.  It is installed for all objects by 
+adapter provides the functionality.  It is installed for all objects by
 default, but could also be configured only for certain interfaces.
 
-In the example below, first we set up the dummy content objects, then we 
+In the example below, first we set up the dummy content objects, then we
 register the necessary adapters, and then we set up some event listener code
 that we use to show what events are being fired.
 
@@ -376,7 +376,7 @@ that we use to show what events are being fired.
     ... @interface.implementer(zope.app.container.interfaces.IContainer)
     ... def DummyRepoGetter(content):
     ...     return repo
-    ... 
+    ...
     >>> component.provideAdapter(
     ...     DummyRepoGetter, name=interfaces.REPOSITORY_NAME)
     >>> from zope.app.container.contained import NameChooser
@@ -433,7 +433,7 @@ that we use to show what events are being fired.
     True
     >>> folder['dummy'].raw_target is repo['dummy-2']
     True
-    
+
     >>> folder['dummy'].raw_target.id
     'foo'
     >>> folder.clear() # prepare for next test
