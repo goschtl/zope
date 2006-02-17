@@ -59,9 +59,10 @@ class DAVWidget(InputWidget):
     def getErrors(self):
         return self._error
 
-    def setNamespace(self, ns, ns_prefix):
-        self.namespace = ns
-        self.ns_prefix = ns_prefix
+    def setNamespace(self, namespace, namespace_prefix):
+        if namespace is not None:
+            self.namespace = namespace
+        self.ns_prefix = namespace_prefix
 
     def setRenderedValue(self, value):
         # don't use this
@@ -134,12 +135,10 @@ class DAVWidget(InputWidget):
             return str(value)
         return None
 
-    def renderProperty(self, ns, ns_prefix):
-        self.setNamespace(ns, ns_prefix)
-
-        el = self._xmldoc.createElementNS(ns, self.name)
-        if ns_prefix is not None:
-            el.setAttributeNS(ns, 'xmlns', ns_prefix)
+    def renderProperty(self):
+        el = self._xmldoc.createElementNS(self.namespace, self.name)
+        if self.ns_prefix is not None:
+            el.setAttributeNS(self.namespace, 'xmlns', self.ns_prefix)
 
         # this is commented out because it cased some problems with values
         # being security proxied when they they are returned from the adapters
@@ -187,7 +186,7 @@ class TextDAVWidget(DAVWidget):
     setUpWidget method
 
       >>> widget.setRenderedValue(u'This is some content')
-      >>> rendered = widget.renderProperty(None, None)
+      >>> rendered = widget.renderProperty()
       >>> rendered #doctest:+ELLIPSIS
       <DOM Element: foo at 0x...>
       >>> rendered.toxml()
@@ -196,6 +195,41 @@ class TextDAVWidget(DAVWidget):
     """
     pass
 
+
+class IntDAVWidget(DAVWidget):
+    """
+    Renders a WebDAV property that contains an integer.
+
+      >>> from zope.schema import Int
+      >>> field = Int(__name__ = 'foo', title = u'Foo Title')
+      >>> request = TestRequest()
+      >>> widget = IntDAVWidget(field, request)
+
+    Set up the value stored in the widget. In reality this is done in the
+    setUpWidget method
+
+      >>> widget.setRenderedValue(10)
+      >>> rendered = widget.renderProperty()
+      >>> rendered #doctest:+ELLIPSIS
+      <DOM Element: foo at 0x...>
+      >>> rendered.toxml()
+      '<foo>10</foo>'
+      >>> widget.setProperty(rendered)
+
+    """
+
+    def _setFieldValue(self, value):
+        if not value.childNodes:
+            return self.context.missing_value
+
+        value = value.childNodes[0]
+        try:
+            return int(value.nodeValue)
+        except ValueError, e:
+            raise ConversionError("Invalid int data", e)
+
+    def _toDAVValue(self, value):
+        return str(value)
 
 class DatetimeDAVWidget(DAVWidget):
     """Render a WebDAV date property
@@ -211,7 +245,7 @@ class DatetimeDAVWidget(DAVWidget):
       >>> from datetime import datetime
       >>> date = datetime.utcfromtimestamp(1131233651)
       >>> widget.setRenderedValue(date)
-      >>> rendered = widget.renderProperty(None, None)
+      >>> rendered = widget.renderProperty()
       >>> rendered #doctest:+ELLIPSIS
       <DOM Element: foo at ...>
       >>> rendered.toxml() # this was '<foo>2005-11-05 23:34:11Z</foo>'
@@ -236,20 +270,20 @@ class DatetimeDAVWidget(DAVWidget):
         return value.strftime('%a, %d %b %Y %H:%M:%S %z').rstrip()
 
 
-class CreatationDateDAVWidget(DAVWidget):
+class ISO8601DateDAVWidget(DAVWidget):
     """Render a WebDAV date property
 
       >>> from zope.schema import Datetime
       >>> field = Datetime(__name__ = 'foo', title = u'Foo Date Title')
       >>> request = TestRequest()
-      >>> widget = CreatationDateDAVWidget(field, request)
+      >>> widget = ISO8601DateDAVWidget(field, request)
 
     Set the value of the widget to that of the current time.
 
       >>> from datetime import datetime
       >>> date = datetime.utcfromtimestamp(1131233651)
       >>> widget.setRenderedValue(date)
-      >>> rendered = widget.renderProperty(None, None)
+      >>> rendered = widget.renderProperty()
       >>> rendered #doctest:+ELLIPSIS
       <DOM Element: foo at ...>
       >>> rendered.toxml()
@@ -279,7 +313,7 @@ class DateDAVWidget(DatetimeDAVWidget):
       >>> from datetime import datetime
       >>> date = datetime.utcfromtimestamp(1131233651)
       >>> widget.setRenderedValue(date)
-      >>> rendered = widget.renderProperty(None, None)
+      >>> rendered = widget.renderProperty()
       >>> rendered #doctest:+ELLIPSIS
       <DOM Element: foo at ...>
       >>> rendered.toxml() # this was '<foo>2005-11-05 23:34:11Z</foo>'
@@ -337,7 +371,7 @@ class XMLEmptyElementListDAVWidget(DAVWidget):
       >>> request = TestRequest()
       >>> widget = XMLEmptyElementListDAVWidget(field, request)
       >>> widget.setRenderedValue(['first', 'second'])
-      >>> rendered = widget.renderProperty(None, None)
+      >>> rendered = widget.renderProperty()
       >>> rendered #doctest:+ELLIPSIS
       <DOM Element: foo at ...>
       >>> rendered.toxml()
@@ -387,7 +421,7 @@ class DAVXMLSubPropertyWidget(DAVWidget):
             assert widget is not None
             ## namespace information is not needed here since we set the
             ## default namespace on elements
-            el = widget.renderProperty(self.namespace, self.ns_prefix)
+            el = widget.renderProperty() # self.namespace, self.ns_prefix)
             if pname:
                 res.appendChild(el)
             else:
@@ -398,23 +432,21 @@ class DAVXMLSubPropertyWidget(DAVWidget):
 
 class DAVOpaqueWidget(DAVWidget):
 
-    def renderProperty(self, ns, ns_prefix):
-        self.setNamespace(ns, ns_prefix)
-        
+    def renderProperty(self):
         value = self.getInputValue()
         if value == self.context.missing_value:
-            el = self._xmldoc.createElementNS(ns, self.name)
-            if ns_prefix is not None:
-                el.setAttributeNS(ns, 'xmlns', ns_prefix)
+            el = self._xmldoc.createElementNS(self.namespace, self.name)
+            if self.ns_prefix is not None:
+                el.setAttributeNS(self.namespace, 'xmlns', self.ns_prefix)
             return el
         el = minidom.parseString(value)
 
         el = el.documentElement
 
-        if ns_prefix is not None and el.attributes is not None:
+        if self.ns_prefix is not None and el.attributes is not None:
             xmlns = el.attributes.getNamedItem('xmlns')
             if xmlns is None:
-                el.setAttributeNS(ns, 'xmlns', ns_prefix)
+                el.setAttributeNS(self.namespace, 'xmlns', self.ns_prefix)
 
         return el
 

@@ -2,11 +2,52 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:meta="http://namespaces.zope.org/meta">
 
-  <meta:directive
-      namespace="http://namespaces.zope.org/dav"
-      name="provideInterface"
-      schema=".metadirectives.IProvideInterfaceDirective"
-      handler=".metaconfigure.interface"
-      />
+  <meta:directives namespace="http://namespaces.zope.org/dav">
+
+    <!--
+        old directive that will disappear later
+      -->
+    <meta:directive
+       name="provideInterface"
+       schema=".metadirectives.IProvideInterfaceDirective"
+       handler=".metaconfigure.interface"
+       />
+
+    <!--
+        new directives
+      -->
+    <meta:complexDirective
+       name="namespace"
+       schema=".metadirectives.INamespaceDirective"
+       handler=".metaconfigure.namespace">
+
+      <meta:subdirective
+         name="widget"
+         schema=".metadirectives.IWidgetSubDirective"
+         />
+
+    </meta:complexDirective>
+
+    <meta:complexDirective
+       name="schemas"
+       schema=".metadirectives.ISchemaDirective"
+       handler=".metaconfigure.schemas">
+
+      <meta:subdirective
+         name="widget"
+         schema=".metadirectives.IWidgetSubDirective"
+         />
+
+    </meta:complexDirective>
+
+    <meta:directive
+       name="widget"
+       schema=".metadirectives.IWidgetDirective"
+       handler=".metaconfigure.widget"
+       />
+
+  </meta:directives>
+
+  <meta:provides feature="webdav" />
 
 </configure>

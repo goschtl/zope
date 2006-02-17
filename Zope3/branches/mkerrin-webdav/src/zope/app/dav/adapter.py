@@ -22,12 +22,44 @@ from xml.dom import minidom
 from zope.interface import Interface, implements
 
 from zope.app import zapi
-from zope.app.dav.interfaces import IDAVSchema, IDAVActiveLock, IDAVLockEntry
+from zope.app.dav.interfaces import IDAVSchema, IActiveLock, ILockEntry, \
+     IDAVLockSchema, IDAVResourceSchema
 from zope.app.dublincore.interfaces import IDCTimes
 from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.size.interfaces import ISized
 from zope.app.file.interfaces import IFile
 from zope.app.locking.interfaces import ILockable
+
+
+class DAVLockSchemaAdapter(object):
+    implements(IDAVLockSchema)
+
+    def __init__(self, context):
+        self.context = context
+
+    def supportedlock(self):
+        return ILockEntry(self.context, None)
+    supportedlock = property(supportedlock)
+
+    def lockdiscovery(self):
+        lockable = ILockable(self.context, None)
+        if lockable is None or not lockable.locked():
+            return None
+        return IActiveLock(self.context, None)
+    lockdiscovery = property(lockdiscovery)
+
+
+class DAVResourceAdapter(object):
+    """Defines a standard default resourcetype property value of None.
+
+    This is the only mandatory property defined with the DAV: namespace.
+    """
+    implements(IDAVResourceSchema)
+
+    def __init__(self, context):
+        self.context = context
+
+    resourcetype = None
 
 
 class DAVSchemaAdapter(object):
@@ -88,27 +120,25 @@ class DAVSchemaAdapter(object):
 
     def getlastmodified(self):
         dc = IDCTimes(self.context, None)
-        if dc is None or dc.created is None:
+        if dc is None or dc.modified is None:
             return None
         return dc.modified
     getlastmodified = property(getlastmodified)
 
     def supportedlock(self):
-        return IDAVLockEntry(self.context, None)
+        return ILockEntry(self.context, None)
     supportedlock = property(supportedlock)
 
     def lockdiscovery(self):
         lockable = ILockable(self.context, None)
         if lockable is None or not lockable.locked():
             return None
-        return IDAVActiveLock(self.context, None)
+        return IActiveLock(self.context, None)
     lockdiscovery = property(lockdiscovery)
-
-    source = None
 
 
 class LockEntry(object):
-    implements(IDAVLockEntry)
+    implements(ILockEntry)
 
     def __init__(self, context):
         pass
@@ -122,7 +152,7 @@ class ActiveLock(object):
     """represent a locked object that is the context of this adapter should
     be locked otherwise a TypeError is raised
     """
-    implements(IDAVActiveLock)
+    implements(IActiveLock)
 
     def __init__(self, context):
         self.context = context

@@ -2,10 +2,33 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:dav="http://namespaces.zope.org/dav">
 
+  <publisher
+     name="WEBDAV"
+     factory=".common.WebDAVRequestFactory"
+     methods="PROPFIND PROPPATCH MKCOL LOCK UNLOCK COPY MOVE"
+     priority="30"
+     />
+
+  <content class=".common.LockNullResource">
+    <allow interface="zope.app.http.interfaces.INullResource" />
+  </content>
+
+  <view
+     for="zope.app.container.interfaces.ISimpleReadContainer"
+     type=".interfaces.IWebDAVRequest"
+     provides="zope.publisher.interfaces.IPublishTraverse"
+     factory=".common.ContainerTraverser"
+     permission="zope.Public"
+     allowed_interface="zope.publisher.interfaces.IPublishTraverse"
+     />
+
+  <!--
+      WebDAV method definitions.
+    -->
   <view
       for="*"
       name="PROPFIND"
-      type="zope.publisher.interfaces.http.IHTTPRequest"
+      type=".interfaces.IWebDAVRequest"
       factory=".propfind.PROPFIND"
       permission="zope.ManageContent"
       allowed_attributes="PROPFIND setDepth getDepth" />
@@ -13,7 +36,7 @@
   <view
       for="*"
       name="PROPPATCH"
-      type="zope.publisher.interfaces.http.IHTTPRequest"
+      type=".interfaces.IWebDAVRequest"
       factory=".proppatch.PROPPATCH"
       permission="zope.ManageContent"
       allowed_attributes="PROPPATCH" />
@@ -21,7 +44,7 @@
   <view
       for="zope.app.http.interfaces.INullResource"
       name="MKCOL"
-      type="zope.publisher.interfaces.http.IHTTPRequest"
+      type=".interfaces.IWebDAVRequest"
       factory=".mkcol.NullResource"
       permission="zope.ManageContent"
       allowed_attributes="MKCOL" />
@@ -29,7 +52,7 @@
   <view
       for="*"
       name="MKCOL"
-      type="zope.publisher.interfaces.http.IHTTPRequest"
+      type=".interfaces.IWebDAVRequest"
       factory=".mkcol.MKCOL"
       permission="zope.ManageContent"
       allowed_attributes="MKCOL" />
@@ -40,7 +63,7 @@
   <view
      for="zope.interface.Interface"
      name="LOCK"
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      factory=".locking.LOCKMethodFactory"
      permission="zope.ManageContent"
      allowed_attributes="LOCK"
@@ -49,7 +72,7 @@
   <view
      for="zope.interface.Interface"
      name="UNLOCK"
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      factory=".locking.UNLOCKMethodFactory"
      permission="zope.ManageContent"
      allowed_attributes="UNLOCK"
@@ -68,28 +91,42 @@
   <view
      for="zope.interface.Interface"
      name="COPY"
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      factory=".copy.COPY"
      permission="zope.ManageContent"
      allowed_attributes="COPY"
      />
 
   <adapter
-     provides="zope.app.dav.interfaces.IDAVSchema"
+     for="zope.app.http.interfaces.INullResource"
+     provides="zope.app.dav.interfaces.IDAVLockSchema"
+     permission="zope.Public"
+     factory=".adapter.DAVLockSchemaAdapter"
+     />
+
+  <adapter
      for="zope.interface.Interface"
+     provides="zope.app.dav.interfaces.IDAVResourceSchema"
+     permission="zope.Public"
+     factory=".adapter.DAVResourceAdapter"
+     />
+
+  <adapter
+     provides="zope.app.dav.interfaces.IDAVSchema"
+     for="zope.app.annotation.interfaces.IAnnotatable"
      permission="zope.Public"
      factory=".adapter.DAVSchemaAdapter"
      />
 
   <adapter
-     provides="zope.app.dav.interfaces.IDAVActiveLock"
+     provides="zope.app.dav.interfaces.IActiveLock"
      for="zope.interface.Interface"
      permission="zope.Public"
      factory=".adapter.ActiveLock"
      />
 
   <adapter
-     provides="zope.app.dav.interfaces.IDAVLockEntry"
+     provides="zope.app.dav.interfaces.ILockEntry"
      for="zope.interface.Interface"
      permission="zope.Public"
      factory=".adapter.LockEntry"
@@ -123,7 +160,7 @@
       Define all the DAV widgets.
     -->
   <view
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      for="zope.schema.interfaces.IText"
      provides="zope.app.dav.interfaces.IDAVWidget"
      factory="zope.app.dav.widget.TextDAVWidget"
@@ -131,7 +168,23 @@
      />
 
   <view
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
+     for="zope.schema.interfaces.ITextLine"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.TextDAVWidget"
+     permission="zope.Public"
+     />
+
+  <view
+     type=".interfaces.IWebDAVRequest"
+     for="zope.schema.interfaces.IInt"
+     provides="zope.app.dav.interfaces.IDAVWidget"
+     factory="zope.app.dav.widget.IntDAVWidget"
+     permission="zope.Public"
+     />
+
+  <view
+     type=".interfaces.IWebDAVRequest"
      for="zope.schema.interfaces.IBytes"
      provides="zope.app.dav.interfaces.IDAVWidget"
      factory="zope.app.dav.widget.TextDAVWidget"
@@ -139,15 +192,7 @@
      />
   
   <view
-     type="zope.publisher.interfaces.http.IHTTPRequest"
-     for="zope.schema.interfaces.IInt"
-     provides="zope.app.dav.interfaces.IDAVWidget"
-     factory="zope.app.dav.widget.TextDAVWidget"
-     permission="zope.Public"
-     />
-
-  <view
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      for="zope.schema.interfaces.IFloat"
      provides="zope.app.dav.interfaces.IDAVWidget"
      factory="zope.app.dav.widget.TextDAVWidget"
@@ -155,7 +200,7 @@
      />
 
   <view
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      for="zope.schema.interfaces.IDatetime"
      provides="zope.app.dav.interfaces.IDAVWidget"
      factory="zope.app.dav.widget.DatetimeDAVWidget"
@@ -163,7 +208,7 @@
      />
 
   <view
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      for="zope.schema.interfaces.IDate"
      provides="zope.app.dav.interfaces.IDAVWidget"
      factory="zope.app.dav.widget.DateDAVWidget"
@@ -171,7 +216,7 @@
      />
 
   <view
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      for="zope.schema.interfaces.ITuple"
      provides="zope.app.dav.interfaces.IDAVWidget"
      factory="zope.app.dav.widget.TupleDAVWidget"
@@ -179,7 +224,7 @@
      />
 
   <view
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      for="zope.schema.interfaces.ISequence"
      provides="zope.app.dav.interfaces.IDAVWidget"
      factory="zope.app.dav.widget.SequenceDAVWidget"
@@ -187,7 +232,7 @@
      />
 
   <view
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      for="zope.schema.interfaces.IList"
      provides="zope.app.dav.interfaces.IDAVWidget"
      factory="zope.app.dav.widget.ListDAVWidget"
@@ -195,7 +240,7 @@
      />
 
   <view
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      for="zope.app.dav.fields.IXMLEmptyElementList"
      provides="zope.app.dav.interfaces.IDAVWidget"
      factory="zope.app.dav.widget.XMLEmptyElementListDAVWidget"
@@ -203,7 +248,7 @@
      />
 
   <view
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      for="zope.app.dav.fields.IDAVXMLSubProperty"
      provides="zope.app.dav.interfaces.IDAVWidget"
      factory="zope.app.dav.widget.DAVXMLSubPropertyWidget"
@@ -211,7 +256,7 @@
      />
 
   <view
-     type="zope.publisher.interfaces.http.IHTTPRequest"
+     type=".interfaces.IWebDAVRequest"
      for="zope.app.dav.fields.DAVOpaqueField"
      provides="zope.app.dav.interfaces.IDAVWidget"
      factory="zope.app.dav.widget.DAVOpaqueWidget"
@@ -225,5 +270,29 @@
   <dav:provideInterface
      for="DAV:"
      interface="zope.app.dav.interfaces.IDAVSchema" />
+
+  <dav:namespace
+     namespace="http://purl.org/dc/1.1"
+     schemas="zope.app.dublincore.interfaces.IZopeDublinCore"
+     interfaceType=".interfaces.IDCDAVNamespaceType"
+     />
+
+  <dav:namespace
+     namespace="DAV:"
+     interfaceType=".interfaces.IDAVNamespaceType"
+     schemas=".interfaces.IDAVResourceSchema
+              .interfaces.IDAVCreationDate
+              .interfaces.IDAVDisplayName
+              .interfaces.IGETDependentDAVSchema
+              .interfaces.IDAVLockSchema
+              .interfaces.IOptionalDAVSchema
+              ">
+
+    <widget
+       propname="creationdate"
+       class=".widget.ISO8601DateDAVWidget"
+       />
+
+  </dav:namespace>
 
 </configure>

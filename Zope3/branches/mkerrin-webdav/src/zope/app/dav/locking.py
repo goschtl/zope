@@ -30,12 +30,14 @@ from zope.app import zapi
 from zope.app.form.utility import setUpWidget
 from zope.app.locking.interfaces import ILockable, ILockStorage, LockingError
 from zope.app.container.interfaces import IReadContainer
+from zope.app.http.interfaces import INullResource
 
-from interfaces import IDAVWidget, IDAVActiveLock, IDAVLockEntry, \
-     IDAVLockSchema, IIfHeader
+from interfaces import IDAVWidget, IActiveLock, ILockEntry, \
+     IDAVLockSchema, IIfHeader, IWebDAVRequest
 from common import MultiStatus
 
 MAXTIMEOUT = (2L**32)-1
+DEFAULTTIMEOUT = 12 * 60L
 
 _randGen = random.Random(time.time())
 
@@ -69,10 +71,13 @@ class UnprocessableEntityError(DAVLockingError):
     stauts = 422
 
 
-@adapter(Interface, IHTTPRequest)
+@adapter(Interface, IWebDAVRequest)
 @implementer(Interface)
 def LOCKMethodFactory(context, request):
-    lockable = ILockable(context, None)
+    try:
+        lockable = ILockable(context, None)
+    except:
+        return None
     if lockable is None:
         return None
     return LOCK(context, request)
@@ -92,10 +97,9 @@ class LOCK(object):
         else:
             self.content_type = ct.lower()
             self.content_type_params = None
+
         self.default_ns = 'DAV:'
         self.default_ns_prefix = None
-
-        self.defaulttimeout = 12 * 60L
 
         self.errorBody = None
 
@@ -113,12 +117,12 @@ class LOCK(object):
         timeoutheader = timeoutheader.strip().lower()
         t = str(timeoutheader).split('-')[-1]
         if t == 'infinite' or t == 'infinity':
-            timeout = self.defaulttimeout
+            timeout = DEFAULTTIMEOUT
         else:
             timeout = long(t)
 
         if timeout > MAXTIMEOUT:
-            timeout = self.defaulttimeout
+            timeout = DEFAULTTIMEOUT
 
         return timeout
 
@@ -199,14 +203,14 @@ class LOCK(object):
         lockinfo['locktoken'] = \
                               '<locktoken><href>%s</href></locktoken>' % token
 
-        adapted = IDAVActiveLock(object)
+        adapted = IActiveLock(object)
         for node in xmldoc.childNodes:
             if node.nodeType != node.ELEMENT_NODE:
                 continue
 
             name = node.localName
 
-            field = IDAVActiveLock[name]
+            field = IActiveLock[name]
 
             setUpWidget(self, name, field, IDAVWidget, value = None,
                         ignoreStickyValues = False)
@@ -266,7 +270,7 @@ class LOCK(object):
                     ignoreStickyValues = False)
         widget = getattr(self, fieldname + '_widget', None)
         assert widget is not None
-        el = widget.renderProperty(ns, ns_prefix)
+        el = widget.renderProperty()
         prop.appendChild(el)
 
         body = resp.toxml('utf-8')
@@ -283,7 +287,10 @@ class LOCK(object):
 @adapter(Interface, IHTTPRequest)
 @implementer(Interface)
 def UNLOCKMethodFactory(context, request):
-    lockable = ILockable(context, None)
+    try:
+        lockable = ILockable(context, None)
+    except:
+        return None
     if lockable is None:
         return None
     return UNLOCK(context, request)
@@ -324,6 +331,8 @@ class UNLOCK(object):
                                           "lock tokens are not equal")
 
         lockable.unlock()
+        if INullResource.providedBy(object):
+            del object.container[object.name]
 
         # recurise into subfolders if we are a folder.
         if IReadContainer.providedBy(object):

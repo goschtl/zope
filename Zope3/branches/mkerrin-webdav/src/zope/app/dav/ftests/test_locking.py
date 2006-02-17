@@ -23,7 +23,7 @@ from unittest import TestSuite, makeSuite, main
 
 from zope.interface import Interface
 from zope.app import zapi
-from zope.app.testing import setup, ztapi, functional
+from zope.app.testing import setup, ztapi
 from zope.app.locking.interfaces import ILockStorage, ILockable
 from zope.app.locking.storage import PersistentLockStorage
 from zope.app.locking.adapter import LockingAdapterFactory, LockingPathAdapter
@@ -32,6 +32,7 @@ from zope.app.file.file import File
 
 from zope.app.security.adapter import LocatingTrustedAdapterFactory
 
+from dav import DAVTestCase
 
 def makeLockBody(data):
     body = '''<?xml version="1.0" encoding="utf-8"?>
@@ -44,7 +45,7 @@ def makeLockBody(data):
     return body
 
 
-class TestAllowBefore(functional.HTTPTestCase):
+class TestAllowBefore(DAVTestCase):
     # Test for the LOCK and UNLOCK in the Allow header. I use both a OPTIONS
     # request and a 'FROGS' (undefined) request to test for this. The reason
     # for two tests is that I ran into problems getting this to work with the
@@ -108,7 +109,7 @@ class TestAllowAfter(TestAllowBefore):
 class TestLOCK(TestAllowBefore):
 
     def setUp(self):
-        functional.HTTPTestCase.setUp(self)
+        super(TestLOCK, self).setUp()
         sm = zapi.getSiteManager(self.getRootFolder())
 
         self.storage = storage = PersistentLockStorage()
@@ -126,12 +127,12 @@ class TestLOCK(TestAllowBefore):
         del self.storage
 
     def test_allow_options(self):
-        super(TestLOCK, self)._test_allow_options(True)
+        self._test_allow_options(True)
 
     def test_allow_publish(self):
         ## XXX - the LOCK, and UNLOCK methods should show up in the allow header
         ## for this test but I can't get this work.
-        super(TestLOCK, self)._test_allow_publish(True)
+        self._test_allow_publish(True)
 
     def test_lock_file_simple(self):
         file = File('some content', 'text/plain')

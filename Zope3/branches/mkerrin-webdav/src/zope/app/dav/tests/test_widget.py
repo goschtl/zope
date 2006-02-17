@@ -23,7 +23,7 @@ from unittest import TestSuite, main, makeSuite, TestCase
 
 from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
-from zope.schema import Text, Datetime, Date, List, Tuple
+from zope.schema import Text, Datetime, Date, List, Tuple, Int
 from zope.schema import ValidationError
 from zope.publisher.browser import TestRequest
 from zope.testing.doctest import DocTestSuite
@@ -33,12 +33,14 @@ from zope.app.testing import placelesssetup
 
 from zope.app.dav.interfaces import IDAVWidget
 from zope.app.dav.widget import DAVWidget, TextDAVWidget, DatetimeDAVWidget, \
-     DateDAVWidget, XMLEmptyElementListDAVWidget, TupleDAVWidget
+     DateDAVWidget, XMLEmptyElementListDAVWidget, TupleDAVWidget, IntDAVWidget
 
 
 class DAVWidgetTest(placelesssetup.PlacelessSetup, TestCase):
 
+    # type of Field we are going to display during this test 
     _FieldFactory = Text
+    # type of DAV widget we are going to test
     _WidgetFactory = DAVWidget
 
     def setUp(self):
@@ -62,6 +64,9 @@ class DAVWidgetTest(placelesssetup.PlacelessSetup, TestCase):
         self.failUnless(verifyClass(IDAVWidget, DAVWidget))
 
     def test_widget_input(self):
+        # make sure that the widget can handle an input value recevied via
+        # the setRenderedValue method. This method is only called rendering
+        # a property.
         content = self.test_content
 
         self.failIf(self._widget.hasInput())
@@ -71,6 +76,9 @@ class DAVWidgetTest(placelesssetup.PlacelessSetup, TestCase):
         self.assertEqual(self._widget.getInputValue(), content)
 
     def _test_widget_bad_input(self, propel):
+        # helper method that tests setting a xml dom fragment that represents
+        # a property. propel should correspond to a correctly formatted
+        # property.
         self._widget.setProperty(propel)
         self.assert_(self._widget.hasInput())
         self.failIf(self._widget.hasValidInput())
@@ -87,12 +95,27 @@ class DAVWidgetTest(placelesssetup.PlacelessSetup, TestCase):
 
 class TextDAVWidgetTest(DAVWidgetTest):
     _WidgetFactory = TextDAVWidget
+    _FieldFactory  = Text
 
     test_content = u'This is some text content'
 
+
+class IntDAVWidgetTest(DAVWidgetTest):
+    _WidgetFactory = IntDAVWidget
+    _FieldFactory  = Int
+
+    test_content = 10
+
+    def test_widget_bad_input(self):
+        doc = minidom.Document()
+        propel = doc.createElement('foo')
+        propel.appendChild(doc.createTextNode(u'This is NOT an integer'))
+        super(IntDAVWidgetTest, self)._test_widget_bad_input(propel)
+
+
 class DatetimeDAVWidgetTest(DAVWidgetTest):
     _WidgetFactory = DatetimeDAVWidget
-    _FieldFactory = Datetime
+    _FieldFactory  = Datetime
 
     test_content = datetime.datetime.fromtimestamp(1131234842)
 
@@ -150,10 +173,9 @@ class DateDAVWidgetTest(DAVWidgetTest):
 
 class XMLEmptyElementListDAVWidgetTest(DAVWidgetTest):
     _WidgetFactory = XMLEmptyElementListDAVWidget
-    _FieldFactory = List
+    _FieldFactory  = List
 
     test_content = [u'hello', u'there']
-    test_bad_contents = [10, u'hello']
 
 
 class TupleDAVWidgetTest(DAVWidgetTest):
@@ -161,12 +183,12 @@ class TupleDAVWidgetTest(DAVWidgetTest):
     _FieldFactory = Tuple
 
     test_content = (u'hello', u'there')
-    test_bad_contents = [10, u'hello']
 
 
 def test_suite():
     return TestSuite((
         makeSuite(TextDAVWidgetTest),
+        makeSuite(IntDAVWidgetTest),
         makeSuite(DatetimeDAVWidgetTest),
         makeSuite(DateDAVWidgetTest),
         makeSuite(XMLEmptyElementListDAVWidgetTest),

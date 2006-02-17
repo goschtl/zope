@@ -24,6 +24,7 @@ from zope.publisher.http import status_reasons
 from zope.security.proxy import removeSecurityProxy
 
 from zope.app import zapi
+from zope import component
 from zope.app.container.interfaces import IReadContainer
 
 
@@ -155,3 +156,91 @@ class MultiStatusResponse(object):
         if ns_prefix is not None:
             el.setAttributeNS(ns, 'xmlns', ns_prefix)
         return el
+
+################################################################################
+#
+# WebDAV Request and Request Factory
+#
+################################################################################
+
+from zope.publisher.http import HTTPResponse, HTTPRequest
+from zope.app.publication.http import HTTPPublication
+from zope.app.publication.interfaces import IRequestPublicationFactory
+from interfaces import IWebDAVRequest, IWebDAVRequestFactory
+
+
+class WebDAVResponse(HTTPResponse):
+    """
+    """
+    pass
+
+
+class WebDAVRequest(HTTPRequest):
+    implements(IWebDAVRequest)
+
+    def _createResponse(self):
+        """Create a specific WebDAV response object."""
+        return WebDAVResponse()
+
+
+class WebDAVPublication(HTTPPublication):
+    pass
+
+
+class WebDAVRequestFactory(object):
+    implements(IRequestPublicationFactory)
+
+    def canHandle(self, environment):
+        return True
+
+    def __call__(self):
+        request_class = component.queryUtility(
+            IWebDAVRequestFactory, default = WebDAVRequest)
+        return request_class, WebDAVPublication
+
+################################################################################
+#
+# WebDAV specific traversal. Needed in order to generate null resources.
+#
+################################################################################
+
+from zope.app.http import traversal
+from zope.app.http.put import NullResource
+from zope.publisher.interfaces import NotFound
+from zope.app.http.interfaces import INullResource
+from zope.app.container.interfaces import IContained
+from zope.app.container.contained import Contained
+from persistent import Persistent
+
+
+class LockNullResource(Persistent, Contained):
+    implements(INullResource, IContained)
+
+    def __init__(self, container, name):
+        # container is __parent__
+        # name is __name__
+        pass
+
+    @property
+    def container(self):
+        return self.__parent__
+
+    @property
+    def name(self):
+        return self.__name__
+
+
+class ContainerTraverser(traversal.ContainerTraverser):
+
+    def nullResource(self, request, name):
+        if request.getTraversalStack():
+            raise NotFound(self.context, name, request)
+
+        if request.method == 'MKCOL':
+            return NullResource(self.context, name)
+        elif request.method == 'LOCK':
+            lnr = LockNullResource(self.context, name)
+            self.context[name] = lnr
+            return lnr
+
+        raise NotFound(self.context, name, request)

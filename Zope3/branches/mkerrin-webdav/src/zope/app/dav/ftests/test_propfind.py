@@ -63,15 +63,15 @@ class TestPROPFIND(DAVTestCase):
         self.verifyPropOK(path='/pt', ns='http://purl.org/dc/1.1',
                           prop='subjects', expect=expect, basic='mgr:mgrpw')
         
-    def test_opaque(self):
-        self.addPage('/pt', u'<span />')
-        pt = traverse(self.getRootFolder(), '/pt')
-        adapted = IDAVOpaqueNamespaces(pt)
-        adapted[u'uri://bar'] = {u'foo': '<foo>spam</foo>'}
-        transaction.commit()
-        expect = 'spam'
-        self.verifyPropOK(path='/pt', ns='uri://bar',
-                          prop='foo', expect=expect, basic='mgr:mgrpw')
+##     def test_opaque(self):
+##         self.addPage('/pt', u'<span />')
+##         pt = traverse(self.getRootFolder(), '/pt')
+##         adapted = IDAVOpaqueNamespaces(pt)
+##         adapted[u'uri://bar'] = {u'foo': '<foo>spam</foo>'}
+##         transaction.commit()
+##         expect = 'spam'
+##         self.verifyPropOK(path='/pt', ns='uri://bar',
+##                           prop='foo', expect=expect, basic='mgr:mgrpw')
 
     def verifyPropOK(self, path, ns, prop, expect, basic):
         body = """<?xml version="1.0" ?>

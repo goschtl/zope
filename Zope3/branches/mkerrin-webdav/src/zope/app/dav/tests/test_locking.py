@@ -119,7 +119,7 @@ class TestPlacefulLOCK(PlacefulSetup, TestCase):
         ztapi.provideUtility(ILockStorage, storage)
         ztapi.provideUtility(ILockTracker, storage)
 
-        ztapi.provideAdapter(Interface, interfaces.IDAVActiveLock,
+        ztapi.provideAdapter(Interface, interfaces.IActiveLock,
                              ActiveLock)
         ztapi.provideAdapter(Interface, interfaces.IDAVLockSchema,
                              DAVSchemaAdapter)

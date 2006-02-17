@@ -21,11 +21,11 @@ from xml.parsers import expat
 from zope.schema import getFieldNamesInOrder, getFields
 from zope.publisher.http import status_reasons
 
-from zope.app import zapi
+from zope import component
 from zope.app.container.interfaces import IReadContainer
 from zope.app.form.utility import setUpWidget
 
-from interfaces import IDAVWidget, IDAVNamespace
+from interfaces import IDAVWidget, IDAVNamespace, INamespaceManager
 from opaquenamespaces import IDAVOpaqueNamespaces
 from common import MultiStatus
 
@@ -46,18 +46,6 @@ class PROPFIND(object):
             self.content_type_params = None
         self.default_ns = 'DAV:'
 
-        self.oprops = IDAVOpaqueNamespaces(self.context, None)
-        _avail_props = {}
-        # List all *registered* DAV interface namespaces and their properties
-        for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
-            _avail_props[ns] = getFieldNamesInOrder(iface)
-
-        # List all opaque DAV namespaces and the properties we know of
-        if self.oprops:
-            for ns, oprops in self.oprops.items():
-                _avail_props[ns] = list(oprops.keys())
-        self.avail_props = _avail_props
-
         self.responsedoc = MultiStatus()
 
     def getDepth(self):
@@ -66,7 +54,7 @@ class PROPFIND(object):
     def setDepth(self, depth):
         self._depth = depth.lower()
 
-    def PROPFIND(self, xmldoc = None):
+    def PROPFIND(self):
         if self.content_type not in ('text/xml', 'application/xml'):
             self.request.response.setStatus(400)
             return ''
@@ -74,11 +62,10 @@ class PROPFIND(object):
             self.request.response.setStatus(400)
             return ''
 
-        if xmldoc is None:
-            try:
-                xmldoc = minidom.parse(self.request.bodyStream)
-            except expat.ExpatError:
-                pass
+        try:
+            xmldoc = minidom.parse(self.request.bodyStream)
+        except expat.ExpatError:
+            xmldoc = None # request body is empty ???
 
         self.handlePropfind(xmldoc)
 
@@ -97,12 +84,17 @@ class PROPFIND(object):
             propname = xmldoc.getElementsByTagNameNS(
                 self.default_ns, 'propname')
             if propname:
-                self._handlePropname(resp)
+                self._renderPropnameResponse(resp)
             else:
                 source = xmldoc.getElementsByTagNameNS(self.default_ns, 'prop')
-                self._handlePropvalues(source)
+                if len(source) == 0:
+                    self._renderAllProperties(resp)
+                elif len(source) == 1:
+                    self._renderSelectedProperties(resp, source[0])
+                else:
+                    raise Exception, "something has gone wrong here"
         else:
-            self._handlePropvalues(None)
+            self._renderAllProperties(resp)
 
         self._depthRecurse(xmldoc)
 
@@ -122,125 +114,66 @@ class PROPFIND(object):
             responses = subrespdoc.getElementsByTagNameNS(self.default_ns,
                                                           'response')
             for r in responses:
-                ## print "obj: %s, %s" %(zapi.getPath(obj), r.toxml('utf-8'))
                 self.responsedoc.appendResponse(r)
 
-    def _handleProp(self, source):
-        props = {}
-        source = source[0]
+    def _renderAllProperties(self, response):
+        count = 0
+
+        for namespace, nsmanager in \
+                component.getUtilitiesFor(INamespaceManager):
+            ns_prefix = None
+            if namespace != self.default_ns:
+                ns_prefix = 'a%s' % count
+                count += 1
+            for propname in nsmanager.getAllPropertyNames(self.context):
+                widget = nsmanager.getWidget(self.context, self.request,
+                                             propname, ns_prefix)
+                el = widget.renderProperty()
+                response.addPropertyByStatus(namespace, ns_prefix, el, 200)
+
+    def _renderSelectedProperties(self, response, source):
+        count = 0
+        renderedns = {}
 
         for node in source.childNodes:
             if node.nodeType != node.ELEMENT_NODE:
                 continue
 
-            ns = node.namespaceURI
-            iface = zapi.queryUtility(IDAVNamespace, ns)
-            value = props.get(ns, {'iface': iface, 'props': []})
-            value['props'].append(node.localName)
-            props[ns] = value
+            namespace = node.namespaceURI
+            propname = node.localName
+            status = 200
 
-        return props
-
-    def _handleAllprop(self):
-        props = {}
-
-        for ns, properties in self.avail_props.items():
-            iface = zapi.queryUtility(IDAVNamespace, ns)
-            props[ns] = {'iface': iface, 'props': properties}
-
-        return props
-
-    def _handlePropname(self, resp):
-        count = 0
-        for ns, props in self.avail_props.items():
-            attr_name = 'a%s' % count
             ns_prefix = None
-            if ns is not None and ns != self.default_ns:
+            if not renderedns.has_key(namespace) and \
+                   namespace != self.default_ns:
+                ns_prefix = 'a%s' % count
                 count += 1
-                ns_prefix = attr_name
-            for p in props:
-                el = resp.createEmptyElement(ns, ns_prefix, p)
-                resp.addPropertyByStatus(ns, ns_prefix, el)
+            elif namespace != self.default_ns:
+                ns_prefix = renderedns[namespace]
 
-    def _handlePropvalues(self, source):
-        if not source:
-            _props = self._handleAllprop()
-        else:
-            _props = self._handleProp(source)
+            nsmanager = component.queryUtility(INamespaceManager, namespace,
+                                               default = None)
 
-        self._renderResponse(self.resp, _props)
+            if nsmanager is not None:
+                if nsmanager.hasProperty(self.context, propname):
+                    widget = nsmanager.getWidget(self.context, self.request,
+                                                 propname, ns_prefix)
+                    el = widget.renderProperty()
+            else:
+                el = response.createEmptyElement(namespace, ns_prefix,
+                                                 propname)
+                status = 404
 
-    def _renderResponse(self, re, _props):
+            response.addPropertyByStatus(namespace, ns_prefix, el, status)
+
+    def _renderPropnameResponse(self, response):
         count = 0
-        # ns - the full namespace for this object.
-        for ns, ifaceprops in _props.items():
-            attr_name = 'a%s' % count
-            ns_prefix = None
-            if ns is not None and ns != self.default_ns:
+        for namespace, manager in component.getUtilitiesFor(INamespaceManager):
+            if namespace != self.default_ns:
+                ns_prefix = 'a%s' % count
                 count += 1
-                ns_prefix = attr_name
-
-            iface = ifaceprops['iface']
-            props = ifaceprops['props']
-
-            # adapted - the current view through which all properties are
-            # reterived this should be moved to using the widget framework.
-            if not iface:
-                for name in props:
-                    if self.oprops:
-                        status = 200
-                        el = self.oprops.renderProperty(ns, ns_prefix, name)
-                        if el is None:
-                            # We can't add a None property in the MultiStatus
-                            # utility so add an empty property registered has
-                            # a 404 stats not found property.
-                            status = 404
-                            el = re.createEmptyElement(ns, ns_prefix, name)
-                        re.addPropertyByStatus(ns, ns_prefix, el, status)
-                    else:
-                        el = re.createEmptyElement(ns, ns_prefix, name)
-                        re.addPropertyByStatus(ns, ns_prefix, el, 404)
-                continue
-
-            adapted = iface(self.context, None)
-            if adapted is None:
-                # XXX - maybe these properties are unavailable for a reason.
-                # render unavailable properties
-                for propname in props:
-                    el = re.createEmptyElement(ns, ns_prefix, propname)
-                    re.addPropertyByStatus(ns, ns_prefix, el, 404)
-                    continue
-
-            for propname in props:
-                status = 200
-                el = None # property DOM fragment
-                field = None
-
-                try:
-                    field = iface[propname]
-                except KeyError:
-                    # A widget wasn't generated for this property
-                    # because the attribute was missing on the adapted
-                    # object, which actually means that the adapter
-                    # didn't fully implement the interface ;(
-                    el = re.createEmptyElement(ns, ns_prefix, propname)
-                    status = 404
-
-                    re.addPropertyByStatus(ns, ns_prefix, el, status)
-                    continue
-
-                try:
-                    setUpWidget(self, propname, field, IDAVWidget,
-                                value = field.get(adapted),
-                                ignoreStickyValues = False)
-                    widget = getattr(self, propname + '_widget', None)
-                    assert widget is not None
-                    el = widget.renderProperty(ns, ns_prefix)
-                    if widget.getErrors():
-                        status = 500
-                except:
-                    # Internal Server Error - status 500
-                    el = re.createEmptyElement(ns, ns_prefix, propname)
-                    status = 500
-
-                re.addPropertyByStatus(ns, ns_prefix, el, status)
+            else:
+                ns_prefix = None
+            for propname in manager.getAllPropertyNames(self.context):
+                el = response.createEmptyElement(namespace, ns_prefix, propname)
+                response.addPropertyByStatus(namespace, ns_prefix, el, 200)

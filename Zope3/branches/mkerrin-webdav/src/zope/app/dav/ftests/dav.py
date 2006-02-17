@@ -18,7 +18,10 @@ $Id$
 from persistent import Persistent
 import transaction
 from zope.interface import implements
-from zope.app.testing.functional import HTTPTestCase
+from zope.app.testing.functional import HTTPTestCase, FunctionalTestSetup
+from zope.publisher.http import HTTPRequest
+from zope.app.publication.http import HTTPPublication
+from zope.app.dav.common import WebDAVRequest, WebDAVPublication
 
 from zope.app.folder import Folder
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -53,3 +56,31 @@ class DAVTestCase(HTTPTestCase):
         page = Page()
         page.source = content
         self.createObject(path, page)
+
+    def makeRequest(self, path = '', basic = None, form = None, env = {},
+                    instream = None):
+        method = env.get('REQUEST_METHOD', '')
+
+        if instream is None:
+            instream = ''
+
+        environment = {"HTTP_HOST": 'localhost',
+                       "HTTP_REFERER": 'localhost'}
+        environment.update(env)
+
+        app = FunctionalTestSetup().getApplication()
+        if method in ('PROPFIND', 'PROPPATCH', 'MKCOL', 'LOCK', 'UNLOCK',
+                      'COPY', 'MOVE'):
+            request = app._request(path, instream,
+                                   environment = environment,
+                                   basic = basic, form = form,
+                                   request = WebDAVRequest,
+                                   publication = WebDAVPublication)
+        else:
+            request = app._request(path, instream,
+                                   environment=environment,
+                                   basic=basic, form=form,
+                                   request=HTTPRequest,
+                                   publication=HTTPPublication)
+
+        return request

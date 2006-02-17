@@ -1,0 +1,26 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:dav="http://namespaces.zope.org/dav">
+
+  <include package="zope.app.dav" file="meta.zcml"/>
+
+  <dav:namespace
+     namespace="http://examplenamespace.org/dav/schema"
+     interfaceType=".test_namespace.IExampleNamespaceType"
+     />
+ 
+  <dav:schemas
+     namespace="http://examplenamespace.org/dav/schema"
+     schemas=".test_namespace.IExampleSchema"
+     />
+
+  <dav:schemas
+     namespace="http://examplenamespace.org/dav/schema"
+     schemas=".test_namespace.IExampleSchemaExtended"
+     />
+
+  <dav:schemas
+     namespace="http://examplenamespace.org/dav/schema"
+     schemas=".test_namespace.IExampleContactSchema"
+     />
+
+</configure>

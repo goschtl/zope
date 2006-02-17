@@ -17,10 +17,15 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
+from zope.interface.interfaces import IInterface
+from zope.interface.common.mapping import IEnumerableMapping
 from zope.schema import Int, Text, TextLine, Dict, Datetime, Date, List, Bool
 from zope.schema.interfaces import IText, IList
 from zope.app.form.interfaces import IWidget
+
+from zope.publisher.interfaces.http import IHTTPRequest
+from zope.app.publication.interfaces import IRequestFactory
 
 from fields import IXMLEmptyElementList, XMLEmptyElementList
 from fields import IDAVXMLSubProperty, DAVXMLSubProperty, DAVOpaqueField
@@ -31,6 +36,42 @@ class IDAVNamespace(Interface):
     DAV namespaces and their associated interface are utilities that fullfill
     provide this interface
     """
+
+
+class IDAVNamespaceType(IInterface):
+    """This interface represents the WebDAV namespace schema defined
+    in RFC2518, RFC3744, ...
+
+    If an **interface** provides this interface type, then all adapters
+    providing the **interfaace** are considered WebDAV data adapters.
+    """
+
+
+class IDCDAVNamespaceType(IInterface):
+    """This interface represents the Dublin Core namespace.
+
+    If an **interface** provides this interface type, then all adapters
+    providing the **interface** are considered data adapters for the
+    DC properties.
+    """
+
+
+class IDAVResourceSchema(Interface):
+    """DAV properties required for Level 1 compliance"""
+
+    resourcetype = XMLEmptyElementList(
+                           title = u'''Specifies the nature of the resource''',
+
+                           description = u'''\
+                                 The resourcetype property MUST be
+                                 defined on all DAV compliant
+                                 resources.  The default value is
+                                 empty.''',
+
+                           readonly = True,
+
+                           value_type = TextLine(title = u'resource type')
+                           )
 
 
 class IDAVCreationDate(Interface):
@@ -83,7 +124,7 @@ class IDAVSource(Interface):
                                       asserts no policy on ordering.''')
 
 
-class IOptionalDAVSchema(IDAVCreationDate, IDAVDisplayName, IDAVSource):
+class IOptionalDAVSchema(IDAVCreationDate, IDAVDisplayName):
     """DAV properties that SHOULD be present but are not required"""
 
 
@@ -153,24 +194,7 @@ class IGETDependentDAVSchema(Interface):
                                readonly = True)
 
 
-class IDAVResourceSchema(Interface):
-    """DAV properties required for Level 1 compliance"""
-
-    resourcetype = XMLEmptyElementList(
-                           title = u'''Specifies the nature of the resource''',
-
-                           description = u'''\
-                                 The resourcetype property MUST be
-                                 defined on all DAV compliant
-                                 resources.  The default value is
-                                 empty.''',
-
-                           readonly = True,
-
-                           value_type = TextLine(title = u'resource type')
-                           )
-
-class IDAVLockEntry(Interface):
+class ILockEntry(Interface):
     """A DAV Sub property of the supportedlock property.
     """
     lockscope = XMLEmptyElementList(title = u'''\
@@ -180,8 +204,6 @@ class IDAVLockEntry(Interface):
                             Specifies whether a lock is an exclusive lock, or a
                             shared lock.''',
 
-                                    readonly = True,
-
                                     value_type = TextLine(title = u''))
 
     locktype = XMLEmptyElementList(title = u'''\
@@ -192,33 +214,12 @@ class IDAVLockEntry(Interface):
                             this specification only defines one lock type, the
                             write lock.''',
 
-                                   readonly = True,
-
                                    value_type = TextLine(title = u''))
 
 
-class IDAVActiveLock(Interface):
+class IActiveLock(ILockEntry):
     """A DAV Sub property of the lockdiscovery property.
     """
-    lockscope = XMLEmptyElementList(title = u'''\
-                            Describes the exclusivity of a lock''',
-
-                                    description = u'''\
-                            Specifies whether a lock is an exclusive lock, or a
-                            shared lock.''',
-
-                                    value_type = TextLine(title = u''))
-
-    locktype = XMLEmptyElementList(title = u'''\
-                            Describes the access type of the lock''',
-
-                                   description = u'''\
-                            Specifies the access type of a lock. At present,
-                            this specification only defines one lock type, the
-                            write lock.''',
-
-                                   value_type = TextLine(title = u''))
-
     depth = Text(title = u'Depth',
                  description = u'The value of the Depth header.')
 
@@ -265,7 +266,7 @@ class IDAVLockSchema(Interface):
 
                                       prop_name = 'activelock',
 
-                                      schema = IDAVActiveLock)
+                                      schema = IActiveLock)
 
     supportedlock = DAVXMLSubProperty(title = u'''\
                                            To provide a listing of the lock\
@@ -286,7 +287,7 @@ class IDAVLockSchema(Interface):
 
                                       readonly = True,
 
-                                      schema = IDAVLockEntry,
+                                      schema = ILockEntry,
 
                                       prop_name = 'lockentry')
 
@@ -362,10 +363,16 @@ class IDAVWidget(IWidget):
         based on the field constraints.
         """
 
+    ## this shouldn't be used ???
     def setRenderedValue(value):
         """Set the value of the field associated with this widget.
 
         This value must validate to the type expected by the associated field.
+        """
+
+    def setNamespace(ns, ns_prefix):
+        """Set the namespace and the namespace prefix. To be used when rendering
+        this widget.
         """
 
     def setProperty(propel):
@@ -375,8 +382,12 @@ class IDAVWidget(IWidget):
         The extracted value must validate against the associated field.
         """
 
-    def renderProperty(ns, ns_prefix):
-        """Render a property has a DOM elements.
+    def renderProperty():
+        """Render a property has a Python XML DOM element.
+
+        Use the setNamespace method to set the namespace and namespace prefix
+        to be used when rendering this property if it belongs to a different
+        WebDAV namespace other then the default DAV: namespace.
         """
 
 ##     def removeProperty(self, ns, prop):
@@ -392,3 +403,100 @@ class IIfHeader(Interface):
         """Return True / False wheather the current context and request
         matches the the IF HTTP header has specified in RFC 2518
         """
+
+
+################################################################################
+#
+# Namespace Management.
+#
+################################################################################
+class INamespaceManager(Interface):
+    """One instance of this utility exists for each namespace known by the
+    system.
+
+    This utility is used to manage all the properties within a namespace. This
+    includes which properties are defined for an object, accessing these
+    properties, and finding what widgets are used to render these properties.
+    """
+
+    #
+    # Registration methods
+    #
+
+    def registerSchema(schema, restricted_properties = ()):
+        """Register the interface, schema, with the namespace manager. Each
+        field defined in the interface will define a property within the
+        namespace.
+
+        restricted_properties is a list of field names defined in schema
+        which whose corresponding property should not be rendered in
+        response to a PROPFIND request for all properties.
+        """
+
+    def registerWidget(propname, widget):
+        """Register a custom widget for the property named propname.
+
+        The widget is a callable taking the current bound field representing
+        the property named propname and the current request, On being called
+        widget must return an object implementing IDAVWidget.
+        """
+
+    #
+    # namespace management methods
+    #
+
+    def hasProperty(object, propname):
+        """This namespace has a property called propname defined for object.
+        """
+
+    def getProperty(object, propname):
+        """Get the field, propname, for this object, is it exists.
+
+        The returned value will implement zope.schema.interfaces.IField and will
+        be bound to the adapter defining the property propname.
+
+        Raises a TypeError / KeyError exception if the property named propname
+        is not defined for object.
+        """
+
+    def getWidget(object, request, propname, ns_prefix):
+        """Get the WebDAV widget to be used to render / store the property
+        propname.
+
+        The returned value is a WebDAV Widget and so will implement IDAVWidget.
+        By calling the renderProperty and setProperty on this object we will
+        be able to render the value of the property or set a value for this
+        property.
+
+        Raises a KeyError if the property named propname is not defined for
+        object.
+        """
+
+    def getAllPropertyNames(object, restricted = False):
+        """Return a list of all the property names that are defined on object.
+
+        If restricted is True then any defined property for object that is
+        registered has a restricted property is not returned in the generated
+        list of names.
+        """
+
+    def getAllProperties(object, restricted = False):
+        """Return all the properties defined within this namespace for this
+        object.
+
+        If restricted is True then don't return any property that is
+        registered has a restricted property.
+        """
+
+    def isRestrictedProperty(object, propname):
+        """Is the named property a restricted property for this object.
+        """
+
+
+class IWebDAVRequest(IHTTPRequest):
+    """
+    """
+
+
+class IWebDAVRequestFactory(IRequestFactory):
+    """WebDAV request factory."""
