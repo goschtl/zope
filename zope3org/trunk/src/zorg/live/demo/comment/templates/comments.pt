@@ -1,0 +1,63 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zope">
+<body>
+<div metal:fill-slot="body">
+
+    <script type="text/javascript" src="prototype.js" 
+       tal:attributes="src string:${context/++resource++zorgajax/prototype.js}">
+    </script>
+    <script type="text/javascript" src="livepage.js" 
+       tal:attributes="src string:${context/++resource++livepage.js}">
+    </script>
+    <script type="text/javascript" src="livecomment.js" 
+       tal:attributes="src string:${context/++resource++livecomment.js}">
+    </script>
+    
+    <script type="text/javascript" 
+            tal:content="string:var livePageUUID = '${view/nextClientId}';">
+        var livePageClientUUID = '0';
+    </script>
+    
+     <script type="text/javascript">
+        startClient();
+    </script>  
+    
+   <p>Type a comment and see how the page
+    updates automatically. Open the same LiveComment page in a second browser
+    and observe how others are immediately notified about your typing. </p>
+   
+   <p>Processing input...<span id="update_feedback">?</span></p>
+
+   <form action="./@@addcomment.html"
+     method="post"
+     >
+
+
+    <div class="row">
+      <div class="label" i18n:translate="">Live Comment</div>
+      <div class="field">
+        <textarea id="commentbox" name="text" rows="5" cols="45"></textarea>
+      </div>
+    </div>
+
+
+    <script type="text/javascript">
+        installTextObserver();
+    </script>  
+    
+    <div class="row">
+      <div class="controls">
+        <input type="submit" name="save" value="Save Comment"
+            i18n:attributes="value save-comment-button"/>
+      </div>
+    </div>
+
+  </form>
+  <hr/>
+  <div>List of Comments</div>
+  <div id="comments" tal:content="structure view/renderComments">
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<a name="comment" tal:attributes="name string:comment${view/info/key}"></a>
+<span class="entry-timestamp" style="float:left;" tal:content="view/info/key">
+    1. 
+</span><span>. posted by &nbsp;</span><span tal:content="view/info/who">
+    Author 
+</span><span>&nbsp;&nbsp;at</span>
+<span tal:content="view/info/when">
+        12:45 
+</span>
+<br/>
+<br/>
+<div id="id001" tal:content="structure view/info/text"
+        tal:attributes="id view/info/id">
+    Content 
+</div>
+<br/>
+<hr/>
