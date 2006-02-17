@@ -61,6 +61,8 @@ from zope.interface import implements
 
 from Products.GenericSetup.interfaces import IFilesystemExporter
 from Products.GenericSetup.interfaces import IFilesystemImporter
+from Products.GenericSetup.content import DAVAwareFileAdapter
+from Products.GenericSetup.content import FolderishExporterImporter
 
 try:
     from Products.GenericSetup.utils import PageTemplateResource
@@ -424,3 +426,24 @@ class DynamicGroupsPluginExportImport(SimpleXMLExportImport):
         return {'title': self.context.title,
                 'groups': group_info,
                }
+
+class ScriptablePluginExportImport(FolderishExporterImporter):
+    """ Export / import the Scriptable type plugin.
+    """
+    def export(self, export_context, subdir, root=False):
+        """ See IFilesystemExporter.
+        """
+        FolderishExporterImporter.export(self, export_context, subdir, root)
+
+    def import_(self, import_context, subdir, root=False):
+        """ See IFilesystemImporter.
+        """
+        FolderishExporterImporter.import_(self, import_context, subdir, root)
+
+class PythonScriptFileAdapter(DAVAwareFileAdapter):
+    """File-ish for PythonScript.
+    """
+    def _getFileName(self):
+        """ Return the name under which our file data is stored.
+        """
+        return '%s.py' % self.context.getId()
