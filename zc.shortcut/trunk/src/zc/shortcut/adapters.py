@@ -23,7 +23,6 @@ import zope.publisher.interfaces.browser
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.http import IHTTPRequest
 
-from zope.app import zapi
 from zope.app.location.pickling import locationCopy
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.event.objectevent import ObjectCopiedEvent, ObjectCreatedEvent
