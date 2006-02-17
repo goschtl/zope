@@ -16,9 +16,11 @@
 $Id$
 """
 import unittest
-from zope.testing import doctest, doctestunit
-from zope.app.tests import placelesssetup
+
 import zope.testing.module
+
+from zope.testing import doctest
+from zope.app.tests import placelesssetup
 
 def adaptersSetUp(test):
     zope.testing.module.setUp(test, name='zc.shortcut.adapters_test')
@@ -38,5 +40,5 @@ def test_suite():
             'shortcut.txt', 'proxy.txt', 'adding.txt', 'factory.txt',
             setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
             optionflags=doctest.ELLIPSIS),
-        doctestunit.DocTestSuite('zc.shortcut.constraints'),
+        doctest.DocTestSuite('zc.shortcut.constraints'),
         ))
