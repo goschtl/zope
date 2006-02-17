@@ -11,7 +11,7 @@ Choose the functionality this Scriptable Plugin will perform.
        tal:define="interfaces here/listInterfaces">
   <tr tal:repeat="info here/plugins/listPluginTypeInfo">
     <td align="left" valign="top"
-        tal:define="interface info/interface;
+        tal:define="interface nocall:info/interface;
                     method python:info['methods'][0];
                     interface_name info/id;
                     title info/title;
