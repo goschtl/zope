@@ -423,3 +423,8 @@ class PluginRegistry( SimpleItem ):
         return found[ 0 ]
 
 InitializeClass( PluginRegistry )
+
+def emptyPluginRegistry( ignored ):
+    """ Return empty registry, for filling from setup profile.
+    """
+    return PluginRegistry(())
