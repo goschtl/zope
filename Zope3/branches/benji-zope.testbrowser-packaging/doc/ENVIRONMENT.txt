@@ -1,0 +1,21 @@
+Usage of environment variables:
+
+  - The test suite uses the LOGGING variable to determine the PEP 282
+    logging level.  This should be a decimal number with the following
+    meaning: 10 DEBUG, 20 INFO, 30 WARN, 40 ERROR, 50 CRITICAL
+    (default).
+
+  - Some ZEO code still uses environment variables, in particular
+    ZEO_CACHE_TRACE, ZEO_CLIENT, INSTANCE_HOME, ZEO_SERVER_PID.
+
+  - ZOPE_WATCH_CHECKERS used by src/zope/security/checker.py.
+
+  - ZOPE_SERVER_SIMULT_MODE used by src/zope/server/serverchannelbase.py.
+
+  - ZOPE_SERVER_DEBUG used by
+    src/zope/server/linereceiver/lineserverchannel.py.
+
+  - NEW_ZOPE_EXCEPTION_FORMATTER used by src/zope/testing/.
+
+  - PYUNIT_EDITOR, EDITOR, EDITOR_REMOTE used by
+    utilities/unittestgui.py.

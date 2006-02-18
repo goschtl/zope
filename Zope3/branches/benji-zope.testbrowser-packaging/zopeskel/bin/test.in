@@ -1,0 +1,44 @@
+#!<<PYTHON>> -u
+##############################################################################
+#
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Run tests in a Zope instance home.
+
+$Id$
+"""
+import sys, os, warnings
+
+here = os.path.dirname(os.path.realpath(__file__))
+here = os.path.dirname(here)
+
+SOFTWARE_HOME = r"<<SOFTWARE_HOME>>"
+
+instance_lib = os.path.join(here, "lib", "python")
+
+sys.path[:0] = [instance_lib, SOFTWARE_HOME]
+
+from zope.testing import testrunner
+
+defaults = ['--tests-pattern', '^f?tests$']
+
+if "--testzope" in sys.argv[1:]:
+    sys.argv.remove("--testzope")
+    defaults += ['--test-path', SOFTWARE_HOME]
+else:
+    defaults += ['--test-path', instance_lib]
+
+# Get rid of twisted.conch.ssh warning
+warnings.filterwarnings(
+    'ignore', 'PyCrypto', RuntimeWarning, 'twisted[.]conch[.]ssh')
+
+sys.exit(testrunner.run(defaults))

@@ -1,0 +1,193 @@
+From steve@cat-box.net  Sat Jun  1 00:31:53 2002
+From: steve@cat-box.net (Steve Alexander)
+Date: Fri, 31 May 2002 19:31:53 -0400
+Subject: [Zope-Checkins] CVS: Zope3/lib/python/Zope/App/Security - PermissionRegistry.py:1.1.2.16.14.1
+Message-ID: <200205312331.g4VNVr927566@cvs.baymountain.com>
+
+Update of /cvs-repository/Zope3/lib/python/Zope/App/Security
+In directory cvs.zope.org:/tmp/cvs-serv27552
+
+Modified Files:
+      Tag: Zope3InWonderland-branch
+        PermissionRegistry.py 
+Log Message:
+Permission ids must not start with a dot.
+
+
+=== Zope3/lib/python/Zope/App/Security/PermissionRegistry.py 1.1.2.16 => 1.1.2.16.14.1 ===
+         """Define a new permission object, register, and return it.
+ 
+-        name is the permission name, must be globally unique
++        permission is the permission name, must be globally unique
+ 
+         title is the permission title, human readable.
+ 
+         description (optional) is human readable
+         """
++        if permission.startswith('.'):
++            raise ValueError("permissions must not start with a '.'")
+         return self.register(permission, title, description)
+ 
+     def definedPermission(self, permission_id):
+
+
+
+
+From steve@cat-box.net  Sat Jun  1 00:31:53 2002
+From: steve@cat-box.net (Steve Alexander)
+Date: Fri, 31 May 2002 19:31:53 -0400
+Subject: [Zope-Checkins] CVS: Zope3/lib/python/Zope/App/Security/tests - testPermissionRegistry.py:1.1.2.13.14.1
+Message-ID: <200205312331.g4VNVr027568@cvs.baymountain.com>
+
+Update of /cvs-repository/Zope3/lib/python/Zope/App/Security/tests
+In directory cvs.zope.org:/tmp/cvs-serv27552/tests
+
+Modified Files:
+      Tag: Zope3InWonderland-branch
+        testPermissionRegistry.py 
+Log Message:
+Permission ids must not start with a dot.
+
+
+=== Zope3/lib/python/Zope/App/Security/tests/testPermissionRegistry.py 1.1.2.13 => 1.1.2.13.14.1 ===
+         self.assertEqual(None, permissionRegistry.getPermission('Foo'))
+         self.failIf(permissionRegistry.definedPermission('Foo'))
++        
++    def testPermissionStartsWithDot(self):
++        self.assertRaises(ValueError, permissionRegistry.definePermission,
++                          '.Foo', 'dot foo title')
+ 
+     def testPermissionIsAnIPermission(self):
+         permissionRegistry.definePermission('Foo', 'foo title')
+@@ -56,7 +60,7 @@
+         permission = permissionRegistry.getPermission('Foo')
+         eq(permission.getTitle(), 'Foo-able')
+         eq(permission.getDescription(), 'A foo-worthy permission')
+-    
++
+ 
+ def test_suite():
+     loader=unittest.TestLoader()
+
+
+
+
+From tim.one@comcast.net  Sat Jun  1 00:46:53 2002
+From: tim.one@comcast.net (Tim Peters)
+Date: Fri, 31 May 2002 19:46:53 -0400
+Subject: [Zope-Checkins] CVS: Zope/lib/python/BTrees/tests - testSetOps.py:1.3
+Message-ID: <200205312346.g4VNkr731412@cvs.baymountain.com>
+
+Update of /cvs-repository/Zope/lib/python/BTrees/tests
+In directory cvs.zope.org:/tmp/cvs-serv30763/tests
+
+Modified Files:
+        testSetOps.py 
+Log Message:
+testBigInput():  This spent almost all of its time building an IISet
+from a sequence of ints in reverse-sorted order (a quadratic-time
+proposition).  That doesn't test anything interesting in context, though.
+So fiddled it to do a larger input, but it runs much faster now.
+
+
+=== Zope/lib/python/BTrees/tests/testSetOps.py 1.2 => 1.3 ===
+ 
+     def testBigInput(self):
+-        input = IISet(range(50000))
+-        reversed = range(50000)
+-        reversed.reverse()
+-        reversed = IISet(reversed)
+-        output = multiunion([input, reversed] * 5)
+-        self.assertEqual(len(output), 50000)
+-        self.assertEqual(list(output), range(50000))
++        N = 100000
++        input = IISet(range(N))
++        output = multiunion([input] * 10)
++        self.assertEqual(len(output), N)
++        self.assertEqual(output.minKey(), 0)
++        self.assertEqual(output.maxKey(), N-1)
++        self.assertEqual(list(output), range(N))
+ 
+     def testLotsOfLittleOnes(self):
+         from random import shuffle
+
+
+
+
+From tim.one@comcast.net  Sat Jun  1 01:49:19 2002
+From: tim.one@comcast.net (Tim Peters)
+Date: Fri, 31 May 2002 20:49:19 -0400
+Subject: [Zope-Checkins] CVS: Zope/lib/python/BTrees - SetOpTemplate.c:1.16
+Message-ID: <200206010049.g510nJR14723@cvs.baymountain.com>
+
+Update of /cvs-repository/Zope/lib/python/BTrees
+In directory cvs.zope.org:/tmp/cvs-serv14639
+
+Modified Files:
+        SetOpTemplate.c 
+Log Message:
+multiunion():  For an input that's IIBucket-based (IIBucket and IISet),
+this now copies the keys into the work area in one gulp via memcpy,
+instead of iterating over them one at a time.  Yields a nice speedup when
+it applies (and it usually should apply!).
+
+
+=== Zope/lib/python/BTrees/SetOpTemplate.c 1.15 => 1.16 ===
+        set.  At this point, we ignore the possibility of duplicates. */
+     for (i = 0; i < n; ++i) {
+-        SetIteration setiter = {0, 0, 0};
+-        int merge;  /* dummy needed for initSetIteration */
+-
+         set = PySequence_GetItem(seq, i);
+         if (set == NULL)
+             goto Error;
+ 
+-        /* TODO: If set is a bucket, do a straight resize+memcpy instead.
+-        */
+-        if (initSetIteration(&setiter, set, 1, &merge) < 0)
+-            goto Error;
+-        if (setiter.next(&setiter) < 0)
+-            goto Error;
+-        while (setiter.position >= 0) {
+-            if (result->len >= result->size && Bucket_grow(result, -1, 1) < 0)
++        /* If set is a bucket, do a straight resize + memcpy. */
++        if (set->ob_type == (PyTypeObject*)&SetType ||
++            set->ob_type == (PyTypeObject*)&BucketType) {
++            const int setsize = SIZED(set)->len;
++            int size_desired = result->len + setsize;
++            /* If there are more to come, overallocate by 25% (arbitrary). */
++            if (i < n-1)
++                size_desired += size_desired >> 2;
++            if (size_desired && size_desired > result->size) {
++                if (Bucket_grow(result, size_desired, 1) < 0)
++                    goto Error;
++            }
++            memcpy(result->keys + result->len,
++                   BUCKET(set)->keys,
++                   setsize * sizeof(KEY_TYPE));
++            result->len += setsize;
++        }
++        else {
++            /* No cheap way:  iterate over set's elements one at a time. */
++            SetIteration setiter = {0, 0, 0};
++            int merge;  /* dummy needed for initSetIteration */
++            
++            if (initSetIteration(&setiter, set, 1, &merge) < 0)
+                 goto Error;
+-            COPY_KEY(result->keys[result->len], setiter.key);
+-            ++result->len;
+-            /* We know the key is an int, so no need to incref it. */
+             if (setiter.next(&setiter) < 0)
+                 goto Error;
++            while (setiter.position >= 0) {
++                if (result->len >= result->size && Bucket_grow(result, -1, 1) < 0)
++                    goto Error;
++                COPY_KEY(result->keys[result->len], setiter.key);
++                ++result->len;
++                /* We know the key is an int, so no need to incref it. */
++                if (setiter.next(&setiter) < 0)
++                    goto Error;
++            }
+         }
+         Py_DECREF(set);
+         set = NULL;
