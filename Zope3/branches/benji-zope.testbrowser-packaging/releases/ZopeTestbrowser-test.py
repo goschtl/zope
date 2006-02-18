@@ -7,8 +7,8 @@ def do(command):
 
 
 do('rm -rf ZopeTestbrowser-0.0.0*')
-do('../../zpkgtools/bin/zpkg -C ZopeTestbrowser.cfg')
-do('tar xozf ZopeTestbrowser-0.0.0.tgz')
+do('zpkg -C ZopeTestbrowser.cfg')
+do('tar xzf ZopeTestbrowser-0.0.0.tgz')
 os.chdir('ZopeTestbrowser-0.0.0')
 do('python setup.py install --home `pwd`/here')
 
