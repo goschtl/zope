@@ -15,12 +15,13 @@
 
 $Id$
 """
+import warnings
 from zope.component.interfaces import IDefaultViewName
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import directlyProvides
 from zope.interface.interface import InterfaceClass
-from zope.publisher.interfaces.browser import ILayer, ISkin, IDefaultSkin
-from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.publisher.interfaces.browser import IBrowserRequest, IDefaultSkin
+from zope.publisher.interfaces.browser import IBrowserSkinType
 
 from zope.app import zapi
 from zope.app.component.metaconfigure import handler
@@ -32,7 +33,18 @@ from zope.app.publisher.browser.i18nresourcemeta import I18nResource
 from zope.app.publisher.browser.viewmeta import view
 from zope.app.component.interface import provideInterface
 
+##############################################################################
+#
+# BBB 2006/02/18, to be removed after 12 months
+#
+
+import zope.deprecation
+zope.deprecation.__show__.off()
+from zope.publisher.interfaces.browser import ILayer
+zope.deprecation.__show__.on()
+
 # Create special modules that contain all layers and skins
+# TODO need deprecation warnings for those modules
 from types import ModuleType as module
 import sys
 import zope.app
@@ -41,8 +53,11 @@ sys.modules['zope.app.layers'] = zope.app.layers
 
 zope.app.skins = module('skins')
 sys.modules['zope.app.skins'] = zope.app.skins
+#
+##############################################################################
 
 
+# BBB 2006/02/18, to be removed after 12 months
 def layer(_context, name=None, interface=None, base=IBrowserRequest):
     """Provides a new layer.
 
@@ -146,6 +161,12 @@ def layer(_context, name=None, interface=None, base=IBrowserRequest):
             "You cannot specify the 'interface' and 'base' together.")
 
     if interface is None:
+        warnings.warn(
+            'Creating layers via ZCML has been deprecated.  The browser:layer '
+            'directive will be removed in Zope 3.5.  Layers are now interfaces '
+            'extending zope.publisher.interfaces.browser.IBrowserRequest. '
+            'They do not need further registration.',
+            DeprecationWarning, stacklevel=2)
         interface = InterfaceClass(str(name), (base, ),
                                    __doc__='Layer: %s' %str(name),
                                    __module__='zope.app.layers')
@@ -155,6 +176,10 @@ def layer(_context, name=None, interface=None, base=IBrowserRequest):
         setattr(zope.app.layers, name, interface)
         path = 'zope.app.layers.'+name
     else:
+        warnings.warn(
+            'Layer interfaces do not require registration anymore.  The '
+            'browser:layer directive will be removed in Zope 3.5.',
+            DeprecationWarning, stacklevel=2)
         path = interface.__module__ + '.' + interface.getName()
 
         # If a name was specified, make this layer available under this name.
@@ -185,6 +210,7 @@ def layer(_context, name=None, interface=None, base=IBrowserRequest):
         args = (name, interface, ILayer, _context.info)
         )
 
+# BBB 2006/02/18, to be removed after 12 months
 def skin(_context, name=None, interface=None, layers=None):
     """Provides a new skin.
 
@@ -254,6 +280,12 @@ def skin(_context, name=None, interface=None, layers=None):
             "You must specify the 'name' or 'interface' attribute.")
 
     if name is not None and layers is not None:
+        warnings.warn(
+            'Creating skins via ZCML has been deprecated.  The browser:skin '
+            'directive will be removed in Zope 3.5.  Skins are now interfaces '
+            'extending zope.publisher.interfaces.browser.IBrowserRequest. '
+            'They are registered using the \'interface\' directive.',
+            DeprecationWarning, stacklevel=2)
         interface = InterfaceClass(str(name), layers,
                                    __doc__='Skin: %s' %str(name),
                                    __module__='zope.app.skins')
@@ -274,13 +306,23 @@ def skin(_context, name=None, interface=None, layers=None):
 
     else:
         path = interface.__module__ + '.' + interface.getName()
+        warnings.warn(
+            'The browser:skin directive has been deprecated and will be '
+            'removed in Zope 3.5.  Skins are now simply registered using '
+            'the \'interface\' directive:\n'
+            '  <interface\n'
+            '      interface="%s"\n'
+            '      type="zope.publisher.interfaces.browser.IBrowserSkinType"\n'
+            '      name="%s"\n'
+            '      />' % (path, name),
+            DeprecationWarning, stacklevel=2)
 
         # Register the skin interface as a skin using the passed name.
         if name is not None:
             _context.action(
                 discriminator = ('skin', name),
                 callable = provideInterface,
-                args = (name, interface, ISkin, _context.info)
+                args = (name, interface, IBrowserSkinType, _context.info)
                 )
         
         name = path
@@ -297,7 +339,7 @@ def skin(_context, name=None, interface=None, layers=None):
     _context.action(
         discriminator = ('skin', name),
         callable = provideInterface,
-        args = (name, interface, ISkin, _context.info)
+        args = (name, interface, IBrowserSkinType, _context.info)
         )
 
 def setDefaultSkin(name, info=''):
@@ -307,9 +349,9 @@ def setDefaultSkin(name, info=''):
     >>> from zope.app.testing import ztapi
 
     >>> class Skin1: pass
-    >>> directlyProvides(Skin1, ISkin)
+    >>> directlyProvides(Skin1, IBrowserSkinType)
 
-    >>> ztapi.provideUtility(ISkin, Skin1, 'Skin1')
+    >>> ztapi.provideUtility(IBrowserSkinType, Skin1, 'Skin1')
     >>> setDefaultSkin('Skin1')
     >>> adapters = zapi.getSiteManager().adapters
 
@@ -318,7 +360,7 @@ def setDefaultSkin(name, info=''):
     >>> adapters.lookup((IBrowserRequest,), IDefaultSkin, '') is Skin1
     True
     """
-    skin = zapi.getUtility(ISkin, name)
+    skin = zapi.getUtility(IBrowserSkinType, name)
     handler('provideAdapter',
             (IBrowserRequest,), IDefaultSkin, '', skin, info),
 
