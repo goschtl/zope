@@ -10,9 +10,10 @@
       interface="zope.app.boston.boston"
       />
 
-  <skin
-      name="Boston"
+  <zope:interface
       interface="zope.app.boston.Boston"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Boston"
       />
 
   <viewletManager

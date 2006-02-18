@@ -6,9 +6,11 @@
       name="css"
       interface="zope.app.css.layer" />  
 
-  <browser:skin 
+  <interface
+      interface="zope.app.css.CSS"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
       name="CSS"
-      interface="zope.app.css.CSS" />
+      />
   
   <browser:resource 
       name="zope3.css" 
