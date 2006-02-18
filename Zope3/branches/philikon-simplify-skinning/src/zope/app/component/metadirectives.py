@@ -161,6 +161,11 @@ class IInterfaceDirective(zope.interface.Interface):
         required=False,
         )
 
+    name = zope.schema.TextLine(
+        title=_("Name"),
+        required=False,
+        )
+
 class IAdapterDirective(zope.interface.Interface):
     """
     Register an adapter

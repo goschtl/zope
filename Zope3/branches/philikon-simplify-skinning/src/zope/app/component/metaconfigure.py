@@ -42,11 +42,11 @@ def handler(methodName, *args, **kwargs):
     method(*args, **kwargs)
 
 from zope.app.component.interface import provideInterface
-def interface(_context, interface, type=None):
+def interface(_context, interface, type=None, name=''):
     _context.action(
         discriminator = None,
         callable = provideInterface,
-        args = ('', interface, type)
+        args = (name, interface, type)
         )
 
 
