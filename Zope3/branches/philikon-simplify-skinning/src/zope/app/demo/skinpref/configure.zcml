@@ -7,10 +7,12 @@
       handler=".skin.applySkin"
       />
 
+  <!-- TODO Browser Skin Names vocabulary can take over -->
   <vocabulary
       name="Skins"
       factory="zope.app.component.vocabulary.UtilityVocabulary"
-      interface="zope.publisher.interfaces.browser.ISkin" />
+      interface="zope.publisher.interfaces.browser.IBrowserSkinType"
+      />
 
   <preferenceGroup
       id="zmi"

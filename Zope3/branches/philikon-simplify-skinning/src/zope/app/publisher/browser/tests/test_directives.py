@@ -29,7 +29,7 @@ from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces import ILayer
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.publisher.interfaces.browser import ISkin, IDefaultSkin
+from zope.publisher.interfaces.browser import IBrowserSkinType, IDefaultSkin
 from zope.security.proxy import removeSecurityProxy, ProxyFactory
 from zope.testing.doctestunit import DocTestSuite
 
@@ -142,7 +142,7 @@ class Test(placelesssetup.PlacelessSetup, unittest.TestCase):
             <browser:skin name="testskin" layers="default" />
             '''
             )))
-        testskin = zapi.getUtility(ISkin, "testskin")
+        testskin = zapi.getUtility(IBrowserSkinType, "testskin")
         import zope.app.skins
         self.assert_(zope.app.skins.testskin is testskin)
 
@@ -342,7 +342,7 @@ class Test(placelesssetup.PlacelessSetup, unittest.TestCase):
 
         self.assertEqual(
             zapi.queryAdapter(request, name='test').__class__, R1)
-        zmi = zapi.getUtility(ISkin, 'zmi')
+        zmi = zapi.getUtility(IBrowserSkinType, 'zmi')
         self.assertEqual(
             zapi.queryAdapter(TestRequest(skin=zmi), name='test').__class__,
             RZMI)
@@ -407,7 +407,7 @@ class Test(placelesssetup.PlacelessSetup, unittest.TestCase):
 
         v = zapi.queryMultiAdapter((ob, request), name='test')
         self.assert_(issubclass(v.__class__, V1))
-        zmi = zapi.getUtility(ISkin, 'zmi')
+        zmi = zapi.getUtility(IBrowserSkinType, 'zmi')
         v = zapi.queryMultiAdapter((ob, TestRequest(skin=zmi)), name='test')
         self.assert_(issubclass(v.__class__, VZMI))
 
@@ -894,7 +894,7 @@ class Test(placelesssetup.PlacelessSetup, unittest.TestCase):
 
         v = zapi.getMultiAdapter((ob, request), name='index.html')
         self.assertEqual(v(), 'V1 here')
-        skinny = zapi.getUtility(ISkin, 'skinny')
+        skinny = zapi.getUtility(IBrowserSkinType, 'skinny')
         v = zapi.getMultiAdapter((ob, TestRequest(skin=skinny)),
                                  name='index.html')
         self.assertEqual(v(), 'done')
@@ -964,7 +964,7 @@ class Test(placelesssetup.PlacelessSetup, unittest.TestCase):
 
         self.assertEqual(zapi.queryAdapter(request, name='test'), None)
 
-        zmi = zapi.getUtility(ISkin, 'zmi')
+        zmi = zapi.getUtility(IBrowserSkinType, 'zmi')
         r = zapi.getAdapter(TestRequest(skin=zmi), name='test')
         r = removeSecurityProxy(r)
         self.assertEqual(r._testData(), open(path, 'rb').read())
