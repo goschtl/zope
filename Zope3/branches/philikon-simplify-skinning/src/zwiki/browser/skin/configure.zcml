@@ -3,8 +3,17 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="zwiki"
     >
-<browser:layer name="wiki" />
-<browser:skin name="wiki" layers="wiki zope.app.rotterdam.rotterdam default" />
+
+<browser:layer
+    interface=".IWikiLayer"
+    name="wiki"
+    />
+
+<interface
+    interface=".IWikiSkin"
+    type="zope.publisher.interfaces.browser.IBrowserSkinType"
+    name="wiki"
+    />
 
 <browser:resource
     name="wiki.css" file="wiki.css" layer="wiki" />
