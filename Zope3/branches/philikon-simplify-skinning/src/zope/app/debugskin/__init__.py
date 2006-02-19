@@ -17,11 +17,10 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.app.rotterdam import rotterdam
+from zope.app.rotterdam import Rotterdam
 
 class IDebugLayer(IBrowserRequest):
     """Layer that we can register debug views with."""
 
-class IDebugSkin(IDebugLayer, rotterdam, IDefaultBrowserLayer):
+class IDebugSkin(IDebugLayer, Rotterdam):
     """Rotterdam-based skin with debug functionality"""

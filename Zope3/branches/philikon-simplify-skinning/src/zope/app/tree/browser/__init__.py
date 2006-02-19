@@ -18,8 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.app.rotterdam import rotterdam
+from zope.app.rotterdam import Rotterdam
 
 from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
@@ -30,7 +29,7 @@ from zope.app.tree.node import Node
 class IStaticTreeLayer(IBrowserRequest):
     """Layer that we can register our own navigation macro for."""
 
-class IStaticTreeSkin(IStaticTreeLayer, rotterdam, IDefaultBrowserLayer):
+class IStaticTreeSkin(IStaticTreeLayer, Rotterdam):
     """Skin based on Rotterdam that includes the static tree
     navigation macro."""
 
