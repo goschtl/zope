@@ -1,9 +1,18 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    >
 
-  <layer name="debug" />
-  <skin 
-      name="Debug" 
-      layers="debug zope.app.rotterdam.rotterdam default" />
+  <layer
+      interface=".IDebugLayer"
+      name="debug"
+      />
+
+  <zope:interface
+      interface=".IDebugSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Debug"
+      />
 
   <page
       for="zope.security.interfaces.IUnauthorized"
@@ -11,7 +20,7 @@
       permission="zope.Public"
       template="unauthorized.pt"
       class="zope.app.exception.browser.unauthorized.Unauthorized"
-      layer="debug" 
+      layer=".IDebugLayer"
       />
 
   <page 
@@ -20,7 +29,7 @@
       for="zope.interface.common.interfaces.IException"
       class=".exceptions.ExceptionDebugView"
       permission="zope.Public"
-      layer="debug" 
+      layer=".IDebugLayer"
       />
 
   <!-- Need to repeat for NotFound to override default view -->
@@ -33,8 +42,7 @@
       for="zope.publisher.interfaces.INotFound"
       class=".exceptions.ExceptionDebugView"
       permission="zope.Public"
-      layer="debug" 
+      layer=".IDebugLayer"
       />
-
 
 </configure>

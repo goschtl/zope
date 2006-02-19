@@ -40,17 +40,22 @@
   </browser:pages>
 
   <!-- Set up the 'StaticTree' skin -->
-  <browser:layer name="statictree" />
-
-  <browser:skin
-      name="StaticTree"
-      layers="statictree zope.app.rotterdam.rotterdam default"
+  <browser:layer
+      interface=".IStaticTreeLayer"
+      name="statictree"
       />
+
+  <interface
+      interface=".IStaticTreeSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="StaticTree"
+      />
+
   <browser:page
       for="*"
       name="navigation_macros"
       permission="zope.View"
-      layer="statictree"
+      layer=".IStaticTreeLayer"
       template="navigation_macros.pt"
       />
 
