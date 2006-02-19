@@ -1,0 +1,37 @@
+CMF 1.6.0-beta (2006/02/19)
+
+  Bug Fixes
+
+    - Removed BBBTransaction class from CMFCore.utils
+
+    - Extension profiles: Fixed import of actions, now they don't
+      overwrite all previous actions in the action provider. Fixed
+      import of action icons.
+
+  Features
+
+    - CMFCore.FSDTMLMethod/FSImage/FSFile: Added 304 Not Modified support
+      analogous to the support added for FSPageTemplates earlier on.
+      (http://www.zope.org/Collectors/CMF/402)
+
+    - Replaced Z2 interfaces w/ Z3 interfaces, dynamically creating Z2
+      interfaces via bridge
+
+    - Back-ported the GenericSetup style of site creation from CMF trunk
+
+    - FSFile: autodetect the encoding of UTF-8 text files with a
+      suitable Byte Order Mark (0xEF 0xBB 0xBF).
+
+    - CMFSetup: Split off GenericSetup.
+      GenericSetup allows to use CMFSetup functionality outside CMF. See
+      the README.txt of GenericSetup for details. 
+
+  Others
+
+    - CMFCore utils: Made _checkPermission depend on Zope's checkPermission.
+      There is no longer a need to modify the checkPermission behavior in CMF.
+
+    - Reordered base classes of File and Image, to allow use of super().
+
+    - Changed TypesTool.manage_addTypeInformation method to log a warning
+      instead of raise an exception if the typeinfo_name is not found.
