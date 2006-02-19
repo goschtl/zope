@@ -23,3 +23,7 @@ class IWikiLayer(IBrowserRequest):
 
 class IWikiSkin(IWikiLayer, Rotterdam):
     """Wiki skin"""
+
+# BBB 2006/02/18, to be removed after 12 months
+import zope.app.skins
+zope.app.skins.set('wiki', IWikiSkin)

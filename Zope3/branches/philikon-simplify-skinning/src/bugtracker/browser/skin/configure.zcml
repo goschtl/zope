@@ -3,9 +3,11 @@
     xmlns:zope="http://namespaces.zope.org/zope"
     >
 
+  <!-- BBB 2006/02/18, to be removed after 12 months -->
   <layer
       interface=".IBugtrackerLayer"
       name="tracker"
+      bbb_aware="true"
       />
 
   <zope:interface

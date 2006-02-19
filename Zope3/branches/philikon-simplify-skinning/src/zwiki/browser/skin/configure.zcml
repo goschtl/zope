@@ -4,9 +4,11 @@
     i18n_domain="zwiki"
     >
 
+<!-- BBB 2006/02/18, to be removed after 12 months -->
 <browser:layer
     interface=".IWikiLayer"
     name="wiki"
+    bbb_aware="true"
     />
 
 <interface

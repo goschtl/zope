@@ -21,3 +21,7 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 class IBasicSkin(IDefaultBrowserLayer):
     """Basic skin that simply only contains the default layer and
     nothing else"""
+
+# BBB 2006/02/18, to be removed after 12 months
+import zope.app.skins
+zope.app.skins.set('Basic', IBasicSkin)

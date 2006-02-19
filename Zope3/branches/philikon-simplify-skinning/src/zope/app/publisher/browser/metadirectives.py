@@ -20,7 +20,7 @@ $Id$
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, GlobalInterface
 from zope.configuration.fields import Tokens, Path, PythonIdentifier, MessageID
-from zope.schema import TextLine, Text, Id, Int
+from zope.schema import TextLine, Text, Id, Int, Bool
 
 from zope.app.component.metadirectives import IBasicViewInformation
 from zope.app.component.fields import LayerField
@@ -596,6 +596,12 @@ class ILayerDirective(Interface):
     base = GlobalObject(
         title=u"Name",
         description=u"The name of the skin",
+        required=False
+        )
+
+    bbb_aware = Bool(
+        title=u"BBB-aware",
+        description=u"Backward-compatability aware?",
         required=False
         )
 
