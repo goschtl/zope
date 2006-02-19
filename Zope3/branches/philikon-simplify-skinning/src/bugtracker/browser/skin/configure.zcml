@@ -1,8 +1,18 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    >
 
-  <layer name="tracker" />
+  <layer
+      interface=".IBugtrackerLayer"
+      name="tracker"
+      />
 
-  <skin name="tracker" layers="tracker zope.app.rotterdam.rotterdam default" />
+  <zope:interface
+      interface=".IBugtrackerSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="tracker"
+      />
 
   <page 
       for="*"
