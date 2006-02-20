@@ -15,17 +15,18 @@
 
 $Id$
 """
-import zope.deprecation
 
+import zope.deferredimport
 from zope.interface import Interface, Attribute
+
+
+# BBB: Backward-compatibility; 12/05/2004
+from bbb.interfaces import *
 
 # BBB: Can be removed in 3.3
 zope.deprecation.__show__.off()
 from zope.exceptions import NotFoundError
 zope.deprecation.__show__.on()
-
-# BBB: Backward-compatibility; 12/05/2004
-from bbb.interfaces import *
 
 class ComponentLookupError(NotFoundError):
     """A component could not be found."""
@@ -36,7 +37,7 @@ class Invalid(Exception):
 class Misused(Exception):
     """A component is being used (registered) for the wrong interface."""
 
-class IComponentArchitecture(Interface, IBBBComponentArchitecture):
+class IComponentArchitecture(Interface):
     """The Component Architecture is defined by two key components: Adapters
     and Utiltities. Both are managed by site managers. All other components
     build on top of them.
@@ -275,8 +276,7 @@ class IComponentArchitecture(Interface, IBBBComponentArchitecture):
         create objects which implement the given interface.
         """
 
-
-class ISiteManager(Interface):
+class IComponentLookup(Interface):
     """Component Manager for a Site
 
     This object manages the components registered at a particular site. The
@@ -289,39 +289,51 @@ class ISiteManager(Interface):
     utilities = Attribute("Adapter Registry to manage all registered "
                           "utilities.")
 
-    def queryAdapter(object, interface, name, default=None):
+    def queryAdapter(object, interface, name=u'', default=None):
         """Look for a named adapter to an interface for an object
 
         If a matching adapter cannot be found, returns the default.
-
-        The name consisting of an empty string is reserved for unnamed
-        adapters. The unnamed adapter methods will often call the
-        named adapter methods with an empty string for a name.
         """
 
-    def queryMultiAdapter(objects, interface, name, default=None):
-        """Look for a multi-adapter to an interface for an object
+    def getAdapter(object, interface, name=u''):
+        """Look for a named adapter to an interface for an object
+
+        If a matching adapter cannot be found, a ComponentLookupError
+        is raised.
+        """
+
+    def queryMultiAdapter(objects, interface, name=u'', default=None):
+        """Look for a multi-adapter to an interface for multiple objects
 
         If a matching adapter cannot be found, returns the default.
+        """
 
-        The name consisting of an empty string is reserved for unnamed
-        adapters. The unnamed adapter methods will often call the
-        named adapter methods with an empty string for a name.
+    def queryMultiAdapter(objects, interface, name=u''):
+        """Look for a multi-adapter to an interface for multiple objects
+
+        If a matching adapter cannot be found, a ComponentLookupError
+        is raised.
         """
 
     def getAdapters(objects, provided):
         """Look for all matching adapters to a provided interface for objects
 
-        Return a list of adapters that match. If an adapter is named, only the
-        most specific adapter of a given name is returned.
+        Return an iterable of name-adapter pairs for adapters that
+        provide the given interface.
         """
 
-    def subscribers(required, provided):
+    def subscribers(objects, provided):
         """Get subscribers
 
         Subscribers are returned that provide the provided interface
         and that depend on and are comuted from the sequence of
         required objects.
+        """
+
+    def handle(*objects):
+        """Call handlers for the given objects
+
+        Handlers registered for the given objects are called.
         """
 
     def queryUtility(interface, name='', default=None):
@@ -345,6 +357,10 @@ class ISiteManager(Interface):
         returned.
         """
 
+zope.deferredimport.deprecated(
+    "Use IComponentLookup instead.  ISiteManager will be removed in 2007.",
+    ISiteManager = "zope.component.interfaces:IComponentLookup",
+    )
         
 class IComponentRegistrationConvenience(Interface):
     """API for registering components.
@@ -454,3 +470,363 @@ class IFactory(Interface):
         created by this factory will implement. If the callable's Implements
         instance cannot be created, an empty Implements instance is returned.
         """
+
+
+class IComponentRegistry(Interface):
+    """Register components
+    """
+
+    def registerUtility(component, provided=None, name=u'', comment=u''):
+        """Register a utility
+
+        component
+           The registered component
+
+        provided
+           This is the interface provided by the utility.  If the
+           component provides a single interface, then this
+           argument is optional and the component-implemented
+           interface will be used.
+
+        name
+           The utility name.
+
+        info
+           An object that can be converted to a string to provide
+           information about the registration.
+        """
+
+    def unregisterUtility(component=None, provided=None, name=u''):
+        """Unregister a utility
+
+        A boolean is returned indicating whether the registry was
+        changed.  If the given component is None and there is no
+        component registered, or if the given component is not
+        None and is not registered, then the function returns
+        False, otherwise it returns True.
+
+        component
+           The registered component The given component can be
+           None, in which case any component registered to provide
+           the given provided interface with the given name is
+           unregistered.
+
+        provided
+           This is the interface provided by the utility.  If the
+           component is not None and provides a single interface,
+           then this argument is optional and the
+           component-implemented interface will be used.
+
+        name
+           The utility name.
+        """
+
+    def registeredUtilities():
+        """Return an iterable of utility-information objects
+
+        The information objects will have attributes:
+
+        provided
+           The provided interface
+
+        name
+           The name
+
+        component
+           The registered component
+
+        info
+           An object that can be converted to a string to provide
+           information about the registration.
+        """
+
+    def registerAdapter(factory, required=None, provided=None, name=u'',
+                       info=u''):
+        """Register an adapter factory
+
+        Parameters:
+
+        factory
+            The object used to compute the adapter
+
+        required
+            This is a sequence of specifications for objects to be
+            adapted.  If omitted, then the value of the factory's
+            __component_adapts__ attribute will be used.  The
+            __component_adapts__ attribute is usually attribute is
+            normally set in class definitions using adapts
+            function, or for callables using the adapter
+            decorator.  If the factory doesn't have a
+            __component_adapts__ adapts attribute, then this
+            argument is required. 
+
+        provided
+            This is the interface provided by the adapter and
+            implemented by the factory.  If the factory
+            implements a single interface, then this argument is
+            optional and the factory-implemented interface will be
+            used. 
+
+        name
+            The adapter name.
+
+        info
+           An object that can be converted to a string to provide
+           information about the registration.
+        """
+
+    def unregisterAdapter(factory=None, required=None,
+                          provided=None, name=u''):
+        """Register an adapter factory
+
+        A boolean is returned indicating whether the registry was
+        changed.  If the given component is None and there is no
+        component registered, or if the given component is not
+        None and is not registered, then the function returns
+        False, otherwise it returns True.
+
+        Parameters:
+
+        factory
+            This is the object used to compute the adapter. The
+            factory can be None, in which case any factory
+            registered to implement the given provided interface
+            for the given required specifications with the given
+            name is unregistered.
+
+        required
+            This is a sequence of specifications for objects to be
+            adapted.  If the factory is not None and the required
+            arguments is omitted, then the value of the factory's
+            __component_adapts__ attribute will be used.  The
+            __component_adapts__ attribute attribute is normally
+            set in class definitions using adapts function, or for
+            callables using the adapter decorator.  If the factory
+            is None or doesn't have a __component_adapts__ adapts
+            attribute, then this argument is required.
+
+        provided
+            This is the interface provided by the adapter and
+            implemented by the factory.  If the factory is not
+            None and implements a single interface, then this
+            argument is optional and the factory-implemented
+            interface will be used.
+
+        name
+            The adapter name.
+        """
+
+    def registeredAdapters():
+        """Return an iterable of adapter-information objects
+
+        The adapter information objects will have attributes:
+
+        required
+           An iterable of required interfaces
+
+        provided
+           The provided interface
+
+        name
+           The name
+
+        factory
+           The registered factory
+
+        info
+           Provide some info about this particular adapter registration.
+        """
+
+    def registerSubscriptionAdapter(factory, required=None, provides=None,
+                                    name=u'', info=''):
+        """Register a subscriber factory
+
+        Parameters:
+
+        factory
+            The object used to compute the adapter
+
+        required
+            This is a sequence of specifications for objects to be
+            adapted.  If omitted, then the value of the factory's
+            __component_adapts__ attribute will be used.  The
+            __component_adapts__ attribute is usually attribute is
+            normally set in class definitions using adapts
+            function, or for callables using the adapter
+            decorator.  If the factory doesn't have a
+            __component_adapts__ adapts attribute, then this
+            argument is required. 
+
+        provided
+            This is the interface provided by the adapter and
+            implemented by the factory.  If the factory implements
+            a single interface, then this argument is optional and
+            the factory-implemented interface will be used.
+
+        name
+            The adapter name.
+
+            Currently, only the empty string is accepted.  Other
+            strings will be accepted in the future when support for
+            named subscribers is added.
+
+        info
+           An object that can be converted to a string to provide
+           information about the registration.
+        """
+
+    def unregisterSubscriptionAdapter(factory=None, required=None, 
+                                      provides=None, name=u''):
+        """Register a subscriber factory
+
+        A boolean is returned indicating whether the registry was
+        changed.  If the given component is None and there is no
+        component registered, or if the given component is not
+        None and is not registered, then the function returns
+        False, otherwise it returns True.
+
+        Parameters:
+
+        factory
+            This is the object used to compute the adapter. The
+            factory can be None, in which case any factories
+            registered to implement the given provided interface
+            for the given required specifications with the given
+            name are unregistered.
+
+        required
+            This is a sequence of specifications for objects to be
+            adapted.  If the factory is not None and the required
+            arguments is omitted, then the value of the factory's
+            __component_adapts__ attribute will be used.  The
+            __component_adapts__ attribute attribute is normally
+            set in class definitions using adapts function, or for
+            callables using the adapter decorator.  If the factory
+            is None or doesn't have a __component_adapts__ adapts
+            attribute, then this argument is required.
+
+        provided
+            This is the interface provided by the adapter and
+            implemented by the factory.  If the factory is not
+            None implements a single interface, then this argument
+            is optional and the factory-implemented interface will
+            be used.
+
+        name
+            The adapter name.
+
+            Note that this parameter is ignored and is reserved
+            for future use when named subscribers are implemented.
+        """
+
+    def registeredSubscriptionAdapters():
+        """Return an iterable of subscriber-information objects
+
+        The subscriber information objects will have attributes:
+
+        required
+           An iterable of required interfaces
+
+        provided
+           The provided interface
+
+        name
+           The name
+
+        factory
+           The registered factory
+
+        info
+           An object that can be converted to a string to provide
+           information about the registration.
+        """
+
+    def registerHandler(handler, adapts=None, name=u'', info=''):
+        """Register a handler.
+
+        A handler is a subscriber that doesn't compute an adapter
+        but performs some function when called.
+
+        Parameters:
+
+        handler
+            The object used to handle some event represented by
+            the objects passed to it.
+
+        required
+            This is a sequence of specifications for objects to be
+            adapted.  If omitted, then the value of the factory's
+            __component_adapts__ attribute will be used.  The
+            __component_adapts__ attribute is usually attribute is
+            normally set in class definitions using adapts
+            function, or for callables using the adapter
+            decorator.  If the factory doesn't have a
+            __component_adapts__ adapts attribute, then this
+            argument is required. 
+
+        name
+            The handler name.
+
+            Note that this parameter is ignored and is reserved
+            for future use when named handlers are implemented.
+
+        info
+           An object that can be converted to a string to provide
+           information about the registration.
+        """
+
+    def unregisterHandler(handler=None, adapts=None, name=u''):
+        """Register a handler.
+
+        A handler is a subscriber that doesn't compute an adapter
+        but performs some function when called.
+
+        Parameters:
+
+        handler
+            This is the object used to handle some event
+            represented by the objects passed to it. The handler
+            can be None, in which case any handlers registered for
+            the given required specifications with the given are
+            unregistered.
+
+        required
+            This is a sequence of specifications for objects to be
+            adapted.  If omitted, then the value of the factory's
+            __component_adapts__ attribute will be used.  The
+            __component_adapts__ attribute is usually attribute is
+            normally set in class definitions using adapts
+            function, or for callables using the adapter
+            decorator.  If the factory doesn't have a
+            __component_adapts__ adapts attribute, then this
+            argument is required. 
+
+        name
+            The handler name.
+
+            Note that this parameter is ignored and is reserved
+            for future use when named handlers are implemented.
+        """
+
+    def registeredHandlers():
+        """Return an iterable of handler-information objects
+
+        The subscriber information objects will have attributes:
+
+        required
+           An iterable of required interfaces
+
+        name
+           The name
+
+        handler
+           The registered handler
+
+        info
+           An object that can be converted to a string to provide
+           information about the registration.
+        """
+
+class IComponents(IComponentLookup, IComponentRegistry):
+    """Component registration and access
+    """
