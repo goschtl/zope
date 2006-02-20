@@ -169,7 +169,7 @@ class AdapterRegistry(object):
         old = components.get(name)
         if old is None:
             return
-        if value is not None and old != value:
+        if (value is not None) and (old != value):
             return
 
         del components[name]
@@ -178,6 +178,8 @@ class AdapterRegistry(object):
             del self._provided[provided]
             if '_v_extendors' in self.__dict__:
                 del self.__dict__['_v_extendors']
+        else:
+            self._provided[provided] = n
 
         self.changed()
 
@@ -211,7 +213,7 @@ class AdapterRegistry(object):
 
         self.changed()
 
-    def unsubscribe(self, required, provided, value):
+    def unsubscribe(self, required, provided, value=None):
         required = tuple(map(_convert_None_to_Interface, required))
         order = len(required)
         byorder = self._subscribers
@@ -228,7 +230,7 @@ class AdapterRegistry(object):
 
         components[u''] = tuple([
             v for v in components.get(u'', ())
-            if v != value
+            if (v != value) or (value is None)
             ])
 
         if provided is not None:
