@@ -10,6 +10,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 546: non-ASCII docstring cause
+        System Error in RootErrorReportingUtility.
+
       - Fixed issue 544: VocabularyRegistryError missing import.
 
       - Fixed issue 536: ErrorLogUtility has UnboundLocalError.

@@ -22,23 +22,21 @@ from zope.exceptions.exceptionformatter import format_exception
 from zope.publisher.tests.httprequest import TestRequest
 from zope.app.testing.placelesssetup import PlacelessSetup
 
-from zope.app.error.error import ErrorReportingUtility
+from zope.app.error.error import ErrorReportingUtility, getFormattedException
 
 class Error(Exception):
 
+    def __init__(self, value):
+        self.value = value
+
     def __str__(self):
-        return u"Error (\u0410)"
+        return self.value
 
-class C1(object):
-
-    def getAnErrorInfo(self):
-        exc_info = None
-        try:
-            raise Error()
-        except:
-            exc_info = sys.exc_info()
-        return exc_info
-
+def getAnErrorInfo(value=""):
+    try:
+        raise Error(value)
+    except:
+        return sys.exc_info()
 
 class ErrorReportingUtilityTests(PlacelessSetup, unittest.TestCase):
 
@@ -64,12 +62,12 @@ class ErrorReportingUtilityTests(PlacelessSetup, unittest.TestCase):
         # Test for Logging Error.  Create one error and check whether its
         # logged or not.
         errUtility = ErrorReportingUtility()
-        exc_info = C1().getAnErrorInfo()
+        exc_info = getAnErrorInfo()
         errUtility.raising(exc_info)
         getErrLog = errUtility.getLogEntries()
         self.assertEquals(1, len(getErrLog))
 
-        tb_text = ''.join(format_exception(*exc_info, **{'as_html': 0}))
+        tb_text = ''.join(format_exception(as_html=0, *exc_info))
 
         err_id = getErrLog[0]['id']
         self.assertEquals(tb_text,
@@ -88,12 +86,12 @@ class ErrorReportingUtilityTests(PlacelessSetup, unittest.TestCase):
         request.setPrincipal(PrincipalStub())
 
         errUtility = ErrorReportingUtility()
-        exc_info = C1().getAnErrorInfo()
+        exc_info = getAnErrorInfo(u"Error (\u0441)")
         errUtility.raising(exc_info, request=request)
         getErrLog = errUtility.getLogEntries()
         self.assertEquals(1, len(getErrLog))
 
-        tb_text = ''.join(format_exception(*exc_info, **{'as_html': 0}))
+        tb_text = ''.join(format_exception(as_html=0, *exc_info))
 
         err_id = getErrLog[0]['id']
         self.assertEquals(tb_text,
@@ -101,6 +99,34 @@ class ErrorReportingUtilityTests(PlacelessSetup, unittest.TestCase):
 
         username = getErrLog[0]['username']
         self.assertEquals(username, u'unauthenticated, \u0441, \u0441, \u0441')
+
+    def test_ErrorLog_nonascii(self):
+        # Emulate a unicode url, it gets encoded to utf-8 before it's passed
+        # to the request. Also add some unicode field to the request's
+        # environment and make the principal's title unicode.
+        request = TestRequest(environ={'PATH_INFO': '/\xd1\x82',
+                                       'SOME_NONASCII': '\xe1'})
+        class PrincipalStub(object):
+            id = '\xe1'
+            title = '\xe1'
+            description = '\xe1'
+        request.setPrincipal(PrincipalStub())
+
+        errUtility = ErrorReportingUtility()
+        exc_info = getAnErrorInfo("Error (\xe1)")
+        errUtility.raising(exc_info, request=request)
+        getErrLog = errUtility.getLogEntries()
+        self.assertEquals(1, len(getErrLog))
+
+        tb_text = getFormattedException(exc_info)
+
+        err_id = getErrLog[0]['id']
+        self.assertEquals(tb_text,
+                          errUtility.getLogEntryById(err_id)['tb_text'])
+
+        username = getErrLog[0]['username']
+        self.assertEquals(username, "unauthenticated,"
+            " '\\xe1', '\\xe1', '\\xe1'")
 
 
 def test_suite():
