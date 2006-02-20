@@ -385,6 +385,8 @@ Subscriptions
 XXX need tests that demonstrate that more general subscribers are
     called before more specific subscribers
 
+XXX Need unscription tests
+
 Normally, we want to look up an object that most-closely matches a
 specification.  Sometimes, we want to get all of the objects that
 match some specification.  We use subscriptions for this.  We
