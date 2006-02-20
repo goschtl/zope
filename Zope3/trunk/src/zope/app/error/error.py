@@ -53,6 +53,41 @@ cleanup_lock = allocate_lock()
 
 logger = logging.getLogger('SiteError')
 
+def getPrintable(value):
+    # A call to unicode(obj) could raise anything at all.
+    # We'll ignore these errors, and print something
+    # useful instead, but also log the error.
+    try:
+        printable = unicode(value)
+    except:
+        logger.exception(
+            "Error in ErrorReportingUtility while getting a unicode"
+            " representation of an object")
+        printable = u"<unprintable %s object>" % type(value).__name__
+        if type(value) is str:
+            try:
+                r = repr(value)
+            except:
+                pass
+            else:
+                try:
+                    printable = unicode(r)
+                except:
+                    pass
+    return printable
+
+def getFormattedException(info, as_html=False):
+    lines = []
+    for line in format_exception(as_html=as_html, *info):
+        line = getPrintable(line)
+        if not line.endswith("\n"):
+            if not as_html:
+                line += "\n"
+            else:
+                line += "<br />\n"
+        lines.append(line)
+    return u"".join(lines)
+
 class ErrorReportingUtility(Persistent, Contained):
     """Error Reporting Utility"""
     implements(IErrorReportingUtility, ILocalErrorReportingUtility)
@@ -72,6 +107,47 @@ class ErrorReportingUtility(Persistent, Contained):
             _temp_logs[self._p_oid] = log
         return log
 
+    def _getUsername(self, request):
+        username = None
+
+        principal = getattr(request, "principal", None)
+        if principal is None:
+            return username
+
+        # UnauthenticatedPrincipal does not have getLogin()
+        getLogin = getattr(principal, "getLogin", None)
+        if getLogin is None:
+            login = "unauthenticated"
+        else:
+            try:
+                login = getLogin()
+            except:
+                logger.exception("Error in ErrorReportingUtility while"
+                    " getting login of the principal")
+                login = u"<error getting login>"
+
+        parts = []
+        for part in [
+                login,
+                getattr(principal, "id",
+                    u"<error getting 'principal.id'>"),
+                getattr(principal, "title",
+                    u"<error getting 'principal.title'>"),
+                getattr(principal, "description",
+                    u"<error getting 'principal.description'>")
+                ]:
+            part = getPrintable(part)
+            parts.append(part)
+        username = u", ".join(parts)
+        return username
+
+    def _getRequestAsHTML(self, request):
+        lines = []
+        for key, value in request.items():
+            lines.append(u"%s: %s<br />\n" % (
+                getPrintable(key), getPrintable(value)))
+        return u"".join(lines)
+
     # Exceptions that happen all the time, so we dont need
     # to log them. Eventually this should be configured
     # through-the-web.
@@ -81,18 +157,17 @@ class ErrorReportingUtility(Persistent, Contained):
         """
         now = time.time()
         try:
-            tb_text = None
-            tb_html = None
-
-            strtype = str(getattr(info[0], '__name__', info[0]))
+            strtype = unicode(getattr(info[0], '__name__', info[0]))
             if strtype in self._ignored_exceptions:
                 return
 
+            tb_text = None
+            tb_html = None
             if not isinstance(info[2], StringTypes):
-                tb_text = ''.join(format_exception(as_html=0, *info))
-                tb_html = ''.join(format_exception(as_html=1, *info))
+                tb_text = getFormattedException(info)
+                tb_html = getFormattedException(info, True)
             else:
-                tb_text = info[2]
+                tb_text = getPrintable(info[2])
 
             url = None
             username = None
@@ -102,41 +177,10 @@ class ErrorReportingUtility(Persistent, Contained):
                 #      just too HTTPRequest-specific.
                 if hasattr(request, 'URL'):
                     url = request.URL
-                try:
-                    # UnauthenticatedPrincipal does not have getLogin()
-                    if hasattr(request.principal, 'getLogin'):
-                        login = request.principal.getLogin()
-                    else:
-                        login = 'unauthenticated'
-                    username = ', '.join([unicode(s) for s in (login,
-                                          request.principal.id,
-                                          request.principal.title,
-                                          request.principal.description
-                                         )])
-                # When there's an unauthorized access, request.principal is
-                # not set, so we get an AttributeError
-                # ??? Is this right? Surely request.principal should be set!
-                # !!! Yes.  Catching AttributeError is correct for the simple
-                # reason that UnauthenticatedUser (which I always use during
-                # coding), has no 'getLogin()' method. However, for some reason
-                # this except does **NOT** catch these errors.
-                except AttributeError:
-                    pass
+                username = self._getUsername(request)
+                req_html = self._getRequestAsHTML(request)
 
-                req_html = ''.join(['%s : %s<br>' % item
-                                    for item in request.items()])
-            try:
-                strv = str(info[1])
-            # A call to str(obj) could raise anything at all.
-            # We'll ignore these errors, and print something
-            # useful instead, but also log the error.
-            except:
-                logger.exception(
-                    'Error in ErrorReportingUtility while getting a str '
-                    'representation of an object')
-                strv = '<unprintable %s object>' % (
-                        str(type(info[1]).__name__)
-                        )
+            strv = getPrintable(info[1])
 
             log = self._getLog()
             entry_id = str(now) + str(random()) # Low chance of collision
@@ -192,7 +236,7 @@ class ErrorReportingUtility(Persistent, Contained):
         self.keep_entries = int(keep_entries)
         self.copy_to_zlog = bool(copy_to_zlog)
         self._ignored_exceptions = tuple(
-                [str(e) for e in ignored_exceptions if e]
+                [unicode(e) for e in ignored_exceptions if e]
                 )
 
     def getLogEntries(self):

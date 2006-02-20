@@ -41,6 +41,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 546: non-ASCII docstring cause
+        System Error in RootErrorReportingUtility.
+
       - Fixed issue 547: return 'add_content' for backward-compatibility.
         Removed 'zope.app.container.browser.adding.ContentAdding'.
 
