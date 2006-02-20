@@ -1,0 +1,35 @@
+<configure 
+   xmlns="http://namespaces.zope.org/browser"
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:event="http://namespaces.zope.org/event"
+   i18n_domain="zorg"
+   >
+    
+  <resource 
+        name="livepage.js"
+        file="client.js"/>
+	
+  <page
+        name="input"
+        for="zorg.live.page.interfaces.ILivePage"
+        class="zorg.live.page.page.Input"
+        permission="zope.Public">
+
+  </page>
+  
+  <page
+        name="output"
+        for="zorg.live.page.interfaces.ILivePage"
+        class="zorg.live.page.page.Output"
+        permission="zope.Public">
+
+  </page>
+  
+  
+  <zope:subscriber
+        for="zope.app.event.interfaces.IObjectEvent"
+        handler="zorg.ajax.livepage.livePageSubscriber"
+        />
+              
+              
+</configure>
