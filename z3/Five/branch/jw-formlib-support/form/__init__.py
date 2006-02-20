@@ -22,8 +22,6 @@ import Acquisition
 import transaction
 from zope.event import notify
 from zope.schema.interfaces import ValidationError
-from zope.publisher.browser import isCGI_NAME
-from zope.i18n.interfaces import IUserPreferredCharsets
 
 from zope.app.location.interfaces import ILocation
 from zope.app.location import LocationProxy
@@ -36,39 +34,8 @@ from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.i18n import ZopeMessageFactory as _
 
 from Products.Five.browser import BrowserView
+from Products.Five.browser.decode import processInputs, setPageEncoding
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-
-# taken from zope.publisher.browser.BrowserRequest
-def _decode(text, charsets):
-    """Try to decode the text using one of the available charsets.
-    """
-    for charset in charsets:
-        try:
-            text = unicode(text, charset)
-            break
-        except UnicodeError:
-            pass
-    return text
-
-def processInputs(request, charsets=None):
-    if charsets is None:
-        envadapter = IUserPreferredCharsets(request)
-        charsets = envadapter.getPreferredCharsets() or ['utf-8']
-    
-    for name, value in request.form.items():
-        if (not (isCGI_NAME(name) or name.startswith('HTTP_'))
-            and isinstance(value, str)):
-            request.form[name] = _decode(value, charsets)
-
-def setPageEncoding(request):
-    """Set the encoding of the form page via the Content-Type header.
-    ZPublisher uses the value of this header to determine how to
-    encode unicode data for the browser.
-    """
-    envadapter = IUserPreferredCharsets(request)
-    charsets = envadapter.getPreferredCharsets() or ['utf-8']
-    request.RESPONSE.setHeader(
-        'Content-Type', 'text/html; charset=%s' % charsets[0])
 
 class EditView(BrowserView):
     """Simple edit-view base class
