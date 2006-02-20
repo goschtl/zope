@@ -136,7 +136,7 @@ function sendLivePage(handler_name, arguments)
     var params = "handler_name=" + handler_name + "&arguments=" + args;
   
     new Ajax.Request(base_url, 
-        { method: 'get',
+        { method: 'post',
             parameters: params
         });
 }

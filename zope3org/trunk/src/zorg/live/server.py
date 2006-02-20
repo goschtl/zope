@@ -13,9 +13,12 @@ from twisted.web2 import stream
 
 from zope.app.wsgi import WSGIPublisherApplication
 from zope.app.twisted.server import ServerType
+from zope.app.twisted.http import Prebuffer
+
+from zope.publisher.http import DirectResult
 
 from zope.app import zapi
-
+        
 from zorg.live.page.interfaces import ILivePageManager
 
 class ExtractionError(Exception) :
@@ -73,27 +76,44 @@ class Extractor(object) :
         manager = zapi.getUtility(ILivePageManager)
         handler = self.context
         
+        
         if "/@@output/" in uri :
             try :
                 uuid = handler.uuid = self.extractUUID(uri, 'output')
-                handler.client = manager.get(uuid, None)
+                handler.output = manager.get(uuid, None)
+                if handler.output :
+                    handler.liverequest = True
             except ExtractionError :
                 pass
          
-#         if "/@@input/" in uri :
-#             try :
-#                 uuid = handler.uuid = self.extractUUID(uri, 'input')
-#                 handler.client = manager.get(uuid, None)
-#             except ExtractionError :
-#                 pass
-                
+        if "/@@input/" in uri :
+            try :
+                uuid = handler.uuid = self.extractUUID(uri, 'input')
+                client = manager.get(uuid, None)
+                if client :
+                    input = str(self.context.request.stream.read())
+                    parsed = cgi.parse_qs(input)
+                    print "Hihi, input", input, parsed
+                    
+                    handler_name = parsed.get('handler_name', None)
+                    arguments = parsed.get('arguments', None)
+                    if handler_name and arguments is not None :
+                        client.input(handler_name[0], arguments[0])
+                        ok = DirectResult(("ok",))
+                        handler.result = ok
+            except ExtractionError :
+                pass
+       
+         
         if "cached=" in uri :
             try :
                 uuid = handler.uuid = self.cachedUUID(uri)
                 handler.result = manager.fetchResult(uuid, clear=True)
+                if handler.result :
+                    handler.liverequest = True
             except ExtractionError :
                 pass
-         
+ 
         handler.liverequest = handler.client or handler.result
         return handler.liverequest
   
@@ -164,6 +184,7 @@ class LivePageWSGIHandler(WSGIHandler) :
                 data += x    
             return self.returnResult(data, r.headers)
             
+              
         output = self.availableOutput()
         if time.time() > self.expires :
             return self.returnResult(output or "idle\n")
@@ -232,6 +253,7 @@ def createHTTPFactory(db):
     zopeserver = WSGIPublisherApplication(db)
     resource = LivePageWSGIResource(zopeserver, db)
     resource = LiveLogWrapperResource(resource)
+    resource = Prebuffer(resource)
     return HTTPFactory(Site(resource))
 
 
