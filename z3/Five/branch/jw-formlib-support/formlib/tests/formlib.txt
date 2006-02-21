@@ -34,6 +34,7 @@ Let's set up a testbrowser:
 
   >>> from Products.Five.testbrowser import Browser
   >>> browser = Browser()
+  >>> browser.addHeader('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7')
   >>> browser.addHeader('Accept-Language', 'en-US')
   >>> browser.addHeader('Authorization', 'Basic manager:r00t')
 
@@ -41,17 +42,41 @@ Let's 'manually' create a Content instance and add it to the folder:
 
   >>> from Products.Five.formlib.tests import content
   >>> folder = self.folder.ftf
-  >>> folder._setObject('content_1', content.Content('content_1', 'Title', []))
+  >>> obj = content.Content('content_1', 'Title', [])
+  >>> folder._setObject('content_1', obj)
   'content_1'
   >>> print folder.content_1.title
   Title
 
+Now we can edit this content object, e.g. by changing the title. Formlib,
+like the traditional AddView and EditView support unicode:
+
   >>> browser.open("http://localhost/test_folder_1_/ftf/content_1/@@edit_content")
+  >>> ni_hao = '\xe4\xbd\xa0\xe5\xa5\xbd'
   >>> ctl = browser.getControl(name="form.title")
-  >>> ctl.value = 'Changed Title'
+  >>> ctl.value = ni_hao
   >>> browser.getControl(name="form.actions.apply").click()
-  >>> print folder.content_1.title
-  Changed Title
+  >>> isinstance(folder.content_1.title, unicode)
+  True
+  >>> folder.content_1.title == ni_hao.decode('utf-8')
+  True
+
+Adding a new content object:
+
+  >>> browser.open("http://localhost/test_folder_1_/ftf/@@add_content")
+  >>> ctl = browser.getControl(name="form.id")
+  >>> ctl.value = 'test123'
+  >>> ctl = browser.getControl(name="form.title")
+  >>> ctl.value = ni_hao
+  >>> browser.getControl(name="form.somelist.add").click()
+  >>> ctl = browser.getControl(name="form.somelist.0.")
+  >>> ctl.value = 'a nice list item'
+  >>> browser.getControl(name="form.somelist.add").click()
+  >>> ctl = browser.getControl(name="form.somelist.1.")
+  >>> ctl.value = 'a nice list item'
+  >>> browser.getControl(name="form.actions.add").click()
+  >>> print folder.test123.somelist
+  [u'a nice list item', u'a nice list item']
 
 Clean up
 --------

@@ -13,8 +13,9 @@ class AddContentForm(AddForm):
     form_fields = form.Fields(IContent)
 
     def createAndAdd(self, data):
-        id = 'some_id'
-        ctnt = Content(id, data.get('title'), somelist=data.get('somelist'))
+        id = data.get('id')
+        ctnt = Content(
+            id,  data.get('title'), somelist=data.get('somelist'))
         self.context._setObject(id, ctnt)
 
 class EditContentForm(EditForm):

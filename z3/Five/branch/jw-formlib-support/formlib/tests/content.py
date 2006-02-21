@@ -16,13 +16,20 @@ from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass
 
 from zope.interface import implements, Interface
-from zope.schema import TextLine, List
+from zope.schema import ASCIILine, TextLine, List
 from zope.i18nmessageid import MessageFactory
 
 _ = MessageFactory('formtest')
 
 class IContent(Interface):
 
+    id = ASCIILine(
+        title=_(u"Id"),
+        description=_(u"The object id."),
+        default='',
+        required=True
+        )
+    
     title = TextLine(
         title=_(u"Title"),
         description=_(u"A short description of the event."),
