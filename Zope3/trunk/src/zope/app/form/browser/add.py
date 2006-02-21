@@ -115,7 +115,7 @@ class AddView(EditView):
             adapted = self.schema(content)
             for name in self._set_after_add:
                 if name in data:
-                    if data[name] <> None:
+                    if data[name] is not None:
                         field = self.schema[name]
                         try:
                             field.set(adapted, data[name])
