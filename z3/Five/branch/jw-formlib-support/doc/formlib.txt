@@ -1,0 +1,16 @@
+============================
+zope.formlib support in Five
+============================
+
+Five support zope.formlib, an alternative for constructing add, edit, and
+other forms based on schema. See zope/formlib/form.txt for a thorough
+description of the functionality provided by formlib.
+
+Formlib forms are normal view classes, registered as browser pages. The
+view class needs to subclass one of the baseclasses provided by
+Products.Five.formlib.formbase.
+
+In almost all cases you need to import zope.formlib.fom as well, in
+order to define the fields and actions for your form.
+
+See Products.Five.formlib.tests for a minimal example.
