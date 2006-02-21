@@ -115,12 +115,12 @@ class AddView(EditView):
             adapted = self.schema(content)
             for name in self._set_after_add:
                 if name in data:
-                    field = self.schema[name]
-                    try:
-                        field.set(adapted, data[name])
-                    except ValidationError:
-                        errors.append(sys.exc_info()[1])
-
+                    if data[name] <> None:
+                        field = self.schema[name]
+                        try:
+                            field.set(adapted, data[name])
+                        except ValidationError:
+                            errors.append(sys.exc_info()[1])
             # We have modified the object, so we need to publish an
             # object-modified event:
             description = Attributes(self.schema, *self._set_after_add)
