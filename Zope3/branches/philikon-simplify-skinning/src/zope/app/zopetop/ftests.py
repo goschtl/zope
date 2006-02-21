@@ -24,10 +24,8 @@ class ZopeTopSkinTests(BrowserTestCase):
     """Funcional tests for ZopeTop skin."""
 
     def test_ZopeTopIsNotRotterdam(self):
-        response1 = self.publish("/++skin++zope.app.rotterdam.Rotterdam",
-                                 basic='mgr:mgrpw')
-        response2 = self.publish("/++skin++zope.app.zopetop.ZopeTop",
-                                 basic='mgr:mgrpw')
+        response1 = self.publish("/++skin++Rotterdam", basic='mgr:mgrpw')
+        response2 = self.publish("/++skin++ZopeTop", basic='mgr:mgrpw')
         self.assert_(response1.getBody() != response2.getBody())
 
 def test_suite():
