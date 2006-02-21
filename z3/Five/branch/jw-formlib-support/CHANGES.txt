@@ -8,6 +8,8 @@ Five 1.4 (unreleased)
 Features
 --------
 
+* Add zope.formlib support.
+
 * Port browser:addMenuItem directive from zope.app.publisher.browser/meta.zcml
 
 * Add a file argument to the five:loadProducts and
