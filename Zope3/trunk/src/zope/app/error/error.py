@@ -21,10 +21,11 @@ __docformat__ = 'restructuredtext'
 
 import time
 import logging
+import codecs
+
 from persistent import Persistent
 from random import random
-from thread import allocate_lock
-from types import StringTypes
+from threading import Lock
 
 from zope.exceptions.exceptionformatter import format_exception
 from zope.interface import implements
@@ -49,32 +50,32 @@ _rate_restrict_burst = 5
 # _temp_logs holds the logs.
 _temp_logs = {}  # { oid -> [ traceback string ] }
 
-cleanup_lock = allocate_lock()
+cleanup_lock = Lock()
 
 logger = logging.getLogger('SiteError')
 
+def printedreplace(error):
+    symbols = (ur"\x%02x" % ord(s)
+        for s in error.object[error.start:error.end])
+    return u"".join(symbols), error.end
+
+codecs.register_error("zope.app.error.printedreplace", printedreplace)
+
 def getPrintable(value):
-    # A call to unicode(obj) could raise anything at all.
-    # We'll ignore these errors, and print something
-    # useful instead, but also log the error.
-    try:
-        printable = unicode(value)
-    except:
-        logger.exception(
-            "Error in ErrorReportingUtility while getting a unicode"
-            " representation of an object")
-        printable = u"<unprintable %s object>" % type(value).__name__
-        if type(value) is str:
+    if not isinstance(value, unicode):
+        if not isinstance(value, str):
+            # A call to str(obj) could raise anything at all.
+            # We'll ignore these errors, and print something
+            # useful instead, but also log the error.
             try:
-                r = repr(value)
+                value = str(value)
             except:
-                pass
-            else:
-                try:
-                    printable = unicode(r)
-                except:
-                    pass
-    return printable
+                logger.exception(
+                    "Error in ErrorReportingUtility while getting a str"
+                    " representation of an object")
+                return u"<unprintable %s object>" % type(value).__name__
+        value = unicode(value, errors="zope.app.error.printedreplace")
+    return value
 
 def getFormattedException(info, as_html=False):
     lines = []
@@ -163,7 +164,7 @@ class ErrorReportingUtility(Persistent, Contained):
 
             tb_text = None
             tb_html = None
-            if not isinstance(info[2], StringTypes):
+            if not isinstance(info[2], basestring):
                 tb_text = getFormattedException(info)
                 tb_html = getFormattedException(info, True)
             else:
