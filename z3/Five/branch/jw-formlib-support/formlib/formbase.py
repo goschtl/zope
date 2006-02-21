@@ -31,6 +31,8 @@ class FiveFormlibMixin(Acquisition.Explicit):
     # using NamedTemplates. NamedTemplates using ViewPageTemplateFile (like
     # formlib does by default) cannot work in Zope2.
     
+    # XXX Maybe we need to have Five-compatible NamedTemplates?
+    
     template = ZopeTwoPageTemplateFile('pageform.pt')
     
     # Overrides formlib.form.FormBase.update. Make sure user input is
@@ -57,7 +59,7 @@ class EditFormBase(FiveFormlibMixin, form.EditFormBase):
             zope.event.notify(
                 zope.app.event.objectevent.ObjectModifiedEvent(self.context)
                 )
-                
+            # XXX: Needs locale support. See also Five.form.EditView.
             self.status = _(
                 "Updated on ${date_time}", 
                 mapping={'date_time': str(datetime.utcnow())}
