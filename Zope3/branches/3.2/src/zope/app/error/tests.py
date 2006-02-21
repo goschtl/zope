@@ -125,8 +125,7 @@ class ErrorReportingUtilityTests(PlacelessSetup, unittest.TestCase):
                           errUtility.getLogEntryById(err_id)['tb_text'])
 
         username = getErrLog[0]['username']
-        self.assertEquals(username, "unauthenticated,"
-            " '\\xe1', '\\xe1', '\\xe1'")
+        self.assertEquals(username, r"unauthenticated, \xe1, \xe1, \xe1")
 
 
 def test_suite():
