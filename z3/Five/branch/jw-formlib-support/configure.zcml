@@ -9,6 +9,7 @@
   <include package=".site" />
   <include package=".browser" />
   <include package=".form" />
+  <include package=".formlib" />
   <include package=".skin" />
   <include package=".utilities" />
 
