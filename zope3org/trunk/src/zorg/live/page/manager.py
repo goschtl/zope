@@ -19,6 +19,7 @@ import zope, time
 
 from thread import allocate_lock
 
+import zope.event
 from zope.interface import implements
 from zope.app import zapi
 
@@ -27,12 +28,17 @@ from zorg.edition.interfaces import IUUIDGenerator
 from zorg.live.page.interfaces import ILivePageManager
 from zorg.live.page.cache import Cache
 
+from zorg.live.page.event import ReloadEvent
+from zorg.live.page.event import ErrorEvent
+from zorg.live.page.event import LoginEvent
+from zorg.live.page.event import LogoutEvent
 
 
 class LivePageManager(object) :
-    """ Groups collections of LivePages.
+    """ Groups collections of LivePages relative to locations specified
+        by ids.
     
-        Holds a dict of dict of LivePageClients with group_ids and
+        Holds a dict of dict of LivePageClients with location ids and
         client uuids as keys and clients as values.
         
         Makes all write operations thread safe.
@@ -53,7 +59,7 @@ class LivePageManager(object) :
     maxClients = 3                  # max clients per user
     
     def __init__(self) :
-        self.groups = {}
+        self.locations = {}
         self.lastCheck = 0
         self.results = Cache(size=200)
         
@@ -91,24 +97,24 @@ class LivePageManager(object) :
             del self.results[uuid]
         return result
         
-    def _group(self, group_id) :
+    def _location(self, where) :
         """ Internal method that returns a dict of uuid, client tuples
-            that belong to a group specified by a group id.
+            that belong to a location specified by a location id.
             
         >>> manager = LivePageManager()
-        >>> manager._group(42)
+        >>> manager._location(42)
         {}
         
         """
         
-        return self.groups.setdefault(group_id, {})
+        return self.locations.setdefault(where, {})
         
     def register(self, client, uuid=None) :
         """ Register a client. Uses the provided uuid or generates a new one.
       
         """
         
-        
+        existing = None
         self.writelock.acquire()
         try:
             if uuid is None :
@@ -117,42 +123,64 @@ class LivePageManager(object) :
                 # an existing uuid indicates a renewed registration of an
                 # old page. We do not know what happened so a reload
                 # would make sense
-                client.addOutput("reload")
+                client.addEvent(ReloadEvent())
              
             existing = self.getClientsFor(client.principal.id)
+            
             if len(existing) > self.maxClients :
                 for c in existing :
                     self.unregister(c)
-                client.addOutput("limited")
+                client.addEvent(ErrorEvent("clients exceeded"))
                 
-            group_id = client.group_id
-            client.handleid = uuid
-            if uuid in self._group(group_id) :
+            where = client.where
+            
+            client.uuid = uuid
+            if uuid in self._location(where) :
                 print "***WARNING: already registered"
             else :
-                self._group(group_id)[uuid] = client
+                self._location(where)[uuid] = client
         finally:
             self.writelock.release()
+            
+        if not existing :
+            login = LoginEvent(who=client.principal.id, where=where)
+            # we use the zope event here since it's up the concrete
+            # pages how they represent the online status of members
+            
+            print "Sending", str(login)
+            zope.event.notify(login)
+              
+
      
     def unregister(self, client) :
+    
+        where = client.where
         self.writelock.acquire()
         try:
-            group_id = client.group_id
             try :
-                del self._group(group_id)[client.handleid]
+                del self._location(where)[client.uuid]
                 print "***Info: unregistered client for %s." % client.principal.title
             except KeyError :
                 print "***Info: client already unregistered."
         finally:
             self.writelock.release()
+            
+        if not self.isOnline(client.principal.id) :
+            logout = LogoutEvent(who=client.principal.id, where=where)
+            # we use the zope event here since it's up the concrete
+            # pages how they represent the online status of members
+            
+            print "Sending", str(logout)
+            zope.event.notify(logout)    
     
-    def getClientsFor(self, user_id, group_id=None) :
+    def getClientsFor(self, user_id, where=None) :
         """ Get clients for a specific user.
         """
-        return [c for c in self._iterClients(group_id) if c.principal.id == user_id]
+        return [c for c in self._iterClients(where) if c.principal.id == user_id]
  
     def get(self, uuid, default=None) :
-        for mapping in self.groups.values() :
+        self.checkAlive()
+        for mapping in self.locations.values() :
             if uuid in mapping :
                 client = mapping[uuid]
                 self.writelock.acquire()
@@ -169,11 +197,11 @@ class LivePageManager(object) :
             return
             
         if verbose :
-            for mapping in self.groups.values() :
+            for mapping in self.locations.values() :
                 for client in mapping.values() :
                     print "Client", client.principal.id
                     
-        for mapping in self.groups.values() :
+        for mapping in self.locations.values() :
             for client in mapping.values() :
                 if time.time() > client.touched + client.targetTimeout :
                     self.unregister(client)
@@ -183,17 +211,17 @@ class LivePageManager(object) :
         finally :
             self.writelock.release()    
     
-    def _iterClients(self, group_id=None) :
+    def _iterClients(self, where=None) :
         """ 
         
         
         """
-        if group_id is None :
-            for mapping in self.groups.values() :
+        if where is None :
+            for mapping in self.locations.values() :
                 for client in mapping.values() :
                     yield client
         else :
-            for client in self._group(group_id).values() :
+            for client in self._location(where).values() :
                 yield client
         
         
@@ -205,21 +233,30 @@ class LivePageManager(object) :
         return self._iterClients()  
         
                 
-    def addOutput(self, output, group_id=None, recipients="all") :
+    def addEvent(self, event) :
         self.checkAlive()
-        for client in self._iterClients(group_id) :
+        recipients = event.recipients
+        where = event.where
+        for client in self._iterClients(where) :
             if recipients == "all" or client.principal.id in recipients :
-                client.addOutput(output)    
+                client.addEvent(event)    
 
-    def whoIsOnline(self, group_id) :
+    def whoIsOnline(self, where) :
         """ Returns the ids of the principals that are using livepages. """
         self.checkAlive()
         online = set()
-        for client in self._iterClients(group_id) :
+        for client in self._iterClients(where) :
             online.add(client.principal.id)
         return sorted(online)
         
-
+    def isOnline(self, principal_id) :
+        """ Returns True iff the user is already online. """
+        
+        for client in self._iterClients() :
+            if client.principal.id == principal_id :
+                return True
+        return False
+            
 livePageManager = LivePageManager()            
 
 def livePageSubscriber(event) :
@@ -233,6 +270,8 @@ def livePageSubscriber(event) :
         of the page classes.
         
     """
+    
+    print "livePageSubscriber", event
     
     manager = zapi.getUtility(ILivePageManager)
     

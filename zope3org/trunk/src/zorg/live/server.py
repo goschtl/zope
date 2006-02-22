@@ -20,6 +20,10 @@ from zope.publisher.http import DirectResult
 from zope.app import zapi
         
 from zorg.live.page.interfaces import ILivePageManager
+from zorg.live.page.event import IdleEvent
+from zorg.live.page.event import ErrorEvent
+from zorg.live.page.event import dict2event
+
 
 class ExtractionError(Exception) :
     """ Indicates a failed searach for a URI part. """
@@ -35,10 +39,10 @@ class Extractor(object) :
         """ Extracts the uuid from the livepage call or raises an IndexError
         
         >>> extract = Extractor(None)
-        >>> extract.extractUUID("/exp/@@output/uuid?outputNum=1", 'output')
+        >>> extract.extractUUID("/exp/@@output/uuid", 'output')
         'uuid'
         
-        >>> extract.outputUUID("/exp/@@out/uuid?outputNum=1", 'output')
+        >>> extract.outputUUID("/exp/@@out/uuid", 'output')
         Traceback (most recent call last):
         ...
         ExtractionError
@@ -56,7 +60,7 @@ class Extractor(object) :
         >>> extract.cachedUUID("/exp/imageMap/cached=uuid")
         'uuid'
         
-        >>> extract.cachedUUID("/exp/@@out/uuid?outputNum=1")
+        >>> extract.cachedUUID("/exp/@@out/uuid")
         Traceback (most recent call last):
         ...
         ExtractionError
@@ -70,18 +74,26 @@ class Extractor(object) :
         except IndexError :
             raise ExtractionError
             
+    def readEvent(self) :
+        """ Deserializes the event from the input stream. """
+        input = str(self.context.request.stream.read())
+        args = cgi.parse_qs(input)
+        print "Input", input, args
+        for k, v in args.items() :
+            args[k] = v[0]
+        return dict2event(args)         
+                            
     def parseURI(self, uri) :
         """ Checks whether we have a livepage request. """
               
         manager = zapi.getUtility(ILivePageManager)
         handler = self.context
         
-        
         if "/@@output/" in uri :
             try :
                 uuid = handler.uuid = self.extractUUID(uri, 'output')
-                handler.output = manager.get(uuid, None)
-                if handler.output :
+                handler.client = manager.get(uuid, None)
+                if handler.client :
                     handler.liverequest = True
             except ExtractionError :
                 pass
@@ -91,14 +103,9 @@ class Extractor(object) :
                 uuid = handler.uuid = self.extractUUID(uri, 'input')
                 client = manager.get(uuid, None)
                 if client :
-                    input = str(self.context.request.stream.read())
-                    parsed = cgi.parse_qs(input)
-                    print "Hihi, input", input, parsed
-                    
-                    handler_name = parsed.get('handler_name', None)
-                    arguments = parsed.get('arguments', None)
-                    if handler_name and arguments is not None :
-                        client.input(handler_name[0], arguments[0])
+                    event = self.readEvent()
+                    if event :
+                        client.input(event)
                         ok = DirectResult(("ok",))
                         handler.result = ok
             except ExtractionError :
@@ -120,7 +127,7 @@ class Extractor(object) :
  
 class LivePageWSGIHandler(WSGIHandler) :
     
-    idleInterval = 0.5
+    idleInterval = 0.2
     limit = 30
     
     count = 0
@@ -133,41 +140,39 @@ class LivePageWSGIHandler(WSGIHandler) :
         Extractor(self).parseURI(self.request.uri)
         LivePageWSGIHandler.count += 1
         self.num = LivePageWSGIHandler.count
+        self.manager = zapi.getUtility(ILivePageManager)
+
                 
     def runLive(self) :
-        #print "runLive", self.request.uri
         self.expires = time.time() + self.limit
         reactor.callLater(self.idleInterval, self.onIdle)
+
  
     def returnResult(self, output, headers=None) :
         """ Writes the result to the deferred response and closes
             the output stream.
         """
+        if not headers :
+            headers = [('Cache-Control', 'no-store, no-cache, must-revalidate'),
+                        ("Connection", "close"),
+                        ('content-type', 'text/html;charset=utf-8'), 
+                        ('content-length', len(output))]
+                                        
         print "***LivePage result", self.num, len(output), "bytes", self.uuid, headers
+        print "Output", output
         
-        if headers is None :
-            headers = [('content-type', 'text/plain;charset=utf-8'), 
-                                        ('content-length', len(output))]
         self.startWSGIResponse('200 Ok', headers)
        
-        #output = output.replace("\n", "*")
         self.headersSent = True
         
         self.response.stream=stream.ProducerStream()
         self.response.stream.write(output)
         self.response.stream.finish()
             
-        #import pdb; pdb.set_trace()
         self.responseDeferred.callback(self.response)
         self.responseDeferred = None
-      
-       
-    def availableOutput(self) :
-        """ Checks for available output in the out box of the client. """
-        
-        return self.client.popOutput()
-        
-        
+ 
+ 
     def onIdle(self) :
         """ Idle handler that is called by the reactor.
         
@@ -177,6 +182,11 @@ class LivePageWSGIHandler(WSGIHandler) :
             Returns 'idle' after the timeout if nothing is available.
         """
         
+        client = self.manager.get(self.uuid, None)
+        if client is None : # Uups, the client has gone in the meanwhile
+            error = ErrorEvent(description="Unexpected timeout")
+            return self.returnResult(str(error))        
+            
         r = self.result
         if r :
             data = ""
@@ -184,17 +194,16 @@ class LivePageWSGIHandler(WSGIHandler) :
                 data += x    
             return self.returnResult(data, r.headers)
             
-              
-        output = self.availableOutput()
+        event = client.nextEvent()
+        if event is not None :
+            return self.returnResult(str(event))
+        
         if time.time() > self.expires :
-            return self.returnResult(output or "idle\n")
-        if output :
-            reactor.callLater(0.5, self.returnResult, output)
-            #self.returnResult(output)
-        else :
-            reactor.callLater(self.idleInterval, self.onIdle)
+            return self.returnResult(str(IdleEvent()))
+        
+        reactor.callLater(self.idleInterval, self.onIdle)
  
-                
+ 
 class LivePageWSGIResource(WSGIResource) :
     """ A special WSGIResource that handles LivePage calls
         more efficiently than Zope.
@@ -202,17 +211,15 @@ class LivePageWSGIResource(WSGIResource) :
      
     livepage_handler = None
     
-    def __init__(self, application, db) :
-        super(LivePageWSGIResource, self).__init__(application)
-        self.db = db
-        
+    def __init__(self, application) :
+        super(LivePageWSGIResource, self).__init__(application)        
         
     def renderHTTP(self, ctx):
         """ This method creates a special WSGIHandler that for each
             request. Otherwise it mimics exactly the behavior of
             its superclass method.
         """
-        #print "renderHTTP called"
+       
         from twisted.internet import reactor
         # Do stuff with WSGIHandler.
         
@@ -250,8 +257,8 @@ class LiveLogWrapperResource(LogWrapperResource) :
 def createHTTPFactory(db):
 
     #print "createHTTPFactory called"
-    zopeserver = WSGIPublisherApplication(db)
-    resource = LivePageWSGIResource(zopeserver, db)
+    resource = WSGIPublisherApplication(db)
+    resource = LivePageWSGIResource(resource)
     resource = LiveLogWrapperResource(resource)
     resource = Prebuffer(resource)
     return HTTPFactory(Site(resource))

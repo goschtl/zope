@@ -7,6 +7,8 @@ function debugEval(str) {
     eval(str);
 }
 
+var userAgent = navigator.userAgent.toLowerCase();
+
 function evalResponse(request) {
     var response = request.responseText;
     
@@ -42,7 +44,7 @@ function evalResponse(request) {
                 if (act) {
                     switch(act) {
                         case 'scroll' : {
-                            scrollToLast();
+                            scrollToLast(id);
                             return;
                             }
                         case 'sound' : {
@@ -76,13 +78,11 @@ function evalResponse(request) {
     }   
 }
 
-function checkOutput(outputNum) {
+function checkOutput() {
     var base_url = livePageBaseURL + "/@@output/" + livePageUUID;
-    var params = "outputNum=" + outputNum;
     
     new Ajax.Request(base_url, 
         { method: 'get',
-            parameters: params, 
             asynchronous:true,
             onError : function(request) { alert('Output error'); },
             onComplete: function(request) { 
@@ -96,12 +96,11 @@ function checkOutput(outputNum) {
                             window.location.reload();
                             }
                         else {
-                            setTimeout("checkOutput(0)", 2000);
+                            setTimeout("checkOutput()", 2000);
                             }
                         }
                     else {
-                        outputNum += 1
-                        setTimeout("checkOutput(" + outputNum + ")", 500);
+                        setTimeout("checkOutput()", 500);
                         }
                 }
         });
@@ -114,7 +113,7 @@ function startClient() {
         if (i != -1) {
             livePageBaseURL = livePageBaseURL.substring(0, i);
             }
-        setTimeout("checkOutput(0)", 500);
+        setTimeout("checkOutput()", 500);
         return true;
         }
     else {
@@ -122,32 +121,34 @@ function startClient() {
         }
 }
 
+function stopClient() {
+    sendEvent("close", { uuid: livePageUUID });
+}
+
 function idleClient() {
     $("livepage_updates").innerHTML = "idle";
 }
 
-function sendLivePage(handler_name, arguments)
+function sendEvent(verb, args)
 {
-    var args = "";
-    for(i=1;i<arguments.length;i++) {
-        args += arguments[i] + ",";
+    var params = "verb=" + verb;
+    for(key in args) {
+        params += "&" + key + "=" + args[key]
         }
     var base_url = livePageBaseURL + "/@@input/" + livePageUUID;
-    var params = "handler_name=" + handler_name + "&arguments=" + args;
-  
+    
     new Ajax.Request(base_url, 
         { method: 'post',
             parameters: params
         });
-}
+    }
 
+function scrollToLast(id) {
+    var area = $(id);
+    if (area.offsetHeight > area.scrollHeight) {
+        area.scrollTop = 0;
+    } else {
+        area.scrollTop = area.scrollHeight;
+    }
+};
 
-function switchElements(a, b) {
-    for(i=0;i<$(b).childNodes.length;i++) {
-        var child = $(b).childNodes[i];
-        $(a).appendChild(child);
-        }
-        
-        
-    return true;
-}

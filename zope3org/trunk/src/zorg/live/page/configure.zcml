@@ -27,9 +27,32 @@
   
   
   <zope:subscriber
-        for="zope.app.event.interfaces.IObjectEvent"
-        handler="zorg.ajax.livepage.livePageSubscriber"
+        for="*"
+        handler="zorg.live.page.manager.livePageSubscriber"
         />
-              
+        
+  <zope:utility
+      name="close"
+      component="zorg.live.page.event.CloseEvent"
+      provides="zorg.live.page.interfaces.IClientEventFactory"
+      />
+      
+  <zope:utility
+      name="update"
+      component="zorg.live.page.event.Update"
+      provides="zorg.live.page.interfaces.IClientEventFactory"
+      />
+
+  <zope:utility
+      name="append"
+      component="zorg.live.page.event.Append"
+      provides="zorg.live.page.interfaces.IClientEventFactory"
+      />
+
+  <zope:utility
+      name="set"
+      component="zorg.live.page.event.SetAttribute"
+      provides="zorg.live.page.interfaces.IClientEventFactory"
+      />
               
 </configure>

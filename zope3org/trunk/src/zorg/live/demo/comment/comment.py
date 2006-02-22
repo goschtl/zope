@@ -17,7 +17,9 @@ $Id: comment.py 38895 2005-10-07 15:09:36Z dominikhuber $
 """
 __docformat__ = 'restructuredtext'
 
-import zope, datetime
+import zope
+from datetime import datetime
+import pytz
 
 from zope.interface import implements
 from zope.component import adapts
@@ -33,6 +35,11 @@ from zorg.comment import IComments
 
 from zorg.live.page.client import LivePageClient
 from zorg.live.page.page import LivePage
+from zorg.live.page.event import Append
+from zorg.live.page.event import Update
+from zorg.live.page.interfaces import ILivePageManager
+from zorg.live.page.interfaces import IPersonEvent
+
 from zorg.edition.interfaces import IUUIDGenerator
 
 def getFullName(principal_id) :
@@ -78,7 +85,7 @@ class LiveComments(LivePage) :
     
     >>> page = LiveComments(file, TestRequest())
     >>> print page.renderComments()
-    <div id="comments"><a name="comment1"></a>
+    <div id="comments">
     ...
     <div id="comment1">A comment</div>
     ...
@@ -100,21 +107,28 @@ class LiveComments(LivePage) :
         self.comments = IComments(self.context)
         
     def startComment(self, comment) :
-        group_id = self.getGroupId()
+        where = self.getLocationId()
         uuid = zapi.getUtility(IUUIDGenerator)()
         r = self.renderPendingComment(comment, uuid).encode('utf-8')
-        response = 'append comments\n%s\n' % (r)
         
-        self.sendResponse(response, group_id)
+        event = Append(id="comments", html=r, extra="scroll")
+        #event.where = self.getLocationId()
+        
+        self.sendEvent(event)
         return uuid
+        
+    def whoIsOnline(self) :
+        manager = zapi.getUtility(ILivePageManager)
+        return manager.whoIsOnline(self.getLocationId())
    
     def renderPendingComment(self, text, uuid) :
         who = self.request.principal.id
         info = self.info = dict()
+        info['live'] = True
         info['id'] = uuid
         info['key'] = uuid
         info['who'] = getFullName(who)
-        info['when'] = datetime.datetime.utcnow() 
+        info['when'] = datetime.now(pytz.utc)
         info['text'] = text
         return self._comment()
         
@@ -126,6 +140,7 @@ class LiveComments(LivePage) :
         for key, value in comments.items() :
             info = self.info = dict()
             dc = IZopeDublinCore(value)
+            info['live'] = False
             info['id'] = "comment%s" % key
             info['key'] = key
             info['who'] = ", ".join(getFullName(x) for x in dc.creators)
@@ -141,6 +156,16 @@ class LiveComments(LivePage) :
     def addComment(self, text) :
         comments = IComments(self.context)
         comments.addComment(text)
+        
+    def notify(cls, event) :
+        print "Comment.notify", event
+        if IPersonEvent.providedBy(event) :
+            manager = zapi.getUtility(ILivePageManager)
+            repr = manager.whoIsOnline(event.where)
+            update = Update(id="online", html=repr)
+            cls.sendEvent(update)
+            
+    notify = classmethod(notify)
         
     
     

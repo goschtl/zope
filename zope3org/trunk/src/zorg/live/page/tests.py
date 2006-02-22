@@ -26,7 +26,7 @@ from zope.publisher.browser import TestRequest
 
 from zorg.live.testing import placelesssetup
   
-     
+      
 
 globs = {'zapi': zapi,
             'ztapi': ztapi,
@@ -39,13 +39,26 @@ optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
         
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocFileSuite('README.txt', 
+        
+        doctest.DocTestSuite('zorg.live.page.event',
                                 setUp=placelesssetup.setUp, 
                                 tearDown=placelesssetup.tearDown,
-                                globs=globs,
                                 optionflags=optionflags
                              ),
                              
+        doctest.DocTestSuite('zorg.live.page.page',
+                                setUp=placelesssetup.setUp, 
+                                tearDown=placelesssetup.tearDown,
+                                optionflags=optionflags
+                             ),
+
+        doctest.DocTestSuite('zorg.live.page.client',
+                                setUp=placelesssetup.setUp, 
+                                tearDown=placelesssetup.tearDown,
+                                optionflags=optionflags
+                             ),
+
+
         ))
 
 if __name__ == '__main__':

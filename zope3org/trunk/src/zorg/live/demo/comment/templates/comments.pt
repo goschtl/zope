@@ -1,6 +1,23 @@
 <html metal:use-macro="context/@@standard_macros/view"
     i18n:domain="zope">
 <body>
+
+<div metal:fill-slot="user_details">
+    <div id="userDetails">
+        <span>Online:</span>
+        <span id="online">
+            <tal:block replace="view/whoIsOnline">
+                  User
+            </tal:block>
+        </span>
+        &nbsp;&nbsp;&nbsp;
+        <span tal:omit-tag="" i18n:translate="">User:</span>
+        <tal:block replace="request/principal/title">
+                User
+        </tal:block>
+    </div>
+</div>
+            
 <div metal:fill-slot="body">
 
     <script type="text/javascript" src="prototype.js" 
@@ -20,6 +37,8 @@
     
      <script type="text/javascript">
         startClient();
+        
+        window.onunload = stopClient
     </script>  
     
    <p>Type a comment and see how the page
@@ -28,6 +47,20 @@
    
    <p>Processing input...<span id="update_feedback">?</span></p>
 
+   <div>List of Comments</div>
+        <div id="comments" 
+             style="display: block;
+                    border: 1px solid #CCCCCC;
+                    padding: 2px 4px;
+                    margin-top: .3em;
+                    width: 800px;
+                    height: 300px;
+                    overflow: auto;"
+
+                tal:content="structure view/renderComments">
+    </div>
+  
+  
    <form action="./@@addcomment.html"
      method="post"
      >
@@ -54,9 +87,7 @@
 
   </form>
   <hr/>
-  <div>List of Comments</div>
-  <div id="comments" tal:content="structure view/renderComments">
-  </div>
+  
 
 </div>
 </body>

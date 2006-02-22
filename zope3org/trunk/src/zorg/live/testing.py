@@ -23,9 +23,12 @@ from zope.interface import implements
 import zope.app.testing.placelesssetup
 from zope.app import zapi
 
-from zorg.live.page.page import LivePage
 from zorg.edition.interfaces import IUUIDGenerator
 from zorg.edition.uuid import UUIDGenerator
+
+from zorg.live.page.page import LivePage
+from zorg.live.page.interfaces import IClientEventFactory
+from zorg.live.page import event
 
 
 class TestUUIDGenerator(object) :
@@ -44,8 +47,10 @@ class TestUUIDGenerator(object) :
 def livePageSetUp(test=None) :
     zope.component.provideUtility(TestUUIDGenerator(), IUUIDGenerator)
 
-
-
+    zope.component.provideUtility(event.Append, IClientEventFactory,
+                                                               name="append")
+    zope.component.provideUtility(event.Update, IClientEventFactory,
+                                                               name="update")
 
 class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
 
@@ -89,7 +94,7 @@ class TestLivePage(LivePage) :
     </head>
     <body onload="startClient()">
     <p>Input some text.</p>
-    <input onchange="sendLivePage('append', 'target', this.value)" type="text" />
+    <input onchange="sendEvent('append', 'target', this.value)" type="text" />
     <p id="target">Text goes here:</p>
     </body>
 </html>""")      

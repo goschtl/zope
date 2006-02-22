@@ -25,8 +25,9 @@ from zope.app import zapi
 
 from zorg.live.page.interfaces import ILivePageClient
 from zorg.live.page.interfaces import ILivePageManager
+from zorg.live.page.interfaces import ICloseEvent
 
-
+from zorg.live.page.event import IdleEvent
 
 class LivePageClient(object):
     """
@@ -47,7 +48,7 @@ class LivePageClient(object):
         
         manager = zapi.getUtility(ILivePageManager)
         
-        self.group_id = page.getGroupId()
+        self.where = page.getLocationId()
         self.page_class = page.__class__
         self.outbox = []
         self.principal = page.request.principal
@@ -55,18 +56,15 @@ class LivePageClient(object):
         self.touched = time.time()
         manager.register(self, uuid)
             
-    def popOutput(self) :
-        """ Returns an output block for processing in the browser side client.
-            Touches the client to indicate that the connection is still alive.
+    def nextEvent(self) :
+        """ Returns an event for processing in the browser side client.
+            Touches the client to indicate that the connection 
+            is still alive.
         """
         self.writelock.acquire()
         try :
             if self.outbox :
-                result = self.outbox.pop()
-                if result.endswith("timestamp=")  :
-                    result += "%s\n" % time.time()
-                #enforce that the URLs with dummy timestamps are really reloaded
-                #we add the dummy as late as possible to avoid redundant calls
+                result = self.outbox.pop(0)
             else :
                 result = None
             self.touched = time.time()      
@@ -75,48 +73,49 @@ class LivePageClient(object):
         return result
     
         
-    def addOutput(self, output) :
-        """ Adds a output block for further client side processing to the
-            clients message queue.
+    def addEvent(self, event) :
+        """ Adds an output event for further client side processing to the
+            clients event queue.
         """
 
         self.writelock.acquire()
         try:
-            if output not in self.outbox :
-                self.outbox.append(output)
+            if event not in self.outbox :
+                self.outbox.append(event)
         finally:
             self.writelock.release()        
  
-    def output(self, outputNum=0) :
+    def output(self) :
+        """ Checks the event queue for waiting events.
+            
+            Returns an idle event after an timeout.
+            
+            Note that this is a blocking version that can be used
+            by a threading server. A non-blocking LivePageServer
+            should use nextEvent for defered checks.
+            
+        """
+            
         end = time.time() + self.refreshInterval
         while time.time() < end :
-            output = self.popOutput()
+            output = self.nextEvent()
             if output :
-                time.sleep(0.5)
-                #print "sending", output
-                return output
-            time.sleep(0.1)
-        return "idle"
+                return str(output)
+            time.sleep(0.2)
+            
+        return str(IdleEvent())
         
-    def input(self, handler_name, arguments) :
-        message = getattr(self, handler_name)(arguments)
+    def input(self, event) :
+        """ Receives a client event and broadcasts the event
+            to other clients.
+        """
         
-        if isinstance(message, unicode) :
-            message = message.encode('utf-8')
         manager = zapi.getUtility(ILivePageManager)
-        manager.addOutput(message)
+        
+        if ICloseEvent.providedBy(event) and event.uuid == self.uuid :
+            manager.unregister(self)
+            return ''
+            
+        manager.addEvent(event)
         return ''
 
-    def alert(self, arguments) :
-        args = arguments.split(",")
-        return "javascript alert('%s')" % args[0]
-        
-    def update(self, arguments) :
-        args = arguments.split(",")
-        return "update %s\n%s" % (args[0], args[1])
-        
-    def append(self, arguments) :
-        args = arguments.split(",")
-        return "append %s\n%s" % (args[0], args[1])
-
-        

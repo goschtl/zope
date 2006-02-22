@@ -67,47 +67,47 @@ class LivePage(ComposedAjaxPage) :
     def nextClientId(self) :
         """ Returns a new client id. """
 
-        return self.clientFactory(self).handleid
+        return self.clientFactory(self).uuid
         
-    def getGroupId(self) :
+    def getLocationId(self) :
         """ Returns a group id that allows to share different livepages
             in different contexts.
             
             The default implementation returns the IKeyReference of the
             LivePage context.
         """
-        
-        return IKeyReference(self.context, None) or 0
+        key = IKeyReference(self.context, None)
+        if key :
+            return key.__hash__()
+        return 0
         
             
-    def output(self, uuid, outputNum) :
+    def output(self, uuid) :
         """ Convenience function that accesses a specific client.
         
         """
         request = self.request
         method = Output(self, request).publishTraverse(request, uuid)
-        return method(outputNum)
+        return str(method())
 
-    def input(self, uuid, handler_name, arguments) :
+    def input(self, uuid, event) :
         """ Convenience function that accesses a specific client.
         
         """
+        
         request = self.request
         method = Input(self, request).publishTraverse(request, uuid)
-        return method(handler_name, arguments)
+        return method(event)
  
-    def sendResponse(cls, response, group_id, recipients="all") :
+    def sendEvent(cls, event) :
         """ Sends a livepage response to all clients. 
-            A response consits of a leading command line 
-            and optional html body data.
+         
         """
-        assert isinstance(response, str)
-        
         manager = zapi.getUtility(ILivePageManager)
-        manager.addOutput(response, group_id, recipients)
+        manager.addEvent(event)
         return ''
     
-    sendResponse = classmethod(sendResponse)
+    sendEvent = classmethod(sendEvent)
             
     def render(self) :
         """ Renders the client and returns the HTML for the browser. """
@@ -156,29 +156,4 @@ class Input(ClientIO) :
     def publishTraverse(self, request, uuid) :
         client = self.traverseClient(request, uuid)
         return client.input
-
-
-
-class LiveOutputStream(object) :
-    """ The iterable output stream. """
-
-    counter = 0
-    limit = 100  
-    
-    def __init__(self, channel, client) :
-        self.channel = channel
-        self.client = client
-        
-    def __iter__(self) :
-        if self.client.output :
-            result = self.client.output.pop()
-            yield result
-       
-        self.counter += 1
-        if self.counter > self.limit :
-            raise StopIteration
-              
-
-defineChecker(LiveOutputStream, NoProxy)
-
 
