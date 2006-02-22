@@ -283,7 +283,10 @@ class ListContainer(PersistentList):
             current.super = current.previous = current.next = None
         return super(ListContainer, self).pop(i)
 
-    def index(self, item, start=None, stop=None):
+    def index(self, item, *args):
+        if len(args) > 2:
+            raise ValueError("too many arguments")
+        start, stop = args + (None,) * (2-len(args))
         if start is not None:
             if stop is not None:
                 items = self[start:stop]
@@ -359,6 +362,9 @@ class ListContainer(PersistentList):
             events.pop()
         for ev in events:
             notify(ev)
+
+    def __iter__(self):
+        return iter(self.data)
 
     def __setitem__(self, i, item):
         if not isinstance(i, int):
