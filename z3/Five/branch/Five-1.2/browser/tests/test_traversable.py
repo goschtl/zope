@@ -64,6 +64,9 @@ def test_traversable():
       ... <five:traversable
       ...     class="Products.Five.browser.tests.test_traversable.SimpleClass"
       ...     />
+      ... <five:traversable
+      ...     class="Products.Five.tests.testing.FiveTraversableFolder"
+      ...     />
       ... 
       ... <browser:page
       ...     for="Products.Five.tests.testing.fancycontent.IFancyContent"
@@ -98,6 +101,18 @@ def test_traversable():
       HTTP/1.1 200 OK
       ...
       Fancy, fancy
+
+    Without five traversable, if there had been an attrubute something-else,
+    the __bobo_traverse__ method would have still been used instead of the
+    atribute, let's make sure we preserve that behavior.
+
+      >>> self.folder.fancy.an_attribute = 'This is an attribute'
+      >>> print http(r'''
+      ... GET /test_folder_1_/fancy/an_attribute HTTP/1.1
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+      an_attribute
 
 
     Clean up:
