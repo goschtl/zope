@@ -64,6 +64,9 @@ def test_traversable():
       ... <five:traversable
       ...     class="Products.Five.browser.tests.test_traversable.SimpleClass"
       ...     />
+      ... <five:traversable
+      ...     class="Products.Five.tests.testing.FiveTraversableFolder"
+      ...     />
       ... 
       ... <browser:page
       ...     for="Products.Five.tests.testing.fancycontent.IFancyContent"
@@ -98,6 +101,35 @@ def test_traversable():
       HTTP/1.1 200 OK
       ...
       Fancy, fancy
+      
+    Five's traversable monkeypatches the __bobo_traverse__ method to do view
+    lookup and then delegates back to the original __bobo_traverse__ or direct
+    attribute/item lookup to do normal lookup.  In the Zope 2 ZPublisher, an 
+    object with a __bobo_traverse__ will not do attribute lookup unless the
+    __bobo_traverse__ method itself does it (i.e. the __bobo_traverse__ is the
+    only element used for traversal lookup).  Let's demonstrate:
+        
+      >>> from Products.Five.tests.testing.fancycontent import manage_addNonTraversableFancyContent
+      >>> info = manage_addNonTraversableFancyContent(self.folder, 'fancy_zope2', '')
+      >>> self.folder.fancy_zope2.an_attribute = 'This is an attribute'
+      >>> print http(r'''
+      ... GET /test_folder_1_/fancy_zope2/an_attribute HTTP/1.1
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+      an_attribute
+      
+    Without a __bobo_traverse__ method this would have returned the attribute
+    value 'This is an attribute'.  Let's make sure the same thing happens for
+    an object that has been marked traversable by Five:
+
+      >>> self.folder.fancy.an_attribute = 'This is an attribute'
+      >>> print http(r'''
+      ... GET /test_folder_1_/fancy/an_attribute HTTP/1.1
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+      an_attribute
 
 
     Clean up:
