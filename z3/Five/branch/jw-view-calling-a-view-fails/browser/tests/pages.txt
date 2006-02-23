@@ -116,6 +116,14 @@ test_zpt_things:
   <p>Hello world</p>
   <p>Hello world</p>
 
+calling a view from a view:
+
+  >>> view = self.folder.unrestrictedTraverse('testoid/callingcondor')
+  >>> print view()
+  <p>Hello world</p>
+  <p>The eagle has landed</p>
+  <p>Hello world</p>
+
 Make sure that tal:repeat works in ZPT browser pages:
 
   >>> view = self.folder.unrestrictedTraverse('testoid/ostrich.html')

@@ -74,6 +74,13 @@
       permission="zope2.ViewManagementScreens"
       />
 
+  <browser:page
+    for="Products.Five.tests.testing.simplecontent.ISimpleContent"
+    class=".pages.CallingOtherView"
+    name="callingcondor"
+    permission="zope2.ViewManagementScreens"
+  />
+    
   <!-- template page that defines a macro page -->
   <browser:page
       for="Products.Five.tests.testing.simplecontent.ISimpleContent"

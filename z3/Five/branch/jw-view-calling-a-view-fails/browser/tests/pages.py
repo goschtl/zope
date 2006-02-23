@@ -70,3 +70,11 @@ class NewStyleClass(object):
     def method(self):
         """Docstring"""
         return
+
+from zope.component import getMultiAdapter
+class CallingOtherView(BrowserView):
+    def __call__(self):
+        view = getMultiAdapter((self.context, self.request), name='condor.html')
+        #view = zapi.getView(self.context, 'condor.html', self.request)
+        return view()
+    
