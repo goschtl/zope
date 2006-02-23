@@ -91,6 +91,8 @@ class DatetimeWidget(DatetimeBase, textwidgets.DatetimeWidget):
 class DateWidget(DatetimeBase, textwidgets.DateWidget):
     """Date entry widget."""
 
+    displayWidth = 10
+
     def _toFormValue(self, value):
         return localizeDateTime(
             super(DateWidget, self)._toFormValue(value), self.request)
