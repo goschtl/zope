@@ -25,7 +25,6 @@ from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
 
 from AccessControl import getSecurityManager
-from Acquisition import aq_base
 from Products.Five.security import newInteraction
 
 _marker = object
