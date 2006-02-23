@@ -85,10 +85,10 @@ class Traversable:
             return self.__fallback_traverse__(REQUEST, name)
         except NotImplementedError:
             pass
-        # This should at least make a half hearted attempt to care for
+        # TODO: This should at least make an attempt to deal with
         # potential WebDAV issues, in particular we should not perform
-        # acquisition for webdav requests, and should return a NullResource
-        # when appropriate.
+        # acquisition for webdav requests. See BaseRequest.traverse for 
+        # details.
         try:
             return getattr(self, name)
         except AttributeError:
