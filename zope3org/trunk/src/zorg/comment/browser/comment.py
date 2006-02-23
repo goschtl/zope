@@ -35,12 +35,12 @@ def getFullName(principal_id) :
     """ Returns the full name or title of a principal that can be used
         for better display.
         
-        Returns None if the full name cannot be found.
+        Returns the id if the full name cannot be found.
     """
     try :
         return zapi.principals().getPrincipal(principal_id).title
     except (PrincipalLookupError, AttributeError) :
-        return None
+        return principal_id
         
 
 class ListComments(BrowserView) :

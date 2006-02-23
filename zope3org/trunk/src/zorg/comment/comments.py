@@ -32,10 +32,30 @@ from zope.app.location import Location
 from zorg.comment import IAnnotableComments
 from zorg.comment import IComment
 from zorg.comment import IComments
+from zorg.comment import ICommentSequence
 
 commentsKey = 'comment.comments'
 
+class CommentSequence(Sequence) :
+    """Special modification description that distinguishes between
+       sequence additions or modifications.
+       
+       XXX This distinction should probably go into
+       
+       zope.app.event.objectevent.Sequence
+       
+       later on.
+    """
+    
+    implements(ICommentSequence)
+    
+    changes = "add", "edit", "del"
 
+    def __init__(self, key, change) :
+        self.interface = IComments
+        self.keys = (key,)
+        self.change = change
+        
 
 def dottedName(klass):
     if klass is None:
@@ -222,7 +242,7 @@ class CommentsForAnnotableComments(Location):
         """See comment.IAddComments"""
         self._assert_comments()
         key = self.comments.addComment(data, contentType)
-        notify(ObjectModifiedEvent(self.context, Sequence(IComments, key)))
+        notify(ObjectModifiedEvent(self.context, CommentSequence(key, "add")))
         return key
 
     def editComment(self, key, data, contentType='text/plain'):
@@ -230,7 +250,7 @@ class CommentsForAnnotableComments(Location):
         if self.comments is not None:
             changed = self.comments.editComment(key, data, contentType)
             if changed:
-                notify(ObjectModifiedEvent(self.context, Sequence(IComments, key)))
+                notify(ObjectModifiedEvent(self.context, CommentSequence(key, "edit")))
             return changed
         else:
             raise KeyError(key)
@@ -239,6 +259,6 @@ class CommentsForAnnotableComments(Location):
         """See comment.IDeleteComments"""
         if self.comments is not None:
             self.comments.__delitem__(key)
-            notify(ObjectModifiedEvent(self.context, Attributes(IComments)))
+            notify(ObjectModifiedEvent(self.context, CommentSequence(key, "del")))
         else:
             raise KeyError(key)

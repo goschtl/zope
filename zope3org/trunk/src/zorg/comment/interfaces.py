@@ -16,9 +16,9 @@
 $Id$
 """
 
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 from zope.interface.common.mapping import IEnumerableMapping
-
+from zope.app.event.interfaces import ISequence
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.file.interfaces import IFile
@@ -84,3 +84,10 @@ class IEditComments(Interface):
 
 class IComments(IReadComments, IAddComments, IEditComments, IDeleteComments):
     """A collection of comments."""
+
+
+
+class ICommentSequence(ISequence) :
+    """A modification descriptor for a sequence of comments."""
+    
+    change = Attribute("Allowed change descriptions are 'add', 'edit', 'del'.")

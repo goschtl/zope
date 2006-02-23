@@ -130,14 +130,17 @@ an object modified event for the context:
     >>> del comments[2]
     >>> len(comments)
     2
-
+    
+    >>> comments.keys()
+    [1, 3]
+    
     >>> len(events)
     1
 
     >>> e = events.pop()
     >>> (e.object == subject, e.__class__.__name__ , 
-    ...  e.descriptions[0].interface.__name__, e.descriptions[0].attributes)
-    (True, 'ObjectModifiedEvent', 'IComments', ())
+    ...  e.descriptions[0].interface.__name__, e.descriptions[0].change)
+    (True, 'ObjectModifiedEvent', 'IComments', 'del')
 
 You can edit a comment passing its key, its data and optionaly its contentType.
 An edition notifies an object modified event for the context and a object

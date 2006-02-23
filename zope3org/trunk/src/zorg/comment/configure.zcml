@@ -32,6 +32,10 @@
         />
     <require
         permission="zope.View"
+        interface=".IEditComments"
+        />    
+    <require
+        permission="zope.View"
         interface=".IDeleteComments"
         />
     <require
