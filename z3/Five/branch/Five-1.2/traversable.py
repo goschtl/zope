@@ -16,8 +16,6 @@
 $Id$
 """
 from zExceptions import NotFound
-from ZPublisher import xmlrpc
-
 from zope.exceptions import NotFoundError
 from zope.component import getView, ComponentLookupError
 from zope.interface import implements
