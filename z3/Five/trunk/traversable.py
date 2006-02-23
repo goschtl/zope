@@ -56,7 +56,7 @@ class Traversable:
         Just raise a AttributeError to indicate traversal has failed
         and let Zope do it's job.
         """
-        raise AttributeError, name
+        raise NotImplementedError
     __fallback_traverse__.__five_method__ = True
 
     def __bobo_traverse__(self, REQUEST, name):
@@ -86,6 +86,14 @@ class Traversable:
                 AttributeError, KeyError, NotFound):
             pass
         try:
+            return self.__fallback_traverse__(REQUEST, name)
+        except NotImplementedError:
+            pass
+        # TODO: This should at least make an attempt to deal with
+        # potential WebDAV issues, in particular we should not perform
+        # acquisition for webdav requests. See BaseRequest.traverse for 
+        # details.
+        try:
             return getattr(self, name)
         except AttributeError:
             pass
@@ -93,7 +101,8 @@ class Traversable:
             return self[name]
         except (AttributeError, KeyError):
             pass
-        return self.__fallback_traverse__(REQUEST, name)
+        raise AttributeError, name
+
     __bobo_traverse__.__five_method__ = True
 
 
