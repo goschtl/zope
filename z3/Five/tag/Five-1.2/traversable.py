@@ -16,8 +16,6 @@
 $Id$
 """
 from zExceptions import NotFound
-from ZPublisher import xmlrpc
-
 from zope.exceptions import NotFoundError
 from zope.component import getView, ComponentLookupError
 from zope.interface import implements
@@ -27,7 +25,6 @@ from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
 
 from AccessControl import getSecurityManager
-from Acquisition import aq_base
 from Products.Five.security import newInteraction
 
 _marker = object
@@ -58,7 +55,7 @@ class Traversable:
         Just raise a AttributeError to indicate traversal has failed
         and let Zope do it's job.
         """
-        raise NotImplementedError
+        raise AttributeError, name
     __fallback_traverse__.__five_method__ = True
 
     def __bobo_traverse__(self, REQUEST, name):
@@ -82,14 +79,6 @@ class Traversable:
                 AttributeError, KeyError, NotFound):
             pass
         try:
-            return self.__fallback_traverse__(REQUEST, name)
-        except NotImplementedError:
-            pass
-        # This should at least make a half hearted attempt to care for
-        # potential WebDAV issues, in particular we should not perform
-        # acquisition for webdav requests, and should return a NullResource
-        # when appropriate.
-        try:
             return getattr(self, name)
         except AttributeError:
             pass
@@ -97,8 +86,7 @@ class Traversable:
             return self[name]
         except (AttributeError, KeyError):
             pass
-        raise AttributeError, name
-
+        return self.__fallback_traverse__(REQUEST, name)
     __bobo_traverse__.__five_method__ = True
 
 
