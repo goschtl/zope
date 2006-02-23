@@ -22,8 +22,6 @@ import Acquisition
 import transaction
 from zope.event import notify
 from zope.schema.interfaces import ValidationError
-from zope.publisher.browser import isCGI_NAME
-from zope.i18n.interfaces import IUserPreferredCharsets
 
 from zope.app.location.interfaces import ILocation
 from zope.app.location import LocationProxy
@@ -36,6 +34,7 @@ from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.i18n import ZopeMessageFactory as _
 
 from Products.Five.browser import BrowserView
+from Products.Five.browser.decode import processInputs, setPageEncoding
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 
 class EditView(BrowserView):
@@ -57,8 +56,8 @@ class EditView(BrowserView):
 
     def __init__(self, context, request):
         BrowserView.__init__(self, context, request)
-        self._processInputs()
-        self._setPageEncoding()
+        processInputs(self.request, self.charsets)
+        setPageEncoding(self.request)
         self._setUpWidgets()
 
     def _setUpWidgets(self):
@@ -70,36 +69,6 @@ class EditView(BrowserView):
         self.adapted = adapted
         setUpEditWidgets(self, self.schema, source=self.adapted,
                          names=self.fieldNames)
-
-    # taken from zope.publisher.browser.BrowserRequest
-    def _decode(self, text):
-        """Try to decode the text using one of the available charsets."""
-        if self.charsets is None:
-            envadapter = IUserPreferredCharsets(self.request)
-            self.charsets = envadapter.getPreferredCharsets() or ['utf-8']
-        for charset in self.charsets:
-            try:
-                text = unicode(text, charset)
-                break
-            except UnicodeError:
-                pass
-        return text
-
-    def _processInputs(self):
-        request = self.request
-        for name, value in request.form.items():
-            if (not (isCGI_NAME(name) or name.startswith('HTTP_'))
-                and isinstance(value, str)):
-                request.form[name] = self._decode(value)
-
-    def _setPageEncoding(self):
-        """Set the encoding of the form page via the Content-Type header.
-        ZPublisher uses the value of this header to determine how to
-        encode unicode data for the browser."""
-        envadapter = IUserPreferredCharsets(self.request)
-        charsets = envadapter.getPreferredCharsets() or ['utf-8']
-        self.request.RESPONSE.setHeader(
-            'Content-Type', 'text/html; charset=%s' % charsets[0])
 
     def setPrefix(self, prefix):
         for widget in self.widgets():
