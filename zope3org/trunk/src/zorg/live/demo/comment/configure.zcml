@@ -22,9 +22,17 @@
         menu="zmi_views" />
         
       <page
-        name="startComment"
-        attribute="startComment"
-      />
+        name="addComment"
+        attribute="addComment" />
+      
+      <page
+        name="saveComment"
+        attribute="saveComment" />
+      
+      <page
+        name="cancelComment"
+        attribute="cancelComment" />
+
            
     </pages>
 </configure>

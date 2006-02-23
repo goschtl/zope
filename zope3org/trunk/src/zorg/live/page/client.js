@@ -9,6 +9,23 @@ function debugEval(str) {
 
 var userAgent = navigator.userAgent.toLowerCase();
 
+var alreadyEvaluated = {};
+
+function getAttention(act, id) {
+    if (act) {
+        switch(act) {
+            case 'scroll' : {
+                scrollToLast(id);
+                return;
+                }
+            case 'sound' : {
+                playFlash("ping");
+                return;
+                }
+            }
+        }
+   }
+
 function evalResponse(request) {
     var response = request.responseText;
     
@@ -28,31 +45,27 @@ function evalResponse(request) {
             case 'update': {
                 var html = lines.join('\n');
                 var id = parameter[0];
+              
                 $(id).innerHTML = html;  /* .stripScripts(); */
                 html.evalScripts();
+                getAttention(parameter[1], id);
+                alreadyEvaluated[response] = true;
                 return;
                 }
       
             case 'append': {
+                if (alreadyEvaluated[response]) {
+                    return;
+                    }
                 var html = lines.join('\n');
                 var id = parameter[0];
-                var act = parameter[1];
+
                 $(id).innerHTML += html;  /* .stripScripts(); */
                 /* We must eval all scripts again. Arrgh!   */
                 $(id).innerHTML.evalScripts();
 
-                if (act) {
-                    switch(act) {
-                        case 'scroll' : {
-                            scrollToLast(id);
-                            return;
-                            }
-                        case 'sound' : {
-                            playFlash("ping");
-                            return;
-                            }
-                        }
-                    }
+                getAttention(parameter[1], id);
+                alreadyEvaluated[response] = true;
                 return;
                 }
                 

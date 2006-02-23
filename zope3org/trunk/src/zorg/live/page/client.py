@@ -28,6 +28,7 @@ from zorg.live.page.interfaces import ILivePageManager
 from zorg.live.page.interfaces import ICloseEvent
 
 from zorg.live.page.event import IdleEvent
+from zorg.live.page.event import request2event
 
 class LivePageClient(object):
     """
@@ -51,6 +52,7 @@ class LivePageClient(object):
         self.where = page.getLocationId()
         self.page_class = page.__class__
         self.outbox = []
+        self.send = []
         self.principal = page.request.principal
         self.writelock = allocate_lock()
         self.touched = time.time()
@@ -95,21 +97,27 @@ class LivePageClient(object):
             should use nextEvent for defered checks.
             
         """
-            
+        output = self.nextEvent()
+        if output :
+            return str(output)
+                
         end = time.time() + self.refreshInterval
         while time.time() < end :
             output = self.nextEvent()
             if output :
                 return str(output)
-            time.sleep(0.2)
+            time.sleep(0.1)
             
         return str(IdleEvent())
         
-    def input(self, event) :
+    def input(self, event=None) :
         """ Receives a client event and broadcasts the event
             to other clients.
         """
         
+        if event is None :
+            event = request2event()
+            
         manager = zapi.getUtility(ILivePageManager)
         
         if ICloseEvent.providedBy(event) and event.uuid == self.uuid :

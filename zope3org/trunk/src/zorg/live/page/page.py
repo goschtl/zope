@@ -33,7 +33,7 @@ from zorg.ajax.page import ComposedAjaxPage
 
 from zorg.live.page.interfaces import ILivePage
 from zorg.live.page.interfaces import ILivePageManager
-
+from zorg.live.page.event import dict2event
 from zorg.live.page.client import LivePageClient
 
 
@@ -90,12 +90,13 @@ class LivePage(ComposedAjaxPage) :
         method = Output(self, request).publishTraverse(request, uuid)
         return str(method())
 
-    def input(self, uuid, event) :
+    def input(self, uuid, event=None) :
         """ Convenience function that accesses a specific client.
         
         """
-        
         request = self.request
+        if event is None :
+            event = dict2event(request.form)
         method = Input(self, request).publishTraverse(request, uuid)
         return method(event)
  

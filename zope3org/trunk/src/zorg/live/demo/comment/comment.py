@@ -17,21 +17,23 @@ $Id: comment.py 38895 2005-10-07 15:09:36Z dominikhuber $
 """
 __docformat__ = 'restructuredtext'
 
-import zope
+import zope, transaction
 from datetime import datetime
 import pytz
 
 from zope.interface import implements
 from zope.component import adapts
-from zope.component import ComponentLookupError
 from zope.app import zapi
 from zope.publisher.browser import TestRequest
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.security.interfaces import PrincipalLookupError
 
+from zope.app.event.interfaces import IObjectModifiedEvent
+
+from zorg.edition.interfaces import IUUIDGenerator
 from zorg.comment import IComments
+from zorg.comment import ICommentSequence
 
 from zorg.live.page.client import LivePageClient
 from zorg.live.page.page import LivePage
@@ -40,19 +42,8 @@ from zorg.live.page.event import Update
 from zorg.live.page.interfaces import ILivePageManager
 from zorg.live.page.interfaces import IPersonEvent
 
-from zorg.edition.interfaces import IUUIDGenerator
-
-def getFullName(principal_id) :
-    """ Returns the full name or title of a principal that can be used
-        for better display.
-        
-        Returns the id if the full name cannot be found.
-    """
-    try :
-        return zapi.principals().getPrincipal(principal_id).title
-    except (PrincipalLookupError, AttributeError, ComponentLookupError) :
-        return principal_id
-        
+from zorg.live.globals import getRequest
+from zorg.live.globals import getFullName
 
 class LiveCommentsClient(LivePageClient) :
     """ A specialization that holds infos about 
@@ -75,23 +66,21 @@ class LiveComments(LivePage) :
     >>> page = LiveComments(file, TestRequest())
     >>> print page.renderComments()
     <div id="comments"></div>
-    
-    
-    
+        
     We can also add the texts as persistent comments:
     
     >>> LiveComments(file, TestRequest()).addComment("A comment")
+    1
     >>> LiveComments(file, TestRequest()).addComment("Another comment")
+    2
     
     >>> page = LiveComments(file, TestRequest())
     >>> print page.renderComments()
-    <div id="comments">
+    <div id="comments"><div id="comment1">
     ...
-    <div id="comment1">A comment</div>
+    <div id="text1">A comment</div>
     ...
-    <a name="comment2"></a>
-    ...
-    <div id="comment2">Another comment</div>
+    <div id="text2">Another comment</div>
     ...
     
    
@@ -105,69 +94,120 @@ class LiveComments(LivePage) :
     def __init__(self, context, request) :
         super(LiveComments, self).__init__(context, request)
         self.comments = IComments(self.context)
+        self.formatter = request.locale.dates.getFormatter('dateTime', 'medium')
         
-    def startComment(self, comment) :
-        where = self.getLocationId()
-        uuid = zapi.getUtility(IUUIDGenerator)()
-        r = self.renderPendingComment(comment, uuid).encode('utf-8')
+    def addComment(self, text) :
+        """ Starts a live comment. Saves a first nearly empty version
+            and returns the new key.
+        """
+        comments = IComments(self.context)
+        return str(comments.addComment(text))
         
-        event = Append(id="comments", html=r, extra="scroll")
-        #event.where = self.getLocationId()
+    def saveComment(self, key, text) :
+        """ Saves the last text of the live comment. """
+        comments = IComments(self.context)
+        comments.editComment(key, text)
+        return "saved"
         
-        self.sendEvent(event)
-        return uuid
+    def cancelComment(self, key) :
+        """ Cancels the edit session and deletes the persistent comment. """
+        comments = IComments(self.context)
+        del comments[key]
+        return "canceled"
         
     def whoIsOnline(self) :
+        """ Returns a comma seperated list of names of online users. """
         manager = zapi.getUtility(ILivePageManager)
-        return manager.whoIsOnline(self.getLocationId())
-   
-    def renderPendingComment(self, text, uuid) :
-        who = self.request.principal.id
-        info = self.info = dict()
-        info['live'] = True
-        info['id'] = uuid
-        info['key'] = uuid
-        info['who'] = getFullName(who)
-        info['when'] = datetime.now(pytz.utc)
-        info['text'] = text
-        return self._comment()
+        ids = manager.whoIsOnline(self.getLocationId())
+        return ", ".join([getFullName(id) for id in ids])
+      
         
+    def renderComment(self, key, comment, livetext=None) :
+    
+        if livetext is not None :
+            text = livetext
+        else :
+            text = unicode(comment.data, encoding="utf-8")
+            
+        info = self.info = dict()
+        dc = IZopeDublinCore(comment)
+        info['live'] = False
+        info['comment_id'] = "comment%s" % key
+        info['text_id'] = "text%s" % key
+        info['key'] = key
+        info['who'] = ", ".join(getFullName(x) for x in dc.creators)
+        info['when'] = self.formatter.format(dc.created)
+        info['text'] = self.makeParagraph(text)
+        return self._comment()
+ 
+ 
     def renderComments(self) :
     
         result = ['<div id="comments">']
         
         comments = self.comments
         for key, value in comments.items() :
-            info = self.info = dict()
-            dc = IZopeDublinCore(value)
-            info['live'] = False
-            info['id'] = "comment%s" % key
-            info['key'] = key
-            info['who'] = ", ".join(getFullName(x) for x in dc.creators)
-            info['when'] = dc.created
-            info['text'] = unicode(value.data, encoding="utf-8")
-            
-            result.append(self._comment())
-        
+            result.append(self.renderComment(key, value))
         result.append('</div>')
         
         return "".join(result)
+
                 
-    def addComment(self, text) :
-        comments = IComments(self.context)
-        comments.addComment(text)
+    def makeParagraph(cls, text) :
+        text = text.replace("\n", "<br/>")
+        return "<p>%s</p>" % text
+
+    makeParagraph = classmethod(makeParagraph)
+
         
     def notify(cls, event) :
-        print "Comment.notify", event
+
         if IPersonEvent.providedBy(event) :
             manager = zapi.getUtility(ILivePageManager)
             repr = manager.whoIsOnline(event.where)
             update = Update(id="online", html=repr)
             cls.sendEvent(update)
+        
+        if IObjectModifiedEvent.providedBy(event) :
+            t = transaction.get()
+            for desc in event.descriptions :
+
+                if ICommentSequence.providedBy(desc) :
+                    if IComments == desc.interface :
+                        method = cls.onCommentModified
+                        # XXX Replace with addAfterCommitHook in ZODB 3.7
+                        t.addBeforeCommitHook(method, (event, desc))
+                                                
+                        
             
     notify = classmethod(notify)
+
+            
+    def onCommentModified(cls, event, desc) :
+        """ Event handler for new comments. Note that this event handler
+            responds to Zopes ObjectModifiedEvent that reflects a change
+            in the ZODB.
+        """
         
+        context = event.object
+        comments = IComments(context)
+        page = LiveComments(context, getRequest())             
+        key = desc.keys[0]
+
+        if desc.change == "add" :
+            persistent = comments[key]
+            r = page.renderComment(key, persistent).encode('utf-8')
+            event = Append(id="comments", html=r, extra="scroll")    
+        elif desc.change == "del" :
+            r = page.renderComments().encode('utf-8')
+            event = Update(id="comments", html=r) 
+        else :
+            persistent = comments[key]
+            text = cls.makeParagraph(persistent.data)
+            event = Update(id="text%s" % key, html=text)    
+            
+        cls.sendEvent(event)
+        
+    onCommentModified = classmethod(onCommentModified)
     
-    
-    
-    
+

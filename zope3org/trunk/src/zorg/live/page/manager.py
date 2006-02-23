@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: page.py 39651 2005-10-26 18:36:17Z oestermeier $
+$Id: manager.py 39651 2005-10-26 18:36:17Z oestermeier $
 """
 import zope, time
 
@@ -147,7 +147,6 @@ class LivePageManager(object) :
             # we use the zope event here since it's up the concrete
             # pages how they represent the online status of members
             
-            print "Sending", str(login)
             zope.event.notify(login)
               
 
@@ -169,8 +168,6 @@ class LivePageManager(object) :
             logout = LogoutEvent(who=client.principal.id, where=where)
             # we use the zope event here since it's up the concrete
             # pages how they represent the online status of members
-            
-            print "Sending", str(logout)
             zope.event.notify(logout)    
     
     def getClientsFor(self, user_id, where=None) :
@@ -270,11 +267,11 @@ def livePageSubscriber(event) :
         of the page classes.
         
     """
-    
-    print "livePageSubscriber", event
-    
-    manager = zapi.getUtility(ILivePageManager)
-    
+        
+    manager = zapi.queryUtility(ILivePageManager)
+    if manager is None :
+        return
+        
     page_classes = set()
     for client in manager :
         page_classes.add(client.page_class)
@@ -282,4 +279,3 @@ def livePageSubscriber(event) :
     for cls in page_classes :
         cls.notify(event)
 
-                     

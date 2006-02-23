@@ -21,7 +21,7 @@ from zope.interface import implements
 from zope.interface import directlyProvides
 
 from zope.app import zapi
-
+from zorg.live.globals import getRequest
 from zorg.live.page.interfaces import ILivePageEvent
 from zorg.live.page.interfaces import IIdleEvent
 from zorg.live.page.interfaces import IReloadEvent
@@ -125,7 +125,7 @@ class CloseEvent(LivePageEvent) :
     """ A user has closed the browser window
     
         >>> str(CloseEvent(uuid='client_uuid'))
-        'reload' 
+        'close client_uuid'
     
     """
     
@@ -270,3 +270,14 @@ def dict2event(args) :
     del args['verb']
     factory = zapi.getUtility(IClientEventFactory, name=verb)
     return factory(**args)    
+
+def request2event() :
+    """ Converts the form data of the current request to an event.
+    
+    """
+    request = getRequest()
+    args = {}
+    for k, v in request.form.items() :
+        args[str(k)] = v.encode("utf-8")
+    return dict2event(args)
+  

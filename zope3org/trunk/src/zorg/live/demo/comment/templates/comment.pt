@@ -1,26 +1,25 @@
-<div tal:condition="view/info/live">
-    <span>Live comment started by &nbsp;</span><span tal:content="view/info/who">
-        Author 
-    </span><span>&nbsp;&nbsp;at</span>
-    <span tal:content="view/info/when">
-            12:45 
-    </span>
+<div id="comment01" 
+    style="float:left; margin: 2px; padding: 4px;"
+    tal:attributes="id view/info/comment_id">
+    
+    <div style="border:1px solid gray; max-width:20em; min-width:20em;">
+        <div id="id001" style="padding: 2px; overflow:auto; max-height: 5em; min-height:5em;"
+                tal:content="structure view/info/text"
+                tal:attributes="id view/info/text_id">
+            Content 
+        </div>
+    </div>
+ 
+    <div style="color: gray; max-width:20em; height: 2em; margin: 2px;">
+        <a name="comment" tal:attributes="name string:comment${view/info/key}"></a>
+        <span class="entry-timestamp" style="float:left;" tal:content="view/info/key">
+            1. 
+        </span><span>. &nbsp;</span><span tal:content="view/info/who">
+            Author 
+        </span><span>&nbsp;&nbsp;</span>
+        <span tal:content="view/info/when">
+                12:45 
+        </span>
+    </div>
+   
 </div>
-<div tal:condition="not: view/info/live">
-    <a name="comment" tal:attributes="name string:comment${view/info/key}"></a>
-    <span class="entry-timestamp" style="float:left;" tal:content="view/info/key">
-        1. 
-    </span><span>. posted by &nbsp;</span><span tal:content="view/info/who">
-        Author 
-    </span><span>&nbsp;&nbsp;at</span>
-    <span tal:content="view/info/when">
-            12:45 
-    </span>
-</div>
-<br/>
-<div id="id001" tal:content="structure view/info/text"
-        tal:attributes="id view/info/id">
-    Content 
-</div>
-<br/>
-<hr/>

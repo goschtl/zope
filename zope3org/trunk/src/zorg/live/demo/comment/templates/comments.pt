@@ -43,11 +43,9 @@
     
    <p>Type a comment and see how the page
     updates automatically. Open the same LiveComment page in a second browser
-    and observe how others are immediately notified about your typing. </p>
-   
-   <p>Processing input...<span id="update_feedback">?</span></p>
+    and observe how others are immediately notified about your typing.</p>
 
-   <div>List of Comments</div>
+    <div>List of Comments</div>
         <div id="comments" 
              style="display: block;
                     border: 1px solid #CCCCCC;
@@ -60,19 +58,18 @@
                 tal:content="structure view/renderComments">
     </div>
   
-  
-   <form action="./@@addcomment.html"
-     method="post"
-     >
-
+   <form action="addComment"
+        onsubmit="saveComment($('commentbox')); return false;"
+        onreset="cancelComment();"
+        method="post">
 
     <div class="row">
-      <div class="label" i18n:translate="">Live Comment</div>
+      <div class="label" i18n:translate="">Live Comment <span id="update_feedback"></span> </div>
+        <input id="comment_key" type="hidden" name="key:int" value="" />
       <div class="field">
-        <textarea id="commentbox" name="text" rows="5" cols="45"></textarea>
+        <textarea style="width: 30em; border: 1px solid gray;" id="commentbox" name="text" rows="5" cols="10"></textarea>
       </div>
     </div>
-
 
     <script type="text/javascript">
         installTextObserver();
@@ -82,12 +79,12 @@
       <div class="controls">
         <input type="submit" name="save" value="Save Comment"
             i18n:attributes="value save-comment-button"/>
+        <input type="reset" name="cancel" value="Cancel"
+            i18n:attributes="value cancel-comment-button"/>
       </div>
     </div>
 
   </form>
-  <hr/>
-  
 
 </div>
 </body>

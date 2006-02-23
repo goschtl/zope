@@ -7,14 +7,6 @@ is similar to and inspired by Nevows LivePages, see also
 
     http://divmod.org/trac/wiki/DivmodNevow
   
-A serious implementation effort should try to use MochiKit and, at least in 
-part, the Nevow Athena JavaScript implementation instead of trying to build 
-another client from scratch. The MochiKit guys work on reimplementing
-the scriptaculous library I used before. If they are done, I will probably 
-switch to these new libs.
-
-    See http://trac.mochikit.com/wiki/ScriptAculoUs
-
 Installation
 ------------
 
@@ -33,26 +25,28 @@ following lines to your 'zope.conf' file :
 Basic idea
 ----------
 
-LivePages try to overcome the traditional model of web pages in which the
-content of the page is refreshed in response to a user activity. Besides the
+This LivePage package implements a MVC approach in its narrow sense: it uses
+server generated events to update browser views in real time.
+It tries to  try to overcome the traditional model of web pages in which the
+content of the page is only refreshed in response to a user activity. Besides the
 typically request response cycle that is under the control of the user
 a LivePage opens a background request that waits for notification of server
-side messages. This background request waits until a notification arives,
-performs some page updating or other javascripts upon notification, and
+side events. This background request waits until an event arrives,
+performs some a (mostly partial) page update upon notification, and
 repeats a new request for further notifications. This means 
-that each LivePage constantly opens HTTP channels until a notification
+that each LivePage constantly opens HTTP channels until an event
 arrives, closes the channel and immediately reopens a new channel.
-Since many notifications are broadcasted to several
-users this might lead to massive concurrent requests, which start nearly
-at the same time.
 
 
-Main problem
+Main problems
 ------------
+
+Since many events are broadcasted to several users this might lead to massive 
+concurrent requests for new events, which start nearly at the same time.
 
 Zope is not well-suited for this performance model since each request is handled
 in a seperate thread with its own database connection and object cache. 
-For most of the background requests for notification this is an unnecessary 
+For most of the background event polling this is an unnecessary 
 overhead that limits the number of connected users to the number of available 
 threads. This might work for two or three users but not for 20 users or more 
 which are concurrently online and share the same resources.
@@ -61,7 +55,34 @@ Therefore this package contains a specialization of Zope3's twisted server
 that handles all LivePage requests without the need for database connections  
 and persistent objects outside of the ordinary Zope3 threads. 
 The Zope3 requests still work of course but should be restricted to security 
-or persistence issues as far as possible.
+or persistence issues as far as possible whereas the event handling is done
+by twisted.
+
+Another problem is that the Zope event model does not guarantee that we get
+all relevant data to distinguish relevant events. For instance, many Zope
+application send many ObjectModifiedEvents after another without distinguishing
+between changes of a ZopeDublinCore attribute, the file data, container content,
+etc. As long as the ObjectModifiedEvent is only used to update the modification
+time of an object this is fine, but in a MVC architecture where the views
+must be updated in a more fine graned manner this often leads to redundant
+updates of large parts of the page. E.g. if we have a form with the
+title, description, and effective date of an object that we want publish,
+all slots must be updated in response to an ObjectModifiedEvent as long as
+the event does not use the optional modification descriptors, which
+are there, but rarely used (This by the way is also a main problem of the 
+current Catalog implementation)
+
+In order to ensure that events are not send multiple times we need a
+check whether an identical event has already be processed and whether
+this really matters. This largeley depends on the application. In a chat
+application it might be ok if a single user repeats himself whereas
+in a list view of container we must ensure that each object is represented
+by only one list item. 
+The check for redundant events could be done on the server or on the client
+side. We decided to use the client side since it may happen that some
+events get lost and redundancy may be usable to recover from such situations.
+So we leave the check for redundant events completely to the JavaScript client
+which stores update and append operations on DOM elements in a hash.
 
 
 Usage
@@ -77,6 +98,12 @@ can be accessed in a thread safe way.
     >>> from zorg.live.page.interfaces import ILivePageManager
     >>> manager = LivePageManager()
     >>> zope.component.provideUtility(manager, ILivePageManager)
+    
+Additionally we must add a subscriber that observes Zope3 events and 
+the LivePageEvents :
+
+    >>> from zorg.live.page.manager import livePageSubscriber
+    >>> zope.event.subscribers.append(livePageSubscriber)
 
 Now we simulate the startup of two clients.
 
