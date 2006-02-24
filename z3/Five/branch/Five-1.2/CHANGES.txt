@@ -2,6 +2,17 @@
 Five Changes
 ============
 
+Five 1.2.1 (unreleased)
+=======================
+
+Bugfixes
+--------
+
+* Five's traversing machinery now mimicks the ZPublisher correctly:
+  When no Zope 3-style view is found, first the object's original
+  ``__bobo_traverse__`` is tried.  If that does not exist, Traversable
+  resorts to attribute look-up.
+
 Five 1.2 (2006-01-07)
 =====================
 
