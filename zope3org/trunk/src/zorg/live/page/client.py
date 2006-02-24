@@ -17,8 +17,7 @@ $Id: page.py 39651 2005-10-26 18:36:17Z oestermeier $
 """
 
 import time, zope
-
-from thread import allocate_lock
+import Queue
 
 from zope.interface import implements
 from zope.app import zapi
@@ -51,44 +50,34 @@ class LivePageClient(object):
         
         self.where = page.getLocationId()
         self.page_class = page.__class__
-        self.outbox = []
-        self.send = []
+        self.outbox = Queue.Queue()
+      
         self.principal = page.request.principal
-        self.writelock = allocate_lock()
         self.touched = time.time()
         manager.register(self, uuid)
-            
+
+
     def nextEvent(self) :
         """ Returns an event for processing in the browser side client.
             Touches the client to indicate that the connection 
             is still alive.
         """
-        self.writelock.acquire()
+        self.touched = time.time()
         try :
-            if self.outbox :
-                result = self.outbox.pop(0)
-            else :
-                result = None
-            self.touched = time.time()      
-        finally :
-            self.writelock.release()
-        return result
+            return self.outbox.get_nowait()
+        except Queue.Empty :
+            return None
     
         
     def addEvent(self, event) :
         """ Adds an output event for further client side processing to the
             clients event queue.
         """
-
-        self.writelock.acquire()
-        try:
-            if event not in self.outbox :
-                self.outbox.append(event)
-        finally:
-            self.writelock.release()        
- 
+        self.outbox.put(event)
+                  
+                  
     def output(self) :
-        """ Checks the event queue for waiting events.
+        """ Checks the event queue for waiting events until a timeout occurrs.
             
             Returns an idle event after an timeout.
             

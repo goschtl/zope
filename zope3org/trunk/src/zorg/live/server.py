@@ -12,7 +12,6 @@
 #
 ##############################################################################
 """
-
 $Id: server.py 39651 2005-10-26 18:36:17Z oestermeier $
 """
 import doctest, unittest
@@ -236,14 +235,13 @@ class LivePageWSGIResource(WSGIResource) :
             request. Otherwise it mimics exactly the behavior of
             its superclass method.
         """
-       
-        from twisted.internet import reactor
-        # Do stuff with WSGIHandler.
+        
+        # reactor.threadpool.dumpStats()
         
         handler = LivePageWSGIHandler(self.application, ctx)
         d = handler.responseDeferred
         if handler.liverequest :
-            # A livepage is not called in it's own thread
+            # Run outside thread
             handler.runLive()
             return d
         else :
@@ -273,7 +271,8 @@ class LiveLogWrapperResource(LogWrapperResource) :
 
 def createHTTPFactory(db):
 
-    #print "createHTTPFactory called"
+    reactor.threadpool.adjustPoolsize(10, 20)
+    
     resource = WSGIPublisherApplication(db)
     resource = LivePageWSGIResource(resource)
     resource = LiveLogWrapperResource(resource)

@@ -17,8 +17,6 @@ $Id: manager.py 39651 2005-10-26 18:36:17Z oestermeier $
 """
 import zope, time
 
-from thread import allocate_lock
-
 import zope.event
 from zope.interface import implements
 from zope.app import zapi
@@ -54,15 +52,15 @@ class LivePageManager(object) :
     
     implements(ILivePageManager)
     
-    writelock = allocate_lock()     # A writelock for clients
     checkInterval = 10              # check for dead clients in seconds
-    maxClients = 3                  # max clients per user
+    maxClients = 10                 # max clients per user
+    cacheSize = 20                  # cache sizes
     
     def __init__(self) :
-        self.locations = {}
+        self.locations = Cache(max_size=self.cacheSize)
         self.lastCheck = 0
-        self.results = Cache(size=200)
-        
+        self.results = Cache(max_size=self.cacheSize)
+                      
     def cacheResult(self, result) :
         """ Caches a result for efficient access. 
         
@@ -76,11 +74,7 @@ class LivePageManager(object) :
         """
         
         uuid = zapi.getUtility(IUUIDGenerator)()
-        self.writelock.acquire()
-        try :
-            self.results[uuid] = result
-        finally:
-            self.writelock.release()
+        self.results[uuid] = result
         return uuid
         
     def fetchResult(self, uuid, clear=True) :
@@ -95,6 +89,7 @@ class LivePageManager(object) :
         result = self.results.get(uuid, None)
         if clear :
             del self.results[uuid]
+            
         return result
         
     def _location(self, where) :
@@ -107,7 +102,7 @@ class LivePageManager(object) :
         
         """
         
-        return self.locations.setdefault(where, {})
+        return self.locations.setdefault(where, Cache(max_size=self.cacheSize))
         
     def register(self, client, uuid=None) :
         """ Register a client. Uses the provided uuid or generates a new one.
@@ -115,32 +110,29 @@ class LivePageManager(object) :
         """
         
         existing = None
-        self.writelock.acquire()
-        try:
-            if uuid is None :
-                uuid = zapi.getUtility(IUUIDGenerator)()
-            else :
-                # an existing uuid indicates a renewed registration of an
-                # old page. We do not know what happened so a reload
-                # would make sense
-                client.addEvent(ReloadEvent())
-             
-            existing = self.getClientsFor(client.principal.id)
+        
+        if uuid is None :
+            uuid = zapi.getUtility(IUUIDGenerator)()
+        else :
+            # an existing uuid indicates a renewed registration of an
+            # old page. We do not know what happened so a reload
+            # would make sense
+            client.addEvent(ReloadEvent())
+         
+        existing = self.getClientsFor(client.principal.id)
+        
+        if len(existing) > self.maxClients :
+            for c in existing :
+                self.unregister(c)
+            client.addEvent(ErrorEvent(description="clients exceeded"))
             
-            if len(existing) > self.maxClients :
-                for c in existing :
-                    self.unregister(c)
-                client.addEvent(ErrorEvent("clients exceeded"))
-                
-            where = client.where
-            
-            client.uuid = uuid
-            if uuid in self._location(where) :
-                print "***WARNING: already registered"
-            else :
-                self._location(where)[uuid] = client
-        finally:
-            self.writelock.release()
+        where = client.where
+        
+        client.uuid = uuid
+        if uuid in self._location(where) :
+            print "***WARNING: already registered"
+        else :
+            self._location(where)[uuid] = client
             
         if not existing :
             login = LoginEvent(who=client.principal.id, where=where)
@@ -154,15 +146,11 @@ class LivePageManager(object) :
     def unregister(self, client) :
     
         where = client.where
-        self.writelock.acquire()
-        try:
-            try :
-                del self._location(where)[client.uuid]
-                print "***Info: unregistered client for %s." % client.principal.title
-            except KeyError :
-                print "***Info: client already unregistered."
-        finally:
-            self.writelock.release()
+        try :
+            del self._location(where)[client.uuid]
+            print "***Info: unregistered client for %s." % client.principal.title
+        except KeyError :
+            print "***Info: client already unregistered."
             
         if not self.isOnline(client.principal.id) :
             logout = LogoutEvent(who=client.principal.id, where=where)
@@ -180,11 +168,7 @@ class LivePageManager(object) :
         for mapping in self.locations.values() :
             if uuid in mapping :
                 client = mapping[uuid]
-                self.writelock.acquire()
-                try :
-                    client.touched = time.time()
-                finally :
-                    self.writelock.release()    
+                client.touched = time.time()
                 return client
         return default
         
@@ -202,12 +186,9 @@ class LivePageManager(object) :
             for client in mapping.values() :
                 if time.time() > client.touched + client.targetTimeout :
                     self.unregister(client)
-        self.writelock.acquire()
-        try :
-            self.lastCheck = time.time()
-        finally :
-            self.writelock.release()    
-    
+        
+        self.lastCheck = time.time()
+        
     def _iterClients(self, where=None) :
         """ 
         

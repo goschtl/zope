@@ -70,17 +70,15 @@ class LiveComments(LivePage) :
     We can also add the texts as persistent comments:
     
     >>> LiveComments(file, TestRequest()).addComment("A comment")
-    1
+    '1'
     >>> LiveComments(file, TestRequest()).addComment("Another comment")
-    2
+    '2'
     
     >>> page = LiveComments(file, TestRequest())
     >>> print page.renderComments()
-    <div id="comments"><div id="comment1">
-    ...
-    <div id="text1">A comment</div>
-    ...
-    <div id="text2">Another comment</div>
+    <div id="comments">...
+    ...<p>A comment</p>...
+    ...<p>Another comment</p>...
     ...
     
    
@@ -96,6 +94,12 @@ class LiveComments(LivePage) :
         self.comments = IComments(self.context)
         self.formatter = request.locale.dates.getFormatter('dateTime', 'medium')
         
+    def format(self, datetime) :
+        try :
+            return self.formatter.format(datetime)
+        except :
+            return str(datetime)
+    
     def addComment(self, text) :
         """ Starts a live comment. Saves a first nearly empty version
             and returns the new key.
@@ -136,7 +140,7 @@ class LiveComments(LivePage) :
         info['text_id'] = "text%s" % key
         info['key'] = key
         info['who'] = ", ".join(getFullName(x) for x in dc.creators)
-        info['when'] = self.formatter.format(dc.created)
+        info['when'] = self.format(dc.created)
         info['text'] = self.makeParagraph(text)
         return self._comment()
  
