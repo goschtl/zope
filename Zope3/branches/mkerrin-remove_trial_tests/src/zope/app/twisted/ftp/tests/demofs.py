@@ -17,6 +17,9 @@ import posixpath
 from zope.security.interfaces import Unauthorized
 from zope.publisher.interfaces import NotFound
 
+from zope.exceptions import DuplicationError
+from zope.app.copypastemove import ItemNotFoundError
+
 from zope.app.twisted.interfaces import IFileSystem
 from zope.interface import implements
 
@@ -155,7 +158,14 @@ class DemoFileSystem(object):
 
     def ls(self, path, filter=None):
         "See zope.server.interfaces.ftp.IFileSystem"
-        f = self.getdir(path)
+        if self.type(path) == 'd':
+            f = self.getdir(path)
+        else:
+            path = path.split('/')
+            name = path.pop()
+            f = self.getdir('/'.join(path))
+            return [self._lsinfo(name, f.files[name])]
+
         if filter is None:
             return [self._lsinfo(name, f.files[name])
                     for name in f
@@ -236,9 +246,11 @@ class DemoFileSystem(object):
         newdir = self.getwdir(newpath)
 
         if oldname not in olddir.files:
-            raise OSError("Not exists:", oldname)
+            ## raise exception that we are likely to get in Zope3
+            raise ItemNotFoundError(olddir, oldname)
         if newname in newdir.files:
-            raise OSError("Already exists:", newname)
+            ## raise exception that we are likely to get in Zope3
+            raise DuplicationError("%s is already in use" % newname)
 
         newdir.files[newname] = olddir.files[oldname]
         del olddir.files[oldname]

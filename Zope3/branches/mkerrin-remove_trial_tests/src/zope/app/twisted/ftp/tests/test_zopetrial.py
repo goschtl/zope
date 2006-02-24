@@ -27,7 +27,7 @@ of syntax errors.
 
 Michael Kerrin <michael.kerrin@openapp.biz>
 
-$Id:$
+$Id$
 """
 __docformat__="restructuredtext"
 

@@ -13,12 +13,13 @@
 ##############################################################################
 """This file basically contains FTP functional tests.
 
-$Id:$
+$Id$
 """
 __docformat__="restructuredtext"
 from cStringIO import StringIO
 import posixpath
 import unittest
+from datetime import datetime
 
 from twisted.test import test_ftp
 from twisted.internet import reactor, protocol, defer
@@ -169,6 +170,56 @@ class BasicFTPServerTestCase(FTPServerTestCase,
         responseLines = wait(self.client.queueStringCommand('SIZE /'))
         self.assertEqual(['213 0'] , responseLines)
 
+    def test_RENAME(self):
+        data = StringIO('x' * 20)
+        self.rootfs.writefile('/file.txt', data)
+
+        self._authLogin()
+        responseLines = wait(
+            self.client.queueStringCommand('RNFR /file.txt'))
+        self.assertEqual(
+            ['350 Requested file action pending further information.'],
+            responseLines)
+        responseLines = wait(
+            self.client.queueStringCommand('RNTO /newfile.txt'))
+        self.assertEqual(
+            ['250 Requested File Action Completed OK'], responseLines)
+
+        file = self.rootfs.get('newfile.txt')
+        self.assertEqual(file.data, data.getvalue())
+        self.assertEqual(['newfile.txt'], self.rootfs.names('/'))
+
+    def test_RENAME_duplicate(self):
+        data = StringIO('x' * 20)
+        self.rootfs.writefile('/file.txt', data)
+        datadest = StringIO('y' * 20)
+        self.rootfs.writefile('/newfile.txt', datadest)
+
+        self._authLogin()
+        responseLines = wait(
+            self.client.queueStringCommand('RNFR /file.txt'))
+        self.assertEqual(
+            ['350 Requested file action pending further information.'],
+            responseLines)
+        deferred = self.client.queueStringCommand('RNTO /newfile.txt')
+        responseLines = self._waitForCommandFailure(deferred)
+        self.assertEqual(
+            ['550 /newfile.txt: Permission denied.'], responseLines)
+
+    def test_RENAME_nosource_file(self):
+        self._authLogin()
+
+        responseLines = wait(
+            self.client.queueStringCommand('RNFR /file.txt'))
+        self.assertEqual(
+            ['350 Requested file action pending further information.'],
+            responseLines)
+        deferred = self.client.queueStringCommand('RNTO /newfile.txt')
+        responseLines = self._waitForCommandFailure(deferred)
+        self.assertEqual(
+            ['550 /file.txt: No such file or directory.'], responseLines)
+
+
 
 class FTPServerPasvDataConnectionTestCase(FTPServerTestCase,
                                   test_ftp.FTPServerPasvDataConnectionTestCase):
@@ -222,10 +273,40 @@ class FTPServerPasvDataConnectionTestCase(FTPServerTestCase,
         wait(defer.gatherResults([d, downloader.d]))
         self.assertEqual('', downloader.buffer)
 
+    def testLIST_with_mtime(self):
+        self._anonymousLogin()
+
+        # Set up file with modification date set.
+        self.rootfs.writefile_nocheck('/foo', StringIO('x' * 20))
+        foo = self.rootfs.get('/foo')
+        now = datetime.now()
+        foo.modified = now
+
+        # Download a listing for foo.
+        downloader = self._makeDataConnection()
+        d = self.client.queueStringCommand('LIST /foo')
+        wait(defer.gatherResults([d, downloader.d]))
+
+        # check the data returned especially the date.
+        buf = downloader.buffer[:-2].split('\r\n')
+        self.assertEqual(len(buf), 1)
+        buf = buf[0]
+        buf = buf.split(None, 5)[5]
+        self.assertEqual(buf, '%s foo' % now.strftime('%b %d %H:%M'))
+
+    def testLIST_nofile(self):
+        self._anonymousLogin()
+
+        downloader = self._makeDataConnection()
+        d = self.client.queueStringCommand('LIST /foo')
+        responseLines = self._waitForCommandFailure(d)
+
+        self.assertEqual(['550 /foo: No such file or directory.'],
+                         responseLines)
+
     def testManyLargeDownloads(self):
         # Login
         self._anonymousLogin()
-
 
         # Download a range of different size files
         for size in range(100000, 110000, 500):

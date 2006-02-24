@@ -15,6 +15,7 @@
 """
 __docformat__="restructuredtext"
 
+import time
 from cStringIO import StringIO
 from types import StringTypes
 
@@ -22,6 +23,8 @@ from zope.interface import implements
 
 from zope.publisher.interfaces import NotFound
 from zope.security.interfaces import Unauthorized
+from zope.exceptions import DuplicationError
+from zope.app.copypastemove import ItemNotFoundError
 
 from twisted.internet import threads, defer
 from twisted.protocols import ftp
@@ -107,33 +110,41 @@ class ZopeFTPShell(object):
     def _path(self, path):
         return '/' + '/'.join(path)
 
+    def _perm_failed(self, failure):
+        raise ftp.PermissionDeniedError(self._path(path))
+
     def makeDirectory(self, path):
-        def failed(failure):
-            raise ftp.PermissionDeniedError(self._path(path))
-        d = threads.deferToThread(self.fs_access.mkdir, self._path(path))
-        d.addErrback(failed)
+        p = self._path(path)
+
+        d = threads.deferToThread(self.fs_access.mkdir, p)
+        d.addErrback(self._perm_failed, p)
 
         return d
 
     def removeDirectory(self, path):
-        def failed(failure):
-            raise ftp.PermissionDeniedError(self._path(path))
-        d = threads.deferToThread(self.fs_access.rmdir, self._path(path))
-        d.addErrback(failed)
+        p = self._path(path)
+
+        d = threads.deferToThread(self.fs_access.rmdir, p)
+        d.addErrback(self._perm_failed, p)
 
         return d
 
     def removeFile(self, path):
-        def failed(failure):
-            raise ftp.PermissionDeniedError(self._path(path))
-        d = threads.deferToThread(self.fs_access.remove, self._path(path))
-        d.addErrback(failed)
+        p = self._path(path)
+
+        d = threads.deferToThread(self.fs_access.remove, p)
+        d.addErrback(self._perm_failed, p)
 
         return d
 
     def rename(self, fromPath, toPath):
         def failed(failure):
-            raise ftp.PermissionDeniedError(self._path(path))
+            if failure.type is DuplicationError:
+                raise ftp.PermissionDeniedError(self._path(toPath))
+            elif failure.type is ItemNotFoundError:
+                raise ftp.FileNotFoundError(self._path(fromPath))
+            raise ftp.PermissionDeniedError(self._path(fromPath))
+
         d = threads.deferToThread(self.fs_access.rename,
                                   self._path(fromPath),
                                   self._path(toPath))
@@ -170,12 +181,20 @@ class ZopeFTPShell(object):
                 ent.append(val)
         return result['name'].encode('utf-8'), ent
 
-    def _stat(self, path, keys):
-        result = self._gotlisting(self.fs_access.lsinfo(path), keys)
-        return result[1]
-
     def stat(self, path, keys=()):
-        return threads.deferToThread(self._stat, self._path(path), keys)
+        p = self._path(path)
+
+        d = threads.deferToThread(self.fs_access.lsinfo, p)
+        d.addCallback(self._gotlisting, keys)
+        d.addCallback(lambda result: result[1])
+        d.addErrback(self._perm_failed, p)
+        
+        return d
+
+    def _list(self, path):
+        if self.fs_access.type(path) == 'd':
+            return self.fs_access.ls(path)
+        return [self.fs_access.lsinfo(path)]
 
     def list(self, path, keys=()):
         def gotresults(results, keys):
@@ -189,7 +208,7 @@ class ZopeFTPShell(object):
                 raise ftp.FileNotFoundError(self._path(path))
             raise ftp.PermissionDeniedError(self._path(path))
 
-        d = threads.deferToThread(self.fs_access.ls, self._path(path))
+        d = threads.deferToThread(self._list, self._path(path))
         d.addCallback(gotresults, keys)
         d.addErrback(goterror)
 
@@ -213,7 +232,7 @@ class ZopeFTPShell(object):
     def _list_modified(self, value):
         mtime = value.get('mtime', None)
         if mtime:
-            return int(mtime.strftime('%s'))
+            return int(time.mktime(mtime.utctimetuple()))
         return 0
 
     def _list_permissions(self, value):
@@ -242,23 +261,32 @@ class ZopeFTPShell(object):
             ret |= 0040000
         return ret
 
-    def _checkFileReadAccess(self, fs_access, p):
-        # run all these methods within the one thread.
-        readable = fs_access.readable(p)
+    def _checkFileReadAccess(self, fs_access, path):
+        # run all these methods within the application thread
+        readable = fs_access.readable(path)
         if not readable:
-            raise ftp.PermissionDeniedError(p)
+            raise ftp.PermissionDeniedError(path)
 
-        filetype = fs_access.type(p)
+        filetype = fs_access.type(path)
         if filetype == 'd':
-            raise ftp.FileNotFoundError(p)
+            raise ftp.FileNotFoundError(path)
 
-        return ReadFileObj(fs_access, p)
+        return ReadFileObj(fs_access, path)
 
     def openForReading(self, path):
         p = self._path(path)
 
-        return threads.deferToThread(self._checkFileReadAccess,
-                                     self.fs_access, p)
+        def failed(failure):
+            if isinstance(failure.type, ftp.FTPCmdError):
+                raise failure
+            elif isinstance(failure.type, NotFound):
+                raise ftp.FileNotFoundError(p)
+            raise ftp.PermissionDeniedError(p)
+
+        d = threads.deferToThread(self._checkFileReadAccess, self.fs_access, p)
+        d.addErrback(failed)
+
+        return d
 
     def openForWriting(self, path):
         p = self._path(path)
@@ -268,11 +296,8 @@ class ZopeFTPShell(object):
                 return WriteFileObj(self.fs_access, p)
             raise ftp.PermissionDeniedError(p)
 
-        def failed(failure):
-            raise ftp.PermissionDeniedError(p)
-
         d = threads.deferToThread(self.fs_access.writable, p)
         d.addCallback(succeed)
-        d.addErrback(failed)
+        d.addErrback(self._perm_failed, p)
 
         return d
