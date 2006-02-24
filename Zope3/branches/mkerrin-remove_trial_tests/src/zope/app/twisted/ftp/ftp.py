@@ -15,7 +15,7 @@
 """
 __docformat__="restructuredtext"
 
-import time
+import calendar
 from cStringIO import StringIO
 from types import StringTypes
 
@@ -232,7 +232,7 @@ class ZopeFTPShell(object):
     def _list_modified(self, value):
         mtime = value.get('mtime', None)
         if mtime:
-            return int(time.mktime(mtime.utctimetuple()))
+            return calendar.timegm(mtime.utctimetuple())
         return 0
 
     def _list_permissions(self, value):

@@ -63,6 +63,8 @@ class DemoFileSystem(demofs.DemoFileSystem):
 
 class FTPServerTestCase(test_ftp.FTPServerTestCase):
     def tearDown(self):
+        ## Uninstall the monkey patches needed to get the tiral tests
+        ## running successfully within the zope test runner.
         test_zopetrial.tearDown()
 
         # Clean up sockets
@@ -74,6 +76,10 @@ class FTPServerTestCase(test_ftp.FTPServerTestCase):
         del self.serverProtocol
 
     def setUp(self):
+        ## Install monkey patches in the test_zopetrail module that
+        ## allow me to cleanly test the Twisted server code from within
+        ## the Zope test runner.
+        ## Don't forget to call test_zopetrial.tearDown
         test_zopetrial.setUp()
 
         root = demofs.Directory()
