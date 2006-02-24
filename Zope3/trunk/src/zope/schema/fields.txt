@@ -22,7 +22,7 @@ as a maximum or minimum value.  Collection fields have additional requirements
 because they contain other types, which may also be described and constrained.
 
 For instance, imagine a list that contains non-negative floats and enforces
-uniqueness, In a schema, this might be written as follows:
+uniqueness. In a schema, this might be written as follows:
 
   >>> from zope.interface import Interface
   >>> from zope.schema import List, Float
@@ -30,7 +30,7 @@ uniqueness, In a schema, this might be written as follows:
   ...     pricePoints = List(
   ...         title=u"Price Points",
   ...         unique=True,
-  ...         value_type=Float(title=u"Price", min=0)
+  ...         value_type=Float(title=u"Price", min=0.0)
   ...     )
 
 This indicates several things.
