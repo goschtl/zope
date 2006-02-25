@@ -30,13 +30,20 @@
 
 $Id$
 """
-from zLOG import LOG, INFO
+import logging
 
-def _write( response, tool, message, level=INFO ):
+try:
+    import transaction
+    get_transaction = transaction.get
+except ImportError:
+    # Zope 2.7 backwards compatibility
+    pass
 
-    LOG( tool, level, message )
+def _write(response, tool, message):
+    logger = logging.getLogger('PluggableAuthService.upgrade.%s' % tool)
+    logger.info(message)
     if response is not None:
-        response.write( message )
+        response.write(message)
 
 def _replaceUserFolder(self, RESPONSE=None):
     """replaces the old acl_users folder with a PluggableAuthService,
