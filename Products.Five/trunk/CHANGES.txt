@@ -11,6 +11,9 @@ Features
 * Add zope.formlib support.  Please see ``doc/formlib.txt`` for more
   information.
 
+* Port zope.testbrowser to Zope 2.  You can now use
+  Products.Five.testbrowser.Browser in functional tests.
+
 * Make the ``browser:addMenuItem`` directive available.
 
 * Add a file argument to the five:loadProducts and
@@ -19,9 +22,6 @@ Features
 
   NOTE: Anyone who copied the Five site.zcml to their
   $INSTANCE_HOME/etc/ directory is going to need to update it.
-
-* Port zope.testbrowser to Zope 2.  You can now use
-  Products.Five.testbrowser.Browser in functional tests.
 
 Five 1.3.2 (2006-02-25)
 =======================
