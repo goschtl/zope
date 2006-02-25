@@ -18,10 +18,11 @@ $Id$
 import re
 
 from zope.interface import implements
-from zope.app.publisher.browser import BrowserView
 from zope.structuredtext.document import Document
 from zope.structuredtext.html import HTML
 
+from zope.app.publisher.browser import BrowserView
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.renderer.interfaces import ISource, IHTMLRenderer
 from zope.app.renderer import SourceFactory
 
@@ -31,7 +32,9 @@ class IStructuredTextSource(ISource):
     implementation of this interface should always derive from unicode or
     behave like a unicode class."""
 
-StructuredTextSourceFactory = SourceFactory(IStructuredTextSource)
+StructuredTextSourceFactory = SourceFactory(
+    IStructuredTextSource, _("Structured Text (STX)"),
+    _("Structured Text (STX) Source"))
 
 
 class StructuredTextToHTMLRenderer(BrowserView):

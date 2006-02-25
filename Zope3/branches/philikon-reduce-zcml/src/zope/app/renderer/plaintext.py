@@ -16,18 +16,19 @@
 $Id$
 """
 from zope.interface import implements
-from zope.app.publisher.browser import BrowserView
 
+from zope.app.publisher.browser import BrowserView
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.renderer.interfaces import ISource, IHTMLRenderer
 from zope.app.renderer import SourceFactory
-
 
 class IPlainTextSource(ISource):
     """Marker interface for a plain text source. Note that an implementation
     of this interface should always derive from unicode or behave like a
     unicode class."""
 
-PlainTextSourceFactory = SourceFactory(IPlainTextSource)
+PlainTextSourceFactory = SourceFactory(
+    IPlainTextSource, _("Plain Text"), _("Plain Text Source"))
 
 
 class PlainTextToHTMLRenderer(BrowserView):
