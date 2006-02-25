@@ -1,5 +1,13 @@
 PluggableAuthService changelog
 
+  After PluggableAuthService 1.2-beta
+
+    Other
+
+      - Removed STX links from README.txt which do nothing but return 
+        404s when clicked from the README on zope.org.
+
+
   PluggableAuthService 1.2-beta (2006/02/25)
 
     New Features

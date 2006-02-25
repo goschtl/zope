@@ -7,8 +7,9 @@ PluggableAuthService Product README
 
   Documentation
 
-    Please see the following for more information:
+    Please see the following documentation in the packaed software for 
+    more information:
 
-      - "Framework Overview":doc/framework_overview.stx
+      - doc/framework_overview.stx (Framework overview)
 
-      - "Plugin APIs":doc/plugin_APIs.stx
+      - doc/plugin_APIs.stx (Plugin APIs)
