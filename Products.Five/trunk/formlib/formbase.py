@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004, 2005 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,15 +12,17 @@
 #
 ##############################################################################
 """Five baseclasses for zope.formlib.form
+
+$Id$
 """
 from datetime import datetime
 import Acquisition
 
-from zope import interface
 import zope.event
 import zope.app.event.objectevent
-from zope.app.i18n import ZopeMessageFactory as _
+from zope import interface
 from zope.formlib import interfaces, form, namedtemplate
+from zope.app.i18n import ZopeMessageFactory as _
 
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.Five.browser.decode import processInputs, setPageEncoding

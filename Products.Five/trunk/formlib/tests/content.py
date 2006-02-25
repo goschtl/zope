@@ -57,4 +57,3 @@ class Content(SimpleItem):
         self.somelist = somelist
 
 InitializeClass(Content)
-        

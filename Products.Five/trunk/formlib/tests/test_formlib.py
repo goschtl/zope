@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004, 2005 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """Test forms
 
-$Id: test_forms.py 19283 2005-10-31 17:43:51Z philikon $
+$Id$
 """
 import os, sys
 if __name__ == '__main__':
