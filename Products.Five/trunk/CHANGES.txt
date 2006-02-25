@@ -23,7 +23,7 @@ Features
 * Port zope.testbrowser to Zope 2.  You can now use
   Products.Five.testbrowser.Browser in functional tests.
 
-Five 1.3.2 (unreleased)
+Five 1.3.2 (2006-02-25)
 =======================
 
 Bugfixes
@@ -34,8 +34,9 @@ Bugfixes
   ``__bobo_traverse__`` is tried.  If that does not exist, Traversable
   resorts to attribute look-up.
 
-* Unit tests that did i18n via Localizer would fail because the request
-  attribute that keeps Localizers list of preferred languages did not exist.
+* Unit tests that did i18n via Localizer would fail because the
+  request attribute that keeps Localizers list of preferred languages
+  did not exist.
 
 Five 1.3.1 (2006-01-08)
 =======================
@@ -122,6 +123,21 @@ Restructuring
 * Backwards compatability for Zope 3-style interfaces of Zope 2
   components has been removed as that functionality is now in the Zope
   2 core as of Zope 2.9.
+
+Five 1.2.1 (2006-02-25)
+=======================
+
+Bugfixes
+--------
+
+* Five's traversing machinery now mimicks the ZPublisher correctly:
+  When no Zope 3-style view is found, first the object's original
+  ``__bobo_traverse__`` is tried.  If that does not exist, Traversable
+  resorts to attribute look-up.
+
+* Unit tests that did i18n via Localizer would fail because the
+  request attribute that keeps Localizers list of preferred languages
+  did not exist.
 
 Five 1.2 (2006-01-07)
 =====================
