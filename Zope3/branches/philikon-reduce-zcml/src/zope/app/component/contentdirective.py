@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from types import ModuleType
 from persistent.interfaces import IPersistent
+from zope.component.interfaces import IFactory
 from zope.component.factory import Factory
 from zope.interface import classImplements
 from zope.schema.interfaces import IField
@@ -31,7 +32,7 @@ from zope.app.location.interfaces import ILocation
 from zope.app.security.protectclass import protectLikeUnto, protectName
 from zope.app.security.protectclass import protectSetAttribute
 
-from metaconfigure import factory
+from zope.app.component.metaconfigure import utility
 
 PublicPermission = 'zope.Public'
 
@@ -171,7 +172,8 @@ class ContentDirective(object):
         # note factories are all in one pile, utilities and content,
         # so addable names must also act as if they were all in the
         # same namespace, despite the utilities/content division
-        factory(_context, factoryObj, id, title, description)
+        utility(_context, IFactory, factoryObj,
+                permission=PublicPermission, name=id)
 
 
 class LocalUtilityDirective(ContentDirective):
