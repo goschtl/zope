@@ -75,6 +75,7 @@ else:
 # monkey patch Zope to cause zmi logout to be PAS-aware
 from App.Management import Navigation
 from interfaces.authservice import IPluggableAuthService
+from zExceptions import Unauthorized
 
 def manage_zmi_logout(self, REQUEST, RESPONSE):
     """Logout current user"""
@@ -86,8 +87,8 @@ def manage_zmi_logout(self, REQUEST, RESPONSE):
         acl_users.resetCredentials(REQUEST, RESPONSE)
     else:
         realm=RESPONSE.realm
-        RESPONSE.setStatus(401)
         RESPONSE.setHeader('WWW-Authenticate', 'basic realm="%s"' % realm, 1)    
+        raise Unauthorized, '<p>You have been logged out.</p>'
     referrer = REQUEST.get('HTTP_REFERER') # HTTP_REFERER is optional header
     if referrer:
         REQUEST['RESPONSE'].redirect(referrer)

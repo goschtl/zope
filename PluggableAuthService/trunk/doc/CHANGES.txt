@@ -2,6 +2,13 @@ PluggableAuthService changelog
 
   After PluggableAuthService 1.2-beta
 
+    Bugs Fixed
+
+      - Fix manage_zmi_logout which stopped working correctly as soon as the
+        PluggableAuthService product code was installed by correcting the
+        monkeypatch for it in __init__.py.
+        (http://www.zope.org/Members/urbanape/PluggableAuthService/Collector/12)
+
     Other
 
       - Removed STX links from README.txt which do nothing but return 
