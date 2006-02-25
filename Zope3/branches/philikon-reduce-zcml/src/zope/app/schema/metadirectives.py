@@ -19,6 +19,7 @@ from zope.configuration.fields import GlobalObject
 from zope.interface import Interface
 from zope.schema import TextLine
 
+# BBB 2006/02/24, to be removed after 12 months
 class IVocabularyDirective(Interface):
     '''Define a named vocabulary.
 

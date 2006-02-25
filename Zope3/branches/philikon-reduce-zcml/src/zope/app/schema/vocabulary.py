@@ -20,15 +20,7 @@ from zope.interface import Interface, implements
 from zope.schema.interfaces import IVocabularyRegistry
 from zope.schema import vocabulary
 from zope.testing import cleanup
-
-
-class IVocabularyFactory(Interface):
-    """Can create vocabularies."""
-
-    def __call__(self, context):
-        """The context provides a location that the vocabulary can make use
-        of."""
-
+from zope.app.schema.interfaces import IVocabularyFactory
 
 class ZopeVocabularyRegistry(object):
     """IVocabularyRegistry that supports global and local utilities."""

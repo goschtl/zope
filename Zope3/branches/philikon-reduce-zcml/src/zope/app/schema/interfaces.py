@@ -19,6 +19,13 @@ from zope.interface import Interface
 from zope.interface.interfaces import IInterface
 from zope.app.container.interfaces import IAdding
 
+class IVocabularyFactory(Interface):
+    """Can create vocabularies."""
+
+    def __call__(self, context):
+        """The context provides a location that the vocabulary can make use
+        of."""
+
 class ISchemaUtility(Interface):
     pass
 
