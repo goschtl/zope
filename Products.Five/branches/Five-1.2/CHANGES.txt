@@ -13,6 +13,10 @@ Bugfixes
   ``__bobo_traverse__`` is tried.  If that does not exist, Traversable
   resorts to attribute look-up.
 
+* Unit tests that did i18n via Localizer would fail because the
+  request attribute that keeps Localizers list of preferred languages
+  did not exist.
+
 Five 1.2 (2006-01-07)
 =====================
 
