@@ -17,7 +17,10 @@
 $Id$
 """
 
-import sys, re, types
+import logging
+import sys
+import re
+import types
 
 from ZPublisher import BeforeTraverse
 
@@ -33,7 +36,6 @@ from AccessControl.SpecialUsers import emergency_user
 
 from App.ImageFile import ImageFile
 
-from zLOG import LOG, BLATHER
 from zExceptions import Unauthorized
 from Persistence import PersistentMapping
 from OFS.Folder import Folder
@@ -87,6 +89,8 @@ from utils import classImplements
 
 security = ModuleSecurityInfo(
     'Products.PluggableAuthService.PluggableAuthService' )
+
+logger = logging.getLogger('PluggableAuthService')
 
 #   Errors which plugins may raise, and which we suppress:
 _SWALLOWABLE_PLUGIN_EXCEPTIONS = ( NameError
@@ -310,9 +314,9 @@ class PluggableAuthService( Folder, Cacheable ):
                     result.append(info)
 
             except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                LOG('PluggableAuthService', BLATHER,
-                    'UserEnumerationPlugin %s error' % enumerator_id,
-                    error=sys.exc_info())
+                logger.debug( 'UserEnumerationPlugin %s error' % enumerator_id
+                            , exc_info=True
+                            )
 
         if sort_by:
             result.sort( lambda a, b: cmp( a.get(sort_by, '').lower()
@@ -366,9 +370,9 @@ class PluggableAuthService( Folder, Cacheable ):
                         info[ 'title' ] = "(Group) %s" % info[ 'groupid' ]
                     result.append(info)
             except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                LOG('PluggableAuthService', BLATHER,
-                    'GroupEnumerationPlugin %s error' % enumerator_id,
-                    error=sys.exc_info())
+                logger.debug( 'GroupEnumerationPlugin %s error' % enumerator_id
+                            , exc_info=True
+                            )
 
         if sort_by:
             result.sort( lambda a, b: cmp( a.get(sort_by, '').lower()
@@ -538,9 +542,7 @@ class PluggableAuthService( Folder, Cacheable ):
         try:
             extractors = plugins.listPlugins( IExtractionPlugin )
         except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-            LOG('PluggableAuthService', BLATHER,
-                'Plugin listing error',
-                error=sys.exc_info())
+            logger.debug('Extractor plugin listing error', exc_info=True)
             extractors = ()
 
         if not extractors:
@@ -549,9 +551,7 @@ class PluggableAuthService( Folder, Cacheable ):
         try:
             authenticators = plugins.listPlugins( IAuthenticationPlugin )
         except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-            LOG('PluggableAuthService', BLATHER,
-                'Plugin listing error',
-                error=sys.exc_info())
+            logger.debug('Authenticator plugin listing error', exc_info=True)
             authenticators = ()
 
         for extractor_id, extractor in extractors:
@@ -559,9 +559,9 @@ class PluggableAuthService( Folder, Cacheable ):
             try:
                 credentials = extractor.extractCredentials( request )
             except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                LOG('PluggableAuthService', BLATHER,
-                    'ExtractionPlugin %s error' % extractor_id,
-                    error=sys.exc_info())
+                logger.debug( 'ExtractionPlugin %s error' % extractor_id
+                            , exc_info=True
+                            )
                 continue
 
             if credentials:
@@ -571,9 +571,9 @@ class PluggableAuthService( Folder, Cacheable ):
                     items = credentials.items()
                     items.sort()
                 except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                    LOG('PluggableAuthService', BLATHER,
-                        'Credentials error: %s' % credentials,
-                        error=sys.exc_info())
+                    logger.debug( 'Credentials error: %s' % credentials
+                                , exc_info=True
+                                )
                 else:
                     user_ids = []
 
@@ -599,9 +599,9 @@ class PluggableAuthService( Folder, Cacheable ):
                             user_id, info = uid_and_info
 
                         except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                            LOG('PluggableAuthService', BLATHER,
-                                'AuthenticationPlugin %s error' %
-                                authenticator_id, error=sys.exc_info())
+                            msg = 'AuthenticationPlugin %s error' % ( 
+                                    authenticator_id, )
+                            logger.debug(msg, exc_info=True) 
                             continue
 
                         if user_id is not None:
@@ -627,9 +627,7 @@ class PluggableAuthService( Folder, Cacheable ):
             eua = EmergencyUserAuthenticator()
             user_id, name = eua.authenticateCredentials( credentials )
         except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-            LOG('PluggableAuthService', BLATHER,
-                'Credentials error: %s' % credentials,
-                error=sys.exc_info())
+            logger.debug('Credentials error: %s' % credentials, exc_info=True)
             user_id, name = ( None, None )
 
         return ( user_id, name )
@@ -787,9 +785,8 @@ class PluggableAuthService( Folder, Cacheable ):
                         return info[0]
 
                 except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                    LOG('PluggableAuthService', BLATHER,
-                        'UserEnumerationPlugin %s error' % enumerator_id,
-                        error=sys.exc_info())
+                    msg = 'UserEnumerationPlugin %s error' % enumerator_id
+                    logger.debug(msg, exc_info=True)
 
         return None
 
@@ -939,9 +936,9 @@ class PluggableAuthService( Folder, Cacheable ):
                 try:
                     roleassigner.doAssignRoleToPrincipal( user.getId(), role )
                 except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                    LOG('PluggableAuthService', BLATHER,
-                        'RoleAssigner %s error' % roleassigner_id,
-                        error=sys.exc_info())
+                    logger.debug( 'RoleAssigner %s error' % roleassigner_id
+                                , exc_info=True
+                                )
                     pass
 
     security.declarePublic('all_meta_types')

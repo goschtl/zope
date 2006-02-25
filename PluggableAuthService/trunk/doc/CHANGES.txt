@@ -20,6 +20,9 @@ PluggableAuthService changelog
         constrain searches by ID.
         (http://www.zope.org/Members/urbanape/PluggableAuthService/Collector/11)
 
+      - Convert from using zLOG to using the Python logging module.
+        (http://www.zope.org/Members/urbanape/PluggableAuthService/Collector/14)
+
 
   PluggableAuthService 1.2-beta (2006/02/25)
 
