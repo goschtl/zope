@@ -8,6 +8,11 @@ PluggableAuthService changelog
         404s when clicked from the README on zope.org.
         (http://www.zope.org/Members/urbanape/PluggableAuthService/Collector/6)
 
+      - Fixing up inconsistent searching in the listAvailablePrincipals
+        method of the ZODBRoleManager and ZODBGroupManager plugins. Now both
+        constrain searches by ID.
+        (http://www.zope.org/Members/urbanape/PluggableAuthService/Collector/11)
+
 
   PluggableAuthService 1.2-beta (2006/02/25)
 

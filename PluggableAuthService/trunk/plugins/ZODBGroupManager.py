@@ -209,24 +209,24 @@ class ZODBGroupManager( BasePlugin ):
     #   Group assignment API
     #
     security.declareProtected( ManageGroups, 'listAvailablePrincipals' )
-    def listAvailablePrincipals( self, group_id, search_name ):
+    def listAvailablePrincipals( self, group_id, search_id ):
 
         """ Return a list of principal IDs to that can belong to the group.
 
-        o If supplied, 'search_name' constrains the principal IDs;  if not,
+        o If supplied, 'search_id' constrains the principal IDs;  if not,
           return empty list.
 
         o Omit principals with existing assignments.
         """
         result = []
 
-        if search_name:  # don't bother searching if no criteria
+        if search_id:  # don't bother searching if no criteria
 
             parent = aq_parent( self )
 
             for info in parent.searchPrincipals( max_results=20
                                                , sort_by='id'
-                                               , name=search_name
+                                               , id=search_id
                                                , exact_match=False
                                                ):
                 id = info[ 'id' ]
