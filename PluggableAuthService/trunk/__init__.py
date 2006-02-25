@@ -82,18 +82,18 @@ def manage_zmi_logout(self, REQUEST, RESPONSE):
     p = getattr(REQUEST, '_logout_path', None)
     if p is not None:
         return apply(self.restrictedTraverse(p))
+
     acl_users = self.acl_users
+    realm=RESPONSE.realm
+    RESPONSE.setHeader('WWW-Authenticate', 'basic realm="%s"' % realm, 1)
+
     if IPluggableAuthService.isImplementedBy(acl_users):
         acl_users.resetCredentials(REQUEST, RESPONSE)
     else:
-        realm=RESPONSE.realm
-        RESPONSE.setHeader('WWW-Authenticate', 'basic realm="%s"' % realm, 1)    
         raise Unauthorized, '<p>You have been logged out.</p>'
-    referrer = REQUEST.get('HTTP_REFERER') # HTTP_REFERER is optional header
-    if referrer:
-        REQUEST['RESPONSE'].redirect(referrer)
-    else:
-        RESPONSE.setBody("""<html>
+
+    RESPONSE.setStatus(401)
+    RESPONSE.setBody("""<html>
 <head><title>Logout</title></head>
 <body>
 <p>
