@@ -1,8 +1,8 @@
 PluginRegistry Product Changelog
 
-  After PluginRegistry-1.0.2
+  PluginRegistry 1.1 (2006/02/25)
 
-    - SVN tag:  svn+ssh://svn.zope.org/repos/main/PluginRegistry/trunk
+    - SVN tag:  svn+ssh://svn.zope.org/repos/main/PluginRegistry/tags/1.1
 
     - Moved interfaces into a top-level module (no need for a package),
       and made them forward-compatible with Z3 interfaces.
