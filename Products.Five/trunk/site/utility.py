@@ -53,8 +53,12 @@ class SimpleLocalUtilityRegistry(object):
         """
         if getattr(aq_base(self.context), 'utilities', None) is not None:
             for id, utility in self.context.utilities.objectItems():
-                if (interface.providedBy(utility) and
-                    (name == '' or id.endswith(name))):
+                if interface.providedBy(utility):
+                    if id.find('-') != -1:
+                        prefix, utility_name = id.split('-', 1)
+                    else:
+                        utility_name = ''
+                    if name == utility_name:
                         return utility
         return self.next.queryUtility(interface, name, default)
 
