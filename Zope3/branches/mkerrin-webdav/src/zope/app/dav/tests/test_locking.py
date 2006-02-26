@@ -26,10 +26,10 @@ from zope.publisher.browser import TestRequest
 from zope.app.component.testing import PlacefulSetup
 from zope.app.traversing.api import traverse
 
+from zope import component
 from zope.interface import Interface
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence, IInt
-from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.app.locking.interfaces import ILockable, ILockTracker
 from zope.app.locking.adapter import LockingAdapterFactory, LockingPathAdapter
@@ -211,7 +211,7 @@ class TestPlacefulLOCK(PlacefulSetup, TestCase):
                                     {'DEPTH': 'infinity'})
         self.assertEqual(response.getStatus(), 200)
         # assert that the depth infinity locked any subobjects
-        locktracker = zapi.getUtility(ILockTracker)
+        locktracker = component.getUtility(ILockTracker)
         self.assert_(locktracker.getAllLocks() > 1)
 
     def test_depthinf_conflict(self):

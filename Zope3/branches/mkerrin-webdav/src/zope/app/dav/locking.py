@@ -23,10 +23,11 @@ from xml.dom import minidom
 from xml.parsers import expat
 
 from zope.interface import Interface, implements, implementer
+from zope import component
 from zope.component import adapter
 from zope.publisher.interfaces.http import IHTTPRequest
 
-from zope.app import zapi
+from zope.app.traversing.browser.absoluteurl import absoluteURL
 from zope.app.form.utility import setUpWidget
 from zope.app.locking.interfaces import ILockable, ILockStorage, LockingError
 from zope.app.container.interfaces import IReadContainer
@@ -35,40 +36,13 @@ from zope.app.http.interfaces import INullResource
 from interfaces import IDAVWidget, IActiveLock, ILockEntry, \
      IDAVLockSchema, IIfHeader, IWebDAVRequest
 from common import MultiStatus
+from common import DAVError, PreConditionFailedError, AlreadyLockedError, \
+     DAVConflictError, UnprocessableEntityError
 
 MAXTIMEOUT = (2L**32)-1
 DEFAULTTIMEOUT = 12 * 60L
 
 _randGen = random.Random(time.time())
-
-
-class DAVLockingError(Exception):
-    # override this value
-    status = None
-
-    def __init__(self, field_name, error_message):
-        self.field_name = field_name
-        self.error_message = error_message
-
-
-class PreConditionFailedError(DAVLockingError):
-    """ """
-    status = 412
-
-
-class AlreadyLockedError(DAVLockingError):
-    """ """
-    status = 423
-
-
-class DAVConflictError(DAVLockingError):
-    """ """
-    status = 409
-
-
-class UnprocessableEntityError(DAVLockingError):
-    """ """
-    stauts = 422
 
 
 @adapter(Interface, IWebDAVRequest)
@@ -84,6 +58,7 @@ def LOCKMethodFactory(context, request):
 
 
 class LOCK(object):
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -154,7 +129,7 @@ class LOCK(object):
                 self.handleRefreshLockedObject(self.context)
             else:
                 self.handleLockObject(xmldocBody, self.context, None)
-        except DAVLockingError, e:
+        except DAVError, e:
             self.request.response.setStatus(e.status)
             return ''
 
@@ -171,11 +146,12 @@ class LOCK(object):
         lockable = ILockable(object)
         lockinfo = lockable.getLockInfo()
 
-        resource_url = zapi.absoluteURL(object, self.request)
+        resource_url = absoluteURL(object, self.request)
         if IReadContainer.providedBy(object):
             resource_url += '/'
 
-        ifparser = zapi.queryMultiAdapter((object, self.request), IIfHeader)
+        ifparser = component.queryMultiAdapter((object, self.request),
+                                               IIfHeader)
         if ifparser is not None and not ifparser():
             raise PreConditionFailedError(None, "if header match failed")
 
@@ -242,7 +218,7 @@ class LOCK(object):
         for id, obj in object.items():
             try:
                 self.handleLockObject(xmldoc, obj, token)
-            except DAVLockingError, error:
+            except DAVError, error:
                 self._addError(obj, error.status)
 
     def _renderResponse(self):

@@ -18,15 +18,10 @@ __docformat__ = 'restructuredtext'
 from xml.dom import minidom
 from xml.parsers import expat
 
-from zope.schema import getFieldNamesInOrder, getFields
-from zope.publisher.http import status_reasons
-
 from zope import component
 from zope.app.container.interfaces import IReadContainer
-from zope.app.form.utility import setUpWidget
 
-from interfaces import IDAVWidget, IDAVNamespace, INamespaceManager
-from opaquenamespaces import IDAVOpaqueNamespaces
+from interfaces import INamespaceRegistry
 from common import MultiStatus
 
 class PROPFIND(object):
@@ -80,21 +75,23 @@ class PROPFIND(object):
         resp = self.resp = \
                self.responsedoc.addResponse(self.context, self.request)
 
+        nr = component.getUtility(INamespaceRegistry, context = self.context)
+
         if xmldoc is not None:
             propname = xmldoc.getElementsByTagNameNS(
                 self.default_ns, 'propname')
             if propname:
-                self._renderPropnameResponse(resp)
+                self._renderPropnameResponse(nr, resp)
             else:
                 source = xmldoc.getElementsByTagNameNS(self.default_ns, 'prop')
                 if len(source) == 0:
-                    self._renderAllProperties(resp)
+                    self._renderAllProperties(nr, resp)
                 elif len(source) == 1:
-                    self._renderSelectedProperties(resp, source[0])
+                    self._renderSelectedProperties(nr, resp, source[0])
                 else:
                     raise Exception, "something has gone wrong here"
         else:
-            self._renderAllProperties(resp)
+            self._renderAllProperties(nr, resp)
 
         self._depthRecurse(xmldoc)
 
@@ -116,22 +113,23 @@ class PROPFIND(object):
             for r in responses:
                 self.responsedoc.appendResponse(r)
 
-    def _renderAllProperties(self, response):
+    def _renderAllProperties(self, nsregistry, response):
         count = 0
 
-        for namespace, nsmanager in \
-                component.getUtilitiesFor(INamespaceManager):
+        for nsmanager in nsregistry.getAllNamespaceManagers():
+            namespace = nsmanager.namespace
             ns_prefix = None
             if namespace != self.default_ns:
                 ns_prefix = 'a%s' % count
                 count += 1
+
             for propname in nsmanager.getAllPropertyNames(self.context):
                 widget = nsmanager.getWidget(self.context, self.request,
                                              propname, ns_prefix)
                 el = widget.renderProperty()
                 response.addPropertyByStatus(namespace, ns_prefix, el, 200)
 
-    def _renderSelectedProperties(self, response, source):
+    def _renderSelectedProperties(self, nsregistry, response, source):
         count = 0
         renderedns = {}
 
@@ -151,29 +149,32 @@ class PROPFIND(object):
             elif namespace != self.default_ns:
                 ns_prefix = renderedns[namespace]
 
-            nsmanager = component.queryUtility(INamespaceManager, namespace,
-                                               default = None)
+            nsmanager = nsregistry.queryNamespaceManager(namespace,
+                                                         default = None)
 
-            if nsmanager is not None:
-                if nsmanager.hasProperty(self.context, propname):
-                    widget = nsmanager.getWidget(self.context, self.request,
-                                                 propname, ns_prefix)
-                    el = widget.renderProperty()
+            if nsmanager is not None and \
+                   nsmanager.queryProperty(self.context,
+                                           propname, None) is not None:
+                widget = nsmanager.getWidget(self.context, self.request,
+                                             propname, ns_prefix)
+                el = widget.renderProperty()
             else:
+                status = 404
                 el = response.createEmptyElement(namespace, ns_prefix,
                                                  propname)
-                status = 404
 
             response.addPropertyByStatus(namespace, ns_prefix, el, status)
 
-    def _renderPropnameResponse(self, response):
+    def _renderPropnameResponse(self, nsregistry, response):
         count = 0
-        for namespace, manager in component.getUtilitiesFor(INamespaceManager):
+        for nsmanager in nsregistry.getAllNamespaceManagers():
+            namespace = nsmanager.namespace
             if namespace != self.default_ns:
                 ns_prefix = 'a%s' % count
                 count += 1
             else:
                 ns_prefix = None
-            for propname in manager.getAllPropertyNames(self.context):
+
+            for propname in nsmanager.getAllPropertyNames(self.context):
                 el = response.createEmptyElement(namespace, ns_prefix, propname)
                 response.addPropertyByStatus(namespace, ns_prefix, el, 200)

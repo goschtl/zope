@@ -20,7 +20,7 @@ from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 from datetime import datetime
 
-from zope.interface import Interface,  directlyProvides, implements
+from zope.interface import Interface, implements
 from zope.publisher.interfaces.http import IHTTPRequest
 
 from zope.pagetemplate.tests.util import normalize_xml
@@ -53,11 +53,12 @@ from zope.app.dav.widget import TextDAVWidget, DatetimeDAVWidget, \
      XMLEmptyElementListDAVWidget, SequenceDAVWidget, ListDAVWidget, \
      DAVXMLSubPropertyWidget, DAVOpaqueWidget, ISO8601DateDAVWidget
 from zope.app.dav.opaquenamespaces import DAVOpaqueNamespacesAdapter
-from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
+from zope.app.dav.interfaces import IDAVOpaqueNamespaces
 from zope.app.dav.adapter import DAVSchemaAdapter
 from zope.app.dav.fields import IDAVXMLSubProperty, IDAVOpaqueField
-from zope.app.dav.interfaces import INamespaceManager
-from zope.app.dav.namespaces import NamespaceManager
+from zope.app.dav.interfaces import INamespaceManager, INamespaceRegistry
+from zope.app.dav.namespaces import NamespaceManager, namespaceRegistry, \
+     LocalNamespaceRegistry
 
 from unitfixtures import File, Folder, FooZPT
 import xmldiff
@@ -145,7 +146,12 @@ class TestPlacefulPROPFINDBase(PlacefulSetup, TestCase):
                              DAVSchemaAdapter)
         ztapi.provideAdapter(IFile, ISized, FileSized)
 
+        self._setUpNamespaces()
+
+    def _setUpNamespaces(self):
         # new webdav configuration
+        component.provideUtility(namespaceRegistry, INamespaceRegistry)
+
         davnamespace = NamespaceManager('DAV:', schemas = (IDAVSchema,))
         davnamespace.registerWidget('creationdate', ISO8601DateDAVWidget)
         component.provideUtility(davnamespace, INamespaceManager, 'DAV:')
@@ -154,6 +160,13 @@ class TestPlacefulPROPFINDBase(PlacefulSetup, TestCase):
                                        schemas = (IZopeDublinCore,))
         component.provideUtility(dcnamespace, INamespaceManager,
                                  'http://www.purl.org/dc/1.1')
+
+    def tearDown(self):
+        super(TestPlacefulPROPFINDBase, self).tearDown()
+        root = self.rootFolder
+        del root['zpt']
+        del root['folder1']
+        del root['file']
 
     def _checkPropfind(self, obj, req, expect, depth='0', resp=None):
         if req:
@@ -513,11 +526,29 @@ class TestPlacefulPROPFIND(TestPlacefulPROPFINDBase):
         <multistatus xmlns="DAV:">%s</multistatus>'''
         self._checkPropfind(folder, req, expect, depth='infinity', resp=resp)
 
+
 #
 # opaque property support is now broken
 #
 
-class TestPlacefulDeadPropsPROPFIND(PlacefulSetup, TestCase):
+class TestPlacefulDeadPropsPROPFIND(TestPlacefulPROPFINDBase):
+
+    def _setUpNamespaces(self):
+        self.nr = nr = LocalNamespaceRegistry()
+        component.provideUtility(nr, INamespaceRegistry)
+
+        davnamespace = NamespaceManager('DAV:', schemas = (IDAVSchema,))
+        davnamespace.registerWidget('creationdate', ISO8601DateDAVWidget)
+        component.provideUtility(davnamespace, INamespaceManager, 'DAV:')
+
+        dcnamespace = NamespaceManager('http://www.purl.org/dc/1.1',
+                                       schemas = (IZopeDublinCore,))
+        component.provideUtility(dcnamespace, INamespaceManager,
+                                 'http://www.purl.org/dc/1.1')
+
+    def tearDown(self):
+        super(TestPlacefulDeadPropsPROPFIND, self).tearDown()
+        del self.nr
 
     def test_davemptybodyallpropzptdepth0(self):
         # RFC 2518, Section 8.1: A client may choose not to submit a
@@ -534,7 +565,8 @@ class TestPlacefulDeadPropsPROPFIND(PlacefulSetup, TestCase):
         expect = ''
         props = getFieldNamesInOrder(IZopeDublinCore)
         ## XXX - '%s+00:00' % now}
-        pvalues = {'created': now.strftime('%a, %d %b %Y %H:%M:%S %z').rstrip()}
+        pvalues = {'created':
+                           now.strftime('%a, %d %b %Y %H:%M:%S +0000').rstrip()}
         for p in props:
             if pvalues.has_key(p):
                 expect += '<%s xmlns="a0">%s</%s>' % (p, pvalues[p], p)
@@ -588,11 +620,14 @@ class TestPlacefulDeadPropsPROPFIND(PlacefulSetup, TestCase):
         self.assertEqual(pfind.getDepth(), depth)
         s1 = normalize_xml(request.response.consumeBody())
         s2 = normalize_xml(resp)
-        self.assertEqual(s1, s2)
+        xmldiff.compareMultiStatus(self, s1, s2)
+        ## self.assertEqual(s1, s2)
 
     def test_propfind_opaque_simple(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
+
+        self.nr.getNamespaceManager(u'http://foo/bar')
         oprops = IDAVOpaqueNamespaces(zpt)
         oprops[u'http://foo/bar'] = {u'egg': '<egg>spam</egg>'}
         req = '<prop xmlns:foo="http://foo/bar"><foo:egg /></prop>'
@@ -604,6 +639,8 @@ class TestPlacefulDeadPropsPROPFIND(PlacefulSetup, TestCase):
     def test_propfind_opaque_complex(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
+
+        self.nr.getNamespaceManager(u'http://foo/bar')
         oprops = IDAVOpaqueNamespaces(zpt)
         oprops[u'http://foo/bar'] = {u'egg':
             '<egg xmlns:bacon="http://bacon">\n'
@@ -622,7 +659,7 @@ def test_suite():
     return TestSuite((
         makeSuite(TestPlacefulPROPFIND),
         ## XXX - fix deab properties support in zope.app.dav
-        ## makeSuite(TestPlacefulDeadPropsPROPFIND),
+        makeSuite(TestPlacefulDeadPropsPROPFIND),
         ))
 
 if __name__ == '__main__':

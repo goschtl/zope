@@ -4,23 +4,30 @@
   <include package="zope.app.dav" file="meta.zcml"/>
 
   <dav:namespace
-     namespace="http://examplenamespace.org/dav/schema"
-     interfaceType=".test_namespace.IExampleNamespaceType"
-     />
- 
-  <dav:schemas
-     namespace="http://examplenamespace.org/dav/schema"
-     schemas=".test_namespace.IExampleSchema"
-     />
+     namespace="http://examplenamespace.org/dav/directives/schema"
+     interfaceType=".test_namespace.ITestDirectiveNamespaceType"
+     schemas=".test_namespace.ITestDirectivesSchema
+              .test_namespace.ITestDirectivesContactSchema">
+
+    <!-- we just want to test the widget directive works - not to render the
+         widget.
+      -->
+    <widget
+       propname="name"
+       class="zope.app.dav.widget.TextDAVWidget"
+       />
+  </dav:namespace>
 
   <dav:schemas
-     namespace="http://examplenamespace.org/dav/schema"
-     schemas=".test_namespace.IExampleSchemaExtended"
+     namespace="http://examplenamespace.org/dav/directives/schema"
+     schemas=".test_namespace.ITestDirectivesExtendedSchema"
+     restricted_properties="job"
      />
 
-  <dav:schemas
-     namespace="http://examplenamespace.org/dav/schema"
-     schemas=".test_namespace.IExampleContactSchema"
+  <dav:widget
+     namespace="http://examplenamespace.org/dav/directives/schema"
+     propname="phoneNo"
+     class="zope.app.dav.widget.IntDAVWidget"
      />
 
 </configure>

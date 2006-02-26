@@ -29,8 +29,9 @@ from zope.publisher.http import status_reasons
 from zope.pagetemplate.tests.util import normalize_xml
 from ZODB.tests.util import DB
 
-from zope.app import zapi
+from zope import component
 from zope.app.testing import ztapi
+from zope.app.traversing.browser.absoluteurl import absoluteURL
 
 from zope.app.traversing.api import traverse
 from zope.publisher.browser import TestRequest
@@ -41,18 +42,24 @@ from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.dublincore.zopedublincore import ScalarProperty
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.app.annotation.attribute import AttributeAnnotations
-from zope.schema.interfaces import IText, ISequence, ITuple
+from zope.schema.interfaces import IText, ISequence, ITuple, IInt
 
 import zope.app.dav.tests
 from zope.app.dav.tests.unitfixtures import File, Folder, FooZPT
+from zope.app.dav.tests import xmldiff
 
 from zope.app.dav import proppatch
+from zope.app.dav.adapter import DAVSchemaAdapter
 from zope.app.dav.interfaces import IDAVSchema
 from zope.app.dav.interfaces import IDAVNamespace
 from zope.app.dav.interfaces import IDAVWidget
-from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget, TupleDAVWidget
+from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget, \
+     TupleDAVWidget, ISO8601DateDAVWidget, IntDAVWidget
 from zope.app.dav.opaquenamespaces import DAVOpaqueNamespacesAdapter
-from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
+from zope.app.dav.interfaces import IDAVOpaqueNamespaces
+
+from zope.app.dav.interfaces import INamespaceManager, INamespaceRegistry
+from zope.app.dav.namespaces import NamespaceManager, LocalNamespaceRegistry
 
 def _createRequest(body=None, headers=None, skip_headers=None,
                    namespaces=(('Z', 'http://www.w3.com/standards/z39.50/'),),
@@ -131,7 +138,7 @@ class TestSchemaAdapter(object):
     constrained = ScalarProperty(u'constrained')
 
 
-class PropFindTests(PlacefulSetup, unittest.TestCase):
+class PropFindTestsBase(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
@@ -142,6 +149,8 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         file = File('spam', 'text/plain', self.content)
         folder = Folder('bla')
         root['file'] = file
+        from zope.interface import directlyProvides
+        directlyProvides(file, IAnnotatable)
         root['zpt'] = zpt
         root['folder'] = folder
         self.zpt = traverse(root, 'zpt')
@@ -151,6 +160,8 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
                           'absolute_url', AbsoluteURL)
         ztapi.provideView(None, IHTTPRequest, Interface,
                           'PROPPATCH', proppatch.PROPPATCH)
+
+        ztapi.browserViewProviding(IInt, IntDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(IText, TextDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(ISequence, SequenceDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(ITuple, TupleDAVWidget, IDAVWidget)
@@ -161,14 +172,23 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
                              DAVOpaqueNamespacesAdapter)
         ztapi.provideAdapter(IAnnotatable, ITestSchema, TestSchemaAdapter)
 
-        sm = zapi.getGlobalSiteManager()
-        directlyProvides(IDAVSchema, IDAVNamespace)
-        sm.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
-        directlyProvides(IZopeDublinCore, IDAVNamespace)
-        sm.provideUtility(IDAVNamespace, IZopeDublinCore,
-                             'http://www.purl.org/dc/1.1')
-        directlyProvides(ITestSchema, IDAVNamespace)
-        sm.provideUtility(IDAVNamespace, ITestSchema, TestURI)
+        ztapi.provideAdapter(None, IDAVSchema, DAVSchemaAdapter)
+
+        # new webdav configuration
+        namespaceRegistry = LocalNamespaceRegistry()
+        component.provideUtility(namespaceRegistry, INamespaceRegistry)
+
+        davnamespace = NamespaceManager('DAV:', schemas = (IDAVSchema,))
+        davnamespace.registerWidget('creationdate', ISO8601DateDAVWidget)
+        component.provideUtility(davnamespace, INamespaceManager, 'DAV:')
+
+        dcnamespace = NamespaceManager('http://www.purl.org/dc/1.1',
+                                       schemas = (IZopeDublinCore,))
+        component.provideUtility(dcnamespace, INamespaceManager,
+                                 'http://www.purl.org/dc/1.1')
+
+        testnamespace = NamespaceManager(TestURI, schemas = (ITestSchema,))
+        component.provideUtility(testnamespace, INamespaceManager, TestURI)
 
         self.db = DB()
         self.conn = self.db.open()
@@ -178,6 +198,65 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
 
     def tearDown(self):
         self.db.close()
+
+    def _checkProppatch(self, obj, ns=(), set=(), rm=(), extra='', expect=''):
+        request = _createRequest(namespaces=ns, set=set, remove=rm,
+                                 extra=extra)
+        resource_url = absoluteURL(obj, request)
+        expect = '''<?xml version="1.0" encoding="utf-8"?>
+            <multistatus xmlns="DAV:"><response>
+            <href>%%(resource_url)s</href>
+            %s
+            </response></multistatus>
+            ''' % expect
+        expect = expect % {'resource_url': resource_url}
+        ppatch = proppatch.PROPPATCH(obj, request)
+        ppatch.PROPPATCH()
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 207)
+        s1 = normalize_xml(request.response.consumeBody())
+        s2 = normalize_xml(expect)
+        ## self.assertEqual(s1, s2)
+        xmldiff.compareMultiStatus(self, s1, s2)
+
+    def _makePropstat(self, ns, properties, status=200):
+        nsattrs = ''
+        count = 0
+        for uri in ns:
+            nsattrs += ' xmlns:a%d="%s"' % (count, uri)
+            count += 1
+        reason = status_reasons[status]
+        return '''<propstat>
+            <prop%s>%s</prop>
+            <status>HTTP/1.1 %d %s</status>
+            </propstat>''' % (nsattrs, properties, status, reason)
+
+    def _assertOPropsEqual(self, obj, expect):
+        oprops = IDAVOpaqueNamespaces(obj)
+        namespacesA = list(oprops.keys())
+        namespacesA.sort()
+        namespacesB = expect.keys()
+        namespacesB.sort()
+        self.assertEqual(namespacesA, namespacesB,
+                         'available opaque namespaces were %s, '
+                         'expected %s' % (namespacesA, namespacesB))
+
+        for ns in namespacesA:
+            propnamesA = list(oprops[ns].keys())
+            propnamesA.sort()
+            propnamesB = expect[ns].keys()
+            propnamesB.sort()
+            self.assertEqual(propnamesA, propnamesB,
+                             'props for opaque namespaces %s were %s, '
+                             'expected %s' % (ns, propnamesA, propnamesB))
+            for prop in propnamesA:
+                valueA = oprops[ns][prop]
+                valueB = expect[ns][prop]
+                self.assertEqual(valueA, valueB,
+                                 'opaque prop %s:%s was %s, '
+                                 'expected %s' % (ns, prop, valueA, valueB))
+
+class PropFindTests(PropFindTestsBase):
 
     def test_contenttype1(self):
         file = self.file
@@ -235,125 +314,16 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 422)
 
-    def _checkProppatch(self, obj, ns=(), set=(), rm=(), extra='', expect=''):
-        request = _createRequest(namespaces=ns, set=set, remove=rm,
-                                 extra=extra)
-        resource_url = zapi.absoluteURL(obj, request)
-        expect = '''<?xml version="1.0" encoding="utf-8"?>
-            <multistatus xmlns="DAV:"><response>
-            <href>%%(resource_url)s</href>
-            %s
-            </response></multistatus>
-            ''' % expect
-        expect = expect % {'resource_url': resource_url}
-        ppatch = proppatch.PROPPATCH(obj, request)
-        ppatch.PROPPATCH()
-        # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 207)
-        s1 = normalize_xml(request.response.consumeBody())
-        s2 = normalize_xml(expect)
-        self.assertEqual(s1, s2)
-
-    def _makePropstat(self, ns, properties, status=200):
-        nsattrs = ''
-        count = 0
-        for uri in ns:
-            nsattrs += ' xmlns:a%d="%s"' % (count, uri)
-            count += 1
-        reason = status_reasons[status]
-        return '''<propstat>
-            <prop%s>%s</prop>
-            <status>HTTP/1.1 %d %s</status>
-            </propstat>''' % (nsattrs, properties, status, reason)
-
-    def _assertOPropsEqual(self, obj, expect):
-        oprops = IDAVOpaqueNamespaces(obj)
-        namespacesA = list(oprops.keys())
-        namespacesA.sort()
-        namespacesB = expect.keys()
-        namespacesB.sort()
-        self.assertEqual(namespacesA, namespacesB,
-                         'available opaque namespaces were %s, '
-                         'expected %s' % (namespacesA, namespacesB))
-
-        for ns in namespacesA:
-            propnamesA = list(oprops[ns].keys())
-            propnamesA.sort()
-            propnamesB = expect[ns].keys()
-            propnamesB.sort()
-            self.assertEqual(propnamesA, propnamesB,
-                             'props for opaque namespaces %s were %s, '
-                             'expected %s' % (ns, propnamesA, propnamesB))
-            for prop in propnamesA:
-                valueA = oprops[ns][prop]
-                valueB = expect[ns][prop]
-                self.assertEqual(valueA, valueB,
-                                 'opaque prop %s:%s was %s, '
-                                 'expected %s' % (ns, prop, valueA, valueB))
-
     def test_removenonexisting(self):
         expect = self._makePropstat(('uri://foo',), '<bar xmlns="a0"/>')
         self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
             rm=('<foo:bar />'), expect=expect)
 
-    def test_opaque_set_simple(self):
-        expect = self._makePropstat(('uri://foo',), '<bar xmlns="a0"/>')
-        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
-            set=('<foo:bar>spam</foo:bar>'), expect=expect)
-        self._assertOPropsEqual(self.zpt,
-                                {u'uri://foo': {u'bar': '<bar>spam</bar>'}})
-
-    def test_opaque_remove_simple(self):
-        oprops = IDAVOpaqueNamespaces(self.zpt)
-        oprops['uri://foo'] = {'bar': '<bar>eggs</bar>'}
-        expect = self._makePropstat(('uri://foo',), '<bar xmlns="a0"/>')
-        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
-            rm=('<foo:bar>spam</foo:bar>'), expect=expect)
-        self._assertOPropsEqual(self.zpt, {})
-
-    def test_opaque_add_and_replace(self):
-        oprops = IDAVOpaqueNamespaces(self.zpt)
-        oprops['uri://foo'] = {'bar': '<bar>eggs</bar>'}
-        expect = self._makePropstat(
-            ('uri://castle', 'uri://foo'),
-            '<camelot xmlns="a0"/><bar xmlns="a1"/>')
-        self._checkProppatch(self.zpt,
-            ns=(('foo', 'uri://foo'), ('c', 'uri://castle')),
-            set=('<foo:bar>spam</foo:bar>',
-                 '<c:camelot place="silly" xmlns:k="uri://knights">'
-                 '  <k:roundtable/>'
-                 '</c:camelot>'),
-            expect=expect)
-        self._assertOPropsEqual(self.zpt, {
-            u'uri://foo': {u'bar': '<bar>spam</bar>'},
-            u'uri://castle': {u'camelot':
-                '<camelot place="silly" xmlns:p0="uri://knights">'
-                '  <p0:roundtable/></camelot>'}})
-
-    def test_opaque_set_and_remove(self):
-        expect = self._makePropstat(
-            ('uri://foo',), '<bar xmlns="a0"/>')
-        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
-            set=('<foo:bar>eggs</foo:bar>',), rm=('<foo:bar/>',),
-            expect=expect)
-        self._assertOPropsEqual(self.zpt, {})
-
-    def test_opaque_complex(self):
-        # PROPPATCH allows us to set, remove and set the same property, ordered
-        expect = self._makePropstat(
-            ('uri://foo',), '<bar xmlns="a0"/>')
-        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
-            set=('<foo:bar>spam</foo:bar>',), rm=('<foo:bar/>',),
-            extra='<set><prop><foo:bar>spam</foo:bar></prop></set>',
-            expect=expect)
-        self._assertOPropsEqual(self.zpt,
-                                {u'uri://foo': {u'bar': '<bar>spam</bar>'}})
-
     def test_proppatch_failure(self):
         expect = self._makePropstat(
             ('uri://foo',), '<bar xmlns="a0"/>', 424)
         expect += self._makePropstat(
-            ('http://www.purl.org/dc/1.1',), '<nonesuch xmlns="a0"/>', 403)
+            ('http://www.purl.org/dc/1.1',), '<nonesuch xmlns="a1"/>', 403)
         self._checkProppatch(self.zpt,
             ns=(('foo', 'uri://foo'), ('DC', 'http://www.purl.org/dc/1.1')),
             set=('<foo:bar>spam</foo:bar>', '<DC:nonesuch>Test</DC:nonesuch>'),
@@ -434,9 +404,67 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
             expect=expect)
         self.assertEqual(dc.subjects, (u'Foo', u'Bar'))
 
+
+class PropFindOpaqueTests(PropFindTestsBase):
+
+    def test_opaque_set_simple(self):
+        expect = self._makePropstat(('uri://foo',), '<bar xmlns="a0"/>')
+        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
+            set=('<foo:bar>spam</foo:bar>'), expect=expect)
+        self._assertOPropsEqual(self.zpt,
+                                {u'uri://foo': {u'bar': '<bar>spam</bar>'}})
+
+    def test_opaque_remove_simple(self):
+        oprops = IDAVOpaqueNamespaces(self.zpt)
+        oprops['uri://foo'] = {'bar': '<bar>eggs</bar>'}
+        expect = self._makePropstat(('uri://foo',), '<bar xmlns="a0"/>')
+        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
+            rm=('<foo:bar>spam</foo:bar>'), expect=expect)
+        self._assertOPropsEqual(self.zpt, {})
+
+    def test_opaque_add_and_replace(self):
+        oprops = IDAVOpaqueNamespaces(self.zpt)
+        oprops['uri://foo'] = {'bar': '<bar>eggs</bar>'}
+        expect = self._makePropstat(
+            ('uri://castle', 'uri://foo'),
+            '<camelot xmlns="a0"/><bar xmlns="a1"/>')
+        self._checkProppatch(self.zpt,
+            ns=(('foo', 'uri://foo'), ('c', 'uri://castle')),
+            set=('<foo:bar>spam</foo:bar>',
+                 '<c:camelot place="silly" xmlns:k="uri://knights">'
+                 '  <k:roundtable/>'
+                 '</c:camelot>'),
+            expect=expect)
+        self._assertOPropsEqual(self.zpt, {
+            u'uri://foo': {u'bar': '<bar>spam</bar>'},
+            u'uri://castle': {u'camelot':
+                '<camelot place="silly" xmlns:p0="uri://knights">'
+                '  <p0:roundtable/></camelot>'}})
+
+    def test_opaque_set_and_remove(self):
+        expect = self._makePropstat(
+            ('uri://foo',), '<bar xmlns="a0"/>')
+        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
+            set=('<foo:bar>eggs</foo:bar>',), rm=('<foo:bar/>',),
+            expect=expect)
+        self._assertOPropsEqual(self.zpt, {})
+
+    def test_opaque_complex(self):
+        # PROPPATCH allows us to set, remove and set the same property, ordered
+        expect = self._makePropstat(
+            ('uri://foo',), '<bar xmlns="a0"/>')
+        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
+            set=('<foo:bar>spam</foo:bar>',), rm=('<foo:bar/>',),
+            extra='<set><prop><foo:bar>spam</foo:bar></prop></set>',
+            expect=expect)
+        self._assertOPropsEqual(self.zpt,
+                                {u'uri://foo': {u'bar': '<bar>spam</bar>'}})
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(PropFindTests),
+        unittest.makeSuite(PropFindOpaqueTests),
         ))
 
 if __name__ == '__main__':

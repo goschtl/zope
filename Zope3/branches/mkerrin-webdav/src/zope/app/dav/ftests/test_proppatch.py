@@ -20,12 +20,24 @@ import transaction
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.publisher.http import status_reasons
 
-from zope.app.dav.ftests.dav import DAVTestCase
+from zope import component
+from zope.app.testing import setup
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
 from zope.app.traversing.api import traverse
 
+from zope.app.dav.ftests.dav import DAVTestCase
+from zope.app.dav.interfaces import IDAVOpaqueNamespaces
+from zope.app.dav.interfaces import INamespaceRegistry
+from zope.app.dav.namespaces import LocalNamespaceRegistry
+
 class TestPROPPATCH(DAVTestCase):
+
+    def setUp(self):
+        super(TestPROPPATCH, self).setUp()
+
+        sm = component.getSiteManager(self.getRootFolder())
+        self.registry = registry = LocalNamespaceRegistry()
+        setup.addUtility(sm, '', INamespaceRegistry, registry)
 
     def test_set(self):
         self.addPage('/pt', u'<span />')
@@ -47,7 +59,7 @@ class TestPROPPATCH(DAVTestCase):
         self.verifyPropOK(path='/pt', namespaces=(('foo', 'uri://foo'),),
             rm=('<foo:bar/>',), expect=expect)
         self._assertOPropsEqual(pt, {})
-        
+
     def test_complex(self):
         self.addPage('/pt', u'<span />')
         pt = traverse(self.getRootFolder(), '/pt')
@@ -84,7 +96,7 @@ class TestPROPPATCH(DAVTestCase):
         transaction.commit()
         expect = self._makePropstat(('http://purl.org/dc/1.1',),
                                     '<title xmlns="a0"/>')
-        self.verifyPropOK(path='/pt', 
+        self.verifyPropOK(path='/pt',
             namespaces=(('DC', 'http://purl.org/dc/1.1'),),
             set=('<DC:title>Test Title</DC:title>',), expect=expect)
         self.assertEqual(IZopeDublinCore(pt).title, u'Test Title')
@@ -98,7 +110,7 @@ class TestPROPPATCH(DAVTestCase):
         self.assertEqual(namespacesA, namespacesB, 
                          'available opaque namespaces were %s, '
                          'expected %s' % (namespacesA, namespacesB))
-        
+
         for ns in namespacesA:
             propnamesA = list(oprops[ns].keys())
             propnamesA.sort()

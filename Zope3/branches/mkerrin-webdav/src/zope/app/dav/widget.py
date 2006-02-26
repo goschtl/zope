@@ -25,7 +25,7 @@ from zope.schema.interfaces import ValidationError
 
 from zope.app.datetimeutils import parseDatetimetz, DateTimeError
 from zope.app.dav.interfaces import IDAVWidget
-from zope.app.dav.opaquenamespaces import makeDOMStandalone
+from zope.app.dav.common import makeDOMStandalone
 
 from zope.app.form import InputWidget
 from zope.app.form.utility import setUpWidget

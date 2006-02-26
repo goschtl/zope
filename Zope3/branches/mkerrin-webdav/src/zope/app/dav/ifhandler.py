@@ -19,7 +19,7 @@ import re, urllib
 
 from zope.interface import implements
 
-from zope.app import zapi
+from zope.app.traversing.browser.absoluteurl import absoluteURL
 from zope.app.container.interfaces import IReadContainer
 from zope.app.locking.interfaces import ILockable
 
@@ -121,7 +121,7 @@ class IfParser(object):
 
         tags = self.ifParser(ifhdr)
 
-        resource_url = zapi.absoluteURL(self.context, self.request)
+        resource_url = absoluteURL(self.context, self.request)
         if IReadContainer.providedBy(self.context):
             resource_url += '/'
 

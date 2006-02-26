@@ -20,8 +20,8 @@ __docformat__ = 'restructuredtext'
 from xml.dom import minidom
 
 from zope.interface import Interface, implements
+from zope.app.traversing.api import getName
 
-from zope.app import zapi
 from zope.app.dav.interfaces import IDAVSchema, IActiveLock, ILockEntry, \
      IDAVLockSchema, IDAVResourceSchema
 from zope.app.dublincore.interfaces import IDCTimes
@@ -71,7 +71,7 @@ class DAVSchemaAdapter(object):
         self.context = object
 
     def displayname(self):
-        value = zapi.name(self.context)
+        value = getName(self.context)
         if IReadDirectory(self.context, None) is not None:
             value = value + '/'
         return value

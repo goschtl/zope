@@ -13,7 +13,7 @@
 ##############################################################################
 """XML differences for use in testing the WebDAV code base
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -82,7 +82,10 @@ def compareMultiStatus(self, status1str, status2str):
         status2 = resp2[href]
 
         for status, namespaces1 in status1.items():
-            self.assert_(status2.has_key(status))
+            self.assert_(status2.has_key(status),
+                         "the expected result is missing a status for the" \
+                         " %s object\n" \
+                         "'%s' != '%s'" %(href, status1, status2))
             namespaces2 = status2[status]
 
             self.assertEqual(len(namespaces1), len(namespaces2),

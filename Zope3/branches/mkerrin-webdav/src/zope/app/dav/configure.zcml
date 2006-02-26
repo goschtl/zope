@@ -1,6 +1,9 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:dav="http://namespaces.zope.org/dav">
+   xmlns:dav="http://namespaces.zope.org/dav"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope.app.dav"
+   >
 
   <publisher
      name="WEBDAV"
@@ -78,15 +81,14 @@
      allowed_attributes="UNLOCK"
      />
 
-  <!-- Disabled for now. Need to write tests before checking in. 
   <view
-      for="*"
-      name="MOVE"
-      type="zope.publisher.interfaces.http.IHTTPRequest"
-      factory=".move.MOVE"
-      permission="zope.ManageContent"
-      allowed_attributes="MOVE" />
-  -->
+     for="*"
+     name="MOVE"
+     type=".interfaces.IWebDAVRequest"
+     factory=".copy.MOVE"
+     permission="zope.ManageContent"
+     allowed_attributes="MOVE"
+     />
 
   <view
      for="zope.interface.Interface"
@@ -143,7 +145,7 @@
        permissions for reading and writing -->
   <adapter
      factory=".opaquenamespaces.DAVOpaqueNamespacesAdapter"
-     provides=".opaquenamespaces.IDAVOpaqueNamespaces"
+     provides=".interfaces.IDAVOpaqueNamespaces"
      for="zope.app.annotation.interfaces.IAnnotatable"
      permission="zope.Public"
      trusted="true"
@@ -271,12 +273,41 @@
      for="DAV:"
      interface="zope.app.dav.interfaces.IDAVSchema" />
 
-  <dav:namespace
-     namespace="http://purl.org/dc/1.1"
-     schemas="zope.app.dublincore.interfaces.IZopeDublinCore"
-     interfaceType=".interfaces.IDCDAVNamespaceType"
+  <!--
+      Utility registration for use with dead properties.
+    -->
+  <utility
+     component=".namespaces.namespaceRegistry"
+     provides=".interfaces.INamespaceRegistry"
      />
 
+  <localUtility class=".namespaces.LocalNamespaceRegistry">
+    <factory
+       id="zope.app.dav.namespaces.LocalNamespaceRegistry"
+       />
+
+    <require
+       permission="zope.Public"
+       interface=".interfaces.INamespaceRegistry"
+       />
+  </localUtility>
+
+  <browser:tool
+     interface=".interfaces.INamespaceRegistry"
+     title="WebDAV Dead Namespace"
+     description="Need for enabling dead namespace support"
+     />
+
+  <browser:addMenuItem
+     title="WebDAV Dead Namespace"
+     description="Need for enabling dead namespace support"
+     class=".namespaces.LocalNamespaceRegistry"
+     permission="zope.ManageSite"
+     />
+
+  <!--
+      Register the WebDAV namespace.
+    -->
   <dav:namespace
      namespace="DAV:"
      interfaceType=".interfaces.IDAVNamespaceType"
@@ -286,6 +317,7 @@
               .interfaces.IGETDependentDAVSchema
               .interfaces.IDAVLockSchema
               .interfaces.IOptionalDAVSchema
+              .interfaces.IDAVSchema
               ">
 
     <widget
@@ -294,5 +326,19 @@
        />
 
   </dav:namespace>
+
+  <!--
+      Some more optional schemas, and namespaces
+    -->
+  <dav:namespace
+     namespace="http://purl.org/dc/1.1"
+     schemas="zope.app.dublincore.interfaces.IZopeDublinCore"
+     interfaceType=".interfaces.IDCDAVNamespaceType"
+     />
+
+  <dav:schemas
+     namespace="DAV:"
+     schemas=".interfaces.IDAVSource"
+     />
 
 </configure>

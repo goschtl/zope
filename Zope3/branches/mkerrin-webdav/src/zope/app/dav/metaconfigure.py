@@ -41,10 +41,6 @@ deprecated(interface,
 #
 ################################################################################
 
-def _addWidgetToRegistry(registry, propertyname, class_):
-    registry.registerWidget(propertyname, class_)
-
-
 class namespace(object):
     def __init__(self, _context, namespace, schemas = [],
                  restricted_properties = [], interfaceType = None):

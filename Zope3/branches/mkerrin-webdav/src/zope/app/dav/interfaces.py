@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 from zope.interface import Interface, Attribute
 from zope.interface.interfaces import IInterface
 from zope.interface.common.mapping import IEnumerableMapping
+from zope.interface.common.mapping import IMapping
 from zope.schema import Int, Text, TextLine, Dict, Datetime, Date, List, Bool
 from zope.schema.interfaces import IText, IList
 from zope.app.form.interfaces import IWidget
@@ -54,6 +55,30 @@ class IDCDAVNamespaceType(IInterface):
     providing the **interface** are considered data adapters for the
     DC properties.
     """
+
+
+class IDAVOpaqueNamespaces(IMapping):
+    """Opaque storage for non-registered DAV namespace properties.
+
+    Any unknown (no interface registered) DAV properties are stored opaquely
+    keyed on their namespace URI, so we can return them later when requested.
+    """
+
+    def getProperty(namespace, name):
+        """
+        """
+
+    def setProperty(namespace, name, prop):
+        """
+        """
+
+    def hasProperty(namespace, name):
+        """
+        """
+
+    def removeProperty(namespace, name):
+        """
+        """
 
 
 class IDAVResourceSchema(Interface):
@@ -363,7 +388,6 @@ class IDAVWidget(IWidget):
         based on the field constraints.
         """
 
-    ## this shouldn't be used ???
     def setRenderedValue(value):
         """Set the value of the field associated with this widget.
 
@@ -390,10 +414,6 @@ class IDAVWidget(IWidget):
         WebDAV namespace other then the default DAV: namespace.
         """
 
-##     def removeProperty(self, ns, prop):
-##         """
-##         """
-
 
 class IIfHeader(Interface):
     """RFC 2518 Section ...
@@ -419,37 +439,16 @@ class INamespaceManager(Interface):
     properties, and finding what widgets are used to render these properties.
     """
 
-    #
-    # Registration methods
-    #
-
-    def registerSchema(schema, restricted_properties = ()):
-        """Register the interface, schema, with the namespace manager. Each
-        field defined in the interface will define a property within the
-        namespace.
-
-        restricted_properties is a list of field names defined in schema
-        which whose corresponding property should not be rendered in
-        response to a PROPFIND request for all properties.
+    def isLiveNamespace():
+        """Return boolean saying whether this namespace is live or not.
         """
 
-    def registerWidget(propname, widget):
-        """Register a custom widget for the property named propname.
-
-        The widget is a callable taking the current bound field representing
-        the property named propname and the current request, On being called
-        widget must return an object implementing IDAVWidget.
+    def queryProperty(object, name, default = None):
+        """Return property if it exists similar to getProperty or else
+        return default.
         """
 
-    #
-    # namespace management methods
-    #
-
-    def hasProperty(object, propname):
-        """This namespace has a property called propname defined for object.
-        """
-
-    def getProperty(object, propname):
+    def getProperty(object, name):
         """Get the field, propname, for this object, is it exists.
 
         The returned value will implement zope.schema.interfaces.IField and will
@@ -459,7 +458,12 @@ class INamespaceManager(Interface):
         is not defined for object.
         """
 
-    def getWidget(object, request, propname, ns_prefix):
+    def removeProperty(object, name):
+        """Remove property or in the case of a live namespace just set to
+        default namespace.
+        """
+
+    def getWidget(object, request, name, ns_prefix):
         """Get the WebDAV widget to be used to render / store the property
         propname.
 
@@ -488,8 +492,58 @@ class INamespaceManager(Interface):
         registered has a restricted property.
         """
 
-    def isRestrictedProperty(object, propname):
+    def isRestrictedProperty(object, name):
         """Is the named property a restricted property for this object.
+        """
+
+
+class ILiveNamespaceManager(INamespaceManager):
+    """Define two methods use to register information about a namespace
+    containing live properties.
+    """
+
+    def registerSchema(schema, restricted_properties = ()):
+        """Register the interface, schema, with the namespace manager. Each
+        field defined in the interface will define a property within the
+        namespace.
+
+        restricted_properties is a list of field names defined in schema
+        which whose corresponding property should not be rendered in
+        response to a PROPFIND request for all properties.
+        """
+
+    def registerWidget(propname, widget):
+        """Register a custom widget for the property named propname.
+
+        The widget is a callable taking the current bound field representing
+        the property named propname and the current request, On being called
+        widget must return an object implementing IDAVWidget.
+        """
+
+class INamespaceRegistry(Interface):
+    """
+    """
+
+    def getNamespaceManager(namespace):
+        """Return an utility providing the INamespaceManager interface. In the
+        case of a dead namespace - return a special implementaion of
+        INamespaceManager that knows how to handle dead properties.
+
+        If the implementation of this utility doesn't know how to handle
+        namespaces then we should raise a ComponentLookupError.
+        """
+
+    def queryNamespaceManager(namespace, default = None):
+        """
+        """
+
+    def hasNamespaceManager(namespace):
+        """Can this utility find an implementation of INamespaceManager
+        """
+
+    def getAllNamespaceManagers():
+        """Returns a iterable of all utilities providing INamepsaceManager
+        that this utility knows about.
         """
 
 

@@ -22,11 +22,12 @@ from xml.dom import minidom
 from unittest import TestSuite, makeSuite, main
 
 from zope.interface import Interface
-from zope.app import zapi
+from zope import component
 from zope.app.testing import setup, ztapi
 from zope.app.locking.interfaces import ILockStorage, ILockable
 from zope.app.locking.storage import PersistentLockStorage
 from zope.app.locking.adapter import LockingAdapterFactory, LockingPathAdapter
+from zope.app.traversing.api import traverse
 from zope.app.traversing.interfaces import IPathAdapter
 from zope.app.file.file import File
 
@@ -110,7 +111,7 @@ class TestLOCK(TestAllowBefore):
 
     def setUp(self):
         super(TestLOCK, self).setUp()
-        sm = zapi.getSiteManager(self.getRootFolder())
+        sm = component.getSiteManager(self.getRootFolder())
 
         self.storage = storage = PersistentLockStorage()
         setup.addUtility(sm, '', ILockStorage, storage)
@@ -152,7 +153,7 @@ class TestLOCK(TestAllowBefore):
         self.assertEqual(result.getStatus(), 200)
 
         ## ILockable doesn't work in this context.
-        file = zapi.traverse(self.getRootFolder(), '/file')
+        file = traverse(self.getRootFolder(), '/file')
         lock = self.storage.getLock(file)
         self.assert_(lock is not None)
 

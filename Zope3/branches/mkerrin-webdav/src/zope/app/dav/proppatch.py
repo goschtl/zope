@@ -18,14 +18,14 @@ __docformat__ = 'restructuredtext'
 from xml.dom import minidom
 
 import transaction
-from zope.app import zapi
-from zope.schema import getFieldNamesInOrder, getFields
+from zope import component
 from zope.app.container.interfaces import IReadContainer
-from zope.publisher.http import status_reasons
-from zope.app.form.utility import setUpWidget, no_value
+from zope.app.traversing.browser.absoluteurl import absoluteURL
 
-from interfaces import IDAVNamespace, IDAVWidget
-from opaquenamespaces import IDAVOpaqueNamespaces
+from common import MultiStatus
+from common import DAVError, UnprocessableEntityError, ForbiddenError
+from interfaces import INamespaceManager, INamespaceRegistry
+
 
 class PROPPATCH(object):
     """PROPPATCH handler for all objects"""
@@ -41,78 +41,78 @@ class PROPPATCH(object):
         else:
             self.content_type = ct.lower()
             self.content_type_params = None
+
         self.default_ns = 'DAV:'
-        self.oprops = IDAVOpaqueNamespaces(self.context, None)
-
-        _avail_props = {}
-        # List all *registered* DAV interface namespaces and their properties
-        for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
-            _avail_props[ns] = getFieldNamesInOrder(iface)
-
-        # List all opaque DAV namespaces and the properties we know of
-        if self.oprops:
-            for ns, oprops in self.oprops.items():
-                _avail_props[ns] = list(oprops.keys())
-
-        self.avail_props = _avail_props
 
     def PROPPATCH(self):
-        if self.content_type not in ['text/xml', 'application/xml']:
+        if self.content_type not in ('text/xml', 'application/xml'):
             self.request.response.setStatus(400)
             return ''
 
-        resource_url = zapi.absoluteURL(self.context, self.request)
+        resource_url = absoluteURL(self.context, self.request)
         if IReadContainer.providedBy(self.context):
             resource_url += '/'
 
         xmldoc = minidom.parse(self.request.bodyStream)
-        resp = minidom.Document()
-        ms = resp.createElement('multistatus')
-        ms.setAttribute('xmlns', self.default_ns)
-        resp.appendChild(ms)
-        ms.appendChild(resp.createElement('response'))
-        ms.lastChild.appendChild(resp.createElement('href'))
-        ms.lastChild.lastChild.appendChild(resp.createTextNode(resource_url))
 
-        updateel = xmldoc.getElementsByTagNameNS(self.default_ns,
-                                                 'propertyupdate')
-        if not updateel:
+        responsedoc = MultiStatus()
+        propertyupdate = xmldoc.documentElement
+        if propertyupdate.namespaceURI != self.default_ns or \
+               propertyupdate.localName != 'propertyupdate':
             self.request.response.setStatus(422)
             return ''
-        updates = [node for node in updateel[0].childNodes
-                        if node.nodeType == node.ELEMENT_NODE and
-                           node.localName in ('set', 'remove')]
-        if not updates:
-            self.request.response.setStatus(422)
-            return ''
-        self._handlePropertyUpdate(resp, updates)
 
-        body = resp.toxml('utf-8')
+        try:
+            self._handlePropertyUpdate(responsedoc, propertyupdate)
+        except DAVError, error:
+            self.request.response.setStatus(error.status)
+            return ''
+
+        body = responsedoc.body.toxml('utf-8')
         self.request.response.setResult(body)
         self.request.response.setStatus(207)
         return body
 
-    def _handlePropertyUpdate(self, resp, updates):
+    def _handlePropertyUpdate(self, responsedoc, source):
         _propresults = {}
-        for update in updates:
-            prop = update.getElementsByTagNameNS(self.default_ns, 'prop')
-            if not prop:
+
+        nr = component.getUtility(INamespaceRegistry, context = self.context)
+
+        for update in source.childNodes:
+            if update.nodeType != update.ELEMENT_NODE:
                 continue
-            for node in prop[0].childNodes:
-                if not node.nodeType == node.ELEMENT_NODE:
+            if update.localName not in ('set', 'remove'):
+                continue
+
+            props = update.getElementsByTagNameNS(self.default_ns, 'prop')
+            if not props:
+                continue
+
+            for prop in props[0].childNodes:
+                if not prop.nodeType == prop.ELEMENT_NODE:
                     continue
+
+                namespace = prop.namespaceURI
+
+                nsmanager = nr.getNamespaceManager(namespace)
+                if nsmanager is None:
+                    raise ForbiddenError(prop.localName,
+                                       "namespace %s doesn't exist" % namespace)
+
                 if update.localName == 'set':
-                    status = self._handleSet(node)
+                    status = self._handleSet(nsmanager, prop)
                 else:
-                    status = self._handleRemove(node)
-                ## _propresults doesn't seems to be set correctly.
+                    status = self._handleRemove(nsmanager, prop)
+
                 results = _propresults.setdefault(status, {})
-                props = results.setdefault(node.namespaceURI, [])
-                if node.localName not in props:
-                    props.append(node.localName)
+                props = results.setdefault(namespace, [])
+                if prop.localName not in props:
+                    props.append(prop.localName)
+
+        if not _propresults:
+            raise UnprocessableEntityError(None, "")
 
         if _propresults.keys() != [200]:
-            # At least some props failed, abort transaction
             transaction.abort()
             # Move 200 succeeded props to the 424 status
             if _propresults.has_key(200):
@@ -122,95 +122,58 @@ class PROPPATCH(object):
                     failed_props.extend(props)
                 del _propresults[200]
 
-        # Create the response document
-        re = resp.lastChild.lastChild
-        for status, results in _propresults.items():
-            re.appendChild(resp.createElement('propstat'))
-            prop = resp.createElement('prop')
-            re.lastChild.appendChild(prop)
-            count = 0
-            for ns in results.keys():
-                attr_name = 'a%s' % count
-                if ns is not None and ns != self.default_ns:
+        renderedns  = {}
+        count = 0
+        resp = responsedoc.addResponse(self.context, self.request)
+        for status, namespaces in _propresults.items():
+            for namespace, properties in namespaces.items():
+                if renderedns.has_key(namespace):
+                    ns_prefix = renderedns[namespace]
+                elif namespace != self.default_ns:
+                    ns_prefix = renderedns[namespace] = 'a%s' % count
                     count += 1
-                    prop.setAttribute('xmlns:%s' % attr_name, ns)
-                for p in results.get(ns, []):
-                    el = resp.createElement(p)
-                    prop.appendChild(el)
-                    if ns is not None and ns != self.default_ns:
-                        el.setAttribute('xmlns', attr_name)
-            reason = status_reasons.get(status, '')
-            re.lastChild.appendChild(resp.createElement('status'))
-            re.lastChild.lastChild.appendChild(
-                resp.createTextNode('HTTP/1.1 %d %s' % (status, reason)))
+                else: # default_ns
+                    ns_prefix = renderedns[namespace] = None
 
-    def _handleSet(self, prop):
-        ns = prop.namespaceURI
-        iface = zapi.queryUtility(IDAVNamespace, ns)
-        if not iface:
-            # opaque DAV properties
-            if self.oprops is not None:
-                self.oprops.setProperty(prop)
-                # Register the new available property, because we need to be
-                # able to remove it again in the same request!
-                props = self.avail_props.setdefault(ns, [])
-                if prop.localName not in props:
-                    props.append(prop.localName)
-                return 200
+                for propname in properties:
+                    el = resp.createEmptyElement(namespace, ns_prefix,
+                                                 propname)
+                    resp.addPropertyByStatus(namespace, ns_prefix, el, status)
+
+    def _handleSet(self, nsmanager, prop):
+        propname = prop.localName
+
+        # we can't add a property to a live namespace - forbidden
+        if nsmanager.isLiveNamespace() and \
+               nsmanager.queryProperty(self.context, propname, None) is None:
             return 403
 
-        if not prop.localName in self.avail_props[ns]:
-            return 403 # Cannot add propeties to a registered schema
+        # we aren't rendereding the property so setting ns_prefix to None is ok
+        widget = nsmanager.getWidget(self.context, self.request,
+                                     propname, None)
+        field = nsmanager.getProperty(self.context, propname)
 
-        fields = getFields(iface)
-        field = fields[prop.localName]
         if field.readonly:
-            return 409 # RFC 2518 specifies 409 for readonly props
+            # XXX - RFC 2518 specifies 409 for readonly props but the next
+            # version of the spec says it is 403 since it isn't allowed.
+            return 409
 
-        adapted = iface(self.context)
-
-        value = field.get(adapted)
-        if value is field.missing_value:
-            value = no_value
-        setUpWidget(self, prop.localName, field, IDAVWidget,
-            value = value, ignoreStickyValues = True)
-
-        widget = getattr(self, prop.localName + '_widget')
         widget.setProperty(prop)
 
         if not widget.hasValidInput():
-            return 409 # Didn't match the widget validation
+            return 409 # Didn't match the field validation
 
-        if widget.applyChanges(adapted):
+        if widget.applyChanges(field.context):
             return 200
 
-        return 422 # Field didn't accept the value
+        return 422 # Field didn't accept the value - is the correct value.
 
-    def _handleRemove(self, prop):
-        ns = prop.namespaceURI
-        if not prop.localName in self.avail_props.get(ns, []):
-            return 200
-        iface = zapi.queryUtility(IDAVNamespace, ns)
-        if not iface:
-            # opaque DAV properties
-            if self.oprops is None:
-                return 200
-            self.oprops.removeProperty(ns, prop.localName)
-            return 200
+    def _handleRemove(self, nsmanager, prop):
+        # XXX - should the INamespaceManager utility be managing the removal
+        # of properties at this level.
+        try:
+            nsmanager.removeProperty(self.context, prop.localName)
+        except DAVError, error:
+            return error.status
 
-        # Registered interfaces
-        fields = getFields(iface)
-        field = fields[prop.localName]
-        if field.readonly:
-            return 409 # RFC 2518 specifies 409 for readonly props
-
-        if field.required:
-            if field.default is None:
-                return 409 # Clearing a required property is a conflict
-            # Reset the field to the default if a value is required
-            field.set(iface(self.context), field.default)
-            return 200
-
-        # Reset the field to it's defined missing_value
-        field.set(iface(self.context), field.missing_value)
         return 200

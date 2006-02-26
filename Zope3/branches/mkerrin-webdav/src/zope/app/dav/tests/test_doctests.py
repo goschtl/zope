@@ -20,7 +20,7 @@ from zope.testing.doctestunit import DocTestSuite
 
 def test_suite():
     return unittest.TestSuite((
-            DocTestSuite('zope.app.dav.opaquenamespaces'),
+            DocTestSuite('zope.app.dav.common'),
             ))
 
 if __name__ == '__main__':
