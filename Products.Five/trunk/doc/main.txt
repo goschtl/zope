@@ -59,7 +59,7 @@ http://codespeak.net/svn/z3/Five/
 
 You can check out Five using the following subversion command::
 
-  svn co http://codespeak.net/svn/z3/Five/trunk Five
+  svn co svn://svn.zope.org/repos/main/Products.Five/trunk Five
 
 There's also a checkins mailing list for the Z3 project, here:
 
