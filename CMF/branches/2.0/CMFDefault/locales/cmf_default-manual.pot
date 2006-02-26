@@ -1,0 +1,26 @@
+msgid "Next ${count} members"
+msgstr ""
+
+msgid "Next member"
+msgstr ""
+
+msgid "Previous ${count} members"
+msgstr ""
+
+msgid "Previous member"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "Local Roles"
+msgstr ""
+
+msgid "Retract"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Transaction(s) undone"
+msgstr ""
