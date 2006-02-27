@@ -5,9 +5,11 @@
 
   <!-- Source Type Vocabulary Setup -->
 
-  <vocabulary
+  <utility
+      component=".vocabulary.SourceTypeVocabulary"
+      provides="zope.app.schema.interfaces.IVocabularyFactory"
       name="SourceTypes"
-      factory=".vocabulary.SourceTypeVocabulary" />
+      />
 
   <!-- Plain Text Support -->
 

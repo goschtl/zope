@@ -22,15 +22,15 @@
     provides=".interfaces.IQueriableAuthenticator"
     factory=".authentication.QuerySchemaSearchAdapter" />
 
-  <vocabulary
-    name="CredentialsPlugins"
-    factory=".vocabulary.credentialsPlugins"
-   />
+  <utility
+      component=".vocabulary.credentialsPlugins"
+      name="CredentialsPlugins"
+      />
 
-  <vocabulary
-    name="AuthenticatorPlugins"
-    factory=".vocabulary.authenticatorPlugins"
-   />
+  <utility
+      component=".vocabulary.authenticatorPlugins"
+      name="AuthenticatorPlugins"
+      />
 
   <utility
       name="No Challenge if Authenticated"

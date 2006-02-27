@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,20 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Vocabulary for the Source Type Registry
+"""Mail vocabularies
 
 $Id$
 """
-from zope.interface import alsoProvides
-from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
+__docformat__ = 'restructuredtext'
 
-from zope.app import zapi
-from zope.app.renderer.interfaces import ISource
+from zope.interface import classProvides
 from zope.app.schema.interfaces import IVocabularyFactory
+from zope.app.component.vocabulary import UtilityVocabulary
 
-def SourceTypeVocabulary(context):
-    return SimpleVocabulary(
-        [SimpleTerm(name, title=factory.title) for name, factory in 
-         zapi.getFactoriesFor(ISource)])
-
-alsoProvides(SourceTypeVocabulary, IVocabularyFactory)
+class MailDeliveryNames(UtilityVocabulary):
+    classProvides(IVocabularyFactory)
