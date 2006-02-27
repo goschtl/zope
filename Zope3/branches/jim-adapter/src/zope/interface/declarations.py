@@ -927,6 +927,45 @@ def alsoProvides(object, *interfaces):
     """
     directlyProvides(object, directlyProvidedBy(object), *interfaces)
 
+def noLongerProvides(object, interface):
+    """
+    This removes a directly provided interface from an object.
+    Consider the following two interfaces:
+
+      >>> from zope.interface import Interface
+      >>> class I1(Interface): pass
+      ...
+      >>> class I2(Interface): pass
+      ...
+
+    ``I1`` is provided through the class, ``I2`` is directly provided
+    by the object:
+    
+      >>> class C(object):
+      ...    implements(I1)
+      >>> c = C()
+      >>> alsoProvides(c, I2)
+      >>> I2.providedBy(c)
+      True
+
+    Remove I2 from c again:
+      
+      >>> noLongerProvides(c, I2)
+      >>> I2.providedBy(c)
+      False
+
+    Removing an interface that is provided through the class is not possible:
+
+      >>> noLongerProvides(c, I1)
+      Traceback (most recent call last):
+      ...
+      ValueError: Can only remove directly provided interfaces.
+
+    """
+    directlyProvides(object, directlyProvidedBy(object)-interface)
+    if interface.providedBy(object):
+        raise ValueError("Can only remove directly provided interfaces.")
+
 class ClassProvidesBasePy(object):
 
     def __get__(self, inst, cls):
