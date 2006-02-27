@@ -1,0 +1,47 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <addMenuItem
+      title="BoolWidget"
+      description="Add a Demo BoolWidget"
+      class="..boolwidget.DemoBoolWidget"
+      permission="zope.ManageContent"
+      view="addDemoBoolWidget.html"
+      />
+
+  <addform
+      name="addDemoBoolWidget.html"
+      label="Add a Demo BoolWidget"
+      schema="..interfaces.IWriteDemoBoolWidget"
+      content_factory="..boolwidget.DemoBoolWidget"
+      permission="zope.ManageContent"
+      />
+
+  <schemadisplay
+      name="index.html"
+      schema="..interfaces.IDemoBoolWidget"
+      label="BoolWidget Index"
+      permission="zope.View"
+      menu="zmi_views" title="View"
+      />
+
+  <editform
+      name="edit.html"
+      label="Edit"
+      for="..interfaces.IDemoBoolWidget"
+      schema="..interfaces.IWriteDemoBoolWidget"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"
+      />
+
+  <editform
+      name="popupEdit.html"
+      label="Popup Edit"
+      for="..interfaces.IDemoBoolWidget"
+      schema="..interfaces.IDemoBoolWidget"
+      permission="zope.ManageContent"
+      template="popup.pt"
+      />
+
+</configure>
