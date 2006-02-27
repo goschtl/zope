@@ -17,25 +17,30 @@ This vocabulary provides permission IDs.
 
 $Id$
 """
+import warnings
 import zope.deprecation
 
 from zope.security.checker import CheckerPublic
 from zope.app import zapi
-from zope.interface import implements
+from zope.interface import implements, classProvides
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.schema.interfaces import ISourceQueriables
-from zope.app.security.interfaces import IPermission, IAuthentication
+from zope.security.interfaces import IPermission
+from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import PrincipalLookupError
+from zope.app.security.interfaces import IPrincipalSource
 from zope.app.component import queryNextUtility
+from zope.app.component.vocabulary import UtilityVocabulary
+from zope.app.schema.interfaces import IVocabularyFactory
 
 # BBB Backward Compatibility
 zope.deprecation.__show__.off()
 from zope.exceptions import NotFoundError
 zope.deprecation.__show__.on()
 
-import warnings
-
-from interfaces import IPrincipalSource
+class PermissionsVocabulary(UtilityVocabulary):
+    classProvides(IVocabularyFactory)
+    interface = IPermission
 
 class PermissionIdsVocabulary(SimpleVocabulary):
     """A vocabular of permission IDs.
@@ -97,6 +102,8 @@ class PermissionIdsVocabulary(SimpleVocabulary):
 
         >>> tearDown()
     """
+    classProvides(IVocabularyFactory)
+
     def __init__(self, context):
         terms = []
         permissions = zapi.getUtilitiesFor(IPermission, context)

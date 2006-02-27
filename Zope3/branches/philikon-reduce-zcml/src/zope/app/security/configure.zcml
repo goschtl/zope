@@ -10,14 +10,15 @@
                    Public resources are always accessible."
       />
 
-  <vocabulary
+  <utility
+      component=".vocabulary.PermissionsVocabulary"
       name="Permissions"
-      factory="zope.app.component.vocabulary.UtilityVocabulary"
-      interface="zope.security.interfaces.IPermission" />
+      />
 
-  <vocabulary
+  <utility
+      component=".vocabulary.PermissionIdsVocabulary"
       name="Permission Ids"
-      factory=".vocabulary.PermissionIdsVocabulary" />
+      />
 
   <include file="globalmodules.zcml" />
   <include file="_protections.zcml" />

@@ -83,9 +83,10 @@
 
   <!-- Vocabularies -->
 
-  <vocabulary
+  <utility
+      component=".vocabulary.RoleIdsVocabulary"
       name="Role Ids"
-      factory=".vocabulary.RoleIdsVocabulary" />
+      />
 
   <!-- Registering documentation with API doc -->
   <configure
@@ -101,6 +102,5 @@
         />
 
   </configure>
-
 
 </configure>
