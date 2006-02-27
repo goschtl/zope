@@ -31,6 +31,6 @@ class ISkinSelection(zope.interface.Interface):
             Note: You have to reload the page again for the setting to show an
             effect.
             """,
-        vocabulary="Skins",
+        vocabulary="Browser Skins",
         default=None,
         required=False)

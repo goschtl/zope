@@ -2,14 +2,18 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser">
 
-
+  <!-- BBB 2006/02/18, to be removed after 12 months -->
   <browser:layer
       name="rotterdam"
-      interface="zope.app.rotterdam.rotterdam" />
+      interface="zope.app.rotterdam.rotterdam"
+      bbb_aware="true"
+      />
 
-  <browser:skin
+  <interface
+      interface="zope.app.rotterdam.Rotterdam"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
       name="Rotterdam"
-      interface="zope.app.rotterdam.Rotterdam" />
+      />
 
   <browser:resource
       name="zope3.css"

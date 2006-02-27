@@ -60,6 +60,20 @@ Also, once a deprecation warning has been displayed, it is not shown again:
   >>> tests.demo1
   1
 
+Deprecation can also happen inside a function.  When we first access
+``demo4``, it can be accessed without problems, then we call a
+function that sets the deprecation message and we get the message upon
+the next access:
+
+  >>> tests.demo4
+  4
+  >>> tests.deprecatedemo4()
+  >>> tests.demo4
+  From tests.py's showwarning():
+  ...README.txt:1: DeprecationWarning: demo4: demo4 is no more.
+  ...
+  4
+
 New let's see how properties and methods can be deprecated. We are going to
 use the same function as before, except that this time, we do not pass in names
 as first argument, but the method or attribute itself. The function then

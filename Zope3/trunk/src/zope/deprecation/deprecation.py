@@ -131,9 +131,8 @@ def deprecated(specifier, message):
 
     # We are inside a module
     if isinstance(specifier, (str, unicode, list, tuple)):
-        locals = sys._getframe(1).f_locals
-        if '__name__' in locals:
-            modname = locals['__name__']
+        globals = sys._getframe(1).f_globals
+        modname = globals['__name__']
 
         if not isinstance(sys.modules[modname], DeprecationProxy):
             sys.modules[modname] = DeprecationProxy(sys.modules[modname])

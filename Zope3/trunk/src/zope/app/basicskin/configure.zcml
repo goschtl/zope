@@ -2,7 +2,11 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
-  <skin name="Basic" layers="default" />
+  <zope:interface
+      interface=".IBasicSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Basic"
+      />
 
   <page
       name="standard_macros"

@@ -15,12 +15,27 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.app.rotterdam import Rotterdam
 
 from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
 
 from zope.app.tree.interfaces import ITreeStateEncoder
 from zope.app.tree.node import Node
+
+class IStaticTreeLayer(IBrowserRequest):
+    """Layer that we can register our own navigation macro for."""
+
+class IStaticTreeSkin(IStaticTreeLayer, Rotterdam):
+    """Skin based on Rotterdam that includes the static tree
+    navigation macro."""
+
+# BBB 2006/02/18, to be removed after 12 months
+import zope.app.skins
+zope.app.skins.set('StaticTree', IStaticTreeSkin)
 
 class StatefulTreeView(BrowserView):
 

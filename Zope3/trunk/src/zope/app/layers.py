@@ -11,20 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Debug skin
+"""Convenience module to access registered layers
+
+This module solely exists for backward compatibility reasons.  It is
+to be removed by Zope 3.5.  The now deprecated browser:layers
+directive puts a reference to the created interfaces in this module.
+
+BBB 2006/02/18, to be removed after 12 months
 
 $Id$
 """
-__docformat__ = 'restructuredtext'
-from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.rotterdam import Rotterdam
+import zope.deprecation
 
-class IDebugLayer(IBrowserRequest):
-    """Layer that we can register debug views with."""
-
-class IDebugSkin(IDebugLayer, Rotterdam):
-    """Rotterdam-based skin with debug functionality"""
-
-# BBB 2006/02/18, to be removed after 12 months
-import zope.app.skins
-zope.app.skins.set('Debug', IDebugSkin)
+def set(name, obj):
+    globals()[name] = obj
+    zope.deprecation.deprecated(name, "The zope.app.layers module has "
+                                "been deprecated and will be removed in "
+                                "Zope 3.5.")

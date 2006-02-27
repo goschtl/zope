@@ -36,3 +36,6 @@ class ZopeTop(templates, images, css, Rotterdam):
     This skin consists of its three specific layers plus the rotterdam layer.
     """
 
+# BBB 2006/02/18, to be removed after 12 months
+import zope.app.skins
+zope.app.skins.set('ZopeTop', ZopeTop)

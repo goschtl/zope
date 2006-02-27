@@ -18,7 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import zope.interface
-from zope.publisher.interfaces.browser import ISkin
+from zope.publisher.interfaces.browser import IBrowserSkinType
 from zope.app.component.interfaces import ISite
 from zope.app.preference.interfaces import IUserPreferences
 from zope.app.publisher.browser import applySkin as applySkinOnRequest

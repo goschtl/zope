@@ -13,7 +13,7 @@
 ##############################################################################
 """Component Architecture Tests
 
-$Id: test_api.py 28632 2004-12-16 17:42:59Z srichter $
+$Id$
 """
 import sys
 import unittest
@@ -31,6 +31,10 @@ deprecated('demo2', 'demo2 is no more.')
 demo3 = 3
 deprecated('demo3', 'demo3 is no more.')
 
+demo4 = 4
+def deprecatedemo4():
+    """Demonstrate that deprecate() also works in a local scope."""
+    deprecated('demo4', 'demo4 is no more.')
 
 orig_showwarning = warnings.showwarning
 

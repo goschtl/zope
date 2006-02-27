@@ -1,8 +1,20 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    >
 
-  <layer name="tracker" />
+  <!-- BBB 2006/02/18, to be removed after 12 months -->
+  <layer
+      interface=".IBugtrackerLayer"
+      name="tracker"
+      bbb_aware="true"
+      />
 
-  <skin name="tracker" layers="tracker zope.app.rotterdam.rotterdam default" />
+  <zope:interface
+      interface=".IBugtrackerSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="tracker"
+      />
 
   <page 
       for="*"

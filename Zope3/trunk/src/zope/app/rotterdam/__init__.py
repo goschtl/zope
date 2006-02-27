@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""`Rotterdam` skin package.
+"""``Rotterdam`` skin package.
 
 $Id$
 """
@@ -20,11 +20,14 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 class rotterdam(IBrowserRequest):
-    """The `rotterdam` layer."""
+    """Layer for registering Rotterdam-specific macros."""
 
 class Rotterdam(rotterdam, IDefaultBrowserLayer):
-    """The `Rotterdam` skin.
+    """The ``Rotterdam`` skin.
 
-    It is available via `++skin++zope.app.rotterdam.Rotterdam`.
+    It is available via ``++skin++Rotterdam``.
     """
 
+# BBB 2006/02/18, to be removed after 12 months
+import zope.app.skins
+zope.app.skins.set('Rotterdam', Rotterdam)
