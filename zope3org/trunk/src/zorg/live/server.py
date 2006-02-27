@@ -120,7 +120,9 @@ class Extractor(object) :
                 client = manager.get(uuid, None)
                 if client :
                     event = self.readEvent()
+                    print ["Reading event", event]
                     if event :
+                        print "Reading event", event.pprint()
                         client.input(event)
                         ok = DirectResult(("ok",))
                         handler.result = ok
@@ -143,7 +145,7 @@ class Extractor(object) :
  
 class LivePageWSGIHandler(WSGIHandler) :
     
-    idleInterval = 0.2
+    idleInterval = 0.1
     limit = 30
     
     count = 0
@@ -201,7 +203,7 @@ class LivePageWSGIHandler(WSGIHandler) :
         client = self.manager.get(self.uuid, None)
         if client is None : # Uups, the client has gone in the meanwhile
             error = ErrorEvent(description="Unexpected timeout")
-            return self.returnResult(str(error))        
+            return self.returnResult(error.toJSON())        
             
         r = self.result
         if r :
@@ -212,10 +214,10 @@ class LivePageWSGIHandler(WSGIHandler) :
             
         event = client.nextEvent()
         if event is not None :
-            return self.returnResult(str(event))
+            return self.returnResult(event.toJSON())
         
         if time.time() > self.expires :
-            return self.returnResult(str(IdleEvent()))
+            return self.returnResult(IdleEvent().toJSON())
         
         reactor.callLater(self.idleInterval, self.onIdle)
  

@@ -21,7 +21,8 @@ function installTextObserver() {
                         })
                     }
                 else {
-                    sendEvent('update', {
+                    LivePage.sendEvent({
+                            name: "update", 
                             id: "text"+currentCommentKey, 
                             html: makeParagraph(value),
                             extra: "scroll"

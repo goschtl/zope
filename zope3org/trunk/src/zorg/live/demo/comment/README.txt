@@ -76,29 +76,47 @@ This online status is also mirrored in the intial server events that are
 send to the clients. Since both clients send events about changing online
 states we get four events :
 
-    >>> print page1.output('uuid1')
-    update online 
-    ['zorg.member.uwe']
+    >>> page1.output('uuid1').pprint()
+    html : ['zorg.member.uwe']
+    id : 'online'
+    name : 'update'
+    recipients : 'all'
+    where : None
    
-    >>> print page1.output('uuid1')
-    update online 
-    ['zorg.member.uwe']
+    >>> page1.output('uuid1').pprint()
+    html : ['zorg.member.uwe']
+    id : 'online'
+    name : 'update'
+    recipients : 'all'
+    where : None
 
-    >>> print page2.output('uuid2')
-    update online 
-    ['zorg.member.dominik', 'zorg.member.uwe']
+    >>> page2.output('uuid2').pprint()
+    html : ['zorg.member.dominik', 'zorg.member.uwe']
+    id : 'online'
+    name : 'update'
+    recipients : 'all'
+    where : None
 
-    >>> print page2.output('uuid2')
-    update online 
-    ['zorg.member.dominik', 'zorg.member.uwe']
+    >>> page2.output('uuid2').pprint()
+    html : ['zorg.member.dominik', 'zorg.member.uwe']
+    id : 'online'
+    name : 'update'
+    recipients : 'all'
+    where : None
 
-    >>> print page1.output('uuid1')
-    update online 
-    ['zorg.member.dominik', 'zorg.member.uwe']
+    >>> page1.output('uuid1').pprint()
+    html : ['zorg.member.dominik', 'zorg.member.uwe']
+    id : 'online'
+    name : 'update'
+    recipients : 'all'
+    where : None
 
-    >>> print page1.output('uuid1')
-    update online 
-    ['zorg.member.dominik', 'zorg.member.uwe']
+    >>> page1.output('uuid1').pprint()
+    html : ['zorg.member.dominik', 'zorg.member.uwe']
+    id : 'online'
+    name : 'update'
+    recipients : 'all'
+    where : None
 
 
 When the user starts typing, the Ajax textarea observer calls addComment which
@@ -124,11 +142,13 @@ new DOM element later on :
     >>> transaction.commit()
 
     >>> out1 = page1.output('uuid1')
-    >>> print out1
-    append comments scroll
-    ...
-    ...<p>Abc</p>...
-    ...
+    >>> out1.pprint()
+    extra : 'scroll'
+    html : '<div id="comment1"...'
+    id : 'comments'
+    name : 'append'
+    recipients : 'all'
+    where : None
  
     >>> out1 == page2.output('uuid2')
     True

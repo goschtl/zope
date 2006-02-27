@@ -88,16 +88,16 @@ class LivePageClient(object):
         """
         output = self.nextEvent()
         if output :
-            return str(output)
+            return output
                 
         end = time.time() + self.refreshInterval
         while time.time() < end :
             output = self.nextEvent()
             if output :
-                return str(output)
+                return output.toJSON()
             time.sleep(0.1)
             
-        return str(IdleEvent())
+        return IdleEvent().toJSON()
         
     def input(self, event=None) :
         """ Receives a client event and broadcasts the event

@@ -89,12 +89,12 @@ class TestLivePage(LivePage) :
         template = Template("""<html>
     <head>
         <script src="$url/prototype.js" type="text/javascript"></script>
-        <script type="text/javascript">var livePageUUID = '$id';</script>
+        <script type="text/javascript">LivePage.uuid = '$id';</script>
         <script src="$url/livepage.js" type="text/javascript"></script>
     </head>
-    <body onload="startClient()">
+    <body onload="LivePage.startClient()">
     <p>Input some text.</p>
-    <input onchange="sendEvent('append', 'target', this.value)" type="text" />
+    <input onchange="LivePage.sendEvent({name: 'append', id: 'target', html: this.value})" type="text" />
     <p id="target">Text goes here:</p>
     </body>
 </html>""")      

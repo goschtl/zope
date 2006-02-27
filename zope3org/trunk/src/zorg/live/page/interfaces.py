@@ -43,20 +43,15 @@ class ILivePageEvent(Interface) :
         client to interpret the description in the intended way.
         
     """
+
+    name = Attribute("The name of the event resp. event factory.")
                 
-    def __str__() :
+    def toJSON() :
         """
-        The __str__ method serializes the event in a way that it can be
+        The toJSON method serializes the event in a way that it can be
         interpreted by the JavaScript Client.
         """
         
-class IVerbEvent(ILivePageEvent) :
-    """ An abstract event with an associated verb that can be used
-        as a utility name for event factories and other purposes.
-    """
-    
-    verb = Attribute("Describes the event in a single word.")
-
 class ILocationEvent(ILivePageEvent) :
     """ An abstract event that carries information about the location of the
         event.
@@ -72,19 +67,19 @@ class IPersonEvent(ILivePageEvent) :
     who = Attribute("Identifies the location of the event.")
 
 
-class IIdleEvent(IVerbEvent) :
+class IIdleEvent(ILivePageEvent) :
     """ An idle event that describes that nothing happened. """
 
-class IReloadEvent(IVerbEvent) :
+class IReloadEvent(ILivePageEvent) :
     """ A reload event that can be used to enforce a page reload. """
 
-class ICloseEvent(IVerbEvent) :
+class ICloseEvent(ILivePageEvent) :
     """ A user has closed the browser window.
     """
     
     uuid = Attribute("Identifies the client browser page.")
 
-class IErrorEvent(IVerbEvent) :
+class IErrorEvent(ILivePageEvent) :
     """ Am error event that can be used to inform the clients about
         server errors.
     """
@@ -98,9 +93,9 @@ class ILogoutEvent(ILocationEvent, IPersonEvent) :
     """
     
    
-class IModifyElementEvent(IVerbEvent) :
+class IModifyElementEvent(ILivePageEvent) :
     """ Describes a modification of a page element. The modification
-        is described by a verb and an id. 
+        is described by a name and an id. 
         
         The description line is simply a string
         with words seperated by spaces.

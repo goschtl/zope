@@ -209,7 +209,7 @@ class LiveComments(LivePage) :
             persistent = comments[key]
             text = cls.makeParagraph(persistent.data)
             event = Update(id="text%s" % key, html=text)    
-            
+         
         cls.sendEvent(event)
         
     onCommentModified = classmethod(onCommentModified)

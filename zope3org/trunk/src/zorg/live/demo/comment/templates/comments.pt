@@ -31,14 +31,13 @@
     </script>
     
     <script type="text/javascript" 
-            tal:content="string:var livePageUUID = '${view/nextClientId}';">
-        var livePageClientUUID = '0';
+            tal:content="string:LivePage.uuid = '${view/nextClientId}';">
+            LivePage.uuid = '0';
     </script>
     
      <script type="text/javascript">
-        startClient();
-        
-        window.onunload = stopClient
+        LivePage.startClient();
+        window.onunload = LivePage.stopClient
     </script>  
     
    <p>Type a comment and see how the page

@@ -25,7 +25,7 @@ following lines to your 'zope.conf' file :
 Basic idea
 ----------
 
-This LivePage package implements a MVC approach in its narrow sense: it uses
+This package implements a MVC approach in its narrow sense: it uses
 server generated events to update browser views in real time.
 It tries to  try to overcome the traditional model of web pages in which the
 content of the page is only refreshed in response to a user activity. Besides the
@@ -52,14 +52,14 @@ threads. This might work for two or three users but not for 20 users or more
 which are concurrently online and share the same resources.
 
 Therefore this package contains a specialization of Zope3's twisted server
-that handles all LivePage requests without the need for database connections  
+that handles LivePage requests without the need for database connections  
 and persistent objects outside of the ordinary Zope3 threads. 
 The Zope3 requests still work of course but should be restricted to security 
 or persistence issues as far as possible whereas the event handling is done
 by twisted.
 
 Another problem is that the Zope event model does not guarantee that we get
-all relevant data to distinguish relevant events. For instance, many Zope
+all necessary data to distinguish relevant events. For instance, many Zope
 application send many ObjectModifiedEvents after another without distinguishing
 between changes of a ZopeDublinCore attribute, the file data, container content,
 etc. As long as the ObjectModifiedEvent is only used to update the modification
@@ -69,8 +69,7 @@ updates of large parts of the page. E.g. if we have a form with the
 title, description, and effective date of an object that we want publish,
 all slots must be updated in response to an ObjectModifiedEvent as long as
 the event does not use the optional modification descriptors, which
-are there, but rarely used (This by the way is also a main problem of the 
-current Catalog implementation)
+are optional, but rarely used.
 
 In order to ensure that events are not send multiple times we need a
 check whether an identical event has already be processed and whether
@@ -78,7 +77,7 @@ this really matters. This largeley depends on the application. In a chat
 application it might be ok if a single user repeats himself whereas
 in a list view of container we must ensure that each object is represented
 by only one list item. 
-The check for redundant events could be done on the server or on the client
+The check for redundant events can be done on the server or on the client
 side. We decided to use the client side since it may happen that some
 events get lost and redundancy may be usable to recover from such situations.
 So we leave the check for redundant events completely to the JavaScript client
@@ -126,12 +125,12 @@ Now we simulate the startup of two clients.
     <html>
         <head>
             <script src="http://127.0.0.1/++resource++zorgajax/prototype.js" type="text/javascript"></script>
-            <script type="text/javascript">var livePageUUID = 'uuid1';</script>
+            <script type="text/javascript">LivePage.uuid = 'uuid1';</script>
             <script src="http://127.0.0.1/++resource++zorgajax/livepage.js" type="text/javascript"></script>
         </head>
-        <body onload="startClient()">
+        <body onload="LivePage.startClient()">
         <p>Input some text.</p>
-        <input onchange="sendEvent('append', 'target', this.value)" type="text" />
+        <input onchange="LivePage.sendEvent({name: 'append', id: 'target', html: this.value})" type="text" />
         <p id="target">Text goes here:</p>
         </body>
     </html>
@@ -143,12 +142,12 @@ Now we simulate the startup of two clients.
     <html>
         <head>
             <script src="http://127.0.0.1/++resource++zorgajax/prototype.js" type="text/javascript"></script>
-            <script type="text/javascript">var livePageUUID = 'uuid2';</script>
+            <script type="text/javascript">LivePage.uuid = 'uuid2';</script>
             <script src="http://127.0.0.1/++resource++zorgajax/livepage.js" type="text/javascript"></script>
         </head>
-        <body onload="startClient()">
+        <body onload="LivePage.startClient()">
         <p>Input some text.</p>
-        <input onchange="sendEvent('append', 'target', this.value)" type="text" />
+        <input onchange="LivePage.sendEvent({name: 'append', id: 'target', html: this.value})" type="text" />
         <p id="target">Text goes here:</p>
         </body>
     </html>
@@ -171,7 +170,7 @@ After that the page can be called by the javascript glue as follows
        Call the output method and ask for special output that is intended
        for the specified client
    
-    -  @@livepage.html/@@client/uuid0/input?verb=change&argument=42
+    -  @@livepage.html/@@client/uuid0/input?name=change&argument=42
         
        Call an input method that produces output for various clients.
       
@@ -179,8 +178,8 @@ After the startup we ask for some output. Since nothing happened, the
 output is 'idle':
     
     >>> page1 = TestLivePage(None, TestRequest())
-    >>> str(page1.output('uuid1'))
-    'idle'
+    >>> page1.output('uuid1')
+    '{..."name":"idle"...}'
   
 Now we can send some input. If we get the input from the browser we must first
 be able to convert the text into a Python object. Since we can convert
@@ -188,14 +187,14 @@ url encoded arguments and post forms easily into dicts we decided to use
 the global function ««dict2event«« as the basic factory.
 
 This function uses named IClientEventFactory utilities to lookup the event 
-from a verb that describes the event:
+from it's name:
 
     >>> from zorg.live.page.event import dict2event
-    >>> event = dict2event(dict(verb="append", id="id", html="<p>ABC</p>"))
+    >>> event = dict2event(dict(name="append", id="id", html="<p>ABC</p>"))
     >>> event
     <zorg.live.page.event.Append object at ...>
-    >>> str(event)
-    'append id \n<p>ABC</p>'
+    >>> event.toJSON()
+    '{..."html":"<p>ABC</p>", "where":null, "id":"id", "recipients":"all", "name":"append"}'
     
 The set of registered event types can be easily extended by registering a
 new IClientEventFactory. Most of the time this will look as follows :
@@ -211,17 +210,16 @@ this by using directlyProvides:
     >>> from zope.interface import directlyProvides
     >>> directlyProvides(SpecialEvent, IClientEventFactory)
     
-    >>> dict2event(dict(verb='special', arg=42))
+    >>> dict2event(dict(name='special', arg=42))
     Traceback (most recent call last):
     ...
     ComponentLookupError: (<InterfaceClass ...IClientEventFactory>, 'special')
     
 After the registration of the class as a utility the conversion works:
-    
-    
+      
     >>> zope.component.provideUtility(SpecialEvent, IClientEventFactory,
     ...                                                        name="special")
-    >>> dict2event(dict(verb='special', arg=42))
+    >>> dict2event(dict(name='special', arg=42))
     <SpecialEvent object at ...>
     
 In Python contexts we can use the event classes directly :   
@@ -237,9 +235,12 @@ Now let's send the event to a LivePage :
     
 After that the next call of the output returns javascript snippets:
         
-    >>> print str(page1.output(uuid='uuid1'))
-    append target
-    <p>42</p>
+    >>> page1.output(uuid='uuid1').pprint()
+    html : '<p>42</p>'
+    id : 'target'
+    name : 'append'
+    recipients : 'all'
+    where : None
 
 
 And this again and again if we provide new input :
@@ -248,9 +249,12 @@ And this again and again if we provide new input :
     >>> page2.input('uuid1', event2)
     ''
     
-    >>> print str(page1.output('uuid1'))
-    append target
-    <p>43</p>
+    >>> page1.output('uuid1').pprint()
+    html : '<p>43</p>'
+    id : 'target'
+    name : 'append'
+    recipients : 'all'
+    where : None
     
 
 

@@ -20,6 +20,8 @@ __docformat__ = 'restructuredtext'
 from zope.interface import implements
 from zope.interface import directlyProvides
 
+import simplejson
+
 from zope.app import zapi
 from zorg.live.globals import getRequest
 from zorg.live.page.interfaces import ILivePageEvent
@@ -35,70 +37,126 @@ from zorg.live.page.interfaces import ISetAttribute
 from zorg.live.page.interfaces import IModifyElementEvent
 from zorg.live.page.interfaces import IClientEventFactory
 
+
+class JSONEventEncoder(simplejson.encoder.JSONEncoder) :
+    """ Specialization of JSONEncoder that makes LivePageEvents serializable.
+    """
+    
+    def default(self, o) :
+        """ Overwritten default method that allows to serialize
+            LivePageEvents.
+        """
+        
+        if ILivePageEvent.providedBy(o) :
+            return o.toDict()
+        return super(JSONEventEncoder, self).default(o)
+                
+        
+
 class LivePageEvent(object) :
-    """ LivePage events are broadcasted from server side LivePage clients
-        to their browser counterparts.
+    """ 
+    LivePage events are broadcasted from server side LivePage clients
+    to their browser counterparts via JSON.
         
-        Each event consist of description line and optional extra infos.
+    Event objects cannot be converted to JSON as such :
+    
+    >>> event = LivePageEvent()
+    >>> simplejson.dumps(event)
+    Traceback (most recent call last):
+    ...
+    TypeError: <...LivePageEvent object at ...> is not JSON serializable
+     
+    Therefore we convert each LivePageEvent into a serializable dict.
+
+    >>> d = event.toDict()
+    >>> sorted(d.items())
+    [('name', 'event'), ('recipients', 'all'), ('where', None)]
+    
+    This dict is used by the JSONEventEncoder to decode the event object. The
+    toJSON method calls these encoder :
+    
+    >>> event = LivePageEvent(description="uwe goes online")
+    >>> event.toJSON()
+    '{..."where":null...}'
+    
+    In order to convert JSON serialized event back into Python objects we
+    use the dict2event function. This function uses the 'name' key 
+    to look up a IClientEventFactory. This factory provides an object constructor
+    that takes a python dict as its keyword arguments. This factory
+    must be registered as a named utility:
+    
+    >>> from zope.component import provideUtility
+    >>> provideUtility(LivePageEvent, IClientEventFactory, name="event")
+    >>> decoded = dict2event(event.toDict())
+    >>> decoded
+    <zorg.live.page.event.LivePageEvent object at ...>
+    
+    Encoded and decoded objects are equivalent:
+    
+    >>> event.toDict() == decoded.toDict()
+    True
         
-        We use a structured object here because we often have the situation
-        that a single DOM element is frequently modified.
+       
         
-        The format of the description line is free, it's up to the
-        client to interpret the description in the intended way.
-        
-        The __str__ method serializes the event in a way that it can be
-        interpreted by the JavaScript Client.
-        
-        >>> event = LivePageEvent(description="uwe goes online")
-        >>> str(event)
-        'uwe goes online'
+  
+  
     """
     
     implements(ILivePageEvent)
     
     recipients = "all"
     where = None
+    name = "event"
     
     def __init__(self, **kw) :
         self.__dict__.update(kw)
         
-    def __str__(self) :
-        return self.description
+    def toDict(self) :
+        d = dict(self.__dict__)
+        d.update(dict(name=self.name,
+                        recipients=self.recipients,
+                        where=self.where))
+        return d
+        
+    def toJSON(self) :
+        return simplejson.dumps(self, cls=JSONEventEncoder)
+        
+    def pprint(self) :
+        for key, value in sorted(self.toDict().items()) :
+            print key, ":", repr(value)
+
+directlyProvides(LivePageEvent, IClientEventFactory)
 
 class ErrorEvent(LivePageEvent) :
     """ An idle event that is send if no event is available. 
     
-        >>> str(ErrorEvent(description="maximum recursion depth exceeded"))
-        'error maximum recursion depth exceeded' 
+        >>> ErrorEvent(description="maximum recursion depth exceeded").pprint()
+        description : 'maximum recursion depth exceeded'
+        name : 'error'
+        recipients : 'all'
+        where : None
     
     """
     
     implements(IIdleEvent)
     
-    verb = "error"
+    name = "error"
     
-    def __str__(self) :
-        return "%s %s" % (self.verb, self.description)
-
-
+    
 class IdleEvent(LivePageEvent) :
     """ An idle event that is send if no event is available. 
     
-        >>> str(IdleEvent())
-        'idle' 
+        >>> IdleEvent().pprint()
+        name : 'idle'
+        recipients : 'all'
+        where : None
     
     """
     
     implements(IIdleEvent)
     
-    verb = "idle"
-    
-    def __init__(self) :
-        pass
-
-    def __str__(self) :
-        return self.verb
+    name = "idle"
+   
 
 directlyProvides(IdleEvent, IClientEventFactory)
 
@@ -106,17 +164,17 @@ directlyProvides(IdleEvent, IClientEventFactory)
 class ReloadEvent(LivePageEvent) :
     """ A reload event that can be used to enforce a page reload 
     
-        >>> str(ReloadEvent())
-        'reload' 
+        >>> ReloadEvent().pprint()
+        name : 'reload'
+        recipients : 'all'
+        where : None
     
     """
     
     implements(IReloadEvent)
     
-    verb = "reload"
+    name = "reload"
     
-    def __str__(self) :
-        return self.verb
         
 directlyProvides(ReloadEvent, IClientEventFactory)
 
@@ -124,17 +182,18 @@ directlyProvides(ReloadEvent, IClientEventFactory)
 class CloseEvent(LivePageEvent) :
     """ A user has closed the browser window
     
-        >>> str(CloseEvent(uuid='client_uuid'))
-        'close client_uuid'
+        >>> CloseEvent(uuid='client_uuid').pprint()
+        name : 'close'
+        recipients : 'all'
+        uuid : 'client_uuid'
+        where : None
     
     """
     
     implements(ICloseEvent)
     
-    verb = "close"
+    name = "close"
     
-    def __str__(self) :
-        return "%s %s" % (self.verb, self.uuid)
 
 directlyProvides(CloseEvent, IClientEventFactory)
         
@@ -142,16 +201,17 @@ directlyProvides(CloseEvent, IClientEventFactory)
 class LoginEvent(LivePageEvent) :
     """ A login event that can be used to notify about new users. 
     
-        >>> str(LoginEvent(who='member.uoe', where='location'))
-        'login member.uoe location' 
+        >>> LoginEvent(who='member.uoe', where='location').pprint()
+        name : 'login'
+        recipients : 'all'
+        where : 'location'
+        who : 'member.uoe'
     
     """    
     implements(ILoginEvent)
     
-    verb = "login"
+    name = "login"
     
-    def __str__(self) :
-        return "%s %s %s" % (self.verb, self.who, self.where)
 
 directlyProvides(LoginEvent, IClientEventFactory)
       
@@ -159,56 +219,60 @@ directlyProvides(LoginEvent, IClientEventFactory)
 class LogoutEvent(LivePageEvent) :
     """ A logout event that can be used to notify about leaving users. 
     
-        >>> str(LoginEvent(who='member.uoe', where='location'))
-        'login member.uoe location' 
+        >>> LogoutEvent(who='member.uoe', where='location').pprint()
+        name : 'logout'
+        recipients : 'all'
+        where : 'location'
+        who : 'member.uoe'
     
     """    
     implements(ILogoutEvent)
 
-    verb = "logout"
+    name = "logout"
     
-    def __str__(self) :
-        return "%s %s %s" % (self.verb, self.who, self.where)
 
 directlyProvides(LogoutEvent, IClientEventFactory)
 
     
 class ModifyElementEvent(LivePageEvent) :
     """ Describes a modification of a page element. The modification
-        is described by a verb and an id. 
+        is described by a name and an id. 
         
         The description line is simply a string
         with words seperated by spaces.
                 
-    
         >>> event = ModifyElementEvent(id="comments")
-        >>> str(event)
-        'noop comments'
+        >>> event.pprint()
+        id : 'comments'
+        name : 'modify'
+        recipients : 'all'
+        where : None
         
     """    
     implements(IModifyElementEvent)
     
-    verb = "noop"
+    name = "modify"
 
-    def __str__(self) :
-        return "%s %s" % (self.verb, self.id)
 
 
 class SetAttribute(ModifyElementEvent) :
     """ Set a property of a DOM element.
     
         >>> event = SetAttribute(id="img", key="src", value="./demo.png")
-        >>> str(event)
-        'set img src ./demo.png'
+        >>> event.pprint()
+        id : 'img'
+        key : 'src'
+        name : 'set'
+        recipients : 'all'
+        value : './demo.png'
+        where : None
     
     """
     
     implements(ISetAttribute)
 
-    verb = "set"
+    name = "set"
 
-    def __str__(self) :
-        return "%s %s %s %s" % (self.verb, self.id, self.key, self.value)
 
 directlyProvides(SetAttribute, IClientEventFactory)
    
@@ -219,23 +283,23 @@ class HTMLUpdateEvent(ModifyElementEvent) :
     """
     
     extra = ""
-    
-    def __str__(self) :
-        return "%s %s %s\n%s" % (self.verb, self.id, self.extra, self.html)
-        
+            
         
 class Append(HTMLUpdateEvent) :
     """ Append a html fragment as a child node to an existing DOM element. 
 
         >>> event = Append(id='comments', html='<div id="comment1"></div>')
-        >>> print str(event)
-        append comments 
-        <div id="comment1"></div>
+        >>> event.pprint()
+        html : '<div id="comment1"></div>'
+        id : 'comments'
+        name : 'append'
+        recipients : 'all'
+        where : None
         
     """
     implements(IAppend)
       
-    verb = "append"
+    name = "append"
     
 directlyProvides(Append, IClientEventFactory)
     
@@ -244,15 +308,18 @@ class Update(HTMLUpdateEvent) :
     """ Append a html fragment as a child node to an existing DOM element. 
 
         >>> event = Update(id='comments', html='<div id="comment1"></div>')
-        >>> print str(event)
-        update comments 
-        <div id="comment1"></div>
+        >>> event.pprint()
+        html : '<div id="comment1"></div>'
+        id : 'comments'
+        name : 'update'
+        recipients : 'all'
+        where : None
         
     """
     
     implements(IUpdate)
 
-    verb = "update"
+    name = "update"
 
 directlyProvides(Update, IClientEventFactory)
 
@@ -266,9 +333,9 @@ def dict2event(args) :
     
     """
     
-    verb = args.get('verb', None)
-    del args['verb']
-    factory = zapi.getUtility(IClientEventFactory, name=verb)
+    name = args.get('name', None)
+    del args['name']
+    factory = zapi.getUtility(IClientEventFactory, name=name)
     return factory(**args)    
 
 def request2event() :
