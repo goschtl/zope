@@ -39,6 +39,17 @@ Zope Changes
       - Removed unused menus and made previous titles, the description,
         since they were awefully long. Then I created new, short titles.
 
+      - The ``browser:layer`` directive and the ``ILayer`` interface
+        has been deprecated.  Registering layers has become obsolete,
+        layers should be created as interfaces extending
+        ``IBrowserRequest``.
+
+      - The ``browser:skin`` directive has been deprecated.  Skins
+        should be created as interfaces extending ``IBrowserRequest``
+        and can be registered using a simple ``utility`` directive.
+
+      - The ``ISkin`` interface has been renamed to ``IBrowserSkinType``.
+
     Bug Fixes
 
       - Fixed issue 546: non-ASCII docstring cause
