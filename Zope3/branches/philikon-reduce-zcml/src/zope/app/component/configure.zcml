@@ -160,15 +160,15 @@
 
   <!-- Vocabularies -->
 
-  <vocabulary
+  <utility
+      component=".vocabulary.InterfacesVocabulary"
       name="Interfaces"
-      factory=".vocabulary.UtilityVocabulary"
-      interface="zope.interface.interfaces.IInterface" />
+      />
 
-  <vocabulary
-    name="Utility Component Interfaces"
-    factory=".vocabulary.UtilityComponentInterfacesVocabulary" />
+  <utility
+      component=".vocabulary.UtilityComponentInterfacesVocabulary"
+      provides="zope.app.schema.interfaces.IVocabularyFactory"
+      name="Utility Component Interfaces"
+      />
 
 </configure>
-
-
