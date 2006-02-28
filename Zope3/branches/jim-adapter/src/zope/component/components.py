@@ -57,8 +57,19 @@ class Components(object):
     def registerUtility(self, component, provided=None, name=u'', info=u''):
         if provided is None:
             provided = _getUtilityProvided(component)
-        self._utility_registrations[(provided, name)] = component, info
+
+
+        subscribed = [
+            1
+            for ((p, _), (c,_)) in self._utility_registrations.iteritems()
+            if p == provided and c == component
+            ]
+
+        self._utility_registrations[(provided, name)] = component, info        
         self.utilities.register((), provided, name, component)
+
+        if not subscribed:
+            self.utilities.subscribe((), provided, component)
 
     def unregisterUtility(self, component=None, provided=None, name=u''):
         if provided is None:
@@ -70,9 +81,21 @@ class Components(object):
         if (old is None) or ((component is not None) and
                              (component != old[0])):
             return False
-        
+
+        if component is None:
+            component = old[0]
         del self._utility_registrations[(provided, name)]
         self.utilities.unregister((), provided, name)
+
+        subscribed = [
+            1
+            for ((p, _), (c,_)) in self._utility_registrations.iteritems()
+            if p == provided and c == component
+            ]
+
+        if not subscribed:
+            self.utilities.unsubscribe((), provided, component)
+        
         return True
 
     def registeredUtilities(self):
