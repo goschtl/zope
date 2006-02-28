@@ -136,6 +136,8 @@ class BaseGlobalComponents(Components):
             yield reg
         for reg in registeredSubscriptionAdapters():
             yield reg
+        for reg in registeredHandlers():
+            yield reg
         for reg in self.registeredUtilities():
             yield reg
     #
