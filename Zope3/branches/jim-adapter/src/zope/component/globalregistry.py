@@ -144,17 +144,12 @@ class BaseGlobalComponents(Components):
     #
     ####################################################################    
 
-def _resetBase():
-    # globally available singleton
-    global base
-    base = BaseGlobalComponents('base')
+base = BaseGlobalComponents('base')
 
 from zope.testing.cleanup import addCleanUp
-addCleanUp(_resetBase)
+addCleanUp(lambda: base.__init__('base'))
 del addCleanUp
 
-# set it up for the first time
-_resetBase()
 
 class NamedGlobalComponents(BaseGlobalComponents):
 
