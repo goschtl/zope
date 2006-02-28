@@ -192,7 +192,7 @@ but you could use the 'dvd' adapter in this case of course. ;)
 Sometimes you want to know all adapters that are available. Let's say you want
 to know about all the adapters that convert a German to a US socket type:
 
-  >>> sockets = zope.component.getAdapters((bathroomDE,), IUSSocket)
+  >>> sockets = list(zope.component.getAdapters((bathroomDE,), IUSSocket))
   >>> len(sockets)
   3
   >>> names = [name for name, socket in sockets]
