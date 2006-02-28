@@ -88,13 +88,14 @@ class Components(object):
             raise interfaces.ComponentLookupError(provided, name)
         return utility
 
-    #TODO
-    def getUtilitiesFor(self, interface, context=None):
-        return []
+    #TODO needs tests
+    def getUtilitiesFor(self, interface):
+        for name, utility in self.utilities.lookupAll((), interface):
+            yield name, utility
 
-    #TODO
-    def getAllUtilitiesRegisteredFor(self, interface, context=None):
-        return []
+    #TODO needs tests
+    def getAllUtilitiesRegisteredFor(self, interface):
+        return self.utilities.subscriptions((), interface)
 
     def registerAdapter(self, factory, required=None, provided=None, name=u'',
                         info=u''):
