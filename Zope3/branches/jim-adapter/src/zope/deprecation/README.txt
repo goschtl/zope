@@ -79,6 +79,10 @@ method is accessed.
   ...
   ...     def splat(self):
   ...         return 4
+  ...
+  ...     @deprecation.deprecate("clap() is no more.")
+  ...     def clap(self):
+  ...         return 5
 
 And here is the result:
 
@@ -97,6 +101,11 @@ And here is the result:
   3
   >>> my.splat()
   4
+  >>> my.clap()
+  From tests.py's showwarning():
+  ...README.txt:1: DeprecationWarning: clap() is no more.
+  ...
+  5
 
 
 Temporarily Turning Off Deprecation Warnings

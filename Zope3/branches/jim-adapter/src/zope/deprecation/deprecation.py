@@ -152,3 +152,12 @@ def deprecated(specifier, message):
             return DeprecatedGetSetProperty(prop, message)
         elif hasattr(prop, '__get__'):
             return DeprecatedGetProperty(prop, message)
+
+class deprecate(object):
+    """Deprecation decorator"""
+
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __call__(self, func):
+        return DeprecatedMethod(func, self.msg)
