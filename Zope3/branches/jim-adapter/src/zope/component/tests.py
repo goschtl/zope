@@ -93,6 +93,21 @@ class A1_23(U):
 def noop(*args):
     pass
 
+@component.adapter(I1)
+def handle1(x):
+    print 'handle1', x
+
+def handle(*objects):
+    print 'handle', objects
+
+@component.adapter(I1)
+def handle3(x):
+    print 'handle3', x
+
+@component.adapter(I1)
+def handle4(x):
+    print 'handle4', x
+
 class Ob(object):
     interface.implements(I1)
     def __repr__(self):
@@ -670,6 +685,109 @@ def test_ability_to_pickle_globalsitemanager():
       >>> adapters = cPickle.loads(pickle)
       >>> adapters is site.globalSiteManager.adapters
       True
+    """
+
+def test_persistent_component_managers():
+    """
+Here, we'll demonstrate that changes work even when data are stored in 
+a database and when accessed from multiple connections.
+
+Start by setting up a database and creating two transaction
+managers and database connections to work with.
+
+    >>> import ZODB.tests.util
+    >>> db = ZODB.tests.util.DB()
+    >>> import transaction
+    >>> t1 = transaction.TransactionManager()
+    >>> c1 = db.open(transaction_manager=t1)
+    >>> r1 = c1.root()
+    >>> t2 = transaction.TransactionManager()
+    >>> c2 = db.open(transaction_manager=t2)
+    >>> r2 = c2.root()
+
+Create a set of components registries in the database, alternating
+connections. 
+
+    >>> from zope.component.persistentregistry import PersistentComponents
+
+    >>> _ = t1.begin()
+    >>> r1[1] = PersistentComponents()
+    >>> t1.commit()
+
+    >>> _ = t2.begin()
+    >>> r2[2] = PersistentComponents((r2[1], ))
+    >>> t2.commit()
+
+    >>> _ = t1.begin()
+    >>> r1[3] = PersistentComponents((r1[1], ))
+    >>> t1.commit()
+
+    >>> _ = t2.begin()
+    >>> r2[4] = PersistentComponents((r2[2], r2[3]))
+    >>> t2.commit()
+
+    >>> _ = t1.begin()
+    >>> r1[1].__bases__
+    ()
+    >>> r1[2].__bases__ == (r1[1], )
+    True
+
+    >>> r1[1].registerUtility(U1(1))
+    >>> r1[1].queryUtility(I1)
+    U1(1)
+    >>> r1[2].queryUtility(I1)
+    U1(1)
+    >>> t1.commit()
+    
+    >>> _ = t2.begin()
+    >>> r2[1].registerUtility(U1(2))
+    >>> r2[2].queryUtility(I1)
+    U1(2)
+
+    >>> r2[4].queryUtility(I1)
+    U1(2)
+    >>> t2.commit()
+
+    
+    >>> _ = t1.begin()
+    >>> r1[1].registerUtility(U12(1), I2)
+    >>> r1[4].queryUtility(I2)
+    U12(1)
+    >>> t1.commit()
+
+
+    >>> _ = t2.begin()
+    >>> r2[3].registerUtility(U12(3), I2)
+    >>> r2[4].queryUtility(I2)
+    U12(3)
+    >>> t2.commit()
+
+    >>> _ = t1.begin()
+
+    >>> r1[1].registerHandler(handle1, info="First handler")
+    >>> r1[2].registerHandler(handle, required=[U])
+    
+    >>> r1[3].registerHandler(handle3)
+    
+    >>> r1[4].registerHandler(handle4)
+
+    >>> r1[4].handle(U1(1))
+    handle1 U1(1)
+    handle3 U1(1)
+    handle (U1(1),)
+    handle4 U1(1)
+
+    >>> t1.commit()
+
+    >>> _ = t2.begin()
+    >>> r2[4].handle(U1(1))
+    handle1 U1(1)
+    handle3 U1(1)
+    handle (U1(1),)
+    handle4 U1(1)
+    >>> t2.abort()
+
+    >>> db.close()
     """
 
 def test_suite():
