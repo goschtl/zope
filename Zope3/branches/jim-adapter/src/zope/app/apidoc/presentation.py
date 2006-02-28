@@ -59,6 +59,7 @@ def getViewFactoryData(factory):
         base = factory.__bases__[0]
         info['path'] = base.__module__ + '.' + base.__name__
         info['template'] = relativizePath(factory.index.filename)
+        info['template_obj'] = factory.index
 
     # Basic Type is a factory
     elif isinstance(factory, (str, unicode, float, int, list, tuple)):
@@ -157,12 +158,12 @@ def filterViewRegistrations(regs, iface, level=SPECIFIC_INTERFACE_LEVEL):
 def getViewInfoDictionary(reg):
     """Build up an information dictionary for a view registration."""
     # get configuration info
-    if isinstance(reg.doc, (str, unicode)):
-        doc = reg.doc
+    if isinstance(reg.info, (str, unicode)):
+        doc = reg.info
         zcml = None
     else:
         doc = None
-        zcml = getParserInfoInfoDictionary(reg.doc)
+        zcml = getParserInfoInfoDictionary(reg.info)
 
     # get layer
     layer = None
@@ -172,7 +173,7 @@ def getViewInfoDictionary(reg):
 
     info = {'name' : reg.name or '<i>no name</i>',
             'type' : getPythonPath(getPresentationType(reg.required[-1])),
-            'factory' : getViewFactoryData(reg.value),
+            'factory' : getViewFactoryData(reg.factory),
             'required': [getInterfaceInfoDictionary(iface)
                          for iface in reg.required],
             'provided' : getInterfaceInfoDictionary(reg.provided),
@@ -182,6 +183,6 @@ def getViewInfoDictionary(reg):
             }
 
     # Educated guess of the attribute name
-    info.update(getPermissionIds('publishTraverse', klass=reg.value))
+    info.update(getPermissionIds('publishTraverse', klass=reg.factory))
 
     return info
