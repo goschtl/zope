@@ -100,11 +100,11 @@ class TestInputWidget(object):
     All widgets rely on a field and a request:
 
         >>> from zope.schema import Field
-        >>> from zope.component.tests.request import Request
         >>> field = Field()
         >>> from zope.interface import Interface
         >>> class ITestRequest(Interface):
         ...     pass
+        >>> from zope.app.component.tests.views import Request
         >>> widget = TestInputWidget(field, Request(ITestRequest))
 
     The default implementation of hasValidInput relies on
