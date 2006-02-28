@@ -16,6 +16,7 @@
 $Id$
 """
 
+import types
 import zope.interface.adapter
 from zope import interface
 from zope.component import interfaces
@@ -283,6 +284,8 @@ def _getAdapterProvided(factory):
         "The adapter factory doesn't implement a single interface "
         "and no provided interface was specified.")
 
+
+classTypes = type, types.ClassType
 def _getAdapterRequired(factory, required):
     if required is None:
         try:
@@ -292,11 +295,21 @@ def _getAdapterRequired(factory, required):
                 "The adapter factory doesn't have a __component_adapts__ "
                 "attribute and no required specifications were specified"
                 )
+    elif zope.interface.interfaces.ISpecification.providedBy(required):
+        raise TypeError("the required argument should be a list of "
+                        "interfaces, not a single interface")
 
     result = []
     for r in required:
-        if not zope.interface.interfaces.ISpecification.providedBy(r):
-            r = interface.implementedBy(r)
+        if r is None:
+            r = interface.Interface
+        elif not zope.interface.interfaces.ISpecification.providedBy(r):
+            if isinstance(r, classTypes):
+                r = interface.implementedBy(r)
+            else:
+                raise TypeError("Required specification must be a "
+                                "specification or class."
+                                )
         result.append(r)
     return tuple(result)
         
