@@ -514,8 +514,7 @@ def testGetAdapters():
     Now we get all the adapters that are registered for `ob` that provide
     `I2`:
 
-      >>> adapters = component.getAdapters((ob,), I2)
-      >>> adapters.sort()
+      >>> adapters = sorted(component.getAdapters((ob,), I2))
       >>> [(name, adapter.__class__.__name__) for name, adapter in adapters]
       [(u'', 'Comp'), (u'foo', 'Comp')]
 
@@ -524,8 +523,7 @@ def testGetAdapters():
 
       >>> component.getGlobalSiteManager().provideAdapter(
       ...     [I1], I2, 'nah', lambda context: None)
-      >>> adapters = component.getAdapters((ob,), I2)
-      >>> adapters.sort()
+      >>> adapters = sorted(component.getAdapters((ob,), I2))
       >>> [(name, adapter.__class__.__name__) for name, adapter in adapters]
       [(u'', 'Comp'), (u'foo', 'Comp')]
 
@@ -623,8 +621,7 @@ def test_getAllUtilitiesRegisteredFor():
     We can now get all the utilities that provide interface `I1`:
 
       >>> uts = list(component.getAllUtilitiesRegisteredFor(I1))
-      >>> uts = [util.__class__.__name__ for util in uts]
-      >>> uts.sort()
+      >>> uts = sorted([util.__class__.__name__ for util in uts])
       >>> uts
       ['Ob', 'Ob', 'Ob11']
 
