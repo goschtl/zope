@@ -91,7 +91,7 @@ deprecated("IGlobalSiteManager", "The IGlobalSiteManager interface has been "
 class BaseGlobalComponents(Components):
     implements(IGlobalSiteManager)
 
-    def __init__(self, name):
+    def __init__(self, name=''):
         self.__name__ = name
         super(BaseGlobalComponents, self).__init__()
 
