@@ -36,6 +36,7 @@ from zorg.comment.browser.comment import getFullName
 
 from zorg.ajax.page import PageElement
 from zorg.ajax.interfaces import IAjaxUpdateable
+
 from zorg.ajax.livepage import LivePage
 from zorg.ajax.livepage import LivePageClient
 from zorg.ajax.livepage import clients
@@ -79,67 +80,8 @@ class LiveComments(WikiPage, LivePage) :
         is updated in all browsers as soon as the server side
         list of comments changes.
         
-        As an example we use a discussion about single file:
         
-        >>> from zorg.comment.browser.tests import buildTestFile
-        >>> file = buildTestFile()
-        >>> import zope.event
-        >>> from zorg.ajax.livepage import livePageSubscriber
-        >>> zope.event.subscribers.append(livePageSubscriber) 
-        
-        >>> class Principal(object) :
-        ...     def __init__(self, id, title) :
-        ...         self.id = id
-        ...         self.title = title
-        
-        >>> user1 = Principal('zorg.member.uwe', u'Uwe Oestmeier')
-        >>> user2 = Principal('zorg.member.dominik', u'Dominik Huber')
-        
-        >>> class SampleLiveComments(LiveComments) :
-        ...     def render(self) :
-        ...         return '<html>client %s</html>' % self.nextClientId()
-        
-        >>> request = TestRequest()
-        >>> request.setPrincipal(user1)
-        >>> page1 = SampleLiveComments(file, request)
-        >>> page1.render()
-        '<html>client uuid1</html>'
-        >>> client1 = clients.get('uuid1')
-        
-        >>> request = TestRequest()
-        >>> request.setPrincipal(user2)
-        >>> page2 = SampleLiveComments(file, request)
-        >>> page2.render()
-        '<html>client uuid2</html>'
-        >>> client2 = clients.get('uuid2')
-        
-        For test purposes we set the refresh interval (i.e. the interval in which
-        output calls are renewed) to 0.1 seconds :
-        
-        >>> for client in clients : 
-        ...     client.refreshInterval = 0.1
-    
-        Both users can see that they are online :
-        
-        >>> page1.online()
-        [u'Dominik Huber', u'Uwe Oestmeier']
-        
-        If one of them adds a comment the other client is immediately informed:
-        
-        >>> AddComment(file, TestRequest()).addComment("My comments")
-        >>> print page1.output('uuid1', 0)
-        update comments
-        <a name="comment1"></a>
-        ...
-        
-        >>> print page2.output('uuid2', 0)
-        update comments
-        <a name="comment1"></a>
-        ...
-        
-        Clean up all created clients
-        
-        >>> clients.online = {}
+        XXX: has to be rewritten since LivePages are now in zorg.live
        
     """
     

@@ -47,7 +47,7 @@
   <body onload="kupu = startKupu();">
  
     <div xmlns:metal="http://xml.zope.org/namespaces/metal" >
-      <form action="" method="POST" tal:attributes="action string:${context/@@absolute_url}/@@wikiupdate.html">
+      <form action="" method="POST" tal:attributes="action view/updateURL">
           <!-- include the xmlconfig -->
           <metal:macro use-macro="view/xmlconfig">
              <metal:slot fill-slot="dst"><tal:block replace="string:${context/@@absolute_url}/@@kupuconent.html" /></metal:slot>

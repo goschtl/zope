@@ -12,7 +12,6 @@
 #
 ##############################################################################
 """
-
 $Id: wikipage.py 38895 2005-10-07 15:09:36Z dominikhuber $
 """
 __docformat__ = 'restructuredtext'
@@ -497,8 +496,17 @@ class WikiEditor(WikiPage) :
         """
         self._modifyLink(cmd, link_id)
         return u'<div id="main">%s</div>' % self.renderBody()
+        
+    def updateURL(self) :
+        """ The URL for the update POST. """
+        url = zapi.absoluteURL(self.context, self.request)
+        return url + "/@@wikiupdate.html"
 
-      
+    def cancelURL(self) :
+        """ The link followed by the cancel option. """
+        return self.nextURL()
+        
+        
 class EditWikiPage(WikiEditor, WikiFilePage) :
     """ An edit view for wiki pages. """
     
@@ -520,7 +528,8 @@ class EditWikiPage(WikiEditor, WikiFilePage) :
         """ Saves the edited content and redirects to the wiki view. """
         file = self.getFile()
         self.main.saveTo(file)
-        self.request.response.redirect("wiki.html")
+        self.request.response.redirect(self.nextURL())
+        #self.request.response.redirect("wiki.html")
                 
         
 class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
@@ -584,7 +593,12 @@ class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
             container[name] = file
             file = container[name] 
         return file
-
+        
+    def nextURL(self, newfile=None) :
+        if newfile is None :
+            return super(EditWikiContainerPage, self).nextURL()
+        return zapi.absoluteURL(newfile, self.request) + self.action
+        
     def update(self, editor=None):
         """
             Generic store method.           
@@ -592,10 +606,8 @@ class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
         request = self.request
         file = self.createFile()
         self.main.saveTo(file)
-        url = zapi.absoluteURL(file, self.request)
-        request.response.redirect(url + self.action)
-
-        
+        request.response.redirect(self.nextURL(file))
+       
 
 class CreateWikiPage(EditWikiContainerPage) :
     """ Creates a wiki page. """

@@ -236,7 +236,7 @@ class ImageLibraryInfo(BrowserView):
             if not info['title']:
                 info['title'] = key
             info['description'] = self._safe_getattr(dc, 'description', u'')
-            info['url'] = str(zapi.getView(value, 'absolute_url', self.request))
+            info['url'] = zapi.absoluteURL(value, self.request)
             infos.append(info)
        
         return infos
@@ -261,7 +261,7 @@ class ImageLibraryInfo(BrowserView):
             info['description'] = self._safe_getattr(dc, 'description', '')
             info['width'], info['height'] = value.getImageSize()
             info['size'] = value.getSize()
-            info['url'] = str(zapi.getView(value, 'absolute_url', self.request))
+            info['url'] = zapi.absoluteURL(value, self.request)
             infos.append(info)
        
         return infos

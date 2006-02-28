@@ -15,7 +15,7 @@ $Id: interfaces.py 7039 2004-10-19 17:27:28Z dhuber $
 from zope.interface import Interface
 from zope.schema import SourceText
 from zope.schema import TextLine
-from zope.i18nmessageid import MessageIDFactory
+from zope.i18nmessageid import MessageFactory
 
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.interfaces import IContainer
@@ -23,7 +23,7 @@ from zope.app.file.interfaces import IImage
 from zope.app.folder.interfaces import IFolder
 
 
-_ = MessageIDFactory("kupu")
+_ = MessageFactory("kupu")
         
 
 class IKupuSample(Interface):

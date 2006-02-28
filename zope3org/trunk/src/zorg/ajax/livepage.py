@@ -282,7 +282,6 @@ class LivePageClients(object) :
         self.checkAlive()
         online = set()
         for client in self._iterClients(group_id) :
-            print "whoIsOnline", group_id, client.principal.id
             online.add(client.principal.id)
         return sorted(online)
         
@@ -553,7 +552,7 @@ class LivePage(ComposedAjaxPage) :
         method = Input(self, request).publishTraverse(request, uuid)
         return method(handler_name, arguments)
  
-    def sendResponse(cls, response, group_id, recipients="all") :
+    def sendResponse(cls, response, group_id=None, recipients="all") :
         """ Sends a livepage response to all clients. 
             A response consits of a leading command line 
             and optional html body data.

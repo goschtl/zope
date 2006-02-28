@@ -54,24 +54,24 @@ At the moment no marks are stored within seen:
 You can mark the subject as seen. The addition notifies a modification event
 for the marked object:
 
+    >>> def logEvent(e) :
+    ...     print "log:", e.__class__.__name__,
+    ...     print e.descriptions[0].interface.__name__,
+    ...     print getattr(e.descriptions[0], "keys", None)
+    >>> import zope.event
+    >>> zope.event.subscribers.append(logEvent)
+    
     >>> seen.markAsSeen('zorg.member.uwe')
+    log: ObjectModifiedEvent ISeen ('zorg.member.uwe',)
     'zorg.member.uwe'
-
-    >>> from zope.app.event.tests.placelesssetup import events, clearEvents
-    >>> len(events)
-    1
-
-    >>> e = events.pop()
-    >>> (e.object == subject, e.__class__.__name__ , 
-    ...  e.descriptions[0].interface.__name__, e.descriptions[0].keys)
-    (True, 'ObjectModifiedEvent', 'ISeen', ('zorg.member.uwe',))
-
 
 We add a few more marks...:
 
     >>> seen.markAsSeen('zorg.member.dominik')
+    log: ObjectModifiedEvent ISeen ('zorg.member.dominik',)
     'zorg.member.dominik'
     >>> seen.markAsSeen('zorg.member.gregoire')
+    log: ObjectModifiedEvent ISeen ('zorg.member.gregoire',)
     'zorg.member.gregoire'
 
 ... and check the read methods:
@@ -117,22 +117,17 @@ You can iterate over the marks:
 You can delete a mark passing its key. The deletion notifies
 an object modified event for the context:
 
-    >>> clearEvents()
-
     >>> del seen['zorg.member.dominik']
+    log: ObjectModifiedEvent ISeen None
     >>> len(seen)
     2
-
-    >>> len(events)
-    1
-
-    >>> e = events.pop()
-    >>> (e.object == subject, e.__class__.__name__ , 
-    ...  e.descriptions[0].interface.__name__, e.descriptions[0].attributes)
-    (True, 'ObjectModifiedEvent', 'ISeen', ())
 
 Alternatively you can use the synonymous markAsUnseen method :
 
     >>> seen.markAsUnseen('zorg.member.uwe')
     >>> len(seen)
     1
+
+Clean up::
+
+    >>> zope.event.subscribers.remove(logEvent)

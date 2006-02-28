@@ -3,7 +3,7 @@
 
     <div id="edit_box">
         <div xmlns:metal="http://xml.zope.org/namespaces/metal">
-            <form action="" method="POST" tal:attributes="action string:${context/@@absolute_url}/@@wikiupdate.html">
+            <form action="" method="POST" tal:attributes="action view/updateURL">
                 <input type="hidden" id="asContentType" value="text/plain" />
                 <input type="hidden" id="editor" value="rest" />
                 <input type="hidden" id="add" name="add" tal:attributes="value python: request.get('add', '')" />

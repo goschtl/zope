@@ -22,6 +22,7 @@ import cgi, urllib, os, time, sys, itertools
 
 from string import Template
 from persistent import Persistent
+from BTrees.OOBTree import OOBTree
 
 from zope.app import zapi
 from zope.interface import implements
@@ -522,13 +523,34 @@ class SearchableAjaxPage(AjaxPage) :
 
 
 
-class SettingsStorage(Persistent) :
-    """ A persistent object for user specific settings. Can be stored
-        in the session or principal annotations.
+class ConflictFree(Persistent) :
+    """ A storage object that allows to store attributes without conflicts.
+    
     """
 
-    implements(ISettingsStorage)
+    def _p_resolveConflict(self, old, state1, state2):
+        print "ConflictFree._p_resolveConflict called"
+        return state2    
 
+
+class SettingsStorage(ConflictFree) :
+    """ A Btree storage that avoids conflict errors. """
+         
+    implements(ISettingsStorage)
+    
+    def __init__(self) :
+        self.__settings__ = OOBTree()
+       
+    def __setitem__(self, key, value) :
+        if self.get(key) != value :
+            self.__settings__[key] = value
+        
+    def __getitem__(self, key) :
+        return self.__settings__[key]
+        
+    def get(self, key, default=None) :
+        return self.__settings__.get(key, default)
+        
 
 def test_suite():
 
