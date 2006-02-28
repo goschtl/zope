@@ -18,7 +18,7 @@ $Id$
 import os
 import unittest
 
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 from zope.configuration import xmlconfig
 
 from zope.app import zapi

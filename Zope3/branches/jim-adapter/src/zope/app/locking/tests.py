@@ -18,7 +18,7 @@ $Id:$
 """
 
 import sys, unittest, time
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 import zope.event
 from zope.testing import doctest
 from transaction import abort

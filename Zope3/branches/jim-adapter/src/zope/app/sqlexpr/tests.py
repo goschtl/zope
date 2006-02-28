@@ -20,7 +20,7 @@ import unittest
 from zope.interface import implements
 from zope.component.factory import Factory
 from zope.component.interfaces import IFactory
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 from zope.tales.tests.test_expressions import Data
 from zope.tales.engine import Engine
 

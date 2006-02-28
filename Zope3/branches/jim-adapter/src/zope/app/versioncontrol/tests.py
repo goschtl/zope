@@ -20,7 +20,7 @@ import unittest
 import persistent
 
 from zope import component, interface
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 from zope.testing import doctest, module
 from transaction import abort
 
