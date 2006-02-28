@@ -135,9 +135,9 @@ class BaseGlobalComponents(Components):
     def registrations(self):
         for reg in self.registeredAdapters():
             yield reg
-        for reg in registeredSubscriptionAdapters():
+        for reg in self.registeredSubscriptionAdapters():
             yield reg
-        for reg in registeredHandlers():
+        for reg in self.registeredHandlers():
             yield reg
         for reg in self.registeredUtilities():
             yield reg
