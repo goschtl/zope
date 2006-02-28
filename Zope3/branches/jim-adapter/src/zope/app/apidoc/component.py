@@ -174,19 +174,19 @@ def getInterfaceInfoDictionary(iface):
 
 def getAdapterInfoDictionary(reg):
     """Return a PT-friendly info dictionary for an adapter registration."""
-    factory = getRealFactory(reg.value)
+    factory = getRealFactory(reg.factory)
     path = getPythonPath(factory)
 
     url = None
     if isReferencable(path):
         url = path.replace('.', '/')
 
-    if isinstance(reg.doc, (str, unicode)):
-        doc = reg.doc
+    if isinstance(reg.info, (str, unicode)):
+        doc = reg.info
         zcml = None
     else:
         doc = None
-        zcml = getParserInfoInfoDictionary(reg.doc)
+        zcml = getParserInfoInfoDictionary(reg.info)
 
     return {
         'provided': getInterfaceInfoDictionary(reg.provided),

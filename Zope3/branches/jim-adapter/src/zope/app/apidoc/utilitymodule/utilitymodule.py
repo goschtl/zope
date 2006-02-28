@@ -54,7 +54,7 @@ class Utility(object):
         self.registration = reg
         self.interface = reg.provided
         self.component = reg.component
-        self.doc = reg.doc
+        self.doc = reg.info
 
 
 class UtilityInterface(ReadContainerBase):
