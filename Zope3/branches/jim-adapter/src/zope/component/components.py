@@ -379,4 +379,17 @@ class HandlerRegistration(object):
         (self.required, self.name, self.handler, self.info
          ) = required, name, handler, doc
 
+    @property
+    def factory(self):
+        return self.handler
+
+    provided = None
+
+    def __repr__(self):
+        return '%s(%r, %r, %r, %r)' % (
+            self.__class__.__name__,
+            tuple([r.__name__ for r in self.required]), 
+            self.name,
+            getattr(self.factory, '__name__', self.factory), self.info,
+            )
     
