@@ -1,0 +1,29 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directive namespace="http://namespaces.zope.com/zc"
+                  name="privilege"
+                  schema=".zcml.IdefinePrivilege"
+                  handler=".zcml.definePrivilege" />
+
+  <meta:directive namespace="http://namespaces.zope.com/zc"
+                  name="permissionPrivilege"
+                  schema=".zcml.IpermissionPrivilege"
+                  handler=".zcml.permissionPrivilege" />
+
+  <meta:directive namespace="http://namespaces.zope.com/zc"
+                  name="systemAdministrators"
+                  schema=".zcml.IsystemAdministrators"
+                  handler=".zcml.systemAdministrators" />
+
+  <meta:directive namespace="http://namespaces.zope.com/zc"
+                  name="privileges"
+                  schema=".zcml.Iprivileges"
+                  handler=".zcml.privileges" />
+
+  <meta:directive namespace="http://namespaces.zope.com/zc"
+                  name="subobjectPrivileges"
+                  schema=".zcml.Iprivileges"
+                  handler=".zcml.subobjectPrivileges" />
+
+</configure>

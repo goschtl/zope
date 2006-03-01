@@ -1,0 +1,243 @@
+Sharing Configuration directives
+================================
+
+This package provides several ZCML configuration directives for setting up the
+sharing security model.
+
+Defining privileges
+-------------------
+
+To define a privilege, use the privilege directive:
+
+    >>> zcml("""
+    ...    <configure
+    ...        xmlns="http://namespaces.zope.org/zope"
+    ...        xmlns:zc="http://namespaces.zope.com/zc"
+    ...        i18n_domain="test"
+    ...        >
+    ...
+    ...      <zc:privilege bit="0" title="Read" />
+    ...      <zc:privilege bit="2" title="Write"
+    ...                     description="Modify content" />
+    ...      <zc:privilege bit="4" title="Share" />
+    ...    </configure>
+    ... """)
+
+Now, having defined these, we can get privilege definitions:
+
+    >>> import zc.sharing.sharing
+    >>> from zope.testing.doctestunit import pprint
+    >>> pprint(zc.sharing.sharing.getPrivilege(0))
+    {'description': '',
+     'id': 0,
+     'info': File "<string>", line 8.5-8.42,
+     'title': u'Read'}
+
+    >>> pprint(zc.sharing.sharing.getPrivilege(2))
+    {'description': u'Modify content',
+     'id': 2,
+     'info': File "<string>", line 9.5-10.51,
+     'title': u'Write'}
+
+    >>> zc.sharing.sharing.getPrivilege(2)['title'].domain
+    'test'
+
+
+It's an error to try to define the same privilege more than once:
+
+    >>> zcml("""
+    ...    <configure
+    ...        xmlns="http://namespaces.zope.org/zope"
+    ...        xmlns:zc="http://namespaces.zope.com/zc"
+    ...        i18n_domain="test"
+    ...        >
+    ...
+    ...      <zc:privilege bit="6" title="Share" />
+    ...      <zc:privilege bit="6" title="Write"
+    ...                     description="Modify content" />
+    ...    </configure>
+    ... """)
+    Traceback (most recent call last):
+      ...
+    ConfigurationConflictError: Conflicting configuration actions
+      For: ('zc.intranet:privilege', 6)
+        File "<string>", line 8.5-8.43
+          Could not read source.
+        File "<string>", line 9.5-10.51
+          Could not read source.
+
+Associating privileges with permissions
+---------------------------------------
+
+Having defined a privilege, we can associate one or more permissions
+with it.  Note that we have to define the permissions before we can associate
+them with privileges:
+
+    >>> zcml("""
+    ...    <configure
+    ...        xmlns="http://namespaces.zope.org/zope"
+    ...        xmlns:zc="http://namespaces.zope.com/zc"
+    ...        i18n_domain="test"
+    ...        >
+    ...
+    ...      <zc:permissionPrivilege permission="foo.p1" privilege="0" />
+    ...    </configure>
+    ... """)
+    Traceback (most recent call last):
+      ...
+    ConfigurationExecutionError: exceptions.ValueError:
+      ('Undefined permission id', 'foo.p1')
+      in:
+      File "<string>", line 8.5-8.65
+      Could not read source.
+
+    >>> zcml("""
+    ...    <configure
+    ...        xmlns="http://namespaces.zope.org/zope"
+    ...        xmlns:zc="http://namespaces.zope.com/zc"
+    ...        i18n_domain="test"
+    ...        >
+    ...      <permission id="foo.p1" title="Permission 1" />
+    ...      <zc:permissionPrivilege permission="foo.p1" privilege="0" />
+    ...    </configure>
+    ... """)
+
+    >>> from zc.sharing import policy
+    >>> policy.getPermissionPrivilege("foo.p1")
+    0
+
+Of course, if you don't define a privilege before you use it, you'll
+get an error:
+
+    >>> zcml("""
+    ...    <configure
+    ...        xmlns="http://namespaces.zope.org/zope"
+    ...        xmlns:zc="http://namespaces.zope.com/zc"
+    ...        i18n_domain="test"
+    ...        >
+    ...      <permission id="foo.p2" title="Permission 1" />
+    ...      <zc:permissionPrivilege permission="foo.p2" privilege="10" />
+    ...    </configure>
+    ... """)
+    Traceback (most recent call last):
+      ...
+    ConfigurationExecutionError: exceptions.ValueError:
+      ('Undefined privilege', 10)
+      in:
+      File "<string>", line 8.5-8.66
+      Could not read source.
+
+Associating privileges with content
+-----------------------------------
+
+Different content types can have different privileges.  We use the
+privileges directive to define privileges for a type.  We can define
+default privileges:
+
+    >>> zcml("""
+    ...    <configure
+    ...        xmlns="http://namespaces.zope.org/zope"
+    ...        xmlns:zc="http://namespaces.zope.com/zc"
+    ...        i18n_domain="test"
+    ...        >
+    ...      <zc:privileges for="*" titles="Read Write Share" />
+    ...    </configure>
+    ... """)
+
+
+Now, we'll define a new content type:
+
+    >>> from zope import interface
+    >>> class IMyContent(interface.Interface):
+    ...     "sample type"
+    >>> class MyContent:
+    ...     interface.implements(IMyContent)
+
+We can find out what privileges it has by adapting it to
+ISharingPrivileges:
+
+    >>> from zc.sharing import interfaces
+    >>> interfaces.ISharingPrivileges(MyContent()).privileges
+    (0, 2, 4)
+
+We may want out content type to have different privileges.  If so, we
+simply use a specific interface in the configuration directive:
+
+    >>> zcml("""
+    ...    <configure
+    ...        xmlns="http://namespaces.zope.org/zope"
+    ...        xmlns:zc="http://namespaces.zope.com/zc"
+    ...        i18n_domain="test"
+    ...        >
+    ...      <zc:privileges for="zc.sharing.zcml_text.IMyContent"
+    ...                      titles="Read Share" />
+    ...    </configure>
+    ... """)
+
+    >>> interfaces.ISharingPrivileges(MyContent()).privileges
+    (0, 4)
+
+For containers, we can privileges that may apply to subobjects.  On
+container sharing tabs, we need to include privileges that apply to
+subobjects as well as privileges that apply to the container.  This is
+necessary so that we can create settings on a container and duplicate
+them on subobjects, whether explicitly in the sharing tab, or when
+objects are added.  To specify subobject privileges, use the
+subobjectPrivileges directive:
+
+    >>> zcml("""
+    ...    <configure
+    ...        xmlns="http://namespaces.zope.org/zope"
+    ...        xmlns:zc="http://namespaces.zope.com/zc"
+    ...        i18n_domain="test"
+    ...        >
+    ...      <zc:subobjectPrivileges
+    ...                      for="zc.sharing.zcml_text.IMyContent"
+    ...                      titles="Write Read" />
+    ...    </configure>
+    ... """)
+
+We can find out what these settings are by adapting an object
+to ISubobjectSharingPrivileges:
+
+    >>> interfaces.ISubobjectSharingPrivileges(MyContent()).subobjectPrivileges
+    (2, 0)
+
+Defining system adminstrators
+-----------------------------
+
+System adminstrators are defined using the systemAdministrators
+directive:
+
+    >>> zcml("""
+    ...    <configure
+    ...        xmlns="http://namespaces.zope.org/zope"
+    ...        xmlns:zc="http://namespaces.zope.com/zc"
+    ...        >
+    ...      <zc:systemAdministrators principals="sally bob" />
+    ...    </configure>
+    ... """)
+
+    >>> policy.systemAdministrators
+    (u'sally', u'bob')
+
+It is an error to use the directive more than once:
+
+    >>> zcml("""
+    ...    <configure
+    ...        xmlns="http://namespaces.zope.org/zope"
+    ...        xmlns:zc="http://namespaces.zope.com/zc"
+    ...        >
+    ...      <zc:systemAdministrators principals="sally bob" />
+    ...      <zc:systemAdministrators principals="ted mary sam" />
+    ...    </configure>
+    ... """)
+    Traceback (most recent call last):
+      ...
+    ConfigurationConflictError: Conflicting configuration actions
+      For: zc:sysAdmins
+        File "<string>", line 6.5-6.55
+          Could not read source.
+        File "<string>", line 7.5-7.58
+          Could not read source.
+

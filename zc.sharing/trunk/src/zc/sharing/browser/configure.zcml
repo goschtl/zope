@@ -1,0 +1,29 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zc.sharing">
+
+
+<page
+    for="..interfaces.ISharable" 
+    name="sharing.html"
+    menu="zmi_views" 
+    title="Sharing"
+    template="sharing.pt"
+    class=".sharing.SharingTab"
+    permission="zope.Security"
+    />
+
+<resource
+    name="user_icon.gif"
+    image="user_icon.gif"
+    permission="zope.Public"
+    />
+
+<resource
+    name="group_icon.gif"
+    image="group_icon.gif"
+    permission="zope.Public"
+    />
+
+</configure>

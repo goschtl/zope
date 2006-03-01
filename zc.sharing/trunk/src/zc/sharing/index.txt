@@ -1,0 +1,114 @@
+Sharing Index
+=============
+
+The sharing index supports "security-filtered search".  A sharing
+index keeps track of the principals that have the read priviledge for
+objects.  The index can then provide a set of all of the objects a
+principal can access, taking the principal's groups into account.
+
+Sharing indexes adapt their inputs to ISharing.  For illustrative
+purposes, we'll provide objects that provide ISharing directly.  We'll
+only bother implementing the methods that the sharing index actually
+uses:
+
+    >>> from zope import interface
+    >>> import zc.sharing.sharing
+    >>> from zc.sharing import interfaces
+    >>> zc.sharing.sharing.definePrivilege(0, "Read")
+    >>> class SampleDoc:
+    ...      interface.implements(interfaces.IBaseSharing)
+    ...
+    ...      def __init__(self, *principal_ids):
+    ...          self.principal_ids = principal_ids
+    ...
+    ...      def getPrincipals(self):
+    ...          return self.principal_ids
+    ...
+    ...      def getBinaryPrivileges(self, principal_id):
+    ...          if principal_id in self.principal_ids:
+    ...              return 2
+    ...          return 0
+
+
+Now we can try indexing some documents:
+
+    >>> import zc.sharing.index
+    >>> index = zc.sharing.index.Index(1)
+
+    >>> index.index_doc(1, SampleDoc('bob', 'Everyone'))
+    >>> index.index_doc(2, SampleDoc('bob'))
+    >>> index.index_doc(3, SampleDoc('sally', 'Editors'))
+    >>> index.index_doc(4, SampleDoc('sally', 'Reviewers'))
+    >>> index.index_doc(5, SampleDoc('sally'))
+    >>> index.index_doc(6, SampleDoc('sally', 'Everyone'))
+    >>> index.index_doc(7, SampleDoc('Workers'))
+    
+Note that, when we created the index, we passed the privilege id of
+the privilege to be used for the index.
+
+Now, we can search it to find the documents accessable to a principal.
+First we'll define a principal class.  Principals have a groups
+attribute that has the groups that the principal is contained in
+directly:
+
+    >>> class Principal:
+    ...     def __init__(self, id, *groups):
+    ...         self.id, self.groups = id, (groups + ('Everyone', ))
+
+The sharing index determines all of the groups a principal is in
+by loading information about their groups from an authentication
+utility.  We'll provide one that knows about our groups:
+
+    >>> from zope import component
+    >>> from zope.app.security.interfaces import IAuthentication
+    >>> class Authentication:
+    ...     interface.implements(IAuthentication)
+    ...     def getPrincipal(self, id):
+    ...         if id in ('Editors', 'Reviewers'):
+    ...             return Principal(id, 'Workers')
+    ...         else:
+    ...             return Principal(id) 
+
+    >>> component.provideUtility(Authentication())
+
+    >>> r = index.apply(Principal('sally', 'Editors', 'Reviewers'))
+    >>> r.__class__.__name__
+    'IFSet'
+
+    >>> list(r)
+    [1, 3, 4, 5, 6, 7]
+
+    >>> list(index.apply(Principal('fred')))
+    [1, 6]
+
+If we modify a document, so that different principals have access:
+
+    >>> index.index_doc(4, SampleDoc('fred', 'Reviewers'))
+
+Then the results change accordingly:
+
+    >>> list(index.apply(Principal('sally', 'Editors')))
+    [1, 3, 5, 6, 7]
+
+    >>> list(index.apply(Principal('fred')))
+    [1, 4, 6]
+
+And if we remove documents:
+
+    >>> index.unindex_doc(1)
+    >>> index.unindex_doc(4)
+
+    >>> list(index.apply(Principal('sally', 'Editors')))
+    [3, 5, 6, 7]
+
+    >>> list(index.apply(Principal('fred')))
+    [6]
+
+Of course, if we clear the index:
+
+    >>> index.clear()
+    >>> list(index.apply(Principal('sally', 'Editors')))
+    []
+
+    >>> list(index.apply(Principal('fred')))
+    []
