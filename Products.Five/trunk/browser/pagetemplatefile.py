@@ -47,6 +47,14 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
 
         basepath, ext = os.path.splitext(self.filename)
         self.__name__ = os.path.basename(basepath)
+
+
+        # required for the ajung-zpt-final-integration branch
+        try:
+            PageTemplateFile.__init__(self, self.filename, _prefix)
+        except:
+            pass
+        
  
     def get_path_from_prefix(self, _prefix):
         if isinstance(_prefix, str):
