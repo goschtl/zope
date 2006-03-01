@@ -12,7 +12,7 @@
          tal:attributes="href string:@@customizetemplate.html?viewname=${reg/name}"
          tal:content="reg/name">
       </a>
-      as defined in <tal:var replace="reg/info/filename" />.
+      as defined in <tal:var replace="reg/info/file" />.
     </li>
   </ul>
 
