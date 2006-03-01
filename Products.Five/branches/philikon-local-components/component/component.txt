@@ -59,7 +59,7 @@ registered at):
   >>> viewnames = [reg.name for reg in view.templateViewRegistrations()]
   >>> viewnames.sort()
   >>> pprint(viewnames)
-  [u'customizeview.html', u'templateviews.html']
+  [u'customizetemplate.html', u'templateviews.html']
 
 
 Customizing views
