@@ -72,8 +72,8 @@ class GlobalServiceManager(object):
                 "manager, which is probably the object you want.",
                 DeprecationWarning, 2)
         if sitemanager is None:
-            from zope.component.site import GlobalSiteManager
-            sitemanager = GlobalSiteManager()
+            from zope.component.globalregistry import BaseGlobalComponents
+            sitemanager = BaseGlobalComponents()
         self.sm = sitemanager
         self.__name__ = name
         self.__module__ = module
@@ -166,7 +166,5 @@ def __getSM(sitemanager=None):
 
 def defineService(name, interface, sitemanager=None):
     if sitemanager is None:
-        from zope.component.site import globalSiteManager
-        sitemanager = globalSiteManager
-    __getSM(sitemanager).defineService(name, interface)
-
+        from zope.component.globalregistry import base
+    __getSM(base).defineService(name, interface)

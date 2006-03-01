@@ -795,7 +795,6 @@ def test_suite():
 
     return unittest.TestSuite((
         doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
-        doctest.DocTestSuite('zope.component.site'),
         doctest.DocFileSuite('README.txt',
                              setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('socketexample.txt',

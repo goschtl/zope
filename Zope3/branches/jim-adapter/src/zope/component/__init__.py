@@ -26,7 +26,7 @@ from zope.component.interfaces import IDefaultViewName
 from zope.component.interfaces import IFactory
 from zope.component.interfaces import ISiteManager
 from zope.component.interfaces import ComponentLookupError
-from zope.component.site import globalSiteManager
+from zope.component.globalregistry import base as globalSiteManager
 
 _class_types = type, ClassType
 

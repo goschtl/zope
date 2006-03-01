@@ -24,7 +24,7 @@ from types import ClassType
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IAdapterService, IRegistry
 from zope.component.bbb.service import GlobalService
-from zope.component.site import AdapterRegistration, SubscriptionRegistration
+from zope.component.components import AdapterRegistration, SubscriptionRegistration
 from zope.interface import implements, providedBy, Interface, implementedBy
 from zope.interface.interfaces import IInterface
 
@@ -65,8 +65,8 @@ class AdapterService(object):
 
     def __init__(self, sitemanager=None):
         if sitemanager is None:
-            from zope.component.site import GlobalSiteManager
-            sitemanager = GlobalSiteManager()
+            from zope.component.globalregistry import BaseGlobalComponents
+            sitemanager = BaseGlobalComponents()
         self.sm = sitemanager
 
     def __getattr__(self, name):

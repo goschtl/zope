@@ -42,7 +42,7 @@ def queryNextSiteManager(context, default=None):
     `default` is returned.
     """
     sm = zapi.getSiteManager(context)
-    if zope.component.site.IGlobalSiteManager.providedBy(sm):
+    if zope.component.globalregistry.IGlobalSiteManager.providedBy(sm):
         return default
     if sm.next is None:
         return zapi.getGlobalSiteManager()
