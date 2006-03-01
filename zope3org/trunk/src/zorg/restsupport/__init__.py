@@ -63,12 +63,15 @@ def html2rest(html) :
 
     """
     
-    parser = Html2ReStructuredTextParser()
-    parser.feed(html)
-    while parser.current:
-        parser.pop_para()
-    lines = parser.para.get_content(parser.page_width)
-    return "\n".join(lines)    
+    try :
+        parser = Html2ReStructuredTextParser()
+        parser.feed(html)
+        while parser.current:
+            parser.pop_para()
+        lines = parser.para.get_content(parser.page_width)
+        return "\n".join(lines)
+    except :
+        return html
  
  
 def test_suite():
