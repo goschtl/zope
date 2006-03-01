@@ -128,6 +128,8 @@ class ZPTView(BrowserView):
         self.request = request
 
     def _findViewClass(self):
+        #XXX we might want to walk up to the next site instead, not
+        # just go to the global one directly
         gsm = getGlobalSiteManager()
         view = gsm.queryMultiAdapter((self.context, self.request), Interface,
                                      name=self.viewname)
