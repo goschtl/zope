@@ -17,7 +17,7 @@ $Id: test_mail.py,v 1.1 2003/07/24 18:08:38 srichter Exp $
 """
 import unittest
 
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 from zope.interface import classImplements, implements
 
 from zope.app.testing import ztapi

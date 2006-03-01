@@ -18,7 +18,7 @@ $Id: test_dependencies.py,v 1.3 2003/08/28 05:22:32 srichter Exp $
 import unittest
 
 from zope.interface import classImplements
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 
 from zope.app.testing import ztapi
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
