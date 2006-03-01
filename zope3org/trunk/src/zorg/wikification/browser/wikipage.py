@@ -303,7 +303,7 @@ class Editor(PageElement) :
 
         file.data = data
         
-        dc = IZopeDublinCore(self.context)
+        dc = IZopeDublinCore(file)
         if self.title is not None :
             dc.title = self.title
         if self.description is not None :
@@ -465,10 +465,18 @@ class WikiEditor(WikiPage) :
     def __init__(self, context, request) :
         super(WikiEditor, self).__init__(context, request)  
         self.editor = self.parameter('editor', storage=self.session)
-        self.main = self.factory.setdefault(self.editor, self.chooser)(self)
-        self.main.asType = "text/html" # default: because we are using .html extension         
+        self.main = self.chooseEditor()
+        self.main.asType = "text/html" # default: because we are using .html 
+                                       # extension         
 
 
+    def chooseEditor(self) :
+        """ Returns a editor or a chooser. If a chooser is returned it's
+            up to the chooser to redirect the user to an editable wiki page
+            with a valid editor.
+        """
+        return self.factory.setdefault(self.editor, self.chooser)(self)
+        
     def _modifyLink(self, cmd, link_id) :
         """ Help method that modified a link and saves the result into
             the file.
@@ -555,7 +563,7 @@ class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
 
     def editableTitle(self) :
         """ Returns the title that should be edited. """
-        if self.isAddView() :
+        if self.isAddView() or self.getFile() is None :
             return u"Untitled"
         return IZopeDublinCore(self.getFile()).title
         

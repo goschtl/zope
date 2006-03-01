@@ -212,7 +212,7 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
             return False, link
         else :
             node = page.container
-            url = zapi.absoluteURL(node, page.request)
+            url = self.absoluteLink(node)
         
         remaining = urllib.unquote(link)
         path = [x for x in remaining.split("/") if x]        
@@ -226,16 +226,25 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
                 break
         
         if path :
-            appendix = urllib.urlencode({'add': "/".join(path)})
-            return True, url + page.add + "?" + appendix
+            return True, self.absoluteAddLink(node, path)
 
         if IFile.providedBy(node) :
             if node.contentType not in page.supported :
-                return False, zapi.absoluteURL(node, page.request)
-            else :
-                url = zapi.absoluteURL(node, page.request)
-                               
-        return False, url + page.action
+                return False, self.absoluteLink(node)
+                                
+        return False, self.absoluteWikiLink(node)
+        
+    
+    def absoluteWikiLink(self, node) :
+        return zapi.absoluteURL(node, self.page.request) + self.page.action
+        
+    def absoluteAddLink(self, node, path) :
+        url = zapi.absoluteURL(node, self.page.request)
+        appendix = urllib.urlencode({'add': "/".join(path)})
+        return  url + self.page.add + "?" + appendix
+
+    def absoluteLink(self, node) :
+        return zapi.absoluteURL(node, self.page.request)
          
          
     def unknown_starttag(self, tag, attrs):

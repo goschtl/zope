@@ -8,7 +8,7 @@
                 <input type="hidden" id="editor" value="rest" />
                 <input type="hidden" id="add" name="add" tal:attributes="value python: request.get('add', '')" />
                 <h4>Title</h4>
-    			<input class="title" id="version_title" name="version[title]" size="30" type="text" value="Test" 
+    			<input class="title" id="version_title" name="title" size="30" type="text" value="Test" 
     			             tal:attributes="value string:${view/editableTitle}"/>
                 <h4>Body</h4>
 
@@ -16,7 +16,7 @@
                         id="version_body" name="tinyhtml" cols="68" rows="22" value=""></textarea>
               
                 <p><input name="text_submit" type="submit" value="Save">
-                or <a href="./wiki.html">Cancel</a></p>
+                or <a href="./wiki.html" tal:attributes="href view/cancelURL">Cancel</a></p>
             </form>
         </div>
     </div>

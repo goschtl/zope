@@ -1,8 +1,3 @@
-// ===========================================================================
-// LINK FUNCTIONS
-// ===========================================================================
-
-
 function dropdownlinkmenu(obj, e, dropmenuID)   {
     if (window.event) 
         event.cancelBubble=true
