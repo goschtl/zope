@@ -1,0 +1,115 @@
+(Local) components in Five
+==========================
+
+  >>> from Products.Five import zcml
+  >>> import Products.Five.component
+  >>> zcml.load_config('meta.zcml', Products.Five)
+  >>> zcml.load_config('permissions.zcml', Products.Five)
+  >>> zcml.load_config('configure.zcml', Products.Five.component)
+
+Turning ObjectManagers into a site
+----------------------------------
+
+Let's create a folder that we'll turn into a site:
+
+  >>> from OFS.ObjectManager import ObjectManager
+  >>> site = ObjectManager()
+
+Make this a real site by using a view that a) sets
+``IObjectManagerSite``, b) sets a traversal hook and c) sets a
+component registration
+
+  >>> import zope.component
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+  >>> view = zope.component.getMultiAdapter((site, request),
+  ...                                       name=u"components.html")
+  >>> view.makeSite()
+
+Now the site provides ``IObjectManagerSite``:
+
+  >>> from Products.Five.component.interfaces import IObjectManagerSite
+  >>> IObjectManagerSite.providedBy(site)
+  True
+
+And it has a site manager (component registry):
+
+  >>> site.getSiteManager() #doctest: +ELLIPSIS
+  <zope.component.persistentregistry.PersistentComponents object at ...>
+
+
+Views on objects
+----------------
+
+Let's create a simple content object that we put into the folder
+(a.k.a. the site):
+
+  >>> from Products.Five.tests.testing.simplecontent import SimpleContent
+  >>> item = SimpleContent('item', 'An item')
+  >>> site._setOb('item', item)
+  >>> item = site.item
+
+Let's get a list of views (that also shows where each view is
+registered at):
+
+  >>> view = zope.component.getMultiAdapter((item, request),
+  ...                                       name=u"templateviews.html")
+  >>> view = view.__of__(item)
+  >>> from pprint import pprint
+  >>> viewnames = [reg.name for reg in view.templateViewRegistrations()]
+  >>> viewnames.sort()
+  >>> pprint(viewnames)
+  [u'customizeview.html', u'templateviews.html']
+
+
+Customizing views
+-----------------
+
+We can select a view and see its template source:
+
+  >>> view = zope.component.getMultiAdapter((item, request),
+  ...                                       name=u"customizeview.html")
+  >>> view = view.__of__(item)
+  >>> print view.templateSource(u'customizeview.html') #doctest: +ELLIPSIS
+  <html metal:use-macro="context/@@standard_macros/view"
+        i18n:domain="zope">
+  ...
+    <p i18n:translate="">This is the source of the
+    <code tal:content="request/form/viewname">viewname</code>:</p>
+  ...
+
+We now hit the customize button and get a customized ZPT template:
+
+  >>> zpt = view.doCustomizeTemplate(u'customizeview.html')
+
+That actually creates a ZPTPage object in the nearest site (perhaps
+later we'd like to have the option to pick which of the sites above us
+should be targeted)
+
+  >>> zpt = getattr(site, 'customizeview.html')
+  >>> print zpt.read() #doctest: +ELLIPSIS
+  <html metal:use-macro="context/@@standard_macros/view"
+        i18n:domain="zope">
+  ...
+    <p i18n:translate="">This is the source of the
+    <code tal:content="request/form/viewname">viewname</code>:</p>
+  ...
+
+It also registers this component as a view now, so when we look up the
+view again, we get the customized one.  Therefore let us customize the
+template and look up the view.  For that to work, we also need to make
+the site the current site:
+
+  >>> zpt.source = u'doctest\n'
+  >>> from zope.app.component.hooks import setSite
+  >>> setSite(site)
+  >>> view = zope.component.getMultiAdapter((item, request),
+  ...                                       name=u"customizeview.html")
+  >>> print view()
+  doctest
+  <BLANKLINE>
+
+Clean up:
+
+  >>> from zope.app.testing.placelesssetup import tearDown
+  >>> tearDown()

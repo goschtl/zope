@@ -1,0 +1,22 @@
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="zope">
+  <body>
+  <div metal:fill-slot="body">
+
+  <p i18n:translate="">Template-based (global) browser views available
+  for this component:</p>
+
+  <ul>
+    <li tal:repeat="reg view/templateViewRegistrations">
+      <a href=""
+         tal:attributes="href string:@@customize.html?viewname=${reg/name}"
+         tal:content="reg/name">
+      </a>
+      as defined in <tal:var replace="reg/info/filename" />.
+    </li>
+  </ul>
+
+  </div>
+  </body>
+
+</html>

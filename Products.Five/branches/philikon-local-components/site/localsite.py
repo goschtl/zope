@@ -15,26 +15,13 @@
 
 $Id$
 """
-from zope.event import notify
-from zope.interface import directlyProvides, directlyProvidedBy
 from zope.interface import implements
 from zope.component import getGlobalSiteManager
 from zope.component.exceptions import ComponentLookupError
-
 from zope.app.component.interfaces import ISite, IPossibleSite
-from zope.app.publication.zopepublication import BeforeTraverseEvent
 
-from ExtensionClass import Base
-from Acquisition import aq_base, aq_inner, aq_parent
-from Products.SiteAccess.AccessRule import AccessRule
-from ZPublisher.BeforeTraverse import registerBeforeTraverse
-from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
-
+from Acquisition import aq_inner, aq_parent
 from Products.Five.site.interfaces import IFiveSiteManager, IFiveUtilityRegistry
-
-# Hook up custom component architecture calls
-import zope.app.component.hooks
-zope.app.component.hooks.setHooks()
 
 def siteManagerAdapter(ob):
     """An adapter * -> ISiteManager.
@@ -51,41 +38,6 @@ def siteManagerAdapter(ob):
             # It does not support acquisition or has no parent, so we
             # return the global site
             return getGlobalSiteManager()
-
-HOOK_NAME = '__local_site_hook__'
-
-class LocalSiteHook(Base):
-    def __call__(self, container, request):
-        notify(BeforeTraverseEvent(container, request))
-
-
-def enableLocalSiteHook(obj):
-    """Install __before_traverse__ hook for Local Site
-    """
-    # We want the original object, not stuff in between, and no acquisition
-    obj = aq_base(obj)
-    if not IPossibleSite.providedBy(obj):
-        raise TypeError, 'Must provide IPossibleSite'
-    hook = AccessRule(HOOK_NAME)
-    registerBeforeTraverse(obj, hook, HOOK_NAME, 1)
-
-    if not hasattr(obj, HOOK_NAME):
-        setattr(obj, HOOK_NAME, LocalSiteHook())
-
-    directlyProvides(obj, ISite, directlyProvidedBy(obj))
-
-def disableLocalSiteHook(obj):
-    """Remove __before_traverse__ hook for Local Site
-    """
-    # We want the original object, not stuff in between, and no acquisition
-    obj = aq_base(obj)
-    if not ISite.providedBy(obj):
-        raise TypeError, 'Must provide ISite'
-    unregisterBeforeTraverse(obj, HOOK_NAME)
-    if hasattr(obj, HOOK_NAME):
-        delattr(obj, HOOK_NAME)
-
-    directlyProvides(obj, directlyProvidedBy(obj) - ISite)
 
 class FiveSiteManager(object):
     implements(IFiveSiteManager)

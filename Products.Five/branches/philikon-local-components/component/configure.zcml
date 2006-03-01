@@ -1,0 +1,32 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:page
+      for="OFS.interfaces.IObjectManager"
+      name="components.html"
+      class=".browser.ComponentsView"
+      template="components.pt"
+      permission="five.ManageSite"
+      />
+
+  <browser:pages
+     for="OFS.interfaces.ISimpleItem"
+     class=".browser.CustomizationView"
+     permission="five.ManageSite">
+
+    <browser:page
+       name="templateviews.html"
+       template="templateviews.pt"
+       />
+    <browser:page
+       name="customizeview.html"
+       template="customizeview.pt"
+       />
+    <browser:page
+       name="customizetemplate"
+       attribute="customizeTemplate"
+       />
+
+  </browser:pages>
+
+</configure>
