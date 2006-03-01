@@ -94,7 +94,7 @@ class CustomizationView(BrowserView):
 
         zpt = ZPTPage()
         zpt.source = unicode(src)
-        obj._setOb(viewname, zpt) #XXX there could be a naming conflict
+        obj._setObject(viewname, zpt) #XXX there could be a naming conflict
         zpt = getattr(obj, viewname)
         components = obj.getSiteManager()
 
@@ -111,7 +111,7 @@ class CustomizationView(BrowserView):
     def customizeTemplate(self, viewname):
         zpt = self.doCustomizeTemplate(viewname)
         #TODO use @@absolute_url view
-        self.request.redirect(zpt.absolute_url() + "/manage_workspace")
+        self.request.RESPONSE.redirect(zpt.absolute_url() + "/manage_workspace")
 
 class ZPTViewFactory(object):
 
