@@ -86,17 +86,16 @@ class CustomizationView(BrowserView):
         src = self.templateSource(viewname)
 
         # find the nearest site
-        obj = self.context
-        while obj is not None and not IObjectManagerSite.providedBy(obj):
-            obj = aq_parent(obj)
-        if obj is None:
+        site = self.context
+        while site is not None and not IObjectManagerSite.providedBy(site):
+            site = aq_parent(site)
+        if site is None:
             raise TypeError("No site found")  #TODO find right exception
 
         zpt = ZPTPage()
         zpt.source = unicode(src)
-        obj._setObject(viewname, zpt) #XXX there could be a naming conflict
-        zpt = getattr(obj, viewname)
-        components = obj.getSiteManager()
+        site._setObject(viewname, zpt) #XXX there could be a naming conflict
+        components = site.getSiteManager()
 
         # find out the view registration object so we can get at the
         # provided and required interfaces
