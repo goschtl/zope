@@ -22,8 +22,8 @@ from Products.Five.component.interfaces import IObjectManagerSite
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.PageTemplates.Expressions import SecureModuleImporter
 
-from zope.interface import providedBy
-from zope.component import getMultiAdapter
+from zope.interface import Interface, providedBy
+from zope.component import getMultiAdapter, getGlobalSiteManager
 from zope.component.globalregistry import base
 from zope.component.persistentregistry import PersistentComponents
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -104,7 +104,8 @@ class CustomizationView(BrowserView):
             if reg.name == viewname:
                 break
 
-        components.registerAdapter(viewFactory(viewzpt), required=reg.required,
+        view_factory = viewFactory(viewzpt, viewname)
+        components.registerAdapter(view_factory, required=reg.required,
                                    provided=reg.provided, name=viewname) #XXX info?
         return viewzpt
 
@@ -113,22 +114,30 @@ class CustomizationView(BrowserView):
         #TODO use @@absolute_url view
         self.request.RESPONSE.redirect(viewzpt.absolute_url() + "/manage_workspace")
 
-def viewFactory(viewzpt):
+def viewFactory(viewzpt, viewname):
     def view(context, request):
-        return ZPTView(viewzpt, context, request)
+        return ZPTView(viewzpt, viewname, context, request)
     return view
 
 class ZPTView(BrowserView):
 
-    def __init__(self, viewzpt, context, request):
+    def __init__(self, viewzpt, viewname, context, request):
         self.viewzpt = viewzpt
+        self.viewname = viewname
         self.context = context
         self.request = request
+
+    def _findViewClass(self):
+        gsm = getGlobalSiteManager()
+        view = gsm.queryMultiAdapter((self.context, self.request), Interface,
+                                     name=self.viewname)
+        if view is not None:
+            return view
+        return self
 
     def _zptNamespace(self):
         root = aq_acquire(self.context, 'getPhysicalRoot')()
         here = aq_inner(self.context)
-        view = self #XXX get the "real" view class
         return {
             'template':  self.viewzpt,
             'nothing':   None,
@@ -136,7 +145,7 @@ class ZPTView(BrowserView):
             'here':      here,
             'context':   here,
             'container': here,
-            'view':      view,
+            'view':      self._findViewClass(),
             'root':      root,
             'modules':   SecureModuleImporter,
             }

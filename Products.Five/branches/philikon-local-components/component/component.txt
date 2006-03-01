@@ -126,6 +126,7 @@ change the template to give us some info output:
   ... view:      <tal:var replace="structure nocall:view" />
   ... modules:   <tal:var replace="structure modules" />
   ... options:   <tal:var replace="structure options" />
+  ... nothing:   <tal:var replace="structure nothing" />
   ... """, content_type=None)
 
 In order to be able to look up the customized view now, we need to
@@ -145,9 +146,10 @@ Now look it up and compare its output:
   root:      <Application at >
   template:  <ZopePageTemplate at customizetemplate.html>
   request:   <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>
-  view:      <Products.Five.component.browser.ZPTView object at ...>
+  view:      <Products.Five.metaclass.SimpleViewClass from .../Five/component/customizetemplate.pt object at ...>
   modules:   <Products.PageTemplates.ZRPythonExpr._SecureModuleImporter instance at ...>
   options:   {'args': ()}
+  nothing:   
   <BLANKLINE>
 
 Clean up:
