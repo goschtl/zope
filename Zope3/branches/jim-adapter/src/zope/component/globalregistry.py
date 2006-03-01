@@ -115,8 +115,6 @@ class BaseGlobalComponents(Components):
     @deprecate("The subscribe method of the global site manager has been "
                "deprecated. Use registerHandler instead.")
     def subscribe(self, required, provided, factory, info=''):
-        # we're discarding 'provided' here, but a subscriber doesn't
-        # need that anyway
         if provided is None:
             self.registerHandler(factory, required, u'', info)
         else:
