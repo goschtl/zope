@@ -17,6 +17,7 @@ We should also create a root object:
   >>> from OFS.Application import Application
   >>> root = Application()
 
+
 Turning ObjectManagers into a site
 ----------------------------------
 
@@ -25,14 +26,15 @@ Let's create a folder that we'll turn into a site:
   >>> from OFS.ObjectManager import ObjectManager
   >>> site = ObjectManager()
 
-We need to add it to the root:
+We need to add it to the root so that objects contained in it have a
+proper acquisition chain all the way to the top:
 
   >>> id = root._setObject('site', site)
   >>> site = root.site
 
-Make this a real site by using a view that a) sets
-``IObjectManagerSite``, b) sets a traversal hook and c) sets a
-component registration
+Now we make this a real site by using a view that a) sets
+``IObjectManagerSite``, b) sets a traversal hook and c) gives the site
+a component registration object (formerly known as site manager):
 
   >>> import zope.component
   >>> from zope.publisher.browser import TestRequest
@@ -80,7 +82,8 @@ registered at):
 Customizing views
 -----------------
 
-We can select a view and see its template source:
+In the list of template-based browser views we can select one and see
+the source of its template:
 
   >>> view = zope.component.getMultiAdapter((item, request),
   ...                                       name=u"customizetemplate.html")
@@ -97,9 +100,9 @@ We now hit the customize button and get a customized ZPT template:
 
   >>> zpt = view.doCustomizeTemplate(u'customizetemplate.html')
 
-That actually creates a ZPTPage object in the nearest site (perhaps
-later we'd like to have the option to pick which of the sites above us
-should be targeted)
+That actually creates a PageTemplate object in the nearest site
+(perhaps later we'd like to have the option to pick which of the sites
+above us should be targeted)
 
   >>> zpt = getattr(site, 'customizetemplate.html')
   >>> print zpt.read() #doctest: +ELLIPSIS
@@ -111,18 +114,40 @@ should be targeted)
   ...
 
 It also registers this component as a view now, so when we look up the
-view again, we get the customized one.  Therefore let us customize the
-template and look up the view.  For that to work, we also need to make
-the site the current site:
+view again, we get the customized one.  Therefore let us actually
+change the template to give us some info output:
 
-  >>> zpt.pt_edit('doctest\n', content_type=None)
+  >>> zpt.pt_edit("""
+  ... context:   <tal:var replace="structure context" />
+  ... container: <tal:var replace="structure container" />
+  ... root:      <tal:var replace="structure root" />
+  ... template:  <tal:var replace="structure nocall:template" />
+  ... request:   <tal:var replace="structure python:repr(request)" />
+  ... view:      <tal:var replace="structure nocall:view" />
+  ... modules:   <tal:var replace="structure modules" />
+  ... options:   <tal:var replace="structure options" />
+  ... """, content_type=None)
+
+In order to be able to look up the customized view now, we need to
+make the site the current site:
+
   >>> from zope.app.component.hooks import setSite
   >>> setSite(site)
+
+Now look it up and compare its output:
+
   >>> view = zope.component.getMultiAdapter((item, request),
   ...                                       name=u"customizetemplate.html")
   >>> view = view.__of__(item)
-  >>> print view()
-  doctest
+  >>> print view() #doctest: +ELLIPSIS
+  context:   <SimpleContent at item>
+  container: <SimpleContent at item>
+  root:      <Application at >
+  template:  <ZopePageTemplate at customizetemplate.html>
+  request:   <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>
+  view:      <Products.Five.component.browser.ZPTView object at ...>
+  modules:   <Products.PageTemplates.ZRPythonExpr._SecureModuleImporter instance at ...>
+  options:   {'args': ()}
   <BLANKLINE>
 
 Clean up:

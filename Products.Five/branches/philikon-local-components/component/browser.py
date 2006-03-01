@@ -125,29 +125,25 @@ class ZPTView(BrowserView):
         self.context = context
         self.request = request
 
-#    def _zptNamespace(self):
-#        root = aq_acquire(self.context, 'getPhysicalRoot')()
-#        here = aq_inner(self.context)
-#        view = self #XXX get the "real" view class
-#        return {
-#            'template':  self.viewzpt,
-#            'nothing':   None,
-#            'request':   request,
-#            'here':      here,
-#            'context':   here,
-#            'container': here,
-#            'view':      view,
-#            'root':      root,
-#            'modules':   SecureModuleImporter,
-#            }
+    def _zptNamespace(self):
+        root = aq_acquire(self.context, 'getPhysicalRoot')()
+        here = aq_inner(self.context)
+        view = self #XXX get the "real" view class
+        return {
+            'template':  self.viewzpt,
+            'nothing':   None,
+            'request':   self.request,
+            'here':      here,
+            'context':   here,
+            'container': here,
+            'view':      view,
+            'root':      root,
+            'modules':   SecureModuleImporter,
+            }
 
     def __call__(self, *args, **kwargs):
-        view = self #XXX get the "real" view class
-        
-        namespace = self.viewzpt.pt_getContext()
+        namespace = self._zptNamespace()
         if not kwargs.has_key('args'):
             kwargs['args'] = args
         namespace['options'] = kwargs
-        namespace['view'] = view
-
         return self.viewzpt.pt_render(namespace)
