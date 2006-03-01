@@ -68,9 +68,9 @@ Customizing views
 We can select a view and see its template source:
 
   >>> view = zope.component.getMultiAdapter((item, request),
-  ...                                       name=u"customizeview.html")
+  ...                                       name=u"customizetemplate.html")
   >>> view = view.__of__(item)
-  >>> print view.templateSource(u'customizeview.html') #doctest: +ELLIPSIS
+  >>> print view.templateSource(u'customizetemplate.html') #doctest: +ELLIPSIS
   <html metal:use-macro="context/@@standard_macros/view"
         i18n:domain="zope">
   ...
@@ -80,13 +80,13 @@ We can select a view and see its template source:
 
 We now hit the customize button and get a customized ZPT template:
 
-  >>> zpt = view.doCustomizeTemplate(u'customizeview.html')
+  >>> zpt = view.doCustomizeTemplate(u'customizetemplate.html')
 
 That actually creates a ZPTPage object in the nearest site (perhaps
 later we'd like to have the option to pick which of the sites above us
 should be targeted)
 
-  >>> zpt = getattr(site, 'customizeview.html')
+  >>> zpt = getattr(site, 'customizetemplate.html')
   >>> print zpt.read() #doctest: +ELLIPSIS
   <html metal:use-macro="context/@@standard_macros/view"
         i18n:domain="zope">
@@ -104,7 +104,7 @@ the site the current site:
   >>> from zope.app.component.hooks import setSite
   >>> setSite(site)
   >>> view = zope.component.getMultiAdapter((item, request),
-  ...                                       name=u"customizeview.html")
+  ...                                       name=u"customizetemplate.html")
   >>> print view()
   doctest
   <BLANKLINE>
