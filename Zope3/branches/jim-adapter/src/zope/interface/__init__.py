@@ -66,7 +66,7 @@ from zope.interface.declarations import directlyProvidedBy, directlyProvides
 from zope.interface.declarations import alsoProvides, implementer
 from zope.interface.declarations import implements, implementsOnly
 from zope.interface.declarations import classProvides, moduleProvides
-from zope.interface.declarations import Declaration
+from zope.interface.declarations import noLongerProvides, Declaration
 from zope.interface.exceptions import Invalid
 
 # The following are to make spec pickles cleaner
