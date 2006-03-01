@@ -1,11 +1,21 @@
 (Local) components in Five
 ==========================
 
+Setup
+-----
+
+We need to load some important ZCML:
+
   >>> from Products.Five import zcml
   >>> import Products.Five.component
   >>> zcml.load_config('meta.zcml', Products.Five)
   >>> zcml.load_config('permissions.zcml', Products.Five)
   >>> zcml.load_config('configure.zcml', Products.Five.component)
+
+We should also create a root object:
+
+  >>> from OFS.Application import Application
+  >>> root = Application()
 
 Turning ObjectManagers into a site
 ----------------------------------
@@ -14,6 +24,11 @@ Let's create a folder that we'll turn into a site:
 
   >>> from OFS.ObjectManager import ObjectManager
   >>> site = ObjectManager()
+
+We need to add it to the root:
+
+  >>> id = root._setObject('site', site)
+  >>> site = root.site
 
 Make this a real site by using a view that a) sets
 ``IObjectManagerSite``, b) sets a traversal hook and c) sets a
@@ -100,11 +115,12 @@ view again, we get the customized one.  Therefore let us customize the
 template and look up the view.  For that to work, we also need to make
 the site the current site:
 
-  >>> zpt.source = u'doctest\n'
+  >>> zpt.pt_edit('doctest\n', content_type=None)
   >>> from zope.app.component.hooks import setSite
   >>> setSite(site)
   >>> view = zope.component.getMultiAdapter((item, request),
   ...                                       name=u"customizetemplate.html")
+  >>> view = view.__of__(item)
   >>> print view()
   doctest
   <BLANKLINE>

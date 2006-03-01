@@ -15,10 +15,12 @@
 
 $Id$
 """
-from Acquisition import aq_parent
+from Acquisition import aq_parent, aq_acquire, aq_inner
 from Products.Five.browser import BrowserView
 from Products.Five.component import enableSite, disableSite
 from Products.Five.component.interfaces import IObjectManagerSite
+from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
+from Products.PageTemplates.Expressions import SecureModuleImporter
 
 from zope.interface import providedBy
 from zope.component import getMultiAdapter
@@ -26,7 +28,6 @@ from zope.component.globalregistry import base
 from zope.component.persistentregistry import PersistentComponents
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.component.hooks import clearSite
-from zope.app.zptpage import ZPTPage
 from zope.app.apidoc.presentation import getViews, getViewInfoDictionary
 
 class ComponentsView(BrowserView):
@@ -92,9 +93,9 @@ class CustomizationView(BrowserView):
         if site is None:
             raise TypeError("No site found")  #TODO find right exception
 
-        zpt = ZPTPage()
-        zpt.source = unicode(src)
-        site._setObject(viewname, zpt) #XXX there could be a naming conflict
+        id = str(viewname)  #XXX this could barf
+        viewzpt = ZopePageTemplate(id, src)
+        site._setObject(id, viewzpt) #XXXthere could be a naming conflict
         components = site.getSiteManager()
 
         # find out the view registration object so we can get at the
@@ -103,31 +104,50 @@ class CustomizationView(BrowserView):
             if reg.name == viewname:
                 break
 
-        components.registerAdapter(ZPTViewFactory(zpt), required=reg.required,
+        components.registerAdapter(viewFactory(viewzpt), required=reg.required,
                                    provided=reg.provided, name=viewname) #XXX info?
-        return zpt
+        return viewzpt
 
     def customizeTemplate(self, viewname):
-        zpt = self.doCustomizeTemplate(viewname)
+        viewzpt = self.doCustomizeTemplate(viewname)
         #TODO use @@absolute_url view
-        self.request.RESPONSE.redirect(zpt.absolute_url() + "/manage_workspace")
+        self.request.RESPONSE.redirect(viewzpt.absolute_url() + "/manage_workspace")
 
-class ZPTViewFactory(object):
+def viewFactory(viewzpt):
+    def view(context, request):
+        return ZPTView(viewzpt, context, request)
+    return view
 
-    def __init__(self, zptpage):
-        self.zptpage = zptpage
+class ZPTView(BrowserView):
 
-    def __call__(self, context, request):
-        return ZPTView(self.zptpage, context, request)
-
-class ZPTView(object):
-
-    def __init__(self, zptpage, context, request):
-        self.zptpage = zptpage
+    def __init__(self, viewzpt, context, request):
+        self.viewzpt = viewzpt
         self.context = context
         self.request = request
 
-    def __call__(self, **kw):
-        namespace = self.zptpage.pt_getContext(self.context, self.request, **kw)
-        namespace['view'] = self #XXX get the "real" view class
-        return self.zptpage.pt_render(namespace)
+#    def _zptNamespace(self):
+#        root = aq_acquire(self.context, 'getPhysicalRoot')()
+#        here = aq_inner(self.context)
+#        view = self #XXX get the "real" view class
+#        return {
+#            'template':  self.viewzpt,
+#            'nothing':   None,
+#            'request':   request,
+#            'here':      here,
+#            'context':   here,
+#            'container': here,
+#            'view':      view,
+#            'root':      root,
+#            'modules':   SecureModuleImporter,
+#            }
+
+    def __call__(self, *args, **kwargs):
+        view = self #XXX get the "real" view class
+        
+        namespace = self.viewzpt.pt_getContext()
+        if not kwargs.has_key('args'):
+            kwargs['args'] = args
+        namespace['options'] = kwargs
+        namespace['view'] = view
+
+        return self.viewzpt.pt_render(namespace)
