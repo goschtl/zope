@@ -139,7 +139,7 @@ class XMLRPCIntrospection(object):
 
         for result in self._getRegistrationAdapters(interfaces):
             if result.name == method_name:
-                method = getattr(result.value, method_name)
+                method = getattr(result.factory, method_name)
                 return self._getFunctionSignature(method)
 
         return 'undef'
@@ -151,7 +151,7 @@ class XMLRPCIntrospection(object):
 
         for result in self._getRegistrationAdapters(interfaces):
             if result.name == method_name:
-                method = getattr(result.value, method_name)
+                method = getattr(result.factory, method_name)
                 return self._getFunctionHelp(method)
 
         return 'undef'
