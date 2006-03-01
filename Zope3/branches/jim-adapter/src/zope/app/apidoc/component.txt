@@ -46,7 +46,7 @@ specified interface. So let's create some adapter registrations:
   >>> regs
   [AdapterRegistration(('IFoo', 'IBar'), 'ISpecialResult', '', None, ''),
    AdapterRegistration(('IFoo',), 'IResult', '', None, ''),
-   SubscriptionRegistration(('IFoo',), None, 'stubFactory', '')]
+   HandlerRegistration(('IFoo',), u'', 'stubFactory', '')]
 
 Note how the adapter requiring an `IRequest` at the end of the required
 interfaces is neglected. This is because it is recognized as a view and views
@@ -58,7 +58,7 @@ are not returned by default. But you can simply turn this flag on:
   [AdapterRegistration(('IFoo', 'IBar'), 'ISpecialResult', '', None, ''),
    AdapterRegistration(('IFoo', 'IRequest'), 'ISpecialResult', '', None, ''),
    AdapterRegistration(('IFoo',), 'IResult', '', None, ''),
-   SubscriptionRegistration(('IFoo',), None, 'stubFactory', '')]
+   HandlerRegistration(('IFoo',), u'', 'stubFactory', '')]
 
 The function will also pick up registrations that have required interfaces the
 specified interface extends:
@@ -68,7 +68,7 @@ specified interface extends:
   >>> regs
   [AdapterRegistration(('IFoo', 'IBar'), 'ISpecialResult', '', None, ''),
    AdapterRegistration(('IFoo',), 'IResult', '', None, ''),
-   SubscriptionRegistration(('IFoo',), None, 'stubFactory', '')]
+   HandlerRegistration(('IFoo',), u'', 'stubFactory', '')]
 
 And all of the required interfaces are considered, of course:
 
@@ -344,14 +344,14 @@ This function can also handle subscription registrations, which are pretty
 much like adapter registrations, except that they do not have a name. So let's
 see how the function handles subscriptions:
 
-  >>> from zope.component.site import SubscriptionRegistration
-  >>> reg = SubscriptionRegistration((IFoo, IBar), None, MyResult, 'doc info')
+  >>> from zope.component.components import HandlerRegistration
+  >>> reg = HandlerRegistration((IFoo, IBar), '', MyResult, 'doc info')
 
   >>> pprint(component.getAdapterInfoDictionary(reg))
   {'doc': 'doc info',
    'factory': 'zope.app.apidoc.doctest.MyResult',
    'factory_url': 'zope/app/apidoc/doctest/MyResult',
-   'name': u'<subscription>',
+   'name': '',
    'provided': None,
    'required': [{'module': 'zope.app.apidoc.doctest', 'name': 'IFoo'},
                 {'module': 'zope.app.apidoc.doctest', 'name': 'IBar'}],
