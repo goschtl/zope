@@ -17,8 +17,7 @@ $Id$
 """
 import unittest, sys
 
-from zope.component.tests.request import Request
-from zope.interface import Interface, classImplements
+from zope.interface import Interface, classImplements, directlyProvides
 from zope.publisher.interfaces import NotFound
 from zope.proxy import removeAllProxies
 
@@ -39,7 +38,11 @@ from zwiki.traversal import WikiPageTraverser
 class I(Interface):
     pass
 
-class Request(Request):
+class Request(object):
+
+    def __init__(self, type):
+        directlyProvides(self, type)
+
     def getEffectiveURL(self):
         return ''
 
