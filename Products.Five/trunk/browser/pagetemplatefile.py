@@ -42,15 +42,15 @@ def BoboTraverseAwareSimpleTraverse(object, path_items, econtext):
         next = getattr(object, name, _marker)
         if next is not _marker:
             object = next
-        elif hasattr(object, '__getitem__'):
-            try:
-                object = object[name]
-            except KeyError:
-                # deal with traversal through bobo_traverse()
-                object = object.restrictedTraverse(name)
         else:
-            # Allow AttributeError to propagate
-            object = getattr(object, name)
+            try:
+                object = object.restrictedTraverse(name)
+            except (KeyError, AttributeError):
+                try:
+                    object = object[name]
+                except:
+                    object = getattr(object, name)
+
     return object
 
 
