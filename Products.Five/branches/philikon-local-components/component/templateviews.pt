@@ -9,7 +9,7 @@
   <ul>
     <li tal:repeat="reg view/templateViewRegistrations">
       <a href=""
-         tal:attributes="href string:@@customize.html?viewname=${reg/name}"
+         tal:attributes="href string:@@customizetemplate.html?viewname=${reg/name}"
          tal:content="reg/name">
       </a>
       as defined in <tal:var replace="reg/info/filename" />.

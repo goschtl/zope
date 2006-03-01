@@ -19,8 +19,8 @@
        template="templateviews.pt"
        />
     <browser:page
-       name="customizeview.html"
-       template="customizeview.pt"
+       name="customizetemplate.html"
+       template="customizetemplate.pt"
        />
     <browser:page
        name="customizetemplate"
