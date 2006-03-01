@@ -18,7 +18,7 @@ $Id$
 import unittest
 
 from zope.interface import implements, directlyProvides
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.security.checker import defineChecker
 from zope.security.checker import NamesChecker
 

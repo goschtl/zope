@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 from types import ClassType
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.interface.interfaces import IInterface
 from zope.app import zapi

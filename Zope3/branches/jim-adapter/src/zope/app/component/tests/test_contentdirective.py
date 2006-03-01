@@ -23,7 +23,7 @@ import zope.app.component
 
 from zope.app import zapi
 from zope.component.interfaces import IFactory
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.component.interface import queryInterface

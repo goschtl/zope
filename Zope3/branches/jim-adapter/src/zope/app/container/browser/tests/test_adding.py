@@ -20,7 +20,7 @@ import unittest
 import zope.interface
 import zope.security.checker
 from zope.component.interfaces import IFactory
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.interface import implements, Interface, directlyProvides
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserRequest

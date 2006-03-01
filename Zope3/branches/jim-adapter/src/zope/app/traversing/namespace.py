@@ -21,7 +21,7 @@ import zope.deprecation
 import zope.component
 import zope.interface
 from zope.i18n.interfaces import IModifiableUserPreferredLanguages
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.interface import providedBy, directlyProvides, directlyProvidedBy
 from zope.publisher.interfaces.browser import ISkin
 from zope.security.proxy import removeSecurityProxy

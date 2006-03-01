@@ -27,7 +27,7 @@ from zope.app.component.interfaces import ILocalUtility
 from zope.app.publisher.browser import BrowserView
 from zope.app.component.interfaces import ISite
 from zope.app.component.site import LocalSiteManager
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.component.interfaces import IFactory
 from zope.interface.interfaces import IMethod
 from zope.schema.interfaces import IField

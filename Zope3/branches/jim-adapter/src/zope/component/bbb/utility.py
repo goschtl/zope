@@ -15,8 +15,8 @@
 
 $Id$
 """
-from zope.component.exceptions import Invalid, ComponentLookupError
-from zope.component.interfaces import IUtilityService, IRegistry
+from zope.component.interfaces import Invalid, ComponentLookupError, IRegistry
+from zope.component.bbb.interfaces import IUtilityService
 from zope.component.service import GlobalService, IService, IServiceDefinition
 from zope.component.components import UtilityRegistration
 import zope.interface

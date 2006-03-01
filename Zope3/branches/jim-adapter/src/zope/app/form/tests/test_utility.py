@@ -18,8 +18,7 @@ $Id$
 import doctest
 
 from zope.interface import Interface, implements
-from zope.component.interfaces import IViewFactory
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import IViewFactory, ComponentLookupError
 from zope.publisher.browser import TestRequest
 import zope.security.checker
 from zope.security.interfaces import ForbiddenAttribute, Unauthorized

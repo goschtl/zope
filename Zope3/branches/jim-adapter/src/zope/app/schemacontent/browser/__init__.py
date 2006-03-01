@@ -24,7 +24,7 @@ from zope.app.form.utility import setUpWidget
 from zope.app.form.interfaces import IInputWidget
 from zope.app.schemacontent.interfaces import IContentComponentDefinition
 from zope.app.schemacontent.content import ContentComponentInstance
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema import getFieldsInOrder, Choice

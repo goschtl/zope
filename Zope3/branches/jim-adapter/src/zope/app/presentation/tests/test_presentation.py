@@ -18,7 +18,7 @@ $Id$
 import unittest
 
 import zope.interface
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface.verify import verifyObject
 from zope.proxy import removeAllProxies

@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.interface import Interface, classImplements
 from zope.schema import Int, TextLine, Text
 

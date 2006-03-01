@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.interface import implements
 from zope.tales.interfaces import ITALESExpression
 from zope.tales.expressions import StringExpr

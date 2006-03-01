@@ -19,7 +19,7 @@ import unittest
 from zope.interface import Interface, implements
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 
 from zope.app import zapi
 from zope.app.component.interfaces import ILocalUtility

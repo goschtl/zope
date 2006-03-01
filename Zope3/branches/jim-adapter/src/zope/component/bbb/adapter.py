@@ -21,8 +21,8 @@ import sys
 import warnings
 from types import ClassType
 
-from zope.component.exceptions import ComponentLookupError
-from zope.component.interfaces import IAdapterService, IRegistry
+from zope.component.interfaces import IRegistry, ComponentLookupError
+from zope.component.bbb.interfaces import IAdapterService
 from zope.component.bbb.service import GlobalService
 from zope.component.components import AdapterRegistration, SubscriptionRegistration
 from zope.interface import implements, providedBy, Interface, implementedBy
