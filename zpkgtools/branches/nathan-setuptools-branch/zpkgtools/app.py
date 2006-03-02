@@ -527,6 +527,20 @@ class PackageComponent:
         f.write("compile = 1\n")
         # generate .pyo files using "python -O"
         f.write("optimize = 1\n")
+        f.write("\n")
+
+        # write information for egg creation control
+        f.write("[egg_info]\n")
+        f.write("tag_build = .dev\n")
+        f.write("tag_svn_revision = 1\n")
+        f.write("\n")
+
+        # XXX write out dependency information for use by develop.py
+        deps = self.get_dependencies()
+        f.write("[development]\n")
+        f.write("depends = %s\n" % " ".join(deps))
+        f.write("\n")
+        
         f.close()
 
     def write_setup_py(self, filename="setup.py", version=None, pathparts=[],
