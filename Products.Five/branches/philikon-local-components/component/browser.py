@@ -136,7 +136,7 @@ class ZPTView(BrowserView):
 
     def __init__(self, viewzpt, viewname, context, request):
         self.viewzpt = viewzpt
-        self.viewname = viewname
+        self.viewname = self.__name__ = viewname
         self.context = context
         self.request = request
 
