@@ -88,7 +88,12 @@ the source of its template:
   >>> view = zope.component.getMultiAdapter((item, request),
   ...                                       name=u"customizetemplate.html")
   >>> view = view.__of__(item)
-  >>> print view.templateSource(u'customizetemplate.html') #doctest: +ELLIPSIS
+  >>> template = view.templateFromViewname(u'customizetemplate.html')
+  >>> import os.path
+  >>> os.path.basename(template.filename)
+  'customizetemplate.pt'
+
+  >>> print template.read() #doctest: +ELLIPSIS
   <html metal:use-macro="context/@@standard_macros/view"
         i18n:domain="zope">
   ...
@@ -104,7 +109,7 @@ That actually creates a PageTemplate object in the nearest site
 (perhaps later we'd like to have the option to pick which of the sites
 above us should be targeted)
 
-  >>> zpt = getattr(site, 'customizetemplate.html')
+  >>> zpt = getattr(site, 'customizetemplate.pt')
   >>> print zpt.read() #doctest: +ELLIPSIS
   <html metal:use-macro="context/@@standard_macros/view"
         i18n:domain="zope">
@@ -144,7 +149,7 @@ Now look it up and compare its output:
   context:   <SimpleContent at item>
   container: <SimpleContent at item>
   root:      <Application at >
-  template:  <ZopePageTemplate at customizetemplate.html>
+  template:  <ZopePageTemplate at customizetemplate.pt>
   request:   <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>
   view:      <Products.Five.metaclass.SimpleViewClass from .../Five/component/customizetemplate.pt object at ...>
   modules:   <Products.PageTemplates.ZRPythonExpr._SecureModuleImporter instance at ...>

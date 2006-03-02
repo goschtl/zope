@@ -15,6 +15,8 @@
 
 $Id$
 """
+import os.path
+
 from Acquisition import aq_parent, aq_acquire, aq_inner
 from Products.Five.browser import BrowserView
 from Products.Five.component import enableSite, disableSite
@@ -78,14 +80,12 @@ class CustomizationView(BrowserView):
                    factory.__name__.startswith('SimpleViewClass'):
                 yield reg
 
-    def templateSource(self, viewname):
+    def templateFromViewname(self, viewname):
         view = getMultiAdapter((self.context, self.request),
                                name=viewname)
-        return view.index.read()
+        return view.index
 
     def doCustomizeTemplate(self, viewname):
-        src = self.templateSource(viewname)
-
         # find the nearest site
         site = self.context
         while site is not None and not IObjectManagerSite.providedBy(site):
@@ -93,9 +93,14 @@ class CustomizationView(BrowserView):
         if site is None:
             raise TypeError("No site found")  #TODO find right exception
 
-        id = str(viewname)  #XXX this could barf
-        viewzpt = ZopePageTemplate(id, src)
-        site._setObject(id, viewzpt) #XXXthere could be a naming conflict
+        # we're using the original filename of the template, not the
+        # view name to avoid potential conflicts and/or confusion in
+        # URLs
+        template = self.templateFromViewname(viewname)
+        zpt_id = os.path.basename(template.filename)
+
+        viewzpt = ZopePageTemplate(zpt_id, template.read())
+        site._setObject(zpt_id, viewzpt) #XXXthere could be a naming conflict
         components = site.getSiteManager()
 
         # find out the view registration object so we can get at the
@@ -107,12 +112,16 @@ class CustomizationView(BrowserView):
         view_factory = ZPTViewFactory(viewzpt, viewname)
         components.registerAdapter(view_factory, required=reg.required,
                                    provided=reg.provided, name=viewname) #XXX info?
+
+        viewzpt = getattr(site, zpt_id)
         return viewzpt
 
     def customizeTemplate(self, viewname):
         viewzpt = self.doCustomizeTemplate(viewname)
+        viewzpt = aq_inner(viewzpt)
         #TODO use @@absolute_url view
-        self.request.RESPONSE.redirect(viewzpt.absolute_url() + "/manage_workspace")
+        url = viewzpt.absolute_url() + "/manage_workspace"
+        self.request.RESPONSE.redirect(url)
 
 class ZPTViewFactory(object):
 
