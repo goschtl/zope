@@ -16,12 +16,15 @@
 $Id$
 """
 from zope.event import notify
+from zope.interface import Interface, implementer
 from zope.interface import alsoProvides, noLongerProvides
+from zope.component import adapter, getGlobalSiteManager
+from zope.component.interfaces import IComponentLookup
 from zope.app.publication.zopepublication import BeforeTraverseEvent
 from zope.app.component.interfaces import ISite, IPossibleSite
 
 import ExtensionClass
-from Acquisition import aq_base
+from Acquisition import aq_base, aq_inner, aq_parent
 from Products.SiteAccess.AccessRule import AccessRule
 from ZPublisher.BeforeTraverse import registerBeforeTraverse
 from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
@@ -30,12 +33,12 @@ from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
 import zope.app.component.hooks
 zope.app.component.hooks.setHooks()
 
+@adapter(Interface)
+@implementer(IComponentLookup)
 def siteManagerAdapter(ob):
-    """An adapter * -> ISiteManager.
-
-    This is registered in place of the one in Zope 3 so that we lookup
-    using acquisition instead of ILocation.
-    """
+    """Look-up a site manager/component registry for local component
+    lookup.  This is registered in place of the one in Zope 3 so that
+    we lookup using acquisition in addition to ILocation."""
     current = ob
     while True:
         if ISite.providedBy(current):
