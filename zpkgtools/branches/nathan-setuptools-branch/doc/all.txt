@@ -1,0 +1,27 @@
+***********************************
+**zpkg** -- The Zope Packaging Tool
+***********************************
+
+:Info: See <http://www.zope.org/Members/fdrake/zpkgtools/> for more information.
+:Author: Fred Drake <fred@zope.com>, Zope Corporation
+
+.. Alternate driver for the zpkg docs.
+   This should be used to format the zpkg docs as a single HTML file
+   for printing.  To use, replace links.rst with an empty file and
+   then format this file.
+
+.. _resource maps: `Resource Locations`_
+
+.. _zpkg: `Running the zpkg tool`_
+.. |zpkg| replace:: **zpkg**
+
+.. _ZConfig: http://www.zope.org/Members/fdrake/zconfig/
+
+
+.. include:: intro.txt
+.. include:: quickstart.txt
+.. include:: zpkg.txt
+.. include:: metadata.txt
+.. include:: resources.txt
+.. include:: collections.txt
+.. include:: TODO.txt

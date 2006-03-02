@@ -1,0 +1,12 @@
+This is @PACKAGE_FULL_NAME@ @PACKAGE_VERSION@.
+
+To build @PACKAGE_FULL_NAME@, run "./configure" in this directory.
+Use "./configure --help" to learn about useful command-line options.
+
+Once you've run the ./configure script, run the command "make" to
+build the software.
+
+To install @PACKAGE_FULL_NAME@, run the command "make install".
+You may need to have root priviledges to do this, depending on where
+you're installing it.  The default location is
+/usr/local/@PACKAGE_SHORT_NAME@-@PACKAGE_VERSION@.

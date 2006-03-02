@@ -1,0 +1,108 @@
+<schema prefix="zpkgtools">
+  <description>
+    Schema for zpkg configuration files.
+  </description>
+
+  <sectiontype name="resources"
+               datatype=".config.resource_map"
+               keytype=".locationmap.resource_name"
+               >
+    <key name="+"
+         attribute="map"
+         datatype=".config.non_empty_string"
+         />
+  </sectiontype>
+
+  <multisection type="resources"
+               attribute="resource_maps"
+               >
+    <description>
+      Embedded resource maps.
+    </description>
+  </multisection>
+
+  <multikey name="resource-map"
+            attribute="location_maps"
+            required="no"
+            datatype=".config.non_empty_string"
+            >
+    <description>
+      Each 'resource-map' is a URL reference to a resource map in an
+      external resource.  Relative references are resolved relative to
+      the resource in which they're embedded.
+    </description>
+  </multikey>
+
+  <sectiontype name="exclude"
+               datatype=".config.exclude"
+               keytype=".config.resource_name"
+               >
+    <key name="+"
+         attribute="mapping"
+         datatype=".config.empty_string"
+         />
+  </sectiontype>
+
+  <section type="exclude"
+           attribute="exclude_packages"
+           >
+    <description>
+      A list of packages that are excluded from the collection.
+    </description>
+  </section>
+
+  <key name="build-application"
+       datatype="boolean"
+       required="no"
+       default="no"
+       />
+
+  <key name="collect-dependencies"
+       datatype="boolean"
+       required="no"
+       default="no"
+       />
+
+  <key name="default-collection"
+       datatype=".config.resource_name"
+       required="no"
+       />
+
+  <key name="include-support-code"
+       datatype="boolean"
+       required="no"
+       default="yes"
+       />
+
+  <key name="release-name"
+       datatype=".config.release_name"
+       required="no"
+       />
+
+  <key name="distribution-class"
+       datatype="dotted-name"
+       required="no"
+       />
+
+  <sectiontype
+      name="support-packages"
+      datatype="ZConfig.components.basic.mapping.mapping"
+      keytype="dotted-name"
+      >
+    <!-- Keys in the <support-packages> section name resources, but
+         those resources must be Python packages, so we use a
+         restricted keytype.
+         -->
+    <key name="+"
+         attribute="mapping"
+         datatype=".config.optional_location"
+         required="no"
+         />
+  </sectiontype>
+  <section name="*"
+           type="support-packages"
+           attribute="support_packages"
+           required="no"
+           />
+
+</schema>
