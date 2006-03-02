@@ -15,8 +15,14 @@
 
 $Id$
 """
-import distutils.dist
-import distutils.extension
+
+try:
+    import setuptools.dist as dist_dist
+    import setuptools.extension as dist_extension
+except ImportError:
+    import distutils.dist as dist_dist
+    import distutils.extension as dist_extension
+    
 import sys
 
 import zpkgsetup.build
@@ -25,17 +31,17 @@ import zpkgsetup.build_headers
 import zpkgsetup.install_headers
 
 
-class ZPkgExtension(distutils.extension.Extension):
+class ZPkgExtension(dist_extension.Extension):
     """Distutils representation of a compiled extension module."""
 
 
-class ZPkgDistribution(distutils.dist.Distribution):
+class ZPkgDistribution(dist_dist.Distribution):
     """Distribution that ensures features needed by **zpkg** are available."""
 
     def __init__ (self, attrs=None):
         self.package_data = None
         self.package_headers = attrs.pop("package_headers", ())
-        distutils.dist.Distribution.__init__(self, attrs)
+        dist_dist.Distribution.__init__(self, attrs)
         if self.package_data and sys.version_info < (2, 4):
             from zpkgsetup.build_py import build_py
             from zpkgsetup.install_lib import install_lib

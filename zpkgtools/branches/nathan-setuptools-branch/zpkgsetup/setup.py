@@ -31,7 +31,10 @@ import posixpath
 import re
 import sys
 
-from distutils.cmd import Command
+try:
+    from setuptools.cmd import Command
+except ImportError:
+    from distutils.cmd import Command
 
 from zpkgsetup import package
 from zpkgsetup import publication
