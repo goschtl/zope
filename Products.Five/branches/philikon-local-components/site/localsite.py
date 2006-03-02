@@ -23,22 +23,6 @@ from zope.app.component.interfaces import ISite, IPossibleSite
 from Acquisition import aq_inner, aq_parent
 from Products.Five.site.interfaces import IFiveSiteManager, IFiveUtilityRegistry
 
-def siteManagerAdapter(ob):
-    """An adapter * -> ISiteManager.
-
-    This is registered in place of the one in Zope 3 so that we lookup
-    using acquisition instead of ILocation.
-    """
-    current = ob
-    while True:
-        if ISite.providedBy(current):
-            return current.getSiteManager()
-        current = getattr(current, '__parent__', aq_parent(aq_inner(current)))
-        if current is None:
-            # It does not support acquisition or has no parent, so we
-            # return the global site
-            return getGlobalSiteManager()
-
 class FiveSiteManager(object):
     implements(IFiveSiteManager)
 
