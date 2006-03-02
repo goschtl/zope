@@ -26,7 +26,6 @@ import psycopg
 import re
 import sys
 
-PG_ENCODING = 'UTF-8'
 
 # These OIDs are taken from include/server/pg_type.h from PostgreSQL headers.
 # Unfortunatelly psycopg does not export them as constants, and
@@ -311,7 +310,7 @@ def registerTypes(encoding):
     STRING = psycopg.new_type((CHAR_OID, TEXT_OID, BPCHAR_OID, VARCHAR_OID),
                               "ZSTRING", _get_string_conv(encoding))
     psycopg.register_type(STRING)
- 
+
 class PsycopgAdapter(ZopeDatabaseAdapter):
     """A PsycoPG adapter for Zope3.
 
@@ -336,9 +335,12 @@ class PsycopgAdapter(ZopeDatabaseAdapter):
             except psycopg.Error, error:
                 raise DatabaseException, str(error)
 
+    def registerTypes(self):
+        registerTypes(self.getEncoding())
+
     def _connection_factory(self):
         """Create a Psycopg DBI connection based on the DSN"""
-        registerTypes(PG_ENCODING)
+        self.registerTypes()
         conn_info = parseDSN(self.dsn)
         conn_list = []
         for dsnname, optname in dsn2option_mapping.iteritems():
@@ -353,10 +355,6 @@ class PsycopgAdapter(ZopeDatabaseAdapter):
         # different isolation levels.
         connection.set_isolation_level(3)
 
-        # Ensure the client_encoding for this connection matches PG_ENCODING
-        cur = connection.cursor()
-        cur.execute("SET client_encoding TO UNICODE")
-        connection.commit()
         return connection
 
 
@@ -383,6 +381,7 @@ def _handle_psycopg_exception(error):
 
 
 class PsycopgConnection(ZopeConnection):
+
     def cursor(self):
         """See IZopeConnection"""
         return PsycopgCursor(self.conn.cursor(), self)
@@ -395,6 +394,7 @@ class PsycopgConnection(ZopeConnection):
 
 
 class PsycopgCursor(ZopeCursor):
+
     def execute(self, operation, parameters=None):
         """See IZopeCursor"""
         try:
@@ -409,4 +409,3 @@ class PsycopgCursor(ZopeCursor):
             return ZopeCursor.execute(self, operation, seq_of_parameters)
         except psycopg.Error, error:
             _handle_psycopg_exception(error)
-

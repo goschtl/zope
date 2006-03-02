@@ -19,7 +19,7 @@ from unittest import TestCase, TestSuite, main, makeSuite
 from datetime import tzinfo, timedelta
 import psycopg
 
-class Stub:
+class Stub(object):
 
     def __init__(self, **kw):
         self.__dict__.update(kw)
@@ -44,7 +44,12 @@ class TZStub(tzinfo):
     def __reduce__(self):
         return type(self), (), self.__dict__
 
-class PsycopgStub:
+class ConnectionStub(object):
+
+    def set_isolation_level(self, level):
+        pass
+
+class PsycopgStub(object):
 
     __shared_state = {}     # 'Borg' design pattern
 
@@ -59,6 +64,7 @@ class PsycopgStub:
 
     def connect(self, connection_string):
         self.last_connection_string = connection_string
+        return ConnectionStub()
 
     def new_type(self, values, name, converter):
         return Stub(name=name, values=values)
@@ -186,7 +192,7 @@ class TestPsycopgAdapter(TestCase):
         import psycopgda.adapter as adapter
         from psycopgda.adapter import PsycopgAdapter
         a = PsycopgAdapter('dbi://')
-        a._registerTypes()
+        a.registerTypes()
         for typename in ('DATE', 'TIME', 'TIMETZ', 'TIMESTAMP',
                          'TIMESTAMPTZ', 'INTERVAL'):
             typeid = getattr(adapter, '%s_OID' % typename)
