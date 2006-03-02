@@ -1,8 +1,0 @@
-<configure
-    xmlns="http://namespaces.zope.org/zope">
-
-    <subscriber
-        for="mailgateway.interfaces.IMailReceivedEvent"
-        handler=".mail_log" />
-
-</configure>
