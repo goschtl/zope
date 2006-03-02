@@ -855,7 +855,7 @@ class ComplexStackItem(object):
     A complex stack item is in the stack when a complex directive is
     being processed.  It only allows subdirectives to be used.
 
-    A complex stack item us created with a complex directive
+    A complex stack item is created with a complex directive
     definition (IComplexDirectiveContext), a configuration context,
     and directive data.
 
