@@ -101,7 +101,7 @@ def load_dev_deps(setup_file):
         return []
     else:
         return [n.strip() for n in
-                setup_cfg.get(DEV_SECTION, DEV_DEPENDS).split()]
+                setup_cfg.get(DEV_SECTION, DEV_DEPENDS).strip().split()]
 
 def check_dirs(*dirs):
     """Check that our target directories all exist."""
@@ -145,7 +145,9 @@ def main():
 
     # install the development dependencies
     from setuptools.command.easy_install import main as einstall
-    einstall(load_dev_deps(options.setup_cfg))
+    deps = load_dev_deps(options.setup_cfg)
+    if deps and len(deps) > 0:
+        einstall(deps)
     
 if __name__ == '__main__':
     main()
