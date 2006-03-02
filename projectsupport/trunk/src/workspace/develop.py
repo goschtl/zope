@@ -18,7 +18,6 @@ $Id$
 
 import os
 import sys
-import setup
 import optparse
 import ConfigParser
 import urllib2
