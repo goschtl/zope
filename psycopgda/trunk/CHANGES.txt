@@ -1,0 +1,13 @@
+PsycopgDA Changes
+
+  This file contains change information for the current PsycopgDA release.
+
+  After PsycopgDA 1.0 (trunk only)
+
+    New features
+
+    Restructuring
+
+    Bug Fixes
+
+      - Fixed issue 561: PsycopgDA ForbiddenAttribute exception;
