@@ -52,6 +52,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 560: Bug in default AddView class.
+
       - Fixed issue 546: non-ASCII docstring cause
         System Error in RootErrorReportingUtility.
 
