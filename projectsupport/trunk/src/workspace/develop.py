@@ -1,0 +1,147 @@
+##############################################################################
+#
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Project checkout setup script
+
+$Id$
+"""
+
+import os
+import sys
+import setup
+import optparse
+import ConfigParser
+import urllib2
+
+DEV_SECTION = 'development'
+DEV_DEPENDS = 'depends'
+
+def bootstrap(libdir, bindir):
+    """Bootstrap our setuptools installation in the target directory."""
+    os.environ['PYTHONPATH'] = os.environ.setdefault('PYTHONPATH', '') + \
+                               ":" + libdir
+    ez_setup.main(['--install-dir', libdir, '--script-dir', bindir, '-U', 'setuptools'])
+
+def updateSetupCfg(setup_file, opts):
+    """Update or create a setup.cfg (setup_file) for working on this
+    project."""
+
+    # load the existing version
+    setup_cfg = ConfigParser.ConfigParser()
+    setup_cfg.read(setup_file)
+
+    # make sure the sections we want exist
+    if not(setup_cfg.has_section('easy_install')):
+        setup_cfg.add_section('easy_install')
+        
+    # update lib dir
+    if opts.libdir is None:
+        # no libdir specified; check for one in setup.cfg
+        if setup_cfg.has_option('easy_install', 'install-dir'):
+            opts.libdir = setup_cfg.get('easy_install', 'install-dir')
+        else:
+            opts.libdir = os.path.abspath('./lib')
+
+    setup_cfg.set('easy_install', 'install-dir', opts.libdir)
+
+    # update bin dir
+    if opts.bindir is None:
+        # no bindir specified; check for one in setup.cfg
+        if setup_cfg.has_option('easy_install', 'script-dir'):
+            opts.bindir = setup_cfg.get('easy_install', 'script-dir')
+        else:
+            opts.bindir = os.path.abspath('./bin')
+
+    setup_cfg.set('easy_install', 'script-dir', opts.bindir)
+        
+    # update site-dirs
+    setup_cfg.set('easy_install', 'site-dirs', opts.libdir)
+    
+    # update find-links
+    setup_cfg.set('easy_install', 'find-links', opts.finddirs)
+
+    # store the updated version
+    setup_cfg.write(file(setup_file, 'w'))
+
+def load_dev_deps(setup_file):
+    global DEV_SECTION
+    global DEV_DEPENDS
+    
+    # load the existing version
+    setup_cfg = ConfigParser.ConfigParser()
+    setup_cfg.read(setup_file)
+
+    if not(setup_cfg.has_option(DEV_SECTION, DEV_DEPENDS)):
+        return []
+    else:
+        return [n.strip() for n in
+                setup_cfg.get(DEV_SECTION, DEV_DEPENDS).split()]
+
+def check_dirs(*dirs):
+    """Check that our target directories all exist."""
+
+    for d in dirs:
+        if not(os.path.exists(os.path.abspath(d))):
+            os.makedirs(os.path.abspath(d))
+
+def cmdline_parser():
+    """Create an option parser and populate our available options."""
+
+    parser = optparse.OptionParser()
+    parser.add_option("-s", "--file", dest="setup_cfg",
+                      help="File to read setup configuration from." )
+    parser.add_option("-l", "--libdir", dest="libdir",
+                      help="Location of Python libraries.")
+    parser.add_option("-b", "--bindir", dest="bindir",
+                      help="Location of Python scripts.")
+    parser.add_option("-f", "--find-dirs", dest="finddirs",
+                      help="Location to examine for package links.")
+
+    parser.set_defaults(setup_cfg="setup.cfg",
+                        libdir=None,
+                        bindir=None,
+                        finddirs="")
+
+    return parser
+
+if __name__ == '__main__':
+
+    (options, args) = cmdline_parser().parse_args()
+
+    # update setup.cfg with the lib dir, bin dir, etc
+    updateSetupCfg(options.setup_cfg, options)
+    
+    # make sure that the lib directory structure of our prefix exists
+    check_dirs(options.bindir, options.libdir)
+    sys.path.insert(0, options.libdir)
+
+    # bootstrap setuptools into our libdir
+    try:
+        # check if we have ez_setup available
+        import ez_setup
+        
+    except ImportError, e:
+        # retrieve ez_setup.py from the interweb
+        EZ_URL = "http://peak.telecommunity.com/dist/ez_setup.py"
+        file('ez_setup.py', 'w').write(
+            urllib2.urlopen(EZ_URL).read()
+            )
+
+        import ez_setup
+        
+    bootstrap(options.libdir, options.bindir)
+
+    # install the development dependencies
+    from setuptools.command.easy_install import main as einstall
+    einstall(load_dev_deps(options.setup_cfg))
+    
