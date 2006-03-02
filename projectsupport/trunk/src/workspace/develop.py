@@ -114,8 +114,7 @@ def cmdline_parser():
 
     return parser
 
-if __name__ == '__main__':
-
+def main():
     (options, args) = cmdline_parser().parse_args()
 
     # update setup.cfg with the lib dir, bin dir, etc
@@ -145,3 +144,5 @@ if __name__ == '__main__':
     from setuptools.command.easy_install import main as einstall
     einstall(load_dev_deps(options.setup_cfg))
     
+if __name__ == '__main__':
+    main()
