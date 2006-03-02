@@ -104,7 +104,7 @@ class CustomizationView(BrowserView):
             if reg.name == viewname:
                 break
 
-        view_factory = viewFactory(viewzpt, viewname)
+        view_factory = ZPTViewFactory(viewzpt, viewname)
         components.registerAdapter(view_factory, required=reg.required,
                                    provided=reg.provided, name=viewname) #XXX info?
         return viewzpt
@@ -116,12 +116,12 @@ class CustomizationView(BrowserView):
 
 class ZPTViewFactory(object):
 
-    def __init__(viewzpt, viewname):
+    def __init__(self, viewzpt, viewname):
         self.viewzpt = viewzpt
         self.viewname = viewname
 
-    def __call__(context, request):
-        return ZPTView(viewzpt, viewname, context, request)
+    def __call__(self, context, request):
+        return ZPTView(self.viewzpt, self.viewname, context, request)
 
 class ZPTView(BrowserView):
 
