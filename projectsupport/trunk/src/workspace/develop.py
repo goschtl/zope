@@ -27,6 +27,23 @@ DEV_DEPENDS = 'depends'
 
 def bootstrap(libdir, bindir):
     """Bootstrap our setuptools installation in the target directory."""
+
+    # make sure ez_setup is available
+    try:
+        # check if we have ez_setup available
+        import ez_setup
+        
+    except ImportError, e:
+        # retrieve ez_setup.py from the interweb
+        EZ_URL = "http://peak.telecommunity.com/dist/ez_setup.py"
+        
+        ez_filename = os.path.join(os.path.dirname(__file__), 'ez_setup.py')
+        file(ez_filename, 'w').write(
+            urllib2.urlopen(EZ_URL).read()
+            )
+
+        import ez_setup
+        
     os.environ['PYTHONPATH'] = os.environ.setdefault('PYTHONPATH', '') + \
                                ":" + libdir
     ez_setup.main(['--install-dir', libdir, '--script-dir', bindir, '-U', 'setuptools'])
@@ -124,19 +141,6 @@ def main():
     sys.path.insert(0, options.libdir)
 
     # bootstrap setuptools into our libdir
-    try:
-        # check if we have ez_setup available
-        import ez_setup
-        
-    except ImportError, e:
-        # retrieve ez_setup.py from the interweb
-        EZ_URL = "http://peak.telecommunity.com/dist/ez_setup.py"
-        file('ez_setup.py', 'w').write(
-            urllib2.urlopen(EZ_URL).read()
-            )
-
-        import ez_setup
-        
     bootstrap(options.libdir, options.bindir)
 
     # install the development dependencies
