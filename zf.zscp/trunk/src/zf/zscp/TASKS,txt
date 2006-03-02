@@ -1,0 +1,16 @@
+================
+Tasks to be done
+================
+
+
+
+Automation Tools
+----------------
+
+- test coverage
+- package meta-information verification (provide hook in parser)
+- Zope coding guidline verifier
+  * check package structure
+  * check class names
+  * check metod and function names
+  * check for method documentation strings

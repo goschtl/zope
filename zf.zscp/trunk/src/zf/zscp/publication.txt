@@ -1,0 +1,245 @@
+=================================
+Handling Package Publication Data
+=================================
+
+The package publication data is stored in an RFC 2822 compatible format. This
+document describes how to parse and generate this file.
+
+Parsing Package Publication Data
+--------------------------------
+
+The publication data file is a collection of simple meta-data entries. The
+file has required and optional fields. So when we simply want to process an
+emoty file, an exception is raised that lists all (missing) required fields:
+
+  >>> import StringIO
+  >>> file = StringIO.StringIO(u'')
+
+  >>> from zf.zscp import publication
+  >>> publication.process(file)
+  Traceback (most recent call last):
+  ...
+  ValueError: Required headers missing: Package-name, Name, Summary, Author,
+              Author-email, License, Metadata-version
+
+So let's now create a file that has at least those required headers:
+
+  >>> file = StringIO.StringIO(u'''\
+  ... Package-name: zope.sample
+  ... Name: Sample Package
+  ... Summary: This is the Sample Package.
+  ... Author: John Doe
+  ... Author-email: john@doe.com
+  ... License: ZPL 2.1
+  ... Metadata-version: 1.0
+  ... ''')
+
+The result of the processing step should be a publication object with all
+those attributes set.
+
+  >>> metadata = publication.process(file)
+  >>> metadata
+  <Publication for 'zope.sample' (meta-data version 1.0)>
+
+  >>> metadata.packageName
+  'zope.sample'
+  >>> metadata.name
+  u'Sample Package'
+  >>> metadata.summary
+  u'This is the Sample Package.'
+  >>> metadata.author
+  [u'John Doe']
+  >>> metadata.authorEmail
+  [u'john@doe.com']
+  >>> metadata.license
+  [u'ZPL 2.1']
+  >>> metadata.metadataVersion
+  u'1.0'
+
+As you can see, some fields are lists, so multiple headers can be specified:
+
+  >>> file = StringIO.StringIO(u'''\
+  ... Package-name: zope.sample
+  ... Name: Sample Package
+  ... Summary: This is the Sample Package.
+  ... Author: John Doe
+  ... Author-email: john@doe.com
+  ... Author: Jane Doe
+  ... Author-email: jane@doe.com
+  ... License: ZPL 2.1
+  ... Metadata-version: 1.0
+  ... ''')
+
+  >>> metadata = publication.process(file)
+  >>> metadata.author
+  [u'John Doe', u'Jane Doe']
+  >>> metadata.authorEmail
+  [u'john@doe.com', u'jane@doe.com']
+
+However, for single fields, you can only provide one value:
+
+  >>> file = StringIO.StringIO(u'''\
+  ... Package-name: zope.sample
+  ... Package-name: zope.sample2
+  ... Name: Sample Package
+  ... Summary: This is the Sample Package.
+  ... Author: John Doe
+  ... Author-email: john@doe.com
+  ... License: ZPL 2.1
+  ... Metadata-version: 1.0
+  ... ''')
+
+  >>> publication.process(file)
+  Traceback (most recent call last):
+  ...
+  ValueError: header 'Package-name' can only be given once
+
+Also, additional headers are simply ignored.
+
+  >>> file = StringIO.StringIO(u'''\
+  ... Package-name: zope.sample
+  ... Faux: Faux Data
+  ... Name: Sample Package
+  ... Summary: This is the Sample Package.
+  ... Author: John Doe
+  ... Author-email: john@doe.com
+  ... License: ZPL 2.1
+  ... Metadata-version: 1.0
+  ... ''')
+
+  >>> metadata = publication.process(file)
+  >>> metadata.faux
+  Traceback (most recent call last):
+  ...
+  AttributeError: 'Publication' object has no attribute 'faux'
+
+We also need to ensure that the values are correctly unescaped. Multi-line
+value blocks are indented for the RFC 822 header format. The unescaping
+should remove that indentation:
+
+  >>> file = StringIO.StringIO(u'''\
+  ... Package-name: zope.sample
+  ... Name: Sample Package
+  ... Summary: This is the Sample Package.
+  ... Description:
+  ...         This is a really great Sample Package. It provides several
+  ...         sample features and is still very sample simple.
+  ...         I hope you enjoy it.
+  ... Author: John Doe
+  ... Author-email: john@doe.com
+  ... License: ZPL 2.1
+  ... Metadata-version: 1.0
+  ... ''')
+
+  >>> metadata = publication.process(file)
+  >>> print metadata.description
+  This is a really great Sample Package. It provides several
+  sample features and is still very sample simple.
+  I hope you enjoy it.
+
+Finally, let's have a full example:
+
+  >>> file = StringIO.StringIO(u'''\
+  ... Package-name: zope.sample
+  ... Name: Sample Package
+  ... Summary: This is the Sample Package.
+  ... Description:
+  ...         This is a really great Sample Package. It provides several
+  ...         sample features and is still very sample simple.
+  ...         I hope you enjoy it.
+  ... Home-page: http://www.zope.org/Products/SamplePackage
+  ... Author: John Doe
+  ... Author-email: john@doe.com
+  ... License: GPL 2.0
+  ... License: ZPL 2.1
+  ... Platform: Windows
+  ... Platform: Unix
+  ... Classifier: Programming Language :: Python
+  ... Classifier: Topic :: Internet :: WWW/HTTP
+  ... Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+  ... Classifier: Topic :: Software Development :: Libraries :: Python Modules
+  ... Developers-mailinglist: sample-dev@doe.com
+  ... Users-mailinglist: sample-users@doe.com
+  ... Issue-tracker: http://www.zope.org/trackers/sample/
+  ... Repository-location: svn://svn.zope.org/repos/main/sample
+  ... Repository-web-location: http://svn.zope.org/sample
+  ... Certification-level: level1
+  ... Certification-date: 2006-02-28
+  ... Metadata-version: 1.0
+  ... ''')
+
+  >>> metadata = publication.process(file)
+  >>> metadata.packageName
+  'zope.sample'
+  >>> metadata.name
+  u'Sample Package'
+  >>> metadata.summary
+  u'This is the Sample Package.'
+  >>> print metadata.description
+  This is a really great Sample Package. It provides several
+  sample features and is still very sample simple.
+  I hope you enjoy it.
+  >>> metadata.author
+  [u'John Doe']
+  >>> metadata.authorEmail
+  [u'john@doe.com']
+  >>> metadata.license
+  [u'GPL 2.0', u'ZPL 2.1']
+  >>> metadata.platform
+  [u'Windows', u'Unix']
+  >>> metadata.classifier
+  [u'Programming Language :: Python',
+   u'Topic :: Internet :: WWW/HTTP',
+   u'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+   u'Topic :: Software Development :: Libraries :: Python Modules']
+  >>> metadata.developersMailinglist
+  u'sample-dev@doe.com'
+  >>> metadata.usersMailinglist
+  u'sample-users@doe.com'
+  >>> metadata.issueTracker
+  'http://www.zope.org/trackers/sample/'
+  >>> metadata.repositoryLocation
+  'svn://svn.zope.org/repos/main/sample'
+  >>> metadata.repositoryWebLocation
+  'http://svn.zope.org/sample'
+  >>> metadata.certificationLevel
+  u'level1'
+  >>> metadata.certificationDate
+  datetime.date(2006, 2, 28)
+  >>> metadata.metadataVersion
+  u'1.0'
+
+
+Writing Package Publication Data
+--------------------------------
+
+The writing of the publication data is pretty straight forward. Thus, let's
+just write out the complete publication data above again:
+
+  >>> print publication.produce(metadata)
+  Package-name: zope.sample
+  Name: Sample Package
+  Summary: This is the Sample Package.
+  Description:
+          This is a really great Sample Package. It provides several
+          sample features and is still very sample simple.
+          I hope you enjoy it.
+  Home-page: http://www.zope.org/Products/SamplePackage
+  Author: John Doe
+  Author-email: john@doe.com
+  License: GPL 2.0
+  License: ZPL 2.1
+  Platform: Windows
+  Platform: Unix
+  Classifier: Programming Language :: Python
+  Classifier: Topic :: Internet :: WWW/HTTP
+  Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+  Classifier: Topic :: Software Development :: Libraries :: Python Modules
+  Developers-mailinglist: sample-dev@doe.com
+  Users-mailinglist: sample-users@doe.com
+  Issue-tracker: http://www.zope.org/trackers/sample/
+  Repository-location: svn://svn.zope.org/repos/main/sample
+  Repository-web-location: http://svn.zope.org/sample
+  Certification-level: level1
+  Certification-date: 2006-02-28
+  Metadata-version: 1.0

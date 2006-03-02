@@ -1,0 +1,319 @@
+=============================
+Handling Package Release Data
+=============================
+
+The package release data is stored in an XML file. This document describes how
+to parse and generate this file.
+
+Parsing Package Release Data
+----------------------------
+
+The release file contains several releases. The simplest case is that there
+are no releases.
+
+  >>> import StringIO
+  >>> xml = StringIO.StringIO(u'<releases />')
+
+  >>> from zf.zscp import release
+  >>> releases = release.processXML(xml)
+  >>> releases
+  []
+
+Note that you cannot just have any root element:
+
+  >>> xml = StringIO.StringIO(u'<faux-releases />')
+
+  >>> from zf.zscp import release
+  >>> release.processXML(xml)
+  Traceback (most recent call last):
+  ...
+  ValueError: The root element must be named `releases`
+
+When a release is added, all required fields must be specified:
+
+  >>> xml = StringIO.StringIO(u'''
+  ... <releases>
+  ...   <release>
+  ...    <name>Sample Package</name>
+  ...    <version>0.9.0</version>
+  ...    <date>2006-02-03</date>
+  ...    <certification>level1</certification>
+  ...    <package>http://www.zope.org/SamplePackage/Sample-0.9.0.tgz</package>
+  ...  </release>
+  ... </releases>
+  ... ''')
+
+  >>> releases = release.processXML(xml)
+  >>> releases
+  [<Release name=u'Sample Package', version=u'0.9.0', codename=None>]
+
+All data should be available via the attributes:
+
+  >>> pointNine = releases[0]
+  >>> pointNine.name
+  u'Sample Package'
+  >>> pointNine.version
+  u'0.9.0'
+  >>> pointNine.date
+  datetime.date(2006, 2, 3)
+  >>> pointNine.certification
+  u'level1'
+  >>> pointNine.package
+  'http://www.zope.org/SamplePackage/Sample-0.9.0.tgz'
+
+If a required field is not specified, then an error is raised. In the example
+below, two required fields are missing:
+
+  >>> xml = StringIO.StringIO(u'''
+  ... <releases>
+  ...   <release>
+  ...    <name>Sample Package</name>
+  ...    <certification>level1</certification>
+  ...    <package>http://www.zope.org/SamplePackage/Sample-0.9.0.tgz</package>
+  ...  </release>
+  ... </releases>
+  ... ''')
+
+  >>> release.processXML(xml)
+  Traceback (most recent call last):
+  ...
+  RequiredElementsMissing: Required field(s) 'date', 'version' missing in
+                           `release` (file "<string>", line 7, column 11)
+
+If a required field is missing that has a default value, the default is simply
+used:
+
+  >>> xml = StringIO.StringIO(u'''
+  ... <releases>
+  ...   <release>
+  ...    <name>Sample Package</name>
+  ...    <version>0.9.0</version>
+  ...    <date>2006-02-03</date>
+  ...    <package>http://www.zope.org/SamplePackage/Sample-0.9.0.tgz</package>
+  ...  </release>
+  ... </releases>
+  ... ''')
+
+  >>> pointNine = release.processXML(xml)[0]
+  >>> pointNine.certification
+  u'none'
+
+Finally, you cannot just add sub-elements randomly:
+
+  >>> xml = StringIO.StringIO(u'''
+  ... <releases>
+  ...   <release>
+  ...    <name>
+  ...      Sample Package
+  ...      <subname>Subname</subname>
+  ...    </name>
+  ...    <version>0.9.0</version>
+  ...    <date>2006-02-03</date>
+  ...    <package>http://www.zope.org/SamplePackage/Sample-0.9.0.tgz</package>
+  ...  </release>
+  ... </releases>
+  ... ''')
+
+  >>> release.processXML(xml)
+  Traceback (most recent call last):
+  ...
+  InvalidSubElement: `name` cannot have sub-elements
+                     (file "<string>", line 6, column 14)
+
+
+Let's now have a look at a complex element within the release. The release
+manager and press contact should be converted to contact objects and then
+being added.
+
+  >>> xml = StringIO.StringIO(u'''
+  ... <releases>
+  ...   <release>
+  ...    <name>Sample Package</name>
+  ...    <version>0.9.0</version>
+  ...    <date>2006-02-03</date>
+  ...    <package>http://www.zope.org/SamplePackage/Sample-0.9.0.tgz</package>
+  ...    <release-manager>
+  ...      <name>John Doe</name>
+  ...      <email>john@doe.com</email>
+  ...    </release-manager>
+  ...    <press-contact>
+  ...      <name>Jane Doe</name>
+  ...      <email>jane@doe.com</email>
+  ...    </press-contact>
+  ...  </release>
+  ... </releases>
+  ... ''')
+
+  >>> pointNine = release.processXML(xml)[0]
+  >>> pointNine.releaseManager
+  <Contact 'John Doe <john@doe.com>'>
+  >>> pointNine.pressContact
+  <Contact 'Jane Doe <jane@doe.com>'>
+
+Another complex element case are the dependencies. Dependencies are a list of
+strings, but are represented structurally in XML. Thus they need to be
+converted properly:
+
+  >>> xml = StringIO.StringIO(u'''
+  ... <releases>
+  ...   <release>
+  ...    <name>Sample Package</name>
+  ...    <version>0.9.0</version>
+  ...    <date>2006-02-03</date>
+  ...    <package>http://www.zope.org/SamplePackage/Sample-0.9.0.tgz</package>
+  ...    <dependencies>
+  ...      <dependency>Zope 3.3</dependency>
+  ...      <dependency>Other Software 1.1</dependency>
+  ...    </dependencies>
+  ...  </release>
+  ... </releases>
+  ... ''')
+
+  >>> pointNine = release.processXML(xml)[0]
+  >>> pointNine.dependencies
+  [u'Zope 3.3', u'Other Software 1.1']
+
+And finally a full file of content:
+
+  >>> xml = StringIO.StringIO(u'''
+  ... <releases>
+  ...   <release>
+  ...    <name>Sample Package</name>
+  ...    <version>1.0.0</version>
+  ...    <codename>CoolName</codename>
+  ...    <date>2006-02-03</date>
+  ...    <certification>listed</certification>
+  ...    <package>http://www.zope.org/SamplePackage/Sample-1.0.0.tgz</package>
+  ...    <source>svn://svn.zope.org/zf.sample/tags/1.0.0</source>
+  ...    <announcement>http://www.zope.org/SamplePackage1Released</announcement>
+  ...    <dependencies>
+  ...      <dependency>Zope 3.3</dependency>
+  ...    </dependencies>
+  ...    <release-manager>
+  ...      <name>John Doe</name>
+  ...      <email>john@doe.com</email>
+  ...    </release-manager>
+  ...    <press-contact>
+  ...      <name>Jane Doe</name>
+  ...      <email>jane@doe.com</email>
+  ...    </press-contact>
+  ...  </release>
+  ...   <release>
+  ...    <name>Sample Package</name>
+  ...    <version>0.9.0</version>
+  ...    <date>2006-01-01</date>
+  ...    <package>http://www.zope.org/SamplePackage/Sample-0.9.0.tgz</package>
+  ...  </release>
+  ... </releases>
+  ... ''')
+
+  >>> releases = release.processXML(xml)
+  >>> one = releases[0]
+  >>> one.name
+  u'Sample Package'
+  >>> one.version
+  u'1.0.0'
+  >>> one.codename
+  u'CoolName'
+  >>> one.date
+  datetime.date(2006, 2, 3)
+  >>> one.certification
+  u'listed'
+  >>> one.package
+  'http://www.zope.org/SamplePackage/Sample-1.0.0.tgz'
+  >>> one.source
+  'svn://svn.zope.org/zf.sample/tags/1.0.0'
+  >>> one.announcement
+  'http://www.zope.org/SamplePackage1Released'
+  >>> one.dependencies
+  [u'Zope 3.3']
+  >>> one.releaseManager
+  <Contact 'John Doe <john@doe.com>'>
+  >>> one.pressContact
+  <Contact 'Jane Doe <jane@doe.com>'>
+
+  >>> pointNine = releases[1]
+  >>> pointNine.name
+  u'Sample Package'
+  >>> pointNine.version
+  u'0.9.0'
+  >>> pointNine.date
+  datetime.date(2006, 1, 1)
+  >>> pointNine.certification
+  u'none'
+  >>> pointNine.package
+  'http://www.zope.org/SamplePackage/Sample-0.9.0.tgz'
+
+
+Writing Package Release Data
+----------------------------
+
+The simplest step is to create a totally empty file.
+
+  >>> releases = []
+  >>> print release.produceXML(releases)
+  <releases>
+  </releases>
+
+Now let's add a release to the releases having the minimum data ...
+
+  >>> import datetime
+  >>> pointNine = release.Release()
+  >>> pointNine.name = u'Sample Package'
+  >>> pointNine.version = u'0.9.0'
+  >>> pointNine.date = datetime.date(2006, 2, 3)
+  >>> pointNine.certification = u'level1'
+  >>> pointNine.package = 'http://www.zope.org/SamplePackage/Sample-0.9.0.tgz'
+
+and add it to the releases:
+
+  >>> releases.append(pointNine)
+
+We can now render the structure:
+
+  >>> print release.produceXML(releases)
+  <releases>
+    <release>
+      <name>Sample Package</name>
+      <version>0.9.0</version>
+      <date>2006-02-03</date>
+      <certification>level1</certification>
+      <package>http://www.zope.org/SamplePackage/Sample-0.9.0.tgz</package>
+    </release>
+  </releases>
+
+Let's now also add the complete 1.0.0 (``one``) release in the first position
+to ensure correct output.
+
+  >>> releases.insert(0, one)
+  >>> print release.produceXML(releases)
+  <releases>
+    <release>
+      <name>Sample Package</name>
+      <version>1.0.0</version>
+      <codename>CoolName</codename>
+      <date>2006-02-03</date>
+      <certification>listed</certification>
+      <package>http://www.zope.org/SamplePackage/Sample-1.0.0.tgz</package>
+      <source>svn://svn.zope.org/zf.sample/tags/1.0.0</source>
+      <announcement>http://www.zope.org/SamplePackage1Released</announcement>
+      <dependencies>
+        <dependency>Zope 3.3</dependency>
+      </dependencies>
+      <release-manager>
+        <name>John Doe</name>
+        <email>john@doe.com</email>
+      </release-manager>
+      <press-contact>
+        <name>Jane Doe</name>
+        <email>jane@doe.com</email>
+      </press-contact>
+    </release>
+    <release>
+      <name>Sample Package</name>
+      <version>0.9.0</version>
+      <date>2006-02-03</date>
+      <certification>level1</certification>
+      <package>http://www.zope.org/SamplePackage/Sample-0.9.0.tgz</package>
+    </release>
+  </releases>

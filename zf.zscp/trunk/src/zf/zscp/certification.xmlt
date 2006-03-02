@@ -1,0 +1,15 @@
+<certifications>
+  <certification tal:repeat="certification options/root">
+    <action tal:content="certification/action" />
+    <source-level tal:content="certification/sourceLevel" />
+    <target-level tal:content="certification/targetLevel" />
+    <date tal:content="certification/date" />
+    <certification-manager>
+      <name tal:content="certification/certificationManager/name" />
+      <email tal:content="certification/certificationManager/email" />
+    </certification-manager>
+    <comments
+        tal:condition="certification/comments"
+        tal:content="certification/comments" />
+  </certification>
+</certifications>

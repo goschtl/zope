@@ -1,0 +1,203 @@
+=====================
+A ZSCP Implementation
+=====================
+
+The zscp module,
+
+  >>> from zf.zscp import zscp
+
+implements the process for an SVN repository. It is controoled by the ZSCP
+repository object:
+
+  >>> import tempfile
+  >>> localRoot = tempfile.mkdtemp()
+  >>> repos = zscp.ZSCPRepository(
+  ...   'svn+ssh://svn.zope.org/repos/main', localRoot, 'mypass')
+
+The first argument of the constructor is the SVN URL to the repository, the
+second is the directory that will be used to checkout the ``zscp`` directories
+and the final argument is the passphrase for the SSL authentication.
+
+For the purpose of this test, we register a stub pysvn client:
+
+  >>> svnClient.root = 'svn+ssh://svn.zope.org/repos/main'
+  >>> repos._getClient = lambda : svnClient
+
+The initial test SVN repository looks as follows::
+
+  root/
+    zope.sample/
+      zscp/
+        ZSCP.cfg
+        PUBLICATION.cfg
+        RELEASES.xml
+        CERTIFICATIONS.xml
+    zope.sample1/
+    zope.sample2/
+
+With the setup all done, let's see how the ZSCP is realized. The first step is
+to initialize the repository, which means that all available package ``zscp``
+directories are checked out from the repository. In the local copy, those
+``zscp`` directories will be known by their package name:
+
+  >>> repos.initialize()
+
+  >>> import os
+  >>> os.listdir(localRoot)
+  ['zope.sample']
+
+Since only the ``zope.sample`` package has a ``zscp`` directory, it is the
+only one checked out. You can also use the ``fetch()`` method to get a list of
+all ZSCP packages in the repository:
+
+  >>> repos.fetch()
+  ['zope.sample']
+
+When you pass ``all=True`` to the method, then all packages in the repository
+will be returned:
+
+  >>> sorted(repos.fetch(all=True))
+  ['zope.sample', 'zope.sample1', 'zope.sample2']
+
+Once the repository is initialized, you can use the mapping interface to
+discover the content:
+
+  >>> len(repos)
+  1
+
+  >>> 'zope.sample' in repos
+  True
+  >>> 'zope.sample1' in repos
+  False
+
+  >>> repos['zope.sample']
+  <Package 'zope.sample'>
+  >>> repos.get('zope.sample')
+  <Package 'zope.sample'>
+  >>> repos.get('zope.sample1') is None
+  True
+
+  >>> repos.keys()
+  ['zope.sample']
+  >>> repos.items()
+  [('zope.sample', <Package 'zope.sample'>)]
+  >>> repos.values()
+  [<Package 'zope.sample'>]
+
+Now we would like to register a new package with the ZSCP process. This is
+done by first creating a package ...
+
+  >>> from zf.zscp import package, publication
+  >>> sample1 = package.Package('zope.sample1')
+
+  >>> sample1.publication = publication.Publication()
+  >>> sample1.publication.packageName = 'zope.sample1'
+  >>> sample1.publication.name = u'Sample Package 1'
+  >>> sample1.publication.summary = u'This is the Sample Package 1.'
+  >>> sample1.publication.author = [u'Jane Doe']
+  >>> sample1.publication.authorEmail = [u'jane@doe.com']
+  >>> sample1.publication.license = [u'GPL 2.0']
+  >>> sample1.publication.metadataVersion = u'1.0'
+
+  >>> sample1.certifications = []
+  >>> sample1.releases = []
+
+and then registering it:
+
+  >>> repos.register(sample1)
+
+Let's make sure all the data was really stored in the SVN repository:
+
+  >>> sorted(repos.items())
+  [('zope.sample', <Package 'zope.sample'>),
+   ('zope.sample1', <Package 'zope.sample1'>)]
+
+  >>> svnClient.dir['zope.sample1']['zscp'].keys()
+  ['PUBLICATION.cfg', 'CERTIFICATIONS.xml', 'RELEASES.xml', 'ZSCP.cfg']
+
+At the beginning there are no certifications:
+
+  >>> sample1.certifications
+  []
+  >>> print svnClient.dir['zope.sample1']['zscp']['CERTIFICATIONS.xml'].read()
+  <certifications>
+  </certifications>
+
+Let's now add a certification:
+
+  >>> import datetime
+  >>> from zf.zscp import certification, contact
+  >>> listed = certification.Certification()
+  >>> listed.action = u'grant'
+  >>> listed.sourceLevel = u'none'
+  >>> listed.targetLevel = u'listed'
+  >>> listed.date = datetime.date(2006, 1, 1)
+  >>> listed.certificationManager = contact.Contact()
+  >>> listed.certificationManager.name = 'John Doe'
+  >>> listed.certificationManager.email = 'john@doe.com'
+  >>> sample1.certifications.append(listed)
+
+To update the checkout and the repository, we can do the following:
+
+  >>> repos.update(sample1)
+
+So now we should have an entry:
+
+  >>> sample1.certifications
+  [<Certification action=u'grant', source=u'none', target=u'listed'>]
+  >>> svnClient.dir['zope.sample1']['zscp']['CERTIFICATIONS.xml'].seek(0)
+  >>> print svnClient.dir['zope.sample1']['zscp']['CERTIFICATIONS.xml'].read()
+  <certifications>
+    <certification>
+      <action>grant</action>
+      <source-level>none</source-level>
+      <target-level>listed</target-level>
+      <date>2006-01-01</date>
+      <certification-manager>
+        <name>John Doe</name>
+        <email>john@doe.com</email>
+      </certification-manager>
+    </certification>
+  </certifications>
+
+In case a project wants to be removed from the ZSCP process, you simply
+unregister it:
+
+  >>> repos.unregister(sample1)
+
+It should be gone in the SVN repository and the local checkout:
+
+
+  >>> print svnClient.dir['zope.sample1'].keys()
+  []
+  >>> os.listdir(localRoot)
+  ['zope.sample']
+
+And that's it.
+
+
+Parsing and writing the ``ZSCP.cfg`` file
+-----------------------------------------
+
+It is necessary to parse the ``ZSCP.cfg`` file in order to determine the
+locations of the other data files.
+
+  >>> import StringIO
+  >>> config = StringIO.StringIO(u'''
+  ...    publication PUBLICATION.cfg
+  ...    releases RELEASES.xml
+  ...    certifications CERTIFICATIONS.xml
+  ... ''')
+
+  >>> zscp_data = zscp.process(config)
+  >>> pprint(zscp_data)
+  {u'certifications': u'CERTIFICATIONS.xml',
+   u'publication': u'PUBLICATION.cfg',
+   u'releases': u'RELEASES.xml'}
+
+On the other hand, we also need to be able create the contents of the file:
+
+  >>> print zscp.produce(zscp_data)
+  certifications CERTIFICATIONS.xml
+  publication PUBLICATION.cfg
+  releases RELEASES.xml

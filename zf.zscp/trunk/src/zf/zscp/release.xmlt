@@ -1,0 +1,33 @@
+<releases>
+  <release tal:repeat="release options/root">
+    <name tal:content="release/name" />
+    <version tal:content="release/version" />
+    <codename
+        tal:condition="release/codename"
+        tal:content="release/codename" />
+    <date tal:content="release/date" />
+    <certification tal:content="release/certification" />
+    <package tal:content="release/package" />
+    <source
+        tal:condition="release/source"
+        tal:content="release/source" />
+    <announcement
+        tal:condition="release/announcement"
+        tal:content="release/announcement" />
+    <dependencies
+        tal:condition="release/dependencies"
+        tal:repeat="dependency release/dependencies">
+      <dependency tal:content="dependency" />
+    </dependencies>
+    <release-manager
+        tal:condition="release/releaseManager">
+      <name tal:content="release/releaseManager/name" />
+      <email tal:content="release/releaseManager/email" />
+    </release-manager>
+    <press-contact
+        tal:condition="release/pressContact">
+      <name tal:content="release/pressContact/name" />
+      <email tal:content="release/pressContact/email" />
+    </press-contact>
+  </release>
+</releases>

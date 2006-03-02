@@ -1,0 +1,217 @@
+===================================
+Handling Package Certification Data
+===================================
+
+The package certification data is stored in an XML file. This document
+describes how to parse and generate this file.
+
+Parsing Package Certification Data
+----------------------------------
+
+The certification file contains several certifications. The simplest case is
+that there are no certifications.
+
+  >>> import StringIO
+  >>> xml = StringIO.StringIO(u'<certifications />')
+
+  >>> from zf.zscp import certification
+  >>> certifications = certification.processXML(xml)
+  >>> certifications
+  []
+
+Note that you cannot just have any root element:
+
+  >>> xml = StringIO.StringIO(u'<faux-certifications />')
+
+  >>> from zf.zscp import certification
+  >>> certification.processXML(xml)
+  Traceback (most recent call last):
+  ...
+  ValueError: The root element must be named `certifications`
+
+When a certification is added, all required fields must be specified:
+
+  >>> xml = StringIO.StringIO(u'''
+  ... <certifications>
+  ...   <certification>
+  ...    <action>grant</action>
+  ...    <source-level>none</source-level>
+  ...    <target-level>listed</target-level>
+  ...    <date>2006-01-01</date>
+  ...    <certification-manager>
+  ...      <name>John Doe</name>
+  ...      <email>john@doe.com</email>
+  ...    </certification-manager>
+  ...  </certification>
+  ... </certifications>
+  ... ''')
+
+  >>> certifications = certification.processXML(xml)
+  >>> certifications
+  [<Certification action=u'grant', source=u'none', target=u'listed'>]
+
+All data should be available via the attributes:
+
+  >>> grant = certifications[0]
+  >>> grant.action
+  u'grant'
+  >>> grant.sourceLevel
+  u'none'
+  >>> grant.targetLevel
+  u'listed'
+  >>> grant.date
+  datetime.date(2006, 1, 1)
+  >>> grant.certificationManager
+  <Contact 'John Doe <john@doe.com>'>
+
+If a required field is not specified, then an error is raised. In the example
+below, two required fields are missing:
+
+  >>> xml = StringIO.StringIO(u'''
+  ... <certifications>
+  ...   <certification>
+  ...    <source-level>none</source-level>
+  ...    <target-level>listed</target-level>
+  ...    <certification-manager>
+  ...      <name>John Doe</name>
+  ...      <email>john@doe.com</email>
+  ...    </certification-manager>
+  ...  </certification>
+  ... </certifications>
+  ... ''')
+
+  >>> certification.processXML(xml)
+  Traceback (most recent call last):
+  ...
+  RequiredElementsMissing: Required field(s) 'action', 'date' missing in
+                           `certification` (file "<string>", line 10, column 17)
+
+And finally a full file of content:
+
+  >>> xml = StringIO.StringIO(u'''
+  ... <certifications>
+  ...   <certification>
+  ...     <action>warn</action>
+  ...     <source-level>level1</source-level>
+  ...     <target-level>level1</target-level>
+  ...     <date>2006-03-15</date>
+  ...     <certification-manager>
+  ...       <name>John Doe</name>
+  ...       <email>john@doe.com</email>
+  ...     </certification-manager>
+  ...     <comments>
+  ...       The test coverage has been around 50% for over two months.
+  ...     </comments>
+  ...   </certification>
+  ...   <certification>
+  ...     <action>grant</action>
+  ...     <source-level>none</source-level>
+  ...     <target-level>level1</target-level>
+  ...     <date>2006-01-01</date>
+  ...     <certification-manager>
+  ...       <name>John Doe</name>
+  ...       <email>john@doe.com</email>
+  ...     </certification-manager>
+  ...   </certification>
+  ... </certifications>
+  ... ''')
+
+  >>> certifications = certification.processXML(xml)
+  >>> warn = certifications[0]
+  >>> warn.action
+  u'warn'
+  >>> warn.sourceLevel
+  u'level1'
+  >>> warn.targetLevel
+  u'level1'
+  >>> warn.date
+  datetime.date(2006, 3, 15)
+  >>> warn.certificationManager
+  <Contact 'John Doe <john@doe.com>'>
+  >>> warn.comments
+  u'The test coverage has been around 50% for over two months.'
+
+  >>> grant = certifications[1]
+  >>> grant.action
+  u'grant'
+  >>> grant.sourceLevel
+  u'none'
+  >>> grant.targetLevel
+  u'level1'
+  >>> grant.date
+  datetime.date(2006, 1, 1)
+  >>> grant.certificationManager
+  <Contact 'John Doe <john@doe.com>'>
+
+
+Writing Package Certification Data
+----------------------------------
+
+The simplest step is to create a totally empty file.
+
+  >>> certifications = []
+  >>> print certification.produceXML(certifications)
+  <certifications>
+  </certifications>
+
+Now let's add a certification to the certifications having the minimum data ...
+
+  >>> import datetime
+  >>> from zf.zscp import contact
+  >>> grant = certification.Certification()
+  >>> grant.action = u'grant'
+  >>> grant.sourceLevel = u'none'
+  >>> grant.targetLevel = u'level1'
+  >>> grant.date = datetime.date(2006, 1, 1)
+  >>> grant.certificationManager = contact.Contact()
+  >>> grant.certificationManager.name = u'John Doe'
+  >>> grant.certificationManager.email = u'john@doe.com'
+
+and add it to the certifications:
+
+  >>> certifications.append(grant)
+
+We can now render the structure:
+
+  >>> print certification.produceXML(certifications)
+  <certifications>
+    <certification>
+      <action>grant</action>
+      <source-level>none</source-level>
+      <target-level>level1</target-level>
+      <date>2006-01-01</date>
+      <certification-manager>
+        <name>John Doe</name>
+        <email>john@doe.com</email>
+      </certification-manager>
+    </certification>
+  </certifications>
+
+Let's now also add the complete warning (``warn``) certification action in the
+first position to ensure correct output.
+
+  >>> certifications.insert(0, warn)
+  >>> print certification.produceXML(certifications)
+  <certifications>
+    <certification>
+      <action>warn</action>
+      <source-level>level1</source-level>
+      <target-level>level1</target-level>
+      <date>2006-03-15</date>
+      <certification-manager>
+        <name>John Doe</name>
+        <email>john@doe.com</email>
+      </certification-manager>
+      <comments>The test coverage has been around 50% for over two months.</comments>
+    </certification>
+    <certification>
+      <action>grant</action>
+      <source-level>none</source-level>
+      <target-level>level1</target-level>
+      <date>2006-01-01</date>
+      <certification-manager>
+        <name>John Doe</name>
+        <email>john@doe.com</email>
+      </certification-manager>
+    </certification>
+  </certifications>
