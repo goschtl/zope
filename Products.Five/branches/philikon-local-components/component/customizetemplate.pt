@@ -10,7 +10,7 @@
     template source
   </pre>
 
-  <form action="." action="@@customizetemplate" method="post"
+  <form action="@@customizetemplate" method="post"
         enctype="multipart/form-data">
 
     <input type="hidden" name="viewname" value="theviewname"
