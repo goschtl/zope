@@ -114,7 +114,7 @@ class CustomizationView(BrowserView):
         #TODO use @@absolute_url view
         self.request.RESPONSE.redirect(viewzpt.absolute_url() + "/manage_workspace")
 
-class ZPTViewFactory(viewzpt, viewname):
+class ZPTViewFactory(object):
 
     def __init__(viewzpt, viewname):
         self.viewzpt = viewzpt
