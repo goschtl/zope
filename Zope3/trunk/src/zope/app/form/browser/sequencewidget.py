@@ -119,18 +119,16 @@ class SequenceWidget(BrowserWidget, InputWidget):
 
     def _getRenderedValue(self):
         if self._renderedValueSet():
-            sequence = self._data
+            sequence = list(self._data)
         elif self.hasInput():
-            sequence = list(self._generateSequence())
+            sequence = self._generateSequence()
         else:
             sequence = []
         # ensure minimum number of items in the form
-        if len(sequence) < self.context.min_length:
-            sequence = list(sequence)
-            for i in range(self.context.min_length - len(sequence)):
-                # Shouldn't this use self.field.value_type.missing_value,
-                # instead of None?
-                sequence.append(None)
+        while len(sequence) < self.context.min_length:
+            # Shouldn't this use self.field.value_type.missing_value,
+            # instead of None?
+            sequence.append(None)
         return sequence
 
     def _getPresenceMarker(self, count=0):
@@ -181,9 +179,6 @@ class SequenceWidget(BrowserWidget, InputWidget):
 
         This can only be called if self.hasInput() returns true.
         """
-        len_prefix = len(self.name)
-        adding = False
-        removing = []
         if self.context.value_type is None:
             # Why would this ever happen?
             return []
@@ -198,32 +193,21 @@ class SequenceWidget(BrowserWidget, InputWidget):
             raise WidgetInputError(self.context.__name__, self.context.title)
 
         # pre-populate
-        found = {}
+        sequence = [None] * count
 
         # now look through the request for interesting values
-        for i in range(count):
-            remove_key = "%s.remove_%d" % (self.name, i)
-            if remove_key in self.request.form:
-                removing.append(i)
+        # in reverse so that we can remove items as we go
+        removing = self.name + ".remove" in self.request.form
+        for i in reversed(range(count)):
             widget = self._getWidget(i)
             if widget.hasValidInput():
-                found[i] = widget.getInputValue()
-            else:
-                found[i] = None
-        adding = (self.name + ".add") in self.request.form
-
-        # remove the indicated indexes
-        if (self.name + ".remove") in self.request.form:
-            for i in removing:
-                del found[i]
-
-        # generate the list, sorting the dict's contents by key
-        items = found.items()
-        items.sort()
-        sequence = [value for key, value in items]
+                sequence[i] = widget.getInputValue()
+            remove_key = "%s.remove_%d" % (self.name, i)
+            if remove_key in self.request.form and removing:
+                del sequence[i]
 
         # add an entry to the list if the add button has been pressed
-        if adding:
+        if self.name + ".add" in self.request.form:
             # Should this be using self.context.value_type.missing_value
             # instead of None?
             sequence.append(None)
