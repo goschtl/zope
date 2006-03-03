@@ -1,0 +1,12 @@
+==========================================================
+Things to do for the next release (in no particular order)
+==========================================================
+
+  - Redo error handling.
+
+  - Robust reconnection support.
+
+  - More tests.
+
+  - Slightly improve datatype convertors. For example we don't need
+    to convert microseconds into float and then into datetime.datetime.
