@@ -265,6 +265,21 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
         s = widget()
         self.verifyResult(s, check_list, inorder=True)
 
+    def test_usererror(self):
+        self.field = Tuple(__name__=u'foo',
+                           value_type=TextLine(__name__='bar'))
+        request = TestRequest(form={
+            'field.foo.0.bar': u'', 'field.foo.1.bar': u'nonempty',
+            'field.foo.count': u'2'})
+        widget = TupleSequenceWidget(
+            self.field, self.field.value_type, request)
+        s = widget()
+        # Rendering a widget should not raise errors!
+        result = widget()
+
+        data = widget._generateSequence()
+        self.assertEquals(data, [None, u'nonempty'])
+
 
 class SequenceDisplayWidgetTest(
     VerifyResults, SequenceWidgetTestHelper, unittest.TestCase):

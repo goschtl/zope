@@ -206,7 +206,10 @@ class SequenceWidget(BrowserWidget, InputWidget):
             if remove_key in self.request.form:
                 removing.append(i)
             widget = self._getWidget(i)
-            found[i] = widget.getInputValue()
+            if widget.hasValidInput():
+                found[i] = widget.getInputValue()
+            else:
+                found[i] = None
         adding = (self.name + ".add") in self.request.form
 
         # remove the indicated indexes
