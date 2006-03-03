@@ -26,6 +26,7 @@ from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.form import InputWidget
 from zope.app.form.browser.widget import BrowserWidget
 from zope.app.form.browser.widget import DisplayWidget, renderElement
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.i18n import ZopeMessageFactory as _
 
 
@@ -37,6 +38,8 @@ class SequenceWidget(BrowserWidget, InputWidget):
     """
 
     implements(IInputWidget)
+
+    template = ViewPageTemplateFile('sequencewidget.pt')
 
     _type = tuple
 
@@ -50,55 +53,27 @@ class SequenceWidget(BrowserWidget, InputWidget):
 
     def __call__(self):
         """Render the widget"""
-        assert self.context.value_type is not None
+        self._update()
+        return self.template()
 
-        render = []
-
-        # length of sequence info
+    def _update(self):
+        """Set various attributes for the template"""
         sequence = self._getRenderedValue()
         num_items = len(sequence)
-        min_length = self.context.min_length
-        max_length = self.context.max_length
+        self.need_add = (not self.context.max_length
+                         or num_items < self.context.max_length)
+        self.need_delete = num_items and num_items > self.context.min_length
+        self.marker = self._getPresenceMarker(num_items)
 
-        # generate each widget from items in the sequence - adding a
-        # "remove" button for each one
-        for i in range(num_items):
-            value = sequence[i]
-            render.append('<tr><td>')
-            if num_items > min_length:
-                render.append(
-                    '<input class="editcheck" type="checkbox" '
-                    'name="%s.remove_%d" />\n' % (self.name, i)
-                    )
+    def widgets(self):
+        """Return a list of widgets to display"""
+        sequence = self._getRenderedValue()
+        result = []
+        for i, value in enumerate(sequence):
             widget = self._getWidget(i)
             widget.setRenderedValue(value)
-            error = widget.error()
-            if error:
-                render.append(error)
-                render.append('\n')
-            render.append(widget() + '</td></tr>\n')
-
-        # possibly generate the "remove" and "add" buttons
-        buttons = ''
-        if render and num_items > min_length:
-            button_label = _('remove-selected-items', "Remove selected items")
-            button_label = translate(button_label, context=self.request,
-                                     default=button_label)
-            buttons += ('<input type="submit" value="%s" name="%s.remove"/>'
-                        % (button_label, self.name))
-        if max_length is None or num_items < max_length:
-            field = self.context.value_type
-            button_label = _('Add %s')
-            button_label = translate(button_label, context=self.request,
-                                     default=button_label)
-            button_label = button_label % (field.title or field.__name__)
-            buttons += '<input type="submit" name="%s.add" value="%s" />\n' % (
-                self.name, button_label)
-        if buttons:
-            render.append('<tr><td>%s</td></tr>\n' % buttons)
-
-        return ('<table border="0">\n%s</table>\n%s'
-                % (''.join(render), self._getPresenceMarker(num_items)))
+            result.append(widget)
+        return result
 
     def _getWidget(self, i):
         """Return a widget for the i-th number of the sequence.
