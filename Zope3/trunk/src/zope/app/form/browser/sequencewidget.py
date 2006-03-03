@@ -28,6 +28,7 @@ from zope.app.form.browser.widget import BrowserWidget
 from zope.app.form.browser.widget import DisplayWidget, renderElement
 from zope.app.i18n import ZopeMessageFactory as _
 
+
 class SequenceWidget(BrowserWidget, InputWidget):
     """A widget baseclass for a sequence of fields.
 
@@ -41,12 +42,14 @@ class SequenceWidget(BrowserWidget, InputWidget):
 
     def __init__(self, context, field, request, subwidget=None):
         super(SequenceWidget, self).__init__(context, request)
-
         self.subwidget = subwidget
 
+        # The subwidgets are cached in this dict if preserve_widgets is True.
+        self._widgets = {}
+        self.preserve_widgets = False
+
     def __call__(self):
-        """Render the widget
-        """
+        """Render the widget"""
         assert self.context.value_type is not None
 
         render = []
@@ -65,11 +68,15 @@ class SequenceWidget(BrowserWidget, InputWidget):
             if num_items > min_length:
                 render.append(
                     '<input class="editcheck" type="checkbox" '
-                    'name="%s.remove_%d" />' %(self.name, i)
+                    'name="%s.remove_%d" />\n' % (self.name, i)
                     )
             widget = self._getWidget(i)
             widget.setRenderedValue(value)
-            render.append(widget() + '</td></tr>')
+            error = widget.error()
+            if error:
+                render.append(error)
+                render.append('\n')
+            render.append(widget() + '</td></tr>\n')
 
         # possibly generate the "remove" and "add" buttons
         buttons = ''
@@ -85,25 +92,40 @@ class SequenceWidget(BrowserWidget, InputWidget):
             button_label = translate(button_label, context=self.request,
                                      default=button_label)
             button_label = button_label % (field.title or field.__name__)
-            buttons += '<input type="submit" name="%s.add" value="%s" />' % (
+            buttons += '<input type="submit" name="%s.add" value="%s" />\n' % (
                 self.name, button_label)
         if buttons:
-            render.append('<tr><td>%s</td></tr>' % buttons)
+            render.append('<tr><td>%s</td></tr>\n' % buttons)
 
-        return ('<table border="0">%s</table>\n%s'
+        return ('<table border="0">\n%s</table>\n%s'
                 % (''.join(render), self._getPresenceMarker(num_items)))
 
     def _getWidget(self, i):
-        field = self.context.value_type
-        if self.subwidget is not None:
-            widget = self.subwidget(field, self.request)
-        else:
-            widget = zapi.getMultiAdapter((field, self.request), IInputWidget)
-        widget.setPrefix('%s.%d.'%(self.name, i))
-        return widget
+        """Return a widget for the i-th number of the sequence.
+
+        Normally this method creates a new widget each time, but when
+        the ``preserve_widgets`` attribute is True, it starts caching
+        widgets.  We need it so that the errors on the subwidgets
+        would appear only if ``getInputValue`` was called.
+
+        ``getInputValue`` on the subwidgets gets called on each
+        request that has data.
+        """
+        if i not in self._widgets:
+            field = self.context.value_type
+            if self.subwidget is not None:
+                widget = self.subwidget(field, self.request)
+            else:
+                widget = zapi.getMultiAdapter((field, self.request),
+                                              IInputWidget)
+            widget.setPrefix('%s.%d.' % (self.name, i))
+            if not self.preserve_widgets:
+                return widget
+            self._widgets[i] = widget
+        return self._widgets[i]
 
     def hidden(self):
-        '''Render the list as hidden fields.'''
+        """Render the list as hidden fields."""
         # length of sequence info
         sequence = self._getRenderedValue()
         num_items = len(sequence)
@@ -118,6 +140,7 @@ class SequenceWidget(BrowserWidget, InputWidget):
         return "\n".join(parts)
 
     def _getRenderedValue(self):
+        """Returns a sequence from the request or _data"""
         if self._renderedValueSet():
             sequence = list(self._data)
         elif self.hasInput():
@@ -148,6 +171,7 @@ class SequenceWidget(BrowserWidget, InputWidget):
         errors encountered, inputting, converting, or validating the data.
         """
         if self.hasInput():
+            self.preserve_widgets = True
             sequence = self._type(self._generateSequence())
             if sequence != self.context.missing_value:
                 self.context.validate(sequence)
@@ -175,7 +199,9 @@ class SequenceWidget(BrowserWidget, InputWidget):
         return (self.name + ".count") in self.request.form
 
     def _generateSequence(self):
-        """Take sequence info in the self.request and _data.
+        """Extract the values of the subwidgets from the request.
+
+        Returns a list of values.
 
         This can only be called if self.hasInput() returns true.
         """
@@ -214,8 +240,10 @@ class SequenceWidget(BrowserWidget, InputWidget):
 
         return sequence
 
+
 class TupleSequenceWidget(SequenceWidget):
     _type = tuple
+
 
 class ListSequenceWidget(SequenceWidget):
     _type = list
@@ -278,5 +306,5 @@ class SequenceDisplayWidget(DisplayWidget):
         else:
             widget = zapi.getMultiAdapter(
                 (field, self.request), IDisplayWidget)
-        widget.setPrefix('%s.%d.'%(self.name, i))
+        widget.setPrefix('%s.%d.' % (self.name, i))
         return widget
