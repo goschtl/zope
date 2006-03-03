@@ -126,7 +126,7 @@ def cmdline_parser():
     parser.set_defaults(setup_cfg="setup.cfg",
                         libdir=None,
                         bindir=None,
-                        finddirs="")
+                        finddirs="http://download.zope.org/distribution/")
 
     return parser
 
