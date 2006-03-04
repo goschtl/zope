@@ -104,7 +104,7 @@ Now let's check for a simple adaption:
 
 Let's get all the adapters for ``adaptable``:
 
-  >>> zapi.getAdapters((adaptable,), IAdapted) #doctest: +ELLIPSIS
+  >>> list(zapi.getAdapters((adaptable,), IAdapted)) #doctest: +ELLIPSIS
   [(u'', <Products.Five.tests.adapters.Adapter instance at ...>)]
 
 
