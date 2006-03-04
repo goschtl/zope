@@ -1,3 +1,11 @@
+Overview
+========
+
+This is the "TimeStamp" implementation, which generates objects that
+have a natural 8-bit string representation of a date and time.  It is
+used by the ZODB to generate transaction serial numbers, but it can be
+used outside of ZODB as well.
+
 Installing This Package
 =======================
 
