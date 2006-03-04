@@ -1,3 +1,10 @@
+Overview
+========
+
+This is the "WeakSet" implementation used by ZODB 3.6+.  It provides a
+WeakSet class that implements enough of the Python set API to allow
+for sets that have weakly-referenced values.
+
 Installing This Package
 =======================
 
