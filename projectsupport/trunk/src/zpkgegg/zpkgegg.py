@@ -27,6 +27,7 @@ import fnmatch
 import tempfile
 
 import zpkgsetup.package
+import zpkgsetup.publication
 
 class EagerDict(object):
     """A dictionary which will _always_ return something for any key;
@@ -176,12 +177,15 @@ def read_zpkg_data(source_dir):
         subst_data['dependencies'] = str(deps)
 
     if os.path.exists(PUBLICATION_CFG):
-        for line in file(PUBLICATION_CFG, 'r'):
-            if not(line.strip()):
-                continue
+        pub_info = zpkgsetup.publication.load(file(PUBLICATION_CFG))
 
-            key, value = line.split(':', 1)
-            subst_data[key.strip()] = value.strip()
+        subst_data['Author'] = pub_info.get_author()
+        subst_data['Autor-email'] = pub_info.get_author_email()
+        subst_data['Summary'] = pub_info.get_description()
+        subst_data['License'] = pub_info.get_license()
+        subst_data['version'] = pub_info.get_version()
+        subst_data['Home-page'] = pub_info.get_url()
+        subst_data['Name'] = pub_info.get_name()
 
     # read the package extension configuration, if it exists
     if os.path.exists(os.path.join(source_dir, 'SETUP.cfg')):
