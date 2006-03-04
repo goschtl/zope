@@ -80,7 +80,7 @@ def makeArgParser():
                         )
 
     return parser
-
+            
 def fixup_opts(opts):
     """Takes an Options object containing the parsed arguments from the
     commmand-line and performs finalization."""
@@ -105,19 +105,41 @@ def fixup_opts(opts):
 
     if opts.workdir is None:
         # no working directory specified; generate a temp dir
-        opts.workdir = os.path.join(tempfile.gettempdir(), "blarf")
+        opts.workdir = tempfile.mkdtemp()
             
 
 def make_project_template(template, target):
     """Make sure the destination directory does not exist,
     and then duplicate the project template into it."""
 
-    if os.path.exists(target):
-        print "*** Output path (%s) exists. ***" % target
+
+    def copytree(src, dst, symlinks=0):
+        """Same as shutil.copytree, just doesn't attempt to create the
+        destination directory; this makes it work correctly with a temp dir
+        created using tempfile.mkdtemp()"""
+
+        names = os.listdir(src)
+
+        for name in names:
+            srcname = os.path.join(src, name)
+            dstname = os.path.join(dst, name)
+            try:
+                if symlinks and os.path.islink(srcname):
+                    linkto = os.readlink(srcname)
+                    os.symlink(linkto, dstname)
+                elif os.path.isdir(srcname):
+                    shutil.copytree(srcname, dstname, symlinks)
+                else:
+                    shutil.copy2(srcname, dstname)
+            except (IOError, os.error), why:
+                print "Can't copy %s to %s: %s" % (`srcname`, `dstname`,
+                                                   str(why))
+
+    if not(os.path.exists(target)):
+        print "*** Output path (%s) does not exist. ***" % target
         sys.exit(2)
         
-    # duplicate the template directory
-    shutil.copytree(template, target)
+    copytree(template, target)
 
 
 def make_extension(pkg_name, ext_def):
@@ -213,38 +235,39 @@ def main(args):
         print "You must supply the source directory as an argument."
         sys.exit(1)
 
-    # get the source directory
-    source_dir = os.path.abspath(args[0])
+    for source in args:
+        # get the source directory
+        source_dir = os.path.abspath(source)
 
-    # create the project directory structure
-    make_project_template(opts.project_template, opts.workdir)
-    copy_package(source_dir, opts.workdir)
-    
-    # read the zpkg metadata
-    proj_data = read_zpkg_data(source_dir)
-    proj_data['version'] = opts.version
+        # create the project directory structure
+        make_project_template(opts.project_template, opts.workdir)
+        copy_package(source_dir, opts.workdir)
 
-    # generate the setup.py
-    setup_py(opts.setup, os.path.join(opts.workdir, 'setup.py'), proj_data)
+        # read the zpkg metadata
+        proj_data = read_zpkg_data(source_dir)
+        proj_data['version'] = opts.version
 
-    # see if we want to build eggs/sdists, or just leave the tree
-    if not(opts.tree_only):
-        # build the egg and sdist
-        # sys.argv = ['setup.py', 'sdist']
-        #sys.path.insert(0, os.path.abspath(opts.workdir))
+        # generate the setup.py
+        setup_py(opts.setup, os.path.join(opts.workdir, 'setup.py'), proj_data)
 
-        startdir = os.getcwd()
-        
-        os.chdir(opts.workdir)
-        subprocess.call(["python", "setup.py", "sdist", "bdist_egg"])
-        os.chdir(startdir)
-        
-        # copy the egg to the eggdir
-        copy_eggs(os.path.join(opts.workdir, "dist"), opts.eggdir)
-        
-        # remove the tree
-        if opts.delete_tree:
-            shutil.rmtree(opts.workdir)
+        # see if we want to build eggs/sdists, or just leave the tree
+        if not(opts.tree_only):
+            # build the egg and sdist
+            # sys.argv = ['setup.py', 'sdist']
+            #sys.path.insert(0, os.path.abspath(opts.workdir))
+
+            startdir = os.getcwd()
+
+            os.chdir(opts.workdir)
+            subprocess.call(["python", "setup.py", "sdist", "bdist_egg"])
+            os.chdir(startdir)
+
+            # copy the egg to the eggdir
+            copy_eggs(os.path.join(opts.workdir, "dist"), opts.eggdir)
+
+            # remove the tree
+            if opts.delete_tree:
+                shutil.rmtree(opts.workdir)
     
         
 if __name__ == '__main__':
