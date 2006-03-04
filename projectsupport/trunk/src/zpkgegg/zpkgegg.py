@@ -111,7 +111,7 @@ def fixup_opts(opts):
 
     # check the egg directory
     if not(os.path.exists(opts.eggdir)):
-        os.mkdirs(opts.eggdir)
+        os.makedirs(opts.eggdir)
             
 
 def make_project_template(template, target):
