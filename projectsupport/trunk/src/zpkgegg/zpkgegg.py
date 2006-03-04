@@ -180,12 +180,13 @@ def read_zpkg_data(source_dir):
         pub_info = zpkgsetup.publication.load(file(PUBLICATION_CFG))
 
         subst_data['Author'] = pub_info.get_author()
-        subst_data['Autor-email'] = pub_info.get_author_email()
+        subst_data['Author-email'] = pub_info.get_author_email()
         subst_data['Summary'] = pub_info.get_description()
         subst_data['License'] = pub_info.get_license()
         subst_data['version'] = pub_info.get_version()
         subst_data['Home-page'] = pub_info.get_url()
         subst_data['Name'] = pub_info.get_name()
+        subst_data['Description'] = pub_info.get_long_description()
 
     # read the package extension configuration, if it exists
     if os.path.exists(os.path.join(source_dir, 'SETUP.cfg')):

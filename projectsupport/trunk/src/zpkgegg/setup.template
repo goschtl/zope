@@ -33,7 +33,7 @@ setup(name='%(Name)s',
       description='%(Summary)s',
       author='%(Author)s',
       author_email='%(Author-email)s',
-      long_description='',
+      long_description='%(Description)s',
 
       packages=['zope', '%(Name)s'],
       package_dir = {'': os.path.join(os.path.dirname(__file__), 'src')},
