@@ -24,6 +24,7 @@ import sys
 import optparse
 import subprocess
 import fnmatch
+import tempfile
 
 import zpkgsetup.package
 
@@ -50,7 +51,7 @@ def makeArgParser():
         usage="mksetup.py [options] <source directory>")
     parser.add_option("-p", "--template", dest="project_template",
                       help="Directory containing the project template." )
-    parser.add_option("-w", "--working", dest="destdir",
+    parser.add_option("-w", "--working", dest="workdir",
                       help="Working directory for project build out.")
     parser.add_option("-s", "--setup", dest="setup",
                       help="Template to use for generating setup.py.")
@@ -66,24 +67,50 @@ def makeArgParser():
                       action="store_false",
                       help="Do not delete the source tree after building packages.")
 
-    parser.set_defaults(project_template=os.path.join(
-        os.path.dirname(__file__), "project-template", "trunk"),
-
+    parser.set_defaults(project_template=None,
                         setup = os.path.join(os.path.dirname(__file__),
                                              "setup.template"),
-                        version="3.0",
+                        eggdir = os.path.join(os.getcwd(),
+                                              "eggs"),
+                        workdir= None,
+                        
+                        version="1.0",
                         tree_only=False,
                         delete_tree=True,
-                        eggdir = os.path.join(os.path.dirname(__file__),
-                                              "eggs")
                         )
 
     return parser
 
+def fixup_opts(opts):
+    """Takes an Options object containing the parsed arguments from the
+    commmand-line and performs finalization."""
+
+    if opts.project_template is None:
+        # no project template was specified... try a handful of places
+        # 1) a project-template/trunk directory in the pwd
+        # 2) a project-template/trunk directory in the relative location
+        #    it would exist in a projectsupport subversion checkout
+        
+        candidates = [os.path.join(os.getcwd(), "project-template", "trunk"),
+                      os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                   "..", "..",
+                                                   "project-template",
+                                                   "trunk")),
+                      ]
+
+        for p in candidates:
+            if os.path.exists(p):
+                opts.project_template = p
+                break
+
+    if opts.workdir is None:
+        # no working directory specified; generate a temp dir
+        opts.workdir = os.path.join(tempfile.gettempdir(), "blarf")
+            
 
 def make_project_template(template, target):
-    """Make sure the destination directory exists, and then duplicate the
-    project template into it."""
+    """Make sure the destination directory does not exist,
+    and then duplicate the project template into it."""
 
     if os.path.exists(target):
         print "*** Output path (%s) exists. ***" % target
@@ -178,7 +205,10 @@ def copy_eggs(source_dir, dest_dir):
                         os.path.join(dest_dir, fn))
 
 def main(args):
+    # parse and validate arguments
     opts, args = makeArgParser().parse_args()
+    fixup_opts(opts)
+    
     if len(args) < 1:
         print "You must supply the source directory as an argument."
         sys.exit(1)
@@ -187,33 +217,34 @@ def main(args):
     source_dir = os.path.abspath(args[0])
 
     # create the project directory structure
-    make_project_template(opts.project_template, opts.destdir)
-    copy_package(source_dir, opts.destdir)
+    make_project_template(opts.project_template, opts.workdir)
+    copy_package(source_dir, opts.workdir)
     
     # read the zpkg metadata
     proj_data = read_zpkg_data(source_dir)
     proj_data['version'] = opts.version
 
     # generate the setup.py
-    setup_py(opts.setup, os.path.join(opts.destdir, 'setup.py'), proj_data)
+    setup_py(opts.setup, os.path.join(opts.workdir, 'setup.py'), proj_data)
 
     # see if we want to build eggs/sdists, or just leave the tree
     if not(opts.tree_only):
         # build the egg and sdist
-        sys.argv = [sys.argv[0], 'bdist_egg','sdist']
-        sys.path.insert(0, os.path.abspath(opts.destdir))
+        # sys.argv = ['setup.py', 'sdist']
+        #sys.path.insert(0, os.path.abspath(opts.workdir))
 
         startdir = os.getcwd()
-        os.chdir(opts.destdir)
-        import setup
+        
+        os.chdir(opts.workdir)
+        subprocess.call(["python", "setup.py", "sdist", "bdist_egg"])
         os.chdir(startdir)
         
         # copy the egg to the eggdir
-        copy_eggs(os.path.join(opts.destdir, "dist"), opts.eggdir)
+        copy_eggs(os.path.join(opts.workdir, "dist"), opts.eggdir)
         
         # remove the tree
         if opts.delete_tree:
-            shutil.rmtree(opts.destdir)
+            shutil.rmtree(opts.workdir)
     
         
 if __name__ == '__main__':
