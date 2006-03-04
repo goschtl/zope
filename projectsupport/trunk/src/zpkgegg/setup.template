@@ -20,10 +20,11 @@ import os
 
 
 try:
-    from setuptools import setup, Extension
-    
+    from setuptools import setup, Extension, find_packages
+    pkg_list = find_packages(os.path.join(os.path.dirname(__file__), 'src'))
 except ImportError, e:
     from distutils.core import setup, Extension
+    pkg_list = ['zope', '%(Name)s']
 
 setup(name='%(Name)s',
       version='%(version)s',
@@ -35,7 +36,7 @@ setup(name='%(Name)s',
       author_email='%(Author-email)s',
       long_description='%(Description)s',
 
-      packages=['zope', '%(Name)s'],
+      packages=pkg_list,
       package_dir = {'': os.path.join(os.path.dirname(__file__), 'src')},
 
       ext_modules=[%(extensions)s],
