@@ -104,9 +104,14 @@ def fixup_opts(opts):
                 opts.project_template = p
                 break
 
+    # check the working directory
     if opts.workdir is None:
         # no working directory specified; generate a temp dir
         opts.workdir = tempfile.mkdtemp()
+
+    # check the egg directory
+    if not(os.path.exists(opts.eggdir)):
+        os.mkdirs(opts.eggdir)
             
 
 def make_project_template(template, target):
@@ -137,8 +142,7 @@ def make_project_template(template, target):
                                                    str(why))
 
     if not(os.path.exists(target)):
-        print "*** Output path (%s) does not exist. ***" % target
-        sys.exit(2)
+        os.mkdir(target)
         
     copytree(template, target)
 
