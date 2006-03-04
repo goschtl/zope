@@ -19,6 +19,7 @@ from zope.interface import implements
 from zope.component import getGlobalSiteManager
 from zope.component.exceptions import ComponentLookupError
 from zope.app.component.interfaces import ISite, IPossibleSite
+from Acquisition import aq_parent, aq_inner
 from Products.Five.site.interfaces import IFiveSiteManager, IFiveUtilityRegistry
 
 class FiveSiteManager(object):
