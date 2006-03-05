@@ -82,6 +82,7 @@ class SiteManagerTest(PlacelessSetup, unittest.TestCase):
         self.unrooted_subfolder = Folder().__of__(self.unparented_folder)
         zcml.load_config("meta.zcml", Products.Five)
         zcml.load_config("permissions.zcml", Products.Five)
+        zcml.load_config("configure.zcml", Products.Five.component)
         zcml.load_config("configure.zcml", Products.Five.site)
         zcml_text = """\
         <five:localsite
