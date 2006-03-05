@@ -58,10 +58,6 @@ class SequenceWidgetTestHelper(object):
         self._widget = self._WidgetFactory(
             self.field, self.field.value_type, self.request)
 
-    def setUp(self):
-        setup.placefulSetUp()
-        self.setUpContent()
-
     def _FieldFactory(self, **kw):
         kw.update({
             '__name__': u'foo', 
@@ -305,17 +301,10 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
             >>> print widget()
             <BLANKLINE>
             ...
-            <tr>
-              <td>
-                 <input class="editcheck" type="checkbox"
-                        name="field.foo.remove_0" />
-              </td>
-              <td>
-                 <input class="textType" id="field.foo.0.bar"
-                        name="field.foo.0.bar"
-                        size="20" type="text" value=""  />
-              </td>
-            </tr>
+            <tr><td><input class="editcheck" type="checkbox"
+                           name="field.foo.remove_0" />
+            <input class="textType" id="field.foo.0.bar" name="field.foo.0.bar"
+                   size="20" type="text" value=""  /></td></tr>
             ...
 
          However, if we call getInputValue or hasValidInput, the
@@ -327,18 +316,11 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
             >>> print widget()
             <BLANKLINE>
             ...
-            <tr>
-              <td>
-                 <input class="editcheck" type="checkbox"
-                        name="field.foo.remove_0" />
-              </td>
-              <td>
-                 <span class="error">Required input is missing.</span>
-                 <input class="textType" id="field.foo.0.bar"
-                        name="field.foo.0.bar"
-                        size="20" type="text" value=""  />
-              </td>
-            </tr>
+            <tr><td><input class="editcheck" type="checkbox"
+                           name="field.foo.remove_0" />
+            <span class="error">Required input is missing.</span>
+            <input class="textType" id="field.foo.0.bar" name="field.foo.0.bar"
+                   size="20" type="text" value=""  /></td></tr>
             ...
         """
 
@@ -408,14 +390,14 @@ class UppercaseDisplayWidget(DisplayWidget):
 
 
 def setUp(test):
-    setup.placefulSetUp()
+    setup.placelessSetUp()
     ztapi.browserViewProviding(ITextLine, TextWidget, IInputWidget)
     ztapi.browserViewProviding(IWidgetInputError, WidgetInputErrorView,
                                IWidgetInputErrorView)
 
 
 def tearDown(test):
-    setup.placefulTearDown()
+    setup.placelessTearDown()
 
 
 def test_suite():

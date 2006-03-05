@@ -52,9 +52,6 @@ Zope Changes
 
     Bug Fixes
 
-      - Fixed two bugs in SequenceWidgets: an exception was raised
-        on rendering and the errors of the subwidgets weren't displayed.
-
       - Fixed issue 560: Bug in default AddView class.
 
       - Fixed issue 546: non-ASCII docstring cause
