@@ -22,8 +22,8 @@ __docformat__ = "reStructuredText"
 
 def test_suite():
     return unittest.TestSuite([
-        DocFileSuite('component.txt', package="Products.Five.component")        
-        DocFileSuite('zpt.txt', package="Products.Five.component")        
+        DocFileSuite('component.txt', package="Products.Five.component"),
+        DocFileSuite('zpt.txt', package="Products.Five.component")
         ])
 
 if __name__ == '__main__':
