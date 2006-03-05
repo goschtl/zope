@@ -17,20 +17,21 @@ $Id$
 """
 import os.path
 
-from Acquisition import aq_parent, aq_acquire, aq_inner
+from Acquisition import aq_inner
 from Products.Five.browser import BrowserView
-from Products.Five.component import enableSite, disableSite
+from Products.Five.component import enableSite, disableSite, findSite
 from Products.Five.component.interfaces import IObjectManagerSite
+from Products.Five.component.zpt import ZPTViewFactory
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
-from Products.PageTemplates.Expressions import SecureModuleImporter
 
-from zope.interface import Interface, providedBy
-from zope.component import getMultiAdapter, getGlobalSiteManager
+import zope.interface
+import zope.component
 from zope.component.globalregistry import base
 from zope.component.persistentregistry import PersistentComponents
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.component.hooks import clearSite
-from zope.app.apidoc.presentation import getViews, getViewInfoDictionary
+from zope.app.apidoc.presentation import getViews
+from zope.app.traversing.browser.absoluteurl import absoluteURL
 
 class ComponentsView(BrowserView):
 
@@ -50,6 +51,8 @@ class ComponentsView(BrowserView):
 
         enableSite(self.context, iface=IObjectManagerSite)
 
+        #TODO in the future we'll have to walk up to other site
+        # managers and put them in the bases
         components = PersistentComponents()
         components.__bases__ = (base,)
         self.context.setSiteManager(components)
@@ -72,24 +75,25 @@ class ComponentsView(BrowserView):
 class CustomizationView(BrowserView):
 
     def templateViewRegistrations(self):
-        for reg in getViews(providedBy(self.context), IBrowserRequest):
+        for reg in getViews(zope.interface.providedBy(self.context),
+                            IBrowserRequest):
             factory = reg.factory
             while hasattr(factory, 'factory'):
                 factory = factory.factory
+            #XXX this should really be dealt with using a marker interface
+            # on the view factory
             if hasattr(factory, '__name__') and \
                    factory.__name__.startswith('SimpleViewClass'):
                 yield reg
 
     def templateFromViewname(self, viewname):
-        view = getMultiAdapter((self.context, self.request),
-                               name=viewname)
+        view = zope.component.getMultiAdapter((self.context, self.request),
+                                              name=viewname)
         return view.index
 
     def doCustomizeTemplate(self, viewname):
         # find the nearest site
-        site = self.context
-        while site is not None and not IObjectManagerSite.providedBy(site):
-            site = aq_parent(site)
+        site = findSite(self.context, IObjectManagerSite)
         if site is None:
             raise TypeError("No site found")  #TODO find right exception
 
@@ -105,7 +109,8 @@ class CustomizationView(BrowserView):
 
         # find out the view registration object so we can get at the
         # provided and required interfaces
-        for reg in getViews(providedBy(self.context), IBrowserRequest):
+        for reg in getViews(zope.interface.providedBy(self.context),
+                            IBrowserRequest):
             if reg.name == viewname:
                 break
 
@@ -118,56 +123,7 @@ class CustomizationView(BrowserView):
 
     def customizeTemplate(self, viewname):
         viewzpt = self.doCustomizeTemplate(viewname)
-        viewzpt = aq_inner(viewzpt)
-        #TODO use @@absolute_url view
-        url = viewzpt.absolute_url() + "/manage_workspace"
+        # to get a "direct" URL we use aq_inner for a straight
+        # acquisition chain
+        url = absoluteURL(aq_inner(viewzpt), self.request) + "/manage_workspace"
         self.request.RESPONSE.redirect(url)
-
-class ZPTViewFactory(object):
-
-    def __init__(self, viewzpt, viewname):
-        self.viewzpt = viewzpt
-        self.viewname = viewname
-
-    def __call__(self, context, request):
-        return ZPTView(self.viewzpt, self.viewname, context, request)
-
-class ZPTView(BrowserView):
-
-    def __init__(self, viewzpt, viewname, context, request):
-        self.viewzpt = viewzpt
-        self.viewname = self.__name__ = viewname
-        self.context = context
-        self.request = request
-
-    def _findViewClass(self):
-        #XXX we might want to walk up to the next site instead, not
-        # just go to the global one directly
-        gsm = getGlobalSiteManager()
-        view = gsm.queryMultiAdapter((self.context, self.request), Interface,
-                                     name=self.viewname)
-        if view is not None:
-            return view
-        return self
-
-    def _zptNamespace(self):
-        root = aq_acquire(self.context, 'getPhysicalRoot')()
-        here = aq_inner(self.context)
-        return {
-            'template':  self.viewzpt,
-            'nothing':   None,
-            'request':   self.request,
-            'here':      here,
-            'context':   here,
-            'container': here,
-            'view':      self._findViewClass(),
-            'root':      root,
-            'modules':   SecureModuleImporter,
-            }
-
-    def __call__(self, *args, **kwargs):
-        namespace = self._zptNamespace()
-        if not kwargs.has_key('args'):
-            kwargs['args'] = args
-        namespace['options'] = kwargs
-        return self.viewzpt.pt_render(namespace)

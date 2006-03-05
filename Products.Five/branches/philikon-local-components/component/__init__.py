@@ -11,17 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Component browser views
+"""Five local component look-up support
 
 $Id$
 """
-from zope.event import notify
-from zope.interface import Interface, implementer
-from zope.interface import alsoProvides, noLongerProvides
-from zope.component import adapter, getGlobalSiteManager
+import zope.interface
+import zope.component
+import zope.event
 from zope.component.interfaces import IComponentLookup
-from zope.app.publication.zopepublication import BeforeTraverseEvent
 from zope.app.component.interfaces import ISite, IPossibleSite
+from zope.app.publication.zopepublication import BeforeTraverseEvent
 
 import ExtensionClass
 from Acquisition import aq_base, aq_inner, aq_parent
@@ -33,27 +32,29 @@ from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
 import zope.app.component.hooks
 zope.app.component.hooks.setHooks()
 
-@adapter(Interface)
-@implementer(IComponentLookup)
+def findSite(obj, iface=ISite):
+    """Find a site by walking up the object hierarchy, supporting both
+    the ``ILocation`` API and Zope 2 Acquisition."""
+    while obj is not None and not iface.providedBy(obj):
+        obj = getattr(obj, '__parent__', aq_parent(aq_inner(obj)))
+    return obj
+
+@zope.component.adapter(zope.interface.Interface)
+@zope.interface.implementer(IComponentLookup)
 def siteManagerAdapter(ob):
     """Look-up a site manager/component registry for local component
     lookup.  This is registered in place of the one in Zope 3 so that
-    we lookup using acquisition in addition to ILocation."""
-    current = ob
-    while True:
-        if ISite.providedBy(current):
-            return current.getSiteManager()
-        current = getattr(current, '__parent__', aq_parent(aq_inner(current)))
-        if current is None:
-            # It does not support acquisition or has no parent, so we
-            # return the global site
-            return getGlobalSiteManager()
-
+    we lookup using acquisition in addition to the ``ILocation`` API.
+    """
+    site = findSite(ob)
+    if site is None:
+        return zope.component.getGlobalSiteManager()
+    return site.getSiteManager()
 
 class LocalSiteHook(ExtensionClass.Base):
 
     def __call__(self, container, request):
-        notify(BeforeTraverseEvent(container, request))
+        zope.event.notify(BeforeTraverseEvent(container, request))
 
 HOOK_NAME = '__local_site_hook__'
 
@@ -70,7 +71,7 @@ def enableSite(obj, iface=ISite):
     if not hasattr(obj, HOOK_NAME):
         setattr(obj, HOOK_NAME, LocalSiteHook())
 
-    alsoProvides(obj, iface)
+    zope.interface.alsoProvides(obj, iface)
 
 def disableSite(obj, iface=ISite):
     """Remove __before_traverse__ hook for Local Site
@@ -84,4 +85,4 @@ def disableSite(obj, iface=ISite):
     if hasattr(obj, HOOK_NAME):
         delattr(obj, HOOK_NAME)
 
-    noLongerProvides(obj, iface)
+    zope.interface.noLongerProvides(obj, iface)
