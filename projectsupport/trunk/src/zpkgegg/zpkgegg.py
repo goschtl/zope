@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-mksetup.py
+zpkgegg.py
 
 Read zpkg style config files to generate a simple setup.py which can
 be used to build an egg.
@@ -46,10 +46,10 @@ class EagerDict(object):
             return ''
         
 def makeArgParser():
-    """Create an OptionParser and configure it to work with mksetup.py"""
+    """Create an OptionParser and configure it to work with zpkgegg.py"""
     
     parser = optparse.OptionParser(
-        usage="mksetup.py [options] <source directory>")
+        usage="zpkgegg.py [options] <source directory>")
     parser.add_option("-p", "--template", dest="project_template",
                       help="Directory containing the project template." )
     parser.add_option("-w", "--working", dest="workdir",
