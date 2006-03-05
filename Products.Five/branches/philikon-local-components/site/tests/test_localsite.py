@@ -23,10 +23,9 @@ if __name__ == '__main__':
 import unittest
 from Testing import ZopeTestCase
 
-from zope.interface import implements
-from zope.interface import directlyProvides, directlyProvidedBy
+import zope.interface
 from zope.component import getGlobalSiteManager, getSiteManager
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.component.interfaces import ISiteManager
 from zope.app.component.hooks import setSite, getSite, setHooks
 from zope.app.component.interfaces import IPossibleSite, ISite
@@ -40,33 +39,25 @@ import Products.Five
 from Products.Five import zcml
 
 class SiteManager(Implicit):
-    implements(ISiteManager)
+    zope.interface.implements(ISiteManager)
 
 class Folder(ObjectManager):
-    implements(IPossibleSite)
-
-    sm = None
-
-    def getId(self):
-        return self.id
-
-    def getSiteManager(self, default=None):
-        return self.sm
 
     def setSiteManager(self, sm):
-        self.sm = sm
-        directlyProvides(self, ISite, directlyProvidedBy(self))
+        super(Folder, self).setSiteManager(sm)
+        zope.interface.alsoProvides(self, ISite)
 
 class Package(Implicit):
     pass
 
 class Root(Folder):
-    implements(IContainmentRoot, ISite)
+    zope.interface.implements(IContainmentRoot, ISite)
+
     def getSiteManager(self):
         return getGlobalSiteManager()
 
 class SiteManagerStub(object):
-    implements(ISiteManager)
+    zope.interface.implements(ISiteManager)
 
 class SiteManagerTest(PlacelessSetup, unittest.TestCase):
 
@@ -164,29 +155,6 @@ class SiteManagerTest(PlacelessSetup, unittest.TestCase):
 #         sm = ProxyFactory(self.sm1, NamesChecker(('next',)))
 #         # Check that getGlobalSiteManager() is not proxied
 #         self.assert_(getNextSiteManager(sm) is getGlobalSiteManager())
-
-    def test_siteManagerAdapter(self):
-        from Products.Five.site.localsite import siteManagerAdapter
-
-        # If it is a site, return the service service.
-        sm = SiteManagerStub()
-        site = Folder()
-        site.setSiteManager(sm)
-        self.assertEqual(siteManagerAdapter(site), sm)
-
-        # If it has an acquisition context, "acquire" the site
-        # and return the service service
-        ob = Folder()
-        ob = ob.__of__(site)
-        self.assertEqual(siteManagerAdapter(ob), sm)
-        ob2 = Folder()
-        ob2 = ob2.__of__(ob)
-        self.assertEqual(siteManagerAdapter(ob2), sm)
-
-        # If it does we are unable to find a service service, raise
-        # ComponentLookupError
-        orphan = Folder()
-        self.failUnless(siteManagerAdapter(orphan) is getGlobalSiteManager())
 
     def test_setThreadSite_clearThreadSite(self):
         from zope.app.component.site import threadSiteSubscriber, clearSite
