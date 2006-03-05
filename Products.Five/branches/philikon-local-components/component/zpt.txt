@@ -25,9 +25,11 @@ Before we can start we need to load some important ZCML:
 
   >>> from Products.Five import zcml
   >>> import Products.Five.component
+  >>> import zope.app.event
   >>> zcml.load_config('meta.zcml', Products.Five)
   >>> zcml.load_config('permissions.zcml', Products.Five)
   >>> zcml.load_config('configure.zcml', Products.Five.component)
+  >>> zcml.load_config('configure.zcml', zope.app.event)
 
 We should also create a root object:
 
@@ -173,6 +175,28 @@ Now look it up and compare its output:
   options:   {'args': ()}
   nothing:   
   <BLANKLINE>
+
+
+5. Deleting view templates
+--------------------------
+
+Once in a while we would like to get rid of the customized view.  The
+easiest way to do that is to simply delete the template:
+
+  >>> if True:
+  ...     site._delObject('customizetemplate.pt')
+
+Now the view look-up is back to the old way:
+
+  >>> view = zope.component.getMultiAdapter((item, request),
+  ...                                       name=u"customizetemplate.html")
+  >>> print view.index.read() #doctest: +ELLIPSIS
+  <html metal:use-macro="context/@@standard_macros/view"
+        i18n:domain="zope">
+  ...
+    <p i18n:translate="">This is the source of the
+    <code tal:content="request/form/viewname">viewname</code>:</p>
+  ...
 
 
 Clean up:

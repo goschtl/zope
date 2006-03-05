@@ -18,9 +18,21 @@ $Id$
 from Acquisition import aq_inner, aq_acquire
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from Products.Five.browser import BrowserView
+from Products.Five.component import findSite
 
 import zope.component
 import zope.interface
+from zope.pagetemplate.interfaces import IPageTemplate
+from zope.app.container.interfaces import IObjectRemovedEvent
+
+class IZPTViewFactory(zope.interface.Interface):
+    """Marker interface for those view factories that invoke locally
+    registered components.
+
+    By finding factories that provide this interface we can find the
+    registration object for a locally registered template and, for
+    example, unregister the view when the template is deleted."""
+    template = zope.interface.Attribute("The ZPT template to invoke.")
 
 class ZPTViewFactory(object):
     """View factory that gets registered with a local component
@@ -31,6 +43,7 @@ class ZPTViewFactory(object):
     persistent) reference only to the Page Template, everything else
     needed for the template (e.g. its view class) is constructed by
     the view."""
+    zope.interface.implements(IZPTViewFactory)
 
     def __init__(self, template, name):
         self.template = template
@@ -84,3 +97,17 @@ class ZPTView(BrowserView):
             kwargs['args'] = args
         namespace['options'] = kwargs
         return self.template.pt_render(namespace)
+
+class IRegisteredViewPageTemplate(IPageTemplate):
+    """Marker interface for registered view page templates
+    """
+
+@zope.component.adapter(IRegisteredViewPageTemplate, IObjectRemovedEvent)
+def unregisterViewWhenZPTIsDeleted(zpt, event):
+    components = zope.component.getSiteManager(zpt)
+    for reg in components.registeredAdapters():
+        if (IZPTViewFactory.providedBy(reg.factory) and
+            reg.factory.template == zpt):
+            break
+    components.unregisterAdapter(reg.factory, reg.required, reg.provided,
+                                 reg.name)

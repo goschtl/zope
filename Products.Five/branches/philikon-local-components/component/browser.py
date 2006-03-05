@@ -21,7 +21,7 @@ from Acquisition import aq_inner
 from Products.Five.browser import BrowserView
 from Products.Five.component import enableSite, disableSite, findSite
 from Products.Five.component.interfaces import IObjectManagerSite
-from Products.Five.component.zpt import ZPTViewFactory
+from Products.Five.component.zpt import ZPTViewFactory, IRegisteredViewPageTemplate
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 
 import zope.interface
@@ -104,6 +104,7 @@ class CustomizationView(BrowserView):
         zpt_id = os.path.basename(template.filename)
 
         viewzpt = ZopePageTemplate(zpt_id, template.read())
+        zope.interface.alsoProvides(viewzpt, IRegisteredViewPageTemplate)
         site._setObject(zpt_id, viewzpt) #XXXthere could be a naming conflict
         components = site.getSiteManager()
 

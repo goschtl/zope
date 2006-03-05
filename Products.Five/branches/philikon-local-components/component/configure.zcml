@@ -42,4 +42,6 @@
 
   </browser:pages>
 
+  <subscriber handler=".zpt.unregisterViewWhenZPTIsDeleted" />
+
 </configure>
