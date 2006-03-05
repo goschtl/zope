@@ -1,10 +1,27 @@
-(Local) components in Five
-==========================
+Locally customizing template-based views
+========================================
+
+This document describes a typical story of locally customizing a
+global view component.  The steps in this story are:
+
+1. Making a folder a site
+
+2. Walking up to an object and getting a list of its template-based
+   views
+
+3. Selecting a particular view, seeing its template source and
+   deciding to customize it
+
+4. Customizing the template and seeing the customized template take
+   effect
+
+5. Deleting the template and seeing the old view take over again
+
 
 Setup
 -----
 
-We need to load some important ZCML:
+Before we can start we need to load some important ZCML:
 
   >>> from Products.Five import zcml
   >>> import Products.Five.component
@@ -18,10 +35,10 @@ We should also create a root object:
   >>> root = Application()
 
 
-Turning ObjectManagers into a site
-----------------------------------
+1. Turning an ObjectManager into a site
+----------------------------------------
 
-Let's create a folder that we'll turn into a site:
+Let's create a folder that we'll turn into a Zope3-style site:
 
   >>> from OFS.ObjectManager import ObjectManager
   >>> site = ObjectManager()
@@ -55,8 +72,8 @@ And it has a site manager (component registry):
   <zope.component.persistentregistry.PersistentComponents object at ...>
 
 
-Views on objects
-----------------
+2. Template-based views available on an object
+----------------------------------------------
 
 Let's create a simple content object that we put into the folder
 (a.k.a. the site):
@@ -79,8 +96,8 @@ registered at):
   [u'customizetemplate.html', u'templateviews.html']
 
 
-Customizing views
------------------
+3. and 4. Customizing a template-based view
+-------------------------------------------
 
 In the list of template-based browser views we can select one and see
 the source of its template:
@@ -157,7 +174,9 @@ Now look it up and compare its output:
   nothing:   
   <BLANKLINE>
 
+
 Clean up:
+---------
 
   >>> from zope.app.testing.placelesssetup import tearDown
   >>> tearDown()
