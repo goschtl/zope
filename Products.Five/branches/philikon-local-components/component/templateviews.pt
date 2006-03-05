@@ -11,8 +11,9 @@
       <a href=""
          tal:attributes="href string:@@customizetemplate.html?viewname=${reg/name}"
          tal:content="reg/name">
-      </a>
-      as defined in <tal:var replace="reg/info/file" />.
+      </a><br />
+      Template file: <code tal:content="reg/factory/index/filename">filename</code>.<br />
+      Registered in: <code tal:content="reg/info/file">filename</code>.<br />
     </li>
   </ul>
 
