@@ -18,12 +18,23 @@ $Id$
 import Acquisition
 from Globals import INSTANCE_HOME
 
-import zcml
+from Products.Five import zcml
 
 # public API provided by Five
 # usage: from Products.Five import <something>
-from browser import BrowserView
-from skin.standardmacros import StandardMacros
+from Products.Five.browser import BrowserView
+from Products.Five.skin.standardmacros import StandardMacros
 
+# load the site's ZCML tree (usually site.zcml) upon product
+# initialization
 def initialize(context):
     zcml.load_site()
+
+# some convenience methods/decorators
+
+def fivemethod(func):
+    func.__five_method__ = True
+    return func
+
+def isFiveMethod(m):
+    return hasattr(m, '__five_method__')

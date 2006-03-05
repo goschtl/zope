@@ -29,6 +29,7 @@ from zope.app.publication.browser import setDefaultSkin
 from zope.app.interface import queryType
 
 from AccessControl import getSecurityManager
+from Products.Five import fivemethod
 from Products.Five.security import newInteraction
 
 _marker = object
@@ -47,6 +48,7 @@ class Traversable:
     """
     __five_traversable__ = True
 
+    @fivemethod
     def __fallback_traverse__(self, REQUEST, name):
         """Method hook for fallback traversal
 
@@ -57,8 +59,8 @@ class Traversable:
         and let Zope do it's job.
         """
         raise NotImplementedError
-    __fallback_traverse__.__five_method__ = True
 
+    @fivemethod
     def __bobo_traverse__(self, REQUEST, name):
         """Hook for Zope 2 traversal
 
@@ -102,9 +104,6 @@ class Traversable:
         except (AttributeError, KeyError):
             pass
         raise AttributeError, name
-
-    __bobo_traverse__.__five_method__ = True
-
 
 class FiveTraversable(DefaultTraversable):
 

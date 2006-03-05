@@ -17,11 +17,12 @@ Zope 2 objects.
 $Id$
 """
 from zope.app.size.interfaces import ISized
-from Products.Five.fiveconfigure import isFiveMethod
+from Products.Five import fivemethod, isFiveMethod
 
 # holds classes that were monkeyed with; for clean up
 _monkied = []
 
+@fivemethod
 def get_size(self):
     size = ISized(self, None)
     if size is not None:
@@ -31,8 +32,6 @@ def get_size(self):
     method = getattr(self, '__five_original_get_size', None)
     if method is not None:
         return self.__five_original_get_size()
-
-get_size.__five_method__ = True
 
 def classSizable(class_):
     """Monkey the class to be sizable through Five"""

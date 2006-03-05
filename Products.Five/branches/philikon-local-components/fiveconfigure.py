@@ -37,10 +37,11 @@ from zope.app.component.interface import provideInterface
 from zope.app.component.metaconfigure import adapter
 from zope.app.security.interfaces import IPermission
 
-from viewable import Viewable
-from traversable import Traversable
-from bridge import fromZ2Interface
-from browser.metaconfigure import page
+from Products.Five import isFiveMethod
+from Products.Five.viewable import Viewable
+from Products.Five.traversable import Traversable
+from Products.Five.bridge import fromZ2Interface
+from Products.Five.browser.metaconfigure import page
 
 debug_mode = App.config.getConfiguration().debug_mode
 
@@ -106,9 +107,6 @@ def implements(_context, class_, interface):
             args = (interface.__module__ + '.' + interface.getName(),
                     interface)
             )
-
-def isFiveMethod(m):
-    return hasattr(m, '__five_method__')
 
 _traversable_monkies = []
 def classTraversable(class_):
