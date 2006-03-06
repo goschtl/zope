@@ -173,7 +173,7 @@ def read_zpkg_data(source_dir):
     subst_data = EagerDict()
     subst_data['dependencies'] = '[]'
     subst_data['extensions'] = []
-    subst_data['Name'] = ".".join(source_dir.split(os.sep)[-2:])
+    subst_data['Name'] = ".".join(source_dir.split(os.sep)[source_dir.split(os.sep).index('src')+1:]) #source_dir.split(os.sep)[-2:])
 
     # read in the zpkg configuration files
     if os.path.exists(DEPENDENCIES_CFG):
@@ -207,11 +207,19 @@ def read_zpkg_data(source_dir):
 
 def copy_package(source_dir, target_dir):
     # copy the target files into the correct loction
-    shutil.copytree(source_dir,
-                    os.path.join(target_dir, "src", "zope",
-                                 os.path.basename(source_dir))
-                    )
-    
+
+    # special case for zope.* packages
+    if os.path.abspath(source_dir).split(os.sep)[-2] == 'zope':
+        shutil.copytree(source_dir,
+                        os.path.join(target_dir, "src", "zope",
+                                     os.path.basename(source_dir))
+                        )
+    else:
+        shutil.copytree(source_dir,
+                        os.path.join(target_dir, "src",
+                                     os.path.basename(source_dir))
+                        )
+        
     
 def setup_py(template, output_fn, user_data):
     """Load the specified template, perform a string substitution and write
