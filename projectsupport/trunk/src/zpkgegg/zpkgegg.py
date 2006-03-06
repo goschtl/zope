@@ -70,7 +70,7 @@ def makeArgParser():
 
     parser.set_defaults(project_template=None,
                         setup = os.path.join(os.path.dirname(__file__),
-                                             "setup.template"),
+                                             "setup.template.py"),
                         eggdir = os.path.join(os.getcwd(),
                                               "eggs"),
                         workdir= None,
