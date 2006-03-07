@@ -21,7 +21,7 @@ PyObject *TimeStamp_FromString(const char *);
 static char TimeStampModule_doc[] =
 "A 64-bit TimeStamp used as a ZODB serial number.\n"
 "\n"
-"$Id: TimeStamp.c 29450 2005-03-11 23:53:09Z tim_one $\n";
+"$Id: TimeStamp.c 41599 2006-02-11 21:33:49Z tseaver $\n";
 
 
 typedef struct {
@@ -218,7 +218,7 @@ TimeStamp_timeTime(TimeStamp *self)
 static PyObject *
 TimeStamp_raw(TimeStamp *self)
 {
-    return PyString_FromStringAndSize(self->data, 8);
+    return PyString_FromStringAndSize((const char*)self->data, 8);
 }
 
 static PyObject *
@@ -261,7 +261,7 @@ TimeStamp_laterThan(TimeStamp *self, PyObject *obj)
 	    new[i] = 0;
 	else {
 	    new[i]++;
-	    return TimeStamp_FromString(new);
+	    return TimeStamp_FromString((const char*)new);
 	}
     }
 
