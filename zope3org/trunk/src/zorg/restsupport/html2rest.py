@@ -24,7 +24,10 @@
 #         if self.parent.is_enum:
 #             first_line_prefix = '%d. '%(self.index + 1)   # uo: added a blank
 #         ...
-
+#
+#    pure_tag = {
+#        'table': True, 'tr': True, 'th': True, # uo: allow text in 'td'
+#    }
 
 
 
@@ -718,7 +721,7 @@ class Html2ReStructuredTextParser(HTMLParser.HTMLParser):
     }
 
     pure_tag = {
-        'table': True, 'tr': True, 'th': True, 'td': True
+        'table': True, 'tr': True, 'th': True, # uo: allow text in 'td'
     }
 
     entities = { 'amp': '&', 'lt': '<', 'gt': '>', 'nbsp': ' ' }

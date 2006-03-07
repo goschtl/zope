@@ -11,8 +11,6 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest, doctest
-
 from cStringIO import StringIO
 from zope.app.renderer.rest import ReStructuredTextSourceFactory
 from zope.app.renderer.rest import ReStructuredTextToHTMLRenderer
@@ -43,7 +41,7 @@ def rest2html(rest) :
     return renderer.render()
                 
               
-def html2rest(html) :
+def html2rest(html, catch_errors=True) :
     """ Converts html to rest. 
     
     >>> html = '<html><body><h1>Header</h1><p>Test</p></body></html>'
@@ -55,30 +53,59 @@ def html2rest(html) :
     Test
     <BLANKLINE>
 
-    Fragments can not be processed :
+    Fragments can not be processed. In this case the input HTML is returned
+    unmodified with an error prefix :
     
     >>> html = '<h1>Header</h1><p>Test</p>'
     >>> print html2rest(html)
-    <BLANKLINE>
+    Sorry, cannot convert to ReST:
+    <h1>Header</h1><p>Test</p>
 
     """
-    
-    try :
+    if catch_errors :
+        try :
+            parser = Html2ReStructuredTextParser()
+            parser.feed(html)
+            while parser.current:
+                parser.pop_para()
+            lines = parser.para.get_content(parser.page_width)
+            if lines :
+                return "\n".join(lines)
+            else :
+                return "Sorry, cannot convert to ReST:\n" + html
+        except :
+            return "Sorry, cannot convert to ReST:\n" + html
+    else :
         parser = Html2ReStructuredTextParser()
         parser.feed(html)
         while parser.current:
             parser.pop_para()
         lines = parser.para.get_content(parser.page_width)
+        if not lines :
+            raise RuntimeError, "cannot convert fragments"
         return "\n".join(lines)
-    except :
-        return html
  
- 
-def test_suite():
-    
-    return unittest.TestSuite((
-        doctest.DocTestSuite(),))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
+# def html2rest2(html) :
+#     """ Converts html to rest. 
+#     
+#     >>> html = '<html><body><h1>Header</h1><p>Test</p></body></html>'
+#     >>> print html2rest2(html)
+#     ======
+#     Header
+#     ======
+#     <BLANKLINE>
+#     Test
+#     <BLANKLINE>
+# 
+#     Fragments can not be processed. In this case the input HTML is returned
+#     unmodified with an error prefix :
+#     
+#     >>> html = '<h1>Header</h1><p>Test</p>'
+#     >>> print html2rest2(html)
+#     Sorry, cannot convert to ReST:
+#     <h1>Header</h1><p>Test</p>
+# 
+#     """
+#     from zorg.restsupport.html2rest2 import html2rest as _html2rest
+#     return _html2rest(html)
+#  
