@@ -17,6 +17,7 @@ ClientForm      ../src/ClientForm.py
 
 # Related components for use with Zope 3:
 buddydemo      ../src/buddydemo
+optionstorage  ../src/optionstorage
 z3checkins     ../src/z3checkins
 
 # These packages are copied from the ZConfig, zdaemon, and ZODB projects:
