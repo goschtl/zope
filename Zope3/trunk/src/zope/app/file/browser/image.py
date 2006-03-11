@@ -18,8 +18,6 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.size.interfaces import ISized
-from zope.app.form.browser.submit import Update
-from zope.app.form.utility import getWidgetsData
 
 class ImageData(object):
 
