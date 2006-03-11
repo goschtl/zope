@@ -100,6 +100,7 @@
       schema="zope.app.file.interfaces.IImage"
       label="Add an Image"
       content_factory="zope.app.file.image.Image"
+      class=".image.ImageAdd"
       name="zope.app.file.Image"
       permission="zope.ManageContent"
       />

@@ -18,6 +18,8 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.size.interfaces import ISized
+from zope.app.form.browser.submit import Update
+from zope.app.form.utility import getWidgetsData
 
 class ImageData(object):
 
@@ -89,3 +91,20 @@ class ImageUpload(object):
     def size(self):
         sized = ISized(self.context)
         return sized.sizeForDisplay()
+
+class ImageAdd(object):
+    
+    def update(self):
+        
+        if self.update_status is not None:
+            # We've been called before. Just return the previous result.
+            return self.update_status
+
+        # set the name of the image if not defined
+        if not self.request.form.get('add_input_name'):
+            filename = getattr(self.request.form.get("field.data"),
+                               "filename", None)
+            if filename is not None:
+                self.request.form["add_input_name"] = filename
+
+        return super(ImageAdd,self).update()

@@ -65,6 +65,24 @@ class FileTest(BrowserTestCase):
         file = root['file']
         self.assertEqual(file.data, 'A file')
 
+    def testAddWithoutName(self):
+        data = StringIO('File Contents')
+        data.filename="test.txt"
+        response = self.publish(
+            '/+/zope.app.file.File=',
+            form={'type_name': u'zope.app.file.File',
+                  'field.data': data,
+                  'field.data.used': '',
+                  'UPDATE_SUBMIT': u'Add'},
+            basic='mgr:mgrpw')
+        self.assertEqual(response.getStatus(), 302)
+        self.assertEqual(response.getHeader('Location'),
+                         'http://localhost/@@contents.html')
+        root = self.getRootFolder()
+        self.assert_('test.txt' in root)
+        file = root['test.txt']
+        self.assertEqual(file.data, 'File Contents')
+
     def testEditForm(self):
         self.addFile()
         response = self.publish(
@@ -192,6 +210,26 @@ class ImageTest(BrowserTestCase):
         self.assert_('image' in root)
         image = root['image']
         self.assertEqual(image.data, self.content)
+
+    def testAddWithoutName(self):
+        data = StringIO(self.content)
+        data.filename="test.gif"
+        response = self.publish(
+            '/+/zope.app.file.Image=',
+            form={'type_name': u'zope.app.image.Image',
+                  'field.data': data,
+                  'field.data.used': '',
+                  'UPDATE_SUBMIT': u'Add'},
+            basic='mgr:mgrpw')
+        self.assertEqual(response.getStatus(), 302)
+        self.assertEqual(response.getHeader('Location'),
+                         'http://localhost/@@contents.html')
+        root = self.getRootFolder()
+        self.assert_('test.gif' in root)
+        image = root['test.gif']
+        self.assertEqual(image.data, self.content)
+
+
 
     def testUploadForm(self):
         self.addImage()
