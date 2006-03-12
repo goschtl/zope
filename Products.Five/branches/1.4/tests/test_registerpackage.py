@@ -28,9 +28,13 @@ def test_registerPackage():
       >>> import Products
       >>> import Products.Five
       >>> from Products.Five import zcml
+      >>> from Products.Five import pythonproducts
+      >>> zcml.load_config('meta.zcml', Products.Five)
+      >>> pythonproducts.setupPythonProducts(app)
 
-    Use the five:registerPackage directive::
-
+    Make sure a python package with no initialize (even though one
+    is specified) will fail::
+    
       >>> configure_zcml = '''
       ... <configure
       ...     xmlns="http://namespaces.zope.org/zope"
@@ -38,10 +42,37 @@ def test_registerPackage():
       ...     i18n_domain="foo">
       ...   <five:registerPackage
       ...       package="Products.Five.tests.testing.pythonproduct1"
+      ...       initialize="Products.Five.tests.testing.pythonproduct1.initialize"
       ...       />
       ... </configure>'''
-      >>> zcml.load_config('meta.zcml', Products.Five)
       >>> zcml.load_string(configure_zcml)
+      Traceback (most recent call last):
+          ...
+      ZopeXMLConfigurationError: ...
+      ConfigurationError: ('...pythonproduct1 has no global initialize')    
+
+    Make sure a python package with a valid initialize gets its
+    initialize function called::
+    
+      >>> configure_zcml = '''
+      ... <configure
+      ...     xmlns="http://namespaces.zope.org/zope"
+      ...     xmlns:five="http://namespaces.zope.org/five"
+      ...     i18n_domain="foo">
+      ...   <five:registerPackage
+      ...       package="Products.Five.tests.testing.pythonproduct2"
+      ...       initialize="Products.Five.tests.testing.pythonproduct2.initialize"
+      ...       />
+      ... </configure>'''
+      >>> zcml.load_string(configure_zcml)
+      pythonproduct2 initialized
+      
+    Test to see if the pythonproduct2 python package actually gets setup
+    as a zope2 product in the Control Panel.
+
+      >>> productListing = app.Control_Panel.Products.objectIds()
+      >>> 'Products.Five.tests.testing.pythonproduct2' in productListing
+      True
 
     Clean up:
 

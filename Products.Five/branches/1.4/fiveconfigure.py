@@ -23,6 +23,8 @@ import glob
 import warnings
 
 import App.config
+from App.Product import initializeProduct
+from App.ProductContext import ProductContext
 import Products
 from zLOG import LOG, ERROR
 
@@ -41,6 +43,7 @@ from viewable import Viewable
 from traversable import Traversable
 from bridge import fromZ2Interface
 from browser.metaconfigure import page
+import pythonproducts
 
 debug_mode = App.config.getConfiguration().debug_mode
 
@@ -258,11 +261,24 @@ def registerClass(_context, class_, meta_type, permission, addview=None,
         args = (class_, meta_type, permission, addview, icon, global_)
         )
 
-# clean up code
-
 def _registerPackage(module_, initFunc=None):
     """Registers the given python package as a Zope 2 style product
     """
+
+    if not hasattr(module_, '__path__'):
+        raise ValueError("Must be a package and the " \
+                         "package must be filesystem based")
+    
+    product = initializeProduct(module_, 
+                                module_.__name__, 
+                                module_.__path__[0], 
+                                pythonproducts._zope_app)
+
+    product.package_name = module_.__name__
+
+    if initFunc is not None:
+        newContext = ProductContext(product, pythonproducts._zope_app, module_)
+        initFunc(newContext)
 
 
 def registerPackage(_context, package, initialize=None):
@@ -275,6 +291,7 @@ def registerPackage(_context, package, initialize=None):
         args = (package,initialize)
         )
 
+# clean up code
 
 def killMonkey(class_, name, fallback, attr=None):
     """Die monkey, die!"""
