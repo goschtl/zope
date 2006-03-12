@@ -39,7 +39,7 @@ def setupPythonProducts(appOrContext):
         _zope_app = appOrContext._ProductContext__app
     
     global _zope_app
-    #applyPatches(_zope_app)
+    applyPatches(_zope_app)
 
 
 def applyPatches(app):
@@ -135,6 +135,7 @@ def patch_externalmethod(app):
                 m = __import__(toplevel)
         
                 d = os.path.join(m.__path__[0], prefix, realName)
+                
                 for s in suffixes:
                     if s: s="%s.%s" % (d, s)
                     else: s=d
