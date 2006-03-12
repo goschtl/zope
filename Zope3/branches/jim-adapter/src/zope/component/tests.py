@@ -23,7 +23,7 @@ from zope.testing import doctest, renormalizing
 
 from zope.component.interfaces import ComponentLookupError
 from zope.component.interfaces import IComponentArchitecture
-from zope.component.interfaces import ISiteManager
+from zope.component.interfaces import IComponentLookup
 from zope.component.testing import setUp, tearDown
 
 class I1(interface.Interface):
@@ -134,16 +134,16 @@ class Comp2(object):
         self.context = context
 
 
-class ConformsToISiteManager(object):
-    """This object allows the sitemanager to conform/adapt to `ISiteManager`
-    and thus to itself."""
+class ConformsToIComponentLookup(object):
+    """This object allows the sitemanager to conform/adapt to
+    `IComponentLookup` and thus to itself."""
 
     def __init__(self, sitemanager):
         self.sitemanager = sitemanager
 
     def __conform__(self, interface):
         """This method is specified by the adapter PEP to do the adaptation."""
-        if interface is ISiteManager:
+        if interface is IComponentLookup:
             return self.sitemanager
 
 
@@ -158,7 +158,8 @@ def testInterfaces():
 def test_getGlobalSiteManager():
     """One of the most important functions is to get the global site manager.
 
-      >>> from zope.component.site import IGlobalSiteManager, globalSiteManager
+      >>> from zope.component.interfaces import IComponentLookup
+      >>> from zope.component.globalregistry import base
 
     Get the global site manager via the CA API function:
 
@@ -167,9 +168,9 @@ def test_getGlobalSiteManager():
     Make sure that the global site manager implements the correct interface
     and is the global site manager instance we expect to get.
 
-      >>> IGlobalSiteManager.providedBy(gsm)
+      >>> IComponentLookup.providedBy(gsm)
       True
-      >>> globalSiteManager is gsm
+      >>> base is gsm
       True
 
     Finally, ensure that we always get the same global site manager, otherwise
@@ -184,9 +185,9 @@ def test_getSiteManager():
     manager instance.
 
     We don't know anything about the default service manager, except that it
-    is an `ISiteManager`.
+    is an `IComponentLookup`.
 
-      >>> ISiteManager.providedBy(component.getSiteManager())
+      >>> IComponentLookup.providedBy(component.getSiteManager())
       True
 
     Calling `getSiteManager()` with no args is equivalent to calling it with a
@@ -195,9 +196,10 @@ def test_getSiteManager():
       >>> component.getSiteManager() is component.getSiteManager(None)
       True
 
-    If the context passed to `getSiteManager()` is not `None`, it is adapted
-    to `ISiteManager` and this adapter returned.  So, we create a context that
-    can be adapted to `ISiteManager` using the `__conform__` API.
+    If the context passed to `getSiteManager()` is not `None`, it is
+    adapted to `IComponentLookup` and this adapter returned.  So, we
+    create a context that can be adapted to `IComponentLookup` using
+    the `__conform__` API.
 
     Let's create the simplest stub-implementation of a site manager possible:
 
@@ -206,7 +208,7 @@ def test_getSiteManager():
     Now create a context that knows how to adapt to our newly created site
     manager.
 
-      >>> context = ConformsToISiteManager(sitemanager)
+      >>> context = ConformsToIComponentLookup(sitemanager)
 
     Now make sure that the `getSiteManager()` API call returns the correct
     site manager.
@@ -214,7 +216,7 @@ def test_getSiteManager():
       >>> component.getSiteManager(context) is sitemanager
       True
 
-    Using a context that is not adaptable to `ISiteManager` should fail.
+    Using a context that is not adaptable to `IComponentLookup` should fail.
 
       >>> component.getSiteManager(ob) #doctest: +NORMALIZE_WHITESPACE
       Traceback (most recent call last):
@@ -248,17 +250,17 @@ def testAdapterInContext(self):
     We now have to create a site manager (other than the default global one)
     with which we can register adapters for `I1`.
 
-      >>> from zope.component.site import GlobalSiteManager
-      >>> sitemanager = GlobalSiteManager()
+      >>> from zope.component.globalregistry import BaseGlobalComponents
+      >>> sitemanager = BaseGlobalComponents()
 
     Now we create a new `context` that knows how to get to our custom site
     manager.
 
-      >>> context = ConformsToISiteManager(sitemanager)
+      >>> context = ConformsToIComponentLookup(sitemanager)
 
     We now register an adapter from `I1` to `I3`:
 
-      >>> sitemanager.provideAdapter((I1,), I3, '', lambda x: 43)
+      >>> sitemanager.registerAdapter(lambda x: 43, (I1,), I3, '')
 
     If an object implements the interface you want to adapt to,
     `getAdapterInContext()` should simply return the object.
@@ -327,14 +329,14 @@ def testAdapter():
     Now get the global site manager and register an adapter from `I1` to `I2`
     without a name:
 
-      >>> component.getGlobalSiteManager().provideAdapter(
-      ...     (I1,), I2, '', Comp)
+      >>> component.getGlobalSiteManager().registerAdapter(
+      ...     Comp, (I1,), I2, '')
 
     You should get a sensible error message if you forget that the 'requires'
     argument is supposed to be a sequence
 
-      >>> component.getGlobalSiteManager().provideAdapter(
-      ...     I1, I2, '', Comp)
+      >>> component.getGlobalSiteManager().registerAdapter(
+      ...     Comp, I1, I2, '')
       Traceback (most recent call last):
         ...
       TypeError: the required argument should be a list of interfaces, not a single interface
@@ -356,8 +358,8 @@ def testInterfaceCall():
 
     First, we need to register an adapter:
 
-      >>> component.getGlobalSiteManager().provideAdapter(
-      ...     [I1], I2, '', Comp)
+      >>> component.getGlobalSiteManager().registerAdapter(
+      ...     Comp, [I1], I2, '')
 
     Then we try to adapt `ob` to provide an `I2` interface by calling the `I2`
     interface with the obejct as first argument:
@@ -389,8 +391,8 @@ def testNamedAdapter():
 
     First we register some named adapter:
 
-      >>> component.getGlobalSiteManager().provideAdapter(
-      ...     [I1], I2, 'foo', lambda x: 0)
+      >>> component.getGlobalSiteManager().registerAdapter(
+      ...     lambda x: 0, [I1], I2, 'foo')
 
     If an adapter isn't registered for the given object and interface,
     and you provide no default, raise `ComponentLookupError`...
@@ -409,8 +411,8 @@ def testNamedAdapter():
 
     But now we register an adapter for the object having the correct name
 
-      >>> component.getGlobalSiteManager().provideAdapter(
-      ...     [I1], I2, 'bar', Comp)
+      >>> component.getGlobalSiteManager().registerAdapter(
+      ...     Comp, [I1], I2, 'bar')
 
     so that the lookup succeeds:
 
@@ -461,8 +463,8 @@ def testMultiAdapter():
 
     Now we can register the multi-adapter using
 
-      >>> component.getGlobalSiteManager().provideAdapter(
-      ...     (I1, I2), I3, '', DoubleAdapter)
+      >>> component.getGlobalSiteManager().registerAdapter(
+      ...     DoubleAdapter, (I1, I2), I3, '')
 
     Notice how the required interfaces are simply provided by a tuple. Now we
     can get the adapter:
@@ -480,8 +482,8 @@ def testAdapterForInterfaceNone():
     """Providing an adapter for None says that your adapter can adapt anything
     to `I2`.
 
-      >>> component.getGlobalSiteManager().provideAdapter(
-      ...     (None,), I2, '', Comp)
+      >>> component.getGlobalSiteManager().registerAdapter(
+      ...     Comp, (None,), I2, '')
 
       >>> adapter = I2(ob)
       >>> adapter.__class__ is Comp
@@ -506,10 +508,10 @@ def testGetAdapters():
 
     Let's register some adapters first:
 
-      >>> component.getGlobalSiteManager().provideAdapter(
-      ...     [I1], I2, '', Comp)
-      >>> component.getGlobalSiteManager().provideAdapter(
-      ...     [None], I2, 'foo', Comp)
+      >>> component.getGlobalSiteManager().registerAdapter(
+      ...     Comp, [I1], I2, '')
+      >>> component.getGlobalSiteManager().registerAdapter(
+      ...     Comp, [None], I2, 'foo')
 
     Now we get all the adapters that are registered for `ob` that provide
     `I2`:
@@ -521,8 +523,8 @@ def testGetAdapters():
     Note that the output doesn't include None values. If an adapter
     factory returns None, it is as if it wasn't present.
 
-      >>> component.getGlobalSiteManager().provideAdapter(
-      ...     [I1], I2, 'nah', lambda context: None)
+      >>> component.getGlobalSiteManager().registerAdapter(
+      ...     lambda context: None, [I1], I2, 'nah')
       >>> adapters = sorted(component.getAdapters((ob,), I2))
       >>> [(name, adapter.__class__.__name__) for name, adapter in adapters]
       [(u'', 'Comp'), (u'foo', 'Comp')]
@@ -553,7 +555,7 @@ def testUtility():
 
     Now we declare `ob` to be the utility providing `I1`
 
-      >>> component.getGlobalSiteManager().provideUtility(I1, ob)
+      >>> component.getGlobalSiteManager().registerUtility(ob, I1)
 
     so that the component is now available:
 
@@ -566,7 +568,7 @@ def testNamedUtility():
 
     Just because you register an utility having no name
 
-      >>> component.getGlobalSiteManager().provideUtility(I1, ob)
+      >>> component.getGlobalSiteManager().registerUtility(ob, I1)
 
     does not mean that they are available when you specify a name:
 
@@ -585,8 +587,8 @@ def testNamedUtility():
 
     Registering the utility under the correct name
 
-      >>> component.getGlobalSiteManager().provideUtility(
-      ...     I1, ob, name='foo')
+      >>> component.getGlobalSiteManager().registerUtility(
+      ...     ob, I1, name='foo')
 
     really helps:
 
@@ -613,10 +615,10 @@ def test_getAllUtilitiesRegisteredFor():
     Now we register the new utilities:
 
       >>> gsm = component.getGlobalSiteManager()
-      >>> gsm.provideUtility(I1, ob)
-      >>> gsm.provideUtility(I11, ob11)
-      >>> gsm.provideUtility(I1, ob_bob, name='bob')
-      >>> gsm.provideUtility(I2, Comp(2))
+      >>> gsm.registerUtility(ob, I1)
+      >>> gsm.registerUtility(ob11, I11)
+      >>> gsm.registerUtility(ob_bob, I1, name='bob')
+      >>> gsm.registerUtility(Comp(2), I2)
 
     We can now get all the utilities that provide interface `I1`:
 
@@ -669,18 +671,18 @@ def test_ability_to_pickle_globalsitemanager():
     We need to make sure that it is possible to pickle the global site manager
     and its two global adapter registries.
 
-      >>> from zope.component import site
+      >>> from zope.component import globalSiteManager
       >>> import cPickle
-      >>> pickle = cPickle.dumps(site.globalSiteManager)
+      >>> pickle = cPickle.dumps(globalSiteManager)
       >>> sm = cPickle.loads(pickle)
-      >>> sm is site.globalSiteManager
+      >>> sm is globalSiteManager
       True
 
     Now let's ensure that the registries themselves can be pickled as well:
 
-      >>> pickle = cPickle.dumps(site.globalSiteManager.adapters)
+      >>> pickle = cPickle.dumps(globalSiteManager.adapters)
       >>> adapters = cPickle.loads(pickle)
-      >>> adapters is site.globalSiteManager.adapters
+      >>> adapters is globalSiteManager.adapters
       True
     """
 

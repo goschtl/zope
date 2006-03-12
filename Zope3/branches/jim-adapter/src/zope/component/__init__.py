@@ -24,42 +24,32 @@ from zope.component.interfaces import IComponentArchitecture
 from zope.component.interfaces import IComponentRegistrationConvenience
 from zope.component.interfaces import IDefaultViewName
 from zope.component.interfaces import IFactory
-from zope.component.interfaces import ISiteManager
 from zope.component.interfaces import ComponentLookupError
+from zope.component.interfaces import IComponentLookup
 from zope.component.globalregistry import base as globalSiteManager
+
+import zope.deferredimport
 
 _class_types = type, ClassType
 
-##############################################################################
-# BBB: Import some backward-compatibility; 12/10/2004
-from zope.component.bbb import exceptions
-sys.modules['zope.component.exceptions'] = exceptions
-from zope.component.bbb import service
-sys.modules['zope.component.service'] = service
-from zope.component.bbb import adapter
-sys.modules['zope.component.adapter'] = adapter
-from zope.component.bbb import utility
-sys.modules['zope.component.utility'] = utility
-from zope.component.bbb import servicenames
-sys.modules['zope.component.servicenames'] = servicenames
-from zope.component.bbb import contextdependent
-sys.modules['zope.component.contextdependent'] = contextdependent
 
-service.__warn__ = False
-service.serviceManager = service.GlobalServiceManager(
-    'serviceManager', __name__, globalSiteManager)
-service.__warn__ = True
+zope.deferredimport.deprecated(
+    "Use IComponentLookup instead.  ISiteManager will be removed in Zope 3.5.",
+    ISiteManager = "zope.component.interfaces:IComponentLookup",
+    )
 
-from zope.component.bbb import getGlobalServices, getGlobalService
-from zope.component.bbb import getServices, getService
-from zope.component.bbb import getServiceDefinitions
-from zope.component.bbb import getView, queryView
-from zope.component.bbb import getMultiView, queryMultiView
-from zope.component.bbb import getViewProviding, queryViewProviding
-from zope.component.bbb import getDefaultViewName, queryDefaultViewName
-from zope.component.bbb import getResource, queryResource
-##############################################################################
-
+zope.deferredimport.deprecatedFrom(
+    "Deprecated and will go away in Zope 3.5",
+    'zope.component.back35',
+    'getGlobalServices', 'getGlobalService',
+    'getServices', 'getService',
+    'getServiceDefinitions',
+    'getView', 'queryView',
+    'getMultiView', 'queryMultiView',
+    'getViewProviding', 'queryViewProviding',
+    'getDefaultViewName', 'queryDefaultViewName',
+    'getResource', 'queryResource',
+    )
 
 # Try to be hookable. Do so in a try/except to avoid a hard dependency.
 try:
@@ -80,10 +70,10 @@ def getSiteManager(context=None):
     if context is None:
         return getGlobalSiteManager()
     else:
-        # Use the global site manager to adapt context to `ISiteManager`
+        # Use the global site manager to adapt context to `IComponentLookup`
         # to avoid the recursion implied by using a local `getAdapter()` call.
         try:
-            return ISiteManager(context)
+            return IComponentLookup(context)
         except TypeError, error:
             raise ComponentLookupError(*error.args)
 
@@ -290,7 +280,7 @@ def provideUtility(component, provides=None, name=u''):
         else:
             raise TypeError("Missing 'provides' argument")
 
-    getGlobalSiteManager().provideUtility(provides, component, name)
+    getGlobalSiteManager().registerUtility(component, provides, name)
 
 
 def provideAdapter(factory, adapts=None, provides=None, name=''):
@@ -307,7 +297,7 @@ def provideAdapter(factory, adapts=None, provides=None, name=''):
         except AttributeError:
             raise TypeError("Missing 'adapts' argument")
 
-    getGlobalSiteManager().provideAdapter(adapts, provides, name, factory)
+    getGlobalSiteManager().registerAdapter(factory, adapts, provides, name)
 
 def provideSubscriptionAdapter(factory, adapts=None, provides=None):
     if provides is None:
@@ -323,7 +313,8 @@ def provideSubscriptionAdapter(factory, adapts=None, provides=None):
         except AttributeError:
             raise TypeError("Missing 'adapts' argument")
 
-    getGlobalSiteManager().subscribe(adapts, provides, factory)
+    getGlobalSiteManager().registerSubscriptionAdapter(
+        factory, adapts, provides)
 
 def provideHandler(factory, adapts=None):
 
@@ -333,4 +324,4 @@ def provideHandler(factory, adapts=None):
         except AttributeError:
             raise TypeError("Missing 'adapts' argument")
 
-    getGlobalSiteManager().subscribe(adapts, None, factory)
+    getGlobalSiteManager().registerHandler(factory, adapts)

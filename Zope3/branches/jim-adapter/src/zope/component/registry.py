@@ -24,6 +24,8 @@ import zope.interface.interfaces
 
 class Components(object):
 
+    interface.implements(interfaces.IComponents)
+
     def __init__(self, bases=()):
         self._init_registries()
         self._init_registrations()

@@ -11,10 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""utility service
+import warnings
 
-$Id$
-"""
+warnings.warn("This module is deprecated and will go away in Zope 3.5.",
+              DeprecationWarning, 2)
+
 from zope.component.interfaces import Invalid, ComponentLookupError, IRegistry
 from zope.component.bbb.interfaces import IUtilityService
 from zope.component.service import GlobalService, IService, IServiceDefinition

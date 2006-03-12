@@ -11,17 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""A simple mix-in class that implements IContextDependent. 
 
-$Id$
-"""
-from zope.component.interfaces import IContextDependent
-from zope.interface import implements
+import warnings
 
-class ContextDependent(object):
-    """standard boilerplate for context dependent objects"""
+warnings.warn("This module is deprecated and will go away in Zope 3.5.",
+              DeprecationWarning, 2)
 
-    implements(IContextDependent)
-
-    def __init__(self, context):
-        self.context = context
+Adapters = 'Adapters'
+Utilities = 'Utilities'
+Services = 'Services'

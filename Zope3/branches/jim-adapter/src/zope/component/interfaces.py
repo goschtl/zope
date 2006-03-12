@@ -23,12 +23,7 @@ from zope.interface import Interface, Attribute
 # BBB: Backward-compatibility; 12/05/2004
 from bbb.interfaces import *
 
-# BBB: Can be removed in 3.3
-zope.deprecation.__show__.off()
-from zope.exceptions import NotFoundError
-zope.deprecation.__show__.on()
-
-class ComponentLookupError(NotFoundError):
+class ComponentLookupError(LookupError):
     """A component could not be found."""
 
 class Invalid(Exception):

@@ -11,14 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Exceptions used by the Component Architecture
 
-$Id$
-"""
-from zope.component.interfaces import ComponentLookupError
-from zope.component.interfaces import Invalid, Misused
+import warnings
 
+warnings.warn("This module is deprecated and will go away in Zope 3.5.",
+              DeprecationWarning, 2)
 
-__all__ = ["ComponentLookupError",
-           "Invalid",
-           "Misused"]
+from zope.component.interfaces import IContextDependent
+from zope.interface import implements
+
+class ContextDependent(object):
+    """standard boilerplate for context dependent objects"""
+
+    implements(IContextDependent)
+
+    def __init__(self, context):
+        self.context = context

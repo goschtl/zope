@@ -11,13 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Service Manager implementation
-
-$Id$
-"""
-__warn__ = True
 import warnings
 
+warnings.warn("This module is deprecated and will go away in Zope 3.5.",
+              DeprecationWarning, 2)
+
+import zope.component
 from zope.exceptions import DuplicationError
 from zope.component.bbb.interfaces import IServiceService
 from zope.interface import implements, Interface, directlyProvides
@@ -59,6 +58,7 @@ class InvalidService(Exception):
        the required interface
     """
 
+__warn__ = True
 class GlobalServiceManager(object):
     """service manager"""
 
@@ -168,3 +168,8 @@ def defineService(name, interface, sitemanager=None):
     if sitemanager is None:
         from zope.component.globalregistry import base
     __getSM(base).defineService(name, interface)
+
+
+__warn__ = False
+serviceManager = GlobalServiceManager('serviceManager', __name__)
+__warn__ = True

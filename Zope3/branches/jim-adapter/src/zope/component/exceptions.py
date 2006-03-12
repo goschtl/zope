@@ -11,10 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Default service names for CA core services
-
+"""
 $Id$
 """
-Adapters = 'Adapters'
-Utilities = 'Utilities'
-Services = 'Services'
+
+import warnings
+
+warnings.warn("This module is deprecated and will go away in Zope 3.5. "
+              "Use zope.component.interfaces instead.",
+              DeprecationWarning, 2)
+
+from zope.component.interfaces import ComponentLookupError
+from zope.component.interfaces import Invalid, Misused
+
+
+__all__ = ["ComponentLookupError",
+           "Invalid",
+           "Misused"]

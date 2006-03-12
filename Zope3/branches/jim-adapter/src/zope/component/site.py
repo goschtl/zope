@@ -24,7 +24,7 @@ import warnings
 warnings.warn("The zope.component.site module has been deprecated and "
               "will be removed.  Most of the functionality now resides "
               "in the zope.component.globalregistry module.",
-              DeprecationWarning, stacklevel=1)
+              DeprecationWarning, stacklevel=2)
 
 from zope.component.registry import Components as SiteManager
 from zope.component.registry import AdapterRegistration

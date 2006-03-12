@@ -11,11 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Global Adapter Service
 
-$Id$
-"""
-__docformat__ = "reStructuredText"
+
+import warnings
+
+warnings.warn("This module is deprecated and will go away in Zope 3.5. ",
+              DeprecationWarning, 2)
+
 
 import sys
 import warnings
