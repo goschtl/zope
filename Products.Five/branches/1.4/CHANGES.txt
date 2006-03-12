@@ -8,6 +8,10 @@ Five 1.4 (unreleased)
 Features
 --------
 
+* Add python-packages-as-zope-products support which basically allows
+  for using any python package as a zope product without it having to
+  live in Products/
+
 * Add zope.formlib support.  Please see ``doc/formlib.txt`` for more
   information.
 
