@@ -24,7 +24,7 @@ from types import ClassType
 from zope.component.interfaces import IRegistry, ComponentLookupError
 from zope.component.bbb.interfaces import IAdapterService
 from zope.component.bbb.service import GlobalService
-from zope.component.components import AdapterRegistration, SubscriptionRegistration
+from zope.component.registry import AdapterRegistration, SubscriptionRegistration
 from zope.interface import implements, providedBy, Interface, implementedBy
 from zope.interface.interfaces import IInterface
 

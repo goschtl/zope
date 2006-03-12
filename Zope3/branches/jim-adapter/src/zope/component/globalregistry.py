@@ -19,7 +19,7 @@ import types
 from zope.interface import implements
 from zope.interface.adapter import AdapterRegistry
 from zope.deprecation.deprecation import deprecate, deprecated
-from zope.component.components import Components
+from zope.component.registry import Components
 from zope.component.interfaces import Invalid, IComponentLookup, IRegistry
 from zope.interface.interfaces import ISpecification
 

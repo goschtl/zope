@@ -18,7 +18,7 @@ $Id$
 from zope.component.interfaces import Invalid, ComponentLookupError, IRegistry
 from zope.component.bbb.interfaces import IUtilityService
 from zope.component.service import GlobalService, IService, IServiceDefinition
-from zope.component.components import UtilityRegistration
+from zope.component.registry import UtilityRegistration
 import zope.interface
 
 class IGlobalUtilityService(IUtilityService, IRegistry):

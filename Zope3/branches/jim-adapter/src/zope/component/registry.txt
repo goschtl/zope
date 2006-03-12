@@ -12,11 +12,11 @@ provided by the zope.interface package.  In particular, it provides:
 
 - management of registration comments
 
-The zope.component.components.Components class provides an
+The zope.component.registry.Components class provides an
 implementation of zope.component.interfaces.IComponents that provides
 these features.
 
-    >>> from zope.component.components import Components
+    >>> from zope.component.registry import Components
     >>> from zope.component import tests
     >>> components = Components()
     

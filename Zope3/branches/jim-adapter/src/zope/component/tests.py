@@ -801,7 +801,7 @@ def test_suite():
                              setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('factory.txt',
                              setUp=setUp, tearDown=tearDown),
-        doctest.DocFileSuite('components.txt', checker=checker),
+        doctest.DocFileSuite('registry.txt', checker=checker),
         ))
 
 if __name__ == "__main__":

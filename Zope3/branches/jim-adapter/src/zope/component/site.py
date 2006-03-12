@@ -26,10 +26,10 @@ warnings.warn("The zope.component.site module has been deprecated and "
               "in the zope.component.globalregistry module.",
               DeprecationWarning, stacklevel=1)
 
-from zope.component.components import Components as SiteManager
-from zope.component.components import AdapterRegistration
-from zope.component.components import SubscriptionRegistration
-from zope.component.components import UtilityRegistration
+from zope.component.registry import Components as SiteManager
+from zope.component.registry import AdapterRegistration
+from zope.component.registry import SubscriptionRegistration
+from zope.component.registry import UtilityRegistration
 from zope.component.globalregistry import BaseGlobalComponents \
      as GlobalSiteManager
 from zope.component.globalregistry import base as globalSiteManager
