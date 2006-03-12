@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 import zope.deprecation
-from zope.component.bbb.service import IService
+from zope.component.service import IService
 from zope.cachedescriptors import property
 
 from zope.app import zapi
