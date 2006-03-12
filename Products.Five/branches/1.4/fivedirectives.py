@@ -178,3 +178,20 @@ class IInclude(Interface):
                     u'installed Product. If the file does not exist, for a '
                     u'particular product, no error is raised.',
         required=False)
+
+class IRegisterPackageDirective(Interface):
+    """Registers the given python package which at a minimum fools zope2 into
+    thinking of it as a zope2 product.
+    """
+
+    package = GlobalObject(
+        title=u'Target package',
+        required=True
+        )
+
+    initialize = GlobalObject(
+        title=u'Initialization function to invoke',
+        description=u'The dotted name of a function that will get invoked '
+                    u'with a ProductContext instance',
+        required=False
+        )

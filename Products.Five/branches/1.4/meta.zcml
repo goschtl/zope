@@ -157,6 +157,12 @@
        handler=".fiveconfigure.registerClass"
        />
 
+    <meta:directive
+       name="registerPackage"
+       schema=".fivedirectives.IRegisterPackageDirective"
+       handler=".fiveconfigure.registerPackage"
+       />
+       
   </meta:directives>
 
   <meta:directive

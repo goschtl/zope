@@ -260,6 +260,22 @@ def registerClass(_context, class_, meta_type, permission, addview=None,
 
 # clean up code
 
+def _registerPackage(module_, initFunc=None):
+    """Registers the given python package as a Zope 2 style product
+    """
+
+
+def registerPackage(_context, package, initialize=None):
+    """ZCML directive function for registering a python package product
+    """
+
+    _context.action(
+        discriminator = ('registerPackage', package),
+        callable = _registerPackage,
+        args = (package,initialize)
+        )
+
+
 def killMonkey(class_, name, fallback, attr=None):
     """Die monkey, die!"""
     method = getattr(class_, name, None)
