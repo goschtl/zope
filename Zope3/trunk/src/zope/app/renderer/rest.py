@@ -70,7 +70,7 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
       >>> renderer = ReStructuredTextToHTMLRenderer(source, TestRequest())
       >>> print renderer.render().strip()
       <p>This is source.</p>
-      <div class="section" id="header-3">
+      <div class="section">
       <h3><a id="header-3" name="header-3">Header 3</a></h3>
       <p>This is more source.</p>
       </div>
