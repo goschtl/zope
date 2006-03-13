@@ -10,6 +10,8 @@ Zope Changes
 
     New features
 
+      - Updated Docutils to V 0.4.0
+
       - Make the HomeFolderManager allowing the user to change the object to
         create when autocreating the homefolder.
 
