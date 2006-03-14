@@ -8,8 +8,10 @@ function dropdownlinkmenu(obj, e, dropmenuID)   {
     return clickreturnvalue()
 }
 
+
 function hidelinkmenu(obj, e, dropmenuID) {
     if (typeof dropmenuobj!="undefined") //hide previous menu
+            
             dropmenuobj.style.visibility="hidden"
             clearhidemenu()
             if (ie5||ns6){
@@ -18,12 +20,21 @@ function hidelinkmenu(obj, e, dropmenuID) {
                 if (hidemenu_onclick) dropmenuobj.onclick=function(){dropmenuobj.style.visibility='hidden'}
                 dropmenuobj.onmouseover=clearhidemenu
                 dropmenuobj.onmouseout=ie5? function(){ dynamichide(event)} : function(event){ dynamichide(event)}
-                showhide(dropmenuobj.style, e, "visible", "hidden")
-                dropmenuobj.x=obj.offsetLeft
-                dropmenuobj.y=obj.offsetTop
                 
-                dropmenuobj.style.left=dropmenuobj.x-clearbrowseredge(obj, "leftedge")+"px"
-                dropmenuobj.style.top=dropmenuobj.y-clearbrowseredge(obj, "bottomedge")+obj.offsetHeight+"px"
+                
+                showhide(dropmenuobj.style, e, "visible", "hidden")
+
+                var offsets = Position.cumulativeOffset(obj)
+                
+                var x = offsets[0]
+                var y = Math.max(Event.pointerY(e), offsets[1], dropmenuobj.y)
+                dropmenuobj.x=x
+                dropmenuobj.y=y
+                
+                dropmenuobj.style.left=x // -clearbrowseredge(obj, "leftedge")+"px"
+                dropmenuobj.style.top=y  // -clearbrowseredge(obj, "bottomedge")+obj.offsetHeight+"px"
+              
+                oldLinkMenuTarget = newLinkMenuTarget
             }
 }            
 

@@ -99,7 +99,6 @@ class WikiPage(ComposedAjaxPage) :
         self.title = dc.title or self.untitled
         self.language = dc.Language()
         
-        
     def verb(self) :
         """ Returns a descriptive verb. """
         return _('View')
@@ -409,9 +408,7 @@ class TinyMCEEditor(Editor) :
         
         self.isType = "text/html"
         self.asType = "text/html"
-        
-        print "TinyMCEEditor", self.data
-        
+                
     
     def render(self) :
         """ Presents the rest editor to the user. """
@@ -569,7 +566,7 @@ class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
         
     def display(self) :
         """ Returns the data that should be edited. """
-        if self.isAddView() :
+        if self.isAddView() or self.getFile() is None :
             return self._new()
         return self.main.readFile(self.getFile())
 
