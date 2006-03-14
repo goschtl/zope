@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -44,9 +44,11 @@ def bootstrap(libdir, bindir):
 
         import ez_setup
         
-    os.environ['PYTHONPATH'] = os.environ.setdefault('PYTHONPATH', '') + \
-                               ":" + libdir
-    ez_setup.main(['--install-dir', libdir, '--script-dir', bindir, '-U', 'setuptools'])
+    os.environ['PYTHONPATH'] = (os.environ.setdefault('PYTHONPATH', '')
+                               + ":" + libdir)
+    ez_setup.main(['--install-dir', libdir,
+                   '--script-dir', bindir,
+                   '-U', 'setuptools'])
 
 def updateSetupCfg(setup_file, opts):
     """Update or create a setup.cfg (setup_file) for working on this
@@ -59,6 +61,9 @@ def updateSetupCfg(setup_file, opts):
     # make sure the sections we want exist
     if not(setup_cfg.has_section('easy_install')):
         setup_cfg.add_section('easy_install')
+
+    if not(setup_cfg.has_section('egg_info')):
+        setup_cfg.add_section('egg_info')
         
     # update lib dir
     if opts.libdir is None:
@@ -85,6 +90,13 @@ def updateSetupCfg(setup_file, opts):
     
     # update find-links
     setup_cfg.set('easy_install', 'find-links', opts.finddirs)
+
+    # update egg_info for development version
+    if not setup_cfg.has_option('egg_info', 'tag_build'):
+        setup_cfg.set('egg_info', 'tag_build', '.dev')
+
+    if not setup_cfg.has_option('egg_info', 'tag_revision'):
+        setup_cfg.set('egg_info', 'tag_revision', '1')
 
     # store the updated version
     setup_cfg.write(file(setup_file, 'w'))
