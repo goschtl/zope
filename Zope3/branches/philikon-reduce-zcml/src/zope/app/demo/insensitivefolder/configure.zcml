@@ -25,6 +25,7 @@
 <utility
     component=".caseInsensitiveFolderFactory"
     name="zope.CaseInsensitiveFolder"
+    permission="zope.Public"
     />
 
 <browser:addMenuItem
