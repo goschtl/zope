@@ -32,23 +32,9 @@ import zope.deferredimport
 
 _class_types = type, ClassType
 
-
 zope.deferredimport.deprecated(
     "Use IComponentLookup instead.  ISiteManager will be removed in Zope 3.5.",
     ISiteManager = "zope.component.interfaces:IComponentLookup",
-    )
-
-zope.deferredimport.deprecatedFrom(
-    "Deprecated and will go away in Zope 3.5",
-    'zope.component.back35',
-    'getGlobalServices', 'getGlobalService',
-    'getServices', 'getService',
-    'getServiceDefinitions',
-    'getView', 'queryView',
-    'getMultiView', 'queryMultiView',
-    'getViewProviding', 'queryViewProviding',
-    'getDefaultViewName', 'queryDefaultViewName',
-    'getResource', 'queryResource',
     )
 
 # Try to be hookable. Do so in a try/except to avoid a hard dependency.
