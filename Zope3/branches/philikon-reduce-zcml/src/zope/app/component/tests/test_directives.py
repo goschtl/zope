@@ -18,6 +18,7 @@ $Id$
 import re
 import unittest
 import pprint
+import warnings
 from cStringIO import StringIO
 
 from zope.interface import Interface, implements
@@ -1366,8 +1367,11 @@ class Test(PlacelessSetup, unittest.TestCase):
             ))
         self.assertRaises(ValueError, xmlconfig, config, testing=1)
 
+    # BBB 2006/02/24, to be removed after 12 months
     def testFactory(self):
-
+        def ignorewarning(message, category, filename, lineno, file=None):
+            pass
+        warnings.showwarning = ignorewarning
         self.assertRaises(ComponentLookupError, zapi.createObject, 'foo')
 
         xmlconfig(StringIO(template % (
@@ -1382,6 +1386,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         from factory import X
         self.assertEqual(zapi.createObject('foo.bar').__class__, X)
 
+        warnings.resetwarnings()
 
 class ParticipationStub(object):
 
