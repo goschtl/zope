@@ -7,19 +7,19 @@
     name="Items"
     factory=".ItemVocabulary" />
 
-<content class=".ItemVocabulary">
+<class class=".ItemVocabulary">
   <allow interface="zope.schema.interfaces.IVocabulary"/>
   <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
-</content>
+</class>
 
-<content class=".ItemTerm">
+<class class=".ItemTerm">
   <allow interface="zope.schema.interfaces.ITokenizedTerm"/>
   <allow attributes="title"/>
-</content>
+</class>
 
 <!-- Sample Content Component and Views -->
 
-<content class=".browser.DefaultItemFolder">
+<class class=".browser.DefaultItemFolder">
   <require like_class="zope.app.content.folder.Folder"/>
 
   <require
@@ -29,7 +29,7 @@
   <require
       permission="zope.ManageContent"
       set_schema=".browser.IDefaultItem" />
-</content>
+</class>
 
 <browser:addMenuItem
     class=".browser.DefaultItemFolder"

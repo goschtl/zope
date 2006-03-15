@@ -1,8 +1,8 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <content class=".viewpagetemplatefile.BoundPageTemplate">
+  <class class=".viewpagetemplatefile.BoundPageTemplate">
     <allow attributes="__call__ __str__ __name__" />
-  </content>
+  </class>
 
   <adapter
       for="*"
@@ -17,9 +17,9 @@
       factory=".urlquote.URLQuote"
       name="url"/> 
 
- <content class="zope.tales.tales.Iterator">
+ <class class="zope.tales.tales.Iterator">
     <allow interface="zope.tales.interfaces.ITALESIterator" />
- </content>
+ </class>
 
  <class class=".engine.ZopePathExpr">
     <allow attributes="__call__" />

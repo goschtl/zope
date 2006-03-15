@@ -17,12 +17,12 @@
 
   </localUtility>
 
-  <content class=".schema.SchemaRegistration">
+  <class class=".schema.SchemaRegistration">
     <require
       permission="zope.ManageServices"
       interface="zope.app.component.interfaces.IUtilityRegistration"
       set_schema="zope.app.component.interfaces.IUtilityRegistration" />
-  </content>
+  </class>
 
   <include file="fields.zcml" />
   <include package=".browser" />

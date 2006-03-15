@@ -5,7 +5,7 @@
     xmlns:i18n="http://namespaces.zope.org/i18n"
     >
 
-  <content class=".groupfolder.GroupInformation">
+  <class class=".groupfolder.GroupInformation">
       <require
           permission="zope.ManageServices"
           interface=".groupfolder.IGroupInformation
@@ -15,16 +15,16 @@
       <implements
           interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
           />
-  </content>
+  </class>
 
-  <content class=".groupfolder.GroupFolder">
+  <class class=".groupfolder.GroupFolder">
     <implements
         interface=".groupfolder.IGroupFolder" />
     <require
         permission="zope.ManageServices"
         interface="zope.app.container.interfaces.IContainer
                  zope.app.container.interfaces.INameChooser" />
-  </content>
+  </class>
 
   <adapter
       provides="zope.app.container.interfaces.INameChooser"

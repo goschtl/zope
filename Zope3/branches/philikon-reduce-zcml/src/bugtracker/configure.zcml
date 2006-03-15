@@ -115,52 +115,52 @@
      name="Users"
      />
 
-  <content class=".vocabulary.ManagableVocabulary">
+  <class class=".vocabulary.ManagableVocabulary">
     <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
     <allow attributes="default title"/>
     <require
         permission="bugtracker.ManageBugTracker"
         attributes="add delete"
         set_attributes="default"/>
-  </content>
+  </class>
 
-  <content class=".vocabulary.StatusVocabulary">
+  <class class=".vocabulary.StatusVocabulary">
     <require like_class=".vocabulary.ManagableVocabulary"/>    
-  </content>
+  </class>
 
-  <content class=".vocabulary.PriorityVocabulary">
+  <class class=".vocabulary.PriorityVocabulary">
     <require like_class=".vocabulary.ManagableVocabulary"/>    
-  </content>
+  </class>
 
-  <content class=".vocabulary.ReleaseVocabulary">
+  <class class=".vocabulary.ReleaseVocabulary">
     <require like_class=".vocabulary.ManagableVocabulary"/>    
-  </content>
+  </class>
 
-  <content class=".vocabulary.BugTypeVocabulary">
+  <class class=".vocabulary.BugTypeVocabulary">
     <require like_class=".vocabulary.ManagableVocabulary"/>    
-  </content>
+  </class>
 
-  <content class=".vocabulary.SimpleTerm">
+  <class class=".vocabulary.SimpleTerm">
     <allow interface="zope.schema.interfaces.ITokenizedTerm"/>
     <allow attributes="title"/>
-  </content>
+  </class>
 
-  <content class=".vocabulary.UserVocabulary">
+  <class class=".vocabulary.UserVocabulary">
     <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
-  </content>
+  </class>
 
-  <content class=".vocabulary.UserTerm">
+  <class class=".vocabulary.UserTerm">
     <allow
         interface="zope.schema.interfaces.ITokenizedTerm"/>
     <allow attributes="principal title"/>
-  </content>
+  </class>
 
-  <content class=".mail.MailSubscriptions">
+  <class class=".mail.MailSubscriptions">
     <require
         permission="bugtracker.EditBug"
         attributes="addSubscriptions removeSubscriptions" />
     <allow attributes="getSubscriptions" />
-  </content>
+  </class>
 
   <!-- Bug Tracker related configuration -->
 
@@ -169,7 +169,7 @@
       type="zope.app.content.interfaces.IContentType"
       /> 
 
-  <content class=".tracker.BugTracker">
+  <class class=".tracker.BugTracker">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -195,7 +195,7 @@
         permission="zope.ManageContent"
         set_schema=".interfaces.IBugTracker" />
 
-  </content>
+  </class>
 
   <adapter 
       for=".interfaces.IBugTracker"
@@ -239,7 +239,7 @@
       type="zope.app.content.interfaces.IContentType"
       /> 
 
-  <content class=".bug.Bug">
+  <class class=".bug.Bug">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"/>
@@ -265,14 +265,14 @@
         permission="bugtracker.AddBug"
         set_schema=".interfaces.IBug" />
 
-  </content>
+  </class>
 
   <adapter 
       factory=".bug.SearchableText"
       provides=".interfaces.ISearchableText"
       for=".interfaces.IBug" />
 
-  <content class=".bug.BugDependencyAdapter">
+  <class class=".bug.BugDependencyAdapter">
 
     <require
         permission="bugtracker.ViewBug"
@@ -284,7 +284,7 @@
                     addDependents deleteDependents" 
         set_schema=".interfaces.IBugDependencies"/>
 
-  </content>
+  </class>
 
   <adapter
       factory=".bug.BugDependencyAdapter"
@@ -301,15 +301,15 @@
 
   <!-- File and Image Attachment related configuration -->
 
-  <content class="zope.app.file.file.File">
+  <class class="zope.app.file.file.File">
     <implements 
         interface="bugtracker.interfaces.IAttachment" />
-  </content>
+  </class>
 
-  <content class="zope.app.file.image.Image">
+  <class class="zope.app.file.image.Image">
     <implements 
         interface="bugtracker.interfaces.IAttachment" />
-  </content>
+  </class>
 
 
   <!-- Comment related configuration -->
@@ -319,7 +319,7 @@
       type="zope.app.content.interfaces.IContentType"
       /> 
 
-  <content class=".comment.Comment">
+  <class class=".comment.Comment">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"/>
@@ -337,7 +337,7 @@
         permission="bugtracker.AddComment"
         set_schema=".interfaces.IComment" />
 
-  </content>
+  </class>
 
 
   <!-- XML-RPC presentation -->

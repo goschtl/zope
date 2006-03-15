@@ -3,7 +3,7 @@
    i18n_domain="zope"
    >
 
-  <content class=".onlinehelp.OnlineHelp">
+  <class class=".onlinehelp.OnlineHelp">
     <require
         permission="zope.View"
         interface=".interfaces.ISourceTextOnlineHelpTopic"
@@ -12,34 +12,34 @@
         permission="zope.View"
         attributes="context"
         />
-  </content>
+  </class>
 
   <!-- this is the generic help topic implementation -->
-  <content class=".onlinehelptopic.OnlineHelpTopic">
+  <class class=".onlinehelptopic.OnlineHelpTopic">
     <require
         permission="zope.View"
         interface=".interfaces.ISourceTextOnlineHelpTopic"
         />
-  </content>
+  </class>
 
   <!-- explicit restructured help topic implementation -->
-  <content class=".onlinehelptopic.RESTOnlineHelpTopic">
+  <class class=".onlinehelptopic.RESTOnlineHelpTopic">
     <require
         permission="zope.View"
         interface=".interfaces.IRESTOnlineHelpTopic"
         />
-  </content>
+  </class>
 
   <!-- explicit structured help topic implementation -->
-  <content class=".onlinehelptopic.STXOnlineHelpTopic">
+  <class class=".onlinehelptopic.STXOnlineHelpTopic">
     <require
         permission="zope.View"
         interface=".interfaces.ISTXOnlineHelpTopic"
         />
-  </content>
+  </class>
 
   <!-- explicit page template help topic implementation -->
-  <content class=".onlinehelptopic.ZPTOnlineHelpTopic">
+  <class class=".onlinehelptopic.ZPTOnlineHelpTopic">
     <factory
         id="onlinehelp.topic.zpt"
         />
@@ -47,14 +47,14 @@
         permission="zope.View"
         interface=".interfaces.IZPTOnlineHelpTopic"
         />
-  </content>
+  </class>
 
-  <content class=".onlinehelptopic.OnlineHelpResource">
+  <class class=".onlinehelptopic.OnlineHelpResource">
     <require
         permission="zope.View"
         interface=".interfaces.IOnlineHelpResource"
         />
-  </content>
+  </class>
 
   <!-- Setup OnlineHelp Root as a Utility -->
   <utility

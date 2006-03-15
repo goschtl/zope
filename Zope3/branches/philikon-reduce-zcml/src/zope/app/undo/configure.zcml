@@ -25,7 +25,7 @@
       />
 
 
-  <content class="zope.app.undo.ZODBUndoManager">
+  <class class="zope.app.undo.ZODBUndoManager">
     <require
         permission="zope.UndoOwnTransactions"
         interface="zope.app.undo.interfaces.IPrincipalUndo"
@@ -34,7 +34,7 @@
         permission="zope.UndoAllTransactions"
         interface="zope.app.undo.interfaces.IUndo"
         />
-  </content>
+  </class>
 
   <!-- Browser directives -->
 

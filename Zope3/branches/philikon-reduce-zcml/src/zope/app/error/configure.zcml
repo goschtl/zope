@@ -15,7 +15,7 @@
         />
   </localUtility>
 
-  <content class=".error.RootErrorReportingUtility">
+  <class class=".error.RootErrorReportingUtility">
     <require
         permission="zope.Public"
         interface=".interfaces.IErrorReportingUtility"
@@ -24,7 +24,7 @@
         permission="zope.ManageServices"
         interface=".interfaces.ILocalErrorReportingUtility"
         />
-  </content>
+  </class>
 
   <utility
       provides=".interfaces.IErrorReportingUtility"

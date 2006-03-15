@@ -2,7 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="zope">
 
-  <content class=".textareawidget.DemoTextAreaWidget">
+  <class class=".textareawidget.DemoTextAreaWidget">
 
     <require permission="zope.View" 
         interface=".interfaces.IDemoTextAreaWidget"
@@ -12,6 +12,6 @@
         set_schema=".interfaces.IDemoTextAreaWidget"
         />
 
-  </content>
+  </class>
 
 </configure>

@@ -1,57 +1,57 @@
 <configure
    xmlns="http://namespaces.zope.org/zope">
 
-  <content class="zope.i18n.format.NumberFormat">
+  <class class="zope.i18n.format.NumberFormat">
     <allow interface="zope.i18n.interfaces.INumberFormat" />
-  </content>
+  </class>
 
-  <content class="zope.i18n.format.DateTimeFormat">
+  <class class="zope.i18n.format.DateTimeFormat">
     <allow interface="zope.i18n.interfaces.IDateTimeFormat" />
-  </content>
+  </class>
 
 
-  <content class="zope.i18n.locales.LocaleIdentity">
+  <class class="zope.i18n.locales.LocaleIdentity">
     <allow interface="zope.i18n.interfaces.locales.ILocaleIdentity" />
-  </content>
+  </class>
 
-  <content class="zope.i18n.locales.LocaleVersion">
+  <class class="zope.i18n.locales.LocaleVersion">
     <allow interface="zope.i18n.interfaces.locales.ILocaleVersion" />
-  </content>
+  </class>
 
-  <content class="zope.i18n.locales.LocaleDisplayNames">
+  <class class="zope.i18n.locales.LocaleDisplayNames">
     <allow interface="zope.i18n.interfaces.locales.ILocaleDisplayNames" />
-  </content>
+  </class>
 
-  <content class="zope.i18n.locales.LocaleTimeZone">
+  <class class="zope.i18n.locales.LocaleTimeZone">
     <allow interface="zope.i18n.interfaces.locales.ILocaleTimeZone" />
-  </content>
+  </class>
 
-  <content class="zope.i18n.locales.LocaleFormat">
+  <class class="zope.i18n.locales.LocaleFormat">
     <allow interface="zope.i18n.interfaces.locales.ILocaleFormat" />
-  </content>
+  </class>
 
-  <content class="zope.i18n.locales.LocaleFormatLength">
+  <class class="zope.i18n.locales.LocaleFormatLength">
     <allow interface="zope.i18n.interfaces.locales.ILocaleFormatLength" />
-  </content>
+  </class>
 
-  <content class="zope.i18n.locales.LocaleCalendar">
+  <class class="zope.i18n.locales.LocaleCalendar">
     <allow interface="zope.i18n.interfaces.locales.ILocaleCalendar" />
-  </content>
+  </class>
 
-  <content class="zope.i18n.locales.LocaleDates">
+  <class class="zope.i18n.locales.LocaleDates">
     <allow interface="zope.i18n.interfaces.locales.ILocaleDates" />
-  </content>
+  </class>
 
-  <content class="zope.i18n.locales.LocaleCurrency">
+  <class class="zope.i18n.locales.LocaleCurrency">
     <allow interface="zope.i18n.interfaces.locales.ILocaleCurrency" />
-  </content>
+  </class>
 
-  <content class="zope.i18n.locales.LocaleNumbers">
+  <class class="zope.i18n.locales.LocaleNumbers">
     <allow interface="zope.i18n.interfaces.locales.ILocaleNumbers" />
-  </content>
+  </class>
 
-  <content class="zope.i18n.locales.Locale">
+  <class class="zope.i18n.locales.Locale">
     <allow interface="zope.i18n.interfaces.locales.ILocale" />
-  </content>
+  </class>
 
 </configure>

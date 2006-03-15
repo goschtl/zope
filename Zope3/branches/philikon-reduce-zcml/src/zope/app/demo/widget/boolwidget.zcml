@@ -2,7 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="zope">
 
-  <content class=".boolwidget.DemoBoolWidget">
+  <class class=".boolwidget.DemoBoolWidget">
 
     <require permission="zope.View" 
         interface=".interfaces.IDemoBoolWidget"
@@ -12,6 +12,6 @@
         set_schema=".interfaces.IDemoBoolWidget"
         />
 
-  </content>
+  </class>
 
 </configure>

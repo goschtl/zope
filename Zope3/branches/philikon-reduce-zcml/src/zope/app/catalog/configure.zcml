@@ -22,11 +22,11 @@
         />
   </localUtility>
   
-  <content class=".catalog.ResultSet">
+  <class class=".catalog.ResultSet">
     <require
         attributes="__iter__ __len__"
         permission="zope.Public"/>
-  </content>
+  </class>
   
   <subscriber
       handler=".catalog.indexAdded"
@@ -50,7 +50,7 @@
       />
   
   
-  <content class=".field.FieldIndex">
+  <class class=".field.FieldIndex">
     <require
         permission="zope.ManageServices"
         interface=".interfaces.IAttributeIndex
@@ -58,9 +58,9 @@
                   "
         set_schema=".interfaces.IAttributeIndex"
         />
-  </content>
+  </class>
   
-  <content class=".text.TextIndex">
+  <class class=".text.TextIndex">
     <require
         permission="zope.ManageServices"
         interface=".interfaces.IAttributeIndex
@@ -68,7 +68,7 @@
                   "
         set_schema=".interfaces.IAttributeIndex"
         />
-  </content>
+  </class>
   
   <include package=".browser" />
 

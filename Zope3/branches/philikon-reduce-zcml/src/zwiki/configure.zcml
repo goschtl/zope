@@ -86,7 +86,7 @@
       type="zope.app.content.interfaces.IContentType"
       /> 
 
-  <content class=".wiki.Wiki">
+  <class class=".wiki.Wiki">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -112,7 +112,7 @@
         permission="zwiki.AddWikiPage"
         interface="zope.app.container.interfaces.IWriteContainer"/>
 
-  </content>
+  </class>
 
   <!-- Mail Subscriptions support -->
   <adapter
@@ -141,7 +141,7 @@
       type="zope.app.content.interfaces.IContentType"
       /> 
 
-  <content class=".wikipage.WikiPage">
+  <class class=".wikipage.WikiPage">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -158,7 +158,7 @@
         permission="zwiki.AddWikiPage"
         set_schema=".interfaces.IWikiPage" />
 
-  </content>
+  </class>
 
   <adapter
       factory=".wikipage.WikiPageHierarchyAdapter"
@@ -186,7 +186,7 @@
       type="zope.app.content.interfaces.IContentType"
       />
 
-  <content class=".comment.Comment">
+  <class class=".comment.Comment">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -202,7 +202,7 @@
         permission="zwiki.CommentWikiPage"
         set_schema=".interfaces.IComment" />
 
-  </content>
+  </class>
 
   <adapter
      for=".interfaces.IComment"

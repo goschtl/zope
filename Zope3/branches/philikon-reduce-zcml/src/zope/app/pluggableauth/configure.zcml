@@ -32,7 +32,7 @@
         handler=".PluggableAuthenticationAddSubscriber"
         />
 
-  <content class=".BTreePrincipalSource">
+  <class class=".BTreePrincipalSource">
     <factory
         id="zope.app.principalsources.BTreePrincipalSource"
         />
@@ -47,9 +47,9 @@
     <allow
         interface=".interfaces.IPrincipalSource"
         />
-  </content>
+  </class>
 
-  <content class=".SimplePrincipal">
+  <class class=".SimplePrincipal">
     <factory
         id="zope.app.principals.SimplePrincipal"
         />
@@ -60,7 +60,7 @@
         permission="zope.ManageSite"
         set_schema=".interfaces.IUserSchemafied"
         />
-  </content>
+  </class>
 
   <browser:view
       name="login"

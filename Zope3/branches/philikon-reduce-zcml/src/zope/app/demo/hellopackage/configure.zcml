@@ -29,7 +29,7 @@ Declaration of a content object.
 
 This is defined by HelloClass in hellomodule.
 -->
-<content class=".hellomodule.HelloClass">
+<class class=".hellomodule.HelloClass">
   <implements 
       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
       />
@@ -56,7 +56,7 @@ This is defined by HelloClass in hellomodule.
       permission="zope.View"
       attributes="getHello"
       />
-</content>
+</class>
 
 <!--
 Create a hello.html view for Hello object.

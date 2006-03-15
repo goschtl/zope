@@ -2,7 +2,7 @@
 
 <!-- Stateful ProcessDefintion -->
 
-<content
+<class
     class=".definition.StatefulProcessDefinition">
   <factory
       id="zope.app.workflow.StatefulProcessDefinition"
@@ -22,12 +22,12 @@
       permission="zope.workflow.ManageProcessDefinitions"
       interface="zope.app.container.interfaces.IReadContainer"
       />
-</content>
+</class>
 
 
 <!-- States Container -->
 
-<content class=".definition.StatesContainer">
+<class class=".definition.StatesContainer">
   <factory
       id="zope.app.workflow.StatefulStatesContainer"
       />
@@ -38,11 +38,11 @@
   <implements
       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
       />
-</content>
+</class>
 
 <!-- State -->
 
-<content class=".definition.State">
+<class class=".definition.State">
   <factory
       id="zope.app.workflow.StatefulState"
       />
@@ -54,7 +54,7 @@
   <implements
       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
       />
-</content>
+</class>
 
 <utility
     component=".definition.StateNamesVocabulary"
@@ -63,7 +63,7 @@
 
 <!-- Transitions Container -->
 
-<content class=".definition.TransitionsContainer">
+<class class=".definition.TransitionsContainer">
   <factory
       id="zope.app.workflow.StatefulTransitionsContainer"
       />
@@ -74,11 +74,11 @@
   <implements
       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
       />
-</content>
+</class>
 
 <!-- Transition -->
 
-<content class=".definition.Transition">
+<class class=".definition.Transition">
   <factory
       id="zope.app.workflow.StatefulTransition"
       />
@@ -90,11 +90,11 @@
   <implements
       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
       />
-</content>
+</class>
 
 <!-- ContentWorkflowsManager -->
 
-<content
+<class
     class=".contentworkflow.ContentWorkflowsManager">
   <factory
     id="zope.app.workflow.ContentWorkflowsManager"
@@ -112,7 +112,7 @@
     interface=".interfaces.IContentWorkflowsManager"
     attributes="cpRegistry"
     />
-</content>
+</class>
 
 <class class=".instance.StatefulProcessInstance">
   <require

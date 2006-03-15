@@ -5,7 +5,7 @@
     i18n_domain="jobboardi18n"
     >
 
-<content class="zope.app.demo.jobboard.job.JobList">
+<class class="zope.app.demo.jobboard.job.JobList">
   <implements interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
   />
   <factory
@@ -14,7 +14,7 @@
       />
   <allow interface=".interfaces.IJobList" />
   <implements interface="zope.app.container.interfaces.IItemContainer" />
-</content>
+</class>
 
 <browser:addMenuItem
     title="I18N Job Board"
@@ -23,9 +23,9 @@
     permission="zope.ManageContent"
     />
 
-<content class=".job.Job">
+<class class=".job.Job">
   <allow interface="zope.app.demo.jobboard.interfaces.IJob" />
-</content>
+</class>
 
 <browser:page
     name="index.html"

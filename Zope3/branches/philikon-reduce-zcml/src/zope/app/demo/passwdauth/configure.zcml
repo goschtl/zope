@@ -3,7 +3,7 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="demo_passwdauth">
 
-<content class=".PasswdPrincipalSource">
+<class class=".PasswdPrincipalSource">
   <factory
       id="zope.app.principalsources.PasswdPrincipalSource"
       permission="zope.ManageServices"/>
@@ -11,7 +11,7 @@
   <require
       permission="zope.ManageContent"
       set_schema=".interfaces.IFileBasedPrincipalSource"/>
-</content>
+</class>
 
 <browser:addform
     schema=".interfaces.IFileBasedPrincipalSource" 

@@ -18,7 +18,7 @@
 
   <!-- content classes -->
 
-  <content class=".i18nfile.I18nFile">
+  <class class=".i18nfile.I18nFile">
     <factory
         id="zope.app.content.I18nFile"
         title="I18n File"
@@ -43,9 +43,9 @@
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
        />
-  </content>
+  </class>
 
-  <content class=".i18nimage.I18nImage">
+  <class class=".i18nimage.I18nImage">
     <factory
         id="zope.app.content.I18nImage"
         title="I18n Image"
@@ -71,7 +71,7 @@
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
        />
-  </content>
+  </class>
 
 
   <!-- include browser package -->

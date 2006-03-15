@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <content class="zope.schema.Field">
+  <class class="zope.schema.Field">
 
     <factory
         id="zope.schema.Field"
@@ -31,9 +31,9 @@
 	set_schema="zope.schema.interfaces.IField"
 	/>
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Container">
+  <class class="zope.schema.Container">
 
     <factory
         id="zope.schema.Container"
@@ -42,9 +42,9 @@
 
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Iterable">
+  <class class="zope.schema.Iterable">
 
     <factory
         id="zope.schema.Iterable"
@@ -53,9 +53,9 @@
 
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Orderable">
+  <class class="zope.schema.Orderable">
 
     <factory
         id="zope.schema.Orderable"
@@ -68,9 +68,9 @@
 	set_schema="zope.schema.interfaces.IMinMax"
 	/>
 
-  </content>
+  </class>
 
-  <content class="zope.schema.MinMaxLen">
+  <class class="zope.schema.MinMaxLen">
 
     <factory
         id="zope.schema.MinMaxLen"
@@ -83,9 +83,9 @@
 	set_schema="zope.schema.interfaces.IMinMaxLen"
 	/>
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Bytes">
+  <class class="zope.schema.Bytes">
 
     <factory
 	id="zope.schema.Bytes"
@@ -95,9 +95,9 @@
     <require like_class="zope.schema.MinMaxLen" />
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.BytesLine">
+  <class class="zope.schema.BytesLine">
 
     <factory
 	id="zope.schema.BytesLine"
@@ -107,9 +107,9 @@
     <require like_class="zope.schema.MinMaxLen" />
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Text">
+  <class class="zope.schema.Text">
 
     <factory
 	id="zope.schema.Text"
@@ -121,9 +121,9 @@
     <require like_class="zope.schema.MinMaxLen" />
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.TextLine">
+  <class class="zope.schema.TextLine">
 
     <factory
 	id="zope.schema.TextLine"
@@ -133,9 +133,9 @@
     <require like_class="zope.schema.MinMaxLen" />
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Bool">
+  <class class="zope.schema.Bool">
 
     <factory
 	id="zope.schema.Bool"
@@ -144,9 +144,9 @@
 
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Int">
+  <class class="zope.schema.Int">
 
     <factory
 	id="zope.schema.Int"
@@ -156,9 +156,9 @@
     <require like_class="zope.schema.Orderable" />
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Float">
+  <class class="zope.schema.Float">
 
     <factory
 	id="zope.schema.Float"
@@ -168,9 +168,9 @@
     <require like_class="zope.schema.Orderable" />
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Tuple">
+  <class class="zope.schema.Tuple">
 
     <factory
 	id="zope.schema.Tuple"
@@ -179,9 +179,9 @@
 
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.List">
+  <class class="zope.schema.List">
 
     <factory
 	id="zope.schema.List"
@@ -190,9 +190,9 @@
 
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Set">
+  <class class="zope.schema.Set">
 
     <factory
 	id="zope.schema.Set"
@@ -201,9 +201,9 @@
 
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Password">
+  <class class="zope.schema.Password">
 
     <factory
 	id="zope.schema.Password"
@@ -213,9 +213,9 @@
     <require like_class="zope.schema.MinMaxLen" />
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Dict">
+  <class class="zope.schema.Dict">
 
     <factory
 	id="zope.schema.Dict"
@@ -225,9 +225,9 @@
     <require like_class="zope.schema.MinMaxLen" />
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Datetime">
+  <class class="zope.schema.Datetime">
 
     <factory
 	id="zope.schema.Datetime"
@@ -237,9 +237,9 @@
     <require like_class="zope.schema.Orderable" />
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.SourceText">
+  <class class="zope.schema.SourceText">
 
     <factory
 	id="zope.schema.SourceText"
@@ -249,9 +249,9 @@
     <require like_class="zope.schema.MinMaxLen" />
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Object">
+  <class class="zope.schema.Object">
 
     <factory
 	id="zope.schema.Object"
@@ -262,9 +262,9 @@
        permission="zope.ManageContent"
        interface="zope.schema.interfaces.IObject" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.URI">
+  <class class="zope.schema.URI">
 
     <factory
 	id="zope.schema.URI"
@@ -274,9 +274,9 @@
     <require like_class="zope.schema.MinMaxLen" />
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.Id">
+  <class class="zope.schema.Id">
 
     <factory
 	id="zope.schema.Id"
@@ -286,9 +286,9 @@
     <require like_class="zope.schema.MinMaxLen" />
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.InterfaceField">
+  <class class="zope.schema.InterfaceField">
 
     <factory
 	id="zope.schema.InterfaceField"
@@ -297,14 +297,14 @@
 
     <require like_class="zope.schema.Field" />
 
-  </content>
+  </class>
 
-  <content class="zope.schema.vocabulary.SimpleTerm">
+  <class class="zope.schema.vocabulary.SimpleTerm">
     <allow interface="zope.schema.interfaces.ITitledTokenizedTerm" />
-  </content>
+  </class>
 
-  <content class="zope.schema.vocabulary.SimpleVocabulary">
+  <class class="zope.schema.vocabulary.SimpleVocabulary">
     <allow interface="zope.schema.interfaces.IVocabularyTokenized" />
-  </content>
+  </class>
 
 </configure>

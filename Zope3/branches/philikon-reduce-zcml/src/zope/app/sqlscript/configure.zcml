@@ -18,7 +18,7 @@
       type="zope.app.content.interfaces.IContentType"
       /> 
 
-  <content class=".sqlscript.SQLScript">
+  <class class=".sqlscript.SQLScript">
     <factory
         id="zope.app.content.SQLScript"
         title="SQL Script"
@@ -32,23 +32,23 @@
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
         />
-  </content>
+  </class>
 
 
   <!-- Arguments Directives -->
-  <content class=".sqlscript.Arguments">
+  <class class=".sqlscript.Arguments">
     <require
         permission="zope.ManageContent"
         interface="zope.interface.common.mapping.IEnumerableMapping"
         />
-  </content>
+  </class>
 
   <!-- SQL DTML Directives -->
-  <content class=".dtml.SQLDTML">
+  <class class=".dtml.SQLDTML">
     <require
         permission="zope.ManageContent"
         attributes="__call__" />
-  </content>
+  </class>
 
 
   <!-- include browser package -->

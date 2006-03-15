@@ -52,18 +52,18 @@
      handler=".permission.unsetIdOnDeactivation"
      />
 
-  <content class=".permission.Permission">
+  <class class=".permission.Permission">
     <allow interface=".interfaces.IPermission" />
-  </content>
+  </class>
 
-  <content class=".principalregistry.Principal">
+  <class class=".principalregistry.Principal">
     <allow interface=".interfaces.IPrincipal" />
-  </content>
+  </class>
 
-  <content class=".settings.PermissionSetting">
+  <class class=".settings.PermissionSetting">
     <require permission="zope.Public"
              attributes="getName getDescription __str__" />
-  </content>
+  </class>
 
   <adapter factory=".NoLogout" />
 
