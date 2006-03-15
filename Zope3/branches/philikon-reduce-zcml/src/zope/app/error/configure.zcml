@@ -1,12 +1,6 @@
 <configure 
     xmlns="http://namespaces.zope.org/zope">
 
-  <!-- BBB: 12/15/2004 -->
-  <modulealias
-    module="zope.app.error"
-    alias="zope.app.errorservice" />
-
-
   <localUtility class=".error.ErrorReportingUtility">
     <factory
         id="zope.app.ErrorLogging"

@@ -17,6 +17,7 @@ $Id$
 """
 import unittest
 import sys
+import warnings
 from zope.configuration import xmlconfig
 from zope.configuration.config import ConfigurationContext
 # math is imported as an example module to test with
@@ -37,15 +38,22 @@ stuff = """
 
 
 class Test(unittest.TestCase):
+
     def setUp(self):
         self.keys = sys.modules.keys()
+
+        def ignorewarning(message, category, filename, lineno, file=None):
+            pass
+        warnings.showwarning = ignorewarning
 
     def tearDown(self):
         keys = sys.modules.keys()
         for key in keys:
             if key not in self.keys:
                 del sys.modules[key]
-        
+
+        warnings.resetwarnings()
+
     def test_definemodulealias(self):
         context = ConfigurationContext()
         from zope.modulealias.metaconfigure import alias_module

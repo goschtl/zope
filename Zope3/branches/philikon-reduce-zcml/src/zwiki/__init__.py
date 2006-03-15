@@ -17,3 +17,7 @@ $Id$
 """
 from zope.i18nmessageid import MessageFactory
 ZWikiMessageFactory = MessageFactory("zwiki")
+
+# BBB
+import sys
+sys.modules['zope.app.wiki'] = sys.modules[__name__]

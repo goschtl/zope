@@ -7,9 +7,6 @@
    i18n_domain="zwiki"
    >
 
-  <!-- Backward compatibility -->
-  <modulealias module="zwiki" alias="zope.app.wiki" />
-
   <!-- Security definitions -->
 
   <role
