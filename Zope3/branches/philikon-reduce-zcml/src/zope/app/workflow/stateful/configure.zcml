@@ -56,9 +56,10 @@
       />
 </content>
 
-<vocabulary
+<utility
+    component=".definition.StateNamesVocabulary"
     name="Workflow State Names"
-    factory=".definition.StateNamesVocabulary" />
+    />
 
 <!-- Transitions Container -->
 

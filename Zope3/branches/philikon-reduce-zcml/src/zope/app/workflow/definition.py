@@ -18,13 +18,14 @@ $Id$
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
-from zope.interface import implements
+from zope.interface import implements, classProvides
 
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabularyTokenized
 
 from zope.app import zapi
 from zope.app.container.contained import Contained, setitem, uncontained
+from zope.app.schema.interfaces import IVocabularyFactory
 from zope.app.workflow.interfaces import IProcessDefinitionElementContainer
 from zope.app.workflow.interfaces import IProcessDefinition
 
@@ -107,6 +108,7 @@ class ProcessDefinitionTerm(object):
 class ProcessDefinitionVocabulary(object):
     """Vocabulary providing available process definition names."""
     implements(IVocabularyTokenized)
+    classProvides(IVocabularyFactory)
 
     def __init__(self, context):
         self.sm = zapi.getSiteManager(context)

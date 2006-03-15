@@ -3,11 +3,10 @@
     i18n_domain="zope"
     >
 
-  <vocabulary
+  <utility
+      component=".sqlscript.ConnectionNamesVocabulary"
       name="Connection Names"
-      factory="zope.app.component.vocabulary.UtilityVocabulary"
-      interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" 
-      nameOnly="True" />
+      />
 
   <permission
       id="zope.AddSQLScripts"

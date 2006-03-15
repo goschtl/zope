@@ -18,7 +18,7 @@ $Id$
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
-from zope.interface import implements
+from zope.interface import implements, classProvides
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.security.checker import CheckerPublic
 
@@ -26,6 +26,7 @@ from zope.app.container.interfaces import IReadContainer
 from zope.app.container.contained import Contained, containedEvent
 from zope.event import notify
 from zope.app.event.objectevent import ObjectEvent, modified
+from zope.app.schema.interfaces import IVocabularyFactory
 from zope.app.workflow.definition import ProcessDefinition
 from zope.app.workflow.definition import ProcessDefinitionElementContainer
 from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition
@@ -53,6 +54,7 @@ class NoLocalProcessDefinition(Exception):
 class StateNamesVocabulary(SimpleVocabulary):
     """Vocabulary providing the names of states in a local process definition.
     """
+    classProvides(IVocabularyFactory)
 
     def __init__(self, context):
         terms = [SimpleTerm(name) for name in self._getStateNames(context)]
@@ -102,8 +104,8 @@ class TransitionsContainer(ProcessDefinitionElementContainer):
 
 class StatefulProcessDefinition(ProcessDefinition):
     """Stateful workflow process definition."""
-
     implements(IStatefulProcessDefinition, IReadContainer)
+    classProvides(IVocabularyFactory)
 
     def __init__(self):
         super(StatefulProcessDefinition, self).__init__()

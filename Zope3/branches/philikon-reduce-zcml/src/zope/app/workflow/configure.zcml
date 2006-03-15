@@ -39,10 +39,10 @@
 
   <!-- Process Definition Name Vocabualry -->
 
-  <vocabulary
-     name="ProcessDefinitions"
-     factory=".definition.ProcessDefinitionVocabulary"
-     />
+  <utility
+      component=".definition.ProcessDefinitionVocabulary"
+      name="ProcessDefinitions"
+      />
 
   <content class=".definition.ProcessDefinitionVocabulary">
       <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>

@@ -21,12 +21,14 @@ from types import StringTypes
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
-from zope.interface import implements
+from zope.interface import implements, classProvides
 from zope.interface.common.mapping import IEnumerableMapping
 
 from zope.app import zapi
 from zope.app.rdb import queryForResults
 from zope.app.container.contained import Contained
+from zope.app.schema.interfaces import IVocabularyFactory
+from zope.app.component.vocabulary import UtilityVocabulary
 from zope.app.cache.caching import getCacheForObject, getLocationForCache
 from zope.app.rdb.interfaces import IZopeDatabaseAdapter
 
@@ -203,3 +205,8 @@ def parseArguments(text, result=None):
 
     return parseArguments(text[length:], result)
 
+
+class ConnectionNamesVocabulary(UtilityVocabulary):
+    classProvides(IVocabularyFactory)
+    interface = IZopeDatabaseAdapter
+    nameOnly = True
