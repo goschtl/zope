@@ -90,25 +90,30 @@
 
   <!-- Setting up the vocabularies for the bug tracker -->  
 
-  <vocabulary
+  <utility
+     component=".vocabulary.StatusVocabulary"
      name="Stati"
-     factory=".vocabulary.StatusVocabulary" />
+     />
 
-  <vocabulary
+  <utility
+     component=".vocabulary.ReleaseVocabulary"
      name="Releases"
-     factory=".vocabulary.ReleaseVocabulary" />
+     />
 
-  <vocabulary
+  <utility
+     component=".vocabulary.PriorityVocabulary"
      name="Priorities"
-     factory=".vocabulary.PriorityVocabulary" />
+     />
 
-  <vocabulary
+  <utility
+     component=".vocabulary.BugTypeVocabulary"
      name="BugTypes"
-     factory=".vocabulary.BugTypeVocabulary" />
+     />
 
-  <vocabulary
+  <utility
+     component=".vocabulary.UserVocabulary"
      name="Users"
-     factory=".vocabulary.UserVocabulary" />
+     />
 
   <content class=".vocabulary.ManagableVocabulary">
     <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
