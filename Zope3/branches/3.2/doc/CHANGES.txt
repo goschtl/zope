@@ -10,6 +10,8 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 568: Typo in basicskin css file.
+
       - Fixed issue 560: Bug in default AddView class.
 
       - Fixed issue 546: non-ASCII docstring cause
