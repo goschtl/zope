@@ -34,14 +34,5 @@
       view="AddcxOracleDA"
       />
 
-  <!-- Menu entry for "add connection" menu -->
-  <browser:menuItem
-      menu="add_connection"
-      for="zope.app.container.interfaces.IAdding"
-      title="cx_Oracle DA"
-      description="A cx_Oracle Database Adapter"
-      action="AddcxOracleDA"
-      />
-
 </configure>
 
