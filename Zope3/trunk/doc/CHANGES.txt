@@ -33,6 +33,10 @@ Zope Changes
         "pkg_resources" is available. This will enable distribution of
         "zope.*" packages as individual eggs.
 
+      - A new zope.app.annotation.factory helper function that makes
+        it easier to create annotations. Also added a README in
+        zope.app.annotation which explains how to use it.
+
     Restructuring
 
       - Removed 'Adding.renderAddButton' method which had been
