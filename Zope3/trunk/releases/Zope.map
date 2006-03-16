@@ -5,6 +5,9 @@ pytz           ../src/pytz
 zodbcode       ../src/zodbcode
 zope           ../src/zope
 
+# Twisted packages are needed for zope.app.twisted
+twisted        ../src/twisted
+
 # Child packages of Zope are handled separately when constructing Zope
 # distributions; this tells where to find all of them.
 zope.*         ../src/zope/
