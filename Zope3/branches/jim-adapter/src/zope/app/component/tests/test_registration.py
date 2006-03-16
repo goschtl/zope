@@ -30,8 +30,8 @@ def setUp(test):
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocFileSuite('../statusproperty.txt'),
-        doctest.DocFileSuite('../registration.txt',
+        doctest.DocFileSuite('deprecated35_statusproperty.txt'),
+        doctest.DocFileSuite('deprecated35_registration.txt',
                              setUp=setUp, tearDown=placelesssetup.tearDown),
         ))
 

@@ -46,30 +46,6 @@
       trusted="true"
       />
 
-  <subscriber
-      for=".interfaces.registration.IComponentRegistration
-           zope.app.container.interfaces.IObjectRemovedEvent"
-      handler=".registration.ComponentRegistrationRemoveSubscriber"
-      />
-
-  <subscriber
-      for=".interfaces.registration.IComponentRegistration
-           zope.app.container.interfaces.IObjectAddedEvent"
-      handler=".registration.ComponentRegistrationAddSubscriber"
-      />
-
-  <subscriber
-      for=".interfaces.registration.IComponentRegistration
-           .interfaces.registration.IRegistrationEvent"
-      handler=".registration.componentRegistrationEventNotify"
-      />
-
-  <subscriber
-      for=".interfaces.registration.IRegisterable
-           zope.app.container.interfaces.IObjectMovedEvent"
-      handler=".registration.RegisterableMoveSubscriber"
-      />
-
 
   <!-- Site and Site Manager Framework -->
 
