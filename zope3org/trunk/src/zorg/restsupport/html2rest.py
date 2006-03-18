@@ -37,6 +37,7 @@ import optparse
 import re
 import HTMLParser
 import StringIO
+from htmlentitydefs import  name2codepoint
 
 ### Global
 
@@ -724,8 +725,11 @@ class Html2ReStructuredTextParser(HTMLParser.HTMLParser):
         'table': True, 'tr': True, 'th': True, # uo: allow text in 'td'
     }
 
-    entities = { 'amp': '&', 'lt': '<', 'gt': '>', 'nbsp': ' ' }
-
+    entities = { 'amp': '&', 'lt': '<', 'gt': '>', 'nbsp': ' '}
+    
+    for name, code in name2codepoint.items() :      # uo
+        entities[name] = unichr(code).encode('utf-8')
+        
     charref = {
         8211: '-',
         8217: "'",
