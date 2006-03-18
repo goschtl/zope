@@ -4,3 +4,4 @@
 
 - May also need UI for unregistering registered object from site
   manager.
+
