@@ -41,20 +41,22 @@ class Components(object):
         self._subscription_registrations = []
         self._handler_registrations = []
 
+    def _getBases(self):
+        # Subclasses might override
+        return self.__dict__.get('__bases__', ())
+        
+    def _setBases(self, bases):
+        # Subclasses might override
+        self.adapters.__bases__ = tuple([
+            base.adapters for base in bases])
+        self.utilities.__bases__ = tuple([
+            base.utilities for base in bases])
+        self.__dict__['__bases__'] = bases
 
-    @apply
-    def __bases__():
-
-        def get_bases(self):
-            return self.__dict__['__bases__']
-        def set_bases(self, bases):
-            self.adapters.__bases__ = tuple([
-                base.adapters for base in bases])
-            self.utilities.__bases__ = tuple([
-                base.utilities for base in bases])
-            self.__dict__['__bases__'] = bases
-
-        return property(get_bases, set_bases)
+    __bases__ = property(
+        lambda self: self._getBases(),
+        lambda self, bases: self._setBases(bases),
+        )
 
     def registerUtility(self, component, provided=None, name=u'', info=u''):
         if provided is None:

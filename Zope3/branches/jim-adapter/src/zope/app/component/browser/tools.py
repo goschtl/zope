@@ -139,10 +139,9 @@ class SiteManagementView(browser.ComponentAdding):
     def toolExists(self, interface, name=''):
         """Check whether a tool already exists in this site"""
         sm = zapi.getSiteManager()
-        for reg in sm.registrations():
-            if isinstance(reg, site.UtilityRegistration):
-                if reg.name == name and reg.provided == interface:
-                    return True
+        for reg in sm.registeredUtilities():
+            if reg.name == name and reg.provided == interface:
+                return True
         return False
 
     def getUniqueTools(self):
@@ -258,7 +257,7 @@ class SiteManagementView(browser.ComponentAdding):
         """See zope.app.container.interfaces.IAdding"""
 
         name = self.contentName
-        if self.toolExists(self.activeTool.interface,name):
+        if self.toolExists(self.activeTool.interface, name):
             raise UserError(_(u'The given tool name is already being used.'))
         
         sm = self.context

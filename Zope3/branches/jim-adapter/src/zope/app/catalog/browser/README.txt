@@ -23,7 +23,8 @@ objects.  Before creating a catalog, you must create a intid tool:
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/++etc++site/default/@@+
   ... 
-  ... type_name=BrowserAdd__zope.app.intid.IntIds&id=&add=+Add+""")
+  ... type_name=BrowserAdd__zope.app.intid.IntIds&id=&add=+Add+""",
+  ... handle_errors=False)
   HTTP/1.1 303 ...
 
 And register it:

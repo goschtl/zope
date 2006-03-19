@@ -4,22 +4,26 @@ The Tools View
 
   >>> from zope import interface
 
+XXX There is no documentation in this doctest. :(
+
 First we define a utility to work with :
 
   >>> from zope.app.content.interfaces import IContentType
-  >>> from zope.app.component.interfaces.registration import IRegisterable
   >>> class IFooUtil(interface.Interface):
   ...     pass
   >>> class FooUtil(object):
   ...     __parent__ = None
   ...     __name__ = u''
-  ...     interface.implements(IFooUtil, IRegisterable, IContentType)
+  ...     interface.implements(IFooUtil, IContentType)
 
   >>> from zope.app.component.browser import tools
   >>> from zope import component
 
+We create a tool-configuration utility that provides information for
+the the UI.
+
   >>> toolConfig = tools.ToolConfiguration(IFooUtil, 'FooUtil')
-  >>> component.provideUtility(toolConfig, tools.IToolConfiguration, 'IFooUtil')
+  >>> component.provideUtility(toolConfig, name='IFooUtil')
 
 We need a factory to create our new utility :
 

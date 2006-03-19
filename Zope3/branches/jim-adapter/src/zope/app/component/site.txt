@@ -177,7 +177,7 @@ registrations:
   MyUtility('Global Utility')
 
 Next let's see whether we can also successfully register an adapter as
-well. Here the adpater will provide the size of a file:
+well. Here the adapter will provide the size of a file:
 
   >>> class IFile(zope.interface.Interface):
   ...     pass
@@ -193,19 +193,9 @@ well. Here the adpater will provide the size of a file:
   ...     def __init__(self, context):
   ...         self.context = context
 
-We place the adapter in a particular module, so that adapter registration will
-be able to look it up by name.
+Now that we have the adapter we need to register it:
 
-  >>> import sys
-  >>> sys.modules['zope.app.component.tests'].FileSize = FileSize
-
-Now that we the adapter we need to register it:
-
-  >>> areg = site.AdapterRegistration(IFile, ISized, 
-  ...                                 'zope.app.component.tests.FileSize')
-  >>> default.registrationManager.addRegistration(areg)
-  'AdapterRegistration'
-  >>> areg.status = interfaces.registration.ActiveStatus
+  >>> sm.registerAdapter(FileSize, [IFile])
 
 Finally, we can get the adapter for a file:
 
@@ -343,6 +333,7 @@ Finally, we make a copy of `myfolder21` and add it as `myfolder11` to
 
   # Make sure that our interfaces and classes are picklable.
 
+  >>> import sys
   >>> sys.modules['zope.app.component.tests'].IMyUtility = IMyUtility
   >>> IMyUtility.__module__ = 'zope.app.component.tests'
   >>> sys.modules['zope.app.component.tests'].MyUtility = MyUtility
