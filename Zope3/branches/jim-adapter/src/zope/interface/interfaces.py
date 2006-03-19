@@ -483,6 +483,31 @@ class IInterfaceDeclaration(Interface):
         adds I2 to the interfaces directly provided by ob.
         """
 
+    def alsoProvides(object, *interfaces):
+        """Declare additional interfaces directly for an object::
+
+          alsoProvides(ob, I1)
+
+        is equivalent to::
+
+          directivelyProvides(ob, directlyProvidedBy(ob), I1)
+        """
+
+    def noLongerProvides(object, interface):
+        """Remove an interface from the list of an object's directly
+        provided interfaces::
+
+          noLongerProivdes(ob, I1)
+
+        is equivalent to::
+
+          directlyProvides(ob, directlyProvidedBy(ob)-I1)
+
+        with the exception that if ``I1`` is an interface that is
+        provided by ``ob`` through the class's implementation,
+        ValueError is raised.
+        """
+
     def implements(*interfaces):
         """Declare interfaces implemented by instances of a class
 
