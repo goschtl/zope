@@ -46,6 +46,8 @@ Zope Changes
 
         * vocabulary
 
+        * content (as an alias to the class directive)
+
         * modulealias
 
         * renderer:renderer
