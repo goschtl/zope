@@ -22,9 +22,10 @@
       />
 
 <!-- Case-insensitive Folder Registration -->
-<factory
-    id="zope.CaseInsensitiveFolder"
+<utility
     component=".caseInsensitiveFolderFactory"
+    name="zope.CaseInsensitiveFolder"
+    permission="zope.Public"
     />
 
 <browser:addMenuItem

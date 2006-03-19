@@ -17,20 +17,21 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.component import adapts
+from zope.component.interfaces import IFactory
+from zope.interface import implements, implementedBy
+from zope.interface import directlyProvides, directlyProvidedBy 
+from zope.publisher.interfaces import NotFound
+
 from zope.app import zapi
 from zope.app.folder import Folder
 from zope.app.folder.interfaces import IFolder
 from zope.app.container.traversal import ContainerTraverser
 from zope.app.container.interfaces import IReadContainer
-from zope.component.interfaces import IFactory
-from zope.interface import \
-     implements, implementedBy, directlyProvides, directlyProvidedBy 
-from zope.publisher.interfaces import NotFound
-
+from zope.app.i18n import ZopeMessageFactory as _
 
 class CaseInsensitiveContainerTraverser(ContainerTraverser):
-
-    __used_for__ = IReadContainer
+    adapts(IReadContainer)
 
     def publishTraverse(self, request, name):
         """See zope.publisher.interfaces.browser.IBrowserPublisher"""
@@ -63,8 +64,8 @@ class CaseInsensitiveFolderFactory(object):
     """A Factory that creates case-insensitive Folders."""
     implements(IFactory)
 
-    title = "Case-Insensitive Folder Factory"
-    description = "A Factory that creates case-insensitive Folders."
+    title = _("Case insensitive Folder")
+    description = _("A simple case insensitive Folder.")
 
     def __call__(self):
         """See zope.component.interfaces.IFactory

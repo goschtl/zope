@@ -7,14 +7,14 @@
 
 <i18n:registerTranslations directory="locales" />
 
-<content class=".buddy.Buddy">
+<class class=".buddy.Buddy">
    <implements 
        interface="zope.app.annotation.IAttributeAnnotatable" />
    <require permission="zope.View"
             interface=".interfaces.IBuddy" />
    <require permission="zope.ManageContent"
             set_schema=".interfaces.IBuddy" />
-</content>
+</class>
 
 <browser:page
     for=".interfaces.IBuddy"
@@ -48,9 +48,9 @@
     view="AddBuddy.html"
     />
 
-<content class=".stubpostal.Info">
+<class class=".stubpostal.Info">
   <allow interface=".interfaces.IPostalInfo" />
-</content>
+</class>
 
 <utility
     factory=".stubpostal.Lookup"
@@ -81,14 +81,14 @@
       />
 </browser:pages>
 
-<content class=".buddy.BuddyFolder">
+<class class=".buddy.BuddyFolder">
   <require permission="zope.View"
            interface="zope.app.container.interfaces.IReadContainer"
            />
   <require permission="zope.ManageContent"
            interface="zope.app.container.interfaces.IWriteContainer"
            />
-</content>
+</class>
 
 <browser:addMenuItem
     title="Buddy Folder"

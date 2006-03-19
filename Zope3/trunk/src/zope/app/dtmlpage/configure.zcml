@@ -9,7 +9,7 @@
       type="zope.app.content.interfaces.IContentType"
       /> 
 
-  <content class=".dtmlpage.DTMLPage">
+  <class class=".dtmlpage.DTMLPage">
     <factory
         id="zope.app.DTMLPage"
         title="DTML Page"
@@ -35,7 +35,7 @@
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
        />
-  </content>
+  </class>
 
   <adapter 
       for="zope.app.folder.interfaces.IFolder"

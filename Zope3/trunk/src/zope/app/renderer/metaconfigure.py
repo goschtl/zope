@@ -15,6 +15,9 @@
 
 $Id$
 """
+# BBB 2006/02/24, to be removed after 12 months
+
+import warnings
 from zope.app import zapi
 from zope.app.component.metaconfigure import handler
 from zope.configuration.fields import GlobalInterface, GlobalObject
@@ -43,6 +46,22 @@ class IRendererDirective(Interface):
 
 # TODO: Does not seem to be tested
 def renderer(_context, sourceType, for_, factory):
+    def dottify(obj):
+        try:
+            return obj.__module__ + '.' + obj.__name__
+        except AttributeError:
+            return '...'
+    warnings.warn_explicit(
+        "The 'renderer' directive has been deprecated and will be "
+        "removed in Zope 3.5.  Use the 'view' directive instead:\n"
+        '  <browser:view\n'
+        '      name=""\n'
+        '      for="%s"\n'
+        '      class="%s"\n'
+        '      permission="zope.Public"\n'
+        '      />' % (dottify(sourceType), dottify(factory)),
+        DeprecationWarning, _context.info.file, _context.info.line)
+
     _context.action(
         discriminator = ('view', sourceType, u'', for_, 'default'),
         callable = handler,

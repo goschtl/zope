@@ -3,7 +3,7 @@
 
   <interface interface=".testobject.IWorkflowData"/>
 
-  <content class=".testobject.TestObject">
+  <class class=".testobject.TestObject">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"/>
@@ -21,6 +21,6 @@
         interface=".testobject.ITestObject"
         set_schema=".testobject.ITestObject" />
 
-  </content>
+  </class>
 
 </configure>

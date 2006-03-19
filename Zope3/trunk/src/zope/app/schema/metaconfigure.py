@@ -15,8 +15,9 @@
 
 $Id$
 """
+import warnings
 from zope.interface import directlyProvides
-from vocabulary import IVocabularyFactory
+from zope.app.schema.interfaces import IVocabularyFactory
 from zope.app.component.metaconfigure import utility
 
 class FactoryKeywordPasser(object):
@@ -30,9 +31,23 @@ class FactoryKeywordPasser(object):
         return self.factory(object, **self.kwargs)
 
 
+# BBB 2006/02/24, to be removed after 12 months
 def vocabulary(_context, name, factory, **kw):
+    try:
+        dottedname = factory.__module__ + "." + factory.__name__
+    except AttributeError:
+        dottedname = '...'
+    warnings.warn_explicit(
+        "The 'vocabulary' directive has been deprecated and will be "
+        "removed in Zope 3.5.  Use the 'utility' directive instead to "
+        "register the class as a named utility:\n"
+        '  <utility\n'
+        '      provides="zope.app.schema.interfaces.IVocabularyFactory"\n'
+        '      component="%s"\n'
+        '      name="%s"\n'
+        '      />' % (dottedname, name),
+        DeprecationWarning, _context.info.file, _context.info.line)
     if kw:
         factory = FactoryKeywordPasser(factory, kw)
     directlyProvides(factory, IVocabularyFactory)
     utility(_context, IVocabularyFactory, factory, name=name)
-

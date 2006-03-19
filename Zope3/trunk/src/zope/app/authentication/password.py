@@ -19,7 +19,9 @@ $Id$
 import md5
 import sha
 
-from zope.interface import implements
+from zope.interface import implements, classProvides
+from zope.app.schema.interfaces import IVocabularyFactory
+from zope.app.component.vocabulary import UtilityVocabulary
 
 from zope.app.authentication.interfaces import IPasswordManager
 
@@ -102,3 +104,8 @@ managers = [
     ("MD5", MD5PasswordManager()),
     ("SHA1", SHA1PasswordManager()),
 ]
+
+class PasswordManagerNamesVocabulary(UtilityVocabulary):
+    classProvides(IVocabularyFactory)
+    interface = IPasswordManager
+    nameOnly = True

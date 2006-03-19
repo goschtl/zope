@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,13 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZWiki for Zope 3
+"""Mail vocabularies
 
 $Id$
 """
-from zope.i18nmessageid import MessageFactory
-ZWikiMessageFactory = MessageFactory("zwiki")
+__docformat__ = 'restructuredtext'
 
-# BBB
-import sys
-sys.modules['zope.app.wiki'] = sys.modules[__name__]
+from zope.interface import classProvides
+from zope.app.schema.interfaces import IVocabularyFactory
+from zope.app.component.vocabulary import UtilityVocabulary
+
+class MailDeliveryNames(UtilityVocabulary):
+    classProvides(IVocabularyFactory)

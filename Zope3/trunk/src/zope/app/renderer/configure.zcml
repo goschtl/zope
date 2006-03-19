@@ -5,17 +5,18 @@
 
   <!-- Source Type Vocabulary Setup -->
 
-  <vocabulary
+  <utility
+      component=".vocabulary.SourceTypeVocabulary"
+      provides="zope.app.schema.interfaces.IVocabularyFactory"
       name="SourceTypes"
-      factory=".vocabulary.SourceTypeVocabulary" />
+      />
 
   <!-- Plain Text Support -->
 
-  <factory
+  <utility
       component=".plaintext.PlainTextSourceFactory"
-      id="zope.source.plaintext"
-      title="Plain Text" 
-      description="Plain Text Source" />
+      name="zope.source.plaintext"
+      />
 
   <browser:view
       name=""
@@ -25,11 +26,10 @@
 
   <!-- STX support -->
 
-  <factory
+  <utility
       component=".stx.StructuredTextSourceFactory"
-      id="zope.source.stx"
-      title="Structured Text (STX)"
-      description="Structured Text (STX) Source" />
+      name="zope.source.stx"
+      />
 
   <browser:view
       name=""
@@ -39,11 +39,10 @@
 
   <!-- ReST support -->
 
-  <factory
+  <utility
       component=".rest.ReStructuredTextSourceFactory"
-      id="zope.source.rest"
-      title="ReStructured Text (ReST)"
-      description="ReStructured Text (ReST) Source" />
+      name="zope.source.rest"
+      />
 
   <browser:view
       name=""

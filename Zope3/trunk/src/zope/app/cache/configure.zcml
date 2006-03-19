@@ -23,12 +23,10 @@
         />
   </localUtility>
 
-  <vocabulary
+  <utility
+      component=".caching.CacheNamesVocabulary"
       name="Cache Names"
-      factory="zope.app.component.vocabulary.UtilityVocabulary"
-      interface="zope.app.cache.interfaces.ICache"
-      nameOnly="True" />
-
+      />
 
   <!-- Include browser package -->
 

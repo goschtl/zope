@@ -4,13 +4,13 @@
     i18n_domain="zope"
     >
 
-  <content class=".registration.PageRegistration">
+  <class class=".registration.PageRegistration">
     <require
         permission="zope.ManageSite"
         interface=".interfaces.IPageRegistration"
         set_schema=".interfaces.IPageRegistration"
         />
-  </content>
+  </class>
   
   <class class=".registration.Registered">
     <allow attributes="registrations" />
@@ -37,7 +37,7 @@
 
   <!-- Page Folder -->
 
-  <content class=".pagefolder.PageFolder">
+  <class class=".pagefolder.PageFolder">
     <factory
         id="zope.app.presentation.pagefolder.PageFolder"
         title="View Folder"
@@ -56,7 +56,7 @@
         set_schema=".interfaces.IPageFolderInfo"
         attributes="registrationManager applyDefaults" 
         />
-  </content>
+  </class>
   
   <adapter
       for=".interfaces.IPageFolder"
@@ -87,7 +87,7 @@
 
   <!-- Page Templates  -->
   
-  <content class=".zpt.ZPTTemplate">
+  <class class=".zpt.ZPTTemplate">
     <factory
         title="ZPT Template"
         description="Persistent View Page Template"
@@ -104,7 +104,7 @@
         interface=".interfaces.IZPTTemplate"
         set_schema=".interfaces.IZPTTemplate"
         />
-  </content>
+  </class>
   
   <adapter
       for=".interfaces.IZPTTemplate"

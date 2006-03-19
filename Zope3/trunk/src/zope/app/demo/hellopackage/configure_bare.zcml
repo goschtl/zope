@@ -6,7 +6,7 @@
    i18n_domain="hellopackage"
    >
 
-<content class=".hellomodule.HelloClass">
+<class class=".hellomodule.HelloClass">
   <factory
       id="hellopackage.Hello"
       title="Hello world"
@@ -16,7 +16,7 @@
       permission="zope.View"
       attributes="getHello"
       />
-</content>
+</class>
 
 <browser:page
     name="hello.html"

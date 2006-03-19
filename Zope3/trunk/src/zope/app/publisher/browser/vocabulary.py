@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,13 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZWiki for Zope 3
+"""Browser vocabularies
 
 $Id$
 """
-from zope.i18nmessageid import MessageFactory
-ZWikiMessageFactory = MessageFactory("zwiki")
+from zope.interface import classProvides
+from zope.publisher.interfaces.browser import IBrowserSkinType
+from zope.app.component.vocabulary import UtilityVocabulary
+from zope.app.schema.interfaces import IVocabularyFactory
 
-# BBB
-import sys
-sys.modules['zope.app.wiki'] = sys.modules[__name__]
+class BrowserSkinsVocabulary(UtilityVocabulary):
+    classProvides(IVocabularyFactory)
+    interface = IBrowserSkinType

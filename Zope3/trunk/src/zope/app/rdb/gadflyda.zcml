@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <content class="zope.app.rdb.gadflyda.GadflyAdapter">
+  <class class="zope.app.rdb.gadflyda.GadflyAdapter">
     <factory
         title="Gadfly Database Adapter" />
     <require
@@ -9,16 +9,16 @@
     <require
         permission="zope.ManageServices"
         interface="zope.app.rdb.interfaces.IZopeDatabaseAdapterManagement" />
-  </content>
+  </class>
 
-  <content class="zope.app.rdb.gadflyda.GadflyAdapterCursor">
+  <class class="zope.app.rdb.gadflyda.GadflyAdapterCursor">
     <allow
         interface="zope.app.rdb.interfaces.IZopeCursor" />
-  </content>
+  </class>
 
-  <content class="zope.app.rdb.gadflyda.GadflyAdapterConnection">
+  <class class="zope.app.rdb.gadflyda.GadflyAdapterConnection">
     <allow
         interface="zope.app.rdb.interfaces.IZopeConnection" />
-  </content>
+  </class>
 
 </configure>

@@ -4,13 +4,13 @@
     i18n_domain="zope"
     >
 
-  <content class=".principalfolder.InternalPrincipal">
+  <class class=".principalfolder.InternalPrincipal">
     <require
         permission="zope.ManageServices"
         interface=".principalfolder.IInternalPrincipal"
         set_schema=".principalfolder.IInternalPrincipal"
         />
-  </content>
+  </class>
 
   <localUtility class=".principalfolder.PrincipalFolder">
 

@@ -8,7 +8,7 @@
       type="zope.app.content.interfaces.IContentType"
       /> 
 
-  <content class=".zptpage.ZPTPage">
+  <class class=".zptpage.ZPTPage">
     <factory
         id="zope.app.content.ZPTPage"
         title="ZPT Page"
@@ -30,7 +30,7 @@
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
         />
-  </content>
+  </class>
 
   <adapter 
       for="zope.app.folder.interfaces.IFolder"

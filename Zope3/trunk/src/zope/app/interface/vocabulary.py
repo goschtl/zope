@@ -17,10 +17,11 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.interface import providedBy
+from zope.interface import classProvides, providedBy
 from zope.security.proxy import removeSecurityProxy
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm 
 from zope.app.component.interface import interfaceToName
+from zope.app.schema.interfaces import IVocabularyFactory
 
 
 class ObjectInterfacesVocabulary(SimpleVocabulary):
@@ -50,6 +51,7 @@ class ObjectInterfacesVocabulary(SimpleVocabulary):
      'zope.app.interface.vocabulary.I3',
      'zope.interface.Interface']
     """
+    classProvides(IVocabularyFactory)
 
     def __init__(self, context):
         # Remove the security proxy so the values from the vocabulary

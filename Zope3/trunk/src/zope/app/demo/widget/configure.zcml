@@ -4,7 +4,7 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="zope">
 
-  <content class="zope.app.demo.widget.app.DemoWidgetContainer">
+  <class class="zope.app.demo.widget.app.DemoWidgetContainer">
 
     <implements 
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -15,7 +15,7 @@
     <require permission="zope.ManageContent" 
         interface="zope.app.container.interfaces.IWriteContainer" />
 
-  </content>
+  </class>
 
   <!-- demo widgets -->
   <include file="boolwidget.zcml" />

@@ -26,6 +26,7 @@ from zope.schema import vocabulary
 import zope.app.dublincore.interfaces
 from zope.app.component.interfaces import ILocalUtility
 from zope.app.i18n import ZopeMessageFactory as _
+from zope.app.schema.interfaces import IVocabularyFactory
 
 from zope.app.authentication import interfaces
 
@@ -89,6 +90,10 @@ def authenticatorPlugins(context):
     return _pluginVocabulary(
         context, interfaces.IAuthenticatorPlugin, 'authenticatorPlugins')
 
+interface.alsoProvides(authenticatorPlugins, IVocabularyFactory)
+
 def credentialsPlugins(context):
     return _pluginVocabulary(
         context, interfaces.ICredentialsPlugin, 'credentialsPlugins')
+
+interface.alsoProvides(credentialsPlugins, IVocabularyFactory)

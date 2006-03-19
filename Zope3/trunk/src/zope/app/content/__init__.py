@@ -16,12 +16,17 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
+from zope.interface import classProvides
 from zope.app.interface import queryType
+from zope.app.schema.interfaces import IVocabularyFactory
 from zope.app.content.interfaces import IContentType
+from zope.app.component.vocabulary import UtilityVocabulary
 
 def queryContentType(object):
     """Returns the interface implemented by object which implements
     `IContentType`."""
     return queryType(object, IContentType)
 
-
+class ContentTypesVocabulary(UtilityVocabulary):
+    classProvides(IVocabularyFactory)
+    interface = IContentType

@@ -25,11 +25,16 @@ $Id$
 __docformat__ = 'restructuredtext'
 import sys
 import types
+import warnings
 
 class ModuleAliasException(Exception):
     pass
 
 def define_module_alias(_context, module, alias):
+    warnings.warn_explicit(
+        "The 'modulealais' directive has been deprecated and will be "
+        "removed in Zope 3.5.  Manipulate sys.modules manually instead.",
+        DeprecationWarning, _context.info.file, _context.info.line)    
     _context.action(
         discriminator = None,
         callable = alias_module,
@@ -49,4 +54,3 @@ def alias_module(module, alias, context):
             '"alias" module %s already exists in sys.modules' % alias)
     
     sys.modules[alias] = module_ob
-

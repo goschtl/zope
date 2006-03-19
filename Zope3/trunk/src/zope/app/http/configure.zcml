@@ -1,8 +1,8 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-<content class=".put.NullResource">
+<class class=".put.NullResource">
   <allow interface="zope.app.http.interfaces.INullResource" />
-</content>
+</class>
 
 <view
   for="zope.app.container.interfaces.ISimpleReadContainer"

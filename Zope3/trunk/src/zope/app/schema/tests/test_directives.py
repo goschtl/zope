@@ -15,7 +15,10 @@
 
 $Id$
 """
+# BBB 2006/02/24, to be removed after 12 months
+
 import unittest
+import warnings
 
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
@@ -34,6 +37,16 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     extra_keywords = {"filter": "my-filter",
                       "another": "keyword"}
+
+    def setUp(self):
+        super(DirectivesTest, self).setUp()
+        def ignorewarning(message, category, filename, lineno, file=None):
+            pass
+        warnings.showwarning = ignorewarning
+
+    def tearDown(self):
+        super(DirectivesTest, self).tearDown()
+        warnings.resetwarnings()
 
     def check_vocabulary_get(self, kw={}):
         context = object()

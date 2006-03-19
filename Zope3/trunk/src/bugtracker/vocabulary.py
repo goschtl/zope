@@ -18,13 +18,14 @@ $Id$
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
-from zope.interface import implements
+from zope.interface import implements, classProvides
 from zope.schema.interfaces import ITokenizedTerm, ITitledTokenizedTerm
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.vocabulary import getVocabularyRegistry
 from zope.security.proxy import removeSecurityProxy 
 
 from zope.app import zapi
+from zope.app.schema.interfaces import IVocabularyFactory
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 
 from bugtracker.interfaces import IManagableVocabulary, IBugTracker
@@ -131,8 +132,8 @@ class ManagableVocabulary(object):
 
 
 class StatusVocabulary(ManagableVocabulary):
-
     implements(IStatusVocabulary)
+    classProvides(IVocabularyFactory)
 
     key = 'bugtracker.status.values'
     interface = IBugTracker
@@ -141,8 +142,8 @@ class StatusVocabulary(ManagableVocabulary):
 
 
 class ReleaseVocabulary(ManagableVocabulary):
-
     implements(IReleaseVocabulary)
+    classProvides(IVocabularyFactory)
 
     key = 'bugtracker.release.values'
     interface = IBugTracker
@@ -151,8 +152,8 @@ class ReleaseVocabulary(ManagableVocabulary):
 
 
 class PriorityVocabulary(ManagableVocabulary):
-
     implements(IPriorityVocabulary)
+    classProvides(IVocabularyFactory)
 
     key = 'bugtracker.priority.values'
     interface = IBugTracker
@@ -161,8 +162,8 @@ class PriorityVocabulary(ManagableVocabulary):
 
 
 class BugTypeVocabulary(ManagableVocabulary):
-
     implements(IBugTypeVocabulary)
+    classProvides(IVocabularyFactory)
 
     key = 'bugtracke.bugtype.values'
     interface = IBugTracker
@@ -171,8 +172,8 @@ class BugTypeVocabulary(ManagableVocabulary):
 
 
 class UserTerm(Persistent):
-
     implements(ITitledTokenizedTerm)
+    classProvides(IVocabularyFactory)
 
     def __init__(self, principal):
         # This is safe here, since we only read non-critical data
@@ -187,8 +188,8 @@ class UserTerm(Persistent):
 
 
 class UserVocabulary(object):
-
     implements(IVocabulary, IVocabularyTokenized)
+    classProvides(IVocabularyFactory)
 
     def __init__(self, context):
         self.auth = zapi.principals()

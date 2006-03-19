@@ -39,23 +39,23 @@
 
   <!-- Process Definition Name Vocabualry -->
 
-  <vocabulary
-     name="ProcessDefinitions"
-     factory=".definition.ProcessDefinitionVocabulary"
-     />
+  <utility
+      component=".definition.ProcessDefinitionVocabulary"
+      name="ProcessDefinitions"
+      />
 
-  <content class=".definition.ProcessDefinitionVocabulary">
+  <class class=".definition.ProcessDefinitionVocabulary">
       <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
-  </content>
+  </class>
 
-  <content class=".definition.ProcessDefinitionTerm">
+  <class class=".definition.ProcessDefinitionTerm">
       <allow interface="zope.schema.interfaces.ITokenizedTerm"/>
-  </content>
+  </class>
 
 
   <!-- Process Instance Container -->
 
-  <content 
+  <class 
         class="zope.app.workflow.definition.ProcessDefinitionElementContainer">
 
     <implements
@@ -71,7 +71,7 @@
         permission="zope.workflow.ManageProcessDefinitions"
         interface="zope.app.container.interfaces.IWriteContainer"
         />
-  </content>
+  </class>
 
   <adapter
       factory="zope.app.workflow.instance.ProcessInstanceContainerAdapter"

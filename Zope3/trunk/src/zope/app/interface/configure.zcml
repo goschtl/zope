@@ -1,7 +1,8 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <vocabulary
+  <utility
+      component=".vocabulary.ObjectInterfacesVocabulary"
       name="Object Interfaces"
-      factory=".vocabulary.ObjectInterfacesVocabulary" />
+      />
 
 </configure>

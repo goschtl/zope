@@ -5,7 +5,7 @@
 
 <!-- CheckinMessage content object -->
 
-  <content class=".message.Message">
+  <class class=".message.Message">
 
     <require permission="zope.View"
              interface=".interfaces.IMessage" />
@@ -13,9 +13,9 @@
     <implements
       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
-  </content>
+  </class>
 
-  <content class=".message.CheckinMessage">
+  <class class=".message.CheckinMessage">
 
     <require permission="zope.View"
              interface=".interfaces.ICheckinMessage" />
@@ -23,9 +23,9 @@
     <implements
       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
-  </content>
+  </class>
 
-  <content class=".folder.CheckinFolder">
+  <class class=".folder.CheckinFolder">
 
      <require permission="zope.View"
               interface="zope.app.container.interfaces.IReadContainer" />
@@ -49,7 +49,7 @@
      <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
-  </content>
+  </class>
 
 <!-- Utilities -->
 

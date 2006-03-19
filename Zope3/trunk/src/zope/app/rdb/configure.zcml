@@ -8,26 +8,26 @@
       title="[zope.app.rdb.Use] Use Database Connections"
       />
 
-  <content class="zope.app.rdb.ZopeConnection">
+  <class class="zope.app.rdb.ZopeConnection">
     <require
         permission="zope.ManageContent"
         interface="zope.app.rdb.interfaces.IZopeConnection"
         />
-  </content>
+  </class>
 
-  <content class="zope.app.rdb.ZopeCursor">
+  <class class="zope.app.rdb.ZopeCursor">
     <require
         permission="zope.ManageContent"
         interface="zope.app.rdb.interfaces.IZopeCursor"
         />
-  </content>
+  </class>
 
-  <content class="zope.app.rdb.Row">
+  <class class="zope.app.rdb.Row">
     <require
         permission="zope.ManageContent"
         attributes="__getattr__"
         />
-  </content>
+  </class>
 
   <localUtility class="zope.app.rdb.ZopeDatabaseAdapter">
 
@@ -37,7 +37,7 @@
 
   </localUtility>
 
-  <content class="zope.app.rdb.ResultSet">
+  <class class="zope.app.rdb.ResultSet">
     <!-- require zope.View for all list methods -->
     <require
         permission="zope.View"
@@ -50,7 +50,7 @@
         permission="zope.View"
         attributes="columns"
         />
-  </content>
+  </class>
 
   <include file="gadflyda.zcml" />
 

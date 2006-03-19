@@ -2,7 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="zope">
 
-  <content class=".textwidget.DemoTextWidget">
+  <class class=".textwidget.DemoTextWidget">
 
     <require permission="zope.View" 
         interface=".interfaces.IDemoTextWidget"
@@ -12,6 +12,6 @@
         set_schema=".interfaces.IDemoTextWidget"
         />
 
-  </content>
+  </class>
 
 </configure>
