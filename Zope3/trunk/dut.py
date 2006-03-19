@@ -25,7 +25,7 @@ def test_xxx():
     """
 
 def test_suite():
-    return unittest.TestSuite((
+    return unittest.TestSuite([
 
         # Uncomment the following line if there are tests in this module:
         # DocTestSuite(),
@@ -34,7 +34,7 @@ def test_suite():
         # sources.  Pass the dotted name of the module:
         # DocTestSuite('mypackage.mymodule'),
         
-        ))
+        ])
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
