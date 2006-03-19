@@ -39,6 +39,20 @@ Zope Changes
 
     Restructuring
 
+      - Deprecated several ZCML directives as described in
+        http://dev.zope.org/Zope3/ReducingTheAmountOfZCMLDirectives:
+
+        * factory
+
+        * vocabulary
+
+        * modulealias
+
+        * renderer:renderer
+
+      - Removed the ``browser:addview`` ZCML directive as it was
+        broken and untested.
+
       - Removed 'Adding.renderAddButton' method which had been
         deprecated 2 years ago.
 
