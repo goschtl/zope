@@ -497,7 +497,7 @@ class IInterfaceDeclaration(Interface):
         """Remove an interface from the list of an object's directly
         provided interfaces::
 
-          noLongerProivdes(ob, I1)
+          noLongerProvides(ob, I1)
 
         is equivalent to::
 
