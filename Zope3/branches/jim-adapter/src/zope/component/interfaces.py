@@ -52,7 +52,7 @@ class IComponentArchitecture(Interface):
         If `context` is `None`, return the global site manager.
 
         If the `context` is not `None`, it is expected that an adapter from
-        the `context` to `ISiteManager` can be found. If no adapter is found,
+        the `context` to `IComponentLookup` can be found. If no adapter is found,
         a `ComponentLookupError` is raised.
         """
 

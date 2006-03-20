@@ -52,7 +52,7 @@ the vocabulary.
     >>> auth = DemoAuth((p.name, p) for p in contained_plugins.values())
     
     >>> @component.adapter(interface.Interface)
-    ... @interface.implementer(component.ISiteManager)
+    ... @interface.implementer(component.IComponentLookup)
     ... def getSiteManager(context):
     ...     return component.getGlobalSiteManager()
     ...

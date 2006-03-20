@@ -29,12 +29,6 @@ deprecated(('IPossibleSite', 'ISite'),
            'This interface has been moved to zope.app.component.interfaces. '
            'The reference will be gone in Zope 3.3.')
 
-ISiteManager = ILocalSiteManager
-
-deprecated('ISiteManager',
-           'This interface has been moved to zope.app.component.interfaces '
-           'and been renamed ISiteManager. '
-           'The reference will be gone in Zope 3.3.')
 
 class ILocalService(registration.IRegisterable):
     """A local service isn't a local service if it doesn't implement this.
