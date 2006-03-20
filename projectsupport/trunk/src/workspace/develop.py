@@ -18,6 +18,7 @@ $Id$
 
 import os
 import sys
+import shutil
 import optparse
 import ConfigParser
 import urllib2
@@ -50,10 +51,21 @@ def bootstrap(libdir, bindir):
                    '--script-dir', bindir,
                    '-U', 'setuptools'])
 
+def initSetupCfg(setup_file, template_file='setup.cfg.in'):
+    """Check if the setup_file (setup.cfg) exists; if it doesn't, and
+    setup.cfg.in does, copy setup.cfg.in to setup.cfg to serve as a
+    template."""
+
+    if not(os.path.exists(setup_file)) and os.path.exists(template_file):
+        shutil.copyfile(template_file, setup_file)
+        
 def updateSetupCfg(setup_file, opts):
     """Update or create a setup.cfg (setup_file) for working on this
     project."""
 
+    # initialize the setup file if necessary
+    initSetupCfg(setup_file)
+    
     # load the existing version
     setup_cfg = ConfigParser.ConfigParser()
     setup_cfg.read(setup_file)
@@ -95,8 +107,8 @@ def updateSetupCfg(setup_file, opts):
     if not setup_cfg.has_option('egg_info', 'tag_build'):
         setup_cfg.set('egg_info', 'tag_build', '.dev')
 
-    if not setup_cfg.has_option('egg_info', 'tag_revision'):
-        setup_cfg.set('egg_info', 'tag_revision', '1')
+    if not setup_cfg.has_option('egg_info', 'tag_svn_revision'):
+        setup_cfg.set('egg_info', 'tag_svn_revision', '1')
 
     # store the updated version
     setup_cfg.write(file(setup_file, 'w'))

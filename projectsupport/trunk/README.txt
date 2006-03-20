@@ -7,7 +7,7 @@ individual zope projects.
 develop.py
 ~~~~~~~~~~
 
-The develop.py script is used to create a sandbox from a zope project
+The develop.py script is used to create a workspace from a zope project
 checkout.  The script installs the development dependencies for the
 project in a library folder, and any binary scripts in a scripts
 folder.
@@ -16,9 +16,14 @@ folder.
 Configuring Development Dependencies
 ------------------------------------
 
-The script reads ``setup.cfg`` to read development dependencies.  When
-develop.py is run, it will add additional entries to setup.cfg
-specifying the library and scripts folders.  The minimal setup.cfg for
+The script reads ``setup.cfg`` to read development dependencies.  In the
+event that setup.cfg does not exist, the script will look for setup.cfg.in
+and copy it to setup.cfg.  Keeping setup.cfg.in in source control is 
+preferrable to setup.cfg, as develop.py will scribble path information on
+the resulting setup.cfg file.
+
+When develop.py is run, it will add additional entries to setup.cfg
+specifying the library and scripts folders.  The minimal setup.cfg[.in] for
 a project with development dependencies contains a single section with
 a single entry.  For example:
 
