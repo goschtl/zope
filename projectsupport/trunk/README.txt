@@ -66,6 +66,14 @@ bootstraps setuptools_ into the library, and retrieves any development
 dependencies.  In the case of our zope.i18nmessageid example, the only
 development dependency is zope.testing.
 
+While running develop.py you may receive an error about an existing name
+space package with the same name already existing in a location which will
+be on the PYTHONPATH before your newly installed packages.  In this 
+case you can add the following line to the ``[easy_install]`` section
+of setup.cfg ::
+
+  ignore-conflicts-at-my-risk = True
+
 After the workspace has been configured, we run setup.py with the
 develop target in order to retrieve any runtime dependencies.
 
