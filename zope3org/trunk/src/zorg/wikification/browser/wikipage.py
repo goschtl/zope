@@ -99,6 +99,10 @@ class WikiPage(ComposedAjaxPage) :
         self.title = dc.title or self.untitled
         self.language = dc.Language()
         
+
+    def prepare(self) :
+        pass
+        
     def verb(self) :
         """ Returns a descriptive verb. """
         return _('View')
@@ -458,14 +462,21 @@ class WikiEditor(WikiPage) :
    
     factory = dict(rest=RestEditor, kupu=KupuEditor, tinymce=TinyMCEEditor)
     chooser = EditOptions
+    _main = None
+    
     
     def __init__(self, context, request) :
         super(WikiEditor, self).__init__(context, request)  
         self.editor = self.parameter('editor', storage=self.session)
-        self.main = self.chooseEditor()
-        self.main.asType = "text/html" # default: because we are using .html 
-                                       # extension         
 
+    def getMain(self) :
+        if self._main is None :
+            self._main = self.chooseEditor()
+            self._main.asType = "text/html" # default: because we are using 
+                                            # .html extension         
+        return self._main
+        
+    main = property(getMain)
 
     def chooseEditor(self) :
         """ Returns a editor or a chooser. If a chooser is returned it's
