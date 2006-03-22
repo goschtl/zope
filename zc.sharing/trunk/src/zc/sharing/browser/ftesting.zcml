@@ -93,13 +93,13 @@
   <!-- o Make reading them public or                              -->
   <!--                                                            -->
   <!-- o Provide public traversal adapters                        -->
-  <content class="zope.app.folder.Folder">
+  <class class="zope.app.folder.Folder">
     <require
         permission="zope.Public"
         interface="zope.app.container.interfaces.IReadContainer" 
         />
     <implements interface="zc.sharing.interfaces.ISharable" />
-  </content>
+  </class>
 
   <utility component=".browser.ntests.formatterFactory" />
   <utility 
