@@ -8,7 +8,6 @@ function dropdownlinkmenu(obj, e, dropmenuID)   {
     return clickreturnvalue()
 }
 
-
 function hidelinkmenu(obj, e, dropmenuID) {
     if (typeof dropmenuobj!="undefined") //hide previous menu
             
@@ -26,15 +25,21 @@ function hidelinkmenu(obj, e, dropmenuID) {
 
                 var offsets = Position.cumulativeOffset(obj)
                 
-                var x = offsets[0]
-                var y = Math.max(Event.pointerY(e), offsets[1], dropmenuobj.y)
+                var x = offsets[0]  // offsets[0]-clearbrowseredge(obj, "leftedge")+"px"
+                var y = offsets[1]
+                
+                if (dropmenuobj.y) {
+                    y = Math.max(Event.pointerY(e), dropmenuobj.y, y)  // -clearbrowseredge(obj, "bottomedge")+obj.offsetHeight+"px"
+                    }
+                
                 dropmenuobj.x=x
                 dropmenuobj.y=y
+
+                dropmenuobj.style.left=x + "px"
+                dropmenuobj.style.top=y + "px"
                 
-                dropmenuobj.style.left=x // -clearbrowseredge(obj, "leftedge")+"px"
-                dropmenuobj.style.top=y  // -clearbrowseredge(obj, "bottomedge")+obj.offsetHeight+"px"
+                $('menu_pos').innerHTML = "x: " + x + ", y: " + y + "offsets[0]: " + offsets[0] + "offsets[1]: " + offsets[1]
               
-                oldLinkMenuTarget = newLinkMenuTarget
             }
 }            
 

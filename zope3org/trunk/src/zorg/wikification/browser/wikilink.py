@@ -64,9 +64,9 @@ class Placeholder(PageElement) :
     def textLink(self) :
         wikified, link = self.processor.wikifyLink(self.link)
         if wikified :
-            pattern = u'<a class="wiki-link" href="%s">[%s]</a>'
+            pattern = '<a class="wiki-link" href="%s">[%s]</a>'
         else :
-            pattern = u'<a class="wiki-link" href="%s">%s</a>'
+            pattern = '<a class="wiki-link" href="%s">%s</a>'
         return pattern % (link, self.label)
    
     def _tagAttrs(self, attrs) :
@@ -81,10 +81,10 @@ class Placeholder(PageElement) :
      
         wikified, link = self.processor.wikifyLink(self.link)
         if wikified :
-            pattern = u'<a href="%s" class="wiki-link"%s>'
+            pattern = '<a href="%s" class="wiki-link"%s>'
             return pattern % (link, self._tagAttrs(attrs))
         else :
-            pattern = u'<a href="%s"%s>'
+            pattern = '<a href="%s"%s>'
             return pattern % (link, self._tagAttrs(attrs))
             
             
@@ -297,17 +297,17 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         >>> link_processor = BaseLinkProcessor(page)
         >>> link_processor.handle_data('A [link]')
         >>> link_processor.pieces
-        [u'A <a class="wiki-link" href="...@@wikiedit.html?add=link">[link]</a>']
+        ['A <a class="wiki-link" href="...@@wikiedit.html?add=link">[link]</a>']
 
         
         >>> link_processor = BaseLinkProcessor(page)
         >>> link_processor.handle_data('A [link] and [another one]')
         >>> link_processor.pieces
-        [u'A <a ...>[link]</a> and <a ...>[another one]</a>']
+        ['A <a ...>[link]</a> and <a ...>[another one]</a>']
         
         
         """
-        
+                 
         if self.placeholder is not None :
             self.placeholder.label += text
             self.pieces.append(text)
@@ -329,11 +329,11 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
             result += placeholder.textLink()
             self.placeholder = None
             
-        result += text[end:]
+        result += text[end:]       
+        
         self.pieces.append(result)
         
-
-          
+        
 class MenuPlaceholder(Placeholder) :
     """ A placeholder, that offers various edit options for the user.
     Placeholders are created by the link processor on demand and are referenced
@@ -345,10 +345,10 @@ class MenuPlaceholder(Placeholder) :
     
     >>> page = WikiPage(site, TestRequest())
     >>> processor = BaseLinkProcessor(page)    
-    >>> placeholder1 = processor.createPlaceholder(u"Label", "http://link")
+    >>> placeholder1 = processor.createPlaceholder("Label", "http://link")
     >>> placeholder1.index
     0
-    >>> placeholder2 = processor.createPlaceholder(u"Label", "http://link")
+    >>> placeholder2 = processor.createPlaceholder("Label", "http://link")
     >>> placeholder2.index
     1
     
@@ -375,7 +375,7 @@ class MenuPlaceholder(Placeholder) :
             attrs.append(("id", self.link_id))
             return self._link % (link, self.onMouseOver, self._tagAttrs(attrs))
         else :
-            pattern = u'<a href="%s"%s>'
+            pattern = '<a href="%s"%s>'
             return pattern % (self.link, self._tagAttrs(attrs))
         
     def textLink(self) :
@@ -398,7 +398,7 @@ class SavingPlaceholder(Placeholder) :
     
     def startTag(self, attrs) :
         """ Called when a starttag for a placeholder is detected. """
-        pattern = u'<a href="%s"%s>'
+        pattern = '<a href="%s"%s>'
         return pattern % (self.link, self._tagAttrs(attrs))
 
 class RenamedPlaceholder(SavingPlaceholder) :
@@ -453,7 +453,7 @@ class AddObjectPlaceholder(SavingPlaceholder) :
         if description :
             dc.description = description
          
-        return name # zapi.absoluteURL(contained, self.page.request)
+        return name.encode("utf-8")
         
     def textLink(self) :
         name = self.addObject()
@@ -461,7 +461,7 @@ class AddObjectPlaceholder(SavingPlaceholder) :
         
     def startTag(self, attrs) :
         name = self.addObject()
-        pattern = u'<a href="%s"%s>'
+        pattern = '<a href="%s"%s>'
         return pattern % (name, self._tagAttrs(attrs))
 
         

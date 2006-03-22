@@ -97,11 +97,7 @@ class WikiPage(ComposedAjaxPage) :
         self.dc = dc
         
         self.title = dc.title or self.untitled
-        self.language = dc.Language()
-        
-
-    def prepare(self) :
-        pass
+        self.language = dc.Language()        
         
     def verb(self) :
         """ Returns a descriptive verb. """
@@ -228,7 +224,8 @@ class WikiFilePage(WikiPage) :
     def renderBody(self) :
         body = self.getBody()
         if body is not None :
-            return self.wikify(unicode(body, encoding="utf-8"))
+            wikified = self.wikify(body)
+            return unicode(wikified, encoding="utf-8")
   
         return u"Sorry, not wikifiable at the moment."
             
@@ -462,9 +459,9 @@ class WikiEditor(WikiPage) :
    
     factory = dict(rest=RestEditor, kupu=KupuEditor, tinymce=TinyMCEEditor)
     chooser = EditOptions
+
     _main = None
-    
-    
+
     def __init__(self, context, request) :
         super(WikiEditor, self).__init__(context, request)  
         self.editor = self.parameter('editor', storage=self.session)
@@ -492,7 +489,6 @@ class WikiEditor(WikiPage) :
         processor = ILinkProcessor(self)
         processor.command = cmd
         processor.link_id = link_id
-        
         body = self.getBody()
         processor.feed(body)
         file = self.getFile()
@@ -537,15 +533,16 @@ class EditWikiPage(WikiEditor, WikiFilePage) :
                 
     def display(self) :
         """ Returns the data that should be edited. """
+        
         file = self.getFile()
         return self.main.readFile(file)
     
     def update(self, editor=None):
         """ Saves the edited content and redirects to the wiki view. """
+       
         file = self.getFile()
         self.main.saveTo(file)
         self.request.response.redirect(self.nextURL())
-        #self.request.response.redirect("wiki.html")
                 
         
 class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
