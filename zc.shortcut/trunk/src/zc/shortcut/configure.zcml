@@ -64,12 +64,12 @@
       allowed_interface="zope.publisher.interfaces.IPublishTraverse"
       />
 
-  <content class=".shortcut.Shortcut">
+  <class class=".shortcut.Shortcut">
     <require
         permission="zope.Public"
         attributes="target raw_target"
         />
-  </content>
+  </class>
 
   <class class=".proxy.TargetProxy">
     <require
@@ -93,9 +93,9 @@
     <require permission="zope.Public" attributes="target" />
   </class>
 
-  <content class=".constraints.ShortcutTypePrecondition">
+  <class class=".constraints.ShortcutTypePrecondition">
     <allow interface=".interfaces.IShortcutTypePrecondition" />
-  </content>
+  </class>
 
   <configure
     xmlns:zcml="http://namespaces.zope.org/zcml"
