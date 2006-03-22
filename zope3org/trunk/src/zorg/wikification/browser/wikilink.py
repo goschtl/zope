@@ -102,6 +102,9 @@ class Placeholder(PageElement) :
             label = label[:-1]
         return label
         
+    def unicodeLabel(self) :
+        return unicode(self.editableLabel(), encoding='utf-8')
+        
         
 class BaseLinkProcessor(BaseHTMLProcessor) :
     """ A link processor that wikifies the links by modifying the
@@ -205,24 +208,22 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         if link.startswith(site_url) :
             link = link[len(site_url)+1:]
             node = page.site
-            url = site_url
         elif self.isAbsoluteURL(link) :
             return False, link
         elif link.startswith("#") :
             return False, link
         else :
             node = page.container
-            url = self.absoluteLink(node)
-        
+            
         remaining = urllib.unquote(link)
         path = [x for x in remaining.split("/") if x]        
         while path :         
             try :
                 name = path[0]
+                name = unicode(name, encoding='utf-8')
                 node = zapi.traverseName(node, name)
-                url += "/" + name
                 name = path.pop(0)
-            except TraversalError :
+            except (TraversalError, UnicodeEncodeError) :
                 break
         
         if path :

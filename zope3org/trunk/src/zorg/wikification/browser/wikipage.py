@@ -196,7 +196,8 @@ class WikiContainerPage(WikiPage) :
                 
         body = self.getBody()
         if body is not None :
-            return self.wikify(unicode(body, encoding="utf-8"))
+            wikified = self.wikify(body)
+            return unicode(wikified, encoding="utf-8")
             
         return self._noindex()
        
@@ -488,7 +489,7 @@ class WikiEditor(WikiPage) :
         """
         processor = ILinkProcessor(self)
         processor.command = cmd
-        processor.link_id = link_id
+        processor.link_id = str(link_id)
         body = self.getBody()
         processor.feed(body)
         file = self.getFile()

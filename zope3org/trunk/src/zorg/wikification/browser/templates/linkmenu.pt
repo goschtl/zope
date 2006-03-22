@@ -2,7 +2,7 @@
     <div class="anylinkcss" tal:attributes="id view/menu_id" >
         <span class="anylinkheader">Edit this Link</span>
         <div class="anylinkitem" onclick="editPlaceholderLabel();"
-             tal:attributes="onclick string:editPlaceholderLabel('${view/link_id}', '${view/menu_id}', '${view/editableLabel}');">
+             tal:attributes="onclick string:editPlaceholderLabel('${view/link_id}', '${view/menu_id}', '${view/unicodeLabel}');">
             Rename
         </div>
         <a class="anylinkitem" href="#" tal:attributes="href view/link">
@@ -81,7 +81,7 @@
                         Name:
                     </td>
                     <td valign="top" >
-                        <input id="folder_name" name="name" type="text" size="40" value="FolderName" tal:attributes="value python: view.upload_name or view.editableLabel()" />
+                        <input id="folder_name" name="name" type="text" size="40" value="FolderName" tal:attributes="value python: view.upload_name or view.unicodeLabel()" />
                     </td>
                 </tr>
                 <tr>
