@@ -37,9 +37,6 @@ function hidelinkmenu(obj, e, dropmenuID) {
 
                 dropmenuobj.style.left=x + "px"
                 dropmenuobj.style.top=y + "px"
-                
-                $('menu_pos').innerHTML = "x: " + x + ", y: " + y + "offsets[0]: " + offsets[0] + "offsets[1]: " + offsets[1]
-              
             }
 }            
 
