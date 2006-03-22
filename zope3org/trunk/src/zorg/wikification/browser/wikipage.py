@@ -384,7 +384,7 @@ class RestEditor(Editor) :
     def __init__(self, parent) :
         super(RestEditor, self).__init__(parent)
         
-        self.data = parent.parameter('rest')
+        self.data = parent.parameter('body')
         self.title = parent.parameter('title')
         self.description = parent.parameter('description')
         
@@ -404,7 +404,7 @@ class TinyMCEEditor(Editor) :
     def __init__(self, parent) :
         super(TinyMCEEditor, self).__init__(parent)
         
-        self.data = parent.parameter('tinyhtml')
+        self.data = parent.parameter('body')
         self.title = parent.parameter('title')
         self.description = parent.parameter('description')
         

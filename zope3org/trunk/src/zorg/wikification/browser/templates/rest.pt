@@ -10,7 +10,7 @@
     			             tal:attributes="value string:${view/editableTitle}"/>
                 <h4>Body</h4>
                 <textarea class="edit-area" tal:content="view/display" 
-                        id="version_body" name="rest" cols="68" rows="22" value=""></textarea>
+                        id="version_body" name="body" cols="68" rows="22" value=""></textarea>
                 <p><input name="text_submit" type="submit" value="Save">
                 or <a href="./wiki.html" tal:attributes="href view/cancelURL">Cancel</a></p>
             </form>
