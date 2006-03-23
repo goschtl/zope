@@ -74,6 +74,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 573: @form.action(failure='name_of_method') didn't work.
+
       - Fixed two bugs in SequenceWidgets: an exception was raised
         on rendering and the errors of the subwidgets weren't displayed.
 
