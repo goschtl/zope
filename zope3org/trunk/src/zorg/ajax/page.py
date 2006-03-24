@@ -154,7 +154,9 @@ class AjaxPage(BrowserView) :
         
         form = self.request.form
         filename = getattr(form.get(key), "filename", default)
-        if '\\' in filename :               # grr, IE hack
+        if filename is None :
+            return None
+        if '\\' in filename :   # grr, IE hack.
             return filename.split('\\')[-1]
         return os.path.basename(filename)
         
