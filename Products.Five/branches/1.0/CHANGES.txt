@@ -5,6 +5,11 @@ Five Changes
 Five 1.0.3 (...)
 ================
 
+* Added missing fix from newer versions of Five where the _context wasn't
+  getting cleaned up properly in zcml.py.  Without this fix, adapter lookups
+  wouldn't work in any test after the first test that used load_zcml in the 
+  same test fixture (essentially adapter lookups were dead).
+
 * Fixed bug that broke WebDAV access for five:defaultViewable objects. The
   __browser_default__ now modifies only GET and POST requests.
 

@@ -61,3 +61,12 @@ def load_string(s):
     global _context
     _context = xmlconfig.string(s, _context)
 
+# clean up code
+
+def cleanUp():
+    global _context
+    _context = None
+
+from zope.testing.cleanup import addCleanUp
+addCleanUp(cleanUp)
+del addCleanUp
