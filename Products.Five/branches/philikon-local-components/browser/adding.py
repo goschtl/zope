@@ -19,29 +19,27 @@ factory screen.
 __docformat__ = 'restructuredtext'
 
 from warnings import warn
+
+import zope.component
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.component.interfaces import IFactory
+from zope.event import notify
 
 from zope.app.exception.interfaces import UserError
 from zope.app.container.interfaces import IAdding, INameChooser
 from zope.app.container.interfaces import IContainerNamesContainer
 from zope.app.container.constraints import checkFactory, checkObject
-
 from zope.app.publisher.browser.menu import getMenu
-
-from zope.app import zapi
 from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.event import notify
 
+from Acquisition import Implicit
 from zExceptions import BadRequest
+from OFS.SimpleItem import SimpleItem
 
 from Products.Five import BrowserView
 from Products.Five.traversable import Traversable
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-
-from Acquisition import Implicit
-from OFS.SimpleItem import SimpleItem
 
 class BasicAdding(Implicit, BrowserView):
     implements(IAdding, IPublishTraverse)
@@ -86,8 +84,8 @@ class BasicAdding(Implicit, BrowserView):
         # XXX this is definitely not right for all or even most uses
         # of Five, but can be overridden by an AddView subclass, using
         # the class attribute of a zcml:addform directive
-        return str(zapi.getMultiAdapter((self.context, self.request),
-                                        name=u"absolute_url")) + '/manage_main'
+        return str(zope.component.getMultiAdapter(
+            (self.context, self.request), name=u"absolute_url")) + '/manage_main'
 
     # set in BrowserView.__init__
     request = None 
@@ -106,18 +104,18 @@ class BasicAdding(Implicit, BrowserView):
 
             if view_name.startswith('@@'):
                 view_name = view_name[2:]
-            return zapi.getMultiAdapter((self, request), name=view_name)
+            return zope.component.getMultiAdapter((self, request), name=view_name)
 
         if name.startswith('@@'):
             view_name = name[2:]
         else:
             view_name = name
 
-        view = zapi.queryView(self, view_name, request)
+        view = zope.component.queryMultiAdapter((self, request), name=view_name)
         if view is not None:
             return view
 
-        factory = zapi.queryUtility(IFactory, name)
+        factory = zope.component.queryUtility(IFactory, name)
         if factory is None:
             return super(BasicAdding, self).publishTraverse(request, name)
 
@@ -135,9 +133,10 @@ class BasicAdding(Implicit, BrowserView):
         else:
             view_name = type_name
 
-        if zapi.queryView(self, view_name, self.request) is not None:
+        if (zope.component.queryMultiAdapter((self, self.request), name=view_name)
+            is not None):
             url = "%s/%s=%s" % (
-                zapi.getMultiAdapter((self, self.request), name=u"absolute_url"),
+                zope.component.getMultiAdapter((self, self.request), name=u"absolute_url"),
                 type_name, id)
             self.request.response.redirect(url)
             return
@@ -145,7 +144,7 @@ class BasicAdding(Implicit, BrowserView):
         if not self.contentName:
             self.contentName = id
 
-        factory = zapi.getUtility(IFactory, type_name)
+        factory = zope.component.getUtility(IFactory, type_name)
         content = factory()
 
         notify(ObjectCreatedEvent(content))
@@ -180,7 +179,7 @@ class Adding(BasicAdding):
                 if extra:
                     factory = extra.get('factory')
                     if factory:
-                        factory = zapi.getUtility(IFactory, factory)
+                        factory = zope.component.getUtility(IFactory, factory)
                         if not checkFactory(container, None, factory):
                             continue
                         elif item['extra']['factory'] != item['action']:

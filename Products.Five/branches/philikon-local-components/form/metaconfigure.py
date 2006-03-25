@@ -18,14 +18,15 @@ $Id$
 import ExtensionClass
 from Globals import InitializeClass as initializeClass
 
+import zope.component
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory('zope')
 
-from zope.app import zapi
 from zope.app.publisher.browser.menumeta import menuItemDirective
 from zope.app.form.browser.metaconfigure import BaseFormDirective
 from zope.app.container.interfaces import IAdding
-from zope.app.i18n import ZopeMessageFactory as _
 
 from Products.Five.form import EditView, AddView
 from Products.Five.metaclass import makeClass
@@ -53,7 +54,7 @@ def EditViewFactory(name, schema, label, permission, layer,
     if layer is None:
         layer = IDefaultBrowserLayer
 
-    s = zapi.getGlobalSiteManager()
+    s = zope.component.getGlobalSiteManager()
     s.provideAdapter((for_, layer), Interface, name, class_)
 
     # Reminder: the permission we got has already been processed by
@@ -116,7 +117,7 @@ def AddViewFactory(name, schema, label, permission, layer,
     if layer is None:
         layer = IDefaultBrowserLayer
 
-    s = zapi.getGlobalSiteManager()
+    s = zope.component.getGlobalSiteManager()
     s.provideAdapter((for_, layer), Interface, name, class_)
 
     # Reminder: the permission we got has already been processed by

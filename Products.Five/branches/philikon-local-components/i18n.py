@@ -19,7 +19,7 @@ from Acquisition import aq_acquire
 from zope.interface import implements
 from zope.i18n import interpolate
 from zope.i18n.interfaces import ITranslationDomain, IUserPreferredLanguages
-from zope.app import zapi
+from zope.component import queryUtility
 from zope.publisher.browser import BrowserLanguages
 
 # BBB 2005/10/10 -- MessageIDs are to be removed for Zope 3.3
@@ -40,7 +40,7 @@ class FiveTranslationService:
             default = msgid.default
             mapping = msgid.mapping
 
-        util = zapi.queryUtility(ITranslationDomain, domain)
+        util = queryUtility(ITranslationDomain, domain)
 
         if util is None:
             # fallback to translation service that was registered,

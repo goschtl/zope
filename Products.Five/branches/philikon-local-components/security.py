@@ -21,7 +21,6 @@ from zope.security.management import thread_local
 from zope.security.interfaces import IInteraction, ISecurityPolicy
 from zope.security.simplepolicies import ParanoidSecurityPolicy
 from zope.app.security.interfaces import IPermission
-from zope.app import zapi
 
 from AccessControl import ClassSecurityInfo, getSecurityManager
 from Globals import InitializeClass as initializeClass
@@ -67,7 +66,7 @@ def checkPermission(permission, object, interaction=None):
         return True
 
     if isinstance(permission, StringTypes):
-        permission = zapi.queryUtility(IPermission, unicode(permission))
+        permission = queryUtility(IPermission, unicode(permission))
         if permission is None:
             return False
 

@@ -41,16 +41,16 @@ def test_get_widgets_for_schema_fields():
       >>> salutation = salutation.bind(request)
       >>> contactname = contactname.bind(request)
 
-      >>> from zope.app import zapi
+      >>> from zope.component import getMultiAdapter
       >>> from zope.app.form.interfaces import IInputWidget
       >>> from zope.app.form.browser.textwidgets import TextWidget
       >>> from zope.app.form.browser.itemswidgets import DropdownWidget
 
-      >>> view1 = zapi.getMultiAdapter((contactname, request), IInputWidget)
+      >>> view1 = getMultiAdapter((contactname, request), IInputWidget)
       >>> view1.__class__ == TextWidget
       True
 
-      >>> view2 = zapi.getMultiAdapter((salutation, request), IInputWidget)
+      >>> view2 = getMultiAdapter((salutation, request), IInputWidget)
       >>> view2.__class__ == DropdownWidget
       True
 

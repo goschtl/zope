@@ -28,11 +28,11 @@ from zLOG import LOG, ERROR
 
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
+from zope.component import getUtility
 from zope.configuration import xmlconfig
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
-from zope.app import zapi
 from zope.app.component.interface import provideInterface
 from zope.app.component.metaconfigure import adapter
 from zope.app.security.interfaces import IPermission
@@ -227,7 +227,7 @@ _meta_type_regs = []
 def _registerClass(class_, meta_type, permission, addview, icon, global_):
     setattr(class_, 'meta_type', meta_type)
 
-    permission_obj = zapi.getUtility(IPermission, permission)
+    permission_obj = getUtility(IPermission, permission)
 
     if icon:
         setattr(class_, 'icon', '++resource++%s' % icon)

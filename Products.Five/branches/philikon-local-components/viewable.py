@@ -20,7 +20,7 @@ from zExceptions import NotFound
 from zope.component import ComponentLookupError
 from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.zapi import getDefaultViewName
+from zope.app.publisher.browser import getDefaultViewName
 
 from Products.Five import fivemethod
 from Products.Five.traversable import FakeRequest

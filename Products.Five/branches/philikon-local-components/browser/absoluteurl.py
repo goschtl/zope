@@ -19,7 +19,7 @@ from Acquisition import aq_inner, aq_parent
 from OFS.interfaces import ITraversable
 
 from zope.interface import implements
-from zope.app import zapi
+from zope.component import getMultiAdapter
 from zope.app.traversing.browser.interfaces import IAbsoluteURL
 
 from Products.Five.browser import BrowserView
@@ -52,7 +52,7 @@ class AbsoluteURL(BrowserView):
             return (
                 {'name': name, 'url': context.absolute_url()},)
 
-        view = zapi.getMultiAdapter((container, request), IAbsoluteURL)
+        view = getMultiAdapter((container, request), IAbsoluteURL)
         base = tuple(view.breadcrumbs())
         base += (
             {'name': name, 'url': ("%s/%s" % (base[-1]['url'], name))},)

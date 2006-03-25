@@ -22,7 +22,7 @@ import zope.event
 import zope.app.event.objectevent
 from zope import interface
 from zope.formlib import interfaces, form, namedtemplate
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.formlib.i18n import _
 
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.Five.browser.decode import processInputs, setPageEncoding
