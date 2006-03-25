@@ -26,6 +26,7 @@ from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 
 import zope.interface
 import zope.component
+import zope.dottedname.resolve
 from zope.component.globalregistry import base
 from zope.component.persistentregistry import PersistentComponents
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -72,6 +73,48 @@ class ComponentsView(BrowserView):
 
         self.context.setSiteManage(None)
 
+def mangleAbsoluteFilename(filename):
+    """
+    Mangle an absolute filename when the file happens to be in a
+    package.  The mangled name will then be of the form::
+
+      <dotted package name>/<base filename>.
+
+    For example, let's take Five's configure.zcml as an example.  We
+    assemble it in an OS-independent way so this test works on all
+    platforms:
+    
+      >>> def filesystemPath(*elements):
+      ...     return os.path.sep.join(elements)
+
+    We see that the filename is now mangled:
+
+      >>> mangleAbsoluteFilename(filesystemPath(
+      ...     '', 'path', 'to', 'Products', 'Five', 'configure.zcml'))
+      'Products.Five/configure.zcml'
+
+    The name of a file that's not in a package is returned unchanged:
+
+      >>> not_in_a_package = filesystemPath('', 'path', 'to', 'configure.zcml')
+      >>> mangleAbsoluteFilename(not_in_a_package) == not_in_a_package
+      True
+    """
+    if not os.path.isabs(filename):
+        raise ValueError("Can only determine package for absolute filenames")
+    dir, basename = os.path.split(filename)
+    pieces = dir.split(os.path.sep)
+    if pieces[0] == '':
+        pieces = pieces[1:]
+    while pieces:
+        try:
+            zope.dottedname.resolve.resolve('.'.join(pieces))
+            break
+        except ImportError:
+            pieces = pieces[1:]
+    if not pieces:
+        return filename
+    return '.'.join(pieces) + '/' + basename
+
 class CustomizationView(BrowserView):
 
     def templateViewRegistrations(self):
@@ -85,6 +128,18 @@ class CustomizationView(BrowserView):
             if hasattr(factory, '__name__') and \
                    factory.__name__.startswith('SimpleViewClass'):
                 yield reg
+
+    def templateViewRegInfo(self):
+        def regkey(reg):
+            return reg.name
+        for reg in sorted(self.templateViewRegistrations(), key=regkey):
+            yield {
+                'viewname': reg.name,
+                'for': reg.required[0].__identifier__,
+                'type': reg.required[1].__identifier__,
+                'zptfile': mangleAbsoluteFilename(reg.factory.index.filename),
+                'zcmlfile': mangleAbsoluteFilename(reg.info.file)
+                }
 
     def templateFromViewname(self, viewname):
         view = zope.component.getMultiAdapter((self.context, self.request),

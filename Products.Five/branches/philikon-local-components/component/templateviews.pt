@@ -6,16 +6,26 @@
   <p i18n:translate="">Template-based (global) browser views available
   for this component:</p>
 
-  <ul>
-    <li tal:repeat="reg view/templateViewRegistrations">
-      <a href=""
-         tal:attributes="href string:@@customizetemplate.html?viewname=${reg/name}"
-         tal:content="reg/name">
-      </a><br />
-      Template file: <code tal:content="reg/factory/index/filename">filename</code>.<br />
-      Registered in: <code tal:content="reg/info/file">filename</code>.<br />
-    </li>
-  </ul>
+  <table>
+    <tr>
+      <th></th>
+      <th>Name of View</th>
+      <th>Registration Info</th>
+    </tr>
+    <tr tal:repeat="info view/templateViewRegInfo">
+      <td><img src="misc_/PageTemplates/zpt.gif"
+               tal:attributes="src string:${context/@@absolute_url}/misc_/PageTemplates/zpt.gif" /></td>
+      <td>
+        <a href=""
+           tal:attributes="href string:@@customizetemplate.html?viewname=${info/viewname}"
+           tal:content="info/viewname">
+        </a>
+      </td>
+      <td><code tal:content="info/zptfile">zptfile</code><br />
+          <code tal:content="info/for">for</code><br />
+          <code tal:content="info/zcmlfile">zcmlfile</code></td>
+    </tr>
+  </table>
 
   </div>
   </body>

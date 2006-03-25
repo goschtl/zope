@@ -16,14 +16,15 @@
 $Id$
 """
 import unittest
-from zope.testing.doctestunit import DocFileSuite
+from zope.testing.doctestunit import DocFileSuite, DocTestSuite
 
 __docformat__ = "reStructuredText"
 
 def test_suite():
     return unittest.TestSuite([
         DocFileSuite('component.txt', package="Products.Five.component"),
-        DocFileSuite('zpt.txt', package="Products.Five.component")
+        DocFileSuite('zpt.txt', package="Products.Five.component"),
+        DocTestSuite('Products.Five.component.browser')
         ])
 
 if __name__ == '__main__':
