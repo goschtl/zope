@@ -49,7 +49,7 @@ from Products.Five.tests.products.FiveTest.fancycontent import manage_addFancyCo
 from Products.Five.tests.products import FiveTest
 _prefix = os.path.dirname(FiveTest.__file__)
 dir_resource_names = [os.path.basename(r)
-                        for r in (glob.glob('%s/*.png' % _prefix) +
+                      for r in (glob.glob('%s/*.png' % _prefix) +
                                 glob.glob('%s/*.pt' % _prefix) +
                                 glob.glob('%s/[a-z]*.py' % _prefix) +
                                 glob.glob('%s/*.css' % _prefix))]
@@ -276,7 +276,7 @@ class FiveTest(FiveTestCase):
         # Test traversal
         base = 'testoid/@@fivetest_macros/%s'
         for macro in ('birdmacro', 'dogmacro',
-                        'flying', 'walking'):
+                      'flying', 'walking'):
             view = self.folder.unrestrictedTraverse(base % macro)
         self.failUnless(view)
 
@@ -413,7 +413,7 @@ class RecursionTest(unittest.TestCase):
 
 
 from zope.app.publisher.browser.globalbrowsermenuservice import \
-        globalBrowserMenuService
+     globalBrowserMenuService
 
 class MenuTest(FiveTestCase):
 
