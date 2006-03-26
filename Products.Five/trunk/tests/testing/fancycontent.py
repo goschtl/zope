@@ -52,10 +52,18 @@ class FancyContent(SimpleItem):
     security = ClassSecurityInfo()
 
     def __bobo_traverse__(self, REQUEST, name):
+        if name == 'raise-attributeerror':
+            raise AttributeError(name)
+        elif name == 'raise-keyerror':
+            raise KeyError(name)
+        elif name == 'raise-valueerror':
+            raise ValueError(name)
         return FancyAttribute(name).__of__(self)
 
     def get_size(self):
         return 43
+
+InitializeClass(FancyContent)
 
 # A copy of the above class used to demonstrate some baseline behavior
 class NonTraversableFancyContent(SimpleItem):
@@ -70,12 +78,18 @@ class NonTraversableFancyContent(SimpleItem):
     security = ClassSecurityInfo()
 
     def __bobo_traverse__(self, REQUEST, name):
+        if name == 'raise-attributeerror':
+            raise AttributeError(name)
+        elif name == 'raise-keyerror':
+            raise KeyError(name)
+        elif name == 'raise-valueerror':
+            raise ValueError(name)
         return FancyAttribute(name).__of__(self)
 
     def get_size(self):
         return 43
 
-InitializeClass(FancyContent)
+InitializeClass(NonTraversableFancyContent)
 
 def manage_addFancyContent(self, id, REQUEST=None):
     """Add the fancy fancy content."""
