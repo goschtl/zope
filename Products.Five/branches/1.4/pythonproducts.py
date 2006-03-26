@@ -33,12 +33,12 @@ def setupPythonProducts(appOrContext):
     
     from OFS.Application import Application
     
+    global _zope_app
     if isinstance(appOrContext, Application):
         _zope_app = appOrContext
     else:
         _zope_app = appOrContext._ProductContext__app
     
-    global _zope_app
     applyPatches(_zope_app)
 
 
@@ -87,8 +87,8 @@ def patch_ProductDispatcher__bobo_traverse__(app):
     """
     
     from App.FactoryDispatcher import FactoryDispatcher, ProductDispatcher
-    _original__bobo_traverse__ = ProductDispatcher.__bobo_traverse__
     global _original__bobo_traverse__
+    _original__bobo_traverse__ = ProductDispatcher.__bobo_traverse__
     
     def __bobo_traverse__(self, REQUEST, name):
         product=self.aq_acquire('_getProducts')()._product(name)
@@ -115,8 +115,8 @@ def patch_externalmethod(app):
     from App import Extensions, FactoryDispatcher
     from Products.ExternalMethod import ExternalMethod
     
-    _originalGetPath = Extensions.getPath
     global _originalGetPath
+    _originalGetPath = Extensions.getPath
 
     def getPath(prefix, name, checkProduct=1, suffixes=('',)):
         """Make sure to check paths of all registered product packages.
