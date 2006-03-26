@@ -141,7 +141,7 @@ def test_traversable():
       ... ''', handle_errors=False)
       Traceback (most recent call last):
         ...
-      ValueError: raise-valueerror
+      ValueError: ...
 
     Five's traversable monkeypatches the __bobo_traverse__ method to do view
     lookup and then delegates back to the original __bobo_traverse__ or direct
