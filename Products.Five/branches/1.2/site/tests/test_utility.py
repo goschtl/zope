@@ -76,9 +76,10 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
     def test_getUtilitiesNoUtilitiesFolder(self):
         utils = zapi.getService(Utilities)
         #XXX test whether utils really is a local utility service...
-        self.assertRaises(ComponentLookupError, utils.getUtility, IDummyUtility)
+        self.failUnless(utils.queryUtility(IDummyUtility) is None)
         self.assertEquals(list(utils.getUtilitiesFor(IDummyUtility)), [])
-        self.assertEquals(list(utils.getAllUtilitiesRegisteredFor(IDummyUtility)), [])
+        self.assertEquals(list(utils.getAllUtilitiesRegisteredFor(IDummyUtility)),
+                          [])
 
     def test_registerUtilityOnUtilityService(self):
         utils = zapi.getService(Utilities)
@@ -115,6 +116,49 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         self.assertEquals(zapi.getUtility(IDummyUtility, 'dummy'), dummy)
         self.assertEquals(zapi.getUtility(ISuperDummyUtility, 'dummy'),
                           superdummy)
+
+    def test_derivedInterfaceRegistration(self):
+        # Utilities providing a derived interface should be listed
+        # when you ask for an interface. So ask for IDummmyInterace, and
+        # anything registered for IDummyInterface of ISuperDummyInterface
+        # should come back.
+
+        sm = zapi.getServices()
+        self.failUnless(IRegisterUtilitySimply.providedBy(sm))
+        dummy = DummyUtility()
+        superdummy = DummyUtility()
+        directlyProvides(superdummy, ISuperDummyUtility)
+        uts = list(zapi.getUtilitiesFor(IDummyUtility))
+        self.failUnlessEqual(uts, [])
+
+        sm.registerUtility(ISuperDummyUtility, superdummy)
+        
+        # We should be able to access this utility both with 
+        # IDummyUtility and ISuperDummyUtility interfaces:
+        uts = list(zapi.getUtilitiesFor(IDummyUtility))
+        self.failUnless(uts[0][1].aq_base is superdummy)
+        uts = list(zapi.getUtilitiesFor(ISuperDummyUtility))
+        self.failUnless(uts[0][1].aq_base is superdummy)
+        
+        # Also try that the standard zapi call works:
+        ut = zapi.getUtility(IDummyUtility, context=self.folder.site)
+        self.failUnless(ut.aq_base is superdummy)
+        ut = zapi.getUtility(ISuperDummyUtility, context=self.folder.site)
+        self.failUnless(ut.aq_base is superdummy)
+    
+        # If we register a second utility we should find both utilities
+        # when looking for the base interface
+        sm.registerUtility(IDummyUtility, dummy)
+
+        uts = list(zapi.getAllUtilitiesRegisteredFor(IDummyUtility))
+        self.failUnless(dummy in uts)
+        self.failUnless(superdummy in uts)
+
+        # But we should find only one when looking for the derived interface
+        uts = list(zapi.getAllUtilitiesRegisteredFor(ISuperDummyUtility))
+        self.failUnless(dummy not in uts)
+        self.failUnless(superdummy in uts)
+
 
     def test_nestedSitesDontConflictButStillAcquire(self):
         # let's register a dummy utility in the dummy site

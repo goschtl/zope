@@ -52,29 +52,26 @@ class SimpleLocalUtilityService(object):
     def queryUtility(self, interface, name='', default=None):
         """See IUtilityService interface
         """
-        if name == '':
-            # Singletons. Only one per interface allowed, so, let's call it
-            # by the interface.
-            id = interface.getName()
-        else:
-            id = interface.getName() + '-' + name
-
         if getattr(aq_base(self.context), 'utilities', None) is not None:
-            utility = self.context.utilities._getOb(id, None)
-            if utility is not None:
-                return utility
+            for id, utility in self.context.utilities.objectItems():
+                if interface.providedBy(utility):
+                    if id.find('-') != -1:
+                        prefix, utility_name = id.split('-', 1)
+                    else:
+                        utility_name = ''
+                    if name == utility_name:
+                        return utility
         return self.next.queryUtility(interface, name, default)
 
     def getUtilitiesFor(self, interface):
         names = []
-        prefix = interface.getName() + '-'
         if getattr(aq_base(self.context), 'utilities', None) is not None:
-            for name, utility in self.context.utilities.objectItems():
-                if name == interface.getName():
-                    names.append('')
-                    yield '', utility
-                elif name.startswith(prefix):
-                    name = name[len(prefix):]
+            for id, utility in self.context.utilities.objectItems():
+                if interface.providedBy(utility):
+                    if id.find('-') != -1:
+                        prefix, name = id.split('-', 1)
+                    else:
+                        name = ''
                     names.append(name)
                     yield (name, utility)
         for name, utility in self.next.getUtilitiesFor(interface):

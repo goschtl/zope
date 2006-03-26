@@ -2,6 +2,12 @@
 Five Changes
 ============
 
+Five 1.2.1 (2006-03-26)
+=======================
+
+* A local utility registered with an derived interface will now be available
+  by the inherited interface as well, in the same way as Zope3.
+
 Five 1.2.1 (2006-02-25)
 =======================
 
