@@ -2,13 +2,23 @@
 Five Changes
 ============
 
-Five 1.0.3 (...)
-================
+Five 1.0.3 (2006-03-26)
+=======================
 
-* Added missing fix from newer versions of Five where the _context wasn't
-  getting cleaned up properly in zcml.py.  Without this fix, adapter lookups
-  wouldn't work in any test after the first test that used load_zcml in the 
-  same test fixture (essentially adapter lookups were dead).
+Bugfixes
+--------
+
+* Fixed look-up order during Five traversal.  It is now as follows:
+
+  1. If an object has __bobo_traverse__, use it.
+
+  2. Otherwise do attribute look-up or, if that doesn't work, key item
+     lookup.
+
+  3. If neither __bobo_traverse__ nor attribute/key look-up work, it
+     tries to find a Zope 3-style view.
+
+* Properly clean up ZCML context in Five.zcml.
 
 * Fixed bug that broke WebDAV access for five:defaultViewable objects. The
   __browser_default__ now modifies only GET and POST requests.
@@ -20,7 +30,8 @@ Five 1.0.3 (...)
   instead of the ZopeTwoPageTemplateFile.  This seem to cause access 
   problems in some very obscure situations, and is now fixed.
   
-* FivePageTemplate is now deprecated and will be removed in Five 1.1.
+* FivePageTemplate is now deprecated and removed in more recent
+  versions of Five.
 
 * Some parts of add.pt and edit.pt were not being translated.
 

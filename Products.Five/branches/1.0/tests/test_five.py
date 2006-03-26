@@ -333,9 +333,11 @@ class PublishTest(Functional, FiveTestCase):
         response = self.publish('/test_folder_1_/fancy/something-else')
         self.assertEquals('something-else', response.getBody())
 
-        # check if z3-based view lookup works
+        # even though we have a zope 3 view registered as 'fancy', it
+        # doesn't kick in, the existing bobo_traverse takes over
+        # everything
         response = self.publish('/test_folder_1_/fancy/fancy')
-        self.assertEquals("Fancy, fancy", response.getBody())
+        self.assertEquals("fancy", response.getBody())
 
     def test_publish_image_resource(self):
         url = '/test_folder_1_/testoid/++resource++pattern.png'

@@ -28,10 +28,10 @@ from zLOG import LOG, ERROR
 from zope.interface import classImplements
 from zope.configuration import xmlconfig
 from zope.app.component.interface import provideInterface
-from viewable import Viewable
-from traversable import Traversable
-from bridge import fromZ2Interface
-from browserconfigure import page
+from Products.Five.viewable import Viewable
+from Products.Five.traversable import Traversable
+from Products.Five.bridge import fromZ2Interface
+from Products.Five.browserconfigure import page
 
 debug_mode = App.config.getConfiguration().debug_mode
 
@@ -54,7 +54,7 @@ def handleBrokenProduct(product):
     # in the control panel. However, all attempts to do so has failed from my 
     # side. //regebro
     exc = sys.exc_info()
-    LOG('Five', ERROR, 'Could not import Product %s' % name, error=exc)
+    LOG('Five', ERROR, 'Could not import Product %s' % product.__name__, error=exc)
 
 def loadProducts(_context):
     products = findProducts()
@@ -118,14 +118,11 @@ def classTraversable(class_):
             isFiveMethod(class_.__bobo_traverse__)):
             return
 
-    if hasattr(class_, '__bobo_traverse__'):
-        if not isFiveMethod(class_.__bobo_traverse__):
-            # if there's an existing bobo_traverse hook already, use that
-            # as the traversal fallback method
-            setattr(class_, '__fallback_traverse__', class_.__bobo_traverse__)
-    if not hasattr(class_, '__fallback_traverse__'):
-        setattr(class_, '__fallback_traverse__',
-                Traversable.__fallback_traverse__.im_func)
+    if (hasattr(class_, '__bobo_traverse__') and
+        not isFiveMethod(class_.__bobo_traverse__)):
+        # if there's an existing bobo_traverse hook already, use that
+        # as the traversal fallback method
+        setattr(class_, '__fallback_traverse__', class_.__bobo_traverse__)
 
     setattr(class_, '__bobo_traverse__',
             Traversable.__bobo_traverse__.im_func)

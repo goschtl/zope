@@ -15,7 +15,6 @@
 
 $Id$
 """
-from zExceptions import NotFound
 from zope.exceptions import NotFoundError
 from zope.component import getView, ComponentLookupError
 from zope.interface import implements
@@ -24,12 +23,11 @@ from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
 
-from AccessControl import getSecurityManager
-from Products.Five.security import newInteraction
+import Products.Five.security
+from zExceptions import NotFound
+from ZPublisher import xmlrpc
 
-_marker = object
-
-class FakeRequest:
+class FakeRequest(dict):
     implements(IBrowserRequest)
 
     def getPresentationSkin(self):
@@ -38,21 +36,13 @@ class FakeRequest:
     def has_key(self, key):
         return False
 
+    def getURL(self):
+        return "http://codespeak.net/z3/five"
+
 class Traversable:
     """A mixin to make an object traversable using an ITraverser adapter.
     """
     __five_traversable__ = True
-
-    def __fallback_traverse__(self, REQUEST, name):
-        """Method hook for fallback traversal
-
-        This method is called by __bobo_traverse___ when Zope3-style
-        ITraverser traversal fails.
-
-        Just raise a AttributeError to indicate traversal has failed
-        and let Zope do it's job.
-        """
-        raise AttributeError, name
 
     def __bobo_traverse__(self, REQUEST, name):
         """Hook for Zope 2 traversal
@@ -61,28 +51,60 @@ class Traversable:
         It allows us to trick it into faking the Zope 3 traversal system
         by using an ITraverser adapter.
         """
+        # We are trying to be compatible with Zope 2 and 3 traversal
+        # behaviour as much as possible.  Therefore the first part of
+        # this method is based on BaseRequest.traverse's behaviour:
+        # 1. If an object has __bobo_traverse__, use it.
+        # 2. Otherwise do attribute look-up or, if that doesn't work,
+        #    key item lookup.
+
+        if hasattr(self, '__fallback_traverse__'):
+            try:
+                return self.__fallback_traverse__(REQUEST, name)
+            except (AttributeError, KeyError):
+                pass
+        else:
+            try:
+                return getattr(self, name)
+            except AttributeError:
+                pass
+
+            try:
+                return self[name]
+            except (KeyError, IndexError, TypeError, AttributeError):
+                pass
+
+        # This is the part Five adds:
+        # 3. If neither __bobo_traverse__ nor attribute/key look-up
+        # work, we try to find a Zope 3-style view.
+
+        # For that we need to make sure we have a good request
+        # (sometimes __bobo_traverse__ gets a stub request)
         if not IBrowserRequest.providedBy(REQUEST):
             # Try to get the REQUEST by acquisition
             REQUEST = getattr(self, 'REQUEST', None)
             if not IBrowserRequest.providedBy(REQUEST):
                 REQUEST = FakeRequest()
-        # con Zope 3 into using Zope 2's checkPermission
-        newInteraction()
+
+        # Con Zope 3 into using Zope 2's checkPermission
+        Products.Five.security.newInteraction()
+
+        # Use the ITraverser adapter (which in turn uses ITraversable
+        # adapters) to traverse to a view.  Note that we're mixing
+        # object-graph and object-publishing traversal here, but Zope
+        # 2 has no way to tell us when to use which...
+        # TODO Perhaps we can decide on object-graph vs.
+        # object-publishing traversal depending on whether REQUEST is
+        # a stub or not?
         try:
             return ITraverser(self).traverse(
                 path=[name], request=REQUEST).__of__(self)
         except (ComponentLookupError, NotFoundError,
                 AttributeError, KeyError, NotFound):
             pass
-        try:
-            return getattr(self, name)
-        except AttributeError:
-            pass
-        try:
-            return self[name]
-        except (AttributeError, KeyError):
-            pass
-        return self.__fallback_traverse__(REQUEST, name)
+
+        raise AttributeError, name
+
     __bobo_traverse__.__five_method__ = True
 
 
@@ -95,7 +117,7 @@ class FiveTraversable(DefaultTraversable):
         REQUEST = getattr(context, 'REQUEST', None)
         if not IBrowserRequest.providedBy(REQUEST):
             REQUEST = FakeRequest()
-        # Try to lookup a view first
+        # Try to lookup a view
         try:
             return getView(context, name, REQUEST)
         except ComponentLookupError:
