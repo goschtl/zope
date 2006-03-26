@@ -138,11 +138,10 @@ def test_traversable():
 
       >>> print http(r'''
       ... GET /test_folder_1_/fancy/raise-valueerror HTTP/1.1
-      ... ''')
-      HTTP/1.1 500 Internal Server Error
-      ...
-      ...ValueError: raise-valueerror
-      ...
+      ... ''', handle_errors=False)
+      Traceback (most recent call last):
+        ...
+      ValueError: raise-valueerror
 
     Five's traversable monkeypatches the __bobo_traverse__ method to do view
     lookup and then delegates back to the original __bobo_traverse__ or direct
