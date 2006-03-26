@@ -21,8 +21,6 @@ Bugfixes
   3. If neither __bobo_traverse__ nor attribute/key look-up work, it
      tries to find a Zope 3-style view.
 
-  This change requires Zope 2.9.2 or higher.
-
 Five 1.2.1 (2006-02-25)
 =======================
 
