@@ -54,7 +54,7 @@ class Traversable:
         # We are trying to be compatible with Zope 2 and 3 traversal
         # behaviour as much as possible.  Therefore the first part of
         # this method is based on BaseRequest.traverse's behaviour:
-        # 1. If an object has __bobo_traverse__, use it
+        # 1. If an object has __bobo_traverse__, use it.
         # 2. Otherwise do attribute look-up or, if that doesn't work,
         #    key item lookup.
 
@@ -76,7 +76,7 @@ class Traversable:
 
         # This is the part Five adds:
         # 3. If neither __bobo_traverse__ nor attribute/key look-up
-        # work, we try to find a Zope 3-style view
+        # work, we try to find a Zope 3-style view.
 
         # For that we need to make sure we have a good request
         # (sometimes __bobo_traverse__ gets a stub request)
