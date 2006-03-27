@@ -28,6 +28,7 @@ Before we can start we need to load some important ZCML:
   >>> import zope.app.event
   >>> zcml.load_config('meta.zcml', Products.Five)
   >>> zcml.load_config('permissions.zcml', Products.Five)
+  #>>> zcml.load_config('traversing.zcml', Products.Five)
   >>> zcml.load_config('configure.zcml', Products.Five.component)
   >>> zcml.load_config('configure.zcml', zope.app.event)
 
@@ -89,13 +90,13 @@ Let's get a list of views (that also shows where each view is
 registered at):
 
   >>> view = zope.component.getMultiAdapter((item, request),
-  ...                                       name=u"templateviews.html")
+  ...                                       name=u"zptviews.html")
   >>> view = view.__of__(item)
   >>> from pprint import pprint
   >>> viewnames = [reg.name for reg in view.templateViewRegistrations()]
   >>> viewnames.sort()
   >>> pprint(viewnames)
-  [u'customizetemplate.html', u'templateviews.html']
+  [u'customizezpt.html', u'zptviews.html']
 
 
 3. and 4. Customizing a template-based view
@@ -105,12 +106,12 @@ In the list of template-based browser views we can select one and see
 the source of its template:
 
   >>> view = zope.component.getMultiAdapter((item, request),
-  ...                                       name=u"customizetemplate.html")
+  ...                                       name=u"customizezpt.html")
   >>> view = view.__of__(item)
-  >>> template = view.templateFromViewname(u'customizetemplate.html')
+  >>> template = view.templateFromViewname(u'customizezpt.html')
   >>> import os.path
   >>> os.path.basename(template.filename)
-  'customizetemplate.pt'
+  'customizezpt.pt'
 
   >>> print template.read() #doctest: +ELLIPSIS
   <html metal:use-macro="context/@@standard_macros/view"
@@ -122,13 +123,13 @@ the source of its template:
 
 We now hit the customize button and get a customized ZPT template:
 
-  >>> zpt = view.doCustomizeTemplate(u'customizetemplate.html')
+  >>> zpt = view.doCustomizeTemplate(u'customizezpt.html')
 
 That actually creates a PageTemplate object in the nearest site
 (perhaps later we'd like to have the option to pick which of the sites
 above us should be targeted)
 
-  >>> zpt = getattr(site, 'customizetemplate.pt')
+  >>> zpt = getattr(site, 'customizezpt.pt')
   >>> print zpt.read() #doctest: +ELLIPSIS
   <html metal:use-macro="context/@@standard_macros/view"
         i18n:domain="zope">
@@ -162,15 +163,15 @@ make the site the current site:
 Now look it up and compare its output:
 
   >>> view = zope.component.getMultiAdapter((item, request),
-  ...                                       name=u"customizetemplate.html")
+  ...                                       name=u"customizezpt.html")
   >>> view = view.__of__(item)
   >>> print view() #doctest: +ELLIPSIS
   context:   <SimpleContent at item>
   container: <SimpleContent at item>
   root:      <Application at >
-  template:  <ZopePageTemplate at customizetemplate.pt>
+  template:  <ZopePageTemplate at customizezpt.pt>
   request:   <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>
-  view:      <Products.Five.metaclass.SimpleViewClass from .../Five/component/customizetemplate.pt object at ...>
+  view:      <Products.Five.metaclass.SimpleViewClass from .../Five/component/customizezpt.pt object at ...>
   modules:   <Products.PageTemplates.ZRPythonExpr._SecureModuleImporter instance at ...>
   options:   {'args': ()}
   nothing:   
@@ -184,12 +185,12 @@ Once in a while we would like to get rid of the customized view.  The
 easiest way to do that is to simply delete the template:
 
   >>> if True:
-  ...     site._delObject('customizetemplate.pt')
+  ...     site._delObject('customizezpt.pt')
 
 Now the view look-up is back to the old way:
 
   >>> view = zope.component.getMultiAdapter((item, request),
-  ...                                       name=u"customizetemplate.html")
+  ...                                       name=u"customizezpt.html")
   >>> print view.index.read() #doctest: +ELLIPSIS
   <html metal:use-macro="context/@@standard_macros/view"
         i18n:domain="zope">

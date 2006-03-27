@@ -11,7 +11,7 @@
     template source
   </pre>
 
-  <form action="@@customizetemplate" method="post"
+  <form action="@@customizezpt" method="post"
         enctype="multipart/form-data">
 
     <input type="hidden" name="viewname" value="theviewname"

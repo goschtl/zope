@@ -28,15 +28,15 @@
      permission="five.ManageSite">
 
     <browser:page
-       name="templateviews.html"
-       template="templateviews.pt"
+       name="zptviews.html"
+       template="zptviews.pt"
        />
     <browser:page
-       name="customizetemplate.html"
-       template="customizetemplate.pt"
+       name="customizezpt.html"
+       template="customizezpt.pt"
        />
     <browser:page
-       name="customizetemplate"
+       name="customizezpt"
        attribute="customizeTemplate"
        />
 
