@@ -116,11 +116,3 @@ class SimpleLocalUtilityRegistry(object):
                              "%s with the name '%s'" % (interface.getName(),
                                                         name))
         utilities._setObject(id, utility)
-
-# BBB 2005/11/01 -- gone in Five 1.5.
-SimpleLocalUtilityService = SimpleLocalUtilityRegistry
-import zope.deprecation
-zope.deprecation.deprecated(
-    'SimpleLocalUtilityService', "'SimpleLocalUtilityService' has been renamed to "
-    "'SimpleLocalUtilityRegistry' and will disappear in Five 1.5."
-    )

@@ -16,7 +16,7 @@
 $Id: interfaces.py 18584 2005-10-14 17:13:27Z regebro $
 """
 from zope.interface import Interface, Attribute
-from zope.component.interfaces import ISiteManager
+from zope.component.interfaces import IComponentLookup
 
 class IRegisterUtilitySimply(Interface):
     """Register utilities simply
@@ -76,7 +76,7 @@ class IFiveUtilityRegistry(IRegisterUtilitySimply):
         returned.
         """
 
-class IFiveSiteManager(ISiteManager, IRegisterUtilitySimply):
+class IFiveSiteManager(IComponentLookup, IRegisterUtilitySimply):
     """Five site manager
 
     For the sake of forward-portability, registering utilities can be
@@ -84,12 +84,3 @@ class IFiveSiteManager(ISiteManager, IRegisterUtilitySimply):
     utility service (this corresponds to Zope 3.1's understanding of
     site managers).  An implementation of this interface will probably
     delegate the work to an IFiveUtilityService component, though."""
-
-
-# BBB 2005/11/01 -- gone in Five 1.5.
-IFiveUtilityService = IFiveUtilityRegistry
-import zope.deprecation
-zope.deprecation.deprecated(
-    'IFiveUtilityService', "'IFiveUtilityService' has been renamed to "
-    "'IFiveUtilityRegistry' and will disappear in Five 1.5."
-    )

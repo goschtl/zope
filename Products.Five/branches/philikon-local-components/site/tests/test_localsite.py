@@ -26,7 +26,7 @@ from Testing import ZopeTestCase
 import zope.interface
 from zope.component import getGlobalSiteManager, getSiteManager
 from zope.component.interfaces import ComponentLookupError
-from zope.component.interfaces import ISiteManager
+from zope.component.interfaces import IComponentLookup
 from zope.app.component.hooks import setSite, getSite, setHooks
 from zope.app.component.interfaces import IPossibleSite, ISite
 from zope.app.traversing.interfaces import IContainmentRoot
@@ -39,7 +39,7 @@ import Products.Five
 from Products.Five import zcml
 
 class SiteManager(Implicit):
-    zope.interface.implements(ISiteManager)
+    zope.interface.implements(IComponentLookup)
 
 class Folder(ObjectManager):
 
@@ -57,7 +57,7 @@ class Root(Folder):
         return getGlobalSiteManager()
 
 class SiteManagerStub(object):
-    zope.interface.implements(ISiteManager)
+    zope.interface.implements(IComponentLookup)
 
 class SiteManagerTest(PlacelessSetup, unittest.TestCase):
 
