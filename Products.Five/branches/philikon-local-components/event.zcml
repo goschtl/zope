@@ -1,5 +1,8 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
+  <!-- Enable object event dispatcher -->
+  <include package="zope.app.event" />
+
   <!-- Adapter giving sublocations for ObjectManagers, used
        by dispatchToSublocations -->
 
