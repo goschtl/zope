@@ -505,7 +505,7 @@ TinyMCE_Engine.prototype = {
 
 	triggerSave : function(skip_cleanup, skip_callback) {
 		var inst, n;
-
+        
 		// Default to false
 		if (typeof(skip_cleanup) == "undefined")
 			skip_cleanup = false;

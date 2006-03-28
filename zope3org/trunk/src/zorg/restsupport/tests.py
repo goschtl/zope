@@ -50,7 +50,7 @@ htmlList = """
 <html><body><p><i>Test</i> paragraph</p> 
     <ul>
     <li>1. Text</li>
-    <li>2. Text&nbsp;</li>
+    <li>2. Text</li>
     </ul>
 </body></html>"""
 
@@ -88,9 +88,8 @@ def test_htmlList2Rest() :
     <BLANKLINE>
     * 1. Text
     <BLANKLINE>
-    * 2. Text 
+    * 2. Text
     <BLANKLINE>
-
 
     """
     

@@ -117,6 +117,40 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         
     command = None
     
+    _url = r'''(?=[a-zA-Z0-9./#])    # Must start correctly
+                  ((?:              # Match the leading part
+                      (?:ftp|https?|telnet|nntp) #     protocol
+                      ://                        #     ://
+                      (?:                       # Optional 'username:password@'
+                          \w+                   #         username
+                          (?::\w+)?             #         optional :password
+                          @                     #         @
+                      )?                        # 
+                      [-\w]+(?:\.\w[-\w]*)+     #  hostname (sub.example.com)
+                  )                             #
+                  (?::\d+)?                     # Optional port number
+                  (?:                           # Rest of the URL, optional
+                      /?                                # Start with '/'
+                      [^.!,?;:"'<>()\[\]{}\s\x7F-\xFF]* # Can't start with these
+                      (?:                               #
+                          [.!,?;:]+                     #  One or more of these
+                          [^.!,?;:"'<>()\[\]{}\s\x7F-\xFF]+  # Can't finish
+                          #'"                           #  # or ' or "
+                      )*                                #
+                  )?)                                   #
+               '''
+
+    _email = r'''(?:mailto:)?            # Optional mailto:
+                    ([-\+\w]+               # username
+                    \@                      # at
+                    [-\w]+(?:\.\w[-\w]*)+)  # hostname
+                 '''
+    
+    url_link = re.compile(_url, re.VERBOSE)
+    email_link = re.compile(_email, re.VERBOSE)
+    text_link = re.compile('\[.*?\]', re.VERBOSE)
+
+
     def __init__(self, page) :
         BaseHTMLProcessor.__init__(self)
         self.page = page
@@ -306,6 +340,17 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         >>> link_processor.pieces
         ['A <a ...>[link]</a> and <a ...>[another one]</a>']
         
+        This method also converts urls and email addresses into clickable links:
+        
+        >>> link_processor = BaseLinkProcessor(page)
+        >>> link_processor.handle_data('Test mailto:jim@zope.org')
+        >>> link_processor.pieces
+        ['Test <a href="mailto:jim@zope.org">jim@zope.org</a>']
+        
+        >>> link_processor = BaseLinkProcessor(page)
+        >>> link_processor.handle_data('Test http://www.iwm-kmrc.de')
+        >>> link_processor.pieces
+        ['Test <a href="http://www.iwm-kmrc.de">http://www.iwm-kmrc.de</a>']
         
         """
                  
@@ -313,12 +358,14 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
             self.placeholder.label += text
             self.pieces.append(text)
             return
-
-        text_link = re.compile('\[.*?\]', re.VERBOSE)
+            
+        
+        text = re.sub(self.url_link, r'''<a href="\1">\1</a>''', text)
+        text = re.sub(self.email_link, r'''<a href="mailto:\1">\1</a>''', text)
         
         result = ""
         end = 0
-        for m in text_link.finditer(text):
+        for m in self.text_link.finditer(text):
             
             start = m.start()
             result += text[end:start]

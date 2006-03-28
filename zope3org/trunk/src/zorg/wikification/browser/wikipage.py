@@ -106,7 +106,19 @@ class WikiPage(ComposedAjaxPage) :
     def getContainer(self) :
         """ Returns the base container. Should be overwritten. """
         return None
-                           
+        
+    def getAbstract(self) :
+        """ Returns the abstract resp. description. """
+        file = self.getFile()
+        if file is not None :
+            return IZopeDublinCore(file).description or u""
+        return u""
+
+    def renderAbstract(self) :
+        """ Render the abstract as ReST. """
+        desc = self.getAbstract()
+        return rest2html(desc)
+        
     def wikify(self, body) :
         """ 
             Renders HTML with dead relative links as 'wikified' HTML,
@@ -186,8 +198,7 @@ class WikiContainerPage(WikiPage) :
         if file :
             page = WikiFilePage(file, self.request, self.getContainer())
             return page.getBody()
-            
-            
+      
     def renderBody(self, debug=False) :
         """ Delegates the rendering to the WikiFilePage of the 
             index.html doocument.
@@ -251,20 +262,41 @@ class Editor(PageElement) :
     asType = "text/plain"
     
     title = description = None
+    
+    def asHTML(self, data) :
+        if self.isType == "text/plain" :
+            return rest2html(data)
+        elif self.isType == "text/html" :
+            return data
+        return _("unknown format: cannot convert content. """)
 
     def toHTML(self) :
+        return self.asHTML(self.data)
+
+    def asRest(self, data, fragment=False) :
         if self.isType == "text/plain" :
-            return rest2html(self.data)
+            return data
         elif self.isType == "text/html" :
-            return self.data
-        return _("unknown format: cannot convert file content. """)
+            return html2rest(data, fragment) 
+        return _("unknown format: cannot convert content. """)
         
     def toRest(self) :
-        if self.isType == "text/plain" :
-            return self.data
-        elif self.isType == "text/html" :
-            return html2rest(self.data) 
-        return _("unknown format: cannot convert file content. """)
+        return self.asRest(self.data)
+        
+    def asContentType(self, data) :
+        """ Return data as selected content type. """
+        if self.asType == "text/html" :
+            return self.asHTML(data)
+        elif self.asType == "text/plain" :
+            return self.asRest(data)
+        return None
+        
+    def asDisplayType(self, ascii) :
+        if self.isType == "text/html" :
+            return rest2html(ascii)
+        elif self.isType == "text/plain" :
+            return ascii
+        return None
         
     def saveTo(self, file) :
         """ 
@@ -394,7 +426,7 @@ class RestEditor(Editor) :
     def render(self) :
         """ Presents the rest editor to the user. """
         return self._rest()    
-
+        
 
 class TinyMCEEditor(Editor) :
     """ Main page element that shows a TineMCE editor. """
@@ -531,6 +563,12 @@ class EditWikiPage(WikiEditor, WikiFilePage) :
         file = self.getFile()
         dc = IZopeDublinCore(file, None)
         return (dc and dc.title) or u"Untitled"
+        
+    def editableAbstract(self) :
+        """ Returns the abstract that should be edited. """
+        file = self.getFile()
+        dc = IZopeDublinCore(file, None)
+        return (dc and self.main.asDisplayType(dc.description)) or u""
                 
     def display(self) :
         """ Returns the data that should be edited. """
@@ -572,7 +610,15 @@ class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
         if self.isAddView() or self.getFile() is None :
             return u"Untitled"
         return IZopeDublinCore(self.getFile()).title
+
+    def editableAbstract(self) :
+        """ Returns the abstract that should be edited. """
+        if self.isAddView() or self.getFile() is None :
+            return u""
+        dc = IZopeDublinCore(self.getFile())
+        return self.main.asDisplayType(dc.description)
         
+
     def display(self) :
         """ Returns the data that should be edited. """
         if self.isAddView() or self.getFile() is None :
