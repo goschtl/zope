@@ -46,6 +46,13 @@ htmlDocument = """<html><body>
 </html>
 """ % htmlFragment
     
+htmlList = """
+<html><body><p><i>Test</i> paragraph</p> 
+    <ul>
+    <li>1. Text</li>
+    <li>2. Text&nbsp;</li>
+    </ul>
+</body></html>"""
 
 def test_htmlTable2Rest() :
     """
@@ -72,7 +79,21 @@ def test_htmlTable2Rest() :
 
     """
     
+def test_htmlList2Rest() :
+    """
+    
+    >>> from zorg.restsupport import html2rest
+    >>> print html2rest(htmlList, catch_errors=False)
+    *Test* paragraph
+    <BLANKLINE>
+    * 1. Text
+    <BLANKLINE>
+    * 2. Text 
+    <BLANKLINE>
 
+
+    """
+    
 
 def test_suite():
     return unittest.TestSuite((

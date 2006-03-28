@@ -70,8 +70,8 @@ def html2rest(html, fragment=False, catch_errors=True) :
     <BLANKLINE>
     
     """
-    
-    if fragment :
+        
+    if fragment and not '<html>' in html.lower() :
         html = "<html><body>%s</body></html>" % html
         
     if catch_errors :
