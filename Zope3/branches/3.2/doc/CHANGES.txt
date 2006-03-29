@@ -9,6 +9,7 @@ Zope Changes
   Zope 3.2.1
 
     Bug fixes
+      - Fixed a bug in field prefix handling in formlib's setUp*Widgets.
 
       - Fixed issue 573: @form.action(failure='name_of_method') didn't work.
 
