@@ -28,6 +28,7 @@ class UserPropertySheetTests( unittest.TestCase
               , ( 'd', 'date'    )
               , ( 'l', 'lines'   )
               , ( 't', 'lines'   )
+              , ( 'b', 'boolean' )
               )
 
     _STRING_VALUE = 'string'
@@ -37,6 +38,7 @@ class UserPropertySheetTests( unittest.TestCase
     _DATE_VALUE = DateTime()
     _LIST_VALUE = [ 'a', 'b', 'c' ]
     _TUPLE_VALUE = ( 'd', 'e', 'f' )
+    _BOOL_VALUE = True
 
     def _getTargetClass( self ):
 
@@ -78,6 +80,7 @@ class UserPropertySheetTests( unittest.TestCase
         self.failUnless( ups.hasProperty( 'd' ) )
         self.failUnless( ups.hasProperty( 'l' ) )
         self.failUnless( ups.hasProperty( 't' ) )
+        self.failUnless( ups.hasProperty( 'b' ) )
 
         self.assertEqual( ups.getPropertyType( 's' ), 'string' )
         self.assertEqual( ups.propertyInfo( 's' )[ 'type' ], 'string' )
@@ -98,6 +101,10 @@ class UserPropertySheetTests( unittest.TestCase
         self.assertEqual( ups.getPropertyType( 'd' ), 'date' )
         self.assertEqual( ups.propertyInfo( 'd' )[ 'type' ], 'date' )
         self.assertEqual( ups.getProperty( 'd' ), self._DATE_VALUE )
+
+        self.assertEqual( ups.getPropertyType( 'b' ), 'boolean' )
+        self.assertEqual( ups.propertyInfo( 'b' )[ 'type' ], 'boolean' )
+        self.assertEqual( ups.getProperty( 'b' ), self._BOOL_VALUE )
 
         self.assertEqual( ups.getPropertyType( 'l' ), 'lines' )
         self.assertEqual( ups.propertyInfo( 'l' )[ 'type' ], 'lines' )
@@ -140,6 +147,7 @@ class UserPropertySheetTests( unittest.TestCase
                            , d=self._DATE_VALUE
                            , l=self._LIST_VALUE
                            , t=self._TUPLE_VALUE
+                           , b=self._BOOL_VALUE
                            )
 
         self._checkStockSchema( ups )
@@ -156,6 +164,7 @@ class UserPropertySheetTests( unittest.TestCase
                            , d=self._DATE_VALUE
                            , l=self._LIST_VALUE
                            , t=self._TUPLE_VALUE
+                           , b=self._BOOL_VALUE
                            )
 
         self._checkStockSchema( ups )

@@ -22,6 +22,7 @@ from types import LongType
 from types import TupleType
 from types import ListType
 from types import InstanceType
+from types import BooleanType
 
 try:
     from types import StringTypes
@@ -54,6 +55,9 @@ def _guessSchema( kw ):
 
         elif type( v ) is LongType:
             ptype = 'long'
+
+        elif type( v ) is BooleanType:
+            ptype = 'boolean'
 
         elif type( v ) in _SequenceTypes:
 
