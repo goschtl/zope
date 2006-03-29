@@ -47,8 +47,7 @@ from zorg.kupusupport.browser.views import KupuEditor as _KupuEditor
 from zorg.kupusupport.interfaces import IKupuPolicy
 
 from zorg.ajax.page import ComposedAjaxPage, PageElement
-from zorg.restsupport import rest2html
-from zorg.restsupport import html2rest
+import zorg.restsupport
 
 
             
@@ -117,7 +116,7 @@ class WikiPage(ComposedAjaxPage) :
     def renderAbstract(self) :
         """ Render the abstract as ReST. """
         desc = self.getAbstract()
-        return rest2html(desc)
+        return zorg.restsupport.text2html(desc)
         
     def wikify(self, body) :
         """ 
@@ -265,7 +264,7 @@ class Editor(PageElement) :
     
     def asHTML(self, data) :
         if self.isType == "text/plain" :
-            return rest2html(data)
+            return zorg.restsupport.rest2html(data)
         elif self.isType == "text/html" :
             return data
         return _("unknown format: cannot convert content. """)
@@ -277,7 +276,7 @@ class Editor(PageElement) :
         if self.isType == "text/plain" :
             return data
         elif self.isType == "text/html" :
-            return html2rest(data, fragment) 
+            return zorg.restsupport.html2rest(data, fragment) 
         return _("unknown format: cannot convert content. """)
         
     def toRest(self) :
@@ -293,9 +292,9 @@ class Editor(PageElement) :
         
     def asDisplayType(self, ascii) :
         if self.isType == "text/html" :
-            return rest2html(ascii)
+            return zorg.restsupport.text2html(ascii)
         elif self.isType == "text/plain" :
-            return ascii
+            return zorg.restsupport.text2rest(ascii)
         return None
         
     def saveTo(self, file) :
@@ -394,14 +393,14 @@ class Editor(PageElement) :
                 return unicode(html, encoding="utf-8")
                 
             if file.contentType == "text/plain" :
-                return rest2html(file.data)
+                return zorg.restsupport.rest2html(file.data)
                 
         elif self.isType == "text/plain" :
         
             if file.contentType == "text/html" :
                 body = html_body(file.data)
-                html = "<html><body>%s</body></html>" % body
-                return unicode(html2rest(html), encoding="utf-8")
+                rest = zorg.restsupport.html2rest(body, fragment=True)
+                return unicode(rest, encoding="utf-8")
             if file.contentType == "text/plain" :
                 return unicode(file.data, encoding="utf-8")   
         
