@@ -28,6 +28,7 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.interface import implements
 from zope.interface import implementedBy
 
+from interfaces import BASE
 from interfaces import EXTENSION
 from interfaces import ISetupTool
 from interfaces import SKIPPED_FILES
@@ -254,6 +255,26 @@ class SetupTool(Folder):
                                   for x in context.listNotes()] )
             messages[step] = '\n'.join(message_list)
             context.clearNotes()
+
+        if self._import_context_id.startswith('profile-'):
+            context_id = self._import_context_id[len('profile-'):]
+            info = self.getProfileInfo(context_id)
+            if info['type'] == BASE:
+                propname = 'applied_base_profile'
+                if not self.hasProperty(propname):
+                    self._setProperty(propname, context_id)
+                else:
+                    self._setPropValue(propname, context_id)
+            elif info['type'] == EXTENSION:
+                propname = 'applied_extension_profiles'
+                ext_profiles = self.getProperty(propname)
+                if ext_profiles is None:
+                    self._setProperty(propname, [context_id], 'lines')
+                elif context_id not in ext_profiles:
+                    ext_profiles = list(ext_profiles)
+                    ext_profiles.append(context_id)
+                    self._setPropValue('applied_extension_profiles',
+                                      ext_profiles)
 
         return { 'steps' : steps, 'messages' : messages }
 
@@ -522,6 +543,12 @@ class SetupTool(Folder):
         """
         return _profile_registry.listProfileInfo()
 
+    security.declareProtected(ManagePortal, 'getProfileInfo')
+    def getProfileInfo(self, profile_id):
+        """ Return the mapping for a specified profile.
+        """
+        return _profile_registry.getProfileInfo(profile_id)
+
     security.declareProtected(ManagePortal, 'listContextInfos')
     def listContextInfos(self):
 
@@ -617,9 +644,8 @@ class SetupTool(Folder):
         encoding = self.getEncoding()
 
         if context_id.startswith('profile-'):
-
             context_id = context_id[len('profile-'):]
-            info = _profile_registry.getProfileInfo(context_id)
+            info = self.getProfileInfo(context_id)
 
             if info.get('product'):
                 path = os.path.join(self._getProductPath(info['product'])
