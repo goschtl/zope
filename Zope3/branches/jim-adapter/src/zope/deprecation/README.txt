@@ -8,6 +8,9 @@ deprecated modules, classes, functions, methods and properties. This module
 provides a simple function called `deprecated(names, reason)` to deprecate the
 previously mentioned Python objects.
 
+Deprecating objects inside a module
+-----------------------------------
+
 Let's start with a demonstration of deprecating any name inside a module. To
 demonstrate the functionality, I have placed the following code inside the
 `tests.py` file of this package:
@@ -60,6 +63,9 @@ Also, once a deprecation warning has been displayed, it is not shown again:
   >>> tests.demo1
   1
 
+Deprecating methods and properties
+----------------------------------
+
 New let's see how properties and methods can be deprecated. We are going to
 use the same function as before, except that this time, we do not pass in names
 as first argument, but the method or attribute itself. The function then
@@ -107,8 +113,33 @@ And here is the result:
   ...
   5
 
+Deprecating modules
+-------------------
 
-Temporarily Turning Off Deprecation Warnings
+It is also possible to deprecate whole modules.  This is useful when
+creating module aliases for backward compatibility.  Let's imagine,
+the ``zope.deprecation`` module used to be called ``zope.wanda`` and
+we'd like to retain backward compatibility:
+
+  >>> import zope.deprecation
+  >>> import sys
+  >>> sys.modules['zope.wanda'] = deprecation.deprecated(
+  ...     zope.deprecation, 'A module called Wanda is now zope.deprecation.')
+
+Now we can import ``wanda``, but when accessing things from it, we get
+our deprecation message as expected:
+
+  >>> from zope.wanda import deprecated
+  From tests.py's showwarning():
+  ...README.txt:1: DeprecationWarning: A module called Wanda is now zope.deprecation.
+  ...
+
+Before we move on, we should clean up:
+
+  >>> del deprecated
+  >>> del sys.modules['zope.wanda']
+
+Temporarily turning off deprecation warnings
 --------------------------------------------
 
 In some cases it is desireable to turn off the deprecation warnings for a
