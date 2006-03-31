@@ -102,7 +102,7 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         sub_folder = root_folder['sub_folder']
         ensureUtility(sub_folder, IErrorReportingUtility,
                      'ErrorReporting', ErrorReportingUtility,
-                     'ErrorReporting')
+                     'ErrorReporting', asObject=True)
     
         # Make sure it was created on the sub folder, not the root folder
         got_utility = zapi.getUtility(IErrorReportingUtility, name='ErrorReporting',
@@ -120,10 +120,13 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         root_folder = self.root_folder
         for i in range(2):
             cx = self.db.open()
-            name = ensureUtility(root_folder, IErrorReportingUtility,
+            utility = ensureUtility(root_folder, IErrorReportingUtility,
                                  'ErrorReporting', ErrorReportingUtility,
-                                 'ErrorReporting')
-
+                                 'ErrorReporting', asObject=True)
+            if utility != None:
+                name = utility.__name__
+            else:
+                name = None
             if i == 0:
                 self.assertEqual(name, 'ErrorReporting')
             else:
