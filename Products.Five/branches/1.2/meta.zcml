@@ -63,6 +63,29 @@
         />
 
     <meta:complexDirective
+        name="class"
+        schema="zope.app.component.metadirectives.IClassDirective"
+        handler=".metaconfigure.ContentDirective"
+        >
+
+      <meta:subdirective
+          name="implements"
+          schema="zope.app.component.metadirectives.IImplementsSubdirective"
+          />
+
+      <meta:subdirective
+          name="require"
+          schema="zope.app.component.metadirectives.IRequireSubdirective"
+          />
+
+      <meta:subdirective
+          name="allow"
+          schema="zope.app.component.metadirectives.IAllowSubdirective"
+          />
+
+    </meta:complexDirective>
+
+    <meta:complexDirective
         name="content"
         schema="zope.app.component.metadirectives.IClassDirective"
         handler=".metaconfigure.ContentDirective"
