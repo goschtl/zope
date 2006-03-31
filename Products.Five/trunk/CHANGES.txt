@@ -8,6 +8,10 @@ Five 1.4 (unreleased)
 Features
 --------
 
+* Add python-packages-as-zope-products support which basically allows
+  for using any python package as a zope product without it having to
+  live in Products/
+
 * Add zope.formlib support.  Please see ``doc/formlib.txt`` for more
   information.
 
@@ -23,8 +27,18 @@ Features
   NOTE: Anyone who copied the Five site.zcml to their
   $INSTANCE_HOME/etc/ directory is going to need to update it.
 
+Five 1.3.4 (2006-03-31)
+=======================
+
+Bugfixes
+--------
+
+* Added the ``class`` ZCML directive as an alias to ``content``.
+
 Five 1.3.3 (2006-03-26)
 =======================
+
+This version is also included in Five 2.9.2
 
 Bugfixes
 --------
