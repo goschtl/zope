@@ -20,6 +20,7 @@ import sys
 from datetime import datetime
 
 # Zope 2
+import transaction
 import Acquisition
 from  Acquisition import aq_inner, aq_parent, aq_base
 from AccessControl import ClassSecurityInfo
@@ -217,7 +218,7 @@ class EditView(BrowserView):
             except WidgetsError, errors:
                 self.errors = errors
                 status = "An error occured."
-                get_transaction().abort()
+                transaction.abort()
             else:
                 setUpEditWidgets(self, self.schema, source=self.adapted,
                                  ignoreStickyValues=True,
