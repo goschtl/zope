@@ -2,8 +2,8 @@
 Five Changes
 ============
 
-Five 1.4 (unreleased)
-=====================
+Five 1.4b (2006-03-31)
+======================
 
 Features
 --------
@@ -158,6 +158,14 @@ Restructuring
 * Backwards compatability for Zope 3-style interfaces of Zope 2
   components has been removed as that functionality is now in the Zope
   2 core as of Zope 2.9.
+
+Five 1.2.3 (2006-03-31)
+=======================
+
+Bugfixes
+--------
+
+* Added the ``class`` ZCML directive as an alias to ``content``.
 
 Five 1.2.1 (2006-02-25)
 =======================
