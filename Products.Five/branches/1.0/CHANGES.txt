@@ -5,6 +5,9 @@ Five Changes
 Five 1.0.3 (2006-03-31)
 =======================
 
+This version is also included in Zope 2.8.7.  It no longer supports
+Zope 2.7!
+
 Bugfixes
 --------
 
