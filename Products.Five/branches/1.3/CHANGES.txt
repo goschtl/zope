@@ -142,6 +142,25 @@ Bugfixes
 
 * Added the ``class`` ZCML directive as an alias to ``content``.
 
+Five 1.2.2 (2006-03-26)
+=======================
+
+Bugfixes
+--------
+
+* A local utility registered with an derived interface will now be available
+  by the inherited interface as well, in the same way as Zope3.
+
+* Fixed look-up order during Five traversal.  It is now as follows:
+
+  1. If an object has __bobo_traverse__, use it.
+
+  2. Otherwise do attribute look-up or, if that doesn't work, key item
+     lookup.
+
+  3. If neither __bobo_traverse__ nor attribute/key look-up work, it
+     tries to find a Zope 3-style view.
+
 Five 1.2.1 (2006-02-25)
 =======================
 
