@@ -34,12 +34,18 @@ from zope.app.publication.zopepublication import ZopePublication
 from zope.app.traversing.api import traverse
 from zope.app.appsetup import interfaces
 
-def ensureObject(root_folder, object_name, object_type, object_factory):
+#from zope.deprecation import deprecated
+import warnings
+
+def ensureObject(root_folder, object_name, object_type, object_factory, asObject=False):
     """Check that there's a basic object in the site
     manager. If not, add one.
 
     Return the name abdded, if we added an object, otherwise None.
     """
+    if not asObject:
+        warnings.warn("asObject=False is deprecated", DeprecationWarning, 2)
+    
     package = getSiteManagerDefault(root_folder)
     valid_objects = [ name
                       for name in package
@@ -49,37 +55,53 @@ def ensureObject(root_folder, object_name, object_type, object_factory):
     name = object_name
     obj = object_factory()
     package[name] = obj
-    return name
+    if asObject:
+        return obj
+    else:
+        return name
 
 def ensureUtility(root_folder, interface, utility_type,
-                  utility_factory, name='', **kw):
+                  utility_factory, name='', asObject=False, **kw):
     """Add a utility to the top site manager
 
     Returns the name added or ``None`` if nothing was added.
     """
+    if not asObject:
+        warnings.warn("asObject=False is deprecated", DeprecationWarning, 2)
+        
     sm = root_folder.getSiteManager()
     utils = [reg for reg in sm.utilities.registrations()
              if reg.provided.isOrExtends(interface)]
     if len(utils) == 0:
         return addConfigureUtility(
             root_folder, interface, utility_type, utility_factory,
-            name, **kw
+            name, asObject, **kw
             )
     else:
         return None
 
 def addConfigureUtility(
-        root_folder, interface, utility_type, utility_factory, name='', **kw):
+        root_folder, interface, utility_type, utility_factory, name='', asObject=False, **kw):
     """Add and configure a utility to the root folder."""
-    utility_name = addUtility(root_folder, utility_type, utility_factory, **kw)
-    configureUtility(root_folder, interface, utility_type, name, utility_name)
-    return name
+    if not asObject:
+        warnings.warn("asObject=False is deprecated", DeprecationWarning, 2)
+        
+    utility = addUtility(root_folder, utility_type, utility_factory, True, **kw)
+    configureUtility(root_folder, interface, utility_type, name, utility.__name__)
+    
+    if asObject:
+        return utility
+    else:
+        return utility.__name__
 
-def addUtility(root_folder, utility_type, utility_factory, **kw):
+def addUtility(root_folder, utility_type, utility_factory, asObject=False, **kw):
     """ Add a Utility to the root folder's site manager.
 
     The utility is added to the default package and activated.
     """
+    if not asObject:
+        warnings.warn("asObject=False is deprecated", DeprecationWarning, 2)
+    
     package = getSiteManagerDefault(root_folder)
     chooser = INameChooser(package)
     utility = utility_factory()
@@ -88,7 +110,10 @@ def addUtility(root_folder, utility_type, utility_factory, **kw):
     # Set additional attributes on the utility
     for k, v in kw.iteritems():
         setattr(utility, k, v)
-    return name
+    if asObject:
+        return utility
+    else:
+        return name
 
 def configureUtility(
         root_folder, interface, utility_type, name, folder_name,
