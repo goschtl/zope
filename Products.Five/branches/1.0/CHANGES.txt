@@ -2,11 +2,13 @@
 Five Changes
 ============
 
-Five 1.0.3 (2006-03-26)
+Five 1.0.3 (2006-03-31)
 =======================
 
 Bugfixes
 --------
+
+* Added the ``class`` ZCML directive as an alias to ``content``.
 
 * Fixed look-up order during Five traversal.  It is now as follows:
 
