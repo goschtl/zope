@@ -32,7 +32,8 @@ def bootStrapSubscriber(event):
     db, connection, root, root_folder = getInformationFromEvent(event)
 
     ensureUtility(root_folder, IPrincipalAnnotationUtility,
-                  'PrincipalAnnotation', PrincipalAnnotationUtility)
+                  'PrincipalAnnotation', PrincipalAnnotationUtility,
+                  asObject=True)
 
     transaction.commit()
     connection.close()

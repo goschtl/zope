@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap code for error reporting utility.
 
-$Id: bootstrap.py 28023 2004-10-12 18:11:29Z anguenot $
+$Id$
 """
 
 import transaction
@@ -32,7 +32,7 @@ def bootStrapSubscriber(event):
     db, connection, root, root_folder = getInformationFromEvent(event)
 
     ensureUtility(root_folder, IErrorReportingUtility, '',
-                  RootErrorReportingUtility, copy_to_zlog=False)
+                  RootErrorReportingUtility, copy_to_zlog=False, asObject=True)
 
     transaction.commit()
     connection.close()
