@@ -21,15 +21,21 @@ import zope.interface.adapter
 from zope import interface
 from zope.component import interfaces
 import zope.interface.interfaces
+import zope.event
 
 class Components(object):
 
     interface.implements(interfaces.IComponents)
 
-    def __init__(self, bases=()):
+    def __init__(self, name='', bases=()):
+        assert isinstance(name, basestring)
+        self.__name__ = name
         self._init_registries()
         self._init_registrations()
         self.__bases__ = tuple(bases)
+
+    def __repr__(self):
+        return "<%s %s>" % (self.__class__.__name__, self.__name__) 
 
     def _init_registries(self):
         self.adapters = zope.interface.adapter.AdapterRegistry()
@@ -75,6 +81,10 @@ class Components(object):
         if not subscribed:
             self.utilities.subscribe((), provided, component)
 
+        zope.event.notify(interfaces.Registered(
+            UtilityRegistration(self, provided, name, component, info)
+            ))
+
     def unregisterUtility(self, component=None, provided=None, name=u''):
         if provided is None:
             if component is None:
@@ -99,13 +109,17 @@ class Components(object):
 
         if not subscribed:
             self.utilities.unsubscribe((), provided, component)
+
+        zope.event.notify(interfaces.Unregistered(
+            UtilityRegistration(self, provided, name, component, old[1])
+            ))
         
         return True
 
     def registeredUtilities(self):
         for ((provided, name), (component, info)
              ) in self._utility_registrations.iteritems():
-            yield UtilityRegistration(provided, name, component, info)
+            yield UtilityRegistration(self, provided, name, component, info)
 
     def queryUtility(self, provided, name=u'', default=None):
         return self.utilities.lookup((), provided, name, default)
@@ -133,6 +147,12 @@ class Components(object):
         self._adapter_registrations[(required, provided, name)
                                     ] = factory, info
         self.adapters.register(required, provided, name, factory)
+        
+        zope.event.notify(interfaces.Registered(
+            AdapterRegistration(self, required, provided, name,
+                                factory, info)
+            ))
+
 
     def unregisterAdapter(self, factory=None,
                           required=None, provided=None, name=u'',
@@ -153,12 +173,18 @@ class Components(object):
         
         del self._adapter_registrations[(required, provided, name)]
         self.adapters.unregister(required, provided, name)
+        
+        zope.event.notify(interfaces.Unregistered(
+            AdapterRegistration(self, required, provided, name,
+                                *old)
+            ))
+
         return True
         
     def registeredAdapters(self):
         for ((required, provided, name), (component, info)
              ) in self._adapter_registrations.iteritems():
-            yield AdapterRegistration(required, provided, name,
+            yield AdapterRegistration(self, required, provided, name,
                                       component, info)
 
     def queryAdapter(self, object, interface, name=u'', default=None):
@@ -200,10 +226,15 @@ class Components(object):
             (required, provided, name, factory, info)
             )
         self.adapters.subscribe(required, provided, factory)
+        
+        zope.event.notify(interfaces.Registered(
+            SubscriptionRegistration(self, required, provided, name,
+                                     factory, info)
+            ))
 
     def registeredSubscriptionAdapters(self):
         for data in self._subscription_registrations:
-            yield SubscriptionRegistration(*data)
+            yield SubscriptionRegistration(self, *data)
 
     def unregisterSubscriptionAdapter(self, factory=None,
                           required=None, provided=None, name=u'',
@@ -239,13 +270,16 @@ class Components(object):
 
         self._subscription_registrations = new
         self.adapters.unsubscribe(required, provided)
+        
+        zope.event.notify(interfaces.Unregistered(
+            SubscriptionRegistration(self, required, provided, name,
+                                     factory, '')
+            ))
+
         return True
 
     def subscribers(self, objects, provided):
         return self.adapters.subscribers(objects, provided)
-
-
-
 
     def registerHandler(self,
                         factory, required=None,
@@ -257,10 +291,14 @@ class Components(object):
             (required, name, factory, info)
             )
         self.adapters.subscribe(required, None, factory)
+        
+        zope.event.notify(interfaces.Registered(
+            HandlerRegistration(self, required, name, factory, info)
+            ))
 
     def registeredHandlers(self):
         for data in self._handler_registrations:
-            yield HandlerRegistration(*data)
+            yield HandlerRegistration(self, *data)
 
     def unregisterHandler(self, factory=None, required=None, name=u''):
         if name:
@@ -289,6 +327,11 @@ class Components(object):
         
         self._handler_registrations = new
         self.adapters.unsubscribe(required, None)
+        
+        zope.event.notify(interfaces.Unregistered(
+            HandlerRegistration(self, required, name, factory, '')
+            ))
+
         return True
 
     def handle(self, *objects):
@@ -343,15 +386,16 @@ def _getAdapterRequired(factory, required):
         
 class UtilityRegistration(object):
 
-    def __init__(self, provided, name, component, doc):
-        (self.provided, self.name, self.component, self.info
-         ) = provided, name, component, doc
+    def __init__(self, registry, provided, name, component, doc):
+        (self.registry, self.provided, self.name, self.component, self.info
+         ) = registry, provided, name, component, doc
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r)' % (
+        return '%s(%r, %s, %r, %s, %r)' % (
             self.__class__.__name__,
+            self.registry,
             getattr(self.provided, '__name__', None), self.name,
-            getattr(self.component, '__name__', self.component), self.info,
+            getattr(self.component, '__name__', `self.component`), self.info,
             )
 
     def __cmp__(self, other):
@@ -359,29 +403,38 @@ class UtilityRegistration(object):
         
 class AdapterRegistration(object):
 
-    def __init__(self, required, provided, name, component, doc):
-        (self.required, self.provided, self.name, self.factory, self.info
-         ) = required, provided, name, component, doc
+    def __init__(self, registry, required, provided, name, component, doc):
+        (self.registry, self.required, self.provided, self.name,
+         self.factory, self.info
+         ) = registry, required, provided, name, component, doc
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r)' % (
+        return '%s(%r, %s, %s, %r, %s, %r)' % (
             self.__class__.__name__,
-            tuple([r.__name__ for r in self.required]), 
+            self.registry,
+            '[' + ", ".join([r.__name__ for r in self.required]) + ']', 
             getattr(self.provided, '__name__', None), self.name,
-            getattr(self.factory, '__name__', self.factory), self.info,
+            getattr(self.factory, '__name__', `self.factory`), self.info,
             )
 
     def __cmp__(self, other):
         return cmp(self.__repr__(), other.__repr__())
 
+    @property
+    @zope.deprecation.deprecate(
+        "The component attribute on adapter registrations will be unsupported "
+        "in Zope 3.5. Use the factory attribute instead.")
+    def component(self):
+        return self.factory
+
 class SubscriptionRegistration(AdapterRegistration):
     pass
 
-class HandlerRegistration(object):
+class HandlerRegistration(AdapterRegistration):
 
-    def __init__(self, required, name, handler, doc):
-        (self.required, self.name, self.handler, self.info
-         ) = required, name, handler, doc
+    def __init__(self, registry, required, name, handler, doc):
+        (self.registry, self.required, self.name, self.handler, self.info
+         ) = registry, required, name, handler, doc
 
     @property
     def factory(self):
@@ -390,10 +443,11 @@ class HandlerRegistration(object):
     provided = None
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r)' % (
+        return '%s(%r, %s, %r, %s, %r)' % (
             self.__class__.__name__,
-            tuple([r.__name__ for r in self.required]), 
+            self.registry,
+            '[' + ", ".join([r.__name__ for r in self.required]) + ']', 
             self.name,
-            getattr(self.factory, '__name__', self.factory), self.info,
+            getattr(self.factory, '__name__', `self.factory`), self.info,
             )
     

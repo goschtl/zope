@@ -18,7 +18,15 @@ these features.
 
     >>> from zope.component.registry import Components
     >>> from zope.component import tests
-    >>> components = Components()
+    >>> components = Components('comps')
+
+As components atr registered, events are generated.  Let's register
+an event subscriber, so we can see the events generated:
+
+    >>> import zope.event
+    >>> def logevent(event):
+    ...     print event
+    >>> zope.event.subscribers.append(logevent)
     
 Utilities
 ---------
@@ -26,6 +34,8 @@ Utilities
 You can register Utilities using registerUtility:
 
     >>> components.registerUtility(tests.U1(1))
+    Registered event:
+    UtilityRegistration(<Components comps>, I1, u'', 1, u'')
 
 Here we didn't specify an interface or name.  An unnamed utility was
 registered for interface I1, since that is only interface implemented
@@ -55,10 +65,14 @@ then an error will be raised:
 We can provide an interface if desired:
 
     >>> components.registerUtility(tests.U12(2), tests.I2)
+    Registered event:
+    UtilityRegistration(<Components comps>, I2, u'', 2, u'')
 
 and we can specify a name:
 
     >>> components.registerUtility(tests.U12(3), tests.I2, u'three')
+    Registered event:
+    UtilityRegistration(<Components comps>, I2, u'three', 3, u'')
 
     >>> components.getUtility(tests.I2)
     U12(2)
@@ -98,6 +112,8 @@ registeredUtilities method:
 Duplicate registrations replace existing ones:
 
     >>> components.registerUtility(tests.U1(4), info=u'use 4 now')
+    Registered event:
+    UtilityRegistration(<Components comps>, I1, u'', 4, u'use 4 now')
     >>> components.getUtility(tests.I1)
     U1(4)
 
@@ -118,6 +134,8 @@ registration itself that is shown when listing registrations.
 You can also unregister utilities:
 
     >>> components.unregisterUtility(provided=tests.I1)
+    Unregistered event:
+    UtilityRegistration(<Components comps>, I1, u'', 4, u'use 4 now')
     True
 
 A boolean is returned indicating whether anything changed:
@@ -136,11 +154,15 @@ doesn't match the one registered, then nothing happens:
 
     >>> u5 = tests.U1(5)
     >>> components.registerUtility(u5)
+    Registered event:
+    UtilityRegistration(<Components comps>, I1, u'', 5, u'')
     >>> components.unregisterUtility(tests.U1(6))
     False
     >>> components.queryUtility(tests.I1)
     U1(5)
     >>> components.unregisterUtility(u5)
+    Unregistered event:
+    UtilityRegistration(<Components comps>, I1, u'', 5, u'')
     True
     >>> components.queryUtility(tests.I1)
 
@@ -150,6 +172,8 @@ Adapters
 You can register adapters with registerAdapter:
 
     >>> components.registerAdapter(tests.A12_1)
+    Registered event:
+    AdapterRegistration(<Components comps>, [I1, I2], IA1, u'', A12_1, u'')
 
 Here, we didn't specify required interfaces, a provided interface, or
 a name.  The required interfaces were determined from the factory
@@ -172,6 +196,8 @@ raised:
 Unless the provided interface is specified:
 
     >>> components.registerAdapter(tests.A1_12, provided=tests.IA2)
+    Registered event:
+    AdapterRegistration(<Components comps>, [I1], IA2, u'', A1_12, u'')
 
 If a factory doesn't declare an implemented interface, an exception will be
 raised:
@@ -186,6 +212,8 @@ raised:
 Unless the provided interface is specified:
 
     >>> components.registerAdapter(tests.A12_, provided=tests.IA2)
+    Registered event:
+    AdapterRegistration(<Components comps>, [I1, I2], IA2, u'', A12_, u'')
 
 If the required interface needs to be specified in the
 registration if the factory doesn't have a __component_adapts__
@@ -201,12 +229,18 @@ attribute:
 Unless the required specifications specified:
 
     >>> components.registerAdapter(tests.A_2, required=[tests.I3])
+    Registered event:
+    AdapterRegistration(<Components comps>, [I3], IA2, u'', A_2, u'')
 
 Classes can be specified in place of specifications, in which case the
 implementedBy specification for the class is used:
 
     >>> components.registerAdapter(tests.A_3, required=[tests.U],
     ...                            info="Really class specific")
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Registered event:
+    AdapterRegistration(<Components comps>, [zope.component.tests.U], IA3, u'',
+                        A_3, 'Really class specific')
 
 We can see the adapters that have been registered using the
 registeredAdapters method:
@@ -278,7 +312,10 @@ rewuired and provided interfaces, can be infered, then they need not
 be provided:
 
     >>> components.unregisterAdapter(tests.A12_1)
+    Unregistered event:
+    AdapterRegistration(<Components comps>, [I1, I2], IA1, u'', A12_1, u'')
     True
+
     >>> for regsitration in sorted(components.registeredAdapters()):
     ...     print regsitration.required
     ...     print regsitration.provided, regsitration.name
@@ -313,6 +350,8 @@ raised:
 Unless the provided interface is specified:
 
     >>> components.unregisterAdapter(tests.A1_12, provided=tests.IA2)
+    Unregistered event:
+    AdapterRegistration(<Components comps>, [I1], IA2, u'', A1_12, u'')
     True
 
 If a factory doesn't declare an implemented interface, an exception will be
@@ -328,6 +367,8 @@ raised:
 Unless the provided interface is specified:
 
     >>> components.unregisterAdapter(tests.A12_, provided=tests.IA2)
+    Unregistered event:
+    AdapterRegistration(<Components comps>, [I1, I2], IA2, u'', A12_, u'')
     True
 
 The required interface needs to be specified if the factory doesn't
@@ -341,6 +382,8 @@ have a __component_adapts__ attribute:
     attribute and no required specifications were specified 
 
     >>> components.unregisterAdapter(tests.A_2, required=[tests.I3])
+    Unregistered event:
+    AdapterRegistration(<Components comps>, [I3], IA2, u'', A_2, u'')
     True
 
     >>> for regsitration in sorted(components.registeredAdapters()):
@@ -365,6 +408,10 @@ The factory can be omitted, to unregister *any* factory that matches
 specified required and provided interfaces:
 
     >>> components.unregisterAdapter(required=[tests.U], provided=tests.IA3)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Unregistered event:
+    AdapterRegistration(<Components comps>, [zope.component.tests.U], 
+                        IA3, u'', A_3, 'Really class specific')
     True
 
     >>> for regsitration in sorted(components.registeredAdapters()):
@@ -374,6 +421,8 @@ Adapters can be named:
 
     >>> components.registerAdapter(tests.A1_12, provided=tests.IA2, 
     ...                            name=u'test')
+    Registered event:
+    AdapterRegistration(<Components comps>, [I1], IA2, u'test', A1_12, u'')
 
     >>> components.queryMultiAdapter((tests.U1(9), ), tests.IA2)
     >>> components.queryMultiAdapter((tests.U1(9), ), tests.IA2, name=u'test')
@@ -390,8 +439,13 @@ interface:
 
     >>> components.registerAdapter(tests.A1_23, provided=tests.IA2, 
     ...                            name=u'test 2')
+    Registered event:
+    AdapterRegistration(<Components comps>, [I1], IA2, u'test 2', A1_23, u'')
 
     >>> components.registerAdapter(tests.A1_12, provided=tests.IA2)
+    Registered event:
+    AdapterRegistration(<Components comps>, [I1], IA2, u'', A1_12, u'')
+
     >>> for name, adapter in sorted(components.getAdapters((tests.U1(9), ), 
     ...                                                    tests.IA2)):
     ...     print name, adapter
@@ -408,9 +462,16 @@ factory:
     >>> components.registerAdapter(tests.noop, 
     ...                            required=[tests.IA1], provided=tests.IA2, 
     ...                            name=u'test noop')
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Registered event:
+    AdapterRegistration(<Components comps>, [IA1], IA2, u'test noop', 
+                        noop, u'')
     >>> components.queryAdapter(tests.U1(9), tests.IA2, name=u'test noop')
 
     >>> components.registerAdapter(tests.A1_12, provided=tests.IA2)
+    Registered event:
+    AdapterRegistration(<Components comps>, [I1], IA2, u'', A1_12, u'')
+
     >>> for name, adapter in sorted(components.getAdapters((tests.U1(9), ), 
     ...                                                    tests.IA2)):
     ...     print name, adapter
@@ -420,9 +481,13 @@ factory:
 
 
     >>> components.unregisterAdapter(tests.A1_12, provided=tests.IA2, 
-    ...                            name=u'test')
+    ...                              name=u'test')
+    Unregistered event:
+    AdapterRegistration(<Components comps>, [I1], IA2, u'test', A1_12, u'')
     True
     >>> components.unregisterAdapter(tests.A1_12, provided=tests.IA2)
+    Unregistered event:
+    AdapterRegistration(<Components comps>, [I1], IA2, u'', A1_12, u'')
     True
     >>> for regsitration in sorted(components.registeredAdapters()):
     ...     print regsitration.required
@@ -446,14 +511,24 @@ isn't any concept of the most specific adapter for a given name.
 
 Subscribers are registered by calling registerSubscriptionAdapter:
 
-     >>> components.registerSubscriptionAdapter(tests.A1_2)
+    >>> components.registerSubscriptionAdapter(tests.A1_2)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Registered event:
+    SubscriptionRegistration(<Components comps>, [I1], IA2, u'', A1_2, u'')
 
-     >>> components.registerSubscriptionAdapter(
-     ...     tests.A1_12, provided=tests.IA2)
+    >>> components.registerSubscriptionAdapter(
+    ...     tests.A1_12, provided=tests.IA2)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Registered event:
+    SubscriptionRegistration(<Components comps>, [I1], IA2, u'', A1_12, u'')
 
-     >>> components.registerSubscriptionAdapter(
-     ...     tests.A, [tests.I1], tests.IA2,
-     ...     info='a sample comment')
+    >>> components.registerSubscriptionAdapter(
+    ...     tests.A, [tests.I1], tests.IA2,
+    ...     info='a sample comment')
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Registered event:
+    SubscriptionRegistration(<Components comps>, [I1], IA2, u'', 
+                             A, 'a sample comment')
 
 The same rules, with regard to when required and provided interfaces
 have to be specified apply as with adapters:
@@ -485,6 +560,10 @@ use. We can give a name, as long as it is an empty string:
 
     >>> components.registerSubscriptionAdapter(
     ...     tests.A, [tests.I1], tests.IA2, u'', 'a sample comment')
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Registered event:
+    SubscriptionRegistration(<Components comps>, [I1], IA2, u'', 
+                             A, 'a sample comment')
 
     >>> components.registerSubscriptionAdapter(
     ...     tests.A, [tests.I1], tests.IA2, u'oops', 'a sample comment')
@@ -506,8 +585,10 @@ subscriber instances.
 
 As with normal adapters, if a factory returns None, the result is skipped:
 
-     >>> components.registerSubscriptionAdapter(
-     ...     tests.noop, [tests.I1], tests.IA2)
+    >>> components.registerSubscriptionAdapter(
+    ...     tests.noop, [tests.I1], tests.IA2)
+    Registered event:
+    SubscriptionRegistration(<Components comps>, [I1], IA2, u'', noop, u'')
 
     >>> for s in components.subscribers((tests.U1(1), ), tests.IA2):
     ...    print s
@@ -542,6 +623,9 @@ We can get registration information for subscriptions:
 We can also unregister subscriptions in much the same way we can for adapters:
 
     >>> components.unregisterSubscriptionAdapter(tests.A1_2)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Unregistered event:
+    SubscriptionRegistration(<Components comps>, [I1], IA2, u'', A1_2, '')
     True
 
     >>> for registration in sorted(
@@ -564,6 +648,8 @@ We can also unregister subscriptions in much the same way we can for adapters:
 
     >>> components.unregisterSubscriptionAdapter(
     ...     tests.A, [tests.I1], tests.IA2)
+    Unregistered event:
+    SubscriptionRegistration(<Components comps>, [I1], IA2, u'', A, '')
     True
 
     >>> for registration in sorted(
@@ -594,6 +680,8 @@ If we omit the factory, we must specify the required and provided interfaces:
 
     >>> components.unregisterSubscriptionAdapter(
     ...     required=[tests.I1], provided=tests.IA2)
+    Unregistered event:
+    SubscriptionRegistration(<Components comps>, [I1], IA2, u'', None, '')
     True
 
     >>> for registration in sorted(
@@ -624,7 +712,8 @@ information can't be determined from the factory and isn't specified:
     TypeError: The adapter factory doesn't implement a single interface
     and no provided interface was specified.
 
-If you unregister something that's not registered, nothing will be changed and False will be returned:
+If you unregister something that's not registered, nothing will be
+changed and False will be returned:
 
 
     >>> components.unregisterSubscriptionAdapter(
@@ -644,6 +733,10 @@ and are not registered to provide any interface.
     ...     print 'handle1', x
 
     >>> components.registerHandler(handle1, info="First handler")
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Registered event:
+    HandlerRegistration(<Components comps>, [I1], u'', 
+                        handle1, 'First handler')
     >>> components.handle(tests.U1(1))
     handle1 U1(1)
 
@@ -652,6 +745,8 @@ and are not registered to provide any interface.
     ...     print 'handle12', x, y
 
     >>> components.registerHandler(handle12)
+    Registered event:
+    HandlerRegistration(<Components comps>, [I1, I2], u'', handle12, u'')
     >>> components.handle(tests.U1(1), tests.U12(2))
     handle12 U1(1) U12(2)
 
@@ -670,11 +765,17 @@ the required interfaces must be specified:
 
     >>> components.registerHandler(handle, required=[tests.I1], 
     ...                            info="a comment")
+    Registered event:
+    HandlerRegistration(<Components comps>, [I1], u'', handle, 'a comment')
 
 Handlers can also be registered for classes:
 
     >>> components.registerHandler(handle, required=[tests.U], 
     ...                            info="handle a class")
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Registered event:
+    HandlerRegistration(<Components comps>, [zope.component.tests.U], u'', 
+                        handle, 'handle a class')
 
 
     >>> components.handle(tests.U1(1))
@@ -701,6 +802,10 @@ We can list the handler registrations:
 and we can unregister handlers:
 
     >>> components.unregisterHandler(required=[tests.U])
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Unregistered event:
+    HandlerRegistration(<Components comps>, [zope.component.tests.U], u'', 
+                        None, '')
     True
 
     >>> for registration in components.registeredHandlers():
@@ -716,6 +821,8 @@ and we can unregister handlers:
     <function handle at 0xb78f5ca4> a comment
 
     >>> components.unregisterHandler(handle12)
+    Unregistered event:
+    HandlerRegistration(<Components comps>, [I1, I2], u'', handle12, '')
     True
 
     >>> for registration in components.registeredHandlers():
@@ -747,50 +854,72 @@ Extending
 Component-management objects can extend other component-management
 objects. 
 
-    >>> c1 = Components()
+    >>> c1 = Components('1')
     >>> c1.__bases__
     ()
 
-    >>> c2 = Components((c1, ))
+    >>> c2 = Components('2', (c1, ))
     >>> c2.__bases__ == (c1, )
     True
 
     >>> c1.registerUtility(tests.U1(1))
+    Registered event:
+    UtilityRegistration(<Components 1>, I1, u'', 1, u'')
+
     >>> c1.queryUtility(tests.I1)
     U1(1)
     >>> c2.queryUtility(tests.I1)
     U1(1)
     >>> c1.registerUtility(tests.U1(2))
+    Registered event:
+    UtilityRegistration(<Components 1>, I1, u'', 2, u'')
+
     >>> c2.queryUtility(tests.I1)
     U1(2)
 
 We can use multiple inheritence:
 
-    >>> c3 = Components((c1, ))
-    >>> c4 = Components((c2, c3))
+    >>> c3 = Components('3', (c1, ))
+    >>> c4 = Components('4', (c2, c3))
     >>> c4.queryUtility(tests.I1)
     U1(2)
 
     >>> c1.registerUtility(tests.U12(1), tests.I2)
+    Registered event:
+    UtilityRegistration(<Components 1>, I2, u'', 1, u'')
+
     >>> c4.queryUtility(tests.I2)
     U12(1)
 
     >>> c3.registerUtility(tests.U12(3), tests.I2)
+    Registered event:
+    UtilityRegistration(<Components 3>, I2, u'', 3, u'')
     >>> c4.queryUtility(tests.I2)
     U12(3)
 
     >>> c1.registerHandler(handle1, info="First handler")
+    Registered event:
+    HandlerRegistration(<Components 1>, [I1], u'', handle1, 'First handler')
+
     >>> c2.registerHandler(handle, required=[tests.U])
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Registered event:
+    HandlerRegistration(<Components 2>, [zope.component.tests.U], u'', 
+                        handle, u'')
     
     >>> @component.adapter(tests.I1)
     ... def handle3(x):
     ...     print 'handle3', x
     >>> c3.registerHandler(handle3)
+    Registered event:
+    HandlerRegistration(<Components 3>, [I1], u'', handle3, u'')
     
     >>> @component.adapter(tests.I1)
     ... def handle4(x):
     ...     print 'handle4', x
     >>> c4.registerHandler(handle4)
+    Registered event:
+    HandlerRegistration(<Components 4>, [I1], u'', handle4, u'')
 
     >>> c4.handle(tests.U1(1))
     handle1 U1(1)

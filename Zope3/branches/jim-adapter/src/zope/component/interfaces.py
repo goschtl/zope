@@ -17,8 +17,7 @@ $Id$
 """
 
 import zope.deferredimport
-from zope.interface import Interface, Attribute
-
+from zope import interface
 
 # BBB: Backward-compatibility; 12/05/2004
 from bbb.interfaces import *
@@ -32,7 +31,27 @@ class Invalid(Exception):
 class Misused(Exception):
     """A component is being used (registered) for the wrong interface."""
 
-class IComponentArchitecture(Interface):
+
+class IObjectEvent(interface.Interface):
+    """An event related to an object.
+
+    The object that generated this event is not necessarily the object
+    refered to by location.
+    """
+
+    object = interface.Attribute("The subject of the event.")
+
+
+class ObjectEvent(object):
+    interface.implements(IObjectEvent)
+
+    def __init__(self, object):
+        self.object = object
+
+    def __repr__(self):
+        return "%s event:\n%r" % (self.__class__.__name__, self.object)
+
+class IComponentArchitecture(interface.Interface):
     """The Component Architecture is defined by two key components: Adapters
     and Utiltities. Both are managed by site managers. All other components
     build on top of them.
@@ -51,9 +70,10 @@ class IComponentArchitecture(Interface):
 
         If `context` is `None`, return the global site manager.
 
-        If the `context` is not `None`, it is expected that an adapter from
-        the `context` to `IComponentLookup` can be found. If no adapter is found,
-        a `ComponentLookupError` is raised.
+        If the `context` is not `None`, it is expected that an adapter
+        from the `context` to `IComponentLookup` can be found. If no
+        adapter is found, a `ComponentLookupError` is raised.
+        
         """
 
     # Utility API
@@ -90,7 +110,9 @@ class IComponentArchitecture(Interface):
 
     # Adapter API
 
-    def getAdapter(object, interface=Interface, name=u'', context=None):
+    def getAdapter(object,
+                   interface=interface.Interface, name=u'',
+                   context=None):
         """Get a named adapter to an interface for an object
 
         Returns an adapter that can adapt object to interface.  If a matching
@@ -125,7 +147,9 @@ class IComponentArchitecture(Interface):
         returned.
         """
 
-    def getMultiAdapter(objects, interface=Interface, name='', context=None):
+    def getMultiAdapter(objects,
+                        interface=interface.Interface, name='',
+                        context=None):
         """Look for a multi-adapter to an interface for an objects
 
         Returns a multi-adapter that can adapt objects to interface.  If a
@@ -142,7 +166,7 @@ class IComponentArchitecture(Interface):
         named adapter methods with an empty string for a name.
         """
 
-    def queryAdapter(object, interface=Interface, name=u'', default=None,
+    def queryAdapter(object, interface=interface.Interface, name=u'', default=None,
                      context=None):
         """Look for a named adapter to an interface for an object
 
@@ -178,7 +202,9 @@ class IComponentArchitecture(Interface):
         returned.
         """
 
-    def queryMultiAdapter(objects, interface=Interface, name=u'', default=None,
+    def queryMultiAdapter(objects,
+                          interface=interface.Interface, name=u'',
+                          default=None,
                           context=None):
         """Look for a multi-adapter to an interface for objects
 
@@ -271,18 +297,18 @@ class IComponentArchitecture(Interface):
         create objects which implement the given interface.
         """
 
-class IComponentLookup(Interface):
+class IComponentLookup(interface.Interface):
     """Component Manager for a Site
 
     This object manages the components registered at a particular site. The
     definition of a site is intentionally vague.
     """
 
-    adapters = Attribute("Adapter Registry to manage all registered "
-                         "adapters.")
+    adapters = interface.Attribute(
+        "Adapter Registry to manage all registered adapters.")
 
-    utilities = Attribute("Adapter Registry to manage all registered "
-                          "utilities.")
+    utilities = interface.Attribute(
+        "Adapter Registry to manage all registered utilities.")
 
     def queryAdapter(object, interface, name=u'', default=None):
         """Look for a named adapter to an interface for an object
@@ -357,7 +383,7 @@ zope.deferredimport.deprecated(
     ISiteManager = "zope.component.interfaces:IComponentLookup",
     )
         
-class IComponentRegistrationConvenience(Interface):
+class IComponentRegistrationConvenience(interface.Interface):
     """API for registering components.
 
     CAUTION: This API should only be used from test or
@@ -439,7 +465,7 @@ class IComponentRegistrationConvenience(Interface):
         activity. 
         """
 
-class IRegistry(Interface):
+class IRegistry(interface.Interface):
     """Object that supports component registry
     """
 
@@ -447,12 +473,12 @@ class IRegistry(Interface):
         """Return an iterable of component registrations
         """
 
-class IFactory(Interface):
+class IFactory(interface.Interface):
     """A factory is responsible for creating other components."""
 
-    title = Attribute("The factory title.")
+    title = interface.Attribute("The factory title.")
 
-    description = Attribute("A brief description of the factory.")
+    description = interface.Attribute("A brief description of the factory.")
 
     def __call__(*args, **kw):
         """Return an instance of the objects we're a factory for."""
@@ -466,8 +492,86 @@ class IFactory(Interface):
         instance cannot be created, an empty Implements instance is returned.
         """
 
+class IRegistration(interface.Interface):
+    """A registration-information object 
+    """
 
-class IComponentRegistry(Interface):
+    registry = interface.Attribute("The registry having the registration")
+
+    name = interface.Attribute("The registration name")
+
+    info = interface.Attribute("""Information about the registration
+
+    This is information deemed useful to people browsing the
+    configuration of a system. It could, for example, include
+    commentary or information about the source of the configuration.
+    """)
+
+class IUtilityRegistration(IRegistration):
+    """Information about the registration of a utility
+    """
+
+    component = interface.Attribute("The object registered")
+    provided = interface.Attribute("The interface provided by the component")
+
+class IAdapterRegistration(IRegistration):
+    """Information about the registration of an adapter
+    """
+
+    factory = interface.Attribute("The factory used to create adapters")
+
+    required = interface.Attribute("""The adapted interfaces
+
+    This is a sequence of interfaces adapters by the registered
+    factory.  The factory will be caled with a sequence of objects, as
+    positional arguments, that provide these interfaces. 
+    """)
+
+    provided = interface.Attribute("""The interface provided by the adapters.
+
+    This interface is implemented by the factory
+    """)
+
+class ISubscriptionAdapterRegistration(IAdapterRegistration):
+    """Information about the registration of a subscription adapter
+    """
+
+class IHandlerRegistration(IRegistration):
+
+    handler = interface.Attribute("An object called used to handle an event")
+
+    required = interface.Attribute("""The handled interfaces
+
+    This is a sequence of interfaces handled by the registered
+    handler.  The handler will be caled with a sequence of objects, as
+    positional arguments, that provide these interfaces. 
+    """)
+
+class IRegistrationEvent(IObjectEvent):
+    """An event that involves a registration"""
+
+class RegistrationEvent(ObjectEvent):
+    """There has been a change in a registration
+    """
+    interface.implements(IRegistrationEvent)
+
+class IRegistered(IRegistrationEvent):
+    """A component or factory was registered 
+    """
+    
+class Registered(RegistrationEvent):
+    interface.implements(IRegistered)
+
+class IUnregistered(IRegistrationEvent):
+    """A component or factory was registered 
+    """
+
+class Unregistered(RegistrationEvent):
+    """A component or factory was registered 
+    """
+    interface.implements(IUnregistered)
+
+class IComponentRegistry(interface.Interface):
     """Register components
     """
 
@@ -489,6 +593,8 @@ class IComponentRegistry(Interface):
         info
            An object that can be converted to a string to provide
            information about the registration.
+
+        A Registered event is generated with an IUtilityRegistration.
         """
 
     def unregisterUtility(component=None, provided=None, name=u''):
@@ -514,25 +620,15 @@ class IComponentRegistry(Interface):
 
         name
            The utility name.
+
+        An UnRegistered event is generated with an IUtilityRegistration.
         """
 
     def registeredUtilities():
-        """Return an iterable of utility-information objects
+        """Return an iterable of IUtilityRegistrations.
 
-        The information objects will have attributes:
-
-        provided
-           The provided interface
-
-        name
-           The name
-
-        component
-           The registered component
-
-        info
-           An object that can be converted to a string to provide
-           information about the registration.
+        These registrations describe the current utility registrations
+        in the object.
         """
 
     def registerAdapter(factory, required=None, provided=None, name=u'',
@@ -568,6 +664,8 @@ class IComponentRegistry(Interface):
         info
            An object that can be converted to a string to provide
            information about the registration.
+           
+        A Registered event is generated with an IAdapterRegistration.
         """
 
     def unregisterAdapter(factory=None, required=None,
@@ -609,27 +707,15 @@ class IComponentRegistry(Interface):
 
         name
             The adapter name.
+
+        An Unregistered event is generated with an IAdapterRegistration.
         """
 
     def registeredAdapters():
-        """Return an iterable of adapter-information objects
+        """Return an iterable of IAdapterRegistrations.
 
-        The adapter information objects will have attributes:
-
-        required
-           An iterable of required interfaces
-
-        provided
-           The provided interface
-
-        name
-           The name
-
-        factory
-           The registered factory
-
-        info
-           Provide some info about this particular adapter registration.
+        These registrations describe the current adapter registrations
+        in the object.
         """
 
     def registerSubscriptionAdapter(factory, required=None, provides=None,
@@ -668,6 +754,9 @@ class IComponentRegistry(Interface):
         info
            An object that can be converted to a string to provide
            information about the registration.
+
+        A Registered event is generated with an
+        ISubscriptionAdapterRegistration.
         """
 
     def unregisterSubscriptionAdapter(factory=None, required=None, 
@@ -712,28 +801,16 @@ class IComponentRegistry(Interface):
 
             Note that this parameter is ignored and is reserved
             for future use when named subscribers are implemented.
+
+        An Unregistered event is generated with an
+        ISubscriptionAdapterRegistration.
         """
 
     def registeredSubscriptionAdapters():
-        """Return an iterable of subscriber-information objects
+        """Return an iterable of ISubscriptionAdapterRegistrations.
 
-        The subscriber information objects will have attributes:
-
-        required
-           An iterable of required interfaces
-
-        provided
-           The provided interface
-
-        name
-           The name
-
-        factory
-           The registered factory
-
-        info
-           An object that can be converted to a string to provide
-           information about the registration.
+        These registrations describe the current subscription adapter
+        registrations in the object.
         """
 
     def registerHandler(handler, adapts=None, name=u'', info=''):
@@ -768,6 +845,9 @@ class IComponentRegistry(Interface):
         info
            An object that can be converted to a string to provide
            information about the registration.
+
+
+        A Registered event is generated with an IHandlerRegistration.
         """
 
     def unregisterHandler(handler=None, adapts=None, name=u''):
@@ -801,26 +881,17 @@ class IComponentRegistry(Interface):
 
             Note that this parameter is ignored and is reserved
             for future use when named handlers are implemented.
+
+        An Unregistered event is generated with an IHandlerRegistration.
         """
 
     def registeredHandlers():
-        """Return an iterable of handler-information objects
+        """Return an iterable of IHandlerRegistrations.
 
-        The subscriber information objects will have attributes:
-
-        required
-           An iterable of required interfaces
-
-        name
-           The name
-
-        handler
-           The registered handler
-
-        info
-           An object that can be converted to a string to provide
-           information about the registration.
+        These registrations describe the current handler registrations
+        in the object.
         """
+
 
 class IComponents(IComponentLookup, IComponentRegistry):
     """Component registration and access

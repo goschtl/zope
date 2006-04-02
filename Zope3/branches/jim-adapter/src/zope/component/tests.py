@@ -710,19 +710,19 @@ connections.
     >>> from zope.component.persistentregistry import PersistentComponents
 
     >>> _ = t1.begin()
-    >>> r1[1] = PersistentComponents()
+    >>> r1[1] = PersistentComponents('1')
     >>> t1.commit()
 
     >>> _ = t2.begin()
-    >>> r2[2] = PersistentComponents((r2[1], ))
+    >>> r2[2] = PersistentComponents('2', (r2[1], ))
     >>> t2.commit()
 
     >>> _ = t1.begin()
-    >>> r1[3] = PersistentComponents((r1[1], ))
+    >>> r1[3] = PersistentComponents('3', (r1[1], ))
     >>> t1.commit()
 
     >>> _ = t2.begin()
-    >>> r2[4] = PersistentComponents((r2[2], r2[3]))
+    >>> r2[4] = PersistentComponents('4', (r2[2], r2[3]))
     >>> t2.commit()
 
     >>> _ = t1.begin()
@@ -789,6 +789,10 @@ connections.
     >>> db.close()
     """
 
+def tearDownRegistryTests(tests):
+    import zope.event
+    zope.event.subscribers.pop()
+
 def test_suite():
     checker = renormalizing.RENormalizing([
         (re.compile('at 0x[0-9a-f]+'), 'at <SOME ADDRESS>'),
@@ -803,7 +807,8 @@ def test_suite():
                              setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('factory.txt',
                              setUp=setUp, tearDown=tearDown),
-        doctest.DocFileSuite('registry.txt', checker=checker),
+        doctest.DocFileSuite('registry.txt', checker=checker,
+                             tearDown=tearDownRegistryTests),
         ))
 
 if __name__ == "__main__":
