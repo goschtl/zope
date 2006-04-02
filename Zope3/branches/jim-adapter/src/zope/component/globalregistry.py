@@ -40,14 +40,11 @@ class GlobalAdapterRegistry(AdapterRegistry):
     def __reduce__(self):
         return GAR, (self.__parent__, self.__name__)
 
-def NGC(components, registryName):
-    return components.getUtility(IComponents, registryName)
-
 ########################################################################
 #
 # BBB 2006/02/28 -- to be removed after 12 months
 
-class IGlobalSiteManager(IComponentLookup, IRegistry):
+class _IGlobalSiteManager(IComponentLookup, IRegistry):
 
     def provideAdapter(required, provided, name, factory, info=''):
         """Register an adapter factory
@@ -81,19 +78,12 @@ class IGlobalSiteManager(IComponentLookup, IRegistry):
         `providedInterface`. Turning strict off is particularly useful for
         tests."""
 
-deprecated("IGlobalSiteManager", "The IGlobalSiteManager interface has been "
-           "deprecated and will be removed.  Use the zope.component.interfaces."
-           "IComponents instead")
 #
 ########################################################################
 
 
 class BaseGlobalComponents(Components):
-    implements(IGlobalSiteManager)
-
-    def __init__(self, name=''):
-        self.__name__ = name
-        super(BaseGlobalComponents, self).__init__()
+    implements(_IGlobalSiteManager)
 
     def _init_registries(self):
         self.adapters = GlobalAdapterRegistry(self, 'adapters')
@@ -151,13 +141,3 @@ base = BaseGlobalComponents('base')
 from zope.testing.cleanup import addCleanUp
 addCleanUp(lambda: base.__init__('base'))
 del addCleanUp
-
-
-class NamedGlobalComponents(BaseGlobalComponents):
-
-    def __init__(self, parent, name):
-        self.__parent__ = parent
-        super(NamedGlobalComponents, self).__init__(name)
-
-    def __reduce__(self):
-        return NGC, (self.__parent__, self.__name__)
