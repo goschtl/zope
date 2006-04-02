@@ -18,19 +18,16 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface, Attribute
+import zope.deferredimport
+import zope.component.interfaces
 
+zope.deferredimport.deprecated(
+    "IObjectEvent is now defined in zope.component.interfaces.  "
+    "Importing IObjectEvent from zope.app.event will be disabled in Zope 3.5.",
+    IObjectEvent = 'zope.component.interfaces:IObjectEvent',
+    )
 
-class IObjectEvent(Interface):
-    """An event related to an object.
-
-    The object that generated this event is not necessarily the object
-    refered to by location.
-    """
-
-    object = Attribute("The subject of the event.")
-
-
-class IObjectCreatedEvent(IObjectEvent):
+class IObjectCreatedEvent(zope.component.interfaces.IObjectEvent):
     """An object has been created.
 
     The location will usually be ``None`` for this event."""
@@ -42,7 +39,7 @@ class IObjectCopiedEvent(IObjectCreatedEvent):
     original = Attribute("The original from which the copy was made")
 
 
-class IObjectModifiedEvent(IObjectEvent):
+class IObjectModifiedEvent(zope.component.interfaces.IObjectEvent):
     """An object has been modified"""
 
 
