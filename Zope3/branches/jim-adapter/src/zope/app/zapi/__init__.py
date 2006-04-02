@@ -40,11 +40,3 @@ name = getName
 def principals():
     from zope.app.security.interfaces import IAuthentication
     return getUtility(IAuthentication)
-
-# BBB: Gone in 3.3.
-from zope.deprecation import deprecated
-from zope.app import servicenames
-
-deprecated('servicenames',
-           'The concept of services has been removed. Please use utilities '
-           'instead. This reference will be removed in Zope 3.3.')
