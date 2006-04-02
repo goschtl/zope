@@ -25,7 +25,7 @@ from zope.component.interfaces import ComponentLookupError
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.app.event.tests.placelesssetup import getEvents
+from zope.app.event.tests.placelesssetup import getEvents, clearEvents
 
 from zope.app.form.browser import TextWidget
 from zope.app.form.browser.editview import EditView
@@ -108,6 +108,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         super(Test, self).setUp()
         ztapi.browserViewProviding(ITextLine, TextWidget, IInputWidget)
         ztapi.provideAdapter(IFoo, IBar, FooBarAdapter)
+        clearEvents()
 
     def test_setPrefix_and_widgets(self):
         v = EV(C(), TestRequest())
