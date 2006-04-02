@@ -28,9 +28,6 @@ from zope.security.checker import CheckerPublic
 from zope.security.management import newInteraction, endInteraction
 
 from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.component.interfaces.registration import IRegisterable
-from zope.app.component.interfaces.registration import IRegistered
-from zope.app.component.interfaces.registration import ActiveStatus
 from zope.app.servicenames import Utilities
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
