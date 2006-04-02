@@ -72,19 +72,19 @@ def provideAdapter(required, provided, factory, name='', with=()):
     elif not isinstance(required, stypes):
         required = (required,)
 
-    gsm.provideAdapter(required, provided, name, factory)
+    gsm.registerAdapter(factory, required, provided, name)
 
 def subscribe(required, provided, factory):
     gsm = zapi.getGlobalSiteManager()
-    gsm.subscribe(required, provided, factory)
-
-# BBB: Deprecated. Gone in 3.3
-def handle(required, handler):
-    subscribe(required, None, handler)
+    if provided is None:
+        gsm.registerHandler(factory, required)
+    else:
+        gsm.registerSubscriptionAdapter(factory, required, provided)
+        
 
 def provideUtility(provided, component, name=''):
     gsm = zapi.getGlobalSiteManager()
-    gsm.provideUtility(provided, component, name)
+    gsm.registerUtility(component, provided, name)
 
 def unprovideUtility(provided, name=''):
     gsm = zapi.getGlobalSiteManager()
