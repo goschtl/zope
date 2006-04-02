@@ -26,7 +26,6 @@ from zope.interface import implements
 from zope.component import ComponentLookupError
 from zope.app.zapi import getUtility
 from BTrees.OOBTree import OOBTree
-from zope.app.component.interfaces import ILocalUtility
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 
 from interfaces import \
@@ -73,7 +72,7 @@ class PersistentSessionDataContainer(Persistent, IterableUserDict):
     """A SessionDataContainer that stores data in the ZODB"""
     __parent__ = __name__ = None
 
-    implements(ISessionDataContainer, ILocalUtility, IAttributeAnnotatable)
+    implements(ISessionDataContainer, IAttributeAnnotatable)
 
     _v_last_sweep = 0 # Epoch time sweep last run
 
