@@ -80,6 +80,8 @@ class DecoratorSpecificationDescriptor(ObjectSpecificationDescriptor):
             cls = type(inst)
             return ObjectSpecification(provided, cls)
 
+    def __set__(self, inst, value):
+        raise TypeError("Can't set __providedBy__ on a decorated object")
 
 class DecoratedSecurityCheckerDescriptor(object):
     """Descriptor for a Decorator that provides a decorated security checker.
@@ -236,6 +238,8 @@ class DecoratedSecurityCheckerDescriptor(object):
             else:
                 return CombinedChecker(wrapper_checker, checker)
 
+    def __set__(self, inst, value):
+        raise TypeError("Can't set __Security_checker__ on a decorated object")
 
 class Decorator(ProxyBase):
     """Decorator base class"""
