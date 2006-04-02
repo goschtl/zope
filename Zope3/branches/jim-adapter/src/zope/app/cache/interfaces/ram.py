@@ -20,9 +20,8 @@ __docformat__ = 'restructuredtext'
 from zope.interface import Attribute
 
 from zope.app.cache.interfaces import ICache
-from zope.app.component.interfaces.registration import IRegisterable
 
-class IRAMCache(ICache, IRegisterable):
+class IRAMCache(ICache):
     """Interface for the RAM Cache."""
 
     maxEntries = Attribute("""A maximum number of cached values.""")
