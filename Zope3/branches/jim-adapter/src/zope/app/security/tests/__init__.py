@@ -30,4 +30,4 @@ def addCheckerPublic():
             """
             )
     gsm = zapi.getGlobalSiteManager()
-    gsm.provideUtility(IPermission, perm, perm.id)
+    gsm.registerUtility(perm, IPermission, perm.id)
