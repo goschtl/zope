@@ -16,7 +16,7 @@
 $Id$
 """
 
-from zope.app.event.interfaces import IObjectEvent
+from zope.component.interfaces import IObjectEvent
 from zope.app.event.objectevent import objectEventNotify
 from zope.app.testing import ztapi
 
