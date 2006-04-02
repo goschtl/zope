@@ -21,7 +21,6 @@ from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 from zope.schema import Text, Int
 
-from zope.component.service import serviceManager
 from zope.app.event.tests.placelesssetup import events, clearEvents
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
