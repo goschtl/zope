@@ -42,11 +42,6 @@ class LocalRole(Persistent, Location):
         self.title = title
         self.description = description
 
-# BBB: Renamed component on 12/05/2004
-PersistentRole = LocalRole
-from zope.app.component.site import UtilityRegistration
-RoleRegistration = UtilityRegistration
-
 def setIdOnActivation(role, event):
     """Set the permission id upon registration activation.
 
