@@ -11,19 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Contains helper functions and monkey patches to integrate twisted trial
-tests with the zope testrunner.
+"""Contains helper functions and monkey patch to integrate twisted trial
+tests with the Zope testrunner.
 
-WARNING - use with care - actaully just DO NOT USE THIS CODE. I only wrote
-his to test the ftp server and the only the ftp server. It should NOT be used
-for anything else. If we need to integrate the twisted trial framework and the
-zope.testing testrunner for anything else we need to think about this and come
-up with something better. Seriously.
-
-Twisted wraps all failures inside twisted.python.failure.Failure objects, and
-it also catches every exception thrown so I need this code to make my tests
-fail when they are broken. Otherwise they will always pass with the exception
-of syntax errors.
+This code will be unneeded when Twisted 2.3 comes out has it contains
+code to integrate itself with any pyunit system. But we it need it now to
+integrate the test_zope_ftp tests with the zope.testing test runner.
 
 Michael Kerrin <michael.kerrin@openapp.biz>
 
@@ -32,41 +25,68 @@ $Id$
 __docformat__="restructuredtext"
 
 import unittest
+import doctest
+import sets
+import time
+import sys
+import os
+import gc
+import re
 
+import twisted.python.failure
 import twisted.trial.unittest
-from twisted.python.failure import Failure
-
+import twisted.trial.reporter
+import twisted.trial.util
 import zope.testing.testrunner
-from zope.testing.testrunner import TestResult
 
-from twisted.trial import util
-
-old_addError = zope.testing.testrunner.TestResult.addError
-old_addFailure = zope.testing.testrunner.TestResult.addFailure
-
-RUNNING_TESTS = False
-
-def print_traceback(msg, exc_info):
-    print
-    print msg
-
-    tb = "".join(exc_info.getTraceback())
-
-    print tb
+class UnsupportedTrialFeature(Exception):
+    """A feature of twisted.trial was used that pyunit cannot support."""
 
 
-def new_addError(self, test, exc_info):
-    if isinstance(exc_info, Failure):
-        if self.options.verbose > 2:
-            print " (%.3f ms)" % (time.time() - self._start_time)
-        self.errors.append((test, exc_info.getTraceback()))
+class PyUnitResultAdapter(object):
+    def __init__(self, original):
+        self.original = original
 
-        if not RUNNING_TESTS:
-            print
-            print_traceback("Error in test %s" % test, exc_info)
+    def _exc_info(self, err):
+        from twisted.trial import reporter
+        if isinstance(err, twisted.python.failure.Failure):
+            # Unwrap the Failure into a exc_info tuple.
+            # XXX: if err.tb is a real traceback and not stringified, we should
+            #      use that.
+            err = (err.type, err.value, None)
+        return err
 
-        if self.options.post_mortem:
-            if self.options.resume_layer:
+    def startTest(self, method):
+        self.original.startTest(method)
+
+    def stopTest(self, method):
+        self.original.stopTest(method)
+
+    def addFailure(self, test, fail):
+        if self.original.options.verbose > 2:
+            print " (%.3f ms)" % (time.time() - self.original._start_time)
+
+        self.original.failures.append((test, fail.getTraceback()))
+        print
+        print "Failure in test %s" % test
+        print fail.getTraceback()
+
+        if self.original.options.post_mortem:
+            zope.testing.testrunner.post_mortem(exc_info)
+
+        self.original.test_width = self.original.last_width = 0
+
+    def addError(self, test, error):
+        if self.original.options.verbose > 2:
+            print " (%.3f ms)" % (time.time() - self.original._start_time)
+
+        self.original.errors.append((test, error.getTraceback()))
+        print
+        print "Error in test %s" % test
+        print error.getTraceback()
+
+        if self.original.options.post_mortem:
+            if self.original.options.resume_layer:
                 print
                 print '*'*70
                 print ("Can't post-mortem debug when running a layer"
@@ -76,153 +96,142 @@ def new_addError(self, test, exc_info):
             else:
                 zope.testing.testrunner.post_mortem(exc_info)
 
-        self.test_width = self.last_width = 0
-    else:
-        old_addError(self, test, exc_info)
+        self.original.test_width = self.original.last_width = 0
+
+    def _unsupported(self, test, feature, info):
+        self.original.addFailure(
+            test, 
+            (UnsupportedTrialFeature, 
+             UnsupportedTrialFeature(feature, info), 
+             None))
+
+    def addSkip(self, test, reason):
+        self._unsupported(test, 'skip', reason)
+
+    def addUnexpectedSuccess(self, test, todo):
+        self._unsupported(test, 'unexpected success', todo)
+        
+    def addExpectedFailure(self, test, error):
+        self._unsupported(test, 'expected failure', error)
+
+    def addSuccess(self, test):
+        self.original.addSuccess(test)
+
+    def upDownError(self, method, warn = True, printStatus = True):
+        pass
+
+    def cleanupErrors(self, errs):
+        pass
+    
+    def startSuite(self, name):
+        pass
 
 
-def new_addFailure(self, test, exc_info):
-    if isinstance(exc_info, Failure):
-        if self.options.verbose > 2:
-            print " (%.3f ms)" % (time.time() - self._start_time)
+orig_run = twisted.trial.unittest.TestCase.run
 
-        self.failures.append((test, exc_info.getTraceback()))
+def new_run(self, result):
+    if not isinstance(result, twisted.trial.reporter.Reporter):
+        result = PyUnitResultAdapter(result)
+    orig_run(self, result)
+    try:
+        twisted.trial.util._Janitor().postCaseCleanup()
+    except twisted.trial.util.FailureError, e:
+        for failure in e.failures:
+            result.cleanupErrors(failure)
+    except:
+        result.cleanupErrors(twisted.python.failure.Failure(sys.exc_info()))
 
-        if not RUNNING_TESTS:
-            print
-            print_traceback("Failure in test %s" % test, exc_info)
-
-        if self.options.post_mortem:
-            zope.testing.testrunner.post_mortem(exc_info)
-
-        self.test_width = self.last_width = 0
-    else:
-        old_addFailure(self, test, exc_info)
-
-
-def setUp():
-    # IMPORTANT - call the tearDown method below if you use this method!!!
+def patchtrial():
     #
-
-    # Monkey-patch the twisted.trial so has to catch and handle
-    # twisted.python.failure.Failure object correctly.
-    zope.testing.testrunner.TestResult.addError = new_addError
-    zope.testing.testrunner.TestResult.addFailure = new_addFailure
-
-def tearDown():
-    # IMPORTANT - call this method!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # Patch the twisted.trial.unittest.TestCase class inorder for it to run
+    # within the Zope testrunner. Only patch this class if we need to. Newer
+    # versions of Twisted don't need to be patched.
     #
+    try:
+        twisted.trial.unittest.PyUnitResultAdapter
+    except AttributeError:
+        ## old version of twisted we need to patch twisted.
+        twisted.trial.unittest.TestCase.run = new_run
 
-    # Un-Monkey-patch the twisted.trial so has to catch and handle
-    # twisted.python.failure.Failure object correctly.
-    zope.testing.testrunner.TestResult.addError = new_addError
-    zope.testing.testrunner.TestResult.addFailure = new_addFailure
+def killthreads():
+    """A lot of tests will start threads which the Zope testrunner complains
+    about. You can use this method to kill off these threads.
+    """
+    from twisted.internet import reactor, interfaces
+    from twisted.python import threadpool
+    if interfaces.IReactorThreads.providedBy(reactor):
+        reactor.suggestThreadPoolSize(0)
+        if reactor.threadpool:
+            reactor.threadpool.stop()
+            reactor.threadpool = None
+            reactor.threadpool = threadpool.ThreadPool(0, 10)
+            reactor.threadpool.start()
 
-    # Something funny happens with threads, the twisted reactor and zope.
-    # This fixes it.
-    util._Janitor.do_cleanThreads()
+orig_configure_logging = zope.testing.testrunner.configure_logging
 
-#
-# Now just make sure that all this does what it says.
-#
+def setUp(test):
+    # This setup is for testing the trial integration. This test indirectly
+    # call the zope.testing.testrunner.configure_logging method which tries
+    # to reconfigure the logging. This causes problems with some of the other
+    # tests. Nullify this method now, this should OK since the logging should
+    # all be set up at this stage.
+    zope.testing.testrunner.configure_logging = lambda : None
 
-class TestZopeTests(unittest.TestCase):
-
-    def setUp(self):
-        setUp()
-
-    def tearDown(self):
-        tearDown()
-
-    def test_error(self):
-        raise Exception, "this test is a broken zope test :-)"
-
-    def test_failure(self):
-        self.assert_(False, "I am a failed zope test")
-
-    def test_assert_ok(self):
-        self.assert_(True, "I am a good test")
-
-
-class TestTrialTests(twisted.trial.unittest.TestCase):
-
-    def setUp(self):
-        setUp()
-
-    def tearDown(self):
-        tearDown()
-
-    def test_error(self):
-        raise Exception, "this test is a broken trial test :-)"
-
-    def test_failure(self):
-        self.assert_(False, "I am a failed trial test")
-
-    def test_assert_ok(self):
-        self.assert_(True, "I am a good test")
+    test.globs['this_directory'] = os.path.split(__file__)[0]
+    test.globs['saved-sys-info'] = (
+        sys.path[:],
+        sys.argv[:],
+        sys.modules.copy(),
+        gc.get_threshold(),
+        )
+    test.globs['testrunner_script'] = __file__
 
 
-class Options(object):
-    # simple object to simpilutate the minium zope.testing options.
-    progress = False
-    verbose  = 0
-    post_mortem = None
+def tearDown(test):
+    # redefine the configure_logging method that we nullified in the setUp
+    # for these tests.
+    zope.testing.testrunner.configure_logging = orig_configure_logging
 
-
-old_print_traceback = zope.testing.testrunner.print_traceback
-def new_print_traceback(msg, exc_info):
-    # don't print out anything when running the test tests.
-    pass
-
-
-class TestTrialIntegration(unittest.TestCase):
-
-    def run_test(self, name, tests):
-        global RUNNING_TESTS
-
-        RUNNING_TESTS = True
-        zope.testing.testrunner.print_traceback = new_print_traceback
-
-        result = zope.testing.testrunner.TestResult(Options(), tests)
-        for test in tests:
-            test(result)
-
-        RUNNING_TESTS = False
-        zope.testing.testrunner.print_traceback = old_print_traceback
-
-        return result
-
-    def test_trial_tests(self):
-        suite = unittest.makeSuite(TestTrialTests)
-        result = self.run_test('', suite)
-        self._assertResults(
-            'zope.app.twisted.ftp.tests.test_zopetrial.TestTrialTests', result)
-
-    def test_zope_tests(self):
-        suite = unittest.makeSuite(TestZopeTests)
-        result = self.run_test('', suite)
-        self._assertResults(
-            'zope.app.twisted.ftp.tests.test_zopetrial.TestZopeTests', result)
-
-    def _assertResults(self, basetest, result):
-        # errors
-        self.assertEqual(len(result.failures), 1)
-        self.assertEqual(result.failures[0][0].id(),
-                         '%s.test_failure' % basetest)
-
-        # failures
-        self.assertEqual(len(result.errors), 1)
-        self.assertEqual(result.errors[0][0].id(), '%s.test_error' % basetest)
-
-        # ok
-        self.assertEqual(result.testsRun, 3) # ok, error, failure
-
+    sys.path[:], sys.argv[:] = test.globs['saved-sys-info'][:2]
+    gc.set_threshold(*test.globs['saved-sys-info'][3])
+    sys.modules.clear()
+    sys.modules.update(test.globs['saved-sys-info'][2])
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestTrialIntegration))
+    # patch trial before starting so that our test fail when they should.
+    patchtrial()
 
-    return suite
+    # copied from zope.testing.testrunner
+    import zope.testing.renormalizing
+    checker = zope.testing.renormalizing.RENormalizing([
+        (re.compile('^> [^\n]+->None$', re.M), '> ...->None'),
+        (re.compile('\\\\'), '/'),   # hopefully, we'll make windows happy
+        (re.compile('/r'), '\\\\r'), # undo damage from previous
+        (re.compile(r'\r'), '\\\\r\n'),
+        (re.compile(r'\d+[.]\d\d\d seconds'), 'N.NNN seconds'),
+        (re.compile(r'\d+[.]\d\d\d ms'), 'N.NNN ms'),
+        (re.compile('( |")[^\n]+testrunner-ex'), r'\1testrunner-ex'),
+        (re.compile('( |")[^\n]+testrunner.py'), r'\1testrunner.py'),
+        (re.compile(r'> [^\n]*(doc|unit)test[.]py\(\d+\)'),
+         r'\1doctest.py(NNN)'),
+        (re.compile(r'[.]py\(\d+\)'), r'.py(NNN)'),
+        (re.compile(r'[.]py:\d+'), r'.py:NNN'),
+        (re.compile(r' line \d+,', re.IGNORECASE), r' Line NNN,'),
 
-if __name__ == '__main__':
-    test_suite()
+        # omit traceback entries for unittest.py or doctest.py from
+        # output:
+        (re.compile(r'^ +File "[^\n]+(doc|unit)test.py", [^\n]+\n[^\n]+\n',
+                    re.MULTILINE),
+         r''),
+        (re.compile('^> [^\n]+->None$', re.M), '> ...->None'),
+        (re.compile('import pdb; pdb'), 'Pdb()'), # Py 2.3
+        ])
+    
+    suites = [
+        doctest.DocFileSuite('trial.txt',
+                             setUp = setUp, tearDown = tearDown,
+                             optionflags = doctest.ELLIPSIS,
+                             checker = checker),
+        ]
+
+    return unittest.TestSuite(suites)

@@ -32,7 +32,11 @@ from zope.app.twisted.ftp.tests import demofs
 from twisted.trial.util import wait
 from twisted.trial.unittest import TestCase
 
+## Install monkey patches in the test_zopetrail module that
+## allow me to cleanly test the Twisted server code from within
+## the Zope test runner.
 import test_zopetrial
+
 
 class DemoFileSystem(demofs.DemoFileSystem):
     def mkdir_nocheck(self, path):
@@ -65,23 +69,19 @@ class FTPServerTestCase(test_ftp.FTPServerTestCase):
     def tearDown(self):
         ## Uninstall the monkey patches needed to get the tiral tests
         ## running successfully within the zope test runner.
-        test_zopetrial.tearDown()
+        test_zopetrial.killthreads()
 
         # Clean up sockets
         self.client.transport.loseConnection()
-        d = self.port.stopListening()
-        if d is not None:
-            wait(d)
+        d = defer.maybeDeferred(self.port.stopListening)
+        d.addCallback(self.ebCallback)
 
+        return d
+
+    def ebCallback(self, ignore):
         del self.serverProtocol
 
     def setUp(self):
-        ## Install monkey patches in the test_zopetrail module that
-        ## allow me to cleanly test the Twisted server code from within
-        ## the Zope test runner.
-        ## Don't forget to call test_zopetrial.tearDown
-        test_zopetrial.setUp()
-
         root = demofs.Directory()
         # the tuple has a user name is used by ZopeSimpleAuthentication to
         # authenticate users.
@@ -310,6 +310,9 @@ class FTPServerPasvDataConnectionTestCase(FTPServerTestCase,
         self.assertEqual(['550 /foo: No such file or directory.'],
                          responseLines)
 
+        d = downloader.transport.loseConnection()
+        return d
+
     def testManyLargeDownloads(self):
         # Login
         self._anonymousLogin()
@@ -409,6 +412,8 @@ class ZopeFTPPermissionTestCases(FTPServerTestCase):
 
 
 def test_suite():
+    test_zopetrial.patchtrial()
+
     suite = unittest.TestSuite()
 
     suite.addTest(unittest.makeSuite(FTPServerTestCase))
