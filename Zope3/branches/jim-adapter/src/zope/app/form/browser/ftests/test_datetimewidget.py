@@ -17,16 +17,15 @@ $Id$
 """
 import unittest
 import re
-from persistent import Persistent
-import transaction
-from datetime import datetime
-from zope.app.datetimeutils import parseDatetimetz, tzinfo
 
+import transaction
+import zope.security.checker
+from persistent import Persistent
+from datetime import datetime
+from zope.datetime import parseDatetimetz, tzinfo
 from zope.interface import Interface
 from zope.interface import implements
-
 from zope.schema import Datetime, Choice
-import zope.security.checker
 
 from support import *
 from zope.app.traversing.api import traverse

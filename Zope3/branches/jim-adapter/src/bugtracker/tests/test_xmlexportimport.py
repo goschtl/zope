@@ -18,8 +18,8 @@ $Id: test_xmlexportimport.py,v 1.4 2003/07/28 17:13:48 srichter Exp $
 import unittest, os
 from datetime import datetime
 
+from zope.datetime import parseDatetimetz
 from zope.app.file import File
-from zope.app.datetimeutils import parseDatetimetz
 from zope.app.dublincore.interfaces import IZopeDublinCore
 
 from bugtracker import tests
