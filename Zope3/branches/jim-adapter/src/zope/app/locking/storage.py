@@ -25,12 +25,12 @@ from BTrees.OOBTree import OOBTree
 from BTrees.IOBTree import IOBTree
 
 from zope import component, interface
+from zope.size.interfaces import ISized
 
 from zope.app.keyreference.interfaces import IKeyReference
 from zope.app.locking import interfaces
 # for backwards compatibility:
 from zope.app.locking.interfaces import ILockStorage
-from zope.app.size.interfaces import ISized
 
 from zope.app.i18n import ZopeMessageFactory as _
 

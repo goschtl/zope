@@ -21,12 +21,12 @@ from xml.dom import minidom
 
 from zope.interface import implements
 from zope.i18n import translate
+from zope.size.interfaces import ISized
 
 from zope.app import zapi
 from zope.app.dav.interfaces import IDAVSchema
 from zope.app.dublincore.interfaces import IDCTimes
 from zope.app.filerepresentation.interfaces import IReadDirectory
-from zope.app.size.interfaces import ISized
 from zope.app.file.interfaces import IFile
 
 class DAVSchemaAdapter(object):

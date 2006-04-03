@@ -61,7 +61,7 @@
   <adapter for=".interfaces.IMessage"
            factory=".folder.MessageSized"
            permission="zope.View"
-           provides="zope.app.size.interfaces.ISized" />
+           provides="zope.size.interfaces.ISized" />
 
 
   <utility factory=".message.CheckinMessageParser"

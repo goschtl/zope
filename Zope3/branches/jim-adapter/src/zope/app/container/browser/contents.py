@@ -23,9 +23,9 @@ from zope.app.exception.interfaces import UserError
 from zope.app.traversing.interfaces import TraversalError
 from zope.security.interfaces import Unauthorized
 from zope.security import canWrite
+from zope.size.interfaces import ISized
 
 from zope.app import zapi
-from zope.app.size.interfaces import ISized
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
 from zope.app.i18n import ZopeMessageFactory as _

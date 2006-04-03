@@ -56,7 +56,7 @@
 
   <adapter
       for=".interfaces.IZPTPage"
-      provides="zope.app.size.interfaces.ISized"
+      provides="zope.size.interfaces.ISized"
       factory=".zptpage.Sized"
       trusted="y"
       permission="zope.ManageContent"
