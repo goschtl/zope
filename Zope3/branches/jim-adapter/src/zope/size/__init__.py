@@ -15,9 +15,10 @@
 
 $Id$
 """
-from zope.app.i18n import ZopeMessageFactory as _
-from zope.app.size.interfaces import ISized
 from zope.interface import implements
+from zope.size.interfaces import ISized
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory('zope')
 
 class DefaultSized(object):
     implements(ISized)

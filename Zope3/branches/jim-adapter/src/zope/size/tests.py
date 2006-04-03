@@ -16,8 +16,7 @@
 $Id$
 """
 import unittest
-
-from zope.app.size.interfaces import ISized
+from zope.size.interfaces import ISized
 
 class DummyObject(object):
 
@@ -30,32 +29,32 @@ class DummyObject(object):
 class Test(unittest.TestCase):
 
     def testImplementsISized(self):
-        from zope.app.size import DefaultSized
+        from zope.size import DefaultSized
         sized = DefaultSized(object())
         self.assert_(ISized.providedBy(sized))
 
     def testSizeWithBytes(self):
-        from zope.app.size import DefaultSized
+        from zope.size import DefaultSized
         obj = DummyObject(1023)
         sized = DefaultSized(obj)
         self.assertEqual(sized.sizeForSorting(), ('byte', 1023))
         self.assertEqual(sized.sizeForDisplay(), u'1 KB')
 
     def testSizeWithNone(self):
-        from zope.app.size import DefaultSized
+        from zope.size import DefaultSized
         obj = DummyObject(None)
         sized = DefaultSized(obj)
         self.assertEqual(sized.sizeForSorting(), (None, None))
         self.assertEqual(sized.sizeForDisplay(), u'not-available')
 
     def testSizeNotAvailable(self):
-        from zope.app.size import DefaultSized
+        from zope.size import DefaultSized
         sized = DefaultSized(object())
         self.assertEqual(sized.sizeForSorting(), (None, None))
         self.assertEqual(sized.sizeForDisplay(), u'not-available')
 
     def testVariousSizes(self):
-        from zope.app.size import DefaultSized
+        from zope.size import DefaultSized
 
         sized = DefaultSized(DummyObject(0))
         self.assertEqual(sized.sizeForSorting(), ('byte', 0))
@@ -76,7 +75,7 @@ class Test(unittest.TestCase):
         self.assertEqual(sized.sizeForDisplay().mapping, {'size': '1.91'})
 
     def test_byteDisplay(self):
-        from zope.app.size import byteDisplay
+        from zope.size import byteDisplay
         self.assertEqual(byteDisplay(0), u'0 KB')
         self.assertEqual(byteDisplay(1), u'1 KB')
         self.assertEqual(byteDisplay(2048), u'${size} KB')
