@@ -688,7 +688,7 @@ def dispatchToSublocations(object, event):
 
     Finally, we need to register our handler for copy events:
 
-      >>> from zope.app.tests import ztapi
+      >>> from zope.app.testing import ztapi
       >>> from zope.app.event.interfaces import IObjectCopiedEvent
       >>> ztapi.subscribe([None, IObjectCopiedEvent], None, handler)
 

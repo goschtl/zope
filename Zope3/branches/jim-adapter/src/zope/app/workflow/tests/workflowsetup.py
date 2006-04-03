@@ -1,4 +1,4 @@
- ##############################################################################
+##############################################################################
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -25,30 +25,24 @@ from zope.app.security.principalregistry import principalRegistry
 from zope.app.servicenames import Authentication, Utilities
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.utility import LocalUtilityService
-from zope.app.tests import setup
+from zope.app.testing import setup
 
 
 class WorkflowSetup(PlacefulSetup):
 
     def setUp(self):
-        #getGlobalServices has been moved 
-        #self.root_sm = zapi.getGlobalServices()
         self.root_sm = zapi.getGlobalSiteManager()
 
         self.sm = PlacefulSetup.setUp(self, site=True)
         setup.addService(self.sm, Utilities, LocalUtilityService())
 
         self.default = zapi.traverse(self.sm, "default")
-        #moved to registrationManager
-        #self.cm = self.default.getRegistrationManager()
         self.cm = self.default.registrationManager
 
         self.sm1 = self.makeSite('folder1')
         setup.addService(self.sm1, Utilities, LocalUtilityService())
 
         self.default1 = zapi.traverse(self.sm1, "default")
-        #moved to registrationManager
-        #self.cm1 = self.default1.getRegistrationManager()
         self.cm1 = self.default1.registrationManager
 
 

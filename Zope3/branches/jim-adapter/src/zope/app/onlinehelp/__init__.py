@@ -61,7 +61,7 @@ def getTopicFor(obj, view=None):
     >>> import os
     >>> from tests.test_onlinehelp import testdir
     >>> from tests.test_onlinehelp import I1, Dummy1, Dummy2
-    >>> from zope.app.tests import ztapi
+    >>> from zope.app.testing import ztapi
     >>> from zope.component.interfaces import IFactory
     >>> from zope.component.factory import Factory
     >>> from zope.app.onlinehelp.onlinehelptopic import OnlineHelpTopic

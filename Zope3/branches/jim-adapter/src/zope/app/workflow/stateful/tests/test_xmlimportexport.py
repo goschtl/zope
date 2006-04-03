@@ -34,7 +34,7 @@ from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.stateful.definition import State, Transition
 from zope.app.workflow.stateful.xmlimportexport import XMLExportHandler
 from zope.app.workflow.stateful.xmlimportexport import XMLImportHandler
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.interface import implements, classImplements, Interface
 from zope.interface.verify import verifyClass
 from zope.schema import TextLine

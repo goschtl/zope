@@ -264,7 +264,7 @@ class ImageTest(BrowserTestCase):
         self.checkForBrokenLinks(body, '/image/@@preview.html', 'mgr:mgrpw')
 
 def test_suite():
-    from zope.app.tests import functional
+    from zope.app.testing import functional
     return unittest.TestSuite((
         unittest.makeSuite(FileTest),
         unittest.makeSuite(ImageTest),
