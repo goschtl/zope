@@ -15,3 +15,19 @@
 
 $Id$
 """
+import sys
+from zope.deprecation import deprecated
+
+import zope.decorator
+import zope.datetime
+import zope.datetime.timezones
+
+sys.modules['zope.app.decorator'] = deprecated(
+    zope.decorator, "zope.app.decorator has been renamed to zope.decorator.")
+
+sys.modules['zope.app.datetimeutils'] = deprecated(
+    zope.datetime, "zope.app.datetimeutils has been renamed to zope.datetime.")
+
+sys.modules['zope.app.timezones'] = deprecated(
+    zope.datetime.timezones, "zope.app.timezones has been renamed to "
+    "zope.datetime.timezones.")
