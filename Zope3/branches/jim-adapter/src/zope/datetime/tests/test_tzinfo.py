@@ -20,7 +20,7 @@ from unittest import TestCase, TestSuite, main, makeSuite
 import pickle
 import datetime
 
-from zope.app.datetimeutils import tzinfo
+from zope.datetime import tzinfo
 class Test(TestCase):
 
     def test(self):

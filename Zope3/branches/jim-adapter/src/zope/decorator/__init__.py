@@ -117,7 +117,7 @@ class DecoratedSecurityCheckerDescriptor(object):
       >>> fooChecker.check(foo, 'a')
       >>> fooChecker.check(foo, 'b')  # doctest: +ELLIPSIS
       Traceback (most recent call last):
-      ForbiddenAttribute: ('b', <zope.app.decorator.Foo object ...>)
+      ForbiddenAttribute: ('b', <zope.decorator.Foo object ...>)
 
     and that a `Wrapper` object uses `wrappeChecker`:
 
@@ -127,7 +127,7 @@ class DecoratedSecurityCheckerDescriptor(object):
       >>> wrapperChecker.check(wrapper, 'b')
       >>> wrapperChecker.check(wrapper, 'a')  # doctest: +ELLIPSIS
       Traceback (most recent call last):
-      ForbiddenAttribute: ('a', <zope.app.decorator.Foo object ...>)
+      ForbiddenAttribute: ('a', <zope.decorator.Foo object ...>)
 
     (Note that the object description says `Foo` because the object is a
     proxy and generally looks and acts like the object it's proxying.)
@@ -152,7 +152,7 @@ class DecoratedSecurityCheckerDescriptor(object):
       'a'
       >>> secure_foo.b  # doctest: +ELLIPSIS
       Traceback (most recent call last):
-      ForbiddenAttribute: ('b', <zope.app.decorator.Foo object ...>)
+      ForbiddenAttribute: ('b', <zope.decorator.Foo object ...>)
 
     when we wrap the secured `foo`:
 

@@ -15,10 +15,9 @@
 
 $Id$
 """
-
 import pickle
 import unittest
-from zope.app.decorator import Decorator
+from zope.decorator import Decorator
 from zope.interface import Interface, implements, directlyProvides, providedBy
 from zope.interface import directlyProvidedBy, implementedBy
 from zope.testing.doctestunit import DocTestSuite
@@ -85,7 +84,7 @@ def test_providedBy_iter_w_classic_class():
 
 def test_suite():
     suite = DocTestSuite()
-    suite.addTest(DocTestSuite('zope.app.decorator'))
+    suite.addTest(DocTestSuite('zope.decorator'))
     return suite
 
 

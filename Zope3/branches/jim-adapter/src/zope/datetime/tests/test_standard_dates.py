@@ -17,22 +17,22 @@ $Id$
 """
 import unittest
 
-from zope.app.datetimeutils import time
+from zope.datetime import time
 
 class Test(unittest.TestCase):
 
     def testiso8601_date(self):
-        from zope.app.datetimeutils import iso8601_date
+        from zope.datetime import iso8601_date
         self.assertEqual(iso8601_date(time("2000-01-01T01:01:01.234Z")),
                          "2000-01-01T01:01:01Z")
 
     def testrfc850_date(self):
-        from zope.app.datetimeutils import rfc850_date
+        from zope.datetime import rfc850_date
         self.assertEqual(rfc850_date(time("2002-01-12T01:01:01.234Z")),
                          "Saturday, 12-Jan-02 01:01:01 GMT")
 
     def testrfc1123_date(self):
-        from zope.app.datetimeutils import rfc1123_date
+        from zope.datetime import rfc1123_date
         self.assertEqual(rfc1123_date(time("2002-01-12T01:01:01.234Z")),
                          "Sat, 12 Jan 2002 01:01:01 GMT")
 
