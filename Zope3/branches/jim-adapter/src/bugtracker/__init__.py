@@ -15,5 +15,5 @@
 
 $Id: __init__.py,v 1.2 2003/08/12 18:55:07 srichter Exp $
 """
-from zope.i18n import MessageIDFactory
-TrackerMessageID = MessageIDFactory('bugtracker')
+from zope.i18nmessageid import MessageFactory
+TrackerMessageID = MessageFactory('bugtracker')
