@@ -105,6 +105,12 @@ def addUtility(root_folder, utility_type, utility_factory, asObject=False, **kw)
     utility = utility_factory()
     name = chooser.chooseName(utility_type, utility)
     package[name] = utility
+
+    # the utility might have been location-proxied; we need the name
+    # information (__name__) so let's get it back again from the
+    # container
+    utility = package[name]
+
     # Set additional attributes on the utility
     for k, v in kw.iteritems():
         setattr(utility, k, v)
