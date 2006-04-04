@@ -27,7 +27,7 @@ from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.container.contained import contained, Contained
-from zope.app.security.interfaces import IAuthentication
+from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.app.security.principalregistry import principalRegistry, Principal
 
 from bugtracker.interfaces import IManagableVocabulary
@@ -226,13 +226,13 @@ class UserVocabularyTest(PlacelessSetup, unittest.TestCase):
     def test_getTerm(self):
         self.assertEqual(self.vocab.getTerm('1').value, '1')
         self.assertEqual(self.vocab.getTerm('1').principal['login'], 'one')
-        self.assertRaises(KeyError, self.vocab.getTerm, ('3',))
+        self.assertRaises(PrincipalLookupError, self.vocab.getTerm, ('3',))
 
     def test_getTermByToken(self):
         vocab = self.vocab
         self.assertEqual(vocab.getTermByToken('1').value, '1')
         self.assertEqual(vocab.getTermByToken('1').principal['login'], 'one')
-        self.assertRaises(KeyError, vocab.getTermByToken, ('3',))
+        self.assertRaises(PrincipalLookupError, vocab.getTermByToken, ('3',))
 
 
 class SampleVocabulary(ManagableVocabulary):
