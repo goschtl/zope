@@ -33,14 +33,10 @@ class WorkflowSetup(PlacefulSetup):
         self.root_sm = zapi.getGlobalSiteManager()
 
         self.sm = PlacefulSetup.setUp(self, site=True)
-        setup.addService(self.sm, Utilities, LocalUtilityService())
-
         self.default = zapi.traverse(self.sm, "default")
         self.cm = self.default.registrationManager
 
         self.sm1 = self.makeSite('folder1')
-        setup.addService(self.sm1, Utilities, LocalUtilityService())
-
         self.default1 = zapi.traverse(self.sm1, "default")
         self.cm1 = self.default1.registrationManager
 
