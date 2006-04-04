@@ -30,7 +30,10 @@ setup(name='zope.exceptions',
       description='exceptions',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
-      long_description='',
+      long_description="This package contains exception interfaces "
+                       "and implementations which are so general purpose "
+                       "that they don't belong in a Zope application-specific "
+                       "package.",
       
       packages=['zope', 'zope.exceptions'],
       package_dir = {'': os.path.join(os.path.dirname(__file__), 'src')},
