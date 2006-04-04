@@ -21,11 +21,12 @@ from persistent.dict import PersistentDict
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.security.checker import CheckerPublic
+from zope.event import notify
+from zope.component.interfaces import ObjectEvent
 
+from zope.app.event.objectevent import modified
 from zope.app.container.interfaces import IReadContainer
 from zope.app.container.contained import Contained, containedEvent
-from zope.event import notify
-from zope.app.event.objectevent import ObjectEvent, modified
 from zope.app.workflow.definition import ProcessDefinition
 from zope.app.workflow.definition import ProcessDefinitionElementContainer
 from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition
