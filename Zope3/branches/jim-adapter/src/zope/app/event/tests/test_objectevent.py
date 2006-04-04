@@ -17,6 +17,7 @@ $Id$
 """
 import unittest
 from zope.testing import doctest
+from zope.component.interfaces import IObjectEvent
 
 from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -27,7 +28,6 @@ from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event import objectevent
 from zope.app.container.contained import Contained, ObjectRemovedEvent
 from zope.app.container.interfaces import IContained, IObjectRemovedEvent
-from zope.app.container.interfaces import IObjectEvent
 from zope.app.container.sample import SampleContainer
 from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.testing import ztapi

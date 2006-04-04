@@ -4,7 +4,7 @@
     >
 
 <subscriber
-    for="zope.app.event.interfaces.IObjectEvent" 
+    for="zope.component.interfaces.IObjectEvent" 
     handler=".objectevent.objectEventNotify"
     />
 
