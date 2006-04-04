@@ -24,13 +24,13 @@ from zope.exceptions._duplicate import DuplicationError, IDuplicationError
 
 # Importing these interfaces from here is deprecated!
 
-# avoid depency on zope.security:
+# avoid hard depency on zope.security:
 try:
-    import zope.security
-except ImportError, v:
-    if not str(v).endswith(' zope.security'):
-        raise
-else:    
-    from zope.security.interfaces import IUnauthorized, Unauthorized
-    from zope.security.interfaces import IForbidden, IForbiddenAttribute
-    from zope.security.interfaces import Forbidden, ForbiddenAttribute
+    from zope.security.interfaces import IUnauthorized
+    from zope.security.interfaces import Unauthorized
+    from zope.security.interfaces import IForbidden
+    from zope.security.interfaces import Forbidden
+    from zope.security.interfaces import IForbiddenAttribute
+    from zope.security.interfaces import ForbiddenAttribute
+except ImportError:
+    pass
