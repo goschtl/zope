@@ -23,7 +23,6 @@ from zope.component.interfaces import ComponentLookupError
 
 from zope.app import zapi
 from zope.app.component.interfaces import ILocalUtility
-from zope.app.component.site import UtilityRegistration
 from zope.app.component.testing import PlacefulSetup
 from zope.app.component.interface import getInterface, searchInterface
 from zope.app.component.interfaces.registration import ActiveStatus
