@@ -182,4 +182,4 @@ def AddViewFactory(name, schema, label, permission, layer,
         layer = IDefaultBrowserLayer
     
     s = zapi.getGlobalSiteManager()
-    s.provideAdapter((for_, layer), Interface, name, class_)
+    s.registerAdapter(class_, (for_, layer), Interface, name)

@@ -27,8 +27,8 @@ from zope.event import notify
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.security.proxy import removeSecurityProxy
+from zope.exceptions.interfaces import UserError
 
-from zope.app.exception.interfaces import UserError
 from zope.app.container.interfaces import IAdding, INameChooser
 from zope.app.container.interfaces import IContainerNamesContainer
 from zope.app.container.constraints import checkFactory, checkObject

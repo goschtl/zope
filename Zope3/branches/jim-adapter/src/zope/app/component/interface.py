@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 from types import ClassType
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.interface.interfaces import IInterface
 from zope.app import zapi
@@ -99,7 +99,7 @@ def provideInterface(id, interface, iface_type=None, info=''):
         iface_type = IInterface
         
     gsm = zapi.getGlobalSiteManager()
-    gsm.provideUtility(iface_type, interface, id, info)
+    gsm.registerUtility(interface, iface_type, id, info)
 
 
 def getInterface(context, id):
@@ -120,7 +120,7 @@ def getInterface(context, id):
     >>> getInterface(None, 'zope.app.component.interface.I4')
     Traceback (most recent call last):
     ...
-    ComponentLookupError: 'zope.app.component.interface.I4'
+    ComponentLookupError: zope.app.component.interface.I4
     >>> provideInterface('', I4, IContentType)
     >>> IContentType.providedBy(I4)
     True

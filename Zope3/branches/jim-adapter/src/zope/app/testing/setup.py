@@ -21,44 +21,13 @@ from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.interface import classImplements
 
+import zope.deferredimport
 
-#############################################################################
-# BBB: Goes away in 3.3
-
-import zope.deprecation
-
-zope.deprecation.__show__.off()
-from zope.component.bbb.service import IService
-from zope.app.site.interfaces import ISimpleService
-zope.deprecation.__show__.on()
-
-from zope.app.component.site import UtilityRegistration
-
-def addService(servicemanager, name, service, suffix=''):
-    """Add a service to a service manager
-
-    This utility is useful for tests that need to set up services.
-    """
-    # Most local services implement ISimpleService in ZCML; therefore make
-    # sure we got it here as well.
-    zope.interface.directlyProvides(service, ISimpleService)
-
-    default = zapi.traverse(servicemanager, 'default')
-    default[name+suffix] = service
-    registration = UtilityRegistration(name, IService, service, default)
-    key = default.registrationManager.addRegistration(registration)
-    zapi.traverse(default.registrationManager, key).status = ActiveStatus
-    return default[name+suffix]
-
-def createServiceManager(folder, setsite=False):
-    return createSiteManager(folder, setsite)
-
-zope.deprecation.deprecated(
-    'createServiceManager',
-    '`ServiceManager`s became `SiteManager`s. Use `createSiteManager` '
-    'instead. Gone in Zope 3.3.')
-
-#############################################################################
+zope.deferredimport.deprecatedFrom(
+    "Goes away in Zope 3.5",
+    "zope.app.testing.back35",
+    "addService",
+    )
 
 #------------------------------------------------------------------------
 # Annotations
@@ -76,16 +45,6 @@ from zope.app.dependable.interfaces import IDependable
 def setUpDependable():
     ztapi.provideAdapter(IAttributeAnnotatable, IDependable,
                          Dependable)
-
-#------------------------------------------------------------------------
-# Registrations
-
-from zope.app.component.interfaces.registration import IComponentRegistration
-from zope.app.component.interfaces.registration import IRegistrationEvent
-from zope.app.component.registration import componentRegistrationEventNotify
-def setUpRegistered():
-    ztapi.subscribe((IComponentRegistration, IRegistrationEvent), None,
-                     componentRegistrationEventNotify)
 
 #------------------------------------------------------------------------
 # Traversal
@@ -128,10 +87,10 @@ def setUpTraversal():
 #------------------------------------------------------------------------
 # ISiteManager lookup
 from zope.app.component.site import SiteManagerAdapter
-from zope.component.interfaces import ISiteManager
+from zope.component.interfaces import IComponentLookup
 from zope.interface import Interface
 def setUpSiteManagerLookup():
-    ztapi.provideAdapter(Interface, ISiteManager, SiteManagerAdapter)
+    ztapi.provideAdapter(Interface, IComponentLookup, SiteManagerAdapter)
 
 #------------------------------------------------------------------------
 # Placeful setup
@@ -143,7 +102,6 @@ def placefulSetUp(site=False):
     zope.app.component.hooks.setHooks()
     setUpAnnotations()
     setUpDependable()
-    setUpRegistered()
     setUpTraversal()
     setUpSiteManagerLookup()
 
@@ -215,20 +173,17 @@ def createSiteManager(folder, setsite=False):
 
 #------------------------------------------------------------------------
 # Local Utility Addition
-from zope.app.component.site import UtilityRegistration
-from zope.app.component.interfaces.registration import ActiveStatus
 def addUtility(sitemanager, name, iface, utility, suffix=''):
     """Add a utility to a site manager
 
     This helper function is useful for tests that need to set up utilities.
     """
     folder_name = (name or (iface.__name__ + 'Utility')) + suffix
-    default = zapi.traverse(sitemanager, 'default')
+    default = sitemanager['default']
     default[folder_name] = utility
-    registration = UtilityRegistration(name, iface, default[folder_name])
-    key = default.registrationManager.addRegistration(registration)
-    zapi.traverse(default.registrationManager, key).status = ActiveStatus
-    return default[folder_name]
+    utility = default[folder_name]
+    sitemanager.registerUtility(utility, iface, name)
+    return utility
 
 
 #------------------------------------------------------------------------

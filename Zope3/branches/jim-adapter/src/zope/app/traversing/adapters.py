@@ -15,13 +15,10 @@
 
 $Id$
 """
-import zope.deprecation
-
 from types import StringTypes, MethodType
-
-from zope.app.traversing.interfaces import TraversalError
 from zope.interface import implements
 
+from zope.app.traversing.interfaces import TraversalError
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.traversing.interfaces import ITraverser, ITraversable
@@ -29,13 +26,6 @@ from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.namespace import namespaceLookup
 from zope.app.traversing.namespace import UnexpectedParameters
 from zope.app.traversing.namespace import nsParse
-
-# BBB Backward Compatibility (Can go away in 3.3)
-zope.deprecation.__show__.off()
-from zope.exceptions import NotFoundError
-zope.deprecation.__show__.on()
-
-import warnings
 
 _marker = object()  # opaque marker that doesn't get security proxied
 
@@ -178,19 +168,6 @@ def traversePathElement(obj, name, further_path, default=_marker,
     try:
         return traversable.traverse(nm, further_path)
     except TraversalError:
-        if default is not _marker:
-            return default
-        else:
-            raise
-    except NotFoundError, v: # BBB Backward Compatibility
-        warnings.warn(
-            "A %s instance raised a NotFoundError in "
-            "traverse.  Raising NotFoundError in this "
-            "method is deprecated and will no-longer be supported "
-            "starting in Zope 3.3.  TraversalError should "
-            "be raised instead."
-            % traversable.__class__.__name__,
-            DeprecationWarning)
         if default is not _marker:
             return default
         else:

@@ -18,28 +18,19 @@ $Id$
 from datetime import datetime
 
 import transaction
-
-import zope.deprecation
+import zope.component
 from zope.interface import implements
-from zope.app.security.interfaces import PrincipalLookupError
 
-from zope.app import zapi
 from zope.app.undo.interfaces import IUndoManager, UndoError
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.interfaces import IPrincipal
-
-# BBB Backward Compatibility (Can go away in 3.3)
-zope.deprecation.__show__.off()
-from zope.exceptions import NotFoundError
-zope.deprecation.__show__.on()
-import warnings
-
+from zope.app.security.interfaces import PrincipalLookupError
 
 def undoSetup(event):
     # setup undo functionality
-    sm = zapi.getGlobalSiteManager()
-    sm.provideUtility(IUndoManager, ZODBUndoManager(event.database))
+    sm = zope.component.getGlobalSiteManager()
+    sm.registerUtility(ZODBUndoManager(event.database), IUndoManager)
 
 class Prefix(unicode):
     """A prefix is equal to any string it is a prefix of.
@@ -158,15 +149,6 @@ class ZODBUndoManager(object):
                 except PrincipalLookupError:
                     # principals might have passed away
                     pass
-                except NotFoundError: # BBB Backward Compatibility
-                    warnings.warn(
-                        "A %s instance raised a NotFoundError in "
-                        "getPrincipals.  Raising NotFoundError in this "
-                        "method is deprecated and will no-longer be supported "
-                        "staring in Zope 3.3.  PrincipalLookupError should "
-                        "be raised instead."
-                        % principalRegistry.__class__.__name__,
-                        DeprecationWarning)
         return entries
 
     def undoTransactions(self, ids):

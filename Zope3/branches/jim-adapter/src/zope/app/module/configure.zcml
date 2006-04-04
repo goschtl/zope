@@ -9,12 +9,14 @@
   </localUtility>
 
   <subscriber
-     for="..component.interfaces.registration.IRegistrationActivatedEvent"
+     for="zope.component.interfaces.IUtilityRegistration
+          zope.component.interfaces.IRegistrationActivatedEvent"
      handler=".manager.setNameOnActivation"
      />
 
   <subscriber
-     for="..component.interfaces.registration.IRegistrationDeactivatedEvent"
+     for="zope.component.interfaces.IUtilityRegistration
+          zope.component.interfaces.IRegistrationDeactivatedEvent"
      handler=".manager.unsetNameOnDeactivation"
      />
 

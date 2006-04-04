@@ -1,6 +1,6 @@
 # BBB: Goes away in 3.3
 import zope.deprecation
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 
 def queryNextService(context, name, default=None):
     try:

@@ -99,8 +99,8 @@ class ManagableVocabulary(object):
 
     def delete(self, value):
         if value == self.default.value:
-            error_msg = _("Cannot delete default value '${value}'.")
-            error_msg.mapping = {'value': value}
+            error_msg = _("Cannot delete default value '${value}'.",
+                          mapping = {'value': value})
             raise ValueError(error_msg)
         del self.annotations[self.key][value]
 
@@ -123,8 +123,7 @@ class ManagableVocabulary(object):
             value = value.value
         if value not in self:
             error_msg = _("The value '${value}' was not found in the "
-                          "vocabulary")
-            error_msg.mapping = {'value': value}
+                          "vocabulary", mapping={'value': value})
             raise ValueError(error_msg)
         self.annotations[self.key+'/default'] = value
 

@@ -28,7 +28,7 @@ from zope.tales.expressions import SimpleModuleImporter
 from zope.tales.pythonexpr import PythonExpr
 from zope.tales.tales import ExpressionEngine, Context
 
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.app.traversing.interfaces import TraversalError
 from zope.security.untrustedpython import rcompile
 from zope.security.proxy import ProxyFactory

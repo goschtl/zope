@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest, doctest
-from zope.app.datetimeutils import parseDatetimetz
+from zope.datetime import parseDatetimetz
 from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import DatetimeWidget

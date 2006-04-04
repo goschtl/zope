@@ -34,7 +34,7 @@ from zope.app.filerepresentation.interfaces import IWriteFile
 from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.filerepresentation.interfaces import IWriteDirectory
 from zope.app.annotation.interfaces import IAnnotations
-from zope.app.event.objectevent import ObjectEvent
+from zope.component.interfaces import ObjectEvent
 from zope.app.container.interfaces import \
      IObjectAddedEvent, IObjectRemovedEvent
 from zope.app.mail.interfaces import IMailDelivery

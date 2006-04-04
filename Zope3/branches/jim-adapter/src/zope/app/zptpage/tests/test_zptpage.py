@@ -168,7 +168,7 @@ class DummyZPT(object):
 class SizedTests(unittest.TestCase):
 
     def testInterface(self):
-        from zope.app.size.interfaces import ISized
+        from zope.size.interfaces import ISized
         self.failUnless(ISized.implementedBy(Sized))
         self.failUnless(verifyClass(ISized, Sized))
 

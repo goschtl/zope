@@ -29,3 +29,6 @@ def ProxyIterator(p):
     while isProxy(p):
         p = getProxiedObject(p)
         yield p
+
+def non_overridable(func):
+    return property(lambda self: func.__get__(self))

@@ -131,7 +131,7 @@ class TestFileFactory(unittest.TestCase):
 class TestSized(unittest.TestCase):
 
     def testInterface(self):
-        from zope.app.size.interfaces import ISized
+        from zope.size.interfaces import ISized
         self.failUnless(ISized.implementedBy(ImageSized))
         self.failUnless(verifyClass(ISized, ImageSized))
 

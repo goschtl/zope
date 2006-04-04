@@ -29,7 +29,6 @@ from zope.i18n.negotiator import negotiator
 from zope.i18n.interfaces import INegotiator, ITranslationDomain
 from zope.i18n.simpletranslationdomain import SimpleTranslationDomain
 from zope.app.container.contained import Contained
-from zope.app.component.site import UtilityRegistration
 from zope.app.component import queryNextUtility
 
 class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
@@ -220,9 +219,6 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
                                    fmsg['msgstr'], fmsg['language'],
                                    fmsg['mod_time'])
 
-
-# BBB: Backward compatibility. 12/09/2004
-DomainRegistration = UtilityRegistration
 
 def setDomainOnActivation(domain, event):
     """Set the permission id upon registration activation.

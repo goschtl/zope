@@ -17,14 +17,15 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.interface import implements
+from zope.size.interfaces import ISized
+from zope.security.interfaces import Unauthorized
+from zope.tales.interfaces import ITALESFunctionNamespace
+
+from zope.app import zapi
 from zope.app.dublincore.interfaces import IDCDescriptiveProperties
 from zope.app.dublincore.interfaces import IDCTimes
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.size.interfaces import ISized
-from zope.app import zapi
-from zope.interface import implements
-from zope.security.interfaces import Unauthorized
-from zope.tales.interfaces import ITALESFunctionNamespace
 
 
 class ZopeTalesAPI(object):

@@ -23,10 +23,9 @@ from cStringIO import StringIO
 
 from zope.interface import Interface, implements
 from zope.testing.doctestunit import DocTestSuite
-from zope.component.tests.request import Request
 from zope.component import createObject
 from zope.component.interfaces import IDefaultViewName
-from zope.component.site import SubscriptionRegistration
+from zope.component.registry import SubscriptionRegistration
 
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 from zope.configuration.exceptions import ConfigurationError
@@ -38,16 +37,17 @@ from zope.security.checker import ProxyFactory
 from zope.security.checker import selectChecker
 
 import zope.app.component
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 
 from zope.app import zapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.component.interface import queryInterface
 from zope.app.component.metaconfigure import interface
-from zope.app.component.tests.adapter import A1, A2, A3, I1, I3, IS, Handler
+from zope.app.component.tests.adapter import A1, A2, A3, Handler
+from zope.app.component.tests.adapter import I1, I2, I3, IS
 from zope.app.component.tests.components import IContent, Content, Comp, comp
 from zope.app.component.tests.components import IApp
-from zope.app.component.tests.views import IV, IC, V1, R1, IR
+from zope.app.component.tests.views import Request, IV, IC, V1, R1, IR
 from zope.app.content.interfaces import IContentType
 
 from zope.app.component.tests import module, exampleclass
@@ -148,7 +148,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             )))
 
         gsm = zapi.getGlobalSiteManager()
-        doc = [reg.doc
+        doc = [reg.info
                for reg in gsm.registrations()
                if (isinstance(reg, SubscriptionRegistration) and
                    reg.provided is IS)][0]
@@ -212,15 +212,9 @@ class Test(PlacelessSetup, unittest.TestCase):
             '''
             )))
 
-        content = Content()
-        a1 = A1()
-        a2 = A2()
-        subscribers = zapi.subscribers((content, a1, a2), None)
-
-        a3 = subscribers[0]
-
-        self.assertEqual(a3.__class__, A3)
-        self.assertEqual(a3.context, (content, a1, a2))
+        sm = zapi.getSiteManager()
+        a3 = sm.adapters.subscriptions((IContent, I1, I2), None)[0]
+        self.assertEqual(a3, A3)
 
 
     def testTrustedSubscriber(self):

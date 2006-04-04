@@ -17,8 +17,7 @@ $Id$
 """
 from zope.app.testing import ztapi
 from zope.schema.vocabulary import setVocabularyRegistry
-from zope.component.tests.placelesssetup \
-    import PlacelessSetup as CAPlacelessSetup
+from zope.component.testing import PlacelessSetup as CAPlacelessSetup
 from zope.app.event.tests.placelesssetup \
     import PlacelessSetup as EventPlacelessSetup
 from zope.app.i18n.tests.placelesssetup \

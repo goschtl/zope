@@ -90,6 +90,34 @@ class DeprecationProxy(object):
 
         delattr(self.__original_module, name)
         
+class DeprecatedModule(object):
+
+    def __init__(self, module, msg):
+        self.__original_module = module
+        self.__msg = msg
+
+    def __getattribute__(self, name):
+        if name.startswith('_DeprecatedModule__'):
+            return ogetattr(self, name)
+
+        if name == '__class__':
+            return types.ModuleType
+        
+        if zope.deprecation.__show__():
+            warnings.warn(self.__msg, DeprecationWarning, 2)
+
+        return getattr(ogetattr(self, '_DeprecatedModule__original_module'),
+                       name)
+
+    def __setattr__(self, name, value):
+        if name.startswith('_DeprecatedModule__'):
+            return object.__setattr__(self, name, value)
+        setattr(self.__original_module, name, value)
+
+    def __delattr__(self, name):
+        if name.startswith('_DeprecatedModule__'):
+            return object.__delattr__(self, name)
+        delattr(self.__original_module, name)
 
 class DeprecatedGetProperty(object):
 
@@ -129,7 +157,9 @@ def DeprecatedMethod(method, message):
 def deprecated(specifier, message):
     """Deprecate the given names."""
 
-    # We are inside a module
+    # A string specifier (or list of strings) means we're called
+    # top-level in a module and are to deprecate things inside this
+    # module
     if isinstance(specifier, (str, unicode, list, tuple)):
         globals = sys._getframe(1).f_globals
         modname = globals['__name__']
@@ -139,9 +169,12 @@ def deprecated(specifier, message):
         sys.modules[modname].deprecate(specifier, message)
 
 
-    # ... that means the specifier is a method or attribute of the class
-    if isinstance(specifier, types.FunctionType):
+    # Anything else can mean the specifier is a function/method,
+    # module, or just an attribute of a class
+    elif isinstance(specifier, types.FunctionType):
         return DeprecatedMethod(specifier, message)
+    elif isinstance(specifier, types.ModuleType):
+        return DeprecatedModule(specifier, message)
     else:
         prop = specifier
         if hasattr(prop, '__get__') and hasattr(prop, '__set__') and \
@@ -151,3 +184,12 @@ def deprecated(specifier, message):
             return DeprecatedGetSetProperty(prop, message)
         elif hasattr(prop, '__get__'):
             return DeprecatedGetProperty(prop, message)
+
+class deprecate(object):
+    """Deprecation decorator"""
+
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __call__(self, func):
+        return DeprecatedMethod(func, self.msg)

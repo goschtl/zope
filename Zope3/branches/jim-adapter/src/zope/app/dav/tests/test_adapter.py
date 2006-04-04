@@ -19,10 +19,10 @@ import unittest
 from zope.testing.doctestunit import DocTestSuite
 
 from zope.interface import Interface, implements
+from zope.size.interfaces import ISized
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import setUp, tearDown
-from zope.app.size.interfaces import ISized
 from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.i18n import ZopeMessageFactory as _
 

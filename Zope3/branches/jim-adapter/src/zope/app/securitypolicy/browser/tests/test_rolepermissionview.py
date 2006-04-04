@@ -21,8 +21,8 @@ import zope.interface
 from zope.i18n.interfaces import ITranslationDomain
 from zope.i18nmessageid import Message
 from zope.publisher.browser import TestRequest
+from zope.exceptions.interfaces import UserError
 
-from zope.app.exception.interfaces import UserError
 from zope.app.publisher.browser import BrowserView
 from zope.app.testing import ztapi
 from zope.app.security.permission import Permission

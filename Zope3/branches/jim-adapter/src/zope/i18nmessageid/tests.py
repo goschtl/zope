@@ -20,7 +20,6 @@ from zope.testing.doctestunit import DocTestSuite, DocFileSuite
 
 def test_suite():
     return unittest.TestSuite((
-	    DocTestSuite('zope.i18nmessageid.messageid'),
 	    DocTestSuite('zope.i18nmessageid.message'),
 	    DocFileSuite('messages.txt', package='zope.i18nmessageid'),
 	    ))

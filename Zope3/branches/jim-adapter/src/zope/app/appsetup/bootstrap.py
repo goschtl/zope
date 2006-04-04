@@ -70,7 +70,7 @@ def ensureUtility(root_folder, interface, utility_type,
         warnings.warn("asObject=False is deprecated", DeprecationWarning, 2)
         
     sm = root_folder.getSiteManager()
-    utils = [reg for reg in sm.utilities.registrations()
+    utils = [reg for reg in sm.registeredUtilities()
              if reg.provided.isOrExtends(interface)]
     if len(utils) == 0:
         return addConfigureUtility(

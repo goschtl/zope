@@ -8,10 +8,10 @@ $Id$
 
 from persistent.list import PersistentList
 from zope.interface import implements
+from zope.size.interfaces import ISized
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.interfaces import INameChooser
 from zope.app.container.interfaces import IContainerNamesContainer
-from zope.app.size.interfaces import ISized
 from z3checkins.interfaces import ICheckinFolder, IMessage
 
 

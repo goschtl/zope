@@ -33,7 +33,7 @@
 
   <adapter
       factory="zope.app.container.size.ContainerSized"
-      provides="zope.app.size.interfaces.ISized"
+      provides="zope.size.interfaces.ISized"
       for="zope.app.container.interfaces.IReadContainer"
       />
 

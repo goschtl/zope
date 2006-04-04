@@ -18,8 +18,8 @@ $Id$
 import unittest, os
 from datetime import datetime
 
+from zope.datetime import parseDatetimetz
 from zope.app.file import File
-from zope.app.datetimeutils import parseDatetimetz
 from zope.app.dublincore.interfaces import IZopeDublinCore
 
 from bugtracker import tests

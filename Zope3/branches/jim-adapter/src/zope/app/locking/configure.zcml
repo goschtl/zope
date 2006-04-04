@@ -47,7 +47,7 @@
   <class class=".storage.Sized">
     <require
         permission="zope.Public"
-        interface="zope.app.size.interfaces.ISized"
+        interface="zope.size.interfaces.ISized"
         />
   </class>
 

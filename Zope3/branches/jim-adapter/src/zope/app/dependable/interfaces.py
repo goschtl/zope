@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
-from zope.app.exception.interfaces import UserError
+from zope.exceptions.interfaces import UserError
 
 class IDependable(Interface):
     """Objects that other objects depend on.

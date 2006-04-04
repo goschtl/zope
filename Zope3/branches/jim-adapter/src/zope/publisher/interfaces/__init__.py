@@ -15,26 +15,14 @@
 
 $Id$
 """
-
 __docformat__ = "reStructuredText"
 
-import zope.deprecation
-
-from zope.interface import Interface
-from zope.interface import Attribute
-from zope.security.interfaces import Unauthorized
 from zope.component.interfaces import IPresentationRequest
-from zope.interface import implements
+from zope.interface import Interface, Attribute, implements
 from zope.interface.interfaces import IInterface
 from zope.interface.common.mapping import IEnumerableMapping
-from zope.interface.common.interfaces import IException
-from zope.security.interfaces import IParticipation
-
-# BBB : can be remove in 3.3
-zope.deprecation.__show__.off()
-from zope.exceptions import NotFoundError, INotFoundError
-zope.deprecation.__show__.on()
-
+from zope.interface.common.interfaces import IException, ILookupError
+from zope.security.interfaces import Unauthorized, IParticipation
 
 class IPublishingException(IException):
     pass
@@ -48,14 +36,14 @@ class ITraversalException(IPublishingException):
 class TraversalException(PublishingException):
     implements(ITraversalException)
 
-class INotFound(INotFoundError, ITraversalException):
+class INotFound(ILookupError, ITraversalException):
     def getObject():
         'Returns the object that was being traversed.'
 
     def getName():
         'Returns the name that was being traversed.'
 
-class NotFound(NotFoundError, TraversalException):
+class NotFound(LookupError, TraversalException):
     implements(INotFound)
 
     def __init__(self, ob, name, request=None):

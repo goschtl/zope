@@ -15,12 +15,13 @@
 
 $Id$
 """
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.interface import implements
 from zope.tales.interfaces import ITALESExpression
 from zope.tales.expressions import StringExpr
+from zope.exceptions.interfaces import UserError 
+
 from zope.app import zapi
-from zope.app.exception.interfaces import UserError 
 from zope.app.rdb import queryForResults
 from zope.app.rdb.interfaces import IZopeDatabaseAdapter, IZopeConnection
 

@@ -21,6 +21,7 @@ import unittest
 
 from zope.testing.doctestunit import DocTestSuite
 from zope.proxy import ProxyBase
+import zope.proxy
 
 class Thing:
     """This class is expected to be a classic class."""
@@ -552,6 +553,66 @@ def test_subclassing_proxies():
     
     """
 
+def test_get_descriptors_in_proxy_class():
+    """
+    A non-data descriptor in a proxy class doesn't hide an attribute on
+    a proxied object or prevent writing the attribute.
+
+    >>> class ReadDescr(object):
+    ...     def __get__(self, i, c):
+    ...         return 'read'
+
+    >>> class MyProxy(ProxyBase):
+    ...    __slots__ = ()
+    ...
+    ...    z = ReadDescr()
+    ...    q = ReadDescr()
+
+    >>> class MyOb:
+    ...    q = 1
+
+    >>> o = MyOb()
+    >>> p = MyProxy(o)
+    >>> p.q
+    1
+
+    >>> p.z
+    'read'
+
+    >>> p.z = 1
+    >>> o.z, p.z
+    (1, 1)
+    
+    """
+
+def test_non_overridable():
+    """
+    Normally, methods defined in proxies are overridden by
+    methods of proxied objects.  This applies to all non-data
+    descriptors.  The non_overridable function can be used to
+    convert a non-data descriptor to a data descriptor that disallows
+    writes.  This function can be used as a decorator to make functions
+    defined in proxy classes take precedence over functions defined
+    in proxied objects.
+
+    
+    >>> class MyProxy(ProxyBase):
+    ...    __slots__ = ()
+    ...
+    ...    @zope.proxy.non_overridable
+    ...    def foo(self):
+    ...        return 'MyProxy foo'
+
+    >>> class MyOb:
+    ...    def foo(self):
+    ...        return 'MyOb foo'
+
+    >>> o = MyOb()
+    >>> p = MyProxy(o)
+    >>> p.foo()
+    'MyProxy foo'
+    
+    """
 
 def test_suite():
     suite = unittest.makeSuite(ProxyTestCase)

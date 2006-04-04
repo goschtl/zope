@@ -25,12 +25,12 @@ from zope.proxy import removeAllProxies
 from zope.schema.vocabulary import getVocabularyRegistry
 from zope.security.checker import getChecker
 from zope.structuredtext.html import HTML
+from zope.size.interfaces import ISized
 
 from zope.app import zapi
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import TextWidget, TextAreaWidget, DropdownWidget
-from zope.app.size.interfaces import ISized
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 from bugtracker.interfaces import IComment

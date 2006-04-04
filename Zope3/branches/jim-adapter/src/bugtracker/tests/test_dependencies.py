@@ -18,7 +18,7 @@ $Id$
 import unittest
 
 from zope.interface import classImplements
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 
 from zope.app.testing import ztapi
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable

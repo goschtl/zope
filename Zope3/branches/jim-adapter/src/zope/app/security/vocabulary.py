@@ -17,26 +17,19 @@ This vocabulary provides permission IDs.
 
 $Id$
 """
-import warnings
-import zope.deprecation
-
-from zope.security.checker import CheckerPublic
-from zope.app import zapi
 from zope.interface import implements, classProvides
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.schema.interfaces import ISourceQueriables
 from zope.security.interfaces import IPermission
+from zope.security.checker import CheckerPublic
+
+from zope.app import zapi
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.security.interfaces import IPrincipalSource
 from zope.app.component import queryNextUtility
 from zope.app.component.vocabulary import UtilityVocabulary
 from zope.app.schema.interfaces import IVocabularyFactory
-
-# BBB Backward Compatibility
-zope.deprecation.__show__.off()
-from zope.exceptions import NotFoundError
-zope.deprecation.__show__.on()
 
 class PermissionsVocabulary(UtilityVocabulary):
     classProvides(IVocabularyFactory)
@@ -163,16 +156,6 @@ class PrincipalSource(object):
         try:
             auth.getPrincipal(id)
         except PrincipalLookupError:
-            return False
-        except NotFoundError: # BBB Backward Compatibility
-            warnings.warn(
-                "A %s instance raised a NotFoundError in "
-                "getPrincipals.  Raising NotFoundError in this "
-                "method is deprecated and will no-longer be supported "
-                "starting in Zope 3.3.  PrincipalLookupError should "
-                "be raised instead."
-                % auth.__class__.__name__,
-                DeprecationWarning)
             return False
         else:
             return True

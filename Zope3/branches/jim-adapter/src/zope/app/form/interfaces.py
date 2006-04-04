@@ -21,7 +21,7 @@ from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IView
 from zope.interface import Attribute, Interface, implements
 from zope.schema import Bool
-from zope.app.exception.interfaces import UserError
+from zope.exceptions.interfaces import UserError
 
 class IWidgetInputError(Interface):
     """Placeholder for a snippet View"""

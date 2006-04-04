@@ -17,12 +17,12 @@ $Id$
 """
 import unittest
 
+import zope.component
 from zope.app.testing import functional
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
 from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.interfaces import IRole
-from zope.app.tests import ztapi
 
 
 class RolePermissionsTest(functional.BrowserTestCase):
@@ -87,7 +87,7 @@ class RolePermissionsTest(functional.BrowserTestCase):
 
     def testAllRolePermissionsFormForLocalRoles(self):
         role = Role(u"id", u"Local Role")
-        ztapi.provideUtility(IRole, role)
+        zope.component.provideUtility(role, IRole)
         self.testAllRolePermissions()
 
         response = self.publish(
@@ -98,7 +98,7 @@ class RolePermissionsTest(functional.BrowserTestCase):
 
     def testAllRolePermissionsFormForLocalPermissions(self):
         permission = Permission(u"id", u"Local Permission")
-        ztapi.provideUtility(IPermission, permission)
+        zope.component.provideUtility(permission, IPermission)
         self.testAllRolePermissions()
 
         response = self.publish(
@@ -109,7 +109,7 @@ class RolePermissionsTest(functional.BrowserTestCase):
 
     def testRolesWithPermissionsFormForLocalPermission(self):
         permission = Permission(u"id", u"Local Permission")
-        ztapi.provideUtility(IPermission, permission)
+        zope.component.provideUtility(permission, IPermission)
 
         response = self.publish(
             '/++etc++site/@@AllRolePermissions.html',

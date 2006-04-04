@@ -14,7 +14,6 @@
 
 $Id$
 """
-
 import datetime
 import re
 import sys
@@ -22,6 +21,7 @@ import pytz
 
 import zope.event
 import zope.i18n
+import zope.i18nmessageid
 import zope.publisher.interfaces.browser
 
 from zope import component, interface, schema
@@ -590,7 +590,7 @@ def render_submit_button(self):
     if not self.available():
         return ''
     label = self.label
-    if isinstance(label, (zope.i18n.Message, zope.i18n.MessageID)):
+    if isinstance(label, zope.i18nmessageid.Message):
         label = zope.i18n.translate(self.label, context=self.form.request)
     return ('<input type="submit" id="%s" name="%s" value="%s"'
             ' class="button" />' %

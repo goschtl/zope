@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.exceptions import DuplicationError
+from zope.exceptions.interfaces import DuplicationError, UserError
 from zope.security.checker import selectChecker, CombinedChecker
 
 import zope.interface.declarations
@@ -26,8 +26,7 @@ from zope.interface.declarations import ObjectSpecification
 from zope.interface import providedBy
 
 from zope.app import zapi
-from zope.app.exception.interfaces import UserError
-from zope.app.event.objectevent import ObjectEvent
+from zope.component.interfaces import ObjectEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.event import notify
 from zope.app.i18n import ZopeMessageFactory as _

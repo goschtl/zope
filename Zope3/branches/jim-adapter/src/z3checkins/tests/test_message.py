@@ -268,7 +268,7 @@ class TestMessageSized(unittest.TestCase):
 
     def test_interface(self):
         from z3checkins.folder import MessageSized
-        from zope.app.size.interfaces import ISized
+        from zope.size.interfaces import ISized
         self.assert_(ISized.providedBy(MessageSized(MessageStub())))
 
     def test_sizeForSorting(self):

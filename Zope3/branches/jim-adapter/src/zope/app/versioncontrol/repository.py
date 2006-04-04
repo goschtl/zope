@@ -25,10 +25,9 @@ from BTrees.OIBTree import OIBTree
 
 import zope.event
 import zope.interface
+import zope.datetime
 
-from zope.app import datetimeutils
 from zope.app import zapi
-
 from zope.app.annotation.interfaces import IAnnotations
 
 from zope.app.versioncontrol import event
@@ -500,8 +499,8 @@ class Repository(persistent.Persistent):
                 sticky = ('B', selector)
             else:
                 try:
-                    timestamp = datetimeutils.time(selector)
-                except datetimeutils.DateTimeError:
+                    timestamp = zope.datetime.time(selector)
+                except zope.datetime.DateTimeError:
                     raise VersionControlError(
                         'Invalid version selector: %s' % selector
                         )

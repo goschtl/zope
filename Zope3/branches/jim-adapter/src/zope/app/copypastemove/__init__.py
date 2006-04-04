@@ -17,8 +17,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import zope.deprecation
-
 from zope.interface import implements, Invalid
 from zope.exceptions import DuplicationError
 from zope.component import adapts
@@ -42,14 +40,9 @@ from zope.app.copypastemove.interfaces import IContainerItemRenamer
 from zope.app.copypastemove.interfaces import IPrincipalClipboard
 from zope.app.copypastemove.interfaces import IItemNotFoundError
 
-# BBB (remove in 3.3)
-zope.deprecation.__show__.off()
-from zope.exceptions import NotFoundError
-zope.deprecation.__show__.on()
-
 import warnings # BBB (remove in 3.3)
 
-class ItemNotFoundError(NotFoundError):
+class ItemNotFoundError(LookupError):
     implements(IItemNotFoundError)
 
 class ObjectMover(object):
@@ -688,7 +681,7 @@ def dispatchToSublocations(object, event):
 
     Finally, we need to register our handler for copy events:
 
-      >>> from zope.app.tests import ztapi
+      >>> from zope.app.testing import ztapi
       >>> from zope.app.event.interfaces import IObjectCopiedEvent
       >>> ztapi.subscribe([None, IObjectCopiedEvent], None, handler)
 

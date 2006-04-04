@@ -21,7 +21,7 @@ import unittest
 import threading
 import time
 
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 from zope.configuration import xmlconfig
 from zope.interface import implements
 

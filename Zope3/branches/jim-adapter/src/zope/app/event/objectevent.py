@@ -69,7 +69,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.event.interfaces import IObjectEvent, IObjectCreatedEvent
+from zope.app.event.interfaces import IObjectCreatedEvent
 from zope.app.event.interfaces import IObjectModifiedEvent
 from zope.app.event.interfaces import IObjectCopiedEvent
 from zope.app.event.interfaces import IObjectAnnotationsModifiedEvent
@@ -77,26 +77,20 @@ from zope.app.event.interfaces import IObjectContentModifiedEvent
 from zope.app.event.interfaces import IAttributes, ISequence
 from zope.interface import implements
 from zope.event import notify
+import zope.component.interfaces
 from zope.component import subscribers
-
-# BBB Backward Compatibility (Can go away in 3.3)
-import warnings 
-
+import zope.deferredimport
 
 _marker = object()
 
-
-class ObjectEvent(object):
-    """Something has happened to an object"""
-
-
-    implements(IObjectEvent)
-
-    def __init__(self, object):
-        self.object = object
+zope.deferredimport.deprecated(
+    "ObjectEvent is now defined in zope.component.interfaces.  "
+    "Importing ObjectEvent from zope.app.event will be disabled in Zope 3.5.",
+    ObjectEvent = 'zope.component.interfaces:ObjectEvent',
+    )
 
 
-class ObjectCreatedEvent(ObjectEvent):
+class ObjectCreatedEvent(zope.component.interfaces.ObjectEvent):
     """An object has been created"""
 
     implements(IObjectCreatedEvent)
@@ -141,8 +135,7 @@ class Sequence(object) :
         self.interface = interface
         self.keys = keys
 
-
-class ObjectModifiedEvent(ObjectEvent):
+class ObjectModifiedEvent(zope.component.interfaces.ObjectEvent):
     """An object has been modified"""
 
     implements(IObjectModifiedEvent)
@@ -175,16 +168,9 @@ class ObjectCopiedEvent(ObjectCreatedEvent):
 
     implements(IObjectCopiedEvent)
 
-    def __init__(self, object, original=None):
+    def __init__(self, object, original):
         super(ObjectCopiedEvent, self).__init__(object)
         self.original = original
-        # BBB goes away in 3.3
-        if original is None:
-            warnings.warn(
-                "%s with no original is deprecated and will no-longer "
-                "be supported starting in Zope 3.3."
-                % self.__class__.__name__,
-                DeprecationWarning, stacklevel=2)
 
 
 def objectEventNotify(event):
@@ -192,59 +178,3 @@ def objectEventNotify(event):
     adapters = subscribers((event.object, event), None)
     for adapter in adapters:
         pass # getting them does the work
-
-
-# BBB:  Can go away in 3.3
-
-class ObjectAnnotationsModifiedEvent(ObjectModifiedEvent):
-    """An object's annotations have been modified"""
-
-    implements(IObjectAnnotationsModifiedEvent)
-
-    def __init__(self, object, deprecated_use=True) :
-        super(ObjectAnnotationsModifiedEvent, self).__init__(object)
-        if deprecated_use :
-            warnings.warn(
-                "%s is deprecated and will no-longer be supported "
-                "starting in Zope 3.3.  Use ObjectModifiedEvent "
-                "and modification descriptors instead."
-                % self.__class__.__name__,
-                DeprecationWarning)
-
-
-def annotationModified(object, deprecated_use=True):
-    warnings.warn(
-                "annotationModified is deprecated and will no-longer be "
-                "supported starting in Zope 3.3.  Use modified "
-                "and modification descriptors instead."
-                % self.__class__.__name__,
-                DeprecationWarning)
-                
-    notify(ObjectAnnotationsModifiedEvent(object, deprecated_use=False))
-
-
-class ObjectContentModifiedEvent(ObjectModifiedEvent):
-    """An object's content has been modified"""
-
-    implements(IObjectContentModifiedEvent)
-
-    def __init__(self, object, deprecated_use=True) :
-        super(ObjectContentModifiedEvent, self).__init__(object)
-        if deprecated_use :
-            warnings.warn(
-                "%s is deprecated and will no-longer be supported "
-                "starting in Zope 3.3.  Use ObjectModifiedEvent "
-                "and modification descriptors instead."
-                % self.__class__.__name__,
-                DeprecationWarning)
-
-
-def contentModified(object, deprecated_use=True):
-    warnings.warn(
-                "contentModified is deprecated and will no-longer be "
-                "supported starting in Zope 3.3.  Use modified "
-                "and modification descriptors instead."
-                % self.__class__.__name__,
-                DeprecationWarning)
-
-    notify(ObjectContentModifiedEvent(object, deprecated_use=False))

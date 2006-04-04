@@ -15,11 +15,10 @@
 
 $Id$
 """
-
-from zope.app.container.contained import NameChooser
-from zope.app.exception.interfaces import UserError
-from zope.app.i18n import ZopeMessageFactory as _
 import re
+from zope.exceptions.interfaces import UserError
+from zope.app.container.contained import NameChooser
+from zope.app.i18n import ZopeMessageFactory as _
 
 ok = re.compile('[!-~]+$').match
 class IdPicker(NameChooser):

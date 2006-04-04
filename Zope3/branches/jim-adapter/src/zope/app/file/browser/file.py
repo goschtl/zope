@@ -15,19 +15,18 @@
 
 $Id$
 """
-
 from datetime import datetime
 
 import zope.event
-
 from zope.publisher import contenttype
 from zope.schema import Text
+from zope.exceptions.interfaces import UserError
+
 from zope.app import contenttypes
 from zope.app.event import objectevent
 from zope.app.file.file import File
 from zope.app.file.interfaces import IFile
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.app.exception.interfaces import UserError
 
 __docformat__ = 'restructuredtext'
 
@@ -134,10 +133,6 @@ class FileUpload(FileUpdateView):
     >>> sio = StringIO.StringIO("some data")
     >>> sio.filename = 'abc.txt'
 
-    >>> def eventLog(event):
-    ...     print 'ModifiedEvent:', event.descriptions[0].attributes
-    >>> zope.event.subscribers.append(eventLog)
-
     Before we instanciate the request, we need to make sure that the
     ``IUserPreferredLanguages`` adapter exists, so that the request's
     locale exists.  This is necessary because the ``update_object``
@@ -149,6 +144,12 @@ class FileUpload(FileUpdateView):
     >>> from zope.i18n.interfaces import IUserPreferredLanguages
     >>> ztapi.provideAdapter(IHTTPRequest, IUserPreferredLanguages,
     ...                      BrowserLanguages)
+
+    We install an event logger so we can see the events generated:
+
+    >>> def eventLog(event):
+    ...     print 'ModifiedEvent:', event.descriptions[0].attributes
+    >>> zope.event.subscribers.append(eventLog)
 
     Let's make sure we can use the uploaded file name if one isn't
     specified by the user, and can use the content type when

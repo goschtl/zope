@@ -20,9 +20,8 @@ __docformat__ = 'restructuredtext'
 from datetime import datetime
 
 from zope.interface import implements
-
+from zope.datetime import parseDatetimetz
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.datetimeutils import parseDatetimetz
 
 class SimpleProperty(object):
 

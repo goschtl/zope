@@ -15,20 +15,12 @@
 
 $Id$
 """
-
-import zope.deprecation
-
 from zope.interface import Interface
 from zope.schema import Text, TextLine
 from zope.security.interfaces import IPrincipal, IPermission, IGroup
 from zope.schema.interfaces import ISource
 
-# BBB : Can move away in 3.3
-zope.deprecation.__show__.off()
-from zope.exceptions import NotFoundError
-zope.deprecation.__show__.on()
-
-class PrincipalLookupError(NotFoundError):
+class PrincipalLookupError(LookupError):
     """A prncipal could not be found for a principal id
     """
 

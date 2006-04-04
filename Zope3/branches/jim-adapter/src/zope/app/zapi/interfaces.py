@@ -64,7 +64,4 @@ class IZAPI(
     def principals():
         """Return the authentication utility
         """
-        
-    # BBB: Deprecated. Gone in X3.3.
-    servicenames = Attribute("Service Names")
 

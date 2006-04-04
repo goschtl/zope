@@ -19,11 +19,10 @@ import unittest
 from zope.interface import Interface, implements
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 
 from zope.app import zapi
 from zope.app.component.interfaces import ILocalUtility
-from zope.app.component.site import UtilityRegistration
 from zope.app.component.testing import PlacefulSetup
 from zope.app.component.interface import getInterface, searchInterface
 from zope.app.component.interfaces.registration import ActiveStatus
@@ -200,21 +199,14 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         default = traverse(self.rootFolder, "++etc++site/default")
         default['foo'] = Foo("local")
         foo = default['foo']
-        cm = default.registrationManager
 
         for name in ('', 'bob'):
-            registration = UtilityRegistration(name, IInterface, foo)
-            cname = cm.addRegistration(registration)
-            registration = traverse(cm, cname)
-
             gout = name and "foo global "+name or "foo global"
             self.assertEqual(sm.queryUtility(IInterface, name).foo(), gout)
-
-            registration.status = ActiveStatus
+            sm.registerUtility(foo, IInterface, name)
             self.assertEqual(
                 sm.queryUtility(IInterface, name).foo(), "foo local")
-
-            registration.status = InactiveStatus
+            sm.unregisterUtility(foo, IInterface, name)
             self.assertEqual(sm.queryUtility(IInterface, name).foo(), gout)
 
 

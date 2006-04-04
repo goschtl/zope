@@ -18,7 +18,7 @@ $Id$
 import unittest
 
 from zope.component.interfaces import IFactory
-from zope.component.interfaces import ISiteManager
+from zope.component.interfaces import IComponentLookup
 from zope.component.factory import Factory
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
@@ -287,7 +287,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                 return "."
 
         # register content factory for content factory id lookup
-        ztapi.provideAdapter(None, ISiteManager, SiteManagerAdapter)
+        ztapi.provideAdapter(None, IComponentLookup, SiteManagerAdapter)
         ztapi.provideUtility(IFactory, Factory(C), name='C')
         
         adding = Adding(self)

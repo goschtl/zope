@@ -10,9 +10,9 @@ from StringIO import StringIO
 from zope.interface import implements
 from zope.exceptions import DuplicationError
 from zope.proxy import removeAllProxies
+from zope.datetime import parseDatetimetz, DateTimeError
 
 from zope.app import zapi
-from zope.app.datetimeutils import parseDatetimetz, DateTimeError
 from zope.app.publisher.browser import BrowserView
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import FileWidget

@@ -16,9 +16,8 @@
 $Id: test_browserpublication.py 38357 2005-09-07 20:14:34Z srichter $
 """
 import unittest
-from zope.testing import doctest
 
-from zope.app.testing import placelesssetup, ztapi
+from zope.app.testing import ztapi
 from StringIO import StringIO
 
 from zope.security.interfaces import ForbiddenAttribute
@@ -316,10 +315,6 @@ def test_suite():
         unittest.makeSuite(BrowserPublicationTests, 'test'),
         unittest.makeSuite(BrowserDefaultTests, 'test'),
         unittest.makeSuite(HTTPPublicationRequestFactoryTests, 'test'),
-        doctest.DocTestSuite('zope.app.publication.browser',
-                             setUp=placelesssetup.setUp,
-                             tearDown=placelesssetup.tearDown),
-
         ))
 
 

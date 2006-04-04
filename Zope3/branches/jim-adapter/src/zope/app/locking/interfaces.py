@@ -18,9 +18,8 @@ $Id: $
 """
 from zope import interface, schema
 
-from zope.app.event.interfaces import IObjectEvent
+from zope.component.interfaces import ObjectEvent, IObjectEvent
 from zope.interface.common.mapping import IMapping
-from zope.app.event.objectevent import ObjectEvent
 from zope.app.i18n import ZopeMessageFactory as _
 
 class ILockable(interface.Interface):

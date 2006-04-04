@@ -19,13 +19,13 @@ __docformat__ = 'restructuredtext'
 
 from xml.sax import saxutils
 from zope.interface import implements
+from zope.datetime import parseDatetimetz
+from zope.datetime import DateTimeError
 
 from zope.app.form.interfaces import IInputWidget, ConversionError
 from zope.app.form.browser.interfaces import ITextBrowserWidget
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.form.browser.widget import DisplayWidget
-from zope.app.datetimeutils import parseDatetimetz
-from zope.app.datetimeutils import DateTimeError
 
 from zope.app.i18n import ZopeMessageFactory as _
 

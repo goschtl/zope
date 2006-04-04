@@ -389,6 +389,19 @@ def test_classImplements_after_classImplementsOnly_issue_402():
 
 """
 
+def test_picklability_of_implements_specifications():
+    """
+
+    Sometimes, we need to pickle implements specs.  We should be able
+    to do so as long as the class is picklable.
+
+    >>> import pickle
+    >>> pickle.loads(pickle.dumps(implementedBy(C))) is implementedBy(C)
+    True
+    
+    
+    """
+
 
 def test_suite():
     suite = unittest.TestSuite()

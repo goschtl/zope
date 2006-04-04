@@ -19,7 +19,7 @@ import os
 import unittest
 from cStringIO import StringIO
 
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 from zope.app.traversing.interfaces import TraversalError
 from zope.interface import Interface, implements

@@ -20,10 +20,10 @@ from persistent import Persistent
 from zope.security.proxy import ProxyFactory
 from zope.interface import implements
 from zope.pagetemplate.pagetemplate import PageTemplate
+from zope.size.interfaces import ISized
 
 from zope.app.pagetemplate.engine import AppPT
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.app.size.interfaces import ISized
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.container.contained import Contained

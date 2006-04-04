@@ -16,7 +16,7 @@
 $Id$
 """
 
-from zope.app.event.interfaces import IObjectEvent
+from zope.component.interfaces import IObjectEvent
 from zope.app.event.objectevent import objectEventNotify
 from zope.app.testing import ztapi
 
@@ -39,9 +39,9 @@ def clearEvents():
 class PlacelessSetup(object):
 
     def setUp(self):
-        clearEvents()
         ztapi.subscribe([None], None, events.append)
         ztapi.subscribe([IObjectEvent], None, objectEventNotify)
+        clearEvents()
 
 import zope.testing.cleanup
 zope.testing.cleanup.addCleanUp(clearEvents)

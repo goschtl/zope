@@ -19,8 +19,13 @@ __docformat__ = 'restructuredtext'
 import types
 
 from zope.component.interfaces import IFactory
-from zope.component.site import AdapterRegistration, SubscriptionRegistration
-from zope.component.site import UtilityRegistration
+from zope.component.registry import (
+    AdapterRegistration,
+    SubscriptionRegistration,
+    HandlerRegistration,
+    )
+    
+from zope.component.registry import UtilityRegistration
 from zope.interface import Interface
 from zope.interface.interface import InterfaceClass
 import zope.interface.declarations
@@ -40,21 +45,21 @@ GENERIC_INTERFACE_LEVEL = 4
 def getRequiredAdapters(iface, withViews=False):
     """Get adapter registrations where the specified interface is required."""
     gsm = zapi.getGlobalSiteManager()
-    for reg in gsm.registrations():
-        # Only get adapters
-        if not isinstance(reg, (AdapterRegistration, SubscriptionRegistration)):
-            continue
-        # Ignore adapters that have no required interfaces
-        if len(reg.required) == 0:
-            continue
-        # Ignore views
-        if not withViews and reg.required[-1] and \
-               reg.required[-1].isOrExtends(IRequest):
-            continue
-        # Only get the adapters for which this interface is required
-        for required_iface in reg.required:
-            if iface.isOrExtends(required_iface):
-                yield reg
+    for meth in ('registeredAdapters',
+                 'registeredSubscriptionAdapters',
+                 'registeredHandlers'):
+
+        for reg in getattr(gsm, meth)():
+            # Ignore adapters that have no required interfaces
+            if len(reg.required) == 0:
+                continue
+            # Ignore views
+            if not withViews and reg.required[-1].isOrExtends(IRequest):
+                continue
+            # Only get the adapters for which this interface is required
+            for required_iface in reg.required:
+                if iface.isOrExtends(required_iface):
+                    yield reg
 
 
 def getProvidedAdapters(iface, withViews=False):
@@ -109,9 +114,7 @@ def getFactories(iface):
     """Return the factory registrations, who will return objects providing this
     interface."""
     gsm = zapi.getGlobalSiteManager()
-    for reg in gsm.registrations():
-        if not isinstance(reg, UtilityRegistration):
-            continue
+    for reg in gsm.registeredUtilities():
         if reg.provided is not IFactory:
             continue
         interfaces = reg.component.getInterfaces()
@@ -128,9 +131,7 @@ def getFactories(iface):
 def getUtilities(iface):
     """Return all utility registrations that provide the interface."""
     gsm = zapi.getGlobalSiteManager()
-    for reg in gsm.registrations():
-        if not isinstance(reg, UtilityRegistration):
-            continue
+    for reg in gsm.registeredUtilities():
         if reg.provided.isOrExtends(iface):
             yield reg
 
@@ -174,26 +175,26 @@ def getInterfaceInfoDictionary(iface):
 
 def getAdapterInfoDictionary(reg):
     """Return a PT-friendly info dictionary for an adapter registration."""
-    factory = getRealFactory(reg.value)
+    factory = getRealFactory(reg.factory)
     path = getPythonPath(factory)
 
     url = None
     if isReferencable(path):
         url = path.replace('.', '/')
 
-    if isinstance(reg.doc, (str, unicode)):
-        doc = reg.doc
+    if isinstance(reg.info, (str, unicode)):
+        doc = reg.info
         zcml = None
     else:
         doc = None
-        zcml = getParserInfoInfoDictionary(reg.doc)
+        zcml = getParserInfoInfoDictionary(reg.info)
 
     return {
         'provided': getInterfaceInfoDictionary(reg.provided),
         'required': [getInterfaceInfoDictionary(iface)
                      for iface in reg.required
                      if iface is not None],
-        'name': getattr(reg, 'name', _('<subscription>')),
+        'name': getattr(reg, 'name', ''),
         'factory': path,
         'factory_url': url,
         'doc': doc,

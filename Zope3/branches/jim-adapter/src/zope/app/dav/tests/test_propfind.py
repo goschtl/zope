@@ -26,6 +26,7 @@ from zope.publisher.interfaces.http import IHTTPRequest
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.schema import getFieldNamesInOrder
 from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence
+from zope.size.interfaces import ISized
 
 from zope.app import zapi
 from zope.app.testing import ztapi
@@ -39,7 +40,6 @@ from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.size.interfaces import ISized
 from zope.app.file.interfaces import IFile
 
 from zope.app.dav import propfind

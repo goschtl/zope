@@ -157,7 +157,7 @@ class Test(TestCase):
             (u'foo \u1111', u'2001-12-31'),
             ])
 
-        from zope.app.datetimeutils import parseDatetimetz
+        from zope.datetime import parseDatetimetz
 
         dc = self.dc
         self.assertEqual(dc.created,

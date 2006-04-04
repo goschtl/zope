@@ -16,7 +16,7 @@
 $Id: hooks.py 29143 2005-02-14 22:43:16Z srichter $
 """
 from zope.component import getSiteManager
-from zope.component.bbb import service
+from zope.component import service
 
 def getServices_hook(context=None):
     sm = getSiteManager(context)

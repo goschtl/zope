@@ -19,9 +19,9 @@ __docformat__ = 'restructuredtext'
 
 import zope.interface
 from zope.app.location.interfaces import ILocation
-from zope.proxy import ProxyBase, getProxiedObject
-from zope.app.decorator import DecoratorSpecificationDescriptor
-from zope.app.decorator import DecoratedSecurityCheckerDescriptor
+from zope.proxy import ProxyBase, getProxiedObject, non_overridable
+from zope.decorator import DecoratorSpecificationDescriptor
+from zope.decorator import DecoratedSecurityCheckerDescriptor
 
 class Location(object):
     """Stupid mix-in that defines `__parent__` and `__name__` attributes
@@ -161,6 +161,7 @@ class LocationProxy(ProxyBase):
         self.__parent__ = container
         self.__name__ = name
 
+    @non_overridable
     def __reduce__(self, proto=None):
         raise TypeError("Not picklable")
 

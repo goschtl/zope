@@ -71,6 +71,10 @@ that contain their own location information.
 
     >>> component.provideAdapter(
     ...     zope.app.annotation.attribute.AttributeAnnotations)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Registered event:
+    AdapterRegistration(<BaseGlobalComponents base>, 
+        [IAttributeAnnotatable], IAnnotations, '', AttributeAnnotations, u'')
 
 Now we need to create a database with an instance of our sample object to work
 with:
@@ -140,6 +144,10 @@ events are being fired for version control actions:
     >>> component.provideHandler(
     ...     (lambda ob, evt: showEvent("applied version control", ob, evt)),
     ...     (interface.Interface, interfaces.IVersionControlApplied))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Registered event:
+    HandlerRegistration(<BaseGlobalComponents base>, 
+                     [Interface, IVersionControlApplied], u'', <lambda>, u'')
 
 Now, let's put an object under version control and verify that we can
 determine that fact by checking against the interface:

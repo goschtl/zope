@@ -21,7 +21,7 @@ from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 from zope.schema import Text, Int
 
-from zope.component.service import serviceManager
+from zope import component
 from zope.app.event.tests.placelesssetup import events, clearEvents
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
@@ -29,10 +29,6 @@ from zope.security.checker import CheckerPublic
 from zope.security.management import newInteraction, endInteraction
 
 from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.component.interfaces.registration import IRegisterable
-from zope.app.component.interfaces.registration import IRegistered
-from zope.app.component.interfaces.registration import ActiveStatus
-from zope.app.servicenames import Utilities
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.workflow.interfaces import IProcessDefinition
@@ -49,7 +45,6 @@ from zope.app.workflow.stateful.instance import StatefulProcessInstance
 from zope.app.workflow.stateful.instance import StateChangeInfo
 
 from zope.app import zapi
-from zope.app.tests import ztapi
 from zope.app.container.contained import contained
 from zope.app.utility import UtilityRegistration
 from zope.app.testing import setup
@@ -348,7 +343,7 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
     def setUp(self):
         WorkflowSetup.setUp(self)
 
-        ztapi.provideUtility(IPermission, Permission('deny', 'Deny'), 'deny')
+        component.provideUtility(Permission('deny', 'Deny'), IPermission, 'deny')
 
         endInteraction()
         newInteraction(ParticipationStub('test'))

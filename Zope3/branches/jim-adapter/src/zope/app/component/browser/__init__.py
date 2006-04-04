@@ -15,19 +15,16 @@
 
 $Id$
 """
-from zope.component.interfaces import ISiteManager
+from zope.exceptions.interfaces import UserError
 from zope.security.proxy import removeSecurityProxy
 from zope.app import zapi
 from zope.app.container.browser.adding import Adding
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.container.interfaces import INameChooser
-from zope.app.component.interfaces.registration import ActiveStatus
-from zope.app.component.interfaces.registration import InactiveStatus
-from zope.app.component.interfaces import ILocalUtility
 from zope.app.publisher.browser import BrowserView
 from zope.app.component.interfaces import ISite
 from zope.app.component.site import LocalSiteManager
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.component.interfaces import IFactory
 from zope.interface.interfaces import IMethod
 from zope.schema.interfaces import IField
@@ -103,14 +100,6 @@ class UtilityAdding(ComponentAdding):
     menu_id = None
     title = _("Add Utility")
 
-    _addFilterInterface = ILocalUtility
-
-    def add(self, content):
-        # Override so as to check the type of the new object.
-        if not ILocalUtility.providedBy(content):
-            raise TypeError("%s is not a local utility" % content)
-        return super(UtilityAdding, self).add(content)
-
     def nextURL(self):
         v = zapi.queryMultiAdapter(
             (self.added_object, self.request), name="addRegistration.html")
@@ -168,7 +157,7 @@ class MakeSite(BrowserView):
 
         """
         if ISite.providedBy(self.context):
-            raise zapi.UserError('This is already a site')
+            raise UserError('This is already a site')
 
         # We don't want to store security proxies (we can't,
         # actually), so we have to remove proxies here before passing

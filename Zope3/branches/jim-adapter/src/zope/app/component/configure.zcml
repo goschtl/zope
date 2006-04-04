@@ -46,30 +46,6 @@
       trusted="true"
       />
 
-  <subscriber
-      for=".interfaces.registration.IComponentRegistration
-           zope.app.container.interfaces.IObjectRemovedEvent"
-      handler=".registration.ComponentRegistrationRemoveSubscriber"
-      />
-
-  <subscriber
-      for=".interfaces.registration.IComponentRegistration
-           zope.app.container.interfaces.IObjectAddedEvent"
-      handler=".registration.ComponentRegistrationAddSubscriber"
-      />
-
-  <subscriber
-      for=".interfaces.registration.IComponentRegistration
-           .interfaces.registration.IRegistrationEvent"
-      handler=".registration.componentRegistrationEventNotify"
-      />
-
-  <subscriber
-      for=".interfaces.registration.IRegisterable
-           zope.app.container.interfaces.IObjectMovedEvent"
-      handler=".registration.RegisterableMoveSubscriber"
-      />
-
 
   <!-- Site and Site Manager Framework -->
 
@@ -85,18 +61,8 @@
         interface="zope.app.container.interfaces.IReadContainer" />
     <require
         permission="zope.ManageSite"
-        interface="zope.component.interfaces.ISiteManager
+        interface="zope.component.interfaces.IComponentLookup
                    zope.app.container.interfaces.IWriteContainer" />
-  </class>
-
-  <!-- TODO: We allow these attributes to be changed. We need some subscriber
-       that updated the registries once attributes change. -->
-  <class class=".site.AdapterRegistration">
-    <require
-        permission="zope.ManageSite"
-        interface=".interfaces.IAdapterRegistration"
-        set_schema=".interfaces.IAdapterRegistration"
-        />
   </class>
 
   <class class=".site.UtilityRegistration">    
@@ -123,7 +89,7 @@
   </class>
   
   <adapter 
-      for="zope.component.interfaces.ISiteManager"
+      for="zope.component.interfaces.IComponentLookup"
       provides="zope.app.filerepresentation.interfaces.IDirectoryFactory"
       factory=".site.SMFolderFactory"
       permission="zope.ManageContent"
@@ -131,7 +97,7 @@
 
   <adapter
       for="zope.interface.Interface" 
-      provides="zope.component.interfaces.ISiteManager"
+      provides="zope.component.interfaces.IComponentLookup"
       factory=".site.SiteManagerAdapter"
       />
 

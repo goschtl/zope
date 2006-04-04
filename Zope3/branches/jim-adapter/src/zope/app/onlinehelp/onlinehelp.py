@@ -33,7 +33,7 @@ from zope.app.onlinehelp.onlinehelptopic import OnlineHelpTopic
 class OnlineHelp(OnlineHelpTopic):
     """
     >>> import os
-    >>> from zope.app.tests import ztapi
+    >>> from zope import component
     >>> from zope.component.interfaces import IFactory
     >>> from zope.component.factory import Factory
     >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
@@ -63,10 +63,10 @@ class OnlineHelp(OnlineHelpTopic):
     >>> rest = Factory(RESTOnlineHelpTopic)
     >>> stx = Factory(STXOnlineHelpTopic)
     >>> zpt = Factory(ZPTOnlineHelpTopic)
-    >>> ztapi.provideUtility(IFactory, default, 'onlinehelp.topic.default')
-    >>> ztapi.provideUtility(IFactory, rest, 'onlinehelp.topic.rest')
-    >>> ztapi.provideUtility(IFactory, stx, 'onlinehelp.topic.stx')
-    >>> ztapi.provideUtility(IFactory, zpt, 'onlinehelp.topic.zpt')
+    >>> component.provideUtility(default, IFactory, 'onlinehelp.topic.default')
+    >>> component.provideUtility(rest, IFactory, 'onlinehelp.topic.rest')
+    >>> component.provideUtility(stx, IFactory, 'onlinehelp.topic.stx')
+    >>> component.provideUtility(zpt, IFactory, 'onlinehelp.topic.zpt')
     >>> path = os.path.join(testdir(), 'help2.txt')
     >>> onlinehelp.registerHelpTopic('', 'help2', 'Help 2',
     ...     path, I1, 'view.html')
@@ -153,5 +153,5 @@ class OnlineHelp(OnlineHelpTopic):
         #utils = zapi.getService(Utilities)
         #utils.provideUtility(IOnlineHelpTopic, topic, topic.getTopicPath())
 
-        zapi.getGlobalSiteManager().provideUtility(
-            IOnlineHelpTopic, topic, topic.getTopicPath())
+        zapi.getGlobalSiteManager().registerUtility(
+            topic, IOnlineHelpTopic, topic.getTopicPath())
