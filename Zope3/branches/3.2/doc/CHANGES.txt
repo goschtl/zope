@@ -12,7 +12,7 @@ Zope Changes
 
       - Fixed a bug in field prefix handling in formlib's setUp*Widgets.
 
-  Zope 3.2.1
+  Zope 3.2.1 (2006/03/26)
 
     Bug fixes
 
@@ -34,7 +34,7 @@ Zope Changes
         + Use the method param instead of an hardcoded value for the
         zcml filename
 
-  Zope 3.2.0
+  Zope 3.2.0 (2006/01/05)
 
     Bug Fixes
 
@@ -48,7 +48,7 @@ Zope Changes
 
       - Fixed a bug in FieldProperty to honor the readonly field.
 
-  Zope 3.2.0b3
+  Zope 3.2.0b3 (2006/01/02)
 
     Bug Fixes
 
@@ -62,7 +62,7 @@ Zope Changes
       - Make zopetest insert rather than append the library path
         (fix spurious test failures from packages in site-packages)
 
-  Zope 3.2.0b2
+  Zope 3.2.0b2 (2005/12/23)
 
     New features
 
