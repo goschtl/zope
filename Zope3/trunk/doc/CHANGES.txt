@@ -127,7 +127,43 @@ Zope Changes
 
   ------------------------------------------------------------------
 
-  Zope 3.2.0b3
+  Zope 3.2.1 (2006/03/26)
+
+    Bug fixes
+
+      - Fixed issue 573: @form.action(failure='name_of_method') didn't work.
+
+      - Fixed issue 568: Typo in basicskin css file.
+
+      - Fixed issue 560: Bug in default AddView class.
+
+      - Fixed issue 546: non-ASCII docstring cause
+        System Error in RootErrorReportingUtility.
+
+      - Fixed issue 544: VocabularyRegistryError missing import.
+
+      - Fixed issue 536: ErrorLogUtility has UnboundLocalError.
+
+      - zope.app.testing.functional.defineLayer
+
+        + Use the method param instead of an hardcoded value for the
+        zcml filename
+
+  Zope 3.2.0 (2006/01/05)
+
+    Bug Fixes
+
+      - zope.i18n.interpolate:
+
+        + now if the variable wasn't found in the mapping no substitution
+          will happens.
+
+        + fixed interpolation in case "$name $$name", only the first variable
+          will be substituted.
+
+      - Fixed a bug in FieldProperty to honor the readonly field.
+
+  Zope 3.2.0b3 (2006/01/02)
 
       - The test-runner --coverage option didn't work when tested code
         was installed in Python's site-packages, which is the case for
@@ -139,7 +175,7 @@ Zope Changes
       - Make zopetest insert rather than append the library path
         (fix spurious test failures from packages in site-packages)
 
-  Zope 3.2.0b2
+  Zope 3.2.0b2 (2005/12/23)
 
     New features
 
