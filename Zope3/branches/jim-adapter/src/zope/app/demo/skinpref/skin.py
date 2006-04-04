@@ -19,9 +19,9 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 from zope.publisher.interfaces.browser import IBrowserSkinType
+from zope.publisher.browser import applySkin as applySkinOnRequest
 from zope.app.component.interfaces import ISite
 from zope.app.preference.interfaces import IUserPreferences
-from zope.app.publisher.browser import applySkin as applySkinOnRequest
 
 def applySkin(event):
     # We only want to look for a new skin to set, if we entered a new site.

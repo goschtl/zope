@@ -18,14 +18,14 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import implements
+from zope.publisher.browser import applySkin
 
 from zope.app import zapi
 from zope.app.location import locate
 from zope.app.location.interfaces import ILocation
-from zope.app.publisher.browser import applySkin
 
-from interfaces import IDocumentationModule
-from utilities import ReadContainerBase
+from zope.app.apidoc.interfaces import IDocumentationModule
+from zope.app.apidoc.utilities import ReadContainerBase
 
 class APIDocumentation(ReadContainerBase):
     """Represent the complete API Documentation.

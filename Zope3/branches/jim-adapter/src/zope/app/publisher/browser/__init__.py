@@ -19,15 +19,13 @@ from zope.component.interfaces import ComponentLookupError, IDefaultViewName
 from zope.component import getSiteManager
 
 import zope.interface
-from zope.interface import implements, directlyProvidedBy, directlyProvides
+from zope.interface import implements
 from zope.publisher.browser import BrowserLanguages
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.interfaces import IModifiableUserPreferredLanguages
 
 from zope.app.location import Location
 from zope.app.publisher.interfaces.browser import IBrowserView
-from zope.publisher.interfaces.browser import IBrowserSkinType
-
 
 key = "zope.app.publisher.browser.IUserPreferredLanguages"
 
@@ -100,40 +98,6 @@ def queryDefaultViewName(object, request, default=None, context=None):
     name = getSiteManager(context).adapters.lookup(
         map(zope.interface.providedBy, (object, request)), IDefaultViewName)
     return name or default
-
-def applySkin(request, skin):
-    """Change the presentation skin for this request.
-
-    >>> import pprint
-    >>> from zope.interface import Interface, providedBy
-    >>> class SkinA(Interface): pass
-    >>> directlyProvides(SkinA, IBrowserSkinType)
-    >>> class SkinB(Interface): pass
-    >>> directlyProvides(SkinB, IBrowserSkinType)
-    >>> class IRequest(Interface): pass
-
-    >>> class Request(object):
-    ...     implements(IRequest)
-
-    >>> req = Request()
-
-    >>> applySkin(req, SkinA)
-    >>> pprint.pprint(list(providedBy(req).interfaces()))
-    [<InterfaceClass zope.app.publisher.browser.SkinA>,
-     <InterfaceClass zope.app.publisher.browser.IRequest>]
-
-    >>> applySkin(req, SkinB)
-    >>> pprint.pprint(list(providedBy(req).interfaces()))
-    [<InterfaceClass zope.app.publisher.browser.SkinB>,
-     <InterfaceClass zope.app.publisher.browser.IRequest>]
-    """
-    # Remove all existing skin declarations (commonly the default skin).
-    ifaces = [iface
-              for iface in directlyProvidedBy(request)
-              if not IBrowserSkinType.providedBy(iface)]
-    # Add the new skin.
-    ifaces.append(skin)
-    directlyProvides(request, *ifaces)
 
 class NotCompatibleAdapterError(Exception):
     """Adapter not compatible with
