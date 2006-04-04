@@ -1,0 +1,38 @@
+<zope:configure 
+  xmlns:zope="http://namespaces.zope.org/zope"
+  xmlns="http://namespaces.zope.org/browser"
+  i18n_domain="zope"
+  >
+
+  <menu
+      id="help_actions"
+      title="Menu for displaying help actions to be performed with popup"
+      />
+
+  <pages
+      for="zope.app.onlinehelp.interfaces.IOnlineHelpTopic"
+      permission="zope.View"
+      class=".OnlineHelpTopicView"
+      >
+
+      <page name="index.html" template="helptopic.pt" />
+      <page name="getTopicTree" attribute="getTopicTree" />
+
+  </pages>
+
+  <page
+      for="zope.app.onlinehelp.interfaces.IOnlineHelp"
+      permission="zope.View"
+      class=".ContextHelpView"
+      name="contexthelp.html" 
+      template="contexthelp.pt" />
+
+  <menuItem
+      for="*"
+      filter="python:request.getURL().find('++help++')==-1"
+      menu="help_actions"
+      title="Help"
+      action="++help++/@@contexthelp.html"
+      />
+ 
+</zope:configure>

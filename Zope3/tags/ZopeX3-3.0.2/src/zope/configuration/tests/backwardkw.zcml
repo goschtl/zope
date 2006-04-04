@@ -1,0 +1,30 @@
+<configure 
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:test="http://namespaces.zope.org/test"
+  package="zope.configuration.tests.directives"
+  >
+
+  <directives namespace="http://namespaces.zope.org/test">
+  
+     <directive name="k" attributes="for class x"
+                handler=".k" description="simple example w python keywords" />
+          
+  
+     <directive name="k2" handler=".k">
+
+        <attribute name="for" description="for descr" required="yes" />
+        <attribute name="class">
+            <description>class descr</description>
+        </attribute>
+        <attribute name="x" required="yes" >
+            x descr
+        </attribute>
+
+     </directive>
+  </directives>
+
+  <test:k  for="f"  class="c"  x="x" >first</test:k>
+  <test:k2 for="ff" class="cc" x="xx">second</test:k2>
+
+</configure>
+

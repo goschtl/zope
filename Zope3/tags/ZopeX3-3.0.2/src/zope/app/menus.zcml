@@ -1,0 +1,38 @@
+<zope:configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
+
+  <menu
+      id="zmi_views"
+      title="Menu for displaying alternate representations of an object" />
+
+  <menu
+      id="zmi_actions"
+      title="Menu for displaying actions to be performed" />
+
+  <menu
+      id="add_cache"
+      title="Menu of caches to be added" />
+
+  <menu
+      id="add_content"
+      title="Menu of objects to be added to content folders" />
+
+  <menu
+      id="zope.app.container.add"
+      title="Menu for objects to be added according to containment constraints"
+      />
+
+  <menu
+      id="add_component"
+      title="Menu of objects to be added to site management folders" />
+
+  <menu
+      id="add_connection"
+      title="Menu of database connections to be added" />
+
+  <menu
+      id="add_registration"
+      title="Menu of addable configuration objects" />
+
+</zope:configure>
