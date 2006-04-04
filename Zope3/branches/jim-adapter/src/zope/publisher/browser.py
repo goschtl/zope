@@ -24,11 +24,13 @@ import re
 from types import ListType, TupleType, StringType, StringTypes
 from cgi import FieldStorage, escape
 
-from zope.interface import implements, directlyProvides
+import zope.component
+from zope.interface import implements, directlyProvides, providedBy
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.interfaces import IUserPreferredCharsets
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.publisher.interfaces.browser import IDefaultSkin
 from zope.publisher.interfaces.browser import IBrowserApplicationRequest
 
 from zope.publisher import contenttype
@@ -821,3 +823,70 @@ class BrowserLanguages(object):
         accepts.reverse()
 
         return [lang for quality, lang in accepts]
+
+def setDefaultSkin(request):
+    """Sets the default skin for the request.
+
+    The default skin is a marker interface that can be registered as an
+    adapter that provides IDefaultSkin for the request type.
+
+    If a default skin is not available, the default layer
+    (IDefaultBrowserLayer) is used.
+
+    To illustrate, we'll first use setDefaultSkin without a registered
+    IDefaultSkin adapter:
+
+      >>> class Request(object):
+      ...     implements(IBrowserRequest)
+
+      >>> request = Request()
+      >>> IDefaultBrowserLayer.providedBy(request)
+      False
+
+      >>> setDefaultSkin(request)
+      >>> IDefaultBrowserLayer.providedBy(request)
+      True
+
+    When we register a default layer, however:
+
+      >>> from zope.interface import Interface
+      >>> class IMySkin(Interface):
+      ...     pass
+      >>> zope.component.provideAdapter(IMySkin, (IBrowserRequest,),
+      ...                               IDefaultSkin)
+
+    setDefaultSkin uses the layer instead of IDefaultBrowserLayer.providedBy:
+
+      >>> request = Request()
+      >>> IMySkin.providedBy(request)
+      False
+      >>> IDefaultSkin.providedBy(request)
+      False
+
+      >>> setDefaultSkin(request)
+
+      >>> IMySkin.providedBy(request)
+      True
+      >>> IDefaultBrowserLayer.providedBy(request)
+      False
+
+    Any interfaces that are directly provided by the request coming into this
+    method are replaced by the applied layer/skin interface:
+
+      >>> request = Request()
+      >>> class IFoo(Interface):
+      ...     pass
+      >>> directlyProvides(request, IFoo)
+      >>> IFoo.providedBy(request)
+      True
+      >>> setDefaultSkin(request)
+      >>> IFoo.providedBy(request)
+      False
+
+    """
+    adapters = zope.component.getSiteManager().adapters
+    skin = adapters.lookup((providedBy(request),), IDefaultSkin, '')
+    if skin is not None:
+        directlyProvides(request, skin)
+    else:
+        directlyProvides(request, IDefaultBrowserLayer)
