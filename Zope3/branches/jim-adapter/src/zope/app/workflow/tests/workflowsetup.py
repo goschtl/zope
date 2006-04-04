@@ -16,14 +16,12 @@
 $Id$
 """
 from zope.interface import implements
-from zope.component.interfaces import IUtilityService
 
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.security.interfaces import IAuthenticationService
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.utility import LocalUtilityService
 from zope.app.testing import setup
 
 
