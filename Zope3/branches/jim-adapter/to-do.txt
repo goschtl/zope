@@ -1,7 +1,0 @@
-
-- Need subscribers for object removal that fix deal with
-  unregistering.
-
-- May also need UI for unregistering registered object from site
-  manager.
-
