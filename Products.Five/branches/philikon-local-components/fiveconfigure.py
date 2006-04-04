@@ -32,10 +32,10 @@ from zope.component import getUtility
 from zope.configuration import xmlconfig
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.security.interfaces import IPermission
 
 from zope.app.component.interface import provideInterface
 from zope.app.component.metaconfigure import adapter
-from zope.app.security.interfaces import IPermission
 
 from Products.Five import isFiveMethod
 from Products.Five.viewable import Viewable

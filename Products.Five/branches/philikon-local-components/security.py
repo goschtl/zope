@@ -19,8 +19,8 @@ from zope.interface import implements, classProvides
 from zope.component import queryUtility, getUtility
 from zope.security.management import thread_local
 from zope.security.interfaces import IInteraction, ISecurityPolicy
+from zope.security.interfaces import IPermission
 from zope.security.simplepolicies import ParanoidSecurityPolicy
-from zope.app.security.interfaces import IPermission
 
 from AccessControl import ClassSecurityInfo, getSecurityManager
 from Globals import InitializeClass as initializeClass
