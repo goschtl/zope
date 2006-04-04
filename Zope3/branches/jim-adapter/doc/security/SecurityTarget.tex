@@ -1,0 +1,2332 @@
+\documentclass[12pt,english]{scrbook}
+\usepackage{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{url}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{rotating}
+\usepackage{varioref}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+
+% 90 degrees rotated
+\newcolumntype{R}{%
+  >{\begin{turn}{90}%
+          \hspace{0pt}}l%
+  <{\end{turn}}%
+}
+\newcommand{\oh}{$\bullet$}
+
+\hypersetup{
+pdftitle={Zope 3.3 Common Criteria Evaluation},
+pdfauthor={Christian Theune {\textless}ct@gocept.com{\textgreater};Steve Alexander {\textless}steve@catbox.net{\textgreater};Jim Fulton {\textless}jim@zope.com{\textgreater}}
+}
+
+\subject{Security Target}
+\title{Zope 3.3 Common Criteria Evaluation}
+\author{Christian Theune \\
+  Steve Alexander \\
+  Jim Fulton \\
+  Christian Zagrodnick}
+
+\uppertitleback{
+\begin{description}
+    \item[Document Title:] Zope 3.3 Common Criteria Evaluation Security Target
+    \item[DocumentID:] \$Id$ $\$
+    \item[Version:] \$Rev$ $\$ (Draft)
+    \item[Status:] Draft
+    \item[Date:] \$Date$ $\$
+    \item[Author:] Christian Theune, ct@gocept.com
+    \item[Author:] Steve Alexander, steve@catbox.net
+    \item[Author:] Jim Fulton, jim@zope.com
+    \item[Author:] Christian Zagrodnick, cz@gocept.com
+  \end{description}
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\newpage
+\listoftables
+
+\chapter{ST Introduction}
+
+This chapter presents security target (ST) identification information and an
+overview of the ST. an ST contains the information technology (IT) security
+requirements of an identified Target of Evaluation (TOE) and specifies the
+functional and assurance security measures offered by that TOE to meet stated
+requirements. An ST principally defines:
+
+\begin{itemize}
+    \item A security problem expressed as a set of assumptions about the
+    security aspects of the environment, a list of threats that the TOE is
+    intended to counter, and any known rules with which the TOE must comply
+    (Chapter ``TOE Security Environment'').
+
+    \item A set of security objectives and a set of security requirements to
+    address the security problem (Chapters ``Security Objectives'' and ``IT
+    Security Requirements'').
+
+    \item The IT security functions provided by the TOE that meet the set of
+    requirements (Chapter ``TOE Summary Specification'').
+\end{itemize}
+
+The structure and content of this ST complies with the requirements specified
+in the Common Criteria (CC), Part 1, Annex C, and Part 3, chapter 5.
+
+\section{ST identification}
+
+This section provides information needed to identify and control this ST and
+its Target of Evaluation (TOE).
+
+\begin{description}
+  
+  \item[ST Title:] Zope 3.3 Common Criteria Evaluation Security Target
+ 
+  \item[ST Version:] \$Rev: 40485 \$ 
+
+  \item[Revision Number:] 1
+
+  \item[Date:] \$Date: 2005-12-02 17:44:46 +0100 (Fr, 02 Dez 2005) \$ 
+
+  \item[Author:] Christian Theune, Steve Alexander, Jim Fulton, Christian Zagrodnick
+
+  \item[TOE Identification:] Zope 3.3
+
+  \item[TOE Version/Build:] n/a yet
+
+  \item[TOE Platform:] Linux
+
+  \item[CC Identification:] Common Criteria for Information Technology Security
+  Evalation, Version 2.1, August 1999 (also known as ISO 15408) and all
+  corresponding final interpretations.
+
+  \item[Evaluation Assurance Level:] EAL 1 augmented with ADV\_SPM.1
+
+  \item[PP Conformance:] none
+
+  \item[Keywords:] Web Application Server, Web Application Framework
+\end{description}
+
+%___________________________________________________________________________
+
+\section{ST overview}
+
+The Target of Evaluation is Zope 3.3 in its non-default ``secure''
+configuration (hereinafter called Zope for simplicity), a general purpose, open
+source web application server and framework. It is used as a runtime
+environment for custom applications that are build using the Zope 3 API and
+component library.
+
+Zope clients are standard conformant web browsers using HTTP or other network
+client programs accessing the various network services provided by Zope. The
+secure configuration for this evaluation considers only the use of the HTTP
+server. Other network service components exist but are out of scope for this
+evaluation.
+
+Zope includes security functionality on three levels: 1. the definition of
+permissions and privileges by developers and administrators, 2. the definition
+of users and groups and granting privileges to them for various objects by
+administrators and 3. the enforcement of those permissions during the runtime 
+when an application is beeing used.
+
+A summary of the TOE security functions can be found in Chapter ``TOE
+description''. A detailed description of the security functions can be found in
+chapter ``TOE Summary Specification''
+
+%___________________________________________________________________________
+
+\section{CC conformance}
+
+This ST is CC Part 2 conformant and CC part 3 conformant at the level of
+assurance EAL1.
+
+
+%___________________________________________________________________________
+
+
+
+\chapter{TOE description}
+
+This chapter provides context for the TOE evaluation by identifying the product
+type and describing the evaluated configuration.
+
+%___________________________________________________________________________
+
+
+\section{Product type}
+
+Zopes primary purpose is to provide an environment for running custom web
+applications and their components. Additionally it provides a software library
+and tools to support the development of new applications.
+
+Zope is written as platform independent software using the Python programming
+language. Therefore it is available for Windows, Linux, MacOS X and other
+operating systems. The platforms supported within this evaluation are Windows
+and Linux.
+
+% purpose one: running applications
+The core functionality contains a web server with WebDAV support, an FTP server
+and an XML/RPC server. It has components that provide functionality for
+security management including administration of users, groups and permissions.
+Other core components cover an object database, indexing mechanisms, workflow,
+a web interface, SQL support, an XML-based and a non-XML based templating
+mechanism, Python scripting, internationalization and localization support and
+many more.
+
+Zope is build with a flexible component architecture that allow the core system
+to be extended by re-using components and adding new components based on
+defined interfaces. This includes extending the server to support new network
+services, authentication schemata, access to new relational databases and many
+more while maintaining integrity within the core system.
+
+% purpose two: building applications
+Historically, Zope is used on building content management systems but also
+widely and successfully used to build web applications in the general sense.
+
+Custom Zope applications are written as packages that can contain configuration
+directives, templates, and Python code and classes. Those packages are intended
+to work together seamlessly using the component architecture to plug them
+together into more complex systems.
+
+\section{Physical scope and boundary of the TOE}
+
+The TOE  is physically described by the release files that are made available
+on zope.org. For general supported platforms this is a set of source files and
+utilities to compile and install Zope. For the Windows platform it is
+additionally made available with pre-compiled binaries and a graphical
+installer.
+
+The complete product consists of several independent software packages that can
+be described as high-level components (not to be confused with the term
+"component" in Zope's own sense):
+
+\begin{enumerate}
+
+\item Developer API, to define permissions and privileges and to declare what
+components of an application are protected by which permission.
+
+\item Zope Object Database (ZODB), a transparent persistency layer that stores
+Python objects into an object database. The ZODB manages a logical and physical
+view on the data and allows for the use of a database server (Zope Enterprise
+Objects, ZEO) to connect a cluster of multiple identical Zope servers to a
+single database server. The ZODB supports typical enterprise-class functions
+like transactions, undo and clustering, yet it does not care for security on
+the programming level. Typically the ZODB is used as the central storage for
+application data, but can be accompanied by RDBMS or be replaced totally. The
+use of additional or replacement data sources is not part of the evaluation.
+
+\item Software library, allowing developers to build their own applications
+based on Zope. Zope itself is formed by combining many components from this
+library into a single program while still all those components are offered for
+re-use and extension by developers.
+
+\item Network component, for providing a HTTP server to access Zope and the
+applications running inside Zope from a web browser.
+
+\item Pluggable Authentication Utility (PAU), that, based on the credentials
+presented through the network component, authenticates and identifies users for
+a request to the Zope server. The PAU is part of the software library.
+
+\item A protection component, that regulates access to application components
+and assures that a user has the correct permissions granted for a component
+before executing component accesses (reading attributes, writing attributes or
+executing methods). The access is regulated with a ``privilege-based access
+policy''.
+
+\item A publication component, that connects requests from the network
+component with the application objects. The publication component also connects
+the request with the authenication utility and the protection component to
+establish the security environment for a request.
+
+\end{enumerate}
+
+%___________________________________________________________________________
+
+
+\subsection{Logical scope and boundary of the TOE}
+
+The TOE logical boundary is defined by the following security-relevant
+subsystems provided by the TOE:
+
+\begin{description}
+
+  \item[Protection] mediates every access to object attributes and methods and
+  consults the authorization subsystem whether to allow an access or not.
+
+  \item[Authentication] uses information made available by a client request to
+  authenticate a user for a request.
+
+  \item[Authorization] manages permission grants and implements a method to
+  check whether a request has a permission or not. Is consulted by the
+  protection function.
+
+  \item[Auditing] receives and logs events through Zope 3's event system that
+  are security relevant.
+
+  \item[Transaction Management] provides ACID compatible transactions to secure
+  the object database's state between multiple concurrent requests 
+
+  \item[Publication / Server] provides a central entry point into the Zope 3
+  process through multiple network services. The publication creates an
+  internal representation of the network request and connects it with the
+  protection function, authentication function and transaction management.
+
+\end{description}
+
+See section \vref{toe-sec-funcs} for more details regarding those sub-systems.
+
+%___________________________________________________________________________
+
+\chapter{TOE security environment}
+
+%___________________________________________________________________________
+
+\section{Assets}
+
+The following primary assets have been identified:
+
+\begin{longtable}[c]{lp{10cm}}
+  \toprule 
+  Asset Name & Description \\
+  \midrule\endhead
+
+  (Content) Objects & 
+  Generic objects (instances of Python classes) that
+  are stored and controlled by Zope and carry
+  information that is to be protected. Objects are
+  stored in a connected manner that is typically
+  hierarchical and allows the derivation of
+  information by the objects context. \\
+  \bottomrule
+  \caption{Primary Assets}
+  \label{tab-assets}
+\end{longtable}
+
+The following secondary assets have been identified:
+
+\begin{longtable}[c]{lp{10cm}}
+  \toprule 
+  Asset Name & Description \\
+  \midrule\endhead
+  Host System
+   & 
+  The unit of computer hardware and software that
+  forms the environment of Zope to run on. (E.g.
+  a PC server with Windows 2000 or Linux installed)
+   \\
+
+  Operations
+   & 
+  Operations are the way of accessing and modifying
+  data provided by (content) objects.
+   \\
+
+  Principals
+   & 
+  Principals are the systems representation of acting
+  individuals. A principal acts in behalf of the user
+  and represents a (content) object of it's own.
+   \\
+
+  Permission
+   & 
+  A permission is a name guarding an operation.
+   \\
+
+  Permission grants
+   & 
+  A permission grant associates a principal with a
+  permission to allow or deny an operation in the context.
+  As a third state, permissions may be declared to
+  be acquired from the context.
+   \\
+
+  Audit data
+   & 
+  The data generated by the TOE audit subsystem.
+   \\
+
+  Transaction data
+   & 
+  All operations within Zope are held within ACID
+  compatible transactions that are bound to each
+  request from the outside and associated with a
+  principal.
+  \\
+  \bottomrule
+  \caption{Secondary Assets}
+  \label{tab-sec-assets}
+
+\end{longtable}
+%___________________________________________________________________________
+
+
+
+\section{Subject}
+
+Zope has a concept of interactions, which model the interaction of one or more
+users with the system.  An interaction keeps track of the users that are
+participating in the interaction as ``participations''.  In the TOE,
+interactions will have single users participating through server requests (for
+example, Web requests).  In the terminology of common criteria, those
+interactions are the ``subjects'' causing operations within the TOE to be
+performed.
+
+
+%___________________________________________________________________________
+
+
+
+\section{Operations}
+
+Operations are performed on objects. They are defined in an object's class. A
+class is defined in the Python programming language and is identified by a
+fully qualified name.
+
+An operation is a name defined in a class. It may take a form of an attribute,
+a method or some other related python thing.
+
+There are two possible kinds of access to an operation: Reading such as
+reading an attribute or calling a method. Writing such as setting or deleting
+an attribute. Reading and writing can be guarded with different permission
+grants.
+
+
+%___________________________________________________________________________
+
+
+
+\section{Assumptions (about the environment)}
+
+The following assumptions need to be made about the TOE environment:
+
+\begin{longtable}[c]{lp{10cm}}
+  \toprule
+  Assumption Name & Description \\
+  \midrule
+
+  A.OS & The machine and the operating system Zope is running on is physically
+  secure. The system is administrated such that the system is free from
+  malicious software like viruses and Trojan horses. The operating system
+  provides a true system clock. \\
+
+  A.Admin & 
+  The ``system-administrator'' of the above
+  mentioned machine is competent and trustworthy.
+   \\
+
+  A.Network & 
+  A network connection to the Zope services is
+  present. All other network connections to the same host are
+  secure in a way that the integrity of
+  the host and operating system is preserved.
+   \\
+
+  A.Client & 
+  The connection between client and Zope server is
+  secure in a sense that the identification and
+  authentication data is not monitored or interfered with. This can either be
+  through the use of a private network or a secure channel using an SSL proxy
+  with an encryption mechanism of at least 128-Bit RSA.
+  \\
+
+  A.Credential & 
+  The user is keeping the credential to authenticate
+  secret. \\
+
+  \bottomrule
+  \caption{Assumptions about the TOE environment.}
+  \label{tab-A}
+\end{longtable}
+
+%___________________________________________________________________________
+
+
+
+\section{Threats}
+
+The following threat agents have been identified:
+
+\begin{itemize} 
+  
+  \item Users having correct authentication credentials who might try to
+  acquire more permission grants to get access to operations they should not.
+
+  \item Users without correct authentication credentials for a certain
+  principal trying to authenticate as this.
+
+\end{itemize}
+
+Specific threat agents with specific motivation, resources and skills have to
+be identified for any specific application build on Zope 3. From the point of a
+generic application server, attackers are either to be expected to  be
+authenticated and trying to extend their level of access or not having been
+authenticated at all and trying to break into the system.
+
+The following threats against the assets have been identified:
+
+\begin{longtable}[c]{lp{6cm}p{4cm}}
+  \toprule
+  Threat & Description & Asset\\
+  \midrule\endhead
+
+  T.IA
+   & 
+  An attacker might impersonate an authorized
+  principal without providing the necessary
+  credentials.
+   & 
+  Principal
+   \\
+  
+
+  T.Perm
+   & 
+  A principal changes the permission grants
+  without having the right to do so.
+   & 
+  Permission grants
+   \\
+  
+
+  T.Operation
+   & 
+  A principal performs an operation on an object
+  without having the correct permission.
+   & 
+  Operation, Object
+   \\
+  
+
+  T.AuditFake
+   & 
+  An attacker might convince the audit data
+  generation functions to log false information
+  (date, time, type of event, outcome, user)
+   & 
+  Audit data
+   \\
+  
+
+  T.RIP
+   & 
+  An attacker might try to make the system use
+  residual information for deciding to allow
+  or deny access to an operation to gain more
+  access than intended.
+   & 
+  Secondary assets
+   \\
+  
+
+  T.Transaction
+   & 
+  An attacker might try to perform commit or
+  abort operations on foreign transactions to
+  perform operations on the behalf of other
+  users.
+   & 
+  All assets in ZODB
+   \\
+  
+
+  T.Undo
+   & 
+  An attacker might try to perform an Undo
+  operation to invalid revisions.
+   & 
+  All assets in ZODB
+   \\
+  
+
+  T.Timestamps
+   & 
+  An attacker might try to hide his actions
+  by making the system create false timestamps
+  which would result in wrong association to a
+  user on dynamic IP address ranges.
+   & 
+  Audit data
+   \\
+  
+
+  T.TrustedPath
+   & 
+  An attacker might try to use ``user data import''
+  or ``user data export'' without being a local
+  user and using the trusted path.
+   & 
+  Object
+   \\
+  
+
+  T.Host
+   & 
+  An attacker might use Python functions that
+  result in direct access to the host environment
+  therefore compromising the host and Zope itself.
+   & 
+  Host, Object
+  \\
+  \bottomrule
+\caption{Threats Against Assets}
+\label{tab-threats}
+\end{longtable}
+  
+
+
+%___________________________________________________________________________
+
+
+
+\section{Organisational security policies}
+
+OSPs are to be defined by the developer who creates applications using Zope and
+the customer running those applications.  Zope as a general purpose application
+server does neither require nor impose any OSPs.
+
+
+%___________________________________________________________________________
+
+
+
+\chapter{Security objectives}
+
+
+%___________________________________________________________________________
+
+
+
+\section{Security objectives for the TOE}
+
+The following security objectives have been defined for the TOE:
+
+\begin{longtable}[c]{lp{10cm}}
+  \toprule
+  Objective Name & Description \\
+  \midrule\endhead
+  
+  O.IA
+   & 
+  All principals must be accurately identified and
+  authenticated with the exception of the ``unauthenticated''
+  principal.
+   \\
+
+  O.Delegation
+   & 
+
+  Provide the ability to securely delegate control. Principals that are granted
+  the zope.Security permission shall be able to grant (or deny) permissions to
+  other principals.
+  
+  By default the zope.Manager role is granted all permissions thus including
+  zope.Security for all managers.
+
+  \\
+
+  O.Audit
+   & 
+  The TOE will provide the means of recording any
+  security relevant events, so as to assist an
+  administrator in the detection of potential attacks
+  or misconfiguration of the TOE security features
+  that would leave the TOE susceptible to attack, and
+  also to hold users accountable for any actions
+  they perform that are relevant to security.
+   \\
+
+  O.Protect
+   & 
+  The TOE will protect itself against external
+  interference or tampering by untrusted subjects or
+  attempts by untrusted subjects to bypass the TOE
+  security functions.
+   \\
+
+  O.Access
+   & 
+  The TOE ensures that access to objects is always
+  mediated by operations and guarded by permissions.
+   \\
+
+  O.Integrity
+   & 
+  Whenever an unhandled error within the context of a
+  running transaction occurs (related or unrelated
+  to security) the transaction will be rolled back
+  and the system will be in the state before the
+  transaction started.
+   \\
+
+  O.Attributes &  All security attributes (e.g. principal or permission
+    identifiers) together must form a meaningful whole at all times. \\
+
+  O.ManageRisk
+   & 
+  Provide the ability to manage risk by trading off
+  functionality against risk. For example, we can
+  make it easier to access the system to perform
+  operations whose potential negative impact is
+  low, but make it more difficult to access the
+  system in a way that allows operations with high
+  negative impact.
+  \\
+  \bottomrule
+  \caption{Security Objectives for the TOE}
+\end{longtable}
+
+
+%___________________________________________________________________________
+
+
+
+\section{Security objectives for the environment}
+
+The following security objectives have been defined for the TOE environment:
+
+\begin{longtable}[c]{lp{10cm}}
+  \toprule
+   Objective for the environment & Description \\
+  
+  \midrule\endhead
+
+  OE.OS
+   & 
+  The machine and the operating system Zope is running
+  on is physically secure.
+   \\
+
+  OE.Trust
+   & 
+  Those responsible for the TOE must be trustworthy.
+   \\
+
+  OE.Auditlog
+   & 
+  Administrators of the TOE must ensure that audit
+  facilities are used and managed effectively. In
+  particular:
+
+  \begin{itemize}
+  
+    \item Appropriate action must be taken to ensure continued audit logging,
+    e.g. by regular archiving of logs before audit trail exhaustion to ensure
+    sufficient free space.
+
+    \item Audit logs should be inspected on a regular basis, and appropriate
+    action should be taken on the detection of breaches of security, or events
+    that are likely to lead to a breach in the future.
+
+  \end{itemize}
+   \\
+
+  OE.Network
+   & 
+  A network connection to the Zope services is present.
+  All other network connections are secure in such a
+  way that the integrity of the machine and operating
+  system is preserved.
+   \\
+
+  OE.Client
+   & 
+  The connection between client and Zope server is secure
+  in a sense that the identification and authentication
+  data is not monitored or interfered.
+   \\
+
+  OE.Credential
+   & 
+  The user is keeping the credentials to authenticate
+  secret.
+  \\
+  \bottomrule
+  \caption{Security Objectives for the Environment}
+\end{longtable}
+
+
+%___________________________________________________________________________
+
+
+
+\chapter{IT Security Requirements}
+
+
+%___________________________________________________________________________
+
+
+
+\section{TOE security requirements}
+
+
+%___________________________________________________________________________
+
+
+
+\subsection{TOE security functional requirements}
+
+The following functional requirements identify the TOE functional requirements.
+They have been drawn from the CC Part 2 functional requirements components.
+
+
+%___________________________________________________________________________
+
+
+
+\subsubsection{Class FAU: Audit data generation}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FAU{\_}GEN.1 Audit data generation}
+\begin{description}
+  
+  \item[FAU\_GEN.1.1] The TSF shall be able to generate an audit record of the
+  following auditable events:
+  \begin{itemize}
+      \item Startup and shutdown of audit functions; and
+      \item all auditable events for the \emph{minimum} level of audit.
+  \end{itemize}
+
+\item[FAU{\_}GEN.1.2]
+
+The TSF shall record within each audit record at least the
+following information:
+
+\begin{itemize}
+\item 
+Date and time of the event, type of event, subject identity,
+and the outcome (success or failure) of the event; and
+
+\item For each audit event type, based on auditable event definitions
+of the functional components included in the ST, \emph{the ID of the
+corresponding interaction.}
+\end{itemize}
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FAU{\_}GEN.2 User identity assocation}
+\begin{description}
+\item[FAU{\_}GEN.2.1]
+
+The TSF shall be able to associate each auditable event with the identity
+of the user that caused the event.
+
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\subsubsection{Class FDP: Data protection}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FDP{\_}ACC.2 Complete access control}
+\begin{description}
+\item[FDP{\_}ACC.2.1 ]
+
+The TSF shall enforce the \emph{Zope access control policy} on \emph{interactions
+and objects and all operations among objects covered by the SFP}.
+
+\item[FDP{\_}ACC.2.2]
+
+The TSF shall ensure that all operations between any
+subject in the TSC and any object within the TSC are covered by an
+access control SFP.
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FDP{\_}ACF.1 Security attribute based access control}
+\begin{description}
+\item[FDP{\_}ACF.1.1]
+
+The TSF shall enforce the \emph{Zope access control policy} to objects
+based on \emph{the interaction principal, the permission required for
+the operation and the grants or denials of the permission for that
+object or it's ancestor objects}.
+
+\item[FDP{\_}ACF.1.2]
+
+The TSF shall enforce the following rules to determine
+if an operation among controlled subjects and controlled objects is
+allowed:
+\begin{itemize}
+\item {} 
+Access is denied if there is a denial for the subject's
+principal for the required permission on the object.
+
+\item {} 
+Access is allowed if there is a grant and there is not a denial
+for the subject's principal for the required permission on the object.
+
+\item {} 
+Access is denied if access would be denied for the subject's
+principal for the required permission on the parent of the
+object.
+
+\item {} 
+Access is allowed if access would be allowed and would not be
+denied for the subject's principal for the required permission
+on the parent of the object.
+
+\end{itemize}
+
+where the required permission is the permission required to
+perform the desired operation on the object.
+
+\item[FDP{\_}ACF.1.3]
+
+The TSF shall explicitly authorise access of subjects to
+objects based on the following additional rules: \emph{none}
+
+\item[FDP{\_}ACF.1.4]
+
+The TSF shall explicitly deny access of subjects to objects
+based on the following additional rules: \emph{none}
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FDP{\_}RIP.1 Subset residual information protection}
+\begin{description}
+
+\item[FDP{\_}RIP.2.1]
+
+
+The TSF shall ensure that any previous information content of a
+resource is made unavailable upon the \emph{deallocation of
+security attributes from} all objects.
+\end{description}
+
+Note: This includes removing references to the security attributes beeing
+deallocated. E.g. permission grants and denials belonging to a principal beeing
+deallocated.
+
+%___________________________________________________________________________
+
+
+
+\minisec{FDP{\_}ROL.2{\_}TRANSACTIONS Advanced Rollback}
+\begin{description}
+
+\item[FDP{\_}ROL.2.1 ]
+
+
+The TSF shall permit \emph{the rollback of all
+operations on all objects}.
+
+
+
+
+\item[FDP{\_}ROL.2.2 ]
+
+
+The TSF shall permit operations to be rolled
+back \emph{at any time before the transaction in which the operation was
+performed is committed}.
+\begin{description}
+
+\item[Note ]
+
+
+This statement may not apply to cached data created
+during the course of a transaction.
+
+
+
+\end{description}
+
+
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FDP{\_}ROL.1{\_}UNDO Basic rollback}
+\begin{description}
+
+\item[FDP{\_}ROL.1.1 ]
+
+
+The TSF shall enforce the \emph{Zope access control policy} to permit
+the rollback of the \emph{operations that caused changes} on the \emph{content
+objects}.
+
+
+
+
+\item[FDP{\_}ROL.1.2 ]
+
+
+The TSF shall permit operations to be rolled back
+within the \emph{period of time for which the old revisions of the objects
+exist}.
+
+
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\subsubsection{Class FIA: Identification and authentication}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FIA{\_}AFL{\_}z.1 Authentication failure handling}
+\begin{description}
+
+\item[FIA{\_}AFL{\_}z.1.1]
+
+
+The TSF shall detect when there are configurable number of consecutive
+unsuccessful authentication attempts for a single login name,
+with no intermediate successful attempts.
+
+
+
+
+\item[FIA{\_}AFL{\_}z.1.2 ]
+
+
+When the defined number of unsuccessful authentication attempts
+has been surpassed, the TSF shall
+\begin{itemize}
+\item {} 
+Disable authentication against the indicated login name for a
+configurable period of time.
+
+\end{itemize}
+
+
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FIA{\_}ATD.1 User attribute definition}
+\begin{description}
+
+\item[FIA{\_}ATD.1.1 ]
+
+The TSF shall maintain the following list of security attributes
+belonging to individual principals: \emph{uniqueid, credentials, grants
+and denials}.
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FIA{\_}UAU.1 Timing of authentication}
+\begin{description}
+
+\item[FIA{\_}UAU.1.1 ]
+
+
+The TSF shall allow \emph{only those operations granted to the
+unauthenticated principal} on behalf of the user before the user is
+authenticated.
+
+\item[Note] It is possible to deny all operations to the anonymous
+principal. This means that a user must login before any operations may
+be performed on their behalf. This fullfills the terms of FIA{\_}UAU.2
+
+
+\item[FIA{\_}UAU.1.2 ]
+
+
+The TSF shall require each \emph{user} to be successfully
+authenticated before allowing any other TSF-mediated actions on behalf
+of that user.
+
+
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FIA{\_}UAU.5 Multiple authentication systems}
+\begin{description}
+
+\item[FIA{\_}UAU.5.1 ]
+
+
+The TSF shall provide \emph{extensible support for multiple
+authentication mechanisms. The default mechanism uses login names
+and passwords in combination with HTTP Basic Authentication and FTP
+authentication}
+
+
+
+
+\item[FIA{\_}UAU.5.2]
+
+
+The TSF shall authenticate any users claimed identity according to
+the \emph{system configuration, provided credentials, such as a
+username/password pair and the protocol used}
+
+
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FIA{\_}UAU.6 Re-authentication}
+\begin{description}
+
+\item[FIA{\_}UAU.6.1 ]
+
+
+The TSF shall re-authenticate the user under the conditions
+\begin{itemize}
+\item {} 
+If the credentials held by the user agent have expired due to
+a configurable time limit.
+
+\item {} 
+If the authenticated user does not have the required permissions to
+perform a requested operation but the presentation of different
+credentials might associate him with a principal that holds enough
+permission grants to perform the requested operation.
+
+\end{itemize}
+
+
+
+\end{description}
+
+
+\minisec{FIA{\_}UID.1 Timing of identification}
+\begin{description}
+
+\item[FIA{\_}UID.1.1 ]
+
+
+The TSF shall allow \emph{only those operations granted to the
+unauthenticated principal} on behalf of the user before the user is
+identified.
+
+\emph{Note:} It is possible to deny all operations to the anonymous
+principal. This means that a user must login before any operations may
+be performed on their behalf. This fullfills the terms of FIA\_UID.2
+
+
+
+
+\item[FIA{\_}UID.1.2 ]
+
+
+The TSF shall require each user to be successfully
+identified before allowing any other TSF-mediated actions on behalf
+of that user.
+
+
+
+\end{description}
+%___________________________________________________________________________
+
+
+
+\minisec{FIA{\_}USB.1 User-subject binding}
+\begin{description}
+
+\item[FIA{\_}USB.1.1]
+
+
+The TSF shall associate the appropriate user security
+attributes with subjects acting on behalf of that user.
+
+
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\subsubsection{Class FMT: Security management}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FMT{\_}MOF.1 Management of security functions}
+\begin{description}
+
+\item[FMT{\_}MOF.1.1]
+
+
+The TSF shall restrict the ability to \emph{determine the
+behaviour of, disable, enable or modify the behaviour of} the
+\emph{authentication} functions to \emph{authorized administrators}.
+
+
+
+
+\item[Note]
+
+
+This includes for example adding and removing principals (for example,
+users) and changing the authentication schemes. Those actions can be
+protected by different permissions.
+
+
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+
+\minisec{FMT{\_}MSA.1 Management of security attributes}
+\begin{description}
+\item[FMT{\_}MSA.1.1.grants]
+    The TSF shall enforce the \emph{Zope access control policy} to restrict the
+    ability to \emph{query, modify, delete, and add} the security
+    attributes \emph{permission grants and denials} to \emph{authorized
+    grantors}.
+
+\item[FMT{\_}MSA.1.1.loginname]
+    The TSF shall enforce the \emph{Zope access control policy} to restrict the
+    ability to \emph{query and modify} the security attribute
+    \emph{login name} to \emph{authorized administrators and users
+    authorized to modify their own authentication data}.
+
+\item[FMT{\_}MSA.1.1.password]
+    The TSF shall enforce the \emph{Zope access control policy} to restrict
+    the ability to \emph{modify} the security attribute
+    \emph{password} to \emph{authorized administrators and users authorized to
+    modify their own authentication data}.
+
+\end{description}
+
+\minisec{FMT{\_}MSA.2 Secure security attributes}
+
+\begin{description}
+
+\item[FMT{\_}MSA.2.1]
+
+    The TSF shall ensure that only secure values are accepted for security
+    attributes.
+
+\end{description}
+
+%___________________________________________________________________________
+
+
+
+\minisec{FMT{\_}MSA.3 Static attribute initialisation}
+\begin{description}
+
+\item[FMT{\_}MSA.3.1]
+
+
+The TSF shall enforce the \emph{Zope access control policy} to provide 
+\emph{restrictive} default values for security attributes that are used to 
+enforce the SFP.
+
+
+
+
+\item[FMT{\_}MSA.3.2 ]
+
+
+The TSF shall allow \emph{no one} to specify alternative
+initial values to override the default values when an object or
+information is created.
+
+
+
+
+\item[Note]
+
+
+Security attributes are expressed as collections of grants or
+denials. The default is an empty collection.
+
+
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FMT{\_}SMR.1 Security roles}
+
+\begin{description}
+    \item[FMT{\_}SMR.1.1]
+
+    The TSF shall maintain the roles:
+\begin{description}
+\item[Authorized administrator]
+
+Users who can perform system-wide security functions. These are
+people who have the zope.ManageSecurity permission.
+
+\item[Grantor ]
+
+Users who have the ability to grant or deny permissions to
+users for objects.  These are users who have any of the grant
+meta-permissions.
+
+\item[Users authorized to modify their own authentication data]
+
+The role name says it all.
+
+\end{description}
+
+\item[FMT{\_}SMR.1.2]
+
+The TSF shall be able to associate \emph{principals} with roles.
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\subsubsection{Class FPT: Protection of the TSF}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FPT{\_}AMT.1 Abstract machine testing}
+\begin{description}
+
+\item[FPT{\_}AMT.1.1 ]
+
+
+The TSF shall run a suite of tests \emph{as an offline
+operation} to demonstrate the correct operation of the security
+assumptions provided by the abstract machine that underlies the
+TSF.
+
+
+
+\end{description}
+
+
+\minisec{FPT{\_}RVM.1 Non-bypassability of the TSP}
+\begin{description}
+
+\item[FPT{\_}RVM.1.1 ]
+
+
+The TSF shall ensure that TSP enforcement functions are invoked
+and succeed before each function within the TSC is allowed to
+proceed.
+
+
+
+\end{description}
+
+
+\minisec{FPT{\_}SEP.1 TSF domain separation}
+\begin{description}
+
+\item[FPT{\_}SEP.1.1 ]
+
+The TSF shall maintain a security domain for its own execution that
+protects it from interference and tampering by untrusted
+subjects.
+
+\item[FPT{\_}SEP.1.2 ]
+
+The TSF shall enforce separation between the
+security domains of subjects in the TSC.
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\minisec{FPT{\_}STM.1 Reliable time stamps}
+\begin{description}
+
+\item[FPT{\_}STM.1.1]
+
+
+The TSF shall be able to provide reliable time stamps for its own use.
+
+
+
+\end{description}
+
+
+%___________________________________________________________________________
+
+
+
+\subsection{TOE security assurance requirements}
+
+The evaluation assurance level chosen for this evaluation is EAL 1.
+
+The following TOE assurance requirements drawn from CC Part 3 are valid:
+
+\begin{longtable}[c]{lp{7cm}p{3cm}}
+  \toprule
+  Identification & Description & Direct dependencies\\
+  \midrule \endhead
+
+  \textbf{ACM} & Configuration management (CM) &  \\
+  ACM{\_}CAP.1 & Version numbers & None \\
+
+  \textbf{ADO} & Delivery and Operation &  \\
+  ADO{\_}IGS.1 & Installation, generation and start-up & AGD{\_}ADM.1 \\
+  
+  \textbf{ADV} & Development &  \\
+  ADV{\_}FSP.1 & Informal Functional specification & ADV{\_}RCR.1 \\
+
+  ADV{\_}RCR.1 & Representation correspondence: Information correspondence
+  demonstration & None \\ 
+
+  ADV{\_}SPM.1 & Informal TOE security policy model & ADV\_FSP.1 \\
+
+  \textbf{AGD} & Guidance documents &  \\
+  AGD{\_}ADM.1 & Administrator guidance & ADV{\_}FSP.1 \\
+  AGD{\_}USR.1 & User guidance & ADV{\_}FSP.1 \\
+  \textbf{ATE} &  &  \\ 
+  ATE{\_}IND.1 & Independent testing - conformance & ADV{\_}FSP.1 AGD{\_}ADM.1 AGD{\_}USR.1 \\
+
+
+  \bottomrule
+  \caption{TOE Assurance Requirements}
+            
+\end{longtable}
+
+
+%___________________________________________________________________________
+
+
+
+\section{Security requirements for the IT environment}
+
+The following security requirements exist for the IT environment:
+
+\begin{itemize}
+
+  \item The operating system is Windows 2000, Windows XP or Linux. All known
+      security patches must have been installed.
+
+  \item The Python Version is 2.4 or a compatible bugfix release. % XXX
+
+  \item The ZODB storage is FileStorage or FileStorage through a ZEO server.
+
+  \item The client software must support ``protected authentication feedback'',
+      to at least not echo a user's credentials in plain text (FIA{\_}UAU.7).
+
+  \item The TOE can only be accessed through a ``trusted path'' using secure
+      proxies, such as an HTTPS proxy like Apache with SSL, or Pound. Users are
+      taught to make correct use of secure channels (e.g. accepting only valid
+      SSL certificates). 
+
+  \item If external IT systems are used, a trusted channel between the TOE and
+      those systems must be provided by the TOE host environment.  For example,
+      while the TOE may communicate with clients on a public network through a
+      specific port allowed through a firewall, all communication with other IT
+      systems should be over a (virtual) private network.
+
+\end{itemize}
+%___________________________________________________________________________
+
+\chapter{TOE summary specification}
+
+
+\section{TOE security functions}  \label{toe-sec-funcs}
+
+
+The major functions implemented by the TOE are:
+
+
+%___________________________________________________________________________
+
+
+\subsection{Protection}
+
+The protection subsystem is responsible for controlling the access of subjects
+to objects.  It does this through the use of security proxies.  Any non-basic
+objects that an interaction accesses is wrapped in a security proxy.  All
+operations on these non-basic objects are performed through the security
+proxies. Security proxies use the authorization system to decide whether access
+is allowed.  Any non-basic results of operations performed through security
+proxies are security proxied.
+
+%___________________________________________________________________________
+
+
+
+\subsection{Authentication}
+
+Zope provides a flexible authentication schema that by default supports HTTP
+Basic Auth and is extensible to support different data
+storages. Zope defines interfaces to implement different mechanisms for
+authentication data schemas as well as authentication mechanisms. By default
+Zope provides components to store username/password pairs in the ZODB and to
+authenticate with a username/password pair through HTTP Basic Authentication
+and FTP authentication.
+
+
+%___________________________________________________________________________
+
+
+
+\subsection{Authorization / Access control}
+
+To determine whether an operation under a given subject is allowed, Zope has an
+authorization subsystem (aka access control). The authorization subsystem uses
+pluggable policies to allow the implementation of different rule sets. Zope
+provides a default security policy called 'zopepolicy'.
+
+Policies implement a method 'checkPermission' to determine whether the
+requested access is allowed or not. Policies define the information required to
+make authorization decisions.  Policies therefore can be implemented to extend
+or reduce the current functionality, e.g. for introducing groups.
+
+The default policy considers roles, grants and denials, location and principals
+to drive the decision. Permissions can be granted or denied to principals
+directly or by roles.  Subjects can consider multiple principals if the
+execution of untrusted code is involved.
+
+If no principal is associated with a subject, the subject is allowed to perform
+any operation. The publisher component is required to bind an anonymous
+principal with the special role ``zope.Anonymous'' if no user has been
+authenticated.
+
+Every principal is automatically granted the ``zope.Anonymous'' role which can't be
+denied by any means. Also, every principal is granted the ``zope.Public''
+permission which can't be denied by any means.
+
+The 'zopepolicy' favors more specific declarations (permissions granted to
+principals over permissions granted to roles or grants that are nearer in terms
+of location) in contrast to more general (e.g. global declarations). Therefore
+it is possible to make exceptions for individuals from permissions granted to a
+role.
+
+
+%___________________________________________________________________________
+
+
+\subsection{Configuration}
+
+The configuration system is used to provide definitions for security
+attributes. It is used to define permissions, roles, principals and other
+security policy relevant data.
+
+It can be accessed via the Python API, the Zope management interface and
+through ZCML configuration files.
+
+The configuration system takes care that any operation made to the security
+relevant data (e.g. adding or deleting a principal) does not compromise the
+systems integrity, especially in respect to residual information protection.
+
+\subsection{Auditing}
+
+Zope provides an auditing system that listens for events within Zope according
+to the SFRs described above. It is implemented using the event framework of
+Zope 3 to subscribe to the audit relevant events and log them appropriately.
+The infrastructure provided (event listener + logger) satisfies the
+requirements as described in FAU{\_}GEN.1 and FAU{\_}GEN.2.
+
+Zope relies on the operating system to deliver reliable time stamps for the
+audit log.
+
+
+%___________________________________________________________________________
+
+
+
+\subsection{Transaction management}
+
+Most data is stored on persistent objects. The transaction machinery rolls back
+all data that is stored on persistent objects.
+
+
+%___________________________________________________________________________
+
+
+
+\subsection{Undo}
+\begin{itemize}
+\item {} 
+storage support
+
+\item {} 
+can redo
+
+\item {} 
+any level
+
+\item {} 
+can undo a transaction, if there aren't any un-undone transactions that touch
+the same objects, if a conflict arises while changing the objects during
+undo, application level conflict resolution is used to try to resolve a
+conflict. if a conflict can't be resolved the undo can't be done.
+
+\end{itemize}
+
+Undo only allows the rollback of serial N last transaction to avoid integrity issues.
+
+
+%___________________________________________________________________________
+
+
+
+\subsection{Publication / Server}
+
+The publisher allows users to communicate with the Zope server through a
+network, using standard protocols and client software like HTTP and browsers or
+FTP and FTP clients. The publisher is the only valid entry point to communicate
+with a Zope 3 application as it also is the starting point for the protection
+subsystem to be involved.
+
+The publisher is extensible to allow support for further protocols.
+
+To support FIA{\_}UAU.1 the implementation of a protocol includes the ability to
+communicate with a user for requesting authentication data. The ability to
+present credentials is specific to the used protocol and clients. By default
+HTTP Basic Auth and FTP authentication are supported.
+
+To support FIA{\_}USB.1, the publisher also returns the credentials to Zope and
+calls the authentication subsystem to validate this data and binds the
+authenticated principal to the running interaction.
+
+%___________________________________________________________________________
+
+
+\subsection{Automated Tests}
+
+Zope provides a suite of automated tests that allow the user to ensure that the
+security functionality implemented with a delivered package is consistent with
+the tests. Those tests can be run in offline mode.
+
+
+%___________________________________________________________________________
+
+
+
+\subsection{Python Environment}
+
+As Zope relies on Python and the host environment to provide reliable time
+stamps. Changes to the external clock are not audited within the system as we
+regard then as beeing out of scope.  Therefore external log mechanisms (Syslog
+on Unix hosts or the Event log on Windows hosts) should be consulted to detect
+those changes. (FPT{\_}STM.1)
+
+%___________________________________________________________________________
+
+
+\section{Assurance measures}
+
+
+%___________________________________________________________________________
+
+
+
+\subsection{AM{\_}ACM: CONFIGURATION MANAGEMENT}
+
+A document describing the configuration management will be provided.
+
+
+%___________________________________________________________________________
+
+
+
+\subsection{AM{\_}ADO: DELIVERY AND OPERATION}
+
+A document describing the delivery and operation of the TOE will be provided.
+
+
+%___________________________________________________________________________
+
+
+\subsection{AM{\_}ADV: DEVELOPMENT}
+
+A functional specification, a RCR document and an informal security policy model
+(ADV\_SPM.1) will be provided.
+
+%___________________________________________________________________________
+
+
+
+\subsection{AM{\_}AGD: GUIDANCE DOCUMENTS}
+
+The guidance documents AGD{\_}ADM and AGD{\_}USR will be provided.
+
+
+%___________________________________________________________________________
+
+
+
+\subsection{AM{\_}ATE: TESTS}
+
+No deliverable. Only independend testing from the evaluator is needed.
+
+
+%___________________________________________________________________________
+
+
+
+\chapter{PP claims}
+
+No PP compatibility is beeing claimed.
+
+
+%___________________________________________________________________________
+
+
+\chapter{Rationale}
+
+
+%___________________________________________________________________________
+
+
+
+\section{Security objectives rationale}
+
+The following table shows that all threads and assumptions are covered
+by a security objectives. 
+
+  \begin{longtable}{rRRRRRRRRRRRRRRR}
+    \toprule
+              & T.IA  & T.Perm &T.Operation&T.AuditFake& T.RIP&T.Transaction&T.Undo &T.Timestamps & T.Host & A.OS & A.Admin & A.Network & A.Client & A.Credential  \\
+    \midrule\endhead
+O.IA         &  \oh  &       &            &            &      &             &       &             &        &      &       \\
+O.Delegation &       &   \oh &            &            &      &             &       &             &        &      &        \\
+O.Audit      & \oh   &   \oh &     \oh    &            &      &             &  \oh  &             &        &      &        \\
+O.Protect    &       &       &            &    \oh     &      &             &       &             &        & \oh  &        \\
+O.Access     &       &       &      \oh   &            &      &    \oh      &       &             &   \oh  &      &        \\
+O.Integrity  &       &       &            &            &  \oh &             &       &             &        &      &        \\
+O.Attributes &       &       &            &            &  \oh &             &  \oh  &             &        &      &        \\
+O.ManageRisk &   \oh &       &            &            &      &             &       &             &        &      &        \\
+\midrule
+OE.OS        &       &       &            &            &      &             &       &    \oh      &        &  \oh &         &         &            &          \\
+OE.Trust     &       &       &            &            &      &             &       &             &        &      &  \oh    &         &            &            \\
+OE.Auditlog  &       &       &            &            &      &             &       &             &        & \oh  &         &         &            &                   \\  
+OE.Network   &       &       &            &            &      &             &       &             &        &      &         &  \oh    &            &                   \\   
+OE.Client    &       &       &            &            &      &             &       &             &        &      &         &         &    \oh     &                   \\
+OE.Credential&       &       &            &            &      &             &       &             &        &      &         &         &            &    \oh    \\ 
+\bottomrule
+  \caption{Mapping of Threats and Assumptions to Security Objectives}
+  \label{tab-SOR}
+\end{longtable}
+
+The following list explains why the objectives cover
+the threads and assumptions.
+
+\begin{description}
+  
+  \item[O.IA:] This security objective is necessary to counter the threat
+  \textbf{T.IA} because it requires that users must be accurately identified
+  and authenticated or incorporate the anonymous principal.
+
+  \item[O.Delegation:] This security objective is necessary to counter the
+  threat \textbf{T.Perm} because a user must only be able to delegate the permissions
+  he is allowed to delegate. It must not be possible for him to gain any extra
+  permissions.
+  
+  \item[O.Audit:] This security objective is necessary to detect and recover
+  from most threats: \textbf{T.IA, T.Perm, T.Operation and T.Undo}
+  as those events are logged by the audit log.
+  
+  \item[O.Protect:] This security objective is necessary to counter the threat
+  \textbf{T.AuditFake} because it protects the audit data generation function
+  and thereby prevents logging of false information. It also helps to covers
+  the assumption \textbf{A.OS} because self-protection mechanisms help to
+  dtect security problems in the runtime environment.
+  
+  \item[O.Access:] This security objective is necessary to counter the threat
+  \textbf{T.Operation} because it prevents performing operations on an object
+  without having the correct permission. It also counters the threat
+  \textbf{T.Host} because functions are objects and thereby protected.
+
+  O.Access also counters the threat \textbf{T.Transaction} because transaction
+  managing functions are also objects and therefore protected.
+
+  \item[O.Integrity:] This security objective is necessary to counter the
+  threat \textbf{T.RIP} because it prevents that any data will be written if
+  an unhandled error occurs.
+  
+  \item[O.Attributes:] This security objective is necessary to counter the
+  threats \textbf{T.Undo} and \textbf{T.RIP} because it
+  prevents an attacker form setting inconsistent security attributes from
+  which he could gain more access than intended.
+
+  \item[O.ManageRisk:] This security objective is necessary to counter the
+  threat \textbf{T.IA} because it makes it less likely that an attacker
+  impersonates a principal which allows operations with high negative impact
+  since those principals are better protected.
+
+  \item[OE.OS:] This security objective is necessary to both counter the
+  threat \textbf{T.Timestamps} and cover the assumption \textbf{A.OS} because
+  it asserts that the machine and the operating system the TOE is running on
+  are physically secure. This means an attacker cannot access the machine
+  directly, i.e. around Zope.
+
+  \item[OE.Auditlog:] This security objective covers the assumption
+  \textbf{A.OS}. To keep the operating system secure and detect possible
+  intrusions it is vital to continuously monitor the audit log. It is also
+  important to keep the Auditlog in a safe place to have enough information to
+  recover from an attack.
+
+  \item[OE.Network:] This security objective covers the assumptions
+  \textbf{A.Network} because it asserts that all
+  network !(!5
+  compromising the integrity.
+
+  \item[OE.Client:] This security objective covers the assumption
+  \textbf{A.Client} because it makes sure that the identification and
+  authentication data is not monitored or interfered.
+
+  \item[OE.Credential:] This security objective covers the assumption
+  \textbf{A.Credential} because it demands that the user is keeping the
+  credentials to authenticate secret.
+  
+\end{description}
+%___________________________________________________________________________
+
+
+
+\section{Security requirements rationale}
+
+
+\begin{longtable}{rRRRRRRRR}
+        \toprule
+                            & O.IA & O.Delegation & O.Audit & O.Protect & O.Access & O.Integrity & O.Attributes & O.ManageRisk \\
+        \midrule\endhead
+
+FAU\_GEN.1                  &      &              & \oh     &           &          &             &              &              \\
+FAU\_GEN.2                  &      &              & \oh     &           &          &             &              &              \\
+FDP\_ACC.2                  &      & \oh          &         &           & \oh      &             &              &              \\
+FDP\_ACF.1                  &      &              &         &           &  \oh     &             &              &              \\
+FDP\_RIP.1                  &      &              &         &           &          &             &  \oh         &              \\
+FDP\_ROL.2\_Transactions    &      &              &         &           &          &   \oh       &              &              \\
+FDP\_ROL.1\_Undo            &      &              &         &           &          &             &  \oh         &              \\
+FIA\_AFL\_z.1               &      &              &         &   \oh     &          &             &              &              \\
+FIA\_ATD.1                  & \oh  &  \oh         &   \oh   &           & \oh      &             &              &              \\
+FIA\_UAU.1                  & \oh  &              &         &           &          &             &              &              \\
+FIA\_UAU.5                  & \oh  &              &         &           &          &             &              & \oh          \\
+FIA\_UAU.6                  & \oh  &              &         &           &          &             &              & \oh          \\
+FIA\_UID.1                  & \oh  &              &         &           &          &             &              &              \\
+FIA\_USB.1                  & \oh  &              &         &           &          &             &              &              \\
+FMT\_MOF.1                  &      &              &         &  \oh      &          &             &              & \oh          \\
+FMT\_MSA.1                  & \oh  &  \oh         &         &           &          &             &              &              \\
+FMT\_MSA.2                  &      &              &         &           &          &             &  \oh         &              \\  
+FMT\_MSA.3                  &      &              &         & \oh       &          &             &  \oh         &              \\
+FMT\_SMR.1                  &      &              &         &           &          &             &              &              \\
+FPT\_AMT.1                  &      &              &         & \oh       &          &             &              &              \\
+FPT\_RVM.1                  &      &              &         &           &  \oh     &             &              &              \\
+FPT\_SEP.1                  &      &              &         &   \oh     &          &             &              &   \oh        \\
+FPT\_STM.1                  &      &              &  \oh    &           &          &             &              &              \\
+ \bottomrule
+ \caption{Mapping of Security Objectives to Security Functional Requirements}
+\end{longtable}
+
+\subsection{SFR component dependency analysis}
+
+\begin{longtable}{rp{8cm}}
+        \toprule
+        SFR                 &   Depends on  \\
+        \midrule\endhead
+FAU\_GEN.1                  &   FPT\_STM.1   \\
+FAU\_GEN.2                  &   FAU\_GEN.1, FIA\_UID.1 \\
+FDP\_ACC.2                  &   FDP\_ACF.1 \\
+FDP\_ACF.1                  &   FDP\_ACC.1, FMT\_MSA.3 \\
+FDP\_RIP.1                  &   -- \\
+FDP\_ROL.2\_Transactions    &   -- \\
+FDP\_ROL.1\_Undo            &   -- \\
+FIA\_AFL\_z.1               &   FIA\_UAU.1 \\
+FIA\_ATD.1                  &   -- \\
+FIA\_UAU.1                  &   FIA\_UID.1 \\
+FIA\_UAU.5                  &   -- \\
+FIA\_UAU.6                  &   -- \\
+FIA\_UID.1                  &   -- \\
+FIA\_USB.1                  &   FIA\_ATD.1 \\
+FMT\_MOF.1                  &   FMT\_SMR.1 \\
+FMT\_MSA.1                  &   FMT\_SMR.1 \\
+FMT\_MSA.2                  &   ADV\_SPM.1, FMT\_MSA.1, FMT\_SMR.1 \\
+FMT\_MSA.3                  &   FMT\_MSA.1, FMT\_SMR.1 \\
+FMT\_SMR.1                  &   FIA\_UID.1 \\
+FPT\_AMT.1                  &   -- \\
+FPT\_RVM.1                  &   -- \\
+FPT\_SEP.1                  &   -- \\
+FPT\_STM.1                  &   -- \\
+\bottomrule
+   \caption{SFR Dependency Analysis}
+\end{longtable}
+
+All dependencies required by the chosen SFRs are covered. See table XXX.
+
+\subsection{O.IA --- Identification and authentication}
+
+    A central part of the security machinery within the TOE is the correct
+    identification and authentification of users.
+
+    This is covered by the activities:
+
+    \begin{description}
+        \item[Asking for and validating a user's credentials:]
+
+            The TOE holds information to uniquely identify a principal and its
+            required credentials (FIA\_ATD.1).
+            
+            The TOE presents the user with a prompt to supply his credentials
+            if an operation requires an identified and authenticated principal (FIA\_UAU.1, FIA\_UID.1)
+
+            Depending on the communication channel, the system selects a
+            suitable authentication mechanism to ask a user for his
+            credentials. (FIA\_UAU.5)
+
+            If an authenticated user does not have enough permission grants to
+            perform an operation, he will get the chance to authenticate with
+            other credentials. (FIA\_UAU.6)
+
+            If the credentials stored at the user agent expire (e.g. cookies in
+            a web browser), the user will be asked to represent his credentials
+            before performing any further operation. (FIA\_UAU.6)
+
+        \item[Binding users to the correct principals:]
+
+            The TOE allows users to interact with the system without presenting
+            credentials by binding unauthenticated users to the ``Anonymous''
+            principal. This allows parts of applications to be accessible without
+            presenting any credentials. (FIA\_UAU.1)
+
+            Once a user has been identified and authenticated, the subject of
+            the operation is bound to the user by selecting the correct
+            principal. (FIA\_USB.1)
+
+        \item[Managing required security attributes:]
+
+            The TOE manages the required security attributes (permission grants
+            and denials, credentials, \dots). Special permissions are required
+            to read or write certain security attributes. (FMT\_MSA.1)
+
+        \item[Associating principals with the correct security attributes:]
+
+            This is covered by FIA\_ATD.1 and FIA\_USB.1
+
+    \end{description}
+
+\subsection{O.Delegation  --- Securely delegate control}
+
+    Changing permission grants and denials allows the delegation of permission
+    grants and denials to other users. Administrators that have grants for all
+    permissions introduce new users to the system by delegating the required
+    permissions to them (e.g. via roles, direct permission grants or denials).
+
+    Delegating control is a normal operation performed on the TOEs objects. To
+    grant a permission special meta permissions are introduced that control the
+    ability to delegate a permission. (FMT\_ATD.1)
+
+    Those operations are securely managed because they are covered by the TSF
+    (FDP\_ACC.2) and follow special rules regarding the management of security
+    attributes. (FMT\_MSA.1)
+
+\subsection{O.Audit --- Provide a reliable security audit trail}
+
+    The TOE shall provide functionality to generate audit data (FAU\_GEN.1,
+    FAU\_GEN.2).
+
+    The TOE includes reliable time stamps to guarantee reasonable data to be
+    logged (FPT\_STM.1) and connects all events with the relevant user
+    attributes. (FIA\_ATD.1)
+
+\subsection{O.Protect --- Protect the TOE from external tampering}
+
+    The TOE provides some effort to not allow an insecure situation that
+    resulted from tampering with the system. Most situations have to be avoided
+    due to correct appliance of the environmental requirements though.
+
+    As the TOE is normally run with access through open communication channels
+    like the internet, credentials very likely might be compromised by brute
+    force attacks. This is avoided by applying FIA\_AFL\_z.1.
+
+    Changing the behaviour of security functions is a critical operation.
+    Therefore a set of well known permissions and roles are established to
+    easily identify people that are able to change any security relevant
+    behaviour. (FMT\_MOF.1)
+    
+    In the case of data loss, failure of subsystems or unexpected situations,
+    the usage of FMT\_MSA.3 allows the system to stay in the most secure state
+    possible. Asserting restrictive default values for security attributes
+    avoids permission elevation and results in a better protected TOE.
+    
+    Using abstract machine tests, the system is able to check if the security
+    code has been modified and does not hold to the assumptions of the security
+    machinery anymore. (FPT\_AMT.1)
+
+    The TOE holds a special domain for running untrusted code that allows
+    external entities not to directly modify or call any security relevant
+    attributes or functions. (FPT\_SEP.1)
+
+\subsection{O.Access --- Mediate every access to objects}
+
+    Mediating every access to an object through operations is another major
+    objective to enforce the TSP. (FDP\_ACC.2)
+
+    A set of attributes and rules is used to describe how to apply those
+    attributes for deriving an access decision. (FDP\_ACF.1, FIA\_ATD.1)  
+
+    To ensure the non-bypassability of the TSP a special paradigm (security
+    proxies) for accessing TOE objects from external entities. (FIA\_RVM.1)
+    
+\subsection{O.Integrity --- Ensure faultless data}
+
+    Providing an ACID compatible transaction management system that allows
+    secure rollback from a failed transaction satisfies the objective to have
+    the system keep its integrity. (FDP\_ROL.2\_Transactions)
+
+    The rollback is performed by the TOE automatically as soon as an error is
+    encountered and not handled by any application logic.
+
+\subsection{O.Attributes --- Ensure consistent security attributes}
+
+    To assure an enduring consistent state of all security attributes we
+    enforce the security policy model upon any changes to security attributes.
+    (FMT\_MSA.2) Additionally static security attribute initialization assures
+    a predictable and secure state if no specific attributes are given.
+    (FMT\_MSA.3)
+
+    Special functions like residual information protection (FDP\_RIP.1) and
+    rollback to historic revisions (FDP\_ROL.1\_Undo) also have to assure that
+    the used security attributes do not reference invalid identifiers. 
+    
+\subsection{O.ManageRisk --- Provide choice of flexibility versus security}
+
+    To manage the risk of using stronger authentication schemes for sensible
+    operations in opposition of weaker authentication schemes for less sensible
+    operations, the TOE allows a selection of the authentication system to
+    happen. (FIA\_UAU.5) To increase a users level of access for accessing more
+    sensible operations, a reauthentication may be needed. (FIA\_UAU.6)
+    
+    The decision what authentication schemes are needed for which operations
+    can be managed by authorised administrators. (FMT\_MOF.1)
+
+    Additionally code can be run either within the trusted or untrusted
+    security domains of the TOE. Installing code in the trusted security domain
+    requires an external entity that has access to the physical secure host to
+    install software into the TOE. This allows developers to trade off between
+    functionality of their code and the level of trust they have to gain from
+    administrators installing their extensions. FPT\_SEP.1 supports the
+    distinction between the trusted and untrusted domain.
+
+\section{TOE Summary specification rationale}
+
+\subsection{Security functions rationale}
+
+\begin{longtable}{rRRRRRRRRRR}
+        \toprule
+                    & Protection & Authentication & Authorization & Auditing & Configuration & Transaction management & Undo & Publication/Server & Automated Tests & Python Environment \\
+        \midrule\endhead
+FAU\_GEN.1          &            &                &               & \oh      &               &                        &      &                    &                 &                    \\   
+FAU\_GEN.2          &            &                &               & \oh      &               &                        &      &                    &                 &                    \\   
+FDP\_ACC.2          & \oh        &                &               &          &               &                        &      & \oh                &                 &                    \\   
+FDP\_ACF.1          &            &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FDP\_RIP.1          &            &                &               &          & \oh           &                        &      &                    &                 &                    \\   
+FDP\_ROL.2\_TRANSACTIONS
+                    & \oh        &                &  \oh          &          &               & \oh                    &      &                    &                 &                    \\   
+FDP\_ROL.1\_UNDO    & \oh        &                &  \oh          &          &               &                        & \oh  &                    &                 &                    \\   
+FIA\_AFL\_z.1       &            &  \oh           &               &          &               &                        &      & \oh                &                 &                    \\   
+FIA\_ATD.1          &            &                &               &          & \oh           &                        &      &                    &                 &                    \\   
+FIA\_UAU.1          &            &                &               &          &               &                        &      & \oh                &                 &                    \\   
+FIA\_UAU.5          &            &  \oh           &               &          &               &                        &      & \oh                &                 &                    \\   
+FIA\_UAU.6          &            &  \oh           &               &          &               &                        &      & \oh                &                 &                    \\   
+FIA\_UID.1          &            &                &               &          &               &                        &      & \oh                &                 &                    \\   
+FIA\_USB.1          &            &                &               &          &               &                        &      &  \oh               &                 &                    \\   
+FMT\_MOF.1          & \oh        &  \oh           &  \oh          &          & \oh           &                        &      &                    &                 &                    \\   
+FMT\_MSA.1          &            &                &  \oh          &          & \oh           &                        &      &                    &                 &                    \\   
+FMT\_MSA.2          &            &                &               &          & \oh           &                        &      &                    &                 &                    \\   
+FMT\_MSA.3          &            &                &  \oh          &          & \oh           &                        &      &                    &                 &                    \\   
+FMT\_SMR.1          &            &                &  \oh          &          & \oh           &                        &      &                    &                 &                    \\   
+FPT\_AMT.1          &            &                &               &          &               &                        &      &                    &    \oh          &                    \\   
+FPT\_RVM.1          & \oh        &                &               &          &               &                        &      &  \oh               &                 &                    \\   
+FPT\_FLS.1          &            &                &               &          &               &     \oh                &      &                    &                 &                    \\   
+FPT\_SEP.1          &  \oh       &                &               &          &               &                        &      &                    &                 &                    \\ 
+FPT\_STM.1          &            &                &               &          &               &                        &      &                    &                 &   \oh              \\       
+    \bottomrule
+    \caption{Security Functions Rationale} % XXX
+
+\end{longtable}
+
+\subsubsection{Suitability of SF to meet the SFRs}
+
+\minisec{FDP\_ACC.2 --- Complete Access Control}
+
+XXX is there a single point of entry?
+
+Complete access control is achieved by the \textbf{Protection} subsystem. The
+\textbf{Publication} subsystem serves as a single entry point to the Zope 3
+application which wraps all published objects into security proxies. The
+transient nature of security proxies then covers that all subsequent accesses
+are security proxied as well. Thereby all operations among those objects are
+covered by the protection subsytem which enforces the Zope access control policy.
+
+\minisec{FDP\_RIP.1 --- Subset residual information protection}
+
+RIP is covered by the \textbf{Configuration} subsystem. This subsystem provides
+an API that verifies that the removal of security attributes (like user
+accounts) also results in a consistent removal of depending security attributes
+(group memberships, role grants, permission grants \ldots).
+
+\minisec{FDP\_ROL.2\_TRANSACTIONS --- Advanced Rollback}
+
+The \textbf{Transaction management} of ZODB allows rollback of transaction. The
+\textbf{Protection} and \textbf{Authorization} subsystems (in place by the
+complete access control) will deny the unauthorized use of those management
+functions. As a result only the subject of a transaction is able to roll back
+it's corresponding transaction.
+
+As transactions are only valid within a single subject (operation), there is no
+possibility to cancel other transactions through the use of the
+\textbf{Publication} subsystem.
+
+\minisec{FDP\_ROL.1\_UNDO --- Basic Rollback}
+(FIA{\_}UAU.7), 
+The \textbf{Undo} subsystem covers undoing old transactions in a secure and
+consistent manner. Old transactions that are not to be undone consistently
+are not allowed to be undone.
+
+The \textbf{Protection} and \textbf{Authorization} subsystems ensure that only
+authorized principals can access this functionality. This is similar as to the
+rollback of transactions.
+
+\minisec{FIA\_AFL\_z.1 --- Authentication Failure Handling}
+
+AFL is handled in cooperation of the \textbf{Authentication} and
+\textbf{Publication} subsystem. The \textbf{Publication} subsystem identifies
+individual authentication trials and uses the authentication subsystem to
+update the security attributes that store the information about failed
+requests. The split of this functionality is needed as the
+\textbf{Authentication} subsystem may not be able to distinguish two requests
+to be different user initiated requests or started off at another point in the
+application.
+  
+
+\minisec{FIA\_UAU.1, FIA\_UID.1 --- Timing of authentication and identification}
+
+The \textbf{Publication} subsystem detects provided credentials and existing
+sessions on the implemented network protocols. It then either identifies and
+authenticates the user for this subject or uses the anonymous principal to
+perform the requested operation. If the anonymous principal is not allowed to
+perform the requested operation, the \textbf{Publication} subsystem challenges
+the user to provide sufficient credentials for authentication and
+identification.
+
+\minisec{FIA\_UAU.5 --- Multiple Authentication Systems}
+
+The \textbf{Publication} and \textbf{Authentication} subsystems work together
+to identify a meaningful way of asking a user for his credentials. 
+
+The \textbf{Authentication} subsystem can then implement different schemes for
+validating the credentials that the \textbf{Publication} system retrieved from
+the user.
+
+The choice of retrieval and verification can depend on the network protocol
+(FTP, HTTP) and the strength of authentication that is requests (e.g. password,
+client certificates).
+
+\minisec{FIA\_UAU.6 --- Re-authentication}
+
+If an operation could not be performed due to missing permission grants, the
+\textbf{Publication} subsystem may -- instead of denying further operation --
+may ask the user to provide other credentials to authenticate for a different
+principal.
+
+\emph{Note:} This is implemented by the same scheme that is used to initially
+retrieve credentials from a user when the operation could not be performed by
+the anonymous principal.
+
+\minisec{FIA\_USB.1 --- User-Subject Binding}
+
+When the \textbf{Publication} system sets up to perform an operation, it
+creates a context of ``interaction''. This interaction is always associated
+with (at least) one principal. If a principal was authenticated during the
+creation of this context, the interaction gets associated with this principal.
+Otherwise the anonymous principal will be bound to the subject.
+
+Binding a principal to an interaction transitively associates the required security
+attributes (e.g. permission grants) to this interaction.
+
+\minisec{FMT\_MOF.1 --- Management of Security Functions}
+
+Management of security functions happens by different physical ways (editing
+configuration files, working with the web interface, writing scripts) that are
+all addressing a single security configuration API that is offered by the
+\textbf{Configuration}, \textbf{Authentication} and \textbf{Authorization}
+subsystems. Access to those subsystems is -- as always -- covered by the
+complete access control policy and enforced by the \textbf{Protection}
+subsystem.
+
+\minisec{FMT\_MSA.1 --- Management of Security Attributes}
+
+The management of security attributes is provided by the \textbf{Configuration}
+subsystem. This happens by using the same API as for FMT\_MOF.1 including the
+different ways of accessing this API.
+
+\minisec{FMT\_MSA.2 --- Secure Security Attributes}
+
+The \textbf{Configuration} subsystems API for managing security functions and
+attributes perform consistency checks upon the change of any security
+attributes. This includes for example the check of dependencies that the
+removal of principals also has the effect of removal of all dependent
+permission grants and denials. 
+
+Also only already existing identifiers (user names, permission names) may only
+be used as references if they have been defined previously.
+
+\minisec{FMT\_MSA.3 --- Static Attribute Initialization}
+
+A set of fixed rules that are used whenever an attribute definition is missing
+realize the static attribute initialisation. These rules are implemented in the
+different subsystems (\textbf{Authorization} and \textbf{Configuration})
+whenever a specific attribute would be used or defined.
+
+\minisec{FMT\_SMR.1 --- Security roles}
+
+The \textbf{Authorization} system resolves roles that users hold into
+permissions they are granted or denied. The configuration system holds the
+definition of what users posess which roles and which roles are granted which
+permissions.
+
+Pre-defined permission/role-mappings are delivered with the certified Zope
+configuration to match the Administrator, Grantor and User roles. 
+
+\minisec{FPT\_RVM.1 --- Non-bypassability of the TSP}
+
+The concept of the \textbf{Protection} system is to put a layer of protection
+around any object that is beeing accessed from an interaction. It is designed
+in a transitive manner that it will not allow any computation to bypass it.
+
+\minisec{FPT\_SEP.1 --- TSF domain seperation}
+
+The \textbf{Protection} subsystem allows code that has been brought to the
+system via installation on the host filesystem to remove security proxies. This
+results in the ability (for performance or functional reasons) to write code
+that calls system functions and internal APIs without disturbing the protected
+code areas.
+
+When data is passed from the trusted domain into another part of the system,
+the Protection system will prevent the elevation of privileges by assuring that
+the layer of security proxies is installed and effective.
+
+\subsection{Assurance measures}
+
+The assurance measures are selected in accordance to EAL 1. Additionally due to
+the selection of FMT\_MSA.2 the document ADV\_SPM has been selected.
+
+%___________________________________________________________________________
+
+\subsection{Choice of TOE security assurance requirements}
+
+The choice of assurance requirements is based on the analysis of the security
+objectives for the TOE and on functional requirements defined to meet these
+objectives.
+
+The assurance level is \textbf{EAL 1}.
+
+%___________________________________________________________________________
+
+
+\section{Evaluation assurance level rationale}
+
+The Zope development community recognizes the need of mature and well defined
+security functions by its users.
+
+Therefore to meet this requirement the decision for an entry level evaluation
+was made on the basis of resource constraints of available developers and
+budget.
+
+Additionally an entry level evaluation gives a glance to the community how a
+certification may effect Zope's degree of documentation and stabilize the good
+security history even more. Eventually this raises interest in Zope 3 for
+projects that have strong requirements in respect to security and do seek free
+alternatives to closed source projects.
+
+It is intended to show that mature open source projects can outperform
+proprietary systems not only on pure functional and monetary aspects but also
+in domains that are typically governed by proprietary systems. Performing a
+well known standardized evaluation also substantiates confidence and trust that
+Zope as a free software project receives by it's users.
+
+%___________________________________________________________________________
+
+
+
+\chapter{Glossary}
+
+\begin{description}
+
+  \item[CC] Common Criteria (referenced as CC])
+  \item[SF] Security Function
+  \item[SFP] Security Function Policy
+  \item[SFR] Security Functional Requirement
+  \item[ST] Security Targets
+  \item[TOE] Target of Evaluation
+  \item[SVN] Subversion; A source code management system, used for managing the Zope source code.
+  \item[TSF] TOE Security Functions
+
+\end{description} 
+
+%___________________________________________________________________________
+
+
+\end{document}

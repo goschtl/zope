@@ -1,0 +1,84 @@
+These are a couple of relicts, questions and stuff that might be interesting
+in the future, but isn't right now
+
+What about the "nice to have" functions?
+----------------------------------------
+
+    FIA_SOS.1   :   password effectiveness check
+    FIA_AFL.1   :   authentication failure counter
+
+FAU_GEN.1.2
+-----------
+
+    Other audit data to store?        
+    
+* Jim talked about something that is described in FMT_SMR.3:
+  "Assuming roles requires that an explicit request is given to the TSF to assume a Role".
+  Are we going to have that?
+
+* In TSF_AUD (summary specification): I'm guessing about the function of the security audit
+  logger (doesn't sound too hard, maybe I should/could write that thing)
+
+- Talk about caching of security data
+
+Stuff I don't want to throw away
+================================
+
+Definitions
+-----------
+
+Principal
+        An object, managed by an Authentication service that
+        represents a user of the system.  Principal have 
+        system-unique identifiers that aree used by other systems to maintain
+        information about them.
+
+Permission
+        An object, managed by the Zope application that represents the
+        ability to perform one or more operations.
+
+Questions to Zope 3 Dev
+=======================
+
+Should we refer to some "hard coded" permissions that will be required to perform
+certain tasks? (e.g. for adding/deleting principals, granting permissions ...)
+This will make the evaluation more specific and/but easier.
+
+Nice to have / Future
+=====================
+
+  * FPT_TST is mostly handled by unit tests. What we don't handle is
+    data integrity.  This might be something to consider for future
+    evaluations. 
+
+  * FTA_TAH.1 TOE access history
+
+- It would be useful, when time allows (hehe) to abstract the security
+  policy into a profile and then see if other security profiles could
+  be "substituted".
+
+- We will need to define events that the auditing system can subscribe
+  to to do what it wants.  Ideally, these events should not be defined
+  by the auditing system, so as not to create dependencies of other
+  systems on the logging system.
+
+- XXX we might want to think about realigning our terminology
+  (Access/protection/authorization)
+
+- The TOE will not have TTW created (untrusted) and stored code.
+  So, no TTW templates. 
+
+- There should be some advice somewhere of the importance of having
+  universal (as opposed to system) principal and permission
+  identifiers if "export of user data with security attributes" is
+  supported.  We might want to think about using guids in auth
+  services.
+ 
+FMT_MSA.1
+---------
+
+XXX
+      In later versions of the TOE we will need to specify semantics
+      of self registration (and authenticated users who are strangers,
+      and thus "untrusted")
+

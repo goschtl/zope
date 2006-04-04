@@ -1,0 +1,54 @@
+<html i18n:domain="jobboard">
+<head>
+<title i18n:translate="enter-new-job-data">Enter new job data</title>
+</head>
+<body>
+<h1 i18n:translate="enter-new-job-data">Enter new job data</h1>
+
+<p i18n:translate="when-done">When you are done, press the Preview
+button below.</p>
+
+    <form action="preview.html" method="post">
+    <table border=0>
+    <tr><td i18n:translate="contributor-email">Contributor email:</td>
+	<td><input name="submitter" value="" size="60"
+	     tal:attributes="value request/submitter|nothing" />
+	</td>
+    </tr>
+    <tr><td i18n:translate="one-line-summary">One-line summary:</td>
+	<td><input name="summary" value="" size="60"
+	     tal:attributes="value request/summary|nothing" />
+	</td>
+    </tr>
+    <tr><td i18n:translate="full-description">Full description (no HTML):</td>
+	<td><textarea name="description" cols=60 rows=10 wrap="hard"
+	    ><span tal:replace="request/description|nothing">Description</span>
+	    </textarea>
+	</td>
+    </tr>
+    <tr><td i18n:translate="contact">Contact (where to apply):</td>
+	<td><input name="contact" value="" size="60"
+	     tal:attributes="value request/contact|nothing" />
+	</td>
+    </tr>
+    <tr><td i18n:translate="salary">Salary Range:</td>
+	<td><input name="salary" value="" size="60"
+	     tal:attributes="value request/salary|nothing" />
+	</td>
+    </tr>
+    <tr>
+	<td><span i18n:translate="startdate">Start Date</span><br>
+	(<span tal:replace="python:request.locale.dates.getFormatter('date', 'short').getPattern()" />)</td>
+	<td><input name="startdate" value="" size="60"
+	     tal:attributes="value request/startdate|nothing" />
+	</td>
+    </tr>
+    <tr><td colspan="2">
+	<input type="submit" value="Preview" i18n:attributes="value=Preview">
+	</td>
+    </tr>
+    </table>
+    </form>
+
+</body>
+</html>
