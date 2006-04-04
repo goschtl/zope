@@ -6,9 +6,13 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  Zope X3 3.0.2 (unreleased)
+  Zope X3 3.0.2 (2006/04/04)
 
     Bug Fixes
+
+      - Changed "soft dependency" imports from 'zope.security' in
+        'zope.exceptions' to avoid breakage due to spelling changes
+        when importing from eggified packages.
 
       - Replace deprecated 'whrandom' with 'random' in zope.security.examples
         (see http://www.zope.org/Collectors/Zope/1892).
