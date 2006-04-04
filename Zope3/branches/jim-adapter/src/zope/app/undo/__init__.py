@@ -39,7 +39,7 @@ import warnings
 def undoSetup(event):
     # setup undo functionality
     sm = zapi.getGlobalSiteManager()
-    sm.provideUtility(IUndoManager, ZODBUndoManager(event.database))
+    sm.registerUtility(ZODBUndoManager(event.database), IUndoManager)
 
 class Prefix(unicode):
     """A prefix is equal to any string it is a prefix of.
