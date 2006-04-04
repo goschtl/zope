@@ -21,6 +21,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 import transaction
 import logging
+import warnings
 
 import zope.event
 from zope.security.management import getSecurityPolicy
@@ -33,9 +34,6 @@ from zope.app.folder import rootFolder
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.traversing.api import traverse
 from zope.app.appsetup import interfaces
-
-#from zope.deprecation import deprecated
-import warnings
 
 def ensureObject(root_folder, object_name, object_type, object_factory, asObject=False):
     """Check that there's a basic object in the site
