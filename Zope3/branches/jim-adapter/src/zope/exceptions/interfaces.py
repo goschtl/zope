@@ -15,9 +15,26 @@
 
 $Id$
 """
+from zope.interface import Interface, Attribute, implements
 
+class IDuplicationError(Interface):
+    pass
 
-from zope.interface import Interface, Attribute
+class DuplicationError(Exception):
+    """A duplicate registration was attempted"""
+    implements(IDuplicationError)
+
+class IUserError(Interface):
+    """User error exceptions
+    """
+
+class UserError(Exception):
+    """User errors
+
+    These exceptions should generally be displayed to users unless
+    they are handled.
+    """
+    implements(IUserError)
 
 class ITracebackSupplement(Interface):
     """Provides valuable information to supplement an exception traceback.

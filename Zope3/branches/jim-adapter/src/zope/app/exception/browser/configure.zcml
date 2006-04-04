@@ -28,7 +28,7 @@
   <zope:adapter factory=".unauthorized.default_template" name="default" />
 
   <page
-      for="zope.app.exception.interfaces.IUserError"
+      for="zope.exceptions.interfaces.IUserError"
       name="index.html"
       permission="zope.Public"
       template="user.pt"

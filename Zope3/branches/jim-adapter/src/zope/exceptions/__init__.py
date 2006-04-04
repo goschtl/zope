@@ -18,9 +18,7 @@ application-specific packages.
 
 $Id$
 """
-
 import zope.deprecation
-
 zope.deprecation.deprecated('INotFoundError',
                             'This interface has been deprecated. '
                             'Use standard interface instead '
@@ -37,9 +35,8 @@ zope.deprecation.__show__.off()
 from zope.exceptions._notfounderror import NotFoundError, INotFoundError
 zope.deprecation.__show__.on()
 
-from zope.exceptions._duplicate import DuplicationError, IDuplicationError
-
-# Importing these interfaces from here is deprecated!
+from zope.exceptions.interfaces import DuplicationError, IDuplicationError
+from zope.exceptions.interfaces import UserError, IUserError
 
 # avoid depency on zope.security:
 try:

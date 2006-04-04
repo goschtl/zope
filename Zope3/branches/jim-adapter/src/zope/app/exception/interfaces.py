@@ -17,17 +17,19 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface, implements
 
-class IUserError(Interface):
-    """User error exceptions
-    """
+##############################################################################
+# BBB 2006/04/03 - to be removed after 12 months
 
-class UserError(Exception):
-    """User errors
+import zope.deferredimport
+zope.deferredimport.deprecated(
+    "UserError has been moved to zope.exceptions.interfaces. This "
+    "reference will be removed in Zope 3.5.",
+    UserError = 'zope.exceptions.interfaces:UserError',
+    IUserError = 'zope.exceptions.interfaces:IUserError',
+    )
 
-    These exceptions should generally be displayed to users unless
-    they are handled.
-    """
-    implements(IUserError)
+#
+##############################################################################
 
 class ISystemErrorView(Interface):
     """Error views that can classify their contexts as system errors
@@ -36,4 +38,3 @@ class ISystemErrorView(Interface):
     def isSystemError():
         """Return a boolean indicating whether the error is a system errror
         """
-    
