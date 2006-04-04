@@ -1,6 +1,15 @@
 zope.exceptions Package Changelog
 =================================
 
+zope.exceptions version 3.0.2 (2006/04/04)
+------------------------------------------
+
+- Corresponds to the verison of the zope.exceptions package included as part
+  of the (internal only) Zope X3.0.2 release.
+
+- Made "soft dependency" import strategy for 'zope.security' less fragile
+  w.r.t. spelling of ImportError message.
+
 zope.exceptions version 3.0.0 (2004/11/07)
 ------------------------------------------
 

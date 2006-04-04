@@ -24,8 +24,8 @@ except ImportError, e:
     from distutils.core import setup, Extension
 
 setup(name='zope.exceptions',
-      version='3.0.0',
-      url='http://svn.zope.org/zope.exceptions/tags/3.0.0',
+      version='3.0.2',
+      url='http://svn.zope.org/zope.exceptions/tags/3.0.2',
       license='ZPL 2.1',
       description='Zope Exceptions',
       author='Zope Corporation and Contributors',
