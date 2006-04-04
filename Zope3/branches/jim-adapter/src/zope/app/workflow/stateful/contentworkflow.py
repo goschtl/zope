@@ -22,7 +22,6 @@ from persistent.dict import PersistentDict
 
 from zope.app import zapi
 from zope.app.event.interfaces import IObjectCreatedEvent
-from zope.app.servicenames import Utilities
 
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
