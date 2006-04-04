@@ -17,8 +17,6 @@ This vocabulary provides permission IDs.
 
 $Id$
 """
-import zope.deprecation
-
 from zope.security.checker import CheckerPublic
 from zope.app import zapi
 from zope.interface import implements
@@ -26,16 +24,8 @@ from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.schema.interfaces import ISourceQueriables
 from zope.app.security.interfaces import IPermission, IAuthentication
 from zope.app.security.interfaces import PrincipalLookupError
+from zope.app.security.interfaces import IPrincipalSource
 from zope.app.component import queryNextUtility
-
-# BBB Backward Compatibility
-zope.deprecation.__show__.off()
-from zope.exceptions import NotFoundError
-zope.deprecation.__show__.on()
-
-import warnings
-
-from interfaces import IPrincipalSource
 
 class PermissionIdsVocabulary(SimpleVocabulary):
     """A vocabular of permission IDs.
@@ -156,16 +146,6 @@ class PrincipalSource(object):
         try:
             auth.getPrincipal(id)
         except PrincipalLookupError:
-            return False
-        except NotFoundError: # BBB Backward Compatibility
-            warnings.warn(
-                "A %s instance raised a NotFoundError in "
-                "getPrincipals.  Raising NotFoundError in this "
-                "method is deprecated and will no-longer be supported "
-                "starting in Zope 3.3.  PrincipalLookupError should "
-                "be raised instead."
-                % auth.__class__.__name__,
-                DeprecationWarning)
             return False
         else:
             return True

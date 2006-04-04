@@ -19,21 +19,12 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import zope.deprecation
-
 from zope.exceptions import DuplicationError
 from zope.interface import implements
 from zope.app.fssync.interfaces import IGlobalFSSyncUtility
 from zope.app.fssync.interfaces import IFactoryNotFoundError
 
-# BBB Backward Compatibility (Can go away in 3.3)
-zope.deprecation.__show__.off()
-from zope.exceptions import NotFoundError
-zope.deprecation.__show__.on()
-
-class FactoryNotFoundError(NotFoundError):
-    # BBB : NotFoundError inheritance
-    # Backward Compatibility (Can go away in 3.3)
+class FactoryNotFoundError(LookupError):
     implements(IFactoryNotFoundError)
 
 class FSRegistry(object):

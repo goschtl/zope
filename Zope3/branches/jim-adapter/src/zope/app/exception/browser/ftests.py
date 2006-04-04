@@ -25,9 +25,9 @@ class RaiseComponentLookupError(object):
         raise ComponentLookupError()
 
 
-class TestNotFound(functional.BrowserTestCase):
+class TestComponentLookupError(functional.BrowserTestCase):
 
-    def testNotFound(self):
+    def testComponentLookupError(self):
         response = self.publish('/foobar', basic='mgr:mgrpw',
                                 handle_errors=True)
         self.assertEqual(response.getStatus(), 404)
@@ -38,7 +38,7 @@ class TestNotFound(functional.BrowserTestCase):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(TestNotFound),
+        unittest.makeSuite(TestComponentLookupError),
         functional.FunctionalDocFileSuite('systemerror.txt'),
         ))
 

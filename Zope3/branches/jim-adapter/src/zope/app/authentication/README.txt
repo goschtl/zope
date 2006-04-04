@@ -360,15 +360,15 @@ search capability, so when we look for a principal:
 
   >>> print pau.getPrincipal('xyz_bob')
   Traceback (most recent call last):
-  PrincipalLookupError: 'bob'
+  PrincipalLookupError: bob
 
   >>> print pau.getPrincipal('white')
   Traceback (most recent call last):
-  PrincipalLookupError: 'white'
+  PrincipalLookupError: white
 
   >>> print pau.getPrincipal('black')
   Traceback (most recent call last):
-  PrincipalLookupError: 'black'
+  PrincipalLookupError: black
 
 For a PAU to support search, it needs to be configured with one or more
 authenticator plugins that support search. To illustrate, we'll create a new
@@ -422,7 +422,7 @@ but only those it knows about:
 
   >>> print pau.getPrincipal('black')
   Traceback (most recent call last):
-  PrincipalLookupError: 'black'
+  PrincipalLookupError: black
 
 Found Principal Creates Events
 ------------------------------
