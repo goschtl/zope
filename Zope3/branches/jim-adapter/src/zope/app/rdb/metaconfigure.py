@@ -32,7 +32,7 @@ def provideConnection(name, connection):
     Uses the global site manager for registering the connection
     """
     gsm = zapi.getGlobalSiteManager()
-    gsm.provideUtility(IZopeDatabaseAdapter, connection, name)
+    gsm.registerUtility(connection, IZopeDatabaseAdapter, name)
 
 
     

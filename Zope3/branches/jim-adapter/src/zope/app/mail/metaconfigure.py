@@ -44,7 +44,7 @@ def queuedDelivery(_context, permission, queuePath, mailer, name="Mail"):
         delivery = QueuedMailDelivery(queuePath)
         delivery = _assertPermission(permission, IMailDelivery, delivery)
 
-        handler('provideUtility', IMailDelivery, delivery, name)
+        handler('registerUtility', delivery, IMailDelivery, name)
 
         mailerObject = zapi.queryUtility(IMailer, mailer)
         if mailerObject is None:
@@ -71,7 +71,7 @@ def directDelivery(_context, permission, mailer, name="Mail"):
         delivery = DirectMailDelivery(mailerObject)
         delivery = _assertPermission(permission, IMailDelivery, delivery)
 
-        handler('provideUtility', IMailDelivery, delivery, name)
+        handler('registerUtility', delivery, IMailDelivery, name)
 
     _context.action(
             discriminator = ('utility', IMailDelivery, name),
@@ -84,6 +84,6 @@ def smtpMailer(_context, name, hostname="localhost", port="25",
     _context.action(
         discriminator = ('utility', IMailer, name),
         callable = handler,
-        args = ('provideUtility',
-                IMailer, SMTPMailer(hostname, port, username, password), name)
+        args = ('registerUtility',
+                SMTPMailer(hostname, port, username, password), IMailer, name)
         )

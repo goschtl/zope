@@ -89,9 +89,9 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
 
     def test_getLocalInterface_delegates_to_globalUtility(self):
         gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, Bar("blob"), name="blob")
-        gsm.provideUtility(IBaz, Baz("global baz"))
-        gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
+        gsm.registerUtility(Bar("blob"), IInterface, name="blob")
+        gsm.registerUtility(Baz("global baz"), IBaz)
+        gsm.registerUtility(Foo("global bob"), IInterface, name="bob")
 
         self.assertEqual(getInterface(None, "bob").__class__, Foo)
         self.assertEqual(getInterface(None, "blob").__class__, Bar)
@@ -102,9 +102,9 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         foo = Foo("global bob")
 
         gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, foo, name="bob")
-        gsm.provideUtility(IInterface, bar)
-        gsm.provideUtility(IBaz, baz)
+        gsm.registerUtility(foo, IInterface, name="bob")
+        gsm.registerUtility(bar, IInterface)
+        gsm.registerUtility(baz, IBaz)
 
         ifaces = searchInterface(None)
         self.assert_(len(ifaces), 2)
@@ -126,9 +126,10 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         baz = Baz("global baz")
         foo = Foo("global bob")
         gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, foo, name="bob")
-        gsm.provideUtility(ILocalUtility, bar)
-        gsm.provideUtility(IBaz, baz)
+
+        gsm.registerUtility(foo, IInterface, name="bob")
+        gsm.registerUtility(bar, ILocalUtility)
+        gsm.registerUtility(baz, IBaz)
 
         iface_utilities = gsm.getUtilitiesFor(IInterface)
         ifaces = [iface for (name, iface) in iface_utilities]
@@ -144,9 +145,9 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
 
     def test_getLocalInterface_raisesComponentLookupError(self):
         gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, Foo("global"))
-        gsm.provideUtility(IBaz, Baz("global baz"))
-        gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
+        gsm.registerUtility(Foo("global"), Interface)
+        gsm.registerUtility(Baz("global baz"), IBaz)
+        gsm.registerUtility(Foo("global bob"), IInterface, name="bob")
 
         self.assertRaises(ComponentLookupError,
                           getInterface, None, "bobesponja")
@@ -156,9 +157,9 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         bar = Bar("global")
         baz = Baz("global baz")
         gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, bar)
-        gsm.provideUtility(IBaz, baz)
-        gsm.provideUtility(IInterface, foo, name="bob")
+        gsm.registerUtility(foo, IInterface, name="bob")
+        gsm.registerUtility(bar, IInterface)
+        gsm.registerUtility(baz, IBaz)
 
         self.assertEqual(searchInterface(None, search_string="bob"),
                          [foo])
@@ -169,9 +170,9 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         bar = Bar("global")
         baz = Baz("global baz")
         gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, bar)
-        gsm.provideUtility(IBaz, baz)
-        gsm.provideUtility(IInterface, foo, name="bob")
+        gsm.registerUtility(foo, IInterface, name="bob")
+        gsm.registerUtility(bar, IInterface)
+        gsm.registerUtility(baz, IBaz)
 
         self.assertEqual(searchInterface(None, search_string="bob"),
                          [foo])
@@ -192,8 +193,8 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
 
     def test_local_utilities(self):
         gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, Foo("global"))
-        gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
+        gsm.registerUtility(Foo("global"), IInterface)
+        gsm.registerUtility(Foo("global bob"), IInterface, name="bob")
 
         sm = zapi.getSiteManager(self.rootFolder)
         default = traverse(self.rootFolder, "++etc++site/default")

@@ -258,8 +258,7 @@ def utility(_context, provides=None, component=None, factory=None,
     _context.action(
         discriminator = ('utility', provides, name),
         callable = handler,
-        args = ('provideUtility',
-                provides, component, name),
+        args = ('registerUtility', component, provides, name),
         )
     _context.action(
         discriminator = None,

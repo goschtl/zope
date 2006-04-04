@@ -38,7 +38,7 @@ class Root(Contained):
 def setUp(test):
     placelesssetup.setUp()
     sm = zapi.getGlobalSiteManager()
-    sm.provideUtility(IInterpreter, PythonInterpreter, 'text/server-python')
+    sm.registerUtility(PythonInterpreter, IInterpreter, 'text/server-python')
 
     ztapi.provideAdapter(None, IPhysicallyLocatable,
                          LocationPhysicallyLocatable)
