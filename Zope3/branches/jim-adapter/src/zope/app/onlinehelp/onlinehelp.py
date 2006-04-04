@@ -153,5 +153,5 @@ class OnlineHelp(OnlineHelpTopic):
         #utils = zapi.getService(Utilities)
         #utils.provideUtility(IOnlineHelpTopic, topic, topic.getTopicPath())
 
-        zapi.getGlobalSiteManager().provideUtility(
-            IOnlineHelpTopic, topic, topic.getTopicPath())
+        zapi.getGlobalSiteManager().registerUtility(
+            topic, IOnlineHelpTopic, topic.getTopicPath())
