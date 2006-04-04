@@ -57,9 +57,6 @@ defaults += ['-m',
 # Get rid of twisted.conch.ssh warning
 warnings.filterwarnings(
     'ignore', 'PyCrypto', RuntimeWarning, 'twisted[.]conch[.]ssh')
-warnings.filterwarnings(
-    'ignore', '', DeprecationWarning,
-    '(zope[.]app[.]twisted[.]ftp|twisted[.]test[.]test_ftp)')
 
 result = testrunner.run(defaults)
 
