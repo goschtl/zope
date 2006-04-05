@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import zope.interface
-from zope.app.location.interfaces import ILocation
+from zope.location.interfaces import ILocation
 from zope.proxy import ProxyBase, getProxiedObject, non_overridable
 from zope.decorator import DecoratorSpecificationDescriptor
 from zope.decorator import DecoratedSecurityCheckerDescriptor
@@ -31,8 +31,8 @@ class Location(object):
     >>> from zope.interface import implements, Interface
     >>> from zope.schema import Object
     >>> from zope.schema.fieldproperty import FieldProperty
-    >>> from zope.app.location.interfaces import ILocation
-    >>> from zope.app.location.location import Location
+    >>> from zope.location.interfaces import ILocation
+    >>> from zope.location.location import Location
 
     >>> class IA(Interface):
     ...     location = Object(schema=ILocation, required=False, default=None)

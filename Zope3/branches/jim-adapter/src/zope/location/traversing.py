@@ -21,7 +21,7 @@ from zope.traversing.interfaces import IContainmentRoot
 from zope.traversing.interfaces import ITraverser
 from zope.traversing.api import getParents
 from zope.app.component.interfaces import ISite
-from zope.app.location.location import Location
+from zope.location.location import Location
 
 
 class LocationPhysicallyLocatable(object):

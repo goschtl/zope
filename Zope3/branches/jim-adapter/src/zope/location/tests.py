@@ -19,7 +19,7 @@ import unittest
 import zope.interface
 from zope.traversing.interfaces import ITraverser
 from zope.testing.doctestunit import DocTestSuite
-from zope.app.location.location import Location
+from zope.location.location import Location
 
 class TLocation(Location):
     """Simple traversable location used in examples."""
@@ -34,14 +34,10 @@ class TLocation(Location):
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.location.location'),
-        DocTestSuite('zope.app.location.traversing'),
-        DocTestSuite('zope.app.location.pickling'),
+        DocTestSuite('zope.location.location'),
+        DocTestSuite('zope.location.traversing'),
+        DocTestSuite('zope.location.pickling'),
         ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
-
-
-
-

@@ -23,9 +23,9 @@ import zope.interface
 from zope.traversing.interfaces import IContainmentRoot
 from zope.traversing.interfaces import ITraverser
 
-from zope.app.location.interfaces import ILocation
-from zope.app.location.location import Location, inside
-from zope.app.location.traversing import LocationPhysicallyLocatable
+from zope.location.interfaces import ILocation
+from zope.location.location import Location, inside
+from zope.location.traversing import LocationPhysicallyLocatable
 
 def locationCopy(loc):
     r"""Return a copy of an object, and anything in it
@@ -171,7 +171,7 @@ class PathPersistent(object):
 
     We require outside locations that can be adapted to `ITraversable`.
     To simplify the example, we'll use a simple traversable location
-    defined in `zope.app.location.tests`, `TLocation`.
+    defined in `zope.location.tests`, `TLocation`.
 
     Normally, general adapters are used to make objects traversable.
 
@@ -193,7 +193,7 @@ class PathPersistent(object):
     But, if we get a location outside the original location, we return it's
     path. To compute it's path, it must be rooted:
 
-    >>> from zope.app.location.tests import TLocation
+    >>> from zope.location.tests import TLocation
     >>> root = TLocation()
     >>> zope.interface.directlyProvides(root, IContainmentRoot)
     >>> o3 = TLocation(); o3.__name__ = 'o3'

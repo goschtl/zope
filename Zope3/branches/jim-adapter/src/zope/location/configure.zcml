@@ -4,9 +4,9 @@
     >
 
   <adapter 
-      for="zope.app.location.interfaces.ILocation"
+      for="zope.location.interfaces.ILocation"
       provides="zope.traversing.interfaces.IPhysicallyLocatable"
-      factory="zope.app.location.traversing.LocationPhysicallyLocatable" 
+      factory="zope.location.traversing.LocationPhysicallyLocatable" 
       />
 
 </configure>
