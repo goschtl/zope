@@ -39,7 +39,7 @@ setup(name='zope.documenttemplate',
 
       namespace_packages=['zope',],
       tests_require = ['zope.testing'],
-      extras_require = {'untrusted': ["zope.security[untrusted]"]},
+      extras_require = {'untrusted': ["zope.security[untrustedpython]"]},
       include_package_data = True,
 
       zip_safe = False,
