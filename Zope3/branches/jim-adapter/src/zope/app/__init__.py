@@ -19,32 +19,22 @@ $Id$
 # BBB 2006/04/03 -- to be removed after 12 months
 
 import sys
+import zope.dottedname.resolve
 from zope.deprecation import deprecated
 
-import zope.decorator
-import zope.datetime
-import zope.datetime.timezones
-import zope.size
-import zope.size.interfaces
+modules_aliases_35 = {
+    'zope.app.decorator': 'zope.decorator',
 
-sys.modules['zope.app.decorator'] = deprecated(
-    zope.decorator, "zope.app.decorator has been renamed to zope.decorator. "
-    "This alias will be removed in Zope 3.5.")
+    'zope.app.datetimeutils': 'zope.datetime',
+    'zope.app.timezones': 'zope.datetime.timezones',
 
-sys.modules['zope.app.datetimeutils'] = deprecated(
-    zope.datetime, "zope.app.datetimeutils has been renamed to zope.datetime. "
-    "This alias will be removed in Zope 3.5.")
+    'zope.app.size': 'zope.size',
+    'zope.app.size.interfaces': 'zope.size.interfaces',
+    }
 
-sys.modules['zope.app.timezones'] = deprecated(
-    zope.datetime.timezones, "zope.app.timezones has been renamed to "
-    "zope.datetime.timezones.  This alias will be removed in Zope 3.5.")
-
-sys.modules['zope.app.size'] = deprecated(
-    zope.size, "zope.app.size has been renamed to zope.size. This alias will "
-    "be removed in Zope 3.5.")
-
-sys.modules['zope.app.size.interfaces'] = deprecated(
-    zope.size, "zope.app.size has been renamed to zope.size. This alias will "
-    "be removed in Zope 3.5.")
+msg_35 = "%s has been moved to %s.  This alias will be removed in Zope 3.5."
+for old, new in modules_aliases_35.iteritems():
+    newmodule = zope.dottedname.resolve.resolve(new)
+    sys.modules[old] = deprecated(newmodule, msg_35 % (old, new))
 
 ##############################################################################
