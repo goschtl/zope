@@ -131,7 +131,7 @@ class AjaxPage(BrowserView) :
             value = self.args[key][0]
         if value is None :
             if storage is not None :
-                return getattr(storage, key, default)
+                return storage.get(key, default)
             return default
         if type is None :
             if isinstance(value, str) :
@@ -139,8 +139,8 @@ class AjaxPage(BrowserView) :
         else :
             value = type(value)
         if storage is not None :
-            if getattr(storage, key, default) != value :
-                setattr(storage, key, value)
+            if storage.get(key, default) != value :
+                storage[key] = value
         return value
 
         
