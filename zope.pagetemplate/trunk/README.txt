@@ -1,10 +1,10 @@
-zope.XXX Package Readme
-=======================
+zope.pagetemplate Package Readme
+================================
 
 Overview
 --------
 
-Lorem ipsum delorem.
+Please see 'src/zope/pagetemplate/architecture.txt'.
 
 Changes
 -------
@@ -22,16 +22,16 @@ Developer Resources
 
 - Subversion browser:
 
-  http://svn.zope.org/zope.XXX/
+  http://svn.zope.org/zope.pagetemplate/
 
 - Read-only Subversion checkout:
 
-  $ svn co svn://svn.zope.org/repos/main/zope.XXX/trunk
+  $ svn co svn://svn.zope.org/repos/main/zope.pagetemplate/trunk
 
 - Writable Subversion checkout:
 
-  $ svn co svn://svn.zope.org/repos/main/zope.XXX/trunk
+  $ svn co svn://svn.zope.org/repos/main/zope.pagetemplate/trunk
 
-- Note that the 'src/zope/XXX' package is acutally a 'svn:externals' link
-  to the corresponding package in the Zope3 trunk (or to a specific tag,
-  for released versions of the package).
+- Note that the 'src/zope/pagetemplate' package is acutally a
+  'svn:externals' link to the corresponding package in the Zope3 trunk
+  (or to a specific tag, for released versions of the package).
