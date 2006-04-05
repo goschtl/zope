@@ -18,9 +18,9 @@ from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces import NotFound
 from zope.traversing.interfaces import TraversalError, ITraversable
 from zope.traversing.namespace import UnexpectedParameters
+from zope.location.interfaces import ILocation
 
 from zope.app import zapi
-from zope.app.location.interfaces import ILocation
 from zope.app.schema.interfaces import IMutableSchema
 
 _marker = object()

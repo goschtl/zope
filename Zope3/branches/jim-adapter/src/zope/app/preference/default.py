@@ -23,10 +23,10 @@ import zope.interface
 import zope.component
 from zope.security.checker import defineChecker
 from zope.traversing.interfaces import IContainmentRoot
+from zope.location import locate
 
 import zope.app.component
 from zope.app.container.contained import Contained
-from zope.app.location import locate
 from zope.app.preference import preference, interfaces
 
 class DefaultPreferenceProvider(persistent.Persistent, Contained):

@@ -83,8 +83,8 @@ class Test(PlacelessSetup, TestCase):
         super(Test, self).setUp()
 
         # provide location adapter
-        from zope.app.location.traversing import LocationPhysicallyLocatable
-        from zope.app.location.interfaces import ILocation
+        from zope.location.traversing import LocationPhysicallyLocatable
+        from zope.location.interfaces import ILocation
         from zope.traversing.interfaces import IPhysicallyLocatable
         ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
                              LocationPhysicallyLocatable)
@@ -111,7 +111,7 @@ class Test(PlacelessSetup, TestCase):
 
     def testGetTransactionsInLocation(self):
         from zope.interface import directlyProvides
-        from zope.app.location import Location
+        from zope.location import Location
         from zope.traversing.interfaces import IContainmentRoot
 
         root = Location()

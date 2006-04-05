@@ -25,8 +25,8 @@ from xml.dom import minidom
 
 from zope.interface import implements
 from zope.interface.common.mapping import IMapping
+from zope.location import Location
 from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
-from zope.app.location import Location
 
 from BTrees.OOBTree import OOBTree
 

@@ -29,12 +29,12 @@ from zope.traversing.interfaces import ITraverser, ITraversable
 from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.traversing.interfaces import IContainmentRoot
 from zope.security.checker import NamesChecker, defineChecker
+from zope.location.traversing import LocationPhysicallyLocatable
 
 from zope.app.testing import ztapi
 from zope.app.publisher.browser import BrowserView
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.container.contained import contained
-from zope.app.location.traversing import LocationPhysicallyLocatable
 
 from zope.app.zptpage.interfaces import IZPTPage
 from zope.app.zptpage.zptpage import ZPTPage, ZPTSourceView,\

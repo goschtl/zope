@@ -142,8 +142,8 @@ Get all implemented interfaces (as paths) of this class.
   >>> pprint(details.getInterfaces())
   [{'path': 'zope.app.apidoc.interfaces.IDocumentationModule',
     'url': 'zope.app.apidoc.interfaces.IDocumentationModule'},
-   {'path': 'zope.app.location.interfaces.ILocation',
-    'url': 'zope.app.location.interfaces.ILocation'},
+   {'path': 'zope.location.interfaces.ILocation',
+    'url': 'zope.location.interfaces.ILocation'},
    {'path': 'zope.app.apidoc.codemodule.interfaces.IModuleDocumentation',
     'url': 'zope.app.apidoc.codemodule.interfaces.IModuleDocumentation'},
    {'path': 'zope.app.container.interfaces.IReadContainer',

@@ -24,7 +24,7 @@ import persistent
 
 from BTrees.OOBTree import OOBTree
 
-import zope.app.location
+import zope.location
 
 from zope.app.versioncontrol.interfaces import VersionControlError
 from zope.app.versioncontrol.interfaces import INonVersionedData
@@ -45,8 +45,8 @@ def cloneByPickle(obj, ignore_list=()):
         if ignore_dict.has_key(id(ob)):
             return 'ignored'
 
-        if (zope.app.location.ILocation.providedBy(ob)
-            and not zope.app.location.inside(ob, obj)):
+        if (zope.location.ILocation.providedBy(ob)
+            and not zope.location.inside(ob, obj)):
             myid = id(ob)
             ids[myid] = ob
             return myid
@@ -68,7 +68,7 @@ def cloneByPickle(obj, ignore_list=()):
     return u.load()
 
 
-class Version(persistent.Persistent, zope.app.location.Location):
+class Version(persistent.Persistent, zope.location.Location):
     """A Version is a resource that contains a copy of a particular state
     (content and dead properties) of a version-controlled resource.  A
     version is created by checking in a checked-out resource. The state

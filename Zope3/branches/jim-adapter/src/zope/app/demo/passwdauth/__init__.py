@@ -22,12 +22,12 @@ __docformat__ = 'restructuredtext'
 
 import os
 from persistent import Persistent
+from zope.interface import implements
+from zope.location import locate
 from zope.app.container.contained import Contained
-from zope.app.location import locate
 from zope.app.pluggableauth import SimplePrincipal
 from zope.app.pluggableauth.interfaces import ILoginPasswordPrincipalSource
 from zope.app.security.interfaces import PrincipalLookupError
-from zope.interface import implements
 from interfaces import IFileBasedPrincipalSource
 
 class PasswdPrincipalSource(Contained, Persistent):

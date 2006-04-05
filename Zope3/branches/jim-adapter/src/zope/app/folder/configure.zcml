@@ -46,7 +46,7 @@
       />
 
   <adapter
-      provides="zope.app.location.interfaces.ISublocations"
+      provides="zope.location.interfaces.ISublocations"
       for=".interfaces.IFolder"
       factory=".folder.FolderSublocations"
       />

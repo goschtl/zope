@@ -28,11 +28,11 @@ from persistent import Persistent
 from zope.event import notify
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
+from zope.location.interfaces import ILocation
 
 from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.keyreference.interfaces import IKeyReference, NotYet
-from zope.app.location.interfaces import ILocation
 
 from zope.app.intid.interfaces import IIntIds
 from zope.app.intid.interfaces import IntIdRemovedEvent

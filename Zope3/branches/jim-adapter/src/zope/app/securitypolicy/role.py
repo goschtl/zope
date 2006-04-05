@@ -17,9 +17,9 @@ $Id$
 """
 from persistent import Persistent
 from zope.interface import implements
+from zope.component import getUtilitiesFor
+from zope.location import Location
 
-from zope.app import zapi
-from zope.app.location import Location
 from zope.app.securitypolicy.interfaces import IRole
 
 from zope.app.i18n import ZopeMessageFactory as _
@@ -100,6 +100,6 @@ def unsetIdOnDeactivation(role, event):
 
 
 def checkRole(context, role_id):
-    names = [name for name, util in zapi.getUtilitiesFor(IRole, context)]
+    names = [name for name, util in getUtilitiesFor(IRole, context)]
     if not role_id in names:
         raise ValueError("Undefined role id", role_id)

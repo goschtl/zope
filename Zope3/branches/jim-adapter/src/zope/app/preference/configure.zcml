@@ -21,7 +21,7 @@
       />
 
   <adapter
-      for="zope.app.location.interfaces.ILocation"
+      for="zope.location.interfaces.ILocation"
       provides=".interfaces.IUserPreferences"
       factory=".preference.UserPreferences"
       />

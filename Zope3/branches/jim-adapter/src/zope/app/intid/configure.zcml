@@ -27,13 +27,13 @@
 
   <subscriber
       handler=".removeIntIdSubscriber"
-      for="zope.app.location.interfaces.ILocation
+      for="zope.location.interfaces.ILocation
            zope.app.container.interfaces.IObjectRemovedEvent"
       />
 
   <subscriber
       handler=".addIntIdSubscriber"
-      for="zope.app.location.interfaces.ILocation
+      for="zope.location.interfaces.ILocation
            zope.app.container.interfaces.IObjectAddedEvent"
       />
 

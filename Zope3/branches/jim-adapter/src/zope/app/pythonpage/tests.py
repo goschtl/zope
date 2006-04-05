@@ -23,11 +23,11 @@ from zope.testing.doctestunit import DocTestSuite
 from zope.traversing.interfaces import IContainmentRoot
 from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.traversing.adapters import RootPhysicallyLocatable
+from zope.location.traversing import LocationPhysicallyLocatable
 
 from zope.app.container.contained import Contained
 from zope.app.interpreter.interfaces import IInterpreter
 from zope.app.interpreter.python import PythonInterpreter
-from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.testing import placelesssetup, ztapi
 
 class Root(Contained):

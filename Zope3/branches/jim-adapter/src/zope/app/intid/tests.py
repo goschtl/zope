@@ -23,10 +23,10 @@ from ZODB.interfaces import IConnection
 
 from zope.interface import implements
 from zope.interface.verify import verifyObject
+from zope.location.interfaces import ILocation
 
 from zope.app.testing import setup, ztapi
 from zope.app import zapi
-from zope.app.location.interfaces import ILocation
 from zope.app.component.hooks import setSite
 
 from zope.app.intid.interfaces import IIntIds

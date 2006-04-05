@@ -17,6 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import zope.location
 from persistent import Persistent
 from zope.interface import implements
 
@@ -26,9 +27,7 @@ from zope.app.container.interfaces import IReadContainer
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.file.interfaces import IFile
 
-import zope.app.location
-
-class Folder(zope.app.location.Location, Persistent):
+class Folder(zope.location.Location, Persistent):
 
     implements(IReadContainer, IReadDirectory)
 
@@ -48,7 +47,7 @@ class Folder(zope.app.location.Location, Persistent):
                        Folder('sub1', level=self.level+1, parent=self)))
         return tuple(result)
 
-class File(zope.app.location.Location, Persistent):
+class File(zope.location.Location, Persistent):
 
     implements(IWriteFile, IFile)
 
@@ -62,7 +61,7 @@ class File(zope.app.location.Location, Persistent):
     def write(self, data):
         self.data = data
 
-class FooZPT(zope.app.location.Location, Persistent):
+class FooZPT(zope.location.Location, Persistent):
 
     implements(IAnnotatable)
 

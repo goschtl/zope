@@ -26,7 +26,7 @@
 
   <include package="zope.app.copypastemove" />
   <include package="zope.size" />
-  <include package="zope.app.location" />
+  <include package="zope.location" />
   <include package="zope.app.container" />
 
   <include package="zope.app.publisher" />

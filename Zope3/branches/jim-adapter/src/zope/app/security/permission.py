@@ -17,11 +17,11 @@ $Id$
 """
 from persistent import Persistent
 from zope.interface import implements
+from zope.component import queryUtility, getUtilitiesFor
 from zope.schema.interfaces import ValidationError
 from zope.security.checker import CheckerPublic
-from zope.app import zapi
-from zope.app.location import Location
-from zope.app.security.interfaces import IPermission
+from zope.location import Location
+from zope.security.interfaces import IPermission
 
 from zope.app.i18n import ZopeMessageFactory as _
 NULL_ID = _('<permission not activated>')
@@ -120,7 +120,7 @@ def checkPermission(context, permission_id):
     """
     if permission_id is CheckerPublic:
         return
-    if not zapi.queryUtility(IPermission, permission_id, context=context):
+    if not queryUtility(IPermission, permission_id, context=context):
         raise ValueError("Undefined permission id", permission_id)
 
 def allPermissions(context=None):
@@ -140,6 +140,6 @@ def allPermissions(context=None):
 
     >>> tearDown()
     """
-    for id, permission in zapi.getUtilitiesFor(IPermission, context):
+    for id, permission in getUtilitiesFor(IPermission, context):
         if id != u'zope.Public':
             yield id

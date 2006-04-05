@@ -30,7 +30,7 @@
 
   <adapter
       provides=".interfaces.IUniqueId"
-      for="zope.app.location.interfaces.ILocation"
+      for="zope.location.interfaces.ILocation"
       factory=".adapters.LocationUniqueId"
       />
 

@@ -17,6 +17,9 @@ $Id$
 """
 import unittest
 
+import zope.location
+from zope.location.interfaces import ILocation
+from zope.location.traversing import LocationPhysicallyLocatable
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface import Interface, implements
 from zope.size.interfaces import ISized
@@ -27,9 +30,6 @@ from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.i18n import ZopeMessageFactory as _
 
-import zope.app.location
-from zope.app.location.interfaces import ILocation
-from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.annotation.attribute import AttributeAnnotations
@@ -39,7 +39,7 @@ from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 class IRobot(Interface):
     pass
 
-class Robot(zope.app.location.Location):
+class Robot(zope.location.Location):
     implements(IRobot, IAttributeAnnotatable)
 
 class RobotSize(object):

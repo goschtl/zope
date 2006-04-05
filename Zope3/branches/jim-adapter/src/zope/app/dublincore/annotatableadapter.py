@@ -19,10 +19,10 @@ __docformat__ = 'restructuredtext'
 
 from persistent.dict import PersistentDict
 
+from zope.location import Location
 from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
 from zope.app.dublincore.zopedublincore import ZopeDublinCore
 from zope.app.dublincore.zopedublincore import DateProperty, ScalarProperty
-from zope.app.location import Location
 
 
 DCkey = "zope.app.dublincore.ZopeDublinCore"

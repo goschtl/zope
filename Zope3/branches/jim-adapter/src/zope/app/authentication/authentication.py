@@ -16,14 +16,13 @@
 $Id$
 """
 import zope.interface
-
 from zope import component
 from zope.schema.interfaces import ISourceQueriables
+from zope.location.interfaces import ILocation
+
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
-from zope.app.location.interfaces import ILocation
 from zope.app.component import queryNextUtility
 from zope.app.component.site import SiteManagementFolder
-
 from zope.app.authentication import interfaces
 
 

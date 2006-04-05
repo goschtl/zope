@@ -17,18 +17,18 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import zope.component
 from zope.interface import implements, Invalid
 from zope.exceptions import DuplicationError
 from zope.component import adapts
 from zope.event import notify
+from zope.location.pickling import locationCopy
+from zope.location.interfaces import ISublocations
 
-from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.sample import SampleContainer
 from zope.app.event.objectevent import ObjectCopiedEvent
-from zope.app.location.pickling import locationCopy
-from zope.app.location.interfaces import ISublocations
 from zope.app.container.interfaces import IContainer, IOrderedContainer
 from zope.app.container.interfaces import IContained
 from zope.app.container.interfaces import INameChooser
@@ -707,5 +707,5 @@ def dispatchToSublocations(object, event):
     subs = ISublocations(object, None)
     if subs is not None:
         for sub in subs.sublocations():
-            for ignored in zapi.subscribers((sub, event), None):
+            for ignored in zope.component.subscribers((sub, event), None):
                 pass # They do work in the adapter fetch

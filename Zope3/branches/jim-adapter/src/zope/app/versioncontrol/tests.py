@@ -21,6 +21,7 @@ import persistent
 from transaction import abort
 
 import zope.event
+import zope.location
 import zope.traversing.interfaces
 from zope import component, interface
 from zope.component.testing import PlacelessSetup
@@ -28,7 +29,6 @@ from zope.testing import doctest, module
 
 import zope.app.annotation.interfaces
 import zope.app.annotation.attribute
-import zope.app.location
 import zope.app.versioncontrol.version
 from zope.app.versioncontrol import interfaces, nonversioned
 
@@ -55,7 +55,7 @@ def eventHandler(event):
     print event
 
 
-class L(persistent.Persistent, zope.app.location.Location):
+class L(persistent.Persistent, zope.location.Location):
     interface.implements(interfaces.IVersionable,
                          zope.app.annotation.interfaces.IAttributeAnnotatable,
                          zope.traversing.interfaces.IPhysicallyLocatable,
@@ -115,14 +115,14 @@ def testLocationSanity_for_cloneByPickle():
     """\
 cloneByPickle should not go outside a location
 
-    >>> parent = zope.app.location.Location()
+    >>> parent = zope.location.Location()
     >>> parent.poison = lambda: None
-    >>> ob = zope.app.location.Location()
+    >>> ob = zope.location.Location()
     >>> ob.__parent__ = parent
-    >>> x = zope.app.location.Location()
+    >>> x = zope.location.Location()
     >>> x.poison = lambda: None
     >>> ob.x = x
-    >>> ob.y = zope.app.location.Location()
+    >>> ob.y = zope.location.Location()
     >>> ob.y.__parent__ = ob
     >>> clone = zope.app.versioncontrol.version.cloneByPickle(ob)
     >>> clone.__parent__ is ob.__parent__

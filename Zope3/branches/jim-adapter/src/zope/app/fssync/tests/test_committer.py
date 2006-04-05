@@ -25,6 +25,7 @@ from zope.interface import implements
 from zope.traversing.interfaces import TraversalError, IContainmentRoot
 from zope.traversing.interfaces import ITraversable, ITraverser
 from zope.xmlpickle import loads, dumps
+from zope.location import Location
 
 from zope.fssync import fsutil
 from zope.fssync.server.entryadapter import DefaultFileAdpater
@@ -36,7 +37,6 @@ from zope.app.testing import ztapi
 from zope.app.container.interfaces import IContainer
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
-from zope.app.location import Location
 from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.fssync import committer, syncer # The module

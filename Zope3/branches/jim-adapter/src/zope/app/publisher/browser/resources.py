@@ -15,13 +15,13 @@
 
 $Id$
 """
-from zope.app.publisher.browser import BrowserView
+import zope.component
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces import NotFound
 from zope.interface import implements
+from zope.location import locate
 
-from zope.app import zapi
-from zope.app.location import locate
+from zope.app.publisher.browser import BrowserView
 
 class Resources(BrowserView):
     """Provide a URL-accessible resource namespace
@@ -32,11 +32,11 @@ class Resources(BrowserView):
     def publishTraverse(self, request, name):
         '''See interface IBrowserPublisher'''
 
-        resource = zapi.queryAdapter(request, name=name)
+        resource = zope.component.queryAdapter(request, name=name)
         if resource is None:
             raise NotFound(self, name)
 
-        sm = zapi.getSiteManager()
+        sm = zope.component.getSiteManager()
         locate(resource, sm, name)
         return resource
 

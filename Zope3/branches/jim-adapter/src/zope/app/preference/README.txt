@@ -404,7 +404,7 @@ If a site is set, getting the user preferences is very simple:
 
 This function is also commonly registered as an adapter,
 
-  >>> from zope.app.location.interfaces import ILocation
+  >>> from zope.location.interfaces import ILocation
   >>> ztapi.provideAdapter(ILocation, interfaces.IUserPreferences, 
   ...                      UserPreferences)
 

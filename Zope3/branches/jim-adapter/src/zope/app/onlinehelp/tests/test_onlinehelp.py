@@ -23,9 +23,9 @@ from zope.testing.doctestunit import DocTestSuite
 from zope.traversing.interfaces import ITraversable, ITraverser
 from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.traversing.adapters import Traverser, DefaultTraversable
+from zope.location.traversing import LocationPhysicallyLocatable
 
 from zope.app.testing import ztapi, placelesssetup
-from zope.app.location.traversing import LocationPhysicallyLocatable
 
 class I1(Interface):
     pass
