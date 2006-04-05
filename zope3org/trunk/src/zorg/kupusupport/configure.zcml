@@ -4,23 +4,23 @@
 
   <content class="zope.app.file.File">
     <implements 
-        interface=".interfaces.IKupuEditable"
+        interface="zorg.kupusupport.interfaces.IKupuEditable"
         />
   </content>
 
   <adapter
-	  factory=".adapters.KupuEditableFile"
-	  provides=".interfaces.IKupuPolicy"
+	  factory="zorg.kupusupport.adapters.KupuEditableFile"
+	  provides="zorg.kupusupport.interfaces.IKupuPolicy"
       for="zope.app.file.interfaces.IFile"
       />
      
   <adapter
-      factory=".adapters.ImageReadContainer"
-      provides=".interfaces.IImageReadContainer"
-      for=".interfaces.IImageLibrary"
+      factory="zorg.kupusupport.adapters.ImageReadContainer"
+      provides="zorg.kupusupport.interfaces.IImageReadContainer"
+      for="zorg.kupusupport.interfaces.IImageLibrary"
       />
 
   <!-- include the browser package -->
-  <include package=".browser" />
+  <include package="zorg.kupusupport.browser" />
 
 </configure>
