@@ -20,16 +20,15 @@ import unittest
 from zope.component.testing import PlacelessSetup
 from zope.interface import classImplements, implements
 from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.location.interfaces import ILocation
+from zope.location.traversing import LocationPhysicallyLocatable
 
 from zope.app.testing import ztapi
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
-from zope.app.dublincore.interfaces import IWriteZopeDublinCore
-
 from zope.app.annotation.attribute import AttributeAnnotations
+from zope.app.dublincore.interfaces import IWriteZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.location.interfaces import ILocation
-from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.mail.interfaces import IMailDelivery
 
 from bugtracker.bug import Bug

@@ -19,12 +19,12 @@ import unittest
 
 from zope.interface import implements, classImplements
 from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.location.interfaces import ILocation
+from zope.location.traversing import LocationPhysicallyLocatable
 
 from zope.app.testing import ztapi
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.location.interfaces import ILocation
-from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 from zwiki.interfaces import IWikiPage, IWikiPageHierarchy

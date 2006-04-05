@@ -30,6 +30,8 @@ from zope.traversing.interfaces import IContainmentRoot, ITraverser
 from zope.traversing.interfaces import ITraversable, IPhysicallyLocatable
 from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.traversing.adapters import DefaultTraversable, Traverser
+from zope.location.interfaces import ILocation
+from zope.location.traversing import LocationPhysicallyLocatable
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup as SetupBase
@@ -40,8 +42,6 @@ from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.dublincore.interfaces import IWriteZopeDublinCore
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.location.interfaces import ILocation
-from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.renderer.plaintext import IPlainTextSource
 from zope.app.renderer.plaintext import PlainTextToHTMLRenderer
 from zope.app.renderer.plaintext import PlainTextSourceFactory
