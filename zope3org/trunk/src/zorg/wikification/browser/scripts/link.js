@@ -41,13 +41,13 @@ function hidelinkmenu(obj, e, dropmenuID) {
 }            
 
 
-function editPlaceholderLabel(link_id, menu_id, label) {
+function editPlaceholderLabel(link_id, menu_id, label, extra) {
     
      var newLabel = prompt('Enter a new label.',  label);
    
      if (newLabel) 
         {
-        new Ajax.Updater('main', './@@modifyLink', { parameters: 'cmd=rename&link_id='+ link_id + '&label=' + newLabel, asynchronous:true});
+        new Ajax.Updater('main', './@@modifyLink', { parameters: 'cmd=rename&link_id='+ link_id + '&label=' + newLabel + extra, asynchronous:true});
         }
 
 }
