@@ -35,6 +35,8 @@ from zorg.live.page.interfaces import IAppend
 from zorg.live.page.interfaces import IUpdate
 from zorg.live.page.interfaces import ISetAttribute
 from zorg.live.page.interfaces import IModifyElementEvent
+from zorg.live.page.interfaces import IProgressEvent
+
 from zorg.live.page.interfaces import IClientEventFactory
 
 
@@ -177,6 +179,26 @@ class ReloadEvent(LivePageEvent) :
     
         
 directlyProvides(ReloadEvent, IClientEventFactory)
+
+
+class ProgressEvent(LivePageEvent) :
+    """ Indicates the progress of a long enduring task.
+
+        >>> event = Progress(percent=20)
+        >>> event.pprint()
+        html : '<div id="comment1"></div>'
+        id : 'comments'
+        name : 'update'
+        recipients : 'all'
+        where : None
+    
+    """
+    
+    implements(IProgressEvent)
+    
+    name = "progress"
+
+directlyProvides(ProgressEvent, IClientEventFactory)
 
        
 class CloseEvent(LivePageEvent) :
@@ -324,6 +346,7 @@ class Update(HTMLUpdateEvent) :
 directlyProvides(Update, IClientEventFactory)
 
     
+
 def dict2event(args) :
     """ Converts a dict into an event.
     

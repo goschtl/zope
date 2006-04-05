@@ -56,7 +56,8 @@ class LivePage(ComposedAjaxPage) :
     implements(ILivePage)
     
     clientFactory = LivePageClient
-        
+    clientUUID = None
+    
     def notify(self, event) :
         """ Default implementation of an event handler. Must be specialized. """
         pass
@@ -66,8 +67,13 @@ class LivePage(ComposedAjaxPage) :
                    
     def nextClientId(self) :
         """ Returns a new client id. """
-
         return self.clientFactory(self).uuid
+        
+    def clientUUID(self) :
+        manager = zapi.getUtility(ILivePageManager)
+        for client in manager._iterClients(self.getLocationId()) :
+            return client.uuid
+        return None
         
     def getLocationId(self) :
         """ Returns a group id that allows to share different livepages

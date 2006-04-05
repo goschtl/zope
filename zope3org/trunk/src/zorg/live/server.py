@@ -38,6 +38,7 @@ from zope.app import zapi
 from zorg.live.page.interfaces import ILivePageManager
 from zorg.live.page.event import IdleEvent
 from zorg.live.page.event import ErrorEvent
+from zorg.live.page.event import ProgressEvent
 from zorg.live.page.event import dict2event
 
 
@@ -69,27 +70,27 @@ class Extractor(object) :
         except IndexError :
             raise ExtractionError
     
-    def cachedUUID(self, uri) :
+    def queryUUID(self, uri, key) :
         """ Extracts the uuid from the livepage call or raises an IndexError
         
         >>> extract = Extractor(None)
-        >>> extract.cachedUUID("/exp/imageMap/cached=uuid")
+        >>> extract.queryUUID("/exp/imageMap/cached=uuid", "cached")
         'uuid'
         
-        >>> extract.cachedUUID("/exp/@@out/uuid")
+        >>> extract.queryUUID("/exp/@@out/uuid", "cached")
         Traceback (most recent call last):
         ...
         ExtractionError
         
         """
-        splitted = uri.split("cached=")
+        splitted = uri.split(key + "=")
         if len(splitted) < 2 :
             raise ExtractionError
         try : 
             return splitted[-1].split("&")[0]
         except IndexError :
             raise ExtractionError
-            
+                  
     def readEvent(self) :
         """ Deserializes the event from the input stream. """
         input = str(self.context.request.stream.read())
@@ -129,10 +130,9 @@ class Extractor(object) :
             except ExtractionError :
                 pass
        
-         
         if "cached=" in uri :
             try :
-                uuid = handler.uuid = self.cachedUUID(uri)
+                uuid = handler.uuid = self.queryUUID(uri, "cached")
                 handler.result = manager.fetchResult(uuid, clear=True)
                 if handler.result :
                     handler.liverequest = True
@@ -270,7 +270,87 @@ class LiveLogWrapperResource(LogWrapperResource) :
 #             LogWrapperResource.hook(self, ctx)    
 
 
+from cStringIO import StringIO
+import tempfile
+from twisted.web2 import iweb, resource, stream
 
+max_stringio = 100*1000 # Should this be configurable?
+
+
+class LiveInputStream(object) :
+    """ A wrapper for live input streams. This wrapper
+        can report the progress of the upload tasks.
+    """
+    
+    def __init__(self, stream, client=None, content_length=None) :
+        self.stream = stream
+        self.received_bytes = 0
+        self.expected_length = content_length or 1.0
+        self.client = client
+        self.reported = time.time()
+        self.interval = LivePageWSGIHandler.idleInterval * 2
+        
+    def write(self, data) :
+        self.received_bytes += len(data)
+        self.stream.write(data)
+        
+        if self.client :
+            if time.time() > (self.reported + self.interval) :
+                ratio = float(self.received_bytes) / float(self.expected_length)
+                percent = int(ratio * 100.0)
+                
+                event = ProgressEvent(percent=percent)
+                manager = zapi.getUtility(ILivePageManager)
+                print "addEvent", percent
+                manager.addEvent(event)
+                print "added"
+    
+class LivePrebuffer(resource.WrapperResource):
+
+    def hook(self, ctx):
+        req = iweb.IRequest(ctx)
+
+        content_length = req.headers.getHeader('content-length')
+        if content_length is not None and int(content_length) > max_stringio:
+            temp = tempfile.TemporaryFile()
+            def done(_):
+                temp.seek(0)
+                # Replace the request's stream object with the tempfile
+                req.stream = stream.FileStream(temp, useMMap=False)
+                # Hm, this shouldn't be required:
+                req.stream.doStartReading = None
+
+        else:
+            temp = StringIO()
+            def done(_):
+                # Replace the request's stream object with the tempfile
+                req.stream = stream.MemoryStream(temp.getvalue())
+                # Hm, this shouldn't be required:
+                req.stream.doStartReading = None
+        
+        
+        print "LivePrebuffer.uri", req.uri
+        try :
+            uuid = Extractor(ctx).queryUUID(req.uri, "progress")
+            print "Found uuid", uuid
+            manager = zapi.getUtility(ILivePageManager)
+            client = manager.get(uuid)
+        except ExtractionError :
+            client = None
+        
+        live = LiveInputStream(temp, client, content_length)
+        
+        return stream.readStream(req.stream, live.write).addCallback(done)
+
+    # Oops, fix missing () in lambda in WrapperResource
+    def locateChild(self, ctx, segments):
+        x = self.hook(ctx)
+        if x is not None:
+            return x.addCallback(lambda data: (self.res, segments))
+        return self.res, segments
+
+
+    
 def createHTTPFactory(db):
 
     reactor.threadpool.adjustPoolsize(10, 20)
@@ -278,7 +358,7 @@ def createHTTPFactory(db):
     resource = WSGIPublisherApplication(db)
     resource = LivePageWSGIResource(resource)
     resource = LiveLogWrapperResource(resource)
-    resource = Prebuffer(resource)
+    resource = LivePrebuffer(resource)
     return HTTPFactory(Site(resource))
 
 

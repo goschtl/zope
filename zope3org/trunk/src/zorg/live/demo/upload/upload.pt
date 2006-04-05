@@ -1,0 +1,102 @@
+<html metal:use-macro="context/@@standard_macros/page"
+    i18n:domain="zope">
+<body>
+
+<div metal:fill-slot="user_details">
+    <div id="userDetails">
+        <span>Online:</span>
+        <span id="online">
+            <tal:block replace="view/whoIsOnline">
+                  User
+            </tal:block>
+        </span>
+        &nbsp;&nbsp;&nbsp;
+        <span tal:omit-tag="" i18n:translate="">User:</span>
+        <tal:block replace="request/principal/title">
+                User
+        </tal:block>
+    </div>
+</div>
+
+<div metal:fill-slot="body">
+
+    <script type="text/javascript" src="prototype.js" 
+       tal:attributes="src string:${context/++resource++zorgajax/prototype.js}">
+    </script>
+    <script type="text/javascript" src="livepage.js" 
+       tal:attributes="src string:${context/++resource++livepage.js}">
+    </script>
+    <script type="text/javascript" src="livecomment.js" 
+       tal:attributes="src string:${context/++resource++livecomment.js}">
+    </script>
+    
+    <script type="text/javascript" 
+            tal:content="string:LivePage.uuid = '${view/nextClientId}';">
+            LivePage.uuid = '0';
+    </script>
+    
+     <script type="text/javascript">
+        LivePage.startClient();
+        window.onunload = LivePage.stopClient
+    </script>  
+
+  <form action="./liveUpload?progress=uuid"
+        tal:attributes="action string:./liveUpload?progress=${view/clientUUID}"
+        method="post" enctype="multipart/form-data">
+
+    <h3 i18n:translate="">LivePage File Upload</h3>
+    
+    <iframe src="./liveprogress.html"></iframe>
+
+    <div tal:define="errors view/errors" tal:content="errors"
+        i18n:translate=""/>
+
+    <div class="row">
+      <div class="label">
+        <label for="field.contentType"
+               title="The content type identifies the type of data."
+               i18n:attributes="title" i18n:translate="">Content Type</label>
+      </div>
+      <div class="field">
+        <input class="textType"
+               id="field.contentType"
+               name="field.contentType"
+               size="20"
+               type="text"
+               value="" /></div>
+    </div>
+
+    <div class="row">
+      <div class="label">
+        <label for="field.data"
+               title="The actual content of the object."
+               i18n:attributes="title" i18n:translate="">Data</label>
+      </div>
+      <div class="field">
+        <input class="fileType"
+               id="field.data"
+               name="field.data"
+               size="20"
+               type="file" /></div>
+               
+    
+    </div>
+
+    <div class="row">
+      <div class="controls"><hr />
+
+        <input type="submit" i18n:attributes="value add-button"
+            value="Add" name="UPDATE_SUBMIT" />
+
+        &nbsp;&nbsp;<b i18n:translate="">Object Name</b>&nbsp;&nbsp;
+        <input type="text" name="add_input_name" value="" />
+
+      </div>
+    </div>
+
+  </form>
+
+</div>
+</body>
+
+</html>

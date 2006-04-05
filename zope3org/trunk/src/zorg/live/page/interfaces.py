@@ -80,9 +80,17 @@ class ICloseEvent(ILivePageEvent) :
     uuid = Attribute("Identifies the client browser page.")
 
 class IErrorEvent(ILivePageEvent) :
-    """ Am error event that can be used to inform the clients about
+    """ An error event that can be used to inform the clients about
         server errors.
     """
+
+class IProgressEvent(ILivePageEvent) :
+    """ An event that can be used to inform the clients about
+        the progress of long enduring tasks.
+    """
+    
+    percent = Attribute("Indicates the progress of the task.")
+
     
 class ILoginEvent(ILocationEvent, IPersonEvent) :
     """ A login event that can be used to notify about new users. 

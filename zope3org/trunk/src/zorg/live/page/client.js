@@ -172,6 +172,13 @@ LivePage.clientHandlers = {
                 $("livepage_status").innerHTML = "idle";
                 }
             return;
+            },
+            
+    onProgress : function(event) {
+            if ($("livepage_progress")) {
+                $("livepage_progress").innerHTML = event.percent + "%";
+                }
+            return;
             }
             
     }

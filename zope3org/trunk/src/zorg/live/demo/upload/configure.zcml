@@ -1,0 +1,32 @@
+<configure 
+   xmlns="http://namespaces.zope.org/browser"
+   xmlns:zope="http://namespaces.zope.org/zope"
+   i18n_domain="zope"
+   >
+     
+   <pages		
+      
+      for="zope.app.folder.interfaces.IFolder"
+      class=".upload.LiveFileAdd"
+      permission="zope.View"
+      >
+      
+      <page
+        name="liveaddfile.html"
+        template="./upload.pt"
+        title="LiveUpload"
+        menu="zmi_views" />
+        
+      <page
+        name="liveprogress.html"
+        template="./progress.pt"
+        />
+        
+      <page
+        name="liveUpload"
+        attribute="errors"
+        />
+        
+    </pages>
+ 
+</configure>
