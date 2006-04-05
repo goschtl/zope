@@ -26,8 +26,11 @@ from zope.interface import classImplements, implements
 from zope.schema.vocabulary import getVocabularyRegistry
 from zope.size.interfaces import ISized
 from zope.size import DefaultSized
+from zope.traversing.interfaces import IContainmentRoot, ITraverser
+from zope.traversing.interfaces import ITraversable, IPhysicallyLocatable
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.traversing.adapters import DefaultTraversable, Traverser
 
-from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup as SetupBase
 from zope.app.annotation.attribute import AttributeAnnotations
@@ -43,11 +46,7 @@ from zope.app.renderer.plaintext import IPlainTextSource
 from zope.app.renderer.plaintext import PlainTextToHTMLRenderer
 from zope.app.renderer.plaintext import PlainTextSourceFactory
 from zope.app.security.interfaces import IAuthentication
-from zope.app.traversing.interfaces import IContainmentRoot, ITraverser
-from zope.app.traversing.interfaces import ITraversable, IPhysicallyLocatable
 from zope.app.security.principalregistry import principalRegistry
-from zope.app.traversing.adapters import DefaultTraversable, Traverser
-from zope.app.traversing.interfaces import IPhysicallyLocatable
 
 from bugtracker.bug import Bug, BugDependencyAdapter
 from bugtracker.comment import Comment

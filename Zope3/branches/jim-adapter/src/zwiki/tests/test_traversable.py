@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest, sys
-from zope.app.traversing.interfaces import TraversalError
+from zope.traversing.interfaces import TraversalError
 from zope.testing.cleanup import CleanUp
 
 from zwiki.wiki import Wiki

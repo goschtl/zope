@@ -229,7 +229,7 @@
 
   <adapter
       factory=".traversal.WikiPageTraversable"
-      provides="zope.app.traversing.interfaces.ITraversable"
+      provides="zope.traversing.interfaces.ITraversable"
       for=".interfaces.IWikiPage"
       trusted="true"
       />

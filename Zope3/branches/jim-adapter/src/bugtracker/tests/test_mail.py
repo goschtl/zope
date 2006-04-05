@@ -19,11 +19,11 @@ import unittest
 
 from zope.component.testing import PlacelessSetup
 from zope.interface import classImplements, implements
+from zope.traversing.interfaces import IPhysicallyLocatable
 
 from zope.app.testing import ztapi
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.dublincore.interfaces import IWriteZopeDublinCore
-from zope.app.traversing.interfaces import IPhysicallyLocatable
 
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter

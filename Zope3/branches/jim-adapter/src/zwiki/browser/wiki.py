@@ -16,11 +16,11 @@
 $Id$
 """
 from datetime import datetime
-from zope.proxy import removeAllProxies
 
-from zope.app import zapi
+import zope.component
+from zope.proxy import removeAllProxies
+from zope.traversing.api import getName, getPath
 from zope.app.dublincore.interfaces import ICMFDublinCore
-from zope.app.traversing.api import getName, getPath
 from zope.app.container.browser.adding import Adding
 
 from zwiki.interfaces import IWikiPageHierarchy
@@ -33,7 +33,7 @@ class AddWiki(object):
 
         if self.request.get('frontpage'):
             page = removeAllProxies(
-                zapi.createObject('zwiki.WikiPage'))
+                zope.component.createObject('zwiki.WikiPage'))
             page.type = u'zope.source.rest'
             page.source = u'This is the FrontPage of the Wiki.'
             dc = ICMFDublinCore(page)

@@ -15,14 +15,12 @@ $Id$
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies
-from zope.publisher.interfaces import IPublishTraverse
-from zope.publisher.interfaces import NotFound
-from zope.app.traversing.interfaces import TraversalError
+from zope.publisher.interfaces import IPublishTraverse, NotFound
+from zope.traversing.interfaces import TraversalError, ITraversable
+from zope.traversing.api import getParent
+from zope.traversing.namespace import UnexpectedParameters
 
 from zope.app import zapi
-from zope.app.traversing.api import getParent
-from zope.app.traversing.namespace import UnexpectedParameters
-from zope.app.traversing.interfaces import ITraversable
 
 from zwiki.interfaces import IWikiPage, IWikiPageHierarchy
 

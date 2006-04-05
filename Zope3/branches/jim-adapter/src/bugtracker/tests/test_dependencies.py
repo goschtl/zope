@@ -19,13 +19,13 @@ import unittest
 
 from zope.interface import classImplements
 from zope.component.testing import PlacelessSetup
+from zope.traversing.interfaces import IPhysicallyLocatable
 
 from zope.app.testing import ztapi
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.location.interfaces import ILocation
 from zope.app.location.traversing import LocationPhysicallyLocatable
-from zope.app.traversing.interfaces import IPhysicallyLocatable
 
 from bugtracker.interfaces import IBug, IBugDependencies
 from bugtracker.bug import Bug, BugDependencyAdapter

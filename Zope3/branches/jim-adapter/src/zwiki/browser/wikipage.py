@@ -18,13 +18,13 @@ $Id$
 import re
 from urllib import quote
 
+from zope.component import createObject, getMultiAdapter
 from zope.proxy import removeAllProxies
-from zope.app.publisher.browser import BrowserView
+from zope.traversing.api import getParent, getName
 
-from zope.app import zapi
 from zope.app.form.browser.submit import Update
 from zope.app.dublincore.interfaces import ICMFDublinCore
-from zope.app.traversing.api import getParent, getName
+from zope.app.publisher.browser import BrowserView
 
 from zwiki.interfaces import IWikiPageHierarchy, IMailSubscriptions
 
@@ -125,8 +125,8 @@ class ViewWikiPage(object):
 
     def render(self):
         """Render the wiki page source."""
-        source = zapi.createObject(self.context.type, self.context.source)
-        view = zapi.getMultiAdapter((removeAllProxies(source), self.request))
+        source = createObject(self.context.type, self.context.source)
+        view = getMultiAdapter((removeAllProxies(source), self.request))
         html = view.render()
         html = self.renderWikiLinks(html)
         return html
@@ -135,8 +135,8 @@ class ViewWikiPage(object):
         result = []
         for name, comment in self.context.items():
             dc = DublinCoreViews(comment, self.request)
-            source = zapi.createObject(comment.type, comment.source)
-            view = zapi.getMultiAdapter(
+            source = createObject(comment.type, comment.source)
+            view = getMultiAdapter(
                 (removeAllProxies(source), self.request))
             result.append({
                 'name': name,
