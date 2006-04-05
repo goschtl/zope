@@ -24,7 +24,7 @@ except ImportError, e:
     from distutils.core import setup, Extension
 
 setup(name='zope.thread',
-      version='1.0',
+      version='3.0.0',
       url='http://svn.zope.org/zope.thread',
       license='ZPL 2.1',
       description='Zope3 Thread-Local Storage',
