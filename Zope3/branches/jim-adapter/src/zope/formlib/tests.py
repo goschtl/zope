@@ -14,21 +14,22 @@
 
 $Id$
 """
-
 import unittest
 import pytz
+
 from zope import component, interface
 import zope.interface.common.idatetime
 import zope.i18n
 import zope.publisher.interfaces
 import zope.publisher.interfaces.browser
 import zope.schema.interfaces
+import zope.traversing.adapters
+
 import zope.app.form.browser
 import zope.app.form.browser.exception
 import zope.app.form.browser.interfaces
 import zope.app.form.interfaces
 from zope.app.testing import placelesssetup
-import zope.app.traversing.adapters
 
 from zope.formlib import interfaces, namedtemplate, form
 
@@ -40,7 +41,7 @@ def requestToTZInfo(request):
 def pageSetUp(test):
     placelesssetup.setUp(test)
     component.provideAdapter(
-        zope.app.traversing.adapters.DefaultTraversable,
+        zope.traversing.adapters.DefaultTraversable,
         [None],
         )
 
@@ -301,10 +302,10 @@ view that provides the necessary macros:
 We also need to provide a traversal adapter for the view namespace
 that lets us look up the macros.
 
-    >>> import zope.app.traversing.interfaces
+    >>> import zope.traversing.interfaces
     >>> class view:
     ...     component.adapts(None, None)
-    ...     interface.implements(zope.app.traversing.interfaces.ITraversable)
+    ...     interface.implements(zope.traversing.interfaces.ITraversable)
     ...     def __init__(self, ob, r=None):
     ...         pass
     ...     def traverse(*args):
@@ -315,7 +316,7 @@ that lets us look up the macros.
 And we have to register the default traversable adapter (I wish we had
 push templates):
 
-    >>> from zope.app.traversing.adapters import DefaultTraversable
+    >>> from zope.traversing.adapters import DefaultTraversable
     >>> component.provideAdapter(DefaultTraversable, [None])
 
 We need to set up the translation framework. We'll just provide a
