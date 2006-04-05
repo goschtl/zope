@@ -23,9 +23,9 @@ that contain their own location information.
 
     >>> import persistent
     >>> from zope import component, interface
+    >>> import zope.traversing.interfaces
     >>> import zope.app.annotation.attribute
     >>> import zope.app.annotation.interfaces
-    >>> import zope.app.traversing.interfaces
     >>> from zope.app.versioncontrol import interfaces
 
     >>> marker = object()
@@ -35,7 +35,7 @@ that contain their own location information.
     ...         interfaces.IVersionable,
     ...         interfaces.INonVersionedData,
     ...         zope.app.annotation.interfaces.IAttributeAnnotatable,
-    ...         zope.app.traversing.interfaces.IPhysicallyLocatable,
+    ...         zope.traversing.interfaces.IPhysicallyLocatable,
     ...         )
     ...
     ...     # Methods defined by INonVersionedData

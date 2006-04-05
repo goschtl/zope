@@ -22,6 +22,7 @@ import zope.interface
 from zope.schema import getFields
 from zope.security.checker import CheckerPublic, Checker, defineChecker
 from zope.security.management import getInteraction
+from zope.traversing.interfaces import IContainmentRoot
 
 import zope.app.component.hooks
 from zope.app import zapi
@@ -29,7 +30,6 @@ from zope.app.container.contained import Contained
 from zope.app.container.interfaces import IReadContainer
 from zope.app.location import LocationProxy, locate, Location
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
-from zope.app.traversing.interfaces import IContainmentRoot
 
 from zope.app.preference.interfaces import IPreferenceGroup 
 from zope.app.preference.interfaces import IPreferenceCategory 

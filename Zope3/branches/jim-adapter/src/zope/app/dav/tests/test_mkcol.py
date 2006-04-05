@@ -16,8 +16,8 @@
 $Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.traversing.api import traverse
 from zope.app.testing import ztapi
-from zope.app.traversing.api import traverse
 from zope.app.component.testing import PlacefulSetup
 
 from zope.app.container.interfaces import IWriteContainer

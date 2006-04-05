@@ -18,10 +18,10 @@ $Id$
 import unittest
 
 from zope.security.checker import NamesChecker, defineChecker
+from zope.traversing.adapters import Traverser, DefaultTraversable
+from zope.traversing.interfaces import ITraverser, ITraversable
 
 from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.app.traversing.adapters import Traverser, DefaultTraversable
-from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.testing import ztapi
 from zope.app.container.contained import contained
 from zope.app.dtmlpage.dtmlpage import DTMLPage

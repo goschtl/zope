@@ -16,10 +16,11 @@
 $Id$
 """
 import unittest
-from zope.testing.doctestunit import DocTestSuite
 
+from zope.testing.doctestunit import DocTestSuite
 from zope.interface import Interface, implements
 from zope.size.interfaces import ISized
+from zope.traversing.interfaces import IPhysicallyLocatable
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import setUp, tearDown
@@ -27,15 +28,13 @@ from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.i18n import ZopeMessageFactory as _
 
 import zope.app.location
-from zope.app.dublincore.interfaces import IWriteZopeDublinCore
+from zope.app.location.interfaces import ILocation
+from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.annotation.attribute import AttributeAnnotations
+from zope.app.dublincore.interfaces import IWriteZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-
-from zope.app.location.interfaces import ILocation
-from zope.app.traversing.interfaces import IPhysicallyLocatable
-from zope.app.location.traversing import LocationPhysicallyLocatable
 
 class IRobot(Interface):
     pass

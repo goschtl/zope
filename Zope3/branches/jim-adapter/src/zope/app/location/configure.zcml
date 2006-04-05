@@ -5,7 +5,7 @@
 
   <adapter 
       for="zope.app.location.interfaces.ILocation"
-      provides="zope.app.traversing.interfaces.IPhysicallyLocatable"
+      provides="zope.traversing.interfaces.IPhysicallyLocatable"
       factory="zope.app.location.traversing.LocationPhysicallyLocatable" 
       />
 

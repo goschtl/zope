@@ -614,10 +614,10 @@ def setUpBrowser(test=None):
     ztapi.browserViewProviding(IText, TextAreaWidget, IInputWidget)
 
     # ++view++ namespace
-    from zope.app.traversing.interfaces import ITraversable
-    import zope.app.traversing.namespace
+    from zope.traversing.interfaces import ITraversable
+    import zope.traversing.namespace
     ztapi.provideView(None, None, ITraversable, 'view',
-                      zope.app.traversing.namespace.view)
+                      zope.traversing.namespace.view)
 
     # Macros
     from zope.app.basicskin.standardmacros import StandardMacros

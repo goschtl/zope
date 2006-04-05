@@ -16,14 +16,14 @@
 $Id$
 """
 import unittest
-from datetime import datetime
 import transaction
+from datetime import datetime
 from zope.pagetemplate.tests.util import normalize_xml
+from zope.traversing.api import traverse
 
-from zope.app.dav.ftests.dav import DAVTestCase
 from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.app.dav.ftests.dav import DAVTestCase
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
-from zope.app.traversing.api import traverse
 
 class TestPROPFIND(DAVTestCase):
 

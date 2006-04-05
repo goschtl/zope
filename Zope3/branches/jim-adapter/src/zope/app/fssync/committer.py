@@ -19,21 +19,20 @@ __docformat__ = 'restructuredtext'
 
 import os
 
+import zope.component
+from zope.event import notify
 from zope.configuration.name import resolve
 from zope.fssync import fsutil
 from zope.fssync.metadata import Metadata
 from zope.fssync.server.interfaces import IObjectDirectory, IObjectFile
 from zope.proxy import removeAllProxies
 from zope.xmlpickle import fromxml
+from zope.traversing.api import traverseName, getName
 
-from zope.app import zapi
 from zope.app.fssync import fspickle
 from zope.app.container.interfaces import IContainer
-from zope.app.container.interfaces import IContainer
-from zope.app.traversing.api import traverseName, getName
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
-from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.container.contained import contained
@@ -395,7 +394,7 @@ class Committer(object):
             else:
                 iface = IFileFactory
 
-            factory = zapi.queryAdapter(location, iface, suffix)
+            factory = zope.component.queryAdapter(location, iface, suffix)
             if factory is None:
                 factory = iface(location, None)
 

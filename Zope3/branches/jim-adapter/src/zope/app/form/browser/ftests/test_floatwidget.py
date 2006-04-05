@@ -16,21 +16,16 @@
 $Id$
 """
 import unittest
-from persistent import Persistent
 import transaction
+from persistent import Persistent
 
-from support import *
-
-from zope.interface import Interface
-from zope.interface import implements
+import zope.security.checker
+from zope.interface import Interface, implements
+from zope.traversing.api import traverse
 
 from zope.schema import Float, Choice
-import zope.security.checker
-
-from zope.app.traversing.api import traverse
-
+from zope.app.form.browser.ftests.support import *
 from zope.app.testing.functional import BrowserTestCase
-
 
 class IFloatTest(Interface):
 

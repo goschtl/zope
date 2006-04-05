@@ -20,9 +20,9 @@ import zope.component
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
 from zope.testing import doctest, doctestunit
-from zope.app.testing import setup
-from zope.app.traversing.interfaces import IContainmentRoot
+from zope.traversing.interfaces import IContainmentRoot
 
+from zope.app.testing import setup
 from zope.app.component.interfaces.registration import IRegistered
 from zope.app.component.interfaces.registration import InactiveStatus
 from zope.app.component.interfaces.registration import ActiveStatus

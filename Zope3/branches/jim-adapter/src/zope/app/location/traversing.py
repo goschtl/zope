@@ -16,11 +16,11 @@
 $Id$
 """
 import zope.interface
-from zope.app.traversing.interfaces import IPhysicallyLocatable
-from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.traversing.interfaces import ITraverser
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.traversing.interfaces import IContainmentRoot
+from zope.traversing.interfaces import ITraverser
+from zope.traversing.api import getParents
 from zope.app.component.interfaces import ISite
-from zope.app.traversing.api import getParents
 from zope.app.location.location import Location
 
 

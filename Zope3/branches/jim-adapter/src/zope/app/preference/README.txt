@@ -425,9 +425,9 @@ traversal path. But before we can use the path expressions, we have to
 register all necessary traversal components and the special `preferences`
 namespace:
 
-  >>> import zope.app.traversing.interfaces
+  >>> import zope.traversing.interfaces
   >>> ztapi.provideAdapter(None,
-  ...                      zope.app.traversing.interfaces.ITraversable,
+  ...                      zope.traversing.interfaces.ITraversable,
   ...                      preference.preferencesNamespace,
   ...                      'preferences')
 

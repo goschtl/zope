@@ -66,14 +66,14 @@
   <view
       name="help" 
       type="*"
-      provides="zope.app.traversing.interfaces.ITraversable" 
+      provides="zope.traversing.interfaces.ITraversable" 
       for="*"
       factory=".helpNamespace"
       />
 
   <adapter
       name="help"
-      provides="zope.app.traversing.interfaces.ITraversable" 
+      provides="zope.traversing.interfaces.ITraversable" 
       for="*"
       factory=".helpNamespace"
       />

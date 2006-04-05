@@ -124,9 +124,7 @@ class LockingAdapter(object):
         return '<Locking adapter for %s>' % repr(self.context)
 
 class LockingPathAdapter(object):
-
-    interface.implements(
-        zope.app.traversing.interfaces.IPathAdapter)
+    interface.implements(zope.traversing.interfaces.IPathAdapter)
 
     def __init__(self, target):
         self._locking = LockingAdapterFactory(target)

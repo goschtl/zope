@@ -24,9 +24,9 @@ import os
 
 from zope.interface import implements
 from zope.configuration.exceptions import ConfigurationError
+from zope.traversing.interfaces import IContainmentRoot
 
 from zope.app import zapi
-from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.onlinehelp.interfaces import IOnlineHelp, IOnlineHelpTopic
 from zope.app.onlinehelp.onlinehelptopic import OnlineHelpTopic
 
@@ -47,7 +47,7 @@ class OnlineHelp(OnlineHelpTopic):
     First do the interface verifying tests.
 
     >>> from zope.interface.verify import verifyObject
-    >>> from zope.app.traversing.interfaces import IContainmentRoot
+    >>> from zope.traversing.interfaces import IContainmentRoot
     >>> verifyObject(IOnlineHelp, onlinehelp)
     True
     >>> verifyObject(IContainmentRoot, onlinehelp)

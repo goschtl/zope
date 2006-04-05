@@ -23,9 +23,9 @@ from zope.pagetemplate.tests.util import check_xml
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces import NotFound
+from zope.traversing.api import traverse
 
 from zope.app.testing import ztapi
-from zope.app.traversing.api import traverse
 from zope.app.container.interfaces import IReadContainer
 from zope.app.component.site import LocalSiteManager
 from zope.app.component.testing import PlacefulSetup

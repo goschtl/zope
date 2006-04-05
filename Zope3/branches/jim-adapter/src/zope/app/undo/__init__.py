@@ -20,9 +20,9 @@ from datetime import datetime
 import transaction
 import zope.component
 from zope.interface import implements
+from zope.traversing.interfaces import IPhysicallyLocatable
 
 from zope.app.undo.interfaces import IUndoManager, UndoError
-from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.interfaces import IPrincipal
 from zope.app.security.interfaces import PrincipalLookupError

@@ -376,8 +376,7 @@ For objects that aren't lockable, the adapter provides information
 that makes sense::
 
   >>> from zope.component import getAdapter
-
-  >>> from zope.app.traversing.interfaces import IPathAdapter
+  >>> from zope.traversing.interfaces import IPathAdapter
 
   >>> ns = getAdapter(42, IPathAdapter, "locking")
   >>> ns.lockable

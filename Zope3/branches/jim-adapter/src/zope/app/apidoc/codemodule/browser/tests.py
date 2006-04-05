@@ -21,6 +21,7 @@ from zope.component.interfaces import IFactory
 from zope.configuration import xmlconfig
 from zope.interface import directlyProvides, implements
 from zope.testing import doctest, doctestunit
+from zope.traversing.interfaces import IContainmentRoot
 
 import zope.app
 import zope.app.appsetup.appsetup
@@ -28,7 +29,6 @@ from zope.app.renderer.rest import ReStructuredTextSourceFactory
 from zope.app.renderer.rest import IReStructuredTextSource
 from zope.app.renderer.rest import ReStructuredTextToHTMLRenderer
 from zope.app.testing import placelesssetup, setup, ztapi
-from zope.app.traversing.interfaces import IContainmentRoot
 
 from zope.app.apidoc.interfaces import IDocumentationModule
 from zope.app.apidoc.codemodule.interfaces import IAPIDocRootModule
@@ -85,13 +85,13 @@ def setUp(test):
 
     # Register ++apidoc++ namespace
     from zope.app.apidoc.apidoc import apidocNamespace
-    from zope.app.traversing.interfaces import ITraversable
+    from zope.traversing.interfaces import ITraversable
     ztapi.provideAdapter(None, ITraversable, apidocNamespace, name="apidoc")
     ztapi.provideView(None, None, ITraversable, "apidoc", apidocNamespace)
 
     # Register ++apidoc++ namespace
-    from zope.app.traversing.namespace import view
-    from zope.app.traversing.interfaces import ITraversable
+    from zope.traversing.namespace import view
+    from zope.traversing.interfaces import ITraversable
     ztapi.provideAdapter(None, ITraversable, view, name="view")
     ztapi.provideView(None, None, ITraversable, "view", view)
 

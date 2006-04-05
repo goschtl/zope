@@ -16,12 +16,13 @@
 $Id$
 """
 import unittest
+import zope.component
 from zope.interface import Interface, implements
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
 from zope.component.interfaces import ComponentLookupError
+from zope.traversing.api import traverse
 
-from zope.app import zapi
 from zope.app.component.interfaces import ILocalUtility
 from zope.app.component.testing import PlacefulSetup
 from zope.app.component.interface import getInterface, searchInterface
@@ -31,7 +32,6 @@ from zope.app.component.interfaces.registration import IRegistered
 from zope.app.container.contained import Contained
 from zope.app.dependable.interfaces import IDependable
 from zope.app.testing import setup
-from zope.app.traversing.api import traverse
 
 class IBaz(Interface): pass
 
@@ -88,7 +88,7 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         sm = PlacefulSetup.setUp(self, site=True)
 
     def test_getLocalInterface_delegates_to_globalUtility(self):
-        gsm = zapi.getGlobalSiteManager()
+        gsm = zope.component.getGlobalSiteManager()
         gsm.registerUtility(Bar("blob"), IInterface, name="blob")
         gsm.registerUtility(Baz("global baz"), IBaz)
         gsm.registerUtility(Foo("global bob"), IInterface, name="bob")
@@ -101,7 +101,7 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         baz = Baz("global baz")
         foo = Foo("global bob")
 
-        gsm = zapi.getGlobalSiteManager()
+        gsm = zope.component.getGlobalSiteManager()
         gsm.registerUtility(foo, IInterface, name="bob")
         gsm.registerUtility(bar, IInterface)
         gsm.registerUtility(baz, IBaz)
@@ -125,7 +125,7 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         bar = Bar("global")
         baz = Baz("global baz")
         foo = Foo("global bob")
-        gsm = zapi.getGlobalSiteManager()
+        gsm = zope.component.getGlobalSiteManager()
 
         gsm.registerUtility(foo, IInterface, name="bob")
         gsm.registerUtility(bar, ILocalUtility)
@@ -144,7 +144,7 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         self.assertEqual(ifaces, [(baz)])
 
     def test_getLocalInterface_raisesComponentLookupError(self):
-        gsm = zapi.getGlobalSiteManager()
+        gsm = zope.component.getGlobalSiteManager()
         gsm.registerUtility(Foo("global"), Interface)
         gsm.registerUtility(Baz("global baz"), IBaz)
         gsm.registerUtility(Foo("global bob"), IInterface, name="bob")
@@ -156,7 +156,7 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         foo = Foo("global bob")
         bar = Bar("global")
         baz = Baz("global baz")
-        gsm = zapi.getGlobalSiteManager()
+        gsm = zope.component.getGlobalSiteManager()
         gsm.registerUtility(foo, IInterface, name="bob")
         gsm.registerUtility(bar, IInterface)
         gsm.registerUtility(baz, IBaz)
@@ -169,7 +169,7 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         foo = Foo("global bob")
         bar = Bar("global")
         baz = Baz("global baz")
-        gsm = zapi.getGlobalSiteManager()
+        gsm = zope.component.getGlobalSiteManager()
         gsm.registerUtility(foo, IInterface, name="bob")
         gsm.registerUtility(bar, IInterface)
         gsm.registerUtility(baz, IBaz)
@@ -178,11 +178,11 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
                          [foo])
 
     def test_query_get_Utility_delegates_to_global(self):
-        gsm = zapi.getGlobalSiteManager()
+        gsm = zope.component.getGlobalSiteManager()
         gsm.provideUtility(IInterface, Foo("global"))
         gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
 
-        sm = zapi.getSiteManager(self.rootFolder)
+        sm = zope.component.getSiteManager(self.rootFolder)
         self.assert_(gsm != sm)
 
         # If queryUtility works on the site manager, getUtility in zapi must
@@ -192,11 +192,11 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
                          "foo global bob")
 
     def test_local_utilities(self):
-        gsm = zapi.getGlobalSiteManager()
+        gsm = zope.component.getGlobalSiteManager()
         gsm.registerUtility(Foo("global"), IInterface)
         gsm.registerUtility(Foo("global bob"), IInterface, name="bob")
 
-        sm = zapi.getSiteManager(self.rootFolder)
+        sm = zope.component.getSiteManager(self.rootFolder)
         default = traverse(self.rootFolder, "++etc++site/default")
         default['foo'] = Foo("local")
         foo = default['foo']

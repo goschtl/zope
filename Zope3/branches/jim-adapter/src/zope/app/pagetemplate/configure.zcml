@@ -6,14 +6,14 @@
 
   <adapter
       for="*"
-      provides="zope.app.traversing.interfaces.IPathAdapter"
+      provides="zope.traversing.interfaces.IPathAdapter"
       factory=".talesapi.ZopeTalesAPI"
       name="zope" 
       />
 
   <adapter
       for="*"
-      provides="zope.app.traversing.interfaces.IPathAdapter"
+      provides="zope.traversing.interfaces.IPathAdapter"
       factory=".urlquote.URLQuote"
       name="url"/> 
 

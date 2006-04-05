@@ -17,9 +17,10 @@ $Id$
 """
 import unittest
 import transaction
-from zope.testing import doctest
 
 from ZODB.tests.util import DB
+from zope.testing import doctest
+from zope.traversing.api import traverse
 
 from zope.app import zapi
 from zope.app.component import hooks
@@ -30,7 +31,6 @@ from zope.app.folder import rootFolder, Folder
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.component.site import LocalSiteManager
-from zope.app.traversing.api import traverse
 
 from zope.app.appsetup.bootstrap import bootStrapSubscriber
 from zope.app.appsetup.bootstrap import getInformationFromEvent, \

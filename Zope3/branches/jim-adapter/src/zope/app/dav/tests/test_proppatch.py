@@ -21,35 +21,32 @@ import unittest
 from StringIO import StringIO
 
 import transaction
+from ZODB.tests.util import DB
 
 from zope.interface import Interface, implements, directlyProvides
 from zope.schema import Text
+from zope.schema.interfaces import IText, ISequence
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.publisher.http import status_reasons
+from zope.publisher.browser import TestRequest
 from zope.pagetemplate.tests.util import normalize_xml
-from ZODB.tests.util import DB
+from zope.traversing.api import traverse
+from zope.traversing.browser import AbsoluteURL
 
 from zope.app import zapi
 from zope.app.testing import ztapi
 
-from zope.app.traversing.api import traverse
-from zope.publisher.browser import TestRequest
 from zope.app.component.testing import PlacefulSetup
-from zope.app.traversing.browser import AbsoluteURL
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.dublincore.zopedublincore import ScalarProperty
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.app.annotation.attribute import AttributeAnnotations
-from zope.schema.interfaces import IText, ISequence
 
 import zope.app.dav.tests
 from zope.app.dav.tests.unitfixtures import File, Folder, FooZPT
-
 from zope.app.dav import proppatch
-from zope.app.dav.interfaces import IDAVSchema
-from zope.app.dav.interfaces import IDAVNamespace
-from zope.app.dav.interfaces import IDAVWidget
+from zope.app.dav.interfaces import IDAVSchema, IDAVNamespace, IDAVWidget
 from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
 from zope.app.dav.opaquenamespaces import DAVOpaqueNamespacesAdapter
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces

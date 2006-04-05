@@ -16,18 +16,19 @@
 $Id$
 """
 import unittest
-from zope.app import zapi
+
+import zope.component
+from zope.interface import implements
+from zope.testing.doctestunit import DocTestSuite
+from zope.traversing.interfaces import IContainmentRoot
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.traversing.adapters import RootPhysicallyLocatable
+
 from zope.app.container.contained import Contained
-from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.interpreter.interfaces import IInterpreter
 from zope.app.interpreter.python import PythonInterpreter
 from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.testing import placelesssetup, ztapi
-from zope.app.traversing.adapters import RootPhysicallyLocatable
-from zope.interface import implements
-from zope.testing.doctestunit import DocTestSuite
-
 
 class Root(Contained):
     implements(IContainmentRoot)    
@@ -37,7 +38,7 @@ class Root(Contained):
 
 def setUp(test):
     placelesssetup.setUp()
-    sm = zapi.getGlobalSiteManager()
+    sm = zope.component.getGlobalSiteManager()
     sm.registerUtility(PythonInterpreter, IInterpreter, 'text/server-python')
 
     ztapi.provideAdapter(None, IPhysicallyLocatable,

@@ -17,6 +17,7 @@ $Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing import doctest
+from zope.traversing.api import traverse
 
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.event.tests.placelesssetup import clearEvents
@@ -25,7 +26,6 @@ from zope.app.copypastemove import ObjectMover
 from zope.app.copypastemove.interfaces import IObjectMover
 from zope.app.testing import ztapi
 from zope.app.testing import setup
-from zope.app.traversing.api import traverse
 from zope.app.folder import Folder
 
 class File(object):

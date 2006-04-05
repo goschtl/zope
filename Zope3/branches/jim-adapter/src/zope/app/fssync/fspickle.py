@@ -64,19 +64,16 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import cPickle
-
 from cStringIO import StringIO
 
 import zope.interface
+from zope.traversing.interfaces import IContainmentRoot
+from zope.traversing.interfaces import ITraverser
 
 from zope.app import location
-from zope.app import zapi
 from zope.app.location.interfaces import ILocation
 from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.location.tests import TLocation
-from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.traversing.interfaces import ITraverser
-
 
 PARENT_MARKER = ".."
 

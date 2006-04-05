@@ -18,20 +18,19 @@ $Id$
 import sys
 import unittest
 import persistent
-
-from zope import component, interface
-from zope.component.testing import PlacelessSetup
-from zope.testing import doctest, module
 from transaction import abort
 
 import zope.event
+import zope.traversing.interfaces
+from zope import component, interface
+from zope.component.testing import PlacelessSetup
+from zope.testing import doctest, module
 
 import zope.app.annotation.interfaces
 import zope.app.annotation.attribute
 import zope.app.location
 import zope.app.versioncontrol.version
 from zope.app.versioncontrol import interfaces, nonversioned
-import zope.app.traversing.interfaces
 
 name = 'zope.app.versioncontrol.README'
 
@@ -59,7 +58,7 @@ def eventHandler(event):
 class L(persistent.Persistent, zope.app.location.Location):
     interface.implements(interfaces.IVersionable,
                          zope.app.annotation.interfaces.IAttributeAnnotatable,
-                         zope.app.traversing.interfaces.IPhysicallyLocatable,
+                         zope.traversing.interfaces.IPhysicallyLocatable,
                          )
     def getPath(self):
         return 'whatever'

@@ -15,28 +15,26 @@
 
 $Id$
 """
-
 import unittest
 
+from zope.component import getMultiAdapter
 from zope.interface import directlyProvides
 from zope.interface.verify import verifyClass
 from zope.security.interfaces import Forbidden
-
-from zope.app import zapi
-from zope.app.testing import ztapi
 from zope.publisher.browser import TestRequest
-from zope.app.publisher.browser import BrowserView
 
-# Wow, this is a lot of work. :(
-from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.app.traversing.adapters import Traverser, DefaultTraversable
-from zope.app.traversing.interfaces import ITraverser, ITraversable
-from zope.app.traversing.interfaces import IPhysicallyLocatable
-from zope.app.traversing.interfaces import IContainmentRoot
+from zope.traversing.adapters import Traverser, DefaultTraversable
+from zope.traversing.adapters import RootPhysicallyLocatable
+from zope.traversing.interfaces import ITraverser, ITraversable
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.traversing.interfaces import IContainmentRoot
 from zope.security.checker import NamesChecker, defineChecker
+
+from zope.app.testing import ztapi
+from zope.app.publisher.browser import BrowserView
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.container.contained import contained
 from zope.app.location.traversing import LocationPhysicallyLocatable
-from zope.app.traversing.adapters import RootPhysicallyLocatable
 
 from zope.app.zptpage.interfaces import IZPTPage
 from zope.app.zptpage.zptpage import ZPTPage, ZPTSourceView,\
@@ -110,7 +108,7 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
 
         defineChecker(AU, NamesChecker(['__str__']))
 
-        from zope.app.traversing.namespace import view
+        from zope.traversing.namespace import view
         ztapi.provideNamespaceHandler('view', view)
         ztapi.browserView(IZPTPage, 'name', AU)
 
@@ -227,7 +225,7 @@ class ZPTSourceTest(PlacelessSetup, unittest.TestCase):
         page.setSource(html, content_type='text/plain')
         request = TestRequest()
 
-        view = zapi.getMultiAdapter((page, request), name='source.html')
+        view = getMultiAdapter((page, request), name='source.html')
 
         self.assertEqual(str(view), html)
         self.assertEqual(view(), html)

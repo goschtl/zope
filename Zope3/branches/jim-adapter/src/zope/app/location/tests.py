@@ -16,10 +16,10 @@
 $Id$
 """
 import unittest
+import zope.interface
+from zope.traversing.interfaces import ITraverser
 from zope.testing.doctestunit import DocTestSuite
 from zope.app.location.location import Location
-import zope.interface
-from zope.app.traversing.interfaces import ITraverser
 
 class TLocation(Location):
     """Simple traversable location used in examples."""

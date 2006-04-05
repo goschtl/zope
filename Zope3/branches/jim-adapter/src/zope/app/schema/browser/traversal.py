@@ -16,12 +16,12 @@ $Id$
 from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces import NotFound
+from zope.traversing.interfaces import TraversalError, ITraversable
+from zope.traversing.namespace import UnexpectedParameters
 
 from zope.app import zapi
 from zope.app.location.interfaces import ILocation
 from zope.app.schema.interfaces import IMutableSchema
-from zope.app.traversing.interfaces import TraversalError, ITraversable
-from zope.app.traversing.namespace import UnexpectedParameters
 
 _marker = object()
 

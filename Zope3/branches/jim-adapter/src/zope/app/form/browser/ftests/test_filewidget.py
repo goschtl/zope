@@ -16,22 +16,18 @@
 $Id$
 """
 import unittest
+import transaction
 from StringIO import StringIO
 from persistent import Persistent
-import transaction
 
-from zope.interface import Interface
-from zope.interface import implements
-
+import zope.security.checker
+from zope.interface import Interface, implements
 from zope.schema.interfaces import IField
 from zope.schema import Field
-import zope.security.checker
+from zope.traversing.api import traverse
 
 from zope.app.form.browser.textwidgets import FileWidget
-
-from support import *
-from zope.app.traversing.api import traverse
-
+from zope.app.form.browser.ftests.support import *
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.form.interfaces import IInputWidget
 

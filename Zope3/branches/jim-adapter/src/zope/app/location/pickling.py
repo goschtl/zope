@@ -17,14 +17,15 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.location.interfaces import ILocation
-from zope.app.location.location import Location, inside
-from zope.app.location.traversing import LocationPhysicallyLocatable
-from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.traversing.interfaces import ITraverser
 import cPickle
 import tempfile
 import zope.interface
+from zope.traversing.interfaces import IContainmentRoot
+from zope.traversing.interfaces import ITraverser
+
+from zope.app.location.interfaces import ILocation
+from zope.app.location.location import Location, inside
+from zope.app.location.traversing import LocationPhysicallyLocatable
 
 def locationCopy(loc):
     r"""Return a copy of an object, and anything in it

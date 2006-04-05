@@ -12,7 +12,7 @@
 
   <adapter
       for="zope.security.interfaces.IPrincipal"
-      provides="zope.app.traversing.interfaces.IPathAdapter"
+      provides="zope.traversing.interfaces.IPathAdapter"
       factory=".homefolder.getHomeFolder"
       name="homefolder" />
 

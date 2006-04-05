@@ -17,17 +17,18 @@ $Id$
 """
 import unittest
 
-import zope.app.component
-import zope.app.security
-import zope.app.onlinehelp
-
 from zope.interface import Interface
 from zope.configuration import xmlconfig
 from zope.configuration.xmlconfig import XMLConfig
 from zope.component.interfaces import IFactory
 from zope.component.factory import Factory
-from zope.app.traversing.interfaces import IPhysicallyLocatable
-from zope.app.traversing.interfaces import ITraverser, ITraversable
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.traversing.interfaces import ITraverser, ITraversable
+from zope.traversing.adapters import Traverser, DefaultTraversable
+
+import zope.app.component
+import zope.app.security
+import zope.app.onlinehelp
 from zope.app.onlinehelp import tests
 from zope.app.onlinehelp import globalhelp
 from zope.app.onlinehelp.onlinehelptopic import OnlineHelpTopic
@@ -37,7 +38,6 @@ from zope.app.onlinehelp.onlinehelptopic import ZPTOnlineHelpTopic
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
 from zope.app.location.traversing import LocationPhysicallyLocatable
-from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.app.testing import ztapi, placelesssetup
 
 

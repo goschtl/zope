@@ -17,21 +17,18 @@ $Id$
 """
 import unittest
 import re
-
 import transaction
-import zope.security.checker
 from persistent import Persistent
 from datetime import datetime
+
+import zope.security.checker
 from zope.datetime import parseDatetimetz, tzinfo
-from zope.interface import Interface
-from zope.interface import implements
+from zope.interface import Interface, implements
 from zope.schema import Datetime, Choice
+from zope.traversing.api import traverse
 
-from support import *
-from zope.app.traversing.api import traverse
-
+from zope.app.form.browser.ftests.support import *
 from zope.app.testing.functional import BrowserTestCase
-
 
 class IDatetimeTest(Interface):
 

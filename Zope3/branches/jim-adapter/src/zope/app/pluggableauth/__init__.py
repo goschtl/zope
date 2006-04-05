@@ -45,7 +45,7 @@ from zope.app.container.ordered import OrderedContainer
 from zope.app.location import locate
 from zope.app.security.interfaces import ILoginPassword, IAuthentication
 from zope.app.security.interfaces import PrincipalLookupError
-from zope.app.traversing.api import getPath
+from zope.traversing.api import getPath
 
 from interfaces import IUserSchemafied, IPluggableAuthentication
 from interfaces import IPrincipalSource, ILoginPasswordPrincipalSource
@@ -203,7 +203,7 @@ def PluggableAuthenticationAddSubscriber(self, event):
 
     Define a stub for `PluggableAuthentication`
 
-    >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
+    >>> from zope.traversing.interfaces import IPhysicallyLocatable
     >>> class PluggableAuthStub(object):
     ...     implements(IPhysicallyLocatable)
     ...     def __init__(self, earmark=None):

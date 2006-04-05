@@ -20,23 +20,22 @@ import shutil
 import tempfile
 import unittest
 
-from zope.app import zapi
-from zope.app.testing import ztapi
-from zope.app.traversing.interfaces import TraversalError
+import zope.component
 from zope.interface import implements
-
+from zope.traversing.interfaces import TraversalError, IContainmentRoot
+from zope.traversing.interfaces import ITraversable, ITraverser
 from zope.xmlpickle import loads, dumps
+
 from zope.fssync import fsutil
 from zope.fssync.server.entryadapter import DefaultFileAdpater
 from zope.fssync.tests.mockmetadata import MockMetadata
 from zope.fssync.tests.tempfiles import TempFiles
-
 from zope.fssync.server.entryadapter import DirectoryAdapter
+
+from zope.app.testing import ztapi
 from zope.app.container.interfaces import IContainer
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
-from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.traversing.interfaces import ITraversable, ITraverser
 from zope.app.location import Location
 from zope.app.testing.placelesssetup import PlacelessSetup
 
@@ -122,7 +121,7 @@ class TestBase(PlacelessSetup, TempFiles):
         super(TestBase, self).setUp()
 
         # Set up FSRegistryUtility
-        gsm = zapi.getGlobalSiteManager()
+        gsm = zope.component.getGlobalSiteManager()
         gsm.provideUtility(IGlobalFSSyncUtility, fsRegistry)
         provideSynchronizer(None, DefaultFileAdpater)
 

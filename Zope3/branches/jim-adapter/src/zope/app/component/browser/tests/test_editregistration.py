@@ -15,17 +15,19 @@
 
 $Id$
 """
-from zope.app.testing import ztapi
 from unittest import TestCase, TestSuite, main, makeSuite
+
+from zope.traversing.interfaces import IContainmentRoot
+from zope.interface import Interface, implements
+from zope.publisher.browser import TestRequest
+
+from zope.app.testing import ztapi
 from zope.app.component.browser.registration import EditRegistration
 from zope.app.container.interfaces import IContainer
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.component.interfaces.registration import ActiveStatus
-from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.interface import Interface, implements
 from zope.app.publisher.browser import BrowserView
-from zope.publisher.browser import TestRequest
 from zope.app.container.contained import Contained
 
 class Container(dict):

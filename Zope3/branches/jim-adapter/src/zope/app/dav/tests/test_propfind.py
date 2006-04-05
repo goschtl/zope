@@ -27,15 +27,15 @@ from zope.pagetemplate.tests.util import normalize_xml
 from zope.schema import getFieldNamesInOrder
 from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence
 from zope.size.interfaces import ISized
+from zope.traversing.api import traverse
+from zope.traversing.browser import AbsoluteURL
+from zope.publisher.browser import TestRequest
 
 from zope.app import zapi
 from zope.app.testing import ztapi
 
-from zope.app.traversing.api import traverse
 from zope.app.container.interfaces import IReadContainer
-from zope.publisher.browser import TestRequest
 from zope.app.component.testing import PlacefulSetup
-from zope.app.traversing.browser import AbsoluteURL
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations

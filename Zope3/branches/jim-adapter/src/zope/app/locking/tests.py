@@ -16,7 +16,6 @@ Locking tests
 
 $Id:$
 """
-
 import sys, unittest, time
 from zope.component.testing import PlacelessSetup
 import zope.event
@@ -24,6 +23,9 @@ from zope.testing import doctest
 from transaction import abort
 
 from zope.interface import Interface
+from zope.traversing.interfaces import IPathAdapter
+from zope.security.testing import Principal, Participation
+
 from zope.app.testing import ztapi
 from zope.app.file.file import File
 from zope.app.folder.folder import Folder
@@ -31,10 +33,7 @@ from zope.app.locking.interfaces import ILockable, ILockTracker
 from zope.app.locking.adapter import LockingAdapterFactory
 from zope.app.locking.adapter import LockingPathAdapter
 from zope.app.locking.storage import ILockStorage, PersistentLockStorage
-from zope.app.traversing.interfaces import IPathAdapter
 from zope.app.keyreference.interfaces import IKeyReference
-from zope.security.testing import Principal, Participation
-
 
 class FakeModule:
     def __init__(self, dict):

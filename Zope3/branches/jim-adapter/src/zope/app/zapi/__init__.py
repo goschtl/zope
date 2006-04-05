@@ -28,11 +28,10 @@ moduleProvides(IZAPI)
 __all__ = tuple(IZAPI)
 
 from zope.component import *
-
 from zope.app.publisher.browser import getDefaultViewName
 from zope.app.publisher.browser import queryDefaultViewName
-from zope.app.traversing.api import *
-from zope.app.traversing.browser.absoluteurl import absoluteURL
+from zope.traversing.api import *
+from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.exceptions.interfaces import UserError
 
 name = getName

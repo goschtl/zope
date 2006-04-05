@@ -31,6 +31,8 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IBrowserSkinType, IDefaultSkin
 from zope.security.proxy import removeSecurityProxy, ProxyFactory
 from zope.testing.doctestunit import DocTestSuite
+from zope.traversing.adapters import DefaultTraversable
+from zope.traversing.interfaces import ITraversable
 
 import zope.app.publisher.browser
 from zope.app import zapi
@@ -42,9 +44,6 @@ from zope.app.publisher.interfaces.browser import IMenuItemType
 from zope.app.security.permission import Permission 
 from zope.app.security.interfaces import IPermission 
 from zope.app.testing import placelesssetup, ztapi
-from zope.app.traversing.adapters import DefaultTraversable
-from zope.app.traversing.interfaces import ITraversable
-
 
 tests_path = os.path.join(
     os.path.dirname(zope.app.publisher.browser.__file__),
