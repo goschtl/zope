@@ -24,8 +24,8 @@ except ImportError, e:
     from distutils.core import setup, Extension
 
 setup(name='zope.documenttemplate',
-      version='1.0',
-      url='http://svn.zope.org/zope.documenttemplate',
+      version='3.0.0',
+      url='http://svn.zope.org/zope.documenttemplate/tags/3.0.0/',
       license='ZPL 2.1',
       description='Zope3 Document Template Markup Language (DTML)',
       author='Zope Corporation and Contributors',
