@@ -75,7 +75,10 @@ def html2rest(html, fragment=False, catch_errors=True) :
     """
         
     if fragment and not '<html>' in html.lower() :
-        html = "<html><body>%s</body></html>" % html
+        if html :
+            html = "<html><body>%s</body></html>" % html
+        else :
+            return ""
         
     if catch_errors :
         try :
