@@ -23,7 +23,6 @@
       attribute="getContent"
       permission="zope.Public" />
  
- <!--
     <page		
       name="wiki.html"
       for="zope.app.folder.interfaces.IFolder"
@@ -55,7 +54,6 @@
             
             
     </pages>
-      -->
       
     <pages		
      
