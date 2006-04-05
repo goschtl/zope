@@ -236,7 +236,6 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         
         
         """
-        
         page = self.page
         site_url = zapi.absoluteURL(page.site, page.request)
         if link.startswith(site_url) :
@@ -248,7 +247,19 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
             return False, link
         else :
             node = page.container
-            
+             
+        node, path = self.traverseLink(node, link)
+        if path :
+            return True, self.absoluteAddLink(node, path)
+
+        if IFile.providedBy(node) :
+            if node.contentType not in page.supported :
+                return False, self.absoluteLink(node)
+                                
+        return False, self.absoluteWikiLink(node)
+
+    
+    def traverseLink(self, node, link) :
         remaining = urllib.unquote(link)
         path = [x for x in remaining.split("/") if x]        
         while path :         
@@ -259,24 +270,18 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
                 name = path.pop(0)
             except (TraversalError, UnicodeEncodeError) :
                 break
-        
-        if path :
-            return True, self.absoluteAddLink(node, path)
+        return node, path
 
-        if IFile.providedBy(node) :
-            if node.contentType not in page.supported :
-                return False, self.absoluteLink(node)
-                                
-        return False, self.absoluteWikiLink(node)
         
-    
     def absoluteWikiLink(self, node) :
         return zapi.absoluteURL(node, self.page.request) + self.page.action
+
         
     def absoluteAddLink(self, node, path) :
         url = zapi.absoluteURL(node, self.page.request)
         appendix = urllib.urlencode({'add': "/".join(path)})
         return  url + self.page.add + "?" + appendix
+
 
     def absoluteLink(self, node) :
         return zapi.absoluteURL(node, self.page.request)
