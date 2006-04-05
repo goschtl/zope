@@ -30,6 +30,16 @@ modules_aliases_35 = {
 
     'zope.app.size': 'zope.size',
     'zope.app.size.interfaces': 'zope.size.interfaces',
+
+    'zope.app.traversing': 'zope.traversing',
+    'zope.app.traversing.adapters': 'zope.traversing.adapters',
+    'zope.app.traversing.api': 'zope.traversing.api',
+    'zope.app.traversing.interfaces': 'zope.traversing.interfaces',
+    'zope.app.traversing.browser': 'zope.traversing.browser',
+    'zope.app.traversing.browser.absoluteurl':
+        'zope.traversing.browser.absoluteurl',
+    'zope.traversing.browser.interfaces':
+        'zope.traversing.browser.absoluteurl',
     }
 
 msg_35 = "%s has been moved to %s.  This alias will be removed in Zope 3.5."
