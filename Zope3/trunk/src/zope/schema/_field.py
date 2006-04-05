@@ -30,7 +30,7 @@ from zope.schema.interfaces import IMinMaxLen, IText, ITextLine
 from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IInterfaceField
 from zope.schema.interfaces import IBytes, IASCII, IBytesLine, IASCIILine
-from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime
+from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime, IFrozenSet
 from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate, ITimedelta
 from zope.schema.interfaces import IURI, IId, IFromUnicode
@@ -370,12 +370,21 @@ class List(AbstractCollection):
 class Set(AbstractCollection):
     """A field representing a set."""
     implements(ISet)
-    _type = SetType
+    _type = SetType, set
     def __init__(self, **kw):
         if 'unique' in kw: # set members are always unique
             raise TypeError(
                 "__init__() got an unexpected keyword argument 'unique'")
         super(Set, self).__init__(unique=True, **kw)
+
+class FrozenSet(AbstractCollection):
+    implements(IFrozenSet)
+    _type = frozenset
+    def __init__(self, **kw):
+        if 'unique' in kw: # set members are always unique
+            raise TypeError(
+                "__init__() got an unexpected keyword argument 'unique'")
+        super(FrozenSet, self).__init__(unique=True, **kw)
 
 def _validate_fields(schema, value, errors=None):
     if errors is None:

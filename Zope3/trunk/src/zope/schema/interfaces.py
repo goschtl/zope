@@ -396,6 +396,17 @@ class ISequence(ICollection):
 class IUnorderedCollection(ICollection):
     u"""Abstract interface specifying that the value cannot be ordered"""
 
+class IAbstractSet(IUnorderedCollection):
+    u"""An unordered collection of unique values."""
+    
+    unique = Attribute(u"This ICollection interface attribute must be True")
+
+class IAbstractBag(IUnorderedCollection):
+    u"""An unordered collection of values, with no limitations on whether
+    members are unique"""
+    
+    unique = Attribute(u"This ICollection interface attribute must be False")
+
 # Concrete
 
 class ITuple(ISequence):
@@ -406,11 +417,13 @@ class IList(ISequence):
     u"""Field containing a value that implements the API of a conventional 
     Python list."""
 
-class ISet(IUnorderedCollection):
+class ISet(IAbstractSet):
     u"""Field containing a value that implements the API of a conventional 
-    Python standard library sets.Set."""
-    
-    unique = Attribute(u"This ICollection interface attribute must be True")
+    Python standard library sets.Set or a Python 2.4+ set."""
+
+class IFrozenSet(IAbstractSet):
+    u"""Field containing a value that implements the API of a conventional 
+    Python 2.4+ frozenset."""
 
 # (end Collections)
 

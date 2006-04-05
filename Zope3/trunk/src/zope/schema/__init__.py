@@ -19,7 +19,7 @@ from zope.schema._field import Field, Container, Iterable, Orderable
 from zope.schema._field import MinMaxLen, Choice
 from zope.schema._field import Bytes, ASCII, BytesLine, ASCIILine
 from zope.schema._field import Text, TextLine, Bool, Int, Float
-from zope.schema._field import Tuple, List, Set
+from zope.schema._field import Tuple, List, Set, FrozenSet
 from zope.schema._field import Password, Dict, Datetime, Date, Timedelta
 from zope.schema._field import SourceText
 from zope.schema._field import Object, URI, Id, DottedName

@@ -191,9 +191,12 @@ class MultiDataHelper(object):
 
         # All AbstractCollection fields have a `_type` attribute specifying
         # the type of collection. Use it to generate the correct type,
-        # otherwise return a list. 
+        # otherwise return a list.  TODO: this breaks encapsulation.
         if hasattr(self.context, '_type'):
-            return self.context._type(values)
+            _type = self.context._type
+            if isinstance(_type, tuple):
+                _type = _type[0]
+            return _type(values)
         else:
             return values
 
