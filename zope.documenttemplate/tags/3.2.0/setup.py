@@ -24,7 +24,7 @@ except ImportError, e:
     from distutils.core import setup, Extension
 
 setup(name='zope.documenttemplate',
-      version='3.2.0',
+      version='3.2.0.1',
       url='http://svn.zope.org/zope.documenttemplate/tags/3.2.0/',
       license='ZPL 2.1',
       description='Zope3 Document Template Markup Language (DTML)',
@@ -39,7 +39,7 @@ setup(name='zope.documenttemplate',
 
       namespace_packages=['zope',],
       tests_require = ['zope.testing'],
-      extras_require = {'untrusted': ["zope.security[untrusted]"]},
+      extras_require = {'untrusted': ["zope.security[untrustedpython]"]},
       include_package_data = True,
 
       zip_safe = False,
