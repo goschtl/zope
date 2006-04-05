@@ -1,10 +1,11 @@
-zope.XXX Package Readme
-=======================
+zope.thread Package Readme
+==========================
 
 Overview
 --------
 
-Lorem ipsum delorem.
+This package supplies a mechoanism for storing "thread-global" values,
+such as the site manager discovered during URL traversal.
 
 Changes
 -------
@@ -22,16 +23,16 @@ Developer Resources
 
 - Subversion browser:
 
-  http://svn.zope.org/zope.XXX/
+  http://svn.zope.org/zope.thread/
 
 - Read-only Subversion checkout:
 
-  $ svn co svn://svn.zope.org/repos/main/zope.XXX/trunk
+  $ svn co svn://svn.zope.org/repos/main/zope.thread/trunk
 
 - Writable Subversion checkout:
 
-  $ svn co svn://svn.zope.org/repos/main/zope.XXX/trunk
+  $ svn co svn://svn.zope.org/repos/main/zope.thread/trunk
 
-- Note that the 'src/zope/XXX' package is acutally a 'svn:externals' link
+- Note that the 'src/zope/thread' package is acutally a 'svn:externals' link
   to the corresponding package in the Zope3 trunk (or to a specific tag,
   for released versions of the package).
