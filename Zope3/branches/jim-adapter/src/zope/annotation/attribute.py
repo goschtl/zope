@@ -21,8 +21,7 @@ from UserDict import DictMixin
 from BTrees.OOBTree import OOBTree
 
 from zope import component, interface
-
-from zope.app.annotation import interfaces
+from zope.annotation import interfaces
 
 class AttributeAnnotations(DictMixin):
     """Store annotations on an object
@@ -40,7 +39,7 @@ class AttributeAnnotations(DictMixin):
         return bool(getattr(self.obj, '__annotations__', 0))
 
     def get(self, key, default=None):
-        """See zope.app.annotation.interfaces.IAnnotations"""
+        """See zope.annotation.interfaces.IAnnotations"""
         annotations = getattr(self.obj, '__annotations__', None)
         if not annotations:
             return default
@@ -62,7 +61,7 @@ class AttributeAnnotations(DictMixin):
         return annotations.keys()
 
     def __setitem__(self, key, value):
-        """See zope.app.annotation.interfaces.IAnnotations"""
+        """See zope.annotation.interfaces.IAnnotations"""
         try:
             annotations = self.obj.__annotations__
         except AttributeError:

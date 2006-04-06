@@ -1,6 +1,6 @@
 import zope.component
 import zope.interface
-from zope.app.annotation.interfaces import IAnnotations
+from zope.annotation.interfaces import IAnnotations
 import zope.app.container.contained
 
 def factory(factory, key=None):

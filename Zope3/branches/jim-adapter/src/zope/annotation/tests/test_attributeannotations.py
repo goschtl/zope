@@ -18,11 +18,11 @@ $Id$
 """
 import unittest, doctest
 from zope.testing import cleanup
-from zope.app.annotation.tests.annotations import AnnotationsTest
-from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.interface import implements
 from zope import component
+from zope.annotation.tests.annotations import AnnotationsTest
+from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAttributeAnnotatable
 
 class Dummy(object):
     implements(IAttributeAnnotatable)
@@ -46,10 +46,6 @@ def test_suite():
         unittest.makeSuite(AttributeAnnotationsTest),
         doctest.DocFileSuite('../README.txt', setUp=setUp, tearDown=tearDown)
         ))
-
-    #return makeSuite(AttributeAnnotationsTest)
-    #    doctest.DocFileSuite('README.txt',
-    #                         setUp=setUp, tearDown=tearDown),
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

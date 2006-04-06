@@ -16,6 +16,6 @@
 $Id$
 """
 
-from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.annotation.interfaces import IAnnotations
-from zope.app.annotation._factory import factory
+from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.annotation.interfaces import IAnnotations
+from zope.annotation._factory import factory

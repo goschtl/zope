@@ -11,7 +11,7 @@ First, let's make a persistent object we can create annotations for:
   >>> from zope import interface
   >>> class IFoo(interface.Interface):
   ...     pass
-  >>> from zope.app.annotation.interfaces import IAttributeAnnotatable
+  >>> from zope.annotation.interfaces import IAttributeAnnotatable
   >>> from persistent import Persistent
   >>> class Foo(Persistent):
   ...     interface.implements(IFoo, IAttributeAnnotatable)
@@ -37,9 +37,9 @@ Note that the annotation implementation does not expect any arguments
 to its `__init__`. Otherwise it's basically an adapter.
 
 Now, we'll register the annotation as an adapter. Do do this we use
-the `factory` function provided by `zope.app.annotation`:
+the `factory` function provided by `zope.annotation`:
 
-  >>> from zope.app.annotation import factory
+  >>> from zope.annotation import factory
   >>> component.provideAdapter(factory(Bar))
 
 Note that we do not need to specify what the adapter provides or what

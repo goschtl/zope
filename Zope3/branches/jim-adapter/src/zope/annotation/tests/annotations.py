@@ -20,7 +20,7 @@ $Id$
 """
 import unittest
 from zope.interface.verify import verifyObject
-from zope.app.annotation.interfaces import IAnnotations
+from zope.annotation.interfaces import IAnnotations
 
 class AnnotationsTest(unittest.TestCase):
     """Test the IAnnotations interface.
