@@ -22,8 +22,8 @@ import zope.deferredimport
 import zope.component.interfaces
 
 zope.deferredimport.deprecated(
-    "IObjectEvent is now defined in zope.component.interfaces.  "
-    "Importing IObjectEvent from zope.app.event will be disabled in Zope 3.5.",
+    "It has moved to zope.component.interfaces.  This reference will be "
+    "gone in Zope 3.5.",
     IObjectEvent = 'zope.component.interfaces:IObjectEvent',
     )
 
@@ -65,13 +65,3 @@ class ISequence(IModificationDescription) :
 
     interface = Attribute("The involved interface.")
     keys = Attribute("A sequence of modified keys.")
-
-
-# BBB: will go in Zope3.3
-
-class IObjectAnnotationsModifiedEvent(IObjectModifiedEvent):
-    """An object's annotations have been modified"""
-
-
-class IObjectContentModifiedEvent(IObjectModifiedEvent):
-    """An object's content has been modified"""

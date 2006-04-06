@@ -25,24 +25,11 @@ from zope.annotation.attribute import AttributeAnnotations
 
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.container.contained import Contained, ObjectRemovedEvent
 from zope.app.container.interfaces import IContained, IObjectRemovedEvent
 from zope.app.container.sample import SampleContainer
 from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.testing import ztapi
-
-    
-class TestObjectModifiedEvent(unittest.TestCase):
-
-    klass = ObjectModifiedEvent
-    object = object()
-
-    def setUp(self):
-        self.event = self.klass(self.object)
-
-    def testGetObject(self):
-        self.assertEqual(self.event.object, self.object)
 
 class TestObjectEventNotifications(unittest.TestCase):
     def setUp(self):
@@ -108,7 +95,6 @@ def tearDownObjectEventDocTest(test) :
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(TestObjectModifiedEvent),
         unittest.makeSuite(TestObjectEventNotifications),
         doctest.DocTestSuite("zope.app.event.objectevent",
                              setUp=setUpObjectEventDocTest,
