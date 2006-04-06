@@ -14,10 +14,9 @@
 
 $Id$
 """
-
 from zope import interface
 from zope.publisher.interfaces import NotFound
-from zope.app.publisher.browser import BrowserView
+from zope.publisher.browser import BrowserView
 from zope.formlib.interfaces import IPage
 
 class Page(BrowserView):

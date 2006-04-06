@@ -24,11 +24,11 @@ from zope.security import checker
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import Interface, classImplements
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.publisher.interfaces.browser import IBrowserView
 
 from zope.app.component.interface import provideInterface
 from zope.app.component import metaconfigure
 from zope.app.publisher.browser import viewmeta
-from zope.app.publisher.interfaces.browser import IBrowserView
 
 from zope.viewlet import viewlet, manager, interfaces
 
