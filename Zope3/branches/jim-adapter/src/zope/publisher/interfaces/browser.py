@@ -20,12 +20,12 @@ __docformat__ = "reStructuredText"
 
 from zope.interface import Interface, Attribute, directlyProvides
 from zope.interface.interfaces import IInterface
+from zope.component.interfaces import IView
 
 from zope.publisher.interfaces import IPublication
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces.http import IHTTPApplicationRequest
 from zope.publisher.interfaces.http import IHTTPRequest
-
 
 class IBrowserApplicationRequest(IHTTPApplicationRequest):
     """Browser-specific requests
@@ -106,6 +106,9 @@ class IBrowserPublisher(IPublishTraverse):
         the base href.
         """
 
+
+class IBrowserView(IView):
+    """Browser View"""
 
 class IDefaultBrowserLayer(IBrowserRequest):
     """The default layer."""
