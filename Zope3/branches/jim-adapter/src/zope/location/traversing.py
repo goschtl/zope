@@ -15,19 +15,19 @@
 
 $Id$
 """
+import zope.component
 import zope.interface
 from zope.traversing.interfaces import IPhysicallyLocatable
-from zope.traversing.interfaces import IContainmentRoot
-from zope.traversing.interfaces import ITraverser
+from zope.traversing.interfaces import IContainmentRoot, ITraverser
 from zope.traversing.api import getParents
-from zope.app.component.interfaces import ISite
+from zope.location.interfaces import ILocation
 from zope.location.location import Location
-
+from zope.app.component.interfaces import ISite
 
 class LocationPhysicallyLocatable(object):
     """Provide location information for location objects
     """
-
+    zope.component.adapts(ILocation)
     zope.interface.implements(IPhysicallyLocatable)
 
     def __init__(self, context):
