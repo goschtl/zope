@@ -15,10 +15,9 @@
 
 $Id$
 """
+import zope.component
 from zope.security.interfaces import ForbiddenAttribute
-
-from zope.app import zapi
-from zope.app.publisher.browser import BrowserView
+from zope.publisher.browser import BrowserView
 from zope.app.undo.interfaces import IUndoManager
 
 class UndoView(BrowserView):
@@ -29,7 +28,7 @@ class UndoView(BrowserView):
         transaction is an undo transaction.
         """
         request = self.request
-        undo = zapi.getUtility(IUndoManager)
+        undo = zope.component.getUtility(IUndoManager)
         txn_info = undo.getPrincipalTransactions(request.principal, first=0,
                                                  last=1)
         if txn_info:
@@ -40,7 +39,7 @@ class UndoView(BrowserView):
         """Undo the authenticated principal's last transaction and
         return where he/she came from"""
         request = self.request
-        undo = zapi.getUtility(IUndoManager)
+        undo = zope.component.getUtility(IUndoManager)
         txn_info = undo.getPrincipalTransactions(request.principal, first=0,
                                                  last=1)
         if txn_info:
@@ -51,14 +50,14 @@ class UndoView(BrowserView):
 
     def undoAllTransactions(self, ids):
         """Undo transactions specified in 'ids'."""
-        undo = zapi.getUtility(IUndoManager)
+        undo = zope.component.getUtility(IUndoManager)
         undo.undoTransactions(ids)
         self._redirect()
 
     def undoPrincipalTransactions(self, ids):
         """Undo transactions that were issued by the authenticated
         user specified in 'ids'."""
-        undo = zapi.getUtility(IUndoManager)
+        undo = zope.component.getUtility(IUndoManager)
         undo.undoPrincipalTransactions(self.request.principal, ids)
         self._redirect()
 
@@ -70,13 +69,13 @@ class UndoView(BrowserView):
         context = None
         if not showall:
             context = self.context
-        undo = zapi.getUtility(IUndoManager)
+        undo = zope.component.getUtility(IUndoManager)
         return undo.getTransactions(context, first, last)
 
     def getPrincipalTransactions(self, first=0, last=-20, showall=False):
         context = None
         if not showall:
             context = self.context
-        undo = zapi.getUtility(IUndoManager)
+        undo = zope.component.getUtility(IUndoManager)
         return undo.getPrincipalTransactions(self.request.principal, context,
                                              first, last)

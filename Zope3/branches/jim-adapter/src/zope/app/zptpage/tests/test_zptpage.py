@@ -21,18 +21,16 @@ from zope.component import getMultiAdapter
 from zope.interface import directlyProvides
 from zope.interface.verify import verifyClass
 from zope.security.interfaces import Forbidden
-from zope.publisher.browser import TestRequest
-
+from zope.security.checker import NamesChecker, defineChecker
+from zope.publisher.browser import TestRequest, BrowserView
+from zope.location.traversing import LocationPhysicallyLocatable
 from zope.traversing.adapters import Traverser, DefaultTraversable
 from zope.traversing.adapters import RootPhysicallyLocatable
 from zope.traversing.interfaces import ITraverser, ITraversable
 from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.traversing.interfaces import IContainmentRoot
-from zope.security.checker import NamesChecker, defineChecker
-from zope.location.traversing import LocationPhysicallyLocatable
 
 from zope.app.testing import ztapi
-from zope.app.publisher.browser import BrowserView
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.container.contained import contained
 

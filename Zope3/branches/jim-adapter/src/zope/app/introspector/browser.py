@@ -20,13 +20,11 @@ __docformat__ = 'restructuredtext'
 from zope.component.interfaces import ComponentLookupError
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.proxy import removeAllProxies
+from zope.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.component.interface import getInterface
 from zope.app.introspector.interfaces import IIntrospector
-from zope.app.publisher.browser import BrowserView
-
-
 
 class IntrospectorView(BrowserView):
 

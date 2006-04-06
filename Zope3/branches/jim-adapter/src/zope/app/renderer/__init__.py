@@ -17,7 +17,7 @@ $Id$
 """
 from zope.component.interfaces import IFactory
 from zope.interface import implements, directlyProvides, Declaration
-from zope.app.publisher.browser import BrowserView
+from zope.publisher.browser import BrowserView
 from interfaces import ISource, IHTMLRenderer
 
 

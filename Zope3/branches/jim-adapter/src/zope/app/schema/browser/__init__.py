@@ -15,15 +15,14 @@
 
 $Id$
 """
-from zope.app import zapi
+from zope.schema import getFieldNamesInOrder, getFieldsInOrder
+from zope.publisher.browser import BrowserView
+
 from zope.app.form.browser.editview import EditView
 from zope.app.form.utility import setUpEditWidgets
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.schema.interfaces import IMutableSchema
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.publisher.browser import BrowserView
-from zope.schema import getFieldNamesInOrder, getFieldsInOrder
-
 
 _msg_anErrorOccurred = _("An error occurred")
 

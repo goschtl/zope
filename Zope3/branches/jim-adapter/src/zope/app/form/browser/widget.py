@@ -19,11 +19,11 @@ __docformat__ = 'restructuredtext'
 
 from xml.sax.saxutils import quoteattr, escape
 
+from zope.component import getMultiAdapter
 from zope.interface import implements
 from zope.schema.interfaces import ValidationError
-from zope.app.publisher.browser import BrowserView
+from zope.publisher.browser import BrowserView
 
-from zope.app import zapi
 from zope.app.form import Widget, InputWidget
 from zope.app.form.interfaces import ConversionError
 from zope.app.form.interfaces import InputErrors
@@ -101,8 +101,8 @@ class BrowserWidget(Widget, BrowserView):
 
     def error(self):
         if self._error:
-            return zapi.getMultiAdapter((self._error, self.request),
-                                        IWidgetInputErrorView).snippet()
+            return getMultiAdapter((self._error, self.request),
+                                   IWidgetInputErrorView).snippet()
         return ""
 
     def hidden(self):

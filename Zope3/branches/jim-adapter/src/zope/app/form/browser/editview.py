@@ -23,6 +23,7 @@ import transaction
 from zope.interface import Interface
 from zope.schema import getFieldNamesInOrder
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
 
 from zope.app import zapi
@@ -33,7 +34,6 @@ from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.form.interfaces import WidgetsError
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
-from zope.app.publisher.browser import BrowserView
 
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.form.browser.submit import Update

@@ -17,13 +17,12 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import zope.component
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.publisher.browser import BrowserView
 from zope.schema import getFieldNamesInOrder
 from zope.security.checker import defineChecker, NamesChecker
-
-from zope.app import zapi
-from zope.app.publisher.browser import BrowserView
 
 from zope.app.form.utility import setUpDisplayWidgets
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -81,5 +80,5 @@ def DisplayViewFactory(name, schema, label, permission, layer,
     if layer is None:
         layer = IDefaultBrowserLayer
 
-    sm = zapi.getGlobalSiteManager()
+    sm = zope.component.getGlobalSiteManager()
     sm.registerAdapter(class_, (for_, layer), Interface, name)

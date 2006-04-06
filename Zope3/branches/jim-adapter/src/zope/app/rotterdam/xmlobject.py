@@ -23,9 +23,9 @@ from zope.proxy import sameProxiedObjects
 from zope.security.interfaces import Unauthorized, Forbidden
 from zope.i18n import translate
 from zope.traversing.api import getParents, getParent, traverse
+from zope.publisher.browser import BrowserView
 
 from zope.app import zapi
-from zope.app.publisher.browser import BrowserView
 from zope.app.container.interfaces import IReadContainer
 from zope.app.i18n import ZopeMessageFactory as _
 

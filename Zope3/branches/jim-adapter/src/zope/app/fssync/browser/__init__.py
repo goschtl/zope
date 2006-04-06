@@ -26,8 +26,8 @@ import transaction
 from zope.traversing.api import getName, getParent, getRoot
 from zope.fssync.snarf import Snarfer, Unsnarfer
 from zope.fssync.metadata import Metadata
+from zope.publisher.browser import BrowserView
 
-from zope.app.publisher.browser import BrowserView
 from zope.app.fssync import syncer
 from zope.app.fssync.committer import Committer, Checker
 from zope.app.i18n import ZopeMessageFactory as _

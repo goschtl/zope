@@ -17,27 +17,22 @@ $Id$
 """
 import doctest
 
+import zope.security.checker
 from zope.interface import Interface, implements
 from zope.component.interfaces import IViewFactory, ComponentLookupError
-from zope.publisher.browser import TestRequest
-import zope.security.checker
+from zope.publisher.browser import TestRequest, BrowserView
 from zope.security.interfaces import ForbiddenAttribute, Unauthorized
-import zope.security.checker
-
 from zope.schema import Field, Int, accessors
 from zope.schema.interfaces import IField, IInt
 
 from zope.app.testing import ztapi, placelesssetup
-from zope.app.publisher.browser import BrowserView
 from zope.app.form import Widget
 from zope.app.form.interfaces import IWidget, IInputWidget, IDisplayWidget
 from zope.app.form.interfaces import ConversionError, InputErrors, WidgetsError
-
 from zope.app.form.utility import no_value, setUpWidget, setUpWidgets
 from zope.app.form.utility import setUpEditWidgets, setUpDisplayWidgets
 from zope.app.form.utility import getWidgetsData, viewHasInput
 from zope.app.form.utility import applyWidgetsChanges
-
 from zope.app.form.tests import utils
 
 request = TestRequest()
@@ -537,7 +532,7 @@ class TestSetUpWidgets(object):
             >>> setUpWidgets(view, IContent, IWidget, 'prefix', True,
             ...              initial={ "bar":"Bar" },
             ...              context="Alt Context")
-            view: <class 'zope.app.publisher.browser.BrowserView'>
+            view: <class 'zope.publisher.browser.BrowserView'>
             name: foo
             field: <class 'zope.app.form.tests.test_utility.Foo'>
             viewType: <class 'zope.interface.interface.InterfaceClass'>
@@ -546,7 +541,7 @@ class TestSetUpWidgets(object):
             ignoreStickyValues: True
             context: Alt Context
             ---
-            view: <class 'zope.app.publisher.browser.BrowserView'>
+            view: <class 'zope.publisher.browser.BrowserView'>
             name: bar
             field: <class 'zope.app.form.tests.test_utility.Bar'>
             viewType: <class 'zope.interface.interface.InterfaceClass'>

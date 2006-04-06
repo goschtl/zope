@@ -23,9 +23,8 @@ import time
 import unittest
 import transaction
 from zope.testing import doctest
-from zope.publisher.browser import TestRequest
+from zope.publisher.browser import TestRequest, BrowserView
 from zope.app.testing import setup, ztapi
-from zope.app.publisher.browser import BrowserView
 
 
 def doctest_RecordingProtocol():

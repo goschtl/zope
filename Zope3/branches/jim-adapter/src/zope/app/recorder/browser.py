@@ -23,15 +23,17 @@ import sys
 import urllib
 import datetime
 from cStringIO import StringIO
+
 from zope.interface import Interface
 from zope.schema import Text
+from zope.publisher.browser import BrowserView
+from zope.publisher.interfaces import NotFound
+
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.form.interfaces import IInputWidget, WidgetsError
-from zope.app.publisher.browser import BrowserView
 from zope.app import recorder
 from zope.app.testing import dochttp
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.publisher.interfaces import NotFound
 
 
 class IRecorderSessionsFilterForm(Interface):

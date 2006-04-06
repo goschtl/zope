@@ -17,7 +17,9 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app import zapi
+from zope.component import getMultiAdapter
+from zope.publisher.browser import BrowserView
+
 from zope.app.cache.caching import getCacheForObject, getLocationForCache
 from zope.app.form.utility import setUpEditWidgets
 from zope.app.i18n import ZopeMessageFactory as _
@@ -25,7 +27,6 @@ from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.cache.interfaces import ICacheable
 from zope.app.form.interfaces import WidgetInputError
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.publisher.browser import BrowserView
 
 class CacheableView(BrowserView):
 
@@ -45,8 +46,8 @@ class CacheableView(BrowserView):
     def current_cache_url(self):
         "Returns the current cache provider's URL."
         cache = getCacheForObject(self.context)
-        absolute_url = zapi.getMultiView((cache, self.request),
-                                         name='absolute_url')
+        absolute_url = getMultiAdapter((cache, self.request),
+                                       name='absolute_url')
         try:
             return absolute_url()
         except TypeError:

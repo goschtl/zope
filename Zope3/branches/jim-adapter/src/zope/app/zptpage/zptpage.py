@@ -21,13 +21,14 @@ from zope.security.proxy import ProxyFactory
 from zope.interface import implements
 from zope.pagetemplate.pagetemplate import PageTemplate
 from zope.size.interfaces import ISized
+from zope.publisher.browser import BrowserView
 
+from zope.app import zapi
 from zope.app.pagetemplate.engine import AppPT
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.container.contained import Contained
-from zope.app import zapi
 from zope.app.publication.interfaces import IFileContent
 
 from interfaces import IZPTPage, IRenderZPTPage
@@ -151,7 +152,6 @@ class ZPTFactory(object):
         page.setSource(data.decode('UTF-8'), content_type or 'text/html')
         return page
 
-from zope.app.publisher.browser import BrowserView
 class ZPTSourceView(BrowserView):
 
     def __str__(self):

@@ -18,12 +18,10 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.i18n import translate
+from zope.publisher.browser import BrowserView
 
 from zope.app import zapi
-from zope.app.publisher.browser import BrowserView
-
 from zope.app.onlinehelp.interfaces import IOnlineHelp
-
 
 class OnlineHelpTopicTreeView(BrowserView):
     """Online help topic tree view."""

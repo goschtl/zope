@@ -253,8 +253,7 @@ class FileEdit(object):
     Converts between Unicode strings used in browser forms and 8-bit strings
     stored internally.
 
-        >>> from zope.app.publisher.browser import BrowserView
-        >>> from zope.publisher.browser import TestRequest
+        >>> from zope.publisher.browser import BrowserView, TestRequest
         >>> class FileEditView(FileEdit, BrowserView): pass
         >>> view = FileEditView(File(), TestRequest())
         >>> view.getData()
