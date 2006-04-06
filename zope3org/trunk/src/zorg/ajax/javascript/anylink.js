@@ -74,6 +74,7 @@ else return true
 }
 
 function contains_ns6(a, b) {
+if (!b) return false;  // fix for Firefox 1.07
 while (b.parentNode)
 if ((b = b.parentNode) == a)
 return true;
