@@ -18,9 +18,7 @@ $Id$
 ##############################################################################
 # BBB 2006/04/03 -- to be removed after 12 months
 
-import sys
-import zope.dottedname.resolve
-from zope.deprecation import deprecated
+from zope.deferredimport import deprecatedModule
 
 modules_aliases_35 = {
     'zope.app.decorator': 'zope.decorator',
@@ -31,25 +29,28 @@ modules_aliases_35 = {
     'zope.app.size': 'zope.size',
     'zope.app.size.interfaces': 'zope.size.interfaces',
 
-#XXX disabled because of circular import problems; needs to be reenabled
-#
-#    'zope.app.traversing': 'zope.traversing',
-#    'zope.app.traversing.adapters': 'zope.traversing.adapters',
-#    'zope.app.traversing.api': 'zope.traversing.api',
-#    'zope.app.traversing.interfaces': 'zope.traversing.interfaces',
-#    'zope.app.traversing.browser': 'zope.traversing.browser',
-#    'zope.app.traversing.browser.absoluteurl':
-#        'zope.traversing.browser.absoluteurl',
-#    'zope.traversing.browser.interfaces':
-#        'zope.traversing.browser.absoluteurl',
+    'zope.app.traversing': 'zope.traversing',
+    'zope.app.traversing.adapters': 'zope.traversing.adapters',
+    'zope.app.traversing.api': 'zope.traversing.api',
+    'zope.app.traversing.interfaces': 'zope.traversing.interfaces',
+    'zope.app.traversing.browser': 'zope.traversing.browser',
+    'zope.app.traversing.browser.absoluteurl':
+        'zope.traversing.browser.absoluteurl',
+    'zope.app.traversing.browser.interfaces':
+        'zope.traversing.browser.absoluteurl',
 
-#TODO provide BBB for zope.app.location
-#TODO provide BBB for zope.app.annotation
+    'zope.app.location': 'zope.location',
+    'zope.app.location.interfaces': 'zope.location.interfaces',
+    'zope.app.location.pickling': 'zope.location.pickling',
+    'zope.app.locatin.traversing': 'zope.location.traversing',
+
+    'zope.app.annotation': 'zope.annotation',
+    'zope.app.annotation.attribute': 'zope.annotation.attribute',
+    'zope.app.annotation.interfaces': 'zope.annotation.interfaces',
     }
 
 msg_35 = "%s has been moved to %s.  This alias will be removed in Zope 3.5."
 for old, new in modules_aliases_35.iteritems():
-    newmodule = zope.dottedname.resolve.resolve(new)
-    sys.modules[old] = deprecated(newmodule, msg_35 % (old, new))
+    deprecatedModule(old, new, msg_35 % (old, new))
 
 ##############################################################################
