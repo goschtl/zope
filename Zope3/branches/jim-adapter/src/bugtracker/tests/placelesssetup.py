@@ -32,14 +32,14 @@ from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.traversing.adapters import DefaultTraversable, Traverser
 from zope.location.interfaces import ILocation
 from zope.location.traversing import LocationPhysicallyLocatable
+from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup as SetupBase
-from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.file import File
 from zope.app.container.interfaces import INameChooser
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.dublincore.interfaces import IWriteZopeDublinCore
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.renderer.plaintext import IPlainTextSource

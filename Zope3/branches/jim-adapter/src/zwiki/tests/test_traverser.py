@@ -23,9 +23,9 @@ from zope.proxy import removeAllProxies
 from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.location.interfaces import ILocation
 from zope.location.traversing import LocationPhysicallyLocatable
+from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 
-from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 

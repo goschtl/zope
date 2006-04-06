@@ -9,7 +9,7 @@
 
 <class class=".buddy.Buddy">
    <implements 
-       interface="zope.app.annotation.IAttributeAnnotatable" />
+       interface="zope.annotation.IAttributeAnnotatable" />
    <require permission="zope.View"
             interface=".interfaces.IBuddy" />
    <require permission="zope.ManageContent"

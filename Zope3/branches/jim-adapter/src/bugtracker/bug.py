@@ -17,9 +17,9 @@ $Id$
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies
+from zope.annotation.interfaces import IAnnotations
 
 from zope.app import zapi
-from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import contained
 from zope.app.dublincore.interfaces import IZopeDublinCore

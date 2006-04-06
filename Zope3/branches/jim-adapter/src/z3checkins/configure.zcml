@@ -11,7 +11,7 @@
              interface=".interfaces.IMessage" />
 
     <implements
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+      interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
   </class>
 
@@ -21,7 +21,7 @@
              interface=".interfaces.ICheckinMessage" />
 
     <implements
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+      interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
   </class>
 
@@ -47,7 +47,7 @@
               description="A checkin folder" />
 
      <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+       interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
   </class>
 

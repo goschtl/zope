@@ -20,12 +20,11 @@ import unittest
 from zope.interface import classImplements, implements
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.vocabulary import getVocabularyRegistry
+from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 
-from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.container.contained import contained, Contained
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.app.security.principalregistry import principalRegistry, Principal

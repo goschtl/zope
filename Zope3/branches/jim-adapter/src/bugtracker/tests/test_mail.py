@@ -22,10 +22,10 @@ from zope.interface import classImplements, implements
 from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.location.interfaces import ILocation
 from zope.location.traversing import LocationPhysicallyLocatable
+from zope.annotation.interfaces import IAnnotations, IAttributeAnnotatable
+from zope.annotation.attribute import AttributeAnnotations
 
 from zope.app.testing import ztapi
-from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
-from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.dublincore.interfaces import IWriteZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.event.objectevent import ObjectModifiedEvent

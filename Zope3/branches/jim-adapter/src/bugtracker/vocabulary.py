@@ -23,10 +23,10 @@ from zope.schema.interfaces import ITokenizedTerm, ITitledTokenizedTerm
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.vocabulary import getVocabularyRegistry
 from zope.security.proxy import removeSecurityProxy 
+from zope.annotation.interfaces import IAnnotatable, IAnnotations
 
 from zope.app import zapi
 from zope.app.schema.interfaces import IVocabularyFactory
-from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 
 from bugtracker.interfaces import IManagableVocabulary, IBugTracker
 from bugtracker.interfaces import IStatusVocabulary

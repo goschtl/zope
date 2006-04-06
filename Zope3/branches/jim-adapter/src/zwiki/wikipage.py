@@ -25,6 +25,8 @@ from persistent import Persistent
 from zope.interface import implements
 from zope.event import notify
 from zope.schema.vocabulary import getVocabularyRegistry
+from zope.annotation.interfaces import IAnnotations
+from zope.component.interfaces import ObjectEvent
 
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
@@ -33,8 +35,6 @@ from zope.app.filerepresentation.interfaces import IReadFile
 from zope.app.filerepresentation.interfaces import IWriteFile
 from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.filerepresentation.interfaces import IWriteDirectory
-from zope.app.annotation.interfaces import IAnnotations
-from zope.component.interfaces import ObjectEvent
 from zope.app.container.interfaces import \
      IObjectAddedEvent, IObjectRemovedEvent
 from zope.app.mail.interfaces import IMailDelivery

@@ -16,9 +16,9 @@
 $Id$
 """
 from zope.interface import implements
+from zope.annotation.interfaces import IAnnotations
 
 from zope.app import zapi
-from zope.app.annotation.interfaces import IAnnotations
 from zope.app.event.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
 from zope.app.mail.interfaces import IMailDelivery
 
