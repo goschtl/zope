@@ -89,6 +89,11 @@ zope.deferredimport.deprecated(
     ObjectEvent = 'zope.component.interfaces:ObjectEvent',
     )
 
+zope.deferredimport.deprecated(
+    "It has moved to zope.component.event.  This reference will be gone "
+    "in Zope 3.5",
+    objectEventNotify = 'zope.component.event:objectEventNotify',
+    )
 
 class ObjectCreatedEvent(zope.component.interfaces.ObjectEvent):
     """An object has been created"""
