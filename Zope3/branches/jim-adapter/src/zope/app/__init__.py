@@ -47,6 +47,10 @@ modules_aliases_35 = {
     'zope.app.annotation': 'zope.annotation',
     'zope.app.annotation.attribute': 'zope.annotation.attribute',
     'zope.app.annotation.interfaces': 'zope.annotation.interfaces',
+
+    'zope.app.event.objectevent': 'zope.lifecycleevent',
+    'zope.app.event.interfaces': 'zope.lifecycleevent.interfaces',
+    'zope.app.event.dispatch': 'zope.component.event'
     }
 
 msg_35 = "%s has been moved to %s.  This alias will be removed in Zope 3.5."
