@@ -21,10 +21,10 @@ from urllib import quote
 from zope.component import createObject, getMultiAdapter
 from zope.proxy import removeAllProxies
 from zope.traversing.api import getParent, getName
+from zope.publisher.browser import BrowserView
 
 from zope.app.form.browser.submit import Update
 from zope.app.dublincore.interfaces import ICMFDublinCore
-from zope.app.publisher.browser import BrowserView
 
 from zwiki.interfaces import IWikiPageHierarchy, IMailSubscriptions
 
