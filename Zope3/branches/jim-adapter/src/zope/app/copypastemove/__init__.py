@@ -24,9 +24,9 @@ from zope.component import adapts
 from zope.event import notify
 from zope.location.pickling import locationCopy
 from zope.location.interfaces import ISublocations
+from zope.annotation.interfaces import IAnnotations
+from zope.annotation.interfaces import IAnnotations
 
-from zope.app.annotation.interfaces import IAnnotations
-from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.sample import SampleContainer
 from zope.app.event.objectevent import ObjectCopiedEvent
 from zope.app.container.interfaces import IContainer, IOrderedContainer

@@ -16,11 +16,11 @@
 $Id$
 """
 import unittest
+import zope.component
 from zope.interface import implements
+from zope.annotation.interfaces import IAttributeAnnotatable
 
-from zope.app import zapi
 from zope.app.testing import ztapi
-from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.settings import Allow, Deny
 from zope.app.component.testing import PlacefulSetup
@@ -34,7 +34,7 @@ class Manageable(object):
 
 def defineRole(id, title=None, description=None):
     role = Role(id, title, description)
-    ztapi.provideUtility(IRole, role, name=role.id)
+    zope.component.provideUtility(role, IRole, name=role.id)
     return role
 
 class Test(PlacefulSetup, unittest.TestCase):

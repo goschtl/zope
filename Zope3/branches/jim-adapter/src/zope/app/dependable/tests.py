@@ -16,7 +16,7 @@
 $Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.annotation.attribute import AttributeAnnotations
+from zope.annotation.attribute import AttributeAnnotations
 from zope.app.testing.placelesssetup import PlacelessSetup
 
 class C(object):

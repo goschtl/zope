@@ -52,7 +52,7 @@ which parts of an object where modified :
  
     >>> from zope.app.dublincore.interfaces import IZopeDublinCore
     >>> from zope.interface import directlyProvides
-    >>> from zope.app.annotation.interfaces import IAttributeAnnotatable
+    >>> from zope.annotation.interfaces import IAttributeAnnotatable
     >>> directlyProvides(file, IAttributeAnnotatable) 
     
     >>> IZopeDublinCore(file).title = u"New title"

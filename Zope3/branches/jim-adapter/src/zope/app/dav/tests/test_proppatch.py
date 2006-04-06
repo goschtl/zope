@@ -32,6 +32,8 @@ from zope.publisher.browser import TestRequest
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.traversing.api import traverse
 from zope.traversing.browser import AbsoluteURL
+from zope.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.annotation.attribute import AttributeAnnotations
 
 from zope.app import zapi
 from zope.app.testing import ztapi
@@ -40,8 +42,6 @@ from zope.app.component.testing import PlacefulSetup
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.dublincore.zopedublincore import ScalarProperty
-from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
-from zope.app.annotation.attribute import AttributeAnnotations
 
 import zope.app.dav.tests
 from zope.app.dav.tests.unitfixtures import File, Folder, FooZPT

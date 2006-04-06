@@ -24,8 +24,8 @@ that contain their own location information.
     >>> import persistent
     >>> from zope import component, interface
     >>> import zope.traversing.interfaces
-    >>> import zope.app.annotation.attribute
-    >>> import zope.app.annotation.interfaces
+    >>> import zope.annotation.attribute
+    >>> import zope.annotation.interfaces
     >>> from zope.app.versioncontrol import interfaces
 
     >>> marker = object()
@@ -34,7 +34,7 @@ that contain their own location information.
     ...     interface.implements(
     ...         interfaces.IVersionable,
     ...         interfaces.INonVersionedData,
-    ...         zope.app.annotation.interfaces.IAttributeAnnotatable,
+    ...         zope.annotation.interfaces.IAttributeAnnotatable,
     ...         zope.traversing.interfaces.IPhysicallyLocatable,
     ...         )
     ...
@@ -70,7 +70,7 @@ that contain their own location information.
     ...         return "<%s object>" % self.__class__.__name__
 
     >>> component.provideAdapter(
-    ...     zope.app.annotation.attribute.AttributeAnnotations)
+    ...     zope.annotation.attribute.AttributeAnnotations)
     ... # doctest: +NORMALIZE_WHITESPACE
     Registered event:
     AdapterRegistration(<BaseGlobalComponents base>, 

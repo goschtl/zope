@@ -18,10 +18,10 @@ $Id$
 import unittest
 from zope.testing import doctest
 from zope.component.interfaces import IObjectEvent
+from zope.annotation.interfaces import IAnnotations, IAnnotatable
+from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.annotation.attribute import AttributeAnnotations
 
-from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
-from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.event.objectevent import ObjectModifiedEvent

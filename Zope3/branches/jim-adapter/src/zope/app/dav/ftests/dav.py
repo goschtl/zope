@@ -15,13 +15,13 @@
 
 $Id$
 """
-from persistent import Persistent
 import transaction
+from persistent import Persistent
 from zope.interface import implements
-from zope.app.testing.functional import HTTPTestCase
+from zope.annotation.interfaces import IAttributeAnnotatable
 
+from zope.app.testing.functional import HTTPTestCase
 from zope.app.folder import Folder
-from zope.app.annotation.interfaces import IAttributeAnnotatable
 
 class Page(Persistent):
     implements(IAttributeAnnotatable)    

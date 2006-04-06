@@ -18,12 +18,14 @@ $Id$
 
 import unittest
 from zope.testing.doctestunit import DocFileSuite
+from zope.annotation.interfaces import IAnnotatable
+from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.annotation.interfaces import IAnnotations
+from zope.annotation.attribute import AttributeAnnotations
+from zope.security.management import endInteraction
+
 from zope.app import zapi
 from zope.app.testing import placelesssetup, ztapi
-from zope.app.annotation.interfaces import IAnnotatable
-from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.annotation.interfaces import IAnnotations
-from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.securitypolicy.interfaces import IGrantInfo
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
@@ -36,7 +38,6 @@ from zope.app.securitypolicy.rolepermission \
      import AnnotationRolePermissionManager
 from zope.app.securitypolicy.grantinfo \
      import AnnotationGrantInfo
-from zope.security.management import endInteraction
 
 def setUp(test):
     placelesssetup.setUp()

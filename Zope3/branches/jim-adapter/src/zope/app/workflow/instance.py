@@ -17,17 +17,16 @@ $Id$
 """
 from types import StringTypes
 from persistent.dict import PersistentDict
+
+import zope.component
 from zope.proxy import removeAllProxies
-
-from zope.app import zapi
-from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
-from zope.app.container.interfaces import IContained
-from zope.app.workflow.interfaces import IProcessInstance, IProcessDefinition
-from zope.app.workflow.interfaces import IProcessInstanceContainer
-
+from zope.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.interface import implements
 
+from zope.app.container.interfaces import IContained
 from zope.app.container.contained import Contained, setitem, uncontained
+from zope.app.workflow.interfaces import IProcessInstance, IProcessDefinition
+from zope.app.workflow.interfaces import IProcessInstanceContainer
 
 class ProcessInstance(Contained):
     """Process Instance implementation.
@@ -52,7 +51,7 @@ class ProcessInstance(Contained):
 def createProcessInstance(context, name):
     """Helper function to create a process instance from a process definition
     name."""
-    sm = zapi.getSiteManager(context)
+    sm = zope.component.getSiteManager(context)
     pd = sm.queryUtility(IProcessDefinition, name)
     return pd.createProcessInstance(name)
 

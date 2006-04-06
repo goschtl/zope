@@ -22,10 +22,10 @@ from zope.interface import classImplements
 from zope.security.interfaces import IPrincipal
 from zope.traversing.interfaces import IPathAdapter 
 from zope.testing import doctest
+from zope.annotation.interfaces import IAnnotatable
+from zope.annotation.interfaces import IAttributeAnnotatable
 
 from zope.app.testing import placelesssetup, setup, ztapi
-from zope.app.annotation.interfaces import IAnnotatable
-from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.file import File
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.securitypolicy.principalrole import AnnotationPrincipalRoleManager

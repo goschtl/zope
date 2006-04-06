@@ -18,13 +18,12 @@ some content object with a `title` attribute that should mirror the
 Dublin Core `title` field::
 
   >>> import zope.interface
-
-  >>> import zope.app.annotation.interfaces
+  >>> import zope.annotation.interfaces
 
   >>> class Content(object):
   ...
   ...     zope.interface.implements(
-  ...         zope.app.annotation.interfaces.IAttributeAnnotatable)
+  ...         zope.annotation.interfaces.IAttributeAnnotatable)
   ...
   ...     title = u""
   ...     description = u""
@@ -96,7 +95,7 @@ content object to be used for the `description` Dublin Core field::
   >>> class Content(object):
   ...
   ...     zope.interface.implements(
-  ...         zope.app.annotation.interfaces.IAttributeAnnotatable)
+  ...         zope.annotation.interfaces.IAttributeAnnotatable)
   ...
   ...     abstract = u""
 

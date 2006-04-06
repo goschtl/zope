@@ -19,12 +19,11 @@ import persistent.interfaces
 import zope.interface
 import zope.schema
 import zope.component.interfaces
+import zope.annotation.interfaces
 
 from zope.schema.vocabulary import SimpleVocabulary
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('zope.app.versioncontrol')
-
-import zope.app.annotation.interfaces
 
 class VersionControlError(Exception):
     pass
@@ -299,7 +298,7 @@ IVersionedContainer = INonVersionedData
 
 
 class IVersionable(persistent.interfaces.IPersistent,
-                   zope.app.annotation.interfaces.IAnnotatable):
+                   zope.annotation.interfaces.IAnnotatable):
     """Version control is allowed for objects that provide this."""
 
 class IVersioned(IVersionable):

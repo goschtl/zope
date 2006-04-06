@@ -91,7 +91,7 @@
 <!-- Granting Roles and Permissions to Principals -->
 
   <page
-      for="zope.app.annotation.interfaces.IAnnotatable"
+      for="zope.annotation.interfaces.IAnnotatable"
       name="grant.html"
       permission="zope.Security"
       template="granting.pt" 

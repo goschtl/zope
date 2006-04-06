@@ -4,23 +4,13 @@
 __docformat__ = "reStructuredText"
 
 import zope.testing.doctest
-
-import zope.app.annotation.attribute
-import zope.app.annotation.interfaces
-import zope.app.testing.placelesssetup
-import zope.app.testing.ztapi
-
+import zope.component.testing
+from zope.component.testing import tearDown
+from zope.annotation.attribute import AttributeAnnotations
 
 def setUp(test):
-    zope.app.testing.placelesssetup.setUp(test)
-    zope.app.testing.ztapi.provideAdapter(
-        zope.app.annotation.interfaces.IAttributeAnnotatable,
-        zope.app.annotation.interfaces.IAnnotations,
-        zope.app.annotation.attribute.AttributeAnnotations)
-
-def tearDown(test):
-    zope.app.testing.placelesssetup.tearDown(test)
-
+    zope.component.testing.setUp(test)
+    zope.component.provideAdapter(AttributeAnnotations)
 
 def test_suite():
     return zope.testing.doctest.DocFileSuite(

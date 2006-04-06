@@ -20,16 +20,15 @@ from unittest import TestCase, TestLoader, TextTestRunner
 
 import zope.component
 from zope.interface import implements
-from zope.app import zapi
-from zope.app.annotation.interfaces import IAnnotations
+from zope.annotation.interfaces import IAnnotations
+from zope.security.interfaces import IPrincipal
+
 from zope.app.principalannotation import PrincipalAnnotationUtility
-from zope.app.security.interfaces import IPrincipal
 from zope.app.component.testing import PlacefulSetup
-from zope.app.testing import ztapi, setup
+from zope.app.testing import setup
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 
 class Principal(object):
-
     implements(IPrincipal)
 
     def __init__(self, id):

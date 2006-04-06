@@ -129,7 +129,7 @@ Tying all this together is the ``configure.zcml``::
              permission="zope.ManageContent" />
 
     <implements 
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
 
     <require

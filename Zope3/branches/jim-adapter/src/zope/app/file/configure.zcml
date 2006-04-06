@@ -42,7 +42,7 @@
         />
 
     <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
   </class>
 
@@ -64,7 +64,7 @@
         />
 
     <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
   </class>
 

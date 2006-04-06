@@ -121,7 +121,7 @@
   <adapter
       factory=".opaquenamespaces.DAVOpaqueNamespacesAdapter"
       provides=".opaquenamespaces.IDAVOpaqueNamespaces"
-      for="zope.app.annotation.interfaces.IAnnotatable"
+      for="zope.annotation.interfaces.IAnnotatable"
       trusted="true"
       />
       

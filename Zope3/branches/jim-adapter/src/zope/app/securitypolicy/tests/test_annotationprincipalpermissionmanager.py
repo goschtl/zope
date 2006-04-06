@@ -18,10 +18,10 @@ $Id$
 import unittest
 
 from zope.interface import implements
+from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAttributeAnnotatable, IAnnotations
 
 from zope.app.testing import ztapi
-from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.annotation.interfaces import IAttributeAnnotatable, IAnnotations
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.testing.placelesssetup import PlacelessSetup

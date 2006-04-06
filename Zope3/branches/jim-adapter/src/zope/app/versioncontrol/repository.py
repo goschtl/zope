@@ -26,11 +26,10 @@ from BTrees.OIBTree import OIBTree
 import zope.event
 import zope.interface
 import zope.datetime
+from zope.annotation.interfaces import IAnnotations
 
 from zope.app import zapi
-from zope.app.annotation.interfaces import IAnnotations
-
-from zope.app.versioncontrol import event
+from zope.app.versioncontrol import nonversioned, utility, event
 from zope.app.versioncontrol.history import VersionHistory
 from zope.app.versioncontrol.interfaces import VersionControlError
 from zope.app.versioncontrol.interfaces import IVersionable, IVersioned
@@ -39,12 +38,8 @@ from zope.app.versioncontrol.interfaces import IRepository
 from zope.app.versioncontrol.interfaces import CHECKED_IN, CHECKED_OUT
 from zope.app.versioncontrol.interfaces import ACTION_CHECKIN, ACTION_CHECKOUT
 from zope.app.versioncontrol.interfaces import ACTION_UNCHECKOUT, ACTION_UPDATE
-from zope.app.versioncontrol import nonversioned
-from zope.app.versioncontrol import utility
-
 
 VERSION_INFO_KEY = "%s.%s" % (utility.__name__, utility.VersionInfo.__name__)
-
 
 class Repository(persistent.Persistent):
     """The repository implementation manages the actual data of versions

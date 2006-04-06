@@ -15,10 +15,10 @@
 
 $Id$
 """
-import unittest 
+import unittest
+import zope.component
+from zope.annotation.interfaces import IAnnotations
 
-from zope.app import zapi
-from zope.app.annotation.interfaces import IAnnotations
 from zope.app.component.testing import PlacefulSetup
 from zope.app.principalannotation import PrincipalAnnotationUtility
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
@@ -26,7 +26,6 @@ from zope.app.testing import ztapi
 
 from zope.app.copypastemove.interfaces import IPrincipalClipboard
 from zope.app.copypastemove import PrincipalClipboard
-
 
 class PrincipalStub(object):
 
@@ -47,7 +46,7 @@ class PrincipalClipboardTest(PlacefulSetup, unittest.TestCase):
     def testAddItems(self):
         user = PrincipalStub('srichter')
 
-        annotationutil = zapi.getUtility(IPrincipalAnnotationUtility)
+        annotationutil = zope.component.getUtility(IPrincipalAnnotationUtility)
         annotations = annotationutil.getAnnotations(user)
         clipboard = IPrincipalClipboard(annotations)
         clipboard.addItems('move', ['bla', 'bla/foo', 'bla/bar'])
@@ -63,7 +62,7 @@ class PrincipalClipboardTest(PlacefulSetup, unittest.TestCase):
     def testSetContents(self):
         user = PrincipalStub('srichter')
 
-        annotationutil = zapi.getUtility(IPrincipalAnnotationUtility)
+        annotationutil = zope.component.getUtility(IPrincipalAnnotationUtility)
         annotations = annotationutil.getAnnotations(user)
         clipboard = IPrincipalClipboard(annotations)
 
@@ -79,7 +78,7 @@ class PrincipalClipboardTest(PlacefulSetup, unittest.TestCase):
     def testClearContents(self):
         user = PrincipalStub('srichter')
 
-        annotationutil = zapi.getUtility(IPrincipalAnnotationUtility)
+        annotationutil = zope.component.getUtility(IPrincipalAnnotationUtility)
         annotations = annotationutil.getAnnotations(user)
         clipboard = IPrincipalClipboard(annotations)
         clipboard.clearContents()

@@ -18,10 +18,9 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app import zapi
-from zope.fssync.server.syncer import Syncer
 from zope.traversing.api import getPath
-
-from zope.app.annotation.interfaces import IAnnotations
+from zope.annotation.interfaces import IAnnotations
+from zope.fssync.server.syncer import Syncer
 from zope.app.fssync.interfaces import IGlobalFSSyncUtility
 
 def getObjectId(obj):

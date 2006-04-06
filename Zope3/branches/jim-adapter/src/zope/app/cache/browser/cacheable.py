@@ -19,11 +19,11 @@ __docformat__ = 'restructuredtext'
 
 from zope.component import getMultiAdapter
 from zope.publisher.browser import BrowserView
+from zope.annotation.interfaces import IAnnotatable
 
 from zope.app.cache.caching import getCacheForObject, getLocationForCache
 from zope.app.form.utility import setUpEditWidgets
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.cache.interfaces import ICacheable
 from zope.app.form.interfaces import WidgetInputError
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile

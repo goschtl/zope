@@ -5,6 +5,6 @@
   <adapter
       factory="zope.app.dependable.Dependable"
       provides="zope.app.dependable.interfaces.IDependable"
-      for="zope.app.annotation.interfaces.IAnnotatable" />
+      for="zope.annotation.interfaces.IAnnotatable" />
 
 </configure>

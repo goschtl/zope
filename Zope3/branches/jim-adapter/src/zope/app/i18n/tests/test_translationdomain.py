@@ -27,9 +27,9 @@ from zope.i18n.translationdomain \
 from zope.interface import implements, classImplements
 from zope.interface.verify import verifyObject
 from zope.testing.doctestunit import DocTestSuite
+from zope.annotation.interfaces import IAttributeAnnotatable
 
 from zope.app import zapi
-from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.i18n.interfaces import ISyncTranslationDomain
 from zope.app.i18n.messagecatalog import MessageCatalog
 from zope.app.i18n.translationdomain import TranslationDomain

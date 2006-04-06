@@ -3,7 +3,7 @@
    xmlns="http://namespaces.zope.org/browser">
 
   <pages
-      for="zope.app.annotation.interfaces.IAnnotatable"
+      for="zope.annotation.interfaces.IAnnotatable"
       permission="zope.app.dublincore.change"
       class=".metadataedit.MetaDataEdit">
 

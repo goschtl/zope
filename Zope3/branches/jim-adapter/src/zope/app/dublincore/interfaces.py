@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.annotation.interfaces import IAnnotatable
+from zope.annotation.interfaces import IAnnotatable
 from zope.interface import Interface
 from zope.schema import Text, TextLine, Datetime, List
 

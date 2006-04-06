@@ -23,12 +23,12 @@ from transaction import abort
 import zope.event
 import zope.location
 import zope.traversing.interfaces
+import zope.annotation.interfaces
+import zope.annotation.attribute
 from zope import component, interface
 from zope.component.testing import PlacelessSetup
 from zope.testing import doctest, module
 
-import zope.app.annotation.interfaces
-import zope.app.annotation.attribute
 import zope.app.versioncontrol.version
 from zope.app.versioncontrol import interfaces, nonversioned
 
@@ -57,7 +57,7 @@ def eventHandler(event):
 
 class L(persistent.Persistent, zope.location.Location):
     interface.implements(interfaces.IVersionable,
-                         zope.app.annotation.interfaces.IAttributeAnnotatable,
+                         zope.annotation.interfaces.IAttributeAnnotatable,
                          zope.traversing.interfaces.IPhysicallyLocatable,
                          )
     def getPath(self):
@@ -147,7 +147,7 @@ isResourceChanged works as expected:
     >>> import transaction
     >>> db = util.DB()
     >>> component.provideAdapter(
-    ...     zope.app.annotation.attribute.AttributeAnnotations)
+    ...     zope.annotation.attribute.AttributeAnnotations)
     >>> component.provideAdapter(
     ...     nonversioned.StandardNonVersionedDataAdapter,
     ...     [None])

@@ -18,11 +18,12 @@ $Id$
 import unittest
 from StringIO import StringIO
 
-from zope.app import zapi
-from zope.app.annotation.attribute import AttributeAnnotations
+import zope.component
+from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.annotation.interfaces import IAttributeAnnotatable
+
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
-from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.security.interfaces import IPermission
 from zope.app.component.interfaces.registration import IRegisterable
@@ -132,7 +133,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         self.assertEqual(
             testpd.schemaPermissions['title'],
-            (CheckerPublic, zapi.getUtility(IPermission, 'zope.View')))
+            (CheckerPublic, zope.component.getUtility(IPermission, 'zope.View')))
 
         self.assertEqual(len(testpd.states), 3)
         self.assertEqual(len(testpd.transitions), 3)

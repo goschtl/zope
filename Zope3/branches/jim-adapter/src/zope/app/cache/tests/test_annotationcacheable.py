@@ -17,10 +17,10 @@ $Id$
 """
 import unittest
 from zope.interface import implements
+from zope.annotation.interfaces import IAnnotations, IAttributeAnnotatable
+from zope.annotation.attribute import AttributeAnnotations
 
 from zope.app.testing import ztapi, placelesssetup
-from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
-from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.cache.interfaces import ICache
 
