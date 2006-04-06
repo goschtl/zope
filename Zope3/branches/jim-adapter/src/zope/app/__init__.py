@@ -44,6 +44,7 @@ modules_aliases_35 = {
 #        'zope.traversing.browser.absoluteurl',
 
 #TODO provide BBB for zope.app.location
+#TODO provide BBB for zope.app.annotation
     }
 
 msg_35 = "%s has been moved to %s.  This alias will be removed in Zope 3.5."
