@@ -16,6 +16,7 @@
 $Id$
 """
 import unittest
+import zope.component.event
 from zope.testing import doctest
 from zope.component.interfaces import IObjectEvent
 from zope.annotation.interfaces import IAnnotations, IAnnotatable
@@ -25,7 +26,6 @@ from zope.annotation.attribute import AttributeAnnotations
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.event import objectevent
 from zope.app.container.contained import Contained, ObjectRemovedEvent
 from zope.app.container.interfaces import IContained, IObjectRemovedEvent
 from zope.app.container.sample import SampleContainer
@@ -59,7 +59,7 @@ class TestObjectEventNotifications(unittest.TestCase):
 
         item = Contained()
         event = ObjectRemovedEvent(item)
-        objectevent.objectEventNotify(event)
+        zope.component.event.objectEventNotify(event)
         self.assertEqual([(item, event)], events)
 
     def testNotifyNobody(self):
@@ -68,11 +68,11 @@ class TestObjectEventNotifications(unittest.TestCase):
         events = []
         item = Contained()
         evt = ObjectRemovedEvent(item)
-        objectevent.objectEventNotify(evt)
+        zope.component.event.objectEventNotify(evt)
         self.assertEqual([], events)
 
     def testVeto(self):
-        ztapi.subscribe([IObjectEvent], None, objectevent.objectEventNotify)
+        zope.component.provideHandler(zope.component.event.objectEventNotify)
         container = SampleContainer()
         item = Contained()
 

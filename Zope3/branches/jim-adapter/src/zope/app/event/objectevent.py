@@ -171,10 +171,3 @@ class ObjectCopiedEvent(ObjectCreatedEvent):
     def __init__(self, object, original):
         super(ObjectCopiedEvent, self).__init__(object)
         self.original = original
-
-
-def objectEventNotify(event):
-    """Event subscriber to dispatch ObjectEvents to interested adapters."""
-    adapters = subscribers((event.object, event), None)
-    for adapter in adapters:
-        pass # getting them does the work

@@ -809,6 +809,7 @@ def test_suite():
                              setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('registry.txt', checker=checker,
                              tearDown=tearDownRegistryTests),
+        doctest.DocFileSuite('event.txt'),
         ))
 
 if __name__ == "__main__":
