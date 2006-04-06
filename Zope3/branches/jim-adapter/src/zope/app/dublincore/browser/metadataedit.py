@@ -19,9 +19,9 @@ __docformat__ = 'restructuredtext'
 
 from datetime import datetime
 from zope.event import notify
-from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.event.objectevent import Attributes
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.lifecycleevent import ObjectModifiedEvent, Attributes
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory('zope')
 from zope.app.dublincore.interfaces import IZopeDublinCore
 
 

@@ -18,12 +18,12 @@ $Id$
 from datetime import datetime
 
 import zope.event
+from zope import lifecycleevent
 from zope.publisher import contenttype
 from zope.schema import Text
 from zope.exceptions.interfaces import UserError
 
 from zope.app import contenttypes
-from zope.app.event import objectevent
 from zope.app.file.file import File
 from zope.app.file.interfaces import IFile
 from zope.app.i18n import ZopeMessageFactory as _
@@ -117,7 +117,7 @@ class FileAdd(FileUpdateView):
 
     def update_object(self, data, contenttype):
         f = File(data, contenttype)
-        zope.event.notify(objectevent.ObjectCreatedEvent(f))
+        zope.event.notify(lifecycleevent.ObjectCreatedEvent(f))
         self.context.add(f)
         self.request.response.redirect(self.context.nextURL())
         return ''
@@ -207,14 +207,14 @@ class FileUpload(FileUpdateView):
     def update_object(self, data, contenttype):
         self.context.contentType = contenttype
 
-        descriptor = objectevent.Attributes(IFile, "contentType")
+        descriptor = lifecycleevent.Attributes(IFile, "contentType")
 
         # Update *only* if a new value is specified
         if data:
             self.context.data = data
             descriptor.attributes += "data",
 
-        event = objectevent.ObjectModifiedEvent(self.context, descriptor)
+        event = lifecycleevent.ObjectModifiedEvent(self.context, descriptor)
         zope.event.notify(event)
 
         formatter = self.request.locale.dates.getFormatter(
