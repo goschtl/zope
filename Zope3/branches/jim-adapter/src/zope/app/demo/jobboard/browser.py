@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.publisher.browser import BrowserView
 from zope.event import notify
-from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.lifecycleevent import ObjectModifiedEvent
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 from job import Job

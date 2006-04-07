@@ -249,7 +249,7 @@ class TestEventSubscribers(unittest.TestCase):
 
     def test_reindexDocSubscriber(self):
         from zope.app.catalog.catalog import reindexDocSubscriber
-        from zope.app.event.objectevent import ObjectModifiedEvent
+        from zope.lifecycleevent import ObjectModifiedEvent
 
         ob = Stub()
         id = self.utility.register(ob)

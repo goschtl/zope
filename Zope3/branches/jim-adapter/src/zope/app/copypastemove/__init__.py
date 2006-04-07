@@ -26,9 +26,9 @@ from zope.location.pickling import locationCopy
 from zope.location.interfaces import ISublocations
 from zope.annotation.interfaces import IAnnotations
 from zope.annotation.interfaces import IAnnotations
+from zope.lifecycleevent import ObjectCopiedEvent
 
 from zope.app.container.sample import SampleContainer
-from zope.app.event.objectevent import ObjectCopiedEvent
 from zope.app.container.interfaces import IContainer, IOrderedContainer
 from zope.app.container.interfaces import IContained
 from zope.app.container.interfaces import INameChooser
@@ -681,8 +681,8 @@ def dispatchToSublocations(object, event):
 
     Finally, we need to register our handler for copy events:
 
+      >>> from zope.lifecycleevent.interfaces import IObjectCopiedEvent
       >>> from zope.app.testing import ztapi
-      >>> from zope.app.event.interfaces import IObjectCopiedEvent
       >>> ztapi.subscribe([None, IObjectCopiedEvent], None, handler)
 
     and this function as a dispatcher:

@@ -32,22 +32,22 @@
 
   <subscriber
       handler=".timeannotators.ModifiedAnnotator"
-      for="zope.app.event.interfaces.IObjectModifiedEvent"
+      for="zope.lifecycleevent.interfaces.IObjectModifiedEvent"
       />
 
   <subscriber
       handler=".timeannotators.CreatedAnnotator"
-      for="zope.app.event.interfaces.IObjectCreatedEvent"
+      for="zope.lifecycleevent.interfaces.IObjectCreatedEvent"
       />
 
   <subscriber
       handler=".creatorannotator.CreatorAnnotator"
-      for="zope.app.event.interfaces.IObjectModifiedEvent"
+      for="zope.lifecycleevent.interfaces.IObjectModifiedEvent"
       />
 
   <subscriber
       handler=".creatorannotator.CreatorAnnotator"
-      for="zope.app.event.interfaces.IObjectCreatedEvent"
+      for="zope.lifecycleevent.interfaces.IObjectCreatedEvent"
       />
 
 

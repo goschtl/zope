@@ -23,19 +23,17 @@ from zope.component import queryAdapter
 from zope.publisher.interfaces.ftp import IFTPPublisher
 from zope.security.proxy import removeSecurityProxy
 from zope.security.checker import canAccess
+from zope.event import notify
+from zope.lifecycleevent import ObjectCreatedEvent
 
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.filerepresentation.interfaces import IWriteDirectory
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
-
-from zope.event import notify
-from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.copypastemove.interfaces import IContainerItemRenamer
 from zope.app.container.interfaces import IContainer
-
 
 class FTPView(object):
     implements(IFTPPublisher)

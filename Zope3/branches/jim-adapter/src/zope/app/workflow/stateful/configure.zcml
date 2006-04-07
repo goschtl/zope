@@ -139,7 +139,7 @@
      are created. -->
 <subscriber
    for="..interfaces.IProcessInstanceContainerAdaptable
-        zope.app.event.objectevent.IObjectCreatedEvent"
+        zope.lifecycleevent.IObjectCreatedEvent"
    handler=".contentworkflow.NewObjectProcessInstanceCreator"
    >
 

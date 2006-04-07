@@ -24,8 +24,8 @@ from zope.schema import Text, Int
 from zope.security.checker import CheckerPublic
 from zope.security.management import newInteraction, endInteraction
 from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.component.testing import events, clearEvents
 
-from zope.app.event.tests.placelesssetup import events, clearEvents
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
 
@@ -43,7 +43,6 @@ from zope.app.workflow.stateful.definition import State, Transition
 from zope.app.workflow.stateful.instance import StatefulProcessInstance
 from zope.app.workflow.stateful.instance import StateChangeInfo
 
-from zope.app import zapi
 from zope.app.container.contained import contained
 from zope.app.utility import UtilityRegistration
 from zope.app.testing import setup
@@ -98,7 +97,7 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         
         setup.addUtility(self.sm, 'definition1', IProcessDefinition, pd)
 
-        self.pd = zapi.getUtility(IProcessDefinition, name='definition1')
+        self.pd = component.getUtility(IProcessDefinition, name='definition1')
         # give the pi some context to find a service
         self.pi = createProcessInstance(self.sm, 'definition1')
         # Let's also listen to the fired events
@@ -206,7 +205,7 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         setup.addUtility(self.sm, 'definition1', IProcessDefinition, pd)
 
-        self.pd = zapi.getUtility(IProcessDefinition, 'definition1')
+        self.pd = component.getUtility(IProcessDefinition, 'definition1')
         # give the pi some context to find a service
         self.pi = contained(
             createProcessInstance(self.sm, 'definition1'),
@@ -288,7 +287,7 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         setup.addUtility(self.sm, 'definition1', IProcessDefinition, pd)
 
-        self.pd = zapi.getUtility(IProcessDefinition, 'definition1')
+        self.pd = component.getUtility(IProcessDefinition, 'definition1')
         # give the pi some context to find a service
         self.pi = contained(
             createProcessInstance(self.sm, 'definition1'),
@@ -370,7 +369,7 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         setup.addUtility(self.sm, 'definition1', IProcessDefinition, pd)
 
-        self.pd = zapi.getUtility(IProcessDefinition, 'definition1')
+        self.pd = component.getUtility(IProcessDefinition, 'definition1')
         # give the process instance container (pic) some context to find a
         # service (while this is not correct, it resembles the current
         # behavior.

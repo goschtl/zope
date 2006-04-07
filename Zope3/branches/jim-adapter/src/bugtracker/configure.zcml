@@ -376,8 +376,8 @@
   <!-- Register event listener for change mails -->
   <subscriber
       handler=".mail.Mailer"
-      for="zope.app.event.interfaces.IObjectCreatedEvent
-           zope.app.event.interfaces.IObjectModifiedEvent" />
+      for="zope.lifecycleevent.interfaces.IObjectCreatedEvent
+           zope.lifecycleevent.interfaces.IObjectModifiedEvent" />
 
 
   <!-- Register various browser related components, including all views -->

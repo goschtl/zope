@@ -23,8 +23,8 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.security.checker import CheckerPublic
 from zope.event import notify
 from zope.component.interfaces import ObjectEvent
+from zope.lifecycleevent import modified
 
-from zope.app.event.objectevent import modified
 from zope.app.container.interfaces import IReadContainer
 from zope.app.container.contained import Contained, containedEvent
 from zope.app.schema.interfaces import IVocabularyFactory

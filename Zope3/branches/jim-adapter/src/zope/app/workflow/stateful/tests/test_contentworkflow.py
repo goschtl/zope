@@ -21,11 +21,11 @@ from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
+from zope.lifecycleevent import ObjectCreatedEvent
+from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 
 from zope.app import zapi
 from zope.app.container.contained import Contained
-from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.event.interfaces import IObjectCreatedEvent
 from zope.app.component.site import UtilityRegistration
 from zope.app.component.interfaces import ILocalUtility
 from zope.app.component.interfaces.registration import ActiveStatus
