@@ -31,7 +31,7 @@ from zope.i18n.negotiator import negotiator
 from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
 from zope.i18n.translationdomain import TranslationDomain
 from zope.publisher.browser import TestRequest
-from zope.schema import Text
+from zope.schema import Text, Int
 from zope.app.form.browser.tests import support
 import zope.app.form.browser.tests
 
@@ -190,6 +190,24 @@ class Test(BrowserWidgetTest):
         request = TestRequest()
         widget = self._WidgetFactory(field, request)
         self.assertEqual(widget._getFormValue(), u'def')
+
+    def test_getFormValue_preserves_errors(self):
+        field = Int(__name__ = 'foo', title = u"Foo Title", default=42)
+        request = TestRequest()
+        widget = self._WidgetFactory(field, request)
+
+        # Sometimes you want to set a custom error on a widget.
+        widget._error = 'my error'
+
+        # _getFormValue shouldn't replace it.
+        request.form['field.foo'] = u'barf!'
+        widget._getFormValue()
+        self.assertEquals(widget._error, 'my error')
+
+        # _getFormValue shouldn't clear it either
+        request.form['field.foo'] = 33
+        widget._getFormValue()
+        self.assertEquals(widget._error, 'my error')
 
 
 def test_suite():
