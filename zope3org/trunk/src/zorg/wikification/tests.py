@@ -71,6 +71,9 @@ example1 = u"""<html>
         <p>An <a href="http://www.google.org">external absolute link</a></p>
         <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
         <p>A <a href="http://127.0.0.1/site/newitem">new absolute link</a></p>
+        <p>A [Topic] can occurr once.</p>
+        <p>A [Topic] can occurr twice.</p>
+        <p>A [Topic] can occurr thrice.</p>
     </body>
 </html>"""
 

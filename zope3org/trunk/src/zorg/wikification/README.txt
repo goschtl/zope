@@ -36,6 +36,9 @@ The index.html is our starting point and contains the following HTML :
             <p>An <a href="http://www.google.org">external absolute link</a></p>
             <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
             <p>A <a href="http://127.0.0.1/site/newitem">new absolute link</a></p>
+            <p>A [Topic] can occurr once.</p>
+            <p>A [Topic] can occurr twice.</p>
+            <p>A [Topic] can occurr thrice.</p>
         </body>
     </html>
 
@@ -66,6 +69,9 @@ one, the resulting HTML could look as follows :
             <p>An <a href="http://www.google.org">external absolute link</a></p>
             <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
             <p>A <a href="http://127.0.0.1/site/@@wikiedit.html?add=newitem" class="wiki-link">new absolute link</a></p>
+            <p>A <a class="wiki-link" href="http://127.0.0.1/site/@@wikiedit.html?add=Topic">[Topic]</a> can occurr once.</p>
+            <p>A <a class="wiki-link" href="http://127.0.0.1/site/@@wikiedit.html?add=Topic">[Topic]</a> can occurr twice.</p>
+            <p>A <a class="wiki-link" href="http://127.0.0.1/site/@@wikiedit.html?add=Topic">[Topic]</a> can occurr thrice.</p>
     <BLANKLINE>
 
     

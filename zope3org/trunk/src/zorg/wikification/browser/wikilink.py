@@ -17,7 +17,7 @@ $Id: wikilink.py 38895 2005-10-07 15:09:36Z dominikhuber $
 """
 __docformat__ = 'restructuredtext'
 
-import re, urllib, cgi
+import re, urllib, cgi, os
 
 import zope
 
@@ -93,6 +93,15 @@ class Placeholder(PageElement) :
             The default implementation returns None.
         """
         return None
+        
+    def postProcessing(self, html) :
+        """ Handler for a postprocessing step. Called after a first
+            pass with a preliminary html version.
+            
+            The default implementation returns the unmodified html
+           
+        """
+        return html
 
     def editableLabel(self) :
         label = self.label.strip()
@@ -387,6 +396,20 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         self.pieces.append(result)
         
         
+    def output(self) :
+        """ Returns the processing result.
+        
+        Adds an additional postprocessing step 
+        for placeholder commands with global scope.
+        
+        """
+        
+        html = BaseHTMLProcessor.output(self)
+        for placeholder in self.placeholders.values() :
+            html = placeholder.postProcessing(html)
+        return html
+        
+        
 class MenuPlaceholder(Placeholder) :
     """ A placeholder, that offers various edit options for the user.
     Placeholders are created by the link processor on demand and are referenced
@@ -447,12 +470,20 @@ class MenuPlaceholder(Placeholder) :
                 
 
 class SavingPlaceholder(Placeholder) :
-    """ A placeholder that saves the result to disk. """
+    """ A placeholder that saves the result to disk. 
+    
+        Determines whether a change is performed globally or only
+        at the position of the placeholder.
+        
+    """
+    
+    global_scope = False        # default: depends on usecase
     
     def startTag(self, attrs) :
         """ Called when a starttag for a placeholder is detected. """
         pattern = '<a href="%s"%s>'
         return pattern % (self.link, self._tagAttrs(attrs))
+
 
 class RenamedPlaceholder(SavingPlaceholder) :
     """ A placeholder with a changed label. """
@@ -472,12 +503,12 @@ class RenamedPlaceholder(SavingPlaceholder) :
         if self.nested == 0 and not self.fired :
             label = self.page.parameter("label").encode("utf-8")
             self.processor.pieces[-2] = label
-            
         
-
- 
+        
 class AddObjectPlaceholder(SavingPlaceholder) :
     """ A convenient base class for placeholders that add objects. """
+    
+    new_link = None
     
     def addObject(self) :
         """ Main method that adds the object and returns the new url.
@@ -485,20 +516,42 @@ class AddObjectPlaceholder(SavingPlaceholder) :
         """
         pass
     
+    def generateAppendix(self, num, type=None) :
+        """ Returns '001', '002' etc. as an automatically generated
+            appendix for link targets."""
+        return "%03d" % num
+            
+    def generateName(self, name, container) :
+        """ Generates a new name that includes a generated appendix. """
+        basename, extension = os.path.splitext(name)
+        id = 1
+        while (basename + self.generateAppendix(id) + extension) in container :
+            id=id+1
+        return basename + self.generateAppendix(id) + extension
     
     def _addObject(self, name, obj) :
-        """ Help method that adds an object and returns the new name. """
+        """ Help method that adds an object and returns the new name. 
+        
+            Handles also the case that the user wants to limit
+            the new link to the clicked one.
+            
+            XXX This first implementation is a hack and needs reworking
+            
+        
+        """
         
         zope.event.notify(ObjectCreatedEvent(obj))
         
         scope = self.page.parameter('scope')
-        scope_checked = scope and scope.lower() == 'on'
-        
-        import pdb; pdb.set_trace()
+        self.global_scope = scope and scope.lower() == 'on'
         
         container = self.page.container
         chooser = INameChooser(container)
         name = chooser.chooseName(name, obj)
+        
+        if not self.global_scope :
+            name = self.generateName(name, container)
+            
         container[name] = obj
         contained = container[name]
         
@@ -510,18 +563,25 @@ class AddObjectPlaceholder(SavingPlaceholder) :
             dc.title = title
         if description :
             dc.description = description
-         
+        
         return name.encode("utf-8")
         
     def textLink(self) :
         name = self.addObject()
-        return '<a href="%s">%s</a>' % (name, self.editableLabel())
+        self.new_link = '<a href="%s">%s</a>' % (name, self.editableLabel())
+        return self.new_link
         
     def startTag(self, attrs) :
         name = self.addObject()
         pattern = '<a href="%s"%s>'
         return pattern % (name, self._tagAttrs(attrs))
 
+    def postProcessing(self, html) :
+        """ Replaces a textual WikiLink globally. """
+        if self.global_scope and self.new_link :
+            html = html.replace("[%s]" % self.label, self.new_link)
+        return html
+        
         
 class UploadFilePlaceholder(AddObjectPlaceholder) :
     """ A placeholder that points to an uploaded file. """

@@ -29,6 +29,9 @@ Let's look at the unmodified content of the index.html page:
             <p>An <a href="http://www.google.org">external absolute link</a></p>
             <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
             <p>A <a href="http://127.0.0.1/site/newitem">new absolute link</a></p>
+            <p>A [Topic] can occurr once.</p>
+            <p>A [Topic] can occurr twice.</p>
+            <p>A [Topic] can occurr thrice.</p>
         </body>
     </html>
   
@@ -50,6 +53,9 @@ navigational structure, which is set aside for the moment :
             <p>An <a href="http://www.google.org">external absolute link</a></p>
             <p>An <a href="http://127.0.0.1/site/target">internal absolute link</a></p>
             <p>A <a href="http://127.0.0.1/site/@@wikiedit.html?add=newitem" class="wiki-link">new absolute link</a></p>
+            <p>A <a class="wiki-link" href="http://127.0.0.1/site/@@wikiedit.html?add=Topic">[Topic]</a> can occurr once.</p>
+            <p>A <a class="wiki-link" href="http://127.0.0.1/site/@@wikiedit.html?add=Topic">[Topic]</a> can occurr twice.</p>
+            <p>A <a class="wiki-link" href="http://127.0.0.1/site/@@wikiedit.html?add=Topic">[Topic]</a> can occurr thrice.</p>
     <BLANKLINE>
 
 It uses the Dublin Core title (or "Untitled" if the title is not set).
@@ -146,16 +152,35 @@ quite easily:
     </div>
     ...      
     
-One of the most usefull options is to upload a new file in one step:
+One of the most usefull options is to upload a new file in one step. 
+We have to consider the interesting usecase here that a wikilink with a
+unique name occurs in different places and should point to different files
+or locations. To ensure this we use an appendix that is guaranteed to be
+unique:
         
     >>> request.form = dict(data='Some Content')
     >>> edit_page.uploadFile(link_id='wiki-link5')
     >>> print edit_page.renderBody()
     <BLANKLINE>
     ...
-    <p>A <a href="http://127.0.0.1/site/New%20Label">New Label</a></p>
+    <p>A <a href="http://127.0.0.1/site/New%20Label001">New Label</a></p>
     ...
 
+The more typical usecase is that we want a global substitution. All wikilinks
+with a certain name should point to the same location after the upload. This is
+done with checkbox that specifies a global scope. Now we simulate
+the replacement of a wikilink that occurs multiple times (the second of three
+occurrences) :
+
+    >>> request.form = dict(scope='on', data='Some Content')
+    >>> print edit_page.modifyLink(cmd='upload', link_id='wiki-link10')
+    <BLANKLINE>
+    ...
+    <p>A <a href="http://127.0.0.1/site/Topic">Topic</a> can occurr once.</p>
+    <p>A <a href="http://127.0.0.1/site/Topic">Topic</a> can occurr twice.</p>
+    <p>A <a href="http://127.0.0.1/site/Topic">Topic</a> can occurr thrice.</p>
+    ...
+    
   
 
 
