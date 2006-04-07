@@ -7,7 +7,7 @@
 
   <utility
       component=".vocabulary.SourceTypeVocabulary"
-      provides="zope.app.schema.interfaces.IVocabularyFactory"
+      provides="zope.schema.interfaces.IVocabularyFactory"
       name="SourceTypes"
       />
 

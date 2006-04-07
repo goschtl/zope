@@ -20,7 +20,7 @@ import md5
 import sha
 
 from zope.interface import implements, classProvides
-from zope.app.schema.interfaces import IVocabularyFactory
+from zope.schema.interfaces import IVocabularyFactory
 from zope.app.component.vocabulary import UtilityVocabulary
 
 from zope.app.authentication.interfaces import IPasswordManager

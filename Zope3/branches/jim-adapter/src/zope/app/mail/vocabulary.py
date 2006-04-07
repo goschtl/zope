@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import classProvides
-from zope.app.schema.interfaces import IVocabularyFactory
+from zope.schema.interfaces import IVocabularyFactory
 from zope.app.component.vocabulary import UtilityVocabulary
 
 class MailDeliveryNames(UtilityVocabulary):

@@ -17,10 +17,11 @@ This vocabulary provides role IDs.
 
 $Id$
 """
+import zope.component
 from zope.interface import implements, classProvides
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
-from zope.app import zapi
-from zope.app.schema.interfaces import IVocabularyFactory
+from zope.schema.interfaces import IVocabularyFactory
+
 from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.interfaces import IGrantVocabulary
 
@@ -62,7 +63,7 @@ class RoleIdsVocabulary(SimpleVocabulary):
 
     def __init__(self, context):
         terms = []
-        roles = zapi.getUtilitiesFor(IRole, context)
+        roles = zope.component.getUtilitiesFor(IRole, context)
         for name, role in roles:
             terms.append(SimpleTerm(name, name, name))
         super(RoleIdsVocabulary, self).__init__(terms)

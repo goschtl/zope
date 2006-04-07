@@ -22,11 +22,11 @@ __docformat__ = "reStructuredText"
 from zope import interface, component, i18n
 from zope.interface.interfaces import IInterface
 from zope.schema import vocabulary
+from zope.schema.interfaces import IVocabularyFactory
 
 import zope.app.dublincore.interfaces
 from zope.app.component.interfaces import ILocalUtility
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.app.schema.interfaces import IVocabularyFactory
 
 from zope.app.authentication import interfaces
 

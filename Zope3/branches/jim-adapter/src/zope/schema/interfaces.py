@@ -579,3 +579,10 @@ class IVocabularyRegistry(Interface):
 
         When the vocabulary cannot be found, LookupError is raised.
         """
+
+class IVocabularyFactory(Interface):
+    """Can create vocabularies."""
+
+    def __call__(self, context):
+        """The context provides a location that the vocabulary can make use
+        of."""

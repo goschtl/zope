@@ -19,10 +19,10 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import classProvides
 from zope.component import ComponentLookupError
+from zope.schema.interfaces import IVocabularyFactory
 from zope.app import zapi
 from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.component.vocabulary import UtilityVocabulary
-from zope.app.schema.interfaces import IVocabularyFactory
 
 def getCacheForObject(obj):
     """Returns the cache associated with `obj` or ``None``."""

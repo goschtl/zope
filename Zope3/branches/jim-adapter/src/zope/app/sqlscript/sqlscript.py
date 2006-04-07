@@ -21,13 +21,13 @@ from types import StringTypes
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
+import zope.component
 from zope.interface import implements, classProvides
 from zope.interface.common.mapping import IEnumerableMapping
+from zope.schema.interfaces import IVocabularyFactory
 
-from zope.app import zapi
 from zope.app.rdb import queryForResults
 from zope.app.container.contained import Contained
-from zope.app.schema.interfaces import IVocabularyFactory
 from zope.app.component.vocabulary import UtilityVocabulary
 from zope.app.cache.caching import getCacheForObject, getLocationForCache
 from zope.app.rdb.interfaces import IZopeDatabaseAdapter
@@ -105,7 +105,7 @@ class SQLScript(Persistent, Contained):
 
     def getConnection(self):
         name = self.connectionName
-        connection = zapi.getUtility(IZopeDatabaseAdapter, name)
+        connection = zope.component.getUtility(IZopeDatabaseAdapter, name)
         return connection()
 
     def __call__(self, **kw):
