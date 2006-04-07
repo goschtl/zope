@@ -25,8 +25,8 @@ import zope.location
 import zope.traversing.interfaces
 import zope.annotation.interfaces
 import zope.annotation.attribute
-from zope import component, interface
-from zope.component.testing import PlacelessSetup
+import zope.component.testing
+from zope import interface
 from zope.testing import doctest, module
 
 import zope.app.versioncontrol.version
@@ -34,12 +34,9 @@ from zope.app.versioncontrol import interfaces, nonversioned
 
 name = 'zope.app.versioncontrol.README'
 
-ps = PlacelessSetup()
-
 def setUp(test):
-    ps.setUp()
+    zope.component.testing.setUp(test)
     module.setUp(test, name)
-    zope.event.subscribers.append(eventHandler)
 
 def tearDown(test):
     module.tearDown(test, name)
@@ -47,19 +44,12 @@ def tearDown(test):
     db = test.globs.get('db')
     if db is not None:
         db.close()
-    ps.tearDown()
-    if eventHandler in zope.event.subscribers:
-        zope.event.subscribers.remove(eventHandler)
-
-def eventHandler(event):
-    print event
-
+    zope.component.testing.tearDown(test)
 
 class L(persistent.Persistent, zope.location.Location):
     interface.implements(interfaces.IVersionable,
                          zope.annotation.interfaces.IAttributeAnnotatable,
-                         zope.traversing.interfaces.IPhysicallyLocatable,
-                         )
+                         zope.traversing.interfaces.IPhysicallyLocatable)
     def getPath(self):
         return 'whatever'
 
@@ -146,9 +136,9 @@ isResourceChanged works as expected:
     >>> from ZODB.tests import util
     >>> import transaction
     >>> db = util.DB()
-    >>> component.provideAdapter(
+    >>> zope.component.provideAdapter(
     ...     zope.annotation.attribute.AttributeAnnotations)
-    >>> component.provideAdapter(
+    >>> zope.component.provideAdapter(
     ...     nonversioned.StandardNonVersionedDataAdapter,
     ...     [None])
     >>> import zope.app.versioncontrol.repository
