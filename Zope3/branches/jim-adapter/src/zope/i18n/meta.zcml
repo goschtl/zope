@@ -7,8 +7,8 @@
 
     <meta:directive
         name="registerTranslations"
-        schema=".metadirectives.IRegisterTranslationsDirective"
-        handler=".metaconfigure.registerTranslations"
+        schema="zope.i18n.zcml.IRegisterTranslationsDirective"
+        handler="zope.i18n.zcml.registerTranslations"
         />
 
   </meta:directives>

@@ -78,7 +78,7 @@
       provides="zope.i18n.interfaces.IMessageImportFilter"
       />
 
-  <include file="locales.zcml" />
+  <include package="zope.i18n.locales" />
   <include package=".xmlrpc" />
   <include package=".browser" />
 

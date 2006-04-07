@@ -19,12 +19,22 @@ __docformat__ = 'restructuredtext'
 
 import os
 
-from zope.app.component.metaconfigure import utility
+from zope.interface import Interface
+from zope.configuration.fields import Path
 from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
 from zope.i18n.testmessagecatalog import TestMessageCatalog
 from zope.i18n.translationdomain import TranslationDomain
 from zope.i18n.interfaces import ITranslationDomain
+from zope.app.component.metaconfigure import utility
 
+class IRegisterTranslationsDirective(Interface):
+    """Register translations with the global site manager."""
+
+    directory = Path(
+        title=u"Directory",
+        description=u"Directory containing the translations",
+        required=True
+        )
 
 def registerTranslations(_context, directory):
     path = os.path.normpath(directory)
