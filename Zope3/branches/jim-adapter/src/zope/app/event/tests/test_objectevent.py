@@ -18,13 +18,7 @@ $Id$
 import unittest
 import zope.component.event
 from zope.testing import doctest
-from zope.component.interfaces import IObjectEvent
-from zope.annotation.interfaces import IAnnotations, IAnnotatable
-from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.annotation.attribute import AttributeAnnotations
 
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.container.contained import Contained, ObjectRemovedEvent
 from zope.app.container.interfaces import IContained, IObjectRemovedEvent
 from zope.app.container.sample import SampleContainer
@@ -32,9 +26,13 @@ from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.testing import ztapi
 
 class TestObjectEventNotifications(unittest.TestCase):
+
     def setUp(self):
         self.callbackTriggered = False
         setUp()
+
+    def tearDown(self):
+        tearDown()
 
     def testNotify(self):
         events = []
@@ -79,27 +77,9 @@ class TestObjectEventNotifications(unittest.TestCase):
         # del container['Fred'] will fire an ObjectRemovedEvent event.
         self.assertRaises(Veto, container.__delitem__, 'Fred')
         
-    def tearDown(self):
-        tearDown()
-
-def setUpObjectEventDocTest(test):
-    setUp()
-        
-    ztapi.provideAdapter(IAttributeAnnotatable,
-                         IAnnotations, AttributeAnnotations) 
-    ztapi.provideAdapter(IAnnotatable,
-                         IZopeDublinCore, ZDCAnnotatableAdapter)    
-
-def tearDownObjectEventDocTest(test) :
-    tearDown()
-
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestObjectEventNotifications),
-        doctest.DocTestSuite("zope.app.event.objectevent",
-                             setUp=setUpObjectEventDocTest,
-                             tearDown=tearDownObjectEventDocTest,
-                             optionflags=doctest.NORMALIZE_WHITESPACE),
         ))
 
 if __name__=='__main__':
