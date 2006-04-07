@@ -50,7 +50,8 @@ modules_aliases_35 = {
 
     'zope.app.event.objectevent': 'zope.lifecycleevent',
     'zope.app.event.interfaces': 'zope.lifecycleevent.interfaces',
-    'zope.app.event.dispatch': 'zope.component.event'
+    'zope.app.event.dispatch': 'zope.component.event',
+    'zope.app.event.tests.placelesssetup': 'zope.component.testing',
     }
 
 msg_35 = "%s has been moved to %s.  This alias will be removed in Zope 3.5."
