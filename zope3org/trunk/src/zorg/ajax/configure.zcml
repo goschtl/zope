@@ -55,22 +55,22 @@
   
   
  
-  <zope:content class="zorg.ajax.livepage.IterBuffer">
+  <zope:class class="zorg.ajax.livepage.IterBuffer">
     
 	<require
 		permission="zope.Public"
 		attributes="next __iter__"/>   
 			
-  </zope:content>
+  </zope:class>
   
 
- <zope:content class="twisted.web2.wsgi.FileWrapper">
+ <zope:class class="twisted.web2.wsgi.FileWrapper">
     
 	<require
 		permission="zope.Public"
 		attributes="next __iter__"/>   
 			
-  </zope:content>
+  </zope:class>
   
   
   <zope:subscriber

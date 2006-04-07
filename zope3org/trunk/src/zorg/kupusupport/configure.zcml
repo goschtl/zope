@@ -2,11 +2,11 @@
     xmlns="http://namespaces.zope.org/zope">
 
 
-  <content class="zope.app.file.File">
+  <class class="zope.app.file.File">
     <implements 
         interface="zorg.kupusupport.interfaces.IKupuEditable"
         />
-  </content>
+  </class>
 
   <adapter
 	  factory="zorg.kupusupport.adapters.KupuEditableFile"

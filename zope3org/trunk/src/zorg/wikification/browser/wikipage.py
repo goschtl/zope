@@ -533,7 +533,6 @@ class WikiEditor(WikiPage) :
         self._modifyLink('upload', link_id)
         self.request.response.redirect(self.nextURL())
         
-        
     def modifyLink(self, cmd, link_id, verbose=True) :
         """ Modify a single link dynamically and return the new
             body.

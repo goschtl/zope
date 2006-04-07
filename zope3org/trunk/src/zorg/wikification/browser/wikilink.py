@@ -491,6 +491,11 @@ class AddObjectPlaceholder(SavingPlaceholder) :
         
         zope.event.notify(ObjectCreatedEvent(obj))
         
+        scope = self.page.parameter('scope')
+        scope_checked = scope and scope.lower() == 'on'
+        
+        import pdb; pdb.set_trace()
+        
         container = self.page.container
         chooser = INameChooser(container)
         name = chooser.chooseName(name, obj)
@@ -551,8 +556,21 @@ class CreateFolderPlaceholder(AddObjectPlaceholder) :
         return self._addObject(name, Folder())
     
 
-class CreatePagePlaceholder(Placeholder) :
-    pass
+class CreatePagePlaceholder(AddObjectPlaceholder) :
+    """ A placeholder for a new single page. Note that this command only
+        changes the reference of the clicked link. Thus you can have
+        several links with the same name and different URLs.
+    """
+                
+    def addObject(self) :
+        """ Create a page. Returns the name of the new page.
+        """
+        
+        label = self.editableLabel()
+        contenttype = "text/html"
+        name = self.page.parameter('name')
+        return self._addObject(name, File(u'New Page', contenttype))
+
 
 class NoopPlaceholder(Placeholder) :
     """ An unmodified placeholder. """

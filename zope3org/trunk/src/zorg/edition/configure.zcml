@@ -60,41 +60,41 @@
   <include package=".browser" />
 
 
-  <content class="zorg.edition.storage.SimpleHistoryStorage">
+  <class class="zorg.edition.storage.SimpleHistoryStorage">
    
     <require
 			permission="zope.ManageSite"
 			interface="zorg.edition.interfaces.IHistoryStorage"/>
         
-  </content>  
+  </class>  
   
-  <content class="zorg.edition.storage.VersionHistory">
+  <class class="zorg.edition.storage.VersionHistory">
    
     <require
 			permission="zope.ManageSite"
 			interface="zorg.edition.interfaces.IVersionHistory"/>
         
-  </content> 
+  </class> 
   
         
-  <content class="buddydemo.buddy.Buddy">
+  <class class="buddydemo.buddy.Buddy">
      <implements 
          interface=".interfaces.IVersionable" />
-  </content>      
+  </class>      
   
-  <content class="zope.app.file.File">
+  <class class="zope.app.file.File">
      <implements 
          interface=".interfaces.IVersionable" />
-  </content>     
+  </class>     
   
-  <content class="zope.app.folder.Folder">
+  <class class="zope.app.folder.Folder">
      <implements 
          interface=".interfaces.IVersionable" />
-  </content>  
+  </class>  
   
-  <content class="zorg.edition.demo.vproposal.VProposal">
+  <class class="zorg.edition.demo.vproposal.VProposal">
      <implements 
          interface=".interfaces.IVersionable" />
-  </content>     
+  </class>     
           
 </configure>

@@ -3,7 +3,7 @@
   i18n_domain="zope">
 
   <!-- comment -->
-  <content class=".comments.Comment">
+  <class class=".comments.Comment">
     <factory id="comment.interfaces.IComment" />
     <implements 
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
@@ -16,7 +16,7 @@
         permission="zope.ManageContent"
         set_schema=".IComment"
         />
-  </content>
+  </class>
 
 
   <!-- comments -->
@@ -44,18 +44,18 @@
         />
   </class>
   
-  <content class="zope.app.file.File">
+  <class class="zope.app.file.File">
     <implements 
         interface="zorg.comment.IAttributeAnnotableComments"
         />
         
-  </content>
+  </class>
 
-  <content class="zope.app.folder.Folder">
+  <class class="zope.app.folder.Folder">
     <implements 
         interface="zorg.comment.IAttributeAnnotableComments"
         />
-  </content>
+  </class>
   
   <adapter
       provides=".IComments"
