@@ -19,6 +19,7 @@ sub transactions need to implement their own proxy.
 
 $Id$
 """
+import re
 import time, random, thread
 from urllib import unquote_plus
 
@@ -189,6 +190,16 @@ class ZopeDatabaseAdapter(Persistent, Contained):
 def identity(x):
     return x
 
+_dsnFormat = re.compile(
+    r"dbi://"
+    r"(((?P<username>.*?)(:(?P<password>.*?))?)?"
+    r"(@(?P<host>.*?)(:(?P<port>.*?))?)?/)?"
+    r"(?P<dbname>.*?)(;(?P<raw_params>.*))?"
+    r"$"
+    )
+
+_paramsFormat = re.compile(r"([^=]+)=([^;]*);?")
+
 def parseDSN(dsn):
     """Parses a database connection string.
 
@@ -216,58 +227,23 @@ def parseDSN(dsn):
        dbname       database name
        parameters   a mapping of additional parameters to their values
     """
+
     if not isinstance(dsn, (str, unicode)):
         raise ValueError('The dsn is not a string. It is a %r' % type(dsn))
-    if not dsn.startswith('dbi://'):
+
+    match = _dsnFormat.match(dsn)
+    if match is None:
         raise ValueError('Invalid DSN; must start with "dbi://": %r' % dsn)
 
-    result = {}
+    result = match.groupdict("")
+    raw_params = result.pop("raw_params")
 
-    dsn = dsn[6:]
-    # Get parameters (dict) from DSN
-    raw_params = dsn.split(';')
-    dsn = raw_params[0]
-    raw_params = raw_params[1:]
+    for key, value in result.items():
+        result[key] = unquote_plus(value)
 
-    parameters = [param.split('=') for param in raw_params]
-    parameters = dict([(unquote_plus(key), unquote_plus(value))
-                       for key, value in parameters])
-
-    result['parameters'] = parameters
-
-    # Get the dbname from the DSN
-    if dsn.find('/') > 0:
-        dsn, dbname = dsn.split('/')
-    else:
-        dbname = dsn
-        dsn = ''
-
-    result['dbname'] = unquote_plus(dbname)
-
-    # Get host and port from DSN
-    if dsn and dsn.find('@') > 0:
-        dsn, host_port = dsn.split('@')
-        if host_port.find(':') > 0:
-            host, port = host_port.split(':')
-        else:
-            host, port = host_port, ''
-    else:
-        host, port = '', ''
-
-    result['host'] = host
-    result['port'] = port
-
-    # Get username and password from DSN
-    if dsn:
-        if dsn.find(':') > 0:
-            username, password = dsn.split(':', 1)
-        else:
-             username, password = dsn, ''
-    else:
-        username, password = '', ''
-
-    result['username'] = unquote_plus(username)
-    result['password'] = unquote_plus(password)
+    params = _paramsFormat.findall(raw_params)
+    result["parameters"] = dict([(unquote_plus(key), unquote_plus(value))
+                                for key, value in params])
 
     return result
 
