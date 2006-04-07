@@ -363,10 +363,12 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
                 # necessary.
                 error = self._error
                 try:
-                    value = self.getInputValue()
-                except InputErrors:
+                    try:
+                        value = self.getInputValue()
+                    except InputErrors:
+                        return self.request.form.get(self.name, self._missing)
+                finally:
                     self._error = error
-                    return self.request.form.get(self.name, self._missing)
             else:
                 value = self._getDefault()
         else:

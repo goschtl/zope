@@ -10,6 +10,9 @@ Zope Changes
 
     Bug fixes
 
+      - SimpleInputWidget used to clear the widget's error as a side effect
+        sometimes.
+
       - Fixed a bug in field prefix handling in formlib's setUp*Widgets.
 
   Zope 3.2.1 (2006/03/26)
