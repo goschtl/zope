@@ -15,20 +15,35 @@
 
 $Id$
 """
+import zope.component
+from zope.component.event import objectEventNotify
 from zope.testing import cleanup
 
-# A mix-in class inheriting from CleanUp that also connects the CA services
+events = []
+def getEvents(event_type=None, filter=None):
+    r = []
+    for event in events:
+        if event_type is not None and not event_type.providedBy(event):
+            continue
+        if filter is not None and not filter(event):
+            continue
+        r.append(event)
+
+    return r
+
+def clearEvents():
+    del events[:]
+cleanup.addCleanUp(clearEvents)
+
 class PlacelessSetup(cleanup.CleanUp):
 
     def setUp(self):
         super(PlacelessSetup, self).setUp()
-
-    def tearDown(self):
-        super(PlacelessSetup, self).tearDown()
-
+        zope.component.provideHandler(events.append, (None,))
+        zope.component.provideHandler(objectEventNotify)
 
 def setUp(test=None):
-    cleanup.setUp()
+    PlacelessSetup().setUp()
 
 def tearDown(test=None):
-    cleanup.tearDown()
+    PlacelessSetup().tearDown()
