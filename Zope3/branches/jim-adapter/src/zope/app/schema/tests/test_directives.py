@@ -40,13 +40,12 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(DirectivesTest, self).setUp()
-        def ignorewarning(message, category, filename, lineno, file=None):
-            pass
-        warnings.showwarning = ignorewarning
+        self.__showwarning = warnings.showwarning
+        warnings.showwarning = lambda *a, **k: None
 
     def tearDown(self):
+        warnings.showwarning = self.__showwarning
         super(DirectivesTest, self).tearDown()
-        warnings.resetwarnings()
 
     def check_vocabulary_get(self, kw={}):
         context = object()

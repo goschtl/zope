@@ -41,18 +41,15 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         self.keys = sys.modules.keys()
-
-        def ignorewarning(message, category, filename, lineno, file=None):
-            pass
-        warnings.showwarning = ignorewarning
+        self.__showwarning = warnings.showwarning
+        warnings.showwarning = lambda *a, **k: None
 
     def tearDown(self):
+        warnings.showwarning = self.__showwarning
         keys = sys.modules.keys()
         for key in keys:
             if key not in self.keys:
                 del sys.modules[key]
-
-        warnings.resetwarnings()
 
     def test_definemodulealias(self):
         context = ConfigurationContext()
