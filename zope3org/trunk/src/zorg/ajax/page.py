@@ -78,8 +78,11 @@ class AjaxPage(BrowserView) :
     
     def parseQuery(self) :
         """ Parses the query string. """
-        if 'QUERY_STRING' in self.request :
-            return cgi.parse_qs(self.request['QUERY_STRING'])
+        try :
+            if 'QUERY_STRING' in self.request :
+                return cgi.parse_qs(self.request['QUERY_STRING'])
+        except TypeError :
+            pass
         return {}
                
     def getSessionStorage(self) :
