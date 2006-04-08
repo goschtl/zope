@@ -18,14 +18,16 @@ $Id$
 __docformat__ = "reStructuredText"
 import os
 import os.path
+import persistent
 import pysvn
 import zope.event
 import zope.interface
+from zope.app.container.contained import Contained
 
 from zf.zscp import interfaces, package, publication, release, certification
 
 
-class ZSCPRepository(object):
+class ZSCPRepository(persistent.Persistent, Contained):
     """A ZSCP-compliant repository."""
     zope.interface.implements(interfaces.IZSCPRepository)
 

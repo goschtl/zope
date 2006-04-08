@@ -84,7 +84,7 @@ below, two required fields are missing:
   Traceback (most recent call last):
   ...
   RequiredElementsMissing: Required field(s) 'action', 'date' missing in
-                           `certification` (file "<string>", line 10, column 17)
+                           `certification` (file "<string>", line ...)
 
 And finally a full file of content:
 

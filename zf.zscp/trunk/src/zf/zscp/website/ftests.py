@@ -11,32 +11,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZSCP Web Site Interfaces
+"""ZSCP Web Site
 
-$Id$
+$Id:$
 """
-__docformat__ = "reStructuredText"
-import os.path
-import zope.schema
-from zope.app import folder
-from zf.zscp.i18n import MessageFactory as _
+import unittest
+
+from zope.testing import doctest
+from zope.app.testing import functional
+
+def getRootFolder():
+    return functional.FunctionalTestSetup().getRootFolder()
 
 
-def isDirectory(path):
-    if path:
-        return os.path.isdir(path)
-    else:
-        return True
+def test_suite():
+    return unittest.TestSuite((
+        functional.FunctionalDocFileSuite(
+            "README.txt",
+            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE,
+            globs={'getRootFolder': getRootFolder}),
+        ))
 
 
-class IZSCPSite(folder.interfaces.IFolder):
-    """The root object for the ZSCP site.
-
-    The site mainly contains ZSCP repository objects.
-    """
-
-    certificationDir = zope.schema.TextLine(title=_(u'Path'),
-        description=_(u'Path to the directory.'),
-        required=False,
-        constraint=isDirectory,
-        max_length=255)
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

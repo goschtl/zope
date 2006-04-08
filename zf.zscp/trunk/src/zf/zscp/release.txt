@@ -78,7 +78,7 @@ below, two required fields are missing:
   Traceback (most recent call last):
   ...
   RequiredElementsMissing: Required field(s) 'date', 'version' missing in
-                           `release` (file "<string>", line 7, column 11)
+                           `release` (file "<string>", line ...)
 
 If a required field is missing that has a default value, the default is simply
 used:
@@ -118,7 +118,7 @@ Finally, you cannot just add sub-elements randomly:
   Traceback (most recent call last):
   ...
   InvalidSubElement: `name` cannot have sub-elements
-                     (file "<string>", line 6, column 14)
+                     (file "<string>", line ...)
 
 
 Let's now have a look at a complex element within the release. The release
