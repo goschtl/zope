@@ -40,7 +40,7 @@ CERTIFICATION_ACTIONS = zope.schema.vocabulary.SimpleVocabulary([
 
 class IRepositoryInitializedEvent(zope.interface.Interface):
     """Event fired after a repository was initialized."""
-    repository = Attribute('The initialized repository')
+    repository = zope.interface.Attribute('The initialized repository')
 
 class RepositoryInitializedEvent(object):
     zope.interface.implements(IRepositoryInitializedEvent)
@@ -51,7 +51,7 @@ class RepositoryInitializedEvent(object):
 
 class IPackageEvent(zope.interface.Interface):
     """An event that involves a package."""
-    package = Attribute('The package that was acted upon')
+    package = zope.interface.Attribute('The package that was acted upon')
 
 class PackageEvent(object):
     zope.interface.implements(IPackageEvent)
