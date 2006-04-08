@@ -1,0 +1,23 @@
+<html>
+    <script type="text/javascript" src="prototype.js" 
+       tal:attributes="src string:${context/++resource++zorgajax/prototype.js}">
+    </script>
+    <script type="text/javascript" src="livepage.js" 
+       tal:attributes="src string:${context/++resource++livepage.js}">
+    </script>
+    <script type="text/javascript" src="livecomment.js" 
+       tal:attributes="src string:${context/++resource++livecomment.js}">
+    </script>
+    
+    <script type="text/javascript" 
+            tal:content="string:LivePage.uuid = '${view/nextClientId}';">
+            LivePage.uuid = '0';
+    </script>
+
+    <body onload="LivePage.startClient();" onunload="LivePage.stopClient();">
+    
+        <p id="livepage_progress">Progress</p>
+    
+    </body>
+
+</html>
