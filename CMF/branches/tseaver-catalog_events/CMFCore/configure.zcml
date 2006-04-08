@@ -45,4 +45,10 @@
     handler=".CookieCrumbler.handleCookieCrumblerEvent"
     />
 
+  <subscriber
+    for=".interfaces.IContentish
+         zope.app.event.interfaces.IObjectEvent"
+    handler=".CMFCatalogAware.handleObjectEvent"
+    />
+
 </configure>
