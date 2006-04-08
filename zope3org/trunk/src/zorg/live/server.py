@@ -166,7 +166,7 @@ class LivePageWSGIHandler(WSGIHandler) :
         reactor.callLater(self.idleInterval, self.onIdle)
 
  
-    def returnResult(self, output, headers=None) :
+    def returnResult(self, output, headers=None, json=None) :
         """ Writes the result to the deferred response and closes
             the output stream.
         """
@@ -175,7 +175,10 @@ class LivePageWSGIHandler(WSGIHandler) :
                         ("Connection", "close"),
                         ('content-type', 'text/html;charset=utf-8'), 
                         ('content-length', len(output))]
-                                        
+        
+        if json :
+            headers.append(('X-JSON', json))    
+            
         print "***LivePage result", self.num, len(output), "bytes", self.uuid, headers
         print "Output", output
         
@@ -203,7 +206,7 @@ class LivePageWSGIHandler(WSGIHandler) :
         client = self.manager.get(self.uuid, None)
         if client is None : # Uups, the client has gone in the meanwhile
             error = ErrorEvent(description="Unexpected timeout")
-            return self.returnResult(error.toJSON())        
+            return self.returnResult("json", json=error.toJSON())        
             
         r = self.result
         if r :
@@ -214,10 +217,10 @@ class LivePageWSGIHandler(WSGIHandler) :
             
         event = client.nextEvent()
         if event is not None :
-            return self.returnResult(event.toJSON())
+            return self.returnResult("json", json=event.toJSON())
         
         if time.time() > self.expires :
-            return self.returnResult(IdleEvent().toJSON())
+            return self.returnResult("json", json=IdleEvent().toJSON())
         
         reactor.callLater(self.idleInterval, self.onIdle)
  

@@ -8,6 +8,9 @@
   <resource 
         name="livepage.js"
         file="client.js"/>
+  <resource 
+        name="json.js"
+        file="json.js"/>
 	
   <page
         name="input"

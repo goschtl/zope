@@ -2,6 +2,9 @@
     <script type="text/javascript" src="prototype.js" 
        tal:attributes="src string:${context/++resource++zorgajax/prototype.js}">
     </script>
+    <script type="text/javascript" src="json.js" 
+       tal:attributes="src string:${context/++resource++json.js}">
+    </script>
     <script type="text/javascript" src="livepage.js" 
        tal:attributes="src string:${context/++resource++livepage.js}">
     </script>

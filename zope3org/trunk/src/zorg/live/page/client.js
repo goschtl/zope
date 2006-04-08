@@ -1,3 +1,5 @@
+
+
 var LivePage = {
     uuid: "",
     baseURL: "",
@@ -7,7 +9,7 @@ var LivePage = {
     alreadyEvaluated : {},
 
     ajaxHandlers : {
-        onError: function(request, transport, json) {
+        onError: function(request, transport) {
             LivePage.numErrors += 1;
 			if (LivePage.numErrors > 3) {
                 alert("Too much errors. The page will be reloaded.");
@@ -28,10 +30,14 @@ var LivePage = {
 		},
 
         onComplete: function(request, transport, json) {
-			var event = eval(transport.responseText);
-            var name = event['name'];
-            name = "on" + name[0].toUpperCase() + name.slice(1);
-            LivePage.Responders.dispatch(name, event);
+            
+            if (transport.responseText == "json") {
+                var event = JSON.parse(request.header('X-JSON'));
+                var name = event['name'];
+                name = "on" + name[0].toUpperCase() + name.slice(1);
+                
+                LivePage.Responders.dispatch(name, event);
+                }
 			setTimeout("LivePage.nextEvent()", 500);
 			return true;
 			}
@@ -87,11 +93,12 @@ var LivePage = {
         if (act) {
             switch(act) {
                 case 'scroll' : {
-                    scrollToLast(id);
+                    LivePage.scrollToLast(id);
+                    LivePage.highlightElement(id);
                     return;
                     }
                 case 'sound' : {
-                    playFlash("ping");
+                    LivePage.playFlash("ping");
                     return;
                     }
                 }
@@ -106,6 +113,11 @@ var LivePage = {
             area.scrollTop = area.scrollHeight;
             }
         }
+        
+    highlightElement : function (id) {
+        
+        }
+
 }
 
 LivePage.Responders = {
@@ -183,3 +195,4 @@ LivePage.clientHandlers = {
             
     }
             
+
