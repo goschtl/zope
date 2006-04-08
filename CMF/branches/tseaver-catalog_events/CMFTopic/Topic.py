@@ -20,6 +20,7 @@ from Acquisition import aq_parent, aq_inner
 from Globals import InitializeClass
 
 from Products.CMFDefault.SkinnedFolder import SkinnedFolder
+from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.utils import getToolByName
 from zope.interface import Interface
 from zope.interface import implements
@@ -53,7 +54,7 @@ class Topic(SkinnedFolder):
     o Each topic holds a set of zero or more Criteria objects specifying
       the query.
     """
-    implements(ITopic, implementedBy(SkinnedFolder))
+    implements(ITopic, IContentish, implementedBy(SkinnedFolder))
     meta_type='Portal Topic'
 
     security = ClassSecurityInfo()
