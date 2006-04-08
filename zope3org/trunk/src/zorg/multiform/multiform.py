@@ -1,4 +1,4 @@
-
+from zope.app.publisher.browser import BrowserView
 from zope.interface import implements
 
 from zope.app import zapi
@@ -6,9 +6,7 @@ from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 from zope.formlib import form
 from zope.formlib.i18n import _
-
-from interfaces import ITableForm
-
+from interfaces import IMultiForm
 
 def availableActions(form, actions):
     result = []
@@ -69,32 +67,36 @@ def isRowDisplayMode(form, action):
     return form.mode == 'display' and action.label in form.table.config.actions
 
 
-class RowFormBase(form.FormBase):
+class ItemFormBase(form.FormBase):
 
     newmode = None
 
-    def __init__(self, view, mode, **kwargs):
-        super(RowFormBase,self).__init__(view.context, view.request)
-        self.view = view
-        self.row = view.row
-        self.table = view.row.table
-        self.mode = mode
-        self.setPrefix(view.prefix)
+    def __init__(self, item, multiForm, **kwargs):
+        super(ItemFormBase,self).__init__(item,
+                                         multiForm.request)
+        self.multiForm = multiForm
         self.baseRow_actions = form.Actions()
-        
+
         # build up form_fields
         # kwargs includes form relevant parameters
         self.form_fields = form.Fields()
-        for cellView in view.getCells():
-            if cellView.useForm:
-                field = cellView.field
-                isDisplay = not(mode == 'edit' and cellView.cell.selected)
-                fieldkwargs = {}
-                fieldkwargs['for_display'] = isDisplay
-                if not isDisplay and cellView.widget is not None:
-                    fieldkwargs['custom_widget'] = cellView.widget
-                self.form_fields = self.form_fields + form.Fields(form.Field(field, **fieldkwargs),**kwargs)
-        
+        for field in self.multiForm.form_fields:
+            isDisplay = not(self.multiForm.mode == 'edit' and self.isSelected())
+            fieldkwargs = {}
+            fieldkwargs['for_display'] = isDisplay
+            # XXX why is render_context not set?
+            fieldkwargs['render_context'] = True
+            if not isDisplay and field.widget is not None:
+                fieldkwargs['custom_widget'] = field.widget
+            self.form_fields = self.form_fields + form.Fields(
+                form.Field(field.field, **fieldkwargs),**kwargs)
+
+
+    def isSelected(self):
+
+        # XXX implement this, default is selected
+        return True
+    
     def actions():
         def _getActions(self):
             return self.baseRow_actions
@@ -124,13 +126,15 @@ def isFormDisplayMode(form, action):
     return form.mode == 'display' and action.label in form.table.config.actions
 
 
-class TableFormBase(object):
-    
-    implements(ITableForm)
+
+
+class MultiForm(BrowserView):
+
+    implements(IMultiForm)
 
     label = u''
 
-    prefix = 'grid'
+    prefix = ''
 
     status = ''
 
@@ -142,20 +146,9 @@ class TableFormBase(object):
 
     newmode = None
 
-    def __init__(self, view):
-        self.context = view.context
-        self.view = view
-        self.table = view.table
-        self.request = view.request
-        self.prefix = view.table.config.prefix   
-        self.base_actions = form.Actions()
+    actions =[]
 
-    def actions():
-        def _getActions(self):
-            return self.base_actions
-        return property(_getActions)
-    
-    actions = actions()
+    selectionField = ISelectable(['isSelected'])
 
     def availableActions(self, actions=None):
         if actions is not None:
@@ -176,26 +169,32 @@ class TableFormBase(object):
             self.newmode = None
             self.form_reset = True
 
-    def rowForm(self, row, **kwargs):
-        return RowFormBase(row, self.mode, **kwargs)
+    def itemForm(self, item, **kwargs):
+        return ItemFormBase(item, self, **kwargs)
 
     def setUpForms(self, ignore_request=False):
         self.forms = {}
-        for row in self.view.getRows():
-                if not ignore_request:
-                    # check edit mode with row actions
-                    self.checkEditMode(row.prefix)
-                kwargs = {
-                    'omit_readonly':False,
-                    'render_context':True}
-                self.forms[row.row.key] = self.rowForm(row, **kwargs)
-                
+        # the context must implement IReadMapping
+        for name,item in self.context.items():
+            itemPrefix = self.prefix and self.prefix+'.' or '' + name
+            if not ignore_request:
+                # check edit mode with row actions
+                self.checkEditMode(itemPrefix)
+            kwargs = {
+                'omit_readonly':False,
+                'render_context':True,
+                'fields':self.form_fields}
+            self.forms[name] = self.itemForm(item, **kwargs)
+            self.forms[name].setPrefix(itemPrefix)
+
+                                            
     def resetForm(self):
         self.setUpForms(ignore_request=True)
         for fo in self.forms.values():
             fo.resetForm()
 
     def validate(self, action, data):
+        # XXX implement this
 #        return (getFormsData(self.widgets, self.prefix, data)
 #                + checkInvariants(self.form_fields, data))
         return ()
@@ -249,22 +248,6 @@ class TableFormBase(object):
             # build up new forms
             self.resetForm()
             form_reset = False
-          
-    def render(self):
-        # if the form has been updated, it will already have a result
-        return self.form_result
-#        if self.form_result is None:
-#            if self.form_reset:
-#                # we reset, in case data has changed in a way that
-#                # causes the widgets to have different data
-#                self.resetForm()
-#                for fo in self.forms.values():
-#                    fo.form_reset = True
-#                self.form_reset = False
-#            for fo in self.forms.values():
-#                fo.render()
-#            self.form_result = self.template()
-#        return self.form_result
 
     def error_views(self):
         for error in self.errors:
@@ -284,8 +267,8 @@ class TableFormBase(object):
         """hand over action table action to row actions with same name, label
            of all selected rows."""
         selected = False
-        for fo in self.forms.values():
-            if fo.row.selected:
+        for formName,fo in self.forms.values():
+            if self.isSelected(formName):
                 # hand over submit of action to all forms
                 action = "%s.actions.%s" % (fo.prefix, name)
                 self.request.form[action] = label
@@ -296,3 +279,18 @@ class TableFormBase(object):
         self.update()
         return self.render()
 
+
+    def isSelected(self,name):
+        # XXX get from request
+        return False
+
+    def render(self):
+        # if the form has been updated, it will already have a result
+        if self.form_result is None:
+            if self.form_reset:
+                # we reset, in case data has changed in a way that
+                # causes the widgets to have different data
+                self.resetForm()
+                self.form_reset = False
+            self.form_result = self.template()
+        return self.form_result
