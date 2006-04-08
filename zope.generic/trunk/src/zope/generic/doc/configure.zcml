@@ -1,0 +1,35 @@
+<configure 
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:apidoc="http://namespaces.zope.org/apidoc"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
+  i18n_domain="zope">
+
+  <apidoc:bookchapter zcml:condition="have apidoc"
+      id="zope.generic"
+      title="Zope Generic"
+      />
+
+  <!-- Register documentation with API Doc -->
+
+  <apidoc:bookchapter zcml:condition="have apidoc"
+      id="zope.generic.readme"
+      title="README"
+      doc_path="README.txt"
+      parent="zope.generic"
+      />
+
+  <apidoc:bookchapter zcml:condition="have apidoc"
+      id="zope.generic.changes"
+      title="CHANGES"
+      doc_path="CHANGES.txt"
+      parent="zope.generic"
+      />
+
+  <apidoc:bookchapter zcml:condition="have apidoc"
+      id="zope.generic.todo"
+      title="TODO"
+      doc_path="TODO.txt"
+      parent="zope.generic"
+      />
+
+</configure>

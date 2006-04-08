@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/generic">
+
+    <meta:complexDirective
+        name="type"
+        schema=".metadirectives.ITypeDirective"
+        handler=".metaconfigure.TypeDirective"
+        >
+
+      <meta:subdirective
+          name="configuration"
+          schema="zope.generic.information.metadirectives.IConfigurationSubdirective"
+          />
+
+      <meta:subdirective
+          name="initializer"
+          schema="zope.generic.type.metadirectives.IInitializerSubdirective"
+          />
+
+    </meta:complexDirective>
+
+  </meta:directives>
+
+</configure>

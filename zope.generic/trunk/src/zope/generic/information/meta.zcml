@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/generic">
+
+    <meta:complexDirective
+        name="information"
+        schema=".metadirectives.IInformationDirective"
+        handler=".metaconfigure.InformationDirective"
+        >
+
+      <meta:subdirective
+          name="configuration"
+          schema=".metadirectives.IConfigurationSubdirective"
+          />
+
+    </meta:complexDirective>
+
+  </meta:directives>
+
+</configure>

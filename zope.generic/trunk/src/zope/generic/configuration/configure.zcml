@@ -1,0 +1,30 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:generic="http://namespaces.zope.org/generic"
+  i18n_domain="zope">
+ 
+ 
+  <generic:information
+      interface=".IConfigurationInformation"
+      label="Configuration Information"
+      registry="zope.generic.information.IInformationRegistryInformation"
+      />
+ 
+   <!-- attribute configurations -->
+  <class class=".adapter.AttributeConfigurations">
+    <allow
+        attributes="__contains__ keys __getitem__ get"
+        />
+    <require
+        permission="zope.ManageSite"
+        attributes="__setitem__ __delitem__"
+        />
+  </class>
+
+  <adapter 
+  	  factory=".adapter.AttributeConfigurations"
+  	  provides="zope.generic.configuration.IConfigurations"
+  	  trusted="True"
+  	  />
+ 
+</configure>

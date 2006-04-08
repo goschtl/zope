@@ -1,0 +1,12 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:generic="http://namespaces.zope.org/generic"
+  i18n_domain="zope">
+
+  <generic:information
+      interface="zope.generic.information.IInformationRegistryInformation"
+      label="Type Information Registry"
+      registry=".ITypeInformation"
+      />
+
+</configure>

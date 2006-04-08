@@ -1,0 +1,6 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:generic="http://namespaces.zope.org/generic"
+  i18n_domain="zope">
+ 
+</configure>
