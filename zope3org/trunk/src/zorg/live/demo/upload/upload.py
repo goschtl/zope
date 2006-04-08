@@ -41,7 +41,7 @@ class LiveFileAdd(LivePage, FileUpdateView) :
     
     
     def update_object(self, data, contenttype):
-        print "XXX"
+        
         f = File(data, contenttype)
         zope.event.notify(objectevent.ObjectCreatedEvent(f))
         

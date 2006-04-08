@@ -79,7 +79,7 @@ class LivePageEvent(object) :
     
     >>> event = LivePageEvent(description="uwe goes online")
     >>> event.toJSON()
-    '{..."where":null...}'
+    '{..."where": null...}'
     
     In order to convert JSON serialized event back into Python objects we
     use the dict2event function. This function uses the 'name' key 
@@ -184,11 +184,10 @@ directlyProvides(ReloadEvent, IClientEventFactory)
 class ProgressEvent(LivePageEvent) :
     """ Indicates the progress of a long enduring task.
 
-        >>> event = Progress(percent=20)
+        >>> event = ProgressEvent(percent=20)
         >>> event.pprint()
-        html : '<div id="comment1"></div>'
-        id : 'comments'
-        name : 'update'
+        name : 'progress'
+        percent : 20
         recipients : 'all'
         where : None
     

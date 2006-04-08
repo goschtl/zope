@@ -179,7 +179,7 @@ output is 'idle':
     
     >>> page1 = TestLivePage(None, TestRequest())
     >>> page1.output('uuid1')
-    '{..."name":"idle"...}'
+    '{..."name": "idle"...}'
   
 Now we can send some input. If we get the input from the browser we must first
 be able to convert the text into a Python object. Since we can convert
@@ -194,7 +194,7 @@ from it's name:
     >>> event
     <zorg.live.page.event.Append object at ...>
     >>> event.toJSON()
-    '{..."html":"<p>ABC</p>", "where":null, "id":"id", "recipients":"all", "name":"append"}'
+    '{..."html": "<p>ABC</p>", "where": null, "id": "id", "recipients": "all", "name": "append"}'
     
 The set of registered event types can be easily extended by registering a
 new IClientEventFactory. Most of the time this will look as follows :

@@ -94,7 +94,9 @@ class LivePage(ComposedAjaxPage) :
         """
         request = self.request
         method = Output(self, request).publishTraverse(request, uuid)
-        return method()
+        rslt = method()
+        #print "---output", rslt
+        return rslt
 
     def input(self, uuid, event=None) :
         """ Convenience function that accesses a specific client.

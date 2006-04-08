@@ -76,6 +76,23 @@ repeately calling the wrapping write method:
     >>> for i in range(1, 10) :
     ...     time.sleep(0.1)
     ...     stream.write("Some Data")
+    addEvent 18
+    added
+    addEvent 27
+    added
+    addEvent 36
+    added
+    addEvent 45
+    added
+    addEvent 54
+    added
+    addEvent 63
+    added
+    addEvent 72
+    added
+    addEvent 81
+    added 
+    
     
     >>> event = client.nextEvent()
     >>> while event :

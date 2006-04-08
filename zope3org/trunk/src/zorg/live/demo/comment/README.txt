@@ -77,42 +77,42 @@ send to the clients. Since both clients send events about changing online
 states we get four events :
 
     >>> page1.output('uuid1').pprint()
-    html : ['zorg.member.uwe']
+    html : 'zorg.member.uwe'
     id : 'online'
     name : 'update'
     recipients : 'all'
     where : None
    
     >>> page1.output('uuid1').pprint()
-    html : ['zorg.member.uwe']
+    html : 'zorg.member.uwe'
     id : 'online'
     name : 'update'
     recipients : 'all'
     where : None
 
     >>> page2.output('uuid2').pprint()
-    html : ['zorg.member.dominik', 'zorg.member.uwe']
+    html : 'zorg.member.dominik, zorg.member.uwe'
     id : 'online'
     name : 'update'
     recipients : 'all'
     where : None
 
     >>> page2.output('uuid2').pprint()
-    html : ['zorg.member.dominik', 'zorg.member.uwe']
+    html : 'zorg.member.dominik, zorg.member.uwe'
     id : 'online'
     name : 'update'
     recipients : 'all'
     where : None
 
     >>> page1.output('uuid1').pprint()
-    html : ['zorg.member.dominik', 'zorg.member.uwe']
+    html : 'zorg.member.dominik, zorg.member.uwe'
     id : 'online'
     name : 'update'
     recipients : 'all'
     where : None
 
     >>> page1.output('uuid1').pprint()
-    html : ['zorg.member.dominik', 'zorg.member.uwe']
+    html : 'zorg.member.dominik, zorg.member.uwe'
     id : 'online'
     name : 'update'
     recipients : 'all'

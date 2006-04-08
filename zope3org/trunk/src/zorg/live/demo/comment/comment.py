@@ -168,8 +168,9 @@ class LiveComments(LivePage) :
 
         if IPersonEvent.providedBy(event) :
             manager = zapi.getUtility(ILivePageManager)
-            repr = manager.whoIsOnline(event.where)
-            update = Update(id="online", html=repr)
+            ids = manager.whoIsOnline(event.where)
+            repr = ", ".join([getFullName(id) for id in ids])
+            update = Update(id="online", html=repr)            
             cls.sendEvent(update)
         
         if IObjectModifiedEvent.providedBy(event) :

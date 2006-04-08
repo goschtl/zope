@@ -30,14 +30,15 @@ var LivePage = {
 		},
 
         onComplete: function(request, transport, json) {
-            
-            if (transport.responseText == "json") {
-                var event = JSON.parse(request.header('X-JSON'));
+        
+            var response = transport.responseText;
+            if (response[0] == '{') {
+                var event = JSON.parse(response);
                 var name = event['name'];
                 name = "on" + name[0].toUpperCase() + name.slice(1);
-                
                 LivePage.Responders.dispatch(name, event);
                 }
+                
 			setTimeout("LivePage.nextEvent()", 500);
 			return true;
 			}
@@ -112,10 +113,10 @@ var LivePage = {
             } else {
             area.scrollTop = area.scrollHeight;
             }
-        }
+        },
         
     highlightElement : function (id) {
-        
+        return;
         }
 
 }
