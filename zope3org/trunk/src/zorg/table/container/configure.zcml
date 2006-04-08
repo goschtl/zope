@@ -128,8 +128,6 @@
       for="zope.interface.Interface"
       name="title"
       useForm="True"
-      class=".view.CellNameView"
-      template="cell_name.pt"
       permission="zope.Public"
       />
 

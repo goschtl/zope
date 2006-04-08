@@ -1,9 +1,38 @@
-<metal:block tal:condition="view/hasInputWidget">
-<span class="containercell" tal:content="structure view/content"/>
+
+<metal:block tal:condition="view/useForm">
+<metal:block tal:define="widget view/content">
+<div class="field" tal:define="hint widget/hint"
+     metal:define-macro="widgetcell">
+  <div class="form-fields-help"
+       i18n:translate=""
+       tal:content="hint"
+       tal:condition="hint"
+       tal:attributes="id string:field-help-for-${widget/name}"
+       onclick="this.style.visibility='hidden';"
+       style="visibility: hidden; position: absolute;"
+       >Title of this content object.</div>
+  <div class="widget">
+    <img tal:replace="structure view/icon"/>
+    <span tal:content="structure widget">
+      <input type="text" />
+    </span>
+  </div>
+  <div class="error"
+       tal:condition="widget/error"
+       >
+    <span tal:replace="structure widget/error">error</span>
+  </div>
+</div>
 </metal:block>
-<a href=""
-   tal:condition="not:view/hasInputWidget"
-   tal:attributes="href string:${context/@@absolute_url}/@@SelectedManagementView.html">
+</metal:block>
+
+<metal:block tal:condition="not:view/useForm">
 <img tal:replace="structure view/icon"/>
-<span class="containercell" tal:content="view/cell"/>
+<a href=""
+   tal:attributes="href string:${context/@@absolute_url}/@@SelectedManagementView.html">
+<span tal:condition="view/useWidget"
+      tal:content="structure view/content"/>
+<span tal:condition="not:view/useWidget"
+      tal:content="view/content"/>
 </a>
+</metal:block>
