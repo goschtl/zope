@@ -6,7 +6,7 @@
   <addform
       schema="zf.zscp.website.interfaces.IZSCPSite"
       label="Add ZSCP Site"
-      content_factory="zf.zscp.website.zscp.ZSCPSite"
+      content_factory="zf.zscp.website.site.ZSCPSite"
       fields="certificationDir"
       keyword_arguments="certificationDir"
       name="AddZSCPSite.html"
@@ -15,7 +15,7 @@
 
   <addMenuItem
        view="AddZSCPSite.html"
-       class="zf.zscp.website.zscp.ZSCPSite"
+       class="zf.zscp.website.site.ZSCPSite"
        title="ZSCP website"
        description="The ZSCP website"
        permission="zope.ManageContent"
