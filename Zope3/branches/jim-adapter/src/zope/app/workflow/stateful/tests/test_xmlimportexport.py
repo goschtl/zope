@@ -26,7 +26,6 @@ from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.security.interfaces import IPermission
-from zope.app.component.interfaces.registration import IRegisterable
 from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
 from zope.app.security.permission import Permission
@@ -95,7 +94,7 @@ xml_text = '''<?xml version="1.0"?>
 
 
 class TestProcessDefinition(StatefulProcessDefinition):
-    implements(IAttributeAnnotatable, IRegisterable)
+    implements(IAttributeAnnotatable)
 
 # need to patch this cause these classes are used directly
 # in the import/export classes
