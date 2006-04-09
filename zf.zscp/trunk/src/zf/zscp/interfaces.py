@@ -21,6 +21,8 @@ import zope.interface
 import zope.interface.common.mapping
 import zope.schema
 import zope.schema.vocabulary
+from zope.app.container.constraints import containers
+from zope.app.container.constraints import contains
 
 import zf.zscp.fields
 
@@ -321,6 +323,8 @@ class IPublication(zope.interface.Interface):
 class IPackage(zope.interface.Interface):
     """Package"""
 
+    containers('zf.zscp.interfaces.IZSCPRepository')
+
     name = zope.schema.Id(
         title=u"Package Name",
         description=u"The dotted Python path of the package.",
@@ -344,6 +348,10 @@ class IPackage(zope.interface.Interface):
 
 class IZSCPRepository(zope.interface.common.mapping.IEnumerableMapping):
     """ZSCP Repository."""
+
+    containers('zf.zscp.website.interfaces.IZSCPSite')
+
+    contains(IPackage)    
 
     svnRoot = zope.schema.URI(
         title=u"SVN Repository Root",

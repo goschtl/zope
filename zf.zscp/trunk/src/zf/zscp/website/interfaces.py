@@ -19,7 +19,10 @@ __docformat__ = "reStructuredText"
 import os.path
 import zope.schema
 from zope.app import folder
+
 from zf.zscp.i18n import MessageFactory as _
+from zope.app.container.constraints import containers
+from zope.app.container.constraints import contains
 
 
 def isDirectory(path):
@@ -34,6 +37,10 @@ class IZSCPSite(folder.interfaces.IFolder):
 
     The site mainly contains ZSCP repository objects.
     """
+
+    containers(folder.interfaces.IFolder)
+
+    contains('zf.zscp.interfaces.IZSCPRepository')
 
     certificationDir = zope.schema.TextLine(title=_(u'Path'),
         description=_(u'Path to the directory.'),
