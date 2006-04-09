@@ -42,6 +42,7 @@ class AdapterUsage(ClassUsage) :
         
     def register(self) :
         """ Registers the adapter. """
+
         zope.component.provideAdapter(self.klass, 
                                             adapts=self.adapts,
                                             provides=self.provides,
@@ -49,9 +50,18 @@ class AdapterUsage(ClassUsage) :
         
 class GlobalUtilityUsage(ClassUsage) :
     """ Describes the usage of a class as a factory for a global utility. """
+    
+    def __init__(self, klass, provides=None, name='') :
+        self.klass = klass
+        self.provides = provides
+        self.name = name
 
     def register(self) :
         """ Registers the global utility. """
+        
+        zope.component.provideUtility(self.klass(), 
+                                            provides=self.provides,
+                                            name=self.name)
 
 
 def _adapter(cls):
@@ -105,8 +115,51 @@ def adapter(adapts=None, provides=None, name='') :
     locals['__adapter_usage_data__'] =  adapts, provides, name
     addClassAdvisor(_adapter)
     
-def globalUtility() :
-    pass # to be written
+
+def _utility(cls):
+    
+    provides, name = cls.__dict__['__utility_usage_data__']
+    del cls.__utility_usage_data__
+    
+    if provides is None :
+        provides = list(cls.__implemented__.interfaces())[0]
+    else :
+        classImplements(cls, iface)
+ 
+    if not hasattr(cls, '__zorg_usages__') :
+        cls.__zorg_usages__ = []
+        
+    usage = GlobalUtilityUsage(cls, provides=provides, name=name)
+    cls.__zorg_usages__.append(usage)
+    return cls
+
+    
+def globalUtility(provides=None, name='') :
+    """
+    Declares the usage of a class as factory for a global utility.
+    
+    >>> class IUtility(zope.interface.Interface) :
+    ...     pass
+ 
+    
+    class Adapter(object) :
+    ...     zope.interface.implements(IUtility)
+    ...     globalUtility()
+    
+    """
+
+    frame = sys._getframe(1)
+    locals = frame.f_locals
+    
+    # Try to make sure we were called from a class def. In 2.2.0 we can't
+    # check for __module__ since it doesn't seem to be added to the locals
+    # until later on.
+    if (locals is frame.f_globals) or ('__module__' not in locals):
+        raise TypeError("provides can be used only from a class definition.")
+
+    locals['__utility_usage_data__'] =  provides, name
+    addClassAdvisor(_utility)
+
     
 def ensureRegistrations(dotted_name) :
     module = resolve(dotted_name)

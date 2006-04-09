@@ -67,26 +67,38 @@ Please, please adapt me.
 Don't worry
 
 That after all is not very different from calling zope.component.provideAdapter.
-The interesting part comes now. We can declare the usage in the class itself
+The interesting part is that we can declare the usage in the class itself
 and register all usages of a module with a single call. With n adapters in
-a single module you safe the typing of n test registrations and n zcml
+a single module you can safe the typing of n test registrations and n zcml
 adapter statements.
 
 The ensureRegistrations function collects all usage descriptions in a single
 module and registers them:
 
->>> zorg.usage.ensureRegistrations("zorg.usage.testadapter")
+>>> zorg.usage.ensureRegistrations("zorg.usage.testcomponent")
 
->>> from zorg.usage.testadapter import First, Second, ICount, IIncrement
+>>> from zorg.usage.testcomponent import First, Second
+>>> from zorg.usage.testcomponent import ICounter, IIncrement
+
 >>> incr = IIncrement(First())
 >>> incr.incr()
 2
 
-
-
-#>>> from zope.app import zapi
-#>>> counter = zapi.getMultiAdapter((First(), Second()), ICount, name="test")
-#>>> counter.count()
+>>> from zope.app import zapi
+>>> counter = zapi.getMultiAdapter((First(), Second()), ICounter)
+>>> counter.count()
 1
 2
 
+>>> roman = zapi.getMultiAdapter((First(), Second()), ICounter, name="roman")
+>>> roman.count()
+I
+II
+
+Since the testcomponent module also describes the use of the latter class as a 
+utility we can get the same behavior in a different way:
+
+>>> counter = zapi.getUtility(ICounter, name="verbal")
+>>> counter.count()
+one
+two

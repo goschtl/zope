@@ -17,6 +17,8 @@ $Id: testadapter.py 41271 2006-01-11 17:02:07Z oestermeier $
 """
 __docformat__ = 'restructuredtext'
 
+from zope.app import zapi
+
 import zope.interface
 import zope.component
 import zorg.usage
@@ -39,10 +41,11 @@ class IIncrement(zope.interface.Interface) :
     def incr() :
         pass
         
-class ICount(zope.interface.Interface) :
+class ICounter(zope.interface.Interface) :
 
     def count() : 
         pass
+
 
 # Define some trivial base classes
 
@@ -77,10 +80,10 @@ class Increment(object) :
         return self.context.number() + 1
 
 
-class Count(object) :
+class Counter(object) :
     """ A multiadapter. """
 
-    zope.interface.implements(ICount)
+    zope.interface.implements(ICounter)
     zope.component.adapts(IFirst, ISecond)
     
     zorg.usage.adapter()
@@ -92,7 +95,37 @@ class Count(object) :
     def count(self) :
         print self.first.number()
         print self.second.number()
-       
-class Named(object) :
+    
+    
+class RomanCounter(Counter) :
     """ A named adapter. """
     
+    zope.interface.implements(ICounter)
+    zope.component.adapts(IFirst, ISecond)
+    
+    zorg.usage.adapter(name="roman")
+    
+    translate = {1 : "I", 2 : "II"}
+   
+    def count(self) :
+        print self.translate[self.first.number()]
+        print self.translate[self.second.number()]
+        
+        
+# A test utility
+
+class CounterUtility(Counter) :
+    """ A named utility. """
+    
+    zope.interface.implements(ICounter)
+    zorg.usage.globalUtility(name="verbal")
+    
+    def __init__(self) :
+        pass
+    
+    def count(self) :
+        print "one"
+        print "two"
+
+
+
