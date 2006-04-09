@@ -1,22 +1,33 @@
 <configure
-   xmlns:zope="http://namespaces.zope.org/zope"
-   xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
     i18n_domain="zf.zscp">
 
   <addform
+      name="AddZSCPRepository.html"
       schema="zf.zscp.interfaces.IZSCPRepository"
       label="Add ZSCP Site"
       content_factory="zf.zscp.website.repository.Repository"
-      name="AddZSCPRepository.html"
+      fields="svnRoot localRoot password"
+      keyword_arguments="svnRoot localRoot password"
       permission="zope.ManageServices"
       />
 
   <addMenuItem
-       view="AddZSCPRepository.html"
-       class="zf.zscp.website.repository.Repository"
-       title="ZSCP repository"
-       description="The ZSCP repository"
-       permission="zope.ManageContent"
-       />
+      view="AddZSCPRepository.html"
+      class="zf.zscp.website.repository.Repository"
+      title="ZSCP repository"
+      description="The ZSCP repository"
+      permission="zope.ManageContent"
+      />
+
+  <editform
+      name="edit.html"
+      schema="zf.zscp.interfaces.IZSCPRepository"
+      fields="svnRoot localRoot password"
+      menu="zmi_views" title="Edit"
+      label="Edit ZSCP repository"
+      permission="zope.ManageContent"
+      />
 
 </configure>

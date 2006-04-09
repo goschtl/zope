@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 
 import persistent
 import zope.interface
+from zope.schema.fieldproperty import FieldProperty
 
 from zope.app.container.contained import Contained
 from zf.zscp.interfaces import IZSCPRepository
@@ -28,3 +29,7 @@ from zf.zscp.repository import ZSCPRepository
 class Repository(ZSCPRepository, persistent.Persistent, Contained):
     """A ZSCP-compliant repository as content type."""
     zope.interface.implements(IZSCPRepository)
+
+    svnRoot = FieldProperty(IZSCPRepository['svnRoot'])
+    localRoot = FieldProperty(IZSCPRepository['localRoot'])
+    password = FieldProperty(IZSCPRepository['password'])

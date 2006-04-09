@@ -4,12 +4,12 @@
     i18n_domain="zf.zscp">
 
   <addform
+      name="AddZSCPSite.html"
       schema="zf.zscp.website.interfaces.IZSCPSite"
       label="Add ZSCP Site"
       content_factory="zf.zscp.website.site.ZSCPSite"
       fields="certificationDir"
       keyword_arguments="certificationDir"
-      name="AddZSCPSite.html"
       permission="zope.ManageServices"
       />
 
