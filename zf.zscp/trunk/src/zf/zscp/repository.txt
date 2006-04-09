@@ -4,14 +4,14 @@ A ZSCP Implementation
 
 The zscp module,
 
-  >>> from zf.zscp import zscp
+  >>> from zf.zscp import repository
 
 implements the process for an SVN repository. It is controoled by the ZSCP
 repository object:
 
   >>> import tempfile
   >>> localRoot = tempfile.mkdtemp()
-  >>> repos = zscp.ZSCPRepository(
+  >>> repos = repository.ZSCPRepository(
   ...   'svn+ssh://svn.zope.org/repos/main', localRoot, 'mypass')
 
 The first argument of the constructor is the SVN URL to the repository, the
@@ -189,7 +189,7 @@ locations of the other data files.
   ...    certifications CERTIFICATIONS.xml
   ... ''')
 
-  >>> zscp_data = zscp.process(config)
+  >>> zscp_data = repository.process(config)
   >>> pprint(zscp_data)
   {u'certifications': u'CERTIFICATIONS.xml',
    u'publication': u'PUBLICATION.cfg',
@@ -197,7 +197,7 @@ locations of the other data files.
 
 On the other hand, we also need to be able create the contents of the file:
 
-  >>> print zscp.produce(zscp_data)
+  >>> print repository.produce(zscp_data)
   certifications CERTIFICATIONS.xml
   publication PUBLICATION.cfg
   releases RELEASES.xml

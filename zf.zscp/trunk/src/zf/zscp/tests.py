@@ -197,7 +197,7 @@ def test_suite():
         DocFileSuite('publication.txt',
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
-        DocFileSuite('zscp.txt',
+        DocFileSuite('repository.txt',
                      setUp=zscpSetUp,
                      globs={'pprint': pprint},
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
