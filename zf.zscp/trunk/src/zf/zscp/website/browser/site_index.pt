@@ -1,0 +1,7 @@
+<html metal:use-macro="context/@@standard_macros/page">
+<body>
+<div align="center" metal:fill-slot="body">
+my index
+</div>
+</body>
+</html>

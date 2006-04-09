@@ -8,8 +8,8 @@
       schema="zf.zscp.interfaces.IZSCPRepository"
       label="Add ZSCP Repository"
       content_factory="zf.zscp.website.repository.Repository"
-      fields="svnRoot localRoot password"
-      keyword_arguments="svnRoot localRoot password"
+      fields="svnRoot localRoot username password"
+      keyword_arguments="svnRoot localRoot username password"
       permission="zope.ManageServices"
       />
 
@@ -24,7 +24,7 @@
   <editform
       name="edit.html"
       schema="zf.zscp.interfaces.IZSCPRepository"
-      fields="svnRoot localRoot password"
+      fields="svnRoot localRoot username password"
       menu="zmi_views" title="Edit"
       label="Edit ZSCP repository"
       permission="zope.ManageContent"

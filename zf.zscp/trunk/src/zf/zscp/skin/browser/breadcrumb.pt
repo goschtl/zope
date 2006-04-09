@@ -1,0 +1,7 @@
+<div id="portal-breadcrumbs">
+	<div class="breadcrumbLink"><a href="#" tal:attributes="href request/getApplicationURL">Home</a></div>
+	<div><img class="breadcrumbSeparator" src="/++skin++ZSCP/@@/img/arrowRight3.png" /></div>
+	<div class="breadcrumbLink"><a href="#">Packages</a></div>
+	<div><img class="breadcrumbSeparator" src="/++skin++ZSCP/@@/img/arrowRight3.png" /></div>
+	<div class="breadcrumbItem">zope.search</div>
+</div>

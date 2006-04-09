@@ -364,10 +364,14 @@ class IZSCPRepository(zope.interface.common.mapping.IEnumerableMapping):
                     u"are checked out.",
         required=True)
 
-    password = zope.schema.TextLine(
+    username = zope.schema.TextLine(
+        title=u"User name",
+        description=u"The username used without SSH keys.",
+        required=False)
+
+    password = zope.schema.Password(
         title=u"SSH Password",
-        description=u"The directory on the server in to which the packages "
-                    u"are checked out.",
+        description=u"The password used for the user or for a shh key.",
         required=False)
 
     def initialize():

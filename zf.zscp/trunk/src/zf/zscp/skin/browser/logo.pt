@@ -1,0 +1,11 @@
+<div id="homeMainImage">
+	<!-- rounded corners, yeah! -->
+	<div id="homeImageTopLeft">&nbsp;
+	</div>
+	<div id="homeImageTopRight">&nbsp;
+	</div>
+	<!-- "Packages, Benefits, Contribute" links overlaying image -->
+	<a href="#" id="homePackagesLink" class="homeImgOverlay"></a>
+	<a href="#" id="homeBenefitsLink" class="homeImgOverlay"></a>
+	<a href="#" id="homeContributeLink" class="homeImgOverlay"></a>
+</div>

@@ -33,4 +33,27 @@
       weight="3"
       />
 
+  <!-- content provider for Breadcrumb -->
+  <zope:adapter
+      for="zope.interface.Interface
+           zf.zscp.skin.IZSCPLayer
+           zope.interface.Interface"
+      provides="zope.contentprovider.interfaces.IContentProvider"
+      name="IBreadcrumb"
+      factory=".views.BreadcrumbProvider"
+      permission="zope.Public"
+      />
+
+  <!-- content provider for Logo on index site -->
+  <zope:adapter
+      for="zope.interface.Interface
+           zf.zscp.skin.IZSCPLayer
+           zope.interface.Interface"
+      provides="zope.contentprovider.interfaces.IContentProvider"
+      name="ILogo"
+      factory=".views.LogoProvider"
+      permission="zope.Public"
+      />
+
+
 </configure>

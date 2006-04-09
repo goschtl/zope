@@ -47,33 +47,17 @@
         </div>
         <!-- end left column -->
         <!-- begin main column -->
-		<div id="portal-column-content" 
-			tal:define="showtitle python: request.URL[-1]==request.getApplicationURL()">
+		<div id="portal-column-content">
             <!-- begin breadcrumbs -->
-            <div id="portal-breadcrumbs" tal:condition="not: showtitle" >
-                <div class="breadcrumbLink"><a href="#" tal:attributes="href request/getApplicationURL">Home</a></div>
-                <div><img class="breadcrumbSeparator" src="/++skin++ZSCP/@@/img/arrowRight3.png" /></div>
-                <div class="breadcrumbLink"><a href="#">Packages</a></div>
-                <div><img class="breadcrumbSeparator" src="/++skin++ZSCP/@@/img/arrowRight3.png" /></div>
-                <div class="breadcrumbItem">zope.search</div>
-            </div>
+            <tal:block replace="structure provider:IBreadcrumb">logo</tal:block>
             <!-- end breadcrumbs -->			
+
 			<!-- begin main content area -->
 			<div id="region-content" >
-				<!-- main home image -->
 
-				<div id="homeMainImage" tal:condition="showtitle" >
-					<!-- rounded corners, yeah! -->
-					<div id="homeImageTopLeft">&nbsp;
-					</div>
-					<div id="homeImageTopRight">&nbsp;
-					</div>
-					<!-- "Packages, Benefits, Contribute" links overlaying image -->
-						<a href="#" id="homePackagesLink" class="homeImgOverlay">
-					</a> <a href="#" id="homeBenefitsLink" class="homeImgOverlay">
-					</a> <a href="#" id="homeContributeLink" class="homeImgOverlay">
-					</a>
-				</div>
+				<!-- main home image -->
+				<tal:block replace="structure provider:ILogo">logo</tal:block>
+
 				<!-- text below main image -->
 				<div id="body" metal:define-slot="body">
 				</div>

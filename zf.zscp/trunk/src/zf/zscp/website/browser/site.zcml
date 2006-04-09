@@ -17,4 +17,25 @@
       add="zope.ManageContent"
       />
 
+  <page
+      name="index.html"
+      for="zf.zscp.website.interfaces.IZSCPSite"
+      template="site_index.pt"
+      class=".site.SiteIndex"
+      permission="zope.Public"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <icon
+      name="zmi_icon"
+      for="zf.zscp.website.interfaces.IZSCPSite"
+      file="site.gif"
+      />
+
+  <defaultView
+      name="index.html"
+      for="zf.zscp.website.interfaces.IZSCPSite"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
 </configure>

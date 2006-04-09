@@ -29,9 +29,10 @@ class ZSCPRepository(object):
     """A ZSCP-compliant repository."""
     zope.interface.implements(interfaces.IZSCPRepository)
 
-    def __init__(self, svnRoot, localRoot, password):
+    def __init__(self, svnRoot, localRoot, username=u'', password=u''):
         self.svnRoot = svnRoot
         self.localRoot = localRoot
+        self.username = username
         self.password = password
 
     def _getClient(self):
@@ -41,6 +42,10 @@ class ZSCPRepository(object):
         def ssl_password(realm, may_save):
             return True, self.password, True
         client.callback_ssl_client_cert_password_prompt = ssl_password
+
+        def get_login( realm, username, may_save ):
+            return True, self.username, self.password, True
+        client.callback_get_login = get_login
 
         return client
 
