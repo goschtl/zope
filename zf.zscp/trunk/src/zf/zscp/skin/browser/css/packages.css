@@ -1,0 +1,84 @@
+/* Packages css for ZSCP skin *
+** Author: Kamal Gill 
+** kamal (dot) gill (at) adaptivewave (dot) com */
+
+/* packages */
+#package-wrapper {
+    margin-top: 26px;
+}
+.packageBody {
+    position: relative;
+    border-right: 1px solid #ccc;
+    border-left: 2px solid #e6e6e6;
+    border-bottom: 2px solid #ccc;
+    min-height: 260px;
+    background: #eee url(../img/packageBodyBg.jpg) repeat-x left top;
+    padding: 30px 30px 20px 20px;
+}
+#package-tabs {
+    border-bottom: 1px solid #ccc;
+}
+.packageTab {
+    position: relative;
+    bottom: 1px;
+    display: inline;
+    padding: 11px 0px 1px 10px;
+    background: url(../img/packageTabLeft.png) no-repeat left top;
+}
+.packageTab a {
+    padding: 10px 20px 1px 10px;
+    color: #666;
+    font-size: 110%;
+    background: url(../img/packageTabRight.png) no-repeat right top;
+}
+.packageTab.selected {
+    position: relative;
+    top: 1px;
+    background: url(../img/packageTabCurLeft.png) no-repeat left top;
+}
+.packageTab.selected a {
+    background: url(../img/packageTabCurRight.png) no-repeat right top;
+    font-weight: bold;
+}
+.packageTab a:hover {
+    color:#000099;
+}
+.packageTab.selected a:hover {
+    color: #666;
+}
+.packageBody label {
+    float: left;
+    width: 110px;
+    text-align: right;
+    vertical-align: top;
+    margin-right: 8px;
+    font-weight: bold;
+}
+.packageBody .infoRow {
+    margin-bottom: 10px;
+    font-size: 110%;
+    line-height: 1.4em;
+}
+.packageBody .infoString {
+    margin-left: 120px;
+}
+.silverText {
+    font-weight: bold;
+    color: #999;
+}
+/* seals for certification levels */
+.certSeal {
+    position: absolute;
+    top: 15px; right: 15px;
+    width: 56px; height: 56px;
+}
+#certifiedGold {
+    background: url(../img/certifiedGold.png) no-repeat left top;
+}
+#certifiedSilver {
+    background: url(../img/certifiedSilver.png) no-repeat left top;
+}
+#certifiedBronze {
+    background: url(../img/certifiedBronze.png) no-repeat left top;
+}
+

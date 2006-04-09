@@ -1,8 +1,7 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser"  
-  i18n_domain="zf.zscp"
-  >
+  i18n_domain="zf.zscp">
 
   <interface
       interface=".ZSCP"
@@ -11,10 +10,10 @@
       />
 
   <browser:viewletManager
-      name=".ICSS"
+      name="zf.zscp.skin.ICSS"
       class=".WeightOrderedViewletManager"
-      provides=".ICSS"
-      layer=".IZSCPLayer"
+      provides="zf.zscp.skin.ICSS"
+      layer="zf.zscp.skin.IZSCPLayer"
       permission="zope.Public"
       />
                     

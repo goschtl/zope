@@ -11,12 +11,39 @@
       permission="zope.Public"
       />
 
+  <browser:resource
+      name="home.css"
+      file="css/home.css"
+      layer="zf.zscp.skin.IZSCPLayer"
+      permission="zope.Public"
+      />
+      
+  <browser:resource
+      name="packages.css"
+      file="css/packages.css"
+      layer="zf.zscp.skin.IZSCPLayer"
+      permission="zope.Public"
+      />
+
+  <browser:resource
+      name="viewlets.css"
+      file="css/viewlets.css"
+      layer="zf.zscp.skin.IZSCPLayer"
+      permission="zope.Public"
+      />
+            
   <browser:viewlet
-      name="base.css"
+      name="css"
       for="*"
       manager="zf.zscp.skin.ICSS"
       permission="zope.Public"
       template="css.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <browser:resourceDirectory
+      directory="img"
+      name="img"
       layer="zf.zscp.skin.IZSCPLayer"
       />
 
@@ -25,6 +52,15 @@
       name="skin_macros"
       permission="zope.Public"
       template="template.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <browser:page
+      for="*"
+      name="standard_macros"
+      permission="zope.Public"
+      class=".standardmacros.StandardMacros"
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
       layer="zf.zscp.skin.IZSCPLayer"
       />
 

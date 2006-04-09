@@ -5,24 +5,16 @@
 	</metal:block>
 	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" i18n:domain="zf.zscp">
 	<head>
-  		<title metal:define-slot="title" 
-			  tal:content="string:WebSite: ${context/zope:title_or_name}">WebSite: title</title>
-
-		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-
+		<title metal:define-slot="title"
+			tal:content="string:WebSite: ${context/zope:title_or_name}">WebSite:
+			title</title>
 		
-  <style type="text/css" media="all" tal:content="string: @import url(${context/++resource++website.css});">
-    @import url(website.css);
-  </style>
-
-  <!-- css viewlets -->
-  <tal:block replace="structure provider:zf.zscp.skin.ICSS" />
-
-
-    <link rel="stylesheet" href="./resources/css/base.css"/>
-    <link rel="stylesheet" href="./resources/css/viewlets.css"/>
-    <link rel="stylesheet" href="./resources/css/home.css"/>
-</head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+		
+		<!-- css viewlets -->
+		<tal:block replace="structure provider:zf.zscp.skin.ICSS"/>
+		
+	</head>
 
 <body>
 

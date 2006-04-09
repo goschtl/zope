@@ -1,4 +1,10 @@
 <metal:block define-macro="basecss">
-<script type="text/javascript" src="base.css"
-        tal:attributes="src string:${context/++resource++base.css}" > </script>
+<link rel="stylesheet" type="text/css" media="all"		
+	tal:attributes="href string:${context/++resource++base.css}" />
+<link rel="stylesheet" type="text/css" media="all"		
+	tal:attributes="href string:${context/++resource++home.css}" />
+<link rel="stylesheet" type="text/css" media="all"		
+	tal:attributes="href string:${context/++resource++packages.css}" />	
+<link rel="stylesheet" type="text/css" media="all"		
+	tal:attributes="href string:${context/++resource++viewlets.css}" />		
 </metal:block>
