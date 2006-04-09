@@ -24,6 +24,7 @@ from Globals import PersistentMapping
 from OFS.Traversable import Traversable
 from zope.interface import implements
 
+from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.interfaces import IDiscussable
 from Products.CMFCore.interfaces import IDiscussionResponse
 from Products.CMFCore.interfaces.Discussions \
@@ -72,7 +73,7 @@ class DiscussionItem(Document):
     """ Class for content which is a response to other content.
     """
 
-    implements(IDiscussionResponse)
+    implements(IDiscussionResponse, IContentish)
     __implements__ = (z2IDiscussionResponse, Document.__implements__)
 
     meta_type           = 'Discussion Item'
@@ -210,7 +211,7 @@ class DiscussionItemContainer( Persistent, Implicit, Traversable ):
         """
         if aq_base(container) is not aq_base(self):
             for obj in self.objectValues():
-                obj.__of__(self).manage_afterAdd(item, container)
+                obj.__of__(self).indexObject()
 
     security.declarePrivate('manage_afterClone')
     def manage_afterClone(self, item):
@@ -219,7 +220,7 @@ class DiscussionItemContainer( Persistent, Implicit, Traversable ):
             Notify the workflow about the contained items.
         """
         for obj in self.objectValues():
-            obj.__of__(self).manage_afterClone(item)
+            obj.__of__(self).notifyWorkflowCreated()
 
     security.declarePrivate( 'manage_beforeDelete' )
     def manage_beforeDelete(self, item, container):
@@ -228,7 +229,7 @@ class DiscussionItemContainer( Persistent, Implicit, Traversable ):
         """
         if aq_base(container) is not aq_base(self):
             for obj in self.objectValues():
-                obj.__of__( self ).manage_beforeDelete( item, container )
+                obj.__of__( self ).unindexObject()
 
     #
     #   OFS.ObjectManager query interface.

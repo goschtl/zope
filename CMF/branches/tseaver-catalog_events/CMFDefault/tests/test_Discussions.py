@@ -306,18 +306,18 @@ class DiscussionTests( SecurityTest, ContentEventAwareTests ):
         self.assertEqual(len(talkback4.getReplies()), 1)
         self.assertEqual(len(talkback5.getReplies()), 1)
         self.assertEqual(len(talkback6.getReplies()), 0)
-        self.assertEqual(len(ctool), 6)
+        self.assertEqual(len(ctool), 7)
 
         talkback3.deleteReply(id4)
         self.assertEqual(len(talkback.getReplies()), 1)
         self.assertEqual(len(talkback1.getReplies()), 1)
         self.assertEqual(len(talkback2.getReplies()), 1)
         self.assertEqual(len(talkback3.getReplies()), 0)
-        self.assertEqual(len(ctool), 3)
+        self.assertEqual(len(ctool), 4)
 
         talkback.deleteReply(id1)
         self.assertEqual(len(talkback.getReplies()), 0)
-        self.assertEqual(len(ctool), 0)
+        self.assertEqual(len(ctool), 1)
 
     def test_newTalkbackIsWrapped(self):
         test = self._makeDummyContent('test')

@@ -302,24 +302,24 @@ def handleObjectEvent(ob, event):
             ob.indexObject()
             if ICallableOpaqueItemEvents.providedBy(ob):
                 ob.manage_afterAdd(ob, event.newParent)
-            #ob._recurseOpaques('manage_afterAdd', ob)
+            ob._recurseOpaques('manage_afterAdd', ob)
 
     elif IObjectClonedEvent.providedBy(event):
         ob.notifyWorkflowCreated()
         ob._clearLocalRolesAfterClone()
         if ICallableOpaqueItemEvents.providedBy(ob):
             ob.manage_afterClone(ob)
-        #ob._recurseOpaques('manage_afterClone')
+        ob._recurseOpaques('manage_afterClone')
 
     elif IObjectMovedEvent.providedBy(event):
         if event.newParent is not None:
             ob.reindexObject()
-            #ob._recurseOpaques('manage_afterAdd', ob)
+            ob._recurseOpaques('manage_afterAdd', ob)
 
     elif IObjectWillBeMovedEvent.providedBy(event):
         if event.oldParent is not None:
             ob.unindexObject()
             if ICallableOpaqueItemEvents.providedBy(ob):
                 ob.manage_beforeDelete(ob, event.oldParent)
-            #ob._recurseOpaques('manage_beforeDelete', ob)
+            ob._recurseOpaques('manage_beforeDelete', ob)
 
