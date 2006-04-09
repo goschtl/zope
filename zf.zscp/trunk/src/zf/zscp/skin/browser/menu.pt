@@ -1,0 +1,9 @@
+<div id="viewlet-navigation" class="viewlet">
+								<div class="viewletHeader"><div class="vlHeaderText">Navigation</div></div>
+                <div class="viewletBody">
+                    <div class="navTreeItem"><a href="#">Packages</a></div>
+                    <div class="navTreeItem"><a href="#">Regulations</a></div>
+                    <div class="navTreeItem"><a href="#">Repository</a></div>
+                    <div class="navTreeItem"><a href="#">Benefits</a></div>
+                </div>
+</div>

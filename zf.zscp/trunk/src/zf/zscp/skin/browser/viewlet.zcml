@@ -1,0 +1,36 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zf.zscp">
+
+  <viewlet
+      name="menu"
+      for="*"
+      manager="zf.zscp.skin.ILeft"
+      template="menu.pt"
+      permission="zope.ManageContent"
+      layer="zf.zscp.skin.IZSCPLayer"
+      weight="1"
+      />
+
+  <viewlet
+      name="search"
+      for="*"
+      manager="zf.zscp.skin.ILeft"
+      template="search.pt"
+      permission="zope.ManageContent"
+      layer="zf.zscp.skin.IZSCPLayer"
+      weight="2"
+      />
+
+  <viewlet
+      name="releases"
+      for="*"
+      manager="zf.zscp.skin.ILeft"
+      template="releases.pt"
+      permission="zope.ManageContent"
+      layer="zf.zscp.skin.IZSCPLayer"
+      weight="3"
+      />
+
+</configure>

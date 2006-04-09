@@ -1,0 +1,9 @@
+						<div id="viewlet-releases" class="viewlet">
+                <div class="viewletHeader"><div class="vlHeaderText">Latest Releases</div></div>
+                <div class="viewletBody">
+                    <div class="packageLink"><a href="#">Zope 3.2.1</a></div>
+                    <div class="packageLink"><a href="#">LDAP DA 1.0.5</a></div>
+                    <div class="packageLink"><a href="#">tiks widgets 9.5.1</a></div>
+                    <div class="moreLink"><a href="#" class="moreButton"></a></div>
+                </div>
+            </div>

@@ -12,7 +12,14 @@
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 		
 		<!-- css viewlets -->
-		<tal:block replace="structure provider:zf.zscp.skin.ICSS"/>
+		<link rel="stylesheet" type="text/css" media="all"		
+			tal:attributes="href string:${context/++resource++base.css}" />
+		<link rel="stylesheet" type="text/css" media="all"		
+			tal:attributes="href string:${context/++resource++home.css}" />
+		<link rel="stylesheet" type="text/css" media="all"		
+			tal:attributes="href string:${context/++resource++packages.css}" />	
+		<link rel="stylesheet" type="text/css" media="all"		
+			tal:attributes="href string:${context/++resource++viewlets.css}" />
 		
 	</head>
 
@@ -36,46 +43,7 @@
     <div id="portal-columns">
         <!-- begin left column -->
         <div id="portal-column-one">
-            <!-- begin navigation viewlet -->
-            <div id="viewlet-navigation" class="viewlet">
-                <div class="viewletHeader"><div class="vlHeaderText">Navigation</div></div>
-                <div class="viewletBody">
-                    <div class="navTreeItem"><a href="#">Packages</a></div>
-                    <div class="navTreeItem"><a href="#">Regulations</a></div>
-                    <div class="navTreeItem"><a href="#">Repository</a></div>
-                    <div class="navTreeItem"><a href="#">Benefits</a></div>
-                </div>
-            </div>
-            <!-- end navigation viewlet -->
-            <!-- begin quicksearch viewlet -->
-            <div id="viewlet-quicksearch" class="viewlet">
-                <div class="viewletHeader"><div class="vlHeaderText">Quick Search</div></div>
-                <div class="viewletBody">
-                    <form name="quicksearch" id="quicksearch-form" action="#">
-                        <input type="text" name="searchtext" id="quicksearch-input" size="10" />
-                        <input type="image" class="noBorder" id="quicksearch-button" 
-							src="/++skin++ZSCP/@@/img/go.png" />
-                    </form>
-                    <div id="advanced-search" class="searchHelper">
-                        <a href="#">Advanced Search</a>
-                    </div>
-                    <div id="search-tips" class="searchHelper">
-                        <a href="#">Search Tips</a>
-                    </div>
-                </div>
-            </div>
-            <!-- end quicksearch viewlet -->
-            <!-- begin releases viewlet -->
-            <div id="viewlet-releases" class="viewlet">
-                <div class="viewletHeader"><div class="vlHeaderText">Latest Releases</div></div>
-                <div class="viewletBody">
-                    <div class="packageLink"><a href="#">Zope 3.2.1</a></div>
-                    <div class="packageLink"><a href="#">LDAP DA 1.0.5</a></div>
-                    <div class="packageLink"><a href="#">tiks widgets 9.5.1</a></div>
-                    <div class="moreLink"><a href="#" class="moreButton"></a></div>
-                </div>
-            </div>
-            <!-- end releases viewlet -->
+						<tal:block replace="structure provider:ILeft" />
         </div>
         <!-- end left column -->
         <!-- begin main column -->

@@ -15,9 +15,9 @@
       />
 
   <browser:viewletManager
-      name="zf.zscp.skin.ICSS"
+      name="ILeft"
       class=".WeightOrderedViewletManager"
-      provides="zf.zscp.skin.ICSS"
+      provides="zf.zscp.skin.ILeft"
       layer="zf.zscp.skin.IZSCPLayer"
       permission="zope.Public"
       />

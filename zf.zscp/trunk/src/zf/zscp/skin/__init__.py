@@ -37,24 +37,6 @@ class ZSCP(IZSCPLayer, IDefaultBrowserLayer):
     """
 
 
-class IHead(IViewletManager):
-    """Head viewlet manager."""
-
-
-class ICSS(IViewletManager):
-    """CSS viewlet manager."""
-
-
-class IJavaScript(IViewletManager):
-    """JavaScript viewlet manager."""
-
-
-class IMenuBar(IViewletManager):
-    """Menu bar viewlet manager used for top level section."""
-
-class IBreadcrumb(IViewletManager):
-    """Breadcrumb viewlet manager."""
-
 class ILeft(IViewletManager):
     """Left viewlet manager."""
 

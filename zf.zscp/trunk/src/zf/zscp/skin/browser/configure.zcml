@@ -31,15 +31,6 @@
       layer="zf.zscp.skin.IZSCPLayer"
       permission="zope.Public"
       />
-            
-  <browser:viewlet
-      name="css"
-      for="*"
-      manager="zf.zscp.skin.ICSS"
-      permission="zope.Public"
-      template="css.pt"
-      layer="zf.zscp.skin.IZSCPLayer"
-      />
 
   <browser:resourceDirectory
       directory="img"
@@ -62,5 +53,7 @@
       allowed_interface="zope.interface.common.mapping.IItemMapping"
       layer="zf.zscp.skin.IZSCPLayer"
       />
+
+  <include file="viewlet.zcml" />
 
 </configure>
