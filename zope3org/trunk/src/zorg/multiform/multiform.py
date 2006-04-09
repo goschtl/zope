@@ -10,6 +10,17 @@ from interfaces import IMultiForm, IParentAction
 from zope import interface
         
 
+def isFormDisplayMode(f,action):
+    return not f.inputMode
+    
+def isFormInputMode(f,action):
+    return f.inputMode
+
+def isParentFormInputMode(f,action):
+    return f.parentForm.inputMode
+
+
+
 class ParentAction(form.Action):
 
     """an action that is rendered in the parent multiform object and
