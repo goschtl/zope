@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZSCP Data Management
+"""ZSCP Repository
 
 $Id$
 """
