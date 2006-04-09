@@ -7,6 +7,7 @@ var LivePage = {
     userAgent : navigator.userAgent.toLowerCase(),
     lastRequest : null,
     alreadyEvaluated : {},
+    numSended: 0,
 
     ajaxHandlers : {
         onError: function(request, transport) {
@@ -39,7 +40,7 @@ var LivePage = {
                 LivePage.Responders.dispatch(name, event);
                 }
                 
-			setTimeout("LivePage.nextEvent()", 500);
+			setTimeout("LivePage.nextEvent()", 35000);
 			return true;
 			}
 	   },
@@ -86,7 +87,10 @@ var LivePage = {
             { method: 'post',
                 parameters: params
             });
-        
+        LivePage.numSended += 1;
+        if ($('event_count')) {
+            $('event_count').innerHTML = LivePage.numSended;
+            }
         return true;
         },
 
@@ -167,7 +171,8 @@ LivePage.clientHandlers = {
             $(id).innerHTML += html;  /* .stripScripts(); */
             /* We must eval all scripts again. Arrgh!   */
             $(id).innerHTML.evalScripts();
-            LivePage.getAttention(id, event.extra);
+           
+            // LivePage.getAttention($(id).lastChild.id, event.extra);
             return;
             },
                 

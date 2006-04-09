@@ -76,48 +76,23 @@ This online status is also mirrored in the intial server events that are
 send to the clients. Since both clients send events about changing online
 states we get four events :
 
-    >>> page1.output('uuid1').pprint()
-    html : 'zorg.member.uwe'
-    id : 'online'
-    name : 'update'
-    recipients : 'all'
-    where : None
+    >>> page1.output('uuid1')
+    '{"html": "zorg.member.uwe", ... "id": "online", ...
    
-    >>> page1.output('uuid1').pprint()
-    html : 'zorg.member.uwe'
-    id : 'online'
-    name : 'update'
-    recipients : 'all'
-    where : None
+    >>> page1.output('uuid1')
+    '{"html": "zorg.member.uwe", ... "id": "online", ...
 
-    >>> page2.output('uuid2').pprint()
-    html : 'zorg.member.dominik, zorg.member.uwe'
-    id : 'online'
-    name : 'update'
-    recipients : 'all'
-    where : None
+    >>> page2.output('uuid2')
+    '{"html": "zorg.member.dominik, zorg.member.uwe", ... "id": "online", ...
 
-    >>> page2.output('uuid2').pprint()
-    html : 'zorg.member.dominik, zorg.member.uwe'
-    id : 'online'
-    name : 'update'
-    recipients : 'all'
-    where : None
+    >>> page2.output('uuid2')
+    '{"html": "zorg.member.dominik, zorg.member.uwe", ... "id": "online", ...
 
-    >>> page1.output('uuid1').pprint()
-    html : 'zorg.member.dominik, zorg.member.uwe'
-    id : 'online'
-    name : 'update'
-    recipients : 'all'
-    where : None
+    >>> page1.output('uuid1')
+    '{"html": "zorg.member.dominik, zorg.member.uwe", ... "id": "online", ...
 
-    >>> page1.output('uuid1').pprint()
-    html : 'zorg.member.dominik, zorg.member.uwe'
-    id : 'online'
-    name : 'update'
-    recipients : 'all'
-    where : None
-
+    >>> page1.output('uuid1')
+    '{"html": "zorg.member.dominik, zorg.member.uwe", ... "id": "online", ...
 
 When the user starts typing, the Ajax textarea observer calls addComment which
 broadcasts a new pending comment div that can be appended to the DOM children
@@ -142,13 +117,9 @@ new DOM element later on :
     >>> transaction.commit()
 
     >>> out1 = page1.output('uuid1')
-    >>> out1.pprint()
-    extra : 'scroll'
-    html : '<div id="comment1"...'
-    id : 'comments'
-    name : 'append'
-    recipients : 'all'
-    where : None
+    >>> out1
+    '{"html": "<div id=\\"comment1...", "where": null, "id": "comments"}'
+
  
     >>> out1 == page2.output('uuid2')
     True

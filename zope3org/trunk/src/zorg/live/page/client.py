@@ -88,7 +88,7 @@ class LivePageClient(object):
         """
         output = self.nextEvent()
         if output :
-            return output
+            return output.toJSON()
                 
         end = time.time() + self.refreshInterval
         while time.time() < end :

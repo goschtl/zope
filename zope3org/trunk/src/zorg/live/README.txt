@@ -233,14 +233,10 @@ Now let's send the event to a LivePage :
     >>> page2.input('uuid1', event1)
     ''
     
-After that the next call of the output returns javascript snippets:
+After that the next call of the output returns JSON event :
         
-    >>> page1.output(uuid='uuid1').pprint()
-    html : '<p>42</p>'
-    id : 'target'
-    name : 'append'
-    recipients : 'all'
-    where : None
+    >>> page1.output(uuid='uuid1')
+    '{"html": "<p>42</p>", "where": null, "id": "target", "recipients": "all", "name": "append"}'
 
 
 And this again and again if we provide new input :
@@ -249,12 +245,8 @@ And this again and again if we provide new input :
     >>> page2.input('uuid1', event2)
     ''
     
-    >>> page1.output('uuid1').pprint()
-    html : '<p>43</p>'
-    id : 'target'
-    name : 'append'
-    recipients : 'all'
-    where : None
+    >>> page1.output('uuid1')
+    '{"html": "<p>43</p>", "where": null, "id": "target", "recipients": "all", "name": "append"}'
     
 
 

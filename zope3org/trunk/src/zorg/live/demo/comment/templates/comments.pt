@@ -48,7 +48,7 @@
     and observe how others are immediately notified about your typing.</p>
 
     <div>List of Comments</div>
-        <div id="comments" 
+        <div id="comments_area"
              style="display: block;
                     border: 1px solid #CCCCCC;
                     padding: 2px 4px;
@@ -85,7 +85,7 @@
             i18n:attributes="value cancel-comment-button"/>
       </div>
     </div>
-
+    <div id="event_count">?</div>
   </form>
 
 </div>
