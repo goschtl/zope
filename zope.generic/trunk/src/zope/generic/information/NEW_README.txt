@@ -13,13 +13,13 @@ registry is holding user-specific informations.
 In order to implement such an information registry we have to declare an
 *key-like* interface extending the IInformation interface:
 
-	>>> from zope.generic.information import IInformation
-	
-	>>> class ILogSupplierInformation(IInformation):
-	...		"""Store log supplier information."""
+    >>> from zope.generic.information import IInformation
+    
+    >>> class ILogSupplierInformation(IInformation):
+    ...     """Store log supplier information."""
 
-	>>> class ILogUserInformation(IInformation):
-	...		"""Store log user information."""
+    >>> class ILogUserInformation(IInformation):
+    ...     """Store log user information."""
 
 This specialized information interface has to be registered later by 
 informationRegistry-directive.
@@ -33,14 +33,14 @@ A supplier has to provide global log instance (dotted name) and an optional
 time formatter. We capture this configuration information within a configuration
 that can be attached to a dedicated supplier information.
 
-	>>> from zope.interface import Interface
-	>>> from zope.configuration.fields import GlobalObject
-	>>> from zope.schema import BytesLine
+    >>> from zope.interface import Interface
+    >>> from zope.configuration.fields import GlobalObject
+    >>> from zope.schema import BytesLine
 
-	>>> class ILogConfiguration(Interface):
-	...		"""Define the log output."""
-	...		log = GlobalObject(title=u'Log')
-	...		timeFormat = BytesLine(title=u'Time Format', required=False, default='%d.%m.%y')
+    >>> class ILogConfiguration(Interface):
+    ...     """Define the log output."""
+    ...     log = GlobalObject(title=u'Log')
+    ...     timeFormat = BytesLine(title=u'Time Format', required=False, default='%d.%m.%y')
 
 This configuration should be registered by using the configuration directive:
 
@@ -53,12 +53,12 @@ This configuration should be registered by using the configuration directive:
 A user has to provide logger configuration. This configuration defines the
 selected logger and a user-specific source tag:
 
-	>>> from zope.configuration.fields import GlobalInterface
+    >>> from zope.configuration.fields import GlobalInterface
 
-	>>> class ILoggerConfiguration(Interface):
-	...		"""Define the log output."""
-	...		logger = GlobalInterface(title=u'Logger')
-	...		sourceTag = BytesLine(title=u'Source Tag', required=False, default='     ')   
+    >>> class ILoggerConfiguration(Interface):
+    ...     """Define the log output."""
+    ...     logger = GlobalInterface(title=u'Logger')
+    ...     sourceTag = BytesLine(title=u'Source Tag', required=False, default='     ')   
 
     >>> registerDirective('''
     ... <generic:configuration
@@ -83,41 +83,41 @@ TODO: Should be a dependency between informationRegistry and its configuration?
 The third part of our framework is the logger itself. The logger will be
 implmented as an adapter. We have to declare the logger interface:
 
-	>>> class ILogger(Interface):
-	...		"""Log."""
-	...		def log(message):
-	...			"""Log the message."""
+    >>> class ILogger(Interface):
+    ...     """Log."""
+    ...     def log(message):
+    ...         """Log the message."""
 
-	>>> from zope.interface import implements
-	>>> from zope.component import adapts
-	>>> from zope.generic.information import IInformationDeclaration
+    >>> from zope.interface import implements
+    >>> from zope.component import adapts
+    >>> from zope.generic.information import IInformationDeclaration
 
-	>>> class Logger(object):
-	...		"""Generic logger adapter."""
-	...		implements(ILogger)
-	...		adapts(IInformationDeclaration)
-	...		def __init__(self, context):
-	...			self.context = context
-	...		def log(self, message):
-	...			id = IInformationDeclaration(self.context())
-	...			info = queryInformation(id.interface, ILogUserInformation)
+    >>> class Logger(object):
+    ...     """Generic logger adapter."""
+    ...     implements(ILogger)
+    ...     adapts(IInformationDeclaration)
+    ...     def __init__(self, context):
+    ...         self.context = context
+    ...     def log(self, message):
+    ...         id = IInformationDeclaration(self.context())
+    ...         info = queryInformation(id.interface, ILogUserInformation)
 
 
 
 After the registration we can retrieve the registries using the
 queryInformationRegistry function:
 
-	>>> from zope.generic.information.api import queryInformationRegistry
-	
-	>>> supplier_registry =  queryInformationRegistry(ILogSupplierInformation)
-	>>> supplier_registry.label
-	u'ILogSupplierInformation'
-	>>> supplier_registry.hint
-	u'Store log supplier information.'
+    >>> from zope.generic.information.api import queryInformationRegistry
+    
+    >>> supplier_registry =  queryInformationRegistry(ILogSupplierInformation)
+    >>> supplier_registry.label
+    u'ILogSupplierInformation'
+    >>> supplier_registry.hint
+    u'Store log supplier information.'
 
-	>>> user_registry =  queryInformationRegistry(ILogUserInformation)
-	>>> user_registry.label
-	u'ILogUserInformation'
-	>>> user_registry.hint
-	u'Store log user information.'
+    >>> user_registry =  queryInformationRegistry(ILogUserInformation)
+    >>> user_registry.label
+    u'ILogUserInformation'
+    >>> user_registry.hint
+    u'Store log user information.'
 
