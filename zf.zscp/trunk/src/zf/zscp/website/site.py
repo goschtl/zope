@@ -42,12 +42,8 @@ from zf.zscp.website import interfaces
 class ZSCPSite(folder.folder.Folder):
     zope.interface.implements(interfaces.IZSCPSite)
 
-    certificationDir = FieldProperty(
-        interfaces.IZSCPSite['certificationDir'])
-
-    def __init__(self, certificationDir=u''):
+    def __init__(self):
         super(ZSCPSite, self).__init__()
-        self.certificationDir = certificationDir
         self.setSiteManager(site.LocalSiteManager(self))
 
     def __repr__(self):

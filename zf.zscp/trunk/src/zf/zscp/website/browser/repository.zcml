@@ -6,7 +6,7 @@
   <addform
       name="AddZSCPRepository.html"
       schema="zf.zscp.interfaces.IZSCPRepository"
-      label="Add ZSCP Site"
+      label="Add ZSCP Repository"
       content_factory="zf.zscp.website.repository.Repository"
       fields="svnRoot localRoot password"
       keyword_arguments="svnRoot localRoot password"

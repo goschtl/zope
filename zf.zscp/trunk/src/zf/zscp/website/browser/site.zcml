@@ -1,24 +1,20 @@
 <configure
-   xmlns:zope="http://namespaces.zope.org/zope"
-   xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
     i18n_domain="zf.zscp">
 
-  <addform
-      name="AddZSCPSite.html"
-      schema="zf.zscp.website.interfaces.IZSCPSite"
-      label="Add ZSCP Site"
-      content_factory="zf.zscp.website.site.ZSCPSite"
-      fields="certificationDir"
-      keyword_arguments="certificationDir"
-      permission="zope.ManageServices"
+  <addMenuItem
+      class="zf.zscp.website.site.ZSCPSite"
+      title="ZSCP website"
+      description="The ZSCP website"
+      permission="zope.ManageContent"
       />
 
-  <addMenuItem
-       view="AddZSCPSite.html"
-       class="zf.zscp.website.site.ZSCPSite"
-       title="ZSCP website"
-       description="The ZSCP website"
-       permission="zope.ManageContent"
-       />
+  <containerViews
+      for="zf.zscp.website.interfaces.IZSCPSite"
+      contents="zope.ManageContent"
+      index="zope.View"
+      add="zope.ManageContent"
+      />
 
 </configure>
