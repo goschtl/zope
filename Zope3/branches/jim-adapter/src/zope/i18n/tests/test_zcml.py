@@ -18,45 +18,41 @@ $Id$
 import os
 import unittest
 
+import zope.component
+import zope.i18n.tests
 from zope.component.testing import PlacelessSetup
 from zope.configuration import xmlconfig
-
-from zope.app import zapi
 from zope.i18n.interfaces import ITranslationDomain
-import zope.app.i18n
-import zope.i18n.tests
 
-template = """<configure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:i18n='http://namespaces.zope.org/i18n'>
-   %s
-   </configure>"""
-
+template = """\
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:i18n='http://namespaces.zope.org/i18n'>
+  %s
+</configure>"""
 
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(DirectivesTest, self).setUp()
-        self.context = xmlconfig.file('meta.zcml', zope.app.i18n)
+        self.context = xmlconfig.file('meta.zcml', zope.i18n)
 
     def testRegisterTranslations(self):
-        eq = self.assertEqual
-        eq(zapi.queryUtility(ITranslationDomain), None)
+        self.assert_(zope.component.queryUtility(ITranslationDomain) is None)
         xmlconfig.string(
             template % '''
             <configure package="zope.i18n.tests">
-            <i18n:registerTranslations directory="./locale" />
+            <i18n:registerTranslations directory="locale" />
             </configure>
             ''', self.context)
         path = os.path.join(os.path.dirname(zope.i18n.tests.__file__),
-                            'locale', 'en',
-                            'LC_MESSAGES', 'zope-i18n.mo')
-        util = zapi.getUtility(ITranslationDomain, 'zope-i18n')
-        eq(util._catalogs, {'test': ['test'], 'en': [unicode(path)]})
-
+                            'locale', 'en', 'LC_MESSAGES', 'zope-i18n.mo')
+        util = zope.component.getUtility(ITranslationDomain, 'zope-i18n')
+        self.assertEquals(util._catalogs,
+                          {'test': ['test'], 'en': [unicode(path)]})
 
 def test_suite():
     return unittest.makeSuite(DirectivesTest)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(test_suite())
+    unittest.main(defaultTest='test_suite')
