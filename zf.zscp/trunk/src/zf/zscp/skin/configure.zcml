@@ -1,7 +1,12 @@
 <configure
-  xmlns="http://namespaces.zope.org/zope"
-  xmlns:browser="http://namespaces.zope.org/browser"  
-  i18n_domain="zf.zscp">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"  
+    i18n_domain="zf.zscp">
+
+  <interface 
+      interface="zf.zscp.skin.IZSCPLayer"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      />
 
   <interface
       interface=".ZSCP"
