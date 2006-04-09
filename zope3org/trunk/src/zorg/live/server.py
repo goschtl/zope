@@ -27,6 +27,8 @@ from twisted.web2.iweb import IRequest
 from twisted.internet import reactor
 from twisted.web2 import stream
 
+from zope.component import ComponentLookupError
+
 from zope.app.wsgi import WSGIPublisherApplication
 from zope.app.twisted.server import ServerType
 from zope.app.twisted.http import Prebuffer
@@ -41,6 +43,7 @@ from zorg.live.page.event import ErrorEvent
 from zorg.live.page.event import ProgressEvent
 from zorg.live.page.event import dict2event
 
+badRequest = object()
 
 class ExtractionError(Exception) :
     """ Indicates a failed searach for a URI part. """
@@ -48,6 +51,7 @@ class ExtractionError(Exception) :
 
 class Extractor(object) :
     """ helper fo extracting uuids from a URI. """
+    
     
     def __init__(self, handler) :
         self.context = handler
@@ -98,7 +102,12 @@ class Extractor(object) :
         print "Input", input, args
         for k, v in args.items() :
             args[k] = v[0]
-        return dict2event(args)         
+        try :    
+            return dict2event(args)
+        except ComponentLookupError :
+            return None                     # indicates a bad request
+            
+        
                             
     def parseURI(self, uri) :
         """ Checks whether we have a livepage request. """
@@ -127,6 +136,11 @@ class Extractor(object) :
                         client.input(event)
                         ok = DirectResult(("ok",))
                         handler.result = ok
+                    else :
+                        global badRequest
+                        handler.result = badRequest
+                        
+                        
             except ExtractionError :
                 pass
        
@@ -165,7 +179,22 @@ class LivePageWSGIHandler(WSGIHandler) :
         self.expires = time.time() + self.limit
         reactor.callLater(self.idleInterval, self.onIdle)
 
- 
+    def _returnOutput(self, output) :
+        self.headersSent = True
+        
+        self.response.stream=stream.ProducerStream()
+        self.response.stream.write(output)
+        self.response.stream.finish()
+            
+        self.responseDeferred.callback(self.response)
+        self.responseDeferred = None
+        
+    
+    def returnError(self, error) :
+        """ Writes an error result. """
+        self.startWSGIResponse(error, [])
+        self._returnOutput("")        
+        
     def returnResult(self, output, headers=None) :
         """ Writes the result to the deferred response and closes
             the output stream.
@@ -180,17 +209,8 @@ class LivePageWSGIHandler(WSGIHandler) :
         print "Output", output
         
         self.startWSGIResponse('200 Ok', headers)
-       
-        self.headersSent = True
+        self._returnOutput(output)
         
-        self.response.stream=stream.ProducerStream()
-        self.response.stream.write(output)
-        self.response.stream.finish()
-            
-        self.responseDeferred.callback(self.response)
-        self.responseDeferred = None
- 
- 
     def onIdle(self) :
         """ Idle handler that is called by the reactor.
         
@@ -206,6 +226,8 @@ class LivePageWSGIHandler(WSGIHandler) :
             return self.returnResult(error.toJSON())        
             
         r = self.result
+        if r == badRequest :
+            return self.returnError('400 Bad Request')
         if r :
             data = ""
             for x in r.body :

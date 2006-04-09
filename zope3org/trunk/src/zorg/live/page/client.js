@@ -40,7 +40,7 @@ var LivePage = {
                 LivePage.Responders.dispatch(name, event);
                 }
                 
-			setTimeout("LivePage.nextEvent()", 35000);
+			setTimeout("LivePage.nextEvent()", 500);
 			return true;
 			}
 	   },

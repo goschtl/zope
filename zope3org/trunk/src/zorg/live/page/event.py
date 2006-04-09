@@ -356,8 +356,8 @@ def dict2event(args) :
     """
     
     name = args.get('name', None)
-    del args['name']
     factory = zapi.getUtility(IClientEventFactory, name=name)
+    del args['name']
     return factory(**args)    
 
 def request2event() :
