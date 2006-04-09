@@ -29,7 +29,6 @@
         <!-- personal bar (login, join, etc.) -->
         <div id="personal-toolbar">
             <div class="toolbarItem"><a href="#">Login</a></div>
-            <div class="toolbarItem"><a href="#">Contribute</a></div>
         </div>
     </div>
     <!-- end portal-top -->
