@@ -30,4 +30,11 @@
       permission="zope.ManageContent"
       />
 
+  <page
+      name="register.html"
+      for="zf.zscp.interfaces.IZSCPRepository"
+      class=".repository.AddPackageForm"
+      permission="zope.ManageContent"
+      />
+
 </configure>
