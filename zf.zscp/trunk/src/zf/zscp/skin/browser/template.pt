@@ -43,35 +43,44 @@
     <div id="portal-columns">
         <!-- begin left column -->
         <div id="portal-column-one">
-						<tal:block replace="structure provider:ILeft" />
+			<tal:block replace="structure provider:ILeft" />
         </div>
         <!-- end left column -->
         <!-- begin main column -->
-        <div id="portal-column-content">
-            <!-- begin main content area -->
-            <div id="region-content">
-                <!-- main home image -->
-                <div id="homeMainImage">
-                    <!-- rounded corners, yeah! -->
-                    <div id="homeImageTopLeft">&nbsp;</div>
-                    <div id="homeImageTopRight">&nbsp;</div>
-                    <!-- "Packages, Benefits, Contribute" links overlaying image -->
-                    <a href="#" id="homePackagesLink" class="homeImgOverlay"></a>
-                    <a href="#" id="homeBenefitsLink" class="homeImgOverlay"></a>
-                    <a href="#" id="homeContributeLink" class="homeImgOverlay"></a>
-                </div>
-                <!-- text below main image -->
-                <div id="whatIsZSCP">What is the Zope Software Certification Program?</div>
-                <div class="siteListItem">
-                    A place to browse and download <span class="blueText">certified</span> Zope products and add-on components</div>
-                <div class="siteListItem">
-                    A resource for Zope component developers to <span class="blueText">manage</span> and distribute software</div>
-                <div class="siteListItem">
-                    A central location for users to report issues and offer 
-                    <span class="blueText">feedback</span> on products and components</div>
+		<div id="portal-column-content" 
+			tal:define="showtitle python: request.URL[-1]==request.getApplicationURL()">
+            <!-- begin breadcrumbs -->
+            <div id="portal-breadcrumbs" tal:condition="not: showtitle" >
+                <div class="breadcrumbLink"><a href="#" tal:attributes="href request/getApplicationURL">Home</a></div>
+                <div><img class="breadcrumbSeparator" src="/++skin++ZSCP/@@/img/arrowRight3.png" /></div>
+                <div class="breadcrumbLink"><a href="#">Packages</a></div>
+                <div><img class="breadcrumbSeparator" src="/++skin++ZSCP/@@/img/arrowRight3.png" /></div>
+                <div class="breadcrumbItem">zope.search</div>
             </div>
-            <!-- end main content area -->
-        </div>
+            <!-- end breadcrumbs -->			
+			<!-- begin main content area -->
+			<div id="region-content" >
+				<!-- main home image -->
+
+				<div id="homeMainImage" tal:condition="showtitle" >
+					<!-- rounded corners, yeah! -->
+					<div id="homeImageTopLeft">&nbsp;
+					</div>
+					<div id="homeImageTopRight">&nbsp;
+					</div>
+					<!-- "Packages, Benefits, Contribute" links overlaying image -->
+						<a href="#" id="homePackagesLink" class="homeImgOverlay">
+					</a> <a href="#" id="homeBenefitsLink" class="homeImgOverlay">
+					</a> <a href="#" id="homeContributeLink" class="homeImgOverlay">
+					</a>
+				</div>
+				<!-- text below main image -->
+				<div id="body" metal:define-slot="body">
+				</div>
+				
+			</div>
+			<!-- end main content area -->
+		</div>
         <!-- end main column -->
     </div>
     <!-- end portal body -->
