@@ -35,7 +35,6 @@ from zope.app.i18n.messagecatalog import MessageCatalog
 from zope.app.i18n.translationdomain import TranslationDomain
 from zope.app.component.testing import PlacefulSetup
 from zope.app.testing import setup, ztapi
-from zope.app.component.interfaces import ILocalUtility 
 
 
 class Environment(object):
@@ -187,7 +186,7 @@ class TestTranslationDomain(TestITranslationDomain,
 
 
     def setUp(self):
-        classImplements(TranslationDomain, ILocalUtility, IAttributeAnnotatable)
+        classImplements(TranslationDomain, IAttributeAnnotatable)
         self.sm = PlacefulSetup.setUp(self, site=True)
         TestITranslationDomain.setUp(self)
 
