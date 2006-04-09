@@ -44,6 +44,10 @@ are defined in the multiform (parent) class called ``Edit`` and
     ...         data, self.adapters)
     ...         self.parentForm.newInputMode=False
     ...         
+    ...     @form.action(u"Upper", condition=multiform.isParentFormDisplayMode)
+    ...     def handle_uppercase_action(self, action, data):
+    ...			self.context.name = self.context.name.upper()
+    ...			
     ...     def template(self):
     ...         return '\n<div>%s</div>\n' % '</div><div>'.join([w() for w in
     ...     self.widgets])
