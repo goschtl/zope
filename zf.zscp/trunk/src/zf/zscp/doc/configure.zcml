@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"  
+    i18n_domain="zf.zscp">
+
+  <browser:page
+      for="*"
+      name="doc.html"
+      permission="zope.Public"
+      template="ProcessAndRepository.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+</configure>

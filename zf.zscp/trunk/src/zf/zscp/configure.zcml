@@ -2,6 +2,7 @@
    xmlns="http://namespaces.zope.org/zope"
    i18n_domain="zf.zscp">
 
+  <include package=".doc" />  
   <include package=".skin" />  
   <include package=".website" />  
 
