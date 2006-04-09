@@ -44,7 +44,6 @@
   <browser:resourceDirectory
       directory="img"
       name="img"
-      layer="zf.zscp.skin.IZSCPLayer"
       />
 
   <browser:page

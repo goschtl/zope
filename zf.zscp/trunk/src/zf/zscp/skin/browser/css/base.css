@@ -4,7 +4,7 @@
 
 /* base tags */
 body {
-    background: #dbe1e9 url(../img/pageBg.jpg) repeat-y 50% 0%;
+    background: #dbe1e9 url(/@@/img/pageBg.jpg) repeat-y 50% 0%;
     margin: 0; padding: 0;
     font-family: Helvetica, Arial, Geneva, Lucida, sans-serif;
     font-size: 75%;
@@ -45,10 +45,10 @@ h1,h2,h3,h4,h5,h6 {
 .moreButton {
     display: block;
     width: 52px; height: 16px;
-    background: url(../img/moreButton.png) no-repeat left top;
+    background: url(/@@/img/moreButton.png) no-repeat left top;
 }
 .moreButton:hover {
-    background: url(../img/moreButtonHover.png) no-repeat left top;
+    background: url(/@@/img/moreButtonHover.png) no-repeat left top;
 }
 
 #visual-portal-wrapper {
@@ -69,7 +69,7 @@ h1,h2,h3,h4,h5,h6 {
     top: 30px; left: 20px;
     display: block;
     width: 407px; height: 44px;
-    background: url(../img/logo.png) no-repeat left top;
+    background: url(/@@/img/logo.png) no-repeat left top;
 }
 
 /* personal tools (login, join, etc.) */
@@ -82,7 +82,7 @@ h1,h2,h3,h4,h5,h6 {
     display: inline;
     margin-left: 15px;
     padding: 1px 0px 2px 20px;
-    background: url(../img/threeDots.png) no-repeat 4px 0px;
+    background: url(/@@/img/threeDots.png) no-repeat 4px 0px;
 }
 .toolbarItem, .toolbarItem a {
     color: #999;
@@ -95,7 +95,7 @@ h1,h2,h3,h4,h5,h6 {
     position: absolute;
     top: 0px; left: 0px;
     width: 800px; height: 10px;
-    background: url(../img/pageTopBar.png) no-repeat left top;
+    background: url(/@@/img/pageTopBar.png) no-repeat left top;
 }
 
 #portal-column-one {
@@ -120,7 +120,7 @@ h1,h2,h3,h4,h5,h6 {
 
 #documentFirstHeading {
     padding-left: 20px;
-    background: url(../img/threeCircles.png) no-repeat left top;
+    background: url(/@@/img/threeCircles.png) no-repeat left top;
     font-size: 150%;
     margin-top: 18px;
     color: #3366cc;
@@ -150,8 +150,8 @@ h1,h2,h3,h4,h5,h6 {
 .itemHeading {
     padding: 4px 0px 2px 26px;
 }
-.itemOne { background: url(../img/circleOne.png) no-repeat 0% 50%; }
-.itemTwo { background: url(../img/circleTwo.png) no-repeat 0% 50%; }
-.itemThree { background: url(../img/circleThree.png) no-repeat 0% 50%; }
-.itemFour { background: url(../img/circleFour.png) no-repeat 0% 50%; }
+.itemOne { background: url(/@@/img/circleOne.png) no-repeat 0% 50%; }
+.itemTwo { background: url(/@@/img/circleTwo.png) no-repeat 0% 50%; }
+.itemThree { background: url(/@@/img/circleThree.png) no-repeat 0% 50%; }
+.itemFour { background: url(/@@/img/circleFour.png) no-repeat 0% 50%; }
 

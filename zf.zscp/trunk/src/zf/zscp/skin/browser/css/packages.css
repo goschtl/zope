@@ -12,7 +12,7 @@
     border-left: 2px solid #e6e6e6;
     border-bottom: 2px solid #ccc;
     min-height: 260px;
-    background: #eee url(../img/packageBodyBg.jpg) repeat-x left top;
+    background: #eee url(/@@/img/packageBodyBg.jpg) repeat-x left top;
     padding: 30px 30px 20px 20px;
 }
 #package-tabs {
@@ -23,21 +23,21 @@
     bottom: 1px;
     display: inline;
     padding: 11px 0px 1px 10px;
-    background: url(../img/packageTabLeft.png) no-repeat left top;
+    background: url(/@@/img/packageTabLeft.png) no-repeat left top;
 }
 .packageTab a {
     padding: 10px 20px 1px 10px;
     color: #666;
     font-size: 110%;
-    background: url(../img/packageTabRight.png) no-repeat right top;
+    background: url(/@@/img/packageTabRight.png) no-repeat right top;
 }
 .packageTab.selected {
     position: relative;
     top: 1px;
-    background: url(../img/packageTabCurLeft.png) no-repeat left top;
+    background: url(/@@/img/packageTabCurLeft.png) no-repeat left top;
 }
 .packageTab.selected a {
-    background: url(../img/packageTabCurRight.png) no-repeat right top;
+    background: url(/@@/img/packageTabCurRight.png) no-repeat right top;
     font-weight: bold;
 }
 .packageTab a:hover {
@@ -73,12 +73,12 @@
     width: 56px; height: 56px;
 }
 #certifiedGold {
-    background: url(../img/certifiedGold.png) no-repeat left top;
+    background: url(/@@/img/certifiedGold.png) no-repeat left top;
 }
 #certifiedSilver {
-    background: url(../img/certifiedSilver.png) no-repeat left top;
+    background: url(/@@/img/certifiedSilver.png) no-repeat left top;
 }
 #certifiedBronze {
-    background: url(../img/certifiedBronze.png) no-repeat left top;
+    background: url(/@@/img/certifiedBronze.png) no-repeat left top;
 }
 
