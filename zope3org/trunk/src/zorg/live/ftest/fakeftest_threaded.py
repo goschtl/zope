@@ -685,6 +685,10 @@ class async_http(asyncore.dispatcher_with_send):
             text = "GET %s HTTP/1.0\r\nHost: %s\r\n\r\n" % (self.path, self.host)
         self.send(text)
         self.bytes_out = self.bytes_out + len(text)
+        
+      #  print "Client sending", text
+
+        time.sleep(0.5)                     # uo: a short delay seems to be necessary
 
     def handle_expt(self):
         # connection failed; notify consumer
@@ -784,6 +788,9 @@ class html_consumer(base_consumer):
         do_request(wireurl, dc, data)
 
 class user_consumer(base_consumer):
+
+    ignore = ["online", "idle"]             # uo: ignore these for now
+    
     def __init__(self, uid):
         self.expected = []
         base_consumer.__init__(self)
@@ -808,14 +815,19 @@ class user_consumer(base_consumer):
         
         exp = self.expected[0]
         
-        if retval.get('id','') != exp[0]:
-            print "FAIL"
-        else:
-            x=retval['html']
-            if x != exp[1]:
-                #elso?@?@?
-                print "FAIL",x,exp
-            self.expected.pop(0)
+        if retval.get('id','') not in self.ignore :
+            
+       #     print "expected: ", exp[0], exp[1]
+       #    print "got:      ", retval.get('id',''), retval['html']
+        
+            if retval.get('id','') != exp[0]:
+                print "FAIL"
+            else:
+                x=retval['html']
+                if x != exp[1]:
+                    #elso?@?@?
+                    print "FAIL",x,exp
+                self.expected.pop(0)
         
         self.data=''
         dc = self
@@ -839,6 +851,7 @@ def todoin(par):
             'extra':'scroll',
             '_':''}
     do_request(wireurl, dc, data)
+    
 
 outputb1 = Browser()
 uid1 = getUid(outputb1)
