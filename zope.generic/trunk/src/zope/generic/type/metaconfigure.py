@@ -82,7 +82,7 @@ class TypeDirective(InformationDirective):
     """Provide a new logical type."""
 
     # mark types with a type marker type
-    _interface_type = ITypeType
+    _information_type = ITypeType
 
 
     def __init__(self, _context, interface, class_, label=None, hint=None):

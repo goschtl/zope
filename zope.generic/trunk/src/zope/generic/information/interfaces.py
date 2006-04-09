@@ -18,6 +18,7 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.interface import alsoProvides
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
 from zope.schema import Object
@@ -25,11 +26,6 @@ from zope.schema import Text
 from zope.schema import TextLine
 
 from zope.app.i18n import ZopeMessageFactory as _
-
-
-
-__all__ = ['IInformationDeclaration', 'IInformationDescription', 'IInformation',
-           'IInformationRegistryInformation']
 
 
 
@@ -69,5 +65,14 @@ class IInformation(IInformationDescription):
 
 
 
+class IInformationRegistryType(IInterface):
+    """Mark information interface as information type."""
+
+
+
 class IInformationRegistryInformation(IInformation):
     """Provide information about registered information registries."""
+
+
+
+alsoProvides(IInformationRegistryInformation, IInformationRegistryType)

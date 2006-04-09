@@ -22,7 +22,7 @@ from zope.configuration.xmlconfig import XMLConfig
 
 import zope.generic.testing.testing
 
-
+from zope.app.testing import setup
 
 ################################################################################
 #
@@ -46,8 +46,7 @@ class PlacelessSetup(zope.generic.testing.testing.PlacelessSetup):
 
         # register the directive of this package
         import zope.generic.information
-        XMLConfig('meta.zcml', zope.generic.information)()
-        
+        XMLConfig('meta.zcml', zope.generic.information)()        
 
     def tearDown(self, doctesttest=None):
         super(PlacelessSetup, self).tearDown(doctesttest)

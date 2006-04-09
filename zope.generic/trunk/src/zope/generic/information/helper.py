@@ -23,6 +23,8 @@ from zope.component import getUtilitiesFor
 
 from zope.generic.configuration.api import resolveClass
 
+from zope.generic.information import IInformationRegistryInformation
+
 
 
 def dottedName(klass):
@@ -43,6 +45,12 @@ def queryInformation(interface, registry, default=None):
 
     except:
         return default
+
+
+
+def queryInformationRegistry(interface, default=None):
+    return queryInformation(interface, IInformationRegistryInformation, default)
+
 
 
 def registeredInformations(registry, default=None):

@@ -23,6 +23,7 @@ from zope import interface
 from zope.testing import doctest
 
 from zope.generic.configuration.testing import placelesssetup
+from zope.generic.configuration.testing import placelesssetup2
 from zope.generic.testing.testing import registerDirective
 
 from zope.generic.information import testing
@@ -36,6 +37,14 @@ def test_suite():
         doctest.DocFileSuite('README.txt',
                              setUp=placelesssetup.setUp,
                              tearDown=placelesssetup.tearDown,
+                             globs={'component': component, 'interface': interface,
+                             'registerDirective': registerDirective,
+                             'testing': testing},
+                             optionflags=doctest.NORMALIZE_WHITESPACE+
+                                            doctest.ELLIPSIS),
+        doctest.DocFileSuite('NEW_README.txt',
+                             setUp=placelesssetup2.setUp,
+                             tearDown=placelesssetup2.tearDown,
                              globs={'component': component, 'interface': interface,
                              'registerDirective': registerDirective,
                              'testing': testing},

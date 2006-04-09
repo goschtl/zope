@@ -40,12 +40,12 @@ class InformationDescription(object):
         self.interface = interface
 
         if label is None:
-            self.label = _(dottedName(interface))
+            self.label = _(interface.__name__)
         else:
             self.label = label
 
         if hint is None:
-            self.hint = _('No hint available.')
+            self.hint = _(interface.__doc__)
         else:
             self.hint = hint
 
@@ -62,7 +62,7 @@ class Information(InformationDescription, dict):
 
         >>> from zope.interface import Interface
         >>> class IFooMarker(Interface):
-        ...    pass
+        ...    '''Foo is member of the example domain.'''
 
         >>> info = Information(IFooMarker, ISpecialInformation)
 
@@ -77,10 +77,10 @@ class Information(InformationDescription, dict):
         >>> info.interface == IFooMarker
         True
         >>> info.label
-        u'zope.generic.information.base.IFooMarker'
+        u'IFooMarker'
         
         >>> info.hint
-        u'No hint available.'
+        u'Foo is member of the example domain.'
 
 
     Often you will provide a specific label and hint for the end-user:

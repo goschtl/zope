@@ -53,7 +53,8 @@ class IBaseInformationDirective(Interface):
 
 
 class IInformationDirective(IBaseInformationDirective):
-    """Directive for informations and information registries."""
+    """Directive to register an information to corresponding information
+    registry."""
 
     registry = GlobalInterface(
         title=_('Information Registry Key'),
@@ -62,6 +63,11 @@ class IInformationDirective(IBaseInformationDirective):
         required=True,
         constraint=lambda v: v.extends(IInformation)
         )
+
+
+
+class IInformationRegistryDirective(IBaseInformationDirective):
+    """Directive to register an information registry."""
 
 
 

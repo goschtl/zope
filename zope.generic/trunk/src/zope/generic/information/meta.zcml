@@ -17,6 +17,19 @@
 
     </meta:complexDirective>
 
+    <meta:complexDirective
+        name="informationRegistry"
+        schema=".metadirectives.IInformationRegistryDirective"
+        handler=".metaconfigure.InformationRegistryDirective"
+        >
+
+      <meta:subdirective
+          name="configuration"
+          schema=".metadirectives.IConfigurationSubdirective"
+          />
+
+    </meta:complexDirective>
+
   </meta:directives>
 
 </configure>

@@ -26,6 +26,8 @@ from zope.interface import alsoProvides
 from zope.generic.configuration.api import IConfigurations
 
 from zope.generic.information import IInformation
+from zope.generic.information import IInformationRegistryInformation
+from zope.generic.information import IInformationRegistryType
 from zope.generic.information.base import Information
 from zope.generic.information.helper import dottedName
 from zope.generic.information.helper import queryInformation
@@ -87,7 +89,7 @@ def provideConfiguration(interface, registry, configuration, data):
 class InformationDirective(object):
     """Provide a new information of a certain information registry."""
     
-    _interface_type = None
+    _information_type = None
 
     def __init__(self, _context, interface, registry, label=None, hint=None):
         self._interface = interface
@@ -95,8 +97,8 @@ class InformationDirective(object):
         self._registry = registry
     
         # assert type as soon as possible
-        if self._interface_type is not None:
-            alsoProvides(interface, self._interface_type)
+        if self._information_type is not None:
+            alsoProvides(interface, self._information_type)
     
         _context.action(
             discriminator = ('provideInformation', self._interface, self._registry),
@@ -131,3 +133,13 @@ class InformationDirective(object):
             callable = provideConfiguration,
             args = (self._interface, self._registry, interface, data),
             )
+
+
+
+class InformationRegistryDirective(InformationDirective):
+    """Provide a new information registry."""
+
+    _information_type = IInformationRegistryType
+
+    def __init__(self, _context, interface, label=None, hint=None):
+        super(InformationRegistryDirective, self).__init__(_context, interface, IInformationRegistryInformation, label, hint)

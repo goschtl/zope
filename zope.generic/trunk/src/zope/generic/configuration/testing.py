@@ -18,6 +18,7 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.app.testing import setup
 from zope.component import provideAdapter
 from zope.configuration.xmlconfig import XMLConfig
 from zope.interface import Interface
@@ -85,3 +86,13 @@ class PlacelessSetup(zope.generic.information.testing.PlacelessSetup):
 
 
 placelesssetup = PlacelessSetup()
+
+
+
+class PlacelessSetup2(PlacelessSetup):
+
+    def setUp(self, doctesttest=None):
+        super(PlacelessSetup, self).setUp(doctesttest)
+        setup.setUpTestAsModule(doctesttest, 'zope.generic.example')
+
+placelesssetup2 = PlacelessSetup2()
