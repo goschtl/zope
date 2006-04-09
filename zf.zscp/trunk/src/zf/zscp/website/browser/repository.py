@@ -25,6 +25,7 @@ from zope.app.event import objectevent
 
 from zf.zscp.interfaces import IPublication
 from zf.zscp.package import Package
+from zf.zscp.publication import Publication
 
 
 
@@ -43,12 +44,14 @@ class AddPackageForm(form.AddForm):
 
         # create the package instance
         package = Package(packageName)
-        package.name = data.get('name', u'')
-        package.summary = data.get('summary', u'')
-        package.author = data.get('author', u'')
-        package.authorEmail = data.get('authorEmail', u'')
-        package.license = data.get('license', u'')
-        package.metadataVersion = data.get('metadataVersion', u'')
+        publication = Publication()
+        publication.name = data.get('name', u'')
+        publication.summary = data.get('summary', u'')
+        publication.author = data.get('author', u'')
+        publication.authorEmail = data.get('authorEmail', u'')
+        publication.license = data.get('license', u'')
+        publication.metadataVersion = data.get('metadataVersion', u'')
+        package.publication = publication
         zope.event.notify(objectevent.ObjectCreatedEvent(package))
 
         # Add the register the package with the register method
