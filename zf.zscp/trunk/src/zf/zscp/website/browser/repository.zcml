@@ -1,0 +1,22 @@
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zf.zscp">
+
+  <addform
+      schema="zf.zscp.interfaces.IZSCPRepository"
+      label="Add ZSCP Site"
+      content_factory="zf.zscp.website.repository.Repository"
+      name="AddZSCPRepository.html"
+      permission="zope.ManageServices"
+      />
+
+  <addMenuItem
+       view="AddZSCPRepository.html"
+       class="zf.zscp.website.repository.Repository"
+       title="ZSCP repository"
+       description="The ZSCP repository"
+       permission="zope.ManageContent"
+       />
+
+</configure>

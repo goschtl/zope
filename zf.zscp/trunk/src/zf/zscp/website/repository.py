@@ -22,7 +22,7 @@ import zope.interface
 
 from zope.app.container.contained import Contained
 from zf.zscp.interfaces import IZSCPRepository
-from zf.zscp.repository import repository import ZSCPRepository
+from zf.zscp.repository import ZSCPRepository
 
 
 class Repository(ZSCPRepository, persistent.Persistent, Contained):

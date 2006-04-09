@@ -2,25 +2,9 @@
    xmlns="http://namespaces.zope.org/zope"
    i18n_domain="zf.zscp">
 
-  <class class=".site.ZSCPSite">
-    <factory id="zf.zscp.website.interfaces.IZSCPSite" />
-    <require
-        permission="zope.Public"
-        interface=".interfaces.IZSCPSite"
-        />
-    <require
-        permission="zope.ManageContent"
-        set_schema=".interfaces.IZSCPSite"
-        />
-  </class>
+  <include file="site.zcml" />
+  <include file="repository.zcml" />
 
-
-  <subscriber
-      for="zf.zscp.website.interfaces.IZSCPSite
-           zope.app.container.interfaces.IObjectAddedEvent"
-      handler=".site.addAuthenticationUtilityToSite"
-      />
-
-   <include package=".browser" />
+  <include package=".browser" />
 
 </configure>
