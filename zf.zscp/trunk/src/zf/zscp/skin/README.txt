@@ -12,6 +12,7 @@ Setup testbrowser for IWebSiteBrowserSkin functional tests.
     >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
     >>> browser.handleErrors = False
 
+
 Check if the IWebSiteBrowserSkin skin is a vailable.
 
     >>> browser.open('http://localhost/++skin++ZSCP/@@contents.html')

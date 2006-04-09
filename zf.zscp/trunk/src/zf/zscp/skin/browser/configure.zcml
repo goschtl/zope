@@ -1,0 +1,31 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"  
+  i18n_domain="zf.zscp"
+  >
+  
+  <browser:resource
+      name="base.css"
+      file="css/base.css"
+      layer="zf.zscp.skin.IZSCPLayer"
+      permission="zope.Public"
+      />
+
+  <browser:viewlet
+      name="base.css"
+      for="*"
+      manager="zf.zscp.skin.ICSS"
+      permission="zope.Public"
+      template="css.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <browser:page
+      for="*"
+      name="skin_macros"
+      permission="zope.Public"
+      template="template.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+</configure>

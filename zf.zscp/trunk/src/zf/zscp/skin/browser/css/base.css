@@ -1,0 +1,157 @@
+/* Base css for ZSCP skin *
+** Author: Kamal Gill 
+** kamal (dot) gill (at) adaptivewave (dot) com */
+
+/* base tags */
+body {
+    background: #dbe1e9 url(../img/pageBg.jpg) repeat-y 50% 0%;
+    margin: 0; padding: 0;
+    font-family: Helvetica, Arial, Geneva, Lucida, sans-serif;
+    font-size: 75%;
+    color: #333;
+}
+
+a {
+    color: #3366cc;
+    text-decoration: none
+}
+
+p {
+    line-height: 1.3em;
+    color: #333;
+}
+
+input {
+    border: 1px solid #999;
+    font-size: 90%;
+    background-color: #f0f0f0;
+}
+input:focus {
+    border: 1px solid #ffcc00;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    color: #666;
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.noBorder {
+    border: none !important;
+}
+
+.blueText { color: #3366cc; }
+
+.moreButton {
+    display: block;
+    width: 52px; height: 16px;
+    background: url(../img/moreButton.png) no-repeat left top;
+}
+.moreButton:hover {
+    background: url(../img/moreButtonHover.png) no-repeat left top;
+}
+
+#visual-portal-wrapper {
+    position: relative;
+    width: 800px;
+    min-height: 100%;
+    margin: 0 auto;
+    min-height: 600px;
+}
+
+#portal-top {
+    height: 90px;
+    clear: both;
+}
+
+#portal-logo {
+    position: absolute;
+    top: 30px; left: 20px;
+    display: block;
+    width: 407px; height: 44px;
+    background: url(../img/logo.png) no-repeat left top;
+}
+
+/* personal tools (login, join, etc.) */
+#personal-toolbar {
+    position: absolute;
+    top: 20px; right: 30px;
+    line-height: 12px;
+}
+.toolbarItem {
+    display: inline;
+    margin-left: 15px;
+    padding: 1px 0px 2px 20px;
+    background: url(../img/threeDots.png) no-repeat 4px 0px;
+}
+.toolbarItem, .toolbarItem a {
+    color: #999;
+}
+.toolbarItem a:hover {
+    color: #3366cc;
+}
+
+#page-topbar {
+    position: absolute;
+    top: 0px; left: 0px;
+    width: 800px; height: 10px;
+    background: url(../img/pageTopBar.png) no-repeat left top;
+}
+
+#portal-column-one {
+    float: left;
+    width: 165px; height: 500px;
+    margin-left: 20px;
+}
+
+#portal-column-content {
+    margin: 10px 20px 20px 200px;
+    height: 500px;
+}
+
+/* breadcrumbs */
+#portal-breadcrumbs div {
+    display: inline;
+}
+.breadcrumbSeparator {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+#documentFirstHeading {
+    padding-left: 20px;
+    background: url(../img/threeCircles.png) no-repeat left top;
+    font-size: 150%;
+    margin-top: 18px;
+    color: #3366cc;
+}
+
+/* footer */
+#portal-footer {
+    border-top: 2px solid #ddd;
+    margin: 20px 20px 20px 20px;
+    padding-top: 8px;
+    color: #999;
+    font-size: 95%;
+}
+#footer-right {
+    float: right; clear: right;
+}
+.footerItem {
+    margin-right: 10px;
+}
+.footerItem a {
+    padding-left: 10px;
+    padding-top: 2px;
+    border-left: 1px solid #ccc;
+}
+
+/* item heading numbers */
+.itemHeading {
+    padding: 4px 0px 2px 26px;
+}
+.itemOne { background: url(../img/circleOne.png) no-repeat 0% 50%; }
+.itemTwo { background: url(../img/circleTwo.png) no-repeat 0% 50%; }
+.itemThree { background: url(../img/circleThree.png) no-repeat 0% 50%; }
+.itemFour { background: url(../img/circleFour.png) no-repeat 0% 50%; }
+

@@ -1,14 +1,23 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"  
   i18n_domain="zf.zscp"
   >
 
-      <interface
-          interface=".ZSCP"
-          type="zope.publisher.interfaces.browser.IBrowserSkinType"
-          name="ZSCP"
-          />
-<!--
+  <interface
+      interface=".ZSCP"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="ZSCP"
+      />
+
+  <browser:viewletManager
+      name=".ICSS"
+      class=".WeightOrderedViewletManager"
+      provides=".ICSS"
+      layer=".IZSCPLayer"
+      permission="zope.Public"
+      />
+                    
   <include package=".browser" />
--->
+
 </configure>

@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<metal:block define-macro="page">
+	<metal:block define-slot="doctype">
+		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+	</metal:block>
+	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" i18n:domain="zf.zscp">
+	<head>
+  		<title metal:define-slot="title" 
+			  tal:content="string:WebSite: ${context/zope:title_or_name}">WebSite: title</title>
+
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+		
+  <style type="text/css" media="all" tal:content="string: @import url(${context/++resource++website.css});">
+    @import url(website.css);
+  </style>
+
+  <!-- css viewlets -->
+  <tal:block replace="structure provider:zf.zscp.skin.ICSS" />
+
+
+    <link rel="stylesheet" href="./resources/css/base.css"/>
+    <link rel="stylesheet" href="./resources/css/viewlets.css"/>
+    <link rel="stylesheet" href="./resources/css/home.css"/>
+</head>
+
+<body>
+
+
+<div id="visual-portal-wrapper">
+<div id="page-topbar">&nbsp;</div>
+
+    <!-- begin portal-top -->
+    <div id="portal-top">
+        <!-- portal logo, linked to root -->
+        <a id="portal-logo" href="/"></a>
+        <!-- personal bar (login, join, etc.) -->
+        <div id="personal-toolbar">
+            <div class="toolbarItem"><a href="#">Login</a></div>
+            <div class="toolbarItem"><a href="#">Contribute</a></div>
+        </div>
+    </div>
+    <!-- end portal-top -->
+    <!-- begin portal columns -->
+    <div id="portal-columns">
+        <!-- begin left column -->
+        <div id="portal-column-one">
+            <!-- begin navigation viewlet -->
+            <div id="viewlet-navigation" class="viewlet">
+                <div class="viewletHeader"><div class="vlHeaderText">Navigation</div></div>
+                <div class="viewletBody">
+                    <div class="navTreeItem"><a href="#">Packages</a></div>
+                    <div class="navTreeItem"><a href="#">Regulations</a></div>
+                    <div class="navTreeItem"><a href="#">Repository</a></div>
+                    <div class="navTreeItem"><a href="#">Benefits</a></div>
+                </div>
+            </div>
+            <!-- end navigation viewlet -->
+            <!-- begin quicksearch viewlet -->
+            <div id="viewlet-quicksearch" class="viewlet">
+                <div class="viewletHeader"><div class="vlHeaderText">Quick Search</div></div>
+                <div class="viewletBody">
+                    <form name="quicksearch" id="quicksearch-form" action="#">
+                        <input type="text" name="searchtext" id="quicksearch-input" size="10" />
+                        <input type="image" class="noBorder" id="quicksearch-button" src="./resources/img/go.png" />
+                    </form>
+                    <div id="advanced-search" class="searchHelper">
+                        <a href="#">Advanced Search</a>
+                    </div>
+                    <div id="search-tips" class="searchHelper">
+                        <a href="#">Search Tips</a>
+                    </div>
+                </div>
+            </div>
+            <!-- end quicksearch viewlet -->
+            <!-- begin releases viewlet -->
+            <div id="viewlet-releases" class="viewlet">
+                <div class="viewletHeader"><div class="vlHeaderText">Latest Releases</div></div>
+                <div class="viewletBody">
+                    <div class="packageLink"><a href="#">Zope 3.2.1</a></div>
+                    <div class="packageLink"><a href="#">LDAP DA 1.0.5</a></div>
+                    <div class="packageLink"><a href="#">tiks widgets 9.5.1</a></div>
+                    <div class="moreLink"><a href="#" class="moreButton"></a></div>
+                </div>
+            </div>
+            <!-- end releases viewlet -->
+        </div>
+        <!-- end left column -->
+        <!-- begin main column -->
+        <div id="portal-column-content">
+            <!-- begin main content area -->
+            <div id="region-content">
+                <!-- main home image -->
+                <div id="homeMainImage">
+                    <!-- rounded corners, yeah! -->
+                    <div id="homeImageTopLeft">&nbsp;</div>
+                    <div id="homeImageTopRight">&nbsp;</div>
+                    <!-- "Packages, Benefits, Contribute" links overlaying image -->
+                    <a href="#" id="homePackagesLink" class="homeImgOverlay"></a>
+                    <a href="#" id="homeBenefitsLink" class="homeImgOverlay"></a>
+                    <a href="#" id="homeContributeLink" class="homeImgOverlay"></a>
+                </div>
+                <!-- text below main image -->
+                <div id="whatIsZSCP">What is the Zope Software Certification Program?</div>
+                <div class="siteListItem">
+                    A place to browse and download <span class="blueText">certified</span> Zope products and add-on components</div>
+                <div class="siteListItem">
+                    A resource for Zope component developers to <span class="blueText">manage</span> and distribute software</div>
+                <div class="siteListItem">
+                    A central location for users to report issues and offer 
+                    <span class="blueText">feedback</span> on products and components</div>
+            </div>
+            <!-- end main content area -->
+        </div>
+        <!-- end main column -->
+    </div>
+    <!-- end portal body -->
+    <!-- begin portal footer -->
+    <div id="portal-footer">
+        <div id="footer-right">
+            Design by <a href="http://www.adaptivewave.com">AdaptiveWave</a>
+        </div>
+        <div id="footer-left">
+            <span class="footerItem">Copyright &copy; 2006, Zope Foundation.  All rights reserved.</span>
+            <span class="footerItem"><a href="#">About</a></span>
+            <span class="footerItem"><a href="#">Contact</a></span>
+        </div>
+    </div>
+    <!-- end footer -->
+</div>
+    
+</body>
+
+</html>
+</metal:block>

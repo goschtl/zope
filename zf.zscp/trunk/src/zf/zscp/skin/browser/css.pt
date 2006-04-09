@@ -1,0 +1,4 @@
+<metal:block define-macro="basecss">
+<script type="text/javascript" src="base.css"
+        tal:attributes="src string:${context/++resource++base.css}" > </script>
+</metal:block>

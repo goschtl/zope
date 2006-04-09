@@ -17,10 +17,10 @@ $Id$
 
 __docformat__ = "reStructuredText"
 
-#from zope.viewlet.interfaces import IViewletManager
-#from zope.viewlet.manager import ViewletManagerBase
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.viewlet.interfaces import IViewletManager
+from zope.viewlet.manager import ViewletManagerBase
 
 
 
@@ -37,41 +37,34 @@ class ZSCP(IZSCPLayer, IDefaultBrowserLayer):
     """
 
 
-#class IHead(IViewletManager):
-#    """Head viewlet manager."""
-#
-#
-#class ICSS(IViewletManager):
-#    """CSS viewlet manager."""
-#
-#
-#class IJavaScript(IViewletManager):
-#    """JavaScript viewlet manager."""
-#
-#
-#class IMenuBar(IViewletManager):
-#    """Menu bar viewlet manager used for top level section."""
-#
-#
-#class IBreadcrumb(IViewletManager):
-#    """Breadcrumb viewlet manager."""
-#
-#
-#class ILeft(IViewletManager):
-#    """Left viewlet manager."""
-#
-#
-#class IRight(IViewletManager):
-#    """Right viewlet manager."""
-#
-#
-#
-#class WeightOrderedViewletManager(ViewletManagerBase):
-#
-#    def sort(self, viewlets):
-#        def getWeight(viewlet):
-#            try:
-#                return viewlet.weight
-#            except:
-#                return 0
-#        return sorted(viewlets, lambda x, y: cmp(getWeight(x[1]), getWeight(y[1])))
+class IHead(IViewletManager):
+    """Head viewlet manager."""
+
+
+class ICSS(IViewletManager):
+    """CSS viewlet manager."""
+
+
+class IJavaScript(IViewletManager):
+    """JavaScript viewlet manager."""
+
+
+class IMenuBar(IViewletManager):
+    """Menu bar viewlet manager used for top level section."""
+
+class IBreadcrumb(IViewletManager):
+    """Breadcrumb viewlet manager."""
+
+class ILeft(IViewletManager):
+    """Left viewlet manager."""
+
+
+class WeightOrderedViewletManager(ViewletManagerBase):
+
+    def sort(self, viewlets):
+        def getWeight(viewlet):
+            try:
+                return viewlet.weight
+            except:
+                return 0
+        return sorted(viewlets, lambda x, y: cmp(getWeight(x[1]), getWeight(y[1])))
