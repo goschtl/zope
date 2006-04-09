@@ -1,20 +1,21 @@
 from zope.app.publisher.browser import BrowserView
 from zope.interface import implements
-
 from zope.app import zapi
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 from zope.formlib import form
 from zope.formlib.interfaces import IBoundAction
 from zope.formlib.i18n import _
-from interfaces import IMultiForm
+from interfaces import IMultiForm, IParentAction
 from zope import interface
 
 class ParentAction(form.Action):
 
     """an action that is rendered in the parent multiform object and
     is applied to all subForms"""
-
+    
+    implements(IParentAction)
+    
     def __get__(self, form, class_=None):
         if form is None:
             return self
@@ -50,7 +51,18 @@ class ItemFormBase(form.FormBase):
         super(ItemFormBase,self).__init__(context,request)
         self.parentForm=parentForm
 
-
+    def update(self):
+        super(ItemFormBase,self).update()
+        
+    def availableParentActions(self):
+        actions=[]
+        if hasattr(self,'actions'):
+            for action in self.actions:
+                if IParentAction.providedBy(action):
+                    actions.append(action)
+                    
+        actions= form.availableActions(self, actions)
+        return actions
 
 class MultiFormBase(form.FormBase):
 
@@ -58,12 +70,22 @@ class MultiFormBase(form.FormBase):
     itemFormFactory = ItemFormBase
     subForms={}
     form_fields = []
-
-
+    actions = []
+    subActionNames = []
+    
     def update(self):
         super(MultiFormBase,self).update()
+        subFormReset = False
         for form in self.subForms.values():
             form.update()
+            if form.form_result is None:
+                if form.form_reset:
+                    subFormReset=True
+                    form.resetForm()
+                    form.form_reset=False
+        if subFormReset:
+            self.refreshSubActionNames()
+
 
     def setUpWidgets(self, *args, **kw):
         super(MultiFormBase,self).setUpWidgets(*args,**kw)
@@ -71,11 +93,24 @@ class MultiFormBase(form.FormBase):
         self.setUpForms(*args, **kw)
 
     def setUpForms(self, *args, **kw):
-        for name,item in self.context.items():
+
+        for name,item in self.context.items(): 
             prefix = (self.prefix and self.prefix+'.' or '') + name
             subForm = self.itemFormFactory(item,self.request,self)
             subForm.setPrefix(prefix)
             subForm.setUpWidgets(*args, **kw)
             self.subForms[name] = subForm
+        self.refreshSubActionNames()
 
-
+    def refreshSubActionNames(self):
+        availableActions = set()
+        for subForm in self.subForms.values():
+            availableActions.update([action.__name__ for action in \
+                                     subForm.availableParentActions()])
+        self.subActionNames = []
+        if hasattr(self.itemFormFactory,'actions'):
+            for action in self.itemFormFactory.actions:
+                if action.__name__ in availableActions:
+                    self.subActionNames.append(action.__name__)
+                    
+            

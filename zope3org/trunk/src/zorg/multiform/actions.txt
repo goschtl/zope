@@ -1,0 +1,103 @@
+So let us define a new specialized item form class, which defines a
+new parent action called ``Edit``.
+
+
+    >>> from multiform.multiform import ItemFormBase,MultiFormBase
+    >>> from zope.formlib import form
+    >>> from multiform import multiform
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope import interface, schema
+    >>> class IOrder(interface.Interface):
+    ...     identifier = schema.Int(title=u"Identifier", readonly=True)
+    ...     name = schema.TextLine(title=u"Name")
+    >>> class Order:
+    ...     interface.implements(IOrder)
+    ...
+    ...     def __init__(self, identifier, name=''):
+    ...         self.identifier = identifier
+    ...         self.name = name
+
+    >>> orderMapping = dict([(str(k),Order(k,name='n%s'%k)) for k in range(2)])
+
+    >>> def haveNoInputWidgets(f,action):
+    ...     return not form.haveInputWidgets(f,action)
+
+    >>> class OrderForm3(ItemFormBase):
+    ...     
+    ...     def __init__(self,context,request,parentForm):
+    ...         super(OrderForm3,self).__init__(context,request,parentForm)
+    ...         self.form_fields = form.Fields(IOrder,omit_readonly=False,
+    ...         render_context=True,for_display=True)
+    ...         
+    ...     @multiform.parentAction(u"Save",condition=form.haveInputWidgets)
+    ...     def handle_save_action(self, action, data):
+    ...         import pdb;pdb.set_trace()
+    ...         for field in self.form_fields:
+    ...             field.for_display=False
+    ...         form.setUpWidgets() 
+    ...         form.applyChanges(self.context, self.form_fields,
+    ...         data, self.adapters)
+    ...         
+    ...     @multiform.parentAction('Edit',condition=haveNoInputWidgets)
+    ...     def handle_edit_action(self, action, data):
+    ...         for field in self.form_fields:
+    ...             field.for_display=False
+    ...         self.form_reset=True
+    ...         
+    ...     def template(self):
+    ...         return '\n<div>%s</div>\n' % '</div><div>'.join([w() for w in
+    ...     self.widgets])
+
+
+    >>> class OrdersForm3(MultiFormBase):
+    ...     itemFormFactory=OrderForm3
+    ...     def template(self):
+    ...         res = u''
+    ...         names = sorted(self.subForms.keys())
+    ...         for name in names:
+    ...             res += '<div>%s</div>\n' % self.subForms[name].render()
+    ...         return res
+
+So in our new form all widgets are display widgets per default
+
+    >>> request = TestRequest()
+    >>> pf = OrdersForm3(orderMapping,request)
+    >>> print pf()
+    <div>
+    <div>0</div><div>n0</div>
+    </div>
+    <div>
+    <div>1</div><div>n1</div>
+    </div>
+
+And the save action should not be available, due to the reason that there
+are no input widgets in the sub forms.
+
+    >>> pf.subActionNames
+    [u'actions.edit']
+
+Now let's call the edit action to set the widgets to input widgets.
+
+    >>> request.form['form.actions.edit']=u''
+    >>> pf =  OrdersForm3(orderMapping,request)
+    >>> print pf()
+    <div>
+    <div...<input class="textType" ... value="n0" ...
+    </div>
+    <div>
+    <div...<input class="textType" ... value="n1" ...
+
+Now only the save action should be available.
+
+    >>> pf.subActionNames
+    [u'actions.save']
+
+Let us save some data.
+
+    >>> request = TestRequest()
+    >>> request.form['form.actions.save']=u''
+    >>> for i in range(2):
+    ...     request.form['form.%s.name' % i]='newer name %s' % i
+    ...     request.form['form.%s.identifier' % i]= i
+    >>> print OrdersForm3(orderMapping,request)()
+

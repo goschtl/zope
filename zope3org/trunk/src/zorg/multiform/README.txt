@@ -91,28 +91,26 @@ time in the parent multiform, but applied to all subforms.
     >>> class OrderForm2(ItemFormBase):
     ...     form_fields = form.Fields(IOrder,omit_readonly=False,
     ...     render_context=True)
-    ...     def update(self):
-    ...         super(OrderForm2,self).update()
     ...         
-    ...     @multiform.parentAction(u"Save")
+    ...     @multiform.parentAction(u"Save",condition=form.haveInputWidgets)
     ...     def handle_save_action(self, action, data):
     ...         form.applyChanges(self.context, self.form_fields,
     ...         data, self.adapters)
-    ...     def render(self):
+    ...         
+    ...     def template(self):
     ...         return '\n<div>%s</div>\n' % '</div><div>'.join([w() for w in
     ...     self.widgets])
 
 
 Now we have to set the factory on the OrdersForm.
 
-    >>> class OrdersForm2(OrdersForm):
+    >>> class OrdersForm2(MultiFormBase):
     ...     itemFormFactory=OrderForm2
-    ...     def __call__(self, ignore_request=False):
-    ...         self.setUpWidgets()
+    ...     def template(self):
     ...         res = u''
     ...         names = sorted(self.subForms.keys())
     ...         for name in names:
-    ...             res += '<div>%s</div>\n' % self.subForms[name]()
+    ...             res += '<div>%s</div>\n' % self.subForms[name].render()
     ...         return res
 
 
@@ -122,6 +120,12 @@ Now we have to set the factory on the OrdersForm.
     >>> action = [action for action in pf.subForms['1'].actions][0]
     >>> action
     <multiform.multiform.ParentAction object at ...>
+
+All available parent action names of the subforms are available through the
+subActions attribute of the multi form.
+
+    >>> pf.subActionNames
+    [u'actions.save']
 
 The name of the action is without the item key, because it is applied
  to all items.
@@ -152,6 +156,89 @@ Let's supply request Data.
     <div... value="new name 1" ...
     </div>
 
+The above example uses inputwidgets for all editable fields in the
+forms. In the next example we implement a multiform which uses
+displaywidgets per default. Inputwidgets should only be used if the
+'Edit' action is called.
+
+So let us define a new specialized item form class, which defines a
+new parent action called ``Edit``.
+
+    >>> def haveNoInputWidgets(f,action):
+    ...     return not form.haveInputWidgets(f,action)
+
+    >>> class OrderForm3(ItemFormBase):
+    ...     
+    ...     def __init__(self,context,request,parentForm):
+    ...         super(OrderForm3,self).__init__(context,request,parentForm)
+    ...         self.form_fields = form.Fields(IOrder,omit_readonly=False,
+    ...         render_context=True,for_display=True)
+    ...         
+    ...         
+    ...     @multiform.parentAction(u"Save",condition=form.haveInputWidgets)
+    ...     def handle_save_action(self, action, data):
+    ...         import pdb;pdb.set_trace()
+    ...         for field in self.form_fields:
+    ...             field.for_display=False
+    ...         form.setUpWidgets() 
+    ...         form.applyChanges(self.context, self.form_fields,
+    ...         data, self.adapters)
+    ...         
+    ...     @multiform.parentAction('Edit',condition=haveNoInputWidgets)
+    ...     def handle_edit_action(self, action, data):
+    ...         for field in self.form_fields:
+    ...             field.for_display=False
+    ...         self.form_reset=True
+    ...     def template(self):
+    ...         return '\n<div>%s</div>\n' % '</div><div>'.join([w() for w in
+    ...     self.widgets])
+
+
+    >>> class OrdersForm3(OrdersForm2):
+    ...     itemFormFactory=OrderForm3
+
+So in our new form all widgets are display widgets per default
+
+    >>> request = TestRequest()
+    >>> pf = OrdersForm3(orderMapping,request)
+    >>> print pf()
+    <div>
+    <div>0</div><div>new name 0</div>
+    </div>
+    <div>
+    <div>1</div><div>new name 1</div>
+    </div>
+
+And the save action should not be available, due to the reason that there
+are no input widgets in the sub forms.
+
+    >>> pf.subActionNames
+    [u'actions.edit']
+
+Now let's call the edit action to set the widgets to input widgets.
+
+    >>> request.form['form.actions.edit']=u''
+    >>> pf =  OrdersForm3(orderMapping,request)
+    >>> print pf()
+    <div>
+    <div...<input class="textType" ... value="new name 0" ...
+    </div>
+    <div>
+    <div...<input class="textType" ... value="new name 1" ...
+
+Now only the save action should be available.
+
+    >>> pf.subActionNames
+    [u'actions.save']
+
+Let us save some data.
+
+    >>> request = TestRequest()
+    >>> request.form['form.actions.save']=u''
+    >>> for i in range(2):
+    ...     request.form['form.%s.name' % i]='newer name %s' % i
+    ...     request.form['form.%s.identifier' % i]= i
+    >>> print OrdersForm3(orderMapping,request)()
 
 
 TODO:
