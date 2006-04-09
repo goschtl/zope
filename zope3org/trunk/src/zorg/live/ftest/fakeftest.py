@@ -33,7 +33,6 @@ import urllib
 import urllib2
 import unittest
 from base64 import encodestring
-from pub.dbgpclient import brk
 
 from zope.testbrowser.browser import Browser
 from zope.testbrowser.browser import PystoneTimer
