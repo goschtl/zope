@@ -2,11 +2,11 @@ from zope.app.publisher.browser import BrowserView
 from zope.interface import implements
 from zope.app import zapi
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
-
+from zope.component import getMultiAdapter
 from zope.formlib import form
 from zope.formlib.interfaces import IBoundAction
 from zope.formlib.i18n import _
-from interfaces import IMultiForm, IParentAction
+from interfaces import IMultiForm, IParentAction, IFormLocation,IItemForm
 from zope import interface
         
 
@@ -16,10 +16,11 @@ def isFormDisplayMode(f,action):
 def isFormInputMode(f,action):
     return f.inputMode
 
+def isParentFormDisplayMode(f,action):
+    return not f.parentForm.inputMode
+
 def isParentFormInputMode(f,action):
     return f.parentForm.inputMode
-
-
 
 class ParentAction(form.Action):
 
@@ -61,11 +62,15 @@ class parentAction(form.action):
 
 class ItemFormBase(form.FormBase):
 
+
+    implements(IItemForm)
+    forceInput = []
     parentForm = None
     inputMode = None
 
     def __init__(self,context,request,parentForm):
-        super(ItemFormBase,self).__init__(context,request)
+        self.request=request
+        self.context = getMultiAdapter([context,self],IFormLocation)
         self.parentForm=parentForm
 
     def update(self):
@@ -81,12 +86,9 @@ class ItemFormBase(form.FormBase):
         actions= form.availableActions(self, actions)
         return actions
 
-
-
-
 class MultiFormBase(form.FormBase):
 
-
+    implements(IMultiForm)
     itemFormFactory = ItemFormBase
     subForms={}
     form_fields = []
@@ -121,9 +123,9 @@ class MultiFormBase(form.FormBase):
             prefix = (self.prefix and self.prefix+'.' or '') + name
             subForm = self.itemFormFactory(item,self.request,self)
             if self.inputMode is not None and not self.inputMode:
-                forceInputs = getattr(self.itemFormFactory,'forceInputs',[])
+                forceInput = self.itemFormFactory.forceInput
                 for field in subForm.form_fields:
-                    if field.__name__ not in forceInputs:
+                    if field.__name__ not in forceInput:
                         field.for_display=True
             subForm.setPrefix(prefix)
             subForm.setUpWidgets(*args, **kw)
@@ -162,8 +164,8 @@ class MultiFormBase(form.FormBase):
     def checkInputMode(self):
         for action in self.itemFormFactory.actions:
             name = '%s.%s' % (self.prefix,action.__name__)
-            if name in self.request.form and action.inputMode \
-               is not None:
+            if name in self.request.form and getattr(action,
+                                'inputMode', None) is not None:
                 self.setInputMode(action.inputMode)
             
                 

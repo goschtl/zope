@@ -7,15 +7,17 @@ form fields on multiple items. The creation of multiforms is derived
 from the Form class of the formlib package.
 
     >>> from zope import interface, schema
+    >>> from zope.app.location.interfaces import ILocation
     >>> class IOrder(interface.Interface):
     ...     identifier = schema.Int(title=u"Identifier", readonly=True)
     ...     name = schema.TextLine(title=u"Name")
     >>> class Order:
-    ...     interface.implements(IOrder)
+    ...     interface.implements(IOrder,ILocation)
     ...
     ...     def __init__(self, identifier, name=''):
     ...         self.identifier = identifier
     ...         self.name = name
+    ...         self.__name__ = name
 
     >>> orderMapping = dict([(str(k),Order(k,name='n%s'%k)) for k in range(5)])
 

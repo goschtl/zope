@@ -17,15 +17,17 @@ are defined in the multiform (parent) class called ``Edit`` and
     >>> from multiform import multiform
     >>> from zope.publisher.browser import TestRequest
     >>> from zope import interface, schema
+    >>> from zope.app.location.interfaces import ILocation
     >>> class IOrder(interface.Interface):
     ...     identifier = schema.Int(title=u"Identifier", readonly=True)
     ...     name = schema.TextLine(title=u"Name")
     >>> class Order:
-    ...     interface.implements(IOrder)
+    ...     interface.implements(IOrder,ILocation)
     ...
     ...     def __init__(self, identifier, name=''):
     ...         self.identifier = identifier
     ...         self.name = name
+    ...         self.__name__= name
 
     >>> orderMapping = dict([(str(k),Order(k,name='n%s'%k)) for k in range(2)])
 
@@ -168,3 +170,19 @@ should be in display mode again.
     <div>1</div><div>newer name 1</div>
     </div>
 
+Now let us call the upper action, which should uppercase the name
+attributes of the items. This action is an action on the items itself,
+so we have a unique prefix with the key of the item in the parent
+mapping.
+
+    >>> request = TestRequest()
+    >>> request.form['form.1.actions.upper']=u''
+    >>> pf =  OrdersForm(orderMapping,request)
+    >>> result = pf()
+    >>> print result
+    <div>
+    <div>0</div><div>newer name 0</div>
+    </div>
+    <div>
+    <div>1</div><div>NEWER NAME 1</div>
+    </div>
