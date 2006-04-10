@@ -113,13 +113,16 @@ Now we are going to select some items. And the checkbox of the ``selected``
 
     >>> request = TestRequest()
     >>> request.form['form.n1.selected']=u'on'
-    >>> request.form['form.n1.selected.used']=u''
     >>> gf = OrdersForm(orderMapping,request)
     >>> gf.update()
     >>> print gf.render()
     <div>
-    ...
-    <div><input ... checked="checked" ... name="form.n1.selected" ...</div>
+    <div><input... name="form.n0.selected" type="checkbox" value="on"  /></div>
+    <div>0</div>
+    <div>n0</div>
+    </div>
+    <div>
+    <div><input... checked="checked" ... name="form.n1.selected" ... /></div>
     <div>1</div>
     <div>n1</div>
     </div>
@@ -127,8 +130,9 @@ Now we are going to select some items. And the checkbox of the ``selected``
 By using the Edit action we can now switch all selected item forms to
 input mode. 
 
+    >>> request = TestRequest()
     >>> request.form['form.actions.edit']=u''
-    >>> request.form['form.n0.selected.used']=u''
+    >>> request.form['form.n1.selected']=u'on'
     >>> gf = OrdersForm(orderMapping,request)
     >>> print gf()
 
