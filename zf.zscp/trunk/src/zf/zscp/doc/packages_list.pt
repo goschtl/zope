@@ -2,11 +2,11 @@
     i18n:domain="zf.zscp">
   <body>
   <div metal:fill-slot="body">
-
-packages list by r. ineichen
-	  	  	  
 	  
-	  
+	  packages list by r. ineichen
+	  <br />
+	  <a href="@@packages_detail.html">package detail</a> 
+	    
   </div>
   </body>
 

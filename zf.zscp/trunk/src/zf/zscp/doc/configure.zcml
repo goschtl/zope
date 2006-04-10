@@ -2,14 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"  
     i18n_domain="zf.zscp">
-
-  <browser:page
-      for="*"
-      name="doc.html"
-      permission="zope.Public"
-      template="ProcessAndRepository.pt"
-      layer="zf.zscp.skin.IZSCPLayer"
-      />
+    
 
   <browser:page
       for="*"
@@ -58,6 +51,14 @@
       template="packages_intro.pt"
       layer="zf.zscp.skin.IZSCPLayer"
       />      
+
+  <browser:page
+      for="*"
+      name="packages_detail.html"
+      permission="zope.Public"
+      template="packages_detail.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
 
   <browser:page
       for="*"

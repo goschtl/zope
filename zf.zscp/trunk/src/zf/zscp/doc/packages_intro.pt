@@ -3,10 +3,10 @@
   <body>
   <div metal:fill-slot="body">
 
-packages intro 	  
-	  	  	  
-	  
-	  
+	  packages intro
+	  <br />
+	  <a href="@@packages_list.html">package list</a> 
+	    	  
   </div>
   </body>
 

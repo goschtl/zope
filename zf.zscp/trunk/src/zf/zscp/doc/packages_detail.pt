@@ -1,0 +1,68 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body">
+			
+			<div id="package-wrapper">
+				<!-- begin package tabs -->
+				<div id="package-tabs">
+					<div id="tab-info" class="packageTab selected"> <a href="#">
+						Info</a>
+					</div>
+					<div id="tab-releases" class="packageTab"> <a href="#">
+						Releases</a>
+					</div>
+					<div id="tab-classifiers" class="packageTab"> <a href="#">
+						Classifiers</a>
+					</div>
+				</div>
+				<!-- end package tabs -->
+				<!-- begin package body -->
+				<div id="package-info" class="packageBody">
+					
+					<!-- certification Seal (possible values: certified[Gold | Silver| Bronze]) -->
+					<div id="certifiedSilver" class="certSeal">&nbsp;
+					</div>
+					<div class="infoRow">
+						<label>Name:</label>
+						<div class="infoString">zope.search (Zope Search)</div>
+					</div>
+					<div class="infoRow">
+						<label>Certification:</label>
+						<div class="infoString">
+							<span class="silverText">Silver</span> (January 31,
+							2006)</div>
+					</div>
+					<div class="infoRow">
+						<label>Summary:</label>
+						<div class="infoString">Zope Search UI Package</div>
+					</div>
+					<div class="infoRow">
+						<label>License:</label>
+						<div class="infoString">ZPL</div>
+					</div>
+					<div class="infoRow">
+						<label>Author(s):</label>
+						<div class="infoString">Stephan Richter (stephan.richter
+							[at] tufts.edu)</div>
+					</div>
+					<div class="infoRow">
+						<label>Homepage:</label>
+						<div class="infoString"> <a
+								href="http://www.zope.org/Products/zope.search">
+							http://www.zope.org/Products/zope.search</a>
+						</div>
+					</div>
+					<div class="infoRow">
+						<label>Description:</label>
+						<div class="infoString"> The Zope search package provides
+							generic user interface components, such as live search and
+							advanced search forms. </div>
+					</div>
+				</div>
+				<!-- end package body -->
+			</div>
+
+		</div>
+	</body>
+</html>
