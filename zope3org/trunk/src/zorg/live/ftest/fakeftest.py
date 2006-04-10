@@ -33,22 +33,24 @@ import urllib
 import urllib2
 import unittest
 from base64 import encodestring
+import subprocess
 
 from zope.testbrowser.browser import Browser
 from zope.testbrowser.browser import PystoneTimer
-
-from threading import Thread
-
 from zorg.live.server import securityInputLimit
 
-BASEURL = 'http://localhost:8088/@@livecomments.html'
+ROOTURL = 'http://localhost:8088'
+BASEURL = ROOTURL + '/@@livecomments.html'
 INURL = BASEURL+'/@@input/%(uuid)s'
 OUTURL = BASEURL+'/@@output/%(uuid)s'
 UID_EXTRACT = re.compile(r"LivePage.uuid = '(\w*?)'")
+SRVCONTROLURL = ROOTURL+'/++etc++process/servercontrol.html'
 
 #manager user
-USER = "adi"
-PWD = "r"
+#USER = "adi"
+#PWD = "r"
+USER = "globalmgr"
+PWD = "globalmgrpw"
 
 ROUNDUP = 3
 TIMEOUT = 30
@@ -257,7 +259,7 @@ class liveserverTest(testUtils, unittest.TestCase):
         wireurl = INURL % {'uuid':'123invalid'}
         try:
             inputb.open(wireurl)
-
+            
             print inputb.contents
             
             self.fail("Should be a 400 Bad Request")
@@ -321,6 +323,20 @@ class liveserverTest(testUtils, unittest.TestCase):
         data={'name':'update',
             'id':'text',
             'html':'x' * (securityInputLimit + 1),
+            'html':'<p>any</p>'*100000,
+            'extra':'scroll',
+            '_':''}
+        try:
+            print self.inputRequest(INURL, '', [], self.uid, data)
+            
+            self.fail("Should be a 400 Bad Request")
+        except urllib2.HTTPError, e:
+            self.assertEqual(e.code, 400)
+        
+        #even bigger one
+        data={'name':'update',
+            'id':'text',
+            'html':'<p>any</p>'*1000000,
             'extra':'scroll',
             '_':''}
         try:
@@ -686,38 +702,73 @@ def test_suite():
     #suite.addTest(unittest.makeSuite(liveserverBenchmark))
     return suite
 
-SOFTWARE_HOME = r"Y:\zope\svn_zope3\src"
-INSTANCE_HOME = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-CONFIG_FILE = os.path.join(INSTANCE_HOME, "etc", "zope.conf")
+started_byus = False
+popen_handle = None
 
+def check_server(url):
+    brw = Browser()
+    try:
+        brw.open(url)
+        return True
+    except urllib2.HTTPError, e:
+        return False
+    except IOError, e:
+        return False
 
 def start_zope():
-    if sys.version_info < ( 2,3,5 ):
-        print """\
-        ERROR: Your python version is not supported by Zope3.
-        Zope3 needs Python 2.3.5 or greater. You are running:""" + sys.version
-        sys.exit(1)
+    global started_byus
+    global popen_handle
+    
+    started_byus = not check_server(ROOTURL)
+    
+    if started_byus:
+        print "Z3 server not running, starting now:"
+        
+        try:
+            import zope
+        except ImportError:
+            print "Please put the zope3/src in your pythonpath"
+            
+        here = os.path.abspath(os.path.dirname(sys.argv[0]))
+        zskel = os.path.join(here, "zopeskel")
+        
+        #no better idea at the time
+        runzope = "python "+os.path.join(zskel, "runzope.py")
+        #os.system(runzope)
+        #os.startfile(runzope)
+        #os.spawnl(os.P_NOWAIT, runzope)
+        popen_handle = subprocess.Popen(runzope, shell=True)
+        
+        while not check_server(ROOTURL):
+            print ".",
+            time.sleep(1)
+        
+        print
+        print "server started"
+    else:
+        print "Z3 server already running, make sure that parameters, users match!"
 
-    # This removes the script directory from sys.path, which we do
-    # since there are no modules here.
-    #
-    basepath = filter(None, sys.path)
-
-    sys.path[:] = [os.path.join(INSTANCE_HOME, "lib", "python"),
-                   SOFTWARE_HOME] + basepath
-
-    from zope.app.twisted.main import main
-    main(["-C", CONFIG_FILE] + sys.argv[1:])
+def stop_zope():
+    if started_byus:
+        print "Stopping Z3 server"
+        
+        brw = Browser()
+        brw.addHeader('Authorization', getAuth(USER, PWD))
+        brw.open(SRVCONTROLURL)
+        brw.getControl(name="shutdown").click()
+        
+        print "Stopped"
 
 
 if __name__ == '__main__':
-    #start_zope()
+    start_zope()
+    stop_zope()
     
-    evto = os.getenv('LIVESERVER_TIMEOUT')
-    if evto:
-        try:
-            TIMEOUT = int(evto)
-        except:
-            pass
-
-    unittest.main(defaultTest='test_suite',argv=sys.argv+['-v'])
+    #evto = os.getenv('LIVESERVER_TIMEOUT')
+    #if evto:
+    #    try:
+    #        TIMEOUT = int(evto)
+    #    except:
+    #        pass
+    #
+    #unittest.main(defaultTest='test_suite',argv=sys.argv+['-v'])
