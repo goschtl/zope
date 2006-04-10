@@ -1,16 +1,16 @@
 <div id="viewlet-quicksearch" class="viewlet">
                 <div class="viewletHeader"><div class="vlHeaderText">Quick Search</div></div>
                 <div class="viewletBody">
-                    <form name="quicksearch" id="quicksearch-form" action="#">
+                    <form name="quicksearch" id="quicksearch-form" action="@@packages_search.html">
                         <input type="text" name="searchtext" id="quicksearch-input" size="10" />
                         <input type="image" class="noBorder" id="quicksearch-button" 
 							src="/++skin++ZSCP/@@/img/go.png" />
                     </form>
                     <div id="advanced-search" class="searchHelper">
-                        <a href="#">Advanced Search</a>
+                        <a href="@@packages_search.html">Advanced Search</a>
                     </div>
                     <div id="search-tips" class="searchHelper">
-                        <a href="#">Search Tips</a>
+                        <a href="@@packages_tips.html">Search Tips</a>
                     </div>
                 </div>
             </div>

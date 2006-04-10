@@ -75,8 +75,8 @@
         </div>
         <div id="footer-left">
             <span class="footerItem">Copyright &copy; 2006, Zope Foundation.  All rights reserved.</span>
-            <span class="footerItem"><a href="#">About</a></span>
-            <span class="footerItem"><a href="#">Contact</a></span>
+            <span class="footerItem"><a href="@@about.html">About</a></span>
+            <span class="footerItem"><a href="@@contact.html">Contact</a></span>
         </div>
     </div>
     <!-- end footer -->

@@ -5,7 +5,7 @@
 	<div id="homeImageTopRight">&nbsp;
 	</div>
 	<!-- "Packages, Benefits, Contribute" links overlaying image -->
-	<a href="#" id="homePackagesLink" class="homeImgOverlay"></a>
-	<a href="#" id="homeBenefitsLink" class="homeImgOverlay"></a>
-	<a href="#" id="homeContributeLink" class="homeImgOverlay"></a>
+	<a href="@@packages_intro.html" id="homePackagesLink" class="homeImgOverlay"></a>
+	<a href="@@benefits_intro.html" id="homeBenefitsLink" class="homeImgOverlay"></a>
+	<a href="@@contribute_intro.html" id="homeContributeLink" class="homeImgOverlay"></a>
 </div>
