@@ -1,0 +1,22 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Layout of the Common Repository (6 of
+				8)</div>
+			<h3 class="itemSix itemHeading">Releases</h3>
+			<p>By default, packages in the Common Repository will adopt the same release
+				schedule as Zope. The Zope development team releases two major releases a
+				year, one in May and one in November.</p>
+			<p>A positive side effect of this rule is that the dependencies on Common
+				Repository packages should be pretty simple. This model has worked great
+				for the KDE community, which always distributes a large set of their
+				libraries and programs at the same time.</p>
+			<p>However, packages may also choose their own release schedule. In this case
+				dependencies must be carefully stated in the release data file.</p>
+			<a href="@@repository_page07.html">Next Page: ...</a>
+			
+		</div>
+	</body>
+</html>

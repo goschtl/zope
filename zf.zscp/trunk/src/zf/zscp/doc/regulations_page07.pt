@@ -1,0 +1,106 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Regulations (7 of 8)</div>
+			<h3 class="itemSeven itemHeading">Package Release Data</h3>
+			<p>Finally, all the releases of certified packages <em>must</em> be tracked.
+				This section describes the data that must be recorded for each release. The
+				same sub-section layout as in section 2.5. applies.</p>
+			<p>The following data description is known as the <em>Package Release Data
+				Version 1.0</em>.</p>
+			<div class="section">
+				<h5><a id="id4" name="id4">2.7.1. Name</a></h5>
+				<p>(Text Line, single, required)</p>
+				<p>The name under which the package will be known for this release. This
+					field <em>may</em> be equivalent to the name field described in
+					section 2.5.1.</p>
+				<p>Example: Sample Package</p>
+			</div>
+			<div class="section">
+				<h5><a id="version" name="version">2.7.2. Version</a></h5>
+				<p>(Text Line, single, required)</p>
+				<p>This field describes the version number of the release.</p>
+				<p>Example: 0.9.0b2</p>
+			</div>
+			<div class="section">
+				<h5><a id="codename" name="codename">2.7.3. Codename</a></h5>
+				<p>(Text Line, single, optional)</p>
+				<p>The code name of the release.</p>
+				<p>Example: CoolName</p>
+			</div>
+			<div class="section">
+				<h5><a id="id5" name="id5">2.7.4. Date</a></h5>
+				<p>(Date, single, required)</p>
+				<p>The date on which the release was made. The date should be in the form <tt
+						class="docutils literal">
+					<span class="pre">yyyy-mm-dd</span></tt>.</p>
+				<p>Example: 2006-02-01</p>
+			</div>
+			<div class="section">
+				<h5><a id="certification" name="certification">2.7.5.
+					Certification</a></h5>
+				<p>(Choice, single, required)</p>
+				<p>The certification level of the package at the date of the release.</p>
+				<p>Allowed Values: none, listed, level1, level2, level3 Example:
+					level1</p>
+			</div>
+			<div class="section">
+				<h5><a id="package" name="package">2.7.6. Package</a></h5>
+				<p>(URL, single, required)</p>
+				<p>The URL to the installation package file.</p>
+				<p>Example: <a class="reference"
+						href="http://www.zope.org/Products/SamplePackage/SamplePackage-0.9.0.tgz">
+					http://www.zope.org/Products/SamplePackage/SamplePackage-0.9.0.tgz</a>
+					</p>
+				<p>2.7.7. Source +++++++++++++x</p>
+				<p>(URL, single, optional)</p>
+				<p>The URL to the repository location. It should be possible to use this URL
+					to make a checkout.</p>
+				<p>Example: svn://svn.zope.org/zf.sample/tags/0.9.0b2</p>
+			</div>
+			<div class="section">
+				<h5><a id="dependency" name="dependency">2.7.8. Dependency</a></h5>
+				<p>(Text Line, multiple, required)</p>
+				<p>A dependency to another package. The dependency must contain the full
+					name of the package and the version number. One entry of this field
+					<em>must</em> be specified for each dependency.</p>
+				<p>Example: Zope 3.3</p>
+			</div>
+			<div class="section">
+				<h5><a id="announcement" name="announcement">2.7.9.
+					Announcement</a></h5>
+				<p>(URL, single, optional)</p>
+				<p>A link to the announcement of the release.</p>
+				<p>Example: <a class="reference"
+						href="http://www.zope.org/Products/SamplePackage090Released">
+					http://www.zope.org/Products/SamplePackage090Released</a>
+					</p>
+			</div>
+			<div class="section">
+				<h5><a id="release-manager" name="release-manager">2.7.10.
+					Release-manager</a></h5>
+				<p>(Text Line, single, required)</p>
+				<p>The full name and E-mail address of the release manager. Both sub-fields
+					should be separately be available.</p>
+				<p>Example: John Doe &lt;<a class="reference"
+						href="mailto:john&#64;doe.com">john&#64;doe.com</a>
+					&gt;</p>
+			</div>
+			<div class="section">
+				<h5><a id="press-contact" name="press-contact">2.7.11.
+					Press-contact</a></h5>
+				<p>(Text Line, single, required)</p>
+				<p>The full name and E-mail address of the press contact. Both sub-fields
+					should be separately be available.</p>
+				<p>Example: John Doe &lt;<a class="reference"
+						href="mailto:john&#64;doe.com">john&#64;doe.com</a>
+					&gt;</p>
+			</div>
+			
+			<a href="@@regulations_page08.html">Next Page: ...</a>
+			
+		</div>
+	</body>
+</html>

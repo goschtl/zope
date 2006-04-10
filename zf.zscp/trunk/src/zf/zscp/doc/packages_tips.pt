@@ -3,10 +3,8 @@
   <body>
   <div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 
-packages search tips  
+		<div id="documentFirstHeading">Package Search Tips</div> 
 	  	  	  
-	  
-	  
   </div>
   </body>
 

@@ -1,0 +1,101 @@
+<html metal:use-macro="context/@@standard_macros/view" i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Changes / Revision history</div>
+			
+			<h4><a id="version-0-8" name="version-0-8">Version 0.8</a></h4>
+			<ul class="simple">
+				<li>Added Q&amp;A that not all certified packages must be in the Common
+					Repository.</li>
+				<li>Improvements to section 2.4.: * Made table simpler and improved metric
+					titles * Added sub-sections for each metric to allow for more
+					specification</li>
+			</ul>
+			
+			<h4><a id="version-0-7" name="version-0-7">Version 0.7</a></h4>
+			<ul class="simple">
+				<li>Added a third certification action: warn</li>
+				<li>Got test coverage requirements right; it should be greater than</li>
+				<li>Made a note that for small packages a Web-repository is enough to put
+					docuemntation online.</li>
+				<li>Added Q&amp;A about certifying core packages that have separate
+					releases</li>
+				<li>Added a note to level 1 description, that this level is generally good
+					enough for the core.</li>
+				<li>Added a note that package information is compatible with PyPI
+					data.</li>
+				<li>Write some more about the marketing effect.</li>
+			</ul>
+			
+			<h4><a id="version-0-6" name="version-0-6">Version 0.6</a></h4>
+			<ul class="simple">
+				<li>Complete rewrite of the proposal to address the following issues: *
+					naming of process and certification levels. * concern of not
+					separating the process from the repository (implementation) * being
+					random * not clearly specifying the quality requirements</li>
+				<li>Added Glossary</li>
+				<li>Expanded Pre-proposal committee list</li>
+			</ul>
+			
+			<h4><a id="version-0-5" name="version-0-5">Version 0.5</a></h4>
+			<ul class="simple">
+				<li>Explain what <tt class="docutils literal">
+					<span class="pre">zf</span></tt> stands for.</li>
+				<li>Correct facts about SchoolTool's coverage feature.</li>
+				<li>Explain that not all packages in the Common Repository must apply for
+					the ZAP process.</li>
+				<li>Applied various typo and grammar/spelling fixes.</li>
+				<li>Changed date format.</li>
+				<li>Made a note about having no fee for the certification.</li>
+				<li>Added QA section for BBB.</li>
+				<li>Added questions and answers.</li>
+				<li>Simplified ZAP format a little bit.</li>
+				<li>Clarified the term &quot;Cubed&quot;.</li>
+			</ul>
+			
+			<h4><a id="version-0-4" name="version-0-4">Version 0.4</a></h4>
+			<ul class="simple">
+				<li>Formalized writing style.</li>
+				<li>Incorporated Gary's ideas of the Zope Accountability Program. That
+					meant rewriting the entire &quot;Process&quot; and most of the
+					&quot;Common Repository&quot; section.</li>
+			</ul>
+			
+			<h4><a id="version-0-3" name="version-0-3">Version 0.3</a></h4>
+			<ul class="simple">
+				<li>Moved <tt class="docutils literal">
+					<span class="pre">z3ecm</span></tt> project to correct location
+					after renaming</li>
+				<li>Added note about packages that have no changes in a new version, but are
+					maintained</li>
+				<li>Added note about automated releases.</li>
+				<li>Added more ideas about namespaces.</li>
+				<li>Added text about alternative Python license and how to deal with
+					third-party included code.</li>
+				<li>Added CHANGES section.</li>
+				<li>Commented that test coverage reports will be run regularly.</li>
+				<li>Added a comment on testing migration scripts.</li>
+				<li>Answered a question about the fear of the repository being too
+					formal.</li>
+				<li>Collapsed back to one repository structure suggestion and reasoned
+					why it is the best approach.</li>
+			</ul>
+			
+			<h4><a id="version-0-2" name="version-0-2">Version 0.2</a></h4>
+			<ul class="simple">
+				<li>Alternative package structure</li>
+				<li>Additional answered question about not hosting full
+					applications</li>
+				<li>Added Dependencies section</li>
+			</ul>
+			
+			<h4><a id="version-0-1" name="version-0-1">Version 0.1</a></h4>
+			<ul class="simple">
+				<li>Initial draft</li>
+			</ul>
+			
+		</div>
+	</body>
+	
+</html>

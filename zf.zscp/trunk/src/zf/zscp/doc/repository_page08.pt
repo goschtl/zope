@@ -1,0 +1,40 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Layout of the 
+				Common Repository (8 of 8)</div>
+
+			<h3 class="itemEight itemHeading">An Example</h3>
+			<p>(informal voice)</p>
+			<p>In the last weeks, I have frequently used an example to illustrate the
+				process. One very common functionality that is needed for many types of Web
+				applications is the &quot;search&quot;. Depending on the software stack
+				one is using, the actual &quot;search&quot; implementation might be quite
+				different. However, there is some value in defining a simple, but generic
+				search API. Based on this API a package would provide a nice set of UI
+				components that could be used by anyone implementing the search API.</p>
+			<p>Since such a package (possibly including a generic sample implementation)
+				would be very useful for a wide variety of people, it would be added to the
+				Common Repository. After some initial setup, the package will have the
+				&quot;listed&quot; ZSCP status. This should open up the visibility a lot
+				and attract people from sub-communities, like Plone, tiks and Z3ECM.</p>
+			<p>Since people from other Zope communities provide a very large skillset, the
+				community effect is used to improve the API and some initial
+				implementations are done against the API. At this stage the package would
+				apply for Level 1 certification.</p>
+			<p>As the API matures, specific projects like Plone would then provide specific
+				implementations of this search API and maintain this code in their
+				repository, since (a) the code would not be very useful for other projects
+				and (b) the additional code provides specific value that can be protected.
+				This process also naturally adds support and documentation to the package,
+				making it possible to apply for Level 2 certification.</p>
+			<p>Once the package is mature and the sub-projects have successfully deployed
+				it, the package will receive the Level 3 certification. While this process
+				may take a year or longer to complete, it ensures that the API of the search
+				package is truly useful and provides benefit to the intended audience.</p>
+			
+		</div>
+	</body>
+</html>

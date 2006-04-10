@@ -36,7 +36,15 @@
       template="contribute_intro.pt"
       layer="zf.zscp.skin.IZSCPLayer"
       />  
-      
+
+  <browser:page
+      for="*"
+      name="glossary.html"
+      permission="zope.Public"
+      template="glossary.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />  
+	      
   <browser:page
       for="*"
       name="packages_intro.html"
@@ -95,6 +103,62 @@
 
   <browser:page
       for="*"
+      name="regulations_page03.html"
+      permission="zope.Public"
+      template="regulations_page03.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <browser:page
+      for="*"
+      name="regulations_page04.html"
+      permission="zope.Public"
+      template="regulations_page04.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 
+
+  <browser:page
+      for="*"
+      name="regulations_page05.html"
+      permission="zope.Public"
+      template="regulations_page05.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 
+
+  <browser:page
+      for="*"
+      name="regulations_page06.html"
+      permission="zope.Public"
+      template="regulations_page06.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 	
+
+  <browser:page
+      for="*"
+      name="regulations_page07.html"
+      permission="zope.Public"
+      template="regulations_page07.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 	
+
+  <browser:page
+      for="*"
+      name="regulations_page08.html"
+      permission="zope.Public"
+      template="regulations_page08.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 	
+	
+  <browser:page
+      for="*"
+      name="regulations_qa.html"
+      permission="zope.Public"
+      template="regulations_qa.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 	
+		
+  <browser:page
+      for="*"
       name="repository_intro.html"
       permission="zope.Public"
       template="repository_intro.pt"
@@ -107,6 +171,69 @@
       permission="zope.Public"
       template="repository_page02.pt"
       layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <browser:page
+      for="*"
+      name="repository_page03.html"
+      permission="zope.Public"
+      template="repository_page03.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 
+
+  <browser:page
+      for="*"
+      name="repository_page04.html"
+      permission="zope.Public"
+      template="repository_page04.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
       /> 	
-		
+
+  <browser:page
+      for="*"
+      name="repository_page05.html"
+      permission="zope.Public"
+      template="repository_page05.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 	
+
+  <browser:page
+      for="*"
+      name="repository_page06.html"
+      permission="zope.Public"
+      template="repository_page06.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 	
+
+  <browser:page
+      for="*"
+      name="repository_page07.html"
+      permission="zope.Public"
+      template="repository_page07.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 	
+
+  <browser:page
+      for="*"
+      name="repository_page08.html"
+      permission="zope.Public"
+      template="repository_page08.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 		
+
+  <browser:page
+      for="*"
+      name="repository_qa.html"
+      permission="zope.Public"
+      template="repository_qa.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 	
+	
+  <browser:page
+      for="*"
+      name="revision_history.html"
+      permission="zope.Public"
+      template="revision_history.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 		
 </configure>

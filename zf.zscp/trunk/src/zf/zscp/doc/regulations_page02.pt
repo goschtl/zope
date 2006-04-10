@@ -1,13 +1,122 @@
 <html metal:use-macro="context/@@standard_macros/view"
     i18n:domain="zf.zscp">
   <body>
-  <div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
-
-packages intro 	  
-	  	  	  
+	  <div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+	
 	  
-	  
-  </div>
-  </body>
+		<div id="documentFirstHeading">Regulations (2 of 8)</div>
+		<h3 class="itemTwo itemHeading">Layout</h3>
 
+			<p>Packages in the Common Repository <em>must</em> have the following
+				layout:</p>
+			<blockquote>
+				<dl>
+					<dt>repos/main/&lt;NAMESPACE&gt;.&lt;PACKAGE&gt;</dt>
+					<dd>branches/</dd>
+					<dd>tags/</dd>
+					<dd>trunk/</dd>
+					<dd>
+						<dl>
+							<dt>... setup files ...</dt>
+							<dd>src/</dd>
+						</dl>
+						<dl>
+									<dt>&lt;NAMESPACE&gt;/</dt>
+									<dd>
+										<dl>
+											<dt>&lt;PACKAGE&gt;/</dt>
+											<dd>... code ...</dd>
+										</dl>
+									</dd>
+						</dl>
+						<dl>
+							<dt>zscp/ [optional]</dt>
+							<dd>ZSCP.cfg</dd>
+							<dd>PUBLICATION.cfg [optional]</dd>
+							<dd>CERTIFICATIONS.xml [optional]</dd>
+							<dd>RELEASES.xml [optional]</dd>
+						</dl>
+					</dd>
+				</dl>
+			</blockquote>
+			<p>This layout, with exception of the <tt class="docutils literal">
+				<span class="pre">zscp/</span></tt> directory, follows the common
+				layout guidelines of SVN and Python. The optional <tt
+					class="docutils literal">
+				<span class="pre">zscp/</span></tt> directory contains all the
+				information to satisfy the ZSCP's package data requirements. The key file
+				is <tt class="docutils literal">
+				<span class="pre">ZSCP.cfg</span></tt>, which contains a reference to
+				other files containing the necessary data.</p>
+			<p>The format of the <tt class="docutils literal">
+				<span class="pre">ZSCP.cfg</span></tt> file is as follows:</p>
+			<pre class="literal-block">			
+			publication &lt;PATH-OR-URL-TO-PUBLICATION-FILE&gt;
+			certifications &lt;PATH-OR-URL-TO-CERTIFICATIONS-FILE&gt;
+			releases &lt;PATH-OR-URL-TO-RELEASES-FILE&gt;
+			</pre>
+			<p>The value for each field, <tt class="docutils literal">
+				<span class="pre">publication</span></tt>, <tt
+					class="docutils literal">
+				<span class="pre">certifications</span></tt>, and <tt
+					class="docutils literal">
+				<span class="pre">releases</span></tt> is a relative path or URL to the
+				corresponding file. The formats for those files is defined in section
+				3.3.</p>
+			<p>The <tt class="docutils literal">
+				<span class="pre">zscp/</span></tt> directory and the <tt
+					class="docutils literal">
+				<span class="pre">ZSCP.cfg</span></tt> file should be auto-generated
+				using the ZSCP homepage. The goal of the ZSCP configuration file is to
+				disconnect the concern of the package manager with that of the
+				certification manager. In other words, the package manager should
+				<em>never</em> be concerned with the maintenance of the of the ZSCP
+				certification and data in the repository.</p>
+			<p>While other repository layouts were originally considered, the layout
+				above has several advantages. First of all, it keeps the hierarchy of the
+				repository relatively flat; it is really just one level deep. Python
+				developers tend to like that. The naming of packages as <tt
+					class="docutils literal">
+				<span class="pre">&lt;NAMESPACE&gt;.&lt;PACKAGE&gt;</span></tt> is
+				already used in the zope.org repository now and works well.</p>
+			<p>However, a package in the Common Repository is <em>not</em> required to
+				apply the ZSCP process. This will allow for experimental and non-generic
+				packages to reside in the Common Repository as well.</p>
+			<p>Since it is not the goal of the Common Repository to assimilate all projects,
+				one can choose whatever namespace desired for a package. There are a only a
+				few rules:</p>
+			<ol class="arabic simple">
+				<li>Every package <em>must</em> be located in a namespace.</li>
+				<li>Packages from the same developer/institution should have the same
+					namespace. For example, Zope Corporation always uses <tt
+						class="docutils literal">
+					<span class="pre">zc</span></tt>.</li>
+				<li>The <tt class="docutils literal">
+					<span class="pre">zope</span></tt> namespace is reserved for Zope 3
+					core components.</li>
+				<li>The default namespace for one-time package developers to use is <tt
+						class="docutils literal">
+					<span class="pre">zf</span></tt> -- short for Zope
+					Foundation.</li>
+			</ol>
+			<p>The Common Repository is <em>not</em> a replacement for other high-level
+				repositories like Plone's or ECM's. It does not aim at assimilating
+				everything in the wider Zope community. It is merely a place for
+				high-quality packages that are supported by the Zope development
+				team.</p>
+			<p>Code in the Common Repository <em>must</em> also use the license stated in
+				section 3.5 and developers <em>must</em> sign the contributor agreement.
+				The agreement is necessary to ensure that contributions originated from
+				the contributing developer.</p>
+			<p>A final goal of the Common Repository is to ease the upstream movement of
+				packages. It should be easy to promote a package to the Zope 3 core or even to
+				the Python standard library. Since all packages in the Common Repository
+				have a license that can be changed by the Zope Foundation and developers have
+				signed contributor agreements, packages can be easily moved into the Zope 3
+				and Python core.</p>
+
+		  <a href="@@regulations_page03.html">Next Page: ...</a>
+	  
+		</div>
+	</body>
 </html>

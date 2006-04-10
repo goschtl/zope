@@ -1,0 +1,39 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Layout of the 
+				Common Repository (7 of 8)</div>
+			<h3 class="itemSeven itemHeading">License</h3>
+			<p>The license of the repository is probably the most sensitive issue. The Plone
+				community has stated several times the need to protect their core values
+				using the GPL. However, in order to maximize cooperation with other
+				projects, the Plone community also agrees to develop generic packages
+				under different licenses. Other parties usually use the ZPL or a BSD-like
+				license.</p>
+			<p>Thus it is proposed to place all the packages in the Zope 3 Common Repository
+				under the ZPL.</p>
+			<p>There has been an alternative argument and proposal concerning licenses.
+				One of the goals of Zope 3 is to become a better citizen of the Python
+				community, in other words, Zope wants to be more Pythonic. From a Python
+				developer's point of view, the ZPL is yet another reminder that Zope has
+				special rules. It has thus been proposed to use the Python license.</p>
+			<p>Another issue that has surfaced frequently in the past was the inclusion of
+				third-party software; this especially applies to Javascript libraries.
+				If a third-party software is included in the repository as part of a package,
+				the package <em>must</em> contain a <tt class="docutils literal">
+				<span class="pre">LICENSES.txt</span></tt> file that lists all the
+				applicable licenses with a reference to the code they apply to. The release
+				manager and/or a member of the &quot;checkin police&quot; (to be
+				determined) <em>must</em> be notified of such inclusion, so that the
+				references can be verified. Failure to do so can result in loss of checkin
+				privileges and/or removal of the package. While this policy might sound
+				very demanding at first sight, it is simply a necessary measure to protect
+				the Zope community legally.</p>	
+		
+			<a href="@@repository_page08.html">Next Page: ...</a>
+			
+		</div>
+	</body>
+</html>

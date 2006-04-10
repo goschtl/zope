@@ -1,0 +1,65 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zf.zscp">
+  <body>
+	<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+		
+		<div id="documentFirstHeading">Regulations: Questions and Answers</div>
+		<p>Does this proposal imply that all certified packages <em>must</em> live in the
+			Common Repository?</p>
+		<p>No, absolutely not! The ZSCP is completely disconnected from the Common
+			Repository. The common repsoitory is merely a place where it will be easy for
+			packages to undergo certification, since it will provide the necessary tools to
+			automatically check for the fullfillment of the requirements.</p>
+		<p>Why would you want your package in the Common Repository?</p>
+		<p>Placing your package in the Common Repository (like the collective in other
+			communities) will ensure a certain exposure of the code to others. If your
+			package will be certified, then other people will dedicate time to keep up the
+			compatibility and quality of the package. Further, you can use the
+			certification as a way to market your software and your skills. It is also
+			<em>your</em> personal way you can contribute back to the community.</p>
+		<p>Is the proposal too formal? Is the entry bar too high?</p>
+		<p>Some people might argue that the process is too formal and that the demotion clause
+			for certified packages will cause no packages being certified. I do not think
+			that will be the case. There will always be a set of packages that many people will
+			rely on (such as RDB adapters, LDAP adapter, authentication plugins) and where
+			the community has a vested interest in maintaining them. Also, I think there is a
+			general desire in the wider Zope community to have quality packages; this
+			proposal provides a roadmap for developers to produce those high-quality
+			packages.</p>
+		<p>How does this fit into the Cubed effort?</p>
+		<p>First a definition of &quot;Cubed&quot;: Cubed is an effort by the Plone
+			developers to develop generic Zope 3 components that are primarily applicable
+			to Plone (integrated via Five for now), but are also usable by a wider audience.
+			The ultimate goal is to eventually provide a migration path of Plone from the Zope
+			2 to the Zope 3 platform.</p>
+		
+		<p>Will the Zope Foundation and/or the Zope core developers have the bandwidth to
+			process certification requests in a timely manner?</p>
+		<p>One big goal of the quality metrics section is to identify a set of quantifiable
+			items that can be easily verified using an automated process. Thus the overhead
+			for the core developers should be minimized. Also, an efficient Web site for the
+			process should allow certification managers to quickly provide the
+			certification. Overall, certifying a package should become as common of a task
+			as making releases or even writing documentation.</p>
+		<p>For such a process it seems to be useful to have an issue tracker, special mailing
+			lists and/or an advanced buildbot setup. Why are those technologies not
+			addressed in the proposal?</p>
+		<p>This proposal is <em>not</em> about technical solutions. It is about defining a
+			process and laying the implementation of this process via a community
+			repository. The purpose of the proposal is to establish an initial set of
+			guidelines/rules and not to discuss the technical implementation.</p>
+		<p>Why are dependencies not addressed in more detail?</p>
+		<p>Currently, we simply do not have any system in place that could sensibly handle
+			version requirements. However, several systems are currently being built. The
+			goal of this proposal is not to invent yet another version dependency system.
+			Thus the issue is deferred until the Zope community decides on a system to
+			use.</p>
+		<p>Are we going to certify core packages that are also seperate projects?</p>
+		<p>Yes, I imagine that it will be generally easier to certify those packages. Also,
+			having them certified separately makes it easier to amrket their
+			certification.</p>
+		
+	</div>
+  </body>
+
+</html>

@@ -1,0 +1,42 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zf.zscp">
+  <body>
+	<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+		
+		<div id="documentFirstHeading">Glossary</div>
+		
+		<dl class="docutils">
+			<dt>Certification Action</dt>
+			<dd>A change in certification level. Currently there are two actions, granting
+				and revoking.</dd>
+			<dt>Certification Manager</dt>
+			<dd>A person that executes the certification process.</dd>
+			<dt>Common Repository</dt>
+			<dd>A community repository governed by Zope Foundation for the development of
+				generic Zope packages.</dd>
+			<dt>Package Certification Data</dt>
+			<dd>Data that describes the certification history of the package.</dd>
+			<dt>Package Meta-Data</dt>
+			<dd>Data that describes the package itself. It is also known as publication
+				data.</dd>
+			<dt>Package Release Data</dt>
+			<dd>Data describing all releases since entering the ZSCP process.</dd>
+			<dt>Quality Metric</dt>
+			<dd>A quantifiable item to measure the quality of a package.</dd>
+			<dt>Zope Community Process</dt>
+			<dd>A set of methods used to develop Zope add-on packages and itself, such as
+				sprints, proposals and testing.</dd>
+			<dt>Zope Software Certification Program (ZSCP)</dt>
+			<dd>A process conducted by the Zope Foundation and core developers to certify
+				package's quality.</dd>
+			<dt>ZSCP Level X Certified</dt>
+			<dd>A certification level that the ZSCP grants to a package.</dd>
+			<dt>ZSCP Listed</dt>
+			<dd>A pre-certification level that lists a package on the ZSCP homepage.</dd>
+		</dl>
+
+		
+	</div>
+  </body>
+
+</html>

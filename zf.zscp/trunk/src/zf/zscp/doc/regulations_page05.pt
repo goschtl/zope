@@ -1,0 +1,72 @@
+<html metal:use-macro="context/@@standard_macros/view" i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Layout of the Common Repository (5 of
+				8)</div>
+			<h3 class="itemFive itemHeading">Coding Style Guidelines</h3>
+			<p>In general the Zope 3 coding style guidelines apply.</p>
+			<blockquote> <a class="reference"
+					href="http://dev.zope.org/Zope3/CodingStyle">
+				http://dev.zope.org/Zope3/CodingStyle</a>
+			</blockquote>
+			<p>The following additional guidelines are provided.</p>
+			<ul>
+				<li>
+					<p class="first">State of Code</p>
+					<p>At any given time, the trunk of a package <em>must</em> be beta
+						quality, if the package is scheduled for a release within the Zope
+						release cycle. That means the code should be always beta quality,
+						pass all tests and have complete documentation. Code in branches
+						do not have to fulfill any of those requirements.</p>
+				</li>
+				<li>
+					<p class="first">Documentation</p>
+					<p>There needs to be at least one <tt class="docutils literal">
+						<span class="pre">README.txt</span></tt> file explaining the
+						generic use of the code. If other tests are provided, it is not
+						necessary to cover all corner cases. However, it will be preferred
+						that a set of text documentation files will cover all of the
+						functionality, including all corner cases. If those details are
+						too much for a single README.txt file, the developer should not
+						hesitate to create multiple text files, making sure that they are
+						linked from the <tt class="docutils literal">
+						<span class="pre">README.txt</span></tt> file. All text files
+						<em>must</em> be doctests to ensure that the information is
+						up-to-date.</p>
+				</li>
+				<li>
+					<p class="first">Backward-Compatibility</p>
+					<p>The package <em>must</em> provide backward-compatibility for
+						two following major releases. Concretely, if a feature is
+						deprecated in X.Y, then it must be supported for X.Y and X.(Y+1).
+						The backward-compatibility can be removed in X.(Y+2). By
+						backward-compatibility it is meant that the old API still has to
+						work as before, but a deprecation warning is raised, if the old API
+						is used.</p>
+				</li>
+				<li>
+					<p class="first">Migration</p>
+					<p>Once one stable release has been made, generation scripts
+						<em>must</em> be provided to upgrade to the next release, if the
+						package stores any data in the ZODB. Zope 3 provides all the
+						necessary facilities to do so.</p>
+					<p>Since migration/generation scripts are code like any other code,
+						the question on testing generation scripts comes to mind. Testing
+						migration scripts can be possible, if the structure of the script
+						is well-designed. Thus migration/generation scripts should be
+						tested.</p>
+				</li>
+				<li>
+					<p class="first">Dependencies</p>
+					<p>All dependencies of a package must be listed in a <tt
+							class="docutils literal">
+						<span class="pre">DEPENDENCIES.cfg</span></tt> file. The
+						dependencies must be listed as a Python path. There is one
+						dependency per line.</p>
+				</li>
+			</ul> <a href="@@repository_page06.html">Next Page: ...</a>
+			
+		</div>
+	</body>
+</html>

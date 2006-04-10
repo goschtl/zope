@@ -4,7 +4,6 @@
 	<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 		
 		<div id="documentFirstHeading">Contact</div>
-		TODO
 		<span tal:content="view/getPageCount | default"> 0 </span>
 		
 	</div>

@@ -1,0 +1,73 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Regulations (8 of 8)</div>
+
+			<h3 class="itemEight itemHeading">The Process</h3>
+
+			<p>The main purpose of this section is to define the workflow that a package
+				undergoes to change its certification level within the ZSCP. A secondary
+				goal is to provide a roadmap for packages to move upstream into the Zope or
+				even Python core, if applicable. With this in mind, it should be easy for the
+				Zope users to find and discover packages, including their meta,
+				certification and release data. Also, receiving a certification level
+				should be perceived as reward for the hard work being done; an
+				accomplishment the package authors should be proud of and be able to market
+				it accordingly.</p>
+			<p>The certification process is conducted by the Zope Foundation with the tight
+				collaboration of the &quot;core developers&quot;. For lack of any other
+				definition, core developers are defined as developers regularly
+				contributing to the Zope core components. They are often informally
+				identified by the community. The developers conducting the
+				certifications are known as the <em>certification managers</em>.</p>
+			<p>As defined in section 2.3., the ZSCP defines four distinct package
+				certification levels. Achieving the first status of being a listed package
+				is an automated process. Once the authors fulfill the package layout
+				guidelines, have provided all required package meta-data and are hooked
+				into the automated test runner, then listed package status will be granted
+				to them from the system.</p>
+			<p>For the other three certification levels, a certification manager
+				<em>must</em> grant the certification level. The authors of a package have
+				to demonstrate that they have fulfilled the requirements for the desired
+				level. The fulfillment of the requirements is checked automatically via
+				some tools, like the automated test runner and coverage checker, and by
+				inspection of the certification manager.</p>
+			<p>Both, the requirements and process, are developed in a way that it should be
+				also simple and fast to receive certification level 1 and level 2. The
+				turn-around time of a request for being granted a certification level 1 or
+				level 2 should be about 1 day.</p>
+			<p>The certification of level 3 will usually take some more time, since it
+				requires the certification manager to inspect the code in much more detail.
+				However, the certification time should not exceed a couple of weeks.</p>
+			<p>Overall, it is very important for the process to have as little overhead as
+				possible and make the certification process a quick, easy and fun
+				experience.</p>
+			<p>When packages are not maintained anymore, they may lose their
+				certification. If a package is not updated for a given Zope release cycle
+				once, it receives a warning. If the package is not updated for a second
+				release cycle in a row, it will lose its certification and will be demoted to
+				the next appropriate level. This will commonly mean that it becomes a
+				&quot;listed&quot; package again. The exception is, of course, when a
+				package has no changes since the last version. In those cases it is simply
+				enough to verify that the package still works and to make an entry in the <tt
+					class="docutils literal">
+				<span class="pre">CHANGES.txt</span></tt> file to that effect.</p>
+			<p>When any of the requirements listed in this document change, then the
+				packages have one release cycle to upgrade to the new requirements. After
+				one release cycle, the package receives a warning. If the requirements are
+				not upgraded for another release cycle, the package will loose its
+				certification and will be demoted to the next appropriate level.</p>
+			<p>While certified packages have to fulfill the requirements of the quality
+				metrics, in return there will also be some technical benefits. Packages
+				that are part of the ZSCP will be automatically tested, have coverage
+				reports created, and be listed on the ZSCP Web site.</p>
+			<p>There is <em>no</em> fee associated with the certification. One of the goals
+				of the program is to encourage developers to write better code and provide
+				them with ways to measure it. The certification is a way of saying
+				&quot;thank you&quot;. And for the community it is overall better to have as
+				many certified packages as possible.</p>
+	</div>
+	</body>
+</html>

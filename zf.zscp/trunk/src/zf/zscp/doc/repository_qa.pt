@@ -1,0 +1,20 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Layout of the Common Repository: FAQ</div>
+			
+			<h3>Questions and Answers</h3>
+			<p>Will the repository present a full-functioning application, like a
+				CMS?</p>
+			<p>No, the purpose of the repository is to be a <em>collection of
+				components</em> that is useful for a wider variety of applications.
+				Applications should be developed, maintained and governed outside this
+				repository. For example, Plone is developed by the Plone Foundation on
+				plone.org and the Tiks CMS by Projekt01 on tiks.org. However, those
+				applications may apply for certification.</p>
+			
+		</div>
+	</body>
+</html>

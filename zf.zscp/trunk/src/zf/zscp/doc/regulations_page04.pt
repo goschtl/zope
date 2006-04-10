@@ -1,0 +1,128 @@
+<html metal:use-macro="context/@@standard_macros/view" i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Regulations (4 of 8)</div>
+			<h3 class="itemFour itemHeading">Quality Assurance</h3>
+			
+			<p>The goal of the Common Repository and its supporting software stack is to
+				automate as many quality assurance tasks as possible. The following
+				sub-section lists such tools. The full development of those tools is
+				expected to be a long-term process.</p>
+			
+			<h5><a id="automated-test-runner" name="automated-test-runner"> 4.1.
+				Automated Test Runner</a></h5>
+			<p>The trunks of the packages in the Common Repository are generally expected to
+				pass all tests. The zope.org buildbot setup will be used to verify all tests
+				of a package after each checkin. Any test failures will be reported.
+				Furthermore, packages should not contain any deprecation warnings. Since
+				instantaneous updating is not practical, a period of 4 weeks (or, if
+				shorter, until the first beta of the next Zope 3 release) will be granted to
+				remove any deprecation warnings, due to refactoring.</p>
+			<p>Status: - The buildbot setup is in place. - A buildout system needs to be
+				developed to describe to buildbot how to build</p>
+			<div class="system-message">
+				<p class="system-message-title">System Message: ERROR/3 (<tt
+						class="docutils">&lt;string&gt;</tt>, line 1247)</p>
+				Unexpected indentation.</div>
+			<blockquote> the package environment to run the tests.</blockquote>
+			
+			<h5><a id="test-coverage-reports" name="test-coverage-reports"> 4.2.
+				Test Coverage Reports</a></h5>
+			<p>The test runner provides a neat option &quot;--coverage&quot; that reports
+				the lines that were not executed during the testing period. The test
+				coverage will be run regularly, probably as part of the buildbot test runs.
+				Whenever a package does not fulfill its required coverage quota (as defined
+				by the quality metric), a message will be sent to the mailing list. Also, an
+				HTML version of the coverage report will be made available.</p>
+			<p><em>Note:</em> The current version of the coverage tool does not work very
+				well. Marius Gedminas of SchoolTool has reimplemented the option for the
+				custom SchoolTool test runner, which works much better; he needs to port his
+				implementation. He also developed a high-level script to report the
+				coverage via an HTML site.</p>
+			<p>See <a class="reference"
+					href="http://source.schooltool.org/coverage/">
+				http://source.schooltool.org/coverage/</a></p>
+			<p>Status: - The concept of test coverage exists. - The tool to convert coverage
+				reports to an HTML page exists. - The better coverage implementation of
+				SchoolTool needs to be ported.</p>
+			
+			<h5><a id="publication-data-verification"
+					name="publication-data-verification">4.3. Publication Data
+				Verification</a></h5>
+			<p>Since the publication data is central to providing sufficient information
+				about a package, it will be necessary for a tool to regularly check the
+				completeness of the file and verify any external links.</p>
+			<p>Status: - This tool has to be written, but should not be too hard, since a parser
+				and</p>
+			<div class="system-message">
+				<p class="system-message-title">System Message: ERROR/3 (<tt
+						class="docutils">&lt;string&gt;</tt>, line 1281)</p>
+				Unexpected indentation.</div>
+			<blockquote> writer for the publication data must be developed for the ZSCP Web
+				site anyways.</blockquote>
+			
+			<h5><a id="dependency-checker" name="dependency-checker">4.4.
+				Dependency Checker</a></h5>
+			<p>A dependency checker will ensure that all used packages and modules are
+				listed in the <tt class="docutils literal">
+				<span class="pre">DEPENDENCIES.cfg</span></tt> file. While this is not
+				a versioned dependency check, it allows to detect unwanted or unknown
+				dependencies. If an unlisted dependency is found, a message to the mailing
+				list will be sent.</p>
+			<p>Status: - This tool does not exist yet, though a dependency detection tool is
+				already</p>
+			<div class="system-message">
+				<p class="system-message-title">System Message: ERROR/3 (<tt
+						class="docutils">&lt;string&gt;</tt>, line 1294)</p>
+				Unexpected indentation.</div>
+			<blockquote> available. Its code could be used to implement this
+				tool.</blockquote>
+			
+			<h5><a id="nightly-tar-ball-testing" name="nightly-tar-ball-testing">
+				4.5. Nightly TAR-ball Testing</a></h5>
+			<p>A nightly cron job could generate a TAR-ball of the package and check whether
+				it is functioning correctly.</p>
+			<p>SchoolTool has already deployed such a tool successfully.</p>
+			<p>Status: - While a &quot;prototype&quot; exists, it would be somewhat
+				difficult to produce an</p>
+			<div class="system-message">
+				<p class="system-message-title">System Message: ERROR/3 (<tt
+						class="docutils">&lt;string&gt;</tt>, line 1306)</p>
+				Unexpected indentation.</div>
+			<blockquote> environment in which the package could be properly
+				run.</blockquote>
+			
+			<h5><a id="coding-style-verification"
+					name="coding-style-verification">4.6. Coding Style
+				Verification</a></h5>
+			<p>While coding style verification can never be fully tested, there are some
+				elements that can be checked:</p>
+			<ul class="simple">
+				<li>Has file called <tt class="docutils literal">
+					<span class="pre">interfaces.py</span></tt></li>
+				<li>Has <tt class="docutils literal">
+					<span class="pre">tests.py</span></tt> file or <tt
+						class="docutils literal">
+					<span class="pre">tests/</span></tt> directory</li>
+				<li>Class names start with upper letter and have no underscore</li>
+				<li>Has a <tt class="docutils literal">
+					<span class="pre">README.txt</span></tt> file</li>
+			</ul>
+			<p>Status: - Such a tool is not implemented yet.</p>
+			
+			<h5><a id="migration-script-testing" name="migration-script-testing">
+				4.7. Migration Script Testing</a></h5>
+			<p>Often data migration scripts are written without fully testing them in an
+				involved test environment. The most effective way to test a migration
+				script is to actually store an old version of the database, apply the
+				migration script and check whether the data was converted correctly.
+				Fortunately, this type of testing does not require any new technology and
+				simply needs to be documented.</p>
+			<p>Status: - The documentation to writing those type of tests needs to be
+				written.</p>
+			<a href="@@regulations_page05.html">Next Page: ...</a>
+			
+		</div>
+	</body>
+</html>

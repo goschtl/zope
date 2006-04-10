@@ -3,9 +3,7 @@
   <body>
   <div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 
-packages search by r. ineichen  
-	  	  	  
-	  
+		<div id="documentFirstHeading">Package Search</div>
 	  
   </div>
   </body>
