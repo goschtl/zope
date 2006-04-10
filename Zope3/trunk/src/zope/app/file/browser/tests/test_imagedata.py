@@ -17,13 +17,29 @@ $Id$
 """
 import unittest
 
+from zope.component import adapts, provideAdapter
+from zope.component.testing import PlacelessSetup
+from zope.interface import implements
 from zope.app.file.image import Image
 from zope.app.file.browser.image import ImageData
+from zope.app.traversing.browser.interfaces import IAbsoluteURL
 
 class FakeRequest(object):
     pass
 
-class Test(unittest.TestCase):
+class StubAbsoluteURL(object):
+    adapts(Image, FakeRequest)
+    implements(IAbsoluteURL)
+
+    def __init__(self, *objects):
+        pass
+
+    def __str__(self):
+        return '/img'
+
+    __call__ = __str__
+
+class Test(PlacelessSetup, unittest.TestCase):
 
     def testData(self):
         """ """
@@ -35,43 +51,32 @@ class Test(unittest.TestCase):
 
     def testTag(self):
         """ """
-
-        # faking absolute_url getter .
-        def absolute_url(context, request):
-            return '/img'
-
+        provideAdapter(StubAbsoluteURL)
         image = Image()
         fe = ImageData()
         fe.context = image
         fe.request = FakeRequest()
 
-        from zope.app import zapi
-        old_absoluteURL = zapi.absoluteURL
-        try:
-            zapi.absoluteURL = absolute_url
-            self.assertEqual(fe.tag(),
-                '<img src="/img" alt="" height="-1" width="-1" border="0" />')
-            self.assertEqual(fe.tag(alt="Test Image"),
-                '<img src="/img" alt="Test Image" '
-                'height="-1" width="-1" border="0" />')
-            self.assertEqual(fe.tag(height=100, width=100),
-                ('<img src="/img" alt="" height="100" '
-                 'width="100" border="0" />'))
-            self.assertEqual(fe.tag(border=1),
-                '<img src="/img" alt="" height="-1" width="-1" border="1" />')
-            self.assertEqual(fe.tag(css_class="Image"),
-                '<img src="/img" alt="" '
-                'height="-1" width="-1" border="0" class="Image" />')
-            self.assertEqual(fe.tag(height=100, width="100",
-                            border=1, css_class="Image"),
-                '<img src="/img" alt="" '
+        self.assertEqual(fe.tag(),
+            '<img src="/img" alt="" height="-1" width="-1" border="0" />')
+        self.assertEqual(fe.tag(alt="Test Image"),
+            '<img src="/img" alt="Test Image" '
+            'height="-1" width="-1" border="0" />')
+        self.assertEqual(fe.tag(height=100, width=100),
+            ('<img src="/img" alt="" height="100" '
+                'width="100" border="0" />'))
+        self.assertEqual(fe.tag(border=1),
+            '<img src="/img" alt="" height="-1" width="-1" border="1" />')
+        self.assertEqual(fe.tag(css_class="Image"),
+            '<img src="/img" alt="" '
+            'height="-1" width="-1" border="0" class="Image" />')
+        self.assertEqual(fe.tag(height=100, width="100",
+                        border=1, css_class="Image"),
+            '<img src="/img" alt="" '
                 'height="100" width="100" class="Image" border="1" />')
-        finally:
-            zapi.absoluteURL = old_absoluteURL
 
 def test_suite():
-    loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
+    return unittest.makeSuite(Test)
 
 if __name__=='__main__':
     unittest.main()
