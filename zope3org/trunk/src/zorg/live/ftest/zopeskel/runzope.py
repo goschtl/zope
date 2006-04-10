@@ -18,8 +18,6 @@ $Id$
 import os
 import sys
 
-from pub.dbgpclient import brk
-
 #SOFTWARE_HOME = r"Y:\zope\svn_zope3\src"
 INSTANCE_HOME = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 CONFIG_FILE = os.path.join(INSTANCE_HOME, "etc", "zope.conf")
