@@ -323,20 +323,6 @@ class liveserverTest(testUtils, unittest.TestCase):
         data={'name':'update',
             'id':'text',
             'html':'x' * (securityInputLimit + 1),
-            'html':'<p>any</p>'*100000,
-            'extra':'scroll',
-            '_':''}
-        try:
-            print self.inputRequest(INURL, '', [], self.uid, data)
-            
-            self.fail("Should be a 400 Bad Request")
-        except urllib2.HTTPError, e:
-            self.assertEqual(e.code, 400)
-        
-        #even bigger one
-        data={'name':'update',
-            'id':'text',
-            'html':'<p>any</p>'*1000000,
             'extra':'scroll',
             '_':''}
         try:
@@ -764,11 +750,11 @@ if __name__ == '__main__':
     start_zope()
     stop_zope()
     
-    #evto = os.getenv('LIVESERVER_TIMEOUT')
-    #if evto:
-    #    try:
-    #        TIMEOUT = int(evto)
-    #    except:
-    #        pass
-    #
-    #unittest.main(defaultTest='test_suite',argv=sys.argv+['-v'])
+    evto = os.getenv('LIVESERVER_TIMEOUT')
+    if evto:
+        try:
+            TIMEOUT = int(evto)
+        except:
+            pass
+
+    unittest.main(defaultTest='test_suite',argv=sys.argv+['-v'])
