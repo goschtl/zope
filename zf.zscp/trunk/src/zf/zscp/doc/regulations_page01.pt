@@ -1,0 +1,13 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zf.zscp">
+  <body>
+  <div metal:fill-slot="body">
+
+packages intro 	  
+	  	  	  
+	  
+	  
+  </div>
+  </body>
+
+</html>
