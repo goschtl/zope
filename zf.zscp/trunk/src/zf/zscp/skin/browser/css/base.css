@@ -106,8 +106,17 @@ h1,h2,h3,h4,h5,h6 {
 
 #portal-column-content {
     margin: 10px 20px 20px 200px;
-    height: 500px;
+    min-height: 500px;
 }
+
+
+/* for Internet Explorer */
+/*\*/
+* html .container {
+height: 8em;
+}
+/**/
+
 
 /* breadcrumbs */
 #portal-breadcrumbs div {
