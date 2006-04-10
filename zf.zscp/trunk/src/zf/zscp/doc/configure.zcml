@@ -19,7 +19,20 @@
       template="benefits_intro.pt"
       layer="zf.zscp.skin.IZSCPLayer"
       /> 
-
+<!--
+  <browser:pages
+      for=".interfaces.IBenefitsSubitems"
+      permission="zope.Public"
+      layer="zf.zscp.skin.IZSCPLayer">
+      
+	<browser:page
+		name="benefits_page*.html"   
+        template="benefits_page*.pt"
+        />
+  
+  </browser:pages>
+-->
+		  
   <browser:page
       for="*"
       name="benefits_page01.html"

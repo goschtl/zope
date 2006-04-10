@@ -2,9 +2,10 @@
     i18n:domain="zf.zscp">
   <body>
   <div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
-benefits intro 	  
 
-
+benefits page02
+	  	  	  
+	  
 	  
   </div>
   </body>
