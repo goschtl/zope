@@ -26,10 +26,15 @@ class PackageEditForm(form.EditForm):
     """Edit a package and it's sub forms."""
 
     form_fields = form.Fields(IPublication, prefix='publication')
-    form_fields += form.Fields(IRelease, prefix='release')
-    form_fields += form.Fields(ICertification, prefix='certification')
+
+    def setUpWidgets(self, ignore_request=False):
+        self.adapters = {}
+        self.widgets = form.setUpEditWidgets(
+            self.form_fields, self.prefix, self.context.publication, 
+            self.request, adapters=self.adapters, ignore_request=ignore_request
+            )
 
     def update(self):
         result = super(PackageEditForm, self).update()
         if result is None:
-            self.context.__parent__.update()
+            self.context.__parent__.update(self.context)

@@ -48,9 +48,9 @@ class AddPackageForm(form.AddForm):
         publication.name = data.get('name', u'')
         publication.packageName = data.get('packageName', u'')
         publication.summary = data.get('summary', u'')
-        publication.author = data.get('author', u'')
-        publication.authorEmail = data.get('authorEmail', u'')
-        publication.license = data.get('license', u'')
+        publication.author = data.get('author', [])
+        publication.authorEmail = data.get('authorEmail', [])
+        publication.license = data.get('license', [])
         publication.metadataVersion = data.get('metadataVersion', u'')
         package.publication = publication
         zope.event.notify(objectevent.ObjectCreatedEvent(package))

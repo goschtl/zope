@@ -19,8 +19,8 @@ emoty file, an exception is raised that lists all (missing) required fields:
   >>> publication.process(file)
   Traceback (most recent call last):
   ...
-  ValueError: Required headers missing: Package-name, Name, Summary, Author,
-              Author-email, License, Metadata-version
+  ValueError: Required headers missing: Package-name, Name, Summary, 
+              Metadata-version
 
 So let's now create a file that has at least those required headers:
 

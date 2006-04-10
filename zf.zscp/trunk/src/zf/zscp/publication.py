@@ -18,31 +18,35 @@ $Id$
 __docformat__ = "reStructuredText"
 import zope.interface
 
-from zf.zscp import interfaces, fileformat
+from zope.schema.fieldproperty import FieldProperty
+from zf.zscp.interfaces import IPublication
+from zf.zscp.fileformat import HeaderProcessor
+from zf.zscp.fileformat import HeaderProducer
 
 
 class Publication(object):
     """Publication"""
-    zope.interface.implements(interfaces.IPublication)
+    zope.interface.implements(IPublication)
 
-    packageName = None
-    name = None
-    summary = None
-    description = None
-    homePage = None
-    author = None
-    authorEmail = None
-    license = None
-    platform = None
-    classifier = None
-    developersMailinglist = None
-    usersMailinglist = None
-    issueTracker = None
-    repositoryLocation = None
-    repositoryWebLocation = None
-    certificationLevel = None
-    certificationDate = None
-    metadataVersion = None
+    def __init__(self):
+        self.packageName = None
+        self.name = None
+        self.summary = None
+        self.description = None
+        self.homePage = None
+        self.author = []
+        self.authorEmail = []
+        self.license = []
+        self.platform = []
+        self.classifier = []
+        self.developersMailinglist = None
+        self.usersMailinglist = None
+        self.issueTracker = None
+        self.repositoryLocation = None
+        self.repositoryWebLocation = None
+        self.certificationLevel = None
+        self.certificationDate = None
+        self.metadataVersion = None
 
     def __repr__(self):
         return "<%s for '%s' (meta-data version %s)>" % (
@@ -50,10 +54,10 @@ class Publication(object):
 
 def process(file):
     publication = Publication()
-    processor = fileformat.HeaderProcessor(publication, interfaces.IPublication)
+    processor = HeaderProcessor(publication, IPublication)
     processor(file)
     return publication
 
 def produce(publication):
-    producer = fileformat.HeaderProducer(publication, interfaces.IPublication)
+    producer = HeaderProducer(publication, IPublication)
     return producer()

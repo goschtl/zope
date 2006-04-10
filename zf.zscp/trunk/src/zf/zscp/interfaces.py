@@ -245,19 +245,19 @@ class IPublication(zope.interface.Interface):
         title=u"Author Names",
         description=u"The names of the authors of the package.",
         value_type=zope.schema.TextLine(title=u'Name'),
-        required=True)
+        required=False)
 
     authorEmail = zope.schema.List(
         title=u"Author Emails",
         description=u"The E-mails of the authors of the package.",
         value_type=zope.schema.TextLine(title=u'E-mail'),
-        required=True)
+        required=False)
 
     license = zope.schema.List(
         title=u"Licenses",
         description=u"The software license(s) of the package.",
         value_type=zope.schema.TextLine(title=u'License'),
-        required=True)
+        required=False)
 
     platform = zope.schema.List(
         title=u"Supported Platforms",
@@ -267,7 +267,7 @@ class IPublication(zope.interface.Interface):
                     u"on all platforms Python is running on, i.e. the "
                     u"package is pure Python code.",
         value_type=zope.schema.TextLine(title=u'Platform'),
-        required=True,
+        required=False,
         default=[u'All'])
 
     classifier = zope.schema.List(

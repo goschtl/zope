@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zf.zscp">
+
+  <class class="zf.zscp.publication.Publication">
+    <require
+        permission="zope.Public"
+        interface="zf.zscp.interfaces.IPublication"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema="zf.zscp.interfaces.IPublication"
+        />
+
+  </class>  
+
+</configure>
