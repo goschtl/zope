@@ -1,5 +1,5 @@
 <html metal:use-macro="context/@@standard_macros/view"
-    i18n:domain="bopp">
+    i18n:domain="zf.zscp">
   <body>
   <div metal:fill-slot="body">
 	  
@@ -7,7 +7,7 @@
 		Repository</h1>
 
 	<div class="section">
-		<h3><a id="introduction" name="introduction">1. Introduction</a></h3>
+		<h3 class="itemOne itemHeading"><a id="introduction" name="introduction">1. Introduction</a></h3>
 		<p>This section intends to provide the reader with an overview where the idea of this
 			proposal originated and what it tries to accomplish.</p>
     </div>
@@ -154,7 +154,7 @@
 
 
 	<div class="section">
-		<h3><a id="the-zope-software-certification-program"
+		<h3 class="itemTwo itemHeading"><a id="the-zope-software-certification-program"
 				name="the-zope-software-certification-program">2. The Zope Software
 			Certification Program</a></h3>
 		<p>This section describes the process for Zope-related software to receive quality
@@ -1247,7 +1247,7 @@ Sec#. Name
 	  	  	    	  
 
 	<div class="section">
-		<h3><a id="the-common-repository" name="the-common-repository">3. The Common
+		<h3 class="itemThree itemHeading"><a id="the-common-repository" name="the-common-repository">3. The Common
 			Repository</a></h3>
 		<p>This section describes <em>one</em> open community-repository that
 			implements the ZSCP process.</p>
@@ -1779,7 +1779,7 @@ releases &lt;PATH-OR-URL-TO-RELEASES-FILE&gt;
 	  
 
 	<div class="section">
-		<h3><a id="a1-questions-and-answers" name="a1-questions-and-answers">A1.
+		<h3 class="itemFour itemHeading"><a id="a1-questions-and-answers" name="a1-questions-and-answers">A1.
 			Questions and Answers</a></h3>
 		<p>Does this proposal imply that all certified packages <em>must</em> live in the
 			Common Repository?</p>
@@ -1850,7 +1850,7 @@ releases &lt;PATH-OR-URL-TO-RELEASES-FILE&gt;
 	  
 
 	<div class="section">
-		<h3><a id="a2-glossary" name="a2-glossary">A2. Glossary</a></h3>
+		<h3 class="itemFive itemHeading"><a id="a2-glossary" name="a2-glossary">A2. Glossary</a></h3>
 		<dl class="docutils">
 			<dt>Certification Action</dt>
 			<dd>A change in certification level. Currently there are two actions, granting
@@ -1883,7 +1883,7 @@ releases &lt;PATH-OR-URL-TO-RELEASES-FILE&gt;
 	</div>
 
 	<div class="section">
-		<h3><a id="a3-pre-proposal-committee" name="a3-pre-proposal-committee">A3.
+		<h3 class="itemSix itemHeading"><a id="a3-pre-proposal-committee" name="a3-pre-proposal-committee">A3.
 			Pre-proposal Committee</a></h3>
 		<p>Before I made the proposal public, I chose a few people to comment on the draft. I
 			tried to choose people from the main interest groups:</p>
@@ -1917,7 +1917,7 @@ releases &lt;PATH-OR-URL-TO-RELEASES-FILE&gt;
 	</div>
 
 	<div class="section">
-		<h3><a id="a4-changes" name="a4-changes">A4. Changes</a></h3>
+		<h3 class="itemSeven itemHeading"><a id="a4-changes" name="a4-changes">A4. Changes</a></h3>
 		<div class="section">
 			<h4><a id="version-0-8" name="version-0-8">Version 0.8</a></h4>
 			<ul class="simple">
