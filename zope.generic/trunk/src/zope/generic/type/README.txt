@@ -30,9 +30,6 @@ need an type marker:
     >>> class IFooMarker(interface.Interface):
     ...     pass
 
-    # make available within the testing module
-    >>> testing.IFooMarker = IFooMarker 
-
 The only thing to register a specific logical type is this type marker interface.
 The package offers four different generic implementation such as Object,
 Contained, Container and Folder (Site) that you might use as implementation of
@@ -50,7 +47,7 @@ In our example we will use a simple generic object:
 
     >>> registerDirective('''
     ... <generic:type
-    ...     interface="zope.generic.type.testing.IFooMarker"
+    ...     interface="example.IFooMarker"
     ...     label='Foo Type' hint='Bla bla bla.'
     ...	    class='zope.generic.type.api.Object'
     ...     />
@@ -118,9 +115,6 @@ First we will provide a new bar type including an additional configuration:
     >>> class IBarMarker(interface.Interface):
     ...     pass
 
-    # make available within the testing module
-    >>> testing.IBarMarker = IBarMarker 
-
 Then we provide two example configurations for our example:
 
 	>>> from zope.schema import TextLine
@@ -132,21 +126,16 @@ Then we provide two example configurations for our example:
     ...		other = TextLine(title=u'Other')
     ...		optional = TextLine(title=u'Other', required=False, default=u'Default bla.')
 
-    # make available within the testing module
-    >>> testing.IAnyConfiguration = IAnyConfiguration
-    >>> testing.IOtherConfiguration = IOtherConfiguration
-    >>> IAnyConfiguration.__module__ = IOtherConfiguration.__module__ = 'zope.generic.type.testing'
-
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="zope.generic.type.testing.IAnyConfiguration"
+    ...     interface="example.IAnyConfiguration"
     ...     label='Any' hint='Any bla.'
     ...     />
     ... ''') 
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="zope.generic.type.testing.IOtherConfiguration"
+    ...     interface="example.IOtherConfiguration"
     ...     />
     ... ''') 
 
@@ -155,32 +144,26 @@ Then we provide two example configurations for our example:
 	>>> IAnyConfiguration.providedBy(typedata)
 	True
 
-    # make available within the testing module
-    >>> testing.typedata = typedata
-
 We can provide a specific intializer:
 
 	>>> def barInitializer(context, *pos, **kws):
 	...		print 'Initializing ...'
 
-    # make available within the testing module
-    >>> testing.barInitializer = barInitializer
-
 After all we register our component using the type directive:
 
     >>> registerDirective('''
     ... <generic:type
-    ...     interface="zope.generic.type.testing.IBarMarker"
+    ...     interface="example.IBarMarker"
     ...     label='Bar Type' hint='Bla bla bla.'
     ...	    class='zope.generic.type.api.Object'
     ...     >
     ...    <initializer
-    ...			interface='zope.generic.type.testing.IOtherConfiguration'
-    ...			handler='zope.generic.type.testing.barInitializer'
+    ...			interface='example.IOtherConfiguration'
+    ...			handler='example.barInitializer'
     ...	   />
     ...	   <configuration
-    ...	       interface='zope.generic.type.testing.IAnyConfiguration'
-    ...        data='zope.generic.type.testing.typedata'
+    ...	       interface='example.IAnyConfiguration'
+    ...        data='example.typedata'
     ...	   />
     ... </generic:type>
     ... ''')

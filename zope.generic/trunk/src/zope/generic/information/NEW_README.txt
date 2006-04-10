@@ -46,7 +46,7 @@ This configuration should be registered by using the configuration directive:
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="zope.generic.example.ILogConfiguration"
+    ...     interface="example.ILogConfiguration"
     ...     />
     ... ''') 
 
@@ -62,7 +62,7 @@ selected logger and a user-specific source tag:
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="zope.generic.example.ILoggerConfiguration"
+    ...     interface="example.ILoggerConfiguration"
     ...     />
     ... ''') 
 
@@ -70,13 +70,13 @@ TODO: Should be a dependency between informationRegistry and its configuration?
 
     >>> registerDirective('''
     ... <generic:informationRegistry
-    ...     interface='zope.generic.example.ILogSupplierInformation'
+    ...     interface='example.ILogSupplierInformation'
     ...     />
     ... ''')
 
     >>> registerDirective('''
     ... <generic:informationRegistry
-    ...     interface='zope.generic.example.ILogUserInformation'
+    ...     interface='example.ILogUserInformation'
     ...     />
     ... ''')
 

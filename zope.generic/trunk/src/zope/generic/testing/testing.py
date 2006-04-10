@@ -20,8 +20,11 @@ __docformat__ = 'restructuredtext'
 
 
 from cStringIO import StringIO
+from zope.app.testing import setup
 from zope.configuration.xmlconfig import XMLConfig
 from zope.configuration.xmlconfig import xmlconfig
+from zope.interface import providedBy
+from zope.interface import implementedBy
 from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
 import unittest
@@ -63,13 +66,21 @@ class InterfaceBaseTest(unittest.TestCase):
 
     def test_verify_class(self):
         if self._verify_class:
-            self.assert_(verifyClass(self._test_interface, self._verify_class)) 
+            self.assert_(self._test_interface.implementedBy(self._verify_class))
+            # check all provided interfaces
+            for interface in implementedBy(self._verify_class):
+                self.assert_(verifyClass(interface, self._verify_class))
 
     def test_verify_object(self):
         if self._verify_object:
-            self.assert_(verifyObject(self._test_interface, self.makeTestObject()))
+            obj = self.makeTestObject()
+            # check all provided interfaces
+            for interface in providedBy(obj):
+                self.assert_(verifyObject(interface, obj))
 
-
+    def test_is_interface_provided(self):
+        obj = self.makeTestObject()
+        self.assert_(self._test_interface.providedBy(obj))
 
 ################################################################################
 #
@@ -87,33 +98,43 @@ template = """<configure
    </configure>"""
 
 
+
 def registerDirective(direcitive):
         xmlconfig(StringIO(template % direcitive))
+
+
+# specific tests
+def setUp(doctest=None):
+    # zope.app.annotations
+    from zope.app.annotation.interfaces import IAnnotations
+    from zope.app.annotation.interfaces import IAttributeAnnotatable
+    from zope.app.annotation.attribute import AttributeAnnotations
+
+    provideAdapter(AttributeAnnotations, adapts=[IAttributeAnnotatable], 
+                   provides=IAnnotations)
+
+    # zcml configurations
+    import zope.app.component
+    XMLConfig('meta.zcml', zope.app.component)()
+    import zope.app.security
+    XMLConfig('meta.zcml', zope.app.security)()
+    
+    # provide artificial module for doctests
+    setup.setUpTestAsModule(doctest, 'example')
+
+def tearDown(doctest=None):
+    pass
 
 
 
 class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
 
-    def setUp(self, doctesttest=None):
-        super(PlacelessSetup, self).setUp(doctesttest)
+    def setUp(self, doctest=None):
+        super(PlacelessSetup, self).setUp(doctest)
+        setUp(doctest)
 
-        # zope.app.annotations
-        from zope.app.annotation.interfaces import IAnnotations
-        from zope.app.annotation.interfaces import IAttributeAnnotatable
-        from zope.app.annotation.attribute import AttributeAnnotations
-
-        provideAdapter(AttributeAnnotations, adapts=[IAttributeAnnotatable], 
-                       provides=IAnnotations)
-
-        # zcml configurations
-        import zope.app.component
-        XMLConfig('meta.zcml', zope.app.component)()
-        import zope.app.security
-        XMLConfig('meta.zcml', zope.app.security)()
-
-    def tearDown(self, doctesttest=None):
+    def tearDown(self, doctest=None):
         super(PlacelessSetup, self).tearDown()
-
-
+        tearDown(doctest)
 
 placelesssetup = PlacelessSetup()

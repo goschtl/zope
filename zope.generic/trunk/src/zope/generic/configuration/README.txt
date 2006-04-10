@@ -10,12 +10,9 @@ defined by an schema which is providing IConfigurationType.
     >>> class IMyConfiguration(interface.Interface):
     ...     my = TextLine(title=u'My')
 
-    # make available within the testing module
-    >>> testing.IMyConfiguration = IMyConfiguration
-
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="zope.generic.configuration.testing.IMyConfiguration"
+    ...     interface="example.IMyConfiguration"
     ...     label='My' hint='My bla.'
     ...     />
     ... ''') 
@@ -62,9 +59,6 @@ Attribute Configurations
  
 Regularly Configurations are provided by objects marked with
 IAttributeConfigurations automatically:
-    
-    >>> from zope.generic.configuration.testing import placelesssetup
-    >>> placelesssetup.setUp()
 
     >>> from zope.interface import implements
     >>> from zope.generic.configuration import IAttributeConfigurable
@@ -100,11 +94,6 @@ data:
     ...    foo = TextLine(title=u'Foo')
     ...    optional = TextLine(title=u'Optional', required=False, default=u'Bla')
 
-    # make available within the module
-    >>> from zope.generic.configuration import adapter
-    >>> adapter.IFooConfiguration = IFooConfiguration
-    >>> IFooConfiguration.__module__ = 'zope.generic.configuration.adapter'
-
 The configuration interface-key is a regular schema, but it has to be typed
 by IConfigurationType (Regularly typed by the configuration directive):
 
@@ -120,12 +109,12 @@ The configuration provides a regular dictionary api by the UserDictMixin
     >>> configurations[IFooConfiguration]
     Traceback (most recent call last):
     ...
-    KeyError: <InterfaceClass zope.generic.configuration.adapter.IFooConfiguration>
+    KeyError: <InterfaceClass example.IFooConfiguration>
 
     >>> del configurations[IFooConfiguration]
     Traceback (most recent call last):
     ...
-    KeyError: <InterfaceClass zope.generic.configuration.adapter.IFooConfiguration>
+    KeyError: <InterfaceClass example.IFooConfiguration>
 
     >>> configurations.keys()
     []
@@ -153,7 +142,7 @@ configuration. This method can be only used if a configuration already exists:
     >>> configurations.update(IFooConfiguration, {'foo': u'Foo!'})
     Traceback (most recent call last):
     ...
-    KeyError: <InterfaceClass zope.generic.configuration.adapter.IFooConfiguration>
+    KeyError: <InterfaceClass example.IFooConfiguration>
 
 You can create valid configuration data using the generic ConfigurationData
 implementation:
@@ -250,15 +239,11 @@ can be used for later lookup of such an handler:
 	>>> def myConfigurationHandler(event, component, configurations=None, annotations=None):
 	...		print event, component, configurations, annotations
 
-    # make available within the testing module
-    >>> testing.IMyConfigurationHandler = IMyConfigurationHandler
-    >>> testing.myConfigurationHandler = myConfigurationHandler
-
     >>> registerDirective('''
     ... <generic:configurationHandler
-    ...     interface='zope.generic.configuration.testing.IMyConfigurationHandler'
+    ...     interface='example.IMyConfigurationHandler'
     ...     label='My Configuration Handler' hint='Please use it'
-    ...		handler='zope.generic.configuration.testing.myConfigurationHandler'
+    ...		handler='example.myConfigurationHandler'
     ...     />
     ... ''')
 

@@ -18,7 +18,8 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.testing import ztapi
+from zope.component import provideHandler
+import zope.app.testing.placelesssetup
 import zope.generic.testing.testing
 
 
@@ -36,22 +37,32 @@ import zope.generic.testing.testing
 #
 ################################################################################
 
+# specific tests
+def setUp(doctest=None):
+    # handlers
+    from zope.generic.directlyprovides.handler import notifyObjectModifiedEvent
+    from zope.generic.directlyprovides import IDirectlyProvidesModifiedEvent
+    provideHandler(notifyObjectModifiedEvent, [IDirectlyProvidesModifiedEvent])
+
+def tearDown(doctest=None):
+    pass
 
 
-class PlacelessSetup(zope.generic.testing.testing.PlacelessSetup):
 
-    def setUp(self, doctesttest=None):
-        super(PlacelessSetup, self).setUp(doctesttest)
+class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
 
-        # handlers
-        from zope.generic.directlyprovides.handler import notifyObjectModifiedEvent
-        from zope.generic.directlyprovides import IDirectlyProvidesModifiedEvent
-        ztapi.subscribe([IDirectlyProvidesModifiedEvent], 
-            None, notifyObjectModifiedEvent)
-        
-    def tearDown(self, doctesttest=None):
+    def setUp(self, doctest=None):
+        super(PlacelessSetup, self).setUp(doctest)
+        # external setup
+        zope.generic.testing.testing.setUp(doctest)
+        # internal setup
+        setUp(doctest)
+
+    def tearDown(self, doctest=None):
         super(PlacelessSetup, self).tearDown()
-
-
+        # external teardown
+        zope.generic.testing.testing.tearDown(doctest)
+        # internal teardown
+        tearDown(doctest)
 
 placelesssetup = PlacelessSetup()

@@ -82,18 +82,18 @@ First we adapt an instance of `A` regularly:
 
     >>> a = A()
     >>> IResult(a)
-    <ResultForA object at ...>
+    <example.ResultForA object at ...>
 
 If we directly provides an interface, for example IB, the
 corresponding adapter `ResultForB` will be looked up:
 
     >>> interface.directlyProvides(a, IB)
     >>> IResult(a)
-    <ResultForB object at ...>
+    <example.ResultForB object at ...>
 
     >>> interface.alsoProvides(a, IC)
     >>> IResult(a)
-    <ResultForB object at ...>
+    <example.ResultForB object at ...>
 
 Given the fact that different orthagonal application such as the site
 framework uses the directly provided mechanism it is not possible
@@ -104,11 +104,11 @@ the point in time when it will be setted:
 
     >>> interface.directlyProvides(a, IC) 
     >>> IResult(a)
-    <ResultForC object at ...>
+    <example.ResultForC object at ...>
 
     >>> interface.alsoProvides(a, IB)
     >>> IResult(a)
-    <ResultForC object at ...>
+    <example.ResultForC object at ...>
 
 As long as different directly provided interfaces do not overlap
 features this unordered aspect is not relevant.
@@ -171,8 +171,8 @@ is notified. We register an handler for this event:
     ...     print 'directlyProvided changed', str(tuple([iface.__name__  
     ...         for iface in interface.directlyProvidedBy(event.object)]))
 
-    >>> ztapi.subscribe((api.IProvides, api.IDirectlyProvidesModifiedEvent), None, 
-    ...     notifyDirectlyProvidesModifiedEvent)
+    >>> component.provideHandler(notifyDirectlyProvidesModifiedEvent,
+    ...     (api.IProvides, api.IDirectlyProvidesModifiedEvent))
 
     >>> from zope.app.event.interfaces import IObjectModifiedEvent
 
@@ -184,13 +184,12 @@ is notified. We register an handler for this event:
     ...         print 'Object modified (single subscriber), ',
     ...     description = first.descriptions[0]
     ...     print description.interface.__name__, description.attributes
-    
 
-    >>> ztapi.subscribe((IObjectModifiedEvent,), None, 
-    ...     notifyObjectModifiedEvent)
+    >>> component.provideHandler(notifyObjectModifiedEvent,
+    ...     (IObjectModifiedEvent,))
 
-    >>> ztapi.subscribe((IPrepender, IObjectModifiedEvent,), None, 
-    ...     notifyObjectModifiedEvent)
+    >>> component.provideHandler(notifyObjectModifiedEvent,
+    ...     (IPrepender, IObjectModifiedEvent))
 
 Now we are implementing an example class using the before- and after-hook.
 For documentation purposes we use for the `first` attribute the decorator and
@@ -235,7 +234,7 @@ After that we provide IB directly:
     >>> [iface.__name__ for iface in interface.directlyProvidedBy(p)]
     ['IB']
     >>> IResult(p)
-    <ResultForB object at ...>
+    <example.ResultForB object at ...>
 
 Another assignment is appended:
 
@@ -246,7 +245,7 @@ Another assignment is appended:
     ['IB', 'IA']
 
     >>> IResult(p)
-    <ResultForB object at ...>
+    <example.ResultForB object at ...>
 
 But if we use our prepend mechanism the interface is prepended:
 
@@ -259,7 +258,7 @@ But if we use our prepend mechanism the interface is prepended:
     ['ID', 'IB', 'IA']
 
     >>> IResult(p)
-    <ResultForD object at ...>
+    <example.ResultForD object at ...>
 
     >>> p.first = (IC, )
     before
@@ -270,7 +269,7 @@ But if we use our prepend mechanism the interface is prepended:
     ['IC', 'ID', 'IB', 'IA']
 
     >>> IResult(p)
-    <ResultForC object at ...>
+    <example.ResultForC object at ...>
 
 The value of the decorated attribute or the property will be only set if the
 old and new value differs:
@@ -289,7 +288,7 @@ We can remove the prepended interface setting an empty tuple:
     ['ID', 'IB', 'IA']
 
     >>> IResult(p)
-    <ResultForD object at ...>
+    <example.ResultForD object at ...>
 
 If the twice the same interface is set only the first is accepted. 
 Attention, in this case no directly provides event is notified, because
@@ -312,7 +311,7 @@ We can add more than one or switch them:
     >>> [iface.__name__ for iface in interface.directlyProvidedBy(p)]
     ['ID', 'IC', 'IB', 'IA']
     >>> IResult(p)
-    <ResultForD object at ...>
+    <example.ResultForD object at ...>
 
     >>> p.first = (IC, ID)
     before
@@ -322,7 +321,7 @@ We can add more than one or switch them:
     >>> [iface.__name__ for iface in interface.directlyProvidedBy(p)]
     ['IC', 'ID', 'IB', 'IA']
     >>> IResult(p)
-    <ResultForC object at ...>
+    <example.ResultForC object at ...>
 
 We can remove a regular directly provided:
 
@@ -332,7 +331,7 @@ We can remove a regular directly provided:
     >>> [iface.__name__ for iface in interface.directlyProvidedBy(p)]
     ['IC', 'ID', 'IA']
     >>> IResult(p)
-    <ResultForC object at ...>
+    <example.ResultForC object at ...>
 
 But we cannot remove a prepended one. Attention, in this case no directly provides
 event is notified, because the directly provided interfaces
@@ -343,7 +342,7 @@ did not change:
     >>> [iface.__name__ for iface in interface.directlyProvidedBy(p)]
     ['IC', 'ID', 'IA']
     >>> IResult(p)
-    <ResultForC object at ...>
+    <example.ResultForC object at ...>
 
 If we like to remove prepended one, we have to set the corresponding attribute.
 Take care, sometimes a second prepended still offfers an removed interface:
@@ -356,7 +355,7 @@ Take care, sometimes a second prepended still offfers an removed interface:
     >>> [iface.__name__ for iface in interface.directlyProvidedBy(p)]
     ['IA', 'ID']
     >>> IResult(p)
-    <ResultForA object at ...>
+    <example.ResultForA object at ...>
 
 There is event dispatcher to object modified events provided if the object
 providing IProvides is marked by IObjectModifiedEventDispatchingProvides:

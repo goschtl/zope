@@ -24,14 +24,10 @@ under registry-interface using the dotted name of the interface as utility name:
     >>> class IFooMarker(Interface):
     ...    pass
 
-    # make available within the testing module
-    >>> testing.ISpecialInformation, testing.IFooMarker = ISpecialInformation, IFooMarker
-    >>> IFooMarker.__module__ = ISpecialInformation.__module = 'zope.generic.information.testing'
-
     >>> registerDirective('''
     ... <generic:information
-    ...     interface="zope.generic.information.testing.IFooMarker"
-    ...     registry="zope.generic.information.testing.ISpecialInformation"
+    ...     interface="example.IFooMarker"
+    ...     registry="example.ISpecialInformation"
     ...     label='Foo Specials' hint='Bla bla foo.'
     ...     />
     ... ''')
@@ -115,12 +111,9 @@ typed a IConfigurationType after its registration (see zope.generic.configuratio
     >>> class IMyConfiguration(interface.Interface):
     ...     my = TextLine(title=u'My')
 
-    # make available within the testing module
-    >>> testing.IMyConfiguration = IMyConfiguration
-
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="zope.generic.information.testing.IMyConfiguration"
+    ...     interface="example.IMyConfiguration"
     ...     label='My' hint='My bla.'
     ...     />
     ... ''') 
@@ -161,18 +154,15 @@ to register further configurations to an information:
 	>>> from zope.generic.configuration.api import ConfigurationData
 	>>> my_information_config = ConfigurationData(IMyConfiguration, {'my': u'My!'})
 
-    # make available within the testing module
-    >>> testing.my_information_config = my_information_config
-
     >>> registerDirective('''
     ... <generic:information
-    ...     interface="zope.generic.information.testing.IFooMarker"
-    ...     registry="zope.generic.information.testing.ISpecialInformation"
+    ...     interface="example.IFooMarker"
+    ...     registry="example.ISpecialInformation"
     ...     label='Foo Specials' hint='Bla bla foo.'
     ...     >
     ...		<configuration
-    ...		    interface="zope.generic.information.testing.IMyConfiguration"
-    ...			data="zope.generic.information.testing.my_information_config"
+    ...		    interface="example.IMyConfiguration"
+    ...			data="example.my_information_config"
     ...			/>
     ...	 </generic:information>
     ... ''')

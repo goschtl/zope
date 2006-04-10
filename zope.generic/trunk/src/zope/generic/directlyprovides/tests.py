@@ -24,7 +24,7 @@ from zope import interface
 from zope import schema
 from zope.testing import doctest
 
-from zope.generic.directlyprovides.testing import placelesssetup, ztapi 
+from zope.generic.directlyprovides.testing import placelesssetup 
 from zope.generic.testing.testing import registerDirective
 
 
@@ -37,8 +37,7 @@ def test_suite():
                              setUp=placelesssetup.setUp,
                              tearDown=placelesssetup.tearDown,
                              globs={'component': component, 'interface': interface,
-                                'schema': schema, 'ztapi': ztapi,
-                                'registerDirective': registerDirective},
+                                'schema': schema, 'registerDirective': registerDirective},
                              optionflags=doctest.NORMALIZE_WHITESPACE+
                                             doctest.ELLIPSIS),
         ))

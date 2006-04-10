@@ -20,9 +20,9 @@ __docformat__ = 'restructuredtext'
 
 from zope.configuration.xmlconfig import XMLConfig
 
+import zope.app.testing.placelesssetup
+import zope.generic.directlyprovides.testing
 import zope.generic.testing.testing
-
-from zope.app.testing import setup
 
 ################################################################################
 #
@@ -39,18 +39,34 @@ from zope.app.testing import setup
 ################################################################################
 
 
-class PlacelessSetup(zope.generic.testing.testing.PlacelessSetup):
 
-    def setUp(self, doctesttest=None):
-        super(PlacelessSetup, self).setUp(doctesttest)
+# specific tests
+def setUp(doctest=None):
+    # register the directive of this package
+    import zope.generic.information
+    XMLConfig('meta.zcml', zope.generic.information)() 
 
-        # register the directive of this package
-        import zope.generic.information
-        XMLConfig('meta.zcml', zope.generic.information)()        
-
-    def tearDown(self, doctesttest=None):
-        super(PlacelessSetup, self).tearDown(doctesttest)
+def tearDown(doctest=None):
+    pass
 
 
+
+class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
+
+    def setUp(self, doctest=None):
+        super(PlacelessSetup, self).setUp(doctest)
+        # external setup
+        zope.generic.testing.testing.setUp(doctest)
+        zope.generic.directlyprovides.testing.setUp(doctest)
+        # internal setup
+        setUp(doctest)
+
+    def tearDown(self, doctest=None):
+        super(PlacelessSetup, self).tearDown()
+        # external teardown
+        zope.generic.testing.testing.tearDown(doctest)
+        zope.generic.directlyprovides.testing.tearDown(doctest)
+        # internal teardown
+        tearDown(doctest)
 
 placelesssetup = PlacelessSetup()

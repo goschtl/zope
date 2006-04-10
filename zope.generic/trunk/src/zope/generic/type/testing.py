@@ -20,7 +20,11 @@ __docformat__ = 'restructuredtext'
 
 from zope.configuration.xmlconfig import XMLConfig
 
+import zope.app.testing.placelesssetup
 import zope.generic.configuration.testing
+import zope.generic.directlyprovides.testing
+import zope.generic.information.testing
+import zope.generic.testing.testing
 
 ################################################################################
 #
@@ -38,19 +42,38 @@ def testInitializer(context, *pos, **kws):
 # Placeless setup
 #
 ################################################################################
-    
-# helper for directive testing
-class PlacelessSetup(zope.generic.configuration.testing.PlacelessSetup):
 
-    def setUp(self, doctesttest=None):
-        super(PlacelessSetup, self).setUp(doctesttest)
-        # register the directive of this package
-        import zope.generic.type
-        XMLConfig('meta.zcml', zope.generic.type)()
+# specific tests
+def setUp(doctest=None):
+    # register the directive of this package
+    import zope.generic.type
+    XMLConfig('meta.zcml', zope.generic.type)()
 
-    def tearDown(self, doctesttest=None):
-        super(PlacelessSetup, self).tearDown(doctesttest)
+def tearDown(doctest=None):
+    pass
 
 
+
+class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
+
+    def setUp(self, doctest=None):
+        super(PlacelessSetup, self).setUp(doctest)
+        # external setup
+        zope.generic.testing.testing.setUp(doctest)
+        zope.generic.directlyprovides.testing.setUp(doctest)
+        zope.generic.information.testing.setUp(doctest)
+        zope.generic.configuration.testing.setUp(doctest)
+        # internal setup
+        setUp(doctest)
+
+    def tearDown(self, doctest=None):
+        super(PlacelessSetup, self).tearDown()
+        # external teardown
+        zope.generic.testing.testing.tearDown(doctest)
+        zope.generic.directlyprovides.testing.tearDown(doctest)
+        zope.generic.information.testing.tearDown(doctest)
+        zope.generic.configuration.testing.tearDown(doctest)
+        # internal teardown
+        tearDown(doctest)
 
 placelesssetup = PlacelessSetup()
