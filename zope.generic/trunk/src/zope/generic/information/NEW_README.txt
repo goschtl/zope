@@ -90,34 +90,34 @@ implmented as an adapter. We have to declare the logger interface:
 
     >>> from zope.interface import implements
     >>> from zope.component import adapts
-    >>> from zope.generic.information import IInformationDeclaration
+    >>> from zope.generic.component import IInterfaceKey
 
     >>> class Logger(object):
     ...     """Generic logger adapter."""
     ...     implements(ILogger)
-    ...     adapts(IInformationDeclaration)
+    ...     adapts(IInterfaceKey)
     ...     def __init__(self, context):
     ...         self.context = context
     ...     def log(self, message):
-    ...         id = IInformationDeclaration(self.context())
+    ...         id = IInterfaceKey(self.context())
     ...         info = queryInformation(id.interface, ILogUserInformation)
     >>> class Logger(object):
     ...     """Generic logger adapter."""
     ...     implements(ILogger)
-    ...     adapts(IInformationDeclaration)
+    ...     adapts(IInterfaceKey)
     ...     def __init__(self, context):
     ...         self.context = context
     ...     def log(self, message):
-    ...         id = IInformationDeclaration(self.context())
+    ...         id = IInterfaceKey(self.context())
     ...         info = queryInformation(id.interface, ILogUserInformation)
     >>> class Logger(object):
     ...     """Generic logger adapter."""
     ...     implements(ILogger)
-    ...     adapts(IInformationDeclaration)
+    ...     adapts(IInterfaceKey)
     ...     def __init__(self, context):
     ...         self.context = context
     ...     def log(self, message):
-    ...         id = IInformationDeclaration(self.context())
+    ...         id = IInterfaceKey(self.context())
     ...         info = queryInformation(id.interface, ILogUserInformation)
 
 

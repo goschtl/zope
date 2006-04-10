@@ -19,31 +19,14 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 
-from zope.dottedname.resolve import resolve
 from zope.component import getUtility
+
+from zope.generic.component.api import toDottedName
 
 from zope.generic.configuration import IConfigurationHandlerConfiguration
 from zope.generic.configuration import IConfigurationHandlerInformation
 from zope.generic.configuration import IConfigurationInformation
 from zope.generic.configuration import IConfigurations
-
-
-
-def dottedName(klass):
-    if klass is None:
-        return 'None'
-    return klass.__module__ + '.' + klass.__name__
-
-
-
-# cache
-__name_to_klass = {}
-
-def resolveClass(name):
-    try:
-        return __name_to_klass[name]
-    except KeyError:
-        return __name_to_klass.setdefault(name, resolve(name))
 
 
 

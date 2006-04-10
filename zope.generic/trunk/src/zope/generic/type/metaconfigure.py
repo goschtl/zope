@@ -30,8 +30,8 @@ from zope.interface import implements
 from zope.security.checker import CheckerPublic
 from zope.security.checker import InterfaceChecker
 
+from zope.generic.component.api import toDottedName
 from zope.generic.configuration.api import ConfigurationData
-from zope.generic.configuration.api import dottedName
 from zope.generic.configuration.api import provideConfigurationData
 from zope.generic.information.metaconfigure import InformationDirective
 
@@ -101,7 +101,7 @@ class TypeDirective(InformationDirective):
         _context.action(
             discriminator = ('provideUtility', self._interface),
             callable = provideUtility,
-            args = (component, IFactory, dottedName(self._interface)),
+            args = (component, IFactory, toDottedName(self._interface)),
             )
 
     def initializer(self, _context, interface=None, handler=None):

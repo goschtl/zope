@@ -18,18 +18,19 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import alsoProvides
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
 from zope.schema import Bool
 from zope.schema import Object
 
+from zope.generic.component import IInterfaceKey
 from zope.generic.configuration import IConfigurationHandler
 from zope.generic.configuration import IConfigurationType
 from zope.generic.directlyprovides import IProvides
-from zope.app.i18n import ZopeMessageFactory as _
 from zope.generic.information import IInformation
-from zope.generic.information import IInformationDeclaration
+
 
 __all__ = ['ITypeType', 'ITypeable', 'ITyped', 'IDirectlyTyped', 
            'ITypeInformation', 'IInitializer', 'IInitializationHandler', 
@@ -51,7 +52,7 @@ class ITypeable(Interface):
 
 
 
-class ITyped(ITypeable, IInformationDeclaration):
+class ITyped(ITypeable, IInterfaceKey):
     """Provid an information within the."""
 
     interface = Object(
@@ -62,7 +63,7 @@ class ITyped(ITypeable, IInformationDeclaration):
 
 
 
-class IDirectlyTyped(ITyped, IProvides, IInformationDeclaration):
+class IDirectlyTyped(ITyped, IProvides, IInterfaceKey):
     """Directly provide the declared interface."""
 
     def __init__(interface, *pos, **kws):

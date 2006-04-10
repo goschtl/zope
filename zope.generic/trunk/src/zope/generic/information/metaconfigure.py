@@ -23,13 +23,13 @@ from zope.component import provideUtility
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import alsoProvides
 
+from zope.generic.component.api import toDottedName
 from zope.generic.configuration.api import IConfigurations
 
 from zope.generic.information import IInformation
 from zope.generic.information import IInformationRegistryInformation
 from zope.generic.information import IInformationRegistryType
 from zope.generic.information.base import Information
-from zope.generic.information.helper import dottedName
 from zope.generic.information.helper import queryInformation
 
 
@@ -72,7 +72,7 @@ def provideInformation(interface, registry, label=None, hint=None, factory=None)
     if not registry.providedBy(component):
         raise ValueError('Factory must implement %s.' % registry.__name__)
     
-    provideUtility(component, provides=registry, name=dottedName(interface))
+    provideUtility(component, provides=registry, name=toDottedName(interface))
 
 
 

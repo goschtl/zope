@@ -16,11 +16,29 @@
 $Id$
 """
 
-# usage see README.txt
-from zope.generic.information.interfaces import *
+__docformat__ = 'restructuredtext'
 
-from zope.generic.information.base import Information
-from zope.generic.information.helper import queryInformation
-from zope.generic.information.helper import queryInformationRegistry
-from zope.generic.information.helper import registeredInformations
-from zope.generic.information.metaconfigure import provideInformation
+from zope.app.i18n import ZopeMessageFactory as _
+from zope.interface import implements
+
+from zope.generic.component import IInterfaceKeyDescription
+
+
+
+class InterfaceKeyDescription(object):
+    """Information description."""
+
+    implements(IInterfaceKeyDescription)
+
+    def __init__(self, interface, label=None, hint=None):
+        self.interface = interface
+
+        if label is None:
+            self.label = _(interface.__name__)
+        else:
+            self.label = label
+
+        if hint is None:
+            self.hint = _(interface.__doc__)
+        else:
+            self.hint = hint

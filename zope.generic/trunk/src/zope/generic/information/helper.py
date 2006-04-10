@@ -20,22 +20,30 @@ __docformat__ = 'restructuredtext'
 
 from zope.component import getUtility
 from zope.component import getUtilitiesFor
+from zope.interface.interfaces import IInterface
 
-from zope.generic.configuration.api import resolveClass
+from zope.generic.component import IInterfaceKey
+from zope.generic.component.api import toComponent
+from zope.generic.component.api import toDottedName
 
 from zope.generic.information import IInformationRegistryInformation
 
 
 
-def dottedName(klass):
-    if klass is None:
-        return 'None'
-    return klass.__module__ + '.' + klass.__name__
+def getInformation(object, registry):
+    """Evaluate an information from an object."""
 
+    if IInterface.providedBy(object):
+        interface = object
 
+    elif IInterfaceKey.providedBy(object):
+        interface = object.interface
 
-def getInformation(interface, registry):
-    return getUtility(registry, dottedName(interface))
+    else:
+        interface = IInterfaceKey(object).interface
+
+    #return interface
+    return getUtility(registry, toDottedName(interface))
 
 
 
@@ -55,4 +63,4 @@ def queryInformationRegistry(interface, default=None):
 
 def registeredInformations(registry, default=None):
     for name, information in getUtilitiesFor(registry):
-        yield (resolveClass(name), information)
+        yield (toComponent(name), information)

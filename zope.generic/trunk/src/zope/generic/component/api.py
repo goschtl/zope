@@ -16,11 +16,10 @@
 $Id$
 """
 
-# usage see README.txt
-from zope.generic.information.interfaces import *
+__docformat__ = 'restructuredtext'
 
-from zope.generic.information.base import Information
-from zope.generic.information.helper import queryInformation
-from zope.generic.information.helper import queryInformationRegistry
-from zope.generic.information.helper import registeredInformations
-from zope.generic.information.metaconfigure import provideInformation
+from zope.generic.component.base import InterfaceKeyDescription
+from zope.generic.component.helper import getKey
+from zope.generic.component.helper import queryKey
+from zope.generic.component.helper import toComponent
+from zope.generic.component.helper import toDottedName

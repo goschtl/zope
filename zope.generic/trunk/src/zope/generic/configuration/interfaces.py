@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.app.event.interfaces import IModificationDescription
 from zope.app.event.interfaces import IObjectModifiedEvent
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.location import ILocation
 from zope.interface import Interface
 from zope.interface import alsoProvides
@@ -30,19 +31,9 @@ from zope.schema import Dict
 from zope.schema import Object
 from zope.schema import Tuple
 
-from zope.app.i18n import ZopeMessageFactory as _
-
+from zope.generic.component import IInterfaceKey
 from zope.generic.information import IInformation
-from zope.generic.information import IInformationDeclaration
 
-__all__ = ['AnnotationKey', 'IConfigurable', 'IAttributeConfigurable',
-           'IAnnotationsConfigurable', 'IConfigurationType', 
-           'IConfigurationModificationDescription', 
-           'IObjectConfigurationsModifiedEvent', 'IReadConfigurations',
-           'IUpdateConfigurations', 'IWriteConfigurations', 'IConfigurations',
-           'IConfigurationInformation', 'IConfigurationHandlerInformation',
-           'IConfigurationHandlerType', 'IPrivateHandler',
-           'IConfigurationHandler', 'missing', 'IConfigurationHandlerConfiguration']
 
 
 
@@ -217,7 +208,7 @@ alsoProvides(IPrivateHandler, IConfigurationHandlerType)
 
 missing = object()
 
-class IConfigurationHandler(IInformationDeclaration):
+class IConfigurationHandler(IInterfaceKey):
     """A configuration handler.
 
     A handler marked by this type provides a certain configuration procdure 

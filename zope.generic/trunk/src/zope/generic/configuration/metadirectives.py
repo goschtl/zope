@@ -18,9 +18,8 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.configuration.fields import GlobalObject
-
 from zope.app.i18n import ZopeMessageFactory as _
+from zope.configuration.fields import GlobalObject
 
 from zope.generic.information.metadirectives import IBaseInformationDirective
 

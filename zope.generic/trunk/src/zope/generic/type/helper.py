@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 
 from zope import component
 
-from zope.generic.configuration.api import dottedName
+from zope.generic.component.api import toDottedName
 from zope.generic.configuration.api import queryConfigurationData
 from zope.generic.information.api import queryInformation
 
@@ -33,7 +33,7 @@ from zope.generic.type import ITypeType
 
 def createObject(interface, *pos, **kws):
     """Create an instance of a logical type using the type marker."""
-    return component.createObject(dottedName(interface), *pos, **kws)
+    return component.createObject(toDottedName(interface), *pos, **kws)
 
 
 def createParameter(interface):

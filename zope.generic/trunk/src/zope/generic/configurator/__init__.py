@@ -16,11 +16,4 @@
 $Id$
 """
 
-# usage see README.txt
-from zope.generic.information.interfaces import *
-
-from zope.generic.information.base import Information
-from zope.generic.information.helper import queryInformation
-from zope.generic.information.helper import queryInformationRegistry
-from zope.generic.information.helper import registeredInformations
-from zope.generic.information.metaconfigure import provideInformation
+from zope.generic.configurator.interfaces import *

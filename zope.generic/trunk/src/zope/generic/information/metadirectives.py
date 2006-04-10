@@ -18,12 +18,11 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.configuration.fields import GlobalInterface
 from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import MessageID
 from zope.interface import Interface
-
-from zope.app.i18n import ZopeMessageFactory as _
 
 from zope.generic.information import IInformation
 

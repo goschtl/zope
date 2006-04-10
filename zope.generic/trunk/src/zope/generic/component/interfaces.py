@@ -19,35 +19,41 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.interface import alsoProvides
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
 from zope.schema import Object
 from zope.schema import Text
 from zope.schema import TextLine
 
-from zope.generic.component import IInterfaceKeyDescription
+
+
+class IInterfaceKeyed(Interface):
+    """Provide an interface key by implementation or adaption."""
 
 
 
-class IInformation(IInterfaceKeyDescription):
-    """Inform about an subject referenced by an interface-key.
+class IInterfaceKey(IInterfaceKeyed):
+    """Declare an interface as information-specific-key."""
 
-    Additional information can be stored within the information's annotations
-    or configurations.
-    
-    Implementation should be adaptable to IConfigurations and IAnnotations."""
-
-
-
-class IInformationRegistryType(IInterface):
-    """Mark information interface as information type."""
+    interface = Object(
+        title=_('Interface'),
+        description=_('Interface marker that can be used as' +
+                      'interface-specific-key to lookup informations.'),
+        required=True,
+        readonly=True,
+        schema=IInterface)
 
 
 
-class IInformationRegistryInformation(IInformation):
-    """Provide information about registered information registries."""
+class IInterfaceKeyDescription(IInterfaceKey):
+    """Describe the associated interface key."""
 
+    label = TextLine(title=_('Label'),
+        description=_('Label for associated interface marker.'),
+        required=True
+        )  
 
-
-alsoProvides(IInformationRegistryInformation, IInformationRegistryType)
+    hint = Text(title=_('Hint'),
+        description=_('Hint explaning the properties of the associated interface marker.'),
+        required=True
+        )

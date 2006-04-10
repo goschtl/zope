@@ -77,9 +77,9 @@ A corresponding type information utility will be available. Your can
 retrieve this utility using the conventional utility api:
 
     >>> from zope.component import queryUtility
-    >>> from zope.generic.configuration.api import dottedName
+    >>> from zope.generic.component.api import toDottedName
 
-    >>> info = queryUtility(api.ITypeInformation, dottedName(IFooMarker))
+    >>> info = queryUtility(api.ITypeInformation, toDottedName(IFooMarker))
 
     >>> info.interface == IFooMarker
     True

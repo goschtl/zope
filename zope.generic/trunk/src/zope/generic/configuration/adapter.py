@@ -28,14 +28,16 @@ from zope.component import adapts
 from zope.event import notify
 from zope.interface import implements
 
+from zope.generic.component.api import toDottedName
+from zope.generic.component.api import toComponent
+
 from zope.generic.configuration import IAttributeConfigurable
 from zope.generic.configuration import IConfigurationType
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration.event import Configuration
 from zope.generic.configuration.event import ObjectConfigurationsModifiedEvent
 from zope.generic.configuration.helper import configuratonToDict
-from zope.generic.configuration.helper import dottedName
-from zope.generic.configuration.helper import resolveClass
+
 
 
 
@@ -60,21 +62,21 @@ class AttributeConfigurations(DictMixin, Location):
             return None
 
         else:
-            return configurations.get(dottedName(interface), None)
+            return configurations.get(toDottedName(interface), None)
 
     def __getitem__(self, interface):
         configurations = getattr(self.context, '__configurations__', None)
         if configurations is None:
             raise KeyError(interface)
 
-        return configurations[dottedName(interface)]
+        return configurations[toDottedName(interface)]
 
     def keys(self):
         configurations = getattr(self.context, '__configurations__', None)
         if configurations is None:
             return []
 
-        return [resolveClass(iface) for iface in configurations.keys()]
+        return [toComponent(iface) for iface in configurations.keys()]
 
     def update(self, interface, data):
         current_config = self[interface]
@@ -120,7 +122,7 @@ class AttributeConfigurations(DictMixin, Location):
             configurations = self.context.__configurations__ = OOBTree()
 
         data = configuratonToDict(interface, value, all=True)
-        configurations[dottedName(interface)] = value
+        configurations[toDottedName(interface)] = value
         # notify setting
         parent = self.__parent__
         if ILocation.providedBy(parent) and parent.__parent__ is not None:
@@ -133,7 +135,7 @@ class AttributeConfigurations(DictMixin, Location):
         except AttributeError:
             raise KeyError(interface)
 
-        del configurations[dottedName(interface)]
+        del configurations[toDottedName(interface)]
         # notify deletion
         # notify setting
         parent = self.__parent__

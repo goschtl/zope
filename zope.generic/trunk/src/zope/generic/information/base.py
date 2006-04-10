@@ -19,39 +19,20 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import alsoProvides
 from zope.interface import implements
 
+from zope.generic.component.api import toDottedName
+from zope.generic.component.api import InterfaceKeyDescription
 from zope.generic.configuration import IAttributeConfigurable
-from zope.app.i18n import ZopeMessageFactory as _
 
 from zope.generic.information import IInformation
-from zope.generic.information import IInformationDescription
-from zope.generic.information.helper import dottedName
 
 
 
-class InformationDescription(object):
-    """Information description."""
 
-    implements(IInformationDescription)
-
-    def __init__(self, interface, label=None, hint=None):
-        self.interface = interface
-
-        if label is None:
-            self.label = _(interface.__name__)
-        else:
-            self.label = label
-
-        if hint is None:
-            self.hint = _(interface.__doc__)
-        else:
-            self.hint = hint
-
-
-
-class Information(InformationDescription, dict):
+class Information(InterfaceKeyDescription, dict):
     """Default information.
 
     Information do relate a dedicated type of information marked as an interface
