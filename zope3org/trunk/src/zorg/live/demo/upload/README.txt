@@ -72,7 +72,8 @@ repeately calling the wrapping write method:
     >>> dummy = DummyStream()
     >>> import time    
     >>> from zorg.live.server import LiveInputStream
-    >>> stream = LiveInputStream(dummy, client, content_length=100)
+    >>> stream = LiveInputStream(dummy, client, content_length=100, 
+    ...                                                     type="progress")
     >>> for i in range(1, 10) :
     ...     time.sleep(0.1)
     ...     stream.write("Some Data")

@@ -16,18 +16,20 @@
         name="input"
         for="zorg.live.page.interfaces.ILivePage"
         class="zorg.live.page.page.Input"
-        permission="zope.Public">
-
-  </page>
+        permission="zope.Public" />
   
   <page
         name="output"
         for="zorg.live.page.interfaces.ILivePage"
         class="zorg.live.page.page.Output"
-        permission="zope.Public">
-
-  </page>
-  
+        permission="zope.Public" />
+    
+  <page
+        name="tearDown"
+        for="*"
+        class="zorg.live.page.page.LivePage"
+        attribute="tearDown"
+        permission="zope.ManageSite" />  
   
   <zope:subscriber
         for="*"

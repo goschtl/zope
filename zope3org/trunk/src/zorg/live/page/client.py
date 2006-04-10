@@ -21,12 +21,17 @@ import Queue
 
 from zope.interface import implements
 from zope.app import zapi
+from zope.component import ComponentLookupError
+
+from zorg.live.globals import getRequest
 
 from zorg.live.page.interfaces import ILivePageClient
 from zorg.live.page.interfaces import ILivePageManager
 from zorg.live.page.interfaces import ICloseEvent
 
 from zorg.live.page.event import IdleEvent
+from zorg.live.page.event import ReloadEvent
+
 from zorg.live.page.event import request2event
 
 class LivePageClient(object):
@@ -75,7 +80,13 @@ class LivePageClient(object):
         """
         self.outbox.put(event)
                   
-                  
+       
+    def tearDown(self) :
+        """ Tear down client and clean up event queue. """
+        
+        while self.outbox.qsize() :
+            self.outbox.get_nowait()    
+        
     def output(self) :
         """ Checks the event queue for waiting events until a timeout occurrs.
             
@@ -102,10 +113,17 @@ class LivePageClient(object):
     def input(self, event=None) :
         """ Receives a client event and broadcasts the event
             to other clients.
+            
+            Returns a bad request if the client is not registered.
         """
         
         if event is None :
-            event = request2event()
+            try :
+                event = request2event()
+            except ComponentLookupError :
+                request = getRequest()
+                request.response.setStatus(400)
+                return 'Invalid client id'
             
         manager = zapi.getUtility(ILivePageManager)
         

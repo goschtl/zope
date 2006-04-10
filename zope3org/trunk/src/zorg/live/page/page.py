@@ -119,6 +119,14 @@ class LivePage(ComposedAjaxPage) :
     def render(self) :
         """ Renders the client and returns the HTML for the browser. """
         NotImplemented
+        
+    def tearDown(self) :
+        """ Tear down test environment. """
+        manager = zapi.getUtility(ILivePageManager)
+        for client in manager._iterClients(self.getLocationId()) :
+            client.tearDown()
+        return "ok"
+        
 
 defineChecker(LivePage, NoProxy)
   

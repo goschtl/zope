@@ -39,6 +39,8 @@ from zope.testbrowser.browser import PystoneTimer
 
 from threading import Thread
 
+from zorg.live.server import securityInputLimit
+
 BASEURL = 'http://localhost:8088/@@livecomments.html'
 INURL = BASEURL+'/@@input/%(uuid)s'
 OUTURL = BASEURL+'/@@output/%(uuid)s'
@@ -315,9 +317,10 @@ class liveserverTest(testUtils, unittest.TestCase):
         #uid OK, what about DOS attack -- XXL data
         #if I hit the memory limit of the server, then it's REAL slow
         #although server restart/shutdown is still possible
+              
         data={'name':'update',
             'id':'text',
-            'html':'<p>any</p>'*10000000,
+            'html':'x' * (securityInputLimit + 1),
             'extra':'scroll',
             '_':''}
         try:

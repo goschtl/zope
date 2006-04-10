@@ -44,10 +44,15 @@ from zorg.live.page.event import ProgressEvent
 from zorg.live.page.event import dict2event
 
 badRequest = object()
+securityInputLimit = 64000
+
 
 class ExtractionError(Exception) :
-    """ Indicates a failed searach for a URI part. """
+    """ Indicates a failed search for a URI part. """
         
+class InputLimitExceeded(Exception) :
+    """ Indicates an input that exceeds the security limit. """
+
 
 class Extractor(object) :
     """ helper fo extracting uuids from a URI. """
@@ -97,7 +102,13 @@ class Extractor(object) :
                   
     def readEvent(self) :
         """ Deserializes the event from the input stream. """
-        input = str(self.context.request.stream.read())
+        global securityInputLimit
+        
+        stream = self.context.request.stream
+        input = str(stream.read())
+        if len(input) > securityInputLimit :
+            return None                 # indicates a bad request
+        
         args = cgi.parse_qs(input)
         print "Input", input, args
         for k, v in args.items() :
@@ -105,7 +116,7 @@ class Extractor(object) :
         try :    
             return dict2event(args)
         except ComponentLookupError :
-            return None                     # indicates a bad request
+            return None                     
             
         
                             
@@ -114,7 +125,7 @@ class Extractor(object) :
               
         manager = zapi.getUtility(ILivePageManager)
         handler = self.context
-        
+
         if "/@@output/" in uri :
             try :
                 uuid = handler.uuid = self.extractUUID(uri, 'output')
@@ -130,9 +141,7 @@ class Extractor(object) :
                 client = manager.get(uuid, None)
                 if client :
                     event = self.readEvent()
-                    print ["Reading event", event]
                     if event :
-                        print "Reading event", event.pprint()
                         client.input(event)
                         ok = DirectResult(("ok",))
                         handler.result = ok
@@ -166,6 +175,7 @@ class LivePageWSGIHandler(WSGIHandler) :
     client = None
     result = None
     liverequest = False
+    exceeded = False
     
     def __init__(self, application, ctx) :
         super(LivePageWSGIHandler, self).__init__(application, ctx)
@@ -296,44 +306,59 @@ from cStringIO import StringIO
 import tempfile
 from twisted.web2 import iweb, resource, stream
 
-max_stringio = 100*1000 # Should this be configurable?
-
 
 class LiveInputStream(object) :
     """ A wrapper for live input streams. This wrapper
-        can report the progress of the upload tasks.
+        can report the progress of the upload tasks or prevent 
+        a malevolent upload.
     """
     
-    def __init__(self, stream, client=None, content_length=None) :
+    exceeded = False
+    
+    def __init__(self, stream, client=None, content_length=None, type=None) :
         self.stream = stream
         self.received_bytes = 0
         self.expected_length = content_length or 1.0
         self.client = client
         self.reported = time.time()
         self.interval = LivePageWSGIHandler.idleInterval * 2
+        self.type = type
         
     def write(self, data) :
+        global securityInputLimit
         self.received_bytes += len(data)
-        self.stream.write(data)
+        if not self.exceeded :
+            self.stream.write(data)
         
         if self.client :
-            if time.time() > (self.reported + self.interval) :
-                ratio = float(self.received_bytes) / float(self.expected_length)
-                percent = int(ratio * 100.0)
-                
-                event = ProgressEvent(percent=percent)
-                manager = zapi.getUtility(ILivePageManager)
-                print "addEvent", percent
-                manager.addEvent(event)
-                print "added"
+
+            if self.type == "progress" :
+                if time.time() > (self.reported + self.interval) :
+                    ratio = float(self.received_bytes) / float(self.expected_length)
+                    percent = int(ratio * 100.0)
+                    
+                    event = ProgressEvent(percent=percent)
+                    manager = zapi.getUtility(ILivePageManager)
+                    print "addEvent", percent
+                    manager.addEvent(event)
+                    print "added"
+                    
+            elif self.type == "input" :
+                if self.received_bytes > securityInputLimit :
+                    self.exceeded = True
+                    
+                    
     
 class LivePrebuffer(resource.WrapperResource):
+
+    max_stringio = 100*1000 # Should this be configurable?
 
     def hook(self, ctx):
         req = iweb.IRequest(ctx)
 
         content_length = req.headers.getHeader('content-length')
-        if content_length is not None and int(content_length) > max_stringio:
+        if content_length is not None and \
+                        int(content_length) > self.max_stringio:
             temp = tempfile.TemporaryFile()
             def done(_):
                 temp.seek(0)
@@ -352,15 +377,27 @@ class LivePrebuffer(resource.WrapperResource):
         
         
         print "LivePrebuffer.uri", req.uri
+        manager = zapi.getUtility(ILivePageManager)
+        extractor = Extractor(ctx)
+        type = None
+        client = None
         try :
-            uuid = Extractor(ctx).queryUUID(req.uri, "progress")
-            print "Found uuid", uuid
-            manager = zapi.getUtility(ILivePageManager)
-            client = manager.get(uuid)
+            uuid = extractor.queryUUID(req.uri, "progress")
+            type = "progress"
         except ExtractionError :
-            client = None
+            uuid = None
         
-        live = LiveInputStream(temp, client, content_length)
+        if not uuid :
+            try :
+                uuid = extractor.extractUUID(req.uri, "input")
+                type = "input"
+            except ExtractionError :
+                uuid = None
+            
+        if uuid :
+            client = manager.get(uuid)
+        
+        live = LiveInputStream(temp, client, content_length, type)
         
         return stream.readStream(req.stream, live.write).addCallback(done)
 
