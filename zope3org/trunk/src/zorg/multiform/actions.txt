@@ -34,8 +34,8 @@ are defined in the multiform (parent) class called ``Edit`` and
     >>> class OrderForm(ItemFormBase):
     ...     inputMode=False
     ...     
-    ...     def __init__(self,context,request,parentForm):
-    ...         super(OrderForm,self).__init__(context,request,parentForm)
+    ...     def __init__(self,context,request,parentForm,name):
+    ...         super(OrderForm,self).__init__(context,request,parentForm,name)
     ...         self.form_fields = form.Fields(IOrder,omit_readonly=False,
     ...         render_context=True)
     ...         
@@ -44,7 +44,7 @@ are defined in the multiform (parent) class called ``Edit`` and
     ...     def handle_save_action(self, action, data):
     ...         form.applyChanges(self.context, self.form_fields,
     ...         data, self.adapters)
-    ...         self.parentForm.newInputMode=False
+    ...         self.parentForm.subFormNewInputMode[self.name]=False
     ...         
     ...     @form.action(u"Upper", condition=multiform.isParentFormDisplayMode)
     ...     def handle_uppercase_action(self, action, data):
@@ -66,11 +66,15 @@ are defined in the multiform (parent) class called ``Edit`` and
     ...     
     ...     @form.action('Edit',condition=multiform.isFormDisplayMode)
     ...     def handle_edit_action(self, action, data):
-    ...         self.newInputMode=True
+    ...         names = sorted(self.subForms.keys())
+    ...         for name in names:
+    ...             self.subFormNewInputMode[name]=True
     ...         
     ...     @form.action('Cancel',condition=multiform.isFormInputMode)
     ...     def handle_cancel_action(self, action, data):
-    ...         self.newInputMode=False
+    ...         names = sorted(self.subForms.keys())
+    ...         for name in names:
+    ...             self.subFormNewInputMode[name]=False
 
 
 So in our new form all widgets are display widgets per default

@@ -19,6 +19,9 @@ class IGridForm(IMultiForm):
 
     """a special grid multiform"""
 
+class IItemAction(IAction):
+    """a item action"""
+    
 class IParentAction(IAction):
     """a parent action"""
 

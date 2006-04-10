@@ -6,22 +6,40 @@ from zope.component import getMultiAdapter
 from zope.formlib import form
 from zope.formlib.interfaces import IBoundAction
 from zope.formlib.i18n import _
-from interfaces import IMultiForm, IParentAction, IFormLocation,IItemForm
+from interfaces import IMultiForm, IParentAction, IItemAction, IFormLocation,IItemForm
 from zope import interface
         
 
 def isFormDisplayMode(f,action):
-    return not f.inputMode
+    return not isFormInputMode(f,action)
     
 def isFormInputMode(f,action):
-    return f.inputMode
+    if len(f.subFormInputMode) == 0:
+        return f.inputMode
+    else:
+        return (True in f.subFormInputMode.values())
 
 def isParentFormDisplayMode(f,action):
-    return not f.parentForm.inputMode
+    return not isParentFormInputMode(f,action)
 
 def isParentFormInputMode(f,action):
-    return f.parentForm.inputMode
+    parentForm = f.parentForm
+    if len(parentForm.subFormInputMode) == 0:
+        return parentForm.inputMode
+    else:
+        return (True in parentForm.subFormInputMode.values())
 
+
+class ItemAction(form.Action):
+
+    """an action that is rendered in the itemform object and can
+    handle the toggle between input and display."""
+    
+    implements(IItemAction)
+    def __init__(self, label, **options):
+        self.inputMode = options.pop('inputMode',None)
+        super(ItemAction,self).__init__(label,**options)
+    
 class ParentAction(form.Action):
 
     """an action that is rendered in the parent multiform object and
@@ -31,8 +49,7 @@ class ParentAction(form.Action):
     def __init__(self, label, **options):
         self.inputMode = options.pop('inputMode',None)
         super(ParentAction,self).__init__(label,**options)
-        
-        
+          
     def __get__(self, form, class_=None):
         if form is None:
             return self
@@ -51,6 +68,12 @@ class ParentAction(form.Action):
             res =  self.__name__ in self.form.request
         return res
 
+class itemAction(form.action):
+
+    def __call__(self, success):
+        action = ItemAction(self.label, success=success, **self.options)
+        self.actions.append(action)
+        return action
 
 class parentAction(form.action):
 
@@ -62,16 +85,17 @@ class parentAction(form.action):
 
 class ItemFormBase(form.FormBase):
 
-
     implements(IItemForm)
     forceInput = []
     parentForm = None
     inputMode = None
+    newInputMode = None
 
-    def __init__(self,context,request,parentForm):
+    def __init__(self,context,request,parentForm,name):
         self.request=request
         self.context = getMultiAdapter([context,self],IFormLocation)
         self.parentForm=parentForm
+        self.name = name
 
     def update(self):
         super(ItemFormBase,self).update()
@@ -96,7 +120,9 @@ class MultiFormBase(form.FormBase):
     subActionNames = []
     inputMode = None
     newInputMode = None
-    
+    subFormInputMode = {}
+    subFormNewInputMode = {}
+
     def update(self):
         self.initInputMode()
         self.checkInputMode()
@@ -107,22 +133,22 @@ class MultiFormBase(form.FormBase):
             form.update()
             hasErrors = hasErrors or form.errors
         if hasErrors:
-            self.newInputMode=None
-        if self.newInputMode is not None:
-            self.setInputMode(self.newInputMode)
-            self.setUpForms(ignore_request=True)
+            self.subFormNewInputMode = {}
+        if len(self.subFormNewInputMode) > 0:
+            for name in self.subFormNewInputMode:
+                self.setUpForm(name, self.context[name], self.subFormNewInputMode[name])
+                self.subFormInputMode[name] = self.subFormNewInputMode[name]
+            self.refreshSubActionNames()
 
     def setUpWidgets(self, *args, **kw):
         super(MultiFormBase,self).setUpWidgets(*args,**kw)
         self.subForms = {}
         self.setUpForms(*args, **kw)
 
-    def setUpForms(self, *args, **kw):
-        for name,item in self.context.items(): 
+    def setUpForm(self, name, item, inputMode, *args, **kw):
             prefix = (self.prefix and self.prefix+'.' or '') + name
-            subForm = self.itemFormFactory(item,self.request,self)
-            if self.inputMode is not None and not self.inputMode \
-                   and subForm.inputMode is not None and not subForm.inputMode:
+            subForm = self.itemFormFactory(item,self.request,self,name)
+            if not inputMode:
                 forceInput = self.itemFormFactory.forceInput
                 for field in subForm.form_fields:
                     if field.__name__ not in forceInput:
@@ -130,6 +156,11 @@ class MultiFormBase(form.FormBase):
             subForm.setPrefix(prefix)
             subForm.setUpWidgets(*args, **kw)
             self.subForms[name] = subForm
+
+    def setUpForms(self, *args, **kw):
+        for name,item in self.context.items():
+            inputMode = self.subFormInputMode.get(name, self.inputMode)
+            self.setUpForm(name, item, inputMode)
         self.refreshSubActionNames()
 
     def refreshSubActionNames(self):
@@ -162,10 +193,27 @@ class MultiFormBase(form.FormBase):
                     break
 
     def checkInputMode(self):
+        import pdb;pdb.set_trace()
+        self.subFormInputMode = {}
+        inputMode = None
         for action in self.itemFormFactory.actions:
             name = '%s.%s' % (self.prefix,action.__name__)
             if name in self.request.form and getattr(action,
                                 'inputMode', None) is not None:
-                self.setInputMode(action.inputMode)
-            
-                
+                inputMode = action.inputMode
+                break
+        if inputMode is None:
+            return
+        inputField = None
+        if len(self.context) > 0:
+            for name, item in self.context.items():
+                break
+            tmpForm = self.itemFormFactory(item,self.request,self,name)
+            for field in tmpForm.form_fields:
+                if not field.for_display and field.__name__ not in tmpForm.forceInput:
+                    inputField = field
+                    break
+            for name in self.context.keys():
+                prefix = self.prefix + '.' + name + '.' + field.__name__
+                self.subFormInputMode[name] = (prefix in self.request.form)
+
