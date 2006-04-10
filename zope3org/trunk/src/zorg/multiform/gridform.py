@@ -19,18 +19,45 @@ default_griditem_template = namedtemplate.NamedTemplateImplementation(
 
 class FormLocationSelection(object):
 
+    __doc__ = """Form Location-object proxy
+
+    This is a non-picklable proxy that can be put around objects that
+    implement `ILocation`.
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope import interface
+    >>> class L(object):
+    ...     __name__ = u'name'
+    >>> l= L()
+    >>> class F(object):
+    ...     request = TestRequest()
+    ...     context = 1
+    ...     prefix = u"form.n1"
+    >>> f = F()
+    >>> p = FormLocationProxy(l, f)
+    >>> p = FormLocationSelection(p)
+    >>> p.selected
+    False
+    >>> p.selected = True
+    >>> p.selected
+    True
+    >>> p.selected = False
+    >>> p.selected
+    False
+    """
+
     implements(ISelection)
 
     def __init__(self,context):
-        self.key = '_mf_selection.' + context.__form__.prefix + \
-                   "." + context.__name__
+        self.context = context
         self.request = context.__form__.request
 
     def _setSelected(self,v):
-        self.request.form[self.key]=v
+        key = '_mf_selection.' + self.context.__form__.prefix
+        self.request.form[key]=v
 
     def _getSelected(self):
-        return self.request.form.get(self.key,False)
+        key = '_mf_selection.' + self.context.__form__.prefix
+        return self.request.form.get(key,False)
 
     selected = property(_getSelected ,_setSelected)
         

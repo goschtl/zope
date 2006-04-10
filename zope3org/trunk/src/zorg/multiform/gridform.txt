@@ -39,8 +39,6 @@ selectable items in our order grid.
     ...     return ISelection(form.context).selected
 
     >>> def isSelectedDisplay(form,action):
-    ...     if isSubFormInputMode(form,action):
-    ...         return False
     ...     return ISelection(form.context).selected
     
 	>>> def isSubFormInputMode(form,action):
@@ -71,6 +69,7 @@ selectable items in our order grid.
     ...     @multiform.parentAction('Edit',
     ...         condition=isSelectedDisplay)
     ...     def handle_edit_action(self, action, data):
+    ...         print "Edit"
     ...         self.parentForm.subFormNewInputMode[self.context.__name__]=True
 
 
@@ -134,5 +133,8 @@ input mode.
     >>> request.form['form.actions.edit']=u''
     >>> request.form['form.n1.selected']=u'on'
     >>> gf = OrdersForm(orderMapping,request)
-    >>> print gf()
-
+    >>> res = gf()
+    >>> gf.subForms['n1'].prefix
+    aaa
+    >>> ISelection(gf.subForms['n1'].context).request.form
+    aaa    

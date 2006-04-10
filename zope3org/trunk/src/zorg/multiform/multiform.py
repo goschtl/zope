@@ -231,7 +231,6 @@ class MultiFormBase(form.FormBase):
     def updateSelection(self):
         for field in self.itemFormFactory.form_fields:
             if issubclass(field.field.interface,ISelection):
-                import pdb;pdb.set_trace()
                 form_fields = form.Fields(field)
                 for name,item in self.context.items():
                     sForm = form.FormBase(getMultiAdapter([item,self],IFormLocation), self.request)
