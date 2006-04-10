@@ -25,9 +25,6 @@ inheritance relationships.
 Step 2: Building Blocks
 -----------------------
 
-Specify the building blocks. In this example the 
-
-
 In the generic model these components may be configurations or annotations.
 
     >>> class ITextConfig(interface.Interface):
@@ -107,7 +104,6 @@ initialization process.
     ...     {'body': u""})
 
 
-
     >>> registerDirective('''
     ... <generic:type
     ...     interface="example.IText"
@@ -157,7 +153,6 @@ initialization process.
     ...    />
     ... </generic:type>
     ... ''')
-
 
 
 Step 4: Enjoy your logical domain...
