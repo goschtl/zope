@@ -39,10 +39,9 @@ class StubAbsoluteURL(object):
 
     __call__ = __str__
 
-class Test(PlacelessSetup, unittest.TestCase):
+class ImageDataTest(PlacelessSetup, unittest.TestCase):
 
     def testData(self):
-        """ """
         image = Image('Data')
         id = ImageData()
         id.context = image
@@ -50,7 +49,6 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(id(), 'Data')
 
     def testTag(self):
-        """ """
         provideAdapter(StubAbsoluteURL)
         image = Image()
         fe = ImageData()
@@ -76,7 +74,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                 'height="100" width="100" class="Image" border="1" />')
 
 def test_suite():
-    return unittest.makeSuite(Test)
+    return unittest.makeSuite(ImageDataTest)
 
 if __name__=='__main__':
     unittest.main()
