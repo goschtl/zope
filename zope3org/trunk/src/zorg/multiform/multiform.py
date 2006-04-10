@@ -148,7 +148,7 @@ class MultiFormBase(form.FormBase):
     def setUpForm(self, name, item, inputMode, *args, **kw):
             prefix = (self.prefix and self.prefix+'.' or '') + name
             subForm = self.itemFormFactory(item,self.request,self,name)
-            if not inputMode:
+            if inputMode is not None and not inputMode:
                 forceInput = self.itemFormFactory.forceInput
                 for field in subForm.form_fields:
                     if field.__name__ not in forceInput:
@@ -193,7 +193,6 @@ class MultiFormBase(form.FormBase):
                     break
 
     def checkInputMode(self):
-        import pdb;pdb.set_trace()
         self.subFormInputMode = {}
         inputMode = None
         for action in self.itemFormFactory.actions:
