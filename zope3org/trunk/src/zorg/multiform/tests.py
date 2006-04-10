@@ -9,7 +9,7 @@ import zope.publisher.interfaces.browser
 import zope.app.form.interfaces
 import interfaces
 import gridform
-
+import selection
 
 def setUp(test):
     setup.placefulSetUp()
@@ -57,14 +57,14 @@ def setUp(test):
         zope.app.form.interfaces.IInputWidget,
         )
     component.provideAdapter(
-        gridform.FormLocationProxy,
+        selection.FormLocationProxy,
         [zope.app.location.interfaces.ILocation,
          zope.formlib.interfaces.IForm
          ],
         interfaces.IFormLocation
         )
     component.provideAdapter(
-        gridform.FormLocationSelection,
+        selection.FormLocationSelection,
         [interfaces.IFormLocation],
         interfaces.ISelection
         )
@@ -82,7 +82,7 @@ def test_suite():
     
     return unittest.TestSuite(
         (
-        DocTestSuite('multiform.gridform',
+        DocTestSuite('multiform.selection',
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         DocFileSuite('README.txt',
