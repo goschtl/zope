@@ -233,7 +233,7 @@ class MultiFormBase(form.FormBase):
             if issubclass(field.field.interface,ISelection):
                 form_fields = form.Fields(field)
                 for name,item in self.context.items():
-                    sForm = form.FormBase(getMultiAdapter([item,self],IFormLocation), self.request)
+                    sForm = SelectionForm(item, self.request, form_fields)
                     prefix = (self.prefix and self.prefix+'.' or '') + name
                     sForm.setPrefix(prefix)
                     sForm.form_fields = form_fields
@@ -253,3 +253,10 @@ class MultiFormBase(form.FormBase):
         
         return self.itemFormFactory(item,self.request,self)
 
+
+class SelectionForm(form.FormBase):
+    
+    def __init__(self, context, request, form_fields):
+        self.form_fields = form_fields
+        self.request = request
+        self.context = getMultiAdapter([context,self],IFormLocation)
