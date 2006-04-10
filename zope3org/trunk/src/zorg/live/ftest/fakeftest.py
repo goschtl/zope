@@ -51,7 +51,7 @@ PWD = "r"
 ROUNDUP = 3
 TIMEOUT = 30
 
-x="""
+"""
 [00:00.000 - client 127.0.0.1:3114 forwarded to localhost:8088]
 POST /@@livecomments.html/@@input/0000010a79a60c576aa49f2600c000a80000000d HTTP/1.1
 Host: localhost:8089
@@ -683,12 +683,38 @@ def test_suite():
     #suite.addTest(unittest.makeSuite(liveserverBenchmark))
     return suite
 
+SOFTWARE_HOME = r"Y:\zope\svn_zope3\src"
+INSTANCE_HOME = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+CONFIG_FILE = os.path.join(INSTANCE_HOME, "etc", "zope.conf")
+
+
+def start_zope():
+    if sys.version_info < ( 2,3,5 ):
+        print """\
+        ERROR: Your python version is not supported by Zope3.
+        Zope3 needs Python 2.3.5 or greater. You are running:""" + sys.version
+        sys.exit(1)
+
+    # This removes the script directory from sys.path, which we do
+    # since there are no modules here.
+    #
+    basepath = filter(None, sys.path)
+
+    sys.path[:] = [os.path.join(INSTANCE_HOME, "lib", "python"),
+                   SOFTWARE_HOME] + basepath
+
+    from zope.app.twisted.main import main
+    main(["-C", CONFIG_FILE] + sys.argv[1:])
+
+
 if __name__ == '__main__':
+    #start_zope()
+    
     evto = os.getenv('LIVESERVER_TIMEOUT')
     if evto:
         try:
             TIMEOUT = int(evto)
         except:
             pass
-    
+
     unittest.main(defaultTest='test_suite',argv=sys.argv+['-v'])
