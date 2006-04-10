@@ -92,7 +92,7 @@ placelesssetup = PlacelessSetup()
 class PlacelessSetup2(PlacelessSetup):
 
     def setUp(self, doctesttest=None):
-        super(PlacelessSetup, self).setUp(doctesttest)
+        super(PlacelessSetup2, self).setUp(doctesttest)
         setup.setUpTestAsModule(doctesttest, 'zope.generic.example')
 
 placelesssetup2 = PlacelessSetup2()
