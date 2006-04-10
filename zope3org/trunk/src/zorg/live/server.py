@@ -15,7 +15,7 @@
 $Id: server.py 39651 2005-10-26 18:36:17Z oestermeier $
 """
 import doctest, unittest
-import time, cgi
+import time, cgi, os
 
 from twisted.web2.channel.http import HTTPFactory
 from twisted.web2.wsgi import WSGIResource
