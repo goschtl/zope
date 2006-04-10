@@ -30,9 +30,9 @@ class FormLocationSelection(object):
         self.request.form[self.key]=v
 
     def _getSelected(self):
-        self.request.form.get(self.key,False)
+        return self.request.form.get(self.key,False)
 
-    selected = property(_getSelected,_setSelected)
+    selected = property(_getSelected ,_setSelected)
         
 
 class FormLocationProxy(ProxyBase):

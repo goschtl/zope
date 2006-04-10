@@ -25,7 +25,7 @@ Let's define a simple content object
     ...         self.name = name
     ...         self.__name__= name
 
-    >>> orderMapping = dict([(str(k),Order(k,name='n%s'%k)) for k in range(2)])
+    >>> orderMapping = dict([('n%s'%k,Order(k,name='n%s'%k)) for k in range(2)])
 
 Now we use the ``GridForm`` as a base class to display orders in
 tabular form. Additionally to the IOrder schema the ISelection schema
@@ -34,13 +34,22 @@ selectable items in our order grid.
 
 
     >>> def isSelectedInput(form,action):
-    ...     if not form.parentForm.inputMode:
+    ...     if not isSubFormInputMode(form,action):
     ...         return False
     ...     return ISelection(form.context).selected
 
-	>>> def isFormDisplayMode(form,action):
+    >>> def isSelectedDisplay(form,action):
+    ...     if isSubFormInputMode(form,action):
+    ...         return False
+    ...     return ISelection(form.context).selected
+    
+	>>> def isSubFormInputMode(form,action):
 	...     parentForm = form.parentForm
-	...     return (parentForm.subFormInputMode.get(form.context.__name__,parentForm.inputMode)
+	...     return parentForm.subFormInputMode.get(form.context.__name__,
+	...     parentForm.inputMode)
+
+	>>> def isSubFormDisplayMode(form,action):
+	...		return not isSubFormInputMode(form,action)
 
     >>> class OrderForm(gridform.GridItemFormBase):
     ...     inputMode=False
@@ -60,12 +69,12 @@ selectable items in our order grid.
     ...     def handle_save_action(self, action, data):
     ...         form.applyChanges(self.context, self.form_fields,
     ...         data, self.adapters)
-    ...         self.parentForm.subFormNewInputMode[self.name]=False
+    ...         self.parentForm.subFormNewInputMode[self.context.__name__]=False
     ...         
     ...     @multiform.parentAction('Edit',
-    ...         condition=multiform.isParentFormDisplayMode)
+    ...         condition=isSelectedDisplay)
     ...     def handle_edit_action(self, action, data):
-    ...         self.parentForm.subFormNewInputMode[self.name]=True
+    ...         self.parentForm.subFormNewInputMode[self.context.__name__]=True
 
 
     >>> class OrdersForm(gridform.GridFormBase):
@@ -91,13 +100,13 @@ because we always want checkboxes to select some items.
     >>> request = TestRequest()
     >>> gf = OrdersForm(orderMapping,request)
     >>> print gf()
-    <div>
-    <div><input ... name="form.0.selected" type="checkbox" ...  /></div>
+    <div>a
+    <div><input ... name="form.n0.selected" type="checkbox" ...  /></div>
     <div>0</div>
     <div>n0</div>
     </div>
     <div>
-    <div><input ... name="form.1.selected" type="checkbox" ...  /></div>
+    <div><input ... name="form.n1.selected" type="checkbox" ...  /></div>
     <div>1</div>
     <div>n1</div>
     </div>
@@ -105,12 +114,12 @@ because we always want checkboxes to select some items.
 Now we are going to select some items. And the checkbox of the ``selected``
 
     >>> request = TestRequest()
-    >>> request.form['form.1.selected']=u'on'
+    >>> request.form['form.n1.selected']=u'on'
     >>> gf = OrdersForm(orderMapping,request)
     >>> print gf()
-    <div>
+    <div>a
     ...
-    <div><input ... checked="checked" ... name="form.1.selected" ...</div>
+    <div><input ... checked="checked" ... name="form.n1.selected" ...</div>
     <div>1</div>
     <div>n1</div>
     </div>
@@ -119,7 +128,7 @@ By using the Edit action we can now switch all selected item forms to
 input mode. 
 
     >>> request.form['form.actions.edit']=u''
-    >>> request.form['form.0.selected.used']=u''
+    >>> request.form['form.n0.selected.used']=u''
     >>> gf = OrdersForm(orderMapping,request)
     >>> print gf()
 

@@ -139,7 +139,8 @@ class MultiFormBase(form.FormBase):
         hasErrors = False
         for form in self.subForms.values():
             form.update()
-            hasErrors = hasErrors or form.errors
+            if form.errors is not None:
+                hasErrors = hasErrors or form.errors
         if hasErrors:
             self.subFormNewInputMode = {}
         if len(self.subFormNewInputMode) > 0:
@@ -166,6 +167,7 @@ class MultiFormBase(form.FormBase):
             self.subForms[name] = subForm
 
     def setUpForms(self, *args, **kw):
+
         for name,item in self.context.items():
             inputMode = self.subFormInputMode.get(name, self.inputMode)
             self.setUpForm(name, item, inputMode)
