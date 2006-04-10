@@ -1,0 +1,4 @@
+<html metal:extend-macro="context/@@standard_macros/view"
+      metal:define-macro="main">
+</html>
+

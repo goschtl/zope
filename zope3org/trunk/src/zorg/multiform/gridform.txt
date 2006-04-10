@@ -1,0 +1,86 @@
+===========
+ Gridforms
+===========
+
+Gridforms are specialized multiforms which are supposed to be
+displayed as grids.
+
+Let's define a simple content object
+
+    >>> from multiform.interfaces import ISelection
+    >>> from zope.formlib import form
+    >>> from multiform import multiform, gridform
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope import interface, schema
+    >>> from zope.app.location.interfaces import ILocation
+    >>> class IOrder(interface.Interface):
+    ...     identifier = schema.Int(title=u"Identifier", readonly=True)
+    ...     name = schema.TextLine(title=u"Name")
+
+    >>> class Order:
+    ...     interface.implements(IOrder,ILocation)
+    ...     
+    ...     def __init__(self, identifier, name=''):
+    ...         self.identifier = identifier
+    ...         self.name = name
+    ...         self.__name__= name
+
+    >>> orderMapping = dict([(str(k),Order(k,name='n%s'%k)) for k in range(2)])
+
+Now we use the ``GridForm`` as a base class to display orders in
+tabular form. Additionally to the IOrder schema the ISelection schema
+is added to the ``form_fields`` of the ``OrderForm`` in order to get
+selectable items in our order grid.
+
+
+    >>> def isSelectedInput(form,action):
+    ...     if not form.parentForm.inputMode:
+    ...         return False
+    ...     return ISelection(form.context).selected
+
+    >>> class OrderForm(gridform.GridItemFormBase):
+    ...     inputMode=False
+    ...     forceInput=['selected']
+    ...     
+    ...     def __init__(self,context,request,parentForm):
+    ...         super(OrderForm,self).__init__(context,request,parentForm)
+    ...         self.form_fields = form.Fields(ISelection,IOrder,
+    ...         omit_readonly=False)
+    ...         
+    ...     def template(self):
+    ...         return '\n<div>%s</div>\n' % '</div>\n<div>'.join([w() for w in
+    ...     self.widgets])
+    ...         
+    ...     @multiform.parentAction(u"Save",
+    ...         condition=isSelectedInput,inputMode=True)
+    ...     def handle_save_action(self, action, data):
+    ...         form.applyChanges(self.context, self.form_fields,
+    ...         data, self.adapters)
+    ...         self.parentForm.newInputMode=False
+    ...         
+    ...     @multiform.parentAction('Edit',
+    ...         condition=multiform.isParentFormDisplayMode)
+    ...     def handle_edit_action(self, action, data):
+    ...         self.newInputMode=True
+
+
+
+    >>> class OrdersForm(gridform.GridFormBase):
+    ...     itemFormFactory=OrderForm
+    ...     def template(self):
+    ...         res = u''
+    ...         names = sorted(self.subForms.keys())
+    ...         for name in names:
+    ...             res += '<div>%s</div>\n' % self.subForms[name].render()
+    ...         return res
+    ...         
+    ...     @form.action('Cancel',condition=multiform.isFormInputMode)
+    ...     def handle_cancel_action(self, action, data):
+    ...         self.newInputMode=False
+
+    >>> request = TestRequest()
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> print gf()
+    <div>...
+    </div>
+    
