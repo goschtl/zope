@@ -2,6 +2,12 @@
 Five Changes
 ============
 
+Trunk (unreleased)
+=======================
+
+* Made sure LocalizerLanguages class normalized language codes to xx-yy, instead of
+  xx_YY or xx-YY.
+
 Five 1.4b (2006-03-31)
 ======================
 
