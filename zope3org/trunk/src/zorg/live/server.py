@@ -45,6 +45,11 @@ from zorg.live.page.event import dict2event
 
 badRequest = object()
 securityInputLimit = 64000
+requestTimeOut = 30
+
+timeout = os.getenv('LIVESERVER_TIMEOUT')
+if timeout:
+    requestTimeOut = int(timeout)
 
 
 class ExtractionError(Exception) :
@@ -169,8 +174,7 @@ class Extractor(object) :
 class LivePageWSGIHandler(WSGIHandler) :
     
     idleInterval = 0.1
-    limit = 30
-    
+
     count = 0
     client = None
     result = None
@@ -186,7 +190,8 @@ class LivePageWSGIHandler(WSGIHandler) :
 
                 
     def runLive(self) :
-        self.expires = time.time() + self.limit
+        global requestTimeOut
+        self.expires = time.time() + requestTimeOut
         reactor.callLater(self.idleInterval, self.onIdle)
 
     def _returnOutput(self, output) :
