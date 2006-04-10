@@ -124,17 +124,62 @@ The resulting HTML is more complex since it contains additional JavaScript
 calls and menu items. The additional menu is rendered for text links in 
 brackets and HTML links ...
 
+We have to monkey patch the isEditable method, to ensure that we really
+get modifiable links :
+
+    >>> def return_true() : return True
+    >>> index_page.isEditable = return_true
+
     >>> print index_page.renderBody()
     <BLANKLINE>
     ...
-    ...dropdownlinkmenu...>new page</a>...
+    ...PopupMenu.update...>new page</a>...
     ...
-    ...dropdownlinkmenu...>[New Subject]</a>...
-    ...
-    </div>
+    ...PopupMenu.update...>[New Subject]</a>...
     ...   
+    
+The menu is loaded on demand. 
+
+    >>> modified = index_page.getModificationStamp()
+    >>> print index_page.popupLinkMenu('wiki-menu5', modified)
+    <span>
+    <BLANKLINE>
+        <div style="display: true;" class="anylinkcss"
+             id="popup_items">
+            <span class="anylinkheader">Edit this Link</span>
+            <div class="anylinkitem"
+                 onclick="editPlaceholderLabel('wiki-link5', 'wiki-menu5', 'New Subject', '')">
+                Rename
+            </div>
+            <a class="anylinkitem"
+               href="http://127.0.0.1/site/@@wikiedit.html?add=NewSubject">
+                Add Page
+            </a>
+            <div class="anylinkitem"
+                 onclick="PopupMenu.showForm('create_folder5')">
+                Create Folder
+            </div>
+            <div class="anylinkitem"
+                 onclick="PopupMenu.showForm('upload_form5')">
+                Upload File
+            </div>
+        </div>
+    ...
    
-   
+If the page has change after the loading the user is alerted that the page
+needs a refresh to be up to date:
+
+    >>> print index_page.popupLinkMenu('wiki-menu5', "modified-timestamp")
+    <span>
+        <div id="popup_items">
+            <form class="inline_form">
+                <span class="anylinkheader">The page has been edited. Please reloaad.
+                </span>
+                <input name="reload" id="reload" type="submit" onselect="window.reload()" value="Reload Page">
+            </form>
+        </div>
+    ...    
+
 Some of the menu items allow the user to edit the link within the view page.
 
     >>> from zorg.wikification.browser.wikipage import EditWikiPage
@@ -144,13 +189,13 @@ The "Change Label" command shows that we can change a page without editor
 quite easily:
 
     >>> request.form = dict(label='New Label')
+    >>> edit_page.isEditable = return_true
     >>> print edit_page.modifyLink(cmd='rename', link_id='wiki-link5')
     <BLANKLINE>
     ...
-    ...dropdownlinkmenu...[New Label]...
+    ...PopupMenu.update...[New Label]...
     ...
-    </div>
-    ...      
+      
     
 One of the most usefull options is to upload a new file in one step. 
 We have to consider the interesting usecase here that a wikilink with a

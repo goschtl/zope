@@ -56,7 +56,7 @@ from zorg.comment.testing import commentSetUp
 from zorg.comment import IAttributeAnnotableComments
 from zorg.wikification.browser.interfaces import ILinkProcessor
 from zorg.wikification.browser.interfaces import IWikiPage
-from zorg.wikification.browser.wikilink import BaseLinkProcessor
+from zorg.wikification.browser.wikilink import WikiLinkProcessor
 
 
 example1 = u"""<html>
@@ -147,7 +147,7 @@ def setUpWikification(test) :
                                             IZopeDublinCore)
  
     
-    zope.component.provideAdapter(BaseLinkProcessor,
+    zope.component.provideAdapter(WikiLinkProcessor,
                                             [IWikiPage], 
                                             ILinkProcessor)
     

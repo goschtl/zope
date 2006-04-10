@@ -1,5 +1,14 @@
 <span>
-    <div class="anylinkcss" tal:attributes="id view/menu_id" >
+    <div tal:condition="view/outdated" id="popup_items">
+        <form class="inline_form" >
+            <span class="anylinkheader">The page has been edited. Please reloaad.
+            </span>
+            <input name="reload" id="reload" 
+                type="submit" onselect="window.reload()" 
+                value="Reload Page">
+        </form>
+    </div>
+    <div tal:condition="not: view/outdated" style="display: true;" class="anylinkcss" id="popup_items">
         <span class="anylinkheader">Edit this Link</span>
         <div class="anylinkitem" onclick="editPlaceholderLabel();"
              tal:attributes="onclick string:editPlaceholderLabel('${view/link_id}', '${view/menu_id}', '${view/unicodeLabel}', '');">
@@ -8,10 +17,10 @@
         <a class="anylinkitem" href="#" tal:attributes="href view/link">
             Add Page
         </a>
-        <div class="anylinkitem" tal:attributes="onclick string:Toggle.display('create_folder${view/index}');">
+        <div class="anylinkitem" tal:attributes="onclick string:PopupMenu.showForm('create_folder${view/index}');">
             Create Folder
         </div>
-        <div class="anylinkitem" tal:attributes="onclick string:Toggle.display('upload_form${view/index}');">
+        <div class="anylinkitem" tal:attributes="onclick string:PopupMenu.showForm('upload_form${view/index}');">
             Upload File
         </div>
     </div>
@@ -19,7 +28,7 @@
         <form method="post"
                enctype="multipart/form-data"
                action="uploadFile"
-               tal:attributes="onreset string:Toggle.display('upload_form${view/index}');">
+               tal:attributes="onreset string:PopupMenu.hideForm('upload_form${view/index}');">
             <h4>Upload File</h4>
             <input name="link_id" type="hidden" tal:attributes="value string:${view/link_id}" />
             <table>
@@ -70,8 +79,8 @@
     <div class="inline_form" tal:attributes="id string:create_folder${view/index}" style="display:none;">
         <form method="post"
                enctype="multipart/form-data"
-               onsubmit="new Ajax.Updater('main', './@@modifyLink', {parameters:Form.serialize(this)}); return false;"  
-               tal:attributes="onreset string:Toggle.display('create_folder${view/index}');">
+               tal:attributes="onsubmit string:PopupMenu.submitForm('create_folder${view/index}', this);;;
+                               onreset string:PopupMenu.hideForm('create_folder${view/index}');;">
             <h4>Create Folder</h4>
             <input name="link_id" type="hidden" tal:attributes="value string:${view/link_id}" />
             <input name="cmd" type="hidden" value="folder" />

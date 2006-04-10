@@ -33,14 +33,16 @@ p.intro {
     width: 400px;
 }
 
-.anylinkcss {
+#wiki_popup_menu {
     position:absolute;
-    visibility: hidden;
+    z-index: 100;
+}
+
+.anylinkcss {
     border:1px solid #666666;
     border-bottom-width: 0;
     font:normal 10px Verdana;
     line-height: 18px;
-    z-index: 100;
     background-color: #EDF0F4;
     width: 150px;
 }

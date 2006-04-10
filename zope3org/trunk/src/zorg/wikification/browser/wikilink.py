@@ -113,11 +113,68 @@ class Placeholder(PageElement) :
         
     def unicodeLabel(self) :
         return unicode(self.editableLabel(), encoding='utf-8')
-        
-        
+ 
+ 
 class BaseLinkProcessor(BaseHTMLProcessor) :
+    """ Implements a processor that is able to visit and modify all links. 
+    """
+
+    def isAbsoluteURL(self, link) :
+        """ Returns true if the link is a complete URL. 
+            
+            Note that an absolute URL in this sense 
+            might point to a local object.
+        """
+        
+        for prefix in 'http:', 'ftp:', 'https:', 'mailto:' :
+            if link.startswith(prefix) :
+                return True
+        return False
+
+class RelativeLinkProcessor(BaseLinkProcessor) :
+    """ Implements a processor that converts all relative links
+        into absolute ones. 
+     
+        >>> html = '''<p><a href="http://www.iwm-kmrc.de">Absolute</a></p>
+        ...           <p><a href="relative">Relative</a></p>'''
+        
+        >>> processor = RelativeLinkProcessor("http://www.iwm-kmrc.de")
+        >>> processor.feed(html)
+        >>> print processor.output()
+        <p><a href="http://www.iwm-kmrc.de">Absolute</a></p>
+        <p><a href="http://www.iwm-kmrc.de/relative">Relative</a></p>
+       
+        
+    """
+ 
+    def __init__(self, base_url) :
+        BaseHTMLProcessor.__init__(self)
+        self.base_url = base_url
+
+    def unknown_starttag(self, tag, attrs):
+        """ Called for each tag. Wikifies links. """
+        
+        if tag == "a" :
+            href = ""
+            result = []
+            for key, value in attrs :
+                if key == "href" :
+                    if value and not self.isAbsoluteURL(value) :
+                        value = "%s/%s" % (self.base_url, value)
+                result.append((key, value))
+           
+            BaseHTMLProcessor.unknown_starttag(self, tag, result) 
+            return True
+     
+        BaseHTMLProcessor.unknown_starttag(self, tag, attrs)               
+
+       
+        
+        
+class WikiLinkProcessor(BaseLinkProcessor) :
     """ A link processor that wikifies the links by modifying the
         href and other attributes of a link.
+        
         
     """
     
@@ -184,18 +241,6 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         self.placeholder = placeholder
         return placeholder        
         
-    def isAbsoluteURL(self, link) :
-        """ Returns true if the link is a complete URL. 
-            
-            Note that an absolute URL in this sense 
-            might point to a local object.
-        """
-        
-        for prefix in 'http:', 'ftp:', 'https:', 'mailto:' :
-            if link.startswith(prefix) :
-                return True
-        return False
-
     def wikifyLink(self, link) :
         """
         Modifies dead relative links and leaves all other links untouched.
@@ -208,7 +253,7 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         >>> request = TestRequest()
         >>> from zorg.wikification.browser.wikipage import WikiPage
         >>> page = WikiPage(site, request)
-        >>> processor = BaseLinkProcessor(page)
+        >>> processor = WikiLinkProcessor(page)
         
         Anchors and absolute external links are left unmodified :
         
@@ -343,25 +388,25 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         >>> from zorg.wikification.browser.wikipage import WikiPage
         >>> page = WikiPage(site, TestRequest())
         
-        >>> link_processor = BaseLinkProcessor(page)
+        >>> link_processor = WikiLinkProcessor(page)
         >>> link_processor.handle_data('A [link]')
         >>> link_processor.pieces
         ['A <a class="wiki-link" href="...@@wikiedit.html?add=link">[link]</a>']
 
         
-        >>> link_processor = BaseLinkProcessor(page)
+        >>> link_processor = WikiLinkProcessor(page)
         >>> link_processor.handle_data('A [link] and [another one]')
         >>> link_processor.pieces
         ['A <a ...>[link]</a> and <a ...>[another one]</a>']
         
         This method also converts urls and email addresses into clickable links:
         
-        >>> link_processor = BaseLinkProcessor(page)
+        >>> link_processor = WikiLinkProcessor(page)
         >>> link_processor.handle_data('Test mailto:jim@zope.org')
         >>> link_processor.pieces
         ['Test <a href="mailto:jim@zope.org">jim@zope.org</a>']
         
-        >>> link_processor = BaseLinkProcessor(page)
+        >>> link_processor = WikiLinkProcessor(page)
         >>> link_processor.handle_data('Test http://www.iwm-kmrc.de')
         >>> link_processor.pieces
         ['Test <a href="http://www.iwm-kmrc.de">http://www.iwm-kmrc.de</a>']
@@ -420,7 +465,7 @@ class MenuPlaceholder(Placeholder) :
     >>> site = buildSampleSite()
     
     >>> page = WikiPage(site, TestRequest())
-    >>> processor = BaseLinkProcessor(page)    
+    >>> processor = WikiLinkProcessor(page)    
     >>> placeholder1 = processor.createPlaceholder("Label", "http://link")
     >>> placeholder1.index
     0
@@ -431,15 +476,18 @@ class MenuPlaceholder(Placeholder) :
     """
     
     _menu = ViewPageTemplateFile("./templates/linkmenu.pt")
-    _link = '<a class="wiki-link" href="%s" onmouseover="%s" onclick="return clickreturnvalue()"%s>'
+    _link = '<a class="wiki-link" href="%s" onmouseover="%s" %s>'
+    _dimmed = '<span class="dimmed-wiki-link">'
     
     wikified = False
+    outdated = False
+    enabled = True
     
     def __init__(self, processor, index, label, link) :
         super(MenuPlaceholder, self).__init__(processor, index, label, link)
+        self.enabled = processor.page.isEditable()
         self.menu_id = processor.createMenuId(index)
-        
-        self.onMouseOver = "dropdownlinkmenu(this, event, '%s');" % self.menu_id
+        self.onMouseOver = "PopupMenu.update(this, '%s');" % self.menu_id
        
     def startTag(self, attrs) :
         """ Called when a starttag for a placeholder is detected. """
@@ -449,7 +497,11 @@ class MenuPlaceholder(Placeholder) :
         if wikified :
             self.wikified = True
             attrs.append(("id", self.link_id))
-            return self._link % (link, self.onMouseOver, self._tagAttrs(attrs))
+            if self.enabled :
+                return self._link % (link, self.onMouseOver, 
+                                                        self._tagAttrs(attrs))
+            else :
+                return self._dimmed
         else :
             pattern = '<a href="%s"%s>'
             return pattern % (self.link, self._tagAttrs(attrs))
@@ -458,12 +510,16 @@ class MenuPlaceholder(Placeholder) :
         start = self.startTag([])
         menu = self.afterCloseTag() or ''
         if self.wikified :
-            return "%s[%s]</a>%s" % (start, self.label, menu)
+            if self.enabled :
+                return "%s[%s]</a>%s" % (start, self.label, menu)
+            else :
+                return "[%s]</span>" % self.label
         else :
             return "%s%s</a>%s" % (start, self.label, menu)
             
     def afterCloseTag(self) :
         if self.wikified :
+            return '<span id="outer%s"></span>' % self.menu_id
             menu = self._menu()
             return menu.encode("utf-8")
         return None
@@ -645,7 +701,7 @@ class NoopPlaceholder(Placeholder) :
             link = self.link
         return '<a href="%s">' % (link)
 
-class AjaxLinkProcessor(BaseLinkProcessor) :
+class AjaxLinkProcessor(WikiLinkProcessor) :
     """ A link processor that wikifies the links by modifying the
         href of a link and additionally inserting a javascript based menu
         that allows the user to choose an edit option. 

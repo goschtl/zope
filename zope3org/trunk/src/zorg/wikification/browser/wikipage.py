@@ -32,6 +32,9 @@ from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.session.interfaces import ISession
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
+from zope.security import canAccess
+from zope.security.interfaces import ForbiddenAttribute
+
 from zope.publisher.browser import TestRequest
 from zope.i18n import MessageIDFactory
 
@@ -113,10 +116,29 @@ class WikiPage(ComposedAjaxPage) :
             return IZopeDublinCore(file).description or u""
         return u""
 
+    def isEditable(self) :
+        try :
+            return canAccess(self.container, '__setitem__')
+        except ForbiddenAttribute :
+            return False
+        
+        
     def renderAbstract(self) :
         """ Render the abstract as ReST. """
         desc = self.getAbstract()
         return zorg.restsupport.text2html(desc)
+        
+    def getModificationStamp(self) :
+        """ Returns a time stamp that indicates the last modification time. 
+        
+        See browser/README.txt for a test.
+        
+        """
+        file = self.getFile()
+        dc = IZopeDublinCore(file, None)
+        if dc is not None :
+            return str(dc.modified)
+        return None
         
     def wikify(self, body) :
         """ 
@@ -145,6 +167,21 @@ class WikiPage(ComposedAjaxPage) :
         processor.feed(body)
         return processor.output()
      
+    def popupLinkMenu(self, menu_id, modification_stamp, current_stamp=None) :
+        """ Render the popup link menu. """
+        
+        modification_stamp = str(modification_stamp)        
+        link_id = menu_id.replace("menu", "link")
+        processor = ILinkProcessor(self)
+        processor.link_id = link_id
+        body = self.getBody()
+        processor.feed(body)
+        placeholder = processor.placeholders.get(link_id)
+        
+        if current_stamp is None :
+            current_stamp = self.getModificationStamp()
+        placeholder.outdated = modification_stamp != current_stamp
+        return placeholder._menu()
       
     def nextURL(self) :
         url = zapi.absoluteURL(self.context, self.request)
@@ -240,6 +277,7 @@ class WikiFilePage(WikiPage) :
   
         return u"Sorry, not wikifiable at the moment."
             
+
 
 class EditOptions(PageElement) :
     """ Allows the user to switch between Kupu, Rest and 
@@ -539,7 +577,7 @@ class WikiEditor(WikiPage) :
         """
         self._modifyLink(cmd, link_id)
         return u'<div id="main">%s</div>' % self.renderBody()
-        
+    
     def updateURL(self) :
         """ The URL for the update POST. """
         url = zapi.absoluteURL(self.context, self.request)
