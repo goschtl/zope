@@ -38,6 +38,10 @@ selectable items in our order grid.
     ...         return False
     ...     return ISelection(form.context).selected
 
+	>>> def isFormDisplayMode(form,action):
+	...     parentForm = form.parentForm
+	...     return (parentForm.subFormInputMode.get(form.context.__name__,parentForm.inputMode)
+
     >>> class OrderForm(gridform.GridItemFormBase):
     ...     inputMode=False
     ...     forceInput=['selected']
@@ -56,13 +60,12 @@ selectable items in our order grid.
     ...     def handle_save_action(self, action, data):
     ...         form.applyChanges(self.context, self.form_fields,
     ...         data, self.adapters)
-    ...         self.parentForm.newInputMode=False
+    ...         self.parentForm.subFormNewInputMode[self.name]=False
     ...         
     ...     @multiform.parentAction('Edit',
     ...         condition=multiform.isParentFormDisplayMode)
     ...     def handle_edit_action(self, action, data):
-    ...         self.inputMode=True
-    ...         self.parentForm.newInputMode=True
+    ...         self.parentForm.subFormNewInputMode[self.name]=True
 
 
     >>> class OrdersForm(gridform.GridFormBase):
@@ -76,7 +79,9 @@ selectable items in our order grid.
     ...         
     ...     @form.action('Cancel',condition=multiform.isFormInputMode)
     ...     def handle_cancel_action(self, action, data):
-    ...         self.newInputMode=False
+    ...         names = sorted(self.subForms.keys())
+    ...         for name in names:
+    ...             self.subFormNewInputMode[name]=False
 
 Due to the reason that the ``inputMode`` attribute is ``False`` we now
 get DisplayWidgets for all fields, except the ``selected`` field

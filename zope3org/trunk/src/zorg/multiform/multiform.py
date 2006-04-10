@@ -91,11 +91,10 @@ class ItemFormBase(form.FormBase):
     inputMode = None
     newInputMode = None
 
-    def __init__(self,context,request,parentForm,name):
+    def __init__(self,context,request,parentForm):
         self.request=request
         self.context = getMultiAdapter([context,self],IFormLocation)
         self.parentForm=parentForm
-        self.name = name
 
     def update(self):
         super(ItemFormBase,self).update()
@@ -147,7 +146,7 @@ class MultiFormBase(form.FormBase):
 
     def setUpForm(self, name, item, inputMode, *args, **kw):
             prefix = (self.prefix and self.prefix+'.' or '') + name
-            subForm = self.itemFormFactory(item,self.request,self,name)
+            subForm = self.itemFormFactory(item,self.request,self)
             if inputMode is not None and not inputMode:
                 forceInput = self.itemFormFactory.forceInput
                 for field in subForm.form_fields:
@@ -207,7 +206,7 @@ class MultiFormBase(form.FormBase):
         if len(self.context) > 0:
             for name, item in self.context.items():
                 break
-            tmpForm = self.itemFormFactory(item,self.request,self,name)
+            tmpForm = self.itemFormFactory(item,self.request,self)
             for field in tmpForm.form_fields:
                 if not field.for_display and field.__name__ not in tmpForm.forceInput:
                     inputField = field
