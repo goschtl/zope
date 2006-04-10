@@ -2,8 +2,2024 @@
     i18n:domain="zf.zscp">
   <body>
   <div metal:fill-slot="body">
+	  
+	<div id="documentFirstHeading">The Zope Software Certification 
+		Program and the Common Repository</div>
 
-regulations intro 	  
+
+	<div class="section">
+		<h3 class="itemOne itemHeading"><a id="introduction" name="introduction">1. Introduction</a></h3>
+		<p>This section intends to provide the reader with an overview where the idea of this
+			proposal originated and what it tries to accomplish.</p>
+    </div>
+	  
+		<div class="section">
+			<h4><a id="motivation" name="motivation">1.1. Motivation</a></h4>
+			<p>It took Zope 3 about four years to be developed, starting from an idea to the
+				acceptance of the technology by most of the wider Zope community. Now its
+				acceptance grows by the minute. But this also means that the code written for
+				Zope 3 increases in a similar fashion. Already people have published
+				several collections of packages:</p>
+			<blockquote>
+				<ul class="simple">
+					<li><tt class="docutils literal">
+						<span class="pre">hurry</span></tt> -- This small library was
+						developed by Infrae as part of a customer engagement. It features
+						an advanced file field/widget and a nice query API for the catalog.
+						There are currently 3 contributed packages.</li>
+					<li><tt class="docutils literal">
+						<span class="pre">schooltool</span></tt> -- Even though
+						SchoolTool has not actively released packages of their code base,
+						it contains several features that are worth looking at, including
+						the relationship, pluggable traverser, and dynamic test setup
+						packages. There are about 4 generic packages.</li>
+					<li><tt class="docutils literal">
+						<span class="pre">tiks</span></tt> -- Developed by Projekt01,
+						the tiks packages are designed to provide useful features for a
+						wide range of Zope 3 applications, including CMSs. There are
+						currently 30+ contributed packages.</li>
+					<li><tt class="docutils literal">
+						<span class="pre">z3ecm</span></tt> -- While it does not seem
+						that the development is making much progress, the ECM repository
+						features several very interesting packages, including a
+						document workflow (based on zope.wfmc) and cpsskin for Zope 3.
+						There are currently 2+ contributed packages.</li>
+					<li><tt class="docutils literal">
+						<span class="pre">zc</span></tt> -- Zope Corporation recently
+						released several of the packages they developed during customer
+						engagements. Some of their released packages are already in the
+						core, others are only useful in more specific environments. There
+						are currently 14+ contributed packages.</li>
+				</ul>
+			</blockquote>
+			<p>(Names sorted alphabetically.)</p>
+			<p>Right now all of those efforts are totally uncoordinated. Even though this is
+				an Open Source community, the communication is often all but open. In fact,
+				already packages duplicate functionality; for example, several packages
+				provide JS-based highly-polished widgets.</p>
+			<p>It is also difficult to gauge the quality of the packages. Surely a developer
+				can look at them and get a general idea, but one might not have the time to do
+				that. By the time developers notice that a package is insufficiently
+				thought out, they might be stuck with it. There should be a way of stating the
+				quality of a package.</p>
+			<p>Another topic that has been also very important to people is the management of
+				package versions and package dependency. This is an unsolved issue and even
+				though there are emerging technologies, for example eggs, the Zope
+				community needs to provide a solution to the problem as part of the
+				development process.</p>
+		</div>
+	  
+
+		<div class="section">
+			<h4><a id="goals" name="goals">1.2. Goals</a></h4>
+			<p>The two main goals of this proposal are to define a process of verifying
+				package quality, called the Zope Software Certification Process (ZSCP),
+				and to lay out a repository, called the Common Repository, that provides
+				developers with a space to implement the process. As a direct consequence,
+				it is anticipated that the various Zope development communities will
+				reunite to develop a common, high-quality code base, by stressing the skill
+				sets and best practices of each contributor. With Zope 3 as the communities'
+				new base-technology, it is possible to easily share code among various
+				projects, even if they are still Zope 2 based. Of course, as time passes, the
+				distinction between Zope 2 and 3 will fade.</p>
+			<p>Here are some specific items that are addressed in this document:</p>
+			<blockquote>
+				<ul>
+					<li>
+						<p class="first">Well-defined Process, the Zope Software
+							Certification Program (ZSCP)</p>
+						<p>The Zope 3 community has a semi-formal process in place to
+							ensure the quality of packages in the core. However, this
+							process does not extend to third party code, let alone code
+							outside of the zope.org repository. On the other hand, Plone
+							also uses the collective for core packages without any
+							control over the process or quality. This proposal will
+							define a process for ensuring the quality of packages and for
+							upstream movement: in other words, the way a third-party
+							package could become a core package.</p>
+					</li>
+					<li>
+						<p class="first">Repository Unification</p>
+						<p>Currently we have several repositories scattered around in
+							many places. No-one has access to all the repositories and
+							thus small code improvements are hard to make; the overhead is
+							large. If one finds something wrong with the code, one either
+							has to write a mail or create a bug report. And that often
+							requires one to sign up to yet another mailing list or create a
+							user account for yet another web site. Thus, this proposal
+							suggests a common repository for all generically useful Zope
+							3 add-on packages.</p>
+					</li>
+					<li>
+						<p class="first">Quality Packages</p>
+						<p>There is a natural desire for any developer to know what they are
+							getting into when they are using a certain package, a baseline
+							of quality that can be expected. While the Zope 3 community has
+							some ideas of what that baseline is for the core, it is not well
+							defined and applied uniformly. This proposal defines clear
+							quality guidelines.</p>
+					</li>
+					<li>
+						<p class="first">Clear Dependency Declarations</p>
+						<p>One of the greatest frustrations in the Zope community,
+							especially in Plone, is the complex non-closed tree of
+							dependencies of packages. While this issue cannot be solved
+							for the entire community, this proposal provides an attempt
+							to clearly define dependencies for the packages living in the
+							official repository.</p>
+					</li>
+					<li>
+						<p class="first">Common License</p>
+						<p>The Zope community at large uses mainly two licenses, the ZPL
+							and the GPL. (Yes, other licenses are also used.) Dealing with
+							multiple licenses is a pain, especially for Zope's
+							consumers. This proposal discusses the current situation
+							and proposes a resolution.</p>
+					</li>
+					<li>
+						<p class="first">Marketing Effect</p>
+						<p>People commonly say, Zope does anti-marketing. And that is
+							probably true. While a proposal like that cannot address this
+							issue globally, it can at least address it from a
+							technical/code-oriented side. It should be possible to use
+							the certification of a package as a marketing tool. Of course,
+							quality, clear dependencies, a common license, a
+							predicatbale process, and having a one stop for all software
+							are all marketting wins that are automatically achieved by
+							implementing this proposal.</p>
+					</li>
+				</ul>
+			</blockquote>
+		</div>
+
+
+
+	<div class="section">
+		<h3 class="itemTwo itemHeading"><a id="the-zope-software-certification-program"
+				name="the-zope-software-certification-program">2. The Zope Software
+			Certification Program</a></h3>
+		<p>This section describes the process for Zope-related software to receive quality
+			certification.</p>
+		<div class="section">
+			<h4><a id="zope-community-process" name="zope-community-process">2.1.
+				Zope Community Process</a></h4>
+			<p>Historically, the Zope community had no development process. This was in
+				part because the development of Zope 2 was controlled by Digital Creations
+				(now Zope Corporation) and testing-automation tools were not available at
+				that time. Also, Zope 2 lacked the necessary documentation. All this lead to
+				an accepted misuse of the API and often low quality software.</p>
+			<p>With the advent of Zope 3, procedures were set in place to ensure the quality
+				and documentation of the code. Guided by eXtreme Programming practices,
+				sprints were organized to educate the Zope community about the project and
+				have high-productivity development time, proposals were introduced to
+				ensure the proper discussion of a feature before implementation, and tests
+				were required to ensure the overall quality of the code base. This
+				development process is called the Zope Community Process.</p>
+			<p>While the Zope Community Process provides an excellent method for
+				developing community-driven projects like Zope 3, it (a) does not show how
+				to produce simple high-quality packages, (b) measure the quality, and (c)
+				communicate the state of a package to outsiders. The goal of the Zope
+				Software Certification Program (ZSCP) is (a) to clearly define the levels
+				of software quality using a metric system and (b) to communicate this
+				information to our users, customers, and prospective customers.</p>
+		</div>
+		<div class="section">
+			<h4><a id="audience" name="audience">2.2. Audience</a></h4>
+			<p>The audience for the Zope Software Certification Program (ZSCP) is
+				two-fold. On the one hand, it is desired to provide the developer with an
+				overview of quality packages, on the other hand, decision makers need to be
+				shown how seriously the Zope community takes the assurance of software
+				quality.</p>
+			<p>One common complain the Zope developers received from the Zope community was
+				about the non-existent organization of Zope's third party products.
+				Everybody can upload their product to zope.org, without any evaluation of
+				quality, version compatibility or documentation. The goal of the ZSCP and
+				its Web site is to provide a measurement of quality (see section 2.4.)
+				measured as much as possible by automated tools and by minimal developer
+				verification. Also, packages listed in the ZSCP <em>must</em> provide a
+				set of meta-data that links the user to various online resources. (See
+				section 2.5.)</p>
+			<p>The message to the decision maker varies slightly based on his/her
+				familiarity with Open Source and Zope in particular. To the uninitiated
+				decision maker the ZSCP should send a message of technical and economic
+				professionalism. The ZSCP is a viable resource to understand the software
+				quality requirements and the process that enforces this quality. For more
+				technically versed people, it also provides a great overview of available
+				features through add-on packages. For the uninitiated decision maker it is
+				also very important to know that the Zope Foundation, a
+				company-independent institution, fully supports this program and its
+				process.</p>
+			<p>The initiated decision maker already believes in Open Source and Zope, but
+				might be skeptical about other third-party packages. For him/her, the ZSCP
+				provides not only a searchable list of quality packages, but also
+				guidelines of what to expect of his/her developers in terms of software
+				quality. Again, the support of the Zope Foundation is reassuring to him that
+				the program is legitimate.</p>
+		</div>
+		<div class="section">
+			<h4><a id="certification-levels" name="certification-levels">2.3.
+				Certification Levels</a></h4>
+			<p>There are 4 distinct levels for certification. They are defined in the list
+				below. The specific list of quality requirements for each level is provided
+				in section 2.4.</p>
+			<ul>
+				<li>
+					<p class="first">ZSCP Listed</p>
+					<p>Getting a package listed in the ZSCP system is the first step to
+						obtain certification. Packages listed on the ZSCP Web site must
+						adhere to the common package layout[1] and are subject to the
+						automated testing as well as the quality assurance process.
+						Listed packages must provide a full set of meta-data (as
+						applicable) as defined in section 2.5.</p>
+					<p>Packages at this level will fulfill roughly the same purpose as
+						packages in the CMF/Plone Collective. It is one way to make a
+						package publicly available and give it some exposure. At this
+						level, the developer will not have to comply with many of the
+						quality metrics. See section 2.4.</p>
+					<table class="docutils footnote" frame="void" id="id1"
+						rules="none">
+						<colgroup>
+							<col class="label"/>
+							<col/>
+						</colgroup>
+						<tbody valign="top">
+							<tr>
+								<td class="label"><a name="id1">[1]</a>
+								</td>
+								<td>
+									<p class="first last">The common package layout
+										is defined in section 3.2.</p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</li>
+				<li>
+					<p class="first">ZSCP Level 1 Certified</p>
+					<p>To be level 1 certified, the package must fulfill the requirements
+						of listed packages. Additionally, it has to provide
+						documentation, tests (in doctest format), conform to the package
+						and coding style guidelines, and provide migration scripts, if
+						applicable.</p>
+					<p>At this level, packages are considered fit for the Zope 3 core. The
+						core developers reserve the right to provide or require small
+						improvements.</p>
+					<p>At this stage one may identify the package as &quot;ZSCP Level 1
+						Certified&quot; in informal or promotional material.</p>
+				</li>
+				<li>
+					<p class="first">ZSCP Level 2 Certified</p>
+					<p>To be level 2 certified, the package must fulfill the requirements
+						of level 1 certified packages. Additionally, it has to be
+						demonstrated that the package integrates well into the Zope
+						software stack by providing documentation in alternative
+						sources (Web sites/API doc), provide standard installation
+						methods and demonstrate the correct functioning of the migration
+						scripts.</p>
+					<p>At this stage one may identify the package as &quot;ZSCP Level 2
+						Certified&quot; in informal or promotional material.</p>
+				</li>
+				<li>
+					<p class="first">ZSCP Level 3 Certified</p>
+					<p>To be level 3 certified, the package must fulfill the requirements
+						of level 2 certified packages. Additionally, it has to be
+						demonstrated that the package has been successfully released
+						during several Zope release cycles, has an active development
+						community and an up-to-date support structure and
+						resources.</p>
+					<p>At this stage one may identify the package as &quot;ZSCP Level 3
+						Certified&quot; in informal or promotional material.</p>
+				</li>
+			</ul>
+		</div>
+		<div class="section">
+			<h4><a id="quality-metrics" name="quality-metrics">2.4. Quality
+				Metrics</a></h4>
+			<p>The certification is meaningless without the precise definition of tasks
+				that have to be accomplished for each certification level. This section
+				provides a list of concrete items that have to be fulfilled for each
+				certification level.</p>
+			<p>Legend:</p>
+			<ul class="simple">
+				<li>x: A metric is required for the certification level.</li>
+				<li>A: The metric check can be conducted (a)utomatically.</li>
+				<li>Q: The metric check can be conducted (q)uickly by human
+					inspection.</li>
+				<li>D: The metric check would be (d)ifficult to conduct by human
+					inspection.</li>
+			</ul>
+			<table border="1" class="docutils">
+				<colgroup>
+					<col width="58%"/>
+					<col width="10%"/>
+					<col width="8%"/>
+					<col width="8%"/>
+					<col width="8%"/>
+					<col width="8%"/>
+				</colgroup>
+				<thead valign="bottom">
+					<tr>
+						<th class="head">Metric</th>
+						<th class="head">Check</th>
+						<th class="head">List</th>
+						<th class="head">Le 1</th>
+						<th class="head">Le 2</th>
+						<th class="head">Le 3</th>
+					</tr>
+				</thead>
+				<tbody valign="top">
+					<tr>
+						<td>Package Meta-Information Verification</td>
+						<td>A</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Test Coverage</td>
+						<td>A</td>
+						<td>0%</td>
+						<td>&gt;90%</td>
+						<td>&gt;95%</td>
+						<td>&gt;95%</td>
+					</tr>
+					<tr>
+						<td>Automated Test Verification</td>
+						<td>A</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Documentation-based Testing</td>
+						<td>A,Q</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Supported Platforms Test Verification</td>
+						<td>A,Q</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Minimal Documentation</td>
+						<td>A,Q</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Complete Documentation</td>
+						<td>Q</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Extensive Documentation</td>
+						<td>D</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Documentation available online</td>
+						<td>Q</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>APIDOC-integrated Documentation</td>
+						<td>Q</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Common package structure</td>
+						<td>A,Q</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Zope Coding Style Guide compliance</td>
+						<td>A,D</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Conform to user interface guidelines</td>
+						<td>D</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Complete dependency list</td>
+						<td>A</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Standard installation method</td>
+						<td>A,Q</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Release(s) with version number</td>
+						<td>A,Q</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Up-to-date homepage</td>
+						<td>D</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Active support mailing list</td>
+						<td>D</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Released for 3+ Zope release cycles</td>
+						<td>D</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Releases state required Zope version</td>
+						<td>A,Q</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Multiple (3) Active Maintainers</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Data migration claimed</td>
+						<td>Q</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Data migration auto-tested</td>
+						<td>A</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Data migration verified</td>
+						<td>D</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>x</td>
+					</tr>
+					<tr>
+						<td>Data migration well-tested</td>
+						<td>D</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>&nbsp;
+						</td>
+						<td>[1]</td>
+					</tr>
+				</tbody>
+			</table>
+			<table class="docutils footnote" frame="void" id="id2" rules="none">
+				<colgroup>
+					<col class="label"/>
+					<col/>
+				</colgroup>
+				<tbody valign="top">
+					<tr>
+						<td class="label"><a name="id2">[1]</a>
+						</td>
+						<td>
+							<div class="first system-message">
+								<p class="system-message-title">System Message:
+									WARNING/2 (<tt class="docutils">
+									&lt;string&gt;</tt>, line 335); <em><a
+										href="#id2">backlink</a></em></p>
+								Duplicate explicit target name: &quot;1&quot;.</div>
+							<p class="last">To verify this metric would require an
+								amount of resources that the Zope Foundation and
+								community cannot provide. This metric might be removed,
+								if the resources cannot be found over a long period of
+								time.</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="section">
+				<h5><a id="package-meta-information"
+						name="package-meta-information">2.4.1. Package
+					Meta-Information</a></h5>
+				<p>The package must at least provide the required fields of the
+					package-meta-information as specified in section 2.5. The package
+					may also provide any of the optional fields and even fields that do not
+					belong to the specification at all. Repositories <em>may</em> ignore
+					unspecified fields.</p>
+				<p>Since this <em>must</em> be an automated task, the data <em>must</em>
+					conform to the repositories package meta-information format.</p>
+			</div>
+			<div class="section">
+				<h5><a id="test-coverage" name="test-coverage">2.4.2. Test
+					Coverage</a></h5>
+				<p>Test coverage tools track the lines of the code that have been accessed
+					during a test run. The percentage of test coverage specified for each
+					certification level, represents the amount of tracked lines with
+					respect to the total amount of lines written.</p>
+			</div>
+			<div class="section">
+				<h5><a id="automated-test-verification"
+						name="automated-test-verification">2.4.3. Automated Test
+					Verification</a></h5>
+				<p>Tests <em>must</em> be runnable via a standard test runner. The
+					repository of the package <em>must</em> provide a method to run the
+					tests after some change and report it to the author.</p>
+			</div>
+			<div class="section">
+				<h5><a id="documentation-based-testing"
+						name="documentation-based-testing">2.4.4.
+					Documentation-based Testing</a></h5>
+				<p>All tests <em>must</em> be written in form of documentation. The tool to
+					implement the tests is not specified, but the tests must be part of the
+					automated test verification (see section 2.4.4). In some cases it is
+					not possible or practical to write documentation-based tests; in
+					those cases developers <em>may</em> choose any testing framework as
+					long as integrates in the automated test verification. The developer
+					<em>must</em> provide a reason for not using documentation-based
+					tests. Acceptable reasons include legacy code/tests and tests that do
+					not verify code.</p>
+			</div>
+			<div class="section">
+				<h5><a id="platform-test-verification"
+						name="platform-test-verification">2.4.5. Platform Test
+					Verification</a></h5>
+				<p>All tests for a package <em>must</em> pass for all platforms the package
+					supports. The list of supported platform is part of the package
+					meta-information (see section 2.5.9). If <cite>All</cite> (meaning
+					all platforms) has been specified, the tests must be verified on
+					Windows, MacOS X, and Unix/Linux.</p>
+			</div>
+			<div class="section">
+				<h5><a id="minimal-documentation" name="minimal-documentation">
+					2.4.6. Minimal Documentation</a></h5>
+				<p>The package <em>must</em> provide a basic overview of the package's API
+					in a <tt class="docutils literal">
+					<span class="pre">README.txt</span></tt>. It is <em>not</em>
+					required to cover all edge cases. The documentation <em>must</em> be a
+					set of documentation tests.</p>
+			</div>
+			<div class="section">
+				<h5><a id="complete-documentation" name="complete-documentation">
+					2.4.7. Complete Documentation</a></h5>
+				<p>The documentation <em>must</em> cover all of the API, including edge
+					cases. The documentation <em>may</em> be distributed over several
+					documents. The documentation <em>must</em> be a set of documentation
+					tests.</p>
+			</div>
+			<div class="section">
+				<h5><a id="extensive-documentation"
+						name="extensive-documentation">2.4.8. Extensive
+					Documentation</a></h5>
+				<p>Documentation at this level might come from many different sources,
+					such as Web sites, mailing list archives, documentation tests, and
+					code. All functional documentation <em>must</em> be a set of
+					documentation tests.</p>
+			</div>
+			<div class="section">
+				<h5><a id="documentation-available-online"
+						name="documentation-available-online">2.4.9.
+					Documentation available online</a></h5>
+				<p>The documentation for the package <em>must</em> be provided through a
+					Web site, which can be in the form of a home page or automatically
+					generated project page. For small packages it is sufficient to make the
+					documentation available via a Web site of the repository.</p>
+			</div>
+			<div class="section">
+				<h5><a id="apidoc-integrated-documentation"
+						name="apidoc-integrated-documentation">2.4.10.
+					APIDOC-integrated Documentation</a></h5>
+				<p>All the documentation that is distributed with the package
+					<em>must</em> be available in the APIDOC documentation modules. This
+					includes the following items: * Package is registered with the source
+					browser. * Documentation tests are compiled as part of the APIDOC
+					&quot;book&quot; module.</p>
+			</div>
+			<div class="section">
+				<h5><a id="common-package-structure"
+						name="common-package-structure">2.4.11. Common package
+					structure</a></h5>
+				<p>The package <em>muat</em> follow the package structure layout
+					required by the repository. Inside the package code itself, Zope's
+					coding styles of a package layout <em>must</em> be followed.</p>
+			</div>
+			<div class="section">
+				<h5><a id="zope-coding-style-guide-compliance"
+						name="zope-coding-style-guide-compliance">2.4.12. Zope
+					Coding Style Guide compliance</a></h5>
+				<p>The Zope coding style guide <em>must</em> be followed. It can be found
+					at:</p>
+				<p><a class="reference"
+						href="http://dev.zope.org/Zope3/CodingStyle">
+					http://dev.zope.org/Zope3/CodingStyle</a></p>
+				<p>Additional conventions <em>may</em> be applicable, but are
+					communicated to the package author(s).</p>
+			</div>
+			<div class="section">
+				<h5><a id="conform-to-user-interface-guidelines"
+						name="conform-to-user-interface-guidelines">2.4.13.
+					Conform to user interface guidelines</a></h5>
+				<p>If the package provides user interface components that are developed as
+					part of a larger framework, the user interface code <em>must</em>
+					conform to any user interface guidelines provided by this
+					framework.</p>
+			</div>
+			<div class="section">
+				<h5><a id="complete-dependency-list"
+						name="complete-dependency-list">2.4.14. Complete
+					dependency list</a></h5>
+				<p>The package <em>must</em> provide a list of all other Python-package
+					dependencies. Often packaging software requires a list of
+					dependencies; this list is be sufficient, if it fulfills the
+					repository layout and Zope coding style guidelines.</p>
+			</div>
+			<div class="section">
+				<h5><a id="standard-installation-method"
+						name="standard-installation-method">2.4.15. Standard
+					installation method</a></h5>
+				<p>The package <em>must</em> be installable via the standard
+					installation method accepted by Zope. It is part of the package release
+					cycle to conform to the latest installation method.</p>
+			</div>
+			<div class="section">
+				<h5><a id="release-s-with-version-number"
+						name="release-s-with-version-number">2.4.16. Release(s)
+					with version number</a></h5>
+				<p>The package <em>must</em> be released regaularly and have version
+					numbers associated with each release.</p>
+			</div>
+			<div class="section">
+				<h5><a id="up-to-date-homepage" name="up-to-date-homepage">2.4.17.
+					Up-to-date homepage</a></h5>
+				<p>The package <em>must</em> have an up-to-date homepage targetted at
+					developers. Other audiences <em>may</em> also be addressed. If a
+					package is very small, an auto-generated or even the repository Web
+					site <em>may</em> be sufficient.</p>
+			</div>
+			<div class="section">
+				<h5><a id="active-support-mailing-list"
+						name="active-support-mailing-list">2.4.18. Active support
+					mailing list</a></h5>
+				<p>The package <em>must</em> provide a mailing list for developers using
+					the package. Activeness will be measured by response time and quality
+					to questions. For small packages it*may* be sufficient to use one of the
+					general Zope mailing lists.</p>
+			</div>
+			<div class="section">
+				<h5><a id="released-for-3-zope-release-cycles"
+						name="released-for-3-zope-release-cycles">2.4.19.
+					Released for 3+ Zope release cycles</a></h5>
+				<p>The package <em>must</em> be released for at least 3 Zope release
+					cycles. While strongly encouraged, it is <em>not</em> required that
+					the package must have the same release cycle as Zope.</p>
+			</div>
+			<div class="section">
+				<h5><a id="releases-state-required-zope-version"
+						name="releases-state-required-zope-version">2.4.20.
+					Releases state required Zope version</a></h5>
+				<p>The release of the package <em>must</em> specify the required Zope
+					version. See section 2.7 for details on release meta-data, including
+					dependency specifications.</p>
+			</div>
+			<div class="section">
+				<h5><a id="multiple-3-active-maintainers"
+						name="multiple-3-active-maintainers">2.4.21. Multiple (3)
+					Active Maintainers</a></h5>
+				<p>The package <em>must</em> have at least three active maintainers. At
+					least one active maintainer <em>must</em> always be reachable by
+					certification managers.</p>
+			</div>
+			<div class="section">
+				<h5><a id="data-migration-claimed" name="data-migration-claimed">
+					2.4.22. Data migration claimed</a></h5>
+				<p>If the package manages any data, it <em>must</em> provide an automated
+					data migration mechanism. If no automated software can be produced,
+					the package author(s) <em>must</em> provide clear instructions
+					about migrating the data. In exeptional cases an argument why data
+					migration cannot be provided <em>may</em> be accepted. Migration
+					scripts <em>must not</em> be provided, if no data migration is
+					necessary.</p>
+			</div>
+			<div class="section">
+				<h5><a id="data-migration-auto-tested"
+						name="data-migration-auto-tested">2.4.23. Data migration
+					auto-tested</a></h5>
+				<p>Additionally to the requirements in section 2.4.22, the data migration
+					scripts <em>must</em> be tested using the standard test runner. If the
+					migration script tests take an uncommonly long time to run, they
+					<em>may</em> be moved to test level 2.</p>
+			</div>
+			<div class="section">
+				<h5><a id="data-migration-verified"
+						name="data-migration-verified">2.4.24. Data migration
+					verified</a></h5>
+				<p>The requirements of section 2.4.23 <em>must</em> be fulfilled. In
+					addition, with the help of the package author(s), the migration
+					manager verified that the data migration is complete and
+					functional.</p>
+			</div>
+			<div class="section">
+				<h5><a id="data-migration-well-tested"
+						name="data-migration-well-tested">2.4.25. Data migration
+					well-tested</a></h5>
+				<p>In addition to the fulfillment of the requirements listed in 2.4.24, the
+					data migration scripts <em>must</em> be tested against
+					production-grade data of at least 2 projects using the package.</p>
+			</div>
+		</div>
+		<div class="section">
+			<h4><a id="id3" name="id3">2.5. Package Meta-Information</a></h4>
+			<p>In order to quickly provide a developer with contextual information about a
+				given package, it is necessary to clearly define the meta-data that
+				<em>must</em> be available about a package. This section defines and
+				explains each item.</p>
+			<p>This data is compatible with the Python Package Index (PyPI).</p>
+			<p>The format of the meta-data fields is as follows:</p>
+			<blockquote>
+				<div class="system-message">
+					<p class="system-message-title">System Message: SEVERE/4 (<tt
+							class="docutils">&lt;string&gt;</tt>, line 547)</p>
+					<p>Unexpected section title.</p>
+					<pre class="literal-block">
+Sec#. Name
+++++++++++
+</pre>
+				</div>
+				<p>(Data Type, Multiplicity, Necessity)</p>
+				<p>Field Description</p>
+				<p>Example: example value</p>
+			</blockquote>
+			<p>The following data description is known as the <em>Package Meta-Data
+				Version 1.0</em>.</p>
+			<div class="section">
+				<h5><a id="package-name" name="package-name">2.5.1.
+					Package-name</a></h5>
+				<p>(Bytes Line, single, required)</p>
+				<p>The dotted Python path of the package.</p>
+				<p>Example: <tt class="docutils literal">
+					<span class="pre">zope.sample</span></tt></p>
+			</div>
+			<div class="section">
+				<h5><a id="name" name="name">2.5.2. Name</a></h5>
+				<p>(Text Line, single, required)</p>
+				<p>The commonly used name of the package.</p>
+				<p>Example: Sample</p>
+			</div>
+			<div class="section">
+				<h5><a id="summary" name="summary">2.5.3. Summary</a></h5>
+				<p>(Text Line, single, required)</p>
+				<p>A short description or summary of the package. It is also often
+					interpreted as the title.</p>
+				<p>Example: The Zope Sample Package</p>
+			</div>
+			<div class="section">
+				<h5><a id="description" name="description">2.5.4. Description</a>
+					</h5>
+				<p>(Text, single, optional)</p>
+				<p>A detailed description of the package's functionality. While it should
+					contain some detail, it should not duplicate the documentation of the
+					README.txt file.</p>
+				<dl class="docutils">
+					<dt>Example: The sample package for Zope does provide some sample
+						features that</dt>
+					<dd>can be useful for developers to learn about sample data
+						development. It does so by providing ...</dd>
+				</dl>
+			</div>
+			<div class="section">
+				<h5><a id="home-page" name="home-page">2.5.5. Home-page</a></h5>
+				<p>(URL, single, optional)</p>
+				<p>A URL to the homepage of the package.</p>
+				<p>Example: <a class="reference"
+						href="http://www.zope.org/Products/sample">
+					http://www.zope.org/Products/sample</a></p>
+			</div>
+			<div class="section">
+				<h5><a id="author" name="author">2.5.6. Author</a></h5>
+				<p>(Text Line, multiple, required)</p>
+				<p>The name of the author of the package. The value should <em>not</em>
+					contain the author's E-mail address. This field can be specified
+					multiple times.</p>
+				<p>Example: John Doe</p>
+			</div>
+			<div class="section">
+				<h5><a id="author-email" name="author-email">2.5.7.
+					Author-email</a></h5>
+				<p>(E-mail Address, multiple, required)</p>
+				<p>The E-mail of the author of the package. This field can be specified
+					multiple times. Any entry X of the author field is matched with entry X of
+					the author email field. If this field is specified the length of the
+					author field list must match the length of the author email field
+					list.</p>
+				<p>Example: <a class="reference" href="mailto:john&#64;doe.com">
+					john&#64;doe.com</a></p>
+			</div>
+			<div class="section">
+				<h5><a id="license" name="license">2.5.8. License</a></h5>
+				<p>(Text Line, multiple, required)</p>
+				<p>The software license of the package. This field can specified multiple
+					times, to support dual-licensing.</p>
+				<p>Example: ZPL 2.1</p>
+			</div>
+			<div class="section">
+				<h5><a id="platform" name="platform">2.5.9. Platform</a></h5>
+				<p>(Text Line, multiple, required)</p>
+				<p>The operating system/platform the package is known to run on. This field
+					can be specified multiple times. <tt class="docutils literal">
+					<span class="pre">All</span></tt> may be used, if the package is
+					available on all platforms Python is running on, i.e. the package is
+					pure Python code.</p>
+				<p>Example: Unix</p>
+			</div>
+			<div class="section">
+				<h5><a id="classifier" name="classifier">2.5.10. Classifier</a>
+					</h5>
+				<p>(Classifier Text Line, multiple, optional)</p>
+				<p>A classification entry identifying the package. This field can be
+					specified multiple times.</p>
+				<dl class="docutils">
+					<dt>Example: Programming Language :: Python</dt>
+					<dd>Topic :: Internet :: WWW/HTTP Topic :: Internet :: WWW/HTTP ::
+						Dynamic Content Topic :: Software Development :: Libraries ::
+						Python Modules</dd>
+				</dl>
+			</div>
+			<div class="section">
+				<h5><a id="developers-mailinglist" name="developers-mailinglist">
+					2.5.11. Developers-mailinglist</a></h5>
+				<p>(E-mail Address, single, optional)</p>
+				<p>The E-mail address of the developer mailing list.</p>
+				<p>Example: <a class="reference"
+						href="mailto:sample-dev&#64;doe.com">
+					sample-dev&#64;doe.com</a></p>
+			</div>
+			<div class="section">
+				<h5><a id="users-mailinglist" name="users-mailinglist">2.5.12.
+					Users-mailinglist</a></h5>
+				<p>(E-mail Address, single, optional)</p>
+				<p>The E-mail address of the users mailing list.</p>
+				<p>Example: <a class="reference"
+						href="mailto:sample-users&#64;doe.com">
+					sample-users&#64;doe.com</a></p>
+			</div>
+			<div class="section">
+				<h5><a id="issue-tracker" name="issue-tracker">2.5.13.
+					Issue-tracker</a></h5>
+				<p>(URL, single, optional)</p>
+				<p>A URL to the issue tracker of the package, where new
+					issues/bugs/requests can be reported.</p>
+				<p>Example: <a class="reference"
+						href="http://www.zope.org/trackers/sample/">
+					http://www.zope.org/trackers/sample/</a></p>
+			</div>
+			<div class="section">
+				<h5><a id="repository-location" name="repository-location">2.5.14.
+					Repository-location</a></h5>
+				<p>(URL, single, optional)</p>
+				<p>The URL to the repository. The URL should be usable to actually check out
+					the package.</p>
+				<p>Example: svn://svn.zope.org/repos/main/sample</p>
+			</div>
+			<div class="section">
+				<h5><a id="repository-web-location"
+						name="repository-web-location">2.5.15.
+					Repository-web-location</a></h5>
+				<p>(URL, single, optional)</p>
+				<p>The URL to the repository's browsable HTML UI.</p>
+				<p>Example: <a class="reference" href="http://svn.zope.org/sample">
+					http://svn.zope.org/sample</a></p>
+			</div>
+			<div class="section">
+				<h5><a id="certification-level" name="certification-level">2.5.16.
+					Certification-level</a></h5>
+				<p>(Choice, single, optional)</p>
+				<p>Describes the certification level of the package. The value can be one of
+					the following five: None, listed, level1, level2, level3</p>
+				<p>Example: level1</p>
+			</div>
+			<div class="section">
+				<h5><a id="certification-date" name="certification-date">2.5.17.
+					Certification-date</a></h5>
+				<p>(Date, single, optional)</p>
+				<p>The date at which the certification was received. The date should be in
+					the format <tt class="docutils literal">
+					<span class="pre">yyyy-mm-dd</span></tt>.</p>
+				<p>Example: 2006-02-28</p>
+			</div>
+			<div class="section">
+				<h5><a id="metadata-version" name="metadata-version">2.5.18.
+					Metadata-Version</a></h5>
+				<p>(Text Line, single, required)</p>
+				<p>This is the version number of this package meta-data.</p>
+				<p>Example: 1.1</p>
+			</div>
+		</div>
+		<div class="section">
+			<h4><a id="package-certification-data"
+					name="package-certification-data">2.6. Package Certification
+				Data</a></h4>
+			<p>In addition to the package's meta-information, certified packages must
+				also track their certification history. This section describes to
+				information that needs to be stored.</p>
+			<p>The following data description is known as the <em>Package Certification
+				Data Version 1.0</em>.</p>
+			<p>Certifications can be granted and revoked. Those activities are known as
+				<em>Certification Actions</em>. You can also receive a warning. For each
+				certification action the following pieces of information must be
+				recorded. The same sub-section layout as in section 2.5. applies.</p>
+			<div class="section">
+				<h5><a id="action" name="action">2.6.1. Action</a></h5>
+				<p>(Choice, single, required)</p>
+				<p>The action describes whether a certification was granted or revoked.
+					Upon violations (as defined in section 2.8), a certification manager
+					can also issue a warning.</p>
+				<p>Allowed Values: grant, revoke, warn Example: granted</p>
+			</div>
+			<div class="section">
+				<h5><a id="source-level" name="source-level">2.6.2.
+					Source-level</a></h5>
+				<p>(Choice, single, required)</p>
+				<p>This field describes the original certification level before this
+					certification action was executed.</p>
+				<p>Allowed Values: none, listed, level1, level2, level3 Example:
+					listed</p>
+			</div>
+			<div class="section">
+				<h5><a id="target-level" name="target-level">2.6.3.
+					Target-level</a></h5>
+				<p>(Choice, single, required)</p>
+				<p>This field describes the final certification level after this
+					certification action was executed.</p>
+				<p>Allowed Values: none, listed, level1, level2, level3 Example:
+					level1</p>
+			</div>
+			<div class="section">
+				<h5><a id="date" name="date">2.6.4. Date</a></h5>
+				<p>(Date, single, required)</p>
+				<p>The date on which the certification action was executed. The field
+					should be of the format <tt class="docutils literal">
+					<span class="pre">yyyy-mm-dd</span></tt>.</p>
+				<p>Example: 2006-02-11</p>
+			</div>
+			<div class="section">
+				<h5><a id="certification-manager" name="certification-manager">
+					2.6.5. Certification-manager</a></h5>
+				<p>(Text Line, single, required)</p>
+				<p>This field lists the person that executed the certification action. It
+					is the full name and E-mail address of the person.</p>
+				<p>Example: John Doe &lt;<a class="reference"
+						href="mailto:john&#64;doe.com">john&#64;doe.com</a>
+					&gt;</p>
+			</div>
+			<div class="section">
+				<h5><a id="comments" name="comments">2.6.6. Comments</a></h5>
+				<p>(Text, single, optional)</p>
+				<p>This field can contain arbitrary comments about the certification
+					action.</p>
+				<dl class="docutils">
+					<dt>Example: The authors of the Sample package have cooperated well by
+						swiftly</dt>
+					<dd>providing all necessary information required for the
+						certification to be granted.</dd>
+				</dl>
+			</div>
+		</div>
+		<div class="section">
+			<h4><a id="package-release-data" name="package-release-data">2.7.
+				Package Release Data</a></h4>
+			<p>Finally, all the releases of certified packages <em>must</em> be tracked.
+				This section describes the data that must be recorded for each release. The
+				same sub-section layout as in section 2.5. applies.</p>
+			<p>The following data description is known as the <em>Package Release Data
+				Version 1.0</em>.</p>
+			<div class="section">
+				<h5><a id="id4" name="id4">2.7.1. Name</a></h5>
+				<p>(Text Line, single, required)</p>
+				<p>The name under which the package will be known for this release. This
+					field <em>may</em> be equivalent to the name field described in
+					section 2.5.1.</p>
+				<p>Example: Sample Package</p>
+			</div>
+			<div class="section">
+				<h5><a id="version" name="version">2.7.2. Version</a></h5>
+				<p>(Text Line, single, required)</p>
+				<p>This field describes the version number of the release.</p>
+				<p>Example: 0.9.0b2</p>
+			</div>
+			<div class="section">
+				<h5><a id="codename" name="codename">2.7.3. Codename</a></h5>
+				<p>(Text Line, single, optional)</p>
+				<p>The code name of the release.</p>
+				<p>Example: CoolName</p>
+			</div>
+			<div class="section">
+				<h5><a id="id5" name="id5">2.7.4. Date</a></h5>
+				<p>(Date, single, required)</p>
+				<p>The date on which the release was made. The date should be in the form <tt
+						class="docutils literal">
+					<span class="pre">yyyy-mm-dd</span></tt>.</p>
+				<p>Example: 2006-02-01</p>
+			</div>
+			<div class="section">
+				<h5><a id="certification" name="certification">2.7.5.
+					Certification</a></h5>
+				<p>(Choice, single, required)</p>
+				<p>The certification level of the package at the date of the release.</p>
+				<p>Allowed Values: none, listed, level1, level2, level3 Example:
+					level1</p>
+			</div>
+			<div class="section">
+				<h5><a id="package" name="package">2.7.6. Package</a></h5>
+				<p>(URL, single, required)</p>
+				<p>The URL to the installation package file.</p>
+				<p>Example: <a class="reference"
+						href="http://www.zope.org/Products/SamplePackage/SamplePackage-0.9.0.tgz">
+					http://www.zope.org/Products/SamplePackage/SamplePackage-0.9.0.tgz</a>
+					</p>
+				<p>2.7.7. Source +++++++++++++x</p>
+				<p>(URL, single, optional)</p>
+				<p>The URL to the repository location. It should be possible to use this URL
+					to make a checkout.</p>
+				<p>Example: svn://svn.zope.org/zf.sample/tags/0.9.0b2</p>
+			</div>
+			<div class="section">
+				<h5><a id="dependency" name="dependency">2.7.8. Dependency</a></h5>
+				<p>(Text Line, multiple, required)</p>
+				<p>A dependency to another package. The dependency must contain the full
+					name of the package and the version number. One entry of this field
+					<em>must</em> be specified for each dependency.</p>
+				<p>Example: Zope 3.3</p>
+			</div>
+			<div class="section">
+				<h5><a id="announcement" name="announcement">2.7.9.
+					Announcement</a></h5>
+				<p>(URL, single, optional)</p>
+				<p>A link to the announcement of the release.</p>
+				<p>Example: <a class="reference"
+						href="http://www.zope.org/Products/SamplePackage090Released">
+					http://www.zope.org/Products/SamplePackage090Released</a>
+					</p>
+			</div>
+			<div class="section">
+				<h5><a id="release-manager" name="release-manager">2.7.10.
+					Release-manager</a></h5>
+				<p>(Text Line, single, required)</p>
+				<p>The full name and E-mail address of the release manager. Both sub-fields
+					should be separately be available.</p>
+				<p>Example: John Doe &lt;<a class="reference"
+						href="mailto:john&#64;doe.com">john&#64;doe.com</a>
+					&gt;</p>
+			</div>
+			<div class="section">
+				<h5><a id="press-contact" name="press-contact">2.7.11.
+					Press-contact</a></h5>
+				<p>(Text Line, single, required)</p>
+				<p>The full name and E-mail address of the press contact. Both sub-fields
+					should be separately be available.</p>
+				<p>Example: John Doe &lt;<a class="reference"
+						href="mailto:john&#64;doe.com">john&#64;doe.com</a>
+					&gt;</p>
+			</div>
+		</div>
+		<div class="section">
+			<h4><a id="the-process" name="the-process">2.8. The Process</a></h4>
+			<p>The main purpose of this section is to define the workflow that a package
+				undergoes to change its certification level within the ZSCP. A secondary
+				goal is to provide a roadmap for packages to move upstream into the Zope or
+				even Python core, if applicable. With this in mind, it should be easy for the
+				Zope users to find and discover packages, including their meta,
+				certification and release data. Also, receiving a certification level
+				should be perceived as reward for the hard work being done; an
+				accomplishment the package authors should be proud of and be able to market
+				it accordingly.</p>
+			<p>The certification process is conducted by the Zope Foundation with the tight
+				collaboration of the &quot;core developers&quot;. For lack of any other
+				definition, core developers are defined as developers regularly
+				contributing to the Zope core components. They are often informally
+				identified by the community. The developers conducting the
+				certifications are known as the <em>certification managers</em>.</p>
+			<p>As defined in section 2.3., the ZSCP defines four distinct package
+				certification levels. Achieving the first status of being a listed package
+				is an automated process. Once the authors fulfill the package layout
+				guidelines, have provided all required package meta-data and are hooked
+				into the automated test runner, then listed package status will be granted
+				to them from the system.</p>
+			<p>For the other three certification levels, a certification manager
+				<em>must</em> grant the certification level. The authors of a package have
+				to demonstrate that they have fulfilled the requirements for the desired
+				level. The fulfillment of the requirements is checked automatically via
+				some tools, like the automated test runner and coverage checker, and by
+				inspection of the certification manager.</p>
+			<p>Both, the requirements and process, are developed in a way that it should be
+				also simple and fast to receive certification level 1 and level 2. The
+				turn-around time of a request for being granted a certification level 1 or
+				level 2 should be about 1 day.</p>
+			<p>The certification of level 3 will usually take some more time, since it
+				requires the certification manager to inspect the code in much more detail.
+				However, the certification time should not exceed a couple of weeks.</p>
+			<p>Overall, it is very important for the process to have as little overhead as
+				possible and make the certification process a quick, easy and fun
+				experience.</p>
+			<p>When packages are not maintained anymore, they may lose their
+				certification. If a package is not updated for a given Zope release cycle
+				once, it receives a warning. If the package is not updated for a second
+				release cycle in a row, it will lose its certification and will be demoted to
+				the next appropriate level. This will commonly mean that it becomes a
+				&quot;listed&quot; package again. The exception is, of course, when a
+				package has no changes since the last version. In those cases it is simply
+				enough to verify that the package still works and to make an entry in the <tt
+					class="docutils literal">
+				<span class="pre">CHANGES.txt</span></tt> file to that effect.</p>
+			<p>When any of the requirements listed in this document change, then the
+				packages have one release cycle to upgrade to the new requirements. After
+				one release cycle, the package receives a warning. If the requirements are
+				not upgraded for another release cycle, the package will loose its
+				certification and will be demoted to the next appropriate level.</p>
+			<p>While certified packages have to fulfill the requirements of the quality
+				metrics, in return there will also be some technical benefits. Packages
+				that are part of the ZSCP will be automatically tested, have coverage
+				reports created, and be listed on the ZSCP Web site.</p>
+			<p>There is <em>no</em> fee associated with the certification. One of the goals
+				of the program is to encourage developers to write better code and provide
+				them with ways to measure it. The certification is a way of saying
+				&quot;thank you&quot;. And for the community it is overall better to have as
+				many certified packages as possible.</p>
+		</div>
+	</div>
+	  	  	    	  
+
+	<div class="section">
+		<h3 class="itemThree itemHeading"><a id="the-common-repository" name="the-common-repository">3. The Common
+			Repository</a></h3>
+		<p>This section describes <em>one</em> open community-repository that
+			implements the ZSCP process.</p>
+		<div class="section">
+			<h4><a id="definition" name="definition">3.1. Definition</a></h4>
+			<p>The Common Repository is a Zope Foundation SVN repository for third-party
+				Zope packages, which are useful for a wide variety of applications, but that
+				do not fit into the Zope core distribution. Common examples for those
+				packages include advanced Javascript-based widgets, alternative
+				templating systems, specific content types, etc.</p>
+			<p>The existing <tt class="docutils literal">
+				<span class="pre">svn://svn.zope.org/repos/main</span></tt> will
+				serve as the Common Repository. Every package in the common repository
+				<em>must</em> conform at least to the layout as described in section 3.2. If
+				a package wishes to participate in the ZSCP, then it must also conform to the
+				program's process. The implementation details of the ZSCP process are
+				provided in the sections below.</p>
+			<p>The Common Repository is only <em>one</em> implementation of the ZSCP.
+				While the Common Repository implements the ZSCP guidelines and suggested
+				automation tools, the ZSCP process itself does <em>not</em> require the
+				Common Repository.</p>
+			<p>Unless otherwise stated, certified packages will automatically be
+				released with every new Zope release. This, on the other hand, will greatly
+				simplify the dependency tree for Common Repository based packages.</p>
+		</div>
+		<div class="section">
+			<h4><a id="layout" name="layout">3.2. Layout</a></h4>
+			<p>Packages in the Common Repository <em>must</em> have the following
+				layout:</p>
+			<blockquote>
+				<dl class="docutils">
+					<dt>repos/main/&lt;NAMESPACE&gt;.&lt;PACKAGE&gt;</dt>
+					<dd>
+						<p class="first">branches/ tags/ trunk/</p>
+						<div class="system-message">
+							<p class="system-message-title">System Message: ERROR/3
+								(<tt class="docutils">&lt;string&gt;</tt>, line
+								1049)</p> Unexpected indentation.</div>
+						<blockquote>
+							<p>... setup files ... src/</p>
+							<div class="system-message">
+								<p class="system-message-title">System Message:
+									ERROR/3 (<tt class="docutils">
+									&lt;string&gt;</tt>, line 1051)</p> Unexpected
+								indentation.</div>
+							<blockquote>
+								<dl class="docutils">
+									<dt>&lt;NAMESPACE&gt;/</dt>
+									<dd>
+										<dl class="first last docutils">
+											<dt>&lt;PACKAGE&gt;/</dt>
+											<dd>... code ...</dd>
+										</dl>
+									</dd>
+								</dl>
+							</blockquote>
+						</blockquote>
+						<div class="system-message">
+							<p class="system-message-title">System Message:
+								WARNING/2 (<tt class="docutils">
+								&lt;string&gt;</tt>, line 1054)</p> Block quote ends
+							without a blank line; unexpected unindent.</div>
+						<dl class="last docutils">
+							<dt>zscp/ [optional]</dt>
+							<dd>ZSCP.cfg PUBLICATION.cfg [optional]
+								CERTIFICATIONS.xml [optional] RELEASES.xml
+								[optional]</dd>
+						</dl>
+					</dd>
+				</dl>
+			</blockquote>
+			<p>This layout, with exception of the <tt class="docutils literal">
+				<span class="pre">zscp/</span></tt> directory, follows the common
+				layout guidelines of SVN and Python. The optional <tt
+					class="docutils literal">
+				<span class="pre">zscp/</span></tt> directory contains all the
+				information to satisfy the ZSCP's package data requirements. The key file
+				is <tt class="docutils literal">
+				<span class="pre">ZSCP.cfg</span></tt>, which contains a reference to
+				other files containing the necessary data.</p>
+			<p>The format of the <tt class="docutils literal">
+				<span class="pre">ZSCP.cfg</span></tt> file is as follows:</p>
+			<pre class="literal-block">
+			
+publication &lt;PATH-OR-URL-TO-PUBLICATION-FILE&gt;
+certifications &lt;PATH-OR-URL-TO-CERTIFICATIONS-FILE&gt;
+releases &lt;PATH-OR-URL-TO-RELEASES-FILE&gt;
+</pre>
+			<p>The value for each field, <tt class="docutils literal">
+				<span class="pre">publication</span></tt>, <tt
+					class="docutils literal">
+				<span class="pre">certifications</span></tt>, and <tt
+					class="docutils literal">
+				<span class="pre">releases</span></tt> is a relative path or URL to the
+				corresponding file. The formats for those files is defined in section
+				3.3.</p>
+			<p>The <tt class="docutils literal">
+				<span class="pre">zscp/</span></tt> directory and the <tt
+					class="docutils literal">
+				<span class="pre">ZSCP.cfg</span></tt> file should be auto-generated
+				using the ZSCP homepage. The goal of the ZSCP configuration file is to
+				disconnect the concern of the package manager with that of the
+				certification manager. In other words, the package manager should
+				<em>never</em> be concerned with the maintenance of the of the ZSCP
+				certification and data in the repository.</p>
+			<p>While other repository layouts were originally considered, the layout
+				above has several advantages. First of all, it keeps the hierarchy of the
+				repository relatively flat; it is really just one level deep. Python
+				developers tend to like that. The naming of packages as <tt
+					class="docutils literal">
+				<span class="pre">&lt;NAMESPACE&gt;.&lt;PACKAGE&gt;</span></tt> is
+				already used in the zope.org repository now and works well.</p>
+			<p>However, a package in the Common Repository is <em>not</em> required to
+				apply the ZSCP process. This will allow for experimental and non-generic
+				packages to reside in the Common Repository as well.</p>
+			<p>Since it is not the goal of the Common Repository to assimilate all projects,
+				one can choose whatever namespace desired for a package. There are a only a
+				few rules:</p>
+			<ol class="arabic simple">
+				<li>Every package <em>must</em> be located in a namespace.</li>
+				<li>Packages from the same developer/institution should have the same
+					namespace. For example, Zope Corporation always uses <tt
+						class="docutils literal">
+					<span class="pre">zc</span></tt>.</li>
+				<li>The <tt class="docutils literal">
+					<span class="pre">zope</span></tt> namespace is reserved for Zope 3
+					core components.</li>
+				<li>The default namespace for one-time package developers to use is <tt
+						class="docutils literal">
+					<span class="pre">zf</span></tt> -- short for Zope
+					Foundation.</li>
+			</ol>
+			<p>The Common Repository is <em>not</em> a replacement for other high-level
+				repositories like Plone's or ECM's. It does not aim at assimilating
+				everything in the wider Zope community. It is merely a place for
+				high-quality packages that are supported by the Zope development
+				team.</p>
+			<p>Code in the Common Repository <em>must</em> also use the license stated in
+				section 3.5 and developers <em>must</em> sign the contributor agreement.
+				The agreement is necessary to ensure that contributions originated from
+				the contributing developer.</p>
+			<p>A final goal of the Common Repository is to ease the upstream movement of
+				packages. It should be easy to promote a package to the Zope 3 core or even to
+				the Python standard library. Since all packages in the Common Repository
+				have a license that can be changed by the Zope Foundation and developers have
+				signed contributor agreements, packages can be easily moved into the Zope 3
+				and Python core.</p>
+		</div>
+		<div class="section">
+			<h4><a id="package-publication-certification-and-release-data"
+					name="package-publication-certification-and-release-data">
+				3.3. Package Publication, Certification, and Release Data</a></h4>
+			<p>The package data that must be available for all packages participating in the
+				ZSCP is contained in three data files. The format of each file is described
+				below.</p>
+			<div class="section">
+				<h5><a id="the-publication-data-file"
+						name="the-publication-data-file">3.3.1. The Publication
+					Data File</a></h5>
+				<p>The publication file is a simple meta-data file in the Internet Message
+					Format (RFC 2822). This format allows simple key-value pair
+					assignments that can occur multiple times. It is also the format used
+					for HTTP headers.</p>
+				<p>The keys in the publication files must correspond to the names of the
+					sub-sections in section 2.5.</p>
+				<p>Zope 3 has already successfully used this format to provide meta-data to
+					the Python Package Index (PyPI).</p>
+				<p>The publication data file is commonly named <tt
+						class="docutils literal">
+					<span class="pre">PUBLICATION.cfg</span></tt>.</p>
+			</div>
+			<div class="section">
+				<h5><a id="the-certification-data-file"
+						name="the-certification-data-file">3.3.2. The
+					Certification Data File</a></h5>
+				<p>The certification data file is a simple XML file. The root element is <tt
+						class="docutils literal">
+					<span class="pre">certifications</span></tt> with <tt
+						class="docutils literal">
+					<span class="pre">certification</span></tt> sub-elements. Each
+					field listed in section 2.6 is a sub-element of <tt
+						class="docutils literal">
+					<span class="pre">certification</span></tt>.</p>
+				<p>The certification data file is commonly named <tt
+						class="docutils literal">
+					<span class="pre">CERTIFICATIONS.xml</span></tt>.</p>
+				<p>This file is auto-generated by the ZSCP Web site.</p>
+				<p>Example:</p>
+				<pre class="literal-block">
+				
+&lt;certifications&gt;
+  &lt;certification&gt;
+    &lt;action&gt;grant&lt;/action&gt;
+    &lt;source-level&gt;listed&lt;/source-level&gt;
+    &lt;target-level&gt;level1&lt;/target-level&gt;
+    &lt;date&gt;2006-02-02&lt;/date&gt;
+    &lt;certification-manager&gt;
+      &lt;name&gt;Jane Doe&lt;/name&gt;
+      &lt;email&gt;jane&#64;doe.com&lt;/e-mail&gt;
+    &lt;/certification-manager&gt;
+  &lt;/certification&gt;
+  &lt;certification&gt;
+    &lt;action&gt;grant&lt;/action&gt;
+    &lt;source-level&gt;none&lt;/source-level&gt;
+    &lt;target-level&gt;listed&lt;/target-level&gt;
+    &lt;date&gt;2006-01-02&lt;/date&gt;
+    &lt;certification-manager&gt;
+      &lt;name&gt;Jane Doe&lt;/name&gt;
+      &lt;email&gt;jane&#64;doe.com&lt;/e-mail&gt;
+    &lt;/certification-manager&gt;
+  &lt;/certification&gt;
+&lt;/certifications&gt;
+</pre>
+			</div>
+			<div class="section">
+				<h5><a id="the-release-data-file" name="the-release-data-file">
+					3.3.3. The Release Data File</a></h5>
+				<p>The release data file is a simple XML file. The root element is <tt
+						class="docutils literal">
+					<span class="pre">&lt;releases&gt;</span></tt> with <tt
+						class="docutils literal">
+					<span class="pre">&lt;release&gt;</span></tt> sub-elements.
+					Each field listed in section 2.7 is a sub-element of <tt
+						class="docutils literal">
+					<span class="pre">&lt;release&gt;</span></tt>.</p>
+				<p>The release data file is commonly named <tt class="docutils literal">
+					<span class="pre">RELEASES.xml</span></tt>.</p>
+				<p>If the package is part of ZSCP, then entries will be added automatically
+					for automated releases at the end of a Zope release cycle.</p>
+				<p>Example:</p>
+				<pre class="literal-block">
+				
+&lt;releases&gt;
+  &lt;release&gt;
+    &lt;name&gt;Sample Package&lt;/name&gt;
+    &lt;version&gt;0.9.0&lt;/version&gt;
+    &lt;codename&gt;CoolName&lt;/codename&gt;
+    &lt;date&gt;2006-02-03&lt;/date&gt;
+    &lt;certification&gt;level1&lt;/certification&gt;
+    &lt;package&gt;http://www.zope.org/SamplePackage/Sample-0.9.0.tgz&lt;/package&gt;
+    &lt;source&gt;svn://svn.zope.org/zf.sample/tags/0.9.0&lt;/source&gt;
+    &lt;announcement&gt;http://www.zope.org/SamplePackage090Released&lt;/announcement&gt;
+    &lt;dependencies&gt;
+      &lt;dependency&gt;Zope 3.2&lt;/dependency&gt;
+      &lt;dependency&gt;zope.otherpackage 1.2&lt;/dependency&gt;
+    &lt;/dependencies&gt;
+    &lt;release-manager&gt;
+      &lt;name&gt;John Doe&lt;/name&gt;
+      &lt;email&gt;john&#64;doe.com&lt;/e-mail&gt;
+    &lt;/release-manager&gt;
+    &lt;press-contact&gt;
+      &lt;name&gt;John Doe&lt;/name&gt;
+      &lt;email&gt;john&#64;doe.com&lt;/e-mail&gt;
+    &lt;/press-contact&gt;
+  &lt;/release&gt;
+  ...
+&lt;/releases&gt;
+</pre>
+			</div>
+		</div>
+		<div class="section">
+			<h4><a id="quality-assurance" name="quality-assurance">3.4. Quality
+				Assurance</a></h4>
+			<p>The goal of the Common Repository and its supporting software stack is to
+				automate as many quality assurance tasks as possible. The following
+				sub-section lists such tools. The full development of those tools is
+				expected to be a long-term process.</p>
+			<div class="section">
+				<h5><a id="automated-test-runner" name="automated-test-runner">
+					3.4.1. Automated Test Runner</a></h5>
+				<p>The trunks of the packages in the Common Repository are generally
+					expected to pass all tests. The zope.org buildbot setup will be used to
+					verify all tests of a package after each checkin. Any test failures will
+					be reported. Furthermore, packages should not contain any
+					deprecation warnings. Since instantaneous updating is not
+					practical, a period of 4 weeks (or, if shorter, until the first beta of
+					the next Zope 3 release) will be granted to remove any deprecation
+					warnings, due to refactoring.</p>
+				<p>Status: - The buildbot setup is in place. - A buildout system needs to be
+					developed to describe to buildbot how to build</p>
+				<div class="system-message">
+					<p class="system-message-title">System Message: ERROR/3 (<tt
+							class="docutils">&lt;string&gt;</tt>, line 1247)</p>
+					Unexpected indentation.</div>
+				<blockquote> the package environment to run the tests.</blockquote>
+			</div>
+			<div class="section">
+				<h5><a id="test-coverage-reports" name="test-coverage-reports">
+					3.4.2. Test Coverage Reports</a></h5>
+				<p>The test runner provides a neat option &quot;--coverage&quot; that
+					reports the lines that were not executed during the testing period. The
+					test coverage will be run regularly, probably as part of the buildbot
+					test runs. Whenever a package does not fulfill its required coverage
+					quota (as defined by the quality metric), a message will be sent to the
+					mailing list. Also, an HTML version of the coverage report will be made
+					available.</p>
+				<p><em>Note:</em> The current version of the coverage tool does not work
+					very well. Marius Gedminas of SchoolTool has reimplemented the option
+					for the custom SchoolTool test runner, which works much better; he
+					needs to port his implementation. He also developed a high-level
+					script to report the coverage via an HTML site.</p>
+				<p>See <a class="reference"
+						href="http://source.schooltool.org/coverage/">
+					http://source.schooltool.org/coverage/</a></p>
+				<p>Status: - The concept of test coverage exists. - The tool to convert
+					coverage reports to an HTML page exists. - The better coverage
+					implementation of SchoolTool needs to be ported.</p>
+			</div>
+			<div class="section">
+				<h5><a id="publication-data-verification"
+						name="publication-data-verification">3.4.3. Publication
+					Data Verification</a></h5>
+				<p>Since the publication data is central to providing sufficient
+					information about a package, it will be necessary for a tool to
+					regularly check the completeness of the file and verify any external
+					links.</p>
+				<p>Status: - This tool has to be written, but should not be too hard, since a
+					parser and</p>
+				<div class="system-message">
+					<p class="system-message-title">System Message: ERROR/3 (<tt
+							class="docutils">&lt;string&gt;</tt>, line 1281)</p>
+					Unexpected indentation.</div>
+				<blockquote> writer for the publication data must be developed for the ZSCP
+					Web site anyways.</blockquote>
+			</div>
+			<div class="section">
+				<h5><a id="dependency-checker" name="dependency-checker">3.4.4.
+					Dependency Checker</a></h5>
+				<p>A dependency checker will ensure that all used packages and modules are
+					listed in the <tt class="docutils literal">
+					<span class="pre">DEPENDENCIES.cfg</span></tt> file. While this
+					is not a versioned dependency check, it allows to detect unwanted or
+					unknown dependencies. If an unlisted dependency is found, a message to
+					the mailing list will be sent.</p>
+				<p>Status: - This tool does not exist yet, though a dependency detection
+					tool is already</p>
+				<div class="system-message">
+					<p class="system-message-title">System Message: ERROR/3 (<tt
+							class="docutils">&lt;string&gt;</tt>, line 1294)</p>
+					Unexpected indentation.</div>
+				<blockquote> available. Its code could be used to implement this
+					tool.</blockquote>
+			</div>
+			<div class="section">
+				<h5><a id="nightly-tar-ball-testing"
+						name="nightly-tar-ball-testing">3.4.5. Nightly TAR-ball
+					Testing</a></h5>
+				<p>A nightly cron job could generate a TAR-ball of the package and check
+					whether it is functioning correctly.</p>
+				<p>SchoolTool has already deployed such a tool successfully.</p>
+				<p>Status: - While a &quot;prototype&quot; exists, it would be somewhat
+					difficult to produce an</p>
+				<div class="system-message">
+					<p class="system-message-title">System Message: ERROR/3 (<tt
+							class="docutils">&lt;string&gt;</tt>, line 1306)</p>
+					Unexpected indentation.</div>
+				<blockquote> environment in which the package could be properly
+					run.</blockquote>
+			</div>
+			<div class="section">
+				<h5><a id="coding-style-verification"
+						name="coding-style-verification">3.4.6. Coding Style
+					Verification</a></h5>
+				<p>While coding style verification can never be fully tested, there are
+					some elements that can be checked:</p>
+				<ul class="simple">
+					<li>Has file called <tt class="docutils literal">
+						<span class="pre">interfaces.py</span></tt></li>
+					<li>Has <tt class="docutils literal">
+						<span class="pre">tests.py</span></tt> file or <tt
+							class="docutils literal">
+						<span class="pre">tests/</span></tt> directory</li>
+					<li>Class names start with upper letter and have no underscore</li>
+					<li>Has a <tt class="docutils literal">
+						<span class="pre">README.txt</span></tt> file</li>
+				</ul>
+				<p>Status: - Such a tool is not implemented yet.</p>
+			</div>
+			<div class="section">
+				<h5><a id="migration-script-testing"
+						name="migration-script-testing">3.4.7. Migration Script
+					Testing</a></h5>
+				<p>Often data migration scripts are written without fully testing them in
+					an involved test environment. The most effective way to test a
+					migration script is to actually store an old version of the database,
+					apply the migration script and check whether the data was converted
+					correctly. Fortunately, this type of testing does not require any new
+					technology and simply needs to be documented.</p>
+				<p>Status: - The documentation to writing those type of tests needs to be
+					written.</p>
+			</div>
+		</div>
+		<div class="section">
+			<h4><a id="coding-style-guidelines" name="coding-style-guidelines">
+				3.5. Coding Style Guidelines</a></h4>
+			<p>In general the Zope 3 coding style guidelines apply.</p>
+			<blockquote> <a class="reference"
+					href="http://dev.zope.org/Zope3/CodingStyle">
+				http://dev.zope.org/Zope3/CodingStyle</a>
+			</blockquote>
+			<p>The following additional guidelines are provided.</p>
+			<ul>
+				<li>
+					<p class="first">State of Code</p>
+					<p>At any given time, the trunk of a package <em>must</em> be beta
+						quality, if the package is scheduled for a release within the Zope
+						release cycle. That means the code should be always beta quality,
+						pass all tests and have complete documentation. Code in branches
+						do not have to fulfill any of those requirements.</p>
+				</li>
+				<li>
+					<p class="first">Documentation</p>
+					<p>There needs to be at least one <tt class="docutils literal">
+						<span class="pre">README.txt</span></tt> file explaining the
+						generic use of the code. If other tests are provided, it is not
+						necessary to cover all corner cases. However, it will be preferred
+						that a set of text documentation files will cover all of the
+						functionality, including all corner cases. If those details are
+						too much for a single README.txt file, the developer should not
+						hesitate to create multiple text files, making sure that they are
+						linked from the <tt class="docutils literal">
+						<span class="pre">README.txt</span></tt> file. All text files
+						<em>must</em> be doctests to ensure that the information is
+						up-to-date.</p>
+				</li>
+				<li>
+					<p class="first">Backward-Compatibility</p>
+					<p>The package <em>must</em> provide backward-compatibility for
+						two following major releases. Concretely, if a feature is
+						deprecated in X.Y, then it must be supported for X.Y and X.(Y+1).
+						The backward-compatibility can be removed in X.(Y+2). By
+						backward-compatibility it is meant that the old API still has to
+						work as before, but a deprecation warning is raised, if the old API
+						is used.</p>
+				</li>
+				<li>
+					<p class="first">Migration</p>
+					<p>Once one stable release has been made, generation scripts
+						<em>must</em> be provided to upgrade to the next release, if the
+						package stores any data in the ZODB. Zope 3 provides all the
+						necessary facilities to do so.</p>
+					<p>Since migration/generation scripts are code like any other code,
+						the question on testing generation scripts comes to mind. Testing
+						migration scripts can be possible, if the structure of the script
+						is well-designed. Thus migration/generation scripts should be
+						tested.</p>
+				</li>
+				<li>
+					<p class="first">Dependencies</p>
+					<p>All dependencies of a package must be listed in a <tt
+							class="docutils literal">
+						<span class="pre">DEPENDENCIES.cfg</span></tt> file. The
+						dependencies must be listed as a Python path. There is one
+						dependency per line.</p>
+				</li>
+			</ul>
+		</div>
+		<div class="section">
+			<h4><a id="releases" name="releases">3.6. Releases</a></h4>
+			<p>By default, packages in the Common Repository will adopt the same release
+				schedule as Zope. The Zope development team releases two major releases a
+				year, one in May and one in November.</p>
+			<p>A positive side effect of this rule is that the dependencies on Common
+				Repository packages should be pretty simple. This model has worked great
+				for the KDE community, which always distributes a large set of their
+				libraries and programs at the same time.</p>
+			<p>However, packages may also choose their own release schedule. In this case
+				dependencies must be carefully stated in the release data file.</p>
+		</div>
+		<div class="section">
+			<h4><a id="id6" name="id6">3.7. License</a></h4>
+			<p>The license of the repository is probably the most sensitive issue. The Plone
+				community has stated several times the need to protect their core values
+				using the GPL. However, in order to maximize cooperation with other
+				projects, the Plone community also agrees to develop generic packages
+				under different licenses. Other parties usually use the ZPL or a BSD-like
+				license.</p>
+			<p>Thus it is proposed to place all the packages in the Zope 3 Common Repository
+				under the ZPL.</p>
+			<p>There has been an alternative argument and proposal concerning licenses.
+				One of the goals of Zope 3 is to become a better citizen of the Python
+				community, in other words, Zope wants to be more Pythonic. From a Python
+				developer's point of view, the ZPL is yet another reminder that Zope has
+				special rules. It has thus been proposed to use the Python license.</p>
+			<p>Another issue that has surfaced frequently in the past was the inclusion of
+				third-party software; this especially applies to Javascript libraries.
+				If a third-party software is included in the repository as part of a package,
+				the package <em>must</em> contain a <tt class="docutils literal">
+				<span class="pre">LICENSES.txt</span></tt> file that lists all the
+				applicable licenses with a reference to the code they apply to. The release
+				manager and/or a member of the &quot;checkin police&quot; (to be
+				determined) <em>must</em> be notified of such inclusion, so that the
+				references can be verified. Failure to do so can result in loss of checkin
+				privileges and/or removal of the package. While this policy might sound
+				very demanding at first sight, it is simply a necessary measure to protect
+				the Zope community legally.</p>
+		</div>
+		<div class="section">
+			<h4><a id="an-example" name="an-example">3.8. An Example</a></h4>
+			<p>(informal voice)</p>
+			<p>In the last weeks, I have frequently used an example to illustrate the
+				process. One very common functionality that is needed for many types of Web
+				applications is the &quot;search&quot;. Depending on the software stack
+				one is using, the actual &quot;search&quot; implementation might be quite
+				different. However, there is some value in defining a simple, but generic
+				search API. Based on this API a package would provide a nice set of UI
+				components that could be used by anyone implementing the search API.</p>
+			<p>Since such a package (possibly including a generic sample implementation)
+				would be very useful for a wide variety of people, it would be added to the
+				Common Repository. After some initial setup, the package will have the
+				&quot;listed&quot; ZSCP status. This should open up the visibility a lot
+				and attract people from sub-communities, like Plone, tiks and Z3ECM.</p>
+			<p>Since people from other Zope communities provide a very large skillset, the
+				community effect is used to improve the API and some initial
+				implementations are done against the API. At this stage the package would
+				apply for Level 1 certification.</p>
+			<p>As the API matures, specific projects like Plone would then provide specific
+				implementations of this search API and maintain this code in their
+				repository, since (a) the code would not be very useful for other projects
+				and (b) the additional code provides specific value that can be protected.
+				This process also naturally adds support and documentation to the package,
+				making it possible to apply for Level 2 certification.</p>
+			<p>Once the package is mature and the sub-projects have successfully deployed
+				it, the package will receive the Level 3 certification. While this process
+				may take a year or longer to complete, it ensures that the API of the search
+				package is truly useful and provides benefit to the intended audience.</p>
+		</div>
+	</div>
+	  
+
+	<div class="section">
+		<h3 class="itemFour itemHeading"><a id="a1-questions-and-answers" name="a1-questions-and-answers">A1.
+			Questions and Answers</a></h3>
+		<p>Does this proposal imply that all certified packages <em>must</em> live in the
+			Common Repository?</p>
+		<p>No, absolutely not! The ZSCP is completely disconnected from the Common
+			Repository. The common repsoitory is merely a place where it will be easy for
+			packages to undergo certification, since it will provide the necessary tools to
+			automatically check for the fullfillment of the requirements.</p>
+		<p>Why would you want your package in the Common Repository?</p>
+		<p>Placing your package in the Common Repository (like the collective in other
+			communities) will ensure a certain exposure of the code to others. If your
+			package will be certified, then other people will dedicate time to keep up the
+			compatibility and quality of the package. Further, you can use the
+			certification as a way to market your software and your skills. It is also
+			<em>your</em> personal way you can contribute back to the community.</p>
+		<p>Is the proposal too formal? Is the entry bar too high?</p>
+		<p>Some people might argue that the process is too formal and that the demotion clause
+			for certified packages will cause no packages being certified. I do not think
+			that will be the case. There will always be a set of packages that many people will
+			rely on (such as RDB adapters, LDAP adapter, authentication plugins) and where
+			the community has a vested interest in maintaining them. Also, I think there is a
+			general desire in the wider Zope community to have quality packages; this
+			proposal provides a roadmap for developers to produce those high-quality
+			packages.</p>
+		<p>How does this fit into the Cubed effort?</p>
+		<p>First a definition of &quot;Cubed&quot;: Cubed is an effort by the Plone
+			developers to develop generic Zope 3 components that are primarily applicable
+			to Plone (integrated via Five for now), but are also usable by a wider audience.
+			The ultimate goal is to eventually provide a migration path of Plone from the Zope
+			2 to the Zope 3 platform.</p>
+		<p>The Cubed effort splits into the generic packages and the specific Plone
+			configuration and user experience. While the generic packages should be
+			developed in the proposed Common Repository, the configuration and user
+			interface should be maintained by the Plone Foundation under their
+			governance.</p>
+		<p>Will the repository present a full-functioning application, like a CMS?</p>
+		<p>No, the purpose of the repository is to be a <em>collection of components</em>
+			that is useful for a wider variety of applications. Applications should be
+			developed, maintained and governed outside this repository. For example,
+			Plone is developed by the Plone Foundation on plone.org and the Tiks CMS by
+			Projekt01 on tiks.org. However, those applications may apply for
+			certification.</p>
+		<p>Will the Zope Foundation and/or the Zope core developers have the bandwidth to
+			process certification requests in a timely manner?</p>
+		<p>One big goal of the quality metrics section is to identify a set of quantifiable
+			items that can be easily verified using an automated process. Thus the overhead
+			for the core developers should be minimized. Also, an efficient Web site for the
+			process should allow certification managers to quickly provide the
+			certification. Overall, certifying a package should become as common of a task
+			as making releases or even writing documentation.</p>
+		<p>For such a process it seems to be useful to have an issue tracker, special mailing
+			lists and/or an advanced buildbot setup. Why are those technologies not
+			addressed in the proposal?</p>
+		<p>This proposal is <em>not</em> about technical solutions. It is about defining a
+			process and laying the implementation of this process via a community
+			repository. The purpose of the proposal is to establish an initial set of
+			guidelines/rules and not to discuss the technical implementation.</p>
+		<p>Why are dependencies not addressed in more detail?</p>
+		<p>Currently, we simply do not have any system in place that could sensibly handle
+			version requirements. However, several systems are currently being built. The
+			goal of this proposal is not to invent yet another version dependency system.
+			Thus the issue is deferred until the Zope community decides on a system to
+			use.</p>
+		<p>Are we going to certify core packages that are also seperate projects?</p>
+		<p>Yes, I imagine that it will be generally easier to certify those packages. Also,
+			having them certified separately makes it easier to amrket their
+			certification.</p>
+	</div>
+	  
+
+	<div class="section">
+		<h3 class="itemFive itemHeading"><a id="a2-glossary" name="a2-glossary">A2. Glossary</a></h3>
+		<dl class="docutils">
+			<dt>Certification Action</dt>
+			<dd>A change in certification level. Currently there are two actions, granting
+				and revoking.</dd>
+			<dt>Certification Manager</dt>
+			<dd>A person that executes the certification process.</dd>
+			<dt>Common Repository</dt>
+			<dd>A community repository governed by Zope Foundation for the development of
+				generic Zope packages.</dd>
+			<dt>Package Certification Data</dt>
+			<dd>Data that describes the certification history of the package.</dd>
+			<dt>Package Meta-Data</dt>
+			<dd>Data that describes the package itself. It is also known as publication
+				data.</dd>
+			<dt>Package Release Data</dt>
+			<dd>Data describing all releases since entering the ZSCP process.</dd>
+			<dt>Quality Metric</dt>
+			<dd>A quantifiable item to measure the quality of a package.</dd>
+			<dt>Zope Community Process</dt>
+			<dd>A set of methods used to develop Zope add-on packages and itself, such as
+				sprints, proposals and testing.</dd>
+			<dt>Zope Software Certification Program (ZSCP)</dt>
+			<dd>A process conducted by the Zope Foundation and core developers to certify
+				package's quality.</dd>
+			<dt>ZSCP Level X Certified</dt>
+			<dd>A certification level that the ZSCP grants to a package.</dd>
+			<dt>ZSCP Listed</dt>
+			<dd>A pre-certification level that lists a package on the ZSCP homepage.</dd>
+		</dl>
+	</div>
+
+	<div class="section">
+		<h3 class="itemSix itemHeading"><a id="a3-pre-proposal-committee" name="a3-pre-proposal-committee">A3.
+			Pre-proposal Committee</a></h3>
+		<p>Before I made the proposal public, I chose a few people to comment on the draft. I
+			tried to choose people from the main interest groups:</p>
+		<ul class="simple">
+			<li>Julien Anguenot (Nuxeo, Z3ECM Developer)</li>
+			<li>Jodok Batlogg (Plone Foundation, Plone Developer)</li>
+			<li>Paul Everitt (Plone Foundation, ZEA)</li>
+			<li>Martijn Faassen (Infrae, hurry Developer)</li>
+			<li>Roger Ineichen (Projekt01, tiks Developer)</li>
+			<li>Whit Morriss (Plone Foundation, Plone Developer)</li>
+			<li>Gary Poster (Zope Corporation, Zope 3 Developer)</li>
+		</ul>
+		<p>(Sorted alphabetically by surname.)</p>
+		<p>Later I enlarged this group of people to get more feedback. Those people were more
+			randomly chosen:</p>
+		<ul class="simple">
+			<li>Nate Aune (Plone Developer)</li>
+			<li>Rocky Burt (Plone Developer)</li>
+			<li>Sidnei DeSilva (Enfold Systems, Plone Developer)</li>
+			<li>Russ Ferriday (Plone Developer)</li>
+			<li>Marius Gedminas (SchoolTool, POV, Zope 3 Developer)</li>
+			<li>Tom Hoffman (SchoolTool)</li>
+			<li>Dominik Huber (tiks Developer)</li>
+			<li>Michael Kerrin (Zope 3 Developer)</li>
+			<li>Rob Page (Zope Corporation)</li>
+			<li>Alan Runyan (Enfold Systems, Plone Foundation)</li>
+			<li>Philipp von Weitershausen (Zope 3 Developer, Five Developer)</li>
+			<li>Benji York (Zope Corporation, Zope 3 Developer)</li>
+		</ul>
+		<p>(Sorted alphabetically by surname.)</p>
+	</div>
+
+	<div class="section">
+		<h3 class="itemSeven itemHeading"><a id="a4-changes" name="a4-changes">A4. Changes</a></h3>
+		<div class="section">
+			<h4><a id="version-0-8" name="version-0-8">Version 0.8</a></h4>
+			<ul class="simple">
+				<li>Added Q&amp;A that not all certified packages must be in the Common
+					Repository.</li>
+				<li>Improvements to section 2.4.: * Made table simpler and improved metric
+					titles * Added sub-sections for each metric to allow for more
+					specification</li>
+			</ul>
+		</div>
+		<div class="section">
+			<h4><a id="version-0-7" name="version-0-7">Version 0.7</a></h4>
+			<ul class="simple">
+				<li>Added a third certification action: warn</li>
+				<li>Got test coverage requirements right; it should be greater than</li>
+				<li>Made a note that for small packages a Web-repository is enough to put
+					docuemntation online.</li>
+				<li>Added Q&amp;A about certifying core packages that have separate
+					releases</li>
+				<li>Added a note to level 1 description, that this level is generally good
+					enough for the core.</li>
+				<li>Added a note that package information is compatible with PyPI
+					data.</li>
+				<li>Write some more about the marketing effect.</li>
+			</ul>
+		</div>
+		<div class="section">
+			<h4><a id="version-0-6" name="version-0-6">Version 0.6</a></h4>
+			<ul class="simple">
+				<li>Complete rewrite of the proposal to address the following issues: *
+					naming of process and certification levels. * concern of not
+					separating the process from the repository (implementation) * being
+					random * not clearly specifying the quality requirements</li>
+				<li>Added Glossary</li>
+				<li>Expanded Pre-proposal committee list</li>
+			</ul>
+		</div>
+		<div class="section">
+			<h4><a id="version-0-5" name="version-0-5">Version 0.5</a></h4>
+			<ul class="simple">
+				<li>Explain what <tt class="docutils literal">
+					<span class="pre">zf</span></tt> stands for.</li>
+				<li>Correct facts about SchoolTool's coverage feature.</li>
+				<li>Explain that not all packages in the Common Repository must apply for
+					the ZAP process.</li>
+				<li>Applied various typo and grammar/spelling fixes.</li>
+				<li>Changed date format.</li>
+				<li>Made a note about having no fee for the certification.</li>
+				<li>Added QA section for BBB.</li>
+				<li>Added questions and answers.</li>
+				<li>Simplified ZAP format a little bit.</li>
+				<li>Clarified the term &quot;Cubed&quot;.</li>
+			</ul>
+		</div>
+		<div class="section">
+			<h4><a id="version-0-4" name="version-0-4">Version 0.4</a></h4>
+			<ul class="simple">
+				<li>Formalized writing style.</li>
+				<li>Incorporated Gary's ideas of the Zope Accountability Program. That
+					meant rewriting the entire &quot;Process&quot; and most of the
+					&quot;Common Repository&quot; section.</li>
+			</ul>
+		</div>
+		<div class="section">
+			<h4><a id="version-0-3" name="version-0-3">Version 0.3</a></h4>
+			<ul class="simple">
+				<li>Moved <tt class="docutils literal">
+					<span class="pre">z3ecm</span></tt> project to correct location
+					after renaming</li>
+				<li>Added note about packages that have no changes in a new version, but are
+					maintained</li>
+				<li>Added note about automated releases.</li>
+				<li>Added more ideas about namespaces.</li>
+				<li>Added text about alternative Python license and how to deal with
+					third-party included code.</li>
+				<li>Added CHANGES section.</li>
+				<li>Commented that test coverage reports will be run regularly.</li>
+				<li>Added a comment on testing migration scripts.</li>
+				<li>Answered a question about the fear of the repository being too
+					formal.</li>
+				<li>Collapsed back to one repository structure suggestion and reasoned
+					why it is the best approach.</li>
+			</ul>
+		</div>
+		<div class="section">
+			<h4><a id="version-0-2" name="version-0-2">Version 0.2</a></h4>
+			<ul class="simple">
+				<li>Alternative package structure</li>
+				<li>Additional answered question about not hosting full
+					applications</li>
+				<li>Added Dependencies section</li>
+			</ul>
+		</div>
+		<div class="section">
+			<h4><a id="version-0-1" name="version-0-1">Version 0.1</a></h4>
+			<ul class="simple">
+				<li>Initial draft</li>
+			</ul>
+		</div>
+	</div>	  	  
+  
 	  	  	  
 	  
 	  
