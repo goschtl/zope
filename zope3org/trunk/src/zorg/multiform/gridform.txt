@@ -39,6 +39,8 @@ selectable items in our order grid.
     ...     return ISelection(form.context).selected
 
     >>> def isSelectedDisplay(form,action):
+    ...     if not isSubFormInputMode(form,action):
+    ...         return False
     ...     return ISelection(form.context).selected
     
 	>>> def isSubFormInputMode(form,action):
@@ -134,7 +136,15 @@ input mode.
     >>> request.form['form.n1.selected']=u'on'
     >>> gf = OrdersForm(orderMapping,request)
     >>> res = gf()
-    >>> gf.subForms['n1'].prefix
-    aaa
-    >>> ISelection(gf.subForms['n1'].context).request.form
-    aaa    
+    >>> ISelection(gf.subForms['n1'].context).selected
+    True
+    >>> print res
+    <div>
+    <div><input... name="form.n0.selected" type="checkbox" value="on"  /></div>
+    <div>0</div>
+    <div>n0</div>
+    </div>
+    <div>
+    <div><input... checked="checked" ... name="form.n1.selected" ... /></div>
+    <div><input... name="form.n1.name" ...</div>
+    </div>    
