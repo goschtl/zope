@@ -18,6 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.size.interfaces import ISized
+from zope.app import zapi
 
 class ImageData(object):
 
@@ -58,8 +59,12 @@ class ImageData(object):
         if ydelta and height:
             height = str(int(round(int(height) * ydelta)))
 
-        result = '<img src="%s"' % (self.absolute_url())
-
+        if self.request is not None:
+            result = '<img src="%s"' % zapi.absoluteURL(self.context,
+                                                        self.request)
+        else:
+            result = '<img '       
+ 
         if alt is None:
             alt = getattr(self, 'title', '')
         result = '%s alt="%s"' % (result, alt)
