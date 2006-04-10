@@ -49,7 +49,7 @@ USER = "adi"
 PWD = "r"
 
 ROUNDUP = 3
-TIMEOUT = 5
+TIMEOUT = 30
 
 x="""
 [00:00.000 - client 127.0.0.1:3114 forwarded to localhost:8088]
@@ -142,11 +142,14 @@ class testUtils(object):
     def getUid(self):
         self.uid = getUid(Browser())
 
-    def inputRequest(self, url, strg, timelist, uid=None):
+    def inputRequest(self, url, strg, timelist, uid=None, postdata=None):
         """simulate INPUT request
         request is blocking
         """
-        if strg:
+        if postdata:
+            data=postdata
+            wiredata = urllib.urlencode(data)
+        elif strg:
             data={'name':'update',
                 'id':'text',
                 'html':strg,
@@ -222,12 +225,121 @@ class testUtils(object):
                 print retval['html']
                 return retval
 
+######################################################################
+######################################################################
+
 class liveserverTest(testUtils, unittest.TestCase):
     def setUp(self):
         self.makeTimer()
         self.getUid()
         
-    def test_noevent(self):
+    def test_weird(self):
+        """test weird request values
+        
+        """
+        ##invalid uid, wrong url
+        outputb = Browser()
+        url = BASEURL+'/@@out/%(uuid)s'
+        wireurl = url % {'uuid':self.uid}
+        try:
+            outputb.open(wireurl)
+            
+            print outputb.contents
+            
+            self.fail("Should be a 404 Not found")
+        except urllib2.HTTPError, e:
+            self.assertEqual(e.code, 404)
+        
+        #invalid uid, input
+        inputb = Browser()
+        wireurl = INURL % {'uuid':'123invalid'}
+        try:
+            inputb.open(wireurl)
+
+            print inputb.contents
+            
+            self.fail("Should be a 400 Bad Request")
+        except urllib2.HTTPError, e:
+            self.assertEqual(e.code, 400)
+        
+        #uid OK, invalid data?
+        data={'name':'update',
+            'id':'text',
+            'html':'<p>any</p>',
+            'extra':'scroll',
+            'invalid':'invalid',
+            '_':''}
+        print self.inputRequest(INURL, '', [], self.uid, data)
+        #TODO: no error: is this OK?
+        
+        data={'kickit':''}
+        try:
+            print self.inputRequest(INURL, '', [], self.uid, data)
+            
+            self.fail("Should be a 400 Bad Request")
+        except urllib2.HTTPError, e:
+            self.assertEqual(e.code, 400)
+        
+        data={'name':'update',
+            'id':'invalid',
+            'html':'<p>any</p>',
+            'extra':'scroll',
+            '_':''}
+        print self.inputRequest(INURL, '', [], self.uid, data)
+        #TODO: no error: is this OK?
+        
+        data={'name':'invalid',
+            'id':'text',
+            'html':'<p>any</p>',
+            'extra':'scroll',
+            '_':''}
+        try:
+            print self.inputRequest(INURL, '', [], self.uid, data)
+            
+            self.fail("Should be a 400 Bad Request")
+        except urllib2.HTTPError, e:
+            self.assertEqual(e.code, 400)
+        
+        data={'name':'text',
+            'id':'text',
+            'html':'<p>any</p>',
+            'extra':'invalid',
+            '_':''}
+        try:
+            print self.inputRequest(INURL, '', [], self.uid, data)
+            
+            self.fail("Should be a 400 Bad Request")
+        except urllib2.HTTPError, e:
+            self.assertEqual(e.code, 400)
+        
+        #uid OK, what about DOS attack -- XXL data
+        #if I hit the memory limit of the server, then it's REAL slow
+        #although server restart/shutdown is still possible
+        data={'name':'update',
+            'id':'text',
+            'html':'<p>any</p>'*10000000,
+            'extra':'scroll',
+            '_':''}
+        try:
+            print self.inputRequest(INURL, '', [], self.uid, data)
+            
+            self.fail("Should be a 400 Bad Request")
+        except urllib2.HTTPError, e:
+            self.assertEqual(e.code, 400)
+        
+        #invalid uid, output
+        outputb = Browser()
+        wireurl = OUTURL % {'uuid':'123invalid'}
+        try:
+            outputb.open(wireurl)
+            
+            print outputb.contents
+            
+            self.fail("Should be a 400 Bad Request")
+        except urllib2.HTTPError, e:
+            self.assertEqual(e.code, 400)
+    
+    def xtest_noevent(self):
         """test_noevent
         test for:
         client makes an input
@@ -255,7 +367,7 @@ class liveserverTest(testUtils, unittest.TestCase):
             self.assert_(self.timer.lastRequestSeconds>TIMEOUT)
             self.assertEqual(retval['name'], 'idle')
     
-    def test_timeout(self):
+    def xtest_timeout(self):
         """test_timeout
         test for:
         client makes an input
@@ -279,7 +391,7 @@ class liveserverTest(testUtils, unittest.TestCase):
         retval=self.getOutput(outputb, [])
         self.assertEqual(retval['name'], 'reload')
     
-    def test_getInput(self):
+    def xtest_getInput(self):
         """test_getInput
         Creativity rules: issue a GET against @@input instead of POST
         """
@@ -295,7 +407,7 @@ class liveserverTest(testUtils, unittest.TestCase):
 
         #check for "400 Bad Request"
     
-    def test_retval(self):
+    def xtest_retval(self):
         """test_retval
         test for:
         client makes an input
@@ -322,7 +434,7 @@ class liveserverTest(testUtils, unittest.TestCase):
         retval = self.getOnlyTextOutput(brw2, [], uid2)
         self.assertEqual(retval['html'], text)
     
-    def test_twoUsersListening(self):
+    def xtest_twoUsersListening(self):
         """test_twoUsersListening
         one user is typing,
         two users listening for texts
@@ -339,7 +451,7 @@ class liveserverTest(testUtils, unittest.TestCase):
             
             self.checktwo(v, outputb1, uid1, outputb2, uid2)
     
-    def test_twoUsersTyping(self):
+    def xtest_twoUsersTyping(self):
         """test_twoUsersTyping
         two users inputting text,
         two listening for texts"""
@@ -377,7 +489,7 @@ class liveserverTest(testUtils, unittest.TestCase):
             
             self.checktwo(v, outputb1, uid1, outputb2, uid2)
     
-    def test_onlineUsers(self):
+    def xtest_onlineUsers(self):
         """test_onlineUsers
         two users, checking for online status
         here we behave nicely as expected
@@ -484,7 +596,7 @@ class liveserverTest(testUtils, unittest.TestCase):
         
         #print timestamp.lastRequestSeconds
     
-    def test_onlineUsersReconnect(self):
+    def xtest_onlineUsersReconnect(self):
         """test_onlineUsersReconnect
         two users, checking for online status
         Getting dirty: simulating that the users get disconnected and send
