@@ -16,7 +16,6 @@
 $Id$
 """
 import unittest
-from zope.app import zapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.component import getUtilitiesFor, queryUtility
 from zope.configuration import xmlconfig
@@ -29,7 +28,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def test_provideConnection(self):
 
-        conns = list(zapi.getUtilitiesFor(IZopeDatabaseAdapter))
+        conns = list(getUtilitiesFor(IZopeDatabaseAdapter))
         self.assertEqual(conns, [])
         connectionstub = queryUtility(IZopeDatabaseAdapter, 'stub')
         self.assertEqual(connectionstub, None)
@@ -38,7 +37,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         connectionstub = queryUtility(IZopeDatabaseAdapter, 'stub')
         connection = connectionstub()
         self.assertEqual(connectionstub.__class__, DAStub)
-        conns = zapi.getUtilitiesFor(IZopeDatabaseAdapter)
+        conns = getUtilitiesFor(IZopeDatabaseAdapter)
            
         self.assertEqual([c[0] for c in conns], ["stub"])
         self.assertEqual(connection.__class__, ZopeConnection)
