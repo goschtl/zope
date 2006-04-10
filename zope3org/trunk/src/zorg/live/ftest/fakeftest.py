@@ -39,21 +39,22 @@ from zope.testbrowser.browser import Browser
 from zope.testbrowser.browser import PystoneTimer
 from zorg.live.server import securityInputLimit
 
+from zorg.live.ftest.z3runner import start_zope, USER, PWD
+
 ROOTURL = 'http://localhost:8088'
 BASEURL = ROOTURL + '/@@livecomments.html'
 INURL = BASEURL+'/@@input/%(uuid)s'
 OUTURL = BASEURL+'/@@output/%(uuid)s'
 UID_EXTRACT = re.compile(r"LivePage.uuid = '(\w*?)'")
-SRVCONTROLURL = ROOTURL+'/++etc++process/servercontrol.html'
 
 #manager user
 #USER = "adi"
 #PWD = "r"
-USER = "globalmgr"
-PWD = "globalmgrpw"
+#USER = "globalmgr"
+#PWD = "globalmgrpw"
 
 ROUNDUP = 3
-TIMEOUT = 30
+TIMEOUT = 5
 
 """
 [00:00.000 - client 127.0.0.1:3114 forwarded to localhost:8088]
@@ -228,6 +229,18 @@ class testUtils(object):
             if retval.get('id','') == 'text':
                 print retval['html']
                 return retval
+    
+    def skipOnlineOutput(self, browser, timelist, uid=None):
+        """issue OUTPUT request
+        get data from OUTPUT result
+        loop requests if 'id'=='online'
+        """
+        while True:
+            retval = self.getOutput(browser, timelist, uid)
+            
+            if retval.get('id','') != 'online':
+                print retval['html']
+                return retval
 
 ######################################################################
 ######################################################################
@@ -334,11 +347,11 @@ class liveserverTest(testUtils, unittest.TestCase):
         
         #invalid uid, output
         outputb = Browser()
-        retval = self.getOutput(outputb, [])
+        retval = self.skipOnlineOutput(outputb, [])
         print retval
         self.assertEqual(retval['name'], 'reload')
     
-    def xtest_noevent(self):
+    def test_noevent(self):
         """test_noevent
         test for:
         client makes an input
@@ -366,7 +379,7 @@ class liveserverTest(testUtils, unittest.TestCase):
             self.assert_(self.timer.lastRequestSeconds>TIMEOUT)
             self.assertEqual(retval['name'], 'idle')
     
-    def xtest_timeout(self):
+    def test_timeout(self):
         """test_timeout
         test for:
         client makes an input
@@ -390,7 +403,7 @@ class liveserverTest(testUtils, unittest.TestCase):
         retval=self.getOutput(outputb, [])
         self.assertEqual(retval['name'], 'reload')
     
-    def xtest_getInput(self):
+    def test_getInput(self):
         """test_getInput
         Creativity rules: issue a GET against @@input instead of POST
         """
@@ -406,7 +419,7 @@ class liveserverTest(testUtils, unittest.TestCase):
 
         #check for "400 Bad Request"
     
-    def xtest_retval(self):
+    def test_retval(self):
         """test_retval
         test for:
         client makes an input
@@ -433,7 +446,7 @@ class liveserverTest(testUtils, unittest.TestCase):
         retval = self.getOnlyTextOutput(brw2, [], uid2)
         self.assertEqual(retval['html'], text)
     
-    def xtest_twoUsersListening(self):
+    def test_twoUsersListening(self):
         """test_twoUsersListening
         one user is typing,
         two users listening for texts
@@ -450,7 +463,7 @@ class liveserverTest(testUtils, unittest.TestCase):
             
             self.checktwo(v, outputb1, uid1, outputb2, uid2)
     
-    def xtest_twoUsersTyping(self):
+    def test_twoUsersTyping(self):
         """test_twoUsersTyping
         two users inputting text,
         two listening for texts"""
@@ -488,7 +501,7 @@ class liveserverTest(testUtils, unittest.TestCase):
             
             self.checktwo(v, outputb1, uid1, outputb2, uid2)
     
-    def xtest_onlineUsers(self):
+    def test_onlineUsers(self):
         """test_onlineUsers
         two users, checking for online status
         here we behave nicely as expected
@@ -595,7 +608,7 @@ class liveserverTest(testUtils, unittest.TestCase):
         
         #print timestamp.lastRequestSeconds
     
-    def xtest_onlineUsersReconnect(self):
+    def test_onlineUsersReconnect(self):
         """test_onlineUsersReconnect
         two users, checking for online status
         Getting dirty: simulating that the users get disconnected and send
@@ -682,73 +695,16 @@ def test_suite():
     #suite.addTest(unittest.makeSuite(liveserverBenchmark))
     return suite
 
-started_byus = False
-popen_handle = None
-
-def check_server(url):
-    brw = Browser()
-    try:
-        brw.open(url)
-        return True
-    except urllib2.HTTPError, e:
-        return False
-    except IOError, e:
-        return False
-
-def start_zope():
-    global started_byus
-    global popen_handle
-    
-    started_byus = not check_server(ROOTURL)
-    
-    if started_byus:
-        print "Z3 server not running, starting now:"
-        
-        try:
-            import zope
-        except ImportError:
-            print "Please put the zope3/src in your pythonpath"
-            
-        here = os.path.abspath(os.path.dirname(sys.argv[0]))
-        zskel = os.path.join(here, "zopeskel")
-        
-        #no better idea at the time
-        runzope = "python "+os.path.join(zskel, "runzope.py")
-        #os.system(runzope)
-        #os.startfile(runzope)
-        #os.spawnl(os.P_NOWAIT, runzope)
-        popen_handle = subprocess.Popen(runzope, shell=True)
-        
-        while not check_server(ROOTURL):
-            print ".",
-            time.sleep(1)
-        
-        print
-        print "server started"
-    else:
-        print "Z3 server already running, make sure that parameters, users match!"
-
-def stop_zope():
-    if started_byus:
-        print "Stopping Z3 server"
-        
-        brw = Browser()
-        brw.addHeader('Authorization', getAuth(USER, PWD))
-        brw.open(SRVCONTROLURL)
-        brw.getControl(name="shutdown").click()
-        
-        print "Stopped"
-
-
 if __name__ == '__main__':
-    start_zope()
-    sys.exitfunc = stop_zope
-    
     evto = os.getenv('LIVESERVER_TIMEOUT')
     if evto:
         try:
             TIMEOUT = int(evto)
         except:
             pass
-
+    
+    env = os.environ
+    env['LIVESERVER_TIMEOUT']=str(TIMEOUT)
+    start_zope(ROOTURL, env)
+    
     unittest.main(defaultTest='test_suite',argv=sys.argv+['-v'])
