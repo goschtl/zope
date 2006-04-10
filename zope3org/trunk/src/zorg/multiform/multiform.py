@@ -6,7 +6,7 @@ from zope.component import getMultiAdapter
 from zope.formlib import form
 from zope.formlib.interfaces import IBoundAction
 from zope.formlib.i18n import _
-from interfaces import IMultiForm, IParentAction, IItemAction
+from interfaces import IMultiForm, IParentAction, IItemAction, ISelection
 from interfaces import IFormLocation,IItemForm
 import copy
 
@@ -99,7 +99,7 @@ class ItemFormBase(form.FormBase):
     def __init__(self,context,request,parentForm):
         # we have to copy the default fields, so that we can mutate
         # them in our instance
-        self.__dict__['form_fields']=copy.deepcopy(self.__class__.form_fields)
+        self.form_fields=copy.deepcopy(self.__class__.form_fields)
         self.request=request
         self.context = getMultiAdapter([context,self],IFormLocation)
         self.parentForm=parentForm
@@ -129,11 +129,13 @@ class MultiFormBase(form.FormBase):
     newInputMode = None
     subFormInputMode = {}
     subFormNewInputMode = {}
+    selection = []
     actions = []
     
     def update(self):
         self.initInputMode()
         self.checkInputMode()
+        self.updateSelection()
         super(MultiFormBase,self).update()
         subFormReset = False
         hasErrors = False
@@ -225,6 +227,25 @@ class MultiFormBase(form.FormBase):
             for name in self.context.keys():
                 prefix = self.prefix + '.' + name + '.' + field.__name__
                 self.subFormInputMode[name] = (prefix in self.request.form)
+                
+    def updateSelection(self):
+        for field in self.itemFormFactory.form_fields:
+            if issubclass(field.field.interface,ISelection):
+                import pdb;pdb.set_trace()
+                form_fields = form.Fields(field)
+                for name,item in self.context.items():
+                    sForm = form.FormBase(getMultiAdapter([item,self],IFormLocation), self.request)
+                    prefix = (self.prefix and self.prefix+'.' or '') + name
+                    sForm.setPrefix(prefix)
+                    sForm.form_fields = form_fields
+                    sForm.setUpWidgets()
+                    data = {}
+                    try:
+                        form.getWidgetsData(sForm.widgets, sForm.prefix, data)
+                    except:
+                       pass
+                    form.applyChanges(sForm.context, sForm.form_fields, data)
+                return
 
     def newSubForm(self,item):
 
@@ -232,3 +253,4 @@ class MultiFormBase(form.FormBase):
         temporary usage"""
         
         return self.itemFormFactory(item,self.request,self)
+

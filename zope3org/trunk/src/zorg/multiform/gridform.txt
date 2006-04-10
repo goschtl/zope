@@ -53,11 +53,8 @@ selectable items in our order grid.
 
     >>> class OrderForm(gridform.GridItemFormBase):
     ...     inputMode=False
-    ...     forceInput=['selected']
-    ...     
-    ...     def __init__(self,context,request,parentForm):
-    ...         super(OrderForm,self).__init__(context,request,parentForm)
-    ...         self.form_fields = form.Fields(ISelection,IOrder,
+    ...     forceInput=['selected'] 
+    ...     form_fields = form.Fields(ISelection,IOrder,
     ...         omit_readonly=False,render_context=True)
     ...         
     ...     def template(self):
@@ -99,8 +96,9 @@ because we always want checkboxes to select some items.
 
     >>> request = TestRequest()
     >>> gf = OrdersForm(orderMapping,request)
-    >>> print gf()
-    <div>a
+    >>> gf.update()
+    >>> print gf.render()
+    <div>
     <div><input ... name="form.n0.selected" type="checkbox" ...  /></div>
     <div>0</div>
     <div>n0</div>
@@ -115,9 +113,11 @@ Now we are going to select some items. And the checkbox of the ``selected``
 
     >>> request = TestRequest()
     >>> request.form['form.n1.selected']=u'on'
+    >>> request.form['form.n1.selected.used']=u''
     >>> gf = OrdersForm(orderMapping,request)
-    >>> print gf()
-    <div>a
+    >>> gf.update()
+    >>> print gf.render()
+    <div>
     ...
     <div><input ... checked="checked" ... name="form.n1.selected" ...</div>
     <div>1</div>
