@@ -1,4 +1,5 @@
-<div id="viewlet-releases" class="viewlet">
+<div id="viewlet-releases" class="viewlet"
+			tal:define="siteURL view/siteURL">
 	<div class="viewletHeader">
 		<div class="vlHeaderText">Latest Releases</div>
 	</div>
@@ -7,8 +8,8 @@
 			<a href="#">Zope 3.2.1</a>
 		</div>
 		<div class="moreLink">
-			<a href="@@packages_list.html"
-				class="moreButton"></a>
+			<a href="@@packages.html" class="moreButton"
+					tal:attributes="href string:${siteURL}/@@packages.html"></a>
 		</div>
 	</div>
 </div>

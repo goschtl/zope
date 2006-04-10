@@ -1,0 +1,12 @@
+<html metal:use-macro="context/@@standard_macros/page">
+<body>
+<div align="center" metal:fill-slot="body">
+<div id="documentFirstHeading">Package List</div>
+	<div tal:repeat="info view/getPackageInfo">
+		<a href="#"
+				tal:content="info/name"
+				tal:attributes="href info/url">name</a>
+	</div>
+</div>
+</body>
+</html>

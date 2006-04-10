@@ -21,7 +21,6 @@ import zope.event
 from zope.formlib import form
 
 from zope.app.event import objectevent
-#from zope.app.pagetemplate import ViewPageTemplateFile
 
 from zf.zscp.interfaces import IPublication
 from zf.zscp.package import Package
@@ -34,8 +33,6 @@ class AddPackageForm(form.AddForm):
 
     form_fields = form.Fields(IPublication).select('packageName', 'name', 
         'summary', 'author', 'authorEmail', 'license', 'metadataVersion')
-
-#    template = ViewPageTemplateFile('package_add.pt')
 
     def createAndAdd(self, data):
 

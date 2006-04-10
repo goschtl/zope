@@ -2,7 +2,6 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"  
     i18n_domain="zf.zscp">
-    
 
   <browser:page
       for="*"
@@ -10,15 +9,15 @@
       permission="zope.Public"
       template="about.pt"
       layer="zf.zscp.skin.IZSCPLayer"
-      /> 
+      />
 
   <browser:page
       for="*"
-      name="benefits_intro.html"
+      name="benefits.html"
       permission="zope.Public"
-      template="benefits_intro.pt"
+      template="benefits.pt"
       layer="zf.zscp.skin.IZSCPLayer"
-      /> 
+      />
 
   <browser:page
       for="*"
@@ -26,13 +25,13 @@
       permission="zope.Public"
       template="contact.pt"
       layer="zf.zscp.skin.IZSCPLayer"
-      /> 
+      />
 
   <browser:page
       for="*"
-      name="contribute_intro.html"
+      name="contribute.html"
       permission="zope.Public"
-      template="contribute_intro.pt"
+      template="contribute.pt"
       layer="zf.zscp.skin.IZSCPLayer"
       />  
 
@@ -42,55 +41,31 @@
       permission="zope.Public"
       template="glossary.pt"
       layer="zf.zscp.skin.IZSCPLayer"
-      />  
-	      
-  <browser:page
-      for="*"
-      name="packages_intro.html"
-      permission="zope.Public"
-      template="packages_intro.pt"
-      layer="zf.zscp.skin.IZSCPLayer"
-      />      
+      />
 
   <browser:page
       for="*"
-      name="packages_detail.html"
+      name="search_tips.html"
       permission="zope.Public"
-      template="packages_detail.pt"
+      template="search_tips.pt"
       layer="zf.zscp.skin.IZSCPLayer"
       />
 
   <browser:page
       for="*"
-      name="packages_list.html"
+      name="search_advanced.html"
       permission="zope.Public"
-      template="packages_list.pt"
+      template="search_advanced.pt"
       layer="zf.zscp.skin.IZSCPLayer"
       />
 
   <browser:page
       for="*"
-      name="packages_search.html"
+      name="regulations.html"
       permission="zope.Public"
-      template="packages_search.pt"
+      template="regulations.pt"
       layer="zf.zscp.skin.IZSCPLayer"
-      />        
-
-  <browser:page
-      for="*"
-      name="packages_tips.html"
-      permission="zope.Public"
-      template="packages_tips.pt"
-      layer="zf.zscp.skin.IZSCPLayer"
-      /> 
-
-  <browser:page
-      for="*"
-      name="regulations_intro.html"
-      permission="zope.Public"
-      template="regulations_intro.pt"
-      layer="zf.zscp.skin.IZSCPLayer"
-      /> 
+      />
 
   <browser:page
       for="*"
@@ -98,7 +73,7 @@
       permission="zope.Public"
       template="regulations_page02.pt"
       layer="zf.zscp.skin.IZSCPLayer"
-      /> 
+      />
 
   <browser:page
       for="*"
@@ -158,11 +133,11 @@
 		
   <browser:page
       for="*"
-      name="repository_intro.html"
+      name="repository.html"
       permission="zope.Public"
-      template="repository_intro.pt"
+      template="repository.pt"
       layer="zf.zscp.skin.IZSCPLayer"
-      /> 	
+      />
 
   <browser:page
       for="*"
@@ -235,4 +210,5 @@
       template="revision_history.pt"
       layer="zf.zscp.skin.IZSCPLayer"
       /> 		
+
 </configure>

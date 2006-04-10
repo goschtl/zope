@@ -1,22 +1,28 @@
-<div id="viewlet-navigation" class="viewlet">
+<div id="viewlet-navigation" class="viewlet"
+			 tal:define="siteURL view/siteURL">
 	<div class="viewletHeader">
 		<div class="vlHeaderText">Navigation</div>
 	</div>
 	<div class="viewletBody">
 		<div class="navTreeItem">
-			<a href="@@benefits_intro.html">Benefits</a>
+			<a href="@@benefits.html"
+					tal:attributes="href string:${siteURL}/@@benefits.html">Benefits</a>
 		</div>
 		<div class="navTreeItem">
-			<a href="@@contribute_intro.html">Contribute</a>
+			<a href="@@contribute.html"
+					tal:attributes="href string:${siteURL}/@@contribute.html">Contribute</a>
 		</div>
 		<div class="navTreeItem">
-			<a href="@@packages_intro.html">Package List</a>
+			<a href="@@packages.html"
+					tal:attributes="href string:${siteURL}/@@packages.html">Package List</a>
 		</div>
 		<div class="navTreeItem">
-			<a href="@@regulations_intro.html">Regulations</a>
+			<a href="@@regulations.html"
+					tal:attributes="href string:${siteURL}/@@regulations.html">Regulations</a>
 		</div>
 		<div class="navTreeItem">
-			<a href="@@repository_intro.html">Repository Layout</a>
+			<a href="@@repository.html"
+					tal:attributes="href string:${siteURL}/@@repository.html">Repository Layout</a>
 		</div>
 	</div>
 </div>

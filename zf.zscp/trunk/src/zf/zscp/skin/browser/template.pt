@@ -80,7 +80,7 @@
 			<a href="@@about.html">here</a>.
         </div>
         <div id="footer-right">
-            Design by <a href="http://www.adaptivewave.com">AdaptiveWave</a>
+            Design by <a href="http://www.adaptivewave.com" target="_blank">AdaptiveWave</a>
         </div>
         <div id="footer-left">
             <span class="footerItem">Copyright &copy; 2006, Zope Foundation.  All rights reserved.</span>

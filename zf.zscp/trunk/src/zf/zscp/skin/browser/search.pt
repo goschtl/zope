@@ -1,4 +1,5 @@
-<div id="viewlet-quicksearch" class="viewlet">
+<div id="viewlet-quicksearch" class="viewlet"
+			tal:define="siteURL view/siteURL">
 	<div class="viewletHeader">
 		<div class="vlHeaderText">Quick Search</div>
 	</div>
@@ -10,10 +11,12 @@
 				src="/++skin++ZSCP/@@/img/go.png"/>
 		</form>
 		<div id="advanced-search" class="searchHelper">
-			<a href="@@packages_search.html">Advanced Search</a>
+			<a href="@@search_advanced.html"
+					tal:attributes="href string:${siteURL}/@@search_advanced.html">Advanced Search</a>
 		</div>
 		<div id="search-tips" class="searchHelper">
-			<a href="@@packages_tips.html">Search Tips</a>
+			<a href="@@search_tips.html"
+					tal:attributes="href string:${siteURL}/@@search_tips.html">Search Tips</a>
 		</div>
 	</div>
 </div>

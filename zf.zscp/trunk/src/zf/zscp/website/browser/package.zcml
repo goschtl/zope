@@ -10,4 +10,12 @@
       permission="zope.ManageContent"
       />
 
+  <page
+      name="index.html"
+      for="zf.zscp.interfaces.IPackage"
+      class=".package.PackageIndex"
+      permission="zope.Public"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
 </configure>

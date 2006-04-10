@@ -19,6 +19,8 @@ $Id$
 from zope.interface import Interface
 from zope.interface import implements
 from zope.formlib import page
+from zope.app.traversing.browser.absoluteurl import absoluteURL
+from zope.app.pagetemplate import ViewPageTemplateFile
 
 
 class ISiteIndex(Interface):
@@ -32,3 +34,30 @@ class SiteIndex(page.Page):
     """Index for IZSCPSite"""
 
     implements(ISiteIndex)
+
+
+
+class PackageList(page.Page):
+    """Show a list of packages."""
+
+    template = ViewPageTemplateFile('site_packages.pt')
+
+    def __init__(self, context, request):
+        super(PackageList, self).__init__(context, request)
+        self.packageInfos = []
+
+    def __call__(self):
+        self.update()
+        return self.template()
+
+    def update(self):
+        for repos in self.context.values():
+            reposURL = absoluteURL(repos, self.request)
+            for name in repos.keys():
+                info = {}
+                info['name'] = name
+                info['url'] = reposURL + '/' + name
+                self.packageInfos.append(info)
+
+    def getPackageInfo(self):
+        return self.packageInfos

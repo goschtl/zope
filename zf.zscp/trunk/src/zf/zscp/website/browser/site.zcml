@@ -26,6 +26,14 @@
       layer="zf.zscp.skin.IZSCPLayer"
       />
 
+  <page
+      name="packages.html"
+      for="zf.zscp.website.interfaces.IZSCPSite"
+      class=".site.PackageList"
+      permission="zope.Public"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
   <icon
       name="zmi_icon"
       for="zf.zscp.website.interfaces.IZSCPSite"

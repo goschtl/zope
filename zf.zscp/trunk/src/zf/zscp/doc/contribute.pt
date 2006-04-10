@@ -7,10 +7,10 @@
 			<div class="section">
 				<p><a href="@@register.html">Here</a> you can login and register a package for the ZSCP process.</p>
 			</div>
-			<h3 class="itemTwo itemHeading"> <a href="@@regulations_intro.html">Regulations for the Zope
+			<h3 class="itemTwo itemHeading"> <a href="@@regulations.html">Regulations for the Zope
 				Software Certification Program</a> </h3>
 			<div class="section">
-				<p><a href="@@regulations_intro.html">This</a> page describes the ZSCP in detail.</p>
+				<p><a href="@@regulations.html">This</a> page describes the ZSCP in detail.</p>
 			</div>
 			
 		</div>
