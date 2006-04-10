@@ -74,7 +74,7 @@ class ConfigurationData(Persistent):
         >>> config_data = ConfigurationData(IFooConfiguration, {})
         Traceback (most recent call last):
         ...
-        KeyError: 'Missed keys: foo.'
+        AttributeError: 'IFooConfiguration' object has no attribute 'foo'.
 
     The schema should not contain methods:
 
@@ -94,15 +94,15 @@ class ConfigurationData(Persistent):
 
     def __init__(self, schema, data):
         # preconditions
-        missedKeys = []
+        missedArguments = []
         for name in schema:
             if name not in data:
                 field = schema[name]
                 if field.required is True:
-                    missedKeys.append(name)
+                    missedArguments.append(name)
         
-        if missedKeys:
-            raise KeyError('Missed keys: %s.' % ', '.join(missedKeys))
+        if missedArguments:
+            raise AttributeError("'%s' object has no attribute '%s'." % (schema.__name__, ', '.join(missedArguments)))
     
         # essentials
         self.__dict__['_ConfigurationData__data'] = PersistentDict(data)
@@ -129,7 +129,7 @@ class ConfigurationData(Persistent):
                 v = lambda: value
             else:
                 v = value
-            # setattr(self, name, v)
+            #setattr(self, name, v)
             return v
         raise AttributeError(name)
 
@@ -145,7 +145,7 @@ class ConfigurationData(Persistent):
             else:
                 if field.readonly is True:
                     raise ValueError(name, 'Data is readonly.')
-            data['name'] = value
+            data[name] = value
         else:
             super(ConfigurationData, self).__setattr__(name, value)
 

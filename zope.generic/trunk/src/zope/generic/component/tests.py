@@ -20,32 +20,22 @@ import unittest
 
 from zope import component
 from zope import interface
-from zope import schema
 from zope.testing import doctest
 
-
-from zope.generic.type import testing
+from zope.generic.configuration.testing import placelesssetup
 from zope.generic.testing.testing import registerDirective
+
+from zope.generic.component import testing
 
 
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocTestSuite('zope.generic.type.factory'),
-        doctest.DocTestSuite('zope.generic.type.metaconfigure'),
         doctest.DocFileSuite('README.txt',
-                             setUp=testing.placelesssetup.setUp,
-                             tearDown=testing.placelesssetup.tearDown,
+                             setUp=placelesssetup.setUp,
+                             tearDown=placelesssetup.tearDown,
                              globs={'component': component, 'interface': interface,
                              'registerDirective': registerDirective,
-                             'testing': testing},
-                             optionflags=doctest.NORMALIZE_WHITESPACE+
-                                            doctest.ELLIPSIS),
-        doctest.DocFileSuite('EXAMPLE.txt',
-                             setUp=testing.placelesssetup.setUp,
-                             tearDown=testing.placelesssetup.tearDown,
-                             globs={'component': component, 'interface': interface,
-                             'schema': schema, 'registerDirective': registerDirective,
                              'testing': testing},
                              optionflags=doctest.NORMALIZE_WHITESPACE+
                                             doctest.ELLIPSIS),

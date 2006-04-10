@@ -55,6 +55,7 @@ def queryConfigurationData(context, interface, default=None):
         return interface(configurations, default)
 
 
+
 def provideConfigurationData(context, interface, data):
     """Set configuration data into the context."""
     from zope.generic.configuration.base import ConfigurationData 
@@ -63,6 +64,15 @@ def provideConfigurationData(context, interface, data):
 
     configurations = IConfigurations(context)
     configurations[interface] = data
+
+
+
+def deleteConfigurationData(context, interface):
+    """Delete configuration from context."""
+    
+    configurations = IConfigurations(context, None)
+    if configurations:
+        del configurations[interface]
 
 
 

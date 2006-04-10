@@ -178,9 +178,9 @@ If we do not satify the declaration an KeyError is raised:
 	>>> bar = api.createObject(IBarMarker)
 	Traceback (most recent call last):
 	...
-	KeyError: 'Missed keys: other.'
+	AttributeError: 'IOtherConfiguration' object has no attribute 'other'.
 
-	>>> bar = api.createObject(IBarMarker, **{'other': u'Specific initialization data.'})
+	>>> bar = api.createObject(IBarMarker, other=u'Specific initialization data.')
 	Initializing ...
 
 This registration attached the specific configuration to the type information.

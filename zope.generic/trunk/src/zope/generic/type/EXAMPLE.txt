@@ -1,0 +1,185 @@
+=====================
+Configuration example
+=====================
+
+The example defines an article. The article has a text and a note part.
+
+
+Step 1: Logical Domain Model
+----------------------------
+
+Define the logical domain types and their inheritance. The logical model of our 
+domain consist of three types. We use marker interfaces to show their 
+inheritance relationships.
+
+    >>> class IText(interface.Interface):
+    ...     """Logical text marker"""
+
+    >>> class INote(interface.Interface):
+    ...     """Logical note marker"""
+
+    >>> class IArticle(IText, INote):
+    ...     """Logical article marker"""
+    
+
+Step 2: Building Blocks
+-----------------------
+
+Specify the building blocks. In this example the 
+
+
+In the generic model these components may be configurations or annotations.
+
+    >>> class ITextConfig(interface.Interface):
+    ...     """The text configuration"""
+    ...     body = schema.Text(title=u"Text body")
+
+    >>> class INoteConfig(interface.Interface):
+    ...     """The note configuration"""
+    ...     body = schema.Text(title=u"Text body")
+
+    >>> class IArticleInitializationConfiguration(interface.Interface):
+    ...     """The articleconfiguration used for initialization only"""
+    ...     text = schema.Text(title=u"Text body")
+    ...     note = schema.Text(title=u"Note body", required=False)
+
+    >>> registerDirective('''
+    ... <generic:configuration
+    ...     interface="example.ITextConfig"
+    ...     />
+    ... ''') 
+
+    >>> registerDirective('''
+    ... <generic:configuration
+    ...     interface="example.INoteConfig"
+    ...     />
+    ... ''')
+
+    >>> registerDirective('''
+    ... <generic:configuration
+    ...     interface="example.IArticleInitializationConfiguration"
+    ...     />
+    ... ''')
+
+Step 3: Implement Specific Handlers and the type-specific default data
+----------------------------------------------------------------------
+
+    >>> from zope.generic.configuration.api import queryConfigurationData
+    >>> from zope.generic.configuration.api import provideConfigurationData
+    >>> from zope.generic.configuration.api import deleteConfigurationData
+    >>> from zope.generic.type.api import queryTypeConfiguration
+
+Let's implement the initializer of the article. Initializers are called from
+``__init__``. Initializers are used to add additional logic at the 
+initialization process.
+
+    >>> def articleInitializer(context, *pos, **kws):
+    ...     """Initializer Policy chosen:
+    ...     - look up article configuration
+    ...     - if there isn't any defined use the base types configuration
+    ...     - raises an exception if no configurationis defined
+    ...     """
+    ...     # looks up the allready configured data on the object
+    ...     article_config = queryConfigurationData(context, 
+    ...         IArticleInitializationConfiguration)
+    ...     if article_config is None:
+    ...         text_config = queryTypeConfiguration(context, ITextConfig)
+    ...         note_config = queryTypeConfiguration(context, INoteConfig)
+    ...         text, note = text_config.text, note_config.text
+    ...     else:
+    ...         text, note = article_config.text, article_config.note
+    ...
+    ...     provideConfigurationData(context, ITextConfig, {'body': text})
+    ...     provideConfigurationData(context, INoteConfig, {'body': note})
+    ...     deleteConfigurationData(context, IArticleInitializationConfiguration)
+ 
+    >>> from zope.generic.configuration.api import ConfigurationData
+    
+    >>> textDefaults = ConfigurationData(ITextConfig, 
+    ...     {'body': u"This is the default text."})
+
+    >>> noteDefaults = ConfigurationData(INoteConfig, 
+    ...     {'body': u"This is the default note."})
+
+    >>> articleTextDefaults = ConfigurationData(ITextConfig, 
+    ...     {'body': u"This is the default article."})
+    >>> articleNoteDefaults = ConfigurationData(INoteConfig, 
+    ...     {'body': u""})
+
+
+
+    >>> registerDirective('''
+    ... <generic:type
+    ...     interface="example.IText"
+    ...     class='zope.generic.type.api.Object'
+    ...     >
+    ...    <initializer
+    ...         interface='example.ITextConfig'
+    ...    />
+    ...    <configuration
+    ...        interface='example.ITextConfig'
+    ...        data='example.textDefaults'
+    ...    />
+    ... </generic:type>
+    ... ''')
+
+    >>> registerDirective('''
+    ... <generic:type
+    ...     interface="example.INote"
+    ...     class='zope.generic.type.api.Object'
+    ...     >
+    ...    <initializer
+    ...         interface='example.INoteConfig'
+    ...    />
+    ...    <configuration
+    ...        interface='example.INoteConfig'
+    ...        data='example.noteDefaults'
+    ...    />
+    ... </generic:type>
+    ... ''')
+
+    >>> registerDirective('''
+    ... <generic:type
+    ...     interface="example.IArticle"
+    ...     class='zope.generic.type.api.Object'
+    ...     >
+    ...    <initializer
+    ...         interface='example.IArticleInitializationConfiguration'
+    ...         handler="example.articleInitializer"
+    ...    />
+    ...    <configuration
+    ...        interface='example.ITextConfig'
+    ...        data='example.articleTextDefaults'
+    ...    />
+    ...    <configuration
+    ...        interface='example.INoteConfig'
+    ...        data='example.articleNoteDefaults'
+    ...    />
+    ... </generic:type>
+    ... ''')
+
+
+
+Step 4: Enjoy your logical domain...
+------------------------------------
+
+To create an article we use the logical domain interface
+
+    >>> from zope.generic.type.api import createObject
+
+    >>> article = createObject(IArticle, text="First version of article.")
+    
+    >>> IArticle.providedBy(article)
+    True
+
+    >>> queryConfigurationData(article, ITextConfig).body
+    'First version of article.'
+    
+    >>> queryConfigurationData(article, IArticleInitializationConfiguration).text
+    Traceback (most recent call last):
+    ...
+    AttributeError: 'NoneType' object has no attribute 'text'
+    
+    #>>> IText(article, None)
+    #>>> INote(article, None)
+    

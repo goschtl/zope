@@ -27,12 +27,7 @@ from zope.schema import TextLine
 
 
 
-class IInterfaceKeyed(Interface):
-    """Provide an interface key by implementation or adaption."""
-
-
-
-class IInterfaceKey(IInterfaceKeyed):
+class IInterfaceKey(Interface):
     """Declare an interface as information-specific-key."""
 
     interface = Object(

@@ -19,6 +19,7 @@ $Id$
 # usage see README.txt
 from zope.generic.configuration.base import ConfigurationData
 from zope.generic.configuration.interfaces import *
+from zope.generic.configuration.helper import deleteConfigurationData
 from zope.generic.configuration.helper import provideConfigurationData
 from zope.generic.configuration.helper import queryConfigurationData
 from zope.generic.configuration.helper import queryConfigurationHandler

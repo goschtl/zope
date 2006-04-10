@@ -55,5 +55,6 @@ class Initializer(object):
                 provideConfigurationData(self.context, config.interface, kws)
 
             # invoke initialization handler
+
             if config.handler:
                 config.handler(self.context, *pos, **kws)

@@ -48,7 +48,6 @@ class IConfigurator(Interface):
 
 
 
-
 class IInitializer(IConfigurator):
     """Initialize an object."""
 
