@@ -30,7 +30,7 @@ class FormLocationSelection(object):
         self.request.form[self.key]=v
 
     def _getSelected(self):
-        self.request.form.get(key,False)
+        self.request.form.get(self.key,False)
 
     selected = property(_getSelected,_setSelected)
         

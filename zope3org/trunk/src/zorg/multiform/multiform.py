@@ -118,11 +118,11 @@ class MultiFormBase(form.FormBase):
         self.setUpForms(*args, **kw)
 
     def setUpForms(self, *args, **kw):
-        
         for name,item in self.context.items(): 
             prefix = (self.prefix and self.prefix+'.' or '') + name
             subForm = self.itemFormFactory(item,self.request,self)
-            if self.inputMode is not None and not self.inputMode:
+            if self.inputMode is not None and not self.inputMode \
+                   and subForm.inputMode is not None and not subForm.inputMode:
                 forceInput = self.itemFormFactory.forceInput
                 for field in subForm.form_fields:
                     if field.__name__ not in forceInput:

@@ -45,7 +45,7 @@ selectable items in our order grid.
     ...     def __init__(self,context,request,parentForm):
     ...         super(OrderForm,self).__init__(context,request,parentForm)
     ...         self.form_fields = form.Fields(ISelection,IOrder,
-    ...         omit_readonly=False)
+    ...         omit_readonly=False,render_context=True)
     ...         
     ...     def template(self):
     ...         return '\n<div>%s</div>\n' % '</div>\n<div>'.join([w() for w in
@@ -61,8 +61,8 @@ selectable items in our order grid.
     ...     @multiform.parentAction('Edit',
     ...         condition=multiform.isParentFormDisplayMode)
     ...     def handle_edit_action(self, action, data):
-    ...         self.newInputMode=True
-
+    ...         self.inputMode=True
+    ...         self.parentForm.newInputMode=True
 
 
     >>> class OrdersForm(gridform.GridFormBase):
@@ -78,9 +78,43 @@ selectable items in our order grid.
     ...     def handle_cancel_action(self, action, data):
     ...         self.newInputMode=False
 
+Due to the reason that the ``inputMode`` attribute is ``False`` we now
+get DisplayWidgets for all fields, except the ``selected`` field
+which's name is defined in the ``forceInput`` attribute of the class,
+because we always want checkboxes to select some items.
+
     >>> request = TestRequest()
     >>> gf = OrdersForm(orderMapping,request)
     >>> print gf()
-    <div>...
+    <div>
+    <div><input ... name="form.0.selected" type="checkbox" ...  /></div>
+    <div>0</div>
+    <div>n0</div>
     </div>
-    
+    <div>
+    <div><input ... name="form.1.selected" type="checkbox" ...  /></div>
+    <div>1</div>
+    <div>n1</div>
+    </div>
+
+Now we are going to select some items. And the checkbox of the ``selected``
+
+    >>> request = TestRequest()
+    >>> request.form['form.1.selected']=u'on'
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> print gf()
+    <div>
+    ...
+    <div><input ... checked="checked" ... name="form.1.selected" ...</div>
+    <div>1</div>
+    <div>n1</div>
+    </div>
+
+By using the Edit action we can now switch all selected item forms to
+input mode. 
+
+    >>> request.form['form.actions.edit']=u''
+    >>> request.form['form.0.selected.used']=u''
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> print gf()
+
