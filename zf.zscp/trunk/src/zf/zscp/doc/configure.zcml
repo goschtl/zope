@@ -19,27 +19,6 @@
       template="benefits_intro.pt"
       layer="zf.zscp.skin.IZSCPLayer"
       /> 
-<!--
-  <browser:pages
-      for=".interfaces.IBenefitsSubitems"
-      permission="zope.Public"
-      layer="zf.zscp.skin.IZSCPLayer">
-      
-	<browser:page
-		name="benefits_page*.html"   
-        template="benefits_page*.pt"
-        />
-  
-  </browser:pages>
--->
-		  
-  <browser:page
-      for="*"
-      name="benefits_page01.html"
-      permission="zope.Public"
-      template="benefits_page01.pt"
-      layer="zf.zscp.skin.IZSCPLayer"
-      /> 
 
   <browser:page
       for="*"
@@ -47,6 +26,7 @@
       permission="zope.Public"
       template="contact.pt"
       layer="zf.zscp.skin.IZSCPLayer"
+	  class=".views.MyPageView"
       /> 
 
   <browser:page
@@ -107,10 +87,26 @@
 
   <browser:page
       for="*"
-      name="regulations_page01.html"
+      name="regulations_page02.html"
       permission="zope.Public"
-      template="regulations_page01.pt"
+      template="regulations_page02.pt"
       layer="zf.zscp.skin.IZSCPLayer"
       /> 
 
+  <browser:page
+      for="*"
+      name="repository_intro.html"
+      permission="zope.Public"
+      template="repository_intro.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 	
+
+  <browser:page
+      for="*"
+      name="repository_page02.html"
+      permission="zope.Public"
+      template="repository_page02.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      /> 	
+		
 </configure>

@@ -1,13 +1,18 @@
-<html metal:use-macro="context/@@standard_macros/view"
-    i18n:domain="zf.zscp">
-  <body>
-  <div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
-
-contribute intro 	  
-	  	  	  
-	  
-	  
-  </div>
-  </body>
-
+<html metal:use-macro="context/@@standard_macros/view" i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Contribute a Package</div>
+			<h3 class="itemOne itemHeading"><a href="@@register.html">Register a Packet</a></h3>
+			<div class="section">
+				<p><a href="@@register.html">Here</a> you can login and register a package for the ZSCP process.</p>
+			</div>
+			<h3 class="itemTwo itemHeading"> <a href="@@regulations_intro.html">Regulations for the Zope
+				Software Certification Program</a> </h3>
+			<div class="section">
+				<p><a href="@@regulations_intro.html">This</a> page describes the ZSCP in detail.</p>
+			</div>
+			
+		</div>
+	</body>
 </html>

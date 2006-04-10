@@ -1,13 +1,10 @@
-<html metal:use-macro="context/@@standard_macros/view"
-    i18n:domain="zf.zscp">
-  <body>
-  <div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
-	  
-	  packages list by r. ineichen
-	  <br />
-	  <a href="@@packages_detail.html">package detail</a> 
-	    
-  </div>
-  </body>
-
+<html metal:use-macro="context/@@standard_macros/view" i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Package List</div> TODO
+			<br /> <a href="@@packages_detail.html">package detail</a> 
+			
+		</div>
+	</body>
 </html>

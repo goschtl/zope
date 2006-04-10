@@ -1,12 +1,62 @@
-<html metal:use-macro="context/@@standard_macros/view"
-    i18n:domain="zf.zscp">
-  <body>
-  <div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
-benefits intro 	  
-
-
-	  
-  </div>
-  </body>
-
+<html metal:use-macro="context/@@standard_macros/view" i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Benefits from the ZSCP Process</div>
+			<p>The two main goals of this proposal are to define a process of verifying
+				package quality, called the Zope Software Certification Process (ZSCP),
+				and to lay out a repository, called the Common Repository, that provides
+				developers with a space to implement the process. As a direct consequence,
+				it is anticipated that the various Zope development communities will
+				reunite to develop a common, high-quality code base, by stressing the skill
+				sets and best practices of each contributor. With Zope 3 as the communities'
+				new base-technology, it is possible to easily share code among various
+				projects, even if they are still Zope 2 based. Of course, as time passes, the
+				distinction between Zope 2 and 3 will fade.</p>
+			<p>Here are some specific items that are addressed in this document:</p>
+			<h3 class="itemOne itemHeading">Well-defined Process, the Zope Software
+				Certification Program (ZSCP)</h3>
+			<p>The Zope 3 community has a semi-formal process in place to ensure the quality
+				of packages in the core. However, this process does not extend to third party
+				code, let alone code outside of the zope.org repository. On the other hand,
+				Plone also uses the collective for core packages without any control over
+				the process or quality. This proposal will define a process for ensuring the
+				quality of packages and for upstream movement: in other words, the way a
+				third-party package could become a core package.</p>
+			<h3 class="itemTwo itemHeading">Repository Unification</h3>
+			<p>Currently we have several repositories scattered around in many places.
+				No-one has access to all the repositories and thus small code improvements
+				are hard to make; the overhead is large. If one finds something wrong with the
+				code, one either has to write a mail or create a bug report. And that often
+				requires one to sign up to yet another mailing list or create a user account
+				for yet another web site. Thus, this proposal suggests a common repository
+				for all generically useful Zope 3 add-on packages.</p>
+			<h3 class="itemThree itemHeading">Quality Packages</h3>
+			<p>There is a natural desire for any developer to know what they are getting into
+				when they are using a certain package, a baseline of quality that can be
+				expected. While the Zope 3 community has some ideas of what that baseline is
+				for the core, it is not well defined and applied uniformly. This proposal
+				defines clear quality guidelines.</p>
+			<h3 class="itemFour itemHeading">Clear Dependency Declarations</h3>
+			<p>One of the greatest frustrations in the Zope community, especially in Plone,
+				is the complex non-closed tree of dependencies of packages. While this
+				issue cannot be solved for the entire community, this proposal provides an
+				attempt to clearly define dependencies for the packages living in the
+				official repository.</p>
+			<h3 class="itemFive itemHeading">Common License</h3>
+			<p>The Zope community at large uses mainly two licenses, the ZPL and the GPL.
+				(Yes, other licenses are also used.) Dealing with multiple licenses is a
+				pain, especially for Zope's consumers. This proposal discusses the
+				current situation and proposes a resolution.</p>
+			<h3 class="itemSix itemHeading">Marketing Effect</h3>
+			<p>People commonly say, Zope does anti-marketing. And that is probably true.
+				While a proposal like that cannot address this issue globally, it can at
+				least address it from a technical/code-oriented side. It should be
+				possible to use the certification of a package as a marketing tool. Of
+				course, quality, clear dependencies, a common license, a predicatbale
+				process, and having a one stop for all software are all marketting wins that
+				are automatically achieved by implementing this proposal.</p>
+			
+		</div>
+	</body>
 </html>
