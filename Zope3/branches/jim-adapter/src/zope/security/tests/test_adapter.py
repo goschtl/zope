@@ -20,7 +20,7 @@ from zope.testing.doctestunit import DocTestSuite
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.security.adapter'),
+        DocTestSuite('zope.security.adapter'),
         ))
 
 
