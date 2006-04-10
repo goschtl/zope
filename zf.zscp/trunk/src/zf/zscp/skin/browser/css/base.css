@@ -109,15 +109,6 @@ h1,h2,h3,h4,h5,h6 {
     min-height: 500px;
 }
 
-
-/* for Internet Explorer */
-/*\*/
-* html .container {
-height: 8em;
-}
-/**/
-
-
 /* breadcrumbs */
 #portal-breadcrumbs div {
     display: inline;
