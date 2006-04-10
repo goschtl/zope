@@ -334,15 +334,9 @@ class liveserverTest(testUtils, unittest.TestCase):
         
         #invalid uid, output
         outputb = Browser()
-        wireurl = OUTURL % {'uuid':'123invalid'}
-        try:
-            outputb.open(wireurl)
-            
-            print outputb.contents
-            
-            self.fail("Should be a 400 Bad Request")
-        except urllib2.HTTPError, e:
-            self.assertEqual(e.code, 400)
+        retval = self.getOutput(outputb, [])
+        print retval
+        self.assertEqual(retval['name'], 'reload')
     
     def xtest_noevent(self):
         """test_noevent
@@ -748,7 +742,7 @@ def stop_zope():
 
 if __name__ == '__main__':
     start_zope()
-    stop_zope()
+    sys.exitfunc = stop_zope
     
     evto = os.getenv('LIVESERVER_TIMEOUT')
     if evto:
