@@ -1,7 +1,14 @@
-						<div id="viewlet-releases" class="viewlet">
-                <div class="viewletHeader"><div class="vlHeaderText">Latest Releases</div></div>
-                <div class="viewletBody">
-                    <div class="packageLink"><a href="#">Zope 3.2.1</a></div>
-                    <div class="moreLink"><a href="@@packages_list.html" class="moreButton"></a></div>
-                </div>
-            </div>
+<div id="viewlet-releases" class="viewlet">
+	<div class="viewletHeader">
+		<div class="vlHeaderText">Latest Releases</div>
+	</div>
+	<div class="viewletBody">
+		<div class="packageLink">
+			<a href="#">Zope 3.2.1</a>
+		</div>
+		<div class="moreLink">
+			<a href="@@packages_list.html"
+				class="moreButton"></a>
+		</div>
+	</div>
+</div>

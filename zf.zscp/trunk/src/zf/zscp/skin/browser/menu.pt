@@ -1,9 +1,22 @@
 <div id="viewlet-navigation" class="viewlet">
-								<div class="viewletHeader"><div class="vlHeaderText">Navigation</div></div>
-                <div class="viewletBody">
-                    <div class="navTreeItem"><a href="@@packages_intro.html">Packages</a></div>
-                    <div class="navTreeItem"><a href="@@regulations_intro.html">Regulations</a></div>
-                    <div class="navTreeItem"><a href="@@contribute_intro.html">Contribute</a></div>
-                    <div class="navTreeItem"><a href="@@benefits_intro.html">Benefits</a></div>
-                </div>
+	<div class="viewletHeader">
+		<div class="vlHeaderText">Navigation</div>
+	</div>
+	<div class="viewletBody">
+		<div class="navTreeItem">
+			<a href="@@benefits_intro.html">Benefits</a>
+		</div>
+		<div class="navTreeItem">
+			<a href="@@contribute_intro.html">Contribute</a>
+		</div>
+		<div class="navTreeItem">
+			<a href="@@packages_intro.html">Package List</a>
+		</div>
+		<div class="navTreeItem">
+			<a href="@@regulations_intro.html">Regulations</a>
+		</div>
+		<div class="navTreeItem">
+			<a href="@@repository_intro.html">Repository Layout</a>
+		</div>
+	</div>
 </div>
