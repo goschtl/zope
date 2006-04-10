@@ -41,7 +41,7 @@ are defined in the multiform (parent) class called ``Edit`` and
     ...     def handle_save_action(self, action, data):
     ...         form.applyChanges(self.context, self.form_fields,
     ...         data, self.adapters)
-    ...         self.parentForm.subFormNewInputMode[self.context.__name__]=False
+    ...         self.newInputMode = False
     ...         
     ...     @form.action(u"Upper", condition=multiform.isParentFormDisplayMode)
     ...     def handle_uppercase_action(self, action, data):
@@ -63,15 +63,13 @@ are defined in the multiform (parent) class called ``Edit`` and
     ...     
     ...     @form.action('Edit',condition=multiform.isFormDisplayMode)
     ...     def handle_edit_action(self, action, data):
-    ...         names = sorted(self.subForms.keys())
-    ...         for name in names:
-    ...             self.subFormNewInputMode[name]=True
+    ...         for form in self.subForms.values():
+    ...             form.newInputMode = True
     ...         
     ...     @form.action('Cancel',condition=multiform.isFormInputMode)
     ...     def handle_cancel_action(self, action, data):
-    ...         names = sorted(self.subForms.keys())
-    ...         for name in names:
-    ...             self.subFormNewInputMode[name]=False
+    ...         for form in self.subForms.values():
+    ...             form.newInputMode = False
 
 
 So in our new form all widgets are display widgets per default

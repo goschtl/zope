@@ -99,10 +99,10 @@ class ItemFormBase(form.FormBase):
     def __init__(self,context,request,parentForm):
         # we have to copy the default fields, so that we can mutate
         # them in our instance
-        self.form_fields=copy.deepcopy(self.__class__.form_fields)
-        self.request=request
+        self.form_fields = copy.deepcopy(self.__class__.form_fields)
+        self.request = request
         self.context = getMultiAdapter([context,self],IFormLocation)
-        self.parentForm=parentForm
+        self.parentForm = parentForm
 
     def update(self):
         super(ItemFormBase,self).update()
@@ -128,28 +128,27 @@ class MultiFormBase(form.FormBase):
     inputMode = None
     newInputMode = None
     subFormInputMode = {}
-    subFormNewInputMode = {}
     selection = []
     actions = []
     
     def update(self):
-        self.initInputMode()
         self.checkInputMode()
         self.updateSelection()
         super(MultiFormBase,self).update()
-        subFormReset = False
         hasErrors = False
         for form in self.subForms.values():
             form.update()
-            if form.errors is not None:
-                hasErrors = hasErrors or form.errors
-        if hasErrors:
-            self.subFormNewInputMode = {}
-        if len(self.subFormNewInputMode) > 0:
-            for name in self.subFormNewInputMode:
-                self.setUpForm(name, self.context[name], self.subFormNewInputMode[name])
-                self.subFormInputMode[name] = self.subFormNewInputMode[name]
-            self.refreshSubActionNames()
+        for form in self.subForms.values():
+            refresh = False
+            if form.newInputMode is not None:
+                newInputMode = form.newInputMode
+                context = self.context[form.context.__name__]
+                name = context.__name__
+                self.setUpForm(name, context, newInputMode)
+                self.subFormInputMode[name] = newInputMode
+                refresh = True
+            if refresh:
+                self.refreshSubActionNames()
 
     def setUpWidgets(self, *args, **kw):
         super(MultiFormBase,self).setUpWidgets(*args,**kw)
@@ -157,21 +156,21 @@ class MultiFormBase(form.FormBase):
         self.setUpForms(*args, **kw)
 
     def setUpForm(self, name, item, inputMode, *args, **kw):
-            prefix = (self.prefix and self.prefix+'.' or '') + name
-            subForm = self.newSubForm(item)
-            if inputMode is not None and not inputMode:
-                forceInput = self.itemFormFactory.forceInput
-                for field in subForm.form_fields:
-                    if field.__name__ not in forceInput:
-                        field.for_display=True
-            subForm.setPrefix(prefix)
-            subForm.setUpWidgets(*args, **kw)
-            self.subForms[name] = subForm
+        prefix = (self.prefix and self.prefix+'.' or '') + name
+        subForm = self.newSubForm(item)
+        if inputMode is not None and not inputMode:
+            forceInput = self.itemFormFactory.forceInput
+            for field in subForm.form_fields:
+                if field.__name__ not in forceInput:
+                    field.for_display=True
+        subForm.inputMode = inputMode
+        subForm.setPrefix(prefix)
+        subForm.setUpWidgets(*args, **kw)
+        self.subForms[name] = subForm
 
     def setUpForms(self, *args, **kw):
-
         for name,item in self.context.items():
-            inputMode = self.subFormInputMode.get(name, self.inputMode)
+            inputMode = self.subFormInputMode.get(name,self.itemFormFactory.inputMode)
             self.setUpForm(name, item, inputMode)
         self.refreshSubActionNames()
 
@@ -188,22 +187,6 @@ class MultiFormBase(form.FormBase):
                     self.subActionNames.append(name)
                     
             
-    def setInputMode(self,v=True):
-        if self.inputMode != v:
-            self.inputMode = v
-            for form in self.subForms.values():
-                form.form_reset=True
-
-
-    def initInputMode(self):
-        self.inputMode = self.itemFormFactory.inputMode
-        if self.inputMode is None:
-            self.inputMode = False
-            for field in self.itemFormFactory.form_fields:
-                if not field.for_display:
-                    self.inputMode=True
-                    break
-
     def checkInputMode(self):
         self.subFormInputMode = {}
         inputMode = None
@@ -248,7 +231,7 @@ class MultiFormBase(form.FormBase):
 
     def newSubForm(self,item):
 
-        """creates a new instance from teh itemFormFactory for
+        """creates a new instance from the itemFormFactory for
         temporary usage"""
         
         return self.itemFormFactory(item,self.request,self)

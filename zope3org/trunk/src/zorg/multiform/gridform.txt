@@ -33,6 +33,9 @@ is added to the ``form_fields`` of the ``OrderForm`` in order to get
 selectable items in our order grid.
 
 
+    >>> def isSelected(form,action):
+    ...     return ISelection(form.context).selected
+    
     >>> def isSelectedInput(form,action):
     ...     if not isSubFormInputMode(form,action):
     ...         return False
@@ -66,13 +69,24 @@ selectable items in our order grid.
     ...     def handle_save_action(self, action, data):
     ...         form.applyChanges(self.context, self.form_fields,
     ...         data, self.adapters)
-    ...         self.parentForm.subFormNewInputMode[self.context.__name__]=False
+    ...         self.newInputMode = False
     ...         
     ...     @multiform.parentAction('Edit',
-    ...         condition=isSelectedDisplay)
+    ...         condition=isSelected)
     ...     def handle_edit_action(self, action, data):
-    ...         print "Edit"
-    ...         self.parentForm.subFormNewInputMode[self.context.__name__]=True
+    ...         self.newInputMode = True
+    ...
+    ...     @multiform.itemAction(u"SingleSave",
+    ...         condition=isSubFormInputMode,inputMode=True)
+    ...     def handle_save_action(self, action, data):
+    ...         form.applyChanges(self.context, self.form_fields,
+    ...         data, self.adapters)
+    ...         self.newInputMode = False
+    ...         
+    ...     @multiform.itemAction('SingleEdit',
+    ...         condition=isSubFormDisplayMode)
+    ...     def handle_edit_action(self, action, data):
+    ...         self.newInputMode = True
 
 
     >>> class OrdersForm(gridform.GridFormBase):
@@ -86,9 +100,8 @@ selectable items in our order grid.
     ...         
     ...     @form.action('Cancel',condition=multiform.isFormInputMode)
     ...     def handle_cancel_action(self, action, data):
-    ...         names = sorted(self.subForms.keys())
-    ...         for name in names:
-    ...             self.subFormNewInputMode[name]=False
+    ...         for form in self.subForms.values():
+    ...             form.newInputMode = False
 
 Due to the reason that the ``inputMode`` attribute is ``False`` we now
 get DisplayWidgets for all fields, except the ``selected`` field
@@ -146,5 +159,24 @@ input mode.
     </div>
     <div>
     <div><input... checked="checked" ... name="form.n1.selected" ... /></div>
+    <div>1</div>
     <div><input... name="form.n1.name" ...</div>
-    </div>    
+    </div>
+    
+Now we test the actions which are displayed in each row.
+
+    >>> request = TestRequest()
+    >>> #request.form['form.n1.actions.singleedit']=u''
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> res = gf()
+    >>> [action.__name__ for action in gf.subForms['n1'].availableActions()]
+    [u'form.n1.actions.singleedit']
+
+We call the singleedit to edit a single row.
+    
+    >>> request = TestRequest()
+    >>> request.form['form.n0.selected.used']=u''
+    >>> request.form['form.n1.selected.used']=u''
+    >>> request.form['form.n1.actions.singleedit']=u''
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> res = gf()  
