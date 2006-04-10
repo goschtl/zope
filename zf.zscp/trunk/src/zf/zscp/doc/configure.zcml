@@ -26,7 +26,6 @@
       permission="zope.Public"
       template="contact.pt"
       layer="zf.zscp.skin.IZSCPLayer"
-	  class=".views.MyPageView"
       /> 
 
   <browser:page

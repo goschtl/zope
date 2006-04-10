@@ -2,70 +2,160 @@
 	<body>
 		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 			
-			<div id="documentFirstHeading">Layout of the Common Repository (5 of
-				8)</div>
-			<h3 class="itemFive itemHeading">Coding Style Guidelines</h3>
-			<p>In general the Zope 3 coding style guidelines apply.</p>
-			<blockquote> <a class="reference"
-					href="http://dev.zope.org/Zope3/CodingStyle">
-				http://dev.zope.org/Zope3/CodingStyle</a>
-			</blockquote>
-			<p>The following additional guidelines are provided.</p>
-			<ul>
-				<li>
-					<p class="first">State of Code</p>
-					<p>At any given time, the trunk of a package <em>must</em> be beta
-						quality, if the package is scheduled for a release within the Zope
-						release cycle. That means the code should be always beta quality,
-						pass all tests and have complete documentation. Code in branches
-						do not have to fulfill any of those requirements.</p>
-				</li>
-				<li>
-					<p class="first">Documentation</p>
-					<p>There needs to be at least one <tt class="docutils literal">
-						<span class="pre">README.txt</span></tt> file explaining the
-						generic use of the code. If other tests are provided, it is not
-						necessary to cover all corner cases. However, it will be preferred
-						that a set of text documentation files will cover all of the
-						functionality, including all corner cases. If those details are
-						too much for a single README.txt file, the developer should not
-						hesitate to create multiple text files, making sure that they are
-						linked from the <tt class="docutils literal">
-						<span class="pre">README.txt</span></tt> file. All text files
-						<em>must</em> be doctests to ensure that the information is
-						up-to-date.</p>
-				</li>
-				<li>
-					<p class="first">Backward-Compatibility</p>
-					<p>The package <em>must</em> provide backward-compatibility for
-						two following major releases. Concretely, if a feature is
-						deprecated in X.Y, then it must be supported for X.Y and X.(Y+1).
-						The backward-compatibility can be removed in X.(Y+2). By
-						backward-compatibility it is meant that the old API still has to
-						work as before, but a deprecation warning is raised, if the old API
-						is used.</p>
-				</li>
-				<li>
-					<p class="first">Migration</p>
-					<p>Once one stable release has been made, generation scripts
-						<em>must</em> be provided to upgrade to the next release, if the
-						package stores any data in the ZODB. Zope 3 provides all the
-						necessary facilities to do so.</p>
-					<p>Since migration/generation scripts are code like any other code,
-						the question on testing generation scripts comes to mind. Testing
-						migration scripts can be possible, if the structure of the script
-						is well-designed. Thus migration/generation scripts should be
-						tested.</p>
-				</li>
-				<li>
-					<p class="first">Dependencies</p>
-					<p>All dependencies of a package must be listed in a <tt
-							class="docutils literal">
-						<span class="pre">DEPENDENCIES.cfg</span></tt> file. The
-						dependencies must be listed as a Python path. There is one
-						dependency per line.</p>
-				</li>
-			</ul> <a href="@@repository_page06.html">Next Page: ...</a>
+			<div id="documentFirstHeading">Regulations (5 of 8)</div>
+			<h3 class="itemFive itemHeading">Package Meta-Information</h3>
+			<p>In order to quickly provide a developer with contextual information about a
+				given package, it is necessary to clearly define the meta-data that
+				<em>must</em> be available about a package. This section defines and
+				explains each item.</p>
+			<p>This data is compatible with the Python Package Index (PyPI).</p>
+			<p>The format of the meta-data fields is as follows:</p>
+			
+			<p>(Data Type, Multiplicity, Necessity)</p>
+			<p>Field Description</p>
+			<p>Example: example value</p>
+			
+			<p>The following data description is known as the <em>Package Meta-Data
+				Version 1.0</em>.</p>
+			<h5><a id="package-name" name="package-name">2.5.1. Package-name</a>
+				</h5>
+			<p>(Bytes Line, single, required)</p>
+			<p>The dotted Python path of the package.</p>
+			<p>Example: <tt class="docutils literal">
+				<span class="pre">zope.sample</span></tt></p>
+			
+			<h5><a id="name" name="name">2.5.2. Name</a></h5>
+			<p>(Text Line, single, required)</p>
+			<p>The commonly used name of the package.</p>
+			<p>Example: Sample</p>
+			
+			<h5><a id="summary" name="summary">2.5.3. Summary</a></h5>
+			<p>(Text Line, single, required)</p>
+			<p>A short description or summary of the package. It is also often interpreted as
+				the title.</p>
+			<p>Example: The Zope Sample Package</p>
+			
+			<h5><a id="description" name="description">2.5.4. Description</a> </h5>
+			<p>(Text, single, optional)</p>
+			<p>A detailed description of the package's functionality. While it should
+				contain some detail, it should not duplicate the documentation of the
+				README.txt file.</p>
+			<dl class="docutils">
+				<dt>Example: The sample package for Zope does provide some sample features
+					that</dt>
+				<dd>can be useful for developers to learn about sample data development. It
+					does so by providing ...</dd>
+			</dl>
+			
+			<h5><a id="home-page" name="home-page">2.5.5. Home-page</a></h5>
+			<p>(URL, single, optional)</p>
+			<p>A URL to the homepage of the package.</p>
+			<p>Example: <a class="reference"
+					href="http://www.zope.org/Products/sample">
+				http://www.zope.org/Products/sample</a></p>
+			
+			<h5><a id="author" name="author">2.5.6. Author</a></h5>
+			<p>(Text Line, multiple, required)</p>
+			<p>The name of the author of the package. The value should <em>not</em> contain
+				the author's E-mail address. This field can be specified multiple
+				times.</p>
+			<p>Example: John Doe</p>
+			
+			<h5><a id="author-email" name="author-email">2.5.7. Author-email</a>
+				</h5>
+			<p>(E-mail Address, multiple, required)</p>
+			<p>The E-mail of the author of the package. This field can be specified multiple
+				times. Any entry X of the author field is matched with entry X of the author
+				email field. If this field is specified the length of the author field list
+				must match the length of the author email field list.</p>
+			<p>Example: <a class="reference" href="mailto:john&#64;doe.com">
+				john&#64;doe.com</a></p>
+			
+			<h5><a id="license" name="license">2.5.8. License</a></h5>
+			<p>(Text Line, multiple, required)</p>
+			<p>The software license of the package. This field can specified multiple
+				times, to support dual-licensing.</p>
+			<p>Example: ZPL 2.1</p>
+			
+			<h5><a id="platform" name="platform">2.5.9. Platform</a></h5>
+			<p>(Text Line, multiple, required)</p>
+			<p>The operating system/platform the package is known to run on. This field can
+				be specified multiple times. <tt class="docutils literal">
+				<span class="pre">All</span></tt> may be used, if the package is
+				available on all platforms Python is running on, i.e. the package is pure
+				Python code.</p>
+			<p>Example: Unix</p>
+			
+			<h5><a id="classifier" name="classifier">2.5.10. Classifier</a> </h5>
+			<p>(Classifier Text Line, multiple, optional)</p>
+			<p>A classification entry identifying the package. This field can be specified
+				multiple times.</p>
+			<dl class="docutils">
+				<dt>Example: Programming Language :: Python</dt>
+				<dd>Topic :: Internet :: WWW/HTTP Topic :: Internet :: WWW/HTTP :: Dynamic
+					Content Topic :: Software Development :: Libraries :: Python
+					Modules</dd>
+			</dl>
+			
+			<h5><a id="developers-mailinglist" name="developers-mailinglist">
+				2.5.11. Developers-mailinglist</a></h5>
+			<p>(E-mail Address, single, optional)</p>
+			<p>The E-mail address of the developer mailing list.</p>
+			<p>Example: <a class="reference" href="mailto:sample-dev&#64;doe.com">
+				sample-dev&#64;doe.com</a></p>
+			
+			<h5><a id="users-mailinglist" name="users-mailinglist">2.5.12.
+				Users-mailinglist</a></h5>
+			<p>(E-mail Address, single, optional)</p>
+			<p>The E-mail address of the users mailing list.</p>
+			<p>Example: <a class="reference"
+					href="mailto:sample-users&#64;doe.com">
+				sample-users&#64;doe.com</a></p>
+			
+			<h5><a id="issue-tracker" name="issue-tracker">2.5.13.
+				Issue-tracker</a></h5>
+			<p>(URL, single, optional)</p>
+			<p>A URL to the issue tracker of the package, where new issues/bugs/requests can
+				be reported.</p>
+			<p>Example: <a class="reference"
+					href="http://www.zope.org/trackers/sample/">
+				http://www.zope.org/trackers/sample/</a></p>
+			
+			<h5><a id="repository-location" name="repository-location">2.5.14.
+				Repository-location</a></h5>
+			<p>(URL, single, optional)</p>
+			<p>The URL to the repository. The URL should be usable to actually check out the
+				package.</p>
+			<p>Example: svn://svn.zope.org/repos/main/sample</p>
+			
+			<h5><a id="repository-web-location" name="repository-web-location">
+				2.5.15. Repository-web-location</a></h5>
+			<p>(URL, single, optional)</p>
+			<p>The URL to the repository's browsable HTML UI.</p>
+			<p>Example: <a class="reference" href="http://svn.zope.org/sample">
+				http://svn.zope.org/sample</a></p>
+			
+			<h5><a id="certification-level" name="certification-level">2.5.16.
+				Certification-level</a></h5>
+			<p>(Choice, single, optional)</p>
+			<p>Describes the certification level of the package. The value can be one of the
+				following five: None, listed, level1, level2, level3</p>
+			<p>Example: level1</p>
+			
+			<h5><a id="certification-date" name="certification-date">2.5.17.
+				Certification-date</a></h5>
+			<p>(Date, single, optional)</p>
+			<p>The date at which the certification was received. The date should be in the
+				format <tt class="docutils literal">
+				<span class="pre">yyyy-mm-dd</span></tt>.</p>
+			<p>Example: 2006-02-28</p>
+			
+			<h5><a id="metadata-version" name="metadata-version">2.5.18.
+				Metadata-Version</a></h5>
+			<p>(Text Line, single, required)</p>
+			<p>This is the version number of this package meta-data.</p>
+			<p>Example: 1.1</p>
+			<a href="@@regulations_page06.html">Next Page: ...</a>
 			
 		</div>
 	</body>
