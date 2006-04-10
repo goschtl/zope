@@ -4,6 +4,7 @@
 
   <include package=".doc" />  
   <include package=".skin" />  
-  <include package=".website" />  
+  <include package=".website" /> 
+  <include file="package.zcml" />  
 
 </configure>

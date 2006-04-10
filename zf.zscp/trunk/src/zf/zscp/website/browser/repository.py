@@ -46,6 +46,7 @@ class AddPackageForm(form.AddForm):
         package = Package(packageName)
         publication = Publication()
         publication.name = data.get('name', u'')
+        publication.packageName = data.get('packageName', u'')
         publication.summary = data.get('summary', u'')
         publication.author = data.get('author', u'')
         publication.authorEmail = data.get('authorEmail', u'')

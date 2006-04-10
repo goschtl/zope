@@ -4,6 +4,7 @@
     i18n_domain="zf.zscp">
 
   <include file="site.zcml" />
+  <include file="package.zcml" />
   <include file="repository.zcml" />
 
 </configure>

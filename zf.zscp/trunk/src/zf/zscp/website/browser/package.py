@@ -11,28 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Package Implementation
+"""
 
 $Id$
 """
-__docformat__ = "reStructuredText"
-import zope.interface
-from zope.app.container.interfaces import IContained
 
-from zf.zscp import interfaces
+from zope.formlib import form
+from zf.zscp.interfaces import IPublication
+from zf.zscp.interfaces import IRelease
+from zf.zscp.interfaces import ICertification
 
-class Package(object):
-    """Package Implementation."""
-    zope.interface.implements(interfaces.IPackage, IContained)
 
-    __parent__ = __name__ = None
-    name = None
-    publication = None
-    releases = None
-    certifications = None
+class PackageEditForm(form.EditForm):
+    """Edit a package and it's sub forms."""
 
-    def __init__(self, name):
-        self.name = name
+    form_fields = form.Fields(IPublication, prefix='publication')
+    form_fields += form.Fields(IRelease, prefix='release')
+    form_fields += form.Fields(ICertification, prefix='certification')
 
-    def __repr__(self):
-        return '<%s %r>' %(self.__class__.__name__, self.name)
+    def update(self):
+        result = super(PackageEditForm, self).update()
+        if result is None:
+            self.context.__parent__.update()

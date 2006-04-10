@@ -171,6 +171,10 @@ class ZSCPRepository(object):
         pkg.certifications = certification.processXML(cert_file)
         cert_file.close()
 
+        # set IContained information
+        pkg.__parent__ = self
+        pkg.__name__ = key
+
         return pkg
 
     def keys(self):

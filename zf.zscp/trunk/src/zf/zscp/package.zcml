@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zf.zscp">
+
+  <class class="zf.zscp.package.Package">
+    <require
+        permission="zope.Public"
+        attributes="__name__ __parent__ name publication releases 
+                    certifications"
+        />
+    <require
+        permission="zope.Public"
+        set_attributes="__name__ __parent__"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_attributes="name publication releases certifications"
+        />
+  </class>  
+
+</configure>

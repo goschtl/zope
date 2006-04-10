@@ -1,0 +1,13 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zf.zscp">
+
+  <page
+      name="edit.html"
+      for="zf.zscp.interfaces.IPackage"
+      class=".package.PackageEditForm"
+      permission="zope.ManageContent"
+      />
+
+</configure>
