@@ -48,9 +48,11 @@
         <!-- end left column -->
         <!-- begin main column -->
 		<div id="portal-column-content">
-            <!-- begin breadcrumbs -->
+            <!-- begin breadcrumbs 
+			
             <tal:block replace="structure provider:IBreadcrumb">logo</tal:block>
-            <!-- end breadcrumbs -->			
+					
+				 end breadcrumbs -->			
 
 			<!-- begin main content area -->
 			<div id="region-content" >
