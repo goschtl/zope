@@ -33,12 +33,9 @@ are defined in the multiform (parent) class called ``Edit`` and
 
     >>> class OrderForm(ItemFormBase):
     ...     inputMode=False
-    ...     
-    ...     def __init__(self,context,request,parentForm):
-    ...         super(OrderForm,self).__init__(context,request,parentForm)
-    ...         self.form_fields = form.Fields(IOrder,omit_readonly=False,
+    ...     form_fields = form.Fields(IOrder,omit_readonly=False,
     ...         render_context=True)
-    ...         
+    ...     
     ...     @multiform.parentAction(u"Save",
     ...     condition=multiform.isParentFormInputMode,inputMode=True)
     ...     def handle_save_action(self, action, data):

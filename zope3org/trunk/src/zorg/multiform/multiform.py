@@ -6,7 +6,10 @@ from zope.component import getMultiAdapter
 from zope.formlib import form
 from zope.formlib.interfaces import IBoundAction
 from zope.formlib.i18n import _
-from interfaces import IMultiForm, IParentAction, IItemAction, IFormLocation,IItemForm
+from interfaces import IMultiForm, IParentAction, IItemAction
+from interfaces import IFormLocation,IItemForm
+import copy
+
 from zope import interface
         
 
@@ -90,8 +93,13 @@ class ItemFormBase(form.FormBase):
     parentForm = None
     inputMode = None
     newInputMode = None
+    form_fields=[]
+    actions = []
 
     def __init__(self,context,request,parentForm):
+        # we have to copy the default fields, so that we can mutate
+        # them in our instance
+        self.__dict__['form_fields']=copy.deepcopy(self.__class__.form_fields)
         self.request=request
         self.context = getMultiAdapter([context,self],IFormLocation)
         self.parentForm=parentForm
@@ -121,7 +129,8 @@ class MultiFormBase(form.FormBase):
     newInputMode = None
     subFormInputMode = {}
     subFormNewInputMode = {}
-
+    actions = []
+    
     def update(self):
         self.initInputMode()
         self.checkInputMode()
@@ -146,7 +155,7 @@ class MultiFormBase(form.FormBase):
 
     def setUpForm(self, name, item, inputMode, *args, **kw):
             prefix = (self.prefix and self.prefix+'.' or '') + name
-            subForm = self.itemFormFactory(item,self.request,self)
+            subForm = self.newSubForm(item)
             if inputMode is not None and not inputMode:
                 forceInput = self.itemFormFactory.forceInput
                 for field in subForm.form_fields:
@@ -206,7 +215,7 @@ class MultiFormBase(form.FormBase):
         if len(self.context) > 0:
             for name, item in self.context.items():
                 break
-            tmpForm = self.itemFormFactory(item,self.request,self)
+            tmpForm = self.newSubForm(item)
             for field in tmpForm.form_fields:
                 if not field.for_display and field.__name__ not in tmpForm.forceInput:
                     inputField = field
@@ -215,3 +224,9 @@ class MultiFormBase(form.FormBase):
                 prefix = self.prefix + '.' + name + '.' + field.__name__
                 self.subFormInputMode[name] = (prefix in self.request.form)
 
+    def newSubForm(self,item):
+
+        """creates a new instance from teh itemFormFactory for
+        temporary usage"""
+        
+        return self.itemFormFactory(item,self.request,self)
