@@ -22,7 +22,7 @@
 				certification action the following pieces of information must be
 				recorded. The same sub-section layout as in section 2.5. applies.</p>
 			<div class="section">
-				<h5><a id="action" name="action">2.6.1. Action</a></h5>
+				<h4><a id="action" name="action">6.1. Action</a></h4>
 				<p>(Choice, single, required)</p>
 				<p>The action describes whether a certification was granted or revoked.
 					Upon violations (as defined in section 2.8), a certification manager
@@ -30,8 +30,8 @@
 				<p>Allowed Values: grant, revoke, warn Example: granted</p>
 			</div>
 			<div class="section">
-				<h5><a id="source-level" name="source-level">2.6.2.
-					Source-level</a></h5>
+				<h4><a id="source-level" name="source-level">6.2.
+					Source-level</a></h4>
 				<p>(Choice, single, required)</p>
 				<p>This field describes the original certification level before this
 					certification action was executed.</p>
@@ -39,8 +39,8 @@
 					listed</p>
 			</div>
 			<div class="section">
-				<h5><a id="target-level" name="target-level">2.6.3.
-					Target-level</a></h5>
+				<h4><a id="target-level" name="target-level">6.3.
+					Target-level</a></h4>
 				<p>(Choice, single, required)</p>
 				<p>This field describes the final certification level after this
 					certification action was executed.</p>
@@ -48,7 +48,7 @@
 					level1</p>
 			</div>
 			<div class="section">
-				<h5><a id="date" name="date">2.6.4. Date</a></h5>
+				<h4><a id="date" name="date">6.4. Date</a></h4>
 				<p>(Date, single, required)</p>
 				<p>The date on which the certification action was executed. The field
 					should be of the format <tt class="docutils literal">
@@ -56,8 +56,8 @@
 				<p>Example: 2006-02-11</p>
 			</div>
 			<div class="section">
-				<h5><a id="certification-manager" name="certification-manager">
-					2.6.5. Certification-manager</a></h5>
+				<h4><a id="certification-manager" name="certification-manager">
+					6.5. Certification-manager</a></h4>
 				<p>(Text Line, single, required)</p>
 				<p>This field lists the person that executed the certification action. It
 					is the full name and E-mail address of the person.</p>
@@ -66,7 +66,7 @@
 					&gt;</p>
 			</div>
 			<div class="section">
-				<h5><a id="comments" name="comments">2.6.6. Comments</a></h5>
+				<h4><a id="comments" name="comments">6.6. Comments</a></h4>
 				<p>(Text, single, optional)</p>
 				<p>This field can contain arbitrary comments about the certification
 					action.</p>

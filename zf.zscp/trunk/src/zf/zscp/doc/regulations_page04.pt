@@ -312,8 +312,8 @@
 				</tbody>
 			</table>
 			
-			<h5><a id="package-meta-information" name="package-meta-information">
-				2.4.1. Package Meta-Information</a></h5>
+			<h4><a id="package-meta-information" name="package-meta-information">
+				4.1. Package Meta-Information</a></h4>
 			<p>The package must at least provide the required fields of the
 				package-meta-information as specified in section 2.5. The package may
 				also provide any of the optional fields and even fields that do not belong to
@@ -321,24 +321,24 @@
 				fields.</p>
 			<p>Since this <em>must</em> be an automated task, the data <em>must</em>
 				conform to the repositories package meta-information format.</p>
-			<h5><a id="test-coverage" name="test-coverage">2.4.2. Test Coverage</a>
-				</h5>
+			<h4><a id="test-coverage" name="test-coverage">4.2. Test Coverage</a>
+				</h4>
 			<p>Test coverage tools track the lines of the code that have been accessed during
 				a test run. The percentage of test coverage specified for each
 				certification level, represents the amount of tracked lines with respect
 				to the total amount of lines written.</p>
-			<h5><a id="automated-test-verification"
-					name="automated-test-verification">2.4.3. Automated Test
-				Verification</a></h5>
+			<h4><a id="automated-test-verification"
+					name="automated-test-verification">4.3. Automated Test
+				Verification</a></h4>
 			<p>Tests <em>must</em> be runnable via a standard test runner. The repository
 				of the package <em>must</em> provide a method to run the tests after some
 				change and report it to the author.</p>
-			<h5><a id="documentation-based-testing"
-					name="documentation-based-testing">2.4.4. Documentation-based
-				Testing</a></h5>
+			<h4><a id="documentation-based-testing"
+					name="documentation-based-testing">4.4. Documentation-based
+				Testing</a></h4>
 			<p>All tests <em>must</em> be written in form of documentation. The tool to
 				implement the tests is not specified, but the tests must be part of the
-				automated test verification (see section 2.4.4). In some cases it is not
+				automated test verification (see section 4.4). In some cases it is not
 				possible or practical to write documentation-based tests; in those cases
 				developers <em>may</em> choose any testing framework as long as
 				integrates in the automated test verification. The developer
@@ -346,62 +346,62 @@
 				Acceptable reasons include legacy code/tests and tests that do not verify
 				code.</p>
 			
-			<h5><a id="platform-test-verification"
-					name="platform-test-verification">2.4.5. Platform Test
-				Verification</a></h5>
+			<h4><a id="platform-test-verification"
+					name="platform-test-verification">4.5. Platform Test
+				Verification</a></h4>
 			<p>All tests for a package <em>must</em> pass for all platforms the package
 				supports. The list of supported platform is part of the package
 				meta-information (see section 2.5.9). If <cite>All</cite> (meaning all
 				platforms) has been specified, the tests must be verified on Windows, MacOS
 				X, and Unix/Linux.</p>
 			
-			<h5><a id="minimal-documentation" name="minimal-documentation"> 2.4.6.
-				Minimal Documentation</a></h5>
+			<h4><a id="minimal-documentation" name="minimal-documentation"> 4.6.
+				Minimal Documentation</a></h4>
 			<p>The package <em>must</em> provide a basic overview of the package's API in a
 					<tt class="docutils literal">
 				<span class="pre">README.txt</span></tt>. It is <em>not</em> required
 				to cover all edge cases. The documentation <em>must</em> be a set of
 				documentation tests.</p>
 			
-			<h5><a id="complete-documentation" name="complete-documentation">
-				2.4.7. Complete Documentation</a></h5>
+			<h4><a id="complete-documentation" name="complete-documentation">
+				4.7. Complete Documentation</a></h4>
 			<p>The documentation <em>must</em> cover all of the API, including edge cases.
 				The documentation <em>may</em> be distributed over several documents.
 				The documentation <em>must</em> be a set of documentation tests.</p>
 			
-			<h5><a id="extensive-documentation" name="extensive-documentation">
-				2.4.8. Extensive Documentation</a></h5>
+			<h4><a id="extensive-documentation" name="extensive-documentation">
+				4.8. Extensive Documentation</a></h4>
 			<p>Documentation at this level might come from many different sources, such as
 				Web sites, mailing list archives, documentation tests, and code. All
 				functional documentation <em>must</em> be a set of documentation
 				tests.</p>
 			
-			<h5><a id="documentation-available-online"
-					name="documentation-available-online">2.4.9. Documentation
-				available online</a></h5>
+			<h4><a id="documentation-available-online"
+					name="documentation-available-online">4.9. Documentation
+				available online</a></h4>
 			<p>The documentation for the package <em>must</em> be provided through a Web
 				site, which can be in the form of a home page or automatically generated
 				project page. For small packages it is sufficient to make the documentation
 				available via a Web site of the repository.</p>
 			
-			<h5><a id="apidoc-integrated-documentation"
-					name="apidoc-integrated-documentation">2.4.10.
-				APIDOC-integrated Documentation</a></h5>
+			<h4><a id="apidoc-integrated-documentation"
+					name="apidoc-integrated-documentation">4.10.
+				APIDOC-integrated Documentation</a></h4>
 			<p>All the documentation that is distributed with the package <em>must</em> be
 				available in the APIDOC documentation modules. This includes the
 				following items: * Package is registered with the source browser. *
 				Documentation tests are compiled as part of the APIDOC
 				&quot;book&quot; module.</p>
 			
-			<h5><a id="common-package-structure" name="common-package-structure">
-				2.4.11. Common package structure</a></h5>
+			<h4><a id="common-package-structure" name="common-package-structure">
+				4.11. Common package structure</a></h4>
 			<p>The package <em>muat</em> follow the package structure layout required by
 				the repository. Inside the package code itself, Zope's coding styles of a
 				package layout <em>must</em> be followed.</p>
 			
-			<h5><a id="zope-coding-style-guide-compliance"
-					name="zope-coding-style-guide-compliance">2.4.12. Zope Coding
-				Style Guide compliance</a></h5>
+			<h4><a id="zope-coding-style-guide-compliance"
+					name="zope-coding-style-guide-compliance">4.12. Zope Coding
+				Style Guide compliance</a></h4>
 			<p>The Zope coding style guide <em>must</em> be followed. It can be found
 				at:</p>
 			<p><a class="reference" href="http://dev.zope.org/Zope3/CodingStyle">
@@ -409,71 +409,71 @@
 			<p>Additional conventions <em>may</em> be applicable, but are communicated
 				to the package author(s).</p>
 			
-			<h5><a id="conform-to-user-interface-guidelines"
-					name="conform-to-user-interface-guidelines">2.4.13. Conform to
-				user interface guidelines</a></h5>
+			<h4><a id="conform-to-user-interface-guidelines"
+					name="conform-to-user-interface-guidelines">4.13. Conform to
+				user interface guidelines</a></h4>
 			<p>If the package provides user interface components that are developed as part
 				of a larger framework, the user interface code <em>must</em> conform to any
 				user interface guidelines provided by this framework.</p>
 			
-			<h5><a id="complete-dependency-list" name="complete-dependency-list">
-				2.4.14. Complete dependency list</a></h5>
+			<h4><a id="complete-dependency-list" name="complete-dependency-list">
+				4.14. Complete dependency list</a></h4>
 			<p>The package <em>must</em> provide a list of all other Python-package
 				dependencies. Often packaging software requires a list of dependencies;
 				this list is be sufficient, if it fulfills the repository layout and Zope
 				coding style guidelines.</p>
 			
-			<h5><a id="standard-installation-method"
-					name="standard-installation-method">2.4.15. Standard
-				installation method</a></h5>
+			<h4><a id="standard-installation-method"
+					name="standard-installation-method">4.15. Standard
+				installation method</a></h4>
 			<p>The package <em>must</em> be installable via the standard installation
 				method accepted by Zope. It is part of the package release cycle to conform to
 				the latest installation method.</p>
 			
-			<h5><a id="release-s-with-version-number"
-					name="release-s-with-version-number">2.4.16. Release(s) with
-				version number</a></h5>
+			<h4><a id="release-s-with-version-number"
+					name="release-s-with-version-number">4.16. Release(s) with
+				version number</a></h4>
 			<p>The package <em>must</em> be released regaularly and have version numbers
 				associated with each release.</p>
 			
-			<h5><a id="up-to-date-homepage" name="up-to-date-homepage">2.4.17.
-				Up-to-date homepage</a></h5>
+			<h4><a id="up-to-date-homepage" name="up-to-date-homepage">4.17.
+				Up-to-date homepage</a></h4>
 			<p>The package <em>must</em> have an up-to-date homepage targetted at
 				developers. Other audiences <em>may</em> also be addressed. If a package
 				is very small, an auto-generated or even the repository Web site
 				<em>may</em> be sufficient.</p>
 			
-			<h5><a id="active-support-mailing-list"
-					name="active-support-mailing-list">2.4.18. Active support
-				mailing list</a></h5>
+			<h4><a id="active-support-mailing-list"
+					name="active-support-mailing-list">4.18. Active support
+				mailing list</a></h4>
 			<p>The package <em>must</em> provide a mailing list for developers using the
 				package. Activeness will be measured by response time and quality to
 				questions. For small packages it*may* be sufficient to use one of the
 				general Zope mailing lists.</p>
 			
-			<h5><a id="released-for-3-zope-release-cycles"
-					name="released-for-3-zope-release-cycles">2.4.19. Released for
-				3+ Zope release cycles</a></h5>
+			<h4><a id="released-for-3-zope-release-cycles"
+					name="released-for-3-zope-release-cycles">4.19. Released for
+				3+ Zope release cycles</a></h4>
 			<p>The package <em>must</em> be released for at least 3 Zope release cycles.
 				While strongly encouraged, it is <em>not</em> required that the package
 				must have the same release cycle as Zope.</p>
 			
-			<h5><a id="releases-state-required-zope-version"
-					name="releases-state-required-zope-version">2.4.20. Releases
-				state required Zope version</a></h5>
+			<h4><a id="releases-state-required-zope-version"
+					name="releases-state-required-zope-version">4.20. Releases
+				state required Zope version</a></h4>
 			<p>The release of the package <em>must</em> specify the required Zope version.
 				See section 2.7 for details on release meta-data, including dependency
 				specifications.</p>
 			
-			<h5><a id="multiple-3-active-maintainers"
-					name="multiple-3-active-maintainers">2.4.21. Multiple (3)
-				Active Maintainers</a></h5>
+			<h4><a id="multiple-3-active-maintainers"
+					name="multiple-3-active-maintainers">4.21. Multiple (3)
+				Active Maintainers</a></h4>
 			<p>The package <em>must</em> have at least three active maintainers. At least
 				one active maintainer <em>must</em> always be reachable by certification
 				managers.</p>
 			
-			<h5><a id="data-migration-claimed" name="data-migration-claimed">
-				2.4.22. Data migration claimed</a></h5>
+			<h4><a id="data-migration-claimed" name="data-migration-claimed">
+				4.22. Data migration claimed</a></h4>
 			<p>If the package manages any data, it <em>must</em> provide an automated data
 				migration mechanism. If no automated software can be produced, the package
 				author(s) <em>must</em> provide clear instructions about migrating the
@@ -481,24 +481,24 @@
 				<em>may</em> be accepted. Migration scripts <em>must not</em> be
 				provided, if no data migration is necessary.</p>
 			
-			<h5><a id="data-migration-auto-tested"
-					name="data-migration-auto-tested">2.4.23. Data migration
-				auto-tested</a></h5>
-			<p>Additionally to the requirements in section 2.4.22, the data migration
+			<h4><a id="data-migration-auto-tested"
+					name="data-migration-auto-tested">4.23. Data migration
+				auto-tested</a></h4>
+			<p>Additionally to the requirements in section 4.22, the data migration
 				scripts <em>must</em> be tested using the standard test runner. If the
 				migration script tests take an uncommonly long time to run, they
 				<em>may</em> be moved to test level 2.</p>
 			
-			<h5><a id="data-migration-verified" name="data-migration-verified">
-				2.4.24. Data migration verified</a></h5>
-			<p>The requirements of section 2.4.23 <em>must</em> be fulfilled. In
+			<h4><a id="data-migration-verified" name="data-migration-verified">
+				4.24. Data migration verified</a></h4>
+			<p>The requirements of section 4.23 <em>must</em> be fulfilled. In
 				addition, with the help of the package author(s), the migration manager
 				verified that the data migration is complete and functional.</p>
 			
-			<h5><a id="data-migration-well-tested"
-					name="data-migration-well-tested">2.4.25. Data migration
-				well-tested</a></h5>
-			<p>In addition to the fulfillment of the requirements listed in 2.4.24, the data
+			<h4><a id="data-migration-well-tested"
+					name="data-migration-well-tested">4.25. Data migration
+				well-tested</a></h4>
+			<p>In addition to the fulfillment of the requirements listed in 4.24, the data
 				migration scripts <em>must</em> be tested against production-grade data
 				of at least 2 projects using the package.</p>
 

@@ -19,11 +19,12 @@
 				about the non-existent organization of Zope's third party products.
 				Everybody can upload their product to zope.org, without any evaluation of
 				quality, version compatibility or documentation. The goal of the ZSCP and
-				its Web site is to provide a measurement of quality (see section 2.4.)
+				its Web site is to provide a measurement of quality 
+				(<a href="@@regulations_page04.html">see section 4</a>)
 				measured as much as possible by automated tools and by minimal developer
 				verification. Also, packages listed in the ZSCP <em>must</em> provide a
-				set of meta-data that links the user to various online resources. (See
-				section 2.5.)</p>
+				set of meta-data that links the user to various online resources. 
+				(<a href="@@regulations_page05.html">see section 5</a>)</p>
 			<p>The message to the decision maker varies slightly based on his/her
 				familiarity with Open Source and Zope in particular. To the uninitiated
 				decision maker the ZSCP should send a message of technical and economic

@@ -61,6 +61,15 @@
 
   <browser:page
       for="*"
+      name="ProcessAndRepository.html"
+      permission="zope.Public"
+      template="rest2html.pt"
+	  class=".views.ReSt2HTMLView"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />	
+	
+  <browser:page
+      for="*"
       name="regulations.html"
       permission="zope.Public"
       template="regulations.pt"

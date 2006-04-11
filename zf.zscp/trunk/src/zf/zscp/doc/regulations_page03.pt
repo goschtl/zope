@@ -3,52 +3,40 @@
 		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 			
 			<div id="documentFirstHeading">Regulations for the Zope Software
-				Certification Program (3 of 9)&nbsp;
-				<b class="itemNavLeftArrow" align="right" ><a href="@@regulations_page02.html"></a></b>
-				<b class="itemNavRightArrow" align="right" ><a href="@@regulations_page04.html"></a></b>
-			</div>
+				Certification Program (3 of 9)&nbsp; <b class="itemNavLeftArrow"
+					align="right"><a href="@@regulations_page02.html"></a></b> <b
+					class="itemNavRightArrow" align="right"><a
+					href="@@regulations_page04.html"></a></b> </div>
 			
 			<h3 class="itemThree itemHeading">Certification Levels</h3>
 			
-			<h4><a id="certification-levels" name="certification-levels">2.3.
-				Certification Levels</a></h4>
 			<p>There are 4 distinct levels for certification. They are defined in the list
 				below. The specific list of quality requirements for each level is provided
-				in section 2.4.</p>
+				in <a href="@@regulations_page04.html">section 4</a>.</p>
 			<ul>
 				<li>
-					<p class="first">ZSCP Listed</p>
+					<h4>ZSCP Listed</h4>
 					<p>Getting a package listed in the ZSCP system is the first step to
 						obtain certification. Packages listed on the ZSCP Web site must
 						adhere to the common package layout[1] and are subject to the
 						automated testing as well as the quality assurance process.
 						Listed packages must provide a full set of meta-data (as
-						applicable) as defined in section 2.5.</p>
+						applicable) as defined in <a
+							href="@@regulations_page05.html">section 5</a>.</p>
 					<p>Packages at this level will fulfill roughly the same purpose as
 						packages in the CMF/Plone Collective. It is one way to make a
 						package publicly available and give it some exposure. At this
 						level, the developer will not have to comply with many of the
-						quality metrics. See section 2.4.</p>
-					<table class="docutils footnote" frame="void" id="id1"
-						rules="none">
-						<colgroup>
-							<col class="label"/>
-							<col/>
-						</colgroup>
-						<tbody valign="top">
-							<tr>
-								<td class="label"><a name="id1">[1]</a>
-								</td>
-								<td>
-									<p class="first last">The common package layout
-										is defined in section 3.2.</p>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+						quality metrics. See <a href="@@regulations_page04.html">
+						section 4</a>.</p>
+					
+					<p>[1] The common package layout is defined in <a
+							href="@@repository_page02.html"> section 2</a> of the
+						Repository Layout.</p>
+					
 				</li>
 				<li>
-					<p class="first">ZSCP Level 1 Certified</p>
+					<h4>ZSCP Level 1 Certified</h4>
 					<p>To be level 1 certified, the package must fulfill the requirements
 						of listed packages. Additionally, it has to provide
 						documentation, tests (in doctest format), conform to the package
@@ -61,7 +49,7 @@
 						Certified&quot; in informal or promotional material.</p>
 				</li>
 				<li>
-					<p class="first">ZSCP Level 2 Certified</p>
+					<h4>ZSCP Level 2 Certified</h4>
 					<p>To be level 2 certified, the package must fulfill the requirements
 						of level 1 certified packages. Additionally, it has to be
 						demonstrated that the package integrates well into the Zope
@@ -73,7 +61,7 @@
 						Certified&quot; in informal or promotional material.</p>
 				</li>
 				<li>
-					<p class="first">ZSCP Level 3 Certified</p>
+					<h4>ZSCP Level 3 Certified</h4>
 					<p>To be level 3 certified, the package must fulfill the requirements
 						of level 2 certified packages. Additionally, it has to be
 						demonstrated that the package has been successfully released
@@ -84,9 +72,13 @@
 						Certified&quot; in informal or promotional material.</p>
 				</li>
 			</ul>
-
-			<div class="itemNavLeftArrow"><a href="@@regulations_page02.html">Previous Page: Audience</a></div>
-			<div class="itemNavRightArrow"><a href="@@regulations_page04.html">Next Page: Quality Metrics</a></div>	
+			
+			<div class="itemNavLeftArrow"><a href="@@regulations_page02.html">
+				Previous Page: Audience</a>
+			</div>
+			<div class="itemNavRightArrow"><a href="@@regulations_page04.html">
+				Next Page: Quality Metrics</a>
+			</div>
 			
 		</div>
 	</body>

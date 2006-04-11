@@ -14,8 +14,8 @@
 				sub-section lists such tools. The full development of those tools is
 				expected to be a long-term process.</p>
 			
-			<h5><a id="automated-test-runner" name="automated-test-runner"> 4.1.
-				Automated Test Runner</a></h5>
+			<h4><a id="automated-test-runner" name="automated-test-runner"> 4.1.
+				Automated Test Runner</a></h4>
 			<p>The trunks of the packages in the Common Repository are generally expected to
 				pass all tests. The zope.org buildbot setup will be used to verify all tests
 				of a package after each checkin. Any test failures will be reported.
@@ -31,8 +31,8 @@
 				Unexpected indentation.</div>
 			<blockquote> the package environment to run the tests.</blockquote>
 			
-			<h5><a id="test-coverage-reports" name="test-coverage-reports"> 4.2.
-				Test Coverage Reports</a></h5>
+			<h4><a id="test-coverage-reports" name="test-coverage-reports"> 4.2.
+				Test Coverage Reports</a></h4>
 			<p>The test runner provides a neat option &quot;--coverage&quot; that reports
 				the lines that were not executed during the testing period. The test
 				coverage will be run regularly, probably as part of the buildbot test runs.
@@ -51,9 +51,9 @@
 				reports to an HTML page exists. - The better coverage implementation of
 				SchoolTool needs to be ported.</p>
 			
-			<h5><a id="publication-data-verification"
+			<h4><a id="publication-data-verification"
 					name="publication-data-verification">4.3. Publication Data
-				Verification</a></h5>
+				Verification</a></h4>
 			<p>Since the publication data is central to providing sufficient information
 				about a package, it will be necessary for a tool to regularly check the
 				completeness of the file and verify any external links.</p>
@@ -66,8 +66,8 @@
 			<blockquote> writer for the publication data must be developed for the ZSCP Web
 				site anyways.</blockquote>
 			
-			<h5><a id="dependency-checker" name="dependency-checker">4.4.
-				Dependency Checker</a></h5>
+			<h4><a id="dependency-checker" name="dependency-checker">4.4.
+				Dependency Checker</a></h4>
 			<p>A dependency checker will ensure that all used packages and modules are
 				listed in the <tt class="docutils literal">
 				<span class="pre">DEPENDENCIES.cfg</span></tt> file. While this is not
@@ -83,8 +83,8 @@
 			<blockquote> available. Its code could be used to implement this
 				tool.</blockquote>
 			
-			<h5><a id="nightly-tar-ball-testing" name="nightly-tar-ball-testing">
-				4.5. Nightly TAR-ball Testing</a></h5>
+			<h4><a id="nightly-tar-ball-testing" name="nightly-tar-ball-testing">
+				4.5. Nightly TAR-ball Testing</a></h4>
 			<p>A nightly cron job could generate a TAR-ball of the package and check whether
 				it is functioning correctly.</p>
 			<p>SchoolTool has already deployed such a tool successfully.</p>
@@ -97,9 +97,9 @@
 			<blockquote> environment in which the package could be properly
 				run.</blockquote>
 			
-			<h5><a id="coding-style-verification"
+			<h4><a id="coding-style-verification"
 					name="coding-style-verification">4.6. Coding Style
-				Verification</a></h5>
+				Verification</a></h4>
 			<p>While coding style verification can never be fully tested, there are some
 				elements that can be checked:</p>
 			<ul class="simple">
@@ -115,8 +115,8 @@
 			</ul>
 			<p>Status: - Such a tool is not implemented yet.</p>
 			
-			<h5><a id="migration-script-testing" name="migration-script-testing">
-				4.7. Migration Script Testing</a></h5>
+			<h4><a id="migration-script-testing" name="migration-script-testing">
+				4.7. Migration Script Testing</a></h4>
 			<p>Often data migration scripts are written without fully testing them in an
 				involved test environment. The most effective way to test a migration
 				script is to actually store an old version of the database, apply the

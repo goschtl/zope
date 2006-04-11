@@ -14,9 +14,9 @@
 				ZSCP is contained in three data files. The format of each file is described
 				below.</p>
 			
-			<h5><a id="the-publication-data-file"
+			<h4><a id="the-publication-data-file"
 					name="the-publication-data-file">3.1. The Publication Data
-				File</a></h5>
+				File</a></h4>
 			<p>The publication file is a simple meta-data file in the Internet Message
 				Format (RFC 2822). This format allows simple key-value pair assignments
 				that can occur multiple times. It is also the format used for HTTP
@@ -28,9 +28,9 @@
 			<p>The publication data file is commonly named <tt class="docutils literal">
 				<span class="pre">PUBLICATION.cfg</span></tt>.</p>
 			
-			<h5><a id="the-certification-data-file"
+			<h4><a id="the-certification-data-file"
 					name="the-certification-data-file">3.2. The Certification
-				Data File</a></h5>
+				Data File</a></h4>
 			<p>The certification data file is a simple XML file. The root element is <tt
 					class="docutils literal">
 				<span class="pre">certifications</span></tt> with <tt
@@ -70,8 +70,8 @@
 &lt;/certifications&gt;
 </pre>
 			
-			<h5><a id="the-release-data-file" name="the-release-data-file"> 3.3.
-				The Release Data File</a></h5>
+			<h4><a id="the-release-data-file" name="the-release-data-file"> 3.3.
+				The Release Data File</a></h4>
 			<p>The release data file is a simple XML file. The root element is <tt
 					class="docutils literal">
 				<span class="pre">&lt;releases&gt;</span></tt> with <tt
