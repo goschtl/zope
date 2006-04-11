@@ -21,7 +21,7 @@ from types import ClassType
 
 import zope.component
 from zope.component.interfaces import ComponentLookupError
-from zope.interface import directlyProvides, directlyProvidedBy
+from zope.interface import alsoProvides
 from zope.interface.interfaces import IInterface
 
 def provideInterface(id, interface, iface_type=None, info=''):
@@ -31,23 +31,23 @@ def provideInterface(id, interface, iface_type=None, info=''):
 
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
-    >>> from zope.app.content.interfaces import IContentType
+    >>> from zope.component.tests import ITestType
 
     >>> class I(Interface):
     ...     pass
     >>> IInterface.providedBy(I)
     True
-    >>> IContentType.providedBy(I)
+    >>> ITestType.providedBy(I)
     False
-    >>> interfaces = gsm.getUtilitiesFor(IContentType)
+    >>> interfaces = gsm.getUtilitiesFor(ITestType)
     >>> list(interfaces)
     []
 
     # provide first interface type
-    >>> provideInterface('', I, IContentType)
-    >>> IContentType.providedBy(I)
+    >>> provideInterface('', I, ITestType)
+    >>> ITestType.providedBy(I)
     True
-    >>> interfaces = list(gsm.getUtilitiesFor(IContentType))
+    >>> interfaces = list(gsm.getUtilitiesFor(ITestType))
     >>> [name for (name, iface) in interfaces]
     [u'zope.component.interface.I']
     >>> [iface.__name__ for (name, iface) in interfaces]
@@ -58,11 +58,11 @@ def provideInterface(id, interface, iface_type=None, info=''):
     ...     pass
     >>> provideInterface('', I, IOtherType)
 
-    >>> IContentType.providedBy(I)
+    >>> ITestType.providedBy(I)
     True
     >>> IOtherType.providedBy(I)
     True
-    >>> interfaces = list(gsm.getUtilitiesFor(IContentType))
+    >>> interfaces = list(gsm.getUtilitiesFor(ITestType))
     >>> [name for (name, iface) in interfaces]
     [u'zope.component.interface.I']
     >>> interfaces = list(gsm.getUtilitiesFor(IOtherType))
@@ -74,9 +74,9 @@ def provideInterface(id, interface, iface_type=None, info=''):
     >>> provideInterface('', I1)
     >>> IInterface.providedBy(I1)
     True
-    >>> IContentType.providedBy(I1)
+    >>> ITestType.providedBy(I1)
     False
-    >>> interfaces = list(gsm.getUtilitiesFor(IContentType))
+    >>> interfaces = list(gsm.getUtilitiesFor(ITestType))
     >>> [name for (name, iface) in interfaces]
     [u'zope.component.interface.I']
     >>> [iface.__name__ for (name, iface) in interfaces]
@@ -93,7 +93,7 @@ def provideInterface(id, interface, iface_type=None, info=''):
     if iface_type is not None:
         if not iface_type.extends(IInterface):
             raise TypeError(iface_type, "is not an interface type")
-        directlyProvides(interface, iface_type, directlyProvidedBy(interface))
+        alsoProvides(interface, iface_type)
     else:
         iface_type = IInterface
         
@@ -105,20 +105,20 @@ def getInterface(context, id):
     """Return interface or raise ComponentLookupError
 
     >>> from zope.interface import Interface
-    >>> from zope.app.content.interfaces import IContentType
+    >>> from zope.component.tests import ITestType
 
     >>> class I4(Interface):
     ...     pass
     >>> IInterface.providedBy(I4)
     True
-    >>> IContentType.providedBy(I4)
+    >>> ITestType.providedBy(I4)
     False
     >>> getInterface(None, 'zope.component.interface.I4')
     Traceback (most recent call last):
     ...
     ComponentLookupError: zope.component.interface.I4
-    >>> provideInterface('', I4, IContentType)
-    >>> IContentType.providedBy(I4)
+    >>> provideInterface('', I4, ITestType)
+    >>> ITestType.providedBy(I4)
     True
     >>> iface = queryInterface( """\
                 """ 'zope.component.interface.I4')
@@ -136,18 +136,18 @@ def queryInterface(id, default=None):
 
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
-    >>> from zope.app.content.interfaces import IContentType
+    >>> from zope.component.tests import ITestType
 
     >>> class I3(Interface):
     ...     pass
     >>> IInterface.providedBy(I3)
     True
-    >>> IContentType.providedBy(I3)
+    >>> ITestType.providedBy(I3)
     False
     >>> queryInterface('zope.component.interface.I3')
     
-    >>> provideInterface('', I3, IContentType)
-    >>> IContentType.providedBy(I3)
+    >>> provideInterface('', I3, ITestType)
+    >>> ITestType.providedBy(I3)
     True
     >>> iface = queryInterface('zope.component.interface.I3')
     >>> iface.__name__
@@ -161,25 +161,24 @@ def searchInterface(context, search_string=None, base=None):
 
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
-    >>> from zope.app.content.interfaces import IContentType
+    >>> from zope.component.tests import ITestType
 
     >>> class I5(Interface):
     ...     pass
     >>> IInterface.providedBy(I5)
     True
-    >>> IContentType.providedBy(I5)
+    >>> ITestType.providedBy(I5)
     False
     >>> searchInterface(None, 'zope.component.interface.I5')
     []
-    >>> provideInterface('', I5, IContentType)
-    >>> IContentType.providedBy(I5)
+    >>> provideInterface('', I5, ITestType)
+    >>> ITestType.providedBy(I5)
     True
     >>> iface = searchInterface(None, 'zope.component.interface.I5')
     >>> iface[0].__name__
     'I5'
     """
-    return [iface_util[1]
-            for iface_util in
+    return [iface_util[1] for iface_util in
             searchInterfaceUtilities(context, search_string, base)]
 
 
@@ -188,26 +187,24 @@ def searchInterfaceIds(context, search_string=None, base=None):
 
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
-    >>> from zope.app.content.interfaces import IContentType
+    >>> from zope.component.tests import ITestType
 
     >>> class I5(Interface):
     ...     pass
     >>> IInterface.providedBy(I5)
     True
-    >>> IContentType.providedBy(I5)
+    >>> ITestType.providedBy(I5)
     False
     >>> searchInterface(None, 'zope.component.interface.I5')
     []
-    >>> provideInterface('', I5, IContentType)
-    >>> IContentType.providedBy(I5)
+    >>> provideInterface('', I5, ITestType)
+    >>> ITestType.providedBy(I5)
     True
-    >>> iface = searchInterfaceIds(None,
-    ...                        'zope.component.interface.I5')
+    >>> iface = searchInterfaceIds(None, 'zope.component.interface.I5')
     >>> iface
     [u'zope.component.interface.I5']
     """
-    return [iface_util[0]
-            for iface_util in
+    return [iface_util[0] for iface_util in
             searchInterfaceUtilities(context, search_string, base)]
 
 
@@ -263,4 +260,3 @@ def interfaceToName(context, interface):
 
     assert len(ids) == 1, "Ambiguous interface names: %s" % ids
     return ids[0]
-

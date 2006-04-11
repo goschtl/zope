@@ -19,6 +19,7 @@ import re
 import unittest
 from zope import interface, component
 from zope.interface.verify import verifyObject
+from zope.interface.interfaces import IInterface
 from zope.testing import doctest, renormalizing
 
 from zope.component.interfaces import ComponentLookupError
@@ -33,6 +34,8 @@ class I2(interface.Interface):
 class I3(interface.Interface):
     pass
 
+class ITestType(IInterface):
+    pass
 
 class U:
 
