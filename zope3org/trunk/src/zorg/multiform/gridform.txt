@@ -46,14 +46,6 @@ selectable items in our order grid.
     ...         return False
     ...     return ISelection(form.context).selected
     
-    >>> def isSubFormInputMode(form,action):
-    ...     return form.inputMode
-    
-    >>> def isSubFormDisplayMode(form,action):
-    ...     return not form.inputMode
-
-    >>> def anySubFormDisplayMode(form,action):
-    ...     return not (True in form.parentForm.subFormInputMode.values())
 
     >>> class OrderForm(gridform.GridItemFormBase):
     ...     inputMode=False
@@ -73,20 +65,20 @@ selectable items in our order grid.
     ...         self.newInputMode = False
     ...         
     ...     @multiform.parentAction('Edit',
-    ...         condition=anySubFormDisplayMode)
+    ...         condition=multiform.allSubFormsDisplayMode)
     ...     def handle_edit_action(self, action, data):
     ...         if isSelected(self,action):
     ...             self.newInputMode = True
     ...
     ...     @multiform.itemAction(u"SingleSave",
-    ...         condition=isSubFormInputMode,inputMode=True)
+    ...         condition=multiform.isFormInputMode,inputMode=True)
     ...     def handle_singlesave_action(self, action, data):
     ...         form.applyChanges(self.context, self.form_fields,
     ...         data, self.adapters)
     ...         self.newInputMode = False
     ...         
     ...     @multiform.itemAction('SingleEdit',
-    ...         condition=isSubFormDisplayMode)
+    ...         condition=multiform.isFormDisplayMode)
     ...     def handle_singleedit_action(self, action, data):
     ...         self.newInputMode = True
 
