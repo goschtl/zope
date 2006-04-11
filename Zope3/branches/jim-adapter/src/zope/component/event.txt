@@ -49,8 +49,3 @@ called accordingly:
   >>> called.sort()
   >>> called
   [1, 2]
-
-Finally, let's clean up:
-
-  >>> from zope.testing.cleanup import cleanUp  
-  >>> cleanUp()

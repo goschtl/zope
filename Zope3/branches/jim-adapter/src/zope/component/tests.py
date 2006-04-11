@@ -798,7 +798,6 @@ def test_suite():
         (re.compile('at 0x[0-9a-f]+'), 'at <SOME ADDRESS>'),
         ])
 
-
     return unittest.TestSuite((
         doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('README.txt',
@@ -809,7 +808,8 @@ def test_suite():
                              setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('registry.txt', checker=checker,
                              tearDown=tearDownRegistryTests),
-        doctest.DocFileSuite('event.txt'),
+        doctest.DocFileSuite('event.txt',
+                             setUp=setUp, tearDown=tearDown),
         doctest.DocTestSuite('zope.component.interface',
                              setUp=setUp, tearDown=tearDown),
         ))
