@@ -1,0 +1,45 @@
+=====================
+ Container Grid Form
+=====================
+
+A container contents view implementation using multiform. This view
+provides cut, copy, paste, edit and save actions. Additionally the
+__name__ attribute of the items can be transparently changed.
+
+In order to test the behaviour of the ``ContainerGridForm`` we
+subclass it and override the template method.
+
+    >>> from zope.app.container.sample import SampleContainer
+    >>> from zope.app.annotation.interfaces import IAttributeAnnotatable
+    >>> from zope.app.dublincore.interfaces import IZopeDublinCore
+    >>> from zope.app.dublincore.interfaces import IDCDescriptiveProperties
+    >>> from multiform.container.views import ContainerGridForm
+    >>> from zope import interface
+    >>> from zope.publisher.browser import TestRequest
+    >>> class ContainerTest(ContainerGridForm):
+    ...     actions = ContainerGridForm.actions.copy()
+    ...     def template(self):
+    ...         res = u''
+    ...         forms = list(self.getForms())
+    ...         forms.sort(lambda x,y: cmp(x.prefix,y.prefix))
+    ...         for form in forms:
+    ...             res += '<div>%s</div>\n' % form.render()
+    ...         return res
+
+    >>> c = SampleContainer()
+    >>> for i in range(2):
+    ...     o = SampleContainer()
+    ...     interface.directlyProvides(o,IAttributeAnnotatable)
+    ...     c[u'name of %s' % i]=o
+
+    >>> request = TestRequest()
+    >>> view = ContainerTest(c,request)
+    >>> print view()
+    <div...<td>name of 0</td>...<td>name of 1</td>...             
+
+
+
+
+
+    
+

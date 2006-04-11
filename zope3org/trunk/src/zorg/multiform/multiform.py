@@ -107,7 +107,7 @@ class ItemFormBase(form.FormBase):
     newInputMode = None
     form_fields=[]
     actions = []
-
+    
     def __init__(self,context,request,parentForm):
         # we have to copy the default fields, so that we can mutate
         # them in our instance
@@ -140,7 +140,6 @@ class MultiFormBase(form.FormBase):
     implements(IMultiForm)
     itemFormFactory = ItemFormBase
     subForms={}
-    subFormsList = []
     form_fields = []
     actions = []
     subActionNames = []
@@ -186,16 +185,20 @@ class MultiFormBase(form.FormBase):
 
     def setUpForms(self, *args, **kw):
         self.subForms = {}
-        self.subFormsList = []
         for name, item in self.context.items():
             inputMode = self.subFormInputMode.get(name,self.itemFormFactory.inputMode)
             self.setUpForm(name, item, inputMode)
-            self.subFormsList.append(name)
         self.refreshSubActionNames()
 
     def getForms(self):
-        for name in self.subFormsList:
+        # we have to use the keys here to support all actions that
+        # modifies the keys of our mapping, e.g. rename, delete
+        for name in self.context.keys():
+            if not self.subForms.has_key(name):
+                self.setUpForm(name,self.context[name],
+                               self.itemFormFactory.inputMode)
             yield self.subForms[name]
+
 
     def refreshSubActionNames(self):
         availableActions = set()
