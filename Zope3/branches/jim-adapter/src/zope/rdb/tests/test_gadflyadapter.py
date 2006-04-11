@@ -21,9 +21,9 @@ from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.interface.verify import verifyObject
 
-from zope.app.rdb import DatabaseAdapterError
-from zope.app.rdb.interfaces import IZopeConnection, IZopeCursor
-from zope.app.rdb.gadflyda import GadflyAdapter, setGadflyRoot
+from zope.rdb import DatabaseAdapterError
+from zope.rdb.interfaces import IZopeConnection, IZopeCursor
+from zope.rdb.gadflyda import GadflyAdapter, setGadflyRoot
 
 
 class GadflyTestBase(TestCase):

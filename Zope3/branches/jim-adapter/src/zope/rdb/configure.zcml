@@ -4,40 +4,40 @@
     >
 
   <permission
-      id="zope.app.rdb.Use"
-      title="[zope.app.rdb.Use] Use Database Connections"
+      id="zope.rdb.Use"
+      title="[zope.rdb.Use] Use Database Connections"
       />
 
-  <class class="zope.app.rdb.ZopeConnection">
+  <class class="zope.rdb.ZopeConnection">
     <require
         permission="zope.ManageContent"
-        interface="zope.app.rdb.interfaces.IZopeConnection"
+        interface="zope.rdb.interfaces.IZopeConnection"
         />
   </class>
 
-  <class class="zope.app.rdb.ZopeCursor">
+  <class class="zope.rdb.ZopeCursor">
     <require
         permission="zope.ManageContent"
-        interface="zope.app.rdb.interfaces.IZopeCursor"
+        interface="zope.rdb.interfaces.IZopeCursor"
         />
   </class>
 
-  <class class="zope.app.rdb.Row">
+  <class class="zope.rdb.Row">
     <require
         permission="zope.ManageContent"
         attributes="__getattr__"
         />
   </class>
 
-  <localUtility class="zope.app.rdb.ZopeDatabaseAdapter">
+  <localUtility class="zope.rdb.ZopeDatabaseAdapter">
 
     <require
-        permission="zope.app.rdb.Use"
-        interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" />
+        permission="zope.rdb.Use"
+        interface="zope.rdb.interfaces.IZopeDatabaseAdapter" />
 
   </localUtility>
 
-  <class class="zope.app.rdb.ResultSet">
+  <class class="zope.rdb.ResultSet">
     <!-- require zope.View for all list methods -->
     <require
         permission="zope.View"

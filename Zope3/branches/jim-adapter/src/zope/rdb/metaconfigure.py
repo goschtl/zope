@@ -16,7 +16,7 @@
 $Id$
 """
 import zope.component
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter
+from zope.rdb.interfaces import IZopeDatabaseAdapter
 
 
 def connectionhandler(_context, name, component, dsn):

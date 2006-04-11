@@ -3,7 +3,7 @@
    xmlns="http://namespaces.zope.org/browser">
 
   <tool
-      interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
+      interface="zope.rdb.interfaces.IZopeDatabaseAdapter"
       title="Database Adapter"
       description="Database Adapters are used to connect to external
       relational databases."
@@ -15,12 +15,12 @@
 
   <view
       name="+"
-      for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
+      for="zope.rdb.interfaces.IZopeDatabaseAdapter"
       class="zope.app.container.browser.adding.Adding"
       permission="zope.ManageServices" />
 
   <pages
-      for="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
+      for="zope.rdb.interfaces.IManageableZopeDatabaseAdapter"
       permission="zope.ManageServices"
       class=".rdb.Connection">
 
@@ -33,7 +33,7 @@
   </pages>
 
   <pages
-      for="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
+      for="zope.rdb.interfaces.IManageableZopeDatabaseAdapter"
       permission="zope.ManageServices"
       class=".rdb.TestSQL">
     <page name="testForm.html" template="rdbtestsql.pt"
@@ -43,7 +43,7 @@
   </pages>
 
   <defaultView 
-      for="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
+      for="zope.rdb.interfaces.IManageableZopeDatabaseAdapter"
       name="editForm.html" />
 
   <zope:include file="gadflyda.zcml" />

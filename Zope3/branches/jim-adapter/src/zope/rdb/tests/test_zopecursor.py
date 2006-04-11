@@ -16,9 +16,9 @@
 $Id$
 """
 from unittest import TestCase, main, makeSuite
-from zope.app.rdb import ZopeConnection
-from zope.app.rdb import ZopeCursor
-from zope.app.rdb.tests.stubs import *
+from zope.rdb import ZopeConnection
+from zope.rdb import ZopeCursor
+from zope.rdb.tests.stubs import *
 
 
 class MyConnectionStub(ConnectionStub):

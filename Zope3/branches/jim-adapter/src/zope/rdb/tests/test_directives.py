@@ -19,10 +19,10 @@ import unittest
 from zope.component.testing import PlacelessSetup
 from zope.component import getUtilitiesFor, queryUtility
 from zope.configuration import xmlconfig
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter
-from zope.app.rdb.tests.test_zopedatabaseadapter import DAStub
-from zope.app.rdb import ZopeConnection
-import zope.app.rdb.tests
+from zope.rdb.interfaces import IZopeDatabaseAdapter
+from zope.rdb.tests.test_zopedatabaseadapter import DAStub
+from zope.rdb import ZopeConnection
+import zope.rdb.tests
 
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
@@ -33,7 +33,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         connectionstub = queryUtility(IZopeDatabaseAdapter, 'stub')
         self.assertEqual(connectionstub, None)
 
-        self.context = xmlconfig.file("rdb.zcml", zope.app.rdb.tests)
+        self.context = xmlconfig.file("rdb.zcml", zope.rdb.tests)
         connectionstub = queryUtility(IZopeDatabaseAdapter, 'stub')
         connection = connectionstub()
         self.assertEqual(connectionstub.__class__, DAStub)

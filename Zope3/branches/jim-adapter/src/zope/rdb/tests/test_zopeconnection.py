@@ -17,9 +17,9 @@ $Id$
 """
 from unittest import TestCase, main, makeSuite
 import transaction
-from zope.app.rdb import ZopeConnection
-from zope.app.rdb.interfaces import IZopeCursor
-from zope.app.rdb.tests.stubs import ConnectionStub, TypeInfoStub
+from zope.rdb import ZopeConnection
+from zope.rdb.interfaces import IZopeCursor
+from zope.rdb.tests.stubs import ConnectionStub, TypeInfoStub
 
 class ZopeConnectionTests(TestCase):
 

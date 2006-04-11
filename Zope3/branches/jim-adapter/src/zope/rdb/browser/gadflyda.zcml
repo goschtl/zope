@@ -4,9 +4,9 @@
 
   <addform
       name="AddGadflyDA"
-      schema="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
+      schema="zope.rdb.interfaces.IManageableZopeDatabaseAdapter"
       label="Add Gadfly Database Adapter"
-      content_factory="zope.app.rdb.gadflyda.GadflyAdapter"
+      content_factory="zope.rdb.gadflyda.GadflyAdapter"
       arguments="dsn"
       fields="dsn"
       permission="zope.ManageContent" />
@@ -14,7 +14,7 @@
   <addMenuItem
     title="Gadfly DA" 
     description="A DA for the built-in 100% Pure Python Gadfly Database"
-    class="zope.app.rdb.gadflyda.GadflyAdapter"
+    class="zope.rdb.gadflyda.GadflyAdapter"
     permission="zope.ManageServices"
     view="AddGadflyDA"
   />

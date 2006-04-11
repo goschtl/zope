@@ -21,7 +21,7 @@ from unittest import TestCase, TestSuite, main, makeSuite
 class TestResultSet(TestCase):
 
     def testPickling(self):
-        from zope.app.rdb import ResultSet
+        from zope.rdb import ResultSet
         from pickle import dumps, loads
 
         columns = ('foo', 'bar')
@@ -35,7 +35,7 @@ class TestResultSet(TestCase):
         self.assertEqual(rs, unpickled)
 
     def test__cmp__(self):
-        from zope.app.rdb import ResultSet
+        from zope.rdb import ResultSet
         from copy import deepcopy
 
         # See if equal to a copy

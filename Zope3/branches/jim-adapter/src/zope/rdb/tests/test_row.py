@@ -21,7 +21,7 @@ from unittest import TestCase, main, makeSuite
 class RowTests(TestCase):
 
     def test_RowClassFactory(self):
-        from zope.app.rdb import RowClassFactory
+        from zope.rdb import RowClassFactory
 
         columns = ('food', 'name')
         data = ('pizza', 'john')
@@ -33,7 +33,7 @@ class RowTests(TestCase):
         self.failUnless(ob.name == 'john', "bad row class attribute (2)")
 
     def test_RowClassFactory_Proxied(self):
-        from zope.app.rdb import RowClassFactory
+        from zope.rdb import RowClassFactory
         from zope.security.proxy import ProxyFactory
         from zope.security.interfaces import ForbiddenAttribute
         from zope.security.interfaces import IChecker
@@ -63,7 +63,7 @@ class RowTests(TestCase):
         self.assert_(IChecker.providedBy(ob.__Security_checker__))
 
     def test__cmp__(self):
-        from zope.app.rdb import RowClassFactory
+        from zope.rdb import RowClassFactory
 
         columns = ('food', 'name')
         data = ('pizza', 'john')
@@ -91,7 +91,7 @@ class RowTests(TestCase):
         self.assert_(ob < ob4, "cmp with different data")
 
     def test_InstanceOnlyDescriptor(self):
-        from zope.app.rdb import InstanceOnlyDescriptor
+        from zope.rdb import InstanceOnlyDescriptor
         inst = object()  # could be anything
         cls = object  # could be any class
         d = InstanceOnlyDescriptor()

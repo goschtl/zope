@@ -20,7 +20,7 @@ import os, shutil
 import tempfile, threading
 from unittest import TestCase, TestSuite, main, makeSuite
 
-from zope.app.rdb.gadflyda import GadflyAdapter, setGadflyRoot
+from zope.rdb.gadflyda import GadflyAdapter, setGadflyRoot
 
 class GadflyTestBase(TestCase):
 

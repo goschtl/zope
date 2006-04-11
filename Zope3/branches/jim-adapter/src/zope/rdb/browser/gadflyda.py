@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.app.rdb.browser.rdb import AdapterAdd
+from zope.rdb.browser.rdb import AdapterAdd
 
 class GadflyDAAddView(AdapterAdd):
     """Provide a user interface for adding a Gadfly DA"""

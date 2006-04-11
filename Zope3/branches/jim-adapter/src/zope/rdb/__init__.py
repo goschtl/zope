@@ -32,10 +32,10 @@ from zope.security.checker import NamesChecker
 
 from zope.interface import implements
 from zope.app.container.contained import Contained
-from zope.app.rdb.interfaces import DatabaseException, DatabaseAdapterError
-from zope.app.rdb.interfaces import IResultSet
-from zope.app.rdb.interfaces import IZopeConnection, IZopeCursor
-from zope.app.rdb.interfaces import IManageableZopeDatabaseAdapter
+from zope.rdb.interfaces import DatabaseException, DatabaseAdapterError
+from zope.rdb.interfaces import IResultSet
+from zope.rdb.interfaces import IZopeConnection, IZopeCursor
+from zope.rdb.interfaces import IManageableZopeDatabaseAdapter
 from zope.thread import local
 
 

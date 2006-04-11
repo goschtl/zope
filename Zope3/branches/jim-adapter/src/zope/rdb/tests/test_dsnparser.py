@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest
-from zope.app.rdb import parseDSN
+from zope.rdb import parseDSN
 
 
 class TestDSNParser(unittest.TestCase):

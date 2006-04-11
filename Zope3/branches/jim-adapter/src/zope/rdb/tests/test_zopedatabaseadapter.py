@@ -16,8 +16,8 @@
 $Id$
 """
 import unittest
-from zope.app.rdb import ZopeDatabaseAdapter
-from zope.app.rdb import ZopeConnection
+from zope.rdb import ZopeDatabaseAdapter
+from zope.rdb import ZopeConnection
 from threading import Thread
 
 class ConnectionStub(object):
@@ -69,7 +69,7 @@ class TestZopeDatabaseAdapter(unittest.TestCase):
         self.assertEqual(ZopeConnection, conn.__class__)
 
     def testGetConverter(self):
-        from zope.app.rdb import identity
+        from zope.rdb import identity
         da = self._da
         conv = da.getConverter('any')
         self.assert_(conv is identity, "default converter is wrong")

@@ -15,8 +15,8 @@
 
 $Id$
 """
-from zope.app.rdb.interfaces import IManageableZopeDatabaseAdapter
-from zope.app.rdb import queryForResults
+from zope.rdb.interfaces import IManageableZopeDatabaseAdapter
+from zope.rdb import queryForResults
 
 class TestSQL(object):
 

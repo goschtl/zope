@@ -21,17 +21,17 @@ import unittest
 
 from zope.configuration import xmlconfig
 
-import zope.app.rdb.tests
-from zope.app.rdb.gadflyda import getGadflyRoot
+import zope.rdb.tests
+from zope.rdb.gadflyda import getGadflyRoot
 
 class DirectiveTest(unittest.TestCase):
 
     def test_gadflyRoot(self):
 
         self.assertEqual(getGadflyRoot(), 'gadfly')
-        self.context = xmlconfig.file("gadflyroot.zcml", zope.app.rdb.tests)
+        self.context = xmlconfig.file("gadflyroot.zcml", zope.rdb.tests)
         self.assert_(
-            os.path.join('zope', 'app', 'rdb', 'tests', 'test', 'dir')
+            os.path.join('zope', 'rdb', 'tests', 'test', 'dir')
             in getGadflyRoot()
             )
 

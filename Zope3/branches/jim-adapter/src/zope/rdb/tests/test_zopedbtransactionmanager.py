@@ -21,9 +21,9 @@ from transaction.interfaces import IDataManager
 from transaction.tests.abstestIDataManager import IDataManagerTests
 
 from zope.interface.verify import verifyObject
-from zope.app.rdb import ZopeDBTransactionManager
-from zope.app.rdb import ZopeConnection
-from zope.app.rdb.tests.stubs import ConnectionStub, TypeInfoStub
+from zope.rdb import ZopeDBTransactionManager
+from zope.rdb import ZopeConnection
+from zope.rdb.tests.stubs import ConnectionStub, TypeInfoStub
 
 
 class TxnMgrTest(IDataManagerTests, TestCase):
@@ -85,7 +85,7 @@ class TwoTxnMgrSortKeyTest(TestCase):
 def test_suite():
     from doctest import DocTestSuite
     return TestSuite((
-        DocTestSuite('zope.app.rdb'),
+        DocTestSuite('zope.rdb'),
         makeSuite(TxnMgrTest),
         makeSuite(TwoTxnMgrSortKeyTest),
         ))

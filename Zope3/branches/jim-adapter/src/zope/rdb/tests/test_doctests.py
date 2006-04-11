@@ -19,7 +19,7 @@ import unittest
 from zope.testing.doctestunit import DocTestSuite
 
 def test_suite():
-    return DocTestSuite('zope.app.rdb')
+    return DocTestSuite('zope.rdb')
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

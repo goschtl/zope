@@ -18,7 +18,7 @@ $Id: metaconfigure.py 25177 2004-06-02 13:17:31Z jim $
 from zope.configuration.fields import Path
 from zope.interface import Interface
 
-from zope.app.rdb.gadflyda import setGadflyRoot 
+from zope.rdb.gadflyda import setGadflyRoot 
 
 class IGadflyRoot(Interface):
     """This directive creates a globale connection to an RDBMS."""

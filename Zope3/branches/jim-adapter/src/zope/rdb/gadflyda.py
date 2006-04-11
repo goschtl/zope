@@ -18,9 +18,9 @@ $Id$
 import gadfly
 import os
 
-from zope.app.rdb import ZopeDatabaseAdapter, parseDSN
-from zope.app.rdb import DatabaseException, DatabaseAdapterError
-from zope.app.rdb import ZopeConnection, ZopeCursor
+from zope.rdb import ZopeDatabaseAdapter, parseDSN
+from zope.rdb import DatabaseException, DatabaseAdapterError
+from zope.rdb import ZopeConnection, ZopeCursor
 
 GadflyError = DatabaseAdapterError
 
