@@ -26,6 +26,11 @@ modules_aliases_35 = {
     'zope.app.datetimeutils': 'zope.datetime',
     'zope.app.timezones': 'zope.datetime.timezones',
 
+    'zope.app.rdb': 'zope.rdb',
+    'zope.app.rdb.interfaces': 'zope.rdb.interfaces',
+    'zope.app.rdb.browser': 'zope.rdb.browser',
+    'zope.app.rdb.gadfly': 'zope.rdb.gadfly',
+    
     'zope.app.size': 'zope.size',
     'zope.app.size.interfaces': 'zope.size.interfaces',
 

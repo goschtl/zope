@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest
-from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 from zope.component import getUtilitiesFor, queryUtility
 from zope.configuration import xmlconfig
 from zope.app.rdb.interfaces import IZopeDatabaseAdapter
