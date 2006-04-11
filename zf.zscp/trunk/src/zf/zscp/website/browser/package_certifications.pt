@@ -3,7 +3,8 @@
 	<body>
 		<div metal:fill-slot="body"
 					tal:define="global pageversion string: 0.8;
-											info view/info">
+											info view/info;
+											certifications view/certifications">
 			
 			<div id="documentFirstHeading">Release Detail for: TODO</div>
 			<div id="package-wrapper">
@@ -23,19 +24,56 @@
 				</div>
 				<!-- end package tabs -->
 				<!-- begin package body -->
-				<div id="package-info" class="packageBody">
-					<div id="certifiedSilver" class="certSeal">&nbsp;
-					</div>
-					<div class="infoRow">
+				<div id="package-info" class="packageBody"
+							tal:define="packageName info/packageName;
+													 name info/name">
+					<div class="infoRow" tal:condition="python:packageName and name">
 						<label>Name:</label>
-						<div class="infoString">zope.search (Zope Search)</div>
+						<div class="infoString">
+							<tal:block content="packageName">zope.search</tal:block>&nbsp;
+							(<tal:block content="name">Zope Search</tal:block>)
+						</div>
 					</div>
-					<div class="infoRow">
-						<label>Description:</label>
-						<div class="infoString"> The Zope search package provides
-							generic user interface components, such as live search and
-							advanced search forms. </div>
-					</div>
+
+					<!-- start certifications -->
+					<tal:block repeat="cert certifications">
+						<tal:block define="action cert/action;
+															 sourceLevel cert/sourceLevel;
+															 targetLevel cert/targetLevel;
+															 date cert/date;
+															 certificationManger cert/certificationManger;
+															 comments cert/comments">
+							<div id="certifiedSilver" class="certSeal">&nbsp;
+							</div>
+		
+							<div class="infoRow">
+								<label>Action:</label>
+								<div class="infoString"
+											tal:content="action">Action</div>
+							</div>
+							<div class="infoRow">
+								<label>Source Level:</label>
+								<div class="infoString"
+											tal:content="sourceLevel">Action</div>
+							</div>
+							<div class="infoRow">
+								<label>Date:</label>
+								<div class="infoString"
+											tal:content="date">January 31, 2006</div>
+							</div>
+							<div class="infoRow">
+								<label>Certification Manger:</label>
+								<div class="infoString"
+											tal:content="certificationManger">January 31, 2006</div>
+							</div>
+							<div class="infoRow">
+								<label>Comments:</label>
+								<div class="infoString"
+											tal:content="comments">January 31, 2006</div>
+							</div>
+						</tal:block>
+					</tal:block>
+					<!-- end releases -->
 				</div>
 				<!-- end package body -->
 			</div>

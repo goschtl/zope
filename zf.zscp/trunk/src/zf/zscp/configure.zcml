@@ -2,10 +2,61 @@
    xmlns="http://namespaces.zope.org/zope"
    i18n_domain="zf.zscp">
 
+  <!-- Package -->
+  <class class="zf.zscp.package.Package">
+    <require
+        permission="zope.Public"
+        attributes="__name__ __parent__ name publication releases 
+                    certifications"
+        />
+    <require
+        permission="zope.Public"
+        set_attributes="__name__ __parent__"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_attributes="name publication releases certifications"
+        />
+  </class>
+
+  <!-- Certification -->
+  <class class="zf.zscp.certification.Certification">
+    <require
+        permission="zope.Public"
+        interface="zf.zscp.interfaces.ICertification"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema="zf.zscp.interfaces.ICertification"
+        />
+  </class>
+
+  <!-- Publication -->
+  <class class="zf.zscp.publication.Publication">
+    <require
+        permission="zope.Public"
+        interface="zf.zscp.interfaces.IPublication"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema="zf.zscp.interfaces.IPublication"
+        />
+  </class>
+
+  <!-- Release -->
+  <class class="zf.zscp.release.Release">
+    <require
+        permission="zope.Public"
+        interface="zf.zscp.interfaces.IRelease"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema="zf.zscp.interfaces.IRelease"
+        />
+  </class>
+
   <include package=".doc" />  
   <include package=".skin" />  
-  <include package=".website" /> 
-  <include file="publication.zcml" />  
-  <include file="package.zcml" /> 
+  <include package=".website" />  
 
 </configure>

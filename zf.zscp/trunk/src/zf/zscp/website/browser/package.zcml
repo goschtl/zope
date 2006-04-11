@@ -34,4 +34,12 @@
       layer="zf.zscp.skin.IZSCPLayer"
       />
 
+  <page
+      name="certifications.html"
+      for="zf.zscp.interfaces.IPackage"
+      class=".package.PackageCertifications"
+      permission="zope.Public"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
 </configure>

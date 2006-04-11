@@ -141,13 +141,35 @@ class PackageCertifications(page.Page):
     template = ViewPageTemplateFile('package_certifications.pt')
 
     def update(self):
-        publication = self.context.publication
         info = {}
+
+        # publication info
+        publication = self.context.publication
+        info['packageName'] = publication.packageName
+        info['name'] = publication.name
         self._info = info
+
+        # certification info
+        certifications = []
+        certs = self.context.certifications
+        for cert in certs:
+            info = {}
+            info['action'] = cert.action
+            info['sourceLevel'] = cert.sourceLevel
+            info['targetLevel'] = cert.targetLevel
+            info['date'] = cert.date
+            info['certificationManger'] = cert.certificationManger
+            info['comments'] = cert.comments
+            certifications.append(info)
+        self._certifications = certifications
 
     @property
     def info(self):
         return self._info
+
+    @property
+    def certifications(self):
+        return self._certifications
 
     def __call__(self):
         self.update()
