@@ -37,13 +37,13 @@ are defined in the multiform (parent) class called ``Edit`` and
     ...         render_context=True)
     ...     
     ...     @multiform.parentAction(u"Save",
-    ...     condition=multiform.isParentFormInputMode,inputMode=True)
+    ...     condition=multiform.anySubFormInputMode,inputMode=True)
     ...     def handle_save_action(self, action, data):
     ...         form.applyChanges(self.context, self.form_fields,
     ...         data, self.adapters)
     ...         self.newInputMode = False
     ...         
-    ...     @form.action(u"Upper", condition=multiform.isParentFormDisplayMode)
+    ...     @form.action(u"Upper", condition=multiform.allSubFormsDisplayMode)
     ...     def handle_uppercase_action(self, action, data):
     ...			self.context.name = self.context.name.upper()
     ...			
@@ -66,7 +66,7 @@ are defined in the multiform (parent) class called ``Edit`` and
     ...             res += '<div>%s</div>\n' % action.render()
     ...         return res
     ...     
-    ...     @form.action('Edit',condition=multiform.allSubFormDisplayMode)
+    ...     @form.action('Edit',condition=multiform.allSubFormsDisplayMode)
     ...     def handle_edit_action(self, action, data):
     ...         for form in self.subForms.values():
     ...             form.newInputMode = True

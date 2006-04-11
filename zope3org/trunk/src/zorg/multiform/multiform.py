@@ -20,18 +20,12 @@ def isFormDisplayMode(f,action):
 def isFormInputMode(f,action):
     return f.inputMode
 
-def isParentFormDisplayMode(f,action):
-    return not isParentFormInputMode(f,action)
-
-def isParentFormInputMode(f,action):
-    return (True in f.parentForm.subFormInputMode.values())
-
 def anySubFormInputMode(form,action):
     if not IMultiForm.providedBy(form):
         form = form.parentForm
     return (True in form.subFormInputMode.values())
 
-def allSubFormDisplayMode(form,action):
+def allSubFormsDisplayMode(form,action):
     if not IMultiForm.providedBy(form):
         form = form.parentForm
     return not (True in form.subFormInputMode.values())
