@@ -19,9 +19,9 @@ import unittest
 import re
 
 from transaction import commit
-
 from zope.interface import Interface
-from zope.app.component.interface import nameToInterface
+from zope.component.interface import nameToInterface
+
 from zope.app import zapi
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.testing.setup import addUtility

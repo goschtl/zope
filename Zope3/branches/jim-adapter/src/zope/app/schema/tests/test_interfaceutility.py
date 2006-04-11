@@ -21,11 +21,11 @@ from zope.interface import Interface, implements
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
 from zope.component.interfaces import ComponentLookupError
+from zope.component.interface import getInterface, searchInterface
 from zope.traversing.api import traverse
 
 from zope.app.component.interfaces import ILocalUtility
 from zope.app.component.testing import PlacefulSetup
-from zope.app.component.interface import getInterface, searchInterface
 from zope.app.component.interfaces.registration import ActiveStatus
 from zope.app.component.interfaces.registration import InactiveStatus
 from zope.app.component.interfaces.registration import IRegistered

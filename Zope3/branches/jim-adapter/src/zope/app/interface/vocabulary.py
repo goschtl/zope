@@ -21,7 +21,7 @@ from zope.interface import classProvides, providedBy
 from zope.security.proxy import removeSecurityProxy
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm 
 from zope.schema.interfaces import IVocabularyFactory
-from zope.app.component.interface import interfaceToName
+from zope.component.interface import interfaceToName
 
 
 class ObjectInterfacesVocabulary(SimpleVocabulary):

@@ -43,7 +43,7 @@ def test_toolDirective():
     >>> iface['discriminator']
 
     >>> iface['callable'].__module__
-    'zope.app.component.interface'
+    'zope.component.interface'
 
     >>> iface['args'][1].getName()
     'IDummyUtility'

@@ -810,6 +810,8 @@ def test_suite():
         doctest.DocFileSuite('registry.txt', checker=checker,
                              tearDown=tearDownRegistryTests),
         doctest.DocFileSuite('event.txt'),
+        doctest.DocTestSuite('zope.component.interface',
+                             setUp=setUp, tearDown=tearDown),
         ))
 
 if __name__ == "__main__":

@@ -20,9 +20,8 @@ from zope.interface import Interface
 from zope.security.checker import CheckerPublic, Checker
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.xmlrpc import IXMLRPCRequest
+from zope.component.interface import provideInterface
 
-from zope.app import zapi
-from zope.app.component.interface import provideInterface
 from zope.app.component.metaconfigure import handler
 from zope.app.publisher.xmlrpc import MethodPublisher
 

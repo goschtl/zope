@@ -16,12 +16,12 @@
 $Id$
 """
 from zope.component import getUtilitiesFor
+from zope.component.interface import nameToInterface, interfaceToName
 from zope.interface import Interface
 from zope.publisher.browser import BrowserView
 from zope.schema import Choice, List
 from zope.security.proxy import removeSecurityProxy 
 
-from zope.app.component.interface import nameToInterface, interfaceToName
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.form.utility import setUpWidgets
 from zope.app.form.interfaces import IInputWidget
