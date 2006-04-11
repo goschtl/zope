@@ -21,7 +21,7 @@ import unittest
 import threading
 import time
 
-from zope.component
+import zope.component
 from zope.component.testing import PlacelessSetup
 from zope.configuration import xmlconfig
 from zope.interface import implements
@@ -58,8 +58,8 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         self.testMailer = Mailer()
 
         gsm = zope.component.getGlobalSiteManager()
-        gsm.registerUtility(IMailer, Mailer(), "test.smtp")
-        gsm.registerUtility(IMailer, self.testMailer, "test.mailer")
+        gsm.registerUtility(Mailer(), IMailer, "test.smtp")
+        gsm.registerUtility(self.testMailer, IMailer, "test.mailer")
 
         self.context = xmlconfig.file("mail.zcml", zope.app.mail.tests)
         self.orig_maildir = delivery.Maildir
@@ -85,7 +85,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         self.assertEqual(self.mailbox, delivery.queuePath)
 
     def testDirectDelivery(self):
-        delivery = zope.componenet.getUtility(IMailDelivery, "Mail2")
+        delivery = zope.component.getUtility(IMailDelivery, "Mail2")
         self.assertEqual('DirectMailDelivery', delivery.__class__.__name__)
         self.assert_(self.testMailer is delivery.mailer)
 
