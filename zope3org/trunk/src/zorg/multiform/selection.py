@@ -4,6 +4,8 @@ from zope.proxy import ProxyBase, getProxiedObject
 from zope.app.decorator import DecoratorSpecificationDescriptor
 from zope.app.decorator import DecoratedSecurityCheckerDescriptor
 from zope.app.location import location
+from zope.security.checker import NamesChecker,defineChecker
+from zope.security.proxy import removeSecurityProxy
 
 class FormLocationSelection(object):
 
@@ -39,12 +41,15 @@ class FormLocationSelection(object):
         self.context = context
 
     def _setSelected(self,v):
-        key = '_mf_selection.' + self.context.__form__.prefix
-        self.context.__form__.request.form[key]=v
+        key = '_mf_selection.' + removeSecurityProxy(
+            self.context.__form__).prefix
+        removeSecurityProxy(self.context.__form__).request.form[key]=v
 
     def _getSelected(self):
-        key = '_mf_selection.' + self.context.__form__.prefix
-        return self.context.__form__.request.form.get(key,False)
+        key = '_mf_selection.' + removeSecurityProxy(
+            self.context.__form__).prefix
+        return removeSecurityProxy(
+            self.context.__form__).request.form.get(key,False)
 
     selected = property(_getSelected ,_setSelected)
         
@@ -52,6 +57,9 @@ class FormLocationSelection(object):
 class FormLocationProxy(ProxyBase):
 
     __doc__ = """Form Location-object proxy
+
+    XXX the attributes of the form are not available because of a
+    security proxy issue
 
     This is a non-picklable proxy that can be put around objects that
     implement `ILocation`.
@@ -118,5 +126,9 @@ class FormLocationProxy(ProxyBase):
     __providedBy__ = DecoratorSpecificationDescriptor()
 
     __Security_checker__ = DecoratedSecurityCheckerDescriptor()
+
+formLocationChecker = NamesChecker(['__form__'])
+defineChecker(FormLocationProxy, formLocationChecker)
+
 
 

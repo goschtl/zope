@@ -7,6 +7,7 @@
                zope.formlib.interfaces.IForm"
           provides=".interfaces.IFormLocation"
           factory=".selection.FormLocationProxy"
+          trusted="true"
           />
 
  <adapter for=".interfaces.IFormLocation"
