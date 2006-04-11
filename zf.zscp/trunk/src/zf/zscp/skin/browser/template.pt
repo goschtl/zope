@@ -77,7 +77,7 @@
         <div id="footer-left">
             This page conforms to revision <div tal:replace="pageversion | string: n/a">0.8</div>
 			of the normative document. The latest version can be found 
-			<a href="@@about.html">here</a>.
+			<a href="@@ProcessAndRepository.html">here</a>.
         </div>
         <div id="footer-right">
             Design by <a href="http://www.adaptivewave.com" target="_blank">AdaptiveWave</a>
