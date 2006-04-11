@@ -21,16 +21,15 @@ import unittest
 import threading
 import time
 
+from zope.component
 from zope.component.testing import PlacelessSetup
 from zope.configuration import xmlconfig
 from zope.interface import implements
 
-from zope.app import zapi
 from zope.app.mail.interfaces import \
      IMailDelivery, IMailer, ISMTPMailer
 from zope.app.mail.delivery import QueueProcessorThread
 from zope.app.mail import delivery
-from zope.app.testing import ztapi
 import zope.app.mail.tests
 
 
@@ -58,8 +57,9 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         super(DirectivesTest, self).setUp()
         self.testMailer = Mailer()
 
-        ztapi.provideUtility(IMailer, Mailer(), name="test.smtp")
-        ztapi.provideUtility(IMailer, self.testMailer, name="test.mailer")
+        gsm = zope.component.getGlobalSiteManager()
+        gsm.registerUtility(IMailer, Mailer(), "test.smtp")
+        gsm.registerUtility(IMailer, self.testMailer, "test.mailer")
 
         self.context = xmlconfig.file("mail.zcml", zope.app.mail.tests)
         self.orig_maildir = delivery.Maildir
@@ -80,17 +80,17 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         shutil.rmtree(self.mailbox, True)
 
     def testQueuedDelivery(self):
-        delivery = zapi.getUtility(IMailDelivery, "Mail")
+        delivery = zope.component.getUtility(IMailDelivery, "Mail")
         self.assertEqual('QueuedMailDelivery', delivery.__class__.__name__)
         self.assertEqual(self.mailbox, delivery.queuePath)
 
     def testDirectDelivery(self):
-        delivery = zapi.getUtility(IMailDelivery, "Mail2")
+        delivery = zope.componenet.getUtility(IMailDelivery, "Mail2")
         self.assertEqual('DirectMailDelivery', delivery.__class__.__name__)
         self.assert_(self.testMailer is delivery.mailer)
 
     def testSMTPMailer(self):
-        mailer = zapi.getUtility(IMailer, "smtp")
+        mailer = zope.component.getUtility(IMailer, "smtp")
         self.assert_(ISMTPMailer.providedBy(mailer))
 
 
