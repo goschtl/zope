@@ -52,6 +52,10 @@ selectable items in our order grid.
     >>> def isSubFormDisplayMode(form,action):
     ...     return not form.inputMode
 
+    >>> def allSubFormsDisplayMode(form,action):
+    ...     return not (True in form.parentForm.subFormInputMode.values())
+
+
     >>> class OrderForm(gridform.GridItemFormBase):
     ...     inputMode=False
     ...     forceInput=['selected'] 
@@ -70,7 +74,7 @@ selectable items in our order grid.
     ...         self.newInputMode = False
     ...         
     ...     @multiform.parentAction('Edit',
-    ...         condition=isSubFormDisplayMode)
+    ...         condition=allSubFormsDisplayMode)
     ...     def handle_edit_action(self, action, data):
     ...         if isSelected(self,action):
     ...             self.newInputMode = True

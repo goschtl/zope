@@ -18,6 +18,7 @@ def isFormDisplayMode(f,action):
     return not isFormInputMode(f,action)
     
 def isFormInputMode(f,action):
+    return not f.inputMode
     if len(f.subFormInputMode) == 0:
         return f.inputMode
     else:
@@ -27,11 +28,7 @@ def isParentFormDisplayMode(f,action):
     return not isParentFormInputMode(f,action)
 
 def isParentFormInputMode(f,action):
-    parentForm = f.parentForm
-    if len(parentForm.subFormInputMode) == 0:
-        return parentForm.inputMode
-    else:
-        return (True in parentForm.subFormInputMode.values())
+    return (True in f.parentForm.subFormInputMode.values())
 
 
 class ItemAction(form.Action):
