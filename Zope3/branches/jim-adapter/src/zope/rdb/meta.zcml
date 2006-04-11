@@ -5,9 +5,15 @@
   <meta:directive 
       namespace="http://namespaces.zope.org/rdb"
       name="provideConnection" 
-      schema=".metadirectives.IProvideConnectionDirective"
-      handler=".metaconfigure.connectionhandler" />
+      schema=".zcml.IProvideConnectionDirective"
+      handler=".zcml.connectionhandler"
+      />
 
-  <include file="gadfly-meta.zcml" />
+  <meta:directive 
+      namespace="http://namespaces.zope.org/rdb"
+      name="gadflyRoot" 
+      schema=".gadflyzcml.IGadflyRoot"
+      handler=".gadflyzcml.gadflyRootHandler"
+      />
 
 </configure>
