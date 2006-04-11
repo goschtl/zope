@@ -11,6 +11,7 @@ import interfaces
 import gridform
 import multiform
 import selection
+import sort
 from zope.formlib import form
 
 def setUp(test):
@@ -70,7 +71,12 @@ def setUp(test):
         [interfaces.IFormLocation],
         interfaces.ISelection
         )
-    
+    component.provideAdapter(
+        sort.SchemaSorter,
+        [zope.interface.Interface,
+         zope.schema.interfaces.IField],
+        interfaces.ISorter
+        )    
     component.provideAdapter(gridform.default_grid_template,
                              name="default")
     component.provideAdapter(gridform.default_griditem_template,

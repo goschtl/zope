@@ -25,7 +25,7 @@ Let's define a simple content object
     ...         self.name = name
     ...         self.__name__= name
 
-    >>> orderMapping = dict([('n%s'%k,Order(k,name='n%s'%k)) for k in range(2)])
+    >>> orderMapping = dict([('n%s'%k,Order(k,name='n%s'%k)) for k in range(4)])
 
 Now we use the ``GridForm`` as a base class to display orders in
 tabular form. Additionally to the IOrder schema the ISelection schema
@@ -115,6 +115,7 @@ because we always want checkboxes to select some items.
     <div><input ... name="form.n1.selected" type="checkbox" ...  /></div>
     <div>1</div>
     <div>n1</div>
+    ...
     </div>
 
 Also the edit action should be available.
@@ -141,6 +142,7 @@ Now we are going to select some items. And the checkbox of the ``selected``
     <div><input... checked="checked" ... name="form.n1.selected" ... /></div>
     <div>1</div>
     <div>n1</div>
+    ...
     </div>
 
 By using the Edit action we can now switch all selected item forms to
@@ -150,6 +152,8 @@ input mode.
     >>> request.form['form.actions.edit']=u''
     >>> request.form['form.n0.selected.used']=u''
     >>> request.form['form.n1.selected']=u'on'
+    >>> request.form['form.n2.selected.used']=u''
+    >>> request.form['form.n3.selected.used']=u''
     >>> gf = OrdersForm(orderMapping,request)
     >>> res = gf()
     >>> ISelection(gf.subForms['n1'].context).selected
@@ -164,6 +168,7 @@ input mode.
     <div><input... checked="checked" ... name="form.n1.selected" ... /></div>
     <div>1</div>
     <div><input... name="form.n1.name" ...</div>
+    ...
     </div>
 
 Also the edit action should be disabled now and the save action should
@@ -189,4 +194,86 @@ We call the singleedit to edit a single row.
     >>> request.form['form.n1.selected.used']=u''
     >>> request.form['form.n1.actions.singleedit']=u''
     >>> gf = OrdersForm(orderMapping,request)
-    >>> res = gf()  
+    >>> res = gf()
+
+The gridform class is able to handle batch_start and batch_size. Let us reduce
+the output.
+
+    >>> request = TestRequest()
+    >>> request.form['form.handle.batch_start']=1
+    >>> request.form['form.handle.batch_size']=2
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> gf.update()
+    >>> print gf.render()
+    <div>
+    <div><input ... name="form.n1.selected" type="checkbox" ...  /></div>
+    <div>1</div>
+    <div>n1</div>
+    </div>
+    <div>
+    <div><input ... name="form.n2.selected" type="checkbox" ...  /></div>
+    <div>2</div>
+    <div>n2</div>
+    </div>    
+
+Check the results of fraktal informations about batch_size and batch_start:
+
+    >>> request = TestRequest()
+    >>> request.form['form.handle.batch_start']=1
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> gf.update()
+    >>> sorted([name for name in gf.subForms])
+    ['n1', 'n2', 'n3']
+    >>> request = TestRequest()
+    >>> request.form['form.handle.batch_size']=2
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> gf.update()
+    >>> sorted([name for name in gf.subForms])
+    ['n0', 'n1']
+
+
+Sorting
+-------
+We can sort the grid with the informations field name (string) and
+reverse (bool).
+
+    >>> class Orders2Form(gridform.GridFormBase):
+    ...     itemFormFactory=OrderForm
+    ...     def template(self):
+    ...         res = u''
+    ...         for form in self.getForms():
+    ...             res += '<div>%s</div>\n' % form.render()
+    ...         return res
+    ...         
+    ...     @form.action('Cancel',condition=multiform.isFormInputMode)
+    ...     def handle_cancel_action(self, action, data):
+    ...         for form in self.subForms.values():
+    ...             form.newInputMode = False
+
+    >>> orderMapping2 = dict([('n%s'%k,Order(4-k,name='n%s'%k)) for k
+    ... in range(4)])
+
+We sort the forms by the value of the column name
+    
+    >>> request = TestRequest()
+    >>> request.form['form.handle.sort_on']=u'name'
+    >>> gf = Orders2Form(orderMapping2,request)
+    >>> gf.update()
+    >>> [(form.context.identifier,
+    ...   form.context.name) for form in gf.getForms()]
+    [(4, 'n0'), (3, 'n1'), (2, 'n2'), (1, 'n3')]
+
+and reserve.
+
+    >>> request = TestRequest()
+    >>> request.form['form.handle.sort_on']=u'name'
+    >>> request.form['form.handle.sort_reverse']=u'on'
+    >>> gf = Orders2Form(orderMapping2,request)
+    >>> gf.update()
+    >>> [(form.context.identifier,
+    ...   form.context.name) for form in gf.getForms()]
+    [(1, 'n3'), (2, 'n2'), (3, 'n1'), (4, 'n0')]
+
+TODO:  
+-----
+- test singleedit, singlesave

@@ -15,6 +15,12 @@
           factory=".selection.FormLocationSelection"
           />
 
+ <adapter for="zope.interface.Interface
+               zope.schema.interfaces.IField"
+          factory=".sort.SchemaSorter"
+          provides=".interfaces.ISorter"
+          />
+
  <!-- namedtemplate for IParentAction -->
  <adapter factory=".multiform.render_submit_button" name="render" />
  

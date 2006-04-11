@@ -140,22 +140,23 @@ class MultiFormBase(form.FormBase):
     implements(IMultiForm)
     itemFormFactory = ItemFormBase
     subForms={}
+    subFormsList = []
     form_fields = []
     actions = []
     subActionNames = []
     subFormInputMode = {}
     selection = []
     actions = []
-    
+
     def update(self):
         self.checkInputMode()
         self.updateSelection()
         super(MultiFormBase,self).update()
         hasErrors = False
-        for form in self.subForms.values():
+        for form in self.getForms():
             form.update()
         refresh = False
-        for form in self.subForms.values():
+        for form in self.getForms():
             if form.newInputMode is not None:
                 newInputMode = form.newInputMode
                 context = self.context[form.context.__name__]
@@ -168,7 +169,6 @@ class MultiFormBase(form.FormBase):
 
     def setUpWidgets(self, *args, **kw):
         super(MultiFormBase,self).setUpWidgets(*args,**kw)
-        self.subForms = {}
         self.setUpForms(*args, **kw)
 
     def setUpForm(self, name, item, inputMode, *args, **kw):
@@ -185,14 +185,21 @@ class MultiFormBase(form.FormBase):
         self.subForms[name] = subForm
 
     def setUpForms(self, *args, **kw):
-        for name,item in self.context.items():
+        self.subForms = {}
+        self.subFormsList = []
+        for name, item in self.context.items():
             inputMode = self.subFormInputMode.get(name,self.itemFormFactory.inputMode)
             self.setUpForm(name, item, inputMode)
+            self.subFormsList.append(name)
         self.refreshSubActionNames()
+
+    def getForms(self):
+        for name in self.subFormsList:
+            yield self.subForms[name]
 
     def refreshSubActionNames(self):
         availableActions = set()
-        for subForm in self.subForms.values():
+        for subForm in self.getForms():
             availableActions.update([action.__name__ for action in \
                                      subForm.availableParentActions()])
         self.subActionNames = []
@@ -263,7 +270,7 @@ class MultiFormBase(form.FormBase):
                 action.__name__ = name
                 yield action
 
-    
+
 class SelectionForm(form.FormBase):
     
     def __init__(self, context, request, form_fields):
