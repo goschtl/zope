@@ -143,8 +143,6 @@ class MultiFormBase(form.FormBase):
     form_fields = []
     actions = []
     subActionNames = []
-    inputMode = None
-    newInputMode = None
     subFormInputMode = {}
     selection = []
     actions = []

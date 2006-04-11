@@ -9,7 +9,9 @@ import zope.publisher.interfaces.browser
 import zope.app.form.interfaces
 import interfaces
 import gridform
+import multiform
 import selection
+from zope.formlib import form
 
 def setUp(test):
     setup.placefulSetUp()
@@ -73,7 +75,9 @@ def setUp(test):
                              name="default")
     component.provideAdapter(gridform.default_griditem_template,
                              name="default")
-
+    component.provideAdapter(form.render_submit_button, name='render')
+    component.provideAdapter(multiform.render_submit_button, name='render')
+    
 def tearDown(test):
     setup.placefulTearDown()
 

@@ -49,7 +49,8 @@ are defined in the multiform (parent) class called ``Edit`` and
     ...			
     ...     def template(self):
     ...         return '\n<div>%s</div>\n' % '</div><div>'.join([w() for w in
-    ...     self.widgets])
+    ...     self.widgets] + [action.render() for action in 
+    ...     self.availableActions()])
 
 
     >>> class OrdersForm(MultiFormBase):
@@ -59,6 +60,10 @@ are defined in the multiform (parent) class called ``Edit`` and
     ...         names = sorted(self.subForms.keys())
     ...         for name in names:
     ...             res += '<div>%s</div>\n' % self.subForms[name].render()
+    ...         for action in self.availableActions():
+    ...             res += '<div>%s</div>\n' % action.render()
+    ...         for action in self.availableSubActions():
+    ...             res += '<div>%s</div>\n' % action.render()
     ...         return res
     ...     
     ...     @form.action('Edit',condition=multiform.isFormDisplayMode)
@@ -78,11 +83,12 @@ So in our new form all widgets are display widgets per default
     >>> pf = OrdersForm(orderMapping,request)
     >>> print pf()
     <div>
-    <div>0</div><div>n0</div>
+    <div>0</div><div>n0</div>...<input...name="form.n0.actions.upper"...
     </div>
     <div>
-    <div>1</div><div>n1</div>
+    <div>1</div><div>n1</div>...<input...name="form.n1.actions.upper"...
     </div>
+    <div><input...name="form.actions.edit"...</div>
 
 And the save action should not be available, due to the reason that there
 are no input widgets in the sub forms.
@@ -98,11 +104,13 @@ Now let's call the edit action to set the widgets to input widgets.
     >>> pf =  OrdersForm(orderMapping,request)
     >>> print pf()
     <div>
-    <div...<input class="textType" ... value="n0" ...
+    <div...<input class="textType" ... value="n0"...
     </div>
     <div>
-    <div...<input class="textType" ... value="n1" ...
-
+    <div...<input class="textType" ... value="n1"...
+    <div><input...name="form.actions.cancel"...</div>
+    <div><input...name="form.actions.save"...</div>
+    
 Now the save action should be available in the subActionNames and
 the cancel action in the multiform actions.
 
@@ -131,11 +139,12 @@ only display widgets are rendered in the results
 
     >>> print result
     <div>
-    <div>0</div><div>newer name 0</div>
+    <div>0</div><div>newer name 0</div>...
     </div>
     <div>
-    <div>1</div><div>newer name 1</div>
+    <div>1</div><div>newer name 1</div>...
     </div>
+    ...
 
 Now we should only have the edit action be available, which is a
 multiform action, therefore not contained in the subActionNames
@@ -163,11 +172,11 @@ should be in display mode again.
 
     >>> print result
     <div>
-    <div>0</div><div>newer name 0</div>
+    <div>0</div><div>newer name 0</div>...
     </div>
     <div>
-    <div>1</div><div>newer name 1</div>
-    </div>
+    <div>1</div><div>newer name 1</div>...
+    </div>...
 
 Now let us call the upper action, which should uppercase the name
 attributes of the items. This action is an action on the items itself,
@@ -180,8 +189,8 @@ mapping.
     >>> result = pf()
     >>> print result
     <div>
-    <div>0</div><div>newer name 0</div>
+    <div>0</div><div>newer name 0</div>...
     </div>
     <div>
-    <div>1</div><div>NEWER NAME 1</div>
-    </div>
+    <div>1</div><div>NEWER NAME 1</div>...
+    </div>...
