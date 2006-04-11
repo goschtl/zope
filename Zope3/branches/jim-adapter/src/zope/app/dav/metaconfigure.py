@@ -17,9 +17,9 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.component.metaconfigure import utility
+from zope.component.zcml import utility
 from zope.interface import directlyProvides
-from interfaces import IDAVNamespace
+from zope.app.dav.interfaces import IDAVNamespace
 
 def interface(_context, for_, interface):
     directlyProvides(interface, IDAVNamespace)

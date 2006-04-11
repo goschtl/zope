@@ -15,8 +15,7 @@
 
 $Id$
 """
-from zope.app.component.metaconfigure import utility
-from zope.app.component.metaconfigure import interface as ifaceDirective
+from zope.component.zcml import utility, interface as ifaceDirective
 from tools import IToolType, IToolConfiguration, ToolConfiguration
 
 

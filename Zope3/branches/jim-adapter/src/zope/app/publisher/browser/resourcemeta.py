@@ -22,9 +22,9 @@ from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.security.checker import CheckerPublic, NamesChecker
+from zope.component.zcml import handler
 
 from zope.app import zapi
-from zope.app.component.metaconfigure import handler
 
 from fileresource import FileResourceFactory, ImageResourceFactory
 from pagetemplateresource import PageTemplateResourceFactory

@@ -16,7 +16,7 @@
 $Id$
 """
 from zope.configuration.exceptions import ConfigurationError
-from zope.app.component.metaconfigure import utility
+from zope.component.zcml import utility
 
 from zope.app.securitypolicy.interfaces import IRole 
 from zope.app.securitypolicy.role import Role 

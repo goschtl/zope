@@ -18,7 +18,7 @@ $Id$
 import warnings
 from zope.interface import directlyProvides
 from zope.schema.interfaces import IVocabularyFactory
-from zope.app.component.metaconfigure import utility
+from zope.component.zcml import utility
 
 class FactoryKeywordPasser(object):
     """Helper that passes additional keywords to the actual factory."""

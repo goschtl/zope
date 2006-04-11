@@ -15,14 +15,12 @@
 
 $Id$
 """
-
 from zope import component
+from zope.component.zcml import utility
 from zope.security.checker import moduleChecker, Checker, defineChecker
 from zope.security.checker import CheckerPublic
 from zope.security.management import setSecurityPolicy
 from zope.security.interfaces import IPermission
-
-from zope.app.component.metaconfigure import utility
 
 from zope.app.security.permission import Permission
 from zope.app.security import principalregistry

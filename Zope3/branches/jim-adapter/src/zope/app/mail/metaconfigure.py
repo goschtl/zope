@@ -17,12 +17,11 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.component import queryUtility
+from zope.component.zcml import handler, proxify, PublicPermission
 from zope.configuration.exceptions import ConfigurationError
-
 from zope.security.checker import InterfaceChecker, CheckerPublic
 
-from zope.app import zapi
-from zope.app.component.metaconfigure import handler, proxify, PublicPermission
 from zope.app.mail.delivery import QueuedMailDelivery, DirectMailDelivery
 from zope.app.mail.delivery import QueueProcessorThread
 from zope.app.mail.interfaces import IMailer, IMailDelivery
@@ -46,7 +45,7 @@ def queuedDelivery(_context, permission, queuePath, mailer, name="Mail"):
 
         handler('registerUtility', delivery, IMailDelivery, name)
 
-        mailerObject = zapi.queryUtility(IMailer, mailer)
+        mailerObject = queryUtility(IMailer, mailer)
         if mailerObject is None:
             raise ConfigurationError("Mailer %r is not defined" %mailer)
 
@@ -64,7 +63,7 @@ def queuedDelivery(_context, permission, queuePath, mailer, name="Mail"):
 def directDelivery(_context, permission, mailer, name="Mail"):
 
     def createDirectDelivery():
-        mailerObject = zapi.queryUtility(IMailer, mailer)
+        mailerObject = queryUtility(IMailer, mailer)
         if mailerObject is None:
             raise ConfigurationError("Mailer %r is not defined" %mailer)
 
