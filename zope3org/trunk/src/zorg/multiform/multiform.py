@@ -152,10 +152,10 @@ class MultiFormBase(form.FormBase):
         self.updateSelection()
         super(MultiFormBase,self).update()
         hasErrors = False
-        for form in self.getForms():
+        for form in list(self.getForms()):
             form.update()
         refresh = False
-        for form in self.getForms():
+        for form in list(self.getForms()):
             if form.newInputMode is not None:
                 newInputMode = form.newInputMode
                 context = self.context[form.context.__name__]
@@ -193,6 +193,11 @@ class MultiFormBase(form.FormBase):
     def getForms(self):
         # we have to use the keys here to support all actions that
         # modifies the keys of our mapping, e.g. rename, delete
+        keys = list(self.context.keys())
+        deleted = filter(lambda x: x not in keys,self.subForms.keys())
+        print "deleted----------",deleted
+        for k in deleted:
+            del(self.subForms[k])
         for name in self.context.keys():
             if not self.subForms.has_key(name):
                 self.setUpForm(name,self.context[name],

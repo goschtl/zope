@@ -115,6 +115,9 @@ class ContainerItemForm(multiform.ItemFormBase):
     @multiform.parentAction("Save", inputMode=True,
                             condition=multiform.anySubFormInputMode)
     def handle_save_action(self, action, data):
+
+        if not isSelected(self,action):
+            return
         if form.applyChanges(self.context, self.form_fields,
                              data, self.adapters):
             notify(ObjectModifiedEvent(self.context))
@@ -128,6 +131,7 @@ class ContainerItemForm(multiform.ItemFormBase):
             self.status = (_("Updated on ${date_time}", mapping=m),)
         else:
             self.status = (_('No changes'),)
+        ISelection(self.context).selected=False    
         self.newInputMode = False
 
 
