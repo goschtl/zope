@@ -53,6 +53,7 @@
     vertical-align: top;
     margin-right: 8px;
     font-weight: bold;
+    white-space: nowrap;
 }
 .packageBody .infoRow {
     margin-bottom: 10px;

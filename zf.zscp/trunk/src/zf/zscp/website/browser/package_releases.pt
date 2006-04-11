@@ -1,45 +1,112 @@
 <html metal:use-macro="context/@@standard_macros/view"
     i18n:domain="zf.zscp">
-	<body>
-		<div metal:fill-slot="body"
-					tal:define="global pageversion string: 0.8;
-											info view/info">
-			
-			<div id="documentFirstHeading">Release Detail for: TODO</div>
-			<div id="package-wrapper">
-				<!-- begin package tabs -->
-				<div id="package-tabs">
-					<div id="tab-info" class="packageTab"><a href="index.html">Info</a>
-					</div>
-					<div id="tab-classifiers" class="packageTab"><a href="classifiers.html">
-						Classifiers</a>
-					</div>
-					<div id="tab-releases" class="packageTab selected"><a href="releases.html">
-						Releases</a>
-					</div>
-					<div id="tab-classifiers" class="packageTab"><a href="certifications.html">
-						Certifications</a>
-					</div>
-				</div>
-				<!-- end package tabs -->
-				<!-- begin package body -->
-				<div id="package-info" class="packageBody">
-					<div id="certifiedSilver" class="certSeal">&nbsp;
-					</div>
-					<div class="infoRow">
-						<label>Name:</label>
-						<div class="infoString">zope.search (Zope Search)</div>
-					</div>
-					<div class="infoRow">
-						<label>Description:</label>
-						<div class="infoString"> The Zope search package provides
-							generic user interface components, such as live search and
-							advanced search forms. </div>
-					</div>
-				</div>
-				<!-- end package body -->
-			</div>
+<body>
+<div metal:fill-slot="body"
+      tal:define="global pageversion string: 0.8;
+                  releases view/releases">
 
-		</div>
-	</body>
+  <div id="documentFirstHeading">Release Detail for: TODO</div>
+  <div id="package-wrapper">
+    <!-- begin package tabs -->
+    <div id="package-tabs">
+      <div id="tab-info" class="packageTab"><a href="index.html">Info</a>
+      </div>
+      <div id="tab-classifiers" class="packageTab">
+        <a href="classifiers.html">Classifiers</a>
+      </div>
+      <div id="tab-releases" class="packageTab selected">
+        <a href="releases.html">Releases</a>
+      </div>
+      <div id="tab-classifiers" class="packageTab">
+        <a href="certifications.html">Certifications</a>
+      </div>
+    </div>
+    <!-- end package tabs -->
+
+    <!-- begin package body -->
+    <div id="package-info" class="packageBody">
+
+      <div tal:condition="not: releases"
+           i18n:translate="">
+        There are no releases for this package.
+      </div>
+
+      <div tal:repeat="release releases">
+
+        <h2>
+          <span tal:replace="release/name" />
+          <span tal:replace="release/version" />
+          <span tal:condition="release/codename">
+            ("<span tal:replace="release/codename" />")
+          </span>
+        </h2>
+
+        <div class="infoRow">
+          <label>Release Date:</label>
+          <div class="infoString"
+               tal:content="release/date" />
+        </div>
+        <div class="infoRow">
+          <label>Certification:</label>
+          <div class="infoString"
+               tal:content="release/certification" />
+        </div>
+        <div class="infoRow">
+          <label>Package:</label>
+          <div class="infoString">
+            <a href=""
+               tal:attributes="href release/package"
+               tal:content="release/package" />
+          </div>
+        </div>
+        <div class="infoRow"
+             tal:condition="release/source">
+          <label>Source:</label>
+          <div class="infoString">
+            <a href=""
+               tal:attributes="href release/source"
+               tal:content="release/source" />
+          </div>
+        </div>
+        <div class="infoRow"
+             tal:condition="release/announcement">
+          <label>Announcement:</label>
+          <div class="infoString">
+            <a href=""
+               tal:attributes="href release/announcement"
+               tal:content="release/announcement" />
+          </div>
+        </div>
+        <div class="infoRow"
+             tal:condition="release/releaseManager">
+          <label>Release Manager:</label>
+          <div class="infoString">
+            <span tal:replace="release/releaseManager/name" />
+            <a href=""
+               tal:attributes="href
+                   string:mailto:${release/releaseManager/email}"
+               tal:content="release/releaseManager/email" />
+          </div>
+        </div>
+        <div class="infoRow"
+             tal:condition="release/pressContact">
+          <label>Press Contact:</label>
+          <div class="infoString">
+            <span tal:replace="release/pressContact/name" />
+            <a href=""
+               tal:attributes="href
+                   string:mailto:${release/pressContact/email}"
+               tal:content="release/pressContact/email" />
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- end package body -->
+  </div>
+
+</div>
+</body>
 </html>

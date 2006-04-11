@@ -6,7 +6,7 @@
   <class class="zf.zscp.package.Package">
     <require
         permission="zope.Public"
-        attributes="__name__ __parent__ name publication releases 
+        attributes="__name__ __parent__ name publication releases
                     certifications"
         />
     <require
@@ -43,6 +43,18 @@
         />
   </class>
 
+  <!-- Contact -->
+  <class class="zf.zscp.contact.Contact">
+    <require
+        permission="zope.Public"
+        interface="zf.zscp.interfaces.IContact"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema="zf.zscp.interfaces.IContact"
+        />
+  </class>
+
   <!-- Release -->
   <class class="zf.zscp.release.Release">
     <require
@@ -55,8 +67,8 @@
         />
   </class>
 
-  <include package=".doc" />  
-  <include package=".skin" />  
-  <include package=".website" />  
+  <include package=".doc" />
+  <include package=".skin" />
+  <include package=".website" />
 
 </configure>

@@ -15,12 +15,13 @@
 
 $Id$
 """
-
+import zope.schema
 from zope.formlib import form
 from zope.formlib import page
 from zf.zscp.interfaces import IPublication
 from zf.zscp.interfaces import IRelease
 from zf.zscp.interfaces import ICertification
+from zf.zscp.interfaces import CERTIFICATION_LEVELS
 from zope.app.pagetemplate import ViewPageTemplateFile
 
 
@@ -101,13 +102,22 @@ class PackageReleases(page.Page):
     template = ViewPageTemplateFile('package_releases.pt')
 
     def update(self):
-        releases = self.context.releases
-        info = {}
-        self._info = info
+        pass
 
-    @property
-    def info(self):
-        return self._info
+    def releases(self):
+        releases = []
+        formatter = self.request.locale.dates.getFormatter('date', 'medium')
+        for release in self.context.releases:
+            info = {}
+            for name, field in zope.schema.getFieldsInOrder(IRelease):
+                info[name] = getattr(release, name)
+
+            info['date'] = formatter.format(release.date)
+            level = CERTIFICATION_LEVELS.getTerm(release.certification)
+            info['certification'] = level.title
+            releases.append(info)
+
+        return releases
 
     def __call__(self):
         self.update()
@@ -125,14 +135,16 @@ class PackageClassifiers(page.Page):
         info = {}
         self._info = info
 
+    def render(self):
+        return self.template()
+
     @property
     def info(self):
         return self._info
 
     def __call__(self):
         self.update()
-        return self.template()
-
+        return self.render()
 
 
 class PackageCertifications(page.Page):
