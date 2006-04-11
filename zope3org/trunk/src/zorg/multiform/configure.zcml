@@ -6,12 +6,12 @@
  <adapter for="zope.app.location.interfaces.ILocation
                zope.formlib.interfaces.IForm"
           provides=".interfaces.IFormLocation"
-          factory=".gridform.FormLocationProxy"
+          factory=".selection.FormLocationProxy"
           />
 
  <adapter for=".interfaces.IFormLocation"
           provides=".interfaces.ISelection"
-          factory=".gridform.FormLocationSelection"
+          factory=".selection.FormLocationSelection"
           />
 
  <include package=".container"/>

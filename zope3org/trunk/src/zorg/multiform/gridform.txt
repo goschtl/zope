@@ -70,20 +70,21 @@ selectable items in our order grid.
     ...         self.newInputMode = False
     ...         
     ...     @multiform.parentAction('Edit',
-    ...         condition=isSelected)
+    ...         condition=isSubFormDisplayMode)
     ...     def handle_edit_action(self, action, data):
-    ...         self.newInputMode = True
+    ...         if isSelected(self,action):
+    ...             self.newInputMode = True
     ...
     ...     @multiform.itemAction(u"SingleSave",
     ...         condition=isSubFormInputMode,inputMode=True)
-    ...     def handle_save_action(self, action, data):
+    ...     def handle_singlesave_action(self, action, data):
     ...         form.applyChanges(self.context, self.form_fields,
     ...         data, self.adapters)
     ...         self.newInputMode = False
     ...         
     ...     @multiform.itemAction('SingleEdit',
     ...         condition=isSubFormDisplayMode)
-    ...     def handle_edit_action(self, action, data):
+    ...     def handle_singleedit_action(self, action, data):
     ...         self.newInputMode = True
 
 
@@ -121,10 +122,16 @@ because we always want checkboxes to select some items.
     <div>n1</div>
     </div>
 
+Also the edit action should be available.
+
+    >>> print gf.subActionNames
+    [u'form.actions.edit']
+    
 Now we are going to select some items. And the checkbox of the ``selected``
 
     >>> request = TestRequest()
     >>> request.form['form.n1.selected']=u'on'
+    >>> request.form['form.n0.selected.used']=u''
     >>> gf = OrdersForm(orderMapping,request)
     >>> gf.update()
     >>> print gf.render()
@@ -144,6 +151,7 @@ input mode.
 
     >>> request = TestRequest()
     >>> request.form['form.actions.edit']=u''
+    >>> request.form['form.n0.selected.used']=u''
     >>> request.form['form.n1.selected']=u'on'
     >>> gf = OrdersForm(orderMapping,request)
     >>> res = gf()
@@ -167,8 +175,9 @@ Now we test the actions which are displayed in each row.
     >>> #request.form['form.n1.actions.singleedit']=u''
     >>> gf = OrdersForm(orderMapping,request)
     >>> res = gf()
-    >>> [action.__name__ for action in gf.subForms['n1'].availableActions()]
-    [u'form.n1.actions.singleedit']
+    >>> sorted([action.__name__ for action in
+    ...     gf.subForms['n1'].availableActions()])
+    [u'form.actions.edit', u'form.n1.actions.singleedit']
 
 We call the singleedit to edit a single row.
     

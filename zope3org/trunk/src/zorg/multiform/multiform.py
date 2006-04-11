@@ -138,8 +138,8 @@ class MultiFormBase(form.FormBase):
         hasErrors = False
         for form in self.subForms.values():
             form.update()
+        refresh = False
         for form in self.subForms.values():
-            refresh = False
             if form.newInputMode is not None:
                 newInputMode = form.newInputMode
                 context = self.context[form.context.__name__]
