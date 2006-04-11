@@ -258,11 +258,16 @@ class MultiFormBase(form.FormBase):
         return self.itemFormFactory(item,self.request,self)
 
     def availableSubActions(self):
-        for name in self.subActionNames:
-            # remove the prefix of our form because, the actions in
-            # the class variable have no prefix in their name
-            name = name[len(self.prefix)+1:]
-            yield self.itemFormFactory.actions.byname[name]
+        if self.subActionNames:
+            for name in self.subActionNames:
+                # remove the prefix of our form because, the actions in
+                # the class variable have no prefix in their name
+                actionName = name[len(self.prefix)+1:]
+                action = self.itemFormFactory.actions.byname[actionName]
+                action = copy.copy(action)
+                action.__name__ = name
+                yield action
+
     
 class SelectionForm(form.FormBase):
     

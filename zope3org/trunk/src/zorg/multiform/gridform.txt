@@ -127,7 +127,7 @@ Also the edit action should be available.
     >>> print gf.subActionNames
     [u'form.actions.edit']
     >>> [a.__name__ for a in gf.availableSubActions()]
-    [u'actions.edit']
+    [u'form.actions.edit']
     
 Now we are going to select some items. And the checkbox of the ``selected``
 
@@ -149,7 +149,7 @@ Now we are going to select some items. And the checkbox of the ``selected``
     </div>
 
 By using the Edit action we can now switch all selected item forms to
-input mode. 
+input mode.
 
     >>> request = TestRequest()
     >>> request.form['form.actions.edit']=u''
@@ -170,7 +170,11 @@ input mode.
     <div>1</div>
     <div><input... name="form.n1.name" ...</div>
     </div>
-    
+
+Also the edit action should be disabled now.
+
+    >>> print gf.subActionNames
+
 Now we test the actions which are displayed in each row.
 
     >>> request = TestRequest()
