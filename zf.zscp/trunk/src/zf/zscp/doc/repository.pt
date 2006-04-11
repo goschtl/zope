@@ -2,8 +2,14 @@
     i18n:domain="zf.zscp">
   <body>
 	<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
-		
-		<div id="documentFirstHeading">Layout of the Common Repository (1 of 8)</div>
+
+			<div id="documentFirstHeading">The Common Repository Layout (1 of 9)&nbsp;
+				<!--
+				<b class="itemNavLeftArrow" align="right" ><a href="@@repository_page02.html"></a></b>
+				-->
+				<b class="itemNavRightArrow" align="right" ><a href="@@repository_page02.html"></a></b>
+			</div>
+
 		<p>This section describes <em>one</em> open community-repository that
 			implements the ZSCP process.</p>
 		<h3 class="itemOne itemHeading">Definition</h3>
@@ -26,8 +32,8 @@
 		<p>Unless otherwise stated, certified packages will automatically be released
 			with every new Zope release. This, on the other hand, will greatly simplify the
 			dependency tree for Common Repository based packages.</p>
-		
-		<a href="@@repository_page02.html">Next Page: Layout</a>
+					
+		<div class="itemNavRightArrow"><a href="@@repository_page02.html">Next Page: Layout</a></div>
 		
 	</div>
   </body>

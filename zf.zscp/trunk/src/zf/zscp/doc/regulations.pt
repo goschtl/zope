@@ -1,9 +1,15 @@
 <html metal:use-macro="context/@@standard_macros/view" i18n:domain="zf.zscp">
 	<body>
 		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
-			
-			<div id="documentFirstHeading">Regulations (1of 8) The Zope Software
-				Certification Program and the Common Repository</div>
+
+			<div id="documentFirstHeading">Regulations for the Zope Software
+				Certification Program (1 of 9)&nbsp;
+				<!--
+				<b class="itemNavLeftArrow" align="right" ><a href="@@regulations_page02.html"></a></b>
+				-->
+				<b class="itemNavRightArrow" align="right" ><a href="@@regulations_page02.html"></a></b>
+			</div>
+	
 			<h3 class="itemOne itemHeading">Zope Community Process</h3>
 			<p>This section describes the process for Zope-related software to receive
 				quality certification.</p>
@@ -27,8 +33,9 @@
 				Software Certification Program (ZSCP) is (a) to clearly define the levels
 				of software quality using a metric system and (b) to communicate this
 				information to our users, customers, and prospective customers.</p>
-			<a href="@@regulations_page02.html">Next Page: ...</a>
 			
+			<div class="itemNavRightArrow"><a href="@@regulations_page02.html">Next Page: Audience</a></div>
+
 		</div>
 	</body>
 </html>

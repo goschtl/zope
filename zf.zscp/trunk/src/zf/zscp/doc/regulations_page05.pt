@@ -2,7 +2,12 @@
 	<body>
 		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 			
-			<div id="documentFirstHeading">Regulations (5 of 8)</div>
+			<div id="documentFirstHeading">Regulations for the Zope Software
+				Certification Program (5 of 9)&nbsp;
+				<b class="itemNavLeftArrow" align="right" ><a href="@@regulations_page04.html"></a></b>
+				<b class="itemNavRightArrow" align="right" ><a href="@@regulations_page06.html"></a></b>
+			</div>
+			
 			<h3 class="itemFive itemHeading">Package Meta-Information</h3>
 			<p>In order to quickly provide a developer with contextual information about a
 				given package, it is necessary to clearly define the meta-data that
@@ -155,7 +160,9 @@
 			<p>(Text Line, single, required)</p>
 			<p>This is the version number of this package meta-data.</p>
 			<p>Example: 1.1</p>
-			<a href="@@regulations_page06.html">Next Page: ...</a>
+
+			<div class="itemNavLeftArrow"><a href="@@regulations_page04.html">Previous Page: Quality Metrics</a></div>
+			<div class="itemNavRightArrow"><a href="@@regulations_page06.html">Next Page: Package Certification Data</a></div>	
 			
 		</div>
 	</body>

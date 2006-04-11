@@ -3,7 +3,12 @@
 	<body>
 		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 			
-			<div id="documentFirstHeading">Regulations (6 of 8)</div>
+			<div id="documentFirstHeading">Regulations for the Zope Software
+				Certification Program (6 of 9)&nbsp;
+				<b class="itemNavLeftArrow" align="right" ><a href="@@regulations_page05.html"></a></b>
+				<b class="itemNavRightArrow" align="right" ><a href="@@regulations_page07.html"></a></b>
+			</div>
+			
 			<h3 class="itemSix itemHeading">Package Certification
 				Data</h3>
 
@@ -72,8 +77,10 @@
 						certification to be granted.</dd>
 				</dl>
 			</div>
-			<a href="@@regulations_page07.html">Next Page: ...</a>
-			
+
+			<div class="itemNavLeftArrow"><a href="@@regulations_page05.html">Previous Page: Package Meta-Information</a></div>
+			<div class="itemNavRightArrow"><a href="@@regulations_page07.html">Next Page: Package Release Data</a></div>	
+
 		</div>
 	</body>
 </html>

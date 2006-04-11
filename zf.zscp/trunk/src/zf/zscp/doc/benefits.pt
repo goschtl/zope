@@ -20,7 +20,7 @@
 				of packages in the core. However, this process does not extend to third party
 				code, let alone code outside of the zope.org repository. On the other hand,
 				Plone also uses the collective for core packages without any control over
-				the process or quality. This proposal will define a process for ensuring the
+				the process or quality. This proposal will define a <a href="@@regulations.html">process</a> for ensuring the
 				quality of packages and for upstream movement: in other words, the way a
 				third-party package could become a core package.</p>
 			<h3 class="itemTwo itemHeading">Repository Unification</h3>
@@ -29,14 +29,14 @@
 				are hard to make; the overhead is large. If one finds something wrong with the
 				code, one either has to write a mail or create a bug report. And that often
 				requires one to sign up to yet another mailing list or create a user account
-				for yet another web site. Thus, this proposal suggests a common repository
-				for all generically useful Zope 3 add-on packages.</p>
+				for yet another web site. Thus, this proposal suggests a <a href="@@repository.html">
+				common repository</a> for all generically useful Zope 3 add-on packages.</p>
 			<h3 class="itemThree itemHeading">Quality Packages</h3>
 			<p>There is a natural desire for any developer to know what they are getting into
 				when they are using a certain package, a baseline of quality that can be
 				expected. While the Zope 3 community has some ideas of what that baseline is
 				for the core, it is not well defined and applied uniformly. This proposal
-				defines clear quality guidelines.</p>
+				defines <a href="@@regulations_page04.html">clear quality guidelines</a>.</p>
 			<h3 class="itemFour itemHeading">Clear Dependency Declarations</h3>
 			<p>One of the greatest frustrations in the Zope community, especially in Plone,
 				is the complex non-closed tree of dependencies of packages. While this
@@ -47,7 +47,7 @@
 			<p>The Zope community at large uses mainly two licenses, the ZPL and the GPL.
 				(Yes, other licenses are also used.) Dealing with multiple licenses is a
 				pain, especially for Zope's consumers. This proposal discusses the
-				current situation and proposes a resolution.</p>
+				current situation and proposes a <a href="@@repository_page07.html">resolution</a>.</p>
 			<h3 class="itemSix itemHeading">Marketing Effect</h3>
 			<p>People commonly say, Zope does anti-marketing. And that is probably true.
 				While a proposal like that cannot address this issue globally, it can at

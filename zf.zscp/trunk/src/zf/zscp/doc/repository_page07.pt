@@ -3,8 +3,11 @@
 	<body>
 		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 			
-			<div id="documentFirstHeading">Layout of the 
-				Common Repository (7 of 8)</div>
+			<div id="documentFirstHeading">The Common Repository Layout (7 of 9)&nbsp;
+				<b class="itemNavLeftArrow" align="right" ><a href="@@repository_page06.html"></a></b>
+				<b class="itemNavRightArrow" align="right" ><a href="@@repository_page08.html"></a></b>
+			</div>	
+			
 			<h3 class="itemSeven itemHeading">License</h3>
 			<p>The license of the repository is probably the most sensitive issue. The Plone
 				community has stated several times the need to protect their core values
@@ -32,7 +35,8 @@
 				very demanding at first sight, it is simply a necessary measure to protect
 				the Zope community legally.</p>	
 		
-			<a href="@@repository_page08.html">Next Page: ...</a>
+			<div class="itemNavLeftArrow"><a href="@@repository_page06.html">Previous Page: Releases</a></div>
+			<div class="itemNavRightArrow"><a href="@@repository_page08.html">Next Page: An Example</a></div>
 			
 		</div>
 	</body>

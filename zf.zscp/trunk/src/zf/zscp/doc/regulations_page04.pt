@@ -2,7 +2,12 @@
 	<body>
 		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 			
-			<div id="documentFirstHeading">Regulations (4 of 8)</div>
+			<div id="documentFirstHeading">Regulations for the Zope Software
+				Certification Program (4 of 9)&nbsp;
+				<b class="itemNavLeftArrow" align="right" ><a href="@@regulations_page03.html"></a></b>
+				<b class="itemNavRightArrow" align="right" ><a href="@@regulations_page05.html"></a></b>
+			</div>
+			
 			<h3 class="itemFour itemHeading">Quality Metrics</h3>
 			<p>The certification is meaningless without the precise definition of tasks
 				that have to be accomplished for each certification level. This section
@@ -496,8 +501,10 @@
 			<p>In addition to the fulfillment of the requirements listed in 2.4.24, the data
 				migration scripts <em>must</em> be tested against production-grade data
 				of at least 2 projects using the package.</p>
-			<a href="@@regulations_page05.html">Next Page: ...</a>
-			
+
+			<div class="itemNavLeftArrow"><a href="@@regulations_page03.html">Previous Page: Certification Levels</a></div>
+			<div class="itemNavRightArrow"><a href="@@regulations_page05.html">Next Page: Package Meta-Information</a></div>	
+
 		</div>
 	</body>
 </html>

@@ -3,8 +3,10 @@
 	<body>
 		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 			
-			<div id="documentFirstHeading">Layout of the 
-				Common Repository (8 of 8)</div>
+			<div id="documentFirstHeading">The Common Repository Layout (8 of 9)&nbsp;
+				<b class="itemNavLeftArrow" align="right" ><a href="@@repository_page07.html"></a></b>
+				<b class="itemNavRightArrow" align="right" ><a href="@@repository_page09.html"></a></b>
+			</div>	
 
 			<h3 class="itemEight itemHeading">An Example</h3>
 			<p>(informal voice)</p>
@@ -34,7 +36,10 @@
 				it, the package will receive the Level 3 certification. While this process
 				may take a year or longer to complete, it ensures that the API of the search
 				package is truly useful and provides benefit to the intended audience.</p>
-			
+
+			<div class="itemNavLeftArrow"><a href="@@repository_page07.html">Previous Page: License</a></div>
+			<div class="itemNavRightArrow"><a href="@@repository_page09.html">Next Page: Questions and Answers</a></div>
+						
 		</div>
 	</body>
 </html>

@@ -2,8 +2,11 @@
 	<body>
 		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 			
-			<div id="documentFirstHeading">Layout of the Common Repository (4 of
-				8)</div>
+			<div id="documentFirstHeading">The Common Repository Layout (4 of 9)&nbsp;
+				<b class="itemNavLeftArrow" align="right" ><a href="@@repository_page03.html"></a></b>
+				<b class="itemNavRightArrow" align="right" ><a href="@@repository_page05.html"></a></b>
+			</div>	
+			
 			<h3 class="itemFour itemHeading">Quality Assurance</h3>
 			
 			<p>The goal of the Common Repository and its supporting software stack is to
@@ -122,7 +125,9 @@
 				simply needs to be documented.</p>
 			<p>Status: - The documentation to writing those type of tests needs to be
 				written.</p>
-			<a href="@@repository_page05.html">Next Page: ...</a>
+
+			<div class="itemNavLeftArrow"><a href="@@repository_page03.html">Previous Page: Package Publication, Certification, and Release Data</a></div>
+			<div class="itemNavRightArrow"><a href="@@repository_page05.html">Next Page: Coding Style Guidelines</a></div>
 			
 		</div>
 	</body>

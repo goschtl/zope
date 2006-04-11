@@ -3,8 +3,11 @@
   <body>
 	  <div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 	
+			<div id="documentFirstHeading">The Common Repository Layout (2 of 9)&nbsp;
+				<b class="itemNavLeftArrow" align="right" ><a href="@@repository.html"></a></b>
+				<b class="itemNavRightArrow" align="right" ><a href="@@repository_page03.html"></a></b>
+			</div>	
 	  
-		<div id="documentFirstHeading">Layout of the Common Repository (2 of 8)</div>
 		<h3 class="itemTwo itemHeading">Layout</h3>
 
 			<p>Packages in the Common Repository <em>must</em> have the following
@@ -114,8 +117,9 @@
 				have a license that can be changed by the Zope Foundation and developers have
 				signed contributor agreements, packages can be easily moved into the Zope 3
 				and Python core.</p>
-
-		  <a href="@@repository_page03.html">Next Page: ...</a>
+			
+			<div class="itemNavLeftArrow"><a href="@@repository.html">Previous Page: Definition</a></div>
+			<div class="itemNavRightArrow"><a href="@@repository_page03.html">Next Page: Package Publication, Certification, and Release Data</a></div>
 	  
 		</div>
 	</body>

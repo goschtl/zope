@@ -2,7 +2,12 @@
 	<body>
 		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 			
-			<div id="documentFirstHeading">Regulations (3 of 8)</div>
+			<div id="documentFirstHeading">Regulations for the Zope Software
+				Certification Program (3 of 9)&nbsp;
+				<b class="itemNavLeftArrow" align="right" ><a href="@@regulations_page02.html"></a></b>
+				<b class="itemNavRightArrow" align="right" ><a href="@@regulations_page04.html"></a></b>
+			</div>
+			
 			<h3 class="itemThree itemHeading">Certification Levels</h3>
 			
 			<h4><a id="certification-levels" name="certification-levels">2.3.
@@ -79,7 +84,9 @@
 						Certified&quot; in informal or promotional material.</p>
 				</li>
 			</ul>
-			<a href="@@regulations_page04.html">Next Page: ...</a>
+
+			<div class="itemNavLeftArrow"><a href="@@regulations_page02.html">Previous Page: Audience</a></div>
+			<div class="itemNavRightArrow"><a href="@@regulations_page04.html">Next Page: Quality Metrics</a></div>	
 			
 		</div>
 	</body>

@@ -125,9 +125,9 @@
 	
   <browser:page
       for="*"
-      name="regulations_qa.html"
+      name="regulations_page09.html"
       permission="zope.Public"
-      template="regulations_qa.pt"
+      template="regulations_page09.pt"
       layer="zf.zscp.skin.IZSCPLayer"
       /> 	
 		
@@ -197,9 +197,9 @@
 
   <browser:page
       for="*"
-      name="repository_qa.html"
+      name="repository_page09.html"
       permission="zope.Public"
-      template="repository_qa.pt"
+      template="repository_page09.pt"
       layer="zf.zscp.skin.IZSCPLayer"
       /> 	
 	

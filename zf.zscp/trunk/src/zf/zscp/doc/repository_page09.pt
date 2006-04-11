@@ -3,7 +3,12 @@
 	<body>
 		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 			
-			<div id="documentFirstHeading">Layout of the Common Repository: FAQ</div>
+			<div id="documentFirstHeading">The Common Repository Layout (9 of 9)&nbsp;
+				<b class="itemNavLeftArrow" align="right" ><a href="@@repository_page08.html"></a></b>
+				<!--
+				<b class="itemNavRightArrow" align="right" ><a href="@@repository_page09.html"></a></b>
+				-->
+			</div>	
 			
 			<h3>Questions and Answers</h3>
 			<p>Will the repository present a full-functioning application, like a
@@ -14,7 +19,9 @@
 				repository. For example, Plone is developed by the Plone Foundation on
 				plone.org and the Tiks CMS by Projekt01 on tiks.org. However, those
 				applications may apply for certification.</p>
-			
+
+			<div class="itemNavLeftArrow"><a href="@@repository_page08.html">Previous Page: An Example</a></div>		
+						
 		</div>
 	</body>
 </html>

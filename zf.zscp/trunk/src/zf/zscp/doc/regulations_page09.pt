@@ -2,8 +2,16 @@
     i18n:domain="zf.zscp">
   <body>
 	<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+	
+			<div id="documentFirstHeading">Regulations for the Zope Software
+				Certification Program (9 of 9)&nbsp;
+				<b class="itemNavLeftArrow" align="right" ><a href="@@regulations_page08.html"></a></b>
+				<!--
+				<b class="itemNavRightArrow" align="right" ><a href="@@regulations_page09.html"></a></b>
+				-->
+			</div>		
 		
-		<div id="documentFirstHeading">Regulations: Questions and Answers</div>
+		<h3 class="itemNine itemHeading">Questions and Answers</h3>
 		<p>Does this proposal imply that all certified packages <em>must</em> live in the
 			Common Repository?</p>
 		<p>No, absolutely not! The ZSCP is completely disconnected from the Common
@@ -59,7 +67,8 @@
 			having them certified separately makes it easier to amrket their
 			certification.</p>
 		
+		<div class="itemNavRightArrow"><a href="@@regulations_page08.html">Previous Page: The Process</a></div>		
+		
 	</div>
   </body>
-
 </html>
