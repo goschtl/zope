@@ -20,8 +20,12 @@ from sgmllib import SGMLParser
 import htmlentitydefs
 
 class BaseHTMLProcessor(SGMLParser):
+
+    unicode_html = False
+    
     def reset(self):
         # extend (called by SGMLParser.__init__)
+        self.unicode_html = False
         self.pieces = []
         SGMLParser.reset(self)
         
@@ -84,9 +88,21 @@ class BaseHTMLProcessor(SGMLParser):
         # Reconstruct original DOCTYPE
         self.pieces.append("<!%(text)s>" % locals())
         
-    def output(self):
-        """Return processed HTML as a single string"""
-        return "".join(self.pieces)
+        
+    def feed(self, html) :
+        """ Specialization that remembers whether we process unicode or not. """
+        if isinstance(html, unicode) :
+            html = html.encode('utf-8')
+            self.unicode_html = True
+        SGMLParser.feed(self, html)
+        
+    def output(self) :
+        """ Returns unicode if the processor was feeded with unicode. """
+        out = "".join(self.pieces)
+        if self.unicode_html :
+            out = unicode(out, encoding='utf-8')
+        return out
+
 
 if __name__ == "__main__":
     for k, v in globals().items():

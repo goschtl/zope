@@ -118,71 +118,11 @@ class Placeholder(PageElement) :
 class BaseLinkProcessor(BaseHTMLProcessor) :
     """ Implements a processor that is able to visit and modify all links. 
     """
-
-    def isAbsoluteURL(self, link) :
-        """ Returns true if the link is a complete URL. 
-            
-            Note that an absolute URL in this sense 
-            might point to a local object.
-        """
-        
-        for prefix in 'http:', 'ftp:', 'https:', 'mailto:' :
-            if link.startswith(prefix) :
-                return True
-        return False
-
-class RelativeLinkProcessor(BaseLinkProcessor) :
-    """ Implements a processor that converts all relative links
-        into absolute ones. 
-     
-        >>> html = '''<p><a href="http://www.iwm-kmrc.de">Absolute</a></p>
-        ...           <p><a href="relative">Relative</a></p>'''
-        
-        >>> processor = RelativeLinkProcessor("http://www.iwm-kmrc.de")
-        >>> processor.feed(html)
-        >>> print processor.output()
-        <p><a href="http://www.iwm-kmrc.de">Absolute</a></p>
-        <p><a href="http://www.iwm-kmrc.de/relative">Relative</a></p>
-       
-        
-    """
- 
-    def __init__(self, base_url) :
-        BaseHTMLProcessor.__init__(self)
-        self.base_url = base_url
-
-    def unknown_starttag(self, tag, attrs):
-        """ Called for each tag. Wikifies links. """
-        
-        if tag == "a" :
-            href = ""
-            result = []
-            for key, value in attrs :
-                if key == "href" :
-                    if value and not self.isAbsoluteURL(value) :
-                        value = "%s/%s" % (self.base_url, value)
-                result.append((key, value))
-           
-            BaseHTMLProcessor.unknown_starttag(self, tag, result) 
-            return True
-     
-        BaseHTMLProcessor.unknown_starttag(self, tag, attrs)               
-
-       
-        
-        
-class WikiLinkProcessor(BaseLinkProcessor) :
-    """ A link processor that wikifies the links by modifying the
-        href and other attributes of a link.
-        
-        
-    """
     
-    implements(ILinkProcessor)
-    adapts(IWikiPage)
-        
-    command = None
-    
+    absolute_prefixes = 'http:', 'ftp:', 'https:', 'mailto:'
+         
+    link_refs = dict(a='href', img='src')       # treat 'a href' and 'img src'
+
     _url = r'''(?=[a-zA-Z0-9./#])    # Must start correctly
                   ((?:              # Match the leading part
                       (?:ftp|https?|telnet|nntp) #     protocol
@@ -216,6 +156,129 @@ class WikiLinkProcessor(BaseLinkProcessor) :
     email_link = re.compile(_email, re.VERBOSE)
     text_link = re.compile('\[.*?\]', re.VERBOSE)
 
+
+    def reset(self):
+        BaseHTMLProcessor.reset(self)
+        self.traversed = {}
+   
+    def isAbsoluteURL(self, link) :
+        """ Returns true if the link is a complete URL. 
+            
+            Note that an absolute URL in this sense 
+            might point to a local object.
+        """
+        
+        for prefix in self.absolute_prefixes  :
+            if link.startswith(prefix) :
+                return True
+        return False
+
+    def onRelativeLink(self, link) :
+        """ Event handler that can be specialized. """
+        return link
+        
+    def onWikiTextLink(self, link) :
+        """ Event handler that can be specialized. """
+        return link
+
+    def onAbsoluteLink(self, link) :
+        """ Event handler that can be specialized. """
+        return link
+
+    def traverseLink(self, node, link) :
+        """ Help method that follows a relative link from a context node. """
+        remaining = urllib.unquote(link)
+        if link in self.traversed :
+            return self.traversed[link]
+        path = [x for x in remaining.split("/") if x]        
+        while path :         
+            try :
+                name = path[0]
+                name = unicode(name, encoding='utf-8')
+                node = zapi.traverseName(node, name)
+                name = path.pop(0)
+            except (TraversalError, UnicodeEncodeError) :
+                break
+        self.traversed[link] = node, path
+        return node, path
+
+    def handle_data(self, text) :
+        """ Called for each text block. Extracts wiki text links. """
+        
+        text = re.sub(self.url_link, r'''<a href="\1">\1</a>''', text)
+        text = re.sub(self.email_link, r'''<a href="mailto:\1">\1</a>''', text)
+        
+        result = ""
+        end = 0
+        for m in self.text_link.finditer(text):
+            
+            start = m.start()
+            result += text[end:start]
+            end = m.end()
+            between = text[start+1:end-1]
+            result += self.onWikiTextLink(between)           
+        result += text[end:]       
+        
+        self.pieces.append(result)
+        
+        
+    def unknown_starttag(self, tag, attrs):
+        """ Called for each tag. Calls link event handlers. """
+        
+        if tag in self.link_refs :
+            result = []
+            for key, value in attrs :
+                if key == self.link_refs[tag] :
+                    if self.isAbsoluteURL(value) :
+                        value = self.onAbsoluteLink(value)
+                    else :
+                        value = self.onRelativeLink(value)
+                result.append((key, value))
+           
+            BaseHTMLProcessor.unknown_starttag(self, tag, result) 
+            return True
+     
+        BaseHTMLProcessor.unknown_starttag(self, tag, attrs)               
+
+
+
+class RelativeLinkProcessor(BaseLinkProcessor) :
+    """ Implements a processor that converts all relative links
+        into absolute ones. 
+     
+        >>> html = '''<p><a href="http://www.iwm-kmrc.de">Absolute</a></p>
+        ...           <p><a href="relative">Relative</a></p>'''
+        
+        >>> processor = RelativeLinkProcessor("http://www.iwm-kmrc.de")
+        >>> processor.feed(html)
+        >>> print processor.output()
+        <p><a href="http://www.iwm-kmrc.de">Absolute</a></p>
+        <p><a href="http://www.iwm-kmrc.de/relative">Relative</a></p>
+       
+        
+    """
+ 
+    def __init__(self, base_url) :
+        BaseHTMLProcessor.__init__(self)
+        self.base_url = base_url
+        
+    def onRelativeLink(self, link) :
+        """ Event handler that can be specialized. """
+        return "%s/%s" % (self.base_url, link)
+        
+        
+class WikiLinkProcessor(BaseLinkProcessor) :
+    """ A link processor that wikifies the links by modifying the
+        href and other attributes of a link.
+        
+        
+    """
+    
+    implements(ILinkProcessor)
+    adapts(IWikiPage)
+        
+    command = None
+   
 
     def __init__(self, page) :
         BaseHTMLProcessor.__init__(self)
@@ -312,20 +375,6 @@ class WikiLinkProcessor(BaseLinkProcessor) :
                                 
         return False, self.absoluteWikiLink(node)
 
-    
-    def traverseLink(self, node, link) :
-        remaining = urllib.unquote(link)
-        path = [x for x in remaining.split("/") if x]        
-        while path :         
-            try :
-                name = path[0]
-                name = unicode(name, encoding='utf-8')
-                node = zapi.traverseName(node, name)
-                name = path.pop(0)
-            except (TraversalError, UnicodeEncodeError) :
-                break
-        return node, path
-
         
     def absoluteWikiLink(self, node) :
         return zapi.absoluteURL(node, self.page.request) + self.page.action
@@ -418,28 +467,13 @@ class WikiLinkProcessor(BaseLinkProcessor) :
             self.pieces.append(text)
             return
             
-        
-        text = re.sub(self.url_link, r'''<a href="\1">\1</a>''', text)
-        text = re.sub(self.email_link, r'''<a href="mailto:\1">\1</a>''', text)
-        
-        result = ""
-        end = 0
-        for m in self.text_link.finditer(text):
-            
-            start = m.start()
-            result += text[end:start]
-            end = m.end()
-            between = text[start+1:end-1]
-            
-            name = between.replace(" ", "")
-            placeholder = self.createPlaceholder(between, name)
-            result += placeholder.textLink()
-            self.placeholder = None
-            
-        result += text[end:]       
-        
-        self.pieces.append(result)
-        
+        BaseLinkProcessor.handle_data(self, text)
+             
+    def onWikiTextLink(self, label) :
+        name = label.replace(" ", "")
+        placeholder = self.createPlaceholder(label, name)
+        self.placeholder = None
+        return placeholder.textLink()
         
     def output(self) :
         """ Returns the processing result.
@@ -538,6 +572,7 @@ class SavingPlaceholder(Placeholder) :
     def startTag(self, attrs) :
         """ Called when a starttag for a placeholder is detected. """
         pattern = '<a href="%s"%s>'
+        print "Saving", attrs
         return pattern % (self.link, self._tagAttrs(attrs))
 
 

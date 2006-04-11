@@ -99,7 +99,10 @@ class WikiPage(ComposedAjaxPage) :
         self.dc = dc
         
         self.title = dc.title or self.untitled
-        self.language = dc.Language()        
+        self.language = dc.Language()
+        
+    def message(self, msg) :
+        return '<div class="system-message">%s</div>' % msg
         
     def verb(self) :
         """ Returns a descriptive verb. """
@@ -180,6 +183,8 @@ class WikiPage(ComposedAjaxPage) :
         
         if current_stamp is None :
             current_stamp = self.getModificationStamp()
+        if placeholder is None :
+            return self.message('Invalid link &quot;%s&quot;' % menu_id)
         placeholder.outdated = modification_stamp != current_stamp
         return placeholder._menu()
       
