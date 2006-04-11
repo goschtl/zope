@@ -20,7 +20,7 @@ from zope.app.component.testing import PlacefulSetup
 from zope.testing.cleanup import CleanUp
 
 from zope.interface import Interface, implements
-from zope.app.testing import ztapi
+import zope.component
 
 from zope.app.dublincore.creatorannotator import CreatorAnnotator
 from zope.app.dublincore.interfaces import IZopeDublinCore
@@ -43,7 +43,7 @@ class DummyDCAdapter(object):
 
     def _setcreator(self, value):
         self.context.creators = value
-    creators = property(_getcreator,_setcreator,None,"Adapted Creators")
+    creators = property(_getcreator, _setcreator, None, "Adapted Creators")
 
     def __init__(self, context):
         self.context = context
@@ -56,6 +56,7 @@ class DummyDublinCore(object):
 
     creators = ()
 
+
 class DummyPrincipal(object):
     implements(IPrincipal)
 
@@ -63,6 +64,7 @@ class DummyPrincipal(object):
         self.id = id
         self.title = title
         self.description = description
+
 
 class DummyRequest(object):
 
@@ -75,13 +77,13 @@ class Test(PlacefulSetup, TestCase, CleanUp):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        ztapi.provideAdapter(IDummyContent, IZopeDublinCore, DummyDCAdapter)
+        gsm = zope.component.getGlobalSiteManager()
+        gsm.registerAdapter(DummyDCAdapter, (IDummyContent, ), IZopeDublinCore)
 
     def tearDown(self):
         PlacefulSetup.tearDown(self)
 
     def test_creatorannotation(self):
-
         # Create stub event and DC object
         event = DummyEvent()
         data = DummyDublinCore()
