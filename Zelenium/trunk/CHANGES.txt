@@ -2,6 +2,9 @@ Zelenium Product Changelog
 
   After Zelenium-0.7
 
+    - Stripped empty filenames out of manifest, to avoid infinite
+      recursion.
+
     - Added the testsuite_name property that allows multiple test
       suites to be built up from test cases within a single filesystem
       directory.
@@ -14,12 +17,15 @@ Zelenium Product Changelog
       patch!
 
     - Define zelenium_globals in __init__.py to be able to
-      registerDirectoryView the 'selenium' directory.
+      register the 'selenium' directory for use as a CMF skin directory.
 
     - If debug-mode is set to "on" in zope.conf, filesystem-based testcases
       files are reloaded every time they are used, to ease development of
       filesystem-based test suites. This behavior emulates what the CMF
       Filesystem Directory Views do with debug-mode on.
+
+    - Moved repository to Subversion:
+      svn+ssh://svn.zope.org/repos/main/Zelenium/
 
 
   Zelenium-0.7 (2005/06/07)
