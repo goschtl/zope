@@ -37,22 +37,20 @@ selectable items in our order grid.
     ...     return ISelection(form.context).selected
     
     >>> def isSelectedInput(form,action):
-    ...     if not isSubFormInputMode(form,action):
+    ...     if not form.inputMode:
     ...         return False
     ...     return ISelection(form.context).selected
 
     >>> def isSelectedDisplay(form,action):
-    ...     if not isSubFormInputMode(form,action):
+    ...     if not form.inputMode:
     ...         return False
     ...     return ISelection(form.context).selected
     
-	>>> def isSubFormInputMode(form,action):
-	...     parentForm = form.parentForm
-	...     return parentForm.subFormInputMode.get(form.context.__name__,
-	...     parentForm.inputMode)
-
-	>>> def isSubFormDisplayMode(form,action):
-	...		return not isSubFormInputMode(form,action)
+    >>> def isSubFormInputMode(form,action):
+    ...     return form.inputMode
+    
+    >>> def isSubFormDisplayMode(form,action):
+    ...     return not form.inputMode
 
     >>> class OrderForm(gridform.GridItemFormBase):
     ...     inputMode=False
