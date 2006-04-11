@@ -161,7 +161,7 @@ function toggleSelect() {
     </dtml-if>
   <dtml-except>
   </dtml-try>
-  <dtml-if expr="externalEditLink_">
+  <dtml-if expr="getattr(this(), 'externalEditLink_', None)">
   <dtml-var expr="externalEditLink_(this())">
   </dtml-if>
   </div>

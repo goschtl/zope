@@ -2,6 +2,9 @@ Zelenium Product Changelog
 
   After Zelenium-0.7
 
+    - Found how to make the dependency on ExternalEditor optionsl (thanks
+      to Andreas Jung for the bug report).
+
     - Stripped empty filenames out of manifest, to avoid infinite
       recursion.
 
@@ -26,7 +29,6 @@ Zelenium Product Changelog
 
     - Moved repository to Subversion:
       svn+ssh://svn.zope.org/repos/main/Zelenium/
-
 
   Zelenium-0.7 (2005/06/07)
 
