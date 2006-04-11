@@ -43,13 +43,16 @@ class FormLocationSelection(object):
     def _setSelected(self,v):
         key = '_mf_selection.' + removeSecurityProxy(
             self.context.__form__).prefix
-        removeSecurityProxy(self.context.__form__).request.form[key]=v
+        form = removeSecurityProxy(self.context.__form__)
+        form.request.form[key] = v
 
     def _getSelected(self):
         key = '_mf_selection.' + removeSecurityProxy(
             self.context.__form__).prefix
-        return removeSecurityProxy(
+        res =  removeSecurityProxy(
             self.context.__form__).request.form.get(key,False)
+        print "res--------",res
+        return res
 
     selected = property(_getSelected ,_setSelected)
         

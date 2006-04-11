@@ -23,12 +23,17 @@ def isFormInputMode(f,action):
 def anySubFormInputMode(form,action):
     if not IMultiForm.providedBy(form):
         form = form.parentForm
-    return (True in form.subFormInputMode.values())
+    for f in form.subForms.values():
+        if f.inputMode:
+            return True
 
 def allSubFormsDisplayMode(form,action):
     if not IMultiForm.providedBy(form):
         form = form.parentForm
-    return not (True in form.subFormInputMode.values())
+    for f in form.subForms.values():
+        if f.inputMode:
+            return False
+    return True
 
 
 class ItemAction(form.Action):
@@ -151,21 +156,24 @@ class MultiFormBase(form.FormBase):
         self.checkInputMode()
         self.updateSelection()
         super(MultiFormBase,self).update()
-        hasErrors = False
-        for form in list(self.getForms()):
+        preForms = list(self.getForms())
+        for form in preForms:
             form.update()
-        refresh = False
-        for form in list(self.getForms()):
+        postForms = list(self.getForms())
+        refresh = postForms != preForms
+        for form in postForms:
             if form.newInputMode is not None:
                 newInputMode = form.newInputMode
                 context = self.context[form.context.__name__]
                 name = context.__name__
-                self.setUpForm(name, context, newInputMode)
+                self.setUpForm(name, context, newInputMode,
+                               ignore_request=True)
                 self.subFormInputMode[name] = newInputMode
                 refresh = True
             if refresh:
                 self.refreshSubActionNames()
 
+        
     def setUpWidgets(self, *args, **kw):
         super(MultiFormBase,self).setUpWidgets(*args,**kw)
         self.setUpForms(*args, **kw)
@@ -195,13 +203,17 @@ class MultiFormBase(form.FormBase):
         # modifies the keys of our mapping, e.g. rename, delete
         keys = list(self.context.keys())
         deleted = filter(lambda x: x not in keys,self.subForms.keys())
-        print "deleted----------",deleted
         for k in deleted:
             del(self.subForms[k])
+            try:
+                del(self.subFormInputMode[k])
+            except KeyError:
+                pass
         for name in self.context.keys():
             if not self.subForms.has_key(name):
                 self.setUpForm(name,self.context[name],
-                               self.itemFormFactory.inputMode)
+                               self.itemFormFactory.inputMode,
+                               ignore_request=True)
             yield self.subForms[name]
 
 

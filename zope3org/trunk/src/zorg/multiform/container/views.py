@@ -131,7 +131,7 @@ class ContainerItemForm(multiform.ItemFormBase):
             self.status = (_("Updated on ${date_time}", mapping=m),)
         else:
             self.status = (_('No changes'),)
-        ISelection(self.context).selected=False    
+        ISelection(self.context).selected=False
         self.newInputMode = False
 
 
