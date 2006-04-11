@@ -54,6 +54,7 @@ modules_aliases_35 = {
     'zope.app.event.tests.placelesssetup': 'zope.component.testing',
 
     'zope.app.security.adapter': 'zope.security.adapter',
+    'zope.app.component.interface': 'zope.component.interface',
     }
 
 msg_35 = "%s has been moved to %s.  This alias will be removed in Zope 3.5."
