@@ -18,7 +18,9 @@ $Id$
 from zope.interface import Interface
 from zope.interface import Attribute
 from zope.schema import TextLine
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import MessageFactory
+
+_ = MessageFactory('zope')
 
 
 class IDBITypeInfoProvider(Interface):
