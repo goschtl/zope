@@ -158,3 +158,25 @@ h1,h2,h3,h4,h5,h6 {
 .itemSix { background: url(/@@/img/circleSix.png) no-repeat 0% 50%; }
 .itemSeven { background: url(/@@/img/circleSeven.png) no-repeat 0% 50%; }
 .itemEight { background: url(/@@/img/circleEight.png) no-repeat 0% 50%; }
+.itemNine { background: url(/@@/img/circleNine.png) no-repeat 0% 50%; }
+
+/* content navigation previous, next pages */
+.itemNavRightArrow a {
+    padding: 4px 2px 0px 10px;
+    background: url(/@@/img/arrowRight1.png) no-repeat 0px 5px;
+    font-weight: bold;
+}
+.itemNavRightArrow a:hover {
+    color: #666;
+    background-color: #fff;
+}
+
+.itemNavLeftArrow a {
+    padding: 4px 2px 0px 10px;
+    background: url(/@@/img/arrowLeft1.png) no-repeat 0px 5px;
+    font-weight: bold;
+}
+.itemNavLeftArrow a:hover {
+    color: #666;
+    background-color: #fff;
+}

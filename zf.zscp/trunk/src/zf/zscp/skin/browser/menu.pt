@@ -24,5 +24,9 @@
 			<a href="@@repository.html"
 					tal:attributes="href string:${siteURL}/@@repository.html">Repository Layout</a>
 		</div>
+		<div class="navTreeItem">
+			<a href="@@glossary.html"
+					tal:attributes="href string:${siteURL}/@@glossary.html">Glossary</a>
+		</div>		
 	</div>
 </div>
