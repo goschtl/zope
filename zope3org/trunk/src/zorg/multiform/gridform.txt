@@ -126,6 +126,8 @@ Also the edit action should be available.
 
     >>> print gf.subActionNames
     [u'form.actions.edit']
+    >>> [a.__name__ for a in gf.availableSubActions()]
+    [u'actions.edit']
     
 Now we are going to select some items. And the checkbox of the ``selected``
 
@@ -177,7 +179,7 @@ Now we test the actions which are displayed in each row.
     >>> res = gf()
     >>> sorted([action.__name__ for action in
     ...     gf.subForms['n1'].availableActions()])
-    [u'form.actions.edit', u'form.n1.actions.singleedit']
+    [u'form.n1.actions.singleedit']
 
 We call the singleedit to edit a single row.
     

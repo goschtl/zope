@@ -9,7 +9,8 @@ from zope.formlib.i18n import _
 from interfaces import IMultiForm, IParentAction, IItemAction, ISelection
 from interfaces import IFormLocation,IItemForm
 import copy
-
+from zope.formlib import namedtemplate
+import zope.i18n
 from zope import interface
         
 
@@ -71,6 +72,20 @@ class ParentAction(form.Action):
             res =  self.__name__ in self.form.request
         return res
 
+@namedtemplate.implementation(IParentAction)
+def render_submit_button(self):
+    if IBoundAction.providedBy(self) and not self.available():
+        return ''
+    label = self.label
+    if isinstance(label, (zope.i18n.Message, zope.i18n.MessageID)):
+        label = zope.i18n.translate(self.label, context=self.form.request)
+    return ('<input type="submit" id="%s" name="%s" value="%s"'
+            ' class="button" />' %
+            (self.__name__, self.__name__, label)
+            )
+
+
+
 class itemAction(form.action):
 
     def __call__(self, success):
@@ -106,16 +121,22 @@ class ItemFormBase(form.FormBase):
 
     def update(self):
         super(ItemFormBase,self).update()
+
+    def availableActions(self):
+        # we need to override this, because we should not return the
+        # parentActions
+        if not hasattr(self,'actions'):
+            return []
+        actions = [action for action in self.actions
+                   if not IParentAction.providedBy(action)]
+        return form.availableActions(self, actions)
         
     def availableParentActions(self):
-        actions=[]
-        if hasattr(self,'actions'):
-            for action in self.actions:
-                if IParentAction.providedBy(action):
-                    actions.append(action)
-                    
-        actions= form.availableActions(self, actions)
-        return actions
+        if not hasattr(self,'actions'):
+            return []
+        actions = [action for action in self.actions
+                   if IParentAction.providedBy(action)]
+        return form.availableActions(self, actions)
 
 class MultiFormBase(form.FormBase):
 
@@ -236,7 +257,13 @@ class MultiFormBase(form.FormBase):
         
         return self.itemFormFactory(item,self.request,self)
 
-
+    def availableSubActions(self):
+        for name in self.subActionNames:
+            # remove the prefix of our form because, the actions in
+            # the class variable have no prefix in their name
+            name = name[len(self.prefix)+1:]
+            yield self.itemFormFactory.actions.byname[name]
+    
 class SelectionForm(form.FormBase):
     
     def __init__(self, context, request, form_fields):
