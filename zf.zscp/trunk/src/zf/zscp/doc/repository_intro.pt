@@ -1,0 +1,35 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zf.zscp">
+  <body>
+	<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+		
+		<div id="documentFirstHeading">Layout of the Common Repository (1 of 8)</div>
+		<p>This section describes <em>one</em> open community-repository that
+			implements the ZSCP process.</p>
+		<h3 class="itemOne itemHeading">Definition</h3>
+		<p>The Common Repository is a Zope Foundation SVN repository for third-party Zope
+			packages, which are useful for a wide variety of applications, but that do not fit
+			into the Zope core distribution. Common examples for those packages include
+			advanced Javascript-based widgets, alternative templating systems,
+			specific content types, etc.</p>
+		<p>The existing <tt class="docutils literal">
+			<span class="pre">svn://svn.zope.org/repos/main</span></tt> will serve
+			as the Common Repository. Every package in the common repository <em>must</em>
+			conform at least to the layout as described in section 3.2. If a package wishes to
+			participate in the ZSCP, then it must also conform to the program's process. The
+			implementation details of the ZSCP process are provided in the sections
+			below.</p>
+		<p>The Common Repository is only <em>one</em> implementation of the ZSCP. While the
+			Common Repository implements the ZSCP guidelines and suggested automation
+			tools, the ZSCP process itself does <em>not</em> require the Common
+			Repository.</p>
+		<p>Unless otherwise stated, certified packages will automatically be released
+			with every new Zope release. This, on the other hand, will greatly simplify the
+			dependency tree for Common Repository based packages.</p>
+		
+		<a href="@@repository_page02.html">Next Page: Layout</a>
+		
+	</div>
+  </body>
+
+</html>

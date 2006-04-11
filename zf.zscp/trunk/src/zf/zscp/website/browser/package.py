@@ -24,6 +24,17 @@ from zf.zscp.interfaces import ICertification
 from zope.app.pagetemplate import ViewPageTemplateFile
 
 
+def listToString(inList):
+    outStr = u''
+    for item in inList:
+        outStr += item
+        outStr += u', '
+    if len(outStr) > 2:
+        # remove the last separator
+        outStr = outStr[:-2]
+    return outStr
+
+
 class PackageEditForm(form.EditForm):
     """Edit a package and it's sub forms."""
 
@@ -43,13 +54,100 @@ class PackageEditForm(form.EditForm):
 
 
 
-class PackageIndex(page.Page):
-    """Detail view for a single package."""
+class PackageInfo(page.Page):
+    """Package info view."""
 
-    template = ViewPageTemplateFile('package_index.pt')
+    template = ViewPageTemplateFile('package_info.pt')
 
     def update(self):
-        pass
+        publication = self.context.publication
+        info = {}
+        info['packageName'] = publication.packageName
+        info['name'] = publication.name
+        info['summary'] = publication.summary
+        info['description'] = publication.description
+        info['homePage'] = publication.homePage
+        info['developersMailinglist'] = publication.developersMailinglist
+        info['usersMailinglist'] = publication.usersMailinglist
+        info['issueTracker'] = publication.issueTracker
+        info['repositoryLocation'] = publication.repositoryLocation
+        info['repositoryWebLocation'] = publication.repositoryWebLocation
+        info['certificationLevel'] = publication.certificationLevel
+        info['certificationDate'] = publication.certificationDate
+        info['metadataVersion'] = publication.metadataVersion
+
+        # list of strings converted to strings
+        info['author'] = listToString(publication.author)
+        info['authorEmail'] = listToString(publication.authorEmail)
+        info['license'] = listToString(publication.license)
+        info['platform'] = listToString(publication.platform)
+        info['classifier'] = listToString(publication.classifier)
+
+        self._info = info
+
+    @property
+    def info(self):
+        return self._info
+
+    def __call__(self):
+        self.update()
+        return self.template()
+
+
+
+class PackageReleases(page.Page):
+    """Release view."""
+
+    template = ViewPageTemplateFile('package_releases.pt')
+
+    def update(self):
+        releases = self.context.releases
+        info = {}
+        self._info = info
+
+    @property
+    def info(self):
+        return self._info
+
+    def __call__(self):
+        self.update()
+        return self.template()
+
+
+
+class PackageClassifiers(page.Page):
+    """Classifier view."""
+
+    template = ViewPageTemplateFile('package_classifiers.pt')
+
+    def update(self):
+        certifications = self.context.certifications
+        info = {}
+        self._info = info
+
+    @property
+    def info(self):
+        return self._info
+
+    def __call__(self):
+        self.update()
+        return self.template()
+
+
+
+class PackageCertifications(page.Page):
+    """Certification view."""
+
+    template = ViewPageTemplateFile('package_certifications.pt')
+
+    def update(self):
+        publication = self.context.publication
+        info = {}
+        self._info = info
+
+    @property
+    def info(self):
+        return self._info
 
     def __call__(self):
         self.update()

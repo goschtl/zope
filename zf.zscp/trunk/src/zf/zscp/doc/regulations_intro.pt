@@ -1,0 +1,34 @@
+<html metal:use-macro="context/@@standard_macros/view" i18n:domain="zf.zscp">
+	<body>
+		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+			
+			<div id="documentFirstHeading">Regulations (1of 8) The Zope Software
+				Certification Program and the Common Repository</div>
+			<h3 class="itemOne itemHeading">Zope Community Process</h3>
+			<p>This section describes the process for Zope-related software to receive
+				quality certification.</p>
+			
+			<p>Historically, the Zope community had no development process. This was in
+				part because the development of Zope 2 was controlled by Digital Creations
+				(now Zope Corporation) and testing-automation tools were not available at
+				that time. Also, Zope 2 lacked the necessary documentation. All this lead to
+				an accepted misuse of the API and often low quality software.</p>
+			<p>With the advent of Zope 3, procedures were set in place to ensure the quality
+				and documentation of the code. Guided by eXtreme Programming practices,
+				sprints were organized to educate the Zope community about the project and
+				have high-productivity development time, proposals were introduced to
+				ensure the proper discussion of a feature before implementation, and tests
+				were required to ensure the overall quality of the code base. This
+				development process is called the Zope Community Process.</p>
+			<p>While the Zope Community Process provides an excellent method for
+				developing community-driven projects like Zope 3, it (a) does not show how
+				to produce simple high-quality packages, (b) measure the quality, and (c)
+				communicate the state of a package to outsiders. The goal of the Zope
+				Software Certification Program (ZSCP) is (a) to clearly define the levels
+				of software quality using a metric system and (b) to communicate this
+				information to our users, customers, and prospective customers.</p>
+			<a href="@@regulations_page02.html">Next Page: ...</a>
+			
+		</div>
+	</body>
+</html>

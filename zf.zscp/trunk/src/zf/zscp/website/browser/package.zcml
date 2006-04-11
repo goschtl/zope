@@ -13,7 +13,23 @@
   <page
       name="index.html"
       for="zf.zscp.interfaces.IPackage"
-      class=".package.PackageIndex"
+      class=".package.PackageInfo"
+      permission="zope.Public"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <page
+      name="releases.html"
+      for="zf.zscp.interfaces.IPackage"
+      class=".package.PackageReleases"
+      permission="zope.Public"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <page
+      name="classifiers.html"
+      for="zf.zscp.interfaces.IPackage"
+      class=".package.PackageClassifiers"
       permission="zope.Public"
       layer="zf.zscp.skin.IZSCPLayer"
       />

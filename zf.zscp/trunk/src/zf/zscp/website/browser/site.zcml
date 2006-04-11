@@ -10,13 +10,6 @@
       permission="zope.ManageContent"
       />
 
-  <containerViews
-      for="zf.zscp.website.interfaces.IZSCPSite"
-      contents="zope.ManageContent"
-      index="zope.View"
-      add="zope.ManageContent"
-      />
-
   <page
       name="index.html"
       for="zf.zscp.website.interfaces.IZSCPSite"
@@ -24,6 +17,13 @@
       class=".site.SiteIndex"
       permission="zope.Public"
       layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <containerViews
+      for="zf.zscp.website.interfaces.IZSCPSite"
+      contents="zope.ManageContent"
+      index="zope.View"
+      add="zope.ManageContent"
       />
 
   <page

@@ -1,7 +1,9 @@
 <html metal:use-macro="context/@@standard_macros/view"
     i18n:domain="zf.zscp">
 	<body>
-		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
+		<div metal:fill-slot="body"
+					tal:define="global pageversion string: 0.8;
+											info view/info">
 			
 			<div id="documentFirstHeading">Package Detail for: TODO</div>
 			<div id="package-wrapper">
