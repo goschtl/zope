@@ -166,7 +166,8 @@ input mode.
     <div><input... name="form.n1.name" ...</div>
     </div>
 
-Also the edit action should be disabled now.
+Also the edit action should be disabled now and the save action should
+be enabled.
 
     >>> print gf.subActionNames
     [u'form.actions.save']
