@@ -52,9 +52,8 @@ selectable items in our order grid.
     >>> def isSubFormDisplayMode(form,action):
     ...     return not form.inputMode
 
-    >>> def allSubFormsDisplayMode(form,action):
+    >>> def anySubFormDisplayMode(form,action):
     ...     return not (True in form.parentForm.subFormInputMode.values())
-
 
     >>> class OrderForm(gridform.GridItemFormBase):
     ...     inputMode=False
@@ -74,7 +73,7 @@ selectable items in our order grid.
     ...         self.newInputMode = False
     ...         
     ...     @multiform.parentAction('Edit',
-    ...         condition=allSubFormsDisplayMode)
+    ...         condition=anySubFormDisplayMode)
     ...     def handle_edit_action(self, action, data):
     ...         if isSelected(self,action):
     ...             self.newInputMode = True
@@ -178,6 +177,7 @@ input mode.
 Also the edit action should be disabled now.
 
     >>> print gf.subActionNames
+    [u'form.actions.save']
 
 Now we test the actions which are displayed in each row.
 

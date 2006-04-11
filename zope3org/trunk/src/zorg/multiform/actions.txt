@@ -66,12 +66,12 @@ are defined in the multiform (parent) class called ``Edit`` and
     ...             res += '<div>%s</div>\n' % action.render()
     ...         return res
     ...     
-    ...     @form.action('Edit',condition=multiform.isFormDisplayMode)
+    ...     @form.action('Edit',condition=multiform.allSubFormDisplayMode)
     ...     def handle_edit_action(self, action, data):
     ...         for form in self.subForms.values():
     ...             form.newInputMode = True
     ...         
-    ...     @form.action('Cancel',condition=multiform.isFormInputMode)
+    ...     @form.action('Cancel',condition=multiform.anySubFormInputMode)
     ...     def handle_cancel_action(self, action, data):
     ...         for form in self.subForms.values():
     ...             form.newInputMode = False

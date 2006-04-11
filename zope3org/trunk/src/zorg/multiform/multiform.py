@@ -15,20 +15,26 @@ from zope import interface
         
 
 def isFormDisplayMode(f,action):
-    return not isFormInputMode(f,action)
+    return not f.inputMode
     
 def isFormInputMode(f,action):
-    return not f.inputMode
-    if len(f.subFormInputMode) == 0:
-        return f.inputMode
-    else:
-        return (True in f.subFormInputMode.values())
+    return f.inputMode
 
 def isParentFormDisplayMode(f,action):
     return not isParentFormInputMode(f,action)
 
 def isParentFormInputMode(f,action):
     return (True in f.parentForm.subFormInputMode.values())
+
+def anySubFormInputMode(form,action):
+    if not IMultiForm.providedBy(form):
+        form = form.parentForm
+    return (True in form.subFormInputMode.values())
+
+def allSubFormDisplayMode(form,action):
+    if not IMultiForm.providedBy(form):
+        form = form.parentForm
+    return not (True in form.subFormInputMode.values())
 
 
 class ItemAction(form.Action):
