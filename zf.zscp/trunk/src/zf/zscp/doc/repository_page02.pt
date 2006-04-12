@@ -12,7 +12,7 @@
 
 			<p>Packages in the Common Repository <em>must</em> have the following
 				layout:</p>
-			<blockquote>
+			<tt>
 				<dl>
 					<dt>repos/main/&lt;NAMESPACE&gt;.&lt;PACKAGE&gt;</dt>
 					<dd>branches/</dd>
@@ -41,7 +41,7 @@
 						</dl>
 					</dd>
 				</dl>
-			</blockquote>
+			</tt>
 			<p>This layout, with exception of the <tt class="docutils literal">
 				<span class="pre">zscp/</span></tt> directory, follows the common
 				layout guidelines of SVN and Python. The optional <tt
@@ -53,19 +53,21 @@
 				other files containing the necessary data.</p>
 			<p>The format of the <tt class="docutils literal">
 				<span class="pre">ZSCP.cfg</span></tt> file is as follows:</p>
-			<pre class="literal-block">			
-			publication &lt;PATH-OR-URL-TO-PUBLICATION-FILE&gt;
-			certifications &lt;PATH-OR-URL-TO-CERTIFICATIONS-FILE&gt;
+			<blockquote>
+		    <tt>			
+			publication &lt;PATH-OR-URL-TO-PUBLICATION-FILE&gt;<br />
+			certifications &lt;PATH-OR-URL-TO-CERTIFICATIONS-FILE&gt;<br />
 			releases &lt;PATH-OR-URL-TO-RELEASES-FILE&gt;
-			</pre>
+			</tt>
+			</blockquote>	
 			<p>The value for each field, <tt class="docutils literal">
 				<span class="pre">publication</span></tt>, <tt
 					class="docutils literal">
 				<span class="pre">certifications</span></tt>, and <tt
 					class="docutils literal">
 				<span class="pre">releases</span></tt> is a relative path or URL to the
-				corresponding file. The formats for those files is defined in section
-				3.3.</p>
+				corresponding file. The formats for those files is 
+				defined in <a href="@@repository_page03.html">section 3</a>.</p>
 			<p>The <tt class="docutils literal">
 				<span class="pre">zscp/</span></tt> directory and the <tt
 					class="docutils literal">
@@ -108,7 +110,7 @@
 				high-quality packages that are supported by the Zope development
 				team.</p>
 			<p>Code in the Common Repository <em>must</em> also use the license stated in
-				section 3.5 and developers <em>must</em> sign the contributor agreement.
+				<a href="@@repository_page05.html">section 5</a> and developers <em>must</em> sign the contributor agreement.
 				The agreement is necessary to ensure that contributions originated from
 				the contributing developer.</p>
 			<p>A final goal of the Common Repository is to ease the upstream movement of
@@ -118,8 +120,8 @@
 				signed contributor agreements, packages can be easily moved into the Zope 3
 				and Python core.</p>
 			
-			<div class="itemNavLeftArrow"><a href="@@repository.html">Previous Page: Definition</a></div>
-			<div class="itemNavRightArrow"><a href="@@repository_page03.html">Next Page: Package Publication, Certification, and Release Data</a></div>
+			<div class="itemNavLeftArrow"><a href="@@repository.html">Definition</a></div>
+			<div class="itemNavRightArrow"><a href="@@repository_page03.html">Package Publication, Certification, and Release Data</a></div>
 	  
 		</div>
 	</body>

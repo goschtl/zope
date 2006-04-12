@@ -21,7 +21,7 @@
 		<p>The existing <tt class="docutils literal">
 			<span class="pre">svn://svn.zope.org/repos/main</span></tt> will serve
 			as the Common Repository. Every package in the common repository <em>must</em>
-			conform at least to the layout as described in section 3.2. If a package wishes to
+			conform at least to the layout as described in <a href="@@repository_page02.html">section 2</a>. If a package wishes to
 			participate in the ZSCP, then it must also conform to the program's process. The
 			implementation details of the ZSCP process are provided in the sections
 			below.</p>
@@ -33,7 +33,7 @@
 			with every new Zope release. This, on the other hand, will greatly simplify the
 			dependency tree for Common Repository based packages.</p>
 					
-		<div class="itemNavRightArrow"><a href="@@repository_page02.html">Next Page: Layout</a></div>
+		<div class="itemNavRightArrow"><a href="@@repository_page02.html">Layout</a></div>
 		
 	</div>
   </body>

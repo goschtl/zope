@@ -18,150 +18,129 @@
 			
 			<p>(Data Type, Multiplicity, Necessity)</p>
 			<p>Field Description</p>
-			<p>Example: example value</p>
+			<p>Example: <tt>example value</tt></p>
 			
 			<p>The following data description is known as the <em>Package Meta-Data
 				Version 1.0</em>.</p>
-			<h4><a id="package-name" name="package-name">5.1. Package-name</a>
-				</h4>
+			<h4>5.1. Package-name</h4>
 			<p>(Bytes Line, single, required)</p>
 			<p>The dotted Python path of the package.</p>
 			<p>Example: <tt>zope.sample</tt></p>
 			
-			<h4><a id="name" name="name">5.2. Name</a></h4>
+			<h4>5.2. Name</h4>
 			<p>(Text Line, single, required)</p>
 			<p>The commonly used name of the package.</p>
-			<p>Example: Sample</p>
+			<p>Example: <tt>Sample</tt></p>
 			
-			<h4><a id="summary" name="summary">5.3. Summary</a></h4>
+			<h4>5.3. Summary</h4>
 			<p>(Text Line, single, required)</p>
 			<p>A short description or summary of the package. It is also often interpreted as
 				the title.</p>
-			<p>Example: The Zope Sample Package</p>
+			<p>Example: <tt>The Zope Sample Package</tt></p>
 			
-			<h4><a id="description" name="description">5.4. Description</a> </h4>
+			<h4>5.4. Description</h4>
 			<p>(Text, single, optional)</p>
 			<p>A detailed description of the package's functionality. While it should
 				contain some detail, it should not duplicate the documentation of the
 				README.txt file.</p>
 			<dl class="docutils">
-				<dt>Example: The sample package for Zope does provide some sample features
-					that</dt>
-				<dd>can be useful for developers to learn about sample data development. It
-					does so by providing ...</dd>
+				<dt>Example: <tt>The sample package for Zope does provide some sample features
+					that can be useful for developers to learn about sample data development. It
+					does so by providing ...</tt></dt>
 			</dl>
 			
-			<h4><a id="home-page" name="home-page">5.5. Home-page</a></h4>
+			<h4>5.5. Home-page</h4>
 			<p>(URL, single, optional)</p>
 			<p>A URL to the homepage of the package.</p>
-			<p>Example: <a class="reference"
-					href="http://www.zope.org/Products/sample">
-				http://www.zope.org/Products/sample</a></p>
+			<p>Example: <tt>http://www.zope.org/Products/sample</tt></p>
 			
-			<h4><a id="author" name="author">5.6. Author</a></h4>
+			<h4>5.6. Author</h4>
 			<p>(Text Line, multiple, required)</p>
 			<p>The name of the author of the package. The value should <em>not</em> contain
 				the author's E-mail address. This field can be specified multiple
 				times.</p>
-			<p>Example: John Doe</p>
+			<p>Example: <tt>John Doe</tt></p>
 			
-			<h4><a id="author-email" name="author-email">5.7. Author-email</a>
-				</h4>
+			<h4>5.7. Author-email</h4>
 			<p>(E-mail Address, multiple, required)</p>
 			<p>The E-mail of the author of the package. This field can be specified multiple
 				times. Any entry X of the author field is matched with entry X of the author
 				email field. If this field is specified the length of the author field list
 				must match the length of the author email field list.</p>
-			<p>Example: <a class="reference" href="mailto:john&#64;doe.com">
-				john&#64;doe.com</a></p>
+			<p>Example: <tt>john&#64;doe.com</tt></p>
 			
-			<h4><a id="license" name="license">5.8. License</a></h4>
+			<h4>5.8. License</h4>
 			<p>(Text Line, multiple, required)</p>
 			<p>The software license of the package. This field can specified multiple
 				times, to support dual-licensing.</p>
-			<p>Example: ZPL 2.1</p>
+			<p>Example: <tt>ZPL 2.1</tt></p>
 			
-			<h4><a id="platform" name="platform">5.9. Platform</a></h4>
+			<h4>5.9. Platform</h4>
 			<p>(Text Line, multiple, required)</p>
 			<p>The operating system/platform the package is known to run on. This field can
 				be specified multiple times. <tt class="docutils literal">
 				<span class="pre">All</span></tt> may be used, if the package is
 				available on all platforms Python is running on, i.e. the package is pure
 				Python code.</p>
-			<p>Example: Unix</p>
+			<p>Example: <tt>Unix</tt></p>
 			
-			<h4><a id="classifier" name="classifier">5.10. Classifier</a> </h4>
+			<h4>5.10. Classifier</h4>
 			<p>(Classifier Text Line, multiple, optional)</p>
 			<p>A classification entry identifying the package. This field can be specified
 				multiple times.</p>
 			<dl class="docutils">
-				<dt>Example: Programming Language :: Python</dt>
-				<dd>Topic :: Internet :: WWW/HTTP Topic :: Internet :: WWW/HTTP :: Dynamic
-					Content Topic :: Software Development :: Libraries :: Python
-					Modules</dd>
+				<dt>Example: <tt>Programming Language :: Python :: Topic :: Internet ::
+					WWW/HTTP Topic :: Internet :: WWW/HTTP :: Dynamic :: Content Topic :: 
+					Software Development :: Libraries :: Python Modules</tt></dt>
 			</dl>
 			
-			<h4><a id="developers-mailinglist" name="developers-mailinglist">
-				5.11. Developers-mailinglist</a></h4>
+			<h4>5.11. Developers-mailinglist</h4>
 			<p>(E-mail Address, single, optional)</p>
 			<p>The E-mail address of the developer mailing list.</p>
-			<p>Example: <a class="reference" href="mailto:sample-dev&#64;doe.com">
-				sample-dev&#64;doe.com</a></p>
+			<p>Example: <tt>sample-dev&#64;doe.com</tt></p>
 			
-			<h4><a id="users-mailinglist" name="users-mailinglist">5.12.
-				Users-mailinglist</a></h4>
+			<h4>5.12. Users-mailinglist</h4>
 			<p>(E-mail Address, single, optional)</p>
 			<p>The E-mail address of the users mailing list.</p>
-			<p>Example: <a class="reference"
-					href="mailto:sample-users&#64;doe.com">
-				sample-users&#64;doe.com</a></p>
+			<p>Example: <tt>sample-users&#64;doe.com</tt></p>
 			
-			<h4><a id="issue-tracker" name="issue-tracker">5.13.
-				Issue-tracker</a></h4>
+			<h4>5.13. Issue-tracker</h4>
 			<p>(URL, single, optional)</p>
 			<p>A URL to the issue tracker of the package, where new issues/bugs/requests can
 				be reported.</p>
-			<p>Example: <a class="reference"
-					href="http://www.zope.org/trackers/sample/">
-				http://www.zope.org/trackers/sample/</a></p>
+			<p>Example: <tt>http://www.zope.org/trackers/sample/</tt></p>
 			
-			<h4><a id="repository-location" name="repository-location">5.14.
-				Repository-location</a></h4>
+			<h4>5.14. Repository-location</h4>
 			<p>(URL, single, optional)</p>
 			<p>The URL to the repository. The URL should be usable to actually check out the
 				package.</p>
-			<p>Example: svn://svn.zope.org/repos/main/sample</p>
+			<p>Example: <tt>svn://svn.zope.org/repos/main/sample</tt></p>
 			
-			<h4><a id="repository-web-location" name="repository-web-location">
-				5.15. Repository-web-location</a></h4>
+			<h4>5.15. Repository-web-location</h4>
 			<p>(URL, single, optional)</p>
 			<p>The URL to the repository's browsable HTML UI.</p>
-			<p>Example: <a class="reference" href="http://svn.zope.org/sample">
-				http://svn.zope.org/sample</a></p>
+			<p>Example: <tt>http://svn.zope.org/sample</tt></p>
 			
-			<h4><a id="certification-level" name="certification-level">5.16.
-				Certification-level</a></h4>
+			<h4>5.16. Certification-level</h4>
 			<p>(Choice, single, optional)</p>
 			<p>Describes the certification level of the package. The value can be one of the
 				following five: None, listed, level1, level2, level3</p>
-			<p>Example: level1</p>
+			<p>Example: <tt>level1</tt></p>
 			
-			<h4><a id="certification-date" name="certification-date">5.17.
-				Certification-date</a></h4>
+			<h4>5.17. Certification-date</h4>
 			<p>(Date, single, optional)</p>
 			<p>The date at which the certification was received. The date should be in the
 				format <tt class="docutils literal">
 				<span class="pre">yyyy-mm-dd</span></tt>.</p>
-			<p>Example: 2006-02-28</p>
+			<p>Example: <tt>2006-02-28</tt></p>
 			
-			<h4><a id="metadata-version" name="metadata-version">5.18.
-				Metadata-Version</a></h4>
+			<h4>5.18. Metadata-Version</h4>
 			<p>(Text Line, single, required)</p>
 			<p>This is the version number of this package meta-data.</p>
-			<p>Example: 1.1</p>
+			<p>Example: <tt>1.1</tt></p>
 
-			<div class="itemNavLeftArrow"><a href="@@regulations_page04.html">Previous Page: Quality Metrics</a></div>
-			<div class="itemNavRightArrow"><a href="@@regulations_page06.html">Next Page: Package Certification Data</a></div>	
+			<div class="itemNavLeftArrow"><a href="@@regulations_page04.html">Quality Metrics</a></div>
+			<div class="itemNavRightArrow"><a href="@@regulations_page06.html">Package Certification Data</a></div>	
 			
 		</div>
 	</body>

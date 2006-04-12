@@ -22,64 +22,60 @@
 				certification action the following pieces of information must be
 				recorded. The same sub-section layout as in section 2.5. applies.</p>
 			<div class="section">
-				<h4><a id="action" name="action">6.1. Action</a></h4>
+				<h4>6.1. Action</h4>
 				<p>(Choice, single, required)</p>
 				<p>The action describes whether a certification was granted or revoked.
 					Upon violations (as defined in section 2.8), a certification manager
 					can also issue a warning.</p>
-				<p>Allowed Values: grant, revoke, warn Example: granted</p>
+				<p>Allowed Values: grant, revoke, warn</p>
+				<p>Example: <tt>granted</tt></p>
 			</div>
 			<div class="section">
-				<h4><a id="source-level" name="source-level">6.2.
-					Source-level</a></h4>
+				<h4>6.2. Source-level</h4>
 				<p>(Choice, single, required)</p>
 				<p>This field describes the original certification level before this
 					certification action was executed.</p>
-				<p>Allowed Values: none, listed, level1, level2, level3 Example:
-					listed</p>
+				<p>Allowed Values: none, listed, level1, level2, level3</p>
+				<p>Example: <tt>listed</tt></p>
 			</div>
 			<div class="section">
-				<h4><a id="target-level" name="target-level">6.3.
-					Target-level</a></h4>
+				<h4>6.3. Target-level</h4>
 				<p>(Choice, single, required)</p>
 				<p>This field describes the final certification level after this
 					certification action was executed.</p>
-				<p>Allowed Values: none, listed, level1, level2, level3 Example:
-					level1</p>
+				<p>Allowed Values: none, listed, level1, level2, level3</p>
+				<p>Example: <tt>level1</tt></p>
 			</div>
 			<div class="section">
-				<h4><a id="date" name="date">6.4. Date</a></h4>
+				<h4>6.4. Date</h4>
 				<p>(Date, single, required)</p>
 				<p>The date on which the certification action was executed. The field
 					should be of the format <tt class="docutils literal">
 					<span class="pre">yyyy-mm-dd</span></tt>.</p>
-				<p>Example: 2006-02-11</p>
+				<p>Example: <tt>2006-02-11</tt></p>
 			</div>
 			<div class="section">
-				<h4><a id="certification-manager" name="certification-manager">
-					6.5. Certification-manager</a></h4>
+				<h4>6.5. Certification-manager</h4>
 				<p>(Text Line, single, required)</p>
 				<p>This field lists the person that executed the certification action. It
 					is the full name and E-mail address of the person.</p>
-				<p>Example: John Doe &lt;<a class="reference"
-						href="mailto:john&#64;doe.com">john&#64;doe.com</a>
-					&gt;</p>
+				<p>Example: <tt>John Doe &lt;john&#64;doe.com&gt;</tt></p>
 			</div>
 			<div class="section">
-				<h4><a id="comments" name="comments">6.6. Comments</a></h4>
+				<h4>6.6. Comments</h4>
 				<p>(Text, single, optional)</p>
 				<p>This field can contain arbitrary comments about the certification
 					action.</p>
 				<dl class="docutils">
-					<dt>Example: The authors of the Sample package have cooperated well by
-						swiftly</dt>
-					<dd>providing all necessary information required for the
-						certification to be granted.</dd>
+					<dt>Example: <tt>The authors of the Sample package have cooperated well by
+						swiftly providing all necessary information required for the
+						certification to be granted.</tt>
+					</dt>
 				</dl>
 			</div>
 
-			<div class="itemNavLeftArrow"><a href="@@regulations_page05.html">Previous Page: Package Meta-Information</a></div>
-			<div class="itemNavRightArrow"><a href="@@regulations_page07.html">Next Page: Package Release Data</a></div>	
+			<div class="itemNavLeftArrow"><a href="@@regulations_page05.html">Package Meta-Information</a></div>
+			<div class="itemNavRightArrow"><a href="@@regulations_page07.html">Package Release Data</a></div>	
 
 		</div>
 	</body>

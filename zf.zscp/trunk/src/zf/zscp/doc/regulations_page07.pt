@@ -4,108 +4,88 @@
 		<div metal:fill-slot="body" tal:define="global pageversion string: 0.8">
 			
 			<div id="documentFirstHeading">Regulations for the Zope Software
-				Certification Program (7 of 9)&nbsp;
-				<b class="itemNavLeftArrow" align="right" ><a href="@@regulations_page06.html"></a></b>
-				<b class="itemNavRightArrow" align="right" ><a href="@@regulations_page08.html"></a></b>
-			</div>
+				Certification Program (7 of 9)&nbsp; <b class="itemNavLeftArrow"
+					align="right"><a href="@@regulations_page06.html"></a></b> <b
+					class="itemNavRightArrow" align="right"><a
+					href="@@regulations_page08.html"></a></b> </div>
 			
 			<h3 class="itemSeven itemHeading">Package Release Data</h3>
 			<p>Finally, all the releases of certified packages <em>must</em> be tracked.
 				This section describes the data that must be recorded for each release. The
-				same sub-section layout as in section 2.5. applies.</p>
+				same sub-section layout as in section 5. applies.</p>
 			<p>The following data description is known as the <em>Package Release Data
 				Version 1.0</em>.</p>
-			<div class="section">
-				<h4><a id="id4" name="id4">7.1. Name</a></h4>
-				<p>(Text Line, single, required)</p>
-				<p>The name under which the package will be known for this release. This
-					field <em>may</em> be equivalent to the name field described in
-					section 2.5.1.</p>
-				<p>Example: Sample Package</p>
-			</div>
-			<div class="section">
-				<h4><a id="version" name="version">7.2. Version</a></h4>
-				<p>(Text Line, single, required)</p>
-				<p>This field describes the version number of the release.</p>
-				<p>Example: 0.9.0b2</p>
-			</div>
-			<div class="section">
-				<h4><a id="codename" name="codename">7.3. Codename</a></h4>
-				<p>(Text Line, single, optional)</p>
-				<p>The code name of the release.</p>
-				<p>Example: CoolName</p>
-			</div>
-			<div class="section">
-				<h4><a id="id5" name="id5">7.4. Date</a></h4>
-				<p>(Date, single, required)</p>
-				<p>The date on which the release was made. The date should be in the form <tt
-						class="docutils literal">
-					<span class="pre">yyyy-mm-dd</span></tt>.</p>
-				<p>Example: 2006-02-01</p>
-			</div>
-			<div class="section">
-				<h4><a id="certification" name="certification">7.5.
-					Certification</a></h4>
-				<p>(Choice, single, required)</p>
-				<p>The certification level of the package at the date of the release.</p>
-				<p>Allowed Values: none, listed, level1, level2, level3 Example:
-					level1</p>
-			</div>
-			<div class="section">
-				<h4><a id="package" name="package">7.6. Package</a></h4>
-				<p>(URL, single, required)</p>
-				<p>The URL to the installation package file.</p>
-				<p>Example: <a class="reference"
-						href="http://www.zope.org/Products/SamplePackage/SamplePackage-0.9.0.tgz">
-					http://www.zope.org/Products/SamplePackage/SamplePackage-0.9.0.tgz</a>
-					</p>
-				<p>7.7. Source +++++++++++++x</p>
-				<p>(URL, single, optional)</p>
-				<p>The URL to the repository location. It should be possible to use this URL
-					to make a checkout.</p>
-				<p>Example: svn://svn.zope.org/zf.sample/tags/0.9.0b2</p>
-			</div>
-			<div class="section">
-				<h4><a id="dependency" name="dependency">7.8. Dependency</a></h4>
-				<p>(Text Line, multiple, required)</p>
-				<p>A dependency to another package. The dependency must contain the full
-					name of the package and the version number. One entry of this field
-					<em>must</em> be specified for each dependency.</p>
-				<p>Example: Zope 3.3</p>
-			</div>
-			<div class="section">
-				<h4><a id="announcement" name="announcement">7.9.
-					Announcement</a></h4>
-				<p>(URL, single, optional)</p>
-				<p>A link to the announcement of the release.</p>
-				<p>Example: <a class="reference"
-						href="http://www.zope.org/Products/SamplePackage090Released">
-					http://www.zope.org/Products/SamplePackage090Released</a>
-					</p>
-			</div>
-			<div class="section">
-				<h4><a id="release-manager" name="release-manager">7.10.
-					Release-manager</a></h4>
-				<p>(Text Line, single, required)</p>
-				<p>The full name and E-mail address of the release manager. Both sub-fields
-					should be separately be available.</p>
-				<p>Example: John Doe &lt;<a class="reference"
-						href="mailto:john&#64;doe.com">john&#64;doe.com</a>
-					&gt;</p>
-			</div>
-			<div class="section">
-				<h4><a id="press-contact" name="press-contact">7.11.
-					Press-contact</a></h4>
-				<p>(Text Line, single, required)</p>
-				<p>The full name and E-mail address of the press contact. Both sub-fields
-					should be separately be available.</p>
-				<p>Example: John Doe &lt;<a class="reference"
-						href="mailto:john&#64;doe.com">john&#64;doe.com</a>
-					&gt;</p>
-			</div>
 			
-			<div class="itemNavLeftArrow"><a href="@@regulations_page06.html">Previous Page: Package Certification Data</a></div>
-			<div class="itemNavRightArrow"><a href="@@regulations_page08.html">Next Page: The Process</a></div>
+			<h4>7.1. Name</h4>
+			<p>(Text Line, single, required)</p>
+			<p>The name under which the package will be known for this release. This field
+				<em>may</em> be equivalent to the name field described in section 5.1.</p>
+			<p>Example: <tt>Sample Package</tt></p>
+			
+			<h4>7.2. Version</h4>
+			<p>(Text Line, single, required)</p>
+			<p>This field describes the version number of the release.</p>
+			<p>Example: <tt>0.9.0b2</tt></p>
+			
+			<h4>7.3. Codename</h4>
+			<p>(Text Line, single, optional)</p>
+			<p>The code name of the release.</p>
+			<p>Example: <tt>CoolName</tt></p>
+			
+			<h4>7.4. Date</h4>
+			<p>(Date, single, required)</p>
+			<p>The date on which the release was made. The date should be in the form <tt
+					class="docutils literal">
+				<span class="pre">yyyy-mm-dd</span></tt>.</p>
+			<p>Example: <tt>2006-02-01</tt></p>
+			
+			<h4>7.5. Certification</h4>
+			<p>(Choice, single, required)</p>
+			<p>The certification level of the package at the date of the release.</p>
+			<p>Allowed Values: none, listed, level1, level2, level3</p>
+			<p>Example: <tt>level1</tt></p>
+			
+			<h4>7.6. Package</h4>
+			<p>(URL, single, required)</p>
+			<p>The URL to the installation package file.</p>
+			<p>Example: <tt>http://www.zope.org/Products/SamplePackage/SamplePackage-0.9.0.tgz</tt></p>
+			
+			<h4>7.7. Source +++++++++++++x</h4>
+			<p>(URL, single, optional)</p>
+			<p>The URL to the repository location. It should be possible to use this URL to
+				make a checkout.</p>
+			<p>Example: <tt>svn://svn.zope.org/zf.sample/tags/0.9.0b2</tt></p>
+			
+			<h4>7.8. Dependency</h4>
+			<p>(Text Line, multiple, required)</p>
+			<p>A dependency to another package. The dependency must contain the full name of
+				the package and the version number. One entry of this field <em>must</em> be
+				specified for each dependency.</p>
+			<p>Example: <tt>Zope 3.3</tt></p>
+			
+			<h4>7.9. Announcement</h4>
+			<p>(URL, single, optional)</p>
+			<p>A link to the announcement of the release.</p>
+			<p>Example: <tt>http://www.zope.org/Products/SamplePackage090Released</tt></p>
+			
+			<h4>7.10. Release-manager</h4>
+			<p>(Text Line, single, required)</p>
+			<p>The full name and E-mail address of the release manager. Both sub-fields
+				should be separately be available.</p>
+			<p>Example: <tt>John Doe &lt;john&#64;doe.com&gt;</tt></p>
+			
+			<h4>7.11. Press-contact</h4>
+			<p>(Text Line, single, required)</p>
+			<p>The full name and E-mail address of the press contact. Both sub-fields should
+				be separately be available.</p>
+			<p>Example: <tt>John Doe &lt;john&#64;doe.com&gt;</tt></p>
+			
+			<div class="itemNavLeftArrow"><a href="@@regulations_page06.html">
+				Package Certification Data</a>
+			</div>
+			<div class="itemNavRightArrow"><a href="@@regulations_page08.html">The
+				Process</a>
+			</div>
 			
 		</div>
 	</body>

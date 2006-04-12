@@ -19,8 +19,8 @@
 			<p>However, packages may also choose their own release schedule. In this case
 				dependencies must be carefully stated in the release data file.</p>
 
-			<div class="itemNavLeftArrow"><a href="@@repository_page05.html">Previous Page: Coding Style Guidelines</a></div>
-			<div class="itemNavRightArrow"><a href="@@repository_page07.html">Next Page: License</a></div>
+			<div class="itemNavLeftArrow"><a href="@@repository_page05.html">Coding Style Guidelines</a></div>
+			<div class="itemNavRightArrow"><a href="@@repository_page07.html">License</a></div>
 			
 		</div>
 	</body>
