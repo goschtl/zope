@@ -295,9 +295,9 @@ directive:
   >>> IApp(Content(), None) is None
   True
 
-  >>> import zope.app.security
+  >>> import zope.security
   >>> from zope.configuration.xmlconfig import XMLConfig
-  >>> XMLConfig('meta.zcml', zope.app.security)()
+  >>> XMLConfig('meta.zcml', zope.security)()
   >>> runSnippet('''
   ...   <permission
   ...       id="y.x"
@@ -446,7 +446,7 @@ proxy-free.  The adapter has umlimited access to it:
 We can also protect the trusted adapter with a permission:
 
   >>> clearZCML()
-  >>> XMLConfig('meta.zcml', zope.app.security)()
+  >>> XMLConfig('meta.zcml', zope.security)()
   >>> runSnippet('''
   ...   <permission
   ...       id="y.x"
@@ -659,7 +659,7 @@ define a permission for which we'll have to register the <permission />
 directive:
 
   >>> clearZCML()
-  >>> XMLConfig('meta.zcml', zope.app.security)()
+  >>> XMLConfig('meta.zcml', zope.security)()
   >>> runSnippet('''
   ...   <permission
   ...       id="y.x"
