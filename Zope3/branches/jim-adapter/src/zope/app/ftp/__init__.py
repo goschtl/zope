@@ -26,12 +26,12 @@ from zope.security.checker import canAccess
 from zope.event import notify
 from zope.lifecycleevent import ObjectCreatedEvent
 from zope.dublincore.interfaces import IZopeDublinCore
+from zope.filerepresentation.interfaces import IReadFile, IWriteFile
+from zope.filerepresentation.interfaces import IReadDirectory
+from zope.filerepresentation.interfaces import IWriteDirectory
+from zope.filerepresentation.interfaces import IFileFactory
+from zope.filerepresentation.interfaces import IDirectoryFactory
 
-from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
-from zope.app.filerepresentation.interfaces import IReadDirectory
-from zope.app.filerepresentation.interfaces import IWriteDirectory
-from zope.app.filerepresentation.interfaces import IFileFactory
-from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.copypastemove.interfaces import IContainerItemRenamer
 from zope.app.container.interfaces import IContainer
 

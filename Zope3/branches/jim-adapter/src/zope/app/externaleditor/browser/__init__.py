@@ -17,9 +17,9 @@ __docformat__ = 'restructuredtext'
 
 from zope.publisher.browser import BrowserView
 from zope.security.proxy import removeSecurityProxy
+from zope.filerepresentation.interfaces import IReadFile
+from zope.traversing.browser import absoluteURL
 
-from zope.app import zapi
-from zope.app.filerepresentation.interfaces import IReadFile
 from zope.app.interface import queryType
 from zope.app.content.interfaces import IContentType
 
@@ -31,7 +31,7 @@ class ExternalEditor(BrowserView):
         response = request.response
 
         r = []
-        url = zapi.absoluteURL(context, request)
+        url = absoluteURL(context, request)
         r.append('url:%s' % url)
         adapted = IReadFile(context)
 

@@ -39,7 +39,7 @@
 
   <adapter 
       for="zope.app.folder.interfaces.IFolder"
-      provides="zope.app.filerepresentation.interfaces.IFileFactory"
+      provides="zope.filerepresentation.interfaces.IFileFactory"
       name=".dtml"
       factory=".dtmlpage.DTMLFactory"
       permission="zope.ManageContent"

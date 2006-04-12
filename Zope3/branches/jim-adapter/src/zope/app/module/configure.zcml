@@ -22,7 +22,7 @@
 
   <adapter
       for="zope.app.component.interfaces.ISiteManagementFolder"
-      provides="zope.app.filerepresentation.interfaces.IFileFactory"
+      provides="zope.filerepresentation.interfaces.IFileFactory"
       name=".py"
       factory=".manager.ModuleFactory"
       permission="zope.ManageContent"

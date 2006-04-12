@@ -20,8 +20,8 @@ import persistent
 import zodbcode.module
 import zope.interface
 
+from zope.filerepresentation.interfaces import IFileFactory
 from zope.app.container.contained import Contained
-from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.module.interfaces import IModuleManager
 from zope.app.module import ZopeModuleRegistry
 

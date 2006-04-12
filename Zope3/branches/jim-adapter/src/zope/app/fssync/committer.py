@@ -29,11 +29,11 @@ from zope.proxy import removeAllProxies
 from zope.xmlpickle import fromxml
 from zope.traversing.api import traverseName, getName
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.filerepresentation.interfaces import IFileFactory
+from zope.filerepresentation.interfaces import IDirectoryFactory
 
 from zope.app.fssync import fspickle
 from zope.app.container.interfaces import IContainer
-from zope.app.filerepresentation.interfaces import IFileFactory
-from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.container.contained import contained
 
 class SynchronizationError(Exception):

@@ -76,21 +76,21 @@
 
   <adapter 
       for=".interfaces.IFile"
-      provides="zope.app.filerepresentation.interfaces.IReadFile"
+      provides="zope.filerepresentation.interfaces.IReadFile"
       factory=".file.FileReadFile"
       permission="zope.View"
       />
 
   <adapter 
       for=".interfaces.IFile"
-      provides="zope.app.filerepresentation.interfaces.IWriteFile"
+      provides="zope.filerepresentation.interfaces.IWriteFile"
       factory=".file.FileWriteFile"
       permission="zope.ManageContent"
       />
 
   <adapter
       for="zope.app.folder.interfaces.IFolder"
-      provides="zope.app.filerepresentation.interfaces.IFileFactory"
+      provides="zope.filerepresentation.interfaces.IFileFactory"
       factory=".image.FileFactory"
       permission="zope.ManageContent"
       />

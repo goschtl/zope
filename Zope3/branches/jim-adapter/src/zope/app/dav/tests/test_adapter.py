@@ -29,10 +29,10 @@ from zope.annotation.interfaces import IAnnotations
 from zope.annotation.attribute import AttributeAnnotations
 from zope.dublincore.interfaces import IWriteZopeDublinCore
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.filerepresentation.interfaces import IReadDirectory
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import setUp, tearDown
-from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.i18n import ZopeMessageFactory as _
 
 class IRobot(Interface):

@@ -17,12 +17,14 @@ $Id$
 """
 from unittest import TestCase, TestSuite, makeSuite
 from StringIO import StringIO
-import zope.app.http.put
-from zope.publisher.browser import TestRequest
-from zope.app.filerepresentation.interfaces import IWriteFile
-from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
-from zope.app.testing.placelesssetup import PlacelessSetup
+
 from zope.interface import implements
+from zope.publisher.browser import TestRequest
+from zope.filerepresentation.interfaces import IWriteFile
+from zope.filerepresentation.interfaces import IWriteDirectory, IFileFactory
+
+import zope.app.http.put
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 class File(object):
 

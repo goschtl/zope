@@ -15,7 +15,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.filerepresentation.interfaces import IWriteDirectory
+from zope.filerepresentation.interfaces import IWriteDirectory
 from zope.app.publication.http import MethodNotAllowed
 
 

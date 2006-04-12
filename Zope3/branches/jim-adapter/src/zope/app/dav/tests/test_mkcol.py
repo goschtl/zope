@@ -17,17 +17,14 @@ $Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.traversing.api import traverse
+from zope.filerepresentation.interfaces import IWriteDirectory
+from zope.filerepresentation.interfaces import IDirectoryFactory
+
 from zope.app.testing import ztapi
 from zope.app.component.testing import PlacefulSetup
-
 from zope.app.container.interfaces import IWriteContainer
-from zope.app.filerepresentation.interfaces import IWriteDirectory
-from zope.app.container.directory import noop
-
+from zope.app.container.directory import noop, Cloner
 from zope.app.folder.interfaces import IFolder
-from zope.app.filerepresentation.interfaces import IDirectoryFactory
-from zope.app.container.directory import Cloner
-
 from zope.app.http.put import NullResource
 from zope.app.dav import mkcol
 from zope.app.dav.tests.test_propfind import _createRequest, File

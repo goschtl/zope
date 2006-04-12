@@ -29,11 +29,11 @@ class IExternallyEditable(Interface):
        site manager that a External Edit action should be available.
 
     2. It needs to have an adapter for the interface
-       ``zope.app.filerepresentation.interfaces.IReadFile``.
+       ``zope.filerepresentation.interfaces.IReadFile``.
 
     3. It needs to have a ``PUT`` view which receive the content back from the
        External Editor client and update the object, optimally using an
        adapter to the interface
-       ``zope.app.filerepresentation.interfaces.IWriteFile`` (but not
+       ``zope.filerepresentation.interfaces.IWriteFile`` (but not
        necessarily).
     """
