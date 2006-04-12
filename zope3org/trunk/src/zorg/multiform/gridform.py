@@ -22,7 +22,11 @@ class GridItemFormBase(multiform.ItemFormBase):
 class GridFormBase(multiform.MultiFormBase):
 
     implements(IGridForm)
-    
+
+    default_batch_size = None
+    default_sort_on = None
+    default_sort_reverse = None
+
     template = namedtemplate.NamedTemplate('default')
 
     def __init__(self, context, request):
@@ -31,19 +35,22 @@ class GridFormBase(multiform.MultiFormBase):
         
 
 class FilterMapping(object):
-    
+
     def __init__(self, context, request, form):
         self.context = context
         self.request = request
         self.form = form
         self.batch_start = request.form.get(
-                           '%s.handle.batch_start' % form.prefix, None)
+                           '%s.handle.batch_start' % form.prefix,0)
         self.batch_size = request.form.get(
-                           '%s.handle.batch_size' % form.prefix, None)
+                           '%s.handle.batch_size' % form.prefix,
+                           form.default_batch_size)
         self.sort_on = request.form.get(
-                           '%s.handle.sort_on' % form.prefix, None)
+                           '%s.handle.sort_on' % form.prefix,
+                           form.default_sort_on)
         self.sort_reverse = request.form.get(
-                           '%s.handle.sort_reverse' % form.prefix, None)
+                           '%s.handle.sort_reverse' % form.prefix,
+                           form.default_sort_reverse)
 
     def sortAllKeys(self):
         sorter = None

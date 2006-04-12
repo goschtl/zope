@@ -122,7 +122,6 @@ class ItemFormBase(form.FormBase):
         self.parentForm = parentForm
 
     def update(self):
-        #self.setUpWidgets()
         self.form_reset = False
 
         data = {}
@@ -162,6 +161,7 @@ class ItemFormBase(form.FormBase):
         actions = [action for action in self.actions
                    if IParentAction.providedBy(action)]
         return form.availableActions(self, actions)
+
 
 class MultiFormBase(form.FormBase):
 

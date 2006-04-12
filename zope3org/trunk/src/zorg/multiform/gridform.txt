@@ -196,6 +196,8 @@ We call the singleedit to edit a single row.
     >>> gf = OrdersForm(orderMapping,request)
     >>> res = gf()
 
+Batching
+--------
 The gridform class is able to handle batch_start and batch_size. Let us reduce
 the output.
 
@@ -231,6 +233,25 @@ Check the results of fraktal informations about batch_size and batch_start:
     >>> sorted([name for name in gf.subForms])
     ['n0', 'n1']
 
+We can have a default value for batch size. Here we just set the attribute
+default_batch_size by hand.
+
+    >>> request = TestRequest()
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> gf.default_batch_size = 3
+    >>> gf.update()
+    >>> print gf.render()
+    <div>
+    <div><input ... name="form.n0.selected" ...
+    <div>1</div>
+    <div>n1</div>
+    ...
+    <div>2</div>
+    <div>n2</div>
+    ...
+    <div>3</div>
+    <div>n3</div>
+    </div>
 
 Sorting
 -------
@@ -273,6 +294,17 @@ and reserve.
     >>> [(form.context.identifier,
     ...   form.context.name) for form in gf.getForms()]
     [(1, 'n3'), (2, 'n2'), (3, 'n1'), (4, 'n0')]
+
+We can have default values for sort field and sort direction. Here we just set
+the attributes default_sort_on or default_sort_reverse by hand.
+
+    >>> request = TestRequest()
+    >>> gf = Orders2Form(orderMapping2,request)
+    >>> gf.default_sort_on = u'name'
+    >>> gf.update()
+    >>> [(form.context.identifier,
+    ...   form.context.name) for form in gf.getForms()]
+    [(4, 'n0'), (3, 'n1'), (2, 'n2'), (1, 'n3')]
 
 TODO:  
 -----
