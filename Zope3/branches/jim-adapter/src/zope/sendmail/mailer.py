@@ -22,7 +22,7 @@ __docformat__ = 'restructuredtext'
 from smtplib import SMTP
 
 from zope.interface import implements
-from zope.app.mail.interfaces import ISMTPMailer
+from zope.sendmail.interfaces import ISMTPMailer
 
 
 class SMTPMailer(object):

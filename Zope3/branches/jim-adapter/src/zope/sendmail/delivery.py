@@ -32,8 +32,8 @@ from time import strftime
 from socket import gethostname
 
 from zope.interface import implements
-from zope.app.mail.interfaces import IDirectMailDelivery, IQueuedMailDelivery
-from zope.app.mail.maildir import Maildir
+from zope.sendmail.interfaces import IDirectMailDelivery, IQueuedMailDelivery
+from zope.sendmail.maildir import Maildir
 from transaction.interfaces import IDataManager
 import transaction
 

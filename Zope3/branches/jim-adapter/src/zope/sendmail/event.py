@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import implements
 
-from zope.app.mail.interfaces import IMailSentEvent, IMailErrorEvent
+from zope.sendmail.interfaces import IMailSentEvent, IMailErrorEvent
 
 
 class MailSentEvent(object):

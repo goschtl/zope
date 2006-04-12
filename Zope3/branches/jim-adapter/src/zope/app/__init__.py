@@ -26,6 +26,13 @@ modules_aliases_35 = {
     'zope.app.datetimeutils': 'zope.datetime',
     'zope.app.timezones': 'zope.datetime.timezones',
 
+    'zope.app.mail': 'zope.sendmail',
+    'zope.app.mail.event': 'zope.sendmail.event',
+    'zope.app.mail.maildir': 'zope.sendmail.maildir',
+    'zope.app.mail.delivery': 'zope.sendmail.delivery',
+    'zope.app.mail.interfaces': 'zope.sendmail.interfaces',
+    'zope.app.mail.vocabulary': 'zope.sendmail.vocabulary',
+
     'zope.app.rdb': 'zope.rdb',
     'zope.app.rdb.interfaces': 'zope.rdb.interfaces',
     'zope.app.rdb.browser': 'zope.rdb.browser',

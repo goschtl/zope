@@ -21,7 +21,7 @@
                       mailer="smtp" />
    -->
 
-  <interface interface="zope.app.mail.interfaces.IMailDelivery" />
+  <interface interface="zope.sendmail.interfaces.IMailDelivery" />
 
   <utility
       component=".vocabulary.MailDeliveryNames"

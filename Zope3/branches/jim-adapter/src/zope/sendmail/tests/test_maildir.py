@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unit tests for zope.app.mail.maildir module
+"""Unit tests for zope.sendmail.maildir module
 
 $Id$
 """
@@ -131,7 +131,7 @@ def fake_open(self, filename, mode):
 class TestMaildir(unittest.TestCase):
 
     def setUp(self):
-        import zope.app.mail.maildir as maildir_module
+        import zope.sendmail.maildir as maildir_module
         self.maildir_module = maildir_module
         self.old_os_module = maildir_module.os
         self.old_time_module = maildir_module.time
@@ -150,8 +150,8 @@ class TestMaildir(unittest.TestCase):
         self.fake_os_module.path._exists_never_fails = False
 
     def test_factory(self):
-        from zope.app.mail.interfaces import IMaildirFactory, IMaildir
-        from zope.app.mail.maildir import Maildir
+        from zope.sendmail.interfaces import IMaildirFactory, IMaildir
+        from zope.sendmail.maildir import Maildir
         verifyObject(IMaildirFactory, Maildir)
 
         # Case 1: normal maildir
@@ -180,7 +180,7 @@ class TestMaildir(unittest.TestCase):
         self.assertRaises(ValueError, Maildir, '/path/to/emptydirectory', True)
 
     def test_iteration(self):
-        from zope.app.mail.maildir import Maildir
+        from zope.sendmail.maildir import Maildir
         m = Maildir('/path/to/maildir')
         messages = list(m)
         messages.sort()
@@ -190,8 +190,8 @@ class TestMaildir(unittest.TestCase):
                                      '/path/to/maildir/new/2'])
 
     def test_newMessage(self):
-        from zope.app.mail.maildir import Maildir
-        from zope.app.mail.interfaces import IMaildirMessageWriter
+        from zope.sendmail.maildir import Maildir
+        from zope.sendmail.interfaces import IMaildirMessageWriter
         m = Maildir('/path/to/maildir')
         fd = m.newMessage()
         verifyObject(IMaildirMessageWriter, fd)
@@ -199,14 +199,14 @@ class TestMaildir(unittest.TestCase):
                           '/path/to/maildir/tmp/1234500002.4242.myhostname')
 
     def test_newMessage_never_loops(self):
-        from zope.app.mail.maildir import Maildir
-        from zope.app.mail.interfaces import IMaildirMessageWriter
+        from zope.sendmail.maildir import Maildir
+        from zope.sendmail.interfaces import IMaildirMessageWriter
         self.fake_os_module.path._exists_never_fails = True
         m = Maildir('/path/to/maildir')
         self.assertRaises(RuntimeError, m.newMessage)
 
     def test_message_writer_and_abort(self):
-        from zope.app.mail.maildir import MaildirMessageWriter
+        from zope.sendmail.maildir import MaildirMessageWriter
         filename1 = '/path/to/maildir/tmp/1234500002.4242.myhostname'
         filename2 = '/path/to/maildir/new/1234500002.4242.myhostname'
         writer = MaildirMessageWriter(filename1, filename2)
@@ -230,7 +230,7 @@ class TestMaildir(unittest.TestCase):
         self.assertRaises(RuntimeError, writer.commit)
 
     def test_message_writer_commit(self):
-        from zope.app.mail.maildir import MaildirMessageWriter
+        from zope.sendmail.maildir import MaildirMessageWriter
         filename1 = '/path/to/maildir/tmp/1234500002.4242.myhostname'
         filename2 = '/path/to/maildir/new/1234500002.4242.myhostname'
         writer = MaildirMessageWriter(filename1, filename2)

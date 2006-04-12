@@ -22,10 +22,10 @@ from zope.component.zcml import handler, proxify, PublicPermission
 from zope.configuration.exceptions import ConfigurationError
 from zope.security.checker import InterfaceChecker, CheckerPublic
 
-from zope.app.mail.delivery import QueuedMailDelivery, DirectMailDelivery
-from zope.app.mail.delivery import QueueProcessorThread
-from zope.app.mail.interfaces import IMailer, IMailDelivery
-from zope.app.mail.mailer import SMTPMailer
+from zope.sendmail.delivery import QueuedMailDelivery, DirectMailDelivery
+from zope.sendmail.delivery import QueueProcessorThread
+from zope.sendmail.interfaces import IMailer, IMailDelivery
+from zope.sendmail.mailer import SMTPMailer
 
 
 def _assertPermission(permission, interfaces, component):

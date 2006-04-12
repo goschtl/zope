@@ -19,13 +19,13 @@ $Id$
 import unittest
 from StringIO import StringIO
 from zope.interface.verify import verifyObject
-from zope.app.mail.interfaces import ISMTPMailer
+from zope.sendmail.interfaces import ISMTPMailer
 
 
 class TestSMTPMailer(unittest.TestCase):
 
     def setUp(self, port=None):
-        from zope.app.mail.mailer import SMTPMailer
+        from zope.sendmail.mailer import SMTPMailer
 
         class SMTP(object):
 

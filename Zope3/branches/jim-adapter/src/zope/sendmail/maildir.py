@@ -23,7 +23,7 @@ import time
 
 from zope.interface import implements, classProvides
 
-from zope.app.mail.interfaces import \
+from zope.sendmail.interfaces import \
      IMaildirFactory, IMaildir, IMaildirMessageWriter
 
 class Maildir(object):

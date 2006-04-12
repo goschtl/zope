@@ -19,8 +19,8 @@ from unittest import TestCase, TestSuite, makeSuite
 
 from zope.interface.verify import verifyObject
 
-from zope.app.mail.interfaces import IMailSentEvent, IMailErrorEvent
-from zope.app.mail.event import MailSentEvent
+from zope.sendmail.interfaces import IMailSentEvent, IMailErrorEvent
+from zope.sendmail.event import MailSentEvent
 
 
 class TestMailEvents(TestCase):
@@ -32,7 +32,7 @@ class TestMailEvents(TestCase):
         self.assertEquals(m.messageId, msgid)
 
     def testMailErrorEvent(self):
-        from zope.app.mail.event import MailErrorEvent
+        from zope.sendmail.event import MailErrorEvent
         msgid = '<1234@example.com>'
         error = '550 Relay access denied'
         m = MailErrorEvent(msgid, error)

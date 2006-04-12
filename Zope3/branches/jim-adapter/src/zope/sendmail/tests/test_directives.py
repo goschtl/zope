@@ -26,11 +26,11 @@ from zope.component.testing import PlacelessSetup
 from zope.configuration import xmlconfig
 from zope.interface import implements
 
-from zope.app.mail.interfaces import \
+from zope.sendmail.interfaces import \
      IMailDelivery, IMailer, ISMTPMailer
-from zope.app.mail.delivery import QueueProcessorThread
-from zope.app.mail import delivery
-import zope.app.mail.tests
+from zope.sendmail.delivery import QueueProcessorThread
+from zope.sendmail import delivery
+import zope.sendmail.tests
 
 
 class MaildirStub(object):
@@ -61,7 +61,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         gsm.registerUtility(Mailer(), IMailer, "test.smtp")
         gsm.registerUtility(self.testMailer, IMailer, "test.mailer")
 
-        self.context = xmlconfig.file("mail.zcml", zope.app.mail.tests)
+        self.context = xmlconfig.file("mail.zcml", zope.sendmail.tests)
         self.orig_maildir = delivery.Maildir
         delivery.Maildir = MaildirStub
 
