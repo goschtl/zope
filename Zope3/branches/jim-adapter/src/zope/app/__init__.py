@@ -58,6 +58,10 @@ modules_aliases_35 = {
     'zope.app.event.dispatch': 'zope.component.event',
     'zope.app.event.tests.placelesssetup': 'zope.component.testing',
 
+    'zope.app.filerepresentation': 'zope.filerepresentation',
+    'zope.app.filerepresentation.interfaces':
+        'zope.filerepresentation.interfaces',
+
     'zope.app.security.adapter': 'zope.security.adapter',
     'zope.app.component.interface': 'zope.component.interface',
     'zope.app.content_types': 'zope.contenttype',
