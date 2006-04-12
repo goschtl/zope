@@ -125,12 +125,15 @@ Zope Changes
 
       - Fixed a NameError in bin/static-apidoc.
 
+      - Fixed issue 448, SingleDataHelper.hidden() raised a LookupError
+        if there was no input value.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dmitry
       Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
       (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute,
-      Shane Hathaway
+      Shane Hathaway, Bjorn Tillenius
 
   ------------------------------------------------------------------
 
