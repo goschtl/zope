@@ -20,11 +20,11 @@ from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.annotation.attribute import AttributeAnnotations
+from zope.rdb.interfaces import IZopeDatabaseAdapter
+from zope.rdb.interfaces import IZopeConnection, IZopeCursor
 
 from zope.app.testing import ztapi
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter
-from zope.app.rdb.interfaces import IZopeConnection, IZopeCursor
-from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.cache.caching import getCacheForObject

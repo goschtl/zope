@@ -17,18 +17,17 @@ $Id: test_sqlexpr.py 26878 2004-08-03 16:25:34Z jim $
 """
 import unittest
 
+import zope.component
 from zope.interface import implements
 from zope.component.factory import Factory
 from zope.component.interfaces import IFactory
 from zope.component.testing import PlacelessSetup
 from zope.tales.tests.test_expressions import Data
 from zope.tales.engine import Engine
+from zope.rdb.interfaces import IZopeDatabaseAdapter, IZopeConnection
+from zope.rdb.tests.stubs import ConnectionStub
 
-from zope.app.testing import ztapi
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter, IZopeConnection
-from zope.app.rdb.tests.stubs import ConnectionStub
 from zope.app.sqlexpr.sqlexpr import SQLExpr, ConnectionError
-
 
 class AdapterStub(object):
     implements(IZopeDatabaseAdapter)
@@ -68,12 +67,9 @@ class SQLExprTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(SQLExprTest, self).setUp()
-        ztapi.provideUtility(IFactory, Factory(AdapterStub),
-                             'zope.da.Stub')
-        ztapi.provideUtility(IFactory, Factory(lambda x: None),
-                             'zope.Fake')
-        ztapi.provideUtility(IZopeDatabaseAdapter, AdapterStub(''),
-                             'test')
+        zope.component.provideUtility(Factory(AdapterStub), name='zope.da.Stub')
+        zope.component.provideUtility(Factory(lambda x: None), name='zope.Fake')
+        zope.component.provideUtility(AdapterStub(''), name='test')
 
     def test_exprUsingRDBAndDSN(self):
         context = Data(vars = {'rdb': 'zope.da.Stub', 'dsn': 'dbi://test'})
