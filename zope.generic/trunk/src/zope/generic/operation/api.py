@@ -16,4 +16,9 @@
 $Id$
 """
 
-from zope.generic.configurator.interfaces import *
+# usage see README.txt
+from zope.generic.operation.interfaces import *
+
+from zope.generic.operation.helper import getOperationInformation
+from zope.generic.operation.helper import queryOperationInformation
+from zope.generic.operation.helper import queryOperationConfiguration

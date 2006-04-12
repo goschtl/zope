@@ -20,6 +20,7 @@ $Id$
 from zope.generic.information.interfaces import *
 
 from zope.generic.information.base import Information
+from zope.generic.information.helper import getInformation
 from zope.generic.information.helper import queryInformation
 from zope.generic.information.helper import queryInformationRegistry
 from zope.generic.information.helper import registeredInformations

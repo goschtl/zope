@@ -42,12 +42,12 @@ def getInformation(object, registry):
     else:
         interface = IInterfaceKey(object).interface
 
-    #return interface
     return getUtility(registry, toDottedName(interface))
 
 
 
 def queryInformation(interface, registry, default=None):
+    """Request an information or return default."""
     try:
         return getInformation(interface, registry)
 

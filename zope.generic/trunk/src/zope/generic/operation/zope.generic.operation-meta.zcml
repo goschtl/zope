@@ -1,5 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <include package="zope.generic.controller" />
+  <include package="zope.generic.operation" file="meta.zcml" />
 
 </configure>

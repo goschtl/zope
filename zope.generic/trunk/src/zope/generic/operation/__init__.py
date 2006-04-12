@@ -16,4 +16,4 @@
 $Id$
 """
 
-from zope.generic.configurator.interfaces import *
+from zope.generic.operation.interfaces import *

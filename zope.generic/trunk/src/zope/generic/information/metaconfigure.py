@@ -34,7 +34,7 @@ from zope.generic.information.helper import queryInformation
 
 
 
-def provideInformation(interface, registry, label=None, hint=None, factory=None):
+def provideInformation(interface, registry=IInformationRegistryInformation, label=None, hint=None, factory=None):
     """Provide new information for the given registry-interface.
 
     Register an information as utiliy under registry-interface using
