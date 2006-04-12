@@ -20,14 +20,14 @@ import unittest
 from zope.interface import implements
 from zope.annotation.attribute import AttributeAnnotations
 from zope.annotation.interfaces import IAttributeAnnotatable, IAnnotations
+from zope.security.interfaces import IPermission
+from zope.security.permission import Permission
 
 from zope.app.testing import ztapi
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.testing.placelesssetup import PlacelessSetup
 
-from zope.app.security.interfaces import IPermission
-from zope.app.security.permission import Permission
 from zope.app.securitypolicy.principalpermission \
     import AnnotationPrincipalPermissionManager
 

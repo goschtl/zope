@@ -19,26 +19,26 @@ import unittest
 from StringIO import StringIO
 
 import zope.component
+from zope.interface import implements, classImplements, Interface
+from zope.interface.verify import verifyClass
+from zope.schema import TextLine
 from zope.annotation.attribute import AttributeAnnotations
 from zope.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.interfaces import IZopeDublinCore
+from zope.security.interfaces import IPermission
+from zope.security.permission import Permission
+from zope.security.checker import CheckerPublic
 
-from zope.app.security.interfaces import IPermission
 from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
-from zope.app.security.permission import Permission
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.stateful.definition import State, Transition
 from zope.app.workflow.stateful.xmlimportexport import XMLExportHandler
 from zope.app.workflow.stateful.xmlimportexport import XMLImportHandler
 from zope.app.testing import ztapi
-from zope.interface import implements, classImplements, Interface
-from zope.interface.verify import verifyClass
-from zope.schema import TextLine
-from zope.security.checker import CheckerPublic
 
 class ISchema(Interface):
 

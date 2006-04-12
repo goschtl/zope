@@ -20,15 +20,14 @@ from pprint import PrettyPrinter
 from zope.interface import Interface, Attribute
 from zope.testing import doctest
 from zope.configuration import xmlconfig
+from zope.security.checker import moduleChecker
+from zope.security.permission import Permission
 
 import zope.app.security
-from zope.security.checker import moduleChecker
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import setUp, tearDown, PlacelessSetup
 from zope.app.security import metaconfigure
 from zope.app.security.interfaces import IPermission
-from zope.app.security.permission import Permission
-from zope.configuration import xmlconfig
 from zope.app.security import fields
 
 def pprint(ob, width=70):

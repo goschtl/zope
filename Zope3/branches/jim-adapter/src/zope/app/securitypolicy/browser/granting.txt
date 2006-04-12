@@ -15,8 +15,8 @@ principals. The view unfortunately depends on a lot of other components:
 
   - Permissions
 
-    >>> from zope.app.security.permission import Permission
-    >>> from zope.app.security.interfaces import IPermission
+    >>> from zope.security.permission import Permission
+    >>> from zope.security.interfaces import IPermission
     >>> ztapi.provideUtility(IPermission, Permission(u'permission1',
     ...                      u'Permission 1'), u'permission1')
     >>> ztapi.provideUtility(IPermission, Permission(u'permission2',

@@ -23,11 +23,10 @@ from zope.interface.verify import verifyClass
 from zope.schema import Text, Int
 from zope.security.checker import CheckerPublic
 from zope.security.management import newInteraction, endInteraction
+from zope.security.interfaces import IPermission
+from zope.security.permission import Permission
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.component.testing import events, clearEvents
-
-from zope.app.security.interfaces import IPermission
-from zope.app.security.permission import Permission
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.workflow.interfaces import IProcessDefinition

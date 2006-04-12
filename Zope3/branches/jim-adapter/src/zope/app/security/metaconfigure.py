@@ -21,8 +21,8 @@ from zope.security.checker import moduleChecker, Checker, defineChecker
 from zope.security.checker import CheckerPublic
 from zope.security.management import setSecurityPolicy
 from zope.security.interfaces import IPermission
+from zope.security.permission import Permission
 
-from zope.app.security.permission import Permission
 from zope.app.security import principalregistry
 from zope.app.security import interfaces
 

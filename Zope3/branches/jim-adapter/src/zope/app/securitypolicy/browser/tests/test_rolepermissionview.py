@@ -22,10 +22,10 @@ from zope.i18n.interfaces import ITranslationDomain
 from zope.i18nmessageid import Message
 from zope.publisher.browser import TestRequest, BrowserView
 from zope.exceptions.interfaces import UserError
+from zope.security.permission import Permission
+from zope.security.interfaces import IPermission
 
 from zope.app.testing import ztapi
-from zope.app.security.permission import Permission
-from zope.app.security.interfaces import IPermission
 from zope.app.component.testing import PlacefulSetup
 
 from zope.app.securitypolicy.role import Role

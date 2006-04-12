@@ -26,6 +26,8 @@ from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.traversing.interfaces import ITraverser, ITraversable
 from zope.traversing.adapters import Traverser, DefaultTraversable
 from zope.location.traversing import LocationPhysicallyLocatable
+from zope.security.interfaces import IPermission
+from zope.security.permission import Permission
 
 import zope.app.component
 import zope.app.security
@@ -36,8 +38,6 @@ from zope.app.onlinehelp.onlinehelptopic import OnlineHelpTopic
 from zope.app.onlinehelp.onlinehelptopic import RESTOnlineHelpTopic
 from zope.app.onlinehelp.onlinehelptopic import STXOnlineHelpTopic
 from zope.app.onlinehelp.onlinehelptopic import ZPTOnlineHelpTopic
-from zope.app.security.interfaces import IPermission
-from zope.app.security.permission import Permission
 from zope.app.testing import ztapi, placelesssetup
 
 

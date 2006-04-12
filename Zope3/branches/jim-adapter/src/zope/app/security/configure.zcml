@@ -32,11 +32,11 @@
         id="zope.app.security.Permission"
         />
     <allow
-        interface=".interfaces.IPermission"
+        interface="zope.security.interfaces.IPermission"
         />
     <require
         permission="zope.Security"
-        set_schema=".interfaces.IPermission"
+        set_schema="zope.security.interfaces.IPermission"
         />
   </localUtility>
 
@@ -52,8 +52,8 @@
      handler=".permission.unsetIdOnDeactivation"
      />
 
-  <class class=".permission.Permission">
-    <allow interface=".interfaces.IPermission" />
+  <class class="zope.security.permission.Permission">
+    <allow interface="zope.security.interfaces.IPermission" />
   </class>
 
   <class class=".principalregistry.Principal">

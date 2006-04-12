@@ -18,9 +18,9 @@ $Id$
 import unittest
 
 import zope.component
+from zope.security.interfaces import IPermission
+from zope.security.permission import Permission
 from zope.app.testing import functional
-from zope.app.security.interfaces import IPermission
-from zope.app.security.permission import Permission
 from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.interfaces import IRole
 

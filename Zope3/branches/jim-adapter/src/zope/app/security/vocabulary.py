@@ -58,7 +58,7 @@ class PermissionIdsVocabulary(SimpleVocabulary):
     the special permission 'zope.Public':
 
         >>> from zope.app.security.interfaces import IPermission
-        >>> from zope.app.security.permission import Permission
+        >>> from zope.security.permission import Permission
         >>> from zope.app.testing import ztapi
         >>> ztapi.provideUtility(IPermission, Permission('zope.Public'),
         ...     'zope.Public')

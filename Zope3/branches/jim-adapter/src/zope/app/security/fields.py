@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 from zope import schema
 from zope.interface import implements
 from zope.schema.interfaces import IFromUnicode
-from zope.app.security.permission import checkPermission
+from zope.security.permission import checkPermission
 
 class Permission(schema.Id):
     r"""This field describes a permission.

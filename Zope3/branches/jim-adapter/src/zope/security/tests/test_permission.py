@@ -11,23 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Security Tests
+"""Test permissions
 
 $Id$
 """
-import zope.component
-from zope.security.interfaces import IPermission
-from zope.security.permission import Permission
+import unittest
+from zope.testing.doctestunit import DocTestSuite
+from zope.component.testing import setUp, tearDown
 
-def addCheckerPublic():
-    """Add the CheckerPublic permission as 'zope.Public'"""
+__docformat__ = "reStructuredText"
 
-    perm = Permission('zope.Public', 'Public',
-            """Special permission used for resources that are always public
+def test_suite():
+    return unittest.TestSuite([
+        DocTestSuite('zope.security.permission',
+                     setUp=setUp, tearDown=tearDown),
+        ])
 
-            The public permission is effectively an optimization, sine
-            it allows security computation to be bypassed.
-            """
-            )
-    gsm = zope.component.getGlobalSiteManager()
-    gsm.registerUtility(perm, IPermission, perm.id)
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

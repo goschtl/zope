@@ -17,23 +17,14 @@ $Id$
 """
 from persistent import Persistent
 from zope.interface import implements
-from zope.component import queryUtility, getUtilitiesFor
-from zope.schema.interfaces import ValidationError
-from zope.security.checker import CheckerPublic
 from zope.location import Location
 from zope.security.interfaces import IPermission
 
 from zope.app.i18n import ZopeMessageFactory as _
 NULL_ID = _('<permission not activated>')
 
-class Permission(object):
-    implements(IPermission)
-
-    def __init__(self, id, title="", description=""):
-        self.id = id
-        self.title = title
-        self.description = description
-
+#BBB XXX
+#from zope.security.permission import Permission, checkPermission, allPermissions
 
 class LocalPermission(Persistent, Location):
     implements(IPermission)
@@ -99,47 +90,3 @@ def unsetIdOnDeactivation(permission, event):
     u'<permission not activated>'
     """
     permission.id = NULL_ID
-
-
-def checkPermission(context, permission_id):
-    """Check whether a given permission exists in the provided context.
-
-    >>> from zope.app.testing.placelesssetup import setUp, tearDown
-    >>> setUp()
-
-    >>> from zope.app.testing.ztapi import provideUtility
-    >>> provideUtility(IPermission, Permission('x'), 'x')
-
-    >>> checkPermission(None, 'x')
-    >>> checkPermission(None, 'y')
-    Traceback (most recent call last):
-    ...
-    ValueError: ('Undefined permission id', 'y')
-
-    >>> tearDown()
-    """
-    if permission_id is CheckerPublic:
-        return
-    if not queryUtility(IPermission, permission_id, context=context):
-        raise ValueError("Undefined permission id", permission_id)
-
-def allPermissions(context=None):
-    """Get the ids of all defined permissions
-
-    >>> from zope.app.testing.placelesssetup import setUp, tearDown
-    >>> setUp()
-
-    >>> from zope.app.testing.ztapi import provideUtility
-    >>> provideUtility(IPermission, Permission('x'), 'x')
-    >>> provideUtility(IPermission, Permission('y'), 'y')
-
-    >>> ids = list(allPermissions(None))
-    >>> ids.sort()
-    >>> ids
-    [u'x', u'y']
-
-    >>> tearDown()
-    """
-    for id, permission in getUtilitiesFor(IPermission, context):
-        if id != u'zope.Public':
-            yield id
