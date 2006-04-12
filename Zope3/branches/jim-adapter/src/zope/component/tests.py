@@ -796,6 +796,13 @@ def tearDownRegistryTests(tests):
     import zope.event
     zope.event.subscribers.pop()
 
+def clearZCML(test=None):
+    tearDown()
+    setUp()
+
+    from zope.configuration.xmlconfig import XMLConfig
+    XMLConfig('meta.zcml', component)()
+
 def test_suite():
     checker = renormalizing.RENormalizing([
         (re.compile('at 0x[0-9a-f]+'), 'at <SOME ADDRESS>'),
@@ -803,6 +810,8 @@ def test_suite():
 
     return unittest.TestSuite((
         doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
+        doctest.DocTestSuite('zope.component.interface',
+                             setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('README.txt',
                              setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('socketexample.txt',
@@ -813,7 +822,7 @@ def test_suite():
                              tearDown=tearDownRegistryTests),
         doctest.DocFileSuite('event.txt',
                              setUp=setUp, tearDown=tearDown),
-        doctest.DocTestSuite('zope.component.interface',
+        doctest.DocFileSuite('zcml.txt',
                              setUp=setUp, tearDown=tearDown),
         ))
 
