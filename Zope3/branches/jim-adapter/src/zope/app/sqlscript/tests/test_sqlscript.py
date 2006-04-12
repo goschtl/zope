@@ -16,6 +16,7 @@ $Id$
 """
 import unittest
 from zope.interface import implements, classImplements
+from zope.component.testing import PlacelessSetup
 from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.annotation.interfaces import IAttributeAnnotatable
@@ -24,7 +25,6 @@ from zope.rdb.interfaces import IZopeDatabaseAdapter
 from zope.rdb.interfaces import IZopeConnection, IZopeCursor
 
 from zope.app.testing import ztapi
-from zope.component.testing import PlacelessSetup
 from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.cache.caching import getCacheForObject
