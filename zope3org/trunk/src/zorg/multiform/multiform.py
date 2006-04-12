@@ -122,7 +122,30 @@ class ItemFormBase(form.FormBase):
         self.parentForm = parentForm
 
     def update(self):
-        super(ItemFormBase,self).update()
+        #self.setUpWidgets()
+        self.form_reset = False
+
+        data = {}
+        errors, action = form.handleSubmit(self.actions, data, self.validate)
+        self.errors = errors
+
+        if errors:
+            self.status = _('There were errors')
+            result = action.failure(data, errors)
+        elif errors is not None:
+            self.form_reset = True
+            result = action.success(data)
+        else:
+            result = None
+
+        self.form_result = result
+
+    def setUpWidgets(self,ignore_request=False):
+        super(ItemFormBase,self).setUpWidgets(ignore_request)
+        # XXX how to check for the field
+        if self.widgets.get('selected'):
+            widget = self.widgets['selected']
+            widget.setRenderedValue(ISelection(self.context).selected)
 
     def availableActions(self):
         # we need to override this, because we should not return the
@@ -173,15 +196,6 @@ class MultiFormBase(form.FormBase):
             if refresh:
                 self.refreshSubActionNames()
 
-        for form in self.getForms():
-            widget = form.widgets['selected']
-            widget.setRenderedValue(
-                ISelection(form.context).selected)
-            print "--------data------------",widget._data,widget
-#             if widget.hasInput():
-#                 print ISelection(form.context).selected,
-#                 "-----------",form.widgets['selected'].getInputValue()
-        
     def setUpWidgets(self, *args, **kw):
         super(MultiFormBase,self).setUpWidgets(*args,**kw)
         self.setUpForms(*args, **kw)
