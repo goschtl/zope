@@ -20,5 +20,9 @@ $Id$
 from zope.generic.operation.interfaces import *
 
 from zope.generic.operation.helper import getOperationInformation
+from zope.generic.operation.helper import getOperationConfiguration
 from zope.generic.operation.helper import queryOperationInformation
 from zope.generic.operation.helper import queryOperationConfiguration
+from zope.generic.operation.helper import queryOperation
+from zope.generic.operation.helper import queryOperationInput
+from zope.generic.operation.helper import queryOperationOutput

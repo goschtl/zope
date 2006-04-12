@@ -43,15 +43,19 @@ def queryConfigurationInformation(interface, default=None):
 
 
 
+def getConfigurationData(context, interface):
+    """Evaluate corresponding configuration data satisfying the interface."""
+    return interface(IConfigurations(context))
+
+
+
 def queryConfigurationData(context, interface, default=None):
     """Evaluate corresponding configuration data satisfying the interface."""
     try:
-        configurations = IConfigurations(context)
+        return getConfigurationData(context, interface)
 
     except:
         return default
-
-    return interface(configurations, default)
 
 
 

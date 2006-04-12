@@ -19,7 +19,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.generic.information.api import getInformation
-from zope.generic.configuration.api import queryConfigurationData
+from zope.generic.configuration.api import getConfigurationData
 
 from zope.generic.operation import IOperationInformation
 from zope.generic.operation import IOperationConfiguration
@@ -42,11 +42,50 @@ def queryOperationInformation(object, default=None):
 
 
 
-def queryOperationConfiguration(object, default=None):
+def getOperationConfiguration(object):
     """Evaluate an operation configuration."""
-
-    info = queryOperationInformation(object, default)
-    if info is default:
-        return default
     
-    return queryConfigurationData(info, IOperationConfiguration)
+    return getConfigurationData(getOperationInformation(object), IOperationConfiguration)
+
+
+
+def queryOperationConfiguration(object, default=None):
+    """Evaluate an operation configuration or default."""
+    try:
+        return getOperationConfiguration(object)
+
+    except:
+        return default
+
+
+
+def queryOperation(interface, default=None):
+    """Return the operation of operation marker."""
+
+    try:
+        return getOperationConfiguration(interface).operation
+
+    except:
+        return default
+
+
+
+def queryOperationInput(interface, default=None):
+    """Return the input paramters of an operation as tuple of configuration interfaces."""
+
+    try:
+        return getOperationConfiguration(interface).input
+
+    except:
+        return default
+
+
+
+def queryOperationOutput(interface, default=None):
+    """Return the ouput paramters of an operation as tuple of configuration interfaces."""
+
+    try:
+        return getOperationConfiguration(interface).output
+
+    except:
+        return default

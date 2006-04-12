@@ -42,13 +42,13 @@ class Operation(object):
         else:
             self.interface = IPrivateOperation
 
-    def __call__(self, context):
+    def __call__(self, context, *pos, **kws):
         self._proceed(context)
 
-    def _proceed(self, context):
+    def _proceed(self, context, *pos, **kws):
         # this method can be overwritten by subclasses
         if self.__callable is not None:
-            return self.__callable(context)
+            self.__callable(context, *pos, **kws)
 
 
 
@@ -59,6 +59,6 @@ class OperationChain(Operation):
         super(OperationChain, self).__init__(None, interface)
         self.__operations = operations
 
-    def _proceed(self, context):
+    def _proceed(self, context, *pos, **kws):
         """Invoke operation in the listed order."""
         [operation(context) for operation in self.__operations]

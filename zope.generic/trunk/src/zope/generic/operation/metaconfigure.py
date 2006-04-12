@@ -88,7 +88,7 @@ def provideOperationConfiguration(interface, operations=(), input=(), output=())
     configurations = IConfigurations(info)
     # create and set configuration data
     provideConfigurationData(info, IOperationConfiguration, 
-        {'operation': operation, 'input': input, 'output': output})
+        {'operation': operation, 'input': tuple(input), 'output': tuple(output)})
 
 
 

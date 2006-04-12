@@ -101,11 +101,15 @@ The operation can be implemented in different ways:
     ...     />
     ... ''')
 
-Step 2: Build a complex operation by using the base operations
---------------------------------------------------------------
+Step 2: Build a complex operation reusing the base operations
+-------------------------------------------------------------
+
+There is a new interface marking the combined operation:
 
     >>> class IMakeSiteSetupPAUConfigureAnythingOperation(interface.Interface):
     ...    """Use the other three operation as nested information."""
+
+Maybe you need an extra configuration:
 
     >>> class IComplexConfig(interface.Interface):
     ...    """Output complex configuration."""
@@ -114,14 +118,21 @@ Step 2: Build a complex operation by using the base operations
     ...    any_b = TextLine()
     ...    any_c = TextLine()
 
-    >>> def privateOperation(context, *pos, **kws):
-    ...    print 'privateOperation'
-
     >>> registerDirective('''
     ... <generic:configuration
     ...     interface="example.IComplexConfig"
     ...     />
     ... ''') 
+
+Sometimes you like to extend the base operation. Therefore you can include a simple
+function. It's not necessary to register such a private function as a public
+function using the operation directive:
+
+    >>> def privateOperation(context, *pos, **kws):
+    ...    print 'privateOperation'
+
+At least we register the complex operation using the operation marker interfaces
+and the private operation:
 
     >>> registerDirective('''
     ... <generic:operation
@@ -142,10 +153,20 @@ operation information can be retrieved:
     >>> len(listing)
     4
 
-    >>> config = api.queryOperationConfiguration(IMakeSiteSetupPAUConfigureAnythingOperation)
-    >>> config.operation(None)
+We can retrieve any registered operation by the following function:
+
+    >>> operation = api.queryOperation(IMakeSiteSetupPAUConfigureAnythingOperation)
+
+    >>> operation(None)
     makeSiteOperation
     setupPAUOperation
     configureAnythingOperation
     privateOperation
+
+    >>> [c.__name__ for c in api.queryOperationInput(IMakeSiteSetupPAUConfigureAnythingOperation)]
+    ['IComplexConfig']
+
+    >>> [c.__name__ for c in api.queryOperationOutput(IMakeSiteSetupPAUConfigureAnythingOperation)]
+    []
+
 
