@@ -53,6 +53,17 @@ modules_aliases_35 = {
     'zope.app.annotation.attribute': 'zope.annotation.attribute',
     'zope.app.annotation.interfaces': 'zope.annotation.interfaces',
 
+    'zope.app.dublincore': 'zope.dublincore',
+    'zope.app.dublincore.interfaces': 'zope.dublincore.interfaces',
+    'zope.app.dublincore.annotatableadapter':
+        'zope.dublincore.annotatableadapter',
+    'zope.app.dublincore.creatorannotator': 'zope.dublincore.creatorannotator',
+    'zope.app.dublincore.dcsv': 'zope.dublincore.dcsv',
+    'zope.app.dublincore.dcterms': 'zope.dublincore.dcterms',
+    'zope.app.dublincore.timeannotators': 'zope.dublincore.timeannotators',
+    'zope.app.dublincore.xmlmetadata': 'zope.dublincore.xmlmetadata',
+    'zope.app.dublincore.zopedublincore': 'zope.dublincore.zopedublincore',
+
     'zope.app.event.objectevent': 'zope.lifecycleevent',
     'zope.app.event.interfaces': 'zope.lifecycleevent.interfaces',
     'zope.app.event.dispatch': 'zope.component.event',
