@@ -17,8 +17,8 @@ $Id$
 """
 from zope.interface import Interface
 from zope.schema import Id 
+from zope.security.zcml import Permission
 from zope.app.security.metadirectives import IBaseDefineDirective
-from zope.app.security.fields import Permission
 
 class IGrantAllDirective(Interface):
     """Grant Permissions to roles and principals and roles to principals."""

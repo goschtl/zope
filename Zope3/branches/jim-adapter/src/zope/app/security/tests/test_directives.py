@@ -17,18 +17,18 @@ $Id$
 """
 import unittest
 from pprint import PrettyPrinter
+
+import zope.security.zcml
 from zope.interface import Interface, Attribute
 from zope.testing import doctest
+from zope.component import provideUtility
+from zope.component.testing import setUp, tearDown, PlacelessSetup
 from zope.configuration import xmlconfig
 from zope.security.checker import moduleChecker
 from zope.security.permission import Permission
+from zope.security.interfaces import IPermission
 
-import zope.app.security
-from zope.app.testing import ztapi
-from zope.app.testing.placelesssetup import setUp, tearDown, PlacelessSetup
 from zope.app.security import metaconfigure
-from zope.app.security.interfaces import IPermission
-from zope.app.security import fields
 
 def pprint(ob, width=70):
     PrettyPrinter(width=width).pprint(ob)
@@ -53,7 +53,7 @@ def test_protectModule():
     >>> moduleChecker(test_directives)
         
     >>> perm = Permission(test_perm, '')
-    >>> ztapi.provideUtility(IPermission, perm, test_perm)
+    >>> provideUtility(perm, IPermission, test_perm)
     >>> metaconfigure.protectModule(test_directives, 'foo', test_perm)
 
     Now, the checker should exist and have an access dictionary with the
@@ -193,7 +193,7 @@ def test_require():
 
 class IDummy(Interface):
 
-    perm = fields.Permission(title=u'')
+    perm = zope.security.zcml.Permission(title=u'')
 
 perms = []
 
@@ -217,22 +217,28 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
     def testRedefinePermission(self):
         self.assertEqual(perms, ['zope.Security'])
 
+def setUpAuth(test=None):
+    setUp(test)
+    from zope.app.authentication.placelesssetup import PlacelessSetup
+    PlacelessSetup().setUp()
+
 def zcml(s):
     context = xmlconfig.file('meta.zcml', package=zope.app.security)
     xmlconfig.string(s, context)
 
 def reset():
     tearDown()
-    setUp()
+    setUpAuth()
 
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
+        doctest.DocTestSuite('zope.security.zcml'),
         unittest.makeSuite(DirectivesTest),
         doctest.DocFileSuite(
             '../globalprincipals.txt',
             globs={'zcml': zcml, 'reset': reset},
-            setUp=setUp, tearDown=tearDown,
+            setUp=setUpAuth, tearDown=tearDown,
             )
         ))
 

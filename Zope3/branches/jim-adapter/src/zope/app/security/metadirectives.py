@@ -19,7 +19,7 @@ from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, GlobalInterface
 from zope.configuration.fields import Tokens, PythonIdentifier, MessageID
 from zope.schema import InterfaceField, Id, TextLine
-from fields import Permission
+from zope.security.zcml import Permission
 
 
 class ISecurityPolicyDirective(Interface):

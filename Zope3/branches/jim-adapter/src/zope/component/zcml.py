@@ -20,6 +20,7 @@ __docformat__ = "reStructuredText"
 import zope.component
 import zope.interface
 import zope.configuration.fields
+import zope.security.zcml
 from zope.component.interface import provideInterface
 from zope.proxy import ProxyBase, getProxiedObject
 from zope.security.proxy import Proxy
@@ -29,8 +30,6 @@ from zope.security.adapter import LocatingUntrustedAdapterFactory
 from zope.security.adapter import TrustedAdapterFactory
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('zope')
-
-import zope.app.security.fields
 
 PublicPermission = 'zope.Public'
 
@@ -49,7 +48,7 @@ class IBasicComponentInformation(zope.interface.Interface):
         required=False,
         )
 
-    permission = zope.app.security.fields.Permission(
+    permission = zope.security.zcml.Permission(
         title=_("Permission"),
         description=_("Permission required to use this component."),
         required=False,
@@ -94,7 +93,7 @@ class IAdapterDirective(zope.interface.Interface):
           ),
         )
 
-    permission = zope.app.security.fields.Permission(
+    permission = zope.security.zcml.Permission(
         title=_("Permission"),
         description=_("This adapter is only available, if the principal"
                       " has this permission."),
@@ -261,7 +260,7 @@ class ISubscriberDirective(zope.interface.Interface):
           ),
         )
 
-    permission = zope.app.security.fields.Permission(
+    permission = zope.security.zcml.Permission(
         title=_("Permission"),
         description=_("This subscriber is only available, if the"
                       " principal has this permission."),

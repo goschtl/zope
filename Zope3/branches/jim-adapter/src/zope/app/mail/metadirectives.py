@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 from zope.configuration.fields import Path
 from zope.interface import Interface
 from zope.schema import TextLine, ASCII, BytesLine, Int
-from zope.app.security.fields import Permission
+from zope.security.zcml import Permission
 
 class IDeliveryDirective(Interface):
     """This abstract directive describes a generic mail delivery utility
