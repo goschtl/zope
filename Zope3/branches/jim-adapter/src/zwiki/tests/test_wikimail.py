@@ -24,11 +24,11 @@ from zope.interface import classImplements, implements
 from zope.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.annotation.attribute import AttributeAnnotations
 from zope.lifecycleevent import ObjectModifiedEvent
+from zope.sendmail.interfaces import IMailDelivery
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.mail.interfaces import IMailDelivery
 
 from zwiki.interfaces import IWikiPage, IWiki, IMailSubscriptions
 from zwiki.interfaces import IWikiPageEditEvent

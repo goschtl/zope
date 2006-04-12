@@ -31,13 +31,13 @@ from zope.filerepresentation.interfaces import IReadFile
 from zope.filerepresentation.interfaces import IWriteFile
 from zope.filerepresentation.interfaces import IReadDirectory
 from zope.filerepresentation.interfaces import IWriteDirectory
+from zope.sendmail.interfaces import IMailDelivery
 
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
 from zope.app.container.interfaces import \
      IObjectAddedEvent, IObjectRemovedEvent
-from zope.app.mail.interfaces import IMailDelivery
 
 from zwiki.interfaces import IWiki, IWikiPage
 from zwiki.interfaces import IWikiContained, IWikiPageContained

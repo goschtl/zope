@@ -27,9 +27,9 @@ from zope.annotation.attribute import AttributeAnnotations
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.dublincore.interfaces import IWriteZopeDublinCore
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.sendmail.interfaces import IMailDelivery
 
 from zope.app.testing import ztapi
-from zope.app.mail.interfaces import IMailDelivery
 
 from bugtracker.bug import Bug
 from bugtracker.interfaces import IBug, IBugTracker, IMailSubscriptions

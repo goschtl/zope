@@ -15,14 +15,13 @@
 
 $Id$
 """
+import zope.component
 from zope.interface import implements
 from zope.annotation.interfaces import IAnnotations
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
-
-from zope.app import zapi
-from zope.app.mail.interfaces import IMailDelivery
-
-from interfaces import IBug, IBugTracker, IMailSubscriptions
+from zope.sendmail.interfaces import IMailDelivery
+from zope.traversing.api import getName, getParent
+from bugtracker.interfaces import IBug, IBugTracker, IMailSubscriptions
 
 SubscriberKey = 'bugtracker.MailSubsriptions.emails'
 
@@ -70,19 +69,19 @@ class Mailer:
                 self.handleModified(event.object)
 
     def handleAdded(self, object):
-        subject = 'Added: %s (%s)' %(object.title, zapi.name(object))
+        subject = 'Added: %s (%s)' %(object.title, getName(object))
         emails = self.getAllSubscribers(object)
         body = object.description
         self.mail(emails, subject, body)        
 
     def handleModified(self, object):
-        subject = 'Modified: %s (%s)' %(object.title, zapi.name(object))
+        subject = 'Modified: %s (%s)' %(object.title, getName(object))
         emails = self.getAllSubscribers(object)
         body = object.description
         self.mail(emails, subject, body)
 
     def handleRemoved(self, object):
-        subject = 'Removed: %s (%s)' %(object.title, zapi.name(object))
+        subject = 'Removed: %s (%s)' %(object.title, getName(object))
         emails = self.getAllSubscribers(object)
         body = object.description
         self.mail(emails, subject, body)
@@ -93,7 +92,7 @@ class Mailer:
         obj = object
         while IBug.providedBy(obj) or IBugTracker.providedBy(obj):
             emails += tuple(IMailSubscriptions(obj).getSubscriptions())
-            obj = zapi.getParent(obj)
+            obj = getParent(obj)
         return emails
 
     def mail(self, toaddrs, subject, body):
@@ -101,5 +100,5 @@ class Mailer:
         if not toaddrs:
             return
         msg = 'Subject: %s\n\n\n%s' %(subject, body)
-        mail_utility = zapi.getUtility(IMailDelivery, 'bug-mailer')
+        mail_utility = zope.component.getUtility(IMailDelivery, 'bug-mailer')
         mail_utility.send('bugtracker@zope3.org' , toaddrs, msg)
