@@ -15,6 +15,9 @@ Zope Changes
 
       - Fixed a bug in field prefix handling in formlib's setUp*Widgets.
 
+      - Fixed issue 448, SingleDataHelper.hidden() raised a LookupError
+        if there was no input value.
+
   Zope 3.2.1 (2006/03/26)
 
     Bug fixes

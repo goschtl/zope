@@ -161,12 +161,21 @@ class SingleDataHelper(object):
             return self.context.missing_value
 
     def hidden(self):
+        #XXX: _getFormValue() should return a string value that can be
+        #     used in a HTML form, but it doesn't. When
+        #     http://www.zope.org/Collectors/Zope3-dev/584 gets fixed
+        #     this hack should be reverted.
+        #     -- Bjorn Tillenius, 2006-04-12
+        value = self._getFormValue()
+        if value == self._missing:
+            form_value = ''
+        else:
+            form_value = self.vocabulary.getTerm(value).token
         return renderElement(u'input',
                              type='hidden',
                              name=self.name,
                              id=self.name,
-                             value=self.vocabulary.getTerm(
-                                self._getFormValue()).token,
+                             value=form_value,
                              cssClass=self.cssClass,
                              extra=self.extra)
 
