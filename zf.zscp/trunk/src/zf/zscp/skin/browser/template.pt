@@ -1,27 +1,30 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <metal:block define-macro="page">
-	<metal:block define-slot="doctype">
-		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-	</metal:block>
-	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" i18n:domain="zf.zscp">
-	<head>
-		<title metal:define-slot="title"
-			tal:content="string:WebSite: ${context/zope:title_or_name}">WebSite:
-			title</title>
-		
-		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-		
-		<!-- css viewlets -->
-		<link rel="stylesheet" type="text/css" media="all"		
-			tal:attributes="href string:${context/++resource++base.css}" />
-		<link rel="stylesheet" type="text/css" media="all"		
-			tal:attributes="href string:${context/++resource++home.css}" />
-		<link rel="stylesheet" type="text/css" media="all"		
-			tal:attributes="href string:${context/++resource++packages.css}" />	
-		<link rel="stylesheet" type="text/css" media="all"		
-			tal:attributes="href string:${context/++resource++viewlets.css}" />
-		
-	</head>
+  <metal:block define-slot="doctype">
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  </metal:block>
+  <html xmlns="http://www.w3.org/1999/xhtml"
+        xml:lang="en" lang="en" i18n:domain="zf.zscp">
+  <head>
+    <title metal:define-slot="title"
+      tal:content="string:WebSite: ${context/zope:title_or_name}">WebSite:
+      title</title>
+
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+
+    <!-- css viewlets -->
+    <link rel="stylesheet" type="text/css" media="all"
+      tal:attributes="href string:${context/++resource++base.css}" />
+    <link rel="stylesheet" type="text/css" media="all"
+      tal:attributes="href string:${context/++resource++home.css}" />
+    <link rel="stylesheet" type="text/css" media="all"
+      tal:attributes="href string:${context/++resource++packages.css}" />
+    <link rel="stylesheet" type="text/css" media="all"
+      tal:attributes="href string:${context/++resource++viewlets.css}" />
+    <link rel="stylesheet" type="text/css" media="all"
+      tal:attributes="href string:${context/++resource++table.css}" />
+
+  </head>
 
 <body>
 
@@ -43,54 +46,58 @@
     <div id="portal-columns">
         <!-- begin left column -->
         <div id="portal-column-one">
-			<tal:block replace="structure provider:ILeft" />
+      <tal:block replace="structure provider:ILeft" />
         </div>
         <!-- end left column -->
         <!-- begin main column -->
-		<div id="portal-column-content">
-            <!-- begin breadcrumbs 
-			
+    <div id="portal-column-content">
+            <!-- begin breadcrumbs
+
             <tal:block replace="structure provider:IBreadcrumb">logo</tal:block>
-					
-				 end breadcrumbs -->			
 
-			<!-- begin main content area -->
-			<div id="region-content" >
+         end breadcrumbs -->
 
-				<!-- main home image -->
-				<tal:block replace="structure provider:ILogo">logo</tal:block>
+      <!-- begin main content area -->
+      <div id="region-content" >
 
-				<!-- text below main image -->
-				<div id="body" metal:define-slot="body">
-				</div>
-				
-			</div>
-			<!-- end main content area -->
-		</div>
+        <!-- main home image -->
+        <tal:block replace="structure provider:ILogo">logo</tal:block>
+
+        <!-- text below main image -->
+        <div id="body" metal:define-slot="body">
+        </div>
+
+      </div>
+      <!-- end main content area -->
+    </div>
         <!-- end main column -->
     </div>
     <!-- end portal body -->
-	
-	
+
+
     <!-- begin portal footer -->
     <div id="portal-footer">
-        <div id="footer-left">
-            This page conforms to revision <div tal:replace="pageversion | string: n/a">0.8</div>
-			of the normative document. The latest version can be found 
-			<a href="@@ProcessAndRepository.html">here</a>.
-        </div>
-        <div id="footer-right">
-            Design by <a href="http://www.adaptivewave.com" target="_blank">AdaptiveWave</a>
-        </div>
-        <div id="footer-left">
-            <span class="footerItem">Copyright &copy; 2006, Zope Foundation.  All rights reserved.</span>
-            <span class="footerItem"><a href="@@about.html">About</a></span>
-            <span class="footerItem"><a href="@@contact.html">Contact</a></span>
-        </div>
+      <div id="footer-left">
+        This page conforms to revision
+        <span tal:replace="pageversion | string: n/a">0.8</span>
+        of the normative document. The latest version can be found
+        <a href="@@ProcessAndRepository.html">here</a>.
+      </div>
+      <div id="footer-right">
+        Design by
+        <a href="http://www.adaptivewave.com" target="_blank">AdaptiveWave</a>
+      </div>
+      <div id="footer-left">
+        <span class="footerItem">
+          Copyright &copy; 2006, Zope Foundation.  All rights reserved.
+        </span>
+        <span class="footerItem"><a href="@@about.html">About</a></span>
+        <span class="footerItem"><a href="@@contact.html">Contact</a></span>
+      </div>
     </div>
     <!-- end footer -->
 </div>
-    
+
 </body>
 
 </html>

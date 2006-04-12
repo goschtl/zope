@@ -2,11 +2,17 @@
 <body>
 <div align="center" metal:fill-slot="body">
 <div id="documentFirstHeading">Package List</div>
-	<div tal:repeat="info view/getPackageInfo">
-		<a href="#"
-				tal:content="info/name"
-				tal:attributes="href info/url">name</a>
-	</div>
+
+<form action=""
+      tal:attributes="action request/URL">
+
+  <div class="package-table">
+    <div tal:replace="structure view/table" />
+  </div>
+
+</form>
+
 </div>
+
 </body>
 </html>

@@ -1,9 +1,15 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
-  xmlns:browser="http://namespaces.zope.org/browser"  
+  xmlns:browser="http://namespaces.zope.org/browser"
   i18n_domain="zf.zscp"
   >
-  
+
+  <browser:menu
+      title="Package Tabs"
+      description="ZSCP Package Tabs"
+      interface="zf.zscp.skin.IPackageTabs"
+      />
+
   <browser:resource
       name="base.css"
       file="css/base.css"
@@ -17,7 +23,7 @@
       layer="zf.zscp.skin.IZSCPLayer"
       permission="zope.Public"
       />
-      
+
   <browser:resource
       name="packages.css"
       file="css/packages.css"
@@ -32,6 +38,13 @@
       permission="zope.Public"
       />
 
+  <browser:resource
+      name="table.css"
+      file="css/table.css"
+      layer="zf.zscp.skin.IZSCPLayer"
+      permission="zope.Public"
+      />
+
   <browser:resourceDirectory
       directory="img"
       name="img"
@@ -42,6 +55,14 @@
       name="skin_macros"
       permission="zope.Public"
       template="template.pt"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <browser:page
+      for="*"
+      name="package_macros"
+      permission="zope.Public"
+      template="package_macros.pt"
       layer="zf.zscp.skin.IZSCPLayer"
       />
 

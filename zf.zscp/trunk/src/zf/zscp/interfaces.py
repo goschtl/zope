@@ -299,7 +299,7 @@ class IPublication(zope.interface.Interface):
         required=False)
 
     repositoryWebLocation = zope.schema.URI(
-        title=u"Repository Web Location",
+        title=u"Browsable Repository",
         description=u"The URL to the repository's browsable HTML UI.",
         required=False)
 

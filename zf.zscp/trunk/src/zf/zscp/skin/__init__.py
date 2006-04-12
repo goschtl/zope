@@ -17,11 +17,18 @@ $Id$
 
 __docformat__ = "reStructuredText"
 
+from zope.interface import Interface, directlyProvides
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.viewlet.interfaces import IViewletManager
 from zope.viewlet.manager import ViewletManagerBase
+from zope.app.publisher.interfaces.browser import IMenuItemType
 
+
+class IPackageTabs(Interface):
+    """Package Tabs"""
+
+directlyProvides(IPackageTabs, IMenuItemType)
 
 
 class IZSCPLayer(IBrowserRequest):
@@ -30,8 +37,8 @@ class IZSCPLayer(IBrowserRequest):
 
 
 class ZSCP(IZSCPLayer, IDefaultBrowserLayer):
-    """The `ZSCP` skin 
-    
+    """The `ZSCP` skin
+
     This skin is based on IZSCPLayer and IDefaultBrowserLayer.
     and accessible via `++skin++ZSCP`.
     """
@@ -49,4 +56,5 @@ class WeightOrderedViewletManager(ViewletManagerBase):
                 return viewlet.weight
             except:
                 return 0
-        return sorted(viewlets, lambda x, y: cmp(getWeight(x[1]), getWeight(y[1])))
+        return sorted(viewlets,
+                      lambda x, y: cmp(getWeight(x[1]), getWeight(y[1])))

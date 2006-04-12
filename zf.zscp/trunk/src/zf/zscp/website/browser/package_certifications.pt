@@ -1,83 +1,56 @@
-<html metal:use-macro="context/@@standard_macros/view"
-    i18n:domain="zf.zscp">
-	<body>
-		<div metal:fill-slot="body"
-					tal:define="global pageversion string: 0.8;
-											info view/info;
-											certifications view/certifications">
-			
-			<div id="documentFirstHeading">Release Detail for: TODO</div>
-			<div id="package-wrapper">
-				<!-- begin package tabs -->
-				<div id="package-tabs">
-					<div id="tab-info" class="packageTab"><a href="index.html">Info</a>
-					</div>
-					<div id="tab-classifiers" class="packageTab"><a href="classifiers.html">
-						Classifiers</a>
-					</div>
-					<div id="tab-releases" class="packageTab"><a href="releases.html">
-						Releases</a>
-					</div>
-					<div id="tab-classifiers" class="packageTab selected"><a href="certifications.html">
-						Certifications</a>
-					</div>
-				</div>
-				<!-- end package tabs -->
-				<!-- begin package body -->
-				<div id="package-info" class="packageBody"
-							tal:define="packageName info/packageName;
-													 name info/name">
-					<div class="infoRow" tal:condition="python:packageName and name">
-						<label>Name:</label>
-						<div class="infoString">
-							<tal:block content="packageName">zope.search</tal:block>&nbsp;
-							(<tal:block content="name">Zope Search</tal:block>)
-						</div>
-					</div>
+<html metal:use-macro="context/@@standard_macros/package-view">
+<body>
 
-					<!-- start certifications -->
-					<tal:block repeat="cert certifications">
-						<tal:block define="action cert/action;
-															 sourceLevel cert/sourceLevel;
-															 targetLevel cert/targetLevel;
-															 date cert/date;
-															 certificationManger cert/certificationManger;
-															 comments cert/comments">
-							<div id="certifiedSilver" class="certSeal">&nbsp;
-							</div>
-		
-							<div class="infoRow">
-								<label>Action:</label>
-								<div class="infoString"
-											tal:content="action">Action</div>
-							</div>
-							<div class="infoRow">
-								<label>Source Level:</label>
-								<div class="infoString"
-											tal:content="sourceLevel">Action</div>
-							</div>
-							<div class="infoRow">
-								<label>Date:</label>
-								<div class="infoString"
-											tal:content="date">January 31, 2006</div>
-							</div>
-							<div class="infoRow">
-								<label>Certification Manger:</label>
-								<div class="infoString"
-											tal:content="certificationManger">January 31, 2006</div>
-							</div>
-							<div class="infoRow">
-								<label>Comments:</label>
-								<div class="infoString"
-											tal:content="comments">January 31, 2006</div>
-							</div>
-						</tal:block>
-					</tal:block>
-					<!-- end releases -->
-				</div>
-				<!-- end package body -->
-			</div>
+  <div metal:fill-slot="package-info">
 
-		</div>
-	</body>
+    <div style="height: 10px;"></div>
+
+    <tal:block repeat="cert view/certifications">
+      <div class="infoRow">
+        <label>Action:</label>
+        <div class="infoString"
+              tal:content="cert/action">Action</div>
+      </div>
+      <div class="infoRow">
+        <label>Source Level:</label>
+        <div class="infoString"
+              tal:content="cert/sourceLevel">None</div>
+      </div>
+      <div class="infoRow">
+        <label>Target Level:</label>
+        <div class="infoString"
+              tal:content="cert/targetLevel">Listed</div>
+      </div>
+      <div class="infoRow">
+        <label>Date:</label>
+        <div class="infoString"
+              tal:content="cert/date">January 31, 2006</div>
+      </div>
+      <div class="infoRow">
+        <label>Cert. Manager:</label>
+        <div class="infoString">
+          <span tal:replace="cert/certificationManager/name" />
+          <a href=""
+             tal:attributes="href
+                 string:mailto:${cert/certificationManager/email}"
+             tal:content="cert/certificationManager/email" />
+        </div>
+      </div>
+      <div class="infoRow"
+           tal:condition="cert/comments">
+        <label>Comments:</label>
+        <div class="infoString"
+             tal:content="cert/comments">January 31, 2006</div>
+      </div>
+
+      <div class="infoRow"
+           tal:condition="not:repeat/cert/end">
+        <hr class="white-line" />
+      </div>
+
+    </tal:block>
+
+  </div>
+
+</body>
 </html>

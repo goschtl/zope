@@ -18,12 +18,50 @@
       layer="zf.zscp.skin.IZSCPLayer"
       />
 
+  <menuItem
+      title="Summary"
+      action="index.html"
+      for="zf.zscp.interfaces.IPackage"
+      menu="zf.zscp.skin.IPackageTabs"
+      layer="zf.zscp.skin.IZSCPLayer"
+      order="1"
+      permission="zope.Public"
+      />
+
+  <page
+      name="community.html"
+      for="zf.zscp.interfaces.IPackage"
+      class=".package.PackageCommunity"
+      permission="zope.Public"
+      layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <menuItem
+      title="Community"
+      action="community.html"
+      for="zf.zscp.interfaces.IPackage"
+      menu="zf.zscp.skin.IPackageTabs"
+      layer="zf.zscp.skin.IZSCPLayer"
+      order="2"
+      permission="zope.Public"
+      />
+
   <page
       name="releases.html"
       for="zf.zscp.interfaces.IPackage"
       class=".package.PackageReleases"
       permission="zope.Public"
       layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <menuItem
+      title="Releases"
+      action="releases.html"
+      for="zf.zscp.interfaces.IPackage"
+      menu="zf.zscp.skin.IPackageTabs"
+      layer="zf.zscp.skin.IZSCPLayer"
+      order="3"
+      permission="zope.Public"
       />
 
   <page
@@ -34,12 +72,32 @@
       layer="zf.zscp.skin.IZSCPLayer"
       />
 
+  <menuItem
+      title="Classifiers"
+      action="classifiers.html"
+      for="zf.zscp.interfaces.IPackage"
+      menu="zf.zscp.skin.IPackageTabs"
+      layer="zf.zscp.skin.IZSCPLayer"
+      order="4"
+      permission="zope.Public"
+      />
+
   <page
       name="certifications.html"
       for="zf.zscp.interfaces.IPackage"
       class=".package.PackageCertifications"
       permission="zope.Public"
       layer="zf.zscp.skin.IZSCPLayer"
+      />
+
+  <menuItem
+      title="Certifications"
+      action="certifications.html"
+      for="zf.zscp.interfaces.IPackage"
+      menu="zf.zscp.skin.IPackageTabs"
+      layer="zf.zscp.skin.IZSCPLayer"
+      order="5"
+      permission="zope.Public"
       />
 
 </configure>

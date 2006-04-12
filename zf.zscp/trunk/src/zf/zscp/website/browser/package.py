@@ -22,6 +22,7 @@ from zf.zscp.interfaces import IPublication
 from zf.zscp.interfaces import IRelease
 from zf.zscp.interfaces import ICertification
 from zf.zscp.interfaces import CERTIFICATION_LEVELS
+from zf.zscp.interfaces import CERTIFICATION_ACTIONS
 from zope.app.pagetemplate import ViewPageTemplateFile
 
 
@@ -44,7 +45,7 @@ class PackageEditForm(form.EditForm):
     def setUpWidgets(self, ignore_request=False):
         self.adapters = {}
         self.widgets = form.setUpEditWidgets(
-            self.form_fields, self.prefix, self.context.publication, 
+            self.form_fields, self.prefix, self.context.publication,
             self.request, adapters=self.adapters, ignore_request=ignore_request
             )
 
@@ -61,28 +62,24 @@ class PackageInfo(page.Page):
     template = ViewPageTemplateFile('package_info.pt')
 
     def update(self):
+        formatter = self.request.locale.dates.getFormatter('date', 'medium')
         publication = self.context.publication
         info = {}
-        info['packageName'] = publication.packageName
-        info['name'] = publication.name
-        info['summary'] = publication.summary
-        info['description'] = publication.description
-        info['homePage'] = publication.homePage
-        info['developersMailinglist'] = publication.developersMailinglist
-        info['usersMailinglist'] = publication.usersMailinglist
-        info['issueTracker'] = publication.issueTracker
-        info['repositoryLocation'] = publication.repositoryLocation
-        info['repositoryWebLocation'] = publication.repositoryWebLocation
-        info['certificationLevel'] = publication.certificationLevel
-        info['certificationDate'] = publication.certificationDate
-        info['metadataVersion'] = publication.metadataVersion
+        for name, field in zope.schema.getFieldsInOrder(IPublication):
+            info[name] = getattr(publication, name)
+
+        info['certificationLevel'] = CERTIFICATION_LEVELS.getTerm(
+            publication.certificationLevel).title
+        info['certificationDate'] = formatter.format(
+            publication.certificationDate)
+
+        info['author'] = [
+            {'name': name, 'email': email}
+            for name, email in zip(publication.author, publication.authorEmail)]
 
         # list of strings converted to strings
-        info['author'] = listToString(publication.author)
-        info['authorEmail'] = listToString(publication.authorEmail)
         info['license'] = listToString(publication.license)
         info['platform'] = listToString(publication.platform)
-        info['classifier'] = listToString(publication.classifier)
 
         self._info = info
 
@@ -94,6 +91,10 @@ class PackageInfo(page.Page):
         self.update()
         return self.template()
 
+
+class PackageCommunity(PackageInfo):
+
+    template = ViewPageTemplateFile('package_community.pt')
 
 
 class PackageReleases(page.Page):
@@ -131,8 +132,7 @@ class PackageClassifiers(page.Page):
     template = ViewPageTemplateFile('package_classifiers.pt')
 
     def update(self):
-        certifications = self.context.certifications
-        info = {}
+        info = {'classifier': self.context.publication.classifier}
         self._info = info
 
     def render(self):
@@ -153,35 +153,28 @@ class PackageCertifications(page.Page):
     template = ViewPageTemplateFile('package_certifications.pt')
 
     def update(self):
-        info = {}
+        pass
 
-        # publication info
-        publication = self.context.publication
-        info['packageName'] = publication.packageName
-        info['name'] = publication.name
-        self._info = info
+    def info(self):
+        return {'packageName': self.context.publication.packageName,
+                'name': self.context.publication.name}
 
-        # certification info
+    def certifications(self):
         certifications = []
         certs = self.context.certifications
+        formatter = self.request.locale.dates.getFormatter('date', 'medium')
+        levels = CERTIFICATION_LEVELS
+        actions = CERTIFICATION_ACTIONS
         for cert in certs:
             info = {}
-            info['action'] = cert.action
-            info['sourceLevel'] = cert.sourceLevel
-            info['targetLevel'] = cert.targetLevel
-            info['date'] = cert.date
-            info['certificationManger'] = cert.certificationManger
+            info['action'] = actions.getTerm(cert.action).title
+            info['sourceLevel'] = levels.getTerm(cert.sourceLevel).title
+            info['targetLevel'] = levels.getTerm(cert.targetLevel).title
+            info['date'] = formatter.format(cert.date)
+            info['certificationManager'] = cert.certificationManager
             info['comments'] = cert.comments
             certifications.append(info)
-        self._certifications = certifications
-
-    @property
-    def info(self):
-        return self._info
-
-    @property
-    def certifications(self):
-        return self._certifications
+        return certifications
 
     def __call__(self):
         self.update()

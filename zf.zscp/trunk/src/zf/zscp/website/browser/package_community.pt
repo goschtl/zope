@@ -1,0 +1,68 @@
+<html metal:use-macro="context/@@standard_macros/package-view">
+<body>
+
+  <div metal:fill-slot="package-info"
+       tal:define="pub view/info">
+
+    <h2>Mailing Lists</h2>
+
+    <div class="infoRow" tal:condition="pub/developersMailinglist">
+      <label>Developers:</label>
+      <div class="infoString">
+        <a href=""
+           tal:content="pub/developersMailinglist"
+           tal:attributes="href string:mailto:${pub/developersMailinglist}">
+          zope@zope.org
+        </a>
+      </div>
+    </div>
+
+    <div class="infoRow" tal:condition="pub/usersMailinglist">
+      <label>Users:</label>
+      <div class="infoString">
+        <a href=""
+           tal:content="pub/usersMailinglist"
+           tal:attributes="href string:mailto:${pub/usersMailinglist}">
+          zope@zope.org
+        </a>
+      </div>
+    </div>
+
+    <h2>Development Sites</h2>
+
+    <div class="infoRow" tal:condition="pub/issueTracker">
+      <label>Issue Tracker:</label>
+      <div class="infoString">
+        <a href=""
+           tal:content="pub/issueTracker"
+           tal:attributes="href pub/issueTracker">
+          zope@zope.org
+        </a>
+      </div>
+    </div>
+
+    <div class="infoRow" tal:condition="pub/repositoryLocation">
+      <label>Repository:</label>
+      <div class="infoString">
+        <a href=""
+           tal:content="pub/repositoryLocation"
+           tal:attributes="href pub/repositoryLocation">
+          zope@zope.org
+        </a>
+      </div>
+    </div>
+
+    <div class="infoRow" tal:condition="pub/repositoryWebLocation">
+      <label>Browsable:</label>
+      <div class="infoString">
+        <a href=""
+           tal:content="pub/repositoryWebLocation"
+           tal:attributes="href pub/repositoryWebLocation">
+          zope@zope.org
+        </a>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

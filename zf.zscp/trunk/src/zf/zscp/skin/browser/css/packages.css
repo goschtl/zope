@@ -13,12 +13,13 @@
     border-bottom: 2px solid #ccc;
     min-height: 260px;
     background: #eee url(/@@/img/packageBodyBg.jpg) repeat-x left top;
-    padding: 30px 30px 20px 20px;
+    padding: 10px 30px 20px 20px;
 }
 #package-tabs {
     border-bottom: 1px solid #ccc;
 }
 .packageTab {
+    margin: 0px;
     position: relative;
     bottom: 1px;
     display: inline;
@@ -37,6 +38,7 @@
     background: url(/@@/img/packageTabCurLeft.png) no-repeat left top;
 }
 .packageTab.selected a {
+    font-size: 110%;
     background: url(/@@/img/packageTabCurRight.png) no-repeat right top;
     font-weight: bold;
 }
@@ -73,6 +75,14 @@
     top: 15px; right: 15px;
     width: 56px; height: 56px;
 }
+
+hr.white-line {
+  background-color: #ffffff;
+  color: #ffffff;
+  border: #ffffff;
+  height: 2px;
+}
+
 #certifiedGold {
     background: url(/@@/img/certifiedGold.png) no-repeat left top;
 }

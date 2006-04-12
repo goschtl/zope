@@ -3,6 +3,9 @@
     xmlns="http://namespaces.zope.org/browser"
     i18n_domain="zf.zscp">
 
+  <include package="zc.table" />
+
+
   <include file="site.zcml" />
   <include file="package.zcml" />
   <include file="repository.zcml" />

@@ -1,0 +1,48 @@
+<metal:block define-macro="package-view">
+  <html metal:use-macro="context/@@standard_macros/view"
+        i18n:domain="zf.zscp">
+  <body>
+  <div metal:fill-slot="body">
+
+    <div id="documentFirstHeading">
+      <metal:block define-slot="package-heading">
+        Package:
+        <span tal:replace="context/name">zope.demo</span>
+        (<span tal:replace="context/publication/name">Zope Demo</span>)
+      </metal:block>
+    </div>
+
+    <div id="package-wrapper">
+      <metal:block use-macro="context/@@standard_macros/package-tabs" />
+      <div id="package-info" class="packageBody">
+        <metal:block define-slot="package-info">
+          Package Info.
+        </metal:block>
+      </div>
+    </div>
+  </div>
+  </body>
+  </html>
+</metal:block>
+
+<metal:block define-macro="package-tabs">
+
+  <div id="package-tabs">
+    <tal:block
+         repeat="tab context/@@view_get_menu/zf.zscp.skin.IPackageTabs">
+      <div class="packageTab selected"
+           tal:condition="tab/selected">
+        <a href="index.html"
+           tal:attributes="href tab/action"
+           tal:content="tab/title">Info</a>
+      </div>
+      <div class="packageTab"
+           tal:condition="not: tab/selected">
+        <a href="index.html"
+           tal:attributes="href tab/action"
+           tal:content="tab/title">Info</a>
+      </div>
+    </tal:block>
+  </div>
+
+</metal:block>
