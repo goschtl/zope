@@ -211,8 +211,8 @@ def adapter(_context, factory, provides=None, for_=None, permission=None,
     _context.action(
         discriminator = ('adapter', for_, provides, name),
         callable = handler,
-        args = ('provideAdapter',
-                for_, provides, name, factory, _context.info),
+        args = ('registerAdapter',
+                factory, for_, provides, name, _context.info),
         )
     _context.action(
         discriminator = None,
