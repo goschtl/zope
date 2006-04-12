@@ -135,8 +135,8 @@ function toggleFormFieldHelp(ob,state) {
          summary="Content listing">
    <thead>
     <tr>
-     <th tal:repeat="field view/itemFormFactory/form_fields">
-       <span tal:content="field/field/title" i18n:translate="" />
+     <th tal:repeat="field view/itemFormFactory/form_fields"
+         tal:content="field/field/title" i18n:translate="">
      </th>
     </tr>
    </thead>

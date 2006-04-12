@@ -1,5 +1,5 @@
 from zope.formlib.i18n import _
-from multiform import multiform
+from multiform import multiform, gridform
 from zope.formlib import form
 from multiform.interfaces import ISelection
 from zope.app.dublincore.interfaces import IWriteZopeDublinCore
@@ -95,7 +95,7 @@ def hasClipboardContents(form, action):
 
 
 
-class ContainerItemForm(multiform.ItemFormBase):
+class ContainerItemForm(gridform.GridItemFormBase):
 
     inputMode=False
     forceInput=['selected']
@@ -133,10 +133,9 @@ class ContainerItemForm(multiform.ItemFormBase):
             self.status = (_('No changes'),)
         ISelection(self.context).selected=False
         self.newInputMode = False
+       
 
-
-
-class ContainerGridForm(multiform.MultiFormBase):
+class ContainerGridForm(gridform.GridFormBase):
 
     itemFormFactory=ContainerItemForm
 
