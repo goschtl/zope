@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 
 import zope.component
 import zope.interface
-import zope.configuration
+import zope.configuration.fields
 from zope.component.interface import provideInterface
 from zope.proxy import ProxyBase, getProxiedObject
 from zope.security.proxy import Proxy
