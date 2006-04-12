@@ -2,11 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:meta="http://namespaces.zope.org/meta">
 
-  <meta:directive
-      namespace="http://namespaces.zope.org/zope"
-      name="permission"
-      schema=".metadirectives.IDefinePermissionDirective"
-      handler=".metaconfigure.definePermission" />
+  <include package="zope.security" file="meta.zcml" />
 
   <meta:directive 
       namespace="http://namespaces.zope.org/zope"
@@ -38,13 +34,6 @@
       schema=".metadirectives.IDefineEverybodyGroupDirective"
       handler=".metaconfigure.everybodyGroup" />
 
-  <meta:directive
-      name="securityPolicy"
-      namespace="http://namespaces.zope.org/zope"
-      schema=".metadirectives.ISecurityPolicyDirective"
-      handler=".metaconfigure.securityPolicy" 
-      />
-
   <meta:groupingDirective
       name="module"
       namespace="http://namespaces.zope.org/zope"
@@ -62,11 +51,5 @@
       namespace="http://namespaces.zope.org/zope"
       schema=".metadirectives.IRequire"
       handler=".metaconfigure.require" />
-
-  <meta:directive
-      name="redefinePermission"
-      namespace="http://namespaces.zope.org/meta"
-      schema=".metadirectives.IRedefinePermission"
-      handler=".metaconfigure.redefinePermission" />
 
 </configure>

@@ -16,12 +16,15 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
-from zope import schema
-from zope.interface import implements
+
+import zope.schema
+from zope.interface import Interface, implements
 from zope.schema.interfaces import IFromUnicode
 from zope.security.permission import checkPermission
+from zope.security.management import setSecurityPolicy
+from zope.configuration.fields import MessageID, GlobalObject
 
-class Permission(schema.Id):
+class Permission(zope.schema.Id):
     r"""This field describes a permission.
 
     Let's look at an example:
@@ -80,3 +83,64 @@ class Permission(schema.Id):
                 order=9999999, 
                 )
         
+
+class ISecurityPolicyDirective(Interface):
+    """Defines the security policy that will be used for Zope."""
+
+    component = GlobalObject(
+        title=u"Component",
+        description=u"Pointer to the object that will handle the security.",
+        required=True)
+
+def securityPolicy(_context, component):
+    _context.action(
+            discriminator = 'defaultPolicy',
+            callable = setSecurityPolicy,
+            args = (component,) )
+
+class IPermissionDirective(Interface):
+    """Define a new security object."""
+
+    id = zope.schema.Id(
+        title=u"Id",
+        description=u"Id as which this object will be known and used.",
+        required=True)
+
+    title = MessageID(
+        title=u"Title",
+        description=u"Provides a title for the object.",
+        required=True)
+
+    description = MessageID(
+        title=u"Description",
+        description=u"Provides a description for the object.",
+        required=False)
+
+def permission(_context, id, title, description=''):
+    from zope.security.interfaces import IPermission
+    from zope.security.permission import Permission
+    from zope.component.zcml import utility
+    permission = Permission(id, title, description)
+    utility(_context, IPermission, permission, name=id)
+
+class IRedefinePermission(Interface):
+    """Define a permission to replace another permission."""
+
+    from_ = Permission(
+        title=u"Original permission",
+        description=u"Original permission id to redefine.",
+        required=True)
+
+    to = Permission(
+        title=u"Substituted permission",
+        description=u"Substituted permission id.",
+        required=True)
+
+def redefinePermission(_context, from_, to):
+    _context = _context.context
+    
+    # check if context has any permission mappings yet
+    if not hasattr(_context, 'permission_mapping'):
+        _context.permission_mapping={}
+
+    _context.permission_mapping[from_] = to

@@ -17,19 +17,21 @@ $Id$
 """
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, GlobalInterface
-from zope.configuration.fields import Tokens, PythonIdentifier, MessageID
+from zope.configuration.fields import Tokens, PythonIdentifier
 from zope.schema import InterfaceField, Id, TextLine
 from zope.security.zcml import Permission
 
+##############################################################################
+# BBB 2006/04/03 -- to be removed after 12 months
 
-class ISecurityPolicyDirective(Interface):
-    """Defines the security policy that will be used for Zope."""
+import zope.deferredimport
+zope.deferredimport.deprecated(
+    "It has been renamed to zope.security.zcml.IPermissionDirective.  "
+    "This reference will be gone in Zope 3.5",
+    IBaseDefineDirective = 'zope.security.zcml:IPermissionDirective'
+    )
 
-    component = GlobalObject(
-        title=u"Component",
-        description=u"Pointer to the object that will handle the security.",
-        required=True)
-
+##############################################################################
 
 class IModule(Interface):
     """Group security declarations about a module"""
@@ -74,29 +76,6 @@ class IRequire(Interface):
     permission = Permission(
         title=u"Permission ID",
         description=u"The id of the permission to require.")
-
-
-class IBaseDefineDirective(Interface):
-    """Define a new security object."""
-
-    id = Id(
-        title=u"Id",
-        description=u"Id as which this object will be known and used.",
-        required=True)
-
-    title = MessageID(
-        title=u"Title",
-        description=u"Provides a title for the object.",
-        required=True)
-
-    description = MessageID(
-        title=u"Description",
-        description=u"Provides a description for the object.",
-        required=False)
-
-
-class IDefinePermissionDirective(IBaseDefineDirective):
-    """Define a new permission."""
 
 class IBasePrincipalDirective(Interface):
     """Base interface for principal definition directives."""
@@ -147,16 +126,3 @@ class IDefineAuthenticatedGroupDirective(IBasePrincipalDirective):
 
 class IDefineEverybodyGroupDirective(IBasePrincipalDirective):
     """Define the everybody group."""
-
-class IRedefinePermission(Interface):
-    """Define a permission to replace another permission."""
-
-    from_ = Permission(
-        title=u"Original permission",
-        description=u"Original permission id to redefine.",
-        required=True)
-
-    to = Permission(
-        title=u"Substituted permission",
-        description=u"Substituted permission id.",
-        required=True)
