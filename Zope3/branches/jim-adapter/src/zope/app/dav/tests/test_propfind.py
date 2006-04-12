@@ -32,13 +32,13 @@ from zope.traversing.browser import AbsoluteURL
 from zope.publisher.browser import TestRequest
 from zope.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.annotation.attribute import AttributeAnnotations
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 
 from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.app.container.interfaces import IReadContainer
 from zope.app.component.testing import PlacefulSetup
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.file.interfaces import IFile
 
 from zope.app.dav import propfind

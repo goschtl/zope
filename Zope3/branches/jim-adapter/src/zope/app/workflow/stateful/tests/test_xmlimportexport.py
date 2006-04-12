@@ -22,9 +22,9 @@ import zope.component
 from zope.annotation.attribute import AttributeAnnotations
 from zope.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.dublincore.interfaces import IZopeDublinCore
 
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.security.interfaces import IPermission
 from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler

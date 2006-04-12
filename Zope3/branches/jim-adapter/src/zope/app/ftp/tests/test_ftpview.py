@@ -21,6 +21,7 @@ from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.interface import implements
 from zope.security.checker import defineChecker, NamesChecker
+from zope.dublincore.interfaces import IZopeDublinCore
 
 from zope.app.testing import ztapi
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
@@ -28,7 +29,6 @@ from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.filerepresentation.interfaces import IWriteDirectory
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.ftp import FTPView
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.copypastemove.interfaces import IObjectMover

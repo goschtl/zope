@@ -104,14 +104,14 @@ and whether the plugin is a utility or just contained in the auth utility.
 We'll give one of the plugins a dublin core title just to show the
 functionality.
 
-    >>> import zope.app.dublincore.interfaces
+    >>> import zope.dublincore.interfaces
     >>> class ISpecial(interface.Interface):
     ...     pass
     ...
     >>> interface.directlyProvides(contained_plugins[1], ISpecial)
     >>> class DemoDCAdapter(object):
     ...     interface.implements(
-    ...         zope.app.dublincore.interfaces.IDCDescriptiveProperties)
+    ...         zope.dublincore.interfaces.IDCDescriptiveProperties)
     ...     component.adapts(ISpecial)
     ...     def __init__(self, context):
     ...         pass

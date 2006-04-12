@@ -19,12 +19,12 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
+import zope.dublincore.interfaces
 from zope import interface, component, i18n
 from zope.interface.interfaces import IInterface
 from zope.schema import vocabulary
 from zope.schema.interfaces import IVocabularyFactory
 
-import zope.app.dublincore.interfaces
 from zope.app.component.interfaces import ILocalUtility
 from zope.app.i18n import ZopeMessageFactory as _
 
@@ -62,7 +62,7 @@ def _pluginVocabulary(context, interface, attr_name):
     if isPAU:
         for k, v in context.items():
             if interface.providedBy(v) and not ILocalUtility.providedBy(v):
-                dc = zope.app.dublincore.interfaces.IDCDescriptiveProperties(
+                dc = zope.dublincore.interfaces.IDCDescriptiveProperties(
                     v, None)
                 if dc is not None and dc.title:
                     title = dc.title
