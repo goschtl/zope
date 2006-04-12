@@ -183,3 +183,14 @@ h1,h2,h3,h4,h5,h6 {
 
 tt {font-family: courier;font-size: normal; font-weight: bold;}
 
+table.docutils {
+	border: 1px solid black;
+	margin: 0px;
+
+}
+
+table.docutils thead {
+	border: 1px solid black;
+	margin: 1px;
+
+}
