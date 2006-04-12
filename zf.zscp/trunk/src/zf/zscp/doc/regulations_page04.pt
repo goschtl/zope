@@ -22,7 +22,7 @@
 				<li>D: The metric check would be (d)ifficult to conduct by human
 					inspection.</li>
 			</ul>
-			<table border="1" class="docutils">
+			<table class="docutils">
 				<colgroup>
 					<col width="58%"/>
 					<col width="10%"/>
@@ -31,27 +31,27 @@
 					<col width="8%"/>
 					<col width="8%"/>
 				</colgroup>
-				<thead valign="bottom">
+				<thead>
 					<tr>
-						<th class="head">Metric</th>
-						<th class="head">Check</th>
-						<th class="head">List</th>
-						<th class="head">Le 1</th>
-						<th class="head">Le 2</th>
-						<th class="head">Le 3</th>
+						<th class="head" align="left">Metric</th>
+						<th class="head" align="left">Check</th>
+						<th class="head" align="left">List</th>
+						<th class="head" align="left">Le 1</th>
+						<th class="head" align="left">Le 2</th>
+						<th class="head" align="left">Le 3</th>
 					</tr>
 				</thead>
-				<tbody valign="top">
+				<tbody>
 					<tr>
-						<td>Package Meta-Information Verification</td>
+						<td><a href="#package-meta-information">Package Meta-Information Verification</a></td>
 						<td>A</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Test Coverage</td>
+						<td><a href="#test-coverage">Test Coverage</a></td>
 						<td>A</td>
 						<td>0%</td>
 						<td>&gt;90%</td>
@@ -59,50 +59,50 @@
 						<td>&gt;95%</td>
 					</tr>
 					<tr>
-						<td>Automated Test Verification</td>
+						<td><a href="#automated-test-verification">Automated Test Verification</a></td>
 						<td>A</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Documentation-based Testing</td>
+						<td><a href="#documentation-based-testing">Documentation-based Testing</a></td>
 						<td>A,Q</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Supported Platforms Test Verification</td>
+						<td><a href="#platform-test-verification">Supported Platforms Test Verification</a></td>
 						<td>A,Q</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Minimal Documentation</td>
+						<td><a href="#minimal-documentation">Minimal Documentation</a></td>
 						<td>A,Q</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Complete Documentation</td>
+						<td><a href="#complete-documentation">Complete Documentation</a></td>
 						<td>Q</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Extensive Documentation</td>
+						<td><a href="#extensive-documentation">Extensive Documentation</a></td>
 						<td>D</td>
 						<td>&nbsp;
 						</td>
@@ -110,86 +110,86 @@
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Documentation available online</td>
+						<td><a href="#documentation-available-online">Documentation available online</a></td>
 						<td>Q</td>
 						<td>&nbsp;
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>APIDOC-integrated Documentation</td>
+						<td><a href="#apidoc-integrated-documentation">APIDOC-integrated Documentation</a></td>
 						<td>Q</td>
 						<td>&nbsp;
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Common package structure</td>
+						<td><a href="#common-package-structure">Common package structure</a></td>
 						<td>A,Q</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Zope Coding Style Guide compliance</td>
+						<td><a href="#zope-coding-style-guide-compliance">Zope Coding Style Guide compliance</a></td>
 						<td>A,D</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Conform to user interface guidelines</td>
+						<td><a href="#conform-to-user-interface-guidelines">Conform to user interface guidelines</a></td>
 						<td>D</td>
 						<td>&nbsp;
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Complete dependency list</td>
+						<td><a href="#complete-dependency-list">Complete dependency list</a></td>
 						<td>A</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Standard installation method</td>
+						<td><a href="#standard-installation-method">Standard installation method</a></td>
 						<td>A,Q</td>
 						<td>&nbsp;
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Release(s) with version number</td>
+						<td><a href="#release-s-with-version-number">Release(s) with version number</a></td>
 						<td>A,Q</td>
 						<td>&nbsp;
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Up-to-date homepage</td>
+						<td><a href="#up-to-date-homepage">Up-to-date homepage</a></td>
 						<td>D</td>
 						<td>&nbsp;
 						</td>
@@ -197,10 +197,10 @@
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Active support mailing list</td>
+						<td><a href="#active-support-mailing-list">Active support mailing list</a></td>
 						<td>D</td>
 						<td>&nbsp;
 						</td>
@@ -208,10 +208,10 @@
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Released for 3+ Zope release cycles</td>
+						<td><a href="#released-for-3-zope-release-cycles">Released for 3+ Zope release cycles</a></td>
 						<td>D</td>
 						<td>&nbsp;
 						</td>
@@ -219,10 +219,10 @@
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Releases state required Zope version</td>
+						<td><a href="#releases-state-required-zope-version">Releases state required Zope version</a></td>
 						<td>A,Q</td>
 						<td>&nbsp;
 						</td>
@@ -230,40 +230,40 @@
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Multiple (3) Active Maintainers</td>
+						<td><a href="#multiple-3-active-maintainers">Multiple (3) Active Maintainers</a></td>
 						<td>&nbsp;
 						</td>
 						<td>&nbsp;
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Data migration claimed</td>
+						<td><a href="#data-migration-claimed">Data migration claimed</a></td>
 						<td>Q</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Data migration auto-tested</td>
+						<td><a href="#data-migration-auto-tested">Data migration auto-tested</a></td>
 						<td>A</td>
 						<td>&nbsp;
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Data migration verified</td>
+						<td><a href="#data-migration-verified">Data migration verified</a></td>
 						<td>D</td>
 						<td>&nbsp;
 						</td>
@@ -271,10 +271,10 @@
 						</td>
 						<td>&nbsp;
 						</td>
-						<td>x</td>
+						<td><img src="/++skin++ZSCP/@@/img/checkmark.png" /></td>
 					</tr>
 					<tr>
-						<td>Data migration well-tested</td>
+						<td><a href="#data-migration-well-tested">Data migration well-tested</a></td>
 						<td>D</td>
 						<td>&nbsp;
 						</td>
@@ -286,36 +286,19 @@
 					</tr>
 				</tbody>
 			</table>
-			<table class="docutils footnote" frame="void" id="id2" rules="none">
-				<colgroup>
-					<col class="label"/>
-					<col/>
-				</colgroup>
-				<tbody valign="top">
-					<tr>
-						<td class="label"><a name="id2">[1]</a>
-						</td>
-						<td>
-							<div class="first system-message">
-								<p class="system-message-title">System Message:
-									WARNING/2 (<tt class="docutils">
-									&lt;string&gt;</tt>, line 335); <em><a
-										href="#id2">backlink</a></em></p>
-								Duplicate explicit target name: &quot;1&quot;.</div>
+	
+
 							<p class="last">To verify this metric would require an
 								amount of resources that the Zope Foundation and
 								community cannot provide. This metric might be removed,
 								if the resources cannot be found over a long period of
 								time.</p>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+	
 			
 			<h4><a id="package-meta-information" name="package-meta-information">
 				4.1. Package Meta-Information</a></h4>
 			<p>The package must at least provide the required fields of the
-				package-meta-information as specified in section 2.5. The package may
+				package-meta-information as specified in <a href="@@regulations_page05.html">section 5</a>. The package may
 				also provide any of the optional fields and even fields that do not belong to
 				the specification at all. Repositories <em>may</em> ignore unspecified
 				fields.</p>
@@ -338,7 +321,7 @@
 				Testing</a></h4>
 			<p>All tests <em>must</em> be written in form of documentation. The tool to
 				implement the tests is not specified, but the tests must be part of the
-				automated test verification (see section 4.4). In some cases it is not
+				automated test verification. In some cases it is not
 				possible or practical to write documentation-based tests; in those cases
 				developers <em>may</em> choose any testing framework as long as
 				integrates in the automated test verification. The developer
@@ -351,7 +334,7 @@
 				Verification</a></h4>
 			<p>All tests for a package <em>must</em> pass for all platforms the package
 				supports. The list of supported platform is part of the package
-				meta-information (see section 2.5.9). If <cite>All</cite> (meaning all
+				meta-information (see <a href="@@regulations_page05.html">section 5.9</a>). If <cite>All</cite> (meaning all
 				platforms) has been specified, the tests must be verified on Windows, MacOS
 				X, and Unix/Linux.</p>
 			
@@ -462,7 +445,7 @@
 					name="releases-state-required-zope-version">4.20. Releases
 				state required Zope version</a></h4>
 			<p>The release of the package <em>must</em> specify the required Zope version.
-				See section 2.7 for details on release meta-data, including dependency
+				See <a href="@@regulations_page07.html">section 7</a> for details on release meta-data, including dependency
 				specifications.</p>
 			
 			<h4><a id="multiple-3-active-maintainers"
