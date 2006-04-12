@@ -1,0 +1,40 @@
+TODO
+====
+
+We are at the very beginning. The first concrete multiform is
+container.views.ContainerGridForm. The actions should work fine.
+
+Missing functionalities:
+------------------------
+
+	- customwidget for container.interfaces.IMovableLocation['__name__']
+
+		Returns an inputwidget if an IInputWidget is needed and returns
+		an displaywidget if an IDisplayWidget is needed.
+	
+	- Size columns
+
+	    Enable to register a size information field (ISized has only IMethods).
+	    Pay attention to register a customwidget to display the size.
+
+	- Sort and Batch
+
+		Write sort and batch handling in the template. Show the current sort
+		column and sort direction. Show the current batch.
+	
+	- Catch DuplicateError in handle_save_action
+	
+	- View Errors and Status of each ItemForm
+	
+	- Use namedtemplate for ContainerGridForm
+	
+	- write more test in gridform.txt
+	
+		Test singleedit and singlesave
+
+	- write functional tests for ContainerGridForm
+
+	- sort_down and sort_up gifs from the skin
+	
+		It would be a nice feature of a skin to provides these to icons
+
