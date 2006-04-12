@@ -22,9 +22,9 @@ from persistent.dict import PersistentDict
 import zope.component
 from zope.location import Location
 from zope.annotation.interfaces import IAnnotations, IAnnotatable
-from zope.app.dublincore.zopedublincore import ZopeDublinCore
-from zope.app.dublincore.zopedublincore import DateProperty, ScalarProperty
-from zope.app.dublincore.interfaces import IWriteZopeDublinCore
+from zope.dublincore.zopedublincore import ZopeDublinCore
+from zope.dublincore.zopedublincore import DateProperty, ScalarProperty
+from zope.dublincore.interfaces import IWriteZopeDublinCore
 
 DCkey = "zope.app.dublincore.ZopeDublinCore"
 
@@ -56,7 +56,7 @@ class ZDCAnnotationData(PersistentDict):
 
     A specialized class is used to allow an alternate fssync
     serialization to be registered.  See the
-    zope.app.dublincore.fssync package.
+    zope.dublincore.fssync package.
     """
 
 

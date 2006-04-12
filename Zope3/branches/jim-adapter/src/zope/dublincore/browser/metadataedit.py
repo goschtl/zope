@@ -19,10 +19,10 @@ __docformat__ = 'restructuredtext'
 
 from datetime import datetime
 from zope.event import notify
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.lifecycleevent import ObjectModifiedEvent, Attributes
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('zope')
-from zope.app.dublincore.interfaces import IZopeDublinCore
 
 
 class MetaDataEdit(object):

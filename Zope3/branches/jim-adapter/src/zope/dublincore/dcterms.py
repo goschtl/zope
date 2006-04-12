@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.dublincore import dcsv
+from zope.dublincore import dcsv
 
 # useful namespace URIs
 DC_NS = "http://purl.org/dc/elements/1.1/"

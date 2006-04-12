@@ -11,17 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Filesystem synchronization support for zope.app.dublincore.
+"""Filesystem synchronization support for zope.dublincore.
 
 $Id$
 """
 __docformat__ = 'restructuredtext'
 
 from zope.interface import implements
-
 from zope.fssync.server.entryadapter import ObjectEntryAdapter
 from zope.fssync.server.interfaces import IObjectFile
-
 
 class ZDCAnnotationDataAdapter(ObjectEntryAdapter):
 

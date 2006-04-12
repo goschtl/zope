@@ -32,7 +32,7 @@ To avoid having a discrepency between the `title` attribute of our
 content object and the equivalent Dublin Core field, we can provide a
 specific adapter for our object::
 
-  >>> from zope.app.dublincore import annotatableadapter
+  >>> from zope.dublincore import annotatableadapter
 
   >>> factory = annotatableadapter.partialAnnotatableAdapterFactory(
   ...     ["title"])

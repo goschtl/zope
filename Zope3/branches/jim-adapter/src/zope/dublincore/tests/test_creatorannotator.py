@@ -22,8 +22,8 @@ from zope.testing.cleanup import CleanUp
 from zope.interface import Interface, implements
 import zope.component
 
-from zope.app.dublincore.creatorannotator import CreatorAnnotator
-from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.creatorannotator import CreatorAnnotator
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.security.interfaces import IPrincipal
 from zope.security.management import newInteraction, endInteraction
 

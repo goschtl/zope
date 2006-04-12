@@ -17,8 +17,8 @@ $Id$
 """
 import unittest
 
-from zope.app.dublincore import dcterms
-from zope.app.dublincore.xmlmetadata import dumpString, parseString
+from zope.dublincore import dcterms
+from zope.dublincore.xmlmetadata import dumpString, parseString
 
 
 class XMLDublinCoreLoadingTests(unittest.TestCase):
@@ -26,7 +26,7 @@ class XMLDublinCoreLoadingTests(unittest.TestCase):
     # Note: We're not using the 'traditional' namespace prefixes in
     # the tests since we want to make sure we're doing the right thing
     # in the content handler.  Also, we should use something we're not
-    # using in zope.app.dublincore.dcterms.
+    # using in zope.dublincore.dcterms.
     _prefix = ("<?xml version='1.0' encoding='utf-8'?>\n"
                "<metadata xmlns:d='%s'\n"
                "          xmlns:t='%s'\n"

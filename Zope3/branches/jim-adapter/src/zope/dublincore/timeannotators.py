@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from datetime import datetime
 import pytz
-from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.security.proxy import removeSecurityProxy
 
 

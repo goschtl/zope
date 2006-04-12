@@ -27,10 +27,7 @@ class TestAnnotations(dict):
 class DublinCoreAdapterTest(PlacelessSetup, unittest.TestCase):
 
     def testZDCAnnotatableAdapter(self):
-
-        from zope.app.dublincore.annotatableadapter \
-             import ZDCAnnotatableAdapter
-
+        from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
         annotations = TestAnnotations()
         dc = ZDCAnnotatableAdapter(annotations)
 

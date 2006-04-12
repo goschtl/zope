@@ -21,7 +21,7 @@ from datetime import datetime
 
 from zope.interface import implements
 from zope.datetime import parseDatetimetz
-from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.interfaces import IZopeDublinCore
 
 class SimpleProperty(object):
 

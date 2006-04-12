@@ -23,7 +23,7 @@ import xml.sax.handler
 from cStringIO import StringIO
 from xml.sax.saxutils import escape, quoteattr
 
-from zope.app.dublincore import dcterms
+from zope.dublincore import dcterms
 
 
 XSI_TYPE = (dcterms.XSI_NS, "type")
