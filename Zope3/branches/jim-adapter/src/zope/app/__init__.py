@@ -74,6 +74,8 @@ modules_aliases_35 = {
         'zope.filerepresentation.interfaces',
 
     'zope.app.security.adapter': 'zope.security.adapter',
+    'zope.app.security.fields': 'zope.security.zcml',
+
     'zope.app.component.interface': 'zope.component.interface',
     'zope.app.content_types': 'zope.contenttype',
     }
