@@ -60,6 +60,7 @@ modules_aliases_35 = {
 
     'zope.app.security.adapter': 'zope.security.adapter',
     'zope.app.component.interface': 'zope.component.interface',
+    'zope.app.content_types': 'zope.contenttype',
     }
 
 msg_35 = "%s has been moved to %s.  This alias will be removed in Zope 3.5."

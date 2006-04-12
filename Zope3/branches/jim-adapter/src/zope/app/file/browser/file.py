@@ -19,11 +19,11 @@ from datetime import datetime
 
 import zope.event
 from zope import lifecycleevent
+from zope.contenttype import guess_content_type
 from zope.publisher import contenttype
 from zope.schema import Text
 from zope.exceptions.interfaces import UserError
 
-from zope.app import contenttypes
 from zope.app.file.file import File
 from zope.app.file.interfaces import IFile
 from zope.app.i18n import ZopeMessageFactory as _
@@ -58,7 +58,7 @@ class FileUpdateView(object):
             contenttype = form.get("field.contentType")
             if filename:
                 if not contenttype:
-                    contenttype = contenttypes.guess_content_type(filename)[0]
+                    contenttype = guess_content_type(filename)[0]
                 if not form.get("add_input_name"):
                     form["add_input_name"] = filename
             return self.update_object(form["field.data"], contenttype)
