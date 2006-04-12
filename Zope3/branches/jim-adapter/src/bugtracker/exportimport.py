@@ -25,9 +25,8 @@ from zope.i18n.locales import locales
 from zope.publisher.browser import TestRequest
 from zope.schema.vocabulary import getVocabularyRegistry
 from zope.security.proxy import removeSecurityProxy 
+from zope.dublincore.interfaces import IZopeDublinCore
 
-from zope.app import zapi
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.file import File, Image
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 

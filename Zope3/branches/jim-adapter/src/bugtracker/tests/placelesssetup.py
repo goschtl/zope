@@ -34,14 +34,14 @@ from zope.location.interfaces import ILocation
 from zope.location.traversing import LocationPhysicallyLocatable
 from zope.annotation.attribute import AttributeAnnotations
 from zope.annotation.interfaces import IAnnotations, IAttributeAnnotatable
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.dublincore.interfaces import IWriteZopeDublinCore
+from zope.dublincore.interfaces import IZopeDublinCore
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup as SetupBase
 from zope.app.file import File
 from zope.app.container.interfaces import INameChooser
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.dublincore.interfaces import IWriteZopeDublinCore
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.renderer.plaintext import IPlainTextSource
 from zope.app.renderer.plaintext import PlainTextToHTMLRenderer
 from zope.app.renderer.plaintext import PlainTextSourceFactory

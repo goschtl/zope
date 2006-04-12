@@ -17,14 +17,12 @@ $Id$
 """
 import re
 
+import zope.component
 from zope.proxy import removeAllProxies
 from zope.schema.vocabulary import getVocabularyRegistry
 from zope.structuredtext.document import Document
 from zope.structuredtext.html import HTML
-
-from zope.app import zapi
-from zope.app.dublincore.interfaces import IZopeDublinCore
-
+from zope.dublincore.interfaces import IZopeDublinCore
 
 class CommentViewBase(object):
 
@@ -53,9 +51,9 @@ class CommentViewBase(object):
     def body(self):
         ttype = getattr(self.context.body, 'ttype', None)
         if ttype is not None:
-            source = zapi.createObject(self.context.body.ttype,
-                                       self.context.body)
-            view = zapi.getMultiAdapter(
+            source = zope.component.createObject(self.context.body.ttype,
+                                                 self.context.body)
+            view = zope.component.getMultiAdapter(
                 (removeAllProxies(source), self.request))
             html = view.render()
         else:

@@ -19,8 +19,8 @@ import re
 from persistent import Persistent
 
 from zope.interface import implements
+from zope.dublincore.interfaces import IZopeDublinCore
 
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.interfaces import INameChooser
 

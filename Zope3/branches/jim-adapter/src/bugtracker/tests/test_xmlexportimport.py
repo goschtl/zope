@@ -19,8 +19,8 @@ import unittest, os
 from datetime import datetime
 
 from zope.datetime import parseDatetimetz
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.app.file import File
-from zope.app.dublincore.interfaces import IZopeDublinCore
 
 from bugtracker import tests
 from bugtracker.bug import Bug, BugDependencyAdapter

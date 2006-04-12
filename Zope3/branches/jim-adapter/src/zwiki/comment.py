@@ -21,8 +21,8 @@ from persistent import Persistent
 
 from zope.interface import implements
 from zope.schema.vocabulary import getVocabularyRegistry
+from zope.dublincore.interfaces import ICMFDublinCore
 from zope.app.container.contained import Contained
-from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 
 from zwiki.interfaces import IComment

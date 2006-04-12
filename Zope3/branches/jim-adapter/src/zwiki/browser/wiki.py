@@ -20,7 +20,7 @@ from datetime import datetime
 import zope.component
 from zope.proxy import removeAllProxies
 from zope.traversing.api import getName, getPath
-from zope.app.dublincore.interfaces import ICMFDublinCore
+from zope.dublincore.interfaces import ICMFDublinCore
 from zope.app.container.browser.adding import Adding
 
 from zwiki.interfaces import IWikiPageHierarchy

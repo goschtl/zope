@@ -15,11 +15,11 @@
 
 $Id$
 """
-from zope.app import zapi
-from zope.app.container.browser.adding import Adding
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.schema.vocabulary import getVocabularyRegistry
+from zope.traversing.api import getName
+from zope.app.container.browser.adding import Adding
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 from bugtracker import TrackerMessageID as _
 from bugtracker.batching import Batch
@@ -35,7 +35,7 @@ class BugTrackerAdding(Adding):
 
     def add(self, content):
         self.context['dummy'] = content
-        self.contentName = zapi.name(content)
+        self.contentName = getName(content)
         return self.context[name]
 
 
@@ -161,7 +161,7 @@ class BugView(BugBaseView):
         return len(filter(IComment.isImplementedBy, self.context.values()))
 
     def name(self):
-        return zapi.name(self.context)
+        return getName(self.context)
 
     def descriptionPreview(self):
         if len(self.context.description) < 200:
