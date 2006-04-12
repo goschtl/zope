@@ -1,6 +1,6 @@
+from zope import schema
 from zope.interface import Interface,Attribute
 from zope.formlib.interfaces import IAction
-from zope import schema
 from zope.formlib.i18n import _
 
 

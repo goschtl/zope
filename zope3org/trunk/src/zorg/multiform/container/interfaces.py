@@ -1,5 +1,5 @@
-from zope.app.location.interfaces import ILocation
 from zope import schema
+from zope.app.location.interfaces import ILocation
 from zope.interface import Interface, Attribute
 
 class IMovableLocation(ILocation):

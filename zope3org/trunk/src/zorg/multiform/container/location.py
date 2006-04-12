@@ -1,8 +1,10 @@
-from interfaces import IMovableLocation
 from zope.interface import implements
-from zope.app.copypastemove.interfaces import IContainerItemRenamer
-from multiform.interfaces import IFormLocation
 from zope.security.proxy import removeSecurityProxy
+from zope.app.copypastemove.interfaces import IContainerItemRenamer
+
+from multiform.interfaces import IFormLocation
+from interfaces import IMovableLocation
+
 
 class MovableLocation(object):
 

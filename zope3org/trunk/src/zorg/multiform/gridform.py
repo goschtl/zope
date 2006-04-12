@@ -1,9 +1,8 @@
-
 from zope.component import getMultiAdapter
-from zope.formlib import namedtemplate
 from zope.interface import implements
+from zope.formlib import namedtemplate
 from zope.app.pagetemplate import ViewPageTemplateFile
-
+from zope.app.location.interfaces import ILocation
 from interfaces import IGridForm, IGridItemForm, ISorter
 import multiform
 
@@ -18,6 +17,7 @@ default_griditem_template = namedtemplate.NamedTemplateImplementation(
 class GridItemFormBase(multiform.ItemFormBase):
     implements(IGridItemForm)
     template = namedtemplate.NamedTemplate('default')
+
 
 class GridFormBase(multiform.MultiFormBase):
 
@@ -35,10 +35,19 @@ class GridFormBase(multiform.MultiFormBase):
         
 
 class FilterMapping(object):
+    
+    implements(ILocation)
 
     def __init__(self, context, request, form):
         self.context = context
         self.request = request
+        if ILocation.providedBy(context):
+            self.__parent__ = context.__parent__
+            self.__name__ = context.__name__
+            
+        else:
+            self.__parent__ = None
+            self.__name__ = u""
         self.form = form
         self.batch_start = request.form.get(
                            '%s.handle.batch_start' % form.prefix,0)

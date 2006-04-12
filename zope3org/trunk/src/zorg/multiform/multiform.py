@@ -1,18 +1,19 @@
-from zope.app.publisher.browser import BrowserView
+import copy
+from zope import interface
+from zope.component import getMultiAdapter
 from zope.interface import implements
+import zope.i18n
+from zope.app.publisher.browser import BrowserView
 from zope.app import zapi
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
-from zope.component import getMultiAdapter
 from zope.formlib import form
+from zope.formlib import namedtemplate
 from zope.formlib.interfaces import IBoundAction
 from zope.formlib.i18n import _
+
 from interfaces import IMultiForm, IParentAction, IItemAction, ISelection
 from interfaces import IFormLocation,IItemForm
-import copy
-from zope.formlib import namedtemplate
-import zope.i18n
-from zope import interface
-        
+
 
 def isFormDisplayMode(f,action):
     return not f.inputMode
@@ -87,13 +88,13 @@ def render_submit_button(self):
             )
 
 
-
 class itemAction(form.action):
 
     def __call__(self, success):
         action = ItemAction(self.label, success=success, **self.options)
         self.actions.append(action)
         return action
+
 
 class parentAction(form.action):
 

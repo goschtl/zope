@@ -1,17 +1,14 @@
+import datetime
+import pytz
 from zope.formlib.i18n import _
-from multiform import multiform, gridform
 from zope.formlib import form
-from multiform.interfaces import ISelection
 from zope.app.dublincore.interfaces import IWriteZopeDublinCore
 from zope.app.size.interfaces import ISized
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.location.interfaces import ILocation
-from interfaces import IMovableLocation
 from zope.event import notify
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.interface.common import idatetime
-import datetime
-import pytz
 from zope.app import zapi
 from zope.app.copypastemove.interfaces import IPrincipalClipboard
 from zope.app.copypastemove.interfaces import IObjectCopier
@@ -21,9 +18,14 @@ from zope.app.container.interfaces import DuplicateIDError
 from zope.security.interfaces import Unauthorized
 from zope.app.traversing.interfaces import TraversalError
 
+from multiform import multiform, gridform
+from multiform.interfaces import ISelection
+from interfaces import IMovableLocation
+
 
 def isSelected(form,action):
     return ISelection(form.context).selected
+
     
 def isSelectedInput(form,action):
     print "isSelectedInput",form,form.inputMode,action.__name__,isSelected(form,action)
@@ -63,12 +65,14 @@ def pasteable(containerForm):
 
     return True
 
+
 def safe_getattr(obj, attr, default):
     """Attempts to read the attr, returning default if Unauthorized."""
     try:
         return getattr(obj, attr, default)
     except Unauthorized:
         return default
+
 
 def hasClipboardContents(form, action):
     """ interogates the `PrinicipalAnnotation` to see if
@@ -94,8 +98,7 @@ def hasClipboardContents(form, action):
     return False
 
 
-
-class ContainerItemForm(gridform.GridItemFormBase):
+class ContainerItemForm(multiform.ItemFormBase):
 
     inputMode=False
     forceInput=['selected']
@@ -135,7 +138,7 @@ class ContainerItemForm(gridform.GridItemFormBase):
         self.newInputMode = False
        
 
-class ContainerGridForm(gridform.GridFormBase):
+class ContainerGridForm(multiform.MultiFormBase):
 
     itemFormFactory=ContainerItemForm
 
@@ -290,6 +293,7 @@ class ContainerGridForm(gridform.GridFormBase):
             self.form_reset = True
         else:
             self.errors = (_("You didn't specify any ids to delete."),)            
+
 
 def getPrincipalClipboard(request):
     """Return the clipboard based on the request."""
