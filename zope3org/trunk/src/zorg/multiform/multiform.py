@@ -173,6 +173,14 @@ class MultiFormBase(form.FormBase):
             if refresh:
                 self.refreshSubActionNames()
 
+        for form in self.getForms():
+            widget = form.widgets['selected']
+            widget.setRenderedValue(
+                ISelection(form.context).selected)
+            print "--------data------------",widget._data,widget
+#             if widget.hasInput():
+#                 print ISelection(form.context).selected,
+#                 "-----------",form.widgets['selected'].getInputValue()
         
     def setUpWidgets(self, *args, **kw):
         super(MultiFormBase,self).setUpWidgets(*args,**kw)

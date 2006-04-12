@@ -51,7 +51,6 @@ class FormLocationSelection(object):
             self.context.__form__).prefix
         res =  removeSecurityProxy(
             self.context.__form__).request.form.get(key,False)
-        print "res--------",res
         return res
 
     selected = property(_getSelected ,_setSelected)
