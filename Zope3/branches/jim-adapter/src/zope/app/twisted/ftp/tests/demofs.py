@@ -14,14 +14,14 @@
 $Id: demofs.py 27459 2004-09-07 01:45:52Z shane $
 """
 import posixpath
+
+from zope.interface import implements
 from zope.security.interfaces import Unauthorized
 from zope.publisher.interfaces import NotFound
-
 from zope.exceptions import DuplicationError
-from zope.app.copypastemove import ItemNotFoundError
+from zope.copypastemove import ItemNotFoundError
 
 from zope.app.twisted.interfaces import IFileSystem
-from zope.interface import implements
 
 execute = 1
 read = 2

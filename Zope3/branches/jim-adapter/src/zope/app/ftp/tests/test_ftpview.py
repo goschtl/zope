@@ -27,13 +27,13 @@ from zope.filerepresentation.interfaces import IReadDirectory
 from zope.filerepresentation.interfaces import IWriteDirectory
 from zope.filerepresentation.interfaces import IFileFactory
 from zope.filerepresentation.interfaces import IDirectoryFactory
+from zope.copypastemove.interfaces import IObjectMover
+from zope.copypastemove.interfaces import IContainerItemRenamer
+from zope.copypastemove import ContainerItemRenamer
 
 from zope.app.testing import ztapi
 from zope.app.ftp import FTPView
 from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.app.copypastemove.interfaces import IObjectMover
-from zope.app.copypastemove.interfaces import IContainerItemRenamer
-from zope.app.copypastemove import ContainerItemRenamer
 from zope.app.container.contained import setitem, Contained
 from zope.app.container.interfaces import IContainer
 

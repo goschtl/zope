@@ -31,8 +31,8 @@ from zope.filerepresentation.interfaces import IReadDirectory
 from zope.filerepresentation.interfaces import IWriteDirectory
 from zope.filerepresentation.interfaces import IFileFactory
 from zope.filerepresentation.interfaces import IDirectoryFactory
+from zope.copypastemove.interfaces import IContainerItemRenamer
 
-from zope.app.copypastemove.interfaces import IContainerItemRenamer
 from zope.app.container.interfaces import IContainer
 
 class FTPView(object):

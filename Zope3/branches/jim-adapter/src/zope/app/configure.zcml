@@ -24,7 +24,7 @@
 
   <include file="menus.zcml" />
 
-  <include package="zope.app.copypastemove" />
+  <include package="zope.copypastemove" />
   <include package="zope.size" />
   <include package="zope.location" />
   <include package="zope.app.container" />
