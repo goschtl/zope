@@ -23,36 +23,37 @@ from zope.component import provideUtility
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import alsoProvides
 
-from zope.generic.component.api import toDottedName
-from zope.generic.configuration.api import IConfigurations
+from zope.generic.component import IConfigurationInformation
+from zope.generic.component import IConfigurationType
+from zope.generic.component import IConfigurations
+from zope.generic.component import IInformationProvider
+from zope.generic.component import IInformationProviderInformation
+from zope.generic.component import IInformationProviderType
+from zope.generic.component.api import queryInformationProvider
+from zope.generic.component.base import ConfigurationData
+from zope.generic.component.base import InformationProvider
+from zope.generic.component.helper import toDottedName
 
-from zope.generic.information import IInformation
-from zope.generic.information import IInformationRegistryInformation
-from zope.generic.information import IInformationRegistryType
-from zope.generic.information.base import Information
-from zope.generic.information.helper import queryInformation
 
-
-
-def provideInformation(interface, registry=IInformationRegistryInformation, label=None, hint=None, factory=None):
+def provideInformationProvider(interface, registry=IInformationProviderInformation, label=None, hint=None, factory=None):
     """Provide new information for the given registry-interface.
 
     Register an information as utiliy under registry-interface using
     the dotted name of the interface as utility name:
 
-        >>> class ISpecialInformation(IInformation):
+        >>> class ISpecialInformation(IInformationProvider):
         ...    pass
 
         >>> from zope.interface import Interface
         >>> class IFooMarker(Interface):
         ...    pass
 
-        >>> provideInformation(IFooMarker, ISpecialInformation)
+        >>> provideInformationProvider(IFooMarker, ISpecialInformation)
 
     The information can be queried using the following method:
 
-        >>> from zope.generic.information.helper import queryInformation
-        >>> info = queryInformation(IFooMarker, ISpecialInformation)
+        >>> from zope.generic.component.helper import queryInformationProvider
+        >>> info = queryInformationProvider(IFooMarker, ISpecialInformation)
         >>> info.interface == IFooMarker
         True
         >>> ISpecialInformation.providedBy(info)
@@ -61,11 +62,11 @@ def provideInformation(interface, registry=IInformationRegistryInformation, labe
     """
 
     # precondition
-    if not registry.extends(IInformation):
-        raise ValueError('Registry must extend %s.' % IInformation.__name__)
+    if not registry.extends(IInformationProvider):
+        raise ValueError('Registry must extend %s.' % IInformationProvider.__name__)
 
     if factory is None:
-        factory = Information
+        factory = InformationProvider
     
     component = factory(interface, registry, label, hint)
 
@@ -79,7 +80,7 @@ def provideInformation(interface, registry=IInformationRegistryInformation, labe
 def provideConfiguration(interface, registry, configuration, data):
     """Provide configuration for a certain type marker."""
 
-    info = queryInformation(interface, registry)
+    info = queryInformationProvider(interface, registry)
     
     configurations = IConfigurations(info)
     configurations[configuration] = data
@@ -101,8 +102,8 @@ class InformationDirective(object):
             alsoProvides(interface, self._information_type)
     
         _context.action(
-            discriminator = ('provideInformation', self._interface, self._registry),
-            callable = provideInformation,
+            discriminator = ('provideInformationProvider', self._interface, self._registry),
+            callable = provideInformationProvider,
             args = (self._interface, self._registry, label, hint),
             )
     
@@ -136,10 +137,34 @@ class InformationDirective(object):
 
 
 
+def configurationDirective(_context, interface, label=None, hint=None):
+    """Provide new configuration information."""
+
+    registry = IConfigurationInformation
+    iface_type = IConfigurationType
+
+    # assert type as soon as possible
+    if not iface_type.providedBy(interface):
+        alsoProvides(interface, iface_type)
+
+    _context.action(
+        discriminator = ('provideInformationProvider', interface, registry),
+        callable = provideInformationProvider,
+        args = (interface, registry, label, hint),
+        )
+
+    _context.action(
+        discriminator = None,
+        callable = provideInterface,
+        args = (None, interface, iface_type),
+        )
+
+
+
 class InformationRegistryDirective(InformationDirective):
     """Provide a new information registry."""
 
-    _information_type = IInformationRegistryType
+    _information_type = IInformationProviderType
 
     def __init__(self, _context, interface, label=None, hint=None):
-        super(InformationRegistryDirective, self).__init__(_context, interface, IInformationRegistryInformation, label, hint)
+        super(InformationRegistryDirective, self).__init__(_context, interface, IInformationProviderInformation, label, hint)

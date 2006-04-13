@@ -18,7 +18,7 @@ Informations provided by the type information should be accounted by the handlin
 of instances marked by a certain type marker interface.
 
 The type directive does extend the information directive
-(see zope.generic.information).
+(see zope.generic.component).
 
 
 Base type directive
@@ -81,7 +81,7 @@ retrieve this utility using the conventional utility api:
 
     >>> info = queryUtility(api.ITypeInformation, toDottedName(IFooMarker))
 
-    >>> info.interface == IFooMarker
+    >>> info.key == IFooMarker
     True
     >>> info.label
     u'Foo Type'
@@ -104,7 +104,7 @@ Type subdirectives
 
 There are serveral subdirectives like:
 
--	configurations (see zope.generic.information)
+-	configurations (see zope.generic.component)
 -	initializer
 
 You can extend type informations by the annotations and configurations mechanism
@@ -139,7 +139,7 @@ Then we provide two example configurations for our example:
     ...     />
     ... ''') 
 
-	>>> from zope.generic.configuration.api import ConfigurationData
+	>>> from zope.generic.component.api import ConfigurationData
 	>>> typedata = ConfigurationData(IAnyConfiguration, {'any': u'Guguseli from Type!'})
 	>>> IAnyConfiguration.providedBy(typedata)
 	True
@@ -212,7 +212,7 @@ different configurations:
 	>>> api.acquireObjectConfiguration(bar, IOtherConfiguration).other
 	u'Specific initialization data.'
 
-    >>> from zope.generic.configuration.api import IConfigurations
+    >>> from zope.generic.component.api import IConfigurations
 	>>> objectdata = ConfigurationData(IAnyConfiguration, {'any': u'Guguseli from Object!'})
 	>>> IConfigurations(bar)[IAnyConfiguration] = objectdata
 	

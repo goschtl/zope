@@ -61,9 +61,9 @@ In the generic model these components may be configurations or annotations.
 Step 3: Implement Specific Handlers and the type-specific default data
 ----------------------------------------------------------------------
 
-    >>> from zope.generic.configuration.api import queryConfigurationData
-    >>> from zope.generic.configuration.api import provideConfigurationData
-    >>> from zope.generic.configuration.api import deleteConfigurationData
+    >>> from zope.generic.component.api import queryInformation
+    >>> from zope.generic.component.api import provideInformation
+    >>> from zope.generic.component.api import deleteInformation
     >>> from zope.generic.type.api import queryTypeConfiguration
 
 Let's implement the initializer of the article. Initializers are called from
@@ -77,7 +77,7 @@ initialization process.
     ...     - raises an exception if no configurationis defined
     ...     """
     ...     # looks up the allready configured data on the object
-    ...     article_config = queryConfigurationData(context, 
+    ...     article_config = queryInformation(context, 
     ...         IArticleInitializationConfiguration)
     ...     if article_config is None:
     ...         text_config = queryTypeConfiguration(context, ITextConfig)
@@ -86,11 +86,11 @@ initialization process.
     ...     else:
     ...         text, note = article_config.text, article_config.note
     ...
-    ...     provideConfigurationData(context, ITextConfig, {'body': text})
-    ...     provideConfigurationData(context, INoteConfig, {'body': note})
-    ...     deleteConfigurationData(context, IArticleInitializationConfiguration)
+    ...     provideInformation(context, ITextConfig, {'body': text})
+    ...     provideInformation(context, INoteConfig, {'body': note})
+    ...     deleteInformation(context, IArticleInitializationConfiguration)
  
-    >>> from zope.generic.configuration.api import ConfigurationData
+    >>> from zope.generic.component.api import ConfigurationData
     
     >>> textDefaults = ConfigurationData(ITextConfig, 
     ...     {'body': u"This is the default text."})
@@ -167,10 +167,10 @@ To create an article we use the logical domain interface
     >>> IArticle.providedBy(article)
     True
 
-    >>> queryConfigurationData(article, ITextConfig).body
+    >>> queryInformation(article, ITextConfig).body
     'First version of article.'
     
-    >>> queryConfigurationData(article, IArticleInitializationConfiguration).text
+    >>> queryInformation(article, IArticleInitializationConfiguration).text
     Traceback (most recent call last):
     ...
     AttributeError: 'NoneType' object has no attribute 'text'

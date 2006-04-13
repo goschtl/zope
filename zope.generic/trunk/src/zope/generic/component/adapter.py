@@ -28,16 +28,46 @@ from zope.component import adapts
 from zope.event import notify
 from zope.interface import implements
 
-from zope.generic.component.api import toDottedName
-from zope.generic.component.api import toComponent
+from zope.generic.component import IAttributeConfigurable
+from zope.generic.component import IConfigurationType
+from zope.generic.component import IConfigurations
+from zope.generic.component import IKeyInterface
+from zope.generic.component import IAttributeKeyInterface
+from zope.generic.component.event import Configuration
+from zope.generic.component.event import ObjectConfiguredEvent
+from zope.generic.component.helper import configuratonToDict
+from zope.generic.component.helper import toDottedName
+from zope.generic.component.helper import toKeyInterface
 
-from zope.generic.configuration import IAttributeConfigurable
-from zope.generic.configuration import IConfigurationType
-from zope.generic.configuration import IConfigurations
-from zope.generic.configuration.event import Configuration
-from zope.generic.configuration.event import ObjectConfiguredEvent
-from zope.generic.configuration.helper import configuratonToDict
 
+class KeyInterface(object):
+    """Adapts IAttributeKeyInterface to IKeyInterface.
+
+    You can adapt IKeyInterface if you provide IAttributeKeyInterface:
+
+        >>> class AnyAttributeKeyInterface(KeyInterface):
+        ...    def __init__(self, key):
+        ...         self.__key_interface__ = key
+
+        >>> fake_key_interface = object()
+        >>> any = AnyAttributeKeyInterface(fake_key_interface)
+
+        >>> KeyInterface(any).key == fake_key_interface
+        True
+        >>> IKeyInterface.providedBy(KeyInterface(any))
+        True
+
+"""
+
+    implements(IKeyInterface)
+    adapts(IAttributeKeyInterface)
+
+    def __init__(self, context):
+        self.context = context
+
+    @property
+    def key(self):
+        return self.context.__key_interface__
 
 
 
@@ -76,7 +106,7 @@ class AttributeConfigurations(DictMixin, Location):
         if configurations is None:
             return []
 
-        return [toComponent(iface) for iface in configurations.keys()]
+        return [toKeyInterface(iface) for iface in configurations.keys()]
 
     def update(self, interface, data):
         current_config = self[interface]

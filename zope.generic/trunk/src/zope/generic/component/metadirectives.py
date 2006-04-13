@@ -24,7 +24,7 @@ from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import MessageID
 from zope.interface import Interface
 
-from zope.generic.information import IInformation
+from zope.generic.component import IInformationProvider
 
 
 
@@ -51,6 +51,15 @@ class IBaseInformationDirective(Interface):
 
 
 
+class IConfigurationDirective(IBaseInformationDirective):
+    """Declare configuration schema.
+
+    Register configuration schema as interface utility typed by
+    IConfigurationType within the configuration registry utility.    
+    """
+
+
+
 class IInformationDirective(IBaseInformationDirective):
     """Directive to register an information to corresponding information
     registry."""
@@ -58,9 +67,9 @@ class IInformationDirective(IBaseInformationDirective):
     registry = GlobalInterface(
         title=_('Information Registry Key'),
         description=_('A registry key is a dedicated interface which should extend' +
-                      'IInformation.'),
+                      'IInformationProvider.'),
         required=True,
-        constraint=lambda v: v.extends(IInformation)
+        constraint=lambda v: v.extends(IInformationProvider)
         )
 
 

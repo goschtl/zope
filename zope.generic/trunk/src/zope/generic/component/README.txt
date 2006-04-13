@@ -1,9 +1,435 @@
-=========
-Component
-=========
+=================
+Generic Component
+=================
 
-The generic package relies heavily on interfaces. Often we have relation between
-different interfaces. One component does provide serveral interfaces so 
-Informations provides dedicated data about an certain 
-marker interface. Informations are implemented as utility. The package provides
-some convenience functions and directives.
+The behavior of components within the ca-framework depends heavily on their
+provided interfaces. A component, except most of the adapters and utilities, 
+regularly provides more than one interface. The adaption and subscriber 
+mechanism of the ca-framework invokes the provided interfaces by a 
+lookup-algorithmus similar to the method resolution order by class inherintance.
+
+Most of the time this behavior satisfies our requirements. Additionally this 
+package offers a mechanism to declare a single key interface (IKeyInterface).
+This key interface can be used to lookup corresponding information providers
+more explicitly. 
+
+You can register different information providers to the same key interface. An
+information provider encapsulates a certain information aspect of the key 
+interface. The relation between information providers of a key interface to
+components providing the same key interface is similar to the object class 
+relation except that each informatio aspect follows its own information 
+acquisition.
+
+You can attache generic informations such as annotations or configurations
+to an certain information provider.
+
+The annotations mechanism is well-known and documented (zope.annotations).
+
+The configurations mechansim works similar to the annotations mechansim, but 
+references a single configuration (annotation) by its corresponding 
+configuration schema (regular interfac-based schema see zope.schema). 
+Such a configuration associates data and its corresponding schema. That means
+the configuration data provides the related schema and you can allways lookup
+dedicated configuration data by its configuration schema.
+
+Similar atomic informations defined by an annotation key or a 
+configuration schemas can be reused by different information providers. So
+the identical information types will receive a contextual meaning that is related
+to information provider type.
+
+Information Provider
+--------------------
+
+You can use the information provider directive to register an information 
+provider as utiliy with an interface extending IInformationProvider and a
+dotted name of an corresponding key interface as utility name:
+
+    >>> from zope.generic.component.api import IInformationProvider
+
+    >>> class ISpecialInformation(IInformationProvider):
+    ...    pass
+
+    >>> from zope.interface import Interface
+    >>> class IFooMarker(Interface):
+    ...    pass
+
+    >>> registerDirective('''
+    ... <generic:information
+    ...     interface="example.IFooMarker"
+    ...     registry="example.ISpecialInformation"
+    ...     label='Foo Specials' hint='Bla bla foo.'
+    ...     />
+    ... ''')
+
+After a registration the information provider can be looked up.
+All information provider with the same interface can be gotten by the 
+getInformationProvidersFor function:
+    
+    >>> from zope.generic.component.api import getInformationProvidersFor
+
+    >>> listing = list(getInformationProvidersFor(ISpecialInformation))
+    >>> len(listing) is 1
+    True
+    >>> [(key.__name__, value) for key, value in listing]
+    [('IFooMarker', {})]
+
+A single information provider can be retrieved by the get- or 
+queryInformationProvider function:
+
+    >>> from zope.generic.component.api import getInformationProvider
+    >>> from zope.generic.component.api import queryInformationProvider
+
+    >>> info = getInformationProvider(IFooMarker, ISpecialInformation)
+    >>> info = queryInformationProvider(IFooMarker, ISpecialInformation)
+
+    >>> listing[0][1] == info
+    True
+    >>> listing[0][0] == IFooMarker
+    True
+
+    >>> info.key == IFooMarker
+    True
+    >>> ISpecialInformation.providedBy(info)
+    True
+    >>> info.label = u'Foo Specials'
+    >>> info.hint = u'Bla bla foo.'
+
+
+
+
+If no information provider is available for a certain interface the default
+value is returned. If no default is defined None is returned:
+
+    >>> class IBarMarker(Interface):
+    ...    pass
+
+    >>> default = object()
+    >>> info = queryInformationProvider(IBarMarker, ISpecialInformation, default)
+    >>> info is default
+    True
+
+    >>> info = queryInformationProvider(IBarMarker, ISpecialInformation)
+    >>> info is None
+    True
+
+Information providers are annotable
+-----------------------------------
+
+Information providers are annotable. The annotations mechanism is used to provide
+additional informations in a generic manner:
+
+    >>> from zope.app.annotation.interfaces import IAnnotations
+
+    >>> info = queryInformationProvider(IFooMarker, ISpecialInformation)
+
+    >>> annotations = IAnnotations(info)
+    >>> annotations.get('test.annotation')
+    >>> annotations['test.annotation']
+    Traceback (most recent call last):
+    ...
+    KeyError: 'test.annotation'
+    >>> list(annotations.keys())
+    []
+    >>> del annotations['test.annotation']
+    Traceback (most recent call last):
+    ...
+    KeyError: 'test.annotation'
+    >>> annotations['test.annotation'] = 'a'
+    >>> annotations.get('test.annotation')
+    'a'
+    >>> annotations['test.annotation']
+    'a'
+    >>> list(annotations.keys())
+    ['test.annotation']
+    >>> del annotations['test.annotation']
+
+
+Information providers are configurable
+--------------------------------------
+
+Information providers are configurable. The configurations mechanism is used 
+to provide additional configurations in a generic manner. A configuration
+is declared by a configuration schema providing IConfigurationType:
+
+    >>> from zope.schema import TextLine
+        
+    >>> class IMyConfiguration(interface.Interface):
+    ...     my = TextLine(title=u'My')
+
+    >>> registerDirective('''
+    ... <generic:configuration
+    ...     interface="example.IMyConfiguration"
+    ...     label='My' hint='My bla.'
+    ...     />
+    ... ''') 
+
+    >>> from zope.generic.component.api import IConfigurationType
+
+    >>> IConfigurationType.providedBy(IMyConfiguration)
+    True
+
+For the further exploration we query this information provider:
+
+    >>> from zope.generic.component.api import IConfigurationInformation
+
+    >>> my_config_ip = queryInformationProvider(IMyConfiguration, IConfigurationInformation)
+    >>> my_config_ip.key == IMyConfiguration
+    True
+    >>> IConfigurationInformation.providedBy(my_config_ip)
+    True
+
+We now can use this configuration to extend our information provider of the
+key interface IFooMarker. At the moment there are no configurations:
+
+    >>> from zope.generic.component.api import queryInformation
+
+    >>> queryInformation(info, IMyConfiguration) is None
+    True
+
+The configuration subdirective of the information provider directive provides a mechanism
+to register further configurations to an information provider:
+
+    >>> from zope.generic.component.api import ConfigurationData
+    >>> my_information_config = ConfigurationData(IMyConfiguration, {'my': u'My!'})
+
+    >>> registerDirective('''
+    ... <generic:information
+    ...     interface="example.IFooMarker"
+    ...     registry="example.ISpecialInformation"
+    ...     label='Foo Specials' hint='Bla bla foo.'
+    ...     >
+    ...        <configuration
+    ...            interface="example.IMyConfiguration"
+    ...            data="example.my_information_config"
+    ...            />
+    ...     </generic:information>
+    ... ''')
+
+    >>> from zope.generic.component.api import queryInformationProvider
+
+    >>> info = queryInformationProvider(IFooMarker, ISpecialInformation)
+    >>> queryInformation(info, IMyConfiguration) is my_information_config
+    True
+
+
+Global Configurations
+---------------------
+
+Configurations is a container of configuration data. Configuration data are
+defined by an schema which is providing IConfigurationType. The configuration
+data itself has to provide the schema that is used to reference it.
+
+    >>> from zope.schema import TextLine
+        
+    >>> class IMyConfiguration(interface.Interface):
+    ...     my = TextLine(title=u'My')
+
+    >>> registerDirective('''
+    ... <generic:configuration
+    ...     interface="example.IMyConfiguration"
+    ...     label='My' hint='My bla.'
+    ...     />
+    ... ''') 
+
+    >>> from zope.generic.component.api import IConfigurationType
+    >>> IConfigurationType.providedBy(IMyConfiguration)
+    True
+
+The registered configuration itself is an information provider which
+is registered as utility providing IConfigurationInformation and is named
+by the dotted configuration schema name (key interface). A configuration
+is an information which can be looked up later using the get- or 
+queryInformationProvider function too:
+
+    >>> from zope.generic.component.api import IConfigurationInformation
+    >>> from zope.generic.component.api import getInformationProvider
+
+    >>> config_info = getInformationProvider(IMyConfiguration, 
+    ...        IConfigurationInformation) 
+    >>> config_info.label == u'My'
+    True
+    >>> config_info.hint == u'My bla.'
+    True
+
+The modification of configuration might cause object configured event.
+Those event extend the regular object event. This event regularly implies
+a location of the referenced object. Therefore only locatable objects will get
+notified. In our example we registered a transient global information which does
+not satify the condition:
+
+    >>> from zope.app.event.tests.placelesssetup import getEvents, clearEvents
+    >>> from zope.generic.component.api import IObjectConfiguredEvent
+
+    >>> events = getEvents()
+    >>> len(events)
+    0 
+
+Local Configurations
+--------------------
+ 
+Regularly local configurations are provided by objects marked with
+IAttributeConfigurations automatically:
+
+    >>> from zope.interface import implements
+    >>> from zope.generic.component.api import IAttributeConfigurable
+
+    >>> class Foo(object):
+    ...    implements(IAttributeConfigurable)
+
+    >>> foo = Foo()
+    >>> IAttributeConfigurable.providedBy(foo)
+    True
+
+Now you can adapt you to IConfigurations:
+
+    >>> from zope.generic.component.api import IConfigurations
+
+    >>> configurations = IConfigurations(foo)
+    >>> IConfigurations.providedBy(configurations)
+    True
+
+At the beginning the IConfigurations storage does not exists:
+
+    >>> configurations.__nonzero__()
+    False
+
+Configuration data will be stored under an key interface within the
+configurations. Such a configuration schema defines its configuration
+data:
+
+    >>> from zope.interface import Interface
+    >>> from zope.schema import TextLine
+    
+    >>> class IFooConfiguration(Interface):
+    ...    foo = TextLine(title=u'Foo')
+    ...    optional = TextLine(title=u'Optional', required=False, default=u'Bla')
+
+The configuration schema is a regular schema, but it has to be typed
+by IConfigurationType (Regularly done by the configuration directive):
+
+    >>> from zope.interface import directlyProvides
+
+    >>> directlyProvides(IFooConfiguration, IConfigurationType)
+    >>> IConfigurationType.providedBy(IFooConfiguration)
+    True
+
+The configurations provides a regular dictionary api by the UserDictMixin
+(like AttributeAnnotations). This mixin bases on the following methods:
+
+    >>> configurations[IFooConfiguration]
+    Traceback (most recent call last):
+    ...
+    KeyError: <InterfaceClass example.IFooConfiguration>
+
+    >>> del configurations[IFooConfiguration]
+    Traceback (most recent call last):
+    ...
+    KeyError: <InterfaceClass example.IFooConfiguration>
+
+    >>> configurations.keys()
+    []
+
+... if a value might be set to the configurations it must provide the 
+configuration schema itself. This key interface must provide IConfigurationType:
+
+    >>> class IBarConfiguration(Interface):
+    ...    bar = TextLine(title=u'Bar')
+
+    >>> configurations[IBarConfiguration] = object()
+    Traceback (most recent call last):
+    ...
+    KeyError: 'Interface key IBarConfiguration does not provide IConfigurationType.'
+
+    >>> configurations[IFooConfiguration] = object()
+    Traceback (most recent call last):
+    ...
+    ValueError: Value does not provide IFooConfiguration.
+
+Furthermore there is an update method that can be used to update a specific
+configuration. This method can be only used if a configuration already exists:
+
+    >>> configurations.update(IFooConfiguration, {'foo': u'Foo!'})
+    Traceback (most recent call last):
+    ...
+    KeyError: <InterfaceClass example.IFooConfiguration>
+
+You can create valid configuration data using the generic ConfigurationData
+implementation and a configuration schema:
+
+    >>> from zope.generic.component.api import ConfigurationData
+
+    >>> data = ConfigurationData(IFooConfiguration, {'foo': u'Foo!'})
+
+    >>> configurations[IFooConfiguration] = data
+
+The setting of the configuration is notified by a object configured event if 
+the parent has a location an the parent's parent is not None:
+
+    >>> events = getEvents()
+    >>> len(events)
+    0
+
+    >>> from zope.app.location import Location
+    >>> parent = Location()
+    >>> configurations.__parent__ = parent
+    
+    >>> configurations[IFooConfiguration] = data
+    >>> events = getEvents()
+    >>> len(events)
+    0
+
+    >>> parent.__parent__ = Location()
+    >>> configurations[IFooConfiguration] = data
+    >>> events = getEvents()
+    >>> len(events)
+    1
+
+    >>> event = events.pop()
+    >>> IObjectConfiguredEvent.providedBy(event)
+    True
+    >>> [(key.__name__, value) for key, value in event.items()]
+    [('IFooConfiguration', {'foo': u'Foo!', 'optional': u'Bla'})]
+
+If the configuration data is set the first time an oobtree storage is set
+to the __configurations__ attribute of the context:
+
+    >>> configurations.__nonzero__()
+    True
+
+    >>> IFooConfiguration in configurations
+    True
+
+    >>> configurations[IFooConfiguration] == data
+    True
+
+    >>> [iface.__name__ for iface in configurations.keys()]
+    ['IFooConfiguration']
+
+You should update a configuration using the update method instead of setting
+new configuration data. If the change differs from the configuration an object
+configuration modified event is notify else not:
+
+    >>> clearEvents()
+    >>> configurations.update(IFooConfiguration, {'foo': u'Bar!'})
+    >>> events = getEvents()
+    >>> len(events)
+    1
+    >>> event = events.pop()
+    >>> [(key.__name__, value) for key, value in event.items()]
+    [('IFooConfiguration', {'foo': u'Bar!'})]
+
+Also the deletion is notified by an empty dict:
+
+    >>> clearEvents()
+
+    >>> del configurations[IFooConfiguration]
+    >>> IFooConfiguration in configurations
+    False
+
+    >>> events = getEvents()
+    >>> len(events)
+    1
+    >>> event = events.pop()
+    >>> [(key.__name__, value) for key, value in event.items()]
+    [('IFooConfiguration', {})]
+

@@ -19,9 +19,6 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.dottedname.resolve import resolve
-from zope.interface.interfaces import IInterface
-
-from zope.generic.component import IKeyInterface
 
 
 
@@ -34,7 +31,7 @@ def toDottedName(component):
 # cache
 __name_to_component = {}
 
-def toComponent(name):
+def toKeyInterface(name):
     try:
         return __name_to_component[name]
     except KeyError:
@@ -42,27 +39,54 @@ def toComponent(name):
 
 
 
-def getKey(component):
-    """Evaluate the interface key from a component."""
+_marker = object()
 
-    if IInterface.providedBy(component):
-        interface = component
+def configuratonToDict(interface, configuration, all=False):
+    """Extract values from configuration to a dictionary.
 
-    elif IKeyInterface.providedBy(component):
-        interface = component.interface
+    First we have to specify a test configurtion interface:
 
-    else:
-        interface = IKeyInterface(component).interface
+        >>> from zope.interface import Interface
+        >>> from zope.schema import TextLine
+        
+        >>> class IFooConfiguration(Interface):
+        ...    fo = TextLine(title=u'Fo')
+        ...    foo = TextLine(title=u'Foo', required=False)
+        ...    fooo = TextLine(title=u'Fooo', required=False, readonly=True, default=u'fooo bla')
 
-    return interface
+    Minimal data without defaults:
 
+        >>> from zope.generic.component.base import ConfigurationData
+        >>> configuration = ConfigurationData(IFooConfiguration, {'fo': 'fo bla'})
+        >>> configuratonToDict(IFooConfiguration, configuration)
+        {'fo': 'fo bla'}
 
+    Including defaults:
+        >>> configuratonToDict(IFooConfiguration, configuration, all=True)
+        {'fooo': u'fooo bla', 'foo': None, 'fo': 'fo bla'}
 
-def queryKey(component, default=None):
-    """Evaluate the interface key from a component."""
+    """
+    data = {}
+    for name in interface:
+        value = getattr(configuration, name, _marker)
+        field = interface[name]
 
-    try:
-        return getKey(component)
+        if field.required is False:
+            if value is not _marker and value != field.default:
+               data[name] = value
 
-    except:
-        return default
+            elif value == field.default:
+                if all:
+                    data[name] = value
+
+            else:
+                if all:
+                    data[name] = field.default
+        
+        elif value is not _marker:
+            data[name] = value
+
+        else:
+            raise RuntimeError('Data is missing', name)
+
+    return data

@@ -22,13 +22,13 @@ from zope.configuration.xmlconfig import XMLConfig
 
 import zope.app.testing.placelesssetup
 import zope.generic.component.testing
-import zope.generic.configuration.testing
+import zope.generic.component.testing
 import zope.generic.directlyprovides.testing
-import zope.generic.information.testing
+import zope.generic.component.testing
 import zope.generic.operation
 import zope.generic.testing.testing
 
-from zope.generic.information.api import provideInformation
+from zope.generic.component.metaconfigure import provideInformationProvider
 from zope.generic.operation import IOperationInformation
 
 
@@ -49,7 +49,7 @@ from zope.generic.operation import IOperationInformation
 # specific tests
 def setUp(doctest=None):
     # register operation information registry
-    provideInformation(IOperationInformation)
+    provideInformationProvider(IOperationInformation)
 
     # register the directive of this package
     XMLConfig('meta.zcml', zope.generic.operation)()
@@ -67,8 +67,8 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         zope.generic.testing.testing.setUp(doctest)
         zope.generic.directlyprovides.testing.setUp(doctest)
         zope.generic.component.testing.setUp(doctest)
-        zope.generic.information.testing.setUp(doctest)
-        zope.generic.configuration.testing.setUp(doctest)
+        zope.generic.component.testing.setUp(doctest)
+        zope.generic.component.testing.setUp(doctest)
         # internal setup
         setUp(doctest)
 
@@ -78,8 +78,8 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         zope.generic.testing.testing.tearDown(doctest)
         zope.generic.directlyprovides.testing.tearDown(doctest)
         zope.generic.component.testing.tearDown(doctest)
-        zope.generic.information.testing.tearDown(doctest)
-        zope.generic.configuration.testing.tearDown(doctest)
+        zope.generic.component.testing.tearDown(doctest)
+        zope.generic.component.testing.tearDown(doctest)
         # internal teardown
         tearDown(doctest)
 

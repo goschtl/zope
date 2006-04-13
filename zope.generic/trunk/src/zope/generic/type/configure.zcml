@@ -4,7 +4,7 @@
   i18n_domain="zope">
 
   <generic:information
-      interface="zope.generic.information.IInformationRegistryInformation"
+      interface="zope.generic.component.IInformationProviderInformation"
       label="Type Information Registry"
       registry=".ITypeInformation"
       />

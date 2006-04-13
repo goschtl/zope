@@ -26,9 +26,9 @@ from zope.schema import Bool
 from zope.schema import Object
 
 from zope.generic.component import IKeyInterface
-from zope.generic.configuration import IConfigurationType
+from zope.generic.component import IConfigurationType
 from zope.generic.directlyprovides import IProvides
-from zope.generic.information import IInformation
+from zope.generic.component import IInformationProvider
 
 
 __all__ = ['ITypeType', 'ITypeable', 'ITyped', 'IDirectlyTyped', 
@@ -77,7 +77,7 @@ class IDirectlyTyped(ITyped, IProvides, IKeyInterface):
 
 
 
-class ITypeInformation(IInformation):
+class ITypeInformation(IInformationProvider):
     """Provide information for the declared type interface."""
 
 

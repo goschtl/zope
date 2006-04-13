@@ -22,9 +22,9 @@ from zope.configuration.xmlconfig import XMLConfig
 
 import zope.app.testing.placelesssetup
 import zope.generic.component.testing
-import zope.generic.configuration.testing
+import zope.generic.component.testing
 import zope.generic.directlyprovides.testing
-import zope.generic.information.testing
+import zope.generic.component.testing
 import zope.generic.testing.testing
 
 ################################################################################
@@ -63,8 +63,8 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         zope.generic.testing.testing.setUp(doctest)
         zope.generic.directlyprovides.testing.setUp(doctest)
         zope.generic.component.testing.setUp(doctest)
-        zope.generic.information.testing.setUp(doctest)
-        zope.generic.configuration.testing.setUp(doctest)
+        zope.generic.component.testing.setUp(doctest)
+        zope.generic.component.testing.setUp(doctest)
         # internal setup
         setUp(doctest)
 
@@ -74,8 +74,8 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         zope.generic.testing.testing.tearDown(doctest)
         zope.generic.directlyprovides.testing.tearDown(doctest)
         zope.generic.component.testing.tearDown(doctest)
-        zope.generic.information.testing.tearDown(doctest)
-        zope.generic.configuration.testing.tearDown(doctest)
+        zope.generic.component.testing.tearDown(doctest)
+        zope.generic.component.testing.tearDown(doctest)
         # internal teardown
         tearDown(doctest)
 

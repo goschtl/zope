@@ -22,14 +22,14 @@ from zope.app.component.interface import provideInterface
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import alsoProvides
 
-from zope.generic.information.api import queryInformation
-from zope.generic.information.metaconfigure import provideInformation
+from zope.generic.component.api import queryInformationProvider
+from zope.generic.component.metaconfigure import provideInformationProvider
 
-from zope.generic.configuration import IConfigurationType
-from zope.generic.configuration import IConfigurations
-from zope.generic.configuration.api import ConfigurationData
-from zope.generic.configuration.api import provideConfigurationData
-from zope.generic.configuration.api import queryConfigurationData
+from zope.generic.component import IConfigurationType
+from zope.generic.component import IConfigurations
+from zope.generic.component.api import ConfigurationData
+from zope.generic.component.api import provideInformation
+from zope.generic.component.api import queryInformation
 
 from zope.generic.operation import IOperation
 from zope.generic.operation import IOperationConfiguration
@@ -47,12 +47,12 @@ def _assertOperation(handler, interface=None):
     
     if IOperationType.providedBy(handler):
         registry = IOperationInformation
-        info = queryInformation(handler, IOperationInformation)
+        info = queryInformationProvider(handler, IOperationInformation)
 
         if info is None:
             ConfigurationError('Operation %s does not exist.' % handler.__name__)
 
-        config = queryConfigurationData(info, IOperationConfiguration)
+        config = queryInformation(info, IOperationConfiguration)
 
         if config is None:
             ConfigurationError('OperationConfiguration for Operation %s does not exist.' % handler.__name__)
@@ -68,7 +68,7 @@ def provideOperationConfiguration(interface, operations=(), input=(), output=())
     """Provide the handler to an configuration information."""
     
     registry = IOperationInformation
-    info = queryInformation(interface, IOperationInformation)
+    info = queryInformationProvider(interface, IOperationInformation)
 
     # this should never happen...
     if info is None:
@@ -87,7 +87,7 @@ def provideOperationConfiguration(interface, operations=(), input=(), output=())
 
     configurations = IConfigurations(info)
     # create and set configuration data
-    provideConfigurationData(info, IOperationConfiguration, 
+    provideInformation(info, IOperationConfiguration, 
         {'operation': operation, 'input': tuple(input), 'output': tuple(output)})
 
 
@@ -102,8 +102,8 @@ def operationDirective(_context, interface, operations=(), input=(), output=(), 
     registry = IOperationInformation
 
     _context.action(
-        discriminator = ('provideInformation', interface, registry),
-        callable = provideInformation,
+        discriminator = ('provideInformationProvider', interface, registry),
+        callable = provideInformationProvider,
         args = (interface, registry, label, hint),
         )
 

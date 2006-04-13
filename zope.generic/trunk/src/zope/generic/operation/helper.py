@@ -18,8 +18,8 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.generic.information.api import getInformation
-from zope.generic.configuration.api import getConfigurationData
+from zope.generic.component.api import getInformationProvider
+from zope.generic.component.api import getInformation
 
 from zope.generic.operation import IOperationInformation
 from zope.generic.operation import IOperationConfiguration
@@ -28,7 +28,7 @@ from zope.generic.operation import IOperationConfiguration
 
 def getOperationInformation(object):
     """Evaluate an operation information from an object."""
-    return getInformation(object, IOperationInformation)
+    return getInformationProvider(object, IOperationInformation)
 
 
 
@@ -45,7 +45,7 @@ def queryOperationInformation(object, default=None):
 def getOperationConfiguration(object):
     """Evaluate an operation configuration."""
     
-    return getConfigurationData(getOperationInformation(object), IOperationConfiguration)
+    return getInformation(getOperationInformation(object), IOperationConfiguration)
 
 
 

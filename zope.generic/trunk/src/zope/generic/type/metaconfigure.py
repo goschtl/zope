@@ -31,9 +31,9 @@ from zope.security.checker import CheckerPublic
 from zope.security.checker import InterfaceChecker
 
 from zope.generic.component.api import toDottedName
-from zope.generic.configuration.api import ConfigurationData
-from zope.generic.configuration.api import provideConfigurationData
-from zope.generic.information.metaconfigure import InformationDirective
+from zope.generic.component.api import ConfigurationData
+from zope.generic.component.api import provideInformation
+from zope.generic.component.metaconfigure import InformationDirective
 
 from zope.generic.type import IInitializationHandler
 from zope.generic.type import IInitializerConfiguration
@@ -49,7 +49,7 @@ def provideTypeConfiguration(interface, configuration, data):
     """Set configuration data into the context."""
 
     info = queryTypeInformation(interface)
-    provideConfigurationData(info, configuration, data)
+    provideInformation(info, configuration, data)
 
 
 

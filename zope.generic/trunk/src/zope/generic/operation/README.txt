@@ -147,9 +147,9 @@ and the private operation:
 For each operation directive we registered an operation information. This
 operation information can be retrieved:
 
-    >>> from zope.generic.information.api import registeredInformations
+    >>> from zope.generic.component.api import getInformationProvidersFor
 
-    >>> listing = list(registeredInformations(api.IOperationInformation))
+    >>> listing = list(getInformationProvidersFor(api.IOperationInformation))
     >>> len(listing)
     4
 

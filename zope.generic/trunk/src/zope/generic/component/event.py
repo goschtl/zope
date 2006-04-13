@@ -21,8 +21,8 @@ __docformat__ = 'restructuredtext'
 from zope.app.event.objectevent import ObjectEvent
 from zope.interface import implements
 
-from zope.generic.configuration import IObjectConfiguredEvent
-from zope.generic.configuration import IConfigurationModificationDescription
+from zope.generic.component import IObjectConfiguredEvent
+from zope.generic.component import IConfigurationModificationDescription
 
 
 

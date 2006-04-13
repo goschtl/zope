@@ -28,7 +28,7 @@ from zope.component import adapts
 from zope.event import notify
 from zope.interface import implements
 
-from zope.generic.configuration.api import provideConfigurationData
+from zope.generic.component.api import provideInformation
 
 from zope.generic.type import IInitializer
 from zope.generic.type import IInitializerConfiguration
@@ -52,7 +52,7 @@ class Initializer(object):
         if config:
             # store initialization data
             if config.interface:
-                provideConfigurationData(self.context, config.interface, kws)
+                provideInformation(self.context, config.interface, kws)
 
             # invoke initialization handler
 

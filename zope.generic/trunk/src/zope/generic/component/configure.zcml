@@ -3,4 +3,38 @@
   xmlns:generic="http://namespaces.zope.org/generic"
   i18n_domain="zope">
 
+  <generic:information
+      interface=".IConfigurationInformation"
+      label="Configuration Information"
+      registry="zope.generic.component.IInformationProviderInformation"
+      />
+ 
+  <generic:information
+      interface=".IInformationProviderInformation"
+      label="Information Provider Information"
+      registry=".IInformationProviderInformation"
+      />
+ 
+   <!-- attribute configurations -->
+  <class class=".adapter.AttributeConfigurations">
+    <require
+        permission="zope.Public"
+        interface=".IReadConfigurations"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface=".IUpdateConfigurations"
+        />
+    <require
+        permission="zope.ManageSite"
+        interface=".IWriteConfigurations"
+        />
+  </class>
+
+  <adapter 
+  	  factory=".adapter.AttributeConfigurations"
+  	  provides="zope.generic.component.IConfigurations"
+  	  trusted="True"
+  	  />
+
 </configure>

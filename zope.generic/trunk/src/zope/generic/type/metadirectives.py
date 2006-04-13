@@ -24,7 +24,7 @@ from zope.configuration.fields import GlobalInterface
 from zope.configuration.fields import GlobalObject
 from zope.interface import Interface
 
-from zope.generic.information.metadirectives import IBaseInformationDirective
+from zope.generic.component.metadirectives import IBaseInformationDirective
 
     
 

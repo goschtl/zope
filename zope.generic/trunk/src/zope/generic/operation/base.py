@@ -21,26 +21,29 @@ __docformat__ = 'restructuredtext'
 from zope.interface import implements
 from zope.schema.fieldproperty import FieldProperty
 
+from zope.generic.component import IAttributeKeyInterface
+from zope.generic.component.api import KeyInterface
+
 from zope.generic.operation import IOperation
 from zope.generic.operation import IPrivateOperation
 
 
 
-class Operation(object):
+class Operation(KeyInterface):
     """Generic operation wrapper."""
 
     implements(IOperation)
 
-    interface = FieldProperty(IOperation['interface'])
+    interface = FieldProperty(IAttributeKeyInterface['__key_interface__'])
 
     def __init__(self, callable=None, interface=None):
         self.__callable = callable
 
         # otherwise use IPrivatConfigurationHandler
         if interface is not None:
-            self.interface = interface
+            self.__key_interface__ = interface
         else:
-            self.interface = IPrivateOperation
+            self.__key_interface__ = IPrivateOperation
 
     def __call__(self, context, *pos, **kws):
         self._proceed(context)

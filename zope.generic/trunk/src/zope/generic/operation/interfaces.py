@@ -27,9 +27,10 @@ from zope.schema import Object
 from zope.schema import Tuple
 
 from zope.generic.component import IKeyInterface
-from zope.generic.configuration import IConfigurationType
-from zope.generic.information import IInformation
-from zope.generic.information import IInformationRegistryType
+from zope.generic.component import IConfigurationType
+from zope.generic.component import IInformationProvider
+from zope.generic.component import IInformationProviderType
+
 from zope.generic.type import ITypeType
 
 
@@ -65,10 +66,10 @@ class IOperation(IKeyInterface):
 
 
 
-class IOperationInformation(IInformation):
+class IOperationInformation(IInformationProvider):
     """Registration about an global operation."""
 
-alsoProvides(IOperationInformation, IInformationRegistryType)
+alsoProvides(IOperationInformation, IInformationProviderType)
 
 
 

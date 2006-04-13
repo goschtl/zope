@@ -21,8 +21,8 @@ __docformat__ = 'restructuredtext'
 from zope import component
 
 from zope.generic.component.api import toDottedName
-from zope.generic.configuration.api import queryConfigurationData
-from zope.generic.information.api import queryInformation
+from zope.generic.component.api import queryInformation
+from zope.generic.component.api import queryInformationProvider
 
 from zope.generic.type import IInitializerConfiguration
 from zope.generic.type import ITypeInformation
@@ -72,7 +72,7 @@ def queryType(object, default=None):
 
 
 def getTypeInformation(object):
-    return queryInformation(getType(object), ITypeInformation)
+    return queryInformationProvider(getType(object), ITypeInformation)
 
 
 
@@ -88,13 +88,13 @@ def queryTypeInformation(object, default=None):
 
 
 def queryObjectConfiguration(object, configuration, default=None):   
-    return queryConfigurationData(object, configuration, default)
+    return queryInformation(object, configuration, default)
 
 
 
 def queryTypeConfiguration(object, configuration, default=None):
     info = queryTypeInformation(object)
-    return queryConfigurationData(info, configuration, default)
+    return queryInformation(info, configuration, default)
 
 
 

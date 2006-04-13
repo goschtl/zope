@@ -13,12 +13,12 @@ registry is holding user-specific informations.
 In order to implement such an information registry we have to declare an
 *key-like* interface extending the IInformation interface:
 
-    >>> from zope.generic.information import IInformation
+    >>> from zope.generic.component import IInformationProvider
     
-    >>> class ILogSupplierInformation(IInformation):
+    >>> class ILogSupplierInformation(IInformationProvider):
     ...     """Store log supplier information."""
 
-    >>> class ILogUserInformation(IInformation):
+    >>> class ILogUserInformation(IInformationProvider):
     ...     """Store log user information."""
 
 This specialized information interface has to be registered later by 
@@ -100,7 +100,7 @@ implmented as an adapter. We have to declare the logger interface:
     ...         self.context = context
     ...     def log(self, message):
     ...         id = IKeyInterface(self.context())
-    ...         info = queryInformation(id.interface, ILogUserInformation)
+    ...         info = queryInformationProvider(id.interface, ILogUserInformation)
     >>> class Logger(object):
     ...     """Generic logger adapter."""
     ...     implements(ILogger)
@@ -109,7 +109,7 @@ implmented as an adapter. We have to declare the logger interface:
     ...         self.context = context
     ...     def log(self, message):
     ...         id = IKeyInterface(self.context())
-    ...         info = queryInformation(id.interface, ILogUserInformation)
+    ...         info = queryInformationProvider(id.interface, ILogUserInformation)
     >>> class Logger(object):
     ...     """Generic logger adapter."""
     ...     implements(ILogger)
@@ -118,22 +118,22 @@ implmented as an adapter. We have to declare the logger interface:
     ...         self.context = context
     ...     def log(self, message):
     ...         id = IKeyInterface(self.context())
-    ...         info = queryInformation(id.interface, ILogUserInformation)
+    ...         info = queryInformationProvider(id.interface, ILogUserInformation)
 
 
 
 After the registration we can retrieve the registries using the
-queryInformationRegistry function:
+queryInformationProvider function:
 
-    >>> from zope.generic.information.api import queryInformationRegistry
+    >>> from zope.generic.component.api import queryInformationProvider
     
-    >>> supplier_registry =  queryInformationRegistry(ILogSupplierInformation)
+    >>> supplier_registry =  queryInformationProvider(ILogSupplierInformation)
     >>> supplier_registry.label
     u'ILogSupplierInformation'
     >>> supplier_registry.hint
     u'Store log supplier information.'
 
-    >>> user_registry =  queryInformationRegistry(ILogUserInformation)
+    >>> user_registry =  queryInformationProvider(ILogUserInformation)
     >>> user_registry.label
     u'ILogUserInformation'
     >>> user_registry.hint

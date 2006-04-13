@@ -23,8 +23,8 @@ from zope.configuration.fields import GlobalInterface
 from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import Tokens
 
-from zope.generic.configuration import IConfigurationType
-from zope.generic.information.metadirectives import IBaseInformationDirective
+from zope.generic.component import IConfigurationType
+from zope.generic.component.metadirectives import IBaseInformationDirective
 
 
 
