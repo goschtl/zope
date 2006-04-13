@@ -21,6 +21,9 @@ $Id$
 from zope.deferredimport import deprecatedModule
 
 modules_aliases_35 = {
+    'zope.app.copypastemove': 'zope.copypastemove',
+    'zope.app.copypastemove.interfaces': 'zope.copypastemove.interfaces',
+
     'zope.app.decorator': 'zope.decorator',
 
     'zope.app.datetimeutils': 'zope.datetime',
@@ -37,7 +40,7 @@ modules_aliases_35 = {
     'zope.app.rdb.interfaces': 'zope.rdb.interfaces',
     'zope.app.rdb.browser': 'zope.rdb.browser',
     'zope.app.rdb.gadfly': 'zope.rdb.gadfly',
-    
+
     'zope.app.size': 'zope.size',
     'zope.app.size.interfaces': 'zope.size.interfaces',
 
