@@ -137,6 +137,7 @@ class WikiPage(ComposedAjaxPage) :
         See browser/README.txt for a test.
         
         """
+        print "WikiPage.getModificationStamp"
         file = self.getFile()
         dc = IZopeDublinCore(file, None)
         if dc is not None :

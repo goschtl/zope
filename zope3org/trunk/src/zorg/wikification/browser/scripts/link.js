@@ -7,7 +7,7 @@ var PopupMenu = {
         document.onmousedown = PopupMenu.onMouseDown;
         },
             
-    update : function (caller, dropmenuID)  {
+    update : function (caller, dropmenuID, extra)  {
         document.onmousedown = PopupMenu.onMouseDown;
         if (PopupMenu.dropmenuID != dropmenuID) {
             PopupMenu.close();
@@ -16,7 +16,7 @@ var PopupMenu = {
             timestamp = "&modification_stamp=" + timestamp;
             
             new Ajax.Updater('wiki_popup_menu', './@@popupLinkMenu', 
-                { parameters: 'menu_id='+ dropmenuID + timestamp});
+                { parameters: 'menu_id='+ dropmenuID + timestamp + extra});
             PopupMenu.dropmenuID = dropmenuID  
             PopupMenu.placeNextTo(caller);
             }
