@@ -49,7 +49,7 @@ notified. In our example we registered a transient global information which does
 not satify the condition:
 
     >>> from zope.app.event.tests.placelesssetup import getEvents, clearEvents
-    >>> from zope.generic.configuration import IObjectConfigurationsModifiedEvent
+    >>> from zope.generic.configuration import IObjectConfiguredEvent
     >>> events = getEvents()
     >>> len(events)
     0 
@@ -177,7 +177,7 @@ is not None:
     1
 
     >>> event = events.pop()
-    >>> IObjectConfigurationsModifiedEvent.providedBy(event)
+    >>> IObjectConfiguredEvent.providedBy(event)
     True
     >>> [(key.__name__, value) for key, value in event.items()]
     [('IFooConfiguration', {'foo': u'Foo!', 'optional': u'Bla'})]
@@ -224,33 +224,3 @@ Also the deletion is notified:
     >>> event = events.pop()
     >>> [(key.__name__, value) for key, value in event.items()]
     [('IFooConfiguration', {})]
-
-
-Configuration Handler
----------------------
-
-The configurationHandler directive allows to share public configuration handlers.
-Those handlers have to provide a dedicated marker interface. This interface
-can be used for later lookup of such an handler:
-
-	>>> class IMyConfigurationHandler(interface.Interface):
-	...		pass
-
-	>>> def myConfigurationHandler(event, component, configurations=None, annotations=None):
-	...		print event, component, configurations, annotations
-
-    >>> registerDirective('''
-    ... <generic:configurationHandler
-    ...     interface='example.IMyConfigurationHandler'
-    ...     label='My Configuration Handler' hint='Please use it'
-    ...		handler='example.myConfigurationHandler'
-    ...     />
-    ... ''')
-
-After the registration we can retrieve this handler by the following function:
-
-	>>> from zope.generic.configuration.api import queryConfigurationHandler
-
-	>>> handler = queryConfigurationHandler(IMyConfigurationHandler)
-	>>> handler('component', 'event', 'configurations', 'annotations')
-	component event configurations annotations

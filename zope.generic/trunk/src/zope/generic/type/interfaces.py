@@ -25,8 +25,7 @@ from zope.interface.interfaces import IInterface
 from zope.schema import Bool
 from zope.schema import Object
 
-from zope.generic.component import IInterfaceKey
-from zope.generic.configuration import IConfigurationHandler
+from zope.generic.component import IKeyInterface
 from zope.generic.configuration import IConfigurationType
 from zope.generic.directlyprovides import IProvides
 from zope.generic.information import IInformation
@@ -52,7 +51,7 @@ class ITypeable(Interface):
 
 
 
-class ITyped(ITypeable, IInterfaceKey):
+class ITyped(ITypeable, IKeyInterface):
     """Provid an information within the."""
 
     interface = Object(
@@ -63,7 +62,7 @@ class ITyped(ITypeable, IInterfaceKey):
 
 
 
-class IDirectlyTyped(ITyped, IProvides, IInterfaceKey):
+class IDirectlyTyped(ITyped, IProvides, IKeyInterface):
     """Directly provide the declared interface."""
 
     def __init__(interface, *pos, **kws):

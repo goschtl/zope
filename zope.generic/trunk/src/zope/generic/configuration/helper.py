@@ -23,8 +23,6 @@ from zope.component import getUtility
 
 from zope.generic.component.api import toDottedName
 
-from zope.generic.configuration import IConfigurationHandlerConfiguration
-from zope.generic.configuration import IConfigurationHandlerInformation
 from zope.generic.configuration import IConfigurationInformation
 from zope.generic.configuration import IConfigurations
 
@@ -76,25 +74,6 @@ def deleteConfigurationData(context, interface):
     configurations = IConfigurations(context, None)
     if configurations:
         del configurations[interface]
-
-
-
-def queryConfigurationHandler(interface, default=None):
-    # cyclic import :(
-    from zope.generic.information.api import queryInformation
-    
-    info = queryInformation(interface, IConfigurationHandlerInformation, None)
-    
-    if info is None:
-        return default
-    
-    configuration = queryConfigurationData(info, IConfigurationHandlerConfiguration)
-    
-    if configuration is None:
-        return default
-
-    else:
-        return configuration.handler
 
 
 

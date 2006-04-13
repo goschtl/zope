@@ -22,7 +22,7 @@ from zope.component import getUtility
 from zope.component import getUtilitiesFor
 from zope.interface.interfaces import IInterface
 
-from zope.generic.component import IInterfaceKey
+from zope.generic.component import IKeyInterface
 from zope.generic.component.api import toComponent
 from zope.generic.component.api import toDottedName
 
@@ -36,11 +36,11 @@ def getInformation(object, registry):
     if IInterface.providedBy(object):
         interface = object
 
-    elif IInterfaceKey.providedBy(object):
+    elif IKeyInterface.providedBy(object):
         interface = object.interface
 
     else:
-        interface = IInterfaceKey(object).interface
+        interface = IKeyInterface(object).interface
 
     return getUtility(registry, toDottedName(interface))
 

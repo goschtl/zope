@@ -19,7 +19,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.event.interfaces import IModificationDescription
-from zope.app.event.interfaces import IObjectModifiedEvent
+from zope.app.event.interfaces import IObjectEvent
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.location import ILocation
 from zope.interface import Interface
@@ -31,7 +31,7 @@ from zope.schema import Dict
 from zope.schema import Object
 from zope.schema import Tuple
 
-from zope.generic.component import IInterfaceKey
+from zope.generic.component import IKeyInterface
 from zope.generic.information import IInformation
 
 
@@ -83,7 +83,7 @@ class IConfigurationModificationDescription(IModificationDescription):
 
 
 
-class IObjectConfigurationsModifiedEvent(IObjectModifiedEvent):
+class IObjectConfiguredEvent(IObjectEvent):
     """An object's configurations has been modified.
     
     The corresponding modifications will be attached on the description attribute
@@ -182,80 +182,3 @@ class IConfigurations(IReadConfigurations, IUpdateConfigurations,
 class IConfigurationInformation(IInformation):
     """Information about a configuration."""
 
-
-
-class IConfigurationHandlerInformation(IInformation):
-    """Information about a configuration handler."""
-
-
-
-class IConfigurationHandlerType(IInterface):
-    """Type a configuration handler marker interface."""
-
-
-
-class IPrivateHandler(Interface):
-    """Mark a private configuration handler.
-
-    Configuration handlers marked by this marker should not be used from
-    other parties.
-
-    """
-
-alsoProvides(IPrivateHandler, IConfigurationHandlerType)
-
-
-
-missing = object()
-
-class IConfigurationHandler(IInterfaceKey):
-    """A configuration handler.
-
-    A handler marked by this type provides a certain configuration procdure 
-    functionality."""
-
-    interface = Object(
-        title=_('Interface'),
-        description=_('Interface marker that references corresponding informations.'),
-        default=IPrivateHandler,
-        schema=IConfigurationHandlerType)
-
-    passConfigurations = Bool(
-        title=_('Lookup Configurations?'),
-        description=_('Should component configurations be invoked by the handler'),
-        default=False)
-
-    passAnnotations = Bool(
-        title=_('Lookup Annotations?'),
-        description=_('Should component annotations be invoked by the handler'),
-        default=False)
-
-    def __call__(component, event, configurations=None, annotations=None):
-        """Configure the component.
-
-        A None value for annotations or configurations implies, that no 
-        configuration was looked up before.
-
-        If you couldn't look up a configurations or annotations you shoul
-        pass the missing marker object.
-
-        If configurations is missing or passConfigurations is False,
-        the handler should provide its own default configuration itself.
-
-        If annotations is missing or passAnnotations is False, 
-        the handler should provide its own default configuration itself.
-
-        """
-
-
-
-class IConfigurationHandlerConfiguration(Interface):
-    """The configuration for the configuration handler registration."""
-
-    handler = Object(
-        title=_('Configuration Handler'),
-        description=_('Registered configuration handler.'),
-        required=True,
-        schema=IConfigurationHandler)
-
-alsoProvides(IConfigurationHandlerConfiguration, IConfigurationType)

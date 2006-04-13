@@ -18,7 +18,7 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.generic.component.base import InterfaceKeyDescription
+from zope.generic.component.base import KeyInterfaceDescription
 from zope.generic.component.helper import getKey
 from zope.generic.component.helper import queryKey
 from zope.generic.component.helper import toComponent

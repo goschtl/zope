@@ -35,7 +35,7 @@ from zope.generic.configuration import IAttributeConfigurable
 from zope.generic.configuration import IConfigurationType
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration.event import Configuration
-from zope.generic.configuration.event import ObjectConfigurationsModifiedEvent
+from zope.generic.configuration.event import ObjectConfiguredEvent
 from zope.generic.configuration.helper import configuratonToDict
 
 
@@ -99,7 +99,7 @@ class AttributeConfigurations(DictMixin, Location):
             # notify update
             parent = self.__parent__
             if updated_data and ILocation.providedBy(parent) and parent.__parent__ is not None:
-                notify(ObjectConfigurationsModifiedEvent(parent, 
+                notify(ObjectConfiguredEvent(parent, 
                     Configuration(interface, updated_data)))
 
         except:
@@ -126,7 +126,7 @@ class AttributeConfigurations(DictMixin, Location):
         # notify setting
         parent = self.__parent__
         if ILocation.providedBy(parent) and parent.__parent__ is not None:
-            notify(ObjectConfigurationsModifiedEvent(parent, 
+            notify(ObjectConfiguredEvent(parent, 
                 Configuration(interface, data)))
 
     def __delitem__(self, interface):
@@ -140,5 +140,5 @@ class AttributeConfigurations(DictMixin, Location):
         # notify setting
         parent = self.__parent__
         if ILocation.providedBy(parent) and parent.__parent__ is not None:
-            notify(ObjectConfigurationsModifiedEvent(parent, 
+            notify(ObjectConfiguredEvent(parent, 
                 Configuration(interface, {})))

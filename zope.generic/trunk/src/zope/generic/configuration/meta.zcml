@@ -10,12 +10,6 @@
         handler=".metaconfigure.configurationDirective"
         />
 
-    <meta:directive
-        name="configurationHandler"
-        schema=".metadirectives.IConfigurationHandlerDirective"
-        handler=".metaconfigure.configurationHandlerDirective"
-        />
-
   </meta:directives>
 
 </configure>

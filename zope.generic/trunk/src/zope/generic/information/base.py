@@ -24,7 +24,7 @@ from zope.interface import alsoProvides
 from zope.interface import implements
 
 from zope.generic.component.api import toDottedName
-from zope.generic.component.api import InterfaceKeyDescription
+from zope.generic.component.api import KeyInterfaceDescription
 from zope.generic.configuration import IAttributeConfigurable
 
 from zope.generic.information import IInformation
@@ -32,7 +32,7 @@ from zope.generic.information import IInformation
 
 
 
-class Information(InterfaceKeyDescription, dict):
+class Information(KeyInterfaceDescription, dict):
     """Default information.
 
     Information do relate a dedicated type of information marked as an interface

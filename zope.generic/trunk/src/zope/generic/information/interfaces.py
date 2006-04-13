@@ -26,11 +26,11 @@ from zope.schema import Object
 from zope.schema import Text
 from zope.schema import TextLine
 
-from zope.generic.component import IInterfaceKeyDescription
+from zope.generic.component import IKeyInterfaceDescription
 
 
 
-class IInformation(IInterfaceKeyDescription):
+class IInformation(IKeyInterfaceDescription):
     """Inform about an subject referenced by an interface-key.
 
     Additional information can be stored within the information's annotations

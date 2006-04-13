@@ -26,7 +26,7 @@ from zope.schema import Bool
 from zope.schema import Object
 from zope.schema import Tuple
 
-from zope.generic.component import IInterfaceKey
+from zope.generic.component import IKeyInterface
 from zope.generic.configuration import IConfigurationType
 from zope.generic.information import IInformation
 from zope.generic.information import IInformationRegistryType
@@ -48,7 +48,7 @@ class IContextProxy(Interface):
 
 
 
-class IOperation(IInterfaceKey):
+class IOperation(IKeyInterface):
     """Proceed operation"""
 
     def __call__(context, *pos, **kws):

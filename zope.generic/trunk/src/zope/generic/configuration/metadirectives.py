@@ -18,9 +18,6 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.i18n import ZopeMessageFactory as _
-from zope.configuration.fields import GlobalObject
-
 from zope.generic.information.metadirectives import IBaseInformationDirective
 
 
@@ -31,20 +28,3 @@ class IConfigurationDirective(IBaseInformationDirective):
     Register configuration schema as interface utility typed by
     IConfigurationType within the configuration registry utility.    
     """
-
-
-
-class IConfigurationHandlerDirective(IBaseInformationDirective):
-    """Declare a public configuration handler.
-
-    Register configuration handler as interface utility typed by
-    IConfigurationHandlerType.
-    
-    """
-
-    handler = GlobalObject(
-        title=_('Configuration Handler'),
-        description=_('Configuration handler or callable with the signature' +
-                      '(componet, event, configuration=None, annotations=None).'),
-        required=True
-        )

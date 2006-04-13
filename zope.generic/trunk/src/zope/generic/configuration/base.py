@@ -21,18 +21,13 @@ __docformat__ = 'restructuredtext'
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
-from zope.app.annotation import IAnnotations
 from zope.interface import directlyProvides
 from zope.interface import implements
 from zope.interface.interfaces import IMethod
 from zope.schema.interfaces import IField
-from zope.schema.fieldproperty import FieldProperty
 
-from zope.generic.configuration import IConfigurationHandler
 from zope.generic.configuration import IConfigurations
-from zope.generic.configuration import missing
 
-__all__ = ['ConfigurationData']
 _marker = object()
 
 
@@ -148,58 +143,3 @@ class ConfigurationData(Persistent):
             data[name] = value
         else:
             super(ConfigurationData, self).__setattr__(name, value)
-
-
-
-class ConfigurationHandler(object):
-    """Configuration handler."""
-
-    implements(IConfigurationHandler)
-
-    interface = FieldProperty(IConfigurationHandler['interface'])
-    passConfigurations = FieldProperty(IConfigurationHandler['passConfigurations'])
-    passAnnotations = FieldProperty(IConfigurationHandler['passAnnotations'])
-
-    def __init__(self, callable, interface=None, passConfigurations=False,
-                 passAnnotations=False):
-
-        self.__callable = callable
-
-        # otherwise use IPrivatConfigurationHandler
-        if interface is not None:
-            self.interface = interface
-
-        self.passAnnotations = passAnnotations
-        self.passConfigurations = passConfigurations
-
-    def __call__(self, component, event, configurations=None, annotations=None):
-        if configurations is None and self.passConfigurations is True:
-            configurations = IConfigurations(component, missing)
-
-        if annotations is None and self.passAnnotations is True:
-            annotations = IAnnotations(component, missing)
-
-        self._apply(component, event, configurations, annotations)
-
-    def _apply(self, component, event, configurations, annotations):
-        # this method can be overwritten by subclasses
-        if self.__callable is not None:
-            return self.__callable(component, event, configurations, annotations)
-
-
-
-class ConfigurationHandlerChain(ConfigurationHandler):
-    """Process a chain of configuration handlers."""
-
-    implements(IConfigurationHandler)
-
-    interface = FieldProperty(IConfigurationHandler['interface'])
-
-    def __init__(self, handlers, interface=None, passConfigurations=True,
-                 passAnnotations=True):
-        super(ConfigurationHandlerChain, self).__intit__(None, interface, passConfigurations, passAnnotations)
-        self.__handlers = handlers
-
-    def _apply(self, component, event, configurations, annotations):
-        """Invoke handler in the listed order."""
-        [handler(component, event, configurations, annotations) for handler in self.__handlers]

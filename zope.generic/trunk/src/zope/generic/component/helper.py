@@ -21,7 +21,7 @@ __docformat__ = 'restructuredtext'
 from zope.dottedname.resolve import resolve
 from zope.interface.interfaces import IInterface
 
-from zope.generic.component import IInterfaceKey
+from zope.generic.component import IKeyInterface
 
 
 
@@ -48,11 +48,11 @@ def getKey(component):
     if IInterface.providedBy(component):
         interface = component
 
-    elif IInterfaceKey.providedBy(component):
+    elif IKeyInterface.providedBy(component):
         interface = component.interface
 
     else:
-        interface = IInterfaceKey(component).interface
+        interface = IKeyInterface(component).interface
 
     return interface
 

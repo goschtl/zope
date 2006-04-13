@@ -18,10 +18,10 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.event.objectevent import ObjectEvent
 from zope.interface import implements
 
-from zope.generic.configuration import IObjectConfigurationsModifiedEvent
+from zope.generic.configuration import IObjectConfiguredEvent
 from zope.generic.configuration import IConfigurationModificationDescription
 
 
@@ -76,7 +76,7 @@ class Configuration(object) :
 
 
 
-class ObjectConfigurationsModifiedEvent(ObjectModifiedEvent):
+class ObjectConfiguredEvent(ObjectEvent):
     """An object's configurations has been modified.
         
     A possible configuration schema:
@@ -101,7 +101,7 @@ class ObjectConfigurationsModifiedEvent(ObjectModifiedEvent):
         >>> from zope.app.event.objectevent import Attributes
         >>> descriptions.append(Attributes(IRegularInterface))
         >>> context = object()
-        >>> event = ObjectConfigurationsModifiedEvent(context, *descriptions)
+        >>> event = ObjectConfiguredEvent(context, *descriptions)
 
     There are two convenience function to introspect configuration modifications
     specifically:
@@ -125,7 +125,11 @@ class ObjectConfigurationsModifiedEvent(ObjectModifiedEvent):
         'default'
     """
 
-    implements(IObjectConfigurationsModifiedEvent)
+    implements(IObjectConfiguredEvent)
+
+    def __init__(self, object, *descriptions):
+        super(ObjectConfiguredEvent, self).__init__(object) 
+        self.descriptions = descriptions
 
     def items(self):
         return [(d.interface, d.data) for d in self.descriptions 

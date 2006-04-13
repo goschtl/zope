@@ -27,8 +27,26 @@ from zope.schema import TextLine
 
 
 
-class IInterfaceKey(Interface):
-    """Declare an interface as information-specific-key."""
+class IKeyInterfaceProvider(Interface):
+    """Assert that a key interface can be looked up.
+
+    The key interface must be provided by adaption to IKeyInterface."""
+
+
+
+class IKeyInterfaceAttributeProvider(IKeyInterfaceProvider):
+    """Provide the key interface within an attribute.
+
+    The key interface is stored within the __key_interface__ attribute.
+    """
+
+
+
+class IKeyInterface(IKeyInterfaceProvider):
+    """Declare a key interface as component-specific key.
+
+    You can use this key to lookup component-specific informations.
+    """
 
     interface = Object(
         title=_('Interface'),
@@ -40,7 +58,7 @@ class IInterfaceKey(Interface):
 
 
 
-class IInterfaceKeyDescription(IInterfaceKey):
+class IKeyInterfaceDescription(IKeyInterface):
     """Describe the associated interface key."""
 
     label = TextLine(title=_('Label'),

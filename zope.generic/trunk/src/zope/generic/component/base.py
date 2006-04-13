@@ -21,14 +21,14 @@ __docformat__ = 'restructuredtext'
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import implements
 
-from zope.generic.component import IInterfaceKeyDescription
+from zope.generic.component import IKeyInterfaceDescription
 
 
 
-class InterfaceKeyDescription(object):
+class KeyInterfaceDescription(object):
     """Information description."""
 
-    implements(IInterfaceKeyDescription)
+    implements(IKeyInterfaceDescription)
 
     def __init__(self, interface, label=None, hint=None):
         self.interface = interface
