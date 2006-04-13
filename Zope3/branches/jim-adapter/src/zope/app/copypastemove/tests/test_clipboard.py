@@ -22,7 +22,6 @@ from zope.annotation.interfaces import IAnnotations
 from zope.app.component.testing import PlacefulSetup
 from zope.app.principalannotation import PrincipalAnnotationUtility
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
-from zope.app.testing import ztapi
 
 from zope.app.copypastemove.interfaces import IPrincipalClipboard
 from zope.app.copypastemove import PrincipalClipboard
@@ -38,10 +37,11 @@ class PrincipalClipboardTest(PlacefulSetup, unittest.TestCase):
     def setUp(self):
         self.buildFolders()
 
-        ztapi.provideAdapter(IAnnotations, IPrincipalClipboard,
-                             PrincipalClipboard)
-        ztapi.provideUtility(IPrincipalAnnotationUtility,
-                             PrincipalAnnotationUtility())
+        gsm = zope.component.getGlobalSiteManager()
+        gsm.registerAdapter(PrincipalClipboard, (IAnnotations, ),
+                            IPrincipalClipboard)
+        gsm.registerUtility(PrincipalAnnotationUtility(),
+                            IPrincipalAnnotationUtility)
 
     def testAddItems(self):
         user = PrincipalStub('srichter')

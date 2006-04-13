@@ -447,9 +447,9 @@ class ContainerItemRenamer(object):
     This adapter uses IObjectMover to move an item within the same container
     to a different name. We need to first setup an adapter for IObjectMover:
 
-      >>> from zope.app.testing import ztapi
       >>> from zope.app.container.interfaces import IContained
-      >>> ztapi.provideAdapter(IContained, IObjectMover, ObjectMover)
+      >>> gsm = zope.component.getGlobalSiteManager()
+      >>> gsm.registerAdapter(ObjectMover, (IContained, ), IObjectMover)
 
     To rename an item in a container, instantiate a ContainerItemRenamer
     with the container:
@@ -515,9 +515,9 @@ class OrderedContainerItemRenamer(ContainerItemRenamer):
     To illustrate, we need to setup an IObjectMover, which is used in the
     renaming:
 
-      >>> from zope.app.testing import ztapi
       >>> from zope.app.container.interfaces import IContained
-      >>> ztapi.provideAdapter(IContained, IObjectMover, ObjectMover)
+      >>> gsm = zope.component.getGlobalSiteManager()
+      >>> gsm.registerAdapter(ObjectMover, (IContained, ), IObjectMover)
 
     To rename an item in an ordered container, we instantiate a
     OrderedContainerItemRenamer with the container:
@@ -682,13 +682,13 @@ def dispatchToSublocations(object, event):
     Finally, we need to register our handler for copy events:
 
       >>> from zope.lifecycleevent.interfaces import IObjectCopiedEvent
-      >>> from zope.app.testing import ztapi
-      >>> ztapi.subscribe([None, IObjectCopiedEvent], None, handler)
+      >>> gsm = zope.component.getGlobalSiteManager()
+      >>> gsm.registerHandler(handler, [None, IObjectCopiedEvent])
 
     and this function as a dispatcher:
 
-      >>> ztapi.subscribe([None, IObjectCopiedEvent], None,
-      ...                 dispatchToSublocations)
+      >>> gsm.registerHandler(dispatchToSublocations,
+      ...                     [None, IObjectCopiedEvent])
 
     When we notify that our root object has been copied:
 
