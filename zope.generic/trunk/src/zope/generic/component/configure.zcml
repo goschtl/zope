@@ -3,13 +3,13 @@
   xmlns:generic="http://namespaces.zope.org/generic"
   i18n_domain="zope">
 
-  <generic:information
+  <generic:informationProvider
       interface=".IConfigurationInformation"
       label="Configuration Information"
       registry="zope.generic.component.IInformationProviderInformation"
       />
  
-  <generic:information
+  <generic:informationProvider
       interface=".IInformationProviderInformation"
       label="Information Provider Information"
       registry=".IInformationProviderInformation"

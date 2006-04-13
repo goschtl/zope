@@ -24,11 +24,11 @@ from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import Tokens
 
 from zope.generic.component import IConfigurationType
-from zope.generic.component.metadirectives import IBaseInformationDirective
+from zope.generic.component.metadirectives import IBaseInformationProviderDirective
 
 
 
-class IOperationDirective(IBaseInformationDirective):
+class IOperationDirective(IBaseInformationProviderDirective):
     """Register a public operation.
 
     The operation will be registered as interface utility typed by IOperationType.

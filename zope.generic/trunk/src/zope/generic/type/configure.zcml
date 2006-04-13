@@ -3,7 +3,7 @@
   xmlns:generic="http://namespaces.zope.org/generic"
   i18n_domain="zope">
 
-  <generic:information
+  <generic:informationProvider
       interface="zope.generic.component.IInformationProviderInformation"
       label="Type Information Registry"
       registry=".ITypeInformation"

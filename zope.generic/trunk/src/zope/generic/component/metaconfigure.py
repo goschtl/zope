@@ -87,7 +87,7 @@ def provideConfiguration(interface, registry, configuration, data):
 
 
 
-class InformationDirective(object):
+class InformationProviderDirective(object):
     """Provide a new information of a certain information registry."""
     
     _information_type = None
@@ -158,13 +158,3 @@ def configurationDirective(_context, interface, label=None, hint=None):
         callable = provideInterface,
         args = (None, interface, iface_type),
         )
-
-
-
-class InformationRegistryDirective(InformationDirective):
-    """Provide a new information registry."""
-
-    _information_type = IInformationProviderType
-
-    def __init__(self, _context, interface, label=None, hint=None):
-        super(InformationRegistryDirective, self).__init__(_context, interface, IInformationProviderInformation, label, hint)

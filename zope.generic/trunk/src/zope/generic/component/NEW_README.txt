@@ -69,14 +69,16 @@ selected logger and a user-specific source tag:
 TODO: Should be a dependency between informationRegistry and its configuration?
 
     >>> registerDirective('''
-    ... <generic:informationRegistry
+    ... <generic:informationProvider
     ...     interface='example.ILogSupplierInformation'
+    ...     registry='zope.generic.component.IInformationProviderInformation'
     ...     />
     ... ''')
 
     >>> registerDirective('''
-    ... <generic:informationRegistry
+    ... <generic:informationProvider
     ...     interface='example.ILogUserInformation'
+    ...     registry='zope.generic.component.IInformationProviderInformation'
     ...     />
     ... ''')
 

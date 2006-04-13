@@ -28,7 +28,7 @@ from zope.generic.component import IInformationProvider
 
 
 
-class IBaseInformationDirective(Interface):
+class IBaseInformationProviderDirective(Interface):
     """Base information attributes."""
 
     interface = GlobalInterface(
@@ -51,7 +51,7 @@ class IBaseInformationDirective(Interface):
 
 
 
-class IConfigurationDirective(IBaseInformationDirective):
+class IConfigurationDirective(IBaseInformationProviderDirective):
     """Declare configuration schema.
 
     Register configuration schema as interface utility typed by
@@ -60,7 +60,7 @@ class IConfigurationDirective(IBaseInformationDirective):
 
 
 
-class IInformationDirective(IBaseInformationDirective):
+class IInformationProviderDirective(IBaseInformationProviderDirective):
     """Directive to register an information to corresponding information
     registry."""
 
@@ -71,11 +71,6 @@ class IInformationDirective(IBaseInformationDirective):
         required=True,
         constraint=lambda v: v.extends(IInformationProvider)
         )
-
-
-
-class IInformationRegistryDirective(IBaseInformationDirective):
-    """Directive to register an information registry."""
 
 
 

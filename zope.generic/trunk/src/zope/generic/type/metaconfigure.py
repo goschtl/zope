@@ -33,7 +33,7 @@ from zope.security.checker import InterfaceChecker
 from zope.generic.component.api import toDottedName
 from zope.generic.component.api import ConfigurationData
 from zope.generic.component.api import provideInformation
-from zope.generic.component.metaconfigure import InformationDirective
+from zope.generic.component.metaconfigure import InformationProviderDirective
 
 from zope.generic.type import IInitializationHandler
 from zope.generic.type import IInitializerConfiguration
@@ -78,7 +78,7 @@ class InitializationHandler(object):
 
 
 
-class TypeDirective(InformationDirective):
+class TypeDirective(InformationProviderDirective):
     """Provide a new logical type."""
 
     # mark types with a type marker type

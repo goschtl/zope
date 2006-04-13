@@ -24,11 +24,11 @@ from zope.configuration.fields import GlobalInterface
 from zope.configuration.fields import GlobalObject
 from zope.interface import Interface
 
-from zope.generic.component.metadirectives import IBaseInformationDirective
+from zope.generic.component.metadirectives import IBaseInformationProviderDirective
 
     
 
-class ITypeDirective(IBaseInformationDirective):
+class ITypeDirective(IBaseInformationProviderDirective):
     """Declare attriubtes of the type directive.
 
     Register an type information and a type factory.

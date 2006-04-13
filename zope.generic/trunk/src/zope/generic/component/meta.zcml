@@ -11,22 +11,9 @@
         />
 
     <meta:complexDirective
-        name="information"
-        schema=".metadirectives.IInformationDirective"
-        handler=".metaconfigure.InformationDirective"
-        >
-
-      <meta:subdirective
-          name="configuration"
-          schema=".metadirectives.IConfigurationSubdirective"
-          />
-
-    </meta:complexDirective>
-
-    <meta:complexDirective
-        name="informationRegistry"
-        schema=".metadirectives.IInformationRegistryDirective"
-        handler=".metaconfigure.InformationRegistryDirective"
+        name="informationProvider"
+        schema=".metadirectives.IInformationProviderDirective"
+        handler=".metaconfigure.InformationProviderDirective"
         >
 
       <meta:subdirective

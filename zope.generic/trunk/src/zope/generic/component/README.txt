@@ -54,7 +54,7 @@ dotted name of an corresponding key interface as utility name:
     ...    pass
 
     >>> registerDirective('''
-    ... <generic:information
+    ... <generic:informationProvider
     ...     interface="example.IFooMarker"
     ...     registry="example.ISpecialInformation"
     ...     label='Foo Specials' hint='Bla bla foo.'
@@ -193,7 +193,7 @@ to register further configurations to an information provider:
     >>> my_information_config = ConfigurationData(IMyConfiguration, {'my': u'My!'})
 
     >>> registerDirective('''
-    ... <generic:information
+    ... <generic:informationProvider
     ...     interface="example.IFooMarker"
     ...     registry="example.ISpecialInformation"
     ...     label='Foo Specials' hint='Bla bla foo.'
@@ -202,7 +202,7 @@ to register further configurations to an information provider:
     ...            interface="example.IMyConfiguration"
     ...            data="example.my_information_config"
     ...            />
-    ...     </generic:information>
+    ...     </generic:informationProvider>
     ... ''')
 
     >>> from zope.generic.component.api import queryInformationProvider
