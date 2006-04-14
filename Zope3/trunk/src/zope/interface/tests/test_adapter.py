@@ -20,6 +20,7 @@ import zope.interface
 from zope.interface.adapter import AdapterRegistry
 import zope.interface
 
+
 class IF0(zope.interface.Interface):
     pass
 class IF1(IF0):
@@ -180,7 +181,7 @@ def test_multi_adapter_check_non_default_dont_hide_default():
     >>> class IX(zope.interface.Interface):
     ...     pass
 
-    
+
     >>> registry.register([None, IR0], IB0, 'bob', 1)
     >>> registry.register([IF1,   IX], IB0, 'bob', 2)
     >>> registry.lookup([IF1, IR1], IB0, 'bob')
@@ -228,7 +229,7 @@ def test_adapter_registry_update_upon_interface_bases_change():
     >>> zope.interface.interface.adapter_hooks.append(_hook)
 
     Now we create some interfaces and an implementation:
-    
+
     >>> class IX(zope.interface.Interface):
     ...   pass
 
@@ -244,11 +245,11 @@ def test_adapter_registry_update_upon_interface_bases_change():
     ...   self.original=original
 
     and register an adapter:
-    
+
     >>> globalRegistry.register((IX,), IY, '', Y)
 
     at first, we still expect the adapter lookup from `X` to `IY` to fail:
-    
+
     >>> IY(X()) #doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     Traceback (most recent call last):
     ...
@@ -318,16 +319,14 @@ There was a bug that caused problems if a spec had multiple bases:
     'X'
     >>> registry.lookup((I2, ), IR0, 'y')
     'Y'
-
-    
-
 """
-    
+
+
 def test_suite():
     from zope.testing import doctest, doctestunit
     return unittest.TestSuite((
         doctestunit.DocFileSuite('../adapter.txt', '../human.txt',
-                                 'foodforthought.txt',
+                                 '../human.ru.txt', 'foodforthought.txt',
                                  globs={'__name__': '__main__'}),
         doctest.DocTestSuite(),
         ))

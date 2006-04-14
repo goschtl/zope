@@ -1,0 +1,155 @@
+===============================
+Использование реестра адаптеров
+===============================
+
+Данный документ содержит небольшую демонстрацию пакета ``zope.interface`` и
+его реестра адаптеров. Документ рассчитывался как конкретный, но более узкий
+пример того как использовать интерфейсы и адаптеры вне Zope 3.
+
+Сначала нам необходимо импортировать пакет для работы с интерфейсами.
+
+  >>> import zope.interface
+
+Теперь мы разработаем интерфейс для нашего объекта - простого файла. Наш
+файл будет содержать всего один атрибут - body, в котором фактически будет
+сохранено содержимое файла.
+
+  >>> class IFile(zope.interface.Interface):
+  ...
+  ...     body = zope.interface.Attribute(u'Содержимое файла.')
+  ...
+
+Для статистики нам часто необходимо знать размер файла. Но было бы несколько
+топорно релизовывать определение размера прямо для объекта файла, т.к. размер
+больше относится к мета-данным. Таким образом мы создаем еще один интерфейс
+для представления размера какого-либо объекта.
+
+  >>> class ISize(zope.interface.Interface):
+  ...
+  ...     def getSize():
+  ...         'Return the size of an object.'
+  ...
+
+Теперь мы должны создать класс реализующий наш файл. Необходимо что бы наш
+объект хранил информацию о том, что он реализует интерфейс `IFile`. Мы также
+создаем атрибут с содержимым файла по умолчанию (для упрощения нашего примера).
+
+  >>> class File(object):
+  ...
+  ...      zope.interface.implements(IFile)
+  ...      body = 'foo bar'
+  ...
+
+Дальше мы создаем адаптер, который будет предоставлять интерфейс `ISize`
+получая любой объект предоставляющий интерфейс `IFile`. По соглашению мы
+используем атрибут `__used_for__` для указания интерфейса который мы ожидаем
+предоставляет адаптируемый объект, `IFile` в нашем случае. На самом деле этот
+атрибут используется только для документирования. В случае если адаптер
+используется для нескольких интерфейсов можно указать их все в виде кортежа.
+
+Опять же по соглашению конструктор адаптера получает один аргумент - context
+(контекст). В нашем случае контекст - это экземпляр `IFile` (объект,
+предоставляющий `IFile`) который используется для получения из него размера.
+Так же по соглашению контекст сохраняется а адаптере в атрибуте с именем
+`context`. Twisted комьюнити ссылается на контекст как на объект `original`.
+Таким образом можно также дать аргументу любое подходящее имя, например `file`.
+
+  >>> class FileSize(object):
+  ...
+  ...      zope.interface.implements(ISize)
+  ...      __used_for__ = IFile
+  ...
+  ...      def __init__(self, context):
+  ...          self.context = context
+  ...
+  ...      def getSize(self):
+  ...          return len(self.context.body)
+  ...
+
+Теперь когда мы написали наш адаптер мы должны зарегистрировать его в
+реестре адаптеров, что бы его можно было запросить когда он понадобится.
+Здесь нет какого-либо глобального реестра адаптеров, таким образом мы должны
+самостоятельно создать для нашего примера реестр.
+
+  >>> from zope.interface.adapter import AdapterRegistry
+  >>> registry = AdapterRegistry()
+
+Реестр содержит отображение того, что адаптер реализует на основе другого
+интерфейса который предоставляет объект. Поэтому дальше мы регистрируем адаптер
+который адаптирует интерфейс `IFile` к интерфейсу `ISize`. Первый аргумент к
+методу `register()` реестра - это список адаптируемых интерфейсов. В нашем
+случае мы имеем только один адаптируемый интерфейс - `IFile`. Список
+интерфейсов имеет смысл для использования концепции мульти-адаптеров, которые
+требуют нескольких оригинальных объектов для адаптации к новому интерфейсу. В
+этой ситуации конструктор адаптера будет требовать новый аргумент для каждого
+оригинального интерфейса.
+
+Второй аргумент метода `register()` это интерфейс который предоставляет
+адаптер, в нашем случае `ISize`. Третий аргумент - имя адаптера. Сейчас нам не
+важно имя адаптера и мы передаем его как пустую строку. Обычно имена полезны
+если используются адаптеры для одинакового набора интерфейсов, но в различных
+ситуациях. Последний аргумент - это класс адаптера.
+
+  >>> registry.register([IFile], ISize, '', FileSize)
+
+Теперь мы можем использовать реестр для запроса адаптера.
+
+  >>> registry.lookup1(IFile, ISize, '')
+  <class '__main__.FileSize'>
+
+Попробуем более практичный пример. Создадим экземпляр `File` и создадим
+адаптер использующий запрос реестра.
+
+Let's get a little bit more practical. Let's create a `File` instance and
+create the adapter using a registry lookup. Then we see whether the adapter
+returns the correct size by calling `getSize()`.
+
+  >>> file = File()
+  >>> size = registry.lookup1(IFile, ISize, '')(file)
+  >>> size.getSize()
+  7
+
+However, this is not very practical, since I have to manually pass in the
+arguments to the lookup method. There is some syntactic candy that will allow
+us to get an adapter instance by simply calling `ISize(file)`. To make use of
+this functionality, we need to add our registry to the adapter_hooks list,
+which is a member of the adapters module. This list stores a collection of
+callables that are automatically invoked when IFoo(obj) is called; their
+purpose is to locate adapters that implement an interface for a certain
+context instance.
+
+You are required to implement your own adapter hook; this example covers one
+of the simplest hooks that use the registry, but you could implement one that
+used an adapter cache or persistent adapters, for instance. The helper hook is
+required to expect as first argument the desired output interface (for us
+`ISize`) and as the second argument the context of the adapter (here
+`file`). The function returns an adapter, i.e. a `FileSize` instance.
+
+  >>> def hook(provided, object):
+  ...     adapter = registry.lookup1(zope.interface.providedBy(object),
+  ...                                provided, '')
+  ...     return adapter(object)
+  ...
+
+We now just add the hook to an `adapter_hooks` list.
+
+  >>> from zope.interface.interface import adapter_hooks
+  >>> adapter_hooks.append(hook)
+
+Once the hook is registered, you can use the desired syntax.
+
+  >>> size = ISize(file)
+  >>> size.getSize()
+  7
+
+Now we have to cleanup after ourselves, so that others after us have a clean
+`adapter_hooks` list.
+
+  >>> adapter_hooks.remove(hook)
+
+That's it. I have intentionally left out a discussion of named adapters and
+multi-adapters, since this text is intended as a practical and simple
+introduction to Zope 3 interfaces and adapters. You might want to read the
+`adapter.txt` in the `zope.interface` package for a more formal, referencial
+and complete treatment of the package. Warning: People have reported that
+`adapter.txt` makes their brain feel soft!
