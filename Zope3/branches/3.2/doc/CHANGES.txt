@@ -21,6 +21,11 @@ Zope Changes
       - Fixed a bug in zope.publisher.http which raises a TypeError
         when using zserver and xmlrpc.
 
+      - set socket-name to $INSTANCE_HOME/var/zopectlsock in
+        zdaemon.conf.in, to prevent conflicts when running multiply
+        instances or as root. the default was zdsock in the directory
+        where zopectl is started from.
+
   Zope 3.2.1 (2006/03/26)
 
     Bug fixes
