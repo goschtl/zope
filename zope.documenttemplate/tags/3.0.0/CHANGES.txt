@@ -1,6 +1,17 @@
 zope.documenttemplate Package Changelog
 =======================================
 
+zope.documenttemplate version 3.0.0.2 (2006/04/04)
+--------------------------------------------------
+
+- Packaging change:  suppress inclusion of 'setup.cfg' in 'sdist' builds.
+
+zope.documenttemplate version 3.0.0.1 (2006/04/04)
+--------------------------------------------------
+
+- Fix packaging error:  incorrect name of feature in 'zope.security'
+  dependency.
+
 zope.documenttemplate version 3.0.0 (2004/11/07)
 ------------------------------------------------
 
