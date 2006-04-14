@@ -85,7 +85,7 @@ situations, your adapter constructor will require an argument for each
 specified interface.
 
 The second argument is the interface the adapter provides, in our case
-`ISize`. The third argument in the name of the adapter. Since we do not care
+`ISize`. The third argument is the name of the adapter. Since we do not care
 about names, we simply leave it as an empty string. Names are commonly useful,
 if you have adapters for the same set of interfaces, but they are useful in
 different situations. The last argument is simply the adapter class.
