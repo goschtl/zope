@@ -128,6 +128,9 @@ Zope Changes
       - Fixed issue 448, SingleDataHelper.hidden() raised a LookupError
         if there was no input value.
 
+      - Fixed a bug in zope.publisher.http which raises a TypeError
+        when using zserver and xmlrpc.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dmitry
