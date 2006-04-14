@@ -1,6 +1,11 @@
 zope.exceptions Package Changelog
 =================================
 
+zope.exceptions version 3.0.2.1 (2006/04/14)
+--------------------------------------------
+
+- Packaging change:  suppress inclusion of 'setup.cfg' in 'sdist' builds.
+
 zope.exceptions version 3.0.2 (2006/04/04)
 ------------------------------------------
 
