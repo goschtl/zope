@@ -1,2 +1,0 @@
-<td tal:repeat="widget view/widgets"
-     tal:content="structure widget"/>
