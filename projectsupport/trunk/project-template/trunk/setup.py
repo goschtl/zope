@@ -33,7 +33,7 @@ setup(name='zope.XXX',
       long_description='',
       
       packages=['zope', 'zope.XXX'],
-      package_dir = {'': os.path.join(os.path.dirname(__file__), 'src')},
+      package_dir = {'': 'src'},
 
 ##       ext_modules=[Extension("zope.XXX._zope_XXX",
 ##                              [os.path.join('src', 'zope', 'XXX',
