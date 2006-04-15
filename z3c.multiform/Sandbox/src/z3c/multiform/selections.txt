@@ -1,0 +1,14 @@
+======================
+ Multiform Selections
+======================
+
+Selecting subforms of a multiform is a common task which is supported
+by the multiform package. Selections are implemented by the ISelection
+interface. This interface can be adapted to from objects which
+implement IFormLocation which in turn can be adapted to from ILocation
+and IForm. The IFormLocation adpater is a proxy which provides the
+``__form_name__`` attribute.
+
+The ISelection implementation in this package uses the request to
+store the selection state, by using the ILocationForm interface.
+

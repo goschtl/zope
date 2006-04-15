@@ -1,0 +1,312 @@
+===========
+ Gridforms
+===========
+
+Gridforms are specialized multiforms which are supposed to be
+displayed as grids.
+
+Let's define a simple content object
+
+    >>> from zope import interface, schema
+    >>> from zope.formlib import form
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.app.location.interfaces import ILocation
+    >>> from z3c.multiform.interfaces import ISelection
+    >>> from z3c.multiform import multiform, gridform
+
+    >>> class IOrder(interface.Interface):
+    ...     identifier = schema.Int(title=u"Identifier", readonly=True)
+    ...     name = schema.TextLine(title=u"Name")
+
+    >>> class Order:
+    ...     interface.implements(IOrder,ILocation)
+    ...     
+    ...     def __init__(self, identifier, name=''):
+    ...         self.identifier = identifier
+    ...         self.name = name
+    ...         self.__name__= name
+
+    >>> orderMapping = dict([('n%s'%k,Order(k,name='n%s'%k)) for k in range(4)])
+
+Now we use the ``GridForm`` as a base class to display orders in
+tabular form. Additionally to the IOrder schema the ISelection schema
+is added to the ``form_fields`` of the ``OrderForm`` in order to get
+selectable items in our order grid.
+
+
+    >>> def isSelected(form,action):
+    ...     return ISelection(form.context).selected
+    
+    >>> def isSelectedInput(form,action):
+    ...     if not form.inputMode:
+    ...         return False
+    ...     return ISelection(form.context).selected
+
+    >>> def isSelectedDisplay(form,action):
+    ...     if not form.inputMode:
+    ...         return False
+    ...     return ISelection(form.context).selected
+    
+
+    >>> class OrderForm(gridform.GridItemFormBase):
+    ...     inputMode=False
+    ...     forceInput=['selected'] 
+    ...     form_fields = form.Fields(ISelection,IOrder,
+    ...         omit_readonly=False,render_context=True)
+    ...         
+    ...     def template(self):
+    ...         return '\n<div>%s</div>\n' % '</div>\n<div>'.join([w() for w in
+    ...     self.widgets])
+    ...         
+    ...     @multiform.parentAction(u"Save",
+    ...         condition=isSelectedInput,inputMode=True)
+    ...     def handle_save_action(self, action, data):
+    ...         form.applyChanges(self.context, self.form_fields,
+    ...         data, self.adapters)
+    ...         self.newInputMode = False
+    ...         
+    ...     @multiform.parentAction('Edit',
+    ...         condition=multiform.allSubFormsDisplayMode)
+    ...     def handle_edit_action(self, action, data):
+    ...         if isSelected(self,action):
+    ...             self.newInputMode = True
+    ...
+    ...     @multiform.itemAction(u"SingleSave",
+    ...         condition=multiform.isFormInputMode,inputMode=True)
+    ...     def handle_singlesave_action(self, action, data):
+    ...         form.applyChanges(self.context, self.form_fields,
+    ...         data, self.adapters)
+    ...         self.newInputMode = False
+    ...         
+    ...     @multiform.itemAction('SingleEdit',
+    ...         condition=multiform.isFormDisplayMode)
+    ...     def handle_singleedit_action(self, action, data):
+    ...         self.newInputMode = True
+
+
+    >>> class OrdersForm(gridform.GridFormBase):
+    ...     itemFormFactory=OrderForm
+    ...     def template(self):
+    ...         res = u''
+    ...         names = sorted(self.subForms.keys())
+    ...         for name in names:
+    ...             res += '<div>%s</div>\n' % self.subForms[name].render()
+    ...         return res
+    ...         
+    ...     @form.action('Cancel',condition=multiform.isFormInputMode)
+    ...     def handle_cancel_action(self, action, data):
+    ...         for form in self.subForms.values():
+    ...             form.newInputMode = False
+
+Due to the reason that the ``inputMode`` attribute is ``False`` we now
+get DisplayWidgets for all fields, except the ``selected`` field
+which's name is defined in the ``forceInput`` attribute of the class,
+because we always want checkboxes to select some items.
+
+    >>> request = TestRequest()
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> gf.update()
+    >>> print gf.render()
+    <div>
+    <div><input ... name="form.n0.selected" type="checkbox" ...  /></div>
+    <div>0</div>
+    <div>n0</div>
+    </div>
+    <div>
+    <div><input ... name="form.n1.selected" type="checkbox" ...  /></div>
+    <div>1</div>
+    <div>n1</div>
+    ...
+    </div>
+
+Also the edit action should be available.
+
+    >>> print gf.subActionNames
+    [u'form.actions.edit']
+    >>> [a.__name__ for a in gf.availableSubActions()]
+    [u'form.actions.edit']
+    
+Now we are going to select some items. And the checkbox of the ``selected``
+
+    >>> request = TestRequest()
+    >>> request.form['form.n1.selected']=u'on'
+    >>> request.form['form.n0.selected.used']=u''
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> gf.update()
+    >>> print gf.render()
+    <div>
+    <div><input... name="form.n0.selected" type="checkbox" value="on"  /></div>
+    <div>0</div>
+    <div>n0</div>
+    </div>
+    <div>
+    <div><input... checked="checked" ... name="form.n1.selected" ... /></div>
+    <div>1</div>
+    <div>n1</div>
+    ...
+    </div>
+
+By using the Edit action we can now switch all selected item forms to
+input mode.
+
+    >>> request = TestRequest()
+    >>> request.form['form.actions.edit']=u''
+    >>> request.form['form.n0.selected.used']=u''
+    >>> request.form['form.n1.selected']=u'on'
+    >>> request.form['form.n2.selected.used']=u''
+    >>> request.form['form.n3.selected.used']=u''
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> res = gf()
+    >>> ISelection(gf.subForms['n1'].context).selected
+    True
+    >>> print res
+    <div>
+    <div><input... name="form.n0.selected" type="checkbox" value="on"  /></div>
+    <div>0</div>
+    <div>n0</div>
+    </div>
+    <div>
+    <div><input... checked="checked" ... name="form.n1.selected" ... /></div>
+    <div>1</div>
+    <div><input... name="form.n1.name" ...</div>
+    ...
+    </div>
+
+Also the edit action should be disabled now and the save action should
+be enabled.
+
+    >>> print gf.subActionNames
+    [u'form.actions.save']
+
+Now we test the actions which are displayed in each row.
+
+    >>> request = TestRequest()
+    >>> #request.form['form.n1.actions.singleedit']=u''
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> res = gf()
+    >>> sorted([action.__name__ for action in
+    ...     gf.subForms['n1'].availableActions()])
+    [u'form.n1.actions.singleedit']
+
+We call the singleedit to edit a single row.
+    
+    >>> request = TestRequest()
+    >>> request.form['form.n0.selected.used']=u''
+    >>> request.form['form.n1.selected.used']=u''
+    >>> request.form['form.n1.actions.singleedit']=u''
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> res = gf()
+
+Batching
+--------
+The gridform class is able to handle batch_start and batch_size. Let us reduce
+the output.
+
+    >>> request = TestRequest()
+    >>> request.form['form.handle.batch_start']=1
+    >>> request.form['form.handle.batch_size']=2
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> gf.update()
+    >>> print gf.render()
+    <div>
+    <div><input ... name="form.n1.selected" type="checkbox" ...  /></div>
+    <div>1</div>
+    <div>n1</div>
+    </div>
+    <div>
+    <div><input ... name="form.n2.selected" type="checkbox" ...  /></div>
+    <div>2</div>
+    <div>n2</div>
+    </div>    
+
+Check the results of fraktal informations about batch_size and batch_start:
+
+    >>> request = TestRequest()
+    >>> request.form['form.handle.batch_start']=1
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> gf.update()
+    >>> sorted([name for name in gf.subForms])
+    ['n1', 'n2', 'n3']
+    >>> request = TestRequest()
+    >>> request.form['form.handle.batch_size']=2
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> gf.update()
+    >>> sorted([name for name in gf.subForms])
+    ['n0', 'n1']
+
+We can have a default value for batch size. Here we just set the attribute
+default_batch_size by hand.
+
+    >>> request = TestRequest()
+    >>> gf = OrdersForm(orderMapping,request)
+    >>> gf.default_batch_size = 3
+    >>> gf.update()
+    >>> print gf.render()
+    <div>
+    <div><input ... name="form.n0.selected" ...
+    <div>1</div>
+    <div>n1</div>
+    ...
+    <div>2</div>
+    <div>n2</div>
+    ...
+    <div>3</div>
+    <div>n3</div>
+    </div>
+
+Sorting
+-------
+We can sort the grid with the informations field name (string) and
+reverse (bool).
+
+    >>> class Orders2Form(gridform.GridFormBase):
+    ...     itemFormFactory=OrderForm
+    ...     def template(self):
+    ...         res = u''
+    ...         for form in self.getForms():
+    ...             res += '<div>%s</div>\n' % form.render()
+    ...         return res
+    ...         
+    ...     @form.action('Cancel',condition=multiform.isFormInputMode)
+    ...     def handle_cancel_action(self, action, data):
+    ...         for form in self.subForms.values():
+    ...             form.newInputMode = False
+
+    >>> orderMapping2 = dict([('n%s'%k,Order(4-k,name='n%s'%k)) for k
+    ... in range(4)])
+
+We sort the forms by the value of the column name
+    
+    >>> request = TestRequest()
+    >>> request.form['form.handle.sort_on']=u'name'
+    >>> gf = Orders2Form(orderMapping2,request)
+    >>> gf.update()
+    >>> [(form.context.identifier,
+    ...   form.context.name) for form in gf.getForms()]
+    [(4, 'n0'), (3, 'n1'), (2, 'n2'), (1, 'n3')]
+
+and reserve.
+
+    >>> request = TestRequest()
+    >>> request.form['form.handle.sort_on']=u'name'
+    >>> request.form['form.handle.sort_reverse']=u'on'
+    >>> gf = Orders2Form(orderMapping2,request)
+    >>> gf.update()
+    >>> [(form.context.identifier,
+    ...   form.context.name) for form in gf.getForms()]
+    [(1, 'n3'), (2, 'n2'), (3, 'n1'), (4, 'n0')]
+
+We can have default values for sort field and sort direction. Here we just set
+the attributes default_sort_on or default_sort_reverse by hand.
+
+    >>> request = TestRequest()
+    >>> gf = Orders2Form(orderMapping2,request)
+    >>> gf.default_sort_on = u'name'
+    >>> gf.update()
+    >>> [(form.context.identifier,
+    ...   form.context.name) for form in gf.getForms()]
+    [(4, 'n0'), (3, 'n1'), (2, 'n2'), (1, 'n3')]
+
+TODO:  
+-----
+- test singleedit, singlesave
