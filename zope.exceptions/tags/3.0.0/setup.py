@@ -24,7 +24,7 @@ except ImportError, e:
     from distutils.core import setup, Extension
 
 setup(name='zope.exceptions',
-      version='3.0.0',
+      version='3.0.0.2',
       url='http://svn.zope.org/zope.exceptions/tags/3.0.0',
       license='ZPL 2.1',
       description='Zope Exceptions',
@@ -36,7 +36,7 @@ setup(name='zope.exceptions',
                        "package.",
       
       packages=['zope', 'zope.exceptions'],
-      package_dir = {'': os.path.join(os.path.dirname(__file__), 'src')},
+      package_dir = {'': 'src'},
 
       namespace_packages=['zope',],
       tests_require = ['zope.testing'],
