@@ -2,13 +2,6 @@
   xmlns:zope="http://namespaces.zope.org/zope"
   xmlns="http://namespaces.zope.org/browser">
 
-  <tool
-      interface="zope.app.schemacontent.interfaces.IContentComponentDefinition"
-      title="Content Component Definition"
-      description="Content Component Definitions are used to declare
-      schema-based content objects."
-      />
-
 <!-- Content Component Definition -->
 
   <!-- Menu entry for "Add Utility" menu -->

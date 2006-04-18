@@ -29,12 +29,6 @@
     view="AddGroupInformation.html"
     />
   
-<tool
-    interface="..groupfolder.IGroupFolder"
-    title="Groups Folder"
-    description="Groups Folder"
-    />
-  
 <addform
     schema="..groupfolder.IGroupFolder"
     content_factory="..groupfolder.GroupFolder"

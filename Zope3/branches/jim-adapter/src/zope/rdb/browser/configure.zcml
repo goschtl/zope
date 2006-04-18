@@ -2,13 +2,6 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
-  <tool
-      interface="zope.rdb.interfaces.IZopeDatabaseAdapter"
-      title="Database Adapter"
-      description="Database Adapters are used to connect to external
-      relational databases."
-      />
-
 <!-- ZopeDatabaseAdapter default views -->
 
   <!-- TODO: need an index.html that gives the source and is the def view -->

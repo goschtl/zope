@@ -3,13 +3,6 @@
    xmlns="http://namespaces.zope.org/browser"
    >
 
-  <tool
-      interface="zope.app.workflow.interfaces.IProcessDefinition"
-      title="Workflows"
-      description="Workflow Process Definitions define a particular workflow
-      for an object."
-      />
-
 <!-- Process Definition Import/Export -->
 
   <page

@@ -2,13 +2,6 @@
   xmlns:zope="http://namespaces.zope.org/zope"
   xmlns="http://namespaces.zope.org/browser">
 
-  <tool
-      interface="zope.app.intid.interfaces.IIntIds"
-      title="Unique Id Tool"
-      description="Unique Ids Tools are used to provide system-wide unique ids
-      for documents."
-      />
-
   <addMenuItem
       title="Unique Id Utility"
       description="A utility that provides unique ids to objects"
