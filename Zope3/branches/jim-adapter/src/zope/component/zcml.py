@@ -305,14 +305,9 @@ def subscriber(_context, for_=None, factory=None, handler=None, provides=None,
         if handler is not None:
             raise TypeError("Cannot use handler with factory")
         if provides is None:
-            import warnings
-            warnings.warn(
-                "\n  %s\n"
-                "Use of factory without provides to indicate a handler "
-                "is deprecated and will change it's meaning in Zope 3.3. "
-                "Use the handler attribute instead."
-                % _context.info,
-                DeprecationWarning)
+            raise TypeError(
+                "You must specify a provided interface when registering "
+                "a factory")
 
     if for_ is None:
         for_ = zope.component.adaptedBy(factory)
@@ -338,12 +333,20 @@ def subscriber(_context, for_=None, factory=None, handler=None, provides=None,
         if trusted:
             factory = TrustedAdapterFactory(factory)
 
-    _context.action(
-        discriminator = None,
-        callable = _handler,
-        args = ('subscribe',
-                for_, provides, factory, _context.info),
-        )
+    if handler is not None:
+        _context.action(
+            discriminator = None,
+            callable = _handler,
+            args = ('registerHandler',
+                    handler, for_, u'', _context.info),
+            )
+    else:
+        _context.action(
+            discriminator = None,
+            callable = _handler,
+            args = ('registerSubscriptionAdapter',
+                    factory, for_, provides, u'', _context.info),
+            )
 
     if provides is not None:
         _context.action(
