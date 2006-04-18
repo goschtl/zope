@@ -57,12 +57,6 @@ name directly, the deprecation warning will be raised immediately.
   ...README.txt:1: DeprecationWarning: demo3: demo3 is no more.
   ...
 
-Also, once a deprecation warning has been displayed, it is not shown again:
-
-  >>> from zope.deprecation import tests
-  >>> tests.demo1
-  1
-
 Deprecation can also happen inside a function.  When we first access
 ``demo4``, it can be accessed without problems, then we call a
 function that sets the deprecation message and we get the message upon
