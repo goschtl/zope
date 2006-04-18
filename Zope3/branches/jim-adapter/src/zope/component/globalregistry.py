@@ -21,6 +21,7 @@ from zope.interface.adapter import AdapterRegistry
 from zope.deprecation.deprecation import deprecate, deprecated
 from zope.component.registry import Components
 from zope.component.interfaces import Invalid, IComponentLookup, IRegistry
+from zope.component.interfaces import ComponentLookupError
 from zope.interface.interfaces import ISpecification
 
 def GAR(components, registryName):
@@ -142,3 +143,29 @@ base = BaseGlobalComponents('base')
 from zope.testing.cleanup import addCleanUp
 addCleanUp(lambda: base.__init__('base'))
 del addCleanUp
+
+globalSiteManager = base
+def getGlobalSiteManager():
+    return globalSiteManager
+
+# The following APIs provide global registration support for Python code.
+# We eventually want to deprecate these in favor of using the global
+# component registry directly.
+
+provideUtility = base.registerUtility
+provideAdapter = base.registerAdapter
+provideSubscriptionAdapter = base.registerSubscriptionAdapter
+provideHandler = base.registerHandler
+
+def provideUtility(component, provides=None, name=u''):
+    base.registerUtility(component, provides, name)
+
+
+def provideAdapter(factory, adapts=None, provides=None, name=''):
+    base.registerAdapter(factory, adapts, provides, name)
+
+def provideSubscriptionAdapter(factory, adapts=None, provides=None):
+    base.registerSubscriptionAdapter(factory, adapts, provides)
+
+def provideHandler(factory, adapts=None):
+    base.registerHandler(factory, adapts)
