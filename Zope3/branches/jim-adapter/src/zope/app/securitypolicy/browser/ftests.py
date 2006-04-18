@@ -109,7 +109,7 @@ class RolePermissionsTest(functional.BrowserTestCase):
 
     def testRolesWithPermissionsFormForLocalPermission(self):
         permission = Permission(u"id", u"Local Permission")
-        zope.component.provideUtility(permission, IPermission)
+        zope.component.provideUtility(permission, IPermission, 'id')
 
         response = self.publish(
             '/++etc++site/@@AllRolePermissions.html',
