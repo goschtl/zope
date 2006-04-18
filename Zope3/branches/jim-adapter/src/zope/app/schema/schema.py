@@ -20,13 +20,13 @@ from types import FunctionType
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.interface import Interface, implements
+import zope.component.interfaces
 
 from zope.security.proxy import removeSecurityProxy
 from zope.proxy import removeAllProxies
 from zope.app import zapi
 from zope.app.container.browser.adding import Adding
 from zope.app.interface import PersistentInterfaceClass
-from zope.app.component.site import UtilityRegistration
 from zope.app.container.contained import Contained, setitem, uncontained
 
 from zope.interface.interface import Attribute, Method, fromFunction
@@ -266,18 +266,21 @@ class SchemaAdding(Adding):
 
     def nextURL(self):
         """See zope.app.container.interfaces.IAdding"""
-        return zapi.absoluteURL(self.context, self.request)+'/@@editschema.html'
+        return zapi.absoluteURL(self.context,
+                                self.request,
+                                )+'/@@editschema.html'
 
 
-class SchemaRegistration(UtilityRegistration):
-    """Schema Registration
+@zope.component.adapter(
+    ISchemaUtility,
+    zope.component.interfaces.IRegistered,
+    )
+def schemaUtilityRegistered(schema, event):
+    schema.setName(event.object.name)
 
-    We have a custom registration here, since we want active registrations to
-    set the name of the schema.
-    """
-
-    def activated(self):
-        self.component.setName(self.name)
-
-    def deactivated(self):
-        self.component.setName('<schema not activated>')
+@zope.component.adapter(
+    ISchemaUtility,
+    zope.component.interfaces.IUnregistered,
+    )
+def schemaUtilityUnregistered(schema, event):
+    schema.setName('<schema not activated>')
