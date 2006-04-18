@@ -26,6 +26,11 @@ Zope Changes
         instances or as root. the default was zdsock in the directory
         where zopectl is started from.
 
+      - Fixed issue 586, BrowserResponse didn't update the
+        Content-Length header after inserting a <base> tag, causing
+        pages to be truncated in the browser.
+
+
   Zope 3.2.1 (2006/03/26)
 
     Bug fixes
