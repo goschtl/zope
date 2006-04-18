@@ -42,13 +42,13 @@
 
   <subscriber
      for="zope.security.interfaces.IPermission
-          ..component.interfaces.registration.IRegistrationActivatedEvent"
+          zope.component.interfaces.IRegistered"
      handler=".permission.setIdOnActivation"
      />
 
   <subscriber
      for="zope.security.interfaces.IPermission
-          ..component.interfaces.registration.IRegistrationDeactivatedEvent"
+          zope.component.interfaces.IUnregistered"
      handler=".permission.unsetIdOnDeactivation"
      />
 
