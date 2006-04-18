@@ -36,18 +36,32 @@ def deprecatedemo4():
     """Demonstrate that deprecate() also works in a local scope."""
     deprecated('demo4', 'demo4 is no more.')
 
-orig_showwarning = warnings.showwarning
+def warn(message, type_, stacklevel):
+    print "From tests.py's showwarning():"
+    
+    frame = sys._getframe(stacklevel)
+    path = frame.f_globals['__file__']
+    file = open(path)
+    lineno = frame.f_lineno
+    for i in range(lineno):
+        line = file.readline()
 
-def showwarning(message, category, filename, lineno, file=None):
-    sys.stdout.write("From tests.py's showwarning():\n")
-    sys.stdout.write(
-        warnings.formatwarning(message, category, filename, lineno))
+    print "%s:%s: %s: %s\n  %s" % (
+        path,
+        frame.f_lineno,
+        type_.__name__,
+        message,
+        line.strip(),
+        )
 
 def setUp(test):
-    warnings.showwarning = showwarning
+    test.globs['saved_warn'] = warnings.warn
+    warnings.warn = warn
 
 def tearDown(test):
-    warnings.showwarning = orig_showwarning
+    warnings.warn = test.globs['saved_warn']
+    del object.__getattribute__(sys.modules['zope.deprecation.tests'],
+                                '_DeprecationProxy__deprecated')['demo4']
 
 def test_suite():
     return unittest.TestSuite((
