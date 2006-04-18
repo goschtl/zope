@@ -16,9 +16,9 @@ The zope.component.registry.Components class provides an
 implementation of zope.component.interfaces.IComponents that provides
 these features.
 
-    >>> from zope.component.registry import Components
+    >>> from zope.component import registry
     >>> from zope.component import tests
-    >>> components = Components('comps')
+    >>> components = registry.Components('comps')
 
 As components atr registered, events are generated.  Let's register
 an event subscriber, so we can see the events generated:
@@ -854,11 +854,11 @@ Extending
 Component-management objects can extend other component-management
 objects. 
 
-    >>> c1 = Components('1')
+    >>> c1 = registry.Components('1')
     >>> c1.__bases__
     ()
 
-    >>> c2 = Components('2', (c1, ))
+    >>> c2 = registry.Components('2', (c1, ))
     >>> c2.__bases__ == (c1, )
     True
 
@@ -879,8 +879,8 @@ objects.
 
 We can use multiple inheritence:
 
-    >>> c3 = Components('3', (c1, ))
-    >>> c4 = Components('4', (c2, c3))
+    >>> c3 = registry.Components('3', (c1, ))
+    >>> c4 = registry.Components('4', (c2, c3))
     >>> c4.queryUtility(tests.I1)
     U1(2)
 
@@ -926,3 +926,130 @@ We can use multiple inheritence:
     handle3 U1(1)
     handle (U1(1),)
     handle4 U1(1)
+
+Redispatch of registration events
+---------------------------------
+
+Some handlers are available that, if registered, redispatch
+registration events to the objects being registered.  They depend on
+being dispatched to by the object-event dispatcher:
+
+    >>> from zope import component
+    >>> import zope.component.event
+    >>> zope.component.provideHandler(zope.component.event.objectEventNotify)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Registered event:
+    HandlerRegistration(<BaseGlobalComponents base>, 
+                        [IObjectEvent], u'', objectEventNotify, u'')
+
+To see this, we'll first register a multi-handler to show is when
+handlers are called on 2 objects:
+
+    >>> @zope.component.adapter(None, None)
+    ... def double_handler(o1, o2):
+    ...     print 'Double dispatch:'
+    ...     print ' ', o1
+    ...     print ' ', o2
+    >>> zope.component.provideHandler(double_handler)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Double dispatch:
+      HandlerRegistration(<BaseGlobalComponents base>, 
+                          [Interface, Interface], u'', double_handler, u'')
+      Registered event:
+      HandlerRegistration(<BaseGlobalComponents base>, 
+      [Interface, Interface], u'', double_handler, u'')
+    Registered event:
+    HandlerRegistration(<BaseGlobalComponents base>, 
+                        [Interface, Interface], u'', double_handler, u'')
+
+In the example above, the double_handler reported it's own registration. :)
+
+Now we'll register our handlers:
+
+    >>> zope.component.provideHandler(
+    ...     registry.dispatchUtilityRegistrationEvent)
+    ... # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    Double dispatch:
+    ...
+
+    >>> zope.component.provideHandler(
+    ...     registry.dispatchAdapterRegistrationEvent)
+    ... # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    Double dispatch:
+    ...
+
+    >>> zope.component.provideHandler(
+    ...     registry.dispatchSubscriptionAdapterRegistrationEvent)
+    ... # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    Double dispatch:
+    ...
+
+    >>> zope.component.provideHandler(
+    ...     registry.dispatchHandlerRegistrationEvent)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Double dispatch:
+      HandlerRegistration(<BaseGlobalComponents base>, 
+                          [IHandlerRegistration, IRegistrationEvent], u'', 
+                          dispatchHandlerRegistrationEvent, u'')
+      Registered event:
+      HandlerRegistration(<BaseGlobalComponents base>, 
+                          [IHandlerRegistration, IRegistrationEvent], u'', 
+                          dispatchHandlerRegistrationEvent, u'')
+    Double dispatch:
+      <function dispatchHandlerRegistrationEvent at 0xb799f72c>
+      Registered event:
+      HandlerRegistration(<BaseGlobalComponents base>,
+                          [IHandlerRegistration, IRegistrationEvent], u'',
+                          dispatchHandlerRegistrationEvent, u'')
+    Registered event:
+    HandlerRegistration(<BaseGlobalComponents base>,
+                        [IHandlerRegistration, IRegistrationEvent], u'',
+                        dispatchHandlerRegistrationEvent, u'')
+
+In the last example above, we can see that the registration of
+dispatchHandlerRegistrationEvent was handled by
+dispatchHandlerRegistrationEvent and redispatched.  This can be seen
+in the second double-dispatch output, where the first argument is the
+object being registered, which is dispatchHandlerRegistrationEvent.
+
+If we change some other registrations, we can the double dispatch
+taking place:
+
+    >>> components.registerUtility(u5)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Double dispatch:
+      UtilityRegistration(<Components comps>, I1, u'', 5, u'')
+      Registered event:
+      UtilityRegistration(<Components comps>, I1, u'', 5, u'')
+    Double dispatch:
+      U1(5)
+      Registered event:
+      UtilityRegistration(<Components comps>, I1, u'', 5, u'')
+    Registered event:
+    UtilityRegistration(<Components comps>, I1, u'', 5, u'')
+
+    >>> components.registerAdapter(tests.A12_1)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Double dispatch:
+      AdapterRegistration(<Components comps>, [I1, I2], IA1, u'', A12_1, u'')
+      Registered event:
+      AdapterRegistration(<Components comps>, [I1, I2], IA1, u'', A12_1, u'')
+    Double dispatch:
+      zope.component.tests.A12_1
+      Registered event:
+      AdapterRegistration(<Components comps>, [I1, I2], IA1, u'', A12_1, u'')
+    Registered event:
+    AdapterRegistration(<Components comps>, [I1, I2], IA1, u'', A12_1, u'')
+
+    >>> components.registerSubscriptionAdapter(tests.A1_2)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Double dispatch:
+      SubscriptionRegistration(<Components comps>, [I1], IA2, u'', A1_2, u'')
+      Registered event:
+      SubscriptionRegistration(<Components comps>, [I1], IA2, u'', A1_2, u'')
+    Double dispatch:
+      zope.component.tests.A1_2
+      Registered event:
+      SubscriptionRegistration(<Components comps>, [I1], IA2, u'', A1_2, u'')
+    Registered event:
+    SubscriptionRegistration(<Components comps>, [I1], IA2, u'', A1_2, u'')

@@ -166,8 +166,8 @@ class IComponentArchitecture(interface.Interface):
         named adapter methods with an empty string for a name.
         """
 
-    def queryAdapter(object, interface=interface.Interface, name=u'', default=None,
-                     context=None):
+    def queryAdapter(object, interface=interface.Interface, name=u'',
+                     default=None, context=None):
         """Look for a named adapter to an interface for an object
 
         Returns an adapter that can adapt object to interface.  If a matching
@@ -514,7 +514,7 @@ class IUtilityRegistration(IRegistration):
     component = interface.Attribute("The object registered")
     provided = interface.Attribute("The interface provided by the component")
 
-class IAdapterRegistration(IRegistration):
+class _IBaseAdapterRegistration(IRegistration):
     """Information about the registration of an adapter
     """
 
@@ -532,7 +532,11 @@ class IAdapterRegistration(IRegistration):
     This interface is implemented by the factory
     """)
 
-class ISubscriptionAdapterRegistration(IAdapterRegistration):
+class IAdapterRegistration(_IBaseAdapterRegistration):
+    """Information about the registration of an adapter
+    """
+
+class ISubscriptionAdapterRegistration(_IBaseAdapterRegistration):
     """Information about the registration of a subscription adapter
     """
 

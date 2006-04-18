@@ -17,8 +17,9 @@ $Id$
 """
 
 import types
+import zope.deprecation
 import zope.interface.adapter
-from zope import interface
+from zope import component, interface
 from zope.component import interfaces
 import zope.interface.interfaces
 import zope.event
@@ -68,6 +69,10 @@ class Components(object):
         if provided is None:
             provided = _getUtilityProvided(component)
 
+        if (self._utility_registrations.get((provided, name))
+            == (component, info)):
+            # already registered
+            return
 
         subscribed = [
             1
@@ -386,6 +391,8 @@ def _getAdapterRequired(factory, required):
         
 class UtilityRegistration(object):
 
+    interface.implements(interfaces.IUtilityRegistration)
+
     def __init__(self, registry, provided, name, component, doc):
         (self.registry, self.provided, self.name, self.component, self.info
          ) = registry, provided, name, component, doc
@@ -402,6 +409,8 @@ class UtilityRegistration(object):
         return cmp(self.__repr__(), other.__repr__())
         
 class AdapterRegistration(object):
+
+    interface.implements(interfaces.IAdapterRegistration)
 
     def __init__(self, registry, required, provided, name, component, doc):
         (self.registry, self.required, self.provided, self.name,
@@ -428,9 +437,12 @@ class AdapterRegistration(object):
         return self.factory
 
 class SubscriptionRegistration(AdapterRegistration):
-    pass
+
+    interface.implementsOnly(interfaces.ISubscriptionAdapterRegistration)
 
 class HandlerRegistration(AdapterRegistration):
+
+    interface.implementsOnly(interfaces.IHandlerRegistration)
 
     def __init__(self, registry, required, name, handler, doc):
         (self.registry, self.required, self.name, self.handler, self.info
@@ -450,4 +462,26 @@ class HandlerRegistration(AdapterRegistration):
             self.name,
             getattr(self.factory, '__name__', `self.factory`), self.info,
             )
+
+
+@component.adapter(interfaces.IUtilityRegistration,
+                   interfaces.IRegistrationEvent)
+def dispatchUtilityRegistrationEvent(registration, event):
+    component.handle(registration.component, event)
+
+@component.adapter(interfaces.IAdapterRegistration,
+                   interfaces.IRegistrationEvent)
+def dispatchAdapterRegistrationEvent(registration, event):
+    component.handle(registration.factory, event)
+
+@component.adapter(interfaces.ISubscriptionAdapterRegistration,
+                   interfaces.IRegistrationEvent)
+def dispatchSubscriptionAdapterRegistrationEvent(registration, event):
+    component.handle(registration.factory, event)
+
+@component.adapter(interfaces.IHandlerRegistration,
+                   interfaces.IRegistrationEvent)
+def dispatchHandlerRegistrationEvent(registration, event):
+    component.handle(registration.handler, event)
+
     
