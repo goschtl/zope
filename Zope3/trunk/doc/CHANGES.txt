@@ -131,6 +131,10 @@ Zope Changes
       - Fixed a bug in zope.publisher.http which raises a TypeError
         when using zserver and xmlrpc.
 
+      - Fixed issue 586, BrowserResponse didn't update the
+        Content-Length header after inserting a <base> tag, causing
+        pages to be truncated in the browser.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dmitry
