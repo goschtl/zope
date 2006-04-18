@@ -8,9 +8,6 @@
       id="zope.app.workflow.StatefulProcessDefinition"
       />
   <implements
-      interface="zope.app.utility.interfaces.ILocalUtility"
-      />
-  <implements
       interface="zope.annotation.interfaces.IAttributeAnnotatable"
       />
   <require
@@ -100,9 +97,6 @@
     id="zope.app.workflow.ContentWorkflowsManager"
   />
 
-  <implements
-      interface="zope.app.utility.interfaces.ILocalUtility"
-      />
   <implements
       interface="zope.annotation.interfaces.IAttributeAnnotatable"
       />
