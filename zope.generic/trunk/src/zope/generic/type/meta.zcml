@@ -20,6 +20,12 @@
           schema="zope.generic.type.metadirectives.IInitializerSubdirective"
           />
 
+
+      <meta:subdirective
+          name="configurationAdapter"
+          schema=".metadirectives.IConfigurationAdapterSubdirective"
+          />
+
     </meta:complexDirective>
 
   </meta:directives>

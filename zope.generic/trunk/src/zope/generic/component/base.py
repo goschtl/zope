@@ -19,6 +19,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from persistent import Persistent
+from persistent import IPersistent
 from persistent.dict import PersistentDict
 
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -220,7 +221,7 @@ class ConfigurationData(Persistent):
         schema = self.__dict__['__keyface__']
         data = self.__dict__['_ConfigurationData__data']
 
-        if name != '__provides__':
+        if not(name == '__provides__' or name in IPersistent):
             try:
                 field = schema[name]
             except KeyError:
@@ -234,7 +235,7 @@ class ConfigurationData(Persistent):
 
 
 
-class InformationProvider(KeyfaceDescription, dict):
+class InformationProvider(KeyfaceDescription):
     """Generic information provider.
 
     Information do relate a dedicated type of information marked as an interface

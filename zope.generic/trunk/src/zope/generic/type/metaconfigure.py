@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 
 from types import ModuleType
 
+from zope.app.component.contentdirective import ClassDirective
 from zope.app.component.metaconfigure import proxify
 from zope.app.component.metaconfigure import adapter
 from zope.component import provideAdapter
@@ -40,6 +41,7 @@ from zope.generic.type import IInitializerConfiguration
 from zope.generic.type import ITypeInformation
 from zope.generic.type import ITypeType
 from zope.generic.type.adapter import Initializer
+from zope.generic.type.adapter import ConfigurationAdapterClass
 from zope.generic.type.factory import TypeFactory
 from zope.generic.type.helper import queryTypeInformation
 
@@ -120,7 +122,9 @@ class TypeDirective(InformationProviderDirective):
         if keyface is not None:
             data['keyface'] = keyface
 
-        adapter(self._context, [Initializer], None, [self._keyface], None, '', True, False)
+        adapter(self._context, factory=[Initializer], provides=None, 
+                for_=[self._keyface], permission=None, name='', trusted=True, 
+                locate=False)
 
         _context.action(
             discriminator = (
@@ -128,3 +132,23 @@ class TypeDirective(InformationProviderDirective):
             callable = provideTypeConfiguration,
             args = (self._keyface, IInitializerConfiguration, data),
             )
+
+    def configurationAdapter(self, _context, keyface, class_=None, writePermission=None, readPermission=None):
+        """Provide a generic configuration adatper."""
+
+        # we will provide a generic adapter class
+        if class_ is None:
+            class_ = ConfigurationAdapterClass(keyface)
+
+        # register class
+        class_directive = ClassDirective(_context, class_)
+        if writePermission:
+            class_directive.require(_context, permission=writePermission, set_schema=[keyface])
+
+        if readPermission:
+            class_directive.require(_context, permission=readPermission, interface=[keyface])
+
+        # register adapter
+        adapter(self._context, factory=[class_], provides=keyface, 
+                for_=[self._keyface], permission=None, name='', trusted=True, 
+                locate=False)

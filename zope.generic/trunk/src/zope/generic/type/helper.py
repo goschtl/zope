@@ -31,9 +31,9 @@ from zope.generic.type import ITypeType
 
 
 
-def createObject(interface, *pos, **kws):
+def createObject(keyface, *pos, **kws):
     """Create an instance of a logical type using the type marker."""
-    return component.createObject(toDottedName(interface), *pos, **kws)
+    return component.createObject(toDottedName(keyface), *pos, **kws)
 
 
 def createParameter(keyface):

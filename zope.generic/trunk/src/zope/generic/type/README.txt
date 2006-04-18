@@ -165,6 +165,9 @@ After all we register our component using the type directive:
     ...	       keyface='example.IAnyConfiguration'
     ...        data='example.typedata'
     ...	   />
+    ...    <configurationAdapter
+    ...        keyface='example.IAnyConfiguration'
+    ...       />
     ... </generic:type>
     ... ''')
 
@@ -221,3 +224,26 @@ different configurations:
 
 	>>> api.acquireObjectConfiguration(bar, IAnyConfiguration).any
 	u'Guguseli from Object!'
+
+The configurationAdapter subdirective provides an adapter too:
+
+    >>> IOtherConfiguration(bar)
+    Traceback (most recent call last):
+    ...
+    TypeError: ('Could not adapt', ... example.IOtherConfiguration>) 
+
+    >>> IAnyConfiguration(bar).any
+    u'Guguseli from Object!'
+
+If we remove the object's configuration the adapter will invoke
+the type configuration, but only the object's configuration can be set:
+
+    >>> from zope.generic.component.api import deleteInformation
+    >>> deleteInformation(bar, IAnyConfiguration)
+
+    >>> IAnyConfiguration(bar).any
+    u'Guguseli from Type!'
+
+    >>> IAnyConfiguration(bar).any = u'Guguseli from Object another time!'
+    >>> IAnyConfiguration(bar).any
+    u'Guguseli from Object another time!'
