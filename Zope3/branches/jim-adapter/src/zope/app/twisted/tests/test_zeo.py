@@ -125,7 +125,6 @@ class Instance:
             os.mkdir(self.dir)
 
         self.path = sys.path
-        self.python = sys.executable
         self.config = os.path.join(self.dir, 'zope.conf')
         self.zeo_port = zeo_port
         self.port = ZEO.tests.testZEO.get_port()
@@ -203,7 +202,8 @@ class Instance:
 
     def start(self):
         os.spawnv(os.P_NOWAIT, sys.executable,
-                  (sys.executable, os.path.join(self.dir, "runzope"), ),
+                  (sys.executable, '-Wignore',
+                   os.path.join(self.dir, "runzope"), ),
                   )
                   
     def stop(self):
@@ -306,7 +306,7 @@ class BadInstance(Instance):
 
     def start(self):
         return os.spawnv(os.P_WAIT, sys.executable,
-                         (sys.executable,
+                         (sys.executable, '-Wignore',
                           os.path.join(self.dir, "runzope"),
                           )
                          )
