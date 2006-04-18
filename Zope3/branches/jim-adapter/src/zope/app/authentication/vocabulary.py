@@ -25,7 +25,6 @@ from zope.interface.interfaces import IInterface
 from zope.schema import vocabulary
 from zope.schema.interfaces import IVocabularyFactory
 
-from zope.app.component.interfaces import ILocalUtility
 from zope.app.i18n import ZopeMessageFactory as _
 
 from zope.app.authentication import interfaces
@@ -48,11 +47,10 @@ def _pluginVocabulary(context, interface, attr_name):
     which is expected to be a pluggable authentication utility, hereafter
     referred to as a PAU).
 
-    These plugins may be objects contained within the PAU that do not provide
-    zope.app.component.interfaces.ILocalUtility ("contained plugins"), or may
-    be utilities registered for the specified interface, found in the context
-    of the PAU ("utility plugins").  Contained plugins mask utility plugins of
-    the same name.
+    These plugins may be objects contained within the PAU ("contained
+    plugins"), or may be utilities registered for the specified
+    interface, found in the context of the PAU ("utility plugins").
+    Contained plugins mask utility plugins of the same name.
 
     The vocabulary also includes the current values of the PAU even if they do
     not correspond to a contained or utility plugin.
@@ -61,7 +59,7 @@ def _pluginVocabulary(context, interface, attr_name):
     isPAU = interfaces.IPluggableAuthentication.providedBy(context)
     if isPAU:
         for k, v in context.items():
-            if interface.providedBy(v) and not ILocalUtility.providedBy(v):
+            if interface.providedBy(v):
                 dc = zope.dublincore.interfaces.IDCDescriptiveProperties(
                     v, None)
                 if dc is not None and dc.title:

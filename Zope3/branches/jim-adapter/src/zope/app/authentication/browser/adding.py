@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2005 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,20 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Improved registration UI for registering pluggable autentication utilities
+"""Adding that redirects to plugins.html.
 
 $Id$
 """
 
-from zope.app.i18n import ZopeMessageFactory as _
-import zope.app.component.browser.registration
-import zope.app.security.interfaces
+from zope.app import zapi
 
-import zope.app.authentication.interfaces
+import zope.app.container.browser.adding
 
-class AddAuthenticationRegistration(
-    zope.app.component.browser.registration.AddUtilityRegistration,
-    ):
-    label = _("Register a pluggable authentication utility")
-    name = ''
-    provided = zope.app.security.interfaces.IAuthentication
+class Adding(zope.app.container.browser.adding.Adding):
+    
+    def nextURL(self):
+        return zapi.absoluteURL(self.context, self.request) + '/@@plugins.html'

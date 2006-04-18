@@ -22,11 +22,11 @@ from zope.location.interfaces import ILocation
 
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.app.component import queryNextUtility
-from zope.app.component.site import SiteManagementFolder
+import zope.app.container.btree
+
 from zope.app.authentication import interfaces
 
-
-class PluggableAuthentication(SiteManagementFolder):
+class PluggableAuthentication(zope.app.container.btree.BTreeContainer):
 
     zope.interface.implements(
         IAuthentication,

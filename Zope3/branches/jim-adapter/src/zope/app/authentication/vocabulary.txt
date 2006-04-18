@@ -132,8 +132,8 @@ expect.
     >>> pprint.pprint([i18n.translate(term.title) for term in vocab])
     [u'Plugin 0 (a utility)',
      u'Special Title (in contents)',
-     u'Plugin 2 (a utility)',
-     u'Plugin 3 (a utility)',
+     u'Plugin 2 (in contents)',
+     u'Plugin 3 (in contents)',
      u'Plugin 4 (in contents)',
      u'Plugin X (not found; deselecting will remove)']
 
@@ -200,7 +200,7 @@ them to see what we expect.
     >>> pprint.pprint([i18n.translate(term.title) for term in vocab])
     [u'Plugin 0 (a utility)',
      u'Special Title (in contents)',
-     u'Plugin 2 (a utility)',
-     u'Plugin 3 (a utility)',
+     u'Plugin 2 (in contents)',
+     u'Plugin 3 (in contents)',
      u'Plugin 4 (in contents)',
      u'Plugin X (not found; deselecting will remove)']

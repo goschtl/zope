@@ -86,41 +86,6 @@ Next we'll create and register a principal folder:
   HTTP/1.1 303 See Other
   ...
 
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU1/Users/addRegistration.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 701
-  ... Content-Type: multipart/form-data; boundary=---------------------------1293260033248
-  ...
-  ... -----------------------------1293260033248
-  ... Content-Disposition: form-data; name="field.name"
-  ...
-  ... Users
-  ... -----------------------------1293260033248
-  ... Content-Disposition: form-data; name="field.status"
-  ...
-  ... Active
-  ... -----------------------------1293260033248
-  ... Content-Disposition: form-data; name="field.status-empty-marker"
-  ...
-  ... 1
-  ... -----------------------------1293260033248
-  ... Content-Disposition: form-data; name="field.permission"
-  ...
-  ...
-  ... -----------------------------1293260033248
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
-  ...
-  ... 1
-  ... -----------------------------1293260033248
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------1293260033248--
-  ... """)
-  HTTP/1.1 303 See Other
-  ...
-
 and add a principal that we'll later search for:
 
   >>> print http(r"""
