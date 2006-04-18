@@ -10,20 +10,6 @@
         permission="zope.ManageSite"
         interface=".interfaces.IPluggableAuthentication"
         />
-<!--
-    <allow
-        interface="zope.app.container.interfaces.IReadContainer"
-        />
-
-    <require
-        permission="zope.ManageSite"
-        interface="zope.app.container.interfaces.IWriteContainer"
-        />
--->
-    <require
-        permission="zope.ManageSite"
-        interface="zope.app.site.interfaces.ISimpleService"
-        />
   </localUtility>
 
   <subscriber
