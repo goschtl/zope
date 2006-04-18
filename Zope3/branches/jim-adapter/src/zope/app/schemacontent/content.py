@@ -15,16 +15,33 @@
 
 $Id$
 """
+
+from zope import component
+import zope.component.interfaces
+
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.app.container.contained import Contained
-from zope.app.component.site import UtilityRegistration
 from zope.interface import directlyProvides, implements
 from zope.schema import getFields
 from zope.security.checker import CheckerPublic, Checker, defineChecker
 
 from interfaces import IContentComponentDefinition
 from interfaces import IContentComponentInstance
+
+@component.adapter(
+    IContentComponentDefinition,
+    zope.component.interfaces.IRegistered,
+    )
+def registeredContentComponent(component, event):
+    component.name = event.object.name
+
+@component.adapter(
+    IContentComponentDefinition,
+    zope.component.interfaces.IUnregistered,
+    )
+def unregisteredContentComponent(component, event):
+    component.name = None
 
 
 class ContentComponentDefinition(Persistent, Contained):
@@ -36,16 +53,6 @@ class ContentComponentDefinition(Persistent, Contained):
         self.schema = schema
         self.copySchema = copySchema
         self.permissions = PersistentDict()
-
-
-class ContentComponentDefinitionRegistration(UtilityRegistration):
-    """Content Component Registration"""
-
-    def activated(self):
-        self.component.name = self.name
-
-    def deactivated(self):
-        self.component.name = None
 
 
 class ContentComponentInstance(Persistent):
