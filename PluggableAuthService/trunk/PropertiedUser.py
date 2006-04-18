@@ -21,7 +21,9 @@ from Acquisition import aq_inner, aq_parent
 from AccessControl.User import BasicUser
 from AccessControl.PermissionRole import _what_not_even_god_should_do
 
+from interfaces.authservice import IPropertiedUser
 from UserPropertySheet import UserPropertySheet
+from utils import classImplements
 
 class PropertiedUser( BasicUser ):
 
@@ -281,3 +283,7 @@ class PropertiedUser( BasicUser ):
             raise KeyError, "Duplicate property sheet: %s" % id
 
         self._propertysheets[ id ] = UserPropertySheet( id, **data )
+
+
+classImplements( PropertiedUser,
+                 IPropertiedUser )

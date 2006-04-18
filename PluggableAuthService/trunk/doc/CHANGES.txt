@@ -7,21 +7,24 @@ PluggableAuthService changelog
       - Fix manage_zmi_logout which stopped working correctly as soon as the
         PluggableAuthService product code was installed by correcting the
         monkeypatch for it in __init__.py.
-        (http://www.zope.org/Members/urbanape/PluggableAuthService/Collector/12)
+        (http://www.zope.org/Collectors/PAS/12)
+
+      - Add missing interface for IPropertiedUser and tests
+        (http://www.zope.org/Collectors/PAS/16)
 
     Other
 
       - Removed STX links from README.txt which do nothing but return 
         404s when clicked from the README on zope.org.
-        (http://www.zope.org/Members/urbanape/PluggableAuthService/Collector/6)
+        (http://www.zope.org/Collectors/PAS/6)
 
       - Fixing up inconsistent searching in the listAvailablePrincipals
         method of the ZODBRoleManager and ZODBGroupManager plugins. Now both
         constrain searches by ID.
-        (http://www.zope.org/Members/urbanape/PluggableAuthService/Collector/11)
+        (http://www.zope.org/Collectors/PAS/11)
 
       - Convert from using zLOG to using the Python logging module.
-        (http://www.zope.org/Members/urbanape/PluggableAuthService/Collector/14)
+        (http://www.zope.org/Collectors/PAS/14)
 
 
   PluggableAuthService 1.2-beta (2006/02/25)

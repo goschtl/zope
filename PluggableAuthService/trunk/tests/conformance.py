@@ -183,6 +183,23 @@ class IUserFolder_conformance:
 
         verifyClass( IUserFolder, self._getTargetClass() )
 
+class IBasicUser_conformance:
+
+    def test_conformance_IBasicUser( self ):
+
+        from Products.PluggableAuthService.interfaces.authservice \
+            import IBasicUser
+
+        verifyClass( IBasicUser, self._getTargetClass() )
+
+class IPropertiedUser_conformance:
+
+    def test_conformance_IPropertiedUser( self ):
+
+        from Products.PluggableAuthService.interfaces.authservice \
+            import IPropertiedUser
+
+        verifyClass( IPropertiedUser, self._getTargetClass() )
 
 class IPropertySheet_conformance:
 

@@ -68,6 +68,36 @@ class IBasicUser( Interface ):
         """
 
 
+class IPropertiedUser( IBasicUser ):
+
+    """ A user which has property sheets associated with it,
+        i.e. a mapping from strings (property sheet ids)
+        to objects implementing IPropertySheet
+    """
+
+    def listPropertysheets():
+
+        """ Return a sequence of property sheet ids
+
+        o for each id in the list getPropertysheet(id)
+          returns a IPropertySheet
+        """
+
+    def getPropertysheet( id ):
+
+        """ Return a property sheet for the given id
+
+        o the returned object implements IPropertySheet
+          and has the same id as the value passed to this method
+
+        o if there is no property sheet for the given id,
+          raise a KeyError
+
+          An alternative way to get the property sheet is via item access,
+          i.e. user.getPropertysheet( id ) == user[ id ]
+        """
+
+
 class IUserFolder( Interface ):
 
     """ Specify the interface called out in AccessControl.User.BasicUserFolder

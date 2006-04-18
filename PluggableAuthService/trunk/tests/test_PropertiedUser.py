@@ -15,6 +15,8 @@
 import unittest
 
 from Acquisition import Implicit
+from conformance import IBasicUser_conformance, \
+                        IPropertiedUser_conformance
 
 class FauxMethod:
 
@@ -29,7 +31,10 @@ class FauxProtected( Implicit ):
 
         self.__ac_local_roles__ = local_roles
 
-class PropertiedUserTests( unittest.TestCase ):
+class PropertiedUserTests( unittest.TestCase
+                           , IBasicUser_conformance
+                           , IPropertiedUser_conformance
+                           ):
 
     def _getTargetClass( self ):
 
@@ -94,6 +99,7 @@ class PropertiedUserTests( unittest.TestCase ):
         self.assertEqual( len( sheet.propertyMap() ), 2 )
         self.assertEqual( sheet.getPropertyType( 'a' ), 'int' )
         self.assertEqual( sheet.getPropertyType( 'b' ), 'string' )
+        self.assertEqual( sheet.getId(), 'one' )
 
         sheet = user[ 'one' ]
 
