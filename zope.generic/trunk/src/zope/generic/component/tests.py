@@ -62,27 +62,27 @@ class ConfigurationDataTest(InterfaceBaseTest):
         self.assertEqual(getattr(test_obj, 'fo'), fo_field.default)
 
 
-class KeyInterfaceAdapterTest(InterfaceBaseTest):
+class KeyfaceAdapterTest(InterfaceBaseTest):
 
     @property
     def _test_interface(self):
-        from zope.generic.component import IKeyInterface
-        return  IKeyInterface
+        from zope.generic.component import IKeyface
+        return  IKeyface
 
     @property
     def _test_class(self):
-        from zope.generic.component.adapter import KeyInterface
-        return KeyInterface
+        from zope.generic.component.adapter import Keyface
+        return Keyface
 
     @property
     def _test_pos(self):
-        return (testing.TestKeyInterfaceAttriute(),)
+        return (testing.TestKeyfaceAttriute(),)
 
 
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(ConfigurationDataTest),
-        #TODO: Why does it fail? unittest.makeSuite(KeyInterfaceAdapterTest),
+        #TODO: Why does it fail? unittest.makeSuite(KeyfaceAdapterTest),
         doctest.DocTestSuite('zope.generic.component.helper'),
         doctest.DocTestSuite('zope.generic.component.base'),
         doctest.DocTestSuite('zope.generic.component.event'),

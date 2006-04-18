@@ -25,7 +25,7 @@ from zope.interface.interfaces import IInterface
 from zope.schema import Bool
 from zope.schema import Object
 
-from zope.generic.component import IKeyInterface
+from zope.generic.component import IKeyface
 from zope.generic.component import IConfigurationType
 from zope.generic.directlyprovides import IProvides
 from zope.generic.component import IInformationProvider
@@ -51,26 +51,26 @@ class ITypeable(Interface):
 
 
 
-class ITyped(ITypeable, IKeyInterface):
+class ITyped(ITypeable, IKeyface):
     """Provid an information within the."""
 
-    interface = Object(
-        title=_('Interface'),
-        description=_('Interface marker that references corresponding type informations.'),
+    keyface = Object(
+        title=_('Key interface'),
+        description=_('Key interface that references corresponding type informations.'),
         required=True,
         schema=ITypeType)
 
 
 
-class IDirectlyTyped(ITyped, IProvides, IKeyInterface):
+class IDirectlyTyped(ITyped, IProvides, IKeyface):
     """Directly provide the declared interface."""
 
-    def __init__(interface, *pos, **kws):
-        """Directly provide the type interface during the __init__ call."""
+    def __init__(__keyface__, *pos, **kws):
+        """Directly provide the key interface during the __init__ call."""
 
-    interface = Object(
-        title=_('Interface'),
-        description=_('The declared interface must be directly provided too.'),
+    __keyface__ = Object(
+        title=_('Key interface'),
+        description=_('The declared key interface must be directly provided too.'),
         required=True,
         readonly=True,
         schema=ITypeType)
@@ -109,7 +109,7 @@ class IInitializerConfiguration(Interface):
     If the **kws does not satify the interface a KeyError is raised.
     """
 
-    interface = Object(
+    keyface = Object(
         title=_('Configuration interface'),
         description=_('Configuration interface defining the signature.'),
         required=False,

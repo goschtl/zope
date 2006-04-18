@@ -35,7 +35,7 @@ from zope.generic.component.base import InformationProvider
 from zope.generic.component.helper import toDottedName
 
 
-def provideInformationProvider(interface, registry=IInformationProviderInformation, label=None, hint=None, factory=None):
+def provideInformationProvider(keyface, registry=IInformationProviderInformation, label=None, hint=None, factory=None):
     """Provide new information for the given registry-interface.
 
     Register an information as utiliy under registry-interface using
@@ -54,7 +54,7 @@ def provideInformationProvider(interface, registry=IInformationProviderInformati
 
         >>> from zope.generic.component.helper import queryInformationProvider
         >>> info = queryInformationProvider(IFooMarker, ISpecialInformation)
-        >>> info.interface == IFooMarker
+        >>> info.keyface == IFooMarker
         True
         >>> ISpecialInformation.providedBy(info)
         True
@@ -68,19 +68,19 @@ def provideInformationProvider(interface, registry=IInformationProviderInformati
     if factory is None:
         factory = InformationProvider
     
-    component = factory(interface, registry, label, hint)
+    component = factory(keyface, registry, label, hint)
 
     if not registry.providedBy(component):
         raise ValueError('Factory must implement %s.' % registry.__name__)
     
-    provideUtility(component, provides=registry, name=toDottedName(interface))
+    provideUtility(component, provides=registry, name=toDottedName(keyface))
 
 
 
-def provideConfiguration(interface, registry, configuration, data):
+def provideConfiguration(keyface, registry, configuration, data):
     """Provide configuration for a certain type marker."""
 
-    info = queryInformationProvider(interface, registry)
+    info = queryInformationProvider(keyface, registry)
     
     configurations = IConfigurations(info)
     configurations[configuration] = data
@@ -92,25 +92,25 @@ class InformationProviderDirective(object):
     
     _information_type = None
 
-    def __init__(self, _context, interface, registry, label=None, hint=None):
-        self._interface = interface
+    def __init__(self, _context, keyface, registry, label=None, hint=None):
+        self._keyface = keyface
         self._context = _context
         self._registry = registry
     
         # assert type as soon as possible
         if self._information_type is not None:
-            alsoProvides(interface, self._information_type)
+            alsoProvides(keyface, self._information_type)
     
         _context.action(
-            discriminator = ('provideInformationProvider', self._interface, self._registry),
+            discriminator = ('provideInformationProvider', self._keyface, self._registry),
             callable = provideInformationProvider,
-            args = (self._interface, self._registry, label, hint),
+            args = (self._keyface, self._registry, label, hint),
             )
     
         _context.action(
             discriminator = None,
             callable = provideInterface,
-            args = (None, self._interface),
+            args = (None, self._keyface),
             )
     
         _context.action(
@@ -123,38 +123,38 @@ class InformationProviderDirective(object):
         "Handle empty/simple declaration."
         return ()
 
-    def configuration(self, _context, interface, data):
+    def configuration(self, _context, keyface, data):
         # preconditions
-        if not interface.providedBy(data):
-            raise ConfigurationError('Data attribute must provide %s.' % interface.__name__)
+        if not keyface.providedBy(data):
+            raise ConfigurationError('Data attribute must provide %s.' % keyface.__name__)
 
         _context.action(
             discriminator = (
-            'InformationConfiguration', self._interface, self._registry, interface),
+            'InformationConfiguration', self._keyface, self._registry, keyface),
             callable = provideConfiguration,
-            args = (self._interface, self._registry, interface, data),
+            args = (self._keyface, self._registry, keyface, data),
             )
 
 
 
-def configurationDirective(_context, interface, label=None, hint=None):
+def configurationDirective(_context, keyface, label=None, hint=None):
     """Provide new configuration information."""
 
     registry = IConfigurationInformation
     iface_type = IConfigurationType
 
     # assert type as soon as possible
-    if not iface_type.providedBy(interface):
-        alsoProvides(interface, iface_type)
+    if not iface_type.providedBy(keyface):
+        alsoProvides(keyface, iface_type)
 
     _context.action(
-        discriminator = ('provideInformationProvider', interface, registry),
+        discriminator = ('provideInformationProvider', keyface, registry),
         callable = provideInformationProvider,
-        args = (interface, registry, label, hint),
+        args = (keyface, registry, label, hint),
         )
 
     _context.action(
         discriminator = None,
         callable = provideInterface,
-        args = (None, interface, iface_type),
+        args = (None, keyface, iface_type),
         )

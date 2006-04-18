@@ -46,7 +46,7 @@ This configuration should be registered by using the configuration directive:
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.ILogConfiguration"
+    ...     keyface="example.ILogConfiguration"
     ...     />
     ... ''') 
 
@@ -62,7 +62,7 @@ selected logger and a user-specific source tag:
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.ILoggerConfiguration"
+    ...     keyface="example.ILoggerConfiguration"
     ...     />
     ... ''') 
 
@@ -70,14 +70,14 @@ TODO: Should be a dependency between informationRegistry and its configuration?
 
     >>> registerDirective('''
     ... <generic:informationProvider
-    ...     interface='example.ILogSupplierInformation'
+    ...     keyface='example.ILogSupplierInformation'
     ...     registry='zope.generic.component.IInformationProviderInformation'
     ...     />
     ... ''')
 
     >>> registerDirective('''
     ... <generic:informationProvider
-    ...     interface='example.ILogUserInformation'
+    ...     keyface='example.ILogUserInformation'
     ...     registry='zope.generic.component.IInformationProviderInformation'
     ...     />
     ... ''')
@@ -92,35 +92,35 @@ implmented as an adapter. We have to declare the logger interface:
 
     >>> from zope.interface import implements
     >>> from zope.component import adapts
-    >>> from zope.generic.component import IKeyInterface
+    >>> from zope.generic.component import IKeyface
 
     >>> class Logger(object):
     ...     """Generic logger adapter."""
     ...     implements(ILogger)
-    ...     adapts(IKeyInterface)
+    ...     adapts(IKeyface)
     ...     def __init__(self, context):
     ...         self.context = context
     ...     def log(self, message):
-    ...         id = IKeyInterface(self.context())
-    ...         info = queryInformationProvider(id.interface, ILogUserInformation)
+    ...         id = IKeyface(self.context())
+    ...         info = queryInformationProvider(id.keyface, ILogUserInformation)
     >>> class Logger(object):
     ...     """Generic logger adapter."""
     ...     implements(ILogger)
-    ...     adapts(IKeyInterface)
+    ...     adapts(IKeyface)
     ...     def __init__(self, context):
     ...         self.context = context
     ...     def log(self, message):
-    ...         id = IKeyInterface(self.context())
-    ...         info = queryInformationProvider(id.interface, ILogUserInformation)
+    ...         id = IKeyface(self.context())
+    ...         info = queryInformationProvider(id.keyface, ILogUserInformation)
     >>> class Logger(object):
     ...     """Generic logger adapter."""
     ...     implements(ILogger)
-    ...     adapts(IKeyInterface)
+    ...     adapts(IKeyface)
     ...     def __init__(self, context):
     ...         self.context = context
     ...     def log(self, message):
-    ...         id = IKeyInterface(self.context())
-    ...         info = queryInformationProvider(id.interface, ILogUserInformation)
+    ...         id = IKeyface(self.context())
+    ...         info = queryInformationProvider(id.keyface, ILogUserInformation)
 
 
 

@@ -33,7 +33,7 @@ from zope.generic.type import ITypeType
 class TypeFactory(Factory):
     """Type factory implementation.
 
-    Preset the type interface for generic directly typed implementation 
+    Preset the type keyface for generic directly typed implementation 
     of its __init__ method.
 
     The type factory constructs directly typed objects of a given generic 
@@ -52,7 +52,7 @@ class TypeFactory(Factory):
     Afterward we build a generic implementation implementing ITyped or a
     regular typeable class:
 
-        >>> from zope.generic.type import ITyped
+        >>> from zope.generic.type import IDirectlyTyped
         >>> from zope.generic.directlyprovides.api import provides
         >>> from zope.generic.directlyprovides.api import UpdateProvides
         >>> from zope.generic.directlyprovides.api import updateDirectlyProvided
@@ -60,13 +60,14 @@ class TypeFactory(Factory):
         >>> class Object(object):
         ...     implements(IDirectlyTyped)
         ...
-        ...     def __init__(self, interface, **kws):
+        ...     def __init__(self, __keyface__, **kws):
         ...         super(Object, self).__init__()
-        ...         self.__dict__['interface'] = interface
-        ...         updateDirectlyProvided(self, interface)
+        ...         self.__dict__['__keyface__'] = __keyface__
+        ...         updateDirectlyProvided(self, __keyface__)
         ...
-        ...     provides('interface')
-        ...     interface = UpdateProvides(ITyped['interface'])
+        ...     provides('__keyface__')
+        ...     __keyface__ = UpdateProvides(IDirectlyTyped['__keyface__'])
+        ...     keyface = __keyface__
 
         >>> class Foo(object):
         ...    implements(ITypeable)
@@ -93,22 +94,22 @@ class TypeFactory(Factory):
 
     implements(IFactory)
 
-    def __init__(self, callable, interface):
+    def __init__(self, callable, __keyface__):
         # preconditions
         if not ITypeable.implementedBy(callable):
             raise ValueError('Callable must implement %s.' % ITypeable.__name__)
 
-        if not ITypeType.providedBy(interface):
+        if not ITypeType.providedBy(__keyface__):
             raise ValueError('Interface must provide %s.' % ITypeType.__name__)
 
-        super(TypeFactory, self).__init__(callable, title='', description='', interfaces=(interface,))
+        super(TypeFactory, self).__init__(callable, title='', description='', interfaces=(__keyface__,))
 
         # essentials
-        self._interface = interface
+        self.__keyface__ = __keyface__
 
     def __call__(self, *pos, **kws):
         if IDirectlyTyped.implementedBy(self._callable):
-            instance = self._callable(self._interface, *pos, **kws)
+            instance = self._callable(self.__keyface__, *pos, **kws)
         
         else:
             instance = self._callable(*pos, **kws)

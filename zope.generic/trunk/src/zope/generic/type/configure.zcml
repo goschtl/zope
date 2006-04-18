@@ -4,9 +4,64 @@
   i18n_domain="zope">
 
   <generic:informationProvider
-      interface="zope.generic.component.IInformationProviderInformation"
+      keyface="zope.generic.component.IInformationProviderInformation"
       label="Type Information Registry"
       registry=".ITypeInformation"
       />
+
+  <!-- transient generic object implementation -->
+  <class class=".base.Object">
+    <require 
+        permission="zope.Public"
+        interface="zope.generic.type.ITyped"
+        />
+  </class>
+
+  <!-- persistent generic contained implementation -->
+  <class class=".base.Contained">
+    <require 
+        permission="zope.Public"
+        interface="zope.generic.type.ITyped"
+        />
+  </class>
+
+  <!-- persistent generic container implementation -->
+  <class class=".base.Container">
+    <require 
+        permission="zope.Public"
+        interface="zope.generic.type.ITyped"
+        />
+    <require 
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+  </class>
+
+  <!-- persistent generic folder implementation -->
+  <class class=".base.Folder">
+    <require 
+        permission="zope.Public"
+        interface="zope.generic.type.ITyped"
+        />
+    <require 
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+    <allow
+        attributes="getSiteManager"
+        />
+    <require
+        permission="zope.ManageSite"
+        attributes="setSiteManager"
+        />
+  </class>
 
 </configure>

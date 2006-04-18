@@ -57,8 +57,8 @@ class IFooConfiguration(Interface):
     fo = TextLine(title=u'Fo', required=False, readonly=True, default=u'fo default')
 
 
-class TestKeyInterfaceAttriute(object):
-    __key__interface__ = IFooConfiguration
+class TestKeyfaceAttriute(object):
+    __keyface__ = IFooConfiguration
 
 
 ################################################################################

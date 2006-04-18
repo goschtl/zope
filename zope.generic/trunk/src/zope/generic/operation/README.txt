@@ -44,25 +44,25 @@ configuration schema.
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.IPAUConfig"
+    ...     keyface="example.IPAUConfig"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.IAnyInputConfig"
+    ...     keyface="example.IAnyInputConfig"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.IAConfig"
+    ...     keyface="example.IAConfig"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.IBConfig"
+    ...     keyface="example.IBConfig"
     ...     />
     ... ''') 
 
@@ -80,14 +80,14 @@ The operation can be implemented in different ways:
 
     >>> registerDirective('''
     ... <generic:operation
-    ...     interface="example.IMakeSiteOperation"
+    ...     keyface="example.IMakeSiteOperation"
     ...     operations="example.makeSiteOperation"
     ...     />
     ... ''')
 
     >>> registerDirective('''
     ... <generic:operation
-    ...     interface="example.ISetupPAUOperation"
+    ...     keyface="example.ISetupPAUOperation"
     ...     operations="example.setupPAUOperation"
     ...     input="example.IPAUConfig"
     ...     />
@@ -95,7 +95,7 @@ The operation can be implemented in different ways:
 
     >>> registerDirective('''
     ... <generic:operation
-    ...     interface="example.IConfigureAnythingOperation"
+    ...     keyface="example.IConfigureAnythingOperation"
     ...     operations="example.configureAnythingOperation"
     ...     input="example.IPAUConfig"
     ...     />
@@ -120,7 +120,7 @@ Maybe you need an extra configuration:
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.IComplexConfig"
+    ...     keyface="example.IComplexConfig"
     ...     />
     ... ''') 
 
@@ -136,7 +136,7 @@ and the private operation:
 
     >>> registerDirective('''
     ... <generic:operation
-    ...     interface="example.IMakeSiteSetupPAUConfigureAnythingOperation"
+    ...     keyface="example.IMakeSiteSetupPAUConfigureAnythingOperation"
     ...     operations="example.IMakeSiteOperation example.setupPAUOperation
     ...         example.configureAnythingOperation example.privateOperation"
     ...     input="example.IComplexConfig"

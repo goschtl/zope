@@ -26,32 +26,32 @@ from zope.interface.interfaces import IInterface
 from zope.generic.component import *
 from zope.generic.component.base import ConfigurationData
 from zope.generic.component.base import InformationProvider
-from zope.generic.component.base import KeyInterface
-from zope.generic.component.base import KeyInterfaceDescription
+from zope.generic.component.base import Keyface
+from zope.generic.component.base import KeyfaceDescription
 from zope.generic.component.helper import configuratonToDict
 from zope.generic.component.helper import toDottedName
-from zope.generic.component.helper import toKeyInterface
+from zope.generic.component.helper import toKeyface
 
 
 
 def getKey(object):
-    """Evaluate the interface key from an object."""
+    """Evaluate the interface keyface from an object."""
 
     if IInterface.providedBy(object):
-        interface = object
+        keyface = object
 
-    elif IKeyInterface.providedBy(object):
-        interface = object.interface
+    elif IKeyface.providedBy(object):
+        keyface = object.keyface
 
     else:
-        interface = IKeyInterface(object).interface
+        keyface = IKeyface(object).keyface
 
-    return interface
+    return keyface
 
 
 
 def queryKey(object, default=None):
-    """Evaluate the interface key from an object."""
+    """Evaluate the keyface keyface from an object."""
 
     try:
         return getKey(object)
@@ -82,49 +82,49 @@ def getInformationProvidersFor(provider, default=None):
     """Evaluate all information providers of a certain information aspect."""
 
     for name, information in getUtilitiesFor(provider):
-        yield (toKeyInterface(name), information)
+        yield (toKeyface(name), information)
 
 
 
-def getInformation(context, key):
-    """Evaluate an information by a key (string or key interface)."""
-    if IConfigurationType.providedBy(key):
-        return key(IConfigurations(context))
+def getInformation(context, keyface):
+    """Evaluate an information by a keyface (string or key keyface)."""
+    if IConfigurationType.providedBy(keyface):
+        return keyface(IConfigurations(context))
 
     else:
-        return IAnnotations(context)[key]
+        return IAnnotations(context)[keyface]
 
 
 
-def queryInformation(context, key, default=None):
-    """Evaluate an information by a key (string or key interface)."""
+def queryInformation(context, keyface, default=None):
+    """Evaluate an information by a keyface (string or key interface)."""
     try:
-        return getInformation(context, key)
+        return getInformation(context, keyface)
 
     except:
         return default
 
 
 
-def provideInformation(context, key, information):
-    """Set an information to a context using a key (string or key interface)."""
+def provideInformation(context, keyface, information):
+    """Set an information to a context using a keyface (string or key interface)."""
 
-    if IConfigurationType.providedBy(key):
+    if IConfigurationType.providedBy(keyface):
         if type(information) is dict:
-            information = ConfigurationData(key, information)
+            information = ConfigurationData(keyface, information)
     
-        IConfigurations(context)[key] = information
+        IConfigurations(context)[keyface] = information
 
     else:
-        IAnnotations(context)[key] = information
+        IAnnotations(context)[keyface] = information
 
 
 
-def deleteInformation(context, key):
-    """Delete an information of a context using a key (string or key interface)."""
+def deleteInformation(context, keyface):
+    """Delete an information of a context using a keyface (string or key interface)."""
 
-    if IConfigurationType.providedBy(key):
-        del IConfigurations(context)[key]
+    if IConfigurationType.providedBy(keyface):
+        del IConfigurations(context)[keyface]
     
     else:
-        del IAnnotations(context)[key]
+        del IAnnotations(context)[keyface]

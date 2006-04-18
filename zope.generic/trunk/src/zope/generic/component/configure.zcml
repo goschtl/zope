@@ -4,13 +4,13 @@
   i18n_domain="zope">
 
   <generic:informationProvider
-      interface=".IConfigurationInformation"
+      keyface=".IConfigurationInformation"
       label="Configuration Information"
       registry="zope.generic.component.IInformationProviderInformation"
       />
  
   <generic:informationProvider
-      interface=".IInformationProviderInformation"
+      keyface=".IInformationProviderInformation"
       label="Information Provider Information"
       registry=".IInformationProviderInformation"
       />

@@ -39,7 +39,7 @@ from zope.generic.operation.base import Operation
 from zope.generic.operation.base import OperationChain
 
 
-def _assertOperation(handler, interface=None):
+def _assertOperation(handler, keyface=None):
     """Assert that we get an operation."""
 
     if IOperation.providedBy(handler):
@@ -60,30 +60,30 @@ def _assertOperation(handler, interface=None):
         return config.operation
 
     # asume callabe (context)
-    return Operation(handler, interface)
+    return Operation(handler, keyface)
 
 
 
-def provideOperationConfiguration(interface, operations=(), input=(), output=()):
+def provideOperationConfiguration(keyface, operations=(), input=(), output=()):
     """Provide the handler to an configuration information."""
     
     registry = IOperationInformation
-    info = queryInformationProvider(interface, IOperationInformation)
+    info = queryInformationProvider(keyface, IOperationInformation)
 
     # this should never happen...
     if info is None:
         ConfigurationError('No operation information for %s' 
-                           % interface.__name__)
+                           % keyface.__name__)
 
     if len(operations) == 0:
         # hidding overwrite -> pass handler
-        operation = _assertOperation(None, interface)
+        operation = _assertOperation(None, keyface)
     
     elif len(operations) == 1:
-        operation = _assertOperation(operations[0], interface)
+        operation = _assertOperation(operations[0], keyface)
     
     else:
-        operation = OperationChain([_assertOperation(handler) for handler in operations], interface)
+        operation = OperationChain([_assertOperation(handler) for handler in operations], keyface)
 
     configurations = IConfigurations(info)
     # create and set configuration data
@@ -92,23 +92,23 @@ def provideOperationConfiguration(interface, operations=(), input=(), output=())
 
 
 
-def operationDirective(_context, interface, operations=(), input=(), output=(), label=None, hint=None):
+def operationDirective(_context, keyface, operations=(), input=(), output=(), label=None, hint=None):
     """Register a public operation."""
 
     # assert type as soon as possible
-    if not IOperationType.providedBy(interface):
-        alsoProvides(interface, IOperationType)
+    if not IOperationType.providedBy(keyface):
+        alsoProvides(keyface, IOperationType)
 
     registry = IOperationInformation
 
     _context.action(
-        discriminator = ('provideInformationProvider', interface, registry),
+        discriminator = ('provideInformationProvider', keyface, registry),
         callable = provideInformationProvider,
-        args = (interface, registry, label, hint),
+        args = (keyface, registry, label, hint),
         )
 
     _context.action(
-        discriminator = ('provideOperationConfiguration', interface),
+        discriminator = ('provideOperationConfiguration', keyface),
         callable = provideOperationConfiguration,
-        args = (interface, operations, input, output),
+        args = (keyface, operations, input, output),
         )

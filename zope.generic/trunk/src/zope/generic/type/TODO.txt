@@ -8,12 +8,12 @@ TODO
 
     >>> foo = api.createObject(IFoo)
 
-    >>> foo.__key_interface__ == IFoo
+    >>> foo.__keyface__ == IFoo
     True
-    >>> IKeyInterface(foo) == IFoo
+    >>> IKeyface(foo) == IFoo
     True
     >>> type_registration = IType(foo) # heute type_information
-    >>> type_registration.__key_interface__ == IFoo
+    >>> type_registration.__keyface__ == IFoo
     True
     >>> type_registration.label
     u'example.IFoo'

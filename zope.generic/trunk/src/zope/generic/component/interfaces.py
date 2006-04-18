@@ -40,17 +40,17 @@ from zope.schema import Tuple
 #
 ###############################################################################
 
-class IKeyInterfaceProvider(Interface):
+class IKeyfaceProvider(Interface):
     """Assert that a key interface can be looked up.
 
-    The key interface must be provided by adaption to IKeyInterface."""
+    The key interface must be provided by adaption to IKeyface."""
 
 
 
-class IAttributeKeyInterface(IKeyInterfaceProvider):
-    """Provide the key interface within the __key_interface__ attribute."""
+class IAttributeKeyface(IKeyfaceProvider):
+    """Provide the key interface within the __keyface__ attribute."""
 
-    __key_interface__ = Object(
+    __keyface__ = Object(
         title=_('Key interface'),
         description=_('Key interface that allows to lookup ' +
                       'key-interface-specific informations such as ' +
@@ -61,13 +61,13 @@ class IAttributeKeyInterface(IKeyInterfaceProvider):
 
 
 
-class IKeyInterface(IKeyInterfaceProvider):
+class IKeyface(IKeyfaceProvider):
     """Declare a key interface as component-specific key.
 
     You can use this key to lookup component-specific informations.
     """
 
-    key = Object(
+    keyface = Object(
         title=_('Key interface'),
         description=_('Key interface of the adapted context.'),
         required=True,
@@ -76,7 +76,7 @@ class IKeyInterface(IKeyInterfaceProvider):
 
 
 
-class IKeyInterfaceDescription(IKeyInterface):
+class IKeyfaceDescription(IKeyface):
     """User description about the associated key interface."""
 
     label = TextLine(title=_('Label'),
@@ -106,7 +106,7 @@ class IConfigurationType(IInterface):
 
 
 
-class IConfigurationData(IKeyInterfaceProvider):
+class IConfigurationData(IKeyfaceProvider):
     """Marker for configuration data implementations."""
 
 
@@ -114,7 +114,7 @@ class IConfigurationData(IKeyInterfaceProvider):
 class IReadConfigurations(Interface):
     """Read configuration data or looku for a certain configuration shema."""
 
-    def __conform__(key_interface):
+    def __conform__(keyface):
         """Invoke configuration data that are stored under the key interface.
 
         Regularly the interface-key should provide configuration type.
@@ -124,7 +124,7 @@ class IReadConfigurations(Interface):
     def __nonzero__():
         """Test whether there are any configurations at all."""
 
-    def __getitem__(key_interface):
+    def __getitem__(keyface):
         """Return the configuration data stored under key interface.
 
         Raises a KeyError if the key interface is not found.
@@ -138,7 +138,7 @@ class IReadConfigurations(Interface):
 class IUpdateConfigurations(Interface):
     """Update configuration data."""
 
-    def update(key_interface, data):
+    def update(keyface, data):
         """Update the configuration data partially if nessecary.
 
         data - dict providing keys and values corresponding to key interface.
@@ -162,7 +162,7 @@ class IUpdateConfigurations(Interface):
 class IWriteConfigurations(Interface):
     """Set or delete a configuration data."""
 
-    def __setitem__(key_interface, configuration_data):
+    def __setitem__(keyface, configuration_data):
         """Store a certain configuration data under the interface-key.
 
         The interface key should provide IConfigurationType.
@@ -177,7 +177,7 @@ class IWriteConfigurations(Interface):
         context (parent of the configurations) is providing ILocation.
         """
 
-    def __delitem__(key_interface):
+    def __delitem__(keyface):
         """Removes the configuration data stored under interface-key.
 
         Raises a KeyError if the key interface is not found.
@@ -207,7 +207,7 @@ class IInformationProviderType(IInterface):
 
 
 
-class IInformationProvider(IKeyInterfaceDescription):
+class IInformationProvider(IKeyfaceDescription):
     """Provide information about a dedicated key interfaces.
     
     A configuration related to the key interface can be stored within the

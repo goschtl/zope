@@ -42,19 +42,19 @@ In the generic model these components may be configurations or annotations.
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.ITextConfig"
+    ...     keyface="example.ITextConfig"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.INoteConfig"
+    ...     keyface="example.INoteConfig"
     ...     />
     ... ''')
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.IArticleInitializationConfiguration"
+    ...     keyface="example.IArticleInitializationConfiguration"
     ...     />
     ... ''')
 
@@ -106,14 +106,14 @@ initialization process.
 
     >>> registerDirective('''
     ... <generic:type
-    ...     interface="example.IText"
+    ...     keyface="example.IText"
     ...     class='zope.generic.type.api.Object'
     ...     >
     ...    <initializer
-    ...         interface='example.ITextConfig'
+    ...         keyface='example.ITextConfig'
     ...    />
     ...    <configuration
-    ...        interface='example.ITextConfig'
+    ...        keyface='example.ITextConfig'
     ...        data='example.textDefaults'
     ...    />
     ... </generic:type>
@@ -121,14 +121,14 @@ initialization process.
 
     >>> registerDirective('''
     ... <generic:type
-    ...     interface="example.INote"
+    ...     keyface="example.INote"
     ...     class='zope.generic.type.api.Object'
     ...     >
     ...    <initializer
-    ...         interface='example.INoteConfig'
+    ...         keyface='example.INoteConfig'
     ...    />
     ...    <configuration
-    ...        interface='example.INoteConfig'
+    ...        keyface='example.INoteConfig'
     ...        data='example.noteDefaults'
     ...    />
     ... </generic:type>
@@ -136,19 +136,19 @@ initialization process.
 
     >>> registerDirective('''
     ... <generic:type
-    ...     interface="example.IArticle"
+    ...     keyface="example.IArticle"
     ...     class='zope.generic.type.api.Object'
     ...     >
     ...    <initializer
-    ...         interface='example.IArticleInitializationConfiguration'
+    ...         keyface='example.IArticleInitializationConfiguration'
     ...         handler="example.articleInitializer"
     ...    />
     ...    <configuration
-    ...        interface='example.ITextConfig'
+    ...        keyface='example.ITextConfig'
     ...        data='example.articleTextDefaults'
     ...    />
     ...    <configuration
-    ...        interface='example.INoteConfig'
+    ...        keyface='example.INoteConfig'
     ...        data='example.articleNoteDefaults'
     ...    />
     ... </generic:type>

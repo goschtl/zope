@@ -36,10 +36,10 @@ def createObject(interface, *pos, **kws):
     return component.createObject(toDottedName(interface), *pos, **kws)
 
 
-def createParameter(interface):
-    config = queryTypeConfiguration(interface, IInitializerConfiguration)
+def createParameter(keyface):
+    config = queryTypeConfiguration(keyface, IInitializerConfiguration)
     if config:
-        return config.interface
+        return config.keyface
     
     else:
         return None
@@ -47,18 +47,18 @@ def createParameter(interface):
 
 
 def getType(object):
-    """Evaluate relevant type marker interface of an object."""
+    """Evaluate relevant type marker keyface of an object."""
 
     if ITypeType.providedBy(object):
-        interface = object
+        keyface = object
 
     elif ITyped.providedBy(object):
-        interface = object.interface
+        keyface = object.keyface
 
     else:
-        interface = ITyped(object).interface
+        keyface = ITyped(object).keyface
 
-    return interface
+    return keyface
 
 
 
@@ -100,7 +100,7 @@ def queryTypeConfiguration(object, configuration, default=None):
 
 def acquireTypeConfiguration(object, configuration, default=None):
     try:
-        interface = getType(object, default)
+        keyface = getType(object, default)
 
     except:
         return default

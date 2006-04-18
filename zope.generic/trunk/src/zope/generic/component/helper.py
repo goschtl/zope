@@ -31,7 +31,7 @@ def toDottedName(component):
 # cache
 __name_to_component = {}
 
-def toKeyInterface(name):
+def toKeyface(name):
     try:
         return __name_to_component[name]
     except KeyError:

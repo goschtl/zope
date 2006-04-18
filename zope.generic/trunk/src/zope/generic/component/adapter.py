@@ -31,43 +31,43 @@ from zope.interface import implements
 from zope.generic.component import IAttributeConfigurable
 from zope.generic.component import IConfigurationType
 from zope.generic.component import IConfigurations
-from zope.generic.component import IKeyInterface
-from zope.generic.component import IAttributeKeyInterface
+from zope.generic.component import IKeyface
+from zope.generic.component import IAttributeKeyface
 from zope.generic.component.event import Configuration
 from zope.generic.component.event import ObjectConfiguredEvent
 from zope.generic.component.helper import configuratonToDict
 from zope.generic.component.helper import toDottedName
-from zope.generic.component.helper import toKeyInterface
+from zope.generic.component.helper import toKeyface
 
 
-class KeyInterface(object):
-    """Adapts IAttributeKeyInterface to IKeyInterface.
+class Keyface(object):
+    """Adapts IAttributeKeyface to IKeyface.
 
-    You can adapt IKeyInterface if you provide IAttributeKeyInterface:
+    You can adapt IKeyface if you provide IAttributeKeyface:
 
-        >>> class AnyAttributeKeyInterface(KeyInterface):
-        ...    def __init__(self, key):
-        ...         self.__key_interface__ = key
+        >>> class AnyAttributeKeyface(Keyface):
+        ...    def __init__(self, keyface):
+        ...         self.__keyface__ = keyface
 
-        >>> fake_key_interface = object()
-        >>> any = AnyAttributeKeyInterface(fake_key_interface)
+        >>> fake_keyface = object()
+        >>> any = AnyAttributeKeyface(fake_keyface)
 
-        >>> KeyInterface(any).key == fake_key_interface
+        >>> Keyface(any).keyface == fake_keyface
         True
-        >>> IKeyInterface.providedBy(KeyInterface(any))
+        >>> IKeyface.providedBy(Keyface(any))
         True
 
 """
 
-    implements(IKeyInterface)
-    adapts(IAttributeKeyInterface)
+    implements(IKeyface)
+    adapts(IAttributeKeyface)
 
     def __init__(self, context):
         self.context = context
 
     @property
-    def key(self):
-        return self.context.__key_interface__
+    def keyface(self):
+        return self.context.__keyface__
 
 
 
@@ -86,30 +86,30 @@ class AttributeConfigurations(DictMixin, Location):
     def __nonzero__(self):
         return bool(getattr(self.context, '__configurations__', 0))
 
-    def __conform__(self, interface):
+    def __conform__(self, keyface):
         configurations = getattr(self.context, '__configurations__', None)
         if configurations is None:
             return None
 
         else:
-            return configurations.get(toDottedName(interface), None)
+            return configurations.get(toDottedName(keyface), None)
 
-    def __getitem__(self, interface):
+    def __getitem__(self, keyface):
         configurations = getattr(self.context, '__configurations__', None)
         if configurations is None:
-            raise KeyError(interface)
+            raise KeyError(keyface)
 
-        return configurations[toDottedName(interface)]
+        return configurations[toDottedName(keyface)]
 
     def keys(self):
         configurations = getattr(self.context, '__configurations__', None)
         if configurations is None:
             return []
 
-        return [toKeyInterface(iface) for iface in configurations.keys()]
+        return [toKeyface(iface) for iface in configurations.keys()]
 
-    def update(self, interface, data):
-        current_config = self[interface]
+    def update(self, keyface, data):
+        current_config = self[keyface]
 
         updated_data = {}
         errors = []
@@ -118,7 +118,7 @@ class AttributeConfigurations(DictMixin, Location):
         try:
             for name, value in data.items():
                 # raise attribute error
-                field = interface[name]
+                field = keyface[name]
                 if field.readonly:
                     raise ValueError(name, 'Data is readonly.')
                 else:
@@ -130,20 +130,20 @@ class AttributeConfigurations(DictMixin, Location):
             parent = self.__parent__
             if updated_data and ILocation.providedBy(parent) and parent.__parent__ is not None:
                 notify(ObjectConfiguredEvent(parent, 
-                    Configuration(interface, updated_data)))
+                    Configuration(keyface, updated_data)))
 
         except:
             savepoint.rollback()
             raise
 
-    def __setitem__(self, interface, value):
+    def __setitem__(self, keyface, value):
         # preconditions
-        if not IConfigurationType.providedBy(interface):
+        if not IConfigurationType.providedBy(keyface):
             raise KeyError('Interface key %s does not provide %s.' % 
-                (interface.__name__, IConfigurationType.__name__))
+                (keyface.__name__, IConfigurationType.__name__))
 
-        if not interface.providedBy(value):
-            raise ValueError('Value does not provide %s.' % interface.__name__)
+        if not keyface.providedBy(value):
+            raise ValueError('Value does not provide %s.' % keyface.__name__)
 
         # essentials
         try:
@@ -151,24 +151,24 @@ class AttributeConfigurations(DictMixin, Location):
         except AttributeError:
             configurations = self.context.__configurations__ = OOBTree()
 
-        data = configuratonToDict(interface, value, all=True)
-        configurations[toDottedName(interface)] = value
+        data = configuratonToDict(keyface, value, all=True)
+        configurations[toDottedName(keyface)] = value
         # notify setting
         parent = self.__parent__
         if ILocation.providedBy(parent) and parent.__parent__ is not None:
             notify(ObjectConfiguredEvent(parent, 
-                Configuration(interface, data)))
+                Configuration(keyface, data)))
 
-    def __delitem__(self, interface):
+    def __delitem__(self, keyface):
         try:
             configurations = self.context.__configurations__
         except AttributeError:
-            raise KeyError(interface)
+            raise KeyError(keyface)
 
-        del configurations[toDottedName(interface)]
+        del configurations[toDottedName(keyface)]
         # notify deletion
         # notify setting
         parent = self.__parent__
         if ILocation.providedBy(parent) and parent.__parent__ is not None:
             notify(ObjectConfiguredEvent(parent, 
-                Configuration(interface, {})))
+                Configuration(keyface, {})))

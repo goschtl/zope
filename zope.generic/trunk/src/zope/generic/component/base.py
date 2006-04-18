@@ -33,59 +33,59 @@ from zope.generic.component import IAttributeConfigurable
 from zope.generic.component import IConfigurationData
 from zope.generic.component import IConfigurations
 from zope.generic.component import IInformationProvider
-from zope.generic.component import IKeyInterface
-from zope.generic.component import IAttributeKeyInterface
-from zope.generic.component import IKeyInterfaceDescription
+from zope.generic.component import IKeyface
+from zope.generic.component import IAttributeKeyface
+from zope.generic.component import IKeyfaceDescription
 from zope.generic.component import adapter
 from zope.generic.component.helper import toDottedName
 
 
 
-class KeyInterface(object):
+class Keyface(object):
     """Key interface mixin for key interface attribute implementations.
     
-    You can mixin this class if you like to provide IKeyInterface for
-    IAttributeKeyInterface implementations:
+    You can mixin this class if you like to provide IKeyface for
+    IAttributeKeyface implementations:
 
-        >>> class AnyAttributeKeyInterface(KeyInterface):
-        ...    def __init__(self, key):
-        ...         self.__key_interface__ = key
+        >>> class AnyAttributeKeyface(Keyface):
+        ...    def __init__(self, keyface):
+        ...         self.__keyface__ = keyface
 
-        >>> fake_key_interface = object()
-        >>> any = AnyAttributeKeyInterface(fake_key_interface)
-        >>> any.__key_interface__ == fake_key_interface
+        >>> fake_keyface = object()
+        >>> any = AnyAttributeKeyface(fake_keyface)
+        >>> any.__keyface__ == fake_keyface
         True
 
     You get only the following method decorator for free :):
 
-        >>> any.key == fake_key_interface
+        >>> any.keyface == fake_keyface
         True
             
     """
 
-    implements(IKeyInterface)
+    implements(IKeyface)
 
     @property
-    def key(self):
-        return self.__key_interface__
+    def keyface(self):
+        return self.__keyface__
 
 
 
-class KeyInterfaceDescription(KeyInterface):
+class KeyfaceDescription(Keyface):
     """Key interface description mixin."""
 
-    implements(IKeyInterfaceDescription)
+    implements(IKeyfaceDescription)
 
-    def __init__(self, key, label=None, hint=None):
-        self.__key_interface__ = key
+    def __init__(self, keyface, label=None, hint=None):
+        self.__keyface__ = keyface
 
         if label is None:
-            self.label = _(key.__name__)
+            self.label = _(keyface.__name__)
         else:
             self.label = label
 
         if hint is None:
-            self.hint = _(key.__doc__)
+            self.hint = _(keyface.__doc__)
         else:
             self.hint = hint
 
@@ -152,20 +152,20 @@ class ConfigurationData(Persistent):
         ...
         RuntimeError: ('Data value is not a schema field', 'method')
 
-    The implementation provide an adapter to IKeyInterface by its __conform__
+    The implementation provide an adapter to IKeyface by its __conform__
     method:
 
-        >>> adapted = IKeyInterface(config_data)
-        >>> IKeyInterface.providedBy(adapted)
+        >>> adapted = IKeyface(config_data)
+        >>> IKeyface.providedBy(adapted)
         True
 
-        >>> adapted.key is IBarConfiguration
+        >>> adapted.keyface is IBarConfiguration
         True
 
         
     """
 
-    implements(IAttributeKeyInterface, IConfigurationData)
+    implements(IAttributeKeyface, IConfigurationData)
 
     def __init__(self, schema, data):
         # preconditions
@@ -181,19 +181,19 @@ class ConfigurationData(Persistent):
     
         # essentials
         self.__dict__['_ConfigurationData__data'] = PersistentDict(data)
-        self.__dict__['__key_interface__'] = schema
+        self.__dict__['__keyface__'] = schema
         directlyProvides(self, schema)
 
-    def __conform__(self, interface):
-        if interface is IKeyInterface:
-            return adapter.KeyInterface(self)
+    def __conform__(self, keyface):
+        if keyface is IKeyface:
+            return adapter.Keyface(self)
 
     def __getattr__(self, name):
-        # assert IAttributeKeyInterface
-        if name == '__key_interface__':
-            return self.__dict__['__key_interface__']
+        # assert IAttributeKeyface
+        if name == '__keyface__':
+            return self.__dict__['__keyface__']
 
-        schema = self.__dict__['__key_interface__']
+        schema = self.__dict__['__keyface__']
         data = self.__dict__['_ConfigurationData__data']
         try:
             field = schema[name]
@@ -217,7 +217,7 @@ class ConfigurationData(Persistent):
         raise AttributeError(name)
 
     def __setattr__(self, name, value):
-        schema = self.__dict__['__key_interface__']
+        schema = self.__dict__['__keyface__']
         data = self.__dict__['_ConfigurationData__data']
 
         if name != '__provides__':
@@ -234,7 +234,7 @@ class ConfigurationData(Persistent):
 
 
 
-class InformationProvider(KeyInterfaceDescription, dict):
+class InformationProvider(KeyfaceDescription, dict):
     """Generic information provider.
 
     Information do relate a dedicated type of information marked as an interface
@@ -257,7 +257,7 @@ class InformationProvider(KeyInterfaceDescription, dict):
     The information is related to the interface declared by the interface
     attribute:
 
-        >>> info.key == IFooMarker
+        >>> info.keyface == IFooMarker
         True
         >>> info.label
         u'IFooMarker'
@@ -278,6 +278,6 @@ class InformationProvider(KeyInterfaceDescription, dict):
 
     implements(IInformationProvider, IAttributeConfigurable, IAttributeAnnotatable)
 
-    def __init__(self, key, provides, label=None, hint=None):
-        super(InformationProvider, self).__init__(key, label, hint)
+    def __init__(self, keyface, provides, label=None, hint=None):
+        super(InformationProvider, self).__init__(keyface, label, hint)
         alsoProvides(self, provides)

@@ -45,9 +45,9 @@ class ITypeDirective(IBaseInformationProviderDirective):
 class IInitializerSubdirective(Interface):
     """Provide an initializer configuration for the type."""
 
-    interface = GlobalInterface(
-        title=_('Configuration interface'),
-        description=_('Configuration interface defining the signature.'),
+    keyface = GlobalInterface(
+        title=_('Configuration keyface'),
+        description=_('Configuration keyface defining the signature.'),
         required=False
         )
 

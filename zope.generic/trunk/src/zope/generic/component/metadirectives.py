@@ -31,7 +31,7 @@ from zope.generic.component import IInformationProvider
 class IBaseInformationProviderDirective(Interface):
     """Base information attributes."""
 
-    interface = GlobalInterface(
+    keyface = GlobalInterface(
         title=_('Interface'),
         description=_('Interface that represents an information.'),
         required=True
@@ -77,7 +77,7 @@ class IInformationProviderDirective(IBaseInformationProviderDirective):
 class IConfigurationSubdirective(Interface):
     """Declare a certain configuration of a type."""
 
-    interface = GlobalInterface(
+    keyface = GlobalInterface(
         title=_('Interface'),
         description=_('Interface referencing a configuraiton.'),
         required=True

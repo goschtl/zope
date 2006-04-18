@@ -47,7 +47,7 @@ In our example we will use a simple generic object:
 
     >>> registerDirective('''
     ... <generic:type
-    ...     interface="example.IFooMarker"
+    ...     keyface="example.IFooMarker"
     ...     label='Foo Type' hint='Bla bla bla.'
     ...	    class='zope.generic.type.api.Object'
     ...     />
@@ -64,7 +64,7 @@ You can create instances of the registered logical type:
 
 	>>> foo = api.createObject(IFooMarker)
 	>>> typed = api.ITyped(foo)
-	>>> typed.interface == IFooMarker
+	>>> typed.keyface == IFooMarker
 	True
 
 In our example we use a generic directly typed implementation. In those cases
@@ -81,7 +81,7 @@ retrieve this utility using the conventional utility api:
 
     >>> info = queryUtility(api.ITypeInformation, toDottedName(IFooMarker))
 
-    >>> info.key == IFooMarker
+    >>> info.keyface == IFooMarker
     True
     >>> info.label
     u'Foo Type'
@@ -128,14 +128,14 @@ Then we provide two example configurations for our example:
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.IAnyConfiguration"
+    ...     keyface="example.IAnyConfiguration"
     ...     label='Any' hint='Any bla.'
     ...     />
     ... ''') 
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.IOtherConfiguration"
+    ...     keyface="example.IOtherConfiguration"
     ...     />
     ... ''') 
 
@@ -153,16 +153,16 @@ After all we register our component using the type directive:
 
     >>> registerDirective('''
     ... <generic:type
-    ...     interface="example.IBarMarker"
+    ...     keyface="example.IBarMarker"
     ...     label='Bar Type' hint='Bla bla bla.'
     ...	    class='zope.generic.type.api.Object'
     ...     >
     ...    <initializer
-    ...			interface='example.IOtherConfiguration'
+    ...			keyface='example.IOtherConfiguration'
     ...			handler='example.barInitializer'
     ...	   />
     ...	   <configuration
-    ...	       interface='example.IAnyConfiguration'
+    ...	       keyface='example.IAnyConfiguration'
     ...        data='example.typedata'
     ...	   />
     ... </generic:type>

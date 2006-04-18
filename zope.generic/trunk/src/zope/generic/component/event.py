@@ -44,7 +44,7 @@ class Configuration(object) :
         >>> IConfigurationModificationDescription.providedBy(description)
         True
 
-        >>> description.interface == IMyConfiguration
+        >>> description.keyface == IMyConfiguration
         True
 
         >>> 'my' in description.data
@@ -56,7 +56,7 @@ class Configuration(object) :
     dict, which implies that the configuration was deleted:
 
         >>> description = Configuration(IMyConfiguration)
-        >>> description.interface == IMyConfiguration
+        >>> description.keyface == IMyConfiguration
         True
 
         >>> description.data
@@ -66,8 +66,8 @@ class Configuration(object) :
 
     implements(IConfigurationModificationDescription)
 
-    def __init__(self, interface, data=None) :
-        self.interface = interface
+    def __init__(self, keyface, data=None) :
+        self.keyface = keyface
         if data is not None:
             self.data = data
 
@@ -132,12 +132,12 @@ class ObjectConfiguredEvent(ObjectEvent):
         self.descriptions = descriptions
 
     def items(self):
-        return [(d.interface, d.data) for d in self.descriptions 
+        return [(d.keyface, d.data) for d in self.descriptions 
                    if IConfigurationModificationDescription.providedBy(d)]
 
-    def get(self, interface, default=None):
+    def get(self, keyface, default=None):
         result = [d.data for d in self.descriptions 
-                   if IConfigurationModificationDescription.providedBy(d) and d.interface is interface]
+                   if IConfigurationModificationDescription.providedBy(d) and d.keyface is keyface]
         if result:
             return result[0]
 

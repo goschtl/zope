@@ -9,7 +9,7 @@ mechanism of the ca-framework invokes the provided interfaces by a
 lookup-algorithmus similar to the method resolution order by class inherintance.
 
 Most of the time this behavior satisfies our requirements. Additionally this 
-package offers a mechanism to declare a single key interface (IKeyInterface).
+package offers a mechanism to declare a single key interface (IKeyface).
 This key interface can be used to lookup corresponding information providers
 more explicitly. 
 
@@ -55,7 +55,7 @@ dotted name of an corresponding key interface as utility name:
 
     >>> registerDirective('''
     ... <generic:informationProvider
-    ...     interface="example.IFooMarker"
+    ...     keyface="example.IFooMarker"
     ...     registry="example.ISpecialInformation"
     ...     label='Foo Specials' hint='Bla bla foo.'
     ...     />
@@ -87,7 +87,7 @@ queryInformationProvider function:
     >>> listing[0][0] == IFooMarker
     True
 
-    >>> info.key == IFooMarker
+    >>> info.keyface == IFooMarker
     True
     >>> ISpecialInformation.providedBy(info)
     True
@@ -158,7 +158,7 @@ is declared by a configuration schema providing IConfigurationType:
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.IMyConfiguration"
+    ...     keyface="example.IMyConfiguration"
     ...     label='My' hint='My bla.'
     ...     />
     ... ''') 
@@ -173,7 +173,7 @@ For the further exploration we query this information provider:
     >>> from zope.generic.component.api import IConfigurationInformation
 
     >>> my_config_ip = queryInformationProvider(IMyConfiguration, IConfigurationInformation)
-    >>> my_config_ip.key == IMyConfiguration
+    >>> my_config_ip.keyface == IMyConfiguration
     True
     >>> IConfigurationInformation.providedBy(my_config_ip)
     True
@@ -194,12 +194,12 @@ to register further configurations to an information provider:
 
     >>> registerDirective('''
     ... <generic:informationProvider
-    ...     interface="example.IFooMarker"
+    ...     keyface="example.IFooMarker"
     ...     registry="example.ISpecialInformation"
     ...     label='Foo Specials' hint='Bla bla foo.'
     ...     >
     ...        <configuration
-    ...            interface="example.IMyConfiguration"
+    ...            keyface="example.IMyConfiguration"
     ...            data="example.my_information_config"
     ...            />
     ...     </generic:informationProvider>
@@ -226,7 +226,7 @@ data itself has to provide the schema that is used to reference it.
 
     >>> registerDirective('''
     ... <generic:configuration
-    ...     interface="example.IMyConfiguration"
+    ...     keyface="example.IMyConfiguration"
     ...     label='My' hint='My bla.'
     ...     />
     ... ''') 

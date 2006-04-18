@@ -42,17 +42,19 @@ class Object(object):
 
     implements(IDirectlyTyped, IAttributeConfigurable, IAttributeAnnotatable)
 
-    def __init__(self, interface, *pos, **kws):
+    def __init__(self, __keyface__, *pos, **kws):
         super(Object, self).__init__()
-        self.__dict__['interface'] = interface
-        updateDirectlyProvided(self, interface)
+        self.__dict__['__keyface__'] = __keyface__
+        updateDirectlyProvided(self, __keyface__)
         initializer = IInitializer(self, None)
         if initializer:
             initializer(*pos, **kws)
 
-    provides('interface')
+    provides('__keyface__')
 
-    interface = UpdateProvides(IDirectlyTyped['interface'])
+    __keyface__ = UpdateProvides(IDirectlyTyped['__keyface__'])
+    
+    keyface = __keyface__
 
 
 
@@ -61,18 +63,19 @@ class Contained(contained.Contained, Persistent):
 
     implements(IDirectlyTyped, IAttributeConfigurable, IAttributeAnnotatable)
 
-    def __init__(self, interface, *pos, **kws):
+    def __init__(self, __keyface__, *pos, **kws):
         super(Contained, self).__init__()
-        self.__dict__['interface'] = interface
-        updateDirectlyProvided(self, interface)
+        self.__dict__['__keyface__'] = __keyface__
+        updateDirectlyProvided(self, __keyface__)
         initializer = IInitializer(self, None)
         if initializer:
             initializer(*pos, **kws)
 
-    provides('interface')
+    provides('__keyface__')
 
-    interface = UpdateProvides(IDirectlyTyped['interface'])
+    __keyface__ = UpdateProvides(IDirectlyTyped['__keyface__'])
 
+    keyface = __keyface__
 
 
 class Container(btree.BTreeContainer):
@@ -80,18 +83,19 @@ class Container(btree.BTreeContainer):
 
     implements(IDirectlyTyped, IAttributeConfigurable, IAttributeAnnotatable)
 
-    def __init__(self, interface, *pos, **kws):
+    def __init__(self, __keyface__, *pos, **kws):
         super(Container, self).__init__()
-        self.__dict__['interface'] = interface
-        updateDirectlyProvided(self, interface)
+        self.__dict__['__keyface__'] = __keyface__
+        updateDirectlyProvided(self, __keyface__)
         initializer = IInitializer(self, None)
         if initializer:
             initializer(*pos, **kws)
 
-    provides('interface')
+    provides('__keyface__')
 
-    interface = UpdateProvides(IDirectlyTyped['interface'])
+    __keyface__ = UpdateProvides(IDirectlyTyped['__keyface__'])
 
+    keyface = __keyface__
 
 
 class Folder(folder.Folder):
@@ -99,14 +103,16 @@ class Folder(folder.Folder):
 
     implements(IDirectlyTyped, IAttributeConfigurable, IAttributeAnnotatable)
 
-    def __init__(self, interface, *pos, **kws):
+    def __init__(self, __keyface__, *pos, **kws):
         super(Folder, self).__init__()
-        self.__dict__['interface'] = interface
-        updateDirectlyProvided(self, interface)
+        self.__dict__['__keyface__'] = __keyface__
+        updateDirectlyProvided(self, __keyface__)
         initializer = IInitializer(self, None)
         if initializer:
             initializer(*pos, **kws)
 
-    provides('interface')
+    provides('__keyface__')
 
-    interface = UpdateProvides(IDirectlyTyped['interface'])
+    __keyface__ = UpdateProvides(IDirectlyTyped['__keyface__'])
+
+    keyface = __keyface__

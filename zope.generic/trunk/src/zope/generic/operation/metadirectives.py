@@ -36,7 +36,7 @@ class IOperationDirective(IBaseInformationProviderDirective):
 
     operations = Tokens(
         title=_('Operation or IOperationType'),
-        description=_('Global operation or callable(context) or IOperationType interface.'),
+        description=_('Global operation or callable(context) or IOperationType keyface.'),
         required=False,
         value_type=GlobalObject()
         )

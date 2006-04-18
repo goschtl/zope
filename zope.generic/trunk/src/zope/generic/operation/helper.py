@@ -59,33 +59,33 @@ def queryOperationConfiguration(object, default=None):
 
 
 
-def queryOperation(interface, default=None):
+def queryOperation(keyface, default=None):
     """Return the operation of operation marker."""
 
     try:
-        return getOperationConfiguration(interface).operation
+        return getOperationConfiguration(keyface).operation
 
     except:
         return default
 
 
 
-def queryOperationInput(interface, default=None):
-    """Return the input paramters of an operation as tuple of configuration interfaces."""
+def queryOperationInput(keyface, default=None):
+    """Return the input paramters of an operation as tuple of configuration keyfaces."""
 
     try:
-        return getOperationConfiguration(interface).input
+        return getOperationConfiguration(keyface).input
 
     except:
         return default
 
 
 
-def queryOperationOutput(interface, default=None):
-    """Return the ouput paramters of an operation as tuple of configuration interfaces."""
+def queryOperationOutput(keyface, default=None):
+    """Return the ouput paramters of an operation as tuple of configuration keyfaces."""
 
     try:
-        return getOperationConfiguration(interface).output
+        return getOperationConfiguration(keyface).output
 
     except:
         return default

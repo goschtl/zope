@@ -45,10 +45,10 @@ from zope.generic.type.helper import queryTypeInformation
 
 
 
-def provideTypeConfiguration(interface, configuration, data):
+def provideTypeConfiguration(keyface, configuration, data):
     """Set configuration data into the context."""
 
-    info = queryTypeInformation(interface)
+    info = queryTypeInformation(keyface)
     provideInformation(info, configuration, data)
 
 
@@ -85,30 +85,30 @@ class TypeDirective(InformationProviderDirective):
     _information_type = ITypeType
 
 
-    def __init__(self, _context, interface, class_, label=None, hint=None):
+    def __init__(self, _context, keyface, class_, label=None, hint=None):
         # preconditions
         if isinstance(class_, ModuleType):
             raise ConfigurationError('Implementation attribute must be a class')
         
         # register types within the type information registry
         registry = ITypeInformation
-        super(TypeDirective, self).__init__(_context, interface, registry, label, hint)
+        super(TypeDirective, self).__init__(_context, keyface, registry, label, hint)
 
         # create and proxy type factory
-        factory = TypeFactory(class_, self._interface) 
+        factory = TypeFactory(class_, self._keyface) 
         component = proxify(factory, InterfaceChecker(IFactory, CheckerPublic))
 
         _context.action(
-            discriminator = ('provideUtility', self._interface),
+            discriminator = ('provideUtility', self._keyface),
             callable = provideUtility,
-            args = (component, IFactory, toDottedName(self._interface)),
+            args = (component, IFactory, toDottedName(self._keyface)),
             )
 
-    def initializer(self, _context, interface=None, handler=None):
+    def initializer(self, _context, keyface=None, handler=None):
         """Add initializer."""
         # preconditions
-        if interface is None and handler is None:
-            raise ConfigurationError('Attribute interface or handler must be defined')
+        if keyface is None and handler is None:
+            raise ConfigurationError('Attribute keyface or handler must be defined')
 
         data = {}
         if handler is not None:
@@ -117,14 +117,14 @@ class TypeDirective(InformationProviderDirective):
 
             data['handler'] = handler
 
-        if interface is not None:
-            data['interface'] = interface
+        if keyface is not None:
+            data['keyface'] = keyface
 
-        adapter(self._context, [Initializer], None, [self._interface], None, '', True, False)
+        adapter(self._context, [Initializer], None, [self._keyface], None, '', True, False)
 
         _context.action(
             discriminator = (
-            'initializer', self._interface),
+            'initializer', self._keyface),
             callable = provideTypeConfiguration,
-            args = (self._interface, IInitializerConfiguration, data),
+            args = (self._keyface, IInitializerConfiguration, data),
             )

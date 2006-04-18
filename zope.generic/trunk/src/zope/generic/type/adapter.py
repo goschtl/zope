@@ -51,8 +51,8 @@ class Initializer(object):
         config = queryTypeConfiguration(self.context, IInitializerConfiguration)
         if config:
             # store initialization data
-            if config.interface:
-                provideInformation(self.context, config.interface, kws)
+            if config.keyface:
+                provideInformation(self.context, config.keyface, kws)
 
             # invoke initialization handler
 

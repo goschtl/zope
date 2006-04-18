@@ -26,7 +26,7 @@ from zope.schema import Bool
 from zope.schema import Object
 from zope.schema import Tuple
 
-from zope.generic.component import IKeyInterface
+from zope.generic.component import IKeyface
 from zope.generic.component import IConfigurationType
 from zope.generic.component import IInformationProvider
 from zope.generic.component import IInformationProviderType
@@ -38,7 +38,7 @@ from zope.generic.type import ITypeType
 class IContextProxy(Interface):
     """Proxy the context of a component."""
 
-    def __conform__(interface):
+    def __conform__(keyface):
         """Might cache adapters."""
 
     def __getattr__(name):
@@ -49,7 +49,7 @@ class IContextProxy(Interface):
 
 
 
-class IOperation(IKeyInterface):
+class IOperation(IKeyface):
     """Proceed operation"""
 
     def __call__(context, *pos, **kws):
