@@ -19,7 +19,7 @@ from datetime import datetime
 import Acquisition
 
 import zope.event
-import zope.app.event.objectevent
+import zope.lifecycleevent
 from zope import interface
 from zope.formlib import interfaces, form, namedtemplate
 from zope.formlib.i18n import _
@@ -59,7 +59,7 @@ class EditFormBase(FiveFormlibMixin, form.EditFormBase):
             self.context, self.form_fields, data, self.adapters):
             
             zope.event.notify(
-                zope.app.event.objectevent.ObjectModifiedEvent(self.context)
+                zope.lifecycleevent.ObjectModifiedEvent(self.context)
                 )
             # TODO: Needs locale support. See also Five.form.EditView.
             self.status = _(

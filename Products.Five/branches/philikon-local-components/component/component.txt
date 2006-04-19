@@ -47,7 +47,7 @@ is used to retrieve the closest site:
 The adapter also works using the ``ILocation`` API by inspecting the
 ``__parent__`` object instead of using the acquisition parent:
 
-  >>> from zope.app.location import Location
+  >>> from zope.location import Location
   >>> ob = Location()
   >>> ob2 = Location()
   >>> ob.__parent__ = site

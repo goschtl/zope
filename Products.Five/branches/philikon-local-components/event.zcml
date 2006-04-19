@@ -8,7 +8,7 @@
 
   <adapter
       for="OFS.interfaces.IObjectManager"
-      provides="zope.app.location.interfaces.ISublocations"
+      provides="zope.location.interfaces.ISublocations"
       factory="OFS.subscribers.ObjectManagerSublocations"
       />
 
