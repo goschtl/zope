@@ -38,7 +38,7 @@ def test_menu():
     Now for some actual testing... Let's look up the menu we registered:
 
       >>> from Products.Five.traversable import FakeRequest
-      >>> from zope.app.publication.browser import setDefaultSkin
+      >>> from zope.publisher.browser import setDefaultSkin
       >>> from zope.app.publisher.browser.menu import getMenu
 
       >>> request = FakeRequest()

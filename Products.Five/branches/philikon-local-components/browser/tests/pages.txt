@@ -195,7 +195,7 @@ This tests security on a low level (functional pages test has
 high-level security tests).  Let's manually look up a protected view:
 
   >>> from zope.component import getMultiAdapter
-  >>> from zope.app.publication.browser import setDefaultSkin
+  >>> from zope.publisher.browser import setDefaultSkin
   >>> from Products.Five.traversable import FakeRequest
   >>> request = FakeRequest()
   >>> setDefaultSkin(request)
