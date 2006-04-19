@@ -28,7 +28,7 @@ Before we can start we need to load some important ZCML:
   >>> import zope.app.event
   >>> zcml.load_config('meta.zcml', Products.Five)
   >>> zcml.load_config('permissions.zcml', Products.Five)
-  #>>> zcml.load_config('traversing.zcml', Products.Five)
+  >>> zcml.load_config('traversing.zcml', Products.Five)
   >>> zcml.load_config('configure.zcml', Products.Five.component)
   >>> zcml.load_config('configure.zcml', zope.app.event)
 
