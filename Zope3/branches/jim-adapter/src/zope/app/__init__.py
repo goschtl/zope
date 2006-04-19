@@ -25,9 +25,11 @@ modules_aliases_35 = {
     'zope.app.copypastemove.interfaces': 'zope.copypastemove.interfaces',
 
     'zope.app.decorator': 'zope.decorator',
-
+    'zope.app.component.interface': 'zope.component.interface',
+    'zope.app.content_types': 'zope.contenttype',
     'zope.app.datetimeutils': 'zope.datetime',
     'zope.app.timezones': 'zope.datetime.timezones',
+    'zope.app.i18n.tests.placelesssetup': 'zope.i18n.testing',
 
     'zope.app.mail': 'zope.sendmail',
     'zope.app.mail.event': 'zope.sendmail.event',
@@ -85,9 +87,6 @@ modules_aliases_35 = {
 
     'zope.app.security.adapter': 'zope.security.adapter',
     'zope.app.security.fields': 'zope.security.zcml',
-
-    'zope.app.component.interface': 'zope.component.interface',
-    'zope.app.content_types': 'zope.contenttype',
     }
 
 msg_35 = "%s has been moved to %s.  This alias will be removed in Zope 3.5."

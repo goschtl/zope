@@ -15,16 +15,15 @@
 
 $Id$
 """
-from zope.app.testing import ztapi
-from zope.i18n.interfaces import IUserPreferredCharsets
-from zope.i18n.interfaces import IUserPreferredLanguages
+import zope.component
 from zope.publisher.browser import BrowserLanguages
-from zope.publisher.http import HTTPCharsets, IHTTPRequest
+from zope.publisher.http import HTTPCharsets
+
+def setUp(test=None):
+    zope.component.provideAdapter(HTTPCharsets)
+    zope.component.provideAdapter(BrowserLanguages)
 
 class PlacelessSetup(object):
 
     def setUp(self):
-        ztapi.provideAdapter(IHTTPRequest, IUserPreferredCharsets,
-                             HTTPCharsets)
-        ztapi.provideAdapter(IHTTPRequest, IUserPreferredLanguages,
-                             BrowserLanguages)
+        setUp()
