@@ -19,14 +19,11 @@ $Id$
 """
 from sets import Set
 
-from zope.interface import implements
-from zope.interface import implementedBy
-from zope.interface import directlyProvidedBy
-from zope.interface import directlyProvides
-from zope.interface import providedBy
+from zope.interface import implements, implementedBy, providedBy
+from zope.interface import directlyProvides, directlyProvidedBy
 from zope.interface.interfaces import IInterface
-from zope.app.component.interface import getInterface, interfaceToName
-from zope.app.component.interface import searchInterface
+from zope.component.interface import getInterface, interfaceToName
+from zope.component.interface import searchInterface
 
 from interfaces import IMarkerInterfaces
 
