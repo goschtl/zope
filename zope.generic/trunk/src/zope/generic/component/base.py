@@ -218,10 +218,11 @@ class ConfigurationData(Persistent):
         raise AttributeError(name)
 
     def __setattr__(self, name, value):
-        schema = self.__dict__['__keyface__']
-        data = self.__dict__['_ConfigurationData__data']
 
         if not(name == '__provides__' or name in IPersistent):
+            schema = self.__dict__['__keyface__']
+            data = self.__dict__['_ConfigurationData__data']
+
             try:
                 field = schema[name]
             except KeyError:
