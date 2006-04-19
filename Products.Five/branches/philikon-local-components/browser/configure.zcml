@@ -4,20 +4,11 @@
   <browser:defaultView name="index.html" />
 
   <interface
-      interface="zope.publisher.interfaces.browser.ILayer"
-      />
-
-  <interface
-      interface="zope.publisher.interfaces.browser.ISkin"
+      interface="zope.publisher.interfaces.browser.IBrowserSkinType"
       />
 
   <interface
       interface="zope.app.publisher.interfaces.browser.IMenuItemType"
-      />
-
-  <browser:layer
-      name="default"
-      interface="zope.publisher.interfaces.browser.IDefaultBrowserLayer"
       />
 
   <browser:page
