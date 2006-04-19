@@ -22,7 +22,7 @@ from unittest import TestCase, TestLoader, TextTestRunner
 from zope import component
 from zope.pagetemplate.tests.util import check_xml
 from zope.publisher.browser import TestRequest
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 from zope.app.onlinehelp.tests import util
 from zope.app.onlinehelp.interfaces import IOnlineHelp, IOnlineHelpTopic
 from zope.app.onlinehelp.onlinehelp import OnlineHelp
