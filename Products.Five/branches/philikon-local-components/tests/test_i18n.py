@@ -19,14 +19,12 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
+from zope.component.testing import setUp, tearDown
+
 def test_directive():
     """
-    Test the i18n directive
-
-      >>> from zope.component.testing import setUp, tearDown
-      >>> setUp()
-
-    First, we need to register the ZCML directive:
+    Test the i18n directive.  First, we need to register the ZCML
+    directive:
 
       >>> import zope.i18n
       >>> from Products.Five import zcml
@@ -56,16 +54,11 @@ def test_directive():
       u'This is an explicit message'
       >>> translate(msg, target_language='de')
       u'Dies ist eine explizite Nachricht'
-
-
-    Clean up:
-
-      >>> tearDown()
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import ZopeDocTestSuite
-    return ZopeDocTestSuite()
+    from zope.testing.doctest import DocTestSuite
+    return DocTestSuite(setUp=setUp, tearDown=tearDown)
 
 if __name__ == '__main__':
     framework()
