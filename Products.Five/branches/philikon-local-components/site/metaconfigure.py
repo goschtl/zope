@@ -20,7 +20,7 @@ $Id: fiveconfigure.py 18581 2005-10-14 16:54:25Z regebro $
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
 from zope.configuration.exceptions import ConfigurationError
-from zope.app.component.metaconfigure import adapter
+from zope.component.zcml import adapter
 from zope.app.component.interfaces import IPossibleSite
 
 from Products.Five.site.localsite import FiveSite
