@@ -43,7 +43,7 @@ from zope.app.workflow.stateful.instance import StatefulProcessInstance
 from zope.app.workflow.stateful.instance import StateChangeInfo
 
 from zope.app.container.contained import contained
-from zope.app.utility import UtilityRegistration
+from zope.app.component.site import UtilityRegistration
 from zope.app.testing import setup
 
 

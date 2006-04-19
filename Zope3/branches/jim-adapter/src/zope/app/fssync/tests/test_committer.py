@@ -21,7 +21,7 @@ import tempfile
 import unittest
 
 import zope.component
-from zope.interface import implements
+import zope.interface
 from zope.traversing.interfaces import TraversalError, IContainmentRoot
 from zope.traversing.interfaces import ITraversable, ITraverser
 from zope.xmlpickle import loads, dumps
@@ -42,7 +42,6 @@ from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.fssync import committer, syncer # The module
 from zope.app.fssync.committer import Checker, Committer, SynchronizationError
 from zope.app.fssync.fsregistry import provideSynchronizer, fsRegistry
-from zope.app.fssync.interfaces import IGlobalFSSyncUtility
 
 
 class Sample(object):
@@ -50,8 +49,7 @@ class Sample(object):
 
 
 class PretendContainer(Location):
-
-    implements(IContainer, ITraversable, ITraverser)
+    zope.interface.implements(IContainer, ITraversable, ITraverser)
 
     def __init__(self):
         self.holding = {}
@@ -94,8 +92,7 @@ class PretendContainer(Location):
 PCname = PretendContainer.__module__ + "." + PretendContainer.__name__
 
 class PretendRootContainer(PretendContainer):
-
-    implements(IContainmentRoot)
+    zope.interface.implements(IContainmentRoot)
 
 
 class DictAdapter(DefaultFileAdpater):
@@ -121,8 +118,7 @@ class TestBase(PlacelessSetup, TempFiles):
         super(TestBase, self).setUp()
 
         # Set up FSRegistryUtility
-        gsm = zope.component.getGlobalSiteManager()
-        gsm.provideUtility(IGlobalFSSyncUtility, fsRegistry)
+        zope.component.provideUtility(fsRegistry)
         provideSynchronizer(None, DefaultFileAdpater)
 
         # Set up temporary name administration
@@ -135,11 +131,15 @@ class TestBase(PlacelessSetup, TempFiles):
         PlacelessSetup.tearDown(self)
 
 
+@zope.component.adapter(IContainer)
+@zope.interface.implementer(IFileFactory)
 def file_factory_maker(container):
     def file_factory(name, content_type, data):
         return loads(data)
     return file_factory
 
+@zope.component.adapter(IContainer)
+@zope.interface.implementer(IDirectoryFactory)
 def directory_factory_maker(container):
     def directory_factory(name):
         return PretendContainer()
@@ -212,7 +212,7 @@ class TestCommitterModule(TestBase):
                 self.name = name
                 self.value = value
         class TestRoot(object):
-            implements(IContainmentRoot, ITraverser)
+            zope.interface.implements(IContainmentRoot, ITraverser)
             def traverse(self, *args):
                 pass
         fspath = tempfile.mktemp()
@@ -259,7 +259,7 @@ class TestCommitterModule(TestBase):
         self.assertEqual(container.items(), [("foo", ["hello", "world"])])
 
     def test_create_object_ifilefactory(self):
-        ztapi.provideAdapter(IContainer, IFileFactory, file_factory_maker)
+        zope.component.provideAdapter(file_factory_maker)
         container = PretendContainer()
         entry = {"flag": "added"}
         data = ["hello", "world"]
@@ -269,8 +269,7 @@ class TestCommitterModule(TestBase):
         self.assertEqual(container.holding, {"foo": ["hello", "world"]})
 
     def test_create_object_idirectoryfactory(self):
-        ztapi.provideAdapter(IContainer, IDirectoryFactory,
-                             directory_factory_maker)
+        zope.component.provideAdapter(directory_factory_maker)
         container = PretendContainer()
         entry = {"flag": "added"}
         tfn = os.path.join(self.tempdir(), "foo")
@@ -288,9 +287,8 @@ class TestCheckerClass(TestBase):
         # Set up environment
         provideSynchronizer(PretendContainer, DirectoryAdapter)
         provideSynchronizer(dict, DictAdapter)
-        ztapi.provideAdapter(IContainer, IFileFactory, file_factory_maker)
-        ztapi.provideAdapter(IContainer, IDirectoryFactory,
-                             directory_factory_maker)
+        zope.component.provideAdapter(file_factory_maker)
+        zope.component.provideAdapter(directory_factory_maker)
 
         # Set up fixed part of object tree
         self.parent = PretendContainer()

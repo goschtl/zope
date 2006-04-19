@@ -178,10 +178,11 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
                          [foo])
 
     def test_query_get_Utility_delegates_to_global(self):
-        gsm = zope.component.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, Foo("global"))
-        gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
+        zope.component.provideUtility(Foo("global"), IInterface)
+        zope.component.provideUtility(Foo("global bob"), IInterface,
+                                      name="bob")
 
+        gsm = zope.component.getGlobalSiteManager()
         sm = zope.component.getSiteManager(self.rootFolder)
         self.assert_(gsm != sm)
 

@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 import persistent
 import zodbcode.module
 import zope.interface
+import zope.component
 
 from zope.filerepresentation.interfaces import IFileFactory
 from zope.app.container.contained import Contained
@@ -81,7 +82,7 @@ class ModuleFactory(object):
         m.execute()
         return m
 
-
+@zope.component.adapter(zope.component.interfaces.IRegistered)
 def setNameOnActivation(event):
     """Set the module name upon registration activation."""
     module = event.object.component
@@ -89,6 +90,7 @@ def setNameOnActivation(event):
         module.name = event.object.name
         module._recompile = True
 
+@zope.component.adapter(zope.component.interfaces.IUnregistered)
 def unsetNameOnDeactivation(event):
     """Unset the permission id up registration deactivation."""
     module = event.object.component
