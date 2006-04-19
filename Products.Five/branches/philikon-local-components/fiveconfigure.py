@@ -35,7 +35,7 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.security.interfaces import IPermission
 
 from zope.app.component.interface import provideInterface
-from zope.app.component.metaconfigure import adapter
+from zope.component.zcml import adapter
 
 from Products.Five import isFiveMethod
 from Products.Five.viewable import Viewable
