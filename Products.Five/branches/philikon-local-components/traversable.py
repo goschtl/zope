@@ -21,11 +21,10 @@ from zope.component import getMultiAdapter, ComponentLookupError
 from zope.interface import implements, Interface
 from zope.publisher.interfaces import ILayer
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.publisher.browser import setDefaultSkin
 from zope.traversing.interfaces import ITraverser, ITraversable
 from zope.traversing.adapters import DefaultTraversable
 from zope.traversing.adapters import traversePathElement
-
-from zope.app.publication.browser import setDefaultSkin
 from zope.app.interface import queryType
 
 from AccessControl import getSecurityManager
