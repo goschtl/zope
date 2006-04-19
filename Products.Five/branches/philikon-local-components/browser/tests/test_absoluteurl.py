@@ -55,7 +55,7 @@ def test_absoluteurl():
     interface:
 
       >>> from zope.interface import directlyProvides, providedBy
-      >>> from zope.app.traversing.interfaces import IContainmentRoot
+      >>> from zope.traversing.interfaces import IContainmentRoot
       >>> directlyProvides(self.folder, IContainmentRoot)
 
       >>> for crumb in view.breadcrumbs():

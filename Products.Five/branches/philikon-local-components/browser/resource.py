@@ -26,9 +26,9 @@ from zope.interface import implements
 from zope.component import getMultiAdapter
 from zope.component.interfaces import IResource
 from zope.publisher.interfaces.browser import IBrowserPublisher
+from zope.traversing.browser.interfaces import IAbsoluteURL
+from zope.datetime import time as timeFromDateTimeString
 
-from zope.app.traversing.browser.interfaces import IAbsoluteURL
-from zope.app.datetimeutils import time as timeFromDateTimeString
 from zope.app.publisher.fileresource import File, Image
 from zope.app.publisher.pagetemplateresource import PageTemplate
 from zope.app.publisher.browser.resources import empty

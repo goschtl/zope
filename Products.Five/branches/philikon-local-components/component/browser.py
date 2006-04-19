@@ -30,9 +30,9 @@ import zope.dottedname.resolve
 from zope.component.globalregistry import base
 from zope.component.persistentregistry import PersistentComponents
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.traversing.browser import absoluteURL
 from zope.app.component.hooks import clearSite
 from zope.app.apidoc.presentation import getViews
-from zope.app.traversing.browser.absoluteurl import absoluteURL
 
 class ComponentsView(BrowserView):
 

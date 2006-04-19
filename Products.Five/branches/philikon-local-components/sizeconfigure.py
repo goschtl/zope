@@ -16,7 +16,7 @@ Zope 2 objects.
 
 $Id$
 """
-from zope.app.size.interfaces import ISized
+from zope.size.interfaces import ISized
 from Products.Five import fivemethod, isFiveMethod
 
 # holds classes that were monkeyed with; for clean up

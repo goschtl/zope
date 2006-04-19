@@ -29,13 +29,12 @@ from zLOG import LOG, ERROR
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
 from zope.component import getUtility
+from zope.component.interface import provideInterface
+from zope.component.zcml import adapter
 from zope.configuration import xmlconfig
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.security.interfaces import IPermission
-
-from zope.app.component.interface import provideInterface
-from zope.component.zcml import adapter
 
 from Products.Five import isFiveMethod
 from Products.Five.viewable import Viewable

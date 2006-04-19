@@ -22,6 +22,8 @@ import os
 
 import zope.component
 from zope.interface import Interface
+from zope.component.zcml import handler
+from zope.component.interface import provideInterface
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IBrowserRequest, \
      IDefaultBrowserLayer
@@ -30,8 +32,6 @@ from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
 from zope.app.publisher.browser.viewmeta import view as zope_app_view
 from zope.app.publisher.browser.viewmeta import providesCallable, \
      _handle_menu, _handle_for
-from zope.app.component.metaconfigure import handler
-from zope.app.component.interface import provideInterface
 
 from Products.Five.browser import BrowserView
 from Products.Five.browser.resource import FileResourceFactory, ImageResourceFactory

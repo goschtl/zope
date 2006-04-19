@@ -25,7 +25,7 @@
       name="absolute_url"
       class=".absoluteurl.AbsoluteURL"
       permission="zope.Public"
-      allowed_interface="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      allowed_interface="zope.traversing.browser.interfaces.IAbsoluteURL"
       />
 
   <view
@@ -33,7 +33,7 @@
       factory=".absoluteurl.AbsoluteURL"
       type="zope.publisher.interfaces.http.IHTTPRequest"
       permission="zope.Public"
-      provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      provides="zope.traversing.browser.interfaces.IAbsoluteURL"
       />
 
   <browser:page
@@ -41,15 +41,15 @@
       name="absolute_url"
       class=".absoluteurl.SiteAbsoluteURL"
       permission="zope.Public"
-      allowed_interface="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      allowed_interface="zope.traversing.browser.interfaces.IAbsoluteURL"
       />
 
   <view
-      for="zope.app.traversing.interfaces.IContainmentRoot"
+      for="zope.traversing.interfaces.IContainmentRoot"
       factory=".absoluteurl.SiteAbsoluteURL"
       type="zope.publisher.interfaces.http.IHTTPRequest"
       permission="zope.Public"
-      provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      provides="zope.traversing.browser.interfaces.IAbsoluteURL"
       />
 
   <browser:view

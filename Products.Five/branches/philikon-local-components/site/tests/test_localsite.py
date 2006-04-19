@@ -27,9 +27,9 @@ import zope.interface
 from zope.component import getGlobalSiteManager, getSiteManager
 from zope.component.interfaces import ComponentLookupError
 from zope.component.interfaces import IComponentLookup
+from zope.traversing.interfaces import IContainmentRoot
 from zope.app.component.hooks import setSite, getSite, setHooks
 from zope.app.component.interfaces import IPossibleSite, ISite
-from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.testing.placelesssetup import PlacelessSetup
 
 from Acquisition import Implicit
