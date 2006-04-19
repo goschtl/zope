@@ -8,11 +8,10 @@
 
   <meta:directives namespace="http://namespaces.zope.org/zope">
 
-    <!-- FIXME: the definePermission handler is not found -->
     <meta:directive
         name="permission"
-        schema="zope.app.security.metadirectives.IDefinePermissionDirective"
-        handler="zope.app.security.metaconfigure.definePermission"
+        schema="zope.security.zcml.IPermissionDirective"
+        handler="zope.security.zcml.permission"
         />
 
     <meta:directive
