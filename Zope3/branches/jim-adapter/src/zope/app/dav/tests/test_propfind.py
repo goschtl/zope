@@ -20,6 +20,7 @@ from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 from datetime import datetime
 
+import zope.component
 from zope.interface import Interface,  directlyProvides, implements
 from zope.publisher.interfaces.http import IHTTPRequest
 
@@ -28,14 +29,13 @@ from zope.schema import getFieldNamesInOrder
 from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence
 from zope.size.interfaces import ISized
 from zope.traversing.api import traverse
-from zope.traversing.browser import AbsoluteURL
+from zope.traversing.browser import AbsoluteURL, absoluteURL
 from zope.publisher.browser import TestRequest
-from zope.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.annotation.interfaces import IAnnotatable
 from zope.annotation.attribute import AttributeAnnotations
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 
-from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.app.container.interfaces import IReadContainer
 from zope.app.component.testing import PlacefulSetup
@@ -87,6 +87,7 @@ def _createRequest(body=None, headers=None, skip_headers=None):
     return request
 
 class FileSized(object):
+    zope.component.adapts(IFile)
     implements(ISized)
 
     def __init__(self, context):
@@ -122,20 +123,21 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         ztapi.browserViewProviding(IDatetime, TextDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(ISequence, SequenceDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(IXMLText, XMLDAVWidget, IXMLDAVWidget)
-        ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
-        ztapi.provideAdapter(IAnnotatable, IZopeDublinCore,
-                             ZDCAnnotatableAdapter)
-        ztapi.provideAdapter(IAnnotatable, IDAVOpaqueNamespaces,
-                             DAVOpaqueNamespacesAdapter)
-        ztapi.provideAdapter(None, IDAVSchema,
-                             DAVSchemaAdapter)
-        ztapi.provideAdapter(IFile, ISized, FileSized)
-        sm = zapi.getGlobalSiteManager()
+
+        zope.component.provideAdapter(AttributeAnnotations, (IAnnotatable,))
+        zope.component.provideAdapter(ZDCAnnotatableAdapter, (IAnnotatable,),
+                                      IZopeDublinCore)
+        zope.component.provideAdapter(DAVOpaqueNamespacesAdapter,
+                                      (IAnnotatable,), IDAVOpaqueNamespaces)
+        zope.component.provideAdapter(DAVSchemaAdapter, (None,), IDAVSchema)
+        zope.component.provideAdapter(FileSized)
+
         directlyProvides(IDAVSchema, IDAVNamespace)
-        sm.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
+        zope.component.provideUtility(IDAVSchema, IDAVNamespace, 'DAV:')
+
         directlyProvides(IZopeDublinCore, IDAVNamespace)
-        sm.provideUtility(IDAVNamespace, IZopeDublinCore,
-                          'http://www.purl.org/dc/1.1')
+        zope.component.provideUtility(IZopeDublinCore, IDAVNamespace,
+                                      'http://www.purl.org/dc/1.1')
 
     def test_contenttype1(self):
         file = self.file
@@ -248,7 +250,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
             body = ''
         request = _createRequest(body=body, headers={
             'Content-type': 'text/xml', 'Depth': depth})
-        resource_url = zapi.absoluteURL(obj, request)
+        resource_url = absoluteURL(obj, request)
         if IReadContainer.providedBy(obj):
             resource_url += '/'
         if resp is None:
