@@ -82,8 +82,8 @@ Finally we need to load the subscribers configuration::
 
   >>> from Products.Five import zcml
   >>> import Products.Five
-  >>> import zope.app.component
-  >>> zcml.load_config('meta.zcml', zope.app.component)
+  >>> import zope.component
+  >>> zcml.load_config('meta.zcml', zope.component)
   >>> zcml.load_config('event.zcml', Products.Five)
 
 We need at least one fake deprecated method to tell the compatibility
