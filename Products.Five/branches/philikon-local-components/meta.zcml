@@ -51,6 +51,30 @@
         />
 
     <meta:complexDirective
+        name="class"
+        schema="zope.app.component.metadirectives.IClassDirective"
+        handler=".metaconfigure.ClassDirective"
+        >
+
+      <meta:subdirective
+          name="implements"
+          schema="zope.app.component.metadirectives.IImplementsSubdirective"
+          />
+
+      <meta:subdirective
+          name="require"
+          schema="zope.app.component.metadirectives.IRequireSubdirective"
+          />
+
+      <meta:subdirective
+          name="allow"
+          schema="zope.app.component.metadirectives.IAllowSubdirective"
+          />
+
+    </meta:complexDirective>
+
+    <!-- BBB 2006/02/24, to be removed after 12 months -->
+    <meta:complexDirective
         name="content"
         schema="zope.app.component.metadirectives.IClassDirective"
         handler=".metaconfigure.ContentDirective"
