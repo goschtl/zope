@@ -15,6 +15,7 @@
 
 $Id$
 """
+import warnings
 from Products.Five.security import CheckerPublic, protectName
 from Globals import InitializeClass as initializeClass
 import zope.app.component.contentdirective
