@@ -21,8 +21,8 @@ __docformat__ = 'restructuredtext'
 from zope.app.annotation import IAnnotations
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
-from zope.generic.keyface.api import getKey
-from zope.generic.keyface.api import queryKey
+from zope.generic.keyface.api import getKeyface
+from zope.generic.keyface.api import queryKeyface
 from zope.generic.keyface.api import toDottedName
 from zope.generic.keyface.api import toKeyface
 
@@ -38,7 +38,7 @@ from zope.generic.informationprovider.base import InformationProvider
 def getInformationProvider(object, provider=IInformationProviderInformation):
     """Evaluate an information provider for an object."""
 
-    return getUtility(provider, toDottedName(getKey(object)))
+    return getUtility(provider, toDottedName(getKeyface(object)))
 
 
 

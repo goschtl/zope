@@ -32,14 +32,6 @@ from zope.generic.testing.testing import registerDirective
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocTestSuite('zope.generic.type.adapter',
-                             setUp=testing.placelesssetup.setUp,
-                             tearDown=testing.placelesssetup.tearDown,
-                             globs={'component': component, 'interface': interface,
-                             'registerDirective': registerDirective,
-                             'testing': testing, 'api': api},
-                             optionflags=doctest.NORMALIZE_WHITESPACE+
-                                            doctest.ELLIPSIS),
         doctest.DocTestSuite('zope.generic.type.factory'),
         doctest.DocTestSuite('zope.generic.type.metaconfigure'),
         doctest.DocFileSuite('README.txt',

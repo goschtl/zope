@@ -27,7 +27,7 @@ from zope.generic.keyface.helper import toKeyface
 
 
 
-def getKey(object):
+def getKeyface(object):
     """Evaluate the interface keyface from an object."""
 
     if IInterface.providedBy(object):
@@ -43,11 +43,11 @@ def getKey(object):
 
 
 
-def queryKey(object, default=None):
+def queryKeyface(object, default=None):
     """Evaluate the keyface keyface from an object."""
 
     try:
-        return getKey(object)
+        return getKeyface(object)
 
     except:
         return default

@@ -41,8 +41,10 @@ from zope.generic.type import IInitializerConfiguration
 from zope.generic.type import ITypeInformation
 from zope.generic.type import ITypeType
 from zope.generic.type.adapter import Initializer
-from zope.generic.type.adapter import ConfigurationAdapterClass
+from zope.generic.configuration.api import ConfigurationAdapterClass
+from zope.generic.configuration.api import ConfigurationAdapterProperty
 from zope.generic.type.factory import TypeFactory
+from zope.generic.type.helper import queryTypeConfiguration
 from zope.generic.type.helper import queryTypeInformation
 
 
@@ -52,6 +54,35 @@ def provideTypeConfiguration(keyface, configuration, data):
 
     info = queryTypeInformation(keyface)
     provideInformation(info, configuration, data)
+
+
+
+_marker = object()
+
+class _TypeConfigurationAdapterProperty(ConfigurationAdapterProperty):
+    """Lookup type informations."""
+
+    def __get__(self, inst, klass):
+        if inst is None:
+            return self
+
+        configurations = inst.__configurations__
+        keyface = inst.__keyface__
+        context = inst.__context__
+
+        configuration = inst.__keyface__(configurations, None)
+        if configuration is None:
+            # Try to evaluate a type configuration
+            configuration = queryTypeConfiguration(context, keyface)
+
+        value = getattr(configuration, self._name, _marker)
+        if value is _marker:
+            field = self._field.bind(inst)
+            value = getattr(field, 'default', _marker)
+            if value is _marker:
+                raise AttributeError(self._name)
+
+        return value
 
 
 
@@ -138,7 +169,7 @@ class TypeDirective(InformationProviderDirective):
 
         # we will provide a generic adapter class
         if class_ is None:
-            class_ = ConfigurationAdapterClass(keyface)
+            class_ = ConfigurationAdapterClass(keyface, (), _TypeConfigurationAdapterProperty)
 
         # register class
         class_directive = ClassDirective(_context, class_)

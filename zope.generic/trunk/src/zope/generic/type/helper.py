@@ -36,6 +36,7 @@ def createObject(keyface, *pos, **kws):
     return component.createObject(toDottedName(keyface), *pos, **kws)
 
 
+
 def createParameter(keyface):
     config = queryTypeConfiguration(keyface, IInitializerConfiguration)
     if config:
@@ -65,7 +66,7 @@ def getType(object):
 def queryType(object, default=None):
     try:
         return getType(object)
-    
+
     except:
         return default
 
@@ -106,6 +107,7 @@ def acquireTypeConfiguration(object, configuration, default=None):
         return default
 
 
+
 def acquireObjectConfiguration(object, configuration, default=None):
     # first try to evaluate object configuration data
     data = queryObjectConfiguration(object, configuration, default)
@@ -116,4 +118,3 @@ def acquireObjectConfiguration(object, configuration, default=None):
     # return type configuration data
     else:
         return queryTypeConfiguration(object, configuration, default)
-

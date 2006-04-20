@@ -76,6 +76,10 @@ def setUp(doctest=None):
     provideAdapter(zope.generic.configuration.adapter.AttributeConfigurations,
         provides=IConfigurations)
 
+    # register the directive of this package
+    import zope.generic.configuration
+    XMLConfig('meta.zcml', zope.generic.configuration)()
+
 def tearDown(doctest=None):
     pass
 

@@ -18,12 +18,16 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.annotation import IAnnotations
+from zope.app.annotation import IAttributeAnnotatable
+from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import alsoProvides
 from zope.interface import implements
 
 from zope.generic.configuration import IAttributeConfigurable
+from zope.generic.configuration import IConfigurations
+from zope.generic.configuration.api import AttributeConfigurations
 from zope.generic.keyface.api import KeyfaceDescription
 
 from zope.generic.informationprovider import IInformationProvider
@@ -77,3 +81,10 @@ class InformationProvider(KeyfaceDescription):
     def __init__(self, keyface, provides, label=None, hint=None):
         super(InformationProvider, self).__init__(keyface, label, hint)
         alsoProvides(self, provides)
+
+    def __conform__(self, interface):
+        if interface is IConfigurations:
+            return AttributeConfigurations(self)
+
+        elif interface is IAnnotations:
+            return AttributeAnnotations(self)

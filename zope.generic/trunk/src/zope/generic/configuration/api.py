@@ -20,5 +20,23 @@ __docformat__ = 'restructuredtext'
 
 from zope.generic.configuration import *
 from zope.generic.configuration.adapter import AttributeConfigurations
+from zope.generic.configuration.adapter import ConfigurationAdapterClass
+from zope.generic.configuration.adapter import ConfigurationAdapterProperty
 from zope.generic.configuration.base import ConfigurationData
 from zope.generic.configuration.helper import configuratonToDict
+
+
+
+def getConfiguration(context, configuration):
+    """Evaluate a configuration."""
+    return configuration(IConfigurations(context))
+
+
+
+def queryConfiguration(context, configuration, default=None):
+    """Evaluate a configuration or return default."""
+    try:
+        return getConfiguration(context, configuration)
+    
+    except:
+        return default

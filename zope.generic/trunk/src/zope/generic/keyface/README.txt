@@ -61,24 +61,24 @@ Furthermore there is simple Keyface mixin for AttributeKeyfaced objects:
 
 The api provides convenience functions to get the key interfaces of components:
 
-    >>> api.getKey(fookeyfaced) == IFooMarker
+    >>> api.getKeyface(fookeyfaced) == IFooMarker
     True
     
-    >>> api.getKey(fookeyface) == IFooMarker
+    >>> api.getKeyface(fookeyface) == IFooMarker
     True
 
-    >>> api.getKey(object())
+    >>> api.getKeyface(object())
     Traceback (most recent call last):
     ...
     TypeError: ('Could not adapt', ...)
 
-    >>> api.queryKey(fookeyfaced) == IFooMarker
+    >>> api.queryKeyface(fookeyfaced) == IFooMarker
     True
     
-    >>> api.queryKey(fookeyface) == IFooMarker
+    >>> api.queryKeyface(fookeyface) == IFooMarker
     True
 
-    >>> api.queryKey(object()) == None
+    >>> api.queryKeyface(object()) == None
     True
 
 

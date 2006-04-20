@@ -26,14 +26,17 @@ from zope.app.location import Location
 from zope.app.location.interfaces import ILocation
 from zope.component import adapts
 from zope.event import notify
+from zope.interface import classImplements
 from zope.interface import implements
 
+from zope.generic.keyface import IAttributeKeyfaced
 from zope.generic.keyface.api import toDottedName
 from zope.generic.keyface.api import toKeyface
 
 from zope.generic.configuration import IAttributeConfigurable
 from zope.generic.configuration import IConfigurationType
 from zope.generic.configuration import IConfigurations
+from zope.generic.configuration.base import ConfigurationData
 from zope.generic.configuration.event import Configuration
 from zope.generic.configuration.event import ObjectConfiguredEvent
 from zope.generic.configuration.helper import configuratonToDict
@@ -141,3 +144,171 @@ class AttributeConfigurations(DictMixin, Location):
         if ILocation.providedBy(parent) and parent.__parent__ is not None:
             notify(ObjectConfiguredEvent(parent, 
                 Configuration(keyface, {})))
+
+
+
+_marker = object()
+
+class ConfigurationAdapterProperty(object):
+    """Compute configuration adapter attributes based on schema fields
+
+    Field properties provide default values, data validation and error messages
+    based on data found in field meta-data.
+
+    Note that ConfigurationAdapterProperty cannot be used with slots. 
+    They can only be used for attributes stored in instance configurations
+    dictionaries.
+    """
+
+    def __init__(self, field, name=None):
+        if name is None:
+            name = field.__name__
+
+        self._field = field
+        self._name = name
+
+    def __get__(self, inst, klass):
+        if inst is None:
+            return self
+
+        configurations = inst.__configurations__
+        keyface = inst.__keyface__
+        context = inst.__context__
+
+        # evaluate configuration
+        configuration = inst.__keyface__(configurations, None)
+        value = getattr(configuration, self._name, _marker)
+        if value is _marker:
+            field = self._field.bind(inst)
+            value = getattr(field, 'default', _marker)
+            if value is _marker:
+                raise AttributeError(self._name)
+
+        return value
+
+    def __set__(self, inst, value):
+        field = self._field.bind(inst)
+        field.validate(value)
+        if field.readonly:
+            raise ValueError(self._name, 'field is readonly')
+
+        configurations = inst.__configurations__
+        keyface = inst.__keyface__
+        # update existing configuration
+        if keyface in configurations:
+            configurations.update(keyface, {self.__name: value})
+            
+        # create a new configuration
+        else:
+            configurations[keyface] = ConfigurationData(keyface, {self._name: value})
+
+        inst.__dict__[self._name] = value
+
+    def __getattr__(self, name):
+        return getattr(self._field, name)
+
+
+
+class ConfigurationAdapterBase(Location):
+    """Base mixin for simple configuration adapter."""
+
+    __keyface__ = None
+
+    def __init__(self, context):
+        self.__context__ = context
+        self.__configurations__ = IConfigurations(context)
+
+
+
+def ConfigurationAdapterClass(keyface, bases=(), property=None):
+    """Generic configuration adapter class factory.
+
+    The generic configuration adapter is a generic adapter class for 
+    instances providing configurations. First we declare a configuration
+    schema:
+
+        >>> from zope.schema import TextLine
+
+        >>> class IFooConfiguration(interface.Interface):
+        ...    foo = TextLine(title=u'Foo', required=False, default=u'Default config.')
+
+    We register the configuration schema using generic:keyface directive:
+
+        >>> registerDirective('''
+        ... <generic:keyface
+        ...     keyface="example.IFooConfiguration"
+        ...     type="zope.generic.configuration.IConfigurationType"
+        ...     />
+        ... ''') 
+
+        >>> from zope.generic.configuration import IConfigurationType
+        >>> IConfigurationType.providedBy(IFooConfiguration)
+        True
+
+    We implement a class which is providing the configuration mechanism:
+    
+        >>> class IFoo(interface.Interface):
+        ...    pass
+
+        >>> registerDirective('''
+        ... <generic:keyface
+        ...     keyface="example.IFoo"
+        ...     />
+        ... ''')
+
+        >>> class Foo(object):
+        ...     interface.implements(IFoo, api.IAttributeConfigurable)
+
+        >>> foo = Foo()
+
+        >>> api.queryConfiguration(foo, IFooConfiguration) is None
+        True
+
+    The simple configuration adapter function will construct an adapter class
+    implementing the IFooConfiguration interface:
+
+        >>> from zope.generic.configuration.adapter import ConfigurationAdapterClass
+        
+        >>> FooConfigurationAdapter = ConfigurationAdapterClass(IFooConfiguration)
+        >>> IFooConfiguration.implementedBy(FooConfigurationAdapter)
+        True
+
+    We can adapt our foo to IFooConfiguration:
+
+        >>> adapted = FooConfigurationAdapter(foo)
+        >>> IFooConfiguration.providedBy(adapted)
+        True
+        >>> adapted.foo
+        u'Default config.'
+
+        >>> adapted.foo = u'Foo config.'
+        >>> adapted.foo
+        u'Foo config.'
+
+        >>> api.queryConfiguration(foo, IFooConfiguration).foo
+        u'Foo config.'
+
+    """
+
+    # preconditions
+    if not IConfigurationType.providedBy(keyface):
+        raise ValueError('Interface must provide %s.' % IConfigurationType.__name__)
+
+    # essentails
+    if not bases:
+        bases = (ConfigurationAdapterBase, )
+
+    class_ = type('ConfigurationAdapterClass from %s' % keyface, bases,
+                  {'__keyface__': keyface})
+
+    classImplements(class_, keyface)
+    
+    if property is None:
+        property = ConfigurationAdapterProperty
+
+    # add field properties for each object field
+    for name in keyface:
+        field = keyface[name]
+        setattr(class_, name, property(keyface[name]))
+
+    return class_
