@@ -20,6 +20,7 @@ from zope.interface import implements
 from zope.i18n import interpolate
 from zope.i18n.interfaces import ITranslationDomain, IUserPreferredLanguages
 from zope.i18nmessageid import MessageID
+from zope.i18n.negotiator import normalize_lang
 from zope.app import zapi
 from zope.publisher.browser import BrowserLanguages
 
@@ -68,7 +69,9 @@ class LocalizerLanguages(object):
         accept_language = self.context.AcceptLanguage
         langs = []
         for lang, node in accept_language.children.items():
-            langs.append((node.get_quality(), lang))
+            # Localizer may use xx_YY and xx-YY as language codes,
+            # while Zope expect xx-yy only, so we normalize the code here.
+            langs.append((node.get_quality(), normalize_lang(lang)))
             langs.extend([(n.get_quality(), l) for l, n
                           in node.children.items()])
         langs.sort()
