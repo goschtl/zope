@@ -63,6 +63,14 @@ class Traversable:
                 return self.__fallback_traverse__(REQUEST, name)
             except (AttributeError, KeyError):
                 pass
+            except NotFound:
+                # OFS.Application.__bobo_traverse__ calls
+                # REQUEST.RESPONSE.notFoundError which sets the HTTP
+                # status code to 404
+                try:
+                    REQUEST.RESPONSE.setStatus(200)
+                except AttributeError:
+                    pass
         else:
             try:
                 return getattr(self, name)
