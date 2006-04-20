@@ -25,6 +25,7 @@ from zope.interface import implements
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container import contained
 from zope.app.container import btree
+from zope.app.container import ordered
 from zope.app import folder
 
 from zope.generic.configuration.api import IAttributeConfigurable
@@ -54,7 +55,9 @@ class Object(object):
 
     __keyface__ = UpdateProvides(IDirectlyTyped['__keyface__'])
     
-    keyface = __keyface__
+    @property
+    def keyface(self):
+        return self.__keyface__
 
 
 
@@ -75,7 +78,9 @@ class Contained(contained.Contained, Persistent):
 
     __keyface__ = UpdateProvides(IDirectlyTyped['__keyface__'])
 
-    keyface = __keyface__
+    @property
+    def keyface(self):
+        return self.__keyface__
 
 
 class Container(btree.BTreeContainer):
@@ -95,7 +100,33 @@ class Container(btree.BTreeContainer):
 
     __keyface__ = UpdateProvides(IDirectlyTyped['__keyface__'])
 
-    keyface = __keyface__
+    @property
+    def keyface(self):
+        return self.__keyface__
+
+
+
+class OrderedContainer(ordered.OrderedContainer):
+    """Default implementation local, persistend and ordered-containerish objects."""
+
+    implements(IDirectlyTyped, IAttributeConfigurable, IAttributeAnnotatable)
+
+    def __init__(self, __keyface__, *pos, **kws):
+        super(OrderedContainer, self).__init__()
+        self.__dict__['__keyface__'] = __keyface__
+        updateDirectlyProvided(self, __keyface__)
+        initializer = IInitializer(self, None)
+        if initializer:
+            initializer(*pos, **kws)
+
+    provides('__keyface__')
+
+    __keyface__ = UpdateProvides(IDirectlyTyped['__keyface__'])
+
+    @property
+    def keyface(self):
+        return self.__keyface__
+
 
 
 class Folder(folder.Folder):
@@ -115,4 +146,6 @@ class Folder(folder.Folder):
 
     __keyface__ = UpdateProvides(IDirectlyTyped['__keyface__'])
 
-    keyface = __keyface__
+    @property
+    def keyface(self):
+        return self.__keyface__

@@ -22,6 +22,7 @@ from zope.generic.type.base import Object
 from zope.generic.type.base import Contained
 from zope.generic.type.base import Container
 from zope.generic.type.base import Folder
+from zope.generic.type.base import OrderedContainer
 
 from zope.generic.type.helper import acquireObjectConfiguration
 from zope.generic.type.helper import createObject
