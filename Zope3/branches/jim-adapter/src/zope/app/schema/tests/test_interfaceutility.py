@@ -24,11 +24,7 @@ from zope.component.interfaces import ComponentLookupError
 from zope.component.interface import getInterface, searchInterface
 from zope.traversing.api import traverse
 
-from zope.app.component.interfaces import ILocalUtility
 from zope.app.component.testing import PlacefulSetup
-from zope.app.component.interfaces.registration import ActiveStatus
-from zope.app.component.interfaces.registration import InactiveStatus
-from zope.app.component.interfaces.registration import IRegistered
 from zope.app.container.contained import Contained
 from zope.app.dependable.interfaces import IDependable
 from zope.app.testing import setup
@@ -36,30 +32,16 @@ from zope.app.testing import setup
 class IBaz(Interface): pass
 
 class Baz(object):
-    # We implement IRegistered and IDependable directly to
+    # We implement IDependable directly to
     # depend as little  as possible on other infrastructure.
-    implements(IBaz, ILocalUtility, IRegistered, IDependable)
+    implements(IBaz, IDependable)
 
     def __init__(self, name):
         self.name = name
-        self._usages = []
         self._dependents = []
 
     def foo(self):
         return 'foo ' + self.name
-
-    def addUsage(self, location):
-        "See zope.app.registration.interfaces.IRegistered"
-        if location not in self._usages:
-            self._usages.append(location)
-
-    def removeUsage(self, location):
-        "See zope.app.registration.interfaces.IRegistered"
-        self._usages.remove(location)
-
-    def usages(self):
-        "See zope.app.registration.interfaces.IRegistered"
-        return self._usages
 
     def addDependent(self, location):
         "See zope.app.dependable.interfaces.IDependable"
@@ -128,16 +110,11 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         gsm = zope.component.getGlobalSiteManager()
 
         gsm.registerUtility(foo, IInterface, name="bob")
-        gsm.registerUtility(bar, ILocalUtility)
         gsm.registerUtility(baz, IBaz)
 
         iface_utilities = gsm.getUtilitiesFor(IInterface)
         ifaces = [iface for (name, iface) in iface_utilities]
         self.assertEqual(ifaces, [(foo)])
-
-        iface_utilities = gsm.getUtilitiesFor(ILocalUtility)
-        ifaces = [iface for (name, iface) in iface_utilities]
-        self.assertEqual(ifaces, [(bar)])
 
         iface_utilities = gsm.getUtilitiesFor(IBaz)
         ifaces = [iface for (name, iface) in iface_utilities]

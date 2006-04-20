@@ -25,8 +25,6 @@ from zope.component.interface import nameToInterface
 from zope.app import zapi
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.testing.setup import addUtility
-from zope.app.component.interfaces.registration import ActiveStatus
-from zope.app.component.site import UtilityRegistration
 
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition,\
@@ -56,14 +54,8 @@ class Test(BrowserTestCase):
                   'ContentWorkflowsManager',
                   'new_value': 'mgr' })
 
-        root = self.getRootFolder()
-        default = zapi.traverse(root, '/++etc++site/default')
-        rm = default.registrationManager
-        registration = UtilityRegistration(
-            'cwm', IContentWorkflowsManager,
-            zapi.traverse(root, self.basepath+'/mgr'))
-        pd_id = rm.addRegistration(registration)
-        zapi.traverse(rm, pd_id).status = ActiveStatus
+        sm.registerUtility(sm['default']['mgr'],
+                           IContentWorkflowsManager, 'cwm')
 
     def test_registry(self):
         response = self.publish(
