@@ -19,6 +19,7 @@ $Id$
 """
 import sys
 from zope.publisher.interfaces import Retry
+## from zope.publisher.interfaces import IPublisherRequest
 from zope.proxy import removeAllProxies
 
 
@@ -127,7 +128,24 @@ def publish(request, handle_errors=True):
                             publication.beforeTraversal(request)
 
                             obj = publication.getApplication(request)
-                            obj = request.traverse(obj)
+## XXX - we should use adapters and interfaces here but Five says
+## that the Zope2 request object implements IPublisherRequest when
+## the API for the traverse method is different on the Zope2 request.
+##                             if IPublisherRequest.providedBy(request):
+##                                 obj = request.traverse(obj)
+##                             else:
+##                                 # The Zope2 request traverse method corresponds
+##                                 # to a different API, so adapt the request
+##                                 # object to a IPublisherRequest object and
+##                                 # then call the traverse method.
+##                                 obj = IPublisherRequest(
+##                                     request).traverse(obj)
+                            try:
+                                from ZPublisher.Publication import Zope3HTTPRequestTraverser
+                                obj = Zope3HTTPRequestTraverser(
+                                    request).traverse(obj)
+                            except ImportError:
+                                obj = request.traverse(obj)
                             publication.afterTraversal(request, obj)
 
                             result = publication.callObject(request, obj)
