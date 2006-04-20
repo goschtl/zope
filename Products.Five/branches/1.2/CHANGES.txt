@@ -5,8 +5,14 @@ Five Changes
 Five 1.2.4 (XXX)
 ================
 
+Bugfixes
+--------
+
 * Made sure LocalizerLanguages class normalized language codes to
   xx-yy, instead of xx_YY or xx-YY.
+
+* Fixed a problem with the new traversal look-up order and the root
+  object (OFS.Application.Application).
 
 Five 1.2.3 (2006-03-31)
 =======================
