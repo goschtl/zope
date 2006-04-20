@@ -207,8 +207,8 @@ def test_view_doesnt_shadow_attribute():
       ...            xmlns:meta="http://namespaces.zope.org/meta"
       ...            xmlns:browser="http://namespaces.zope.org/browser"
       ...            xmlns:five="http://namespaces.zope.org/five">
-      ... <!-- make the zope2.Public permission work -->
-      ... <meta:redefinePermission from="zope2.Public" to="zope.Public" />
+      ...   <!-- make the zope2.Public permission work -->
+      ...   <meta:redefinePermission from="zope2.Public" to="zope.Public" />
       ...   <browser:page
       ...       name="eagle"
       ...       for="OFS.interfaces.IObjectManager"
@@ -216,6 +216,7 @@ def test_view_doesnt_shadow_attribute():
       ...       attribute="eagle"
       ...       permission="zope2.Public"
       ...       />
+      ...   <five:traversable class="OFS.Application.Application"/>
       ... </configure>'''
       >>> import Products.Five
       >>> from Products.Five import zcml
@@ -252,12 +253,31 @@ def test_view_doesnt_shadow_attribute():
       The eagle has landed
 
 
+    Some weird implementations of __bobo_traverse__, like the one
+    found in OFS.Application, raise NotFound.  Five still knows how to
+    deal with this, hence views work there too:
+
+      >>> print http(r'''
+      ... GET /eagle HTTP/1.1
+      ...
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+      The eagle has landed
+
+      >>> print http(r'''
+      ... GET /@@eagle HTTP/1.1
+      ...
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+      The eagle has landed
+
     Clean up:
 
       >>> from zope.app.testing.placelesssetup import tearDown
       >>> tearDown()
     """
-
 
 def test_suite():
     from Testing.ZopeTestCase import FunctionalDocTestSuite
