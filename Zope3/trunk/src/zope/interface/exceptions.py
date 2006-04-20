@@ -17,7 +17,7 @@ $Id$
 """
 
 class Invalid(Exception):
-    """An specification is violated
+    """A specification is violated
     """
 
 class DoesNotImplement(Invalid):
