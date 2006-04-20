@@ -25,7 +25,6 @@ from zope.schema import Int, TextLine, Text
 from zope.annotation.interfaces import IAttributeAnnotatable
 
 from zope.app import zapi
-from zope.app.component.interfaces import ILocalUtility
 from zope.app.container.interfaces import IAdding
 from zope.app.schemacontent.content import ContentComponentDefinition
 from zope.app.schemacontent.content import ContentComponentInstance
