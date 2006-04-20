@@ -22,14 +22,13 @@ from zope.app.component.interface import provideInterface
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import alsoProvides
 
-from zope.generic.component.api import queryInformationProvider
-from zope.generic.component.metaconfigure import provideInformationProvider
-
-from zope.generic.component import IConfigurationType
-from zope.generic.component import IConfigurations
-from zope.generic.component.api import ConfigurationData
-from zope.generic.component.api import provideInformation
-from zope.generic.component.api import queryInformation
+from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration import IConfigurations
+from zope.generic.configuration.api import ConfigurationData
+from zope.generic.informationprovider.api import provideInformation
+from zope.generic.informationprovider.api import queryInformation
+from zope.generic.informationprovider.api import queryInformationProvider
+from zope.generic.informationprovider.metaconfigure import provideInformationProvider
 
 from zope.generic.operation import IOperation
 from zope.generic.operation import IOperationConfiguration

@@ -56,6 +56,10 @@ def setUp(doctest=None):
     provideAdapter(zope.generic.keyface.adapter.KeyfaceForAttributeKeyfaced ,
         provides=IKeyface)
 
+    # register the directive of this package
+    import zope.generic.keyface
+    XMLConfig('meta.zcml', zope.generic.keyface)()
+
 def tearDown(doctest=None):
     pass
 

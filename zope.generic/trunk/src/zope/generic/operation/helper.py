@@ -18,8 +18,8 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.generic.component.api import getInformationProvider
-from zope.generic.component.api import getInformation
+from zope.generic.informationprovider.api import getInformationProvider
+from zope.generic.informationprovider.api import getInformation
 
 from zope.generic.operation import IOperationInformation
 from zope.generic.operation import IOperationConfiguration

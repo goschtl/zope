@@ -2,18 +2,6 @@
   xmlns="http://namespaces.zope.org/zope"
   xmlns:generic="http://namespaces.zope.org/generic"
   i18n_domain="zope">
-
-  <generic:informationProvider
-      keyface=".IConfigurationInformation"
-      label="Configuration Information"
-      registry="zope.generic.component.IInformationProviderInformation"
-      />
- 
-  <generic:informationProvider
-      keyface=".IInformationProviderInformation"
-      label="Information Provider Information"
-      registry=".IInformationProviderInformation"
-      />
  
    <!-- attribute configurations -->
   <class class=".adapter.AttributeConfigurations">
@@ -33,7 +21,7 @@
 
   <adapter 
   	  factory=".adapter.AttributeConfigurations"
-  	  provides="zope.generic.component.IConfigurations"
+  	  provides="zope.generic.configuration.IConfigurations"
   	  trusted="True"
   	  />
 

@@ -18,26 +18,21 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+import zope.app.testing.placelesssetup
 from zope.configuration.xmlconfig import XMLConfig
 
-import zope.app.testing.placelesssetup
-import zope.generic.directlyprovides.testing
 import zope.generic.configuration.testing
-import zope.generic.informationprovider.testing
+import zope.generic.directlyprovides.testing
 import zope.generic.keyface.testing
-import zope.generic.operation
+import zope.generic.informationprovider.testing
 import zope.generic.testing.testing
-
-from zope.generic.informationprovider.metaconfigure import provideInformationProvider
-from zope.generic.operation import IOperationInformation
-
-
 
 ################################################################################
 #
 # Public Test implementations
 #
 ################################################################################
+
 
 
 ################################################################################
@@ -48,11 +43,11 @@ from zope.generic.operation import IOperationInformation
 
 # specific tests
 def setUp(doctest=None):
-    # register operation information registry
-    provideInformationProvider(IOperationInformation)
+    # register attribute configurations adapter
 
     # register the directive of this package
-    XMLConfig('meta.zcml', zope.generic.operation)()
+    import zope.generic.informationprovider
+    XMLConfig('meta.zcml', zope.generic.informationprovider)()
 
 def tearDown(doctest=None):
     pass
@@ -68,19 +63,16 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         zope.generic.directlyprovides.testing.setUp(doctest)
         zope.generic.keyface.testing.setUp(doctest)
         zope.generic.configuration.testing.setUp(doctest)
-        zope.generic.informationprovider.testing.setUp(doctest)
         # internal setup
         setUp(doctest)
 
     def tearDown(self, doctest=None):
         super(PlacelessSetup, self).tearDown()
         # external teardown
-        zope.generic.informationprovider.testing.setUp(doctest)
         zope.generic.configuration.testing.tearDown(doctest)
         zope.generic.keyface.testing.tearDown(doctest)
         zope.generic.directlyprovides.testing.tearDown(doctest)
         zope.generic.testing.testing.tearDown(doctest)
-
         # internal teardown
         tearDown(doctest)
 

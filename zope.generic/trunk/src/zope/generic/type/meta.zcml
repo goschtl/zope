@@ -12,7 +12,7 @@
 
       <meta:subdirective
           name="configuration"
-          schema="zope.generic.component.metadirectives.IConfigurationSubdirective"
+          schema="zope.generic.informationprovider.metadirectives.IConfigurationSubdirective"
           />
 
       <meta:subdirective

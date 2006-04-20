@@ -20,9 +20,9 @@ __docformat__ = 'restructuredtext'
 
 from zope import component
 
-from zope.generic.component.api import toDottedName
-from zope.generic.component.api import queryInformation
-from zope.generic.component.api import queryInformationProvider
+from zope.generic.keyface.api import toDottedName
+from zope.generic.informationprovider.api import queryInformation
+from zope.generic.informationprovider.api import queryInformationProvider
 
 from zope.generic.type import IInitializerConfiguration
 from zope.generic.type import ITypeInformation

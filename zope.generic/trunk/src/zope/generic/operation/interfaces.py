@@ -21,17 +21,15 @@ __docformat__ = 'restructuredtext'
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import alsoProvides
 from zope.interface import Interface
-from zope.interface.interfaces import IInterface
 from zope.schema import Bool
 from zope.schema import Object
 from zope.schema import Tuple
 
-from zope.generic.component import IConfigurationType
-from zope.generic.component import IInformationProvider
-from zope.generic.component import IInformationProviderType
+from zope.generic.configuration import IConfigurationType
+from zope.generic.informationprovider import IInformationProvider
+from zope.generic.informationprovider import IInformationProviderType
 from zope.generic.keyface import IKeyface
-
-from zope.generic.type import ITypeType
+from zope.generic.keyface import IKeyfaceType
 
 
 
@@ -73,7 +71,7 @@ alsoProvides(IOperationInformation, IInformationProviderType)
 
 
 
-class IOperationType(IInterface):
+class IOperationType(IKeyfaceType):
     """Mark operation marker interface."""
 
 

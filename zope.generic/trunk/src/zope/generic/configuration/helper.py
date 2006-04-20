@@ -18,26 +18,6 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.dottedname.resolve import resolve
-
-
-
-def toDottedName(component):
-    if component is None:
-        return 'None'
-    return component.__module__ + '.' + component.__name__
-
-
-# cache
-__name_to_component = {}
-
-def toKeyface(name):
-    try:
-        return __name_to_component[name]
-    except KeyError:
-        return __name_to_component.setdefault(name, resolve(name))
-
-
 
 _marker = object()
 
@@ -56,7 +36,7 @@ def configuratonToDict(interface, configuration, all=False):
 
     Minimal data without defaults:
 
-        >>> from zope.generic.component.base import ConfigurationData
+        >>> from zope.generic.configuration.base import ConfigurationData
         >>> configuration = ConfigurationData(IFooConfiguration, {'fo': 'fo bla'})
         >>> configuratonToDict(IFooConfiguration, configuration)
         {'fo': 'fo bla'}

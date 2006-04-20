@@ -13,12 +13,10 @@ registry is holding user-specific informations.
 In order to implement such an information registry we have to declare an
 *key-like* interface extending the IInformation interface:
 
-    >>> from zope.generic.component import IInformationProvider
-    
-    >>> class ILogSupplierInformation(IInformationProvider):
+    >>> class ILogSupplierInformation(api.IInformationProvider):
     ...     """Store log supplier information."""
 
-    >>> class ILogUserInformation(IInformationProvider):
+    >>> class ILogUserInformation(api.IInformationProvider):
     ...     """Store log user information."""
 
 This specialized information interface has to be registered later by 
@@ -45,8 +43,9 @@ that can be attached to a dedicated supplier information.
 This configuration should be registered by using the configuration directive:
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.ILogConfiguration"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
@@ -61,8 +60,9 @@ selected logger and a user-specific source tag:
     ...     sourceTag = BytesLine(title=u'Source Tag', required=False, default='     ')   
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.ILoggerConfiguration"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
@@ -71,14 +71,14 @@ TODO: Should be a dependency between informationRegistry and its configuration?
     >>> registerDirective('''
     ... <generic:informationProvider
     ...     keyface='example.ILogSupplierInformation'
-    ...     registry='zope.generic.component.IInformationProviderInformation'
+    ...     registry='zope.generic.informationprovider.IInformationProviderInformation'
     ...     />
     ... ''')
 
     >>> registerDirective('''
     ... <generic:informationProvider
     ...     keyface='example.ILogUserInformation'
-    ...     registry='zope.generic.component.IInformationProviderInformation'
+    ...     registry='zope.generic.informationprovider.IInformationProviderInformation'
     ...     />
     ... ''')
 
@@ -126,16 +126,14 @@ implmented as an adapter. We have to declare the logger interface:
 
 After the registration we can retrieve the registries using the
 queryInformationProvider function:
-
-    >>> from zope.generic.component.api import queryInformationProvider
     
-    >>> supplier_registry =  queryInformationProvider(ILogSupplierInformation)
+    >>> supplier_registry =  api.queryInformationProvider(ILogSupplierInformation)
     >>> supplier_registry.label
     u'ILogSupplierInformation'
     >>> supplier_registry.hint
     u'Store log supplier information.'
 
-    >>> user_registry =  queryInformationProvider(ILogUserInformation)
+    >>> user_registry =  api.queryInformationProvider(ILogUserInformation)
     >>> user_registry.label
     u'ILogUserInformation'
     >>> user_registry.hint

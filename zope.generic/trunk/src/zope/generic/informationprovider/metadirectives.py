@@ -24,7 +24,7 @@ from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import MessageID
 from zope.interface import Interface
 
-from zope.generic.component import IInformationProvider
+from zope.generic.informationprovider import IInformationProvider
 
 
 
@@ -48,15 +48,6 @@ class IBaseInformationProviderDirective(Interface):
         description=_('Hint of the informtion.'),
         required=False
         )
-
-
-
-class IConfigurationDirective(IBaseInformationProviderDirective):
-    """Declare configuration schema.
-
-    Register configuration schema as interface utility typed by
-    IConfigurationType within the configuration registry utility.    
-    """
 
 
 

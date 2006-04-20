@@ -27,7 +27,7 @@ from zope.app.container import contained
 from zope.app.container import btree
 from zope.app import folder
 
-from zope.generic.component.api import IAttributeConfigurable
+from zope.generic.configuration.api import IAttributeConfigurable
 from zope.generic.directlyprovides.api import provides
 from zope.generic.directlyprovides.api import UpdateProvides
 from zope.generic.directlyprovides.api import updateDirectlyProvided

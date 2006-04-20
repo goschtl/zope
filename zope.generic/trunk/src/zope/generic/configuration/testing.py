@@ -24,7 +24,7 @@ from zope.configuration.xmlconfig import XMLConfig
 from zope.interface import Interface
 from zope.schema import TextLine
 
-import zope.generic.component.testing
+import zope.generic.configuration.testing
 import zope.generic.keyface.testing
 import zope.generic.directlyprovides.testing
 import zope.generic.testing.testing
@@ -71,14 +71,10 @@ class TestKeyfaceAttriute(object):
 # specific tests
 def setUp(doctest=None):
     # register attribute configurations adapter
-    import zope.generic.component.adapter
-    from zope.generic.component import IConfigurations
-    provideAdapter(zope.generic.component.adapter.AttributeConfigurations,
+    import zope.generic.configuration.adapter
+    from zope.generic.configuration import IConfigurations
+    provideAdapter(zope.generic.configuration.adapter.AttributeConfigurations,
         provides=IConfigurations)
-
-    # register the directive of this package
-    import zope.generic.component
-    XMLConfig('meta.zcml', zope.generic.component)()
 
 def tearDown(doctest=None):
     pass
@@ -93,14 +89,14 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         zope.generic.testing.testing.setUp(doctest)
         zope.generic.directlyprovides.testing.setUp(doctest)
         zope.generic.keyface.testing.setUp(doctest)
-        zope.generic.component.testing.setUp(doctest)
+        zope.generic.configuration.testing.setUp(doctest)
         # internal setup
         setUp(doctest)
 
     def tearDown(self, doctest=None):
         super(PlacelessSetup, self).tearDown()
         # external teardown
-        zope.generic.component.testing.tearDown(doctest)
+        zope.generic.configuration.testing.tearDown(doctest)
         zope.generic.keyface.testing.tearDown(doctest)
         zope.generic.directlyprovides.testing.tearDown(doctest)
         zope.generic.testing.testing.tearDown(doctest)

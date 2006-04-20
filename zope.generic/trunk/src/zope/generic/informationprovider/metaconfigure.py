@@ -23,16 +23,16 @@ from zope.component import provideUtility
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import alsoProvides
 
-from zope.generic.component import IConfigurationInformation
-from zope.generic.component import IConfigurationType
-from zope.generic.component import IConfigurations
-from zope.generic.component import IInformationProvider
-from zope.generic.component import IInformationProviderInformation
-from zope.generic.component import IInformationProviderType
-from zope.generic.component.api import queryInformationProvider
-from zope.generic.component.base import ConfigurationData
-from zope.generic.component.base import InformationProvider
-from zope.generic.component.helper import toDottedName
+from zope.generic.configuration import IConfigurations
+from zope.generic.configuration.api import ConfigurationData
+from zope.generic.keyface.api import toDottedName
+
+from zope.generic.informationprovider.base import InformationProvider
+from zope.generic.informationprovider import IInformationProvider
+from zope.generic.informationprovider import IInformationProviderInformation
+from zope.generic.informationprovider import IInformationProviderType
+from zope.generic.informationprovider.api import queryInformationProvider
+
 
 
 def provideInformationProvider(keyface, registry=IInformationProviderInformation, label=None, hint=None, factory=None):
@@ -52,7 +52,7 @@ def provideInformationProvider(keyface, registry=IInformationProviderInformation
 
     The information can be queried using the following method:
 
-        >>> from zope.generic.component.helper import queryInformationProvider
+        >>> from zope.generic.configuration.helper import queryInformationProvider
         >>> info = queryInformationProvider(IFooMarker, ISpecialInformation)
         >>> info.keyface == IFooMarker
         True
@@ -134,27 +134,3 @@ class InformationProviderDirective(object):
             callable = provideConfiguration,
             args = (self._keyface, self._registry, keyface, data),
             )
-
-
-
-def configurationDirective(_context, keyface, label=None, hint=None):
-    """Provide new configuration information."""
-
-    registry = IConfigurationInformation
-    iface_type = IConfigurationType
-
-    # assert type as soon as possible
-    if not iface_type.providedBy(keyface):
-        alsoProvides(keyface, iface_type)
-
-    _context.action(
-        discriminator = ('provideInformationProvider', keyface, registry),
-        callable = provideInformationProvider,
-        args = (keyface, registry, label, hint),
-        )
-
-    _context.action(
-        discriminator = None,
-        callable = provideInterface,
-        args = (None, keyface, iface_type),
-        )

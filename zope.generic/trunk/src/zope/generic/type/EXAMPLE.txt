@@ -41,29 +41,32 @@ In the generic model these components may be configurations or annotations.
     ...     note = schema.Text(title=u"Note body", required=False)
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.ITextConfig"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.INoteConfig"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''')
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.IArticleInitializationConfiguration"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''')
 
 Step 3: Implement Specific Handlers and the type-specific default data
 ----------------------------------------------------------------------
 
-    >>> from zope.generic.component.api import queryInformation
-    >>> from zope.generic.component.api import provideInformation
-    >>> from zope.generic.component.api import deleteInformation
+    >>> from zope.generic.informationprovider.api import queryInformation
+    >>> from zope.generic.informationprovider.api import provideInformation
+    >>> from zope.generic.informationprovider.api import deleteInformation
     >>> from zope.generic.type.api import queryTypeConfiguration
 
 Let's implement the initializer of the article. Initializers are called from
@@ -90,7 +93,7 @@ initialization process.
     ...     provideInformation(context, INoteConfig, {'body': note})
     ...     deleteInformation(context, IArticleInitializationConfiguration)
  
-    >>> from zope.generic.component.api import ConfigurationData
+    >>> from zope.generic.configuration.api import ConfigurationData
     
     >>> textDefaults = ConfigurationData(ITextConfig, 
     ...     {'body': u"This is the default text."})

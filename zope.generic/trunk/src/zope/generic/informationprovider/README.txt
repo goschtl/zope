@@ -37,7 +37,7 @@ You can use the information provider directive to register an information
 provider as utiliy with an interface extending IInformationProvider and a
 dotted name of an corresponding key interface as utility name:
 
-    >>> from zope.generic.component.api import IInformationProvider
+    >>> from zope.generic.informationprovider.api import IInformationProvider
 
     >>> class ISpecialInformation(IInformationProvider):
     ...    pass
@@ -57,23 +57,18 @@ dotted name of an corresponding key interface as utility name:
 After a registration the information provider can be looked up.
 All information provider with the same interface can be gotten by the 
 getInformationProvidersFor function:
-    
-    >>> from zope.generic.component.api import getInformationProvidersFor
 
-    >>> listing = list(getInformationProvidersFor(ISpecialInformation))
+    >>> listing = list(api.getInformationProvidersFor(ISpecialInformation))
     >>> len(listing) is 1
     True
     >>> [(key.__name__, value) for key, value in listing]
-    [('IFooMarker', <zope.generic.component.base.InformationProvider ...>)]
+    [('IFooMarker', <zope.generic.informationprovider.base.InformationProvider ...>)]
 
 A single information provider can be retrieved by the get- or 
 queryInformationProvider function:
 
-    >>> from zope.generic.component.api import getInformationProvider
-    >>> from zope.generic.component.api import queryInformationProvider
-
-    >>> info = getInformationProvider(IFooMarker, ISpecialInformation)
-    >>> info = queryInformationProvider(IFooMarker, ISpecialInformation)
+    >>> info = api.getInformationProvider(IFooMarker, ISpecialInformation)
+    >>> info = api.queryInformationProvider(IFooMarker, ISpecialInformation)
 
     >>> listing[0][1] == info
     True
@@ -87,9 +82,6 @@ queryInformationProvider function:
     >>> info.label = u'Foo Specials'
     >>> info.hint = u'Bla bla foo.'
 
-
-
-
 If no information provider is available for a certain interface the default
 value is returned. If no default is defined None is returned:
 
@@ -97,11 +89,11 @@ value is returned. If no default is defined None is returned:
     ...    pass
 
     >>> default = object()
-    >>> info = queryInformationProvider(IBarMarker, ISpecialInformation, default)
+    >>> info = api.queryInformationProvider(IBarMarker, ISpecialInformation, default)
     >>> info is default
     True
 
-    >>> info = queryInformationProvider(IBarMarker, ISpecialInformation)
+    >>> info = api.queryInformationProvider(IBarMarker, ISpecialInformation)
     >>> info is None
     True
 
@@ -113,7 +105,7 @@ additional informations in a generic manner:
 
     >>> from zope.app.annotation.interfaces import IAnnotations
 
-    >>> info = queryInformationProvider(IFooMarker, ISpecialInformation)
+    >>> info = api.queryInformationProvider(IFooMarker, ISpecialInformation)
 
     >>> annotations = IAnnotations(info)
     >>> annotations.get('test.annotation')
@@ -150,39 +142,27 @@ is declared by a configuration schema providing IConfigurationType:
     ...     my = TextLine(title=u'My')
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.IMyConfiguration"
-    ...     label='My' hint='My bla.'
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
-    >>> from zope.generic.component.api import IConfigurationType
+    >>> from zope.generic.configuration.api import IConfigurationType
 
     >>> IConfigurationType.providedBy(IMyConfiguration)
-    True
-
-For the further exploration we query this information provider:
-
-    >>> from zope.generic.component.api import IConfigurationInformation
-
-    >>> my_config_ip = queryInformationProvider(IMyConfiguration, IConfigurationInformation)
-    >>> my_config_ip.keyface == IMyConfiguration
-    True
-    >>> IConfigurationInformation.providedBy(my_config_ip)
     True
 
 We now can use this configuration to extend our information provider of the
 key interface IFooMarker. At the moment there are no configurations:
 
-    >>> from zope.generic.component.api import queryInformation
-
-    >>> queryInformation(info, IMyConfiguration) is None
+    >>> api.queryInformation(info, IMyConfiguration) is None
     True
 
 The configuration subdirective of the information provider directive provides a mechanism
 to register further configurations to an information provider:
 
-    >>> from zope.generic.component.api import ConfigurationData
+    >>> from zope.generic.configuration.api import ConfigurationData
     >>> my_information_config = ConfigurationData(IMyConfiguration, {'my': u'My!'})
 
     >>> registerDirective('''
@@ -198,15 +178,13 @@ to register further configurations to an information provider:
     ...     </generic:informationProvider>
     ... ''')
 
-    >>> from zope.generic.component.api import queryInformationProvider
-
-    >>> info = queryInformationProvider(IFooMarker, ISpecialInformation)
-    >>> queryInformation(info, IMyConfiguration) is my_information_config
+    >>> info = api.queryInformationProvider(IFooMarker, ISpecialInformation)
+    >>> api.queryInformation(info, IMyConfiguration) is my_information_config
     True
 
 
-Global Configurations
----------------------
+Configurations
+---------------
 
 Configurations is a container of configuration data. Configuration data are
 defined by an schema which is providing IConfigurationType. The configuration
@@ -218,53 +196,21 @@ data itself has to provide the schema that is used to reference it.
     ...     my = TextLine(title=u'My')
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.IMyConfiguration"
-    ...     label='My' hint='My bla.'
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
-    >>> from zope.generic.component.api import IConfigurationType
+    >>> from zope.generic.configuration.api import IConfigurationType
     >>> IConfigurationType.providedBy(IMyConfiguration)
     True
-
-The registered configuration itself is an information provider which
-is registered as utility providing IConfigurationInformation and is named
-by the dotted configuration schema name (key interface). A configuration
-is an information which can be looked up later using the get- or 
-queryInformationProvider function too:
-
-    >>> from zope.generic.component.api import IConfigurationInformation
-    >>> from zope.generic.component.api import getInformationProvider
-
-    >>> config_info = getInformationProvider(IMyConfiguration, 
-    ...        IConfigurationInformation) 
-    >>> config_info.label == u'My'
-    True
-    >>> config_info.hint == u'My bla.'
-    True
-
-The modification of configuration might cause object configured event.
-Those event extend the regular object event. This event regularly implies
-a location of the referenced object. Therefore only locatable objects will get
-notified. In our example we registered a transient global information which does
-not satify the condition:
-
-    >>> from zope.app.event.tests.placelesssetup import getEvents, clearEvents
-    >>> from zope.generic.component.api import IObjectConfiguredEvent
-
-    >>> events = getEvents()
-    >>> len(events)
-    0 
-
-Local Configurations
---------------------
  
 Regularly local configurations are provided by objects marked with
 IAttributeConfigurations automatically:
 
     >>> from zope.interface import implements
-    >>> from zope.generic.component.api import IAttributeConfigurable
+    >>> from zope.generic.configuration.api import IAttributeConfigurable
 
     >>> class Foo(object):
     ...    implements(IAttributeConfigurable)
@@ -275,7 +221,7 @@ IAttributeConfigurations automatically:
 
 Now you can adapt you to IConfigurations:
 
-    >>> from zope.generic.component.api import IConfigurations
+    >>> from zope.generic.configuration.api import IConfigurations
 
     >>> configurations = IConfigurations(foo)
     >>> IConfigurations.providedBy(configurations)
@@ -349,7 +295,7 @@ configuration. This method can be only used if a configuration already exists:
 You can create valid configuration data using the generic ConfigurationData
 implementation and a configuration schema:
 
-    >>> from zope.generic.component.api import ConfigurationData
+    >>> from zope.generic.configuration.api import ConfigurationData
 
     >>> data = ConfigurationData(IFooConfiguration, {'foo': u'Foo!'})
 
@@ -357,6 +303,9 @@ implementation and a configuration schema:
 
 The setting of the configuration is notified by a object configured event if 
 the parent has a location an the parent's parent is not None:
+
+    >>> from zope.app.event.tests.placelesssetup import getEvents, clearEvents
+    >>> from zope.generic.configuration.api import IObjectConfiguredEvent
 
     >>> events = getEvents()
     >>> len(events)

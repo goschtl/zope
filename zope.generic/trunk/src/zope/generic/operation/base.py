@@ -22,7 +22,7 @@ from zope.interface import implements
 from zope.schema.fieldproperty import FieldProperty
 
 from zope.generic.keyface import IAttributeKeyfaced
-from zope.generic.component.api import Keyface
+from zope.generic.keyface.api import Keyface
 
 from zope.generic.operation import IOperation
 from zope.generic.operation import IPrivateOperation

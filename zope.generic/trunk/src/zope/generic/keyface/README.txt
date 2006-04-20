@@ -21,6 +21,21 @@ First we use a key interface:
     >>> class IFooMarker(interface.Interface):
     ...    pass
 
+The key interface should be registered by the keyface directive. This asserts
+that those interface got marked as IKeyfaceType:
+
+    >>> api.IKeyfaceType.providedBy(IFooMarker)
+    False
+
+    >>> registerDirective('''
+    ... <generic:keyface
+    ...     keyface="example.IFooMarker"
+    ...     />
+    ... ''') 
+
+    >>> api.IKeyfaceType.providedBy(IFooMarker)
+    True
+
 Then we have to decorate a corresponding key-faced component:
 
     >>> class FooKeyfaced(object):
@@ -67,3 +82,33 @@ The api provides convenience functions to get the key interfaces of components:
     True
 
 
+New key interface types can be created to provide key interfaces with a dedicated
+usage (for example IConfigurationType). Attention keyfaces can be typed only
+once by a type deriving from IKeyfaceType:
+
+    >>> class IMyKeyfaceType(api.IKeyfaceType):
+    ...    pass
+
+    >>> registerDirective('''
+    ... <generic:keyface
+    ...     keyface="example.IFooMarker"
+    ...     type="example.IMyKeyfaceType"
+    ...     />
+    ... ''') 
+    Traceback (most recent call last):
+    ...
+    ZopeXMLConfigurationError: ...ConfigurationError: Keyface IFooMarker already registered.
+
+    >>> class IBarMarker(interface.Interface):
+    ...    pass
+
+
+    >>> registerDirective('''
+    ... <generic:keyface
+    ...     keyface="example.IBarMarker"
+    ...     type="example.IMyKeyfaceType"
+    ...     />
+    ... ''') 
+
+    >>> api.IKeyfaceType.providedBy(IBarMarker)
+    True

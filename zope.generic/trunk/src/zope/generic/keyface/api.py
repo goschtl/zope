@@ -22,6 +22,8 @@ from zope.generic.keyface import *
 from zope.generic.keyface.adapter import KeyfaceForAttributeKeyfaced
 from zope.generic.keyface.base import Keyface
 from zope.generic.keyface.base import KeyfaceDescription
+from zope.generic.keyface.helper import toDottedName
+from zope.generic.keyface.helper import toKeyface
 
 
 

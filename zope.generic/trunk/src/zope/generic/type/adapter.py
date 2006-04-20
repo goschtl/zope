@@ -23,11 +23,11 @@ from zope.component import adapts
 from zope.interface import classImplements
 from zope.interface import implements
 
-from zope.generic.component import IConfigurations
-from zope.generic.component import IConfigurationType
-from zope.generic.component.api import provideInformation
-from zope.generic.component.api import ConfigurationData
+from zope.generic.configuration import IConfigurations
+from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration.api import ConfigurationData
 from zope.generic.keyface import IAttributeKeyfaced
+from zope.generic.informationprovider.api import provideInformation
 
 from zope.generic.type import IInitializer
 from zope.generic.type import IInitializerConfiguration
@@ -151,12 +151,13 @@ def ConfigurationAdapterClass(keyface, bases=()):
     We register the configuration schema using generic:configuration directive:
 
         >>> registerDirective('''
-        ... <generic:configuration
+        ... <generic:keyface
         ...     keyface="example.IFooConfiguration"
+        ...     type="zope.generic.configuration.IConfigurationType"
         ...     />
         ... ''') 
 
-        >>> from zope.generic.component import IConfigurationType
+        >>> from zope.generic.configuration import IConfigurationType
         >>> IConfigurationType.providedBy(IFooConfiguration)
         True
 
@@ -167,7 +168,7 @@ def ConfigurationAdapterClass(keyface, bases=()):
 
         >>>
 
-        >>> from zope.generic.component.api import ConfigurationData
+        >>> from zope.generic.configuration.api import ConfigurationData
 
         >>> foo_configuration = ConfigurationData(IFooConfiguration, {'foo': u'Type Foo'})
 

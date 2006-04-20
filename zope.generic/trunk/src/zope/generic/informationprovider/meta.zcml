@@ -4,12 +4,6 @@
 
   <meta:directives namespace="http://namespaces.zope.org/generic">
 
-    <meta:directive
-        name="configuration"
-        schema=".metadirectives.IConfigurationDirective"
-        handler=".metaconfigure.configurationDirective"
-        />
-
     <meta:complexDirective
         name="informationProvider"
         schema=".metadirectives.IInformationProviderDirective"

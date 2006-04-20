@@ -16,4 +16,9 @@
 $Id$
 """
 
-from zope.generic.component.interfaces import *
+__docformat__ = 'restructuredtext'
+
+from zope.generic.configuration import *
+from zope.generic.configuration.adapter import AttributeConfigurations
+from zope.generic.configuration.base import ConfigurationData
+from zope.generic.configuration.helper import configuratonToDict

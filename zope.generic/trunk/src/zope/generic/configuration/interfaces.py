@@ -23,27 +23,19 @@ from zope.app.event.interfaces import IObjectEvent
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.location import ILocation
 from zope.interface import Interface
-from zope.interface import alsoProvides
 from zope.interface import Attribute
-from zope.interface.interfaces import IInterface
 
 from zope.generic.keyface import IKeyfaced
+from zope.generic.keyface import IKeyfaceType
 from zope.generic.keyface import IKeyfaceDescription
 
-
-
-###############################################################################
-#
-# base configurations related interfaces 
-#
-###############################################################################
 
 class IConfigurable(Interface):
     """Provides an adapter to IConfigurations."""
 
 
 
-class IConfigurationType(IInterface):
+class IConfigurationType(IKeyfaceType):
     """Mark a schema that is used for configuration."""
 
 
@@ -136,55 +128,6 @@ class IConfigurations(IReadConfigurations, IUpdateConfigurations,
     """United configurations interfaces."""
 
 
-###############################################################################
-#
-# base configurations related interfaces 
-#
-###############################################################################
-
-
-
-class IInformationProviderType(IInterface):
-    """Mark information interface as information type."""
-
-
-
-class IInformationProvider(IKeyfaceDescription):
-    """Provide information about a dedicated key interfaces.
-    
-    A configuration related to the key interface can be stored within the
-    provider's configurations.
-    
-    Dedicated information providers has to extend this interface.
-    """
-
-
-
-class IInformationProviderInformation(IInformationProvider):
-    """Provide information about information providers."""
-
-
-
-alsoProvides(IInformationProviderInformation, IInformationProviderType)
-
-
-
-###############################################################################
-#
-# Extended key interface related interfaces 
-#
-###############################################################################
-
-
-
-
-
-###############################################################################
-#
-# Extended configurations related interfaces 
-#
-###############################################################################
-
 class IAttributeConfigurable(IConfigurable):
     """Marker indicating that configurations can be stored on an attribute.
     
@@ -194,7 +137,7 @@ class IAttributeConfigurable(IConfigurable):
     """
 
 
-AnnotationKey = 'zope.generic.component.IConfigurations'
+AnnotationKey = 'zope.generic.configuration.IConfigurations'
 
 class IAnnotationsConfigurable(IConfigurable):
     """Marker indicating that configurations can be stored on annotations.
@@ -226,8 +169,3 @@ class IObjectConfiguredEvent(IObjectEvent):
 
     def get(interface, default=None):
         """Return affected configuration data from the description or default."""
-
-    
-
-class IConfigurationInformation(IInformationProvider):
-    """Information about a configuration."""

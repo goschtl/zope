@@ -31,10 +31,10 @@ from zope.interface import implements
 from zope.security.checker import CheckerPublic
 from zope.security.checker import InterfaceChecker
 
-from zope.generic.component.api import toDottedName
-from zope.generic.component.api import ConfigurationData
-from zope.generic.component.api import provideInformation
-from zope.generic.component.metaconfigure import InformationProviderDirective
+from zope.generic.configuration.api import ConfigurationData
+from zope.generic.informationprovider.api import provideInformation
+from zope.generic.informationprovider.metaconfigure import InformationProviderDirective
+from zope.generic.keyface.api import toDottedName
 
 from zope.generic.type import IInitializationHandler
 from zope.generic.type import IInitializerConfiguration

@@ -28,47 +28,15 @@ from zope.component import adapts
 from zope.event import notify
 from zope.interface import implements
 
-from zope.generic.keyface import IAttributeKeyfaced
-from zope.generic.keyface import IKeyface
+from zope.generic.keyface.api import toDottedName
+from zope.generic.keyface.api import toKeyface
 
-from zope.generic.component import IAttributeConfigurable
-from zope.generic.component import IConfigurationType
-from zope.generic.component import IConfigurations
-from zope.generic.component.event import Configuration
-from zope.generic.component.event import ObjectConfiguredEvent
-from zope.generic.component.helper import configuratonToDict
-from zope.generic.component.helper import toDottedName
-from zope.generic.component.helper import toKeyface
-
-
-class Keyface(object):
-    """Adapts IAttributeKeyfaced to IKeyface.
-
-    You can adapt IKeyface if you provide IAttributeKeyfaced:
-
-        >>> class AnyAttributeKeyfaced(Keyface):
-        ...    def __init__(self, keyface):
-        ...         self.__keyface__ = keyface
-
-        >>> fake_keyface = object()
-        >>> any = AnyAttributeKeyfaced(fake_keyface)
-
-        >>> Keyface(any).keyface == fake_keyface
-        True
-        >>> IKeyface.providedBy(Keyface(any))
-        True
-
-"""
-
-    implements(IKeyface)
-    adapts(IAttributeKeyfaced)
-
-    def __init__(self, context):
-        self.context = context
-
-    @property
-    def keyface(self):
-        return self.context.__keyface__
+from zope.generic.configuration import IAttributeConfigurable
+from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration import IConfigurations
+from zope.generic.configuration.event import Configuration
+from zope.generic.configuration.event import ObjectConfiguredEvent
+from zope.generic.configuration.helper import configuratonToDict
 
 
 

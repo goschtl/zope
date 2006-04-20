@@ -21,18 +21,17 @@ __docformat__ = 'restructuredtext'
 from zope.app.annotation import IAnnotations
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
-from zope.interface.interfaces import IInterface
 from zope.generic.keyface.api import getKey
 from zope.generic.keyface.api import queryKey
+from zope.generic.keyface.api import toDottedName
+from zope.generic.keyface.api import toKeyface
 
-from zope.generic.component import *
-from zope.generic.component.base import ConfigurationData
-from zope.generic.component.base import InformationProvider
-from zope.generic.keyface.api import Keyface
-from zope.generic.keyface.api import KeyfaceDescription
-from zope.generic.component.helper import configuratonToDict
-from zope.generic.component.helper import toDottedName
-from zope.generic.component.helper import toKeyface
+from zope.generic.configuration import IConfigurations
+from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration.api import ConfigurationData
+
+from zope.generic.informationprovider import *
+from zope.generic.informationprovider.base import InformationProvider
 
 
 

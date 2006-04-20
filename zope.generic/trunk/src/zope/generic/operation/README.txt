@@ -43,26 +43,30 @@ configuration schema.
 
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.IPAUConfig"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.IAnyInputConfig"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.IAConfig"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.IBConfig"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
@@ -119,8 +123,9 @@ Maybe you need an extra configuration:
     ...    any_c = TextLine()
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.IComplexConfig"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
@@ -147,7 +152,7 @@ and the private operation:
 For each operation directive we registered an operation information. This
 operation information can be retrieved:
 
-    >>> from zope.generic.component.api import getInformationProvidersFor
+    >>> from zope.generic.informationprovider.api import getInformationProvidersFor
 
     >>> listing = list(getInformationProvidersFor(api.IOperationInformation))
     >>> len(listing)

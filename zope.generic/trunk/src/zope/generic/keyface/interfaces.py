@@ -53,6 +53,15 @@ class IAttributeKeyfaced(IKeyfaced):
 
 
 
+class IKeyfaceType(IInterface):
+    """Mark key interfaces.
+
+    You can derive from this type to provide dedicated keyface types. A key 
+    interface should only provide a single keyface type.
+    """
+
+
+
 class IKeyface(IKeyfaced):
     """Declare a key interface as component-specific key.
 
@@ -64,7 +73,7 @@ class IKeyface(IKeyfaced):
         description=_('Key interface of the adapted context.'),
         required=True,
         readonly=True,
-        schema=IInterface)
+        schema=IKeyfaceType)
 
 
 

@@ -18,7 +18,7 @@ Informations provided by the type information should be accounted by the handlin
 of instances marked by a certain type marker interface.
 
 The type directive does extend the information directive
-(see zope.generic.component).
+(see zope.generic.configuration).
 
 
 Base type directive
@@ -77,7 +77,7 @@ A corresponding type information utility will be available. Your can
 retrieve this utility using the conventional utility api:
 
     >>> from zope.component import queryUtility
-    >>> from zope.generic.component.api import toDottedName
+    >>> from zope.generic.keyface.api import toDottedName
 
     >>> info = queryUtility(api.ITypeInformation, toDottedName(IFooMarker))
 
@@ -104,7 +104,7 @@ Type subdirectives
 
 There are serveral subdirectives like:
 
--	configurations (see zope.generic.component)
+-	configurations (see zope.generic.configuration)
 -	initializer
 
 You can extend type informations by the annotations and configurations mechanism
@@ -127,19 +127,20 @@ Then we provide two example configurations for our example:
     ...		optional = TextLine(title=u'Other', required=False, default=u'Default bla.')
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.IAnyConfiguration"
-    ...     label='Any' hint='Any bla.'
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
-    ... <generic:configuration
+    ... <generic:keyface
     ...     keyface="example.IOtherConfiguration"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
-	>>> from zope.generic.component.api import ConfigurationData
+	>>> from zope.generic.configuration.api import ConfigurationData
 	>>> typedata = ConfigurationData(IAnyConfiguration, {'any': u'Guguseli from Type!'})
 	>>> IAnyConfiguration.providedBy(typedata)
 	True
@@ -215,7 +216,7 @@ different configurations:
 	>>> api.acquireObjectConfiguration(bar, IOtherConfiguration).other
 	u'Specific initialization data.'
 
-    >>> from zope.generic.component.api import IConfigurations
+    >>> from zope.generic.configuration.api import IConfigurations
 	>>> objectdata = ConfigurationData(IAnyConfiguration, {'any': u'Guguseli from Object!'})
 	>>> IConfigurations(bar)[IAnyConfiguration] = objectdata
 	
@@ -238,7 +239,7 @@ The configurationAdapter subdirective provides an adapter too:
 If we remove the object's configuration the adapter will invoke
 the type configuration, but only the object's configuration can be set:
 
-    >>> from zope.generic.component.api import deleteInformation
+    >>> from zope.generic.informationprovider.api import deleteInformation
     >>> deleteInformation(bar, IAnyConfiguration)
 
     >>> IAnyConfiguration(bar).any

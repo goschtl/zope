@@ -21,14 +21,14 @@ __docformat__ = 'restructuredtext'
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import alsoProvides
 from zope.interface import Interface
-from zope.interface.interfaces import IInterface
 from zope.schema import Bool
 from zope.schema import Object
 
-from zope.generic.component import IConfigurationType
-from zope.generic.component import IInformationProvider
+from zope.generic.configuration import IConfigurationType
 from zope.generic.directlyprovides import IProvides
+from zope.generic.informationprovider import IInformationProvider
 from zope.generic.keyface import IKeyface
+from zope.generic.keyface import IKeyfaceType
 
 
 __all__ = ['ITypeType', 'ITypeable', 'ITyped', 'IDirectlyTyped', 
@@ -37,7 +37,7 @@ __all__ = ['ITypeType', 'ITypeable', 'ITyped', 'IDirectlyTyped',
 
 
 
-class ITypeType(IInterface):
+class ITypeType(IKeyfaceType):
     """An abstract interface marker marker type.
 
     An interface marked by this marker type will provide an typed information

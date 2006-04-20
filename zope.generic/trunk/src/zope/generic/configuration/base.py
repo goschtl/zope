@@ -22,9 +22,7 @@ from persistent import Persistent
 from persistent import IPersistent
 from persistent.dict import PersistentDict
 
-from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.interface import alsoProvides
 from zope.interface import directlyProvides
 from zope.interface import implements
 from zope.interface.interfaces import IMethod
@@ -32,14 +30,10 @@ from zope.schema.interfaces import IField
 
 from zope.generic.keyface import IAttributeKeyfaced
 from zope.generic.keyface import IKeyface
-from zope.generic.keyface.api import KeyfaceDescription
 from zope.generic.keyface.api import KeyfaceForAttributeKeyfaced
 
-from zope.generic.component import IAttributeConfigurable
-from zope.generic.component import IConfigurationData
-from zope.generic.component import IConfigurations
-from zope.generic.component import IInformationProvider
-from zope.generic.component.helper import toDottedName
+from zope.generic.configuration import IConfigurationData
+from zope.generic.configuration import IConfigurations
 
 
 
@@ -113,8 +107,7 @@ class ConfigurationData(Persistent):
 
         >>> adapted.keyface is IBarConfiguration
         True
-
-        
+  
     """
 
     implements(IAttributeKeyfaced, IConfigurationData)
@@ -184,53 +177,3 @@ class ConfigurationData(Persistent):
             data[name] = value
         else:
             super(ConfigurationData, self).__setattr__(name, value)
-
-
-
-class InformationProvider(KeyfaceDescription):
-    """Generic information provider.
-
-    Information do relate a dedicated type of information marked as an interface
-    extending IInformationProvider and another marker interface:
-
-        >>> class ISpecialInformation(IInformationProvider):
-        ...    pass
-
-        >>> from zope.interface import Interface
-        >>> class IFooMarker(Interface):
-        ...    '''Foo is member of the example domain.'''
-
-        >>> info = InformationProvider(IFooMarker, ISpecialInformation)
-
-    The information will provide the interface of the dedicated information:
-
-        >>> ISpecialInformation.providedBy(info)
-        True
-
-    The information is related to the interface declared by the interface
-    attribute:
-
-        >>> info.keyface == IFooMarker
-        True
-        >>> info.label
-        u'IFooMarker'
-        
-        >>> info.hint
-        u'Foo is member of the example domain.'
-
-
-    Often you will provide a specific label and hint for the end-user:
-
-        >>> info = InformationProvider(IFooMarker, ISpecialInformation, u'Foo', u'Bla bla.')
-        >>> info.label
-        u'Foo'
-        
-        >>> info.hint
-        u'Bla bla.'
-    """
-
-    implements(IInformationProvider, IAttributeConfigurable, IAttributeAnnotatable)
-
-    def __init__(self, keyface, provides, label=None, hint=None):
-        super(InformationProvider, self).__init__(keyface, label, hint)
-        alsoProvides(self, provides)
