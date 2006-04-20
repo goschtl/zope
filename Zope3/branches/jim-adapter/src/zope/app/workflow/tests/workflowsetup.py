@@ -20,7 +20,7 @@ from zope.interface import implements
 from zope.app import zapi
 from zope.app.security.interfaces import IAuthenticationService
 from zope.app.security.principalregistry import principalRegistry
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 from zope.app.testing import setup
 
 
