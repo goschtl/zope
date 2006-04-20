@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- ToolBar viewlets -->
+  <include package=".toolbar" />
+
+  <!-- Left viewlets -->
+  <include package=".xmltree" />
+  <include package=".addinginfo" />
+
+</configure>

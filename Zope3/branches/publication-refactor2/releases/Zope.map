@@ -1,0 +1,45 @@
+# These packages are the Zope 3 components.
+#
+docutils       ../src/docutils
+pytz           ../src/pytz
+zodbcode       ../src/zodbcode
+zope           ../src/zope
+
+# Child packages of Zope are handled separately when constructing Zope
+# distributions; this tells where to find all of them.
+zope.*         ../src/zope/
+
+# Dependencies of testbrowser
+ClientCookie    ../src/ClientCookie
+mechanize       ../src/mechanize
+# XXX toplevel modules are not supported by zpkg yet, but it
+# appears that philiKON is on the case - jinty
+
+# Related components for use with Zope 3:
+buddydemo      ../src/buddydemo
+z3checkins     ../src/z3checkins
+
+# These packages are copied from the ZConfig, zdaemon, and ZODB projects:
+#
+BTrees          ../src/BTrees
+persistent      ../src/persistent
+transaction     ../src/transaction
+ThreadedAsync   ../src/ThreadedAsync
+ZEO             ../src/ZEO
+ZODB            ../src/ZODB
+
+RestrictedPython ../src/RestrictedPython
+ZConfig          ../src/ZConfig
+zdaemon          ../src/zdaemon
+
+# These packages are the release collections based on the Zope 3
+# project; they define what goes into the Zope X3 and related
+# releases.
+#
+Zope-win         ../releases/Zope-win
+Zope             ../releases/Zope
+Zope-src         ../releases/Zope
+ZopeInterface    ../releases/ZopeInterface
+ZopeTestbrowser  ../releases/ZopeTestbrowser
+Workflow         ../releases/Workflow
+ZPT              ../releases/ZPT

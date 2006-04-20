@@ -1,0 +1,68 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:help="http://namespaces.zope.org/help"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="zope">
+
+  <layer
+      name="boston"
+      interface="zope.app.boston.boston"
+      />
+
+  <skin
+      name="Boston"
+      interface="zope.app.boston.Boston"
+      />
+
+  <viewletManager
+      name="zope.app.boston.IHead"
+      provides="zope.app.boston.IHead"
+      layer="zope.app.boston.boston"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="zope.app.boston.ICSS"
+      provides="zope.app.boston.ICSS"
+      layer="zope.app.boston.boston"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="zope.app.boston.IJavaScript"
+      provides="zope.app.boston.IJavaScript"
+      layer="zope.app.boston.boston"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="zope.app.boston.IToolBar"
+      provides="zope.app.boston.IToolBar"
+      class=".viewlets.toolbar.browser.ToolBarViewletManager"
+      template="viewlets/toolbar/macros.pt"
+      layer="zope.app.boston.boston"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="zope.app.boston.ILeft"
+      provides="zope.app.boston.ILeft"
+      class="zope.app.boston.LeftViewletManager"
+      layer="zope.app.boston.boston"
+      permission="zope.Public"
+      />
+
+  <include package=".viewlets" />
+  <include package=".browser" />
+
+  <configure zcml:condition="have onlinehelp">
+    <help:register
+        id="boston"
+        title="Boston Skin"
+        doc_path="README.txt"
+        class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
+        />
+  </configure>
+
+</configure>

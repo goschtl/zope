@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope">
+
+  <content class=".intwidget.DemoIntWidget">
+
+    <require permission="zope.View" 
+        interface=".interfaces.IDemoIntWidget"
+        />
+
+    <require permission="zope.ManageContent" 
+        set_schema=".interfaces.IDemoIntWidget"
+        />
+
+  </content>
+
+</configure>
