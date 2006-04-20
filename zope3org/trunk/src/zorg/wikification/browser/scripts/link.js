@@ -6,6 +6,10 @@ var PopupMenu = {
     initialize : function() {
         document.onmousedown = PopupMenu.onMouseDown;
         },
+        
+    leave : function (caller, dropmenuID) {
+        // PopupMenu.close();
+        },
             
     update : function (caller, dropmenuID, extra)  {
         document.onmousedown = PopupMenu.onMouseDown;

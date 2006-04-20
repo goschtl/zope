@@ -510,7 +510,7 @@ class MenuPlaceholder(Placeholder) :
     """
     
     _menu = ViewPageTemplateFile("./templates/linkmenu.pt")
-    _link = '<a class="wiki-link" href="%s" onmouseover="%s" %s>'
+    _link = '<a class="wiki-link" href="%s" onmouseover="%s" onmouseout="%s" %s>'
     _dimmed = '<span class="dimmed-wiki-link">'
     
     wikified = False
@@ -522,6 +522,7 @@ class MenuPlaceholder(Placeholder) :
         self.enabled = processor.page.isEditable()
         self.menu_id = processor.createMenuId(index)
         self.onMouseOver = "PopupMenu.update(this, '%s');" % self.menu_id
+        self.onMouseOut = "PopupMenu.leave(this, '%s');" % self.menu_id
        
     def startTag(self, attrs) :
         """ Called when a starttag for a placeholder is detected. """
@@ -532,7 +533,7 @@ class MenuPlaceholder(Placeholder) :
             self.wikified = True
             attrs.append(("id", self.link_id))
             if self.enabled :
-                return self._link % (link, self.onMouseOver, 
+                return self._link % (link, self.onMouseOver, self.onMouseOut,
                                                         self._tagAttrs(attrs))
             else :
                 return self._dimmed
