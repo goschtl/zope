@@ -53,7 +53,7 @@ Plugin Types
 
 Plugin Registration
 
-  PluggableAuthService's plugins are configured via its ZMI, or alteratively
+  PluggableAuthService plugins are configured via the ZMI, or alternatively
   via an XML import / export mechanism.  Each plugin is identified
   using a TALES path expression, which will be evaluated with an
   implied 'nocall' modifier;  plugins are intended to be callables,

@@ -51,7 +51,7 @@ class UserPropertySheetTests( unittest.TestCase
 
         return self._getTargetClass()( *args, **kw )
 
-    def test_ctor_id_noscehma_novalues( self ):
+    def test_ctor_id_noschema_novalues( self ):
 
         ups = self._makeOne( 'empty' )
 

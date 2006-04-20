@@ -319,7 +319,7 @@ class IUserEnumerationPlugin( Interface ):
 
         o Plugin *must* ignore unknown criteria.
 
-        o Plugin may raise ValueError for invalid critera.
+        o Plugin may raise ValueError for invalid criteria.
 
         o Insufficiently-specified criteria may have catastrophic
           scaling issues for some implementations.

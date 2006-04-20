@@ -202,9 +202,9 @@ class IPluggableAuthService( IUserFolder ):
         """
 
     def logout(REQUEST):
-        """Publicly accessible method to log out a usera wrapper
+        """Publicly accessible method to log out a user. A wrapper
         around resetCredentials that may implement some policy (the
-        default implementation redirects to HTTP_REFERER)
+        default implementation redirects to HTTP_REFERER).
         """
 
     def resetCredentials(self, request, response):
