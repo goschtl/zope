@@ -25,10 +25,10 @@ from zope.interface.interfaces import IInterface
 from zope.schema import Bool
 from zope.schema import Object
 
-from zope.generic.component import IKeyface
 from zope.generic.component import IConfigurationType
-from zope.generic.directlyprovides import IProvides
 from zope.generic.component import IInformationProvider
+from zope.generic.directlyprovides import IProvides
+from zope.generic.keyface import IKeyface
 
 
 __all__ = ['ITypeType', 'ITypeable', 'ITyped', 'IDirectlyTyped', 

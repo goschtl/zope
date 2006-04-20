@@ -92,7 +92,7 @@ implmented as an adapter. We have to declare the logger interface:
 
     >>> from zope.interface import implements
     >>> from zope.component import adapts
-    >>> from zope.generic.component import IKeyface
+    >>> from zope.generic.keyface import IKeyface
 
     >>> class Logger(object):
     ...     """Generic logger adapter."""

@@ -22,42 +22,17 @@ from zope.app.annotation import IAnnotations
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
 from zope.interface.interfaces import IInterface
+from zope.generic.keyface.api import getKey
+from zope.generic.keyface.api import queryKey
 
 from zope.generic.component import *
 from zope.generic.component.base import ConfigurationData
 from zope.generic.component.base import InformationProvider
-from zope.generic.component.base import Keyface
-from zope.generic.component.base import KeyfaceDescription
+from zope.generic.keyface.api import Keyface
+from zope.generic.keyface.api import KeyfaceDescription
 from zope.generic.component.helper import configuratonToDict
 from zope.generic.component.helper import toDottedName
 from zope.generic.component.helper import toKeyface
-
-
-
-def getKey(object):
-    """Evaluate the interface keyface from an object."""
-
-    if IInterface.providedBy(object):
-        keyface = object
-
-    elif IKeyface.providedBy(object):
-        keyface = object.keyface
-
-    else:
-        keyface = IKeyface(object).keyface
-
-    return keyface
-
-
-
-def queryKey(object, default=None):
-    """Evaluate the keyface keyface from an object."""
-
-    try:
-        return getKey(object)
-
-    except:
-        return default
 
 
 

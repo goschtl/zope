@@ -26,10 +26,10 @@ from zope.schema import Bool
 from zope.schema import Object
 from zope.schema import Tuple
 
-from zope.generic.component import IKeyface
 from zope.generic.component import IConfigurationType
 from zope.generic.component import IInformationProvider
 from zope.generic.component import IInformationProviderType
+from zope.generic.keyface import IKeyface
 
 from zope.generic.type import ITypeType
 

@@ -30,65 +30,16 @@ from zope.interface import implements
 from zope.interface.interfaces import IMethod
 from zope.schema.interfaces import IField
 
+from zope.generic.keyface import IAttributeKeyfaced
+from zope.generic.keyface import IKeyface
+from zope.generic.keyface.api import KeyfaceDescription
+from zope.generic.keyface.api import KeyfaceForAttributeKeyfaced
+
 from zope.generic.component import IAttributeConfigurable
 from zope.generic.component import IConfigurationData
 from zope.generic.component import IConfigurations
 from zope.generic.component import IInformationProvider
-from zope.generic.component import IKeyface
-from zope.generic.component import IAttributeKeyface
-from zope.generic.component import IKeyfaceDescription
-from zope.generic.component import adapter
 from zope.generic.component.helper import toDottedName
-
-
-
-class Keyface(object):
-    """Key interface mixin for key interface attribute implementations.
-    
-    You can mixin this class if you like to provide IKeyface for
-    IAttributeKeyface implementations:
-
-        >>> class AnyAttributeKeyface(Keyface):
-        ...    def __init__(self, keyface):
-        ...         self.__keyface__ = keyface
-
-        >>> fake_keyface = object()
-        >>> any = AnyAttributeKeyface(fake_keyface)
-        >>> any.__keyface__ == fake_keyface
-        True
-
-    You get only the following method decorator for free :):
-
-        >>> any.keyface == fake_keyface
-        True
-            
-    """
-
-    implements(IKeyface)
-
-    @property
-    def keyface(self):
-        return self.__keyface__
-
-
-
-class KeyfaceDescription(Keyface):
-    """Key interface description mixin."""
-
-    implements(IKeyfaceDescription)
-
-    def __init__(self, keyface, label=None, hint=None):
-        self.__keyface__ = keyface
-
-        if label is None:
-            self.label = _(keyface.__name__)
-        else:
-            self.label = label
-
-        if hint is None:
-            self.hint = _(keyface.__doc__)
-        else:
-            self.hint = hint
 
 
 
@@ -166,7 +117,7 @@ class ConfigurationData(Persistent):
         
     """
 
-    implements(IAttributeKeyface, IConfigurationData)
+    implements(IAttributeKeyfaced, IConfigurationData)
 
     def __init__(self, schema, data):
         # preconditions
@@ -185,12 +136,12 @@ class ConfigurationData(Persistent):
         self.__dict__['__keyface__'] = schema
         directlyProvides(self, schema)
 
-    def __conform__(self, keyface):
-        if keyface is IKeyface:
-            return adapter.Keyface(self)
+    def __conform__(self, interface):
+        if interface is IKeyface:
+            return KeyfaceForAttributeKeyfaced(self)
 
     def __getattr__(self, name):
-        # assert IAttributeKeyface
+        # assert IAttributeKeyfaced
         if name == '__keyface__':
             return self.__dict__['__keyface__']
 

@@ -23,11 +23,11 @@ from zope.component import adapts
 from zope.interface import classImplements
 from zope.interface import implements
 
-from zope.generic.component import IAttributeKeyface
 from zope.generic.component import IConfigurations
 from zope.generic.component import IConfigurationType
 from zope.generic.component.api import provideInformation
 from zope.generic.component.api import ConfigurationData
+from zope.generic.keyface import IAttributeKeyfaced
 
 from zope.generic.type import IInitializer
 from zope.generic.type import IInitializerConfiguration

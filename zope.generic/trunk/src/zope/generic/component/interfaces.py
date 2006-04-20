@@ -26,68 +26,10 @@ from zope.interface import Interface
 from zope.interface import alsoProvides
 from zope.interface import Attribute
 from zope.interface.interfaces import IInterface
-from zope.schema import Bool
-from zope.schema import Dict
-from zope.schema import Object
-from zope.schema import Text
-from zope.schema import TextLine
-from zope.schema import Tuple
 
+from zope.generic.keyface import IKeyfaced
+from zope.generic.keyface import IKeyfaceDescription
 
-###############################################################################
-#
-# Base key interface related interfaces  
-#
-###############################################################################
-
-class IKeyfaceProvider(Interface):
-    """Assert that a key interface can be looked up.
-
-    The key interface must be provided by adaption to IKeyface."""
-
-
-
-class IAttributeKeyface(IKeyfaceProvider):
-    """Provide the key interface within the __keyface__ attribute."""
-
-    __keyface__ = Object(
-        title=_('Key interface'),
-        description=_('Key interface that allows to lookup ' +
-                      'key-interface-specific informations such as ' +
-                      'configurations providers.'),
-        required=True,
-        readonly=True,
-        schema=IInterface)
-
-
-
-class IKeyface(IKeyfaceProvider):
-    """Declare a key interface as component-specific key.
-
-    You can use this key to lookup component-specific informations.
-    """
-
-    keyface = Object(
-        title=_('Key interface'),
-        description=_('Key interface of the adapted context.'),
-        required=True,
-        readonly=True,
-        schema=IInterface)
-
-
-
-class IKeyfaceDescription(IKeyface):
-    """User description about the associated key interface."""
-
-    label = TextLine(title=_('Label'),
-        description=_('Label for associated key interface.'),
-        required=True
-        )  
-
-    hint = Text(title=_('Hint'),
-        description=_('Hint explaning the properties of the associated key interface.'),
-        required=True
-        )
 
 
 ###############################################################################
@@ -106,7 +48,7 @@ class IConfigurationType(IInterface):
 
 
 
-class IConfigurationData(IKeyfaceProvider):
+class IConfigurationData(IKeyfaced):
     """Marker for configuration data implementations."""
 
 

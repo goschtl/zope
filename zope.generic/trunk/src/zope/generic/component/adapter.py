@@ -28,11 +28,12 @@ from zope.component import adapts
 from zope.event import notify
 from zope.interface import implements
 
+from zope.generic.keyface import IAttributeKeyfaced
+from zope.generic.keyface import IKeyface
+
 from zope.generic.component import IAttributeConfigurable
 from zope.generic.component import IConfigurationType
 from zope.generic.component import IConfigurations
-from zope.generic.component import IKeyface
-from zope.generic.component import IAttributeKeyface
 from zope.generic.component.event import Configuration
 from zope.generic.component.event import ObjectConfiguredEvent
 from zope.generic.component.helper import configuratonToDict
@@ -41,16 +42,16 @@ from zope.generic.component.helper import toKeyface
 
 
 class Keyface(object):
-    """Adapts IAttributeKeyface to IKeyface.
+    """Adapts IAttributeKeyfaced to IKeyface.
 
-    You can adapt IKeyface if you provide IAttributeKeyface:
+    You can adapt IKeyface if you provide IAttributeKeyfaced:
 
-        >>> class AnyAttributeKeyface(Keyface):
+        >>> class AnyAttributeKeyfaced(Keyface):
         ...    def __init__(self, keyface):
         ...         self.__keyface__ = keyface
 
         >>> fake_keyface = object()
-        >>> any = AnyAttributeKeyface(fake_keyface)
+        >>> any = AnyAttributeKeyfaced(fake_keyface)
 
         >>> Keyface(any).keyface == fake_keyface
         True
@@ -60,7 +61,7 @@ class Keyface(object):
 """
 
     implements(IKeyface)
-    adapts(IAttributeKeyface)
+    adapts(IAttributeKeyfaced)
 
     def __init__(self, context):
         self.context = context

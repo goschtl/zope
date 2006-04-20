@@ -2,16 +2,9 @@
 Generic Component
 =================
 
-The behavior of components within the ca-framework depends heavily on their
-provided interfaces. A component, except most of the adapters and utilities, 
-regularly provides more than one interface. The adaption and subscriber 
-mechanism of the ca-framework invokes the provided interfaces by a 
-lookup-algorithmus similar to the method resolution order by class inherintance.
-
-Most of the time this behavior satisfies our requirements. Additionally this 
-package offers a mechanism to declare a single key interface (IKeyface).
-This key interface can be used to lookup corresponding information providers
-more explicitly. 
+The key interface (see zope.generic.keyface) can be used to lookup corresponding
+information providers. This package offers a way to implement information
+providers generically.
 
 You can register different information providers to the same key interface. An
 information provider encapsulates a certain information aspect of the key 
@@ -71,7 +64,7 @@ getInformationProvidersFor function:
     >>> len(listing) is 1
     True
     >>> [(key.__name__, value) for key, value in listing]
-    [('IFooMarker', {})]
+    [('IFooMarker', <zope.generic.component.base.InformationProvider ...>)]
 
 A single information provider can be retrieved by the get- or 
 queryInformationProvider function:

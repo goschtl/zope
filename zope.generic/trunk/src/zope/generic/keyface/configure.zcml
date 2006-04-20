@@ -1,0 +1,20 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:generic="http://namespaces.zope.org/generic"
+  i18n_domain="zope">
+
+   <!-- attribute configurations -->
+  <class class=".adapter.KeyfaceForAttributeKeyfaced">
+    <require
+        permission="zope.Public"
+        interface=".IKeyface"
+        />
+  </class>
+
+  <adapter 
+  	  factory=".adapter.KeyfaceForAttributeKeyfaced"
+  	  provides=".IKeyface"
+  	  trusted="True"
+  	  />
+
+</configure>

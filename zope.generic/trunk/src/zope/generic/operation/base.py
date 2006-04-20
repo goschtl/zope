@@ -21,7 +21,7 @@ __docformat__ = 'restructuredtext'
 from zope.interface import implements
 from zope.schema.fieldproperty import FieldProperty
 
-from zope.generic.component import IAttributeKeyface
+from zope.generic.keyface import IAttributeKeyfaced
 from zope.generic.component.api import Keyface
 
 from zope.generic.operation import IOperation
@@ -34,7 +34,7 @@ class Operation(Keyface):
 
     implements(IOperation)
 
-    keyface = FieldProperty(IAttributeKeyface['__keyface__'])
+    keyface = FieldProperty(IAttributeKeyfaced['__keyface__'])
 
     def __init__(self, callable=None, keyface=None):
         self.__callable = callable
