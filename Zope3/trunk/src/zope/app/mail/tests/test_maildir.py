@@ -160,7 +160,7 @@ class TestMaildir(unittest.TestCase):
 
         # Case 2a: directory does not exist, create = False
         self.assertRaises(ValueError, Maildir, '/path/to/nosuchfolder', False)
-        
+
         # Case 2b: directory does not exist, create = True
         m = Maildir('/path/to/nosuchfolder', True)
         verifyObject(IMaildir, m)

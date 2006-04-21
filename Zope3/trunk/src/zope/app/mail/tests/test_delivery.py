@@ -17,11 +17,12 @@ Simple implementation of the MailDelivery, Mailers and MailEvents.
 
 $Id$
 """
+
 import os.path
 from tempfile import mktemp
 from unittest import TestCase, TestSuite, makeSuite
-import transaction
 
+import transaction
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 from zope.app.mail.interfaces import IMailer
@@ -243,14 +244,11 @@ class TestQueueProcessorThread(TestCase):
         self.thread.log = LoggerStub()
 
     def test_parseMessage(self):
-
         hdr = ('X-Zope-From: foo@example.com\n'
                'X-Zope-To: bar@example.com, baz@example.com\n')
         msg = ('Header: value\n'
                '\n'
                'Body\n')
-
-
         f, t, m = self.thread._parseMessage(hdr + msg)
         self.assertEquals(f, 'foo@example.com')
         self.assertEquals(t, ('bar@example.com', 'baz@example.com'))
@@ -276,7 +274,6 @@ class TestQueueProcessorThread(TestCase):
                              'bar@example.com, baz@example.com'),
                             {})])
 
-
     def test_error_logging(self):
         self.thread.setMailer(BrokenMailerStub())
         self.filename = mktemp()
@@ -292,7 +289,6 @@ class TestQueueProcessorThread(TestCase):
                             ('foo@example.com',
                              'bar@example.com, baz@example.com'),
                             {'exc_info': 1})])
-
 
 
 def test_suite():

@@ -26,6 +26,7 @@ from zope.interface import implements, classProvides
 from zope.app.mail.interfaces import \
      IMaildirFactory, IMaildir, IMaildirMessageWriter
 
+
 class Maildir(object):
     """See `zope.app.interfaces.mail.IMaildir`"""
 
