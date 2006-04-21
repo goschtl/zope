@@ -21,7 +21,7 @@ import zope.component.testing
 import zope.app.publisher.browser
 from zope.testing import doctest, module
 from zope.configuration import xmlconfig
-from zope.app.traversing.adapters import DefaultTraversable
+from zope.traversing.adapters import DefaultTraversable
 
 __docformat__ = "reStructuredText"
 

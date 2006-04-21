@@ -19,12 +19,12 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 import zope.configuration.fields
+import zope.security.zcml
 import zope.schema
 import zope.i18nmessageid
 _ = zope.i18nmessageid.MessageFactory('zope')
 
 from zope.app.publisher.browser.fields import MenuField
-from zope.app.security.fields import Permission
 
 class IViewCharacteristics(zope.interface.Interface):
 
@@ -48,7 +48,7 @@ class IViewCharacteristics(zope.interface.Interface):
         required=True
         )
 
-    permission = Permission(
+    permission = zope.security.zcml.Permission(
         title=_(u'Permission'),
         description=_(u"The permission needed to use the view."),
         required=True

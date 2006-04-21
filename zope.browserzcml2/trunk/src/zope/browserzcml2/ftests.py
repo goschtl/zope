@@ -16,23 +16,24 @@
 $Id$
 """
 import unittest
-import zope.formlib.interfaces
 import zope.interface
+from zope.publisher.browser import BrowserPage
+from zope.publisher.interfaces.browser import IBrowserPage
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.testing.functional import FunctionalDocFileSuite
 
-class MacGyverPage(zope.formlib.Page):
+class MacGyverPage(BrowserPage):
     def __call__(self):
         return u"I've got a Swiss Army knife"
 
-@zope.interface.implementer(zope.formlib.interfaces.IPage)
+@zope.interface.implementer(IBrowserPage)
 def makeAMacGyverPage(context, request):
     return MacGyverPage(context, request)
 
-class MacGyverTemplatePage(zope.formlib.Page):
+class MacGyverTemplatePage(BrowserPage):
     __call__ = ViewPageTemplateFile('test.pt')
 
-class JackDaltonTemplatePage(zope.formlib.Page):
+class JackDaltonTemplatePage(BrowserPage):
     __call__ = ViewPageTemplateFile('test2.pt')
     def getName(self):
         return u'Jack Dalton'

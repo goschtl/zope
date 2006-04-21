@@ -18,21 +18,22 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import zope.interface
-import zope.formlib.interfaces
 import zope.configuration.fields
 import zope.configuration.exceptions
+import zope.component.zcml
+import zope.security.zcml
 import zope.i18nmessageid
 _ = zope.i18nmessageid.MessageFactory('zope')
 
+from zope.publisher.browser import BrowserPage
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.publisher.interfaces.browser import IBrowserPage
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.browserzcml2.interfaces import IViewCharacteristics
 from zope.browserzcml2.interfaces import IRegisterInMenu
 
 from zope.app.publisher.browser.viewmeta import _handle_menu
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.component.metaconfigure import adapter
-from zope.app.security.fields import Permission
 
 class IPageDirective(IViewCharacteristics, IRegisterInMenu):
     """Define a browser page"""
@@ -48,17 +49,17 @@ def page(
     _context, factory,                                  # IPageDirective
     for_, name, permission, layer=IDefaultBrowserLayer, # IViewCharacteristics
     menu=None, title=None):                             # IRegisterInMenu
-    if not zope.formlib.interfaces.IPage.implementedBy(factory):
+    if not IBrowserPage.implementedBy(factory):
         raise zope.configuration.exceptions.ConfigurationError(
-            "The browser page factory needs to provide IPage. "
-            "A convenient base class is zope.formlib.Page."
+            "The browser page factory needs to provide IBrowserPage. "
+            "A convenient base class is zope.publisher.browser.BrowserPage."
             )
-    adapter(_context,
-            factory=(factory,),
-            for_=(for_, layer),
-            provides=zope.formlib.interfaces.IPage,
-            permission=permission,
-            name=name)
+    zope.component.zcml.adapter(_context,
+                                factory=(factory,),
+                                for_=(for_, layer),
+                                provides=IBrowserPage,
+                                permission=permission,
+                                name=name)
 
     _handle_menu(_context, menu, title, (for_,), name, permission, layer)
 
@@ -83,7 +84,7 @@ def pageTemplate(
     for_, name, permission, layer=IDefaultBrowserLayer, # IViewCharacteristics
     menu=None, title=None):                             # IRegisterInMenu
 
-    class TemplatePage(zope.formlib.Page):
+    class TemplatePage(BrowserPage):
         __call__ = ViewPageTemplateFile(template)
 
     page(_context, TemplatePage,
@@ -124,7 +125,7 @@ class IPageSubdirective(IRegisterInMenu):
         required=True
         )
 
-    permission = Permission(
+    permission = zope.security.zcml.Permission(
         title=_(u'Permission'),
         description=_(u"The permission needed to use the view."),
         required=True
@@ -148,10 +149,10 @@ class PagesFromClass(object):
     def page(self, _context, name, permission, attribute,
              menu=None, title=None):
         if attribute == '__call__':
-            class PageFromClass(zope.formlib.Page, self.class_):
+            class PageFromClass(BrowserPage, self.class_):
                 pass
         else:
-            class PageFromClass(zope.formlib.Page, self.class_):
+            class PageFromClass(BrowserPage, self.class_):
                 def __call__(self, *arg, **kw):
                     return getattr(self, attribute)(*arg, **kw)
 

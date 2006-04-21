@@ -27,18 +27,19 @@ published.  Hence, it has to be publishable.  Publishability is
 determined by the ``IBrowerPublisher`` interface, all browser views
 that want to be published should provide it.
 
-For browser pages in this context we actually require the ``IPage``
-interface which extends ``IBrowserPublisher`` in one aspect: a
-``__call__`` method.
+For browser pages in this context we actually require the
+``IBrowserPage`` interface which extends ``IBrowserPublisher`` in one
+aspect: a ``__call__`` method.
 
 Simple page
 ~~~~~~~~~~~
 
 Let's create a simple page.  For convenience, we can inherit from
-``zope.formlib.Page`` which will give us ``IPage`` conformance:
+``zope.publisher.browser.BrowserPage`` which will give us
+``IBrowserPage`` conformance:
 
-  >>> import zope.formlib
-  >>> class MacGyverPage(zope.formlib.Page):
+  >>> from zope.publisher.browser import BrowserPage
+  >>> class MacGyverPage(BrowserPage):
   ...     def __call__(self):
   ...         return u"I've got a Swiss Army knife"
 
@@ -77,7 +78,7 @@ Other factories
 Note that we require the page factory to implement
 ``IBrowserPublisher``.  Something else won't work, e.g.:
 
-  >>> from zope.app.publisher.browser import BrowserView
+  >>> from zope.publisher.browser import BrowserView
   >>> class MacGyverView(BrowserView):
   ...     def __call__(self):
   ...         return u"I drive a Jeep"
@@ -93,15 +94,15 @@ Note that we require the page factory to implement
   Traceback (most recent call last):
     ...
   ZopeXMLConfigurationError: File "<string>", line 7.0-12.6
-      ConfigurationError: The browser page factory needs to provide
-      IPage. A convenient base class is zope.formlib.Page.
+      ConfigurationError: The browser page factory needs to provide IBrowserPage.
+      A convenient base class is zope.publisher.browser.BrowserPage.
 
 It is, however, absolutely possible that the supplied factory isn't in
-fact a class.  As long as it implements ``IPage``, it's ok:
+fact a class.  As long as it implements ``IBrowserPage``, it's ok:
 
   >>> import zope.interface
-  >>> from zope.formlib.interfaces import IPage
-  >>> @zope.interface.implementer(IPage)
+  >>> from zope.publisher.interfaces.browser import IBrowserPage
+  >>> @zope.interface.implementer(IBrowserPage)
   ... def makeAMacGyverPage(context, request):
   ...     return MacGyverPage(context, request)
 
@@ -129,7 +130,7 @@ work over to Page Templates.  Referring to a Page Template in a page
 is easy:
 
   >>> from zope.app.pagetemplate import ViewPageTemplateFile
-  >>> class MacGyverTemplatePage(zope.formlib.Page):
+  >>> class MacGyverTemplatePage(BrowserPage):
   ...     __call__ = ViewPageTemplateFile('test.pt')
 
 The rest works just like with a pure-Python browser page:
@@ -153,7 +154,7 @@ The rest works just like with a pure-Python browser page:
 Page Templates bound to pages this way can also make use of auxiliary
 view methods on the page class:
 
-  >>> class JackDaltonTemplatePage(zope.formlib.Page):
+  >>> class JackDaltonTemplatePage(BrowserPage):
   ...     __call__ = ViewPageTemplateFile('test2.pt')
   ...     def getName(self):
   ...         return u'Jack Dalton'
