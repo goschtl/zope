@@ -31,7 +31,7 @@ class IViewCharacteristics(zope.interface.Interface):
     for_ = zope.configuration.fields.GlobalObject(
         title=_(u'Registered for'),
         description=_(u"The interface or class this view is for."),
-        required=False
+        required=True
         )
 
     layer = zope.configuration.fields.GlobalInterface(
