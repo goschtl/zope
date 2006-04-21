@@ -1,0 +1,71 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser2="http://namespaces.zope.org/browser2"
+    >
+
+  <browser2:page
+      for="*"
+      name="bz2-simplepage.html"
+      factory="zope.browserzcml2.ftests.MacGyverPage"
+      permission="zope.Public"
+      />
+
+  <browser2:page
+      for="*"
+      name="bz2-protectedpage.html"
+      factory="zope.browserzcml2.ftests.MacGyverPage"
+      permission="zope.ManageContent"
+      />
+
+  <browser2:page
+      for="*"
+      name="bz2-functionfactory.html"
+      factory="zope.browserzcml2.ftests.makeAMacGyverPage"
+      permission="zope.Public"
+      />
+
+  <browser2:page
+      for="*"
+      name="bz2-protectedfactory.html"
+      factory="zope.browserzcml2.ftests.makeAMacGyverPage"
+      permission="zope.ManageContent"
+      />
+
+  <browser2:page
+      for="*"
+      name="bz2-templatepage.html"
+      factory="zope.browserzcml2.ftests.MacGyverTemplatePage"
+      permission="zope.Public"
+      />
+
+  <browser2:page
+      for="*"
+      name="bz2-viewmethodpage.html"
+      factory="zope.browserzcml2.ftests.JackDaltonTemplatePage"
+      permission="zope.Public"
+      />
+
+  <browser2:pageTemplate
+      for="*"
+      name="bz2-pagetemplate.html"
+      template="test.pt"
+      permission="zope.Public"
+      />
+
+  <browser2:pagesFromClass
+      for="*"
+      class="zope.browserzcml2.ftests.PhoenixPages"
+      >
+      <page
+          name="bz2-fromclass1.html"
+          attribute="macgyver"
+          permission="zope.Public"
+          />
+      <page
+          name="bz2-fromclass2.html"
+          attribute="pete"
+          permission="zope.ManageContent"
+          />
+  </browser2:pagesFromClass>
+
+</configure>

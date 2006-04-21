@@ -1,0 +1,32 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/browser2">
+
+    <meta:directive
+        name="pageTemplate"
+        schema=".zcml.IPageTemplateDirective"
+        handler=".zcml.pageTemplate"
+        />
+
+    <meta:directive
+        name="page"
+        schema=".zcml.IPageDirective"
+        handler=".zcml.page"
+        />
+
+    <meta:complexDirective
+        name="pagesFromClass"
+        schema=".zcml.IPagesFromClassDirective"
+        handler=".zcml.PagesFromClass"
+        >
+      <meta:subdirective
+          name="page"
+          schema=".zcml.IPageSubdirective"
+          />
+    </meta:complexDirective>
+
+  </meta:directives>
+
+</configure>

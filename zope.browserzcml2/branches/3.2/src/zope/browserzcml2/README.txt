@@ -1,0 +1,299 @@
+zope.browserzcml2
+=================
+
+This package provides a few ZCML directives to register a browser
+pages in a much less magical way.  The rationale behind this is that
+pages implemented in Python should themselves be fully operational, in
+other words, publishable as registered adapters.  These directives are
+all part of the ``http://namespaces.zope.org/browser2`` namespace.
+
+In the following we will discuss three major use cases involving
+browser pages for which this package provides three ZCML directives:
+
+  * ``browser2:page``
+
+  * ``browser2:pageTemplate``
+
+  * ``browser2:pagesFromClass``
+
+
+Pages
+-----
+
+A browser page is nothing but a (browser) view that is *publishable*.
+Publishable means that it is basically the last piece in the traversal
+chain and the object that is responsible for the request.  It will be
+published.  Hence, it has to be publishable.  Publishability is
+determined by the ``IBrowerPublisher`` interface, all browser views
+that want to be published should provide it.
+
+For browser pages in this context we actually require the ``IPage``
+interface which extends ``IBrowserPublisher`` in one aspect: a
+``__call__`` method.
+
+Simple page
+~~~~~~~~~~~
+
+Let's create a simple page.  For convenience, we can inherit from
+``zope.formlib.Page`` which will give us ``IPage`` conformance:
+
+  >>> import zope.formlib
+  >>> class MacGyverPage(zope.formlib.Page):
+  ...     def __call__(self):
+  ...         return u"I've got a Swiss Army knife"
+
+Now we register the page.  This works almost like registering an
+adapter:
+
+  >>> run_config("""
+  ... <browser2:page
+  ...     for="*"
+  ...     name="simplepage.html"
+  ...     factory="zope.browserzcml2.README.MacGyverPage"
+  ...     permission="zope.Public"
+  ...     />
+  ... """)
+
+Then we can look up the page as an adapter.  We'll use a test request
+and a stub object.
+
+  >>> import zope.component
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+  >>> page = zope.component.getMultiAdapter((object(), request),
+  ...                                       name=u'simplepage.html')
+
+We see that the adapter is an instance of our page class above and
+that we get the expected result upon calling it.
+
+  >>> page #doctest: +ELLIPSIS
+  <zope.browserzcml2.README.MacGyverPage object at ...>
+  >>> page()
+  u"I've got a Swiss Army knife"
+
+Other factories
+~~~~~~~~~~~~~~~
+
+Note that we require the page factory to implement
+``IBrowserPublisher``.  Something else won't work, e.g.:
+
+  >>> from zope.app.publisher.browser import BrowserView
+  >>> class MacGyverView(BrowserView):
+  ...     def __call__(self):
+  ...         return u"I drive a Jeep"
+
+  >>> run_config("""
+  ... <browser2:page
+  ...     for="*"
+  ...     name="justaview.html"
+  ...     factory="zope.browserzcml2.README.MacGyverView"
+  ...     permission="zope.Public"
+  ...     />
+  ... """) # doctest: +NORMALIZE_WHITESPACE
+  Traceback (most recent call last):
+    ...
+  ZopeXMLConfigurationError: File "<string>", line 7.0-12.6
+      ConfigurationError: The browser page factory needs to provide
+      IPage. A convenient base class is zope.formlib.Page.
+
+It is, however, absolutely possible that the supplied factory isn't in
+fact a class.  As long as it implements ``IPage``, it's ok:
+
+  >>> import zope.interface
+  >>> from zope.formlib.interfaces import IPage
+  >>> @zope.interface.implementer(IPage)
+  ... def makeAMacGyverPage(context, request):
+  ...     return MacGyverPage(context, request)
+
+  >>> run_config("""
+  ... <browser2:page
+  ...     for="*"
+  ...     name="functionfactory.html"
+  ...     factory="zope.browserzcml2.README.makeAMacGyverPage"
+  ...     permission="zope.Public"
+  ...     />
+  ... """)
+
+  >>> page = zope.component.getMultiAdapter((object(), request),
+  ...                                       name=u'functionfactory.html')
+  >>> page #doctest: +ELLIPSIS
+  <zope.browserzcml2.README.MacGyverPage object at ...>
+  >>> page()
+  u"I've got a Swiss Army knife"
+
+Page with page template
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Rendering HTML from Python is tedious.  We therefore often turn this
+work over to Page Templates.  Referring to a Page Template in a page
+is easy:
+
+  >>> from zope.app.pagetemplate import ViewPageTemplateFile
+  >>> class MacGyverTemplatePage(zope.formlib.Page):
+  ...     __call__ = ViewPageTemplateFile('test.pt')
+
+The rest works just like with a pure-Python browser page:
+
+  >>> run_config("""
+  ... <browser2:page
+  ...     for="*"
+  ...     name="templatepage.html"
+  ...     factory="zope.browserzcml2.README.MacGyverTemplatePage"
+  ...     permission="zope.Public"
+  ...     />
+  ... """)
+
+  >>> page = zope.component.getMultiAdapter((object(), request),
+  ...                                       name=u'templatepage.html')
+  >>> page #doctest: +ELLIPSIS
+  <zope.browserzcml2.README.MacGyverTemplatePage object at ...>
+  >>> page()
+  u"Hi, the name's MacGyver.\n"
+
+Page Templates bound to pages this way can also make use of auxiliary
+view methods on the page class:
+
+  >>> class JackDaltonTemplatePage(zope.formlib.Page):
+  ...     __call__ = ViewPageTemplateFile('test2.pt')
+  ...     def getName(self):
+  ...         return u'Jack Dalton'
+
+  >>> run_config("""
+  ... <browser2:page
+  ...     for="*"
+  ...     name="viewmethodpage.html"
+  ...     factory="zope.browserzcml2.README.JackDaltonTemplatePage"
+  ...     permission="zope.Public"
+  ...     />
+  ... """)
+
+  >>> page = zope.component.getMultiAdapter((object(), request),
+  ...                                       name=u'viewmethodpage.html')
+  >>> page #doctest: +ELLIPSIS
+  <zope.browserzcml2.README.JackDaltonTemplatePage object at ...>
+  >>> page()
+  u'My friend is Jack Dalton.\n'
+
+
+Pages from Page Templates
+-------------------------
+
+We've just seen how to create pages that use Page Templates for
+rendering.  If that's all a page does, we can use a shortcut provided
+by the ``browser2:pageTemplate`` directive.  It works almost like the
+``browser2:page`` directive, except that it takes a ``template``
+parameter, not a ``factory`` parameter:
+
+  >>> run_config("""
+  ... <browser2:pageTemplate
+  ...     for="*"
+  ...     name="pagetemplate.html"
+  ...     template="test.pt"
+  ...     permission="zope.Public"
+  ...     />
+  ... """)
+
+We can look up the page like the others before, except now it won't be
+an instance of a class that we've implemented.  It'll be a dynamically
+generated class.  Either way, we are still able to call it like any
+other browser page:
+
+  >>> page = zope.component.getMultiAdapter((object(), request),
+  ...                                       name=u'pagetemplate.html')
+  >>> page #doctest: +ELLIPSIS
+  <zope.browserzcml2.zcml.TemplatePage object at ...>
+  >>> page()
+  u"Hi, the name's MacGyver.\n"
+
+
+Pages from classes
+------------------
+
+Sometimes, out of pure convenience, you'd like to define several pages
+in one class.  Each page would be implemented as a method or other
+callable attribute.  For example:
+
+  >>> class PhoenixPages(object):
+  ...     macgyver = ViewPageTemplateFile('test.pt')
+  ...     def pete(self):
+  ...         return u'Peter Thornton'
+
+These are configured in one large ZCML directive:
+
+  >>> run_config("""
+  ... <browser2:pagesFromClass
+  ...     for="*"
+  ...     class="zope.browserzcml2.README.PhoenixPages"
+  ...     >
+  ...     <page
+  ...         name="fromclass1.html"
+  ...         attribute="macgyver"
+  ...         permission="zope.Public"
+  ...         />
+  ...     <page
+  ...         name="fromclass2.html"
+  ...         attribute="pete"
+  ...         permission="zope.Public"
+  ...         />
+  ... </browser2:pagesFromClass>
+  ... """)
+
+As any other page, we can look them up and call them.  They *are*
+instances of a dynamically generated class, though:
+
+  >>> page = zope.component.getMultiAdapter((object(), request),
+  ...                                       name=u'fromclass1.html')
+  >>> page #doctest: +ELLIPSIS
+  <zope.browserzcml2.zcml.PageFromClass object at ...>
+  >>> page()
+  u"Hi, the name's MacGyver.\n"
+
+
+Conflicts
+---------
+
+Pages registered for the same interface under the same name and on the
+same layer conflict.  For example, take two pages that both want to be
+called ``conflict.html`` (note that they don't necessarily have to be
+registered with exactly the same directive):
+
+  >>> run_config("""
+  ... <browser2:page
+  ...     for="*"
+  ...     name="conflict.html"
+  ...     factory="zope.browserzcml2.README.MacGyverPage"
+  ...     permission="zope.Public"
+  ...     />
+  ... <browser2:pageTemplate
+  ...     for="*"
+  ...     name="conflict.html"
+  ...     template="test.pt"
+  ...     permission="zope.Public"
+  ...     />
+  ... """) # doctest: +ELLIPSIS
+  Traceback (most recent call last):
+    ...
+  ConfigurationConflictError: Conflicting configuration actions
+    ...
+
+Pages defined via the directives from ``zope.browserzcml2`` even
+conflict with the old-style ``browser:page`` directives:
+
+  >>> run_config("""
+  ... <browser2:page
+  ...     for="*"
+  ...     name="conflict.html"
+  ...     factory="zope.browserzcml2.README.MacGyverPage"
+  ...     permission="zope.Public"
+  ...     />
+  ... <browser:page
+  ...     for="*"
+  ...     name="conflict.html"
+  ...     template="test.pt"
+  ...     permission="zope.Public"
+  ...     />
+  ... """) # doctest: +ELLIPSIS
+  Traceback (most recent call last):
+    ...
+  ConfigurationConflictError: Conflicting configuration actions
+    ...
