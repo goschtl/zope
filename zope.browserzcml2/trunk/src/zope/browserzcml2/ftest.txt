@@ -1,0 +1,120 @@
+Publishing browser pages
+========================
+
+Let's use the test browser and a couple demo pages to see how pages
+can be published.
+
+  >>> from zope.testbrowser.testing import Browser
+
+
+Simple pages
+------------
+
+Simple pages are just published like you would expect it from a
+browser page:
+
+  >>> browser = Browser('http://localhost/bz2-simplepage.html')
+  >>> print browser.headers['status']
+  200 Ok
+  >>> print browser.contents
+  I've got a Swiss Army knife
+
+Protected pages will obviously not be viewable by anonymous:
+
+  >>> browser = Browser('http://localhost/bz2-protectedpage.html')
+  Traceback (most recent call last):
+    ...
+  HTTPError: HTTP Error 401: Unauthorized
+
+Instead you'll need proper credentials:
+
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> browser.open('http://localhost/bz2-protectedpage.html')
+  >>> print browser.headers['status']
+  200 Ok
+  >>> print browser.contents
+  I've got a Swiss Army knife
+
+
+Other factories
+---------------
+
+Page factories don't necessarily have to be classes.  For example,
+functions can serve that purpose, too.  We will still see proper
+security handling:
+
+  >>> browser = Browser('http://localhost/bz2-functionfactory.html')
+  >>> print browser.headers['status']
+  200 Ok
+  >>> print browser.contents
+  I've got a Swiss Army knife
+
+Now with a protected factory:
+
+  >>> browser = Browser('http://localhost/bz2-protectedfactory.html')
+  Traceback (most recent call last):
+    ...
+  HTTPError: HTTP Error 401: Unauthorized
+
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> browser.open('http://localhost/bz2-protectedpage.html')
+  >>> print browser.headers['status']
+  200 Ok
+  >>> print browser.contents
+  I've got a Swiss Army knife
+
+
+Page with page template
+-----------------------
+
+Often, pages don't generate HTML themselves but defer to a Page
+Template, like this one:
+
+  >>> browser = Browser('http://localhost/bz2-templatepage.html')
+  >>> print browser.headers['status']
+  200 Ok
+  >>> print browser.contents
+  Hi, the name's MacGyver.
+
+
+Pages from templates
+--------------------
+
+If all the page really is is a Page Template, a shortcut ZCML
+directive (browser2:pageTemplate) can be used to avoid implementing an
+extra class:
+
+  >>> browser = Browser('http://localhost/bz2-pagetemplate.html')
+  >>> print browser.headers['status']
+  200 Ok
+  >>> print browser.contents
+  Hi, the name's MacGyver.
+
+
+Pages from class
+----------------
+
+For the convenience of certain cases, several pages can be created
+from a single class at once.  They each have different names (of
+course), but can also have different permissions.  For example, this
+one is publically viewable:
+
+  >>> browser = Browser('http://localhost/bz2-fromclass1.html')
+  >>> print browser.headers['status']
+  200 Ok
+  >>> print browser.contents
+  Hi, the name's MacGyver.
+
+This page created from the same class is not publically viewable:
+
+  >>> browser = Browser('http://localhost/bz2-fromclass2.html')
+  Traceback (most recent call last):
+    ...
+  HTTPError: HTTP Error 401: Unauthorized
+
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> browser.open('http://localhost/bz2-fromclass2.html')
+  >>> print browser.headers['status']
+  200 Ok
+  >>> print browser.contents
+  Peter Thornton
