@@ -23,7 +23,10 @@
 
 \hypersetup{
 pdftitle={Zope 3.3 Common Criteria Evaluation},
-pdfauthor={Christian Theune {\textless}ct@gocept.com{\textgreater};Steve Alexander {\textless}steve@catbox.net{\textgreater};Jim Fulton {\textless}jim@zope.com{\textgreater}}
+pdfauthor={Christian Theune {\textless}ct@gocept.com{\textgreater};Steve
+Alexander {\textless}steve@catbox.net{\textgreater};Jim Fulton
+{\textless}jim@zope.com{\textgreater};Christian Zagrodnick
+{\textless}cz@gocept.com{\textgreater}}
 }
 
 \subject{Security Target}
@@ -37,9 +40,9 @@ pdfauthor={Christian Theune {\textless}ct@gocept.com{\textgreater};Steve Alexand
 \begin{description}
     \item[Document Title:] Zope 3.3 Common Criteria Evaluation Security Target
     \item[DocumentID:] \$Id: SecurityTarget.tex 65684 2006-03-01 22:40:30Z ctheune \$
-    \item[Version:] \$Rev: 65684 \$ (Draft)
-    \item[Status:] Draft
-    \item[Date:] \$Date: 2006-03-01 23:40:30 +0100 (Mi, 01 MÃ¤r 2006) \$
+    \item[Version:] \$Rev: 65684 \$ 
+    \item[Status:] Final
+    \item[Date:] \$Date: 2006-03-01 23:40:30 +0100 (Mi, 01 Mär 2006) \$
     \item[Author:] Christian Theune, ct@gocept.com
     \item[Author:] Steve Alexander, steve@catbox.net
     \item[Author:] Jim Fulton, jim@zope.com
@@ -394,7 +397,9 @@ associating an interaction with multiple participations, e.g. to include the
 author of code stored in the system and the user running it.
 
 In the terminology of common criteria, those interactions are the ``subjects''
-causing operations within the TOE to be performed.
+causing operations within the TOE to be performed. The terms ``subject'' and
+``interaction'' can be used interchangeably for the purpose of this
+certification.
 
 %___________________________________________________________________________
 
@@ -448,10 +453,8 @@ information will be applied by copying over the applicable sharing information
 of the parent object and granting all applicable privileges to the creator(s).
 
 Objects may support "`sharing'' by providing the ISharing interface. If an
-object does not provide the ISharing interface XXX happens.
-
-% We are not talking about adapters or adapting here. An objects provides
-% ISharing if there is an adapter.
+object does not provide the ISharing interface the next object in the chain of
+ancestors that provides ISharing will be considered for policy decisions.
 
 %___________________________________________________________________________
 
@@ -957,18 +960,17 @@ following additional rules: \emph{There are no additional rules.}
 
 \item[FDP{\_}ROL.2.1 ]
 
-The TSF shall permit \emph{the rollback of all
-operations on all objects}.
+The TSF shall permit \emph{the rollback of all operations on all persistent
+objects}.
 
 \item[FDP{\_}ROL.2.2 ]
 
 
-The TSF shall permit operations to be rolled
-back \emph{at any time before the transaction in which the operation was
-performed is committed}.
+The TSF shall permit operations to be rolled back \emph{at any time before the
+transaction in which the operation was performed is committed}.
 
-\textbf{Note:} This statement may not apply to cached data created during the
-course of a transaction.
+\textbf{Note:} This statement does not apply to non-persistent data created
+during the course of a transaction.
 
 \end{description}
 
@@ -1293,14 +1295,13 @@ proceed.
 
 \item[FPT{\_}SEP.1.1 ]
 
-The TSF shall maintain a security domain for its own execution that
-protects it from interference and tampering by untrusted
-subjects.
+The TSF shall maintain a security domain for its own execution that protects it
+from interference and tampering by untrusted subjects.
 
 \item[FPT{\_}SEP.1.2 ]
 
-The TSF shall enforce separation between the
-security domains of subjects in the TSC.
+The TSF shall enforce separation between the security domains of subjects in
+the TSC.
 
 \end{description}
 
@@ -1337,9 +1338,6 @@ The following TOE assurance requirements drawn from CC Part 3 are valid:
   Identification & Description & Direct dependencies\\
   \midrule \endhead
 
-  \textbf{ACM} & Configuration management (CM) &  \\
-  ACM{\_}CAP.1 & Version numbers & None \\
-
   \textbf{ADO} & Delivery and Operation &  \\
   ADO{\_}IGS.1 & Installation, generation and start-up & AGD{\_}ADM.1 \\
   
@@ -1353,7 +1351,7 @@ The following TOE assurance requirements drawn from CC Part 3 are valid:
 
   \textbf{AGD} & Guidance documents &  \\
   AGD{\_}ADM.1 & Administrator guidance & ADV{\_}FSP.1 \\
-  AGD{\_}USR.1 & User guidance & ADV{\_}FSP.1 \\
+  AGD{\_}USR.1 & User guidance (for developers) & ADV{\_}FSP.1 \\
   \textbf{ATE} &  &  \\ 
   ATE{\_}IND.1 & Independent testing - conformance & ADV{\_}FSP.1 AGD{\_}ADM.1 AGD{\_}USR.1 \\
 
@@ -1454,10 +1452,9 @@ Privileges can be granted to principals or groups.  Subjects can consider
 multiple principals, for example if the execution of untrusted code is
 involved.
 
-
-If no principal is associated with a subject, the subject is allowed to perform
-any operation. However, the publisher component is required to associate a
-special anonymous principal if no user has been authenticated.
+If no principal is associated with a interaction, the interaction is allowed to
+perform any operation. However, the publisher component is required to
+associate a special anonymous principal if no user has been authenticated.
 
 Every principal is always granted the ``zope.Public'' permission which can't be
 denied by any means.
@@ -1528,7 +1525,7 @@ authenticated principal to the running interaction.
 %___________________________________________________________________________
 
 
-\subsection{Automated Tests}
+\subsection{Automated tests}
 
 Zope provides a suite of automated tests that allow the user to ensure that the
 security functionality in the TOE is consistent with the tests. Those tests are
@@ -1539,7 +1536,7 @@ run in offline mode.
 
 
 
-\subsection{Python Environment}
+\subsection{Python environment}
 
 As Zope relies on Python and the host environment to provide reliable time
 stamps. Changes to the external clock are not audited within the system as we
@@ -1551,18 +1548,7 @@ as syslog) should be consulted to detect those changes. (FPT{\_}STM.1)
 
 \section{Assurance measures}
 
-
 %___________________________________________________________________________
-
-
-
-\subsection{AM{\_}ACM: CONFIGURATION MANAGEMENT}
-
-A document describing the configuration management will be provided.
-
-
-%___________________________________________________________________________
-
 
 
 \subsection{AM{\_}ADO: DELIVERY AND OPERATION}
@@ -1575,7 +1561,7 @@ A document describing the delivery and operation of the TOE will be provided.
 
 \subsection{AM{\_}ADV: DEVELOPMENT}
 
-A functional specification, a RCR document and an informal security policy model
+A functional specification, an RCR document and an informal security policy model
 (ADV\_SPM.1) will be provided.
 
 %___________________________________________________________________________
@@ -1617,7 +1603,7 @@ No PP compatibility is beeing claimed.
 
 \section{Security objectives rationale}
 
-The following table shows that all threads and assumptions are covered
+The following table shows that all threats and assumptions are covered
 by a security objectives. 
 
   \begin{longtable}{rRRRRRRRRRRRRRRR}
@@ -1645,7 +1631,7 @@ OE.Credential&       &       &            &            &               &        
 \end{longtable}
 
 The following list explains why the objectives cover
-the threads and assumptions.
+the threats and assumptions.
 
 \begin{description}
   
@@ -1722,6 +1708,8 @@ the threads and assumptions.
 
 \section{Security requirements rationale}
 
+The following table shows that all objectices are covered by security
+functions.
 
 \begin{longtable}{rRRRRRRRR}
         \toprule
@@ -1736,7 +1724,6 @@ FDP\_ROL.2\_Transactions    &      &              &         &           &       
 FIA\_AFL\_z.1               &      &              &         &   \oh     &          &             &              &              \\
 FIA\_ATD.1                  & \oh  &  \oh         &   \oh   &           & \oh      &             &              &              \\
 FIA\_UAU.1                  & \oh  &              &         &           &          &             &              &              \\
-FIA\_UAU.5                  & \oh  &              &         &           &          &             &              &              \\
 FIA\_UAU.6                  & \oh  &              &         &           &          &             &              &              \\
 FIA\_UID.1                  & \oh  &              &         &           &          &             &              &              \\
 FIA\_USB.1                  & \oh  &              &         &           &          &             &              &              \\
@@ -1767,7 +1754,6 @@ FDP\_ROL.2\_Transactions    &   -- \\
 FIA\_AFL\_z.1               &   FIA\_UAU.1 \\
 FIA\_ATD.1                  &   -- \\
 FIA\_UAU.1                  &   FIA\_UID.1 \\
-FIA\_UAU.5                  &   -- \\
 FIA\_UAU.6                  &   -- \\
 FIA\_UID.1                  &   -- \\
 FIA\_USB.1                  &   FIA\_ATD.1 \\
@@ -1784,7 +1770,7 @@ FPT\_STM.1                  &   -- \\
    \caption{SFR Dependency Analysis}
 \end{longtable}
 
-All dependencies required by the chosen SFRs are covered. See table XXX.
+All dependencies required by the chosen SFRs are covered. 
 
 \subsection{O.IA --- Identification and authentication}
 
@@ -1804,7 +1790,7 @@ All dependencies required by the chosen SFRs are covered. See table XXX.
 
             Depending on the communication channel, the system selects a
             suitable authentication mechanism to ask a user for his
-            credentials. (FIA\_UAU.5)
+            credentials. 
 
             If an authenticated user does not have enough permission grants to
             perform an operation, he might get the chance to authenticate with
@@ -1895,8 +1881,11 @@ All dependencies required by the chosen SFRs are covered. See table XXX.
     A set of attributes and rules is used to describe how to apply those
     attributes for deriving an access decision. (FDP\_ACF.1, FIA\_ATD.1)  
 
-    To ensure the non-bypassability of the TSP a special paradigm is used (security
-    proxies) for accessing TOE objects from external entities. (FIA\_RVM.1)
+    To ensure the non-bypassability of the TSP a special paradigm is used:
+    Every access has to pass a single entry point (the Zope publisher) who
+    wraps every object from the TOE with a so called ``security proxy''. Any
+    access from an interaction to an object from thereon will be mediated by
+    the proxy, who in turn activates the protection subsystem. (FPT\_RVM.1)
     
 \subsection{O.Integrity --- Ensure faultless data}
 
@@ -1917,15 +1906,17 @@ All dependencies required by the chosen SFRs are covered. See table XXX.
 
 \subsection{O.ManageRisk --- Provide choice of flexibility versus security}
     
-    Additionally code can be run either within the trusted or untrusted
-    security domains of the TOE. Installing code in the trusted security domain
-    requires an external entity that has access to the physical secure host to
-    install software into the TOE. This allows developers to trade off between
-    functionality of their code and the level of trust they have to gain from
-    administrators installing their extensions. FPT\_SEP.1 supports the
+    Code can be run either within the trusted or untrusted security domains of
+    the TOE. Installing code in the trusted security domain requires an
+    external entity that has access to the physical secure host to install
+    software into the TOE. This allows developers and administrators to trade
+    off between functionality of their code and the level of trust they have to
+    agree on when installing a developer's extensions. FPT\_SEP.1 supports the
     distinction between the trusted and untrusted domain.
 
-\section{TOE Summary specification rationale}
+\newpage
+
+\section{TOE summary specification rationale}
 
 \subsection{Security functions rationale}
 
@@ -1942,7 +1933,6 @@ FDP\_ROL.2\_TRANSACTIONS
 FIA\_AFL\_z.1       &            &  \oh           &               &          &               &                        & \oh                &                 &                    \\   
 FIA\_ATD.1          &            &                &               &          & \oh           &                        &                    &                 &                    \\   
 FIA\_UAU.1          &            &                &               &          &               &                        & \oh                &                 &                    \\   
-FIA\_UAU.5          &            &  \oh           &               &          &               &                        & \oh                &                 &                    \\   
 FIA\_UAU.6          &            &  \oh           &               &          &               &                        & \oh                &                 &                    \\   
 FIA\_UID.1          &            &                &               &          &               &                        & \oh                &                 &                    \\   
 FIA\_USB.1          &            &                &               &          &               &                        &  \oh               &                 &                    \\   
@@ -1957,7 +1947,7 @@ FPT\_FLS.1          &            &                &               &          &  
 FPT\_SEP.1          &  \oh       &                &               &          &               &                        &                    &                 &                    \\ 
 FPT\_STM.1          &            &                &               &          &               &                        &                    &                 &   \oh              \\       
     \bottomrule
-    \caption{Security Functions Rationale} % XXX
+    \caption{Security Functions Rationale} 
 
 \end{longtable}
 
@@ -1981,7 +1971,7 @@ complete access control) will deny the unauthorized use of those management
 functions. As a result only the subject of a transaction is able to roll back
 it's corresponding transaction.
 
-As transactions are only valid within a single subject (operation), there is no
+As transactions are only valid within a single subject (interaction), there is no
 possibility to cancel other transactions through the use of the
 \textbf{Publication} subsystem.
 
@@ -2006,8 +1996,6 @@ perform the requested operation. If the anonymous principal is not allowed to
 perform the requested operation, the \textbf{Publication} subsystem challenges
 the user to provide sufficient credentials for authentication and
 identification.
-
-\minisec{FIA\_UAU.5 --- Multiple Authentication Systems}
 
 The \textbf{Publication} and \textbf{Authentication} subsystems work together
 to identify a meaningful way of asking a user for his credentials. 
