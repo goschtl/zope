@@ -23,7 +23,7 @@ except ImportError, e:
     from distutils.core import setup, Extension
 
 setup(name='zope.browserzcml2',
-      version='3.2',
+      version='3.3',
       url='http://svn.zope.org/zope.browserzcml2',
       license='ZPL 2.1',
       description='Alternate, non-magical browser ZCML directives',
