@@ -36,7 +36,7 @@ def _assertPermission(permission, interfaces, component):
         checker = InterfaceChecker(interfaces, permission)
 
     return proxify(component, checker)
-    
+
 
 def queuedDelivery(_context, permission, queuePath, mailer, name="Mail"):
 

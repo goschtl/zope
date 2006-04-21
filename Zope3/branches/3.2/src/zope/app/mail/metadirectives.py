@@ -22,10 +22,11 @@ from zope.interface import Interface
 from zope.schema import TextLine, ASCII, BytesLine, Int
 from zope.app.security.fields import Permission
 
+
 class IDeliveryDirective(Interface):
     """This abstract directive describes a generic mail delivery utility
     registration."""
-    
+
     name = TextLine(
         title=u"Name",
         description=u'Specifies the Delivery name of the mail utility. '\
@@ -37,7 +38,7 @@ class IDeliveryDirective(Interface):
         title=u"Permission",
         description=u"Defines the permission needed to use this service.",
         required=True)
-    
+
     mailer = TextLine(
         title=u"Mailer",
         description=u"Defines the mailer to be used for sending mail.",
@@ -66,7 +67,7 @@ class IMailerDirective(Interface):
         title=u"Name",
         description=u"Name of the Mailer.",
         required=True)
-    
+
 
 class ISMTPMailerDirective(IMailerDirective):
     """Registers a new SMTP mailer."""
