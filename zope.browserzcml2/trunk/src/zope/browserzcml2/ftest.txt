@@ -76,6 +76,15 @@ Template, like this one:
   >>> print browser.contents
   Hi, the name's MacGyver.
 
+More than often, these Page Templates also want to access auxiliary
+methods of the page class, like this one:
+
+  >>> browser = Browser('http://localhost/bz2-viewmethodpage.html')
+  >>> print browser.headers['status']
+  200 Ok
+  >>> print browser.contents
+  My friend is Jack Dalton.
+
 
 Pages from templates
 --------------------

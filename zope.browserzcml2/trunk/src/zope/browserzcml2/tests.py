@@ -21,6 +21,7 @@ import zope.component.testing
 import zope.app.publisher.browser
 from zope.testing import doctest, module
 from zope.configuration import xmlconfig
+from zope.app.traversing.adapters import DefaultTraversable
 
 __docformat__ = "reStructuredText"
 
@@ -38,12 +39,15 @@ def run_config(snippet):
 
 _context = None
 def setUp(test):
-    global _context
-    _context = xmlconfig.file('meta.zcml', zope.browserzcml2)
-    xmlconfig.file('meta.zcml', zope.app.publisher.browser, _context)
     test.globs['run_config'] = run_config
     module.setUp(test, 'zope.browserzcml2.README')
     zope.component.testing.setUp(test)
+
+    global _context
+    _context = xmlconfig.file('meta.zcml', zope.browserzcml2)
+    xmlconfig.file('meta.zcml', zope.app.publisher.browser, _context)
+
+    zope.component.provideAdapter(DefaultTraversable, (None,))
 
 def tearDown(test):
     global _context

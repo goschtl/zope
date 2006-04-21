@@ -38,6 +38,13 @@
       permission="zope.Public"
       />
 
+  <browser2:page
+      for="*"
+      name="bz2-viewmethodpage.html"
+      factory="zope.browserzcml2.ftests.JackDaltonTemplatePage"
+      permission="zope.Public"
+      />
+
   <browser2:pageTemplate
       for="*"
       name="bz2-pagetemplate.html"

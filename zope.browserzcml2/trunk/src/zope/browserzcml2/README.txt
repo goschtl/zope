@@ -150,6 +150,30 @@ The rest works just like with a pure-Python browser page:
   >>> page()
   u"Hi, the name's MacGyver.\n"
 
+Page Templates bound to pages this way can also make use of auxiliary
+view methods on the page class:
+
+  >>> class JackDaltonTemplatePage(zope.formlib.Page):
+  ...     __call__ = ViewPageTemplateFile('test2.pt')
+  ...     def getName(self):
+  ...         return u'Jack Dalton'
+
+  >>> run_config("""
+  ... <browser2:page
+  ...     for="*"
+  ...     name="viewmethodpage.html"
+  ...     factory="zope.browserzcml2.README.JackDaltonTemplatePage"
+  ...     permission="zope.Public"
+  ...     />
+  ... """)
+
+  >>> page = zope.component.getMultiAdapter((object(), request),
+  ...                                       name=u'viewmethodpage.html')
+  >>> page #doctest: +ELLIPSIS
+  <zope.browserzcml2.README.JackDaltonTemplatePage object at ...>
+  >>> page()
+  u'My friend is Jack Dalton.\n'
+
 
 Pages from Page Templates
 -------------------------

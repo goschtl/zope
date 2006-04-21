@@ -32,6 +32,11 @@ def makeAMacGyverPage(context, request):
 class MacGyverTemplatePage(zope.formlib.Page):
     __call__ = ViewPageTemplateFile('test.pt')
 
+class JackDaltonTemplatePage(zope.formlib.Page):
+    __call__ = ViewPageTemplateFile('test2.pt')
+    def getName(self):
+        return u'Jack Dalton'
+
 class PhoenixPages(object):
     macgyver = ViewPageTemplateFile('test.pt')
     def pete(self):
