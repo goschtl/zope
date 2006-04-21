@@ -20,6 +20,7 @@ from StringIO import StringIO
 
 import zope.browserzcml2
 import zope.component.testing
+import zope.app.publisher.browser
 from zope.testing import doctest, module
 from zope.configuration import xmlconfig
 
@@ -30,6 +31,7 @@ def run_config(snippet):
     template = """\
     <configure
         xmlns="http://namespaces.zope.org/zope"
+        xmlns:browser="http://namespaces.zope.org/browser"
         xmlns:browser2="http://namespaces.zope.org/browser2"
         >
         %s
@@ -40,6 +42,7 @@ _context = None
 def setUp(test):
     global _context
     _context = xmlconfig.file('meta.zcml', zope.browserzcml2)
+    xmlconfig.file('meta.zcml', zope.app.publisher.browser, _context)
     test.globs['run_config'] = run_config
     module.setUp(test, 'zope.browserzcml2.README')
     zope.component.testing.setUp(test)

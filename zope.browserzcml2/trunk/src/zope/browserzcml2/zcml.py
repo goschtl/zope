@@ -24,6 +24,7 @@ import zope.configuration.exceptions
 import zope.i18nmessageid
 _ = zope.i18nmessageid.MessageFactory('zope')
 
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.browserzcml2.interfaces import IViewCharacteristics
@@ -62,6 +63,10 @@ def page(
 
     _handle_menu(_context, menu, title, (for_,), name, permission, layer)
 
+    # emit an empty action that has the same descriminator as the
+    # old-school browser:page directive handler; that way we'll get
+    # proper conflicts
+    _context.action(discriminator=('view', for_, name, IBrowserRequest, layer))
 
 class IPageTemplateDirective(IViewCharacteristics, IRegisterInMenu):
     """Define a browser page from a page template"""
@@ -157,4 +162,3 @@ class PagesFromClass(object):
 
     def __call__(self):
         pass
-    

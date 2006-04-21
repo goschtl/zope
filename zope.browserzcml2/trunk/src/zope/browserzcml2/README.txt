@@ -89,7 +89,7 @@ Note that we require the page factory to implement
   ... """) # doctest: +NORMALIZE_WHITESPACE
   Traceback (most recent call last):
     ...
-  ZopeXMLConfigurationError: File "<string>", line 6.0-11.6
+  ZopeXMLConfigurationError: File "<string>", line 7.0-12.6
       ConfigurationError: The browser page factory needs to provide
       IBrowserPublisher. A convenient base class is zope.formlib.Page.
 
@@ -226,4 +226,48 @@ instances of a dynamically generated class, though:
 Conflicts
 ---------
 
-XXX
+Pages registered for the same interface under the same name and on the
+same layer conflict.  For example, take two pages that both want to be
+called ``conflict.html`` (note that they don't necessarily have to be
+registered with exactly the same directive):
+
+  >>> run_config("""
+  ... <browser2:page
+  ...     for="*"
+  ...     name="conflict.html"
+  ...     factory="zope.browserzcml2.README.MacGyverPage"
+  ...     permission="zope.Public"
+  ...     />
+  ... <browser2:pageTemplate
+  ...     for="*"
+  ...     name="conflict.html"
+  ...     template="test.pt"
+  ...     permission="zope.Public"
+  ...     />
+  ... """) # doctest: +ELLIPSIS
+  Traceback (most recent call last):
+    ...
+  ConfigurationConflictError: Conflicting configuration actions
+    ...
+
+Pages defined via the directives from ``zope.browserzcml2`` even
+conflict with the old-style ``browser:page`` directives:
+
+  >>> run_config("""
+  ... <browser2:page
+  ...     for="*"
+  ...     name="conflict.html"
+  ...     factory="zope.browserzcml2.README.MacGyverPage"
+  ...     permission="zope.Public"
+  ...     />
+  ... <browser:page
+  ...     for="*"
+  ...     name="conflict.html"
+  ...     template="test.pt"
+  ...     permission="zope.Public"
+  ...     />
+  ... """) # doctest: +ELLIPSIS
+  Traceback (most recent call last):
+    ...
+  ConfigurationConflictError: Conflicting configuration actions
+    ...
