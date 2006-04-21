@@ -24,15 +24,18 @@ A browser page is nothing but a (browser) view that is *publishable*.
 Publishable means that it is basically the last piece in the traversal
 chain and the object that is responsible for the request.  It will be
 published.  Hence, it has to be publishable.  Publishability is
-determined by the ``IBrowerPublisher`` interface.  All pages should
-provide it.
+determined by the ``IBrowerPublisher`` interface, all browser views
+that want to be published should provide it.
+
+For browser pages in this context we actually require the ``IPage``
+interface which extends ``IBrowserPublisher`` in one aspect: a
+``__call__`` method.
 
 Simple page
 ~~~~~~~~~~~
 
 Let's create a simple page.  For convenience, we can inherit from
-``zope.formlib.Page`` which will give us ``IBrowserPublisher``
-conformance:
+``zope.formlib.Page`` which will give us ``IPage`` conformance:
 
   >>> import zope.formlib
   >>> class MacGyverPage(zope.formlib.Page):
@@ -91,15 +94,14 @@ Note that we require the page factory to implement
     ...
   ZopeXMLConfigurationError: File "<string>", line 7.0-12.6
       ConfigurationError: The browser page factory needs to provide
-      IBrowserPublisher. A convenient base class is zope.formlib.Page.
+      IPage. A convenient base class is zope.formlib.Page.
 
 It is, however, absolutely possible that the supplied factory isn't in
-fact a class.  As long as it implements ``IBrowserPublisher``, it's
-ok:
+fact a class.  As long as it implements ``IPage``, it's ok:
 
   >>> import zope.interface
-  >>> from zope.publisher.interfaces.browser import IBrowserPublisher
-  >>> @zope.interface.implementer(IBrowserPublisher)
+  >>> from zope.formlib.interfaces import IPage
+  >>> @zope.interface.implementer(IPage)
   ... def makeAMacGyverPage(context, request):
   ...     return MacGyverPage(context, request)
 

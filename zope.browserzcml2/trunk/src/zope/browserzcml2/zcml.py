@@ -18,14 +18,13 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import zope.interface
-import zope.formlib
+import zope.formlib.interfaces
 import zope.configuration.fields
 import zope.configuration.exceptions
 import zope.i18nmessageid
 _ = zope.i18nmessageid.MessageFactory('zope')
 
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.browserzcml2.interfaces import IViewCharacteristics
 from zope.browserzcml2.interfaces import IRegisterInMenu
@@ -41,7 +40,7 @@ class IPageDirective(IViewCharacteristics, IRegisterInMenu):
     factory = zope.configuration.fields.GlobalObject(
         title=_(u"Factory"),
         description=_(u"Adapter factory that returns the browser page. "
-                      "It should implement IBrowserPublisher."),
+                      "It should implement IPage."),
         required=True,
         )
 
@@ -49,15 +48,15 @@ def page(
     _context, factory,                                  # IPageDirective
     for_, name, permission, layer=IDefaultBrowserLayer, # IViewCharacteristics
     menu=None, title=None):                             # IRegisterInMenu
-    if not IBrowserPublisher.implementedBy(factory):
+    if not zope.formlib.interfaces.IPage.implementedBy(factory):
         raise zope.configuration.exceptions.ConfigurationError(
-            "The browser page factory needs to provide IBrowserPublisher. "
+            "The browser page factory needs to provide IPage. "
             "A convenient base class is zope.formlib.Page."
             )
     adapter(_context,
             factory=(factory,),
             for_=(for_, layer),
-            provides=IBrowserPublisher,
+            provides=zope.formlib.interfaces.IPage,
             permission=permission,
             name=name)
 
