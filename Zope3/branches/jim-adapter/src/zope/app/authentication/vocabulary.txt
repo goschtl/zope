@@ -7,23 +7,20 @@ interfaces.IAuthentiatorPlugin, respectively) for the current context-- which
 is expected to be a pluggable authentication utility, hereafter referred to as
 a PAU.
 
-These names may be for objects contained within the PAU that do not provide
-zope.app.component.interfaces.ILocalUtility ("contained plugins"), or may
-be utilities registered for the specified interface, found in the context
-of the PAU ("utility plugins").  Contained plugins mask utility plugins of
-the same name.  They also may be names currently selected in the PAU that do
-not actually have a corresponding plugin at this time.
+These names may be for objects contained within the PAU ("contained
+plugins"), or may be utilities registered for the specified interface,
+found in the context of the PAU ("utility plugins").  Contained
+plugins mask utility plugins of the same name.  They also may be names
+currently selected in the PAU that do not actually have a
+corresponding plugin at this time.
 
 Here is a short example of how the vocabulary should work.  Let's say we're
 working with authentication plugins.  We'll create some faux
 authentication plugins, and register some of them as utilities and put
-others in a faux PAU.  Two of the contained plugins will provide
-zope.app.component.interfaces.ILocalUtility, and so should not be included in
-the vocabulary.
+others in a faux PAU.
 
     >>> from zope.app.authentication import interfaces
     >>> from zope import interface, component
-    >>> from zope.app.component.interfaces import ILocalUtility
     >>> class DemoPlugin(object):
     ...     interface.implements(interfaces.IAuthenticatorPlugin)
     ...     def __init__(self, name):
@@ -33,8 +30,6 @@ the vocabulary.
     ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(4))
     >>> contained_plugins = dict(
     ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(1, 5))
-    >>> interface.directlyProvides(contained_plugins[2], ILocalUtility)
-    >>> interface.directlyProvides(contained_plugins[3], ILocalUtility)
     >>> sorted(utility_plugins.keys())
     [0, 1, 2, 3]
     >>> for p in utility_plugins.values():
@@ -151,8 +146,6 @@ For completeness, we'll do the same review of the credentialsPlugins.
     ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(4))
     >>> contained_plugins = dict(
     ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(1, 5))
-    >>> interface.directlyProvides(contained_plugins[2], ILocalUtility)
-    >>> interface.directlyProvides(contained_plugins[3], ILocalUtility)
     >>> for p in utility_plugins.values():
     ...     component.provideUtility(p, name=p.name)
     ...
