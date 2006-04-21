@@ -17,9 +17,10 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
+import zope.interface
+import zope.formlib
 import zope.configuration.fields
 import zope.configuration.exceptions
-import zope.formlib
 import zope.i18nmessageid
 _ = zope.i18nmessageid.MessageFactory('zope')
 
@@ -31,6 +32,7 @@ from zope.browserzcml2.interfaces import IRegisterInMenu
 from zope.app.publisher.browser.viewmeta import _handle_menu
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.component.metaconfigure import adapter
+from zope.app.security.fields import Permission
 
 class IPageDirective(IViewCharacteristics, IRegisterInMenu):
     """Define a browser page"""
@@ -85,14 +87,74 @@ def pageTemplate(
          menu, title)
 
 
-class IPagesFromClassDirective(IViewCharacteristics):
+class IPagesFromClassDirective(zope.interface.Interface):
     """Define multiple pages from a single class"""
 
     class_ = zope.configuration.fields.GlobalObject(
         title=_(u"Class"),
         description=_(u"A class from which one or more browser pages will "
                       "be dynamically created and registered"),
+        required=True,
+        )
+
+    for_ = zope.configuration.fields.GlobalObject(
+        title=_(u'Registered for'),
+        description=_(u"The interface or class this view is for."),
+        required=True
+        )
+
+    layer = zope.configuration.fields.GlobalInterface(
+        title=_('Layer'),
+        description=_("""Layer that the view is registered for.
+        This defaults to IDefaultBrowserLayer."""),
         required=False,
         )
 
-# XXX PagesFromClass
+class IPageSubdirective(IRegisterInMenu):
+    """Define a page based on an attribute of a class"""
+
+    name = zope.schema.TextLine(
+        title=_(u'Name'),
+        description=_(u"""The name of a view, which will show up e.g. in
+        URLs and other paths."""),
+        required=True
+        )
+
+    permission = Permission(
+        title=_(u'Permission'),
+        description=_(u"The permission needed to use the view."),
+        required=True
+        )
+
+    attribute = zope.configuration.fields.PythonIdentifier(
+        title=_(u'Attribute'),
+        description=_(u"The name of the class attribute that will be called "
+                      "when the page is published the page."),
+        required=True
+        )
+
+class PagesFromClass(object):
+
+    def __init__(self, _context, class_, for_, layer=IDefaultBrowserLayer):
+        self._context = _context
+        self.class_ = class_
+        self.for_ = for_
+        self.layer = layer
+
+    def page(self, _context, name, permission, attribute,
+             menu=None, title=None):
+        if attribute == '__call__':
+            class PageFromClass(zope.formlib.Page, self.class_):
+                pass
+        else:
+            class PageFromClass(zope.formlib.Page, self.class_):
+                def __call__(self, *arg, **kw):
+                    return getattr(self, attribute)(*arg, **kw)
+
+        page(self._context, PageFromClass,
+             self.for_, name, permission, self.layer,
+             menu, title)
+
+    def __call__(self):
+        pass
+    

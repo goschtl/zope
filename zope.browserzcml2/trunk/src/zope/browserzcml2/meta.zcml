@@ -16,6 +16,17 @@
         handler=".zcml.page"
         />
 
+    <meta:complexDirective
+        name="pagesFromClass"
+        schema=".zcml.IPagesFromClassDirective"
+        handler=".zcml.PagesFromClass"
+        >
+      <meta:subdirective
+          name="page"
+          schema=".zcml.IPageSubdirective"
+          />
+    </meta:complexDirective>
+
   </meta:directives>
 
 </configure>

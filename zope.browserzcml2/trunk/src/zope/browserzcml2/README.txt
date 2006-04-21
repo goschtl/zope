@@ -183,7 +183,44 @@ other browser page:
 Pages from classes
 ------------------
 
-XXX
+Sometimes, out of pure convenience, you'd like to define several pages
+in one class.  Each page would be implemented as a method or other
+callable attribute.  For example:
+
+  >>> class PhoenixPages(object):
+  ...     macgyver = ViewPageTemplateFile('test.pt')
+  ...     def pete(self):
+  ...         return u'Peter Thornton'
+
+These are configured in one large ZCML directive:
+
+  >>> run_config("""
+  ... <browser2:pagesFromClass
+  ...     for="*"
+  ...     class="zope.browserzcml2.README.PhoenixPages"
+  ...     >
+  ...     <page
+  ...         name="fromclass1.html"
+  ...         attribute="macgyver"
+  ...         permission="zope.Public"
+  ...         />
+  ...     <page
+  ...         name="fromclass2.html"
+  ...         attribute="pete"
+  ...         permission="zope.Public"
+  ...         />
+  ... </browser2:pagesFromClass>
+  ... """)
+
+As any other page, we can look them up and call them.  They *are*
+instances of a dynamically generated class, though:
+
+  >>> page = zope.component.getMultiAdapter((object(), request),
+  ...                                       name=u'fromclass1.html')
+  >>> page #doctest: +ELLIPSIS
+  <zope.browserzcml2.zcml.PageFromClass object at ...>
+  >>> page()
+  u"Hi, the name's MacGyver.\n"
 
 
 Conflicts
