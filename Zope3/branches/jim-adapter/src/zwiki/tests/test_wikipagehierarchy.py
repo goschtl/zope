@@ -25,7 +25,7 @@ from zope.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.annotation.attribute import AttributeAnnotations
 
 from zope.app.testing import ztapi
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 
 from zwiki.interfaces import IWikiPage, IWikiPageHierarchy
 from zwiki.wikipage import WikiPage, WikiPageHierarchyAdapter

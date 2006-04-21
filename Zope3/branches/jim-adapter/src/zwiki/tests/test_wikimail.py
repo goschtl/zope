@@ -28,7 +28,7 @@ from zope.sendmail.interfaces import IMailDelivery
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 
 from zwiki.interfaces import IWikiPage, IWiki, IMailSubscriptions
 from zwiki.interfaces import IWikiPageEditEvent

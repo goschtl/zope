@@ -23,7 +23,7 @@ from zwiki.wiki import Wiki
 from zwiki.wikipage import WikiPage
 from zwiki.traversal import WikiPageTraversable
 
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 
 class TestTraversable(PlacefulSetup, CleanUp, unittest.TestCase):
 
