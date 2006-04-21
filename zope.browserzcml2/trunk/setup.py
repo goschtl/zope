@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 import os
 
 try:
@@ -23,23 +22,17 @@ try:
 except ImportError, e:
     from distutils.core import setup, Extension
 
-setup(name='zope.XXX',
+setup(name='zope.browserzcml2',
       version='1.0',
-      url='http://svn.zope.org/zope.XXX',
+      url='http://svn.zope.org/zope.browserzcml2',
       license='ZPL 2.1',
-      description='XXX',
+      description='Alternate, non-magical browser ZCML directives',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       long_description='',
       
-      packages=['zope', 'zope.XXX'],
+      packages=['zope', 'zope.browserzcml2'],
       package_dir = {'': 'src'},
-
-##       ext_modules=[Extension("zope.XXX._zope_XXX",
-##                              [os.path.join('src', 'zope', 'XXX',
-##                                            "_zope_XXX.c")
-##                               ]),
-##                    ],
 
       namespace_packages=['zope',],
       tests_require = ['zope.testing'],

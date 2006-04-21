@@ -1,15 +1,20 @@
-zope.XXX Package Readme
-=======================
+zope.browserzcml2
+=================
 
 Overview
 --------
 
-Lorem ipsum delorem.
+Alternate ZCML browser directives that don't magically create classes
+etc.  The goal is more clarity in both Python and ZCML.
+
+See http://dev.zope.org/Zope3/TheBrowserPageCompromise.
+
 
 Changes
 -------
 
 See CHANGES.txt.
+
 
 Installation
 ------------
@@ -22,16 +27,12 @@ Developer Resources
 
 - Subversion browser:
 
-  http://svn.zope.org/zope.XXX/
+  http://svn.zope.org/zope.browserzcml2/
 
 - Read-only Subversion checkout:
 
-  $ svn co svn://svn.zope.org/repos/main/zope.XXX/trunk
+  $ svn co svn://svn.zope.org/repos/main/zope.browserzcml2/trunk
 
 - Writable Subversion checkout:
 
-  $ svn co svn://svn.zope.org/repos/main/zope.XXX/trunk
-
-- Note that the 'src/zope/XXX' package is acutally a 'svn:externals' link
-  to the corresponding package in the Zope3 trunk (or to a specific tag,
-  for released versions of the package).
+  $ svn co svn://svn.zope.org/repos/main/zope.browserzcml2/trunk
