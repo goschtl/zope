@@ -135,9 +135,6 @@ def new_run(self, result):
     orig_run(self, result)
     try:
         twisted.trial.util._Janitor().postCaseCleanup()
-    except twisted.trial.util.FailureError, e:
-        for failure in e.failures:
-            result.cleanupErrors(failure)
     except:
         result.cleanupErrors(twisted.python.failure.Failure(sys.exc_info()))
 

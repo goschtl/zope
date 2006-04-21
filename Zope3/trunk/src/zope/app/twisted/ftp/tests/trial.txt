@@ -159,3 +159,47 @@ errors.
     <BLANKLINE>
       Ran 3 tests with 1 failures and 4 errors in 0.118 seconds.
     True
+
+Make sure that errors are handled correctly if the postCaseCleanup method
+fails for what ever reason.
+
+    >>> import twisted.trial.util
+    >>> old_doCleanReactor = twisted.trial.util._Janitor.do_cleanReactor
+    >>> def new_doCleanReactor(cls):
+    ...     raise Exception, "Can't clean the reactor"
+    ...
+    >>> twisted.trial.util._Janitor.do_cleanReactor = new_doCleanReactor
+
+    >>> sys.argv = 'test --tests-pattern ^trialtest$ '.split()
+    >>> testrunner.run(defaults)
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Running unit tests:
+    <BLANKLINE>
+    Error in test test_error (trialtest.TestTrialTests)
+    Traceback (most recent call last):
+    ...
+    --- <exception caught here> ---
+      File "...twisted/internet/defer.py", Line NNN, in maybeDeferred
+        result = f(*args, **kw)
+      File "...app/twisted/ftp/tests/trialtest.py", Line NNN, in test_error
+        raise Exception, "this test is a broken trial test :-)"
+    exceptions.Exception: this test is a broken trial test :-)
+    <BLANKLINE>
+    <BLANKLINE>
+    Failure in test test_failure (trialtest.TestTrialTests)
+    Traceback (most recent call last):
+    ...
+    --- <exception caught here> ---
+      File "...twisted/internet/defer.py", Line NNN, in maybeDeferred
+        result = f(*args, **kw)
+      File "...app/twisted/ftp/tests/trialtest.py", Line NNN, in test_failure
+        self.assert_(False, "I am a failed trial test")
+    twisted.trial.unittest.FailTest: I am a failed trial test
+    <BLANKLINE>
+      Ran 3 tests with 1 failures and 1 errors in N.NNN seconds.
+    True
+
+Now un-patch the twisted trial janitor, so that it does actually clean the
+reactor.
+
+    >>> twisted.trial.util._Janitor.do_cleanReactor = old_doCleanReactor
