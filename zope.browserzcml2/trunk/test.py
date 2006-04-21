@@ -28,9 +28,8 @@ from zope.testing import testrunner
 
 defaults = [
     '--path', src,
-    '--package', 'zope.i18nmessageid',
+    '--package', 'zope.browserzcml2',
     '--tests-pattern', '^tests$',
     ]
 
 sys.exit(testrunner.run(defaults))
-
