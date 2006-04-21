@@ -32,35 +32,8 @@ from zope.app.publisher.browser.viewmeta import _handle_menu
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.component.metaconfigure import adapter
 
-class IPageTemplateDirective(IViewCharacteristics, IRegisterInMenu):
-
-    template = zope.configuration.fields.Path(
-        title=_(u"Template"),
-        description=_(u"""
-        Refers to a file containing a page template (should end in
-        extension '.pt' or '.html')."""),
-        required=True
-        )
-
-def pageTemplate(
-    _context, template,                                 # IPageTemplateDirective
-    for_, name, permission, layer=IDefaultBrowserLayer, # IViewCharacteristics
-    menu=None, title=None):                             # IRegisterInMenu
-
-    class TemplatePage(zope.formlib.Page):
-        __call__ = ViewPageTemplateFile(template)
-
-    page(_context, TemplatePage,
-         for_, name, permission, layer,
-         menu, title)
-
 class IPageDirective(IViewCharacteristics, IRegisterInMenu):
-    """Define multiple pages without repeating all of the parameters.
-
-    The pages directive allows multiple page views to be defined
-    without repeating the 'for', 'permission', 'class', 'layer',
-    'allowed_attributes', and 'allowed_interface' attributes.
-    """
+    """Define a browser page"""
 
     factory = zope.configuration.fields.GlobalObject(
         title=_(u"Factory"),
@@ -87,13 +60,33 @@ def page(
 
     _handle_menu(_context, menu, title, (for_,), name, permission, layer)
 
-class IPagesFromClassDirective(IViewCharacteristics):
-    """Define multiple pages without repeating all of the parameters.
 
-    The pages directive allows multiple page views to be defined
-    without repeating the 'for', 'permission', 'class', 'layer',
-    'allowed_attributes', and 'allowed_interface' attributes.
-    """
+class IPageTemplateDirective(IViewCharacteristics, IRegisterInMenu):
+    """Define a browser page from a page template"""
+
+    template = zope.configuration.fields.Path(
+        title=_(u"Template"),
+        description=_(u"""
+        Refers to a file containing a page template (should end in
+        extension '.pt' or '.html')."""),
+        required=True
+        )
+
+def pageTemplate(
+    _context, template,                                 # IPageTemplateDirective
+    for_, name, permission, layer=IDefaultBrowserLayer, # IViewCharacteristics
+    menu=None, title=None):                             # IRegisterInMenu
+
+    class TemplatePage(zope.formlib.Page):
+        __call__ = ViewPageTemplateFile(template)
+
+    page(_context, TemplatePage,
+         for_, name, permission, layer,
+         menu, title)
+
+
+class IPagesFromClassDirective(IViewCharacteristics):
+    """Define multiple pages from a single class"""
 
     class_ = zope.configuration.fields.GlobalObject(
         title=_(u"Class"),
