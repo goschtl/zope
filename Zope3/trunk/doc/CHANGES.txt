@@ -81,6 +81,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 590: zope.app.mail could send multiple copies of emails on
+        ConflictErrors, and it was also rate limited to 1 email per second when
+        you used QueuedMailDelivery.
+
       - SimpleInputWidget used to clear the widget's error as a side effect
         sometimes.
 
