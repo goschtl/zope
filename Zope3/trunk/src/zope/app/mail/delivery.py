@@ -48,7 +48,7 @@ class MailDataManager(object):
         self.transaction_manager = transaction.manager
 
     def commit(self, transaction):
-        self.callable(*self.args)
+        pass
 
     def abort(self, transaction):
          if self.onAbort:
@@ -74,7 +74,10 @@ class MailDataManager(object):
     def tpc_vote(self, transaction):
         pass
 
-    tpc_finish = tpc_abort = tpc_vote
+    def tpc_finish(self, transaction):
+        self.callable(*self.args)
+
+    tpc_abort = abort
 
 
 class AbstractMailDelivery(object):
