@@ -195,10 +195,10 @@ class view(zope_app_view):
                     return getattr(self, pages[name])
                 view = zapi.queryView(self, name, request)
                 if view is not None:
-                    return view
+                    return view.__of__(self)
 
                 m = class_.publishTraverse.__get__(self)
-                return m(request, name)
+                return m(request, name).__of__(self)
 
         else:
             def publishTraverse(self, request, name,
@@ -208,7 +208,7 @@ class view(zope_app_view):
                     return getattr(self, pages[name])
                 view = zapi.queryView(self, name, request)
                 if view is not None:
-                    return view
+                    return view.__of__(self)
 
                 raise NotFoundError(self, name, request)
 
