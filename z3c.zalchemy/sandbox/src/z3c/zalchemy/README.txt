@@ -2,8 +2,8 @@
 SQLAlchemy and Zope 3
 =====================
 
-"zalchemy" integrates the object relational mapper sqlalchemy into zope 3
-as SQLOS integrates sqlobject.
+"z3c.zalchemy" integrates the object relational mapper sqlalchemy into
+zope 3 as SQLOS integrates sqlobject.
 
 zalchemy tries to do it's best not to interfere with the standard sqlalchemy
 usage.
@@ -23,25 +23,28 @@ zalchemy provides a transparent way to connect a table to a database (engine).
 A SQLAlchemy engine is represented as a utility :
 
   >>> import os
-  >>> from zalchemy.datamanager import AlchemyEngineUtility
+  >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtil = AlchemyEngineUtility(
   ...     'sqlite',
   ...     dns='sqlite://',
   ...     )
 
-We create our tables as usual sqlalchemy table :
-Note that we use a ProxyEngine which is important here.
-The real connection to database engine will be done later in our utility.
+We create our tables as usual sqlalchemy table : 
 
   >>> import sqlalchemy
-  >>> engine = sqlalchemy.ext.proxy.ProxyEngine()
 
   >>> aTable = sqlalchemy.Table(
   ...     'aTable',
-  ...     engine,
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.Integer),
   ...     )
+
+Note that by not specifying an engine we use a ProxyEngine which is
+important here.  The real connection to database engine will be done
+later in our utility.
+
+  >>> aTable.engine
+  <sqlalchemy.ext.proxy.ProxyEngine object at ...>
 
 Define a simple class which will be used later to map to a database table.
 
@@ -52,10 +55,11 @@ Now we map the table to our class.
 
   >>> sqlalchemy.assign_mapper(A, aTable)
 
-The next step is to connect the table to the database engine.
-We use our utility for that :
+The next step is to connect the table to the database engine.  We use
+our utility for that. The ``create`` argument tells the utility if it
+should try to create the table.
 
-  >>> engineUtil.addTable(aTable)
+  >>> engineUtil.addTable(aTable,create=True)
 
 To let zalchemy do his magic thing we need to register our database utility
 as a named utility :
@@ -66,25 +70,8 @@ as a named utility :
 From now on zalchemy takes care of the zope transaction process behind the
 scenes :
 - connect the engine to the tables for every thread
-- create the tables in the database if not already done
 - handle the two phase commit process
 - disconnect the engine from the tables at the end of the thread
-
-Now let's try to use our database objects :
-
-  >>> a = A()
-  >>> a.value = 1
-  >>> sqlalchemy.objectstore.commit()
-  Traceback (most recent call last):
-  ...
-  AttributeError: No connection established
-
-Ups, this is because the tabel is not connected to a real database engine.
-We need to use zope transactions.
-
-First let's clear the current unit of work :
-
-  >>> sqlalchemy.objectstore.clear()
 
 Note that the transaction handling is done inside zope.
 
@@ -93,7 +80,7 @@ Note that the transaction handling is done inside zope.
 
 Then we need to simulate a beforeTraversal Event :
 
-  >>> from zalchemy.datamanager import beforeTraversal
+  >>> from z3c.zalchemy.datamanager import beforeTraversal
   >>> beforeTraversal(None)
 
   >>> a = A()
@@ -105,6 +92,8 @@ Now let's try to get the object back in a new transaction :
 
   >>> txn = transaction.begin()
   >>> beforeTraversal(None)
+
+XXX this is not the same db, use filebased db?
 
   >>> a = A.get(1)
   >>> a.value
@@ -126,14 +115,13 @@ Multiple databases
 
   >>> bTable = sqlalchemy.Table(
   ...     'bTable',
-  ...     engine,
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.String),
   ...     )
   >>> class B(object):
   ...     pass
   >>> sqlalchemy.assign_mapper(B, bTable)
-  >>> engine2Util.addTable(bTable)
+  >>> engine2Util.addTable(bTable,create=True)
 
   >>> txn = transaction.begin()
   >>> beforeTraversal(None)

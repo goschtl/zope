@@ -7,8 +7,8 @@ from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 from zope.testing.doctestunit import DocTestSuite
 from zope.app.testing.placelesssetup import PlacelessSetup
 
-import zalchemy
-from zalchemy.interfaces import IAlchemyEngineUtility
+import z3c.zalchemy
+from z3c.zalchemy.interfaces import IAlchemyEngineUtility
 
 template = """<configure
    xmlns='http://namespaces.zope.org/zope'
@@ -22,7 +22,7 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(TestDirectives, self).setUp()
-        XMLConfig('meta.zcml', zalchemy)()
+        XMLConfig('meta.zcml', z3c.zalchemy)()
 
     def testEngineDirective(self):
         xmlconfig(StringIO(template % (
@@ -53,14 +53,14 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
                 />
             <alchemy:connect
                 engine="sqlite-in-memory"
-                table="zalchemy.tests.environ.testTable"
+                table="z3c.zalchemy.tests.environ.testTable"
                 />
             '''
             )))
         util = component.getUtility(IAlchemyEngineUtility,'sqlite-in-memory')
         self.assert_(len(util.tables)==1)
         self.assertEqual(util.tables[0],
-                         zalchemy.tests.environ.testTable)
+                         z3c.zalchemy.tests.environ.testTable)
 
     def tearDown(self):
         PlacelessSetup.tearDown(self)

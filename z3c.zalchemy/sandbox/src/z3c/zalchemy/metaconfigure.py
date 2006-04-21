@@ -25,15 +25,15 @@ def engine(_context, name, dns, echo=False, **kwargs):
             permission=PublicPermission,
             name=name)
 
-def connect(_context, engine, table):
+def connect(_context, engine, table, create=False):
     _context.action(
             discriminator = (engine, table),
             callable = connector,
-            args = (engine, table)
+            args = (engine, table, create)
             )
 
-def connector(engine, table):
+def connector(engine, table, create):
     util = component.getUtility(IAlchemyEngineUtility, engine)
-    util.addTable(table)
+    util.addTable(table,create=create)
     #connections.append((util, table))
 

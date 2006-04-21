@@ -2,7 +2,7 @@ Zope transactions and sqlalchemy
 ================================
 
 When a zope transaction is used also a sqlalchemy transaction must be
-activated. "zalchemy" installs a data manager every time a new zope
+activated. "z3c.zalchemy" installs a data manager every time a new zope
 transaction is created. 
 
 Setup zope's test environment :
@@ -13,9 +13,9 @@ Setup zope's test environment :
 Create a utility to provide a database :
 
   >>> from zope.component import provideUtility
-  >>> from zalchemy.datamanager import AlchemyEngineUtility
+  >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtility = AlchemyEngineUtility('database',
-  ...                                      'sqlite://filename=abc.db',
+  ...                                      'sqlite://filename=/tmp/abc.db',
   ...                                      echo=False)
   >>> provideUtility(engineUtility, name="test")
 
@@ -40,7 +40,7 @@ a real engine.
 
   >>> import os
   >>> try:
-  ...     os.remove('abc.db')
+  ...     os.remove('/tmp/abc.db')
   ... except:
   ...     pass
 
@@ -57,7 +57,7 @@ Now start a zope transaction :
 
 Now we need to connect our table to a real engine :
 
-  >>> from zalchemy.datamanager import beforeTraversal
+  >>> from z3c.zalchemy.datamanager import beforeTraversal
   >>> beforeTraversal(None)
 
   >>> aTable.engine.engine is not None
@@ -143,7 +143,15 @@ Use of a second table with the same engine :
 
 Connect the new table to the already existing database :
 
-  >>> engineUtility.addTable(bTable)
+  >>> engineUtility.addTable(bTable,create=True)
+  >>> not not bTable.engine.engine
+  True
+
+The table should now be created.
+
+  >>> c = bTable.engine.engine.execute("select * from bTable")
+  >>> [row for row in c]
+  []
 
   >>> log = []
   >>> def createB():
@@ -168,6 +176,10 @@ Connect the new table to the already existing database :
   >>> thread.join()
   >>> log
   [1]
+
+XXX why do we have to do this?
+
+  >>> transaction.get().commit()  
 
   >>> log = []
   >>> thread = threading.Thread(target=doB)

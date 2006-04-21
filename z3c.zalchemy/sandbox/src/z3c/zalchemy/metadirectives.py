@@ -13,7 +13,7 @@
 ##############################################################################
 from zope import interface
 from zope import schema
-from zope.configuration.fields import GlobalObject
+from zope.configuration.fields import GlobalObject,Bool
 
 
 class IEngineDirective(interface.Interface):
@@ -52,3 +52,5 @@ class IConnectDirective(interface.Interface):
             required = True,
             )
 
+    create = Bool(title=u'Create Table',default=False,
+                  required=False)

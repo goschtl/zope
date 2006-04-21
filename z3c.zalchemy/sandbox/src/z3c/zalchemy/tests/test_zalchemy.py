@@ -1,11 +1,28 @@
 import unittest
+import doctest
 from zope.testing.doctestunit import DocFileSuite
+from zope.app.testing import setup
+
+def setUp(test):
+    setup.placefulSetUp()
+
+
+def tearDown(test):
+    setup.placefulTearDown()
+
+
 
 def test_suite():
     return unittest.TestSuite((
-            DocFileSuite('TRANSACTION.txt'),
-            DocFileSuite('../README.txt'),
-            ))
+        DocFileSuite('../README.txt',
+                     setUp=setUp, tearDown=tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
+        DocFileSuite('TRANSACTION.txt',
+                     setUp=setUp, tearDown=tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
+        ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

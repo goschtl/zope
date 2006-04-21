@@ -41,7 +41,7 @@ class AlchemyEngineUtility(object):
         self.storage = local()
         self.createdTables = {}
 
-    def addTable(self, table):
+    def addTable(self, table, create=False):
         if not isinstance(table.engine, sqlalchemy.ext.proxy.ProxyEngine):
             raise TypeError(table.engine)
         utils = getUtilitiesFor(IAlchemyEngineUtility)
@@ -50,15 +50,34 @@ class AlchemyEngineUtility(object):
                 #TODO: should raise an exception here
                 return
         self.tables.append(table)
+        if create:
+            self.createTable(table)
 
-    def connectTablesForThread(self):
-        # create a thread local engine
+    def createTable(self,table):
+
+        """tries to create the given table if not there"""
+        self.initEngine()
+        table.engine.engine = self.storage.engine
+        table.create()
+
+        
+    def initEngine(self):
+
+        """create a thread local engine if not there, returns True if
+        a new engine is created"""
+        
         engine=getattr(self.storage,'engine',None)
         if engine is not None:
-            return
+            return False
         self.storage.engine = create_engine(self.dns,
                                             self.kw,
                                             echo=self.echo)
+        return True
+
+    def connectTablesForThread(self):
+        # create a thread local engine
+        if not self.initEngine():
+            return
         engine = self.storage.engine
         # create a data manager
         if self.echo:
@@ -69,14 +88,6 @@ class AlchemyEngineUtility(object):
         # connect the tables to the engine
         for table in self.tables:
             table.engine.engine = engine
-            #TODO: this is a bad hack which must go away soon !
-            if table not in self.createdTables:
-                try:
-                    # make sure the table exists :
-                    table.create()
-                except:
-                    pass
-                self.createdTables[table]=True
 
     def dataManagerFinished(self):
         self.storage.engine=None
