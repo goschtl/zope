@@ -1,0 +1,59 @@
+<div class="inline_form" tal:attributes="id string:add_page_form${view/index}">
+    <form method="post"
+           enctype="multipart/form-data"
+           onsubmit="WikiMenu.submitForm(this); return false;"
+           onreset="WikiMenu.hideForm();">
+        <div class="inline-title">Add Page for Link &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;</div>
+        <input name="link_id" type="hidden" tal:attributes="value string:${view/link_id}" />
+        <input name="cmd" type="hidden" value="newpage" />
+        <input name="reference" type="hidden" value="001" 
+                tal:attributes="name string:${view/processor/referenceKey};
+                value string:${view/processor/reference}" />
+        <table>
+            <tr>
+                <td valign="top" class="form-title">
+                    Page Name:
+                </td>
+                <td valign="top" >
+                    <input id="page_name" name="name" type="text" size="40" value="FileName"  tal:attributes="value python: view.unicodeLabel()" />
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" class="form-title">
+                    Title:
+                </td>
+                <td valign="top" >
+                    <input id="page_title" name="title" type="text" size="40" value=""/>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" class="form-title">
+                    Abstract: 
+                </td>
+                <td valign="top" >
+                    <textarea id="description" name="description"
+                                   cols="37" rows="8" value="123"></textarea>
+                </td>
+            </tr>
+
+            <tr tal:condition="not: view/isUnique"> 
+                <td valign="top" class="form-title">
+                    Scope: 
+                </td>
+                <td valign="top" class="form-title">
+                    <input name="scope" id="scope" type="checkbox">
+                    Apply to all links named &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;.
+                </td>   
+            </tr>
+
+            <tr>
+                <td>&nbsp;		
+                </td>
+                <td>
+                    <input name="entry_submit" type="submit" value="Submit">
+                    <input name="cancel_submit" type="reset" value="Cancel"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

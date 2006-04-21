@@ -133,52 +133,63 @@ get modifiable links :
     >>> print index_page.renderBody()
     <BLANKLINE>
     ...
-    ...PopupMenu.update...>new page</a>...
+    ...WikiMenu.dropDown...>new page</a>...
     ...
-    ...PopupMenu.update...>[New Subject]</a>...
+    ...WikiMenu.dropDown...>[New Subject]</a>...
     ...   
     
-The menu is loaded on demand. 
+The forms for the menu commands are loaded on demand: 
 
     >>> modified = index_page.getModificationStamp()
-    >>> print index_page.popupLinkMenu('wiki-menu5', modified)
-    <span>
+    >>> print index_page.wikiCommandForm('rename', 5, modified)
+    <div class="inline_form" id="create_folder5">
+        <form method="post" enctype="multipart/form-data" action="renameLink" onsubmit="WikiMenu.submitForm(this); return false;" onreset="WikiMenu.hideForm()">
     <BLANKLINE>
-        <div style="display: true;" class="anylinkcss"
-             id="popup_items">
-            <span class="anylinkheader">Edit this Link</span>
-            <div class="anylinkitem"
-                 onclick="editPlaceholderLabel('wiki-link5', 'wiki-menu5', 'New Subject', '')">
-                Rename
-            </div>
-            <a class="anylinkitem"
-               href="http://127.0.0.1/site/@@wikiedit.html?add=NewSubject">
-                Add Page
-            </a>
-            <div class="anylinkitem"
-                 onclick="PopupMenu.showForm('create_folder5')">
-                Create Folder
-            </div>
-            <div class="anylinkitem"
-                 onclick="PopupMenu.showForm('upload_form5')">
-                Upload File
-            </div>
-        </div>
-    ...
-   
+            <h4>Rename Link &quot;New Subject&quot;</h4>
+            <input name="link_id" type="hidden"
+                   value="wiki-link5" />
+            <input name="cmd" type="hidden" value="rename" />
+            <input name="url" type="hidden"
+                   value="http://127.0.0.1/site/index.html" />
+            <table>
+                <tr>
+                    <td valign="top" class="form-title">
+                        New Label:
+                    </td>
+                    <td valign="top">
+                        <input id="link_label" name="label"
+                               type="text" size="40"
+                               value="New Subject" />
+                    </td>
+                </tr>
+    <BLANKLINE>
+                <tr>
+                    <td>&nbsp;		
+                    </td>
+                    <td>
+                        <input name="entry_submit" type="submit" value="Submit">
+                        <input name="cancel_submit" type="reset" value="Cancel" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <BLANKLINE>
+    
 If the page has change after the loading the user is alerted that the page
 needs a refresh to be up to date:
 
-    >>> print index_page.popupLinkMenu('wiki-menu5', "modified-timestamp")
-    <span>
-        <div id="popup_items">
-            <form class="inline_form">
-                <span class="anylinkheader">The page has been edited. Please reloaad.
-                </span>
-                <input name="reload" id="reload" type="submit" onselect="window.reload()" value="Reload Page">
-            </form>
-        </div>
-    ...    
+    >>> print index_page.wikiCommandForm('rename', 5, "modified-timestamp")
+    <div>
+        <form class="inline_form" onsubmit="window.reload(); return false;">
+            <span class="anylinkheader">The page has been edited. Please reloaad.
+            </span>
+            <input name="url" type="hidden"
+                   value="http://127.0.0.1/site/index.html" />
+            <input name="reload" id="reload" type="submit" value="Reload Page">
+        </form>
+    </div>
+    <BLANKLINE>
 
 Some of the menu items allow the user to edit the link within the view page.
 
@@ -193,7 +204,7 @@ quite easily:
     >>> print edit_page.modifyLink(cmd='rename', link_id='wiki-link5')
     <BLANKLINE>
     ...
-    ...PopupMenu.update...[New Label]...
+    ...WikiMenu.dropDown...[New Label]...
     ...
       
     

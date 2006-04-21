@@ -1,0 +1,65 @@
+<div class="inline_form" tal:attributes="id string:upload_form${view/index}">
+    <form method="post"
+           enctype="multipart/form-data"
+           action="uploadFile"
+           onreset="WikiMenu.hideForm();">
+        <div class="inline-title">Upload File for Link &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;</div>
+        <input name="link_id" type="hidden" tal:attributes="value string:${view/link_id}" />
+        <input name="cmd" type="hidden" value="upload" />
+        <input name="reference" type="hidden" value="001" 
+                tal:attributes="name string:${view/processor/referenceKey};
+                value string:${view/processor/reference}" />
+        <table>
+            <tr>
+                <td valign="top" class="form-title">
+                    File Name:
+                </td>
+                <td valign="top" >
+                    <input id="folder_name" name="name" type="text" size="40" value="FileName" tal:attributes="value string:${view/upload_name}" />
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" class="form-title">
+                    Title:
+                </td>
+                <td valign="top" >
+                    <input id="file_title" name="title" type="text" size="40" value=""/>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" class="form-title">
+                    Description: 
+                </td>
+                <td valign="top" >
+                    <textarea id="description" name="description"
+                                   cols="37" rows="8" value="123"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top" class="form-title">
+                    File: 
+                </td>
+                <td>
+                    <input id="data" name="data" size="20" type="file" />
+                </td>
+            </tr>
+            <tr tal:condition="not: view/isUnique"> 
+                <td valign="top" class="form-title">
+                    Scope: 
+                </td>
+                <td valign="top" class="form-title">
+                    <input name="scope" id="scope" type="checkbox">
+                    Apply to all links named &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;.
+                </td>   
+            </tr>
+            <tr>
+                <td>&nbsp;		
+                </td>
+                <td>
+                    <input name="entry_submit" type="submit" value="Submit">
+                    <input name="cancel_submit" type="reset" value="Cancel"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

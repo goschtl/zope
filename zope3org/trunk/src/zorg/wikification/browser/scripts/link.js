@@ -1,36 +1,47 @@
 
-var PopupMenu = {
+var WikiMenu = {
 
-    dropmenuID : "",
-
-    initialize : function() {
-        document.onmousedown = PopupMenu.onMouseDown;
+    linkID : -1,
+    extraInfo : "",
+    caller : null,
+    
+    dropDown : function(obj, e, dropmenuID, extra) {
+    
+        if (WikiMenu.linkID != -1) return
+        
+        WikiMenu.extraInfo = extra;
+        WikiMenu.caller = obj;
+        target = $(dropmenuID);
+        
+        if (window.event) 
+            event.cancelBubble=true
+        else if (e.stopPropagation) 
+            e.stopPropagation()
+        
+        if (typeof dropmenuobj!="undefined") //hide previous menu
+            dropmenuobj.style.visibility="hidden"
+            clearhidemenu()
+            if (ie5||ns6){
+                obj.onmouseout=delayhidemenu
+                dropmenuobj = target;
+                if (hidemenu_onclick) 
+                    dropmenuobj.onclick=function(){dropmenuobj.style.visibility='hidden'}
+                dropmenuobj.onmouseover=clearhidemenu
+                dropmenuobj.onmouseout=ie5? function(){ dynamichide(event)} : function(event){ dynamichide(event)}
+                showhide(dropmenuobj.style, e, "visible", "hidden")
+                dropmenuobj.x=getposOffset(obj, "left")
+                dropmenuobj.y=getposOffset(obj, "top")
+                dropmenuobj.style.left=dropmenuobj.x-clearbrowseredge(obj, "rightedge")+"px"
+                dropmenuobj.style.top=dropmenuobj.y-clearbrowseredge(obj, "bottomedge")+obj.offsetHeight+"px"
+                }
+        return clickreturnvalue()
         },
         
-    leave : function (caller, dropmenuID) {
-        // PopupMenu.close();
-        },
-            
-    update : function (caller, dropmenuID, extra)  {
-        document.onmousedown = PopupMenu.onMouseDown;
-        if (PopupMenu.dropmenuID != dropmenuID) {
-            PopupMenu.close();
-            var timestamp =  $('modification_stamp').innerHTML;
-            timestamp = timestamp.replace(/\+/g, '%2b');        // Obey + in datetime str format
-            timestamp = "&modification_stamp=" + timestamp;
-            
-            new Ajax.Updater('wiki_popup_menu', './@@popupLinkMenu', 
-                { parameters: 'menu_id='+ dropmenuID + timestamp + extra});
-            PopupMenu.dropmenuID = dropmenuID  
-            PopupMenu.placeNextTo(caller);
-            }
-        },
-
     close : function (event) {
-        if ($('wiki_popup_menu').innerHTML) {
-            $('wiki_popup_menu').innerHTML = "";
+        if ($('wiki_link_form').innerHTML) {
+            $('wiki_link_form').innerHTML = "";
             }
-        PopupMenu.dropmenuID = "";
+        WikiMenu.linkID = -1;
         },
         
     alertReload : function () {
@@ -38,7 +49,7 @@ var PopupMenu = {
         },
         
     editPlaceholderLabel : function (link_id, menu_id, label, extra) {
-        PopupMenu.close();
+        WikiMenu.close();
         var newLabel = prompt('Enter a new label.',  label);
         if (newLabel) {
             var params = '&label=' + newLabel + extra;
@@ -49,58 +60,44 @@ var PopupMenu = {
         },
 
         
-    submitForm : function (id, form) {
+    submitForm : function (form) {
+        
         new Ajax.Updater('main', './@@modifyLink', {
             parameters:Form.serialize(form),
             onError: function(request) { alert("Sorry, a server error occurred."); },
-            onComplete: function(request) { PopupMenu.hideForm(id); }
+            onComplete: function(request) { WikiMenu.hideForm(); }
             });
+            
         return false;  
         },
         
-    showForm : function (id) {
-        Element.hide('popup_items');
-        Element.show(id);
+    showForm : function (cmd, id) {
+       if (WikiMenu.linkID != id) {
+            //WikiMenu.close();
+           
+            var timestamp =  $('modification_stamp').innerHTML;
+            timestamp = timestamp.replace(/\+/g, '%2b');        // Obey + in datetime str format
+            timestamp = "&modification_stamp=" + timestamp;
+            
+            new Ajax.Updater('wiki_link_form', './@@wikiCommandForm', 
+                { parameters: 'cmd=' + cmd + '&menu_id='+ id + timestamp + WikiMenu.extraInfo});
+            WikiMenu.linkID = id;  
+            WikiMenu.placeNextTo(WikiMenu.caller);
+            }
         },
         
-    hideForm : function (id) {
-        Element.hide(id);
-        PopupMenu.close();
+    hideForm : function () {
+        WikiMenu.close();
         },
         
     placeNextTo : function(obj) {
         var offsets = Position.positionedOffset(obj)
-                
         var x = offsets[0];
         var y = offsets[1];
-        var menu = $('wiki_popup_menu');
-        menu.style.left=x + "px";
-        menu.style.top=y + 15 + "px";
-        },
-    
-    
-    onMouseDown : function (event) {
-        if (!event) var event = window.event; // IE compatibility
         
-        if (event.target) {
-            targ = event.target;
-            }
-        else if (event.srcElement) {
-            targ = event.srcElement;
-            }
-        
-        var node = targ;
-        while (node) {
-            if (node == $('wiki_popup_menu')) {
-                return;
-                }
-            node = node.parentNode;
-            }
-            
-        PopupMenu.close();
+        var form = $('wiki_link_form');
+        form.style.left=x + "px";
+        form.style.top=y + 15 + "px";
         }
+    
 }
-
-
-window.onload = PopupMenu.initialize;
-

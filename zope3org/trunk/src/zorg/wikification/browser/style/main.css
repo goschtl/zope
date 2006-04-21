@@ -23,22 +23,22 @@ p.intro {
 }
 
 .inline_form {
-    position:absolute;
     border: 1px solid #666666;
     padding: 4px;
     font:normal 10px Verdana;
     line-height: 18px;
-    z-index: 100;
     background-color: #EDF0F4;
     width: 400px;
 }
 
-#wiki_popup_menu {
+#wiki_link_form {
     position:absolute;
     z-index: 100;
 }
 
 .anylinkcss {
+    position:absolute;
+    z-index: 100;
     border:1px solid #666666;
     border-bottom-width: 0;
     font:normal 10px Verdana;

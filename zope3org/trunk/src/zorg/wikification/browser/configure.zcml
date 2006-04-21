@@ -44,16 +44,16 @@
     <page
         class=".wikipage.WikiFilePage"
         for="zope.app.file.interfaces.IFile"
-        name="popupLinkMenu"
-        attribute="popupLinkMenu"
+        name="wikiCommandForm"
+        attribute="wikiCommandForm"
         permission="zope.View"
         />
 
     <page
         class=".wikipage.WikiContainerPage"
         for="zope.app.folder.interfaces.IFolder"
-        name="popupLinkMenu"
-        attribute="popupLinkMenu"
+        name="wikiCommandForm"
+        attribute="wikiCommandForm"
         permission="zope.View"
         />
 

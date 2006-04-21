@@ -67,6 +67,8 @@ class WikiPage(ComposedAjaxPage) :
     """
     
     implements(IWikiPage)
+    
+    _outdated = ViewPageTemplateFile("./templates/wiki_outdated.pt")  
 
     supported = 'text/html', 'application/xhtml+xml', 'application/xml', 'text/xml'
     title = u"Wiki page"
@@ -77,7 +79,7 @@ class WikiPage(ComposedAjaxPage) :
             'login': '#',
             }
     untitled = u"Untitled"
-
+    processor = None
    
     def __init__(self, context, request, container=None) :
         """ Initializes some usefull instance variables. 
@@ -112,6 +114,10 @@ class WikiPage(ComposedAjaxPage) :
         """ Returns the base container. Should be overwritten. """
         return None
         
+    def getFile(self) :
+        """ Returns the wikified file. Should be overwritten. """
+        return None
+    
     def getAbstract(self) :
         """ Returns the abstract resp. description. """
         file = self.getFile()
@@ -124,7 +130,6 @@ class WikiPage(ComposedAjaxPage) :
             return canAccess(self.container, '__setitem__')
         except ForbiddenAttribute :
             return False
-        
         
     def renderAbstract(self) :
         """ Render the abstract as ReST. """
@@ -139,7 +144,7 @@ class WikiPage(ComposedAjaxPage) :
         """
         file = self.getFile()
         dc = IZopeDublinCore(file, None)
-        if dc is not None :
+        if dc is not None and dc.modified is not None :
             return str(dc.modified)
         return None
         
@@ -168,15 +173,24 @@ class WikiPage(ComposedAjaxPage) :
         
         processor = ILinkProcessor(self)
         processor.feed(body)
-        return processor.output()
-     
-    def popupLinkMenu(self, menu_id, modification_stamp, current_stamp=None) :
-        """ Render the popup link menu. """
+        html = processor.output()
         
-        modification_stamp = str(modification_stamp)        
-        link_id = menu_id.replace("menu", "link")
-        processor = ILinkProcessor(self)
+        modified = self.getModificationStamp()
+        if modified :
+            pat = '<div id="modification_stamp" style="display:none;">%s</div>'
+            html += pat % modified
+            
+        return html
+             
+    def wikiCommandForm(self, cmd, id, modification_stamp, current_stamp=None) :
+        """ Render the link command form. """
+        
+        processor = self.processor = ILinkProcessor(self)
+        link_id = processor.createLinkId(id)
+        menu_id = processor.createMenuId(id)
+        processor.render_form = True
         processor.link_id = link_id
+        processor.command = cmd
         body = self.getBody()
         processor.feed(body)
         placeholder = processor.placeholders.get(link_id)
@@ -185,12 +199,20 @@ class WikiPage(ComposedAjaxPage) :
             current_stamp = self.getModificationStamp()
         if placeholder is None :
             return self.message('Invalid link &quot;%s&quot;' % menu_id)
-        placeholder.outdated = modification_stamp != current_stamp
-        return placeholder._menu()
+        
+        if modification_stamp != current_stamp :
+            return self._outdated()
+        
+        form = placeholder._form()
+       #  print "Form:"
+#         print form
+        return form
+        
+    def getURL(self) :
+        return zapi.absoluteURL(self.context, self.request)
       
     def nextURL(self) :
-        url = zapi.absoluteURL(self.context, self.request)
-        return url + self.action
+        return self.getURL() + self.action
 
         
 class WikiContainerPage(WikiPage) :
@@ -567,7 +589,10 @@ class WikiEditor(WikiPage) :
         body = self.getBody()
         processor.feed(body)
         file = self.getFile()
-        file.data = processor.output()
+        newbody = processor.output()
+        if newbody != file.data :
+            file.data = newbody
+            zope.event.notify(ObjectModifiedEvent(file))
         
     def uploadFile(self, link_id) :
         """ Uploads a file for a wikified link and redirects 

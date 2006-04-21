@@ -65,8 +65,7 @@
 				<div id="main">
 					<div tal:content="structure view/renderBody" />
 				</div>
-				<div id="wiki_popup_menu"></div>
-				<div id="modification_stamp" tal:content="view/getModificationStamp"></div>
+				<div id="wiki_link_form"></div>
 			</div>
 
 			<div class="col second">

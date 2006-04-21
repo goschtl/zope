@@ -1,0 +1,12 @@
+<div>
+    <form class="inline_form" onsubmit="window.reload(); return false;">
+        <span class="anylinkheader">The page has been edited. Please reloaad.
+        </span>
+        <input name="reference" type="hidden" value="001" 
+                tal:attributes="name string:${view/processor/referenceKey};
+                                value string:${view/processor/reference}" />
+        <input name="reload" id="reload" 
+            type="submit"
+            value="Reload Page">
+    </form>
+</div>

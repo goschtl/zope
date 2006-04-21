@@ -111,8 +111,21 @@ class Placeholder(PageElement) :
             label = label[:-1]
         return label
         
+    def isUnique(self) :
+        """ Returns true if this is the label is unique within a page.
+            Must be called after all placeholders have been generated.
+            
+        """
+        
+        for placeholder in self.processor.placeholders.values() :
+            if placeholder != self :
+                if placeholder.editableLabel() == self.editableLabel() :
+                    return False
+        return True
+        
     def unicodeLabel(self) :
         return unicode(self.editableLabel(), encoding='utf-8')
+        
  
  
 class BaseLinkProcessor(BaseHTMLProcessor) :
@@ -285,6 +298,12 @@ class WikiLinkProcessor(BaseLinkProcessor) :
         self.page = page
         self.placeholders = {}
         self.placeholder = None     # current placeholder
+        
+    def reference(self) :
+        return self.page.getURL()
+        
+    def referenceKey(self) :
+        return "url"
         
     def createLinkId(self, index) :
         return "wiki-link%s" % index
@@ -482,10 +501,10 @@ class WikiLinkProcessor(BaseLinkProcessor) :
         for placeholder commands with global scope.
         
         """
-        
         html = BaseHTMLProcessor.output(self)
         for placeholder in self.placeholders.values() :
             html = placeholder.postProcessing(html)
+                       
         return html
         
         
@@ -510,20 +529,18 @@ class MenuPlaceholder(Placeholder) :
     """
     
     _menu = ViewPageTemplateFile("./templates/linkmenu.pt")
-    _link = '<a class="wiki-link" href="%s" onmouseover="%s" onmouseout="%s" %s>'
+    _link = '<a class="wiki-link" href="%s" onmouseover="%s" %s>'
     _dimmed = '<span class="dimmed-wiki-link">'
     
     wikified = False
-    outdated = False
     enabled = True
     
     def __init__(self, processor, index, label, link) :
         super(MenuPlaceholder, self).__init__(processor, index, label, link)
         self.enabled = processor.page.isEditable()
         self.menu_id = processor.createMenuId(index)
-        self.onMouseOver = "PopupMenu.update(this, '%s');" % self.menu_id
-        self.onMouseOut = "PopupMenu.leave(this, '%s');" % self.menu_id
-       
+        self.onMouseOver = "WikiMenu.dropDown(this, event, '%s');" % self.menu_id       
+
     def startTag(self, attrs) :
         """ Called when a starttag for a placeholder is detected. """
         
@@ -533,8 +550,8 @@ class MenuPlaceholder(Placeholder) :
             self.wikified = True
             attrs.append(("id", self.link_id))
             if self.enabled :
-                return self._link % (link, self.onMouseOver, self.onMouseOut,
-                                                        self._tagAttrs(attrs))
+                return self._link % (link, self.onMouseOver, 
+                                                    self._tagAttrs(attrs))
             else :
                 return self._dimmed
         else :
@@ -554,11 +571,23 @@ class MenuPlaceholder(Placeholder) :
             
     def afterCloseTag(self) :
         if self.wikified :
-            return '<span id="outer%s"></span>' % self.menu_id
             menu = self._menu()
             return menu.encode("utf-8")
         return None
-                
+
+
+class NoopPlaceholder(Placeholder) :
+    """ An unmodified placeholder. """
+    
+    def textLink(self) :
+        return "[%s]" % self.label
+     
+    def startTag(self, attrs) :
+        if self.link.endswith(self.page.action) :
+            link = self.link[:-len(self.page.action)]
+        else :
+            link = self.link
+        return '<a href="%s">' % (link)
 
 class SavingPlaceholder(Placeholder) :
     """ A placeholder that saves the result to disk. 
@@ -569,40 +598,63 @@ class SavingPlaceholder(Placeholder) :
     """
     
     global_scope = False        # default: depends on usecase
+    render_form = False
     
+    def textLink(self) :
+        if self.render_form :
+            return super(SavingPlaceholder, self).textLink()
+        return self.performSubstitution()
+
     def startTag(self, attrs) :
         """ Called when a starttag for a placeholder is detected. """
+        if self.render_form :
+            return super(SavingPlaceholder, self).startTag(attrs)
+            
         pattern = '<a href="%s"%s>'
-        print "Saving", attrs
         return pattern % (self.link, self._tagAttrs(attrs))
-
 
 class RenamedPlaceholder(SavingPlaceholder) :
     """ A placeholder with a changed label. """
     
-    fired = False
-            
-    def textLink(self) :
+    _form = ViewPageTemplateFile("./templates/wiki_rename.pt")
+    title = u"Rename"
+    new_link = ''
+    
+    def _newLabel(self) :
+        label = self.page.parameter("label")
+        if label :
+            return label.encode("utf-8")
+        return self.label
+    
+    def performSubstitution(self) :
         """ Replaces the label in text mode. """
         
-        label = self.page.parameter("label").encode("utf-8")
-        self.fired = True
-        return '[' + label + ']'
+        scope = self.page.parameter('scope')
+        self.global_scope = scope and scope.lower() == 'on'
+        
+        label = self._newLabel()
+        self.new_link = '[' + label + ']'
+        return self.new_link
         
     def afterCloseTag(self) :
         """ Replaces the label after the tag has been closed. """
         
-        if self.nested == 0 and not self.fired :
-            label = self.page.parameter("label").encode("utf-8")
-            self.processor.pieces[-2] = label
-        
+        if self.nested == 0 and not self.new_link :
+            self.processor.pieces[-2] =  self._newLabel()
+ 
+    def postProcessing(self, html) :
+        """ Replaces a textual WikiLink globally. """
+        if self.global_scope and self.new_link :
+            html = html.replace("[%s]" % self.label, self.new_link)
+        return html
+
         
 class AddObjectPlaceholder(SavingPlaceholder) :
     """ A convenient base class for placeholders that add objects. """
     
     new_link = None
     
-    def addObject(self) :
+    def apply(self) :
         """ Main method that adds the object and returns the new url.
             Must be specialized.
         """
@@ -658,8 +710,8 @@ class AddObjectPlaceholder(SavingPlaceholder) :
         
         return name.encode("utf-8")
         
-    def textLink(self) :
-        name = self.addObject()
+    def performSubstitution(self) :
+        name = self.apply()
         self.new_link = '<a href="%s">%s</a>' % (name, self.editableLabel())
         return self.new_link
         
@@ -678,7 +730,10 @@ class AddObjectPlaceholder(SavingPlaceholder) :
 class UploadFilePlaceholder(AddObjectPlaceholder) :
     """ A placeholder that points to an uploaded file. """
     
-    def addObject(self) :
+    title = u"Upload File"
+    _form = ViewPageTemplateFile("./templates/wiki_upload.pt")
+    
+    def apply(self) :
         """ Upload a file. Returns the name of the new file.
         """
         
@@ -698,7 +753,10 @@ class UploadFilePlaceholder(AddObjectPlaceholder) :
 class CreateFolderPlaceholder(AddObjectPlaceholder) :
     """ A placeholder that points to a new folder. """
     
-    def addObject(self) :
+    title = u"Create Folder"
+    _form = ViewPageTemplateFile("./templates/wiki_folder.pt")
+    
+    def apply(self) :
         """ Creates a new folder. Returns the name of the folder.
         """
         
@@ -713,29 +771,20 @@ class CreatePagePlaceholder(AddObjectPlaceholder) :
         changes the reference of the clicked link. Thus you can have
         several links with the same name and different URLs.
     """
+    
+    title = u"Add Page"
+    
+    _form = ViewPageTemplateFile("./templates/wiki_newpage.pt")
                 
-    def addObject(self) :
+    def apply(self) :
         """ Create a page. Returns the name of the new page.
         """
         
         label = self.editableLabel()
         contenttype = "text/html"
-        name = self.page.parameter('name')
+        name = self.page.parameter('name') or unicode(label, encoding="utf-8")
         return self._addObject(name, File(u'New Page', contenttype))
-
-
-class NoopPlaceholder(Placeholder) :
-    """ An unmodified placeholder. """
-    
-    def textLink(self) :
-        return "[%s]" % self.label
-     
-    def startTag(self, attrs) :
-        if self.link.endswith(self.page.action) :
-            link = self.link[:-len(self.page.action)]
-        else :
-            link = self.link
-        return '<a href="%s">' % (link)
+        
 
 class AjaxLinkProcessor(WikiLinkProcessor) :
     """ A link processor that wikifies the links by modifying the
@@ -750,7 +799,15 @@ class AjaxLinkProcessor(WikiLinkProcessor) :
 
     command = None      # the name of the link modification command
     link_id = None
+    render_form = False
     
+    
+    def getItemInfos(self) :
+        result = []
+        for cmd in 'rename', 'newpage', 'folder', 'upload' :
+            command = self.cmds[cmd]
+            result.append(dict(key=cmd, title=command.title))
+        return result
     
     def createPlaceholder(self, label, link, factory=MenuPlaceholder) :
         """
@@ -769,6 +826,8 @@ class AjaxLinkProcessor(WikiLinkProcessor) :
                 placeholder = NoopPlaceholder(self, index, label, link)
         else :
             placeholder = factory(self, index, label, link)
+        
+        placeholder.render_form = self.render_form
         self.placeholders[placeholder.link_id] = placeholder
         self.placeholder = placeholder
         return placeholder            
