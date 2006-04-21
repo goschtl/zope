@@ -373,6 +373,15 @@ class IPublisherRequest(IPublicationRequest):
         """Set the request's publication object
         """
 
+    def processInputs():
+        """Do any input processing that needs to be done before traversing
+
+        This is done after construction to allow the publisher to
+        handle errors that arise.
+        """
+
+class ITraversingRequest(IPublisherRequest):
+
     def traverse(object):
         """Traverse from the given object to the published object
 
@@ -385,13 +394,6 @@ class IPublisherRequest(IPublicationRequest):
 
           - traverseName to actually do a single traversal
 
-        """
-
-    def processInputs():
-        """Do any input processing that needs to be done before traversing
-
-        This is done after construction to allow the publisher to
-        handle errors that arise.
         """
 
 

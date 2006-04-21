@@ -27,6 +27,7 @@ from cgi import FieldStorage, escape
 from zope.interface import implements, directlyProvides
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.interfaces import IUserPreferredCharsets
+from zope.publisher.interfaces import ITraversingRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.interfaces.browser import IBrowserApplicationRequest
@@ -197,6 +198,14 @@ class Record(object):
         L1.sort()
         return ', '.join(["%s: %s" % (key, repr(value)) for key, value in L1])
 
+class TraversingRequest(object):
+    implements(ITraversingRequest)
+    
+    def __init__(self, request):
+        self.request = request
+        
+    def traverse(self, object):
+        return self.request.traverse(object)
 
 class BrowserRequest(HTTPRequest):
     implements(IBrowserRequest, IBrowserApplicationRequest)
