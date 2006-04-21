@@ -135,6 +135,9 @@ Zope Changes
         Content-Length header after inserting a <base> tag, causing
         pages to be truncated in the browser.
 
+      - Fixed issue 587, make sure that utf-8 is chosen if the
+        Accept-Charset header contains '*'.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dmitry
