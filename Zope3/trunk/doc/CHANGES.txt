@@ -12,6 +12,9 @@ Zope Changes
 
       - Updated Docutils to V 0.4.0
 
+      - Change the session credentials plugin to make it configurable in which
+	fields it looks for the credentials.
+
       - Make the HomeFolderManager allowing the user to change the object to
         create when autocreating the homefolder.
 
