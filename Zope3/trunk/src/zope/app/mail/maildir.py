@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 import os
 import socket
 import time
+import random
 
 from zope.interface import implements, classProvides
 
@@ -81,10 +82,12 @@ class Maildir(object):
         subdir_new = join(self.path, 'new')
         pid = os.getpid()
         host = socket.gethostname()
+        randmax = 0x7fffffff
         counter = 0
         while True:
             timestamp = int(time.time())
-            unique = '%d.%d.%s' % (timestamp, pid, host)
+            unique = '%d.%d.%s.%d' % (timestamp, pid, host,
+                                      random.randrange(randmax))
             filename = join(subdir_tmp, unique)
             try:
                 fd = os.open(filename, os.O_CREAT|os.O_EXCL|os.O_WRONLY, 0600)
@@ -96,8 +99,7 @@ class Maildir(object):
                                        " in %s, are we under a DoS attack?"
                                        % subdir_tmp)
                 # NOTE: maildir.html (see above) says I should sleep for 2
-                #       seconds, not 1
-                time.sleep(1)
+                time.sleep(0.1)
             else:
                 break
         return MaildirMessageWriter(os.fdopen(fd, 'w'), filename,

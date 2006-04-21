@@ -69,8 +69,8 @@ class FakeOsModule(object):
         '/path/to/maildir/tmp': stat.S_IFDIR,
         '/path/to/maildir/tmp/1': stat.S_IFREG,
         '/path/to/maildir/tmp/2': stat.S_IFREG,
-        '/path/to/maildir/tmp/1234500000.4242.myhostname': stat.S_IFREG,
-        '/path/to/maildir/tmp/1234500001.4242.myhostname': stat.S_IFREG,
+        '/path/to/maildir/tmp/1234500000.4242.myhostname.*': stat.S_IFREG,
+        '/path/to/maildir/tmp/1234500001.4242.myhostname.*': stat.S_IFREG,
         '/path/to/regularfile': stat.S_IFREG,
         '/path/to/emptydirectory': stat.S_IFDIR,
     }
@@ -92,7 +92,13 @@ class FakeOsModule(object):
         self._descriptors = {}
 
     def access(self, path, mode):
-        return path in self._stat_mode or self._all_files_exist
+        if self._all_files_exist:
+            return True
+        if path in self._stat_mode:
+            return True
+        if path.rsplit('.', 1)[0] + '.*' in self._stat_mode:
+            return True
+        return False
 
     def stat(self, path):
         if path in self._stat_mode:
@@ -228,8 +234,8 @@ class TestMaildir(unittest.TestCase):
         m = Maildir('/path/to/maildir')
         fd = m.newMessage()
         verifyObject(IMaildirMessageWriter, fd)
-        self.assertEquals(fd._filename,
-                          '/path/to/maildir/tmp/1234500002.4242.myhostname')
+        self.assert_(fd._filename.startswith(
+                     '/path/to/maildir/tmp/1234500002.4242.myhostname.'))
 
     def test_newMessage_never_loops(self):
         from zope.app.mail.maildir import Maildir
