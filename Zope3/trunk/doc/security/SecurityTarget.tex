@@ -247,7 +247,7 @@ establish the security environment for a request.
 %___________________________________________________________________________
 
 
-\subsection{Logical scope and boundary of the TOE}
+\section{Logical scope and boundary of the TOE}
 
 The TOE logical boundary is defined by the following security-relevant
 subsystems provided by the TOE:
@@ -303,10 +303,7 @@ The following primary assets have been identified:
   (Content) Objects & 
   Generic objects (instances of Python classes) that
   are stored and controlled by Zope and carry
-  information that is to be protected. Objects are
-  stored in a connected manner that is typically
-  hierarchical and allows the derivation of
-  information by the objects context. \\
+  information that is to be protected. \\
   \bottomrule
   \caption{Primary Assets}
   \label{tab-assets}
@@ -372,9 +369,20 @@ The following secondary assets have been identified:
   \label{tab-sec-assets}
 
 \end{longtable}
-%___________________________________________________________________________
 
-\section{Subject}
+%___________________________________________________________________________
+\section{Objects}
+
+Objects are defined by both Zope and applications running on Zope. They are
+used for storing data and providing functionality. 
+
+Objects are stored in a hierarchy (i.e. a tree). Therefore for every object
+you can determine its ancestors and descendants.  The object's place in the
+hierarchy is called ``context''. Given an object, additional information can
+be retrieved from its context.
+
+%___________________________________________________________________________
+\section{Subjects}
 
 Zope has a concept of interactions, which model the interaction of one or more
 users with the system.  An interaction keeps track of the users that are
@@ -561,10 +569,10 @@ The following threats against the assets have been identified:
    \\
   
 
-  T.RIP
+  T.Inconsistent
    & 
   An attacker might try to make the system use
-  residual information for deciding to allow
+  inconsistent information for deciding to allow
   or deny access to an operation to gain more
   access than intended.
    & 
@@ -654,15 +662,11 @@ The following security objectives have been defined for the TOE:
   other principals.
   
   A special group of system administrators can be configured using ZCML to
-  create a set of initial users that have all permissions, including the
-  permisisons mapped to the ``Share'' privilege.  %% XXX
+  create a set of initial users that have all permissions. This also includes
+  the permissions mapped to the ``Share'' privilege and any other permission
+  that is not mapped to a privilege.
 
-  % ***Jim
-  % Note that these adminstrors can have permissions that can't be granted.
-  % These users have all permissions and not all permissions need be mapped
-  % to privileges.
   \\
-
 
   O.Audit
    & 
@@ -708,7 +712,7 @@ The following security objectives have been defined for the TOE:
   For example, we can make it easier to access the system to perform operations
   whose potential negative impact is low, but make it more difficult to access
   the system in a way that allows operations with high negative impact.
-  (Especially timed authentification and identification allow to provide
+  (Especially timed authentication and identification allow to provide
   functions to unauthenticated or unidentified users with the option to
   identify or authenticate as soon as the user wants to use a more critical
   function.)
@@ -717,7 +721,6 @@ The following security objectives have been defined for the TOE:
   \caption{Security Objectives for the TOE}
 \end{longtable}
 
-\marginpar{Has anyone implemented time-based auth? -- Jim}
 
 %___________________________________________________________________________
 
@@ -881,7 +884,7 @@ of the user that caused the event.
 \begin{description}
 
   \item[FDP{\_}ACC.2.1 ] The TSF shall enforce the \emph{Zope access control
-    policy} on 1.  \emph{interactions and objects} and 2. all operations among
+    policy} on 1. \emph{interactions and objects} and 2. all operations among
     subjects and objects covered by the SFP.
 
   \item[FDP{\_}ACC.2.2] The TSF shall ensure that all operations between any
@@ -925,7 +928,7 @@ of the administrative system group.
 
 \item If the object does not support sharing, access is determined by checking
 the privileges of the next object in the chain of ancestors that supports
-sharing. \marginpar{``Ancestors'' is not defined -- jim/zagy}
+sharing. 
 
 \item If the object does not support sharing and has no ancestors, then access
 is denied.
@@ -936,15 +939,15 @@ is denied.
 
 \item[FDP{\_}ACF.1.3]
 
-The TSF shall explicitly authorise access of subjects to
-objects based on the following additional rules: \emph{none}
-\marginpar{Missing? -- jim}
+The TSF shall explicitly authorise access of subjects to objects based on the
+following additional rules: \emph{There are no additional rules.}
+
 
 \item[FDP{\_}ACF.1.4]
 
-The TSF shall explicitly deny access of subjects to objects
-based on the following additional rules: \emph{none}
-\marginpar{Missing? -- jim}
+The TSF shall explicitly deny access of subjects to objects based on the
+following additional rules: \emph{There are no additional rules.}
+
 
 \end{description}
 
@@ -1000,10 +1003,6 @@ has been surpassed, the TSF shall
 
 \end{itemize}
 
-\marginpar{
-Interesting. :)  I wonder who's gonna implement this.
-Maybe we need to to-do list. -- jim}
-
 
 \end{description}
 
@@ -1038,10 +1037,12 @@ operations where there is a privilege grant for the required permission to the
 unauthenticated principal.}
 
 \item[Note] It is possible to deny all operations to the anonymous
-principal. This means that a user must login before any operations may
-be performed on their behalf. This fulfills the terms of FIA{\_}UAU.2
-\marginpar{If authenticating is an operation too denying all operations means
-nobody can login?! -- zagy}
+principal. This means that all users must login before any operations may
+be performed on their behalf. Certain authentication methods require access to
+operations on the Zope server and will not work if all operations are denied.
+However HTTP basic auth does not require access to operations on the server
+and therefore is always available.  This fulfills the terms of FIA{\_}UAU.2.
+
 
 \item[FIA{\_}UAU.1.2 ]
 
@@ -1092,9 +1093,8 @@ identified.
 
 \emph{Note:} It is possible to deny all operations to the anonymous
 principal. This means that a user must login before any operations may
-be performed on their behalf. This fulfills the terms of FIA\_UID.2
-\marginpar{See above regarding nobody can authenticate\ldots -- zagy}
-
+be performed on their behalf. The restrictions mentioned in FIA\_UAU.1.1 apply
+as well.  This fulfills the terms of FIA\_UID.2
 
 
 \item[FIA{\_}UID.1.2 ]
@@ -1166,7 +1166,19 @@ granted those permissions.
     The TSF shall enforce the \emph{Zope access control policy} to restrict the
     ability to \emph{query, modify, delete, and add} the security
     attributes \emph{privilege grants} to \emph{users granted the ``Sharing''
-    privilege}.
+    p
+    rivilege}.
+\item[FMT{\_}MSA.1.1.users]
+    The TSF shall enforce the \emph{Zope access control policy} to restrict the
+    ability to \emph{query, modify, delete, and add} the security
+    attributes \emph{principals} to \emph{users in the administrators
+    group}.
+
+\item[FMT{\_}MSA.1.1.groups]
+    The TSF shall enforce the \emph{Zope access control policy} to restrict the
+    ability to \emph{query, modify, delete, and add} the security
+    attributes \emph{groups} to \emph{users in the administrators group}.
+
 \end{description}
 
 \minisec{FMT{\_}MSA.2 Secure security attributes}
@@ -1177,7 +1189,6 @@ granted those permissions.
 
     The TSF shall ensure that only secure values are accepted for security
     attributes.
-    \marginpar{Hm. I wonder what that means. :) -- jim}
 \end{description}
 
 %___________________________________________________________________________
@@ -1192,13 +1203,11 @@ granted those permissions.
 
 The TSF shall enforce the \emph{Zope access control policy} to provide 
 \emph{inherited} default values for security attributes that are used to 
-enforce the SFP.
-\marginpar{
-define inherited? Also, granting everything to the creator?  BTW
-granting sharing is equivalent to granting everything, since one you have
-sharing, you can get everything else. For this reason, we consider sharing
-equivalent to ownership. -- jim}
+enforce the SFP. 
 
+\item[Note:] On creation of an object the creator is granted all privileges.
+  Additional grants are copied from the next object in the chain of ancestors
+  that supports sharing.
 
 \item[FMT{\_}MSA.3.2 ]
 
@@ -1221,7 +1230,6 @@ information is created.
     The TSF shall maintain the roles:
 \begin{description}
 \item[application-defined roles,]
-  \marginpar{XXX nothing to say? -- zagy}
 
 \item[administration role]
 
@@ -1369,8 +1377,7 @@ The following security requirements exist for the IT environment:
   \item The operating system is Linux. All known security patches must have
     been installed.
 
-  \item The Python Version is 2.4.2 
-    \marginpar{You might double check the schedule for 2.4.3. -- jim}
+  \item The Python Version is 2.4.3
 
   \item The ZODB storage is FileStorage or FileStorage through a ZEO server.
 
@@ -1413,9 +1420,6 @@ proxies. Security proxies use the authorization system to decide whether access
 is allowed.  Any non-basic results of operations performed through security
 proxies are security proxied.
 
-\marginpar{I hope there is more layer, like definition of basic objects and
-mention of special case of attribute access. Maybe even ``untrusted
-interpreter''. -- jim}
 %___________________________________________________________________________
 
 
@@ -1423,14 +1427,10 @@ interpreter''. -- jim}
 \subsection{Authentication}
 
 Within the scope of this certification, Zope provides authentication using
-HTTP basic authentication and a cookie-based authentication mechanism.
+HTTP basic authentication and a session/cookie-based authentication mechanism.
 Credentials can be configured and stored using the configuration system and/or
 in the ZODB using the ``Pluggable Authentication Utility''.
-\marginpar{
-Note that afaik, we don't have cookie auth per se. We have session auth and 
-often use cookies to keep track of sessions.
--- jim
-}
+
 %___________________________________________________________________________
 
 
@@ -1515,11 +1515,11 @@ access the database server (ZEO) directly.
 
 The publisher is extensible to allow support for further protocols.
 
-To support FIA{\_}UAU.1 the implementation of a protocol includes the ability to
-communicate with a user for requesting authentication data. The ability to
+To support FIA{\_}UAU.1 the implementation of a protocol includes the ability
+to communicate with a user for requesting authentication data. The ability to
 present credentials is specific to the used protocol and clients. By default
-HTTP basic auth, cookie authentication and FTP authentication are supported.
-\marginpar{See remark above wrt cookies --jim}
+HTTP basic auth, session/cookie authentication and FTP authentication are
+supported.
 
 To support FIA{\_}USB.1, the publisher also returns the credentials to Zope and
 calls the authentication subsystem to validate this data and binds the
@@ -1622,23 +1622,23 @@ by a security objectives.
 
   \begin{longtable}{rRRRRRRRRRRRRRRR}
     \toprule
-              & T.IA  & T.Perm &T.Operation&T.AuditFake& T.RIP&T.Transaction&T.Timestamps & T.Host & A.OS & A.Admin & A.Network & A.Client & A.Credential  \\
+              & T.IA  & T.Perm &T.Operation&T.AuditFake& T.Inconsistent&T.Transaction&T.Timestamps & T.Host & A.OS & A.Admin & A.Network & A.Client & A.Credential  \\
     \midrule\endhead
-O.IA         &  \oh  &       &            &            &      &             &             &        &      &       \\
-O.Delegation &       &   \oh &            &            &      &             &             &        &      &        \\
-O.Audit      & \oh   &   \oh &     \oh    &            &      &             &             &        &      &        \\
-O.Protect    &       &       &            &    \oh     &      &             &             &        & \oh  &        \\
-O.Access     &       &       &      \oh   &            &      &    \oh      &             &   \oh  &      &        \\
-O.Integrity  &       &       &            &            &  \oh &             &             &        &      &        \\
-O.Attributes &       &       &            &            &  \oh &             &             &        &      &        \\
-O.ManageRisk &   \oh &       &            &            &      &             &             &        &      &        \\
+O.IA         &  \oh  &       &            &            &               &             &             &        &      &       \\
+O.Delegation &       &   \oh &            &            &               &             &             &        &      &        \\
+O.Audit      & \oh   &   \oh &     \oh    &            &               &             &             &        &      &        \\
+O.Protect    &       &       &            &    \oh     &               &             &             &        & \oh  &        \\
+O.Access     &       &       &      \oh   &            &               &    \oh      &             &   \oh  &      &        \\
+O.Integrity  &       &       &            &            &  \oh          &             &             &        &      &        \\
+O.Attributes &       &       &            &            &  \oh          &             &             &        &      &        \\
+O.ManageRisk &   \oh &       &            &            &               &             &             &        &      &        \\
 \midrule
-OE.OS        &       &       &            &            &      &             &    \oh      &        &  \oh &         &         &            &          \\
-OE.Trust     &       &       &            &            &      &             &             &        &      &  \oh    &         &            &            \\
-OE.Auditlog  &       &       &            &            &      &             &             &        & \oh  &         &         &            &                   \\  
-OE.Network   &       &       &            &            &      &             &             &        &      &         &  \oh    &            &                   \\   
-OE.Client    &       &       &            &            &      &             &             &        &      &         &         &    \oh     &                   \\
-OE.Credential&       &       &            &            &      &             &             &        &      &         &         &            &    \oh    \\ 
+OE.OS        &       &       &            &            &               &             &    \oh      &        &  \oh &         &         &            &          \\
+OE.Trust     &       &       &            &            &               &             &             &        &      &  \oh    &         &            &            \\
+OE.Auditlog  &       &       &            &            &               &             &             &        & \oh  &         &         &            &                   \\  
+OE.Network   &       &       &            &            &               &             &             &        &      &         &  \oh    &            &                   \\   
+OE.Client    &       &       &            &            &               &             &             &        &      &         &         &    \oh     &                   \\
+OE.Credential&       &       &            &            &               &             &             &        &      &         &         &            &    \oh    \\ 
 \bottomrule
   \caption{Mapping of Threats and Assumptions to Security Objectives}
   \label{tab-SOR}
@@ -1677,14 +1677,13 @@ the threads and assumptions.
   managing functions are also objects and therefore protected.
 
   \item[O.Integrity:] This security objective is necessary to counter the
-  threat \textbf{T.RIP} because it prevents that any data will be written if
-  an unhandled error occurs.
+    threat \textbf{T.Inconsistent} because it prevents that any data will be
+    written if an unhandled error occurs.
   
   \item[O.Attributes:] This security objective is necessary to counter the
-  threat \textbf{T.RIP} because it
-  prevents an attacker form setting inconsistent security attributes from
-  which he could gain more access than intended.
-  % XXX rip was removed!
+    threat \textbf{T.Inconsistent} because it prevents an attacker from
+    setting inconsistent security attributes from which he could gain more
+    access than intended.
 
   \item[O.ManageRisk:] This security objective is necessary to counter the
   threat \textbf{T.IA} because it makes it less likely that an attacker
@@ -1733,16 +1732,15 @@ FAU\_GEN.1                  &      &              & \oh     &           &       
 FAU\_GEN.2                  &      &              & \oh     &           &          &             &              &              \\
 FDP\_ACC.2                  &      & \oh          &         &           & \oh      &             &              &              \\
 FDP\_ACF.1                  &      &              &         &           &  \oh     &             &              &              \\
-FDP\_RIP.1                  &      &              &         &           &          &             &  \oh         &              \\
 FDP\_ROL.2\_Transactions    &      &              &         &           &          &   \oh       &              &              \\
 FIA\_AFL\_z.1               &      &              &         &   \oh     &          &             &              &              \\
 FIA\_ATD.1                  & \oh  &  \oh         &   \oh   &           & \oh      &             &              &              \\
 FIA\_UAU.1                  & \oh  &              &         &           &          &             &              &              \\
-FIA\_UAU.5                  & \oh  &              &         &           &          &             &              & \oh          \\
-FIA\_UAU.6                  & \oh  &              &         &           &          &             &              & \oh          \\
+FIA\_UAU.5                  & \oh  &              &         &           &          &             &              &              \\
+FIA\_UAU.6                  & \oh  &              &         &           &          &             &              &              \\
 FIA\_UID.1                  & \oh  &              &         &           &          &             &              &              \\
 FIA\_USB.1                  & \oh  &              &         &           &          &             &              &              \\
-FMT\_MOF.1                  &      &              &         &  \oh      &          &             &              & \oh          \\
+FMT\_MOF.1                  &      &              &         &  \oh      &          &             &              &              \\
 FMT\_MSA.1                  & \oh  &  \oh         &         &           &          &             &              &              \\
 FMT\_MSA.2                  &      &              &         &           &          &             &  \oh         &              \\  
 FMT\_MSA.3                  &      &              &         & \oh       &          &             &  \oh         &              \\
@@ -1765,7 +1763,6 @@ FAU\_GEN.1                  &   FPT\_STM.1   \\
 FAU\_GEN.2                  &   FAU\_GEN.1, FIA\_UID.1 \\
 FDP\_ACC.2                  &   FDP\_ACF.1 \\
 FDP\_ACF.1                  &   FDP\_ACC.1, FMT\_MSA.3 \\
-FDP\_RIP.1                  &   -- \\
 FDP\_ROL.2\_Transactions    &   -- \\
 FIA\_AFL\_z.1               &   FIA\_UAU.1 \\
 FIA\_ATD.1                  &   -- \\
@@ -1813,9 +1810,9 @@ All dependencies required by the chosen SFRs are covered. See table XXX.
             perform an operation, he might get the chance to authenticate with
             other credentials. (FIA\_UAU.6)
 
-            If the credentials stored at the user agent expire (e.g. cookies in
-            a web browser), the user will be asked to represent his credentials
-            before performing any further operation. (FIA\_UAU.6)
+            If the credentials stored at the user agent expire (e.g.  cookies
+            in a web browser), the user will be asked to represent his
+            credentials before performing any further operation. (FIA\_UAU.6)
 
         \item[Binding users to the correct principals:]
 
@@ -1919,20 +1916,6 @@ All dependencies required by the chosen SFRs are covered. See table XXX.
     (FMT\_MSA.3)
 
 \subsection{O.ManageRisk --- Provide choice of flexibility versus security}
-
-    To manage the risk of using stronger authentication schemes for sensitive
-    operations in opposition of weaker authentication schemes for less sensitive
-    operations, the TOE allows a selection of the authentication system to
-    happen. (FIA\_UAU.5) To increase a users level of access for accessing more
-    sensitive operations, a reauthentication may be needed. (FIA\_UAU.6)
-    
-    The decision what authentication schemes are needed for which operations
-    can be managed by authorised administrators. (FMT\_MOF.1)
-    \marginpar{
-I don't understand this.  Auth schemes don't depend on the operations
-being performed. -- jim
-}
-
     
     Additionally code can be run either within the trusted or untrusted
     security domains of the TOE. Installing code in the trusted security domain
@@ -1954,7 +1937,6 @@ FAU\_GEN.1          &            &                &               & \oh      &  
 FAU\_GEN.2          &            &                &               & \oh      &               &                        &                    &                 &                    \\   
 FDP\_ACC.2          & \oh        &                &               &          &               &                        & \oh                &                 &                    \\   
 FDP\_ACF.1          &            &                &  \oh          &          &               &                        &                    &                 &                    \\   
-FDP\_RIP.1          &            &                &               &          & \oh           &                        &                    &                 &                    \\   
 FDP\_ROL.2\_TRANSACTIONS
                     & \oh        &                &  \oh          &          &               & \oh                    &                    &                 &                    \\   
 FIA\_AFL\_z.1       &            &  \oh           &               &          &               &                        & \oh                &                 &                    \\   
@@ -1983,14 +1965,13 @@ FPT\_STM.1          &            &                &               &          &  
 
 \minisec{FDP\_ACC.2 --- Complete Access Control}
 
-\marginpar{XXX is there a single point of entry? -- theuni}
-
 Complete access control is achieved by the \textbf{Protection} subsystem. The
 \textbf{Publication} subsystem serves as a single entry point to the Zope 3
-application which wraps all published objects into security proxies. The
-transient nature of security proxies then covers that all subsequent accesses
-are security proxied as well. Thereby all operations among those objects are
-covered by the protection subsytem which enforces the Zope access control policy.
+application which wraps all published objects into security proxies.
+
+When an interaction accesses a proxied object, the protection subsystem
+becomes effective and regulates access.
+
 
 \minisec{FDP\_ROL.2\_TRANSACTIONS --- Advanced Rollback}
 
@@ -2073,11 +2054,7 @@ subsystem.
 
 \minisec{FMT\_MSA.1 --- Management of Security Attributes}
 
-The management of security attributes is provided by the \textbf{Configuration}
-subsystem. This happens by using the same API as for FMT\_MOF.1 including the
-different ways of accessing this API.
-\marginpar{I'm confused -- jim}
-
+Managing security attributes is a normal operation and therefore protected.
 
 \minisec{FMT\_MSA.2 --- Secure Security Attributes}
 
