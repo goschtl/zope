@@ -20,6 +20,7 @@ $Id$
 """
 import os
 
+from zope.app import zapi
 from zope.interface import Interface
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IBrowserRequest, \
