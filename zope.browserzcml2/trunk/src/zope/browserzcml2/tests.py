@@ -16,8 +16,6 @@
 $Id$
 """
 import unittest
-from StringIO import StringIO
-
 import zope.browserzcml2
 import zope.component.testing
 import zope.app.publisher.browser
