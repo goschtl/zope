@@ -64,6 +64,12 @@ class ModuleManager(persistent.Persistent, Contained):
     # See zope.app.module.interfaces.IModuleManager
     source = property(_getSource, _setSource)
 
+    def _setName(self, name):
+        self.__dict__['name'] = name
+        self._recompile = True
+
+    name = property(lambda self: self.__dict__['name'], _setName)
+    
 
 class ModuleFactory(object):
     """Special factory for creating module managers in site managment
@@ -82,18 +88,14 @@ class ModuleFactory(object):
         m.execute()
         return m
 
-@zope.component.adapter(zope.component.interfaces.IRegistered)
-def setNameOnActivation(event):
+@zope.component.adapter(IModuleManager,
+                        zope.component.interfaces.IRegistered)
+def setNameOnActivation(manager, event):
     """Set the module name upon registration activation."""
-    module = event.object.component
-    if isinstance(module, ModuleManager):
-        module.name = event.object.name
-        module._recompile = True
+    manager.name = event.object.name
 
-@zope.component.adapter(zope.component.interfaces.IUnregistered)
-def unsetNameOnDeactivation(event):
+@zope.component.adapter(IModuleManager,
+                        zope.component.interfaces.IUnregistered)
+def unsetNameOnDeactivation(manager, event):
     """Unset the permission id up registration deactivation."""
-    module = event.object.component
-    if isinstance(module, ModuleManager):
-        module.name = None
-        module._recompile = True
+    manager.name = None
