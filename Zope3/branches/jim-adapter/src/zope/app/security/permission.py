@@ -87,8 +87,8 @@ def unsetIdOnDeactivation(permission, event):
     >>> perm1 = LocalPermission('Permission 1', 'A first permission')
     >>> perm1.id = 'perm1'
 
-    >>> from zope.app.component import registration 
-    >>> event = registration.RegistrationDeactivatedEvent(
+    >>> import zope.component.interfaces 
+    >>> event = zope.component.interfaces.Unregistered(
     ...     Registration(perm1, 'perm1'))
 
     Now we pass the event into this function, and the id of the permission

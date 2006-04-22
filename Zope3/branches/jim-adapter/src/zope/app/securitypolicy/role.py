@@ -56,8 +56,8 @@ def setIdOnActivation(role, event):
     >>> role1 = LocalRole('Role 1', 'A first role')
     >>> role1.id
     u'<role not activated>'
-    >>> from zope.app.component import registration 
-    >>> event = registration.RegistrationActivatedEvent(
+    >>> import zope.component.interfaces
+    >>> event = zope.component.interfaces.Registered(
     ...     Registration(role1, 'role1'))
 
     Now we pass the event into this function, and the id of the role should be
@@ -84,8 +84,8 @@ def unsetIdOnDeactivation(role, event):
     >>> role1 = LocalRole('Role 1', 'A first role')
     >>> role1.id = 'role1'
 
-    >>> from zope.app.component import registration 
-    >>> event = registration.RegistrationDeactivatedEvent(
+    >>> import zope.component.interfaces
+    >>> event = zope.component.interfaces.Unregistered(
     ...     Registration(role1, 'role1'))
 
     Now we pass the event into this function, and the id of the role should be
