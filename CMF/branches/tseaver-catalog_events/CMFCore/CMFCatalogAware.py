@@ -174,7 +174,7 @@ class CMFCatalogAware(Base):
         for name in self_base.__dict__.keys():
             obj = getattr(self_base, name)
             if ICallableOpaqueItem.providedBy(obj):
-                items.append((obj.getId(), obj))
+                items.append((obj.getId(), getattr(self, name)))
 
         return tuple(items)
 
