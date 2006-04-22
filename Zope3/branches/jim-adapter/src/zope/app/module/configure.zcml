@@ -8,17 +8,9 @@
         />
   </localUtility>
 
-  <subscriber
-     for="zope.component.interfaces.IUtilityRegistration
-          zope.component.interfaces.IRegistrationActivatedEvent"
-     handler=".manager.setNameOnActivation"
-     />
+  <subscriber handler=".manager.setNameOnActivation" />
 
-  <subscriber
-     for="zope.component.interfaces.IUtilityRegistration
-          zope.component.interfaces.IRegistrationDeactivatedEvent"
-     handler=".manager.unsetNameOnDeactivation"
-     />
+  <subscriber handler=".manager.unsetNameOnDeactivation" />
 
   <adapter
       for="zope.app.component.interfaces.ISiteManagementFolder"
