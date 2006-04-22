@@ -58,9 +58,9 @@ def setIdOnActivation(permission, event):
     >>> perm1 = LocalPermission('Permission 1', 'A first permission')
     >>> perm1.id
     u'<permission not activated>'
-    
-    >>> from zope.app.component import registration 
-    >>> event = registration.RegistrationActivatedEvent(
+
+    >>> import zope.component.interfaces
+    >>> event = zope.component.interfaces.Registered(
     ...     Registration(perm1, 'perm1'))
 
     Now we pass the event into this function, and the id of the permission
