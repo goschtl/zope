@@ -52,6 +52,20 @@
       permission="zope.Public"
       />
 
+  <browser2:pageTemplate
+      for="*"
+      name="bz2-macrotemplate.html"
+      template="test3.pt"
+      permission="zope.Public"
+      />
+
+  <browser2:pageTemplate
+      for="*"
+      name="bz2-usemacrotemplate.html"
+      template="test4.pt"
+      permission="zope.Public"
+      />
+
   <browser2:pagesFromClass
       for="*"
       class="zope.browserzcml2.ftests.PhoenixPages"
