@@ -15,8 +15,13 @@
 
 $Id$
 """
-import zope.component
+from zope.component import provideHandler
 from zope.component.event import objectEventNotify
+from zope.component.registry import dispatchUtilityRegistrationEvent
+from zope.component.registry import dispatchAdapterRegistrationEvent
+from zope.component.registry import (
+    dispatchSubscriptionAdapterRegistrationEvent)
+from zope.component.registry import dispatchHandlerRegistrationEvent
 from zope.testing import cleanup
 
 events = []
@@ -39,8 +44,12 @@ class PlacelessSetup(cleanup.CleanUp):
 
     def setUp(self):
         super(PlacelessSetup, self).setUp()
-        zope.component.provideHandler(events.append, (None,))
-        zope.component.provideHandler(objectEventNotify)
+        provideHandler(events.append, (None,))
+        provideHandler(objectEventNotify)
+        provideHandler(dispatchUtilityRegistrationEvent)
+        provideHandler(dispatchAdapterRegistrationEvent)
+        provideHandler(dispatchSubscriptionAdapterRegistrationEvent)
+        provideHandler(dispatchHandlerRegistrationEvent)
 
 def setUp(test=None):
     PlacelessSetup().setUp()
