@@ -99,6 +99,14 @@ extra class:
   >>> print browser.contents
   Hi, the name's MacGyver.
 
+Pages created like that also support macro access:
+
+  >>> browser = Browser('http://localhost/bz2-usemacrotemplate.html')
+  >>> print browser.headers['status']
+  200 Ok
+  >>> print browser.contents
+  I work at the Phoenix Foundation.
+
 
 Pages from class
 ----------------

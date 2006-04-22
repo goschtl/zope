@@ -85,6 +85,8 @@ def pageTemplate(
 
     class TemplatePage(zope.formlib.Page):
         __call__ = ViewPageTemplateFile(template)
+        def __getitem__(self, name):
+            return self.__call__.macros[name]
 
     page(_context, TemplatePage,
          for_, name, permission, layer,
