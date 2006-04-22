@@ -15,10 +15,15 @@
 
 $Id$
 """
+
+import os
+import shutil
 import sys
+import tempfile
 import unittest
 import warnings
 from zope.testing import doctest
+import zope.deprecation
 
 # Used in doctests
 from deprecation import deprecated
@@ -54,11 +59,35 @@ def warn(message, type_, stacklevel):
         line.strip(),
         )
 
+
+def setUpCreateModule(test):
+    d = test.globs['tmp_d'] = tempfile.mkdtemp('deprecation')
+
+    def create_module(**modules):
+        for name, src in modules.iteritems():
+            f = open(os.path.join(d, name+'.py'), 'w')
+            f.write(src)
+            f.close()
+            test.globs['created_modules'].append(name)
+
+    test.globs['created_modules'] = []
+    test.globs['create_module'] = create_module
+
+    zope.deprecation.__path__.append(d)
+
+def tearDownCreateModule(test):
+    zope.deprecation.__path__.pop()
+    shutil.rmtree(test.globs['tmp_d'])
+    for name in test.globs['created_modules']:
+        sys.modules.pop(name, None)
+
 def setUp(test):
     test.globs['saved_warn'] = warnings.warn
     warnings.warn = warn
+    setUpCreateModule(test)
 
 def tearDown(test):
+    tearDownCreateModule(test)
     warnings.warn = test.globs['saved_warn']
     del object.__getattribute__(sys.modules['zope.deprecation.tests'],
                                 '_DeprecationProxy__deprecated')['demo4']

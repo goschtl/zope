@@ -193,3 +193,14 @@ class deprecate(object):
 
     def __call__(self, func):
         return DeprecatedMethod(func, self.msg)
+
+def moved(to_location, unsupported_in=None):
+    old = sys._getframe(1).f_globals['__name__']
+    message = '%s has moved to %s.' % (old, to_location)
+    if unsupported_in:
+        message += " Import of %s will become unsupported in %s" % (
+            old, unsupported_in)
+    
+    warnings.warn(message, DeprecationWarning, 3)
+    __import__(to_location)
+    sys.modules[old] = sys.modules[to_location]

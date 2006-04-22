@@ -147,6 +147,56 @@ Before we move on, we should clean up:
   >>> del deprecated
   >>> del sys.modules['zope.wanda']
 
+Moving modules
+--------------
+
+When a module is moved, you often want to support importing from the
+old location for a while, generating a deprecation warning when
+someone uses the old location.  This can be done using the moved
+function.
+
+To see how this works, we'll use a helper function to create two fake
+modules in the zope.deprecation package.  First will create a module
+in the "old" location that used the moved function to indicate the a
+module on the new location should be used:
+
+  >>> create_module(old_location=
+  ... '''
+  ... import zope.deprecation
+  ... zope.deprecation.moved('zope.deprecation.new_location', 'version 2')
+  ... ''')
+  
+and we define the module in the new location:
+
+  >>> create_module(new_location=
+  ... '''\
+  ... print "new module imported"
+  ... x = 42
+  ... ''')
+
+Now, if we import the old location, we'll see the output of importing
+the old location:
+
+  >>> import zope.deprecation.old_location
+  ... # doctest: +NORMALIZE_WHITESPACE
+  From tests.py's showwarning():
+  ...zope/deprecation/README.txt:1: 
+  DeprecationWarning: zope.deprecation.old_location has moved to 
+  zope.deprecation.new_location.
+  Import of zope.deprecation.old_location will become unsupported
+  in version 2
+    ===============
+  new module imported
+
+  >>> zope.deprecation.old_location.x
+  42
+
+and the old module will be an alias for the new:
+
+  >>> (sys.modules['zope.deprecation.old_location']
+  ...  is sys.modules['zope.deprecation.new_location'])
+  True
+
 Temporarily turning off deprecation warnings
 --------------------------------------------
 
