@@ -53,27 +53,15 @@ Register PAU.
   ... Referer: http://localhost:8081/++etc++site/default/PAU/addRegistration.html
   ... 
   ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.status"
-  ... 
-  ... Active
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.status-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.permission"
+  ... Content-Disposition: form-data; name="field.comment"
   ... 
   ... 
   ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
+  ... Content-Disposition: form-data; name="field.actions.register"
   ... 
-  ... 1
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
+  ... Register
   ... -----------------------------5559795404609280911441883437--
-  ... """)
+  ... """, handle_errors=False)
   HTTP/1.1 303 See Other
   ...
 

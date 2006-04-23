@@ -37,25 +37,13 @@ First we'll create a PAU with a prefix of `pau1_` and and register:
   ... Content-Type: multipart/form-data; boundary=---------------------------516441125097
   ...
   ... -----------------------------516441125097
-  ... Content-Disposition: form-data; name="field.status"
+  ... Content-Disposition: form-data; name="field.comment"
   ...
-  ... Active
+  ... 
   ... -----------------------------516441125097
-  ... Content-Disposition: form-data; name="field.status-empty-marker"
+  ... Content-Disposition: form-data; name="field.actions.register"
   ...
-  ... 1
-  ... -----------------------------516441125097
-  ... Content-Disposition: form-data; name="field.permission"
-  ...
-  ...
-  ... -----------------------------516441125097
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
-  ...
-  ... 1
-  ... -----------------------------516441125097
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
+  ... Register
   ... -----------------------------516441125097--
   ... """)
   HTTP/1.1 303 See Other
