@@ -31,7 +31,7 @@ from zope.app.form.browser import SequenceDisplayWidget
 from zope.app.form.browser import SequenceWidget
 from zope.app.form.interfaces import IDisplayWidget
 from zope.app.form.interfaces import IInputWidget, MissingInputError
-from zope.app.form.interfaces import IWidgetInputError
+from zope.app.form.interfaces import IWidgetInputError, WidgetInputError
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser.exception import WidgetInputErrorView
@@ -148,7 +148,7 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
         widget = ListSequenceWidget(
             self.field, self.field.value_type, request)
         self.assert_(widget.hasInput())
-        self.assertRaises(ValidationError, widget.getInputValue)
+        self.assertRaises(WidgetInputError, widget.getInputValue)
 
         request = TestRequest(form={'field.foo.0.bar': u'Hello world!',
                                     'field.foo.count': u'1'})
@@ -172,7 +172,7 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
         widget = TupleSequenceWidget(
             self.field, self.field.value_type, request)
         self.assert_(widget.hasInput())
-        self.assertRaises(ValidationError, widget.getInputValue)
+        self.assertRaises(WidgetInputError, widget.getInputValue)
         check_list = (
             'checkbox', 'field.foo.remove_0', 'input', 'field.foo.0.bar',
             'submit', 'submit', 'field.foo.add'

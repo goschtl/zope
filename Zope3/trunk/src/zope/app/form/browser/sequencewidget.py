@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import implements
 from zope.i18n import translate
+from zope.schema.interfaces import ValidationError
 
 from zope.app import zapi
 from zope.app.form.interfaces import IDisplayWidget, IInputWidget
@@ -156,7 +157,16 @@ class SequenceWidget(BrowserWidget, InputWidget):
             self.preserve_widgets = True
             sequence = self._type(self._generateSequence())
             if sequence != self.context.missing_value:
-                self.context.validate(sequence)
+                # catch and set field errors to ``_error`` attribute
+                try:
+                    self.context.validate(sequence)
+                except WidgetInputError, error:
+                    self._error = error
+                    raise self._error
+                except ValidationError, error:
+                    self._error = WidgetInputError(
+                        self.context.__name__, self.label, error)
+                    raise self._error
             elif self.context.required:
                 raise MissingInputError(self.context.__name__,
                                         self.context.title)
@@ -209,7 +219,13 @@ class SequenceWidget(BrowserWidget, InputWidget):
         for i in reversed(range(count)):
             widget = self._getWidget(i)
             if widget.hasValidInput():
-                sequence[i] = widget.getInputValue()
+                # catch and set sequence widget errors to ``_error`` attribute
+                try:
+                    sequence[i] = widget.getInputValue()
+                except WidgetInputError, error:
+                    self._error = error
+                    raise self._error
+
             remove_key = "%s.remove_%d" % (self.name, i)
             if remove_key in self.request.form and removing:
                 del sequence[i]
