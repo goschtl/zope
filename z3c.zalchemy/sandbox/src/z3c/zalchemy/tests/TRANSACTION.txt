@@ -15,17 +15,14 @@ Create a utility to provide a database :
   >>> from zope.component import provideUtility
   >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtility = AlchemyEngineUtility('database',
-  ...                                      'sqlite://filename=/tmp/abc.db',
-  ...                                      echo=False)
+  ...     dns='sqlite://filename=%s.1' % dbFile,echo=False)
   >>> provideUtility(engineUtility, name="test")
 
 Setup a sqlalchemy table and class :
 
   >>> import sqlalchemy
-  >>> proxy = sqlalchemy.ext.proxy.ProxyEngine()
   >>> aTable = sqlalchemy.Table(
-  ...     'aTable',
-  ...     proxy,
+  ...     'aTable',sqlalchemy.ext.proxy.ProxyEngine(),
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
   ...     sqlalchemy.Column('x', sqlalchemy.Integer),
   ...     )
@@ -132,8 +129,7 @@ Or does this only happen with sqlite ?
 Use of a second table with the same engine :
 
   >>> bTable = sqlalchemy.Table(
-  ...     'bTable',
-  ...     proxy,
+  ...     'bTable',sqlalchemy.ext.proxy.ProxyEngine(),
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
   ...     sqlalchemy.Column('x', sqlalchemy.Integer),
   ...     )

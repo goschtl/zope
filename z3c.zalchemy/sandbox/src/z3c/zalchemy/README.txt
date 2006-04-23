@@ -26,7 +26,7 @@ A SQLAlchemy engine is represented as a utility :
   >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtil = AlchemyEngineUtility(
   ...     'sqlite',
-  ...     dns='sqlite://',
+  ...     dns='sqlite://filename=%s.1' % dbFile,
   ...     )
 
 We create our tables as usual sqlalchemy table : 
@@ -34,14 +34,14 @@ We create our tables as usual sqlalchemy table :
   >>> import sqlalchemy
 
   >>> aTable = sqlalchemy.Table(
-  ...     'aTable',
+  ...     'aTable',sqlalchemy.ext.proxy.ProxyEngine(),
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.Integer),
   ...     )
 
-Note that by not specifying an engine we use a ProxyEngine which is
-important here.  The real connection to database engine will be done
-later in our utility.
+We create our tables as usual sqlalchemy table : Note that we use a
+ProxyEngine which is important here.  The real connection to database
+engine will be done later in our utility.
 
   >>> aTable.engine
   <sqlalchemy.ext.proxy.ProxyEngine object at ...>
@@ -85,8 +85,11 @@ Then we need to simulate a beforeTraversal Event :
 
   >>> a = A()
   >>> a.value = 123
+  >>> aTable.engine.engine.filename
+  '....1'
 
   >>> transaction.get().commit()
+
 
 Now let's try to get the object back in a new transaction :
 
@@ -107,14 +110,14 @@ Multiple databases
 
   >>> engine2Util = AlchemyEngineUtility(
   ...     'sqlite2',
-  ...     dns='sqlite://',
+  ...     dns='sqlite://filename=%s.2' % dbFile,
   ...     )
 
   >>> engine = sqlalchemy.ext.proxy.ProxyEngine()
   >>> provideUtility(engine2Util, name='sqlite2')
 
   >>> bTable = sqlalchemy.Table(
-  ...     'bTable',
+  ...     'bTable',sqlalchemy.ext.proxy.ProxyEngine(),
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.String),
   ...     )

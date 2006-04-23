@@ -56,9 +56,13 @@ class AlchemyEngineUtility(object):
     def createTable(self,table):
 
         """tries to create the given table if not there"""
-        self.initEngine()
-        table.engine.engine = self.storage.engine
+        self.connectTablesForThread()
+        #table.engine.connect(self.dns,self.kw,echo=self.echo)
+        #table.engine.engine = self.storage.engine
         table.create()
+        # seems that this does not get commited, why?
+        objectstore.commit()
+        #self.dataManagerFinished()
 
         
     def initEngine(self):
@@ -76,12 +80,16 @@ class AlchemyEngineUtility(object):
 
     def connectTablesForThread(self):
         # create a thread local engine
-        if not self.initEngine():
+        #import pdb;pdb.set_trace()
+
+        self.initEngine()
+        if getattr(self.storage,'_connected',False):
             return
+
         engine = self.storage.engine
-        # create a data manager
         if self.echo:
             engine.log('adding data manager for %s'%self.name)
+        # create a data manager
         self.storage.dataManager = AlchemyDataManager(self)
         txn = manager.get()
         txn.join(self.storage.dataManager)
@@ -89,8 +97,11 @@ class AlchemyEngineUtility(object):
         for table in self.tables:
             table.engine.engine = engine
 
+        self.storage._connected=True
+
     def dataManagerFinished(self):
         self.storage.engine=None
+        self.storage._connected=False
         # disconnect the tables from the engine
         for table in self.tables:
             table.engine.engine = None
