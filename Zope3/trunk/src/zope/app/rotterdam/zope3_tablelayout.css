@@ -490,11 +490,6 @@ div.row span.error {
     float: left;
     clear: both;
 }
-/*
-div.row div.error:before {
-    content: "\2190  "; /* Left pointing arrow */
-}
-*/
 
 #metadata .label {
     font-size: 80%;

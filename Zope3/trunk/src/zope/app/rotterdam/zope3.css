@@ -383,11 +383,6 @@ div.row span.error {
     float: left;
     clear: both;
 }
-/*
-div.row div.error:before {
-    content: "\2190  "; /* Left pointing arrow */
-}
-*/
 
 div.box {
     margin: 0em 0em 2em 0em;
