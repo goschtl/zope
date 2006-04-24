@@ -33,12 +33,14 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
                 echo="True"
                 filename="testdatabase.db"
                 encoding="ISO-8859-15"
+                convert_unicode="True"
                 />
             '''
             )))
         util = component.getUtility(IAlchemyEngineUtility,'sqlite')
         self.assertNotEqual(util, None)
         self.assertEqual(util.dns, 'sqlite')
+        self.assertEqual(util.convert_unicode, True)
         self.assertEqual(util.echo, True)
         self.assertEqual(util.encoding, 'ISO-8859-15')
         self.assertEqual(util.kw['filename'], 'testdatabase.db')

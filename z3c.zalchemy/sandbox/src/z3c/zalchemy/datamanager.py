@@ -33,11 +33,12 @@ class AlchemyEngineUtility(object):
     implements(IAlchemyEngineUtility)
     
     def __init__(self, name, dns, echo=False, encoding=u'utf-8',
-                 **kwargs):
+                 convert_unicode=False, **kwargs):
         self.name = name
         self.dns = dns
         self.echo = echo
         self.encoding=encoding or None
+        self.convert_unicode=convert_unicode or False
         self.kw=kwargs
         self.tables = []
         self.storage = local()
@@ -59,9 +60,10 @@ class AlchemyEngineUtility(object):
 
         """tries to create the given table if not there"""
         self.connectTablesForThread()
-        #table.engine.connect(self.dns,self.kw,echo=self.echo)
-        #table.engine.engine = self.storage.engine
-        table.create()
+        try:
+            table.create()
+        except sqlalchemy.exceptions.SQLError,e:
+            return
         # seems that this does not get commited, why?
         objectstore.commit()
         #self.dataManagerFinished()
@@ -75,10 +77,9 @@ class AlchemyEngineUtility(object):
         engine=getattr(self.storage,'engine',None)
         if engine is not None:
             return False
-        self.storage.engine = create_engine(self.dns,
-                                            self.kw,
-                                            echo=self.echo,
-                                            encoding=self.encoding)
+        self.storage.engine = create_engine(
+            self.dns, self.kw, echo=self.echo,
+            encoding=self.encoding, convert_unicode=self.convert_unicode)
         return True
 
     def connectTablesForThread(self):

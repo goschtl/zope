@@ -32,6 +32,20 @@ class IEngineDirective(interface.Interface):
                 default=False
                 )
 
+    convert_unicode = Bool(title = u'Convert Unicode',
+            description=u"""If set to True, all String/character based
+                           types will convert Unicode values to raw
+                           byte values going into the database, and
+                           all raw byte values to Python Unicode
+                           coming out in result sets. This is an
+                           engine-wide method to provide unicode
+                           across the board. For unicode conversion on
+                           a column-by-column level, use the Unicode
+                           column type instead.""",
+                           required = False,
+                           default=False
+                )
+
     encoding = schema.TextLine(title=u'Encoding',
                                default=u'utf-8',
                                required=False)
