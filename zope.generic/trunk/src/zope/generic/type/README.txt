@@ -164,7 +164,7 @@ After all we register our component using the type directive:
     ...	   />
     ...	   <configuration
     ...	       keyface='example.IAnyConfiguration'
-    ...        data='example.typedata'
+    ...        configuration='example.typedata'
     ...	   />
     ...    <configurationAdapter
     ...        keyface='example.IAnyConfiguration'

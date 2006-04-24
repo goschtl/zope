@@ -97,43 +97,21 @@ value is returned. If no default is defined None is returned:
     >>> info is None
     True
 
-Information providers are annotable
------------------------------------
+Information providers are extentable by informations
+----------------------------------------------------
+
+At the moment informations are an abstraction for annotations and
+configurations.
 
 Information providers are annotable. The annotations mechanism is used to provide
-additional informations in a generic manner:
+additional informations in a well-known manner. At the moment there are no 
+configurations:
 
-    >>> from zope.app.annotation.interfaces import IAnnotations
-
-    >>> info = api.queryInformationProvider(IFooMarker, ISpecialInformation)
-
-    >>> annotations = IAnnotations(info)
-    >>> annotations.get('test.annotation')
-    >>> annotations['test.annotation']
-    Traceback (most recent call last):
-    ...
-    KeyError: 'test.annotation'
-    >>> list(annotations.keys())
-    []
-    >>> del annotations['test.annotation']
-    Traceback (most recent call last):
-    ...
-    KeyError: 'test.annotation'
-    >>> annotations['test.annotation'] = 'a'
-    >>> annotations.get('test.annotation')
-    'a'
-    >>> annotations['test.annotation']
-    'a'
-    >>> list(annotations.keys())
-    ['test.annotation']
-    >>> del annotations['test.annotation']
-
-
-Information providers are configurable
---------------------------------------
+    >>> api.queryInformation(info, 'example.my_annotation') is None
+    True
 
 Information providers are configurable. The configurations mechanism is used 
-to provide additional configurations in a generic manner. A configuration
+to provide additional configurations in a generic manner too. A configuration
 is declared by a configuration schema providing IConfigurationType:
 
     >>> from zope.schema import TextLine
@@ -153,17 +131,22 @@ is declared by a configuration schema providing IConfigurationType:
     >>> IConfigurationType.providedBy(IMyConfiguration)
     True
 
-We now can use this configuration to extend our information provider of the
-key interface IFooMarker. At the moment there are no configurations:
+At the moment there are no configurations:
 
     >>> api.queryInformation(info, IMyConfiguration) is None
     True
 
-The configuration subdirective of the information provider directive provides a mechanism
-to register further configurations to an information provider:
+We now can use an annotation and a configuration to extend our information
+provider of the key interface IFooMarker.
+
+The annotation and configuration subdirective of the information provider
+directive provides a mechanism to register further informations to an 
+information provider:
+
+    >>> my_annotation = object()
 
     >>> from zope.generic.configuration.api import ConfigurationData
-    >>> my_information_config = ConfigurationData(IMyConfiguration, {'my': u'My!'})
+    >>> my_configuration = ConfigurationData(IMyConfiguration, {'my': u'My!'})
 
     >>> registerDirective('''
     ... <generic:informationProvider
@@ -171,15 +154,23 @@ to register further configurations to an information provider:
     ...     registry="example.ISpecialInformation"
     ...     label='Foo Specials' hint='Bla bla foo.'
     ...     >
+    ...        <annotation
+    ...            key="example.my_annotation"
+    ...            annotation="example.my_annotation"
+    ...            />
     ...        <configuration
     ...            keyface="example.IMyConfiguration"
-    ...            data="example.my_information_config"
+    ...            configuration="example.my_configuration"
     ...            />
     ...     </generic:informationProvider>
     ... ''')
 
     >>> info = api.queryInformationProvider(IFooMarker, ISpecialInformation)
-    >>> api.queryInformation(info, IMyConfiguration) is my_information_config
+    >>> api.queryInformation(info, 'example.my_annotation') is my_annotation
+    True
+
+    >>> info = api.queryInformationProvider(IFooMarker, ISpecialInformation)
+    >>> api.queryInformation(info, IMyConfiguration) is my_configuration
     True
 
 

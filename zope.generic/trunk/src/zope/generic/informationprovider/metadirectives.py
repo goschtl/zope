@@ -23,6 +23,7 @@ from zope.configuration.fields import GlobalInterface
 from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import MessageID
 from zope.interface import Interface
+from zope.schema import DottedName
 
 from zope.generic.informationprovider import IInformationProvider
 
@@ -74,9 +75,25 @@ class IConfigurationSubdirective(Interface):
         required=True
         )
 
-    data = GlobalObject(
-        title=_('Data'),
-        description=_('Configuration data component providing the configuraiton interface.'),
+    configuration = GlobalObject(
+        title=_('Configuration'),
+        description=_('Configuration component providing the key interface.'),
         required=True
         )
 
+
+
+class IAnnotationSubdirective(Interface):
+    """Declare a certain configuration of a type."""
+
+    key = DottedName(
+        title=_('Interface'),
+        description=_('Interface referencing a configuraiton.'),
+        required=True
+        )
+
+    annotation = GlobalObject(
+        title=_('Annotation'),
+        description=_('Annotation component expected undert the key.'),
+        required=True
+        )

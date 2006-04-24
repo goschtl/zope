@@ -49,9 +49,6 @@ class Operation(Keyface):
             self.__keyface__ = IPrivateOperation
 
     def __call__(self, context, *pos, **kws):
-        return self._proceed(context, *pos, **kws)
-
-    def _proceed(self, context, *pos, **kws):
         # this method can be overwritten by subclasses
         if self._callable is not None:
             return self._callable(context, *pos, **kws)
@@ -65,7 +62,7 @@ class OperationPipe(Operation):
         super(OperationPipe, self).__init__(None, keyface, input, output)
         self._operations = operations
 
-    def _proceed(self, context, *pos, **kws):
+    def __call__(self, context, *pos, **kws):
         """Invoke operation in the listed order."""
         last_output = argumentsToConfiguration(self._input, *pos, **kws)
         for operation in self._operations:

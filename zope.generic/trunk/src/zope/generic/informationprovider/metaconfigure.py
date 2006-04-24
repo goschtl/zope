@@ -18,6 +18,7 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.app.annotation import IAnnotations
 from zope.app.component.interface import provideInterface
 from zope.component import provideUtility
 from zope.configuration.exceptions import ConfigurationError
@@ -77,13 +78,23 @@ def provideInformationProvider(keyface, registry=IInformationProviderInformation
 
 
 
-def provideConfiguration(keyface, registry, configuration, data):
-    """Provide configuration for a certain type marker."""
+def provideConfiguration(keyface, registry, configuration_keyface, configuration):
+    """Provide a configuration for a certain type marker."""
 
     info = queryInformationProvider(keyface, registry)
     
     configurations = IConfigurations(info)
-    configurations[configuration] = data
+    configurations[configuration_keyface] = configuration
+
+
+
+def provideAnnotation(keyface, registry, annotation_key, annotation):
+    """Provide an annotation for a certain type marker."""
+
+    info = queryInformationProvider(keyface, registry)
+    
+    annotations = IAnnotations(info)
+    annotations[annotation_key] = annotation
 
 
 
@@ -123,14 +134,25 @@ class InformationProviderDirective(object):
         "Handle empty/simple declaration."
         return ()
 
-    def configuration(self, _context, keyface, data):
+    def configuration(self, _context, keyface, configuration):
+        """Add a configuration to the information provider."""
         # preconditions
-        if not keyface.providedBy(data):
+        if not keyface.providedBy(configuration):
             raise ConfigurationError('Data attribute must provide %s.' % keyface.__name__)
 
         _context.action(
             discriminator = (
-            'InformationConfiguration', self._keyface, self._registry, keyface),
+            'informationprovider.configuration', self._keyface, self._registry, keyface),
             callable = provideConfiguration,
-            args = (self._keyface, self._registry, keyface, data),
+            args = (self._keyface, self._registry, keyface, configuration),
+            )
+
+    def annotation(self, _context, key, annotation):
+        """Add an annotation to the information provider."""
+
+        _context.action(
+            discriminator = (
+            'informationprovider.annotation', self._keyface, self._registry, key),
+            callable = provideAnnotation,
+            args = (self._keyface, self._registry, key, annotation),
             )
