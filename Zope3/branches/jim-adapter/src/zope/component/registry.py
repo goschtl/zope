@@ -273,7 +273,7 @@ class Components(object):
             return False
         
 
-        self._subscription_registrations = new
+        self._subscription_registrations[:] = new
         self.adapters.unsubscribe(required, provided)
         
         zope.event.notify(interfaces.Unregistered(
@@ -330,7 +330,7 @@ class Components(object):
         if len(new) == len(self._handler_registrations):
             return False
         
-        self._handler_registrations = new
+        self._handler_registrations[:] = new
         self.adapters.unsubscribe(required, None)
         
         zope.event.notify(interfaces.Unregistered(

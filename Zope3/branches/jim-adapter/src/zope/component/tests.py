@@ -792,6 +792,41 @@ connections.
     >>> db.close()
     """
 
+def persistent_registry_doesnt_scew_up_subsribers():
+    """
+    >>> import ZODB.tests.util
+    >>> db = ZODB.tests.util.DB()
+    >>> import transaction
+    >>> t1 = transaction.TransactionManager()
+    >>> c1 = db.open(transaction_manager=t1)
+    >>> r1 = c1.root()
+    >>> t2 = transaction.TransactionManager()
+    >>> c2 = db.open(transaction_manager=t2)
+    >>> r2 = c2.root()
+
+    >>> from zope.component.persistentregistry import PersistentComponents
+
+    >>> _ = t1.begin()
+    >>> r1[1] = PersistentComponents('1')
+    >>> r1[1].registerHandler(handle1)
+    >>> r1[1].registerSubscriptionAdapter(handle1, provided=I2)
+    >>> _ = r1[1].unregisterHandler(handle1)
+    >>> _ = r1[1].unregisterSubscriptionAdapter(handle1, provided=I2)
+    >>> t1.commit()
+    >>> _ = t1.begin()
+    >>> r1[1].registerHandler(handle1)
+    >>> r1[1].registerSubscriptionAdapter(handle1, provided=I2)
+    >>> t1.commit()
+
+    >>> _ = t2.begin()
+    >>> len(list(r2[1].registeredHandlers()))
+    1
+    >>> len(list(r2[1].registeredSubscriptionAdapters()))
+    1
+    >>> t2.abort()
+
+    """
+
 def tearDownRegistryTests(tests):
     import zope.event
     zope.event.subscribers.pop()
