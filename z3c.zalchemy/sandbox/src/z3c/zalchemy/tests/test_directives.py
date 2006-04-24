@@ -32,6 +32,7 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
                 dns="sqlite"
                 echo="True"
                 filename="testdatabase.db"
+                encoding="ISO-8859-15"
                 />
             '''
             )))
@@ -39,6 +40,7 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
         self.assertNotEqual(util, None)
         self.assertEqual(util.dns, 'sqlite')
         self.assertEqual(util.echo, True)
+        self.assertEqual(util.encoding, 'ISO-8859-15')
         self.assertEqual(util.kw['filename'], 'testdatabase.db')
 
     def testConnectDirective(self):

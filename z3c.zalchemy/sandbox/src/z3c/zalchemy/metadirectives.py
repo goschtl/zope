@@ -19,19 +19,22 @@ from zope.configuration.fields import GlobalObject,Bool
 class IEngineDirective(interface.Interface):
     """Define an engine.
     """
-    name = schema.Text(
-            title = u'Engine name',
-            required = True,
-            )
-    dns = schema.Text(
-            title = u'DNS for the database connection',
-            required = True,
-            )
-    echo = schema.Bool(
-            title = u'Echo SQL statement',
-            required = False,
-            default=False
-            )
+    name = schema.TextLine(title = u'Engine name',
+                           required = True,
+                           )
+    
+    dns = schema.TextLine(title = u'DNS for the database connection',
+                          required = True,
+                          )
+    
+    echo = Bool(title = u'Echo SQL statement',
+                required = False,
+                default=False
+                )
+
+    encoding = schema.TextLine(title=u'Encoding',
+                               default=None,
+                               required=False)
 
 # Arbitrary keys and values are allowed to be passed to the viewlet.
 IEngineDirective.setTaggedValue('keyword_arguments', True)

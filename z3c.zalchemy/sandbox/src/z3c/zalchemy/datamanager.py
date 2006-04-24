@@ -31,11 +31,12 @@ class AlchemyEngineUtility(object):
     """A utility providing the dns for alchemy database engines.
     """
     implements(IAlchemyEngineUtility)
-
-    def __init__(self, name, dns, echo=False, **kwargs):
+    
+    def __init__(self, name, dns, echo=False, encoding=None, **kwargs):
         self.name = name
         self.dns = dns
         self.echo = echo
+        self.encoding=encoding or None
         self.kw=kwargs
         self.tables = []
         self.storage = local()
@@ -75,7 +76,8 @@ class AlchemyEngineUtility(object):
             return False
         self.storage.engine = create_engine(self.dns,
                                             self.kw,
-                                            echo=self.echo)
+                                            echo=self.echo,
+                                            encoding=self.encoding)
         return True
 
     def connectTablesForThread(self):
