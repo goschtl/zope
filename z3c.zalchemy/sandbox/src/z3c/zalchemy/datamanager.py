@@ -32,7 +32,8 @@ class AlchemyEngineUtility(object):
     """
     implements(IAlchemyEngineUtility)
     
-    def __init__(self, name, dns, echo=False, encoding=None, **kwargs):
+    def __init__(self, name, dns, echo=False, encoding=u'utf-8',
+                 **kwargs):
         self.name = name
         self.dns = dns
         self.echo = echo

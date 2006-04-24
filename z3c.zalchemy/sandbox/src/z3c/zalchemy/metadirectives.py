@@ -33,7 +33,7 @@ class IEngineDirective(interface.Interface):
                 )
 
     encoding = schema.TextLine(title=u'Encoding',
-                               default=None,
+                               default=u'utf-8',
                                required=False)
 
 # Arbitrary keys and values are allowed to be passed to the viewlet.

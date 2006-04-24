@@ -17,8 +17,9 @@ from zope.app.component.metaconfigure import utility, PublicPermission
 from datamanager import AlchemyEngineUtility
 from interfaces import IAlchemyEngineUtility
 
-def engine(_context, name, dns, echo=False, **kwargs):
-    component = AlchemyEngineUtility(name, dns, echo, **kwargs)
+def engine(_context, name, dns, echo=False, encoding=u'utf-8', **kwargs):
+    component = AlchemyEngineUtility(name, dns, echo=echo,
+                                     encoding=encoding,**kwargs)
     utility(_context,
             IAlchemyEngineUtility,
             component,
