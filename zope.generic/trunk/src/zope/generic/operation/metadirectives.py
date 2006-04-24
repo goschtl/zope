@@ -41,13 +41,10 @@ class IOperationDirective(IBaseInformationProviderDirective):
         value_type=GlobalObject()
         )
 
-    input = Tokens(title=_('Input Configurations'),
+    input = GlobalInterface(title=_('Input Configurations'),
         description=_('Tuple of configuration schema that will be respected.'),
-        required=False,
-        value_type=GlobalInterface())
+        required=False)
 
-    output = Tokens(title=_('Output Configurations'),
+    output = GlobalInterface(title=_('Output Configurations'),
         description=_('Tuple of configuration schema that might be modified or created.'),
-        required=False,
-        value_type=GlobalInterface())
-        
+        required=False)

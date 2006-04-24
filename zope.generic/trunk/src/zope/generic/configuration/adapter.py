@@ -123,7 +123,7 @@ class AttributeConfigurations(DictMixin, Location):
         except AttributeError:
             configurations = self.context.__configurations__ = OOBTree()
 
-        data = configuratonToDict(keyface, value, all=True)
+        data = configuratonToDict(value, all=True)
         configurations[toDottedName(keyface)] = value
         # notify setting
         parent = self.__parent__

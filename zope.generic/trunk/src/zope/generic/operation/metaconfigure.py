@@ -35,10 +35,10 @@ from zope.generic.operation import IOperationConfiguration
 from zope.generic.operation import IOperationInformation
 from zope.generic.operation import IOperationType
 from zope.generic.operation.base import Operation
-from zope.generic.operation.base import OperationChain
+from zope.generic.operation.base import OperationPipe
 
 
-def _assertOperation(handler, keyface=None):
+def _assertOperation(handler, keyface=None, input=None, output=None):
     """Assert that we get an operation."""
 
     if IOperation.providedBy(handler):
@@ -59,11 +59,11 @@ def _assertOperation(handler, keyface=None):
         return config.operation
 
     # asume callabe (context)
-    return Operation(handler, keyface)
+    return Operation(handler, keyface, input, output)
 
 
 
-def provideOperationConfiguration(keyface, operations=(), input=(), output=()):
+def provideOperationConfiguration(keyface, operations=(), input=None, output=None):
     """Provide the handler to an configuration information."""
     
     registry = IOperationInformation
@@ -76,22 +76,22 @@ def provideOperationConfiguration(keyface, operations=(), input=(), output=()):
 
     if len(operations) == 0:
         # hidding overwrite -> pass handler
-        operation = _assertOperation(None, keyface)
+        operation = _assertOperation(None, keyface, input, output)
     
     elif len(operations) == 1:
-        operation = _assertOperation(operations[0], keyface)
+        operation = _assertOperation(operations[0], keyface, input, output)
     
     else:
-        operation = OperationChain([_assertOperation(handler) for handler in operations], keyface)
+        operation = OperationPipe([_assertOperation(handler) for handler in operations], keyface, input, output)
 
     configurations = IConfigurations(info)
     # create and set configuration data
     provideInformation(info, IOperationConfiguration, 
-        {'operation': operation, 'input': tuple(input), 'output': tuple(output)})
+        {'operation': operation, 'input': input, 'output': output})
 
 
 
-def operationDirective(_context, keyface, operations=(), input=(), output=(), label=None, hint=None):
+def operationDirective(_context, keyface, operations=(), input=None, output=None, label=None, hint=None):
     """Register a public operation."""
 
     # assert type as soon as possible

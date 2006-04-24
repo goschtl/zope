@@ -21,6 +21,7 @@ __docformat__ = 'restructuredtext'
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import alsoProvides
 from zope.interface import Interface
+from zope.interface.interfaces import IInterface
 from zope.schema import Bool
 from zope.schema import Object
 from zope.schema import Tuple
@@ -91,17 +92,17 @@ class IOperationConfiguration(Interface):
         required=False,
         schema=IOperation)
 
-    input = Tuple(title=_('Input Configurations'),
-        description=_('Tuple of configuration schema that will be respected.'),
+    input = Tuple(title=_('Input Declaration'),
+        description=_('A configuration interface declaring the input parameters.'),
         required=False,
         default=(),
         value_type=Object(schema=IConfigurationType))
 
-    output = Tuple(title=_('Output Configurations'),
-        description=_('Tuple of configuration schema that might be modified or created.'),
+    output = Tuple(title=_('Output Declaration'),
+        description=_('An interface interface declaring the output parameters.'),
         required=False,
         default=(),
-        value_type=Object(schema=IConfigurationType))
+        value_type=Object(schema=IInterface))
 
 
 

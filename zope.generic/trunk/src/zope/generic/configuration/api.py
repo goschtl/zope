@@ -23,7 +23,9 @@ from zope.generic.configuration.adapter import AttributeConfigurations
 from zope.generic.configuration.adapter import ConfigurationAdapterClass
 from zope.generic.configuration.adapter import ConfigurationAdapterProperty
 from zope.generic.configuration.base import ConfigurationData
+from zope.generic.configuration.helper import argumentsToConfiguration
 from zope.generic.configuration.helper import configuratonToDict
+from zope.generic.configuration.helper import requiredInOrder
 
 
 
