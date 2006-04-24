@@ -93,6 +93,9 @@ class AjaxPage(BrowserView) :
             session["storage"] = SettingsStorage()
         return session["storage"]
 
+    def getCookieStorage(self) :
+        """ Returns a cookie storage. """
+        return CookieStorage(self.request)
 
     def parameter(self, key, type=None, default=None, storage=None) :
         """ Extract parameter from request or storage. 
@@ -555,7 +558,61 @@ class SettingsStorage(ConflictFree) :
         
     def get(self, key, default=None) :
         return self.__settings__.get(key, default)
+
+
+class CookieStorage(object) :
+    """ A storage that holds key value pairs in the browser cookie. 
+    
+        The cookie has a default lifetime of one week. This deviates from
+        the Zope default which ends with the session. Use the SessionStorage
+        if you want this behavior or provide a max_age.
         
+        This implementation anticipates the actual storing and returns
+        the response cookie value if we a __setitem__ call was used
+        to modify the cookie:
+        
+        >>> request = TestRequest()
+        >>> storage = CookieStorage(request)
+        >>> storage.get('test', 42)
+        42
+        >>> storage['test'] = 43
+        >>> storage['test']
+        43
+        
+        Note that this implementation converts integers and floats
+        as expected albeit the internally used methods only work with strings.
+        
+    """
+
+    cookie_age = 60 * 60 * 24 * 7  # one week default
+    
+    def __init__(self, request, cookie_age=None) :
+        self.request = request
+        if cookie_age is not None :
+            self.cookie_age = cookie_age
+            
+    def save_eval(self, value) :
+        for type in int, float :
+            try :
+                return type(value)
+            except :
+                pass
+        return str(value)
+                
+    def __setitem__(self, key, value) :
+        if self.get(key) != value :
+            value = str(value)
+            self.request.response.setCookie(key, value, max_age=self.cookie_age)
+        
+    def __getitem__(self, key) :
+        if self.request.response.getCookie(key) :
+            return self.save_eval(self.request.response.getCookie(key)['value'])   
+        return self.save_eval(self.request.cookies.get(key))
+        
+    def get(self, key, default=None) :
+        return self.save_eval(self.request.cookies.get(key, default))
+
+
 
 def test_suite():
 
