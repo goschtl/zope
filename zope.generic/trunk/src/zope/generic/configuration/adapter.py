@@ -196,7 +196,7 @@ class ConfigurationAdapterProperty(object):
         keyface = inst.__keyface__
         # update existing configuration
         if keyface in configurations:
-            configurations.update(keyface, {self.__name: value})
+            configurations.update(keyface, {self._name: value})
             
         # create a new configuration
         else:
@@ -287,6 +287,10 @@ def ConfigurationAdapterClass(keyface, bases=(), property=None):
 
         >>> api.queryConfiguration(foo, IFooConfiguration).foo
         u'Foo config.'
+
+        >>> adapted.foo = u'Another foo value.'
+        >>> adapted.foo
+        u'Another foo value.'
 
     """
 
