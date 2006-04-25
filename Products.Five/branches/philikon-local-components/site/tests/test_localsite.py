@@ -41,6 +41,13 @@ from Products.Five import zcml
 class SiteManager(Implicit):
     zope.interface.implements(IComponentLookup)
 
+    @property
+    def __bases__(self):
+        next = getattr(self, 'next', None)
+        if next is None:
+            return ()
+        return (next,)
+
 class Folder(ObjectManager):
 
     def setSiteManager(self, sm):
