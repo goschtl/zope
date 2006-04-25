@@ -11,22 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Zope Application Server Generations
+"""Evolve local site managers
 
 $Id$
 """
 __docformat__ = "reStructuredText"
-from zope.app.generations.generations import SchemaManager
-from zope.app.publication.zopepublication import ZopePublication
 
-key = 'zope.app.zopeappgenerations'
+from zope.app.zopeappgenerations import getRootFolder
 
+def evolve(context):
+    getRootFolder(context).getSiteManager()._evolve_to_generation_4()
 
-ZopeAppSchemaManager = SchemaManager(
-    minimum_generation=1,
-    generation=4,
-    package_name=key)
-
-
-def getRootFolder(context):
-    return context.connection.root().get(ZopePublication.root_name, None)
+    
