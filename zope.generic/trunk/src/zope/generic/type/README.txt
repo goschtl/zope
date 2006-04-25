@@ -162,7 +162,7 @@ After all we register our component using the type directive:
     ...			keyface='example.IOtherConfiguration'
     ...			handler='example.barInitializer'
     ...	   />
-    ...	   <configuration
+    ...	   <information
     ...	       keyface='example.IAnyConfiguration'
     ...        configuration='example.typedata'
     ...	   />

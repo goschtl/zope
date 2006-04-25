@@ -115,7 +115,7 @@ initialization process.
     ...    <initializer
     ...         keyface='example.ITextConfig'
     ...    />
-    ...    <configuration
+    ...    <information
     ...        keyface='example.ITextConfig'
     ...        configuration='example.textDefaults'
     ...    />
@@ -130,7 +130,7 @@ initialization process.
     ...    <initializer
     ...         keyface='example.INoteConfig'
     ...    />
-    ...    <configuration
+    ...    <information
     ...        keyface='example.INoteConfig'
     ...        configuration='example.noteDefaults'
     ...    />
@@ -146,11 +146,11 @@ initialization process.
     ...         keyface='example.IArticleInitializationConfiguration'
     ...         handler="example.articleInitializer"
     ...    />
-    ...    <configuration
+    ...    <information
     ...        keyface='example.ITextConfig'
     ...        configuration='example.articleTextDefaults'
     ...    />
-    ...    <configuration
+    ...    <information
     ...        keyface='example.INoteConfig'
     ...        configuration='example.articleNoteDefaults'
     ...    />

@@ -11,13 +11,8 @@
         >
 
       <meta:subdirective
-          name="configuration"
-          schema=".metadirectives.IConfigurationSubdirective"
-          />
-
-      <meta:subdirective
-          name="annotation"
-          schema=".metadirectives.IAnnotationSubdirective"
+          name="information"
+          schema=".metadirectives.IInformationSubdirective"
           />
 
     </meta:complexDirective>

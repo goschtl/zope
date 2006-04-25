@@ -134,25 +134,33 @@ class InformationProviderDirective(object):
         "Handle empty/simple declaration."
         return ()
 
-    def configuration(self, _context, keyface, configuration):
+    def information(self, _context, keyface=None, configuration=None, key=None, annotation=None):
         """Add a configuration to the information provider."""
-        # preconditions
-        if not keyface.providedBy(configuration):
-            raise ConfigurationError('Data attribute must provide %s.' % keyface.__name__)
+        # handle configuration
+        if keyface and configuration:
+            # preconditions
+            if not keyface.providedBy(configuration):
+                raise ConfigurationError('Data attribute must provide %s.' % keyface.__name__)
+    
+            _context.action(
+                discriminator = (
+                'informationprovider.configuration', self._keyface, self._registry, keyface),
+                callable = provideConfiguration,
+                args = (self._keyface, self._registry, keyface, configuration),
+                )
 
-        _context.action(
-            discriminator = (
-            'informationprovider.configuration', self._keyface, self._registry, keyface),
-            callable = provideConfiguration,
-            args = (self._keyface, self._registry, keyface, configuration),
-            )
+        # handle annotation
+        elif key and annotation:
 
-    def annotation(self, _context, key, annotation):
-        """Add an annotation to the information provider."""
+            _context.action(
+                discriminator = (
+                'informationprovider.annotation', self._keyface, self._registry, key),
+                callable = provideAnnotation,
+                args = (self._keyface, self._registry, key, annotation),
+                )
 
-        _context.action(
-            discriminator = (
-            'informationprovider.annotation', self._keyface, self._registry, key),
-            callable = provideAnnotation,
-            args = (self._keyface, self._registry, key, annotation),
-            )
+        # handle wrong usage
+        else:
+            raise ConfigurationError('Information subdirective must provide ' +
+                'key and annotation or keyface and configuration.')
+                

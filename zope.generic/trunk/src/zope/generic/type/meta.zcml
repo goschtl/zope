@@ -11,15 +11,14 @@
         >
 
       <meta:subdirective
-          name="configuration"
-          schema="zope.generic.informationprovider.metadirectives.IConfigurationSubdirective"
+          name="information"
+          schema="zope.generic.informationprovider.metadirectives.IInformationSubdirective"
           />
 
       <meta:subdirective
           name="initializer"
           schema="zope.generic.type.metadirectives.IInitializerSubdirective"
           />
-
 
       <meta:subdirective
           name="configurationAdapter"

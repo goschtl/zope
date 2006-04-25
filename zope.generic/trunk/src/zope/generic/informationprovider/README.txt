@@ -154,11 +154,11 @@ information provider:
     ...     registry="example.ISpecialInformation"
     ...     label='Foo Specials' hint='Bla bla foo.'
     ...     >
-    ...        <annotation
+    ...        <information
     ...            key="example.my_annotation"
     ...            annotation="example.my_annotation"
     ...            />
-    ...        <configuration
+    ...        <information
     ...            keyface="example.IMyConfiguration"
     ...            configuration="example.my_configuration"
     ...            />

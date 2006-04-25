@@ -66,34 +66,29 @@ class IInformationProviderDirective(IBaseInformationProviderDirective):
 
 
 
-class IConfigurationSubdirective(Interface):
-    """Declare a certain configuration of a type."""
+class IInformationSubdirective(Interface):
+    """Declare a certain information of an information provider."""
 
     keyface = GlobalInterface(
         title=_('Interface'),
         description=_('Interface referencing a configuraiton.'),
-        required=True
+        required=False
         )
 
     configuration = GlobalObject(
         title=_('Configuration'),
         description=_('Configuration component providing the key interface.'),
-        required=True
+        required=False
         )
-
-
-
-class IAnnotationSubdirective(Interface):
-    """Declare a certain configuration of a type."""
 
     key = DottedName(
         title=_('Interface'),
         description=_('Interface referencing a configuraiton.'),
-        required=True
+        required=False
         )
 
     annotation = GlobalObject(
         title=_('Annotation'),
         description=_('Annotation component expected undert the key.'),
-        required=True
+        required=False
         )
