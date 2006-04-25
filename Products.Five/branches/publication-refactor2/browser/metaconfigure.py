@@ -20,7 +20,7 @@ $Id$
 """
 import os
 
-from zope.app import zapi
+from zope import component
 from zope.interface import Interface
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IBrowserRequest, \
@@ -193,7 +193,8 @@ class view(zope_app_view):
 
                 if name in pages:
                     return getattr(self, pages[name])
-                view = zapi.queryView(self, name, request)
+                view = component.queryMultiAdapter((self, request), name,
+                                                   default = None)
                 if view is not None:
                     return view.__of__(self)
 
@@ -206,7 +207,8 @@ class view(zope_app_view):
 
                 if name in pages:
                     return getattr(self, pages[name])
-                view = zapi.queryView(self, name, request)
+                view = component.queryMultiAdapter((self, request), name,
+                                                   default = None)
                 if view is not None:
                     return view.__of__(self)
 
