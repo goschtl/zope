@@ -17,7 +17,7 @@ $Id$
 """
 from zope.interface import implements
 from zope.component import getGlobalSiteManager
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.app.component import getNextSiteManager
 
 from Acquisition import aq_base

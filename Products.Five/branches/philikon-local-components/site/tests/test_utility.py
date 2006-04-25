@@ -26,7 +26,7 @@ from Testing import ZopeTestCase
 
 from zope.interface import directlyProvides
 from zope.component import provideUtility
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.app import zapi
 from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.component import getNextUtility
