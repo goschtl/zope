@@ -60,6 +60,7 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(KeyfaceAdapterTest),
         doctest.DocTestSuite('zope.generic.keyface.adapter'),
+        doctest.DocTestSuite('zope.generic.keyface.helper'),
         doctest.DocFileSuite('README.txt',
                              setUp=testing.placelesssetup.setUp,
                              tearDown=testing.placelesssetup.tearDown,

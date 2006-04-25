@@ -42,15 +42,17 @@ In our example we will use a simple generic object:
 	>>> from zope.generic.type import api
 	>>> api.ITypeable.implementedBy(api.Object)
 	True
-	>>> api.IDirectlyTyped.implementedBy(api.Object)
+	>>> api.IGenericTyped.implementedBy(api.Object)
 	True
 
     >>> registerDirective('''
     ... <generic:type
     ...     keyface="example.IFooMarker"
     ...     label='Foo Type' hint='Bla bla bla.'
-    ...	    class='zope.generic.type.api.Object'
-    ...     />
+    ...     >
+    ...    <factory
+    ...        class='zope.generic.type.api.Object' />
+    ... </generic:type>
     ... ''')
 
 After the typed is registered the type marker will provide ITypeType:
@@ -156,12 +158,12 @@ After all we register our component using the type directive:
     ... <generic:type
     ...     keyface="example.IBarMarker"
     ...     label='Bar Type' hint='Bla bla bla.'
-    ...	    class='zope.generic.type.api.Object'
     ...     >
-    ...    <initializer
-    ...			keyface='example.IOtherConfiguration'
-    ...			handler='example.barInitializer'
-    ...	   />
+    ...    <factory
+    ...        class='zope.generic.type.api.Object'
+    ...        input='example.IOtherConfiguration'
+    ...        operations='example.barInitializer'
+    ...    />
     ...	   <information
     ...	       keyface='example.IAnyConfiguration'
     ...        configuration='example.typedata'
@@ -182,7 +184,7 @@ If we do not satify the declaration an KeyError is raised:
 	>>> bar = api.createObject(IBarMarker)
 	Traceback (most recent call last):
 	...
-	AttributeError: 'IOtherConfiguration' object has no attribute 'other'.
+	TypeError: __init__ requires 'other' of 'IOtherConfiguration'.
 
 	>>> bar = api.createObject(IBarMarker, other=u'Specific initialization data.')
 	Initializing ...

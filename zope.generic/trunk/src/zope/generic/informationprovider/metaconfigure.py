@@ -26,6 +26,7 @@ from zope.interface import alsoProvides
 
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration.api import ConfigurationData
+from zope.generic.keyface.api import toDescription
 from zope.generic.keyface.api import toDottedName
 
 from zope.generic.informationprovider.base import InformationProvider
@@ -107,6 +108,11 @@ class InformationProviderDirective(object):
         self._keyface = keyface
         self._context = _context
         self._registry = registry
+
+        # set label and hint
+        label, hint = toDescription(keyface, label, hint)
+        self._label = label
+        self._hint = hint
     
         # assert type as soon as possible
         if self._information_type is not None:

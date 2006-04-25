@@ -25,7 +25,9 @@ from zope.configuration.fields import GlobalInterface
 from zope.configuration.fields import GlobalObject
 from zope.interface import Interface
 
+from zope.generic.factory.metadirectives import IBaseFactoryDirective
 from zope.generic.informationprovider.metadirectives import IBaseInformationProviderDirective
+from zope.generic.operation.metadirectives import IBaseOperationDirective
 
     
 
@@ -35,28 +37,10 @@ class ITypeDirective(IBaseInformationProviderDirective):
     Register an type information and a type factory.
     """
 
-    class_ = GlobalObject(
-        title=_('Class'),
-        description=_('Generic class implementation.'),
-        required=True
-        )
 
 
-
-class IInitializerSubdirective(Interface):
-    """Provide an initializer configuration for the type."""
-
-    keyface = GlobalInterface(
-        title=_('Configuration keyface'),
-        description=_('Configuration keyface defining the signature.'),
-        required=False
-        )
-
-    handler = GlobalObject(
-        title=_('Initializiation handler'),
-        description=_('Callable (context, *pos, **kws).'),
-        required=False
-        )
+class IFactorySubdirective(IBaseFactoryDirective, IBaseOperationDirective):
+    """Provide an factory for the type."""
 
 
 

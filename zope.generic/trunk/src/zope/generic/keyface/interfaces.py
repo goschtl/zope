@@ -25,6 +25,8 @@ from zope.schema import Object
 from zope.schema import Text
 from zope.schema import TextLine
 
+from zope.generic.directlyprovides import IProvides
+
 
 ###############################################################################
 #
@@ -40,7 +42,7 @@ class IKeyfaced(Interface):
 
 
 class IAttributeKeyfaced(IKeyfaced):
-    """Provide the key interface within the __keyface__ attribute."""
+    """Store the key interface within the __keyface__ attribute."""
 
     __keyface__ = Object(
         title=_('Key interface'),
@@ -50,6 +52,11 @@ class IAttributeKeyfaced(IKeyfaced):
         required=True,
         readonly=True,
         schema=IInterface)
+
+
+
+class IProvidesAttributeKeyfaced(IAttributeKeyfaced, IProvides):
+    """Directly provide the __keyface__ attribute."""
 
 
 

@@ -22,7 +22,6 @@ from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import alsoProvides
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
-from zope.schema import Bool
 from zope.schema import Object
 from zope.schema import Tuple
 

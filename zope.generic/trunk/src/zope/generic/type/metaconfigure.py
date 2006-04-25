@@ -21,29 +21,16 @@ __docformat__ = 'restructuredtext'
 from types import ModuleType
 
 from zope.app.component.contentdirective import ClassDirective
-from zope.app.component.metaconfigure import proxify
 from zope.app.component.metaconfigure import adapter
-from zope.component import provideAdapter
-from zope.component import provideUtility
-from zope.component.interfaces import IFactory
-from zope.configuration.exceptions import ConfigurationError
-from zope.interface import implements
-from zope.security.checker import CheckerPublic
-from zope.security.checker import InterfaceChecker
 
-from zope.generic.configuration.api import ConfigurationData
-from zope.generic.informationprovider.api import provideInformation
-from zope.generic.informationprovider.metaconfigure import InformationProviderDirective
-from zope.generic.keyface.api import toDottedName
-
-from zope.generic.type import IInitializationHandler
-from zope.generic.type import IInitializerConfiguration
-from zope.generic.type import ITypeInformation
-from zope.generic.type import ITypeType
-from zope.generic.type.adapter import Initializer
 from zope.generic.configuration.api import ConfigurationAdapterClass
 from zope.generic.configuration.api import ConfigurationAdapterProperty
-from zope.generic.type.factory import TypeFactory
+from zope.generic.factory.metaconfigure import factoryDirective
+from zope.generic.informationprovider.api import provideInformation
+from zope.generic.informationprovider.metaconfigure import InformationProviderDirective
+
+from zope.generic.type import ITypeInformation
+from zope.generic.type import ITypeType
 from zope.generic.type.helper import queryTypeConfiguration
 from zope.generic.type.helper import queryTypeInformation
 
@@ -86,31 +73,6 @@ class _TypeConfigurationAdapterProperty(ConfigurationAdapterProperty):
 
 
 
-class InitializationHandler(object):
-    """Initialization handler.
-    
-    Wrap a callable:
-
-        >>> def callable(context, *pos, **kws):
-        ...     print context, pos, kws
-        
-        >>> init_handler = InitializationHandler(callable)
-        
-        >>> init_handler(1, 2, 3, x=4)
-        1 (2, 3) {'x': 4}
-    
-    """
-
-    implements(IInitializationHandler)
-
-    def __init__(self, callable):
-        self.__callable = callable
-
-    def __call__(self, context, *pos, **kws):
-        self.__callable(context, *pos, **kws)
-
-
-
 class TypeDirective(InformationProviderDirective):
     """Provide a new logical type."""
 
@@ -118,51 +80,18 @@ class TypeDirective(InformationProviderDirective):
     _information_type = ITypeType
 
 
-    def __init__(self, _context, keyface, class_, label=None, hint=None):
-        # preconditions
-        if isinstance(class_, ModuleType):
-            raise ConfigurationError('Implementation attribute must be a class')
-        
+    def __init__(self, _context, keyface, label=None, hint=None):        
         # register types within the type information registry
         registry = ITypeInformation
         super(TypeDirective, self).__init__(_context, keyface, registry, label, hint)
 
-        # create and proxy type factory
-        factory = TypeFactory(class_, self._keyface) 
-        component = proxify(factory, InterfaceChecker(IFactory, CheckerPublic))
+    def factory(self, _context, class_, operations=(), input=None,
+                providesKeyface=True, notifyCreated=True, storeInput=True):
+        """Add factory."""
+        factoryDirective(_context, self._keyface, class_, None, operations, input,
+                     providesKeyface, notifyCreated, storeInput,
+                     self._label, self._hint)
 
-        _context.action(
-            discriminator = ('provideUtility', self._keyface),
-            callable = provideUtility,
-            args = (component, IFactory, toDottedName(self._keyface)),
-            )
-
-    def initializer(self, _context, keyface=None, handler=None):
-        """Add initializer."""
-        # preconditions
-        if keyface is None and handler is None:
-            raise ConfigurationError('Attribute keyface or handler must be defined')
-
-        data = {}
-        if handler is not None:
-            if not IInitializationHandler.providedBy(handler):
-                handler = InitializationHandler(handler)
-
-            data['handler'] = handler
-
-        if keyface is not None:
-            data['keyface'] = keyface
-
-        adapter(self._context, factory=[Initializer], provides=None, 
-                for_=[self._keyface], permission=None, name='', trusted=True, 
-                locate=False)
-
-        _context.action(
-            discriminator = (
-            'initializer', self._keyface),
-            callable = provideTypeConfiguration,
-            args = (self._keyface, IInitializerConfiguration, data),
-            )
 
     def configurationAdapter(self, _context, keyface, class_=None, writePermission=None, readPermission=None):
         """Provide a generic configuration adatper."""

@@ -16,17 +16,4 @@
 $Id$
 """
 
-# usage see README.txt
-from zope.generic.factory.api import createObject
-from zope.generic.factory.api import createParameter
-from zope.generic.type.interfaces import *
-from zope.generic.type.base import Object
-from zope.generic.type.base import Contained
-from zope.generic.type.base import Container
-from zope.generic.type.base import Folder
-from zope.generic.type.base import OrderedContainer
-
-from zope.generic.type.helper import acquireObjectConfiguration
-from zope.generic.type.helper import queryObjectConfiguration
-from zope.generic.type.helper import queryTypeConfiguration
-from zope.generic.type.helper import queryTypeInformation
+from zope.generic.factory.interfaces import *

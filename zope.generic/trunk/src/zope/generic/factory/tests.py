@@ -20,32 +20,31 @@ import unittest
 
 from zope import component
 from zope import interface
-from zope import schema
 from zope.testing import doctest
 
 
-from zope.generic.type import api
-from zope.generic.type import testing
+from zope.generic.factory import api
+from zope.generic.factory import testing
 from zope.generic.testing.testing import registerDirective
 
 
 
 def test_suite():
     return unittest.TestSuite((
+        doctest.DocTestSuite('zope.generic.factory.factory',
+                             setUp=testing.placelesssetup.setUp,
+                             tearDown=testing.placelesssetup.tearDown,
+                             globs={'component': component, 'interface': interface,
+                             'registerDirective': registerDirective,
+                             'testing': testing, 'api': api},
+                             optionflags=doctest.NORMALIZE_WHITESPACE+
+                                            doctest.ELLIPSIS),
         doctest.DocFileSuite('README.txt',
                              setUp=testing.placelesssetup.setUp,
                              tearDown=testing.placelesssetup.tearDown,
                              globs={'component': component, 'interface': interface,
                              'registerDirective': registerDirective,
-                             'testing': testing},
-                             optionflags=doctest.NORMALIZE_WHITESPACE+
-                                            doctest.ELLIPSIS),
-        doctest.DocFileSuite('EXAMPLE.txt',
-                             setUp=testing.placelesssetup.setUp,
-                             tearDown=testing.placelesssetup.tearDown,
-                             globs={'component': component, 'interface': interface,
-                             'schema': schema, 'registerDirective': registerDirective,
-                             'testing': testing},
+                             'testing': testing, 'api': api},
                              optionflags=doctest.NORMALIZE_WHITESPACE+
                                             doctest.ELLIPSIS),
         ))

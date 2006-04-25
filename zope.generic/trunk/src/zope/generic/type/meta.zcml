@@ -16,8 +16,8 @@
           />
 
       <meta:subdirective
-          name="initializer"
-          schema="zope.generic.type.metadirectives.IInitializerSubdirective"
+          name="factory"
+          schema=".metadirectives.IFactorySubdirective"
           />
 
       <meta:subdirective

@@ -81,7 +81,7 @@ class ConfigurationData(Persistent):
         >>> config_data = ConfigurationData(IExampleConfiugrationSchema, {})
         Traceback (most recent call last):
         ...
-        AttributeError: 'IExampleConfiugrationSchema' object has no attribute 'foo'.
+        TypeError: __init__ requires 'foo' of 'IExampleConfiugrationSchema'.
 
     The schema should not contain methods:
 
@@ -122,7 +122,7 @@ class ConfigurationData(Persistent):
                     missedArguments.append(name)
         
         if missedArguments:
-            raise AttributeError("'%s' object has no attribute '%s'." % (schema.__name__, ', '.join(missedArguments)))
+            raise TypeError("__init__ requires '%s' of '%s'." % (', '.join(missedArguments), schema.__name__))
     
         # essentials
         self.__dict__['_ConfigurationData__data'] = PersistentDict(data)

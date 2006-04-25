@@ -110,10 +110,10 @@ initialization process.
     >>> registerDirective('''
     ... <generic:type
     ...     keyface="example.IText"
-    ...     class='zope.generic.type.api.Object'
     ...     >
-    ...    <initializer
-    ...         keyface='example.ITextConfig'
+    ...    <factory
+    ...        class='zope.generic.type.api.Object'
+    ...        input='example.ITextConfig'
     ...    />
     ...    <information
     ...        keyface='example.ITextConfig'
@@ -125,10 +125,10 @@ initialization process.
     >>> registerDirective('''
     ... <generic:type
     ...     keyface="example.INote"
-    ...     class='zope.generic.type.api.Object'
     ...     >
-    ...    <initializer
-    ...         keyface='example.INoteConfig'
+    ...    <factory
+    ...        class='zope.generic.type.api.Object'
+    ...        input='example.INoteConfig'
     ...    />
     ...    <information
     ...        keyface='example.INoteConfig'
@@ -140,11 +140,11 @@ initialization process.
     >>> registerDirective('''
     ... <generic:type
     ...     keyface="example.IArticle"
-    ...     class='zope.generic.type.api.Object'
     ...     >
-    ...    <initializer
-    ...         keyface='example.IArticleInitializationConfiguration'
-    ...         handler="example.articleInitializer"
+    ...    <factory
+    ...        class='zope.generic.type.api.Object'
+    ...        input='example.IArticleInitializationConfiguration'
+    ...        operations='example.articleInitializer'
     ...    />
     ...    <information
     ...        keyface='example.ITextConfig'
@@ -165,13 +165,18 @@ To create an article we use the logical domain interface
 
     >>> from zope.generic.type.api import createObject
 
-    >>> article = createObject(IArticle, text="First version of article.")
+    >>> article = createObject(IArticle)
+    Traceback (most recent call last):
+    ...
+    TypeError: __init__ requires 'text' of 'IArticleInitializationConfiguration'.
+
+    >>> article = createObject(IArticle, u"First version of article.")
     
     >>> IArticle.providedBy(article)
     True
 
     >>> queryInformation(article, ITextConfig).body
-    'First version of article.'
+    u'First version of article.'
     
     >>> queryInformation(article, IArticleInitializationConfiguration).text
     Traceback (most recent call last):

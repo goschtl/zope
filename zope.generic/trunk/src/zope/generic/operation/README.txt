@@ -87,7 +87,7 @@ You can call an operation on a context:
     >>> operation('corresponding Context')
     Traceback (most recent call last):
     ...
-    AttributeError: 'IAnyInput' object has no attribute 'a'.
+    TypeError: __init__ requires 'a' of 'IAnyInput'.
 
     >>> output = operation('corresponding Context', u'a bla')
     Any input: a=a bla, b=None, c=c default.

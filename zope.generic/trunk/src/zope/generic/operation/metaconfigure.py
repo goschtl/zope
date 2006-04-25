@@ -38,13 +38,36 @@ from zope.generic.operation.base import Operation
 from zope.generic.operation.base import OperationPipe
 
 
-def _assertOperation(handler, keyface=None, input=None, output=None):
+def assertOperation(handlers, keyface=None, input=None, output=None):
     """Assert that we get an operation."""
 
+    # handle operations tuple or lists
+    if type(handlers) == tuple or type(handlers) == list:
+        if len(handlers) > 1:
+            return OperationPipe([assertOperation(handler) 
+                                 for handler in handlers], 
+                                 keyface, input, output)
+
+        elif len(handlers) == 1:
+            handler = handlers[0]
+
+        else:
+            handler=None
+
+    # assume that handlers is a single handler
+    else:
+        handler = handlers
+
+    # nothing to do, this is already an information
     if IOperation.providedBy(handler):
         return handler
     
-    if IOperationType.providedBy(handler):
+    # sometimes we use an do nothing operation
+    elif handler is None:
+        return Operation(None, keyface, input, output)
+
+    # evaluate an operation from a operation key interface
+    elif IOperationType.providedBy(handler):
         registry = IOperationInformation
         info = queryInformationProvider(handler, IOperationInformation)
 
@@ -59,34 +82,30 @@ def _assertOperation(handler, keyface=None, input=None, output=None):
         return config.operation
 
     # asume callabe (context)
-    return Operation(handler, keyface, input, output)
+    else:
+        return Operation(handler, keyface, input, output)
 
 
 
-def provideOperationConfiguration(keyface, operations=(), input=None, output=None):
+def provideOperationConfiguration(keyface, operations=None, registry=None, input=None, output=None):
     """Provide the handler to an configuration information."""
-    
-    registry = IOperationInformation
-    info = queryInformationProvider(keyface, IOperationInformation)
+
+    # assume configuration within an IOperationInformation
+    if registry is None:
+        registry = IOperationInformation
+
+    provider = queryInformationProvider(keyface, registry)
 
     # this should never happen...
-    if info is None:
+    if provider is None:
         ConfigurationError('No operation information for %s' 
                            % keyface.__name__)
 
-    if len(operations) == 0:
-        # hidding overwrite -> pass handler
-        operation = _assertOperation(None, keyface, input, output)
-    
-    elif len(operations) == 1:
-        operation = _assertOperation(operations[0], keyface, input, output)
-    
-    else:
-        operation = OperationPipe([_assertOperation(handler) for handler in operations], keyface, input, output)
+    # create operation wrapper
+    operation = assertOperation(operations, keyface, input, output)
 
-    configurations = IConfigurations(info)
     # create and set configuration data
-    provideInformation(info, IOperationConfiguration, 
+    provideInformation(provider, IOperationConfiguration, 
         {'operation': operation, 'input': input, 'output': output})
 
 
@@ -109,5 +128,5 @@ def operationDirective(_context, keyface, operations=(), input=None, output=None
     _context.action(
         discriminator = ('provideOperationConfiguration', keyface),
         callable = provideOperationConfiguration,
-        args = (keyface, operations, input, output),
+        args = (keyface, operations, registry, input, output),
         )

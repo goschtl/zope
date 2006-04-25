@@ -21,12 +21,13 @@ __docformat__ = 'restructuredtext'
 from zope.component import adapts
 from zope.interface import implements
 
-from zope.generic.informationprovider.api import provideInformation
+from zope.generic.informationprovider.api import queryInformation
+from zope.generic.informationprovider.api import getInformationProvider
+from zope.generic.keyface import IKeyfaced
+from zope.generic.operation import IOperationConfiguration
 
-from zope.generic.type import IInitializer
-from zope.generic.type import IInitializerConfiguration
-from zope.generic.type import ITypeable
-from zope.generic.type.api import queryTypeConfiguration
+from zope.generic.factory import IFactoryInformation
+from zope.generic.factory import IInitializer
 
 
 
@@ -35,19 +36,10 @@ class Initializer(object):
 
     implements(IInitializer)
     
-    adapts(ITypeable)
+    adapts(IKeyfaced)
 
     def __init__(self, context):
         self.context = context
 
     def __call__(self, *pos, **kws):
-        config = queryTypeConfiguration(self.context, IInitializerConfiguration)
-        if config:
-            # store initialization data
-            if config.keyface:
-                provideInformation(self.context, config.keyface, kws)
 
-            # invoke initialization handler
-
-            if config.handler:
-                config.handler(self.context, *pos, **kws)

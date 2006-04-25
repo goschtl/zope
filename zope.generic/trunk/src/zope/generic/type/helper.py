@@ -18,32 +18,12 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope import component
-
-from zope.generic.keyface.api import toDottedName
 from zope.generic.informationprovider.api import queryInformation
-from zope.generic.informationprovider.api import queryInformationProvider
+from zope.generic.informationprovider.api import getInformationProvider
 
-from zope.generic.type import IInitializerConfiguration
 from zope.generic.type import ITypeInformation
 from zope.generic.type import ITyped
 from zope.generic.type import ITypeType
-
-
-
-def createObject(keyface, *pos, **kws):
-    """Create an instance of a logical type using the type marker."""
-    return component.createObject(toDottedName(keyface), *pos, **kws)
-
-
-
-def createParameter(keyface):
-    config = queryTypeConfiguration(keyface, IInitializerConfiguration)
-    if config:
-        return config.keyface
-    
-    else:
-        return None
 
 
 
@@ -73,7 +53,7 @@ def queryType(object, default=None):
 
 
 def getTypeInformation(object):
-    return queryInformationProvider(getType(object), ITypeInformation)
+    return getInformationProvider(getType(object), ITypeInformation)
 
 
 

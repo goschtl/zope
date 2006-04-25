@@ -18,22 +18,20 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.interface import alsoProvides
 from zope.interface import Interface
-from zope.schema import Bool
 from zope.schema import Object
 
-from zope.generic.configuration import IConfigurationType
-from zope.generic.directlyprovides import IProvides
+from zope.generic.configuration.api import IAttributeConfigurable
 from zope.generic.informationprovider import IInformationProvider
 from zope.generic.keyface import IKeyface
 from zope.generic.keyface import IKeyfaceType
+from zope.generic.keyface import IProvidesAttributeKeyfaced
 
 
-__all__ = ['ITypeType', 'ITypeable', 'ITyped', 'IDirectlyTyped', 
-           'ITypeInformation', 'IInitializer', 'IInitializationHandler', 
-           'IInitializerConfiguration']
+__all__ = ['ITypeType', 'ITypeable', 'ITyped', 'IGenericTyped', 
+           'ITypeInformation']
 
 
 
@@ -52,7 +50,7 @@ class ITypeable(Interface):
 
 
 class ITyped(ITypeable, IKeyface):
-    """Provid an information within the."""
+    """Provide the key interface."""
 
     keyface = Object(
         title=_('Key interface'),
@@ -62,63 +60,11 @@ class ITyped(ITypeable, IKeyface):
 
 
 
-class IDirectlyTyped(ITyped, IProvides, IKeyface):
-    """Directly provide the declared interface."""
-
-    def __init__(__keyface__, *pos, **kws):
-        """Directly provide the key interface during the __init__ call."""
-
-    __keyface__ = Object(
-        title=_('Key interface'),
-        description=_('The declared key interface must be directly provided too.'),
-        required=True,
-        readonly=True,
-        schema=ITypeType)
+class IGenericTyped(ITyped, IProvidesAttributeKeyfaced, IAttributeConfigurable, IAttributeAnnotatable):
+    """Directly provide the declared key interface interface."""
 
 
 
 class ITypeInformation(IInformationProvider):
     """Provide information for the declared type interface."""
 
-
-
-class IInitializer(Interface):
-    """Initialize an object."""
-
-    def __call__(*pos, **kws):
-        """Invoke initialization handler declared by the initializer configuration."""
-
-
-
-class IInitializationHandler(Interface):
-    """Initialize an object."""
-
-    def __call__(context, *pos, **kws):
-        """Initialize the object referenced by self."""
-
-
-
-class IInitializerConfiguration(Interface):
-    """Provide initialization handler.
-
-    At least a handler or an interface must be defined.
-
-    If the interface is defined, **kws are stored as configuration defined by
-    the interface.
-
-    If the **kws does not satify the interface a KeyError is raised.
-    """
-
-    keyface = Object(
-        title=_('Configuration interface'),
-        description=_('Configuration interface defining the signature.'),
-        required=False,
-        schema=IConfigurationType)
-
-    handler = Object(
-        title=_('Initialization Handler'),
-        description=_('Callable (context, *pos, **kws).'),
-        required=False,
-        schema=IInitializationHandler)
-
-alsoProvides(IInitializerConfiguration, IConfigurationType)

@@ -21,9 +21,12 @@ __docformat__ = 'restructuredtext'
 from zope.configuration.xmlconfig import XMLConfig
 
 import zope.app.testing.placelesssetup
-import zope.generic.directlyprovides.testing
+
 import zope.generic.configuration.testing
+import zope.generic.directlyprovides.testing
+import zope.generic.factory.testing
 import zope.generic.keyface.testing
+import zope.generic.operation.testing
 import zope.generic.testing.testing
 
 ################################################################################
@@ -63,17 +66,21 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         zope.generic.directlyprovides.testing.setUp(doctest)
         zope.generic.keyface.testing.setUp(doctest)
         zope.generic.configuration.testing.setUp(doctest)
+        zope.generic.operation.testing.setUp(doctest)
+        zope.generic.factory.testing.setUp(doctest)
         # internal setup
         setUp(doctest)
 
     def tearDown(self, doctest=None):
-        super(PlacelessSetup, self).tearDown()
+        # internal teardown
+        tearDown(doctest)
         # external teardown
+        zope.generic.factory.testing.tearDown(doctest)
+        zope.generic.operation.testing.tearDown(doctest)
         zope.generic.configuration.testing.tearDown(doctest)
         zope.generic.keyface.testing.tearDown(doctest)
         zope.generic.directlyprovides.testing.tearDown(doctest)
         zope.generic.testing.testing.tearDown(doctest)
-        # internal teardown
-        tearDown(doctest)
+        super(PlacelessSetup, self).tearDown()
 
 placelesssetup = PlacelessSetup()

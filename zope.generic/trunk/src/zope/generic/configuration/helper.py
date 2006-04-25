@@ -124,7 +124,7 @@ def argumentsToConfiguration(__keyface__, *pos, **kws):
         >>> argumentsToConfiguration(IAnyConfiguration)
         Traceback (most recent call last):
         ...
-        AttributeError: 'IAnyConfiguration' object has no attribute 'a, d'.
+        TypeError: __init__ requires 'a, d' of 'IAnyConfiguration'.
 
     B: Provide the required as positionals:
 

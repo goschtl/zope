@@ -19,14 +19,13 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import zope.app.testing.placelesssetup
-from zope.component import provideAdapter
 from zope.configuration.xmlconfig import XMLConfig
-from zope.interface import Interface
-from zope.schema import TextLine
 
 import zope.generic.configuration.testing
-import zope.generic.keyface.testing
 import zope.generic.directlyprovides.testing
+import zope.generic.informationprovider.testing
+import zope.generic.keyface.testing
+import zope.generic.operation.testing
 import zope.generic.testing.testing
 
 ################################################################################
@@ -35,31 +34,6 @@ import zope.generic.testing.testing
 #
 ################################################################################
 
-class IMarker(Interface):
-    """Demo marker."""
-
-
-class IBarConfiguration(Interface):
-
-    bar = TextLine(title=u'Bar')
-
-
-class IInputConfiguration(Interface):
-
-    foo = TextLine(title=u'Foo')
-
-    bar = TextLine(title=u'Bar')
-
-
-class IFooConfiguration(Interface):
-
-    foo = TextLine(title=u'Foo')
-    
-    fo = TextLine(title=u'Fo', required=False, readonly=True, default=u'fo default')
-
-
-class TestKeyfaceAttriute(object):
-    __keyface__ = IFooConfiguration
 
 
 ################################################################################
@@ -70,15 +44,9 @@ class TestKeyfaceAttriute(object):
 
 # specific tests
 def setUp(doctest=None):
-    # register attribute configurations adapter
-    import zope.generic.configuration.adapter
-    from zope.generic.configuration import IConfigurations
-    provideAdapter(zope.generic.configuration.adapter.AttributeConfigurations,
-        provides=IConfigurations)
-
     # register the directive of this package
-    import zope.generic.configuration
-    XMLConfig('meta.zcml', zope.generic.configuration)()
+    import zope.generic.factory
+    XMLConfig('meta.zcml', zope.generic.factory)()
 
 def tearDown(doctest=None):
     pass
@@ -94,6 +62,8 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         zope.generic.directlyprovides.testing.setUp(doctest)
         zope.generic.keyface.testing.setUp(doctest)
         zope.generic.configuration.testing.setUp(doctest)
+        zope.generic.informationprovider.testing.setUp(doctest)
+        zope.generic.operation.testing.setUp(doctest)
         # internal setup
         setUp(doctest)
 
@@ -101,10 +71,13 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         # internal teardown
         tearDown(doctest)
         # external teardown
+        zope.generic.operation.testing.tearDown(doctest)
+        zope.generic.informationprovider.testing.tearDown(doctest)
         zope.generic.configuration.testing.tearDown(doctest)
         zope.generic.keyface.testing.tearDown(doctest)
         zope.generic.directlyprovides.testing.tearDown(doctest)
         zope.generic.testing.testing.tearDown(doctest)
         super(PlacelessSetup, self).tearDown()
+
 
 placelesssetup = PlacelessSetup()

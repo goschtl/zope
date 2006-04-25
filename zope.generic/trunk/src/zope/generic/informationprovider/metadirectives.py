@@ -30,11 +30,11 @@ from zope.generic.informationprovider import IInformationProvider
 
 
 class IBaseInformationProviderDirective(Interface):
-    """Base information attributes."""
+    """Base information provider attributes."""
 
     keyface = GlobalInterface(
-        title=_('Interface'),
-        description=_('Interface that represents an information.'),
+        title=_('Key Interface'),
+        description=_('Key interface that is refered by the information.'),
         required=True
         )
 

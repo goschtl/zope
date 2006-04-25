@@ -129,13 +129,13 @@ queryInformationProvider function:
     
     >>> supplier_registry =  api.queryInformationProvider(ILogSupplierInformation)
     >>> supplier_registry.label
-    u'ILogSupplierInformation'
-    >>> supplier_registry.hint
     u'Store log supplier information.'
+    >>> supplier_registry.hint
+    u''
 
     >>> user_registry =  api.queryInformationProvider(ILogUserInformation)
     >>> user_registry.label
-    u'ILogUserInformation'
-    >>> user_registry.hint
     u'Store log user information.'
+    >>> user_registry.hint
+    u''
 
