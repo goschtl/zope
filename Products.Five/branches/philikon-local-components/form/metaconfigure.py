@@ -55,7 +55,7 @@ def EditViewFactory(name, schema, label, permission, layer,
         layer = IDefaultBrowserLayer
 
     s = zope.component.getGlobalSiteManager()
-    s.provideAdapter((for_, layer), Interface, name, class_)
+    s.registerAdapter(class_, (for_, layer), Interface, name)
 
     # Reminder: the permission we got has already been processed by
     # BaseFormDirective, that means that zope.Public has been
@@ -118,7 +118,7 @@ def AddViewFactory(name, schema, label, permission, layer,
         layer = IDefaultBrowserLayer
 
     s = zope.component.getGlobalSiteManager()
-    s.provideAdapter((for_, layer), Interface, name, class_)
+    s.registerAdapter(class_, (for_, layer), Interface, name)
 
     # Reminder: the permission we got has already been processed by
     # BaseFormDirective, that means that zope.Public has been
