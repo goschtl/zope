@@ -67,6 +67,5 @@ global component registry is returned:
 Clean up:
 ---------
 
-#XXX somehow this makes the zpt.txt tests fail
-#  >>> from zope.component.testing import tearDown
-#  >>> tearDown()
+  >>> from zope.component.testing import tearDown
+  >>> tearDown()

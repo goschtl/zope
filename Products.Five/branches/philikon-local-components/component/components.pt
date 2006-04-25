@@ -18,11 +18,6 @@
       </div>
   </form>
 
-  <p tal:condition="not:view/isSite">XXX perhaps list locally
-  registered comonents here, or just give some stats about locally
-  registered objects with links to pages who actually show them...
-  XXX</p>
-
   </div>
   </body>
 

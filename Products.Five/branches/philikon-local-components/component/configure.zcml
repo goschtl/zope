@@ -17,31 +17,9 @@
   <browser:page
       for="OFS.interfaces.IObjectManager"
       name="components.html"
-      class=".browser.ComponentsView"
+      class=".browser.ObjectManagerSiteView"
       template="components.pt"
       permission="five.ManageSite"
       />
-
-  <browser:pages
-     for="OFS.interfaces.ISimpleItem"
-     class=".browser.CustomizationView"
-     permission="five.ManageSite">
-
-    <browser:page
-       name="zptviews.html"
-       template="zptviews.pt"
-       />
-    <browser:page
-       name="customizezpt.html"
-       template="customizezpt.pt"
-       />
-    <browser:page
-       name="customizezpt"
-       attribute="customizeTemplate"
-       />
-
-  </browser:pages>
-
-  <subscriber handler=".zpt.unregisterViewWhenZPTIsDeleted" />
 
 </configure>
