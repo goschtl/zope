@@ -12,13 +12,6 @@
 
 - container implementation is some kind of a quick hack
 
-- sqlalchemy's proxy handling is not using a global connection pool !
-   Each proxy creates a new engine even if it is the same database.
-
-       Solved by using the database utility to create the engine and directly
-       assign this engine to all proxies.
-       Shotcuts ProxyEngines's connect !?
-
 - use of ActiveMapper
 
 - Adapter for sqlalchemy mapped object deletion
