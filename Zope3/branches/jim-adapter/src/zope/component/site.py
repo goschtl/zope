@@ -33,5 +33,6 @@ from zope.component.registry import UtilityRegistration
 from zope.component.globalregistry import BaseGlobalComponents \
      as GlobalSiteManager
 from zope.component.globalregistry import base as globalSiteManager
+from zope.component.globalregistry import GAR
 from zope.component.globalregistry \
      import _IGlobalSiteManager as IGlobalSiteManager
