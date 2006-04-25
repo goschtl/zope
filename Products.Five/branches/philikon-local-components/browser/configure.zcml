@@ -28,7 +28,7 @@
       />
 
   <browser:page
-      for="zope.app.traversing.interfaces.IContainmentRoot"
+      for="zope.traversing.interfaces.IContainmentRoot"
       name="absolute_url"
       class=".absoluteurl.SiteAbsoluteURL"
       permission="zope.Public"
