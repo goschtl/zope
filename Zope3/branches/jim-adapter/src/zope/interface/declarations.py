@@ -46,8 +46,8 @@ class Declaration(Specification):
     def __init__(self, *interfaces):
         Specification.__init__(self, _normalizeargs(interfaces))
 
-    def changed(self):
-        Specification.changed(self)
+    def changed(self, originally_changed):
+        Specification.changed(self, originally_changed)
         try:
             del self._v_attrs
         except AttributeError:

@@ -251,7 +251,7 @@ class Specification(SpecificationBase):
         for b in bases:
             b.subscribe(self)
 
-        self.changed()
+        self.changed(self)
 
     __bases__ = property(
 
@@ -259,7 +259,7 @@ class Specification(SpecificationBase):
         __setBases,
         )
 
-    def changed(self):
+    def changed(self, originally_changed):
         """We, or something we depend on, have changed
         """
 
@@ -285,7 +285,7 @@ class Specification(SpecificationBase):
 
         # Now, advise our dependents of change:
         for dependent in self.dependents.keys():
-            dependent.changed()
+            dependent.changed(originally_changed)
 
 
     def interfaces(self):

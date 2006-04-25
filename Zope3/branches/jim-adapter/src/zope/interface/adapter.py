@@ -79,7 +79,7 @@ class AdapterRegistry(object):
             
             self.__dict__['__bases__'] = v
             self.ro = ro.ro(self)
-            self.changed()
+            self.changed(self)
             
         return property(get, set)
 
@@ -90,16 +90,16 @@ class AdapterRegistry(object):
         if r in self._v_subregistries:
             del self._v_subregistries[r]
 
-    def changed(self):
+    def changed(self, originally_changed):
         try:
             lookup = self._v_lookup
         except AttributeError:
             pass
         else:
-            lookup.changed()
+            lookup.changed(originally_changed)
 
         for sub in self._v_subregistries.keys():
-            sub.changed()
+            sub.changed(originally_changed)
        
     @readproperty
     def _v_extendors(self):
@@ -149,7 +149,7 @@ class AdapterRegistry(object):
         if n == 1 and '_v_extendors' in self.__dict__:
             del self.__dict__['_v_extendors']
 
-        self.changed()
+        self.changed(self)
         
     def unregister(self, required, provided, name, value=None):
         required = tuple(map(_convert_None_to_Interface, required))
@@ -181,7 +181,7 @@ class AdapterRegistry(object):
         else:
             self._provided[provided] = n
 
-        self.changed()
+        self.changed(self)
 
         return
 
@@ -211,7 +211,7 @@ class AdapterRegistry(object):
             if n == 1 and '_v_extendors' in self.__dict__:
                 del self.__dict__['_v_extendors']
 
-        self.changed()
+        self.changed(self)
 
     def unsubscribe(self, required, provided, value=None):
         required = tuple(map(_convert_None_to_Interface, required))
@@ -240,7 +240,7 @@ class AdapterRegistry(object):
                 if '_v_extendors' in self.__dict__:
                     del self.__dict__['_v_extendors']
 
-        self.changed()
+        self.changed(self)
 
         return
 
@@ -265,7 +265,7 @@ class AdapterLookup(object):
         self._scache = {}
         self._required = {}
 
-    def changed(self):
+    def changed(self, originally_changed):
         self._cache.clear()
         self._mcache.clear()
         self._scache.clear()

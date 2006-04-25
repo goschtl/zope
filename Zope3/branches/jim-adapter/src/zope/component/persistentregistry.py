@@ -24,9 +24,10 @@ import zope.component.registry
 class PersistentAdapterRegistry(zope.interface.adapter.AdapterRegistry,
                                 persistent.Persistent):
 
-    def changed(self):
-        self._p_changed = True
-        super(PersistentAdapterRegistry, self).changed()
+    def changed(self, originally_changed):
+        if originally_changed is self:
+            self._p_changed = True
+        super(PersistentAdapterRegistry, self).changed(originally_changed)
         
 class PersistentComponents(zope.component.registry.Components):
 
