@@ -31,6 +31,13 @@ class FiveSiteManager(object):
         self.context = self.__parent__ = context
 
     @property
+    def __bases__(self):
+        next = self.next
+        if next is None:
+            return ()
+        return (next,)
+
+    @property
     def next(self):
         obj = self.context
         while obj is not None:
