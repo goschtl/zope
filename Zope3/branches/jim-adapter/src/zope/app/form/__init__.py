@@ -26,7 +26,7 @@ from zope.schema.interfaces import IChoice, ICollection
 
 deprecated('CustomSequenceWidgetFactory',
            'Use CustomWidgetFactory instead. '
-           'The reference will be gone in Zope 3.3.')
+           'The reference will be gone in Zope 3.4.')
 
 class Widget(object):
     """Mixin class providing functionality common across widget types."""
@@ -120,7 +120,7 @@ class CustomWidgetFactory(object):
         return self._create(args)
 
 
-# BBB: Gone in 3.3 (does not satify IViewFactory)
+# BBB: Gone in 3.4 (does not satify IViewFactory)
 class CustomSequenceWidgetFactory(CustomWidgetFactory):
     """Custom sequence widget factory."""
 
