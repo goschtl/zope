@@ -27,6 +27,12 @@ from zope.component.interfaces import IComponentArchitecture
 from zope.component.interfaces import IComponentLookup
 from zope.component.testing import setUp, tearDown
 
+import zope.deferredimport
+zope.deferredimport.deprecated(
+    "Use zope.component.testing.placelesssetup",
+    placelesssetup = "zope.component.testing",
+    )
+
 class I1(interface.Interface):
     pass
 class I2(interface.Interface):
