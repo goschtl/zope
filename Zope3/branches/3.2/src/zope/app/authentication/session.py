@@ -83,12 +83,22 @@ class IBrowserFormChallenger(Interface):
     """A challenger that uses a browser form to collect user credentials."""
 
     loginpagename = TextLine(
-        title=u'loginpagename',
+        title=u'Loginpagename',
         description=u"""Name of the login form used by challenger.
 
         The form must provide 'login' and 'password' input fields.
         """,
         default=u'loginForm.html')
+    
+    loginfield = TextLine(
+        title=u'Loginfield',
+        description=u"Field of the login page in which is looked for the login user name.",
+        default=u"login")
+        
+    passwordfield = TextLine(
+        title=u'Passwordfield',
+        description=u"Field of the login page in which is looked for the password.",
+        default=u"password")
 
 
 class SessionCredentialsPlugin(Persistent, Contained):
@@ -142,6 +152,20 @@ class SessionCredentialsPlugin(Persistent, Contained):
 
       >>> plugin.extractCredentials(TestRequest())
       {'login': 'harry', 'password': 'hirsch'}
+      
+    We can also change the fields from which the credentials are extracted:
+    
+      >>> plugin.loginfield = "my_new_login_field"
+      >>> plugin.passwordfield = "my_new_password_field"
+      
+    Now we build a request that uses the new fields:
+    
+      >>> request = TestRequest(my_new_login_field='luke', my_new_password_field='the_force')
+      
+    The plugin now extracts the credentials information from these new fields:
+    
+      >>> plugin.extractCredentials(request)
+      {'login': 'luke', 'password': 'the_force'}
 
     Finally, we clear the session credentials using the logout method:
 
@@ -154,6 +178,8 @@ class SessionCredentialsPlugin(Persistent, Contained):
     implements(ICredentialsPlugin, IBrowserFormChallenger)
 
     loginpagename = 'loginForm.html'
+    loginfield = 'login'
+    passwordfield = 'password'
 
     def extractCredentials(self, request):
         """Extracts credentials from a session if they exist."""
@@ -162,8 +188,8 @@ class SessionCredentialsPlugin(Persistent, Contained):
 
         sessionData = ISession(request)[
             'zope.app.authentication.browserplugins']
-        login = request.get('login', None)
-        password = request.get('password', None)
+        login = request.get(self.loginfield, None)
+        password = request.get(self.passwordfield, None)
         if login and password:
             credentials = SessionCredentials(login, password)
             sessionData['credentials'] = credentials

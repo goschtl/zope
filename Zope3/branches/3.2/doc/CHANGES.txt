@@ -10,6 +10,9 @@ Zope Changes
 
     Bug fixes
 
+      - Change the session credentials plugin to make it configurable in which
+	fields it looks for the credentials.
+
       - Fixed issue 590: zope.app.mail could send multiple copies of emails on
         ConflictErrors, and it was also rate limited to 1 email per second when
         you used QueuedMailDelivery.
