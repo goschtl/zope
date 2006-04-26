@@ -12,21 +12,21 @@
   <!-- Register documentation with API Doc -->
 
   <apidoc:bookchapter zcml:condition="have apidoc"
-      id="zope.generic.readme"
+      id="zope.generic.doc.readme"
       title="README"
       doc_path="README.txt"
       parent="zope.generic"
       />
 
   <apidoc:bookchapter zcml:condition="have apidoc"
-      id="zope.generic.changes"
+      id="zope.generic.doc.changes"
       title="CHANGES"
       doc_path="CHANGES.txt"
       parent="zope.generic"
       />
 
   <apidoc:bookchapter zcml:condition="have apidoc"
-      id="zope.generic.todo"
+      id="zopegeneric.doc.todo"
       title="TODO"
       doc_path="TODO.txt"
       parent="zope.generic"

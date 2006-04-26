@@ -1,7 +1,16 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
+  xmlns:apidoc="http://namespaces.zope.org/apidoc"
   xmlns:generic="http://namespaces.zope.org/generic"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
   i18n_domain="zope">
+ 
+  <apidoc:bookchapter zcml:condition="have apidoc"
+      id="zope.generic.informationprovider.readme"
+      title="Information Provider"
+      doc_path="README.txt"
+      parent="zope.generic"
+      />
  
   <generic:informationProvider
       keyface=".IInformationProviderInformation"
