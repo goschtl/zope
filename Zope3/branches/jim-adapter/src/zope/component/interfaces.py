@@ -45,11 +45,12 @@ class IObjectEvent(interface.Interface):
 class ObjectEvent(object):
     interface.implements(IObjectEvent)
 
+    # for repr backward compatibility. In the next release cycle, we'll
+    # provide a testing framework that addresses repr migration.
+    __module__ = 'zope.app.event.objectevent'
+
     def __init__(self, object):
         self.object = object
-
-    def __repr__(self):
-        return "%s event:\n%r" % (self.__class__.__name__, self.object)
 
 class IComponentArchitecture(interface.Interface):
     """The Component Architecture is defined by two key components: Adapters
@@ -558,6 +559,9 @@ class RegistrationEvent(ObjectEvent):
     """There has been a change in a registration
     """
     interface.implements(IRegistrationEvent)
+
+    def __repr__(self):
+        return "%s event:\n%r" % (self.__class__.__name__, self.object)
 
 class IRegistered(IRegistrationEvent):
     """A component or factory was registered 
