@@ -191,11 +191,102 @@ the old location:
   >>> zope.deprecation.old_location.x
   42
 
-and the old module will be an alias for the new:
+Moving packages
+---------------
 
-  >>> (sys.modules['zope.deprecation.old_location']
-  ...  is sys.modules['zope.deprecation.new_location'])
+When moving packages, you need to leave placeholders for each 
+module.  Let's look at an example:
+
+  >>> create_module({
+  ... 'new_package.__init__': '''\
+  ... print __name__, 'imported'
+  ... x=0
+  ... ''',
+  ... 'new_package.m1': '''\
+  ... print __name__, 'imported'
+  ... x=1
+  ... ''',
+  ... 'new_package.m2': '''\
+  ... print __name__, 'imported'
+  ... def x():
+  ...     pass
+  ... ''',
+  ... 'new_package.m3': '''\
+  ... print __name__, 'imported'
+  ... x=3
+  ... ''',
+  ... 'old_package.__init__': '''\
+  ... import zope.deprecation
+  ... zope.deprecation.moved('zope.deprecation.new_package', 'version 2')
+  ... ''',
+  ... 'old_package.m1': '''\
+  ... import zope.deprecation
+  ... zope.deprecation.moved('zope.deprecation.new_package.m1', 'version 2')
+  ... ''',
+  ... 'old_package.m2': '''\
+  ... import zope.deprecation
+  ... zope.deprecation.moved('zope.deprecation.new_package.m2', 'version 2')
+  ... ''',
+  ... })
+
+
+
+Now, if we import the old modules, we'll get warnings:
+
+  >>> import zope.deprecation.old_package
+  ... # doctest: +NORMALIZE_WHITESPACE
+  From tests.py's showwarning():
+  ...zope/deprecation/README.txt:1: DeprecationWarning:
+  zope.deprecation.old_package has moved to zope.deprecation.new_package.
+  Import of zope.deprecation.old_package will become unsupported in version 2
+    ===============
+  zope.deprecation.new_package imported
+
+  >>> zope.deprecation.old_package.x
+  0
+
+  >>> import zope.deprecation.old_package.m1
+  ... # doctest: +NORMALIZE_WHITESPACE
+  From tests.py's showwarning():
+  ...zope/deprecation/README.txt:1: DeprecationWarning:
+  zope.deprecation.old_package.m1 has moved to zope.deprecation.new_package.m1.
+  Import of zope.deprecation.old_package.m1 will become unsupported in
+  version 2
+    ===============
+  zope.deprecation.new_package.m1 imported
+
+  >>> zope.deprecation.old_package.m1.x
+  1
+
+  >>> import zope.deprecation.old_package.m2
+  ... # doctest: +NORMALIZE_WHITESPACE
+  From tests.py's showwarning():
+  ...zope/deprecation/README.txt:1: DeprecationWarning:
+  zope.deprecation.old_package.m2 has moved to zope.deprecation.new_package.m2.
+  Import of zope.deprecation.old_package.m2 will become unsupported in
+  version 2
+    ===============
+  zope.deprecation.new_package.m2 imported
+
+  >>> zope.deprecation.old_package.m2.x is zope.deprecation.new_package.m2.x
   True
+
+  >>> (zope.deprecation.old_package.m2.x.func_globals
+  ...  is zope.deprecation.new_package.m2.__dict__)
+  True
+
+  >>> zope.deprecation.old_package.m2.x.__module__
+  'zope.deprecation.new_package.m2'
+
+We'll get an error if we try to import m3, because we didn't create a
+placeholder for it:
+
+  >>> import  zope.deprecation.old_package.m3
+  Traceback (most recent call last):
+  ...
+  ImportError: No module named m3
+
+
 
 Temporarily turning off deprecation warnings
 --------------------------------------------

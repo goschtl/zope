@@ -63,11 +63,15 @@ def warn(message, type_, stacklevel):
 def setUpCreateModule(test):
     d = test.globs['tmp_d'] = tempfile.mkdtemp('deprecation')
 
-    def create_module(**modules):
+    def create_module(modules=(), **kw):
+        modules = dict(modules)
+        modules.update(kw)
         for name, src in modules.iteritems():
-            f = open(os.path.join(d, name+'.py'), 'w')
-            f.write(src)
-            f.close()
+            pname = name.split('.')
+            if pname[-1] == '__init__':
+                os.mkdir(os.path.join(d, *pname[:-1]))
+                name = '.'.join(pname[:-1])
+            open(os.path.join(d, *pname)+'.py', 'w').write(src)
             test.globs['created_modules'].append(name)
 
     test.globs['created_modules'] = []

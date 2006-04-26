@@ -203,4 +203,14 @@ def moved(to_location, unsupported_in=None):
     
     warnings.warn(message, DeprecationWarning, 3)
     __import__(to_location)
-    sys.modules[old] = sys.modules[to_location]
+
+    fromdict = sys.modules[to_location].__dict__
+    tomod = sys.modules[old]
+    tomod.__doc__ = message
+    todict = tomod.__dict__
+
+    for name, v in fromdict.iteritems():
+        if name not in tomod.__dict__:
+            setattr(tomod, name, v)
+
+    
