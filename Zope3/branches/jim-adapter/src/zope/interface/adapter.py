@@ -150,6 +150,25 @@ class AdapterRegistry(object):
             del self.__dict__['_v_extendors']
 
         self.changed(self)
+
+    def registered(self, required, provided, name=u''):
+        required = tuple(map(_convert_None_to_Interface, required))
+        name = _normalize_name(name)
+        order = len(required)
+        byorder = self._adapters
+        if len(byorder) <= order:
+            return None
+
+        components = byorder[order]
+        key = required + (provided,)
+        
+        for k in key:
+            d = components.get(k)
+            if d is None:
+                return None
+            components = d
+
+        return components.get(name)
         
     def unregister(self, required, provided, name, value=None):
         required = tuple(map(_convert_None_to_Interface, required))
@@ -218,7 +237,7 @@ class AdapterRegistry(object):
         order = len(required)
         byorder = self._subscribers
         if order >= len(byorder):
-            return False
+            return
         components = byorder[order]
         key = required + (provided,)
         
@@ -228,13 +247,22 @@ class AdapterRegistry(object):
                 return
             components = d
 
-        components[u''] = tuple([
-            v for v in components.get(u'', ())
-            if (v != value) or (value is None)
-            ])
+        old = components.get(u'')
+        if not old:
+            return
+
+        if value is None:
+            new = ()
+        else:
+            new = tuple([v for v in old if v != value])
+
+        if new == old:
+            return
+        
+        components[u''] = new
 
         if provided is not None:
-            n = self._provided[provided] - 1
+            n = self._provided[provided] + len(new) - len(old)
             if n == 0:
                 del self._provided[provided]
                 if '_v_extendors' in self.__dict__:
@@ -242,11 +270,8 @@ class AdapterRegistry(object):
 
         self.changed(self)
 
-        return
-
-    # XXX hack to fake out twisted's use of a private api.  We'll need
-    # to add a public api to mean twisted's needs and get them to use
-    # it.
+    # XXX hack to fake out twisted's use of a private api.  We need to get them
+    # to use the new registed method.
     def get(self, _):
         class XXXTwistedFakeOut:
             selfImplied = {}

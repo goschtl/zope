@@ -115,6 +115,32 @@ when using IR2::
   >>> registry.lookup([IR2], IP1, '')
   21
 
+Finding out what, if anything, is registered
+--------------------------------------------
+
+We can ask if there is an adapter registered for a collection of
+interfaces. This is different than lookup, because it looks for an
+exact match.
+
+  >>> print registry.registered([IR1], IP1)
+  11
+
+  >>> print registry.registered([IR1], IP2)
+  12
+
+  >>> print registry.registered([IR1], IP2, 'bob')
+  Bob's 12
+  
+
+  >>> print registry.registered([IR2], IP1)
+  21
+
+  >>> print registry.registered([IR2], IP2)
+  None
+
+In the last example, None was returned because nothing was registered
+exactly for the given interfaces.
+
 lookup1
 -------
 
@@ -382,11 +408,6 @@ And even null adapters::
 Subscriptions
 =============
 
-XXX need tests that demonstrate that more general subscribers are
-    called before more specific subscribers
-
-XXX Need unscription tests
-
 Normally, we want to look up an object that most-closely matches a
 specification.  Sometimes, we want to get all of the objects that
 match some specification.  We use subscriptions for this.  We
@@ -399,43 +420,36 @@ the subscribed objects::
 
 Note that, unlike regular adapters, subscriptions are unnamed.
 
-The order of returned subscriptions is not specified.
-
 You can have multiple subscribers for the same specification::
 
   >>> registry.subscribe([IR1], IP2, 'sub12 2')
-  >>> subs = registry.subscriptions([IR1], IP2)
-  >>> subs.sort()
-  >>> subs
+  >>> registry.subscriptions([IR1], IP2)
   ['sub12 1', 'sub12 2']
+
+If subscribers are registered for the same required interfaces, they
+are returned in the order of definition.
 
 You can register subscribers for all specifications using None::
 
   >>> registry.subscribe([None], IP1, 'sub_1')
-  >>> subs = registry.subscriptions([IR2], IP1)
-  >>> subs.sort()
-  >>> subs
-  ['sub12 1', 'sub12 2', 'sub_1']
+  >>> registry.subscriptions([IR2], IP1)
+  ['sub_1', 'sub12 1', 'sub12 2']
+
+Note that the new subscriber is returned first.  Subscribers defined
+for more general required interfaces are returned before subscribers
+for more general interfaces.
 
 Subscriptions may be combined over multiple compatible specifications::
 
-  >>> subs = registry.subscriptions([IR2], IP1)
-  >>> subs.sort()
-  >>> subs
-  ['sub12 1', 'sub12 2', 'sub_1']
+  >>> registry.subscriptions([IR2], IP1)
+  ['sub_1', 'sub12 1', 'sub12 2']
   >>> registry.subscribe([IR1], IP1, 'sub11')
-  >>> subs = registry.subscriptions([IR2], IP1)
-  >>> subs.sort()
-  >>> subs
-  ['sub11', 'sub12 1', 'sub12 2', 'sub_1']
+  >>> registry.subscriptions([IR2], IP1)
+  ['sub_1', 'sub12 1', 'sub12 2', 'sub11']
   >>> registry.subscribe([IR2], IP2, 'sub22')
-  >>> subs = registry.subscriptions([IR2], IP1)
-  >>> subs.sort()
-  >>> subs
-  ['sub11', 'sub12 1', 'sub12 2', 'sub22', 'sub_1']
-  >>> subs = registry.subscriptions([IR2], IP2)
-  >>> subs.sort()
-  >>> subs
+  >>> registry.subscriptions([IR2], IP1)
+  ['sub_1', 'sub12 1', 'sub12 2', 'sub11', 'sub22']
+  >>> registry.subscriptions([IR2], IP2)
   ['sub12 1', 'sub12 2', 'sub22']
 
 Subscriptions can be on multiple specifications::
@@ -450,10 +464,8 @@ specify None for the first required interface, to specify a default::
   >>> registry.subscribe([None, IQ], IP2, 'sub_q2')
   >>> registry.subscriptions([IS, IQ], IP2)
   ['sub_q2']
-  >>> subs = registry.subscriptions([IR1, IQ], IP2)
-  >>> subs.sort()
-  >>> subs
-  ['sub1q2', 'sub_q2']
+  >>> registry.subscriptions([IR1, IQ], IP2)
+  ['sub_q2', 'sub1q2']
 
 You can have subscriptions that are indepenent of any specifications::
   
@@ -464,12 +476,27 @@ You can have subscriptions that are indepenent of any specifications::
   >>> registry.subscriptions([], IP1)
   ['sub2']
   >>> registry.subscribe([], IP1, 'sub1')
-  >>> subs = registry.subscriptions([], IP1)
-  >>> subs.sort()
-  >>> subs
-  ['sub1', 'sub2']
+  >>> registry.subscriptions([], IP1)
+  ['sub2', 'sub1']
   >>> registry.subscriptions([], IP2)
   ['sub2']
+
+Unregistering subscribers
+-------------------------
+
+We can unregister subscribers.  When unregistering a subscriber, we
+can unregister a specific subscriber:
+
+  >>> registry.unsubscribe([IR1], IP1, 'sub11')
+  >>> registry.subscriptions([IR1], IP1)
+  ['sub_1', 'sub12 1', 'sub12 2']
+
+If we don't specify a value, then all subscribers matching the given
+interfaces will be unsubscribed:
+
+  >>> registry.unsubscribe([IR1], IP2)
+  >>> registry.subscriptions([IR1], IP1)
+  ['sub_1']
 
 
 Subscription adapters
