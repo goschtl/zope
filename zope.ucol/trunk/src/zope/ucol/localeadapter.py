@@ -37,5 +37,5 @@ $Id$
 from zope.ucol import Collator
 
 def LocaleCollator(locale):
-    return Collator(locale.getLocaleID())
+    return Collator(str(locale.getLocaleID()))
     
