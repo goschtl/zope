@@ -145,6 +145,7 @@ initialization process.
     ...        class='zope.generic.type.api.Object'
     ...        input='example.IArticleInitializationConfiguration'
     ...        operations='example.articleInitializer'
+    ...        storeInput='True'
     ...    />
     ...    <information
     ...        keyface='example.ITextConfig'

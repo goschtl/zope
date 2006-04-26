@@ -22,7 +22,6 @@ from persistent import Persistent
 from persistent import IPersistent
 from persistent.dict import PersistentDict
 
-from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import directlyProvides
 from zope.interface import implements
 from zope.interface.interfaces import IMethod

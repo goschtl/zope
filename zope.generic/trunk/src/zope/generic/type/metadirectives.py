@@ -19,12 +19,9 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.app.security.fields import Permission
 from zope.configuration.fields import Bool
-from zope.configuration.fields import GlobalInterface
-from zope.configuration.fields import GlobalObject
-from zope.interface import Interface
 
+from zope.generic.adapter.metadirectives import IOthersAdapterDirective
 from zope.generic.factory.metadirectives import IBaseFactoryDirective
 from zope.generic.informationprovider.metadirectives import IBaseInformationProviderDirective
 from zope.generic.operation.metadirectives import IBaseOperationDirective
@@ -42,34 +39,22 @@ class ITypeDirective(IBaseInformationProviderDirective):
 class IFactorySubdirective(IBaseFactoryDirective, IBaseOperationDirective):
     """Provide an factory for the type."""
 
-
-
-class IConfigurationAdapterSubdirective(Interface):
-    """Provide an adapter to a certain configuration."""
-
-    keyface = GlobalInterface(
-        title=_('Configuration Key Interface3'),
-        description=_('Configuration interface defining adapter interface.'),
-        required=True
-        )
-
-    class_ = GlobalObject(
-        title=_('Adapter class'),
-        description=_('If not declared a generic implementation will be used.'),
-        required=False
-        )
-
-    writePermission = Permission(
-        title=_('Write Permission'),
-        description=_('Specifies the permission by id that will be required ' +
-            ' to mutate the attributes and methods specified.'),
+    providesKeyface = Bool(
+        title=_('Provides Keyface'),
+        description=_('If the class does not implement the key interface '
+                      'directly provide it to the instances '
+                      'before initalization.'),
         required=False,
+        default=True
         )
 
-    readPermission = Permission(
-        title=_('Read Permission'),
-        description=_('Specifies the permission by id that will be required ' +
-            ' to accessthe attributes and methods specified.'),
+
+class IAdapterSubdirective(IOthersAdapterDirective):
+    """Provide an adapter for the key interface."""
+
+    acquire = Bool(
+        title=_('Acquire Type Information'),
+        description=_('If selected the type information are invoked.'),
         required=False,
+        default=False
         )
-

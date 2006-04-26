@@ -23,7 +23,7 @@ from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.interface import alsoProvides
 
-from zope.generic.configuration.api import argumentsToConfiguration
+from zope.generic.configuration.api import parameterToConfiguration
 from zope.generic.configuration.api import configuratonToDict
 from zope.generic.directlyprovides.api import updateDirectlyProvided
 from zope.generic.informationprovider.api import getInformationProvider
@@ -235,7 +235,7 @@ class Factory(factory.Factory, Keyface):
         config = self.__config
         mode = self.__mode
         if config and config.input:
-            new_kws = configuratonToDict(argumentsToConfiguration(config.input, *pos, **kws), all=True)
+            new_kws = configuratonToDict(parameterToConfiguration(config.input, *pos, **kws), all=True)
             instance = self._callable(**new_kws)
         
         elif not pos and not kws:
@@ -263,7 +263,7 @@ class Factory(factory.Factory, Keyface):
         if self.__storeInput and config:
             input = config.input
             if input:
-                configuration = argumentsToConfiguration(input, *pos, **kws)
+                configuration = parameterToConfiguration(input, *pos, **kws)
                 provideInformation(instance, input, configuration)
 
         # invoke initializer operations

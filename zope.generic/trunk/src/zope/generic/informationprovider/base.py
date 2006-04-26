@@ -21,7 +21,6 @@ __docformat__ = 'restructuredtext'
 from zope.app.annotation import IAnnotations
 from zope.app.annotation import IAttributeAnnotatable
 from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import alsoProvides
 from zope.interface import implements
 

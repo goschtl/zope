@@ -29,7 +29,6 @@ from zope.app import folder
 
 from zope.generic.directlyprovides.api import provides
 from zope.generic.directlyprovides.api import UpdateProvides
-from zope.generic.directlyprovides.api import updateDirectlyProvided
 
 from zope.generic.type import IGenericTyped
 

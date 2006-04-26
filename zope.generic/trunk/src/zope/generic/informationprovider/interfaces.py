@@ -18,7 +18,6 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import alsoProvides
 
 from zope.generic.keyface import IKeyfaceType

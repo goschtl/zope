@@ -21,8 +21,8 @@
           />
 
       <meta:subdirective
-          name="configurationAdapter"
-          schema=".metadirectives.IConfigurationAdapterSubdirective"
+          name="adapter"
+          schema=".metadirectives.IAdapterSubdirective"
           />
 
     </meta:complexDirective>

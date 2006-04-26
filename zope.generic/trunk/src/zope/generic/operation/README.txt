@@ -26,11 +26,11 @@ output-declaration and a corresponding handler.
     ...    """A possible output declaration for any operation."""
     ...    b = TextLine()
 
-    >>> from zope.generic.configuration.api import argumentsToConfiguration
+    >>> from zope.generic.configuration.api import parameterToConfiguration
     >>> from zope.generic.configuration.api import ConfigurationData
 
     >>> def anyOperation(context, *pos, **kws):
-    ...     input = argumentsToConfiguration(IAnyInput, *pos, **kws)
+    ...     input = parameterToConfiguration(IAnyInput, *pos, **kws)
     ...     print 'Any input: a=%s, b=%s, c=%s.' % (input.a, input.b, input.c)
     ...     print 'Operate on *%s*.' % context
     ...     return ConfigurationData(IAnyOutput, {'b': u'b operated'})
@@ -119,7 +119,7 @@ For this example we provide a few other example operations:
 
     >>> def setupPAUOperation(context, *pos, **kws):
     ...     print 'Public operation: setupPAUOperation'
-    ...     input = argumentsToConfiguration(IPAUConfig, *pos, **kws)
+    ...     input = parameterToConfiguration(IPAUConfig, *pos, **kws)
     ...     print 'Pau input: a=%s.' % (input.a)
 
     >>> registerDirective('''
@@ -181,7 +181,7 @@ avoid the return value of the any-operation:
 
     >>> def inputToConfigurations(context, *pos, **kws):
     ...    print 'Private operation: inputToConfigurations'
-    ...    input = argumentsToConfiguration(IComplexConfig, *pos, **kws)
+    ...    input = parameterToConfiguration(IComplexConfig, *pos, **kws)
     ...    provideInformation(context, IAnyInput, {'a': input.any})
     ...    provideInformation(context, IPAUConfig, {'a': input.pau})
 

@@ -23,7 +23,7 @@ from zope.schema.fieldproperty import FieldProperty
 
 from zope.generic.keyface import IAttributeKeyfaced
 from zope.generic.keyface.api import Keyface
-from zope.generic.configuration.api import argumentsToConfiguration
+from zope.generic.configuration.api import parameterToConfiguration
 
 from zope.generic.operation import IOperation
 from zope.generic.operation import IPrivateOperation
@@ -64,7 +64,7 @@ class OperationPipe(Operation):
 
     def __call__(self, context, *pos, **kws):
         """Invoke operation in the listed order."""
-        last_output = argumentsToConfiguration(self._input, *pos, **kws)
+        last_output = parameterToConfiguration(self._input, *pos, **kws)
         for operation in self._operations:
             if last_output is not None:
                 last_output = operation(context, last_output)

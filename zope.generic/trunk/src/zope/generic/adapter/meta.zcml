@@ -5,9 +5,9 @@
   <meta:directives namespace="http://namespaces.zope.org/generic">
 
     <meta:directive
-        name="configurationAdapter"
-        schema=".metadirectives.IConfigurationAdapterDirective"
-        handler=".metaconfigure.configurationAdapterDirective"
+        name="adapter"
+        schema=".metadirectives.IAdapterDirective"
+        handler=".metaconfigure.adapterDirective"
         />
 
   </meta:directives>

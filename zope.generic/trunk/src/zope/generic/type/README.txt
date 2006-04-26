@@ -50,8 +50,8 @@ In our example we will use a simple generic object:
     ...     keyface="example.IFooMarker"
     ...     label='Foo Type' hint='Bla bla bla.'
     ...     >
-    ...    <factory
-    ...        class='zope.generic.type.api.Object' />
+    ...    <factory class='zope.generic.type.api.Object'
+    ...        />
     ... </generic:type>
     ... ''')
 
@@ -163,14 +163,16 @@ After all we register our component using the type directive:
     ...        class='zope.generic.type.api.Object'
     ...        input='example.IOtherConfiguration'
     ...        operations='example.barInitializer'
-    ...    />
+    ...        storeInput='True'
+    ...        />
     ...	   <information
     ...	       keyface='example.IAnyConfiguration'
     ...        configuration='example.typedata'
-    ...	   />
-    ...    <configurationAdapter
-    ...        keyface='example.IAnyConfiguration'
-    ...       />
+    ...	       />
+    ...    <adapter
+    ...        provides='example.IAnyConfiguration'
+    ...        acquire='True'
+    ...        />
     ... </generic:type>
     ... ''')
 

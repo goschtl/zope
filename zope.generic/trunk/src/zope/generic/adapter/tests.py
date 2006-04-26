@@ -20,19 +20,24 @@ import unittest
 
 from zope import component
 from zope import interface
-from zope import schema
 from zope.testing import doctest
 
-
-from zope.generic.type import api
-from zope.generic.type import testing
 from zope.generic.testing.testing import registerDirective
 
+from zope.generic.adapter import api
+from zope.generic.adapter import testing
+
+
+###############################################################################
+#
+# Unit tests  
+#
+###############################################################################
 
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocFileSuite('README.txt',
+        doctest.DocTestSuite('zope.generic.adapter.adapter',
                              setUp=testing.placelesssetup.setUp,
                              tearDown=testing.placelesssetup.tearDown,
                              globs={'component': component, 'interface': interface,
@@ -40,11 +45,11 @@ def test_suite():
                              'testing': testing, 'api': api},
                              optionflags=doctest.NORMALIZE_WHITESPACE+
                                             doctest.ELLIPSIS),
-        doctest.DocFileSuite('EXAMPLE.txt',
+        doctest.DocFileSuite('README.txt',
                              setUp=testing.placelesssetup.setUp,
                              tearDown=testing.placelesssetup.tearDown,
                              globs={'component': component, 'interface': interface,
-                             'schema': schema, 'registerDirective': registerDirective,
+                             'registerDirective': registerDirective,
                              'testing': testing, 'api': api},
                              optionflags=doctest.NORMALIZE_WHITESPACE+
                                             doctest.ELLIPSIS),

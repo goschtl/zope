@@ -21,7 +21,6 @@ __docformat__ = 'restructuredtext'
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import implements
 
-from zope.generic.keyface import IAttributeKeyfaced
 from zope.generic.keyface import IKeyface
 from zope.generic.keyface import IKeyfaceDescription
 

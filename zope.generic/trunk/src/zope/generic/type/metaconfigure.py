@@ -18,58 +18,14 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from types import ModuleType
+from zope.configuration.exceptions import ConfigurationError
 
-from zope.app.component.contentdirective import ClassDirective
-from zope.app.component.metaconfigure import adapter
-
-from zope.generic.configuration.api import ConfigurationAdapterClass
-from zope.generic.configuration.api import ConfigurationAdapterProperty
+from zope.generic.adapter.metaconfigure import adapterDirective
 from zope.generic.factory.metaconfigure import factoryDirective
-from zope.generic.informationprovider.api import provideInformation
 from zope.generic.informationprovider.metaconfigure import InformationProviderDirective
 
 from zope.generic.type import ITypeInformation
 from zope.generic.type import ITypeType
-from zope.generic.type.helper import queryTypeConfiguration
-from zope.generic.type.helper import queryTypeInformation
-
-
-
-def provideTypeConfiguration(keyface, configuration, data):
-    """Set configuration data into the context."""
-
-    info = queryTypeInformation(keyface)
-    provideInformation(info, configuration, data)
-
-
-
-_marker = object()
-
-class _TypeConfigurationAdapterProperty(ConfigurationAdapterProperty):
-    """Lookup type informations."""
-
-    def __get__(self, inst, klass):
-        if inst is None:
-            return self
-
-        configurations = inst.__configurations__
-        keyface = inst.__keyface__
-        context = inst.__context__
-
-        configuration = inst.__keyface__(configurations, None)
-        if configuration is None:
-            # Try to evaluate a type configuration
-            configuration = queryTypeConfiguration(context, keyface)
-
-        value = getattr(configuration, self._name, _marker)
-        if value is _marker:
-            field = self._field.bind(inst)
-            value = getattr(field, 'default', _marker)
-            if value is _marker:
-                raise AttributeError(self._name)
-
-        return value
 
 
 
@@ -86,29 +42,24 @@ class TypeDirective(InformationProviderDirective):
         super(TypeDirective, self).__init__(_context, keyface, registry, label, hint)
 
     def factory(self, _context, class_, operations=(), input=None,
-                providesKeyface=True, notifyCreated=True, storeInput=True):
+                providesKeyface=True, notifyCreated=False, storeInput=False):
         """Add factory."""
         factoryDirective(_context, self._keyface, class_, None, operations, input,
                      providesKeyface, notifyCreated, storeInput,
                      self._label, self._hint)
 
 
-    def configurationAdapter(self, _context, keyface, class_=None, writePermission=None, readPermission=None):
-        """Provide a generic configuration adatper."""
+    def adapter(self, _context, provides, class_=None, writePermission=None, 
+                readPermission=None, attributes=None, set_attributes=None, 
+                key=None, informationProviders=None, acquire=False):
+        """Provide a generic adatper for the key interface."""
+        
+        if informationProviders and acquire:
+            raise ConfigurationError('Use informationsProviders or acquire attriubte.')
 
-        # we will provide a generic adapter class
-        if class_ is None:
-            class_ = ConfigurationAdapterClass(keyface, (), _TypeConfigurationAdapterProperty)
+        if acquire:
+            informationProviders = [ITypeInformation]
 
-        # register class
-        class_directive = ClassDirective(_context, class_)
-        if writePermission:
-            class_directive.require(_context, permission=writePermission, set_schema=[keyface])
-
-        if readPermission:
-            class_directive.require(_context, permission=readPermission, interface=[keyface])
-
-        # register adapter
-        adapter(self._context, factory=[class_], provides=keyface, 
-                for_=[self._keyface], permission=None, name='', trusted=True, 
-                locate=False)
+        adapterDirective(_context, provides, [self._keyface], class_, 
+                     writePermission, readPermission, attributes,
+                     set_attributes, key, informationProviders,)

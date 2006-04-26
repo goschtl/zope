@@ -82,8 +82,8 @@ class IInformationSubdirective(Interface):
         )
 
     key = DottedName(
-        title=_('Interface'),
-        description=_('Interface referencing a configuraiton.'),
+        title=_('Annotation key'),
+        description=_('Annotation key referencing an annotation.'),
         required=False
         )
 

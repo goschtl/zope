@@ -105,7 +105,7 @@ def requiredInOrder(configuration):
 
 
 
-def argumentsToConfiguration(__keyface__, *pos, **kws):
+def parameterToConfiguration(__keyface__, *pos, **kws):
     """Create configuration data
 
     The generic signature *pos, **kws can will be resolved into a configuration.
@@ -121,53 +121,53 @@ def argumentsToConfiguration(__keyface__, *pos, **kws):
 
     A: No arguments does not satisfy the configuration:
 
-        >>> argumentsToConfiguration(IAnyConfiguration)
+        >>> parameterToConfiguration(IAnyConfiguration)
         Traceback (most recent call last):
         ...
         TypeError: __init__ requires 'a, d' of 'IAnyConfiguration'.
 
     B: Provide the required as positionals:
 
-        >>> config = argumentsToConfiguration(IAnyConfiguration, u'a bla', u'd bla')
+        >>> config = parameterToConfiguration(IAnyConfiguration, u'a bla', u'd bla')
         >>> config.a, config.b, config.c, config.d
         (u'a bla', None, u'c default', u'd bla')
 
     C: Provide the required as positional and keyword:
 
-        >>> config = argumentsToConfiguration(IAnyConfiguration, u'a bla', d=u'd bla')
+        >>> config = parameterToConfiguration(IAnyConfiguration, u'a bla', d=u'd bla')
         >>> config.a, config.b, config.c, config.d
         (u'a bla', None, u'c default', u'd bla')
 
     D: Provide all required as keyword:
 
-        >>> config = argumentsToConfiguration(IAnyConfiguration, d=u'd bla', c=u'c bla', a=u'a bla')
+        >>> config = parameterToConfiguration(IAnyConfiguration, d=u'd bla', c=u'c bla', a=u'a bla')
         >>> config.a, config.b, config.c, config.d
         (u'a bla', None, u'c bla', u'd bla')
 
     E: You can also use an existing configuration as input:
 
-        >>> argumentsToConfiguration(IAnyConfiguration, config) == config
+        >>> parameterToConfiguration(IAnyConfiguration, config) == config
         True
 
 
     F: Provide the required as positional and keyword, do not messup the order otherwise
     a duplacted arguments error could occur:
 
-        >>> config = argumentsToConfiguration(IAnyConfiguration, u'a bla', d=u'd bla', c=u'c bla')
+        >>> config = parameterToConfiguration(IAnyConfiguration, u'a bla', d=u'd bla', c=u'c bla')
         >>> config.a, config.b, config.c, config.d
         (u'a bla', None, u'c bla', u'd bla')
 
-        >>> argumentsToConfiguration(IAnyConfiguration, u'd bla', a=u'd bla', c=u'c bla')
+        >>> parameterToConfiguration(IAnyConfiguration, u'd bla', a=u'd bla', c=u'c bla')
         Traceback (most recent call last):
         ...
         AttributeError: Duplicated arguments: a.
 
     G: Sometimes no arguments are allowed. This use case is indicated by a None key interface:
 
-        >>> argumentsToConfiguration(None) is None
+        >>> parameterToConfiguration(None) is None
         True
 
-        >>> argumentsToConfiguration(None, 'not allowed parameter')
+        >>> parameterToConfiguration(None, 'not allowed parameter')
         Traceback (most recent call last):
         ...
         AttributeError: No arguments allowed.
