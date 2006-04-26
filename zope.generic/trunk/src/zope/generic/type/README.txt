@@ -147,10 +147,16 @@ Then we provide two example configurations for our example:
 	>>> IAnyConfiguration.providedBy(typedata)
 	True
 
-We can provide a specific intializer:
+We can provide a specific intializer handler:
 
 	>>> def barInitializer(context, *pos, **kws):
 	...		print 'Initializing ...'
+
+Additionaly we can add other operation base object event handlers:
+
+    >>> def objectEventHandler(context, event):
+    ...        print 'Guguseli from object event.'
+
 
 After all we register our component using the type directive:
 
@@ -172,6 +178,10 @@ After all we register our component using the type directive:
     ...    <adapter
     ...        provides='example.IAnyConfiguration'
     ...        acquire='True'
+    ...        />
+    ...    <handler
+    ...        event='zope.app.event.interfaces.IObjectEvent'
+    ...        operations='example.objectEventHandler'
     ...        />
     ... </generic:type>
     ... ''')
@@ -252,3 +262,15 @@ the type configuration, but only the object's configuration can be set:
     >>> IAnyConfiguration(bar).any = u'Guguseli from Object another time!'
     >>> IAnyConfiguration(bar).any
     u'Guguseli from Object another time!'
+
+Now we like to invoke an type-specific event handler:
+
+    >>> from zope.app.event.interfaces import IObjectEvent
+    >>> from zope.app.event.objectevent import ObjectEvent
+    >>> from zope.event import notify
+
+    >>> event = ObjectEvent(bar)
+    >>> notify(event)
+    Guguseli from object event.
+    
+    >>> notify(ObjectEvent(object()))

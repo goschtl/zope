@@ -25,6 +25,11 @@
           schema=".metadirectives.IAdapterSubdirective"
           />
 
+      <meta:subdirective
+          name="handler"
+          schema=".metadirectives.IHandlerSubdirective"
+          />
+
     </meta:complexDirective>
 
   </meta:directives>

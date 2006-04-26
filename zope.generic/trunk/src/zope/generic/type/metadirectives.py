@@ -24,6 +24,7 @@ from zope.configuration.fields import Bool
 from zope.generic.adapter.metadirectives import IOthersAdapterDirective
 from zope.generic.factory.metadirectives import IBaseFactoryDirective
 from zope.generic.informationprovider.metadirectives import IBaseInformationProviderDirective
+from zope.generic.handler.metadirectives import IBaseHandlerDirective
 from zope.generic.operation.metadirectives import IBaseOperationDirective
 
     
@@ -58,3 +59,6 @@ class IAdapterSubdirective(IOthersAdapterDirective):
         required=False,
         default=False
         )
+
+class IHandlerSubdirective(IBaseHandlerDirective, IBaseOperationDirective):
+    """Provide object event handler for the keyface."""

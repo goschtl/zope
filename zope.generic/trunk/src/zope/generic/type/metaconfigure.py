@@ -23,6 +23,7 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.generic.adapter.metaconfigure import adapterDirective
 from zope.generic.factory.metaconfigure import factoryDirective
 from zope.generic.informationprovider.metaconfigure import InformationProviderDirective
+from zope.generic.handler.metaconfigure import handlerDirective
 
 from zope.generic.type import ITypeInformation
 from zope.generic.type import ITypeType
@@ -63,3 +64,7 @@ class TypeDirective(InformationProviderDirective):
         adapterDirective(_context, provides, [self._keyface], class_, 
                      writePermission, readPermission, attributes,
                      set_attributes, key, informationProviders,)
+
+    def handler(self, _context, event, operations=(), input=None):
+        """Provide a object event handler."""
+        handlerDirective(_context, self._keyface, event, operations, input)

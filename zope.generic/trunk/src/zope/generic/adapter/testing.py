@@ -20,8 +20,6 @@ __docformat__ = 'restructuredtext'
 
 import zope.app.testing.placelesssetup
 from zope.configuration.xmlconfig import XMLConfig
-from zope.interface import Interface
-from zope.schema import TextLine
 
 import zope.generic.adapter.testing
 import zope.generic.configuration.testing
@@ -34,32 +32,6 @@ import zope.generic.testing.testing
 # Public Test implementations
 #
 ################################################################################
-
-class IMarker(Interface):
-    """Demo marker."""
-
-
-class IBarConfiguration(Interface):
-
-    bar = TextLine(title=u'Bar')
-
-
-class IInputConfiguration(Interface):
-
-    foo = TextLine(title=u'Foo')
-
-    bar = TextLine(title=u'Bar')
-
-
-class IFooConfiguration(Interface):
-
-    foo = TextLine(title=u'Foo')
-    
-    fo = TextLine(title=u'Fo', required=False, readonly=True, default=u'fo default')
-
-
-class TestKeyfaceAttriute(object):
-    __keyface__ = IFooConfiguration
 
 
 ################################################################################

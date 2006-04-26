@@ -18,17 +18,13 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+import zope.app.testing.placelesssetup
 from zope.configuration.xmlconfig import XMLConfig
 
-import zope.app.testing.placelesssetup
-
-import zope.generic.adapter.testing
+import zope.generic.handler.testing
 import zope.generic.configuration.testing
 import zope.generic.directlyprovides.testing
-import zope.generic.factory.testing
-import zope.generic.handler.testing
 import zope.generic.keyface.testing
-import zope.generic.operation.testing
 import zope.generic.testing.testing
 
 ################################################################################
@@ -36,9 +32,6 @@ import zope.generic.testing.testing
 # Public Test implementations
 #
 ################################################################################
-
-def testInitializer(context, *pos, **kws):
-    print context, pos, kws
 
 
 
@@ -51,8 +44,8 @@ def testInitializer(context, *pos, **kws):
 # specific tests
 def setUp(doctest=None):
     # register the directive of this package
-    import zope.generic.type
-    XMLConfig('meta.zcml', zope.generic.type)()
+    import zope.generic.handler
+    XMLConfig('meta.zcml', zope.generic.handler)()
 
 def tearDown(doctest=None):
     pass
@@ -68,9 +61,6 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         zope.generic.directlyprovides.testing.setUp(doctest)
         zope.generic.keyface.testing.setUp(doctest)
         zope.generic.configuration.testing.setUp(doctest)
-        zope.generic.operation.testing.setUp(doctest)
-        zope.generic.factory.testing.setUp(doctest)
-        zope.generic.adapter.testing.setUp(doctest)
         zope.generic.handler.testing.setUp(doctest)
         # internal setup
         setUp(doctest)
@@ -80,9 +70,6 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         tearDown(doctest)
         # external teardown
         zope.generic.handler.testing.tearDown(doctest)
-        zope.generic.adapter.testing.tearDown(doctest)
-        zope.generic.factory.testing.tearDown(doctest)
-        zope.generic.operation.testing.tearDown(doctest)
         zope.generic.configuration.testing.tearDown(doctest)
         zope.generic.keyface.testing.tearDown(doctest)
         zope.generic.directlyprovides.testing.tearDown(doctest)

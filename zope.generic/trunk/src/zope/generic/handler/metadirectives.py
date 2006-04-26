@@ -22,24 +22,20 @@ from zope.app.i18n import ZopeMessageFactory as _
 from zope.configuration.fields import GlobalInterface
 from zope.interface import Interface
 
+from zope.generic.keyface.metadirectives import IBaseKeyfaceDirective
+from zope.generic.operation.metadirectives import IBaseOperationDirective
 
-class IBaseKeyfaceDirective(Interface):
-    """Base keyface directive."""
 
-    keyface = GlobalInterface(
-        title=_('Key Interface'),
-        description=_('Interface that represents an information key.'),
+
+class IBaseHandlerDirective(Interface):
+    """Base handler directive."""
+
+    event = GlobalInterface(
+        title=_('Event'),
+        description=_('The event to be listened.'),
         required=True
         )
 
 
-class IKeyFaceDirective(IBaseKeyfaceDirective):
-    """Keyface directive."""
-
-    type = GlobalInterface(
-        title=_('Key Interface Type'),
-        description=_('Type a key interface by an interface derived from ' +
-                      'IKeyfaceType. If no type provided the interface will ' +
-                      'marked by IKeyfaceType.'),
-        required=False
-        )
+class IHandlerDirective(IBaseKeyfaceDirective, IBaseHandlerDirective, IBaseOperationDirective):
+    """Provide trusted locatable handler that invoke operations."""
