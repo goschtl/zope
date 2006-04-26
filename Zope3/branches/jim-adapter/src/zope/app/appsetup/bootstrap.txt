@@ -24,7 +24,7 @@ The subscriber makes ure that there is a root folder:
 
 A DatabaseOpenedWithRoot is generated with the database.
 
-    >>> from zope.component.testing import getEvents
+    >>> from zope.component.eventtesting import getEvents
     >>> [event] = getEvents(interfaces.IDatabaseOpenedWithRootEvent)
     >>> event.database is db
     True

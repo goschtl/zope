@@ -27,6 +27,10 @@ from zope.component.interfaces import IComponentArchitecture
 from zope.component.interfaces import IComponentLookup
 from zope.component.testing import setUp, tearDown
 
+# side effect gets component-based event dispatcher installed.
+# we should obviously make this more explicit
+import zope.component.event
+
 import zope.deferredimport
 zope.deferredimport.deprecated(
     "Use zope.component.testing.placelesssetup",

@@ -79,7 +79,7 @@ def test_BuddyRename():
 
     There should be an ObjectModifiedEvent event logged:
 
-      >>> from zope.component.testing import getEvents
+      >>> from zope.component.eventtesting import getEvents
       >>> from zope.lifecycleevent.interfaces \
       ...      import IObjectModifiedEvent
       >>> [event] = getEvents(IObjectModifiedEvent)

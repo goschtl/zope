@@ -26,7 +26,7 @@ from zope.security.management import newInteraction, endInteraction
 from zope.security.interfaces import IPermission
 from zope.security.permission import Permission
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.component.testing import events, clearEvents
+from zope.component.eventtesting import events, clearEvents
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.workflow.interfaces import IProcessDefinition

@@ -15,41 +15,12 @@
 
 $Id$
 """
-from zope.component import provideHandler
-from zope.component.event import objectEventNotify
-from zope.component.registry import dispatchUtilityRegistrationEvent
-from zope.component.registry import dispatchAdapterRegistrationEvent
-from zope.component.registry import (
-    dispatchSubscriptionAdapterRegistrationEvent)
-from zope.component.registry import dispatchHandlerRegistrationEvent
-from zope.testing import cleanup
 
-events = []
-def getEvents(event_type=None, filter=None):
-    r = []
-    for event in events:
-        if event_type is not None and not event_type.providedBy(event):
-            continue
-        if filter is not None and not filter(event):
-            continue
-        r.append(event)
+# HACK to make sure basicmost event subscriber is installed
+import zope.component.event
 
-    return r
-
-def clearEvents():
-    del events[:]
-cleanup.addCleanUp(clearEvents)
-
-class PlacelessSetup(cleanup.CleanUp):
-
-    def setUp(self):
-        super(PlacelessSetup, self).setUp()
-        provideHandler(events.append, (None,))
-        provideHandler(objectEventNotify)
-        provideHandler(dispatchUtilityRegistrationEvent)
-        provideHandler(dispatchAdapterRegistrationEvent)
-        provideHandler(dispatchSubscriptionAdapterRegistrationEvent)
-        provideHandler(dispatchHandlerRegistrationEvent)
+# we really don't need special setup now:
+from zope.testing.cleanup import CleanUp as PlacelessSetup
 
 def setUp(test=None):
     PlacelessSetup().setUp()

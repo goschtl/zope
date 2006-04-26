@@ -26,6 +26,7 @@ import zope.traversing.interfaces
 import zope.annotation.interfaces
 import zope.annotation.attribute
 import zope.component.testing
+import zope.component.eventtesting
 from zope import interface
 from zope.testing import doctest, module
 
@@ -36,6 +37,7 @@ name = 'zope.app.versioncontrol.README'
 
 def setUp(test):
     zope.component.testing.setUp(test)
+    zope.component.eventtesting.setUp(test)
     module.setUp(test, name)
 
 def tearDown(test):

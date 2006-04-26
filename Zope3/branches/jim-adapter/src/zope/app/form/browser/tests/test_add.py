@@ -27,7 +27,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.schema import TextLine, accessors
 from zope.security.checker import CheckerPublic
-from zope.component.testing import getEvents
+from zope.component.eventtesting import getEvents
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
 
 from zope.app.component.site import SiteManagerAdapter

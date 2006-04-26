@@ -22,7 +22,7 @@ import unittest
 from zope.testing import doctest
 from zope.interface import implements
 from zope.component import provideUtility, provideAdapter
-from zope.component.testing import getEvents, clearEvents
+from zope.component.eventtesting import getEvents, clearEvents
 from zope.publisher.interfaces import IRequest
 from zope.publisher.tests.httprequest import TestRequest
 

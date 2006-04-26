@@ -22,7 +22,7 @@ from zope.publisher.browser import TestRequest
 from zope.schema import TextLine, accessors
 from zope.schema.interfaces import ITextLine
 from zope.component.interfaces import ComponentLookupError
-from zope.component.testing import getEvents, clearEvents
+from zope.component.eventtesting import getEvents, clearEvents
 from zope.location.interfaces import ILocation
 
 from zope.app.testing import ztapi
