@@ -162,20 +162,18 @@ def parameterToConfiguration(__keyface__, *pos, **kws):
         ...
         AttributeError: Duplicated arguments: a.
 
-    G: Sometimes no arguments are allowed. This use case is indicated by a None key interface:
+    G: Sometimes any parameters are allowed. This use case is indicated by a None key interface:
 
         >>> parameterToConfiguration(None) is None
         True
 
         >>> parameterToConfiguration(None, 'not allowed parameter')
-        Traceback (most recent call last):
-        ...
-        AttributeError: No arguments allowed.
+
     """
     # no arguments declared
     if __keyface__ is None:
-        if pos or kws:
-            raise AttributeError('No arguments allowed.')
+#        if pos or kws:
+#            raise AttributeError('No arguments allowed.')
 
         return None
 

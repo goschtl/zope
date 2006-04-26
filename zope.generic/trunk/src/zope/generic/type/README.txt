@@ -150,12 +150,12 @@ Then we provide two example configurations for our example:
 We can provide a specific intializer handler:
 
 	>>> def barInitializer(context, *pos, **kws):
-	...		print 'Initializing ...'
+	...		print 'Initializing bar'
 
 Additionaly we can add other operation base object event handlers:
 
     >>> def objectEventHandler(context, event):
-    ...        print 'Guguseli from object event.'
+    ...     print 'Guguseli from object event.'
 
 
 After all we register our component using the type directive:
@@ -198,8 +198,9 @@ If we do not satify the declaration an KeyError is raised:
 	...
 	TypeError: __init__ requires 'other' of 'IOtherConfiguration'.
 
-	>>> bar = api.createObject(IBarMarker, other=u'Specific initialization data.')
-	Initializing ...
+    >>> bar = api.createObject(IBarMarker, other=u'Specific initialization data.')
+    Guguseli from object event.
+    Initializing bar
 
 This registration attached the specific configuration to the type information.
 You can retrieve type information by a typed instance or the marker type itself
