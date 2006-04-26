@@ -936,7 +936,8 @@ being dispatched to by the object-event dispatcher:
 
     >>> from zope import component
     >>> import zope.component.event
-    >>> zope.component.provideHandler(zope.component.event.objectEventNotify)
+    >>> zope.component.getGlobalSiteManager().registerHandler(
+    ...      zope.component.event.objectEventNotify)
     ... # doctest: +NORMALIZE_WHITESPACE
     Registered event:
     HandlerRegistration(<BaseGlobalComponents base>, 
@@ -950,7 +951,7 @@ handlers are called on 2 objects:
     ...     print 'Double dispatch:'
     ...     print ' ', o1
     ...     print ' ', o2
-    >>> zope.component.provideHandler(double_handler)
+    >>> zope.component.getGlobalSiteManager().registerHandler(double_handler)
     ... # doctest: +NORMALIZE_WHITESPACE
     Double dispatch:
       HandlerRegistration(<BaseGlobalComponents base>, 
@@ -966,25 +967,25 @@ In the example above, the double_handler reported it's own registration. :)
 
 Now we'll register our handlers:
 
-    >>> zope.component.provideHandler(
+    >>> zope.component.getGlobalSiteManager().registerHandler(
     ...     registry.dispatchUtilityRegistrationEvent)
     ... # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     Double dispatch:
     ...
 
-    >>> zope.component.provideHandler(
+    >>> zope.component.getGlobalSiteManager().registerHandler(
     ...     registry.dispatchAdapterRegistrationEvent)
     ... # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     Double dispatch:
     ...
 
-    >>> zope.component.provideHandler(
+    >>> zope.component.getGlobalSiteManager().registerHandler(
     ...     registry.dispatchSubscriptionAdapterRegistrationEvent)
     ... # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     Double dispatch:
     ...
 
-    >>> zope.component.provideHandler(
+    >>> zope.component.getGlobalSiteManager().registerHandler(
     ...     registry.dispatchHandlerRegistrationEvent)
     ... # doctest: +NORMALIZE_WHITESPACE
     Double dispatch:

@@ -65,7 +65,8 @@ class Components(object):
         lambda self, bases: self._setBases(bases),
         )
 
-    def registerUtility(self, component, provided=None, name=u'', info=u''):
+    def registerUtility(self, component, provided=None, name=u'', info=u'',
+                        event=True):
         if provided is None:
             provided = _getUtilityProvided(component)
 
@@ -86,9 +87,10 @@ class Components(object):
         if not subscribed:
             self.utilities.subscribe((), provided, component)
 
-        zope.event.notify(interfaces.Registered(
-            UtilityRegistration(self, provided, name, component, info)
-            ))
+        if event:
+            zope.event.notify(interfaces.Registered(
+                UtilityRegistration(self, provided, name, component, info)
+                ))
 
     def unregisterUtility(self, component=None, provided=None, name=u''):
         if provided is None:
@@ -145,18 +147,19 @@ class Components(object):
         return self.utilities.subscriptions((), interface)
 
     def registerAdapter(self, factory, required=None, provided=None, name=u'',
-                        info=u''):
+                        info=u'', event=True):
         if provided is None:
             provided = _getAdapterProvided(factory)
         required = _getAdapterRequired(factory, required)
         self._adapter_registrations[(required, provided, name)
                                     ] = factory, info
         self.adapters.register(required, provided, name, factory)
-        
-        zope.event.notify(interfaces.Registered(
-            AdapterRegistration(self, required, provided, name,
-                                factory, info)
-            ))
+
+        if event:
+            zope.event.notify(interfaces.Registered(
+                AdapterRegistration(self, required, provided, name,
+                                    factory, info)
+                ))
 
 
     def unregisterAdapter(self, factory=None,
@@ -221,7 +224,8 @@ class Components(object):
 
     def registerSubscriptionAdapter(self,
                                     factory, required=None, provided=None,
-                                    name=u'', info=u''):
+                                    name=u'', info=u'',
+                                    event=True):
         if name:
             raise TypeError("Named subscribers are not yet supported")
         if provided is None:
@@ -231,11 +235,12 @@ class Components(object):
             (required, provided, name, factory, info)
             )
         self.adapters.subscribe(required, provided, factory)
-        
-        zope.event.notify(interfaces.Registered(
-            SubscriptionRegistration(self, required, provided, name,
-                                     factory, info)
-            ))
+
+        if event:
+            zope.event.notify(interfaces.Registered(
+                SubscriptionRegistration(self, required, provided, name,
+                                         factory, info)
+                ))
 
     def registeredSubscriptionAdapters(self):
         for data in self._subscription_registrations:
@@ -288,7 +293,8 @@ class Components(object):
 
     def registerHandler(self,
                         factory, required=None,
-                        name=u'', info=u''):
+                        name=u'', info=u'',
+                        event=True):
         if name:
             raise TypeError("Named handlers are not yet supported")
         required = _getAdapterRequired(factory, required)
@@ -297,9 +303,10 @@ class Components(object):
             )
         self.adapters.subscribe(required, None, factory)
         
-        zope.event.notify(interfaces.Registered(
-            HandlerRegistration(self, required, name, factory, info)
-            ))
+        if event:
+            zope.event.notify(interfaces.Registered(
+                HandlerRegistration(self, required, name, factory, info)
+                ))
 
     def registeredHandlers(self):
         for data in self._handler_registrations:
@@ -332,7 +339,7 @@ class Components(object):
         
         self._handler_registrations[:] = new
         self.adapters.unsubscribe(required, None)
-        
+
         zope.event.notify(interfaces.Unregistered(
             HandlerRegistration(self, required, name, factory, '')
             ))

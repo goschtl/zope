@@ -158,14 +158,14 @@ provideSubscriptionAdapter = base.registerSubscriptionAdapter
 provideHandler = base.registerHandler
 
 def provideUtility(component, provides=None, name=u''):
-    base.registerUtility(component, provides, name)
+    base.registerUtility(component, provides, name, event=False)
 
 
 def provideAdapter(factory, adapts=None, provides=None, name=''):
-    base.registerAdapter(factory, adapts, provides, name)
+    base.registerAdapter(factory, adapts, provides, name, event=False)
 
 def provideSubscriptionAdapter(factory, adapts=None, provides=None):
-    base.registerSubscriptionAdapter(factory, adapts, provides)
+    base.registerSubscriptionAdapter(factory, adapts, provides, event=False)
 
 def provideHandler(factory, adapts=None):
-    base.registerHandler(factory, adapts)
+    base.registerHandler(factory, adapts, event=False)
