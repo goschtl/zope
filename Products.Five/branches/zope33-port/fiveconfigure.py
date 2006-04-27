@@ -28,15 +28,15 @@ import Products
 
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
+from zope.component import getUtility
+from zope.component.interface import provideInterface
+from zope.component.zcml import adapter
 from zope.configuration import xmlconfig
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.security.interfaces import IPermission
 
-from zope.app import zapi
-from zope.app.component.interface import provideInterface
-from zope.app.component.metaconfigure import adapter
-from zope.app.security.interfaces import IPermission
-
+from Products.Five import isFiveMethod
 from Products.Five.viewable import Viewable
 from Products.Five.traversable import Traversable
 from Products.Five.bridge import fromZ2Interface
@@ -107,9 +107,6 @@ def implements(_context, class_, interface):
             args = (interface.__module__ + '.' + interface.getName(),
                     interface)
             )
-
-def isFiveMethod(m):
-    return hasattr(m, '__five_method__')
 
 _traversable_monkies = []
 def classTraversable(class_):
@@ -227,7 +224,7 @@ _meta_type_regs = []
 def _registerClass(class_, meta_type, permission, addview, icon, global_):
     setattr(class_, 'meta_type', meta_type)
 
-    permission_obj = zapi.getUtility(IPermission, permission)
+    permission_obj = getUtility(IPermission, permission)
 
     if icon:
         setattr(class_, 'icon', '++resource++%s' % icon)

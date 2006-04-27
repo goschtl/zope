@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004, 2005 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,15 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Provide basic browser functionality
+"""Test skins
 
 $Id$
 """
-import Acquisition
-import zope.publisher.browser
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
-class BrowserView(Acquisition.Explicit, zope.publisher.browser.BrowserView):
-    """Five browser view
-
-    Mixes in explicit acquisition so that security can be acquired for
-    views"""
+class ITestSkin(IDefaultBrowserLayer):
+    pass

@@ -60,7 +60,7 @@ def test_editview():
 
       >>> from Products.Five.tests.testing.simplecontent import ISimpleContent
       >>> class IFooMarker(ISimpleContent): pass
-      >>> from zope.app.component.interface import provideInterface
+      >>> from zope.component.interface import provideInterface
       >>> provideInterface('', IFooMarker)
       >>> view.getAvailableInterfaceNames()
       [...IFooMarker...]

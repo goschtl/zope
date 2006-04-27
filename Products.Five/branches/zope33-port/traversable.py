@@ -19,16 +19,15 @@ from zope.component import getMultiAdapter, ComponentLookupError
 from zope.interface import implements, Interface
 from zope.publisher.interfaces import ILayer
 from zope.publisher.interfaces.browser import IBrowserRequest
-
-from zope.app.traversing.interfaces import ITraverser, ITraversable
-from zope.app.traversing.adapters import DefaultTraversable
-from zope.app.traversing.adapters import traversePathElement
-from zope.app.publication.browser import setDefaultSkin
+from zope.publisher.browser import setDefaultSkin
+from zope.traversing.interfaces import ITraverser, ITraversable
+from zope.traversing.adapters import DefaultTraversable
+from zope.traversing.adapters import traversePathElement
 from zope.app.interface import queryType
 
 import Products.Five.security
+from Products.Five import fivemethod
 from zExceptions import NotFound
-from ZPublisher import xmlrpc
 
 class FakeRequest(dict):
     implements(IBrowserRequest)
@@ -44,6 +43,7 @@ class Traversable:
     """
     __five_traversable__ = True
 
+    @fivemethod
     def __bobo_traverse__(self, REQUEST, name):
         """Hook for Zope 2 traversal
 
@@ -113,9 +113,6 @@ class Traversable:
             pass
 
         raise AttributeError(name)
-
-    __bobo_traverse__.__five_method__ = True
-
 
 class FiveTraversable(DefaultTraversable):
 

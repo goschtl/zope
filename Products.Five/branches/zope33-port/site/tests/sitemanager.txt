@@ -30,8 +30,8 @@ Local vs. global sites
 
 Let's make the possible site a real site:
 
-  >>> from Products.Five.site.localsite import enableLocalSiteHook
-  >>> enableLocalSiteHook(dummysite)
+  >>> from Products.Five.component import enableSite
+  >>> enableSite(dummysite)
 
 and tell Zope 3 about it:
 
@@ -104,7 +104,7 @@ Now let's check for a simple adaption:
 
 Let's get all the adapters for ``adaptable``:
 
-  >>> zapi.getAdapters((adaptable,), IAdapted) #doctest: +ELLIPSIS
+  >>> list(zapi.getAdapters((adaptable,), IAdapted)) #doctest: +ELLIPSIS
   [(u'', <Products.Five.tests.adapters.Adapter instance at ...>)]
 
 
@@ -118,7 +118,7 @@ Let's set up another site to test nested sites:
 
 Now we set the current site to the ``subsite``:
 
-  >>> enableLocalSiteHook(subsite)
+  >>> enableSite(subsite)
   >>> setSite(subsite)
 
 When we call getServices() now, we get the correct site manager:

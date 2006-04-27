@@ -21,17 +21,18 @@ from datetime import datetime
 import Acquisition
 import transaction
 from zope.event import notify
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.location.interfaces import ILocation
+from zope.location import LocationProxy
 from zope.schema.interfaces import ValidationError
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory('zope')
 
-from zope.app.location.interfaces import ILocation
-from zope.app.location import LocationProxy
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.form.browser.submit import Update
 from zope.app.form.interfaces import WidgetsError, MissingInputError
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.form.interfaces import IInputWidget, WidgetsError
-from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
-from zope.app.i18n import ZopeMessageFactory as _
 
 from Products.Five.browser import BrowserView
 from Products.Five.browser.decode import processInputs, setPageEncoding

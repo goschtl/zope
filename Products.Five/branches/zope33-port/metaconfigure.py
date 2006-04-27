@@ -15,13 +15,12 @@
 
 $Id$
 """
+import warnings
 from Products.Five.security import CheckerPublic, protectName
 from Globals import InitializeClass as initializeClass
+import zope.app.component.contentdirective
 
-from zope.app.component.contentdirective import ContentDirective as \
-     zope_app_ContentDirective
-
-class ContentDirective(zope_app_ContentDirective):
+class ClassDirective(zope.app.component.contentdirective.ClassDirective):
         
     def __protectName(self, name, permission_id):
         self.__context.action(
@@ -37,3 +36,13 @@ class ContentDirective(zope_app_ContentDirective):
             callable = initializeClass,
             args = (self.__class,)
             )
+
+# BBB 2006/02/24, to be removed after 12 months
+class ContentDirective(ClassDirective):
+
+    def __init__(self, _context, class_):
+        warnings.warn_explicit(
+            "The 'content' alias for the 'class' directive has been "
+            "deprecated and will be removed in Zope 2.12.\n",
+            DeprecationWarning, _context.info.file, _context.info.line)        
+        super(ContentDirective, self).__init__(_context, class_)

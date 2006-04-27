@@ -17,12 +17,10 @@ $Id$
 """
 from zope.interface import Interface
 from zope.app.publisher.browser.metadirectives import IBasicResourceInformation
-from zope.app.security.fields import Permission
+from zope.security.zcml import Permission
 from zope.configuration.fields import GlobalObject, Tokens, PythonIdentifier
 from zope.configuration.fields import Bool
-from zope.schema import ASCII
-from zope.schema import TextLine
-from zope.schema import BytesLine
+from zope.schema import ASCII, TextLine, BytesLine
 
 class IImplementsDirective(Interface):
     """State that a class implements something.

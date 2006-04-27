@@ -19,15 +19,15 @@ from Acquisition import aq_inner, aq_parent
 from OFS.interfaces import ITraversable
 
 from zope.interface import implements
-from zope.app import zapi
-from zope.app.traversing.browser.interfaces import IAbsoluteURL
+from zope.component import getMultiAdapter
+from zope.traversing.browser.interfaces import IAbsoluteURL
 
 from Products.Five.browser import BrowserView
 
 class AbsoluteURL(BrowserView):
     """An adapter for Zope3-style absolute_url using Zope2 methods
 
-    (original: zope.app.traversing.browser.absoluteurl)
+    (original: zope.traversing.browser.absoluteurl)
     """
     implements(IAbsoluteURL)
 
@@ -52,7 +52,7 @@ class AbsoluteURL(BrowserView):
             return (
                 {'name': name, 'url': context.absolute_url()},)
 
-        view = zapi.getMultiAdapter((container, request), IAbsoluteURL)
+        view = getMultiAdapter((container, request), IAbsoluteURL)
         base = tuple(view.breadcrumbs())
         base += (
             {'name': name, 'url': ("%s/%s" % (base[-1]['url'], name))},)
@@ -72,7 +72,7 @@ class SiteAbsoluteURL(AbsoluteURL):
     This one is just used to stop breadcrumbs from crumbing up
     to the Zope root.
 
-    (original: zope.app.traversing.browser.absoluteurl)
+    (original: zope.traversing.browser.absoluteurl)
     """
 
     def breadcrumbs(self):

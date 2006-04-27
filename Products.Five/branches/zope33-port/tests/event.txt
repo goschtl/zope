@@ -25,9 +25,6 @@ Test setup
 A bit of setup for the tests. Because we'll test copy/paste, we need to
 work inside a database::
 
-  >>> from zope.app.testing.placelesssetup import setUp, tearDown
-  >>> setUp()
-
   >>> import ZODB.tests.util
   >>> db = ZODB.tests.util.DB()
   >>> connection = db.open()
@@ -58,7 +55,7 @@ not for (None, IObjectEvent), and register our subscribers before the
 framework's ones, so ours will be called first. This has the effect that
 printed events will be in their "natural" order::
 
-  >>> from zope.app.event.interfaces import IObjectEvent
+  >>> from zope.component.interfaces import IObjectEvent, IRegistrationEvent
   >>> from zope.app.container.interfaces import IObjectMovedEvent
   >>> from OFS.interfaces import IObjectWillBeMovedEvent
   >>> from OFS.interfaces import IObjectClonedEvent
@@ -68,7 +65,8 @@ printed events will be in their "natural" order::
   >>> def printObjectEventExceptSome(object, event):
   ...     if (IObjectMovedEvent.providedBy(event) or
   ...         IObjectWillBeMovedEvent.providedBy(event) or
-  ...         IObjectClonedEvent.providedBy(event)):
+  ...         IObjectClonedEvent.providedBy(event) or
+  ...         IRegistrationEvent.providedBy(event)):
   ...         return
   ...     print event.__class__.__name__, object.getId()
 
@@ -80,11 +78,12 @@ printed events will be in their "natural" order::
 
 Finally we need to load the subscribers configuration::
 
-  >>> from Products.Five import zcml
-  >>> import Products.Five
-  >>> import zope.app.component
-  >>> zcml.load_config('meta.zcml', zope.app.component)
-  >>> zcml.load_config('event.zcml', Products.Five)
+  >>> import zope.component
+  >>> import OFS.subscribers
+  >>> zope.component.provideAdapter(OFS.subscribers.ObjectManagerSublocations)
+  >>> zope.component.provideHandler(OFS.subscribers.dispatchObjectWillBeMovedEvent)
+  >>> zope.component.provideHandler(OFS.subscribers.dispatchObjectMovedEvent)
+  >>> zope.component.provideHandler(OFS.subscribers.dispatchObjectClonedEvent)
 
 We need at least one fake deprecated method to tell the compatibility
 framework that component architecture is initialized::
@@ -465,4 +464,3 @@ Now cleanup::
 
   >>> import transaction
   >>> transaction.abort()
-  >>> tearDown()

@@ -20,8 +20,9 @@ from zExceptions import NotFound
 from zope.component import ComponentLookupError
 from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.zapi import getDefaultViewName
+from zope.app.publisher.browser import getDefaultViewName
 
+from Products.Five import fivemethod
 from Products.Five.traversable import FakeRequest
 from Products.Five.interfaces import IBrowserDefault
 
@@ -45,6 +46,7 @@ class Viewable:
     #    return self
 
     # we have a default view, tell zpublisher to go there
+    @fivemethod
     def __browser_default__(self, request):
         obj = self
         path = None
@@ -59,11 +61,11 @@ class Viewable:
                 return obj, ('fallback_call__',)
             return obj, path
         return self.__fallback_default__(request)
-    __browser_default__.__five_method__ = True
 
     # this is technically not needed because ZPublisher finds our
     # attribute through __browser_default__; but we also want to be
     # able to call pages from python modules, PythonScripts or ZPT
+    # @fivemethod
     # def __call__(self, *args, **kw):
     #    """ """
     #    request = kw.get('REQUEST')
@@ -77,7 +79,6 @@ class Viewable:
     #        if meth is not None:
     #            return meth(*args, **kw)
     #    return self.fallback_call__(*args, **kw)
-    # __call__.__five_method__ = True
 
 # def simpleRecursion():
 #     # This tests for simple recursion, which can easily happen

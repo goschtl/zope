@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004, 2005 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,15 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Provide basic browser functionality
+"""Component interfaces
 
 $Id$
 """
-import Acquisition
-import zope.publisher.browser
+from zope.app.component.interfaces import ISite
+from OFS.interfaces import IObjectManager
 
-class BrowserView(Acquisition.Explicit, zope.publisher.browser.BrowserView):
-    """Five browser view
-
-    Mixes in explicit acquisition so that security can be acquired for
-    views"""
+class IObjectManagerSite(IObjectManager, ISite):
+    """Object manager that is also a site."""
