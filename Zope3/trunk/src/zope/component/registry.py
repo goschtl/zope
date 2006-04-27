@@ -451,6 +451,13 @@ class AdapterRegistration(object):
         "in Zope 3.5. Use the factory attribute instead.")
     def value(self):
         return self.factory
+
+    @property
+    @zope.deprecation.deprecate(
+        "The doc attribute on adapter registrations will be unsupported "
+        "in Zope 3.5. Use the info attribute instead.")
+    def doc(self):
+        return self.info
     
 class SubscriptionRegistration(AdapterRegistration):
 
