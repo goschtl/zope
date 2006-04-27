@@ -15,19 +15,17 @@
 
 $Id$
 """
-from zope.component import getMultiAdapter, ComponentLookupError
+import zope.publisher.interfaces
 from zope.interface import implements, Interface
-from zope.publisher.interfaces import ILayer
+from zope.security.proxy import removeSecurityProxy
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.browser import setDefaultSkin
-from zope.traversing.interfaces import ITraverser, ITraversable
-from zope.traversing.adapters import DefaultTraversable
-from zope.traversing.adapters import traversePathElement
 from zope.app.interface import queryType
+from zope.app.publication.publicationtraverse import PublicationTraverse
 
+import zExceptions
 import Products.Five.security
 from Products.Five import fivemethod
-from zExceptions import NotFound
 
 class FakeRequest(dict):
     implements(IBrowserRequest)
@@ -63,7 +61,7 @@ class Traversable:
                 return self.__fallback_traverse__(REQUEST, name)
             except (AttributeError, KeyError):
                 pass
-            except NotFound:
+            except zExceptions.NotFound:
                 # OFS.Application.__bobo_traverse__ calls
                 # REQUEST.RESPONSE.notFoundError which sets the HTTP
                 # status code to 404
@@ -98,34 +96,10 @@ class Traversable:
         # Con Zope 3 into using Zope 2's checkPermission
         Products.Five.security.newInteraction()
 
-        # Use the ITraverser adapter (which in turn uses ITraversable
-        # adapters) to traverse to a view.  Note that we're mixing
-        # object-graph and object-publishing traversal here, but Zope
-        # 2 has no way to tell us when to use which...
-        # TODO Perhaps we can decide on object-graph vs.
-        # object-publishing traversal depending on whether REQUEST is
-        # a stub or not?
         try:
-            return ITraverser(self).traverse(
-                path=[name], request=REQUEST).__of__(self)
-        except (ComponentLookupError, LookupError,
-                AttributeError, KeyError, NotFound):
+            ob = PublicationTraverse().traverseName(REQUEST, self, name)
+            return removeSecurityProxy(ob).__of__(self)
+        except zope.publisher.interfaces.NotFound:
             pass
 
         raise AttributeError(name)
-
-class FiveTraversable(DefaultTraversable):
-
-    def traverse(self, name, furtherPath):
-        context = self._subject
-        __traceback_info__ = (context, name, furtherPath)
-        # Find the REQUEST
-        REQUEST = getattr(context, 'REQUEST', None)
-        if not IBrowserRequest.providedBy(REQUEST):
-            REQUEST = FakeRequest()
-            setDefaultSkin(REQUEST)
-        # Try to lookup a view
-        try:
-            return getMultiAdapter((context, REQUEST), Interface, name)
-        except ComponentLookupError:
-            pass
