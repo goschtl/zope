@@ -125,8 +125,8 @@ def page(_context, name, permission, for_,
     _context.action(
         discriminator = ('view', for_, name, IBrowserRequest, layer),
         callable = handler,
-        args = ('provideAdapter',
-                (for_, layer), Interface, name, new_class, _context.info),
+        args = ('registerAdapter',
+                new_class, (for_, layer), Interface, name, _context.info),
         )
     _context.action(
         discriminator = ('five:protectClass', new_class),
@@ -251,8 +251,8 @@ class view(zope_app_view):
             discriminator = ('view', for_, name, IBrowserRequest, layer,
                              self.provides),
             callable = handler,
-            args = ('provideAdapter',
-                    (for_, layer), self.provides, name, newclass,
+            args = ('registerAdapter',
+                    newclass, (for_, layer), self.provides, name,
                     _context.info),
             )
 
@@ -291,8 +291,8 @@ def resource(_context, name, layer=IDefaultBrowserLayer, permission='zope.Public
     _context.action(
         discriminator = ('resource', name, IBrowserRequest, layer),
         callable = handler,
-        args = ('provideAdapter',
-                (layer,), Interface, name, factory, _context.info),
+        args = ('registerAdapter',
+                factory, (layer,), Interface, name, _context.info),
         )
     _context.action(
         discriminator = ('five:protectClass', new_class),
@@ -358,8 +358,8 @@ def resourceDirectory(_context, name, directory, layer=IDefaultBrowserLayer,
     _context.action(
         discriminator = ('resource', name, IBrowserRequest, layer),
         callable = handler,
-        args = ('provideAdapter',
-                (layer,), Interface, name, factory, _context.info),
+        args = ('registerAdapter',
+                factory, (layer,), Interface, name, _context.info),
         )
     for new_class in new_classes:
         _context.action(
