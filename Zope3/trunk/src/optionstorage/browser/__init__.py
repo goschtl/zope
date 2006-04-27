@@ -4,19 +4,13 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from optionstorage.interfaces import IOptionStorage
 from optionstorage import OptionDict
 
-# BBB: Can be removed in 3.3
-zope.deprecation.__show__.off()
-from zope.exceptions import NotFoundError
-zope.deprecation.__show__.on()
-
 def checkFields(request, *fields):
     for field in fields:
         if field not in request:
             return False
     return True
 
-class StorageNameNotFoundError(NotFoundError):
-    # BBB: Can be Remove in 3.3
+class StorageNameNotFoundError(LookupError):
     pass
 
 class OptionStorageView(object):
@@ -52,7 +46,7 @@ class OptionStorageView(object):
                 self.topic = topic
                 break
         else:
-            raise StorageNameNotFoundError(self.context, name, self.request)
+            raise StorageNameNotFoundError
 
         form = self.request.form
         if "SAVE" not in form:
