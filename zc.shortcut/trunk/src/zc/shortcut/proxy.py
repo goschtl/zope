@@ -36,6 +36,9 @@ class DecoratorSpecificationDescriptor(
             dec_impl = interface.implementedBy(type(inst))
             return declarations.Declaration(dec_impl, provided)
 
+    def __set__(self, inst, v):
+        raise TypeError("assignment not allowed")
+
 class Decorator(proxy.ProxyBase):
     "Overriding specification decorator base class"
     __providedBy__ = DecoratorSpecificationDescriptor()
@@ -73,6 +76,9 @@ class ClassAndInstanceDescr(object):
         if inst is None:
             return self.funcs[1](cls)
         return self.funcs[0](inst)
+
+    def __set__(self, inst, v):
+        raise TypeError("assignment not allowed")
 
 class ProxyBase(proxy.ProxyBase):
 
