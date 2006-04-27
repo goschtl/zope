@@ -17,25 +17,43 @@ Makes imports easier
 
 $Id$
 """
-from interfaces import IZAPI
 from zope.interface import moduleProvides
-
-from zope.security.proxy import isinstance
-
-from zope.app.interface import queryType
-
+from zope.app.zapi.interfaces import IZAPI
 moduleProvides(IZAPI)
 __all__ = tuple(IZAPI)
 
 from zope.component import *
-from zope.app.publisher.browser import getDefaultViewName
-from zope.app.publisher.browser import queryDefaultViewName
+from zope.security.proxy import isinstance
 from zope.traversing.api import *
 from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.exceptions.interfaces import UserError
+from zope.app.publisher.browser import getDefaultViewName
+from zope.app.publisher.browser import queryDefaultViewName
+from zope.app.interface import queryType
 
 name = getName
 
 def principals():
     from zope.app.security.interfaces import IAuthentication
     return getUtility(IAuthentication)
+
+# BBB 2006/04/27 -- to be removed after 12 months
+import zope.deferredimport
+zope.deferredimport.deprecated(
+    "This object was deprecated long ago.  Only import is allowed now "
+    "and will be disallows in Zope 3.5.",
+    getGlobalServices = "zope.component.back35:deprecated",
+    getGlobalService = "zope.component.back35:deprecated",
+    getService = "zope.component.back35:deprecated",
+    getServiceDefinitions = "zope.component.back35:deprecated",
+    getView = "zope.component.back35:deprecated",
+    queryView = "zope.component.back35:deprecated",
+    getMultiView = "zope.component.back35:deprecated",
+    queryMultiView = "zope.component.back35:deprecated",
+    getViewProviding = "zope.component.back35:deprecated",
+    queryViewProviding = "zope.component.back35:deprecated",
+    getDefaultViewName = "zope.component.back35:deprecated",
+    queryDefaultViewName = "zope.component.back35:deprecated",
+    getResource = "zope.component.back35:deprecated",
+    queryResource = "zope.component.back35:deprecated",
+    )
