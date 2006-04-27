@@ -28,6 +28,7 @@ from zope.interface.verify import verifyObject
 from zope.app.testing import ztapi, setup, placelesssetup
 from BTrees.IFBTree import IFSet
 from zope.app.intid.interfaces import IIntIds
+from zope.app.component.hooks import setSite
 
 from zope.index.interfaces import IInjection, IIndexSearch
 from zope.app.catalog.interfaces import ICatalog
@@ -227,6 +228,7 @@ class TestEventSubscribers(unittest.TestCase):
         sm = self.root.getSiteManager()
         self.utility = setup.addUtility(sm, '', IIntIds, IntIdsStub())
         self.cat = setup.addUtility(sm, '', ICatalog, CatalogStub())
+        setSite(self.root)
 
     def tearDown(self):
         setup.placefulTearDown()
@@ -247,7 +249,7 @@ class TestEventSubscribers(unittest.TestCase):
 
     def test_reindexDocSubscriber(self):
         from zope.app.catalog.catalog import reindexDocSubscriber
-        from zope.app.event.objectevent import ObjectModifiedEvent
+        from zope.lifecycleevent import ObjectModifiedEvent
 
         ob = Stub()
         id = self.utility.register(ob)

@@ -24,7 +24,7 @@ from BTrees.IOBTree import IOBTree
 from BTrees.IIBTree import IIBTree
 from BTrees.OOBTree import OOBTree
 
-import zope.app.location
+import zope.location
 
 import zope.app.versioncontrol.utility
 import zope.app.versioncontrol.version
@@ -32,7 +32,7 @@ import zope.app.versioncontrol.version
 from zope.app.versioncontrol.interfaces import VersionControlError
 
 
-class VersionHistory(persistent.Persistent, zope.app.location.Location):
+class VersionHistory(persistent.Persistent, zope.location.Location):
     """A version history maintains the information about the changes
     to a particular version-controlled resource over time."""
 
@@ -216,7 +216,7 @@ class VersionHistory(persistent.Persistent, zope.app.location.Location):
         return self._versions.keys()
 
 
-class BranchInfo(persistent.Persistent, zope.app.location.Location):
+class BranchInfo(persistent.Persistent, zope.location.Location):
     """A utility class to hold branch (line-of-descent) information.
 
     It maintains the name of the branch, the version id of the root of

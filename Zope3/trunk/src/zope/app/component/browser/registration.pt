@@ -2,53 +2,48 @@
     i18n:domain="zope">
 <body>
 <div metal:fill-slot="body">
+<form tal:attributes="action request/URL" 
+      method="POST"
+      >
 
-<form tal:attributes="action request/URL" method="POST"
-      tal:define="ignored view/update">
-
-  <div tal:condition="view/registered">
-    <div tal:define="registration view/registration">
-      <p i18n:translate="">This object is registered as:</p>
-
-      <div class="registrationSummary">
-        <div tal:content="structure registration/details">
-          Details
-        </div>
-        <div class="modificationLink">
-          <a tal:attributes="href registration/url"
-             i18n:translate="">(modify)</a>
-        </div>
-      </div>
-
-      <tal:block condition="view/active">
-        <p i18n:translate="">This object is currently active.</p>
-        <input type="submit" i18n:attributes="value deactivate-button"
-          value="Deactivate" name="deactivate" />
-      </tal:block>
-      <tal:block condition="not:view/active">
-        <p i18n:translate="">This object is currently inactive.</p>
-        <input type="submit" i18n:attributes="value activate-button"
-          value="Activate" name="activate" />
-      </tal:block>
-    </div>
-
-    <hr />
-    <a href="registrations.html" i18n:translate="">
-      Advanced Options
-    </a>
-
-  </div>
-
-  <div tal:condition="not:view/registered">
-    <p i18n:translate="">This object is not currently active.</p>
-
+  <div tal:condition="not:view/registrations">
     <p i18n:translate="">
-      This object won't actually be used unless it is registered to
-      perform a specific function and is activated.
+      This object isn't yet registered.  Click 
+      <a href="@@addRegistration.html">here</a>
+      to register the object.
     </p>
-
-    <input type="submit" value="Register" name="activate"
-      i18n:attributes="value register-button" />
+  </div>
+  <div tal:condition="view/registrations">
+    <p i18n:translate="">
+      This object is registered:
+    </p>
+    <table>
+      <tr tal:repeat="registration view/registrations">
+         <td>
+           <input type="checkbox" 
+                  class="noborder" name="ids:list"
+                  tal:attributes="value registration/id;
+                                  id registration/id;
+                                  "
+                  />
+         </td>
+         <td tal:content="structure registration/render">
+           zope.app.fooIFoo utility named bob
+           comment: needed a bob
+         </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <input type="submit" value="Unregister" name="deactivate"
+                 i18n:attributes="value unregister-button" />
+        </td>
+      </tr>
+    </table>
+    <p>
+      Click <a href="@@addRegistration.html">here</a>
+      to register the object again.
+    </p>
   </div>
 
 </form>

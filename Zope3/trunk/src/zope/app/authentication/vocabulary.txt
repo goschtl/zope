@@ -7,23 +7,20 @@ interfaces.IAuthentiatorPlugin, respectively) for the current context-- which
 is expected to be a pluggable authentication utility, hereafter referred to as
 a PAU.
 
-These names may be for objects contained within the PAU that do not provide
-zope.app.component.interfaces.ILocalUtility ("contained plugins"), or may
-be utilities registered for the specified interface, found in the context
-of the PAU ("utility plugins").  Contained plugins mask utility plugins of
-the same name.  They also may be names currently selected in the PAU that do
-not actually have a corresponding plugin at this time.
+These names may be for objects contained within the PAU ("contained
+plugins"), or may be utilities registered for the specified interface,
+found in the context of the PAU ("utility plugins").  Contained
+plugins mask utility plugins of the same name.  They also may be names
+currently selected in the PAU that do not actually have a
+corresponding plugin at this time.
 
 Here is a short example of how the vocabulary should work.  Let's say we're
 working with authentication plugins.  We'll create some faux
 authentication plugins, and register some of them as utilities and put
-others in a faux PAU.  Two of the contained plugins will provide
-zope.app.component.interfaces.ILocalUtility, and so should not be included in
-the vocabulary.
+others in a faux PAU.
 
     >>> from zope.app.authentication import interfaces
     >>> from zope import interface, component
-    >>> from zope.app.component.interfaces import ILocalUtility
     >>> class DemoPlugin(object):
     ...     interface.implements(interfaces.IAuthenticatorPlugin)
     ...     def __init__(self, name):
@@ -33,8 +30,6 @@ the vocabulary.
     ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(4))
     >>> contained_plugins = dict(
     ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(1, 5))
-    >>> interface.directlyProvides(contained_plugins[2], ILocalUtility)
-    >>> interface.directlyProvides(contained_plugins[3], ILocalUtility)
     >>> sorted(utility_plugins.keys())
     [0, 1, 2, 3]
     >>> for p in utility_plugins.values():
@@ -52,7 +47,7 @@ the vocabulary.
     >>> auth = DemoAuth((p.name, p) for p in contained_plugins.values())
     
     >>> @component.adapter(interface.Interface)
-    ... @interface.implementer(component.ISiteManager)
+    ... @interface.implementer(component.IComponentLookup)
     ... def getSiteManager(context):
     ...     return component.getGlobalSiteManager()
     ...
@@ -104,14 +99,14 @@ and whether the plugin is a utility or just contained in the auth utility.
 We'll give one of the plugins a dublin core title just to show the
 functionality.
 
-    >>> import zope.app.dublincore.interfaces
+    >>> import zope.dublincore.interfaces
     >>> class ISpecial(interface.Interface):
     ...     pass
     ...
     >>> interface.directlyProvides(contained_plugins[1], ISpecial)
     >>> class DemoDCAdapter(object):
     ...     interface.implements(
-    ...         zope.app.dublincore.interfaces.IDCDescriptiveProperties)
+    ...         zope.dublincore.interfaces.IDCDescriptiveProperties)
     ...     component.adapts(ISpecial)
     ...     def __init__(self, context):
     ...         pass
@@ -132,8 +127,8 @@ expect.
     >>> pprint.pprint([i18n.translate(term.title) for term in vocab])
     [u'Plugin 0 (a utility)',
      u'Special Title (in contents)',
-     u'Plugin 2 (a utility)',
-     u'Plugin 3 (a utility)',
+     u'Plugin 2 (in contents)',
+     u'Plugin 3 (in contents)',
      u'Plugin 4 (in contents)',
      u'Plugin X (not found; deselecting will remove)']
 
@@ -151,8 +146,6 @@ For completeness, we'll do the same review of the credentialsPlugins.
     ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(4))
     >>> contained_plugins = dict(
     ...     (i, DemoPlugin(u'Plugin %d' % i)) for i in range(1, 5))
-    >>> interface.directlyProvides(contained_plugins[2], ILocalUtility)
-    >>> interface.directlyProvides(contained_plugins[3], ILocalUtility)
     >>> for p in utility_plugins.values():
     ...     component.provideUtility(p, name=p.name)
     ...
@@ -200,7 +193,7 @@ them to see what we expect.
     >>> pprint.pprint([i18n.translate(term.title) for term in vocab])
     [u'Plugin 0 (a utility)',
      u'Special Title (in contents)',
-     u'Plugin 2 (a utility)',
-     u'Plugin 3 (a utility)',
+     u'Plugin 2 (in contents)',
+     u'Plugin 3 (in contents)',
      u'Plugin 4 (in contents)',
      u'Plugin X (not found; deselecting will remove)']

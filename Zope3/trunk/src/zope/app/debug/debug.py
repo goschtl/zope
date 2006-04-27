@@ -20,8 +20,8 @@ __docformat__ = 'restructuredtext'
 import base64, time
 from StringIO import StringIO
 from zope.publisher.publish import publish as _publish, debug_call
-from zope.publisher.browser import TestRequest
-from zope.app.publication.browser import BrowserPublication, setDefaultSkin
+from zope.publisher.browser import TestRequest, setDefaultSkin
+from zope.app.publication.browser import BrowserPublication
 from zope.app.appsetup import config, database
 
 class Debugger(object):

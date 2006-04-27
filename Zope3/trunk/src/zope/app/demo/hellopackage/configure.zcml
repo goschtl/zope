@@ -31,7 +31,7 @@ This is defined by HelloClass in hellomodule.
 -->
 <class class=".hellomodule.HelloClass">
   <implements 
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+      interface="zope.annotation.interfaces.IAttributeAnnotatable"
       />
 
   <!--

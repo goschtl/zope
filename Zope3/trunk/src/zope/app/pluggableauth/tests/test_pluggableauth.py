@@ -21,7 +21,8 @@ from zope.interface.verify import verifyObject
 
 from zope.app import zapi
 from zope.app.testing import ztapi, setup
-import zope.app.site.tests as placefulsetup
+
+from zope.app.component.testing import PlacefulSetup
 
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.publisher.interfaces.http import IHTTPCredentials
@@ -43,10 +44,10 @@ from zope.app.testing.placelesssetup import setUp, tearDown
 import base64
 
 
-class Setup(placefulsetup.PlacefulSetup, TestCase):
+class Setup(PlacefulSetup, TestCase):
 
     def setUp(self):
-        sm = placefulsetup.PlacefulSetup.setUp(self, site=True)
+        sm = PlacefulSetup.setUp(self, site=True)
         ztapi.provideAdapter(IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
         ztapi.browserView(IPrincipalSource, "login",

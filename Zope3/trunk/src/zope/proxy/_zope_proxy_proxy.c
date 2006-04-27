@@ -234,6 +234,18 @@ wrap_getattro(PyObject *self, PyObject *name)
         if (descriptor != NULL) {
             if (PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS)
                 && descriptor->ob_type->tp_descr_get != NULL) {
+
+              if (descriptor->ob_type->tp_descr_set == NULL)
+                {
+                  res = PyObject_GetAttr(wrapped, name);
+                  if (res != NULL)
+                    goto finally;
+                  if (PyErr_ExceptionMatches(PyExc_AttributeError))
+                    PyErr_Clear();
+                  else
+                    goto finally;
+                }
+
                 res = descriptor->ob_type->tp_descr_get(
                         descriptor,
                         self,
@@ -278,17 +290,13 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
         Py_INCREF(name);
 
     descriptor = WrapperType_Lookup(self->ob_type, name);
-    if (descriptor != NULL) {
-        if (PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) &&
-            descriptor->ob_type->tp_descr_set != NULL) {
-            res = descriptor->ob_type->tp_descr_set(descriptor, self, value);
-        } else {
-            PyErr_Format(PyExc_TypeError,
-                "Tried to set attribute '%s' on wrapper, but it is not"
-                " a data descriptor", PyString_AS_STRING(name));
-        }
+    if (descriptor != NULL
+        && PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) 
+        && descriptor->ob_type->tp_descr_set != NULL) 
+      {
+        res = descriptor->ob_type->tp_descr_set(descriptor, self, value);
         goto finally;
-    }
+      }
 
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {

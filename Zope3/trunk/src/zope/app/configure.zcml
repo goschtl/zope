@@ -18,15 +18,15 @@
   <include package="zope.app.interface" />
   <include package="zope.app.security" />
   <include package="zope.app.event" />
-  <include package="zope.app.annotation" />
+  <include package="zope.annotation" />
   <include package="zope.app.dependable" />
   <include package="zope.app.content" />
 
   <include file="menus.zcml" />
 
-  <include package="zope.app.copypastemove" />
-  <include package="zope.app.size" />
-  <include package="zope.app.location" />
+  <include package="zope.copypastemove" />
+  <include package="zope.size" />
+  <include package="zope.location" />
   <include package="zope.app.container" />
 
   <include package="zope.app.publisher" />
@@ -35,7 +35,7 @@
   <include package="zope.app.publication" />
 
 
-  <include package="zope.app.traversing" />
+  <include package="zope.traversing" />
   <include package="zope.app.pagetemplate" />
   <include package=".generations" />
   <include package=".zapi" />
@@ -69,7 +69,7 @@
   <!-- Additional packages -->
 
   <include package="zope.app.applicationcontrol" />
-  <include package="zope.app.dublincore" />
+  <include package="zope.dublincore" />
   <include package="zope.app.introspector" />
   <include package="zope.app.wsgi" />
 

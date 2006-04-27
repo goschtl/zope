@@ -24,30 +24,29 @@ from datetime import datetime
 from zope.component.interfaces import IFactory
 from zope.interface import classImplements, implements
 from zope.schema.vocabulary import getVocabularyRegistry
+from zope.size.interfaces import ISized
+from zope.size import DefaultSized
+from zope.traversing.interfaces import IContainmentRoot, ITraverser
+from zope.traversing.interfaces import ITraversable, IPhysicallyLocatable
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.traversing.adapters import DefaultTraversable, Traverser
+from zope.location.interfaces import ILocation
+from zope.location.traversing import LocationPhysicallyLocatable
+from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAnnotations, IAttributeAnnotatable
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.dublincore.interfaces import IWriteZopeDublinCore
+from zope.dublincore.interfaces import IZopeDublinCore
 
-from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup as SetupBase
-from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.file import File
 from zope.app.container.interfaces import INameChooser
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
-from zope.app.dublincore.interfaces import IWriteZopeDublinCore
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.location.interfaces import ILocation
-from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.renderer.plaintext import IPlainTextSource
 from zope.app.renderer.plaintext import PlainTextToHTMLRenderer
 from zope.app.renderer.plaintext import PlainTextSourceFactory
 from zope.app.security.interfaces import IAuthentication
-from zope.app.size.interfaces import ISized
-from zope.app.traversing.interfaces import IContainmentRoot, ITraverser
-from zope.app.traversing.interfaces import ITraversable, IPhysicallyLocatable
 from zope.app.security.principalregistry import principalRegistry
-from zope.app.size import DefaultSized
-from zope.app.traversing.adapters import DefaultTraversable, Traverser
-from zope.app.traversing.interfaces import IPhysicallyLocatable
 
 from bugtracker.bug import Bug, BugDependencyAdapter
 from bugtracker.comment import Comment

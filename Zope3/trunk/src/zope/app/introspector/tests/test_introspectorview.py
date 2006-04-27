@@ -19,12 +19,14 @@ import unittest
 
 import zope.deprecation
 
-from zope.app.component.testing import PlacefulSetup
 from zope.publisher.browser import TestRequest
 from zope.interface import Interface, directlyProvidedBy
 from zope.interface import directlyProvides, implements
-from zope.app.component.interface import provideInterface
+from zope.component.interface import provideInterface
+
+from zope.app.component.testing import PlacefulSetup
 from zope.app.testing import ztapi, setup
+
 zope.deprecation.__show__.off()
 from zope.app.introspector.interfaces import IIntrospector
 from zope.app.introspector import Introspector

@@ -15,15 +15,16 @@
  
 $Id$
 """
-from zope.app import zapi
-from zope.app.component.interface import nameToInterface, interfaceToName
+from zope.component import getUtilitiesFor
+from zope.component.interface import nameToInterface, interfaceToName
+from zope.interface import Interface
+from zope.publisher.browser import BrowserView
+from zope.schema import Choice, List
+from zope.security.proxy import removeSecurityProxy 
+
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.form.utility import setUpWidgets
 from zope.app.form.interfaces import IInputWidget
-from zope.interface import Interface
-from zope.app.publisher.browser import BrowserView
-from zope.schema import Choice, List
-from zope.security.proxy import removeSecurityProxy 
 from zope.app.workflow.interfaces import IProcessDefinition
 
 class IContentProcessMapping(Interface):
@@ -56,7 +57,7 @@ class ManageContentProcessRegistry(BrowserView):
 
     def getProcessInterfacesMapping(self):
         mapping = []
-        for name in [name for name, util in zapi.getUtilitiesFor(
+        for name in [name for name, util in getUtilitiesFor(
                                                        IProcessDefinition,
                                                        self.context,
                                                        )]:

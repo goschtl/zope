@@ -16,7 +16,7 @@
 $Id$
 """
 from persistent import Persistent
-from zope.app.annotation import IAnnotations
+from zope.annotation import IAnnotations
 from zope.security.management import queryInteraction
 
 class SecurityMap(object):

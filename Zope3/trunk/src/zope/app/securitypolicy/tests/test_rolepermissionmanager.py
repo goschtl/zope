@@ -17,15 +17,12 @@ $Id$
 """
 import unittest
 
+from zope.security.interfaces import IPermission
+from zope.security.permission import Permission
+
 from zope.app.testing.placelesssetup import PlacelessSetup
-
-from zope.app import zapi
 from zope.app.testing import ztapi
-
-from zope.app.security.interfaces import IPermission
-from zope.app.security.permission import Permission
 from zope.app.security.settings import Allow, Deny
-
 from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.rolepermission \

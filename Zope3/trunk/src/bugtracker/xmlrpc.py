@@ -22,11 +22,11 @@ import base64
 from zope.event import notify
 from zope.app.publisher.xmlrpc import MethodPublisher
 from zope.schema.vocabulary import getVocabularyRegistry
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 
 from zope.app import zapi
 from zope.app.container.contained import contained
 from zope.app.container.interfaces import INameChooser
-from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.file import File, Image
 
 from bugtracker.bug import Bug

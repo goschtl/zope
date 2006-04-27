@@ -29,7 +29,7 @@ from zope.app.generations.utility import findObjectsProviding
 from zope.app.component import registration
 import zope.app.authentication.interfaces
 from zope.app.authentication import groupfolder
-from zope.app.copypastemove.interfaces import IObjectMover
+from zope.copypastemove.interfaces import IObjectMover
 
 generation = 3
 

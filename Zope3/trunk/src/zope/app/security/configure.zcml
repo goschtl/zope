@@ -32,28 +32,28 @@
         id="zope.app.security.Permission"
         />
     <allow
-        interface=".interfaces.IPermission"
+        interface="zope.security.interfaces.IPermission"
         />
     <require
         permission="zope.Security"
-        set_schema=".interfaces.IPermission"
+        set_schema="zope.security.interfaces.IPermission"
         />
   </localUtility>
 
   <subscriber
      for="zope.security.interfaces.IPermission
-          ..component.interfaces.registration.IRegistrationActivatedEvent"
+          zope.component.interfaces.IRegistered"
      handler=".permission.setIdOnActivation"
      />
 
   <subscriber
      for="zope.security.interfaces.IPermission
-          ..component.interfaces.registration.IRegistrationDeactivatedEvent"
+          zope.component.interfaces.IUnregistered"
      handler=".permission.unsetIdOnDeactivation"
      />
 
-  <class class=".permission.Permission">
-    <allow interface=".interfaces.IPermission" />
+  <class class="zope.security.permission.Permission">
+    <allow interface="zope.security.interfaces.IPermission" />
   </class>
 
   <class class=".principalregistry.Principal">

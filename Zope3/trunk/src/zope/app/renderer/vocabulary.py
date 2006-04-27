@@ -15,16 +15,15 @@
 
 $Id$
 """
+import zope.component
 from zope.interface import alsoProvides
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
-
-from zope.app import zapi
+from zope.schema.interfaces import IVocabularyFactory
 from zope.app.renderer.interfaces import ISource
-from zope.app.schema.interfaces import IVocabularyFactory
 
 def SourceTypeVocabulary(context):
     return SimpleVocabulary(
         [SimpleTerm(name, title=factory.title) for name, factory in 
-         zapi.getFactoriesFor(ISource)])
+         zope.component.getFactoriesFor(ISource)])
 
 alsoProvides(SourceTypeVocabulary, IVocabularyFactory)

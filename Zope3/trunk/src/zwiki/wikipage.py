@@ -25,19 +25,19 @@ from persistent import Persistent
 from zope.interface import implements
 from zope.event import notify
 from zope.schema.vocabulary import getVocabularyRegistry
+from zope.annotation.interfaces import IAnnotations
+from zope.component.interfaces import ObjectEvent
+from zope.filerepresentation.interfaces import IReadFile
+from zope.filerepresentation.interfaces import IWriteFile
+from zope.filerepresentation.interfaces import IReadDirectory
+from zope.filerepresentation.interfaces import IWriteDirectory
+from zope.sendmail.interfaces import IMailDelivery
 
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
-from zope.app.filerepresentation.interfaces import IReadFile
-from zope.app.filerepresentation.interfaces import IWriteFile
-from zope.app.filerepresentation.interfaces import IReadDirectory
-from zope.app.filerepresentation.interfaces import IWriteDirectory
-from zope.app.annotation.interfaces import IAnnotations
-from zope.app.event.objectevent import ObjectEvent
 from zope.app.container.interfaces import \
      IObjectAddedEvent, IObjectRemovedEvent
-from zope.app.mail.interfaces import IMailDelivery
 
 from zwiki.interfaces import IWiki, IWikiPage
 from zwiki.interfaces import IWikiContained, IWikiPageContained
@@ -270,17 +270,17 @@ class ContentFile:
         self.context = context
 
     def read(self):
-        """See zope.app.filerepresentation.interfaces.IReadFile"""
+        """See zope.filerepresentation.interfaces.IReadFile"""
         text = u'Source Type: %s\n\n' %self.context.type
         text += self.context.source 
         return text
 
     def size(self):
-        """See zope.app.filerepresentation.interfaces.IReadFile"""
+        """See zope.filerepresentation.interfaces.IReadFile"""
         return len(self.read())
 
     def write(self, data):
-        """See zope.app.filerepresentation.interfaces.IWriteFile"""
+        """See zope.filerepresentation.interfaces.IWriteFile"""
         if data.startswith('Type: '):
             type, data = data.split('\n\n', 1)
             type = type[6:]

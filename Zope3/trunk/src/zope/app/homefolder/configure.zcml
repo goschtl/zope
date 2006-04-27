@@ -12,7 +12,7 @@
 
   <adapter
       for="zope.security.interfaces.IPrincipal"
-      provides="zope.app.traversing.interfaces.IPathAdapter"
+      provides="zope.traversing.interfaces.IPathAdapter"
       factory=".homefolder.getHomeFolder"
       name="homefolder" />
 
@@ -78,12 +78,6 @@
       class=".browser.AssignHomeFolder"
       permission="zope.ManageServices"
       menu="zmi_views" title="Assignments"
-      />
-
-  <browser:tool
-      interface=".interfaces.IHomeFolderManager"
-      title="Home Folder Manager"
-      description="A Principal Home Folder Manager"
       />
 
   <!-- Registering documentation with API doc -->

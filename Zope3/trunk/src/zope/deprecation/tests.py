@@ -15,10 +15,15 @@
 
 $Id$
 """
+
+import os
+import shutil
 import sys
+import tempfile
 import unittest
 import warnings
 from zope.testing import doctest
+import zope.deprecation
 
 # Used in doctests
 from deprecation import deprecated
@@ -36,18 +41,60 @@ def deprecatedemo4():
     """Demonstrate that deprecate() also works in a local scope."""
     deprecated('demo4', 'demo4 is no more.')
 
-orig_showwarning = warnings.showwarning
+def warn(message, type_, stacklevel):
+    print "From tests.py's showwarning():"
+    
+    frame = sys._getframe(stacklevel)
+    path = frame.f_globals['__file__']
+    file = open(path)
+    lineno = frame.f_lineno
+    for i in range(lineno):
+        line = file.readline()
 
-def showwarning(message, category, filename, lineno, file=None):
-    sys.stdout.write("From tests.py's showwarning():\n")
-    sys.stdout.write(
-        warnings.formatwarning(message, category, filename, lineno))
+    print "%s:%s: %s: %s\n  %s" % (
+        path,
+        frame.f_lineno,
+        type_.__name__,
+        message,
+        line.strip(),
+        )
+
+
+def setUpCreateModule(test):
+    d = test.globs['tmp_d'] = tempfile.mkdtemp('deprecation')
+
+    def create_module(modules=(), **kw):
+        modules = dict(modules)
+        modules.update(kw)
+        for name, src in modules.iteritems():
+            pname = name.split('.')
+            if pname[-1] == '__init__':
+                os.mkdir(os.path.join(d, *pname[:-1]))
+                name = '.'.join(pname[:-1])
+            open(os.path.join(d, *pname)+'.py', 'w').write(src)
+            test.globs['created_modules'].append(name)
+
+    test.globs['created_modules'] = []
+    test.globs['create_module'] = create_module
+
+    zope.deprecation.__path__.append(d)
+
+def tearDownCreateModule(test):
+    zope.deprecation.__path__.pop()
+    shutil.rmtree(test.globs['tmp_d'])
+    for name in test.globs['created_modules']:
+        sys.modules.pop(name, None)
 
 def setUp(test):
-    warnings.showwarning = showwarning
+    test.globs['saved_warn'] = warnings.warn
+    warnings.warn = warn
+    setUpCreateModule(test)
 
 def tearDown(test):
-    warnings.showwarning = orig_showwarning
+    tearDownCreateModule(test)
+    warnings.warn = test.globs['saved_warn']
+    del object.__getattribute__(sys.modules['zope.deprecation.tests'],
+                                '_DeprecationProxy__deprecated')['demo4']
 
 def test_suite():
     return unittest.TestSuite((

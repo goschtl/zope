@@ -27,16 +27,15 @@ from StringIO import StringIO
 from zope.exceptions import DuplicationError
 from zope.interface import implements
 from zope.proxy import removeAllProxies
+from zope.datetime import parseDatetimetz, DateTimeError
+from zope.publisher.browser import BrowserView
+from zope.dublincore.interfaces import IZopeDublinCore
 
-from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.container.interfaces import IReadContainer
-from zope.app.datetimeutils import parseDatetimetz, DateTimeError
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import FileWidget
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.publisher.browser import BrowserView
 
 from z3checkins.interfaces import IMessage, ICheckinMessage, IMessageContained
 from z3checkins.interfaces import IBookmark, IMessageParser, FormatError

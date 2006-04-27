@@ -25,7 +25,7 @@ passing an object to use as the parent as the second argument to the
 `loads()` function.  The name of the outermost object is not stored in
 the pickle unless it is stored in the object.
 
->>> from zope.app.location.tests import TLocation
+>>> from zope.location.tests import TLocation
 >>> root = TLocation()
 >>> zope.interface.directlyProvides(root, IContainmentRoot)
 >>> o1 = DataLocation('o1', root, 12)
@@ -64,19 +64,15 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import cPickle
-
 from cStringIO import StringIO
 
 import zope.interface
-
-from zope.app import location
-from zope.app import zapi
-from zope.app.location.interfaces import ILocation
-from zope.app.location.traversing import LocationPhysicallyLocatable
-from zope.app.location.tests import TLocation
-from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.traversing.interfaces import ITraverser
-
+from zope import location
+from zope.location.interfaces import ILocation
+from zope.location.traversing import LocationPhysicallyLocatable
+from zope.location.tests import TLocation
+from zope.traversing.interfaces import IContainmentRoot
+from zope.traversing.interfaces import ITraverser
 
 PARENT_MARKER = ".."
 
@@ -111,7 +107,7 @@ def loads(data, location, parent=None):
 class ParentPersistentIdGenerator(object):
     """
 
-    >>> from zope.app.location.tests import TLocation
+    >>> from zope.location.tests import TLocation
     >>> root = TLocation()
     >>> zope.interface.directlyProvides(root, IContainmentRoot)
     >>> o1 = TLocation(); o1.__parent__ = root; o1.__name__ = 'o1'

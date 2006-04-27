@@ -16,8 +16,7 @@
 $Id$
 """
 from zope.interface import Interface, implements
-
-from zope.app.traversing.interfaces import ITraverser
+from zope.traversing.interfaces import ITraverser
 
 class FakeTraverser(object):
 

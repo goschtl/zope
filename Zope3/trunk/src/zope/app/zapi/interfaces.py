@@ -17,9 +17,9 @@ $Id$
 """
 from zope.interface import Attribute
 from zope.component.interfaces import IComponentArchitecture
+from zope.traversing.interfaces import ITraversalAPI
+from zope.traversing.browser.interfaces import IAbsoluteURLAPI
 from zope.app.publisher.browser import IDefaultViewNameAPI 
-from zope.app.traversing.interfaces import ITraversalAPI
-from zope.app.traversing.browser.interfaces import IAbsoluteURLAPI
 
 class IZAPI(
     IComponentArchitecture,
@@ -64,7 +64,4 @@ class IZAPI(
     def principals():
         """Return the authentication utility
         """
-        
-    # BBB: Deprecated. Gone in X3.3.
-    servicenames = Attribute("Service Names")
 

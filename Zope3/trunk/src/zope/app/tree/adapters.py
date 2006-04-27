@@ -21,12 +21,12 @@ up with ComponentLookupErrors whenever encounter unknown objects.
 $Id$
 """
 from zope.interface import Interface, implements
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.security import canAccess
 from zope.security.interfaces import Unauthorized
+from zope.location.interfaces import ILocation
 
 from zope.app import zapi
-from zope.app.location.interfaces import ILocation
 from zope.app.container.interfaces import IReadContainer
 from zope.app.component.interfaces import ISite
 

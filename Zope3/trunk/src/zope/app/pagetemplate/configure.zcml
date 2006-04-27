@@ -6,14 +6,14 @@
 
   <adapter
       for="*"
-      provides="zope.app.traversing.interfaces.IPathAdapter"
+      provides="zope.traversing.interfaces.IPathAdapter"
       factory=".talesapi.ZopeTalesAPI"
       name="zope" 
       />
 
   <adapter
       for="*"
-      provides="zope.app.traversing.interfaces.IPathAdapter"
+      provides="zope.traversing.interfaces.IPathAdapter"
       factory=".urlquote.URLQuote"
       name="url"/> 
 
@@ -43,5 +43,12 @@
  <class class="zope.tales.expressions.DeferExpr">
     <allow attributes="__call__" />
  </class>
+
+ <adapter
+     for="zope.app.pagetemplate.viewpagetemplatefile.BoundPageTemplate
+          zope.publisher.interfaces.browser.IBrowserRequest"
+     provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+     factory="zope.app.publication.traversers.NoTraverser"
+     />
 
 </configure>

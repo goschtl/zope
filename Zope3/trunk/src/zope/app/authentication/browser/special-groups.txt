@@ -39,25 +39,13 @@ Create pluggable authentication utility and register it.
   ... Referer: http://localhost:8081/++etc++site/default/PAU/addRegistration.html
   ... 
   ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.status"
-  ... 
-  ... Active
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.status-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.permission"
+  ... Content-Disposition: form-data; name="field.comment"
   ... 
   ... 
   ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
+  ... Content-Disposition: form-data; name="field.actions.register"
   ... 
-  ... 1
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
+  ... Register
   ... -----------------------------5559795404609280911441883437--
   ... """)
   HTTP/1.1 303 See Other
@@ -86,46 +74,6 @@ Add a Principal folder plugin to PAU.
   ... 
   ... users
   ... -----------------------------95449631112274213651507932125--
-  ... """)
-  HTTP/1.1 303 See Other
-  ...
-
-
-Register Principal Folder.
-
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU/users/addRegistration.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 806
-  ... Content-Type: multipart/form-data; boundary=---------------------------3658059809094229671187159254
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/users/addRegistration.html
-  ... 
-  ... -----------------------------3658059809094229671187159254
-  ... Content-Disposition: form-data; name="field.name"
-  ... 
-  ... users
-  ... -----------------------------3658059809094229671187159254
-  ... Content-Disposition: form-data; name="field.status"
-  ... 
-  ... Active
-  ... -----------------------------3658059809094229671187159254
-  ... Content-Disposition: form-data; name="field.status-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------3658059809094229671187159254
-  ... Content-Disposition: form-data; name="field.permission"
-  ... 
-  ... 
-  ... -----------------------------3658059809094229671187159254
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------3658059809094229671187159254
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------3658059809094229671187159254--
   ... """)
   HTTP/1.1 303 See Other
   ...

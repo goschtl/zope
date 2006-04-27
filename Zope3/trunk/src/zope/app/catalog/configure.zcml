@@ -41,7 +41,7 @@
   
   <subscriber
       handler=".catalog.reindexDocSubscriber"
-      for="zope.app.event.objectevent.IObjectModifiedEvent"
+      for="zope.lifecycleevent.interfaces.IObjectModifiedEvent"
       />
   
   <subscriber

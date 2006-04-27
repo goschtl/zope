@@ -25,25 +25,13 @@ And register it:
   ... Referer: http://localhost:8081/++etc++site/default/PAU/addRegistration.html
   ... 
   ... -----------------------------191720529414243436931796477300
-  ... Content-Disposition: form-data; name="field.status"
-  ... 
-  ... Active
-  ... -----------------------------191720529414243436931796477300
-  ... Content-Disposition: form-data; name="field.status-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------191720529414243436931796477300
-  ... Content-Disposition: form-data; name="field.permission"
+  ... Content-Disposition: form-data; name="field.comment"
   ... 
   ... 
   ... -----------------------------191720529414243436931796477300
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
+  ... Content-Disposition: form-data; name="field.actions.register"
   ... 
-  ... 1
-  ... -----------------------------191720529414243436931796477300
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
+  ... Register
   ... -----------------------------191720529414243436931796477300--
   ... """)
   HTTP/1.1 303 See Other

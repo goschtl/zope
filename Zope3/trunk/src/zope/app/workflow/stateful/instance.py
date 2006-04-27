@@ -18,8 +18,6 @@ $Id$
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
-from zope.app import zapi
-from zope.event import notify
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.stateful.interfaces import AUTOMATIC
 from zope.app.workflow.stateful.interfaces import IAfterTransitionEvent
@@ -29,11 +27,12 @@ from zope.app.workflow.stateful.interfaces import IStatefulProcessInstance
 from zope.app.workflow.stateful.interfaces import ITransitionEvent
 from zope.app.workflow.stateful.interfaces import IBeforeRelevantDataChangeEvent
 from zope.app.workflow.stateful.interfaces import IAfterRelevantDataChangeEvent
-from zope.app.servicenames import Utilities
-from zope.app.traversing.api import getParent
 from zope.app.workflow.instance import ProcessInstance
 from zope.app.container.contained import Contained
 
+from zope.component import getUtility, getSiteManager
+from zope.event import notify
+from zope.traversing.api import getParent
 from zope.security.interfaces import Unauthorized
 from zope.interface import directlyProvides, implements
 from zope.proxy import removeAllProxies
@@ -216,7 +215,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
 
     def getProcessDefinition(self):
         """Get the ProcessDefinition object from Workflow Utility."""
-        return zapi.getUtility(IProcessDefinition, self.processDefinitionName)
+        return getUtility(IProcessDefinition, self.processDefinitionName)
 
     def _getContext(self):
         ctx = {}
@@ -273,9 +272,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         if not script:
             return True
         if isinstance(script, (str, unicode)):
-            #removed getServices in exchange for getSiteManager
-            #sm = zapi.getServices(self)
-            sm = zapi.getSiteManager(self)
+            sm = getSiteManager(self)
             script = sm.resolve(script)
         return script(contexts)
 

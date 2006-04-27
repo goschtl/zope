@@ -15,12 +15,13 @@
 
 $Id$
 """
-from zope.app import zapi
+import zope.traversing.api
+from zope.traversing.interfaces import IContainmentRoot
+from zope.component.interfaces import IComponentLookup
+
 from zope.app.container.interfaces import IContainer
 from zope.app.folder.interfaces import IFolder
 from zope.app.component.interfaces import ISite
-from zope.component.interfaces import ISiteManager
-from zope.app.traversing.interfaces import IContainmentRoot
 
 from zope.app.tree.filters import OnlyInterfacesFilter
 from zope.app.tree.browser import StatefulTreeView

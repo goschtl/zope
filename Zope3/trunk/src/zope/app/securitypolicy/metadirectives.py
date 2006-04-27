@@ -17,8 +17,7 @@ $Id$
 """
 from zope.interface import Interface
 from zope.schema import Id 
-from zope.app.security.metadirectives import IBaseDefineDirective
-from zope.app.security.fields import Permission
+from zope.security.zcml import Permission, IPermissionDirective
 
 class IGrantAllDirective(Interface):
     """Grant Permissions to roles and principals and roles to principals."""
@@ -41,6 +40,6 @@ class IGrantDirective(IGrantAllDirective):
         description=u"Specifies the Permission to be mapped.",
         required=False)
 
-class IDefineRoleDirective(IBaseDefineDirective):
+class IDefineRoleDirective(IPermissionDirective):
     """Define a new role."""
 

@@ -17,11 +17,11 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from interfaces import IDependable
-from zope.app.annotation.interfaces import IAnnotations
-from zope.app.traversing.api import getParent, canonicalPath, getPath
 from zope.interface import implements
+from zope.traversing.api import getParent, canonicalPath, getPath
+from zope.annotation.interfaces import IAnnotations
 
+from zope.app.dependable.interfaces import IDependable
 
 class PathSetAnnotation(object):
     """Abstract base class for annotations that are sets of paths.

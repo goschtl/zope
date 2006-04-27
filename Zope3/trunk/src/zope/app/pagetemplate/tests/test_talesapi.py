@@ -15,12 +15,13 @@
 
 $Id$
 """
+from datetime import datetime
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface import implements
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.size.interfaces import ISized
-from zope.app.traversing.interfaces import IPhysicallyLocatable
-from datetime import datetime
+from zope.size.interfaces import ISized
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.dublincore.interfaces import IZopeDublinCore
+
 from zope.app.pagetemplate.talesapi import ZopeTalesAPI
 
 class TestObject(object):

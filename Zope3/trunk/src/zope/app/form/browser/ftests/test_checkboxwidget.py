@@ -16,21 +16,17 @@
 $Id$
 """
 import unittest
-from persistent import Persistent
 import transaction
+from persistent import Persistent
 
-from zope.interface import Interface
-from zope.interface import implements
-
-from zope.schema import Bool
 import zope.security.checker
+from zope.interface import Interface, implements
+from zope.schema import Bool
+from zope.traversing.api import traverse
+
 from zope.app.form.browser import CheckBoxWidget
-
-from support import *
-from zope.app.traversing.api import traverse
-
+from zope.app.form.browser.ftests.support import *
 from zope.app.testing.functional import BrowserTestCase
-
 
 class IBoolTest(Interface):
 

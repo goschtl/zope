@@ -15,11 +15,9 @@
 
 $Id$
 """
+from zope.annotation.interfaces import IAnnotations
 from zope.app.security.settings import Unset
-
 from zope.app.securitypolicy.interfaces import IGrantInfo
-
-from zope.app.annotation.interfaces import IAnnotations
 
 from zope.app.securitypolicy.principalpermission \
      import AnnotationPrincipalPermissionManager
@@ -35,8 +33,6 @@ from zope.app.securitypolicy.rolepermission \
      import AnnotationRolePermissionManager
 rolepermkey = AnnotationRolePermissionManager.key
 del AnnotationRolePermissionManager
-
-
 
 class AnnotationGrantInfo(object):
 

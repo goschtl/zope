@@ -19,22 +19,21 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from zope.app import zapi
+import zope.component
 from zope.component.interfaces import IFactory
 from zope.event import notify
 from zope.interface import Interface
+from zope.schema.interfaces import ValidationError
+from zope.security.checker import defineChecker, NamesChecker
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.lifecycleevent import Attributes
 
-from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.event.objectevent import Attributes
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.form.interfaces import IInputWidget, WidgetsError
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.schema.interfaces import ValidationError
-from zope.security.checker import defineChecker, NamesChecker
 from editview import EditView
 from submit import Update
 
@@ -143,7 +142,7 @@ def _getFactory(self):
     factory = self.__dict__.get('_factory_or_id', self._factory_or_id)
 
     if type(factory) is str: # factory id
-        return zapi.getUtility(IFactory, factory, self.context)
+        return zope.component.getUtility(IFactory, factory, self.context)
     else:
         return factory
 
@@ -181,5 +180,5 @@ def AddViewFactory(name, schema, label, permission, layer,
     if layer is None:
         layer = IDefaultBrowserLayer
     
-    s = zapi.getGlobalSiteManager()
-    s.provideAdapter((for_, layer), Interface, name, class_)
+    s = zope.component.getGlobalSiteManager()
+    s.registerAdapter(class_, (for_, layer), Interface, name)

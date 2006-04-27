@@ -17,15 +17,14 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.dublincore.interfaces import IDCDescriptiveProperties
-from zope.app.dublincore.interfaces import IDCTimes
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.size.interfaces import ISized
-from zope.app import zapi
 from zope.interface import implements
+from zope.size.interfaces import ISized
 from zope.security.interfaces import Unauthorized
 from zope.tales.interfaces import ITALESFunctionNamespace
-
+from zope.dublincore.interfaces import IDCDescriptiveProperties
+from zope.dublincore.interfaces import IDCTimes
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.traversing.api import getName
 
 class ZopeTalesAPI(object):
 
@@ -66,13 +65,13 @@ class ZopeTalesAPI(object):
     modified = property(modified)
 
     def name(self):
-        return zapi.name(self.context)
+        return getName(self.context)
 
     def title_or_name(self):
         try:
-            return getattr(self, 'title', '') or zapi.name(self.context)
+            return getattr(self, 'title', '') or getName(self.context)
         except Unauthorized:
-            return zapi.name(self.context)
+            return getName(self.context)
 
     def size(self):
         a = ISized(self.context, None)

@@ -4,12 +4,11 @@
 __docformat__ = "reStructuredText"
 
 import zope.interface
-
-import zope.app.event.objectevent
+import zope.component.interfaces
 import zope.app.versioncontrol.interfaces
 
 
-class VersionEvent(zope.app.event.objectevent.ObjectEvent):
+class VersionEvent(zope.component.interfaces.ObjectEvent):
 
     def __init__(self, object, info):
         super(VersionEvent, self).__init__(object)

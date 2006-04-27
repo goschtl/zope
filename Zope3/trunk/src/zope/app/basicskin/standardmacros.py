@@ -20,8 +20,8 @@ $Id$
 __docformat__ = 'restructuredtext'
 import zope.interface
 
-from zope.app import zapi
-from zope.app.publisher.browser import BrowserView
+from zope.component import getMultiAdapter
+from zope.publisher.browser import BrowserView
 
 class Macros(object):
     zope.interface.implements(zope.interface.common.mapping.IItemMapping)
@@ -38,7 +38,7 @@ class Macros(object):
         context = self.context
         request = self.request
         for name in self.macro_pages:
-            page = zapi.getMultiAdapter((context, request), name=name)
+            page = getMultiAdapter((context, request), name=name)
             try:
                 v = page[key]
             except KeyError:

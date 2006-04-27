@@ -20,16 +20,14 @@ import persistent
 from BTrees.OOBTree import OOBTree
 
 import zope.interface
+import zope.component
 from zope.security.checker import defineChecker
+from zope.traversing.interfaces import IContainmentRoot
+from zope.location import locate
 
-from zope.app import component
-from zope.app import zapi
+import zope.app.component
 from zope.app.container.contained import Contained
-from zope.app.location import locate
-from zope.app.traversing.interfaces import IContainmentRoot
-
 from zope.app.preference import preference, interfaces
-
 
 class DefaultPreferenceProvider(persistent.Persistent, Contained):
     zope.interface.implements(interfaces.IDefaultPreferenceProvider)
@@ -38,7 +36,7 @@ class DefaultPreferenceProvider(persistent.Persistent, Contained):
         self.data = OOBTree()
 
     def getDefaultPreferenceGroup(self, id=''):
-        group = zapi.getUtility(interfaces.IPreferenceGroup, name=id)
+        group = zope.component.getUtility(interfaces.IPreferenceGroup, name=id)
         group = group.__bind__(self)
         default = DefaultPreferenceGroup(group, self)
         zope.interface.alsoProvides(default, IContainmentRoot)
@@ -92,7 +90,7 @@ class DefaultPreferenceGroup(preference.PreferenceGroup):
 
             # There is currently no local entry, so let's go to the next
             # provider and lookup the group and value there.
-            nextProvider = component.queryNextUtility(
+            nextProvider = zope.app.component.queryNextUtility(
                 self.provider, interfaces.IDefaultPreferenceProvider)
 
             # No more providers found, so return the schema's default

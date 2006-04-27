@@ -23,9 +23,8 @@ from zope.interface import directlyProvides, directlyProvidedBy, providedBy
 from zope.interface.interfaces import IInterface
 from zope.interface.interface import InterfaceClass
 from zope.security.proxy import removeSecurityProxy
+from zope.component.interface import searchInterface, getInterface
 
-from zope.app import zapi
-from zope.app.component.interface import searchInterface, getInterface
 from zope.app.introspector.interfaces import IIntrospector
 
 ##############################################################################

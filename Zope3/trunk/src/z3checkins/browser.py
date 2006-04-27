@@ -7,16 +7,16 @@ import re
 import mailbox
 from StringIO import StringIO
 
+import zope.component
 from zope.interface import implements
 from zope.exceptions import DuplicationError
 from zope.proxy import removeAllProxies
+from zope.datetime import parseDatetimetz, DateTimeError
+from zope.publisher.browser import BrowserView
+from zope.dublincore.interfaces import IZopeDublinCore
 
-from zope.app import zapi
-from zope.app.datetimeutils import parseDatetimetz, DateTimeError
-from zope.app.publisher.browser import BrowserView
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import FileWidget
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.pagetemplate import ViewPageTemplateFile
 
 from z3checkins.message import Bookmark
@@ -35,7 +35,7 @@ class MessageUpload:
     def createAndAdd(self, data):
         if data.has_key('data'): # TODO should we bark if no data is given?
             msg_raw = data['data']
-            parser = zapi.getUtility(IMessageParser)
+            parser = zope.component.getUtility(IMessageParser)
             if msg_raw.startswith("From "):
                 # detected an mbox file
                 mbox = StringIO(msg_raw)
@@ -165,7 +165,8 @@ class ContainerView:
                 previous_message = item.log_message
             else:
                 same_as_previous = None
-            view = zapi.getMultiAdapter((item, self.request), name='html')
+            view = zope.component.getMultiAdapter((item, self.request),
+                                                  name='html')
             output = view(same_as_previous=same_as_previous)
             html.append(output)
         return "".join(html)

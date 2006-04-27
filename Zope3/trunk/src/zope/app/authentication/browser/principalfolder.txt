@@ -28,7 +28,8 @@ We need to create and register a pluggable authentication utility.
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
   ... Referer: http://localhost:8081/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
   ... 
-  ... type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication&new_value=PAU""")
+  ... type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication&new_value=PAU""",
+  ... handle_errors=False)
   HTTP/1.1 303 See Other
   ...
 
@@ -52,27 +53,15 @@ Register PAU.
   ... Referer: http://localhost:8081/++etc++site/default/PAU/addRegistration.html
   ... 
   ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.status"
-  ... 
-  ... Active
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.status-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.permission"
+  ... Content-Disposition: form-data; name="field.comment"
   ... 
   ... 
   ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
+  ... Content-Disposition: form-data; name="field.actions.register"
   ... 
-  ... 1
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
+  ... Register
   ... -----------------------------5559795404609280911441883437--
-  ... """)
+  ... """, handle_errors=False)
   HTTP/1.1 303 See Other
   ...
 
@@ -107,46 +96,6 @@ We specify a prefix, `users.`.  This is used to make sure that ids
 used by this plugin don't conflict with ids of other plugins.  We also
 name ths plugin `users`.  This is the name we'll use when we configure
 the pluggable authentiaction service.
-
-
-Register Principal Folder as `users`.
-
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU/users/addRegistration.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 806
-  ... Content-Type: multipart/form-data; boundary=---------------------------3658059809094229671187159254
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/users/addRegistration.html
-  ... 
-  ... -----------------------------3658059809094229671187159254
-  ... Content-Disposition: form-data; name="field.name"
-  ... 
-  ... users
-  ... -----------------------------3658059809094229671187159254
-  ... Content-Disposition: form-data; name="field.status"
-  ... 
-  ... Active
-  ... -----------------------------3658059809094229671187159254
-  ... Content-Disposition: form-data; name="field.status-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------3658059809094229671187159254
-  ... Content-Disposition: form-data; name="field.permission"
-  ... 
-  ... 
-  ... -----------------------------3658059809094229671187159254
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------3658059809094229671187159254
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------3658059809094229671187159254--
-  ... """)
-  HTTP/1.1 303 See Other
-  ...  
 
 Next we'll view the contents page of the principal folder:
 
@@ -250,7 +199,7 @@ select any one credentials.
   ... 
   ... dXNlcnM=
   ... -----------------------------6519411471194050603270010787--
-  ... """)
+  ... """, handle_errors=False)
   HTTP/1.1 200 Ok
   ... 
 

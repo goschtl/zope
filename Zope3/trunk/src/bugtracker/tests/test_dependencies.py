@@ -17,32 +17,26 @@ $Id$
 """
 import unittest
 
+import zope.component
+from zope.component.testing import PlacelessSetup
 from zope.interface import classImplements
-from zope.component.tests.placelesssetup import PlacelessSetup
-
-from zope.app.testing import ztapi
-from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
-from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.location.interfaces import ILocation
-from zope.app.location.traversing import LocationPhysicallyLocatable
-from zope.app.traversing.interfaces import IPhysicallyLocatable
+from zope.location.traversing import LocationPhysicallyLocatable
+from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.annotation.attribute import AttributeAnnotations
 
 from bugtracker.interfaces import IBug, IBugDependencies
 from bugtracker.bug import Bug, BugDependencyAdapter
 from bugtracker.tracker import BugTracker
-
 
 class DependencyTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(DependencyTest, self).setUp()
         classImplements(Bug, IAttributeAnnotatable);
-        ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
-                             AttributeAnnotations)
-        ztapi.provideAdapter(IBug, IBugDependencies,
-                             BugDependencyAdapter)
-        ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
-                             LocationPhysicallyLocatable)
+        zope.component.provideAdapter(AttributeAnnotations)
+        zope.component.provideAdapter(BugDependencyAdapter, (IBug,),
+                                      IBugDependencies)
+        zope.component.provideAdapter(LocationPhysicallyLocatable)
 
         self.bug = Bug()
 

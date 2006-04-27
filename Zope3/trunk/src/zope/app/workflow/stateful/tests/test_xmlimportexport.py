@@ -18,27 +18,27 @@ $Id$
 import unittest
 from StringIO import StringIO
 
-from zope.app import zapi
-from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
-from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.security.interfaces import IPermission
-from zope.app.component.interfaces.registration import IRegisterable
+import zope.component
+from zope.interface import implements, classImplements, Interface
+from zope.interface.verify import verifyClass
+from zope.schema import TextLine
+from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.security.interfaces import IPermission
+from zope.security.permission import Permission
+from zope.security.checker import CheckerPublic
+
 from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
-from zope.app.security.permission import Permission
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.stateful.definition import State, Transition
 from zope.app.workflow.stateful.xmlimportexport import XMLExportHandler
 from zope.app.workflow.stateful.xmlimportexport import XMLImportHandler
-from zope.app.tests import ztapi
-from zope.interface import implements, classImplements, Interface
-from zope.interface.verify import verifyClass
-from zope.schema import TextLine
-from zope.security.checker import CheckerPublic
+from zope.app.testing import ztapi
 
 class ISchema(Interface):
 
@@ -94,7 +94,7 @@ xml_text = '''<?xml version="1.0"?>
 
 
 class TestProcessDefinition(StatefulProcessDefinition):
-    implements(IAttributeAnnotatable, IRegisterable)
+    implements(IAttributeAnnotatable)
 
 # need to patch this cause these classes are used directly
 # in the import/export classes
@@ -132,7 +132,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         self.assertEqual(
             testpd.schemaPermissions['title'],
-            (CheckerPublic, zapi.getUtility(IPermission, 'zope.View')))
+            (CheckerPublic, zope.component.getUtility(IPermission, 'zope.View')))
 
         self.assertEqual(len(testpd.states), 3)
         self.assertEqual(len(testpd.transitions), 3)

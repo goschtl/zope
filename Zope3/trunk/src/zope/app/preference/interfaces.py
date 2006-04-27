@@ -20,10 +20,9 @@ __docformat__ = "reStructuredText"
 import zope.interface
 import zope.schema
 from zope.configuration.fields import MessageID
+from zope.location.interfaces import ILocation
 
 from zope.app.container.interfaces import IReadContainer
-from zope.app.location.interfaces import ILocation
-
 
 class IPreferenceGroup(ILocation):
     """A group of preferences.

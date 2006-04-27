@@ -15,19 +15,19 @@
 
 $Id$
 """
-from zope.app import zapi
+import zope.component
 from zope.proxy import removeAllProxies
-from zope.app.publisher.browser import BrowserView
+from zope.schema import getFields, Choice
+from zope.publisher.browser import BrowserView
+from zope.security.checker import CheckerPublic
+from zope.security.proxy import removeSecurityProxy
+
 from zope.app.container.browser.adding import Adding
 from zope.app.form.browser.submit import Update
 from zope.app.form.browser.editview import EditView
 from zope.app.form.interfaces import IInputWidget
 from zope.app.workflow.stateful.definition import State, Transition
-from zope.schema import getFields, Choice
-
 from zope.app.security.interfaces import IPermission
-from zope.security.checker import CheckerPublic
-from zope.security.proxy import removeSecurityProxy
 from zope.app.form.utility import setUpWidget
 
 class StatesContainerAdding(Adding):
@@ -123,8 +123,8 @@ class RelevantDataSchemaEdit(EditView):
                 set_perm_id = setPermWidget.getInputValue()
 
                 # get the right permission from the given id
-                get_perm = zapi.getUtility(IPermission, get_perm_id)
-                set_perm = zapi.getUtility(IPermission, set_perm_id)
+                get_perm = zope.component.getUtility(IPermission, get_perm_id)
+                set_perm = zope.component.getUtility(IPermission, set_perm_id)
                 
                 # set the permission back to the instance
                 perms[name] = (get_perm, set_perm)

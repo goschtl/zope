@@ -13,12 +13,14 @@
 ##############################################################################
 """Home Folder related views.
 
-$Id:$
+$Id$
 """
 __docformat__ = "reStructuredText"
 import zope.schema
 from zope.schema.vocabulary import SimpleVocabulary
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.interfaces import TraversalError
+from zope.dottedname.resolve import resolve
 
 from zope.app import zapi
 from zope.app.form.browser import TextWidget, MultiSelectWidget
@@ -27,10 +29,6 @@ from zope.app.form.interfaces import IInputWidget
 from zope.app.form.interfaces import ConversionError
 
 from zope.app.security.vocabulary import PrincipalSource
-from zope.app.traversing.interfaces import TraversalError
-
-from zope.dottedname.resolve import resolve
-
 
 class PathWidget(TextWidget):
 

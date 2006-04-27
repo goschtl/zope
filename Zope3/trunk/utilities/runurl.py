@@ -47,11 +47,6 @@
 
          Run the profiler saving the profile data to the given file name
 
-      --hotshot file
-
-         Run the hotshot profiler saving the profile data to the given
-         file name
-
       -w
       --warmup
 
@@ -62,9 +57,9 @@
 
          Output this usage information.
 
-      --build
+      --bias float
 
-        Run from a build directory
+        The profiler bias.  The default is 0.0.          
 
 $Id$
 """
@@ -86,15 +81,17 @@ def main(argv=None):
             args,
             'b:r:p:d:c:hi:w',
             ['basic=', 'run=', 'profile=', 'database=', 'config=', 'help',
-             'input=', 'warmup', 'build', 'hotshot='])
+             'input=', 'warmup', 'bias='])
     except getopt.GetoptError:
         print __doc__ % {'script': script}
         raise
 
 
-    basic = run = warm = profilef = database = config = hotshotf = None
+    basic = run = warm = profilef = database = config = None
     stdin = ''
     src = 'src'
+    bias = 0.0
+    warm = 0
     for name, value in options:
         if name in ('-b', '--basic'):
             basic = value
@@ -102,13 +99,6 @@ def main(argv=None):
             run = int(value)
         elif name in ('-p', '--profile'):
             profilef = value
-        elif name in ('--hotshot', ):
-            hotshotf = value
-        elif name in ('--build', ):
-            from distutils.util import get_platform
-            PLAT_SPEC = "%s-%s" % (get_platform(), sys.version[0:3])
-            src = os.path.join("build", "lib.%s" % PLAT_SPEC)
-
         elif name in ('-d', '--database'):
              database = value
         elif name in ('-c', '--config'):
@@ -116,7 +106,9 @@ def main(argv=None):
         elif name in ('-i', '--input'):
              input = value
         elif name in ('-w', '--warmup'):
-             warm= True
+             warm += 1
+        elif name in ('--bias', ):
+            bias = float(value)
         elif name in ('-h', '--help'):
             print __doc__ % {'script': script}
             sys.exit(0)
@@ -139,27 +131,21 @@ def main(argv=None):
     debugger = Debugger(database, config)
 
     if warm:
-        _mainrun(debugger, path, basic, 1, stdin, env)
+        _mainrun(debugger, path, basic, warm, stdin, env)
 
-    if profilef or hotshotf:
+    if profilef:
         cmd = "_mainrun(debugger, path, basic, run, stdin, env, True)"
-        if profilef:
-            import profile
-            profile.run(cmd, profilef)
-        if hotshotf:
-            import hotshot
-            p = hotshot.Profile(hotshotf)
-            p.runctx(cmd, globals(), locals())
-            p.close()
-            del p
-
-            print 'Writing', hotshotf
-            from hotshot.stats import StatsLoader
-            p = StatsLoader(hotshotf).load()
-            import marshal
-            marshal.dump(p.stats, open(hotshotf, 'w'))
-            print 'Wrote', hotshotf
-
+        import time
+        import profile
+        profiler = profile.Profile(time.time, bias)
+        try:
+            profiler.run(cmd)
+        except SystemExit:
+            pass
+        if profilef == '-':
+            profiler.print_stats()
+        else:
+            profiler.dump_stats(profilef)
     else:
         _mainrun(debugger, path, basic, run, stdin, env)
 

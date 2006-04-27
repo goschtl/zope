@@ -17,8 +17,8 @@ $Id$
 """
 import unittest
 
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.dublincore.interfaces import IWriteZopeDublinCore
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.dublincore.interfaces import IWriteZopeDublinCore
 from zope.app.container.tests.test_btree import TestBTreeContainer
 
 from bugtracker.tests.placelesssetup import PlacelessSetup

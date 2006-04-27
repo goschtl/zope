@@ -16,51 +16,32 @@
 $Id$
 """
 import unittest
+import zope.component
 from zope.interface import Interface, implements
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
+from zope.component.interface import getInterface, searchInterface
+from zope.traversing.api import traverse
 
-from zope.app import zapi
-from zope.app.component.interfaces import ILocalUtility
-from zope.app.component.site import UtilityRegistration
 from zope.app.component.testing import PlacefulSetup
-from zope.app.component.interface import getInterface, searchInterface
-from zope.app.component.interfaces.registration import ActiveStatus
-from zope.app.component.interfaces.registration import InactiveStatus
-from zope.app.component.interfaces.registration import IRegistered
 from zope.app.container.contained import Contained
 from zope.app.dependable.interfaces import IDependable
 from zope.app.testing import setup
-from zope.app.traversing.api import traverse
 
 class IBaz(Interface): pass
 
 class Baz(object):
-    # We implement IRegistered and IDependable directly to
+    # We implement IDependable directly to
     # depend as little  as possible on other infrastructure.
-    implements(IBaz, ILocalUtility, IRegistered, IDependable)
+    implements(IBaz, IDependable)
 
     def __init__(self, name):
         self.name = name
-        self._usages = []
         self._dependents = []
 
     def foo(self):
         return 'foo ' + self.name
-
-    def addUsage(self, location):
-        "See zope.app.registration.interfaces.IRegistered"
-        if location not in self._usages:
-            self._usages.append(location)
-
-    def removeUsage(self, location):
-        "See zope.app.registration.interfaces.IRegistered"
-        self._usages.remove(location)
-
-    def usages(self):
-        "See zope.app.registration.interfaces.IRegistered"
-        return self._usages
 
     def addDependent(self, location):
         "See zope.app.dependable.interfaces.IDependable"
@@ -89,10 +70,10 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         sm = PlacefulSetup.setUp(self, site=True)
 
     def test_getLocalInterface_delegates_to_globalUtility(self):
-        gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, Bar("blob"), name="blob")
-        gsm.provideUtility(IBaz, Baz("global baz"))
-        gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
+        gsm = zope.component.getGlobalSiteManager()
+        gsm.registerUtility(Bar("blob"), IInterface, name="blob")
+        gsm.registerUtility(Baz("global baz"), IBaz)
+        gsm.registerUtility(Foo("global bob"), IInterface, name="bob")
 
         self.assertEqual(getInterface(None, "bob").__class__, Foo)
         self.assertEqual(getInterface(None, "blob").__class__, Bar)
@@ -102,10 +83,10 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         baz = Baz("global baz")
         foo = Foo("global bob")
 
-        gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, foo, name="bob")
-        gsm.provideUtility(IInterface, bar)
-        gsm.provideUtility(IBaz, baz)
+        gsm = zope.component.getGlobalSiteManager()
+        gsm.registerUtility(foo, IInterface, name="bob")
+        gsm.registerUtility(bar, IInterface)
+        gsm.registerUtility(baz, IBaz)
 
         ifaces = searchInterface(None)
         self.assert_(len(ifaces), 2)
@@ -126,28 +107,24 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         bar = Bar("global")
         baz = Baz("global baz")
         foo = Foo("global bob")
-        gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, foo, name="bob")
-        gsm.provideUtility(ILocalUtility, bar)
-        gsm.provideUtility(IBaz, baz)
+        gsm = zope.component.getGlobalSiteManager()
+
+        gsm.registerUtility(foo, IInterface, name="bob")
+        gsm.registerUtility(baz, IBaz)
 
         iface_utilities = gsm.getUtilitiesFor(IInterface)
         ifaces = [iface for (name, iface) in iface_utilities]
         self.assertEqual(ifaces, [(foo)])
-
-        iface_utilities = gsm.getUtilitiesFor(ILocalUtility)
-        ifaces = [iface for (name, iface) in iface_utilities]
-        self.assertEqual(ifaces, [(bar)])
 
         iface_utilities = gsm.getUtilitiesFor(IBaz)
         ifaces = [iface for (name, iface) in iface_utilities]
         self.assertEqual(ifaces, [(baz)])
 
     def test_getLocalInterface_raisesComponentLookupError(self):
-        gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, Foo("global"))
-        gsm.provideUtility(IBaz, Baz("global baz"))
-        gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
+        gsm = zope.component.getGlobalSiteManager()
+        gsm.registerUtility(Foo("global"), Interface)
+        gsm.registerUtility(Baz("global baz"), IBaz)
+        gsm.registerUtility(Foo("global bob"), IInterface, name="bob")
 
         self.assertRaises(ComponentLookupError,
                           getInterface, None, "bobesponja")
@@ -156,10 +133,10 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         foo = Foo("global bob")
         bar = Bar("global")
         baz = Baz("global baz")
-        gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, bar)
-        gsm.provideUtility(IBaz, baz)
-        gsm.provideUtility(IInterface, foo, name="bob")
+        gsm = zope.component.getGlobalSiteManager()
+        gsm.registerUtility(foo, IInterface, name="bob")
+        gsm.registerUtility(bar, IInterface)
+        gsm.registerUtility(baz, IBaz)
 
         self.assertEqual(searchInterface(None, search_string="bob"),
                          [foo])
@@ -169,20 +146,21 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
         foo = Foo("global bob")
         bar = Bar("global")
         baz = Baz("global baz")
-        gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, bar)
-        gsm.provideUtility(IBaz, baz)
-        gsm.provideUtility(IInterface, foo, name="bob")
+        gsm = zope.component.getGlobalSiteManager()
+        gsm.registerUtility(foo, IInterface, name="bob")
+        gsm.registerUtility(bar, IInterface)
+        gsm.registerUtility(baz, IBaz)
 
         self.assertEqual(searchInterface(None, search_string="bob"),
                          [foo])
 
     def test_query_get_Utility_delegates_to_global(self):
-        gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, Foo("global"))
-        gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
+        zope.component.provideUtility(Foo("global"), IInterface)
+        zope.component.provideUtility(Foo("global bob"), IInterface,
+                                      name="bob")
 
-        sm = zapi.getSiteManager(self.rootFolder)
+        gsm = zope.component.getGlobalSiteManager()
+        sm = zope.component.getSiteManager(self.rootFolder)
         self.assert_(gsm != sm)
 
         # If queryUtility works on the site manager, getUtility in zapi must
@@ -192,29 +170,22 @@ class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
                          "foo global bob")
 
     def test_local_utilities(self):
-        gsm = zapi.getGlobalSiteManager()
-        gsm.provideUtility(IInterface, Foo("global"))
-        gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
+        gsm = zope.component.getGlobalSiteManager()
+        gsm.registerUtility(Foo("global"), IInterface)
+        gsm.registerUtility(Foo("global bob"), IInterface, name="bob")
 
-        sm = zapi.getSiteManager(self.rootFolder)
+        sm = zope.component.getSiteManager(self.rootFolder)
         default = traverse(self.rootFolder, "++etc++site/default")
         default['foo'] = Foo("local")
         foo = default['foo']
-        cm = default.registrationManager
 
         for name in ('', 'bob'):
-            registration = UtilityRegistration(name, IInterface, foo)
-            cname = cm.addRegistration(registration)
-            registration = traverse(cm, cname)
-
             gout = name and "foo global "+name or "foo global"
             self.assertEqual(sm.queryUtility(IInterface, name).foo(), gout)
-
-            registration.status = ActiveStatus
+            sm.registerUtility(foo, IInterface, name)
             self.assertEqual(
                 sm.queryUtility(IInterface, name).foo(), "foo local")
-
-            registration.status = InactiveStatus
+            sm.unregisterUtility(foo, IInterface, name)
             self.assertEqual(sm.queryUtility(IInterface, name).foo(), gout)
 
 

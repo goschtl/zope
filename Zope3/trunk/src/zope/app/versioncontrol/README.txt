@@ -22,20 +22,21 @@ implementation of INonVersionedData has to deal with these for objects
 that contain their own location information.
 
     >>> import persistent
-    >>> from zope import component, interface
-    >>> import zope.app.annotation.attribute
-    >>> import zope.app.annotation.interfaces
-    >>> import zope.app.traversing.interfaces
+    >>> import zope.interface
+    >>> import zope.component
+    >>> import zope.traversing.interfaces
+    >>> import zope.annotation.attribute
+    >>> import zope.annotation.interfaces
     >>> from zope.app.versioncontrol import interfaces
 
     >>> marker = object()
 
     >>> class Sample(persistent.Persistent):
-    ...     interface.implements(
+    ...     zope.interface.implements(
     ...         interfaces.IVersionable,
     ...         interfaces.INonVersionedData,
-    ...         zope.app.annotation.interfaces.IAttributeAnnotatable,
-    ...         zope.app.traversing.interfaces.IPhysicallyLocatable,
+    ...         zope.annotation.interfaces.IAttributeAnnotatable,
+    ...         zope.traversing.interfaces.IPhysicallyLocatable,
     ...         )
     ...
     ...     # Methods defined by INonVersionedData
@@ -69,8 +70,8 @@ that contain their own location information.
     ...     def __repr__(self):
     ...         return "<%s object>" % self.__class__.__name__
 
-    >>> component.provideAdapter(
-    ...     zope.app.annotation.attribute.AttributeAnnotations)
+    >>> zope.component.provideAdapter(
+    ...     zope.annotation.attribute.AttributeAnnotations)
 
 Now we need to create a database with an instance of our sample object to work
 with:
@@ -116,8 +117,7 @@ be asked to perform operations directly.
 
     >>> repository = zope.app.versioncontrol.repository.Repository()
     >>> zope.interface.verify.verifyObject(
-    ...     interfaces.IRepository,
-    ...	  repository)
+    ...     interfaces.IRepository, repository)
     True
 
 In order to actually use version control, there must be an
@@ -134,12 +134,11 @@ user making changes.  Let's set up an interaction now.
 Let's register some subscribers so we can check that interesting
 events are being fired for version control actions:
 
-    >>> def showEvent(label, object, event):
-    ...     print label, "for", object
-
-    >>> component.provideHandler(
-    ...     (lambda ob, evt: showEvent("applied version control", ob, evt)),
-    ...     (interface.Interface, interfaces.IVersionControlApplied))
+    >>> @zope.component.adapter(None, interfaces.IVersionEvent)
+    ... def printEvent(object, event):
+    ...     print event
+    ... 
+    >>> zope.component.provideHandler(printEvent)
 
 Now, let's put an object under version control and verify that we can
 determine that fact by checking against the interface:

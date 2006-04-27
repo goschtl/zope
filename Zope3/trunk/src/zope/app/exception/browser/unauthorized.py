@@ -17,12 +17,13 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app import zapi
-from zope.formlib import page
+from zope.publisher.browser import BrowserPage
 from zope.formlib import namedtemplate
+
+from zope.app import zapi
 from zope.app.pagetemplate import ViewPageTemplateFile
 
-class Unauthorized(page.Page):
+class Unauthorized(BrowserPage):
 
     def __call__(self):
         # Set the error status to 403 (Forbidden) in the case when we don't

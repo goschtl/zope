@@ -17,26 +17,18 @@ This vocabulary provides permission IDs.
 
 $Id$
 """
-import warnings
-import zope.deprecation
-
-from zope.security.checker import CheckerPublic
-from zope.app import zapi
+import zope.component
 from zope.interface import implements, classProvides
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
-from zope.schema.interfaces import ISourceQueriables
+from zope.schema.interfaces import ISourceQueriables, IVocabularyFactory
 from zope.security.interfaces import IPermission
+from zope.security.checker import CheckerPublic
+
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.security.interfaces import IPrincipalSource
 from zope.app.component import queryNextUtility
 from zope.app.component.vocabulary import UtilityVocabulary
-from zope.app.schema.interfaces import IVocabularyFactory
-
-# BBB Backward Compatibility
-zope.deprecation.__show__.off()
-from zope.exceptions import NotFoundError
-zope.deprecation.__show__.on()
 
 class PermissionsVocabulary(UtilityVocabulary):
     classProvides(IVocabularyFactory)
@@ -66,7 +58,7 @@ class PermissionIdsVocabulary(SimpleVocabulary):
     the special permission 'zope.Public':
 
         >>> from zope.app.security.interfaces import IPermission
-        >>> from zope.app.security.permission import Permission
+        >>> from zope.security.permission import Permission
         >>> from zope.app.testing import ztapi
         >>> ztapi.provideUtility(IPermission, Permission('zope.Public'),
         ...     'zope.Public')
@@ -106,7 +98,7 @@ class PermissionIdsVocabulary(SimpleVocabulary):
 
     def __init__(self, context):
         terms = []
-        permissions = zapi.getUtilitiesFor(IPermission, context)
+        permissions = zope.component.getUtilitiesFor(IPermission, context)
         for name, permission in permissions:
             if name == 'zope.Public':
                 terms.append(SimpleTerm(
@@ -144,8 +136,8 @@ class PrincipalSource(object):
         simply monkey patch the `getUtility()` method to always return our
         dummy authentication utility.
 
-        >>> temp = zapi.getUtility
-        >>> zapi.getUtility = lambda iface: DummyUtility()
+        >>> temp = zope.component.getUtility
+        >>> zope.component.getUtility = lambda iface: DummyUtility()
 
         Now initialize the principal source and test the method
 
@@ -157,22 +149,12 @@ class PrincipalSource(object):
 
         Now revert our patch.
 
-        >>> zapi.getUtility = temp
+        >>> zope.component.getUtility = temp
         """
-        auth = zapi.getUtility(IAuthentication)
+        auth = zope.component.getUtility(IAuthentication)
         try:
             auth.getPrincipal(id)
         except PrincipalLookupError:
-            return False
-        except NotFoundError: # BBB Backward Compatibility
-            warnings.warn(
-                "A %s instance raised a NotFoundError in "
-                "getPrincipals.  Raising NotFoundError in this "
-                "method is deprecated and will no-longer be supported "
-                "starting in Zope 3.3.  PrincipalLookupError should "
-                "be raised instead."
-                % auth.__class__.__name__,
-                DeprecationWarning)
             return False
         else:
             return True
@@ -208,17 +190,17 @@ class PrincipalSource(object):
         >>> testingNextUtility(dummy1, dummy2, IAuthentication)
         >>> testingNextUtility(dummy2, dummy3, IAuthentication)
 
-        >>> temp = zapi.getUtility
-        >>> zapi.getUtility = lambda iface: dummy1
+        >>> temp = zope.component.getUtility
+        >>> zope.component.getUtility = lambda iface: dummy1
 
         >>> source = PrincipalSource()
         >>> list(source.getQueriables())
         [(u'0', dummy1), (u'1.1', 1), (u'1.2', 2), (u'1.3', 3), (u'2.4', 4)]
 
-        >>> zapi.getUtility = temp
+        >>> zope.component.getUtility = temp
         """
         i = 0
-        auth = zapi.getUtility(IAuthentication)
+        auth = zope.component.getUtility(IAuthentication)
         yielded = []
         while True:
             queriables = ISourceQueriables(auth, None)

@@ -21,19 +21,19 @@ from types import StringTypes
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
+import zope.component
 from zope.interface import implements, classProvides
 from zope.interface.common.mapping import IEnumerableMapping
+from zope.schema.interfaces import IVocabularyFactory
+from zope.rdb import queryForResults
+from zope.rdb.interfaces import IZopeDatabaseAdapter
 
-from zope.app import zapi
-from zope.app.rdb import queryForResults
 from zope.app.container.contained import Contained
-from zope.app.schema.interfaces import IVocabularyFactory
 from zope.app.component.vocabulary import UtilityVocabulary
 from zope.app.cache.caching import getCacheForObject, getLocationForCache
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter
 
-from interfaces import ISQLScript
-from dtml import SQLDTML
+from zope.app.sqlscript.interfaces import ISQLScript
+from zope.app.sqlscript.dtml import SQLDTML
 
 
 unparmre = re.compile(r'([\000- ]*([^\000- ="]+))')
@@ -105,11 +105,11 @@ class SQLScript(Persistent, Contained):
 
     def getConnection(self):
         name = self.connectionName
-        connection = zapi.getUtility(IZopeDatabaseAdapter, name)
+        connection = zope.component.getUtility(IZopeDatabaseAdapter, name)
         return connection()
 
     def __call__(self, **kw):
-        """See zope.app.rdb.interfaces"""
+        """See zope.rdb.interfaces"""
 
         # Try to resolve arguments
         arg_values = {}

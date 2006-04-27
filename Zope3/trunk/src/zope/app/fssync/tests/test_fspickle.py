@@ -16,14 +16,12 @@
 $Id$
 """
 import unittest
-
-from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.location.tests import TLocation
-from zope.app.fssync import fspickle
-from zope.interface import directlyProvides
-
 from zope.testing.doctestunit import DocTestSuite
+from zope.interface import directlyProvides
+from zope.traversing.interfaces import IContainmentRoot
+from zope.location.tests import TLocation
 
+from zope.app.fssync import fspickle
 
 class PersistentLoaderTestCase(unittest.TestCase):
 

@@ -46,8 +46,8 @@ class Declaration(Specification):
     def __init__(self, *interfaces):
         Specification.__init__(self, _normalizeargs(interfaces))
 
-    def changed(self):
-        Specification.changed(self)
+    def changed(self, originally_changed):
+        Specification.changed(self, originally_changed)
         try:
             del self._v_attrs
         except AttributeError:
@@ -236,21 +236,6 @@ class Declaration(Specification):
 
     __radd__ = __add__
 
-    def __nonzero__(self):
-        """Test whether there are any interfaces in a specification.
-
-        >>> from zope.interface import Interface
-        >>> class I1(Interface): pass
-        ...
-        >>> spec = Declaration(I1)
-        >>> int(bool(spec))
-        1
-        >>> spec = Declaration()
-        >>> int(bool(spec))
-        0
-        """
-        return bool(self.__iro__)
-
 
 ##############################################################################
 #
@@ -271,6 +256,8 @@ class Implements(Declaration):
     def __repr__(self):
         return '<implementedBy %s>' % (self.__name__)
 
+    def __reduce__(self):
+        return implementedBy, (self.inherit, )
 
 def implementedByFallback(cls):
     """Return the interfaces implemented for a class' instances
@@ -942,6 +929,45 @@ def alsoProvides(object, *interfaces):
     """
     directlyProvides(object, directlyProvidedBy(object), *interfaces)
 
+def noLongerProvides(object, interface):
+    """
+    This removes a directly provided interface from an object.
+    Consider the following two interfaces:
+
+      >>> from zope.interface import Interface
+      >>> class I1(Interface): pass
+      ...
+      >>> class I2(Interface): pass
+      ...
+
+    ``I1`` is provided through the class, ``I2`` is directly provided
+    by the object:
+    
+      >>> class C(object):
+      ...    implements(I1)
+      >>> c = C()
+      >>> alsoProvides(c, I2)
+      >>> I2.providedBy(c)
+      True
+
+    Remove I2 from c again:
+      
+      >>> noLongerProvides(c, I2)
+      >>> I2.providedBy(c)
+      False
+
+    Removing an interface that is provided through the class is not possible:
+
+      >>> noLongerProvides(c, I1)
+      Traceback (most recent call last):
+      ...
+      ValueError: Can only remove directly provided interfaces.
+
+    """
+    directlyProvides(object, directlyProvidedBy(object)-interface)
+    if interface.providedBy(object):
+        raise ValueError("Can only remove directly provided interfaces.")
+
 class ClassProvidesBasePy(object):
 
     def __get__(self, inst, cls):
@@ -1208,30 +1234,6 @@ def ObjectSpecification(direct, cls):
       >>> int(providedBy(c).extends(I31))
       1
       >>> int(providedBy(c).extends(I5))
-      1
-
-      nonzero:
-
-      >>> from zope.interface import Interface
-      >>> class I1(Interface):
-      ...     pass
-      >>> class I2(Interface):
-      ...     pass
-      >>> class C(object):
-      ...     implements(I1)
-      >>> c = C()
-      >>> int(bool(providedBy(c)))
-      1
-      >>> directlyProvides(c, I2)
-      >>> int(bool(providedBy(c)))
-      1
-      >>> class C(object):
-      ...     pass
-      >>> c = C()
-      >>> int(bool(providedBy(c)))
-      0
-      >>> directlyProvides(c, I2)
-      >>> int(bool(providedBy(c)))
       1
     """
 

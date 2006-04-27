@@ -21,7 +21,8 @@ from docutils.writers.html4css1 import HTMLTranslator
 from docutils.writers.html4css1 import Writer
 
 from zope.interface import implements
-from zope.app.publisher.browser import BrowserView
+from zope.publisher.browser import BrowserView
+
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.renderer.interfaces import ISource, IHTMLRenderer
 from zope.app.renderer import SourceFactory

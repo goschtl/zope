@@ -19,10 +19,10 @@ import os
 
 from unittest import TestCase, TestLoader, TextTestRunner
 
+from zope import component
 from zope.pagetemplate.tests.util import check_xml
 from zope.publisher.browser import TestRequest
-from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.tests import ztapi
+from zope.app.component.testing import PlacefulSetup
 from zope.app.onlinehelp.tests import util
 from zope.app.onlinehelp.interfaces import IOnlineHelp, IOnlineHelpTopic
 from zope.app.onlinehelp.onlinehelp import OnlineHelp
@@ -41,7 +41,7 @@ class TestOnlineHelpTopicTreeView(PlacefulSetup, TestCase):
         PlacefulSetup.setUp(self, site=True)
         path = os.path.join(testdir(), 'help.txt')
         self.onlinehelp = OnlineHelp('Help', path)
-        ztapi.provideUtility(IOnlineHelp, self.onlinehelp, "OnlineHelp")
+        component.provideUtility(self.onlinehelp, IOnlineHelp, "OnlineHelp")
 
     def test_onlinehelp(self):
         view = OnlineHelpTopicTreeView

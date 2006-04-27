@@ -18,19 +18,15 @@ $Id$
 __docformat__ = "reStructuredText"
 import unittest
 
+import zope.component
 from zope.testing import doctest
-from zope.app.component import interfaces
 from zope.app.module import manager
-from zope.app.testing import setup, ztapi
+from zope.app.testing import setup
 
 def setUp(test):
     setup.placefulSetUp()
-    ztapi.subscribe(
-        (interfaces.registration.IRegistrationActivatedEvent,), None,
-        manager.setNameOnActivation)
-    ztapi.subscribe(
-        (interfaces.registration.IRegistrationDeactivatedEvent,), None,
-        manager.unsetNameOnDeactivation)
+    zope.component.provideHandler(manager.setNameOnActivation)
+    zope.component.provideHandler(manager.unsetNameOnDeactivation)
 
 def tearDown(test):
     setup.placefulTearDown()

@@ -18,12 +18,11 @@ $Id$
 import unittest
 from zope.interface import implements, Interface
 from zope.publisher.browser import TestRequest
+from zope.publisher.interfaces.browser import IBrowserView
 
 from zope.app.basicskin.standardmacros import Macros
 from zope.app.component.testing import PlacefulSetup
-from zope.app.publisher.interfaces.browser import IBrowserView
 from zope.app.testing import ztapi
-
 
 class ViewWithMacros(object):
     implements(IBrowserView)

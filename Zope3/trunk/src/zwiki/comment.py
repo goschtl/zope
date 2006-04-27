@@ -21,9 +21,9 @@ from persistent import Persistent
 
 from zope.interface import implements
 from zope.schema.vocabulary import getVocabularyRegistry
+from zope.dublincore.interfaces import ICMFDublinCore
 from zope.app.container.contained import Contained
-from zope.app.dublincore.interfaces import ICMFDublinCore
-from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
+from zope.filerepresentation.interfaces import IReadFile, IWriteFile
 
 from zwiki.interfaces import IComment
 from zwiki.interfaces import IWikiPageContained
@@ -148,18 +148,18 @@ class CommentFile:
         self.context = context
 
     def read(self):
-        """See zope.app.filerepresentation.interfaces.IReadFile"""
+        """See zope.filerepresentation.interfaces.IReadFile"""
         text = 'Title: %s\n' %self.context.title
         text += 'Type: %s\n\n' %self.context.type
         text += self.context.source
         return text
 
     def size(self):
-        """See zope.app.filerepresentation.interfaces.IReadFile"""
+        """See zope.filerepresentation.interfaces.IReadFile"""
         return len(self.read())
 
     def write(self, data):
-        """See zope.app.filerepresentation.interfaces.IWriteFile"""
+        """See zope.filerepresentation.interfaces.IWriteFile"""
         if data.startswith('Title: '):
             title, data = data.split('\n', 1)
             self.context.title = unicode(title[7:])

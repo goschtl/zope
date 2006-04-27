@@ -17,8 +17,9 @@ $Id$
 """
 import unittest
 
+from zope.component import getMultiAdapter
 from zope.component.interfaces import IFactory
-from zope.component.interfaces import ISiteManager
+from zope.component.interfaces import IComponentLookup
 from zope.component.factory import Factory
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
@@ -26,12 +27,11 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.schema import TextLine, accessors
 from zope.security.checker import CheckerPublic
+from zope.component.eventtesting import getEvents
+from zope.lifecycleevent.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
 
-from zope.app import zapi
 from zope.app.component.site import SiteManagerAdapter
 from zope.app.container.interfaces import IAdding
-from zope.app.event.tests.placelesssetup import getEvents
-from zope.app.event.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import TextWidget as Text
 from zope.app.form.browser.add import AddViewFactory, AddView
@@ -258,7 +258,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         (descriminator, callable, args, kw) = self._context.last_action
         factory = AddViewFactory(*args)
         request = TestRequest()
-        view = zapi.getMultiAdapter((adding, request), name='addthis')
+        view = getMultiAdapter((adding, request), name='addthis')
         content = view.create('a',0,abc='def')
 
         self.failUnless(isinstance(content, C))
@@ -287,7 +287,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                 return "."
 
         # register content factory for content factory id lookup
-        ztapi.provideAdapter(None, ISiteManager, SiteManagerAdapter)
+        ztapi.provideAdapter(None, IComponentLookup, SiteManagerAdapter)
         ztapi.provideUtility(IFactory, Factory(C), name='C')
         
         adding = Adding(self)
@@ -295,7 +295,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         (descriminator, callable, args, kw) = self._context.last_action
         factory = AddViewFactory(*args)
         request = TestRequest()
-        view = zapi.getMultiAdapter((adding, request), name='addthis')
+        view = getMultiAdapter((adding, request), name='addthis')
         content = view.create('a',0,abc='def')
 
         self.failUnless(isinstance(content, C))
@@ -328,7 +328,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         (descriminator, callable, args, kw) = self._context.last_action
         factory = AddViewFactory(*args)
         request = TestRequest()
-        view = zapi.getMultiAdapter((adding, request), name='addthis')
+        view = getMultiAdapter((adding, request), name='addthis')
 
         view.createAndAdd(SampleData.__dict__)
 
@@ -366,7 +366,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         (descriminator, callable, args, kw) = self._context.last_action
         factory = AddViewFactory(*args)
         request = TestRequest()
-        view = zapi.getMultiAdapter((adding, request), name='addthis')
+        view = getMultiAdapter((adding, request), name='addthis')
 
         view.createAndAdd({'bar': 'bar'})
 
@@ -386,7 +386,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             for (k, v) in dict(SampleData.__dict__).items()
             ]))
         request.form[Update] = ''
-        view = zapi.getMultiAdapter((adding, request), name='addthis')
+        view = getMultiAdapter((adding, request), name='addthis')
 
         # Add hooks to V
 

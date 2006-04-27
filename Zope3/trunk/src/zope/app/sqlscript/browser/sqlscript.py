@@ -15,12 +15,10 @@
 
 $Id$
 """
+from zope.rdb.interfaces import DatabaseException
+from zope.traversing.browser import absoluteURL
 from zope.app.form.browser.submit import Update
-from zope.app.rdb.interfaces import DatabaseException
-from zope.app import zapi
-
 from zope.app.sqlscript.interfaces import ISQLScript
-
 
 class SQLScriptTest(object):
     """Test the SQL inside the SQL Script
@@ -125,7 +123,7 @@ class SQLScriptAdd(object):
             name = self.context.contentName
             container = self.context.context
             obj = container[name]
-            url = zapi.absoluteURL(obj, self.request)
+            url = absoluteURL(obj, self.request)
             url = '%s/test.html' % url
             return url
         else:

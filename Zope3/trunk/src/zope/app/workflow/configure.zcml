@@ -59,7 +59,7 @@
         class="zope.app.workflow.definition.ProcessDefinitionElementContainer">
 
     <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
 
     <require
@@ -76,7 +76,7 @@
   <adapter
       factory="zope.app.workflow.instance.ProcessInstanceContainerAdapter"
       provides="zope.app.workflow.interfaces.IProcessInstanceContainer"
-      for="zope.app.annotation.interfaces.IAnnotatable"
+      for="zope.annotation.interfaces.IAnnotatable"
       permission="zope.workflow.UseProcessInstances"
       trusted="true"
       />

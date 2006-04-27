@@ -23,7 +23,8 @@ objects.  Before creating a catalog, you must create a intid tool:
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/++etc++site/default/@@+
   ... 
-  ... type_name=BrowserAdd__zope.app.intid.IntIds&id=&add=+Add+""")
+  ... type_name=BrowserAdd__zope.app.intid.IntIds&id=&add=+Add+""",
+  ... handle_errors=False)
   HTTP/1.1 303 ...
 
 And register it:
@@ -47,30 +48,16 @@ And register it:
   ... 
   ... 1
   ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
-  ... Content-Disposition: form-data; name="field.status"
-  ... 
-  ... Active
-  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
-  ... Content-Disposition: form-data; name="field.status-empty-marker"
-  ... 
-  ... 1
-  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
-  ... Content-Disposition: form-data; name="field.permission"
+  ... Content-Disposition: form-data; name="field.comment"
   ... 
   ... 
   ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
+  ... Content-Disposition: form-data; name="field.actions.register"
   ... 
-  ... 1
-  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
+  ... Register
   ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ--
-  ... """)
+  ... """, handle_errors=False)
   HTTP/1.1 303 See Other
-  ...
-  Location: @@SelectedManagementView.html
   ...
 
 
@@ -123,25 +110,13 @@ and register it:
   ... 
   ... 1
   ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
-  ... Content-Disposition: form-data; name="field.status"
+  ... Content-Disposition: form-data; name="field.comment"
   ... 
-  ... Active
+  ... 
   ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
-  ... Content-Disposition: form-data; name="field.status-empty-marker"
+  ... Content-Disposition: form-data; name="field.actions.register"
   ... 
-  ... 1
-  ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
-  ... Content-Disposition: form-data; name="field.permission"
-  ... 
-  ... zope.Public
-  ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
-  ... 
-  ... 1
-  ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
+  ... Register
   ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa--
   ... """)
   HTTP/1.1 303 ...

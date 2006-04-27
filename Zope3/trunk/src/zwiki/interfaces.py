@@ -19,11 +19,11 @@ $Id$
 """
 from zope.interface import Interface
 from zope.schema import TextLine, List, SourceText, Choice
+from zope.component.interfaces import IObjectEvent
 
 from zope.app.container.interfaces import IContained
 from zope.app.container.interfaces import IContainer
 from zope.app.container.constraints import contains, containers
-from zope.app.event.interfaces import IObjectEvent
 
 from zwiki import ZWikiMessageFactory as _
 

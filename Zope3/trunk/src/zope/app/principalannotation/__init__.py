@@ -22,12 +22,12 @@ __docformat__ = 'restructuredtext'
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from BTrees.OOBTree import OOBTree
-from zope import interface, component
 import zope.security.interfaces
+from zope import interface, component
+from zope.location import Location
+from zope.annotation.interfaces import IAnnotations
 
-from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.contained import Contained
-from zope.app.location import Location
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.component import queryNextUtility
 

@@ -3,12 +3,6 @@
    xmlns="http://namespaces.zope.org/browser"
    >
 
-  <tool
-      interface="zope.app.cache.interfaces.ICache"
-      title="Caches"
-      description="Caches can be used to make your site run faster."
-      />
-
   <addMenuItem
       title="RAM Cache"
       description="A RAM cache is a volatile (in memory) cache"

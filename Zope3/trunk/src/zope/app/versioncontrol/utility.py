@@ -24,6 +24,7 @@ import persistent
 from ZODB.serialize import referencesf
 from ZODB.TimeStamp import TimeStamp
 
+import zope.location
 import zope.security.management
 
 import zope.app.versioncontrol.interfaces
@@ -82,8 +83,8 @@ def _findModificationTime(object):
             return None
 
         # TODO obviously no test for this
-        if (zope.app.location.ILocation.providedBy(ob)
-            and not zope.app.location.inside(ob, object)):
+        if (zope.location.ILocation.providedBy(ob)
+            and not zope.location.inside(ob, object)):
             return '1' # go away
 
 #          The location check above should wake the object

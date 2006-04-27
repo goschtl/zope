@@ -19,9 +19,9 @@ from datetime import datetime
 
 from zope.i18n import translate
 from zope.interface import implements
+from zope.exceptions.interfaces import UserError
 
 from zope.app import zapi
-from zope.app.exception.interfaces import UserError
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.security.settings import Unset, Allow, Deny
 from zope.app.security.interfaces import IPermission

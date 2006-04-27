@@ -16,21 +16,17 @@
 $Id$
 """
 import unittest
+import transaction
+
+from zope import copypastemove
+from zope.interface import implements, Interface, directlyProvides
+from zope.exceptions.interfaces import UserError
 
 from zope.app.testing import ztapi
 from zope.app.testing import functional
-
-import transaction
-
-from zope.interface import implements, Interface, directlyProvides
-from zope.app import copypastemove
-
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.principalfolder import Principal
 from zope.app.authentication.principalfolder import IInternalPrincipal
-
-from zope.app.exception.interfaces import UserError
-
 
 class FunkTest(functional.BrowserTestCase):
 

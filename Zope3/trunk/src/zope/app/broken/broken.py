@@ -19,11 +19,10 @@ __docformat__ = 'restructuredtext'
 
 import ZODB.broken
 import zope.interface
-import zope.app.location.interfaces
+import zope.location.interfaces
 import zope.security.checker
 
-
-from zope.app.annotation.interfaces import IAnnotations
+from zope.annotation.interfaces import IAnnotations
 
 class IBroken(zope.interface.Interface):
     """Marker interface for broken objects
@@ -32,7 +31,7 @@ class IBroken(zope.interface.Interface):
 class Broken(ZODB.broken.Broken):
     zope.interface.implements(
         IBroken,
-        zope.app.location.interfaces.ILocation,
+        zope.location.interfaces.ILocation,
         IAnnotations,
         )
 
@@ -96,7 +95,7 @@ def installBroken(event):
 
     It implements ILocation and IAnnotations::
 
-      >>> zope.app.location.interfaces.ILocation.implementedBy(cls)
+      >>> zope.location.interfaces.ILocation.implementedBy(cls)
       True
       >>> IAnnotations.implementedBy(cls)
       True

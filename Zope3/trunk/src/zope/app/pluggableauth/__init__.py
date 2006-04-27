@@ -32,6 +32,8 @@ from BTrees.OIBTree import OIBTree
 from zope.interface import implements
 from zope.component.interfaces import IViewFactory
 from zope.deprecation import deprecated
+from zope.traversing.api import getPath
+from zope.location import locate
 
 from zope.app import zapi
 from zope.app.component import queryNextUtility
@@ -42,10 +44,8 @@ from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.contained import Contained, setitem, uncontained
 from zope.app.container.ordered import OrderedContainer
-from zope.app.location import locate
 from zope.app.security.interfaces import ILoginPassword, IAuthentication
 from zope.app.security.interfaces import PrincipalLookupError
-from zope.app.traversing.api import getPath
 
 from interfaces import IUserSchemafied, IPluggableAuthentication
 from interfaces import IPrincipalSource, ILoginPasswordPrincipalSource
@@ -203,7 +203,7 @@ def PluggableAuthenticationAddSubscriber(self, event):
 
     Define a stub for `PluggableAuthentication`
 
-    >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
+    >>> from zope.traversing.interfaces import IPhysicallyLocatable
     >>> class PluggableAuthStub(object):
     ...     implements(IPhysicallyLocatable)
     ...     def __init__(self, earmark=None):

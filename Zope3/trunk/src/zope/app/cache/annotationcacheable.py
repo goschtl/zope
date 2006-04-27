@@ -17,11 +17,11 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import zope.component
 from zope.interface import implements
 from zope.proxy import removeAllProxies
+from zope.annotation.interfaces import IAnnotations
 
-from zope.app import zapi
-from zope.app.annotation.interfaces import IAnnotations
 from zope.app.cache.interfaces import ICacheable, ICache
 
 annotation_key = 'zope.app.cache.CacheManager'
@@ -42,7 +42,7 @@ class AnnotationCacheable(object):
         # Remove object from old cache
         old_cache_id = self.getCacheId()
         if old_cache_id and old_cache_id != id:
-            cache = zapi.getUtility(ICache, old_cache_id)
+            cache = zope.component.getUtility(ICache, old_cache_id)
             cache.invalidate(self._context)
         annotations = IAnnotations(removeAllProxies(self._context))
         annotations[annotation_key] = id

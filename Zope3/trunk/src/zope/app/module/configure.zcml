@@ -8,19 +8,13 @@
         />
   </localUtility>
 
-  <subscriber
-     for="..component.interfaces.registration.IRegistrationActivatedEvent"
-     handler=".manager.setNameOnActivation"
-     />
+  <subscriber handler=".manager.setNameOnActivation" />
 
-  <subscriber
-     for="..component.interfaces.registration.IRegistrationDeactivatedEvent"
-     handler=".manager.unsetNameOnDeactivation"
-     />
+  <subscriber handler=".manager.unsetNameOnDeactivation" />
 
   <adapter
       for="zope.app.component.interfaces.ISiteManagementFolder"
-      provides="zope.app.filerepresentation.interfaces.IFileFactory"
+      provides="zope.filerepresentation.interfaces.IFileFactory"
       name=".py"
       factory=".manager.ModuleFactory"
       permission="zope.ManageContent"

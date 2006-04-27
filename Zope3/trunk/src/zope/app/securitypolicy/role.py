@@ -17,9 +17,9 @@ $Id$
 """
 from persistent import Persistent
 from zope.interface import implements
+from zope.component import getUtilitiesFor
+from zope.location import Location
 
-from zope.app import zapi
-from zope.app.location import Location
 from zope.app.securitypolicy.interfaces import IRole
 
 from zope.app.i18n import ZopeMessageFactory as _
@@ -42,11 +42,6 @@ class LocalRole(Persistent, Location):
         self.title = title
         self.description = description
 
-# BBB: Renamed component on 12/05/2004
-PersistentRole = LocalRole
-from zope.app.component.site import UtilityRegistration
-RoleRegistration = UtilityRegistration
-
 def setIdOnActivation(role, event):
     """Set the permission id upon registration activation.
 
@@ -61,8 +56,8 @@ def setIdOnActivation(role, event):
     >>> role1 = LocalRole('Role 1', 'A first role')
     >>> role1.id
     u'<role not activated>'
-    >>> from zope.app.component import registration 
-    >>> event = registration.RegistrationActivatedEvent(
+    >>> import zope.component.interfaces
+    >>> event = zope.component.interfaces.Registered(
     ...     Registration(role1, 'role1'))
 
     Now we pass the event into this function, and the id of the role should be
@@ -89,8 +84,8 @@ def unsetIdOnDeactivation(role, event):
     >>> role1 = LocalRole('Role 1', 'A first role')
     >>> role1.id = 'role1'
 
-    >>> from zope.app.component import registration 
-    >>> event = registration.RegistrationDeactivatedEvent(
+    >>> import zope.component.interfaces
+    >>> event = zope.component.interfaces.Unregistered(
     ...     Registration(role1, 'role1'))
 
     Now we pass the event into this function, and the id of the role should be
@@ -105,6 +100,6 @@ def unsetIdOnDeactivation(role, event):
 
 
 def checkRole(context, role_id):
-    names = [name for name, util in zapi.getUtilitiesFor(IRole, context)]
+    names = [name for name, util in getUtilitiesFor(IRole, context)]
     if not role_id in names:
         raise ValueError("Undefined role id", role_id)

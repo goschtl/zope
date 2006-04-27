@@ -21,12 +21,12 @@ from xml.dom import minidom
 
 from zope.interface import implements
 from zope.i18n import translate
+from zope.size.interfaces import ISized
+from zope.dublincore.interfaces import IDCTimes
+from zope.filerepresentation.interfaces import IReadDirectory
+from zope.traversing.api import getName
 
-from zope.app import zapi
 from zope.app.dav.interfaces import IDAVSchema
-from zope.app.dublincore.interfaces import IDCTimes
-from zope.app.filerepresentation.interfaces import IReadDirectory
-from zope.app.size.interfaces import ISized
 from zope.app.file.interfaces import IFile
 
 class DAVSchemaAdapter(object):
@@ -38,7 +38,7 @@ class DAVSchemaAdapter(object):
         self.context = object
 
     def displayname(self):
-        value = zapi.name(self.context)
+        value = getName(self.context)
         if IReadDirectory(self.context, None) is not None:
             value = value + '/'
         return value

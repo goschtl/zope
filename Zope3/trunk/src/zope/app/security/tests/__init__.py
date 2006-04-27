@@ -15,9 +15,9 @@
 
 $Id$
 """
-from zope.app import zapi
-from zope.app.security.permission import Permission
-from zope.app.security.interfaces import IPermission
+import zope.component
+from zope.security.interfaces import IPermission
+from zope.security.permission import Permission
 
 def addCheckerPublic():
     """Add the CheckerPublic permission as 'zope.Public'"""
@@ -29,5 +29,5 @@ def addCheckerPublic():
             it allows security computation to be bypassed.
             """
             )
-    gsm = zapi.getGlobalSiteManager()
-    gsm.provideUtility(IPermission, perm, perm.id)
+    gsm = zope.component.getGlobalSiteManager()
+    gsm.registerUtility(perm, IPermission, perm.id)

@@ -134,7 +134,7 @@ class SpecificationBasePy(object):
           ...
           >>> spec = Declaration()
           >>> int(spec.extends(Interface))
-          0
+          1
           >>> spec = Declaration(I2)
           >>> int(spec.extends(Interface))
           1
@@ -156,6 +156,8 @@ try:
     from _zope_interface_coptimizations import SpecificationBase
 except ImportError:
     pass
+
+
 
 class Specification(SpecificationBase):
     """Specifications
@@ -249,7 +251,7 @@ class Specification(SpecificationBase):
         for b in bases:
             b.subscribe(self)
 
-        self.changed()
+        self.changed(self)
 
     __bases__ = property(
 
@@ -257,7 +259,7 @@ class Specification(SpecificationBase):
         __setBases,
         )
 
-    def changed(self):
+    def changed(self, originally_changed):
         """We, or something we depend on, have changed
         """
 
@@ -265,10 +267,17 @@ class Specification(SpecificationBase):
         implied.clear()
 
         ancestors = ro(self)
+
+        try:
+            if Interface not in ancestors:
+                ancestors.append(Interface)
+        except NameError:
+            pass # defining Interface itself
+
         self.__sro__ = tuple(ancestors)
         self.__iro__ = tuple([ancestor for ancestor in ancestors
                               if isinstance(ancestor, InterfaceClass)
-                             ])
+                              ])
 
         for ancestor in ancestors:
             # We directly imply our ancestors:
@@ -276,7 +285,7 @@ class Specification(SpecificationBase):
 
         # Now, advise our dependents of change:
         for dependent in self.dependents.keys():
-            dependent.changed()
+            dependent.changed(originally_changed)
 
 
     def interfaces(self):
@@ -333,7 +342,7 @@ class Specification(SpecificationBase):
           ...
           >>> spec = Declaration()
           >>> int(spec.extends(Interface))
-          0
+          1
           >>> spec = Declaration(I2)
           >>> int(spec.extends(Interface))
           1
@@ -907,8 +916,9 @@ def _wire():
     from zope.interface.interfaces import IMethod
     classImplements(Method, IMethod)
 
-    from zope.interface.interfaces import IInterface
+    from zope.interface.interfaces import IInterface, ISpecification
     classImplements(InterfaceClass, IInterface)
+    classImplements(Specification, ISpecification)
 
 # We import this here to deal with module dependencies.
 from zope.interface.declarations import providedBy, implementedBy

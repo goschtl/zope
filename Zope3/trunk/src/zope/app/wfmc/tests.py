@@ -22,8 +22,6 @@ import unittest
 from zope.configuration import xmlconfig
 from zope.testing import module, doctest
 
-import zope.app.annotation.interfaces
-import zope.app.annotation.attribute
 import zope.app.wfmc
 from zope.app.testing import placelesssetup
 from zope.app.testing import ztapi

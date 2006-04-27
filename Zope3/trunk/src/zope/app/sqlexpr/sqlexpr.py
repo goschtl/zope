@@ -15,14 +15,14 @@
 
 $Id$
 """
-from zope.component.exceptions import ComponentLookupError
+from zope.component import queryUtility, createObject
+from zope.component.interfaces import ComponentLookupError
 from zope.interface import implements
 from zope.tales.interfaces import ITALESExpression
 from zope.tales.expressions import StringExpr
-from zope.app import zapi
-from zope.app.exception.interfaces import UserError 
-from zope.app.rdb import queryForResults
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter, IZopeConnection
+from zope.exceptions.interfaces import UserError 
+from zope.rdb import queryForResults
+from zope.rdb.interfaces import IZopeDatabaseAdapter, IZopeConnection
 
 class ConnectionError(UserError):
     """This exception is raised when the user did not specify an RDB
@@ -36,7 +36,7 @@ class SQLExpr(StringExpr):
             # TODO: It is hard-coded that the connection name variable is called
             # 'sql_conn'. We should find a better solution.
             conn_name = econtext.vars['sql_conn']
-            adapter = zapi.queryUtility(IZopeDatabaseAdapter, conn_name)
+            adapter = queryUtility(IZopeDatabaseAdapter, conn_name)
             if adapter is None:
                 raise ConnectionError("The RDB DA name, '%s' you specified is "
                                       "not valid." % conn_name)
@@ -44,7 +44,7 @@ class SQLExpr(StringExpr):
             rdb = econtext.vars['rdb']
             dsn = econtext.vars['dsn']
             try:
-                adapter = zapi.createObject(rdb, dsn)
+                adapter = createObject(rdb, dsn)
             except ComponentLookupError:
                 raise ConnectionError("The factory id, '%s', you specified in "
                                       "the `rdb` attribute did not match any "

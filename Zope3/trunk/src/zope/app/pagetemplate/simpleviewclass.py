@@ -18,11 +18,11 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import sys
-from zope.app.publisher.browser import BrowserView
-from zope.publisher.interfaces.browser import IBrowserPublisher
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.publisher.interfaces import NotFound
 from zope.interface import implements
+from zope.publisher.browser import BrowserView
+from zope.publisher.interfaces.browser import IBrowserPublisher
+from zope.publisher.interfaces import NotFound
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 class simple(BrowserView):
 

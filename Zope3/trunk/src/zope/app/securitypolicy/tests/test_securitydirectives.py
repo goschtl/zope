@@ -17,17 +17,15 @@ $Id$
 """
 import unittest
 
+import zope.component
 from zope.configuration import xmlconfig
 from zope.configuration.config import ConfigurationConflictError
+from zope.security.interfaces import IPermission
+from zope.security.permission import Permission
 
-from zope.app import zapi
 from zope.app.testing import ztapi
-
 from zope.app.testing.placelesssetup import PlacelessSetup
-
-from zope.app.security.interfaces import IPermission
 from zope.app.security.interfaces import IAuthentication
-from zope.app.security.permission import Permission
 from zope.app.security.settings import Allow
 from zope.app.security.principalregistry import principalRegistry
 
@@ -61,7 +59,7 @@ class TestRoleDirective(TestBase, unittest.TestCase):
         context = xmlconfig.file("role.zcml",
                                  zope.app.securitypolicy.tests)
 
-        role = zapi.getUtility(IRole, "zope.Everyperson")
+        role = zope.component.getUtility(IRole, "zope.Everyperson")
         self.failUnless(role.id.endswith('Everyperson'))
         self.assertEqual(role.title, 'Tout le monde')
         self.assertEqual(role.description,

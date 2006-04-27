@@ -23,9 +23,8 @@ import time
 import unittest
 import transaction
 from zope.testing import doctest
-from zope.publisher.browser import TestRequest
+from zope.publisher.browser import TestRequest, BrowserView
 from zope.app.testing import setup, ztapi
-from zope.app.publisher.browser import BrowserView
 
 
 def doctest_RecordingProtocol():
@@ -614,10 +613,10 @@ def setUpBrowser(test=None):
     ztapi.browserViewProviding(IText, TextAreaWidget, IInputWidget)
 
     # ++view++ namespace
-    from zope.app.traversing.interfaces import ITraversable
-    import zope.app.traversing.namespace
+    from zope.traversing.interfaces import ITraversable
+    import zope.traversing.namespace
     ztapi.provideView(None, None, ITraversable, 'view',
-                      zope.app.traversing.namespace.view)
+                      zope.traversing.namespace.view)
 
     # Macros
     from zope.app.basicskin.standardmacros import StandardMacros

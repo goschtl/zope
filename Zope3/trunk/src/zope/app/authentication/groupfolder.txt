@@ -19,7 +19,7 @@ We create group information using the `GroupInformation` class:
 Note that when group-info is added, a GroupAdded event is generated:
 
   >>> from zope.app.authentication import interfaces
-  >>> from zope.app.event.tests.placelesssetup import getEvents
+  >>> from zope.component.eventtesting import getEvents
   >>> getEvents(interfaces.IGroupAdded)
   [<GroupAdded 'group.g1'>]
 

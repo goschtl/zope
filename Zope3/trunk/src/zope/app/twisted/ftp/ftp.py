@@ -20,11 +20,10 @@ from cStringIO import StringIO
 from types import StringTypes
 
 from zope.interface import implements
-
 from zope.publisher.interfaces import NotFound
 from zope.security.interfaces import Unauthorized
 from zope.exceptions import DuplicationError
-from zope.app.copypastemove import ItemNotFoundError
+from zope.copypastemove import ItemNotFoundError
 
 from twisted.internet import threads, defer
 from twisted.protocols import ftp

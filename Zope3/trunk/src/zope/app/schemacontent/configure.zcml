@@ -19,20 +19,15 @@
 
   </localUtility>
 
-  <class class=".content.ContentComponentDefinitionRegistration">
-    <require
-      permission="zope.ManageServices"
-      interface="zope.app.component.interfaces.IUtilityRegistration"
-      set_schema="zope.app.component.interfaces.IUtilityRegistration"
-      />
-  </class>
-
 <!-- Content Component Instance -->
 
   <class class=".content.ContentComponentInstance">
     <implements
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+      interface="zope.annotation.interfaces.IAttributeAnnotatable" />
   </class>
+
+  <subscriber handler=".content.registeredContentComponent" />
+  <subscriber handler=".content.unregisteredContentComponent" />
 
   <include package=".browser" />
 

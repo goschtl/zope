@@ -18,29 +18,27 @@ $Id$
 import sys
 import unittest
 import persistent
-
-from zope import component, interface
-from zope.component.tests.placelesssetup import PlacelessSetup
-from zope.testing import doctest, module
 from transaction import abort
 
 import zope.event
+import zope.location
+import zope.traversing.interfaces
+import zope.annotation.interfaces
+import zope.annotation.attribute
+import zope.component.testing
+import zope.component.eventtesting
+from zope import interface
+from zope.testing import doctest, module
 
-import zope.app.annotation.interfaces
-import zope.app.annotation.attribute
-import zope.app.location
 import zope.app.versioncontrol.version
 from zope.app.versioncontrol import interfaces, nonversioned
-import zope.app.traversing.interfaces
 
 name = 'zope.app.versioncontrol.README'
 
-ps = PlacelessSetup()
-
 def setUp(test):
-    ps.setUp()
+    zope.component.testing.setUp(test)
+    zope.component.eventtesting.setUp(test)
     module.setUp(test, name)
-    zope.event.subscribers.append(eventHandler)
 
 def tearDown(test):
     module.tearDown(test, name)
@@ -48,19 +46,12 @@ def tearDown(test):
     db = test.globs.get('db')
     if db is not None:
         db.close()
-    ps.tearDown()
-    if eventHandler in zope.event.subscribers:
-        zope.event.subscribers.remove(eventHandler)
+    zope.component.testing.tearDown(test)
 
-def eventHandler(event):
-    print event
-
-
-class L(persistent.Persistent, zope.app.location.Location):
+class L(persistent.Persistent, zope.location.Location):
     interface.implements(interfaces.IVersionable,
-                         zope.app.annotation.interfaces.IAttributeAnnotatable,
-                         zope.app.traversing.interfaces.IPhysicallyLocatable,
-                         )
+                         zope.annotation.interfaces.IAttributeAnnotatable,
+                         zope.traversing.interfaces.IPhysicallyLocatable)
     def getPath(self):
         return 'whatever'
 
@@ -116,14 +107,14 @@ def testLocationSanity_for_cloneByPickle():
     """\
 cloneByPickle should not go outside a location
 
-    >>> parent = zope.app.location.Location()
+    >>> parent = zope.location.Location()
     >>> parent.poison = lambda: None
-    >>> ob = zope.app.location.Location()
+    >>> ob = zope.location.Location()
     >>> ob.__parent__ = parent
-    >>> x = zope.app.location.Location()
+    >>> x = zope.location.Location()
     >>> x.poison = lambda: None
     >>> ob.x = x
-    >>> ob.y = zope.app.location.Location()
+    >>> ob.y = zope.location.Location()
     >>> ob.y.__parent__ = ob
     >>> clone = zope.app.versioncontrol.version.cloneByPickle(ob)
     >>> clone.__parent__ is ob.__parent__
@@ -147,9 +138,9 @@ isResourceChanged works as expected:
     >>> from ZODB.tests import util
     >>> import transaction
     >>> db = util.DB()
-    >>> component.provideAdapter(
-    ...     zope.app.annotation.attribute.AttributeAnnotations)
-    >>> component.provideAdapter(
+    >>> zope.component.provideAdapter(
+    ...     zope.annotation.attribute.AttributeAnnotations)
+    >>> zope.component.provideAdapter(
     ...     nonversioned.StandardNonVersionedDataAdapter,
     ...     [None])
     >>> import zope.app.versioncontrol.repository

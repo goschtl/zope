@@ -28,13 +28,13 @@
         interface=".interfaces.IRenderZPTPage"
         />
     <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
   </class>
 
   <adapter 
       for="zope.app.folder.interfaces.IFolder"
-      provides="zope.app.filerepresentation.interfaces.IFileFactory"
+      provides="zope.filerepresentation.interfaces.IFileFactory"
       name=".pt"
       factory=".zptpage.ZPTFactory"
       permission="zope.ManageContent"
@@ -42,21 +42,21 @@
 
   <adapter 
       for=".interfaces.IZPTPage"
-      provides="zope.app.filerepresentation.interfaces.IReadFile"
+      provides="zope.filerepresentation.interfaces.IReadFile"
       factory=".zptpage.ZPTReadFile"
       permission="zope.ManageContent"
       />
 
   <adapter 
       for=".interfaces.IZPTPage"
-      provides="zope.app.filerepresentation.interfaces.IWriteFile"
+      provides="zope.filerepresentation.interfaces.IWriteFile"
       factory=".zptpage.ZPTWriteFile"
       permission="zope.ManageContent"
       />
 
   <adapter
       for=".interfaces.IZPTPage"
-      provides="zope.app.size.interfaces.ISized"
+      provides="zope.size.interfaces.ISized"
       factory=".zptpage.Sized"
       trusted="y"
       permission="zope.ManageContent"

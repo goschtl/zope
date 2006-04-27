@@ -21,24 +21,23 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
+from zope import component
 from zope.interface import implements
+from zope.component.interfaces import ComponentLookupError
+from zope.traversing.interfaces import IPathAdapter, ITraversable
+from zope.traversing.interfaces import TraversalError
+from zope.traversing.adapters import Traverser, traversePathElement
+from zope.security.untrustedpython import rcompile
+from zope.security.proxy import ProxyFactory
+from zope.security.untrustedpython.builtins import SafeBuiltins
+from zope.i18n import translate
 
 from zope.tales.expressions import PathExpr, StringExpr, NotExpr, DeferExpr
 from zope.tales.expressions import SimpleModuleImporter
 from zope.tales.pythonexpr import PythonExpr
 from zope.tales.tales import ExpressionEngine, Context
 
-from zope.component.exceptions import ComponentLookupError
-from zope.app.traversing.interfaces import TraversalError
-from zope.security.untrustedpython import rcompile
-from zope.security.proxy import ProxyFactory
-from zope.security.untrustedpython.builtins import SafeBuiltins
-from zope.i18n import translate
-
-from zope.app import zapi
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.app.traversing.adapters import Traverser, traversePathElement
-from zope.app.traversing.interfaces import IPathAdapter, ITraversable
 
 class InlineCodeError(Exception):
     pass
@@ -126,7 +125,7 @@ class ZopeContextBase(Context):
         # TODO This is only needed when self.evaluateInlineCode is true,
         # so should only be needed for zope.app.pythonpage.
         from zope.app.interpreter.interfaces import IInterpreter
-        interpreter = zapi.queryUtility(IInterpreter, lang)
+        interpreter = component.queryUtility(IInterpreter, lang)
         if interpreter is None:
             error = _('No interpreter named "${lang_name}" was found.',
                       mapping={'lang_name': lang})
@@ -196,7 +195,7 @@ class AdapterNamespaces(object):
         if namespace is None:
             def namespace(object):
                 try:
-                    return zapi.getAdapter(object, IPathAdapter, name)
+                    return component.getAdapter(object, IPathAdapter, name)
                 except ComponentLookupError:
                     raise KeyError(name)
 

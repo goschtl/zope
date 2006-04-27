@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 import urllib
 from zope.interface import implements
-from zope.app.traversing.interfaces import IPathAdapter
+from zope.traversing.interfaces import IPathAdapter
 
 class URLQuote(object):
     r"""An adapter for URL quoting.

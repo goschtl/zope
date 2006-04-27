@@ -21,35 +21,31 @@ import unittest
 from StringIO import StringIO
 
 import transaction
-
-from zope.interface import Interface, implements, directlyProvides
-from zope.schema import Text
-from zope.publisher.interfaces.http import IHTTPRequest
-from zope.publisher.http import status_reasons
-from zope.pagetemplate.tests.util import normalize_xml
 from ZODB.tests.util import DB
 
-from zope.app import zapi
-from zope.app.testing import ztapi
-
-from zope.app.traversing.api import traverse
-from zope.publisher.browser import TestRequest
-from zope.app.component.testing import PlacefulSetup
-from zope.app.traversing.browser import AbsoluteURL
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.dublincore.zopedublincore import ScalarProperty
-from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
-from zope.app.annotation.attribute import AttributeAnnotations
+import zope.component
+from zope.interface import Interface, implements, directlyProvides
+from zope.schema import Text
 from zope.schema.interfaces import IText, ISequence
+from zope.publisher.interfaces.http import IHTTPRequest
+from zope.publisher.http import status_reasons
+from zope.publisher.browser import TestRequest
+from zope.pagetemplate.tests.util import normalize_xml
+from zope.traversing.api import traverse
+from zope.traversing.browser import AbsoluteURL, absoluteURL
+from zope.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.annotation.attribute import AttributeAnnotations
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.dublincore.zopedublincore import ScalarProperty
+
+from zope.app.testing import ztapi
+from zope.app.component.testing import PlacefulSetup
 
 import zope.app.dav.tests
 from zope.app.dav.tests.unitfixtures import File, Folder, FooZPT
-
 from zope.app.dav import proppatch
-from zope.app.dav.interfaces import IDAVSchema
-from zope.app.dav.interfaces import IDAVNamespace
-from zope.app.dav.interfaces import IDAVWidget
+from zope.app.dav.interfaces import IDAVSchema, IDAVNamespace, IDAVWidget
 from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
 from zope.app.dav.opaquenamespaces import DAVOpaqueNamespacesAdapter
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
@@ -152,20 +148,25 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
                           'PROPPATCH', proppatch.PROPPATCH)
         ztapi.browserViewProviding(IText, TextDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(ISequence, SequenceDAVWidget, IDAVWidget)
-        ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
-        ztapi.provideAdapter(IAnnotatable, IZopeDublinCore,
-                             ZDCAnnotatableAdapter)
-        ztapi.provideAdapter(IAnnotatable, IDAVOpaqueNamespaces,
-                             DAVOpaqueNamespacesAdapter)
-        ztapi.provideAdapter(IAnnotatable, ITestSchema, TestSchemaAdapter)
-        sm = zapi.getGlobalSiteManager()
+
+        zope.component.provideAdapter(AttributeAnnotations, (IAnnotatable,))
+        zope.component.provideAdapter(ZDCAnnotatableAdapter, (IAnnotatable,),
+                                      IZopeDublinCore)
+        zope.component.provideAdapter(DAVOpaqueNamespacesAdapter,
+                                      (IAnnotatable,), IDAVOpaqueNamespaces)
+        zope.component.provideAdapter(TestSchemaAdapter, (IAnnotatable,),
+                                      ITestSchema)
+
         directlyProvides(IDAVSchema, IDAVNamespace)
-        sm.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
+        zope.component.provideUtility(IDAVSchema, IDAVNamespace, 'DAV:')
+
         directlyProvides(IZopeDublinCore, IDAVNamespace)
-        sm.provideUtility(IDAVNamespace, IZopeDublinCore,
-                             'http://www.purl.org/dc/1.1')
+        zope.component.provideUtility(IZopeDublinCore, IDAVNamespace,
+                                      'http://www.purl.org/dc/1.1')
+
         directlyProvides(ITestSchema, IDAVNamespace)
-        sm.provideUtility(IDAVNamespace, ITestSchema, TestURI)
+        zope.component.provideUtility(ITestSchema, IDAVNamespace, TestURI)
+
         self.db = DB()
         self.conn = self.db.open()
         root = self.conn.root()
@@ -234,7 +235,7 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
     def _checkProppatch(self, obj, ns=(), set=(), rm=(), extra='', expect=''):
         request = _createRequest(namespaces=ns, set=set, remove=rm,
                                  extra=extra)
-        resource_url = zapi.absoluteURL(obj, request)
+        resource_url = absoluteURL(obj, request)
         expect = '''<?xml version="1.0" encoding="utf-8"?>
             <multistatus xmlns="DAV:"><response>
             <href>%%(resource_url)s</href>

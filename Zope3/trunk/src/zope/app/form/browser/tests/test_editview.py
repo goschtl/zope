@@ -21,19 +21,18 @@ from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.schema import TextLine, accessors
 from zope.schema.interfaces import ITextLine
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
+from zope.component.eventtesting import getEvents, clearEvents
+from zope.location.interfaces import ILocation
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.app.event.tests.placelesssetup import getEvents
 
 from zope.app.form.browser import TextWidget
 from zope.app.form.browser.editview import EditView
 from zope.app.form.browser.submit import Update
-from zope.component.exceptions import ComponentLookupError
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.tests import utils
-from zope.app.location.interfaces import ILocation
 
 class I(Interface):
     foo = TextLine(title=u"Foo")
@@ -108,6 +107,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         super(Test, self).setUp()
         ztapi.browserViewProviding(ITextLine, TextWidget, IInputWidget)
         ztapi.provideAdapter(IFoo, IBar, FooBarAdapter)
+        clearEvents()
 
     def test_setPrefix_and_widgets(self):
         v = EV(C(), TestRequest())

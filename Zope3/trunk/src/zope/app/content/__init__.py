@@ -17,8 +17,8 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 from zope.interface import classProvides
+from zope.schema.interfaces import IVocabularyFactory
 from zope.app.interface import queryType
-from zope.app.schema.interfaces import IVocabularyFactory
 from zope.app.content.interfaces import IContentType
 from zope.app.component.vocabulary import UtilityVocabulary
 

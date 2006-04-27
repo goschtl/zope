@@ -1,41 +1,7 @@
-##############################################################################
-#
-# Copyright (c) 2003 Zope Corporation and Contributors.
-# All Rights Reserved.
-#
-# This software is subject to the provisions of the Zope Public License,
-# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
-# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
-# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-# FOR A PARTICULAR PURPOSE.
-#
-##############################################################################
-"""Collection of possible Mail Events.
-
-$Id$
-"""
-__docformat__ = 'restructuredtext'
-
-from zope.interface import implements
-
-from zope.app.mail.interfaces import IMailSentEvent, IMailErrorEvent
-
-
-class MailSentEvent(object):
-    __doc__ = IMailSentEvent.__doc__
-
-    implements(IMailSentEvent)
-
-    def __init__(self, messageId):
-        self.messageId = messageId
-
-
-class MailErrorEvent(object):
-    __doc__ = IMailErrorEvent.__doc__
-
-    implements(IMailErrorEvent)
-
-    def __init__(self, messageId, errorMessage):
-        self.messageId = messageId
-        self.errorMessage = errorMessage
+# This module has moved to zope.sendmail.event
+# and will go away in Zope 3.5
+import zope.deprecation
+zope.deprecation.moved(
+    'zope.sendmail.event',
+    "Zope 3.5",
+    )

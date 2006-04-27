@@ -16,18 +16,14 @@
 $Id$
 """
 import persistent.interfaces
-
 import zope.interface
 import zope.schema
+import zope.component.interfaces
+import zope.annotation.interfaces
 
 from zope.schema.vocabulary import SimpleVocabulary
-
-import zope.app.annotation.interfaces
-import zope.app.event.interfaces
-
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('zope.app.versioncontrol')
-
 
 class VersionControlError(Exception):
     pass
@@ -302,7 +298,7 @@ IVersionedContainer = INonVersionedData
 
 
 class IVersionable(persistent.interfaces.IPersistent,
-                   zope.app.annotation.interfaces.IAnnotatable):
+                   zope.annotation.interfaces.IAnnotatable):
     """Version control is allowed for objects that provide this."""
 
 class IVersioned(IVersionable):
@@ -326,7 +322,7 @@ class ICheckedOut(IVersioned):
 
 # Events that are raised for interesting occurances:
 
-class IVersionEvent(zope.app.event.interfaces.IObjectEvent):
+class IVersionEvent(zope.component.interfaces.IObjectEvent):
     """Base interface for all version-control events."""
 
     info = zope.interface.Attribute("Version info (IVersionInfo)")

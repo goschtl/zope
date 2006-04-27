@@ -16,31 +16,29 @@
 $Id$
 """
 import unittest
-from zope.testing.doctestunit import DocTestSuite
 
+import zope.location
+from zope.location.interfaces import ILocation
+from zope.location.traversing import LocationPhysicallyLocatable
+from zope.testing.doctestunit import DocTestSuite
 from zope.interface import Interface, implements
+from zope.size.interfaces import ISized
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
+from zope.annotation.interfaces import IAnnotations
+from zope.annotation.attribute import AttributeAnnotations
+from zope.dublincore.interfaces import IWriteZopeDublinCore
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.filerepresentation.interfaces import IReadDirectory
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import setUp, tearDown
-from zope.app.size.interfaces import ISized
-from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.i18n import ZopeMessageFactory as _
-
-import zope.app.location
-from zope.app.dublincore.interfaces import IWriteZopeDublinCore
-from zope.app.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
-from zope.app.annotation.interfaces import IAnnotations
-from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-
-from zope.app.location.interfaces import ILocation
-from zope.app.traversing.interfaces import IPhysicallyLocatable
-from zope.app.location.traversing import LocationPhysicallyLocatable
 
 class IRobot(Interface):
     pass
 
-class Robot(zope.app.location.Location):
+class Robot(zope.location.Location):
     implements(IRobot, IAttributeAnnotatable)
 
 class RobotSize(object):

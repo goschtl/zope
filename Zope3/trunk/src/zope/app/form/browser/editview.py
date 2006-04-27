@@ -20,24 +20,22 @@ __docformat__ = 'restructuredtext'
 from datetime import datetime
 import transaction
 
+import zope.component
 from zope.interface import Interface
 from zope.schema import getFieldNamesInOrder
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
-
-from zope.app import zapi
 from zope.event import notify
-from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.event.objectevent import Attributes
+from zope.lifecycleevent import ObjectModifiedEvent
+from zope.lifecycleevent import Attributes
+
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.app.form.interfaces import WidgetsError
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
-from zope.app.publisher.browser import BrowserView
-
+from zope.app.form.interfaces import WidgetsError
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.form.browser.submit import Update
-
 
 class EditView(BrowserView):
     """Simple edit-view base class
@@ -145,5 +143,5 @@ def EditViewFactory(name, schema, label, permission, layer,
     if layer is None:
         layer = IDefaultBrowserLayer
 
-    s = zapi.getGlobalSiteManager()
-    s.provideAdapter((for_, layer), Interface, name, class_)
+    s = zope.component.getGlobalSiteManager()
+    s.registerAdapter(class_, (for_, layer), Interface, name)

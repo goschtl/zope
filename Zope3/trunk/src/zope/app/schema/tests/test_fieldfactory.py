@@ -20,8 +20,7 @@ import unittest
 import zope.app.schema
 
 from zope.app import zapi
-from zope.component.exceptions import ComponentLookupError
-from zope.component.interfaces import IFactory
+from zope.component.interfaces import ComponentLookupError, IFactory
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.schema.interfaces import IField, IText
 from zope.interface import Interface

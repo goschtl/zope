@@ -20,15 +20,14 @@ $Id$
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
-from zope.app import zapi
-from zope.app.event.interfaces import IObjectCreatedEvent
-from zope.app.servicenames import Utilities
+from zope.component import getUtilitiesFor
+from zope.interface import implements, providedBy
+from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
 from zope.app.workflow.stateful.interfaces import IContentWorkflowsManager
 from zope.app.workflow.instance import createProcessInstance
-from zope.interface import implements, providedBy
 from zope.app.container.contained import Contained
 
 
@@ -37,7 +36,7 @@ def NewObjectProcessInstanceCreator(obj, event):
 
     pi_container = IProcessInstanceContainer(obj)
 
-    for (ignored, cwf) in zapi.getUtilitiesFor(IContentWorkflowsManager):
+    for (ignored, cwf) in getUtilitiesFor(IContentWorkflowsManager):
         # here we will lookup the configured processdefinitions
         # for the newly created compoent. For every pd_name
         # returned we will create a processinstance.

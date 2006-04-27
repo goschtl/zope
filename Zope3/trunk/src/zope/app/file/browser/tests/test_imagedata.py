@@ -22,7 +22,7 @@ from zope.component.testing import PlacelessSetup
 from zope.interface import implements
 from zope.app.file.image import Image
 from zope.app.file.browser.image import ImageData
-from zope.app.traversing.browser.interfaces import IAbsoluteURL
+from zope.traversing.browser.interfaces import IAbsoluteURL
 
 class FakeRequest(object):
     pass

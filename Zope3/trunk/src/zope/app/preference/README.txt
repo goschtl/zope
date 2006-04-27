@@ -404,7 +404,7 @@ If a site is set, getting the user preferences is very simple:
 
 This function is also commonly registered as an adapter,
 
-  >>> from zope.app.location.interfaces import ILocation
+  >>> from zope.location.interfaces import ILocation
   >>> ztapi.provideAdapter(ILocation, interfaces.IUserPreferences, 
   ...                      UserPreferences)
 
@@ -425,9 +425,9 @@ traversal path. But before we can use the path expressions, we have to
 register all necessary traversal components and the special `preferences`
 namespace:
 
-  >>> import zope.app.traversing.interfaces
+  >>> import zope.traversing.interfaces
   >>> ztapi.provideAdapter(None,
-  ...                      zope.app.traversing.interfaces.ITraversable,
+  ...                      zope.traversing.interfaces.ITraversable,
   ...                      preference.preferencesNamespace,
   ...                      'preferences')
 

@@ -47,9 +47,9 @@ And the Schemas are defined in the ``interfaces.py`` file below::
     from zope.interface import Interface
     from zope.schema import Object, Tuple, TextLine
     from zope.schema.interfaces import ITextLine
-    from zope.i18n import MessageIDFactory
+    from zope.i18nmessageid import MessageFactory
 
-    _ = MessageIDFactory("poll")
+    _ = MessageFactory("poll")
 
     class IPollOption(Interface):
         label = TextLine(title=u'Label', min_length=1)
@@ -129,7 +129,7 @@ Tying all this together is the ``configure.zcml``::
              permission="zope.ManageContent" />
 
     <implements 
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
 
     <require

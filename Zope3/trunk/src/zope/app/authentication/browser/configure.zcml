@@ -29,6 +29,13 @@
        permission="zope.ManageServices"
        />
 
+  <page
+      for="..interfaces.IPluggableAuthentication"
+      name="addRegistration.html"
+      permission="zope.ManageSite"
+      class=".register.AddAuthenticationRegistration" 
+      />
+
   <editform
       schema="..interfaces.IPluggableAuthentication"
       label="Edit Pluggable Authentication Utility"
@@ -46,6 +53,17 @@
       attribute="contents"
       />
 
+  <view
+      name="+"
+      menu="zmi_actions" title="Add"
+      for="..interfaces.IPluggableAuthentication"
+      permission="zope.ManageSite"
+      class=".adding.Adding"
+      >
+    <page name="index.html"  attribute="index"  />
+    <page name="action.html" attribute="action" />
+  </view>
+
   <menuItem
       menu="zmi_views"
       for="..interfaces.IPluggableAuthentication"
@@ -53,57 +71,11 @@
       action=""
       filter="python:False" />
 
-  <addform
-      label="New Pluggable Authentication Utility Registration"
-      for="..interfaces.IPluggableAuthentication"
-      name="addRegistration.html"
-      schema="zope.app.component.interfaces.IUtilityRegistration"
-      class="zope.app.component.browser.registration.AddComponentRegistration"
-      permission="zope.ManageSite"
-      content_factory=".register.pluggableAuthenticationRegistration"
-      arguments="component"
-      fields="component status permission"
-      />
-
-  <addform
-      label="New Credentials Plugin Registration"
-      for="..interfaces.ICredentialsPlugin"
-      name="addRegistration.html"
-      schema="zope.app.component.interfaces.IUtilityRegistration"
-      class="zope.app.component.browser.registration.AddComponentRegistration"
-      permission="zope.ManageSite"
-      content_factory=".register.credentialsPluginRegistration"
-      arguments="name component"
-      fields="name component status permission"
-      />
-
-  <addform
-      label="New Authenticator Plugin Registration"
-      for="..interfaces.IAuthenticatorPlugin"
-      name="addRegistration.html"
-      schema="zope.app.component.interfaces.IUtilityRegistration"
-      class="zope.app.component.browser.registration.AddComponentRegistration"
-      permission="zope.ManageSite"
-      content_factory=".register.authenticatorPluginRegistration"
-      arguments="name component"
-      fields="name component status permission"
-      />
-
   <zope:adapter
       for="..interfaces.IQuerySchemaSearch
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.browser.interfaces.ISourceQueryView"
       factory=".schemasearch.QuerySchemaSearchView"
-      />
-
-  <tool
-      interface="..interfaces.ICredentialsPlugin"
-      title="Credentials Plugin"
-      />
-
-  <tool
-      interface="..interfaces.IAuthenticatorPlugin"
-      title="Authenticator Plugin"
       />
 
 </zope:configure>

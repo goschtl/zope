@@ -15,13 +15,13 @@
 
 $Id$
 """
-from zope.interface import implements
-from zope.app.container.btree import BTreeContainer
 import zope.index.interfaces
+from zope.interface import implements
+from zope.annotation.interfaces import IAttributeAnnotatable
 
 from zope.app import zapi
-from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IContainer
+from zope.app.container.btree import BTreeContainer
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.intid.interfaces import IIntIds
 from BTrees.IFBTree import weightedIntersection

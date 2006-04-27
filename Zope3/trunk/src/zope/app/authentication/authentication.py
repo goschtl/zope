@@ -16,18 +16,17 @@
 $Id$
 """
 import zope.interface
-
 from zope import component
 from zope.schema.interfaces import ISourceQueriables
+from zope.location.interfaces import ILocation
+
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
-from zope.app.location.interfaces import ILocation
 from zope.app.component import queryNextUtility
-from zope.app.component.site import SiteManagementFolder
+import zope.app.container.btree
 
 from zope.app.authentication import interfaces
 
-
-class PluggableAuthentication(SiteManagementFolder):
+class PluggableAuthentication(zope.app.container.btree.BTreeContainer):
 
     zope.interface.implements(
         IAuthentication,
@@ -40,6 +39,16 @@ class PluggableAuthentication(SiteManagementFolder):
     def __init__(self, prefix=''):
         super(PluggableAuthentication, self).__init__()
         self.prefix = prefix
+
+    @property
+    def registrationManager(self):
+        import warnings
+        warnings.warn(
+            "The registration manager is deprecated and will go away in "
+            "Zope 3.5.  Use the simpler registration api (registerUtility) "
+            "instead.",
+            DeprecationWarning, 2)
+        return self.__parent__.registrationManager
 
     def _plugins(self, names, interface):
         for name in names:

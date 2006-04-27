@@ -15,12 +15,12 @@
 
 $Id$
 """
-from zope.app import zapi
+import zope.component
 from zope.interface import Interface, implements
 from zope.schema.interfaces import IVocabularyRegistry
 from zope.schema import vocabulary
 from zope.testing import cleanup
-from zope.app.schema.interfaces import IVocabularyFactory
+from zope.schema.interfaces import IVocabularyFactory
 
 class ZopeVocabularyRegistry(object):
     """IVocabularyRegistry that supports global and local utilities."""
@@ -30,7 +30,7 @@ class ZopeVocabularyRegistry(object):
 
     def get(self, context, name):
         """See zope.schema.interfaces.IVocabularyRegistry"""
-        factory = zapi.getUtility(IVocabularyFactory, name)
+        factory = zope.component.getUtility(IVocabularyFactory, name)
         return factory(context)
 
 def _clear():
@@ -42,7 +42,6 @@ def _clear():
     vocabularyRegistry = vocabulary.getVocabularyRegistry()
     vocabulary._clear()
     vocabulary.setVocabularyRegistry(ZopeVocabularyRegistry())
-
 
 _clear()
 cleanup.addCleanUp(_clear)

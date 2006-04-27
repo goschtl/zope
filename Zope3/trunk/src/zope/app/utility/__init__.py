@@ -1,5 +1,6 @@
 ##############################################################################
-# Copyright (c) 2003 Zope Corporation and Contributors.
+#
+# Copyright (c) 2005 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -8,15 +9,23 @@
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
+#
 ##############################################################################
-"""Local utility service implementation.
+"""Deprecared utility package
 
-$Id: __init__.py 25177 2004-06-02 13:17:31Z jim $
+$Id$
 """
-import zope.deprecation
 
-zope.deprecation.__show__.off()
-from utility import LocalUtilityService
-zope.deprecation.__show__.on()
+import sys
+import warnings
 
-from zope.app.component.site import UtilityRegistration
+warnings.warn("This module is deprecated and will go away in Zope 3.5. ",
+              DeprecationWarning, 2)
+
+
+import zope.deferredimport
+
+zope.deferredimport.deprecated(
+    "This object is deprecated and will go away in Zope 3.5",
+    UtilityRegistration = "zope.app.component.back35:UtilityRegistration",
+    )

@@ -24,16 +24,16 @@ import os
 
 from zope.interface import implements
 from zope.configuration.exceptions import ConfigurationError
+from zope.traversing.interfaces import IContainmentRoot
 
 from zope.app import zapi
-from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.onlinehelp.interfaces import IOnlineHelp, IOnlineHelpTopic
 from zope.app.onlinehelp.onlinehelptopic import OnlineHelpTopic
 
 class OnlineHelp(OnlineHelpTopic):
     """
     >>> import os
-    >>> from zope.app.tests import ztapi
+    >>> from zope import component
     >>> from zope.component.interfaces import IFactory
     >>> from zope.component.factory import Factory
     >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
@@ -47,7 +47,7 @@ class OnlineHelp(OnlineHelpTopic):
     First do the interface verifying tests.
 
     >>> from zope.interface.verify import verifyObject
-    >>> from zope.app.traversing.interfaces import IContainmentRoot
+    >>> from zope.traversing.interfaces import IContainmentRoot
     >>> verifyObject(IOnlineHelp, onlinehelp)
     True
     >>> verifyObject(IContainmentRoot, onlinehelp)
@@ -63,10 +63,10 @@ class OnlineHelp(OnlineHelpTopic):
     >>> rest = Factory(RESTOnlineHelpTopic)
     >>> stx = Factory(STXOnlineHelpTopic)
     >>> zpt = Factory(ZPTOnlineHelpTopic)
-    >>> ztapi.provideUtility(IFactory, default, 'onlinehelp.topic.default')
-    >>> ztapi.provideUtility(IFactory, rest, 'onlinehelp.topic.rest')
-    >>> ztapi.provideUtility(IFactory, stx, 'onlinehelp.topic.stx')
-    >>> ztapi.provideUtility(IFactory, zpt, 'onlinehelp.topic.zpt')
+    >>> component.provideUtility(default, IFactory, 'onlinehelp.topic.default')
+    >>> component.provideUtility(rest, IFactory, 'onlinehelp.topic.rest')
+    >>> component.provideUtility(stx, IFactory, 'onlinehelp.topic.stx')
+    >>> component.provideUtility(zpt, IFactory, 'onlinehelp.topic.zpt')
     >>> path = os.path.join(testdir(), 'help2.txt')
     >>> onlinehelp.registerHelpTopic('', 'help2', 'Help 2',
     ...     path, I1, 'view.html')
@@ -153,5 +153,5 @@ class OnlineHelp(OnlineHelpTopic):
         #utils = zapi.getService(Utilities)
         #utils.provideUtility(IOnlineHelpTopic, topic, topic.getTopicPath())
 
-        zapi.getGlobalSiteManager().provideUtility(
-            IOnlineHelpTopic, topic, topic.getTopicPath())
+        zapi.getGlobalSiteManager().registerUtility(
+            topic, IOnlineHelpTopic, topic.getTopicPath())

@@ -13,7 +13,7 @@
       />
 
   <class class="zope.publisher.http.HTTPRequest">
-      <implements interface="zope.app.annotation.IAttributeAnnotatable" />
+      <implements interface="zope.annotation.IAttributeAnnotatable" />
   </class>
 
   <!-- Setup charset negotiation -->
@@ -42,13 +42,13 @@
 
   <subscriber
        for=".interfaces.ILocalTranslationDomain
-            ..component.interfaces.registration.IRegistrationActivatedEvent"
+            zope.component.interfaces.IRegistered"
        handler=".translationdomain.setDomainOnActivation"
        />
 
   <subscriber
        for=".interfaces.ILocalTranslationDomain
-            ..component.interfaces.registration.IRegistrationDeactivatedEvent"
+            zope.component.interfaces.IUnregistered"
        handler=".translationdomain.unsetDomainOnDeactivation"
        />
 
@@ -56,7 +56,7 @@
   <class class=".messagecatalog.MessageCatalog">
     <factory id="zope.app.MessageCatalog" />
     <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
     <require permission="zope.View"
         interface="zope.i18n.interfaces.IMessageCatalog" />
@@ -78,7 +78,7 @@
       provides="zope.i18n.interfaces.IMessageImportFilter"
       />
 
-  <include file="locales.zcml" />
+  <include package="zope.i18n.locales" />
   <include package=".xmlrpc" />
   <include package=".browser" />
 

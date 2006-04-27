@@ -7,7 +7,7 @@
   <class class="zope.app.demo.widget.app.DemoWidgetContainer">
 
     <implements 
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
     <require permission="zope.View" 
         interface="zope.app.container.interfaces.IReadContainer" />

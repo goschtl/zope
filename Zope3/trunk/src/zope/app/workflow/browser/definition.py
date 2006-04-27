@@ -15,10 +15,8 @@
 
 $Id$
 """
-
-from zope.app.traversing.api import traverse
+from zope.traversing.api import traverse
 # registration path changed
-from zope.app.component.interfaces.registration import IRegistered
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
 from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
 

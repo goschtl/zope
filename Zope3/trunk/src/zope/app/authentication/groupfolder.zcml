@@ -13,7 +13,7 @@
           set_schema=".groupfolder.IGroupInformation"
           />
       <implements
-          interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+          interface="zope.annotation.interfaces.IAttributeAnnotatable"
           />
   </class>
 

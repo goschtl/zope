@@ -17,8 +17,8 @@ $Id$
 """
 import warnings
 from zope.interface import directlyProvides
-from zope.app.schema.interfaces import IVocabularyFactory
-from zope.app.component.metaconfigure import utility
+from zope.schema.interfaces import IVocabularyFactory
+from zope.component.zcml import utility
 
 class FactoryKeywordPasser(object):
     """Helper that passes additional keywords to the actual factory."""
@@ -42,7 +42,7 @@ def vocabulary(_context, name, factory, **kw):
         "removed in Zope 3.5.  Use the 'utility' directive instead to "
         "register the class as a named utility:\n"
         '  <utility\n'
-        '      provides="zope.app.schema.interfaces.IVocabularyFactory"\n'
+        '      provides="zope.schema.interfaces.IVocabularyFactory"\n'
         '      component="%s"\n'
         '      name="%s"\n'
         '      />' % (dottedname, name),

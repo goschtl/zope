@@ -20,7 +20,7 @@ from zope.interface import implements
 
 from zope.app import zapi
 from zope.app.component.hooks import getSite
-from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.app.publisher.interfaces.browser import IBrowserMenu
 
 

@@ -2,12 +2,6 @@
   xmlns:zope="http://namespaces.zope.org/zope"
   xmlns="http://namespaces.zope.org/browser">
 
-  <tool
-      interface="zope.app.schema.interfaces.ISchemaUtility"
-      title="Persistent, Local Schemas"
-      description="These are schemas that live in the ZODB and are modifiable."
-      />
-
   <menu
       id="add_schema_field"
       title="Menu of Fields to be added to a schema." />
@@ -57,7 +51,7 @@
 
   <zope:adapter
       factory=".traversal.SchemaFieldTraversable"
-      provides="zope.app.traversing.interfaces.ITraversable"
+      provides="zope.traversing.interfaces.ITraversable"
       for="zope.app.schema.interfaces.IMutableSchema" />
 
 </zope:configure>

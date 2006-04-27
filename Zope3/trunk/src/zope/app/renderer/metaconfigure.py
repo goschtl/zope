@@ -18,8 +18,7 @@ $Id$
 # BBB 2006/02/24, to be removed after 12 months
 
 import warnings
-from zope.app import zapi
-from zope.app.component.metaconfigure import handler
+from zope.component.zcml import handler
 from zope.configuration.fields import GlobalInterface, GlobalObject
 from zope.interface import Interface
 

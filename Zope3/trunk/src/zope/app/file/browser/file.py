@@ -15,19 +15,18 @@
 
 $Id$
 """
-
 from datetime import datetime
 
 import zope.event
-
+from zope import lifecycleevent
+from zope.contenttype import guess_content_type
 from zope.publisher import contenttype
 from zope.schema import Text
-from zope.app import contenttypes
-from zope.app.event import objectevent
+from zope.exceptions.interfaces import UserError
+
 from zope.app.file.file import File
 from zope.app.file.interfaces import IFile
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.app.exception.interfaces import UserError
 
 __docformat__ = 'restructuredtext'
 
@@ -59,7 +58,7 @@ class FileUpdateView(object):
             contenttype = form.get("field.contentType")
             if filename:
                 if not contenttype:
-                    contenttype = contenttypes.guess_content_type(filename)[0]
+                    contenttype = guess_content_type(filename)[0]
                 if not form.get("add_input_name"):
                     form["add_input_name"] = filename
             return self.update_object(form["field.data"], contenttype)
@@ -118,7 +117,7 @@ class FileAdd(FileUpdateView):
 
     def update_object(self, data, contenttype):
         f = File(data, contenttype)
-        zope.event.notify(objectevent.ObjectCreatedEvent(f))
+        zope.event.notify(lifecycleevent.ObjectCreatedEvent(f))
         self.context.add(f)
         self.request.response.redirect(self.context.nextURL())
         return ''
@@ -134,10 +133,6 @@ class FileUpload(FileUpdateView):
     >>> sio = StringIO.StringIO("some data")
     >>> sio.filename = 'abc.txt'
 
-    >>> def eventLog(event):
-    ...     print 'ModifiedEvent:', event.descriptions[0].attributes
-    >>> zope.event.subscribers.append(eventLog)
-
     Before we instanciate the request, we need to make sure that the
     ``IUserPreferredLanguages`` adapter exists, so that the request's
     locale exists.  This is necessary because the ``update_object``
@@ -149,6 +144,12 @@ class FileUpload(FileUpdateView):
     >>> from zope.i18n.interfaces import IUserPreferredLanguages
     >>> ztapi.provideAdapter(IHTTPRequest, IUserPreferredLanguages,
     ...                      BrowserLanguages)
+
+    We install an event logger so we can see the events generated:
+
+    >>> def eventLog(event):
+    ...     print 'ModifiedEvent:', event.descriptions[0].attributes
+    >>> zope.event.subscribers.append(eventLog)
 
     Let's make sure we can use the uploaded file name if one isn't
     specified by the user, and can use the content type when
@@ -206,14 +207,14 @@ class FileUpload(FileUpdateView):
     def update_object(self, data, contenttype):
         self.context.contentType = contenttype
 
-        descriptor = objectevent.Attributes(IFile, "contentType")
+        descriptor = lifecycleevent.Attributes(IFile, "contentType")
 
         # Update *only* if a new value is specified
         if data:
             self.context.data = data
             descriptor.attributes += "data",
 
-        event = objectevent.ObjectModifiedEvent(self.context, descriptor)
+        event = lifecycleevent.ObjectModifiedEvent(self.context, descriptor)
         zope.event.notify(event)
 
         formatter = self.request.locale.dates.getFormatter(
@@ -252,8 +253,7 @@ class FileEdit(object):
     Converts between Unicode strings used in browser forms and 8-bit strings
     stored internally.
 
-        >>> from zope.app.publisher.browser import BrowserView
-        >>> from zope.publisher.browser import TestRequest
+        >>> from zope.publisher.browser import BrowserView, TestRequest
         >>> class FileEditView(FileEdit, BrowserView): pass
         >>> view = FileEditView(File(), TestRequest())
         >>> view.getData()

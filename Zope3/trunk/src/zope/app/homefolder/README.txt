@@ -201,10 +201,10 @@ We also need to register our manager as a utility:
 
 (2) Or alternatively via the path adapter:
 
-  >>> from zope.app.traversing.interfaces import IPathAdapter
-  >>> from zope.app import zapi
-  >>> zapi.getAdapter(principal, IPathAdapter,
-  ...                 "homefolder") is baseFolder['stephan']
+  >>> import zope.component
+  >>> from zope.traversing.interfaces import IPathAdapter
+  >>> zope.component.getAdapter(principal, IPathAdapter,
+  ...                           "homefolder") is baseFolder['stephan']
   True
 
 As you can see, the path adapter just returns the homefolder. This way we can

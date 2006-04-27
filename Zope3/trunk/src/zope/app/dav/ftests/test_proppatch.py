@@ -19,11 +19,11 @@ import unittest
 import transaction
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.publisher.http import status_reasons
+from zope.traversing.api import traverse
+from zope.dublincore.interfaces import IZopeDublinCore
 
 from zope.app.dav.ftests.dav import DAVTestCase
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
-from zope.app.traversing.api import traverse
 
 class TestPROPPATCH(DAVTestCase):
 

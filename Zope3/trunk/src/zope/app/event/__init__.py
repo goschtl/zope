@@ -17,4 +17,11 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from dispatching import publish
+import zope.deferredimport
+zope.deferredimport.deprecated(
+    "Event support has been moved to zope.component.event, life cycle events "
+    "to zope.lifecycleevent.  This reference will be gone in Zope 3.5",
+    objectevent = 'zope.lifecycleevent',
+    interfaces = 'zope.lifecycleevent.interfaces',
+    dispatch = 'zope.component.event',
+    )

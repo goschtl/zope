@@ -16,14 +16,16 @@ Locking tests
 
 $Id:$
 """
-
 import sys, unittest, time
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 import zope.event
 from zope.testing import doctest
 from transaction import abort
 
 from zope.interface import Interface
+from zope.traversing.interfaces import IPathAdapter
+from zope.security.testing import Principal, Participation
+
 from zope.app.testing import ztapi
 from zope.app.file.file import File
 from zope.app.folder.folder import Folder
@@ -31,10 +33,7 @@ from zope.app.locking.interfaces import ILockable, ILockTracker
 from zope.app.locking.adapter import LockingAdapterFactory
 from zope.app.locking.adapter import LockingPathAdapter
 from zope.app.locking.storage import ILockStorage, PersistentLockStorage
-from zope.app.traversing.interfaces import IPathAdapter
 from zope.app.keyreference.interfaces import IKeyReference
-from zope.security.testing import Principal, Participation
-
 
 class FakeModule:
     def __init__(self, dict):
@@ -66,6 +65,9 @@ class FakeKeyReference(object):
     def __cmp__(self, other):
         return cmp(id(self.object), id(other.object))
 
+def maybeFakeKeyReference(ob):
+    if not isinstance(ob, int):
+        return FakeKeyReference(ob)
 
 class TestLockStorage(unittest.TestCase):
 
@@ -136,7 +138,7 @@ def setUp(test):
     dict['__name__'] = name
     sys.modules[name] = FakeModule(dict)
 
-    ztapi.provideAdapter(Interface, IKeyReference, FakeKeyReference)
+    ztapi.provideAdapter(Interface, IKeyReference, maybeFakeKeyReference)
     ztapi.provideAdapter(Interface, ILockable, LockingAdapterFactory)
     ztapi.provideAdapter(None, IPathAdapter, LockingPathAdapter,
                          "locking")

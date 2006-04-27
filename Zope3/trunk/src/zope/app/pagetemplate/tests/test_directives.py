@@ -20,13 +20,12 @@ from cStringIO import StringIO
 
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 from zope.interface import Interface, implements
-from zope.app.testing import ztapi
+from zope.traversing.interfaces import ITraversable
 
 import zope.app.pagetemplate
-from zope.app.pagetemplate.engine import Engine
-
-from zope.app.traversing.interfaces import ITraversable
+from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.app.pagetemplate.engine import Engine
 
 template = """<configure 
    xmlns='http://namespaces.zope.org/zope'

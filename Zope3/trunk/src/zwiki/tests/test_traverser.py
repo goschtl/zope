@@ -17,19 +17,17 @@ $Id$
 """
 import unittest, sys
 
-from zope.component.tests.request import Request
-from zope.interface import Interface, classImplements
+from zope.interface import Interface, classImplements, directlyProvides
 from zope.publisher.interfaces import NotFound
 from zope.proxy import removeAllProxies
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.location.interfaces import ILocation
+from zope.location.traversing import LocationPhysicallyLocatable
+from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 
-from zope.app import zapi
-from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
-from zope.app.location.interfaces import ILocation
-from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.app.traversing.interfaces import IPhysicallyLocatable
 
 from zwiki.interfaces import IWikiPage, IWikiPageHierarchy
 from zwiki.wiki import Wiki
@@ -39,7 +37,11 @@ from zwiki.traversal import WikiPageTraverser
 class I(Interface):
     pass
 
-class Request(Request):
+class Request(object):
+
+    def __init__(self, type):
+        directlyProvides(self, type)
+
     def getEffectiveURL(self):
         return ''
 

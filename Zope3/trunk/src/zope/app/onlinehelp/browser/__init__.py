@@ -18,11 +18,11 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.security.proxy import removeSecurityProxy
+from zope.publisher.browser import BrowserView
+from zope.publisher.interfaces.browser import IBrowserView
 
 from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.publisher.browser import BrowserView
-from zope.app.publisher.interfaces.browser import IBrowserView
 
 from zope.app.onlinehelp.interfaces import IOnlineHelpTopic, IOnlineHelp
 from zope.app.onlinehelp import getTopicFor

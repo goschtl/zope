@@ -21,14 +21,13 @@ import struct
 from cStringIO import StringIO
 
 from zope.interface import implements
+from zope.size.interfaces import ISized
+from zope.size import byteDisplay
+from zope.contenttype import guess_content_type
 
-from zope.app.size.interfaces import ISized
-from zope.app.size import byteDisplay
-from zope.app.contenttypes import guess_content_type
 from zope.app.i18n import ZopeMessageFactory as _
-
-from file import File
-from interfaces import IImage
+from zope.app.file.file import File
+from zope.app.file.interfaces import IImage
 
 class Image(File):
     implements(IImage)

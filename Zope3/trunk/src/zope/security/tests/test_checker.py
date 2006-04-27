@@ -18,19 +18,16 @@ $Id$
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.interface import implements
 from zope.interface.verify import verifyObject
-from zope.security.checker import Checker, NamesChecker, CheckerPublic
 from zope.testing.cleanup import CleanUp
 from zope.proxy import getProxiedObject
-from zope.security.interfaces import ISecurityPolicy
+from zope.security.interfaces import ISecurityPolicy, Unauthorized
 from zope.security.interfaces import Forbidden, ForbiddenAttribute
-from zope.security.interfaces import Unauthorized
 from zope.security.management import setSecurityPolicy, newInteraction
 from zope.security.management import endInteraction, getInteraction
-from zope.security.proxy import removeSecurityProxy
-from zope.security.proxy import getChecker
-from zope.security.proxy import Proxy
+from zope.security.proxy import removeSecurityProxy, getChecker, Proxy
 from zope.security.checker import defineChecker, undefineChecker, ProxyFactory
 from zope.security.checker import canWrite, canAccess
+from zope.security.checker import Checker, NamesChecker, CheckerPublic
 from zope.security.checker import BasicTypes, _checkers, NoProxy, _clear
 import types, pickle
 

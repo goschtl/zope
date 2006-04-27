@@ -87,7 +87,7 @@ class Test(BrowserTestCase):
 
         self.assertEqual(response.getStatus(), 200)
         body = ' '.join(response.getBody().split())
-        self.assert_(body.find('This object is not currently active.') >=0)
+        self.assert_(body.find("This object isn't yet registered.") >=0)
 
     def test_transitions(self):
         response = self.publish(

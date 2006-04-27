@@ -20,10 +20,10 @@ __docformat__ = "reStructuredText"
 import zope.interface
 import zope.schema
 import zope.configuration.fields
+import zope.wfmc.interfaces
 from zope import wfmc
 from zope.wfmc import xpdl
-from zope.app.component.metaconfigure import utility
-import zope.wfmc.interfaces
+from zope.component.zcml import utility
 
 class IdefineXpdl(zope.interface.Interface):
 

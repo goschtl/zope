@@ -16,20 +16,16 @@
 $Id$
 """
 import unittest
-from persistent import Persistent
 import transaction
+from persistent import Persistent
 
-from zope.interface import Interface
-from zope.interface import implements
-
-from zope.schema import Text
 import zope.security.checker
+from zope.interface import Interface, implements
+from zope.schema import Text
+from zope.traversing.api import traverse
 
-from support import *
-from zope.app.traversing.api import traverse
-
+from zope.app.form.browser.ftests.support import *
 from zope.app.testing.functional import BrowserTestCase
-
 
 class ITextTest(Interface):
 

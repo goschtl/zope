@@ -17,7 +17,7 @@ Grants and denials are stored as annotations on objects.  To store
 grants and denials, objects must be annotatable:
 
   >>> import zope.interface
-  >>> from zope.app.annotation.interfaces import IAttributeAnnotatable
+  >>> from zope.annotation.interfaces import IAttributeAnnotatable
   >>> class Ob:
   ...     zope.interface.implements(IAttributeAnnotatable)
 

@@ -16,15 +16,15 @@
 $Id$
 """
 import unittest
+import zope.component
 from zope.schema.vocabulary import SimpleVocabulary
 from zope.schema.vocabulary import VocabularyRegistry, _clear
 from zope.schema.vocabulary import getVocabularyRegistry
 from zope.schema.vocabulary import setVocabularyRegistry
 from zope.testing.doctestunit import DocTestSuite
+from zope.dublincore.interfaces import ICMFDublinCore
 
-from zope.app import zapi
-from zope.app.dublincore.interfaces import ICMFDublinCore
-from zope.app.testing import placelesssetup, ztapi
+from zope.app.testing import placelesssetup
 
 from zwiki.interfaces import IComment
 
@@ -48,7 +48,7 @@ def VocabularyFactory(context):
 
 def setUp(test):
     placelesssetup.setUp()
-    ztapi.provideAdapter(IComment, ICMFDublinCore, DCStub)
+    zope.component.provideAdapter(DCStub, (IComment,), ICMFDublinCore)
 
     _clear()
     registry = VocabularyRegistry()

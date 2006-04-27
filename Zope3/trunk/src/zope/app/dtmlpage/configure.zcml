@@ -33,13 +33,13 @@
         />
 
     <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
   </class>
 
   <adapter 
       for="zope.app.folder.interfaces.IFolder"
-      provides="zope.app.filerepresentation.interfaces.IFileFactory"
+      provides="zope.filerepresentation.interfaces.IFileFactory"
       name=".dtml"
       factory=".dtmlpage.DTMLFactory"
       permission="zope.ManageContent"

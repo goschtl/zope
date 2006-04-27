@@ -8,10 +8,7 @@
       id="zope.app.workflow.StatefulProcessDefinition"
       />
   <implements
-      interface="zope.app.utility.interfaces.ILocalUtility"
-      />
-  <implements
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+      interface="zope.annotation.interfaces.IAttributeAnnotatable"
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
@@ -36,7 +33,7 @@
       interface=".interfaces.IStatefulStatesContainer"
       />
   <implements
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+      interface="zope.annotation.interfaces.IAttributeAnnotatable"
       />
 </class>
 
@@ -52,7 +49,7 @@
       set_schema=".interfaces.IState"
       />
   <implements
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+      interface="zope.annotation.interfaces.IAttributeAnnotatable"
       />
 </class>
 
@@ -72,7 +69,7 @@
       interface=".interfaces.IStatefulTransitionsContainer"
       />
   <implements
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+      interface="zope.annotation.interfaces.IAttributeAnnotatable"
       />
 </class>
 
@@ -88,7 +85,7 @@
       set_schema=".interfaces.ITransition"
       />
   <implements
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+      interface="zope.annotation.interfaces.IAttributeAnnotatable"
       />
 </class>
 
@@ -101,10 +98,7 @@
   />
 
   <implements
-      interface="zope.app.utility.interfaces.ILocalUtility"
-      />
-  <implements
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+      interface="zope.annotation.interfaces.IAttributeAnnotatable"
       />
 
   <require
@@ -139,7 +133,7 @@
      are created. -->
 <subscriber
    for="..interfaces.IProcessInstanceContainerAdaptable
-        zope.app.event.objectevent.IObjectCreatedEvent"
+        zope.lifecycleevent.IObjectCreatedEvent"
    handler=".contentworkflow.NewObjectProcessInstanceCreator"
    >
 

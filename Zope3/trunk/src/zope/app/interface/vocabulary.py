@@ -20,8 +20,8 @@ __docformat__ = 'restructuredtext'
 from zope.interface import classProvides, providedBy
 from zope.security.proxy import removeSecurityProxy
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm 
-from zope.app.component.interface import interfaceToName
-from zope.app.schema.interfaces import IVocabularyFactory
+from zope.schema.interfaces import IVocabularyFactory
+from zope.component.interface import interfaceToName
 
 
 class ObjectInterfacesVocabulary(SimpleVocabulary):

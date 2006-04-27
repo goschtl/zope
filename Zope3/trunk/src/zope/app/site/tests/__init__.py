@@ -1,6 +1,15 @@
-# BBB: Goes away in 3.3
+import zope.deferredimport
 
-from zope.app.component.testing import PlacefulSetup
+zope.deferredimport.deprecatedModule(
+    "zope.app.site.tests.placefulsetup",
+    "zope.app.component.testing",
+    "zope.app.site.tests.placefulsetup is deprecated and will go away "
+    "in Zope 3.5. Use zope.app.component.testing instead"
+    )
 
-def test_suite():
-    return None
+zope.deferredimport.deprecated(
+    "Import of PlacefulSetup from zope.app.site.testing is deprecated "
+    "and will be disabled in Zope 3.5.  Import from "
+    "zope.app.component.testing instead.",
+    PlacefulSetup = "zope.app.component.testing:PlacefulSetup",
+    )

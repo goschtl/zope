@@ -172,7 +172,7 @@
   <class class=".tracker.BugTracker">
 
     <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+       interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
         id="bugtracker.BugTracker"
@@ -242,7 +242,7 @@
   <class class=".bug.Bug">
 
     <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"/>
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"/>
 
     <factory
         id="bugtracker.Bug"
@@ -322,7 +322,7 @@
   <class class=".comment.Comment">
 
     <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"/>
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"/>
 
     <factory
         id="bugtracker.BugComment"
@@ -376,8 +376,8 @@
   <!-- Register event listener for change mails -->
   <subscriber
       handler=".mail.Mailer"
-      for="zope.app.event.interfaces.IObjectCreatedEvent
-           zope.app.event.interfaces.IObjectModifiedEvent" />
+      for="zope.lifecycleevent.interfaces.IObjectCreatedEvent
+           zope.lifecycleevent.interfaces.IObjectModifiedEvent" />
 
 
   <!-- Register various browser related components, including all views -->

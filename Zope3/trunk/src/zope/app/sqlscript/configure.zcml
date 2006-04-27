@@ -30,7 +30,7 @@
         set_schema=".interfaces.ISQLScript"
         />
     <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
   </class>
 

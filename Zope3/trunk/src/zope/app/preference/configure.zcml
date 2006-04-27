@@ -9,19 +9,19 @@
       name="preferences"
       for="*"
       type="*"
-      provides="zope.app.traversing.interfaces.ITraversable"
+      provides="zope.traversing.interfaces.ITraversable"
       factory=".preference.preferencesNamespace"
       />
 
   <adapter
       name="preferences"
       for="*"
-      provides="zope.app.traversing.interfaces.ITraversable"
+      provides="zope.traversing.interfaces.ITraversable"
       factory=".preference.preferencesNamespace"
       />
 
   <adapter
-      for="zope.app.location.interfaces.ILocation"
+      for="zope.location.interfaces.ILocation"
       provides=".interfaces.IUserPreferences"
       factory=".preference.UserPreferences"
       />
@@ -73,16 +73,6 @@
        description="A Default User Preferences Provider"
        permission="zope.ManageSite"
        />
-
-  <browser:tool
-      interface=".interfaces.IDefaultPreferenceProvider"
-      title="Default User Preferences Provider"
-      description="
-          This component lets you define the local default user
-          preferences. The values of this provider are used, if the
-          user has not made a selection yet."
-      unique="true"
-      />
 
   <!-- Preferences-specific macros -->
   <browser:page

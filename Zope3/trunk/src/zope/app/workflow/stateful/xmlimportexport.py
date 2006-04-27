@@ -18,14 +18,14 @@ $Id$
 from xml.sax import parseString
 from xml.sax.handler import ContentHandler
 
+import zope.component
 from zope.configuration.name import resolve
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.security.checker import CheckerPublic
 from zope.security.proxy import removeSecurityProxy
+from zope.dublincore.interfaces import IZopeDublinCore
 
-from zope.app import zapi
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.security.interfaces import IPermission 
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
@@ -95,7 +95,7 @@ class XMLStatefulImporter(ContentHandler):
         elif perm_id == '':
             perm = None
         else:
-            perm = zapi.getUtility(IPermission, perm_id)
+            perm = zope.component.getUtility(IPermission, perm_id)
         if not fieldName in perms.keys():
             perms[fieldName] = (CheckerPublic, CheckerPublic)
         if type == u'get':

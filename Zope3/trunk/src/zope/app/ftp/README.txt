@@ -22,5 +22,5 @@ How FTP Works in Zope
 
   The view, in turn, uses adapters for the `IReadFile`, `IWriteFile`,
   `IReadDirectory`, `IWriteDirectory`, `IFileFactory`, and
-  `IDirectoryFactory`, defined in `zope.app.filerepresentation.interfaces`.
+  `IDirectoryFactory`, defined in `zope.filerepresentation.interfaces`.
 

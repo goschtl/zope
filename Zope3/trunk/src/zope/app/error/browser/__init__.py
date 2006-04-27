@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.app.publisher.browser import BrowserView
+from zope.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.error.interfaces import IErrorReportingUtility

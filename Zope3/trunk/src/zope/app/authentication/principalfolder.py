@@ -461,7 +461,7 @@ class AuthenticatedPrincipalFactory(object):
 
     It also fires an AuthenticatedPrincipalCreatedEvent:
 
-      >>> from zope.app.event.tests.placelesssetup import getEvents
+      >>> from zope.component.eventtesting import getEvents
       >>> [event] = getEvents(interfaces.IAuthenticatedPrincipalCreated)
       >>> event.principal is principal, event.authentication is auth
       (True, True)
@@ -524,7 +524,7 @@ class FoundPrincipalFactory(object):
 
     It also fires a FoundPrincipalCreatedEvent:
 
-      >>> from zope.app.event.tests.placelesssetup import getEvents
+      >>> from zope.component.eventtesting import getEvents
       >>> [event] = getEvents(interfaces.IFoundPrincipalCreated)
       >>> event.principal is principal, event.authentication is auth
       (True, True)

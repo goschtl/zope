@@ -19,21 +19,20 @@ __docformat__ = 'restructuredtext'
 
 import re
 from BTrees.OOBTree import OOBTree
-from zope.interface import implements
 
-from zope.app import zapi
-from zope.app.container.btree import BTreeContainer
-from zope.app.i18n.interfaces import ILocalTranslationDomain
+import zope.component
+from zope.interface import implements
 from zope.i18n import interpolate
 from zope.i18n.negotiator import negotiator
 from zope.i18n.interfaces import INegotiator, ITranslationDomain
 from zope.i18n.simpletranslationdomain import SimpleTranslationDomain
+
+from zope.app.container.btree import BTreeContainer
+from zope.app.i18n.interfaces import ILocalTranslationDomain
 from zope.app.container.contained import Contained
-from zope.app.component.site import UtilityRegistration
 from zope.app.component import queryNextUtility
 
 class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
-
     implements(ILocalTranslationDomain)
 
     def __init__(self):
@@ -68,7 +67,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
         if target_language is None and context is not None:
             avail_langs = self.getAvailableLanguages()
             # Let's negotiate the language to translate to. :)
-            negotiator = zapi.getUtility(INegotiator, context=self)
+            negotiator = zope.component.getUtility(INegotiator, context=self)
             target_language = negotiator.getLanguage(avail_langs, context)
 
         # Get the translation. Default is the source text itself.
@@ -166,8 +165,8 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
     def addLanguage(self, language):
         'See `IWriteTranslationDomain`'
-        catalog = zapi.createObject(u'zope.app.MessageCatalog',
-                                    language)
+        catalog = zope.component.createObject(u'zope.app.MessageCatalog',
+                                              language)
         self[language] = catalog
 
 
@@ -221,9 +220,6 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
                                    fmsg['mod_time'])
 
 
-# BBB: Backward compatibility. 12/09/2004
-DomainRegistration = UtilityRegistration
-
 def setDomainOnActivation(domain, event):
     """Set the permission id upon registration activation.
 
@@ -239,8 +235,8 @@ def setDomainOnActivation(domain, event):
     >>> domain1.domain
     '<domain not activated>'
 
-    >>> from zope.app.component import registration 
-    >>> event = registration.RegistrationActivatedEvent(
+    >>> import zope.component.interfaces
+    >>> event = zope.component.interfaces.Registered(
     ...     Registration(domain1, 'domain1'))
 
     Now we pass the event into this function, and the id of the domain should
@@ -267,8 +263,8 @@ def unsetDomainOnDeactivation(domain, event):
     >>> domain1 = TranslationDomain()
     >>> domain1.domain = 'domain1'
 
-    >>> from zope.app.component import registration
-    >>> event = registration.RegistrationDeactivatedEvent(
+    >>> import zope.component.interfaces
+    >>> event = zope.component.interfaces.Unregistered(
     ...     Registration(domain1, 'domain1'))
 
     Now we pass the event into this function, and the id of the role should be

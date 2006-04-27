@@ -15,10 +15,10 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.filerepresentation.interfaces import IWriteDirectory
-from zope.app.filerepresentation.interfaces import IDirectoryFactory
+from zope.filerepresentation.interfaces import IWriteDirectory
+from zope.filerepresentation.interfaces import IDirectoryFactory
 from zope.event import notify
-from zope.app.event.objectevent import ObjectCreatedEvent
+from zope.lifecycleevent import ObjectCreatedEvent
 
 class NullResource(object):
     """MKCOL handler for creating collections"""

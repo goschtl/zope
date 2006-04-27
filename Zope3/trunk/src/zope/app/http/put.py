@@ -16,12 +16,13 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.component import queryAdapter
-from zope.app.http.interfaces import INullResource
-from zope.app.filerepresentation.interfaces import IWriteFile
-from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
 from zope.event import notify
-from zope.app.event.objectevent import ObjectCreatedEvent
+from zope.lifecycleevent import ObjectCreatedEvent
 from zope.interface import implements
+from zope.filerepresentation.interfaces import IWriteFile
+from zope.filerepresentation.interfaces import IWriteDirectory, IFileFactory
+
+from zope.app.http.interfaces import INullResource
 
 class NullResource(object):
     """Object representing objects to be created by a `PUT`.

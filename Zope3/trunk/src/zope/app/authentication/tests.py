@@ -22,12 +22,11 @@ import unittest
 from zope.testing import doctest
 from zope.interface import implements
 from zope.component import provideUtility, provideAdapter
+from zope.component.eventtesting import getEvents, clearEvents
 from zope.publisher.interfaces import IRequest
 from zope.publisher.tests.httprequest import TestRequest
 
-from zope.app import zapi
 from zope.app.testing import placelesssetup, ztapi
-from zope.app.event.tests.placelesssetup import getEvents, clearEvents
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
 from zope.app.session.interfaces import \
         IClientId, IClientIdManager, ISession, ISessionDataContainer, \

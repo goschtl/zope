@@ -18,13 +18,13 @@ from base64 import encodestring
 
 from zope.interface import implements, Interface, directlyProvides
 from zope.publisher.browser import TestRequest
+from zope.filerepresentation.interfaces import IReadFile
 
 from zope.app import zapi
 from zope.app.component.testing import PlacefulSetup
 from zope.app.testing import ztapi
 from zope.app.container.contained import contained
 from zope.app.content.interfaces import IContentType
-from zope.app.filerepresentation.interfaces import IReadFile
 from zope.app.file.file import File, FileReadFile
 
 from zope.app.externaleditor.interfaces import IExternallyEditable

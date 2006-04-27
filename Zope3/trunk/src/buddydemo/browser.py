@@ -1,7 +1,7 @@
 import zope.interface
 from buddydemo.interfaces import IBuddy, IPostalInfo
 from zope.event import notify
-from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.lifecycleevent import ObjectModifiedEvent
 
 class BuddyInfo:
     """Provide an interface for viewing a Buddy

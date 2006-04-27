@@ -17,13 +17,6 @@
       factory="zope.app.security.browser.principalterms.PrincipalTerms"
       />
 
-  <browser:tool
-      interface="..interfaces.IAuthentication"
-      title="Authentication"
-      description="Authenticates Principals."
-      unique="true"
-      />
-
   <browser:page
       name="failsafelogin.html"
       for="*"
@@ -56,12 +49,6 @@
       for="*"
       class=".auth.LoginLogout"
       permission="zope.Public"
-      />
-
-  <browser:tool
-      interface="..interfaces.IPermission"
-      title="Permission"
-      description="Security Permission"
       />
 
   <browser:addform

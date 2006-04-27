@@ -15,20 +15,15 @@
 
 $Id$
 """
-from zope.testing import cleanup
 
-# A mix-in class inheriting from CleanUp that also connects the CA services
-class PlacelessSetup(cleanup.CleanUp):
+# HACK to make sure basicmost event subscriber is installed
+import zope.component.event
 
-    def setUp(self):
-        super(PlacelessSetup, self).setUp()
-
-    def tearDown(self):
-        super(PlacelessSetup, self).tearDown()
-
+# we really don't need special setup now:
+from zope.testing.cleanup import CleanUp as PlacelessSetup
 
 def setUp(test=None):
-    cleanup.setUp()
+    PlacelessSetup().setUp()
 
 def tearDown(test=None):
-    cleanup.tearDown()
+    PlacelessSetup().tearDown()

@@ -233,19 +233,3 @@ def reset():
 from zope.testing.cleanup import addCleanUp
 addCleanUp(reset)
 del addCleanUp
-
-
-# BBB
-import zope.deprecation
-IDatabaseOpenedEvent = interfaces.IDatabaseOpenedEvent
-DatabaseOpened = interfaces.DatabaseOpened
-IProcessStartingEvent = interfaces.IProcessStartingEvent
-ProcessStarting = interfaces.ProcessStarting
-zope.deprecation.deprecated(
-    ['IDatabaseOpenedEvent', 'DatabaseOpened',
-     'IProcessStartingEvent', 'ProcessStarting'
-     ],
-    "The database opened and process starting events have moved to "
-    "zope.app.appsetup.interfaces they will disappear from here in "
-    "in Zope 3.3."
-    )

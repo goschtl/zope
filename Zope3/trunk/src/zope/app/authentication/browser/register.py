@@ -1,14 +1,30 @@
-from zope.app.component.site import UtilityRegistration
-from zope.app.security.interfaces import IAuthentication
-from zope.app.authentication.interfaces import ICredentialsPlugin
-from zope.app.authentication.interfaces import IAuthenticatorPlugin
+##############################################################################
+#
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Improved registration UI for registering pluggable autentication utilities
 
-def pluggableAuthenticationRegistration(view, component):
-    return UtilityRegistration(u'', IAuthentication, component)
+$Id$
+"""
 
-def credentialsPluginRegistration(view, name, component):
-    return UtilityRegistration(name, ICredentialsPlugin, component)
+from zope.app.i18n import ZopeMessageFactory as _
+import zope.app.component.browser.registration
+import zope.app.security.interfaces
 
-def authenticatorPluginRegistration(view, name, component):
-    return UtilityRegistration(name, IAuthenticatorPlugin, component)
+import zope.app.authentication.interfaces
 
+class AddAuthenticationRegistration(
+    zope.app.component.browser.registration.AddUtilityRegistration,
+    ):
+    label = _("Register a pluggable authentication utility")
+    name = ''
+    provided = zope.app.security.interfaces.IAuthentication

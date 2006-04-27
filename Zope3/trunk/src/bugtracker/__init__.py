@@ -15,5 +15,5 @@
 
 $Id$
 """
-from zope.i18n import MessageIDFactory
-TrackerMessageID = MessageIDFactory('bugtracker')
+from zope.i18nmessageid import MessageFactory
+TrackerMessageID = MessageFactory('bugtracker')

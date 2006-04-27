@@ -18,12 +18,12 @@ $Id$
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
+import zope.component
 from zope.testing.doctestunit import DocTestSuite
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 
-from zope.app.testing import ztapi
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.folder.interfaces import IFolder
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.component.testing import PlacefulSetup
 from zope.app.component.tests.test_site import BaseTestSiteManagerContainer
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
@@ -51,7 +51,8 @@ class FolderMetaDataTest(PlacefulSetup, TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         PlacefulSetup.buildFolders(self)
-        ztapi.provideAdapter(IFolder, IZopeDublinCore, ZDCAnnotatableAdapter)
+        zope.component.provideAdapter(ZDCAnnotatableAdapter, (IFolder,),
+                                      IZopeDublinCore)
 
 def test_suite():
     from zope.testing.doctestunit import DocTestSuite
