@@ -1,0 +1,17 @@
+p.recommendations
+{
+	background-color: #ddd;
+	padding: 5 3 3 5;
+	text-align: center;
+}
+
+p.recommendations img.tracker
+{
+	width: 1px; 
+	height: 1px; 
+	border:none !important; 
+	margin:0px !important;
+}
+
+
+
