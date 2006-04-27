@@ -46,7 +46,7 @@ def test_recursion():
     name for it:
 
       >>> from Products.Five.fiveconfigure import classDefaultViewable
-      >>> classDefaultViewable(Recurse)
+      >>> #classDefaultViewable(Recurse)
 
       >>> from zope.component import provideAdapter
       >>> from zope.publisher.interfaces.browser import IBrowserRequest

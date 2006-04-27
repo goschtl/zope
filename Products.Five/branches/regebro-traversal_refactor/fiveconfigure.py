@@ -138,6 +138,9 @@ def classTraversable(class_):
     _traversable_monkies.append(class_)
 
 def traversable(_context, class_):
+    warnings.warn("The five:traversable statement is no longer needed " \
+                  "and will be removed in Zope 2.12",
+                  DeprecationWarning)
     _context.action(
         discriminator = None,
         callable = classTraversable,
@@ -145,7 +148,7 @@ def traversable(_context, class_):
         )
 
 _defaultviewable_monkies = []
-def classDefaultViewable(class_):
+def classDefaultViewable(class_):    
     # If a class already has this attribute, it means it is either a
     # subclass of DefaultViewable or was already processed with this
     # directive; in either case, do nothing... except in the case were
@@ -173,6 +176,10 @@ def classDefaultViewable(class_):
     _defaultviewable_monkies.append(class_)
 
 def defaultViewable(_context, class_):
+    warnings.warn("The five:defaultViewable statement is no longer needed " \
+                  "and will be removed in Zope 2.12",
+                  DeprecationWarning, 2)
+    return
     _context.action(
         discriminator = None,
         callable = classDefaultViewable,
