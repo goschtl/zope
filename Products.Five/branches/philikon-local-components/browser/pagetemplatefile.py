@@ -18,8 +18,6 @@ $Id$
 import os, sys
 
 from Globals import package_home
-from AccessControl import getSecurityManager
-from Shared.DC.Scripts.Bindings import Unauthorized, UnauthorizedBinding
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper

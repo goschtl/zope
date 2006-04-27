@@ -15,10 +15,7 @@
 
 $Id$
 """
-from sys import modules
-
 from Products.PageTemplates.PythonExpr import PythonExpr
-
 from Products.PageTemplates.Expressions import \
      SubPathExpr, PathExpr, \
      StringExpr, \
