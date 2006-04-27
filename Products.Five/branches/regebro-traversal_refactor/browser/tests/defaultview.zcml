@@ -2,9 +2,6 @@
            xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:five="http://namespaces.zope.org/five">
 
-  <five:defaultViewable
-      class="Products.Five.tests.testing.simplecontent.SimpleContent" />
-
   <browser:page
       for="Products.Five.tests.testing.simplecontent.ISimpleContent"
       name="eagledefaultview.txt"

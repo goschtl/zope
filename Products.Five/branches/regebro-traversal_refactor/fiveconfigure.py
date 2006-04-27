@@ -26,6 +26,7 @@ import logging
 import App.config
 import Products
 
+import zope.deprecation
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
 from zope.configuration import xmlconfig
@@ -37,10 +38,11 @@ from zope.app.component.interface import provideInterface
 from zope.app.component.metaconfigure import adapter
 from zope.app.security.interfaces import IPermission
 
-from Products.Five.viewable import Viewable
+#from Products.Five.viewable import Viewable
 from Products.Five.traversable import Traversable
 from Products.Five.bridge import fromZ2Interface
 from Products.Five.browser.metaconfigure import page
+from Products.Five.interfaces import IBrowserDefault
 
 debug_mode = App.config.getConfiguration().debug_mode
 LOG = logging.getLogger('Five')
@@ -146,56 +148,16 @@ def traversable(_context, class_):
         callable = classTraversable,
         args = (class_,)
         )
-
-_defaultviewable_monkies = []
-def classDefaultViewable(class_):    
-    # XXX deprecated, can be removed
-    # If a class already has this attribute, it means it is either a
-    # subclass of DefaultViewable or was already processed with this
-    # directive; in either case, do nothing... except in the case were
-    # the class overrides the attribute instead of getting it from
-    # a base class. In this case, we suppose that the class probably
-    # didn't bother with the base classes attribute anyway.
-    if hasattr(class_, '__five_viewable__'):
-        if (hasattr(class_, '__browser_default__') and
-            isFiveMethod(class_.__browser_default__)):
-            return
-
-    if hasattr(class_, '__browser_default__'):
-        # if there's an existing __browser_default__ hook already, use that
-        # as the fallback
-        if not isFiveMethod(class_.__browser_default__):
-            setattr(class_, '__fallback_default__', class_.__browser_default__)
-    if not hasattr(class_, '__fallback_default__'):
-        setattr(class_, '__fallback_default__',
-                Viewable.__fallback_default__.im_func)
-
-    setattr(class_, '__browser_default__',
-            Viewable.__browser_default__.im_func)
-    setattr(class_, '__five_viewable__', True)
-    # remember class for clean up
-    _defaultviewable_monkies.append(class_)
-
-from zope.component import getSiteManager, provideAdapter
-from zope.interface import providedBy
-from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.component.interfaces import IDefaultViewName
-from interfaces import IBrowserDefault
-
+    
 def defaultViewable(_context, class_):
-    warnings.warn("The five:defaultViewable statement is no longer needed " \
-                  "and will be removed in Zope 2.12. \n If you rely on it " \
-                  "to make 'index.html' the default view, replace it with " \
-                  "<browser:defaultView name='index.html' />",
+    if zope.deprecation.__show__():
+        warnings.warn("The five:defaultViewable statement is no longer "     \
+                  "needed and will be removed in Zope 2.12. \n If you rely " \
+                  "on it to make 'index.html' the default view, replace it " \
+                  "with <browser:defaultView name='index.html' />",
                   DeprecationWarning, 2)
     implements(_context, class_, (IBrowserDefault,))
-    return
-    # XXX old code
-    #_context.action(
-        #discriminator = None,
-        #callable = classDefaultViewable,
-        #args = (class_,)
-        #)
+
 
 def createZope2Bridge(zope2, package, name):
     # Map a Zope 2 interface into a Zope3 interface, seated within 'package'
@@ -302,11 +264,11 @@ def untraversable(class_):
     killMonkey(class_, '__bobo_traverse__', '__fallback_traverse__',
                '__five_traversable__')
 
-def undefaultViewable(class_):
-    """Restore class's initial state with respect to being default
-    viewable."""
-    killMonkey(class_, '__browser_default__', '__fallback_default__',
-               '__five_viewable__')
+#def undefaultViewable(class_):
+    #"""Restore class's initial state with respect to being default
+    #viewable."""
+    #killMonkey(class_, '__browser_default__', '__fallback_default__',
+               #'__five_viewable__')
 
 def unregisterClass(class_):
     delattr(class_, 'meta_type')
@@ -321,10 +283,10 @@ def cleanUp():
         untraversable(class_)
     _traversable_monkies = []
 
-    global _defaultviewable_monkies
-    for class_ in _defaultviewable_monkies:
-        undefaultViewable(class_)
-    _defaultviewable_monkies = []
+    #global _defaultviewable_monkies
+    #for class_ in _defaultviewable_monkies:
+        #undefaultViewable(class_)
+    #_defaultviewable_monkies = []
 
     global _register_monkies
     for class_ in _register_monkies:

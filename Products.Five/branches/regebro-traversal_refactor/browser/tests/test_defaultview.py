@@ -46,7 +46,18 @@ def test_default_view():
       >>> uf = self.folder.acl_users
       >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
 
-    Test that index.html is still the default view:
+    BBB This is a test of backwards comaptibility with Five 1.3/Zope2.9.
+    The deprecated directive five:defaultViewable would before make
+    index.html the default view. Test that this is still the case.
+    five:defaultViewable goes away in Zope 2.12, and this test goes then too:
+      >>> import zope.deprecation
+      >>> zope.deprecation.__show__.off()
+      >>> zcml.load_string('''
+      ... <configure xmlns:five="http://namespaces.zope.org/five">
+      ...   <five:defaultViewable
+      ...     class="Products.Five.tests.testing.simplecontent.SimpleContent" />
+      ... </configure>''')    
+      >>> zope.deprecation.__show__.on()
       >>> print http(r'''
       ... GET /test_folder_1_/testoid HTTP/1.1
       ... Authorization: Basic manager:r00t
