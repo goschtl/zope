@@ -88,3 +88,8 @@ class IWriteMutableSchema(Interface):
 class IMutableSchema(IReadMutableSchema, IWriteMutableSchema):
     """This object represents an interface/schema that can be edited by
     managing the fields it contains."""
+
+import zope.deferredimport
+zope.deferredimport.deprecated(
+    'IVocabularyFactory has moved to zope.schema.interfaces',
+    IVocabularyFactory = 'zope.schema.interfaces:IVocabularyFactory')
