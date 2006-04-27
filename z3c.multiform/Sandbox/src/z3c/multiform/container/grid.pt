@@ -135,49 +135,48 @@ function toggleFormFieldHelp(ob,state) {
          summary="Content listing">
    <thead>
     <tr>
-     <th tal:repeat="field view/itemFormFactory/form_fields"
-         tal:content="field/field/title" i18n:translate="">
-     </th>
-    </tr>
+     <metal:block tal:repeat="field view/itemFormFactory/form_fields">
+      <th tal:define="isSelection python:field.field.__name__=='selected'"
+          tal:attributes="style python:isSelection and 'width:1%;;' or default">
+       <span tal:replace="field/field/title" tal:condition="not:isSelection" i18n:translate=""/>
+      </th>
+     </metal:block>
+     </tr>
    </thead>
    <tbody>
     <tr tal:repeat="subForm view/getForms"
-        tal:attributes="class python:repeat['subForm'].even and 'even' or 'odd'"
+        tal:attributes="class python:repeat['subForm'].even and 'even' or 'odd';"
         tal:content="structure subForm"/>
    </tbody>
   </table>
   
   <!-- end: subforms -->
 
-  <!-- start: parentActions -->
-
+  <metal:block define-slot="above_buttons" />
+  
+  <!-- start: Actions -->
   <div id="parentActionsView"
-       metal:define-macro="form_parent_actions">
+       metal:define-macro="form_actions">
+
    <span class="actionButtons"
         tal:condition="view/availableSubActions"
-        metal:define-slot="bottom_buttons">
+        metal:define-slot="parent_bottom_buttons">
     <input tal:repeat="action view/availableSubActions"
            tal:replace="structure action/render"
            />
-  </span>
-</div>
-
-  <!-- end: parentActions -->
-
-  
-  
-  <metal:block define-slot="above_buttons" />
-</div>
-<div id="actionsView"
-     metal:define-macro="form_actions">
-  <span class="actionButtons"
-        tal:condition="view/availableActions"
-        metal:define-slot="bottom_buttons">
+   </span>
+   <span class="actionButtons"
+         tal:condition="view/availableActions"
+         metal:define-slot="bottom_buttons">
     <input tal:repeat="action view/actions"
            tal:replace="structure action/render"
            />
-  </span>
-</div>
+   </span>
+   </div>
+
+  <!-- end: Actions -->
+
+ </div>
 
 </form>
 

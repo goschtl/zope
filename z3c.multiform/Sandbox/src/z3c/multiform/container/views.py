@@ -104,7 +104,12 @@ class ContainerItemForm(multiform.ItemFormBase):
     form_fields = form.Fields(ISelection['selected'],
                               IMovableLocation['__name__'],
                               IWriteZopeDublinCore['title'],
+                              IWriteZopeDublinCore['created'],
+                              IWriteZopeDublinCore['modified'],
                         omit_readonly=False,render_context=True)
+    form_fields['created'].for_display=True
+    form_fields['modified'].for_display=True
+
 
     @multiform.parentAction('Edit',
                             condition=multiform.allSubFormsDisplayMode)

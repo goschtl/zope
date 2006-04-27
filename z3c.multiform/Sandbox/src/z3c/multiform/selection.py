@@ -11,10 +11,10 @@ from interfaces import ISelection,IFormLocation
 
 class FormLocationSelection(object):
 
-    __doc__ = """Form Location-object proxy
+    __doc__ = """
 
-    This is a non-picklable proxy that can be put around objects that
-    implement `ILocation`.
+    FormLocation to Selection adapter
+
     >>> from zope.publisher.browser import TestRequest
     >>> from zope import interface
     >>> class L(object):

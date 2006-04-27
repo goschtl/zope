@@ -80,7 +80,7 @@ def render_submit_button(self):
     if IBoundAction.providedBy(self) and not self.available():
         return ''
     label = self.label
-    if isinstance(label, (zope.i18n.Message, zope.i18n.MessageID)):
+    if isinstance(label, zope.i18n.Message):
         label = zope.i18n.translate(self.label, context=self.form.request)
     return ('<input type="submit" id="%s" name="%s" value="%s"'
             ' class="button" />' %

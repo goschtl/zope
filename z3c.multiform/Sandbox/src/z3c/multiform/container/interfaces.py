@@ -9,7 +9,7 @@ class IMovableLocation(ILocation):
     itself"""
 
     __name__ = schema.TextLine(
-        title=u"The name within the parent",
+        title=u"Name",
         description=u"Traverse the parent with this name to get the object.",
         required=False,
         default=None)

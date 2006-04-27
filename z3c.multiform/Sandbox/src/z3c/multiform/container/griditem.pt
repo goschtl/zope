@@ -1,2 +1,5 @@
-<td tal:repeat="widget view/widgets"
-     tal:content="structure widget"/>
+<td tal:attributes="title: python:widget.error() or default;
+                    style: python:widget.error() and 'background: red;;' or default;"
+    tal:repeat="widget view/widgets"
+    tal:content="structure widget"/>
+
