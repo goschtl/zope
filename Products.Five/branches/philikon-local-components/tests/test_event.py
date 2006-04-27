@@ -28,7 +28,11 @@ from OFS.Folder import Folder
 from OFS.OrderedFolder import OrderedFolder
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2
 
-from zope.component.testing import setUp, tearDown
+from zope.component import testing, eventtesting
+
+def setUp(test):
+    testing.setUp(test)
+    eventtesting.setUp(test)
 
 class DontComplain(object):
     def _verifyObjectPaste(self, object, validate_src=1):
@@ -85,7 +89,7 @@ class MyNewFolder(DontComplain, Folder):
 def test_suite():
     from zope.testing.doctest import DocFileSuite
     return DocFileSuite('event.txt', package="Products.Five.tests",
-                        setUp=setUp, tearDown=tearDown)
+                        setUp=setUp, tearDown=testing.tearDown)
 
 if __name__ == '__main__':
     framework()
