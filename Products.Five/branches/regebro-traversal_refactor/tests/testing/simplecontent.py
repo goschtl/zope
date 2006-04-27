@@ -20,7 +20,6 @@ from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 
 from zope.interface import Interface, implements
-from Products.Five.traversable import Traversable
 
 class ISimpleContent(Interface):
     pass
@@ -31,7 +30,7 @@ class ICallableSimpleContent(ISimpleContent):
 class IIndexSimpleContent(ISimpleContent):
     pass
 
-class SimpleContent(Traversable, SimpleItem):
+class SimpleContent(SimpleItem):
     implements(ISimpleContent)
 
     meta_type = 'Five SimpleContent'

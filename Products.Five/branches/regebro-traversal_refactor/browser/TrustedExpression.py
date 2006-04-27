@@ -29,6 +29,19 @@ from ReuseUtils import rebindFunction
 
 ModuleImporter = SecureModuleImporter
 
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.interface import implements, Interface
+from zope.app.publication.browser import setDefaultSkin
+from zope.app.traversing.namespace import nsParse
+from zope.app.traversing.namespace import namespaceLookup
+from zope.component import queryMultiAdapter
+
+class FakeRequest(dict):
+  implements(IBrowserRequest)
+
+  def getURL(self):
+    return "http://codespeak.net/z3/five"
+
 def trustedTraverse(ob, path, ignored,):
   if not path: return self
 
@@ -40,7 +53,11 @@ def trustedTraverse(ob, path, ignored,):
   if isinstance(path, str): path = path.split('/')
   else: path=list(path)
   
-  REQUEST={'TraversalRequestNameStack': path}
+  REQUEST = get(ob, 'REQUEST', None)
+  if REQUEST is None:
+    REQUEST=FakeRequest()
+  setDefaultSkin(REQUEST)
+  REQUEST['TraversalRequestNameStack'] = path
   path.reverse()
   pop=path.pop
 
@@ -64,6 +81,17 @@ def trustedTraverse(ob, path, ignored,):
         object=o
         continue
 
+    if name and name[:1] in '@+':
+      # Process URI segment parameters.
+      ns, nm = nsParse(name)
+      if ns:
+        try:
+          o = namespaceLookup(ns, nm, object, REQUEST).__of__(object)
+        except TraversalError:
+          raise KeyError(name)
+        object = o
+        continue
+        
     t=get(object, '__bobo_traverse__', M)
     if t is not M: o=t(REQUEST, name)
     else:
@@ -71,7 +99,11 @@ def trustedTraverse(ob, path, ignored,):
       if o is M:
         try: o = object[name]
         except (AttributeError, TypeError): # better exception
-          raise AttributeError(name)
+            o = queryMultiAdapter((object, REQUEST), Interface, name)
+            if o is not None:
+                o = o.__of__(object)
+            else:
+                raise AttributeError(name)
     object = o
 
   return object
