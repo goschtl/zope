@@ -79,8 +79,6 @@
       permission="zope2.ViewManagementScreens"
       />
 
-  <!-- five:defaultViewable class=".democontent.DemoContent"/-->
-
   <browser:defaultView
       for=".democontent.IDemoContent"
       name="someview.html"
