@@ -21,7 +21,7 @@ $Id$
 from zope.exceptions.interfaces import DuplicationError, IDuplicationError
 from zope.exceptions.interfaces import UserError, IUserError
 
-# avoid depency on zope.security:
+# avoid dependency on zope.security:
 try:
     import zope.security
 except ImportError, v:
