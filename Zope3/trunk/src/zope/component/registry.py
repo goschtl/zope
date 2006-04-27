@@ -36,7 +36,7 @@ class Components(object):
         self.__bases__ = tuple(bases)
 
     def __repr__(self):
-        return "<%s %s>" % (self.__class__.__name__, self.__name__) 
+        return "<%s %s>" % (self.__class__.__name__, self.__name__)
 
     def _init_registries(self):
         self.adapters = zope.interface.adapter.AdapterRegistry()
@@ -51,7 +51,7 @@ class Components(object):
     def _getBases(self):
         # Subclasses might override
         return self.__dict__.get('__bases__', ())
-        
+
     def _setBases(self, bases):
         # Subclasses might override
         self.adapters.__bases__ = tuple([
@@ -81,7 +81,7 @@ class Components(object):
             if p == provided and c == component
             ]
 
-        self._utility_registrations[(provided, name)] = component, info        
+        self._utility_registrations[(provided, name)] = component, info
         self.utilities.register((), provided, name, component)
 
         if not subscribed:
@@ -120,7 +120,7 @@ class Components(object):
         zope.event.notify(interfaces.Unregistered(
             UtilityRegistration(self, provided, name, component, old[1])
             ))
-        
+
         return True
 
     def registeredUtilities(self):
@@ -172,23 +172,23 @@ class Components(object):
 
         if (required is None) and (factory is None):
             raise TypeError("Must specify one of factory and required")
-        
+
         required = _getAdapterRequired(factory, required)
         old = self._adapter_registrations.get((required, provided, name))
         if (old is None) or ((factory is not None) and
                              (factory != old[0])):
             return False
-        
+
         del self._adapter_registrations[(required, provided, name)]
         self.adapters.unregister(required, provided, name)
-        
+
         zope.event.notify(interfaces.Unregistered(
             AdapterRegistration(self, required, provided, name,
                                 *old)
             ))
 
         return True
-        
+
     def registeredAdapters(self):
         for ((required, provided, name), (component, info)
              ) in self._adapter_registrations.iteritems():
@@ -258,7 +258,7 @@ class Components(object):
 
         if (required is None) and (factory is None):
             raise TypeError("Must specify one of factory and required")
-        
+
         required = _getAdapterRequired(factory, required)
 
         if factory is None:
@@ -276,11 +276,11 @@ class Components(object):
 
         if len(new) == len(self._subscription_registrations):
             return False
-        
+
 
         self._subscription_registrations[:] = new
         self.adapters.unsubscribe(required, provided)
-        
+
         zope.event.notify(interfaces.Unregistered(
             SubscriptionRegistration(self, required, provided, name,
                                      factory, '')
@@ -302,7 +302,7 @@ class Components(object):
             (required, name, factory, info)
             )
         self.adapters.subscribe(required, None, factory)
-        
+
         if event:
             zope.event.notify(interfaces.Registered(
                 HandlerRegistration(self, required, name, factory, info)
@@ -318,7 +318,7 @@ class Components(object):
 
         if (required is None) and (factory is None):
             raise TypeError("Must specify one of factory and required")
-        
+
         required = _getAdapterRequired(factory, required)
 
         if factory is None:
@@ -336,7 +336,7 @@ class Components(object):
 
         if len(new) == len(self._handler_registrations):
             return False
-        
+
         self._handler_registrations[:] = new
         self.adapters.unsubscribe(required, None)
 
@@ -394,8 +394,8 @@ def _getAdapterRequired(factory, required):
                                 )
         result.append(r)
     return tuple(result)
-        
-        
+
+
 class UtilityRegistration(object):
 
     interface.implements(interfaces.IUtilityRegistration)
@@ -414,7 +414,7 @@ class UtilityRegistration(object):
 
     def __cmp__(self, other):
         return cmp(self.__repr__(), other.__repr__())
-        
+
 class AdapterRegistration(object):
 
     interface.implements(interfaces.IAdapterRegistration)
@@ -428,7 +428,7 @@ class AdapterRegistration(object):
         return '%s(%r, %s, %s, %r, %s, %r)' % (
             self.__class__.__name__,
             self.registry,
-            '[' + ", ".join([r.__name__ for r in self.required]) + ']', 
+            '[' + ", ".join([r.__name__ for r in self.required]) + ']',
             getattr(self.provided, '__name__', None), self.name,
             getattr(self.factory, '__name__', `self.factory`), self.info,
             )
@@ -465,7 +465,7 @@ class HandlerRegistration(AdapterRegistration):
         return '%s(%r, %s, %r, %s, %r)' % (
             self.__class__.__name__,
             self.registry,
-            '[' + ", ".join([r.__name__ for r in self.required]) + ']', 
+            '[' + ", ".join([r.__name__ for r in self.required]) + ']',
             self.name,
             getattr(self.factory, '__name__', `self.factory`), self.info,
             )
@@ -491,4 +491,4 @@ def dispatchSubscriptionAdapterRegistrationEvent(registration, event):
 def dispatchHandlerRegistrationEvent(registration, event):
     component.handle(registration.handler, event)
 
-    
+
