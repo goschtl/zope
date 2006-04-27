@@ -1,4 +1,4 @@
-from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.proxy import removeAllProxies
 from zope.interface import implements
 from zope.app import zapi

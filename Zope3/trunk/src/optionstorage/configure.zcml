@@ -25,7 +25,7 @@
 <adapter
 	factory="optionstorage.OptionStorage"
 	provides="optionstorage.interfaces.IOptionStorage"
-	for="zope.app.annotation.interfaces.IAnnotatable"
+	for="zope.annotation.interfaces.IAnnotatable"
 	permission="zope.View"
 	/>
 
