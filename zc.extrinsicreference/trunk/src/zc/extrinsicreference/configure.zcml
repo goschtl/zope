@@ -6,7 +6,6 @@
     <class class=".extrinsicreference.ExtrinsicReferences">
         <implements
             interface="zope.app.annotation.interfaces.IAttributeAnnotatable"/>
-        <implements interface="zope.app.utility.interfaces.ILocalUtility"/>
     </class>
 
     <browser:addMenuItem
