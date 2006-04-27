@@ -149,6 +149,7 @@ def traversable(_context, class_):
 
 _defaultviewable_monkies = []
 def classDefaultViewable(class_):    
+    # XXX deprecated, can be removed
     # If a class already has this attribute, it means it is either a
     # subclass of DefaultViewable or was already processed with this
     # directive; in either case, do nothing... except in the case were
@@ -175,16 +176,26 @@ def classDefaultViewable(class_):
     # remember class for clean up
     _defaultviewable_monkies.append(class_)
 
+from zope.component import getSiteManager, provideAdapter
+from zope.interface import providedBy
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.component.interfaces import IDefaultViewName
+from interfaces import IBrowserDefault
+
 def defaultViewable(_context, class_):
     warnings.warn("The five:defaultViewable statement is no longer needed " \
-                  "and will be removed in Zope 2.12",
+                  "and will be removed in Zope 2.12. \n If you rely on it " \
+                  "to make 'index.html' the default view, replace it with " \
+                  "<browser:defaultView name='index.html' />",
                   DeprecationWarning, 2)
+    implements(_context, class_, (IBrowserDefault,))
     return
-    _context.action(
-        discriminator = None,
-        callable = classDefaultViewable,
-        args = (class_,)
-        )
+    # XXX old code
+    #_context.action(
+        #discriminator = None,
+        #callable = classDefaultViewable,
+        #args = (class_,)
+        #)
 
 def createZope2Bridge(zope2, package, name):
     # Map a Zope 2 interface into a Zope3 interface, seated within 'package'

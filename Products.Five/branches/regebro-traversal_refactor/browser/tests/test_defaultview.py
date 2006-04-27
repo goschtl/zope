@@ -46,8 +46,7 @@ def test_default_view():
       >>> uf = self.folder.acl_users
       >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
 
-    Test a simple default view:
-
+    Test that index.html is still the default view:
       >>> print http(r'''
       ... GET /test_folder_1_/testoid HTTP/1.1
       ... Authorization: Basic manager:r00t
@@ -55,6 +54,23 @@ def test_default_view():
       HTTP/1.1 200 OK
       ...
       The eagle has landed
+
+
+    But if we want to, we can specify another default view with 
+    browser:defaultView:
+      >>> zcml.load_string('''
+      ... <configure xmlns:browser="http://namespaces.zope.org/browser">
+      ...   <browser:defaultView
+      ...     for="Products.Five.tests.testing.simplecontent.ISimpleContent"
+      ...     name="eagledefaultview.txt" />
+      ... </configure>''')
+      >>> print http(r'''
+      ... GET /test_folder_1_/testoid HTTP/1.1
+      ... Authorization: Basic manager:r00t
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+      The mouse has been eaten by the eagle
 
     This tests whether an existing ``index_html`` method is still
     supported and called:
