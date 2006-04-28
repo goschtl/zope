@@ -23,10 +23,10 @@ from zope.component.interfaces import IFactory
 from zope.app.component.hooks import getSite
 import zope.app.container.browser.adding
 from zope.app.container.constraints import checkObject
-from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.exception.interfaces import UserError
-from zope.app.location.interfaces import ILocation
-from zope.app.location import LocationProxy
+from zope.lifecycleevent import ObjectCreatedEvent
+from zope.exceptions.interfaces import UserError
+from zope.location.interfaces import ILocation
+from zope.location import LocationProxy
 
 from zc.shortcut import Shortcut, traversedURL, interfaces
 

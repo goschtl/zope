@@ -17,7 +17,7 @@ $Id$
 """
 import persistent
 from zope import interface
-from zope.app.location.interfaces import ILocation
+from zope.location.interfaces import ILocation
 
 from zc.shortcut import interfaces, proxy
 

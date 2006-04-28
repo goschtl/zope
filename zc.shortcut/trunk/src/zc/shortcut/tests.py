@@ -20,7 +20,7 @@ import unittest
 import zope.testing.module
 
 from zope.testing import doctest
-from zope.app.tests import placelesssetup
+from zope.app.testing import placelesssetup
 
 def adaptersSetUp(test):
     zope.testing.module.setUp(test, name='zc.shortcut.adapters_test')

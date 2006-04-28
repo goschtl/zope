@@ -19,7 +19,7 @@ The action method changes are pertinent to redirecting to an adding view.
 
     >>> from zc.shortcut import adding, interfaces
     >>> from zope import interface, component
-    >>> from zope.app.location.interfaces import ILocation
+    >>> from zope.location.interfaces import ILocation
     >>> class ISpam(interface.Interface):
     ...     pass
     ...
@@ -29,7 +29,7 @@ The action method changes are pertinent to redirecting to an adding view.
     ...         self.__parent__ = parent
     ...         self.__name__ = name
     ...
-    >>> from zope.app.traversing.interfaces import IContainmentRoot
+    >>> from zope.traversing.interfaces import IContainmentRoot
     >>> class DummyContainmentRoot(object):
     ...     interface.implements(IContainmentRoot)
     ...

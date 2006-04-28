@@ -11,7 +11,7 @@ configured folder fires an object added event.
     >>> class IDummy(interface.Interface):
     ...     pass
     ...
-    >>> from zope.app.location.interfaces import ILocation
+    >>> from zope.location.interfaces import ILocation
     >>> class Dummy(object):
     ...     interface.implements(IDummy, ILocation)
     ...     def __init__(self, *args, **kwargs):

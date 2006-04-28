@@ -16,7 +16,7 @@ from zope import interface, event, component
 import zope.component.factory
 from zope.app.container.interfaces import INameChooser, IContainer
 from zope.app.container.constraints import checkObject
-from zope.app.event.objectevent import ObjectCreatedEvent
+from zope.lifecycleevent import ObjectCreatedEvent
 
 from zc.shortcut import interfaces, Shortcut
 

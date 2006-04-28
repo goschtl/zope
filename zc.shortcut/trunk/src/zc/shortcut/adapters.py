@@ -23,14 +23,13 @@ import zope.publisher.interfaces.browser
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.http import IHTTPRequest
 
-from zope.app.location.pickling import locationCopy
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.event.objectevent import ObjectCopiedEvent, ObjectCreatedEvent
-from zope.app.size.interfaces import ISized
-from zope.app.traversing.interfaces import ITraversable, IContainmentRoot
-from zope.app.publisher.browser import BrowserView
-from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app import copypastemove
+from zope.location.pickling import locationCopy
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.lifecycleevent import ObjectCopiedEvent, ObjectCreatedEvent
+from zope.size.interfaces import ISized
+from zope.traversing.interfaces import ITraversable, IContainmentRoot
+from zope.publisher.browser import BrowserView
+from zope import copypastemove
 from zope.app.container.constraints import checkObject
 from zope.app.container.interfaces import INameChooser, IContainer
 

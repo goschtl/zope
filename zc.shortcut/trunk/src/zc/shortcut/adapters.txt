@@ -12,9 +12,9 @@ First we have to import the interfaces we'll be working with::
 
     >>> from zope.publisher.interfaces import IRequest
     >>> from zope.publisher.interfaces.browser import IBrowserPublisher
-    >>> from zope.app.traversing.interfaces import ITraversable
+    >>> from zope.traversing.interfaces import ITraversable
     >>> from zc.shortcut.interfaces import IShortcut
-    >>> from zope.app.location.interfaces import ILocation
+    >>> from zope.location.interfaces import ILocation
     >>> from zc.shortcut import interfaces
 
 If we have a target object with a root::
@@ -29,7 +29,7 @@ If we have a target object with a root::
     ...         self.__parent__ = parent
     ...         self.__name__ = name
 
-    >>> from zope.app.traversing.interfaces import IContainmentRoot
+    >>> from zope.traversing.interfaces import IContainmentRoot
     >>> class DummyContainmentRoot(object):
     ...     __parent__ = __name__ = None
     ...     interface.implements(IContainmentRoot)
@@ -273,8 +273,8 @@ are part of the shortcut package.
     >>> component.provideAdapter(zc.displayname.adapters.DefaultDisplayNameGenerator)
     >>> component.provideAdapter(zc.displayname.adapters.SiteDisplayNameGenerator)
     >>> from zope.publisher.interfaces.http import IHTTPRequest
-    >>> from zope.app.traversing.browser.interfaces import IAbsoluteURL
-    >>> from zope.app.traversing import browser
+    >>> from zope.traversing.browser.interfaces import IAbsoluteURL
+    >>> from zope.traversing import browser
     >>> component.provideAdapter(
     ...     browser.AbsoluteURL, adapts=(None, IHTTPRequest),
     ...     provides=IAbsoluteURL)
@@ -337,7 +337,7 @@ are part of the shortcut package.
 Copy and Link
 =============
 
-The zope.app.copypastemove package provides a number of interfaces to provide
+The zope.copypastemove package provides a number of interfaces to provide
 copy, move, rename, and other similar operations.  The shortcut package
 provides a replacement implementation of copy for objects that looks up a
 repository and uses it if available; an implementation of
@@ -420,7 +420,7 @@ that we use to show what events are being fired.
     >>> dummy.__parent__ = repo
     >>> dummy.__name__ = 'dummy'
     >>> dummy.id = 'foo'
-    >>> from zope.app import copypastemove
+    >>> from zope import copypastemove
     >>> copier = copypastemove.IObjectCopier(dummy)
     >>> verifyObject(copypastemove.IObjectCopier, copier)
     True
