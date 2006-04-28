@@ -17,6 +17,9 @@ $Id: test_api.py 28632 2004-12-16 17:42:59Z srichter $
 """
 import re
 import unittest
+import transaction
+import persistent
+
 from zope import interface, component
 from zope.interface.verify import verifyObject
 from zope.interface.interfaces import IInterface
@@ -26,6 +29,8 @@ from zope.component.interfaces import ComponentLookupError
 from zope.component.interfaces import IComponentArchitecture
 from zope.component.interfaces import IComponentLookup
 from zope.component.testing import setUp, tearDown
+import zope.component.persistentregistry
+import zope.component.globalregistry
 
 # side effect gets component-based event dispatcher installed.
 # we should obviously make this more explicit
@@ -836,6 +841,89 @@ def persistent_registry_doesnt_scew_up_subsribers():
     >>> t2.abort()
 
     """
+
+
+
+class GlobalRegistry:
+    pass
+
+base = zope.component.globalregistry.GlobalAdapterRegistry(
+    GlobalRegistry, 'adapters')
+GlobalRegistry.adapters = base
+def clear_base():
+    base.__init__(GlobalRegistry, 'adapters')
+    
+class IFoo(interface.Interface):
+    pass
+class Foo(persistent.Persistent):
+    interface.implements(IFoo)
+    name = ''
+    def __init__(self, name=''):
+        self.name = name
+
+    def __repr__(self):
+        return 'Foo(%r)' % self.name
+
+def test_deghostification_of_persistent_adapter_registries():
+    """
+    
+We want to make sure that we see updates corrextly.
+
+    >>> len(base._v_subregistries)
+    0
+    
+    >>> import ZODB.tests.util
+    >>> db = ZODB.tests.util.DB()
+    >>> tm1 = transaction.TransactionManager()
+    >>> c1 = db.open(transaction_manager=tm1)
+    >>> r1 = zope.component.persistentregistry.PersistentAdapterRegistry(
+    ...           (base,))
+    >>> r2 = zope.component.persistentregistry.PersistentAdapterRegistry((r1,))
+    >>> c1.root()[1] = r1
+    >>> c1.root()[2] = r2
+    >>> tm1.commit()
+    >>> r1._p_deactivate()
+
+    >>> len(base._v_subregistries)
+    0
+
+    >>> tm2 = transaction.TransactionManager()
+    >>> c2 = db.open(transaction_manager=tm2)
+    >>> r1 = c2.root()[1]
+    >>> r2 = c2.root()[2]
+
+    >>> r1.lookup((), IFoo, '')
+
+    >>> base.register((), IFoo, '', Foo(''))
+    >>> r1.lookup((), IFoo, '')
+    Foo('')
+
+    >>> r2.lookup((), IFoo, '1')
+
+    >>> r1.register((), IFoo, '1', Foo('1'))
+
+    >>> r2.lookup((), IFoo, '1')
+    Foo('1')
+
+    >>> r1.lookup((), IFoo, '2')
+    >>> r2.lookup((), IFoo, '2')
+
+    >>> base.register((), IFoo, '2', Foo('2'))
+    
+    >>> r1.lookup((), IFoo, '2')
+    Foo('2')
+
+    >>> r2.lookup((), IFoo, '2')
+    Foo('2')
+
+Cleanup:
+
+    >>> db.close()
+    >>> clear_base()
+
+    """
+
+
 
 def tearDownRegistryTests(tests):
     import zope.event

@@ -21,13 +21,27 @@ import zope.interface.adapter
 
 import zope.component.registry
 
-class PersistentAdapterRegistry(zope.interface.adapter.AdapterRegistry,
-                                persistent.Persistent):
+class PersistentAdapterRegistry(
+    zope.interface.adapter.VerifyingAdapterRegistry,
+    persistent.Persistent,
+    ):
 
     def changed(self, originally_changed):
         if originally_changed is self:
             self._p_changed = True
         super(PersistentAdapterRegistry, self).changed(originally_changed)
+
+    def __getstate__(self):
+        state = super(PersistentAdapterRegistry, self).__getstate__().copy()
+        for name in self._delegated:
+            state.pop(name, 0)
+        return state
+
+    def __setstate__(self, state):
+        super(PersistentAdapterRegistry, self).__setstate__(state)
+        self._createLookup()
+        self._v_lookup.changed(self)
+        
         
 class PersistentComponents(zope.component.registry.Components):
 

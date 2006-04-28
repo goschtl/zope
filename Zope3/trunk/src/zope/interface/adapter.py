@@ -19,104 +19,71 @@ $Id$
 import weakref
 from zope.interface import providedBy, Interface, ro
 
-class readproperty(object):
-
-    def __init__(self, func):
-        self.func = func
-
-    def __get__(self, inst, class_):
-        if inst is None:
-            return self
-
-        func = self.func
-        return func(inst)
-    
-
-_delegated = ('lookup', 'queryMultiAdapter', 'lookup1', 'queryAdapter',
-              'adapter_hook', 'lookupAll', 'names',
-              'subscriptions', 'subscribers')
-
 _marker = object
-class AdapterRegistry(object):
+class BaseAdapterRegistry(object):
+
+    # List of methods copied from lookup sub-objects:
+    _delegated = ('lookup', 'queryMultiAdapter', 'lookup1', 'queryAdapter',
+                  'adapter_hook', 'lookupAll', 'names',
+                  'subscriptions', 'subscribers')
+
+    # All registries maintain a generation that can be used by verifying
+    # registries
+    _generation = 0
 
     def __init__(self, bases=()):
+
+        # {order -> {required -> {provided -> {name -> value}}}}
+        # where "interfaces" is really a nested key.  So, for example:
+        # for order == 0, we have:
+        #   {provided -> {name -> valie}}
+        # but for order == 2, we have:
+        #   {r1 -> {r2 -> {provided -> {name -> valie}}}}
         self._adapters = []
+
+        # {order -> {required -> {provided -> {name -> [value]}}}}
+        # where the remarks about adapters above apply
         self._subscribers = []
+
+        # Set, with a reference count, keeping track of the interfaces
+        # for which we have provided components:
         self._provided = {}
-        self._init_non_persistent()
-        self.__bases__ = bases
 
-    def _init_non_persistent(self):
-        self._v_subregistries = weakref.WeakKeyDictionary()
-        self._v_lookup = lookup = AdapterLookup(self)
-        for name in _delegated:
-            self.__dict__[name] = getattr(lookup, name)
+        # Looup object to perform lookup.  We make this a separate object to
+        # to make it easier, in the furture, to implement just the lookup
+        # functionality in C.
+        self._createLookup()
 
-    def __getstate__(self):
-        state = super(AdapterRegistry, self).__getstate__().copy()
-        for name in _delegated:
-            state.pop(name, 0)
-        return state
-
-    def __setstate__(self, state):
-        super(AdapterRegistry, self).__setstate__(state)
-        self._init_non_persistent()
-
-    @apply
-    def __bases__():
+        # Cache invalidation data.  There are really 2 kinds of registries:
         
-        def get(self):
-            return self.__dict__['__bases__']
+        #   Invalidating registries have caches that are invalidated
+        #     when they or when base registies change.  An invalidating
+        #     registry can only have invalidating registries as bases.
 
-        def set(self, v):
-            old = self.__dict__.get('__bases__', ())
-            for r in old:
-                if r not in v:
-                    r._removeSubregistry(self)
-            for r in v:
-                if r not in old:
-                    r._addSubregistry(self)
-            
-            self.__dict__['__bases__'] = v
-            self.ro = ro.ro(self)
-            self.changed(self)
-            
-        return property(get, set)
+        #   Verifying registies can't rely on getting invalidation message,
+        #     so have to check the generations of base registries to determine
+        #     if their cache data are current
 
-    def _addSubregistry(self, r):
-        self._v_subregistries[r] = 1
+        # Base registries:
+        self.__bases__ = bases
+        
+    def _setBases(self, bases):
+        self.__dict__['__bases__'] = bases
+        self.ro = ro.ro(self)
+        self.changed(self)
 
-    def _removeSubregistry(self, r):
-        if r in self._v_subregistries:
-            del self._v_subregistries[r]
+    __bases__ = property(lambda self: self.__dict__['__bases__'],
+                         lambda self, bases: self._setBases(bases),
+                         )
+
+    def _createLookup(self):
+        self._v_lookup = self.LookupClass(self)
+        for name in self._delegated:
+            self.__dict__[name] = getattr(self._v_lookup, name)
 
     def changed(self, originally_changed):
-        try:
-            lookup = self._v_lookup
-        except AttributeError:
-            pass
-        else:
-            lookup.changed(originally_changed)
-
-        for sub in self._v_subregistries.keys():
-            sub.changed(originally_changed)
-       
-    @readproperty
-    def _v_extendors(self):
-        _v_extendors = {}
-        for provided in self._provided:
-            for i in provided.__iro__:
-                extendors = _v_extendors.get(i, ())
-                if provided not in extendors:
-                    _v_extendors[i] = (
-                        [e for e in extendors if provided.isOrExtends(e)]
-                        +
-                        [provided]
-                        + 
-                        [e for e in extendors if not provided.isOrExtends(e)]
-                        )
-        self._v_extendors = _v_extendors
-        return self._v_extendors
+        self._generation += 1
+        self._v_lookup.changed(originally_changed)
 
     def register(self, required, provided, name, value):
         if value is None:
@@ -146,8 +113,8 @@ class AdapterRegistry(object):
 
         n = self._provided.get(provided, 0) + 1
         self._provided[provided] = n
-        if n == 1 and '_v_extendors' in self.__dict__:
-            del self.__dict__['_v_extendors']
+        if n == 1:
+            self._v_lookup.add_extendor(provided)
 
         self.changed(self)
 
@@ -195,8 +162,7 @@ class AdapterRegistry(object):
         n = self._provided[provided] - 1
         if n == 0:
             del self._provided[provided]
-            if '_v_extendors' in self.__dict__:
-                del self.__dict__['_v_extendors']
+            self._v_lookup.remove_extendor(provided)
         else:
             self._provided[provided] = n
 
@@ -227,8 +193,8 @@ class AdapterRegistry(object):
         if provided is not None:
             n = self._provided.get(provided, 0) + 1
             self._provided[provided] = n
-            if n == 1 and '_v_extendors' in self.__dict__:
-                del self.__dict__['_v_extendors']
+            if n == 1:
+                self._v_lookup.add_extendor(provided)
 
         self.changed(self)
 
@@ -265,8 +231,7 @@ class AdapterRegistry(object):
             n = self._provided[provided] + len(new) - len(old)
             if n == 0:
                 del self._provided[provided]
-                if '_v_extendors' in self.__dict__:
-                    del self.__dict__['_v_extendors']
+                self._v_lookup.remove_extendor(provided)
 
         self.changed(self)
 
@@ -278,8 +243,6 @@ class AdapterRegistry(object):
         return XXXTwistedFakeOut
 
 
-
-
 _not_in_mapping = object()
 class AdapterLookup(object):
 
@@ -289,8 +252,9 @@ class AdapterLookup(object):
         self._mcache = {}
         self._scache = {}
         self._required = {}
+        self.init_extendors()
 
-    def changed(self, originally_changed):
+    def changed(self, ignored=None):
         self._cache.clear()
         self._mcache.clear()
         self._scache.clear()
@@ -299,6 +263,53 @@ class AdapterLookup(object):
             if r is not None:
                 r.unsubscribe(self)
         self._required.clear()
+
+
+    # Extendors
+    # ---------
+
+    # When given an target interface for an adapter lookup, we need to consider
+    # adapters for interfaces that extend the target interface.  This is
+    # what the extendors dictionary is about.  It tells us all of the
+    # interfaces that extend an interface for which there are adapters
+    # registered.
+
+    # We could separate this by order and name, thus reducing the
+    # number of provided interfaces to search at run time.  The tradeoff,
+    # however, is that we have to store more information.  For example,
+    # is the same interface is provided for multiple names and if the
+    # interface extends many interfaces, we'll have to keep track of
+    # a fair bit of information for each name.  It's better to
+    # be space efficient here and be time efficient in the cache
+    # implementation.
+
+    # TODO: add invalidation when a provided interface changes, in case
+    # the interface's __iro__ has changed.  This is unlikely enough that
+    # we'll take our chances for now.
+    
+    def init_extendors(self):
+        self._extendors = {}
+        for p in self._registry._provided:
+            self.add_extendor(p)
+
+    def add_extendor(self, provided):
+        _extendors = self._extendors
+        for i in provided.__iro__:
+            extendors = _extendors.get(i, ())
+            _extendors[i] = (
+                [e for e in extendors if provided.isOrExtends(e)]
+                +
+                [provided]
+                + 
+                [e for e in extendors if not provided.isOrExtends(e)]
+                )
+
+    def remove_extendor(self, provided):
+        _extendors = self._extendors
+        for i in provided.__iro__:
+            _extendors[i] = [e for e in _extendors.get(i, ())
+                             if e != provided]
+
         
     def _getcache(self, provided, name):
         cache = self._cache.get(provided)
@@ -336,7 +347,7 @@ class AdapterLookup(object):
                 if order >= len(byorder):
                     continue
 
-                extendors = registry._v_extendors.get(provided)
+                extendors = registry._v_lookup._extendors.get(provided)
                 if not extendors:
                     continue
 
@@ -412,7 +423,7 @@ class AdapterLookup(object):
                 byorder = registry._adapters
                 if order >= len(byorder):
                     continue
-                extendors = registry._v_extendors.get(provided)
+                extendors = registry._v_lookup._extendors.get(provided)
                 if not extendors:
                     continue
                 components = byorder[order]
@@ -445,7 +456,7 @@ class AdapterLookup(object):
                 if provided is None:
                     extendors = (provided, )
                 else:
-                    extendors = registry._v_extendors.get(provided)
+                    extendors = registry._v_lookup._extendors.get(provided)
                     if extendors is None:
                         continue
 
@@ -470,6 +481,83 @@ class AdapterLookup(object):
                 if subscriber is not None:
                     result.append(subscriber)
         return result
+
+class AdapterRegistry(BaseAdapterRegistry):
+
+    LookupClass = AdapterLookup
+
+    def __init__(self, bases=()):
+        # AdapterRegisties are invalidating registries, so
+        # we need to keep track of out invalidating subregistries.
+        self._v_subregistries = weakref.WeakKeyDictionary()
+
+        super(AdapterRegistry, self).__init__(bases)
+
+    def _addSubregistry(self, r):
+        self._v_subregistries[r] = 1
+
+    def _removeSubregistry(self, r):
+        if r in self._v_subregistries:
+            del self._v_subregistries[r]
+
+    def _setBases(self, bases):
+        old = self.__dict__.get('__bases__', ())
+        for r in old:
+            if r not in bases:
+                r._removeSubregistry(self)
+        for r in bases:
+            if r not in old:
+                r._addSubregistry(self)
+
+        super(AdapterRegistry, self)._setBases(bases)
+
+    def changed(self, originally_changed):
+        super(AdapterRegistry, self).changed(originally_changed)
+
+        for sub in self._v_subregistries.keys():
+            sub.changed(originally_changed)
+
+
+class VerifyingAdapterLookup(AdapterLookup):
+
+    def __init__(self, registry):
+        super(VerifyingAdapterLookup, self).__init__(registry)
+
+    def changed(self, originally_changed):
+        super(VerifyingAdapterLookup, self).changed(originally_changed)
+        self._verify_ro = self._registry.ro[1:]
+        self._verify_generations = [r._generation for r in self._verify_ro]
+
+    def _verify(self):
+        if ([r._generation for r in self._verify_ro]
+            != self._verify_generations):
+            self.changed(None)
+
+    def _getcache(self, provided, name):
+        self._verify()
+
+        # The non-use of super here is intentional.  A C implementation
+        # will call AdapterLookup's C implementation directly.
+        return AdapterLookup._getcache(self, provided, name)
+    
+    def lookupAll(self, required, provided):
+        self._verify()
+
+        # The non-use of super here is intentional.  A C implementation
+        # will call AdapterLookup's C implementation directly.
+        return AdapterLookup.lookupAll(self, required, provided)
+
+    def subscriptions(self, required, provided):
+        self._verify()
+
+        # The non-use of super here is intentional.  A C implementation
+        # will call AdapterLookup's C implementation directly.
+        return AdapterLookup.subscriptions(self, required, provided)
+
+
+class VerifyingAdapterRegistry(BaseAdapterRegistry):
+
+    LookupClass = VerifyingAdapterLookup
     
 def _convert_None_to_Interface(x):
     if x is None:
