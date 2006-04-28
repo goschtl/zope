@@ -20,7 +20,7 @@ these features.
     >>> from zope.component import tests
     >>> components = registry.Components('comps')
 
-As components atr registered, events are generated.  Let's register
+As components are registered, events are generated.  Let's register
 an event subscriber, so we can see the events generated:
 
     >>> import zope.event
@@ -99,9 +99,9 @@ Unless you use queryUtility:
 You can get information about registered utilities with the
 registeredUtilities method:
 
-    >>> for regsitration in sorted(components.registeredUtilities()):
-    ...     print regsitration.provided, regsitration.name
-    ...     print regsitration.component, regsitration.info
+    >>> for registration in sorted(components.registeredUtilities()):
+    ...     print registration.provided, registration.name
+    ...     print registration.component, registration.info
     <InterfaceClass zope.component.tests.I1> 
     U1(1) 
     <InterfaceClass zope.component.tests.I2> 
@@ -117,9 +117,9 @@ Duplicate registrations replace existing ones:
     >>> components.getUtility(tests.I1)
     U1(4)
 
-    >>> for regsitration in sorted(components.registeredUtilities()):
-    ...     print regsitration.provided, regsitration.name
-    ...     print regsitration.component, regsitration.info
+    >>> for registration in sorted(components.registeredUtilities()):
+    ...     print registration.provided, registration.name
+    ...     print registration.component, registration.info
     <InterfaceClass zope.component.tests.I1> 
     U1(4) use 4 now
     <InterfaceClass zope.component.tests.I2> 
@@ -141,9 +141,9 @@ You can also unregister utilities:
 A boolean is returned indicating whether anything changed:
 
     >>> components.queryUtility(tests.I1)
-    >>> for regsitration in sorted(components.registeredUtilities()):
-    ...     print regsitration.provided, regsitration.name
-    ...     print regsitration.component, regsitration.info
+    >>> for registration in sorted(components.registeredUtilities()):
+    ...     print registration.provided, registration.name
+    ...     print registration.component, registration.info
     <InterfaceClass zope.component.tests.I2> 
     U12(2) 
     <InterfaceClass zope.component.tests.I2> three
@@ -245,10 +245,10 @@ implementedBy specification for the class is used:
 We can see the adapters that have been registered using the
 registeredAdapters method:
 
-    >>> for regsitration in sorted(components.registeredAdapters()):
-    ...     print regsitration.required
-    ...     print regsitration.provided, regsitration.name
-    ...     print regsitration.factory, regsitration.info
+    >>> for registration in sorted(components.registeredAdapters()):
+    ...     print registration.required
+    ...     print registration.provided, registration.name
+    ...     print registration.factory, registration.info
     ... # doctest: +NORMALIZE_WHITESPACE
     (<InterfaceClass zope.component.tests.I1>, 
      <InterfaceClass zope.component.tests.I2>)
@@ -316,10 +316,10 @@ be provided:
     AdapterRegistration(<Components comps>, [I1, I2], IA1, u'', A12_1, u'')
     True
 
-    >>> for regsitration in sorted(components.registeredAdapters()):
-    ...     print regsitration.required
-    ...     print regsitration.provided, regsitration.name
-    ...     print regsitration.factory, regsitration.info
+    >>> for registration in sorted(components.registeredAdapters()):
+    ...     print registration.required
+    ...     print registration.provided, registration.name
+    ...     print registration.factory, registration.info
     ... # doctest: +NORMALIZE_WHITESPACE
     (<InterfaceClass zope.component.tests.I1>, 
      <InterfaceClass zope.component.tests.I2>)
@@ -386,10 +386,10 @@ have a __component_adapts__ attribute:
     AdapterRegistration(<Components comps>, [I3], IA2, u'', A_2, u'')
     True
 
-    >>> for regsitration in sorted(components.registeredAdapters()):
-    ...     print regsitration.required
-    ...     print regsitration.provided, regsitration.name
-    ...     print regsitration.factory, regsitration.info
+    >>> for registration in sorted(components.registeredAdapters()):
+    ...     print registration.required
+    ...     print registration.provided, registration.name
+    ...     print registration.factory, registration.info
     ... # doctest: +NORMALIZE_WHITESPACE
     (<implementedBy zope.component.tests.U>,)
     <InterfaceClass zope.component.tests.IA3> 
@@ -414,8 +414,8 @@ specified required and provided interfaces:
                         IA3, u'', A_3, 'Really class specific')
     True
 
-    >>> for regsitration in sorted(components.registeredAdapters()):
-    ...     print regsitration
+    >>> for registration in sorted(components.registeredAdapters()):
+    ...     print registration
 
 Adapters can be named:
 
@@ -489,10 +489,10 @@ factory:
     Unregistered event:
     AdapterRegistration(<Components comps>, [I1], IA2, u'', A1_12, u'')
     True
-    >>> for regsitration in sorted(components.registeredAdapters()):
-    ...     print regsitration.required
-    ...     print regsitration.provided, regsitration.name
-    ...     print regsitration.factory, regsitration.info
+    >>> for registration in sorted(components.registeredAdapters()):
+    ...     print registration.required
+    ...     print registration.provided, registration.name
+    ...     print registration.factory, registration.info
     ... # doctest: +NORMALIZE_WHITESPACE
     (<InterfaceClass zope.component.tests.I1>,)
     <InterfaceClass zope.component.tests.IA2> test 2
