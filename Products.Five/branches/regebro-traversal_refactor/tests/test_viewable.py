@@ -21,7 +21,8 @@ if __name__ == '__main__':
 
 def test_defaultView():
     """
-    Testing default view functionality
+    This tests the default view functionality. It also tests the deprecated 
+    BrowserDefault class. References to BrowserDefault can be removed in 2.12.
 
     Take a class Foo and an interface IFoo:
 
@@ -50,15 +51,21 @@ def test_defaultView():
 
     Now take a BrowserDefault for an instance of Foo::
 
+      >>> import zope.deprecation
       >>> foo = Foo()
       >>> from Products.Five.viewable import BrowserDefault
+      >>> zope.deprecation.__show__.off()
       >>> bd = BrowserDefault(foo)
+      >>> zope.deprecation.__show__.on()
 
     For now the default view name is index.html, like we set above:
 
       >>> from Products.Five.traversable import FakeRequest
       >>> request = FakeRequest()
-
+      >>> from zope.app.publisher.browser import queryDefaultViewName
+      
+      >>> queryDefaultViewName(foo, request)
+      u'index.html'
       >>> obj, path = bd.defaultView(request)
       >>> obj is foo
       True
@@ -69,6 +76,9 @@ def test_defaultView():
 
       >>> from zope.interface import directlyProvides
       >>> directlyProvides(foo, IFoo)
+      >>> queryDefaultViewName(foo, request)
+      u'foo.html'
+      
       >>> obj, path = bd.defaultView(request)
       >>> obj is foo
       True

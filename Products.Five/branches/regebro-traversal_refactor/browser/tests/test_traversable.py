@@ -57,16 +57,6 @@ def test_traversable():
       ... 
       ... <!-- make the zope2.Public permission work -->
       ... <meta:redefinePermission from="zope2.Public" to="zope.Public" />
-      ... 
-      ... <five:traversable
-      ...     class="Products.Five.tests.testing.fancycontent.FancyContent"
-      ...     />
-      ... <five:traversable
-      ...     class="Products.Five.browser.tests.test_traversable.SimpleClass"
-      ...     />
-      ... <five:traversable
-      ...     class="Products.Five.tests.testing.FiveTraversableFolder"
-      ...     />
       ...
       ... <!-- this view will never be found -->
       ... <browser:page
@@ -216,7 +206,6 @@ def test_view_doesnt_shadow_attribute():
       ...       attribute="eagle"
       ...       permission="zope2.Public"
       ...       />
-      ...   <five:traversable class="OFS.Application.Application"/>
       ... </configure>'''
       >>> import Products.Five
       >>> from Products.Five import zcml

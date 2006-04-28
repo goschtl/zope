@@ -10,7 +10,6 @@
   <meta:redefinePermission from="zope2.Public" to="zope.Public" />
 
   <!-- browser forms -->
-  <five:traversable class=".schemacontent.FieldContent" />
 
   <browser:editform
       schema=".schemacontent.IFieldContent"
@@ -19,8 +18,6 @@
       label="Edit Field Content"
       permission="zope2.Public"
       />
-
-  <five:traversable class=".schemacontent.ComplexSchemaContent" />
 
   <browser:editform
       schema=".schemacontent.IComplexSchemaContent"

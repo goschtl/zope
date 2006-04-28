@@ -22,8 +22,6 @@ and 4) register our test page:
   ...     <i18n:registerTranslations directory="locales" />
   ...   </configure>
   ... 
-  ...   <five:traversable class="Products.CPSDefault.Portal.CPSDefaultSite" />
-  ... 
   ...   <adapter
   ...       for="zope.publisher.interfaces.http.IHTTPRequest"
   ...       provides="zope.i18n.interfaces.IUserPreferredLanguages"

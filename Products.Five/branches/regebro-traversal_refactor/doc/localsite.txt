@@ -42,11 +42,6 @@ Note that unlike the Zope 3 equivalent of this view, it does not set
 the site manager to site; it is assumed that the site already knows
 how to get its site manager.
 
-Also note that in order for the view to work, the object's class needs
-to be Five-traversable, e.g. with the following ZCML statement:
-
-   <five:traversable class=".module.MyClass" />
-
 
 Custom site implementations
 ---------------------------
