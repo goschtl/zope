@@ -18,15 +18,15 @@ $Id$
 """
 import unittest
 import zope.event
-from zope.app.tests import placelesssetup
+import zope.component
+from zope.app.testing import placelesssetup
 from zope.configuration import xmlconfig
 from zc.sharing import policy
 import zc.sharing
 import zc.sharing.sharing
 import zope.app.security
-from zope.app.tests import ztapi
-import zope.app.annotation.interfaces
-import zope.app.annotation.attribute
+import zope.annotation.interfaces
+import zope.annotation.attribute
 from zope.testing import module
 import zope.security.management
 
@@ -50,10 +50,10 @@ def zcmlTearDown(test):
 def setUpSharing(test):
     placelesssetup.setUp()
     module.setUp(test, 'zc.sharing.SHARING')
-    ztapi.provideAdapter(
-        [zope.app.annotation.interfaces.IAttributeAnnotatable],
-        zope.app.annotation.interfaces.IAnnotations,
-        zope.app.annotation.attribute.AttributeAnnotations,
+    zope.component.provideAdapter(
+        zope.annotation.attribute.AttributeAnnotations,
+        [zope.annotation.interfaces.IAttributeAnnotatable],
+        zope.annotation.interfaces.IAnnotations,
         )
     events = test.globs['events'] = []
     zope.event.subscribers.append(events.append)
@@ -86,7 +86,7 @@ def make_sure_sharing_uses_instance():
     
     >>> sharing.setBinaryPrivileges('bob', 21)
 
-    >>> from zope.app.annotation.interfaces import IAnnotations
+    >>> from zope.annotation.interfaces import IAnnotations
     >>> annotations = IAnnotations(content)
     >>> annotations[zc.sharing.sharing.key].__class__
     <class 'zc.sharing.sharing.SharingData'>

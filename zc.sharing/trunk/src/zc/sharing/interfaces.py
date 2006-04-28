@@ -18,11 +18,11 @@ $Id$
 """
 
 from zope import interface, schema
-import zope.app.annotation.interfaces
-import zope.app.event.interfaces
-import zope.app.event.objectevent
+import zope.annotation.interfaces
+import zope.lifecycleevent.interfaces
+import zope.lifecycleevent
 
-class ISharable(zope.app.annotation.interfaces.IAttributeAnnotatable):
+class ISharable(zope.annotation.interfaces.IAttributeAnnotatable):
     """Sharable content
 
     Sharable can be adapted to ISharing.
@@ -169,7 +169,7 @@ class ISharingMacro(interface.Interface):
         Will typically be a zope.i18n.Message.  If None, the registered
         adapter name will be used.''', required=False)
 
-class ISharingEvent(zope.app.event.interfaces.IObjectModifiedEvent):
+class ISharingEvent(zope.lifecycleevent.interfaces.IObjectModifiedEvent):
     "An event fired by the sharing package"
 
 class ISharingChanged(ISharingEvent):
@@ -184,12 +184,12 @@ class ISharingChanged(ISharingEvent):
 
     new = schema.Int(title=u"Old settings")
 
-class SharingChanged(zope.app.event.objectevent.ObjectModifiedEvent):
+class SharingChanged(zope.lifecycleevent.ObjectModifiedEvent):
 
     interface.implements(ISharingChanged)
 
     def __init__(self, object, principal_id, old, new):
-        zope.app.event.objectevent.ObjectModifiedEvent.__init__(self, object)
+        zope.lifecycleevent.ObjectModifiedEvent.__init__(self, object)
         self.principal_id = principal_id
         self.old = old
         self.new = new

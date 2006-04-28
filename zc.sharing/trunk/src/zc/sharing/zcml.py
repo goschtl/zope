@@ -21,7 +21,7 @@ from types import ClassType
 
 from zope import component, interface, schema
 import zope.configuration.fields
-import zope.app.security.fields
+import zope.security.zcml
 
 from zc.sharing import policy, sharing, interfaces
 
@@ -56,7 +56,7 @@ def definePrivilege(_context, bit, title, description=''):
 
 class IpermissionPrivilege(interface.Interface):
 
-    permission = zope.app.security.fields.Permission(
+    permission = zope.security.zcml.Permission(
         title=u"Permission",
         description=u"Permission for which a privilege is being defined",
         )

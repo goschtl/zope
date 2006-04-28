@@ -16,7 +16,7 @@
 
 $Id$
 """
-from zope.app.location.interfaces import ISublocations
+from zope.location.interfaces import ISublocations
 
 from zc.sharing.interfaces import ISharing
 from zc.sharing.sharing import sharingMask

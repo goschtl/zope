@@ -863,7 +863,7 @@ Normally, objects are adapted to ISublocations, however, to keep the
 example simple, we'll just extend our sample class to support
 sublocations:
 
-    >>> from zope.app.location.interfaces import ISublocations
+    >>> from zope.location.interfaces import ISublocations
     >>> class SharingSampleWithSublocations(SharingSample):
     ...     interface.implements(ISublocations)
     ...     subs = ()

@@ -24,7 +24,7 @@ from zc.table import table, column
 import zc.table.interfaces
 from zope import schema, component, interface
 from zope.app import zapi
-from zope.app.location.interfaces import ISublocations
+from zope.location.interfaces import ISublocations
 from zope.interface import Interface
 from zope.interface.common.idatetime import ITZInfo
 from zope.security.interfaces import IGroup

@@ -25,7 +25,7 @@ from zope import component, interface, event
 from zope.security.management import queryInteraction
 from zope.publisher.interfaces import IRequest
 
-from zope.app.annotation.interfaces import IAnnotations
+from zope.annotation.interfaces import IAnnotations
 from zope.app.container.interfaces import IObjectAddedEvent
 
 from zc.sharing import interfaces
