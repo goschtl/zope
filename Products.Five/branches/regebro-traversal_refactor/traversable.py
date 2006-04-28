@@ -15,6 +15,10 @@
 
 $Id$
 """
+
+import warnings
+import zope.deprecation
+
 from zope.component import getMultiAdapter, ComponentLookupError
 from zope.interface import implements, Interface
 from zope.publisher.interfaces import ILayer
@@ -57,6 +61,13 @@ class Traversable:
         # 1. If an object has __bobo_traverse__, use it.
         # 2. Otherwise do attribute look-up or, if that doesn't work,
         #    key item lookup.
+
+        if zope.deprecation.__show__():
+            warnings.warn("The view lookup done by Traversable." \
+                          "__bobo_traverse__ is now done by the standard " \
+                          "traversal. This class is no longer needed and "
+                          "will be removed in Zope 2.12.",
+                          DeprecationWarning, 2)
 
         if hasattr(self, '__fallback_traverse__'):
             try:
@@ -118,6 +129,14 @@ class Traversable:
 
 
 class FiveTraversable(DefaultTraversable):
+
+    def __init__(self, subject):
+        if zope.deprecation.__show__():
+            warnings.warn("The FiveTraversable class is no longer needed, " \
+                          "and will be removed in Zope 2.12.",
+                  DeprecationWarning, 2)
+        
+        self._subject = subject
 
     def traverse(self, name, furtherPath):
         context = self._subject

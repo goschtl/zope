@@ -38,8 +38,6 @@ from zope.app.component.interface import provideInterface
 from zope.app.component.metaconfigure import adapter
 from zope.app.security.interfaces import IPermission
 
-#from Products.Five.viewable import Viewable
-from Products.Five.traversable import Traversable
 from Products.Five.bridge import fromZ2Interface
 from Products.Five.browser.metaconfigure import page
 from Products.Five.interfaces import IBrowserDefault
@@ -113,41 +111,10 @@ def implements(_context, class_, interface):
 def isFiveMethod(m):
     return hasattr(m, '__five_method__')
 
-_traversable_monkies = []
-def classTraversable(class_):
-    # If a class already has this attribute, it means it is either a
-    # subclass of Traversable or was already processed with this
-    # directive; in either case, do nothing... except in the case were
-    # the class overrides __bobo_traverse__ instead of getting it from
-    # a base class. In this case, we suppose that the class probably
-    # didn't bother with the base classes __bobo_traverse__ anyway and
-    # we step __fallback_traverse__.
-    if hasattr(class_, '__five_traversable__'):
-        if (hasattr(class_, '__bobo_traverse__') and
-            isFiveMethod(class_.__bobo_traverse__)):
-            return
-
-    if (hasattr(class_, '__bobo_traverse__') and
-        not isFiveMethod(class_.__bobo_traverse__)):
-        # if there's an existing bobo_traverse hook already, use that
-        # as the traversal fallback method
-        setattr(class_, '__fallback_traverse__', class_.__bobo_traverse__)
-
-    setattr(class_, '__bobo_traverse__',
-            Traversable.__bobo_traverse__.im_func)
-    setattr(class_, '__five_traversable__', True)
-    # remember class for clean up
-    _traversable_monkies.append(class_)
-
 def traversable(_context, class_):
     warnings.warn("The five:traversable statement is no longer needed " \
                   "and will be removed in Zope 2.12",
                   DeprecationWarning)
-    _context.action(
-        discriminator = None,
-        callable = classTraversable,
-        args = (class_,)
-        )
     
 def defaultViewable(_context, class_):
     if zope.deprecation.__show__():
@@ -259,17 +226,6 @@ def killMonkey(class_, name, fallback, attr=None):
         except (AttributeError, KeyError):
             pass
 
-def untraversable(class_):
-    """Restore class's initial state with respect to traversability"""
-    killMonkey(class_, '__bobo_traverse__', '__fallback_traverse__',
-               '__five_traversable__')
-
-#def undefaultViewable(class_):
-    #"""Restore class's initial state with respect to being default
-    #viewable."""
-    #killMonkey(class_, '__browser_default__', '__fallback_default__',
-               #'__five_viewable__')
-
 def unregisterClass(class_):
     delattr(class_, 'meta_type')
     try:
@@ -278,15 +234,6 @@ def unregisterClass(class_):
         pass
 
 def cleanUp():
-    global _traversable_monkies
-    for class_ in _traversable_monkies:
-        untraversable(class_)
-    _traversable_monkies = []
-
-    #global _defaultviewable_monkies
-    #for class_ in _defaultviewable_monkies:
-        #undefaultViewable(class_)
-    #_defaultviewable_monkies = []
 
     global _register_monkies
     for class_ in _register_monkies:

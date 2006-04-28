@@ -18,7 +18,6 @@ $Id$
 from OFS.Folder import Folder
 from OFS.interfaces import IFolder
 from zope.interface import implements
-from Products.Five.traversable import Traversable
 
 class NoVerifyPasteFolder(Folder):
     """Folder that does not perform paste verification.
@@ -33,7 +32,7 @@ def manage_addNoVerifyPasteFolder(container, id, title=''):
     folder.id = id
     folder.title = title
 
-class FiveTraversableFolder(Traversable, Folder):
+class FiveTraversableFolder(Folder):
     """Folder that is five-traversable
     """
     implements(IFolder)
