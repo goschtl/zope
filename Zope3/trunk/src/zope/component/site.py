@@ -22,8 +22,9 @@ __docformat__ = "reStructuredText"
 
 import warnings
 warnings.warn("The zope.component.site module has been deprecated and "
-              "will be removed.  Most of the functionality now resides "
-              "in the zope.component.globalregistry module.",
+              "will be removed.  The functionality now resides "
+              "in the zope.component.globalregistry "
+              "and zope.component.registry modules.",
               DeprecationWarning, stacklevel=2)
 
 from zope.component.registry import Components as SiteManager
