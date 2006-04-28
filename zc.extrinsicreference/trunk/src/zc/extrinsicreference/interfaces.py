@@ -12,8 +12,6 @@
 #
 ##############################################################################
 from zope import interface
-import zope.app.location
-
 
 class IExtrinsicReferences(interface.Interface):
     """An object that stores extrinsic references to another object

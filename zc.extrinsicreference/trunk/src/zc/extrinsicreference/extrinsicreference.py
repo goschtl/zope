@@ -20,13 +20,12 @@ from BTrees import OOBTree
 
 from zope import interface
 from zope.app.keyreference.interfaces import IKeyReference
-from zope.app.component.interfaces import ILocalUtility
 
 from zc.extrinsicreference.interfaces import IExtrinsicReferences
 
 class ExtrinsicReferences(persistent.Persistent):
 
-    interface.implements(IExtrinsicReferences, ILocalUtility)
+    interface.implements(IExtrinsicReferences)
 
     # To be usable as an ILocalUtility we have to have these.
     __parent__ = __name__ = None
