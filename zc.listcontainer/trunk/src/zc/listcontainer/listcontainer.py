@@ -20,7 +20,7 @@ from UserList import UserList
 from persistent.list import PersistentList
 from zope import interface
 from zope.event import notify
-from zope.app.event.objectevent import ObjectEvent
+from zope.component.interfaces import ObjectEvent
 
 import interfaces
 

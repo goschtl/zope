@@ -19,7 +19,7 @@ $Id: interfaces.py 700 2005-02-23 16:53:35Z gary $
 """
 from zope import interface
 from zope.interface.common import sequence
-from zope.app.event.interfaces import IObjectEvent
+from zope.component.interfaces import IObjectEvent
 
 class IContainedObjectEvent(IObjectEvent):
     """An object's super or predecessor has changed (not successor).
