@@ -19,14 +19,12 @@ __docformat__ = 'restructuredtext'
 
 from zope.size.interfaces import ISized
 from zope.app import zapi
-
-class ImageData(object):
+from zope.app.file.browser.file import FileView
+class ImageData(FileView):
 
     def __call__(self):
         image = self.context
-        if self.request is not None:
-            self.request.response.setHeader('content-type', image.contentType)
-        return image.data
+        return self.show()
 
     def tag(self, height=None, width=None, alt=None,
             scale=0, xscale=0, yscale=0, css_class=None, **args):

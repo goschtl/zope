@@ -172,6 +172,7 @@ The file is initially empty, since we did not upload anything.
   HTTP/1.1 200 Ok
   Content-Length: 0
   Content-Type: text/plain
+  Last-Modified: ...
   <BLANKLINE>
 
 Since it is a text file, we can edit it directly in a web form.
@@ -269,6 +270,7 @@ Here's the file
   HTTP/1.1 200 Ok
   Content-Length: ...
   Content-Type: text/plain
+  Last-Modified: ...  
   <BLANKLINE>
   This is a sample text file.
   <BLANKLINE>
@@ -344,6 +346,7 @@ Here's the file
   HTTP/1.1 200 Ok
   Content-Length: ...
   Content-Type: text/plain; charset=UTF-8
+  Last-Modified: ...
   <BLANKLINE>
   This is a sample text file.
   <BLANKLINE>
@@ -417,6 +420,7 @@ Here's the file
   HTTP/1.1 200 Ok
   Content-Length: ...
   Content-Type: text/plain; charset=ISO-8859-1
+  Last-Modified: ...
   <BLANKLINE>
   This is a sample text file.
   <BLANKLINE>

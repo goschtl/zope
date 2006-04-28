@@ -15,8 +15,6 @@
 
 $Id$
 """
-from datetime import datetime
-
 import zope.event
 from zope import lifecycleevent
 from zope.contenttype import guess_content_type
@@ -27,20 +25,100 @@ from zope.exceptions.interfaces import UserError
 from zope.app.file.file import File
 from zope.app.file.interfaces import IFile
 from zope.app.i18n import ZopeMessageFactory as _
+from zope.dublincore.interfaces import IZopeDublinCore
+import zope.datetime 
+
+import time
+from datetime import datetime
 
 __docformat__ = 'restructuredtext'
-
 
 class FileView(object):
 
     def show(self):
-        """Call the File"""
-        request = self.request
-        if request is not None:
-            request.response.setHeader('Content-Type',
-                                       self.context.contentType)
-            request.response.setHeader('Content-Length',
-                                       self.context.getSize())
+
+        """Sets various headers if the request is present and returns the
+        data of the file. If the "If-Modified-Since" header is set and
+        the context implements IZopeDublinCore, data is only returned if
+        the modification date of the context is new than the date in the
+        "If-Modified-Since" header
+        >>> from zope.publisher.browser import BrowserView, TestRequest
+        >>> class FileTestView(FileView, BrowserView): pass
+        >>> import pytz
+        >>> class MyFile(object):
+        ...     contentType='text/plain'
+        ...     data="data of file"
+        ...     modified = datetime(2006,1,1,tzinfo=pytz.utc)
+        ...     def getSize(self):
+        ...         return len(self.data)
+
+        >>> aFile = MyFile()
+        >>> request = TestRequest()
+        >>> view = FileTestView(aFile,request)
+        >>> view.show()
+        'data of file'
+        >>> request.response.getHeader('Content-Type')
+        'text/plain'
+        >>> request.response.getHeader('Content-Length')
+        '12'
+
+        If the file is adaptable to IZopeDublinCore the
+        "Last-Modified" header is also set.
+        
+        >>> request.response.getHeader('Last-Modified') is None
+        True
+
+        For the test we just declare that our file provides
+        IZopeDublinCore
+        >>> from zope.interface import directlyProvides
+        >>> directlyProvides(aFile,IZopeDublinCore)
+        >>> request = TestRequest()
+        >>> view = FileTestView(aFile,request)
+        >>> view.show()
+        'data of file'
+        >>> datetime.fromtimestamp(zope.datetime.time(
+        ...     request.response.getHeader('Last-Modified')))
+        datetime.datetime(2006, 1, 1, 0, 0)
+
+        If the "If-Modified-Since" header is set and is newer a 304
+        status is returned and the value is empty.
+        
+        >>> modified = datetime.now()
+        >>> modHeader = zope.datetime.rfc1123_date(time.mktime(modified.timetuple()))
+        >>> request = TestRequest(IF_MODIFIED_SINCE=modHeader)
+        
+        >>> view = FileTestView(aFile,request)
+        >>> view.show()
+        ''
+        >>> request.response.getStatus()
+        304
+        
+        """
+
+        if self.request is not None:
+            self.request.response.setHeader('Content-Type',
+                                            self.context.contentType)
+            self.request.response.setHeader('Content-Length',
+                                            self.context.getSize())
+        try:
+            modified = IZopeDublinCore(self.context).modified
+        except TypeError:
+            modified=None
+        if modified is None or not isinstance(modified,datetime):
+            return self.context.data
+        
+        header= self.request.getHeader('If-Modified-Since', None)
+        lmt = long(time.mktime(modified.timetuple()))
+        if header is not None:
+            header = header.split(';')[0]
+            try:    mod_since=long(zope.datetime.time(header))
+            except: mod_since=None
+            if mod_since is not None:
+                if lmt <= mod_since:
+                    self.request.response.setStatus(304)
+                    return ''
+        self.request.response.setHeader('Last-Modified',
+                                        zope.datetime.rfc1123_date(lmt))
 
         return self.context.data
 
