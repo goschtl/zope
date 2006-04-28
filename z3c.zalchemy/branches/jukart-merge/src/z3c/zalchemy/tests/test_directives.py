@@ -1,6 +1,20 @@
 import unittest
 from cStringIO import StringIO
 
+##############################################################################
+#
+# Copyright (c) 2006 ROBOTECH Logistiksysteme GmbH and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+
 from zope import component
 
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
@@ -32,17 +46,13 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
                 dns="sqlite"
                 echo="True"
                 filename="testdatabase.db"
-                encoding="ISO-8859-15"
-                convert_unicode="True"
                 />
             '''
             )))
         util = component.getUtility(IAlchemyEngineUtility,'sqlite')
         self.assertNotEqual(util, None)
         self.assertEqual(util.dns, 'sqlite')
-        self.assertEqual(util.convert_unicode, True)
         self.assertEqual(util.echo, True)
-        self.assertEqual(util.encoding, 'ISO-8859-15')
         self.assertEqual(util.kw['filename'], 'testdatabase.db')
 
     def testConnectDirective(self):
@@ -57,14 +67,14 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
                 />
             <alchemy:connect
                 engine="sqlite-in-memory"
-                table="z3c.zalchemy.tests.environ.testTable"
+                table="testTable"
                 />
             '''
             )))
         util = component.getUtility(IAlchemyEngineUtility,'sqlite-in-memory')
-        self.assert_(len(util.tables)==1)
-        self.assertEqual(util.tables[0],
-                         z3c.zalchemy.tests.environ.testTable)
+        self.assert_(len(z3c.zalchemy.tableToUtility)==1)
+        self.assert_('testTable' in z3c.zalchemy.tableToUtility)
+        self.assertEqual(z3c.zalchemy.tableToUtility['testTable'], util)
 
     def tearDown(self):
         PlacelessSetup.tearDown(self)

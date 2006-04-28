@@ -2,8 +2,8 @@
 SQLAlchemy and Zope 3
 =====================
 
-"z3c.zalchemy" integrates the object relational mapper sqlalchemy into
-zope 3 as SQLOS integrates sqlobject.
+"z3c.zalchemy" integrates the object relational mapper sqlalchemy into zope 3
+as SQLOS integrates sqlobject.
 
 zalchemy tries to do it's best not to interfere with the standard sqlalchemy
 usage.
@@ -22,29 +22,43 @@ zalchemy provides a transparent way to connect a table to a database (engine).
 
 A SQLAlchemy engine is represented as a utility :
 
+  >>> dbFilename = 'readme_test.db'
   >>> import os
+  >>> try:
+  ...     os.remove(dbFilename)
+  ... except:
+  ...     pass
+
   >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtil = AlchemyEngineUtility(
-  ...     'sqlite',
-  ...     dns='sqlite://filename=%s.1' % dbFile,
+  ...     'readme.sqlite',
+  ...     dns='sqlite',
+  ...     filename=dbFilename,
+  ...     echo = False,
   ...     )
 
-We create our tables as usual sqlalchemy table : 
+The next step is to connect the table to the database engine.
+This is neccessary because we need the same engine for all
+tables using the same database.
+
+  >>> engineUtil.addTable('readme.aTable')
+
+We create our tables as usual sqlalchemy table :
+Note that we use a ProxyEngine which is important here.
+The real connection to database engine will be done later in our utility.
 
   >>> import sqlalchemy
-
+  >>> import z3c.zalchemy
   >>> aTable = sqlalchemy.Table(
-  ...     'aTable',sqlalchemy.ext.proxy.ProxyEngine(),
+  ...     'aTable',
+  ...     z3c.zalchemy.getProxyEngine('readme.aTable'),
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.Integer),
   ...     )
 
-We create our tables as usual sqlalchemy table : Note that we use a
-ProxyEngine which is important here.  The real connection to database
-engine will be done later in our utility.
+We must make sure the table exists :
 
-  >>> aTable.engine
-  <sqlalchemy.ext.proxy.ProxyEngine object at ...>
+  >>> z3c.zalchemy.registerTableForCreation(aTable)
 
 Define a simple class which will be used later to map to a database table.
 
@@ -55,17 +69,11 @@ Now we map the table to our class.
 
   >>> sqlalchemy.assign_mapper(A, aTable)
 
-The next step is to connect the table to the database engine.  We use
-our utility for that. The ``create`` argument tells the utility if it
-should try to create the table.
-
-  >>> engineUtil.addTable(aTable,create=True)
-
 To let zalchemy do his magic thing we need to register our database utility
 as a named utility :
 
   >>> from zope.component import provideUtility
-  >>> provideUtility(engineUtil, name='sqlite')
+  >>> provideUtility(engineUtil, name='readme.sqlite')
 
 From now on zalchemy takes care of the zope transaction process behind the
 scenes :
@@ -73,30 +81,42 @@ scenes :
 - handle the two phase commit process
 - disconnect the engine from the tables at the end of the thread
 
+Now let's try to use our database objects :
+
+  >>> a = A()
+  >>> a.value = 1
+  >>> sqlalchemy.objectstore.commit()
+  Traceback (most recent call last):
+  ...
+  AttributeError: No connection established
+
+Ups, this is because the table is not connected to a real database engine.
+We need to use zope transactions.
+
+First let's clear the current unit of work :
+
+  >>> sqlalchemy.objectstore.clear()
+
 Note that the transaction handling is done inside zope.
 
   >>> import transaction
   >>> txn = transaction.begin()
 
 Then we need to simulate a beforeTraversal Event :
+  The event connects our ProxyEngine's with the real databases.
 
   >>> from z3c.zalchemy.datamanager import beforeTraversal
   >>> beforeTraversal(None)
 
   >>> a = A()
   >>> a.value = 123
-  >>> aTable.engine.engine.filename
-  '....1'
 
   >>> transaction.get().commit()
-
 
 Now let's try to get the object back in a new transaction :
 
   >>> txn = transaction.begin()
   >>> beforeTraversal(None)
-
-XXX this is not the same db, use filebased db?
 
   >>> a = A.get(1)
   >>> a.value
@@ -110,21 +130,27 @@ Multiple databases
 
   >>> engine2Util = AlchemyEngineUtility(
   ...     'sqlite2',
-  ...     dns='sqlite://filename=%s.2' % dbFile,
+  ...     dns='sqlite://',
   ...     )
 
   >>> engine = sqlalchemy.ext.proxy.ProxyEngine()
   >>> provideUtility(engine2Util, name='sqlite2')
 
+  >>> engineUtil.addTable('readme.bTable')
+
   >>> bTable = sqlalchemy.Table(
-  ...     'bTable',sqlalchemy.ext.proxy.ProxyEngine(),
+  ...     'bTable',
+  ...     z3c.zalchemy.getProxyEngine('readme.bTable'),
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.String),
   ...     )
+
+  >>> z3c.zalchemy.registerTableForCreation(bTable)
+
   >>> class B(object):
   ...     pass
   >>> sqlalchemy.assign_mapper(B, bTable)
-  >>> engine2Util.addTable(bTable,create=True)
+  >>> engine2Util.addTable(bTable)
 
   >>> txn = transaction.begin()
   >>> beforeTraversal(None)
@@ -143,8 +169,8 @@ Multiple databases
 
   >>> a = A.get(1)
   >>> b = B.get(1)
-  >>> b.value
-  u'b1'
+  >>> str(b.value)
+  'b1'
 
   >>> transaction.get().commit()
 
@@ -163,15 +189,15 @@ Glitches
   False
 
 At this time a1 is not stored in the database. It is only stored when doing an
-objectstore.commit().
+objectstore.flush().
 At this time the object also has no id.
 
   >>> a1.id is None
   True
 
-An explicit commit for a1 solves the problem :
+An explicit flush for a1 solves the problem :
 
-  >>> sqlalchemy.objectstore.commit(a1)
+  >>> sqlalchemy.objectstore.flush(a1)
 
   >>> A.mapper.count() == startLen + 1
   True
@@ -179,24 +205,4 @@ An explicit commit for a1 solves the problem :
   False
 
   >>> transaction.get().commit()
-
-
-Exceptions
-----------
-
-A table must use a ProxyEngine.
-
-  >>> illegalEngine = sqlalchemy.create_engine("sqlite://")
-
-  >>> illegalTable = sqlalchemy.Table(
-  ...     'illegalTable',
-  ...     illegalEngine,
-  ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
-  ...     sqlalchemy.Column('value', sqlalchemy.Integer),
-  ...     )
-
-  >>> engineUtil.addTable(illegalTable) #doctest: +ELLIPSIS
-  Traceback (most recent call last):
-  ...
-  TypeError: ...
 

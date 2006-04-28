@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 ROBOTECH Logistiksysteme GmbH
+# Copyright (c) 2006 ROBOTECH Logistiksysteme GmbH and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -149,7 +149,7 @@ class SQLAlchemyContainer(Persistent, Contained):
     def __delitem__(self, name):
         obj = self[name]
         #TODO: better delete objects using a delete adapter
-        #      to dependency handling.
+        #      for dependency handling.
         obj.delete()
 
     def __setitem__(self, name, item):

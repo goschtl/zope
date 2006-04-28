@@ -17,27 +17,11 @@ from zope.app.component.metaconfigure import utility, PublicPermission
 from datamanager import AlchemyEngineUtility
 from interfaces import IAlchemyEngineUtility
 
-def engine(_context, name, dns, echo=False, encoding=u'utf-8',
-           convert_unicode=False,**kwargs):
-    component = AlchemyEngineUtility(name, dns, echo=echo,
-                                     encoding=encoding,
-                                     convert_unicode=convert_unicode,
-                                     **kwargs)
-    utility(_context,
-            IAlchemyEngineUtility,
-            component,
-            permission=PublicPermission,
-            name=name)
+def engine(_context, name, dns, echo=False, **kwargs):
+    engine = AlchemyEngineUtility(name, dns, echo, **kwargs)
+    component.provideUtility(engine, name=name)
 
-def connect(_context, engine, table, create=False):
-    _context.action(
-            discriminator = (engine, table),
-            callable = connector,
-            args = (engine, table, create)
-            )
-
-def connector(engine, table, create):
+def connect(_context, engine, table):
     util = component.getUtility(IAlchemyEngineUtility, engine)
-    util.addTable(table,create=create)
-    #connections.append((util, table))
+    util.addTable(table)
 

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 ROBOTECH Logistiksysteme GmbH
+# Copyright (c) 2006 ROBOTECH Logistiksysteme GmbH and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -48,8 +48,23 @@ class IAlchemyEngineUtility(interface.Interface):
             required=False,
             default=False
             )
+    proxyEngine = interface.Attribute(
+            'Engine to bind related tables to one engine',
+            )
 
-    def addTable():
-        """
+    def addTable(name):
+        """Add a table to the engine.
+
+        The name must be unique within all utilities.
+        This name can be used in a sqlalchemy table definition :
+          t = Table('myName',
+                    zalchemy.getProxyEngine('myNameInZAlchemy'
+                    ...
+                   )
+
+        This allowes to bind all related tables to the same proxy which
+        is neccessary for Relations.
+
+        The name need not be the name of the table.
         """
 

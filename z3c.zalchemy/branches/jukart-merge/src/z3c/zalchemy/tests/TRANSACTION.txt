@@ -12,40 +12,31 @@ Setup zope's test environment :
 
 Create a utility to provide a database :
 
+  >>> import os
+  >>> os.remove('abc.db')
   >>> from zope.component import provideUtility
   >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtility = AlchemyEngineUtility('database',
-  ...     dns='sqlite://filename=%s.1' % dbFile,echo=False)
+  ...                                      'sqlite://filename=abc.db',
+  ...                                      echo=False)
   >>> provideUtility(engineUtility, name="test")
+  >>> engineUtility.addTable('aTable')
 
 Setup a sqlalchemy table and class :
 
   >>> import sqlalchemy
+  >>> import z3c.zalchemy
   >>> aTable = sqlalchemy.Table(
-  ...     'aTable',sqlalchemy.ext.proxy.ProxyEngine(),
+  ...     'aTable',
+  ...     z3c.zalchemy.getProxyEngine('aTable'),
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
   ...     sqlalchemy.Column('x', sqlalchemy.Integer),
   ...     )
+  >>> z3c.zalchemy.registerTableForCreation(aTable)
   >>> class A(object):
   ...   pass
   >>> sqlalchemy.assign_mapper(A, aTable)
 
-
-We need to register a connection between the engine and the table.
-This connetion will be used later to connect the proxy in aTable with
-a real engine.
-
-  >>> import os
-  >>> try:
-  ...     os.remove('/tmp/abc.db')
-  ... except:
-  ...     pass
-
-We need a connection between the database and the table :
-  This is done manually here but can also be done using the
-  connect ZCML directive.
-
-  >>> engineUtility.addTable(aTable)
 
 Now start a zope transaction :
 
@@ -59,14 +50,6 @@ Now we need to connect our table to a real engine :
 
   >>> aTable.engine.engine is not None
   True
-
-Because we now have a connection to a brand new database we need to create
-the table.
-
-  >>> try:
-  ...     dummy = aTable.create()
-  ... except:
-  ...    pass
 
   >>> a=A()
   >>> a.x = 1
@@ -83,8 +66,8 @@ thread :
   ...     txn = transaction.begin()
   ...     beforeTraversal(None)
   ...     obj = A.get(1)
-  ...     log.append(obj.x)
   ...     obj.x+= 1
+  ...     log.append(('do', obj.x))
   ...     transaction.get().commit()
   ...
 
@@ -92,62 +75,64 @@ thread :
   >>> thread.start()
   >>> thread.join()
   >>> log
-  [1]
-  >>> log = []
+  [('do', 2)]
   >>> thread = threading.Thread(target=do)
   >>> thread.start()
   >>> thread.join()
   >>> log
-  [2]
+  [('do', 2), ('do', 3)]
 
-  >>> def doSubThread():
+  >>> def doSub():
   ...     txn = transaction.begin()
   ...     beforeTraversal(None)
   ...     obj = A.get(1)
+  ...     obj.x+= 1
+  ...     log.append(('sub1', obj.x))
   ...     thread = threading.Thread(target=do)
   ...     thread.start()
   ...     thread.join()
-  ...     log.append(obj.x)
+  ...     log.append(('sub2', obj.x))
   ...     obj.x+= 1
+  ...     log.append(('sub3', obj.x))
   ...     transaction.get().commit()
   ...
 
   >>> log = []
-  >>> thread = threading.Thread(target=doSubThread)
+  >>> thread = threading.Thread(target=doSub)
   >>> thread.start()
   >>> thread.join()
 
-TODO:
-Can we accept this ?
-This result shows, that a running transaction is not aborted or rolled back
-if another transaction was commited between begin and commit !
-Or does this only happen with sqlite ?
+  >>> thread = threading.Thread(target=do)
+  >>> thread.start()
+  >>> thread.join()
+
+This log shows that the do thread running inside doSub uses it's own copy
+of the object.
+At 'sub1' the local object of doSub was incremented but do also produces a
+log entry with value 4.
 
   >>> log
-  [3, 3]
+  [('sub1', 4), ('do', 4), ('sub2', 4), ('sub3', 5), ('do', 6)]
+
+TODO:
+Shouldn't the above example produce a collision because the same object was
+modified in two different threads at the same time ?
+
 
 Use of a second table with the same engine :
 
+  >>> engineUtility.addTable('bTable')
+
   >>> bTable = sqlalchemy.Table(
-  ...     'bTable',sqlalchemy.ext.proxy.ProxyEngine(),
+  ...     'bTable',
+  ...     z3c.zalchemy.getProxyEngine('bTable'),
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
   ...     sqlalchemy.Column('x', sqlalchemy.Integer),
   ...     )
+  >>> z3c.zalchemy.registerTableForCreation(bTable)
   >>> class B(object):
   ...   pass
   >>> sqlalchemy.assign_mapper(B, bTable)
-
-Connect the new table to the already existing database :
-
-  >>> engineUtility.addTable(bTable,create=True)
-  >>> not not bTable.engine.engine
-  True
-
-The table should now be created.
-
-  >>> c = bTable.engine.engine.execute("select * from bTable")
-  >>> [row for row in c]
-  []
 
   >>> log = []
   >>> def createB():
@@ -172,10 +157,6 @@ The table should now be created.
   >>> thread.join()
   >>> log
   [1]
-
-XXX why do we have to do this?
-
-  >>> transaction.get().commit()  
 
   >>> log = []
   >>> thread = threading.Thread(target=doB)

@@ -61,7 +61,7 @@ class TestThreads(PlacelessSetup, unittest.TestCase):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(TestThreads),
+        #unittest.makeSuite(TestThreads),
         ))
     
 if __name__ == '__main__':

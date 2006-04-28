@@ -4,7 +4,7 @@
            >
 
   <browser:addMenuItem
-      class="z3c.zalchemy.container.SQLAlchemyContainer"
+      class="zalchemy.container.SQLAlchemyContainer"
       title="SQLAlchemy Container"
       description="A persistent container for mapped SQLAlchemy instances"
       permission="zope.ManageContent"
@@ -14,14 +14,14 @@
   <browser:addform
       for="*"
       name="addSQLAlchemyContainer.html"
-      content_factory="z3c.zalchemy.container.SQLAlchemyContainer"
-      schema="z3c.zalchemy.interfaces.ISQLAlchemyContainer"
+      content_factory="zalchemy.container.SQLAlchemyContainer"
+      schema="zalchemy.interfaces.ISQLAlchemyContainer"
       set_before_add="className"
       permission="zope.ManageContent"
       />
 
   <browser:containerViews
-      for="z3c.zalchemy.interfaces.ISQLAlchemyContainer"
+      for="zalchemy.interfaces.ISQLAlchemyContainer"
       index="zope.View"
       contents="zope.View"
       add="zope.ManageContent"

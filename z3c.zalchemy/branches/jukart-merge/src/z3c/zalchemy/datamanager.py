@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 ROBOTECH Logistiksysteme GmbH
+# Copyright (c) 2006 ROBOTECH Logistiksysteme GmbH and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -26,89 +26,68 @@ from interfaces import IAlchemyEngineUtility
 from sqlalchemy import objectstore, create_engine
 import sqlalchemy
 
+from z3c.zalchemy import tableToUtility, tablesToCreate
+
 
 class AlchemyEngineUtility(object):
     """A utility providing the dns for alchemy database engines.
     """
     implements(IAlchemyEngineUtility)
-    
-    def __init__(self, name, dns, echo=False, encoding=u'utf-8',
-                 convert_unicode=False, **kwargs):
+
+    def __init__(self, name, dns, echo=False, **kwargs):
         self.name = name
         self.dns = dns
         self.echo = echo
-        self.encoding=encoding or None
-        self.convert_unicode=convert_unicode or False
-        self.kw=kwargs
-        self.tables = []
+        self.kw={}
+        self.kw.update(kwargs)
         self.storage = local()
-        self.createdTables = {}
+        self._proxyEngine=sqlalchemy.ext.proxy.ProxyEngine()
 
-    def addTable(self, table, create=False):
-        if not isinstance(table.engine, sqlalchemy.ext.proxy.ProxyEngine):
-            raise TypeError(table.engine)
-        utils = getUtilitiesFor(IAlchemyEngineUtility)
-        for name, util in utils:
-            if table in util.tables:
-                #TODO: should raise an exception here
-                return
-        self.tables.append(table)
-        if create:
-            self.createTable(table)
-
-    def createTable(self,table):
-
-        """tries to create the given table if not there"""
-        self.connectTablesForThread()
-        try:
-            table.create()
-        except sqlalchemy.exceptions.SQLError,e:
+    def addTable(self, name):
+        if name in tableToUtility:
+            #TODO: should raise an exception here
             return
-        # seems that this does not get commited, why?
-        objectstore.commit()
-        #self.dataManagerFinished()
+        tableToUtility[name]=self
 
-        
-    def initEngine(self):
-
-        """create a thread local engine if not there, returns True if
-        a new engine is created"""
-        
-        engine=getattr(self.storage,'engine',None)
-        if engine is not None:
-            return False
-        self.storage.engine = create_engine(
-            self.dns, self.kw, echo=self.echo,
-            encoding=self.encoding, convert_unicode=self.convert_unicode)
-        return True
+    def getProxyEngine(self):
+        return self._proxyEngine
+    proxyEngine = property(getProxyEngine)
 
     def connectTablesForThread(self):
         # create a thread local engine
-        #import pdb;pdb.set_trace()
-
-        self.initEngine()
-        if getattr(self.storage,'_connected',False):
+        engine=getattr(self.storage,'engine',None)
+        if engine is not None:
             return
-
+        # create_engine consumes the keywords, so better to make a copy first
+        kw = {}
+        kw.update(self.kw)
+        # create a new engine and store it thread local
+        self.storage.engine = create_engine(self.dns,
+                                            kw,
+                                            echo=self.echo)
         engine = self.storage.engine
         if self.echo:
-            engine.log('adding data manager for %s'%self.name)
+            engine.log('adding data manager for %s,%s'%(self.name, self.dns))
         # create a data manager
         self.storage.dataManager = AlchemyDataManager(self)
         txn = manager.get()
         txn.join(self.storage.dataManager)
         # connect the tables to the engine
-        for table in self.tables:
-            table.engine.engine = engine
-
-        self.storage._connected=True
+        self._proxyEngine.engine=engine
+        tables = list(tablesToCreate)
+        # create tables for this engine :
+        for table in tables:
+            if table.engine == self._proxyEngine:
+                try:
+                    table.create()
+                except:
+                    pass
+                tablesToCreate.remove(table)
 
     def dataManagerFinished(self):
         self.storage.engine=None
-        self.storage._connected=False
         # disconnect the tables from the engine
-        for table in self.tables:
-            table.engine.engine = None
+        self._proxyEngine.engine=None
 
     def getEngine(self):
         return getattr(self.storage,'engine',None)
@@ -124,11 +103,10 @@ class AlchemyDataManager(object):
 
     def __init__(self, util):
         self.util = util
-        self.engine = util.getEngine()
-        self.engine.begin()
+        self.session = objectstore.begin()
 
     def abort(self, trans):
-        self.engine.rollback()
+        self.session.rollback()
         objectstore.clear()
         self.util.dataManagerFinished()
 
@@ -136,20 +114,19 @@ class AlchemyDataManager(object):
         pass
 
     def commit(self, trans):
-        objectstore.commit()
+        self.session.commit()
 
     def tpc_vote(self, trans):
         pass
 
     def tpc_finish(self, trans):
-        self.engine.commit()
         if self.util.echo:
             self.engine.log('commit for %s'%self.util.name)
         objectstore.clear()
         self.util.dataManagerFinished()
 
     def tpc_abort(self, trans):
-        self.engine.rollback()
+        self.session.rollback()
         objectstore.clear()
         self.util.dataManagerFinished()
 
