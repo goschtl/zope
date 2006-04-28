@@ -23,7 +23,6 @@ from zope.app.file.browser.file import FileView
 class ImageData(FileView):
 
     def __call__(self):
-        image = self.context
         return self.show()
 
     def tag(self, height=None, width=None, alt=None,
