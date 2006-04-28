@@ -39,6 +39,8 @@ def rest2html(rest) :
 
     """
    
+    if not isinstance(rest, unicode) :
+        rest = unicode(rest, encoding='utf-8', errors='replace')
     main = ReStructuredTextSourceFactory(rest)
     renderer = ReStructuredTextToHTMLRenderer(main, None)
     return renderer.render()
