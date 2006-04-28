@@ -12,15 +12,15 @@ Zope Changes
 
       - Updated Docutils to V 0.4.0
 
-      - Change the session credentials plugin to make it configurable in which
-	fields it looks for the credentials.
+      - Change the session credentials plugin to make it configurable
+	    in which fields it looks for the credentials.
 
       - Make the HomeFolderManager allowing the user to change the object to
         create when autocreating the homefolder.
 
-      - The ensureObject, ensureUtility, addConfigureUtility and addUtility 
-	in zope.app.appsetup.bootstrap now optionally can return an object 
-	instead	of a name.
+      - The ensureObject, ensureUtility, addConfigureUtility and
+     	addUtility in zope.app.appsetup.bootstrap now optionally can
+     	return an object instead of a name.
 
       - Allow ``zmi_views`` actions like: ``javascript:popup()``, 
         ``../parentview.html`` or ``++namespace++foobar`` as first menu items.
@@ -43,6 +43,12 @@ Zope Changes
       - A new zope.app.annotation.factory helper function that makes
         it easier to create annotations. Also added a README in
         zope.app.annotation which explains how to use it.
+
+      - The default browser view for file and image now set the
+        "Last-Modified" headers and handles "If-Modified-Since"
+        request headers if the file is adaptable to
+        IZopeDublinCore. This reduces server traffic a lot when large
+        files are served.
 
     Restructuring
 
