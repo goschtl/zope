@@ -19,13 +19,13 @@ $Id: adapters.py 4811 2006-01-17 20:45:52Z fred $
 from zope import interface, component, i18n, proxy
 from zope.i18nmessageid import Message
 from zope.security.interfaces import Unauthorized
-import zope.app.dublincore.interfaces
-import zope.app.location.interfaces
+import zope.dublincore.interfaces
+import zope.location.interfaces
 from zope.app import zapi
 from zope.publisher.interfaces import IRequest
 from zope.publisher.interfaces.http import IHTTPRequest
-from zope.app.publisher.browser import BrowserView
-from zope.app.traversing.interfaces import IContainmentRoot
+from zope.publisher.browser import BrowserView
+from zope.traversing.interfaces import IContainmentRoot
 
 from zc.displayname import interfaces
 from zc.displayname.i18n import _
@@ -35,14 +35,14 @@ INSUFFICIENT_CONTEXT = _("There isn't enough context to get URL information. "
                        "information.")
 
 class DefaultDisplayNameGenerator(BrowserView):
-    component.adapts(zope.app.location.interfaces.ILocation, IRequest)
+    component.adapts(zope.location.interfaces.ILocation, IRequest)
     interface.implementsOnly(interfaces.IDisplayNameGenerator)
 
     def __call__(self, maxlength=None):
         ob = self.context
         try:
             try:
-                dc = zope.app.dublincore.interfaces.IDCDescriptiveProperties(ob)
+                dc = zope.dublincore.interfaces.IDCDescriptiveProperties(ob)
             except TypeError:
                 name = ob.__name__
             else:
@@ -134,14 +134,14 @@ class HiddenBreadcrumbs(BrowserView):
             base = tuple(view(maxlength))
         return base
 
-@component.adapter(zope.app.location.interfaces.ILocation, IHTTPRequest)
+@component.adapter(zope.location.interfaces.ILocation, IHTTPRequest)
 @interface.implementer(interface.Interface)
 def breadcrumbs(context, request):
     "breadcrumbs; unlimited display name length for each traversed object"
     return component.getMultiAdapter(
         (context, request), interfaces.IBreadcrumbs)()
 
-@component.adapter(zope.app.location.interfaces.ILocation, IHTTPRequest)
+@component.adapter(zope.location.interfaces.ILocation, IHTTPRequest)
 @interface.implementer(interface.Interface)
 def breadcrumbs20char(context, request):
     "breadcrumbs; display name length limited to 20 characters for each object"
