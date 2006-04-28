@@ -145,7 +145,7 @@ The forms for the menu commands are loaded on demand:
     <div class="inline_form" id="create_folder5">
         <form method="post" enctype="multipart/form-data" action="renameLink" onsubmit="WikiMenu.submitForm(this); return false;" onreset="WikiMenu.hideForm()">
     <BLANKLINE>
-            <h4>Rename Link &quot;New Subject&quot;</h4>
+            <div class="inline-title">Rename Link &quot;New Subject&quot;</div>
             <input name="link_id" type="hidden"
                    value="wiki-link5" />
             <input name="cmd" type="hidden" value="rename" />

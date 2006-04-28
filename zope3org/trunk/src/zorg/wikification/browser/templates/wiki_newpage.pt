@@ -12,10 +12,10 @@
         <table>
             <tr>
                 <td valign="top" class="form-title">
-                    Page Name:
+                    Filename:
                 </td>
                 <td valign="top" >
-                    <input id="page_name" name="name" type="text" size="40" value="FileName"  tal:attributes="value python: view.unicodeLabel()" />
+                    <input id="page_name" name="name" type="text" size="40" value="FileName"  tal:attributes="value python: view.unicodeLabel() + u'.html'" />
                 </td>
             </tr>
             <tr>

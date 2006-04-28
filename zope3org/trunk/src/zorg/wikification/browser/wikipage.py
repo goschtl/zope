@@ -70,7 +70,8 @@ class WikiPage(ComposedAjaxPage) :
     
     _outdated = ViewPageTemplateFile("./templates/wiki_outdated.pt")  
 
-    supported = 'text/html', 'application/xhtml+xml', 'application/xml', 'text/xml'
+    supported = ('text/html', 'application/xhtml+xml', 'application/xml', 
+                        'text/xml', 'text/plain')
     title = u"Wiki page"
     action = "/@@wiki.html"      # the action that wikifies
     add = "/@@wikiedit.html"
