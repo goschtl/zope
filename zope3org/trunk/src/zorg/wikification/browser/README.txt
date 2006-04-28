@@ -142,10 +142,10 @@ The forms for the menu commands are loaded on demand:
 
     >>> modified = index_page.getModificationStamp()
     >>> print index_page.wikiCommandForm('rename', 5, modified)
-    <div class="inline_form" id="create_folder5">
+    <div class="wiki-form" id="create_folder5">
         <form method="post" enctype="multipart/form-data" action="renameLink" onsubmit="WikiMenu.submitForm(this); return false;" onreset="WikiMenu.hideForm()">
     <BLANKLINE>
-            <div class="inline-title">Rename Link &quot;New Subject&quot;</div>
+            <div class="wiki-form-title">Rename Link &quot;New Subject&quot;</div>
             <input name="link_id" type="hidden"
                    value="wiki-link5" />
             <input name="cmd" type="hidden" value="rename" />
@@ -153,11 +153,12 @@ The forms for the menu commands are loaded on demand:
                    value="http://127.0.0.1/site/index.html" />
             <table>
                 <tr>
-                    <td valign="top" class="form-title">
+                    <td valign="top" class="wiki-field">
                         New Label:
                     </td>
                     <td valign="top">
-                        <input id="link_label" name="label"
+                        <input class="wiki-input"
+                               id="link_label" name="label"
                                type="text" size="40"
                                value="New Subject" />
                     </td>
@@ -181,7 +182,7 @@ needs a refresh to be up to date:
 
     >>> print index_page.wikiCommandForm('rename', 5, "modified-timestamp")
     <div>
-        <form class="inline_form" onsubmit="window.reload(); return false;">
+        <form class="wiki-form" onsubmit="window.reload(); return false;">
             <span class="anylinkheader">The page has been edited. Please reloaad.
             </span>
             <input name="url" type="hidden"

@@ -22,7 +22,7 @@ p.intro {
 	cursor: pointer;
 }
 
-.inline_form {
+.wiki-form {
     border: 1px solid #666666;
     padding: 4px;
     font:normal 10px Verdana;
@@ -30,6 +30,19 @@ p.intro {
     background-color: #EDF0F4;
     width: 400px;
 }
+
+.wiki-field
+{
+	font: normal 10px Verdana;
+	white-space: nowrap;
+}
+
+.wiki-input
+{
+	width: 300px;
+}
+
+
 
 #wiki_link_form {
     position:absolute;

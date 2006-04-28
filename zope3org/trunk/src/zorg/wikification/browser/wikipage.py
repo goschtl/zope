@@ -252,7 +252,7 @@ class WikiContainerPage(WikiPage) :
         if file is None :
             return self._new()
         else :
-            return unicode(file.data, encoding="utf-8")
+            return unicode(file.data, encoding="utf-8", errors='replace')
         
     def getFile(self) :
         return self.context.get(u"index.html")
@@ -272,7 +272,7 @@ class WikiContainerPage(WikiPage) :
         body = self.getBody()
         if body is not None :
             wikified = self.wikify(body)
-            return unicode(wikified, encoding="utf-8")
+            return unicode(wikified, encoding='utf-8', errors='replace')
             
         return self._noindex()
        
@@ -301,7 +301,7 @@ class WikiFilePage(WikiPage) :
         body = self.getBody()
         if body is not None :
             wikified = self.wikify(body)
-            return unicode(wikified, encoding="utf-8")
+            return unicode(wikified, encoding='utf-8', errors='replace')
   
         return u"Sorry, not wikifiable at the moment."
             
@@ -456,7 +456,7 @@ class Editor(PageElement) :
         
             if file.contentType == "text/html" :
                 html = self.editableHTML(file.data)
-                return unicode(html, encoding="utf-8")
+                return unicode(html, encoding="utf-8", errors='replace')
                 
             if file.contentType == "text/plain" :
                 return zorg.restsupport.rest2html(file.data)
@@ -466,9 +466,9 @@ class Editor(PageElement) :
             if file.contentType == "text/html" :
                 body = html_body(file.data)
                 rest = zorg.restsupport.html2rest(body, fragment=True)
-                return unicode(rest, encoding="utf-8")
+                return unicode(rest, encoding="utf-8", errors='replace')
             if file.contentType == "text/plain" :
-                return unicode(file.data, encoding="utf-8")   
+                return unicode(file.data, encoding="utf-8", errors='replace')   
         
         return _("unknown format: cannot show file content. """)
         

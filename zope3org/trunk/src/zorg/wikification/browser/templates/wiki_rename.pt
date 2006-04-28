@@ -1,9 +1,9 @@
-<div class="inline_form" tal:attributes="id string:create_folder${view/index}">
+<div class="wiki-form" tal:attributes="id string:create_folder${view/index}">
     <form method="post" enctype="multipart/form-data" action="renameLink"
         onsubmit="WikiMenu.submitForm(this); return false;"
         onreset="WikiMenu.hideForm()" >
         
-        <div class="inline-title">Rename Link &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;</div>
+        <div class="wiki-form-title">Rename Link &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;</div>
         <input name="link_id" type="hidden" tal:attributes="value string:${view/link_id}" />
         <input name="cmd" type="hidden" value="rename" />
         <input name="reference" type="hidden" value="001" 
@@ -11,18 +11,18 @@
                 value string:${view/processor/reference}" />
         <table>
             <tr>
-                <td valign="top" class="form-title">
+                <td valign="top" class="wiki-field">
                     New Label:
                 </td>
-                <td valign="top" >
-                    <input id="link_label" name="label" type="text" size="40" value="Label" tal:attributes="value python: view.unicodeLabel()" />
+                <td valign="top">
+                    <input class="wiki-input" id="link_label" name="label" type="text" size="40" value="Label" tal:attributes="value python: view.unicodeLabel()" />
                 </td>
             </tr>
             <tr tal:condition="not: view/isUnique"> 
-                <td valign="top" class="form-title">
+                <td valign="top" class="wiki-field">
                     Scope: 
                 </td>
-                <td valign="top" class="form-title">
+                <td valign="top" class="wiki-field">
                     <input name="scope" id="scope" type="checkbox">
                     Apply to all links named &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;.
                 </td>   

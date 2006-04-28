@@ -88,12 +88,18 @@ class BaseHTMLProcessor(SGMLParser):
         # Reconstruct original DOCTYPE
         self.pieces.append("<!%(text)s>" % locals())
         
+    def prepare(self, html) :
+        """ A handler for preprocessing steps. Called after the conversion 
+            into utf-8
+        """
+        return html
         
     def feed(self, html) :
         """ Specialization that remembers whether we process unicode or not. """
         if isinstance(html, unicode) :
             html = html.encode('utf-8')
             self.unicode_html = True
+        html = self.prepare(html)
         SGMLParser.feed(self, html)
         
     def output(self) :

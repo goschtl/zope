@@ -291,7 +291,6 @@ class WikiLinkProcessor(BaseLinkProcessor) :
     adapts(IWikiPage)
         
     command = None
-   
 
     def __init__(self, page) :
         BaseHTMLProcessor.__init__(self)
@@ -493,7 +492,7 @@ class WikiLinkProcessor(BaseLinkProcessor) :
         placeholder = self.createPlaceholder(label, name)
         self.placeholder = None
         return placeholder.textLink()
-        
+                
     def output(self) :
         """ Returns the processing result.
         

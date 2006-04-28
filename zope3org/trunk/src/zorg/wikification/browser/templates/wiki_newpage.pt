@@ -1,9 +1,9 @@
-<div class="inline_form" tal:attributes="id string:add_page_form${view/index}">
+<div class="wiki-form" tal:attributes="id string:add_page_form${view/index}">
     <form method="post"
            enctype="multipart/form-data"
            onsubmit="WikiMenu.submitForm(this); return false;"
            onreset="WikiMenu.hideForm();">
-        <div class="inline-title">Add Page for Link &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;</div>
+        <div class="wiki-form-title">Add Page for Link &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;</div>
         <input name="link_id" type="hidden" tal:attributes="value string:${view/link_id}" />
         <input name="cmd" type="hidden" value="newpage" />
         <input name="reference" type="hidden" value="001" 
@@ -11,36 +11,36 @@
                 value string:${view/processor/reference}" />
         <table>
             <tr>
-                <td valign="top" class="form-title">
+                <td valign="top" class="wiki-field">
                     Filename:
                 </td>
-                <td valign="top" >
-                    <input id="page_name" name="name" type="text" size="40" value="FileName"  tal:attributes="value python: view.unicodeLabel() + u'.html'" />
+                <td valign="top">
+                    <input class="wiki-input" id="page_name" name="name" type="text" size="40" value="FileName"  tal:attributes="value python: view.unicodeLabel() + u'.html'" />
                 </td>
             </tr>
             <tr>
-                <td valign="top" class="form-title">
+                <td valign="top" class="wiki-field">
                     Title:
                 </td>
-                <td valign="top" >
-                    <input id="page_title" name="title" type="text" size="40" value=""/>
+                <td valign="top">
+                    <input class="wiki-input" id="page_title" name="title" type="text" size="40" value=""/>
                 </td>
             </tr>
             <tr>
-                <td valign="top" class="form-title">
+                <td valign="top" class="wiki-field">
                     Abstract: 
                 </td>
-                <td valign="top" >
-                    <textarea id="description" name="description"
+                <td valign="top">
+                    <textarea class="wiki-input" id="description" name="description"
                                    cols="37" rows="8" value="123"></textarea>
                 </td>
             </tr>
 
             <tr tal:condition="not: view/isUnique"> 
-                <td valign="top" class="form-title">
+                <td valign="top" class="wiki-field">
                     Scope: 
                 </td>
-                <td valign="top" class="form-title">
+                <td valign="top" class="wiki-field">
                     <input name="scope" id="scope" type="checkbox">
                     Apply to all links named &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;.
                 </td>   
