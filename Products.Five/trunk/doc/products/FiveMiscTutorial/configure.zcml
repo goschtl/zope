@@ -4,8 +4,6 @@
   xmlns:five="http://namespaces.zope.org/five"
   >
 
-<five:traversable class="OFS.Folder.Folder" />
-
 <browser:resource
   image="z3base.png"
   name="z3base.png"

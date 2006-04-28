@@ -42,11 +42,7 @@ def test_recursion():
       ...         return 'foo'
       ...
 
-    Now we make the class default viewable and register a default view
-    name for it:
-
-      >>> from Products.Five.fiveconfigure import classDefaultViewable
-      >>> classDefaultViewable(Recurse)
+    Now we register a default view name for the class:
 
       >>> from zope.component import provideAdapter
       >>> from zope.publisher.interfaces.browser import IBrowserRequest

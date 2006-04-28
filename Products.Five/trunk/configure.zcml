@@ -29,12 +29,6 @@
       provides="zope.app.traversing.interfaces.ITraverser"
       />
 
-  <adapter
-      for="*"
-      factory=".viewable.BrowserDefault"
-      provides=".interfaces.IBrowserDefault"
-      />
-
   <!-- this is really lying, but it's to please checkContainer -->
   <five:implements class="OFS.ObjectManager.ObjectManager"
                    interface="zope.app.container.interfaces.IContainer" />

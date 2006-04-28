@@ -37,7 +37,7 @@ from zope.event import notify
 from zExceptions import BadRequest
 
 from Products.Five import BrowserView
-from Products.Five.traversable import Traversable
+
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 
 from Acquisition import Implicit
@@ -202,7 +202,7 @@ class Adding(BasicAdding):
                return True
        return False
 
-class ContentAdding(Adding, Traversable, SimpleItem):
+class ContentAdding(Adding, SimpleItem):
 
     menu_id = "add_content"
 

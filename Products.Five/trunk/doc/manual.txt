@@ -260,27 +260,6 @@ following in ZCML::
 ``five`` in this case refers to the XML namespace for Five,
 ``http://namespace.zope.org/five``.
 
-We've provided another ZCML directive to make an object
-traversable. To make your MyClass traversable, let's assume it is in
-``mymodule``, in the same package as the zcml file we are editing::
-
-  <five:traversable class=".mymodule.MyClass" />
-
-To continue our example, to make Zope's ``Folder`` traversable through
-Five, you need to declare this in ZCML as well:
-
-  <five:traversable class="OFS.Folder.Folder"/>
-
-This makes Folder traverse in the Zope 3 way first, looking up views
-and other things, and then if they cannot be found, fall back on the
-regular Zope 2 traversal. It does this by overriding the
-``__bobo_traverse__`` hook. Old hooks that are already in place in an
-object will be stored and become the secondary fallback. This allows
-the ZMI to work still, but new views can be added on the fly.
-
-Note that at the point of writing it is only possible to make an object
-viewable through ZCML if this object does not already provide its own
-``__bobo_traverse__`` method.
 
 Views in Five are simple classes. The only requirements for a Five
 view class are:

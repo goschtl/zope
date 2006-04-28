@@ -66,9 +66,9 @@ PROPFIND with defaultViewable
 
 Now make the class default viewable:
 
-  >>> from Products.Five.fiveconfigure import classDefaultViewable
-  >>> from OFS.Folder import Folder
-  >>> classDefaultViewable(Folder)
+  >>> #from Products.Five.fiveconfigure import classDefaultViewable
+  >>> #from OFS.Folder import Folder
+  >>> #classDefaultViewable(Folder)
 
 And try it again:
 

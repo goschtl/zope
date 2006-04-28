@@ -3,11 +3,7 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:five="http://namespaces.zope.org/five">
 
-  <five:traversable class="OFS.Application.Application"/>
-
   <!-- OFS.Folder.Folder views -->
-
-  <five:traversable class="OFS.Folder.Folder"/>
 
   <browser:page
       for="OFS.interfaces.IFolder"
@@ -49,8 +45,6 @@
 
   <!-- .democontent.IDemoContent views -->
 
-  <five:traversable class=".democontent.DemoContent"/>
-
   <browser:page
       for="zope.app.container.interfaces.IAdding"
       name="addDemoContent.html"
@@ -78,8 +72,6 @@
       template="someview.pt"
       permission="zope2.ViewManagementScreens"
       />
-
-  <five:defaultViewable class=".democontent.DemoContent"/>
 
   <browser:defaultView
       for=".democontent.IDemoContent"

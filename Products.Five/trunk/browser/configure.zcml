@@ -1,7 +1,8 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser">
 
-  <browser:defaultView name="index.html" />
+  <browser:defaultView for="Products.Five.interfaces.IBrowserDefault" 
+                       name="index.html" />
 
   <interface
       interface="zope.publisher.interfaces.browser.ILayer"

@@ -16,6 +16,9 @@ Bugfixes
 
 * fiveconfigure.py: replaced zLOG with logging module
 
+* five:defaultViewable and five:traversable are now unessecary, as the 
+  functionality exists in the Zope core publisher from Zope 2.10 and up.
+
 Five 1.4b (2006-03-31)
 ======================
 
