@@ -174,7 +174,7 @@ is notified. We register an handler for this event:
     >>> component.provideHandler(notifyDirectlyProvidesModifiedEvent,
     ...     (api.IProvides, api.IDirectlyProvidesModifiedEvent))
 
-    >>> from zope.app.event.interfaces import IObjectModifiedEvent
+    >>> from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
     >>> def notifyObjectModifiedEvent(first, second=None):
     ...     if second:

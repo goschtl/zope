@@ -19,10 +19,9 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.i18n import ZopeMessageFactory as _
+from zope.component.interfaces import IObjectEvent
 from zope.interface import Attribute
 from zope.interface import Interface
-
-from zope.app.event.interfaces import IObjectEvent
 
 
 

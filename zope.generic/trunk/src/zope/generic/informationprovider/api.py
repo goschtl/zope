@@ -18,7 +18,7 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.annotation import IAnnotations
+from zope.annotation import IAnnotations
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
 from zope.generic.keyface.api import getKeyface

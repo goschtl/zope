@@ -18,9 +18,11 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.component import provideHandler
 import zope.app.testing.placelesssetup
 import zope.generic.testing.testing
+
+from zope.component import provideHandler
+
 
 
 ################################################################################

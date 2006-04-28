@@ -18,7 +18,7 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.event.objectevent import ObjectEvent
+from zope.component.interfaces import ObjectEvent
 from zope.interface import implements
 
 from zope.generic.configuration import IObjectConfiguredEvent
@@ -98,7 +98,7 @@ class ObjectConfiguredEvent(ObjectEvent):
         >>> descriptions = []
         >>> descriptions.append(Configuration(IMyConfiguration, {'my': u'Bla'}))
         >>> descriptions.append(Configuration(IYourConfiguration))
-        >>> from zope.app.event.objectevent import Attributes
+        >>> from zope.lifecycleevent import Attributes
         >>> descriptions.append(Attributes(IRegularInterface))
         >>> context = object()
         >>> event = ObjectConfiguredEvent(context, *descriptions)

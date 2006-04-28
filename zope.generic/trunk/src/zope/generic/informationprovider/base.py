@@ -18,9 +18,9 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.annotation import IAnnotations
-from zope.app.annotation import IAttributeAnnotatable
-from zope.app.annotation.attribute import AttributeAnnotations
+from zope.annotation import IAnnotations
+from zope.annotation import IAttributeAnnotatable
+from zope.annotation.attribute import AttributeAnnotations
 from zope.interface import alsoProvides
 from zope.interface import implements
 

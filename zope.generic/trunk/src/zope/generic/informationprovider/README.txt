@@ -58,6 +58,11 @@ After a registration the information provider can be looked up.
 All information provider with the same interface can be gotten by the 
 getInformationProvidersFor function:
 
+    >>> from zope.component.eventtesting import getEvents, clearEvents
+    >>> len(getEvents())
+    2
+    >>> clearEvents()
+
     >>> listing = list(api.getInformationProvidersFor(ISpecialInformation))
     >>> len(listing) is 1
     True
@@ -165,6 +170,10 @@ information provider:
     ...     </generic:informationProvider>
     ... ''')
 
+    >>> len(getEvents())
+    1
+    >>> clearEvents()
+
     >>> info = api.queryInformationProvider(IFooMarker, ISpecialInformation)
     >>> api.queryInformation(info, 'example.my_annotation') is my_annotation
     True
@@ -192,6 +201,10 @@ data itself has to provide the schema that is used to reference it.
     ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
+
+    >>> len(getEvents())
+    1
+    >>> clearEvents()
 
     >>> from zope.generic.configuration.api import IConfigurationType
     >>> IConfigurationType.providedBy(IMyConfiguration)
@@ -295,14 +308,13 @@ implementation and a configuration schema:
 The setting of the configuration is notified by a object configured event if 
 the parent has a location an the parent's parent is not None:
 
-    >>> from zope.app.event.tests.placelesssetup import getEvents, clearEvents
     >>> from zope.generic.configuration.api import IObjectConfiguredEvent
 
     >>> events = getEvents()
     >>> len(events)
     0
 
-    >>> from zope.app.location import Location
+    >>> from zope.location import Location
     >>> parent = Location()
     >>> configurations.__parent__ = parent
     

@@ -18,11 +18,11 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.event.interfaces import IModificationDescription
-from zope.app.event.interfaces import IObjectEvent
-from zope.app.location import ILocation
-from zope.interface import Interface
+from zope.location import ILocation
+from zope.component.interfaces import IObjectEvent
 from zope.interface import Attribute
+from zope.interface import Interface
+from zope.lifecycleevent.interfaces import IModificationDescription
 
 from zope.generic.keyface import IKeyfaced
 from zope.generic.keyface import IKeyfaceType

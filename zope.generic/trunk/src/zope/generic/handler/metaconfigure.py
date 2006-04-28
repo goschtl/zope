@@ -18,7 +18,7 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.component.metaconfigure import subscriber
+from zope.component.zcml import subscriber
 
 from zope.generic.keyface import IKeyfaceType
 from zope.generic.operation.api import assertOperation

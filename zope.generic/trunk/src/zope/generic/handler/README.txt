@@ -34,7 +34,7 @@ certain event-interface or -class:
     >>> registerDirective('''
     ... <generic:handler
     ...     keyface="example.IFoo"
-    ...     event="zope.app.event.interfaces.IObjectEvent"
+    ...     event="zope.component.interfaces.IObjectEvent"
     ...     operations="example.simplehandler"
     ...     />
     ... ''') 
@@ -46,8 +46,8 @@ Now we can check out the registered handler:
 
     >>> foo = Foo()
 
-    >>> from zope.app.event.interfaces import IObjectEvent
-    >>> from zope.app.event.objectevent import ObjectEvent
+    >>> from zope.component.interfaces import IObjectEvent
+    >>> from zope.component.interfaces import ObjectEvent
     >>> from zope.event import notify
 
     >>> event = ObjectEvent(foo)

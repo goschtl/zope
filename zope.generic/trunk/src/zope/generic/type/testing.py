@@ -18,10 +18,7 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.configuration.xmlconfig import XMLConfig
-
 import zope.app.testing.placelesssetup
-
 import zope.generic.adapter.testing
 import zope.generic.configuration.testing
 import zope.generic.directlyprovides.testing
@@ -30,6 +27,10 @@ import zope.generic.handler.testing
 import zope.generic.keyface.testing
 import zope.generic.operation.testing
 import zope.generic.testing.testing
+
+from zope.configuration.xmlconfig import XMLConfig
+
+
 
 ################################################################################
 #

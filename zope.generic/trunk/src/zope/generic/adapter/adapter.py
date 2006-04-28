@@ -18,7 +18,7 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.location import Location
+from zope.location import Location
 from zope.interface import classImplements
 from zope.interface import implements
 

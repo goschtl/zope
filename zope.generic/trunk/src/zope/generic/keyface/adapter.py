@@ -18,9 +18,9 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.location import Location
 from zope.component import adapts
 from zope.interface import implements
+from zope.location import Location
 
 from zope.generic.keyface import IAttributeKeyfaced
 from zope.generic.keyface import IKeyface

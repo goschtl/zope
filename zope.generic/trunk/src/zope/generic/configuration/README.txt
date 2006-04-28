@@ -122,25 +122,25 @@ configuration. This method can be only used if a configuration already exists:
     KeyError: <InterfaceClass example.IFooConfiguration>
 
 You can create valid configuration data using the generic ConfigurationData
-implementation and a configuration schema:
+implementation and a configuration schema. The setting of the configuration is
+notified by a object configured event if the parent has a location an the 
+parent's parent is not None:
 
+    >>> from zope.component.eventtesting import getEvents, clearEvents
     >>> from zope.generic.configuration.api import ConfigurationData
+    >>> from zope.generic.configuration.api import IObjectConfiguredEvent
+
+    >>> clearEvents()
 
     >>> data = ConfigurationData(IFooConfiguration, {'foo': u'Foo!'})
 
     >>> configurations[IFooConfiguration] = data
 
-The setting of the configuration is notified by a object configured event if 
-the parent has a location an the parent's parent is not None:
-
-    >>> from zope.app.event.tests.placelesssetup import getEvents, clearEvents
-    >>> from zope.generic.configuration.api import IObjectConfiguredEvent
-
     >>> events = getEvents()
     >>> len(events)
     0
 
-    >>> from zope.app.location import Location
+    >>> from zope.location import Location
     >>> parent = Location()
     >>> configurations.__parent__ = parent
     

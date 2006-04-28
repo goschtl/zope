@@ -20,9 +20,9 @@ __docformat__ = 'restructuredtext'
 
 from zope.app import zapi
 from zope.app.container.interfaces import INameChooser
-from zope.app.component.interfaces.registration import ActiveStatus
-from zope.app.component.interfaces import IPossibleSite
-from zope.app.component.interfaces import ISite
+from zope.component.interfaces.registration import ActiveStatus
+from zope.component.interfaces import IPossibleSite
+from zope.component.interfaces import ISite
 from zope.app.component.site import LocalSiteManager
 from zope.app.utility import UtilityRegistration
 

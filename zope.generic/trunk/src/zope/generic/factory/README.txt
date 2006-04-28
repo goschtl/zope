@@ -102,6 +102,13 @@ instance's configurations. The notifyCreated is notifying an object created even
 After this registration we find the following stuff within the component
 registration:
 
+    >>> from zope.component.eventtesting import getEvents, clearEvents
+    
+    >>> events = getEvents()
+    >>> len(events)
+    2
+    >>> clearEvents()
+
     >>> from zope.component import IFactory
     >>> from zope.generic.keyface.api import toDottedName
 
@@ -155,8 +162,6 @@ configuration:
     (u'a bla', None, u'c default')
 
 We selected object created event notification too:
-
-    >>> from zope.app.event.tests.placelesssetup import getEvents, clearEvents
     
     >>> events = getEvents()
     >>> len(events)

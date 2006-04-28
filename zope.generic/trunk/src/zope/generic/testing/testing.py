@@ -105,10 +105,10 @@ def registerDirective(direcitive):
 
 # specific tests
 def setUp(doctest=None):
-    # zope.app.annotations
-    from zope.app.annotation.interfaces import IAnnotations
-    from zope.app.annotation.interfaces import IAttributeAnnotatable
-    from zope.app.annotation.attribute import AttributeAnnotations
+    # zope.annotations
+    from zope.annotation.interfaces import IAnnotations
+    from zope.annotation.interfaces import IAttributeAnnotatable
+    from zope.annotation.attribute import AttributeAnnotations
 
     provideAdapter(AttributeAnnotations, adapts=[IAttributeAnnotatable], 
                    provides=IAnnotations)

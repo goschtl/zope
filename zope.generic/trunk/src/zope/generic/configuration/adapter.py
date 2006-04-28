@@ -22,8 +22,8 @@ from BTrees.OOBTree import OOBTree
 import transaction
 from UserDict import DictMixin
 
-from zope.app.location import Location
-from zope.app.location.interfaces import ILocation
+from zope.location import Location
+from zope.location.interfaces import ILocation
 from zope.component import adapts
 from zope.event import notify
 from zope.interface import implements

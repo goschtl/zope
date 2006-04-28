@@ -19,13 +19,15 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import zope.app.testing.placelesssetup
+import zope.generic.directlyprovides.testing
+import zope.generic.keyface.testing
+import zope.generic.testing.testing
+
 from zope.component import provideAdapter
 from zope.configuration.xmlconfig import XMLConfig
 from zope.interface import Interface
 
-import zope.generic.keyface.testing
-import zope.generic.directlyprovides.testing
-import zope.generic.testing.testing
+
 
 ################################################################################
 #

@@ -180,7 +180,7 @@ After all we register our component using the type directive:
     ...        acquire='True'
     ...        />
     ...    <handler
-    ...        event='zope.app.event.interfaces.IObjectEvent'
+    ...        event='zope.component.interfaces.IObjectEvent'
     ...        operations='example.objectEventHandler'
     ...        />
     ... </generic:type>
@@ -266,8 +266,8 @@ the type configuration, but only the object's configuration can be set:
 
 Now we like to invoke an type-specific event handler:
 
-    >>> from zope.app.event.interfaces import IObjectEvent
-    >>> from zope.app.event.objectevent import ObjectEvent
+    >>> from zope.component.interfaces import IObjectEvent
+    >>> from zope.component.interfaces import ObjectEvent
     >>> from zope.event import notify
 
     >>> event = ObjectEvent(bar)

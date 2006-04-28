@@ -17,8 +17,8 @@ $Id$
 """
 
 from zope.component import subscribers
-from zope.app.event.objectevent import Attributes
-from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.lifecycleevent import Attributes
+from zope.lifecycleevent import ObjectModifiedEvent
 
 from zope.generic.directlyprovides import IProvides
 from zope.generic.directlyprovides import IObjectModifiedEventDispatchingProvides

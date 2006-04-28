@@ -18,8 +18,8 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.app.annotation import IAnnotations
-from zope.app.component.interface import provideInterface
+from zope.annotation import IAnnotations
+from zope.component.interface import provideInterface
 from zope.component import provideUtility
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import alsoProvides

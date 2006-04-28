@@ -90,7 +90,7 @@ class ProvidesProperty(object):
         # everything prepended correctly   
         elif is_ok:
             if list(Declaration(value.__bases__[:-1])) != list(directlyProvidedBy(inst)):
-                value.changed()
+                # value.changed()
                 inst.__dict__['__provides__'] = value
                 
                 notify(DirectlyProvidesModifiedEvent(inst))
@@ -154,18 +154,21 @@ def provides(*names):
         >>> from zope.app.testing import placelesssetup
         >>> placelesssetup.setUp()
     
-        >>> from zope.app.event.tests.placelesssetup import events
+        >>> from zope.component.eventtesting import getEvents, clearEvents
         >>> from zope.interface import directlyProvidedBy
 
         >>> class IA(Interface):
         ...     pass
 
+        >>> clearEvents()
+        >>> events = getEvents()
         >>> len(events)
         0
 
         >>> bar = Bar()
         >>> directlyProvides(bar, IA)
-        
+
+        >>> events = getEvents()
         >>> len(events)
         1
         >>> events.pop() # doctest: +ELLIPSIS

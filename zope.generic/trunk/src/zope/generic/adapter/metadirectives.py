@@ -19,13 +19,13 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.app.security.fields import Permission
 from zope.configuration.fields import GlobalInterface
 from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import PythonIdentifier
 from zope.configuration.fields import Tokens
 from zope.interface import Interface
 from zope.schema import DottedName
+from zope.security.zcml import Permission
 
 
 class IForAdapterDirective(Interface):

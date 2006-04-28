@@ -19,9 +19,9 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.component.contentdirective import ClassDirective
-from zope.app.component.metaconfigure import adapter
-from zope.app.location import ILocation
+from zope.component.zcml import adapter
 from zope.configuration.exceptions import ConfigurationError
+from zope.location import ILocation
 
 from zope.generic.configuration import IConfigurationType
 

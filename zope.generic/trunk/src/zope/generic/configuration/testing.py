@@ -19,14 +19,17 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import zope.app.testing.placelesssetup
+import zope.generic.configuration.testing
+import zope.generic.directlyprovides.testing
+import zope.generic.keyface.testing
+import zope.generic.testing.testing
+
 from zope.component import provideAdapter
+from zope.component.eventtesting import clearEvents
 from zope.interface import Interface
 from zope.schema import TextLine
 
-import zope.generic.configuration.testing
-import zope.generic.keyface.testing
-import zope.generic.directlyprovides.testing
-import zope.generic.testing.testing
+
 
 ################################################################################
 #
@@ -75,6 +78,8 @@ def setUp(doctest=None):
     provideAdapter(zope.generic.configuration.adapter.AttributeConfigurations,
         provides=IConfigurations)
 
+    clearEvents()
+
 def tearDown(doctest=None):
     pass
 
@@ -91,6 +96,7 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         zope.generic.configuration.testing.setUp(doctest)
         # internal setup
         setUp(doctest)
+
 
     def tearDown(self, doctest=None):
         # internal teardown

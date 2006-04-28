@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.component import factory
 from zope.event import notify
-from zope.app.event.objectevent import ObjectCreatedEvent
+from zope.lifecycleevent import ObjectCreatedEvent
 from zope.interface import alsoProvides
 
 from zope.generic.configuration.api import parameterToConfiguration
@@ -92,7 +92,7 @@ class Factory(factory.Factory, Keyface):
 
     We can notify an ObjectCreatedEvent for created instance:
 
-        >>> from zope.app.event.tests.placelesssetup import getEvents, clearEvents
+        >>> from zope.component.eventtesting import getEvents, clearEvents
         >>> clearEvents()
 
         >>> f = Factory(Simple, IMyInstance, notifyCreated=True)
