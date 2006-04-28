@@ -42,8 +42,9 @@ class TestDT_Var(DTMLTestBase):
             multi:    <dtml-var spam fmt=multi-line>
             dollars:  <dtml-var spam fmt=whole-dollars>
             cents:    <dtml-var spam fmt=dollars-and-cents>
-            dollars,: <dtml-var spam fmt=dollars-with-commas>
-            cents,:   <dtml-var spam fmt=dollars-and-cents-with-commas>
+            dollars:  <dtml-var spam fmt=dollars-with-commas>
+            cents:    <dtml-var spam fmt=dollars-and-cents-with-commas>
+            stx:      <dtml-var spam fmt=structured-text>
 
             """)
 
@@ -55,8 +56,9 @@ class TestDT_Var(DTMLTestBase):
             multi:    4200000
             dollars:  $4200000
             cents:    $4200000.00
-            dollars,: $4,200,000
-            cents,:   $4,200,000.00
+            dollars:  $4,200,000
+            cents:    $4,200,000.00
+            stx:      <p>4200000</p>
 
             """)
 
@@ -70,8 +72,9 @@ class TestDT_Var(DTMLTestBase):
             multi:    None
             dollars:\x20\x20
             cents:\x20\x20\x20\x20
-            dollars,:\x20
-            cents,:\x20\x20\x20
+            dollars:\x20\x20
+            cents:\x20\x20\x20\x20
+            stx:      <p>None</p>
 
             """)
 
@@ -83,14 +86,16 @@ class TestDT_Var(DTMLTestBase):
             multi:    <a href="spam"><br>\nfoo bar
             dollars:\x20\x20
             cents:\x20\x20\x20\x20
-            dollars,:\x20
-            cents,:\x20\x20\x20
+            dollars:\x20\x20
+            cents:\x20\x20\x20\x20
+            stx:      <p><a href="spam">\nfoo bar</p>
 
             """)
 
-        self.assertEqual(html(spam=4200000), result1)
-        self.assertEqual(html(spam=None), result2)
-        self.assertEqual(html(spam=u'<a href="spam">\nfoo bar'), result3)
+        self.assertEqual(html(spam=4200000).strip(), result1.strip())
+        self.assertEqual(html(spam=None).strip(), result2.strip())
+        self.assertEqual(html(spam=u'<a href="spam">\nfoo bar').strip(),
+                         result3.strip())
 
 
     def testRender(self):
