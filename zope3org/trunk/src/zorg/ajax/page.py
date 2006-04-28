@@ -568,7 +568,7 @@ class CookieStorage(object) :
         if you want this behavior or provide a max_age.
         
         This implementation anticipates the actual storing and returns
-        the response cookie value if we a __setitem__ call was used
+        the response cookie value if a __setitem__ call was used
         to modify the cookie:
         
         >>> request = TestRequest()
