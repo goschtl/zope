@@ -6,13 +6,13 @@
 
   <adapter
       for=".interfaces.IShortcut"
-      provides="zope.app.size.ISized"
+      provides="zope.size.ISized"
       factory=".adapters.ShortcutSizedAdapterFactory"
       />
 
   <adapter
       for=".interfaces.IShortcut"
-      provides="zope.app.dublincore.interfaces.IZopeDublinCore"
+      provides="zope.dublincore.interfaces.IZopeDublinCore"
       factory=".adapters.ShortcutZopeDoublinCoreAdapterFactory"
       />
 
@@ -21,7 +21,7 @@
       for=".interfaces.IShortcut
            zope.publisher.interfaces.IRequest"
       factory=".adapters.ShortcutTraversalAdapterFactory"
-      provides="zope.app.traversing.interfaces.ITraversable"
+      provides="zope.traversing.interfaces.ITraversable"
       />
   <adapter factory=".adapters.ShortcutZMIIconFactory" name="zmi_icon" />
   <adapter factory=".adapters.TraversedURL" />
