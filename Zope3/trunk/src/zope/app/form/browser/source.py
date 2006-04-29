@@ -15,21 +15,30 @@
 
 $Id$
 """
+
+from itertools import imap
+
 import xml.sax.saxutils
 
+from zope.component import adapts
+from zope.interface import implements
 import zope.schema.interfaces
-from zope.schema.interfaces import ISourceQueriables, ValidationError
+from zope.schema.interfaces import \
+    ISourceQueriables, ValidationError, IVocabularyTokenized, IIterableSource
 from zope.app import zapi 
 import zope.app.form.interfaces
 import zope.app.form.browser.widget
 import zope.app.form.browser.interfaces
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
-from zope.app.form.browser.interfaces import IWidgetInputErrorView
+from zope.app.form.browser.interfaces import ITerms, IWidgetInputErrorView
+from zope.app.form.browser import \
+    SelectWidget, RadioWidget, MultiSelectWidget, OrderedMultiSelectWidget, \
+    MultiCheckBoxWidget, MultiSelectSetWidget
 
 class SourceDisplayWidget(zope.app.form.Widget):
 
-    zope.interface.implements(zope.app.form.interfaces.IDisplayWidget)
+    implements(zope.app.form.interfaces.IDisplayWidget)
 
     def __init__(self, field, source, request):
         super(SourceDisplayWidget, self).__init__(field, request)
@@ -109,7 +118,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
 
     _error = None
 
-    zope.interface.implements(zope.app.form.interfaces.IInputWidget)
+    implements(zope.app.form.interfaces.IInputWidget)
 
     def __init__(self, field, source, request):
         super(SourceInputWidget, self).__init__(field, request)
@@ -496,73 +505,90 @@ class SourceListInputWidget(SourceInputWidget):
 
 # Input widgets for IIterableSource:
 
-class SourceSelectWidget(zope.app.form.browser.SelectWidget):
-    """Select-box widget for iterable vocabularies."""
+# These widgets reuse the old-style vocabulary widgets via the class
+# IterableSourceVocabulary that adapts a source (and its ITerms object) 
+# into a vocabulary. When/if vocabularies go away, these classes
+# should be updated into full implementations.
 
-    # This is a very thin veneer over the vocabulary widget, but deals
-    # with the only differences in retrieving information about values
-    # that existing between sources and vocabularies.
 
-    def __init__(self, field, source, request):
-        super(SourceSelectWidget, self).__init__(field, source, request)
+class IterableSourceVocabulary(object):
+    
+    """Adapts an iterable source into a legacy vocabulary.
+    
+    This can be used to wrap sources to make them usable with widgets that 
+    expect vocabularies. Note that there must be an ITerms implementation 
+    registered to obtain the terms.
+    """
+    
+    implements(IVocabularyTokenized)
+    adapts(IIterableSource);
+    
+    def __init__(self, source, request):
+        self.source = source
         self.terms = zapi.getMultiAdapter(
-            (self.vocabulary, self.request),
-            zope.app.form.browser.interfaces.ITerms,
-            )
+            (source, request), zope.app.form.browser.interfaces.ITerms)
+    
+    def getTerm(self, value):
+        return self.terms.getTerm(value)
+        
+    def getTermByToken(self, token):
+        value = self.terms.getValue(token)
+        return self.getTerm(value)
+        
+    def __iter__(self):
+        return imap(
+            lambda value: self.getTerm(value), self.source.__iter__())
+            
+    def __len__(self):
+        return self.source.__len__()
+        
+    def __contains__(self, value):
+        return self.source.__contains__(value)
 
-    def convertTokensToValues(self, tokens):
-        """Convert term tokens to the terms themselves.
 
-        Tokens are used in the HTML form to represent terms. This method takes
-        the form tokens and converts them back to terms.
-        """
-        values = []
-        for token in tokens:
-            try:
-                value = self.terms.getValue(token)
-            except LookupError, error:
-                pass
-            else:
-                values.append(value)
-        return values
-
-    def renderItemsWithValues(self, values):
-        """Render the list of possible values, with those found in
-        `values` being marked as selected."""
-
-        cssClass = self.cssClass
-
-        # multiple items with the same value are not allowed from a
-        # vocabulary, so that need not be considered here
-        rendered_items = []
-        count = 0
-        for value in self.vocabulary:
-            term = self.terms.getTerm(value)
-            item_text = self.textForValue(term)
-
-            if value in values:
-                rendered_item = self.renderSelectedItem(count,
-                                                        item_text,
-                                                        term.token,
-                                                        self.name,
-                                                        cssClass)
-            else:
-                rendered_item = self.renderItem(count,
-                                                item_text,
-                                                term.token,
-                                                self.name,
-                                                cssClass)
-
-            rendered_items.append(rendered_item)
-            count += 1
-
-        return rendered_items
-
-    def textForValue(self, term):
-        return term.title
-
+class SourceSelectWidget(SelectWidget):
+    """Provide a selection list for the item."""
+    
+    def __init__(self, field, source, request):
+        super(SourceSelectWidget, self).__init__(
+            field, IterableSourceVocabulary(source, request), request)
 
 class SourceDropdownWidget(SourceSelectWidget):
-    """Variant of the SourceSelectWidget that uses a drop-down list."""
-
+    """Variation of the SourceSelectWidget that uses a drop-down list."""
+    
     size = 1
+
+class SourceRadioWidget(RadioWidget):
+    """Radio widget for single item choices."""
+    
+    def __init__(self, field, source, request):
+        super(SourceRadioWidget, self).__init__(
+            field, IterableSourceVocabulary(source, request), request)
+
+class SourceMultiSelectWidget(MultiSelectWidget):
+    """A multi-selection widget with ordering support."""
+    
+    def __init__(self, field, source, request):
+        super(SourceMultiSelectWidget, self).__init__(
+            field, IterableSourceVocabulary(source, request), request)
+            
+class SourceOrderedMultiSelectWidget(OrderedMultiSelectWidget):
+    """A multi-selection widget with ordering support."""
+    
+    def __init__(self, field, source, request):
+        super(SourceOrderedMultiSelectWidget, self).__init__(
+            field, IterableSourceVocabulary(source, request), request)
+            
+class SourceMultiSelectSetWidget(MultiSelectSetWidget):
+    """Provide a selection list for the set to be selected."""
+    
+    def __init__(self, field, source, request):
+        super(SourceMultiSelectSetWidget, self).__init__(
+            field, IterableSourceVocabulary(source, request), request)
+    
+class SourceMultiCheckBoxWidget(MultiCheckBoxWidget):
+    """Provide a list of checkboxes that provide the choice for the list."""
+    
+    def __init__(self, field, source, request):
+        super(SourceMultiCheckBoxWidget, self).__init__(
+            field, IterableSourceVocabulary(source, request), request)

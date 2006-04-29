@@ -29,12 +29,7 @@ our tests::
 
   >>> import zope.publisher.interfaces.browser
   >>> import zope.app.form.browser.interfaces
-
-  >>> class Term:
-  ...
-  ...     def __init__(self, **kw):
-  ...         self.__dict__.update(kw)
-
+  >>> from zope.schema.vocabulary import SimpleTerm
   >>> class ListTerms:
   ...
   ...     zope.interface.implements(
@@ -49,11 +44,11 @@ our tests::
   ...             token = title.encode('base64').strip()
   ...         except binascii.Error:
   ...             raise LookupError(token)
-  ...         return Term(title=title, token=token)
+  ...         return SimpleTerm(value, token=token, title=title)
   ...
   ...     def getValue(self, token):
   ...         return token.decode('base64')
-
+  
 This view just uses the unicode representations of values as titles
 and the base-64 encoding of the titles as tokens.  This is a very
 simple strategy that's only approriate when the values have short and
@@ -158,7 +153,322 @@ selected::
   <input name="field.dog-empty-marker" type="hidden" value="1" />
   </div>
 
+Dropdown widgets are achieved with SourceDropdownWidget, which simply
+generates a selection list of size 1::
 
+  >>> request = TestRequest()
+  >>> widget = zope.app.form.browser.source.SourceDropdownWidget(
+  ...     dog, dog.source, request)
+  >>> print widget() # doctest: +ELLIPSIS
+  <div>
+  <div class="value">
+  <select id="field.dog" name="field.dog" size="1" >...
+  
+An alternative to SourceSelectWidget for small numbers of items is
+SourceRadioWidget that provides a radio button group for the items::
+
+  >>> request = TestRequest()
+  >>> widget = zope.app.form.browser.source.SourceRadioWidget(
+  ...     dog, dog.source, request)
+  >>> print widget() # doctest: +NORMALIZE_WHITESPACE
+  <div>
+  <div class="value">
+  <label><input class="radioType" id="field.dog.0" name="field.dog"
+      type="radio" value="c3BvdA==" />&nbsp;spot</label><br 
+  /><label><input class="radioType" id="field.dog.1" name="field.dog"
+      type="radio" value="Ym93c2Vy" />&nbsp;bowser</label><br 
+  /><label><input class="radioType" id="field.dog.2" name="field.dog"
+      type="radio" value="cHJpbmNl" />&nbsp;prince</label><br
+  /><label><input class="radioType" id="field.dog.3" name="field.dog"
+      type="radio" value="ZHVjaGVzcw==" />&nbsp;duchess</label><br
+  /><label><input class="radioType" id="field.dog.4" name="field.dog"
+      type="radio" value="bGFzc2ll" />&nbsp;lassie</label>
+  </div>
+  <input name="field.dog-empty-marker" type="hidden" value="1" />
+  </div>
+  
+We'll select an item by setting the appropriate fields in the request:
+
+  >>> request.form['field.dog-empty-marker'] = '1'
+  >>> request.form['field.dog'] = 'bGFzc2ll'
+  >>>
+  >>> widget = zope.app.form.browser.source.SourceRadioWidget(
+  ...     dog, dog.source, request)
+  >>> print widget() # doctest: +NORMALIZE_WHITESPACE
+  <div>
+  <div class="value">
+  <label><input class="radioType" id="field.dog.0" name="field.dog"
+      type="radio" value="c3BvdA==" />&nbsp;spot</label><br 
+  /><label><input class="radioType" id="field.dog.1" name="field.dog"
+      type="radio" value="Ym93c2Vy" />&nbsp;bowser</label><br 
+  /><label><input class="radioType" id="field.dog.2" name="field.dog"
+      type="radio" value="cHJpbmNl" />&nbsp;prince</label><br
+  /><label><input class="radioType" id="field.dog.3" name="field.dog"
+      type="radio" value="ZHVjaGVzcw==" />&nbsp;duchess</label><br
+  /><label><input class="radioType" checked="checked" id="field.dog.4"
+      name="field.dog" type="radio" value="bGFzc2ll" />&nbsp;lassie</label>
+  </div>
+  <input name="field.dog-empty-marker" type="hidden" value="1" />
+  </div>
+  
+For list-valued fields with items chosen from iterable sources, there are the
+SourceMultiSelectWidget and SourceOrderedMultiSelectWidget widgets.
+The latter widget includes support for re-ording the list items. 
+SourceOrderedMultiSelectWidget is configured as the default widget
+for lists of choices.
+
+If you don't need ordering support through the web UI, then you can use
+the simpler SourceMultiSelectWidget::
+
+  >>> dogSource = SourceList([
+  ...     u'spot', u'bowser', u'prince', u'duchess', u'lassie'])
+  >>> dogs = zope.schema.List(
+  ...     __name__ = 'dogs',
+  ...     title=u"Dogs",
+  ...     value_type=zope.schema.Choice(
+  ...         source=dogSource,
+  ...     )
+  ... )
+  >>> dogs = dogs.bind(object()) # give the field a context
+  
+  >>> request = TestRequest()
+  >>> widget = zope.app.form.browser.source.SourceMultiSelectWidget(
+  ...     dogs, dogSource, request)
+
+Let's look at the rendered widget:
+
+  >>> print widget() # doctest: +NORMALIZE_WHITESPACE
+  <div>
+  <div class="value">
+  <select id="field.dogs" multiple="multiple" name="field.dogs:list"
+    size="5" ><option value="c3BvdA==">spot</option>
+  <option value="Ym93c2Vy">bowser</option>
+  <option value="cHJpbmNl">prince</option>
+  <option value="ZHVjaGVzcw==">duchess</option>
+  <option value="bGFzc2ll">lassie</option></select>
+  </div>
+  <input name="field.dogs-empty-marker" type="hidden" value="1" />
+  </div>
+
+We have no input yet:
+
+  >>> try:
+  ...     widget.getInputValue()
+  ... except zope.app.form.interfaces.MissingInputError:
+  ...     print 'no input'
+  no input
+
+Select an item:
+
+  >>> request.form['field.dogs-empty-marker'] = '1'
+  >>> request.form['field.dogs'] = ['bGFzc2ll']
+  >>> widget.getInputValue()
+  ['lassie']
+
+and another:
+
+  >>> request.form['field.dogs'] = ['cHJpbmNl', 'bGFzc2ll']
+  >>> widget.getInputValue()
+  ['prince', 'lassie']
+
+Finally, what does the widget look like now:
+
+  >>> print widget() # doctest: +NORMALIZE_WHITESPACE
+  <div>
+  <div class="value">
+  <select id="field.dogs" multiple="multiple" name="field.dogs:list"
+    size="5" ><option value="c3BvdA==">spot</option>
+  <option value="Ym93c2Vy">bowser</option>
+  <option selected="selected" value="cHJpbmNl">prince</option>
+  <option value="ZHVjaGVzcw==">duchess</option>
+  <option selected="selected" value="bGFzc2ll">lassie</option></select>
+  </div>
+  <input name="field.dogs-empty-marker" type="hidden" value="1" />
+  </div>
+
+
+An alternative for small numbers of items is to use SourceMultiCheckBoxWidget::
+
+  >>> request = TestRequest()
+  >>> widget = zope.app.form.browser.source.SourceMultiCheckBoxWidget(
+  ...     dogs, dogSource, request)
+
+The rendered widget:
+
+  >>> print widget() # doctest: +NORMALIZE_WHITESPACE
+  <div>
+  <div class="value">
+  <input class="checkboxType" id="field.dogs.0" name="field.dogs"
+    type="checkbox" value="c3BvdA==" />&nbsp;spot<br
+    /><input class="checkboxType" id="field.dogs.1"
+        name="field.dogs" type="checkbox" value="Ym93c2Vy" />&nbsp;bowser<br
+    /><input class="checkboxType" id="field.dogs.2"
+        name="field.dogs" type="checkbox" value="cHJpbmNl" />&nbsp;prince<br
+    /><input class="checkboxType" id="field.dogs.3"
+        name="field.dogs" type="checkbox"
+        value="ZHVjaGVzcw==" />&nbsp;duchess<br
+    /><input class="checkboxType" id="field.dogs.4"
+        name="field.dogs" type="checkbox" value="bGFzc2ll" />&nbsp;lassie
+  </div>
+  <input name="field.dogs-empty-marker" type="hidden" value="1" />
+  </div>
+
+We have no input yet:
+
+  >>> try:
+  ...     widget.getInputValue()
+  ... except zope.app.form.interfaces.MissingInputError:
+  ...     print 'no input'
+  no input
+
+Select an item:
+
+  >>> request.form['field.dogs-empty-marker'] = '1'
+  >>> request.form['field.dogs'] = ['bGFzc2ll']
+  >>> widget.getInputValue()
+  ['lassie']
+
+and another:
+
+  >>> request.form['field.dogs'] = ['c3BvdA==', 'bGFzc2ll']
+  >>> widget.getInputValue()
+  ['spot', 'lassie']
+
+Finally, what does the widget look like now:
+
+  >>> print widget() # doctest: +NORMALIZE_WHITESPACE
+  <div>
+  <div class="value">
+  <input class="checkboxType" checked="checked" id="field.dogs.0"
+    name="field.dogs" type="checkbox" value="c3BvdA==" />&nbsp;spot<br
+    /><input class="checkboxType" id="field.dogs.1"
+        name="field.dogs" type="checkbox" value="Ym93c2Vy" />&nbsp;bowser<br
+    /><input class="checkboxType" id="field.dogs.2"
+        name="field.dogs" type="checkbox" value="cHJpbmNl" />&nbsp;prince<br
+    /><input class="checkboxType" id="field.dogs.3"
+        name="field.dogs" type="checkbox"
+        value="ZHVjaGVzcw==" />&nbsp;duchess<br
+    /><input class="checkboxType" checked="checked" id="field.dogs.4"
+        name="field.dogs" type="checkbox" value="bGFzc2ll" />&nbsp;lassie
+  </div>
+  <input name="field.dogs-empty-marker" type="hidden" value="1" />
+  </div>
+
+
+For list ordering support, use SourceOrderedMultiSelectWidget::
+
+  >>> request = TestRequest()
+  >>> widget = zope.app.form.browser.source.SourceOrderedMultiSelectWidget(
+  ...     dogs, dogSource, request)
+
+The widget is too complicated to show in complete rendered form here.
+Insted, we'll inspect the properties of the widget:
+
+  >>> from zope.app.form.interfaces import MissingInputError
+  >>> try:
+  ...     widget.getInputValue()
+  ... except MissingInputError:
+  ...     print 'no input'
+  no input
+  
+  >>> widget.choices() == [
+  ...     {'text': u'spot',    'value': 'c3BvdA=='},
+  ...     {'text': u'bowser',  'value': 'Ym93c2Vy'},
+  ...     {'text': u'prince',  'value': 'cHJpbmNl'},
+  ...     {'text': u'duchess', 'value': 'ZHVjaGVzcw=='},
+  ...     {'text': u'lassie',  'value': 'bGFzc2ll'}
+  ... ]
+  True
+  
+  >>> widget.selected()
+  []
+  
+Let's try out selecting items. Select one item:
+  
+  >>> request.form['field.dogs-empty-marker'] = '1'
+  >>> request.form['field.dogs'] = ['bGFzc2ll']
+  >>> widget.selected() # doctest: +NORMALIZE_WHITESPACE
+  [{'text': u'lassie',  'value': 'bGFzc2ll'}]
+  
+  >>> widget.getInputValue()
+  ['lassie']
+  
+Select two items:
+
+  >>> request.form['field.dogs'] = ['c3BvdA==', 'bGFzc2ll']
+  >>> widget.selected()  # doctest: +NORMALIZE_WHITESPACE
+  [{'text': u'spot',    'value': 'c3BvdA=='},
+   {'text': u'lassie',  'value': 'bGFzc2ll'}]
+
+  >>> widget.getInputValue()
+  ['spot', 'lassie']
+
+
+For set-valued fields, use SourceMultiSelectSetWidget::
+
+  >>> dogSet = zope.schema.Set(
+  ...     __name__ = 'dogSet',
+  ...     title=u"Dogs",
+  ...     value_type=zope.schema.Choice(
+  ...         source=dogSource,
+  ...     )
+  ... )
+  >>> dogSet = dogSet.bind(object()) # give the field a context
+  >>> from sets import Set
+  >>> request = TestRequest()
+  >>> widget = zope.app.form.browser.source.SourceMultiSelectSetWidget(
+  ...     dogSet, dogSource, request)
+  
+  >>> try:
+  ...     widget.getInputValue()
+  ... except zope.app.form.interfaces.MissingInputError:
+  ...     print 'no input'
+  no input
+  
+  >>> print widget()  # doctest: +NORMALIZE_WHITESPACE
+  <div>
+  <div class="value">
+  <select id="field.dogSet" multiple="multiple"
+      name="field.dogSet:list" size="5" ><option value="c3BvdA==">spot</option>
+  <option value="Ym93c2Vy">bowser</option>
+  <option value="cHJpbmNl">prince</option>
+  <option value="ZHVjaGVzcw==">duchess</option>
+  <option value="bGFzc2ll">lassie</option></select>
+  </div>
+  <input name="field.dogSet-empty-marker" type="hidden" value="1" />
+  </div>
+  
+Let's try out selecting items. Select one item:
+  
+  >>> request.form['field.dogSet-empty-marker'] = '1'
+  >>> request.form['field.dogSet'] = ['bGFzc2ll']
+  >>> widget.getInputValue()
+  Set(['lassie'])
+  
+Select two items:
+
+  >>> request.form['field.dogSet'] = ['c3BvdA==', 'bGFzc2ll']
+  >>> widget.getInputValue()
+  Set(['spot', 'lassie'])
+  
+The rendered widget (still with the two items selected) looks like this:
+
+  >>> print widget()  # doctest: +NORMALIZE_WHITESPACE
+  <div>
+  <div class="value">
+  <select id="field.dogSet" multiple="multiple"
+      name="field.dogSet:list" size="5" ><option selected="selected"
+      value="c3BvdA==">spot</option>
+  <option value="Ym93c2Vy">bowser</option>
+  <option value="cHJpbmNl">prince</option>
+  <option value="ZHVjaGVzcw==">duchess</option>
+  <option selected="selected" value="bGFzc2ll">lassie</option></select>
+  </div>
+  <input name="field.dogSet-empty-marker" type="hidden" value="1" />
+  </div>
+
+
+  
 Source Widget Query Framework
 -----------------------------
 
@@ -722,3 +1032,68 @@ buttons that allow us to remove selections:
       </div> <!-- query -->
     </div> <!-- queries -->
   </div> <!-- value -->
+
+
+Using vocabulary-dependent widgets with sources
+------------------------------------------------
+
+if you have a widget that uses old-style vocabularies but don't have the
+time to rewrite it for sources, all is not lost! The wrapper 
+IterableSourceVocabulary can be used to make sources and ITerms look like 
+a vocabulary. This allows us to use vocabulary-based widgets with sources 
+instead of vocabularies.
+
+Usage::
+    
+  >>> from zope.schema.vocabulary import SimpleTerm
+  
+  >>> values  = [u'a', u'b', u'c']
+  >>> tokens  = [ '0',  '1',  '2']
+  >>> titles  = [u'A', u'B', u'C']
+  
+  >>> terms = [SimpleTerm(values[i], token=tokens[i], title=titles[i]) \
+  ...     for i in range(0,len(values))]
+  
+  >>> class TestSource(list):
+  ...     zope.interface.implements(zope.schema.interfaces.IIterableSource)
+  >>> source = TestSource(values)
+  
+  >>> from zope.app.form.browser.interfaces import ITerms
+  >>> class TestTerms(object):
+  ...     zope.interface.implements(ITerms)
+  ...     def __init__(self, source, request):
+  ...         pass
+  ...     def getTerm(self, value):
+  ...         index = values.index(value)
+  ...         return terms[index]
+  ...     def getValue(self, token):
+  ...         index = tokens.index(token)
+  ...         return values[index]
+  
+  >>> zope.component.provideAdapter(
+  ...     TestTerms,
+  ...     (TestSource, zope.publisher.interfaces.browser.IBrowserRequest))
+  
+  >>> from zope.app.form.browser.source import IterableSourceVocabulary
+  >>> request = TestRequest()
+  >>> vocab = IterableSourceVocabulary(source, request)
+  >>> from zope.interface.verify import verifyClass, verifyObject
+  >>> verifyClass(zope.schema.interfaces.IVocabularyTokenized, \
+  ...     IterableSourceVocabulary)
+  True
+  >>> verifyObject(zope.schema.interfaces.IVocabularyTokenized, vocab)
+  True
+  
+  >>> len(vocab)
+  3
+  >>> (u'a' in vocab) and (u'b' in vocab) and (u'c' in vocab)
+  True
+  >>> [value for value in vocab] == terms
+  True
+  >>> term = vocab.getTerm(u'b')
+  >>> (term.value, term.token, term.title)
+  (u'b', '1', u'B')
+  >>> term = vocab.getTermByToken('2')
+  >>> (term.value, term.token, term.title)
+  (u'c', '2', u'C')
+

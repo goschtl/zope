@@ -410,10 +410,28 @@
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.ISet
+           zope.schema.interfaces.IIterableSource"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".source.SourceMultiSelectSetWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IChoice
            zope.schema.interfaces.IIterableSource"
       provides="zope.app.form.interfaces.IInputWidget"
       factory=".source.SourceDropdownWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IList
+           zope.schema.interfaces.IIterableSource"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".source.SourceOrderedMultiSelectWidget"
       permission="zope.Public"
       />
 
