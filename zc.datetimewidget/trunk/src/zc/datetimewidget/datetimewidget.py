@@ -19,18 +19,18 @@ import datetime
 import pytz
 
 from zope.interface.common.idatetime import ITZInfo
-from zope.app.datetimeutils import DateTimeError
-from zope.app.datetimeutils import parseDatetimetz
+from zope.datetime import DateTimeError
+from zope.datetime import parseDatetimetz
 from zope.app.form.browser import textwidgets
 from zope.app.form.browser.widget import renderElement
-import zope.app.datetimeutils
+import zope.datetime
 import zc.i18n.date
 import zc.resourcelibrary
 
 def normalizeDateTime(dt, request):
     if dt is not None:
         if (dt.tzinfo is not None and
-            isinstance(dt.tzinfo, zope.app.datetimeutils._tzinfo)):
+            isinstance(dt.tzinfo, zope.datetime._tzinfo)):
             dt = dt.replace(tzinfo=None) # TODO: this is a hack
             # to accomodate pre-Zope-3.2 datetime widgets that assume UTC
             # timezone.  Zope 3.2+ datetime widgets should use the
