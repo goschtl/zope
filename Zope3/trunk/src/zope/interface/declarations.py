@@ -1105,13 +1105,21 @@ def classProvides(*interfaces):
         ['IFooFactory']
         >>> [i.getName() for i in C().__providedBy__]
         ['IFoo']
+
+      If classProvides is called outside of a class definition, it fails.
+
+        >>> classProvides(IFooFactory)
+        Traceback (most recent call last):
+        ...
+        TypeError: classProvides can be used only from a class definition.
+
       """
     frame = sys._getframe(1)
     locals = frame.f_locals
 
     # Try to make sure we were called from a class def
     if (locals is frame.f_globals) or ('__module__' not in locals):
-        raise TypeError(name+" can be used only from a class definition.")
+        raise TypeError("classProvides can be used only from a class definition.")
 
     if '__provides__' in locals:
         raise TypeError(
