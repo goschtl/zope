@@ -73,8 +73,8 @@
       >
 
     <browser:page
-        name="undoTransactions.html"
-        attribute="undoPrincipalTransactions"
+        name="undoAllTransactions.html"
+        attribute="undoAllTransactions"
         />
 
     <browser:page
