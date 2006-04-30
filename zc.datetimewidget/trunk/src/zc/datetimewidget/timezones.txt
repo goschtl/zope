@@ -1,0 +1,41 @@
+==================
+Handling Timezones
+==================
+
+Datetimes are always stored timezone aware, by default the utc
+timezone is used. We use the demo package here to have a content class
+and interface.
+
+In order to handle timezones correctly the zope instance has to
+provide an adapter from IBrowserRequest to ITZInfo. It is up to the
+instance what kind of implementation it uses. For this tests we just
+use the implementation of the demo.timezone module which always
+returns Europe/Vienna as timezone.
+
+    >>> from zope import component
+    >>> from datetime import datetime
+    >>> import pytz
+    >>> from zc.datetimewidget import datetimewidget
+    >>> from zc.datetimewidget.demo import timezone
+    >>> from zc.datetimewidget.demo.content import DemoContent
+    >>> from zc.datetimewidget.demo.interfaces import IDemoContent
+    >>> from zope.publisher.browser import TestRequest
+    >>> request = TestRequest()
+    >>> component.provideAdapter(timezone.tzinfo)
+    >>> fmt = '%Y-%m-%d %H:%M:%S %Z%z'
+    >>> tz = pytz.timezone('Europe/Vienna')
+    >>> field = IDemoContent['startDatetime']
+    >>> widget = datetimewidget.DatetimeWidget(field,request)
+    >>> dt = datetime(2006,5,1,12,tzinfo=pytz.utc)
+    >>> formValue = widget._toFormValue(dt)
+    >>> formValue
+    '2006-05-01 14:00:00'
+    >>> parsedValue = widget._toFieldValue(formValue)
+    >>> parsedValue
+    datetime.datetime(2006, 5, 1, 12, 0, tzinfo=<UTC>)
+
+
+
+
+
+

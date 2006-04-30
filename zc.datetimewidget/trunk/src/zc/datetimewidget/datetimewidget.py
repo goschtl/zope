@@ -31,6 +31,7 @@ def normalizeDateTime(dt, request):
     if dt is not None:
         if (dt.tzinfo is not None and
             isinstance(dt.tzinfo, zope.datetime._tzinfo)):
+            tzinfo = ITZInfo(request)
             dt = dt.replace(tzinfo=None) # TODO: this is a hack
             # to accomodate pre-Zope-3.2 datetime widgets that assume UTC
             # timezone.  Zope 3.2+ datetime widgets should use the
@@ -79,11 +80,16 @@ class DatetimeWidget(DatetimeBase, textwidgets.DatetimeWidget):
     _showsTime = "true"
 
     def _toFormValue(self, value):
-        return localizeDateTime(
-            super(DatetimeWidget, self)._toFormValue(value), self.request)
+        dt = localizeDateTime(
+            super(DatetimeWidget, self)._toFormValue(value),
+            self.request)
+        return dt.strftime(self._format)
+        
+    
 
     def _toFieldValue(self, input):
         res = super(DatetimeWidget, self)._toFieldValue(input)
+        #import pdb;pdb.set_trace()
         if res is not self.context.missing_value:
             res = normalizeDateTime(res, self.request)
         return res
