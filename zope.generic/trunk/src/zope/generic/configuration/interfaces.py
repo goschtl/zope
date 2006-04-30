@@ -21,12 +21,13 @@ __docformat__ = 'restructuredtext'
 from zope.location import ILocation
 from zope.component.interfaces import IObjectEvent
 from zope.interface import Attribute
+from zope.interface import alsoProvides
 from zope.interface import Interface
 from zope.lifecycleevent.interfaces import IModificationDescription
 
-from zope.generic.keyface import IKeyfaced
-from zope.generic.keyface import IKeyfaceType
-from zope.generic.keyface import IKeyfaceDescription
+from zope.generic.face import IFaced
+from zope.generic.face import IConfaceType
+from zope.generic.face import IKeyfaceDescription
 
 
 
@@ -35,12 +36,15 @@ class IConfigurable(Interface):
 
 
 
-class IConfigurationType(IKeyfaceType):
+class IConfiguration(Interface):
     """Mark a schema that is used for configuration."""
 
+alsoProvides(IConfiguration, IConfaceType)
 
 
-class IConfigurationData(IKeyfaced):
+
+
+class IConfigurationData(IFaced):
     """Marker for configuration data implementations."""
 
 
@@ -99,7 +103,7 @@ class IWriteConfigurations(Interface):
     def __setitem__(keyface, configuration_data):
         """Store a certain configuration data under the interface-key.
 
-        The interface key should provide IConfigurationType.
+        The interface key should provide IConfiguration.
 
         The configuration data has to provide the declared key interface. 
         

@@ -19,9 +19,10 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import alsoProvides
+from zope.interface import Interface
 
-from zope.generic.keyface import IKeyfaceType
-from zope.generic.keyface import IKeyfaceDescription
+from zope.generic.face import IKeyfaceType
+from zope.generic.face import IKeyfaceDescription
 
 
 
@@ -37,7 +38,7 @@ class IInformationProviderType(IKeyfaceType):
 
 
 
-class IInformationProvider(IKeyfaceDescription):
+class IInformationProvider(Interface):
     """Provide information about a dedicated key interfaces.
     
     A configuration related to the key interface can be stored within the

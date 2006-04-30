@@ -22,7 +22,7 @@ import zope.app.testing.placelesssetup
 import zope.generic.configuration.testing
 import zope.generic.directlyprovides.testing
 import zope.generic.informationprovider.testing
-import zope.generic.keyface.testing
+import zope.generic.face.testing
 import zope.generic.operation.testing
 import zope.generic.testing.testing
 
@@ -61,7 +61,7 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         # external setup
         zope.generic.testing.testing.setUp(doctest)
         zope.generic.directlyprovides.testing.setUp(doctest)
-        zope.generic.keyface.testing.setUp(doctest)
+        zope.generic.face.testing.setUp(doctest)
         zope.generic.configuration.testing.setUp(doctest)
         zope.generic.informationprovider.testing.setUp(doctest)
         zope.generic.operation.testing.setUp(doctest)
@@ -75,7 +75,7 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         zope.generic.operation.testing.tearDown(doctest)
         zope.generic.informationprovider.testing.tearDown(doctest)
         zope.generic.configuration.testing.tearDown(doctest)
-        zope.generic.keyface.testing.tearDown(doctest)
+        zope.generic.face.testing.tearDown(doctest)
         zope.generic.directlyprovides.testing.tearDown(doctest)
         zope.generic.testing.testing.tearDown(doctest)
         super(PlacelessSetup, self).tearDown()

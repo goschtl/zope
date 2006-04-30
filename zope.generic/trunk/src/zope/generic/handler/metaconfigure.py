@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.component.zcml import subscriber
 
-from zope.generic.keyface import IKeyfaceType
+from zope.generic.face import IKeyfaceType
 from zope.generic.operation.api import assertOperation
 
 

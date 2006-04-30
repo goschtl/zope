@@ -2,7 +2,7 @@
 Generic Component
 =================
 
-The key interface (see zope.generic.keyface) can be used to lookup corresponding
+The key interface (see zope.generic.face) can be used to lookup corresponding
 information providers. This package offers a way to implement information
 providers generically.
 
@@ -117,7 +117,7 @@ configurations:
 
 Information providers are configurable. The configurations mechanism is used 
 to provide additional configurations in a generic manner too. A configuration
-is declared by a configuration schema providing IConfigurationType:
+is declared by a configuration schema providing IConfiguration:
 
     >>> from zope.schema import TextLine
         
@@ -125,15 +125,15 @@ is declared by a configuration schema providing IConfigurationType:
     ...     my = TextLine(title=u'My')
 
     >>> registerDirective('''
-    ... <generic:keyface
+    ... <generic:face
     ...     keyface="example.IMyConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ...     type="zope.generic.configuration.IConfiguration"
     ...     />
     ... ''') 
 
-    >>> from zope.generic.configuration.api import IConfigurationType
+    >>> from zope.generic.configuration.api import IConfiguration
 
-    >>> IConfigurationType.providedBy(IMyConfiguration)
+    >>> IConfiguration.providedBy(IMyConfiguration)
     True
 
 At the moment there are no configurations:
@@ -171,7 +171,7 @@ information provider:
     ... ''')
 
     >>> len(getEvents())
-    1
+    3
     >>> clearEvents()
 
     >>> info = api.queryInformationProvider(IFooMarker, ISpecialInformation)
@@ -187,7 +187,7 @@ Configurations
 ---------------
 
 Configurations is a container of configuration data. Configuration data are
-defined by an schema which is providing IConfigurationType. The configuration
+defined by an schema which is providing IConfiguration. The configuration
 data itself has to provide the schema that is used to reference it.
 
     >>> from zope.schema import TextLine
@@ -196,9 +196,9 @@ data itself has to provide the schema that is used to reference it.
     ...     my = TextLine(title=u'My')
 
     >>> registerDirective('''
-    ... <generic:keyface
+    ... <generic:face
     ...     keyface="example.IMyConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ...     type="zope.generic.configuration.IConfiguration"
     ...     />
     ... ''') 
 
@@ -206,8 +206,8 @@ data itself has to provide the schema that is used to reference it.
     1
     >>> clearEvents()
 
-    >>> from zope.generic.configuration.api import IConfigurationType
-    >>> IConfigurationType.providedBy(IMyConfiguration)
+    >>> from zope.generic.configuration.api import IConfiguration
+    >>> IConfiguration.providedBy(IMyConfiguration)
     True
  
 Regularly local configurations are provided by objects marked with
@@ -248,12 +248,12 @@ data:
     ...    optional = TextLine(title=u'Optional', required=False, default=u'Bla')
 
 The configuration schema is a regular schema, but it has to be typed
-by IConfigurationType (Regularly done by the configuration directive):
+by IConfiguration (Regularly done by the configuration directive):
 
     >>> from zope.interface import directlyProvides
 
-    >>> directlyProvides(IFooConfiguration, IConfigurationType)
-    >>> IConfigurationType.providedBy(IFooConfiguration)
+    >>> directlyProvides(IFooConfiguration, IConfiguration)
+    >>> IConfiguration.providedBy(IFooConfiguration)
     True
 
 The configurations provides a regular dictionary api by the UserDictMixin
@@ -273,7 +273,7 @@ The configurations provides a regular dictionary api by the UserDictMixin
     []
 
 ... if a value might be set to the configurations it must provide the 
-configuration schema itself. This key interface must provide IConfigurationType:
+configuration schema itself. This key interface must provide IConfiguration:
 
     >>> class IBarConfiguration(Interface):
     ...    bar = TextLine(title=u'Bar')
@@ -281,7 +281,7 @@ configuration schema itself. This key interface must provide IConfigurationType:
     >>> configurations[IBarConfiguration] = object()
     Traceback (most recent call last):
     ...
-    KeyError: 'Interface key IBarConfiguration does not provide IConfigurationType.'
+    KeyError: 'Interface key IBarConfiguration does not provide IConfiguration.'
 
     >>> configurations[IFooConfiguration] = object()
     Traceback (most recent call last):

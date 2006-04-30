@@ -1,0 +1,103 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:apidoc="http://namespaces.zope.org/apidoc"
+  xmlns:generic="http://namespaces.zope.org/generic"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
+  i18n_domain="zope">
+ 
+  <apidoc:bookchapter zcml:condition="have apidoc"
+      id="zope.generic.content.readme"
+      title="Type"
+      doc_path="README.txt"
+      parent="zope.generic"
+      />
+
+  <apidoc:bookchapter zcml:condition="have apidoc"
+      id="zope.generic.content.example"
+      title="Type (Example)"
+      doc_path="EXAMPLE.txt"
+      parent="zope.generic"
+      />
+
+  <generic:informationProvider
+      keyface="zope.generic.informationprovider.IInformationProviderInformation"
+      label="Type Information Registry"
+      registry=".ITypeInformation"
+      />
+
+  <!-- transient generic object implementation -->
+  <class class=".base.Object">
+    <require 
+        permission="zope.Public"
+        interface="zope.generic.content.ITyped"
+        />
+  </class>
+
+  <!-- persistent generic contained implementation -->
+  <class class=".base.Contained">
+    <require 
+        permission="zope.Public"
+        interface="zope.generic.content.ITyped"
+        />
+  </class>
+
+  <!-- persistent generic container implementation -->
+  <class class=".base.Container">
+    <require 
+        permission="zope.Public"
+        interface="zope.generic.content.ITyped"
+        />
+    <require 
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+  </class>
+
+  <!-- persistent generic ordered container implementation -->
+  <class class=".base.OrderedContainer">
+    <require 
+        permission="zope.Public"
+        interface="zope.generic.content.ITyped"
+        />
+    <require 
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+    <require
+        permission="zope.ManageContent"
+        attributes="updateOrder"
+        />
+  </class>	
+
+  <!-- persistent generic folder implementation -->
+  <class class=".base.Folder">
+    <require 
+        permission="zope.Public"
+        interface="zope.generic.content.ITyped"
+        />
+    <require 
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+    <allow
+        attributes="getSiteManager"
+        />
+    <require
+        permission="zope.ManageSite"
+        attributes="setSiteManager"
+        />
+  </class>
+
+</configure>

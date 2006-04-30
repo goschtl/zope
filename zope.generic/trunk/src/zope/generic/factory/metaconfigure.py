@@ -31,10 +31,10 @@ from zope.generic.informationprovider.api import getInformationProvider
 from zope.generic.informationprovider.api import provideInformation
 from zope.generic.informationprovider.metaconfigure import InformationProviderDirective
 from zope.generic.informationprovider.metaconfigure import provideInformationProvider
-from zope.generic.keyface import IKeyfaceType
-from zope.generic.keyface.api import toDescription
-from zope.generic.keyface.api import toDottedName
-from zope.generic.keyface.metaconfigure import keyfaceDirective
+from zope.generic.face import IKeyfaceType
+from zope.generic.face.api import toDescription
+from zope.generic.face.api import toDottedName
+from zope.generic.face.metaconfigure import keyfaceDirective
 from zope.generic.operation.api import assertOperation
 from zope.generic.operation.api import provideOperationConfiguration
 
@@ -44,7 +44,7 @@ from zope.generic.factory.factory import Factory
 
 
 def factoryDirective(_context, keyface, class_, type=None, operations=(), input=None,
-                     providesKeyface=False, notifyCreated=False, storeInput=False,
+                     providesFace=False, notifyCreated=False, storeInput=False,
                      label=None, hint=None):
     """Register a public factory."""
     # preconditions
@@ -73,11 +73,11 @@ def factoryDirective(_context, keyface, class_, type=None, operations=(), input=
     else:
         mode = 0
 
-    if mode and providesKeyface:
+    if mode and providesFace:
         output = keyface
 
     # create and proxy type factory
-    factory = Factory(class_, keyface, providesKeyface, storeInput, 
+    factory = Factory(class_, keyface, providesFace, storeInput, 
                       notifyCreated, label, hint, mode) 
     component = proxify(factory, InterfaceChecker(IFactory, CheckerPublic))
     

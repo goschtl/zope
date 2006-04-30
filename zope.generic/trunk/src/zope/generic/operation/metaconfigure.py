@@ -22,7 +22,7 @@ from zope.component.interface import provideInterface
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import alsoProvides
 
-from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration import IConfiguration
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration.api import ConfigurationData
 from zope.generic.informationprovider.api import provideInformation

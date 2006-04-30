@@ -27,10 +27,11 @@ from zope.interface import implements
 from zope.interface.interfaces import IMethod
 from zope.schema.interfaces import IField
 
-from zope.generic.keyface import IAttributeKeyfaced
-from zope.generic.keyface import IKeyface
-from zope.generic.keyface.api import KeyfaceForAttributeKeyfaced
+from zope.generic.face import IAttributeFaced
+from zope.generic.face import IFace
+from zope.generic.face.api import FaceForAttributeFaced
 
+from zope.generic.configuration import IConfiguration
 from zope.generic.configuration import IConfigurationData
 from zope.generic.configuration import IConfigurations
 
@@ -97,19 +98,24 @@ class ConfigurationData(Persistent):
         ...
         RuntimeError: ('Data value is not a schema field', 'method')
 
-    The implementation provide an adapter to IKeyface by its __conform__
+    The implementation provide an adapter to IFace by its __conform__
     method:
 
-        >>> adapted = IKeyface(config_data)
-        >>> IKeyface.providedBy(adapted)
+        >>> adapted = IFace(config_data)
+        >>> IFace.providedBy(adapted)
         True
 
         >>> adapted.keyface is IBarConfiguration
         True
-  
+
+    A configuration belong to the configuration context:
+
+        >>> adapted.conface is IConfiguration
+        True
+
     """
 
-    implements(IAttributeKeyfaced, IConfigurationData)
+    implements(IAttributeFaced, IConfigurationData)
 
     def __init__(self, schema, data):
         # preconditions
@@ -126,16 +132,17 @@ class ConfigurationData(Persistent):
         # essentials
         self.__dict__['_ConfigurationData__data'] = PersistentDict(data)
         self.__dict__['__keyface__'] = schema
+        self.__dict__['__conface__'] = IConfiguration
         directlyProvides(self, schema)
 
     def __conform__(self, interface):
-        if interface is IKeyface:
-            return KeyfaceForAttributeKeyfaced(self)
+        if interface is IFace:
+            return FaceForAttributeFaced(self)
 
     def __getattr__(self, name):
-        # assert IAttributeKeyfaced
-        if name == '__keyface__':
-            return self.__dict__['__keyface__']
+        # assert IAttributeFaced
+        if name in ['__keyface__', '__conface__']:
+            return self.__dict__[name]
 
         schema = self.__dict__['__keyface__']
         data = self.__dict__['_ConfigurationData__data']

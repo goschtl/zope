@@ -16,7 +16,7 @@ Configurations
 ---------------
 
 Configurations is a container of configuration data. Configuration data are
-defined by an schema which is providing IConfigurationType. The configuration
+defined by an schema which is providing IConfiguration. The configuration
 data itself has to provide the schema that is used to reference it.
 
     >>> from zope.schema import TextLine
@@ -25,14 +25,14 @@ data itself has to provide the schema that is used to reference it.
     ...     my = TextLine(title=u'My')
 
     >>> registerDirective('''
-    ... <generic:keyface
+    ... <generic:face
     ...     keyface="example.IMyConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ...     type="zope.generic.configuration.IConfiguration"
     ...     />
     ... ''') 
 
-    >>> from zope.generic.configuration.api import IConfigurationType
-    >>> IConfigurationType.providedBy(IMyConfiguration)
+    >>> from zope.generic.configuration.api import IConfiguration
+    >>> IConfiguration.providedBy(IMyConfiguration)
     True
  
 Regularly local configurations are provided by objects marked with
@@ -73,12 +73,12 @@ data:
     ...    optional = TextLine(title=u'Optional', required=False, default=u'Bla')
 
 The configuration schema is a regular schema, but it has to be typed
-by IConfigurationType (Regularly done by the configuration directive):
+by IConfiguration (Regularly done by the configuration directive):
 
     >>> from zope.interface import directlyProvides
 
-    >>> directlyProvides(IFooConfiguration, IConfigurationType)
-    >>> IConfigurationType.providedBy(IFooConfiguration)
+    >>> directlyProvides(IFooConfiguration, IConfiguration)
+    >>> IConfiguration.providedBy(IFooConfiguration)
     True
 
 The configurations provides a regular dictionary api by the UserDictMixin
@@ -98,7 +98,7 @@ The configurations provides a regular dictionary api by the UserDictMixin
     []
 
 ... if a value might be set to the configurations it must provide the 
-configuration schema itself. This key interface must provide IConfigurationType:
+configuration schema itself. This key interface must provide IConfiguration:
 
     >>> class IBarConfiguration(Interface):
     ...    bar = TextLine(title=u'Bar')
@@ -106,7 +106,7 @@ configuration schema itself. This key interface must provide IConfigurationType:
     >>> configurations[IBarConfiguration] = object()
     Traceback (most recent call last):
     ...
-    KeyError: 'Interface key IBarConfiguration does not provide IConfigurationType.'
+    KeyError: 'Interface key IBarConfiguration does not provide IConfiguration.'
 
     >>> configurations[IFooConfiguration] = object()
     Traceback (most recent call last):

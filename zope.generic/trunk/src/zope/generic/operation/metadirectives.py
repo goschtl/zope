@@ -24,7 +24,7 @@ from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import Tokens
 from zope.interface import Interface
 
-from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration import IConfiguration
 from zope.generic.informationprovider.metadirectives import IBaseInformationProviderDirective
 
 

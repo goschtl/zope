@@ -26,7 +26,7 @@ As usual first we have to declare an key interface for our implementation:
     ...     pass
 
     >>> registerDirective('''
-    ... <generic:keyface
+    ... <generic:face
     ...     keyface="example.IMyInstance"
     ...     />
     ... ''') 
@@ -35,15 +35,15 @@ Then we have to implement an example class with dedicated initalization
 parameters:
 
     >>> from zope.generic.configuration import IAttributeConfigurable
-    >>> from zope.generic.keyface import IAttributeKeyfaced
+    >>> from zope.generic.face import IAttributeFaced
 
     >>> class Example(object):
-    ...    interface.implements(IAttributeKeyfaced, IAttributeConfigurable)
+    ...    interface.implements(IAttributeFaced, IAttributeConfigurable)
     ...    def __init__(self, a, b, c):
     ...        print '__init__:', 'a=',a ,', b=', b, ', c=', c
 
 Now we have to declare the signature for our key interface. We like to provide
-default arguments. Afterward we register the schema as IConfigurationType:
+default arguments. Afterward we register the schema as IConfiguration:
 
     >>> from zope.schema import TextLine
 
@@ -53,9 +53,9 @@ default arguments. Afterward we register the schema as IConfigurationType:
     ...    c = TextLine(required=False, default=u'c default')
 
     >>> registerDirective('''
-    ... <generic:keyface
+    ... <generic:face
     ...     keyface="example.IMyParameter"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ...     type="zope.generic.configuration.IConfiguration"
     ...     />
     ... ''') 
 
@@ -74,7 +74,7 @@ This stuff can be registered within the factory directive.
     ...     class="example.Example"
     ...     operations="example.init_handler"
     ...     input="example.IMyParameter"
-    ...     providesKeyface="True"
+    ...     providesFace="True"
     ...     storeInput="True"
     ...     notifyCreated="True"
     ...     />
@@ -83,15 +83,15 @@ This stuff can be registered within the factory directive.
 The keyface defines the key interface to lookup the factory. The class
 is the implementation. The operations attribute defines one operation or a
 pipe of operations (see zope.generic.operation). Input declares the input
-parameter. The attribute provideKeyface asserts that the key interface is
+parameter. The attribute provideFace asserts that the key interface is
 provided. Four cases are checked: 
 
 1.  If the class does provide the keyface nothing happens. 
 
-2.  If the instance provides zope.generic.keyface.IProvidesAttributeKeyfaced
+2.  If the instance provides zope.generic.face.IProvidesAttributeFaced
     the __keyface__ attribute is set and the updateDirectlyProvided is called.
 
-3.  If zope.generic.keyface.IAttributeKeyfaced is provided the the __keyface__ 
+3.  If zope.generic.face.IAttributeFaced is provided the the __keyface__ 
     attribute is set and the keyface is directly provided.
 
 4.  Else only the keyface is directly provided.
@@ -106,11 +106,11 @@ registration:
     
     >>> events = getEvents()
     >>> len(events)
-    2
+    4
     >>> clearEvents()
 
     >>> from zope.component import IFactory
-    >>> from zope.generic.keyface.api import toDottedName
+    >>> from zope.generic.face.api import toDottedName
 
     >>> util = component.getUtility(IFactory, name=toDottedName(IMyInstance))
     >>> util.keyface == IMyInstance

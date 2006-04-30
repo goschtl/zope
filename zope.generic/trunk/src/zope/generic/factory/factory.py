@@ -29,16 +29,16 @@ from zope.generic.directlyprovides.api import updateDirectlyProvided
 from zope.generic.informationprovider.api import getInformationProvider
 from zope.generic.informationprovider.api import provideInformation
 from zope.generic.informationprovider.api import queryInformation
-from zope.generic.keyface import IAttributeKeyfaced
-from zope.generic.keyface import IProvidesAttributeKeyfaced
-from zope.generic.keyface.api import Keyface
+from zope.generic.face import IAttributeFaced
+from zope.generic.face import IProvidesAttributeFaced
+from zope.generic.face.api import Face
 from zope.generic.operation import IOperationConfiguration
 
 from zope.generic.factory import IFactoryInformation
         
 
 
-class Factory(factory.Factory, Keyface):
+class Factory(factory.Factory, Face):
     """Key-interface-based factory implementation.
 
     First we declare an key interface:
@@ -72,19 +72,19 @@ class Factory(factory.Factory, Keyface):
 
     We can provide the key interface during the creation:
 
-        >>> f = Factory(Simple, IMyInstance, providesKeyface=True)
+        >>> f = Factory(Simple, IMyInstance, providesFace=True)
         >>> IMyInstance.providedBy(f())
         True
 
-    If the class does implement IAttributeKeyfaced the __keyface__
+    If the class does implement IAttributeFaced the __keyface__
     attribute is set too:
 
-        >>> from zope.generic.keyface import IAttributeKeyfaced
+        >>> from zope.generic.face import IAttributeFaced
 
         >>> class SimpleKeyFaced(object):
-        ...    interface.implements(IAttributeKeyfaced)
+        ...    interface.implements(IAttributeFaced)
 
-        >>> f = Factory(SimpleKeyFaced, IMyInstance, providesKeyface=True)
+        >>> f = Factory(SimpleKeyFaced, IMyInstance, providesFace=True)
         >>> IMyInstance.providedBy(f())
         True
         >>> f().__keyface__ is IMyInstance
@@ -145,7 +145,7 @@ class Factory(factory.Factory, Keyface):
         >>> from zope.schema import TextLine
 
         >>> class SimpleKeyFacedWithParameter(object):
-        ...    interface.implements(IAttributeKeyfaced)
+        ...    interface.implements(IAttributeFaced)
         ...    def __init__(self, a, b, c):
         ...        print '__init__:', 'a=',a ,', b=', b, ', c=', c
 
@@ -155,9 +155,9 @@ class Factory(factory.Factory, Keyface):
         ...    c = TextLine(required=False, default=u'c default')
 
         >>> registerDirective('''
-        ... <generic:keyface
+        ... <generic:face
         ...     keyface="example.IMyParameter"
-        ...     type="zope.generic.configuration.IConfigurationType"
+        ...     type="zope.generic.configuration.IConfiguration"
         ...     />
         ... ''') 
 
@@ -198,7 +198,7 @@ class Factory(factory.Factory, Keyface):
         >>> from zope.generic.configuration import IAttributeConfigurable
 
         >>> class SimpleConfigurable(object):
-        ...    interface.implements(IAttributeKeyfaced, IAttributeConfigurable)
+        ...    interface.implements(IAttributeFaced, IAttributeConfigurable)
         ...    def __init__(self, a, b, c):
         ...        print '__init__:', 'a=',a ,', b=', b, ', c=', c
 
@@ -215,7 +215,7 @@ class Factory(factory.Factory, Keyface):
 
     """
 
-    def __init__(self, callable, __keyface__, providesKeyface=False, 
+    def __init__(self, callable, __keyface__, providesFace=False, 
                  storeInput=False, notifyCreated=False, 
                  title=u'', description=u'', mode=0):
 
@@ -223,7 +223,7 @@ class Factory(factory.Factory, Keyface):
 
         # essentials
         self.__keyface__ = __keyface__
-        self.__provideKeyface = providesKeyface
+        self.__provideFace = providesFace
         self.__storeInput = storeInput
         self.__notifyCreated = notifyCreated
         self.__mode = mode
@@ -246,13 +246,13 @@ class Factory(factory.Factory, Keyface):
             
 
         # provide key interface
-        if self.__provideKeyface:
+        if self.__provideFace:
             if not self.keyface.providedBy(instance):
-                if IProvidesAttributeKeyfaced.providedBy(instance):
+                if IProvidesAttributeFaced.providedBy(instance):
                     instance.__dict__['__keyface__'] = self.keyface
                     updateDirectlyProvided(instance, self.keyface)
 
-                elif IAttributeKeyfaced.providedBy(instance):
+                elif IAttributeFaced.providedBy(instance):
                     instance.__dict__['__keyface__'] = self.keyface
                     alsoProvides(instance, self.keyface)
 

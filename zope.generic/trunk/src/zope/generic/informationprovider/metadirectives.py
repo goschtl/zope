@@ -26,11 +26,11 @@ from zope.interface import Interface
 from zope.schema import DottedName
 
 from zope.generic.informationprovider import IInformationProvider
-from zope.generic.keyface.metadirectives import IBaseKeyfaceDirective
+from zope.generic.face.metadirectives import IKeyfaceDirective
 
 
 
-class IBaseInformationProviderDirective(IBaseKeyfaceDirective):
+class IBaseInformationProviderDirective(IKeyfaceDirective):
     """Base information provider attributes."""
 
     label = MessageID(

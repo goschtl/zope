@@ -27,7 +27,7 @@ from zope.interface import implements
 from zope.generic.configuration import IAttributeConfigurable
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration.api import AttributeConfigurations
-from zope.generic.keyface.api import KeyfaceDescription
+from zope.generic.face.api import KeyfaceDescription
 
 from zope.generic.informationprovider import IInformationProvider
 

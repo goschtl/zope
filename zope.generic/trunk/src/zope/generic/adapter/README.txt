@@ -43,17 +43,17 @@ First we declare a configuration schema that should adapted:
     >>> class IFooConfiguration(interface.Interface):
     ...    foo = TextLine(title=u'Foo', required=False, default=u'Default config.')
 
-We register the configuration schema using generic:keyface directive:
+We register the configuration schema using generic:face directive:
 
     >>> registerDirective('''
-    ... <generic:keyface
+    ... <generic:face
     ...     keyface="example.IFooConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ...     type="zope.generic.configuration.IConfiguration"
     ...     />
     ... ''') 
 
-    >>> from zope.generic.configuration import IConfigurationType
-    >>> IConfigurationType.providedBy(IFooConfiguration)
+    >>> from zope.generic.configuration import IConfiguration
+    >>> IConfiguration.providedBy(IFooConfiguration)
     True
 
 We implement a class which is providing the configuration mechanism:
@@ -62,7 +62,7 @@ We implement a class which is providing the configuration mechanism:
     ...    pass
 
     >>> registerDirective('''
-    ... <generic:keyface
+    ... <generic:face
     ...     keyface="example.IFoo"
     ...     />
     ... ''')

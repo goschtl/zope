@@ -28,11 +28,11 @@ from zope.component import adapts
 from zope.event import notify
 from zope.interface import implements
 
-from zope.generic.keyface.api import toDottedName
-from zope.generic.keyface.api import toKeyface
+from zope.generic.face.api import toDottedName
+from zope.generic.face.api import toInterface
 
 from zope.generic.configuration import IAttributeConfigurable
-from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration import IConfiguration
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration.event import Configuration
 from zope.generic.configuration.event import ObjectConfiguredEvent
@@ -75,7 +75,7 @@ class AttributeConfigurations(DictMixin, Location):
         if configurations is None:
             return []
 
-        return [toKeyface(iface) for iface in configurations.keys()]
+        return [toInterface(iface) for iface in configurations.keys()]
 
     def update(self, keyface, data):
         current_config = self[keyface]
@@ -107,9 +107,9 @@ class AttributeConfigurations(DictMixin, Location):
 
     def __setitem__(self, keyface, value):
         # preconditions
-        if not IConfigurationType.providedBy(keyface):
+        if not IConfiguration.providedBy(keyface):
             raise KeyError('Interface key %s does not provide %s.' % 
-                (keyface.__name__, IConfigurationType.__name__))
+                (keyface.__name__, IConfiguration.__name__))
 
         if not keyface.providedBy(value):
             raise ValueError('Value does not provide %s.' % keyface.__name__)

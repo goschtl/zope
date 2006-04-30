@@ -15,7 +15,7 @@ First we declare a key interface:
     ...    """The key interface."""
 
     >>> registerDirective('''
-    ... <generic:keyface
+    ... <generic:face
     ...     keyface="example.IFoo"
     ...     />
     ... ''')

@@ -23,7 +23,7 @@ from zope.interface import implements
 
 from zope.generic.informationprovider.api import queryInformation
 from zope.generic.informationprovider.api import getInformationProvider
-from zope.generic.keyface import IKeyfaced
+from zope.generic.face import IFaced
 from zope.generic.operation import IOperationConfiguration
 
 from zope.generic.factory import IFactoryInformation
@@ -36,7 +36,7 @@ class Initializer(object):
 
     implements(IInitializer)
     
-    adapts(IKeyfaced)
+    adapts(IFaced)
 
     def __init__(self, context):
         self.context = context

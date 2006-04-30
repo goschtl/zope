@@ -23,7 +23,7 @@ from zope.component.zcml import adapter
 from zope.configuration.exceptions import ConfigurationError
 from zope.location import ILocation
 
-from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration import IConfiguration
 
 from zope.generic.adapter.adapter import ConfigurationAdapterClass
 
@@ -42,7 +42,7 @@ def adapterDirective(_context, provides, for_=None, class_=None,
         raise ConfigurationError('Use class or key/ informationProividers attriubte.')
 
     # we will provide a generic adapter class
-    if class_ is None and IConfigurationType.providedBy(provides):
+    if class_ is None and IConfiguration.providedBy(provides):
         class_ = ConfigurationAdapterClass(provides, informationProviders)
 
     if class_ is None and key:

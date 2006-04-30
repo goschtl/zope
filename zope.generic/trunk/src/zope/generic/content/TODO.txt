@@ -1,0 +1,26 @@
+====
+TODO
+====
+
+    logical type 
+    >>> class IFoo(Interface):
+    ...     """IFoo bla."""
+
+    >>> foo = api.createObject(IFoo)
+
+    >>> foo.__keyface__ == IFoo
+    True
+    >>> IFace(foo) == IFoo
+    True
+    >>> type_registration = IType(foo) # heute type_information
+    >>> type_registration.__keyface__ == IFoo
+    True
+    >>> type_registration.label
+    u'example.IFoo'
+    >>> type_registration.hint
+    u'Foo bla'
+    >>> IConfigurations.providedBy(type_registration)
+    True
+    >>> any_type_config = IAnyConfig(type_registration)
+    >>> IAnyConfig.providedBy(any_type_config)
+    True

@@ -21,7 +21,7 @@ __docformat__ = 'restructuredtext'
 import zope.app.testing.placelesssetup
 import zope.generic.configuration.testing
 import zope.generic.directlyprovides.testing
-import zope.generic.keyface.testing
+import zope.generic.face.testing
 import zope.generic.testing.testing
 
 from zope.component import provideAdapter
@@ -60,7 +60,7 @@ class IFooConfiguration(Interface):
     fo = TextLine(title=u'Fo', required=False, readonly=True, default=u'fo default')
 
 
-class TestKeyfaceAttriute(object):
+class TestAttributeFaced(object):
     __keyface__ = IFooConfiguration
 
 
@@ -92,7 +92,7 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         # external setup
         zope.generic.testing.testing.setUp(doctest)
         zope.generic.directlyprovides.testing.setUp(doctest)
-        zope.generic.keyface.testing.setUp(doctest)
+        zope.generic.face.testing.setUp(doctest)
         zope.generic.configuration.testing.setUp(doctest)
         # internal setup
         setUp(doctest)
@@ -103,7 +103,7 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
         tearDown(doctest)
         # external teardown
         zope.generic.configuration.testing.tearDown(doctest)
-        zope.generic.keyface.testing.tearDown(doctest)
+        zope.generic.face.testing.tearDown(doctest)
         zope.generic.directlyprovides.testing.tearDown(doctest)
         zope.generic.testing.testing.tearDown(doctest)
         super(PlacelessSetup, self).tearDown()

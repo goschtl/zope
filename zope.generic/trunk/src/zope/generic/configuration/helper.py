@@ -19,7 +19,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 
-from zope.generic.keyface import IKeyface
+from zope.generic.face import IFace
 
 from zope.generic.configuration.base import ConfigurationData
 
@@ -53,7 +53,7 @@ def configuratonToDict(configuration, all=False):
 
     """
     data = {}
-    keyface = IKeyface(configuration).keyface
+    keyface = IFace(configuration).keyface
 
     for name in keyface:
         value = getattr(configuration, name, _marker)

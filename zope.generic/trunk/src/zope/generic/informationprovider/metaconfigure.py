@@ -25,8 +25,8 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.interface import alsoProvides
 
 from zope.generic.configuration import IConfigurations
-from zope.generic.keyface.api import toDescription
-from zope.generic.keyface.api import toDottedName
+from zope.generic.face.api import toDescription
+from zope.generic.face.api import toDottedName
 
 from zope.generic.informationprovider.base import InformationProvider
 from zope.generic.informationprovider import IInformationProvider

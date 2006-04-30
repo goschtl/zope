@@ -22,7 +22,7 @@ from zope.app.i18n import ZopeMessageFactory as _
 from zope.configuration.fields import GlobalInterface
 from zope.interface import Interface
 
-from zope.generic.keyface.metadirectives import IBaseKeyfaceDirective
+from zope.generic.face.metadirectives import IKeyfaceDirective
 from zope.generic.operation.metadirectives import IBaseOperationDirective
 
 
@@ -37,5 +37,5 @@ class IBaseHandlerDirective(Interface):
         )
 
 
-class IHandlerDirective(IBaseKeyfaceDirective, IBaseHandlerDirective, IBaseOperationDirective):
+class IHandlerDirective(IKeyfaceDirective, IBaseHandlerDirective, IBaseOperationDirective):
     """Provide trusted locatable handler that invoke operations."""

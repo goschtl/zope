@@ -25,11 +25,11 @@ from zope.interface.interfaces import IInterface
 from zope.schema import Object
 from zope.schema import Tuple
 
-from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration import IConfiguration
 from zope.generic.informationprovider import IInformationProvider
 from zope.generic.informationprovider import IInformationProviderType
-from zope.generic.keyface import IKeyface
-from zope.generic.keyface import IKeyfaceType
+from zope.generic.face import IFace
+from zope.generic.face import IKeyfaceType
 
 
 
@@ -47,7 +47,7 @@ class IContextProxy(Interface):
 
 
 
-class IOperation(IKeyface):
+class IOperation(IFace):
     """Proceed operation"""
 
     def __call__(context, *pos, **kws):
@@ -95,7 +95,7 @@ class IOperationConfiguration(Interface):
         description=_('A configuration interface declaring the input parameters.'),
         required=False,
         default=(),
-        value_type=Object(schema=IConfigurationType))
+        value_type=Object(schema=IConfiguration))
 
     output = Tuple(title=_('Output Declaration'),
         description=_('An interface interface declaring the output parameters.'),
@@ -105,4 +105,4 @@ class IOperationConfiguration(Interface):
 
 
 
-alsoProvides(IOperationConfiguration, IConfigurationType)
+alsoProvides(IOperationConfiguration, IConfiguration)

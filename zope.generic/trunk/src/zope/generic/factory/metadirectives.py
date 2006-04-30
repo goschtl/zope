@@ -36,8 +36,8 @@ class IBaseFactoryDirective(Interface):
         required=True
         )
 
-    providesKeyface = Bool(
-        title=_('Provides Keyface'),
+    providesFace = Bool(
+        title=_('Provides Face'),
         description=_('If the class does not implement the key interface ' +
                       'directly provide it to the instances ' +
                       'before initalization.'),

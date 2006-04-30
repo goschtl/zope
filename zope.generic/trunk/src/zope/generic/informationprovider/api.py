@@ -21,13 +21,13 @@ __docformat__ = 'restructuredtext'
 from zope.annotation import IAnnotations
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
-from zope.generic.keyface.api import getKeyface
-from zope.generic.keyface.api import queryKeyface
-from zope.generic.keyface.api import toDottedName
-from zope.generic.keyface.api import toKeyface
+from zope.generic.face.api import getKeyface
+from zope.generic.face.api import queryKeyface
+from zope.generic.face.api import toDottedName
+from zope.generic.face.api import toInterface
 
 from zope.generic.configuration import IConfigurations
-from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration import IConfiguration
 from zope.generic.configuration.api import ConfigurationData
 
 from zope.generic.informationprovider import *
@@ -56,13 +56,13 @@ def getInformationProvidersFor(provider, default=None):
     """Evaluate all information providers of a certain information aspect."""
 
     for name, information in getUtilitiesFor(provider):
-        yield (toKeyface(name), information)
+        yield (toInterface(name), information)
 
 
 
 def getInformation(context, keyface):
     """Evaluate an information by a keyface (string or key keyface)."""
-    if IConfigurationType.providedBy(keyface):
+    if IConfiguration.providedBy(keyface):
         return keyface(IConfigurations(context))
 
     else:
@@ -83,7 +83,7 @@ def queryInformation(context, keyface, default=None):
 def provideInformation(context, keyface, information):
     """Set an information to a context using a keyface (string or key interface)."""
 
-    if IConfigurationType.providedBy(keyface):
+    if IConfiguration.providedBy(keyface):
         if type(information) is dict:
             information = ConfigurationData(keyface, information)
     
@@ -97,7 +97,7 @@ def provideInformation(context, keyface, information):
 def deleteInformation(context, keyface):
     """Delete an information of a context using a keyface (string or key interface)."""
 
-    if IConfigurationType.providedBy(keyface):
+    if IConfiguration.providedBy(keyface):
         del IConfigurations(context)[keyface]
     
     else:

@@ -1,0 +1,37 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/generic">
+
+    <meta:complexDirective
+        name="content"
+        schema=".metadirectives.ITypeDirective"
+        handler=".metaconfigure.TypeDirective"
+        >
+
+      <meta:subdirective
+          name="information"
+          schema="zope.generic.informationprovider.metadirectives.IInformationSubdirective"
+          />
+
+      <meta:subdirective
+          name="factory"
+          schema=".metadirectives.IFactorySubdirective"
+          />
+
+      <meta:subdirective
+          name="adapter"
+          schema=".metadirectives.IAdapterSubdirective"
+          />
+
+      <meta:subdirective
+          name="handler"
+          schema=".metadirectives.IHandlerSubdirective"
+          />
+
+    </meta:complexDirective>
+
+  </meta:directives>
+
+</configure>

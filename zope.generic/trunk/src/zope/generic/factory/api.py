@@ -22,7 +22,7 @@ from zope import component
 
 from zope.generic.informationprovider.api import getInformationProvider
 from zope.generic.informationprovider.api import queryInformation
-from zope.generic.keyface.api import toDottedName
+from zope.generic.face.api import toDottedName
 from zope.generic.operation import IOperationConfiguration
 
 from zope.generic.factory import *
