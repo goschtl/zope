@@ -50,6 +50,10 @@ Zope Changes
         IZopeDublinCore. This reduces server traffic a lot when large
         files are served.
 
+      - Added a more complete set of widgets for fields that use 
+        iterable sources.  These widgets now mirror the set provided
+        by vocabulary-based fields.
+
     Restructuring
 
       - Deprecated several ZCML directives as described in
@@ -156,7 +160,7 @@ Zope Changes
       Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dmitry
       Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
       (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute,
-      Shane Hathaway, Bjorn Tillenius
+      Shane Hathaway, Bjorn Tillenius, Sam Stainsby
 
   ------------------------------------------------------------------
 
