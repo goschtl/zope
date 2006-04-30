@@ -26,6 +26,15 @@ from zope.app.form.browser.widget import renderElement
 import zope.datetime
 import zc.i18n.date
 import zc.resourcelibrary
+import glob
+import os
+
+
+# initialize the language files
+LANGS = []
+for langFile in glob.glob(
+    os.path.join(os.path.dirname(__file__),'resources','lang') + '/calendar-??.js'):
+    LANGS.append(os.path.basename(langFile)[9:11])
 
 def normalizeDateTime(dt, request):
     if dt is not None:
@@ -51,6 +60,7 @@ template = """
 %(widget_html)s
 <input type="button" value="..." id="%(name)s_trigger">
 <script type="text/javascript">
+  %(langDef)s
   Calendar.setup(
     {
       inputField: "%(name)s", // ID of the input field
@@ -67,11 +77,22 @@ class DatetimeBase(object):
 
     def __call__(self):
         zc.resourcelibrary.need('zc.datetimewidget')
+        lang = self.request.locale.id.language
+        lang = lang in LANGS and lang or 'en'
+        if lang != 'en':
+            # en is always loadad via the resourcelibrary, so that all
+            # variables are defined in js
+            # TODO: do not hardcode this
+            langFile = '/@@/zc.datetimewidget/lang/calendar-%s.js' % lang
+            langDef = "dateTimeWidgetLoadLanguageFile('%s');" % langFile
+        else:
+            langDef = ''
         widget_html = super(DatetimeBase, self).__call__()
         return template % {"widget_html": widget_html,
                            "name": self.name,
                            "showsTime": self._showsTime,
-                           "datetime_format": self._format}
+                           "datetime_format": self._format,
+                           "langDef":langDef}
 
 class DatetimeWidget(DatetimeBase, textwidgets.DatetimeWidget):
     """Datetime entry widget."""

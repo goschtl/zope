@@ -8,7 +8,8 @@
   <resourceLibrary name="zc.datetimewidget" layer="default">
     <directory
         source="resources"
-        include="calendar-system.css calendar.js lang/calendar-en.js 
+        include="calendar-system.css calendar.js datetimewidget.js
+                 lang/calendar-en.js
                  calendar-setup.js"/>
   </resourceLibrary>
 
