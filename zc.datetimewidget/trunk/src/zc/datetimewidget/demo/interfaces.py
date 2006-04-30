@@ -3,6 +3,8 @@ from zope.schema import Date,Datetime
 
 class IDemoContent(Interface):
 
+    now = Datetime(title=u"Now",readonly=True)
+
     startDate = Date(title=u"Start Date")
     endDate = Date(title=u"End Date")
 
