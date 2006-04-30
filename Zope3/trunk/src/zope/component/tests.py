@@ -938,7 +938,7 @@ def clearZCML(test=None):
 
 def test_suite():
     checker = renormalizing.RENormalizing([
-        (re.compile('at 0x[0-9a-f]+'), 'at <SOME ADDRESS>'),
+        (re.compile('at 0x[0-9a-fA-F]+'), 'at <SOME ADDRESS>'),
         ])
 
     return unittest.TestSuite((
