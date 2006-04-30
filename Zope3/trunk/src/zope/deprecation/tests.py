@@ -16,13 +16,15 @@
 $Id$
 """
 
+from zope.testing import doctest
+from zope.testing import renormalizing
 import os
+import re
 import shutil
 import sys
 import tempfile
 import unittest
 import warnings
-from zope.testing import doctest
 import zope.deprecation
 
 # Used in doctests
@@ -97,10 +99,16 @@ def tearDown(test):
                                 '_DeprecationProxy__deprecated')['demo4']
 
 def test_suite():
+    checker = renormalizing.RENormalizing([
+        (re.compile('\\\\'), '/'),   # convert Windows paths to Unix paths
+        ])
+
     return unittest.TestSuite((
         doctest.DocFileSuite('README.txt',
                              setUp=setUp, tearDown=tearDown,
-                             optionflags=doctest.ELLIPSIS),
+                             optionflags=doctest.ELLIPSIS,
+                             checker=checker,
+                             ),
         ))
 
 if __name__ == "__main__":
