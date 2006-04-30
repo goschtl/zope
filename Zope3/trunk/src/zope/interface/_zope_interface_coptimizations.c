@@ -21,8 +21,9 @@
 
 static PyObject *str__dict__, *str__implemented__, *strextends;
 static PyObject *BuiltinImplementationSpecifications, *str__provides__;
-static PyObject *str__class__, *str__providedBy__, *strisOrExtends;
+static PyObject *str__class__, *str__providedBy__;
 static PyObject *empty, *fallback, *str_implied, *str_cls, *str_implements;
+static PyObject *str__conform__, *str_call_conform, *adapter_hooks;
 static PyTypeObject *Implements;
 
 static int imported_declarations = 0;
@@ -233,12 +234,22 @@ providedBy(PyObject *ignored, PyObject *ob)
   return result;
 }
 
+/* 
+   Get an attribute from an inst dict. Return a borrowed reference.
+  
+   This has a number of advantages:
+
+   - It avoids layers of Python api
+
+   - It doesn't waste time looking for descriptors
+
+   - It fails wo raising an exception, although that shouldn't really
+     matter.
+
+*/
 static PyObject *
 inst_attr(PyObject *self, PyObject *name)
 {
-  /* Get an attribute from an inst dict. Return a borrowed reference.
-   */
-
   PyObject **dictp, *v;
 
   dictp = _PyObject_GetDictPtr(self);
@@ -280,6 +291,16 @@ static char Spec_providedBy__doc__[] =
 ;
 
 static PyObject *
+Spec_call(PyObject *self, PyObject *args, PyObject *kw)
+{
+  PyObject *spec;
+
+  if (! PyArg_ParseTuple(args, "O", &spec))
+    return NULL;
+  return Spec_extends(self, spec);
+}
+
+static PyObject *
 Spec_providedBy(PyObject *self, PyObject *ob)
 {
   PyObject *decl, *item;
@@ -288,13 +309,13 @@ Spec_providedBy(PyObject *self, PyObject *ob)
   if (decl == NULL)
     return NULL;
 
-  if (PyObject_TypeCheck(ob, &SpecType))
+  if (PyObject_TypeCheck(decl, &SpecType))
     item = Spec_extends(decl, self);
   else
     /* decl is probably a security proxy.  We have to go the long way
        around. 
     */
-    item = PyObject_CallMethodObjArgs(decl, strisOrExtends, self, NULL);
+    item = PyObject_CallFunctionObjArgs(decl, self, NULL);
 
   Py_DECREF(decl);
   return item;
@@ -318,7 +339,7 @@ Spec_implementedBy(PyObject *self, PyObject *cls)
   if (PyObject_TypeCheck(decl, &SpecType))
     item = Spec_extends(decl, self);
   else
-    item = PyObject_CallMethodObjArgs(decl, strisOrExtends, self, NULL);
+    item = PyObject_CallFunctionObjArgs(decl, self, NULL);
 
   Py_DECREF(decl);
   return item;
@@ -354,7 +375,7 @@ static PyTypeObject SpecType = {
 	/* tp_as_sequence    */ 0,
 	/* tp_as_mapping     */ 0,
 	/* tp_hash           */ (hashfunc)0,
-	/* tp_call           */ (ternaryfunc)0,
+	/* tp_call           */ (ternaryfunc)Spec_call,
 	/* tp_str            */ (reprfunc)0,
         /* tp_getattro       */ (getattrofunc)0,
         /* tp_setattro       */ (setattrofunc)0,
@@ -488,6 +509,194 @@ static PyTypeObject CPBType = {
         /* tp_descr_get      */ (descrgetfunc)CPB_descr_get,
 };
 
+/* ==================================================================== */
+/* ========== Begin: __call__ and __adapt__ descriptors =============== */
+
+/*
+    def __adapt__(self, obj):
+        """Adapt an object to the reciever
+        """
+        if self.providedBy(obj):
+            return obj
+
+        for hook in adapter_hooks:
+            adapter = hook(self, obj)
+            if adapter is not None:
+                return adapter
+
+  
+*/
+static PyObject *
+__adapt__(PyObject *self, PyObject *obj)
+{
+  PyObject *decl, *args, *adapter;
+  int implements, i, l;
+
+  decl = providedBy(NULL, obj);
+  if (decl == NULL)
+    return NULL;
+
+  if (PyObject_TypeCheck(decl, &SpecType))
+    {
+      PyObject *implied;
+
+      implied = inst_attr(decl, str_implied);
+      if (implied == NULL)
+        {
+          Py_DECREF(decl);
+          return NULL;
+        }
+
+      implements = PyDict_GetItem(implied, self) != NULL;
+      Py_DECREF(decl);
+    }
+  else
+    {
+      /* decl is probably a security proxy.  We have to go the long way
+         around. 
+      */
+      PyObject *r;
+      r = PyObject_CallFunctionObjArgs(decl, self, NULL);
+      Py_DECREF(decl);
+      if (r == NULL)
+        return NULL;
+      implements = PyObject_IsTrue(r);
+      Py_DECREF(r);
+    }
+
+  if (implements)
+    {
+      Py_INCREF(obj);
+      return obj;
+    }
+
+  l = PyList_GET_SIZE(adapter_hooks);
+  args = PyTuple_New(2);
+  if (args == NULL)
+    return NULL;
+  Py_INCREF(self);
+  PyTuple_SET_ITEM(args, 0, self);
+  Py_INCREF(obj);
+  PyTuple_SET_ITEM(args, 1, obj);
+  for (i = 0; i < l; i++)
+    {
+      adapter = PyObject_CallObject(PyList_GET_ITEM(adapter_hooks, i), args);
+      if (adapter == NULL || adapter != Py_None)
+        {
+          Py_DECREF(args);
+          return adapter;
+        }
+      Py_DECREF(adapter);
+    }
+
+  Py_DECREF(args);
+
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static struct PyMethodDef ib_methods[] = {
+  {"__adapt__",	(PyCFunction)__adapt__, METH_O,
+   "Adapt an object to the reciever"},
+  {NULL,		NULL}		/* sentinel */
+};
+
+/* 
+        def __call__(self, obj, alternate=_marker):
+            conform = getattr(obj, '__conform__', None)
+            if conform is not None:
+                adapter = self._call_conform(conform)
+                if adapter is not None:
+                    return adapter
+
+            adapter = self.__adapt__(obj)
+
+            if adapter is not None:
+                return adapter
+            elif alternate is not _marker:
+                return alternate
+            else:
+                raise TypeError("Could not adapt", obj, self)
+*/
+static PyObject *
+ib_call(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+  PyObject *conform, *obj, *alternate=NULL, *adapter;
+  
+  static char *kwlist[] = {"obj", "alternate", NULL};
+
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|O", kwlist,
+                                   &obj, &alternate))
+    return NULL;
+
+  conform = PyObject_GetAttr(obj, str__conform__);
+  if (conform != NULL)
+    {
+      adapter = PyObject_CallMethodObjArgs(self, str_call_conform,
+                                           conform, NULL);
+      Py_DECREF(conform);
+      if (adapter == NULL || adapter != Py_None)
+        return adapter;
+      Py_DECREF(adapter);
+    }
+  else
+    PyErr_Clear();
+ 
+  adapter = __adapt__(self, obj);
+  if (adapter == NULL || adapter != Py_None)
+    return adapter;
+  Py_DECREF(adapter);
+
+  if (alternate != NULL)
+    {
+      Py_INCREF(alternate);
+      return alternate;
+    }
+
+  adapter = Py_BuildValue("sOO", "Could not adapt", obj, self);
+  if (adapter != NULL)
+    {
+      PyErr_SetObject(PyExc_TypeError, adapter);
+      Py_DECREF(adapter);
+    }
+  return NULL;
+}
+
+static PyTypeObject InterfaceBase = {
+	PyObject_HEAD_INIT(NULL)
+	/* ob_size           */ 0,
+	/* tp_name           */ "_zope_interface_coptimizations."
+                                "InterfaceBase",
+	/* tp_basicsize      */ 0,
+	/* tp_itemsize       */ 0,
+	/* tp_dealloc        */ (destructor)0,
+	/* tp_print          */ (printfunc)0,
+	/* tp_getattr        */ (getattrfunc)0,
+	/* tp_setattr        */ (setattrfunc)0,
+	/* tp_compare        */ (cmpfunc)0,
+	/* tp_repr           */ (reprfunc)0,
+	/* tp_as_number      */ 0,
+	/* tp_as_sequence    */ 0,
+	/* tp_as_mapping     */ 0,
+	/* tp_hash           */ (hashfunc)0,
+	/* tp_call           */ (ternaryfunc)ib_call,
+	/* tp_str            */ (reprfunc)0,
+        /* tp_getattro       */ (getattrofunc)0,
+        /* tp_setattro       */ (setattrofunc)0,
+        /* tp_as_buffer      */ 0,
+        /* tp_flags          */ Py_TPFLAGS_DEFAULT
+				| Py_TPFLAGS_BASETYPE ,
+	/* tp_doc */ "Interface base type providing __call__ and __adapt__",
+        /* tp_traverse       */ (traverseproc)0,
+        /* tp_clear          */ (inquiry)0,
+        /* tp_richcompare    */ (richcmpfunc)0,
+        /* tp_weaklistoffset */ (long)0,
+        /* tp_iter           */ (getiterfunc)0,
+        /* tp_iternext       */ (iternextfunc)0,
+        /* tp_methods        */ ib_methods,
+};
+
+/* ========== End: __call__ and __adapt__ descriptors =============== */
 
 static struct PyMethodDef m_methods[] = {
   {"implementedBy", (PyCFunction)implementedBy, METH_O,
@@ -517,13 +726,16 @@ init_zope_interface_coptimizations(void)
   DEFINE_STRING(__provides__);
   DEFINE_STRING(__class__);
   DEFINE_STRING(__providedBy__);
-  DEFINE_STRING(isOrExtends);
   DEFINE_STRING(extends);
   DEFINE_STRING(_implied);
   DEFINE_STRING(_implements);
   DEFINE_STRING(_cls);
+  DEFINE_STRING(__conform__);
+  DEFINE_STRING(_call_conform);
 #undef DEFINE_STRING
-  
+  adapter_hooks = PyList_New(0);
+  if (adapter_hooks == NULL)
+    return;
         
   /* Initialize types: */
   SpecType.tp_new = PyBaseObject_Type.tp_new;
@@ -535,6 +747,11 @@ init_zope_interface_coptimizations(void)
   CPBType.tp_new = PyBaseObject_Type.tp_new;
   if (PyType_Ready(&CPBType) < 0)
     return;
+
+  InterfaceBase.tp_new = PyBaseObject_Type.tp_new;
+  if (PyType_Ready(&InterfaceBase) < 0)
+    return;
+
   
   /* Create the module and add the functions */
   m = Py_InitModule3("_zope_interface_coptimizations", m_methods,
@@ -550,5 +767,9 @@ init_zope_interface_coptimizations(void)
                          (PyObject *)&OSDType) < 0)
     return;
   if (PyModule_AddObject(m, "ClassProvidesBase", (PyObject *)&CPBType) < 0)
+    return;
+  if (PyModule_AddObject(m, "InterfaceBase", (PyObject *)&InterfaceBase) < 0)
+    return;
+  if (PyModule_AddObject(m, "adapter_hooks", adapter_hooks) < 0)
     return;
 }

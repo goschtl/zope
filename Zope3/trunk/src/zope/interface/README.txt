@@ -670,7 +670,115 @@ And the list will be filled with the individual exceptions::
 
   >>> del errors[:]
 
+==========
+Adaptation
+==========
 
+Interfaces can be called to perform adaptation.
+
+The sematics based on those of the PEP 246 adapt function.
+
+If an object cannot be adapted, then a TypeError is raised::
+
+  >>> class I(zope.interface.Interface):
+  ...     pass
+
+  >>> I(0)
+  Traceback (most recent call last):
+  ...
+  TypeError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
+
+
+
+unless an alternate value is provided as a second positional argument::
+
+  >>> I(0, 'bob')
+  'bob'
+
+If an object already implements the interface, then it will be returned::
+
+  >>> class C(object):
+  ...     zope.interface.implements(I)
+
+  >>> obj = C()
+  >>> I(obj) is obj
+  True
+
+If an object implements __conform__, then it will be used::
+
+  >>> class C(object):
+  ...     zope.interface.implements(I)
+  ...     def __conform__(self, proto):
+  ...          return 0
+
+  >>> I(C())
+  0
+
+Adapter hooks (see __adapt__) will also be used, if present:
+
+  >>> from zope.interface.interface import adapter_hooks
+  >>> def adapt_0_to_42(iface, obj):
+  ...     if obj == 0:
+  ...         return 42
+
+  >>> adapter_hooks.append(adapt_0_to_42)
+  >>> I(0)
+  42
+
+  >>> adapter_hooks.remove(adapt_0_to_42)
+  >>> I(0)
+  Traceback (most recent call last):
+  ...
+  TypeError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
+
+__adapt__
+=========
+
+  >>> class I(zope.interface.Interface):
+  ...     pass
+
+Interfaces implement the PEP 246 __adapt__ method.
+
+This method is normally not called directly. It is called by the PEP
+246 adapt framework and by the interface __call__ operator.
+
+The adapt method is responsible for adapting an object to the
+reciever.
+
+The default version returns None::
+
+  >>> I.__adapt__(0)
+
+unless the object given provides the interface::
+
+  >>> class C(object):
+  ...     zope.interface.implements(I)
+
+  >>> obj = C()
+  >>> I.__adapt__(obj) is obj
+  True
+
+Adapter hooks can be provided (or removed) to provide custom
+adaptation. We'll install a silly hook that adapts 0 to 42.
+We install a hook by simply adding it to the adapter_hooks
+list::
+
+  >>> from zope.interface.interface import adapter_hooks
+  >>> def adapt_0_to_42(iface, obj):
+  ...     if obj == 0:
+  ...         return 42
+
+  >>> adapter_hooks.append(adapt_0_to_42)
+  >>> I.__adapt__(0)
+  42
+
+Hooks must either return an adapter, or None if no adapter can
+be found.
+
+Hooks can be uninstalled by removing them from the list::
+
+  >>> adapter_hooks.remove(adapt_0_to_42)
+  >>> I.__adapt__(0)
 
 
 .. [#create] The main reason we subclass `Interface` is to cause the

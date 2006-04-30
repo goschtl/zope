@@ -647,6 +647,7 @@ _Declaration_checker = InterfaceChecker(
     _implied=CheckerPublic,
     subscribe=CheckerPublic,
     unsubscribe=CheckerPublic,
+    __call__=CheckerPublic,
     )
 
 def f():

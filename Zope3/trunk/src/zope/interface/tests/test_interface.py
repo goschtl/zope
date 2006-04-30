@@ -327,7 +327,6 @@ a set of bases and the bases were changed:
 
 """
 
-
 def test_suite():
     from zope.testing import doctest
     suite = unittest.makeSuite(InterfaceTests)

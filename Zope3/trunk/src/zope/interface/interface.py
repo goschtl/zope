@@ -150,14 +150,55 @@ class SpecificationBasePy(object):
         """
         return interface in self._implied
 
+    __call__ = isOrExtends
+
 SpecificationBase = SpecificationBasePy
 
+_marker = object()
+class InterfaceBasePy(object):
+    """Base class that wants to be replaced with a C base :)
+    """
+
+    def __call__(self, obj, alternate=_marker):
+        """Adapt an object to the interface
+        """
+        conform = getattr(obj, '__conform__', None)
+        if conform is not None:
+            adapter = self._call_conform(conform)
+            if adapter is not None:
+                return adapter
+
+        adapter = self.__adapt__(obj)
+
+        if adapter is not None:
+            return adapter
+        elif alternate is not _marker:
+            return alternate
+        else:
+            raise TypeError("Could not adapt", obj, self)
+
+    def __adapt__(self, obj):
+        """Adapt an object to the reciever
+        """
+        if self.providedBy(obj):
+            return obj
+
+        for hook in adapter_hooks:
+            adapter = hook(self, obj)
+            if adapter is not None:
+                return adapter
+    
+InterfaceBase = InterfaceBasePy
+
+adapter_hooks = []
+
 try:
-    from _zope_interface_coptimizations import SpecificationBase
+    import _zope_interface_coptimizations
 except ImportError:
     pass
-
-
+else:
+    from _zope_interface_coptimizations import SpecificationBase
+    from _zope_interface_coptimizations import InterfaceBase, adapter_hooks
 
 class Specification(SpecificationBase):
     """Specifications
@@ -390,7 +431,7 @@ class Specification(SpecificationBase):
         else:
             return attr
 
-class InterfaceClass(Element, Specification):
+class InterfaceClass(Element, InterfaceBase, Specification):
     """Prototype (scarecrow) Interfaces Implementation."""
 
     # We can't say this yet because we don't have enough
@@ -589,168 +630,24 @@ class InterfaceClass(Element, Specification):
             self._v_repr = r
             return r
 
-    def __call__():
-        # Mind the closure. It serves to keep a unique marker around to
-        # allow for an optional argument to __call__ without resorting
-        # to a global marker.
-        #
-        # This provides some consistency with the PEP 246 adapt method.
+    def _call_conform(self, conform):
+        try:
+            return conform(self)
+        except TypeError:
+            # We got a TypeError. It might be an error raised by
+            # the __conform__ implementation, or *we* may have
+            # made the TypeError by calling an unbound method
+            # (object is a class).  In the later case, we behave
+            # as though there is no __conform__ method. We can
+            # detect this case by checking whether there is more
+            # than one traceback object in the traceback chain:
+            if sys.exc_info()[2].tb_next is not None:
+                # There is more than one entry in the chain, so
+                # reraise the error:
+                raise
+            # This clever trick is from Phillip Eby
 
-        marker = object()
-
-        def __call__(self, obj, alternate=marker):
-            """Adapt an object to the interface
-
-               The sematics based on those of the PEP 246 adapt function.
-
-               If an object cannot be adapted, then a TypeError is raised::
-
-                 >>> import zope.interface
-                 >>> class I(zope.interface.Interface):
-                 ...     pass
-
-                 >>> I(0)
-                 Traceback (most recent call last):
-                 ...
-                 TypeError: ('Could not adapt', 0, """ \
-                      """<InterfaceClass zope.interface.interface.I>)
-
-               unless an alternate value is provided as a second
-               positional argument::
-
-                 >>> I(0, 'bob')
-                 'bob'
-
-               If an object already implements the interface, then it will be
-               returned::
-
-                 >>> class C(object):
-                 ...     zope.interface.implements(I)
-
-                 >>> obj = C()
-                 >>> I(obj) is obj
-                 True
-
-               If an object implements __conform__, then it will be used::
-
-                 >>> class C(object):
-                 ...     zope.interface.implements(I)
-                 ...     def __conform__(self, proto):
-                 ...          return 0
-
-                 >>> I(C())
-                 0
-
-               Adapter hooks (see __adapt__) will also be used, if present:
-
-                 >>> from zope.interface.interface import adapter_hooks
-                 >>> def adapt_0_to_42(iface, obj):
-                 ...     if obj == 0:
-                 ...         return 42
-
-                 >>> adapter_hooks.append(adapt_0_to_42)
-                 >>> I(0)
-                 42
-
-                 >>> adapter_hooks.remove(adapt_0_to_42)
-                 >>> I(0)
-                 Traceback (most recent call last):
-                 ...
-                 TypeError: ('Could not adapt', 0, """ \
-                      """<InterfaceClass zope.interface.interface.I>)
-
-            """
-            conform = getattr(obj, '__conform__', None)
-            if conform is not None:
-                try:
-                    adapter = conform(self)
-                except TypeError:
-                    # We got a TypeError. It might be an error raised by
-                    # the __conform__ implementation, or *we* may have
-                    # made the TypeError by calling an unbound method
-                    # (object is a class).  In the later case, we behave
-                    # as though there is no __conform__ method. We can
-                    # detect this case by checking whether there is more
-                    # than one traceback object in the traceback chain:
-                    if sys.exc_info()[2].tb_next is not None:
-                        # There is more than one entry in the chain, so
-                        # reraise the error:
-                        raise
-                    # This clever trick is from Phillip Eby
-                else:
-                    if adapter is not None:
-                        return adapter
-
-            adapter = self.__adapt__(obj)
-
-            if adapter is not None:
-                return adapter
-            elif alternate is not marker:
-                return alternate
-            else:
-                raise TypeError("Could not adapt", obj, self)
-
-        return __call__
-
-    __call__ = __call__() # Make the closure the *real* __call__ method.
-
-    def __adapt__(self, obj):
-        """Adapt an object to the reciever
-
-           This method is normally not called directly. It is called by
-           the PEP 246 adapt framework and by the interface __call__
-           operator.
-
-           The adapt method is responsible for adapting an object to
-           the reciever.
-
-           The default version returns None::
-
-             >>> import zope.interface
-             >>> class I(zope.interface.Interface):
-             ...     pass
-
-             >>> I.__adapt__(0)
-
-           unless the object given provides the interface::
-
-             >>> class C(object):
-             ...     zope.interface.implements(I)
-
-             >>> obj = C()
-             >>> I.__adapt__(obj) is obj
-             True
-
-           Adapter hooks can be provided (or removed) to provide custom
-           adaptation. We'll install a silly hook that adapts 0 to 42.
-           We install a hook by simply adding it to the adapter_hooks
-           list::
-
-             >>> from zope.interface.interface import adapter_hooks
-             >>> def adapt_0_to_42(iface, obj):
-             ...     if obj == 0:
-             ...         return 42
-
-             >>> adapter_hooks.append(adapt_0_to_42)
-             >>> I.__adapt__(0)
-             42
-
-           Hooks must either return an adapter, or None if no adapter can
-           be found.
-
-           Hooks can be uninstalled by removing them from the list::
-
-             >>> adapter_hooks.remove(adapt_0_to_42)
-             >>> I.__adapt__(0)
-
-           """
-        if self.providedBy(obj):
-            return obj
-
-        for hook in adapter_hooks:
-            adapter = hook(self, obj)
-            if adapter is not None:
-                return adapter
+        return None
 
     def __reduce__(self):
         return self.__name__
@@ -802,8 +699,6 @@ class InterfaceClass(Element, Specification):
         #print '>', self, other, c > 0, c
         return c > 0
 
-
-adapter_hooks = []
 
 Interface = InterfaceClass("Interface", __module__ = 'zope.interface')
 
