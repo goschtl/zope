@@ -2,7 +2,6 @@
 A cx_Oracle based Database Adapter for Zope3
 ============================================
 
-:Project Page: http://www.zope.org/Members/dobe/cxoracleda
 :Source Repository: http://svn.zope.org/cxoracleda/trunk/
 
 Note that this package does not work with Zope 2. If you are looking
