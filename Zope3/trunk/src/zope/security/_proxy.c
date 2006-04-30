@@ -309,20 +309,15 @@ proxy_traverse(SecurityProxy *self, visitproc visit, void *arg)
   return 0;
 }
 
-
-/* Map rich comparison operators to their __xx__ namesakes */
-static PyObject *name_op[6];
-
 static PyObject *
 proxy_richcompare(SecurityProxy* self, PyObject* other, int op)
 {
   PyObject *result = NULL;
 
-  if (check(self, str_check, name_op[op]) >= 0) 
-    {
-      result = PyObject_RichCompare(self->proxy.proxy_object, other, op);
-      PROXY_RESULT(self, result);
-    } 
+  result = PyObject_RichCompare(self->proxy.proxy_object, other, op);
+  if (result == Py_True || result == Py_False)
+    return result;
+  PROXY_RESULT(self, result);
   return result;
 }
 
@@ -447,17 +442,13 @@ proxy_repr(SecurityProxy *self)
 static int
 proxy_compare(SecurityProxy *self, PyObject *other)
 {
-  if (check(self, str_check, str___cmp__) >= 0)
-    return PyObject_Compare(self->proxy.proxy_object, other);
-  return -1;
+  return PyObject_Compare(self->proxy.proxy_object, other);
 }
 
 static long
 proxy_hash(SecurityProxy *self)
 {
-  if (check(self, str_check, str___hash__) >= 0)
-    return PyObject_Hash(self->proxy.proxy_object);
-  return -1;
+  return PyObject_Hash(self->proxy.proxy_object);
 }
 
 static PyObject *
@@ -609,9 +600,7 @@ UNOP(abs, PyNumber_Absolute)
 static int
 proxy_nonzero(PyObject *self)
 {
-  if (check(((SecurityProxy*)self), str_check, str___nonzero__) >= 0)
-    return PyObject_IsTrue(((SecurityProxy*)self)->proxy.proxy_object);
-  return -1;
+  return PyObject_IsTrue(((SecurityProxy*)self)->proxy.proxy_object);
 }
 
 UNOP(invert, PyNumber_Invert)
@@ -917,13 +906,6 @@ init_proxy(void)
 
   if (Proxy_Import() < 0)
     return;
-
-  name_op[0] = PyString_FromString("__lt__");
-  name_op[1] = PyString_FromString("__le__");
-  name_op[2] = PyString_FromString("__eq__");
-  name_op[3] = PyString_FromString("__ne__");
-  name_op[4] = PyString_FromString("__gt__");
-  name_op[5] = PyString_FromString("__ge__");
 
 #define INIT_STRING(S) \
 if((str_##S = PyString_InternFromString(#S)) == NULL) return
