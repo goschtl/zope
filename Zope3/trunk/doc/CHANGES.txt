@@ -56,6 +56,11 @@ Zope Changes
 
     Restructuring
 
+      - Undeprecated automatic translation of message ids.  This is now
+        ok again, both for convenience and to support rendering values
+        which may sometimes be Messages and sometimes be non-translatable
+        strings.
+
       - Deprecated several ZCML directives as described in
         http://dev.zope.org/Zope3/ReducingTheAmountOfZCMLDirectives:
 
