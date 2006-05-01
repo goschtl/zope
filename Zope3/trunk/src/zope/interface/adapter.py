@@ -244,20 +244,153 @@ class BaseAdapterRegistry(object):
 
 
 _not_in_mapping = object()
-class AdapterLookup(object):
+class LookupBasePy(object):
 
-    def __init__(self, registry):
-        self._registry = registry
+    def __init__(self):
         self._cache = {}
         self._mcache = {}
         self._scache = {}
-        self._required = {}
-        self.init_extendors()
-
+        
     def changed(self, ignored=None):
         self._cache.clear()
         self._mcache.clear()
         self._scache.clear()
+        
+    def _getcache(self, provided, name):
+        cache = self._cache.get(provided)
+        if cache is None:
+            cache = {}
+            self._cache[provided] = cache
+        if name:
+            c = cache.get(name)
+            if c is None:
+                c = {}
+                cache[name] = c
+            cache = c
+        return cache
+
+    def lookup(self, required, provided, name=u'', default=None):
+        cache = self._getcache(provided, name)
+        if len(required) == 1:
+            result = cache.get(required[0], _not_in_mapping)
+        else:
+            result = cache.get(tuple(required), _not_in_mapping)
+
+        if result is _not_in_mapping:
+            result = self._uncached_lookup(required, provided, name)
+            if len(required) == 1:
+                cache[required[0]] = result
+            else:
+                cache[tuple(required)] = result
+
+        if result is None:
+            return default
+
+        return result
+    
+    def lookup1(self, required, provided, name=u'', default=None):
+        cache = self._getcache(provided, name)
+        result = cache.get(required, _not_in_mapping)
+        if result is _not_in_mapping:
+            return self.lookup((required, ), provided, name, default)
+
+        if result is None:
+            return default
+
+        return result
+
+    def queryAdapter(self, object, provided, name=u'', default=None):
+        return self.adapter_hook(provided, object, name, default)
+
+    def adapter_hook(self, provided, object, name=u'', default=None):
+        required = providedBy(object)
+        cache = self._getcache(provided, name)
+        factory = cache.get(required, _not_in_mapping)
+        if factory is _not_in_mapping:
+            factory = self.lookup((required, ), provided, name)
+
+        if factory is not None:
+            result = factory(object)
+            if result is not None:
+                return result
+
+        return default
+
+    def lookupAll(self, required, provided):
+        cache = self._mcache.get(provided)
+        if cache is None:
+            cache = {}
+            self._mcache[provided] = cache
+
+        required = tuple(required)
+        result = cache.get(required, _not_in_mapping)
+        if result is _not_in_mapping:
+            result = self._uncached_lookupAll(required, provided)
+            cache[required] = result
+
+        return result
+
+
+    def subscriptions(self, required, provided):
+        cache = self._scache.get(provided)
+        if cache is None:
+            cache = {}
+            self._scache[provided] = cache
+
+        required = tuple(required)
+        result = cache.get(required, _not_in_mapping)
+        if result is _not_in_mapping:
+            result = self._uncached_subscriptions(required, provided)
+            cache[required] = result
+
+        return result
+    
+LookupBase = LookupBasePy
+
+class VerifyingBasePy(LookupBasePy):
+
+    def changed(self, originally_changed):
+        LookupBasePy.changed(self, originally_changed)
+        self._verify_ro = self._registry.ro[1:]
+        self._verify_generations = [r._generation for r in self._verify_ro]
+
+    def _verify(self):
+        if ([r._generation for r in self._verify_ro]
+            != self._verify_generations):
+            self.changed(None)
+
+    def _getcache(self, provided, name):
+        self._verify()
+        return LookupBasePy._getcache(self, provided, name)
+    
+    def lookupAll(self, required, provided):
+        self._verify()
+        return LookupBasePy.lookupAll(self, required, provided)
+
+    def subscriptions(self, required, provided):
+        self._verify()
+        return LookupBasePy.subscriptions(self, required, provided)
+
+VerifyingBase = VerifyingBasePy
+
+
+try:
+    import _zope_interface_coptimizations
+except ImportError:
+    pass
+else:
+    from _zope_interface_coptimizations import LookupBase, VerifyingBase
+
+class AdapterLookupBase(object):
+
+    def __init__(self, registry):
+        self._registry = registry
+        self._required = {}
+        self.init_extendors()
+        super(AdapterLookupBase, self).__init__()
+
+    def changed(self, ignored=None):
+        super(AdapterLookupBase, self).changed(None)
         for r in self._required.keys():
             r = r()
             if r is not None:
@@ -310,19 +443,6 @@ class AdapterLookup(object):
             _extendors[i] = [e for e in _extendors.get(i, ())
                              if e != provided]
 
-        
-    def _getcache(self, provided, name):
-        cache = self._cache.get(provided)
-        if cache is None:
-            cache = {}
-            self._cache[provided] = cache
-        if name:
-            c = cache.get(name)
-            if c is None:
-                c = {}
-                cache[name] = c
-            cache = c
-        return cache
 
     def _subscribe(self, *required):
         _refs = self._required
@@ -332,39 +452,25 @@ class AdapterLookup(object):
                 r.subscribe(self)
                 _refs[ref] = 1
 
-    def lookup(self, required, provided, name=u'', default=None):
-        cache = self._getcache(provided, name)
-        if len(required) == 1:
-            result = cache.get(required[0], _not_in_mapping)
-        else:
-            result = cache.get(tuple(required), _not_in_mapping)
+    def _uncached_lookup(self, required, provided, name=u''):
+        result = None
+        order = len(required)
+        for registry in self._registry.ro:
+            byorder = registry._adapters
+            if order >= len(byorder):
+                continue
 
-        if result is _not_in_mapping:
-            result = None
-            order = len(required)
-            for registry in self._registry.ro:
-                byorder = registry._adapters
-                if order >= len(byorder):
-                    continue
+            extendors = registry._v_lookup._extendors.get(provided)
+            if not extendors:
+                continue
 
-                extendors = registry._v_lookup._extendors.get(provided)
-                if not extendors:
-                    continue
+            components = byorder[order]
+            result = _lookup(components, required, extendors, name, 0,
+                             order)
+            if result is not None:
+                break
 
-                components = byorder[order]
-                result = _lookup(components, required, extendors, name, 0,
-                                 order)
-                if result is not None:
-                    break
-
-            self._subscribe(*required)
-            if len(required) == 1:
-                cache[required[0]] = result
-            else:
-                cache[tuple(required)] = result
-
-        if result is None:
-            return default
+        self._subscribe(*required)
 
         return result
 
@@ -378,93 +484,46 @@ class AdapterLookup(object):
             return default
 
         return result        
-    
-    def lookup1(self, required, provided, name=u'', default=None):
-        cache = self._getcache(provided, name)
-        result = cache.get(required, _not_in_mapping)
-        if result is _not_in_mapping:
-            return self.lookup((required, ), provided, name, default)
 
-        if result is None:
-            return default
+    def _uncached_lookupAll(self, required, provided):
+        order = len(required)
+        result = {}
+        for registry in reversed(self._registry.ro):
+            byorder = registry._adapters
+            if order >= len(byorder):
+                continue
+            extendors = registry._v_lookup._extendors.get(provided)
+            if not extendors:
+                continue
+            components = byorder[order]
+            _lookupAll(components, required, extendors, result, 0, order)
 
-        return result
+        self._subscribe(*required)
 
-    
-    def queryAdapter(self, object, provided, name=u'', default=None):
-        return self.adapter_hook(provided, object, name, default)
-
-    def adapter_hook(self, provided, object, name=u'', default=None):
-        required = providedBy(object)
-        cache = self._getcache(provided, name)
-        factory = cache.get(required, _not_in_mapping)
-        if factory is _not_in_mapping:
-            factory = self.lookup((required, ), provided, name)
-
-        if factory is not None:
-            result = factory(object)
-            if result is not None:
-                return result
-
-        return default
-
-    def lookupAll(self, required, provided):
-        cache = self._mcache.get(provided)
-        if cache is None:
-            cache = {}
-            self._mcache[provided] = cache
-
-        required = tuple(required)
-        result = cache.get(required, _not_in_mapping)
-        if result is _not_in_mapping:
-            order = len(required)
-            result = {}
-            for registry in reversed(self._registry.ro):
-                byorder = registry._adapters
-                if order >= len(byorder):
-                    continue
-                extendors = registry._v_lookup._extendors.get(provided)
-                if not extendors:
-                    continue
-                components = byorder[order]
-                _lookupAll(components, required, extendors, result, 0, order)
-
-            self._subscribe(*required)
-            cache[required] = result
-
-        return result.iteritems()
+        return tuple(result.iteritems())
 
     def names(self, required, provided):
         return [c[0] for c in self.lookupAll(required, provided)]
 
-    def subscriptions(self, required, provided):
-        cache = self._scache.get(provided)
-        if cache is None:
-            cache = {}
-            self._scache[provided] = cache
+    def _uncached_subscriptions(self, required, provided):
+        order = len(required)
+        result = []
+        for registry in reversed(self._registry.ro):
+            byorder = registry._subscribers
+            if order >= len(byorder):
+                continue
 
-        required = tuple(required)
-        result = cache.get(required, _not_in_mapping)
-        if result is _not_in_mapping:
-            order = len(required)
-            result = []
-            for registry in reversed(self._registry.ro):
-                byorder = registry._subscribers
-                if order >= len(byorder):
+            if provided is None:
+                extendors = (provided, )
+            else:
+                extendors = registry._v_lookup._extendors.get(provided)
+                if extendors is None:
                     continue
 
-                if provided is None:
-                    extendors = (provided, )
-                else:
-                    extendors = registry._v_lookup._extendors.get(provided)
-                    if extendors is None:
-                        continue
+            _subscriptions(byorder[order], required, extendors, u'',
+                           result, 0, order)
 
-                _subscriptions(byorder[order], required, extendors, u'',
-                               result, 0, order)
-
-            self._subscribe(*required)
-            cache[required] = result
+        self._subscribe(*required)
 
         return result
 
@@ -481,6 +540,9 @@ class AdapterLookup(object):
                 if subscriber is not None:
                     result.append(subscriber)
         return result
+
+class AdapterLookup(AdapterLookupBase, LookupBase):
+    pass
 
 class AdapterRegistry(BaseAdapterRegistry):
 
@@ -518,42 +580,8 @@ class AdapterRegistry(BaseAdapterRegistry):
             sub.changed(originally_changed)
 
 
-class VerifyingAdapterLookup(AdapterLookup):
-
-    def __init__(self, registry):
-        super(VerifyingAdapterLookup, self).__init__(registry)
-
-    def changed(self, originally_changed):
-        super(VerifyingAdapterLookup, self).changed(originally_changed)
-        self._verify_ro = self._registry.ro[1:]
-        self._verify_generations = [r._generation for r in self._verify_ro]
-
-    def _verify(self):
-        if ([r._generation for r in self._verify_ro]
-            != self._verify_generations):
-            self.changed(None)
-
-    def _getcache(self, provided, name):
-        self._verify()
-
-        # The non-use of super here is intentional.  A C implementation
-        # will call AdapterLookup's C implementation directly.
-        return AdapterLookup._getcache(self, provided, name)
-    
-    def lookupAll(self, required, provided):
-        self._verify()
-
-        # The non-use of super here is intentional.  A C implementation
-        # will call AdapterLookup's C implementation directly.
-        return AdapterLookup.lookupAll(self, required, provided)
-
-    def subscriptions(self, required, provided):
-        self._verify()
-
-        # The non-use of super here is intentional.  A C implementation
-        # will call AdapterLookup's C implementation directly.
-        return AdapterLookup.subscriptions(self, required, provided)
-
+class VerifyingAdapterLookup(AdapterLookupBase, VerifyingBase):
+    pass
 
 class VerifyingAdapterRegistry(BaseAdapterRegistry):
 
