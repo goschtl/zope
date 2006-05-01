@@ -25,6 +25,8 @@ from Products.PageTemplates.Expressions import \
      getEngine, installHandlers,\
      SecureModuleImporter
 
+from ProviderExpression import ProviderExpr
+
 from ReuseUtils import rebindFunction
 
 ModuleImporter = SecureModuleImporter
@@ -52,7 +54,7 @@ def trustedTraverse(ob, path, ignored,):
 
   if isinstance(path, str): path = path.split('/')
   else: path=list(path)
-  
+
   REQUEST = get(ob, 'REQUEST', None)
   if REQUEST is None:
     REQUEST=FakeRequest()
@@ -91,7 +93,7 @@ def trustedTraverse(ob, path, ignored,):
           raise KeyError(name)
         object = o
         continue
-        
+
     t=get(object, '__bobo_traverse__', M)
     if t is not M: o=t(REQUEST, name)
     else:
@@ -123,18 +125,21 @@ class StringExpr(StringExpr):
   __init__ = rebindFunction(StringExpr.__init__.im_func,
                             PathExpr=PathExpr,
                             )
-  
+
+
 installHandlers = rebindFunction(installHandlers,
                                  PathExpr=PathExpr,
                                  StringExpr=StringExpr,
                                  PythonExpr=PythonExpr,
                                  )
 
+def installHandlers2(engine):
+    installHandlers(engine)
+    engine.registerType('provider', ProviderExpr)
+
 _engine=None
 getEngine = rebindFunction(getEngine,
                            _engine=_engine,
-                           installHandlers=installHandlers
+                           installHandlers=installHandlers2
                            )
 
-
-  

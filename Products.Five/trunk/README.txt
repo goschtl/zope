@@ -36,6 +36,8 @@ Five already makes the following Zope 3 technologies available in Zope
 
 * Zope 2 security declarations in ZCML instead of in Python code.
 
+* Content Providers and Viewlets
+
 Together with another product, CMFonFive, Five can integrate into CMF.
 
 For more information, see ``doc/features.txt``.
