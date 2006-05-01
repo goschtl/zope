@@ -80,7 +80,7 @@ class DatetimeBase(object):
         lang = self.request.locale.id.language
         lang = lang in LANGS and lang or 'en'
         if lang != 'en':
-            # en is always loadad via the resourcelibrary, so that all
+            # en is always loaded via the resourcelibrary, so that all
             # variables are defined in js
             # TODO: do not hardcode this
             langFile = '/@@/zc.datetimewidget/lang/calendar-%s.js' % lang
@@ -94,6 +94,7 @@ class DatetimeBase(object):
                            "datetime_format": self._format,
                            "langDef":langDef}
 
+
 class DatetimeWidget(DatetimeBase, textwidgets.DatetimeWidget):
     """Datetime entry widget."""
 
@@ -101,16 +102,13 @@ class DatetimeWidget(DatetimeBase, textwidgets.DatetimeWidget):
     _showsTime = "true"
 
     def _toFormValue(self, value):
-        dt = localizeDateTime(
-            super(DatetimeWidget, self)._toFormValue(value),
-            self.request)
-        return dt.strftime(self._format)
+        if not isinstance(value, datetime.date):
+            return super(DatetimeWidget, self)._toFormValue(value)
+        value = localizeDateTime(value, self.request)
+        return value.strftime(self._format)
         
-    
-
     def _toFieldValue(self, input):
         res = super(DatetimeWidget, self)._toFieldValue(input)
-        #import pdb;pdb.set_trace()
         if res is not self.context.missing_value:
             res = normalizeDateTime(res, self.request)
         return res
@@ -120,13 +118,15 @@ class DateWidget(DatetimeBase, textwidgets.DateWidget):
 
     displayWidth = 10
 
-    def _toFormValue(self, value):
-        return localizeDateTime(
-            super(DateWidget, self)._toFormValue(value), self.request)
-
     _format = '%Y-%m-%d'
     _showsTime = "false"
 
+    def _toFormValue(self, value):
+        if not isinstance(value, datetime.date):
+            return super(DateWidget, self)._toFormValue(value)
+        value = localizeDateTime(value, self.request)
+        return value.strftime(self._format)
+        
 class DatetimeDisplayBase(object):
 
     def __call__(self):
