@@ -19,7 +19,7 @@
         interface="zope.generic.configuration.IAttributeConfigurable"
         />
     <implements
-        interface="zope.annotation.IAttributeAnnotable"
+        interface="zope.annotation.IAttributeAnnotatable"
         />
   </class>
 
@@ -28,7 +28,7 @@
         interface="zope.generic.configuration.IAttributeConfigurable"
         />
     <implements
-        interface="zope.annotation.IAttributeAnnotable"
+        interface="zope.annotation.IAttributeAnnotatable"
         />
   </class>
 
