@@ -7,6 +7,7 @@ zc.datetimewidget
 
     >>> from zope.testbrowser.testing import Browser
     >>> browser = Browser()
+    >>> browser.handleErrors = False
     >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
     >>> browser.open('http://localhost/@@contents.html')
 
