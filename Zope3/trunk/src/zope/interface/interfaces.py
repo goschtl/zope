@@ -660,6 +660,18 @@ class IAdapterRegistry(Interface):
         provided interface, and a name.
         """
 
+    def registered(required, provided, name=u''):
+        """Return the component registered for the given interfaces and name
+
+        Unlike the lookup method, this methods won't retrieve
+        components registered for more specific required interfaces or
+        less specific provided interfaces.
+
+        If no component was registered exactly for the given
+        interfaces and name, then None is returned.
+        
+        """
+  
     def lookup(required, provided, name='', default=None):
         """Lookup a value
 
