@@ -94,18 +94,18 @@ class DatetimeBase(object):
                            "datetime_format": self._format,
                            "langDef":langDef}
 
+    def _toFormValue(self, value):
+        if not isinstance(value, datetime.date):
+            return super(DatetimeBase, self)._toFormValue(value)
+        value = localizeDateTime(value, self.request)
+        return value.strftime(self._format)
+
 
 class DatetimeWidget(DatetimeBase, textwidgets.DatetimeWidget):
     """Datetime entry widget."""
 
     _format = '%Y-%m-%d %H:%M:%S'
     _showsTime = "true"
-
-    def _toFormValue(self, value):
-        if not isinstance(value, datetime.date):
-            return super(DatetimeWidget, self)._toFormValue(value)
-        value = localizeDateTime(value, self.request)
-        return value.strftime(self._format)
         
     def _toFieldValue(self, input):
         res = super(DatetimeWidget, self)._toFieldValue(input)
@@ -121,11 +121,6 @@ class DateWidget(DatetimeBase, textwidgets.DateWidget):
     _format = '%Y-%m-%d'
     _showsTime = "false"
 
-    def _toFormValue(self, value):
-        if not isinstance(value, datetime.date):
-            return super(DateWidget, self)._toFormValue(value)
-        value = localizeDateTime(value, self.request)
-        return value.strftime(self._format)
         
 class DatetimeDisplayBase(object):
 

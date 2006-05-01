@@ -27,13 +27,24 @@ returns Europe/Vienna as timezone.
     >>> field = IDemoContent['startDatetime']
     >>> widget = datetimewidget.DatetimeWidget(field,request)
     >>> dt = datetime(2006,5,1,12,tzinfo=pytz.utc)
+
+By the way, if the value to be displayed in the form is not a datetime
+object the superlclass's implementation is used.
+
+    >>> widget._toFormValue(None)
+    u''
+
+    >>> widget._toFormValue(u'this is not a date')
+    u'this is not a date'
+
+Now let us convert a real datetime.
+
     >>> formValue = widget._toFormValue(dt)
     >>> formValue
     '2006-05-01 14:00:00'
     >>> parsedValue = widget._toFieldValue(formValue)
     >>> parsedValue
     datetime.datetime(2006, 5, 1, 12, 0, tzinfo=<UTC>)
-
 
 
 
