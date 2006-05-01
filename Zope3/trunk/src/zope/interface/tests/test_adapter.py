@@ -78,15 +78,15 @@ def test_multi_adapter_lookupAll_get_best_matches():
     >>> registry.register([None, IB0], IR0, '', 'A0')
     >>> registry.register([None, IB2], IR0, '', 'A2')
 
-    >>> registry.lookupAll((IF1, IB1), IR0).next()[1]
+    >>> tuple(registry.lookupAll((IF1, IB1), IR0))[0][1]
     'A1'
-    >>> registry.lookupAll((IF1, IB2), IR0).next()[1]
+    >>> tuple(registry.lookupAll((IF1, IB2), IR0))[0][1]
     'A2'
-    >>> registry.lookupAll((IF1, IB0), IR0).next()[1]
+    >>> tuple(registry.lookupAll((IF1, IB0), IR0))[0][1]
     'A0'
-    >>> registry.lookupAll((IF1, IB3), IR0).next()[1]
+    >>> tuple(registry.lookupAll((IF1, IB3), IR0))[0][1]
     'A2'
-    >>> registry.lookupAll((IF1, IB4), IR0).next()[1]
+    >>> tuple(registry.lookupAll((IF1, IB4), IR0))[0][1]
     'A1'
     """
 
