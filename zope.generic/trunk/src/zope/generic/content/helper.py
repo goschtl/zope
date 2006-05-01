@@ -18,42 +18,17 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.generic.face.api import getKeyface
+from zope.generic.face.api import getNextInformationProvider
 from zope.generic.informationprovider.api import queryInformation
-from zope.generic.informationprovider.api import getInformationProvider
 
-from zope.generic.content import ITypeInformation
-from zope.generic.content import ITyped
-from zope.generic.content import ITypeType
+from zope.generic.face import IUndefinedContext
 
 
 
-def getType(object):
-    """Evaluate relevant type marker keyface of an object."""
 
-    if ITypeType.providedBy(object):
-        keyface = object
-
-    elif ITyped.providedBy(object):
-        keyface = object.keyface
-
-    else:
-        keyface = ITyped(object).keyface
-
-    return keyface
-
-
-
-def queryType(object, default=None):
-    try:
-        return getType(object)
-
-    except:
-        return default
-
-
-
-def getTypeInformation(object):
-    return getInformationProvider(getType(object), ITypeInformation)
+def getTypeInformation(object, conface=IUndefinedContext):
+    return getNextInformationProvider(getKeyface(object), conface)
 
 
 
@@ -81,7 +56,7 @@ def queryTypeConfiguration(object, configuration, default=None):
 
 def acquireTypeConfiguration(object, configuration, default=None):
     try:
-        keyface = getType(object, default)
+        keyface = getKeyface(object, default)
 
     except:
         return default

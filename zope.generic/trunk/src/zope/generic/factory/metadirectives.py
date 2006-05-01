@@ -63,9 +63,6 @@ class IBaseFactoryDirective(Interface):
 class IFactoryDirective(IBaseInformationProviderDirective, IBaseFactoryDirective, IBaseOperationDirective):
     """Register a public factory.
 
-    The factory will be registered as information provider utility providing
-    IFactoryInformation.
+    The factory will be registered as information provider utility within
+    the IFactory context.
     """
-
-
-

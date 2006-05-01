@@ -19,10 +19,11 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.annotation import IAnnotations
-from zope.component import getUtilitiesFor
-from zope.component import getUtility
+from zope.generic.face.api import getConface
 from zope.generic.face.api import getKeyface
-from zope.generic.face.api import queryKeyface
+from zope.generic.face.api import getNextInformationProvider
+from zope.generic.face.api import getNextInformationProvidersFor
+from zope.generic.face.api import queryNextInformationProvider
 from zope.generic.face.api import toDottedName
 from zope.generic.face.api import toInterface
 
@@ -31,74 +32,48 @@ from zope.generic.configuration import IConfiguration
 from zope.generic.configuration.api import ConfigurationData
 
 from zope.generic.informationprovider import *
-from zope.generic.informationprovider.base import InformationProvider
 
 
 
-def getInformationProvider(object, provider=IInformationProviderInformation):
-    """Evaluate an information provider for an object."""
-
-    return getUtility(provider, toDottedName(getKeyface(object)))
-
-
-
-def queryInformationProvider(object, provider=IInformationProviderInformation, default=None):
-    """Evalute an information provider or return default."""
-    try:
-        return getInformationProvider(object, provider)
-
-    except:
-        return default
-
-
-
-def getInformationProvidersFor(provider, default=None):
-    """Evaluate all information providers of a certain information aspect."""
-
-    for name, information in getUtilitiesFor(provider):
-        yield (toInterface(name), information)
-
-
-
-def getInformation(context, keyface):
+def getInformation(context, informationkey):
     """Evaluate an information by a keyface (string or key keyface)."""
-    if IConfiguration.providedBy(keyface):
-        return keyface(IConfigurations(context))
+    if IConfiguration.providedBy(informationkey):
+        return informationkey(IConfigurations(context))
 
     else:
-        return IAnnotations(context)[keyface]
+        return IAnnotations(context)[informationkey]
 
 
 
-def queryInformation(context, keyface, default=None):
+def queryInformation(context, informationkey, default=None):
     """Evaluate an information by a keyface (string or key interface)."""
     try:
-        return getInformation(context, keyface)
+        return getInformation(context, informationkey)
 
     except:
         return default
 
 
 
-def provideInformation(context, keyface, information):
+def provideInformation(context, informationkey, information):
     """Set an information to a context using a keyface (string or key interface)."""
 
-    if IConfiguration.providedBy(keyface):
+    if IConfiguration.providedBy(informationkey):
         if type(information) is dict:
-            information = ConfigurationData(keyface, information)
+            information = ConfigurationData(informationkey, information)
     
-        IConfigurations(context)[keyface] = information
+        IConfigurations(context)[informationkey] = information
 
     else:
-        IAnnotations(context)[keyface] = information
+        IAnnotations(context)[informationkey] = information
 
 
 
-def deleteInformation(context, keyface):
+def deleteInformation(context, informationkey):
     """Delete an information of a context using a keyface (string or key interface)."""
 
-    if IConfiguration.providedBy(keyface):
-        del IConfigurations(context)[keyface]
+    if IConfiguration.providedBy(informationkey):
+        del IConfigurations(context)[informationkey]
     
     else:
-        del IAnnotations(context)[keyface]
+        del IAnnotations(context)[informationkey]

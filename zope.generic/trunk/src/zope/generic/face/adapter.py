@@ -24,8 +24,8 @@ from zope.location import Location
 
 from zope.generic.face import IAttributeFaced
 from zope.generic.face import IFace
-from zope.generic.face import INoConface
-from zope.generic.face import INoKeyface
+from zope.generic.face import IUndefinedContext
+from zope.generic.face import IUndefinedKeyface
 
 
 
@@ -53,9 +53,9 @@ class FaceForAttributeFaced(Location):
 
         >>> faced = NoAttributeFaced()
         >>> face = FaceForAttributeFaced(faced)
-        >>> face.keyface is INoKeyface
+        >>> face.keyface is IUndefinedKeyface
         True
-        >>> face.conface is INoConface
+        >>> face.conface is IUndefinedContext
         True
     """
 
@@ -67,8 +67,8 @@ class FaceForAttributeFaced(Location):
 
     @property
     def keyface(self):
-        return getattr(self.context, '__keyface__', INoKeyface)
+        return getattr(self.context, '__keyface__', IUndefinedKeyface)
 
     @property
     def conface(self):
-        return getattr(self.context, '__conface__', INoConface)
+        return getattr(self.context, '__conface__', IUndefinedContext)

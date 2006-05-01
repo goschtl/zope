@@ -37,43 +37,53 @@ You can use the information provider directive to register an information
 provider as utiliy with an interface extending IInformationProvider and a
 dotted name of an corresponding key interface as utility name:
 
-    >>> from zope.generic.informationprovider.api import IInformationProvider
-
-    >>> class ISpecialInformation(IInformationProvider):
+    >>> class ISpecialContext(interface.Interface):
     ...    pass
+
+    >>> registerDirective('''
+    ... <generic:face
+    ...     conface="example.ISpecialContext"
+    ...     />
+    ... ''') 
 
     >>> from zope.interface import Interface
     >>> class IFooMarker(Interface):
     ...    pass
 
     >>> registerDirective('''
+    ... <generic:face
+    ...     keyface="example.IFooMarker"
+    ...     />
+    ... ''') 
+
+    >>> registerDirective('''
     ... <generic:informationProvider
     ...     keyface="example.IFooMarker"
-    ...     registry="example.ISpecialInformation"
+    ...     conface="example.ISpecialContext"
     ...     label='Foo Specials' hint='Bla bla foo.'
     ...     />
     ... ''')
 
 After a registration the information provider can be looked up.
 All information provider with the same interface can be gotten by the 
-getInformationProvidersFor function:
+getNextInformationProvidersFor function:
 
     >>> from zope.component.eventtesting import getEvents, clearEvents
     >>> len(getEvents())
-    2
+    6
     >>> clearEvents()
 
-    >>> listing = list(api.getInformationProvidersFor(ISpecialInformation))
+    >>> listing = list(api.getNextInformationProvidersFor(ISpecialContext))
     >>> len(listing) is 1
     True
     >>> [(key.__name__, value) for key, value in listing]
-    [('IFooMarker', <zope.generic.informationprovider.base.InformationProvider ...>)]
+    [('IFooMarker', <zope.generic.face.base.GlobalInformationProvider ...>)]
 
 A single information provider can be retrieved by the get- or 
-queryInformationProvider function:
+queryNextInformationProvider function:
 
-    >>> info = api.getInformationProvider(IFooMarker, ISpecialInformation)
-    >>> info = api.queryInformationProvider(IFooMarker, ISpecialInformation)
+    >>> info = api.getNextInformationProvider(IFooMarker, ISpecialContext)
+    >>> info = api.queryNextInformationProvider(IFooMarker, ISpecialContext)
 
     >>> listing[0][1] == info
     True
@@ -82,7 +92,7 @@ queryInformationProvider function:
 
     >>> info.keyface == IFooMarker
     True
-    >>> ISpecialInformation.providedBy(info)
+    >>> ISpecialContext.providedBy(info)
     True
     >>> info.label = u'Foo Specials'
     >>> info.hint = u'Bla bla foo.'
@@ -94,11 +104,11 @@ value is returned. If no default is defined None is returned:
     ...    pass
 
     >>> default = object()
-    >>> info = api.queryInformationProvider(IBarMarker, ISpecialInformation, default)
+    >>> info = api.queryNextInformationProvider(IBarMarker, ISpecialContext, default)
     >>> info is default
     True
 
-    >>> info = api.queryInformationProvider(IBarMarker, ISpecialInformation)
+    >>> info = api.queryNextInformationProvider(IBarMarker, ISpecialContext)
     >>> info is None
     True
 
@@ -156,7 +166,7 @@ information provider:
     >>> registerDirective('''
     ... <generic:informationProvider
     ...     keyface="example.IFooMarker"
-    ...     registry="example.ISpecialInformation"
+    ...     conface="example.ISpecialContext"
     ...     label='Foo Specials' hint='Bla bla foo.'
     ...     >
     ...        <information
@@ -171,14 +181,14 @@ information provider:
     ... ''')
 
     >>> len(getEvents())
-    3
+    2
     >>> clearEvents()
 
-    >>> info = api.queryInformationProvider(IFooMarker, ISpecialInformation)
+    >>> info = api.queryNextInformationProvider(IFooMarker, ISpecialContext)
     >>> api.queryInformation(info, 'example.my_annotation') is my_annotation
     True
 
-    >>> info = api.queryInformationProvider(IFooMarker, ISpecialInformation)
+    >>> info = api.queryNextInformationProvider(IFooMarker, ISpecialContext)
     >>> api.queryInformation(info, IMyConfiguration) is my_configuration
     True
 

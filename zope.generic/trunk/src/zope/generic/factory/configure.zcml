@@ -11,11 +11,5 @@
       doc_path="README.txt"
       parent="zope.generic"
       />
- 
-  <generic:informationProvider
-      keyface="zope.generic.informationprovider.IInformationProviderInformation"
-      label="Factory Information"
-      registry=".IFactoryInformation"
-      />
 
 </configure>

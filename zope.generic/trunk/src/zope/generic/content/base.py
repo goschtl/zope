@@ -19,8 +19,8 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from persistent import Persistent
-
 from zope.interface import implements
+from zope.schema.fieldproperty import FieldProperty
 
 from zope.app.container import contained
 from zope.app.container import btree
@@ -29,22 +29,24 @@ from zope.app import folder
 
 from zope.generic.directlyprovides.api import provides
 from zope.generic.directlyprovides.api import UpdateProvides
+from zope.generic.face.api import Face
 
-from zope.generic.content import IGenericTyped
+from zope.generic.content import IDirectlyTypedContent
 
 
 
-class Object(object):
+class Object(Face, Persistent):
     """Default implementation for simple objects."""
 
-    implements(IGenericTyped)
+    implements(IDirectlyTypedContent)
 
     def __init__(self, *pos, **kws):
         super(Object, self).__init__()
 
     provides('__keyface__')
 
-    __keyface__ = UpdateProvides(IGenericTyped['__keyface__'])
+    __keyface__ = UpdateProvides(IDirectlyTypedContent['__keyface__'])
+    __conface__ = FieldProperty(IDirectlyTypedContent['__conface__'])
     
     @property
     def keyface(self):
@@ -52,34 +54,36 @@ class Object(object):
 
 
 
-class Contained(contained.Contained, Persistent):
+class Contained(Face, contained.Contained, Persistent):
     """Default implementation local, persistend and contained objects."""
 
-    implements(IGenericTyped)
+    implements(IDirectlyTypedContent)
 
     def __init__(self, *pos, **kws):
         super(Contained, self).__init__()
 
     provides('__keyface__')
 
-    __keyface__ = UpdateProvides(IGenericTyped['__keyface__'])
+    __keyface__ = UpdateProvides(IDirectlyTypedContent['__keyface__'])
+    __conface__ = FieldProperty(IDirectlyTypedContent['__conface__'])
 
     @property
     def keyface(self):
         return self.__keyface__
 
 
-class Container(btree.BTreeContainer):
+class Container(Face, btree.BTreeContainer):
     """Default implementation local, persistend and containerish objects."""
 
-    implements(IGenericTyped)
+    implements(IDirectlyTypedContent)
 
     def __init__(self, *pos, **kws):
         super(Container, self).__init__()
 
     provides('__keyface__')
 
-    __keyface__ = UpdateProvides(IGenericTyped['__keyface__'])
+    __keyface__ = UpdateProvides(IDirectlyTypedContent['__keyface__'])
+    __conface__ = FieldProperty(IDirectlyTypedContent['__conface__'])
 
     @property
     def keyface(self):
@@ -87,17 +91,18 @@ class Container(btree.BTreeContainer):
 
 
 
-class OrderedContainer(ordered.OrderedContainer):
+class OrderedContainer(Face, ordered.OrderedContainer):
     """Default implementation local, persistend and ordered-containerish objects."""
 
-    implements(IGenericTyped)
+    implements(IDirectlyTypedContent)
 
     def __init__(self, *pos, **kws):
         super(OrderedContainer, self).__init__()
 
     provides('__keyface__')
 
-    __keyface__ = UpdateProvides(IGenericTyped['__keyface__'])
+    __keyface__ = UpdateProvides(IDirectlyTypedContent['__keyface__'])
+    __conface__ = FieldProperty(IDirectlyTypedContent['__conface__'])
 
     @property
     def keyface(self):
@@ -105,18 +110,15 @@ class OrderedContainer(ordered.OrderedContainer):
 
 
 
-class Folder(folder.Folder):
+class Folder(Face, folder.Folder):
     """Default implementation local, persistend and containerish possible sites."""
 
-    implements(IGenericTyped)
+    implements(IDirectlyTypedContent)
 
     def __init__(self, *pos, **kws):
         super(Folder, self).__init__()
 
     provides('__keyface__')
 
-    __keyface__ = UpdateProvides(IGenericTyped['__keyface__'])
-
-    @property
-    def keyface(self):
-        return self.__keyface__
+    __keyface__ = UpdateProvides(IDirectlyTypedContent['__keyface__'])
+    __conface__ = FieldProperty(IDirectlyTypedContent['__conface__'])

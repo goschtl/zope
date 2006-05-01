@@ -117,23 +117,23 @@ class ConfigurationData(Persistent):
 
     implements(IAttributeFaced, IConfigurationData)
 
-    def __init__(self, schema, data):
+    def __init__(self, __keyface__, data):
         # preconditions
         missedArguments = []
-        for name in schema:
+        for name in __keyface__:
             if name not in data:
-                field = schema[name]
+                field = __keyface__[name]
                 if field.required is True:
                     missedArguments.append(name)
         
         if missedArguments:
-            raise TypeError("__init__ requires '%s' of '%s'." % (', '.join(missedArguments), schema.__name__))
+            raise TypeError("__init__ requires '%s' of '%s'." % (', '.join(missedArguments), __keyface__.__name__))
     
         # essentials
         self.__dict__['_ConfigurationData__data'] = PersistentDict(data)
-        self.__dict__['__keyface__'] = schema
+        self.__dict__['__keyface__'] = __keyface__
         self.__dict__['__conface__'] = IConfiguration
-        directlyProvides(self, schema)
+        directlyProvides(self, __keyface__)
 
     def __conform__(self, interface):
         if interface is IFace:
@@ -144,10 +144,10 @@ class ConfigurationData(Persistent):
         if name in ['__keyface__', '__conface__']:
             return self.__dict__[name]
 
-        schema = self.__dict__['__keyface__']
+        keyface = self.__dict__['__keyface__']
         data = self.__dict__['_ConfigurationData__data']
         try:
-            field = schema[name]
+            field = keyface[name]
         except KeyError:
             raise AttributeError(name)
         else:
@@ -170,11 +170,11 @@ class ConfigurationData(Persistent):
     def __setattr__(self, name, value):
 
         if not(name == '__provides__' or name in IPersistent):
-            schema = self.__dict__['__keyface__']
+            keyface = self.__dict__['__keyface__']
             data = self.__dict__['_ConfigurationData__data']
 
             try:
-                field = schema[name]
+                field = keyface[name]
             except KeyError:
                 raise AttributeError(name)
             else:

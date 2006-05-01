@@ -25,7 +25,7 @@ from zope.configuration.fields import MessageID
 from zope.interface import Interface
 from zope.schema import DottedName
 
-from zope.generic.informationprovider import IInformationProvider
+from zope.generic.face import IConfaceType
 from zope.generic.face.metadirectives import IKeyfaceDirective
 
 
@@ -48,15 +48,13 @@ class IBaseInformationProviderDirective(IKeyfaceDirective):
 
 
 class IInformationProviderDirective(IBaseInformationProviderDirective):
-    """Directive to register an information to corresponding information
-    registry."""
+    """Directive to register an information to information provider."""
 
-    registry = GlobalInterface(
-        title=_('Information Registry Key'),
-        description=_('A registry key is a dedicated interface which should extend' +
-                      'IInformationProvider.'),
+    conface = GlobalInterface(
+        title=_('Context Interface'),
+        description=_('The context interface provided by the information provider.'),
         required=True,
-        constraint=lambda v: v.extends(IInformationProvider)
+        constraint=lambda v: IConfaceType.providedBy(v)
         )
 
 

@@ -28,8 +28,7 @@ import zope.generic.face.testing
 import zope.generic.operation
 import zope.generic.testing.testing
 
-from zope.generic.informationprovider.metaconfigure import provideInformationProvider
-from zope.generic.operation import IOperationInformation
+from zope.generic.operation import IOperationContext
 
 
 
@@ -48,9 +47,6 @@ from zope.generic.operation import IOperationInformation
 
 # specific tests
 def setUp(doctest=None):
-    # register operation information registry
-    provideInformationProvider(IOperationInformation)
-
     # register the directive of this package
     XMLConfig('meta.zcml', zope.generic.operation)()
 

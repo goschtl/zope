@@ -19,52 +19,17 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.app.i18n import ZopeMessageFactory as _
-from zope.interface import Interface
-from zope.schema import Object
 
 from zope.generic.configuration.api import IAttributeConfigurable
-from zope.generic.informationprovider import IInformationProvider
 from zope.generic.face import IFace
-from zope.generic.face import IKeyfaceType
 from zope.generic.face import IProvidesAttributeFaced
 
 
-__all__ = ['ITypeType', 'ITypeable', 'ITyped', 'IGenericTyped', 
-           'ITypeInformation']
+
+class ITypedContent(IFace, IAttributeConfigurable, IAttributeAnnotatable):
+    """Content that provides the declared key interface."""
 
 
 
-class ITypeType(IKeyfaceType):
-    """An abstract interface marker marker type.
-
-    An interface marked by this marker type will provide an typed information
-    within the corresponding ITypeInformation registry.
-    """
-
-
-
-class ITypeable(Interface):
-    """Assert ITyped by adaption or by implementation."""
-
-
-
-class ITyped(ITypeable, IFace):
-    """Provide the key interface."""
-
-    keyface = Object(
-        title=_('Key interface'),
-        description=_('Key interface that references corresponding type informations.'),
-        required=True,
-        schema=ITypeType)
-
-
-
-class IGenericTyped(ITyped, IProvidesAttributeFaced, IAttributeConfigurable, IAttributeAnnotatable):
-    """Directly provide the declared key interface interface."""
-
-
-
-class ITypeInformation(IInformationProvider):
-    """Provide information for the declared type interface."""
-
+class IDirectlyTypedContent(ITypedContent, IProvidesAttributeFaced):
+    """Content that  directly provides the declared key interface."""

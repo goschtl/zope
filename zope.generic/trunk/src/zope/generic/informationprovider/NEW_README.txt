@@ -2,34 +2,50 @@
 How to use the information package?
 ===================================
 
+Part one: Provide a framework based on information providers
+------------------------------------------------------------
+
 We are developing a logger framework that can be used by user-application
 domains and supplier-application domains.
 
-Therefore we provide two public information registries for the members of our
-orthagonal application domain such as suppliers. The log-supplier-information 
-registry is holding supplier-specific informations. The log-user-information 
-registry is holding user-specific informations.
+Therefore we provide two public information contexts for the members of our
+orthagonal application domains. The supplier-context information provider 
+should hold supplier-specific informations. The user-context information 
+provider should hold user-specific informations.
 
-In order to implement such an information registry we have to declare an
-*key-like* interface extending the IInformation interface:
+In order to implement those information contexts we have to declare two context 
+interfaces (short: conface con[text inter]face):
 
-    >>> class ILogSupplierInformation(api.IInformationProvider):
+    >>> class ISupplierContext(interface.Interface):
     ...     """Store log supplier information."""
 
-    >>> class ILogUserInformation(api.IInformationProvider):
+    >>> class IUserContext(interface.Interface):
     ...     """Store log user information."""
 
 This specialized information interface has to be registered later by 
-informationRegistry-directive.
+face-directive:
 
-Such an extended information is logical container for configurations and
-annotations. In our framework example we have now to specify concrete
-configuration that are registered to the two registries by the corresponding
-member group.
+    >>> registerDirective('''
+    ... <generic:face
+    ...     conface="example.ISupplierContext"
+    ...     />
+    ... ''') 
 
-A supplier has to provide global log instance (dotted name) and an optional
-time formatter. We capture this configuration information within a configuration
-that can be attached to a dedicated supplier information.
+    >>> registerDirective('''
+    ... <generic:face
+    ...     conface="example.IUserContext"
+    ...     />
+    ... ''') 
+
+    >>> from zope.generic.face import IConfaceType
+
+    >>> IConfaceType.providedBy(ISupplierContext)
+    True
+    >>> IConfaceType.providedBy(IUserContext)
+    True
+
+Within those contexts we like to provide log configuration information. In our
+example logger frame work  we need to configure a specific log:
 
     >>> from zope.interface import Interface
     >>> from zope.configuration.fields import GlobalObject
@@ -37,105 +53,246 @@ that can be attached to a dedicated supplier information.
 
     >>> class ILogConfiguration(Interface):
     ...     """Define the log output."""
-    ...     log = GlobalObject(title=u'Log')
     ...     timeFormat = BytesLine(title=u'Time Format', required=False, default='%d.%m.%y')
+    ...     header = BytesLine(title=u'Header', required=False, default='General')
 
-This configuration should be registered by using the configuration directive:
+We like to use the configuration mechansim of zope.generic.configuration. Within
+this configuration facility we have to type the configuration interface by
+the zope.generic.configuration.IConfiguration context interface. This should
+be done the following way:
 
     >>> registerDirective('''
     ... <generic:face
     ...     keyface="example.ILogConfiguration"
     ...     type="zope.generic.configuration.IConfiguration"
     ...     />
-    ... ''') 
+    ... ''')
 
-A user has to provide logger configuration. This configuration defines the
-selected logger and a user-specific source tag:
+    >>> from zope.generic.face import IKeyfaceType
+    >>> from zope.generic.configuration import IConfiguration
 
-    >>> from zope.configuration.fields import GlobalInterface
+    >>> IKeyfaceType.providedBy(ILogConfiguration)
+    True
+    >>> IConfiguration.providedBy(ILogConfiguration)
+    True
 
-    >>> class ILoggerConfiguration(Interface):
-    ...     """Define the log output."""
-    ...     logger = GlobalInterface(title=u'Logger')
-    ...     sourceTag = BytesLine(title=u'Source Tag', required=False, default='     ')   
+Components that are using our log framework can provide their own log 
+configuration by adding a log configuration to the corresponding information
+provider. That has to be done by information that is set for an key interface
+within a dedicated context (ISupplierContext and IUserContext in our example).
+For all components that will not provide their own log configuration information
+we should provide default configuration within both contexts.
 
-    >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.ILoggerConfiguration"
-    ...     type="zope.generic.configuration.IConfiguration"
-    ...     />
-    ... ''') 
+You can provide all configuration value, but at least you have to provide
+the required ones.
 
-TODO: Should be a dependency between informationRegistry and its configuration?
+    >>> from zope.generic.configuration.api import ConfigurationData
+
+    >>> supplier_default = ConfigurationData(ILogConfiguration, {'header': 'Supplier', 'timeFormat': '%y.%m.%d'})
 
     >>> registerDirective('''
     ... <generic:informationProvider
-    ...     keyface='example.ILogSupplierInformation'
-    ...     registry='zope.generic.informationprovider.IInformationProviderInformation'
-    ...     />
+    ...     keyface="zope.generic.face.IUndefinedKeyface"
+    ...     conface="example.ISupplierContext"
+    ...     >
+    ...   <information
+    ...       keyface="example.ILogConfiguration"
+    ...       configuration="example.supplier_default"
+    ...       />
+    ... </generic:informationProvider>
     ... ''')
+
+Not provided optional data are taken from the default field values:
+
+    >>> user_default = ConfigurationData(ILogConfiguration, {})
 
     >>> registerDirective('''
     ... <generic:informationProvider
-    ...     keyface='example.ILogUserInformation'
-    ...     registry='zope.generic.informationprovider.IInformationProviderInformation'
-    ...     />
+    ...     keyface="zope.generic.face.IUndefinedKeyface"
+    ...     conface="example.IUserContext"
+    ...     >
+    ...   <information
+    ...       keyface="example.ILogConfiguration"
+    ...       configuration="example.user_default"
+    ...       />
+    ...  </generic:informationProvider>
     ... ''')
 
-The third part of our framework is the logger itself. The logger will be
-implmented as an adapter. We have to declare the logger interface:
+You can retrieve this configurations the following way:
 
-    >>> class ILogger(Interface):
+    >>> provider_for_nokeyface_at_suppliercontext = api.queryNextInformationProvider(conface=ISupplierContext)
+    >>> api.getInformation(provider_for_nokeyface_at_suppliercontext, ILogConfiguration) is supplier_default
+    True
+
+    >>> provider_for_nokeyface_at_usercontext = api.queryNextInformationProvider(conface=IUserContext)
+    >>> api.getInformation(provider_for_nokeyface_at_usercontext, ILogConfiguration) is user_default
+    True
+
+Last we have to define our application - the log itself.
+
+    >>> class ILog(Interface):
     ...     """Log."""
-    ...     def log(message):
+    ...     def __call__(message):
     ...         """Log the message."""
 
-    >>> from zope.interface import implements
-    >>> from zope.component import adapts
-    >>> from zope.generic.face import IFace
+    >>> import time
+    >>> from zope.generic.face import IAttributeFaced
+    >>> from zope.generic.face import IUndefinedKeyface, IUndefinedContext
 
-    >>> class Logger(object):
-    ...     """Generic logger adapter."""
-    ...     implements(ILogger)
-    ...     adapts(IFace)
+    >>> class Log(object):
+    ...     """Generic log adapter."""
+    ...     __keyface__ = IUndefinedKeyface
+    ...     __conface__ = IUndefinedContext
+    ...
+    ...     interface.implements(ILog, IAttributeFaced)
+    ...     component.adapts(None)
+    ...
     ...     def __init__(self, context):
     ...         self.context = context
-    ...     def log(self, message):
-    ...         id = IFace(self.context())
-    ...         info = queryInformationProvider(id.keyface, ILogUserInformation)
-    >>> class Logger(object):
-    ...     """Generic logger adapter."""
-    ...     implements(ILogger)
-    ...     adapts(IFace)
-    ...     def __init__(self, context):
-    ...         self.context = context
-    ...     def log(self, message):
-    ...         id = IFace(self.context())
-    ...         info = queryInformationProvider(id.keyface, ILogUserInformation)
-    >>> class Logger(object):
-    ...     """Generic logger adapter."""
-    ...     implements(ILogger)
-    ...     adapts(IFace)
-    ...     def __init__(self, context):
-    ...         self.context = context
-    ...     def log(self, message):
-    ...         id = IFace(self.context())
-    ...         info = queryInformationProvider(id.keyface, ILogUserInformation)
+    ...     def __call__(self, message):
+    ...         keyface = api.getKeyface(self.context)
+    ...         conface = api.getConface(self)
+    ...         provider = api.getNextInformationProvider(keyface, conface)
+    ...         logconfig = api.getInformation(provider, ILogConfiguration)
+    ...         return '%s: %s, %s' % (logconfig.header, message, 
+    ...                               time.strftime(logconfig.timeFormat))
+
+We have to provide two contextual adapters. Preferably they will be implemented
+as named adapter:
+
+    >>> class SupplierLog(Log):
+    ...     __conface__ = ISupplierContext
+
+    >>> class UserLog(Log):
+    ...     __conface__ = IUserContext
+
+    >>> component.provideAdapter(SupplierLog, provides=ILog, 
+    ...                         name=api.toDottedName(ISupplierContext))
+
+    >>> component.provideAdapter(UserLog, provides=ILog, 
+    ...                         name=api.toDottedName(IUserContext))
 
 
+We are done. Our log framework implementation is finished. This work is done only
+once a time. Now other developer can use this framework.
 
-After the registration we can retrieve the registries using the
-queryInformationProvider function:
+
+Part two: Use a framework based on information providers
+--------------------------------------------------------
+
+You can use the logger framework *as it is* without any further registrations or 
+configuration:
+
+    >>> my = object()
     
-    >>> supplier_registry =  api.queryInformationProvider(ILogSupplierInformation)
-    >>> supplier_registry.label
-    u'Store log supplier information.'
-    >>> supplier_registry.hint
-    u''
+    >>> supplier_log = component.getAdapter(my, ILog, api.toDottedName(ISupplierContext))
+    >>> entry = supplier_log('Guguseli'); entry
+    'Supplier: Guguseli, ...'
 
-    >>> user_registry =  api.queryInformationProvider(ILogUserInformation)
-    >>> user_registry.label
-    u'Store log user information.'
-    >>> user_registry.hint
-    u''
+    >>> entry == 'Supplier: Guguseli, %s' % time.strftime('%y.%m.%d')
+    True
 
+    >>> user_log = component.getAdapter(my, ILog, api.toDottedName(IUserContext))
+    >>> entry = user_log('Guguseli'); entry
+    'General: Guguseli, ...'
+
+    >>> entry == 'General: Guguseli, %s' % time.strftime('%d.%m.%y')
+    True
+
+Often you like to configure the framework for dedicated components. You have
+to define an own key interface that allows you to provide specific configuration:
+
+    >>> class IMy(interface.Interface):
+    ...     """My own key interface."""
+
+    >>> my_supplier = ConfigurationData(ILogConfiguration, {'header': 'My Supplier'})
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IMy"
+    ...     conface="example.ISupplierContext"
+    ...     >
+    ...   <information
+    ...       keyface="example.ILogConfiguration"
+    ...       configuration="example.my_supplier"
+    ...       />
+    ... </generic:informationProvider>
+    ... ''')
+
+
+    >>> from zope.generic.face.base import Face
+
+    >>> class My(Face):
+    ...    __keyface__ = IMy
+
+    >>> my = My()
+
+We configured a log configuration within the supplier context, but none within
+the user context:
+
+    >>> supplier_log = component.getAdapter(my, ILog, api.toDottedName(ISupplierContext))
+    >>> entry = supplier_log('Guguseli'); entry
+    'My Supplier: Guguseli, ...'
+
+    >>> user_log = component.getAdapter(my, ILog, api.toDottedName(IUserContext))
+    >>> entry = user_log('Guguseli'); entry
+    Traceback (most recent call last):
+    ...
+    ComponentLookupError: (<InterfaceClass example.IUserContext>, 'example.IMy')
+
+If we like to acquire from the default user context configuration, we have
+to derive our marker from IUndefinedKeyface.
+
+    >>> class IMy(IUndefinedKeyface):
+    ...     """My own key interface."""
+
+    >>> my_supplier = ConfigurationData(ILogConfiguration, {'header': 'My Supplier'})
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IMy"
+    ...     conface="example.ISupplierContext"
+    ...     >
+    ...   <information
+    ...       keyface="example.ILogConfiguration"
+    ...       configuration="example.my_supplier"
+    ...       />
+    ... </generic:informationProvider>
+    ... ''')
+
+
+    >>> from zope.generic.face.base import Face
+
+    >>> class My(Face):
+    ...    __keyface__ = IMy
+
+    >>> my = My()
+
+    >>> supplier_log = component.getAdapter(my, ILog, api.toDottedName(ISupplierContext))
+    >>> entry = supplier_log('Guguseli'); entry
+    'My Supplier: Guguseli, ...'
+
+    >>> user_log = component.getAdapter(my, ILog, api.toDottedName(IUserContext))
+    >>> entry = user_log('Guguseli'); entry
+    'General: Guguseli, ...'
+
+As soon as we configure the user context information provider we ca overwrite
+the default settings, too:
+
+    >>> my_user = ConfigurationData(ILogConfiguration, {'header': 'My User'})
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IMy"
+    ...     conface="example.IUserContext"
+    ...     >
+    ...   <information
+    ...       keyface="example.ILogConfiguration"
+    ...       configuration="example.my_user"
+    ...       />
+    ... </generic:informationProvider>
+    ... ''')
+
+    >>> user_log = component.getAdapter(my, ILog, api.toDottedName(IUserContext))
+    >>> entry = user_log('Guguseli'); entry
+    'My User: Guguseli, ...'

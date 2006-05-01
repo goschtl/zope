@@ -25,8 +25,7 @@ from zope.generic.factory.metaconfigure import factoryDirective
 from zope.generic.informationprovider.metaconfigure import InformationProviderDirective
 from zope.generic.handler.metaconfigure import handlerDirective
 
-from zope.generic.content import ITypeInformation
-from zope.generic.content import ITypeType
+from zope.generic.face import IUndefinedContext
 
 
 
@@ -34,18 +33,18 @@ class TypeDirective(InformationProviderDirective):
     """Provide a new logical type."""
 
     # mark types with a type marker type
-    _information_type = ITypeType
+    _information_type = IUndefinedContext
 
 
     def __init__(self, _context, keyface, label=None, hint=None):        
         # register types within the type information registry
-        registry = ITypeInformation
-        super(TypeDirective, self).__init__(_context, keyface, registry, label, hint)
+        conface = IUndefinedContext
+        super(TypeDirective, self).__init__(_context, keyface, conface, label, hint)
 
     def factory(self, _context, class_, operations=(), input=None,
                 providesFace=True, notifyCreated=False, storeInput=False):
         """Add factory."""
-        factoryDirective(_context, self._keyface, class_, None, operations, input,
+        factoryDirective(_context, self._keyface, class_, operations, input,
                      providesFace, notifyCreated, storeInput,
                      self._label, self._hint)
 
@@ -59,7 +58,7 @@ class TypeDirective(InformationProviderDirective):
             raise ConfigurationError('Use informationsProviders or acquire attriubte.')
 
         if acquire:
-            informationProviders = [ITypeInformation]
+            informationProviders = [IUndefinedContext]
 
         adapterDirective(_context, provides, [self._keyface], class_, 
                      writePermission, readPermission, attributes,

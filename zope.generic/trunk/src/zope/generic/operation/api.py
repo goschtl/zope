@@ -17,7 +17,7 @@ $Id$
 """
 
 # usage see README.txt
-from zope.generic.informationprovider.api import getInformationProvider
+from zope.generic.informationprovider.api import getNextInformationProvider
 from zope.generic.informationprovider.api import getInformation
 
 from zope.generic.operation.interfaces import *
@@ -28,7 +28,7 @@ from zope.generic.operation.metaconfigure import provideOperationConfiguration
 
 def getOperationInformation(object):
     """Evaluate an operation information from an object."""
-    return getInformationProvider(object, IOperationInformation)
+    return getNextInformationProvider(object, IOperationContext)
 
 
 

@@ -18,10 +18,15 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.component import getUtilitiesFor
+from zope.component import getUtility
+
 from zope.generic.face import *
 from zope.generic.face.adapter import FaceForAttributeFaced
 from zope.generic.face.base import Face
+from zope.generic.face.base import GlobalInformationProvider
 from zope.generic.face.base import KeyfaceDescription
+from zope.generic.face.base import LocalInformationProvider
 from zope.generic.face.helper import toDescription
 from zope.generic.face.helper import toDottedName
 from zope.generic.face.helper import toInterface
@@ -29,8 +34,11 @@ from zope.generic.face.metaconfigure import ensureInformationProvider
 
 
 
-def getKeyface(object):
+def getKeyface(object, default=IUndefinedKeyface):
     """Return the key interface from an object."""
+
+    if object is None:
+        return default
 
     # todo replace IInterface by IKeyfaceType
     if IInterface.providedBy(object):
@@ -41,41 +49,73 @@ def getKeyface(object):
         return object
 
     if IAttributeFaced.providedBy(object):
-        return getattr(object, '__keyface__', INoKeyface)
-
-    return IFace(object).keyface
-
-
-
-def queryKeyface(object, default=None):
-    """Return the key interface from an object or default."""
+        return getattr(object, '__keyface__', IUndefinedKeyface)
 
     try:
-        return getKeyface(object)
+        return IFace(object).keyface
 
-    except:
+    except TypeError:
         return default
 
 
 
-def getConface(object):
+def getConface(object, default=IUndefinedContext):
     """Return the context interface from an object."""
+    
+    if object is None:
+        return default
 
     if IConfaceType.providedBy(object):
         return object
 
     if IAttributeFaced.providedBy(object):
-        return getattr(object, '__conface__', INoConface)
-
-    return IFace(object).conface
-
-
-
-def queryConface(object, default=None):
-    """Return the context interface from an object or default."""
+        return getattr(object, '__conface__', IUndefinedContext)
 
     try:
-        return getConface(object)
+        return IFace(object).conface
+
+    except TypeError:
+        return default
+
+
+
+def getNextInformationProvider(object=None, conface=None):
+    """Evaluate the next information provider utility for an object or keyface."""
+    
+    if conface is None:
+        conface = getConface(object, IUndefinedContext)
+        
+    keyface = getKeyface(object)
+
+    try:
+        return getUtility(conface, toDottedName(keyface))
+
+    except:
+        # try to evaluate a matching super key interface
+        for more_general_keyface in keyface.__iro__:
+            if IKeyfaceType.providedBy(more_general_keyface):
+                try:
+                    return getUtility(conface, toDottedName(more_general_keyface))
+
+                except:
+                    pass
+        else:
+            raise
+
+
+
+def queryNextInformationProvider(object=None, conface=None, default=None):
+    """Evaluate the next information provider utility for an object or keyface."""
+    try:
+        return getNextInformationProvider(object, conface)
 
     except:
         return default
+
+
+
+def getNextInformationProvidersFor(provider, default=None):
+    """Evaluate all information providers of a certain information aspect."""
+
+    for name, information in getUtilitiesFor(provider):
+        yield (toInterface(name), information)

@@ -22,6 +22,7 @@ from persistent import Persistent
 from zope.app.container.contained import Contained
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import implements
+from zope.schema.fieldproperty import FieldProperty
 
 from zope.generic.directlyprovides.api import provides
 from zope.generic.directlyprovides.api import updateDirectlyProvided
@@ -32,8 +33,8 @@ from zope.generic.face import IFace
 from zope.generic.face import IGlobalInformationProvider
 from zope.generic.face import IKeyfaceDescription
 from zope.generic.face import ILocalInformationProvider
-from zope.generic.face import INoConface
-from zope.generic.face import INoKeyface
+from zope.generic.face import IUndefinedContext
+from zope.generic.face import IUndefinedKeyface
 
 
 
@@ -64,17 +65,17 @@ class Face(object):
         ...     pass
 
         >>> face = NoAttributeFaced()
-        >>> face.__keyface__ is INoKeyface
+        >>> face.__keyface__ is IUndefinedKeyface
         Traceback (most recent call last):
         ...
         AttributeError: 'NoAttributeFaced' object has no attribute '__keyface__'
-        >>> face.__conface__ is INoConface
+        >>> face.__conface__ is IUndefinedContext
         Traceback (most recent call last):
         ...
         AttributeError: 'NoAttributeFaced' object has no attribute '__conface__'
-        >>> face.keyface is INoKeyface
+        >>> face.keyface is IUndefinedKeyface
         True
-        >>> face.conface is INoConface
+        >>> face.conface is IUndefinedContext
         True
     """
 
@@ -82,77 +83,120 @@ class Face(object):
 
     @property
     def keyface(self):
-        return getattr(self, '__keyface__', INoKeyface)
+        return getattr(self, '__keyface__', IUndefinedKeyface)
 
     @property
     def conface(self):
-        return getattr(self, '__conface__', INoConface)
+        return getattr(self, '__conface__', IUndefinedContext)
 
 
 
-class GlobalInformationProvider(object):
+class BaseInformationProvider(object):
+    """Information provider mixin.
+
+    Information provider provide contextual information for key interfaces
+    (keyface). The context is defined by a context interface (conface):
+
+        >>> from zope.interface import alsoProvides
+        >>> from zope.interface import Interface
+        >>> from zope.generic.face import IConfaceType
+
+        >>> class ISpecialContext(Interface):
+        ...    pass
+
+        >>> alsoProvides(ISpecialContext, IConfaceType)
+
+    The key interface is defined by a marker interface too.
+
+        >>> from zope.generic.face import IKeyfaceType
+
+        >>> class IFoo(Interface):
+        ...    pass
+
+        >>> alsoProvides(IFoo, IKeyfaceType)
+
+    During the registration of a information provider the key interface should
+    be marked by the context interface:
+
+        >>> alsoProvides(IFoo, ISpecialContext)
+
+    This typing asserts that there will be an information provider registered
+    as utility providing the context and named by the dotted name of the
+    key interface.
+
+        >>> provider = BaseInformationProvider(ISpecialContext, IFoo)
+
+    The information provider will provide the context interface:
+
+        >>> ISpecialContext.providedBy(provider)
+        True
+
+    The information provider is related to the key interface:
+
+        >>> provider.keyface == IFoo
+        True
+        >>> provider.conface == ISpecialContext
+        True
+
+    """
+
+    def __init__(self, __conface__=None, __keyface__=None):
+        if __keyface__:
+            self.__keyface__ = __keyface__
+        
+        if __conface__:
+            self.__conface__ = __conface__
+            updateDirectlyProvided(self, __conface__)
+
+    provides('__conface__')
+
+    __keyface__ = FieldProperty(IAttributeFaced['__keyface__'])
+    __conface__ = UpdateProvides(IAttributeFaced['__conface__'])
+    
+    @property
+    def keyface(self):
+        return self.__keyface__
+
+    @property
+    def conface(self):
+        return self.__conface__
+
+    def __conform__(self, interface):
+        raise NotImplementedErro('__conform__')
+
+
+_global_information_hook = {}
+
+class GlobalInformationProvider(BaseInformationProvider):
     """Global information provider."""
 
     implements(IGlobalInformationProvider)
 
-    def __init__(self, __conface__=None, __keyface__=None):
-        directlyprovided = []
-        if __keyface__:
-            self.__keyface__ = __keyface__
-            directlyprovided.append(__keyface__)
-        
-        if __conface__:
-            self.__conface__ = __conface__
-            directlyprovided.append(__conface__)
+    provides('__conface__')
 
-        if directlyprovided:
-            updateDirectlyProvided(self, directlyprovided)
+    def __conform__(self, interface):
+        try:
+            return _global_information_hook[interface](self)
 
-    provides('__keyface__', '__conface__')
-
-    __keyface__ = UpdateProvides(IAttributeFaced['__keyface__'])
-    __conface__ = UpdateProvides(IAttributeFaced['__conface__'])
-    
-    @property
-    def keyface(self):
-        return self.__keyface__
-
-    @property
-    def conface(self):
-        return self.__conface__
+        except:
+            return None
 
 
+_local_information_hook = {}
 
-class LocalInformationProvider(Contained, Persistent):
+class LocalInformationProvider(BaseInformationProvider, Contained, Persistent):
     """Local information provider."""
 
     implements(ILocalInformationProvider)
 
-    def __init__(self, __conface__=None, __keyface__=None):
-        directlyprovided = []
-        if __keyface__:
-            self.__keyface__ = __keyface__
-            directlyprovided.append(__keyface__)
-        
-        if __conface__:
-            self.__conface__ = __conface__
-            directlyprovided.append(__conface__)
+    provides('__conface__')
 
-        if directlyprovided:
-            updateDirectlyProvided(self, directlyprovided)
+    def __conform__(self, interface):
+        try:
+            return _global_information_hook[interface](self)
 
-    provides('__keyface__', '__conface__')
-
-    __keyface__ = UpdateProvides(IAttributeFaced['__keyface__'])
-    __conface__ = UpdateProvides(IAttributeFaced['__conface__'])
-    
-    @property
-    def keyface(self):
-        return self.__keyface__
-
-    @property
-    def conface(self):
-        return self.__conface__
+        except:
+            return None
 
 
 

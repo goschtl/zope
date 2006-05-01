@@ -7,7 +7,7 @@ based type assoziation in a way like *classes* or *types* do. Typeable object
 provides by adaption or implementation access to a type marker. This type
 marker can be used to lookup further information about the referenced type.
 
-For each interface typed by our type marker type (ITypeType) we provied a type 
+For each interface typed by our type marker type (IUndefinedContext) we provied a type 
 factory that can create instaces of this certain *logical* type.
 
 Furthermore a type information utility will be provided. This type information
@@ -35,14 +35,13 @@ The package offers four different generic implementation such as Object,
 Contained, Container and Folder (Site) that you might use as implementation of
 your logical type. Certainly you can provide your own implementation. Such an
 implementation should implement at least the marker ITypeable and a corresponding
-adapter to ITyped.
+adapter to ITypedContent.
 
 In our example we will use a simple generic object:
 
 	>>> from zope.generic.content import api
-	>>> api.ITypeable.implementedBy(api.Object)
-	True
-	>>> api.IGenericTyped.implementedBy(api.Object)
+
+	>>> api.IDirectlyTypedContent.implementedBy(api.Object)
 	True
 
     >>> registerDirective('''
@@ -55,17 +54,17 @@ In our example we will use a simple generic object:
     ... </generic:content>
     ... ''')
 
-After the typed is registered the type marker will provide ITypeType:
+After the typed is registered the type marker will provide IUndefinedContext:
 
-	>>> from zope.generic.content import api
+	>>> from zope.generic.face import IUndefinedContext
 
-    >>> api.ITypeType.providedBy(IFooMarker)
+    >>> IUndefinedContext.providedBy(IFooMarker)
     True
 
 You can create instances of the registered logical type:
 
 	>>> foo = api.createObject(IFooMarker)
-	>>> typed = api.ITyped(foo)
+	>>> typed = api.ITypedContent(foo)
 	>>> typed.keyface == IFooMarker
 	True
 
@@ -81,18 +80,20 @@ retrieve this utility using the conventional utility api:
     >>> from zope.component import queryUtility
     >>> from zope.generic.face.api import toDottedName
 
-    >>> info = queryUtility(api.ITypeInformation, toDottedName(IFooMarker))
+    >>> info = queryUtility(IUndefinedContext, toDottedName(IFooMarker))
 
     >>> info.keyface == IFooMarker
     True
-    >>> info.label
-    u'Foo Type'
-    >>> info.hint
-    u'Bla bla bla.'
+
+# TODO: Implement label and hint
+#    >>> info.label
+#    u'Foo Type'
+#    >>> info.hint
+#    u'Bla bla bla.'
 
 There is convenience function for the lookup of corresponding type information.
 You can lookup the type information by the type marker interface or an object
-providing ITyped by implementation or adaption:
+providing ITypedContent by implementation or adaption:
 
 	>>> api.queryTypeInformation(IFooMarker) == info
 	True

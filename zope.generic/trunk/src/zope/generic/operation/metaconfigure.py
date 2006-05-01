@@ -25,15 +25,14 @@ from zope.interface import alsoProvides
 from zope.generic.configuration import IConfiguration
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration.api import ConfigurationData
+from zope.generic.face.metaconfigure import keyfaceDirective
 from zope.generic.informationprovider.api import provideInformation
 from zope.generic.informationprovider.api import queryInformation
-from zope.generic.informationprovider.api import queryInformationProvider
-from zope.generic.informationprovider.metaconfigure import provideInformationProvider
+from zope.generic.informationprovider.api import queryNextInformationProvider
 
 from zope.generic.operation import IOperation
 from zope.generic.operation import IOperationConfiguration
-from zope.generic.operation import IOperationInformation
-from zope.generic.operation import IOperationType
+from zope.generic.operation import IOperationContext
 from zope.generic.operation.base import Operation
 from zope.generic.operation.base import OperationPipe
 
@@ -67,9 +66,9 @@ def assertOperation(handlers, keyface=None, input=None, output=None):
         return Operation(None, keyface, input, output)
 
     # evaluate an operation from a operation key interface
-    elif IOperationType.providedBy(handler):
-        registry = IOperationInformation
-        info = queryInformationProvider(handler, IOperationInformation)
+    elif IOperationContext.providedBy(handler):
+        registry = IOperationContext
+        info = queryNextInformationProvider(handler, IOperationContext)
 
         if info is None:
             ConfigurationError('Operation %s does not exist.' % handler.__name__)
@@ -90,11 +89,11 @@ def assertOperation(handlers, keyface=None, input=None, output=None):
 def provideOperationConfiguration(keyface, operations=None, registry=None, input=None, output=None):
     """Provide the handler to an configuration information."""
 
-    # assume configuration within an IOperationInformation
+    # assume configuration within an IOperationContext
     if registry is None:
-        registry = IOperationInformation
+        registry = IOperationContext
 
-    provider = queryInformationProvider(keyface, registry)
+    provider = queryNextInformationProvider(keyface, registry)
 
     # this should never happen...
     if provider is None:
@@ -113,20 +112,13 @@ def provideOperationConfiguration(keyface, operations=None, registry=None, input
 def operationDirective(_context, keyface, operations=(), input=None, output=None, label=None, hint=None):
     """Register a public operation."""
 
+    type = IOperationContext
+    
     # assert type as soon as possible
-    if not IOperationType.providedBy(keyface):
-        alsoProvides(keyface, IOperationType)
-
-    registry = IOperationInformation
-
-    _context.action(
-        discriminator = ('provideInformationProvider', keyface, registry),
-        callable = provideInformationProvider,
-        args = (keyface, registry, label, hint),
-        )
+    keyfaceDirective(_context, keyface, type)
 
     _context.action(
         discriminator = ('provideOperationConfiguration', keyface),
         callable = provideOperationConfiguration,
-        args = (keyface, operations, registry, input, output),
+        args = (keyface, operations, type, input, output),
         )

@@ -64,9 +64,9 @@ We can retrieve and introspect any registered operation by the following ways
 using itself or its keyface. For each operation directive an operation 
 information will be registered:
 
-    >>> from zope.generic.informationprovider.api import getInformationProvidersFor
+    >>> from zope.generic.informationprovider.api import getNextInformationProvidersFor
 
-    >>> listing = list(getInformationProvidersFor(api.IOperationInformation))
+    >>> listing = list(getNextInformationProvidersFor(api.IOperationContext))
     >>> len(listing)
     1
 

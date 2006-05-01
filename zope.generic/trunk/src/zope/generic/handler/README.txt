@@ -22,7 +22,7 @@ First we declare a key interface:
 
 During the notification process we invoke the declared operations. In our example
 we are defining a simple handler, but you could use object providing IOperation
-or interfaces providing IOperationType too:
+or interfaces providing IOperationContext too:
 
     >>> def simplehandler(context, event):
     ...    print 'Guguseli!'

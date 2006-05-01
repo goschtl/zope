@@ -18,8 +18,14 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.generic.informationprovider import IInformationProvider
+from zope.interface import alsoProvides
+from zope.interface import Interface
+
+from zope.generic.face import IConfaceType
 
 
-class IFactoryInformation(IInformationProvider):
-    """Provide information for the factory referenced by the key interface."""
+
+class IFactory(Interface):
+    """Factory context."""
+
+alsoProvides(IFactory, IConfaceType)

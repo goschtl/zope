@@ -26,7 +26,7 @@ from zope.interface import alsoProvides
 from zope.generic.configuration.api import parameterToConfiguration
 from zope.generic.configuration.api import configuratonToDict
 from zope.generic.directlyprovides.api import updateDirectlyProvided
-from zope.generic.informationprovider.api import getInformationProvider
+from zope.generic.informationprovider.api import getNextInformationProvider
 from zope.generic.informationprovider.api import provideInformation
 from zope.generic.informationprovider.api import queryInformation
 from zope.generic.face import IAttributeFaced
@@ -34,7 +34,7 @@ from zope.generic.face import IProvidesAttributeFaced
 from zope.generic.face.api import Face
 from zope.generic.operation import IOperationConfiguration
 
-from zope.generic.factory import IFactoryInformation
+from zope.generic.factory import IFactory
         
 
 
@@ -105,7 +105,7 @@ class Factory(factory.Factory, Face):
         True
 
     There are further features but to use them we have to register an
-    an IFactoryInformation information provider including an
+    an IFactory information provider including an
     IOperationConfiguration:
 
         >>> def init_handler(context, *pos, **kws):
@@ -119,7 +119,7 @@ class Factory(factory.Factory, Face):
         >>> registerDirective('''
         ... <generic:informationProvider
         ...     keyface="example.IMyInstance"
-        ...     registry="zope.generic.factory.IFactoryInformation"
+        ...     conface="zope.generic.factory.IFactory"
         ...     >
         ...    <information
         ...       keyface="zope.generic.operation.IOperationConfiguration"
@@ -168,7 +168,7 @@ class Factory(factory.Factory, Face):
         >>> registerDirective('''
         ... <generic:informationProvider
         ...     keyface="example.IMyInstance"
-        ...     registry="zope.generic.factory.IFactoryInformation"
+        ...     conface="zope.generic.factory.IFactory"
         ...     >
         ...    <information
         ...       keyface="zope.generic.operation.IOperationConfiguration"
@@ -280,7 +280,7 @@ class Factory(factory.Factory, Face):
     def __config(self):
         if '_Factory__config' not in self.__dict__:
             try:
-                provider = getInformationProvider(self.keyface, IFactoryInformation)
+                provider = getNextInformationProvider(self.keyface, IFactory)
                 self.__dict__['_Factory__config'] = queryInformation(provider, IOperationConfiguration)
 
             except:

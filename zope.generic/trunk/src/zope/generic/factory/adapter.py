@@ -22,7 +22,7 @@ from zope.component import adapts
 from zope.interface import implements
 
 from zope.generic.informationprovider.api import queryInformation
-from zope.generic.informationprovider.api import getInformationProvider
+from zope.generic.informationprovider.api import getNextInformationProvider
 from zope.generic.face import IFaced
 from zope.generic.operation import IOperationConfiguration
 

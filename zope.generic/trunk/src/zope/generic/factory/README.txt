@@ -61,7 +61,7 @@ default arguments. Afterward we register the schema as IConfiguration:
 
 During the creation process we can invoke initializer operations. In our example
 we are defining a simple handler, but you could use object providing IOperation
-or interfaces providing IOperationType too:
+or interfaces providing IOperationContext too:
 
     >>> def init_handler(context, *pos, **kws):
     ...    print 'initializing'
@@ -106,17 +106,16 @@ registration:
     
     >>> events = getEvents()
     >>> len(events)
-    4
+    5
     >>> clearEvents()
 
-    >>> from zope.component import IFactory
     >>> from zope.generic.face.api import toDottedName
 
-    >>> util = component.getUtility(IFactory, name=toDottedName(IMyInstance))
+    >>> util = component.getUtility(component.IFactory, name=toDottedName(IMyInstance))
     >>> util.keyface == IMyInstance
     True
 
-    >>> util = component.getUtility(api.IFactoryInformation, name=toDottedName(IMyInstance))
+    >>> util = component.getUtility(api.IFactory, name=toDottedName(IMyInstance))
     >>> util.keyface == IMyInstance
     True
 

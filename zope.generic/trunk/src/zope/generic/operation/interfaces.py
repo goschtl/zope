@@ -26,8 +26,7 @@ from zope.schema import Object
 from zope.schema import Tuple
 
 from zope.generic.configuration import IConfiguration
-from zope.generic.informationprovider import IInformationProvider
-from zope.generic.informationprovider import IInformationProviderType
+from zope.generic.face import IConfaceType
 from zope.generic.face import IFace
 from zope.generic.face import IKeyfaceType
 
@@ -64,22 +63,17 @@ class IOperation(IFace):
 
 
 
-class IOperationInformation(IInformationProvider):
+class IOperationContext(Interface):
     """Registration about an global operation."""
 
-alsoProvides(IOperationInformation, IInformationProviderType)
-
-
-
-class IOperationType(IKeyfaceType):
-    """Mark operation marker interface."""
+alsoProvides(IOperationContext, IConfaceType)
 
 
 
 class IPrivateOperation(Interface):
-    """Mark private callables."""
+    """Marker private, undefined callables."""
 
-alsoProvides(IPrivateOperation, IOperationType)
+alsoProvides(IPrivateOperation, IKeyfaceType)
 
 
 

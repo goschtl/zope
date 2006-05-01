@@ -11,11 +11,25 @@
       doc_path="README.txt"
       parent="zope.generic"
       />
- 
-  <generic:informationProvider
-      keyface=".IInformationProviderInformation"
-      label="Information Provider Information"
-      registry=".IInformationProviderInformation"
-      />
+
+  <!-- add configuration and annotation mechanism to generic information providers. -->
+
+  <class class="zope.generic.face.api.GlobalInformationProvider">
+    <implements
+        interface="zope.generic.configuration.IAttributeConfigurable"
+        />
+    <implements
+        interface="zope.annotation.IAttributeAnnotable"
+        />
+  </class>
+
+  <class class="zope.generic.face.api.LocalInformationProvider">
+    <implements
+        interface="zope.generic.configuration.IAttributeConfigurable"
+        />
+    <implements
+        interface="zope.annotation.IAttributeAnnotable"
+        />
+  </class>
 
 </configure>

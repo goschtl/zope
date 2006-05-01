@@ -29,7 +29,13 @@ from zope.schema import TextLine
 from zope.generic.directlyprovides import IProvides
 
 
-class IKeyfaceType(IInterface):
+
+class IFaceType(IInterface):
+    """Mark key or context interfaces."""
+
+
+
+class IKeyfaceType(IFaceType):
     """Mark key interfaces.
     
     The key interface is the most relevant interface of the object in relation
@@ -37,25 +43,29 @@ class IKeyfaceType(IInterface):
 
 
 
-class INoKeyface(Interface):
+class IUndefinedKeyface(Interface):
     """A unspecified key interface."""
 
-alsoProvides(INoKeyface, IKeyfaceType)
+alsoProvides(IUndefinedKeyface, IKeyfaceType)
 
 
 
-class IConfaceType(IInterface):
+class IConfaceType(IFaceType):
     """Mark context interfaces.
     
-    The context interface declares the context wherein infomration about an
-    object should be catched."""
+    The context interface declares the context wherein information about an
+    object should be catched.
+
+    Context interfaces are *allways* pure marker interfaces. Utilities and 
+    adapters providing this marker. Should provide IInformationProvider by
+    adaption or implementation."""
 
 
 
-class INoConface(Interface):
+class IUndefinedContext(Interface):
     """A unspecified context interface."""
 
-alsoProvides(INoConface, IConfaceType)
+alsoProvides(IUndefinedContext, IConfaceType)
 
 
 
@@ -73,14 +83,14 @@ class IFace(IFaced):
         title=_('Key interface'),
         description=_('Key interface of the underlying object.'),
         readonly=True,
-        default=INoKeyface,
+        default=IUndefinedKeyface,
         schema=IKeyfaceType)
 
     conface = Object(
         title=_('Context interface'),
         description=_('Context interface of the underlying object.'),
         readonly=True,
-        default=INoConface,
+        default=IUndefinedContext,
         schema=IConfaceType)
 
 
@@ -91,21 +101,21 @@ class IAttributeFaced(IFaced):
     The context interface is provided by the attribute __conface__.
     The key interface is provided by the attribute  __keyface__.
     
-    If no attribute is defined INoConface or INoKeyface will be returned.
+    If no attribute is defined IUndefinedContext or IUndefinedKeyface will be returned.
     """
 
     __keyface__ = Object(
         title=_('Key interface'),
         description=_('Key interface of the assoziated object.'),
         readonly=True,
-        default=INoKeyface,
+        default=IUndefinedKeyface,
         schema=IKeyfaceType)
 
     __conface__ = Object(
         title=_('Context interface'),
         description=_('Context interface of the assoziated object.'),
         readonly=True,
-        default=INoConface,
+        default=IUndefinedContext,
         schema=IConfaceType)
 
 
@@ -146,8 +156,6 @@ class IGlobalInformationProvider(IInformationProvider):
     """Global information provider."""
 
 
+
 class ILocalInformationProvider(IInformationProvider):
     """Local information provider."""
-
-
-

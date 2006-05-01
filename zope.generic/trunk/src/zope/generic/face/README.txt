@@ -149,8 +149,8 @@ there are *no* contextual informations to an key interface:
     True
 
 Attention: Those contextual types will be not available as interface utility.
-Instead there will be an information provider 
-(see zope.generic.informationprovider too):
+Instead there will be an information provider (see 
+zope.generic.informationprovider too):
 
     >>> provider = component.getUtility(IMyContext, 
     ...     api.toDottedName(IFoo)) 
@@ -160,8 +160,12 @@ Instead there will be an information provider
 
     >>> IMyContext.providedBy(provider)
     True
+    >>> provider.conface == IMyContext
+    True
 
     >>> IFoo.providedBy(provider)
+    False
+    >>> provider.keyface == IFoo
     True
 
     >>> api.IInformationProvider.providedBy(provider)
@@ -188,7 +192,7 @@ There is a default adapter to IFace for key-faced objects:
     >>> adapted = api.IFace(foofaced)
     >>> adapted.keyface == IFoo
     True
-    >>> adapted.conface == api.INoConface
+    >>> adapted.conface == api.IUndefinedContext
     True
 
 Furthermore there is simple Face mixin for AttributeFaced objects:
@@ -197,7 +201,7 @@ Furthermore there is simple Face mixin for AttributeFaced objects:
     ...    __conface__ = IMyContext
 
     >>> fooface = FooFace()
-    >>> fooface.keyface == api.INoKeyface
+    >>> fooface.keyface == api.IUndefinedKeyface
     True
     >>> fooface.conface == IMyContext
     True
@@ -207,45 +211,24 @@ The api provides convenience functions to get the key interfaces of components:
     >>> api.getKeyface(foofaced) == IFoo
     True
     
-    >>> api.getKeyface(fooface) == api.INoKeyface
+    >>> api.getKeyface(fooface) == api.IUndefinedKeyface
     True
 
-    >>> api.getKeyface(object())
-    Traceback (most recent call last):
-    ...
-    TypeError: ('Could not adapt', ...)
-
-    >>> api.queryKeyface(foofaced) == IFoo
-    True
-    
-    >>> api.queryKeyface(fooface) == api.INoKeyface
-    True
-
-    >>> api.queryKeyface(object()) == None
+    >>> api.getKeyface(object()) == api.IUndefinedKeyface
     True
 
 
 The api provides convenience functions to get the context interfaces of components:
 
-    >>> api.getConface(foofaced) == api.INoConface
+    >>> api.getConface(foofaced) == api.IUndefinedContext
     True
     
     >>> api.getConface(fooface) == IMyContext
     True
 
-    >>> api.getConface(object())
-    Traceback (most recent call last):
-    ...
-    TypeError: ('Could not adapt', ...)
-
-    >>> api.queryConface(foofaced) == api.INoConface
-    True
-    
-    >>> api.queryConface(fooface) == IMyContext
+    >>> api.getConface(object()) == api.IUndefinedContext
     True
 
-    >>> api.queryConface(object()) == None
-    True
 
 
 

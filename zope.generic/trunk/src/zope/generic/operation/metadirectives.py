@@ -33,9 +33,9 @@ class IBaseOperationDirective(Interface):
     """Register an operation."""
 
     operations = Tokens(
-        title=_('Callable, Operation or IOperationType'),
+        title=_('Callable, Operation or IOperationContext'),
         description=_('Callable(context, *pos, **kws), global operation ' +
-                      'or IOperationType key interface.'),
+                      'or IOperationContext key interface.'),
         required=False,
         value_type=GlobalObject()
         )
@@ -50,10 +50,10 @@ class IOperationDirective(IBaseInformationProviderDirective, IBaseOperationDirec
     """Register a public operation.
 
     The operation will be registered as information provider utility providing
-    IOperationInformation.
+    IOperationContext.
 
     The operation key interface will be registered as interface utility typed as
-    IOperationType too.
+    IOperationContext too.
     """
 
     output = GlobalInterface(title=_('Output Declaration'),

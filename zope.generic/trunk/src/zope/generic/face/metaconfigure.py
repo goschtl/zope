@@ -26,7 +26,7 @@ from zope.interface import alsoProvides
 
 from zope.generic.face import IConfaceType
 from zope.generic.face import IKeyfaceType
-from zope.generic.face import INoKeyface
+from zope.generic.face import IUndefinedContext
 from zope.generic.face.base import GlobalInformationProvider
 from zope.generic.face.base import LocalInformationProvider
 from zope.generic.face.helper import toDottedName
@@ -47,7 +47,7 @@ def ensureInformationProvider(conface, keyface, context=None):
 
     provider = queryUtility(conface, name, context=context)
 
-    if not provider:
+    if not (provider and provider.conface == conface):
         
         if context is None:
             provider = GlobalInformationProvider(conface, keyface)
@@ -62,14 +62,18 @@ def ensureInformationProvider(conface, keyface, context=None):
 def keyfaceDirective(_context, keyface, type=None):
     """Type and register an new key interface."""
 
+    if type is None:
+        type = IUndefinedContext
+
     # context can never be key interface and key can never be context interface
     if keyface and IConfaceType.providedBy(keyface):
         raise ConfigurationError('Key interface %s can not be registered as context interface too.' % keyface.__name__)
 
     # provide type as soon as possilbe
-    provideInterface(None, keyface, IKeyfaceType)
+    if not IKeyfaceType.providedBy(keyface):
+        provideInterface(None, keyface, IKeyfaceType)
 
-    if type:
+    if type and not type.providedBy(keyface):
         # provide additional interface utility
         if not IConfaceType.providedBy(type):
             provideInterface(None, keyface, type)
@@ -89,10 +93,11 @@ def confaceDirective(_context, conface, type=None):
         raise ConfigurationError('Context interface %s can not be registered as key interface too.' % conface.__name__)
 
     # provide type as soon as possilbe
-    provideInterface(None, conface, IConfaceType)
+    if not IConfaceType.providedBy(conface):
+        provideInterface(None, conface, IConfaceType)
 
     # provide additional interface utility
-    if type:
+    if type and not type.providedBy(conface):
         provideInterface(None, conface, type)
 
 
