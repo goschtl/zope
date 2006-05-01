@@ -40,9 +40,9 @@ Zope Changes
         "pkg_resources" is available. This will enable distribution of
         "zope.*" packages as individual eggs.
 
-      - A new zope.app.annotation.factory helper function that makes
+      - A new zope.annotation.factory helper function that makes
         it easier to create annotations. Also added a README in
-        zope.app.annotation which explains how to use it.
+        zope.annotation which explains how to use it.
 
       - The default browser view for file and image now set the
         "Last-Modified" headers and handles "If-Modified-Since"
@@ -170,7 +170,7 @@ Zope Changes
       Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dmitry
       Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
       (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute,
-      Shane Hathaway, Bjorn Tillenius, Sam Stainsby
+      Shane Hathaway, Bjorn Tillenius, Sam Stainsby, Bernd Dorn
 
   ------------------------------------------------------------------
 
