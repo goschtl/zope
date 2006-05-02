@@ -22,7 +22,15 @@ from zope.app.publisher.browser import getDefaultViewName
 import zExceptions
 import Products.Five.security
 from Products.Five import fivemethod
-from Products.Five.interfaces import IBrowserDefault
+
+class IBrowserDefault(Interface):
+    """Provide a hook for deciding about the default view for an object"""
+
+    def defaultView(self, request):
+        """Return the object to be published
+        (usually self) and a sequence of names to traverse to
+        find the method to be published.
+        """
 
 class BrowserDefault(object):
     implements(IBrowserDefault)

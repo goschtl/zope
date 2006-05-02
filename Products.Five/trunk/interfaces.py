@@ -15,17 +15,7 @@
 
 $Id$
 """
-from zope.interface import Interface
 from zope.interface.interfaces import IInterface
-
-class IBrowserDefault(Interface):
-    """Provide a hook for deciding about the default view for an object"""
-
-    def defaultView(self, request):
-        """Return the object to be published
-        (usually self) and a sequence of names to traverse to
-        find the method to be published.
-        """
 
 class IMenuItemType(IInterface):
     """Menu item type
@@ -33,3 +23,13 @@ class IMenuItemType(IInterface):
     Menu item types are interfaces that define classes of
     menu items.
     """
+
+# BBB 2006/05/01 -- to be removed after 12 months
+import zope.deferredimport
+zope.deferredimport.deprecated(
+    "To get the default browser view of an object, use "
+    "zope.app.publisher.browser.queryDefaultViewName. To "
+    "define the default view of an object, use the "
+    "browser:defaultView directive",
+    IBrowserDefault = "Products.Five.bbb:IBrowserDefault",
+    )

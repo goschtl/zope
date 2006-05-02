@@ -8,7 +8,7 @@
   <adapter
       for="*"
       factory=".bbb.BrowserDefault"
-      provides=".interfaces.IBrowserDefault"
+      provides=".bbb.IBrowserDefault"
       />
 
 </configure>

@@ -39,7 +39,6 @@ from zope.security.interfaces import IPermission
 from Products.Five import isFiveMethod
 from Products.Five.bridge import fromZ2Interface
 from Products.Five.browser.metaconfigure import page
-from Products.Five.interfaces import IBrowserDefault
 
 debug_mode = App.config.getConfiguration().debug_mode
 LOG = logging.getLogger('Five')
@@ -120,6 +119,7 @@ def defaultViewable(_context, class_):
                   "on it to make 'index.html' the default view, replace it "
                   "with <browser:defaultView name='index.html' />",
                   DeprecationWarning, 2)
+    from Products.Five.bbb import IBrowserDefault
     implements(_context, class_, (IBrowserDefault,))
 
 def createZope2Bridge(zope2, package, name):
