@@ -26,7 +26,6 @@ import logging
 import App.config
 import Products
 
-import zope.deprecation
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
 from zope.configuration import xmlconfig
