@@ -153,9 +153,9 @@ def viewletDirective(
     _context.action(
         discriminator = ('viewlet', for_, layer, view, manager, name),
         callable = zcml.handler,
-        args = ('provideAdapter',
-                (for_, layer, view, manager), interfaces.IViewlet,
-                 name, new_class, _context.info),)
+        args = ('registerAdapter',
+                new_class, (for_, layer, view, manager),
+                interfaces.IViewlet, name, _context.info),)
 
     _context.action(
         discriminator = ('five:protectClass', new_class),
