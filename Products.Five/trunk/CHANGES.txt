@@ -2,6 +2,14 @@
 Five Changes
 ============
 
+Five 1.5 (unreleased)
+=====================
+
+Features
+--------
+
+* Added Viewlet and Content Provider support.
+
 Five 1.4 (unreleased)
 =====================
 
