@@ -31,20 +31,22 @@ var LivePage = {
 		},
 
         onComplete: function(request, transport, json) {
-        
             var response = transport.responseText;
-            if (response[0] == '{') {
+            if (response.substr(0,1) == '{') {
                 var event = JSON.parse(response);
-                var name = event['name'];
-                name = "on" + name[0].toUpperCase() + name.slice(1);
-                LivePage.Responders.dispatch(name, event);
+                LivePage.processEvent(event);
                 }
-                
 			setTimeout("LivePage.nextEvent()", 500);
 			return true;
 			}
 	   },
-	
+	   
+    processEvent : function (event) 
+	    {
+        var name = event['name'];
+        name = "on" + name.substr(0,1).toUpperCase() + name.slice(1);
+        LivePage.Responders.dispatch(name, event);
+	    },
     
     nextEvent : function () {
         var base_url = LivePage.baseURL + "/@@output/" + LivePage.uuid;
@@ -53,10 +55,8 @@ var LivePage = {
         },
 
     startClient : function () {
-    
         Ajax.Responders.register(LivePage.ajaxHandlers);
         LivePage.Responders.register(LivePage.clientHandlers);
-        
         if (!LivePage.baseURL) {
             LivePage.baseURL = window.location.href;
             var i = LivePage.baseURL.indexOf('#');
@@ -77,16 +77,24 @@ var LivePage = {
 
 
     sendEvent : function (event) {
+//        alert("entered sendEvent ... event = " + event);
         var params = ""
         for(key in event) {
             params += "&" + key + "=" + event[key]
             }
+//        alert("params = " + params);
         var base_url = LivePage.baseURL + "/@@input/" + LivePage.uuid;
-        
+//        alert("base_url = " + base_url);
+
+
         new Ajax.Request(base_url, 
             { method: 'post',
-                parameters: params
+                parameters: params,
+                asynchronous: true
             });
+
+//        alert("request sended");
+
         LivePage.numSended += 1;
         if ($('event_count')) {
             $('event_count').innerHTML = LivePage.numSended;
@@ -94,33 +102,34 @@ var LivePage = {
         return true;
         },
 
-    getAttention : function (act, id) {
-        if (act) {
-            switch(act) {
-                case 'scroll' : {
-                    LivePage.scrollToLast(id);
-                    LivePage.highlightElement(id);
-                    return;
-                    }
-                case 'sound' : {
-                    LivePage.playFlash("ping");
-                    return;
-                    }
-                }
-            }
-        },
-   
+  
+
     scrollToLast : function (id) {
-        var area = $(id);
-        if (area.offsetHeight > area.scrollHeight) {
-            area.scrollTop = 0;
-            } else {
-            area.scrollTop = area.scrollHeight;
+        var scrollArea = $(id).parentNode;
+        var scrollAreaId = $(id).parentNode.lastChild.previousSibling.getAttribute('id');
+        document.getElementById(scrollAreaId).scrollIntoView(true);
+        },
+
+    scrollToNew : function (id) {
+        document.getElementById(id).scrollIntoView(true);
+        if ((navigator.appName.substr(0,1).toLowerCase()) == "m")
+            {
+            window.scrollBy(-300,0);
             }
         },
+
         
-    highlightElement : function (id) {
-        return;
+    highlightElement : function (id, start, end) {
+        if (start && end) {
+            new Effect.Highlight(id, {startcolor:start, endcolor:end});
+            }
+        else {
+            new Effect.Highlight(id);
+            }
+        },
+
+    playSound : function (id) {
+        playFlash(id);
         }
 
 }
@@ -146,7 +155,7 @@ LivePage.Responders = {
       if (responder[callback] && typeof responder[callback] == 'function') {
         try {
           responder[callback].apply(responder, [event]);
-        } catch (e) { alert(e); }
+        } catch (e) { alert ("exception thrown at: " + callback); }
       }
     });
   }
@@ -168,20 +177,43 @@ LivePage.clientHandlers = {
     onAppend: function(event) {            
             var id = event['id'];
             var html = event['html'];
+//            alert("append: " + id + " --- " + html);
             $(id).innerHTML += html;  /* .stripScripts(); */
             /* We must eval all scripts again. Arrgh!   */
             $(id).innerHTML.evalScripts();
-           
-            // LivePage.getAttention($(id).lastChild.id, event.extra);
             return;
             },
                 
+    onScroll: function(event) {            
+            var id = event['id'];
+            LivePage.scrollToNew(id);
+            return;
+            },
+
+    onHighlight: function(event) {            
+            var id = event['id'];
+            var start = event['start'];
+            var end = event['end'];
+            LivePage.highlightElement(id, start, end);
+            return;
+            },
+
+
+    onSound: function(event) {            
+            var id = event['id'];
+            LivePage.playSound(id);
+            return;
+            },
+
+
     onUpdate : function(event) {
             var id = event['id'];
             var html = event['html'];
+//            alert("update: " + id + " --- " + html);
             $(id).innerHTML = html;
-            html.evalScripts();
-            LivePage.getAttention(id, event.extra);
+//            html.evalScripts();
+//            id.evalScripts();
+            $(id).innerHTML.evalScripts();
             return;
             },
             
@@ -197,8 +229,18 @@ LivePage.clientHandlers = {
                 $("livepage_progress").innerHTML = event.percent + "%";
                 }
             return;
+            },
+
+
+    onMulti: function(event) {
+            allEvents = event.events;
+            for (i=0; i<allEvents.length; i++)  
+                {
+                var event = allEvents[i]; 
+                LivePage.processEvent(event);
+                }
+            return;
             }
-            
     }
             
 

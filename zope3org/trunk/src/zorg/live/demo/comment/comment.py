@@ -38,6 +38,10 @@ from zorg.comment import ICommentSequence
 from zorg.live.page.client import LivePageClient
 from zorg.live.page.page import LivePage
 from zorg.live.page.event import Append
+from zorg.live.page.event import Highlight
+from zorg.live.page.event import Scroll
+from zorg.live.page.event import Sound
+from zorg.live.page.event import MultiEvent
 from zorg.live.page.event import Update
 from zorg.live.page.interfaces import ILivePageManager
 from zorg.live.page.interfaces import IPersonEvent
@@ -193,23 +197,41 @@ class LiveComments(LivePage) :
             responds to Zopes ObjectModifiedEvent that reflects a change
             in the ZODB.
         """
-        
+
         context = event.object
         comments = IComments(context)
         page = LiveComments(context, getRequest())             
         key = desc.keys[0]
-
+        #group_id = page.getGroupId()
+        
+        #all = set(clients.whoIsOnline(group_id))
+        #me = set([getUserId()])
+        #others = all - me
+        
         if desc.change == "add" :
             persistent = comments[key]
             r = page.renderComment(key, persistent).encode('utf-8')
-            event = Append(id="comments", html=r, extra="scroll")    
+#            event = Append(id="comments", html=r, extra="scroll")    
+            step1 = Append(id="comments", html=r)
+            step2 = Scroll(id="text%s" % key)
+            step3 = Sound(id="ping")
+            step4 = Highlight(id="text%s" % key, start="#FFCC00", end="#000000")
+            event = MultiEvent(events=[step1, step2, step3, step4])    
         elif desc.change == "del" :
             r = page.renderComments().encode('utf-8')
-            event = Update(id="comments", html=r) 
+            step1 = Sound(id="ping")
+            step2 = Highlight(id="text%s" % key, start="#FFCC00", end="#333333")
+            step3 = Update(id="comments", html=r)
+            event = MultiEvent(events=[step1, step2, step3])    
         else :
             persistent = comments[key]
             text = cls.makeParagraph(persistent.data)
-            event = Update(id="text%s" % key, html=text)    
+#            event = Append(id="comments", html=r)
+            step1 = Update(id="text%s" % key, html=text)    
+            step2 = Scroll(id="text%s" % key)
+            step3 = Sound(id="ping")
+            step4 = Highlight(id="text%s" % key, start="#336699", end="#FFCC00")
+            event = MultiEvent(events=[step1, step2, step3, step4])    
          
         cls.sendEvent(event)
         

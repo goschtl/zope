@@ -36,6 +36,10 @@ from zorg.live.page.interfaces import IUpdate
 from zorg.live.page.interfaces import ISetAttribute
 from zorg.live.page.interfaces import IModifyElementEvent
 from zorg.live.page.interfaces import IProgressEvent
+from zorg.live.page.interfaces import IEventSequence
+from zorg.live.page.interfaces import IHighlight
+from zorg.live.page.interfaces import IScroll
+from zorg.live.page.interfaces import ISound
 
 from zorg.live.page.interfaces import IClientEventFactory
 
@@ -199,6 +203,24 @@ class ProgressEvent(LivePageEvent) :
 
 directlyProvides(ProgressEvent, IClientEventFactory)
 
+
+class MultiEvent(LivePageEvent) :
+    """ Appends multiple Events in one action
+    
+        >>> a = Append(id="comments", html='<p id="text">sample</p>')
+        >>> b = Highlight(id="text")
+        >>> c = Scroll(id="text")
+        >>> event = MultiEvent(events=[a,b,c])
+        >>> event.toJSON()
+        '{"where": null, "events": [{"html": ...
+    """
+    
+    implements(IEventSequence)
+    
+    name = "multi"
+
+directlyProvides(MultiEvent, IClientEventFactory)
+
        
 class CloseEvent(LivePageEvent) :
     """ A user has closed the browser window
@@ -323,6 +345,62 @@ class Append(HTMLUpdateEvent) :
     name = "append"
     
 directlyProvides(Append, IClientEventFactory)
+    
+    
+class Highlight(LivePageEvent) :
+    """ Highlights an existing DOM element. 
+
+        >>> event = Highlight(id='text', start='#996633', end='#33FF00')
+        >>> event.pprint()
+        end : '#33FF00'
+        id : 'text'
+        name : 'highlight'
+        recipients : 'all'
+        start : '#996633'
+        where : None
+        
+    """
+    implements(IHighlight)
+      
+    name = "highlight"
+    
+directlyProvides(Highlight, IClientEventFactory)
+    
+    
+class Scroll(LivePageEvent) :
+    """ Scrolls to the last element. 
+
+        >>> event = Scroll(id='text')
+        >>> event.pprint()
+        id : 'text'
+        name : 'scroll'
+        recipients : 'all'
+        where : None
+        
+    """
+    implements(IScroll)
+      
+    name = "scroll"
+    
+directlyProvides(Scroll, IClientEventFactory)
+    
+    
+class Sound(LivePageEvent) :
+    """ Plays a Sound. 
+
+        >>> event = Sound(id='tone')
+        >>> event.pprint()
+        id : 'tone'
+        name : 'sound'
+        recipients : 'all'
+        where : None
+        
+    """
+    implements(ISound)
+      
+    name = "sound"
+    
+directlyProvides(Sound, IClientEventFactory)
     
     
 class Update(HTMLUpdateEvent) :

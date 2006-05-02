@@ -11,6 +11,16 @@
   <resource 
         name="json.js"
         file="json.js"/>
+  <resource 
+        name="movies.js"
+        file="movies.js"/>
+  <resource 
+        name="movies.vbs"
+        file="movies.vbs"/>
+	
+  <resource 
+        name="signal.swf"
+        file="signal.swf"/>
 	
   <page
         name="input"

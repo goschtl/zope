@@ -21,12 +21,13 @@ function installTextObserver() {
                         })
                     }
                 else {
+//                    alert("entered script.js ... text" + currentCommentKey + " = " + value);
                     LivePage.sendEvent({
                             name: "update", 
                             id: "text"+currentCommentKey, 
-                            html: makeParagraph(value),
-                            extra: "scroll"
+                            html: makeParagraph(value)
                         });
+//                    alert("... exit!");
                     }
                 }
             }               

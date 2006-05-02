@@ -32,6 +32,15 @@
     <script type="text/javascript" src="livecomment.js" 
        tal:attributes="src string:${context/++resource++livecomment.js}">
     </script>
+    <script type="text/javascript" src="effects.js"
+       tal:attributes="src string:${context/++resource++zorgajax/effects.js}">
+    </script>
+    <script type="text/javascript" src="movies.js"
+       tal:attributes="src string:${context/++resource++movies.js}">
+    </script>
+    <script type="text/vbscript" src="movies.vbs"
+       tal:attributes="src string:${context/++resource++movies.vbs}">
+    </script>
     
     <script type="text/javascript" 
             tal:content="string:LivePage.uuid = '${view/nextClientId}';">
@@ -42,6 +51,19 @@
         LivePage.startClient();
         window.onunload = LivePage.stopClient
     </script>  
+
+	<div id="flashSound" style="height: 0px;
+	                     visibility: hidden;">
+		<object id="ping" src="signal.swf" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="0" height="0"
+		    tal:attributes="src string:${context/++resource++signal.swf}"
+			>
+			<param name="quality" value="high">
+			<embed name="ping" src="signal.swf" type="application/x-shockwave-flash" width="0" height="0" swLiveConnect="true"
+			    tal:attributes="src string:${context/++resource++signal.swf}"
+				/>
+		</object>
+	</div>
+
     
    <p>Type a comment and see how the page
     updates automatically. Open the same LiveComment page in a second browser

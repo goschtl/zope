@@ -126,6 +126,22 @@ class IAppend(IHTMLUpdateEvent) :
     """ Append a html fragment as a child node to an existing DOM element. 
     """    
     
+class IHighlight(ILivePageEvent) :
+    """ Append a html fragment as a child node to an existing DOM element. 
+    """    
+    
+class IScroll(ILivePageEvent) :
+    """ Append a html fragment as a child node to an existing DOM element. 
+    """    
+    
+class ISound(ILivePageEvent) :
+    """ Append a html fragment as a child node to an existing DOM element. 
+    """    
+    
+class IEventSequence(ILivePageEvent) :
+    """ Append a sequence of events. 
+    """    
+    
 class IUpdate(IHTMLUpdateEvent) :
     """ Update the inner HTML of a dom element with the HTML fragment. 
     """
