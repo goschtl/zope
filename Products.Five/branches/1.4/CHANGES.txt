@@ -16,8 +16,6 @@ Five 1.4 (unreleased)
 Bugfixes
 --------
 
-* Made sure that events are fired as expected in add and edit forms.
-
 * Made sure LocalizerLanguages class normalized language codes to
   xx-yy, instead of xx_YY or xx-YY.
 
