@@ -24,7 +24,10 @@ import warnings
 import logging
 
 import App.config
+from App.Product import initializeProduct
+from App.ProductContext import ProductContext
 import Products
+import Zope2
 
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
@@ -197,6 +200,37 @@ def registerClass(_context, class_, meta_type, permission, addview=None,
         discriminator = ('registerClass', meta_type),
         callable = _registerClass,
         args = (class_, meta_type, permission, addview, icon, global_)
+        )
+
+def _registerPackage(module_, init_func=None):
+    """Registers the given python package as a Zope 2 style product
+    """
+
+    if not hasattr(module_, '__path__'):
+        raise ValueError("Must be a package and the " \
+                         "package must be filesystem based")
+    
+    app = Zope2.app()
+    product = initializeProduct(module_, 
+                                module_.__name__, 
+                                module_.__path__[0],
+                                app)
+
+    product.package_name = module_.__name__
+
+    if init_func is not None:
+        newContext = ProductContext(product, app, module_)
+        init_func(newContext)
+
+
+def registerPackage(_context, package, initialize=None):
+    """ZCML directive function for registering a python package product
+    """
+
+    _context.action(
+        discriminator = ('registerPackage', package),
+        callable = _registerPackage,
+        args = (package,initialize)
         )
 
 # clean up code
