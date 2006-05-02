@@ -69,10 +69,8 @@ Now we have to instantiate it in the context of an actual zope object:
   >>> obj_id = self.folder._setObject('content1', Content())
   >>> content = self.folder[obj_id]
 
-  >>> from Products.Five.traversable import FakeRequest
-  >>> request = FakeRequest()
-  >>> from zope.publisher.browser import setDefaultSkin
-  >>> setDefaultSkin(request)
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
 
   >>> from Products.Five.browser import BrowserView as View
   >>> view = View(content, request)
@@ -363,14 +361,6 @@ viewlet base classes and helper functions for inserting CSS and Javascript
 links into HTML headers, since those two are so very common. I am only going
 to demonstrate the helper functions here, since those demonstrations will
 fully demonstrate the functionality of the base classes as well.
-
-To make resource lookup work we need to make the content traversable:
-  >>> try:
-  ...     from Products.Five.fiveconfigure import classTraversable
-  ...     classTraversable(Content)
-  ...
-  ... except ImportError:
-  ...     pass
 
 The viewlet will look up the resource it was given and tries to produce the
 absolute URL for it:

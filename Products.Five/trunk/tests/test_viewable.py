@@ -54,10 +54,10 @@ def test_defaultView():
 
     For now the default view name is index.html, like we set above:
 
-      >>> from Products.Five.traversable import FakeRequest
-      >>> request = FakeRequest()
+      >>> from zope.publisher.browser import TestRequest
+      >>> request = TestRequest()
       >>> from zope.app.publisher.browser import queryDefaultViewName
-      
+
       >>> queryDefaultViewName(foo, request)
       u'index.html'
       >>> obj, path = bd.defaultView(request)

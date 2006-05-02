@@ -40,10 +40,8 @@ objects:
   >>> obj_id = self.folder._setObject('content1', Content())
   >>> content = self.folder[obj_id]
 
-  >>> from Products.Five.traversable import FakeRequest
-  >>> request = FakeRequest()
-  >>> from zope.publisher.browser import setDefaultSkin
-  >>> setDefaultSkin(request)
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
 
   >>> from Products.Five.browser import BrowserView as View
   >>> view = View(content, request)

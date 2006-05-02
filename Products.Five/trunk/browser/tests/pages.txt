@@ -195,10 +195,8 @@ This tests security on a low level (functional pages test has
 high-level security tests).  Let's manually look up a protected view:
 
   >>> from zope.component import getMultiAdapter
-  >>> from zope.publisher.browser import setDefaultSkin
-  >>> from Products.Five.traversable import FakeRequest
-  >>> request = FakeRequest()
-  >>> setDefaultSkin(request)
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
   >>> view = getMultiAdapter((self.folder.testoid, request), name=u'eagle.txt')
 
 It's protecting the object with the permission, and not the attribute,

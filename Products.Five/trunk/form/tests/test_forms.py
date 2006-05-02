@@ -36,8 +36,8 @@ def test_get_widgets_for_schema_fields():
       ...                     values=("Mr.", "Mrs.", "Captain", "Don"))
       >>> contactname = TextLine(title=u'Name')
 
-      >>> from Products.Five.traversable import FakeRequest
-      >>> request = FakeRequest()
+      >>> from zope.publisher.browser import TestRequest
+      >>> request = TestRequest()
       >>> salutation = salutation.bind(request)
       >>> contactname = contactname.bind(request)
 
