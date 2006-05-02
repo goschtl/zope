@@ -42,7 +42,7 @@ def test_defaultView():
     and default view names for everything and IFoo objects in particular:
 
       >>> from zope.app.component.metaconfigure import adapter
-      >>> from Products.Five.viewable import BrowserDefault
+      >>> from Products.Five.bbb import BrowserDefault
       >>> from Products.Five.interfaces import IBrowserDefault
       >>> from zope.interface import Interface
       >>> provideAdapter(BrowserDefault, (Interface,), IBrowserDefault)
@@ -51,12 +51,8 @@ def test_defaultView():
 
     Now take a BrowserDefault for an instance of Foo::
 
-      >>> import zope.deprecation
       >>> foo = Foo()
-      >>> from Products.Five.viewable import BrowserDefault
-      >>> zope.deprecation.__show__.off()
       >>> bd = BrowserDefault(foo)
-      >>> zope.deprecation.__show__.on()
 
     For now the default view name is index.html, like we set above:
 
