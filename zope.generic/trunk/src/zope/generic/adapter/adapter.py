@@ -22,7 +22,7 @@ from zope.location import Location
 from zope.interface import classImplements
 from zope.interface import implements
 
-from zope.generic.configuration import IConfiguration
+from zope.generic.configuration import IConfigurationType
 from zope.generic.configuration import IConfigurations
 
 from zope.generic.adapter.property import ConfigurationAdapterProperty
@@ -55,14 +55,14 @@ def ConfigurationAdapterClass(keyface, informationProviders=None, bases=()):
     We register the configuration schema using generic:face directive:
 
         >>> registerDirective('''
-        ... <generic:face
-        ...     keyface="example.IFooConfiguration"
-        ...     type="zope.generic.configuration.IConfiguration"
+        ... <generic:interface
+        ...     interface="example.IFooConfiguration"
+        ...     type="zope.generic.configuration.IConfigurationType"
         ...     />
         ... ''') 
 
-        >>> from zope.generic.configuration import IConfiguration
-        >>> IConfiguration.providedBy(IFooConfiguration)
+        >>> from zope.generic.configuration import IConfigurationType
+        >>> IConfigurationType.providedBy(IFooConfiguration)
         True
 
     We implement a class which is providing the configuration mechanism:
@@ -71,8 +71,9 @@ def ConfigurationAdapterClass(keyface, informationProviders=None, bases=()):
         ...    pass
 
         >>> registerDirective('''
-        ... <generic:face
-        ...     keyface="example.IFoo"
+        ... <generic:interface
+        ...     interface="example.IFoo"
+        ...     type="zope.generic.face.IKeyfaceType"
         ...     />
         ... ''')
 
@@ -119,8 +120,8 @@ def ConfigurationAdapterClass(keyface, informationProviders=None, bases=()):
     """
 
     # preconditions
-    if not IConfiguration.providedBy(keyface):
-        raise ValueError('Interface must provide %s.' % IConfiguration.__name__)
+    if not IConfigurationType.providedBy(keyface):
+        raise ValueError('Interface must provide %s.' % IConfigurationType.__name__)
 
     # essentails
     if not bases:

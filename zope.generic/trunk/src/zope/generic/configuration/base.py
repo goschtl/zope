@@ -29,9 +29,9 @@ from zope.schema.interfaces import IField
 
 from zope.generic.face import IAttributeFaced
 from zope.generic.face import IFace
+from zope.generic.face import IUndefinedContext
 from zope.generic.face.api import FaceForAttributeFaced
 
-from zope.generic.configuration import IConfiguration
 from zope.generic.configuration import IConfigurationData
 from zope.generic.configuration import IConfigurations
 
@@ -110,7 +110,7 @@ class ConfigurationData(Persistent):
 
     A configuration belong to the configuration context:
 
-        >>> adapted.conface is IConfiguration
+        >>> adapted.conface is IUndefinedContext
         True
 
     """
@@ -132,7 +132,7 @@ class ConfigurationData(Persistent):
         # essentials
         self.__dict__['_ConfigurationData__data'] = PersistentDict(data)
         self.__dict__['__keyface__'] = __keyface__
-        self.__dict__['__conface__'] = IConfiguration
+        self.__dict__['__conface__'] = IUndefinedContext
         directlyProvides(self, __keyface__)
 
     def __conform__(self, interface):

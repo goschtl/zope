@@ -23,15 +23,13 @@ from zope.interface import alsoProvides
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
 from zope.schema import Object
-from zope.schema import Text
-from zope.schema import TextLine
 
 from zope.generic.directlyprovides import IProvides
 
 
 
 class IFaceType(IInterface):
-    """Mark key or context interfaces."""
+    """Abstract type interfaces."""
 
 
 
@@ -44,7 +42,7 @@ class IKeyfaceType(IFaceType):
 
 
 class IUndefinedKeyface(Interface):
-    """A unspecified key interface."""
+    """An unspecified key interface."""
 
 alsoProvides(IUndefinedKeyface, IKeyfaceType)
 
@@ -63,7 +61,7 @@ class IConfaceType(IFaceType):
 
 
 class IUndefinedContext(Interface):
-    """A unspecified context interface."""
+    """An unspecified context interface."""
 
 alsoProvides(IUndefinedContext, IConfaceType)
 
@@ -122,40 +120,3 @@ class IAttributeFaced(IFaced):
 
 class IProvidesAttributeFaced(IAttributeFaced, IProvides):
     """Directly provide the key and context interface."""
-
-
-class IKeyfaceDescription(Interface):
-    """Describe an key interface."""
-
-    label = TextLine(title=_('Lable'))
-
-    hint = Text(title=_('Hint'))
-
-
-
-class IInformationProvider(IProvidesAttributeFaced):
-    """Provide information to a dedicated context and key interface pair.
-
-    Information provider will be registered as utility providing the context 
-    interface and named by the dotted name of the key interface.
-
-    Information providers can be extended by generic information mechanism
-    such as zope.annotation.IAnnotations simply by adding a specific marker to
-    the information provider implementation. The marker should invoke the 
-    specific information mechanism:
-    
-        classProvides(api.InformationProvider, IAttributeAnnotatable)
-
-        <class class="zope.generic.api.InformationProvider" >
-            <implements="zope.annotation.IAttributeAnnotatable" />
-        </class>
-    """
-
-
-class IGlobalInformationProvider(IInformationProvider):
-    """Global information provider."""
-
-
-
-class ILocalInformationProvider(IInformationProvider):
-    """Local information provider."""

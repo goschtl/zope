@@ -16,25 +16,32 @@ Configurations
 ---------------
 
 Configurations is a container of configuration data. Configuration data are
-defined by an schema which is providing IConfiguration. The configuration
-data itself has to provide the schema that is used to reference it.
+defined by an schema which is typed as IConfigurationType. IConfigurationType
+is extending IKeyType because the configuration schemas are the key interface
+of a configuration object too. The configuration object itself has to provide 
+the schema too.
 
+    >>> from zope.interface import Interface
     >>> from zope.schema import TextLine
-        
-    >>> class IMyConfiguration(interface.Interface):
-    ...     my = TextLine(title=u'My')
+    
+    >>> class IFooConfiguration(Interface):
+    ...    foo = TextLine(title=u'Foo')
+    ...    optional = TextLine(title=u'Optional', required=False, default=u'Bla')
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IMyConfiguration"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.IFooConfiguration"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
-    >>> from zope.generic.configuration.api import IConfiguration
-    >>> IConfiguration.providedBy(IMyConfiguration)
+    >>> api.IConfigurationType.providedBy(IFooConfiguration)
     True
  
+    >>> from zope.generic.face import IKeyfaceType
+    >>> IKeyfaceType.providedBy(IFooConfiguration)
+    True
+
 Regularly local configurations are provided by objects marked with
 IAttributeConfigurations automatically:
 
@@ -61,26 +68,6 @@ At the beginning the IConfigurations storage does not exists:
     >>> configurations.__nonzero__()
     False
 
-Configuration data will be stored under an key interface within the
-configurations. Such a configuration schema defines its configuration
-data:
-
-    >>> from zope.interface import Interface
-    >>> from zope.schema import TextLine
-    
-    >>> class IFooConfiguration(Interface):
-    ...    foo = TextLine(title=u'Foo')
-    ...    optional = TextLine(title=u'Optional', required=False, default=u'Bla')
-
-The configuration schema is a regular schema, but it has to be typed
-by IConfiguration (Regularly done by the configuration directive):
-
-    >>> from zope.interface import directlyProvides
-
-    >>> directlyProvides(IFooConfiguration, IConfiguration)
-    >>> IConfiguration.providedBy(IFooConfiguration)
-    True
-
 The configurations provides a regular dictionary api by the UserDictMixin
 (like AttributeAnnotations). This mixin bases on the following methods:
 
@@ -106,7 +93,7 @@ configuration schema itself. This key interface must provide IConfiguration:
     >>> configurations[IBarConfiguration] = object()
     Traceback (most recent call last):
     ...
-    KeyError: 'Interface key IBarConfiguration does not provide IConfiguration.'
+    KeyError: 'Interface key IBarConfiguration requires IConfigurationType.'
 
     >>> configurations[IFooConfiguration] = object()
     Traceback (most recent call last):

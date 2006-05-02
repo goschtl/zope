@@ -41,23 +41,23 @@ In the generic model these components may be configurations or annotations.
     ...     note = schema.Text(title=u"Note body", required=False)
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.ITextConfig"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.ITextConfig"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.INoteConfig"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.INoteConfig"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''')
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IArticleInitializationConfiguration"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.IArticleInitializationConfiguration"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''')
 

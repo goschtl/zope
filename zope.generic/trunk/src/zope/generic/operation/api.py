@@ -17,65 +17,39 @@ $Id$
 """
 
 # usage see README.txt
-from zope.generic.informationprovider.api import getNextInformationProvider
+from zope.generic.face import IUndefinedContext
+from zope.generic.informationprovider.api import getInformationProvider
 from zope.generic.informationprovider.api import getInformation
 
 from zope.generic.operation.interfaces import *
 from zope.generic.operation.metaconfigure import assertOperation
-from zope.generic.operation.metaconfigure import provideOperationConfiguration
 
 
 
-def getOperationInformation(object):
-    """Evaluate an operation information from an object."""
-    return getNextInformationProvider(object, IOperationContext)
-
-
-
-def queryOperationInformation(object, default=None):
-    """Evaluate an operation information from an object or return default."""
-    try:
-        return getOperationInformation(object)
-
-    except:
-        return default
-
-
-
-def getOperationConfiguration(object):
+def getOperationConfiguration(object, conface=IUndefinedContext):
     """Evaluate an operation configuration."""
     
-    return getInformation(getOperationInformation(object), IOperationConfiguration)
+    return getInformation(getInformationProvider(object, conface), IOperationConfiguration)
 
 
 
-def queryOperationConfiguration(object, default=None):
-    """Evaluate an operation configuration or default."""
-    try:
-        return getOperationConfiguration(object)
-
-    except:
-        return default
-
-
-
-def getOperation(keyface, default=None):
+def getOperation(keyface, conface=IUndefinedContext):
     """Return the operation of operation marker."""
 
-    return getOperationConfiguration(keyface).operation
+    return getOperationConfiguration(keyface, conface).operation
 
 
 
 
-def inputParameter(object, default=None):
+def inputParameter(object, conface=IUndefinedContext):
     """Return the input paramters of an operation as tuple of configuration keyfaces."""
 
-    return getOperationConfiguration(object).input
+    return getOperationConfiguration(object, conface).input
 
 
 
 
-def outputParameter(object, default=None):
+def outputParameter(object, conface=IUndefinedContext):
     """Return the ouput paramters of an operation as tuple of configuration keyfaces."""
 
-    return getOperationConfiguration(object).output
+    return getOperationConfiguration(object, conface).output

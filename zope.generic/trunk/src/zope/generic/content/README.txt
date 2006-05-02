@@ -47,7 +47,6 @@ In our example we will use a simple generic object:
     >>> registerDirective('''
     ... <generic:content
     ...     keyface="example.IFooMarker"
-    ...     label='Foo Type' hint='Bla bla bla.'
     ...     >
     ...    <factory class='zope.generic.content.api.Object'
     ...        />
@@ -84,12 +83,6 @@ retrieve this utility using the conventional utility api:
 
     >>> info.keyface == IFooMarker
     True
-
-# TODO: Implement label and hint
-#    >>> info.label
-#    u'Foo Type'
-#    >>> info.hint
-#    u'Bla bla bla.'
 
 There is convenience function for the lookup of corresponding type information.
 You can lookup the type information by the type marker interface or an object
@@ -130,16 +123,16 @@ Then we provide two example configurations for our example:
     ...		optional = TextLine(title=u'Other', required=False, default=u'Default bla.')
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IAnyConfiguration"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.IAnyConfiguration"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IOtherConfiguration"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.IOtherConfiguration"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 

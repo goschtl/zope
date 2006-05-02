@@ -23,8 +23,9 @@ from zope.configuration.fields import Bool
 from zope.configuration.fields import GlobalObject
 from zope.interface import Interface
 
-from zope.generic.informationprovider.metadirectives import IBaseInformationProviderDirective
-from zope.generic.operation.metadirectives import IBaseOperationDirective
+from zope.generic.informationprovider.metadirectives import IKeyfaceDirective
+from zope.generic.operation.metadirectives import IInputDirective
+from zope.generic.operation.metadirectives import IOperationsDirective
 
 
 class IBaseFactoryDirective(Interface):
@@ -60,7 +61,7 @@ class IBaseFactoryDirective(Interface):
         )
 
 
-class IFactoryDirective(IBaseInformationProviderDirective, IBaseFactoryDirective, IBaseOperationDirective):
+class IFactoryDirective(IKeyfaceDirective, IBaseFactoryDirective, IOperationsDirective, IInputDirective):
     """Register a public factory.
 
     The factory will be registered as information provider utility within

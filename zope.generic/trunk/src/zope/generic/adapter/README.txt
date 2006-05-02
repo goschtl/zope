@@ -46,14 +46,14 @@ First we declare a configuration schema that should adapted:
 We register the configuration schema using generic:face directive:
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IFooConfiguration"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.IFooConfiguration"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
-    >>> from zope.generic.configuration import IConfiguration
-    >>> IConfiguration.providedBy(IFooConfiguration)
+    >>> from zope.generic.configuration import IConfigurationType
+    >>> IConfigurationType.providedBy(IFooConfiguration)
     True
 
 We implement a class which is providing the configuration mechanism:
@@ -61,9 +61,9 @@ We implement a class which is providing the configuration mechanism:
     >>> class IFoo(interface.Interface):
     ...    pass
 
-    >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IFoo"
+    ... <generic:interface
+    ...     interface="example.IFoo"
+    ...     type="zope.generic.face.IKeyfaceType"
     ...     />
     ... ''')
     

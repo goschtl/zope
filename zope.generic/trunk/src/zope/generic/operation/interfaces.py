@@ -25,8 +25,7 @@ from zope.interface.interfaces import IInterface
 from zope.schema import Object
 from zope.schema import Tuple
 
-from zope.generic.configuration import IConfiguration
-from zope.generic.face import IConfaceType
+from zope.generic.configuration import IConfigurationType
 from zope.generic.face import IFace
 from zope.generic.face import IKeyfaceType
 
@@ -63,10 +62,8 @@ class IOperation(IFace):
 
 
 
-class IOperationContext(Interface):
-    """Registration about an global operation."""
-
-alsoProvides(IOperationContext, IConfaceType)
+class IOperationType(IKeyfaceType):
+    """Type an public operation key interface."""
 
 
 
@@ -89,7 +86,7 @@ class IOperationConfiguration(Interface):
         description=_('A configuration interface declaring the input parameters.'),
         required=False,
         default=(),
-        value_type=Object(schema=IConfiguration))
+        value_type=Object(schema=IConfigurationType))
 
     output = Tuple(title=_('Output Declaration'),
         description=_('An interface interface declaring the output parameters.'),
@@ -99,4 +96,4 @@ class IOperationConfiguration(Interface):
 
 
 
-alsoProvides(IOperationConfiguration, IConfiguration)
+alsoProvides(IOperationConfiguration, IConfigurationType)

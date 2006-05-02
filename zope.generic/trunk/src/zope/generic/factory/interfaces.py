@@ -18,14 +18,9 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.interface import alsoProvides
-from zope.interface import Interface
-
-from zope.generic.face import IConfaceType
+from zope.generic.face import IKeyfaceType
 
 
 
-class IFactory(Interface):
-    """Factory context."""
-
-alsoProvides(IFactory, IConfaceType)
+class IFactoryType(IKeyfaceType):
+    """Type key interfaces that provide a factory for its creation."""

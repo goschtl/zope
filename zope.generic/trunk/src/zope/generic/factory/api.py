@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 
 from zope import component
 
-from zope.generic.informationprovider.api import getNextInformationProvider
+from zope.generic.informationprovider.api import getInformationProvider
 from zope.generic.informationprovider.api import queryInformation
 from zope.generic.face.api import toDottedName
 from zope.generic.operation import IOperationConfiguration
@@ -38,7 +38,7 @@ def createObject(keyface, *pos, **kws):
 
 def createParameter(keyface):
     """Evaluate initializer parameters."""
-    provider = getNextInformationProvider(keyface, IFactory)
+    provider = getInformationProvider(keyface)
     config = queryInformation(provider, IOperationConfiguration)
     if config:
         return config.input

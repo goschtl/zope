@@ -33,7 +33,6 @@ from zope.generic.face import IKeyfaceType
 
 
 
-
 ################################################################################
 #
 # Public Test implementations
@@ -74,7 +73,6 @@ def setUp(doctest=None):
     provideAdapter(zope.generic.face.adapter.FaceForAttributeFaced ,
         provides=IFace)
 
-    # register the directive of this package
     import zope.generic.face
     XMLConfig('meta.zcml', zope.generic.face)()
 

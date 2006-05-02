@@ -19,25 +19,30 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.annotation import IAnnotations
+from zope.generic.face.api import acquireInformationProvider
 from zope.generic.face.api import getConface
+from zope.generic.face.api import getInformationProvider
+from zope.generic.face.api import getInformationProvidersFor
 from zope.generic.face.api import getKeyface
-from zope.generic.face.api import getNextInformationProvider
-from zope.generic.face.api import getNextInformationProvidersFor
-from zope.generic.face.api import queryNextInformationProvider
+from zope.generic.face.api import queryInformationProvider
 from zope.generic.face.api import toDottedName
 from zope.generic.face.api import toInterface
 
 from zope.generic.configuration import IConfigurations
-from zope.generic.configuration import IConfiguration
+from zope.generic.configuration import IConfigurationType
 from zope.generic.configuration.api import ConfigurationData
 
 from zope.generic.informationprovider import *
+from zope.generic.informationprovider.base import GlobalInformationProvider
+from zope.generic.informationprovider.base import LocalInformationProvider
+from zope.generic.informationprovider.base import UserDescription
+from zope.generic.informationprovider.metaconfigure import ensureInformationProvider
 
 
 
 def getInformation(context, informationkey):
     """Evaluate an information by a keyface (string or key keyface)."""
-    if IConfiguration.providedBy(informationkey):
+    if IConfigurationType.providedBy(informationkey):
         return informationkey(IConfigurations(context))
 
     else:
@@ -58,7 +63,7 @@ def queryInformation(context, informationkey, default=None):
 def provideInformation(context, informationkey, information):
     """Set an information to a context using a keyface (string or key interface)."""
 
-    if IConfiguration.providedBy(informationkey):
+    if IConfigurationType.providedBy(informationkey):
         if type(information) is dict:
             information = ConfigurationData(informationkey, information)
     
@@ -72,7 +77,7 @@ def provideInformation(context, informationkey, information):
 def deleteInformation(context, informationkey):
     """Delete an information of a context using a keyface (string or key interface)."""
 
-    if IConfiguration.providedBy(informationkey):
+    if IConfigurationType.providedBy(informationkey):
         del IConfigurations(context)[informationkey]
     
     else:

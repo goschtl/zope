@@ -28,7 +28,7 @@ import zope.generic.face.testing
 import zope.generic.operation
 import zope.generic.testing.testing
 
-from zope.generic.operation import IOperationContext
+from zope.generic.operation import IOperationType
 
 
 

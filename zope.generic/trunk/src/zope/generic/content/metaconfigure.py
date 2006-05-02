@@ -29,7 +29,7 @@ from zope.generic.face import IUndefinedContext
 
 
 
-class TypeDirective(InformationProviderDirective):
+class ContentDirective(InformationProviderDirective):
     """Provide a new logical type."""
 
     # mark types with a type marker type
@@ -39,14 +39,13 @@ class TypeDirective(InformationProviderDirective):
     def __init__(self, _context, keyface, label=None, hint=None):        
         # register types within the type information registry
         conface = IUndefinedContext
-        super(TypeDirective, self).__init__(_context, keyface, conface, label, hint)
+        super(ContentDirective, self).__init__(_context, keyface, conface)
 
     def factory(self, _context, class_, operations=(), input=None,
                 providesFace=True, notifyCreated=False, storeInput=False):
         """Add factory."""
         factoryDirective(_context, self._keyface, class_, operations, input,
-                     providesFace, notifyCreated, storeInput,
-                     self._label, self._hint)
+                     providesFace, notifyCreated, storeInput)
 
 
     def adapter(self, _context, provides, class_=None, writePermission=None, 

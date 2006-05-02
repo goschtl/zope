@@ -20,21 +20,20 @@ __docformat__ = 'restructuredtext'
 
 from zope.component.interface import provideInterface
 from zope.configuration.exceptions import ConfigurationError
-from zope.interface import alsoProvides
 
-from zope.generic.configuration import IConfiguration
 from zope.generic.configuration import IConfigurations
-from zope.generic.configuration.api import ConfigurationData
-from zope.generic.face.metaconfigure import keyfaceDirective
-from zope.generic.informationprovider.api import provideInformation
+from zope.generic.face import IUndefinedContext
+from zope.generic.face import IUndefinedKeyface
 from zope.generic.informationprovider.api import queryInformation
-from zope.generic.informationprovider.api import queryNextInformationProvider
+from zope.generic.informationprovider.api import queryInformationProvider
+from zope.generic.informationprovider.metaconfigure import InformationProviderDirective
 
 from zope.generic.operation import IOperation
 from zope.generic.operation import IOperationConfiguration
-from zope.generic.operation import IOperationContext
+from zope.generic.operation import IOperationType
 from zope.generic.operation.base import Operation
 from zope.generic.operation.base import OperationPipe
+
 
 
 def assertOperation(handlers, keyface=None, input=None, output=None):
@@ -66,9 +65,8 @@ def assertOperation(handlers, keyface=None, input=None, output=None):
         return Operation(None, keyface, input, output)
 
     # evaluate an operation from a operation key interface
-    elif IOperationContext.providedBy(handler):
-        registry = IOperationContext
-        info = queryNextInformationProvider(handler, IOperationContext)
+    elif IOperationType.providedBy(handler):
+        info = queryInformationProvider(handler)
 
         if info is None:
             ConfigurationError('Operation %s does not exist.' % handler.__name__)
@@ -86,39 +84,22 @@ def assertOperation(handlers, keyface=None, input=None, output=None):
 
 
 
-def provideOperationConfiguration(keyface, operations=None, registry=None, input=None, output=None):
-    """Provide the handler to an configuration information."""
+def operationDirective(_context, keyface, conface=None, operations=(), input=None, output=None, label=None, hint=None):
+    """Register a public operation."""
 
-    # assume configuration within an IOperationContext
-    if registry is None:
-        registry = IOperationContext
+    if conface is None:
+        conface = IUndefinedContext
 
-    provider = queryNextInformationProvider(keyface, registry)
+    # provide type as soon as possilbe
+    if not IOperationType.providedBy(keyface):
+        provideInterface(None, keyface, IOperationType)      
 
-    # this should never happen...
-    if provider is None:
-        ConfigurationError('No operation information for %s' 
-                           % keyface.__name__)
+    # register the operatio using the information provider directive
+    directive = InformationProviderDirective(_context, keyface, conface)
 
     # create operation wrapper
     operation = assertOperation(operations, keyface, input, output)
-
-    # create and set configuration data
-    provideInformation(provider, IOperationConfiguration, 
-        {'operation': operation, 'input': input, 'output': output})
-
-
-
-def operationDirective(_context, keyface, operations=(), input=None, output=None, label=None, hint=None):
-    """Register a public operation."""
-
-    type = IOperationContext
     
-    # assert type as soon as possible
-    keyfaceDirective(_context, keyface, type)
+    directive.information(_context, keyface=IOperationConfiguration, 
+        configuration={'operation': operation, 'input': input, 'output': output})
 
-    _context.action(
-        discriminator = ('provideOperationConfiguration', keyface),
-        callable = provideOperationConfiguration,
-        args = (keyface, operations, type, input, output),
-        )

@@ -25,12 +25,6 @@ As usual first we have to declare an key interface for our implementation:
     >>> class IMyInstance(Interface):
     ...     pass
 
-    >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IMyInstance"
-    ...     />
-    ... ''') 
-
 Then we have to implement an example class with dedicated initalization
 parameters:
 
@@ -53,15 +47,15 @@ default arguments. Afterward we register the schema as IConfiguration:
     ...    c = TextLine(required=False, default=u'c default')
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IMyParameter"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.IMyParameter"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
 During the creation process we can invoke initializer operations. In our example
 we are defining a simple handler, but you could use object providing IOperation
-or interfaces providing IOperationContext too:
+or interfaces providing IOperationType too:
 
     >>> def init_handler(context, *pos, **kws):
     ...    print 'initializing'
@@ -103,10 +97,7 @@ After this registration we find the following stuff within the component
 registration:
 
     >>> from zope.component.eventtesting import getEvents, clearEvents
-    
-    >>> events = getEvents()
-    >>> len(events)
-    5
+
     >>> clearEvents()
 
     >>> from zope.generic.face.api import toDottedName
@@ -115,7 +106,9 @@ registration:
     >>> util.keyface == IMyInstance
     True
 
-    >>> util = component.getUtility(api.IFactory, name=toDottedName(IMyInstance))
+    >>> from zope.generic.face import IUndefinedContext
+
+    >>> util = component.getUtility(IUndefinedContext, name=toDottedName(IMyInstance))
     >>> util.keyface == IMyInstance
     True
 

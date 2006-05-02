@@ -20,7 +20,6 @@ __docformat__ = 'restructuredtext'
 
 from zope.component.zcml import subscriber
 
-from zope.generic.face import IKeyfaceType
 from zope.generic.operation.api import assertOperation
 
 
@@ -32,7 +31,7 @@ def handlerDirective(_context, keyface, event, operations=(), input=None):
         raise NotImplementedError('Missing feature: You cannot use the input attribute yet.')
 
     # evaluate the operation
-    operation = assertOperation(operations, keyface, input, None)
+    operation = assertOperation(operations, None, input, None)
 
     def handler(component, event):
         operation(component, event)

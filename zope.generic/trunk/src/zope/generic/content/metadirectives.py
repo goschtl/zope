@@ -23,13 +23,15 @@ from zope.configuration.fields import Bool
 
 from zope.generic.adapter.metadirectives import IOthersAdapterDirective
 from zope.generic.factory.metadirectives import IBaseFactoryDirective
-from zope.generic.informationprovider.metadirectives import IBaseInformationProviderDirective
-from zope.generic.handler.metadirectives import IBaseHandlerDirective
-from zope.generic.operation.metadirectives import IBaseOperationDirective
+from zope.generic.informationprovider.metadirectives import IDescriptionDirective
+from zope.generic.informationprovider.metadirectives import IKeyfaceDirective
+from zope.generic.handler.metadirectives import IEventDirective
+from zope.generic.operation.metadirectives import IOperationsDirective
+from zope.generic.operation.metadirectives import IInputDirective
 
     
 
-class ITypeDirective(IBaseInformationProviderDirective):
+class IContentDirective(IKeyfaceDirective, IDescriptionDirective):
     """Declare attriubtes of the type directive.
 
     Register an type information and a type factory.
@@ -37,7 +39,7 @@ class ITypeDirective(IBaseInformationProviderDirective):
 
 
 
-class IFactorySubdirective(IBaseFactoryDirective, IBaseOperationDirective):
+class IFactorySubdirective(IBaseFactoryDirective, IOperationsDirective, IInputDirective):
     """Provide an factory for the type."""
 
     providesFace = Bool(
@@ -60,5 +62,5 @@ class IAdapterSubdirective(IOthersAdapterDirective):
         default=False
         )
 
-class IHandlerSubdirective(IBaseHandlerDirective, IBaseOperationDirective):
+class IHandlerSubdirective(IEventDirective, IOperationsDirective, IInputDirective):
     """Provide object event handler for the keyface."""

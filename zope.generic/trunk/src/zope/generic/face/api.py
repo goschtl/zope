@@ -20,17 +20,14 @@ __docformat__ = 'restructuredtext'
 
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
+from zope.interface import directlyProvidedBy
 
 from zope.generic.face import *
 from zope.generic.face.adapter import FaceForAttributeFaced
 from zope.generic.face.base import Face
-from zope.generic.face.base import GlobalInformationProvider
-from zope.generic.face.base import KeyfaceDescription
-from zope.generic.face.base import LocalInformationProvider
 from zope.generic.face.helper import toDescription
 from zope.generic.face.helper import toDottedName
 from zope.generic.face.helper import toInterface
-from zope.generic.face.metaconfigure import ensureInformationProvider
 
 
 
@@ -79,43 +76,63 @@ def getConface(object, default=IUndefinedContext):
 
 
 
-def getNextInformationProvider(object=None, conface=None):
+def getInformationProvider(object=None, conface=IUndefinedContext):
     """Evaluate the next information provider utility for an object or keyface."""
-    
-    if conface is None:
-        conface = getConface(object, IUndefinedContext)
-        
+
     keyface = getKeyface(object)
 
     try:
-        return getUtility(conface, toDottedName(keyface))
-
+        provider = getUtility(conface, toDottedName(keyface))
+        # return only provider that is or extends a certain context.
+        if provider.conface == conface:
+            return provider
     except:
-        # try to evaluate a matching super key interface
-        for more_general_keyface in keyface.__iro__:
-            if IKeyfaceType.providedBy(more_general_keyface):
-                try:
-                    return getUtility(conface, toDottedName(more_general_keyface))
+        pass
 
-                except:
-                    pass
-        else:
-            raise
+    raise KeyError('Missing information provider %s at %s.' % (keyface.__name__, conface.__name__))
 
 
 
-def queryNextInformationProvider(object=None, conface=None, default=None):
+def queryInformationProvider(object=None, conface=IUndefinedContext, default=None):
     """Evaluate the next information provider utility for an object or keyface."""
     try:
-        return getNextInformationProvider(object, conface)
+        return getInformationProvider(object, conface)
 
     except:
         return default
 
 
 
-def getNextInformationProvidersFor(provider, default=None):
+def acquireInformationProvider(object=None, conface=IUndefinedContext):
+    """Evaluate the next information provider utility for an object or keyface."""
+        
+    keyface = getKeyface(object)
+
+    for more_general_conface in conface.__iro__:
+        for more_general_keyface in keyface.__iro__:
+            if IConfaceType.providedBy(more_general_conface) and IKeyfaceType.providedBy(more_general_keyface):
+                #print '<Lookup %s at %s >' % (more_general_keyface.__name__, more_general_conface.__name__)
+                try:
+                    return getInformationProvider(more_general_keyface, more_general_conface)
+                
+                except:
+                    pass
+
+    raise KeyError('Missing information provider %s at %s.' % (keyface.__name__, conface.__name__))
+
+
+
+
+def getInformationProvidersFor(face):
     """Evaluate all information providers of a certain information aspect."""
 
-    for name, information in getUtilitiesFor(provider):
-        yield (toInterface(name), information)
+    if IConfaceType.providedBy(face):
+        for name, provider in getUtilitiesFor(face):
+            yield (toInterface(name), provider)
+    
+    elif IKeyfaceType.providedBy(face):
+        for conface in [conface for conface in directlyProvidedBy(face).flattened() if IConfaceType.providedBy(conface)]:
+            yield (conface, getInformationProvider(face, conface))
+
+    else:
+        raise TypeError('KeyfaceType or ConfaceType required.', face)

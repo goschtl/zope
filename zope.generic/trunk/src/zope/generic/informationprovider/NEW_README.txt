@@ -22,28 +22,6 @@ interfaces (short: conface con[text inter]face):
     >>> class IUserContext(interface.Interface):
     ...     """Store log user information."""
 
-This specialized information interface has to be registered later by 
-face-directive:
-
-    >>> registerDirective('''
-    ... <generic:face
-    ...     conface="example.ISupplierContext"
-    ...     />
-    ... ''') 
-
-    >>> registerDirective('''
-    ... <generic:face
-    ...     conface="example.IUserContext"
-    ...     />
-    ... ''') 
-
-    >>> from zope.generic.face import IConfaceType
-
-    >>> IConfaceType.providedBy(ISupplierContext)
-    True
-    >>> IConfaceType.providedBy(IUserContext)
-    True
-
 Within those contexts we like to provide log configuration information. In our
 example logger frame work  we need to configure a specific log:
 
@@ -62,18 +40,18 @@ the zope.generic.configuration.IConfiguration context interface. This should
 be done the following way:
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.ILogConfiguration"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.ILogConfiguration"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''')
 
     >>> from zope.generic.face import IKeyfaceType
-    >>> from zope.generic.configuration import IConfiguration
+    >>> from zope.generic.configuration import IConfigurationType
 
     >>> IKeyfaceType.providedBy(ILogConfiguration)
     True
-    >>> IConfiguration.providedBy(ILogConfiguration)
+    >>> IConfigurationType.providedBy(ILogConfiguration)
     True
 
 Components that are using our log framework can provide their own log 
@@ -81,18 +59,19 @@ configuration by adding a log configuration to the corresponding information
 provider. That has to be done by information that is set for an key interface
 within a dedicated context (ISupplierContext and IUserContext in our example).
 For all components that will not provide their own log configuration information
-we should provide default configuration within both contexts.
+we should provide default configuration within both contexts. This can be done
+by ommiting the keyface attribute of information provider directive. This
+assigns an information provider to IUndefinedKeyface
 
 You can provide all configuration value, but at least you have to provide
 the required ones.
 
     >>> from zope.generic.configuration.api import ConfigurationData
 
-    >>> supplier_default = ConfigurationData(ILogConfiguration, {'header': 'Supplier', 'timeFormat': '%y.%m.%d'})
+    >>> supplier_default = {'header': 'Supplier', 'timeFormat': '%y.%m.%d'}
 
     >>> registerDirective('''
     ... <generic:informationProvider
-    ...     keyface="zope.generic.face.IUndefinedKeyface"
     ...     conface="example.ISupplierContext"
     ...     >
     ...   <information
@@ -104,11 +83,10 @@ the required ones.
 
 Not provided optional data are taken from the default field values:
 
-    >>> user_default = ConfigurationData(ILogConfiguration, {})
+    >>> user_default = {}
 
     >>> registerDirective('''
     ... <generic:informationProvider
-    ...     keyface="zope.generic.face.IUndefinedKeyface"
     ...     conface="example.IUserContext"
     ...     >
     ...   <information
@@ -120,13 +98,15 @@ Not provided optional data are taken from the default field values:
 
 You can retrieve this configurations the following way:
 
-    >>> provider_for_nokeyface_at_suppliercontext = api.queryNextInformationProvider(conface=ISupplierContext)
-    >>> api.getInformation(provider_for_nokeyface_at_suppliercontext, ILogConfiguration) is supplier_default
-    True
+    >>> provider_for_nokeyface_at_suppliercontext = api.getInformationProvider(conface=ISupplierContext)
+    >>> data = api.getInformation(provider_for_nokeyface_at_suppliercontext, ILogConfiguration)
+    >>> data.header, data.timeFormat
+    ('Supplier', '%y.%m.%d')
 
-    >>> provider_for_nokeyface_at_usercontext = api.queryNextInformationProvider(conface=IUserContext)
-    >>> api.getInformation(provider_for_nokeyface_at_usercontext, ILogConfiguration) is user_default
-    True
+    >>> provider_for_nokeyface_at_usercontext = api.getInformationProvider(conface=IUserContext)
+    >>> data = api.getInformation(provider_for_nokeyface_at_usercontext, ILogConfiguration)
+    >>> data.header, data.timeFormat
+    ('General', '%d.%m.%y')
 
 Last we have to define our application - the log itself.
 
@@ -152,7 +132,7 @@ Last we have to define our application - the log itself.
     ...     def __call__(self, message):
     ...         keyface = api.getKeyface(self.context)
     ...         conface = api.getConface(self)
-    ...         provider = api.getNextInformationProvider(keyface, conface)
+    ...         provider = api.acquireInformationProvider(keyface, conface)
     ...         logconfig = api.getInformation(provider, ILogConfiguration)
     ...         return '%s: %s, %s' % (logconfig.header, message, 
     ...                               time.strftime(logconfig.timeFormat))
@@ -238,7 +218,7 @@ the user context:
     >>> entry = user_log('Guguseli'); entry
     Traceback (most recent call last):
     ...
-    ComponentLookupError: (<InterfaceClass example.IUserContext>, 'example.IMy')
+    KeyError: 'Missing information provider IMy at IUserContext.'
 
 If we like to acquire from the default user context configuration, we have
 to derive our marker from IUndefinedKeyface.

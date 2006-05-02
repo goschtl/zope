@@ -19,36 +19,62 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.annotation import IAnnotations
-from zope.annotation.attribute import AttributeAnnotations
-from zope.component.interface import provideInterface
 from zope.component import provideUtility
+from zope.component import queryUtility
+from zope.component.interface import provideInterface
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import alsoProvides
 
 from zope.generic.configuration import IConfigurations
-from zope.generic.configuration.api import AttributeConfigurations
+from zope.generic.configuration.api import ConfigurationData
 from zope.generic.face import IConfaceType
-from zope.generic.face.api import ensureInformationProvider
-from zope.generic.face.api import getNextInformationProvider
+from zope.generic.face import IKeyfaceType
+from zope.generic.face import IUndefinedContext
+from zope.generic.face import IUndefinedKeyface
+from zope.generic.face.api import getInformationProvider
 from zope.generic.face.api import toDescription
 from zope.generic.face.api import toDottedName
-from zope.generic.face.base import _global_information_hook
-from zope.generic.face.base import _local_information_hook
-from zope.generic.face.metaconfigure import faceDirective
+
+from zope.generic.informationprovider.base import GlobalInformationProvider
 
 
-# provide adapter via __conform__ mechanism
-_global_information_hook[IAnnotations] = AttributeAnnotations
-_global_information_hook[IConfigurations] = AttributeConfigurations
-_local_information_hook[IAnnotations] = AttributeAnnotations
-_local_information_hook[IConfigurations] = AttributeConfigurations
+
+def ensureInformationProvider(keyface, conface):
+    """Provide an information provider."""
+
+    # preconditions
+    if not IConfaceType.providedBy(conface):
+        raise TypeError('Conface requires %s.' % IConfaceType.__name__)
+
+    if not IKeyfaceType.providedBy(keyface):
+        raise TypeError('Keyface requires %s.' % IKeyfaceType.__name__)
+
+    # essentials
+    name = toDottedName(keyface)
+
+    provider = queryUtility(conface, name)
+
+    # register
+    if not (provider and provider.conface == conface):
+
+        # type key face by its context interface
+        alsoProvides(keyface, conface)
+
+        # provide information provider utility
+        provider = GlobalInformationProvider(conface, keyface)
+        provideUtility(provider, conface, name=name)
+
+    return provider
 
 
 
 def provideConfiguration(keyface, conface, configuration_keyface, configuration):
     """Provide a configuration for a certain type marker."""
 
-    info = getNextInformationProvider(keyface, conface)
+    if type(configuration) is dict:
+        configuration = ConfigurationData(configuration_keyface, configuration)
+
+    info = getInformationProvider(keyface, conface)
     
     configurations = IConfigurations(info)
     configurations[configuration_keyface] = configuration
@@ -58,7 +84,7 @@ def provideConfiguration(keyface, conface, configuration_keyface, configuration)
 def provideAnnotation(keyface, conface, annotation_key, annotation):
     """Provide an annotation for a certain type marker."""
 
-    info = getNextInformationProvider(keyface, conface)
+    info = getInformationProvider(keyface, conface)
     
     annotations = IAnnotations(info)
     annotations[annotation_key] = annotation
@@ -68,30 +94,32 @@ def provideAnnotation(keyface, conface, annotation_key, annotation):
 class InformationProviderDirective(object):
     """Provide a new information of a certain information registry."""
 
-    def __init__(self, _context, keyface, conface, label=None, hint=None):
+    def __init__(self, _context, keyface=IUndefinedKeyface, conface=IUndefinedContext):
+        # preconditions
+        if IConfaceType.providedBy(keyface):
+            raise ConfigurationError('Key interface %s can not be registered '
+                                     'as context interface too.' % 
+                                     keyface.__name__)
+    
+        if conface and IKeyfaceType.providedBy(conface):
+            raise ConfigurationError('Context interface %s can not be '
+                                     'registered as key interface too.' % 
+                                     conface.__name__)
+
+        # assign variables for the subdirecitives
         self._keyface = keyface
         self._context = _context
         self._conface = conface
 
-        # set label and hint
-        label, hint = toDescription(keyface, label, hint)
-        self._label = label
-        self._hint = hint
-    
-        # assert type as soon as possible
-        faceDirective(_context, keyface=keyface, conface=None, type=conface)
+        # provide type as soon as possilbe
+        if not IKeyfaceType.providedBy(keyface):
+            provideInterface(None, keyface, IKeyfaceType)
 
-        _context.action(
-            discriminator = None,
-            callable = provideInterface,
-            args = (None, self._keyface),
-            )
-    
-        _context.action(
-            discriminator = None,
-            callable = provideInterface,
-            args = (None, self._conface),
-            )
+        if not IConfaceType.providedBy(conface):
+            provideInterface(None, conface, IConfaceType)
+
+        # ensure the corresponding information provider
+        ensureInformationProvider(keyface, conface)
 
     def __call__(self):
         "Handle empty/simple declaration."
@@ -100,9 +128,9 @@ class InformationProviderDirective(object):
     def information(self, _context, keyface=None, configuration=None, key=None, annotation=None):
         """Add a configuration to the information provider."""
         # handle configuration
-        if keyface and configuration:
+        if keyface and configuration is not None:
             # preconditions
-            if not keyface.providedBy(configuration):
+            if not (keyface.providedBy(configuration) or type(configuration) is dict):
                 raise ConfigurationError('Data attribute must provide %s.' % keyface.__name__)
     
             _context.action(

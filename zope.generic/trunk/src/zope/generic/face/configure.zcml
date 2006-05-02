@@ -25,19 +25,5 @@
   	  provides=".IFace"
   	  trusted="True"
   	  />
-
-  <class class=".base.GlobalInformationProvider">
-    <require
-        permission="zope.Public"
-        interface=".IFace"
-        />
-  </class>
-
-  <class class=".base.LocalInformationProvider">
-    <require
-        permission="zope.Public"
-        interface=".IFace"
-        />
-  </class>
-
+ 
 </configure>

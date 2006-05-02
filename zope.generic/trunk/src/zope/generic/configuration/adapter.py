@@ -32,7 +32,7 @@ from zope.generic.face.api import toDottedName
 from zope.generic.face.api import toInterface
 
 from zope.generic.configuration import IAttributeConfigurable
-from zope.generic.configuration import IConfiguration
+from zope.generic.configuration import IConfigurationType
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration.event import Configuration
 from zope.generic.configuration.event import ObjectConfiguredEvent
@@ -107,9 +107,9 @@ class AttributeConfigurations(DictMixin, Location):
 
     def __setitem__(self, keyface, value):
         # preconditions
-        if not IConfiguration.providedBy(keyface):
-            raise KeyError('Interface key %s does not provide %s.' % 
-                (keyface.__name__, IConfiguration.__name__))
+        if not IConfigurationType.providedBy(keyface):
+            raise KeyError('Interface key %s requires %s.' % 
+                (keyface.__name__, IConfigurationType.__name__))
 
         if not keyface.providedBy(value):
             raise ValueError('Value does not provide %s.' % keyface.__name__)

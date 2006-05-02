@@ -24,13 +24,12 @@ from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import Tokens
 from zope.interface import Interface
 
-from zope.generic.configuration import IConfiguration
-from zope.generic.informationprovider.metadirectives import IBaseInformationProviderDirective
+from zope.generic.informationprovider.metadirectives import IInformationProviderDirective
 
 
 
-class IBaseOperationDirective(Interface):
-    """Register an operation."""
+class IOperationsDirective(Interface):
+    """Register operations."""
 
     operations = Tokens(
         title=_('Callable, Operation or IOperationContext'),
@@ -40,13 +39,27 @@ class IBaseOperationDirective(Interface):
         value_type=GlobalObject()
         )
 
+
+
+class IInputDirective(Interface):
+    """Register input schema of the operations."""
+
     input = GlobalInterface(title=_('Input Declaration'),
         description=_('Configuration schema describing the input arguments.'),
         required=False)
 
 
 
-class IOperationDirective(IBaseInformationProviderDirective, IBaseOperationDirective):
+class IOutputDirective(Interface):
+    """Register output schema of the operations."""
+
+    output = GlobalInterface(title=_('Output Declaration'),
+        description=_('Configuration schema or interface describing the input arguments.'),
+        required=False)
+
+
+
+class IOperationDirective(IInformationProviderDirective, IOperationsDirective, IInputDirective, IOutputDirective):
     """Register a public operation.
 
     The operation will be registered as information provider utility providing
@@ -56,6 +69,3 @@ class IOperationDirective(IBaseInformationProviderDirective, IBaseOperationDirec
     IOperationContext too.
     """
 
-    output = GlobalInterface(title=_('Output Declaration'),
-        description=_('Configuration schema or interface describing the input arguments.'),
-        required=False)

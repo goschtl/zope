@@ -38,16 +38,16 @@ output-declaration and a corresponding handler.
 We have to register those parts:
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IAnyInput"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.IAnyInput"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IAnyOutput"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.IAnyOutput"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 
@@ -63,12 +63,6 @@ We have to register those parts:
 We can retrieve and introspect any registered operation by the following ways
 using itself or its keyface. For each operation directive an operation 
 information will be registered:
-
-    >>> from zope.generic.informationprovider.api import getNextInformationProvidersFor
-
-    >>> listing = list(getNextInformationProvidersFor(api.IOperationContext))
-    >>> len(listing)
-    1
 
     >>> operation = api.getOperation(IAnyOperation)
 
@@ -123,9 +117,9 @@ For this example we provide a few other example operations:
     ...     print 'Pau input: a=%s.' % (input.a)
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IPAUConfig"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.IPAUConfig"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''')
 
@@ -161,9 +155,9 @@ Regularly you will have to provide a new input configuration:
     ...    any = TextLine()
 
     >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IComplexConfig"
-    ...     type="zope.generic.configuration.IConfiguration"
+    ... <generic:interface
+    ...     interface="example.IComplexConfig"
+    ...     type="zope.generic.configuration.IConfigurationType"
     ...     />
     ... ''') 
 

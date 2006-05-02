@@ -22,6 +22,7 @@ from zope.interface import implements
 from zope.schema.fieldproperty import FieldProperty
 
 from zope.generic.face import IAttributeFaced
+from zope.generic.face import IUndefinedKeyface
 from zope.generic.face.api import Face
 from zope.generic.configuration.api import parameterToConfiguration
 

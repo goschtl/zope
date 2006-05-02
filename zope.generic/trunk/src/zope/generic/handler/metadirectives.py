@@ -22,13 +22,14 @@ from zope.app.i18n import ZopeMessageFactory as _
 from zope.configuration.fields import GlobalInterface
 from zope.interface import Interface
 
-from zope.generic.face.metadirectives import IKeyfaceDirective
-from zope.generic.operation.metadirectives import IBaseOperationDirective
+from zope.generic.informationprovider.metadirectives import IKeyfaceDirective
+from zope.generic.operation.metadirectives import IOperationsDirective
+from zope.generic.operation.metadirectives import IInputDirective
 
 
 
-class IBaseHandlerDirective(Interface):
-    """Base handler directive."""
+class IEventDirective(Interface):
+    """Event directive."""
 
     event = GlobalInterface(
         title=_('Event'),
@@ -37,5 +38,5 @@ class IBaseHandlerDirective(Interface):
         )
 
 
-class IHandlerDirective(IKeyfaceDirective, IBaseHandlerDirective, IBaseOperationDirective):
+class IHandlerDirective(IKeyfaceDirective, IOperationsDirective, IInputDirective, IEventDirective):
     """Provide trusted locatable handler that invoke operations."""

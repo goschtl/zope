@@ -6,8 +6,8 @@
 
     <meta:complexDirective
         name="content"
-        schema=".metadirectives.ITypeDirective"
-        handler=".metaconfigure.TypeDirective"
+        schema=".metadirectives.IContentDirective"
+        handler=".metaconfigure.ContentDirective"
         >
 
       <meta:subdirective

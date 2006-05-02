@@ -19,7 +19,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.generic.face.api import getKeyface
-from zope.generic.face.api import getNextInformationProvider
+from zope.generic.face.api import getInformationProvider
 from zope.generic.informationprovider.api import queryInformation
 
 from zope.generic.face import IUndefinedContext
@@ -28,7 +28,7 @@ from zope.generic.face import IUndefinedContext
 
 
 def getTypeInformation(object, conface=IUndefinedContext):
-    return getNextInformationProvider(getKeyface(object), conface)
+    return getInformationProvider(getKeyface(object), conface)
 
 
 

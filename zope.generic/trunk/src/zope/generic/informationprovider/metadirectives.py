@@ -26,11 +26,34 @@ from zope.interface import Interface
 from zope.schema import DottedName
 
 from zope.generic.face import IConfaceType
-from zope.generic.face.metadirectives import IKeyfaceDirective
+from zope.generic.face import IKeyfaceType
+
+
+class IKeyfaceDirective(Interface):
+    """Key interface registration directive."""
+
+    keyface = GlobalInterface(
+        title=_('Key Interface'),
+        description=_('Interface that represents an information key.'),
+        required=False,
+        constraint=lambda v: not IConfaceType.providedBy(v)
+        )
 
 
 
-class IBaseInformationProviderDirective(IKeyfaceDirective):
+class IConfaceDirective(Interface):
+    """Context interface registration directive."""
+
+    conface = GlobalInterface(
+        title=_('Context Interface'),
+        description=_('Interface that represents an information context.'),
+        required=False,
+        constraint=lambda v: not IKeyfaceType.providedBy(v)
+        )
+
+
+
+class IDescriptionDirective(IKeyfaceDirective):
     """Base information provider attributes."""
 
     label = MessageID(
@@ -47,15 +70,8 @@ class IBaseInformationProviderDirective(IKeyfaceDirective):
 
 
 
-class IInformationProviderDirective(IBaseInformationProviderDirective):
-    """Directive to register an information to information provider."""
-
-    conface = GlobalInterface(
-        title=_('Context Interface'),
-        description=_('The context interface provided by the information provider.'),
-        required=True,
-        constraint=lambda v: IConfaceType.providedBy(v)
-        )
+class IInformationProviderDirective(IKeyfaceDirective, IConfaceDirective):
+    """Directive to register information and information providers."""
 
 
 
@@ -70,7 +86,8 @@ class IInformationSubdirective(Interface):
 
     configuration = GlobalObject(
         title=_('Configuration'),
-        description=_('Configuration component providing the key interface.'),
+        description=_('Configuration component providing the key interface or '
+                      'a dictionary satisfying the key interface.'),
         required=False
         )
 

@@ -39,6 +39,7 @@ from zope.generic.informationprovider import testing
 
 def test_suite():
     return unittest.TestSuite((
+        doctest.DocTestSuite('zope.generic.face.base'),
         doctest.DocFileSuite('README.txt',
                              setUp=testing.placelesssetup.setUp,
                              tearDown=testing.placelesssetup.tearDown,

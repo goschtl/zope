@@ -26,8 +26,7 @@ from zope.interface import Interface
 from zope.lifecycleevent.interfaces import IModificationDescription
 
 from zope.generic.face import IFaced
-from zope.generic.face import IConfaceType
-from zope.generic.face import IKeyfaceDescription
+from zope.generic.face import IKeyfaceType
 
 
 
@@ -36,11 +35,8 @@ class IConfigurable(Interface):
 
 
 
-class IConfiguration(Interface):
-    """Mark a schema that is used for configuration."""
-
-alsoProvides(IConfiguration, IConfaceType)
-
+class IConfigurationType(IKeyfaceType):
+    """Type a key schema that is used for configuration purposes."""
 
 
 
@@ -103,7 +99,7 @@ class IWriteConfigurations(Interface):
     def __setitem__(keyface, configuration_data):
         """Store a certain configuration data under the interface-key.
 
-        The interface key should provide IConfiguration.
+        The interface key should provide IConfigurationType.
 
         The configuration data has to provide the declared key interface. 
         
@@ -137,14 +133,6 @@ class IAttributeConfigurable(IConfigurable):
     
     This is a marker interface giving permission for an `IConfigurations`
     adapter to store data in an attribute named `__configurations__`.
-
-    """
-
-
-AnnotationKey = 'zope.generic.configuration.IConfigurations'
-
-class IAnnotationsConfigurable(IConfigurable):
-    """Marker indicating that configurations can be stored on annotations.
 
     """
 

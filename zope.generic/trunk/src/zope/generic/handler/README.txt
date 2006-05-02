@@ -14,15 +14,15 @@ First we declare a key interface:
     >>> class IFoo(interface.Interface):
     ...    """The key interface."""
 
-    >>> registerDirective('''
-    ... <generic:face
-    ...     keyface="example.IFoo"
+    ... <generic:interface
+    ...     interface="example.IFoo"
+    ...     type="zope.generic.face.IKeyfaceType"
     ...     />
     ... ''')
 
 During the notification process we invoke the declared operations. In our example
 we are defining a simple handler, but you could use object providing IOperation
-or interfaces providing IOperationContext too:
+or interfaces providing IOperationType too:
 
     >>> def simplehandler(context, event):
     ...    print 'Guguseli!'

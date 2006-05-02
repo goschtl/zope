@@ -54,8 +54,8 @@ def setUp(doctest=None):
 
     from zope.annotation import IAttributeAnnotatable
     from zope.generic.configuration import IAttributeConfigurable
-    from zope.generic.face.api import GlobalInformationProvider
-    from zope.generic.face.api import LocalInformationProvider
+    from zope.generic.informationprovider.api import GlobalInformationProvider
+    from zope.generic.informationprovider.api import LocalInformationProvider
 
     classImplements(GlobalInformationProvider, IAttributeConfigurable, IAttributeAnnotatable)
     classImplements(LocalInformationProvider, IAttributeConfigurable, IAttributeAnnotatable)

@@ -22,7 +22,7 @@ from zope.generic.configuration import IConfigurations
 from zope.generic.configuration.base import ConfigurationData
 from zope.generic.configuration.helper import configuratonToDict
 from zope.generic.informationprovider.api import getInformation
-from zope.generic.informationprovider.api import getNextInformationProvider
+from zope.generic.informationprovider.api import getInformationProvider
 
 
 
@@ -68,7 +68,7 @@ class ConfigurationAdapterProperty(object):
         if configuration is None and self._providers:
             for registry in self._providers:
                 try:
-                    provider = getNextInformationProvider(context, registry)
+                    provider = getInformationProvider(context, registry)
                     configuration = getInformation(provider, keyface)
                     break
                 except:
@@ -115,7 +115,7 @@ class ConfigurationAdapterProperty(object):
                 if configuration is None and self._providers:
                     for registry in self._providers:
                         try:
-                            provider = getNextInformationProvider(context, registry)
+                            provider = getInformationProvider(context, registry)
                             configuration = getInformation(provider, keyface)
                             break
                         except:
