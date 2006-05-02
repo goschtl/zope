@@ -14,6 +14,14 @@ Bugfixes
 * Fixed a problem with the new traversal look-up order and the root
   object (OFS.Application.Application).
 
+Five 1.2.4 (unreleased)
+=======================
+
+Bugfixes
+--------
+
+* Made sure that events are fired as expected in add and edit forms.
+
 Five 1.2.3 (2006-03-31)
 =======================
 

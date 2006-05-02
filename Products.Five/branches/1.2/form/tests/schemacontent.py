@@ -106,3 +106,11 @@ def manage_addComplexSchemaContent(self, id, REQUEST=None):
     """Add the complex schema content"""
     id = self._setObject(id, ComplexSchemaContent(id))
     return ''
+
+def modifiedSubscriber(content, ev):
+    """A simple event handler, which sets a flag on the object"""
+    content._modified_flag = True
+
+def createdSubscriber(content,ev):
+    """A simple event handler, which sets a flag on the object"""
+    content._created_flag = True
