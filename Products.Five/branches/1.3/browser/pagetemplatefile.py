@@ -34,10 +34,10 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
     Uses Zope 2's engine, but with security disabled and with some
     initialization and API from Zope 3.
     """
-        
+
     def __init__(self, filename, _prefix=None, content_type=None):
         # XXX doesn't use content_type yet
-        
+
         self.ZBindings_edit(self._default_bindings)
 
         path = self.get_path_from_prefix(_prefix)
@@ -47,7 +47,7 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
 
         basepath, ext = os.path.splitext(self.filename)
         self.__name__ = os.path.basename(basepath)
- 
+
     def get_path_from_prefix(self, _prefix):
         if isinstance(_prefix, str):
             path = _prefix
@@ -55,24 +55,24 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
             if _prefix is None:
                 _prefix = sys._getframe(2).f_globals
             path = package_home(_prefix)
-        return path 
+        return path
 
     _cook = rebindFunction(PageTemplateFile._cook,
                            getEngine=getEngine)
-    
+
     pt_render = rebindFunction(PageTemplateFile.pt_render,
                                getEngine=getEngine)
 
     def _pt_getContext(self):
         try:
             root = self.getPhysicalRoot()
-            view = self._getContext()
         except AttributeError:
-            # self has no attribute getPhysicalRoot. This typically happens 
-            # when the template has no proper acquisition context. 
-            # That also means it has no view.  /regebro
             root = self.context.getPhysicalRoot()
-            view = None
+        # Even if the context isn't a view (when would that be exaclty?),
+        # there shouldn't be any dange in applying a view, because it
+        # won't be used.  However assuming that a lack of getPhysicalRoot
+        # implies a missing view causes problems.
+        view = self._getContext()
 
         here = self.context.aq_inner
 
@@ -87,7 +87,7 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
              'request': request,
              'modules': ModuleImporter,
              }
-        if view:
+        if view is not None:
             c['view'] = view
             c['views'] = ViewMapper(here, request)
 
