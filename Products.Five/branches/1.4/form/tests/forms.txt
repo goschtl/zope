@@ -77,6 +77,19 @@ specified attribute is the default value:
   u'title'
   >>> edittest.description #XXX shouldn't we get a u'' here???
 
+We can also verify that the IObjectCreatedEvent was fired, and the test
+subscriber we registered set a flag indicating such:
+
+  >>> edittest._created_flag
+  True
+
+Because the process of adding an object often sets attributes after the
+object is created and added, and IObjectModified event should also have been
+fired:
+
+  >>> edittest._modified_flag
+  True
+  >>> del edittest._modified_flag
 
 Edit forms
 ----------
@@ -104,6 +117,8 @@ We will see that nothing has changed:
   >>> edittest.title
   u'title'
   >>> edittest.description #XXX shouldn't we get a u'' here???
+  >>> getattr(edittest, '_modified_flag', False)
+  False
 
 However, when we specify the correct fields:
 
@@ -123,6 +138,69 @@ We will see that something has changed:
   u'FooTitle'
   >>> edittest.description
   u'FooDescription'
+
+And that the event has been fired:
+
+  >>> edittest._modified_flag
+  True
+  >>> del edittest._modified_flag
+
+Widget Overrides
+----------------
+
+We have an alternate add form for IFieldContent which uses a TextArea widget
+via and override in the zcml.  Let's ensure that that works:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/ftf/+/addwidgetoverride.html HTTP/1.1
+  ... """, handle_errors=False)
+  HTTP/1.1 200 OK
+  ...
+  ...<textarea
+  ...
+
+  >>> print http(r"""
+  ... POST /test_folder_1_/ftf/+/addwidgetoverride.html HTTP/1.1
+  ... Authorization: Basic manager:r00t
+  ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
+  ... Content-Length: 527
+  ...
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.title"
+  ...
+  ... title2
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.description"
+  ...
+  ... Blah
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ...
+  ... Add
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="add_input_name"
+  ...
+  ... edittest2
+  ... -----------------------------968064918930967154199105236--
+  ... """, handle_errors=False)
+  HTTP/1.1 302 Moved Temporarily
+  ...
+  Location: http://localhost/test_folder_1_/ftf/manage_main
+  ...
+
+We also indicated that all fields for this view should be set before adding
+the content, this means that no IObjectModified event should have been fired
+
+  >>> edittest2 = self.folder.ftf.edittest2
+  >>> edittest2.title
+  u'title2'
+  >>> edittest2.description
+  u'Blah'
+  >>> edittest2._created_flag
+  True
+
+  >>> getattr(edittest2, '_modified_flag', False)
+  False
 
 
 Unicode-safety of forms

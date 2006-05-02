@@ -31,6 +31,7 @@ from zope.app.form.interfaces import WidgetsError, MissingInputError
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.form.interfaces import IInputWidget, WidgetsError
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.app.event.objectevent import Attributes
 from zope.app.i18n import ZopeMessageFactory as _
 
 from Products.Five.browser import BrowserView
@@ -99,9 +100,16 @@ class EditView(BrowserView):
                 changed = applyWidgetsChanges(self, self.schema,
                     target=content, names=self.fieldNames)
                 # We should not generate events when an adapter is used.
-                # That's the adapter's job.
-                if changed and self.context is self.adapted:
-                    notify(ObjectModifiedEvent(content))
+                # That's the adapter's job.  We need to unwrap the objects to
+                # compare them, as they are wrapped differently.
+                # Additionally, we can't use Acquisition.aq_base() because
+                # it strangely returns different objects for these two even
+                # when they are identical.  In particular
+                # aq_base(self.adapted) != self.adapted.aq_base :-(
+                if changed and getattr(self.context, 'aq_base', self.context)\
+                            is getattr(self.adapted, 'aq_base', self.adapted):
+                    description = Attributes(self.schema, *self.fieldNames)
+                    notify(ObjectModifiedEvent(content, description))
             except WidgetsError, errors:
                 self.errors = errors
                 status = _("An error occurred.")
@@ -122,6 +130,7 @@ class EditView(BrowserView):
                                mapping={'date_time': str(datetime.utcnow())})
 
         self.update_status = status
+
         return status
 
 class AddView(EditView):
@@ -157,7 +166,9 @@ class AddView(EditView):
     def create(self, *args, **kw):
         """Do the actual instantiation."""
         # hack to please typical Zope 2 factories, which expect id and title
-        args = ('tmp_id', 'Temporary title') + args
+        # Any sane schema will use a unicode title, and may fail on a
+        # non-unicode one.
+        args = ('tmp_id', u'Temporary title') + args
         return self._factory(*args, **kw)
 
     def createAndAdd(self, data):
@@ -197,7 +208,6 @@ class AddView(EditView):
         notify(ObjectCreatedEvent(content))
 
         content = self.add(content)
-
         adapted = self.schema(content)
 
         if self._set_after_add:
@@ -208,6 +218,10 @@ class AddView(EditView):
                         field.set(adapted, data[name])
                     except ValidationError:
                         errors.append(sys.exc_info()[1])
+            # We have modified the object, so we need to publish an
+            # object-modified event:
+            description = Attributes(self.schema, *self._set_after_add)
+            notify(ObjectModifiedEvent(content, description))
 
         if errors:
             raise WidgetsError(*errors)

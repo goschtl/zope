@@ -16,6 +16,8 @@ Five 1.4 (unreleased)
 Bugfixes
 --------
 
+* Made sure that events are fired as expected in add and edit forms.
+
 * Made sure LocalizerLanguages class normalized language codes to
   xx-yy, instead of xx_YY or xx-YY.
 
@@ -88,7 +90,7 @@ Bugfixes
   When no Zope 3-style view is found, first the object's original
   ``__bobo_traverse__`` is tried.  If that does not exist, Traversable
   resorts to attribute look-up.
-  
+
 * Unit tests that did i18n via Localizer would fail because the
   request attribute that keeps Localizers list of preferred languages
   did not exist.
