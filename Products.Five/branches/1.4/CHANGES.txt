@@ -2,19 +2,18 @@
 Five Changes
 ============
 
-Five 1.5 (unreleased)
-=====================
+Five 1.4c (unreleased)
+======================
 
 Features
 --------
 
 * Added Viewlet and Content Provider support.
 
-Five 1.4 (unreleased)
-=====================
-
 Bugfixes
 --------
+
+* Made sure that events are fired as expected in add and edit forms.
 
 * Made sure LocalizerLanguages class normalized language codes to
   xx-yy, instead of xx_YY or xx-YY.
