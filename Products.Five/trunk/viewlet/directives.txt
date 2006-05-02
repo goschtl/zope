@@ -393,12 +393,6 @@ get do its view lookup magic:
 
   >>> from OFS.Folder import manage_addFolder
   >>> manage_addFolder(self.folder, 'ftf')
-  >>> context = zcml.load_string('''
-  ... <configure xmlns="http://namespaces.zope.org/five" i18n_domain="zope">
-  ...   <traversable class="OFS.Folder.Folder"
-  ...       />
-  ... </configure>
-  ... ''')
 
 Now we can register another simple viewlet manager:
 

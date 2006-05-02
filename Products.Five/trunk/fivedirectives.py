@@ -38,6 +38,7 @@ class IImplementsDirective(Interface):
         value_type=GlobalObject()
         )
 
+# BBB 2006/05/01 -- to be removed after 12 months
 class ITraversableDirective(Interface):
     """Make instances of class traversable publically.
 
@@ -50,6 +51,7 @@ class ITraversableDirective(Interface):
         required=True
         )
 
+# BBB 2006/05/01 -- to be removed after 12 months
 class IDefaultViewableDirective(Interface):
     """Make instances of class viewable publically.
 
