@@ -1,9 +1,9 @@
 <div class="wiki-form" tal:attributes="id string:upload_form${view/index}">
     <form method="post"
            enctype="multipart/form-data"
-           action="uploadFile"
+           action="uploadImage"
            onreset="WikiMenu.hideForm();">
-        <div class="wiki-form-title">Upload File for Link &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;</div>
+        <div class="wiki-form-title">Upload Image for Link &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;</div>
         <input name="link_id" type="hidden" tal:attributes="value string:${view/link_id}" />
         <input name="cmd" type="hidden" value="upload" />
         <input name="reference" type="hidden" value="001" 
@@ -12,10 +12,10 @@
         <table>
             <tr>
                 <td valign="top" class="wiki-field">
-                    File Name:
+                    Image Name:
                 </td>
                 <td valign="top">
-                    <input class="wiki-input" id="file_name" name="name" type="text" size="40" value="FileName" tal:attributes="value string:${view/upload_name}" />
+                    <input class="wiki-input" id="image_name" name="name" type="text" size="40" value="FileName" tal:attributes="value string:${view/upload_name}" />
                 </td>
             </tr>
             <tr>
@@ -23,7 +23,7 @@
                     Title:
                 </td>
                 <td valign="top">
-                    <input class="wiki-input" id="file_title" name="title" type="text" size="40" value=""/>
+                    <input class="wiki-input" id="image_title" name="title" type="text" size="40" value=""/>
                 </td>
             </tr>
             <tr>

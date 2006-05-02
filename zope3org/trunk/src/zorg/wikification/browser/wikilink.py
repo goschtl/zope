@@ -203,14 +203,14 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         remaining = urllib.unquote(link)
         if link in self.traversed :
             return self.traversed[link]
-        path = [x for x in remaining.split("/") if x]        
+        path = [x for x in remaining.split("/") if x]
         while path :         
             try :
                 name = path[0]
                 name = unicode(name, encoding='utf-8')
                 node = zapi.traverseName(node, name)
                 name = path.pop(0)
-            except (TraversalError, UnicodeEncodeError) :
+            except (TraversalError, UnicodeEncodeError, UnicodeDecodeError) :
                 break
         self.traversed[link] = node, path
         return node, path
@@ -715,7 +715,7 @@ class AddObjectPlaceholder(SavingPlaceholder) :
         return self.new_link
         
     def startTag(self, attrs) :
-        name = self.addObject()
+        name = self.apply()
         pattern = '<a href="%s"%s>'
         return pattern % (name, self._tagAttrs(attrs))
 
@@ -727,7 +727,7 @@ class AddObjectPlaceholder(SavingPlaceholder) :
         
         
 class UploadFilePlaceholder(AddObjectPlaceholder) :
-    """ A placeholder that points to an uploaded file. """
+    """ A placeholder for a file. """
     
     title = u"Upload File"
     _form = ViewPageTemplateFile("./templates/wiki_upload.pt")
@@ -748,7 +748,19 @@ class UploadFilePlaceholder(AddObjectPlaceholder) :
      
         return self._addObject(name, File(data, contenttype))
         
- 
+class UploadImagePlaceholder(UploadFilePlaceholder) :
+    """ A placeholder for an image. """
+    
+    title = u"Upload Image"
+    _form = ViewPageTemplateFile("./templates/wiki_image.pt")
+    
+    def performSubstitution(self) :
+        name = self.apply()
+        self.new_link = '<img src="%s"/>' % (name)
+        return self.new_link
+
+    
+    
 class CreateFolderPlaceholder(AddObjectPlaceholder) :
     """ A placeholder that points to a new folder. """
     
@@ -793,6 +805,7 @@ class AjaxLinkProcessor(WikiLinkProcessor) :
                
     cmds = dict(rename=RenamedPlaceholder, 
                         upload=UploadFilePlaceholder,
+                        image=UploadImagePlaceholder,
                         folder=CreateFolderPlaceholder,
                         newpage=CreatePagePlaceholder)
 
@@ -803,7 +816,7 @@ class AjaxLinkProcessor(WikiLinkProcessor) :
     
     def getItemInfos(self) :
         result = []
-        for cmd in 'rename', 'newpage', 'folder', 'upload' :
+        for cmd in 'rename', 'newpage', 'folder', 'upload', 'image' :
             command = self.cmds[cmd]
             result.append(dict(key=cmd, title=command.title))
         return result
