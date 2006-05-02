@@ -114,7 +114,7 @@ class Traversable:
 
         raise AttributeError(name)
 
-class FiveTraversable(DefaultTraversable):
+class FiveTraversable(object):
 
     def __init__(self, subject):
         if zope.deprecation.__show__():
