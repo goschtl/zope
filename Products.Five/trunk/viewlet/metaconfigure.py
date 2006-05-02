@@ -8,8 +8,8 @@ from zope.publisher.interfaces.browser import IBrowserView
 from zope.app.publisher.browser import viewmeta
 
 from Products.Five.security import getSecurityInfo, protectClass, protectName
-import viewlet
-import manager
+from Products.Five.viewlet import viewlet
+from Products.Five.viewlet import manager
 
 
 from Globals import InitializeClass as initializeClass

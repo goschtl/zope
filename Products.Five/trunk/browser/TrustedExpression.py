@@ -22,7 +22,7 @@ from Products.PageTemplates.Expressions import \
      getEngine, installHandlers,\
      SecureModuleImporter
 
-from ProviderExpression import ProviderExpr
+from Products.Five.browser.ProviderExpression import ProviderExpr
 
 from ReuseUtils import rebindFunction
 

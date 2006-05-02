@@ -19,13 +19,9 @@ __docformat__ = 'restructuredtext'
 
 import unittest
 from Testing.ZopeTestCase import FunctionalDocFileSuite
-from zope.app.testing import setup, ztapi
-from zope.component import provideAdapter
+from zope.app.testing import setup
 from zope.interface import Interface
 from zope.interface import implements
-from zope.traversing.interfaces import ITraversable, ITraverser
-from zope.traversing.adapters import Traverser
-from zope.traversing.namespace import resource
 from zope.viewlet import interfaces
 from OFS.SimpleItem import SimpleItem
 
@@ -53,24 +49,19 @@ class UnitTestSecurityPolicy:
     def checkPermission( self, permission, object, context) :
         return 1
 
-
 class ILeftColumn(interfaces.IViewletManager):
     """Left column of my page."""
 
-
 class INewColumn(interfaces.IViewletManager):
     """Left column of my page."""
-
 
 class WeightBasedSorting(object):
     def sort(self, viewlets):
         return sorted(viewlets,
                       lambda x, y: cmp(x[1].weight, y[1].weight))
 
-
 class Weather(object):
     weight = 0
-
 
 class Stock(object):
     weight = 0
@@ -82,47 +73,18 @@ class Sport(object):
     def __call__(self):
         return u'Red Sox vs. White Sox'
 
-
 def setUp(test):
     setup.placefulSetUp()
-
-#    # resource namespace setup
-#    from zope.traversing.interfaces import ITraversable
-#    from zope.traversing.namespace import resource
-#    ztapi.provideAdapter(None, ITraversable, resource, name="resource")
-#    ztapi.provideView(None, None, ITraversable, "resource", resource)
-#
-#    from zope.app.pagetemplate import metaconfigure
-#    from zope.contentprovider import tales
-#    metaconfigure.registerType('provider', tales.TALESProviderExpression)
-#
-#    zope.security.management.getInteraction().add(TestParticipation())
-
-#def directivesSetUp(test):
-#    setUp(test)
-#    setup.setUpTestAsModule(test, 'zope.viewlet.directives')
-
 
 def tearDown(test):
     setup.placefulTearDown()
 
-#def directivesTearDown(test):
-#    tearDown(test)
-#    setup.tearDownTestAsModule(test)
-
-
 def test_suite():
     return unittest.TestSuite((
-        FunctionalDocFileSuite('README.txt',
-                     setUp=setUp, tearDown=tearDown
-                     ),
+        FunctionalDocFileSuite('README.txt'),
         FunctionalDocFileSuite('directives.txt',
                      setUp=setUp, tearDown=tearDown
                      ),
-#        DocFileSuite('directives.txt',
-#                     setUp=directivesSetUp, tearDown=directivesTearDown,
-#                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-#                     ),
         ))
 
 if __name__ == '__main__':
