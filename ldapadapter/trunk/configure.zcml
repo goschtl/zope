@@ -11,7 +11,7 @@
         id="ldapadapter.utility.ManageableLDAPAdapter" />
 
     <implements
-        interface="zope.app.utility.interfaces.ILocalUtility" />
+        interface="zope.app.component.interfaces.ILocalUtility" />
 
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
