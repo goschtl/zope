@@ -2,13 +2,11 @@
 Five Changes
 ============
 
-Five 1.5 (unreleased)
-=====================
+Five 1.5b (unreleased)
+======================
 
 Features
 --------
-
-* Added Viewlet and Content Provider support.
 
 * five:defaultViewable and five:traversable are now unessecary and
   deprecated, as the functionality exists in the Zope core publisher
