@@ -25,6 +25,8 @@ from Products.PageTemplates.Expressions import \
      getEngine, installHandlers,\
      SecureModuleImporter
 
+from Products.Five.browser.ProviderExpression import ProviderExpr
+
 from ReuseUtils import rebindFunction
 
 ModuleImporter = SecureModuleImporter
@@ -91,18 +93,21 @@ class StringExpr(StringExpr):
   __init__ = rebindFunction(StringExpr.__init__.im_func,
                             PathExpr=PathExpr,
                             )
-  
+
+
 installHandlers = rebindFunction(installHandlers,
                                  PathExpr=PathExpr,
                                  StringExpr=StringExpr,
                                  PythonExpr=PythonExpr,
                                  )
 
+def installHandlers2(engine):
+    installHandlers(engine)
+    engine.registerType('provider', ProviderExpr)
+
 _engine=None
 getEngine = rebindFunction(getEngine,
                            _engine=_engine,
-                           installHandlers=installHandlers
+                           installHandlers=installHandlers2
                            )
 
-
-  
