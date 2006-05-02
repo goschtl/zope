@@ -52,8 +52,6 @@ zope.deferredimport.deprecated(
     queryMultiView = "zope.component.back35:deprecated",
     getViewProviding = "zope.component.back35:deprecated",
     queryViewProviding = "zope.component.back35:deprecated",
-    getDefaultViewName = "zope.component.back35:deprecated",
-    queryDefaultViewName = "zope.component.back35:deprecated",
     getResource = "zope.component.back35:deprecated",
     queryResource = "zope.component.back35:deprecated",
     )
