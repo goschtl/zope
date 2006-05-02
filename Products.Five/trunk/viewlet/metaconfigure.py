@@ -1,12 +1,11 @@
 import os
 from zope.configuration.exceptions import ConfigurationError
 from zope.viewlet import interfaces
-from zope.interface import Interface
-from zope.interface import classImplements
+from zope.interface import Interface, classImplements
+from zope.component import zcml
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.app.component import metaconfigure
+from zope.publisher.interfaces.browser import IBrowserView
 from zope.app.publisher.browser import viewmeta
-from zope.app.publisher.interfaces.browser import IBrowserView
 
 from Products.Five.security import getSecurityInfo, protectClass, protectName
 import viewlet
@@ -49,15 +48,15 @@ def viewletManagerDirective(
 
     # Register interfaces
     viewmeta._handle_for(_context, for_)
-    metaconfigure.interface(_context, view)
+    zcml.interface(_context, view)
 
     # register a viewlet manager
     _context.action(
         discriminator = ('viewletManager', for_, layer, view, name),
-        callable = metaconfigure.handler,
-        args = ('provideAdapter',
-                (for_, layer, view), provides, name,
-                 new_class, _context.info),)
+        callable = zcml.handler,
+        args = ('registerAdapter',
+                new_class, (for_, layer, view), provides, name,
+                _context.info),)
     _context.action(
         discriminator = ('five:protectClass', new_class),
         callable = protectClass,
@@ -148,12 +147,12 @@ def viewletDirective(
 
     # Register the interfaces.
     viewmeta._handle_for(_context, for_)
-    metaconfigure.interface(_context, view)
+    zcml.interface(_context, view)
 
     # register viewlet
     _context.action(
         discriminator = ('viewlet', for_, layer, view, manager, name),
-        callable = metaconfigure.handler,
+        callable = zcml.handler,
         args = ('provideAdapter',
                 (for_, layer, view, manager), interfaces.IViewlet,
                  name, new_class, _context.info),)

@@ -23,10 +23,9 @@ from zope.app.testing import setup, ztapi
 from zope.component import provideAdapter
 from zope.interface import Interface
 from zope.interface import implements
-from zope.app.traversing.adapters import Traverser
-from zope.app.traversing.interfaces import ITraversable
-from zope.app.traversing.interfaces import ITraverser
-from zope.app.traversing.namespace import resource
+from zope.traversing.interfaces import ITraversable, ITraverser
+from zope.traversing.adapters import Traverser
+from zope.traversing.namespace import resource
 from zope.viewlet import interfaces
 from OFS.SimpleItem import SimpleItem
 
@@ -88,8 +87,8 @@ def setUp(test):
     setup.placefulSetUp()
 
 #    # resource namespace setup
-#    from zope.app.traversing.interfaces import ITraversable
-#    from zope.app.traversing.namespace import resource
+#    from zope.traversing.interfaces import ITraversable
+#    from zope.traversing.namespace import resource
 #    ztapi.provideAdapter(None, ITraversable, resource, name="resource")
 #    ztapi.provideView(None, None, ITraversable, "resource", resource)
 #

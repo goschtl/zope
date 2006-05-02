@@ -30,9 +30,8 @@ ModuleImporter = SecureModuleImporter
 
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.interface import implements, Interface
-from zope.app.publication.browser import setDefaultSkin
-from zope.app.traversing.namespace import nsParse
-from zope.app.traversing.namespace import namespaceLookup
+from zope.publisher.browser import setDefaultSkin
+from zope.traversing.namespace import nsParse, namespaceLookup
 from zope.component import queryMultiAdapter
 
 class FakeRequest(dict):

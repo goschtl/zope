@@ -42,7 +42,7 @@ objects:
 
   >>> from Products.Five.traversable import FakeRequest
   >>> request = FakeRequest()
-  >>> from zope.app.publication.browser import setDefaultSkin
+  >>> from zope.publisher.browser import setDefaultSkin
   >>> setDefaultSkin(request)
 
   >>> from Products.Five.browser import BrowserView as View

@@ -71,7 +71,7 @@ Now we have to instantiate it in the context of an actual zope object:
 
   >>> from Products.Five.traversable import FakeRequest
   >>> request = FakeRequest()
-  >>> from zope.app.publication.browser import setDefaultSkin
+  >>> from zope.publisher.browser import setDefaultSkin
   >>> setDefaultSkin(request)
 
   >>> from Products.Five.browser import BrowserView as View
@@ -89,7 +89,7 @@ But now we register some viewlets for the manager
 
   >>> import zope.component
   >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-  >>> from zope.app.publisher.interfaces.browser import IBrowserView
+  >>> from zope.publisher.interfaces.browser import IBrowserView
 
   >>> from Acquisition import Explicit
   >>> class WeatherBox(Explicit):
