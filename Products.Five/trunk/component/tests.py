@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004, 2005 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,15 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Provide basic browser functionality
+"""Component tests
 
 $Id$
 """
-import Acquisition
-import zope.publisher.browser
+import unittest
+from zope.testing.doctestunit import DocFileSuite, DocTestSuite
 
-class BrowserView(Acquisition.Explicit, zope.publisher.browser.BrowserView):
-    """Five browser view
+__docformat__ = "reStructuredText"
 
-    Mixes in explicit acquisition so that security can be acquired for
-    views"""
+def test_suite():
+    return unittest.TestSuite([
+        DocFileSuite('component.txt', package="Products.Five.component"),
+        ])
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

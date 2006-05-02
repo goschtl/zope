@@ -23,12 +23,12 @@ from ComputedAttribute import ComputedAttribute
 from OFS.Traversable import Traversable as OFSTraversable
 
 from zope.interface import implements
+from zope.component import getMultiAdapter
 from zope.component.interfaces import IResource
 from zope.publisher.interfaces.browser import IBrowserPublisher
+from zope.traversing.browser.interfaces import IAbsoluteURL
+from zope.datetime import time as timeFromDateTimeString
 
-from zope.app import zapi
-from zope.app.traversing.browser.interfaces import IAbsoluteURL
-from zope.app.datetimeutils import time as timeFromDateTimeString
 from zope.app.publisher.fileresource import File, Image
 from zope.app.publisher.pagetemplateresource import PageTemplate
 from zope.app.publisher.browser.resources import empty
@@ -51,7 +51,7 @@ class Resource(Acquisition.Explicit):
 
         # TODO Zope 3 uses site = getSite() instead of container here
         # and the @@ resource access view
-        url = str(zapi.getMultiAdapter((container, self.request), IAbsoluteURL))
+        url = str(getMultiAdapter((container, self.request), IAbsoluteURL))
         url = urllib.unquote(url)
         if not isinstance(container, DirectoryResource):
             name = '++resource++%s' % name

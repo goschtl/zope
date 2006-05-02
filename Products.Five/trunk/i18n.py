@@ -20,14 +20,9 @@ from zope.interface import implements
 from zope.i18n import interpolate
 from zope.i18n.interfaces import ITranslationDomain, IUserPreferredLanguages
 from zope.i18n.negotiator import normalize_lang
-from zope.app import zapi
+from zope.component import queryUtility
 from zope.publisher.browser import BrowserLanguages
-
-# BBB 2005/10/10 -- MessageIDs are to be removed for Zope 3.3
-import zope.deprecation
-zope.deprecation.__show__.off()
-from zope.i18nmessageid import MessageID, Message
-zope.deprecation.__show__.on()
+from zope.i18nmessageid import Message
 
 class FiveTranslationService:
     """Translation service that delegates to ``zope.i18n`` machinery.
@@ -36,12 +31,12 @@ class FiveTranslationService:
     # regarding fallback and Zope 2 compatability
     def translate(self, domain, msgid, mapping=None,
                   context=None, target_language=None, default=None):
-        if isinstance(msgid, (Message, MessageID)):
+        if isinstance(msgid, Message):
             domain = msgid.domain
             default = msgid.default
             mapping = msgid.mapping
 
-        util = zapi.queryUtility(ITranslationDomain, domain)
+        util = queryUtility(ITranslationDomain, domain)
 
         if util is None:
             # fallback to translation service that was registered,

@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.interface import implements, Interface
+from zope.interface import implements, implementsOnly, Interface
 from OFS.SimpleItem import SimpleItem
 from Products.Five.tests.testing import FiveTraversableFolder
 
@@ -25,7 +25,10 @@ class IDummySite(Interface):
 class DummySite(FiveTraversableFolder):
     """A very dummy Site
     """
-    implements(IDummySite)
+    # we specifically do not let this site inherit any interfaces from
+    # the superclasses so that this class does not implement
+    # IPossibleSite under any circumstances
+    implementsOnly(IDummySite)
 
 def manage_addDummySite(self, id, REQUEST=None):
     """Add the dummy site."""

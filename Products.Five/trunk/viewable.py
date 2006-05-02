@@ -15,20 +15,12 @@
 
 $Id$
 """
-import inspect
-from zExceptions import NotFound
-from zope.component import ComponentLookupError
-from zope.interface import implements
-from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.zapi import getDefaultViewName
-
-from Products.Five.traversable import FakeRequest
-from Products.Five.interfaces import IBrowserDefault
-
-_marker = object
-
 import warnings
 import zope.deprecation
+from zope.interface import implements
+from zope.component.interfaces import ComponentLookupError
+from zope.app.publisher.browser import getDefaultViewName
+from Products.Five.interfaces import IBrowserDefault
 
 class BrowserDefault(object):
     implements(IBrowserDefault)

@@ -70,7 +70,7 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
     pt_render = rebindFunction(PageTemplateFile.pt_render,
                                getEngine=getEngine)
 
-    def _pt_getContext(self):
+    def pt_getContext(self):
         try:
             root = self.getPhysicalRoot()
         except AttributeError:
@@ -99,6 +99,3 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
             c['views'] = ViewMapper(here, request)
 
         return c
-
-    pt_getContext = rebindFunction(_pt_getContext,
-                                   SecureModuleImporter=ModuleImporter)

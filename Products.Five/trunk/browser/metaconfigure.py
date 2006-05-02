@@ -22,6 +22,8 @@ import os
 
 from zope import component
 from zope.interface import Interface
+from zope.component.zcml import handler
+from zope.component.interface import provideInterface
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IBrowserRequest, \
      IDefaultBrowserLayer
@@ -30,11 +32,10 @@ from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
 from zope.app.publisher.browser.viewmeta import view as zope_app_view
 from zope.app.publisher.browser.viewmeta import providesCallable, \
      _handle_menu, _handle_for
-from zope.app.component.metaconfigure import handler
-from zope.app.component.interface import provideInterface
 
 from Products.Five.browser import BrowserView
-from Products.Five.browser.resource import FileResourceFactory, ImageResourceFactory
+from Products.Five.browser.resource import FileResourceFactory
+from Products.Five.browser.resource import ImageResourceFactory
 from Products.Five.browser.resource import PageTemplateResourceFactory
 from Products.Five.browser.resource import DirectoryResourceFactory
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
@@ -125,8 +126,8 @@ def page(_context, name, permission, for_,
     _context.action(
         discriminator = ('view', for_, name, IBrowserRequest, layer),
         callable = handler,
-        args = ('provideAdapter',
-                (for_, layer), Interface, name, new_class, _context.info),
+        args = ('registerAdapter',
+                new_class, (for_, layer), Interface, name, _context.info),
         )
     _context.action(
         discriminator = ('five:protectClass', new_class),
@@ -193,8 +194,8 @@ class view(zope_app_view):
 
                 if name in pages:
                     return getattr(self, pages[name])
-                view = component.queryMultiAdapter((self, request), name = name,
-                                                   default = None)
+                view = component.queryMultiAdapter((self, request), name=name,
+                                                   default=None)
                 if view is not None:
                     return view.__of__(self)
 
@@ -207,8 +208,8 @@ class view(zope_app_view):
 
                 if name in pages:
                     return getattr(self, pages[name])
-                view = component.queryMultiAdapter((self, request), name = name,
-                                                   default = None)
+                view = component.queryMultiAdapter((self, request), name=name,
+                                                   default=None)
                 if view is not None:
                     return view.__of__(self)
 
@@ -253,8 +254,8 @@ class view(zope_app_view):
             discriminator = ('view', for_, name, IBrowserRequest, layer,
                              self.provides),
             callable = handler,
-            args = ('provideAdapter',
-                    (for_, layer), self.provides, name, newclass,
+            args = ('registerAdapter',
+                    newclass, (for_, layer), self.provides, name,
                     _context.info),
             )
 
@@ -293,8 +294,8 @@ def resource(_context, name, layer=IDefaultBrowserLayer, permission='zope.Public
     _context.action(
         discriminator = ('resource', name, IBrowserRequest, layer),
         callable = handler,
-        args = ('provideAdapter',
-                (layer,), Interface, name, factory, _context.info),
+        args = ('registerAdapter',
+                factory, (layer,), Interface, name, _context.info),
         )
     _context.action(
         discriminator = ('five:protectClass', new_class),
@@ -360,8 +361,8 @@ def resourceDirectory(_context, name, directory, layer=IDefaultBrowserLayer,
     _context.action(
         discriminator = ('resource', name, IBrowserRequest, layer),
         callable = handler,
-        args = ('provideAdapter',
-                (layer,), Interface, name, factory, _context.info),
+        args = ('registerAdapter',
+                factory, (layer,), Interface, name, _context.info),
         )
     for new_class in new_classes:
         _context.action(

@@ -72,13 +72,13 @@ def test_security_equivalence():
 
       >>> configure_zcml = '''
       ... <configure xmlns="http://namespaces.zope.org/zope">
-      ...   <content class="Products.Five.tests.test_security.Dummy1">
+      ...   <class class="Products.Five.tests.test_security.Dummy1">
       ...     <allow attributes="foo" />
       ...     <!--deny attributes="baz" /--> <!-- XXX not yet supported -->
       ...     <require attributes="bar keg"
       ...              permission="zope2.ViewManagementScreens"
       ...              />
-      ...   </content>
+      ...   </class>
       ... </configure>
       ... '''
       >>> zcml.load_string(configure_zcml)

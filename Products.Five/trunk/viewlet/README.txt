@@ -181,7 +181,7 @@ If the viewlet is not found, then the expected behavior is provided:
   >>> leftColumn['stock']
   Traceback (most recent call last):
   ...
-  ComponentLookupError: 'No provider with name `stock` found.'
+  ComponentLookupError: No provider with name `stock` found.
 
   >>> leftColumn.get('stock') is None
   True

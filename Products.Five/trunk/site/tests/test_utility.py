@@ -26,7 +26,7 @@ from Testing import ZopeTestCase
 
 from zope.interface import directlyProvides
 from zope.component import provideUtility
-from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.app import zapi
 from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.component import getNextUtility
@@ -34,8 +34,8 @@ from zope.app.component.hooks import setSite, clearSite, setHooks
 
 import Products.Five
 from Products.Five import zcml
+from Products.Five.component import enableSite
 from Products.Five.site.interfaces import IRegisterUtilitySimply
-from Products.Five.site.localsite import enableLocalSiteHook
 from Products.Five.site.tests.dummy import manage_addDummySite, \
      IDummyUtility, ISuperDummyUtility, DummyUtility
 
@@ -45,6 +45,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         setUp()
         zcml.load_config("meta.zcml", Products.Five)
         zcml.load_config("permissions.zcml", Products.Five)
+        zcml.load_config("configure.zcml", Products.Five.component)
         zcml.load_config("configure.zcml", Products.Five.site)
         zcml_text = """\
         <five:localsite
@@ -52,7 +53,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
             class="Products.Five.site.tests.dummy.DummySite" />"""
         zcml.load_string(zcml_text)
         manage_addDummySite(self.folder, 'site')
-        enableLocalSiteHook(self.folder.site)
+        enableSite(self.folder.site)
         setSite(self.folder.site)
 
         # Hook up custom component architecture calls; we need to do
@@ -173,7 +174,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
 
         # let's also create a subsite and make that our site
         manage_addDummySite(self.folder.site, 'subsite')
-        enableLocalSiteHook(self.folder.site.subsite)
+        enableSite(self.folder.site.subsite)
         setSite(self.folder.site.subsite)
 
         # we should still be able to lookup the original utility from
@@ -249,7 +250,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
 
         # test local site vs. nested local site
         manage_addDummySite(self.folder.site, 'subsite')
-        enableLocalSiteHook(self.folder.site.subsite)
+        enableSite(self.folder.site.subsite)
         setSite(self.folder.site.subsite)
 
         sublocal_dummy = DummyUtility()

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2005 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,40 +11,42 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Local sites browser views
+"""Component browser views
 
 $Id$
 """
-from zope.app.component.interfaces import ISite
-from zope.app.component.hooks import clearSite
-
 from Products.Five.browser import BrowserView
 from Products.Five.component import enableSite, disableSite
+from Products.Five.component.interfaces import IObjectManagerSite
 
-class LocalSiteView(BrowserView):
-    """View for convering a possible site to a site
-    """
+from zope.component.persistentregistry import PersistentComponents
+from zope.app.component.hooks import clearSite
+
+class ObjectManagerSiteView(BrowserView):
 
     def update(self):
         form = self.request.form
-        if form.has_key('UPDATE_MAKESITE'):
+        if form.has_key('MAKESITE'):
             self.makeSite()
-        elif form.has_key('UPDATE_UNMAKESITE'):
+        elif form.has_key('UNMAKESITE'):
             self.unmakeSite()
 
     def isSite(self):
-        return ISite.providedBy(self.context)
+        return IObjectManagerSite.providedBy(self.context)
 
     def makeSite(self):
-        """Convert a possible site to a site"""
-        if self.isSite():
+        if IObjectManagerSite.providedBy(self.context):
             raise ValueError('This is already a site')
 
-        enableSite(self.context)
-        return "This object is now a site"
+        enableSite(self.context, iface=IObjectManagerSite)
+
+        #TODO in the future we'll have to walk up to other site
+        # managers and put them in the bases
+        components = PersistentComponents()
+        components.__bases__ = (base,)
+        self.context.setSiteManager(components)
 
     def unmakeSite(self):
-        """Convert a site to a possible site"""
         if not self.isSite():
             raise ValueError('This is not a site')
 
@@ -57,4 +59,4 @@ class LocalSiteView(BrowserView):
         # the local site from the thread local.
         clearSite()
 
-        return "This object is no longer a site"
+        self.context.setSiteManage(None)

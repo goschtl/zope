@@ -20,7 +20,7 @@ if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
 from zope.interface import implements
-from zope.app.size.interfaces import ISized
+from zope.size.interfaces import ISized
 
 class SimpleContentSize(object):
     """Size for ``SimpleContent`` objects."""
@@ -64,12 +64,12 @@ def test_size():
       ...   <five:sizable class="Products.Five.tests.testing.fancycontent.FancyContent" />
       ...   <adapter
       ...       for="Products.Five.tests.testing.simplecontent.ISimpleContent"
-      ...       provides="zope.app.size.interfaces.ISized"
+      ...       provides="zope.size.interfaces.ISized"
       ...       factory="Products.Five.tests.test_size.SimpleContentSize"
       ...       />
       ...   <adapter
       ...       for="Products.Five.tests.testing.fancycontent.IFancyContent"
-      ...       provides="zope.app.size.interfaces.ISized"
+      ...       provides="zope.size.interfaces.ISized"
       ...       factory="Products.Five.tests.test_size.FancyContentSize"
       ...       />
       ... </configure>'''

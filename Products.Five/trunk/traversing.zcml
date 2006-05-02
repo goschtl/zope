@@ -1,0 +1,13 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:five="http://namespaces.zope.org/five">
+
+  <!-- define default namespace adapters, etc. -->
+  <include package="zope.traversing" />
+
+  <adapter
+      for="*"
+      factory=".viewable.BrowserDefault"
+      provides=".interfaces.IBrowserDefault"
+      />
+
+</configure>

@@ -21,7 +21,6 @@ this test:
   >>> zcml.load_config('meta.zcml', Products.Five)
   >>> import Products.Five.form.tests
   >>> zcml.load_config('configure.zcml', package=Products.Five)
-  >>> zcml.load_config('configure.zcml', package=Products.Five.formlib)
   >>> zcml.load_config('configure.zcml', package=Products.Five.formlib.tests)
 
 Finally, we need to setup a traversable folder. Otherwise, Five won't get

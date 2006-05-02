@@ -23,7 +23,6 @@ from zope.app.testing import setup, ztapi
 from zope.component import provideAdapter
 from zope.interface import Interface
 from zope.interface import implements
-from Products.Five.traversable import FiveTraversable
 from zope.app.traversing.adapters import Traverser
 from zope.app.traversing.interfaces import ITraversable
 from zope.app.traversing.interfaces import ITraverser

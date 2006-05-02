@@ -16,8 +16,7 @@
 $Id$
 """
 import zope.interface
-
-from zope.app import zapi
+import zope.component
 from Products.Five.browser import BrowserView
 
 # this is a verbatim copy of zope.app.basicskin except that it doesn't
@@ -37,7 +36,7 @@ class Macros:
         context = self.context
         request = self.request
         for name in self.macro_pages:
-            page = zapi.getMultiAdapter((context, request), name=name)
+            page = zope.component.getMultiAdapter((context, request), name=name)
             try:
                 v = page[key]
             except KeyError:

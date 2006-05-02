@@ -103,7 +103,7 @@ Failure to lookup a Content Provider
   ... ''')
   HTTP/1.1 500 Internal Server Error
   ...
-  ...ContentProviderLookupError: 'mypage.UnknownName'
+  ...ContentProviderLookupError: mypage.UnknownName
   ...
 
 Additional Data from TAL

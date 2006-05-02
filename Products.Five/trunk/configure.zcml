@@ -6,28 +6,14 @@
   <include file="i18n.zcml" />
   <include file="event.zcml"/>
   <include file="deprecated.zcml"/>
+  <include file="traversing.zcml"/>
+  <include package=".component" />
   <include package=".site" />
   <include package=".browser" />
   <include package=".form" />
   <include package=".formlib" />
   <include package=".skin" />
   <include package=".utilities" />
-
-  <include package="zope.app.event" />
-  <include package="zope.app.traversing" />
-
-  <!-- do 'traditional' traversing by default; needed by ZPT -->
-  <adapter
-      for="*"
-      factory=".traversable.FiveTraversable"
-      provides="zope.app.traversing.interfaces.ITraversable"
-      />
-
-  <adapter
-      for="*"
-      factory="zope.app.traversing.adapters.Traverser"
-      provides="zope.app.traversing.interfaces.ITraverser"
-      />
 
   <!-- this is really lying, but it's to please checkContainer -->
   <five:implements class="OFS.ObjectManager.ObjectManager"

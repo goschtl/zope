@@ -5,20 +5,11 @@
                        name="index.html" />
 
   <interface
-      interface="zope.publisher.interfaces.browser.ILayer"
-      />
-
-  <interface
-      interface="zope.publisher.interfaces.browser.ISkin"
+      interface="zope.publisher.interfaces.browser.IBrowserSkinType"
       />
 
   <interface
       interface="zope.app.publisher.interfaces.browser.IMenuItemType"
-      />
-
-  <browser:layer
-      name="default"
-      interface="zope.publisher.interfaces.browser.IDefaultBrowserLayer"
       />
 
   <browser:page
@@ -26,7 +17,7 @@
       name="absolute_url"
       class=".absoluteurl.AbsoluteURL"
       permission="zope.Public"
-      allowed_interface="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      allowed_interface="zope.traversing.browser.interfaces.IAbsoluteURL"
       />
 
   <view
@@ -34,23 +25,23 @@
       factory=".absoluteurl.AbsoluteURL"
       type="zope.publisher.interfaces.http.IHTTPRequest"
       permission="zope.Public"
-      provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      provides="zope.traversing.browser.interfaces.IAbsoluteURL"
       />
 
   <browser:page
-      for="zope.app.traversing.interfaces.IContainmentRoot"
+      for="zope.traversing.interfaces.IContainmentRoot"
       name="absolute_url"
       class=".absoluteurl.SiteAbsoluteURL"
       permission="zope.Public"
-      allowed_interface="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      allowed_interface="zope.traversing.browser.interfaces.IAbsoluteURL"
       />
 
   <view
-      for="zope.app.traversing.interfaces.IContainmentRoot"
+      for="zope.traversing.interfaces.IContainmentRoot"
       factory=".absoluteurl.SiteAbsoluteURL"
       type="zope.publisher.interfaces.http.IHTTPRequest"
       permission="zope.Public"
-      provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      provides="zope.traversing.browser.interfaces.IAbsoluteURL"
       />
 
   <browser:view
