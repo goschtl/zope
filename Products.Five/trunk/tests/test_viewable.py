@@ -41,7 +41,6 @@ def test_defaultView():
 
     and default view names for everything and IFoo objects in particular:
 
-      >>> from zope.app.component.metaconfigure import adapter
       >>> from Products.Five.bbb import BrowserDefault
       >>> from Products.Five.interfaces import IBrowserDefault
       >>> from zope.interface import Interface
