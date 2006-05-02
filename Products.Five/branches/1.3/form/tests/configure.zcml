@@ -65,7 +65,8 @@
      schema=".schemacontent.IFieldContent"
      content_factory=".schemacontent.FieldContent"
      name="addwidgetoverride.html"
-     permission="zope2.Public">
+     permission="zope2.Public"
+     set_before_add="title description somenumber somelist">
 
      <widget
          field="description"
@@ -80,6 +81,18 @@
      name="protectedaddform.html"
      permission="zope2.ViewManagementScreens"
      />
+
+  <subscriber
+      for=".schemacontent.IFieldContent
+           zope.app.event.interfaces.IObjectModifiedEvent"
+      handler=".schemacontent.modifiedSubscriber"
+      />
+
+  <subscriber
+      for=".schemacontent.IFieldContent
+           zope.app.event.interfaces.IObjectCreatedEvent"
+      handler=".schemacontent.createdSubscriber"
+      />
 
   <i18n:registerTranslations directory="locales"/>
 
