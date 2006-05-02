@@ -94,17 +94,15 @@ Finally we publish the view:
     </body>
   </html>
 
-
 Failure to lookup a Content Provider
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   >>> print http(r'''
   ... GET /test_folder_1_/content_obj/error.html HTTP/1.1
-  ... ''')
-  HTTP/1.1 500 Internal Server Error
-  ...
-  ...ContentProviderLookupError: mypage.UnknownName
-  ...
+  ... ''', handle_errors=False)
+  Traceback (most recent call last):
+    ...
+  ContentProviderLookupError: ...mypage.UnknownName...
 
 Additional Data from TAL
 ~~~~~~~~~~~~~~~~~~~~~~~~
