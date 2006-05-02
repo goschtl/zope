@@ -103,7 +103,7 @@ class WikiPage(ComposedAjaxPage) :
         
         self.title = dc.title or self.untitled
         self.language = dc.Language()
-        
+     
     def message(self, msg) :
         return '<div class="system-message">%s</div>' % msg
         
@@ -125,6 +125,15 @@ class WikiPage(ComposedAjaxPage) :
         if file is not None :
             return IZopeDublinCore(file).description or u""
         return u""
+        
+    def getExtension(self) :
+        return '.html'
+        
+    def proposePageName(self, label) :
+        """ Translates a wiki label into a reasonable filename.
+            The default implementation returns the unmodified label.
+        """
+        return label
 
     def isEditable(self) :
         try :
@@ -208,7 +217,10 @@ class WikiPage(ComposedAjaxPage) :
        #  print "Form:"
 #         print form
         return form
-        
+
+    def getBaseURL(self) :
+        return zapi.absoluteURL(self.container, self.request) + '/'
+
     def getURL(self) :
         return zapi.absoluteURL(self.context, self.request)
       

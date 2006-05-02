@@ -4,8 +4,10 @@
            onsubmit="WikiMenu.submitForm(this); return false;"
            onreset="WikiMenu.hideForm()" >
   
-        <div class="wiki-form-title">Create Folder for Link &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;</div>
-        <input name="link_id" type="hidden" tal:attributes="value string:${view/link_id}" />
+        <div class="wiki-form-title">Create Folder for Link &quot;
+                <span tal:replace="view/unicodeLabel">Name</span>&quot;</div>
+        <input name="link_id" type="hidden" 
+                            tal:attributes="value string:${view/link_id}" />
         <input name="cmd" type="hidden" value="folder" />
         <input name="reference" type="hidden" value="001" 
                 tal:attributes="name string:${view/processor/referenceKey};
@@ -17,7 +19,9 @@
                     Foldername:
                 </td>
                 <td valign="top">
-                    <input class="wiki-input" id="folder_name" name="name" type="text" size="38" value="FolderName" tal:attributes="value python: view.upload_name or view.unicodeLabel()" />
+                    <input class="wiki-input" id="folder_name" name="name" 
+                            type="text" size="38" value="FolderName"
+                            tal:attributes="value string:${view/proposeName}" />
                 </td>
             </tr>
             <tr>
@@ -25,7 +29,8 @@
                     Title:
                 </td>
                 <td valign="top">
-                    <input class="wiki-input" id="file_title" name="title" type="text" size="38" value=""/>
+                    <input class="wiki-input" id="file_title" name="title" 
+                                                type="text" size="38" value=""/>
                 </td>
             </tr>
             <tr>
@@ -33,8 +38,9 @@
                     Description: 
                 </td>
                 <td valign="top">
-                    <textarea class="wiki-input" id="description" name="description"
-                                   cols="37" rows="8" value="123"></textarea>
+                    <textarea class="wiki-input" id="description" 
+                                name="description"
+                                cols="37" rows="8" value="123"></textarea>
                 </td>
             </tr>
             <tr tal:condition="not: view/isUnique"> 
@@ -43,7 +49,8 @@
                 </td>
                 <td valign="top" class="wiki-field">
                     <input name="scope" id="scope" type="checkbox">
-                    Apply to all links named &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;.
+                    Apply to all links named &quot;
+                        <span tal:replace="view/unicodeLabel">Name</span>&quot;.
                 </td>   
             </tr>
             <tr>

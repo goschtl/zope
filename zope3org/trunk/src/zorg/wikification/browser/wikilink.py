@@ -51,15 +51,12 @@ class Placeholder(PageElement) :
         self.page = processor.page
         self.index = index
         self.label = label
-        if self.label :                 # with a label we are in text mode
-                                        # and it's up to the user to provide
-                                        # an additional upload target name
-            self.upload_name = ""
-        else :
-            self.upload_name = link
         self.link = link
         self.link_id = processor.createLinkId(index)
         self.nested = 0
+        
+    def proposeName(self) :
+        return self.page.proposePageName(self.label) or self.link
  
     def textLink(self) :
         wikified, link = self.processor.wikifyLink(self.link)
@@ -125,6 +122,8 @@ class Placeholder(PageElement) :
         
     def unicodeLabel(self) :
         return unicode(self.editableLabel(), encoding='utf-8')
+        
+    
         
  
  
@@ -260,19 +259,23 @@ class RelativeLinkProcessor(BaseLinkProcessor) :
         into absolute ones. 
      
         >>> html = '''<p><a href="http://www.iwm-kmrc.de">Absolute</a></p>
-        ...           <p><a href="relative">Relative</a></p>'''
+        ...           <p><a href="relative">Relative</a></p>
+        ...           <img src="http://www.iwm-kmrc.de/image.gif"/>
+        ...           <img src="images/image.gif"/>'''
         
         >>> processor = RelativeLinkProcessor("http://www.iwm-kmrc.de")
         >>> processor.feed(html)
         >>> print processor.output()
         <p><a href="http://www.iwm-kmrc.de">Absolute</a></p>
         <p><a href="http://www.iwm-kmrc.de/relative">Relative</a></p>
-       
+        <img src="http://www.iwm-kmrc.de/image.gif">
+        <img src="http://www.iwm-kmrc.de/images/image.gif">
+     
         
     """
  
     def __init__(self, base_url) :
-        BaseHTMLProcessor.__init__(self)
+        BaseLinkProcessor.__init__(self)
         self.base_url = base_url
         
     def onRelativeLink(self, link) :
@@ -280,7 +283,7 @@ class RelativeLinkProcessor(BaseLinkProcessor) :
         return "%s/%s" % (self.base_url, link)
         
         
-class WikiLinkProcessor(BaseLinkProcessor) :
+class WikiLinkProcessor(RelativeLinkProcessor) :
     """ A link processor that wikifies the links by modifying the
         href and other attributes of a link.
         
@@ -293,7 +296,10 @@ class WikiLinkProcessor(BaseLinkProcessor) :
     command = None
 
     def __init__(self, page) :
-        BaseHTMLProcessor.__init__(self)
+        """ Inits the wiki link processor with base url of the page container.
+        """
+        base_url = page.getBaseURL()
+        RelativeLinkProcessor.__init__(self, base_url)
         self.page = page
         self.placeholders = {}
         self.placeholder = None     # current placeholder
@@ -426,7 +432,7 @@ class WikiLinkProcessor(BaseLinkProcessor) :
         else :
             self.placeholder.nested += 1
             
-        BaseHTMLProcessor.unknown_starttag(self, tag, attrs)               
+        RelativeLinkProcessor.unknown_starttag(self, tag, attrs)               
 
     def unknown_endtag(self, tag) :
         """ Called for each tag. Looks for pending placeholders and
@@ -434,7 +440,7 @@ class WikiLinkProcessor(BaseLinkProcessor) :
             is rendered after the tag is closed.
         """
         
-        BaseHTMLProcessor.unknown_endtag(self, tag)
+        RelativeLinkProcessor.unknown_endtag(self, tag)
         if self.placeholder is not None :
             if self.placeholder.nested == 0 :
                 after = self.placeholder.afterCloseTag()
@@ -485,7 +491,7 @@ class WikiLinkProcessor(BaseLinkProcessor) :
             self.pieces.append(text)
             return
             
-        BaseLinkProcessor.handle_data(self, text)
+        RelativeLinkProcessor.handle_data(self, text)
              
     def onWikiTextLink(self, label) :
         name = label.replace(" ", "")
@@ -500,7 +506,7 @@ class WikiLinkProcessor(BaseLinkProcessor) :
         for placeholder commands with global scope.
         
         """
-        html = BaseHTMLProcessor.output(self)
+        html = RelativeLinkProcessor.output(self)
         for placeholder in self.placeholders.values() :
             html = placeholder.postProcessing(html)
                        
@@ -596,7 +602,7 @@ class SavingPlaceholder(Placeholder) :
         
     """
     
-    global_scope = False        # default: depends on usecase
+    global_scope = True        # default: depends on usecase
     render_form = False
     
     def textLink(self) :
@@ -629,7 +635,8 @@ class RenamedPlaceholder(SavingPlaceholder) :
         """ Replaces the label in text mode. """
         
         scope = self.page.parameter('scope')
-        self.global_scope = scope and scope.lower() == 'on'
+        if scope :
+            self.global_scope = scope.lower() == 'on'
         
         label = self._newLabel()
         self.new_link = '[' + label + ']'
@@ -684,9 +691,10 @@ class AddObjectPlaceholder(SavingPlaceholder) :
         """
         
         zope.event.notify(ObjectCreatedEvent(obj))
-        
+            
         scope = self.page.parameter('scope')
-        self.global_scope = scope and scope.lower() == 'on'
+        if scope :
+            self.global_scope = scope.lower() == 'on'
         
         container = self.page.container
         chooser = INameChooser(container)
@@ -787,6 +795,10 @@ class CreatePagePlaceholder(AddObjectPlaceholder) :
     
     _form = ViewPageTemplateFile("./templates/wiki_newpage.pt")
                 
+    def proposeName(self) :
+        name = super(CreatePagePlaceholder, self).proposeName()
+        return name + self.page.getExtension()
+        
     def apply(self) :
         """ Create a page. Returns the name of the new page.
         """
