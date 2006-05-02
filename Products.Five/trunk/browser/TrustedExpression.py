@@ -54,7 +54,7 @@ def trustedTraverse(ob, path, ignored,):
   REQUEST = get(ob, 'REQUEST', None)
   if REQUEST is None:
     REQUEST=FakeRequest()
-  setDefaultSkin(REQUEST)
+    setDefaultSkin(REQUEST)
   REQUEST['TraversalRequestNameStack'] = path
   path.reverse()
   pop=path.pop
