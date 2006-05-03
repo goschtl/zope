@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - Added a simple Python id based implementation of IKeyReference for
+        testing.
+
       - Updated Docutils to V 0.4.0
 
       - Change the session credentials plugin to make it configurable
