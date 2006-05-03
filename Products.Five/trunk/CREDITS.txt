@@ -37,6 +37,8 @@ Five contributors
 
 - Brian Sutherland (jinty@web.de)
 
+- Rocky Burt (rocky@serverzen.com)
+
 Thank you
 ---------
 
