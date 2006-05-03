@@ -148,6 +148,20 @@ Restructuring
   components has been removed as that functionality is now in the Zope
   2 core as of Zope 2.9.
 
+Five 1.2.4 (2006-05-04)
+=======================
+
+Bugfixes
+--------
+
+* Made sure that events are fired as expected in add and edit forms.
+
+* Made sure LocalizerLanguages class normalized language codes to
+  xx-yy, instead of xx_YY or xx-YY.
+
+* Fixed a problem with the new traversal look-up order and the root
+  object (OFS.Application.Application).
+
 Five 1.2.3 (2006-03-31)
 =======================
 
