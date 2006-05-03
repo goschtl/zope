@@ -58,7 +58,7 @@ getInformationProvidersFor function:
     >>> len(listing) is 1
     True
     >>> [(key.__name__, value) for key, value in listing]
-    [('IMyFoo', <zope.generic.informationprovider.base.GlobalInformationProvider ...>)]
+    [('IMyFoo', <GlobalInformationProvider IMyFoo at ISpecialContext>)]
 
 A single information provider can be retrieved by the get- or 
 queryInformationProvider function:
@@ -166,7 +166,226 @@ information provider:
     >>> api.queryInformation(provider, IMyConfiguration) is my_configuration
     True
 
-Complex information provider lookup using acquireInformationProvider
---------------------------------------------------------------------
+Further information provider exploration
+----------------------------------------
 
-see zope.generic.face README.txt
+The following example should provide a further exploration about information
+provider an theirs behavior:
+
+    >>> class IMyContext(interface.Interface):
+    ...    pass
+
+    >>> class IFoo(interface.Interface):
+    ...    pass
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IFoo" />
+    ... ''')
+
+An information provider should provide the contex interface itself. Further more
+it is responsible to mark the key interface by the context interface:
+
+    >>> api.IUndefinedContext.providedBy(IFoo)
+    True
+    >>> api.IUndefinedContext.providedBy(api.getInformationProvider(IFoo))
+    True
+
+Simple Lookup using queryInformationProvider and getInformationProvider
+------------------------------------------------------------------------
+
+    >>> api.getInformationProvider(IFoo)
+    <GlobalInformationProvider IFoo at IUndefinedContext>
+
+    >>> api.queryInformationProvider(IFoo)
+    <GlobalInformationProvider IFoo at IUndefinedContext>
+
+A key error is raised or the default is returned if no information provider 
+could be evalutated for a certain key interface, context interface pair:
+
+    >>> api.getInformationProvider(IFoo, IMyContext)
+    Traceback (most recent call last):
+    ...
+    KeyError: 'Missing information provider IFoo at IMyContext.'
+
+    >>> api.queryInformationProvider(IFoo, IMyContext, 'Missing information provider.')
+    'Missing information provider.'
+
+Attention information provider does not acquire from more specialized interface
+like the regular utility lookup does:
+
+    >>> class IYourContext(IMyContext):
+    ...    pass
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IFoo"
+    ...     conface="example.IYourContext" />
+    ... ''')
+
+    >>> component.getUtility(IMyContext, api.toDottedName(IFoo))
+    <GlobalInformationProvider IFoo at IYourContext>
+
+    >>> api.getInformationProvider(IFoo, IMyContext)
+    Traceback (most recent call last):
+    ...
+    KeyError: 'Missing information provider IFoo at IMyContext.'
+
+Complex Lookup using acquireInformationProvider
+-----------------------------------------------
+
+You can use the acquireInformationProvider function to lookup more general
+information providers. The acquisition is based on the __iro__ of the key and
+context interface. You will start within the first context looking up all key
+interface in order of the __iro__. If no information provider could be found
+the context will be switch to the next more general context. There the same
+procedure will start until an information provider could be found. If no
+information could be found a key error is raised.
+
+In our example we cannot acquire anything therefore we still expect a key error.
+
+    >>> api.acquireInformationProvider(IFoo, IMyContext) 
+    Traceback (most recent call last):
+    ...
+    KeyError: 'Missing information provider IFoo at IMyContext.'
+
+We could derive a context from IUndefinedContext. That way we could acquire the
+first provider registered to IFoo and IUndefinedContext:
+
+    >>> class IOurContext(api.IUndefinedContext):
+    ...    pass
+
+    >>> api.getInformationProvider(IFoo, IOurContext) 
+    Traceback (most recent call last):
+    ...
+    KeyError: 'Missing information provider IFoo at IOurContext.'
+
+    >>> api.acquireInformationProvider(IFoo, IOurContext)
+    <GlobalInformationProvider IFoo at IUndefinedContext>
+
+The other way round we can play with key interface inheritance:
+
+    >>> class IBar(interface.Interface):
+    ...    pass
+
+    >>> api.acquireInformationProvider(IBar) 
+    Traceback (most recent call last):
+    ...
+    KeyError: 'Missing information provider IBar at IUndefinedContext.'
+
+    >>> class IFooBar(IFoo, IBar):
+    ...    pass
+
+    >>> api.acquireInformationProvider(IFooBar) 
+    <GlobalInformationProvider IFoo at IUndefinedContext>
+
+If we register a new information provider to IBar and IUndefinedContext, we can
+observe the following behavior:
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IBar" />
+    ... ''')
+
+    >>> api.acquireInformationProvider(IBar)
+    <GlobalInformationProvider IBar at IUndefinedContext>
+
+    >>> api.acquireInformationProvider(IFooBar) 
+    <GlobalInformationProvider IFoo at IUndefinedContext>
+
+    >>> class IBarFoo(IBar, IFoo):
+    ...    pass
+
+    >>> api.acquireInformationProvider(IBarFoo) 
+    <GlobalInformationProvider IBar at IUndefinedContext>
+
+But we always get the most specialized one:
+
+    >>> api.acquireInformationProvider(IBarFoo, IOurContext) 
+    <GlobalInformationProvider IBar at IUndefinedContext> 
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IBarFoo" />
+    ... ''')
+
+    >>> api.acquireInformationProvider(IBarFoo, IOurContext) 
+    <GlobalInformationProvider IBarFoo at IUndefinedContext>
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IBar"
+    ...     conface="example.IOurContext" />
+    ... ''')
+
+    >>> api.acquireInformationProvider(IBarFoo, IOurContext) 
+    <GlobalInformationProvider IBar at IOurContext>
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IBarFoo"
+    ...     conface="example.IOurContext" />
+    ... ''')
+
+    >>> api.acquireInformationProvider(IBarFoo, IOurContext) 
+    <GlobalInformationProvider IBarFoo at IOurContext>
+
+Complex Lookup using getInformationProvidersFor
+-----------------------------------------------
+
+Last but not least you can lookup all information provider registered for a 
+certain key interface or context interface using getInformationProvidersFor
+function.
+
+If you lookup the providers for a context interface, you will get an iterator
+that returns (keyface, provider) pairs:
+
+    >>> [i.__name__ for i,p in api.getInformationProvidersFor(IOurContext)]
+    ['IBar', 'IBarFoo']
+
+If you lookup the providers for a key interface, you will get an iterator
+which returns (conface, provider) pairs:
+
+    >>> [i.__name__ for i,p in api.getInformationProvidersFor(IBarFoo)]
+    ['IOurContext', 'IUndefinedContext']
+
+Components can suggest key and context interfaces
+-------------------------------------------------
+
+You can use the IFace interface to provide key interface and context interface
+by a component itself. Therefore the conface parameter has to be None:
+
+    >>> from zope.generic.face.api import Face
+
+    >>> class Foo(Face):
+    ...    __keyface__ = IFoo
+    ...    __conface__ = IOurContext
+
+    >>> foo = Foo()
+    >>> foo.keyface == IFoo
+    True
+    >>> foo.conface == IOurContext
+    True
+
+    >>> api.acquireInformationProvider(foo, None) 
+    <GlobalInformationProvider IFoo at IUndefinedContext>
+
+    >>> api.acquireInformationProvider(foo) 
+    <GlobalInformationProvider IFoo at IUndefinedContext>
+
+
+    >>> class Bar(Face):
+    ...    __keyface__ = IBar
+    ...    __conface__ = IOurContext
+
+    >>> bar = Bar()
+    >>> bar.keyface == IBar
+    True
+    >>> bar.conface == IOurContext
+    True
+
+    >>> api.acquireInformationProvider(bar, None) 
+    <GlobalInformationProvider IBar at IOurContext>
+
+    >>> api.acquireInformationProvider(bar) 
+    <GlobalInformationProvider IBar at IUndefinedContext>

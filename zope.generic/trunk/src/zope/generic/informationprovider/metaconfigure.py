@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.annotation import IAnnotations
 from zope.component import provideUtility
+from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.interface import provideInterface
 from zope.configuration.exceptions import ConfigurationError
@@ -31,11 +32,31 @@ from zope.generic.face import IConfaceType
 from zope.generic.face import IKeyfaceType
 from zope.generic.face import IUndefinedContext
 from zope.generic.face import IUndefinedKeyface
-from zope.generic.face.api import getInformationProvider
+from zope.generic.face.api import getConface
+from zope.generic.face.api import getKeyface
 from zope.generic.face.api import toDescription
 from zope.generic.face.api import toDottedName
 
 from zope.generic.informationprovider.base import GlobalInformationProvider
+
+
+
+def getInformationProvider(object=None, conface=IUndefinedContext):
+    """Evaluate the next information provider utility for an object or keyface."""
+
+    keyface = getKeyface(object)
+    if conface is None:
+        conface = getConface(object)
+
+    try:
+        provider = getUtility(conface, toDottedName(keyface))
+        # return only provider that is or extends a certain context.
+        if provider.conface == conface:
+            return provider
+    except:
+        pass
+
+    raise KeyError('Missing information provider %s at %s.' % (keyface.__name__, conface.__name__))
 
 
 

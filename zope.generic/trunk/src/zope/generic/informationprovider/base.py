@@ -122,7 +122,9 @@ class BaseInformationProvider(object):
 
         elif interface == IAnnotations:
             return AttributeAnnotations(self)
-            
+
+    def __repr__(self):
+        return '<%s %s at %s>' % (self.__class__.__name__, self.keyface.__name__, self.conface.__name__)
 
 
 

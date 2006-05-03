@@ -5,9 +5,9 @@
   <meta:directives namespace="http://namespaces.zope.org/generic">
 
     <meta:directive
-        name="face"
-        schema=".metadirectives.IFaceDirective"
-        handler=".metaconfigure.faceDirective"
+        name="interface"
+        schema="zope.component.zcml.IInterfaceDirective"
+        handler=".metaconfigure.interfaceDirective"
         />
 
   </meta:directives>

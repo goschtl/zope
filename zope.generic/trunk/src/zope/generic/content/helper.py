@@ -19,7 +19,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.generic.face.api import getKeyface
-from zope.generic.face.api import getInformationProvider
+from zope.generic.informationprovider.api import getInformationProvider
 from zope.generic.informationprovider.api import queryInformation
 
 from zope.generic.face import IUndefinedContext
