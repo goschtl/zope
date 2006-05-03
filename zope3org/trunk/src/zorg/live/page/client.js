@@ -11,8 +11,10 @@ var LivePage = {
 
     ajaxHandlers : {
         onError: function(request, transport) {
+//            alert("in onError");
             LivePage.numErrors += 1;
-			if (LivePage.numErrors > 3) {
+			LivePage.lastRequest = null;
+            if (LivePage.numErrors > 3) {
                 alert("Too much errors. The page will be reloaded.");
                 window.location.reload();
                 }
@@ -32,6 +34,7 @@ var LivePage = {
 
         onComplete: function(request, transport, json) {
             var response = transport.responseText;
+            LivePage.lastRequest = null;
             if (response.substr(0,1) == '{') {
                 var event = JSON.parse(response);
                 LivePage.processEvent(event);
@@ -49,8 +52,12 @@ var LivePage = {
 	    },
     
     nextEvent : function () {
+        if(LivePage.lastRequest){ 
+//            alert("in nextEvent");
+            return;
+        }
         var base_url = LivePage.baseURL + "/@@output/" + LivePage.uuid;
-        lastRequest = new Ajax.Request(base_url, 
+        LivePage.lastRequest = new Ajax.Request(base_url, 
                                 { method: 'get', asynchronous:true});
         },
 
