@@ -35,25 +35,6 @@ def test_registerPackage():
       >>> from Products.Five import zcml
       >>> zcml.load_config('meta.zcml', Products.Five)
 
-    Make sure a python package with no initialize (even though one
-    is specified) will fail::
-    
-      >>> configure_zcml = '''
-      ... <configure
-      ...     xmlns="http://namespaces.zope.org/zope"
-      ...     xmlns:five="http://namespaces.zope.org/five"
-      ...     i18n_domain="foo">
-      ...   <five:registerPackage
-      ...       package="pythonproduct1"
-      ...       initialize="pythonproduct1.initialize"
-      ...       />
-      ... </configure>'''
-      >>> zcml.load_string(configure_zcml)
-      Traceback (most recent call last):
-          ...
-      ZopeXMLConfigurationError: ...
-      ConfigurationError: ('...pythonproduct1 has no global initialize')    
-
     Make sure a python package with a valid initialize gets its
     initialize function called::
     
@@ -70,13 +51,6 @@ def test_registerPackage():
       >>> zcml.load_string(configure_zcml)
       pythonproduct2 initialized
       
-    Test to see if the pythonproduct2 python package actually gets setup
-    as a zope2 product in the Control Panel.
-
-      >>> product_listing = app.Control_Panel.Products.objectIds()
-      >>> 'pythonproduct2' in product_listing
-      True
-
     Clean up:
 
       >>> tearDown()
@@ -84,8 +58,10 @@ def test_registerPackage():
 
 
 def test_suite():
-    from Testing.ZopeTestCase import ZopeDocTestSuite
-    return ZopeDocTestSuite()
+    from zope.testing.doctest import DocTestSuite
+    return DocTestSuite()
+    #from Testing.ZopeTestCase import ZopeDocTestSuite
+    #return ZopeDocTestSuite()
 
 if __name__ == '__main__':
     framework()
