@@ -30,8 +30,10 @@ class PublisherConnection(testing.PublisherConnection):
         real_response = self.response._response
         status = real_response.getStatus()
         reason = zope.publisher.http.status_reasons[real_response.status]
-
         headers = real_response.headers.items()
+        # get the cookies, breaking them into tuples for sorting
+        cookies = [(c[:10], c[12:]) for c in real_response._cookie_list()]
+        headers.extend(cookies)
         headers.sort()
         headers.insert(0, ('Status', "%s %s" % (status, reason)))
         headers = '\r\n'.join('%s: %s' % h for h in headers)
