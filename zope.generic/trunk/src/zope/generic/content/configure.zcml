@@ -94,4 +94,31 @@
         />
   </class>
 
+  <!-- persistent generic ordered folder implementation -->
+  <class class=".base.OrderedFolder">
+    <require 
+        permission="zope.Public"
+        interface="zope.generic.content.ITypedContent"
+        />
+    <require 
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+    <require
+        permission="zope.ManageContent"
+        attributes="updateOrder"
+        />
+    <allow
+        attributes="getSiteManager"
+        />
+    <require
+        permission="zope.ManageSite"
+        attributes="setSiteManager"
+        />
+  </class>	
+	
 </configure>
