@@ -26,6 +26,7 @@ from zope.app.form import InputWidget
 from zope.app.form.browser.widget import BrowserWidget
 from zope.app.form.utility import setUpWidgets, applyWidgetsChanges
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 
 class ObjectWidgetView:
