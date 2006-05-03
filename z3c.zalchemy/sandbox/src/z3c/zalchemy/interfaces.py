@@ -21,6 +21,12 @@ class ISQLAlchemyObject(interface.Interface):
     """Marker interface for mapped sqlalchemy objects.
     """
 
+class IMappedSQLAlchemyObject(ISQLAlchemyObject):
+
+    """an object mapped to a single mapper which ist stored as a class
+    attribute"""
+
+    mapper = interface.Attribute("The sqlalchemy.mapper object")
 
 class ISQLAlchemyContainer(IContainer):
     """A zope container containing sqlalchemy objects.

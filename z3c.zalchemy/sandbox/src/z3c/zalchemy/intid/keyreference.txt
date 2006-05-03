@@ -1,0 +1,71 @@
+==================================
+Keyreferences for zalchemy objects
+==================================
+
+In order to index zalchemy objects with the standard zope catalog we
+have to provide an adapter to IKeyReference.
+
+  >>> from zope import component, interface
+  >>> from z3c.zalchemy.intid.keyreference import RefToMappedSQLAlchemyObject
+  >>> component.provideAdapter(RefToMappedSQLAlchemyObject)
+
+
+Let's create a simple mapper and an according class.
+
+  >>> import sqlalchemy
+  >>> aTable = sqlalchemy.Table(
+  ...     'aTable',engine,
+  ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
+  ...     sqlalchemy.Column('value', sqlalchemy.Integer),
+  ...     )
+
+Add it to the engine utility (which is already created for this test)
+and attach our mapper to the class.
+
+  >>> engineUtil.addTable(aTable,create=True)
+  >>> from z3c.zalchemy.interfaces import IMappedSQLAlchemyObject
+  >>> class A(object):
+  ...     interface.implements(IMappedSQLAlchemyObject)
+  ...     pass
+  >>> A.mapper = sqlalchemy.mapper(A, aTable)
+
+Start a transaction.
+
+  >>> import transaction
+  >>> from z3c.zalchemy.datamanager import beforeTraversal
+  >>> txn = transaction.begin()
+  >>> beforeTraversal(None)
+  >>> a = A()
+  >>> a.id = 1
+  >>> a.value = 1
+
+Now let us create a reference to the object
+
+  >>> from zope.app.keyreference.interfaces import IKeyReference
+  >>> ref1 = IKeyReference(a)
+
+A keyreference must be hashable and comparable.
+
+  >>> type(hash(ref1)) is type(1)
+  True
+
+  >>> ref2 = IKeyReference(a)
+  >>> ref1 == ref2
+  True
+
+We have not commited, our transaction therefore the ref returns None
+because it is not in the database.
+
+  >>> ref1() is None
+  True
+
+  >>> transaction.get().commit()
+  >>> txn = transaction.begin()
+  >>> beforeTraversal(None)
+  >>> a2 = ref1()
+  >>> a2
+  <A object at ...>
+
+  >>> ref3 = IKeyReference(a2)
+  >>> ref3 == ref2 == ref1
+  True

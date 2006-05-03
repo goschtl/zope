@@ -36,6 +36,7 @@
      trusted="True"
      />
 
+  <include package=".intid" />
   <include package=".browser" />
 
 </configure>
