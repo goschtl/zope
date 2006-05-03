@@ -2,7 +2,7 @@
 Five Changes
 ============
 
-Five 1.4c (unreleased)
+Five 1.4c (2006-05-04)
 ======================
 
 Features
@@ -45,6 +45,20 @@ Features
 
   NOTE: Anyone who copied the Five site.zcml to their
   $INSTANCE_HOME/etc/ directory is going to need to update it.
+
+Five 1.3.5 (2006-05-04)
+=======================
+
+Bugfixes
+--------
+
+* Made sure that events are fired as expected in add and edit forms.
+
+* Made sure LocalizerLanguages class normalized language codes to
+  xx-yy, instead of xx_YY or xx-YY.
+
+* Fixed a problem with the new traversal look-up order and the root
+  object (OFS.Application.Application).
 
 Five 1.3.4 (2006-03-31)
 =======================
@@ -177,6 +191,20 @@ Restructuring
 * Backwards compatability for Zope 3-style interfaces of Zope 2
   components has been removed as that functionality is now in the Zope
   2 core as of Zope 2.9.
+
+Five 1.2.4 (2006-05-04)
+=======================
+
+Bugfixes
+--------
+
+* Made sure that events are fired as expected in add and edit forms.
+
+* Made sure LocalizerLanguages class normalized language codes to
+  xx-yy, instead of xx_YY or xx-YY.
+
+* Fixed a problem with the new traversal look-up order and the root
+  object (OFS.Application.Application).
 
 Five 1.2.3 (2006-03-31)
 =======================
