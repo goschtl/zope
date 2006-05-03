@@ -15,12 +15,6 @@
   <!-- information providers. -->
 
   <class class="zope.generic.informationprovider.api.GlobalInformationProvider">
-    <implements
-        interface="zope.generic.configuration.IAttributeConfigurable"
-        />
-    <implements
-        interface="zope.annotation.IAttributeAnnotatable"
-        />
     <require
         permission="zope.Public"
         interface="zope.generic.face.IFace"
@@ -28,12 +22,6 @@
   </class>
 
   <class class="zope.generic.informationprovider.api.LocalInformationProvider">
-    <implements
-        interface="zope.generic.configuration.IAttributeConfigurable"
-        />
-    <implements
-        interface="zope.annotation.IAttributeAnnotatable"
-        />
     <require
         permission="zope.Public"
         interface="zope.generic.face.IFace"

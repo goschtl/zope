@@ -71,7 +71,7 @@ def assertOperation(handlers, keyface=None, input=None, output=None):
         if info is None:
             ConfigurationError('Operation %s does not exist.' % handler.__name__)
 
-        config = queryInformation(info, IOperationConfiguration)
+        config = queryInformation(IOperationConfiguration, info)
 
         if config is None:
             ConfigurationError('OperationConfiguration for Operation %s does not exist.' % handler.__name__)

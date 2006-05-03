@@ -18,31 +18,34 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.annotation.interfaces import IAnnotatable
+from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.interface import Interface
 from zope.schema import Text
 from zope.schema import TextLine
 
+from zope.generic.configuration import IAttributeConfigurable
+from zope.generic.configuration import IConfigurable
 from zope.generic.face import IProvidesAttributeFaced
 
 
+class IInformable(IConfigurable, IAnnotatable):
+    """Provide generic mechanism to access or attach information to the object."""
 
-class IInformationProvider(IProvidesAttributeFaced):
+
+
+class IAttributeInformable(IInformable, IAttributeConfigurable, IAttributeAnnotatable):
+    """Provide generic mechanism to access or attach information to the object."""
+
+
+
+class IInformationProvider(IInformable, IProvidesAttributeFaced):
     """Provide information to a dedicated context and key interface pair.
 
     Information provider will be registered as utility providing the context 
     interface and named by the dotted name of the key interface.
 
-    Information providers can be extended by generic information mechanism
-    such as zope.annotation.IAnnotations simply by adding a specific marker to
-    the information provider implementation. The marker should invoke the 
-    specific information mechanism:
-    
-        classProvides(api.InformationProvider, IAttributeAnnotatable)
-
-        <class class="zope.generic.api.InformationProvider" >
-            <implements="zope.annotation.IAttributeAnnotatable" />
-        </class>
     """
 
 

@@ -39,7 +39,7 @@ def createObject(keyface, *pos, **kws):
 def createParameter(keyface):
     """Evaluate initializer parameters."""
     provider = getInformationProvider(keyface)
-    config = queryInformation(provider, IOperationConfiguration)
+    config = queryInformation(IOperationConfiguration, provider)
     if config:
         return config.input
     

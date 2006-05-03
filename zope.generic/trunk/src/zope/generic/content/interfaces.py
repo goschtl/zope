@@ -18,15 +18,13 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.annotation.interfaces import IAttributeAnnotatable
-
-from zope.generic.configuration.api import IAttributeConfigurable
 from zope.generic.face import IFace
 from zope.generic.face import IProvidesAttributeFaced
+from zope.generic.informationprovider import IAttributeInformable
 
 
 
-class ITypedContent(IFace, IAttributeConfigurable, IAttributeAnnotatable):
+class ITypedContent(IFace, IAttributeInformable):
     """Content that provides the declared key interface."""
 
 

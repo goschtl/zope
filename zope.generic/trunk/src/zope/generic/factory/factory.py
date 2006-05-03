@@ -193,10 +193,10 @@ class Factory(factory.Factory, Face):
     Such an configuration can be retrieved later on using the queryInformation
     function:
 
-        >>> from zope.generic.configuration import IAttributeConfigurable
+        >>> from zope.generic.informationprovider import IAttributeInformable
 
         >>> class SimpleConfigurable(object):
-        ...    interface.implements(IAttributeFaced, IAttributeConfigurable)
+        ...    interface.implements(IAttributeInformable, IAttributeFaced)
         ...    def __init__(self, a, b, c):
         ...        print '__init__:', 'a=',a ,', b=', b, ', c=', c
 
@@ -207,7 +207,7 @@ class Factory(factory.Factory, Face):
         
         >>> from zope.generic.informationprovider.api import queryInformation
         
-        >>> config = queryInformation(instance, IMyParameter)
+        >>> config = queryInformation(IMyParameter, instance)
         >>> config.a, config.b, config.c
         (u'a bla', None, u'c default')
 
@@ -262,7 +262,7 @@ class Factory(factory.Factory, Face):
             input = config.input
             if input:
                 configuration = parameterToConfiguration(input, *pos, **kws)
-                provideInformation(instance, input, configuration)
+                provideInformation(input, configuration, instance)
 
         # invoke initializer operations
         if mode > 1:
@@ -279,7 +279,7 @@ class Factory(factory.Factory, Face):
         if '_Factory__config' not in self.__dict__:
             try:
                 provider = getInformationProvider(self.keyface)
-                self.__dict__['_Factory__config'] = queryInformation(provider, IOperationConfiguration)
+                self.__dict__['_Factory__config'] = queryInformation(IOperationConfiguration, provider)
 
             except:
                 self.__dict__['_Factory__config'] = None

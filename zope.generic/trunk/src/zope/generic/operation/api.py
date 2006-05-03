@@ -29,7 +29,7 @@ from zope.generic.operation.metaconfigure import assertOperation
 def getOperationConfiguration(object, conface=IUndefinedContext):
     """Evaluate an operation configuration."""
     
-    return getInformation(getInformationProvider(object, conface), IOperationConfiguration)
+    return getInformation(IOperationConfiguration, getInformationProvider(object, conface))
 
 
 

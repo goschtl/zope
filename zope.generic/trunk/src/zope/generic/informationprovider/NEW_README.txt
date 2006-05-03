@@ -98,13 +98,13 @@ Not provided optional data are taken from the default field values:
 
 You can retrieve this configurations the following way:
 
-    >>> provider_for_nokeyface_at_suppliercontext = api.getInformationProvider(conface=ISupplierContext)
-    >>> data = api.getInformation(provider_for_nokeyface_at_suppliercontext, ILogConfiguration)
+    >>> provider_at_suppliercontext = api.getInformationProvider(conface=ISupplierContext)
+    >>> data = api.getInformation(ILogConfiguration, provider_at_suppliercontext)
     >>> data.header, data.timeFormat
     ('Supplier', '%y.%m.%d')
 
-    >>> provider_for_nokeyface_at_usercontext = api.getInformationProvider(conface=IUserContext)
-    >>> data = api.getInformation(provider_for_nokeyface_at_usercontext, ILogConfiguration)
+    >>> provider_at_usercontext = api.getInformationProvider(conface=IUserContext)
+    >>> data = api.getInformation(ILogConfiguration, provider_at_usercontext)
     >>> data.header, data.timeFormat
     ('General', '%d.%m.%y')
 
@@ -133,7 +133,7 @@ Last we have to define our application - the log itself.
     ...         keyface = api.getKeyface(self.context)
     ...         conface = api.getConface(self)
     ...         provider = api.acquireInformationProvider(keyface, conface)
-    ...         logconfig = api.getInformation(provider, ILogConfiguration)
+    ...         logconfig = api.getInformation(ILogConfiguration, provider)
     ...         return '%s: %s, %s' % (logconfig.header, message, 
     ...                               time.strftime(logconfig.timeFormat))
 

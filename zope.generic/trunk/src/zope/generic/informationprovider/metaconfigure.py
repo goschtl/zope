@@ -41,12 +41,13 @@ from zope.generic.informationprovider.base import GlobalInformationProvider
 
 
 
-def getInformationProvider(object=None, conface=IUndefinedContext):
-    """Evaluate the next information provider utility for an object or keyface."""
-
-    keyface = getKeyface(object)
+def getInformationProvider(keyface=IUndefinedKeyface, conface=IUndefinedContext):
+    """Get the information provider for an faced object or face-typed interface."""
     if conface is None:
-        conface = getConface(object)
+        conface = getConface(keyface)
+
+    if not IKeyfaceType.providedBy(keyface):
+        keyface = getKeyface(keyface)
 
     try:
         provider = getUtility(conface, toDottedName(keyface))

@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 
 from persistent import Persistent
 from zope.annotation import IAnnotations
+from zope.annotation import IAttributeAnnotatable
 from zope.annotation.attribute import AttributeAnnotations
 from zope.app.container.contained import Contained
 from zope.app.i18n import ZopeMessageFactory as _
@@ -28,6 +29,7 @@ from zope.interface import implements
 from zope.schema.fieldproperty import FieldProperty
 
 from zope.generic.configuration import IConfigurations
+from zope.generic.configuration import IAttributeConfigurable
 from zope.generic.configuration.api import AttributeConfigurations
 from zope.generic.directlyprovides.api import provides
 from zope.generic.directlyprovides.api import updateDirectlyProvided
@@ -89,7 +91,7 @@ class BaseInformationProvider(object):
 
     """
 
-    implements(IInformationProvider)
+    implements(IInformationProvider, IAttributeConfigurable, IAttributeAnnotatable)
 
     def __init__(self, __conface__=None, __keyface__=None):
         if __keyface__:

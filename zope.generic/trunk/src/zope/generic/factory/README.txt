@@ -28,11 +28,11 @@ As usual first we have to declare an key interface for our implementation:
 Then we have to implement an example class with dedicated initalization
 parameters:
 
-    >>> from zope.generic.configuration import IAttributeConfigurable
+    >>> from zope.generic.informationprovider import IAttributeInformable
     >>> from zope.generic.face import IAttributeFaced
 
     >>> class Example(object):
-    ...    interface.implements(IAttributeFaced, IAttributeConfigurable)
+    ...    interface.implements(IAttributeFaced, IAttributeInformable)
     ...    def __init__(self, a, b, c):
     ...        print '__init__:', 'a=',a ,', b=', b, ', c=', c
 
@@ -149,7 +149,8 @@ We selected to store the input. Therefore you can lookup the corresponding
 configuration:
 
     >>> from zope.generic.informationprovider.api import getInformation
-    >>> info = getInformation(ex, IMyParameter)
+
+    >>> info = getInformation(IMyParameter, ex)
     >>> info.a, info.b, info.c
     (u'a bla', None, u'c default')
 

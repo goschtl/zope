@@ -20,7 +20,27 @@ inheritance relationships.
 
     >>> class IArticle(IText, INote):
     ...     """Logical article marker"""
-    
+
+    >>> registerDirective('''
+    ... <generic:interface
+    ...     interface="example.IText"
+    ...     type="zope.generic.face.IKeyfaceType"
+    ...     />
+    ... ''') 
+
+    >>> registerDirective('''
+    ... <generic:interface
+    ...     interface="example.INote"
+    ...     type="zope.generic.face.IKeyfaceType"
+    ...     />
+    ... ''')
+
+    >>> registerDirective('''
+    ... <generic:interface
+    ...     interface="example.IArticle"
+    ...     type="zope.generic.face.IKeyfaceType"
+    ...     />
+    ... ''')
 
 Step 2: Building Blocks
 -----------------------
@@ -67,7 +87,6 @@ Step 3: Implement Specific Handlers and the type-specific default data
     >>> from zope.generic.informationprovider.api import queryInformation
     >>> from zope.generic.informationprovider.api import provideInformation
     >>> from zope.generic.informationprovider.api import deleteInformation
-    >>> from zope.generic.content.api import queryTypeConfiguration
 
 Let's implement the initializer of the article. Initializers are called from
 ``__init__``. Initializers are used to add additional logic at the 
@@ -80,18 +99,18 @@ initialization process.
     ...     - raises an exception if no configurationis defined
     ...     """
     ...     # looks up the allready configured data on the object
-    ...     article_config = queryInformation(context, 
-    ...         IArticleInitializationConfiguration)
+    ...     article_config = queryInformation(IArticleInitializationConfiguration, 
+    ...                                        context)
     ...     if article_config is None:
-    ...         text_config = queryTypeConfiguration(context, ITextConfig)
-    ...         note_config = queryTypeConfiguration(context, INoteConfig)
+    ...         text_config = queryInformation(context.keyface, ITextConfig)
+    ...         note_config = queryInformation(context.keyface, INoteConfig)
     ...         text, note = text_config.text, note_config.text
     ...     else:
     ...         text, note = article_config.text, article_config.note
     ...
-    ...     provideInformation(context, ITextConfig, {'body': text})
-    ...     provideInformation(context, INoteConfig, {'body': note})
-    ...     deleteInformation(context, IArticleInitializationConfiguration)
+    ...     provideInformation(ITextConfig, {'body': text}, context)
+    ...     provideInformation(INoteConfig, {'body': note}, context)
+    ...     deleteInformation(IArticleInitializationConfiguration, context)
  
     >>> from zope.generic.configuration.api import ConfigurationData
     
@@ -176,10 +195,10 @@ To create an article we use the logical domain interface
     >>> IArticle.providedBy(article)
     True
 
-    >>> queryInformation(article, ITextConfig).body
+    >>> queryInformation(ITextConfig, article).body
     u'First version of article.'
     
-    >>> queryInformation(article, IArticleInitializationConfiguration).text
+    >>> queryInformation(IArticleInitializationConfiguration, article).text
     Traceback (most recent call last):
     ...
     AttributeError: 'NoneType' object has no attribute 'text'

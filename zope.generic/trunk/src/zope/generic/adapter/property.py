@@ -69,7 +69,7 @@ class ConfigurationAdapterProperty(object):
             for registry in self._providers:
                 try:
                     provider = getInformationProvider(context, registry)
-                    configuration = getInformation(provider, keyface)
+                    configuration = getInformation(keyface, provider)
                     break
                 except:
                     pass
@@ -116,7 +116,7 @@ class ConfigurationAdapterProperty(object):
                     for registry in self._providers:
                         try:
                             provider = getInformationProvider(context, registry)
-                            configuration = getInformation(provider, keyface)
+                            configuration = getInformation(keyface, provider)
                             break
                         except:
                             pass

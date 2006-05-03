@@ -79,19 +79,21 @@ retrieve this utility using the conventional utility api:
     >>> from zope.component import queryUtility
     >>> from zope.generic.face.api import toDottedName
 
-    >>> info = queryUtility(IUndefinedContext, toDottedName(IFooMarker))
+    >>> provider = queryUtility(IUndefinedContext, toDottedName(IFooMarker))
 
-    >>> info.keyface == IFooMarker
+    >>> provider.keyface == IFooMarker
     True
 
 There is convenience function for the lookup of corresponding type information.
 You can lookup the type information by the type marker interface or an object
 providing ITypedContent by implementation or adaption:
 
-	>>> api.queryTypeInformation(IFooMarker) == info
+    >>> from zope.generic.informationprovider.api import getInformationProvider
+
+	>>> getInformationProvider(IFooMarker) == provider
 	True
 
-    >>> api.queryTypeInformation(foo) == info
+    >>> getInformationProvider(foo.keyface) == provider
     True
 
 
@@ -200,39 +202,44 @@ This registration attached the specific configuration to the type information.
 You can retrieve type information by a typed instance or the marker type itself
 using the following convenience function:
 
-	>>> api.queryTypeConfiguration(IBarMarker, IAnyConfiguration).any
+    >>> from zope.generic.informationprovider.api import queryInformation
+
+	>>> queryInformation(IAnyConfiguration, IBarMarker).any
 	u'Guguseli from Type!'
 
-	>>> api.queryTypeConfiguration(bar, IAnyConfiguration).any
+	>>> queryInformation(IAnyConfiguration, bar.keyface).any
 	u'Guguseli from Type!'
 
-	>>> api.queryTypeConfiguration(IBarMarker, IOtherConfiguration) is None
+	>>> queryInformation(IOtherConfiguration, IBarMarker) is None
 	True
 
 This configuration is type specific. You cannot lookup any object- or 
 instance-specific configuration, but you can use a function that `acquires`
 different configurations:
 
-	>>> api.queryObjectConfiguration(bar, IAnyConfiguration) is None
+    >>> from zope.generic.informationprovider.api import acquireInformation
+    
+
+	>>> queryInformation(IAnyConfiguration, bar) is None
 	True
 
-	>>> api.queryObjectConfiguration(bar, IOtherConfiguration).other
+	>>> queryInformation(IOtherConfiguration, bar).other
 	u'Specific initialization data.'
 
-	>>> api.acquireObjectConfiguration(bar, IAnyConfiguration).any
+	>>> acquireInformation(IAnyConfiguration, bar).any
 	u'Guguseli from Type!'
 
-	>>> api.acquireObjectConfiguration(bar, IOtherConfiguration).other
+	>>> acquireInformation(IOtherConfiguration, bar).other
 	u'Specific initialization data.'
 
     >>> from zope.generic.configuration.api import IConfigurations
 	>>> objectdata = ConfigurationData(IAnyConfiguration, {'any': u'Guguseli from Object!'})
 	>>> IConfigurations(bar)[IAnyConfiguration] = objectdata
 	
-	>>> api.queryObjectConfiguration(bar, IAnyConfiguration).any
+	>>> queryInformation(IAnyConfiguration, bar).any
 	u'Guguseli from Object!'
 
-	>>> api.acquireObjectConfiguration(bar, IAnyConfiguration).any
+	>>> acquireInformation(IAnyConfiguration, bar).any
 	u'Guguseli from Object!'
 
 The configurationAdapter subdirective provides an adapter too:
@@ -249,7 +256,7 @@ If we remove the object's configuration the adapter will invoke
 the type configuration, but only the object's configuration can be set:
 
     >>> from zope.generic.informationprovider.api import deleteInformation
-    >>> deleteInformation(bar, IAnyConfiguration)
+    >>> deleteInformation(IAnyConfiguration, bar)
 
     >>> IAnyConfiguration(bar).any
     u'Guguseli from Type!'

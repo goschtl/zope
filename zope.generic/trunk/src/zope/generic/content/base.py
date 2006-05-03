@@ -23,12 +23,12 @@ from persistent import Persistent
 from zope.app import folder
 from zope.app.component.interfaces import IPossibleSite
 from zope.app.component.interfaces import ISite
+from zope.app.component.interfaces import NewLocalSite 
 from zope.app.container import btree
 from zope.app.container import contained
 from zope.app.container import ordered
 from zope.component.interfaces import ComponentLookupError
 from zope.component.interfaces import IComponentLookup
-from zope.app.component.interfaces import NewLocalSite 
 from zope.event import notify
 from zope.interface import directlyProvidedBy
 from zope.interface import directlyProvides

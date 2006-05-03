@@ -176,16 +176,16 @@ avoid the return value of the any-operation:
     >>> def inputToConfigurations(context, *pos, **kws):
     ...    print 'Private operation: inputToConfigurations'
     ...    input = parameterToConfiguration(IComplexConfig, *pos, **kws)
-    ...    provideInformation(context, IAnyInput, {'a': input.any})
-    ...    provideInformation(context, IPAUConfig, {'a': input.pau})
+    ...    provideInformation(IAnyInput, {'a': input.any}, context)
+    ...    provideInformation(IPAUConfig, {'a': input.pau}, context)
 
     >>> def pauInitializer(context, *pos, **kws):
     ...    print 'Private operation: pauInitializer'
-    ...    return getInformation(context, IPAUConfig)
+    ...    return getInformation(IPAUConfig, context)
 
     >>> def anyOperationInitializer(context, *pos, **kws):
     ...    print 'Private operation: anyOperationInitializer'
-    ...    return getInformation(context, IAnyInput)
+    ...    return getInformation(IAnyInput, context)
 
     >>> def void(context, *pos, **kws):
     ...    print 'Private operation: void'
@@ -206,10 +206,11 @@ and the private operations:
 
 Now we will check the behavior of the example on a dedicated context:
 
-    >>> from zope.generic.configuration import IAttributeConfigurable
+    >>> from zope.generic.informationprovider import IAttributeInformable
+    >>> from zope.generic.face.api import Face
 
-    >>> class DummyContext(object):
-    ...     interface.implements(IAttributeConfigurable)
+    >>> class DummyContext(Face):
+    ...     interface.implements(IAttributeInformable)
     ...     def __repr__(self):
     ...         return 'DummyContext'
 

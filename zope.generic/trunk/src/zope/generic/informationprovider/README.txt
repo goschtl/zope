@@ -101,7 +101,7 @@ Information providers are annotable. The annotations mechanism is used to provid
 additional informations in a well-known manner. At the moment there are no 
 configurations:
 
-    >>> api.queryInformation(provider, 'example.my_annotation') is None
+    >>> api.queryInformation('example.my_annotation', provider) is None
     True
 
 Information providers are configurable. The configurations mechanism is used 
@@ -127,7 +127,7 @@ is declared by a configuration schema providing IConfiguration:
 
 At the moment there are no configurations:
 
-    >>> api.queryInformation(provider, IMyConfiguration) is None
+    >>> api.queryInformation(IMyConfiguration, provider) is None
     True
 
 We now can use an annotation and a configuration to extend our information
@@ -159,11 +159,11 @@ information provider:
     ... ''')
 
     >>> provider = api.queryInformationProvider(IMyFoo, ISpecialContext)
-    >>> api.queryInformation(provider, 'example.my_annotation') is my_annotation
+    >>> api.queryInformation('example.my_annotation', provider) is my_annotation
     True
 
     >>> provider = api.queryInformationProvider(IMyFoo, ISpecialContext)
-    >>> api.queryInformation(provider, IMyConfiguration) is my_configuration
+    >>> api.queryInformation(IMyConfiguration, provider) is my_configuration
     True
 
 Further information provider exploration

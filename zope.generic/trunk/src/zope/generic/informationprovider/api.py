@@ -43,22 +43,24 @@ from zope.generic.informationprovider.metaconfigure import getInformationProvide
 
 
 
-def queryInformationProvider(object=None, conface=IUndefinedContext, default=None):
-    """Evaluate the next information provider utility for an object or keyface."""
+def queryInformationProvider(keyface=IUndefinedKeyface, conface=IUndefinedContext, default=None):
+    """Query the information provider for an faced object or face-typed interface."""
     try:
-        return getInformationProvider(object, conface)
+        return getInformationProvider(keyface, conface)
 
     except:
         return default
 
 
 
-def acquireInformationProvider(object=None, conface=IUndefinedContext):
-    """Evaluate the next information provider utility for an object or keyface."""
-        
-    keyface = getKeyface(object)
+def acquireInformationProvider(keyface=IUndefinedKeyface, conface=IUndefinedContext):
+    """Acquire the information provider for an faced object or face-typed interface."""
+
     if conface is None:
-        conface = getConface(object)
+        conface = getConface(keyface)
+
+    if not IKeyfaceType.providedBy(keyface):
+        keyface = getKeyface(keyface)
 
     for more_general_conface in conface.__iro__:
         for more_general_keyface in keyface.__iro__:
@@ -76,7 +78,7 @@ def acquireInformationProvider(object=None, conface=IUndefinedContext):
 
 
 def getInformationProvidersFor(face):
-    """Evaluate all information providers of a certain information aspect."""
+    """Evaluate available information providers of a certain information aspect."""
 
     if IConfaceType.providedBy(face):
         for name, provider in getUtilitiesFor(face):
@@ -92,8 +94,15 @@ def getInformationProvidersFor(face):
 
 
 
-def getInformation(context, informationkey):
+def getInformation(informationkey, keyface=IUndefinedKeyface, conface=IUndefinedContext):
     """Evaluate an information by a keyface (string or key keyface)."""
+    
+    if IInformable.providedBy(keyface):
+        context = keyface
+
+    else:
+        context = getInformationProvider(keyface, conface)
+    
     if IConfigurationType.providedBy(informationkey):
         return informationkey(IConfigurations(context))
 
@@ -102,18 +111,37 @@ def getInformation(context, informationkey):
 
 
 
-def queryInformation(context, informationkey, default=None):
+def queryInformation(informationkey, keyface=IUndefinedKeyface, conface=IUndefinedContext, default=None):
     """Evaluate an information by a keyface (string or key interface)."""
     try:
-        return getInformation(context, informationkey)
+        return getInformation(informationkey, keyface, conface)
 
     except:
         return default
 
 
 
-def provideInformation(context, informationkey, information):
+def acquireInformation(informationkey, keyface=IUndefinedKeyface, conface=IUndefinedContext):
+    """Evaluate an information by a keyface (string or key keyface)."""
+    
+    if IInformable.providedBy(keyface):
+        try:
+            return getInformation(informationkey, keyface, conface)
+        except:
+            pass
+
+    return getInformation(informationkey, getKeyface(keyface), conface)
+
+
+
+def provideInformation(informationkey, information, keyface=IUndefinedKeyface, conface=IUndefinedContext):
     """Set an information to a context using a keyface (string or key interface)."""
+
+    if IInformable.providedBy(keyface):
+        context = keyface
+
+    else:
+        context = getInformationProvider(keyface, conface)
 
     if IConfigurationType.providedBy(informationkey):
         if type(information) is dict:
@@ -126,11 +154,18 @@ def provideInformation(context, informationkey, information):
 
 
 
-def deleteInformation(context, informationkey):
+def deleteInformation(informationkey, keyface, conface=IUndefinedContext):
     """Delete an information of a context using a keyface (string or key interface)."""
+
+    if IInformable.providedBy(keyface):
+        context = keyface
+
+    else:
+        context = getInformationProvider(keyface, conface)
 
     if IConfigurationType.providedBy(informationkey):
         del IConfigurations(context)[informationkey]
     
     else:
         del IAnnotations(context)[informationkey]
+

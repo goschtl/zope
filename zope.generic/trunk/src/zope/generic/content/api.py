@@ -26,8 +26,3 @@ from zope.generic.content.base import Container
 from zope.generic.content.base import Folder
 from zope.generic.content.base import OrderedContainer
 from zope.generic.content.base import OrderedFolder
-
-from zope.generic.content.helper import acquireObjectConfiguration
-from zope.generic.content.helper import queryObjectConfiguration
-from zope.generic.content.helper import queryTypeConfiguration
-from zope.generic.content.helper import queryTypeInformation
