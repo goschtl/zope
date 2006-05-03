@@ -10,6 +10,18 @@ Zope Changes
 
     New features
 
+      - Provided a new component registry API that allows multiple
+        component registries to be combined more flexibly than before.
+        See zope.component.interfaces.IComponentRegistry for more
+        information.
+
+      - Greatly simplified local-component registration.
+        See zope.component.interfaces.IComponentRegistry for more
+        information.
+
+      - Moved many packages out of zope.app to make them easier to use
+        outside of Zope.
+
       - Added a simple Python id based implementation of IKeyReference for
         testing.
 
@@ -56,6 +68,9 @@ Zope Changes
       - Added a more complete set of widgets for fields that use 
         iterable sources.  These widgets now mirror the set provided
         by vocabulary-based fields.
+
+      - Added a cleaner and more robust API to testbrowser for setting
+        file-upload data.
 
     Restructuring
 
