@@ -123,8 +123,8 @@ Furthermore there is simple Face mixin for AttributeFaced objects:
     >>> fooface.conface == IMyContext
     True
 
-getKeyface
-----------
+Look up key interfaces by getKeyface
+------------------------------------
 
 The api provides convenience functions to get the key interfaces of components:
 
@@ -137,8 +137,8 @@ The api provides convenience functions to get the key interfaces of components:
     >>> api.getKeyface(object(), None) is None
     True
 
-getConface
-----------
+Look up key interfaces bygetConface
+-----------------------------------
 
 The api provides convenience functions to get the context interfaces of components:
 
