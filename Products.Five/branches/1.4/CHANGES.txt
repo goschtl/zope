@@ -2,6 +2,19 @@
 Five Changes
 ============
 
+Five 1.4 (Unreleased)
+=====================
+
+Bugfixes
+--------
+
+* Five.testbrowser does not swallow cookies anymore, based on patch by
+  Daniel Nouri.
+
+* Five.testbrowser capitalizes headers in the same way as the Zope2
+  HTTPResponse. i.e. content-length -> Content-Length.
+
+
 Five 1.4c (2006-05-04)
 ======================
 
