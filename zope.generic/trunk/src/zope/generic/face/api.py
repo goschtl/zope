@@ -23,6 +23,7 @@ from zope.generic.face.adapter import FaceForAttributeFaced
 from zope.generic.face.base import Face
 from zope.generic.face.helper import toDescription
 from zope.generic.face.helper import toDottedName
+from zope.generic.face.helper import toFaceTuple
 from zope.generic.face.helper import toInterface
 
 

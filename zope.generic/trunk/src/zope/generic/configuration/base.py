@@ -24,6 +24,8 @@ from persistent.dict import PersistentDict
 
 from zope.interface import directlyProvides
 from zope.interface import implements
+from zope.schema.interfaces import IObject
+from zope.schema.interfaces import IContainer
 
 from zope.generic.face import IAttributeFaced
 from zope.generic.face import IFace
@@ -32,8 +34,62 @@ from zope.generic.face.api import FaceForAttributeFaced
 
 from zope.generic.configuration import IConfigurationData
 from zope.generic.configuration import IConfigurations
+from zope.generic.configuration import IConfigurationType
 from zope.generic.configuration.helper import getValue
 
+
+
+def subData(name, data):
+    """Return a subdata dict and remove the subdata from the given data dict.
+
+    Example 1:
+
+        >>> data = {'x.y': 2, 'x.a': 3, 'x.': 4, 'xa': 5}
+        >>> subData('x', data)
+        {'y': 2, 'a': 3}
+    """
+
+    subdata = {}
+
+    prefix = name + '.'
+    prefix_len = len(name + '.')
+
+    # add subdata to dictionary
+    for key, value in data.items():
+        if len(key) > prefix_len and key.startswith(prefix):
+            subdata[key[prefix_len:]] = value
+            del data[key]
+
+    return subdata
+
+
+
+def prepareData(__keyface__, data):
+    """Nested configuration support."""
+    missedArguments = []
+    for name in __keyface__:
+        # forget missing but none-required
+        if name not in data:
+            field = __keyface__[name]
+            # handle nested configuration data
+            if IObject.providedBy(field) and IConfigurationType.providedBy(field.schema):
+                try:
+                    subdata = subData(name, data)
+                    if subdata or field.required is True:
+                        data[name] = ConfigurationData(field.schema, subData(name, data))
+                        break
+
+                except:
+                    pass
+
+            if field.required is True:
+                missedArguments.append(name)
+    
+    if missedArguments:
+        raise TypeError("__init__ requires '%s' of '%s'." % (', '.join(missedArguments), __keyface__.__name__))
+    
+    return data
+    
 
 
 _marker = object()
@@ -117,19 +173,8 @@ class ConfigurationData(Persistent):
     implements(IAttributeFaced, IConfigurationData)
 
     def __init__(self, __keyface__, data):
-        # preconditions
-        missedArguments = []
-        for name in __keyface__:
-            if name not in data:
-                field = __keyface__[name]
-                if field.required is True:
-                    missedArguments.append(name)
-        
-        if missedArguments:
-            raise TypeError("__init__ requires '%s' of '%s'." % (', '.join(missedArguments), __keyface__.__name__))
-    
         # essentials
-        self.__dict__['_ConfigurationData__data'] = PersistentDict(data)
+        self.__dict__['_ConfigurationData__data'] = PersistentDict(prepareData(__keyface__, data))
         self.__dict__['__keyface__'] = __keyface__
         self.__dict__['__conface__'] = IUndefinedContext
         directlyProvides(self, __keyface__)

@@ -15,12 +15,13 @@
           schema=".metadirectives.IInformationSubdirective"
           />
 
-      <meta:subdirective
-          name="informations"
-          schema=".metadirectives.IInformationsSubdirective"
-          />
-
     </meta:complexDirective>
+
+    <meta:directive
+        name="multiInformationProviders"
+        schema=".metadirectives.IMultiInformationProviderDirectives"
+        handler=".metaconfigure.multiInformationProviderDirectives"
+        />
 
   </meta:directives>
 

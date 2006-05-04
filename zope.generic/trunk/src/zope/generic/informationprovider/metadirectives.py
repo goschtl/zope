@@ -55,6 +55,23 @@ class IConfaceDirective(Interface):
 
 
 
+class IIniFileDirective(Interface):
+    """Ini-file based configurations for multi information provider."""
+
+    iniFiles = Tokens(
+        title=_('*.ini-like File'),
+        description=_('Parse ((ConfigParser) configuration and face interfaces '
+                      'from sections resolving the pattern '
+                      'configuration:keyface@conface. The configuration data '
+                      'are retrieved from the corresponding options using '
+                      'IFromUnicode(field).fromUnicode() from the configuration '
+                      'fields.'),
+        required=False,
+        value_type=Path(constraint=lambda v: v.endswith('.ini'))
+        )
+
+
+
 class IDescriptionDirective(IKeyfaceDirective):
     """Base information provider attributes."""
 
@@ -77,7 +94,7 @@ class IInformationProviderDirective(IKeyfaceDirective, IConfaceDirective):
 
 
 
-class IInformationSubdirective(Interface):
+class IInformationSubdirective(IIniFileDirective):
     """Declare a certain information of an information provider."""
 
     keyface = GlobalInterface(
@@ -106,14 +123,6 @@ class IInformationSubdirective(Interface):
         )
 
 
-class IInformationsSubdirective(Interface):
-    """Ini-file based configurations for an information provider."""
+class IMultiInformationProviderDirectives(IIniFileDirective):
+    """Ini-file based configurations for multi information providers."""
 
-    iniFiles = Tokens(
-        title=_('*.ini-like File'),
-        description=_('Parse configuration key interfaces from sections. '
-                      'and the configuration data from theirs options using '
-                      'the config parser and IFromUnicode(field).fromUnicode().'),
-        required=False,
-        value_type=Path(constraint=lambda v: v.endswith('.ini'))
-        )

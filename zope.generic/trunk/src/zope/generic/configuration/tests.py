@@ -65,10 +65,17 @@ class ConfigurationDataTest(InterfaceBaseTest):
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(ConfigurationDataTest),
-        doctest.DocTestSuite('zope.generic.configuration.helper'),
         doctest.DocTestSuite('zope.generic.configuration.base'),
         doctest.DocTestSuite('zope.generic.configuration.event'),
         doctest.DocTestSuite('zope.generic.configuration.adapter',
+                             setUp=testing.placelesssetup.setUp,
+                             tearDown=testing.placelesssetup.tearDown,
+                             globs={'component': component, 'interface': interface,
+                             'registerDirective': registerDirective,
+                             'testing': testing, 'api': api},
+                             optionflags=doctest.NORMALIZE_WHITESPACE+
+                                            doctest.ELLIPSIS),
+        doctest.DocTestSuite('zope.generic.configuration.helper',
                              setUp=testing.placelesssetup.setUp,
                              tearDown=testing.placelesssetup.tearDown,
                              globs={'component': component, 'interface': interface,

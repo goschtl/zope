@@ -19,6 +19,8 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.dottedname.resolve import resolve
+from zope.generic.face import IUndefinedContext
+from zope.generic.face import IUndefinedKeyface
 
 
 
@@ -48,7 +50,7 @@ def toDescription(component, label=None, hint=None):
         >>> class A:
         ...     pass
 
-        >>> label, hint = toDescription(A)
+        >>> label, hint = api.toDescription(A)
         >>> label
         u''
         >>> hint
@@ -60,7 +62,7 @@ def toDescription(component, label=None, hint=None):
         ...    '''Test label.   
         ...    '''
 
-        >>> label, hint = toDescription(B)
+        >>> label, hint = api.toDescription(B)
         >>> label
         u'Test label.'
         >>> hint
@@ -75,7 +77,7 @@ def toDescription(component, label=None, hint=None):
         ...    bla bla bla:  
         ...         - bla, bla, bla.   '''
 
-        >>> label, hint = toDescription(C)
+        >>> label, hint = api.toDescription(C)
         >>> label
         u'Test label.'
         >>> hint
@@ -84,13 +86,13 @@ def toDescription(component, label=None, hint=None):
     You can overwrite the underlying doc string providing your own
     label or hint:
 
-        >>> label, hint = toDescription(C, label=u'My label')
+        >>> label, hint = api.toDescription(C, label=u'My label')
         >>> label
         u'My label'
         >>> hint
         u'Test hint, bla bla .\\\\nbla bla bla:\\\\n- bla, bla, bla.'
 
-        >>> label, hint = toDescription(C, hint=u'My hint')
+        >>> label, hint = api.toDescription(C, hint=u'My hint')
         >>> label
         u'Test label.'
         >>> hint
@@ -129,4 +131,72 @@ def toDescription(component, label=None, hint=None):
                 else:
                     return (unicode(lines[0].strip()), u'')
 
-        return (u'', u'')   
+        return (u'', u'')
+
+
+
+def toFaceTuple(identifier):
+    """Resolve 'keyface@conface' to (keyface, conface).
+
+        >>> from zope.interface import Interface
+        
+        >>> class IK(Interface):
+        ...     pass
+        
+        >>> class IC(Interface):
+        ...     pass
+
+    Example 1:
+        
+        >>> api.toFaceTuple(api.toDottedName(IK))
+        (<InterfaceClass example.IK>, <....IUndefinedContext>)
+
+    Example 2:
+        
+        >>> api.toFaceTuple('wrong')
+        (<....IUndefinedKeyface>, <....IUndefinedContext>)
+
+    Example 3:
+        
+        >>> api.toFaceTuple(api.toDottedName(IK) + '@' + api.toDottedName(IC))
+        (<InterfaceClass example.IK>, <InterfaceClass example.IC>)
+
+    Example 4:
+        
+        >>> api.toFaceTuple('@' + api.toDottedName(IC))
+        (<....IUndefinedKeyface>, <InterfaceClass example.IC>)
+
+    Example 5:
+        
+        >>> api.toFaceTuple(api.toDottedName(IK) + '@')
+        (<InterfaceClass example.IK>, <....IUndefinedContext>)
+
+    Example 6:
+        
+        >>> api.toFaceTuple('@')
+        (<....IUndefinedKeyface>, <....IUndefinedContext>)
+  
+    """
+    
+    parts = identifier.split('@')
+    
+    if len(parts) == 1:
+        try:
+            return (toInterface(parts[0]), IUndefinedContext)
+
+        except:
+            return (IUndefinedKeyface, IUndefinedContext)
+
+    else:
+        try:
+            keyface = toInterface(parts[0])
+        
+        except:
+            keyface = IUndefinedKeyface
+        
+        try:
+            return (keyface, toInterface(parts[1]))
+        
+        except:
+            return (keyface, IUndefinedContext)
+

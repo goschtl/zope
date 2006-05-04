@@ -22,6 +22,10 @@ from zope.interface.interfaces import IMethod
 from zope.schema.interfaces import IField
 
 from zope.generic.face import IFace
+from zope.generic.face import IUndefinedContext
+from zope.generic.face import IUndefinedKeyface
+from zope.generic.face.api import toFaceTuple
+from zope.generic.face.api import toInterface
 
 
 
@@ -69,11 +73,11 @@ def configuratonToDict(configuration, all=False):
 
         >>> from zope.generic.configuration.base import ConfigurationData
         >>> configuration = ConfigurationData(IAnyConfiguration, {'a': 'a bla'})
-        >>> configuratonToDict(configuration)
+        >>> api.configuratonToDict(configuration)
         {'a': 'a bla'}
 
     Including defaults:
-        >>> configuratonToDict(configuration, all=True)
+        >>> api.configuratonToDict(configuration, all=True)
         {'a': 'a bla', 'c': u'c default', 'b': None}
 
     """
@@ -121,9 +125,36 @@ def requiredInOrder(configuration):
         ...    c = TextLine(required=False, readonly=True, default=u'c bla')
         ...    d = TextLine()
 
-        >>> requiredInOrder(IAnyConfiguration)
+        >>> api.requiredInOrder(IAnyConfiguration)
         ['a', 'd']
     
     """
     
     return [name for name in configuration if configuration[name].required is True]
+
+
+
+def toConfigFaceTriple(identifier):
+    """Split configface:keyface@conface to (configface, keyface, conface).
+
+        >>> from zope.interface import Interface
+        
+        >>> class IA(Interface):
+        ...     pass
+
+        >>> from zope.generic.face.api import toDottedName
+
+        >>> api.toConfigFaceTriple(toDottedName(IA) + ':')
+        (<InterfaceClass example.IA>, <....IUndefinedKeyface>, <....IUndefinedContext>)
+    """
+
+    parts = identifier.split(':')
+
+    if len(parts) == 1:
+        return (toInterface(parts[0]), IUndefinedKeyface, IUndefinedContext)
+
+    else:
+        keyface, conface = toFaceTuple(parts[1])
+        return (toInterface(parts[0]), keyface, conface)
+            
+        
