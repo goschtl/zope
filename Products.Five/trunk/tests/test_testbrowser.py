@@ -54,6 +54,29 @@ def doctest_cookies():
         True
     """
 
+def doctest_camel_case_headers():
+    """Make sure that the headers come out in camel case.
+
+    Some setup:
+
+        >>> from Products.Five.tests.test_testbrowser import CookieStub
+        >>> self.folder._setObject('stub', CookieStub())
+        'stub'
+
+    The Zope2 response mungs headers so they come out in camel case we should
+    do the same. This is also more consistent with the Zope3 testbrowser tests.
+    We will test a few:
+
+        >>> from Products.Five.testbrowser import Browser
+        >>> browser = Browser()
+        >>> browser.open('http://localhost/test_folder_1_/stub')
+        >>> 'Content-Length: ' in str(browser.headers)
+        True
+        >>> 'Content-Type: ' in str(browser.headers)
+        True
+    """
+
+
 def test_suite():
     return unittest.TestSuite((
             FunctionalDocTestSuite(),

@@ -30,7 +30,20 @@ class PublisherConnection(testing.PublisherConnection):
         real_response = self.response._response
         status = real_response.getStatus()
         reason = zope.publisher.http.status_reasons[real_response.status]
-        headers = real_response.headers.items()
+        headers = []
+        # Convert header keys to camel case. This is basically a copy
+        # paste from ZPublisher.HTTPResponse
+        for key, val in real_response.headers.items():
+            if key.lower() == key:
+                # only change non-literal header names
+                key = "%s%s" % (key[:1].upper(), key[1:])
+                start = 0
+                l = key.find('-',start)
+                while l >= start:
+                    key = "%s-%s%s" % (key[:l],key[l+1:l+2].upper(),key[l+2:])
+                    start = l + 1
+                    l = key.find('-', start)
+            headers.append((key, val))
         # get the cookies, breaking them into tuples for sorting
         cookies = [(c[:10], c[12:]) for c in real_response._cookie_list()]
         headers.extend(cookies)
