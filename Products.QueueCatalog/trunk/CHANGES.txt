@@ -1,6 +1,18 @@
 QueueCatalog Product Changelog
 
-  post-QueueCatalog 1.3 (2005/04/07)
+  After QueueCatalog 1.3
+
+    - Added a dependencies document
+
+    - Updated the tests to run on Zope 2.8+
+
+    - Enabled conflict testing after changing it to use a quick and dirty
+      FileStorage, and expanding it a little.
+
+    - Removed the security declaration for a method named refreshCatalog
+      which was added in version 1.0 - this is the wrong place to apply
+      product-specific settings for a product the QueueCatalog is not
+      dependent on.
 
     - CVS-only, tag 'QueueCatalog-post-1_3-error-logging'
 

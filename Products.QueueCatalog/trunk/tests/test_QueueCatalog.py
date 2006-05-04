@@ -16,80 +16,34 @@
 $Id$
 """
 
+import os
+import shutil
+import tempfile
 import unittest
+
 import Testing
-import Zope
-Zope.startup()
+import transaction
+import Zope2
+Zope2.startup()
 
 from Products.ZCatalog.ZCatalog import ZCatalog
 from Products.QueueCatalog.QueueCatalog import QueueCatalog
+from OFS.Application import Application
 from OFS.Folder import Folder
-from zLOG.tests.testzLog import StupidLogTest
+from Testing.ZopeTestCase.base import TestCase 
+from ZODB.POSException import ConflictError 
 
-# Use a module global to store a fresh Zope app *once* per test run
-# This avoids having to recreate one everytime the unittest framework
-# instantiates the test case anew, which it tends to do often
+class QueueCatalogTests(TestCase):
 
-_conn = None
-
-def makeConnection():
-    from ZODB import DB
-    from ZODB.DemoStorage import DemoStorage
-
-    s = DemoStorage(quota=(1<<20))
-    return DB( s ).open()
-
-def getZopeApp():
-
-    from cStringIO import StringIO
-    from OFS.Application import Application
-    from OFS.Application import initialize as initialize_app
-    from Testing.makerequest import makerequest
-
-    global _conn
-    if _conn is None: # or fresh_db:
-        _conn = makeConnection()
-        try:
-            root = _conn.root()
-            app = Application()
-            root['Application'] = app
-            responseOut = StringIO()
-            app = makerequest(app, stdout=responseOut)
-            get_transaction().commit(1)
-            initialize_app(app)
-            get_transaction().commit(1)
-            return app
-        except:
-            _conn.close()
-            _conn = None
-            raise
-    else:
-        app = _conn.root()['Application']
-        responseOut = StringIO()
-        return makerequest(app, stdout=responseOut)
-
-
-class QueueCatalogTests(StupidLogTest):
-
-    def setUp(self):
-        app = getZopeApp()
-        self.app = app
-        app.real_cat = ZCatalog('real_cat')
-        app.real_cat.addIndex('id', 'FieldIndex')
-        app.real_cat.addIndex('title', 'FieldIndex')
-        app.real_cat.addIndex('meta_type', 'FieldIndex')
-        app.queue_cat = QueueCatalog(3) # 3 buckets
-        app.queue_cat.id = 'queue_cat'
-        app.queue_cat.manage_edit(location='/real_cat',
+    def afterSetUp(self):
+        self.app.real_cat = ZCatalog('real_cat')
+        self.app.real_cat.addIndex('id', 'FieldIndex')
+        self.app.real_cat.addIndex('title', 'FieldIndex')
+        self.app.real_cat.addIndex('meta_type', 'FieldIndex')
+        self.app.queue_cat = QueueCatalog(3) # 3 buckets
+        self.app.queue_cat.id = 'queue_cat'
+        self.app.queue_cat.manage_edit(location='/real_cat',
                                   immediate_indexes=['id', 'title'])
-        StupidLogTest.setUp(self)
-
-    def tearDown(self):
-        get_transaction().abort()
-        try:
-            StupidLogTest.tearDown(self)
-        except OSError:
-            pass
 
     def testAddObject(self):
         app = self.app
@@ -211,33 +165,32 @@ class QueueCatalogTests(StupidLogTest):
         res = app.queue_cat.searchResults(id='f1')[0]
         self.assertEqual(res.title, 'Betty')
 
-    def testLogCatalogErrors(self):
-        self.setLog()
-        app = self.app
-        app.f1 = Folder()
-        app.f1.id = 'f1'
-        app.queue_cat.catalog_object(app.f1)
-        app.real_cat.catalog_object = lambda : None # raises TypeError
-        app.queue_cat.process()
-        del app.real_cat.catalog_object
-        app.queue_cat.setImmediateRemoval(False)
-        app.queue_cat.uncatalog_object(app.queue_cat.uidForObject(app.f1))
-        app.real_cat.uncatalog_object = lambda : None # raises TypeError
-        app.queue_cat.process()
-        del app.real_cat.uncatalog_object
-        f = self.getLogFile()
-        self.verifyEntry(f, subsys="QueueCatalog",
-                         summary="error cataloging object")
-        # the verify method in the log tests is broken :-(
-        l = f.readline()
-        marker = "------\n"
-        while l != marker:
-            l = f.readline()
-            if not l:
-                self.fail('could not find next log entry')
-        f.seek(f.tell() - len(marker))
-        self.verifyEntry(f, subsys="QueueCatalog",
-                         summary="error uncataloging object")
+    #def testLogCatalogErrors(self):
+    #    app = self.app
+    #    app.f1 = Folder()
+    #    app.f1.id = 'f1'
+    #    app.queue_cat.catalog_object(app.f1)
+    #    app.real_cat.catalog_object = lambda : None # raises TypeError
+    #    app.queue_cat.process()
+    #    del app.real_cat.catalog_object
+    #    app.queue_cat.setImmediateRemoval(False)
+    #    app.queue_cat.uncatalog_object(app.queue_cat.uidForObject(app.f1))
+    #    app.real_cat.uncatalog_object = lambda : None # raises TypeError
+    #    app.queue_cat.process()
+    #    del app.real_cat.uncatalog_object
+    #    f = self.getLogFile()
+    #    self.verifyEntry(f, subsys="QueueCatalog",
+    #                     summary="error cataloging object")
+    #    # the verify method in the log tests is broken :-(
+    #    l = f.readline()
+    #    marker = "------\n"
+    #    while l != marker:
+    #        l = f.readline()
+    #        if not l:
+    #            self.fail('could not find next log entry')
+    #    f.seek(f.tell() - len(marker))
+    #    self.verifyEntry(f, subsys="QueueCatalog",
+    #                     summary="error uncataloging object")
 
     def testQueueProcessingLimit(self):
         # Don't try to process too many items at once.
@@ -299,53 +252,128 @@ class QueueCatalogTests(StupidLogTest):
         self.assertEqual(app.test_cat.manage_size(), 19)
         del app.test_cat
 
-# Enable this test when DemoStorage supports conflict resolution.
 
-##    def testSimpleConflict(self):
-##        # Verifies that the queue resolves conflicts.
-##        # Prepare the data.
-##        app = self.app
-##        for n in range(10):
-##            f = Folder()
-##            f.id = 'f%d' % n
-##            setattr(app, f.id, f)
-##            g = Folder()
-##            g.id = 'g%d' % n
-##            setattr(app, g.id, g)
-##        get_transaction().commit()
-##        # Queue some events.
-##        for n in range(10):
-##            f = getattr(app, 'f%d' % n) 
-##            app.queue_cat.catalog_object(f)
-##        # Let another thread add events that change the same queues.
-##        from thread import start_new_thread, allocate_lock
-##        lock = allocate_lock()
-##        lock.acquire()
-##        start_new_thread(self._simpleConflictThread, (lock,))
-##        lock.acquire()
-##        # Verify the other thread did its work.
-##        app2 = Zope.app()
-##        try:
-##            self.assertEqual(len(app2.queue_cat()), 10)
-##        finally:
-##            del app2
-##        # Commit the conflicting changes.
-##        get_transaction().commit()
-##        # Did it work?
-##        self.assertEqual(len(app.queue_cat()), 20)
+class QueueConflictTests(unittest.TestCase):
 
-##    def _simpleConflictThread(self, lock):
-##        try:
-##            app = Zope.app()
-##            for n in range(10):
-##                g = getattr(app, 'g%d' % n) 
-##                app.queue_cat.catalog_object(g)
-##            get_transaction().commit()
-##            del app
-##        finally:
-##            lock.release()
+    def openDB(self):
+        from ZODB.FileStorage import FileStorage
+        from ZODB.DB import DB
+        self.dir = tempfile.mkdtemp()
+        self.storage = FileStorage(os.path.join(self.dir, 'testQCConflicts.fs'))
+        self.db = DB(self.storage)
 
+    def setUp(self):
+        self.openDB()
+        app = Application()
+
+        tm1 = transaction.TransactionManager()
+        conn1 = self.db.open(transaction_manager=tm1)
+        r1 = conn1.root()
+        r1["Application"] = app
+        del app
+        self.app = r1["Application"]
+        tm1.commit()
+
+        self.app.real_cat = ZCatalog('real_cat')
+        self.app.real_cat.addIndex('id', 'FieldIndex')
+        self.app.real_cat.addIndex('title', 'FieldIndex')
+        self.app.real_cat.addIndex('meta_type', 'FieldIndex')
+        self.app.queue_cat = QueueCatalog(3) # 3 buckets
+        self.app.queue_cat.id = 'queue_cat'
+        self.app.queue_cat.manage_edit(location='/real_cat',
+                                  immediate_indexes=[])
+
+        # Create stuff to catalog
+        for n in range(10):
+            f = Folder()
+            f.id = 'f%d' % n
+            self.app._setOb(f.id, f)
+            g = Folder()
+            g.id = 'g%d' % n
+            self.app._setOb(g.id, g)
+
+        # Make sure everything is committed so the second connection sees it
+        tm1.commit()
+
+        tm2 = transaction.TransactionManager()
+        conn2 = self.db.open(transaction_manager=tm2)
+        r2 = conn2.root()
+        self.app2 = r2["Application"]
+        ignored = dir(self.app2)    # unghostify
+
+    def tearDown(self):
+        transaction.abort()
+        del self.app
+        if self.storage is not None:
+            self.storage.close()
+            self.storage.cleanup()
+            shutil.rmtree(self.dir)
+
+    def test_rig(self):
+        # Test the test rig
+        self.assertEqual(self.app._p_serial, self.app2._p_serial)
+
+    def test_simpleConflict(self):
+        # Using the first connection, index 10 folders
+        for n in range(10):
+            f = getattr(self.app, 'f%d' % n) 
+            self.app.queue_cat.catalog_object(f)
+        self.app._p_jar.transaction_manager.commit()
+
+        # After this run, the first connection's queuecatalog has 10
+        # entries, the second has none.
+        self.assertEqual(self.app.queue_cat.manage_size(), 10)
+        self.assertEqual(self.app2.queue_cat.manage_size(), 0)
+
+        # Using the second connection, index the other 10 folders
+        for n in range(10):
+            g = getattr(self.app2, 'g%d' % n) 
+            self.app2.queue_cat.catalog_object(g)
+
+        # Now both connections' queuecatalogs have 10 entries each, but
+        # for differrent objects
+        self.assertEqual(self.app.queue_cat.manage_size(), 10)
+        self.assertEqual(self.app2.queue_cat.manage_size(), 10)
+
+        # Now we commit. Conflict resolution on the catalog queue should
+        # kick in because both connections have changes. Since none of the
+        # events collide, we should end up with 20 entries in our catalogs.
+        self.app2._p_jar.transaction_manager.commit()
+        self.app._p_jar.sync()
+        self.app2._p_jar.sync()
+        self.assertEqual(self.app.queue_cat.manage_size(), 20)
+        self.assertEqual(self.app2.queue_cat.manage_size(), 20)
+
+    def test_unresolved_add_after_delete(self):
+        # If a DELETE event is encountered for an object and other events
+        # happen afterwards, we have entered the twilight zone and give up.
+
+        # Taking one item and cataloging it in the first connection, then
+        # uncataloging it. There should be 1 event in the queue left
+        # afterwards, for uncataloging the content item (DELETE)
+        f0 = getattr(self.app, 'f0')
+        self.app.queue_cat.catalog_object(f0)
+        self.app._p_jar.transaction_manager.commit()
+        self.app.queue_cat.uncatalog_object('/f0')
+        self.app._p_jar.transaction_manager.commit()
+        self.assertEqual(self.app.queue_cat.manage_size(), 1)
+
+        # In the second connection, I will newly catalog the same folder again
+        # in order to provoke insane state (ADD after DELETE)
+        self.app2.queue_cat.catalog_object(f0)
+
+        # This commit should now raise a conflict
+        self.assertRaises( ConflictError
+                         , self.app2._p_jar.transaction_manager.commit
+                         )
+
+
+def test_suite():
+    return unittest.TestSuite((
+            unittest.makeSuite(QueueCatalogTests),
+            unittest.makeSuite(QueueConflictTests),
+                    ))
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='test_suite')
 

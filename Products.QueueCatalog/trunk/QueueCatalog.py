@@ -529,8 +529,7 @@ class QueueCatalog(Implicit, SimpleItem):
     security.declarePublic('getTitle', 'title_or_id')
 
     security.declareProtected(manage_zcatalog_entries,
-                              'catalog_object', 'uncatalog_object',
-                              'refreshCatalog')
+                              'catalog_object', 'uncatalog_object')
 
 
 def cataloged(catalog, path):

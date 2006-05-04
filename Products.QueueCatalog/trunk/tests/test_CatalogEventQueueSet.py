@@ -308,3 +308,11 @@ class CatalogEventQueueSetTests( unittest.TestCase ):
 
 # TODO:
 #  test_process_*
+
+def test_suite():
+    return unittest.TestSuite((
+                unittest.makeSuite(CatalogEventQueueSetTests),
+                                    ))
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')
