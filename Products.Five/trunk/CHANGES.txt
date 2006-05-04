@@ -2,6 +2,16 @@
 Five Changes
 ============
 
+Five 1.5 (Unreleased)
+=====================
+
+Bugfixes
+--------
+
+* Five.testbrowser capitalizes headers in the same way as the Zope2
+  HTTPResponse. i.e. content-length -> Content-Length.
+
+
 Five 1.5b (2006-05-04)
 ======================
 
@@ -13,6 +23,20 @@ Features
 * five:defaultViewable and five:traversable are now unessecary and
   deprecated, as the functionality exists in the Zope core publisher
   from Zope 2.10 and up.
+
+
+Five 1.4 (Unreleased)
+=====================
+
+Bugfixes
+--------
+
+* Five.testbrowser does not swallow cookies anymore, based on patch by
+  Daniel Nouri.
+
+* Five.testbrowser capitalizes headers in the same way as the Zope2
+  HTTPResponse. i.e. content-length -> Content-Length.
+
 
 Five 1.4c (2006-05-04)
 ======================
