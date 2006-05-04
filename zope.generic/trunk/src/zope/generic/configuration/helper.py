@@ -18,14 +18,39 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.interface.interfaces import IMethod
+from zope.schema.interfaces import IField
 
 from zope.generic.face import IFace
-
-from zope.generic.configuration.base import ConfigurationData
 
 
 
 _marker = object()
+
+def getValue(keyface, name, data):
+    """Return a declared value."""
+    try:
+        field = keyface[name]
+    except KeyError:
+        raise AttributeError(name)
+    else:
+        value = data.get(name, _marker)
+        if value is _marker:
+            value = getattr(field, 'default', _marker)
+            if value is _marker:
+                raise RuntimeError('Data is missing', name)
+
+        if IMethod.providedBy(field):
+            if not IField.providedBy(field):
+                raise RuntimeError('Data value is not a schema field', name)
+            v = lambda: value
+        else:
+            v = value
+
+        return v
+    raise AttributeError(name)
+
+
 
 def configuratonToDict(configuration, all=False):
     """Extract values from configuration to a dictionary.
@@ -102,108 +127,3 @@ def requiredInOrder(configuration):
     """
     
     return [name for name in configuration if configuration[name].required is True]
-
-
-
-def parameterToConfiguration(__keyface__, *pos, **kws):
-    """Create configuration data
-
-    The generic signature *pos, **kws can will be resolved into a configuration.
-
-        >>> from zope.interface import Interface
-        >>> from zope.schema import TextLine
-        
-        >>> class IAnyConfiguration(Interface):
-        ...    a = TextLine()
-        ...    b = TextLine(required=False)
-        ...    c = TextLine(required=False, readonly=True, default=u'c default')
-        ...    d = TextLine()
-
-    A: No arguments does not satisfy the configuration:
-
-        >>> parameterToConfiguration(IAnyConfiguration)
-        Traceback (most recent call last):
-        ...
-        TypeError: __init__ requires 'a, d' of 'IAnyConfiguration'.
-
-    B: Provide the required as positionals:
-
-        >>> config = parameterToConfiguration(IAnyConfiguration, u'a bla', u'd bla')
-        >>> config.a, config.b, config.c, config.d
-        (u'a bla', None, u'c default', u'd bla')
-
-    C: Provide the required as positional and keyword:
-
-        >>> config = parameterToConfiguration(IAnyConfiguration, u'a bla', d=u'd bla')
-        >>> config.a, config.b, config.c, config.d
-        (u'a bla', None, u'c default', u'd bla')
-
-    D: Provide all required as keyword:
-
-        >>> config = parameterToConfiguration(IAnyConfiguration, d=u'd bla', c=u'c bla', a=u'a bla')
-        >>> config.a, config.b, config.c, config.d
-        (u'a bla', None, u'c bla', u'd bla')
-
-    E: You can also use an existing configuration as input:
-
-        >>> parameterToConfiguration(IAnyConfiguration, config) == config
-        True
-
-
-    F: Provide the required as positional and keyword, do not messup the order otherwise
-    a duplacted arguments error could occur:
-
-        >>> config = parameterToConfiguration(IAnyConfiguration, u'a bla', d=u'd bla', c=u'c bla')
-        >>> config.a, config.b, config.c, config.d
-        (u'a bla', None, u'c bla', u'd bla')
-
-        >>> parameterToConfiguration(IAnyConfiguration, u'd bla', a=u'd bla', c=u'c bla')
-        Traceback (most recent call last):
-        ...
-        AttributeError: Duplicated arguments: a.
-
-    G: Sometimes any parameters are allowed. This use case is indicated by a None key interface:
-
-        >>> parameterToConfiguration(None) is None
-        True
-
-        >>> parameterToConfiguration(None, 'not allowed parameter')
-
-    """
-    # no arguments declared
-    if __keyface__ is None:
-#        if pos or kws:
-#            raise AttributeError('No arguments allowed.')
-
-        return None
-
-    # assume that kws are ok
-    if not pos:
-        try:
-            return ConfigurationData(__keyface__, kws)
-
-        except:
-            pass
-
-    # assume that first pos is already a configuration
-    if len(pos) == 1 and not kws and __keyface__.providedBy(pos[0]):
-        return pos[0]
-
-    # pos and kws mixture
-    attribution = requiredInOrder(__keyface__)
-    errors = []
-    for i in range(len(pos)):
-        key = attribution[i]
-        value = pos[i]
-        
-        
-        if key not in kws:
-            kws[key] = value
-        else:
-            errors.append(key)
-
-    if errors:
-        raise AttributeError('Duplicated arguments: %s.' % ', '.join(errors))
-
-    return ConfigurationData(__keyface__, kws)
-        

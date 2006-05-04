@@ -15,6 +15,11 @@
           schema=".metadirectives.IInformationSubdirective"
           />
 
+      <meta:subdirective
+          name="informations"
+          schema=".metadirectives.IInformationsSubdirective"
+          />
+
     </meta:complexDirective>
 
   </meta:directives>

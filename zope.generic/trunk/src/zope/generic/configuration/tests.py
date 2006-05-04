@@ -22,7 +22,6 @@ from zope import component
 from zope import interface
 from zope.testing import doctest
 
-
 from zope.generic.testing.testing import InterfaceBaseTest
 from zope.generic.testing.testing import registerDirective
 

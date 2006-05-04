@@ -18,6 +18,8 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from ConfigParser import SafeConfigParser
+
 from zope.annotation import IAnnotations
 from zope.component import provideUtility
 from zope.component import getUtility
@@ -25,6 +27,7 @@ from zope.component import queryUtility
 from zope.component.interface import provideInterface
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import alsoProvides
+from zope.schema.interfaces import IFromUnicode
 
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration.api import ConfigurationData
@@ -36,6 +39,7 @@ from zope.generic.face.api import getConface
 from zope.generic.face.api import getKeyface
 from zope.generic.face.api import toDescription
 from zope.generic.face.api import toDottedName
+from zope.generic.face.api import toInterface
 
 from zope.generic.informationprovider.base import GlobalInformationProvider
 
@@ -113,8 +117,42 @@ def provideAnnotation(keyface, conface, annotation_key, annotation):
 
 
 
+_marker = object()
+
+def iniFileToConfiguration(path):
+    """Parse ini file to an iterator over keyface, configuration pairs."""
+
+    configparser = SafeConfigParser()
+    configparser.read(path)
+
+    for section in configparser.sections():
+        # convert section to configuration interface
+        keyface = toInterface(section)
+
+        data = {}
+    
+        for name in keyface:
+            field = keyface[name]
+            # evalutate name: config parser options are always lower case
+            try:
+                value = configparser.get(section, name.lower())
+
+            except:
+                value = _marker
+
+            if value is not _marker:
+                try:
+                    data[name] = field.fromUnicode(unicode(value))
+    
+                except:
+                    data[name] = IFromUnicode(field).fromUnicode(unicode(value))
+
+        yield (keyface, data)
+
+
+
 class InformationProviderDirective(object):
-    """Provide a new information of a certain information registry."""
+    """Provide a new information provider."""
 
     def __init__(self, _context, keyface=IUndefinedKeyface, conface=IUndefinedContext):
         # preconditions
@@ -176,4 +214,13 @@ class InformationProviderDirective(object):
         else:
             raise ConfigurationError('Information subdirective must provide ' +
                 'key and annotation or keyface and configuration.')
+
+    def informations(self, _context, iniFiles=()):
+        """Ini-file based configurations for an information provider."""
+        
+        for path in iniFiles:
+            for keyface, configuration in iniFileToConfiguration(path):
+                # register corresponding configuration information
+                self.information(_context, keyface, configuration)
+                
                 

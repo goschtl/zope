@@ -33,8 +33,6 @@ from zope.generic.face import IAttributeFaced
 from zope.generic.face import IProvidesAttributeFaced
 from zope.generic.face.api import Face
 from zope.generic.operation import IOperationConfiguration
-
-from zope.generic.factory import IFactoryType
         
 
 

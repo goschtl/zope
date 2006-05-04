@@ -24,7 +24,6 @@ import zope.generic.directlyprovides.testing
 import zope.generic.face.testing
 import zope.generic.testing.testing
 
-from zope.interface import classImplements
 from zope.configuration.xmlconfig import XMLConfig
 
 
@@ -56,9 +55,6 @@ def setUp(doctest=None):
     from zope.generic.configuration import IAttributeConfigurable
     from zope.generic.informationprovider.api import GlobalInformationProvider
     from zope.generic.informationprovider.api import LocalInformationProvider
-
-    classImplements(GlobalInformationProvider, IAttributeConfigurable, IAttributeAnnotatable)
-    classImplements(LocalInformationProvider, IAttributeConfigurable, IAttributeAnnotatable)
 
 def tearDown(doctest=None):
     pass

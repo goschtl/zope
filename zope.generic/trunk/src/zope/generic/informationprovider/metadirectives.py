@@ -22,6 +22,8 @@ from zope.app.i18n import ZopeMessageFactory as _
 from zope.configuration.fields import GlobalInterface
 from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import MessageID
+from zope.configuration.fields import Path
+from zope.configuration.fields import Tokens
 from zope.interface import Interface
 from zope.schema import DottedName
 
@@ -101,4 +103,17 @@ class IInformationSubdirective(Interface):
         title=_('Annotation'),
         description=_('Annotation component expected undert the key.'),
         required=False
+        )
+
+
+class IInformationsSubdirective(Interface):
+    """Ini-file based configurations for an information provider."""
+
+    iniFiles = Tokens(
+        title=_('*.ini-like File'),
+        description=_('Parse configuration key interfaces from sections. '
+                      'and the configuration data from theirs options using '
+                      'the config parser and IFromUnicode(field).fromUnicode().'),
+        required=False,
+        value_type=Path(constraint=lambda v: v.endswith('.ini'))
         )

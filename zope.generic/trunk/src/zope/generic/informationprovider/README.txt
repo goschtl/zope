@@ -147,15 +147,15 @@ information provider:
     ...     keyface="example.IMyFoo"
     ...     conface="example.ISpecialContext"
     ...     >
-    ...        <information
-    ...            key="example.my_annotation"
-    ...            annotation="example.my_annotation"
-    ...            />
-    ...        <information
-    ...            keyface="example.IMyConfiguration"
-    ...            configuration="example.my_configuration"
-    ...            />
-    ...     </generic:informationProvider>
+    ...   <information
+    ...       key="example.my_annotation"
+    ...       annotation="example.my_annotation"
+    ...       />
+    ...   <information
+    ...       keyface="example.IMyConfiguration"
+    ...       configuration="example.my_configuration"
+    ...       />
+    ... </generic:informationProvider>
     ... ''')
 
     >>> provider = api.queryInformationProvider(IMyFoo, ISpecialContext)
@@ -349,6 +349,7 @@ which returns (conface, provider) pairs:
     >>> [i.__name__ for i,p in api.getInformationProvidersFor(IBarFoo)]
     ['IOurContext', 'IUndefinedContext']
 
+
 Components can suggest key and context interfaces
 -------------------------------------------------
 
@@ -389,3 +390,77 @@ by a component itself. Therefore the conface parameter has to be None:
 
     >>> api.acquireInformationProvider(bar) 
     <GlobalInformationProvider IBar at IUndefinedContext>
+
+
+Ini-file based configurations for an information provider
+---------------------------------------------------------
+
+The configuration file holds several configuration in the ini-file style.
+
+    >>> from zope.interface import Interface
+    >>> from zope.schema import Text, TextLine
+    
+    >>> class IOneConfiguration(Interface):
+    ...    textLine = TextLine(title=u'TextLine')
+    ...    text = Text(title=u'Text', required=False, default=u'Bla\\n')
+
+    >>> registerDirective('''
+    ... <generic:interface
+    ...     interface="example.IOneConfiguration"
+    ...     type="zope.generic.configuration.IConfigurationType"
+    ...     />
+    ... ''') 
+
+    >>> from zope.schema import Bool, Int
+
+    >>> class IOtherConfiguration(Interface):
+    ...    bool = Bool(title=u'Bool')
+    ...    int = Int(title=u'Int', required=False, default=42)
+
+    >>> registerDirective('''
+    ... <generic:interface
+    ...     interface="example.IOtherConfiguration"
+    ...     type="zope.generic.configuration.IConfigurationType"
+    ...     />
+    ... ''') 
+
+    >>> import os, tempfile
+    >>> temp_dir = tempfile.mkdtemp()
+    >>> iniFile = os.path.join(temp_dir, 'example.ini')
+    >>> open(iniFile, 'w').write('''
+    ... [example.IOneConfiguration]
+    ... textline = Foo
+    ... text : Bla bla bla bla.
+    ... 
+    ... [example.IOtherConfiguration]
+    ... bool = True
+    ... int = 77
+    ... ''')
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IFoo"
+    ...     conface="example.ISpecialContext"
+    ...     >
+    ...   <informations
+    ...       iniFiles="%s"
+    ...       />
+    ...     </generic:informationProvider>
+    ... ''' % iniFile)
+
+    >>> foo_config = api.getInformation(IOneConfiguration, IFoo, ISpecialContext)
+    >>> foo_config.textLine
+    u'Foo'
+
+    >>> foo_config.text
+    u'Bla bla bla bla.'
+
+    >>> bar_config =  api.getInformation(IOtherConfiguration, IFoo, ISpecialContext)
+    >>> bar_config.bool
+    True
+
+    >>> bar_config.int
+    77
+
+    >>> import shutil
+    >>> shutil.rmtree(temp_dir)

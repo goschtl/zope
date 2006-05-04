@@ -24,8 +24,6 @@ from persistent.dict import PersistentDict
 
 from zope.interface import directlyProvides
 from zope.interface import implements
-from zope.interface.interfaces import IMethod
-from zope.schema.interfaces import IField
 
 from zope.generic.face import IAttributeFaced
 from zope.generic.face import IFace
@@ -34,6 +32,7 @@ from zope.generic.face.api import FaceForAttributeFaced
 
 from zope.generic.configuration import IConfigurationData
 from zope.generic.configuration import IConfigurations
+from zope.generic.configuration.helper import getValue
 
 
 
@@ -146,26 +145,9 @@ class ConfigurationData(Persistent):
 
         keyface = self.__dict__['__keyface__']
         data = self.__dict__['_ConfigurationData__data']
-        try:
-            field = keyface[name]
-        except KeyError:
-            raise AttributeError(name)
-        else:
-            value = data.get(name, _marker)
-            if value is _marker:
-                value = getattr(field, 'default', _marker)
-                if value is _marker:
-                    raise RuntimeError('Data is missing', name)
 
-            if IMethod.providedBy(field):
-                if not IField.providedBy(field):
-                    raise RuntimeError('Data value is not a schema field', name)
-                v = lambda: value
-            else:
-                v = value
-            #setattr(self, name, v)
-            return v
-        raise AttributeError(name)
+        return getValue(keyface, name, data)
+
 
     def __setattr__(self, name, value):
 

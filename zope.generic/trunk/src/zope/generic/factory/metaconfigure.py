@@ -28,12 +28,9 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.security.checker import CheckerPublic
 from zope.security.checker import InterfaceChecker
 
-from zope.generic.face import IKeyfaceType
 from zope.generic.face import IUndefinedContext
 from zope.generic.face.api import toDescription
 from zope.generic.face.api import toDottedName
-from zope.generic.informationprovider.api import getInformationProvider
-from zope.generic.informationprovider.api import provideInformation
 from zope.generic.informationprovider.metaconfigure import InformationProviderDirective
 from zope.generic.operation import IOperationConfiguration
 from zope.generic.operation.api import assertOperation
