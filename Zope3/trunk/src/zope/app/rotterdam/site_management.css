@@ -52,3 +52,8 @@ hr {
 h1, h2, h3, h4, h5, h6 {
     border-bottom: 1px solid #963;
 }
+
+div.row div.label {
+    background: #963;
+    border: 1px solid #963; /* Same as .itemViews */
+}
