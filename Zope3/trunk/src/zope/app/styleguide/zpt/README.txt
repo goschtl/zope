@@ -8,9 +8,9 @@ Associate labels explicitly with their controls
 In other words it means: use <label> along with your <input type="text"/>,
 your <input type="checkbox"/> and your <input type="radio"/> elements.
 Using labels makes it possible to use the pointer on the label
-(clicking on the label) to active the input, so that it is easier to select a
-text input, a check box or a radio box, just like it is in heavy client
-applications such as Firefox.
+(clicking on the label) to active the input, making it easier to select a
+text input, a check box or a radio box, just like in thick-client
+applications.
 
 Example::
 
