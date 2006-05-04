@@ -78,7 +78,8 @@ class ManagerDetails(object):
                 info = ''
             else:
                 # XXX: the renderer *expects* unicode as input encoding (ajung)
-                renderer = ReStructuredTextToHTMLRenderer(unicode(info), self.request)
+                renderer = ReStructuredTextToHTMLRenderer(
+                    unicode(info), self.request)
                 info = renderer.render()
                 
             evolvers.append({'from': gen, 'to': gen+1, 'info': info})
