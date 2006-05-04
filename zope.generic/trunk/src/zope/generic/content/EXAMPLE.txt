@@ -125,6 +125,16 @@ initialization process.
     >>> articleNoteDefaults = ConfigurationData(INoteConfig, 
     ...     {'body': u""})
 
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IText"
+    ...     >
+    ...    <information
+    ...        keyface='example.ITextConfig'
+    ...        configuration='example.textDefaults'
+    ...        />
+    ... </generic:informationProvider>
+    ... ''')
 
     >>> registerDirective('''
     ... <generic:content
@@ -133,12 +143,19 @@ initialization process.
     ...    <factory
     ...        class='zope.generic.content.api.Object'
     ...        input='example.ITextConfig'
-    ...    />
-    ...    <information
-    ...        keyface='example.ITextConfig'
-    ...        configuration='example.textDefaults'
-    ...    />
+    ...        />
     ... </generic:content>
+    ... ''')
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.INote"
+    ...     >
+    ...    <information
+    ...        keyface='example.INoteConfig'
+    ...        configuration='example.noteDefaults'
+    ...    />
+    ... </generic:informationProvider>
     ... ''')
 
     >>> registerDirective('''
@@ -149,11 +166,22 @@ initialization process.
     ...        class='zope.generic.content.api.Object'
     ...        input='example.INoteConfig'
     ...    />
+    ... </generic:content>
+    ... ''')
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IArticle"
+    ...     >
+    ...    <information
+    ...        keyface='example.ITextConfig'
+    ...        configuration='example.articleTextDefaults'
+    ...    />
     ...    <information
     ...        keyface='example.INoteConfig'
-    ...        configuration='example.noteDefaults'
+    ...        configuration='example.articleNoteDefaults'
     ...    />
-    ... </generic:content>
+    ... </generic:informationProvider>
     ... ''')
 
     >>> registerDirective('''
@@ -165,14 +193,6 @@ initialization process.
     ...        input='example.IArticleInitializationConfiguration'
     ...        operations='example.articleInitializer'
     ...        storeInput='True'
-    ...    />
-    ...    <information
-    ...        keyface='example.ITextConfig'
-    ...        configuration='example.articleTextDefaults'
-    ...    />
-    ...    <information
-    ...        keyface='example.INoteConfig'
-    ...        configuration='example.articleNoteDefaults'
     ...    />
     ... </generic:content>
     ... ''')

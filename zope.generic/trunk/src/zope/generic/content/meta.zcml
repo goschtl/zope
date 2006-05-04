@@ -11,11 +11,6 @@
         >
 
       <meta:subdirective
-          name="information"
-          schema="zope.generic.informationprovider.metadirectives.IInformationSubdirective"
-          />
-
-      <meta:subdirective
           name="factory"
           schema=".metadirectives.IFactorySubdirective"
           />

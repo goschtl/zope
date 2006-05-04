@@ -154,23 +154,31 @@ Additionaly we can add other operation base object event handlers:
     ...     print 'Guguseli from object event.'
 
 
-After all we register our component using the type directive:
+After all we register our component using the informationProvider and content
+directive:
+
+    >>> registerDirective('''
+    ... <generic:informationProvider
+    ...     keyface="example.IBarMarker"
+    ...     >
+    ...   <information
+    ...       keyface='example.IAnyConfiguration'
+    ...       configuration='example.typedata'
+    ...       />
+    ... </generic:informationProvider>
+    ... ''')
 
     >>> registerDirective('''
     ... <generic:content
     ...     keyface="example.IBarMarker"
     ...     label='Bar Type' hint='Bla bla bla.'
     ...     >
-    ...    <factory
+    ...   <factory
     ...        class='zope.generic.content.api.Object'
     ...        input='example.IOtherConfiguration'
     ...        operations='example.barInitializer'
     ...        storeInput='True'
     ...        />
-    ...	   <information
-    ...	       keyface='example.IAnyConfiguration'
-    ...        configuration='example.typedata'
-    ...	       />
     ...    <adapter
     ...        provides='example.IAnyConfiguration'
     ...        acquire='True'

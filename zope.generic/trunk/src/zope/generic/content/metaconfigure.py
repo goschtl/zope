@@ -18,18 +18,22 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.component.interface import provideInterface
 from zope.configuration.exceptions import ConfigurationError
+from zope.interface import alsoProvides
 
 from zope.generic.adapter.metaconfigure import adapterDirective
+from zope.generic.face import IConfaceType
+from zope.generic.face import IKeyfaceType
 from zope.generic.factory.metaconfigure import factoryDirective
-from zope.generic.informationprovider.metaconfigure import InformationProviderDirective
 from zope.generic.handler.metaconfigure import handlerDirective
+from zope.generic.informationprovider.metaconfigure import ensureInformationProvider
 
 from zope.generic.face import IUndefinedContext
 
 
 
-class ContentDirective(InformationProviderDirective):
+class ContentDirective(object):
     """Provide a new logical type."""
 
     # mark types with a type marker type
@@ -38,8 +42,25 @@ class ContentDirective(InformationProviderDirective):
 
     def __init__(self, _context, keyface, label=None, hint=None):        
         # register types within the type information registry
-        conface = IUndefinedContext
-        super(ContentDirective, self).__init__(_context, keyface, conface)
+        if IConfaceType.providedBy(keyface):
+            raise ConfigurationError('Key interface %s can not be registered '
+                                     'as context interface too.' % 
+                                     keyface.__name__)
+
+        # assign variables for the subdirecitives
+        self._keyface = keyface
+        self._context = _context
+        self._conface = conface = IUndefinedContext
+
+        # provide type as soon as possilbe
+        if not IKeyfaceType.providedBy(keyface):
+            provideInterface(None, keyface, IKeyfaceType)
+
+        if not IConfaceType.providedBy(conface):
+            provideInterface(None, conface, IConfaceType)
+
+        # ensure the corresponding information provider
+        ensureInformationProvider(keyface, conface)
 
     def factory(self, _context, class_, operations=(), input=None,
                 providesFace=True, notifyCreated=False, storeInput=False):
