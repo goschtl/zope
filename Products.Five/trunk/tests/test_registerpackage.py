@@ -50,7 +50,22 @@ def test_registerPackage():
       ... </configure>'''
       >>> zcml.load_string(configure_zcml)
       pythonproduct2 initialized
+
       
+    Test to see if the pythonproduct2 python package actually gets setup
+    as a zope2 product in the Control Panel.
+
+      >>> product_listing = []
+      >>> import Zope2
+      >>> app = Zope2.app()
+      >>> try:
+      ...    product_listing = app.Control_Panel.Products.objectIds()
+      ... finally:
+      ...     app._p_jar.close()
+      >>> 'pythonproduct2' in product_listing
+      True
+
+
     Clean up:
 
       >>> tearDown()

@@ -211,17 +211,23 @@ def _registerPackage(module_, init_func=None):
                          "package must be filesystem based")
     
     app = Zope2.app()
-    product = initializeProduct(module_, 
-                                module_.__name__, 
-                                module_.__path__[0],
-                                app)
+    try:
+        product = initializeProduct(module_, 
+                                    module_.__name__, 
+                                    module_.__path__[0],
+                                    app)
 
-    product.package_name = module_.__name__
+        product.package_name = module_.__name__
 
-    if init_func is not None:
-        newContext = ProductContext(product, app, module_)
-        init_func(newContext)
-
+        if init_func is not None:
+            newContext = ProductContext(product, app, module_)
+            init_func(newContext)
+    finally:
+        try:
+            import transaction
+            transaction.commit()
+        finally:
+            app._p_jar.close()
 
 def registerPackage(_context, package, initialize=None):
     """ZCML directive function for registering a python package product
