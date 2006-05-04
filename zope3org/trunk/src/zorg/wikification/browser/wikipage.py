@@ -595,6 +595,8 @@ class WikiEditor(WikiPage) :
     def _modifyLink(self, cmd, link_id) :
         """ Help method that modified a link and saves the result into
             the file.
+            
+            Returns the modified file or None if the file was not changed.
         """
         processor = ILinkProcessor(self)
         processor.command = cmd
@@ -606,6 +608,8 @@ class WikiEditor(WikiPage) :
         if newbody != file.data :
             file.data = newbody
             zope.event.notify(ObjectModifiedEvent(file))
+            return file
+        return None
         
     def uploadFile(self, link_id) :
         """ Uploads a file for a wikified link and redirects 
@@ -621,7 +625,7 @@ class WikiEditor(WikiPage) :
         self._modifyLink('image', link_id)
         self.request.response.redirect(self.nextURL())
         
-    def modifyLink(self, cmd, link_id, verbose=True) :
+    def modifyLink(self, cmd, link_id) :
         """ Modify a single link dynamically and return the new
             body.
         """

@@ -196,6 +196,12 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
     def onAbsoluteLink(self, link) :
         """ Event handler that can be specialized. """
         return link
+        
+    def traverseName(self, node, name) :
+        for ext in u'', u'.html', u'.txt' :
+            if (name + ext) in node :
+                return zapi.traverseName(node, name + ext)
+        raise TraversalError
 
     def traverseLink(self, node, link) :
         """ Help method that follows a relative link from a context node. """
@@ -207,7 +213,7 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
             try :
                 name = path[0]
                 name = unicode(name, encoding='utf-8')
-                node = zapi.traverseName(node, name)
+                node = self.traverseName(node, name)
                 name = path.pop(0)
             except (TraversalError, UnicodeEncodeError, UnicodeDecodeError) :
                 break
@@ -388,7 +394,7 @@ class WikiLinkProcessor(RelativeLinkProcessor) :
             return False, link
         else :
             node = page.container
-             
+        
         node, path = self.traverseLink(node, link)
         if path :
             return True, self.absoluteAddLink(node, path)
@@ -602,7 +608,7 @@ class SavingPlaceholder(Placeholder) :
         
     """
     
-    global_scope = True        # default: depends on usecase
+    global_scope = False        # default: depends on usecase
     render_form = False
     
     def textLink(self) :
@@ -714,7 +720,7 @@ class AddObjectPlaceholder(SavingPlaceholder) :
             dc.title = title
         if description :
             dc.description = description
-        
+       
         return name.encode("utf-8")
         
     def performSubstitution(self) :
@@ -749,7 +755,8 @@ class UploadFilePlaceholder(AddObjectPlaceholder) :
         contenttype = self.page.parameter('contenttype')
 
         filename = self.filename("data", label)
-        name = self.page.parameter('name') or unicode(filename, encoding="utf-8")
+        filename = unicode(filename, encoding="utf-8")
+        name = filename or self.page.parameter('name')
 
         if not contenttype :
             contenttype = contenttypes.guess_content_type(filename)[0]
