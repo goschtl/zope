@@ -1,0 +1,169 @@
+Zope transactions and sqlalchemy
+================================
+
+When a zope transaction is used also a sqlalchemy transaction must be
+activated. "z3c.zalchemy" installs a data manager every time a new zope
+transaction is created. 
+
+Setup zope's test environment :
+
+  >>> from zope.app.testing.placelesssetup import setUp, tearDown
+  >>> setUp()
+
+Create a utility to provide a database :
+
+  >>> import os
+  >>> os.remove('abc.db')
+  >>> from zope.component import provideUtility
+  >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
+  >>> engineUtility = AlchemyEngineUtility('database',
+  ...                                      'sqlite://filename=abc.db',
+  ...                                      echo=False)
+  >>> provideUtility(engineUtility, name="test")
+  >>> engineUtility.addTable('aTable')
+
+Setup a sqlalchemy table and class :
+
+  >>> import sqlalchemy
+  >>> import z3c.zalchemy
+  >>> aTable = sqlalchemy.Table(
+  ...     'aTable',
+  ...     z3c.zalchemy.getProxyEngine('aTable'),
+  ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
+  ...     sqlalchemy.Column('x', sqlalchemy.Integer),
+  ...     )
+  >>> z3c.zalchemy.registerTableForCreation(aTable)
+  >>> class A(object):
+  ...   pass
+  >>> sqlalchemy.assign_mapper(A, aTable)
+
+
+Now start a zope transaction :
+
+  >>> import transaction
+  >>> txn = transaction.begin()
+
+Now we need to connect our table to a real engine :
+
+  >>> from z3c.zalchemy.datamanager import beforeTraversal
+  >>> beforeTraversal(None)
+
+  >>> aTable.engine.engine is not None
+  True
+
+  >>> a=A()
+  >>> a.x = 1
+
+  >>> transaction.get().commit()
+  >>> a=None
+
+Now we must be able to use the newly created object from within another
+thread :
+
+  >>> import threading
+  >>> log = []
+  >>> def do():
+  ...     txn = transaction.begin()
+  ...     beforeTraversal(None)
+  ...     obj = A.get(1)
+  ...     obj.x+= 1
+  ...     log.append(('do', obj.x))
+  ...     transaction.get().commit()
+  ...
+
+  >>> thread = threading.Thread(target=do)
+  >>> thread.start()
+  >>> thread.join()
+  >>> log
+  [('do', 2)]
+  >>> thread = threading.Thread(target=do)
+  >>> thread.start()
+  >>> thread.join()
+  >>> log
+  [('do', 2), ('do', 3)]
+
+  >>> def doSub():
+  ...     txn = transaction.begin()
+  ...     beforeTraversal(None)
+  ...     obj = A.get(1)
+  ...     obj.x+= 1
+  ...     log.append(('sub1', obj.x))
+  ...     thread = threading.Thread(target=do)
+  ...     thread.start()
+  ...     thread.join()
+  ...     log.append(('sub2', obj.x))
+  ...     obj.x+= 1
+  ...     log.append(('sub3', obj.x))
+  ...     transaction.get().commit()
+  ...
+
+  >>> log = []
+  >>> thread = threading.Thread(target=doSub)
+  >>> thread.start()
+  >>> thread.join()
+
+  >>> thread = threading.Thread(target=do)
+  >>> thread.start()
+  >>> thread.join()
+
+This log shows that the do thread running inside doSub uses it's own copy
+of the object.
+At 'sub1' the local object of doSub was incremented but do also produces a
+log entry with value 4.
+
+  >>> log
+  [('sub1', 4), ('do', 4), ('sub2', 4), ('sub3', 5), ('do', 6)]
+
+TODO:
+Shouldn't the above example produce a collision because the same object was
+modified in two different threads at the same time ?
+
+
+Use of a second table with the same engine :
+
+  >>> engineUtility.addTable('bTable')
+
+  >>> bTable = sqlalchemy.Table(
+  ...     'bTable',
+  ...     z3c.zalchemy.getProxyEngine('bTable'),
+  ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
+  ...     sqlalchemy.Column('x', sqlalchemy.Integer),
+  ...     )
+  >>> z3c.zalchemy.registerTableForCreation(bTable)
+  >>> class B(object):
+  ...   pass
+  >>> sqlalchemy.assign_mapper(B, bTable)
+
+  >>> log = []
+  >>> def createB():
+  ...     txn = transaction.begin()
+  ...     beforeTraversal(None)
+  ...     obj=B()
+  ...     obj.x=1
+  ...     log.append(obj.x)
+  ...     transaction.get().commit()
+  ...
+  >>> def doB():
+  ...     txn = transaction.begin()
+  ...     beforeTraversal(None)
+  ...     obj = B.get(1)
+  ...     log.append(obj.x)
+  ...     obj.x+= 1
+  ...     transaction.get().commit()
+  ...
+
+  >>> thread = threading.Thread(target=createB)
+  >>> thread.start()
+  >>> thread.join()
+  >>> log
+  [1]
+
+  >>> log = []
+  >>> thread = threading.Thread(target=doB)
+  >>> thread.start()
+  >>> thread.join()
+  >>> log
+  [1]
+
+  >>> tearDown()
+

@@ -1,0 +1,22 @@
+<configure xmlns='http://namespaces.zope.org/zope'
+           xmlns:meta="http://namespaces.zope.org/meta"
+           i18n_domain="zalchemy">
+
+  <meta:directives namespace="http://namespaces.zalchemy.org/alchemy">
+
+    <meta:directive
+        name="engine"
+        schema=".metadirectives.IEngineDirective"
+        handler=".metaconfigure.engine"
+        />
+
+    <meta:directive
+        name="connect"
+        schema=".metadirectives.IConnectDirective"
+        handler=".metaconfigure.connect"
+        />
+
+  </meta:directives>
+
+</configure>
+
