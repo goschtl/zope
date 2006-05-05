@@ -1,7 +1,5 @@
 - update container implementation for SA 0.2
 
-- Assign classes to engines like tables can be assigned
-
 - container implementation is some kind of a quick hack
 
 - Adapter for sqlalchemy mapped object deletion
