@@ -17,7 +17,6 @@ from zope.testing.doctestunit import DocFileSuite
 
 def test_suite():
     return unittest.TestSuite((
-            #DocFileSuite('za.txt'),
             DocFileSuite('TRANSACTION.txt'),
             DocFileSuite('../README.txt'),
             ))

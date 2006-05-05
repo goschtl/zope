@@ -11,9 +11,15 @@
         />
 
     <meta:directive
-        name="connect"
-        schema=".metadirectives.IConnectDirective"
-        handler=".metaconfigure.connect"
+        name="connectTable"
+        schema=".metadirectives.ITableConnectDirective"
+        handler=".metaconfigure.connectTable"
+        />
+
+    <meta:directive
+        name="connectClass"
+        schema=".metadirectives.IClassConnectDirective"
+        handler=".metaconfigure.connectClass"
         />
 
     <meta:directive

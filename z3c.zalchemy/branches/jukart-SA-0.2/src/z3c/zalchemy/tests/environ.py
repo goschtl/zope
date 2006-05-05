@@ -27,3 +27,11 @@ illegalTable = sqlalchemy.Table(
         z3c.zalchemy.metadata,
         sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
         )
+
+class unmappedTestClass(object):
+    pass
+
+class mappedTestClass(object):
+    pass
+sqlalchemy.mapper(mappedTestClass, testTable)
+

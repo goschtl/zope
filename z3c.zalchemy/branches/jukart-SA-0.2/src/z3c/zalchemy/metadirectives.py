@@ -39,7 +39,7 @@ class IEngineDirective(interface.Interface):
 IEngineDirective.setTaggedValue('keyword_arguments', True)
 
 
-class IConnectDirective(interface.Interface):
+class ITableConnectDirective(interface.Interface):
     """Connect a table to an engine.
 
     This is only neccessary if a table should not be uses in the default
@@ -48,6 +48,26 @@ class IConnectDirective(interface.Interface):
     table = schema.TextLine(
             title = u'Table',
             description = u'The name of the table to connect an engine to.',
+            required = True,
+            )
+    engine = schema.TextLine(
+            title = u'Engine',
+            description = u'The name of an engine to connect the table to.',
+            required = True,
+            )
+
+
+class IClassConnectDirective(interface.Interface):
+    """Connect a class to an engine.
+
+    This is only neccessary if a class should not be uses in the default
+    database.
+
+    The class must be mapped to a table.
+    """
+    class_ = GlobalObject(
+            title = u'Class',
+            description = u'The class to connect an engine to.',
             required = True,
             )
     engine = schema.TextLine(

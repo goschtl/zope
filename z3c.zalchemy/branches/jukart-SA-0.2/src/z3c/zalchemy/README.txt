@@ -60,8 +60,6 @@ Define a simple class which will be used later to map to a database table.
 
 Now we map the table to our class.
 
-xxx  >>> A.mapper = sqlalchemy.mapper(A, aTable)
-
   >>> sqlalchemy.mapper(A, aTable) is not None
   True
 
@@ -118,8 +116,9 @@ The unnamed utility is always the default database for new sessions.
 
 This automatically assign's every table to the default engine.
 
-For multiple databases the tables must be assigned to engines.
+For multiple databases tables can be assigned to engines.
 
+We create a new database engine :
 
   >>> engine2Util = AlchemyEngineUtility(
   ...     'engine2',
@@ -147,6 +146,7 @@ new engine.
 Assign bTable to the new engine.
 
   >>> z3c.zalchemy.assignTable('bTable', 'engine2')
+
   >>> z3c.zalchemy.createTable('bTable')
 
   >>> txn = transaction.begin()
@@ -169,6 +169,31 @@ Assign bTable to the new engine.
   >>> b = session.get(B, 1)
   >>> str(b.value)
   'b1'
+
+  >>> transaction.get().commit()
+
+It is also possible to assign a class to a database :
+
+  >>> class Aa(object):
+  ...     pass
+  >>> sqlalchemy.mapper(Aa, aTable) is not None
+  True
+
+Now we cann assign the class to the engine :
+
+  >>> z3c.zalchemy.assignClass(Aa, 'engine2')
+
+The problem is now that we do not have the table in 'engine2'.
+We can use an additional parameter to createTable :
+
+  >>> z3c.zalchemy.createTable('aTable', 'engine2')
+
+  >>> txn = transaction.begin()
+  >>> session = z3c.zalchemy.getSession()
+
+  >>> aa = Aa()
+  >>> session.save(aa)
+  >>> aa.value = 100
 
   >>> transaction.get().commit()
 

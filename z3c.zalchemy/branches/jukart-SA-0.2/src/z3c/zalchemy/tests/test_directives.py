@@ -68,15 +68,19 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
         self.assertEqual(util.echo, True)
 
     def testConnectDirective(self):
-        from environ import testTable
+        from environ import testTable, mappedTestClass
         xmlconfig(StringIO(template % (
             '''
             <alchemy:engine
                 name="sqlite-in-memory"
                 dns="sqlite://:memory:"
                 />
-            <alchemy:connect
+            <alchemy:connectTable
                 table="testTable"
+                engine="sqlite-in-memory"
+                />
+            <alchemy:connectClass
+                class="z3c.zalchemy.tests.environ.mappedTestClass"
                 engine="sqlite-in-memory"
                 />
             '''
@@ -84,16 +88,17 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
         util = component.getUtility(IAlchemyEngineUtility,'sqlite-in-memory')
         self.assert_(len(z3c.zalchemy.datamanager._tableToEngine)==1)
         self.assert_('testTable' in z3c.zalchemy.datamanager._tableToEngine)
+        self.assert_(mappedTestClass in z3c.zalchemy.datamanager._classToEngine)
 
     def tearDown(self):
         z3c.zalchemy.datamanager._tableToEngine.clear()
+        z3c.zalchemy.datamanager._classToEngine.clear()
         PlacelessSetup.tearDown(self)
 
 
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestDirectives),
-        #DocTestSuite(),
         ))
 
 if __name__ == "__main__":
