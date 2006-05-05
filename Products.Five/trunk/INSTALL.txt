@@ -26,7 +26,8 @@ Five 1.0      included
 Five 1.2          X
 Five 1.3                 included
 Five 1.4                     X
-Five trunk                        included
+Five 1.5                          included
+Five trunk                            X
 ============ =========== ======== =========
 
 
