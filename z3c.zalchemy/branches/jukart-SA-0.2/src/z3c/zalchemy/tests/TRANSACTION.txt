@@ -17,10 +17,9 @@ Create a utility to provide a database :
   >>> from zope.component import provideUtility
   >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtility = AlchemyEngineUtility('database',
-  ...                                      'sqlite://filename=abc.db',
+  ...                                      'sqlite://abc.db',
   ...                                      echo=False)
-  >>> provideUtility(engineUtility, name="test")
-  >>> engineUtility.addTable('aTable')
+  >>> provideUtility(engineUtility)
 
 Setup a sqlalchemy table and class :
 
@@ -28,142 +27,139 @@ Setup a sqlalchemy table and class :
   >>> import z3c.zalchemy
   >>> aTable = sqlalchemy.Table(
   ...     'aTable',
-  ...     z3c.zalchemy.getProxyEngine('aTable'),
+  ...     z3c.zalchemy.metadata,
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
-  ...     sqlalchemy.Column('x', sqlalchemy.Integer),
+  ...     sqlalchemy.Column('value', sqlalchemy.Integer),
   ...     )
-  >>> z3c.zalchemy.registerTableForCreation(aTable)
   >>> class A(object):
   ...   pass
-  >>> sqlalchemy.assign_mapper(A, aTable)
-
+  >>> A.mapper = sqlalchemy.mapper(A, aTable)
 
 Now start a zope transaction :
 
   >>> import transaction
   >>> txn = transaction.begin()
 
-Now we need to connect our table to a real engine :
+Get a thread local session :
 
-  >>> from z3c.zalchemy.datamanager import beforeTraversal
-  >>> beforeTraversal(None)
+  >>> session = z3c.zalchemy.getSession()
 
-  >>> aTable.engine.engine is not None
+  >>> z3c.zalchemy.createTable('aTable')
+
+Multiple calls to getSession return the same session :
+
+  >>> session == z3c.zalchemy.getSession()
   True
 
+Create an object and add it to the session :
+
   >>> a=A()
-  >>> a.x = 1
+  >>> session.save(a)
+  >>> a.id is None
+  True
+
+We flush the object so that it gets a primary key.
+
+  >>> session.flush([a])
+  >>> a.id is None
+  False
+
+  >>> a.value = 1
 
   >>> transaction.get().commit()
-  >>> a=None
 
-Now we must be able to use the newly created object from within another
-thread :
+After the commit we can get a new session from zalchemy outside of a
+transaction.
+We can tell zalchemy to create a new transaction if there is none active.
+But we need to commit the transaction manually.
+
+  >>> session2 = z3c.zalchemy.getSession(True)
+  >>> session == session2
+  False
+  >>> a=A()
+  >>> session2.save(a)
+  >>> a.value = 2
+  >>> transaction.get().commit()
+
+
+Handling multiple threads
+-------------------------
 
   >>> import threading
+
+A different thread must get a different session :
+
   >>> log = []
-  >>> def do():
+  >>> def differentSession():
+  ...     global session
+  ...     log.append(('differentSession',session == z3c.zalchemy.getSession()))
+  ...
+
+  >>> thread = threading.Thread(target=differentSession)
+  >>> thread.start()
+  >>> thread.join()
+  >>> log
+  [('differentSession', False)]
+
+A different Thread must be able to operate on the engine :
+
+  >>> log = []
+  >>> def modifyA():
   ...     txn = transaction.begin()
-  ...     beforeTraversal(None)
-  ...     obj = A.get(1)
-  ...     obj.x+= 1
-  ...     log.append(('do', obj.x))
+  ...     session = z3c.zalchemy.getSession()
+  ...     obj = session.get(A, 1)
+  ...     obj.value+= 1
+  ...     log.append(('modifyA', obj.value))
   ...     transaction.get().commit()
   ...
 
-  >>> thread = threading.Thread(target=do)
+  >>> thread = threading.Thread(target=modifyA)
   >>> thread.start()
   >>> thread.join()
   >>> log
-  [('do', 2)]
-  >>> thread = threading.Thread(target=do)
-  >>> thread.start()
-  >>> thread.join()
-  >>> log
-  [('do', 2), ('do', 3)]
+  [('modifyA', 2)]
 
-  >>> def doSub():
+Nested Threads :
+
+  >>> log = []
+
+  >>> def nested():
   ...     txn = transaction.begin()
-  ...     beforeTraversal(None)
-  ...     obj = A.get(1)
-  ...     obj.x+= 1
-  ...     log.append(('sub1', obj.x))
-  ...     thread = threading.Thread(target=do)
+  ...     session = z3c.zalchemy.getSession()
+  ...     obj = session.get(A, 1)
+  ...     thread = threading.Thread(target=modifyA)
   ...     thread.start()
   ...     thread.join()
-  ...     log.append(('sub2', obj.x))
-  ...     obj.x+= 1
-  ...     log.append(('sub3', obj.x))
+  ...     obj.value+= 1
+  ...     log.append(('nested', obj.value))
   ...     transaction.get().commit()
   ...
 
-  >>> log = []
-  >>> thread = threading.Thread(target=doSub)
-  >>> thread.start()
-  >>> thread.join()
-
-  >>> thread = threading.Thread(target=do)
-  >>> thread.start()
-  >>> thread.join()
-
-This log shows that the do thread running inside doSub uses it's own copy
-of the object.
-At 'sub1' the local object of doSub was incremented but do also produces a
-log entry with value 4.
-
-  >>> log
-  [('sub1', 4), ('do', 4), ('sub2', 4), ('sub3', 5), ('do', 6)]
-
-TODO:
-Shouldn't the above example produce a collision because the same object was
-modified in two different threads at the same time ?
-
-
-Use of a second table with the same engine :
-
-  >>> engineUtility.addTable('bTable')
-
-  >>> bTable = sqlalchemy.Table(
-  ...     'bTable',
-  ...     z3c.zalchemy.getProxyEngine('bTable'),
-  ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
-  ...     sqlalchemy.Column('x', sqlalchemy.Integer),
-  ...     )
-  >>> z3c.zalchemy.registerTableForCreation(bTable)
-  >>> class B(object):
-  ...   pass
-  >>> sqlalchemy.assign_mapper(B, bTable)
-
-  >>> log = []
-  >>> def createB():
-  ...     txn = transaction.begin()
-  ...     beforeTraversal(None)
-  ...     obj=B()
-  ...     obj.x=1
-  ...     log.append(obj.x)
-  ...     transaction.get().commit()
-  ...
-  >>> def doB():
-  ...     txn = transaction.begin()
-  ...     beforeTraversal(None)
-  ...     obj = B.get(1)
-  ...     log.append(obj.x)
-  ...     obj.x+= 1
-  ...     transaction.get().commit()
-  ...
-
-  >>> thread = threading.Thread(target=createB)
+  >>> thread = threading.Thread(target=nested)
   >>> thread.start()
   >>> thread.join()
   >>> log
-  [1]
+  [('modifyA', 3), ('nested', 3)]
 
-  >>> log = []
-  >>> thread = threading.Thread(target=doB)
-  >>> thread.start()
-  >>> thread.join()
-  >>> log
-  [1]
+
+Aborting transactions
+---------------------
+
+  >>> session = z3c.zalchemy.getSession(True)
+  >>> a=session.get(A, 1)
+  >>> v = a.value
+  >>> a.value += 1
+  >>> session.flush([a])
+  >>> transaction.get().abort()
+
+  >>> session = z3c.zalchemy.getSession(True)
+  >>> a=session.get(A, 1)
+  >>> a.value
+  3
+  
+  >>> a.value == v
+  True
+  >>> transaction.get().commit()
 
   >>> tearDown()
 

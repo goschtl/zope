@@ -1,18 +1,8 @@
-- test rollback behaviour
+- update container implementation for SA 0.2
 
-- better README !!!
-   Show the problems with newely created objects.
-
-- data manager
-   It is not fully clear what should be done in commit and what should be done
-   in tpc_vote !
-
-- where to create a table for a fresh database
-   Remove the hack in datamanager.beforeTraversal
+- Assign classes to engines like tables can be assigned
 
 - container implementation is some kind of a quick hack
-
-- use of ActiveMapper
 
 - Adapter for sqlalchemy mapped object deletion
 

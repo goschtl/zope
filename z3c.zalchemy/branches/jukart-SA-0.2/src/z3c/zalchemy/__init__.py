@@ -12,20 +12,10 @@
 #
 ##############################################################################
 
-tableToUtility = {}
-tablesToCreate = []
-
-def getProxyEngine(name):
-    return tableToUtility[name].proxyEngine
-
-def registerTableForCreation(table):
-    """Register a table for later creation.
-
-    The table will be created at the next start of a transaction.
-
-    Usually this will be called immediately after defining the table.
-    table must be a sqlalchemy.Table object.
-    """
-    if table not in tablesToCreate:
-        tablesToCreate.append(table)
+from datamanager import (
+        getSession,
+        assignTable,
+        createTable,
+        metadata,
+        )
 

@@ -16,6 +16,12 @@
         handler=".metaconfigure.connect"
         />
 
+    <meta:directive
+        name="createTable"
+        schema=".metadirectives.ICreateTableDirective"
+        handler=".metaconfigure.createTable"
+        />
+
   </meta:directives>
 
 </configure>

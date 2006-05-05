@@ -23,42 +23,35 @@ zalchemy provides a transparent way to connect a table to a database (engine).
 A SQLAlchemy engine is represented as a utility :
 
   >>> dbFilename = 'readme_test.db'
+  >>> db2Filename = 'readme_test_2.db'
   >>> import os
   >>> try:
   ...     os.remove(dbFilename)
   ... except:
   ...     pass
+  >>> try:
+  ...     os.remove(db2Filename)
+  ... except:
+  ...     pass
 
   >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
-  >>> engineUtil = AlchemyEngineUtility(
-  ...     'readme.sqlite',
-  ...     dns='sqlite',
-  ...     filename=dbFilename,
-  ...     echo = False,
-  ...     )
+  >>> engineUtility = AlchemyEngineUtility(
+  ...       'database',
+  ...       'sqlite://%s'%dbFilename,
+  ...       echo=False,
+  ...       )
 
-The next step is to connect the table to the database engine.
-This is neccessary because we need the same engine for all
-tables using the same database.
-
-  >>> engineUtil.addTable('readme.aTable')
-
-We create our tables as usual sqlalchemy table :
-Note that we use a ProxyEngine which is important here.
-The real connection to database engine will be done later in our utility.
+We create our table as usual sqlalchemy table :
 
   >>> import sqlalchemy
   >>> import z3c.zalchemy
   >>> aTable = sqlalchemy.Table(
   ...     'aTable',
-  ...     z3c.zalchemy.getProxyEngine('readme.aTable'),
+  ...     z3c.zalchemy.metadata,
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.Integer),
+  ...     redefine=True,
   ...     )
-
-We must make sure the table exists :
-
-  >>> z3c.zalchemy.registerTableForCreation(aTable)
 
 Define a simple class which will be used later to map to a database table.
 
@@ -67,60 +60,51 @@ Define a simple class which will be used later to map to a database table.
 
 Now we map the table to our class.
 
-  >>> sqlalchemy.assign_mapper(A, aTable)
+xxx  >>> A.mapper = sqlalchemy.mapper(A, aTable)
 
-To let zalchemy do his magic thing we need to register our database utility
-as a named utility :
+  >>> sqlalchemy.mapper(A, aTable) is not None
+  True
+
+To let zalchemy do his magic thing we need to register our database utility.
 
   >>> from zope.component import provideUtility
-  >>> provideUtility(engineUtil, name='readme.sqlite')
+  >>> provideUtility(engineUtility)
 
-From now on zalchemy takes care of the zope transaction process behind the
-scenes :
-- connect the engine to the tables for every thread
-- handle the two phase commit process
-- disconnect the engine from the tables at the end of the thread
+Tables can be created without an open transaction or session.
+If no session is created then the table creation is deffered to the next
+call to zalchemy.getSession.
 
-Now let's try to use our database objects :
-
-  >>> a = A()
-  >>> a.value = 1
-  >>> sqlalchemy.objectstore.commit()
-  Traceback (most recent call last):
-  ...
-  AttributeError: No connection established
-
-Ups, this is because the table is not connected to a real database engine.
-We need to use zope transactions.
-
-First let's clear the current unit of work :
-
-  >>> sqlalchemy.objectstore.clear()
+  >>> z3c.zalchemy.createTable('aTable')
 
 Note that the transaction handling is done inside zope.
 
   >>> import transaction
   >>> txn = transaction.begin()
 
-Then we need to simulate a beforeTraversal Event :
-  The event connects our ProxyEngine's with the real databases.
+Everything inside SQLAlchemy needs a Session. We must obtain the Session
+from zalchemy. This makes sure that a transaction handler is inserted into
+zope's transaction process.
 
-  >>> from z3c.zalchemy.datamanager import beforeTraversal
-  >>> beforeTraversal(None)
+  >>> session = z3c.zalchemy.getSession()
 
   >>> a = A()
-  >>> a.value = 123
+
+Apply the new object to the session :
+
+  >>> session.save(a)
+  >>> a.value = 1
 
   >>> transaction.get().commit()
 
 Now let's try to get the object back in a new transaction :
+Note that it is neccessary to get a new session here.
 
   >>> txn = transaction.begin()
-  >>> beforeTraversal(None)
+  >>> session = z3c.zalchemy.getSession()
 
-  >>> a = A.get(1)
+  >>> a = session.get(A, 1)
   >>> a.value
-  123
+  1
 
   >>> transaction.get().commit()
 
@@ -128,81 +112,63 @@ Now let's try to get the object back in a new transaction :
 Multiple databases
 ------------------
 
+The above example asumed that there is only one database.
+The database engine was registered as unnamed utility.
+The unnamed utility is always the default database for new sessions.
+
+This automatically assign's every table to the default engine.
+
+For multiple databases the tables must be assigned to engines.
+
+
   >>> engine2Util = AlchemyEngineUtility(
-  ...     'sqlite2',
-  ...     dns='sqlite://',
+  ...     'engine2',
+  ...     'sqlite://%s'%db2Filename,
+  ...     echo=False,
   ...     )
 
-  >>> engine = sqlalchemy.ext.proxy.ProxyEngine()
-  >>> provideUtility(engine2Util, name='sqlite2')
+Because there is already a default engine we must provide a name for the
+new engine.
 
-  >>> engineUtil.addTable('readme.bTable')
+  >>> provideUtility(engine2Util, name='engine2')
 
   >>> bTable = sqlalchemy.Table(
   ...     'bTable',
-  ...     z3c.zalchemy.getProxyEngine('readme.bTable'),
+  ...     z3c.zalchemy.metadata,
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.String),
+  ...     redefine=True,
   ...     )
-
-  >>> z3c.zalchemy.registerTableForCreation(bTable)
 
   >>> class B(object):
   ...     pass
-  >>> sqlalchemy.assign_mapper(B, bTable)
-  >>> engine2Util.addTable(bTable)
+  >>> B.mapper = sqlalchemy.mapper(B, bTable)
+
+Assign bTable to the new engine.
+
+  >>> z3c.zalchemy.assignTable('bTable', 'engine2')
+  >>> z3c.zalchemy.createTable('bTable')
 
   >>> txn = transaction.begin()
-  >>> beforeTraversal(None)
+  >>> session = z3c.zalchemy.getSession()
 
   >>> b = B()
+  >>> session.save(b)
   >>> b.value = 'b1'
-  >>> B.get(1)
 
   >>> a = A()
+  >>> session.save(a)
   >>> a.value = 321
 
   >>> transaction.get().commit()
 
   >>> txn = transaction.begin()
-  >>> beforeTraversal(None)
+  >>> session = z3c.zalchemy.getSession()
 
-  >>> a = A.get(1)
-  >>> b = B.get(1)
+  >>> a = session.get(A, 1)
+  >>> b = session.get(B, 1)
   >>> str(b.value)
   'b1'
-
-  >>> transaction.get().commit()
-
-Glitches
---------
-
-  >>> txn = transaction.begin()
-  >>> beforeTraversal(None)
-
-  >>> startLen = A.mapper.count()
-
-  >>> a1 = A()
-  >>> a1.value = 123
-
-  >>> A.mapper.count() == startLen + 1
-  False
-
-At this time a1 is not stored in the database. It is only stored when doing an
-objectstore.flush().
-At this time the object also has no id.
-
-  >>> a1.id is None
-  True
-
-An explicit flush for a1 solves the problem :
-
-  >>> sqlalchemy.objectstore.flush(a1)
-
-  >>> A.mapper.count() == startLen + 1
-  True
-  >>> a1.id is None
-  False
 
   >>> transaction.get().commit()
 

@@ -19,16 +19,18 @@ from zope.configuration.fields import GlobalObject
 class IEngineDirective(interface.Interface):
     """Define an engine.
     """
-    name = schema.Text(
-            title = u'Engine name',
-            required = True,
-            )
     dns = schema.Text(
             title = u'DNS for the database connection',
             required = True,
             )
+    name = schema.Text(
+            title = u'Engine name',
+            description = u'Empty if this engine is the default engine.',
+            required = False,
+            default = u'',
+            )
     echo = schema.Bool(
-            title = u'Echo SQL statement',
+            title = u'Echo SQL statements',
             required = False,
             default=False
             )
@@ -38,17 +40,29 @@ IEngineDirective.setTaggedValue('keyword_arguments', True)
 
 
 class IConnectDirective(interface.Interface):
+    """Connect a table to an engine.
+
+    This is only neccessary if a table should not be uses in the default
+    database.
     """
-    """
-    engine = schema.Text(
-            title = u'Engine',
-            description = u'The name of the engine to connect a table to',
-            required = True,
-            )
     table = schema.TextLine(
             title = u'Table',
-            description = u'The table to connect the engine to.'\
-                          u'The Table must contain a ProxyEngine !',
+            description = u'The name of the table to connect an engine to.',
+            required = True,
+            )
+    engine = schema.TextLine(
+            title = u'Engine',
+            description = u'The name of an engine to connect the table to.',
+            required = True,
+            )
+
+
+class ICreateTableDirective(interface.Interface):
+    """Create a table if not exist.
+    """
+    table = schema.TextLine(
+            title = u'Table',
+            description = u'The name of the table.',
             required = True,
             )
 

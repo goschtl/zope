@@ -30,12 +30,6 @@
       factory="z3c.zalchemy.container.SQLAlchemyNameChooser"
       />
 
-  <subscriber
-     handler="z3c.zalchemy.datamanager.beforeTraversal"
-     for="zope.app.publication.interfaces.IBeforeTraverseEvent"
-     trusted="True"
-     />
-
   <include package=".browser" />
 
 </configure>

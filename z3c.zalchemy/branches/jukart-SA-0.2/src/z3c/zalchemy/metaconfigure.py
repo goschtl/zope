@@ -17,11 +17,19 @@ from zope.app.component.metaconfigure import utility, PublicPermission
 from datamanager import AlchemyEngineUtility
 from interfaces import IAlchemyEngineUtility
 
-def engine(_context, name, dns, echo=False, **kwargs):
-    engine = AlchemyEngineUtility(name, dns, echo, **kwargs)
-    component.provideUtility(engine, name=name)
+import z3c.zalchemy
 
-def connect(_context, engine, table):
-    util = component.getUtility(IAlchemyEngineUtility, engine)
-    util.addTable(table)
+def engine(_context, dns, name='', echo=False, **kwargs):
+    engine = AlchemyEngineUtility(name, dns, echo=echo, **kwargs)
+    utility(_context,
+            IAlchemyEngineUtility,
+            engine,
+            permission=PublicPermission,
+            name=name)
+
+def connect(_context, table, engine):
+    z3c.zalchemy.assignTable(table, engine)
+
+def createTable(_context, table):
+    z3c.zalchemy.createTable(table)
 

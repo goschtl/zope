@@ -12,19 +12,18 @@
 #
 ##############################################################################
 
+import z3c.zalchemy
 import sqlalchemy
-
-engine = sqlalchemy.ext.proxy.ProxyEngine()
 
 testTable = sqlalchemy.Table(
         'testTable',
-        engine,
+        z3c.zalchemy.metadata,
         sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
         sqlalchemy.Column('x', sqlalchemy.Integer),
         )
 
 illegalTable = sqlalchemy.Table(
         'illegalTable',
-        sqlalchemy.create_engine('sqlite://'),
+        z3c.zalchemy.metadata,
         sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
         )

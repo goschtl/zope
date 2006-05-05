@@ -13,24 +13,20 @@
 ##############################################################################
 import thread
 from threading import local
-from ZODB.utils import WeakSet
 
+import transaction
 from zope.interface import implements
-from zope.component import getUtilitiesFor
+from zope.component import getUtility, getUtilitiesFor
 
-from transaction import get, manager
 from transaction.interfaces import IDataManager, ISynchronizer
 
 from interfaces import IAlchemyEngineUtility
 
-from sqlalchemy import objectstore, create_engine
 import sqlalchemy
-
-from z3c.zalchemy import tableToUtility, tablesToCreate
 
 
 class AlchemyEngineUtility(object):
-    """A utility providing the dns for alchemy database engines.
+    """A utility providing a database engine.
     """
     implements(IAlchemyEngineUtility)
 
@@ -41,57 +37,98 @@ class AlchemyEngineUtility(object):
         self.kw={}
         self.kw.update(kwargs)
         self.storage = local()
-        self._proxyEngine=sqlalchemy.ext.proxy.ProxyEngine()
 
-    def addTable(self, name):
-        if name in tableToUtility:
-            #TODO: should raise an exception here
-            return
-        tableToUtility[name]=self
-
-    def getProxyEngine(self):
-        return self._proxyEngine
-    proxyEngine = property(getProxyEngine)
-
-    def connectTablesForThread(self):
-        # create a thread local engine
-        engine=getattr(self.storage,'engine',None)
-        if engine is not None:
-            return
+    def getEngine(self):
+        engine = getattr(self.storage,'engine',None)
+        if engine:
+            return engine
         # create_engine consumes the keywords, so better to make a copy first
         kw = {}
         kw.update(self.kw)
         # create a new engine and store it thread local
-        self.storage.engine = create_engine(self.dns,
-                                            kw,
-                                            echo=self.echo)
-        engine = self.storage.engine
-        if self.echo:
-            engine.log('adding data manager for %s,%s'%(self.name, self.dns))
-        # create a data manager
-        self.storage.dataManager = AlchemyDataManager(self)
-        txn = manager.get()
-        txn.join(self.storage.dataManager)
-        # connect the tables to the engine
-        self._proxyEngine.engine=engine
-        tables = list(tablesToCreate)
-        # create tables for this engine :
-        for table in tables:
-            if table.engine == self._proxyEngine:
-                try:
-                    table.create()
-                except:
-                    pass
-                tablesToCreate.remove(table)
-
-    def dataManagerFinished(self):
-        self.storage.engine=None
-        # disconnect the tables from the engine
-        self._proxyEngine.engine=None
-
-    def getEngine(self):
-        return getattr(self.storage,'engine',None)
+        self.storage.engine = sqlalchemy.create_engine(self.dns,
+                                            echo=self.echo,
+                                            strategy='threadlocal',
+                                            **kw)
+        return self.storage.engine
     engine = property(getEngine)
+
+    def _resetEngine(self):
+        self.storage.engine=None
+
+
+metadata = sqlalchemy.MetaData()
+
+_tableToEngine = {}
+_tablesToCreate = []
+_storage = local()
+
+def getSession(createTransaction=False):
+    txn = transaction.manager.get()
+    if createTransaction and (txn is None):
+        txn = transaction.begin()
+    session=getattr(_storage,'session',None)
+    if session:
+        return session
+    util = getUtility(IAlchemyEngineUtility)
+    _storage.session=sqlalchemy.Session(bind_to=util.engine)
+    session = _storage.session
+    for table, engine in _tableToEngine.iteritems():
+        t = metadata.tables[table]
+        util = getUtility(IAlchemyEngineUtility, name=engine)
+        session.bind_table(t,util.engine)
+    if txn is not None:
+        _storage.dataManager = AlchemyDataManager(session)
+        txn.join(_storage.dataManager)
+    _createTables()
+    return session
+
+
+def inSession():
+    return getattr(_storage,'session',None) is not None
+
+
+def assignTable(table, engine):
+    _tableToEngine[table]=engine
+
+
+def createTable(table):
+    _tablesToCreate.append(table)
+    if inSession():
+        _createTables()
+
+
+def _createTables():
+    tables = _tablesToCreate[:]
+    del _tablesToCreate[:]
+    for table in tables:
+        _doCreateTable(table)
+
+
+def _doCreateTable(table):
+    for t, engine in _tableToEngine.iteritems():
+        if t==table:
+            t = metadata.tables[table]
+            util = getUtility(IAlchemyEngineUtility, name=engine)
+            try:
+                util.engine.create(t)
+            except:
+                pass
+            return
+    util = getUtility(IAlchemyEngineUtility)
+    t = metadata.tables[table]
+    try:
+        util.engine.create(t)
+    except:
+        pass
+
+
+def _dataManagerFinished():
+    _storage.session = None
+    _storage.dataManager = None
+    utils = getUtilitiesFor(IAlchemyEngineUtility)
+    for util in utils:
+        util[1]._resetEngine()
 
 
 class AlchemyDataManager(object):
@@ -101,40 +138,30 @@ class AlchemyDataManager(object):
 
     vote = False
 
-    def __init__(self, util):
-        self.util = util
-        self.session = objectstore.begin()
+    def __init__(self, session):
+        self.session = session
+        self.transaction = session.create_transaction()
 
     def abort(self, trans):
-        self.session.rollback()
-        objectstore.clear()
-        self.util.dataManagerFinished()
+        self.transaction.rollback()
+        _dataManagerFinished()
 
     def tpc_begin(self, trans):
         pass
 
     def commit(self, trans):
-        self.session.commit()
+        self.transaction.commit()
 
     def tpc_vote(self, trans):
         pass
 
     def tpc_finish(self, trans):
-        if self.util.echo:
-            self.engine.log('commit for %s'%self.util.name)
-        objectstore.clear()
-        self.util.dataManagerFinished()
+        _dataManagerFinished()
 
     def tpc_abort(self, trans):
-        self.session.rollback()
-        objectstore.clear()
-        self.util.dataManagerFinished()
+        self.transaction.rollback()
+        _dataManagerFinished()
 
     def sortKey(self):
         return str(id(self))
-
-def beforeTraversal(event):
-    utils = getUtilitiesFor(IAlchemyEngineUtility)
-    for name, util in utils:
-        util.connectTablesForThread()
 

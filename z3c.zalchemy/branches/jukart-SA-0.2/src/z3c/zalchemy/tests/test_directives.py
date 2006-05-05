@@ -38,27 +38,37 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
         super(TestDirectives, self).setUp()
         XMLConfig('meta.zcml', z3c.zalchemy)()
 
+    def testDefaultEngineDirective(self):
+        xmlconfig(StringIO(template % (
+            '''
+            <alchemy:engine
+                dns="sqlite://testdatabase.db"
+                echo="True"
+                />
+            '''
+            )))
+        util = component.getUtility(IAlchemyEngineUtility)
+        self.assertNotEqual(util, None)
+        self.assertEqual(util.dns, 'sqlite://testdatabase.db')
+        self.assertEqual(util.echo, True)
+
     def testEngineDirective(self):
         xmlconfig(StringIO(template % (
             '''
             <alchemy:engine
                 name="sqlite"
-                dns="sqlite"
+                dns="sqlite://testdatabase.db"
                 echo="True"
-                filename="testdatabase.db"
                 />
             '''
             )))
         util = component.getUtility(IAlchemyEngineUtility,'sqlite')
         self.assertNotEqual(util, None)
-        self.assertEqual(util.dns, 'sqlite')
+        self.assertEqual(util.dns, 'sqlite://testdatabase.db')
         self.assertEqual(util.echo, True)
-        self.assertEqual(util.kw['filename'], 'testdatabase.db')
 
     def testConnectDirective(self):
         from environ import testTable
-        self.assertRaises(AttributeError,
-                lambda : testTable.engine.engine)
         xmlconfig(StringIO(template % (
             '''
             <alchemy:engine
@@ -66,17 +76,17 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
                 dns="sqlite://:memory:"
                 />
             <alchemy:connect
-                engine="sqlite-in-memory"
                 table="testTable"
+                engine="sqlite-in-memory"
                 />
             '''
             )))
         util = component.getUtility(IAlchemyEngineUtility,'sqlite-in-memory')
-        self.assert_(len(z3c.zalchemy.tableToUtility)==1)
-        self.assert_('testTable' in z3c.zalchemy.tableToUtility)
-        self.assertEqual(z3c.zalchemy.tableToUtility['testTable'], util)
+        self.assert_(len(z3c.zalchemy.datamanager._tableToEngine)==1)
+        self.assert_('testTable' in z3c.zalchemy.datamanager._tableToEngine)
 
     def tearDown(self):
+        z3c.zalchemy.datamanager._tableToEngine.clear()
         PlacelessSetup.tearDown(self)
 
 
