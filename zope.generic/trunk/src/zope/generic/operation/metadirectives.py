@@ -24,7 +24,9 @@ from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import Tokens
 from zope.interface import Interface
 
+from zope.generic.configuration import IConfigurationType
 from zope.generic.informationprovider.metadirectives import IInformationProviderDirective
+from zope.generic.operation import INoParameter
 
 
 
@@ -46,7 +48,9 @@ class IInputDirective(Interface):
 
     input = GlobalInterface(title=_('Input Declaration'),
         description=_('Configuration schema describing the input arguments.'),
-        required=False)
+        required=False,
+        default=INoParameter,
+        constraint=lambda v: IConfigurationType.providedBy(v))
 
 
 

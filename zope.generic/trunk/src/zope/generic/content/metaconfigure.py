@@ -28,6 +28,7 @@ from zope.generic.face import IKeyfaceType
 from zope.generic.factory.metaconfigure import factoryDirective
 from zope.generic.handler.metaconfigure import handlerDirective
 from zope.generic.informationprovider.metaconfigure import ensureInformationProvider
+from zope.generic.operation import INoParameter
 
 from zope.generic.face import IUndefinedContext
 
@@ -62,7 +63,7 @@ class ContentDirective(object):
         # ensure the corresponding information provider
         ensureInformationProvider(keyface, conface)
 
-    def factory(self, _context, class_, operations=(), input=None,
+    def factory(self, _context, class_, operations=(), input=INoParameter,
                 providesFace=True, notifyCreated=False, storeInput=False):
         """Add factory."""
         factoryDirective(_context, self._keyface, class_, operations, input,

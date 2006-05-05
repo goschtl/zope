@@ -218,7 +218,7 @@ Now we will check the behavior of the example on a dedicated context:
 
     >>> operation = api.getOperation(IMakeSiteSetupPAUAndAnyOperation)
 
-    >>> operation(context, any='a any', pau=u'a pau')
+    >>> operation(context, any=u'a any', pau=u'a pau')
     Private operation: inputToConfigurations
     Public operation: makeSiteOperation
     Private operation: pauInitializer

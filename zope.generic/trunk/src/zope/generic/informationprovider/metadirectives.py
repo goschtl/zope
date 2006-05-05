@@ -123,6 +123,6 @@ class IInformationSubdirective(IIniFileDirective):
         )
 
 
-class IMultiInformationProviderDirectives(IIniFileDirective):
+class IMultiInformationProvidersDirective(IIniFileDirective):
     """Ini-file based configurations for multi information providers."""
 

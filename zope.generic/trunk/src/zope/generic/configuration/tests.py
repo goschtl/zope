@@ -49,10 +49,9 @@ class ConfigurationDataTest(InterfaceBaseTest):
     def test_readonly_attributes(self):
         interface = self._test_interface
         test_obj = self.makeTestObject()
-        for name in interface:
-            field = interface[name]
-            if field.readonly is True:
-                self.assertRaises(ValueError, setattr, test_obj, name, object())
+        # a read-only value can be set only once.
+        test_obj.fo = u'basdf'
+        self.assertRaises(ValueError, setattr, test_obj, 'fo', u'aasdf')
 
     def test_default_value(self):
         interface = self._test_interface

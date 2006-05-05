@@ -20,12 +20,12 @@ __docformat__ = 'restructuredtext'
 
 from persistent import Persistent
 from persistent import IPersistent
-from persistent.dict import PersistentDict
 
 from zope.interface import directlyProvides
 from zope.interface import implements
+from zope.schema import ValidationError
+from zope.schema.interfaces import IField
 from zope.schema.interfaces import IObject
-from zope.schema.interfaces import IContainer
 
 from zope.generic.face import IAttributeFaced
 from zope.generic.face import IFace
@@ -35,7 +35,6 @@ from zope.generic.face.api import FaceForAttributeFaced
 from zope.generic.configuration import IConfigurationData
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration import IConfigurationType
-from zope.generic.configuration.helper import getValue
 
 
 
@@ -124,12 +123,29 @@ class ConfigurationData(Persistent):
         >>> config_data.bar
         Traceback (most recent call last):
         ...
-        AttributeError: bar
-        
+        AttributeError: 'IExampleConfiugrationSchema' configuration has no attribute 'bar'.
+ 
+    The implementation provide an adapter to IFace by its __conform__ method:
+
+        >>> adapted = IFace(config_data)
+        >>> IFace.providedBy(adapted)
+        True
+
+        >>> adapted.keyface is IExampleConfiugrationSchema
+        True
+
+    A configuration belong to the configuration context:
+
+        >>> adapted.conface is IUndefinedContext
+        True
+ 
+    Readonly attribute can be set once. Afterward an value error is raised:
+
+        >>> config_data.fii = u'Bla bla'
         >>> config_data.fii = u'Bla bla'
         Traceback (most recent call last):
         ...
-        ValueError: ('fii', 'Data is readonly.')
+        ValueError: 'IExampleConfiugrationSchema' configuration's attribute 'fii' is readonly.
 
     If a relevant key is missed within the data a key error is raised:
 
@@ -138,7 +154,7 @@ class ConfigurationData(Persistent):
         ...
         TypeError: __init__ requires 'foo' of 'IExampleConfiugrationSchema'.
 
-    The schema should not contain methods:
+    The schema should never contain methods:
 
         >>> class IBarConfiguration(Interface):
         ...    bar = TextLine(title=u'Bar')
@@ -146,27 +162,9 @@ class ConfigurationData(Persistent):
         ...        pass
 
         >>> config_data = ConfigurationData(IBarConfiguration, {'bar': u'Bar!', 'method': u'Method!'})
-        >>> config_data.bar
-        u'Bar!'
-        >>> config_data.method
         Traceback (most recent call last):
         ...
-        RuntimeError: ('Data value is not a schema field', 'method')
-
-    The implementation provide an adapter to IFace by its __conform__
-    method:
-
-        >>> adapted = IFace(config_data)
-        >>> IFace.providedBy(adapted)
-        True
-
-        >>> adapted.keyface is IBarConfiguration
-        True
-
-    A configuration belong to the configuration context:
-
-        >>> adapted.conface is IUndefinedContext
-        True
+        AttributeError: 'Method' object has no attribute 'readonly'
 
     """
 
@@ -174,39 +172,75 @@ class ConfigurationData(Persistent):
 
     def __init__(self, __keyface__, data):
         # essentials
-        self.__dict__['_ConfigurationData__data'] = PersistentDict(prepareData(__keyface__, data))
         self.__dict__['__keyface__'] = __keyface__
         self.__dict__['__conface__'] = IUndefinedContext
         directlyProvides(self, __keyface__)
+
+        # set other data
+        for key, value in prepareData(__keyface__, data).items():
+            setattr(self, key, value)
 
     def __conform__(self, interface):
         if interface is IFace:
             return FaceForAttributeFaced(self)
 
     def __getattr__(self, name):
-        # assert IAttributeFaced
+        """Get value of a configuration."""
+
+        # assert acces attribute faced attributes
         if name in ['__keyface__', '__conface__']:
             return self.__dict__[name]
+        
+        # filter all names except keyface attributes  
+        else:
+            # short cut
+            data = self.__dict__
+            keyface = data['__keyface__']
 
-        keyface = self.__dict__['__keyface__']
-        data = self.__dict__['_ConfigurationData__data']
-
-        return getValue(keyface, name, data)
+            try:
+                field = keyface[name]
+    
+            except KeyError:
+                raise AttributeError("'%s' configuration has no attribute '%s'." % (keyface.__name__, name))
+    
+            else:
+                value = data.get(name, _marker)
+                if value is _marker:
+                    value = getattr(field, 'default', _marker)
+                    if value is _marker:
+                        # should not happen
+                        raise RuntimeError("'%s' configuration's value for '%s' is missing." % (keyface.__name__, name))
+        
+                return value
+        
+            raise AttributeError("'%s' configuration has no attribute '%s'." % (keyface.__name__, name))
 
 
     def __setattr__(self, name, value):
+        """Set value of a configuration."""
 
-        if not(name == '__provides__' or name in IPersistent):
-            keyface = self.__dict__['__keyface__']
-            data = self.__dict__['_ConfigurationData__data']
+        # assert setting of dedicated  faced attributes
+        if name == '__provides__' or name in IPersistent:
+            super(ConfigurationData, self).__setattr__(name, value)
+ 
+        else:
+            # short cut
+            data = self.__dict__
+            keyface = data['__keyface__']
 
             try:
                 field = keyface[name]
             except KeyError:
                 raise AttributeError(name)
             else:
-                if field.readonly is True:
-                    raise ValueError(name, 'Data is readonly.')
-            data[name] = value
-        else:
-            super(ConfigurationData, self).__setattr__(name, value)
+                if field.readonly and data.has_key(name):
+                    raise ValueError("'%s' configuration's attribute '%s' is readonly." % (keyface.__name__, name))
+
+                field = field.bind(self)
+                try:
+                    field.validate(value)
+                    
+                except ValidationError, e:
+                    raise e.__class__("'%s' configuration's attribute '%s' is not valid: %s." % (keyface.__name__, name, ', '.join([repr(a) for a in e.args])))
+
+                super(ConfigurationData, self).__setattr__(name, value)

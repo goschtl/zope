@@ -32,7 +32,9 @@ from zope.generic.informationprovider.api import queryInformation
 from zope.generic.face import IAttributeFaced
 from zope.generic.face import IProvidesAttributeFaced
 from zope.generic.face.api import Face
+from zope.generic.operation import INoParameter
 from zope.generic.operation import IOperationConfiguration
+from zope.generic.operation import IUndefinedParameter
         
 
 
@@ -111,8 +113,9 @@ class Factory(factory.Factory, Face):
 
         >>> from zope.generic.configuration.api import ConfigurationData
         >>> from zope.generic.operation import IOperationConfiguration
+        >>> from zope.generic.operation.api import Operation
 
-        >>> my_factory=ConfigurationData(IOperationConfiguration, {'operation': init_handler})
+        >>> my_factory={'operation': Operation(init_handler)}
 
         >>> registerDirective('''
         ... <generic:informationProvider
@@ -125,7 +128,7 @@ class Factory(factory.Factory, Face):
         ... </generic:informationProvider>
         ... ''')
 
-        >>> f = Factory(Simple, IMyInstance, mode=2)
+        >>> f = Factory(Simple, IMyInstance, useConfig=True)
         >>> f()
         initializing
         <example.Simple object at ...>
@@ -133,7 +136,7 @@ class Factory(factory.Factory, Face):
         >>> f('wrong')
         Traceback (most recent call last):
         ...
-        TypeError: default __new__ takes no parameters
+        TypeError: This factory takes no parameters
 
 
     If we like to provide parameter we have to declare them by an input
@@ -158,9 +161,7 @@ class Factory(factory.Factory, Face):
         ...     />
         ... ''') 
 
-        >>> my_factory=ConfigurationData(IOperationConfiguration, 
-        ...                              {'operation': init_handler,
-        ...                               'input': IMyParameter})
+        >>> my_factory={'operation': Operation(init_handler), 'input': IMyParameter}
 
         >>> registerDirective('''
         ... <generic:informationProvider
@@ -173,7 +174,7 @@ class Factory(factory.Factory, Face):
         ... </generic:informationProvider>
         ... ''')
 
-        >>> f = Factory(SimpleKeyFacedWithParameter, IMyInstance, mode=3)
+        >>> f = Factory(SimpleKeyFacedWithParameter, IMyInstance, useConfig=True)
         >>> f(u'a bla bla')
         __init__: a= a bla bla , b= None , c= c default
         initializing
@@ -181,11 +182,11 @@ class Factory(factory.Factory, Face):
 
     We can ignore the factory configuration fully by mode=0:
 
-        >>> f = Factory(SimpleKeyFacedWithParameter, IMyInstance, mode=0)
+        >>> f = Factory(SimpleKeyFacedWithParameter, IMyInstance, useConfig=False)
         >>> f(u'a bla bla')
         Traceback (most recent call last):
          ...
-        TypeError: default __new__ takes no parameters
+        TypeError: __init__() takes exactly 4 arguments (2 given)
 
     Last but not least we can store the arguments directly as configuration. 
     Such an configuration can be retrieved later on using the queryInformation
@@ -198,7 +199,7 @@ class Factory(factory.Factory, Face):
         ...    def __init__(self, a, b, c):
         ...        print '__init__:', 'a=',a ,', b=', b, ', c=', c
 
-        >>> f = Factory(SimpleConfigurable, IMyInstance, storeInput=True, mode=3)
+        >>> f = Factory(SimpleConfigurable, IMyInstance, storeInput=True, useConfig=True)
         >>> instance = f(u'a bla')
         __init__: a= a bla , b= None , c= c default
         initializing
@@ -213,7 +214,7 @@ class Factory(factory.Factory, Face):
 
     def __init__(self, callable, __keyface__, providesFace=False, 
                  storeInput=False, notifyCreated=False, 
-                 title=u'', description=u'', mode=0):
+                 title=u'', description=u'', useConfig=False):
 
         super(Factory, self).__init__(callable, title, description, interfaces=(__keyface__,))
 
@@ -222,24 +223,31 @@ class Factory(factory.Factory, Face):
         self.__provideFace = providesFace
         self.__storeInput = storeInput
         self.__notifyCreated = notifyCreated
-        self.__mode = mode
-        if mode == 0:
+        # this assigns that there will be no configuration within an informatio provider
+        if useConfig is False:
             self.__dict__['_Factory__config'] = None
 
     def __call__(self, *pos, **kws):
         """Create instance."""
         config = self.__config
-        mode = self.__mode
-        if config and config.input:
-            new_kws = configuratonToDict(parameterToConfiguration(config.input, *pos, **kws), all=True)
-            instance = self._callable(**new_kws)
-        
-        elif not pos and not kws:
-            instance = self._callable()
+        # handle declared callables
+        new_kws = None
+        if config and config.input != IUndefinedParameter:
+            # callables with no parameter
+            if config.input == INoParameter:
+                if kws or pos:
+                    raise TypeError('This factory takes no parameters')
 
+                instance = self._callable()
+
+            # callables with defined parameters
+            else:
+                new_kws = configuratonToDict(parameterToConfiguration(config.input, *pos, **kws), all=True)
+                instance = self._callable(**new_kws)
+
+        # handle undeclared ones
         else:
-            raise TypeError('default __new__ takes no parameters')
-            
+            instance = self._callable(*pos, **kws)
 
         # provide key interface
         if self.__provideFace:
@@ -259,12 +267,22 @@ class Factory(factory.Factory, Face):
         if self.__storeInput and config:
             input = config.input
             if input:
-                configuration = parameterToConfiguration(input, *pos, **kws)
+                if new_kws:
+                    configuration = parameterToConfiguration(input, **new_kws)
+
+                else:
+                    configuration = parameterToConfiguration(input, *pos, **kws)
+
                 provideInformation(input, configuration, instance)
 
         # invoke initializer operations
-        if mode > 1:
-            config.operation(instance, *pos, **kws)
+        operation = getattr(config, 'operation', None)
+        if operation:
+            if new_kws:
+                config.operation(instance, **new_kws)
+
+            else:
+                config.operation(instance, *pos, **kws)
 
         # notify created object
         if self.__notifyCreated:

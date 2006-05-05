@@ -26,6 +26,7 @@ from zope.schema import Object
 from zope.schema import Tuple
 
 from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration.api import provideConfigurationType
 from zope.generic.face import IFace
 from zope.generic.face import IKeyfaceType
 
@@ -61,6 +62,19 @@ class IOperation(IFace):
         """
 
 
+class IUndefinedParameter(Interface):
+    """Undefined input or output parameter."""
+
+provideConfigurationType(IUndefinedParameter)
+
+
+
+class INoParameter(Interface):
+    """No parameter."""
+
+provideConfigurationType(INoParameter)
+
+
 
 class IOperationType(IKeyfaceType):
     """Type an public operation key interface."""
@@ -82,17 +96,17 @@ class IOperationConfiguration(Interface):
         required=False,
         schema=IOperation)
 
-    input = Tuple(title=_('Input Declaration'),
+    input = Object(title=_('Input Declaration'),
         description=_('A configuration interface declaring the input parameters.'),
         required=False,
-        default=(),
-        value_type=Object(schema=IConfigurationType))
+        default=INoParameter,
+        schema=IConfigurationType)
 
-    output = Tuple(title=_('Output Declaration'),
+    output = Object(title=_('Output Declaration'),
         description=_('An interface interface declaring the output parameters.'),
         required=False,
-        default=(),
-        value_type=Object(schema=IInterface))
+        default=INoParameter,
+        schema=IInterface)
 
 
 

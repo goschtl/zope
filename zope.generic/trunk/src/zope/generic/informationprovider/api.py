@@ -38,6 +38,7 @@ from zope.generic.informationprovider import *
 from zope.generic.informationprovider.base import GlobalInformationProvider
 from zope.generic.informationprovider.base import LocalInformationProvider
 from zope.generic.informationprovider.base import UserDescription
+from zope.generic.informationprovider.helper import toConfigFaceTriple
 from zope.generic.informationprovider.metaconfigure import ensureInformationProvider
 from zope.generic.informationprovider.metaconfigure import getInformationProvider
 
@@ -76,7 +77,6 @@ def acquireInformationProvider(keyface=IUndefinedKeyface, conface=IUndefinedCont
 
 
 
-
 def getInformationProvidersFor(face):
     """Evaluate available information providers of a certain information aspect."""
 
@@ -90,7 +90,6 @@ def getInformationProvidersFor(face):
 
     else:
         raise TypeError('KeyfaceType or ConfaceType required.', face)
-
 
 
 
@@ -168,4 +167,3 @@ def deleteInformation(informationkey, keyface, conface=IUndefinedContext):
     
     else:
         del IAnnotations(context)[informationkey]
-

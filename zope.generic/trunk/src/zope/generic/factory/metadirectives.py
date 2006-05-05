@@ -60,6 +60,12 @@ class IBaseFactoryDirective(Interface):
         default=False
         )
 
+    useConfig = Bool(
+        title=_('Use configuration'),
+        description=_('Should the configuration be invoked during the initialization.'),
+        required=False,
+        default=True
+        )
 
 class IFactoryDirective(IKeyfaceDirective, IBaseFactoryDirective, IOperationsDirective, IInputDirective):
     """Register a public factory.

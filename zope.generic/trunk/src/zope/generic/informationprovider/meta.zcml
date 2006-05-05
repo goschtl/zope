@@ -19,8 +19,8 @@
 
     <meta:directive
         name="multiInformationProviders"
-        schema=".metadirectives.IMultiInformationProviderDirectives"
-        handler=".metaconfigure.multiInformationProviderDirectives"
+        schema=".metadirectives.IMultiInformationProvidersDirective"
+        handler=".metaconfigure.multiInformationProvidersDirective"
         />
 
   </meta:directives>

@@ -37,7 +37,6 @@ from zope.schema.interfaces import ITuple
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration import IConfigurationType
 from zope.generic.configuration.api import ConfigurationData
-from zope.generic.configuration.api import toConfigFaceTriple
 from zope.generic.face import IConfaceType
 from zope.generic.face import IKeyfaceType
 from zope.generic.face import IUndefinedContext
@@ -49,6 +48,7 @@ from zope.generic.face.api import toDottedName
 from zope.generic.face.api import toInterface
 
 from zope.generic.informationprovider.base import GlobalInformationProvider
+from zope.generic.informationprovider.helper import toConfigFaceTriple
 
 
 
@@ -323,7 +323,7 @@ class InformationProviderDirective(object):
 
 
 
-def multiInformationProviderDirectives(_context, iniFiles=()):
+def multiInformationProvidersDirective(_context, iniFiles=()):
     """Ini-file based configurations for multi information provider."""
         
     for path in iniFiles:

@@ -32,7 +32,9 @@ from zope.generic.face import IUndefinedContext
 from zope.generic.face.api import toDescription
 from zope.generic.face.api import toDottedName
 from zope.generic.informationprovider.metaconfigure import InformationProviderDirective
+from zope.generic.operation import INoParameter
 from zope.generic.operation import IOperationConfiguration
+from zope.generic.operation import IUndefinedParameter
 from zope.generic.operation.api import assertOperation
 
 from zope.generic.factory import IFactoryType
@@ -40,8 +42,8 @@ from zope.generic.factory.factory import Factory
 
 
 
-def factoryDirective(_context, keyface, class_, operations=(), input=None,
-                     providesFace=False, notifyCreated=False, storeInput=False):
+def factoryDirective(_context, keyface, class_, operations=(), input=INoParameter,
+                     providesFace=False, notifyCreated=False, storeInput=False, useConfig=True):
     """Register a public factory."""
     # preconditions
     if isinstance(class_, ModuleType):
@@ -54,22 +56,9 @@ def factoryDirective(_context, keyface, class_, operations=(), input=None,
     # set label and hint
     label, hint = toDescription(keyface)
 
-    # how to invoke the factory
-    if operations and input:
-        mode = 3
-    
-    elif operations:
-        mode = 2
-    
-    elif input:
-        mode = 1
-    
-    else:
-        mode = 0
-
     # create and proxy type factory
     factory = Factory(class_, keyface, providesFace, storeInput, 
-                      notifyCreated, label, hint, mode) 
+                      notifyCreated, label, hint, useConfig) 
     proxied = proxify(factory, InterfaceChecker(IFactory, CheckerPublic))
     
     _context.action(
@@ -78,9 +67,9 @@ def factoryDirective(_context, keyface, class_, operations=(), input=None,
         args = (proxied, IFactory, toDottedName(keyface)),
         )
 
-    if mode != 0:
+    if useConfig:
         # does the output provide the keyface?
-        output = None
+        output = IUndefinedParameter
         if providesFace:
             output = keyface
 

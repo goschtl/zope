@@ -107,8 +107,10 @@ initialization process.
     ...         text, note = text_config.text, note_config.text
     ...     else:
     ...         text, note = article_config.text, article_config.note
-    ...
+    ... 
     ...     provideInformation(ITextConfig, {'body': text}, context)
+    ...     if note is None:
+    ...        note = u'Default Initializer Note.'
     ...     provideInformation(INoteConfig, {'body': note}, context)
     ...     deleteInformation(IArticleInitializationConfiguration, context)
  

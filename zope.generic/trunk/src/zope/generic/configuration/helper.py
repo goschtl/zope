@@ -18,43 +18,22 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from zope.interface.interfaces import IMethod
-from zope.schema.interfaces import IField
+from zope.interface import alsoProvides
 
 from zope.generic.face import IFace
-from zope.generic.face import IUndefinedContext
-from zope.generic.face import IUndefinedKeyface
-from zope.generic.face.api import toFaceTuple
-from zope.generic.face.api import toInterface
+
+from zope.generic.configuration import IConfigurationType
+
+
+def provideConfigurationType(interface):
+    """Mark an interface as IConfigurationType."""
+
+    alsoProvides(interface, IConfigurationType)
+
 
 
 
 _marker = object()
-
-def getValue(keyface, name, data):
-    """Return a declared value."""
-    try:
-        field = keyface[name]
-    except KeyError:
-        raise AttributeError(name)
-    else:
-        value = data.get(name, _marker)
-        if value is _marker:
-            value = getattr(field, 'default', _marker)
-            if value is _marker:
-                raise RuntimeError('Data is missing', name)
-
-        if IMethod.providedBy(field):
-            if not IField.providedBy(field):
-                raise RuntimeError('Data value is not a schema field', name)
-            v = lambda: value
-        else:
-            v = value
-
-        return v
-    raise AttributeError(name)
-
-
 
 def configuratonToDict(configuration, all=False):
     """Extract values from configuration to a dictionary.
@@ -72,13 +51,13 @@ def configuratonToDict(configuration, all=False):
     Minimal data without defaults:
 
         >>> from zope.generic.configuration.base import ConfigurationData
-        >>> configuration = ConfigurationData(IAnyConfiguration, {'a': 'a bla'})
+        >>> configuration = ConfigurationData(IAnyConfiguration, {'a': u'a bla'})
         >>> api.configuratonToDict(configuration)
-        {'a': 'a bla'}
+        {'a': u'a bla'}
 
     Including defaults:
         >>> api.configuratonToDict(configuration, all=True)
-        {'a': 'a bla', 'c': u'c default', 'b': None}
+        {'a': u'a bla', 'c': u'c default', 'b': None}
 
     """
     data = {}
@@ -131,30 +110,3 @@ def requiredInOrder(configuration):
     """
     
     return [name for name in configuration if configuration[name].required is True]
-
-
-
-def toConfigFaceTriple(identifier):
-    """Split configface:keyface@conface to (configface, keyface, conface).
-
-        >>> from zope.interface import Interface
-        
-        >>> class IA(Interface):
-        ...     pass
-
-        >>> from zope.generic.face.api import toDottedName
-
-        >>> api.toConfigFaceTriple(toDottedName(IA) + ':')
-        (<InterfaceClass example.IA>, <....IUndefinedKeyface>, <....IUndefinedContext>)
-    """
-
-    parts = identifier.split(':')
-
-    if len(parts) == 1:
-        return (toInterface(parts[0]), IUndefinedKeyface, IUndefinedContext)
-
-    else:
-        keyface, conface = toFaceTuple(parts[1])
-        return (toInterface(parts[0]), keyface, conface)
-            
-        

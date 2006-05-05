@@ -22,6 +22,8 @@ from zope.generic.informationprovider.api import getInformationProvider
 from zope.generic.informationprovider.api import getInformation
 
 from zope.generic.operation.interfaces import *
+from zope.generic.operation.base import Operation
+from zope.generic.operation.base import OperationPipe
 from zope.generic.operation.metaconfigure import assertOperation
 
 
