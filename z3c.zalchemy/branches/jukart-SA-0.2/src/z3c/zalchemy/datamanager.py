@@ -72,7 +72,7 @@ def getSession(createTransaction=False):
     if session:
         return session
     util = getUtility(IAlchemyEngineUtility)
-    _storage.session=sqlalchemy.Session(bind_to=util.engine)
+    _storage.session=sqlalchemy.create_session(bind_to=util.engine)
     session = _storage.session
     for table, engine in _tableToEngine.iteritems():
         _assignTable(table, engine)
