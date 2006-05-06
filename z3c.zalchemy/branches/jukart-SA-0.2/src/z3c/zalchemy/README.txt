@@ -22,18 +22,6 @@ zalchemy provides a transparent way to connect a table to a database (engine).
 
 A SQLAlchemy engine is represented as a utility :
 
-  >>> dbFilename = 'readme_test.db'
-  >>> db2Filename = 'readme_test_2.db'
-  >>> import os
-  >>> try:
-  ...     os.remove(dbFilename)
-  ... except:
-  ...     pass
-  >>> try:
-  ...     os.remove(db2Filename)
-  ... except:
-  ...     pass
-
   >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtility = AlchemyEngineUtility(
   ...       'database',
@@ -122,7 +110,7 @@ We create a new database engine :
 
   >>> engine2Util = AlchemyEngineUtility(
   ...     'engine2',
-  ...     'sqlite://%s'%db2Filename,
+  ...     'sqlite://%s'%dbFilename2,
   ...     echo=False,
   ...     )
 

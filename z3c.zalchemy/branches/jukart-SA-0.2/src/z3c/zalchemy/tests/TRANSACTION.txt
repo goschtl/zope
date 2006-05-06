@@ -5,19 +5,13 @@ When a zope transaction is used also a sqlalchemy transaction must be
 activated. "z3c.zalchemy" installs a data manager every time a new zope
 transaction is created. 
 
-Setup zope's test environment :
-
-  >>> from zope.app.testing.placelesssetup import setUp, tearDown
-  >>> setUp()
-
 Create a utility to provide a database :
 
   >>> import os
-  >>> os.remove('abc.db')
   >>> from zope.component import provideUtility
   >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtility = AlchemyEngineUtility('database',
-  ...                                      'sqlite://abc.db',
+  ...                                      'sqlite://%s'%dbTrFilename,
   ...                                      echo=False)
   >>> provideUtility(engineUtility)
 
@@ -160,6 +154,4 @@ Aborting transactions
   >>> a.value == v
   True
   >>> transaction.get().commit()
-
-  >>> tearDown()
 

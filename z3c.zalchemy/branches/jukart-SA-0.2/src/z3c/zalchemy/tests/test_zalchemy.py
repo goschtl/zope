@@ -11,15 +11,45 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
+import os
 import unittest
+import doctest
+from zope.app.testing import setup
 from zope.testing.doctestunit import DocFileSuite
+
+
+def setUp(test):
+    setup.placefulSetUp()
+    test.globs['dbTrFilename'] = 'z3c.zalchemy.test.transaction.db'
+    test.globs['dbFilename'] = 'z3c.zalchemy.test1.db'
+    test.globs['dbFilename2'] = 'z3c.zalchemy.test2.db'
+
+def tearDown(test):
+    try:
+        os.remove(test.globs['dbTrFilename'])
+    except:
+        pass
+    try:
+        os.remove(test.globs['dbFilename'])
+    except:
+        pass
+    try:
+        os.remove(test.globs['dbFilename2'])
+    except:
+        pass
+    setup.placefulTearDown()
 
 def test_suite():
     return unittest.TestSuite((
-            DocFileSuite('TRANSACTION.txt'),
-            DocFileSuite('../README.txt'),
-            ))
+        DocFileSuite('TRANSACTION.txt',
+                     setUp=setUp, tearDown=tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
+        DocFileSuite('../README.txt',
+                     setUp=setUp, tearDown=tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
+        ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
