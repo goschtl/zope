@@ -49,3 +49,53 @@ class IAlchemyEngineUtility(interface.Interface):
             default=False
             )
 
+class IAlchemy(interface.Interface):
+    
+    def getSession(createTransaction=False):
+        """Get a new session for the current thread.
+
+        createTransaction :
+            Create a zope transaction if none exists for the current thread.
+        """
+
+    def inSession():
+        """Return True if the thread is in a transaction.
+        """
+
+    def assignTable(table, engine):
+        """Assign a table to an engine.
+        The table is immediately assigned to the engine if a session is active
+        for the thread. If no session is active the table is assigned when the
+        next session starts.
+
+        table :
+            Name of the table.
+        engine :
+            Name of the engine utility.
+        """
+
+    def assignClass(class_, engine):
+        """Assign a class to an engine.
+        The class is immediately assigned to the engine if a session is active
+        for the thread. If no session is active the class is assigned when the
+        next session starts.
+
+        class_ :
+            The class to assign to an engine.
+            The class must have a primary mapper assigned.
+        engine :
+            Name of the engine utility.
+        """
+
+    def createTable(table, engine=''):
+        """Automatically create a table in the database.
+        The table is immediately created if a session is active for the thread.
+        If no session is active the table is created when the next session
+        starts.
+
+        table :
+            Name of the table.
+        engine :
+            Name of the engine utility.
+        """
+
