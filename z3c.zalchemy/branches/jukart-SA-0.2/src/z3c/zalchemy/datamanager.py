@@ -75,13 +75,9 @@ def getSession(createTransaction=False):
     _storage.session=sqlalchemy.Session(bind_to=util.engine)
     session = _storage.session
     for table, engine in _tableToEngine.iteritems():
-        t = metadata.tables[table]
-        util = getUtility(IAlchemyEngineUtility, name=engine)
-        session.bind_table(t,util.engine)
+        _assignTable(table, engine)
     for class_, engine in _classToEngine.iteritems():
-        m = sqlalchemy.orm.session.class_mapper(class_)
-        util = getUtility(IAlchemyEngineUtility, name=engine)
-        session.bind_mapper(m,util.engine)
+        _assignClass(class_, engine)
     if txn is not None:
         _storage.dataManager = AlchemyDataManager(session)
         txn.join(_storage.dataManager)
@@ -95,23 +91,39 @@ def inSession():
 
 def assignTable(table, engine):
     _tableToEngine[table]=engine
+    _assignTable(table, engine)
 
 
 def assignClass(class_, engine):
     _classToEngine[class_]=engine
+    _assignClass(class_, engine)
 
 
 def createTable(table, engine=''):
     _tablesToCreate.append((table, engine))
+    _createTables()
+
+
+def _assignTable(table, engine):
     if inSession():
-        _createTables()
+        t = metadata.tables[table]
+        util = getUtility(IAlchemyEngineUtility, name=engine)
+        _storage.session.bind_table(t,util.engine)
+
+
+def _assignClass(class_, engine):
+    if inSession():
+        m = sqlalchemy.orm.session.class_mapper(class_)
+        util = getUtility(IAlchemyEngineUtility, name=engine)
+        _storage.session.bind_mapper(m,util.engine)
 
 
 def _createTables():
-    tables = _tablesToCreate[:]
-    del _tablesToCreate[:]
-    for table, engine in tables:
-        _doCreateTable(table, engine)
+    if inSession():
+        tables = _tablesToCreate[:]
+        del _tablesToCreate[:]
+        for table, engine in tables:
+            _doCreateTable(table, engine)
 
 
 def _doCreateTable(table, engine):

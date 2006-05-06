@@ -143,14 +143,14 @@ new engine.
   ...     pass
   >>> B.mapper = sqlalchemy.mapper(B, bTable)
 
-Assign bTable to the new engine.
-
-  >>> z3c.zalchemy.assignTable('bTable', 'engine2')
-
-  >>> z3c.zalchemy.createTable('bTable')
-
   >>> txn = transaction.begin()
   >>> session = z3c.zalchemy.getSession()
+
+Assign bTable to the new engine and create the table.
+This time we do it inside of a session.
+
+  >>> z3c.zalchemy.assignTable('bTable', 'engine2')
+  >>> z3c.zalchemy.createTable('bTable')
 
   >>> b = B()
   >>> session.save(b)
