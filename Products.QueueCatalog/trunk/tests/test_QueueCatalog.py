@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002-2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
@@ -16,22 +16,16 @@
 $Id$
 """
 
-import os
-import shutil
-import tempfile
 import unittest
 
 import Testing
-import transaction
 import Zope2
 Zope2.startup()
 
 from Products.ZCatalog.ZCatalog import ZCatalog
 from Products.QueueCatalog.QueueCatalog import QueueCatalog
-from OFS.Application import Application
 from OFS.Folder import Folder
 from Testing.ZopeTestCase.base import TestCase 
-from ZODB.POSException import ConflictError 
 
 class QueueCatalogTests(TestCase):
 
@@ -236,7 +230,7 @@ class QueueCatalogTests(TestCase):
 
     def testImmediateDeletion(self):
         app = self.app
-        app.test_cat = QueueCatalog(1000)  # 1000 buckets. I don't want collisions here.
+        app.test_cat = QueueCatalog(1000)  # 1000 buckets to prevent collisions
         app.test_cat.id = 'test_cat'
         app.test_cat.manage_edit(location='/real_cat',
                                   immediate_indexes=['id'], immediate_removal=1)
@@ -247,131 +241,16 @@ class QueueCatalogTests(TestCase):
             f = getattr(app, f.id)
             app.test_cat.catalog_object(f)
         self.assertEqual(app.test_cat.manage_size(), 20)
-        # "Delete" one. This should be processed immediately (including the add-event)
+        # "Delete" one. This should be processed immediately (including 
+        # the add-event)
         app.test_cat.uncatalog_object(getattr(app, 'f1').getPhysicalPath())
         self.assertEqual(app.test_cat.manage_size(), 19)
         del app.test_cat
 
 
-class QueueConflictTests(unittest.TestCase):
-
-    def openDB(self):
-        from ZODB.FileStorage import FileStorage
-        from ZODB.DB import DB
-        self.dir = tempfile.mkdtemp()
-        self.storage = FileStorage(os.path.join(self.dir, 'testQCConflicts.fs'))
-        self.db = DB(self.storage)
-
-    def setUp(self):
-        self.openDB()
-        app = Application()
-
-        tm1 = transaction.TransactionManager()
-        conn1 = self.db.open(transaction_manager=tm1)
-        r1 = conn1.root()
-        r1["Application"] = app
-        del app
-        self.app = r1["Application"]
-        tm1.commit()
-
-        self.app.real_cat = ZCatalog('real_cat')
-        self.app.real_cat.addIndex('id', 'FieldIndex')
-        self.app.real_cat.addIndex('title', 'FieldIndex')
-        self.app.real_cat.addIndex('meta_type', 'FieldIndex')
-        self.app.queue_cat = QueueCatalog(3) # 3 buckets
-        self.app.queue_cat.id = 'queue_cat'
-        self.app.queue_cat.manage_edit(location='/real_cat',
-                                  immediate_indexes=[])
-
-        # Create stuff to catalog
-        for n in range(10):
-            f = Folder()
-            f.id = 'f%d' % n
-            self.app._setOb(f.id, f)
-            g = Folder()
-            g.id = 'g%d' % n
-            self.app._setOb(g.id, g)
-
-        # Make sure everything is committed so the second connection sees it
-        tm1.commit()
-
-        tm2 = transaction.TransactionManager()
-        conn2 = self.db.open(transaction_manager=tm2)
-        r2 = conn2.root()
-        self.app2 = r2["Application"]
-        ignored = dir(self.app2)    # unghostify
-
-    def tearDown(self):
-        transaction.abort()
-        del self.app
-        if self.storage is not None:
-            self.storage.close()
-            self.storage.cleanup()
-            shutil.rmtree(self.dir)
-
-    def test_rig(self):
-        # Test the test rig
-        self.assertEqual(self.app._p_serial, self.app2._p_serial)
-
-    def test_simpleConflict(self):
-        # Using the first connection, index 10 folders
-        for n in range(10):
-            f = getattr(self.app, 'f%d' % n) 
-            self.app.queue_cat.catalog_object(f)
-        self.app._p_jar.transaction_manager.commit()
-
-        # After this run, the first connection's queuecatalog has 10
-        # entries, the second has none.
-        self.assertEqual(self.app.queue_cat.manage_size(), 10)
-        self.assertEqual(self.app2.queue_cat.manage_size(), 0)
-
-        # Using the second connection, index the other 10 folders
-        for n in range(10):
-            g = getattr(self.app2, 'g%d' % n) 
-            self.app2.queue_cat.catalog_object(g)
-
-        # Now both connections' queuecatalogs have 10 entries each, but
-        # for differrent objects
-        self.assertEqual(self.app.queue_cat.manage_size(), 10)
-        self.assertEqual(self.app2.queue_cat.manage_size(), 10)
-
-        # Now we commit. Conflict resolution on the catalog queue should
-        # kick in because both connections have changes. Since none of the
-        # events collide, we should end up with 20 entries in our catalogs.
-        self.app2._p_jar.transaction_manager.commit()
-        self.app._p_jar.sync()
-        self.app2._p_jar.sync()
-        self.assertEqual(self.app.queue_cat.manage_size(), 20)
-        self.assertEqual(self.app2.queue_cat.manage_size(), 20)
-
-    def test_unresolved_add_after_delete(self):
-        # If a DELETE event is encountered for an object and other events
-        # happen afterwards, we have entered the twilight zone and give up.
-
-        # Taking one item and cataloging it in the first connection, then
-        # uncataloging it. There should be 1 event in the queue left
-        # afterwards, for uncataloging the content item (DELETE)
-        f0 = getattr(self.app, 'f0')
-        self.app.queue_cat.catalog_object(f0)
-        self.app._p_jar.transaction_manager.commit()
-        self.app.queue_cat.uncatalog_object('/f0')
-        self.app._p_jar.transaction_manager.commit()
-        self.assertEqual(self.app.queue_cat.manage_size(), 1)
-
-        # In the second connection, I will newly catalog the same folder again
-        # in order to provoke insane state (ADD after DELETE)
-        self.app2.queue_cat.catalog_object(f0)
-
-        # This commit should now raise a conflict
-        self.assertRaises( ConflictError
-                         , self.app2._p_jar.transaction_manager.commit
-                         )
-
-
 def test_suite():
     return unittest.TestSuite((
             unittest.makeSuite(QueueCatalogTests),
-            unittest.makeSuite(QueueConflictTests),
                     ))
 
 if __name__ == '__main__':

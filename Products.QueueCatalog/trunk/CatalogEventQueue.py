@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002-2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
@@ -176,7 +176,6 @@ class CatalogEventQueue(Persistent):
         # transaction previous to the undone transaction.
 
         # Committed is always the currently committed data.
-
         oldstate_data  =  oldstate['_data']
         committed_data = committed['_data']
         newstate_data  =  newstate['_data']
@@ -207,8 +206,6 @@ class CatalogEventQueue(Persistent):
                 # Check aqainst current value. Either we want a
                 # different event, in which case we give up, or we
                 # do nothing.
-                
-                
                 current = committed_data.get(uid)
                 if current is not None:
                     if current[1] != new[1]:

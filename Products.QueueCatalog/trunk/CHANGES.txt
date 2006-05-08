@@ -6,8 +6,8 @@ QueueCatalog Product Changelog
 
     - Updated the tests to run on Zope 2.8+
 
-    - Enabled conflict testing after changing it to use a quick and dirty
-      FileStorage, and expanding it a little.
+    - Factored out queue conflict testing after changing it to use a quick 
+      and dirty FileStorage, and expanding it a little.
 
     - Removed the security declaration for a method named refreshCatalog
       which was added in version 1.0 - this is the wrong place to apply

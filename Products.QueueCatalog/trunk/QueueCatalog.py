@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002-2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -327,7 +327,9 @@ class QueueCatalog(Implicit, SimpleItem):
         self._update(uid, REMOVED)
 
         if self._immediate_removal:
-            self._process_queue(self._queues[hash(uid) % self._buckets], limit=None)
+            self._process_queue( self._queues[hash(uid) % self._buckets]
+                               , limit=None
+                               )
 
     security.declareProtected(manage_zcatalog_entries, 'process')
     def process(self, max=None):
