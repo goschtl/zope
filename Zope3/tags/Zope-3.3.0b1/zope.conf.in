@@ -1,0 +1,90 @@
+# identify the component configuration used to define the site:
+site-definition site.zcml
+
+# number of bytecode instructions to execute between checks for
+# interruptions (SIGINTR, thread switches):
+interrupt-check-interval 200
+
+<server>
+  type HTTP
+  address 8080
+</server>
+
+# Ready to go HTTPS server. You just need to make sure OpenSSL is installed.
+# <sslserver>
+#   type HTTPS
+#   address 8443
+#   privatekeypath server.pem
+#   certificatepath server.pem
+# </sslserver>
+
+# For debugging purposes, you can use this publisher instead/as well
+# (obviously if it's as well, use a different port number). If there's
+# an exception, Zope will drop into pdb at the point of the exception.
+#<server>
+#  type PostmortemDebuggingHTTP
+#  address 8080
+#</server>
+
+# A special HTTP server that records HTTP session that can be converted to
+# functional tests.
+# <server>
+#   type RecordingHTTP
+#   address 8081
+# </server>
+
+#<server>
+#  type FTP
+#  address 8021
+#</server>
+
+# You must install pycrypto to use the SFTP server.
+# <sshserver>
+#   type SFTP
+#   address 8115
+#   hostkey ssh_host_rsa_key
+# </sshserver>
+
+# Standard Filestorage
+<zodb>
+  <filestorage>
+    path Data.fs
+  </filestorage>
+</zodb>
+
+<accesslog>
+  # This sets up logging to both a file (access.log) and to standard
+  # output (STDOUT).  The "path" setting can be a relative or absolute
+  # filesystem path or the tokens STDOUT or STDERR.
+
+  <logfile>
+    path access.log
+  </logfile>
+
+  <logfile>
+    path STDOUT
+  </logfile>
+</accesslog>
+
+<eventlog>
+  # This sets up logging to both a file (z3.log) and to standard
+  # output (STDOUT).  The "path" setting can be a relative or absolute
+  # filesystem path or the tokens STDOUT or STDERR.
+
+  <logfile>
+    path z3.log
+  </logfile>
+
+  <logfile>
+    path STDOUT
+  </logfile>
+</eventlog>
+
+# devmode
+#
+#   Switches the Developer Mode on and off.
+#
+# Default:
+#   devmode on
+#
+# devmode off
