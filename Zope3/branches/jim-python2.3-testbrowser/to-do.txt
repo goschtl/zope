@@ -1,0 +1,65 @@
+
+- Need subscribers for object removal that deal with
+  unregistering.
+
+- May also need UI for unregistering registered object from site
+  manager.
+
+- I really want to allow the following:
+
+    class IA: pass
+    class IB(IA): pass
+
+    class A: 
+        implements(IA)
+        ...
+
+    class B(A): 
+        implements(IB)
+
+    <adapter factory="B" />
+
+  This doesn't work now because B implements IB and IA.  But it
+  should work, IMO, because IB extends IA.
+
+- We should deprecate passing multiple factories to adapter
+  directives, or we should make it work well.
+
+- We need to think about auditability of security declarations.
+
+- Find and fix functional tests that make global component
+  registrations.
+
+
+Notes:
+
+- I'm not too happy with the permission support in
+  zope.configure.zcml:
+
+  - dependency on zope.security
+
+  - wrappers
+
+  It would be nice if. when using an adapter class, we could just make
+  security declarations about the class.  Of course, we generally want
+  adapters to be unprotected.  We do often want pages to be protcted
+  though, not because we want to protect the code, but because we
+  don't want to even try to invoke the view of the user isn't
+  authorized.  Grrrrr
+
+  When are adapters security proxied? 
+  When they are are obtained by untrusted programs (e.g. URL).
+
+  Note that they may be obtained indirectly by an untrusted program.
+  So an untrusted program gets a function F.  F gets an adapter and
+  returns it.  Inside F, the adapter is unproxied, but outside, it is
+  proxied.
+
+  If we want the adapter to be usable by untrusted code, we really
+  need to say how.
+
+    <adapter class=".IFoo" permission="foo.bar" />
+  
+  This should cause a security declaration for the class.
+
+  Man, security sucks,
