@@ -11,7 +11,7 @@ Create a utility to provide a database :
   >>> from zope.component import provideUtility
   >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtility = AlchemyEngineUtility('database',
-  ...                                      'sqlite://%s'%dbTrFilename,
+  ...                                      'sqlite:///%s'%dbTrFilename,
   ...                                      echo=False)
   >>> provideUtility(engineUtility)
 

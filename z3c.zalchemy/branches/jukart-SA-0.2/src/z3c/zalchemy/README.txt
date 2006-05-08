@@ -25,7 +25,7 @@ A SQLAlchemy engine is represented as a utility :
   >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtility = AlchemyEngineUtility(
   ...       'database',
-  ...       'sqlite://%s'%dbFilename,
+  ...       'sqlite:///%s'%dbFilename,
   ...       echo=False,
   ...       )
 
@@ -110,7 +110,7 @@ We create a new database engine :
 
   >>> engine2Util = AlchemyEngineUtility(
   ...     'engine2',
-  ...     'sqlite://%s'%dbFilename2,
+  ...     'sqlite:///%s'%dbFilename2,
   ...     echo=False,
   ...     )
 
