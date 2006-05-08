@@ -1,0 +1,102 @@
+Release Date: May 8, 2006
+
+The Zope 3 development team is proud to announce Zope 3.3.0 beta 1.
+
+Zope 3 is the next major Zope release and has been written from scratch based
+on the latest software design patterns and the experiences of Zope 2.
+
+Cleanup of the Zope 3 packages has continued to ensure a flexible and
+scalable platform. We continued the work on making the transition from Zope 2
+to Zope 3 by making Zope 2.10 use even more of the Zope 3 packages. But we're
+not there yet. **You can't run Zope 2 applications in Zope 3.**
+
+
+Downloads
+
+  http://zope.org/Products/Zope3
+
+  Installation instructions for both Windows and Un*x/Linux are now available
+  in the top level "README.txt":http://www.zope.org/Products/Zope3/3.3.0b1/README.txt
+  file of the distribution. The binary installer is recommended for Windows.
+
+  Zope 3.3 requires Python 2.4.1 to run. You must also have zlib
+  installed on your system.
+
+Most Important Changes Since 3.2
+
+  - Provided a new component registry API that allows multiple
+    component registries to be combined more flexibly than before.
+    See 'zope.component.interfaces.IComponentRegistry' for more
+    information.
+
+  - Greatly simplified local-component registration.
+    See 'zope.component.interfaces.IComponentRegistry' for more
+    information.
+
+  - Moved many packages out of zope.app to make them easier to use
+    outside of Zope.
+
+  - Change the session credentials plugin to make it configurable
+    in which fields it looks for the credentials.
+
+  - Added a new API for collating text.  You can now adapt
+    a locale to 'zope.i18n.interfaces.ILocales.ICollator'.  You can
+    then use that to sort strings, such as menu entries, in a
+    locale-specific fashion.
+
+  - A new 'zope.annotation.factory' helper function that makes
+    it easier to create annotations. Also added a README in
+    'zope.annotation' which explains how to use it.
+
+  - Added a more complete set of widgets for fields that use
+    iterable sources.  These widgets now mirror the set provided
+    by vocabulary-based fields.
+
+  - Added a cleaner and more robust API to testbrowser for setting
+    file-upload data.
+
+
+  - Deprecated several ZCML directives:
+
+    * factory
+
+    * vocabulary
+
+    * content (as an alias to the class directive)
+
+    * modulealias
+
+    * renderer:renderer
+
+  - The 'browser:layer' directive and the 'ILayer' interface
+    has been deprecated.  Registering layers has become obsolete,
+    layers should be created as interfaces extending
+    'IBrowserRequest'.
+
+  - The 'browser:skin' directive has been deprecated.  Skins
+    should be created as interfaces extending 'IBrowserRequest'
+    and can be registered using a simple 'utility' directive.
+
+  - The 'ISkin' interface has been renamed to 'IBrowserSkinType'.
+
+  For a complete list of changes see the 'CHANGES.txt' file.
+
+
+Resources
+
+  - "Zope 3 Development Web Site":http://dev.zope.org/Zope3
+
+  - "Zope 3 Dev Mailing List":http://mail.zope.org/mailman/listinfo/zope3-dev
+
+  - "Zope 3 Users Mailing List":http://mail.zope.org/mailman/listinfo/zope3-users
+
+  - IRC Channel: #zope3-dev at irc.freenode.net
+
+
+Acknowledgments
+
+  Thanks goes to everyone that contributed.
+
+Enjoy!
+
+The Zope 3 Development Team
