@@ -51,7 +51,6 @@ class AlchemyEngineUtility(object):
                                             strategy='threadlocal',
                                             **kw)
         return self.storage.engine
-    engine = property(getEngine)
 
     def _resetEngine(self):
         self.storage.engine=None
@@ -72,7 +71,7 @@ def getSession(createTransaction=False):
     if session:
         return session
     util = getUtility(IAlchemyEngineUtility)
-    _storage.session=sqlalchemy.create_session(bind_to=util.engine)
+    _storage.session=sqlalchemy.create_session(bind_to=util.getEngine())
     session = _storage.session
     for table, engine in _tableToEngine.iteritems():
         _assignTable(table, engine)
@@ -108,14 +107,14 @@ def _assignTable(table, engine):
     if inSession():
         t = metadata.tables[table]
         util = getUtility(IAlchemyEngineUtility, name=engine)
-        _storage.session.bind_table(t,util.engine)
+        _storage.session.bind_table(t,util.getEngine())
 
 
 def _assignClass(class_, engine):
     if inSession():
         m = sqlalchemy.orm.session.class_mapper(class_)
         util = getUtility(IAlchemyEngineUtility, name=engine)
-        _storage.session.bind_mapper(m,util.engine)
+        _storage.session.bind_mapper(m,util.getEngine())
 
 
 def _createTables():
@@ -132,14 +131,14 @@ def _doCreateTable(table, engine):
             t = metadata.tables[table]
             util = getUtility(IAlchemyEngineUtility, name=tengine)
             try:
-                util.engine.create(t)
+                util.getEngine().create(t)
             except:
                 pass
             return
     util = getUtility(IAlchemyEngineUtility, name=engine)
     t = metadata.tables[table]
     try:
-        util.engine.create(t)
+        util.getEngine().create(t)
     except:
         pass
 
