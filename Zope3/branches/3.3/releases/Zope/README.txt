@@ -55,7 +55,7 @@ it will match the version number from the compressed tarball you unpacked.  To
 change the installation directory, use the ``--prefix`` option to specify an
 alternate location:
 
-  $ ./configure --prefix /opt/Zope-3.2.0
+  $ ./configure --prefix /opt/Zope-3.3.0
 
   Configuring Zope 3 installation
 
@@ -85,7 +85,7 @@ optional step, and can take a while to complete.  The tests can be run using
   python2.4 install.py -q build
   python2.4 test.py -v
   Running UNIT tests at level 1
-  Running UNIT tests from /home/user/Zope-3.2.0/build/lib.linux-i686-2.3
+  Running UNIT tests from /home/user/Zope-3.3.0/build/lib.linux-i686-2.3
   [...lots of dots, one per test...]
   ----------------------------------------------------------------------
   Ran 8007 tests in 252.406s
@@ -93,7 +93,7 @@ optional step, and can take a while to complete.  The tests can be run using
   OK
 
   Running FUNCTIONAL tests at level 1
-  Running FUNCTIONAL tests from /home/user/Zope-3.2.0/build/lib.linux-i686-2.3
+  Running FUNCTIONAL tests from /home/user/Zope-3.3.0/build/lib.linux-i686-2.3
   [...lots of dots, one per test...]
   ----------------------------------------------------------------------
   Ran 385 tests in 106.901s
@@ -108,7 +108,7 @@ To install the software, run ``make`` again::
 
   $ make install
   python2.4 install.py -q build
-  python2.4 install.py -q install --home "/opt/Zope-3.2.0"
+  python2.4 install.py -q install --home "/opt/Zope-3.3.0"
 
 You now have a complete Zope 3 installation.
 
@@ -162,15 +162,15 @@ the ``\Python24\python `` at the start of each command line.
 Build the Zope software by switching to the directory created by unpacking the
 source distribution, then running the command::
 
-  C:\Zope-3.2.0> \Python24\python install.py -q build
+  C:\Zope-3.3.0> \Python24\python install.py -q build
 
 The unit tests for the Zope software can be run once this is complete.  This
 is an optional step, and can take a while to complete.  The tests can be run
 using the command::
 
-  C:\Zope-3.2.0> \Python24\python test.py -v
+  C:\Zope-3.3.0> \Python24\python test.py -v
   Running UNIT tests at level 1
-  Running UNIT tests from C:\Zope-3.2.0\build\lib.win32-2.3
+  Running UNIT tests from C:\Zope-3.3.0\build\lib.win32-2.3
   [...lots of dots, one per test...]
   ----------------------------------------------------------------------
   Ran 4500 tests in 501.389s
@@ -183,7 +183,7 @@ operating system, and host platform.
 
 At this point, you can install the software using the command:
 
-  C:\Zope-3.2.0> \Python24\python install.py -q install
+  C:\Zope-3.3.0> \Python24\python install.py -q install
 
 You now have a complete Zope 3 installation.  Note that this method of
 installing Zope does not allow for easy uninstallation later: you will need to
