@@ -6,7 +6,21 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  After Zope 3.2.0 (trunk only)
+  After Zope 3.3.0 (trunk only)
+
+    New features
+
+    Restructuring
+
+    Bug fixes
+
+    Much thanks to everyone who contributed to this release:
+
+      Jim Fulton
+
+  ------------------------------------------------------------------
+
+  Zope 3.3.0 (date)
 
     New features
 
@@ -37,7 +51,7 @@ Zope Changes
      	addUtility in zope.app.appsetup.bootstrap now optionally can
      	return an object instead of a name.
 
-      - Allow ``zmi_views`` actions like: ``javascript:popup()``, 
+      - Allow ``zmi_views`` actions like: ``javascript:popup()``,
         ``../parentview.html`` or ``++namespace++foobar`` as first menu items.
 
       - Added ``-x dirs`` option to i18nextract that allows to exclude
@@ -65,7 +79,7 @@ Zope Changes
         IZopeDublinCore. This reduces server traffic a lot when large
         files are served.
 
-      - Added a more complete set of widgets for fields that use 
+      - Added a more complete set of widgets for fields that use
         iterable sources.  These widgets now mirror the set provided
         by vocabulary-based fields.
 
@@ -185,7 +199,7 @@ Zope Changes
 
     Much thanks to everyone who contributed to this release:
 
-      Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dmitry
+      Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dimitry
       Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
       (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute,
       Shane Hathaway, Bjorn Tillenius, Sam Stainsby, Bernd Dorn
