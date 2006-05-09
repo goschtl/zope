@@ -1,6 +1,6 @@
 QueueCatalog Product Changelog
 
-  After QueueCatalog 1.3
+  QueueCatalog 1.4 (2006/05/09)
 
     - Added a second catalog queue conflict resolution strategy and made
       the strategy configurable via the 'Configure' ZMI tab. The new policy
