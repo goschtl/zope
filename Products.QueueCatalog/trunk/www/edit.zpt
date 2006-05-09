@@ -88,6 +88,25 @@
     </tr>
 
     <tr>
+      <td align="left" valign="top" class="form-label">
+        Conflict handling policy
+      </td>
+      <td align="left" valign="top" colspan="3">
+        <select name="conflict_policy:int"
+                tal:define="policy here/getConflictPolicy">
+          <option value="0"
+                  tal:attributes="selected python: policy == 0">
+            Safe policy (old default policy)
+          </option>
+          <option value="1"
+                  tal:attributes="selected python: policy == 1">
+            Conflict-averse policy
+          </option>
+        </select>
+      </td>
+    </tr>
+
+    <tr>
       <td>&nbsp;</td>
       <td colspan="3">
         <br>

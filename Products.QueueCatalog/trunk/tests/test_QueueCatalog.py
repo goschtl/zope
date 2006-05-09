@@ -16,7 +16,9 @@
 $Id$
 """
 
+import logging
 import unittest
+import cStringIO
 
 import Testing
 import Zope2
@@ -159,32 +161,43 @@ class QueueCatalogTests(TestCase):
         res = app.queue_cat.searchResults(id='f1')[0]
         self.assertEqual(res.title, 'Betty')
 
-    #def testLogCatalogErrors(self):
-    #    app = self.app
-    #    app.f1 = Folder()
-    #    app.f1.id = 'f1'
-    #    app.queue_cat.catalog_object(app.f1)
-    #    app.real_cat.catalog_object = lambda : None # raises TypeError
-    #    app.queue_cat.process()
-    #    del app.real_cat.catalog_object
-    #    app.queue_cat.setImmediateRemoval(False)
-    #    app.queue_cat.uncatalog_object(app.queue_cat.uidForObject(app.f1))
-    #    app.real_cat.uncatalog_object = lambda : None # raises TypeError
-    #    app.queue_cat.process()
-    #    del app.real_cat.uncatalog_object
-    #    f = self.getLogFile()
-    #    self.verifyEntry(f, subsys="QueueCatalog",
-    #                     summary="error cataloging object")
-    #    # the verify method in the log tests is broken :-(
-    #    l = f.readline()
-    #    marker = "------\n"
-    #    while l != marker:
-    #        l = f.readline()
-    #        if not l:
-    #            self.fail('could not find next log entry')
-    #    f.seek(f.tell() - len(marker))
-    #    self.verifyEntry(f, subsys="QueueCatalog",
-    #                     summary="error uncataloging object")
+    def testLogCatalogErrors(self):
+        # Mutilate the logger so we can capture output silently
+        from Products.QueueCatalog.QueueCatalog import logger
+        logger.propagate = 0
+        fake_file = cStringIO.StringIO()
+        fake_log_handler = logging.StreamHandler(fake_file)
+        logger.addHandler(fake_log_handler)
+
+        # Now do our bidding
+        app = self.app
+        app.f1 = Folder()
+        app.f1.id = 'f1'
+        app.queue_cat.catalog_object(app.f1)
+        app.real_cat.catalog_object = lambda : None # raises TypeError
+        app.queue_cat.process()
+        del app.real_cat.catalog_object
+
+        # See what the fake file contains, and then rewind for reuse
+        output = fake_file.getvalue()
+        self.failUnless(output.startswith('error cataloging object'))
+        fake_file.seek(0)
+        
+        app.queue_cat.setImmediateRemoval(False)
+        app.queue_cat.uncatalog_object(app.queue_cat.uidForObject(app.f1))
+        app.real_cat.uncatalog_object = lambda : None # raises TypeError
+        app.queue_cat.process()
+        del app.real_cat.uncatalog_object
+
+        # See what the fake file contains, and then rewind for reuse
+        output = fake_file.getvalue()
+        self.failUnless(output.startswith('error uncataloging object'))
+        fake_file.close()
+
+        # cleanup the logger
+        fake_log_handler.close()
+        logger.removeHandler(fake_log_handler)
+        logger.propagate = 1
 
     def testQueueProcessingLimit(self):
         # Don't try to process too many items at once.

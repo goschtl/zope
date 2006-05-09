@@ -32,6 +32,8 @@ from Products.QueueCatalog.CatalogEventQueue import ADDED
 from Products.QueueCatalog.CatalogEventQueue import CHANGED
 from Products.QueueCatalog.CatalogEventQueue import CHANGED_ADDED
 from Products.QueueCatalog.CatalogEventQueue import REMOVED
+from Products.QueueCatalog.CatalogEventQueue import SAFE_POLICY
+from Products.QueueCatalog.CatalogEventQueue import ALTERNATIVE_POLICY
 from Products.QueueCatalog.QueueCatalog import QueueCatalog
 from OFS.Application import Application
 from OFS.Folder import Folder
@@ -40,6 +42,16 @@ from ZODB.POSException import ConflictError
 
 
 class QueueConflictTests(unittest.TestCase):
+
+    def _setAlternativePolicy(self):
+        # Apply the alternative conflict resolution policy
+        self.queue._conflict_policy = ALTERNATIVE_POLICY
+        self.queue._p_jar.transaction_manager.commit()
+        self.queue2._p_jar.sync()
+
+        self.assertEquals(self.queue._conflict_policy, ALTERNATIVE_POLICY)
+        self.assertEquals(self.queue2._conflict_policy, ALTERNATIVE_POLICY)
+ 
 
     def _insane_update(self, queue, uid, etype):
         # Queue update method that allows insane state changes, needed
@@ -71,16 +83,16 @@ class QueueConflictTests(unittest.TestCase):
         queue = CatalogEventQueue()
 
         tm1 = transaction.TransactionManager()
-        conn1 = self.db.open(transaction_manager=tm1)
-        r1 = conn1.root()
+        self.conn1 = self.db.open(transaction_manager=tm1)
+        r1 = self.conn1.root()
         r1["queue"] = queue
         del queue
         self.queue = r1["queue"]
         tm1.commit()
 
         tm2 = transaction.TransactionManager()
-        conn2 = self.db.open(transaction_manager=tm2)
-        r2 = conn2.root()
+        self.conn2 = self.db.open(transaction_manager=tm2)
+        r2 = self.conn2.root()
         self.queue2 = r2["queue"]
         ignored = dir(self.queue2)    # unghostify
 
@@ -129,27 +141,106 @@ class QueueConflictTests(unittest.TestCase):
     def test_unresolved_add_after_something(self):
         # If an  event is encountered for an object and we are trying to
         # commit an ADDED event, a conflict is encountered
-        self._insane_update(self.queue, '/f0', CHANGED)
+
+        # Mutilate the logger so we don't see complaints about the 
+        # conflict we are about to provoke
+        from Products.QueueCatalog.QueueCatalog import logger
+        logger.disabled = 1
+
+        self.queue.update('/f0', ADDED)
+        self.queue.update('/f0', CHANGED)
         self.queue._p_jar.transaction_manager.commit()
 
-        self._insane_update(self.queue2, '/f0', CHANGED)
+        self.queue2.update('/f0', ADDED)
+        self.queue2.update('/f0', CHANGED)
         self.queue2._p_jar.transaction_manager.commit()
 
         self._insane_update(self.queue, '/f0', CHANGED)
         self.queue._p_jar.transaction_manager.commit()
 
-        # This commit should now raise a conflict
         self._insane_update(self.queue2, '/f0', ADDED)
         self.assertRaises( ConflictError
                          , self.queue2._p_jar.transaction_manager.commit
                          )
+
+        # cleanup the logger
+        logger.disabled = 0
+
+    def test_resolved_add_after_nonremoval(self):
+        # If an  event is encountered for an object and we are trying to
+        # commit an ADDED event while the conflict resolution policy is
+        # NOT the SAFE_POLICY, we won't get a conflict.
+        self._setAlternativePolicy()
+        
+        self.queue.update('/f0', ADDED)
+        self.queue.update('/f0', CHANGED)
+        self.queue._p_jar.transaction_manager.commit()
+
+        self.queue2.update('/f0', ADDED)
+        self.queue2.update('/f0', CHANGED)
+        self.queue2._p_jar.transaction_manager.commit()
+
+        self._insane_update(self.queue, '/f0', CHANGED)
+        self.queue._p_jar.transaction_manager.commit()
+
+        # If we had a conflict, this would blow up
+        self._insane_update(self.queue2, '/f0', ADDED)
+        self.queue2._p_jar.transaction_manager.commit()
+
+        # After the conflict has been resolved, we expect the queues to
+        # containa a CHANGED_ADDED event.
+        self.queue._p_jar.sync()
+        self.queue2._p_jar.sync()
+        self.assertEquals(len(self.queue), 1)
+        self.assertEquals(len(self.queue2), 1)
+        event1 = self.queue.getEvent('/f0')
+        event2 = self.queue2.getEvent('/f0')
+        self.failUnless(event1 == event2 == CHANGED_ADDED)
+
+    def test_resolved_add_after_removal(self):
+        # If a REMOVED event is encountered for an object and we are trying to
+        # commit an ADDED event while the conflict resolution policy is
+        # NOT the SAFE_POLICY, we won't get a conflict.
+        self._setAlternativePolicy()
+        
+        self.queue.update('/f0', ADDED)
+        self.queue.update('/f0', CHANGED)
+        self.queue._p_jar.transaction_manager.commit()
+
+        self.queue2.update('/f0', ADDED)
+        self.queue2.update('/f0', CHANGED)
+        self.queue2._p_jar.transaction_manager.commit()
+
+        self.queue.update('/f0', REMOVED)
+        self.queue._p_jar.transaction_manager.commit()
+
+        # If we had a conflict, this would blow up
+        self._insane_update(self.queue2, '/f0', ADDED)
+        self.queue2._p_jar.transaction_manager.commit()
+
+        # After the conflict has been resolved, we expect the queue to
+        # contain a REMOVED event.
+        self.queue._p_jar.sync()
+        self.queue2._p_jar.sync()
+        self.assertEquals(len(self.queue), 1)
+        self.assertEquals(len(self.queue2), 1)
+        event1 = self.queue.getEvent('/f0')
+        event2 = self.queue2.getEvent('/f0')
+        self.failUnless(event1 == event2 == REMOVED)
 
     def test_unresolved_new_old_current_all_different(self):
         # If the events we get from the current, new and old states are
         # all different, we throw in the towel in the form of a conflict.
         # This test relies on the fact that no OLD state is de-facto treated
         # as a state.
-        self._insane_update(self.queue, '/f0', CHANGED)
+
+        # Mutilate the logger so we don't see complaints about the 
+        # conflict we are about to provoke
+        from Products.QueueCatalog.QueueCatalog import logger
+        logger.disabled = 1
+
+        self.queue.update('/f0', ADDED)
+        self.queue.update('/f0', CHANGED)
         self.queue._p_jar.transaction_manager.commit()
 
         # This commit should now raise a conflict
@@ -157,6 +248,101 @@ class QueueConflictTests(unittest.TestCase):
         self.assertRaises( ConflictError
                          , self.queue2._p_jar.transaction_manager.commit
                          )
+
+        # cleanup the logger
+        logger.disabled = 0
+
+    def test_resolved_new_old_current_all_different(self):
+        # If the events we get from the current, new and old states are
+        # all different and the SAFE_POLICY conflict resolution policy is 
+        # not enforced, the conflict resolves without bloodshed.
+        # This test relies on the fact that no OLD state is de-facto treated
+        # as a state.
+        self._setAlternativePolicy()
+ 
+        self.queue.update('/f0', ADDED)
+        self.queue.update('/f0', CHANGED)
+        self.queue._p_jar.transaction_manager.commit()
+
+        # This commit should not raise a conflict
+        self._insane_update(self.queue2, '/f0', REMOVED)
+        self.queue2._p_jar.transaction_manager.commit()
+
+        # In this scenario (the incoming new state has a REMOVED event), 
+        # the new state is disregarded and the old state is used. We are 
+        # left with a CHANGED_ADDED event. (see queue.update method; ADDED
+        # plus CHANGED results in CHANGED_ADDED)
+        self.queue._p_jar.sync()
+        self.queue2._p_jar.sync()
+        self.assertEquals(len(self.queue), 1)
+        self.assertEquals(len(self.queue2), 1)
+        event1 = self.queue.getEvent('/f0')
+        event2 = self.queue2.getEvent('/f0')
+        self.failUnless(event1 == event2 == CHANGED_ADDED)
+
+    def test_unresolved_new_old_current_all_different_2(self):
+        # If the events we get from the current, new and old states are
+        # all different, we throw in the towel in the form of a conflict.
+        # This test relies on the fact that no OLD state is de-facto treated
+        # as a state.
+
+        # Mutilate the logger so we don't see complaints about the 
+        # conflict we are about to provoke
+        from Products.QueueCatalog.QueueCatalog import logger
+        logger.disabled = 1
+
+        self.queue.update('/f0', ADDED)
+        self.queue.update('/f0', CHANGED)
+        self.queue._p_jar.transaction_manager.commit()
+
+        self.queue2.update('/f0', ADDED)
+        self.queue2.update('/f0', CHANGED)
+        self.queue2._p_jar.transaction_manager.commit()
+
+        self.queue.update('/f0', CHANGED)
+        self.queue._p_jar.transaction_manager.commit()
+
+        # This commit should now raise a conflict
+        self._insane_update(self.queue2, '/f0', REMOVED)
+        self.assertRaises( ConflictError
+                         , self.queue2._p_jar.transaction_manager.commit
+                         )
+
+        # cleanup the logger
+        logger.disabled = 0
+
+    def test_resolved_new_old_current_all_different_2(self):
+        # If the events we get from the current, new and old states are
+        # all different and the SAFE_POLICY conflict resolution policy is 
+        # not enforced, the conflict resolves without bloodshed.
+        self._setAlternativePolicy()
+ 
+        self.queue.update('/f0', ADDED)
+        self.queue.update('/f0', CHANGED)
+        self.queue._p_jar.transaction_manager.commit()
+
+        self.queue2.update('/f0', ADDED)
+        self.queue2.update('/f0', CHANGED)
+        self.queue2._p_jar.transaction_manager.commit()
+
+        self.queue.update('/f0', CHANGED)
+        self.queue._p_jar.transaction_manager.commit()
+
+        # This commit should not raise a conflict
+        self._insane_update(self.queue2, '/f0', REMOVED)
+        self.queue2._p_jar.transaction_manager.commit()
+
+        # In this scenario (the incoming new state has a REMOVED event), 
+        # we will take the new state to resolve the conflict, because its
+        # generation number is higher then the oldstate and current state.
+        self.queue._p_jar.sync()
+        self.queue2._p_jar.sync()
+        self.assertEquals(len(self.queue), 1)
+        self.assertEquals(len(self.queue2), 1)
+        event1 = self.queue.getEvent('/f0')
+        event2 = self.queue2.getEvent('/f0')
+        self.failUnless(event1 == event2 == REMOVED)
+
 
 def test_suite():
     return unittest.TestSuite((

@@ -15,9 +15,15 @@
 $Id$
 """
 
+import logging
+
 from Persistence import Persistent
 from ZODB.POSException import ConflictError
-from time import time as current_wall_time
+
+logger = logging.getLogger('event.QueueCatalog')
+
+SAFE_POLICY = 0
+ALTERNATIVE_POLICY = 1
 
 REMOVED       = 0
 ADDED         = 1
@@ -108,10 +114,13 @@ class CatalogEventQueue(Persistent):
     
     """
 
-    def __init__(self):
+    _conflict_policy = SAFE_POLICY
+
+    def __init__(self, conflict_policy=SAFE_POLICY):
 
         # Mapping from uid -> (generation, event type)
         self._data = {}
+        self._conflict_policy = conflict_policy
 
     def __nonzero__(self):
         return not not self._data
@@ -175,6 +184,10 @@ class CatalogEventQueue(Persistent):
         # the transaction being undone and newdata is the data for the
         # transaction previous to the undone transaction.
 
+        # Find the conflict policy on the new state to make sure changes
+        # to it will be applied
+        policy = newstate['_conflict_policy']
+
         # Committed is always the currently committed data.
         oldstate_data  =  oldstate['_data']
         committed_data = committed['_data']
@@ -185,6 +198,7 @@ class CatalogEventQueue(Persistent):
 
             # Decide if this is a change
             old = oldstate_data.get(uid)
+            current = committed_data.get(uid)
             
             if new != old:
                 # something changed
@@ -197,7 +211,15 @@ class CatalogEventQueue(Persistent):
                         # (undone) event. 
                         new = (0, antiEvent(old[1]))
                     elif new[1] is ADDED:
-                        raise ConflictError
+                        if policy == SAFE_POLICY:
+                            logger.error('Queue conflict on %s: ADDED on existing item' % uid)
+                            raise ConflictError
+                        else:
+                            if current and current[1] == REMOVED:
+                                new = current
+                            else:
+                                new = (current[0]+1, CHANGED_ADDED)
+                            
 
                     # remove this event from old, so that we don't
                     # mess with it later.
@@ -206,11 +228,24 @@ class CatalogEventQueue(Persistent):
                 # Check aqainst current value. Either we want a
                 # different event, in which case we give up, or we
                 # do nothing.
-                current = committed_data.get(uid)
                 if current is not None:
                     if current[1] != new[1]:
-                        # This is too complicated, bail
-                        raise ConflictError
+                        if policy == SAFE_POLICY:
+                            # This is too complicated, bail
+                            logger.error('Queue conflict on %s' % uid)
+                            raise ConflictError
+                        elif REMOVED not in (new[1], current[1]):
+                            new = (current[0]+1, CHANGED_ADDED)
+                            committed_data[uid] = new
+                        elif ( current[0] < new[0] and
+                               new[1] == REMOVED ):
+                            committed_data[uid] = new
+
+                        # remove this event from old, so that we don't
+                        # mess with it later.
+                        if oldstate_data.get(uid) is not None:
+                            del oldstate_data[uid]
+
                     # nothing to do
                     continue
 
@@ -226,13 +261,16 @@ class CatalogEventQueue(Persistent):
             if current is not None:
                 if current[1] != new[1]:
                     # This is too complicated, bail
+                    logger.error('Queue conflict on %s processing undos' % uid)
                     raise ConflictError
                 # nothing to do
                 continue
 
             committed_data[uid] = new
 
-        return {'_data': committed_data}
+        return { '_data': committed_data
+               , '_conflict_policy' : policy
+               }
 
 __doc__ = CatalogEventQueue.__doc__ + __doc__
 

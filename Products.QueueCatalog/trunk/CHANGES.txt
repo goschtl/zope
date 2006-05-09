@@ -2,6 +2,18 @@ QueueCatalog Product Changelog
 
   After QueueCatalog 1.3
 
+    - Added a second catalog queue conflict resolution strategy and made
+      the strategy configurable via the 'Configure' ZMI tab. The new policy
+      can be tried when ZODB conflict errors emanating from the catalog
+      queue buckets become a problem. It attempts to avoid conflicts by
+      doing even more guessing about what the behavior should be, rather
+      than deeming a conflicting situation as too insane to handle and 
+      raising a ConflictError.
+
+    - Removed all uses of zLOG in favor of the Python logging module
+
+    - Updated some help screens
+
     - Added a dependencies document
 
     - Updated the tests to run on Zope 2.8+

@@ -15,14 +15,15 @@
 $Id$
 """
 # Python std. lib
-import sets, sys
+import logging
+import sets
+import sys
 from time import time
 from types import StringType
 
 # Other packages
 from ZODB.POSException import ConflictError
 from ZEO.Exceptions import ClientDisconnected
-from zLOG import LOG, INFO, BLATHER, ERROR
 from zExceptions import Unauthorized
 from ExtensionClass import Base
 from OFS.SimpleItem import SimpleItem
@@ -39,7 +40,9 @@ from Acquisition import Implicit, aq_base, aq_inner, aq_parent
 # Local
 from CatalogEventQueue import CatalogEventQueue, EVENT_TYPES, ADDED_EVENTS
 from CatalogEventQueue import ADDED, CHANGED, CHANGED_ADDED, REMOVED
+from CatalogEventQueue import SAFE_POLICY, ALTERNATIVE_POLICY
 
+logger = logging.getLogger('event.QueueCatalog')
 
 _zcatalog_methods = {
     'catalog_object': 1,
@@ -107,16 +110,24 @@ class QueueCatalog(Implicit, SimpleItem):
                              #       indexes
     title = ''
 
+
     # When set, _v_catalog_cache is a tuple containing the wrapped ZCatalog
     # and the REQUEST it is bound to.
     _v_catalog_cache = None
 
-    def __init__(self, buckets=1009):
+    # As an alternative to the original queue conflict handling there is now
+    # a policy which will reduce conflicts, but at the cost of possibly having
+    # situations where items get cataloged unnecessarily. YMMV.
+    _conflict_policy = SAFE_POLICY
+
+    def __init__(self, buckets=1009, conflict_policy=SAFE_POLICY):
         self._buckets = buckets
+        self._conflict_policy = conflict_policy
         self._clearQueues()
 
     def _clearQueues(self):
-        self._queues = [CatalogEventQueue() for i in range(self._buckets)]
+        self._queues = [ CatalogEventQueue(self.getConflictPolicy()) 
+                              for i in range(self._buckets) ]
 
     def getTitle(self):
         return self.title
@@ -190,6 +201,25 @@ class QueueCatalog(Implicit, SimpleItem):
         self._buckets = int(count)
         self._clearQueues()
 
+    security.declareProtected(view_management_screens, 'getConflictPolicy')
+    def getConflictPolicy(self):
+        """ Return the currently-used conflict policy
+        """
+        return self._conflict_policy
+
+    security.declareProtected(view_management_screens, 'setConflictPolicy')
+    def setConflictPolicy(self, policy=SAFE_POLICY):
+        """ Set the conflic policy to be used
+        """
+        try:
+            policy = int(policy)
+        except ValueError:
+            return
+
+        if ( policy in (SAFE_POLICY, ALTERNATIVE_POLICY) and
+             policy != self.getConflictPolicy() ):
+            self._conflict_policy = policy
+            self._clearQueues()
 
     security.declareProtected(manage_zcatalog_entries, 'getZCatalog')
     def getZCatalog(self, method=''):
@@ -258,10 +288,11 @@ class QueueCatalog(Implicit, SimpleItem):
         # update_metadata=0 is ignored if the queued catalog is set to
         # update metadata during queue processing, rather than immediately
 
-        # similarly, limiting the idxs only limits the immediate indexes.  If
-        # any work needs to be done in the queue processing, it will all be         # done: we have not implemented partial indexing during queue
-        # processing.  The only way to avoid any of it is to avoid all of it
-        # (i.e., update metadata immediately and don't have any indexes to
+        # similarly, limiting the idxs only limits the immediate indexes.  If 
+        # any work needs to be done in the queue processing, it will all be
+        # done: we have not implemented partial indexing during queue 
+        # processing.  The only way to avoid any of it is to avoid all of it 
+        # (i.e., update metadata immediately and don't have any indexes to 
         # update on the queued side).
 
         # Make sure the current context is allowed to do this:
@@ -378,7 +409,7 @@ class QueueCatalog(Implicit, SimpleItem):
                 except (ConflictError, ClientDisconnected):
                     raise
                 except:
-                    LOG('QueueCatalog', ERROR, 'error uncataloging object',                         error=sys.exc_info())
+                    logger.error('error uncataloging object', exc_info=True)
             else:
                 # add or change
                 if event is CHANGED and not cataloged(catalog, uid):
@@ -394,8 +425,7 @@ class QueueCatalog(Implicit, SimpleItem):
                     except (ConflictError, ClientDisconnected):
                         raise
                     except:
-                        LOG('QueueCatalog', ERROR, 'error cataloging object',
-                            error=sys.exc_info())
+                        logger.error('error cataloging object', exc_info=True)
 
             count = count + 1
 
@@ -451,7 +481,7 @@ class QueueCatalog(Implicit, SimpleItem):
     security.declareProtected(view_management_screens, 'manage_edit')
     def manage_edit(self, title='', location='', immediate_indexes=(),
                     immediate_removal=0, bucket_count=0, immediate_metadata=0,
-                    all_indexes=0, RESPONSE=None):
+                    all_indexes=0, conflict_policy=SAFE_POLICY, RESPONSE=None):
         """ Edit the instance """
         self.title = title
         self.setLocation(location or None)
@@ -459,6 +489,7 @@ class QueueCatalog(Implicit, SimpleItem):
         self.setImmediateRemoval(immediate_removal)
         self.setImmediateMetadataUpdate(immediate_metadata)
         self.setProcessAllIndexes(all_indexes)
+        self.setConflictPolicy(conflict_policy)
         if bucket_count:
             bucket_count = int(bucket_count)
             if bucket_count != self.getBucketCount():
