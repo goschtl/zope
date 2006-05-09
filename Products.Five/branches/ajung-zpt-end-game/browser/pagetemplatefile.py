@@ -19,13 +19,10 @@ import os, sys
 
 from Globals import package_home
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from Products.PageTemplates.Expressions import SecureModuleImporter
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-
-from Products.Five.browser.ReuseUtils import rebindFunction
-from Products.Five.browser.TrustedExpression import getEngine, ModuleImporter
-
 
 class ZopeTwoPageTemplateFile(PageTemplateFile):
     """A strange hybrid between Zope 2 and Zope 3 page template.
@@ -64,12 +61,6 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
             path = package_home(_prefix)
         return path
 
-    _cook = rebindFunction(PageTemplateFile._cook,
-                           getEngine=getEngine)
-
-    pt_render = rebindFunction(PageTemplateFile.pt_render,
-                               getEngine=getEngine)
-
     def pt_getContext(self):
         try:
             root = self.getPhysicalRoot()
@@ -92,7 +83,7 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
              'options': {},
              'root': root,
              'request': request,
-             'modules': ModuleImporter,
+             'modules': SecureModuleImporter,
              }
         if view is not None:
             c['view'] = view
