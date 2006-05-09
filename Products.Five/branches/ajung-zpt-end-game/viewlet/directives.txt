@@ -220,7 +220,7 @@ If we look into the adapter registry, we will find the viewlet:
   ...     (content, request, view, manager), interfaces.IViewlet,
   ...     name='weather')
   >>> viewlet.render().strip()
-  '<div>sunny</div>'
+  u'<div>sunny</div>'
   >>> viewlet.extra_string_attributes
   u'can be specified'
 
@@ -253,7 +253,7 @@ Let's now ensure that we can also specify a viewlet class:
   ...     (content, request, view, manager), interfaces.IViewlet,
   ...     name='weather2')
   >>> viewlet().strip()
-  '<div>sunny</div>'
+  u'<div>sunny</div>'
 
 Okay, so the template-driven cases work. But just specifying a class should
 also work:

@@ -35,13 +35,13 @@ A browser page that is a view class's attribute (method):
   >>> isinstance(view, SimpleView)
   True
   >>> view()
-  'The eagle has landed'
+  u'The eagle has landed'
 
 A browser page that is a Page Template.
 
   >>> view = self.folder.unrestrictedTraverse('testoid/owl.html')
   >>> view()
-  '<p>2</p>\n'
+  u'<p>2</p>\n'
 
 A browser page that is a PageTemplate plus a view class:
 
@@ -49,7 +49,7 @@ A browser page that is a PageTemplate plus a view class:
   >>> isinstance(view, SimpleView)
   True
   >>> view()
-  '<p>The falcon has taken flight</p>\n'
+  u'<p>The falcon has taken flight</p>\n'
 
 Test pages that have been registered through the cumulative
 <browser:pages> directive:
@@ -58,13 +58,13 @@ Test pages that have been registered through the cumulative
   >>> isinstance(view, SimpleView)
   True
   >>> view()
-  'The eagle has landed'
+  u'The eagle has landed'
 
   >>> view = self.folder.unrestrictedTraverse('testoid/mouse-page.txt')
   >>> isinstance(view, SimpleView)
   True
   >>> view()
-  'The mouse has been eaten by the eagle'
+  u'The mouse has been eaten by the eagle'
 
 Zope 2 objects always need a docstring in order to be published.  Five
 adds a docstring automatically if a view method doesn't have it, but
@@ -98,7 +98,7 @@ Test macro access from ZPT pages:
 
   >>> view = self.folder.unrestrictedTraverse('testoid/seagull.html')
   >>> view()
-  '<html><head><title>bird macro</title></head><body>Color: gray</body></html>\n'
+  u'<html><head><title>bird macro</title></head><body>Color: gray</body></html>\n'
 
 Test whether old-style direct traversal still works with a
 five:traversable class:
@@ -298,7 +298,7 @@ Make sure that browser pages can be overridden:
   ... ''')
   >>> view = self.folder.unrestrictedTraverse('testoid/overridden_view')
   >>> view()
-  'The mouse has been eaten by the eagle'
+  u'The mouse has been eaten by the eagle'
 
 Test traversal to resources from within ZPT pages:
 
