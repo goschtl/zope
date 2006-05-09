@@ -1,0 +1,42 @@
+QueueCatalog - Configure: Configure a ZCatalog Queue
+
+  Description
+
+    This view is used to edit the properties of a ZCatalog
+    Queue instance.
+
+
+  Controls
+
+    'Title' -- An optional Title
+
+    'Catalog location' -- Enter the path to the real ZCatalog where
+      cataloging requests will be sent
+
+    'Process removal events immediately' -- If this item is selected,
+      requests to uncatalog an item will be processed immediately as
+      opposed to being processed along with the normal event queue.
+
+    'Update metadata immediately' -- If this item is selected, metadata
+      columns will be updated immediately when a cataloging/uncataloging
+      request comes in as opposed to being updated when the queue is
+      processed.
+
+    'Process all indexes during queue' -- Normally only those indices
+      that are not flagged to be updated immediately are updated when the
+      queue is being processed. Enabling this flag will update all 
+      indices during queue processing.
+
+    'Bucket count' -- The number of "buckets" in which to collect the
+      various queued events. If you are unsure what to put here, leave it
+      at the default value (1009).
+
+    'Conflict handling policy' -- Select a conflict resolution policy for
+      when a bucket is updated by more than one thread at the time. The
+      "Safe Policy" represents the original default behavior and will be 
+      fine for most situations. If ZODB conflict errors become a problem,
+      the "Conflict-averse" policy uses an algorithm that avoids conflicts
+      at the expense of possibly updating the catalog more often than 
+      needed during queue processing.
+
+    'Save Changes' -- Commit the changes
