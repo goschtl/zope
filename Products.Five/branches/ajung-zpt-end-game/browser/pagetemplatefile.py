@@ -20,9 +20,14 @@ import os, sys
 from Globals import package_home
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.Expressions import SecureModuleImporter
+from Products.PageTemplates.Expressions import createTrustedZopeEngine
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+
+_engine = createTrustedZopeEngine()
+def getEngine():
+    return _engine
 
 class ZopeTwoPageTemplateFile(PageTemplateFile):
     """A strange hybrid between Zope 2 and Zope 3 page template.
@@ -44,13 +49,7 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
         basepath, ext = os.path.splitext(self.filename)
         self.__name__ = os.path.basename(basepath)
 
-
-        # required for the ajung-zpt-final-integration branch
-        try:
-            PageTemplateFile.__init__(self, self.filename, _prefix)
-        except:
-            pass
-
+        super(PageTemplateFile, self).__init__(self.filename, _prefix)
 
     def get_path_from_prefix(self, _prefix):
         if isinstance(_prefix, str):
@@ -60,6 +59,9 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
                 _prefix = sys._getframe(2).f_globals
             path = package_home(_prefix)
         return path
+
+    def pt_getEngine(self):
+        return getEngine()
 
     def pt_getContext(self):
         try:
