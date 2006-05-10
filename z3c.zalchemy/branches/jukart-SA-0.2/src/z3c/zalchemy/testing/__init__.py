@@ -26,6 +26,8 @@ def setUp(test):
 def tearDown(test):
     if z3c.zalchemy.inSession():
         transaction.get().commit()
+    z3c.zalchemy.datamanager._tableToEngine.clear()
+    z3c.zalchemy.datamanager._classToEngine.clear()
 
 def placefulSetUp(test):
     setup.placefulSetUp()
