@@ -26,6 +26,7 @@ import zope.generic.testing.testing
 
 from zope.component import provideAdapter
 from zope.component.eventtesting import clearEvents
+from zope.configuration.xmlconfig import XMLConfig
 from zope.interface import Interface
 from zope.schema import TextLine
 
@@ -60,6 +61,7 @@ class IFooConfiguration(Interface):
     fo = TextLine(title=u'Fo', required=False, readonly=True, default=u'fo default')
 
 
+
 class TestAttributeFaced(object):
     __keyface__ = IFooConfiguration
 
@@ -77,6 +79,9 @@ def setUp(doctest=None):
     from zope.generic.configuration import IConfigurations
     provideAdapter(zope.generic.configuration.adapter.AttributeConfigurations,
         provides=IConfigurations)
+
+    import zope.generic.configuration
+    XMLConfig('meta.zcml', zope.generic.configuration)()
 
     clearEvents()
 

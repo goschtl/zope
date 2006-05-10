@@ -40,6 +40,11 @@ class IConfigurationType(IKeyfaceType):
 
 
 
+class INestedConfigurationType(IConfigurationType):
+    """Type a key schema that contains nested configuraiton."""
+
+
+
 class IConfigurationData(IFaced):
     """Marker for configuration data implementations."""
 

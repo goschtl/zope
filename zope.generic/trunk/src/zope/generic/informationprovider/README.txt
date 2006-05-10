@@ -114,9 +114,8 @@ is declared by a configuration schema providing IConfiguration:
     ...     my = TextLine(title=u'My')
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IMyConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.IMyConfiguration"
     ...     />
     ... ''') 
 
@@ -405,9 +404,8 @@ The configuration file holds several configuration in the ini-file style.
     ...    text = Text(title=u'Text', required=False, default=u'Bla\\n')
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IOneConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.IOneConfiguration"
     ...     />
     ... ''') 
 
@@ -418,9 +416,8 @@ The configuration file holds several configuration in the ini-file style.
     ...    int = Int(title=u'Int', required=False, default=42)
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IOtherConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.IOtherConfiguration"
     ...     />
     ... ''') 
 
@@ -434,9 +431,8 @@ The configuration file holds several configuration in the ini-file style.
     ...    dict = Dict(title=u'Dict of TextLine', value_type=TextLine())
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.INestedConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.INestedConfiguration"
     ...     />
     ... ''') 
 

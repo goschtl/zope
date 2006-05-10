@@ -125,16 +125,14 @@ Then we provide two example configurations for our example:
     ...		optional = TextLine(title=u'Other', required=False, default=u'Default bla.')
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IAnyConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.IAnyConfiguration"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IOtherConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.IOtherConfiguration"
     ...     />
     ... ''') 
 

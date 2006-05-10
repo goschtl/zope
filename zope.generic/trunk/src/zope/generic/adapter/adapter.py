@@ -55,9 +55,8 @@ def ConfigurationAdapterClass(keyface, informationProviders=None, bases=()):
     We register the configuration schema using generic:face directive:
 
         >>> registerDirective('''
-        ... <generic:interface
-        ...     interface="example.IFooConfiguration"
-        ...     type="zope.generic.configuration.IConfigurationType"
+        ... <generic:configuration
+        ...     keyface="example.IFooConfiguration"
         ...     />
         ... ''') 
 
@@ -71,9 +70,8 @@ def ConfigurationAdapterClass(keyface, informationProviders=None, bases=()):
         ...    pass
 
         >>> registerDirective('''
-        ... <generic:interface
-        ...     interface="example.IFoo"
-        ...     type="zope.generic.face.IKeyfaceType"
+        ... <generic:configuration
+        ...     keyface="example.IFoo"
         ...     />
         ... ''')
 

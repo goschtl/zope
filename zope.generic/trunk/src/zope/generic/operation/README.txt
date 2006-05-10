@@ -38,16 +38,14 @@ output-declaration and a corresponding handler.
 We have to register those parts:
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IAnyInput"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.IAnyInput"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IAnyOutput"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.IAnyOutput"
     ...     />
     ... ''') 
 
@@ -117,9 +115,8 @@ For this example we provide a few other example operations:
     ...     print 'Pau input: a=%s.' % (input.a)
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IPAUConfig"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.IPAUConfig"
     ...     />
     ... ''')
 
@@ -155,9 +152,8 @@ Regularly you will have to provide a new input configuration:
     ...    any = TextLine()
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IComplexConfig"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.IComplexConfig"
     ...     />
     ... ''') 
 

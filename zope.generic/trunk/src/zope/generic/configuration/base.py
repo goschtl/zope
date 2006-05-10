@@ -76,7 +76,7 @@ def prepareData(__keyface__, data):
                     subdata = subData(name, data)
                     if subdata or field.required is True:
                         data[name] = ConfigurationData(field.schema, subData(name, data))
-                        break
+                        continue
 
                 except:
                     pass

@@ -22,23 +22,20 @@ inheritance relationships.
     ...     """Logical article marker"""
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IText"
-    ...     type="zope.generic.face.IKeyfaceType"
+    ... <generic:configuration
+    ...     keyface="example.IText"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.INote"
-    ...     type="zope.generic.face.IKeyfaceType"
+    ... <generic:configuration
+    ...     keyface="example.INote"
     ...     />
     ... ''')
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IArticle"
-    ...     type="zope.generic.face.IKeyfaceType"
+    ... <generic:configuration
+    ...     keyface="example.IArticle"
     ...     />
     ... ''')
 
@@ -61,23 +58,20 @@ In the generic model these components may be configurations or annotations.
     ...     note = schema.Text(title=u"Note body", required=False)
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.ITextConfig"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.ITextConfig"
     ...     />
     ... ''') 
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.INoteConfig"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.INoteConfig"
     ...     />
     ... ''')
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IArticleInitializationConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.IArticleInitializationConfiguration"
     ...     />
     ... ''')
 

@@ -40,9 +40,8 @@ the zope.generic.configuration.IConfiguration context interface. This should
 be done the following way:
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.ILogConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.ILogConfiguration"
     ...     />
     ... ''')
 

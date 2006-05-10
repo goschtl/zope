@@ -21,17 +21,15 @@ is extending IKeyType because the configuration schemas are the key interface
 of a configuration object too. The configuration object itself has to provide 
 the schema too.
 
-    >>> from zope.interface import Interface
     >>> from zope.schema import TextLine
     
-    >>> class IFooConfiguration(Interface):
+    >>> class IFooConfiguration(interface.Interface):
     ...    foo = TextLine(title=u'Foo')
     ...    optional = TextLine(title=u'Optional', required=False, default=u'Bla')
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IFooConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.IFooConfiguration"
     ...     />
     ... ''') 
 
@@ -87,7 +85,7 @@ The configurations provides a regular dictionary api by the UserDictMixin
 ... if a value might be set to the configurations it must provide the 
 configuration schema itself. This key interface must provide IConfiguration:
 
-    >>> class IBarConfiguration(Interface):
+    >>> class IBarConfiguration(interface.Interface):
     ...    bar = TextLine(title=u'Bar')
 
     >>> configurations[IBarConfiguration] = object()
@@ -190,3 +188,94 @@ Also the deletion is notified by an empty dict:
     >>> event = events.pop()
     >>> [(key.__name__, value) for key, value in event.items()]
     [('IFooConfiguration', {})]
+
+Nested Configurations
+---------------------
+
+The configuration directive does evaluate if an key interface is nested:
+
+    >>> from zope.schema import Object
+
+    >>> class ISubConfigurationConfiguration(interface.Interface):
+    ...    foo = Object(schema=IFooConfiguration)
+
+    >>> registerDirective('''
+    ... <generic:configuration
+    ...     keyface="example.ISubConfigurationConfiguration"
+    ...     />
+    ... ''') 
+
+    >>> api.INestedConfigurationType.providedBy(ISubConfigurationConfiguration)
+    True
+
+    >>> from zope.schema import Tuple
+
+    >>> class ISubTupleConfiguration(interface.Interface):
+    ...    foo = Tuple(value_type=TextLine())
+
+    >>> registerDirective('''
+    ... <generic:configuration
+    ...     keyface="example.ISubTupleConfiguration"
+    ...     />
+    ... ''')
+
+    >>> api.INestedConfigurationType.providedBy(ISubTupleConfiguration)
+    True
+
+    >>> from zope.schema import Tuple
+
+You can suppress the evaluation by an explicite declaration using the nested
+attribute:
+
+    >>> class ISuppressedContainerConfiguration(interface.Interface):
+    ...    foo = Tuple(value_type=TextLine())
+
+    >>> registerDirective('''
+    ... <generic:configuration
+    ...     keyface="example.ISuppressedContainerConfiguration"
+    ...     nested="False"
+    ...     />
+    ... ''')
+
+    >>> api.INestedConfigurationType.providedBy(ISuppressedContainerConfiguration)
+    False
+
+We can create nested configurations by a dictionary where the hierarchy is
+reflected by dotted names.
+
+First test nested configuration:
+
+#    >>> data = {'foo.foo': u'bla', 'foo.optional': u'Blu'}
+#    >>> config = api.ConfigurationData(ISubConfigurationConfiguration, data)
+#    >>> IFooConfiguration.providedBy(config.foo)
+#    True
+#    >>> config.foo.foo
+#    u'bla'
+#    >>> config.foo.optional
+#    u'Blu'
+#
+#    >>> data = {'foo.foo': u'xxx'}
+#    >>> config = api.ConfigurationData(ISubConfigurationConfiguration, data)
+#    >>> IFooConfiguration.providedBy(config.foo)
+#    True
+#    >>> config.foo.foo
+#    u'xxx'
+#    >>> config.foo.optional
+#    u'Bla'
+#
+#    >>> data = {'foo.optional': u'Blu'}
+#    >>> config = api.ConfigurationData(ISubConfigurationConfiguration, data)
+#    Traceback (most recent call last):
+#    ...
+#    TypeError: __init__ requires 'foo.foo' of 'ISubConfigurationConfiguration'.
+#
+#    >>> subdata = {'foo': u'bla', 'optional': u'Blu'}
+#    >>> subconfig = api.ConfigurationData(IFooConfiguration, subdata)
+#    >>> data = {'foo': subconfig}
+#    >>> config = api.ConfigurationData(ISubConfigurationConfiguration, data)
+#    >>> IFooConfiguration.providedBy(config.foo)
+#    True
+#    >>> config.foo.foo
+#    u'bla'
+#    >>> config.foo.optional
+#    u'Blu'

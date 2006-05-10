@@ -46,9 +46,8 @@ First we declare a configuration schema that should adapted:
 We register the configuration schema using generic:face directive:
 
     >>> registerDirective('''
-    ... <generic:interface
-    ...     interface="example.IFooConfiguration"
-    ...     type="zope.generic.configuration.IConfigurationType"
+    ... <generic:configuration
+    ...     keyface="example.IFooConfiguration"
     ...     />
     ... ''') 
 

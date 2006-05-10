@@ -155,9 +155,8 @@ class Factory(factory.Factory, Face):
         ...    c = TextLine(required=False, default=u'c default')
 
         >>> registerDirective('''
-        ... <generic:interface
-        ...     interface="example.IMyParameter"
-        ...     type="zope.generic.configuration.IConfigurationType"
+        ... <generic:configuration
+        ...     keyface="example.IMyParameter"
         ...     />
         ... ''') 
 
