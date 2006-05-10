@@ -16,8 +16,9 @@ import unittest
 import doctest
 from zope.app.testing import setup
 from zope.testing.doctestunit import DocFileSuite
+from zope.app.testing.placelesssetup import PlacelessSetup
 
-import z3c.zalchemy.testing
+import z3c.zalchemy
 
 
 def setUp(test):
@@ -43,12 +44,41 @@ def tearDown(test):
         pass
     setup.placefulTearDown()
 
+
+class TestDefaultEngine(PlacelessSetup, unittest.TestCase):
+
+    def setUp(self):
+        super(TestDefaultEngine, self).setUp()
+        z3c.zalchemy.testing.setUp(self)
+
+    def tearDown(self):
+        super(TestDefaultEngine, self).tearDown()
+        z3c.zalchemy.testing.tearDown(self)
+
+    def testNoDefaultEngine(self):
+        session = z3c.zalchemy.getSession()
+        self.assertNotEqual(session, None)
+        self.assertEqual(session.get_bind(None), None)
+
+    def testDefaultEngine(self):
+        from zope.component import provideUtility
+        from z3c.zalchemy.datamanager import AlchemyEngineUtility
+        engineUtility = z3c.zalchemy.datamanager.AlchemyEngineUtility(
+                'database',
+                'sqlite:///:memory:')
+        provideUtility(engineUtility)
+        session = z3c.zalchemy.getSession()
+        self.assertNotEqual(session, None)
+        self.assertNotEqual(session.get_bind(None), None)
+
+
 def test_suite():
     return unittest.TestSuite((
         DocFileSuite('TRANSACTION.txt',
                      setUp=setUp, tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
+        unittest.makeSuite(TestDefaultEngine),
         DocFileSuite('../README.txt',
                      setUp=setUp, tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
