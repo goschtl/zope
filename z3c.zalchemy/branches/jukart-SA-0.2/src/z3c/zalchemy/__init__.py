@@ -14,6 +14,7 @@
 
 from datamanager import (
         getSession,
+        inSession,
         assignTable,
         assignClass,
         createTable,

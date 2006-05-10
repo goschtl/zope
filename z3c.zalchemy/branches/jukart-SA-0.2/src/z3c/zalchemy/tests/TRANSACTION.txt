@@ -154,5 +154,4 @@ Aborting transactions
   
   >>> a.value == v
   True
-  >>> transaction.get().commit()
 

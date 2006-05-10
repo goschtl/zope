@@ -17,14 +17,18 @@ import doctest
 from zope.app.testing import setup
 from zope.testing.doctestunit import DocFileSuite
 
+import z3c.zalchemy.testing
+
 
 def setUp(test):
     setup.placefulSetUp()
+    z3c.zalchemy.testing.setUp(test)
     test.globs['dbTrFilename'] = 'z3c.zalchemy.test.transaction.db'
     test.globs['dbFilename'] = 'z3c.zalchemy.test1.db'
     test.globs['dbFilename2'] = 'z3c.zalchemy.test2.db'
 
 def tearDown(test):
+    z3c.zalchemy.testing.tearDown(test)
     try:
         os.remove(test.globs['dbTrFilename'])
     except:

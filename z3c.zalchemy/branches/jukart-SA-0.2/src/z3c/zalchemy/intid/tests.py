@@ -5,12 +5,12 @@ from zope.app.testing import setup
 import os, tempfile
 import shutil
 from z3c.zalchemy.datamanager import AlchemyEngineUtility
+import z3c.zalchemy.testing
 from zope import component
-import sqlalchemy
-from threading import local
 
 def setUp(test):
     setup.placefulSetUp()
+    z3c.zalchemy.testing.setUp(test)
     test.tmpDir = tempfile.mkdtemp()
     dbFile = os.path.join(test.tmpDir,'z3c.zalchemy.test.intid.db')
     
@@ -21,6 +21,7 @@ def setUp(test):
     
 
 def tearDown(test):
+    z3c.zalchemy.testing.tearDown(test)
     setup.placefulTearDown()
     shutil.rmtree(test.tmpDir)
 

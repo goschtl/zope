@@ -80,5 +80,3 @@ because it is not in the database.
   >>> ref3 == ref2 == ref1
   True
 
-  >>> transaction.get().commit()
-
