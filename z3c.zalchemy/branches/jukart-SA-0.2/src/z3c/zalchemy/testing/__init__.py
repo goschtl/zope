@@ -39,7 +39,7 @@ def placefulSetUp(test):
     test.globs['engineUtil'] = engineUtil
 
 def placefulTearDown(test):
-    setup.placefulTearDown()
     tearDown(test)
+    setup.placefulTearDown()
     shutil.rmtree(test.tmpDir)
     
