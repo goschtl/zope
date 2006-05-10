@@ -16,21 +16,20 @@
 $Id$
 """
 import sys
+
 from zope.event import notify
+from zope.interface import Declaration
 from zope.interface import directlyProvidedBy
 from zope.interface import directlyProvides
 from zope.interface import implementedBy
-from zope.interface.declarations import Declaration
+from zope.interface.advice import addClassAdvisor
 
 from zope.generic.directlyprovides.event import DirectlyProvidesModifiedEvent
 from zope.generic.directlyprovides.helper import assertListOfInterfaces
 from zope.generic.directlyprovides.helper import updateDirectlyProvided
 
-_marker = object()
-
 
 def hack_checker(value, length, inst):
-    from zope.interface.declarations import Declaration
     flattened = [i for i in value.flattened()]
 
     # precondition for the hack checker
@@ -48,21 +47,36 @@ def hack_checker(value, length, inst):
     return True
 
 
-class ProvidesProperty(object):
+
+def _getclass(cls):
+    return cls
+
+class ProvidesProperty(Declaration):
     """Prepend the values of the declared names to the directly provided interfaces."""
 
     def __init__(self, *names):
         self.__names = names
+        # TODO: This is realy a super hack
+        # From class perspective this property has to behave like a class provides
+        # declaration, from instance perspective this is only a property
+        # This mechanism will breack if somebody uses 
+        # directlyProvides(class, *interfaces). Maybe we have to introduce a 
+        # meta class for that purpose
+        cls = addClassAdvisor(_getclass, depth=3)
+        metacls = type(cls)
+        interfaces = ()
+        self._implements = implementedBy(cls)
+        self.__args = (cls, metacls, ) + interfaces
+        Declaration.__init__(self, *(interfaces + (implementedBy(metacls), )))
 
-    def __get__(self, inst, klass):
+    def __get__(self, inst, cls):
         if inst is None:
             return self
 
-        value = inst.__dict__.get('__provides__', _marker)
-        if value is _marker:
+        try:
+            return inst.__dict__['__provides__']
+        except:
             raise AttributeError('__provides__')
-
-        return value
 
     def __set__(self, inst, value):
         # remove a provides declaration
@@ -123,6 +137,8 @@ class ProvidesProperty(object):
 
         return prependes
 
+    def __reduce__(self):
+        return self.__class__, self.__args
 
 
 def provides(*names):
@@ -189,6 +205,8 @@ def provides(*names):
 
 
 
+_marker = object()
+
 class UpdateProvides(object):
     """Update the provides attribute after a new value is set.
     
@@ -203,7 +221,7 @@ class UpdateProvides(object):
         self.__after = after
         self.__value_hook = value_hook
 
-    def __get__(self, inst, klass):
+    def __get__(self, inst, cls):
         if inst is None:
             return self
 
