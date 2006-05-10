@@ -12,7 +12,7 @@ from threading import local
 def setUp(test):
     setup.placefulSetUp()
     test.tmpDir = tempfile.mkdtemp()
-    dbFile = os.path.join(test.tmpDir,'z3c.zalchemy.test.db')
+    dbFile = os.path.join(test.tmpDir,'z3c.zalchemy.test.intid.db')
     
     engineUtil = AlchemyEngineUtility(
         'database','sqlite:///%s' % dbFile)

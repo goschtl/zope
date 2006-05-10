@@ -1,6 +1,5 @@
 - update container implementation for SA 0.2
-
-- container implementation is some kind of a quick hack
+- functional tests for container
 
 - Adapter for sqlalchemy mapped object deletion
 

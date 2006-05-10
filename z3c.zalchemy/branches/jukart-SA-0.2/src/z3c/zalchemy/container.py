@@ -19,13 +19,14 @@ from zope.app.container.contained import Contained
 from zope.app.container.contained import ContainedProxy
 from zope.app.container.contained import NameChooser
 from zope.app.container.interfaces import IContained
-from zope.app.location.interfaces import ILocation
-from zope.app.exception.interfaces import UserError
+from zope.location.interfaces import ILocation
+from zope.exceptions.interfaces import UserError
 
 from zope import interface
 from zope.configuration.name import resolve
 
 import sqlalchemy
+import z3c.zalchemy
 
 from interfaces import ISQLAlchemyContainer
 
@@ -83,7 +84,8 @@ class SQLAlchemyNameChooser(NameChooser):
 
     def chooseName(self, name, obj):
         # commit the object to make sure it contains an id
-        sqlalchemy.objectstore.commit(obj)
+        session = z3c.zalchemy.getSession()
+        session.flush(obj)
         return '%s.%i'%(obj.__class__.__name__, obj.id)
 
 
@@ -141,7 +143,9 @@ class SQLAlchemyContainer(Persistent, Contained):
 
     def __len__(self):
         try:
-            return self._class.mapper.count()
+            session = z3c.zalchemy.getSession()
+            query = session.query(class_)
+            return query.count()
         except sqlalchemy.exceptions.SQLError:
             # we don't want an exception in case of database problems
             return 0
@@ -153,5 +157,6 @@ class SQLAlchemyContainer(Persistent, Contained):
         obj.delete()
 
     def __setitem__(self, name, item):
-        sqlalchemy.objectstore.commit(item)
+        session = z3c.zalchemy.getSession()
+        session.flush(item)
 
