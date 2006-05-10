@@ -11,12 +11,33 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+
 import transaction
 import z3c.zalchemy
+from zope.app.testing import setup
+from z3c.zalchemy.datamanager import AlchemyEngineUtility
+from zope import component
+import os, tempfile, shutil
 
-def setUp(context):
+
+def setUp(test):
     pass
 
-def tearDown(context):
+def tearDown(test):
     if z3c.zalchemy.inSession():
         transaction.get().commit()
+
+def placefulSetUp(test):
+    setup.placefulSetUp()
+    test.tmpDir = tempfile.mkdtemp()
+    dbFile = os.path.join(test.tmpDir,'z3c.zalchemy.testing.placefull.db')
+    engineUtil = AlchemyEngineUtility(
+        'database','sqlite:///%s' % dbFile)
+    component.provideUtility(engineUtil)
+    test.globs['engineUtil'] = engineUtil
+
+def placefulTearDown(test):
+    setup.placefulTearDown()
+    tearDown(test)
+    shutil.rmtree(test.tmpDir)
+    
