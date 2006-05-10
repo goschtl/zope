@@ -16,7 +16,7 @@ from threading import local
 
 import transaction
 from zope.interface import implements
-from zope.component import getUtility, getUtilitiesFor
+from zope.component import queryUtility, getUtility, getUtilitiesFor
 
 from transaction.interfaces import IDataManager, ISynchronizer
 
@@ -70,8 +70,11 @@ def getSession(createTransaction=False):
     session=getattr(_storage,'session',None)
     if session:
         return session
-    util = getUtility(IAlchemyEngineUtility)
-    _storage.session=sqlalchemy.create_session(bind_to=util.getEngine())
+    util = queryUtility(IAlchemyEngineUtility)
+    engine = None
+    if util is not None:
+        engine = util.getEngine()
+    _storage.session=sqlalchemy.create_session(bind_to=engine)
     session = _storage.session
     for table, engine in _tableToEngine.iteritems():
         _assignTable(table, engine)
