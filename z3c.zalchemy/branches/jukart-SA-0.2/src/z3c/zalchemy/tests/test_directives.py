@@ -1,6 +1,3 @@
-import unittest
-from cStringIO import StringIO
-
 ##############################################################################
 #
 # Copyright (c) 2006 ROBOTECH Logistiksysteme GmbH and Contributors.
@@ -16,6 +13,9 @@ from cStringIO import StringIO
 ##############################################################################
 
 from zope import component
+
+import unittest
+from cStringIO import StringIO
 
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 from zope.testing.doctestunit import DocTestSuite
