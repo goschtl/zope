@@ -37,18 +37,26 @@ Options:
     -p / --path <path>
         Specifies the package that is supposed to be searched
         (i.e. 'zope/app')
+    -s / --site_zcml <path>
+        Specify the location of the 'site.zcml' file. By default the regular
+        Zope 3 one is used.
+    -e / --exclude-default-domain
+        Exclude all messages found as part of the default domain. Messages are
+        in this domain, if their domain could not be determined. This usually
+        happens in page template snippets.
     -o dir
         Specifies a directory, relative to the package in which to put the
         output translation template.
     -x dir
         Specifies a directory, relative to the package, to exclude.
         May be used more than once.
+    --python-only
+        Only extract message ids from Python
 
 $Id$
 """
 
 import os, sys, getopt
-
 def usage(code, msg=''):
     # Python 2.1 required
     print >> sys.stderr, __doc__
@@ -84,8 +92,8 @@ def main(argv=sys.argv):
     try:
         opts, args = getopt.getopt(
             sys.argv[1:],
-            'hd:p:o:x:',
-            ['help', 'domain=', 'path=', 'python-only'])
+            'hd:s:i:p:o:x:',
+            ['help', 'domain=', 'site_zcml=', 'path=', 'python-only'])
     except getopt.error, msg:
         usage(1, msg)
 
@@ -94,12 +102,16 @@ def main(argv=sys.argv):
     include_default_domain = True
     output_dir = None
     exclude_dirs = []
-    python_only = None
+    python_only = False
+    site_zcml = None
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
         elif opt in ('-d', '--domain'):
             domain = arg
+        elif opt in ('-s', '--site_zcml'):
+            site_zcml = arg
+        elif opt in ('-e', '--exclude-default-domain'):
             include_default_domain = False
         elif opt in ('-o', ):
             output_dir = arg
@@ -133,10 +145,14 @@ def main(argv=sys.argv):
 
     print "base path: %r\n" \
           "search path: %s\n" \
+          "'site.zcml' location: %s\n" \
           "exclude dirs: %r\n" \
           "domain: %r\n" \
-          "output file: %r" \
-          % (base_dir, path, exclude_dirs, domain, output_file)
+          "include default domain: %r\n" \
+          "output file: %r\n" \
+          "Python only: %r" \
+          % (base_dir, path, site_zcml, exclude_dirs, domain,
+             include_default_domain, output_file, python_only)
 
     from zope.app.locales.extract import POTMaker, \
          py_strings, tal_strings, zcml_strings
@@ -144,7 +160,7 @@ def main(argv=sys.argv):
     maker = POTMaker(output_file, path)
     maker.add(py_strings(path, domain, exclude=exclude_dirs), base_dir)
     if not python_only:
-        maker.add(zcml_strings(path, domain), base_dir)
+        maker.add(zcml_strings(path, domain, site_zcml), base_dir)
         maker.add(tal_strings(path, domain, include_default_domain,
                               exclude=exclude_dirs), base_dir)
     maker.write()
