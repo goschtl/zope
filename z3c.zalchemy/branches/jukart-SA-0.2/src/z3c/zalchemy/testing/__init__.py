@@ -25,7 +25,10 @@ def setUp(test):
 
 def tearDown(test):
     if z3c.zalchemy.inSession():
-        transaction.get().commit()
+        try:
+            transaction.get().commit()
+        except:
+            pass
     z3c.zalchemy.datamanager._tableToEngine.clear()
     z3c.zalchemy.datamanager._classToEngine.clear()
 

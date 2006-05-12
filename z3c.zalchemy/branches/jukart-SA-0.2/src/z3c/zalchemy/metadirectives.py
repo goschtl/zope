@@ -19,10 +19,10 @@ from zope.configuration.fields import GlobalObject
 class IEngineDirective(interface.Interface):
     """Define an engine.
     """
-    dns = schema.Text(
-            title = u'DNS for the database connection',
-            required = True,
-            )
+    dns = schema.BytesLine(
+        title = u'RFC RFC-1738 DNS for the database connection',
+        required = True,
+        )
     name = schema.Text(
             title = u'Engine name',
             description = u'Empty if this engine is the default engine.',
