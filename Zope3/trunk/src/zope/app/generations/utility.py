@@ -64,16 +64,13 @@ def findObjectsMatching(root, condition):
     >>> names
     ['a2', 'b2', 'c2']
     """
-    matches = []
     if condition(root):
-        matches.append(root)
+        yield root
 
     if hasattr(root, 'values'):
         for subobj in root.values():
-            matches += findObjectsMatching(subobj, condition)
-
-    return matches
-
+            for match in findObjectsMatching(subobj, condition):
+                yield match
 
 def findObjectsProviding(root, interface):
     """Find all objects in the root that provide the specified interface.
@@ -127,4 +124,5 @@ def findObjectsProviding(root, interface):
     >>> names
     ['a1', 'a2', 'a3', 'c1', 'c2']
     """
-    return findObjectsMatching(root, interface.providedBy)
+    for match in findObjectsMatching(root, interface.providedBy):
+        yield match
