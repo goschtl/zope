@@ -24,7 +24,7 @@ key = 'zope.app.zopeappgenerations'
 
 ZopeAppSchemaManager = SchemaManager(
     minimum_generation=1,
-    generation=4,
+    generation=5,
     package_name=key)
 
 

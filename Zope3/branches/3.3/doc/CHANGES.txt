@@ -6,7 +6,16 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  Zope 3.3.x (date)
+  Zope 3.3.0b2 (UNRELEASED)
+
+    Bugfixes
+
+      - Include backward-compatibility packages in zope.app in the
+        release.  They were left out in 3.3.0b1 by mistake.
+
+      - Provide ZODB migration script for moved DublinCore classes.
+
+  Zope 3.3.0b1 (2006/05/08)
 
     New features
 
