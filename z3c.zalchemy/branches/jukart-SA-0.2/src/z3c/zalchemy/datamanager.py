@@ -48,7 +48,6 @@ class AlchemyEngineUtility(object):
         # create a new engine and store it thread local
         self.storage.engine = sqlalchemy.create_engine(self.dns,
                                             echo=self.echo,
-                                            strategy='threadlocal',
                                             **kw)
         return self.storage.engine
 
