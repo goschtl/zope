@@ -36,7 +36,8 @@ We create our table as usual sqlalchemy table :
   >>> aTable = sqlalchemy.Table(
   ...     'aTable',
   ...     z3c.zalchemy.metadata,
-  ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
+  ...     sqlalchemy.Column('id', sqlalchemy.Integer,
+  ...         sqlalchemy.Sequence('atable_id'), primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.Integer),
   ...     redefine=True,
   ...     )
@@ -122,7 +123,8 @@ new engine.
   >>> bTable = sqlalchemy.Table(
   ...     'bTable',
   ...     z3c.zalchemy.metadata,
-  ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
+  ...     sqlalchemy.Column('id', sqlalchemy.Integer,
+  ...         sqlalchemy.Sequence('btable_id'), primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.String),
   ...     redefine=True,
   ...     )

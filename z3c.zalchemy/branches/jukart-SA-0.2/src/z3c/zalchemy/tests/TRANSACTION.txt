@@ -22,7 +22,8 @@ Setup a sqlalchemy table and class :
   >>> aTable = sqlalchemy.Table(
   ...     'aTable',
   ...     z3c.zalchemy.metadata,
-  ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
+  ...     sqlalchemy.Column('id', sqlalchemy.Integer,
+  ...         sqlalchemy.Sequence('atable_id'), primary_key = True),
   ...     sqlalchemy.Column('value', sqlalchemy.Integer),
   ...     redefine=True,
   ...     )

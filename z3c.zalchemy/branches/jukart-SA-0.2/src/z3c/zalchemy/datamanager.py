@@ -30,9 +30,9 @@ class AlchemyEngineUtility(object):
     """
     implements(IAlchemyEngineUtility)
 
-    def __init__(self, name, dns, echo=False, **kwargs):
+    def __init__(self, name, url, echo=False, **kwargs):
         self.name = name
-        self.dns = dns
+        self.url = url
         self.echo = echo
         self.kw={}
         self.kw.update(kwargs)
@@ -46,7 +46,7 @@ class AlchemyEngineUtility(object):
         kw = {}
         kw.update(self.kw)
         # create a new engine and store it thread local
-        self.storage.engine = sqlalchemy.create_engine(self.dns,
+        self.storage.engine = sqlalchemy.create_engine(self.url,
                                             echo=self.echo,
                                             **kw)
         return self.storage.engine
