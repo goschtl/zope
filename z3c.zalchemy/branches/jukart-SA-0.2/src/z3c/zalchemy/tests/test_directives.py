@@ -42,14 +42,14 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
         xmlconfig(StringIO(template % (
             '''
             <alchemy:engine
-                dns="sqlite://testdatabase.db"
+                url="sqlite://testdatabase.db"
                 echo="True"
                 />
             '''
             )))
         util = component.getUtility(IAlchemyEngineUtility)
         self.assertNotEqual(util, None)
-        self.assertEqual(util.dns, 'sqlite://testdatabase.db')
+        self.assertEqual(util.url, 'sqlite://testdatabase.db')
         self.assertEqual(util.echo, True)
 
     def testEngineDirective(self):
@@ -57,14 +57,14 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
             '''
             <alchemy:engine
                 name="sqlite"
-                dns="sqlite://testdatabase.db"
+                url="sqlite://testdatabase.db"
                 echo="True"
                 />
             '''
             )))
         util = component.getUtility(IAlchemyEngineUtility,'sqlite')
         self.assertNotEqual(util, None)
-        self.assertEqual(util.dns, 'sqlite://testdatabase.db')
+        self.assertEqual(util.url, 'sqlite://testdatabase.db')
         self.assertEqual(util.echo, True)
 
     def testConnectDirective(self):
@@ -73,7 +73,7 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
             '''
             <alchemy:engine
                 name="sqlite-in-memory"
-                dns="sqlite://:memory:"
+                url="sqlite://:memory:"
                 />
             <alchemy:connectTable
                 table="testTable"
