@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Revision: 38234/Branch: Zope-3.1\n"
-"POT-Creation-Date: Tue May 02 21:39:45 2006\n"
+"POT-Creation-Date: Fri May 12 18:05:01 2006\n"
 "PO-Revision-Date: 2005-12-10 16:30+0100\n"
 "Last-Translator: Adam Groszer <adamg@fw.hu>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -24,12 +24,12 @@ msgstr ""
 "Generated-By: zope/app/locales/extract.py\n"
 
 #: securitypolicy.zcml:11
-msgid "Everybody"
-msgstr "Mindenki"
-
-#: securitypolicy.zcml:11
 msgid "All users have this role implicitly"
 msgstr "Minden felhasználó rendelkezik ezzel a szereppel"
+
+#: securitypolicy.zcml:11
+msgid "Everybody"
+msgstr "Mindenki"
 
 #: securitypolicy.zcml:13
 msgid "Site Manager"
@@ -263,108 +263,6 @@ msgstr ""
 "közvetlenül a szükséges információhoz vezeti a fejlesztőt. Az alábbiakban "
 "láthatja minden modul rövid leírását."
 
-#: src/zope/app/apidoc/browser/contents.pt:24
-#: src/zope/app/apidoc/browser/contents.pt:29
-#: src/zope/app/apidoc/browser/menu_macros.pt:78
-#: src/zope/app/apidoc/browser/menu_macros.pt:84
-#: src/zope/app/apidoc/browser/modules.pt:14
-#: src/zope/app/apidoc/browser/prefIndex.pt:66
-#: src/zope/app/apidoc/browser/prefIndex.pt:68
-#: src/zope/app/apidoc/browser/prefIndex.pt:73
-#: src/zope/app/apidoc/browser/prefIndex.pt:95
-#: src/zope/app/apidoc/browser/prefIndex.pt:100
-#: src/zope/app/apidoc/browser/prefIndex.pt:103
-#: src/zope/app/apidoc/browser/static_contents.pt:24
-#: src/zope/app/apidoc/browser/static_contents.pt:29
-#: src/zope/app/apidoc/browser/static_menu_macros.pt:87
-#: src/zope/app/apidoc/browser/static_menu_macros.pt:93
-#: src/zope/app/apidoc/browser/static_modules.pt:14
-#: src/zope/app/apidoc/codemodule/browser/class_index.pt:11
-#: src/zope/app/apidoc/codemodule/browser/class_index.pt:101
-#: src/zope/app/apidoc/codemodule/browser/class_index.pt:103
-#: src/zope/app/apidoc/codemodule/browser/class_index.pt:147
-#: src/zope/app/apidoc/codemodule/browser/class_index.pt:149
-#: src/zope/app/apidoc/codemodule/browser/introspector.pt:142
-#: src/zope/app/apidoc/codemodule/browser/introspector.pt:144
-#: src/zope/app/apidoc/codemodule/browser/introspector.pt:183
-#: src/zope/app/apidoc/codemodule/browser/introspector.pt:185
-#: src/zope/app/apidoc/codemodule/browser/module_index.pt:9
-#: src/zope/app/apidoc/codemodule/browser/module_index.pt:16
-#: src/zope/app/apidoc/ifacemodule/iface_macros.pt:108
-#: src/zope/app/apidoc/ifacemodule/iface_macros.pt:125
-#: src/zope/app/applicationcontrol/browser/runtimeinfo.pt:12
-#: src/zope/app/applicationcontrol/browser/servercontrol.pt:8
-#: src/zope/app/applicationcontrol/browser/translationdomaincontrol.pt:9
-#: src/zope/app/applicationcontrol/browser/zodbcontrol.pt:11
-#: src/zope/app/applicationcontrol/browser/zodbcontrol.pt:23
-#: src/zope/app/basicskin/view_macros.pt:23
-#: src/zope/app/boston/browser/template.pt:88
-#: src/zope/app/cache/browser/cacheableedit.pt:53
-#: src/zope/app/cache/browser/ramedit.pt:56
-#: src/zope/app/cache/browser/ramstats.pt:38
-#: src/zope/app/container/browser/add.pt:10
-#: src/zope/app/container/browser/add.pt:30
-#: src/zope/app/container/browser/add.pt:32
-#: src/zope/app/container/browser/commontasks.pt:11
-#: src/zope/app/container/browser/commontasks.pt:21
-#: src/zope/app/container/browser/commontasks.pt:31
-#: src/zope/app/container/browser/contents.pt:20
-#: src/zope/app/container/browser/contents.pt:78
-#: src/zope/app/container/browser/contents.pt:96
-#: src/zope/app/container/browser/contents.pt:103
-#: src/zope/app/container/browser/contents.pt:110
-#: src/zope/app/container/browser/contents.pt:113
-#: src/zope/app/container/browser/contents.pt:116
-#: src/zope/app/container/browser/index.pt:45
-#: src/zope/app/container/browser/index.pt:52
-#: src/zope/app/container/browser/index.pt:54
-#: src/zope/app/container/browser/index.pt:56
-#: src/zope/app/exception/browser/user.pt:7
-#: src/zope/app/file/browser/file_add.pt:11
-#: src/zope/app/file/browser/file_upload.pt:11
-#: src/zope/app/file/browser/image_edit.pt:13
-#: src/zope/app/form/browser/add.pt:13 src/zope/app/form/browser/add.pt:19
-#: src/zope/app/form/browser/display.pt:9 src/zope/app/form/browser/edit.pt:14
-#: src/zope/app/form/browser/edit.pt:20
-#: src/zope/app/i18nfile/browser/file_edit.pt:25
-#: src/zope/app/i18nfile/browser/image_edit.pt:25
-#: src/zope/app/i18nfile/browser/image_edit.pt:87
-#: src/zope/app/onlinehelp/browser/helptopic.pt:3
-#: src/zope/app/pythonpage/edit.pt:14 src/zope/app/pythonpage/edit.pt:19
-#: src/zope/app/rotterdam/template.pt:112
-#: src/zope/app/rotterdam/template.pt:131
-#: src/zope/app/rotterdam/template.pt:140
-#: src/zope/app/rotterdam/template_tablelayout.pt:113
-#: src/zope/app/rotterdam/template_tablelayout.pt:130
-#: src/zope/app/rotterdam/template_tablelayout.pt:137
-#: src/zope/app/rotterdam/view_macros.pt:5
-#: src/zope/app/rotterdam/view_macros.pt:24
-#: src/zope/app/securitypolicy/browser/granting.pt:6
-#: src/zope/app/securitypolicy/browser/granting.pt:35
-#: src/zope/app/securitypolicy/browser/granting.pt:61
-#: src/zope/app/securitypolicy/browser/manage_access.pt:11
-#: src/zope/app/securitypolicy/browser/manage_access.pt:37
-#: src/zope/app/securitypolicy/browser/manage_access.pt:56
-#: src/zope/app/securitypolicy/browser/manage_permissionform.pt:34
-#: src/zope/app/securitypolicy/browser/manage_permissionform.pt:74
-#: src/zope/app/securitypolicy/browser/manage_roleform.pt:6
-#: src/zope/app/securitypolicy/browser/manage_roleform.pt:16
-#: src/zope/app/securitypolicy/browser/manage_roleform.pt:40
-#: src/zope/app/securitypolicy/browser/manage_roleform.pt:53
-#: src/zope/app/undo/undo_macros.pt:86
-#: src/zope/app/zopetop/widget_macros.pt:15
-#: src/zope/app/zopetop/widget_macros.pt:23
-#: src/zope/app/zopetop/widget_macros.pt:158
-#: src/zope/app/zopetop/widget_macros.pt:175
-#: src/zope/app/zopetop/widget_macros.pt:212
-#: src/zope/app/zopetop/widget_macros.pt:227
-#: src/zope/app/zptpage/browser/inlinecode.pt:13
-#: src/zope/app/zptpage/browser/inlinecode.pt:45
-#: src/zope/app/zptpage/browser/inlinecode.pt:55
-#: src/zope/dublincore/browser/edit.pt:12
-msgid "${DYNAMIC_CONTENT}"
-msgstr "${DYNAMIC_CONTENT}"
-
 #: src/zope/app/apidoc/browser/contents.pt:5
 #: src/zope/app/apidoc/browser/index.pt:3
 #: src/zope/app/apidoc/browser/static_contents.pt:5
@@ -412,38 +310,48 @@ msgstr "Menü"
 msgid "Zope 3 API Docs"
 msgstr "Zope 3 API Dokumentáció"
 
-#. Default: "Refresh"
-#: src/zope/app/apidoc/browser/prefIndex.pt:118
-#: src/zope/app/demo/widget/browser/Kopie von popup.pt:65
-#: src/zope/app/demo/widget/browser/popup.pt:65
-#: src/zope/app/error/browser/error.pt:53
-#: src/zope/app/file/browser/file_add.pt:46
-#: src/zope/app/file/browser/file_upload.pt:48
-#: src/zope/app/form/browser/add.pt:53 src/zope/app/form/browser/edit.pt:53
-#: src/zope/app/pythonpage/edit.pt:70
-#: src/zope/app/zptpage/browser/inlinecode.pt:64
-#: src/zope/dublincore/browser/edit.pt:50
-msgid "refresh-button"
-msgstr "Frissít"
+#: src/zope/app/apidoc/browser/prefmenu.pt:4
+msgid "Preferences"
+msgstr "Beállítások"
 
-#. Default: "Change"
-#: src/zope/app/apidoc/browser/prefIndex.pt:120
-#: src/zope/app/demo/widget/browser/Kopie von popup.pt:67
-#: src/zope/app/demo/widget/browser/popup.pt:67
-#: src/zope/app/form/browser/edit.pt:55 src/zope/app/pythonpage/edit.pt:72
-#: src/zope/app/zptpage/browser/inlinecode.pt:66
-msgid "submit-button"
-msgstr "Elfogad"
-
-#: src/zope/app/apidoc/browser/prefIndex.pt:78
-#: src/zope/app/demo/widget/browser/Kopie von popup.pt:36
-#: src/zope/app/demo/widget/browser/popup.pt:36
-#: src/zope/app/form/browser/add.pt:25 src/zope/app/form/browser/edit.pt:26
-#: src/zope/app/pythonpage/edit.pt:24
-#: src/zope/app/schema/browser/schema_edit.pt:21
-#: src/zope/app/zptpage/browser/inlinecode.pt:50
-msgid "There are ${num_errors} input errors."
-msgstr "${num_errors} beviteli hiba van."
+#: src/zope/app/apidoc/browser/prefmenu.pt:51
+#: src/zope/app/boston/browser/widget_macros.pt:11
+#: src/zope/app/boston/viewlets/addinginfo/viewlet.pt:16
+#: src/zope/app/boston/viewlets/addinginfo/viewlet.pt:26
+#: src/zope/app/boston/viewlets/addinginfo/viewlet.pt:36
+#: src/zope/app/boston/viewlets/toolbar/macros.pt:3
+#: src/zope/app/boston/viewlets/toolbar/macros.pt:12
+#: src/zope/app/form/browser/objectwidget.pt:2
+#: src/zope/app/form/browser/orderedSelectionList.pt:146
+#: src/zope/app/form/browser/orderedSelectionList.pt:166
+#: src/zope/app/form/browser/subedit.pt:3
+#: src/zope/app/form/browser/subedit.pt:10
+#: src/zope/app/form/browser/subedit.pt:14
+#: src/zope/app/form/browser/subedit.pt:23
+#: src/zope/app/rotterdam/simpleeditingrow.pt:24
+#: src/zope/app/workflow/stateful/browser/add.pt:22
+#: src/zope/app/workflow/stateful/browser/add.pt:24
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:22
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:32
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:11
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:25
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:41
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:11
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:36
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:37
+#: src/zope/app/workflow/stateful/browser/definition_index.pt:13
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:18
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:28
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:42
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:55
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:64
+#: src/zope/formlib/pageform.pt:44 src/zope/formlib/pageform.pt:56
+#: src/zope/formlib/pageform.pt:92 src/zope/formlib/pageform.pt:98
+#: src/zope/formlib/pageform.pt:104 src/zope/formlib/subpageform.pt:30
+#: src/zope/formlib/subpageform.pt:41 src/zope/formlib/subpageform.pt:80
+#: src/zope/formlib/subpageform.pt:86 src/zope/formlib/subpageform.pt:92
+msgid "${DYNAMIC_CONTENT}"
+msgstr "${DYNAMIC_CONTENT}"
 
 #: src/zope/app/apidoc/codemodule/browser/class_index.pt:100
 #: src/zope/app/apidoc/codemodule/browser/class_index.pt:146
@@ -1543,12 +1451,12 @@ msgid "ZODB successfully packed."
 msgstr "A ZODB sikeresen tömörítve."
 
 #: src/zope/app/authentication/browser/configure.zcml:24
-msgid "New-style pluggable authentication utility"
-msgstr "Új stílusú Cserélhető Hitelesítő Segédprogram"
-
-#: src/zope/app/authentication/browser/configure.zcml:24
 msgid "Pluggable Authentication Utility"
 msgstr "Cserélhető Hitelesítő Segédprogram"
+
+#: src/zope/app/authentication/browser/configure.zcml:24
+msgid "New-style pluggable authentication utility"
+msgstr "Új stílusú Cserélhető Hitelesítő Segédprogram"
 
 #: src/zope/app/authentication/browser/configure.zcml:39
 msgid "Edit Pluggable Authentication Utility"
@@ -1579,12 +1487,12 @@ msgid "Add group folder"
 msgstr "Csoport Mappa hozzáadása"
 
 #: src/zope/app/authentication/browser/groupfolder.zcml:41
-msgid "Group Folder"
-msgstr "Csoport Mappa"
-
-#: src/zope/app/authentication/browser/groupfolder.zcml:41
 msgid "A Group folder"
 msgstr "Egy Csoport Mappa"
+
+#: src/zope/app/authentication/browser/groupfolder.zcml:41
+msgid "Group Folder"
+msgstr "Csoport Mappa"
 
 #: src/zope/app/authentication/browser/groupfolder.zcml:7
 msgid "Change group information"
@@ -1709,7 +1617,11 @@ msgstr "A Jogosultsághoz egy címet szolgáltat."
 #: src/zope/app/component/metadirectives.py:322
 #: src/zope/app/form/browser/ftests/test_i18n.py:40
 #: src/zope/schema/interfaces.py:108 src/zope/security/interfaces.py:270
-#: src/zope/security/interfaces.py:319 src/zope/dublincore/browser/edit.pt:25
+#: src/zope/security/interfaces.py:319
+#: src/zope/app/introspector/introspector.pt:53
+#: src/zope/app/introspector/introspector.pt:142
+#: src/zope/app/introspector/marker.pt:62
+#: src/zope/app/preference/macros.pt:120
 msgid "Description"
 msgstr "Megnevezés"
 
@@ -1903,6 +1815,11 @@ msgstr "Boston felület"
 msgid "Adding info"
 msgstr "Hozzáadás információ"
 
+#: src/zope/app/boston/viewlets/xmltree/xmltree.pt:3
+#: src/zope/app/boston/viewlets/xmltree/xmltree.pt:8
+msgid "Navigation"
+msgstr "Navigáció"
+
 #: src/zope/app/broken/broken.pt:12
 msgid ""
 "This is probably because the module of the class, ${module}, can't be found "
@@ -1970,12 +1887,12 @@ msgid "Statistics"
 msgstr "Statisztika"
 
 #: src/zope/app/cache/browser/configure.zcml:6
-msgid "A RAM cache is a volatile (in memory) cache"
-msgstr "A RAM Gyorsítótár egy illékony (memóriában tárolt) gyorsítótár"
-
-#: src/zope/app/cache/browser/configure.zcml:6
 msgid "RAM Cache"
 msgstr "RAM Gyorsítótár"
+
+#: src/zope/app/cache/browser/configure.zcml:6
+msgid "A RAM cache is a volatile (in memory) cache"
+msgstr "A RAM Gyorsítótár egy illékony (memóriában tárolt) gyorsítótár"
 
 #: src/zope/app/cache/browser/ramedit.pt:21
 msgid "Maximum cached entries"
@@ -2177,9 +2094,8 @@ msgstr "A szolgáltatott interfész"
 
 #: src/zope/app/component/back35.py:302 src/zope/component/zcml.py:104
 #: src/zope/component/zcml.py:377 src/zope/component/zcml.py:449
-#: src/zope/app/container/browser/contents.pt:33
-#: src/zope/app/container/browser/index.pt:27
-#: src/zope/app/schema/browser/schema_edit.pt:37
+#: src/zope/app/workflow/browser/instancecontainer_index.pt:19
+#: src/zope/app/workflow/browser/instancecontainer_main.pt:18
 msgid "Name"
 msgstr "Név"
 
@@ -2519,7 +2435,7 @@ msgstr ""
 #: src/zope/app/component/metadirectives.py:235 src/zope/component/zcml.py:52
 #: src/zope/component/zcml.py:97 src/zope/component/zcml.py:264
 #: src/zope/app/security/browser/configure.zcml:63
-#: src/zope/app/securitypolicy/browser/manage_access.pt:23
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:46
 msgid "Permission"
 msgstr "Jogosultság"
 
@@ -2605,20 +2521,6 @@ msgstr ""
 #: src/zope/app/component/vocabulary.py:290
 msgid "(unnamed utility)"
 msgstr "(névtelen segédprogram)"
-
-#: src/zope/app/container/browser/add.pt:12
-msgid "Add Content"
-msgstr "Tartalom hozzáadás"
-
-#. Default: "Add"
-#: src/zope/app/container/browser/add.pt:45
-#: src/zope/app/container/browser/contents.pt:156
-#: src/zope/app/file/browser/file_add.pt:48
-#: src/zope/app/form/browser/add.pt:55
-#: src/zope/app/i18n/browser/translate.pt:49
-#: src/zope/app/schema/browser/schema_add.pt:40
-msgid "add-button"
-msgstr "Hozzáadás"
 
 #: src/zope/app/container/browser/adding.py:113
 msgid "You must select the type of object to add."
@@ -2746,12 +2648,13 @@ msgid "Contents"
 msgstr "Tartalom"
 
 #: src/zope/app/container/browser/metaconfigure.py:85
-#: src/zope/formlib/form.py:835 src/zope/app/menus.zcml:17
+#: src/zope/formlib/form.py:837 src/zope/app/menus.zcml:17
 #: src/zope/app/menus.zcml:25 src/zope/app/component/browser/configure.zcml:56
 #: src/zope/app/workflow/stateful/browser/configure.zcml:48
 #: src/zope/app/workflow/stateful/browser/configure.zcml:85
 #: src/zope/app/authentication/browser/configure.zcml:56
 #: src/zope/app/schema/browser/configure.zcml:9
+#: src/zope/app/boston/viewlets/addinginfo/viewlet.pt:5
 msgid "Add"
 msgstr "Hozzáadás"
 
@@ -2984,12 +2887,12 @@ msgid "TextAreaWidget Index"
 msgstr "SzövegTerületSzerkentyű Index"
 
 #: src/zope/app/demo/widget/browser/textareawidget.zcml:5
-msgid "TextAreaWidget"
-msgstr "SzövegTerületSzerkentyű"
-
-#: src/zope/app/demo/widget/browser/textareawidget.zcml:5
 msgid "Add a Demo TextAreaWidget"
 msgstr "SzövegTerületSzerkentyű demó hozzáadás"
+
+#: src/zope/app/demo/widget/browser/textareawidget.zcml:5
+msgid "TextAreaWidget"
+msgstr "SzövegTerületSzerkentyű"
 
 #: src/zope/app/demo/widget/browser/textwidget.zcml:21
 msgid "TextWidget Index"
@@ -3214,13 +3117,13 @@ msgstr ""
 
 #: src/zope/app/dtmlpage/configure.zcml:13
 #: src/zope/app/dtmlpage/configure.zcml:81
-msgid "DTML Page"
-msgstr "DTML Lap"
+msgid "A simple, content-based DTML page"
+msgstr "Egy egyszerű tartalom alapú DTML lap"
 
 #: src/zope/app/dtmlpage/configure.zcml:13
 #: src/zope/app/dtmlpage/configure.zcml:81
-msgid "A simple, content-based DTML page"
-msgstr "Egy egyszerű tartalom alapú DTML lap"
+msgid "DTML Page"
+msgstr "DTML Lap"
 
 #: src/zope/app/dtmlpage/configure.zcml:59
 msgid "Edit a DTML page"
@@ -3255,12 +3158,12 @@ msgid "Configure"
 msgstr "Beállítás"
 
 #: src/zope/app/error/browser/configure.zcml:35
-msgid "Error Reporting Utility for Logging Errors"
-msgstr "Hiba Jelentő Segédprogram a hibák naplózásához"
-
-#: src/zope/app/error/browser/configure.zcml:35
 msgid "Error Logging Utility"
 msgstr "Hiba Naplózó Segédprogram"
+
+#: src/zope/app/error/browser/configure.zcml:35
+msgid "Error Reporting Utility for Logging Errors"
+msgstr "Hiba Jelentő Segédprogram a hibák naplózásához"
 
 #: src/zope/app/error/browser/error.pt:11
 msgid ""
@@ -3414,7 +3317,7 @@ msgstr "Kép hozzáadása"
 
 #. Default: ""
 #: src/zope/app/file/browser/file.py:300 src/zope/app/file/browser/file.py:442
-#: src/zope/app/form/browser/editview.py:114 src/zope/formlib/form.py:793
+#: src/zope/app/form/browser/editview.py:114 src/zope/formlib/form.py:795
 msgid "Updated on ${date_time}"
 msgstr "Frissítve ${date_time}"
 
@@ -3500,13 +3403,13 @@ msgstr "Fájl"
 
 #: src/zope/app/file/configure.zcml:50
 #: src/zope/app/file/browser/configure.zcml:91
-msgid "An Image"
-msgstr "Egy kép"
+msgid "Image"
+msgstr "Kép"
 
 #: src/zope/app/file/configure.zcml:50
 #: src/zope/app/file/browser/configure.zcml:91
-msgid "Image"
-msgstr "Kép"
+msgid "An Image"
+msgstr "Egy kép"
 
 #. Default: ""
 #: src/zope/app/file/image.py:78
@@ -3562,14 +3465,14 @@ msgstr "Hamis"
 #: src/zope/app/form/browser/boolwidgets.py:95
 #: src/zope/app/form/browser/boolwidgets.py:100
 #: src/zope/app/form/browser/boolwidgets.py:107
-msgid "off"
-msgstr "ki"
+msgid "on"
+msgstr "be"
 
 #: src/zope/app/form/browser/boolwidgets.py:95
 #: src/zope/app/form/browser/boolwidgets.py:100
 #: src/zope/app/form/browser/boolwidgets.py:107
-msgid "on"
-msgstr "be"
+msgid "off"
+msgstr "ki"
 
 #: src/zope/app/form/browser/configure.zcml:512
 msgid "Widgets and Forms"
@@ -3669,6 +3572,11 @@ msgstr "A többértékű értékkészletből hiányzik az érték"
 msgid "Edit"
 msgstr "Szerkesztés"
 
+#. Default: "Remove selected items"
+#: src/zope/app/form/browser/sequencewidget.pt:17
+msgid "remove-selected-items"
+msgstr "A kiválasztott elemek eltávolítása"
+
 #. Default: "(no value available)"
 #: src/zope/app/form/browser/sequencewidget.py:254
 msgid "sequence-value-not-provided"
@@ -3756,6 +3664,25 @@ msgstr "Az aktualitási ellenőrzés nem jó:"
 #: src/zope/app/fssync/browser/__init__.py:91
 msgid "Content-Type is not application/x-snarf"
 msgstr "A tartalom típus (Content-Type) nem application/x-snarf"
+
+#: src/zope/app/fssync/browser/fromFS.pt:11
+msgid "Commit results: ${results}"
+msgstr ""
+
+#: src/zope/app/fssync/browser/fromFS.pt:16
+msgid "Upload a zipfile in the following form"
+msgstr ""
+
+#. Default: "Upload"
+#: src/zope/app/fssync/browser/fromFS.pt:20
+#, fuzzy
+msgid "upload-button"
+msgstr "Újratöltés"
+
+#: src/zope/app/fssync/browser/fromFS.pt:5
+#, fuzzy
+msgid "Commit Action"
+msgstr "Feltétel"
 
 #: src/zope/app/generations/browser/configure.zcml:6
 msgid "Database Schemas"
@@ -3944,12 +3871,12 @@ msgid "Synchronize"
 msgstr "Szinkronizálás"
 
 #: src/zope/app/i18n/browser/configure.zcml:54
-msgid "Translation Domain"
-msgstr "Fordítás Tartomány"
-
-#: src/zope/app/i18n/browser/configure.zcml:54
 msgid "A Persistent Translation Domain"
 msgstr "Egy Perzisztens Fordítás Tartomány"
+
+#: src/zope/app/i18n/browser/configure.zcml:54
+msgid "Translation Domain"
+msgstr "Fordítás Tartomány"
 
 #: src/zope/app/i18n/browser/exportimport.pt:11
 msgid "Import and Export Messages"
@@ -3968,11 +3895,6 @@ msgstr "Nyelvek választása:"
 #: src/zope/app/i18n/browser/exportimport.pt:33
 msgid "Import File Name:"
 msgstr "Import Fájlnév:"
-
-#. Default: "Import"
-#: src/zope/app/i18n/browser/exportimport.pt:38
-msgid "import-button"
-msgstr "Importálás"
 
 #: src/zope/app/i18n/browser/exportimport.pt:4
 #: src/zope/app/i18n/browser/translate.pt:4
@@ -4019,6 +3941,10 @@ msgid "Status"
 msgstr "Állapot"
 
 #: src/zope/app/i18n/browser/synchronize.py:34
+msgid "Out of Date"
+msgstr "Lejárt"
+
+#: src/zope/app/i18n/browser/synchronize.py:34
 msgid "Up to Date"
 msgstr "Naprakész"
 
@@ -4026,17 +3952,13 @@ msgstr "Naprakész"
 msgid "New Remote"
 msgstr "Új Távoli"
 
-#: src/zope/app/i18n/browser/synchronize.py:34
-msgid "Out of Date"
-msgstr "Lejárt"
+#: src/zope/app/i18n/browser/synchronize.py:35
+msgid "Newer Local"
+msgstr "Új Helyi"
 
 #: src/zope/app/i18n/browser/synchronize.py:35
 msgid "Does not exist"
 msgstr "Nem létezik"
-
-#: src/zope/app/i18n/browser/synchronize.py:35
-msgid "Newer Local"
-msgstr "Új Helyi"
 
 #: src/zope/app/i18n/browser/translate.pt:103
 msgid "Add new messages"
@@ -4054,11 +3976,6 @@ msgstr "Üzenet törlése"
 #: src/zope/app/i18n/browser/translate.pt:35
 msgid "edit-button"
 msgstr "Módosítás"
-
-#. Default: "Delete"
-#: src/zope/app/i18n/browser/translate.pt:38
-msgid "delete-button"
-msgstr "Törlés"
 
 #: src/zope/app/i18n/browser/translate.pt:46
 msgid "New Language:"
@@ -4095,12 +4012,6 @@ msgstr "Alapértelmezett Nyelv"
 #: src/zope/app/i18nfile/browser/image_edit.pt:68
 msgid "show-button"
 msgstr "Megjelenítés"
-
-#. Default: "Remove"
-#: src/zope/app/i18nfile/browser/file_edit.pt:69
-#: src/zope/app/i18nfile/browser/image_edit.pt:70
-msgid "remove-button"
-msgstr "Eltávolítás"
 
 #: src/zope/app/i18nfile/browser/file_edit.pt:72
 #: src/zope/app/i18nfile/browser/image_edit.pt:73
@@ -4166,6 +4077,11 @@ msgstr "Objektum"
 msgid "${count} objects"
 msgstr "${count} objektum"
 
+#. Default: "Introspect Object Classes and Interfaces"
+#: src/zope/app/introspector/configure.zcml:6
+msgid "zope.app.introspector.Introspect"
+msgstr "Objektum osztály és interfész vizsgálata"
+
 #: src/zope/app/introspector/configure.zcml:6
 msgid ""
 "       Use the object-introspection facility to discover       and browse "
@@ -4174,10 +4090,89 @@ msgstr ""
 "       Az objektum vizsgáló eszközzel lehet az interfészeket és osztályokat "
 "megismerni és böngészni.       "
 
-#. Default: "Introspect Object Classes and Interfaces"
-#: src/zope/app/introspector/configure.zcml:6
-msgid "zope.app.introspector.Introspect"
-msgstr "Objektum osztály és interfész vizsgálata"
+#: src/zope/app/introspector/introspector.pt:108
+#: src/zope/app/introspector/marker.pt:26
+#, fuzzy
+msgid "Class Browser"
+msgstr "Forrás Böngésző"
+
+#. Default: "Class"
+#: src/zope/app/introspector/introspector.pt:113
+#: src/zope/app/introspector/marker.pt:31
+#, fuzzy
+msgid "class-component"
+msgstr "Séma"
+
+#: src/zope/app/introspector/introspector.pt:153
+#: src/zope/app/introspector/marker.pt:73
+#, fuzzy
+msgid "Interfaces from Class"
+msgstr "Interfész Kereső:"
+
+#: src/zope/app/introspector/introspector.pt:172
+#: src/zope/app/introspector/marker.pt:91
+#, fuzzy
+msgid "Interfaces from Object"
+msgstr "Interfészek"
+
+#. Default: "Modify"
+#: src/zope/app/introspector/introspector.pt:190
+#, fuzzy
+msgid "modify-button"
+msgstr "Módosítás"
+
+#: src/zope/app/introspector/introspector.pt:27
+#, fuzzy
+msgid "Interface Browser"
+msgstr "Interfészek"
+
+#. Default: "Bases"
+#: src/zope/app/introspector/introspector.pt:39
+#: src/zope/app/introspector/introspector.pt:127
+#: src/zope/app/introspector/marker.pt:38
+#, fuzzy
+msgid "class-bases"
+msgstr "Osztályok"
+
+#. Default: "Attributes"
+#: src/zope/app/introspector/introspector.pt:67
+#, fuzzy
+msgid "class-attributes"
+msgstr "Osztály attribútum"
+
+#. Default: "Methods"
+#: src/zope/app/introspector/introspector.pt:84
+#, fuzzy
+msgid "class-methods"
+msgstr "Osztályok"
+
+#: src/zope/app/introspector/marker.pt:108
+#, fuzzy
+msgid "Remove Interfaces:"
+msgstr "Szolgáltatott interfészek"
+
+#. Default: "Remove"
+#: src/zope/app/introspector/marker.pt:117
+msgid "remove-button"
+msgstr "Eltávolítás"
+
+#: src/zope/app/introspector/marker.pt:123
+#, fuzzy
+msgid "Add Interfaces:"
+msgstr "Interfész:"
+
+#. Default: "Add"
+#: src/zope/app/introspector/marker.pt:132
+#: src/zope/app/workflow/stateful/browser/add.pt:66
+#: src/zope/app/workflow/stateful/browser/addstate.pt:20
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:55
+msgid "add-button"
+msgstr "Hozzáadás"
+
+#. Default: "Module"
+#: src/zope/app/introspector/marker.pt:55
+msgid "python-module"
+msgstr ""
 
 #: src/zope/app/keyreference/configure.zcml:26
 #, fuzzy
@@ -4248,13 +4243,13 @@ msgid "Menu of objects to be added to site management folders"
 msgstr "Webhely-Kezelés mappákba hozzáadható objektumok menüje"
 
 #: src/zope/app/menus.zcml:31
-msgid "Menu of addable configuration objects"
-msgstr "Hozzáadható Konfiguráció objektumok menüje"
-
-#: src/zope/app/menus.zcml:31
 #, fuzzy
 msgid "Add Registration"
 msgstr "Bejegyzés"
+
+#: src/zope/app/menus.zcml:31
+msgid "Menu of addable configuration objects"
+msgstr "Hozzáadható Konfiguráció objektumok menüje"
 
 #: src/zope/app/menus.zcml:5
 msgid "Menu for displaying alternate representations of an object"
@@ -4264,6 +4259,11 @@ msgstr "Az objektum más reprezentációinak megjelenítésére szolgáló menü
 #: src/zope/app/zopetop/widget_macros.pt:154
 msgid "Views"
 msgstr "Nézetek"
+
+#: src/zope/app/module/browser/browse_module.pt:3
+#, fuzzy
+msgid "View Module Names"
+msgstr "Nézet név"
 
 #: src/zope/app/onlinehelp/browser/configure.zcml:48
 #: src/zope/app/demo/menu/configure.zcml:234
@@ -4334,6 +4334,8 @@ msgstr ""
 
 #: src/zope/app/onlinehelp/interfaces.py:53
 #: src/zope/security/interfaces.py:258 src/zope/security/interfaces.py:308
+#: src/zope/app/workflow/stateful/browser/addstate.pt:12
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:12
 msgid "Id"
 msgstr "Azon"
 
@@ -4439,24 +4441,44 @@ msgid "User Preferences"
 msgstr "Felhasználói Beállítások"
 
 #: src/zope/app/preference/configure.zcml:70
-msgid "A Default User Preferences Provider"
-msgstr "Egy Alapértelmezett Felhasználói Beállítások Szolgáltató"
-
-#: src/zope/app/preference/configure.zcml:70
 msgid "Default User Preferences Provider"
 msgstr "Alapértelmezett Felhasználói Beállítások Szolgáltató"
 
-#: src/zope/app/preference/menu.pt:5
-msgid "Preferences"
-msgstr "Beállítások"
+#: src/zope/app/preference/configure.zcml:70
+msgid "A Default User Preferences Provider"
+msgstr "Egy Alapértelmezett Felhasználói Beállítások Szolgáltató"
 
-#: src/zope/app/principalannotation/configure.zcml:18
-msgid "Principal Annotation Utility"
-msgstr "Felettes Jegyzet Segédprogram"
+#. Default: "Refresh"
+#: src/zope/app/preference/edit.pt:112 src/zope/app/preference/index.pt:14
+#: src/zope/app/schemacontent/browser/permission_edit.pt:33
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:24
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:51
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:74
+msgid "refresh-button"
+msgstr "Frissít"
+
+#. Default: "Change"
+#: src/zope/app/preference/edit.pt:114 src/zope/app/preference/index.pt:16
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:76
+msgid "submit-button"
+msgstr "Elfogad"
+
+#: src/zope/app/preference/edit.pt:77 src/zope/app/preference/macros.pt:111
+msgid "There are ${num_errors} input errors."
+msgstr "${num_errors} beviteli hiba van."
+
+#: src/zope/app/preference/macros.pt:121
+#: src/zope/app/workflow/browser/instance_index.pt:38
+msgid "Value"
+msgstr "Érték"
 
 #: src/zope/app/principalannotation/configure.zcml:18
 msgid "Stores Annotations for Principals"
 msgstr "Feletteshez tartozó Jegyzeteket tárol"
+
+#: src/zope/app/principalannotation/configure.zcml:18
+msgid "Principal Annotation Utility"
+msgstr "Felettes Jegyzet Segédprogram"
 
 #: src/zope/app/publisher/configure.zcml:18
 msgid "Creating HTTP Results"
@@ -4715,10 +4737,10 @@ msgstr "Z3 UI"
 msgid "Tip"
 msgstr "Tanács"
 
-#: src/zope/app/rotterdam/navigation_macros.pt:31
-#: src/zope/app/tree/browser/navigation_macros.pt:16
-msgid "Navigation"
-msgstr "Navigáció"
+#: src/zope/app/rotterdam/simpleeditingrow.pt:3
+#, fuzzy
+msgid "Extended Editor"
+msgstr "Bővített Illesztők"
 
 #: src/zope/app/rotterdam/template.pt:79
 #: src/zope/app/rotterdam/template_tablelayout.pt:99
@@ -4741,7 +4763,7 @@ msgid "Contains $${num} item(s)"
 msgstr "$${num} elemet tartalmaz"
 
 #: src/zope/app/rotterdam/xmlobject.py:33
-#: src/zope/app/rotterdam/navigation_macros.pt:32
+#: src/zope/app/boston/viewlets/xmltree/xmltree.pt:9
 msgid "Loading..."
 msgstr "Betöltés..."
 
@@ -4826,12 +4848,12 @@ msgid "Edit Text Field"
 msgstr "Szöveg mező szerkesztése"
 
 #: src/zope/app/schema/fieldforms.zcml:33
-msgid "TextLine Field"
-msgstr "Szövegsor mező"
-
-#: src/zope/app/schema/fieldforms.zcml:33
 msgid "A TextLine Field"
 msgstr "Egy Szövegsor mező"
+
+#: src/zope/app/schema/fieldforms.zcml:33
+msgid "TextLine Field"
+msgstr "Szövegsor mező"
 
 #: src/zope/app/schema/fieldforms.zcml:33
 msgid "Add TextLine Field"
@@ -4842,12 +4864,12 @@ msgid "Edit TextLine Field"
 msgstr "Szövegsor mező szerkesztése"
 
 #: src/zope/app/schema/fieldforms.zcml:59
-msgid "Add Boolean Field"
-msgstr "Logikai mező hozzáadása"
-
-#: src/zope/app/schema/fieldforms.zcml:59
 msgid "A Boolean Field"
 msgstr "Egy Logikai mező"
+
+#: src/zope/app/schema/fieldforms.zcml:59
+msgid "Add Boolean Field"
+msgstr "Logikai mező hozzáadása"
 
 #: src/zope/app/schema/fieldforms.zcml:7
 msgid "A Text Field"
@@ -4974,12 +4996,25 @@ msgid "New Content Component Instance"
 msgstr "Új Tartalom Komponens Példány"
 
 #: src/zope/app/schemacontent/browser/configure.zcml:66
+msgid "Schema-based Content"
+msgstr "Séma alapú Tartalom"
+
+#: src/zope/app/schemacontent/browser/configure.zcml:66
 msgid "Schema-based Content Component Instance"
 msgstr "Séma alapú Tartalom Komponens Példány"
 
-#: src/zope/app/schemacontent/browser/configure.zcml:66
-msgid "Schema-based Content"
-msgstr "Séma alapú Tartalom"
+#: src/zope/app/schemacontent/browser/permission_edit.pt:14
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:33
+#, fuzzy
+msgid "Map permissions to Schema fields"
+msgstr "A mező leírása"
+
+#. Default: "Change"
+#: src/zope/app/schemacontent/browser/permission_edit.pt:35
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:53
+#, fuzzy
+msgid "change-button"
+msgstr "Változtatások mentése"
 
 #: src/zope/app/schemacontent/configure.zcml:10
 #: src/zope/app/schemacontent/browser/configure.zcml:8
@@ -4993,6 +5028,7 @@ msgstr "Tartalom Komponens Meghatározás"
 
 #. Default: "Interface"
 #: src/zope/app/schemacontent/interfaces.py:38
+#: src/zope/app/introspector/introspector.pt:32
 msgid "interface-component"
 msgstr "Interfész"
 
@@ -5382,16 +5418,16 @@ msgid "Session Data Container Properties"
 msgstr "Munkamenet Adat Tároló tulajdonságok"
 
 #: src/zope/app/session/browser.zcml:8
+msgid "Cookie Client Id Manager"
+msgstr "Cookie Ügyfél azonosító kezelő"
+
+#: src/zope/app/session/browser.zcml:8
 msgid ""
 "Uses a cookie to uniquely identify a client, allowing        state to be "
 "maintained between requests"
 msgstr ""
 "Cookie-t használ az ügyfelek egyedi azonosítására, így lehet az állapotot "
 "fenntartani a kérések között"
-
-#: src/zope/app/session/browser.zcml:8
-msgid "Cookie Client Id Manager"
-msgstr "Cookie Ügyfél azonosító kezelő"
 
 #: src/zope/app/session/configure.zcml:82
 #, fuzzy
@@ -5494,10 +5530,6 @@ msgstr "Módosítás és tesztelés"
 msgid "Argument Name"
 msgstr "Paraméter neve"
 
-#: src/zope/app/sqlscript/browser/test.pt:17
-msgid "Value"
-msgstr "Érték"
-
 #. Default: "Test"
 #: src/zope/app/sqlscript/browser/test.pt:32
 msgid "test-button"
@@ -5586,11 +5618,6 @@ msgstr "Több Visszavonás"
 msgid "Undo all"
 msgstr "Mindent visszavon"
 
-#. Default: "Undo all transactions"
-#: src/zope/app/undo/configure.zcml:14
-msgid "undo-all-transactions-permission"
-msgstr "Minden Visszavonása"
-
 #: src/zope/app/undo/configure.zcml:14
 msgid ""
 "With this permission a user may undo all transactions,                    "
@@ -5598,6 +5625,11 @@ msgid ""
 msgstr ""
 "Evvel a jogosultsággal a felhasználó visszavonhat minden tranzakciót, attól "
 "függetlenül, ki indította azt."
+
+#. Default: "Undo all transactions"
+#: src/zope/app/undo/configure.zcml:14
+msgid "undo-all-transactions-permission"
+msgstr "Minden Visszavonása"
 
 #: src/zope/app/undo/configure.zcml:7
 msgid ""
@@ -5822,6 +5854,59 @@ msgstr "Munkafolyamatok"
 msgid "Registering XPDL using ZCML"
 msgstr ""
 
+#: src/zope/app/workflow/browser/definition_index.pt:11
+#, fuzzy
+msgid "Process Definition: ${pd_name}"
+msgstr "Állapotos Munkafolyamat Meghatározás"
+
+#: src/zope/app/workflow/browser/definition_index.pt:3
+#: src/zope/app/workflow/stateful/browser/definition_index.pt:3
+#, fuzzy
+msgid "Process Definition"
+msgstr "Állapotos Munkafolyamat Meghatározás"
+
+#: src/zope/app/workflow/browser/importexport_index.pt:12
+#, fuzzy
+msgid "Import / Export Process Definitions:"
+msgstr "Állapotos Munkafolyamat Meghatározás"
+
+#: src/zope/app/workflow/browser/importexport_index.pt:13
+#, fuzzy
+msgid "Import:"
+msgstr "Importálás/exportálás"
+
+#. Default: "Import"
+#: src/zope/app/workflow/browser/importexport_index.pt:17
+msgid "import-button"
+msgstr "Importálás"
+
+#: src/zope/app/workflow/browser/importexport_index.pt:21
+msgid "Export: <a href=\"@@export.html\">save as file</a>"
+msgstr ""
+
+#: src/zope/app/workflow/browser/importexport_index.pt:6
+#, fuzzy
+msgid "Import was successfull!"
+msgstr "Kilépés sikeres!"
+
+#: src/zope/app/workflow/browser/instance_index.pt:19
+msgid "Status: ${status}"
+msgstr ""
+
+#: src/zope/app/workflow/browser/instance_index.pt:22
+#, fuzzy
+msgid "Outgoing Transitions:"
+msgstr "Átmenetek Kezelése"
+
+#: src/zope/app/workflow/browser/instance_index.pt:37
+msgid "Key"
+msgstr ""
+
+#. Default: "Delete"
+#: src/zope/app/workflow/browser/instancecontainer_main.pt:47
+msgid "delete-button"
+msgstr "Törlés"
+
 #. Default: "Create Workflow ProcessInstances"
 #: src/zope/app/workflow/configure.zcml:14
 msgid "create-workflow-processinstances-permission"
@@ -5837,6 +5922,20 @@ msgstr "Munkafolyamat Meghatározás Példányok Használata"
 msgid "manage-workflow-processdefinitions-permission"
 msgstr "Munkafolyamat Meghatározások Kezelése"
 
+#: src/zope/app/workflow/stateful/browser/add.pt:8
+msgid "Add Content"
+msgstr "Tartalom hozzáadás"
+
+#: src/zope/app/workflow/stateful/browser/addstate.pt:3
+#, fuzzy
+msgid "Add State"
+msgstr "Fájl hozzáadása"
+
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:3
+#, fuzzy
+msgid "Add Transition"
+msgstr "Átmenet szerkesztése"
+
 #: src/zope/app/workflow/stateful/browser/configure.zcml:101
 msgid "Edit a Transition"
 msgstr "Átmenet szerkesztése"
@@ -5846,12 +5945,12 @@ msgid "Stateful Transition"
 msgstr "Állapot Átmenet"
 
 #: src/zope/app/workflow/stateful/browser/configure.zcml:121
-msgid "An utility to manage content and workflow interaction."
-msgstr "Tartalom és Munkafolyamat együttműködést kezelő segédprogram."
-
-#: src/zope/app/workflow/stateful/browser/configure.zcml:121
 msgid "Content Workflows Manager"
 msgstr "Tartalom Munkafolyamat Kezelő"
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:121
+msgid "An utility to manage content and workflow interaction."
+msgstr "Tartalom és Munkafolyamat együttműködést kezelő segédprogram."
 
 #: src/zope/app/workflow/stateful/browser/configure.zcml:129
 msgid "Content/Process Registry"
@@ -5901,15 +6000,131 @@ msgstr "Hozzárendelés(ek) hozzáadva."
 msgid "Mapping(s) removed."
 msgstr "Hozzárendelés(ek) törölve."
 
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:15
+msgid ""
+"This screen let's you specify which content types (by interface) can receive "
+"which workflows (process definitions)."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:20
+msgid "Available Mappings"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:3
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:3
+msgid "Process Definition <-> Content Type Registry"
+msgstr ""
+
+#. Default: "Switch View"
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:48
+#, fuzzy
+msgid "switch-view-button"
+msgstr "Megjelenítés"
+
+#. Default: "Remove Mappings"
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:50
+#, fuzzy
+msgid "remove-mappings-button"
+msgstr "Eltávolítás"
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:55
+#, fuzzy
+msgid "Add new Mapping"
+msgstr "Új nyelv hozzáadása"
+
+#. Default: "Add Mappings"
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:67
+#, fuzzy
+msgid "add-mappings-button"
+msgstr "Hozzáadás"
+
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:16
+#, fuzzy
+msgid "Set Workflow-Relevant Data Schema"
+msgstr "Munkafolyamathoz tartozó adat séma"
+
+#. Default: "Set Schema"
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:26
+#, fuzzy
+msgid "set-schema-button"
+msgstr "Keresés"
+
+#: src/zope/app/workflow/stateful/browser/definition_index.pt:13
+#, fuzzy
+msgid "Process Definition: ${name}"
+msgstr "Állapotos Munkafolyamat Meghatározás"
+
+#: src/zope/app/workflow/stateful/browser/definition_states.pt:10
+#, fuzzy
+msgid "States"
+msgstr "Állapot"
+
+#: src/zope/app/workflow/stateful/browser/definition_states.pt:3
+#, fuzzy
+msgid "Process Definition States"
+msgstr "Állapotos Munkafolyamat Meghatározás"
+
+#: src/zope/app/workflow/stateful/browser/definition_transitions.pt:10
+#, fuzzy
+msgid "Transitions"
+msgstr "Átmenet elemek"
+
+#: src/zope/app/workflow/stateful/browser/definition_transitions.pt:3
+#, fuzzy
+msgid "Process Definition Transitions"
+msgstr "Állapotos Munkafolyamat Meghatározás"
+
 #: src/zope/app/workflow/stateful/browser/instance.py:148
 msgid "Updated Workflow Data."
 msgstr "Frissített munkafolyamat adat."
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:16
+#, fuzzy
+msgid "Workflow:"
+msgstr "Munkafolyamatok"
+
+#. Default: "Choose"
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:22
+#, fuzzy
+msgid "choose-button"
+msgstr "Megjelenítés"
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:28
+#, fuzzy
+msgid "Workflow: ${wf_title}"
+msgstr "Felhasználó: ${user_title}"
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:42
+msgid "Current Status: x"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:45
+#, fuzzy
+msgid "Possible State Changes:"
+msgstr "Módosítások mentése"
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:5
+#, fuzzy
+msgid "Workflow Options"
+msgstr "Munkafolyamatok"
+
+#. Default: "Make Transition"
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:57
+#, fuzzy
+msgid "make-transition-button"
+msgstr "Beállítások mentése"
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:62
+#, fuzzy
+msgid "Workflow-relevant Data"
+msgstr "Munkafolyamathoz tartozó adat séma"
 
 #: src/zope/app/workflow/stateful/interfaces.py:100
 msgid "Name of the source state."
 msgstr "A kiinduló állapot neve."
 
 #: src/zope/app/workflow/stateful/interfaces.py:105
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:29
 msgid "Destination State"
 msgstr "Cél állapot"
 
@@ -5918,6 +6133,7 @@ msgid "Name of the destination state."
 msgstr "A cél állapot neve."
 
 #: src/zope/app/workflow/stateful/interfaces.py:111
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:39
 msgid "Condition"
 msgstr "Feltétel"
 
@@ -5966,6 +6182,7 @@ msgstr ""
 "amely a pd.data-ban található."
 
 #: src/zope/app/workflow/stateful/interfaces.py:99
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:19
 msgid "Source State"
 msgstr "Kiinduló állapot"
 
@@ -6058,13 +6275,13 @@ msgstr ""
 
 #: src/zope/app/zptpage/configure.zcml:12
 #: src/zope/app/zptpage/browser/configure.zcml:23
-msgid "A simple, content-based Page Template"
-msgstr "Egy egyszerű tartalom alapú Oldal Sablon"
+msgid "ZPT Page"
+msgstr "ZPT Lap"
 
 #: src/zope/app/zptpage/configure.zcml:12
 #: src/zope/app/zptpage/browser/configure.zcml:23
-msgid "ZPT Page"
-msgstr "ZPT Lap"
+msgid "A simple, content-based Page Template"
+msgstr "Egy egyszerű tartalom alapú Oldal Sablon"
 
 #: src/zope/app/zptpage/interfaces.py:37
 msgid "The source of the page template."
@@ -6342,15 +6559,15 @@ msgstr "DublinCore metaadatok megtekintése"
 msgid "zope.app.dublincore.change-permission"
 msgstr "DublinCore metaadatok szerkesztése"
 
-#: src/zope/formlib/form.py:723
+#: src/zope/formlib/form.py:725
 msgid "There were errors"
 msgstr "Hibák történtek"
 
-#: src/zope/formlib/form.py:781
+#: src/zope/formlib/form.py:783
 msgid "Apply"
 msgstr "Alkalmaz"
 
-#: src/zope/formlib/form.py:802
+#: src/zope/formlib/form.py:804
 msgid "No changes"
 msgstr "Nincs változás"
 
@@ -7067,9 +7284,6 @@ msgstr "nézet"
 #~ msgid "Error Reporting"
 #~ msgstr "Hiba Jelentő"
 
-#~ msgid "remove-selected-items"
-#~ msgstr "A kiválasztott elemek eltávolítása"
-
 #~ msgid "A Principal Home Folder Manager"
 #~ msgstr "Felettes Kezdőmappa Kezelő"
 
@@ -7145,9 +7359,6 @@ msgstr "nézet"
 
 #~ msgid "The type of requests the view works with"
 #~ msgstr "A nézet ezekkel a kérés típusokkal dolgozik"
-
-#~ msgid "Class attribute"
-#~ msgstr "Osztály attribútum"
 
 #~ msgid "The interface of the objects being viewed"
 #~ msgstr "A megtekintett objektumok interfésze"

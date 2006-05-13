@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
-"POT-Creation-Date: Tue May 02 21:39:45 2006\n"
+"POT-Creation-Date: Fri May 12 18:05:01 2006\n"
 "PO-Revision-Date: 2005-12-27 01:18+0100\n"
 "Last-Translator: Sebastien Douche <sdouche@gmail.com>\n"
 "Language-Team: French Zope 3 Team <zope3-dev@zope3.org>\n"
@@ -14,12 +14,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: securitypolicy.zcml:11
-msgid "Everybody"
-msgstr "Tout le monde"
-
-#: securitypolicy.zcml:11
 msgid "All users have this role implicitly"
 msgstr "Tous les utilisateurs disposent implicitement de ce rôle"
+
+#: securitypolicy.zcml:11
+msgid "Everybody"
+msgstr "Tout le monde"
 
 #: securitypolicy.zcml:13
 msgid "Site Manager"
@@ -235,108 +235,6 @@ msgstr ""
 "\"thématique\" ce qui permet aux développeurs d'obtenir l'information "
 "adéquate. Ci-dessous, une brève description de chaque module."
 
-#: src/zope/app/apidoc/browser/contents.pt:24
-#: src/zope/app/apidoc/browser/contents.pt:29
-#: src/zope/app/apidoc/browser/menu_macros.pt:78
-#: src/zope/app/apidoc/browser/menu_macros.pt:84
-#: src/zope/app/apidoc/browser/modules.pt:14
-#: src/zope/app/apidoc/browser/prefIndex.pt:66
-#: src/zope/app/apidoc/browser/prefIndex.pt:68
-#: src/zope/app/apidoc/browser/prefIndex.pt:73
-#: src/zope/app/apidoc/browser/prefIndex.pt:95
-#: src/zope/app/apidoc/browser/prefIndex.pt:100
-#: src/zope/app/apidoc/browser/prefIndex.pt:103
-#: src/zope/app/apidoc/browser/static_contents.pt:24
-#: src/zope/app/apidoc/browser/static_contents.pt:29
-#: src/zope/app/apidoc/browser/static_menu_macros.pt:87
-#: src/zope/app/apidoc/browser/static_menu_macros.pt:93
-#: src/zope/app/apidoc/browser/static_modules.pt:14
-#: src/zope/app/apidoc/codemodule/browser/class_index.pt:11
-#: src/zope/app/apidoc/codemodule/browser/class_index.pt:101
-#: src/zope/app/apidoc/codemodule/browser/class_index.pt:103
-#: src/zope/app/apidoc/codemodule/browser/class_index.pt:147
-#: src/zope/app/apidoc/codemodule/browser/class_index.pt:149
-#: src/zope/app/apidoc/codemodule/browser/introspector.pt:142
-#: src/zope/app/apidoc/codemodule/browser/introspector.pt:144
-#: src/zope/app/apidoc/codemodule/browser/introspector.pt:183
-#: src/zope/app/apidoc/codemodule/browser/introspector.pt:185
-#: src/zope/app/apidoc/codemodule/browser/module_index.pt:9
-#: src/zope/app/apidoc/codemodule/browser/module_index.pt:16
-#: src/zope/app/apidoc/ifacemodule/iface_macros.pt:108
-#: src/zope/app/apidoc/ifacemodule/iface_macros.pt:125
-#: src/zope/app/applicationcontrol/browser/runtimeinfo.pt:12
-#: src/zope/app/applicationcontrol/browser/servercontrol.pt:8
-#: src/zope/app/applicationcontrol/browser/translationdomaincontrol.pt:9
-#: src/zope/app/applicationcontrol/browser/zodbcontrol.pt:11
-#: src/zope/app/applicationcontrol/browser/zodbcontrol.pt:23
-#: src/zope/app/basicskin/view_macros.pt:23
-#: src/zope/app/boston/browser/template.pt:88
-#: src/zope/app/cache/browser/cacheableedit.pt:53
-#: src/zope/app/cache/browser/ramedit.pt:56
-#: src/zope/app/cache/browser/ramstats.pt:38
-#: src/zope/app/container/browser/add.pt:10
-#: src/zope/app/container/browser/add.pt:30
-#: src/zope/app/container/browser/add.pt:32
-#: src/zope/app/container/browser/commontasks.pt:11
-#: src/zope/app/container/browser/commontasks.pt:21
-#: src/zope/app/container/browser/commontasks.pt:31
-#: src/zope/app/container/browser/contents.pt:20
-#: src/zope/app/container/browser/contents.pt:78
-#: src/zope/app/container/browser/contents.pt:96
-#: src/zope/app/container/browser/contents.pt:103
-#: src/zope/app/container/browser/contents.pt:110
-#: src/zope/app/container/browser/contents.pt:113
-#: src/zope/app/container/browser/contents.pt:116
-#: src/zope/app/container/browser/index.pt:45
-#: src/zope/app/container/browser/index.pt:52
-#: src/zope/app/container/browser/index.pt:54
-#: src/zope/app/container/browser/index.pt:56
-#: src/zope/app/exception/browser/user.pt:7
-#: src/zope/app/file/browser/file_add.pt:11
-#: src/zope/app/file/browser/file_upload.pt:11
-#: src/zope/app/file/browser/image_edit.pt:13
-#: src/zope/app/form/browser/add.pt:13 src/zope/app/form/browser/add.pt:19
-#: src/zope/app/form/browser/display.pt:9 src/zope/app/form/browser/edit.pt:14
-#: src/zope/app/form/browser/edit.pt:20
-#: src/zope/app/i18nfile/browser/file_edit.pt:25
-#: src/zope/app/i18nfile/browser/image_edit.pt:25
-#: src/zope/app/i18nfile/browser/image_edit.pt:87
-#: src/zope/app/onlinehelp/browser/helptopic.pt:3
-#: src/zope/app/pythonpage/edit.pt:14 src/zope/app/pythonpage/edit.pt:19
-#: src/zope/app/rotterdam/template.pt:112
-#: src/zope/app/rotterdam/template.pt:131
-#: src/zope/app/rotterdam/template.pt:140
-#: src/zope/app/rotterdam/template_tablelayout.pt:113
-#: src/zope/app/rotterdam/template_tablelayout.pt:130
-#: src/zope/app/rotterdam/template_tablelayout.pt:137
-#: src/zope/app/rotterdam/view_macros.pt:5
-#: src/zope/app/rotterdam/view_macros.pt:24
-#: src/zope/app/securitypolicy/browser/granting.pt:6
-#: src/zope/app/securitypolicy/browser/granting.pt:35
-#: src/zope/app/securitypolicy/browser/granting.pt:61
-#: src/zope/app/securitypolicy/browser/manage_access.pt:11
-#: src/zope/app/securitypolicy/browser/manage_access.pt:37
-#: src/zope/app/securitypolicy/browser/manage_access.pt:56
-#: src/zope/app/securitypolicy/browser/manage_permissionform.pt:34
-#: src/zope/app/securitypolicy/browser/manage_permissionform.pt:74
-#: src/zope/app/securitypolicy/browser/manage_roleform.pt:6
-#: src/zope/app/securitypolicy/browser/manage_roleform.pt:16
-#: src/zope/app/securitypolicy/browser/manage_roleform.pt:40
-#: src/zope/app/securitypolicy/browser/manage_roleform.pt:53
-#: src/zope/app/undo/undo_macros.pt:86
-#: src/zope/app/zopetop/widget_macros.pt:15
-#: src/zope/app/zopetop/widget_macros.pt:23
-#: src/zope/app/zopetop/widget_macros.pt:158
-#: src/zope/app/zopetop/widget_macros.pt:175
-#: src/zope/app/zopetop/widget_macros.pt:212
-#: src/zope/app/zopetop/widget_macros.pt:227
-#: src/zope/app/zptpage/browser/inlinecode.pt:13
-#: src/zope/app/zptpage/browser/inlinecode.pt:45
-#: src/zope/app/zptpage/browser/inlinecode.pt:55
-#: src/zope/dublincore/browser/edit.pt:12
-msgid "${DYNAMIC_CONTENT}"
-msgstr "${DYNAMIC_CONTENT}"
-
 #: src/zope/app/apidoc/browser/contents.pt:5
 #: src/zope/app/apidoc/browser/index.pt:3
 #: src/zope/app/apidoc/browser/static_contents.pt:5
@@ -383,38 +281,48 @@ msgstr "Menu"
 msgid "Zope 3 API Docs"
 msgstr "Docs de l'API de Zope 3"
 
-#. Default: "Refresh"
-#: src/zope/app/apidoc/browser/prefIndex.pt:118
-#: src/zope/app/demo/widget/browser/Kopie von popup.pt:65
-#: src/zope/app/demo/widget/browser/popup.pt:65
-#: src/zope/app/error/browser/error.pt:53
-#: src/zope/app/file/browser/file_add.pt:46
-#: src/zope/app/file/browser/file_upload.pt:48
-#: src/zope/app/form/browser/add.pt:53 src/zope/app/form/browser/edit.pt:53
-#: src/zope/app/pythonpage/edit.pt:70
-#: src/zope/app/zptpage/browser/inlinecode.pt:64
-#: src/zope/dublincore/browser/edit.pt:50
-msgid "refresh-button"
-msgstr "Rafraîchir"
+#: src/zope/app/apidoc/browser/prefmenu.pt:4
+msgid "Preferences"
+msgstr "Préférences"
 
-#. Default: "Change"
-#: src/zope/app/apidoc/browser/prefIndex.pt:120
-#: src/zope/app/demo/widget/browser/Kopie von popup.pt:67
-#: src/zope/app/demo/widget/browser/popup.pt:67
-#: src/zope/app/form/browser/edit.pt:55 src/zope/app/pythonpage/edit.pt:72
-#: src/zope/app/zptpage/browser/inlinecode.pt:66
-msgid "submit-button"
-msgstr "Soumettre"
-
-#: src/zope/app/apidoc/browser/prefIndex.pt:78
-#: src/zope/app/demo/widget/browser/Kopie von popup.pt:36
-#: src/zope/app/demo/widget/browser/popup.pt:36
-#: src/zope/app/form/browser/add.pt:25 src/zope/app/form/browser/edit.pt:26
-#: src/zope/app/pythonpage/edit.pt:24
-#: src/zope/app/schema/browser/schema_edit.pt:21
-#: src/zope/app/zptpage/browser/inlinecode.pt:50
-msgid "There are ${num_errors} input errors."
-msgstr "Il y a ${num_errors} erreurs d'encodage."
+#: src/zope/app/apidoc/browser/prefmenu.pt:51
+#: src/zope/app/boston/browser/widget_macros.pt:11
+#: src/zope/app/boston/viewlets/addinginfo/viewlet.pt:16
+#: src/zope/app/boston/viewlets/addinginfo/viewlet.pt:26
+#: src/zope/app/boston/viewlets/addinginfo/viewlet.pt:36
+#: src/zope/app/boston/viewlets/toolbar/macros.pt:3
+#: src/zope/app/boston/viewlets/toolbar/macros.pt:12
+#: src/zope/app/form/browser/objectwidget.pt:2
+#: src/zope/app/form/browser/orderedSelectionList.pt:146
+#: src/zope/app/form/browser/orderedSelectionList.pt:166
+#: src/zope/app/form/browser/subedit.pt:3
+#: src/zope/app/form/browser/subedit.pt:10
+#: src/zope/app/form/browser/subedit.pt:14
+#: src/zope/app/form/browser/subedit.pt:23
+#: src/zope/app/rotterdam/simpleeditingrow.pt:24
+#: src/zope/app/workflow/stateful/browser/add.pt:22
+#: src/zope/app/workflow/stateful/browser/add.pt:24
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:22
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:32
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:11
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:25
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:41
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:11
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:36
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:37
+#: src/zope/app/workflow/stateful/browser/definition_index.pt:13
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:18
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:28
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:42
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:55
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:64
+#: src/zope/formlib/pageform.pt:44 src/zope/formlib/pageform.pt:56
+#: src/zope/formlib/pageform.pt:92 src/zope/formlib/pageform.pt:98
+#: src/zope/formlib/pageform.pt:104 src/zope/formlib/subpageform.pt:30
+#: src/zope/formlib/subpageform.pt:41 src/zope/formlib/subpageform.pt:80
+#: src/zope/formlib/subpageform.pt:86 src/zope/formlib/subpageform.pt:92
+msgid "${DYNAMIC_CONTENT}"
+msgstr "${DYNAMIC_CONTENT}"
 
 #: src/zope/app/apidoc/codemodule/browser/class_index.pt:100
 #: src/zope/app/apidoc/codemodule/browser/class_index.pt:146
@@ -1497,12 +1405,12 @@ msgid "ZODB successfully packed."
 msgstr "Compactage de la ZODB réussi."
 
 #: src/zope/app/authentication/browser/configure.zcml:24
-msgid "New-style pluggable authentication utility"
-msgstr "Nouveau style de l'utilitaire d'authentification enfichable"
-
-#: src/zope/app/authentication/browser/configure.zcml:24
 msgid "Pluggable Authentication Utility"
 msgstr "Utilitaire d'authentification enfichable"
+
+#: src/zope/app/authentication/browser/configure.zcml:24
+msgid "New-style pluggable authentication utility"
+msgstr "Nouveau style de l'utilitaire d'authentification enfichable"
 
 #: src/zope/app/authentication/browser/configure.zcml:39
 msgid "Edit Pluggable Authentication Utility"
@@ -1533,12 +1441,12 @@ msgid "Add group folder"
 msgstr "Ajouter un dossier groupe"
 
 #: src/zope/app/authentication/browser/groupfolder.zcml:41
-msgid "Group Folder"
-msgstr "Dossier groupe"
-
-#: src/zope/app/authentication/browser/groupfolder.zcml:41
 msgid "A Group folder"
 msgstr "Un dossier groupe"
+
+#: src/zope/app/authentication/browser/groupfolder.zcml:41
+msgid "Group Folder"
+msgstr "Dossier groupe"
 
 #: src/zope/app/authentication/browser/groupfolder.zcml:7
 msgid "Change group information"
@@ -1662,7 +1570,11 @@ msgstr "Fournir un titre pour la permission."
 #: src/zope/app/component/metadirectives.py:322
 #: src/zope/app/form/browser/ftests/test_i18n.py:40
 #: src/zope/schema/interfaces.py:108 src/zope/security/interfaces.py:270
-#: src/zope/security/interfaces.py:319 src/zope/dublincore/browser/edit.pt:25
+#: src/zope/security/interfaces.py:319
+#: src/zope/app/introspector/introspector.pt:53
+#: src/zope/app/introspector/introspector.pt:142
+#: src/zope/app/introspector/marker.pt:62
+#: src/zope/app/preference/macros.pt:120
 msgid "Description"
 msgstr "Description"
 
@@ -1856,6 +1768,11 @@ msgstr "Thème Boston"
 msgid "Adding info"
 msgstr "Ajouter des informations"
 
+#: src/zope/app/boston/viewlets/xmltree/xmltree.pt:3
+#: src/zope/app/boston/viewlets/xmltree/xmltree.pt:8
+msgid "Navigation"
+msgstr "Navigation"
+
 #: src/zope/app/broken/broken.pt:12
 msgid ""
 "This is probably because the module of the class, ${module}, can't be found "
@@ -1923,12 +1840,12 @@ msgid "Statistics"
 msgstr "Statistiques"
 
 #: src/zope/app/cache/browser/configure.zcml:6
-msgid "A RAM cache is a volatile (in memory) cache"
-msgstr "Un RAM cache est un cache volatile (en mémoire)"
-
-#: src/zope/app/cache/browser/configure.zcml:6
 msgid "RAM Cache"
 msgstr "RAM Cache"
+
+#: src/zope/app/cache/browser/configure.zcml:6
+msgid "A RAM cache is a volatile (in memory) cache"
+msgstr "Un RAM cache est un cache volatile (en mémoire)"
 
 #: src/zope/app/cache/browser/ramedit.pt:21
 msgid "Maximum cached entries"
@@ -2133,9 +2050,8 @@ msgstr "L'interface fournie"
 
 #: src/zope/app/component/back35.py:302 src/zope/component/zcml.py:104
 #: src/zope/component/zcml.py:377 src/zope/component/zcml.py:449
-#: src/zope/app/container/browser/contents.pt:33
-#: src/zope/app/container/browser/index.pt:27
-#: src/zope/app/schema/browser/schema_edit.pt:37
+#: src/zope/app/workflow/browser/instancecontainer_index.pt:19
+#: src/zope/app/workflow/browser/instancecontainer_main.pt:18
 msgid "Name"
 msgstr "Nom"
 
@@ -2478,7 +2394,7 @@ msgstr ""
 #: src/zope/app/component/metadirectives.py:235 src/zope/component/zcml.py:52
 #: src/zope/component/zcml.py:97 src/zope/component/zcml.py:264
 #: src/zope/app/security/browser/configure.zcml:63
-#: src/zope/app/securitypolicy/browser/manage_access.pt:23
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:46
 msgid "Permission"
 msgstr "Permission"
 
@@ -2557,20 +2473,6 @@ msgstr ""
 #: src/zope/app/component/vocabulary.py:290
 msgid "(unnamed utility)"
 msgstr "(utilitaire anonyme)"
-
-#: src/zope/app/container/browser/add.pt:12
-msgid "Add Content"
-msgstr "Ajouter du contenu"
-
-#. Default: "Add"
-#: src/zope/app/container/browser/add.pt:45
-#: src/zope/app/container/browser/contents.pt:156
-#: src/zope/app/file/browser/file_add.pt:48
-#: src/zope/app/form/browser/add.pt:55
-#: src/zope/app/i18n/browser/translate.pt:49
-#: src/zope/app/schema/browser/schema_add.pt:40
-msgid "add-button"
-msgstr "Ajouter"
 
 #: src/zope/app/container/browser/adding.py:113
 msgid "You must select the type of object to add."
@@ -2697,12 +2599,13 @@ msgid "Contents"
 msgstr "Contenus"
 
 #: src/zope/app/container/browser/metaconfigure.py:85
-#: src/zope/formlib/form.py:835 src/zope/app/menus.zcml:17
+#: src/zope/formlib/form.py:837 src/zope/app/menus.zcml:17
 #: src/zope/app/menus.zcml:25 src/zope/app/component/browser/configure.zcml:56
 #: src/zope/app/workflow/stateful/browser/configure.zcml:48
 #: src/zope/app/workflow/stateful/browser/configure.zcml:85
 #: src/zope/app/authentication/browser/configure.zcml:56
 #: src/zope/app/schema/browser/configure.zcml:9
+#: src/zope/app/boston/viewlets/addinginfo/viewlet.pt:5
 msgid "Add"
 msgstr "Ajouter"
 
@@ -2933,12 +2836,12 @@ msgid "TextAreaWidget Index"
 msgstr "Index TextAreaWidget"
 
 #: src/zope/app/demo/widget/browser/textareawidget.zcml:5
-msgid "TextAreaWidget"
-msgstr "TextAreaWidget"
-
-#: src/zope/app/demo/widget/browser/textareawidget.zcml:5
 msgid "Add a Demo TextAreaWidget"
 msgstr "Ajouter une démo TextAreaWidget"
+
+#: src/zope/app/demo/widget/browser/textareawidget.zcml:5
+msgid "TextAreaWidget"
+msgstr "TextAreaWidget"
 
 #: src/zope/app/demo/widget/browser/textwidget.zcml:21
 msgid "TextWidget Index"
@@ -3143,13 +3046,13 @@ msgstr "Champ zope.schema.TextLine avec min_lenght = 5 et max_length = 10"
 
 #: src/zope/app/dtmlpage/configure.zcml:13
 #: src/zope/app/dtmlpage/configure.zcml:81
-msgid "DTML Page"
-msgstr "Page DTML"
+msgid "A simple, content-based DTML page"
+msgstr "Une simple page DTML de contenu"
 
 #: src/zope/app/dtmlpage/configure.zcml:13
 #: src/zope/app/dtmlpage/configure.zcml:81
-msgid "A simple, content-based DTML page"
-msgstr "Une simple page DTML de contenu"
+msgid "DTML Page"
+msgstr "Page DTML"
 
 #: src/zope/app/dtmlpage/configure.zcml:59
 msgid "Edit a DTML page"
@@ -3184,12 +3087,12 @@ msgid "Configure"
 msgstr "Configurer"
 
 #: src/zope/app/error/browser/configure.zcml:35
-msgid "Error Reporting Utility for Logging Errors"
-msgstr "Utilitaire de rapport d'erreurs pour les erreurs enregistrées"
-
-#: src/zope/app/error/browser/configure.zcml:35
 msgid "Error Logging Utility"
 msgstr "Utilitaire d'enregistrement des erreurs"
+
+#: src/zope/app/error/browser/configure.zcml:35
+msgid "Error Reporting Utility for Logging Errors"
+msgstr "Utilitaire de rapport d'erreurs pour les erreurs enregistrées"
 
 #: src/zope/app/error/browser/error.pt:11
 msgid ""
@@ -3344,7 +3247,7 @@ msgstr "Ajouter une image"
 
 #. Default: ""
 #: src/zope/app/file/browser/file.py:300 src/zope/app/file/browser/file.py:442
-#: src/zope/app/form/browser/editview.py:114 src/zope/formlib/form.py:793
+#: src/zope/app/form/browser/editview.py:114 src/zope/formlib/form.py:795
 msgid "Updated on ${date_time}"
 msgstr "Mis à jour le ${date_time}"
 
@@ -3431,13 +3334,13 @@ msgstr "Fichier"
 
 #: src/zope/app/file/configure.zcml:50
 #: src/zope/app/file/browser/configure.zcml:91
-msgid "An Image"
-msgstr "Une image"
+msgid "Image"
+msgstr "Image"
 
 #: src/zope/app/file/configure.zcml:50
 #: src/zope/app/file/browser/configure.zcml:91
-msgid "Image"
-msgstr "Image"
+msgid "An Image"
+msgstr "Une image"
 
 #. Default: ""
 #: src/zope/app/file/image.py:78
@@ -3493,14 +3396,14 @@ msgstr "Faux"
 #: src/zope/app/form/browser/boolwidgets.py:95
 #: src/zope/app/form/browser/boolwidgets.py:100
 #: src/zope/app/form/browser/boolwidgets.py:107
-msgid "off"
-msgstr "désactivé"
+msgid "on"
+msgstr "activé"
 
 #: src/zope/app/form/browser/boolwidgets.py:95
 #: src/zope/app/form/browser/boolwidgets.py:100
 #: src/zope/app/form/browser/boolwidgets.py:107
-msgid "on"
-msgstr "activé"
+msgid "off"
+msgstr "désactivé"
 
 #: src/zope/app/form/browser/configure.zcml:512
 msgid "Widgets and Forms"
@@ -3597,6 +3500,11 @@ msgstr "Valeur multiple manquante pour l'édition"
 msgid "Edit"
 msgstr "Éditer"
 
+#. Default: "Remove selected items"
+#: src/zope/app/form/browser/sequencewidget.pt:17
+msgid "remove-selected-items"
+msgstr "Supprimer les éléments sélectionnés"
+
 #. Default: "(no value available)"
 #: src/zope/app/form/browser/sequencewidget.py:254
 msgid "sequence-value-not-provided"
@@ -3684,6 +3592,25 @@ msgstr "Le test de mise à jour a échoué :"
 #: src/zope/app/fssync/browser/__init__.py:91
 msgid "Content-Type is not application/x-snarf"
 msgstr "Le type de contenu n'est pas application/x-snarf"
+
+#: src/zope/app/fssync/browser/fromFS.pt:11
+msgid "Commit results: ${results}"
+msgstr ""
+
+#: src/zope/app/fssync/browser/fromFS.pt:16
+msgid "Upload a zipfile in the following form"
+msgstr ""
+
+#. Default: "Upload"
+#: src/zope/app/fssync/browser/fromFS.pt:20
+#, fuzzy
+msgid "upload-button"
+msgstr "Recharger"
+
+#: src/zope/app/fssync/browser/fromFS.pt:5
+#, fuzzy
+msgid "Commit Action"
+msgstr "Condition"
 
 #: src/zope/app/generations/browser/configure.zcml:6
 msgid "Database Schemas"
@@ -3870,12 +3797,12 @@ msgid "Synchronize"
 msgstr "Synchroniser"
 
 #: src/zope/app/i18n/browser/configure.zcml:54
-msgid "Translation Domain"
-msgstr "Domaine de traduction"
-
-#: src/zope/app/i18n/browser/configure.zcml:54
 msgid "A Persistent Translation Domain"
 msgstr "Un domaine de traduction persistant"
+
+#: src/zope/app/i18n/browser/configure.zcml:54
+msgid "Translation Domain"
+msgstr "Domaine de traduction"
 
 #: src/zope/app/i18n/browser/exportimport.pt:11
 msgid "Import and Export Messages"
@@ -3896,11 +3823,6 @@ msgstr "Sélectionner les langues :"
 #: src/zope/app/i18n/browser/exportimport.pt:33
 msgid "Import File Name:"
 msgstr "Nom du fichier à importer :"
-
-#. Default: "Import"
-#: src/zope/app/i18n/browser/exportimport.pt:38
-msgid "import-button"
-msgstr "Importer"
 
 #: src/zope/app/i18n/browser/exportimport.pt:4
 #: src/zope/app/i18n/browser/translate.pt:4
@@ -3948,6 +3870,10 @@ msgid "Status"
 msgstr "Statut"
 
 #: src/zope/app/i18n/browser/synchronize.py:34
+msgid "Out of Date"
+msgstr "Non à jour"
+
+#: src/zope/app/i18n/browser/synchronize.py:34
 msgid "Up to Date"
 msgstr "Mis à jour"
 
@@ -3955,17 +3881,13 @@ msgstr "Mis à jour"
 msgid "New Remote"
 msgstr "Nouveau distant"
 
-#: src/zope/app/i18n/browser/synchronize.py:34
-msgid "Out of Date"
-msgstr "Non à jour"
+#: src/zope/app/i18n/browser/synchronize.py:35
+msgid "Newer Local"
+msgstr "Nouveau local"
 
 #: src/zope/app/i18n/browser/synchronize.py:35
 msgid "Does not exist"
 msgstr "N'existe pas"
-
-#: src/zope/app/i18n/browser/synchronize.py:35
-msgid "Newer Local"
-msgstr "Nouveau local"
 
 #: src/zope/app/i18n/browser/translate.pt:103
 msgid "Add new messages"
@@ -3983,11 +3905,6 @@ msgstr "Effacer les messages"
 #: src/zope/app/i18n/browser/translate.pt:35
 msgid "edit-button"
 msgstr "Éditer"
-
-#. Default: "Delete"
-#: src/zope/app/i18n/browser/translate.pt:38
-msgid "delete-button"
-msgstr "Effacer"
 
 #: src/zope/app/i18n/browser/translate.pt:46
 msgid "New Language:"
@@ -4024,12 +3941,6 @@ msgstr "Langue par défaut"
 #: src/zope/app/i18nfile/browser/image_edit.pt:68
 msgid "show-button"
 msgstr "Afficher"
-
-#. Default: "Remove"
-#: src/zope/app/i18nfile/browser/file_edit.pt:69
-#: src/zope/app/i18nfile/browser/image_edit.pt:70
-msgid "remove-button"
-msgstr "Supprimer"
 
 #: src/zope/app/i18nfile/browser/file_edit.pt:72
 #: src/zope/app/i18nfile/browser/image_edit.pt:73
@@ -4095,6 +4006,11 @@ msgstr "Objet"
 msgid "${count} objects"
 msgstr "${count} objets"
 
+#. Default: "Introspect Object Classes and Interfaces"
+#: src/zope/app/introspector/configure.zcml:6
+msgid "zope.app.introspector.Introspect"
+msgstr "[zope.app.introspector.Introspect] Introspecteur"
+
 #: src/zope/app/introspector/configure.zcml:6
 msgid ""
 "       Use the object-introspection facility to discover       and browse "
@@ -4103,10 +4019,89 @@ msgstr ""
 "       Employez le service de l'objet introspection pour découvrir et passer "
 "en revue les interfaces et les classes.       "
 
-#. Default: "Introspect Object Classes and Interfaces"
-#: src/zope/app/introspector/configure.zcml:6
-msgid "zope.app.introspector.Introspect"
-msgstr "[zope.app.introspector.Introspect] Introspecteur"
+#: src/zope/app/introspector/introspector.pt:108
+#: src/zope/app/introspector/marker.pt:26
+#, fuzzy
+msgid "Class Browser"
+msgstr "Navigateur de code"
+
+#. Default: "Class"
+#: src/zope/app/introspector/introspector.pt:113
+#: src/zope/app/introspector/marker.pt:31
+#, fuzzy
+msgid "class-component"
+msgstr "Schéma de composant"
+
+#: src/zope/app/introspector/introspector.pt:153
+#: src/zope/app/introspector/marker.pt:73
+#, fuzzy
+msgid "Interfaces from Class"
+msgstr "Interfaces et schémas"
+
+#: src/zope/app/introspector/introspector.pt:172
+#: src/zope/app/introspector/marker.pt:91
+#, fuzzy
+msgid "Interfaces from Object"
+msgstr "Interfaces"
+
+#. Default: "Modify"
+#: src/zope/app/introspector/introspector.pt:190
+#, fuzzy
+msgid "modify-button"
+msgstr "Éditer"
+
+#: src/zope/app/introspector/introspector.pt:27
+#, fuzzy
+msgid "Interface Browser"
+msgstr "Interfaces"
+
+#. Default: "Bases"
+#: src/zope/app/introspector/introspector.pt:39
+#: src/zope/app/introspector/introspector.pt:127
+#: src/zope/app/introspector/marker.pt:38
+#, fuzzy
+msgid "class-bases"
+msgstr "Classes"
+
+#. Default: "Attributes"
+#: src/zope/app/introspector/introspector.pt:67
+#, fuzzy
+msgid "class-attributes"
+msgstr "Attribut de classe"
+
+#. Default: "Methods"
+#: src/zope/app/introspector/introspector.pt:84
+#, fuzzy
+msgid "class-methods"
+msgstr "Classes"
+
+#: src/zope/app/introspector/marker.pt:108
+#, fuzzy
+msgid "Remove Interfaces:"
+msgstr "Interfaces fournies"
+
+#. Default: "Remove"
+#: src/zope/app/introspector/marker.pt:117
+msgid "remove-button"
+msgstr "Supprimer"
+
+#: src/zope/app/introspector/marker.pt:123
+#, fuzzy
+msgid "Add Interfaces:"
+msgstr "Interface :"
+
+#. Default: "Add"
+#: src/zope/app/introspector/marker.pt:132
+#: src/zope/app/workflow/stateful/browser/add.pt:66
+#: src/zope/app/workflow/stateful/browser/addstate.pt:20
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:55
+msgid "add-button"
+msgstr "Ajouter"
+
+#. Default: "Module"
+#: src/zope/app/introspector/marker.pt:55
+msgid "python-module"
+msgstr ""
 
 #: src/zope/app/keyreference/configure.zcml:26
 msgid "Persistent Key References"
@@ -4179,13 +4174,13 @@ msgid "Menu of objects to be added to site management folders"
 msgstr "Menu d'objets à ajouter aux dossiers de gestion de site"
 
 #: src/zope/app/menus.zcml:31
-msgid "Menu of addable configuration objects"
-msgstr "Menu d'ajout d'objets de configuration"
-
-#: src/zope/app/menus.zcml:31
 #, fuzzy
 msgid "Add Registration"
 msgstr "Enregistrement"
+
+#: src/zope/app/menus.zcml:31
+msgid "Menu of addable configuration objects"
+msgstr "Menu d'ajout d'objets de configuration"
 
 #: src/zope/app/menus.zcml:5
 msgid "Menu for displaying alternate representations of an object"
@@ -4195,6 +4190,11 @@ msgstr "Menu d'affichage de représentations de remplacement d'un objet"
 #: src/zope/app/zopetop/widget_macros.pt:154
 msgid "Views"
 msgstr "Vues"
+
+#: src/zope/app/module/browser/browse_module.pt:3
+#, fuzzy
+msgid "View Module Names"
+msgstr "Nom de la vue"
 
 #: src/zope/app/onlinehelp/browser/configure.zcml:48
 #: src/zope/app/demo/menu/configure.zcml:234
@@ -4265,6 +4265,8 @@ msgstr ""
 
 #: src/zope/app/onlinehelp/interfaces.py:53
 #: src/zope/security/interfaces.py:258 src/zope/security/interfaces.py:308
+#: src/zope/app/workflow/stateful/browser/addstate.pt:12
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:12
 msgid "Id"
 msgstr "Id"
 
@@ -4369,24 +4371,44 @@ msgid "User Preferences"
 msgstr "Préférences utilisateur"
 
 #: src/zope/app/preference/configure.zcml:70
-msgid "A Default User Preferences Provider"
-msgstr "Un fournisseur par défaut de préférences utilisateur"
-
-#: src/zope/app/preference/configure.zcml:70
 msgid "Default User Preferences Provider"
 msgstr "Fournisseur par défaut de préférences utilisateur"
 
-#: src/zope/app/preference/menu.pt:5
-msgid "Preferences"
-msgstr "Préférences"
+#: src/zope/app/preference/configure.zcml:70
+msgid "A Default User Preferences Provider"
+msgstr "Un fournisseur par défaut de préférences utilisateur"
 
-#: src/zope/app/principalannotation/configure.zcml:18
-msgid "Principal Annotation Utility"
-msgstr "Utilitaire d'annotation Principal"
+#. Default: "Refresh"
+#: src/zope/app/preference/edit.pt:112 src/zope/app/preference/index.pt:14
+#: src/zope/app/schemacontent/browser/permission_edit.pt:33
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:24
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:51
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:74
+msgid "refresh-button"
+msgstr "Rafraîchir"
+
+#. Default: "Change"
+#: src/zope/app/preference/edit.pt:114 src/zope/app/preference/index.pt:16
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:76
+msgid "submit-button"
+msgstr "Soumettre"
+
+#: src/zope/app/preference/edit.pt:77 src/zope/app/preference/macros.pt:111
+msgid "There are ${num_errors} input errors."
+msgstr "Il y a ${num_errors} erreurs d'encodage."
+
+#: src/zope/app/preference/macros.pt:121
+#: src/zope/app/workflow/browser/instance_index.pt:38
+msgid "Value"
+msgstr "Valeur"
 
 #: src/zope/app/principalannotation/configure.zcml:18
 msgid "Stores Annotations for Principals"
 msgstr "Stocke les annotations des Principals"
+
+#: src/zope/app/principalannotation/configure.zcml:18
+msgid "Principal Annotation Utility"
+msgstr "Utilitaire d'annotation Principal"
 
 #: src/zope/app/publisher/configure.zcml:18
 msgid "Creating HTTP Results"
@@ -4644,10 +4666,10 @@ msgstr "Z3 UI"
 msgid "Tip"
 msgstr "Astuce"
 
-#: src/zope/app/rotterdam/navigation_macros.pt:31
-#: src/zope/app/tree/browser/navigation_macros.pt:16
-msgid "Navigation"
-msgstr "Navigation"
+#: src/zope/app/rotterdam/simpleeditingrow.pt:3
+#, fuzzy
+msgid "Extended Editor"
+msgstr "Adaptateurs étendus"
 
 #: src/zope/app/rotterdam/template.pt:79
 #: src/zope/app/rotterdam/template_tablelayout.pt:99
@@ -4670,7 +4692,7 @@ msgid "Contains $${num} item(s)"
 msgstr "Contient $${num} élément(s)"
 
 #: src/zope/app/rotterdam/xmlobject.py:33
-#: src/zope/app/rotterdam/navigation_macros.pt:32
+#: src/zope/app/boston/viewlets/xmltree/xmltree.pt:9
 msgid "Loading..."
 msgstr "Chargement..."
 
@@ -4755,12 +4777,12 @@ msgid "Edit Text Field"
 msgstr "Éditer un champ texte"
 
 #: src/zope/app/schema/fieldforms.zcml:33
-msgid "TextLine Field"
-msgstr "Champ ligne de texte"
-
-#: src/zope/app/schema/fieldforms.zcml:33
 msgid "A TextLine Field"
 msgstr "Un champ ligne de texte"
+
+#: src/zope/app/schema/fieldforms.zcml:33
+msgid "TextLine Field"
+msgstr "Champ ligne de texte"
 
 #: src/zope/app/schema/fieldforms.zcml:33
 msgid "Add TextLine Field"
@@ -4771,12 +4793,12 @@ msgid "Edit TextLine Field"
 msgstr "Éditer un champ ligne de texte"
 
 #: src/zope/app/schema/fieldforms.zcml:59
-msgid "Add Boolean Field"
-msgstr "Ajouter un champ booléen"
-
-#: src/zope/app/schema/fieldforms.zcml:59
 msgid "A Boolean Field"
 msgstr "Un champ booléen"
+
+#: src/zope/app/schema/fieldforms.zcml:59
+msgid "Add Boolean Field"
+msgstr "Ajouter un champ booléen"
 
 #: src/zope/app/schema/fieldforms.zcml:7
 msgid "A Text Field"
@@ -4903,12 +4925,25 @@ msgid "New Content Component Instance"
 msgstr "Nouvelle instanciation du composant de contenu"
 
 #: src/zope/app/schemacontent/browser/configure.zcml:66
+msgid "Schema-based Content"
+msgstr "Contenu orienté schéma"
+
+#: src/zope/app/schemacontent/browser/configure.zcml:66
 msgid "Schema-based Content Component Instance"
 msgstr "Instance de composant de contenu orienté schéma"
 
-#: src/zope/app/schemacontent/browser/configure.zcml:66
-msgid "Schema-based Content"
-msgstr "Contenu orienté schéma"
+#: src/zope/app/schemacontent/browser/permission_edit.pt:14
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:33
+#, fuzzy
+msgid "Map permissions to Schema fields"
+msgstr "Une description du champ"
+
+#. Default: "Change"
+#: src/zope/app/schemacontent/browser/permission_edit.pt:35
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:53
+#, fuzzy
+msgid "change-button"
+msgstr "Enregistrer les modifications"
 
 #: src/zope/app/schemacontent/configure.zcml:10
 #: src/zope/app/schemacontent/browser/configure.zcml:8
@@ -4922,6 +4957,7 @@ msgstr "Définition de composant de contenu"
 
 #. Default: "Interface"
 #: src/zope/app/schemacontent/interfaces.py:38
+#: src/zope/app/introspector/introspector.pt:32
 msgid "interface-component"
 msgstr "Interface de composant"
 
@@ -5310,16 +5346,16 @@ msgid "Session Data Container Properties"
 msgstr "Propriétés de conteneur de session de données"
 
 #: src/zope/app/session/browser.zcml:8
+msgid "Cookie Client Id Manager"
+msgstr "Gestionnaire d'Id du cookie du client"
+
+#: src/zope/app/session/browser.zcml:8
 msgid ""
 "Uses a cookie to uniquely identify a client, allowing        state to be "
 "maintained between requests"
 msgstr ""
 "Utiliser un cookie afin d'identifier de façon unique un navigateur, "
 "permettant de conserver l'état entre les requêtes"
-
-#: src/zope/app/session/browser.zcml:8
-msgid "Cookie Client Id Manager"
-msgstr "Gestionnaire d'Id du cookie du client"
 
 #: src/zope/app/session/configure.zcml:82
 msgid "Sessions"
@@ -5420,10 +5456,6 @@ msgstr "Changer et tester"
 msgid "Argument Name"
 msgstr "Nom de l'argument"
 
-#: src/zope/app/sqlscript/browser/test.pt:17
-msgid "Value"
-msgstr "Valeur"
-
 #. Default: "Test"
 #: src/zope/app/sqlscript/browser/test.pt:32
 msgid "test-button"
@@ -5512,11 +5544,6 @@ msgstr "Annuler suite"
 msgid "Undo all"
 msgstr "Tout annuler"
 
-#. Default: "Undo all transactions"
-#: src/zope/app/undo/configure.zcml:14
-msgid "undo-all-transactions-permission"
-msgstr "Permission annuler toutes les transactions"
-
 #: src/zope/app/undo/configure.zcml:14
 msgid ""
 "With this permission a user may undo all transactions,                    "
@@ -5524,6 +5551,11 @@ msgid ""
 msgstr ""
 "Avec cette permission un utilisateur peut annuler toutes transactions "
 "quelque soit l'initiateur de celles-ci"
+
+#. Default: "Undo all transactions"
+#: src/zope/app/undo/configure.zcml:14
+msgid "undo-all-transactions-permission"
+msgstr "Permission annuler toutes les transactions"
 
 #: src/zope/app/undo/configure.zcml:7
 msgid ""
@@ -5751,6 +5783,59 @@ msgstr "Workflows utilisant XPDL"
 msgid "Registering XPDL using ZCML"
 msgstr "Enregistré XPDL utilisant ZCML"
 
+#: src/zope/app/workflow/browser/definition_index.pt:11
+#, fuzzy
+msgid "Process Definition: ${pd_name}"
+msgstr "Définition d'un processus à état"
+
+#: src/zope/app/workflow/browser/definition_index.pt:3
+#: src/zope/app/workflow/stateful/browser/definition_index.pt:3
+#, fuzzy
+msgid "Process Definition"
+msgstr "Définition d'un processus à état"
+
+#: src/zope/app/workflow/browser/importexport_index.pt:12
+#, fuzzy
+msgid "Import / Export Process Definitions:"
+msgstr "Définition d'un processus à état"
+
+#: src/zope/app/workflow/browser/importexport_index.pt:13
+#, fuzzy
+msgid "Import:"
+msgstr "Importer/Exporter"
+
+#. Default: "Import"
+#: src/zope/app/workflow/browser/importexport_index.pt:17
+msgid "import-button"
+msgstr "Importer"
+
+#: src/zope/app/workflow/browser/importexport_index.pt:21
+msgid "Export: <a href=\"@@export.html\">save as file</a>"
+msgstr ""
+
+#: src/zope/app/workflow/browser/importexport_index.pt:6
+#, fuzzy
+msgid "Import was successfull!"
+msgstr "Déconnexion réussie !"
+
+#: src/zope/app/workflow/browser/instance_index.pt:19
+msgid "Status: ${status}"
+msgstr ""
+
+#: src/zope/app/workflow/browser/instance_index.pt:22
+#, fuzzy
+msgid "Outgoing Transitions:"
+msgstr "Gérer les transitions"
+
+#: src/zope/app/workflow/browser/instance_index.pt:37
+msgid "Key"
+msgstr ""
+
+#. Default: "Delete"
+#: src/zope/app/workflow/browser/instancecontainer_main.pt:47
+msgid "delete-button"
+msgstr "Effacer"
+
 #. Default: "Create Workflow ProcessInstances"
 #: src/zope/app/workflow/configure.zcml:14
 msgid "create-workflow-processinstances-permission"
@@ -5766,6 +5851,20 @@ msgstr "Permission utiliser des instances de processus de workflow"
 msgid "manage-workflow-processdefinitions-permission"
 msgstr "Permission gérer des définitions de processus de workflow"
 
+#: src/zope/app/workflow/stateful/browser/add.pt:8
+msgid "Add Content"
+msgstr "Ajouter du contenu"
+
+#: src/zope/app/workflow/stateful/browser/addstate.pt:3
+#, fuzzy
+msgid "Add State"
+msgstr "Ajouter un fichier"
+
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:3
+#, fuzzy
+msgid "Add Transition"
+msgstr "Editer une transition"
+
 #: src/zope/app/workflow/stateful/browser/configure.zcml:101
 msgid "Edit a Transition"
 msgstr "Editer une transition"
@@ -5775,12 +5874,12 @@ msgid "Stateful Transition"
 msgstr "Transition à état"
 
 #: src/zope/app/workflow/stateful/browser/configure.zcml:121
-msgid "An utility to manage content and workflow interaction."
-msgstr "Un utilitaire pour gérer le contenu et l'intéraction du workflow."
-
-#: src/zope/app/workflow/stateful/browser/configure.zcml:121
 msgid "Content Workflows Manager"
 msgstr "Gestionnaire de contenu de workflows"
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:121
+msgid "An utility to manage content and workflow interaction."
+msgstr "Un utilitaire pour gérer le contenu et l'intéraction du workflow."
 
 #: src/zope/app/workflow/stateful/browser/configure.zcml:129
 msgid "Content/Process Registry"
@@ -5830,15 +5929,131 @@ msgstr "Mapping(s) ajouté(s)."
 msgid "Mapping(s) removed."
 msgstr "Mapping(s) supprimé(s)."
 
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:15
+msgid ""
+"This screen let's you specify which content types (by interface) can receive "
+"which workflows (process definitions)."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:20
+msgid "Available Mappings"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:3
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:3
+msgid "Process Definition <-> Content Type Registry"
+msgstr ""
+
+#. Default: "Switch View"
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:48
+#, fuzzy
+msgid "switch-view-button"
+msgstr "Afficher"
+
+#. Default: "Remove Mappings"
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:50
+#, fuzzy
+msgid "remove-mappings-button"
+msgstr "Supprimer"
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:55
+#, fuzzy
+msgid "Add new Mapping"
+msgstr "Ajouter une nouvelle langue"
+
+#. Default: "Add Mappings"
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:67
+#, fuzzy
+msgid "add-mappings-button"
+msgstr "Ajouter"
+
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:16
+#, fuzzy
+msgid "Set Workflow-Relevant Data Schema"
+msgstr "workflow-Schéma appropriée de données"
+
+#. Default: "Set Schema"
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:26
+#, fuzzy
+msgid "set-schema-button"
+msgstr "Chercher"
+
+#: src/zope/app/workflow/stateful/browser/definition_index.pt:13
+#, fuzzy
+msgid "Process Definition: ${name}"
+msgstr "Définition d'un processus à état"
+
+#: src/zope/app/workflow/stateful/browser/definition_states.pt:10
+#, fuzzy
+msgid "States"
+msgstr "Statut"
+
+#: src/zope/app/workflow/stateful/browser/definition_states.pt:3
+#, fuzzy
+msgid "Process Definition States"
+msgstr "Définition d'un processus à état"
+
+#: src/zope/app/workflow/stateful/browser/definition_transitions.pt:10
+#, fuzzy
+msgid "Transitions"
+msgstr "Transactions"
+
+#: src/zope/app/workflow/stateful/browser/definition_transitions.pt:3
+#, fuzzy
+msgid "Process Definition Transitions"
+msgstr "Définition d'un processus à état"
+
 #: src/zope/app/workflow/stateful/browser/instance.py:148
 msgid "Updated Workflow Data."
 msgstr "Données de workflow actualisées."
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:16
+#, fuzzy
+msgid "Workflow:"
+msgstr "Worflows"
+
+#. Default: "Choose"
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:22
+#, fuzzy
+msgid "choose-button"
+msgstr "Afficher"
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:28
+#, fuzzy
+msgid "Workflow: ${wf_title}"
+msgstr "Utilisateur : ${user_title}"
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:42
+msgid "Current Status: x"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:45
+#, fuzzy
+msgid "Possible State Changes:"
+msgstr "Sauver les changements"
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:5
+#, fuzzy
+msgid "Workflow Options"
+msgstr "Worflows"
+
+#. Default: "Make Transition"
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:57
+#, fuzzy
+msgid "make-transition-button"
+msgstr "Sauver paramétrage"
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:62
+#, fuzzy
+msgid "Workflow-relevant Data"
+msgstr "workflow-Schéma appropriée de données"
 
 #: src/zope/app/workflow/stateful/interfaces.py:100
 msgid "Name of the source state."
 msgstr "Nom de l'état de la source."
 
 #: src/zope/app/workflow/stateful/interfaces.py:105
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:29
 msgid "Destination State"
 msgstr "État de destination"
 
@@ -5847,6 +6062,7 @@ msgid "Name of the destination state."
 msgstr "Nom de l'état de destination."
 
 #: src/zope/app/workflow/stateful/interfaces.py:111
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:39
 msgid "Condition"
 msgstr "Condition"
 
@@ -5895,6 +6111,7 @@ msgstr ""
 "instance de processus, trouvé dans pd.data."
 
 #: src/zope/app/workflow/stateful/interfaces.py:99
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:19
 msgid "Source State"
 msgstr "Etat d'origine"
 
@@ -5988,13 +6205,13 @@ msgstr ""
 
 #: src/zope/app/zptpage/configure.zcml:12
 #: src/zope/app/zptpage/browser/configure.zcml:23
-msgid "A simple, content-based Page Template"
-msgstr "Un simple contenu basé sur page template"
+msgid "ZPT Page"
+msgstr "Page ZPT"
 
 #: src/zope/app/zptpage/configure.zcml:12
 #: src/zope/app/zptpage/browser/configure.zcml:23
-msgid "ZPT Page"
-msgstr "Page ZPT"
+msgid "A simple, content-based Page Template"
+msgstr "Un simple contenu basé sur page template"
 
 #: src/zope/app/zptpage/interfaces.py:37
 msgid "The source of the page template."
@@ -6265,15 +6482,15 @@ msgstr "[zope.app.dublincore.view-permission] Voir la permission"
 msgid "zope.app.dublincore.change-permission"
 msgstr "[zope.app.dublincore.change-permission] Changer la permission"
 
-#: src/zope/formlib/form.py:723
+#: src/zope/formlib/form.py:725
 msgid "There were errors"
 msgstr "Il y a des erreurs"
 
-#: src/zope/formlib/form.py:781
+#: src/zope/formlib/form.py:783
 msgid "Apply"
 msgstr "Appliquer"
 
-#: src/zope/formlib/form.py:802
+#: src/zope/formlib/form.py:804
 msgid "No changes"
 msgstr "Pas de modification"
 
@@ -7004,9 +7221,6 @@ msgstr "Vue"
 #~ msgstr ""
 #~ "Composant d'enregistrement de toutes les erreurs et exceptions non gérées."
 
-#~ msgid "remove-selected-items"
-#~ msgstr "Supprimer les éléments sélectionnés"
-
 #~ msgid "A Principal Home Folder Manager"
 #~ msgstr "Un gestionnaire de dossier personnel Principal"
 
@@ -7083,9 +7297,6 @@ msgstr "Vue"
 
 #~ msgid "The type of requests the view works with"
 #~ msgstr "Le type de requêtes que la vue utilise"
-
-#~ msgid "Class attribute"
-#~ msgstr "Attribut de classe"
 
 #~ msgid "The interface of the objects being viewed"
 #~ msgstr "L'interface des objets visualisés"
