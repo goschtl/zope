@@ -19,8 +19,8 @@ from interfaces import IAlchemyEngineUtility
 
 import z3c.zalchemy
 
-def engine(_context, dns, name='', echo=False, **kwargs):
-    engine = AlchemyEngineUtility(name, dns, echo=echo, **kwargs)
+def engine(_context, url, name='', echo=False, **kwargs):
+    engine = AlchemyEngineUtility(name, url, echo=echo, **kwargs)
     utility(_context,
             IAlchemyEngineUtility,
             engine,
