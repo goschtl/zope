@@ -1,6 +1,6 @@
 PluggableAuthService changelog
 
-  After PluggableAuthService 1.2-beta
+  PluggableAuthService 1.2 (2006/05/14)
 
     Bugs Fixed
 

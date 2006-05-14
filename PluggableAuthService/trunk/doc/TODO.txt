@@ -26,8 +26,7 @@ ZCUserFolder TODOs
   - ( ) Define and /etc/passwd-based authentication plugin.  Test
         mix-and-match with BTree decorator.
 
-  - ( ) Create export / import facilities (based on Boston.com's
-        setup tool design).
+  - (x) Create export / import facilities (GenericSetup)
 
   - (x) Test layering of authentication plugins (try BTree first,
         then fall back to /etc/passwd).
