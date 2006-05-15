@@ -145,6 +145,24 @@ def _doCreateTable(table, engine):
         pass
 
 
+def dropTable(table, engine=''):
+    for t, tengine in _tableToEngine.iteritems():
+        if t==table:
+            t = metadata.tables[table]
+            util = getUtility(IAlchemyEngineUtility, name=tengine)
+            try:
+                util.getEngine().drop(t)
+            except:
+                pass
+            return
+    util = getUtility(IAlchemyEngineUtility, name=engine)
+    t = metadata.tables[table]
+    try:
+        util.getEngine().drop(t)
+    except:
+        pass
+
+
 def _dataManagerFinished():
     _storage.session = None
     _storage.dataManager = None
