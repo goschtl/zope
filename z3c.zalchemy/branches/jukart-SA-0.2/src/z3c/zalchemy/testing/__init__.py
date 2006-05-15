@@ -32,12 +32,14 @@ def tearDown(test):
     z3c.zalchemy.datamanager._tableToEngine.clear()
     z3c.zalchemy.datamanager._classToEngine.clear()
 
-def placefulSetUp(test):
+def placefulSetUp(test, echo=False):
     setup.placefulSetUp()
     test.tmpDir = tempfile.mkdtemp()
     dbFile = os.path.join(test.tmpDir,'z3c.zalchemy.testing.placefull.db')
     engineUtil = AlchemyEngineUtility(
-        'database','sqlite:///%s' % dbFile)
+        'database',
+        'sqlite:///%s' % dbFile,
+        echo=echo)
     component.provideUtility(engineUtil)
     test.globs['engineUtil'] = engineUtil
 
