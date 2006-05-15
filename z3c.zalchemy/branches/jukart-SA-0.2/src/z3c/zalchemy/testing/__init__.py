@@ -29,6 +29,12 @@ def tearDown(test):
             transaction.get().commit()
         except:
             pass
+    if _tablesToDrop:
+        session = z3c.zalchemy.getSession()
+        for table, engine in _tablesToDrop:
+            z3c.zalchemy.datamanager.dropTable(table, engine)
+        del _tablesToDrop[:]
+        transaction.get().commit()
     z3c.zalchemy.datamanager._tableToEngine.clear()
     z3c.zalchemy.datamanager._classToEngine.clear()
 
@@ -47,4 +53,12 @@ def placefulTearDown(test):
     tearDown(test)
     setup.placefulTearDown()
     shutil.rmtree(test.tmpDir)
-    
+
+_tablesToDrop = []
+
+def dropTable(name, engine=''):
+    """Drop table at tearDown.
+    """
+    _tablesToDrop.append((name, engine))
+
+
