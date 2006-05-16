@@ -1,6 +1,7 @@
-You are invited to become a Zope Foundation Committer.  Zope
-Foundation Committers can vote for Zope Foundation board members and
-will have access to the future Zope Foundation Software Repository.
+You are invited to become a Zope Foundation Committer member.  Zope
+Foundation Committer members can vote for Zope Foundation board
+members and will have access to the future Zope Foundation Software
+Repository.
 
 You are receiving this message because you checked into the Zope
 software repository between January 1, 2005 and May 11, 2006.
@@ -17,13 +18,22 @@ You can submit it in one of 3 ways:
 
   - Fax it to the number shown the agreement.
 
-  - Email the scanned agreement to the email address shown on the
-    agreement, legal@zope.org.
+  - Email the scanned agreement to legal@zope.org.
 
 An email acknowledging receipt of the agreement will be sent so that
 you can know whether we have received it.
 
-Let me know if you have any questions that are specific to you.
+If you decide to become a committer member, you should also subscribe
+to the Zope Foundation mailing list:
+
+  http://mail.zope.org/mailman/listinfo/foundation
+
+I encourage you to become a member as soon as you can.  We hope to
+elect the first Zope Foundation Board by July 1 and expect to begin the
+committer-member voting process by mid-June.
+
+Questions that are specific to you should be sent to legal@zope.org.
+
 General Questions about the Zope Foundation or about the process of
 becoming a committer member should be send to the Zope-Foundation
 mailing list:
