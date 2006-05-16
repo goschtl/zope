@@ -2,6 +2,10 @@ Zelenium Product Changelog
 
   After Zelenium-0.7
 
+    - Fix unit tests by wrapping filesystem objects that are rendered
+      during ZIP file creation - code in OFS.Image wants to acquire
+      REQUEST and use RESPONSE.
+
     - Found how to make the dependency on ExternalEditor optionsl (thanks
       to Andreas Jung for the bug report).
 

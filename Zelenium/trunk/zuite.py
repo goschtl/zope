@@ -513,7 +513,7 @@ class Zuite( OrderedFolder ):
         if include_selenium:
 
             for k, v in _SUPPORT_FILES.items():
-                archive.writestr( k, v.manage_FTPget() )
+                archive.writestr( k, v.__of__(self).manage_FTPget() )
 
         archive.close()
         return stream.getvalue()
