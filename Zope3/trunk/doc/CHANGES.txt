@@ -128,6 +128,12 @@ Zope Changes
 
     Bug Fixes
 
+      - Fix invariant error handling in formlib. The exception Invalid raised
+        in interface invariants where end in a component lookup error because
+        this exception didn't get converted to a usefull error message.
+        Now the error_views method in formlib can handle strings and i18n 
+        Message based Invalid exceptions.
+
       - Fixed error handling in sequence item input widget. This widget
         was raising a ValidationError instead a WidgetInputError. The formlib
         didn't catch ValidationErrors. Added also ValidationError handling to
