@@ -6,7 +6,7 @@ def main(args=None):
         args = sys.argv[1:]
     [data] = args
 
-    server = smtplib.SMTP('smtp.zope.com')
+    server = smtplib.SMTP()
     from_addr = 'legal@zope.org'
     invitation = open('invitation.txt').read()
 
@@ -29,7 +29,8 @@ def main(args=None):
             to = '<%s>' % email
 
         msg = MIMEText(invitation)
-        msg['Subject'] = 'Test message, please ignore'
+        msg['Subject'] = (
+            'Invitation to become a Zope Foundation Committer member')
         msg['From'] = 'Zope Foundation <legal@zope.org>'
         msg['Cc'] = 'Zope Foundation <legal@zope.org>'
         msg['To'] = to
