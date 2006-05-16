@@ -1,6 +1,6 @@
 Zelenium Product Changelog
 
-  After Zelenium-0.7
+  Zelenium 0.8 (2006/05/16)
 
     - Fixed unit tests by wrapping filesystem objects that are rendered
       during ZIP file creation - code in OFS.Image wants to acquire
