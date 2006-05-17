@@ -108,17 +108,17 @@ initialization process.
     ...     provideInformation(INoteConfig, {'body': note}, context)
     ...     deleteInformation(IArticleInitializationConfiguration, context)
  
-    >>> from zope.generic.configuration.api import ConfigurationData
+    >>> from zope.generic.configuration.api import createConfiguration
     
-    >>> textDefaults = ConfigurationData(ITextConfig, 
+    >>> textDefaults = createConfiguration(ITextConfig, 
     ...     {'body': u"This is the default text."})
 
-    >>> noteDefaults = ConfigurationData(INoteConfig, 
+    >>> noteDefaults = createConfiguration(INoteConfig, 
     ...     {'body': u"This is the default note."})
 
-    >>> articleTextDefaults = ConfigurationData(ITextConfig, 
+    >>> articleTextDefaults = createConfiguration(ITextConfig, 
     ...     {'body': u"This is the default article."})
-    >>> articleNoteDefaults = ConfigurationData(INoteConfig, 
+    >>> articleNoteDefaults = createConfiguration(INoteConfig, 
     ...     {'body': u""})
 
     >>> registerDirective('''

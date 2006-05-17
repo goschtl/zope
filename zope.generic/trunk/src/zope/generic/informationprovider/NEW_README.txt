@@ -65,7 +65,7 @@ assigns an information provider to IUndefinedKeyface
 You can provide all configuration value, but at least you have to provide
 the required ones.
 
-    >>> from zope.generic.configuration.api import ConfigurationData
+    >>> from zope.generic.configuration.api import createConfiguration
 
     >>> supplier_default = {'header': 'Supplier', 'timeFormat': '%y.%m.%d'}
 
@@ -184,7 +184,7 @@ to define an own key interface that allows you to provide specific configuration
     >>> class IMy(interface.Interface):
     ...     """My own key interface."""
 
-    >>> my_supplier = ConfigurationData(ILogConfiguration, {'header': 'My Supplier'})
+    >>> my_supplier = createConfiguration(ILogConfiguration, {'header': 'My Supplier'})
 
     >>> registerDirective('''
     ... <generic:informationProvider
@@ -225,7 +225,7 @@ to derive our marker from IUndefinedKeyface.
     >>> class IMy(IUndefinedKeyface):
     ...     """My own key interface."""
 
-    >>> my_supplier = ConfigurationData(ILogConfiguration, {'header': 'My Supplier'})
+    >>> my_supplier = createConfiguration(ILogConfiguration, {'header': 'My Supplier'})
 
     >>> registerDirective('''
     ... <generic:informationProvider
@@ -258,7 +258,7 @@ to derive our marker from IUndefinedKeyface.
 As soon as we configure the user context information provider we ca overwrite
 the default settings, too:
 
-    >>> my_user = ConfigurationData(ILogConfiguration, {'header': 'My User'})
+    >>> my_user = createConfiguration(ILogConfiguration, {'header': 'My User'})
 
     >>> registerDirective('''
     ... <generic:informationProvider

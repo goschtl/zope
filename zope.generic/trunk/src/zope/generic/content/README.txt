@@ -136,8 +136,8 @@ Then we provide two example configurations for our example:
     ...     />
     ... ''') 
 
-	>>> from zope.generic.configuration.api import ConfigurationData
-	>>> typedata = ConfigurationData(IAnyConfiguration, {'any': u'Guguseli from Type!'})
+	>>> from zope.generic.configuration.api import createConfiguration
+	>>> typedata = createConfiguration(IAnyConfiguration, {'any': u'Guguseli from Type!'})
 	>>> IAnyConfiguration.providedBy(typedata)
 	True
 
@@ -239,7 +239,7 @@ different configurations:
 	u'Specific initialization data.'
 
     >>> from zope.generic.configuration.api import IConfigurations
-	>>> objectdata = ConfigurationData(IAnyConfiguration, {'any': u'Guguseli from Object!'})
+	>>> objectdata = createConfiguration(IAnyConfiguration, {'any': u'Guguseli from Object!'})
 	>>> IConfigurations(bar)[IAnyConfiguration] = objectdata
 	
 	>>> queryInformation(IAnyConfiguration, bar).any

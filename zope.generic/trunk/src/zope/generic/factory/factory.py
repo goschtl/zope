@@ -111,7 +111,7 @@ class Factory(factory.Factory, Face):
         >>> def init_handler(context, *pos, **kws):
         ...    print 'initializing'
 
-        >>> from zope.generic.configuration.api import ConfigurationData
+        >>> from zope.generic.configuration.api import createConfiguration
         >>> from zope.generic.operation import IOperationConfiguration
         >>> from zope.generic.operation.api import Operation
 

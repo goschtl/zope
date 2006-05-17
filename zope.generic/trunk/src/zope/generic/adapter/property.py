@@ -19,7 +19,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.generic.configuration import IConfigurations
-from zope.generic.configuration.base import ConfigurationData
+from zope.generic.configuration.base import createConfiguration
 from zope.generic.configuration.helper import configuratonToDict
 from zope.generic.informationprovider.api import getInformation
 from zope.generic.informationprovider.api import getInformationProvider
@@ -105,7 +105,7 @@ class ConfigurationAdapterProperty(object):
         # create a new configuration
         else:
             try:
-                configurations[keyface] = ConfigurationData(keyface, {self._name: value})
+                configurations[keyface] = createConfiguration(keyface, {self._name: value})
 
             except TypeError, e:
                 # hack around the atomic update of the form framework
@@ -127,7 +127,7 @@ class ConfigurationAdapterProperty(object):
 
                 data = configuratonToDict(configuration)
                 data[self._name] = value
-                configurations[keyface] = ConfigurationData(keyface, data)
+                configurations[keyface] = createConfiguration(keyface, data)
 
         inst.__dict__[self._name] = value
 

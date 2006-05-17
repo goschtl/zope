@@ -36,7 +36,7 @@ from zope.schema.interfaces import ITuple
 
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration import IConfigurationType
-from zope.generic.configuration.api import ConfigurationData
+from zope.generic.configuration.api import createConfiguration
 from zope.generic.face import IConfaceType
 from zope.generic.face import IKeyfaceType
 from zope.generic.face import IUndefinedContext
@@ -105,7 +105,7 @@ def provideConfiguration(keyface, conface, configuration_keyface, configuration)
     """Provide a configuration for a certain type marker."""
 
     if type(configuration) is dict:
-        configuration = ConfigurationData(configuration_keyface, configuration)
+        configuration = createConfiguration(configuration_keyface, configuration)
 
     info = getInformationProvider(keyface, conface)
     
@@ -151,7 +151,7 @@ def nestedConfigurationData(configparser, section, keyface, prefix=''):
 
                 if subdata or field.required is True:
                     try:
-                        data[name] = ConfigurationData(subkeyface, subdata)
+                        data[name] = createConfiguration(subkeyface, subdata)
                         continue
                     except:
                         if field.required is False:

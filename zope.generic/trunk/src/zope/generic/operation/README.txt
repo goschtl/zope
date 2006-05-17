@@ -27,13 +27,13 @@ output-declaration and a corresponding handler.
     ...    b = TextLine()
 
     >>> from zope.generic.configuration.api import parameterToConfiguration
-    >>> from zope.generic.configuration.api import ConfigurationData
+    >>> from zope.generic.configuration.api import createConfiguration
 
     >>> def anyOperation(context, *pos, **kws):
     ...     input = parameterToConfiguration(IAnyInput, *pos, **kws)
     ...     print 'Any input: a=%s, b=%s, c=%s.' % (input.a, input.b, input.c)
     ...     print 'Operate on *%s*.' % context
-    ...     return ConfigurationData(IAnyOutput, {'b': u'b operated'})
+    ...     return createConfiguration(IAnyOutput, {'b': u'b operated'})
 
 We have to register those parts:
 
@@ -165,7 +165,7 @@ context and providing the pau configuration, the secound and third will provide
 the input parameter for the pau- and the any-operation, and the fourth should
 avoid the return value of the any-operation:
 
-    >>> from zope.generic.configuration.api import ConfigurationData
+    >>> from zope.generic.configuration.api import createConfiguration
     >>> from zope.generic.informationprovider.api import getInformation
     >>> from zope.generic.informationprovider.api import provideInformation
 

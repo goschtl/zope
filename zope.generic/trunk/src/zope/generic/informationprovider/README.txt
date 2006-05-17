@@ -138,8 +138,8 @@ information provider:
 
     >>> my_annotation = object()
 
-    >>> from zope.generic.configuration.api import ConfigurationData
-    >>> my_configuration = ConfigurationData(IMyConfiguration, {'my': u'My!'})
+    >>> from zope.generic.configuration.api import createConfiguration
+    >>> my_configuration = createConfiguration(IMyConfiguration, {'my': u'My!'})
 
     >>> registerDirective('''
     ... <generic:informationProvider

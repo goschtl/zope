@@ -19,7 +19,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.configuration.fields import GlobalInterface
+from zope.configuration.fields import GlobalObject
 from zope.interface import Interface
 
 from zope.generic.informationprovider.metadirectives import IKeyfaceDirective
@@ -31,7 +31,7 @@ from zope.generic.operation.metadirectives import IInputDirective
 class IEventDirective(Interface):
     """Event directive."""
 
-    event = GlobalInterface(
+    event = GlobalObject(
         title=_('Event'),
         description=_('The event to be listened.'),
         required=True

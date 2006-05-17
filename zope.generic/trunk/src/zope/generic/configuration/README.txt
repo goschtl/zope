@@ -106,18 +106,18 @@ configuration. This method can be only used if a configuration already exists:
     ...
     KeyError: <InterfaceClass example.IFooConfiguration>
 
-You can create valid configuration data using the generic ConfigurationData
+You can create valid configuration data using the generic createConfiguration
 implementation and a configuration schema. The setting of the configuration is
 notified by a object configured event if the parent has a location an the 
 parent's parent is not None:
 
     >>> from zope.component.eventtesting import getEvents, clearEvents
-    >>> from zope.generic.configuration.api import ConfigurationData
+    >>> from zope.generic.configuration.api import createConfiguration
     >>> from zope.generic.configuration.api import IObjectConfiguredEvent
 
     >>> clearEvents()
 
-    >>> data = ConfigurationData(IFooConfiguration, {'foo': u'Foo!'})
+    >>> data = createConfiguration(IFooConfiguration, {'foo': u'Foo!'})
 
     >>> configurations[IFooConfiguration] = data
 
@@ -246,7 +246,7 @@ reflected by dotted names.
 First test nested configuration:
 
 #    >>> data = {'foo.foo': u'bla', 'foo.optional': u'Blu'}
-#    >>> config = api.ConfigurationData(ISubConfigurationConfiguration, data)
+#    >>> config = api.createConfiguration(ISubConfigurationConfiguration, data)
 #    >>> IFooConfiguration.providedBy(config.foo)
 #    True
 #    >>> config.foo.foo
@@ -255,7 +255,7 @@ First test nested configuration:
 #    u'Blu'
 #
 #    >>> data = {'foo.foo': u'xxx'}
-#    >>> config = api.ConfigurationData(ISubConfigurationConfiguration, data)
+#    >>> config = api.createConfiguration(ISubConfigurationConfiguration, data)
 #    >>> IFooConfiguration.providedBy(config.foo)
 #    True
 #    >>> config.foo.foo
@@ -264,15 +264,15 @@ First test nested configuration:
 #    u'Bla'
 #
 #    >>> data = {'foo.optional': u'Blu'}
-#    >>> config = api.ConfigurationData(ISubConfigurationConfiguration, data)
+#    >>> config = api.createConfiguration(ISubConfigurationConfiguration, data)
 #    Traceback (most recent call last):
 #    ...
 #    TypeError: __init__ requires 'foo.foo' of 'ISubConfigurationConfiguration'.
 #
 #    >>> subdata = {'foo': u'bla', 'optional': u'Blu'}
-#    >>> subconfig = api.ConfigurationData(IFooConfiguration, subdata)
+#    >>> subconfig = api.createConfiguration(IFooConfiguration, subdata)
 #    >>> data = {'foo': subconfig}
-#    >>> config = api.ConfigurationData(ISubConfigurationConfiguration, data)
+#    >>> config = api.createConfiguration(ISubConfigurationConfiguration, data)
 #    >>> IFooConfiguration.providedBy(config.foo)
 #    True
 #    >>> config.foo.foo

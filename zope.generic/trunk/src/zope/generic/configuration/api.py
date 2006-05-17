@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.generic.configuration import *
 from zope.generic.configuration.adapter import AttributeConfigurations
-from zope.generic.configuration.base import ConfigurationData
+from zope.generic.configuration.base import createConfiguration
 from zope.generic.configuration.helper import configuratonToDict
 from zope.generic.configuration.helper import provideConfigurationType
 from zope.generic.configuration.helper import requiredInOrder
@@ -118,7 +118,7 @@ def parameterToConfiguration(__keyface__, *pos, **kws):
     # assume that kws are ok
     if not pos:
         try:
-            return ConfigurationData(__keyface__, kws)
+            return createConfiguration(__keyface__, kws)
 
         except:
             pass
@@ -143,5 +143,5 @@ def parameterToConfiguration(__keyface__, *pos, **kws):
     if errors:
         raise AttributeError('Duplicated arguments: %s.' % ', '.join(errors))
 
-    return ConfigurationData(__keyface__, kws)
+    return createConfiguration(__keyface__, kws)
         

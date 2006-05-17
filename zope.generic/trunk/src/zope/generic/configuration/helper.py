@@ -50,8 +50,8 @@ def configuratonToDict(configuration, all=False):
 
     Minimal data without defaults:
 
-        >>> from zope.generic.configuration.base import ConfigurationData
-        >>> configuration = ConfigurationData(IAnyConfiguration, {'a': u'a bla'})
+        >>> from zope.generic.configuration.base import createConfiguration
+        >>> configuration = createConfiguration(IAnyConfiguration, {'a': u'a bla'})
         >>> api.configuratonToDict(configuration)
         {'a': u'a bla'}
 

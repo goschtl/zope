@@ -24,7 +24,7 @@ from zope.interface import directlyProvidedBy
 
 from zope.generic.configuration import IConfigurationType
 from zope.generic.configuration import IConfigurations
-from zope.generic.configuration.api import ConfigurationData
+from zope.generic.configuration.api import createConfiguration
 from zope.generic.face import IConfaceType
 from zope.generic.face import IKeyfaceType
 from zope.generic.face import IUndefinedContext
@@ -144,7 +144,7 @@ def provideInformation(informationkey, information, keyface=IUndefinedKeyface, c
 
     if IConfigurationType.providedBy(informationkey):
         if type(information) is dict:
-            information = ConfigurationData(informationkey, information)
+            information = createConfiguration(informationkey, information)
     
         IConfigurations(context)[informationkey] = information
 

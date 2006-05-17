@@ -37,6 +37,10 @@ from zope.generic.configuration import IConfigurations
 from zope.generic.configuration import IConfigurationType
 
 
+def createConfiguration(keyface, data):
+    return ConfigurationData(keyface, data)
+
+
 
 def subData(name, data):
     """Return a subdata dict and remove the subdata from the given data dict.
@@ -75,7 +79,7 @@ def prepareData(__keyface__, data):
                 try:
                     subdata = subData(name, data)
                     if subdata or field.required is True:
-                        data[name] = ConfigurationData(field.schema, subData(name, data))
+                        data[name] = createConfiguration(field.schema, subData(name, data))
                         continue
 
                 except:
