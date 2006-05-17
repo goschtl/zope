@@ -1,4 +1,4 @@
-#!<<PYTHON>> -i
+#!<<PYTHON>> 
 ##############################################################################
 #
 # Copyright (c) 2004 Zope Corporation and Contributors.
@@ -19,13 +19,9 @@ $Id$
 import os
 import sys
 
-import paths
-paths.addPackagePaths()
-
 SOFTWARE_HOME = r"<<SOFTWARE_HOME>>"
 INSTANCE_HOME = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 CONFIG_FILE = os.path.join(INSTANCE_HOME, "etc", "zope.conf")
-
 
 def startup():
     # This removes the script directory from sys.path, which we do
@@ -53,4 +49,3 @@ if __name__ == '__main__':
 
     script = sys.argv[1]
     execfile(script)
-    sys.exit()
