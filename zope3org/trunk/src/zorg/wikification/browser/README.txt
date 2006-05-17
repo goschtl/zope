@@ -220,7 +220,7 @@ unique:
     >>> print edit_page.renderBody()
     <BLANKLINE>
     ...
-    <p>A <a href="http://127.0.0.1/site/New%20Label">New Label</a></p>
+    <p>A <a href="http://127.0.0.1/site/New%20Label001">New Label</a></p>
     ...
 
 The more typical usecase is that we want a global substitution. All wikilinks

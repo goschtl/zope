@@ -59,11 +59,21 @@
                 </td>   
             </tr>
             <tr>
-                <td>&nbsp;		
+                <td>&nbsp;
+                    <input tal:condition="view/isUnique" type="hidden" 
+                            name="scope" id="scope" value="on">        
                 </td>
                 <td>
                     <input name="entry_submit" type="submit" value="Submit">
                     <input name="cancel_submit" type="reset" value="Cancel"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    You can change the position and the size of the image after the upload.
+                    Select the image in the WYSIWYG edit mode and click
+                    the image icon:<img src="/@@/images/image.gif" alt="Image" 
+                            title="" height="20" width="20" />
                 </td>
             </tr>
         </table>

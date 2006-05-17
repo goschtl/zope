@@ -54,7 +54,9 @@
             </tr>
 
             <tr>
-                <td>&nbsp;		
+                <td>&nbsp;
+                    <input tal:condition="view/isUnique" type="hidden" 
+                            name="scope" id="scope" value="on">        
                 </td>
                 <td>
                     <input name="entry_submit" type="submit" value="Submit">

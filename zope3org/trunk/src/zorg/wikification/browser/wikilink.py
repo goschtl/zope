@@ -269,7 +269,7 @@ class RelativeLinkProcessor(BaseLinkProcessor) :
         ...           <img src="http://www.iwm-kmrc.de/image.gif"/>
         ...           <img src="images/image.gif"/>'''
         
-        >>> processor = RelativeLinkProcessor("http://www.iwm-kmrc.de")
+        >>> processor = RelativeLinkProcessor("http://www.iwm-kmrc.de/")
         >>> processor.feed(html)
         >>> print processor.output()
         <p><a href="http://www.iwm-kmrc.de">Absolute</a></p>
@@ -286,6 +286,8 @@ class RelativeLinkProcessor(BaseLinkProcessor) :
         
     def onRelativeLink(self, link) :
         """ Event handler that can be specialized. """
+        if self.base_url.endswith('/') :
+            return self.base_url + link
         return "%s/%s" % (self.base_url, link)
         
         
@@ -382,6 +384,7 @@ class WikiLinkProcessor(RelativeLinkProcessor) :
         (True, 'http://127.0.0.1/site/folder/emptysubfolder/@@wikiedit.html?add=b')
         
         
+        
         """
         page = self.page
         site_url = zapi.absoluteURL(page.site, page.request)
@@ -402,7 +405,10 @@ class WikiLinkProcessor(RelativeLinkProcessor) :
         if IFile.providedBy(node) :
             if node.contentType not in page.supported :
                 return False, self.absoluteLink(node)
-                                
+        
+        if node is None :
+            return False, link
+            
         return False, self.absoluteWikiLink(node)
 
         
