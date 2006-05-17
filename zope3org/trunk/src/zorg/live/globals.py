@@ -35,7 +35,10 @@ def getRequest() :
                 return participation
     return defaultRequest
     
-
+def setRequest(request) :
+    global defaultRequest
+    defaultRequest = request
+    
 def getFullName(principal_id) :
     """ Returns the full name or title of a principal that can be used
         for better display.
