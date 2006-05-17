@@ -4,7 +4,7 @@
            i18n_domain="zope">
 
   <browser:resource
-    name="MochiKit.js"
+    name="mochikit.js"
     file="src/packed/MochiKit/MochiKit.js"
   />
 
