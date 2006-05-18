@@ -27,7 +27,8 @@ PORT = 8000
 
 class HTTPHandler(CGIHTTPServer.CGIHTTPRequestHandler):
     """
-    Simple Web Server that can handle query strings in a request URL and can be stopped with a request
+    Simple Web Server that can handle query strings in a request URL and
+    can be stopped with a request
     
     """
     
@@ -54,19 +55,20 @@ class HTTPHandler(CGIHTTPServer.CGIHTTPRequestHandler):
         HTTPHandler.quitRequestReceived = True 
 
 if __name__ == '__main__':
-	port = PORT
-	if len(sys.argv) > 1:
-	    port = int(sys.argv[1])
-	
-        server_address = ('', port)
-    	httpd = BaseHTTPServer.HTTPServer(server_address, HTTPHandler)
-    
-    	print "serving at port", port
-    	print "To run the entire JsUnit test suite, open"
-    	print "  http://localhost:8000/jsunit/testRunner.html?testPage=http://localhost:8000/tests/JsUnitSuite.html&autoRun=true"
-    	print "To run the acceptance test suite, open"
-    	print "  http://localhost:8000/TestRunner.html"
-    
-    	while not HTTPHandler.quitRequestReceived :
-        	httpd.handle_request()	
-	
+    port = PORT
+    if len(sys.argv) > 1:
+        port = int(sys.argv[1])
+
+    server_address = ('', port)
+    httpd = BaseHTTPServer.HTTPServer(server_address, HTTPHandler)
+
+    print "serving at port", port
+    print "To run the entire JsUnit test suite, open"
+    print ("  http://localhost:8000/jsunit/testRunner.html?testPage="
+           "http://localhost:8000/tests/JsUnitSuite.html&autoRun=true")
+    print "To run the acceptance test suite, open"
+    print "  http://localhost:8000/TestRunner.html"
+
+    while not HTTPHandler.quitRequestReceived :
+        httpd.handle_request()
+
