@@ -31,10 +31,12 @@ from zope.generic.face import IAttributeFaced
 from zope.generic.face import IFace
 from zope.generic.face import IUndefinedContext
 from zope.generic.face.api import FaceForAttributeFaced
+from zope.generic.face.api import toDottedName
 
 from zope.generic.configuration import IConfigurationData
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration import IConfigurationType
+
 
 
 def createConfiguration(keyface, data):
@@ -110,15 +112,18 @@ class ConfigurationData(Persistent):
         >>> from zope.interface import Interface
         >>> from zope.schema import TextLine
         
-        >>> class IExampleConfiugrationSchema(Interface):
+        >>> class IExampleConfiugration(Interface):
         ...    foo = TextLine(title=u'Foo')
         ...    fuu = TextLine(title=u'Fuu', required=False)
         ...    fii = TextLine(title=u'Fii', required=False, readonly=True)
 
     Create a corresponding configuration data:
 
-        >>> config_data = ConfigurationData(IExampleConfiugrationSchema, {'foo': u'Foo!'})
-        >>> IExampleConfiugrationSchema.providedBy(config_data)
+        >>> config_data = ConfigurationData(IExampleConfiugration, {'foo': u'Foo!'})
+        >>> config_data
+        <Configuration zope.generic.configuration.base.IExampleConfiugration>
+
+        >>> IExampleConfiugration.providedBy(config_data)
         True
         >>> config_data.foo
         u'Foo!'
@@ -127,7 +132,7 @@ class ConfigurationData(Persistent):
         >>> config_data.bar
         Traceback (most recent call last):
         ...
-        AttributeError: 'IExampleConfiugrationSchema' configuration has no attribute 'bar'.
+        AttributeError: 'IExampleConfiugration' configuration has no attribute 'bar'.
  
     The implementation provide an adapter to IFace by its __conform__ method:
 
@@ -135,7 +140,7 @@ class ConfigurationData(Persistent):
         >>> IFace.providedBy(adapted)
         True
 
-        >>> adapted.keyface is IExampleConfiugrationSchema
+        >>> adapted.keyface is IExampleConfiugration
         True
 
     A configuration belong to the configuration context:
@@ -149,14 +154,14 @@ class ConfigurationData(Persistent):
         >>> config_data.fii = u'Bla bla'
         Traceback (most recent call last):
         ...
-        ValueError: 'IExampleConfiugrationSchema' configuration's attribute 'fii' is readonly.
+        ValueError: 'IExampleConfiugration' configuration's attribute 'fii' is readonly.
 
     If a relevant key is missed within the data a key error is raised:
 
-        >>> config_data = ConfigurationData(IExampleConfiugrationSchema, {})
+        >>> config_data = ConfigurationData(IExampleConfiugration, {})
         Traceback (most recent call last):
         ...
-        TypeError: __init__ requires 'foo' of 'IExampleConfiugrationSchema'.
+        TypeError: __init__ requires 'foo' of 'IExampleConfiugration'.
 
     The schema should never contain methods:
 
@@ -183,6 +188,9 @@ class ConfigurationData(Persistent):
         # set other data
         for key, value in prepareData(__keyface__, data).items():
             setattr(self, key, value)
+
+    def __repr__(self):
+        return '<Configuration %s>' % toDottedName(self.__keyface__)
 
     def __conform__(self, interface):
         if interface is IFace:

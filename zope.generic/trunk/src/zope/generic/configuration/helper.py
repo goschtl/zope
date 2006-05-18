@@ -89,7 +89,7 @@ def configuratonToDict(configuration, all=False):
 
 
 
-def requiredInOrder(configuration):
+def namesInOrder(configuration, required_only=True):
     """Evaluate the relevant order of positional arguments.
 
     The relevant order of positional arguments is evaluated by a configuration
@@ -104,9 +104,17 @@ def requiredInOrder(configuration):
         ...    c = TextLine(required=False, readonly=True, default=u'c bla')
         ...    d = TextLine()
 
-        >>> api.requiredInOrder(IAnyConfiguration)
+        >>> api.namesInOrder(IAnyConfiguration)
         ['a', 'd']
-    
+
+        >>> api.namesInOrder(IAnyConfiguration, False)
+        ['a', 'b', 'c', 'd']
     """
     
-    return [name for name in configuration if configuration[name].required is True]
+    if required_only:
+        names = [name for name in configuration if configuration[name].required is True]
+    else:
+        names = [name for name in configuration]
+
+    names.sort()
+    return names

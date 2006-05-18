@@ -23,7 +23,7 @@ from zope.generic.configuration.adapter import AttributeConfigurations
 from zope.generic.configuration.base import createConfiguration
 from zope.generic.configuration.helper import configuratonToDict
 from zope.generic.configuration.helper import provideConfigurationType
-from zope.generic.configuration.helper import requiredInOrder
+from zope.generic.configuration.helper import namesInOrder
 
 
 
@@ -128,7 +128,7 @@ def parameterToConfiguration(__keyface__, *pos, **kws):
         return pos[0]
 
     # pos and kws mixture
-    attribution = requiredInOrder(__keyface__)
+    attribution = namesInOrder(__keyface__)
     errors = []
     for i in range(len(pos)):
         key = attribution[i]
