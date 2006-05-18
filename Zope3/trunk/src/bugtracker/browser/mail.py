@@ -28,14 +28,14 @@ class MailSubscriptions:
         if 'ADD' in self.request:
             emails = self.request['emails'].strip().split('\n')
             IMailSubscriptions(self.context).addSubscriptions(emails)
-            status = _('Subscribers successfully added: $emails')
-            status.mapping = {'emails': ', '.join(emails)}
+            status = _("Subscribers successfully added: $emails",
+                       mapping = {'emails': ', '.join(emails)})
         elif 'REMOVE' in self.request:
             emails = self.request['remails']
             if isinstance(emails, (str, unicode)):
                 emails = [emails]
             IMailSubscriptions(self.context).removeSubscriptions(emails)
-            status = _('Subscribers successfully deleted: $emails')
-            status.mapping = {'emails': ', '.join(emails)}
+            status = _("Subscribers successfully deleted: $emails",
+                       mapping = {'emails': ', '.join(emails)})
 
         return status

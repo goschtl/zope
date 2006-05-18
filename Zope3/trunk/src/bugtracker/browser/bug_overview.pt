@@ -94,7 +94,7 @@
   <div tal:repeat="comment view/comments" i18n:domain="">
       <h5 style="margin: 0em 0.6em" i18n:translate="">
         Entry #<d tal:replace="repeat/comment/number" i18n:name="bug_id"/> by
-        <d tal:replace="comment/creator/title" i18n:name="creator"/> on 
+        <d tal:define="creator comment/creator" tal:replace="creator/title" i18n:name="creator"/> on 
         <d tal:replace="comment/modified" i18n:name="modified_datetime"/>
       </h5>
     <div class="comment"

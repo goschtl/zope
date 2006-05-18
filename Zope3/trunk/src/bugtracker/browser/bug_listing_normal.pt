@@ -36,6 +36,11 @@
                 i18n:name="created_date">2003/01/01</b>
           - <b tal:replace="bug/numberOfComments" 
                i18n:name="num_comments">3</b> comments
+          - <span i18n:translate="">Owners: </span>
+          <tal:block repeat="owner bug/owners">
+            <b tal:content="owner/title">username</b>
+            <span tal:condition="not:repeat/owner/end" tal:omit-tag="">,</span>
+          </tal:block>
         </div>
       </div>
     </div>
