@@ -57,10 +57,10 @@
   </module>
 
   <module module="stringprep">
-    <allow attributes="in_table_a1 in_table_b1 map_table_b2 map_table_b3 
+    <allow attributes="in_table_a1 in_table_b1 map_table_b2 map_table_b3
                        in_table_c11 in_table_c12 in_table_c11_c12 in_table_c21
-                       in_table_c22 in_table_c21_c22 in_table_c3 in_table_c4 
-                       in_table_c5 in_table_c6 in_table_c7 in_table_c8 
+                       in_table_c22 in_table_c21_c22 in_table_c3 in_table_c4
+                       in_table_c5 in_table_c6 in_table_c7 in_table_c8
                        in_table_c9 in_table_d1 in_table_d2" />
   </module>
 
@@ -71,6 +71,15 @@
                        defaultTestLoader TextTestRunner main" />
   </module>
 
+  <module module="decimal">
+    <allow attributes="Decimal Context DefaultContext BasicContext
+                       ExtendedContext DecimalException Clamped
+                       InvalidOperation DivisionByZero Inexact Rounded
+                       Subnormal Overflow Underflow ROUND_DOWN ROUND_HALF_UP
+                       ROUND_HALF_EVEN ROUND_CEILING ROUND_FLOOR ROUND_UP
+                       ROUND_HALF_DOWN setcontext getcontext" />
+  </module>
+
   <module module="math">
     <allow attributes="acos asin atan atan2 ceil cos cosh degress exp fabs
                        floor fmod frexp hypot ldexp log log10 modf pow radians
@@ -78,7 +87,7 @@
   </module>
 
   <module module="cmath">
-    <allow attributes="acos acosh asin asinh atan atanh cos cosh exp log log10 
+    <allow attributes="acos acosh asin asinh atan atanh cos cosh exp log log10
                        sin sinh sqrt tan tanh pi e" />
   </module>
 
@@ -177,13 +186,13 @@
   <!-- 11. Internet Protocols and Support -->
 
   <module module="cgi">
-    <allow attributes="parse parse_qs parse_qsl parse_multipart parse_header 
+    <allow attributes="parse parse_qs parse_qsl parse_multipart parse_header
                        escape" />
   </module>
 
   <module module="urllib">
     <allow attributes="urlopen urlretrieve _urlopener urlcleanup quote
-                       quote_plus unquote unquote_plus urlencode pathname2url 
+                       quote_plus unquote unquote_plus urlencode pathname2url
                        url2pathname URLopener FancyURLopener" />
   </module>
 
@@ -243,7 +252,7 @@
   </module>
 
   <module module="urlparse">
-    <allow attributes="urlparse urlunparse urlsplit urlunsplit urljoin 
+    <allow attributes="urlparse urlunparse urlsplit urlunsplit urljoin
                        urldefrag" />
   </module>
 
@@ -298,8 +307,8 @@
 
   <module module="binascii">
     <allow attributes="a2b_uu b2a_uu a2b_base64 b2a_base64 a2b_qp b2a_qp
-                       a2b_hqx rledecode_hqx rlecode_hqx b2a_hqx crc_hqx 
-                       crc32 b2a_hex hexlify a2b_hex unhexlify Error 
+                       a2b_hqx rledecode_hqx rlecode_hqx b2a_hqx crc_hqx
+                       crc32 b2a_hex hexlify a2b_hex unhexlify Error
                        Incomplete" />
   </module>
 
@@ -328,7 +337,7 @@
   </module>
 
   <module module="csv">
-    <allow attributes="reader writer register_dialect unregister_dialect 
+    <allow attributes="reader writer register_dialect unregister_dialect
                        list_dialects DictReader DictWriter Dialect Sniffer
                        sniff has_header QUOTE_ALL QUOTE_MINIMAL
                        QUOTE_NONNUMERIC QUOTE_NONE Error" />
@@ -353,13 +362,13 @@
   </module>
 
   <module module="xml.parsers.expat">
-    <allow attributes="ExpatError error XMLParserType ErrorString 
+    <allow attributes="ExpatError error XMLParserType ErrorString
                        ParserCreate" />
   </module>
 
   <module module="xml.dom">
     <allow attributes="registerDOMImplementation getDOMImplementation
-                       EMPTY_NAMESPACE XML_NAMESPACE XMLNS_NAMESPACE 
+                       EMPTY_NAMESPACE XML_NAMESPACE XMLNS_NAMESPACE
                        XHTML_NAMESPACE" />
   </module>
 
