@@ -26,6 +26,9 @@ from OFS.interfaces import IObjectClonedEvent
 from OFS.interfaces import IObjectWillBeMovedEvent
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.container.interfaces import IObjectMovedEvent
+from zope.app.location.interfaces import ISublocations
+from zope.component import adapts
+from zope.interface import implements
 
 from permissions import AccessContentsInformation
 from permissions import ManagePortal
@@ -35,6 +38,7 @@ from utils import _getAuthenticatedUser
 from utils import getToolByName
 
 from interfaces import ICallableOpaqueItem
+from interfaces import IContentish
 from interfaces.IOpaqueItems \
         import ICallableOpaqueItem as z2ICallableOpaqueItem
 
@@ -264,6 +268,28 @@ class CMFCatalogAware(Base):
             manage_tabs_message=manage_tabs_message)
 
 InitializeClass(CMFCatalogAware)
+
+
+class ContentishSublocations(object):
+
+    """ Get the sublocations for content, including "opaque" subitems.
+    """
+    adapts(IContentish)
+    implements(ISublocations)
+
+    def __init__(self, context):
+        self.context = context
+
+    def sublocations(self):
+
+        for ob in self.context.objectValues():
+            yield ob
+
+        for opaque in  self.context.opaqueValues():
+            s = getattr(opaque, '_p_changed', 0)
+            yield opaque
+            if s is None:
+                opaque._p_deactivate()
 
 
 def handleObjectEvent(ob, event):
