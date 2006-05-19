@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 543: add 'decimal'-package to
+        zope/app/security/globalmodules.zcml
+
       - Include backward-compatibility packages in zope.app in the
         release.  They were left out in 3.3.0b1 by mistake.
 
@@ -39,14 +42,14 @@ Zope Changes
       - Updated Docutils to V 0.4.0
 
       - Change the session credentials plugin to make it configurable
-	    in which fields it looks for the credentials.
+        in which fields it looks for the credentials.
 
       - Make the HomeFolderManager allowing the user to change the object to
         create when autocreating the homefolder.
 
       - The ensureObject, ensureUtility, addConfigureUtility and
-     	addUtility in zope.app.appsetup.bootstrap now optionally can
-     	return an object instead of a name.
+        addUtility in zope.app.appsetup.bootstrap now optionally can
+        return an object instead of a name.
 
       - Allow ``zmi_views`` actions like: ``javascript:popup()``,
         ``../parentview.html`` or ``++namespace++foobar`` as first menu items.
