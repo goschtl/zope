@@ -4,8 +4,17 @@
            i18n_domain="zope">
 
  <browser:resource
-  file="prototype.js"
+  file="prototype/prototype.js"
   name="prototype.js"
   />
+
+ <configure zcml:condition="have zc.resourcelibrary"
+            xmlns:zcml="http://namespaces.zope.org/zcml">
+  <resourceLibrary name="z3c.javascript.prototype">
+   <directory source="prototype" include="prototype.js"/>
+  </resourceLibrary>
+ </configure>
+
+
 
 </configure>
