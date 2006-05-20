@@ -2,11 +2,14 @@
 Five Changes
 ============
 
-Five 1.5 (Unreleased)
-=====================
+Five 1.5c (Unreleased)
+======================
 
 Bugfixes
 --------
+
+* Provided the 'default' layer alias for backwards compability.  It
+  was deleted by accident during the Zope 3.3 port.
 
 * Five.testbrowser capitalizes headers in the same way as the Zope2
   HTTPResponse. i.e. content-length -> Content-Length.
