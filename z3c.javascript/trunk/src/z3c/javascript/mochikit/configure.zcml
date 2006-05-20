@@ -8,4 +8,12 @@
     file="src/packed/MochiKit/MochiKit.js"
   />
 
+  <configure zcml:condition="have zc.resourcelibrary"
+             xmlns:zcml="http://namespaces.zope.org/zcml">
+   <resourceLibrary name="z3c.javascript.mochikit">
+    <directory source="src/packed/MochiKit" include="MochiKit.js"/>
+   </resourceLibrary>
+  </configure>
+
+  
 </configure>
