@@ -96,15 +96,6 @@ class ZopePythonExpr(PythonExpr):
 class ZopeContextBase(Context):
     """Base class for both trusted and untrusted evaluation contexts."""
 
-    def evaluateText(self, expr):
-        text = self.evaluate(expr)
-        if text is self.getDefault() or text is None:
-            return text
-        if isinstance(text, basestring):
-            # text could be a proxied/wrapped object
-            return text
-        return unicode(text)
-
     def evaluateMacro(self, expr):
         macro = Context.evaluateMacro(self, expr)
         return macro
