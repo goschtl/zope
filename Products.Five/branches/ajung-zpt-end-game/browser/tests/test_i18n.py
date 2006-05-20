@@ -34,6 +34,7 @@ def test_zpt_i18n():
       ...   <configure package="Products.Five.browser.tests">
       ...     <browser:page
       ...         for="OFS.interfaces.IFolder"
+      ...         class=".i18n.I18nView"
       ...         template="i18n.pt"
       ...         name="i18n.html"
       ...         permission="zope2.View"
@@ -73,6 +74,8 @@ def test_zpt_i18n():
       <table summary="Explizite Zusammenfassung"
              title="Expliziter Titel">
       </table>
+      <p>Dies ist eine Nachricht</p>
+      <p>Dies ist eine Nachricht</p>
       </body>
       </html>
       ...
