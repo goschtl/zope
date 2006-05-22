@@ -26,8 +26,9 @@ import urllib2
 DEV_SECTION = 'development'
 DEV_DEPENDS = 'depends'
 
-def bootstrap(libdir, bindir):
-    """Bootstrap our setuptools installation in the target directory."""
+def bootstrap(libdir, bindir, packages=[]):
+    """Bootstrap our setuptools installation in the target directory
+    and install any additional packages specified."""
 
     # make sure ez_setup is available
     try:
@@ -49,7 +50,7 @@ def bootstrap(libdir, bindir):
                                + ":" + libdir)
     ez_setup.main(['--install-dir', libdir,
                    '--script-dir', bindir,
-                   'setuptools'])
+                   '--site-dirs', libdir, ] + packages)
 
 def initSetupCfg(setup_file, template_file='setup.cfg.in'):
     """Check if the setup_file (setup.cfg) exists; if it doesn't, and
@@ -164,18 +165,18 @@ def main():
     check_dirs(options.bindir, options.libdir)
     sys.path.insert(0, options.libdir)
 
-    # see if we need to bootstrap setuptools
-    try:
-        import setuptools
-    except ImportError, e:
-        # setuptools not available -- bootstrap into our libdir
-        bootstrap(options.libdir, options.bindir)
-
     # install the development dependencies
-    from setuptools.command.easy_install import main as einstall
     deps = load_dev_deps(options.setup_cfg)
-    if deps and len(deps) > 0:
-        einstall(deps)
+    try:
+        from setuptools.command.easy_install import main as einstall
+        if deps and len(deps) > 0:
+            einstall(deps)
+
+    except ImportError, e:
+        # setuptools not available -- bootstrap into our libdir 
+        # and allow setuptools to do the installation at the same time
+        bootstrap(options.libdir, options.bindir, packages=deps)
+
     
 if __name__ == '__main__':
     main()
