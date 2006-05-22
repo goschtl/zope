@@ -49,7 +49,7 @@ def bootstrap(libdir, bindir):
                                + ":" + libdir)
     ez_setup.main(['--install-dir', libdir,
                    '--script-dir', bindir,
-                   '-U', 'setuptools'])
+                   'setuptools'])
 
 def initSetupCfg(setup_file, template_file='setup.cfg.in'):
     """Check if the setup_file (setup.cfg) exists; if it doesn't, and
@@ -164,8 +164,12 @@ def main():
     check_dirs(options.bindir, options.libdir)
     sys.path.insert(0, options.libdir)
 
-    # bootstrap setuptools into our libdir
-    bootstrap(options.libdir, options.bindir)
+    # see if we need to bootstrap setuptools
+    try:
+        import setuptools
+    except ImportError, e:
+        # setuptools not available -- bootstrap into our libdir
+        bootstrap(options.libdir, options.bindir)
 
     # install the development dependencies
     from setuptools.command.easy_install import main as einstall
