@@ -34,12 +34,7 @@ def getKeyface(object, default=IUndefinedKeyface):
     if object is None:
         return default
 
-    # todo replace IInterface by IKeyfaceType
-    if IInterface.providedBy(object):
-        if not IKeyfaceType.providedBy(object):
-            #print object
-            pass
-        
+    if IKeyfaceType.providedBy(object):
         return object
 
     if IAttributeFaced.providedBy(object):

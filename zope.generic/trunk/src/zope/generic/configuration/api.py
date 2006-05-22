@@ -18,6 +18,8 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.generic.face.api import getKeyface
+
 from zope.generic.configuration import *
 from zope.generic.configuration.adapter import AttributeConfigurations
 from zope.generic.configuration.base import createConfiguration
@@ -27,19 +29,33 @@ from zope.generic.configuration.helper import namesInOrder
 
 
 
-def getConfiguration(context, configuration):
+def getConfiguration(context, keyface):
     """Evaluate a configuration."""
-    return configuration(IConfigurations(context))
+    return keyface(IConfigurations(context))
 
 
 
-def queryConfiguration(context, configuration, default=None):
+def queryConfiguration(context, keyface, default=None):
     """Evaluate a configuration or return default."""
     try:
-        return getConfiguration(context, configuration)
+        return getConfiguration(context, keyface)
     
     except:
         return default
+
+
+
+def updateConfiguration(context, keyfaced_or_keyface, data=None):
+    """Set or update a configuration to/of a context."""
+
+    IConfigurations(context).update(keyfaced_or_keyface, data)
+
+
+
+def deleteConfiguration(context, keyface):
+    """Delete a configuration from a context."""
+
+    del IConfigurations(context)[keyface]
 
 
 

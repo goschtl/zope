@@ -264,8 +264,12 @@ first provider registered to IFoo and IUndefinedContext:
 
 The other way round we can play with key interface inheritance:
 
+    >>> from zope.generic.face import IKeyfaceType
+
     >>> class IBar(interface.Interface):
     ...    pass
+
+    >>> interface.alsoProvides(IBar, IKeyfaceType)
 
     >>> api.acquireInformationProvider(IBar) 
     Traceback (most recent call last):
@@ -274,6 +278,8 @@ The other way round we can play with key interface inheritance:
 
     >>> class IFooBar(IFoo, IBar):
     ...    pass
+
+    >>> interface.alsoProvides(IFooBar, IKeyfaceType)
 
     >>> api.acquireInformationProvider(IFooBar) 
     <GlobalInformationProvider IFoo at IUndefinedContext>
@@ -294,6 +300,8 @@ observe the following behavior:
 
     >>> class IBarFoo(IBar, IFoo):
     ...    pass
+
+    >>> interface.alsoProvides(IBarFoo, IKeyfaceType)
 
     >>> api.acquireInformationProvider(IBarFoo) 
     <GlobalInformationProvider IBar at IUndefinedContext>

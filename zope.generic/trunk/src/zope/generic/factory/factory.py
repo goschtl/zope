@@ -142,6 +142,10 @@ class Factory(factory.Factory, Face):
     If we like to provide parameter we have to declare them by an input
     configuration:
 
+        >>> from zope.generic.informationprovider.api import deleteInformation
+        >>> from zope.generic.operation import IOperationConfiguration
+        >>> deleteInformation(IOperationConfiguration, IMyInstance)
+
         >>> from zope.schema import TextLine
 
         >>> class SimpleKeyFacedWithParameter(object):

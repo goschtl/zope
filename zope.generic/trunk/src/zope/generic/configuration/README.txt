@@ -96,15 +96,52 @@ configuration schema itself. This key interface must provide IConfiguration:
     >>> configurations[IFooConfiguration] = object()
     Traceback (most recent call last):
     ...
-    ValueError: Value does not provide IFooConfiguration.
+    ValueError: Value does not provide IFooConfiguration or is not a dictionary.
 
-Furthermore there is an update method that can be used to update a specific
-configuration. This method can be only used if a configuration already exists:
+    >>> from zope.generic.configuration.api import createConfiguration
+    >>> data = createConfiguration(IFooConfiguration, {'foo': u'Foo!'})
 
-    >>> configurations.update(IFooConfiguration, {'foo': u'Foo!'})
+    >>> configurations[IFooConfiguration] = data
+
+You can set a configuraiton only once. Otherwise you should use the update method
+or delete the configuraiton before a new setting:
+
+    >>> configurations[IFooConfiguration] = data
     Traceback (most recent call last):
     ...
-    KeyError: <InterfaceClass example.IFooConfiguration>
+    ValueError: Configuration is already provided IFooConfiguration.
+
+    >>> del configurations[IFooConfiguration]
+
+You can also use only a dictionary as value instead of a configuration:
+
+    >>> configurations[IFooConfiguration] = {'foo': u'Foo!'}
+    >>> configurations[IFooConfiguration].foo
+    u'Foo!'
+
+    >>> del configurations[IFooConfiguration]
+
+Furthermore there is an update method that can be used to update a specific
+configuration. You can use the method to provide an initial configuration or
+to update parts of a configuration:
+
+    >>> configurations.update(IFooConfiguration, {'foo': u'Foo!'})
+    >>> configurations[IFooConfiguration].foo
+    u'Foo!'
+    
+    >>> configurations.update(IFooConfiguration, {'foo': u'Foo x!'})
+    >>> configurations[IFooConfiguration].foo
+    u'Foo x!'
+
+    >>> config = createConfiguration(IFooConfiguration, {'foo': u'Foo y!'})
+    >>> configurations.update(IFooConfiguration, config)
+    >>> configurations[IFooConfiguration].foo
+    u'Foo y!'
+
+    >>> config = createConfiguration(IFooConfiguration, {'foo': u'Foo z!'})
+    >>> configurations.update(config)
+    >>> configurations[IFooConfiguration].foo
+    u'Foo z!'
 
 You can create valid configuration data using the generic createConfiguration
 implementation and a configuration schema. The setting of the configuration is
@@ -112,27 +149,22 @@ notified by a object configured event if the parent has a location an the
 parent's parent is not None:
 
     >>> from zope.component.eventtesting import getEvents, clearEvents
-    >>> from zope.generic.configuration.api import createConfiguration
     >>> from zope.generic.configuration.api import IObjectConfiguredEvent
 
     >>> clearEvents()
 
-    >>> data = createConfiguration(IFooConfiguration, {'foo': u'Foo!'})
-
-    >>> configurations[IFooConfiguration] = data
-
-    >>> events = getEvents()
-    >>> len(events)
-    0
+    >>> del configurations[IFooConfiguration]
 
     >>> from zope.location import Location
     >>> parent = Location()
     >>> configurations.__parent__ = parent
-    
+
     >>> configurations[IFooConfiguration] = data
     >>> events = getEvents()
     >>> len(events)
     0
+
+    >>> del configurations[IFooConfiguration]
 
     >>> parent.__parent__ = Location()
     >>> configurations[IFooConfiguration] = data
@@ -163,7 +195,8 @@ to the __configurations__ attribute of the context:
 
 You should update a configuration using the update method instead of setting
 new configuration data. If the change differs from the configuration an object
-configuration modified event is notify else not:
+configuration modified event is notify else not. This can be done by a dict
+or a configuration:
 
     >>> clearEvents()
     >>> configurations.update(IFooConfiguration, {'foo': u'Bar!'})
@@ -173,6 +206,16 @@ configuration modified event is notify else not:
     >>> event = events.pop()
     >>> [(key.__name__, value) for key, value in event.items()]
     [('IFooConfiguration', {'foo': u'Bar!'})]
+
+    >>> clearEvents()
+    >>> foo_config = api.createConfiguration(IFooConfiguration, {'foo': u'Bar !'})
+    >>> configurations.update(foo_config)
+    >>> events = getEvents()
+    >>> len(events)
+    1
+    >>> event = events.pop()
+    >>> [(key.__name__, value) for key, value in event.items()]
+    [('IFooConfiguration', {'foo': u'Bar !'})]
 
 Also the deletion is notified by an empty dict:
 

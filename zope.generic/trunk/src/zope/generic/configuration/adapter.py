@@ -28,12 +28,14 @@ from zope.component import adapts
 from zope.event import notify
 from zope.interface import implements
 
+from zope.generic.face.api import getKeyface
 from zope.generic.face.api import toDottedName
 from zope.generic.face.api import toInterface
 
 from zope.generic.configuration import IAttributeConfigurable
 from zope.generic.configuration import IConfigurationType
 from zope.generic.configuration import IConfigurations
+from zope.generic.configuration.base import createConfiguration
 from zope.generic.configuration.event import Configuration
 from zope.generic.configuration.event import ObjectConfiguredEvent
 from zope.generic.configuration.helper import configuratonToDict
@@ -77,23 +79,50 @@ class AttributeConfigurations(DictMixin, Location):
 
         return [toInterface(iface) for iface in configurations.keys()]
 
-    def update(self, keyface, data):
-        current_config = self[keyface]
+    def update(self, keyfaced_or_keyface, data=None):
+        """Update a configuration."""
+        
+        keyface = getKeyface(keyfaced_or_keyface)
+        # feed by a configuration
+        isconfig = False
+        if keyface != keyfaced_or_keyface:
+            data = keyfaced_or_keyface
+            isconfig = True
+
+        elif keyface.providedBy(data):
+            isconfig = True
+
+        try:
+            current_config = self[keyface]
+        except KeyError:
+            # there is no existing configuration, try to set a new one
+            self[keyface] = data
+            return
 
         updated_data = {}
         errors = []
         
         savepoint = transaction.savepoint()
         try:
-            for name, value in data.items():
-                # raise attribute error
+            for name in keyface:
                 field = keyface[name]
+
+                # readonly attribute cannot be updated
                 if field.readonly:
                     raise ValueError(name, 'Data is readonly.')
+
+                if isconfig:
+                    value = getattr(data, name, field.missing_value)
+                # assume dict
                 else:
-                    if value != getattr(current_config, name, field.missing_value):
-                        setattr(current_config, name, value)
-                        updated_data[name] = value
+                    try:
+                        value = data[name]
+                    except KeyError:
+                        continue
+                    
+                if value != getattr(current_config, name, field.missing_value):
+                    setattr(current_config, name, value)
+                    updated_data[name] = value
 
             # notify update
             parent = self.__parent__
@@ -111,20 +140,30 @@ class AttributeConfigurations(DictMixin, Location):
             raise KeyError('Interface key %s requires %s.' % 
                 (keyface.__name__, IConfigurationType.__name__))
 
-        if not keyface.providedBy(value):
-            raise ValueError('Value does not provide %s.' % keyface.__name__)
+        if not (keyface.providedBy(value) or isinstance(value, dict)):
+            raise ValueError('Value does not provide %s or is not a dictionary.' % keyface.__name__)
 
         # essentials
         try:
             configurations = self.context.__configurations__
         except AttributeError:
             configurations = self.context.__configurations__ = OOBTree()
+        
+        # avoid unintended overwrittings of a configuration
+        key = toDottedName(keyface)
+        if key in configurations:
+            raise ValueError('Configuration is already provided %s.' % keyface.__name__)
 
-        data = configuratonToDict(value, all=True)
-        configurations[toDottedName(keyface)] = value
+        # set configuration or dictionary
+        if keyface.providedBy(value):
+            configurations[key] = value
+        else:
+            configurations[key] = createConfiguration(keyface, value)
+
         # notify setting
         parent = self.__parent__
         if ILocation.providedBy(parent) and parent.__parent__ is not None:
+            data = configuratonToDict(value, all=True)
             notify(ObjectConfiguredEvent(parent, 
                 Configuration(keyface, data)))
 

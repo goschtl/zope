@@ -222,6 +222,8 @@ the user context:
 If we like to acquire from the default user context configuration, we have
 to derive our marker from IUndefinedKeyface.
 
+    >>> api.deleteInformation(ILogConfiguration, IMy, ISupplierContext)
+
     >>> class IMy(IUndefinedKeyface):
     ...     """My own key interface."""
 

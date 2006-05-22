@@ -24,7 +24,8 @@ from zope.interface import directlyProvidedBy
 
 from zope.generic.configuration import IConfigurationType
 from zope.generic.configuration import IConfigurations
-from zope.generic.configuration.api import createConfiguration
+from zope.generic.configuration.api import deleteConfiguration
+from zope.generic.configuration.api import updateConfiguration
 from zope.generic.face import IConfaceType
 from zope.generic.face import IKeyfaceType
 from zope.generic.face import IUndefinedContext
@@ -143,10 +144,7 @@ def provideInformation(informationkey, information, keyface=IUndefinedKeyface, c
         context = getInformationProvider(keyface, conface)
 
     if IConfigurationType.providedBy(informationkey):
-        if type(information) is dict:
-            information = createConfiguration(informationkey, information)
-    
-        IConfigurations(context)[informationkey] = information
+        updateConfiguration(context, informationkey, information)
 
     else:
         IAnnotations(context)[informationkey] = information
@@ -163,7 +161,7 @@ def deleteInformation(informationkey, keyface, conface=IUndefinedContext):
         context = getInformationProvider(keyface, conface)
 
     if IConfigurationType.providedBy(informationkey):
-        del IConfigurations(context)[informationkey]
+        deleteConfiguration(context, informationkey)
     
     else:
         del IAnnotations(context)[informationkey]
