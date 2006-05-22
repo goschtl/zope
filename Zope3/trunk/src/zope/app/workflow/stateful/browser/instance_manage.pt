@@ -39,7 +39,7 @@
        tal:condition="info">
       <div i18n:translate="">
         Current Status:
-        <div tal:replace="info/status" i18n:translate=""/>
+        <div tal:replace="info/status" i18n:name="status" i18n:translate=""/>
       </div>
       <br />
       <span i18n:translate="">Possible State Changes:</span>
