@@ -21,7 +21,7 @@ from zope.schema._field import Bytes, ASCII, BytesLine, ASCIILine
 from zope.schema._field import Text, TextLine, Bool, Int, Float
 from zope.schema._field import Tuple, List, Set, FrozenSet
 from zope.schema._field import Password, Dict, Datetime, Date, Timedelta
-from zope.schema._field import SourceText
+from zope.schema._field import Time, SourceText
 from zope.schema._field import Object, URI, Id, DottedName
 from zope.schema._field import InterfaceField
 from zope.schema._schema import getFields, getFieldsInOrder

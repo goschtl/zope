@@ -10,6 +10,8 @@ Zope Changes
 
     New features
 
+      - Added new Time field type to zope.schema
+
     Restructuring
 
     Bug fixes

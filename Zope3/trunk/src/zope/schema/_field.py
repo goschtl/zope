@@ -19,7 +19,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import re
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, time
 from sets import Set as SetType
 
 from zope.interface import classImplements, implements
@@ -33,6 +33,7 @@ from zope.schema.interfaces import IBytes, IASCII, IBytesLine, IASCIILine
 from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime, IFrozenSet
 from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate, ITimedelta
+from zope.schema.interfaces import ITime
 from zope.schema.interfaces import IURI, IId, IFromUnicode
 from zope.schema.interfaces import ISource, IBaseVocabulary
 from zope.schema.interfaces import IContextSourceBinder
@@ -183,6 +184,11 @@ class Timedelta(Orderable, Field):
     __doc__ = ITimedelta.__doc__
     implements(ITimedelta)
     _type = timedelta
+    
+class Time(Orderable, Field):
+    __doc__ = ITime.__doc__
+    implements(ITime)
+    _type = time
 
 class Choice(Field):
     """Choice fields can have a value found in a constant or dynamic set of
