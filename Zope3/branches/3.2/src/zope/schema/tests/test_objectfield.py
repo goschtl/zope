@@ -180,7 +180,7 @@ class ObjectTest(FieldTestBase):
         self.assertRaises(ValidationError, field.validate, data)
         self.assertRaises(WrongContainedType, field.validate, data)
         errors = self.getErrors(field.validate, data)
-        self.assertEquals(errors[0], SchemaNotFullyImplemented())
+        self.assert_(isinstance(errors[0], SchemaNotFullyImplemented))
 
 def test_suite():
     suite = TestSuite()

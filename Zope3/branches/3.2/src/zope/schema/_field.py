@@ -391,7 +391,7 @@ def _validate_fields(schema, value, errors=None):
                 errors.append(error)
             except AttributeError, error:
                 # property for the given name is not implemented
-                errors.append(SchemaNotFullyImplemented())
+                errors.append(SchemaNotFullyImplemented(error))
     return errors
 
 
