@@ -163,7 +163,10 @@ class AttributeConfigurations(DictMixin, Location):
         # notify setting
         parent = self.__parent__
         if ILocation.providedBy(parent) and parent.__parent__ is not None:
-            data = configuratonToDict(value, all=True)
+            if isinstance(value, dict):
+                data = value
+            else:
+                data = configuratonToDict(value, all=True)
             notify(ObjectConfiguredEvent(parent, 
                 Configuration(keyface, data)))
 

@@ -72,6 +72,7 @@ def subData(name, data):
 def prepareData(__keyface__, data):
     """Nested configuration support."""
     missedArguments = []
+    relevant_data = {}
     for name in __keyface__:
         # forget missing but none-required
         if name not in data:
@@ -81,7 +82,7 @@ def prepareData(__keyface__, data):
                 try:
                     subdata = subData(name, data)
                     if subdata or field.required is True:
-                        data[name] = createConfiguration(field.schema, subData(name, data))
+                        relevant_data[name] = createConfiguration(field.schema, subData(name, data))
                         continue
 
                 except:
@@ -89,11 +90,13 @@ def prepareData(__keyface__, data):
 
             if field.required is True:
                 missedArguments.append(name)
+        else:
+            relevant_data[name] = data[name]
     
     if missedArguments:
         raise TypeError("__init__ requires '%s' of '%s'." % (', '.join(missedArguments), __keyface__.__name__))
     
-    return data
+    return relevant_data
     
 
 

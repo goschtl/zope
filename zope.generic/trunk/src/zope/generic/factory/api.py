@@ -19,6 +19,8 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope import component
+from zope.event import notify
+from zope.lifecycleevent import ObjectCreatedEvent
 
 from zope.generic.informationprovider.api import getInformationProvider
 from zope.generic.informationprovider.api import queryInformation
@@ -29,10 +31,17 @@ from zope.generic.factory import *
 
 
 
-
 def createObject(keyface, *pos, **kws):
     """Create an instance of a logical type using the type marker."""
     return component.createObject(toDottedName(keyface), *pos, **kws)
+
+
+
+def createAndNotifyObject(keyface, *pos, **kws):
+    """Create an instance of a logical type using the type marker."""
+    obj = component.createObject(toDottedName(keyface), *pos, **kws)
+    notify(ObjectCreatedEvent(obj))
+    return obj
 
 
 
