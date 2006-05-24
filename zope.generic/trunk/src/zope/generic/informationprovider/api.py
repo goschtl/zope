@@ -39,7 +39,6 @@ from zope.generic.informationprovider import *
 from zope.generic.informationprovider.base import GlobalInformationProvider
 from zope.generic.informationprovider.base import LocalInformationProvider
 from zope.generic.informationprovider.base import UserDescription
-from zope.generic.informationprovider.helper import toConfigFaceTriple
 from zope.generic.informationprovider.metaconfigure import ensureInformationProvider
 from zope.generic.informationprovider.metaconfigure import getInformationProvider
 

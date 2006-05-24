@@ -40,14 +40,6 @@ from zope.generic.informationprovider import testing
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite('zope.generic.informationprovider.base'),
-        doctest.DocTestSuite('zope.generic.informationprovider.helper',
-                             setUp=testing.placelesssetup.setUp,
-                             tearDown=testing.placelesssetup.tearDown,
-                             globs={'component': component, 'interface': interface,
-                             'registerDirective': registerDirective,
-                             'testing': testing, 'api': api},
-                             optionflags=doctest.NORMALIZE_WHITESPACE+
-                                            doctest.ELLIPSIS),
         doctest.DocFileSuite('README.txt',
                              setUp=testing.placelesssetup.setUp,
                              tearDown=testing.placelesssetup.tearDown,

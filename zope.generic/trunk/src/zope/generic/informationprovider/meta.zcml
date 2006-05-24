@@ -17,12 +17,6 @@
 
     </meta:complexDirective>
 
-    <meta:directive
-        name="multiInformationProviders"
-        schema=".metadirectives.IMultiInformationProvidersDirective"
-        handler=".metaconfigure.multiInformationProvidersDirective"
-        />
-
   </meta:directives>
 
 </configure>

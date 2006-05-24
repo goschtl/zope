@@ -21,6 +21,7 @@ __docformat__ = 'restructuredtext'
 from zope.dottedname.resolve import resolve
 from zope.generic.face import IUndefinedContext
 from zope.generic.face import IUndefinedKeyface
+from zope.testing import cleanup
 
 
 
@@ -33,11 +34,19 @@ def toDottedName(component):
 # cache
 __name_to_component = {}
 
+# clean cache for test purposes
+def _clear():
+    __name_to_component.clear()
+
+cleanup.addCleanUp(_clear)
+del _clear
+
 def toInterface(dottedname):
     try:
         return __name_to_component[dottedname]
     except KeyError:
         return __name_to_component.setdefault(dottedname, resolve(dottedname))
+
 
 
 def toDescription(component, label=None, hint=None):
@@ -135,7 +144,7 @@ def toDescription(component, label=None, hint=None):
 
 
 
-def toFaceTuple(identifier):
+def toFaceTuple(identifier, keyface=IUndefinedKeyface, conface=IUndefinedContext):
     """Resolve 'keyface@conface' to (keyface, conface).
 
         >>> from zope.interface import Interface
@@ -182,10 +191,10 @@ def toFaceTuple(identifier):
     
     if len(parts) == 1:
         try:
-            return (toInterface(parts[0]), IUndefinedContext)
+            return (toInterface(parts[0]), conface)
 
         except:
-            return (IUndefinedKeyface, IUndefinedContext)
+            return (keyface, conface)
 
     else:
         try:
@@ -198,5 +207,5 @@ def toFaceTuple(identifier):
             return (keyface, toInterface(parts[1]))
         
         except:
-            return (keyface, IUndefinedContext)
+            return (keyface, conface)
 

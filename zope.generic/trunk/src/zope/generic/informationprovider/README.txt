@@ -39,8 +39,7 @@ provider. For that purpose we need a key and a context interface:
     >>> class ISpecialContext(interface.Interface):
     ...    pass
 
-    >>> from zope.interface import Interface
-    >>> class IMyFoo(Interface):
+    >>> class IMyFoo(interface.Interface):
     ...    pass
 
     >>> registerDirective('''
@@ -79,7 +78,7 @@ queryInformationProvider function:
 If no information provider is available for a certain interface the default
 value is returned. If no default is defined None is returned:
 
-    >>> class IMyBar(Interface):
+    >>> class IMyBar(interface.Interface):
     ...    pass
 
     >>> default = object()
@@ -397,172 +396,3 @@ by a component itself. Therefore the conface parameter has to be None:
 
     >>> api.acquireInformationProvider(bar) 
     <GlobalInformationProvider IBar at IUndefinedContext>
-
-
-Ini-file based configurations for an information provider
----------------------------------------------------------
-
-The configuration file holds several configuration in the ini-file style.
-
-    >>> from zope.interface import Interface
-    >>> from zope.schema import Text, TextLine
-    
-    >>> class IOneConfiguration(Interface):
-    ...    textLine = TextLine(title=u'TextLine')
-    ...    text = Text(title=u'Text', required=False, default=u'Bla\\n')
-
-    >>> registerDirective('''
-    ... <generic:configuration
-    ...     keyface="example.IOneConfiguration"
-    ...     />
-    ... ''') 
-
-    >>> from zope.schema import Bool, Int
-
-    >>> class IOtherConfiguration(Interface):
-    ...    bool = Bool(title=u'Bool')
-    ...    int = Int(title=u'Int', required=False, default=42)
-
-    >>> registerDirective('''
-    ... <generic:configuration
-    ...     keyface="example.IOtherConfiguration"
-    ...     />
-    ... ''') 
-
-    >>> from zope.schema import Dict, Object, Tuple
-
-    >>> class INestedConfiguration(Interface):
-    ...    one = Object(title=u'One configuration', schema=IOneConfiguration)
-    ...    optionalother = Object(title=u'Other configuration', required=False, schema=IOtherConfiguration)
-    ...    requiredother = Object(title=u'Other configuration', schema=IOtherConfiguration)
-    ...    tuple = Tuple(title=u'Tuple of Int', value_type=Int())
-    ...    dict = Dict(title=u'Dict of TextLine', value_type=TextLine())
-
-    >>> registerDirective('''
-    ... <generic:configuration
-    ...     keyface="example.INestedConfiguration"
-    ...     />
-    ... ''') 
-
-    >>> import os, tempfile
-    >>> temp_dir = tempfile.mkdtemp()
-    >>> iniFile = os.path.join(temp_dir, 'example.ini')
-    >>> open(iniFile, 'w').write('''
-    ... [example.IOneConfiguration]
-    ... textline = Foo
-    ... text : Bla bla bla bla.
-    ... 
-    ... [example.IOtherConfiguration]
-    ... bool = True
-    ... int = 77
-    ... 
-    ... [example.INestedConfiguration]
-    ... one.textline = Bingo
-    ... one.text = Lotto.
-    ... requiredother.bool = False
-    ... tuple.0 = 2
-    ... tuple.1 = 3
-    ... tuple.2 = 19
-    ... dict.roger = ineichen
-    ... dict.dominik = huber
-    ... dict.daniel = meier
-    ... ''')
-
-Such a file can be used for the configuration initializiation. Therefore you
-have to declare one or more files within the iniFiles attribute of the
-informaiton subdirective of the informationProvider direcitve:
-
-    >>> registerDirective('''
-    ... <generic:informationProvider
-    ...     keyface="example.IFoo"
-    ...     conface="example.ISpecialContext"
-    ...     >
-    ...   <information
-    ...       iniFiles="%s"
-    ...       />
-    ... </generic:informationProvider>
-    ... ''' % iniFile)
-
-    >>> one_config = api.getInformation(IOneConfiguration, IFoo, ISpecialContext)
-    >>> one_config.textLine
-    u'Foo'
-
-    >>> one_config.text
-    u'Bla bla bla bla.'
-
-    >>> other_config =  api.getInformation(IOtherConfiguration, IFoo, ISpecialContext)
-    >>> other_config.bool
-    True
-
-    >>> other_config.int
-    77
-
-    >>> nested_config = api.getInformation(INestedConfiguration, IFoo, ISpecialContext)
-    >>> nested_config.one.textLine
-    u'Bingo'
-
-    >>> nested_config.one.text
-    u'Lotto.'
-
-    >>> nested_config.optionalother is None
-    True
-
-    >>> nested_config.requiredother.bool
-    False
-
-    >>> nested_config.requiredother.int
-    42
-
-    >>> nested_config.tuple
-    (2, 3, 19)
-
-    >>> nested_config.dict
-    {'dominik': u'huber', 'daniel': u'meier', 'roger': u'ineichen'}
-
-Ini-file based configurations for an multi information provider
----------------------------------------------------------------
-
-    >>> temp_dir = tempfile.mkdtemp()
-    >>> iniFile = os.path.join(temp_dir, 'example2.ini')
-    >>> open(iniFile, 'w').write('''
-    ... [example.IOneConfiguration:example.IBar@example.IMyContext]
-    ... textline = Gaga
-    ... text : Bla bla bla bla.
-    ... 
-    ... [example.IOneConfiguration:example.IBarFoo@example.IMyContext]
-    ... textline = Gugu
-    ... text : Bla bla bla bla.
-    ... 
-    ... [example.INestedConfiguration:example.IBar@example.IMyContext]
-    ... one.textline = Gogo
-    ... one.text = Lotto.
-    ... requiredother.bool = False
-    ... tuple.0 = 2
-    ... tuple.1 = 3
-    ... tuple.2 = 19
-    ... dict.roger = ineichen
-    ... dict.dominik = huber
-    ... dict.daniel = meier
-    ... ''')
-
-Such a file can be used for the configuration initializiation. Therefore you
-have to declare one or more files within the iniFiles attribute of the
-informaiton directive:
-
-    >>> registerDirective('''
-    ... <generic:multiInformationProviders
-    ...     iniFiles="%s"
-    ...     />
-    ... ''' % iniFile)
-
-    >>> api.getInformation(IOneConfiguration, IBar, IMyContext).textLine
-    u'Gaga'
-
-    >>> api.getInformation(IOneConfiguration, IBarFoo, IMyContext).textLine
-    u'Gugu'
-
-    >>> api.getInformation(INestedConfiguration, IBar, IMyContext).one.textLine
-    u'Gogo'
-
-    >>> import shutil
-    >>> shutil.rmtree(temp_dir)
