@@ -19,5 +19,6 @@ from datamanager import (
         assignClass,
         createTable,
         metadata,
+        getEngineForTable,
         )
 

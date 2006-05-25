@@ -86,6 +86,16 @@ def getSession(createTransaction=False):
     return session
 
 
+def getEngineForTable(t):
+
+    """returns an sqlalchemy engine for the given table name, this is
+    usefull for using the engine to execute literal sql statements"""
+    
+    name = _tableToEngine[t]
+    util = getUtility(IAlchemyEngineUtility, name=name)
+    return util.getEngine()
+    
+
 def inSession():
     return getattr(_storage,'session',None) is not None
 
