@@ -81,7 +81,7 @@ Apply the new object to the session :
   >>> session.save(a)
   >>> a.value = 1
 
-  >>> transaction.get().commit()
+  >>> transaction.commit()
 
 Now let's try to get the object back in a new transaction :
 Note that it is neccessary to get a new session here.
@@ -93,7 +93,7 @@ Note that it is neccessary to get a new session here.
   >>> a.value
   1
 
-  >>> transaction.get().commit()
+  >>> transaction.commit()
 
 
 Multiple databases
@@ -150,7 +150,7 @@ This time we do it inside of a session.
   >>> session.save(a)
   >>> a.value = 321
 
-  >>> transaction.get().commit()
+  >>> transaction.commit()
 
   >>> txn = transaction.begin()
   >>> session = z3c.zalchemy.getSession()
@@ -160,7 +160,7 @@ This time we do it inside of a session.
   >>> str(b.value)
   'b1'
 
-  >>> transaction.get().commit()
+  >>> transaction.commit()
 
 It is also possible to assign a class to a database :
 
@@ -185,5 +185,5 @@ We can use an additional parameter to createTable :
   >>> session.save(aa)
   >>> aa.value = 100
 
-  >>> transaction.get().commit()
+  >>> transaction.commit()
 

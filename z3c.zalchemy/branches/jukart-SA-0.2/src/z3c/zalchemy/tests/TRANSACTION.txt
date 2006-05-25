@@ -62,7 +62,7 @@ We flush the object so that it gets a primary key.
 
   >>> a.value = 1
 
-  >>> transaction.get().commit()
+  >>> transaction.commit()
 
 After the commit we can get a new session from zalchemy outside of a
 transaction.
@@ -75,7 +75,7 @@ But we need to commit the transaction manually.
   >>> a=A()
   >>> session2.save(a)
   >>> a.value = 2
-  >>> transaction.get().commit()
+  >>> transaction.commit()
 
 
 Handling multiple threads
@@ -106,7 +106,7 @@ A different Thread must be able to operate on the engine :
   ...     obj = session.get(A, 1)
   ...     obj.value+= 1
   ...     log.append(('modifyA', obj.value))
-  ...     transaction.get().commit()
+  ...     transaction.commit()
   ...
 
   >>> thread = threading.Thread(target=modifyA)
@@ -128,7 +128,7 @@ Nested Threads :
   ...     thread.join()
   ...     obj.value+= 1
   ...     log.append(('nested', obj.value))
-  ...     transaction.get().commit()
+  ...     transaction.commit()
   ...
 
   >>> thread = threading.Thread(target=nested)
@@ -146,7 +146,7 @@ Aborting transactions
   >>> v = a.value
   >>> a.value += 1
   >>> session.flush([a])
-  >>> transaction.get().abort()
+  >>> transaction.abort()
 
   >>> session = z3c.zalchemy.getSession(True)
   >>> a=session.get(A, 1)
