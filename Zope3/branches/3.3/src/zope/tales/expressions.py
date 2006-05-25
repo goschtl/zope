@@ -15,7 +15,7 @@
 
 $Id$
 """
-import re
+import re, types
 
 from zope.interface import implements
 from zope.tales.tales import _valid_name, _parse_expr, NAME_RE, Undefined
@@ -194,8 +194,16 @@ class PathExpr(object):
         if self._name == 'nocall':
             return ob
 
-        # Call the object if it is callable.
-        if hasattr(ob, '__call__'):
+        # Call the object if it is callable.  Note that checking for
+        # callable() isn't safe because the object might be security
+        # proxied (and security proxies report themselves callable, no
+        # matter what the underlying object is).  We therefore check
+        # for the __call__ attribute, but not with hasattr as that
+        # eats babies, err, exceptions.  In addition to that, we
+        # support calling old style classes which don't have a
+        # __call__.
+        if (getattr(ob, '__call__', _marker) is not _marker
+            or isinstance(ob, types.ClassType)):
             return ob()
         return ob
 

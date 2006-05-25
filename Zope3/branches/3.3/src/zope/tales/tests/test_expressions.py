@@ -115,6 +115,13 @@ class ExpressionTests(ExpressionTestBase):
         else:
             self.fail('Engine accepted first subpath element as dynamic')
             
+    def testOldStyleClassIsCalled(self):
+        class AnOldStyleClass:
+            pass
+        self.context.vars['oldstyleclass'] = AnOldStyleClass
+        expr = self.engine.compile('oldstyleclass')
+        self.assert_(isinstance(expr(self.context), AnOldStyleClass))
+            
     def testString(self):
         expr = self.engine.compile('string:Fred')
         context=self.context
