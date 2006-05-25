@@ -9,7 +9,8 @@
   name="scriptaculous"/>
 
  <configure zcml:condition="have zc.resourcelibrary">
-  <resourceLibrary name="z3c.javascript.scriptaculous">
+  <resourceLibrary name="z3c.javascript.scriptaculous"
+                   require="z3c.javascript.prototype">
    <directory source="src" include="scriptaculous.js"/>
   </resourceLibrary>
  </configure>
