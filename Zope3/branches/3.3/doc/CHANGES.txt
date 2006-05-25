@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 638: TALES PathExpr calls result of alternate
+        subexpression
+
       - Fixed issue 635: TALES PathExpr doesn't call old style classes
 
       - Fixed issue 543: add 'decimal'-package to
