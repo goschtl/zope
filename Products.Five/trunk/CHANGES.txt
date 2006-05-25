@@ -8,6 +8,9 @@ Five 1.5c (Unreleased)
 Bugfixes
 --------
 
+* Fixed an issue where new-style classes could not be used for
+  view components with <browser:page>.
+
 * Provided the 'default' layer alias for backwards compability.  It
   was deleted by accident during the Zope 3.3 port.
 
