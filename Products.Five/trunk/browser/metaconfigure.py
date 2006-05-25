@@ -111,7 +111,8 @@ def page(_context, name, permission, for_,
             # some security declarations on it so we really shouldn't
             # modify the original.  So, instead we make a new class
             # with just one base class -- the original
-            new_class = makeClass(class_.__name__, (class_,), cdict)
+            new_class = makeClass(class_.__name__, 
+                                  (class_, BrowserView), cdict)
 
     else:
         # template

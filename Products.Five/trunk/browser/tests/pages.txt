@@ -78,6 +78,14 @@ Make sure new-style classes work fine as view classes:
 
   >>> self.folder.unrestrictedTraverse('testoid/@@new_style_class')
   <Products.Five.metaclass.NewStyleClass ...>
+  
+At one point browser classes with no attribute and no template
+values specified wasn't getting BrowserView mixed in.  Lets make
+sure it is now:
+
+  >>> self.folder.unrestrictedTraverse('testoid/@@new_style_class2')
+  <Products.Five.metaclass.NewStyleClass ...>
+
 
 ZPT-based browser pages
 -----------------------

@@ -200,6 +200,14 @@
       permission="zope2.Public"
       />
 
+  <browser:page
+      for="Products.Five.tests.testing.simplecontent.ISimpleContent"
+      class=".pages.NewStyleClass"
+      name="new_style_class2"
+      permission="zope2.Public"
+      />
+
+
   <!-- Verify that browser:view works, especially when no specific
        view attribute is specified -->
 
