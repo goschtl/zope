@@ -10,6 +10,17 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 636: Default ITraverser can't traverse old style
+        classes
+
+      - Fixed issue 638: TALES PathExpr calls result of alternate
+        subexpression
+
+      - Fixed issue 635: TALES PathExpr doesn't call old style classes
+
+      - Fixed issue 543: add 'decimal'-package to
+        zope/app/security/globalmodules.zcml
+
       - Change the session credentials plugin to make it configurable in which
 	fields it looks for the credentials.
 
