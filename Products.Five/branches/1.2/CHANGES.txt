@@ -2,6 +2,18 @@
 Five Changes
 ============
 
+Five 1.2.x (unreleased)
+=======================
+
+Bugfixes
+--------
+
+* Fixed an issue where <browser:page> based views that didn't have
+  template or attribute defined weren't getting BrowserView mixed in.
+
+* Fixed an issue where new-style classes could not be used for
+  view components with <browser:page>.
+
 Five 1.2.4 (2006-05-04)
 =======================
 

@@ -74,14 +74,17 @@ it shouldn't modify existing ones:
   >>> view.eagle.__doc__ == SimpleView.eagle.__doc__
   True
 
-Test whether new-style classes are ignored when registering browser
-pages with view classes.  When traversing for a non-existing view, we
-should get an AttributeError:
+Make sure new-style classes work fine as view classes:
 
   >>> self.folder.unrestrictedTraverse('testoid/@@new_style_class')
-  Traceback (most recent call last):
-  ...
-  AttributeError: @@new_style_class
+  <Products.Five.metaclass.NewStyleClass ...>
+  
+At one point browser classes with no attribute and no template
+values specified wasn't getting BrowserView mixed in.  Lets make
+sure it is now:
+
+  >>> self.folder.unrestrictedTraverse('testoid/@@new_style_class2')
+  <Products.Five.metaclass.NewStyleClass ...>
 
 
 ZPT-based browser pages
