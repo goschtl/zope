@@ -136,6 +136,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fix get_rendered in zope.formlib. Make use of get_rendered in 
+        setUpInputWidget which is used in AddFormBase.
+
       - Fixed error handling in sequence item input widget. This widget
         was raising a ValidationError instead a WidgetInputError. The formlib
         didn't catch ValidationErrors. Added also ValidationError handling to
