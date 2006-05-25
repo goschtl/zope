@@ -5,12 +5,12 @@
 
   <h3 i18n:translate="">
     Error type: 
-    <tal:span tal:replace="view/error_type" i18n:name="error_type"/>
+    <tal:span tal:replace="nocall:view/error_type" i18n:name="error_type"/>
   </h3>
 
   <h5 i18n:translate="">
     Error object: 
-    <tal:span tal:replace="view/error_object" i18n:name="error_object"/>
+    <tal:span tal:replace="nocall:view/error_object" i18n:name="error_object"/>
   </h5>
 
   <pre class="traceback" style="font-size:small;">
@@ -21,4 +21,3 @@
 </div>
 </body>
 </html>
-
