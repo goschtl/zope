@@ -186,8 +186,6 @@ class AlchemyDataManager(object):
     """
     implements(IDataManager)
 
-    vote = False
-
     def __init__(self, session):
         self.session = session
         self.transaction = session.create_transaction()
