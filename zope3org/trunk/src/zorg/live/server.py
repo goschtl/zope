@@ -28,7 +28,10 @@ from twisted.internet import reactor
 from twisted.web2 import stream
 
 from zope.component import ComponentLookupError
+from zope.interface import implements
+from zope.interface import alsoProvides
 
+from zope.app.publication.httpfactory import HTTPPublicationRequestFactory
 from zope.app.wsgi import WSGIPublisherApplication
 from zope.app.twisted.server import ServerType
 from zope.app.twisted.http import Prebuffer
@@ -42,6 +45,8 @@ from zorg.live.page.event import IdleEvent
 from zorg.live.page.event import ErrorEvent
 from zorg.live.page.event import ProgressEvent
 from zorg.live.page.event import dict2event
+
+import interfaces
 
 badRequest = object()
 securityInputLimit = 64000
@@ -414,12 +419,24 @@ class LivePrebuffer(resource.WrapperResource):
         return self.res, segments
 
 
+class HTTPLivePageRequestFactory(HTTPPublicationRequestFactory) :
+    """ A special request factory for live page servers. 
+        Marks all requests as live page requests.
+    """
+    
+    def __call__(self, input_stream, env, output_stream=None) :
+        request = super(HTTPLivePageRequestFactory, self).__call__(input_stream,
+                                                            env, output_stream)
+        alsoProvides(request, interfaces.ILiveRequest)       
+        return request
+        
+
     
 def createHTTPFactory(db):
 
     reactor.threadpool.adjustPoolsize(10, 20)
     
-    resource = WSGIPublisherApplication(db)
+    resource = WSGIPublisherApplication(db, factory=HTTPLivePageRequestFactory)
     resource = LivePageWSGIResource(resource)
     resource = LiveLogWrapperResource(resource)
     resource = LivePrebuffer(resource)

@@ -28,9 +28,11 @@ from zope.app import zapi
 from zope.app.keyreference.interfaces import IKeyReference
 from zope.app.publisher.browser import BrowserView
 
+from zope.app.twisted.interfaces import IServerType
 
 from zorg.ajax.page import ComposedAjaxPage
 
+from zorg.live.interfaces import ILiveRequest
 from zorg.live.page.interfaces import ILivePage
 from zorg.live.page.interfaces import ILivePageManager
 from zorg.live.page.event import dict2event
@@ -57,6 +59,12 @@ class LivePage(ComposedAjaxPage) :
     
     clientFactory = LivePageClient
     clientUUID = None
+    
+    
+    def isLive(self) :
+        """ Returns True if the livepage server is available. """
+        return ILiveRequest.providedBy(self.request)
+        
     
     def notify(self, event) :
         """ Default implementation of an event handler. Must be specialized. """
