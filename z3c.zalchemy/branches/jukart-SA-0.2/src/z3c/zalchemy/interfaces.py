@@ -99,3 +99,19 @@ class IAlchemy(interface.Interface):
             Name of the engine utility.
         """
 
+    def dropTable(table, engine=''):
+        """Drop a table.
+
+        Drops the table immediately without the need of a session.
+
+        table :
+            Name of the table.
+        engine :
+            Name of the engine utility.
+        """
+
+    def getEngineForTable(t):
+        """returns an sqlalchemy engine for the given table name, this is
+           usefull for using the engine to execute literal sql statements
+        """
+
