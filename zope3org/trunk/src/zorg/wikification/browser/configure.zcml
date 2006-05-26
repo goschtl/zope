@@ -56,37 +56,6 @@
         attribute="wikiCommandForm"
         permission="zope.View"
         />
-
-    <pages  
-      for="zorg.comment.IAttributeAnnotableComments"
-      class="zorg.wikification.browser.comment.LiveComments"
-      permission="zope.View">
-                        
-      <page 
-            name="wikicomment.html"
-            attribute="render"
-            title="Comments"
-            menu="zmi_views" />
-            
-            
-    </pages>
-      
-    <pages		
-     
-      for="zorg.comment.IAttributeAnnotableComments"
-      class="zorg.wikification.browser.comment.AddComment"
-      permission="zope.View">
-      
-      <page  
-            name="wikiaddcomment.html"
-            template="./templates/add_comment.pt" />
-            
-      <page
-            name="wikisubmitcomment.html"
-            attribute="addComment" />
-            
-    </pages>
-      
                
     <pages
       class=".wikipage.EditWikiPage"

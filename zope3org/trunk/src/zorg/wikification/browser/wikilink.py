@@ -28,6 +28,7 @@ from zope.app import contenttypes
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.file import File
+from zope.app.file.image import Image
 from zope.app.folder import Folder
 from zope.app.file.interfaces import IFile
 from zope.app.event.objectevent import ObjectCreatedEvent
@@ -767,6 +768,9 @@ class UploadFilePlaceholder(AddObjectPlaceholder) :
         if not contenttype :
             contenttype = contenttypes.guess_content_type(filename)[0]
      
+        return self._addFile(name, data, contenttype)
+       
+    def _addFile(self, name, data, contenttype) :
         return self._addObject(name, File(data, contenttype))
         
 class UploadImagePlaceholder(UploadFilePlaceholder) :
@@ -774,10 +778,31 @@ class UploadImagePlaceholder(UploadFilePlaceholder) :
     
     title = u"Upload Image"
     _form = ViewPageTemplateFile("./templates/wiki_image.pt")
+    maxwidth = 200
+    
+    def _addFile(self, name, data, contenttype) :
+        self._image = Image(data)
+        return self._addObject(name, self._image)
     
     def performSubstitution(self) :
+    
+        alignment = self.page.parameter('alignment', type=str, default='')
+        
+        try :
+            maxwidth = self.page.parameter('maxwidth', 
+                                            type=int, default=self.maxwidth)
+        except ValueError :
+            maxwidth = self.maxwidth
+            
         name = self.apply()
-        self.new_link = '<img src="%s"/>' % (name)
+        width, height = self._image.getImageSize()
+        if width > maxwidth :
+            height = (height * maxwidth) / width
+            width = maxwidth
+         
+        alt = IZopeDublinCore(self._image).title.encode('utf-8')
+        pat = '<img src="%s" alt="%s" width="%s" height="%s" align="%s"/>'
+        self.new_link = pat % (name, alt, width, height, alignment)
         return self.new_link
 
     

@@ -58,6 +58,38 @@
                         <span tal:replace="view/unicodeLabel">Name</span>&quot;.
                 </td>   
             </tr>
+            <tr> 
+                <td valign="top" class="wiki-field">
+                    Image width: 
+                </td>
+                <td valign="top" class="wiki-field">
+                    <input style="float:left;" id="maxwidth" name="maxwidth" 
+                            type="text" size="5" value="200" 
+                            tal:attributes="value string:${view/maxwidth}" />
+                            
+                    <div>Maximum width of the image in pixel.<br/>
+                    Smaller images will be shown in original size.<br/>
+                    We recommend 40 pixel for thumbnails, <br/>
+                    100 for small, 200 for medium size images.</div>
+                </td>   
+            </tr>
+            <tr> 
+                <td valign="top" class="wiki-field">
+                    Image align: 
+                </td>
+                <td valign="top" class="wiki-field">
+                    <select id="alignment" name="alignment">
+                        <optgroup label="Options">
+                            <option label="-- Not set --" value="" selected>-- Not Set --</option>
+                            <option label="Top" value="top" >Top</option>
+                            <option label="Middle" value="middle">Middle</option>
+                            <option label="Bottom" value="bottom" >Bottom</option>
+                            <option label="Left" value="left">Left</option>
+                            <option label="Right" value="right" >Right</option>
+                        </optgroup>
+                    </select>
+                </td>   
+            </tr>
             <tr>
                 <td>&nbsp;
                     <input tal:condition="view/isUnique" type="hidden" 

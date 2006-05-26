@@ -165,7 +165,10 @@ The forms for the menu commands are loaded on demand:
                 </tr>
     <BLANKLINE>
                 <tr>
-                    <td>&nbsp;		
+                    <td>&nbsp;
+                        <input type="hidden" name="scope"
+                               id="scope" value="on">        
+    <BLANKLINE>
                     </td>
                     <td>
                         <input name="entry_submit" type="submit" value="Submit">
