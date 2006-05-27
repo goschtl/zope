@@ -1,5 +1,12 @@
 PluggableAuthService changelog
 
+  PluggableAuthService (unreleased)
+
+     - Modify CookieAuthHelper to prefer __ac form variables to the cookie
+       when extracting credentials.
+       (https://dev.plone.org/plone/ticket/5355)
+
+
   PluggableAuthService 1.2 (2006/05/14)
 
     Bugs Fixed

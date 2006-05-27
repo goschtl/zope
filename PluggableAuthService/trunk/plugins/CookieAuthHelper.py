@@ -108,14 +108,9 @@ class CookieAuthHelper(Folder, BasePlugin):
         """ Extract credentials from cookie or 'request'. """
         creds = {}
         cookie = request.get(self.cookie_name, '')
+        login = request.get('__ac_name', '')
 
-        if cookie:
-            cookie_val = decodestring(unquote(cookie))
-            login, password = cookie_val.split(':')
-
-            creds['login'] = login
-            creds['password'] = password
-        else:
+        if login:
             # Look in the request for the names coming from the login form
             login = request.get('__ac_name', '')
             password = request.get('__ac_password', '')
@@ -123,6 +118,12 @@ class CookieAuthHelper(Folder, BasePlugin):
             if login:
                 creds['login'] = login
                 creds['password'] = password
+        elif cookie:
+            cookie_val = decodestring(unquote(cookie))
+            login, password = cookie_val.split(':')
+
+            creds['login'] = login
+            creds['password'] = password
 
         if creds:
             creds['remote_host'] = request.get('REMOTE_HOST', '')
