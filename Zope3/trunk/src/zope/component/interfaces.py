@@ -821,7 +821,7 @@ class IComponentRegistry(interface.Interface):
         registrations in the object.
         """
 
-    def registerHandler(handler, adapts=None, name=u'', info=''):
+    def registerHandler(handler, required=None, name=u'', info=''):
         """Register a handler.
 
         A handler is a subscriber that doesn't compute an adapter
@@ -858,7 +858,7 @@ class IComponentRegistry(interface.Interface):
         A Registered event is generated with an IHandlerRegistration.
         """
 
-    def unregisterHandler(handler=None, adapts=None, name=u''):
+    def unregisterHandler(handler=None, required=None, name=u''):
         """Register a handler.
 
         A handler is a subscriber that doesn't compute an adapter
