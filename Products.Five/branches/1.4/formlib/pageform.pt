@@ -1,9 +1,13 @@
-<html metal:define-macro="main">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/@@standard_macros/page">
 <head>
 </head>
 
 <body>
-<div>
+<div metal:fill-slot="body">
 
 <div metal:define-macro="form">
 
