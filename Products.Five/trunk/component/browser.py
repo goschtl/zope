@@ -19,6 +19,7 @@ from Products.Five.browser import BrowserView
 from Products.Five.component import enableSite, disableSite
 from Products.Five.component.interfaces import IObjectManagerSite
 
+from zope.component.globalregistry import base
 from zope.component.persistentregistry import PersistentComponents
 from zope.app.component.hooks import clearSite
 
