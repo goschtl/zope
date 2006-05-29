@@ -133,7 +133,7 @@ function toggleFormFieldHelp(ob,state) {
   <!-- start: subforms -->
   <table id="sortable" class="listing"
          summary="Content listing">
-   <thead>
+   <thead metal:define-slot="subforms-thead">
     <tr>
      <metal:block tal:repeat="field view/itemFormFactory/form_fields">
       <th tal:define="isSelection python:field.field.__name__=='selected'"
@@ -143,9 +143,12 @@ function toggleFormFieldHelp(ob,state) {
      </metal:block>
      </tr>
    </thead>
-   <tbody>
+   <tbody id="subforms-tbody">
     <tr tal:repeat="subForm view/getForms"
-        tal:attributes="class python:repeat['subForm'].even and 'even' or 'odd';"
+        tal:attributes="class
+                        python:repeat['subForm'].even() and 'even' or 'odd';
+                        id subForm/prefix;"
+        
         tal:content="structure subForm"/>
    </tbody>
   </table>
@@ -179,8 +182,6 @@ function toggleFormFieldHelp(ob,state) {
  </div>
 
 </form>
-
-<div tal:content="view/request/form"/>
 
 <script type="text/javascript" metal:define-slot="trackChanges">
   zc_trackChanges(document.getElementById('zc.page.browser_form'));
