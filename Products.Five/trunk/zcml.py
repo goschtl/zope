@@ -33,10 +33,10 @@ def load_site():
     # load instance site configuration file
     site_zcml = os.path.join(INSTANCE_HOME, "etc", "site.zcml")
     if not os.path.exists(site_zcml):
-        raise IOError, "site.zcml is now required to live at '%s', for " \
-                       "sites upgraded from Zope 2.9 please copy site.zcml " \
-                       "from your installed Zope's skel/etc directory" \
-                       % site_zcml
+        raise IOError("site.zcml is now required to live at '%s', for " \
+                      "sites upgraded from Zope 2.9 please copy site.zcml " \
+                      "from your installed Zope's skel/etc directory" \
+                      % site_zcml)
 
     global _context
     _context = xmlconfig.file(site_zcml)
