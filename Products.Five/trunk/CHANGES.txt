@@ -2,7 +2,7 @@
 Five Changes
 ============
 
-Five 1.5c (Unreleased)
+Five 1.5c (2006-05-29)
 ======================
 
 Restructuring
@@ -36,9 +36,11 @@ Bugfixes
 * Provided the 'default' layer alias for backwards compability.  It
   was deleted by accident during the Zope 3.3 port.
 
+* Five.testbrowser does not swallow cookies anymore, based on patch by
+  Daniel Nouri.
+
 * Five.testbrowser capitalizes headers in the same way as the Zope2
   HTTPResponse. i.e. content-length -> Content-Length.
-
 
 Five 1.5b (2006-05-04)
 ======================
@@ -52,19 +54,23 @@ Features
   deprecated, as the functionality exists in the Zope core publisher
   from Zope 2.10 and up.
 
-
-Five 1.4 (Unreleased)
+Five 1.4 (2006-05-29)
 =====================
 
 Bugfixes
 --------
+
+* Fixed an issue where <browser:page> based views that didn't have
+  template or attribute defined weren't getting BrowserView mixed in.
+
+* Fixed an issue where new-style classes could not be used for
+  view components with <browser:page>.
 
 * Five.testbrowser does not swallow cookies anymore, based on patch by
   Daniel Nouri.
 
 * Five.testbrowser capitalizes headers in the same way as the Zope2
   HTTPResponse. i.e. content-length -> Content-Length.
-
 
 Five 1.4c (2006-05-04)
 ======================
@@ -109,6 +115,18 @@ Features
 
   NOTE: Anyone who copied the Five site.zcml to their
   $INSTANCE_HOME/etc/ directory is going to need to update it.
+
+Five 1.3.6 (2006-05-29)
+=======================
+
+Bugfixes
+--------
+
+* Fixed an issue where <browser:page> based views that didn't have
+  template or attribute defined weren't getting BrowserView mixed in.
+
+* Fixed an issue where new-style classes could not be used for
+  view components with <browser:page>.
 
 Five 1.3.5 (2006-05-04)
 =======================
@@ -255,6 +273,18 @@ Restructuring
 * Backwards compatability for Zope 3-style interfaces of Zope 2
   components has been removed as that functionality is now in the Zope
   2 core as of Zope 2.9.
+
+Five 1.2.5 (2006-05-29)
+=======================
+
+Bugfixes
+--------
+
+* Fixed an issue where <browser:page> based views that didn't have
+  template or attribute defined weren't getting BrowserView mixed in.
+
+* Fixed an issue where new-style classes could not be used for
+  view components with <browser:page>.
 
 Five 1.2.4 (2006-05-04)
 =======================
