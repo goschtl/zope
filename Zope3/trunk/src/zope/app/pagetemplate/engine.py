@@ -26,7 +26,7 @@ from zope.interface import implements
 from zope.component.interfaces import ComponentLookupError
 from zope.traversing.interfaces import IPathAdapter, ITraversable
 from zope.traversing.interfaces import TraversalError
-from zope.traversing.adapters import Traverser, traversePathElement
+from zope.traversing.adapters import traversePathElement
 from zope.security.untrustedpython import rcompile
 from zope.security.proxy import ProxyFactory
 from zope.security.untrustedpython.builtins import SafeBuiltins
@@ -42,33 +42,41 @@ from zope.app.i18n import ZopeMessageFactory as _
 class InlineCodeError(Exception):
     pass
 
+class ZopeTraverser(object):
 
-def zopeTraverser(object, path_items, econtext):
-    """Traverses a sequence of names, first trying attributes then items.
-    """
-    request = getattr(econtext, 'request', None)
-    path_items = list(path_items)
-    path_items.reverse()
+    def __init__(self, proxify=None):
+        if proxify is None:
+            self.proxify = lambda x: x
+        else:
+            self.proxify = proxify
 
-    while path_items:
-        name = path_items.pop()
-        object = traversePathElement(object, name, path_items,
-                                     request=request)
-        object = ProxyFactory(object)
-    return object
+    def __call__(self, object, path_items, econtext):
+        """Traverses a sequence of names, first trying attributes then items.
+        """
+        request = getattr(econtext, 'request', None)
+        path_items = list(path_items)
+        path_items.reverse()
+
+        while path_items:
+            name = path_items.pop()
+            
+            # special-case dicts for performance reasons        
+            if getattr(object, '__class__', None) == dict:
+                object = object[name]
+            else:
+                object = traversePathElement(object, name, path_items,
+                                             request=request)
+            object = self.proxify(object)
+        return object
+
+zopeTraverser = ZopeTraverser(ProxyFactory)
 
 class ZopePathExpr(PathExpr):
 
     def __init__(self, name, expr, engine):
         super(ZopePathExpr, self).__init__(name, expr, engine, zopeTraverser)
 
-
-def trustedZopeTraverser(object, path_items, econtext):
-    """Traverses a sequence of names, first trying attributes then items.
-    """
-    traverser = Traverser(object)
-    return traverser.traverse(path_items,
-                              request=getattr(econtext, 'request', None))
+trustedZopeTraverser = ZopeTraverser()
 
 class TrustedZopePathExpr(PathExpr):
 
@@ -280,6 +288,21 @@ class ZopeEngine(ExpressionEngine):
 
       >>> o1 is o2
       False
+
+    Note that this engine special-cases dicts during path traversal:
+    it traverses only to their items, but not to their attributes
+    (e.g. methods on dicts), because of performance reasons:
+
+      >>> d = engine.getBaseNames()
+      >>> d['adict'] = {'items': 123}
+      >>> d['anotherdict'] = {}
+      >>> context = engine.getContext(d)
+      >>> context.evaluate('adict/items')
+      123
+      >>> context.evaluate('anotherdict/keys')
+      Traceback (most recent call last):
+        ...
+      KeyError: 'keys'
 
       >>> tearDown()
 
