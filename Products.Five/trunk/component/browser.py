@@ -23,6 +23,7 @@ from zope.component.globalregistry import base
 from zope.component.persistentregistry import PersistentComponents
 from zope.app.component.hooks import clearSite
 
+
 class ObjectManagerSiteView(BrowserView):
 
     def update(self):
@@ -60,4 +61,4 @@ class ObjectManagerSiteView(BrowserView):
         # the local site from the thread local.
         clearSite()
 
-        self.context.setSiteManage(None)
+        self.context.setSiteManager(None)
