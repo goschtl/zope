@@ -10,6 +10,8 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 639: Default ITraverser ignores dict methods
+
       - Fixed issue 636: Default ITraverser can't traverse old style
         classes
 
