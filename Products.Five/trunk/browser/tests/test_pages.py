@@ -39,7 +39,7 @@ def test_ViewAcquisitionWrapping():
       >>> isinstance(view, SimpleView)
       True
       >>> view()
-      'The eagle has landed'
+      u'The eagle has landed'
 
     This sucks, but we know it
 

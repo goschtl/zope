@@ -22,35 +22,35 @@ class SimpleView(BrowserView):
 
     def eagle(self):
         """Docstring"""
-        return "The eagle has landed"
+        return u"The eagle has landed"
 
     def mouse(self):
         """Docstring"""
-        return "The mouse has been eaten by the eagle"
+        return u"The mouse has been eaten by the eagle"
 
 class FancyView(BrowserView):
     """Fancy, fancy stuff"""
 
     def view(self):
-        return "Fancy, fancy"
+        return u"Fancy, fancy"
 
 class CallView(BrowserView):
 
     def __call__(self):
-        return "I was __call__()'ed"
+        return u"I was __call__()'ed"
 
 class CallableNoDocstring:
 
     def __call__(self):
-        return "No docstring"
+        return u"No docstring"
 
 def function_no_docstring(self):
-    return "No docstring"
+    return u"No docstring"
 
 class NoDocstringView(BrowserView):
 
     def method(self):
-        return "No docstring"
+        return u"No docstring"
 
     function = function_no_docstring
 

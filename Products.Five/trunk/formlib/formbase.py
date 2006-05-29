@@ -22,7 +22,8 @@ import zope.event
 import zope.lifecycleevent
 from zope import interface
 from zope.formlib import interfaces, form, namedtemplate
-from zope.formlib.i18n import _
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory("zope")
 
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.Five.browser.decode import processInputs, setPageEncoding

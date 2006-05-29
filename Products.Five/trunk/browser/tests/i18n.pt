@@ -8,5 +8,7 @@
 </table>
 <table summary="Explicit summary" title="Explicit title" i18n:attributes="summary explicit-summary; title explicit-title" >
 </table>
+<p tal:content="view/this_is_a_message">Text should be inserted here and translated automatically</p>
+<p tal:content="view/this_is_a_message" i18n:translate="">Text should be inserted here and translated</p>
 </body>
 </html>

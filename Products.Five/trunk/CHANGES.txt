@@ -5,6 +5,13 @@ Five Changes
 Five 1.5c (Unreleased)
 ======================
 
+Restructuring
+-------------
+
+* Zope 2.10+ uses the Zope 3 PageTemplate engine (incl. TAL and
+  TALES).  A bunch of special and magic code in Five has become
+  obsolete with this, some other had to be readjusted.
+
 Bugfixes
 --------
 
