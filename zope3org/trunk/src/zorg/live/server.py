@@ -50,7 +50,7 @@ import interfaces
 
 badRequest = object()
 securityInputLimit = 64000
-requestTimeOut = 30
+requestTimeOut = 5
 
 timeout = os.getenv('LIVESERVER_TIMEOUT')
 if timeout:
@@ -226,7 +226,6 @@ class LivePageWSGIHandler(WSGIHandler) :
                         ('content-length', len(output))]
                     
         print "***LivePage result", self.num, len(output), "bytes", self.uuid, headers
-        print "Output", output
         
         self.startWSGIResponse('200 Ok', headers)
         self._returnOutput(output)
@@ -385,8 +384,6 @@ class LivePrebuffer(resource.WrapperResource):
                 # Hm, this shouldn't be required:
                 req.stream.doStartReading = None
         
-        
-        print "LivePrebuffer.uri", req.uri
         manager = zapi.getUtility(ILivePageManager)
         extractor = Extractor(ctx)
         type = None

@@ -23,13 +23,34 @@ from zope.interface import implements
 import zope.app.testing.placelesssetup
 from zope.app import zapi
 
+from zope.app.keyreference.interfaces import IKeyReference
+from zope.app.intid.interfaces import IIntIds
+from zope.app.intid import IntIds
+
 from zorg.edition.interfaces import IUUIDGenerator
 from zorg.edition.uuid import UUIDGenerator
 
 from zorg.live.page.page import LivePage
 from zorg.live.page.interfaces import IClientEventFactory
+from zorg.live.page.manager import LivePageManager
+from zorg.live.page.interfaces import ILivePageManager
 from zorg.live.page import event
 
+
+class TestKeyReference(object) :
+
+    implements(IKeyReference)
+    
+    def __init__(self, object) :
+        self.object = object
+
+    def __call__(self) :
+        return self.object
+        
+    def __hash__(self) :
+        return id(self.object)
+    
+    
 
 class TestUUIDGenerator(object) :
     """ A generator that produces always the same sequence of uuids for test
@@ -44,14 +65,22 @@ class TestUUIDGenerator(object) :
         self.count += 1
         return "uuid%s" % self.count
     
-def livePageSetUp(test=None) :
-    zope.component.provideUtility(TestUUIDGenerator(), IUUIDGenerator)
+def livePageSetUp(test=None, manager=False) :
 
+    zope.component.provideAdapter(TestKeyReference, [None], IKeyReference)
+    
+    zope.component.provideUtility(IntIds(), IIntIds)
+    zope.component.provideUtility(TestUUIDGenerator(), IUUIDGenerator)
     zope.component.provideUtility(event.Append, IClientEventFactory,
                                                                name="append")
     zope.component.provideUtility(event.Update, IClientEventFactory,
                                                                name="update")
+    if manager :
+        lpm = LivePageManager()
+        zope.component.provideUtility(lpm, ILivePageManager)
+        return lpm
 
+    
 class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
 
     def setUp(self, doctesttest=None):

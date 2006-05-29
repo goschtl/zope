@@ -244,7 +244,8 @@ directlyProvides(CloseEvent, IClientEventFactory)
 class LoginEvent(LivePageEvent) :
     """ A login event that can be used to notify about new users. 
     
-        >>> LoginEvent(who='member.uoe', where='location').pprint()
+        >>> LoginEvent(who='member.uoe', where='location', client=42).pprint()
+        client : 42
         name : 'login'
         recipients : 'all'
         where : 'location'
@@ -262,7 +263,8 @@ directlyProvides(LoginEvent, IClientEventFactory)
 class LogoutEvent(LivePageEvent) :
     """ A logout event that can be used to notify about leaving users. 
     
-        >>> LogoutEvent(who='member.uoe', where='location').pprint()
+        >>> LogoutEvent(who='member.uoe', where='location', client=42).pprint()
+        client : 42
         name : 'logout'
         recipients : 'all'
         where : 'location'

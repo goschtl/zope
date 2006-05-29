@@ -52,11 +52,15 @@ var LivePage = {
 	    },
     
     nextEvent : function () {
+        
+        
         if(LivePage.lastRequest){ 
-//            alert("in nextEvent");
+            alert("in nextEvent");
             return;
         }
         var base_url = LivePage.baseURL + "/@@output/" + LivePage.uuid;
+        
+        alert("nextEvent" + base_url);
         LivePage.lastRequest = new Ajax.Request(base_url, 
                                 { method: 'get', asynchronous:true});
         },
@@ -216,7 +220,7 @@ LivePage.clientHandlers = {
     onUpdate : function(event) {
             var id = event['id'];
             var html = event['html'];
-//            alert("update: " + id + " --- " + html);
+            alert("update: " + id);
             $(id).innerHTML = html;
 //            html.evalScripts();
 //            id.evalScripts();

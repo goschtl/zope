@@ -135,7 +135,8 @@ class LivePageManager(object) :
             self._location(where)[uuid] = client
             
         if not existing :
-            login = LoginEvent(who=client.principal.id, where=where)
+            login = LoginEvent(who=client.principal.id, 
+                        where=where, client=client)
             # we use the zope event here since it's up the concrete
             # pages how they represent the online status of members
             
@@ -153,7 +154,8 @@ class LivePageManager(object) :
             print "***Info: client already unregistered."
             
         if not self.isOnline(client.principal.id) :
-            logout = LogoutEvent(who=client.principal.id, where=where)
+            logout = LogoutEvent(who=client.principal.id, 
+                                            where=where, client=client)
             # we use the zope event here since it's up the concrete
             # pages how they represent the online status of members
             zope.event.notify(logout)    

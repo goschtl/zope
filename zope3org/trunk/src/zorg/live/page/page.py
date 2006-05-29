@@ -15,7 +15,7 @@
 
 $Id: page.py 39651 2005-10-26 18:36:17Z oestermeier $
 """
-
+import zope.component
 from zope.interface import implements
 
 from zope.security.checker import defineChecker, NoProxy
@@ -27,6 +27,7 @@ from zope.publisher.interfaces import NotFound
 from zope.app import zapi
 from zope.app.keyreference.interfaces import IKeyReference
 from zope.app.publisher.browser import BrowserView
+from zope.app.intid.interfaces import IIntIds
 
 from zope.app.twisted.interfaces import IServerType
 
@@ -40,7 +41,7 @@ from zorg.live.page.client import LivePageClient
 
 
 class LivePage(ComposedAjaxPage) :
-    """ A Zope3 substitute for the newov.livepage.LivePage    
+    """ A Zope3 substitute for the nevow.livepage.LivePage    
     
     The initial call of a LivePage (without parameters) returns a page
     that immediately connects a client to the server. After that the client
@@ -52,7 +53,20 @@ class LivePage(ComposedAjaxPage) :
     >>> from zope.interface.verify import verifyObject
     >>> verifyObject(ILivePage, page)
     True
+    
+    A livepage is registered for a location. The location is represented
+    by an id. It's up to the implementation to provide an id with the 
+    getLocationId method that can be resolved by the getLocationResolver method. 
+    
+    The default implementation of this class uses the IntIds utility:
  
+    >>> context = object()
+    >>> page = LivePage(context, TestRequest())
+    >>> id = page.getLocationId()
+    >>> resolver = page.getLocationResolver()
+    >>> resolver(id) == context
+    True
+    
     """
         
     implements(ILivePage)
@@ -87,15 +101,21 @@ class LivePage(ComposedAjaxPage) :
         """ Returns a group id that allows to share different livepages
             in different contexts.
             
-            The default implementation returns the IKeyReference of the
+            The default implementation returns the int id of the
             LivePage context.
         """
-        key = IKeyReference(self.context, None)
-        if key :
-            return key.__hash__()
-        return 0
+        intIds = zope.component.getUtility(IIntIds)
+        return intIds.register(self.context)
         
-            
+    def getLocationResolver(self) :
+        """
+        Returns a callable that converts location ids to the corresponding
+        objects.
+        """
+        
+        intIds = zope.component.getUtility(IIntIds)
+        return intIds.getObject
+    
     def output(self, uuid) :
         """ Convenience function that accesses a specific client.
         

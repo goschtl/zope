@@ -53,10 +53,10 @@ class LivePageClient(object):
         
         manager = zapi.getUtility(ILivePageManager)
         
+        self.resolver = page.getLocationResolver()
         self.where = page.getLocationId()
         self.page_class = page.__class__
         self.outbox = Queue.Queue()
-      
         self.principal = page.request.principal
         self.touched = time.time()
         manager.register(self, uuid)
