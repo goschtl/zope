@@ -73,7 +73,13 @@ def product_packages(app):
     for product_id in products.objectIds():
         product = products[product_id]
         if hasattr(product, 'package_name'):
-            packages[product_id] = __import__(product.package_name)
+            pos = product.package_name.rfind('.')
+            if pos > -1:
+                packages[product_id] = __import__(product.package_name, 
+                                                  globals(), {}, 
+                                                  product.package_name[pos+1:])
+            else:
+                packages[product_id] = __import__(product.package_name)
         elif old_product_packages.has_key(product_id):
             packages[product_id] = old_product_packages[product_id]
     
@@ -127,12 +133,16 @@ def patch_externalmethod(app):
             return result
 
         try:
-            l = name.find('.')
+            l = name.rfind('.')
             if l > 0:
                 realName = name[l + 1:]
                 toplevel = name[:l]
                 
-                m = __import__(toplevel)
+                pos = toplevel.rfind('.')
+                if pos > -1:
+                    m = __import__(toplevel, globals(), {}, toplevel[pos+1:])
+                else:
+                    m = __import__(toplevel)
         
                 d = os.path.join(m.__path__[0], prefix, realName)
                 
