@@ -215,7 +215,7 @@ Zope Changes
       Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dimitry
       Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
       (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute,
-      Shane Hathaway, Bjorn Tillenius, Sam Stainsby, Bernd Dorn
+      Shane Hathaway, Bjorn Tillenius, Sam Stainsby, Bernd Dorn, Benji York
 
   ------------------------------------------------------------------
 
