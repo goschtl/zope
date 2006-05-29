@@ -13,17 +13,11 @@ catalogs.
 
 We've tried to keep the Five experience as close to Zope 3 as
 possible, so this means that what you learn while using Five should
-also be applicable to Zope 3, and viceversa.
-
-Five 1.0 and 1.1 work on a straight Zope 2.7 installation, as long as
-Zope 3 has been installed.  Five 1.2 requires Zope 2.8 which already
-ships with Zope 3, Five 1.3 is included in Zope 2.9.
-
-We're in the process of evaluating lots more Zope 3 technologies for
-integration into Zope 2.  This is the right moment for interested Zope
-2 and Zope 3 developers to jump in.  We're looking for cooperation
-between different Zope 2 projects so that this can be a foundational
-system for us all.
+also be applicable to Zope 3, and viceversa.  We're in the process of
+evaluating lots more Zope 3 technologies for integration into Zope 2.
+This is the right moment for interested Zope 2 and Zope 3 developers
+to jump in.  We're looking for cooperation between different Zope 2
+projects so that this can be a foundational system for us all.
 
 Download
 --------
@@ -43,6 +37,10 @@ We have also released Five 1.4.  This is a feature release and is
 compatible with Zope 2.9.  You may download it here:
 
 http://codespeak.net/z3/five/release/Five-1.4.tgz
+
+To check which version of Five is compatible with which version of
+Zope, please refer to the `compatibility matrix
+<http://codespeak.net/z3/five/INSTALL.html>`_.
 
 Joining the project
 -------------------
