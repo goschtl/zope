@@ -20,19 +20,23 @@ from zope.app import zapi
 
 from zope.component import ComponentLookupError
 from zope.app.security.interfaces import PrincipalLookupError
+from zope.publisher.browser import TestRequest
 
 from zope.security.management import queryInteraction
 from zope.publisher.interfaces import IRequest
 
 defaultRequest = None
 
-def getRequest() :
+def getRequest(test=True) :
     global defaultRequest
     interaction = queryInteraction()
     if interaction is not None:
         for participation in interaction.participations:
             if IRequest.providedBy(participation) :
                 return participation
+    
+    if test :
+        return TestRequest()
     return defaultRequest
     
 def setRequest(request) :

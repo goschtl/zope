@@ -119,6 +119,9 @@ class LivePageEvent(object) :
         
     def toDict(self) :
         d = dict(self.__dict__)
+        for key in d.keys() :
+            if key.startswith("_") :
+                del d[key]
         d.update(dict(name=self.name,
                         recipients=self.recipients,
                         where=self.where))
@@ -244,8 +247,7 @@ directlyProvides(CloseEvent, IClientEventFactory)
 class LoginEvent(LivePageEvent) :
     """ A login event that can be used to notify about new users. 
     
-        >>> LoginEvent(who='member.uoe', where='location', client=42).pprint()
-        client : 42
+        >>> LoginEvent(who='member.uoe', where='location', _client=42).pprint()
         name : 'login'
         recipients : 'all'
         where : 'location'
@@ -263,8 +265,7 @@ directlyProvides(LoginEvent, IClientEventFactory)
 class LogoutEvent(LivePageEvent) :
     """ A logout event that can be used to notify about leaving users. 
     
-        >>> LogoutEvent(who='member.uoe', where='location', client=42).pprint()
-        client : 42
+        >>> LogoutEvent(who='member.uoe', where='location', _client=42).pprint()
         name : 'logout'
         recipients : 'all'
         where : 'location'
@@ -447,6 +448,9 @@ def request2event() :
     request = getRequest()
     args = {}
     for k, v in request.form.items() :
-        args[str(k)] = v.encode("utf-8")
+        try :
+            args[str(k)] = v.encode("utf-8")
+        except AttributeError :
+            args[str(k)] = str(v)
     return dict2event(args)
   

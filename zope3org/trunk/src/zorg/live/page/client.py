@@ -126,7 +126,6 @@ class LivePageClient(object):
                 return 'Invalid client id'
             
         manager = zapi.getUtility(ILivePageManager)
-        
         if ICloseEvent.providedBy(event) and event.uuid == self.uuid :
             manager.unregister(self)
             return ''

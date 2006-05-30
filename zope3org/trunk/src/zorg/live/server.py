@@ -15,7 +15,7 @@
 $Id: server.py 39651 2005-10-26 18:36:17Z oestermeier $
 """
 import doctest, unittest
-import time, cgi, os
+import time, cgi, os, logging
 
 from twisted.web2.channel.http import HTTPFactory
 from twisted.web2.wsgi import WSGIResource
@@ -41,12 +41,18 @@ from zope.publisher.http import DirectResult
 from zope.app import zapi
         
 from zorg.live.page.interfaces import ILivePageManager
+from zorg.live.page.interfaces import IIdleEvent
+
 from zorg.live.page.event import IdleEvent
 from zorg.live.page.event import ErrorEvent
 from zorg.live.page.event import ProgressEvent
 from zorg.live.page.event import dict2event
 
 import interfaces
+
+
+logger = logging.getLogger('zorg.live.server')
+
 
 badRequest = object()
 securityInputLimit = 64000
@@ -120,12 +126,15 @@ class Extractor(object) :
             return None                 # indicates a bad request
         
         args = cgi.parse_qs(input)
-        print "Input", input, args
+        
         for k, v in args.items() :
             args[k] = v[0]
-        try :    
-            return dict2event(args)
+        try :
+            event = dict2event(args)
+            logger.log(logging.INFO,"Input %s" % (event))
+            return event
         except ComponentLookupError :
+            logger.warning("Cannot parse event %s" % (args))
             return None                     
             
         
@@ -224,8 +233,6 @@ class LivePageWSGIHandler(WSGIHandler) :
                         ("Connection", "close"),
                         ('content-type', 'text/html;charset=utf-8'), 
                         ('content-length', len(output))]
-                    
-        print "***LivePage result", self.num, len(output), "bytes", self.uuid, headers
         
         self.startWSGIResponse('200 Ok', headers)
         self._returnOutput(output)
@@ -255,7 +262,11 @@ class LivePageWSGIHandler(WSGIHandler) :
             
         event = client.nextEvent()
         if event is not None :
-            return self.returnResult(event.toJSON())
+            json = event.toJSON()
+            if not IIdleEvent.providedBy(event) :
+                logger.log(logging.INFO, "Sending... %s" % (json))
+        
+            return self.returnResult(json)
         
         if time.time() > self.expires :
             return self.returnResult(IdleEvent().toJSON())
@@ -348,9 +359,7 @@ class LiveInputStream(object) :
                     
                     event = ProgressEvent(percent=percent)
                     manager = zapi.getUtility(ILivePageManager)
-                    print "addEvent", percent
                     manager.addEvent(event)
-                    print "added"
                     
             elif self.type == "input" :
                 if self.received_bytes > securityInputLimit :
@@ -432,6 +441,9 @@ class HTTPLivePageRequestFactory(HTTPPublicationRequestFactory) :
 def createHTTPFactory(db):
 
     reactor.threadpool.adjustPoolsize(10, 20)
+    
+#     manager = zapi.getUtility(ILivePageManager)
+#     manager.connect(db)
     
     resource = WSGIPublisherApplication(db, factory=HTTPLivePageRequestFactory)
     resource = LivePageWSGIResource(resource)

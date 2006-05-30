@@ -15,7 +15,7 @@
 
 $Id: manager.py 39651 2005-10-26 18:36:17Z oestermeier $
 """
-import zope, time
+import zope, time, logging
 
 import zope.event
 from zope.interface import implements
@@ -31,6 +31,7 @@ from zorg.live.page.event import ErrorEvent
 from zorg.live.page.event import LoginEvent
 from zorg.live.page.event import LogoutEvent
 
+logger = logging.getLogger('zorg.live.manager')
 
 class LivePageManager(object) :
     """ Groups collections of LivePages relative to locations specified
@@ -60,7 +61,17 @@ class LivePageManager(object) :
         self.locations = Cache(max_size=self.cacheSize)
         self.lastCheck = 0
         self.results = Cache(max_size=self.cacheSize)
-                      
+        
+    def connect(self, db) :
+        """ Connect to the database. XXX Is this really necessary?"""
+        
+        self.connection = db.open()
+        assert self.connection is not None
+        
+        self.db_root = self.connection.root()
+        self.app = self.db_root['Application']
+        
+                       
     def cacheResult(self, result) :
         """ Caches a result for efficient access. 
         
@@ -130,13 +141,13 @@ class LivePageManager(object) :
         
         client.uuid = uuid
         if uuid in self._location(where) :
-            print "***WARNING: already registered"
+            logger.warning("Client already registered %s" % uuid)
         else :
             self._location(where)[uuid] = client
             
         if not existing :
             login = LoginEvent(who=client.principal.id, 
-                        where=where, client=client)
+                        where=where, _client=client)
             # we use the zope event here since it's up the concrete
             # pages how they represent the online status of members
             
@@ -149,16 +160,20 @@ class LivePageManager(object) :
         where = client.where
         try :
             del self._location(where)[client.uuid]
-            print "***Info: unregistered client for %s." % client.principal.title
+            info = "Unregistered client for %s." % client.principal.title
         except KeyError :
-            print "***Info: client already unregistered."
+            info = "Client already unregistered."
             
-        if not self.isOnline(client.principal.id) :
-            logout = LogoutEvent(who=client.principal.id, 
-                                            where=where, client=client)
+        logger.log(logging.INFO, info)
+        
+        who = client.principal.id
+        if not self.isOnline(who, where) :
+            logout = LogoutEvent(who=who, where=where, _client=client)
             # we use the zope event here since it's up the concrete
             # pages how they represent the online status of members
-            zope.event.notify(logout)    
+            zope.event.notify(logout)
+        else :
+            logger.log(logging.INFO, "%s is still online." % who)
     
     def getClientsFor(self, user_id, where=None) :
         """ Get clients for a specific user.
@@ -229,10 +244,10 @@ class LivePageManager(object) :
             online.add(client.principal.id)
         return sorted(online)
         
-    def isOnline(self, principal_id) :
+    def isOnline(self, principal_id, where=None) :
         """ Returns True iff the user is already online. """
         
-        for client in self._iterClients() :
+        for client in self._iterClients(where) :
             if client.principal.id == principal_id :
                 return True
         return False

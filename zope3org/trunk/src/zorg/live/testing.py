@@ -41,17 +41,25 @@ class TestKeyReference(object) :
 
     implements(IKeyReference)
     
+    _objects = {}
+    
     def __init__(self, object) :
         self.object = object
-
+        if object not in self._objects :
+            self._objects[object] = len(self._objects)
+        self.id = self._objects[object]
+   
     def __call__(self) :
         return self.object
         
     def __hash__(self) :
-        return id(self.object)
-    
-    
+        return self.id
+        
+    def __cmp__(self, other):
+        return cmp(self.id, other.id)
 
+    
+   
 class TestUUIDGenerator(object) :
     """ A generator that produces always the same sequence of uuids for test
         purposes.
@@ -112,8 +120,7 @@ class TestLivePage(LivePage) :
             
         """
         
-        url = zapi.absoluteURL(self.context, self.request) 
-        url += "/++resource++zorgajax"
+        url = "http://127.0.0.1/++resource++zorgajax"
 
         template = Template("""<html>
     <head>

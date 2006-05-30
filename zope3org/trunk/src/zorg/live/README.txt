@@ -104,8 +104,17 @@ the LivePageEvents :
     >>> from zorg.live.page.manager import livePageSubscriber
     >>> zope.event.subscribers.append(livePageSubscriber)
 
-Now we simulate the startup of two clients.
+Now we simulate the startup of two clients. Note that we need a location,
+i.e. an object which can be identified by an id on the server as well as on the
+client side.
 
+    >>> from zope.app.folder import Folder
+    >>> shared_location = Folder()
+    
+    >>> from zope.app.intid.interfaces import IIntIds
+    >>> intIds = zope.component.getUtility(IIntIds)
+    >>> locationId = intIds.register(shared_location)
+    
     >>> from zorg.live.testing import TestLivePage
     
     >>> class Principal(object) :
@@ -119,8 +128,10 @@ Now we simulate the startup of two clients.
     >>> request = TestRequest()
     >>> request.setPrincipal(user1)
     
-    >>> page = TestLivePage(None, request)
+    
+    >>> page = TestLivePage(shared_location, request)
     >>> where = page.getLocationId()
+    
     >>> print page.render()
     <html>
         <head>
@@ -137,7 +148,7 @@ Now we simulate the startup of two clients.
 
     
     >>> request.setPrincipal(user2)
-    >>> page = TestLivePage(None, request)
+    >>> page = TestLivePage(shared_location, request)
     >>> print page.render()
     <html>
         <head>
@@ -153,7 +164,9 @@ Now we simulate the startup of two clients.
     </html>
    
 The global utility can be asked for all online users:
-        
+    
+    >>> where == locationId
+    True
     >>> manager.whoIsOnline(where)
     ['zorg.member.dominik', 'zorg.member.uwe']
     

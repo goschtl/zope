@@ -11,7 +11,6 @@ var LivePage = {
 
     ajaxHandlers : {
         onError: function(request, transport) {
-//            alert("in onError");
             LivePage.numErrors += 1;
 			LivePage.lastRequest = null;
             if (LivePage.numErrors > 3) {
@@ -33,12 +32,17 @@ var LivePage = {
 		},
 
         onComplete: function(request, transport, json) {
+          
             var response = transport.responseText;
             LivePage.lastRequest = null;
             if (response.substr(0,1) == '{') {
                 var event = JSON.parse(response);
+                if (event.name != 'idle') {
+                    LivePage.logging("Event received: " + event.name);
+                    }
                 LivePage.processEvent(event);
                 }
+          
 			setTimeout("LivePage.nextEvent()", 500);
 			return true;
 			}
@@ -55,12 +59,12 @@ var LivePage = {
         
         
         if(LivePage.lastRequest){ 
-            alert("in nextEvent");
+            LivePage.logging("nextEvent blocked");
             return;
         }
         var base_url = LivePage.baseURL + "/@@output/" + LivePage.uuid;
         
-        alert("nextEvent" + base_url);
+        // LivePage.logging("nextEvent " + base_url);
         LivePage.lastRequest = new Ajax.Request(base_url, 
                                 { method: 'get', asynchronous:true});
         },
@@ -81,8 +85,28 @@ var LivePage = {
             alert("startClient called again...");
             }
         },
+        
+    
+    callInProgress : function(xmlhttp) {
+        switch (xmlhttp.readyState) {
+            case 1: case 2: case 3:
+                return true;
+            break;
+            // Case 4 and 0
+            default:
+                return false;
+            break;
+            }
+        },
+
 
     stopClient : function() {
+        if (self.lastRequest) {
+            if (LivePage.callInProgress(self.lastRequest.transport)) {
+                self.lastRequest.transport.abort();
+                }
+            }
+        
         LivePage.sendEvent({name: "close", uuid: LivePage.uuid });
         },
 
@@ -141,6 +165,12 @@ var LivePage = {
 
     playSound : function (id) {
         playFlash(id);
+        },
+        
+    logging : function(str) {
+        if ($('logging')) {
+            $('logging').innerHTML += "<p>" + str + "</p>"
+            }
         }
 
 }
@@ -220,7 +250,7 @@ LivePage.clientHandlers = {
     onUpdate : function(event) {
             var id = event['id'];
             var html = event['html'];
-            alert("update: " + id);
+            LivePage.logging("update: " + id);
             $(id).innerHTML = html;
 //            html.evalScripts();
 //            id.evalScripts();
