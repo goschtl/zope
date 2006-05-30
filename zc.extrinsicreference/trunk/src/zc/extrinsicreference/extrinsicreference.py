@@ -15,13 +15,12 @@
 
 $Id$
 """
-import persistent
 from BTrees import OOBTree
-
-from zope import interface
-from zope.app.keyreference.interfaces import IKeyReference
-
 from zc.extrinsicreference.interfaces import IExtrinsicReferences
+from zope import interface
+from zope.app import zapi
+from zope.app.keyreference.interfaces import IKeyReference
+import persistent
 
 class ExtrinsicReferences(persistent.Persistent):
 
@@ -89,20 +88,22 @@ class ExtrinsicReferences(persistent.Persistent):
         for kr in refs:
             yield kr()
 
-# TODO these belong elsewhere (zc.shortcut, maybe?)
-from zope.app import zapi
-from zc.shortcut.interfaces import IShortcut
+try:
+    from zc.shortcut.interfaces import IShortcut
 
-def registerShortcut(shortcut, event):
-    """Subscriber to add an extrinsic reference."""
-    registry = zapi.queryUtility(IExtrinsicReferences, 'shortcuts')
-    if registry is not None:
-        # We use raw_target because we don't want a proxy.
-        registry.add(shortcut.raw_target, shortcut)
+    def registerShortcut(shortcut, event):
+        """Subscriber to add an extrinsic reference."""
+        registry = zapi.queryUtility(IExtrinsicReferences, 'shortcuts')
+        if registry is not None:
+            # We use raw_target because we don't want a proxy.
+            registry.add(shortcut.raw_target, shortcut)
 
-def unregisterShortcut(shortcut, event):
-    """Subscriber to remove an extrinsic reference."""
-    registry = zapi.queryUtility(IExtrinsicReferences, 'shortcuts')
-    if registry is not None:
-        # We use raw_target because we don't want a proxy.
-        registry.discard(shortcut.raw_target, shortcut)
+    def unregisterShortcut(shortcut, event):
+        """Subscriber to remove an extrinsic reference."""
+        registry = zapi.queryUtility(IExtrinsicReferences, 'shortcuts')
+        if registry is not None:
+            # We use raw_target because we don't want a proxy.
+            registry.discard(shortcut.raw_target, shortcut)
+except ImportError:
+    # apparently zc.shortcut isn't around, skip it
+    pass
