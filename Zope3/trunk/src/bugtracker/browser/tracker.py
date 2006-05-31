@@ -206,10 +206,10 @@ class Overview(object):
         
         formatter = self.request.locale.dates.getFormatter('dateTime', 'short')
         result = []
-        for name, bug in self.context.items():
+        items  = self.context.items()
+        for name, bug in sorted(items, lambda x, y: cmp(int(x[0]), int(y[0]))):
             if checkBug(bug, criteria, self.getSearchText()):
                 result.append(BugView(bug, self.request))
-
 
         start = int(self.request.get('start', 0))
         size = int(self.request.get('size', 20))
