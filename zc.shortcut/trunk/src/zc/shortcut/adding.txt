@@ -13,7 +13,7 @@ shortcut adding changes both of these methods to use traversedURL instead.  As
 a result, adding to a shortcut of a container returns the user to the
 shortcut, not the absolute path of the container's real location; and 
 submitting the form of the default view of the adding redirects to within the 
-context of the traversed shorcut(s), not the absoluteURL.
+context of the traversed shortcut(s), not the absoluteURL.
 
 The action method changes are pertinent to redirecting to an adding view.
 

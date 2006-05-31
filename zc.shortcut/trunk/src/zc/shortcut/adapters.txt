@@ -261,11 +261,11 @@ within page templates (as in context/@@traversedURL).
 Breadcrumbs
 ===========
 
-The zc.displayname package provides a way to obtain breadcrumbs that is not tied to
-the zope IAbsoluteURL interface and that takes advantage of zc.displayname features
-like the display name generator.  The zc.shortcut package includes a breadcrumb
-adapter for the zc.displayname interface that is aware of the traversal proxies that
-are part of the shortcut package.
+The zc.displayname package provides a way to obtain breadcrumbs that is not
+tied to the zope IAbsoluteURL interface and that takes advantage of
+zc.displayname features like the display name generator.  The zc.shortcut
+package includes a breadcrumb adapter for the zc.displayname interface that is
+aware of the traversal proxies that are part of the shortcut package.
 
     >>> import zc.displayname.adapters
     >>> component.provideAdapter(zc.displayname.adapters.Breadcrumbs)
