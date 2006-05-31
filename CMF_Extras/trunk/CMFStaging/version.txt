@@ -1,1 +1,1 @@
-CMFStaging-0.10
+CMFStaging-0.10+

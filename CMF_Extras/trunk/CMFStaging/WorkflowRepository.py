@@ -46,8 +46,9 @@ class WorkflowRepository (SimpleItemWithProperties):
 
     _properties = ()
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id=None):
+        if id is not None:
+           self._setId( id )
         self._histories = OOBTree()
 
     security.declarePrivate('getHistory')
@@ -70,7 +71,8 @@ manage_addWorkflowRepositoryForm = PageTemplateFile(
 
 def manage_addWorkflowRepository(dispatcher, id, REQUEST=None):
     """ """
-    ob = WorkflowRepository(id)
+    ob = WorkflowRepository()
+    ob._setId(id)
     dispatcher._setObject(id, ob)
     if REQUEST is not None:
         return dispatcher.manage_main(dispatcher, REQUEST)

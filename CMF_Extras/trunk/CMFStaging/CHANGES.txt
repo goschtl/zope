@@ -1,5 +1,10 @@
 CMFStaging Changelog
 
+ After CMFStaging 0.10
+
+   - Made WorkflowRepository addable via GenericSetup toolset
+     (http://www.zope.org/Collectors/CMF/438).
+
  CMFStaging 0.10 (2005/03/22)
 
    - CVS-only, tag CMFStaging-0_10
