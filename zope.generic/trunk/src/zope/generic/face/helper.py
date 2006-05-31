@@ -48,6 +48,12 @@ def toInterface(dottedname):
         return __name_to_component.setdefault(dottedname, resolve(dottedname))
 
 
+def unicodeDictToStrDict(data):
+    strDict = {}
+    [strDict.__setitem__(str(key), value) for key, value in data.items()]
+    return strDict
+
+
 
 def toDescription(component, label=None, hint=None):
     """Use the __doc__ attribute for label and hint.

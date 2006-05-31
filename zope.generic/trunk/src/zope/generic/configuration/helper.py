@@ -35,7 +35,7 @@ def provideConfigurationType(interface):
 
 _marker = object()
 
-def configuratonToDict(configuration, all=False):
+def configurationToDict(configuration, all=False):
     """Extract values from configuration to a dictionary.
 
     First we have to specify a test configurtion interface:
@@ -52,11 +52,11 @@ def configuratonToDict(configuration, all=False):
 
         >>> from zope.generic.configuration.base import createConfiguration
         >>> configuration = createConfiguration(IAnyConfiguration, {'a': u'a bla'})
-        >>> api.configuratonToDict(configuration)
+        >>> api.configurationToDict(configuration)
         {'a': u'a bla'}
 
     Including defaults:
-        >>> api.configuratonToDict(configuration, all=True)
+        >>> api.configurationToDict(configuration, all=True)
         {'a': u'a bla', 'c': u'c default', 'b': None}
 
     """
@@ -78,7 +78,7 @@ def configuratonToDict(configuration, all=False):
             else:
                 if all:
                     data[name] = field.default
-        
+
         elif value is not _marker:
             data[name] = value
 

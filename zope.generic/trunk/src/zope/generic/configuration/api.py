@@ -23,7 +23,7 @@ from zope.generic.face.api import getKeyface
 from zope.generic.configuration import *
 from zope.generic.configuration.adapter import AttributeConfigurations
 from zope.generic.configuration.base import createConfiguration
-from zope.generic.configuration.helper import configuratonToDict
+from zope.generic.configuration.helper import configurationToDict
 from zope.generic.configuration.helper import provideConfigurationType
 from zope.generic.configuration.helper import namesInOrder
 

@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration.base import createConfiguration
-from zope.generic.configuration.helper import configuratonToDict
+from zope.generic.configuration.helper import configurationToDict
 from zope.generic.informationprovider.api import getInformation
 from zope.generic.informationprovider.api import getInformationProvider
 
@@ -125,7 +125,7 @@ class ConfigurationAdapterProperty(object):
                 if not configuration:
                     raise
 
-                data = configuratonToDict(configuration)
+                data = configurationToDict(configuration)
                 data[self._name] = value
                 configurations[keyface] = createConfiguration(keyface, data)
 

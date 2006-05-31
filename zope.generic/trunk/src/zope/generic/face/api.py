@@ -25,6 +25,7 @@ from zope.generic.face.helper import toDescription
 from zope.generic.face.helper import toDottedName
 from zope.generic.face.helper import toFaceTuple
 from zope.generic.face.helper import toInterface
+from zope.generic.face.helper import unicodeDictToStrDict
 
 
 

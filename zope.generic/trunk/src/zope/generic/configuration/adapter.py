@@ -38,7 +38,7 @@ from zope.generic.configuration import IConfigurations
 from zope.generic.configuration.base import createConfiguration
 from zope.generic.configuration.event import Configuration
 from zope.generic.configuration.event import ObjectConfiguredEvent
-from zope.generic.configuration.helper import configuratonToDict
+from zope.generic.configuration.helper import configurationToDict
 
 
 
@@ -166,7 +166,7 @@ class AttributeConfigurations(DictMixin, Location):
             if isinstance(value, dict):
                 data = value
             else:
-                data = configuratonToDict(value, all=True)
+                data = configurationToDict(value, all=True)
             notify(ObjectConfiguredEvent(parent, 
                 Configuration(keyface, data)))
 

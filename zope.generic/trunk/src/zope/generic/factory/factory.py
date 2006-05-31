@@ -24,7 +24,7 @@ from zope.lifecycleevent import ObjectCreatedEvent
 from zope.interface import alsoProvides
 
 from zope.generic.configuration.api import parameterToConfiguration
-from zope.generic.configuration.api import configuratonToDict
+from zope.generic.configuration.api import configurationToDict
 from zope.generic.directlyprovides.api import updateDirectlyProvided
 from zope.generic.informationprovider.api import getInformationProvider
 from zope.generic.informationprovider.api import provideInformation
@@ -245,7 +245,7 @@ class Factory(factory.Factory, Face):
 
             # callables with defined parameters
             else:
-                new_kws = configuratonToDict(parameterToConfiguration(config.input, *pos, **kws), all=True)
+                new_kws = configurationToDict(parameterToConfiguration(config.input, *pos, **kws), all=True)
                 instance = self._callable(**new_kws)
 
         # handle undeclared ones
