@@ -15,6 +15,7 @@
 
 $Id$
 """
+import warnings
 import os
 from zope.configuration import xmlconfig
 
@@ -33,6 +34,7 @@ def load_site():
     # load instance site configuration file
     site_zcml = os.path.join(INSTANCE_HOME, "etc", "site.zcml")
     skel_site_zcml = os.path.join(INSTANCE_HOME, "skel", "etc", "site.zcml")
+    skel_site2_zcml = os.path.join(ZOPE_HOME, "skel", "etc", "site.zcml")
     
     if os.path.exists(site_zcml):
         file = site_zcml
@@ -40,11 +42,12 @@ def load_site():
         # check for zope installation home skel during running unit tests
         file = skel_site_zcml
     else:
-        msg = "site.zcml is now required to live at '%s', for " \
-              "sites upgraded from Zope 2.9 please copy site.zcml " \
-              "from your installed Zope's skel/etc directory" \
-              % site_zcml 
-        raise IOError(msg)
+        file = skel_site2_zcml
+        msg = "site.zcml should now live at '%s', for " \
+              "sites upgraded from Zope 2.9 please copy '%s' " \
+              "to '%s'" \
+              % (site_zcml, skel_site2_zcml, site_zcml)
+        warnings.warn(msg, DeprecationWarning)
 
     global _context
     _context = xmlconfig.file(file)
