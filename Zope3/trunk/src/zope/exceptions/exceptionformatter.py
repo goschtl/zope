@@ -158,8 +158,8 @@ class TextExceptionFormatter(object):
         return self.line_sep.join(result)
 
     def formatExceptionOnly(self, etype, value):
-        return self.line_sep.join(
-            traceback.format_exception_only(etype, value))
+        result = ''.join(traceback.format_exception_only(etype, value))
+        return result.replace('\n', self.line_sep)
 
     def formatLastLine(self, exc_line):
         return self.escape(exc_line)
