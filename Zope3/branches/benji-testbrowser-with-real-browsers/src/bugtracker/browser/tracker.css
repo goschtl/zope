@@ -1,0 +1,170 @@
+/* Tracker Overview */
+
+.summary_content {
+  padding-left: 0.5em;
+}
+
+.summary_title {
+  font-weight: bold;
+}
+
+.summary_body {
+  font-size: 100%;
+}
+
+.summary_condition {
+}
+
+.summary_metadata {
+  font-size: 80%;
+  color: #808080;
+}
+
+div.even {
+  padding: 0.3em;
+  background-color: #F8F8F8;
+}
+
+div.odd {
+  padding: 0.3em;
+  background-color: White;
+}
+
+div.batch {
+  background-color: #F0F0F0;
+  border: 1px solid #808080;
+  padding: 2px;
+  clear: both;
+}
+
+div.batch div.prev_batch {
+  text-align: left;
+  float: left;        
+  width: 20%;
+}
+
+div.batch div.curr_batch {
+  text-align: center;
+  float: left;
+  width: 59%;
+}
+
+div.batch div.next_batch {
+  text-align: right;
+  float: right;
+  width: 20%;
+}
+
+div.clear { 
+  clear: both; 
+}
+
+
+/* Bug Overview */
+
+.single_p {
+  padding-top: 0.5em;
+}
+
+.comment {
+  margin: 0.6em;
+  padding: 0.6em;
+  background-color: #F0F0F0;
+  border: 1pt solid #AAAAAA;
+}
+
+#description {
+  padding: 0.6em;
+  margin: 0.6em;
+  background-color: #F8F8F8;
+  border: 1pt solid #EEEEEE;        
+}
+
+p {
+  margin: 0px;
+}
+
+div.action {
+  padding-top: 1em;
+}
+
+#attachments {
+  margin-top: 4px;
+  margin-bottom: 0px;
+}
+
+div.md_label {
+  width: 25%;
+}
+
+div.md_field {
+  width: 25%;
+}
+
+/* Bug Dependencies */
+
+#explanation {
+  font-weight: bold;
+}
+
+a.node {
+  text-decoration: none;
+}
+
+/* Status */
+
+.new {
+  font-style: italic;
+}
+
+.open {
+  font-variant: small-caps;
+}
+
+.assigned {
+}
+
+.closed {
+  text-decoration: line-through;
+}
+
+.deferred {
+  font-style: italic;
+  text-decoration: line-through;
+}
+
+/* Priorities */ 
+
+.low {
+  color: black;
+}
+
+.normal {
+}
+
+.urgent {
+  font-weight: bold;
+  color: #FFCE7B;
+}
+
+.critical {
+  font-weight: bold;
+  color: #FFA500;
+}
+
+/* Statistics-specific options */
+
+div.stats {
+  padding-top: 0.5em;
+  padding-bottom: 1.5em;
+}
+
+div.stats div.row {
+  margin: 2pt;
+  padding: 0pt;
+  width: 100%;
+}
+
+div.stats div.label {
+  width: 30%;
+}

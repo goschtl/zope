@@ -1,0 +1,292 @@
+================
+IntWidget sample
+================
+
+Interface
+---------
+
+Add interfaces with Int fields::
+
+    class IReadDemoIntWidget(Interface):
+        """Widget read interface."""
+    
+        readonly = Int(
+            title = _(u"readonly"),
+            description=_(u"zope.schema.Int field with readonly = True."),
+            required=False,
+            readonly=True,
+            default=42)
+    
+    
+    class IWriteDemoIntWidget(Interface):
+        """Widget write interface."""
+    
+        standard = Int(
+            title = _(u"standard"),
+            description=_(u"""zope.schema.Int field with only title and description."""),
+            )
+    
+        required = Int(
+            title = _(u"required"),
+            description=_(u"zope.schema.Int field with required = True."),
+            required=True)
+    
+        constraint = Int(
+            title = _(u"constraint"),
+            description=_(u"""zope.schema.Int field with constraint """
+                """lambda x: x == 42."""),
+            constraint=lambda x: x == 42)
+    
+        default = Int(
+            title = _(u"default"),
+            description=_(u"""zope.schema.Int field with """
+                """default = u'default'."""),
+            default=42)
+    
+        min = Int(
+            title = _(u"min"),
+            description=_(u"zope.schema.Int field with min = 5."),
+            min=5)
+    
+        max = Int(
+            title = _(u"max"),
+            description=_(u"zope.schema.Int field with max = 10"),
+            max=10)
+    
+        min_max = Int(
+            title = _(u"min_max"),
+            description=_(u"""zope.schema.Int field with min = 5 and max = 10"""),
+            min=5,
+            max=10)
+    
+    
+    class IDemoIntWidget(IDemoWidget, IReadDemoIntWidget, IWriteDemoIntWidget):
+        """Widget interface inherits read and write interfaces."""
+
+Define a class::
+
+    class DemoIntWidget(DemoWidget):
+        """Demo TextWidget implementation."""
+    
+        implements(IDemoIntWidget)
+        
+        standard = FieldProperty(IDemoIntWidget['standard'])
+        required = FieldProperty(IDemoIntWidget['required'])
+        readonly = FieldProperty(IDemoIntWidget['readonly'])
+        constraint = FieldProperty(IDemoIntWidget['constraint'])
+        default = FieldProperty(IDemoIntWidget['default'])
+        min = FieldProperty(IDemoIntWidget['min'])
+        max = FieldProperty(IDemoIntWidget['max'])
+        min_max = FieldProperty(IDemoIntWidget['min_max'])
+
+Register the class::
+
+  <content class=".intwidget.DemoIntWidget">
+
+    <require permission="zope.View" 
+        interface=".interfaces.IDemoIntWidget"
+        />
+
+    <require permission="zope.ManageContent" 
+        set_schema=".interfaces.IDemoIntWidget"
+        />
+
+  </content>
+
+Register a addform::
+
+  <addMenuItem
+      title="IntWidget"
+      description="Add a Demo IntWidget"
+      class="..intwidget.DemoIntWidget"
+      permission="zope.ManageContent"
+      view="addDemoIntWidget.html"
+      />
+
+  <addform
+      name="addDemoIntWidget.html"
+      label="Add a Demo IntWidget"
+      schema="..interfaces.IWriteDemoIntWidget"
+      content_factory="..intwidget.DemoIntWidget"
+      permission="zope.ManageContent"
+      />
+
+Register a editform::
+
+  <editform
+      name="edit.html"
+      label="Edit"
+      for="..interfaces.IDemoIntWidget"
+      schema="..interfaces.IWriteDemoIntWidget"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"
+      />
+
+Add a DemoWidgetContainer for test the widgets::
+
+  >>> print http(r"""
+  ... POST /@@contents.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: application/x-www-form-urlencoded
+  ... 
+  ... type_name=BrowserAdd__zope.app.demo.widget.app.DemoWidgetContainer&new_value=widgets""")
+  HTTP/1.1 303 See Other
+  ...
+
+Add a IntWidget using the addform::
+
+  >>> print http(r"""
+  ... POST /widgets/+/addDemoIntWidget.html%3D HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: multipart/form-data; boundary=---------------------------7d538ddc0aea
+  ... Referer: http://localhost:8081/widgets/+/addDemoIntWidget.html=
+  ... 
+  ... -----------------------------7d538ddc0aea
+  ... Content-Disposition: form-data; name="field.standard"
+  ... 
+  ... 42
+  ... -----------------------------7d538ddc0aea
+  ... Content-Disposition: form-data; name="field.required"
+  ... 
+  ... 42
+  ... -----------------------------7d538ddc0aea
+  ... Content-Disposition: form-data; name="field.constraint"
+  ... 
+  ... 42
+  ... -----------------------------7d538ddc0aea
+  ... Content-Disposition: form-data; name="field.default"
+  ... 
+  ... 42
+  ... -----------------------------7d538ddc0aea
+  ... Content-Disposition: form-data; name="field.min"
+  ... 
+  ... 6
+  ... -----------------------------7d538ddc0aea
+  ... Content-Disposition: form-data; name="field.max"
+  ... 
+  ... 6
+  ... -----------------------------7d538ddc0aea
+  ... Content-Disposition: form-data; name="field.min_max"
+  ... 
+  ... 6
+  ... -----------------------------7d538ddc0aea
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ... 
+  ... Add
+  ... -----------------------------7d538ddc0aea
+  ... Content-Disposition: form-data; name="add_input_name"
+  ... 
+  ... 42
+  ... -----------------------------7d538ddc0aea--
+  ... """)
+  HTTP/1.1 303 See Other
+  ...
+        <div class="row">
+            <div class="label">
+              <label for="field.standard"
+                     title="zope.schema.Int field with only title and description.">standard</label>
+            </div>
+            <div class="field"><input class="textType" id="field.standard" name="field.standard" size="10" type="text" value="42"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.required"
+                     title="zope.schema.Int field with required = True.">required</label>
+            </div>
+            <div class="field"><input class="textType" id="field.required" name="field.required" size="10" type="text" value="42"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.constraint"
+                     title="zope.schema.Int field with constraint lambda x: x == 42.">constraint</label>
+            </div>
+            <div class="field"><input class="textType" id="field.constraint" name="field.constraint" size="10" type="text" value="42"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.default"
+                     title="zope.schema.Int field with default = u'default'.">default</label>
+            </div>
+            <div class="field"><input class="textType" id="field.default" name="field.default" size="10" type="text" value="42"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.min"
+                     title="zope.schema.Int field with min = 5.">min</label>
+            </div>
+            <div class="field"><input class="textType" id="field.min" name="field.min" size="10" type="text" value="6"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.max"
+                     title="zope.schema.Int field with max = 10">max</label>
+            </div>
+            <div class="field"><input class="textType" id="field.max" name="field.max" size="10" type="text" value="6"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.min_max"
+                     title="zope.schema.Int field with min = 5 and max = 10">min_max</label>
+            </div>
+            <div class="field"><input class="textType" id="field.min_max" name="field.min_max" size="10" type="text" value="6"  /></div>
+        </div...
+
+
+Check the editform::
+
+  >>> print http(r"""
+  ... GET /widgets/42/@@edit.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Referer: http://localhost:8081/widgets/42/@@index.html
+  ... """)
+  HTTP/1.1 200 Ok
+  ...
+        <div class="row">
+            <div class="label">
+              <label for="field.standard"
+                     title="zope.schema.Int field with only title and description.">standard</label>
+            </div>
+            <div class="field"><input class="textType" id="field.standard" name="field.standard" size="10" type="text" value="42"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.required"
+                     title="zope.schema.Int field with required = True.">required</label>
+            </div>
+            <div class="field"><input class="textType" id="field.required" name="field.required" size="10" type="text" value="42"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.constraint"
+                     title="zope.schema.Int field with constraint lambda x: x == 42.">constraint</label>
+            </div>
+            <div class="field"><input class="textType" id="field.constraint" name="field.constraint" size="10" type="text" value="42"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.default"
+                     title="zope.schema.Int field with default = u'default'.">default</label>
+            </div>
+            <div class="field"><input class="textType" id="field.default" name="field.default" size="10" type="text" value="42"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.min"
+                     title="zope.schema.Int field with min = 5.">min</label>
+            </div>
+            <div class="field"><input class="textType" id="field.min" name="field.min" size="10" type="text" value="6"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.max"
+                     title="zope.schema.Int field with max = 10">max</label>
+            </div>
+            <div class="field"><input class="textType" id="field.max" name="field.max" size="10" type="text" value="6"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.min_max"
+                     title="zope.schema.Int field with min = 5 and max = 10">min_max</label>
+            </div>
+            <div class="field"><input class="textType" id="field.min_max" name="field.min_max" size="10" type="text" value="6"  /></div>
+        </div...
