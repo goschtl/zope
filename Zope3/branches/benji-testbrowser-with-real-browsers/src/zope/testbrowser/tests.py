@@ -47,7 +47,7 @@ def set_next_response(body, headers=None, status='200', reason='OK'):
 
 
 class FauxConnection(object):
-    """A ``urllib2`` compatible connection object."""
+    """A ``urllib2`` compatible connection obejct."""
 
     def __init__(self, host):
         pass
@@ -89,7 +89,7 @@ class FauxConnection(object):
     def getresponse(self):
         """Return a ``urllib2`` compatible response.
 
-        The goal of this method is to convert the Zope Publisher's response to
+        The goal of ths method is to convert the Zope Publisher's reseponse to
         a ``urllib2`` compatible response, which is also understood by
         mechanize.
         """
@@ -160,7 +160,7 @@ class Browser(browser.Browser):
 
 def test_file_upload():
     """
-
+    
     >>> browser = Browser()
 
 When given a form with a file-upload
@@ -195,7 +195,7 @@ Fill in the form value using add_file:
     --127.0.0.11000318041146699896411--
     <BLANKLINE>
 
-You can pass a string to add_file:
+You can pass s atring to add_file:
 
 
     >>> browser.getControl(name='foo').add_file(
@@ -220,8 +220,7 @@ You can pass a string to add_file:
     """
 
 checker = renormalizing.RENormalizing([
-    (re.compile(r'^--\S+\.\S+\.\S+', re.M), '-'*30),
-    (re.compile(r'boundary=\S+\.\S+\.\S+'), 'boundary='+'-'*30),
+    (re.compile('127.0.0.\S+'), '-'*30),
     (re.compile('User-agent:\s+\S+'), 'User-agent: XXX'),
     (re.compile('Content-length:\s+\S+'), 'Content-length: 123'),
     ])
