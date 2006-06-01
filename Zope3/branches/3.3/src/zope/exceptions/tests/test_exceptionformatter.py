@@ -143,6 +143,22 @@ class Test(CleanUp, TestCase):
         self.assert_(s.find('&lt;') >= 0, s)
         self.assert_(s.find('&gt;') >= 0, s)
 
+    def testMultilineException(self):
+        try:
+            exec 'syntax error'
+        except:
+            s = tb()
+        # Traceback (most recent call last):
+        #   Module zope.exceptions.tests.test_exceptionformatter, line ??, in testMultilineException
+        #     exec \'syntax error\'
+        #   File "<string>", line 1
+        #     syntax error
+        #            ^
+        # SyntaxError: unexpected EOF while parsing
+        self.assertEquals(s.splitlines()[-3:],
+                          ['    syntax error',
+                           '               ^',
+                           'SyntaxError: unexpected EOF while parsing'])
 
 
 def test_suite():
