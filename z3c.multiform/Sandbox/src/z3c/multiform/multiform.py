@@ -9,11 +9,9 @@ from zope.app.form.browser.interfaces import IWidgetInputErrorView
 from zope.formlib import form
 from zope.formlib import namedtemplate
 from zope.formlib.interfaces import IBoundAction
-from zope.formlib.i18n import _
-
-from interfaces import IMultiForm, IParentAction, IItemAction, ISelection
+from zope.app.i18n import ZopeMessageFactory as _
+from interfaces import *
 from interfaces import IFormLocation,IItemForm
-
 
 def isFormDisplayMode(f,action):
     return not f.inputMode
@@ -46,7 +44,7 @@ class ItemAction(form.Action):
     def __init__(self, label, **options):
         self.inputMode = options.pop('inputMode',None)
         super(ItemAction,self).__init__(label,**options)
-    
+
 class ParentAction(form.Action):
 
     """an action that is rendered in the parent multiform object and
@@ -97,7 +95,7 @@ class itemAction(form.action):
 
 
 class parentAction(form.action):
-
+    
     def __call__(self, success):
         action = ParentAction(self.label, success=success, **self.options)
         self.actions.append(action)
@@ -162,6 +160,16 @@ class ItemFormBase(form.FormBase):
         actions = [action for action in self.actions
                    if IParentAction.providedBy(action)]
         return form.availableActions(self, actions)
+
+# copy from formlib with get
+def availableActions(form, actions):
+    result = []
+    for action in actions:
+        condition = action.condition
+        if (condition is None) or condition(form, action):
+            result.append(action)
+    return result
+
 
 
 class MultiFormBase(form.FormBase):
@@ -311,6 +319,9 @@ class MultiFormBase(form.FormBase):
                 action = self.itemFormFactory.actions.byname[actionName]
                 action = copy.copy(action)
                 action.__name__ = name
+                # we need the form here to render, maybe we can do
+                # this somehow with an Actions object (__get__)
+                action.form = self
                 yield action
 
 

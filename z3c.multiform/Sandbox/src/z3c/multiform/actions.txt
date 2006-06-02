@@ -18,6 +18,7 @@ are defined in the multiform (parent) class called ``Edit`` and
     >>> from zope.app.location.interfaces import ILocation
     >>> from z3c.multiform import multiform
     >>> from z3c.multiform.multiform import ItemFormBase,MultiFormBase
+    >>> from zope.app.i18n import ZopeMessageFactory as _
 
     >>> class IOrder(interface.Interface):
     ...     identifier = schema.Int(title=u"Identifier", readonly=True)
@@ -37,7 +38,7 @@ are defined in the multiform (parent) class called ``Edit`` and
     ...     form_fields = form.Fields(IOrder,omit_readonly=False,
     ...         render_context=True)
     ...     
-    ...     @multiform.parentAction(u"Save",
+    ...     @multiform.parentAction(_(u"Save"),
     ...     condition=multiform.anySubFormInputMode,inputMode=True)
     ...     def handle_save_action(self, action, data):
     ...         form.applyChanges(self.context, self.form_fields,

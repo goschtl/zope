@@ -95,7 +95,7 @@ def test_suite():
     
     return unittest.TestSuite(
         (
-        DocTestSuite('multiform.selection',
+        DocTestSuite('z3c.multiform.selection',
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         DocFileSuite('README.txt',

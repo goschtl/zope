@@ -95,7 +95,7 @@ class FormLocationProxy(ProxyBase):
     >>> p2 = pickle.dumps(p)
     Traceback (most recent call last):
     ...
-    TypeError: Not picklable
+    PicklingError: Can't pickle <class 'z3c.multiform.selection.L'...
 
     Proxies should get their doc strings from the object they proxy:
 

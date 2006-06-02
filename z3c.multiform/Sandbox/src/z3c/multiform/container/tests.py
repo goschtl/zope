@@ -24,12 +24,21 @@ def setUp(test):
     setup.placefulSetUp()
 
     component.provideAdapter(
+        zope.app.form.browser.DatetimeDisplayWidget,
+        [zope.schema.interfaces.IDatetime,
+         zope.publisher.interfaces.browser.IBrowserRequest,
+         ],
+        zope.app.form.interfaces.IDisplayWidget,
+        )
+
+    component.provideAdapter(
         zope.app.form.browser.TextWidget,
         [zope.schema.interfaces.ITextLine,
          zope.publisher.interfaces.browser.IBrowserRequest,
          ],
         zope.app.form.interfaces.IInputWidget,
         )
+
     component.provideAdapter(
         zope.app.form.browser.UnicodeDisplayWidget,
         [zope.schema.interfaces.ITextLine,

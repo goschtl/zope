@@ -1,7 +1,7 @@
 import datetime
 import pytz
 from zope.interface.common import idatetime
-from zope.formlib.i18n import _
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.formlib import form
 from zope.app.dublincore.interfaces import IWriteZopeDublinCore
 from zope.app.pagetemplate import ViewPageTemplateFile
@@ -111,14 +111,14 @@ class ContainerItemForm(multiform.ItemFormBase):
     form_fields['modified'].for_display=True
 
 
-    @multiform.parentAction('Edit',
+    @multiform.parentAction(_('Edit'),
                             condition=multiform.allSubFormsDisplayMode)
     def handle_edit_action(self, action, data):
         #print "handle_edit_action",action,data,isSelected(self,action)
         if isSelected(self,action):
             self.newInputMode = True
 
-    @multiform.parentAction("Save", inputMode=True,
+    @multiform.parentAction(_("Save"), inputMode=True,
                             condition=multiform.anySubFormInputMode)
     def handle_save_action(self, action, data):
 
@@ -147,12 +147,13 @@ class ContainerGridForm(multiform.MultiFormBase):
 
     template = ViewPageTemplateFile('grid.pt')
 
-    @form.action('Cancel',condition=multiform.anySubFormInputMode)
+    @form.action(_('Cancel'),condition=multiform.anySubFormInputMode)
     def handle_cancel_action(self, action, data):
         for form in self.subForms.values():
             form.newInputMode = False
 
-    @form.action("Paste", condition=hasClipboardContents)
+    @form.action(_("container-paste-button"),
+                 condition=hasClipboardContents)
     def handle_paste_action(self, action, data):
         """Paste ojects in the user clipboard to the container"""
         self.form_reset = True
@@ -200,7 +201,8 @@ class ContainerGridForm(multiform.MultiFormBase):
                 _("The given name(s) %s is / are already being used" %(
                 str(not_pasteable_ids))),)
 
-    @form.action("Cut", condition=multiform.allSubFormsDisplayMode)
+    @form.action(_("container-cut-button"),
+                 condition=multiform.allSubFormsDisplayMode)
     def handle_cut_action(self, action, data):
         """move objects specified in a list of object ids"""
 
@@ -240,7 +242,8 @@ class ContainerGridForm(multiform.MultiFormBase):
             clipboard.clearContents()
             clipboard.addItems('cut', items)
 
-    @form.action("Copy", condition=multiform.allSubFormsDisplayMode)
+    @form.action(_("container-copy-button"),
+                 condition=multiform.allSubFormsDisplayMode)
     def handle_copy_action(self, action, data):
         """Copy objects specified in a list of object ids"""
 
@@ -281,7 +284,8 @@ class ContainerGridForm(multiform.MultiFormBase):
             clipboard.clearContents()
             clipboard.addItems('copy', items)
 
-    @form.action("Delete", condition=multiform.allSubFormsDisplayMode)
+    @form.action(_("container-delete-button"),
+                 condition=multiform.allSubFormsDisplayMode)
     def handle_delete_action(self, action, data):
         """Delete objects specified in a list of object ids"""
         container = self.context

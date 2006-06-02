@@ -1,7 +1,7 @@
 from zope import schema
 from zope.interface import Interface,Attribute
 from zope.formlib.interfaces import IAction
-from zope.formlib.i18n import _
+from zope.app.i18n import ZopeMessageFactory as _
 
 
 class IMultiForm(Interface):
