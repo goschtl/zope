@@ -50,7 +50,9 @@ def normalizeDateTime(dt, request):
     return dt
 
 def localizeDateTime(dt, request):
-    if isinstance(dt, datetime.datetime) and dt.tzinfo is pytz.utc:
+    if isinstance(dt, datetime.datetime) and \
+        dt.tzinfo.utcoffset(None) == datetime.timedelta(0):
+        
         tzinfo = ITZInfo(request, None)
         if tzinfo is not None:
             dt = dt.astimezone(tzinfo)
