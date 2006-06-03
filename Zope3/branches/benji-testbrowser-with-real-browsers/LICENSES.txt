@@ -112,3 +112,9 @@ The simplejson library is covered by the MIT license.
 ----------------------------------------------------------------------
 
 The Beautiful Soup module is covered by the Python license.
+
+----------------------------------------------------------------------
+
+MochiKit is covered by the MIT license.
+
+----------------------------------------------------------------------

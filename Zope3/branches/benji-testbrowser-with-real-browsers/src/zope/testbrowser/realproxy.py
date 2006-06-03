@@ -10,7 +10,7 @@ import socket
 import threading
 import urlparse
 
-base_dir = '/home/benji/workspace/testbrowser'
+base_dir = os.path.dirname(__file__)
 allowed_resources = ['MochiKit', 'shim.js', 'commands.js', 'start.html']
 PROXY_PORT = 8000
 
@@ -75,7 +75,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         (scheme, netloc, path, params, query, fragment) = urlparse.urlparse(
             self.path, 'http')
         assert netloc == ''
-        print self.path
+#        print self.path
         if scheme != 'http':
             self.send_error(400, "unknown scheme %r" % scheme)
             return
@@ -120,7 +120,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            print 'sending', self.remote_host
+#            print 'sending', self.remote_host
             if self._connect(self.remote_host, soc):
                 soc.send("%s %s %s\r\n" % (
                     self.command,
@@ -132,7 +132,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                     soc.send("%s: %s\r\n" % key_val)
                 soc.send("\r\n")
                 self._read_write(soc)
-                print 'done with', self.path
+#                print 'done with', self.path
         finally:
             soc.close()
             self.connection.close()
@@ -177,6 +177,7 @@ class HttpServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
     def __init__(self, *args, **kws):
         self.command_queue = Queue.Queue()
         self.result_queue = Queue.Queue()
+        self.threads = []
         BaseHTTPServer.HTTPServer.__init__(self, *args, **kws)
 
     def serve_forever(self):
@@ -184,11 +185,18 @@ class HttpServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
         while not self.stop:
             self.handle_request()
 
+    # This method comes from ThreadingMixIn
+    def process_request_thread(self, request, client_address):
+        my_thread = threading.currentThread()
+        self.threads.append(my_thread)
+        return SocketServer.ThreadingMixIn.process_request_thread(
+            self, request, client_address)
+
 
 class ServerManager(object):
     def __init__(self):
         self.port = PROXY_PORT
-        self.server = HttpServer(('0.0.0.0', self.port), RequestHandler)
+        self.server = HttpServer(('127.0.0.1', self.port), RequestHandler)
 
     def start(self):
         self.server_thread = threading.Thread(
@@ -201,6 +209,11 @@ class ServerManager(object):
         conn = httplib.HTTPConnection('localhost:%d' % self.port)
         conn.request('NOOP', '/')
         conn.getresponse()
+
+        # we want to wait until all outstanding requests are finished before
+        # we return
+        for t in self.server.threads:
+            t.join()
         self.server_thread.join()
 
     def executeCommand(self, command, *args):

@@ -1,0 +1,41 @@
+===================
+Using Real Browsers
+===================
+
+Using the zope.testbrowser.real module, real browsers can be controlled via
+the testbrowser API.  First, instantiate a Browser object.
+
+    >>> from zope.testbrowser.real import Browser
+    >>> browser = Browser()
+
+We can open pages.
+
+    >>> browser.open('http://localhost/')
+    >>> browser.getLink('buddies')
+    <Link text='buddies' url=u'http://localhost:8000/buddies'>
+
+If a link doesn't exist, we get an exception.
+
+    >>> browser.getLink('does not exist')
+    Traceback (most recent call last):
+    ...
+    LookupError: text 'does not exist'
+
+Links can be clicked.
+
+    >>> browser.getLink('buddies').click()
+
+We can retrieve the current address.
+
+    >>> browser.url
+    u'http://localhost:8000/buddies'
+
+We can also view the contents of the page.
+
+    >>> browser.getLink('brian').click()
+    >>> browser.contents
+    u'...<head>...'
+
+When we're done with the browser we have to close it.
+
+    >>> browser.close()

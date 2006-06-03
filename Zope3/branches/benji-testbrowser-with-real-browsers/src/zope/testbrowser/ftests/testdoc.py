@@ -22,9 +22,11 @@ from zope.app.testing.functional import FunctionalDocFileSuite
 def test_suite():
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     readme = FunctionalDocFileSuite('../README.txt', optionflags=flags)
+    real = doctest.DocFileSuite('../real.txt', optionflags=flags)
+    real.level = 2
     wire = FunctionalDocFileSuite('../over_the_wire.txt', optionflags=flags)
     wire.level = 2
-    return unittest.TestSuite((readme, wire))
+    return unittest.TestSuite((readme, wire, real))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
