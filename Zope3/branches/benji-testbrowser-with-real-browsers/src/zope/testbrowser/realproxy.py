@@ -214,6 +214,7 @@ class ServerManager(object):
         # we return
         for t in self.server.threads:
             t.join()
+
         self.server_thread.join()
 
     def executeCommand(self, command, *args):
