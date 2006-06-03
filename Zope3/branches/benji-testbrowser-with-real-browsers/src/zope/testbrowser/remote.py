@@ -18,7 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 from BeautifulSoup import BeautifulSoup
 from zope.testbrowser import interfaces
-from zope.testbrowser.remoteproxy2 import ServerManager, PROXY_PORT
+from zope.testbrowser.remoteproxy import ServerManager, PROXY_PORT
 from zope.testbrowser.utilities import disambiguate, zeroOrOne, \
     SetattrErrorsMixin, PystoneTimer
 import re
@@ -94,7 +94,7 @@ class Browser(SetattrErrorsMixin):
             self.send_error(400, "unknown scheme %r" % scheme)
 
         url = urlparse.urlunparse(
-            (scheme, '192.168.0.113:%s' % PROXY_PORT, path, params, query, frag))
+            (scheme, 'localhost:%s' % PROXY_PORT, path, params, query, frag))
 
         self._start_timer()
         self.executeCommand('open', url, data)
