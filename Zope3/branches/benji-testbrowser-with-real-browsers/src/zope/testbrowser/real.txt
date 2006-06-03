@@ -34,7 +34,7 @@ We can also view the contents of the page.
 
     >>> browser.getLink('brian').click()
     >>> browser.contents
-    u'...<head>...'
+    u'...</head>...'
 
 When we're done with the browser we have to close it.
 
