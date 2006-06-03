@@ -18,7 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 from BeautifulSoup import BeautifulSoup
 from zope.testbrowser import interfaces
-from zope.testbrowser.remoteproxy import ServerManager, PROXY_PORT
+from zope.testbrowser.realproxy import ServerManager, PROXY_PORT
 from zope.testbrowser.utilities import disambiguate, zeroOrOne, \
     SetattrErrorsMixin, PystoneTimer
 import re
