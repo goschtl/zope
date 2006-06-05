@@ -6,21 +6,33 @@ Repository.
 You are receiving this message because you checked into the Zope
 software repository between January 1, 2005 and May 11, 2006.
 
-To become a member, you need to fill out the committer agreement at:
+To become a committer member, you need to fill out the membership
+agreement at:
+
+  http://www.zope.org/DevHome/Foundation/ZopeFoundationMembershipAgreement.pdf
+
+and the committer agreement at:
 
   http://www.zope.org/DevHome/Foundation/ZopeFoundation_Committer_Agreement.pdf
 
-Note that you and your employer, if any, need to fill this out. 
-You can submit it in one of 3 ways:
+Note that you and your employer, if any, need to fill out the
+committer agreement.  If you are self- or un-employed, then write
+"self employed" or "non applicable" into the employer block on page 3
+of the committer agreement. Don't leave the employer block blank.
+ 
+If you wish, you can send just pages 1 and 9 of the membership agreement.
 
-  - Send the signed agreement to the address indicated on the agreement.
-    (I don't recommend this option if you are outside of the U.S.)
+You can submit the agreements in one of 3 ways:
 
-  - Fax it to the number shown the agreement.
+  - Send the signed agreements to the address indicated on the
+    contributor agreement.  (I don't recommend this option if you are
+    outside of the U.S.)
 
-  - Email the scanned agreement to legal@zope.org.
+  - Fax them to +1 703 995 0412.
 
-An email acknowledging receipt of the agreement will be sent so that
+  - Email the scanned agreements to legal@zope.org.
+
+An email acknowledging receipt of the agreements will be sent so that
 you can know whether we have received it.
 
 If you decide to become a committer member, you should also subscribe
@@ -28,14 +40,16 @@ to the Zope Foundation mailing list:
 
   http://mail.zope.org/mailman/listinfo/foundation
 
+You will also be subscribed by the foundation-committers list.
+
 I encourage you to become a member as soon as you can.  We hope to
-elect the first Zope Foundation Board by July 1 and expect to begin the
-committer-member voting process by mid-June.
+elect the first Zope Foundation Board by the end of June and expect to
+begin the committer-member voting process by mid-June.
 
 Questions that are specific to you should be sent to legal@zope.org.
 
 General Questions about the Zope Foundation or about the process of
-becoming a committer member should be send to the Zope-Foundation
+becoming a committer member should be sent to the Zope-Foundation
 mailing list:
 
   http://mail.zope.org/mailman/listinfo/foundation
