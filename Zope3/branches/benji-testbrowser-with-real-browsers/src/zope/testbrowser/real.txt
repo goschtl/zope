@@ -8,11 +8,14 @@ the testbrowser API.  First, instantiate a Browser object.
     >>> from zope.testbrowser.real import Browser
     >>> browser = Browser()
 
-We can open pages.
+We can open pages and look at their contents.
 
     >>> browser.open('http://localhost/')
-    >>> browser.getLink('buddies')
-    <Link text='buddies' url=u'http://localhost:8000/buddies'>
+    >>> browser.contents
+    u'...</head>...'
+
+    >>> browser.getLink('[top]', index=0)
+    <Link text='[top]' url=u'http://localhost:23123/@@SelectedManagementView.html'>
 
 If a link doesn't exist, we get an exception.
 
@@ -23,18 +26,12 @@ If a link doesn't exist, we get an exception.
 
 Links can be clicked.
 
-    >>> browser.getLink('buddies').click()
+    >>> browser.getLink('[top]', index=0).click()
 
 We can retrieve the current address.
 
     >>> browser.url
-    u'http://localhost:8000/buddies'
-
-We can also view the contents of the page.
-
-    >>> browser.getLink('brian').click()
-    >>> browser.contents
-    u'...</head>...'
+    u'http://localhost:23123/'
 
 When we're done with the browser we have to close it.
 

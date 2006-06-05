@@ -12,7 +12,10 @@ import urlparse
 
 base_dir = os.path.dirname(__file__)
 allowed_resources = ['MochiKit', 'shim.js', 'commands.js', 'start.html']
-PROXY_PORT = 8000
+
+PROXY_PORT = 23123
+PROXY_HOST = '127.0.0.1'
+TARGET_PORT = 23124
 
 class Constant(object):
     def __init__(self, name):
@@ -26,7 +29,7 @@ UNDEFINED = Constant('undefined')
 class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 #    server_version = "TinyHTTPProxy/" + __version__
     rbufsize = 0
-    remote_host = 'localhost:8080' # TODO needs to be configurable
+    remote_host = 'localhost:%d' % TARGET_PORT
 
     def __init__(self, request, client_address, server):
         self.command_queue = server.command_queue
@@ -195,8 +198,9 @@ class HttpServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
 
 class ServerManager(object):
     def __init__(self):
+        self.host = PROXY_HOST
         self.port = PROXY_PORT
-        self.server = HttpServer(('127.0.0.1', self.port), RequestHandler)
+        self.server = HttpServer((self.host, self.port), RequestHandler)
 
     def start(self):
         self.server_thread = threading.Thread(
@@ -206,7 +210,7 @@ class ServerManager(object):
 
     def stop(self):
         self.executeCommand('stop')
-        conn = httplib.HTTPConnection('localhost:%d' % self.port)
+        conn = httplib.HTTPConnection('%s:%d' % (self.host, self.port))
         conn.request('NOOP', '/')
         conn.getresponse()
 

@@ -18,12 +18,14 @@ $Id$
 import unittest
 import doctest
 from zope.app.testing.functional import FunctionalDocFileSuite
+from reallayer import TestbrowserReal
 
 def test_suite():
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     readme = FunctionalDocFileSuite('../README.txt', optionflags=flags)
     real = doctest.DocFileSuite('../real.txt', optionflags=flags)
     real.level = 2
+    real.layer = TestbrowserReal
     wire = FunctionalDocFileSuite('../over_the_wire.txt', optionflags=flags)
     wire.level = 2
     return unittest.TestSuite((readme, wire, real))
