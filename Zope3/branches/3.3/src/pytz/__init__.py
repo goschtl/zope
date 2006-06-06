@@ -9,7 +9,7 @@ on how to use these modules.
 '''
 
 # The Olson database has historically been updated about 4 times a year
-OLSON_VERSION = '2005r'
+OLSON_VERSION = '2006g'
 VERSION = OLSON_VERSION
 #VERSION = OLSON_VERSION + '.2'
 __version__ = OLSON_VERSION
@@ -448,6 +448,7 @@ common_timezones = \
  'America/Merida',
  'America/Mexico_City',
  'America/Miquelon',
+ 'America/Moncton',
  'America/Monterrey',
  'America/Montevideo',
  'America/Montreal',
@@ -882,7 +883,9 @@ all_timezones = \
  'America/Indiana/Indianapolis',
  'America/Indiana/Knox',
  'America/Indiana/Marengo',
+ 'America/Indiana/Petersburg',
  'America/Indiana/Vevay',
+ 'America/Indiana/Vincennes',
  'America/Indianapolis',
  'America/Inuvik',
  'America/Iqaluit',
@@ -906,6 +909,7 @@ all_timezones = \
  'America/Merida',
  'America/Mexico_City',
  'America/Miquelon',
+ 'America/Moncton',
  'America/Monterrey',
  'America/Montevideo',
  'America/Montreal',
@@ -916,6 +920,7 @@ all_timezones = \
  'America/Nome',
  'America/Noronha',
  'America/North_Dakota/Center',
+ 'America/North_Dakota/New_Salem',
  'America/Panama',
  'America/Pangnirtung',
  'America/Paramaribo',
