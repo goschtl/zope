@@ -85,7 +85,7 @@ def main(args=None):
         validate(issuefolder, args)
         votefile = os.path.join(issuefolder, uname)
         open(votefile, 'w').write('\n'.join(args))
-        os.chmod(votefile, 0700)
+        os.chmod(votefile, 0600)
 
     if os.access(issuefolder, os.R_OK):
         count(issuefolder, uname)
