@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: pytz 2005r\n"
-"POT-Creation-Date: 2005-12-31 09:29+UTC\n"
+"Project-Id-Version: pytz 2006g\n"
+"POT-Creation-Date: 2006-05-09 08:33+UTC\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
 
@@ -365,7 +365,13 @@ msgstr ""
 msgid "America/Indiana/Marengo"
 msgstr ""
 
+msgid "America/Indiana/Petersburg"
+msgstr ""
+
 msgid "America/Indiana/Vevay"
+msgstr ""
+
+msgid "America/Indiana/Vincennes"
 msgstr ""
 
 msgid "America/Indianapolis"
@@ -437,6 +443,9 @@ msgstr ""
 msgid "America/Miquelon"
 msgstr ""
 
+msgid "America/Moncton"
+msgstr ""
+
 msgid "America/Monterrey"
 msgstr ""
 
@@ -465,6 +474,9 @@ msgid "America/Noronha"
 msgstr ""
 
 msgid "America/North_Dakota/Center"
+msgstr ""
+
+msgid "America/North_Dakota/New_Salem"
 msgstr ""
 
 msgid "America/Panama"
