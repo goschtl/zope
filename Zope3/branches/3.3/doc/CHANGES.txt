@@ -96,6 +96,8 @@ Zope Changes
       - Added a cleaner and more robust API to testbrowser for setting
         file-upload data.
 
+      - Updated pytz to version 2006g
+
     Restructuring
 
       - Undeprecated automatic translation of message ids.  This is now
@@ -216,6 +218,7 @@ Zope Changes
       Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
       (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute,
       Shane Hathaway, Bjorn Tillenius, Sam Stainsby, Bernd Dorn, Benji York
+      Stuart Bishop
 
   ------------------------------------------------------------------
 
