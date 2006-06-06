@@ -11,11 +11,12 @@ def validate(issuefolder, args):
     seen = set()
     for arg in args:
         if arg in seen:
-            error("Repeated vote: "+args)
+            error("Repeated vote: "+arg)
         if arg not in valid:
             error("Invalid vote: %s.\nValid choices are: %s"
                   % (arg, ' '.join(valid))
                   )
+        seen.add(arg)
 
 def count(issuefolder, uname):
     vote = os.path.join(issuefolder, uname)
