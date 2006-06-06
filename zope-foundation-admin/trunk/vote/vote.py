@@ -68,6 +68,9 @@ def main(args=None):
     if not os.path.isdir(issuefolder):
         error("Invalid issue id")
 
+    if not os.access(issuefolder, os.X_OK):
+        error("You are not permitted to vote on this issue.")
+
     if not os.access(issuefolder, os.W_OK):
         error("Voting is closed")
 
@@ -80,7 +83,9 @@ def main(args=None):
     uname = pwd.getpwuid(os.geteuid())[0]
     if args:
         validate(issuefolder, args)
-        open(os.path.join(issuefolder, uname), 'w').write('\n'.join(args))
+        votefile = os.path.join(issuefolder, uname)
+        open(votefile, 'w').write('\n'.join(args))
+        os.chmod(votefile, 0700)
 
     if os.access(issuefolder, os.R_OK):
         count(issuefolder, uname)
