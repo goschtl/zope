@@ -47,7 +47,6 @@ $Id$
 import os, pwd, re, sys
 
 votes = os.path.dirname(os.path.realpath(__file__))
-print votes
 
 valid_issueid = re.compile('\w+$').match
 
@@ -58,6 +57,7 @@ def error(mess):
 def main(args=None):
     if args is None:
         args = sys.argv[1:]
+
     if not args:
         error("Usage: vote issueid [arguments]")
     issueid, args = args[0], args[1:]
