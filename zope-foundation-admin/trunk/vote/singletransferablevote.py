@@ -9,7 +9,7 @@ def validate(issuefolder, args):
         error("Too many votes.")
 
     seen = set()
-    for arg in votes:
+    for arg in args:
         if arg in seen:
             error("Repeated vote: "+args)
         if arg not in valid:
