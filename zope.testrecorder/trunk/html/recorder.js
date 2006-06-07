@@ -355,7 +355,8 @@ TestRecorder.ElementInfo.prototype.findLabelText = function(element) {
 TestRecorder.ElementInfo.prototype.findReferencingLabel = function(element) {
   var labels = top.frames[1].document.getElementsByTagName('label')
   for (var i = 0; i < labels.length; i++) {
-    if (labels[i].attributes['for'].value == element.id)
+    if (labels[i].attributes['for'] &&
+        labels[i].attributes['for'].value == element.id)
         return labels[i]
   }
 }
