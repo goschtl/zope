@@ -25,12 +25,14 @@ from zope.app.component.interfaces import IPossibleSite
 
 from Products.Five.site.localsite import FiveSite
 
-from zLOG import LOG, WARNING
+import logging
+
+LOG = logging.getLogger('Five')
 
 _localsite_monkies = []
 def classSiteHook(class_, site_class):
     if class_ in _localsite_monkies:
-        LOG('Five', WARNING, "Class %s already has a site hook" % class_)        
+        LOG.warn("Class %s already has a site hook" % class_)        
     else:
         _localsite_monkies.append(class_)
     setattr(class_, 'getSiteManager', site_class.getSiteManager.im_func)
