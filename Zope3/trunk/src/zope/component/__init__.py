@@ -18,7 +18,6 @@ $Id$
 import sys
 import zope.deferredimport
 import zope.interface
-from types import ClassType
 from zope.interface import moduleProvides, Interface
 from zope.interface import providedBy, implementedBy
 from zope.component.interfaces import IComponentArchitecture
