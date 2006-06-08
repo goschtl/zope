@@ -18,12 +18,14 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.location import ILocation
 from zope.component.interfaces import IObjectEvent
 from zope.interface import Attribute
 from zope.interface import alsoProvides
 from zope.interface import Interface
 from zope.lifecycleevent.interfaces import IModificationDescription
+from zope.schema.interfaces import IField
 
 from zope.generic.face import IFaced
 from zope.generic.face import IKeyfaceType
@@ -42,6 +44,11 @@ class IConfigurationType(IKeyfaceType):
 
 class INestedConfigurationType(IConfigurationType):
     """Type a key schema that contains nested configuraiton."""
+
+
+
+class INestedConfiguration(IField):
+    """Mark nested configuration."""
 
 
 

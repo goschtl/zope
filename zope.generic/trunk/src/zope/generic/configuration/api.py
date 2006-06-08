@@ -23,6 +23,12 @@ from zope.generic.face.api import getKeyface
 from zope.generic.configuration import *
 from zope.generic.configuration.adapter import AttributeConfigurations
 from zope.generic.configuration.base import createConfiguration
+from zope.generic.configuration.field import ISubConfiguration
+from zope.generic.configuration.field import ISubConfigurationDict
+from zope.generic.configuration.field import ISubConfigurationList
+from zope.generic.configuration.field import SubConfiguration
+from zope.generic.configuration.field import SubConfigurationDict
+from zope.generic.configuration.field import SubConfigurationList
 from zope.generic.configuration.helper import configurationToDict
 from zope.generic.configuration.helper import provideConfigurationType
 from zope.generic.configuration.helper import namesInOrder

@@ -178,31 +178,5 @@ class InformationProviderDirective(object):
         # handle wrong usage
         else:
             raise ConfigurationError('Information subdirective must provide ' +
-                'key and annotation or keyface and configuration.')
-
-
-
-def multiInformationProvidersDirective(_context, iniFiles=()):
-    """Ini-file based configurations for multi information provider."""
-        
-    for path in iniFiles:
-        for configuration, keyface, conface, data in iniFileToConfiguration(path):
-            # register corresponding configuration information
-            # provide type as soon as possilbe
-            if not IKeyfaceType.providedBy(keyface):
-                provideInterface(None, keyface, IKeyfaceType)
-    
-            if not IConfaceType.providedBy(conface):
-                provideInterface(None, conface, IConfaceType)
-    
-            # ensure the corresponding information provider
-            ensureInformationProvider(keyface, conface)
-
-            _context.action(
-                discriminator = (
-                'informationprovider.configuration', keyface, conface, configuration),
-                callable = provideConfiguration,
-                args = (keyface, conface, configuration, data),
-                )
-                
+                'key and annotation or keyface and configuration.')              
                 

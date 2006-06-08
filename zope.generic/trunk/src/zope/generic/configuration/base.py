@@ -18,14 +18,15 @@ $Id$
 
 __docformat__ = 'restructuredtext'
 
-from persistent import Persistent
 from persistent import IPersistent
+from persistent import Persistent
+from persistent.dict import PersistentDict
+from persistent.list import PersistentList
 
 from zope.interface import directlyProvides
 from zope.interface import implements
 from zope.schema import ValidationError
 from zope.schema.interfaces import IField
-from zope.schema.interfaces import IObject
 
 from zope.generic.face import IAttributeFaced
 from zope.generic.face import IFace
@@ -36,11 +37,61 @@ from zope.generic.face.api import toDottedName
 from zope.generic.configuration import IConfigurationData
 from zope.generic.configuration import IConfigurations
 from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration import INestedConfiguration
+from zope.generic.configuration.field import ISubConfiguration
+from zope.generic.configuration.field import ISubConfigurationDict
+from zope.generic.configuration.field import ISubConfigurationList
 
 
 
 def createConfiguration(keyface, data):
+    """Factory function for configuration data."""
+
     return ConfigurationData(keyface, data)
+
+
+
+def createConfigurationList(field, data):
+
+    if ISubConfiguration.providedBy(field.value_type):
+        subkeyface = field.value_type.schema
+        counter = 0
+        subconfigurations = []
+        while data:
+            subdata = subData(str(counter), data)
+            if subdata:
+                subconfigurations.append(createConfiguration(subkeyface, subdata))
+            else:
+                raise IndexError('list index out of range')
+
+            counter += 1
+            
+        return ConfigurationList(subconfigurations)
+
+    # other objects
+    else:
+        indices = data.keys()
+        indices.sort()
+        # precondition: assume that everythings is ok if the start and end point is ok
+        if int(indices[0]) != 0 or int(indices[-1]) != len(indices) - 1:
+            raise IndexError('list index out of range')
+        return ConfigurationList([data[index] for index in indices])
+
+
+
+def createConfigurationDict(field, data):
+    if ISubConfiguration.providedBy(field.value_type):
+        subkeyface = field.value_type.schema
+        subconfigurations = {}
+        while data:
+            prefix = iter(data).next().split('.')[0] # evaluate the next entry  
+            subconfigurations[prefix] = createConfiguration(subkeyface, subData(prefix, data))
+
+        return ConfigurationDict(subconfigurations)
+
+    # other objects
+    else:
+        return ConfigurationDict(data)
 
 
 
@@ -78,26 +129,50 @@ def prepareData(__keyface__, data):
         if name not in data:
             field = __keyface__[name]
             # handle nested configuration data
-            if IObject.providedBy(field) and IConfigurationType.providedBy(field.schema):
-                try:
-                    subdata = subData(name, data)
-                    if subdata or field.required is True:
-                        relevant_data[name] = createConfiguration(field.schema, subData(name, data))
-                        continue
+            if INestedConfiguration.providedBy(field):
+                subdata = subData(name, data)
 
-                except:
-                    pass
+                if subdata or field.required is True:
+                    if ISubConfiguration.providedBy(field):
+                        relevant_data[name] = createConfiguration(field.schema, subdata)
+                    elif ISubConfigurationList.providedBy(field):
+                        relevant_data[name] = createConfigurationList(field, subdata)
+                    elif ISubConfigurationDict.providedBy(field):
+                        relevant_data[name] = createConfigurationDict(field, subdata)
+                    else:
+                        raise NotImplementedError()
+
+                    continue
 
             if field.required is True:
                 missedArguments.append(name)
+
         else:
-            relevant_data[name] = data[name]
+            value = data[name]
+            if isinstance(value, list):
+                relevant_data[name] = ConfigurationList(value)
+
+            elif isinstance(value, dict):
+                relevant_data[name] = ConfigurationDict(value)
+           
+            else:
+                relevant_data[name] = data[name]
     
     if missedArguments:
         raise TypeError("__init__ requires '%s' of '%s'." % (', '.join(missedArguments), __keyface__.__name__))
     
     return relevant_data
-    
+
+
+
+class ConfigurationList(PersistentList):
+    """List-like configurations."""
+
+
+
+class ConfigurationDict(PersistentDict):
+    """Dict-like configurations."""
+
 
 
 _marker = object()

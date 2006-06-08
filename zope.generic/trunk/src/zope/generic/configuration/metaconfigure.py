@@ -24,6 +24,7 @@ from zope.schema.interfaces import ISequence
 from zope.schema.interfaces import IObject
 
 from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration import INestedConfiguration
 from zope.generic.configuration import INestedConfigurationType
 
 
@@ -43,11 +44,7 @@ def configurationDirective(_context, keyface, nested=None):
     elif nested is None:
         for name in keyface:
             field = keyface[name]
-            if IObject.providedBy(field) and IConfigurationType.providedBy(field.schema):
-                type = INestedConfigurationType
-                break
-            
-            elif ISequence.providedBy(field) or IDict.providedBy(field):
+            if INestedConfiguration.providedBy(field):
                 type = INestedConfigurationType
                 break
 

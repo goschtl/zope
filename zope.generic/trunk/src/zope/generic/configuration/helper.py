@@ -23,6 +23,10 @@ from zope.interface import alsoProvides
 from zope.generic.face import IFace
 
 from zope.generic.configuration import IConfigurationType
+from zope.generic.configuration import INestedConfiguration
+from zope.generic.configuration.field import ISubConfiguration
+from zope.generic.configuration.field import ISubConfigurationDict
+from zope.generic.configuration.field import ISubConfigurationList
 
 
 def provideConfigurationType(interface):
@@ -66,24 +70,46 @@ def configurationToDict(configuration, all=False):
     for name in keyface:
         value = getattr(configuration, name, _marker)
         field = keyface[name]
+        
+        if INestedConfiguration.providedBy(field):
 
-        if field.required is False:
-            if value is not _marker and value != field.default:
-               data[name] = value
+            if ISubConfiguration.providedBy(field):
+                data[name] = configurationToDict(value, all)
 
-            elif value == field.default:
-                if all:
-                    data[name] = value
+            elif ISubConfigurationList.providedBy(field):
+                if ISubConfiguration.providedBy(field.value_type):
+                    data[name] = [configurationToDict(v, all) for v in value]
+                # regular objects
+                else:
+                    data[name] = [v for v in value]
 
-            else:
-                if all:
-                    data[name] = field.default
+            elif ISubConfigurationDict.providedBy(field):
+                if ISubConfiguration.providedBy(field.value_type):
+                    data[name] = dict([(k, configurationToDict(v, all)) for k, v in value.items()])
+                # regular objects
+                else:
+                    data[name] = dict([item for item in value.items()])
 
-        elif value is not _marker:
-            data[name] = value
-
+        # no sub-configuraiton
         else:
-            raise RuntimeError('Data is missing', name)
+
+            if field.required is False:
+                if value is not _marker and value != field.default:
+                   data[name] = value
+    
+                elif value == field.default:
+                    if all:
+                        data[name] = value
+    
+                else:
+                    if all:
+                        data[name] = field.default
+    
+            elif value is not _marker:
+                data[name] = value
+    
+            else:
+                raise RuntimeError('Data is missing', name)
 
     return data
 
