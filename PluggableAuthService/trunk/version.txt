@@ -1,1 +1,1 @@
-PluggableAuthService-1.3-beta
+PluggableAuthService-1.3
