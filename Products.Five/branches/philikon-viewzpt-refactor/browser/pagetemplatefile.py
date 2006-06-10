@@ -15,80 +15,67 @@
 
 $Id$
 """
-import os, sys
-
-from Globals import package_home
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+import AccessControl.Owned
+from Acquisition import aq_inner, aq_acquire
+from DocumentTemplate.DT_Util import TemplateDict
+from Shared.DC.Scripts.Bindings import Bindings
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from Products.PageTemplates.Expressions import createTrustedZopeEngine
-
-from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.pagetemplate import viewpagetemplatefile
 
 _engine = createTrustedZopeEngine()
 def getEngine():
     return _engine
 
-class ZopeTwoPageTemplateFile(PageTemplateFile):
-    """A strange hybrid between Zope 2 and Zope 3 page template.
+class ViewPageTemplateFile(Bindings, AccessControl.Owned.Owned,
+                           viewpagetemplatefile.ViewPageTemplateFile):
 
-    Uses Zope 2's engine, but with security disabled and with some
-    initialization and API from Zope 3.
-    """
+    _default_bindings = {'name_subpath': 'traverse_subpath'}
+    _Bindings_ns_class = TemplateDict
 
     def __init__(self, filename, _prefix=None, content_type=None):
-        # XXX doesn't use content_type yet
-
         self.ZBindings_edit(self._default_bindings)
-
-        path = self.get_path_from_prefix(_prefix)
-        self.filename = os.path.join(path, filename)
-        if not os.path.isfile(self.filename):
-            raise ValueError("No such file", self.filename)
-
-        basepath, ext = os.path.splitext(self.filename)
-        self.__name__ = os.path.basename(basepath)
-
-        super(PageTemplateFile, self).__init__(self.filename, _prefix)
-
-    def get_path_from_prefix(self, _prefix):
-        if isinstance(_prefix, str):
-            path = _prefix
-        else:
-            if _prefix is None:
-                _prefix = sys._getframe(2).f_globals
-            path = package_home(_prefix)
-        return path
+        _prefix = self.get_path_from_prefix(_prefix)
+        super(ViewPageTemplateFile, self).__init__(
+            filename, _prefix, content_type)
 
     def pt_getEngine(self):
         return getEngine()
 
-    def pt_getContext(self):
+    def pt_getContext(self, instance, request, **kw):
+        namespace = super(ViewPageTemplateFile, self).pt_getContext(
+            instance, request, **kw)
+        bound_names = namespace['options'].pop('bound_names')
+        namespace.update(bound_names)
+
+        context = aq_inner(instance.context)
         try:
-            root = self.getPhysicalRoot()
+            root = aq_acquire(context, 'getPhysicalRoot')()
         except AttributeError:
-            root = self.context.getPhysicalRoot()
-        # Even if the context isn't a view (when would that be exaclty?),
-        # there shouldn't be any dange in applying a view, because it
-        # won't be used.  However assuming that a lack of getPhysicalRoot
-        # implies a missing view causes problems.
-        view = self._getContext()
+            raise
+            # we can't access the root, probably because 'context' is
+            # something that doesn't support Acquisition.  You lose.
+            root = None
+        namespace.update({
+            'context': context,            
+            'here': context,
+            'container': context,
+            'root': root,
+            'user': AccessControl.getSecurityManager().getUser(),
+            'modules': SecureModuleImporter,
+            })
+        return namespace
 
-        here = self.context.aq_inner
+    # this will be called by Bindings.__call__
+    def _exec(self, bound_names, args, kw):
+        kw['bound_names'] = bound_names
+        return viewpagetemplatefile.ViewPageTemplateFile.__call__(
+            self, *args, **kw)
 
-        request = getattr(root, 'REQUEST', None)
-        c = {'template': self,
-             'here': here,
-             'context': here,
-             'container': here,
-             'nothing': None,
-             'options': {},
-             'root': root,
-             'request': request,
-             'modules': SecureModuleImporter,
-             }
-        if view is not None:
-            c['view'] = view
-            c['views'] = ViewMapper(here, request)
-
-        return c
+# BBB 2006/05/01 -- to be removed after 12 months
+import zope.deprecation
+zope.deprecation.deprecated(
+    "ZopeTwoPageTemplateFile",
+    "ZopeTwoPageTemplate has been renamed to ViewPageTemplateFile. "
+    "The old name will disappear in Zope 2.12")
+ZopeTwoPageTemplateFile = ViewPageTemplateFile
