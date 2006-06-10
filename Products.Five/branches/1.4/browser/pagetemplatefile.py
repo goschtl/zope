@@ -21,9 +21,7 @@ from Globals import package_home
 from AccessControl import getSecurityManager
 from Shared.DC.Scripts.Bindings import Unauthorized, UnauthorizedBinding
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 from Products.Five.browser.ReuseUtils import rebindFunction
 from Products.Five.browser.TrustedExpression import getEngine, ModuleImporter
@@ -95,3 +93,5 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
 
     pt_getContext = rebindFunction(_pt_getContext,
                                    SecureModuleImporter=ModuleImporter)
+
+ViewPageTemplateFile = ZopeTwoPageTemplateFile
