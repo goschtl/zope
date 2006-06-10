@@ -25,22 +25,21 @@ from zope.formlib import interfaces, form, namedtemplate
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory("zope")
 
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.Five.browser.decode import processInputs, setPageEncoding
 
 class FiveFormlibMixin(Acquisition.Explicit):
-
     # Overrides the formlib.form.FormBase.template attributes implemented 
     # using NamedTemplates. NamedTemplates using ViewPageTemplateFile (like
     # formlib does by default) cannot work in Zope2.
-    
+
     # XXX Maybe we need to have Five-compatible NamedTemplates?
-    
-    template = ZopeTwoPageTemplateFile('pageform.pt')
-    
+
+    template = ViewPageTemplateFile('pageform.pt')
+
     # Overrides formlib.form.FormBase.update. Make sure user input is
     # decoded first and the page encoding is set before proceeding.
-    
+
     def update(self):
         processInputs(self.request)
         setPageEncoding(self.request)
@@ -53,7 +52,7 @@ class EditFormBase(FiveFormlibMixin, form.EditFormBase):
 
     # Overrides formlib.form.EditFormBase.handle_edit_action, to remove
     # dependecy on request.locale
-    
+
     @form.action(_("Apply"), condition=form.haveInputWidgets)
     def handle_edit_action(self, action, data):
         if form.applyChanges(
@@ -69,51 +68,41 @@ class EditFormBase(FiveFormlibMixin, form.EditFormBase):
                 )
         else:
             self.status = _('No changes')
-    
+
 class DisplayFormBase(FiveFormlibMixin, form.DisplayFormBase):
     pass
 
 class AddFormBase(FiveFormlibMixin, form.AddFormBase):
     pass
-    
-class PageForm(FormBase):
 
+class PageForm(FormBase):
     interface.implements(interfaces.IPageForm)
 
 Form = PageForm
 
 class PageEditForm(EditFormBase):
-
     interface.implements(interfaces.IPageForm)
 
 EditForm = PageEditForm
 
 class PageDisplayForm(DisplayFormBase):
-
     interface.implements(interfaces.IPageForm)
 
 DisplayForm = PageDisplayForm
 
 class PageAddForm(AddFormBase):
-
     interface.implements(interfaces.IPageForm)
 
 AddForm = PageAddForm
 
 class SubPageForm(FormBase):
-
-    template = ZopeTwoPageTemplateFile('subpageform.pt')
-    
     interface.implements(interfaces.ISubPageForm)
+    template = ViewPageTemplateFile('subpageform.pt')
 
 class SubPageEditForm(EditFormBase):
-
-    template = ZopeTwoPageTemplateFile('subpageform.pt')
-    
     interface.implements(interfaces.ISubPageForm)
+    template = ViewPageTemplateFile('subpageform.pt')
 
 class SubPageDisplayForm(DisplayFormBase):
-
-    template = ZopeTwoPageTemplateFile('subpageform.pt')
-    
     interface.implements(interfaces.ISubPageForm)
+    template = ViewPageTemplateFile('subpageform.pt')

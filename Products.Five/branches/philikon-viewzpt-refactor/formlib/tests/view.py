@@ -19,7 +19,7 @@ from zope.formlib import form, page
 
 from Products.Five.browser import BrowserView
 from Products.Five.formlib.formbase import AddForm, EditForm, Form
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from Products.Five.formlib.tests.content import IContent, Content
 

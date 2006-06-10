@@ -31,7 +31,7 @@ from zope.app.container.interfaces import IAdding
 from Products.Five.form import EditView, AddView
 from Products.Five.metaclass import makeClass
 from Products.Five.security import protectClass
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.Five.browser.metaconfigure import makeClassForTemplate
 
 def EditViewFactory(name, schema, label, permission, layer,
@@ -49,7 +49,7 @@ def EditViewFactory(name, schema, label, permission, layer,
 
     class_.fulledit_label = fulledit_label
 
-    class_.generated_form = ZopeTwoPageTemplateFile(default_template)
+    class_.generated_form = ViewPageTemplateFile(default_template)
 
     if layer is None:
         layer = IDefaultBrowserLayer
@@ -112,7 +112,7 @@ def AddViewFactory(name, schema, label, permission, layer,
     class_._set_before_add = set_before_add
     class_._set_after_add = set_after_add
 
-    class_.generated_form = ZopeTwoPageTemplateFile(default_template)
+    class_.generated_form = ViewPageTemplateFile(default_template)
 
     if layer is None:
         layer = IDefaultBrowserLayer

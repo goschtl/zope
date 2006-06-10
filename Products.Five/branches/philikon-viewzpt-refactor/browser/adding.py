@@ -37,9 +37,8 @@ from Acquisition import Implicit
 from zExceptions import BadRequest
 from OFS.SimpleItem import SimpleItem
 
-from Products.Five import BrowserView
-
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.Five.browser import BrowserView
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 class BasicAdding(Implicit, BrowserView):
     implements(IAdding, IPublishTraverse)
@@ -162,7 +161,7 @@ class BasicAdding(Implicit, BrowserView):
 class Adding(BasicAdding):
 
     menu_id = None
-    index = ZopeTwoPageTemplateFile("adding.pt")
+    index = ViewPageTemplateFile("adding.pt")
 
     def addingInfo(self):
         """Return menu data.

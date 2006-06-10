@@ -526,10 +526,10 @@ Now we need a template to produce the contents table:
 From the two pieces above, we can generate the final viewlet manager class and
 register it (it's a bit tedious, I know):
 
-  >>> from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+  >>> from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
   >>> ContentsViewletManager = type(
   ...     'ContentsViewletManager', (ContentsViewletManager,),
-  ...     {'index': ZopeTwoPageTemplateFile('table.pt', temp_dir)})
+  ...     {'index': ViewPageTemplateFile('table.pt', temp_dir)})
 
   >>> zope.component.provideAdapter(
   ...     ContentsViewletManager,
@@ -811,7 +811,7 @@ the new viewlet manager. We simply override the existing registration:
 
   >>> SortedContentsViewletManager = type(
   ...     'SortedContentsViewletManager', (SortedContentsViewletManager,),
-  ...     {'index': ZopeTwoPageTemplateFile('table.pt', temp_dir)})
+  ...     {'index': ViewPageTemplateFile('table.pt', temp_dir)})
 
   >>> zope.component.provideAdapter(
   ...     SortedContentsViewletManager,

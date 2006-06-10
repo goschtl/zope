@@ -37,7 +37,7 @@ from zope.app.form.interfaces import IInputWidget, WidgetsError
 
 from Products.Five.browser import BrowserView
 from Products.Five.browser.decode import processInputs, setPageEncoding
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 class EditView(BrowserView):
     """Simple edit-view base class
@@ -54,7 +54,7 @@ class EditView(BrowserView):
     # Fall-back field names computes from schema
     fieldNames = property(lambda self: getFieldNamesInOrder(self.schema))
     # Fall-back template
-    generated_form = ZopeTwoPageTemplateFile('edit.pt')
+    generated_form = ViewPageTemplateFile('edit.pt')
 
     def __init__(self, context, request):
         BrowserView.__init__(self, context, request)

@@ -38,7 +38,7 @@ from Products.Five.browser.resource import FileResourceFactory
 from Products.Five.browser.resource import ImageResourceFactory
 from Products.Five.browser.resource import PageTemplateResourceFactory
 from Products.Five.browser.resource import DirectoryResourceFactory
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.Five.metaclass import makeClass
 from Products.Five.security import getSecurityInfo, protectClass, protectName
 
@@ -170,7 +170,7 @@ class view(zope_app_view):
 
         for pname, attribute, template in self.pages:
             if template:
-                cdict[pname] = ZopeTwoPageTemplateFile(template)
+                cdict[pname] = ViewPageTemplateFile(template)
                 if attribute and attribute != name:
                     cdict[attribute] = cdict[pname]
             else:
@@ -408,7 +408,7 @@ def makeClassForTemplate(filename, globals=None, used_for=None,
     # XXX needs to deal with security from the bases?
     if cdict is None:
         cdict = {}
-    cdict.update({'index': ZopeTwoPageTemplateFile(filename, globals),
+    cdict.update({'index': ViewPageTemplateFile(filename, globals),
                   '__name__': name})
     bases += (ViewMixinForTemplates,)
     class_ = makeClass("SimpleViewClass from %s" % filename, bases, cdict)

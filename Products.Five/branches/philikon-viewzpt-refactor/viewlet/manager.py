@@ -5,7 +5,7 @@ import zope.security
 from zope.viewlet import interfaces
 from zope.viewlet.manager import ViewletManagerBase as origManagerBase
 
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 
 class ViewletManagerBase(origManagerBase, Acquisition.Explicit):
@@ -48,7 +48,7 @@ class ViewletManagerBase(origManagerBase, Acquisition.Explicit):
 def ViewletManager(name, interface, template=None, bases=()):
 
     if template is not None:
-        template = ZopeTwoPageTemplateFile(template)
+        template = ViewPageTemplateFile(template)
 
     if ViewletManagerBase not in bases:
         # Make sure that we do not get a default viewlet manager mixin, if the

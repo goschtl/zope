@@ -3,7 +3,7 @@ from Acquisition import Explicit
 from zope.viewlet import interfaces
 from zope.viewlet import viewlet as orig_viewlet
 
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 # We add Acquisition to all the base classes to enable security machinery
 class ViewletBase(orig_viewlet.ViewletBase, Explicit):
@@ -25,7 +25,7 @@ def SimpleViewletClass(template, bases=(), attributes=None,
     # Create the base class hierarchy
     bases += (simple, ViewletBase)
 
-    attrs = {'index' : ZopeTwoPageTemplateFile(template),
+    attrs = {'index' : ViewPageTemplateFile(template),
              '__name__' : name}
     if attributes:
         attrs.update(attributes)
@@ -45,7 +45,7 @@ def JavaScriptViewlet(path):
 
     klass = type('JavaScriptViewlet',
                  (ResourceViewletBase, ViewletBase),
-                  {'index': ZopeTwoPageTemplateFile(src),
+                  {'index': ViewPageTemplateFile(src),
                    '_path': path})
 
     return klass
@@ -60,7 +60,7 @@ def CSSViewlet(path, media="all", rel="stylesheet"):
 
     klass = type('CSSViewlet',
                  (CSSResourceViewletBase, ViewletBase),
-                  {'index': ZopeTwoPageTemplateFile(src),
+                  {'index': ViewPageTemplateFile(src),
                    '_path': path,
                    '_media':media,
                    '_rel':rel})
