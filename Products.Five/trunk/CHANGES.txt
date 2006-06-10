@@ -2,6 +2,13 @@
 Five Changes
 ============
 
+Five 1.5 (unreleased)
+=====================
+
+* Added Five.browser.pagetemplatefile.ViewPageTemplateFile as an alias
+  to ZopeTwoPageTemplateFile and as a Zope 2 correspondence to
+  zope.app.pagetemplate.ViewPageTemplateFile.
+
 Five 1.5c (2006-05-29)
 ======================
 

@@ -21,9 +21,7 @@ from Globals import package_home
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from Products.PageTemplates.Expressions import createTrustedZopeEngine
-
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 _engine = createTrustedZopeEngine()
 def getEngine():
@@ -92,3 +90,5 @@ class ZopeTwoPageTemplateFile(PageTemplateFile):
             c['views'] = ViewMapper(here, request)
 
         return c
+
+ViewPageTemplateFile = ZopeTwoPageTemplateFile
