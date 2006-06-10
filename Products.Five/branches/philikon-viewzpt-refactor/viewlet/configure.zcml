@@ -1,0 +1,12 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <interface
+      interface="zope.viewlet.interfaces.IViewletManager"
+      />
+
+  <interface
+      interface="zope.viewlet.interfaces.IViewletManager"
+      />
+
+</configure>
