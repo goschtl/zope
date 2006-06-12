@@ -150,7 +150,7 @@ Now, we have the permission:
     True
 
 because the write privilege has the permission and our principal,
-'bob', has the privilege.  Of course, we still don't have the write
+'bob', has the privilege.  Of course, we still don't have the read
 privilege:
 
     >>> interaction.checkPermission('R1', ob)

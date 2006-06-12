@@ -289,7 +289,7 @@ Unless we remove the settings in our subobject:
 
 If there is an interaction, and if any of the participations are
 requests (iow, if any of the participants are participating by way of
-a UI), then these participats will be given fill access:
+a UI), then these participats will be given full access:
 
     >>> class Principal:
     ...     def __init__(self, id):
@@ -503,7 +503,7 @@ reverse.
 .. [#i18n] The title and descriptions should be message ids, as they
            may need to be translated.
 
-.. [#bit] Zope Corporation reserves even bits for it's own use.  Odd
+.. [#bit] Zope Corporation reserves even bits for its own use.  Odd
           bits are used for customer-specific privileges.  (VAR's
           might then decide to subdivide the odd bits.) XXX Is this still 
           the plan?
