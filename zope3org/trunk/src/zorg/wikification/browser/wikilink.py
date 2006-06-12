@@ -213,8 +213,13 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         while path :         
             try :
                 name = path[0]
-                name = unicode(name, encoding='utf-8')
-                node = self.traverseName(node, name)
+                if name == ".." :
+                    node = node.__parent__
+                elif name == "." :
+                    node = node
+                else :
+                    name = unicode(name, encoding='utf-8')
+                    node = self.traverseName(node, name)
                 name = path.pop(0)
             except (TraversalError, UnicodeEncodeError, UnicodeDecodeError) :
                 break
@@ -287,8 +292,10 @@ class RelativeLinkProcessor(BaseLinkProcessor) :
         
     def onRelativeLink(self, link) :
         """ Event handler that can be specialized. """
+        
         if self.base_url.endswith('/') :
             return self.base_url + link
+ 
         return "%s/%s" % (self.base_url, link)
         
         
@@ -366,6 +373,13 @@ class WikiLinkProcessor(RelativeLinkProcessor) :
         >>> processor.wikifyLink('http://127.0.0.1/site/folder')
         (False, 'http://127.0.0.1/site/folder/@@wiki.html')
         
+        The parser also handles '..' and '.' in URLs :
+        
+        >>> processor.wikifyLink('http://127.0.0.1/site/folder/../folder')
+        (False, 'http://127.0.0.1/site/folder/@@wiki.html')
+        >>> processor.wikifyLink('http://127.0.0.1/site/./folder')
+        (False, 'http://127.0.0.1/site/folder/@@wiki.html')
+        
         Relative and internal absolute links are treated the same. If 
         a link can be traversed successfully only the specific wiki
         view is added to ensure that we remain in the wiki navigation :
@@ -375,7 +389,7 @@ class WikiLinkProcessor(RelativeLinkProcessor) :
         >>> processor.wikifyLink('http://127.0.0.1/site/folder/emptysubfolder')
         (False, 'http://127.0.0.1/site/folder/emptysubfolder/@@wiki.html')
         
-        If the path cannot completely be resolved the link is changed to
+        If the path cannot be resolved completely the link is changed to
         an add view call :
         
         >>> processor.wikifyLink('http://127.0.0.1/site/folder/wikify.html')
