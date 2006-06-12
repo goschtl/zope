@@ -35,11 +35,6 @@ def test_suite():
              'TestRequest': zope.publisher.browser.TestRequest}
  
     return unittest.TestSuite((
-        doctest.DocTestSuite("zorg.wikification.browser.comment", 
-                                setUp=setUpBrowserTests, 
-                                tearDown=tearDownBrowserTests,
-                                optionflags=optionflags
-                             ),
                              
         doctest.DocTestSuite("zorg.wikification.browser.wikipage", 
                                 setUp=setUpBrowserTests, 

@@ -767,7 +767,10 @@ class UploadFilePlaceholder(AddObjectPlaceholder) :
 
         if not contenttype :
             contenttype = contenttypes.guess_content_type(filename)[0]
-     
+
+        if data is None :
+            data = ''
+
         return self._addFile(name, data, contenttype)
        
     def _addFile(self, name, data, contenttype) :
