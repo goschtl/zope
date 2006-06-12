@@ -12,7 +12,7 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""Zope4Intranets security policy
+"""sharing security policy
 
 $Id$
 """
@@ -31,7 +31,7 @@ from zope.app.security.interfaces import PrincipalLookupError
 
 from zc.sharing import interfaces, sharing
 
-admin_group = 'zc.intranet.policy.admingroup'
+admin_group = 'zc.groups.admin' # TODO: Make this configurable
 
 class CacheEntry:
     pass
