@@ -1,0 +1,9 @@
+<div id="main">
+     <p class="intro">This document type cannot be displayed as a wiki page.</p>
+     
+     <p>Download 
+        <a href="#" tal:attributes="href view/getURL"
+            tal:content="context/__name__"
+            >Title</a>   
+      </p>
+</div>

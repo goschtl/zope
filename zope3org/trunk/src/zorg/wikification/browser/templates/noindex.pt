@@ -1,5 +1,6 @@
 <div id="main">
-     <p class="intro">This Wiki allows you to create pages and upload files by clicking placeholders.
+     <p class="intro">This Wiki allows you to create pages and upload files 
+        by clicking placeholders.
         Such placeholders are marked by red dotted borders.
         If you click a placeholder you will be led to
         a page editor and other edit options.

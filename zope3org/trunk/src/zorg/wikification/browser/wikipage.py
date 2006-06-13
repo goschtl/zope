@@ -294,6 +294,8 @@ class WikiFilePage(WikiPage) :
     
     untitled = u"Untitled Document"
     
+    _unwikifiable = ViewPageTemplateFile("./templates/unwikifiable.pt")
+    
     def isEmpty(self) :
         return False
         
@@ -315,7 +317,7 @@ class WikiFilePage(WikiPage) :
             wikified = self.wikify(body)
             return unicode(wikified, encoding='utf-8', errors='replace')
   
-        return u"Sorry, not wikifiable at the moment."
+        return self._unwikifiable()
             
 
 

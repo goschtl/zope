@@ -4,15 +4,20 @@ var WikiMenu = {
     linkID : -1,
     extraInfo : "",
     caller : null,
+    x : -1,
     
     dropDown : function(obj, e, dropmenuID, extra) {
     
         if (WikiMenu.linkID != -1) return
         
         WikiMenu.extraInfo = extra;
-        WikiMenu.caller = obj;
+        if (WikiMenu.caller != obj) {
+            WikiMenu.caller = obj
+            WikiMenu.x = (document.all) ? window.event.x + document.body.scrollLeft  : e.pageX;
+            }
+      
         target = $(dropmenuID);
-        
+            
         if (window.event) 
             event.cancelBubble=true
         else if (e.stopPropagation) 
@@ -28,9 +33,12 @@ var WikiMenu = {
                     dropmenuobj.onclick=function(){dropmenuobj.style.visibility='hidden'}
                 dropmenuobj.onmouseover=clearhidemenu
                 dropmenuobj.onmouseout=ie5? function(){ dynamichide(event)} : function(event){ dynamichide(event)}
+                                
                 showhide(dropmenuobj.style, e, "visible", "hidden")
-                dropmenuobj.x=getposOffset(obj, "left")
-                dropmenuobj.y=getposOffset(obj, "top")
+              
+                dropmenuobj.x= (WikiMenu.x != -1) ? WikiMenu.x : getposOffset(obj, "left")
+                dropmenuobj.y= getposOffset(obj, "top")
+             
                 dropmenuobj.style.left=dropmenuobj.x-clearbrowseredge(obj, "rightedge")+"px"
                 dropmenuobj.style.top=dropmenuobj.y-clearbrowseredge(obj, "bottomedge")+obj.offsetHeight+"px"
                 }
