@@ -554,3 +554,56 @@ file contents, you will not be able to access the edit view.
   ...
      <li>The character set specified in the content type (ASCII) does not match file content.</li>
   ...
+
+
+Non-ASCII Filenames
+-------------------
+
+Filenames are not restricted to ASCII.
+
+  >>> print http("""
+  ... POST /+/zope.app.file.File%3D HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: multipart/form-data; boundary=---------------------------73793505419963331401738523176
+  ...
+  ... -----------------------------73793505419963331401738523176
+  ... Content-Disposition: form-data; name="field.contentType"
+  ...
+  ... application/octet-stream
+  ... -----------------------------73793505419963331401738523176
+  ... Content-Disposition: form-data; name="field.data"; filename="bj\xc3\xb6rn.txt.gz"
+  ... Content-Type: application/x-gzip
+  ...
+  ... \x1f\x8b\x08\x08\xcb\x48\xea\x42\x00\x03\x68\x65\x6c\x6c\x6f\x2e\
+  ... \x74\x78\x74\x00\xcb\x48\xcd\xc9\xc9\xe7\x02\x00\x20\x30\x3a\x36\
+  ... \x06\x00\x00\x00
+  ... -----------------------------73793505419963331401738523176
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ...
+  ... Add
+  ... -----------------------------73793505419963331401738523176
+  ... Content-Disposition: form-data; name="add_input_name"
+  ...
+  ...
+  ... -----------------------------73793505419963331401738523176--
+  ... """)
+  HTTP/1.1 303 See Other
+  Content-Length: ...
+  Content-Type: text/html;charset=utf-8
+  Location: http://localhost/@@contents.html
+  <BLANKLINE>
+  ...
+
+Since we did not specify the object name in the form, Zope 3 will use the
+filename.
+
+  >>> response = http("""
+  ... GET /bj%C3%B6rn.txt.gz HTTP/1.1
+  ... """)
+  >>> print response
+  HTTP/1.1 200 Ok
+  Content-Length: 36
+  Content-Type: application/octet-stream
+  <BLANKLINE>
+  ...
+
