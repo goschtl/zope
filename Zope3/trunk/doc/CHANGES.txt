@@ -145,6 +145,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issues 648 and 593: uploading files with non-ASCII filenames now
+        works.
+
       - Fix get_rendered in zope.formlib. Make use of get_rendered in 
         setUpInputWidget which is used in AddFormBase.
 
