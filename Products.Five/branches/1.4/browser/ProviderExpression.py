@@ -49,6 +49,9 @@ class ProviderExpr(StringExpr):
         if provider is None:
             raise interfaces.ContentProviderLookupError(name)
 
+        if getattr(provider, '__of__', None) is not None:
+            provider = provider.__of__(context)
+
         # Insert the data gotten from the context
         addTALNamespaceData(provider, econtext)
 

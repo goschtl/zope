@@ -73,6 +73,10 @@ class Sport(object):
     def __call__(self):
         return u'Red Sox vs. White Sox'
 
+class DynamicTempBox(object):
+    weight = 0
+    city = {'name': 'Los Angeles, CA', 'temp': 78}
+
 def setUp(test):
     setup.placefulSetUp()
 

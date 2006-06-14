@@ -5,6 +5,14 @@ Five Changes
 Five 1.4.1 (unreleased)
 =======================
 
+* Enabled the viewlet related directives by default.
+
+* Added acquisition wrappers to viewlets before updating or rendering.
+
+* Made the provider directive acquisition wrap the resultant content provider
+  so that simple providers that need security declarations (e.g. those that
+  render pagetemplates) can work with the Zope 2 security machinery.
+
 * Added Five.browser.pagetemplatefile.ViewPageTemplateFile as an alias
   to ZopeTwoPageTemplateFile and as a Zope 2 correspondence to
   zope.app.pagetemplate.ViewPageTemplateFile.
