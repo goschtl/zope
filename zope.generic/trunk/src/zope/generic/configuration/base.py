@@ -148,13 +148,17 @@ def prepareData(__keyface__, data):
                 missedArguments.append(name)
 
         else:
+            field = __keyface__[name]
             value = data[name]
-            if isinstance(value, list):
+            if isinstance(value, list) and ISubConfigurationList.providedBy(field):
                 relevant_data[name] = ConfigurationList(value)
 
-            elif isinstance(value, dict):
+            elif isinstance(value, dict) and ISubConfigurationDict.providedBy(field):
                 relevant_data[name] = ConfigurationDict(value)
-           
+
+            elif isinstance(value, dict) and ISubConfiguration.providedBy(field):
+                relevant_data[name] = createConfiguration(field.schema, value)
+
             else:
                 relevant_data[name] = data[name]
     
