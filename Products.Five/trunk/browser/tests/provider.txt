@@ -187,3 +187,45 @@ information is used:
       </div>
     </body>
   </html>
+
+Now we test a provider using a PageTemplateFile to render itself.  It must
+inherit from an Acquisition base class so that the template can use Zope 2
+security mechanisms:
+
+  >>> import os, tempfile
+  >>> temp_dir = tempfile.mkdtemp()
+  >>> dynTemplate = os.path.join(temp_dir, 'dynamic_template.pt')
+  >>> open(dynTemplate, 'w').write(
+  ...   'A simple template: <tal:simple replace="python:view.my_property" />')
+  >>> from Acquisition import Explicit
+  >>> from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+  >>> class TemplateProvider(Explicit):
+  ...     zope.component.adapts(zope.interface.Interface,
+  ...                           browser.IDefaultBrowserLayer,
+  ...                           zope.interface.Interface)
+  ...
+  ...     def __init__(self, context, request, view):
+  ...         self.__parent__ = view
+  ...         self.context = context
+  ...         self.request = request
+  ...         self.view = view
+  ...
+  ...     def update(self):
+  ...         pass
+  ...     # Is there a better way to tell it to look in the current dir?
+  ...     render = ZopeTwoPageTemplateFile(dynTemplate, temp_dir)
+  ...     my_property = 'A string for you'
+
+  >>> zope.component.provideAdapter(TemplateProvider, name='mypage.TemplateProvider', provides=interfaces.IContentProvider)
+  >>> print http(r'''
+  ... GET /test_folder_1_/content_obj/template_based.html HTTP/1.1
+  ... ''')
+  HTTP/1.1 200 OK
+  ...
+  A simple template: A string for you
+
+ Cleanup
+ -------
+
+  >>> import shutil
+  >>> shutil.rmtree(temp_dir)

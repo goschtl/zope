@@ -400,7 +400,7 @@ Now we can register another simple viewlet manager:
   ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope">
   ...   <viewletManager
   ...       name="newcolumn"
-  ...       permission="zope.Public"
+  ...       permission="zope2.View"
   ...       provides="Products.Five.viewlet.tests.INewColumn"
   ...       />
   ... </configure>
@@ -443,7 +443,6 @@ We now register some viewlets with different permissions:
   ...       manager="Products.Five.viewlet.tests.INewColumn"
   ...       template="%s"
   ...       permission="zope.Public"
-  ...       extra_string_attributes="can be specified"
   ...       />
   ... </configure>
   ... ''' % weatherTemplate)
@@ -483,6 +482,45 @@ But when we make an anonymous request, we will only see the public viewlet:
   ...
        <h1>Weather</h1>
        <div>
+       <div>sunny</div>
+       </div>
+  ...
+
+A Dynamic Viewlet
+-----------------
+
+A viewlet template can of course contain some dynamic code, let's see how
+that works:
+
+  >>> dynWeatherTemplate = os.path.join(temp_dir, 'dynamic_weather.pt')
+  >>> open(dynWeatherTemplate, 'w').write(u'''
+  ... <div tal:define="city view/city;"><span tal:replace="string:${city/name}: ${city/temp} F" /></div>'''
+  ... )
+
+  >>> context = zcml.load_string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope">
+  ...   <viewlet
+  ...       name="dynweather"
+  ...       for="*"
+  ...       manager="Products.Five.viewlet.tests.INewColumn"
+  ...       class="Products.Five.viewlet.tests.DynamicTempBox"
+  ...       template="%s"
+  ...       permission="zope2.View"
+  ...       />
+  ... </configure>
+  ... ''' % dynWeatherTemplate)
+
+Now we request the view to ensure that we can see the dynamic template
+rendered as expected:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/ftf/@@securitytest_view HTTP/1.1
+  ... """, handle_errors=False)
+  HTTP/1.1 200 OK
+  ...
+       <h1>Weather</h1>
+       <div>
+       <div>Los Angeles, CA: 78 F</div>
        <div>sunny</div>
        </div>
   ...

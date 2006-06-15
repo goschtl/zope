@@ -5,6 +5,15 @@ Five Changes
 Five 1.5 (unreleased)
 =====================
 
+* Enabled the viewlet related directives by default.
+
+* Added acquisition wrappers to viewlets before updating or rendering.
+
+* Moved the custom 'provider:' tales expression back into Five.  Made the
+  provider directive acquisition wrap the resultant content provider so that
+  simple providers that need security declarations (e.g. those that render
+  pagetemplates) can work with the Zope 2 security machinery.
+
 * Added Five.browser.pagetemplatefile.ViewPageTemplateFile as an alias
   to ZopeTwoPageTemplateFile and as a Zope 2 correspondence to
   zope.app.pagetemplate.ViewPageTemplateFile.
@@ -17,11 +26,11 @@ Restructuring
 
 * Zope 2.10+ now includes site.zcml as part of its instance creation
   skel directory.  As a consequence Five now requires this file to exist
-  in every instance.  If upgrading a site from Zope 2.9 to 2.10, you will 
-  need to copy site.zcml and package-includes/ from your installed Zope 
-  installation location (skel/etc/) into the etc/ directory of your upgraded 
+  in every instance.  If upgrading a site from Zope 2.9 to 2.10, you will
+  need to copy site.zcml and package-includes/ from your installed Zope
+  installation location (skel/etc/) into the etc/ directory of your upgraded
   instance.
-  
+
   The rationale for requiring this new file is to bring Zope 2 instances
   closer in consistency to Zope 3 instances.  It also eases use of Zope 3
   coding techniques in Zope 2 and removes some confusion when trying
@@ -190,7 +199,7 @@ Bugfixes
   When no Zope 3-style view is found, first the object's original
   ``__bobo_traverse__`` is tried.  If that does not exist, Traversable
   resorts to attribute look-up.
-  
+
 * Unit tests that did i18n via Localizer would fail because the
   request attribute that keeps Localizers list of preferred languages
   did not exist.

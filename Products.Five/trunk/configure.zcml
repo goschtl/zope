@@ -14,6 +14,7 @@
   <include package=".formlib" />
   <include package=".skin" />
   <include package=".utilities" />
+  <include package=".viewlet" />
 
   <!-- this is really lying, but it's to please checkContainer -->
   <five:implements class="OFS.ObjectManager.ObjectManager"
