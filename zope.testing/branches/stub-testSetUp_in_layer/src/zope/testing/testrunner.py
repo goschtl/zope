@@ -299,6 +299,9 @@ def run_with_options(options, found_suites=None):
     of any kind.
     """
 
+    global _layer_name_cache
+    _layer_name_cache = {} # Reset to enforce test isolation
+
     if options.resume_layer:
         original_stderr = sys.stderr
         sys.stderr = sys.stdout
@@ -939,6 +942,7 @@ def layer_from_name(layer_name):
        to allow locating layers in cases where it would otherwise be
        impossible.
     """
+    global _layer_name_cache
     if _layer_name_cache.has_key(layer_name):
         return _layer_name_cache[layer_name]
     layer_names = layer_name.split('.')
