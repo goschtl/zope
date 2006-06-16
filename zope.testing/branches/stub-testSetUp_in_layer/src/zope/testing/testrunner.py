@@ -1874,6 +1874,7 @@ def test_suite():
         'testrunner-errors.txt',
         'testrunner-layers-ntd.txt',
         'testrunner-layers.txt',
+        'testrunner-layers-api.txt',
         'testrunner-progress.txt',
         'testrunner-simple.txt',
         'testrunner-test-selection.txt',
