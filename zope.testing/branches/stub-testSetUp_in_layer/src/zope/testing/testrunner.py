@@ -490,7 +490,7 @@ def run_tests(options, tests, name, failures, errors):
 
         if options.verbose > 0 or options.progress:
             print '  Running:'
-        result = TestResult(options, tests)
+        result = TestResult(options, tests, layer_name=name)
 
         t = time.time()
 
@@ -683,9 +683,14 @@ class TestResult(unittest.TestResult):
 
     max_width = 80
 
-    def __init__(self, options, tests):
+    def __init__(self, options, tests, layer_name=None):
         unittest.TestResult.__init__(self)
         self.options = options
+        # Calculate our list of relevant layers we need to call testSetUp
+        # and testTearDown on.
+        self.layers = []
+        if layer_name != 'unit':
+            gather_layers(layer_from_name(layer_name), self.layers)
         if options.progress:
             count = 0
             for test in tests:
@@ -728,7 +733,28 @@ class TestResult(unittest.TestResult):
 
         return ' ' + s[:room]
 
+    def testSetUp(self):
+        """A layer may define a setup method to be called before each
+        individual test.
+        """
+        for layer in reversed(self.layers):
+            if hasattr(layer, 'testSetUp'):
+                layer.testSetUp()
+
+    def testTearDown(self):
+        """A layer may define a teardown method to be called after each
+           individual test.
+           
+           This is useful for clearing the state of global
+           resources or resetting external systems such as relational
+           databases or daemons.
+        """
+        for layer in self.layers:
+            if hasattr(layer, 'testTearDown'):
+                layer.testTearDown()
+
     def startTest(self, test):
+        self.testSetUp()
         unittest.TestResult.startTest(self, test)
         testsRun = self.testsRun - 1
         count = test.countTestCases()
@@ -817,6 +843,7 @@ class TestResult(unittest.TestResult):
             sys.stdout.write('\r' + (' ' * self.last_width) + '\r')
 
     def stopTest(self, test):
+        self.testTearDown()
         if self.options.progress:
             self.last_width = self.test_width
         elif self.options.verbose > 1:

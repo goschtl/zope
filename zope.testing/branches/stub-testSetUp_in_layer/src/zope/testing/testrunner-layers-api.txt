@@ -12,41 +12,44 @@ layer between each test.
 Layers are generally implemented as classes using class methods.
 
 >>> class BaseLayer:
-...     @classmethod
 ...     def setUp(cls):
 ...         log('BaseLayer.setUp')
+...     setUp = classmethod(setUp)
 ...
-...     @classmethod
 ...     def tearDown(cls):
 ...         log('BaseLayer.tearDown')
+...     tearDown = classmethod(tearDown)
 ...
-...     @classmethod
 ...     def testSetUp(cls):
 ...         log('BaseLayer.testSetUp')
+...     testSetUp = classmethod(testSetUp)
 ...
-...     @classmethod
 ...     def testTearDown(cls):
 ...         log('BaseLayer.testTearDown')
+...     testTearDown = classmethod(testTearDown)
+...
 
 Layers can extend other layers. Note that they do not explicitly
 invoke the setup and teardown methods of other layers - the test runner
 does this for us in order to minimize the number of invokations.
 
 >>> class TopLayer(BaseLayer):
-...     @classmethod
 ...     def setUp(cls):
 ...         log('TopLayer.setUp')
+...     setUp = classmethod(setUp)
 ...
-...     @classmethod
 ...     def tearDown(cls):
 ...         log('TopLayer.tearDown')
+...     tearDown = classmethod(tearDown)
 ...
-...     @classmethod
 ...     def testSetUp(cls):
 ...         log('TopLayer.testSetUp')
+...     testSetUp = classmethod(testSetUp)
 ...
 ...     def testTearDown(cls):
 ...         log('TopLayer.testTearDown')
+...     testTearDown = classmethod(testTearDown)
+...
 
 Tests or test suites specify what layer they need by storing a reference
 in the 'layer' attribute.
@@ -158,7 +161,7 @@ each test using that layer in the right order.
 
 >>> report()
 BaseLayer.setUp
-BaseLayer.testSetup
+BaseLayer.testSetUp
 TestSpecifyingBaseLayer.setUp
 TestSpecifyingBaseLayer.test1
 TestSpecifyingBaseLayer.tearDown
