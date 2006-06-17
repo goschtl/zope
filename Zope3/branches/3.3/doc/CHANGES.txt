@@ -9,7 +9,10 @@ Zope Changes
   Zope 3.3.0b2 (UNRELEASED)
 
     Bugfixes
-
+    
+      - Fixed issue 565: Verified fix for ObjectWidget's 'error' method and
+        provided test coverage.
+    
       - Fixed issue 559: Removed filtering of CGI names when used as form
         fields
 
