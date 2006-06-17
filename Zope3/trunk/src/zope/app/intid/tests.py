@@ -108,36 +108,20 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.assertRaises(KeyError, u.getId, obj)
 
     def test_btree_long(self):
+        # This is a somewhat arkward test, that *simulates* the border case
+        # behaviour of the _generateId method
         u = IntIds()
+        u._randrange = lambda x,y:int(2**31-1)
 
-        fake_randint_data = [2**31,20,2**31-1,2**31-2,10]
-
-        def fake_randint(min, max):
-            return fake_randint_data.pop(0)
-
-        u.__randint__ = fake_randint
-
-        # Check whether something in the area of 2**31 is accepted by the btree
-        try:
-            u.refs[2**31] = True
-            btree_accepts_long = True
-        except TypeError:
-            btree_accepts_long = False
-
-        # One int that is too large 
-        uid1 = u._generateId()
-        if btree_accepts_long:
-            self.assertEquals(2**31, uid1)
-        else:
-            self.assertEquals(20, uid1)
-
-        # Two ints that are too large
-        u._v_nextid = None
-        uid2 = u._generateId()
-        if btree_accepts_long:
-            self.assertEquals(20, uid2)
-        else:
-            self.assertEquals(10, uid2)
+        # The chosen int is exactly the largest number possible that is
+        # delivered by the randint call in the code
+        obj = P()
+        obj._p_jar = ConnectionStub()
+        uid = u.register(obj)
+        self.assertEquals(2**31-1, uid)
+        # Make an explicit tuple here to avoid implicit type casts on 2**31-1
+        # by the btree code
+        self.failUnless(2**31-1 in tuple(u.refs.keys()))
 
     def test_len_items(self):
         u = IntIds()
