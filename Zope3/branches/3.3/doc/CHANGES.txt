@@ -10,6 +10,8 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 199: macro expansion in ZPT pages now work
+
       - Fixed issues 648 and 593: uploading files with non-ASCII filenames now
         works.
 

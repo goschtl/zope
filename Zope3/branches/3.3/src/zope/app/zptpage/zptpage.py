@@ -42,9 +42,9 @@ class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
     # See zope.app.zptpage.interfaces.IZPTPage
     evaluateInlineCode = False
 
-    def getSource(self):
+    def getSource(self, request=None):
         """See zope.app.zptpage.interfaces.IZPTPage"""
-        return self.read()
+        return self.read(request)
 
     def setSource(self, text, content_type='text/html'):
         """See zope.app.zptpage.interfaces.IZPTPage"""

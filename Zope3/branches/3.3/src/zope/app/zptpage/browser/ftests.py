@@ -93,7 +93,6 @@ class ZPTPageTest(BrowserTestCase):
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
-        self.assert_('Edit a ZPT page' in body)
         self.assert_('Source' in body)
         self.assert_('Expand macros' in body)
         self.assert_(escape(self.content) in body)
@@ -104,20 +103,43 @@ class ZPTPageTest(BrowserTestCase):
         self.addZPTPage()
         response = self.publish(
             '/zptpage/@@edit.html',
-            form={'field.source': u'<h1>A ZPT Page</h1>\n',
-                  'field.expand.used': u'',
-                  'field.expand': u'on',                  
-                  'UPDATE_SUBMIT': u'Edit'},
+            form={'form.source': u'<h1>A ZPT Page</h1>\n',
+                  'form.expand.used': u'',
+                  'form.expand': u'on',
+                  'form.actions.apply': u'Apply'},
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
-        self.assert_('Edit a ZPT page' in body)
         self.assert_('Source' in body)
         self.assert_(escape(u'<h1>A ZPT Page</h1>') in body)
         root = self.getRootFolder()
         zptpage = root['zptpage']
         self.assertEqual(zptpage.source, '<h1>A ZPT Page</h1>\n')
         self.assertEqual(zptpage.expand, True)
+
+    def testIssue199(self):
+        # This is a test to protect us against issue 199 in the future
+        self.addZPTPage()
+        source = u"""<html metal:use-macro="container/@@standard_macros/page">
+         <body>
+           <div metal:fill-slot="body">
+            write this in the body slot.
+           </div>
+         </body>
+         </html>"""
+
+        response = self.publish(
+            '/zptpage/@@edit.html',
+            form={'form.source': source,
+                  'form.expand.used': u'',
+                  'form.expand': u'on',
+                  'form.actions.apply': u'Apply'},
+            basic='mgr:mgrpw')
+        self.assertEqual(response.getStatus(), 200)
+        body = response.getBody()
+        # Check for a string from the default template
+        self.assert_(escape(u'Z3 UI') in body) 
+        self.failIf(u"Macro expansion failed" in body)
         
     def testIndex(self):
         self.addZPTPage()
