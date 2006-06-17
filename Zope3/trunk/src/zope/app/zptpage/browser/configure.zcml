@@ -36,12 +36,10 @@
       permission="zope.ManageContent"
       />
 
-  <browser:editform
+  <browser:page
       for="zope.app.zptpage.interfaces.IZPTPage"
-      schema="zope.app.zptpage.interfaces.IZPTPage"
       name="edit.html"
-      label="Edit a ZPT page"
-      fields="source expand"
+      class=".zptpage.EditForm"
       permission="zope.ManageContent" 
       menu="zmi_views" title="Edit"
       />
