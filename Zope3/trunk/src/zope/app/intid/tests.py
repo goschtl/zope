@@ -117,19 +117,33 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 
         u.__randint__ = fake_randint
 
+        # Check whether something in the area of 2**31 is accepted by the btree
+        try:
+            u.refs[2**31] = True
+            btree_accepts_long = True
+        except TypeError:
+            btree_accepts_long = False
+
         # One int that is too large 
         uid1 = u._generateId()
-        self.assertEquals(20, uid1)
+        if btree_accepts_long:
+            self.assertEquals(2**31, uid1)
+        else:
+            self.assertEquals(20, uid1)
 
         # Two ints that are too large
         u._v_nextid = None
         uid2 = u._generateId()
-        self.assertEquals(10, uid2)
+        if btree_accepts_long:
+            self.assertEquals(20, uid2)
+        else:
+            self.assertEquals(10, uid2)
 
     def test_len_items(self):
         u = IntIds()
         obj = P()
         obj._p_jar = ConnectionStub()
+
 
         self.assertEquals(len(u), 0)
         self.assertEquals(u.items(), [])
