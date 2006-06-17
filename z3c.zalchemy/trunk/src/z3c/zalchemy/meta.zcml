@@ -1,0 +1,34 @@
+<configure xmlns='http://namespaces.zope.org/zope'
+           xmlns:meta="http://namespaces.zope.org/meta"
+           i18n_domain="zalchemy">
+
+  <meta:directives namespace="http://namespaces.zalchemy.org/alchemy">
+
+    <meta:directive
+        name="engine"
+        schema=".metadirectives.IEngineDirective"
+        handler=".metaconfigure.engine"
+        />
+
+    <meta:directive
+        name="connectTable"
+        schema=".metadirectives.ITableConnectDirective"
+        handler=".metaconfigure.connectTable"
+        />
+
+    <meta:directive
+        name="connectClass"
+        schema=".metadirectives.IClassConnectDirective"
+        handler=".metaconfigure.connectClass"
+        />
+
+    <meta:directive
+        name="createTable"
+        schema=".metadirectives.ICreateTableDirective"
+        handler=".metaconfigure.createTable"
+        />
+
+  </meta:directives>
+
+</configure>
+
