@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 559: Removed filtering of CGI names when used as form
+        fields
+
       - Fixed issue 517: Bug in intid that doesn't respect that BTrees can not
         handle long.
 
