@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 399: traversal of missing skins now give 404 / NotFound
+        instead of 505 / ComponentLookupError
+
       - Fixed issue 199: macro expansion in ZPT pages now work
 
       - Fixed issues 648 and 593: uploading files with non-ASCII filenames now
@@ -223,7 +226,7 @@ Zope Changes
       Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
       (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute,
       Shane Hathaway, Bjorn Tillenius, Sam Stainsby, Bernd Dorn, Benji York
-      Stuart Bishop
+      Stuart Bishop, Christian Theune
 
   ------------------------------------------------------------------
 
