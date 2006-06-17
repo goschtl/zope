@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 517: Bug in intid that doesn't respect that BTrees can not
+        handle long.
+
       - Fixed issue 399: traversal of missing skins now give 404 / NotFound
         instead of 505 / ComponentLookupError
 

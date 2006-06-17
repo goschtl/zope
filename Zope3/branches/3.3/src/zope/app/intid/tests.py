@@ -107,6 +107,25 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.assertRaises(KeyError, u.getObject, uid)
         self.assertRaises(KeyError, u.getId, obj)
 
+    def test_btree_long(self):
+        u = IntIds()
+
+        fake_randint_data = [2**31,20,2**31-1,2**31-2,10]
+
+        def fake_randint(min, max):
+            return fake_randint_data.pop(0)
+
+        u.__randint__ = fake_randint
+
+        # One int that is too large 
+        uid1 = u._generateId()
+        self.assertEquals(20, uid1)
+
+        # Two ints that are too large
+        u._v_nextid = None
+        uid2 = u._generateId()
+        self.assertEquals(10, uid2)
+
     def test_len_items(self):
         u = IntIds()
         obj = P()

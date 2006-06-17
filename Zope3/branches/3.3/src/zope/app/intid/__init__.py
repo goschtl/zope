@@ -47,7 +47,10 @@ class IntIds(Persistent, Contained):
     """
     implements(IIntIds)
 
-    _v_nextid = None
+    _v_nextid = None   
+    
+    # Used for testability of random function
+    __randint__ = random.randint
 
     def __init__(self):
         self.ids = OIBTree.OIBTree()
@@ -97,11 +100,16 @@ class IntIds(Persistent, Contained):
         """
         while True:
             if self._v_nextid is None:
-                self._v_nextid = random.randint(0, 2**31)
+                self._v_nextid = self.__randint__(0, 2**31)
             uid = self._v_nextid
             self._v_nextid += 1
-            if uid not in self.refs:
-                return uid
+            try:
+                if uid not in self.refs:
+                    return uid
+            except TypeError:
+                # uid was a long instead of int and btree complained
+                # we just try again
+                pass
             self._v_nextid = None
 
     def register(self, ob):
