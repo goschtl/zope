@@ -9,6 +9,9 @@ Zope Changes
   Zope 3.3.0b2 (UNRELEASED)
 
     Bugfixes
+
+      - Fixed issue 634: Changed lookup for pre-marshallers to use component
+        architecture.
     
       - Fixed issue 565: Verified fix for ObjectWidget's 'error' method and
         provided test coverage.
