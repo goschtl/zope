@@ -375,7 +375,7 @@ class TraversableModuleImporter(SimpleModuleImporter):
         try:
             return self[name]
         except KeyError:
-            raise TraversalError(name)
+            raise TraversalError(self, name)
 
 
 def _Engine(engine=None):
