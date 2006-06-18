@@ -13,6 +13,23 @@ This is solved by using a data manager which joins the zope transaction for
 every newly created thread.
 
 
+Important
+=========
+Zope uses the transaction module to handle transactions. zalchemy plugs into
+this mechanism and uses it's own data manager to use zopes transaction module.
+
+zalchemy provides the method z3c.zalchemy.getSession to obtain a sqlalchemy
+session object. This method makes sure the session is connected to zopes
+transactions.
+
+Never get es session directly from sqlalchemy !
+
+It is also important to never store an instance of a session. Always directly
+use z3c.zalchemy.getSession. This is necessary because you never know when
+a transaction is commited. A commit always invalidates the current session.
+A new call to getSession makes sure a new session is created.
+
+
 zalchemy class implementation
 =============================
 
@@ -30,6 +47,7 @@ A SQLAlchemy engine is represented as a utility :
   ...       )
 
 We create our table as usual sqlalchemy table :
+The important thing here is, that the metadata from zalchemy must be used.
 
   >>> import sqlalchemy
   >>> import z3c.zalchemy
@@ -71,25 +89,36 @@ Note that the transaction handling is done inside zope.
 Everything inside SQLAlchemy needs a Session. We must obtain the Session
 from zalchemy. This makes sure that a transaction handler is inserted into
 zope's transaction process.
+To simplify the usage of getSession we store the function in "session" (see
+also the note above).
 
-  >>> session = z3c.zalchemy.getSession()
+  >>> session = z3c.zalchemy.getSession
 
   >>> a = A()
+  >>> a.value = 1
 
 Apply the new object to the session :
 
-  >>> session.save(a)
-  >>> a.value = 1
+  >>> session().save(a)
+
+A new instance of a mapped sqlobject class is created this object is not
+stored in the database until the session is commited or flush is called for
+the new instance.
+To be able to query a new instance it is therefore necessary to flush the
+object to the database before the query.
+
+  >>> session().flush([a])
+
+Commiting a transaction is doing the same with all remaining instances.
+After this commit the current session is flushed and cleared.
 
   >>> transaction.commit()
 
 Now let's try to get the object back in a new transaction :
-Note that it is neccessary to get a new session here.
 
   >>> txn = transaction.begin()
-  >>> session = z3c.zalchemy.getSession()
 
-  >>> a = session.get(A, 1)
+  >>> a = session().get(A, 1)
   >>> a.value
   1
 
@@ -134,7 +163,6 @@ new engine.
   >>> B.mapper = sqlalchemy.mapper(B, bTable)
 
   >>> txn = transaction.begin()
-  >>> session = z3c.zalchemy.getSession()
 
 Assign bTable to the new engine and create the table.
 This time we do it inside of a session.
@@ -143,20 +171,19 @@ This time we do it inside of a session.
   >>> z3c.zalchemy.createTable('bTable')
 
   >>> b = B()
-  >>> session.save(b)
+  >>> session().save(b)
   >>> b.value = 'b1'
 
   >>> a = A()
-  >>> session.save(a)
+  >>> session().save(a)
   >>> a.value = 321
 
   >>> transaction.commit()
 
   >>> txn = transaction.begin()
-  >>> session = z3c.zalchemy.getSession()
 
-  >>> a = session.get(A, 1)
-  >>> b = session.get(B, 1)
+  >>> a = session().get(A, 1)
+  >>> b = session().get(B, 1)
   >>> str(b.value)
   'b1'
 
@@ -169,7 +196,7 @@ It is also possible to assign a class to a database :
   >>> sqlalchemy.mapper(Aa, aTable) is not None
   True
 
-Now we cann assign the class to the engine :
+Now we can assign the class to the engine :
 
   >>> z3c.zalchemy.assignClass(Aa, 'engine2')
 
@@ -179,10 +206,9 @@ We can use an additional parameter to createTable :
   >>> z3c.zalchemy.createTable('aTable', 'engine2')
 
   >>> txn = transaction.begin()
-  >>> session = z3c.zalchemy.getSession()
 
   >>> aa = Aa()
-  >>> session.save(aa)
+  >>> session().save(aa)
   >>> aa.value = 100
 
   >>> transaction.commit()
