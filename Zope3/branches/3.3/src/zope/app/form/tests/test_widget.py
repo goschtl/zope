@@ -201,6 +201,7 @@ class TestCustomWidgetFactory(object):
 
     """
 
+
 # BBB: Gone in 3.3 (does not satify IViewFactory)
 class TestCustomSequenceWidgetFactory(object):
     """Tests the custom sequence widget factory.

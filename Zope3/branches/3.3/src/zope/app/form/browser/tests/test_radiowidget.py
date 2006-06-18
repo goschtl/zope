@@ -55,7 +55,6 @@ class RadioWidgetTest(SimpleInputWidgetTest):
     def testProperties(self):
         self.assertEqual(self._widget.cssClass, "")
         self.assertEqual(self._widget.extra, '')
-        self.assertEqual(self._widget.firstItem, 0)
         self.assertEqual(self._widget.orientation, 'vertical')
 
 

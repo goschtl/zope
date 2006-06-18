@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 592: Made handling of '(no value)' entries for selection
+        widgets cleaner and consistent
+
       - Fixed issue 634: Changed lookup for pre-marshallers to use component
         architecture.
     
