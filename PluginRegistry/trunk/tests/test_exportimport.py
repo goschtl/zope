@@ -33,7 +33,11 @@ else:
     from Products.GenericSetup.utils import _getDottedName
 
     from zope.interface import Interface
-    from zope.app.tests.placelesssetup import PlacelessSetup
+    try:
+        from zope.app.testing.placelesssetup import PlacelessSetup
+    except ImportError:
+        # BBB for Zope 2.8
+        from zope.app.tests.placelesssetup import PlacelessSetup
 
     class IFoo(Interface):
         pass
