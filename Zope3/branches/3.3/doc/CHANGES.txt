@@ -10,6 +10,8 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 575: Inconsistent raising of TraversalError
+
       - Fixed issue 592: Made handling of '(no value)' entries for selection
         widgets cleaner and consistent
 
