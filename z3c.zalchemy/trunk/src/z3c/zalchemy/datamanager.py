@@ -63,12 +63,12 @@ _tablesToCreate = []
 _storage = local()
 
 def getSession(createTransaction=False):
-    txn = transaction.manager.get()
-    if createTransaction and (txn is None):
-        txn = transaction.begin()
     session=getattr(_storage,'session',None)
     if session:
         return session
+    txn = transaction.manager.get()
+    if createTransaction and (txn is None):
+        txn = transaction.begin()
     util = queryUtility(IAlchemyEngineUtility)
     engine = None
     if util is not None:
