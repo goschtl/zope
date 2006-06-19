@@ -31,7 +31,7 @@ Layers are generally implemented as classes using class methods.
 
 Layers can extend other layers. Note that they do not explicitly
 invoke the setup and teardown methods of other layers - the test runner
-does this for us in order to minimize the number of invokations.
+does this for us in order to minimize the number of invocations.
 
 >>> class TopLayer(BaseLayer):
 ...     def setUp(cls):
@@ -87,6 +87,10 @@ in the 'layer' attribute.
 ...     def test2(self):
 ...         log('TestSpecifyingNoLayer.test')
 ...
+
+Create a TestSuite containing two test suites, one for each of
+TestSpecifyingBaseLayer and TestSpecifyingNoLayer.
+
 >>> umbrella_suite = unittest.TestSuite()
 >>> umbrella_suite.addTest(unittest.makeSuite(TestSpecifyingBaseLayer))
 >>> no_layer_suite = unittest.makeSuite(TestSpecifyingNoLayer)
@@ -100,9 +104,6 @@ Before we can run the tests, we need to setup some helpers.
 >>> log_handler = InstalledHandler('zope.testing.tests')
 >>> def log(msg):
 ...     logging.getLogger('zope.testing.tests').info(msg)
->>> def report():
-...     for record in log_handler.records:
-...         print record.getMessage()
 >>> def fresh_options():
 ...     options = testrunner.get_options(['--test-filter', '.*'])
 ...     options.resume_layer = None
@@ -133,7 +134,7 @@ a layer. This is generally how you specify what layer doctests need.
 Tearing down left over layers:
   Tear down BaseLayer in N.NNN seconds.
 
-Clear our logged output, as we want to inpect it shortly.
+Clear our logged output, as we want to inspect it shortly.
 
 >>> log_handler.clear()
 
@@ -159,6 +160,9 @@ see that the layer setup and teardown methods only got called once. We can
 also see that the layer's test setup and teardown methods got called for
 each test using that layer in the right order.
 
+>>> def report():
+...     for record in log_handler.records:
+...         print record.getMessage()
 >>> report()
 BaseLayer.setUp
 BaseLayer.testSetUp
@@ -188,36 +192,4 @@ TopLayer.testTearDown
 BaseLayer.testTearDown
 TopLayer.tearDown
 BaseLayer.tearDown
-
-
-Test some testrunner.py internals
-=================================
-
-These are unit tests of the almost totally undocumented testrunner.py
-internals. They should be moved to a seperate file and more unit tests
-added as more of testrunner.py is decoded and refactored to make it unit
-testable.
-
->>> del no_layer_suite.layer
->>> del TestSpecifyingNoLayer.layer
-
->>> tests_and_layers = sorted(testrunner.tests_from_suite(
-...     umbrella_suite, fresh_options()
-...     ))
->>> for test, layer_name in tests_and_layers:
-...     print layer_name, '-', str(test.name)
-BaseLayer - TestSpecifyingBaseLayer 
-BaseLayer - TestSpecifyingBaseLayer 
-unit - TestSpecifyingNoLayer
-unit - TestSpecifyingNoLayer
-
->>> found_tests = testrunner.find_tests(fresh_options(), [umbrella_suite])
->>> for layer_name, suite in sorted(found_tests.items()):
-...     for test_name in sorted(test.name for test in suite):
-...         print layer_name, '-', test_name
-BaseLayer - TestSpecifyingBaseLayer 
-BaseLayer - TestSpecifyingBaseLayer 
-unit - TestSpecifyingNoLayer
-unit - TestSpecifyingNoLayer
-
 

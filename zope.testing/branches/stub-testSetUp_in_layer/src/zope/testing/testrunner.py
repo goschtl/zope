@@ -737,7 +737,7 @@ class TestResult(unittest.TestResult):
         """A layer may define a setup method to be called before each
         individual test.
         """
-        for layer in reversed(self.layers):
+        for layer in self.layers[-1::-1]:
             if hasattr(layer, 'testSetUp'):
                 layer.testSetUp()
 
