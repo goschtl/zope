@@ -17,6 +17,11 @@ Five 1.5 (unreleased)
 * Added Five.browser.pagetemplatefile.ViewPageTemplateFile as an alias
   to ZopeTwoPageTemplateFile and as a Zope 2 correspondence to
   zope.app.pagetemplate.ViewPageTemplateFile.
+  
+* Added tests to make sure that views are not blocked by acquired attributes.
+
+* Changed the tests to reflect that defaultView no only works for views
+  (and not on attributes).
 
 Five 1.5c (2006-05-29)
 ======================

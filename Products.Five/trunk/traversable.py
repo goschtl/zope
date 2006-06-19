@@ -22,8 +22,8 @@ zope.deferredimport.deprecated(
     "__bobo_traverse__ and ITraverser/ITraversable for controlling "
     "URL traversal have become obsolete. Use an IPublishTraverse "
     "adapter instead.  This reference will go away in Zope 2.12.",
-    Traversable = "Products.Five.bbb.Traversable",
-    FiveTraversable = "zope.traversing.adapters.DefaultTraversable",
+    Traversable = "Products.Five.bbb:Traversable",
+    FiveTraversable = "zope.traversing.adapters:DefaultTraversable",
     )
 zope.deferredimport.deprecated(
     "Use zope.publisher.browser.TestRequest instead.",

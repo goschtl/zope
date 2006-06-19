@@ -88,15 +88,14 @@ def test_default_view():
       ...
       The mouse has been eaten by the eagle
 
-    This tests whether an existing ``index_html`` method is still
-    supported and called:
-
+    In Five 1.5 ``index_html`` you can no longer set default views to anything
+    else than views:
+    
       >>> print http(r'''
       ... GET /test_folder_1_/testindex HTTP/1.1
       ... ''')
-      HTTP/1.1 200 OK
+      HTTP/1.1 404 Not Found
       ...
-      Default index_html called
 
     Disabled __call__ overriding for now.  Causes more trouble than it
     fixes.  Thus, no test here:
