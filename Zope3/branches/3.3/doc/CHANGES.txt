@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - The 'install' generation was hiding ImportErrors that happen within the
+        'install' module; they get re-raised now.
+
       - Fixed issue 550: Added adapter for datetime.datetime for xmlrpc
         premarshalling$
 
