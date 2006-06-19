@@ -17,6 +17,8 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import sys
+
 from interfaces import GenerationTooHigh, GenerationTooLow, UnableToEvolve
 from interfaces import ISchemaManager, IInstallableSchemaManager
 import logging
@@ -95,6 +97,13 @@ class SchemaManager(object):
          >>> manager = SchemaManager(1, 3, 'zope.app.generations.demo2')
          >>> manager.install(context)
 
+       We handle ImportErrors within the script specially, so they get promoted:
+
+         >>> manager = SchemaManager(1, 3, 'zope.app.generations.demo3')
+         >>> manager.install(context)
+         Traceback (most recent call last):
+         ImportError: No module named nonexistingmodule
+
        We'd better clean up:
 
          >>> context.connection.close()
@@ -125,7 +134,6 @@ class SchemaManager(object):
     def evolve(self, context, generation):
         """Evolve a database to reflect software/schema changes
         """
-
         name = "%s.evolve%d" % (self.package_name, generation)
 
         evolver = __import__(name, {}, {}, ['*'])
@@ -135,14 +143,15 @@ class SchemaManager(object):
     def install(self, context):
         """Evolve a database to reflect software/schema changes
         """
-
         name = "%s.install" % self.package_name
 
         try:
-            evolver = __import__("%s.install" % self.package_name,
-                                 {}, {}, ['*'])
-        except ImportError:
-            pass
+            evolver = __import__(name, {}, {}, ['*'])
+        except ImportError, m:
+            if str(m) not in ('No module named %s' % name,
+                              'No module named install'):
+                # This was an import error *within* the module, so we re-raise.
+                raise
         else:
             evolver.evolve(context)
 
