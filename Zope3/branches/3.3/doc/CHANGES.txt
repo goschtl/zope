@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 550: Added adapter for datetime.datetime for xmlrpc
+        premarshalling$
+
       - Fixed issue 633: Boston skin has logo slot now
 
       - Fixed issue 575: Inconsistent raising of TraversalError
