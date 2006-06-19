@@ -283,7 +283,7 @@ You can also go back:
     >>> browser.url
     'http://localhost/@@/testbrowser/notitle.html'
     >>> browser.goBack()
-    >>> browser.url
+    >>> browser.url # XXX ERROR HERE
     'http://localhost/@@/testbrowser/simple.html'
 
 

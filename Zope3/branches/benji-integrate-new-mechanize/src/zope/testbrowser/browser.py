@@ -237,7 +237,7 @@ class Browser(SetattrErrorsMixin):
             if code >= 400:
                 raise urllib2.HTTPError(url, code, msg, self.headers, fp)
 
-            if code >= 300: import pdb;pdb.set_trace()
+#            if code >= 300: import pdb;pdb.set_trace()
 
     def _start_timer(self):
         self.timer.start()

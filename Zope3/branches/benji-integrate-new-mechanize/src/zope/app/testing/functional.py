@@ -588,6 +588,7 @@ class HTTPCaller(CookieHandler):
             omit=('x-content-type-warning', 'x-powered-by'),
             )
 
+#        import pdb;pdb.set_trace()
         publish(request, handle_errors=handle_errors)
         self.saveCookies(response)
         setSite(old_site)

@@ -186,6 +186,7 @@ class Browser(UserAgent):
 
         success = True
         try:
+#            if 'non-existent' in url: import pdb;pdb.set_trace()
             response = UserAgent.open(self, self.request, data)
         except urllib2.HTTPError, error:
             success = False
