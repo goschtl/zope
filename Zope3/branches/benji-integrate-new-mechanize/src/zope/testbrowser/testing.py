@@ -127,21 +127,16 @@ class PublisherHTTPHandler(urllib2.HTTPHandler):
 class PublisherMechanizeBrowser(mechanize.Browser):
     """Special ``mechanize`` browser using the Zope Publisher HTTP handler."""
 
-    default_schemes = ["http"]
-    default_others = ["_http_error", "_http_request_upgrade",
-                      "_http_default_error"]
-    default_features = ["_authen", "_redirect", "_cookies", "_seek"]
-
-    default_features = ["_redirect", "_cookies", "_referer",
-                        "_refresh", "_equiv",
-                        "_basicauth", "_digestauth",
-                        "_seek",
-                        ]
+    default_schemes = ['http']
+    default_others = ['_http_error', '_http_request_upgrade',
+                      '_http_default_error']
+    default_features = ['_redirect', '_cookies', '_referer', '_refresh',
+                        '_equiv', '_basicauth', '_digestauth', '_seek' ]
 
     def __init__(self, *args, **kws):
         inherited_handlers = ['_unknown', '_http_error',
             '_http_request_upgrade', '_http_default_error', '_basicauth',
-            '_digestauth', '_authen', '_redirect', '_cookies', '_referer',
+            '_digestauth', '_redirect', '_cookies', '_referer',
             '_refresh', '_equiv', '_seek', '_gzip']
 
         self.handler_classes = {"http": PublisherHTTPHandler}
