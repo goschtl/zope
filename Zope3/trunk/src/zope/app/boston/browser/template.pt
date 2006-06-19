@@ -50,8 +50,10 @@
     </tr>
     <tr class="head">
       <td class="logo">
-        <img width="107" height="38"
-             tal:attributes="src context/++resource++logo.gif" />
+        <metal:slot define-slot="logo">
+          <img width="107" height="38"
+            tal:attributes="src context/++resource++logo.gif" />
+        </metal:slot>
       </td>
       <td>
         <div id="breadcrumbs" metal:define-macro="breadcrumbs">
