@@ -25,11 +25,11 @@ if p.get_tag("title"):
     print "Title: %s" % title
 
 
-Copyright 2003-2004 John J. Lee <jjl@pobox.com>
+Copyright 2003-2006 John J. Lee <jjl@pobox.com>
 Copyright 1998-2001 Gisle Aas (original libwww-perl code)
 
 This code is free software; you can redistribute it and/or modify it
-under the terms of the BSD License.
+under the terms of the BSD or ZPL 2.1 licenses.
 
 """
 
@@ -38,7 +38,8 @@ from __future__ import generators
 import re, htmlentitydefs
 import HTMLParser
 
-__version__ = (0, 0, 6, None, None)  # 0.0.6b
+__version__ = (0, 1, 0, None, None)  # 0.1.0
+
 
 class NoMoreTokensError(Exception): pass
 
@@ -100,26 +101,63 @@ def caller():
         import sys
     return sys.exc_traceback.tb_frame.f_back.f_back.f_code.co_name
 
-def unescape(data, entities):
-    if data is None or '&' not in data:
+def unescape(data, entities, encoding):
+    if data is None or "&" not in data:
         return data
+
     def replace_entities(match):
         ent = match.group()
-        repl = entities.get(ent, ent)
+        if ent[1] == "#":
+            return unescape_charref(ent[2:-1], encoding)
+
+        repl = entities.get(ent)
+        if repl is not None:
+            if type(repl) != type(""):
+                try:
+                    repl = repl.encode(encoding)
+                except UnicodeError:
+                    repl = ent
+        else:
+            repl = ent
+
         return repl
-    return re.sub(r'&\S+?;', replace_entities, data)
+
+    return re.sub(r"&#?[A-Za-z0-9]+?;", replace_entities, data)
+
+def unescape_charref(data, encoding):
+    name, base = data, 10
+    if name.startswith("x"):
+        name, base= name[1:], 16
+    uc = unichr(int(name, base))
+    if encoding is None:
+        return uc
+    else:
+        try:
+            repl = uc.encode(encoding)
+        except UnicodeError:
+            repl = "&#%s;" % data
+        return repl
 
 def get_entitydefs():
     entitydefs = {}
-    for name, char in htmlentitydefs.entitydefs.items():
-        entitydefs["&%s;" % name] = char
+    try:
+        htmlentitydefs.name2codepoint
+    except AttributeError:
+        entitydefs = {}
+        for name, char in htmlentitydefs.entitydefs.items():
+            uc = char.decode("latin-1")
+            if uc.startswith("&#") and uc.endswith(";"):
+                uc = unescape_charref(uc[2:-1], None)
+            entitydefs["&%s;" % name] = uc
+    else:
+        for name, codepoint in htmlentitydefs.name2codepoint.items():
+            entitydefs["&%s;" % name] = unichr(codepoint)
     return entitydefs
 
 
 class _AbstractParser:
     chunk = 1024
     compress_re = re.compile(r"\s+")
-    entitydefs = htmlentitydefs.entitydefs
     def __init__(self, fh, textify={"img": "alt", "applet": "alt"},
                  encoding="ascii", entitydefs=None):
         """
@@ -129,8 +167,16 @@ class _AbstractParser:
          to represent opening tags as text
         encoding: encoding used to encode numeric character references by
          .get_text() and .get_compressed_text() ("ascii" by default)
-        entitydefs: mapping like {'&amp;': '&', ...} containing HTML entity
-         definitions (a sensible default is used)
+
+        entitydefs: mapping like {"&amp;": "&", ...} containing HTML entity
+         definitions (a sensible default is used).  This is used to unescape
+         entities in .get_text() (and .get_compressed_text()) and attribute
+         values.  If the encoding can not represent the character, the entity
+         reference is left unescaped.  Note that entity references (both
+         numeric - e.g. &#123; or &#xabc; - and non-numeric - e.g. &amp;) are
+         unescaped in attribute values and the return value of .get_text(), but
+         not in data outside of tags.  Instead, entity references outside of
+         tags are represented as tokens.  This is a bit odd, it's true :-/
 
         If the element name of an opening tag matches a key in the textify
         mapping then that tag is converted to text.  The corresponding value is
@@ -237,10 +283,10 @@ class _AbstractParser:
         .get_tag() first (unless you want an empty string returned when you
         next call .get_text()).
 
-        Entity references are translated using the entitydefs attribute (a
-        mapping from names to characters like that provided by the standard
-        module htmlentitydefs).  Named entity references that are not in this
-        mapping are left unchanged.
+        Entity references are translated using the value of the entitydefs
+        constructor argument (a mapping from names to characters like that
+        provided by the standard module htmlentitydefs).  Named entity
+        references that are not in this mapping are left unchanged.
 
         The textify attribute is used to translate opening tags into text: see
         the class docstring.
@@ -258,17 +304,10 @@ class _AbstractParser:
             if tok.type == "data":
                 text.append(tok.data)
             elif tok.type == "entityref":
-                name = tok.data
-                if name in self.entitydefs:
-                    t = self.entitydefs[name]
-                else:
-                    t = "&%s;" % name
+                t = unescape("&%s;"%tok.data, self._entitydefs, self.encoding)
                 text.append(t)
             elif tok.type == "charref":
-                name, base = tok.data, 10
-                if name.startswith('x'):
-                    name, base= name[1:], 16
-                t = unichr(int(name, base)).encode(self.encoding)
+                t = unescape_charref(tok.data, self.encoding)
                 text.append(t)
             elif tok.type in ["starttag", "endtag", "startendtag"]:
                 tag_name = tok.data
@@ -322,7 +361,7 @@ class _AbstractParser:
         self._tokenstack.append(Token("pi", data))
 
     def unescape_attr(self, name):
-        return unescape(name, self._entitydefs)
+        return unescape(name, self._entitydefs, self.encoding)
     def unescape_attrs(self, attrs):
         escaped_attrs = []
         for key, val in attrs:
@@ -339,6 +378,8 @@ class PullParser(_AbstractParser, HTMLParser.HTMLParser):
         return self.unescape_attr(name)
 
 import sgmllib
+# monkeypatch to fix http://www.python.org/sf/803422 :-(
+sgmllib.charref = re.compile("&#(x?[0-9a-fA-F]+)[^0-9a-fA-F]")
 class TolerantPullParser(_AbstractParser, sgmllib.SGMLParser):
     def __init__(self, *args, **kwds):
         sgmllib.SGMLParser.__init__(self)

@@ -217,16 +217,27 @@ class Browser(SetattrErrorsMixin):
         """See zope.testbrowser.interfaces.IBrowser"""
         self._start_timer()
         try:
-            self.mech_browser.open(url, data)
-        except urllib2.HTTPError, e:
-            if e.code >= 200 and e.code <= 299:
-                # 200s aren't really errors
-                pass
-            else:
-                raise
+            try:
+                self.mech_browser.open(url, data)
+            except urllib2.HTTPError, e:
+                if e.code >= 200 and e.code <= 299:
+                    # 200s aren't really errors
+                    pass
+                else:
+                    raise
+        finally:
+            self._stop_timer()
+            self._changed()
 
-        self._stop_timer()
-        self._changed()
+        # if the headers don't have a status, I suppose there can't be an error
+        if 'Status' in self.headers:
+            code, msg = self.headers['Status'].split(' ', 1)
+            code = int(code)
+            fp = self.mech_browser.open(self.mech_browser.request)
+            if code >= 400:
+                raise urllib2.HTTPError(url, code, msg, self.headers, fp)
+
+            if code >= 300: import pdb;pdb.set_trace()
 
     def _start_timer(self):
         self.timer.start()
@@ -290,22 +301,31 @@ class Browser(SetattrErrorsMixin):
         matches = re.compile(r'(^|\b|\W)%s(\b|\W|$)'
                              % re.escape(compressText(label))).search
         found = []
+#        import pdb;pdb.set_trace()
         for f in forms:
             for control in f.controls:
                 phantom = control.type in ('radio', 'checkbox')
                 if include_subcontrols and (
-
                     phantom or control.type=='select'):
+
+                    found_one = False
                     for i in control.items:
                         for l in i.get_labels():
                             if matches(l.text):
                                 found.append((i, f))
+                                found_one = True
                                 break
+
+                    if found_one:
+                        del found_one
+                        continue
+
                 if not phantom:
                     for l in control.get_labels():
                         if matches(l.text):
                             found.append((control, f))
                             break
+#        if len(found) > 1: import pdb;pdb.set_trace()
         return found
 
     def _findByName(self, name, forms):

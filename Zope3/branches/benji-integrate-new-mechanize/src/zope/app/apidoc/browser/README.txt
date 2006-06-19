@@ -26,7 +26,7 @@ feel better and does not have all the O-wrap clutter:
   ... except HTTPError, error:
   ...     pass
 
-  >>> print error.read()
+  >>> print error.read() # XXX error here
   <...
   <h1 class="details-header">
     Page Not Found

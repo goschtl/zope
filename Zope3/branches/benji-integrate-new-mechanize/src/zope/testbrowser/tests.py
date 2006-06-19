@@ -222,6 +222,8 @@ You can pass a string to add_file:
 checker = renormalizing.RENormalizing([
     (re.compile(r'^--\S+\.\S+\.\S+', re.M), '-'*30),
     (re.compile(r'boundary=\S+\.\S+\.\S+'), 'boundary='+'-'*30),
+    (re.compile(r'^---{10}.*', re.M), '-'*30),
+    (re.compile(r'boundary=-{10}.*'), 'boundary='+'-'*30),
     (re.compile('User-agent:\s+\S+'), 'User-agent: XXX'),
     (re.compile('Content-length:\s+\S+'), 'Content-length: 123'),
     ])
