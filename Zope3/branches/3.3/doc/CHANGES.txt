@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 599: Provided a view for interface.exceptions.Invalid to
+        allow formlib to display errors when validating invariants.
+
       - The 'install' generation was hiding ImportErrors that happen within the
         'install' module; they get re-raised now.
 
