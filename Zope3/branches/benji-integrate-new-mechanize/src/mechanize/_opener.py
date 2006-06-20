@@ -190,7 +190,6 @@ class OpenerDirector(urllib2.OpenerDirector):
         # call ._open() instead.
         urlopen = getattr(urllib2.OpenerDirector, "_open",
                           urllib2.OpenerDirector.open)
-#        import pdb;pdb.set_trace()
         response = urlopen(self, req, data)
 
         # post-process response

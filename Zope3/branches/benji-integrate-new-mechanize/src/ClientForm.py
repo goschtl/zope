@@ -466,7 +466,6 @@ class _AbstractFormParser:
             self.end_form()
 
     def start_form(self, attrs):
-#        import pdb;pdb.set_trace()
         debug("%s", attrs)
         if self._current_form is not None:
             raise ParseError("nested FORMs")
@@ -946,7 +945,6 @@ def ParseFile(file, base_uri, select_default=False,
     """
     if backwards_compat:
         deprecation("operating in backwards-compatibility mode")
-#    import pdb;pdb.set_trace()
     fp = form_parser_class(entitydefs, encoding)
     while 1:
         data = file.read(CHUNK)

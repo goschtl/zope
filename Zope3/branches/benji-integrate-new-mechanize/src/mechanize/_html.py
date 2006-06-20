@@ -507,14 +507,8 @@ class Factory:
 
     def forms(self):
         """Return iterable over ClientForm.HTMLForm-like objects."""
-#        import pdb;pdb.set_trace()
         if self._forms is None:
-##            self._forms_genf = CachingGeneratorFunction(
-##                self._forms_factory.forms())
-#            forms = self._forms_factory.forms()
-#            self._forms_genf = CachingGeneratorFunction(forms)
             self._forms = self._forms_factory.forms()
-#        if len(self._forms) > 1: import pdb;pdb.set_trace()
         return self._forms
 
     def links(self):
