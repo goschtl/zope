@@ -32,6 +32,7 @@ from zope.app.i18n.interfaces import ILocalTranslationDomain
 from zope.app.container.contained import Contained
 from zope.app.component import queryNextUtility
 
+
 class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
     implements(ILocalTranslationDomain)
 
@@ -86,7 +87,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
                 return domain.translate(msgid, mapping, context,
                                         target_language, default=default)
             if default is None:
-                default = msgid
+                default = unicode(msgid)
             text = default
 
         # Now we need to do the interpolation
