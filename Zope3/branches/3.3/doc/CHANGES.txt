@@ -10,6 +10,8 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 531: Spurious i18n deprecation warnings;
+
       - Fixed issue 599: Provided a view for interface.exceptions.Invalid to
         allow formlib to display errors when validating invariants.
 
@@ -33,10 +35,10 @@ Zope Changes
 
       - Fixed issue 634: Changed lookup for pre-marshallers to use component
         architecture.
-    
+
       - Fixed issue 565: Verified fix for ObjectWidget's 'error' method and
         provided test coverage.
-    
+
       - Fixed issue 559: Removed filtering of CGI names when used as form
         fields
 
