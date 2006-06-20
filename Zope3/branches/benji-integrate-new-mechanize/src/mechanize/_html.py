@@ -35,15 +35,65 @@ URLQUOTE_SAFE_URL_CHARS = "!*'();:@&=+$,/?%#[]~"
 DEFAULT_ENCODING = "latin-1"
 
 class CachingGeneratorFunction(object):
-    """Caching wrapper around a no-arguments iterable."""
+    """Caching wrapper around a no-arguments iterable.
+
+    >>> i = [1]
+    >>> func = CachingGeneratorFunction(i)
+    >>> list(func())
+    [1]
+    >>> list(func())
+    [1]
+
+    >>> i = [1, 2, 3]
+    >>> func = CachingGeneratorFunction(i)
+    >>> list(func())
+    [1, 2, 3]
+
+    >>> i = func()
+    >>> i.next()
+    1
+    >>> i.next()
+    2
+    >>> i.next()
+    3
+
+    >>> i = func()
+    >>> j = func()
+    >>> i.next()
+    1
+    >>> j.next()
+    1
+    >>> i.next()
+    2
+    >>> j.next()
+    2
+    >>> j.next()
+    3
+    >>> i.next()
+    3
+    >>> i.next()
+    Traceback (most recent call last):
+    ...
+    StopIteration
+    >>> j.next()
+    Traceback (most recent call last):
+    ...
+    StopIteration
+    """
     def __init__(self, iterable):
-        self._iterable = iterable
+        def make_gen():
+            for item in iterable:
+                yield item
+
         self._cache = []
+        self._generator = make_gen()
+
     def __call__(self):
         cache = self._cache
+
         for item in cache:
             yield item
-        for item in self._iterable:
+        for item in self._generator:
             cache.append(item)
             yield item
 
@@ -476,8 +526,7 @@ class Factory:
 
         """
         self._response = response
-#        self._forms_genf = self._links_genf = None
-        self._forms = self._links_genf = None
+        self._forms_genf = self._links_genf = None
         self._get_title = None
         for name in ["encoding", "is_html", "title"]:
             try:
@@ -507,9 +556,10 @@ class Factory:
 
     def forms(self):
         """Return iterable over ClientForm.HTMLForm-like objects."""
-        if self._forms is None:
-            self._forms = self._forms_factory.forms()
-        return self._forms
+        if self._forms_genf is None:
+            self._forms_genf = CachingGeneratorFunction(
+                self._forms_factory.forms())
+        return self._forms_genf()
 
     def links(self):
         """Return iterable over mechanize.Link-like objects."""
