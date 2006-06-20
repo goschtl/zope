@@ -233,11 +233,8 @@ class Browser(SetattrErrorsMixin):
         if 'Status' in self.headers:
             code, msg = self.headers['Status'].split(' ', 1)
             code = int(code)
-            fp = self.mech_browser.open(self.mech_browser.request)
             if code >= 400:
-                raise urllib2.HTTPError(url, code, msg, self.headers, fp)
-
-#            if code >= 300: import pdb;pdb.set_trace()
+                raise urllib2.HTTPError(url, code, msg, self.headers, fp=None)
 
     def _start_timer(self):
         self.timer.start()
@@ -301,7 +298,6 @@ class Browser(SetattrErrorsMixin):
         matches = re.compile(r'(^|\b|\W)%s(\b|\W|$)'
                              % re.escape(compressText(label))).search
         found = []
-#        import pdb;pdb.set_trace()
         for f in forms:
             for control in f.controls:
                 phantom = control.type in ('radio', 'checkbox')
@@ -325,7 +321,6 @@ class Browser(SetattrErrorsMixin):
                         if matches(l.text):
                             found.append((control, f))
                             break
-#        if len(found) > 1: import pdb;pdb.set_trace()
         return found
 
     def _findByName(self, name, forms):
