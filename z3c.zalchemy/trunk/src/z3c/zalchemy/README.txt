@@ -2,27 +2,26 @@
 SQLAlchemy and Zope 3
 =====================
 
-"z3c.zalchemy" integrates the object relational mapper sqlalchemy into zope 3
+"z3c.zalchemy" integrates the object relational mapper SQLAlchemy into Zope 3
 as SQLOS integrates sqlobject.
 
-zalchemy tries to do it's best not to interfere with the standard sqlalchemy
-usage.
-The main part of zalchemy is the integration of the sqlalchemy transaction
-into the zope transaction.
-This is solved by using a data manager which joins the zope transaction for
-every newly created thread.
+zalchemy tries to do it's best not to interfere with the standard SQLAlchemy
+usage.  The main part of zalchemy is the integration of the SQLAlchemy
+transaction into the Zope transaction.  This is solved by using a data manager
+which joins the Zope transaction for every newly created thread.
 
 
 Important
 =========
-Zope uses the transaction module to handle transactions. zalchemy plugs into
-this mechanism and uses it's own data manager to use zopes transaction module.
 
-zalchemy provides the method z3c.zalchemy.getSession to obtain a sqlalchemy
-session object. This method makes sure the session is connected to zopes
+Zope uses the transaction module to handle transactions. zalchemy plugs into
+this mechanism and uses it's own data manager to use Zope's transaction module.
+
+zalchemy provides the method z3c.zalchemy.getSession to obtain a SQLAlchemy
+session object. This method makes sure the session is connected to Zope's
 transactions.
 
-Never get es session directly from sqlalchemy !
+Never get a session directly from SQLAlchemy!
 
 It is also important to never store an instance of a session. Always directly
 use z3c.zalchemy.getSession. This is necessary because you never know when
@@ -30,10 +29,10 @@ a transaction is commited. A commit always invalidates the current session.
 A new call to getSession makes sure a new session is created.
 
 
-zalchemy class implementation
+zalchemy Class Implementation
 =============================
 
-There is no difference between the usage of sqlalchemy together with zope.
+There is no difference between the usage of SQLAlchemy together with Zope.
 
 zalchemy provides a transparent way to connect a table to a database (engine).
 
@@ -46,7 +45,7 @@ A SQLAlchemy engine is represented as a utility :
   ...       echo=False,
   ...       )
 
-We create our table as usual sqlalchemy table :
+We create our table as usual SQLAlchemy table :
 The important thing here is, that the metadata from zalchemy must be used.
 
   >>> import sqlalchemy
@@ -81,14 +80,15 @@ call to zalchemy.getSession.
 
   >>> z3c.zalchemy.createTable('aTable')
 
-Note that the transaction handling is done inside zope.
+Note that the transaction handling is done inside Zope.
 
   >>> import transaction
   >>> txn = transaction.begin()
 
 Everything inside SQLAlchemy needs a Session. We must obtain the Session
 from zalchemy. This makes sure that a transaction handler is inserted into
-zope's transaction process.
+Zope's transaction process.
+
 To simplify the usage of getSession we store the function in "session" (see
 also the note above).
 
@@ -104,6 +104,7 @@ Apply the new object to the session :
 A new instance of a mapped sqlobject class is created this object is not
 stored in the database until the session is commited or flush is called for
 the new instance.
+
 To be able to query a new instance it is therefore necessary to flush the
 object to the database before the query.
 
