@@ -22,7 +22,6 @@ import urllib2
 from cStringIO import StringIO
 
 import mechanize
-import ClientCookie
 
 import transaction
 from zope.testbrowser import browser
