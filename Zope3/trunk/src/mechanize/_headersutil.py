@@ -1,30 +1,22 @@
 """Utility functions for HTTP header value parsing and construction.
 
 Copyright 1997-1998, Gisle Aas
-Copyright 2002-2004, John J. Lee
+Copyright 2002-2006, John J. Lee
 
-This code is free software; you can redistribute it and/or modify it under
-the terms of the BSD License (see the file COPYING included with the
-distribution).
+This code is free software; you can redistribute it and/or modify it
+under the terms of the BSD or ZPL 2.1 licenses (see the file
+COPYING.txt included with the distribution).
 
 """
 
-import re, string
+import os, re, string, urlparse
 from types import StringType
-try:
-    from types import UnicodeType
-    STRING_TYPES = StringType, UnicodeType
-except:
-    STRING_TYPES = StringType,
+from types import UnicodeType
+STRING_TYPES = StringType, UnicodeType
 
-from _Util import startswith, endswith, http2time
+from _util import startswith, endswith, http2time
 
-try: True
-except NameError:
-    True = 1
-    False = 0
-
-def is_html(ct_headers, url):
+def is_html(ct_headers, url, allow_xhtml=False):
     """
     ct_headers: Sequence of Content-Type headers
     url: Response URL
@@ -32,14 +24,20 @@ def is_html(ct_headers, url):
     """
     if not ct_headers:
         # guess
-        return (url.endswith('.htm') or url.endswith('.html') or
-                url.endswith('.xhtml'))
+        ext = os.path.splitext(urlparse.urlparse(url)[2])[1]
+        html_exts = [".htm", ".html"]
+        if allow_xhtml:
+            html_exts += [".xhtml"]
+        return ext in html_exts
     # use first header
     ct = split_header_words(ct_headers)[0][0][0]
-    return ct in [
-        "text/html", "text/xhtml", "text/xml",
-        "application/xml", "application/xhtml+xml",
-        ]
+    html_types = ["text/html"]
+    if allow_xhtml:
+        html_types += [
+            "text/xhtml", "text/xml",
+            "application/xml", "application/xhtml+xml",
+            ]
+    return ct in html_types
 
 def unmatched(match):
     """Return unmatched part of re.Match object."""
@@ -220,8 +218,8 @@ def parse_ns_headers(ns_headers):
 
 
 def _test():
-   import doctest, _HeadersUtil
-   return doctest.testmod(_HeadersUtil)
+   import doctest, _headersutil
+   return doctest.testmod(_headersutil)
 
 if __name__ == "__main__":
    _test()

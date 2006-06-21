@@ -1,21 +1,16 @@
 """Integration with Python standard library module urllib2: Request class.
 
-Copyright 2004 John J Lee <jjl@pobox.com>
+Copyright 2004-2006 John J Lee <jjl@pobox.com>
 
-This code is free software; you can redistribute it and/or modify it under
-the terms of the BSD License (see the file COPYING included with the
-distribution).
+This code is free software; you can redistribute it and/or modify it
+under the terms of the BSD or ZPL 2.1 licenses (see the file
+COPYING.txt included with the distribution).
 
 """
 
-try: True
-except NameError:
-    True = 1
-    False = 0
-
 import urllib2, string
 
-from _ClientCookie import request_host
+from _clientcookie import request_host
 
 
 class Request(urllib2.Request):
