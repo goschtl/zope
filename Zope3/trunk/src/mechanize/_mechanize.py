@@ -46,7 +46,8 @@ class History:
         del self._history[:]
     def close(self):
         for request, response in self._history:
-            response.close()
+            if response is not None:
+                response.close()
         del self._history[:]
 
 # Horrible, but needed, at least until fork urllib2.  Even then, may want
