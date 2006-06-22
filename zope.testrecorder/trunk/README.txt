@@ -3,7 +3,15 @@ Test Recorder
 
 The testrecorder is a browser-based tool to support the rapid
 development of functional tests for Web-based systems and
-applications.  It supports two output modes:
+applications.  The idea is to "record" tests by exercising whatever is
+to be tested within the browser.  The test recorder will turn a
+recorded session into a functional test.
+
+
+Output
+------
+
+Test recorder supports two output modes:
 
 Selenium
   In this mode, the testrecorder spits out HTML markup that lets you
@@ -21,6 +29,10 @@ Test browser
 .. _Selenium: http://www.openqa.org/selenium/
 .. _doctest: http://docs.python.org/lib/module-doctest.html
 .. _testbrowser: http://cheeseshop.python.org/pypi/ZopeTestbrowser
+
+
+Usage
+-----
 
 Like Selenium and the Zope test browser, the test recorder can very
 well be used to test any web application, be it Zope-based or not.  Of
