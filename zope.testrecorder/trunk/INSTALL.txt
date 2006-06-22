@@ -1,8 +1,10 @@
 Installing the Test Recorder
 ============================
 
-This package is designed to be deployable in Zope 2 or Zope 3
-applications.
+This package is designed to be directly deployable in Zope 2 or Zope 3
+applications.  Since the actual testrecorder is just JavaScript code,
+it can be deployed in probably any web application that allows the
+injection of arbitrary resource files.
 
 
 Zope 2
