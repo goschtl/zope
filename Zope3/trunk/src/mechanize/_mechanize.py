@@ -45,6 +45,18 @@ class History:
     def clear(self):
         del self._history[:]
     def close(self):
+        """
+            If nothing has been added, .close should work.
+
+                >>> history = History()
+                >>> history.close()
+
+            Under some circumstances response can be None, in that case
+            this method should not raise an exception.
+
+                >>> history.add(None, None)
+                >>> history.close()
+        """
         for request, response in self._history:
             if response is not None:
                 response.close()

@@ -29,6 +29,26 @@ def methnames(obj):
     return methnames_of_instance_as_dict(obj).keys()
 
 def methnames_of_instance_as_dict(inst):
+    """
+    It is possible for an attribute to be present in the results of dir(inst),
+    but for getattr(inst, attr_name) to raise an Attribute error, that should
+    be handled gracefully.
+
+        >>> class BadAttr(object):
+        ...     def error(self):
+        ...         raise AttributeError
+        ...     error = property(error)
+
+        >>> inst = BadAttr()
+        >>> 'error' in dir(inst)
+        True
+        >>> inst.error
+        Traceback (most recent call last):
+        ...
+        AttributeError
+
+        >>> result = methnames_of_instance_as_dict(inst) # no exception
+    """
     names = {}
     names.update(methnames_of_class_as_dict(inst.__class__))
     for methname in dir(inst):
@@ -41,6 +61,27 @@ def methnames_of_instance_as_dict(inst):
     return names
 
 def methnames_of_class_as_dict(klass):
+    """
+    It is possible for an attribute to be present in the results of dir(inst),
+    but for getattr(inst, attr_name) to raise an Attribute error, that should
+    be handled gracefully.
+
+        >>> class BadClass(object):
+        ...     def error(self):
+        ...         raise AttributeError
+        ...     error = property(error)
+        ...     __bases__ = []
+
+        >>> klass = BadClass()
+        >>> 'error' in dir(klass)
+        True
+        >>> klass.error
+        Traceback (most recent call last):
+        ...
+        AttributeError
+
+        >>> result = methnames_of_class_as_dict(klass) # no exception
+    """
     names = {}
     for methname in dir(klass):
         try:
