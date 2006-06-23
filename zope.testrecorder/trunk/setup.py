@@ -15,9 +15,6 @@
 
 $Id$
 """
-
-import os
-
 try:
     from setuptools import setup, Extension
 except ImportError, e:
