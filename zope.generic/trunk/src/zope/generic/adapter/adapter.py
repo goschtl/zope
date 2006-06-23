@@ -24,6 +24,8 @@ from zope.interface import implements
 
 from zope.generic.configuration import IConfigurationType
 from zope.generic.configuration import IConfigurations
+from zope.generic.face import IFace
+from zope.generic.face.adapter import FaceForAttributeFaced
 
 from zope.generic.adapter.property import ConfigurationAdapterProperty
 
@@ -37,6 +39,10 @@ class ConfigurationAdapterBase(Location):
     def __init__(self, context):
         self.__context__ = context
         self.__configurations__ = IConfigurations(context)
+    
+    def __conform__(self, interface):
+        if interface is IFace:
+            return FaceForAttributeFaced(self)
 
 
 

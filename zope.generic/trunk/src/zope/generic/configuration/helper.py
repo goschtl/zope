@@ -36,7 +36,6 @@ def provideConfigurationType(interface):
 
 
 
-
 _marker = object()
 
 def configurationToDict(configuration, all=False):
@@ -74,7 +73,8 @@ def configurationToDict(configuration, all=False):
         if INestedConfiguration.providedBy(field):
 
             if ISubConfiguration.providedBy(field):
-                data[name] = configurationToDict(value, all)
+                if value:
+                    data[name] = configurationToDict(value, all)
 
             elif ISubConfigurationList.providedBy(field):
                 if ISubConfiguration.providedBy(field.value_type):
