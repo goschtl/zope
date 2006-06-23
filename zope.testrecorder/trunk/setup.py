@@ -35,8 +35,11 @@ setup(name='zope.testrecorder',
       
       packages=['zope', 'zope.testrecorder'],
       package_dir = {'': 'src'},
-      namespace_packages=['zope',],
-      include_package_data = True,
+      namespace_packages=['zope'],
+      package_data = {
+          '': ['*.txt', '*.zcml'],
+          'zope.testrecorder': ['www/*', 'html/*'],
+          },
 
       zip_safe = False,
       )
