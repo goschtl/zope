@@ -1,5 +1,14 @@
 PluggableAuthService changelog
 
+  PluggableAuthService 1.4-beta (unreleased)
+
+    Bugs Fixed
+
+      - CookieAuthHelper: If expireCookie was called and extractCredentials
+        was hit in the same request, the CookieAuthHelper would throw an
+        exception (http://www.zope.org/Collectors/PAS/43)
+
+
   PluggableAuthService 1.3 (2006/06/09)
 
     No changes from version 1.3-beta

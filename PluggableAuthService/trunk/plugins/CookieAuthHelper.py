@@ -118,7 +118,7 @@ class CookieAuthHelper(Folder, BasePlugin):
             if login:
                 creds['login'] = login
                 creds['password'] = password
-        elif cookie:
+        elif cookie and cookie != 'deleted':
             cookie_val = decodestring(unquote(cookie))
             login, password = cookie_val.split(':')
 

@@ -100,6 +100,22 @@ class CookieAuthHelperTests( unittest.TestCase
                          'remote_address': ''})
         self.assertEqual(len(response.cookies), 0)
 
+    def test_extractCredentials_with_deleted_cookie(self):
+        # http://www.zope.org/Collectors/PAS/43
+        # Edge case: The ZPublisher sets a cookie's value to "deleted"
+        # in the current request if expireCookie is called. If we hit
+        # extractCredentials in the same request after this, it would 
+        # blow up trying to deal with the invalid cookie value.
+        helper = self._makeOne()
+        response = FauxCookieResponse()
+        req_data = { helper.cookie_name : 'deleted'
+                   , 'RESPONSE' : response
+                   }
+        request = FauxSettableRequest(**req_data)
+        self.assertEqual(len(response.cookies), 0)
+
+        self.assertEqual(helper.extractCredentials(request), {})
+
     def test_challenge( self ):
         from zExceptions import Unauthorized
         rc, root, folder, object = self._makeTree()
