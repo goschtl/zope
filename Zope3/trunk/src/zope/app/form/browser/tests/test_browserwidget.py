@@ -53,7 +53,7 @@ class BrowserWidgetTest(PlacelessSetup,
         self.content = TestObject()
         field = ITestContent['foo']
         field = field.bind(self.content)
-        request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl')
+        request = TestRequest(HTTP_ACCEPT_LANGUAGE='ru')
         request.form['field.foo'] = u'Foo Value'
         self._widget = self._WidgetFactory(field, request)
 
@@ -86,10 +86,12 @@ class SimpleInputWidgetTest(BrowserWidgetTest):
         self.assertEqual(self._widget.cssClass, '')
         self.assertEqual(self._widget.extra, '')
 
-    def testRender(self):
-        value = 'Foo Value'
-        check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
-                      'value="Foo Value"')
+    def testRender(self, value=None, check_list=None):
+        if value is None:
+            value = 'Foo Value'
+        if check_list is None:
+            check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
+                          'value="Foo Value"')
         self._widget.setRenderedValue(value)
         self.verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:]

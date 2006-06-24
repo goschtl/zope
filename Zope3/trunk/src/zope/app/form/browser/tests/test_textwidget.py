@@ -168,7 +168,7 @@ class DateDisplayWidgetTest(BrowserWidgetTest):
         self.verifyResult(self._widget(),
                           ["<span",
                            'class="%s"' % self.expected_class,
-                           "2004-12-01",
+                           "01.12.2004",
                            "</span"])
 
     def testRenderShort(self):
@@ -177,7 +177,7 @@ class DateDisplayWidgetTest(BrowserWidgetTest):
         self.verifyResult(self._widget(),
                           ["<span",
                            'class="%s"' % self.expected_class,
-                           u"04-12-01",
+                           u"01.12.04",
                            "</span"])
 
     def testRenderMedium(self):
@@ -186,7 +186,7 @@ class DateDisplayWidgetTest(BrowserWidgetTest):
         self.verifyResult(self._widget(),
                           ["<span",
                            'class="%s"' % self.expected_class,
-                           u"2004-12-01",
+                           u"01.12.2004",
                            "</span"])
 
     def testRenderLong(self):
@@ -195,7 +195,8 @@ class DateDisplayWidgetTest(BrowserWidgetTest):
         self.verifyResult(self._widget(),
                           ["<span",
                            'class="%s"' % self.expected_class,
-                           u"1 grudzie\u0144 2004",
+                           u"1 \u0414\u0435\u043a\u0430\u0431\u0440\u044c"
+                                u" 2004 \u0433.",
                            "</span"])
 
     def testRenderFull(self):
@@ -204,7 +205,8 @@ class DateDisplayWidgetTest(BrowserWidgetTest):
         self.verifyResult(self._widget(),
                           ["<span",
                            'class="%s"' % self.expected_class,
-                           u"1 grudzie\u0144 2004",
+                           u"1 \u0414\u0435\u043a\u0430\u0431\u0440\u044c"
+                                u" 2004 \u0433.",
                            "</span"])
 
 
