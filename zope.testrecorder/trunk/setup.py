@@ -28,8 +28,15 @@ setup(name='zope.testrecorder',
       description='Test recorder for functional tests',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
-      long_description='',
-      
+      long_description="""\
+The testrecorder is a browser-based tool to support the rapid
+development of functional tests for Web-based systems and
+applications.  The idea is to "record" tests by exercising whatever is
+to be tested within the browser.  The test recorder will turn a
+recorded session into a functional test.""",
+      platform='any',
+      keywords='web testing',
+
       packages=['zope', 'zope.testrecorder'],
       package_dir = {'': 'src'},
       namespace_packages=['zope'],
