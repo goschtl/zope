@@ -1,0 +1,41 @@
+Installing the Test Recorder
+============================
+
+This package is designed to be directly deployable in Zope 2 or Zope 3
+applications.  Since the actual testrecorder is just JavaScript code,
+it can be deployed in probably any web application that allows the
+injection of arbitrary resource files.
+
+
+Zope 2
+------
+
+For a Zope 2 system, drop the ``zope/testrecorder`` directory into the
+``Products`` directory of the Zope instance and restart the instance.
+After restart, it will be possible to add a ``Test Recorder`` object
+in the ZMI.  The Test Recorder Zope object mainly provides the ability
+to traverse to the ``.html`` and ``.js`` files that make up the
+recorder.
+
+
+Zope 3
+------
+
+In a Zope 3 or Five environment, you can install the
+``zope.testrecorder`` as an additional package into your instance's
+``lib/python`` directory, e.g. with::
+
+  $ python setup.py install --home=$INSTANCE_HOME
+
+where $INSTANCE_HOME points ot your Zope instance.  Then you only need
+to load the testrecorder's ZCML, by adding the following line to your
+``site.zcml``:
+
+  <include package="zope.testrecorder" />
+
+Alternatively, you can put this line into a separate
+``zope.testrecorder-configure.zcml`` file within your instance's
+``package-includes`` directory.  After restarting your instance, the
+testrecorder will be available through a resource URL,
+e.g. http://localhost:8080/@@/recorder/index.html (Zope 3) or
+http://localhost:8080/++resource++recorder/index.html (Five).

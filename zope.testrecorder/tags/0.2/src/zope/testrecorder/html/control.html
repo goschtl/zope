@@ -1,0 +1,137 @@
+<html>
+<head>
+
+<title>Test Recorder</title>
+
+<link rel="stylesheet" type="text/css" href="./style.css" />
+
+<script type="text/javascript" src="./recorder.js"></script>
+
+<script language="javascript" type="text/javascript"><!--
+
+
+function RecorderUI() {
+  this.recorder = recorder;
+  this.recorder.logfunc = this.log;
+}
+
+RecorderUI.prototype.start = function() {
+  var url = document.forms[0].elements["url"].value;
+  if (url == "") {
+    return false;
+  }
+  if ( (url.indexOf("http://") == -1) && (url.indexOf("https://")) ) {
+    url = "http://" + url;
+  }
+
+  var w = top.frames["target"];
+  w.document.location = url;
+
+  var e = document.getElementById("bstop");
+  e.style.display = '';
+  e.onclick = ui.stop;
+  e.value = "Stop Recording";
+  e = document.getElementById("bcomment");
+  e.style.display = '';
+
+
+  ui.recorder.start(w);
+  return false;
+}
+
+RecorderUI.prototype.stop = function() {
+  var e = document.getElementById("bstop");
+  e.style.display = 'none';
+  e = document.getElementById("bcomment");
+  e.style.display = 'none';
+  ui.recorder.stop();
+  top.frames["target"].document.location = "./result.html";
+  return false;
+}
+
+RecorderUI.prototype.openurl = function(url) {
+  ui.recorder.open(url);
+  top.frames["target"].URL = url;
+  ui.start();
+}
+
+RecorderUI.prototype.showcomment = function() {
+  var f = top.document.getElementById("fs");
+  f.rows = "250,*";
+  var e = document.getElementById("bcomment");
+  e.style.display = 'none';
+  e = document.getElementById("comment");
+  e.style.display = '';
+  e = document.getElementById("ctext");
+  e.focus();
+  return false;
+}
+
+RecorderUI.prototype.hidecomment = function(bsave) {
+  var f = top.document.getElementById("fs");
+  f.rows = "50,*";
+  var e = document.getElementById("bcomment");
+  e.style.display = '';
+  e = document.getElementById("comment");
+  e.style.display = 'none';
+  e = document.getElementById("ctext");
+  if (bsave) {
+    var txt = e.value;
+    if (txt && txt.length > 0) {
+      this.recorder.addComment(e.value);
+    }
+  }
+  e.value = "";
+  return false;
+}
+
+RecorderUI.prototype.log = function(text, level) {
+  top.window.status = text;
+  //var e = document.getElementById("log");
+  //e.value = text + "\n" + e.value;
+}
+
+var ui = new RecorderUI();
+
+//--></script>
+
+</head>
+<body>
+
+<form name="control">
+<table border="0">
+  <tr>
+  <td align="left" valign="top">
+  <strong>URL:</strong> 
+  </td>
+  <td align="left" valign="top">
+  <input type="text" size="80" name="url"> 
+  <input type="submit" name="submit" value=" Go "
+   onclick="ui.openurl(document.forms[0].elements['url'].value); return false;"> 
+  <input type="submit" id="bstop" name="bstop" value="Stop Recording"
+   style="display:none;"
+   onclick="ui.stop(); return false;"> 
+  <input type="submit" id="bcomment" name="bcomment" value="Add Comment"
+   onclick="ui.showcomment(); return false;"> 
+  </td>
+  </tr>
+
+  <tr id="comment" style="display:none">
+  <td align="left" valign="top">
+  <strong>Comment:</strong> 
+  </td>
+  <td align="left" valign="top">
+  <textarea id="ctext" id="ctext" name="ctext"
+   rows="8" cols="80"></textarea> 
+  <br />
+  <input type="submit" name="c1" value=" Save " 
+   onclick="ui.hidecomment(true); return false;"> 
+  <input type="submit" name="c2" value=" Cancel " 
+   onclick="ui.hidecomment(false); return false;">
+  </td>
+  </tr>
+</table>
+</form>
+
+</body>
+</html>
