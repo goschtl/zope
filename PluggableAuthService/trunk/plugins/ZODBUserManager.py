@@ -287,6 +287,16 @@ class ZODBUserManager( BasePlugin, Cacheable ):
         view_name = createViewName('enumerateUsers')
         self.ZCacheable_invalidate(view_name=view_name)
 
+    security.declarePrivate('updateUser')
+    def updateUser(self, user_id, login_name):
+        
+        # The following raises a KeyError if the user_id is invalid
+        old_login = self.getLoginForUserId(user_id)
+
+        del self._login_to_userid[old_login]
+        self._login_to_userid[login_name] = user_id
+        self._userid_to_login[user_id] = login_name
+
     security.declarePrivate( 'removeUser' )
     def removeUser( self, user_id ):
 
@@ -306,17 +316,10 @@ class ZODBUserManager( BasePlugin, Cacheable ):
         self.ZCacheable_invalidate(view_name=view_name)
 
     security.declarePrivate( 'updateUserPassword' )
-    def updateUserPassword( self, user_id, login_name, password ):
+    def updateUserPassword( self, user_id, password ):
 
         if self._user_passwords.get( user_id ) is None:
             raise KeyError, 'Invalid user ID: %s' % user_id
-
-        old_login_name = self._userid_to_login[ user_id ]
-
-        if old_login_name != login_name:
-            del self._login_to_userid[ old_login_name ]
-            self._login_to_userid[ login_name ] = user_id
-            self._userid_to_login[ user_id ] = login_name
 
         if password:
             digested = AuthEncoding.pw_encrypt( password )
@@ -377,7 +380,6 @@ class ZODBUserManager( BasePlugin, Cacheable ):
     security.declareProtected( ManageUsers, 'manage_updateUserPassword' )
     def manage_updateUserPassword( self
                                  , user_id
-                                 , login_name
                                  , password
                                  , confirm
                                  , RESPONSE=None
@@ -389,14 +391,27 @@ class ZODBUserManager( BasePlugin, Cacheable ):
 
         else:
         
-            if not login_name:
-                login_name = user_id
-
-            # XXX:  validate 'user_id', 'login_name' against policies?
-
-            self.updateUserPassword( user_id, login_name, password )
+            self.updateUserPassword( user_id, password )
 
             message = 'password+updated'
+
+        if RESPONSE is not None:
+            RESPONSE.redirect( '%s/manage_users?manage_tabs_message=%s'
+                             % ( self.absolute_url(), message )
+                             )
+
+    security.declareProtected( ManageUsers, 'manage_updateUser' )
+    def manage_updateUser(self, user_id, login_name, RESPONSE=None):
+        """ Update a user's login name via the ZMI.
+        """
+        if not login_name:
+            login_name = user_id
+
+        # XXX:  validate 'user_id', 'login_name' against policies?
+
+        self.updateUser(user_id, login_name)
+
+        message = 'Login+name+updated'
 
         if RESPONSE is not None:
             RESPONSE.redirect( '%s/manage_users?manage_tabs_message=%s'

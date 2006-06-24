@@ -126,9 +126,32 @@
   </td>
  </tr>
 
- <tbody metal:use-macro="here/manage_widgets/macros/authentication_widgets">
+ <tr valign="top">
+  <th align="right">
+   <div class="form-label">Login name:</div>
+  </th>
+  <td>
+    <div class="form-label" tal:content="login_name"> Login </div>
+  </td>
+ </tr>
 
- </tbody>
+ <tr valign="top">
+  <th align="right">
+   <div class="form-label">Password:</div>
+  </th>
+  <td>
+   <input type="password" name="password" size="20" value="password" />
+  </td>
+ </tr>
+
+ <tr valign="top">
+  <th align="right">
+   <div class="form-label">Confirm password:</div>
+  </th>
+  <td>
+   <input type="password" name="confirm" size="20" value="confirm" />
+  </td>
+ </tr>
 
  <tr valign="top">
   <td />
@@ -160,7 +183,22 @@
   <th align="right">
    <div class="form-label">User ID:</div>
   </th>
-  <td tal:content="user_id">USER_ID</td>
+  <td>
+   <input type="hidden" name="user_id"
+          tal:attributes="value user_id" />
+   <div class="form-label" tal:content="user_id">USER_ID</div>
+  </td>
+ </tr>
+
+ <tr valign="top">
+  <th align="right">
+   <div class="form-label">Login name:</div>
+  </th>
+  <td>
+   <input type="text" name="login_name" size="40"
+          tal:attributes="value login_name"
+   />
+  </td>
  </tr>
 
  <tr valign="top">

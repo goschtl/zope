@@ -4,6 +4,15 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - ZODBUserManager: Extend the "notional IZODBUserManager interface"
+        with the left-out updateUser facility and a corresponding
+        manage_updateUser method for ZMI use. Removed any responsibility
+        for updating a user's login from the updateUserPassword and
+        manage_updateUserPassword methods. This fixes the breakage
+        described in the collector issue below, and makes the ZMI view
+        for updating users work in a sane way.
+        (http://www.zope.org/Collectors/PAS/42)
+
       - CookieAuthHelper: If expireCookie was called and extractCredentials
         was hit in the same request, the CookieAuthHelper would throw an
         exception (http://www.zope.org/Collectors/PAS/43)

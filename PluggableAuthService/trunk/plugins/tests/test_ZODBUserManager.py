@@ -357,6 +357,50 @@ class ZODBUserManagerTests( unittest.TestCase
         self.assertEqual( user_id, 'new_user' )
         self.assertEqual( login, 'new_user@example.com' )
 
+    def test_updateUserPassword(self):
+
+        zum = self._makeOne()
+
+        # Create a user and make sure we can authenticate with it
+        zum.addUser( 'user1', 'user1@example.com', 'password' )
+        info1 = { 'login' : 'user1@example.com', 'password' : 'password' }
+        user_id, login = zum.authenticateCredentials(info1)
+        self.assertEqual(user_id, 'user1')
+        self.assertEqual(login, 'user1@example.com')
+
+        # Give the user a new password; attempting to authenticate with the
+        # old password must fail
+        zum.updateUserPassword('user1', 'new_password')
+        self.failIf(zum.authenticateCredentials(info1))
+
+        # Try to authenticate with the new password, this must succeed.
+        info2 = { 'login' : 'user1@example.com', 'password' : 'new_password' }
+        user_id, login = zum.authenticateCredentials(info2)
+        self.assertEqual(user_id, 'user1')
+        self.assertEqual(login, 'user1@example.com')
+
+    def test_updateUser(self):
+
+        zum = self._makeOne()
+
+        # Create a user and make sure we can authenticate with it
+        zum.addUser( 'user1', 'user1@example.com', 'password' )
+        info1 = { 'login' : 'user1@example.com', 'password' : 'password' }
+        user_id, login = zum.authenticateCredentials(info1)
+        self.assertEqual(user_id, 'user1')
+        self.assertEqual(login, 'user1@example.com')
+
+        # Give the user a new login; attempts to authenticate with the
+        # old login must fail.
+        zum.updateUser('user1', 'user1@foobar.com')
+        self.failIf(zum.authenticateCredentials(info1))
+
+        # Try to authenticate with the new login, this must succeed.
+        info2 = { 'login' : 'user1@foobar.com', 'password' : 'password' }
+        user_id, login = zum.authenticateCredentials(info2)
+        self.assertEqual(user_id, 'user1')
+        self.assertEqual(login, 'user1@foobar.com')
+
     def test_enumerateUsersWithOptionalMangling(self):
 
         zum = self._makeOne()
