@@ -19,8 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from xml.sax import saxutils
 from zope.interface import implements
-from zope.datetime import parseDatetimetz
-from zope.datetime import DateTimeError
+from zope.i18n.format import DateTimeParseError
 
 from zope.app.form.interfaces import IInputWidget, ConversionError
 from zope.app.form.browser.interfaces import ITextBrowserWidget
@@ -302,7 +301,7 @@ class TextAreaWidget(SimpleInputWidget):
             except ValueError, v:
                 raise ConversionError(_("Invalid unicode data"), v)
             else:
-                value = value.replace("\r\n", "\n")                
+                value = value.replace("\r\n", "\n")
         return value
 
     def _toFormValue(self, value):
@@ -312,7 +311,7 @@ class TextAreaWidget(SimpleInputWidget):
             value = escape(value)
         else:
             value = u''
-            
+
         return value
 
     def __call__(self):
@@ -484,32 +483,58 @@ class FloatWidget(TextWidget):
             except ValueError, v:
                 raise ConversionError(_("Invalid floating point data"), v)
 
+class DateWidget(TextWidget):
+    """Date entry widget.
 
-class DatetimeWidget(TextWidget):
-    """Datetime entry widget."""
+    The `displayStyle` attribute may be set to control the formatting of the
+    value.
+
+    `displayStyle` must be one of 'full', 'long', 'medium', 'short',
+    or None ('' is accepted an an alternative to None to support
+    provision of a value from ZCML).
+    """
+
+    _category = "date"
 
     displayWidth = 20
+
+    displayStyle = None
 
     def _toFieldValue(self, input):
         if input == self._missing:
             return self.context.missing_value
         else:
             try:
-                return parseDatetimetz(input)
-            except (DateTimeError, ValueError, IndexError), v:
-                raise ConversionError(_("Invalid datetime data"), v)
+                formatter = self.request.locale.dates.getFormatter(
+                    self._category, (self.displayStyle or None))
+                return formatter.parse(input)
+            except (DateTimeParseError, ValueError), v:
+                raise ConversionError(_("Invalid datetime data"),
+                    "%s (%r)" % (v, input))
 
+    def _toFormValue(self, value):
+        value = super(DateWidget, self)._toFormValue(value)
+        if value:
+            formatter = self.request.locale.dates.getFormatter(
+                self._category, (self.displayStyle or None))
+            value = formatter.format(value)
+        return value
 
-class DateWidget(DatetimeWidget):
-    """Date entry widget.
+class DatetimeWidget(DateWidget):
+    """Datetime entry widget.
+
+    The `displayStyle` attribute may be set to control the formatting of the
+    value.
+
+    `displayStyle` must be one of 'full', 'long', 'medium', 'short',
+    or None ('' is accepted an an alternative to None to support
+    provision of a value from ZCML).
+
+    NOTE: If you need timezone information you need to set `displayStyle`
+    to either 'long' or 'full' since other display styles just ignore it.
     """
 
-    def _toFieldValue(self, input):
-        v = super(DateWidget, self)._toFieldValue(input)
-        if v != self.context.missing_value:
-            v = v.date()
-        return v
-
+    _category = "dateTime"
 
 class DateDisplayWidget(DisplayWidget):
     """Date display widget.
@@ -520,7 +545,6 @@ class DateDisplayWidget(DisplayWidget):
     `displayStyle` must be one of 'full', 'long', 'medium', 'short',
     or None ('' is accepted an an alternative to None to support
     provision of a value from ZCML).
-
     """
 
     cssClass = "date"
@@ -551,7 +575,6 @@ class DatetimeDisplayWidget(DateDisplayWidget):
     `displayStyle` must be one of 'full', 'long', 'medium', 'short',
     or None ('' is accepted an an alternative to None to support
     provision of a value from ZCML).
-
     """
 
     cssClass = "dateTime"

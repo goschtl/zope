@@ -10,6 +10,10 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 525: DateWidget ru-format.
+	If you plan to use DatetimeWidget with timezone information take a look
+	at the note in the DatetimeWidget docstring;
+
       - Fixed issue 531: Spurious i18n deprecation warnings;
 
       - Fixed issue 599: Provided a view for interface.exceptions.Invalid to
@@ -19,7 +23,7 @@ Zope Changes
         'install' module; they get re-raised now.
 
       - Fixed issue 550: Added adapter for datetime.datetime for xmlrpc
-        premarshalling$
+        premarshalling;
 
       - Fixed issue 633: Boston skin has logo slot now
 

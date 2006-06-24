@@ -39,31 +39,31 @@ import zope.app.form.browser.tests
 class BrowserWidgetTest(PlacelessSetup,
                         support.VerifyResults,
                         unittest.TestCase):
-                            
+
     _FieldFactory = Text
     _WidgetFactory = None
-    
+
     def setUpContent(self, desc=u'', title=u'Foo Title'):
         class ITestContent(Interface):
             foo = self._FieldFactory(
-	            title=title,
-	            description=desc)
+            title=title,
+            description=desc)
         class TestObject:
             implements(ITestContent)
         self.content = TestObject()
         field = ITestContent['foo']
         field = field.bind(self.content)
-        request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl')
+        request = TestRequest(HTTP_ACCEPT_LANGUAGE='ru')
         request.form['field.foo'] = u'Foo Value'
         self._widget = self._WidgetFactory(field, request)
-    
+
     def setUp(self):
         super(BrowserWidgetTest, self).setUp()
         self.setUpContent()
 
 
 class SimpleInputWidgetTest(BrowserWidgetTest):
-    
+
     _WidgetFactory = SimpleInputWidget
 
     def test_required(self):
@@ -86,10 +86,12 @@ class SimpleInputWidgetTest(BrowserWidgetTest):
         self.assertEqual(self._widget.cssClass, '')
         self.assertEqual(self._widget.extra, '')
 
-    def testRender(self):
-        value = 'Foo Value'
-        check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
-                      'value="Foo Value"')
+    def testRender(self, value=None, check_list=None):
+        if value is None:
+            value = 'Foo Value'
+        if check_list is None:
+            check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
+                          'value="Foo Value"')
         self._widget.setRenderedValue(value)
         self.verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:]
@@ -147,7 +149,7 @@ class Test(BrowserWidgetTest):
         self._widget.request.form['field.foo'] = u'barf!'
         self.failIf(self._widget.hasValidInput())
 
-        del self._widget.request.form['field.foo']        
+        del self._widget.request.form['field.foo']
         self._widget.context.required = True
         self.failIf(self._widget.hasValidInput())
 
@@ -164,7 +166,7 @@ class Test(BrowserWidgetTest):
         self._widget.request.form['field.foo'] = u'barf!'
         self.assertRaises(ConversionError, self._widget.getInputValue)
 
-        del self._widget.request.form['field.foo']        
+        del self._widget.request.form['field.foo']
         self._widget.context.required = True
         self.assertRaises(MissingInputError, self._widget.getInputValue)
 
