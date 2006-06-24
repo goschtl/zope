@@ -34,8 +34,14 @@ development of functional tests for Web-based systems and
 applications.  The idea is to "record" tests by exercising whatever is
 to be tested within the browser.  The test recorder will turn a
 recorded session into a functional test.""",
-      platform='any',
       keywords='web testing',
+      classifiers=[
+          'Development Status :: 5 - Production/Stable',
+          'License :: OSI Approved :: Zope Public License',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP :: Browsers',
+          'Topic :: Software Development :: Testing',
+          ],
 
       packages=['zope', 'zope.testrecorder'],
       package_dir = {'': 'src'},
