@@ -23,8 +23,12 @@ Zope 3
 
 In a Zope 3 or Five environment, you can install the
 ``zope.testrecorder`` as an additional package into your instance's
-``lib/python`` directory.  Then you only need to load the
-testrecorder's ZCML, by adding the following line to your
+``lib/python`` directory, e.g. with::
+
+  $ python setup.py install --home=$INSTANCE_HOME
+
+where $INSTANCE_HOME points ot your Zope instance.  Then you only need
+to load the testrecorder's ZCML, by adding the following line to your
 ``site.zcml``:
 
   <include package="zope.testrecorder" />
