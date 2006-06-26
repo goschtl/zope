@@ -21,10 +21,11 @@ import os
 import sys
 import glob
 import warnings
+import logging
+logger = logging.getLogger('Five')
 
 import App.config
 import Products
-from zLOG import LOG, ERROR
 
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
@@ -63,7 +64,7 @@ def handleBrokenProduct(product):
     # in the control panel. However, all attempts to do so has failed from my 
     # side. //regebro
     exc = sys.exc_info()
-    LOG('Five', ERROR, 'Could not import Product %s' % product.__name__, error=exc)
+    logger.error('Could not import Product %s' % product.__name__, error=exc)
 
 def loadProducts(_context):
     products = findProducts()
