@@ -28,6 +28,11 @@ returns Europe/Vienna as timezone.
     >>> widget = datetimewidget.DatetimeWidget(field,request)
     >>> dt = datetime(2006,5,1,12,tzinfo=pytz.utc)
 
+The field's missing value results in an empty string.
+
+    >>> widget._toFormValue(None)
+    u''
+
 Now let us convert a real datetime.
 
     >>> formValue = widget._toFormValue(dt)

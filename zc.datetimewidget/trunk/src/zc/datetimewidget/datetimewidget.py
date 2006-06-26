@@ -105,6 +105,8 @@ class DatetimeBase(object):
                 return super(DatetimeBase, self)._toFieldValue(input)
 
     def _toFormValue(self, value):
+        if value == self.context.missing_value:
+            return self._missing
         value = localizeDateTime(value, self.request)
         return value.strftime(self._format)
 
