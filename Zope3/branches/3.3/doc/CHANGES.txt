@@ -77,6 +77,25 @@ Zope Changes
 
       - Fixed issue 632: "bin/zopectl run" drops into python shell on errors.
 
+    Notes
+
+      If you register a new default view name for a particular layer, and this
+      registration applies to an object that has a nameless view (such as for
+      an ISite's /@@/ resource container), then you need to also re-register
+      the nameless view for the same layer and object that you registered the
+      new default view name for.
+
+      So, if you registered a default view name of 'mainpage.html' for the
+      root object on the layer MyLayer, you also need to register the nameless
+      view for the layer MyLayer for the root object.  If you don't do this,
+      then the /@@/ resource URLs will stop working for MyLayer requests.
+
+      This extra registration is needed because the default view name directive
+      registers a no-name adapter providing IDefaultViewName.  Registering a
+      view with no name registers a no-name adapter providing Interface.  So,
+      unless you re-register the adapter providing Interface, the
+      IDefaultViewName adapter will be used instead.
+
   Zope 3.3.0b1 (2006/05/08)
 
     New features
