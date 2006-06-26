@@ -2,13 +2,13 @@
 Handling Timezones
 ==================
 
-Datetimes are always stored timezone aware, by default the utc
+Datetimes are always stored timezone aware, and by default the utc
 timezone is used. We use the demo package here to have a content class
 and interface.
 
 In order to handle timezones correctly the zope instance has to
 provide an adapter from IBrowserRequest to ITZInfo. It is up to the
-instance what kind of implementation it uses. For this tests we just
+instance what kind of implementation it uses. For this test, we just
 use the implementation of the demo.timezone module which always
 returns Europe/Vienna as timezone.
 
@@ -19,23 +19,14 @@ returns Europe/Vienna as timezone.
     >>> from zc.datetimewidget.demo import timezone
     >>> from zc.datetimewidget.demo.content import DemoContent
     >>> from zc.datetimewidget.demo.interfaces import IDemoContent
-    >>> from zope.publisher.browser import TestRequest
-    >>> request = TestRequest()
+    >>> from zope.publisher.browser import TestRequest, BrowserLanguages
+    >>> component.provideAdapter(BrowserLanguages)
+    >>> request = TestRequest(HTTP_ACCEPT_LANGUAGE='en-US')
     >>> component.provideAdapter(timezone.tzinfo)
-    >>> fmt = '%Y-%m-%d %H:%M:%S %Z%z'
     >>> tz = pytz.timezone('Europe/Vienna')
     >>> field = IDemoContent['startDatetime']
     >>> widget = datetimewidget.DatetimeWidget(field,request)
     >>> dt = datetime(2006,5,1,12,tzinfo=pytz.utc)
-
-By the way, if the value to be displayed in the form is not a datetime
-object the superlclass's implementation is used.
-
-    >>> widget._toFormValue(None)
-    u''
-
-    >>> widget._toFormValue(u'this is not a date')
-    u'this is not a date'
 
 Now let us convert a real datetime.
 
@@ -46,7 +37,9 @@ Now let us convert a real datetime.
     >>> parsedValue
     datetime.datetime(2006, 5, 1, 12, 0, tzinfo=<UTC>)
 
+While the widget tries to parse dates in the form '%Y-%m-%d %H:%M:%S'
+first, it will fall through to the locale-specific parsing of the core
+datetimewidget.
 
-
-
-
+    >>> widget._toFieldValue('May 1, 2006 2:00:00 PM')
+    datetime.datetime(2006, 5, 1, 12, 0, tzinfo=<UTC>)

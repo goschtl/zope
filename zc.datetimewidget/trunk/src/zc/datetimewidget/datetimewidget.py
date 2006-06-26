@@ -19,8 +19,7 @@ import datetime
 import pytz
 
 from zope.interface.common.idatetime import ITZInfo
-from zope.datetime import DateTimeError
-from zope.datetime import parseDatetimetz
+from zope.datetime import parseDatetimetz, DateTimeError
 from zope.app.form.browser import textwidgets
 from zope.app.form.browser.widget import renderElement
 import zope.datetime
@@ -96,9 +95,16 @@ class DatetimeBase(object):
                            "datetime_format": self._format,
                            "langDef":langDef}
 
+    def _toFieldValue(self, input):
+        if input == self._missing:
+            return self.context.missing_value
+        else:
+            try:
+                return parseDatetimetz(input)
+            except (DateTimeError, ValueError, IndexError), v:
+                return super(DatetimeBase, self)._toFieldValue(input)
+
     def _toFormValue(self, value):
-        if not isinstance(value, datetime.date):
-            return super(DatetimeBase, self)._toFormValue(value)
         value = localizeDateTime(value, self.request)
         return value.strftime(self._format)
 
