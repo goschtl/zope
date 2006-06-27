@@ -583,7 +583,7 @@ class IComponentRegistry(interface.Interface):
     """Register components
     """
 
-    def registerUtility(component, provided=None, name=u'', comment=u''):
+    def registerUtility(component, provided=None, name=u'', info=u''):
         """Register a utility
 
         component
