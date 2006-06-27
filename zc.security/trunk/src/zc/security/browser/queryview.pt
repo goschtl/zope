@@ -1,0 +1,23 @@
+<div i18n:domain="zc.security">
+  <div tal:condition="python: view.searchstring == ''"
+       i18n:translate="">Please enter a search string.</div>
+  <div class="row">
+    <span class="label">
+      <label for="" tal:attributes="for options/field_name"
+             i18n:translate="source_query_view_search"
+             >Browse</label>
+    </span>
+    <span class="field">
+      <input type="text" name="" tal:attributes="
+             name options/field_name; id options/field_name;
+             value python: request.get(options['field_name'], nothing)" />
+    </span>
+  </div>
+  <div class="row">
+    <div class="field">
+      <input type="submit" name="" value="Search"
+             tal:attributes="name options/button_name"
+             i18n:attributes="value search_button" class="submit" />
+    </div>
+  </div>
+</div>

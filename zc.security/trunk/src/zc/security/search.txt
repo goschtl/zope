@@ -1,0 +1,546 @@
+Search support adapters
+=======================
+
+We provide adapters to support searching for groups or users.
+
+Pluggable Authentication adapter for Searching for groups
+---------------------------------------------------------
+
+We provide an adapter for the pluggable authentication utility for
+searching for groups.  It searches the utilities search plugins for
+plugins that can be adapted to `ISimpleGroupSearch`.  It also searches
+higher-level authentication utilities.
+
+Let's look at an example.  We'll provide a fake pluggable
+authentication utility that simply has some authenticator plugins:
+
+    >>> import zope.interface
+    >>> import zope.component
+    >>> from zope.app.security.interfaces import IAuthentication
+    >>> from zope.app.security.interfaces import PrincipalLookupError
+    >>> from zope.app.authentication.interfaces import (
+    ...     IPluggableAuthentication, IAuthenticatorPlugin)
+    >>> class PA:
+    ...     prefix = 'test.'
+    ...     zope.interface.implements(IPluggableAuthentication,
+    ...                               IAuthentication)
+    ...     authenticatorPlugins = ('users', 'groups', 'dummy',
+    ...                             'moreusers', 'moregroups', 'missing')
+    ...     def getAuthenticatorPlugins(self):
+    ...         for nm in self.authenticatorPlugins:
+    ...             p = zope.component.queryUtility(
+    ...                 IAuthenticatorPlugin, name=nm)
+    ...             if p is not None:
+    ...                 yield nm, p
+    ...     def getPrincipal(self, principal_id):
+    ...         for nm, p in self.getAuthenticatorPlugins():
+    ...             try:
+    ...                 return p.getPrincipal(principal_id[len(nm)+1:])
+    ...             except PrincipalLookupError:
+    ...                 pass
+    ...         raise PrincipalLookupError
+
+We define a Dummy utility that will be ignored by the searcher:
+
+    >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
+    >>> class DummyPrincipalSearchPlugin:
+    ...     zope.interface.implements(IAuthenticatorPlugin)
+    ...     def getPrincipal(self, principal_id):
+    ...         raise PrincipalLookupError
+
+    >>> zope.component.provideUtility(
+    ...     DummyPrincipalSearchPlugin(), IAuthenticatorPlugin, 'dummy')
+
+We define a utility that supports group searching:
+
+    >>> class Principals:
+    ...     zope.interface.implements(IAuthenticatorPlugin)
+    ...
+    ...     def __init__(self, *principals):
+    ...         self.principals = principals
+    ...
+    ...     def searchPrincipals(self, filter, start=0, size=None):
+    ...         principals = self.principals
+    ...         principals = [p for p in principals if filter in p]
+    ...         return principals[start:start+size]
+    ...
+    ...     def getPrincipal(self, principal_id):
+    ...         if principal_id in self.principals:
+    ...             return self.principal_factory()
+    ...         raise PrincipalLookupError
+
+    >>> from zope.security.interfaces import IGroup
+    >>> class Group(object):
+    ...     zope.interface.implements(IGroup)
+
+    >>> from zc.security.interfaces import ISimpleGroupSearch
+    >>> class Groups(Principals):
+    ...     zope.interface.implements(ISimpleGroupSearch)
+    ...     searchGroups = Principals.searchPrincipals
+    ...     principal_factory = Group
+
+    >>> groups = Groups(
+    ...    'root', 'bin', 'daemon', 'sys', 'adm', 'tty', 'disk', 'lp', 'mem',
+    ...    'kmem', 'wheel', 'mail', 'news', 'uucp', 'man', 'games', 'gopher',
+    ...    )
+    >>> zope.component.provideUtility(groups, IAuthenticatorPlugin, 'groups')
+
+    >>> moregroups = Groups(
+    ...    'dip', 'ftp', 'lock', 'nobody', 'users', 'rpm', 'floppy', 'vcsa',
+    ...    'utmp', 'rpc', 'rpcuser', 'nfsnobody', 'mailnull', 'smmsp',
+    ...    'pcap', 'dbus', 'xfs', 'ntp', 'gdm',
+    ...    )
+    >>> zope.component.provideUtility(moregroups, IAuthenticatorPlugin, 'moregroups')
+
+And we define a utility that provides user searching:
+
+    >>> from zope.security.interfaces import IPrincipal
+    >>> class User(object):
+    ...     zope.interface.implements(IPrincipal)
+
+    >>> from zc.security.interfaces import ISimpleUserSearch
+    >>> class Users(Principals):
+    ...     zope.interface.implements(ISimpleUserSearch)
+    ...     searchUsers = Principals.searchPrincipals
+    ...     principal_factory = User
+
+    >>> users = Users(
+    ...    'zalman', 'zaltana', 'zamir', 'zamora', 'zan',
+    ...    'zander', 'zandra', 'zane', 'zanna', 'zanta',
+    ...    'zanthe', 'zara', 'zareb', 'zared', 'zareh',
+    ...    )
+    >>> zope.component.provideUtility(users, IAuthenticatorPlugin, 'users')
+
+    >>> moreusers = Users(
+    ...    'zorina', 'zorion', 'zsa', 'zubaida', 'zubeda',
+    ...    'zubin', 'zudora', 'zula', 'zuleika', 'zulema',
+    ...    'zulu', 'zuna', 'zuri', 'zuriel', 'zurina',
+    ...    'zuwena', 'zuzana', 'zuzela', 'zwi', 'zyta', 'zytka',
+    ...    )
+    >>> zope.component.provideUtility(
+    ...     moreusers, IAuthenticatorPlugin, 'moreusers')
+
+Finally, we'll provide some utilities in a hierarchy.
+
+    >>> pa = PA()
+
+    >>> class DummyAuth:
+    ...     zope.interface.implements(IAuthentication)
+
+    >>> class SearchableDummyAuth(Groups, Users, DummyAuth):
+    ...     pass
+
+    >>> dummyauth = DummyAuth()
+    >>> searchabledummyauth = SearchableDummyAuth(
+    ...    'baba', 'baback', 'babette', 'baby', 'bach',
+    ...    'bade', 'baden', 'badu', 'baeddan', 'bahari',
+    ...    'bailey', 'baina', 'baird', 'bairn', 'baka',
+    ...    'baldasarre', 'balin', 'ballard', 'ballari',
+    ...    'balthasar', 'bambi', 'ban', 'banagher',
+    ...    'bandele', 'banji', 'banyan', 'bao', 'baqer',
+    ...    'barak', 'barb', 'barbara', 'barbie', 'barbod',
+    ...    'barbra', 'barclay', 'bardia', 'barid', 'barke',
+    ...    )
+
+    >>> searchabledummyauth2 = SearchableDummyAuth(
+    ...    'barnabas', 'barnard', 'barney', 'barny', 'baron',
+    ...    'barr', 'barrett', 'barrington', 'barry', 'bart',
+    ...    'barth', 'bartholemew', 'bartholomew', 'barto',
+    ...    'barton', 'baruch', 'bary', 'base', 'bash',
+    ...    'basil', 'bast', 'bastien', 'bat', 'bathsheba',
+    ...    'baxter', 'bayard', 'bayle', 'baylee', 'bazyli',
+    ...    'bea', 'beata', 'beate', 'beatrice', 'beatrix',
+    ...    )
+
+    >>> from zope.app.component.testing import testingNextUtility
+    >>> testingNextUtility(pa, dummyauth, IAuthentication)
+    >>> testingNextUtility(dummyauth, searchabledummyauth, IAuthentication)
+    >>> testingNextUtility(searchabledummyauth, searchabledummyauth2,
+    ...                    IAuthentication)
+
+Nooooow, we can try out some searches and see if we get the right results.
+
+    >>> from zc.security.search import PASimpleGroupSearch
+    >>> search = PASimpleGroupSearch(pa)
+
+First, we'll get "all" of the groups:
+
+    >>> list(search.searchGroups('', 0, 1000))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['test.root', 'test.bin', 'test.daemon', 'test.sys', 'test.adm',
+    'test.tty', 'test.disk', 'test.lp', 'test.mem', 'test.kmem',
+    'test.wheel', 'test.mail', 'test.news', 'test.uucp', 'test.man',
+    'test.games', 'test.gopher', 'test.dip', 'test.ftp', 'test.lock',
+    'test.nobody', 'test.users', 'test.rpm', 'test.floppy',
+    'test.vcsa', 'test.utmp', 'test.rpc', 'test.rpcuser',
+    'test.nfsnobody', 'test.mailnull', 'test.smmsp', 'test.pcap',
+    'test.dbus', 'test.xfs', 'test.ntp', 'test.gdm', 'baba', 'baback',
+    'babette', 'baby', 'bach', 'bade', 'baden', 'badu', 'baeddan',
+    'bahari', 'bailey', 'baina', 'baird', 'bairn', 'baka',
+    'baldasarre', 'balin', 'ballard', 'ballari', 'balthasar', 'bambi',
+    'ban', 'banagher', 'bandele', 'banji', 'banyan', 'bao', 'baqer',
+    'barak', 'barb', 'barbara', 'barbie', 'barbod', 'barbra',
+    'barclay', 'bardia', 'barid', 'barke']
+
+Note that we didn't get any ids from searchabledummyauth2. This is because it
+is the responsibility of an ISimpleGroupSearch adapter of an authentication
+utility to delegate to higher utilities.  Because searchabledummyauth didn't
+delegate, we don't get any values from searchabledummyauth2.
+
+Now, let's try batching the results:
+
+    >>> list(search.searchGroups('', 0, 7))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['test.root', 'test.bin', 'test.daemon', 'test.sys', 'test.adm',
+     'test.tty', 'test.disk']
+
+    >>> list(search.searchGroups('', 14, 7))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['test.man', 'test.games', 'test.gopher', 'test.dip', 'test.ftp',
+     'test.lock', 'test.nobody']
+
+    >>> list(search.searchGroups('', 35, 7))
+    ['test.gdm', 'baba', 'baback', 'babette', 'baby', 'bach', 'bade']
+
+    >>> list(search.searchGroups('', 70, 7))
+    ['barclay', 'bardia', 'barid', 'barke']
+
+And searching:
+
+    >>> list(search.searchGroups('n', 0, 1000))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['test.bin', 'test.daemon', 'test.news', 'test.man',
+    'test.nobody', 'test.nfsnobody', 'test.mailnull', 'test.ntp',
+    'baden', 'baeddan', 'baina', 'bairn', 'balin', 'ban', 'banagher',
+    'bandele', 'banji', 'banyan']
+
+and searching with batching:
+
+    >>> list(search.searchGroups('n', 0, 7))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['test.bin', 'test.daemon', 'test.news', 'test.man',
+    'test.nobody', 'test.nfsnobody', 'test.mailnull']
+
+    >>> list(search.searchGroups('n', 7, 7))
+    ['test.ntp', 'baden', 'baeddan', 'baina', 'bairn', 'balin', 'ban']
+
+Group Folder adapter for searching for groups
+---------------------------------------------
+
+A group folder adapter supports simple searching:
+
+    >>> from zope.app.authentication import groupfolder
+    >>> groups = groupfolder.GroupFolder('group.')
+
+    >>> groups['g1'] = groupfolder.GroupInformation("Group 1")
+    >>> groups['g2'] = groupfolder.GroupInformation("Group Two")
+    >>> groups['g3'] = groupfolder.GroupInformation("Others")
+    >>> groups['g4'] = groupfolder.GroupInformation("System")
+    >>> groups['g5'] = groupfolder.GroupInformation("SHOUTERS")
+    >>> groups['g6'] = groupfolder.GroupInformation("kids")
+    >>> groups['g7'] = groupfolder.GroupInformation("Dudes")
+    >>> groups['g8'] = groupfolder.GroupInformation("Foo")
+    >>> groups['g9'] = groupfolder.GroupInformation("Bar")
+
+    >>> from zc.security.search import GroupFolderSimpleGroupSearch
+    >>> search = GroupFolderSimpleGroupSearch(groups)
+    >>> list(search.searchGroups('', 0, 100))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    [u'group.g1', u'group.g2', u'group.g3', u'group.g4', u'group.g5',
+     u'group.g6', u'group.g7', u'group.g8', u'group.g9']
+
+    >>> list(search.searchGroups('', 5, 10))
+    [u'group.g6', u'group.g7', u'group.g8', u'group.g9']
+
+    >>> list(search.searchGroups('', 2, 4))
+    [u'group.g3', u'group.g4', u'group.g5', u'group.g6']
+
+    >>> list(search.searchGroups('s', 0, 100))
+    [u'group.g3', u'group.g4', u'group.g5', u'group.g6', u'group.g7']
+
+    >>> list(search.searchGroups('s', 2, 2))
+    [u'group.g3', u'group.g4']
+
+Pluggable Authentication adapter for Searching for users
+--------------------------------------------------------
+
+There's a similar adapter for searching for users:
+
+
+    >>> from zc.security.search import PASimpleUserSearch
+    >>> search = PASimpleUserSearch(pa)
+
+First, we'll get "all" of the users:
+
+    >>> list(search.searchUsers('', 0, 1000))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['test.zalman', 'test.zaltana', 'test.zamir', 'test.zamora',
+    'test.zan', 'test.zander', 'test.zandra', 'test.zane',
+    'test.zanna', 'test.zanta', 'test.zanthe', 'test.zara',
+    'test.zareb', 'test.zared', 'test.zareh', 'test.zorina',
+    'test.zorion', 'test.zsa', 'test.zubaida', 'test.zubeda',
+    'test.zubin', 'test.zudora', 'test.zula', 'test.zuleika',
+    'test.zulema', 'test.zulu', 'test.zuna', 'test.zuri',
+    'test.zuriel', 'test.zurina', 'test.zuwena', 'test.zuzana',
+    'test.zuzela', 'test.zwi', 'test.zyta', 'test.zytka', 'baba',
+    'baback', 'babette', 'baby', 'bach', 'bade', 'baden', 'badu',
+    'baeddan', 'bahari', 'bailey', 'baina', 'baird', 'bairn', 'baka',
+    'baldasarre', 'balin', 'ballard', 'ballari', 'balthasar', 'bambi',
+    'ban', 'banagher', 'bandele', 'banji', 'banyan', 'bao', 'baqer',
+    'barak', 'barb', 'barbara', 'barbie', 'barbod', 'barbra',
+    'barclay', 'bardia', 'barid', 'barke']
+
+Note that we didn't get any ids from searchabledummyauth2. This is because it
+is the responsibility of an ISimpleUserSearch adapter of an authentication
+utility to delegate to higher utilities.  Because searchabledummyauth didn't
+delegate, we don't get any values from searchabledummyauth2.
+
+Now, let's try batching the results:
+
+    >>> list(search.searchUsers('', 0, 7))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['test.zalman', 'test.zaltana', 'test.zamir', 'test.zamora',
+    'test.zan', 'test.zander', 'test.zandra']
+
+
+    >>> list(search.searchUsers('', 14, 7))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['test.zareh', 'test.zorina', 'test.zorion', 'test.zsa',
+    'test.zubaida', 'test.zubeda', 'test.zubin']
+
+    >>> list(search.searchUsers('', 35, 7))
+    ['test.zytka', 'baba', 'baback', 'babette', 'baby', 'bach', 'bade']
+
+    >>> list(search.searchUsers('', 70, 7))
+    ['barclay', 'bardia', 'barid', 'barke']
+
+And searching:
+
+    >>> list(search.searchUsers('n', 0, 1000))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['test.zalman', 'test.zaltana', 'test.zan', 'test.zander',
+    'test.zandra', 'test.zane', 'test.zanna', 'test.zanta',
+    'test.zanthe', 'test.zorina', 'test.zorion', 'test.zubin',
+    'test.zuna', 'test.zurina', 'test.zuwena', 'test.zuzana', 'baden',
+    'baeddan', 'baina', 'bairn', 'balin', 'ban', 'banagher',
+    'bandele', 'banji', 'banyan']
+
+
+and searching with batching:
+
+    >>> list(search.searchUsers('n', 0, 7))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['test.zalman', 'test.zaltana', 'test.zan', 'test.zander',
+    'test.zandra', 'test.zane', 'test.zanna']
+
+    >>> list(search.searchUsers('n', 7, 7))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['test.zanta', 'test.zanthe', 'test.zorina', 'test.zorion',
+    'test.zubin', 'test.zuna', 'test.zurina']
+
+
+Principals Folder adapter for searching for users
+-------------------------------------------------
+
+A principal folder adapter supports simple searching:
+
+    >>> from zope.app.authentication import principalfolder
+    >>> users = principalfolder.PrincipalFolder('users.')
+
+    >>> for name in [
+    ...    'zalman', 'zaltana', 'zamir', 'zamora', 'zan',
+    ...    'zander', 'zandra', 'zane', 'zanna', 'zanta',
+    ...    'zanthe', 'zara', 'zareb', 'zared', 'zareh',
+    ...    ]:
+    ...    users[name] = principalfolder.InternalPrincipal(
+    ...       name, '123', name.capitalize())
+
+    >>> from zc.security.search import UserFolderSimpleUserSearch
+    >>> search = UserFolderSimpleUserSearch(users)
+    >>> list(search.searchUsers('', 0, 100))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    [u'users.zalman', u'users.zaltana', u'users.zamir', u'users.zamora',
+     u'users.zan', u'users.zander', u'users.zandra', u'users.zane',
+     u'users.zanna', u'users.zanta', u'users.zanthe', u'users.zara',
+     u'users.zareb', u'users.zared', u'users.zareh']
+
+    >>> list(search.searchUsers('', 5, 10))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    [u'users.zander', u'users.zandra', u'users.zane', u'users.zanna',
+     u'users.zanta', u'users.zanthe', u'users.zara', u'users.zareb',
+     u'users.zared', u'users.zareh']
+
+    >>> list(search.searchUsers('', 2, 4))
+    [u'users.zamir', u'users.zamora', u'users.zan', u'users.zander']
+
+    >>> list(search.searchUsers('n', 0, 100))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    [u'users.zalman', u'users.zaltana', u'users.zan', u'users.zander',
+     u'users.zandra', u'users.zane', u'users.zanna', u'users.zanta',
+     u'users.zanthe']
+
+    >>> list(search.searchUsers('n', 2, 4))
+    [u'users.zan', u'users.zander', u'users.zandra', u'users.zane']
+
+ZCML Principal Registry adapters for searching for users and groups
+-------------------------------------------------------------------
+
+A principal registry adapter supports simple searching
+
+    >>> from zope.app.security import principalregistry
+    >>> users = principalregistry.PrincipalRegistry()
+
+    >>> for name in [
+    ...    'zalman', 'zaltana', 'zamir', 'zamora', 'zan',
+    ...    'zander', 'zandra', 'zane', 'zanna', 'zanta',
+    ...    'zanthe', 'zara', 'zareb', 'zared', 'zareh',
+    ...    ]:
+    ...    _ = users.definePrincipal(name, name.capitalize(), '', name, '123')
+    >>> everybody = principalregistry.EverybodyGroup('e', 'Everybody', '')
+    >>> users.registerGroup(everybody)
+    >>> auth = principalregistry.AuthenticatedGroup('a', 'Authenticated', '')
+    >>> users.registerGroup(auth)
+    >>> unauth = principalregistry.UnauthenticatedGroup(
+    ...     'u', 'Unauthenticated', '')
+    >>> users.registerGroup(unauth)
+
+
+    >>> from zc.security.search import UserRegistrySimpleUserSearch
+    >>> search = UserRegistrySimpleUserSearch(users)
+    >>> list(search.searchUsers('', 0, 100))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['zalman', 'zaltana', 'zamir', 'zamora',
+     'zan', 'zander', 'zandra', 'zane',
+     'zanna', 'zanta', 'zanthe', 'zara',
+     'zareb', 'zared', 'zareh']
+
+    >>> list(search.searchUsers('', 5, 10))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['zander', 'zandra', 'zane', 'zanna',
+     'zanta', 'zanthe', 'zara', 'zareb',
+     'zared', 'zareh']
+
+    >>> list(search.searchUsers('', 2, 4))
+    ['zamir', 'zamora', 'zan', 'zander']
+
+    >>> list(search.searchUsers('n', 0, 100))
+    ... # doctest: +NORMALIZE_WHITESPACE
+    ['zalman', 'zaltana', 'zan', 'zander',
+     'zandra', 'zane', 'zanna', 'zanta',
+     'zanthe']
+
+    >>> list(search.searchUsers('n', 2, 4))
+    ['zan', 'zander', 'zandra', 'zane']
+
+    >>> from zc.security.search import UserRegistrySimpleGroupSearch
+    >>> search = UserRegistrySimpleGroupSearch(users)
+    >>> list(search.searchGroups('', 0, 100))
+    ['a', 'e', 'u']
+
+    >>> list(search.searchGroups('', 1, 1))
+    ['e']
+
+    >>> list(search.searchGroups('ev', 0, 100))
+    ['e']
+
+
+Searching all principals
+------------------------
+
+In addition to searching for users and groups alone as shown above,
+another interface allows searching together for both groups and users:
+all principals.
+
+This is currently implemented with an adapter that unions the result
+of searches for users and groups.  For testing purposes, our
+authentication service will already provide the necessary interfaces,
+eliminating the necessity of registering any adapters.
+
+    >>> class DummySimpleUserSearchAuthentication:
+    ...     zope.interface.implements(
+    ...         ISimpleUserSearch, ISimpleGroupSearch)
+    ...     def searchUsers(self, filter, start, size):
+    ...         data = ['uAx', 'uBy', 'uCx', 'uDy', 'uEx']
+    ...         if filter:
+    ...             data = [d for d in data if filter in d]
+    ...         for u in data[start:start+size]:
+    ...             yield u
+    ...     def searchGroups(self, filter, start, size):
+    ...         data = ['gAx', 'gBy', 'gCx', 'gDy', 'gEx']
+    ...         if filter:
+    ...             data = [d for d in data if filter in d]
+    ...         for u in data[start:start+size]:
+    ...             yield u
+    ...
+    >>> auth = DummySimpleUserSearchAuthentication()
+    >>> from zc.security.search import SimplePrincipalSearch
+    >>> search = SimplePrincipalSearch(auth)
+
+First, we can get all principals.
+
+    >>> list(search.searchPrincipals('', 0, 1000))
+    ['uAx', 'uBy', 'uCx', 'uDy', 'uEx', 'gAx', 'gBy', 'gCx', 'gDy', 'gEx']
+
+Passing in a filter works as shown above: pass in a string, with semantics as
+determined by the plugin.
+
+    >>> list(search.searchPrincipals('x', 0, 1000))
+    ['uAx', 'uCx', 'uEx', 'gAx', 'gCx', 'gEx']
+
+Here are some examples of the batching semantics combined with a filter.
+
+    >>> list(search.searchPrincipals('x', 0, 4))
+    ['uAx', 'uCx', 'uEx', 'gAx']
+    >>> list(search.searchPrincipals('x', 2, 3))
+    ['uEx', 'gAx', 'gCx']
+    >>> list(search.searchPrincipals('x', 0, 3))
+    ['uAx', 'uCx', 'uEx']
+    >>> list(search.searchPrincipals('x', 3, 1000))
+    ['gAx', 'gCx', 'gEx']
+
+These are similar examples without an active filter.
+
+    >>> list(search.searchPrincipals('', 0, 8))
+    ['uAx', 'uBy', 'uCx', 'uDy', 'uEx', 'gAx', 'gBy', 'gCx']
+    >>> list(search.searchPrincipals('', 2, 6))
+    ['uCx', 'uDy', 'uEx', 'gAx', 'gBy', 'gCx']
+    >>> list(search.searchPrincipals('', 0, 5))
+    ['uAx', 'uBy', 'uCx', 'uDy', 'uEx']
+    >>> list(search.searchPrincipals('', 5, 5))
+    ['gAx', 'gBy', 'gCx', 'gDy', 'gEx']
+
+
+Sources
+=======
+
+There are sources defined for use in schemas:
+
+    >>> from zc.security.search import SimplePrincipalSource
+    >>> from zc.security.search import SimpleUserSource
+    >>> from zc.security.search import SimpleGroupSource
+    >>> principal_source = SimplePrincipalSource()
+    >>> user_source = SimpleUserSource()
+    >>> group_source = SimpleGroupSource()
+
+    >>> zope.component.provideUtility(pa, IAuthentication)
+
+SimplePrincipalSearch contains all users and groups
+
+    >>> 'users.zared' in principal_source
+    True
+    >>> 'groups.wheel' in principal_source
+    True
+
+SimpleUserSource contains only users
+
+    >>> 'users.zared' in user_source
+    True
+    >>> 'groups.wheel' in user_source
+    False
+
+SimpleGroupSource contains only groups
+
+    >>> 'users.zared' in group_source
+    False
+    >>> 'groups.wheel' in group_source
+    True
