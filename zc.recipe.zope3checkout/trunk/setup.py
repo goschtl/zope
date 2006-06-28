@@ -11,7 +11,7 @@ setup(
     long_description = open('README.txt').read(),
     license = "ZPL 2.1",
     keywords = "zope3 buildout",
-    url='http://svn.zope.org/zc.recipe.zope3checkout',
+    url='http://svn.zope.org/'+name,
     classifiers = [
         'Framework :: Buildout',
         'License :: OSI Approved :: Zope Public License',
@@ -21,8 +21,7 @@ setup(
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['zc', 'zc.recipe'],
-    install_requires = ['zc.buildout', 'zope.testing', 'setuptools'],
+    install_requires = ['zc.buildout', 'setuptools'],
     dependency_links = ['http://download.zope.org/distribution/'],
-    entry_points = {'zc.buildout':
-                    ['default = zc.recipe.zope3checkout:Zope3Checkout']},
+    entry_points = {'zc.buildout': ['default = %s:Recipe' % name]},
     )
