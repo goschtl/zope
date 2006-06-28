@@ -13,7 +13,6 @@ setup(
     keywords = "zope3 buildout",
     url='http://svn.zope.org/'+name,
     classifiers = [
-        'Framework :: Buildout',
         'License :: OSI Approved :: Zope Public License',
         ],
 
