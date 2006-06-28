@@ -197,6 +197,10 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
     def onAbsoluteLink(self, link) :
         """ Event handler that can be specialized. """
         return link
+      
+    def onAbsoluteExternalLink(self, link) :
+        """ Event handler that can be specialized. """
+        return link
         
     def traverseName(self, node, name) :
         for ext in u'', u'.html', u'.txt' :
@@ -248,7 +252,6 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
         
     def unknown_starttag(self, tag, attrs):
         """ Called for each tag. Calls link event handlers. """
-        
         if tag in self.link_refs :
             result = []
             for key, value in attrs :
@@ -407,6 +410,7 @@ class WikiLinkProcessor(RelativeLinkProcessor) :
             link = link[len(site_url)+1:]
             node = page.site
         elif self.isAbsoluteURL(link) :
+            link = self.onAbsoluteExternalLink(link)
             return False, link
         elif link.startswith("#") :
             return False, link
