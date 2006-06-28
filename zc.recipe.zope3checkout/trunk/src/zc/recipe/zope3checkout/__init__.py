@@ -1,6 +1,6 @@
 import os, re
 
-class Zope3Checkout:
+class Recipe:
 
     def __init__(self, buildout, name, options):
         self.buildout = buildout
