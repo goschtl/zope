@@ -62,7 +62,6 @@ def contained(obj, parent=None, name=None):
 class SQLAlchemyNameChooser(NameChooser):
 
     def checkName(self, name, container):
-
         if isinstance(name, str):
             name = unicode(name)
         elif not isinstance(name, unicode):
@@ -70,23 +69,15 @@ class SQLAlchemyNameChooser(NameChooser):
 
         unproxied = removeSecurityProxy(container)
         if not name.startswith(unproxied._class.__name__+'.'):
-            raise UserError(
-                _("Invalid name for SQLAlchemy object")
-                )
-        try:
-            id = int(name.split('.')[-1])
-        except:
-            raise UserError(
-                _("Invalid id for SQLAlchemy object")
-                )
-
+            raise UserError("Invalid name for SQLAlchemy object")
         return True
 
     def chooseName(self, name, obj):
-        # commit the object to make sure it contains an id
+        # flush the object to make sure it contains an id
         session = z3c.zalchemy.getSession()
-        session.flush(obj)
-        return '%s.%i'%(obj.__class__.__name__, obj.id)
+        session.save(obj)
+        session.flush([obj])
+        return self.context._toStringIdentifier(obj)
 
 
 class SQLAlchemyContainer(Persistent, Contained):
@@ -115,19 +106,16 @@ class SQLAlchemyContainer(Persistent, Contained):
         return iter(self.keys())
 
     def items(self):
-        for obj in self._class.mapper.select():
-            name = '%s.%i'%(self._class.__name__, obj.id)
+        session = z3c.zalchemy.getSession()
+        query = session.query(self._class)
+        for obj in query.select():
+            name = self._toStringIdentifier(obj)
             yield (name, contained(obj, self, name) )
 
     def __getitem__(self, name):
         if not isinstance(name, basestring):
             raise KeyError, "%s is not a string" % name
-        vals = name.split('.')
-        try:
-            id=int(vals[-1])
-        except ValueError:
-            return None
-        obj = self._class.mapper.selectfirst(self._class.c.id==id)
+        obj = self._fromStringIdentifier(name)
         if obj is None:
             raise KeyError, name
         return contained(obj, self, name)
@@ -144,7 +132,7 @@ class SQLAlchemyContainer(Persistent, Contained):
     def __len__(self):
         try:
             session = z3c.zalchemy.getSession()
-            query = session.query(class_)
+            query = session.query(self._class)
             return query.count()
         except sqlalchemy.exceptions.SQLError:
             # we don't want an exception in case of database problems
@@ -158,5 +146,21 @@ class SQLAlchemyContainer(Persistent, Contained):
 
     def __setitem__(self, name, item):
         session = z3c.zalchemy.getSession()
-        session.flush(item)
+        session.save(item)
+        session.flush([item])
+
+    def _toStringIdentifier(self, obj):
+        session = z3c.zalchemy.getSession()
+        mapper = session.mapper(obj.__class__)
+        instance_key = mapper.instance_key(obj)
+        ident = str(instance_key[1])
+        return '%s.%s'%(instance_key[0].__name__, ident)
+
+    def _fromStringIdentifier(self, name):
+        dotpos = name.find('.')
+        if dotpos<0:
+            return None
+        exec 'keys='+name[dotpos+1:]
+        session = z3c.zalchemy.getSession()
+        return session.query(self._class).get([str(key) for key in keys])
 
