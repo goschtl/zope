@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zc="http://namespaces.zope.com/zc"
+    i18n_domain='zc.sharing'
+    >
+
+<!-- Simple privilege definitions, useful for apps that don't -->
+<!-- care about their own or that want an example -->
+
+  <zc:privilege bit="0" title="Read"
+                description="Read or view content"
+                />
+
+    <zc:permissionPrivilege permission="zope.View"
+                            privilege="0"
+                            />
+
+    <zc:permissionPrivilege permission="zope.app.dublincore.view"
+                            privilege="0"
+                            />
+
+  <zc:privilege bit="2" title="Write"
+                description="Modify content"
+                />
+
+    <zc:permissionPrivilege permission="zope.ManageContent"
+                            privilege="2"
+                            />
+    <zc:permissionPrivilege permission="zope.app.dublincore.change"
+                            privilege="2"
+                            />
+
+  <zc:privilege bit="4" title="Share"
+                description="Share content"
+                />
+
+    <zc:permissionPrivilege permission="zope.Security"
+                            privilege="4"
+                            />
+
+  <zc:privileges for="zc.sharing.interfaces.ISharable"
+                 titles="Read Write Share"
+                 />
+
+  <zc:subobjectPrivileges
+     for="zope.app.container.interfaces.IContainer"
+     titles="Read Write Share"
+     />
+
+
+</configure>

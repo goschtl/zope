@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zc="http://namespaces.zope.com/zc"
+    >
+
+<!-- Make zope.manager the administrator -->
+
+<zc:systemAdministrators principals="zope.manager" />
+
+</configure>
