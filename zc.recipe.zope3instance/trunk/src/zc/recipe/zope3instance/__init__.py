@@ -2,13 +2,14 @@ import os, re, shutil
 import zc.buildout
 import zc.recipe.egg
 
-class Recipe(zc.recipe.egg.Egg):
+class Recipe:
     # Need to think about the inheritence interface
     # it *is* reasonable to think about instances as an
     # extension of the basic egg/script-generation model.
 
     def __init__(self, buildout, name, options):
-        zc.recipe.egg.Egg.__init__(self, buildout, name, options)
+        self.egg = zc.recipe.egg.Egg(buildout, name, options)
+        self.options, self.name = options, name
 
         options['zope3'] = options.get('zope3', 'zope3')
         options['database-config'] = buildout[options['database']]['zconfig']
@@ -24,33 +25,22 @@ class Recipe(zc.recipe.egg.Egg):
         
         options = self.options
         location = options['location']
+
+        requirements, ws = self.egg.working_set()
+
         if os.path.exists(location):
-            return location
 
-        # Gather information on extra distros. We should be able to
-        # inherit the next 2 statements, but Egg doesn't provide a
-        # subclassing api
-        
-        distributions = [
-            r.strip()
-            for r in options.get('distribution', self.name).split('\n')
-            if r.strip()
-            ]
+            # See is we can stop.  We need to see if the working set path
+            # has changed.
+            saved_path_path = os.path.join(location, 'etc', '.eggs')
+            if os.path.isfile(saved_path_path):
+                if (open(saved_path_path).read() ==
+                    '\n'.join([d.location for d in ws])
+                    ):
+                    return location
 
-        if self.buildout['buildout'].get('offline') == 'true':
-            ws = zc.buildout.easy_install.working_set(
-                distributions, options['executable'],
-                [options['_d'], options['_e']]
-                )
-        else:
-            ws = zc.buildout.easy_install.install(
-                distributions, options['_e'],
-                links = self.links,
-                index = self.index, 
-                executable = options['executable'],
-                always_unzip=options.get('unzip') == 'true',
-                path=[options['_d']]
-                )
+            # The working set has changed.  Blow away the instance.
+            shutil.rmtree(location)
         
         # What follows is a bit of a hack because the instance-setup mechanism
         # is a bit monolithic.  We'll run mkzopeinstabce and then we'll
@@ -67,6 +57,9 @@ class Recipe(zc.recipe.egg.Egg):
             ) == 0
 
         try:
+            # Save the working set:
+            open(os.path.join(location, 'etc', '.eggs'), 'w').write(
+                '\n'.join([d.location for d in ws]))
 
             # Now, patch the zodb option in zope.conf
             zope_conf_path = os.path.join(location, 'etc', 'zope.conf')

@@ -1,7 +1,10 @@
 Recipe for createing a Zope 3 instance
 ======================================
 
-This recipe takes the following options:
+This recipe creates a Zope instance that has been extended by a
+collection of eggs.
+
+The recipe takes the following options:
 
 zope3 
    The name of a section providing a Zope 3 installation definition.
@@ -18,10 +21,8 @@ database
 user
    The user name and password for manager user
 
-distribution
+eggs
    One or more requirements for distributions to be included.
-
-   THIS WILL SOON BE RENAMED TO EGGS
 
 zcml
 
