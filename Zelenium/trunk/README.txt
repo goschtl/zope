@@ -154,9 +154,9 @@ Zelenium Product README
     result data from an automated test run to the server.
 
     Invoke the test suite from your browser as usual, but append the
-    query string '?auto=1', to the URL, e.g.::
+    query string '?auto=true', to the URL, e.g.::
 
-      http://localhost:8080/test_suite?auto=1
+      http://localhost:8080/test_suite?auto=true
 
     Selenium will run all test cases, and then upload its result data
     to the 'postResults' method of your suite. (Note that you no longer

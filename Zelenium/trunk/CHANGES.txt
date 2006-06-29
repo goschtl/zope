@@ -1,5 +1,11 @@
 Zelenium Product Changelog
 
+  After Zelenium 0.8
+
+    - Corrected the documentation in the README for capturing results of a test
+      run ('auto=1' -> 'auto=true', in line with the Selenium documentation).
+      Thanks to Yoshinori Okuji for pointing this out.
+
   Zelenium 0.8 (2006/05/16)
 
     - Fixed unit tests by wrapping filesystem objects that are rendered
