@@ -17,8 +17,9 @@ Zope Changes
     Bug fixes
 
       - Fixed issue 525: DateWidget ru-format.
-        If you plan to use DatetimeWidget with timezone information take a look
-        at the note in the DatetimeWidget docstring;
+        Added new Date(time)I18nWidget. Note: if you plan to use
+        DatetimeI18nWidget with timezone information take a look
+        at the note in the DatetimeI18nWidget docstring;
 
       - Fixed issue 531: Spurious i18n deprecation warnings;
 
