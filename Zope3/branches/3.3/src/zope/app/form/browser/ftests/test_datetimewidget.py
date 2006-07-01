@@ -22,7 +22,7 @@ from persistent import Persistent
 from datetime import datetime
 
 import zope.security.checker
-from zope.datetime import tzinfo
+from zope.datetime import parseDatetimetz, tzinfo
 from zope.interface import Interface, implements
 from zope.schema import Datetime, Choice
 from zope.traversing.api import traverse
@@ -39,22 +39,22 @@ class IDatetimeTest(Interface):
     d3 = Choice(
         required=False,
         values=(
-            datetime(2003, 9, 15),
-            datetime(2003, 10, 15)),
-        missing_value=datetime(2000, 1, 1))
+            datetime(2003, 9, 15, tzinfo=tzinfo(0)),
+            datetime(2003, 10, 15, tzinfo=tzinfo(0))),
+        missing_value=datetime(2000, 1, 1, tzinfo=tzinfo(0)))
 
     d1 = Datetime(
         required=True,
-        min=datetime(2003, 1, 1),
-        max=datetime(2020, 12, 31))
+        min=datetime(2003, 1, 1, tzinfo=tzinfo(0)),
+        max=datetime(2020, 12, 31, tzinfo=tzinfo(0)))
 
 class DatetimeTest(Persistent):
 
     implements(IDatetimeTest)
 
     def __init__(self):
-        self.d1 = datetime(2003, 4, 6)
-        self.d2 = datetime(2003, 8, 6)
+        self.d1 = datetime(2003, 4, 6, tzinfo=tzinfo(0))
+        self.d2 = datetime(2003, 8, 6, tzinfo=tzinfo(0))
         self.d3 = None
 
 class Test(BrowserTestCase):
@@ -80,12 +80,7 @@ class Test(BrowserTestCase):
             m = re.search(pattern, source, re.DOTALL)
             if m is None:
                 return None
-
-        request = self.makeRequest(env={"HTTP_ACCEPT_LANGUAGE": "ru"})
-
-        formatter = request.locale.dates.getFormatter("dateTime")
-
-        return formatter.parse(m.group(1))
+        return parseDatetimetz(m.group(1))
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = DatetimeTest()
@@ -112,9 +107,9 @@ class Test(BrowserTestCase):
         # submit edit view
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.d1' : u'Feb 1, 2003 12:00:00 AM',
-            'field.d2' : u'Feb 2, 2003 12:00:00 AM',
-            'field.d3' : u'2003-10-15 00:00:00' },
+            'field.d1' : u'2003-02-01 00:00:00+00:00',
+            'field.d2' : u'2003-02-02 00:00:00+00:00',
+            'field.d3' : u'2003-10-15 00:00:00+00:00' },
             env={"HTTP_ACCEPT_LANGUAGE": "en"})
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
@@ -122,9 +117,9 @@ class Test(BrowserTestCase):
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
 
-        self.assertEqual(object.d1, datetime(2003, 2, 1))
-        self.assertEqual(object.d2, datetime(2003, 2, 2))
-        self.assertEqual(object.d3, datetime(2003, 10, 15))
+        self.assertEqual(object.d1, datetime(2003, 2, 1, tzinfo=tzinfo(0)))
+        self.assertEqual(object.d2, datetime(2003, 2, 2, tzinfo=tzinfo(0)))
+        self.assertEqual(object.d3, datetime(2003, 10, 15, tzinfo=tzinfo(0)))
 
 
     def test_missing_value(self):
@@ -143,7 +138,7 @@ class Test(BrowserTestCase):
         object = traverse(self.getRootFolder(), 'test')
         self.assert_(object.d2 is None) # default missing_value for dates
         # 2000-1-1 is missing_value for d3
-        self.assertEqual(object.d3, datetime(2000, 1, 1))
+        self.assertEqual(object.d3, datetime(2000, 1, 1, tzinfo=tzinfo(0)))
 
 
     def test_required_validation(self):
@@ -171,7 +166,7 @@ class Test(BrowserTestCase):
         # submit a value for d3 that isn't allowed
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.d3' : u'Feb 1, 2003 12:00:00 AM'})
+            'field.d3' : u'2003-02-01 12:00:00+00:00'})
         self.assertEqual(response.getStatus(), 200)
         self.assert_(invalidValueErrorExists('d3', response.getBody()))
 
@@ -183,7 +178,7 @@ class Test(BrowserTestCase):
         # submit value for d1 that is too low
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.d1' : u'Dec 31, 2002 12:00:00 AM'},
+            'field.d1' : u'2002-12-31 12:00:00+00:00'},
             env={"HTTP_ACCEPT_LANGUAGE": "en"})
         self.assertEqual(response.getStatus(), 200)
         self.assert_(validationErrorExists('d1', 'Value is too small',
@@ -192,7 +187,7 @@ class Test(BrowserTestCase):
         # submit value for i1 that is too high
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.d1' : u'Dec 1, 2021 12:00:00 AM'},
+            'field.d1' : u'2021-12-01 12:00:00+00:00'},
             env={"HTTP_ACCEPT_LANGUAGE": "en"})
         self.assertEqual(response.getStatus(), 200)
         self.assert_(validationErrorExists('d1', 'Value is too big',

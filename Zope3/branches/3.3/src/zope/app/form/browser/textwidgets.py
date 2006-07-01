@@ -19,6 +19,8 @@ __docformat__ = 'restructuredtext'
 
 from xml.sax import saxutils
 from zope.interface import implements
+from zope.datetime import parseDatetimetz
+from zope.datetime import DateTimeError
 from zope.i18n.format import DateTimeParseError
 
 from zope.app.form.interfaces import IInputWidget, ConversionError
@@ -483,8 +485,36 @@ class FloatWidget(TextWidget):
             except ValueError, v:
                 raise ConversionError(_("Invalid floating point data"), v)
 
-class DateWidget(TextWidget):
+class DatetimeWidget(TextWidget):
+    """Datetime entry widget."""
+
+    displayWidth = 20
+
+    def _toFieldValue(self, input):
+        if input == self._missing:
+            return self.context.missing_value
+        else:
+            try:
+                # TODO: Currently datetimes return in local (server)
+                # time zone if no time zone information was given.
+                # Maybe offset-naive datetimes should be returned in
+                # this case? (DV)
+                return parseDatetimetz(input)
+            except (DateTimeError, ValueError, IndexError), v:
+                raise ConversionError(_("Invalid datetime data"), v)
+
+class DateWidget(DatetimeWidget):
     """Date entry widget.
+    """
+
+    def _toFieldValue(self, input):
+        v = super(DateWidget, self)._toFieldValue(input)
+        if v != self.context.missing_value:
+            v = v.date()
+        return v
+
+class DateI18nWidget(TextWidget):
+    """I18n date entry widget.
 
     The `displayStyle` attribute may be set to control the formatting of the
     value.
@@ -513,15 +543,15 @@ class DateWidget(TextWidget):
                     "%s (%r)" % (v, input))
 
     def _toFormValue(self, value):
-        value = super(DateWidget, self)._toFormValue(value)
+        value = super(DateI18nWidget, self)._toFormValue(value)
         if value:
             formatter = self.request.locale.dates.getFormatter(
                 self._category, (self.displayStyle or None))
             value = formatter.format(value)
         return value
 
-class DatetimeWidget(DateWidget):
-    """Datetime entry widget.
+class DatetimeI18nWidget(DateI18nWidget):
+    """I18n datetime entry widget.
 
     The `displayStyle` attribute may be set to control the formatting of the
     value.
