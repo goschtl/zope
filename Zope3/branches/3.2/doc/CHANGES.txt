@@ -10,6 +10,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 529: Undo Principal Transactions doesn't work with
+        non-root principals
+
       - Fixed issue 636: Default ITraverser can't traverse old style
         classes
 
