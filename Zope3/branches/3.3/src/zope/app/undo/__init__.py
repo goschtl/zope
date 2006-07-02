@@ -23,8 +23,7 @@ from zope.interface import implements
 from zope.traversing.interfaces import IPhysicallyLocatable
 
 from zope.app.undo.interfaces import IUndoManager, UndoError
-from zope.app.security.principalregistry import principalRegistry
-from zope.app.security.interfaces import IPrincipal
+from zope.app.security.interfaces import IAuthentication, IPrincipal
 from zope.app.security.interfaces import PrincipalLookupError
 
 def undoSetup(event):
@@ -144,8 +143,9 @@ class ZODBUndoManager(object):
                     user_name = split[1]
             if user_name:
                 try:
-                    entry['principal'] = principalRegistry.getPrincipal(
-                        user_name)
+                    principal = zope.component.getUtility(
+                        IAuthentication).getPrincipal(user_name)
+                    entry['principal'] = principal
                 except PrincipalLookupError:
                     # principals might have passed away
                     pass
@@ -168,7 +168,8 @@ class ZODBUndoManager(object):
         txns = self._getUndoInfo(None, principal, first, -batch_size)
         while txns and left_overs:
             for info in txns:
-                if info['id'] in left_overs and info['principal'] is principal:
+                if (info['id'] in left_overs and
+                    info['principal'].id == principal.id):
                     left_overs.remove(info['id'])
             first += batch_size
             txns = self._getUndoInfo(None, principal, first, -batch_size)
