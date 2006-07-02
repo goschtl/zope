@@ -19,11 +19,8 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 from zope.interface import Attribute
-
-from zope.i18n import MessageIDFactory
-
-
-_ = MessageIDFactory("zorg.wikification")
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory("zorg.wikification")
           
 
 class ILinkProcessor(Interface) :

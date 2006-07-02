@@ -24,11 +24,11 @@ from zope.interface.common.mapping import IEnumerableMapping
 from zope.schema import Bytes, BytesLine
 
 from zope.app.container.interfaces import IContainer
-from zope.i18n import MessageIDFactory
+from zope.i18nmessageid import MessageFactory
 
 from zorg.ajax.interfaces import IAjaxPage
 
-_ = MessageIDFactory("zorg.live")
+_ = MessageFactory("zorg.live")
 
 class ILivePageEvent(Interface) :
     """ LivePage events are broadcasted from server side LivePage clients

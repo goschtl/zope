@@ -36,9 +36,9 @@ from zope.security import canAccess
 from zope.security.interfaces import ForbiddenAttribute
 
 from zope.publisher.browser import TestRequest
-from zope.i18n import MessageIDFactory
+from zope.i18nmessageid import MessageFactory
 
-_ = MessageIDFactory("zorg.wikification")
+_ = MessageFactory("zorg.wikification")
 
 from persistent import Persistent
 

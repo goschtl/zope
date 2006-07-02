@@ -20,11 +20,11 @@ __docformat__ = 'restructuredtext'
 import re, urllib, cgi, os
 
 import zope
+import zope.contenttype
 
 from zope.interface import implements
 from zope.component import adapts
 from zope.app import zapi
-from zope.app import contenttypes
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.file import File
@@ -784,7 +784,7 @@ class UploadFilePlaceholder(AddObjectPlaceholder) :
         name = filename or self.page.parameter('name')
 
         if not contenttype :
-            contenttype = contenttypes.guess_content_type(filename)[0]
+            contenttype = zope.contenttype.guess_content_type(filename)[0]
 
         if data is None :
             data = ''
