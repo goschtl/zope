@@ -27,7 +27,7 @@ from zope.app import zapi
 from zope.app.undo.interfaces import IUndoManager, UndoError
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.security.principalregistry import principalRegistry
-from zope.app.security.interfaces import IPrincipal
+from zope.app.security.interfaces import IAuthentication, IPrincipal
 
 # BBB Backward Compatibility (Can go away in 3.3)
 zope.deprecation.__show__.off()
@@ -153,19 +153,19 @@ class ZODBUndoManager(object):
                     user_name = split[1]
             if user_name:
                 try:
-                    entry['principal'] = principalRegistry.getPrincipal(
-                        user_name)
+                    principal = zope.component.getUtility(
+                        IAuthentication).getPrincipal(user_name)
+                    entry['principal'] = principal
                 except PrincipalLookupError:
                     # principals might have passed away
                     pass
                 except NotFoundError: # BBB Backward Compatibility
                     warnings.warn(
-                        "A %s instance raised a NotFoundError in "
+                        "An authentication utility raised a NotFoundError in "
                         "getPrincipals.  Raising NotFoundError in this "
                         "method is deprecated and will no-longer be supported "
                         "staring in Zope 3.3.  PrincipalLookupError should "
-                        "be raised instead."
-                        % principalRegistry.__class__.__name__,
+                        "be raised instead.",
                         DeprecationWarning)
         return entries
 
@@ -186,7 +186,8 @@ class ZODBUndoManager(object):
         txns = self._getUndoInfo(None, principal, first, -batch_size)
         while txns and left_overs:
             for info in txns:
-                if info['id'] in left_overs and info['principal'] is principal:
+                if (info['id'] in left_overs and
+                    info['principal'].id == principal.id):
                     left_overs.remove(info['id'])
             first += batch_size
             txns = self._getUndoInfo(None, principal, first, -batch_size)

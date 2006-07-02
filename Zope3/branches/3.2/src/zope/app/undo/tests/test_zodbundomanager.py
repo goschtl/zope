@@ -22,6 +22,7 @@ import transaction
 from zope.testing.cleanup import CleanUp 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.app.security.interfaces import IAuthentication
 
 from zope.app.undo import ZODBUndoManager
 from zope.app.undo.interfaces import UndoError
@@ -94,6 +95,7 @@ class Test(PlacelessSetup, TestCase):
         principalRegistry.definePrincipal('jim', 'Jim Fulton', login='jim')
         principalRegistry.definePrincipal('anthony', 'Anthony Baxter',
                                           login='anthony')
+        ztapi.provideUtility(IAuthentication, principalRegistry)
         self.undo = ZODBUndoManager(StubDB())
         self.data = list(testdata)
 
