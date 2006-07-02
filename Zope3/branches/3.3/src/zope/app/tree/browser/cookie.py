@@ -55,7 +55,7 @@ class CookieTreeView(StatefulTreeView):
         node.
         """
         parent = self.context
-        for parent in zapi.getParents(self.context):
+        for parent in zope.traversing.api.getParents(self.context):
             if ISite.providedBy(parent):
                 break
         return self.folderTree(parent)
@@ -64,7 +64,7 @@ class CookieTreeView(StatefulTreeView):
         """Cookie tree with only folders and the root container as
         root node.
         """
-        root = zapi.getRoot(self.context)
+        root = zope.traversing.api.getRoot(self.context)
         return self.folderTree(root)
 
     def virtualHostTree(self):
@@ -75,5 +75,5 @@ class CookieTreeView(StatefulTreeView):
         if vh:
             return self.folderTree(vh)
         else:
-            root = zapi.getRoot(self.context)
+            root = zope.traversing.api.getRoot(self.context)
             return self.folderTree(root)

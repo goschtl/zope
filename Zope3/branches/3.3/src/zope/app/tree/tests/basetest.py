@@ -17,6 +17,7 @@ $Id$
 """
 import unittest
 from zope.interface import implements, Interface, Attribute
+from zope.location import Location
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.testing import ztapi
 
@@ -31,12 +32,14 @@ class IItem(Interface):
     id = Attribute("id")
     children = Attribute("children")
 
-class Item(object):
+class Item(Location):
     implements(IItem)
 
     def __init__(self, id, children=[]):
         self.id = id
         self.children = children
+        for child in children:
+            child.__parent__ = self
 
 class ItemUniqueId(object):
     """Simplistic adapter from IItem to IUniqueId
