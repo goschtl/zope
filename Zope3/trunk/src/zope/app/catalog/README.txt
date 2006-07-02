@@ -216,12 +216,6 @@ We can update all of the indexes:
     [1, 6]
     >>> list(cat.apply({'color': 'red'}))
     [2]
-
-
-If no IntId utility exists in the same site as the catalog, we must ensure
-that we will not end up with objects not belonging to the site of the catalog.
-
-    >>> from zope.app.testing.setup import buildSampleFolderTree
     
 
 There's an alternate search interface that returns "result sets".
