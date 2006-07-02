@@ -10,6 +10,12 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 645: zope.testbrowser truncates document content after
+        goBack()
+
+      - Upgraded bundled Mechanize and ClientForm to latest versions - include
+        several bugfixes.
+
       - Fixed issue 466: Catalog reindex indexing wrong objects
 
       - Fixed issue 529: Undo Principal Transactions doesn't work with
