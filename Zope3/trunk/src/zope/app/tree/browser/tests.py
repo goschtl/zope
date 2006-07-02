@@ -17,9 +17,14 @@ $Id$
 """
 
 import unittest
+import zope.component
+from zope.component import getMultiAdapter
 from zope.publisher.browser import TestRequest
-from zope.app import zapi
+from zope.interface import alsoProvides
+from zope.traversing.interfaces import IContainmentRoot
+from zope.location.traversing import LocationPhysicallyLocatable
 from zope.app.testing import ztapi
+from zope.app.component.interfaces import ISite
 
 from zope.app.tree.utils import TreeStateEncoder
 from zope.app.tree.browser import StatefulTreeView
@@ -44,6 +49,7 @@ class CookieTreeViewTest(StatefulTreeViewTest):
     def setUp(self):
         super(CookieTreeViewTest, self).setUp()
         ztapi.browserView(None, 'cookie_tree', CookieTreeView)
+        zope.component.provideAdapter(LocationPhysicallyLocatable)
 
     def makeRequestWithVar(self):
         varname = CookieTreeView.request_variable 
@@ -55,7 +61,7 @@ class CookieTreeViewTest(StatefulTreeViewTest):
 
     def test_cookie_tree_pre_expanded(self):
         request = self.makeRequestWithVar()
-        view = zapi.getMultiAdapter((self.root_obj, request),
+        view = getMultiAdapter((self.root_obj, request),
                                     name='cookie_tree')
         cookie_tree = view.cookieTree()
         self.assert_(self.root_node.expanded)
@@ -64,10 +70,28 @@ class CookieTreeViewTest(StatefulTreeViewTest):
 
     def test_cookie_tree_sets_cookie(self):
         request = self.makeRequestWithVar()
-        view = zapi.getMultiAdapter((self.root_obj, request),
-                                    name='cookie_tree')
+        view = getMultiAdapter((self.root_obj, request),
+                               name='cookie_tree')
         cookie_tree = view.cookieTree()
         self.failIf(request.response.getCookie(view.request_variable) is None)
+
+    def test_cookie_tree_site_tree(self):
+        request = self.makeRequestWithVar()
+        alsoProvides(self.items['a'], IContainmentRoot)
+        alsoProvides(self.items['c'], ISite)
+        view = getMultiAdapter((self.items['f'], request),
+                               name='cookie_tree')
+        cookie_tree = view.siteTree()
+        self.assert_(cookie_tree.context is self.items['c'])
+
+    def test_cookie_tree_root_tree(self):
+        request = self.makeRequestWithVar()
+        alsoProvides(self.items['c'], IContainmentRoot)
+        view = getMultiAdapter((self.items['f'], request),
+                               name='cookie_tree')
+        cookie_tree = view.rootTree()
+        self.assert_(cookie_tree.context is self.items['c'])
+        
 
 def test_suite():
     suite = unittest.makeSuite(StatefulTreeViewTest)
