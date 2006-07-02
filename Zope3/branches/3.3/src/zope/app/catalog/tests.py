@@ -221,6 +221,8 @@ class Stub:
     __name__ = None
     __parent__ = None
 
+
+
 class TestEventSubscribers(unittest.TestCase):
 
     def setUp(self):
@@ -286,11 +288,74 @@ class TestEventSubscribers(unittest.TestCase):
         self.assertEqual(self.cat.regs, [])
 
 
+class TestIndexUpdating(unittest.TestCase) :
+    """Issue #466: When reindexing a catalog it takes all objects from 
+    the nearest IntId utility. This is a problem when IntId utility 
+    lives in another site than the one.
+            
+    To solve this issue we simply check whether the objects are living
+    within the nearest site.
+    """
+
+    def setUp(self):
+        
+        setup.placefulSetUp(True)
+        
+        from zope.app.catalog.catalog import Catalog
+        from zope.app.container.contained import ContainerSublocations
+        
+        self.root = setup.buildSampleFolderTree()
+        
+        subfolder = self.root[u'folder1'][u'folder1_1']
+        root_sm = self.root_sm = setup.createSiteManager(self.root)
+        local_sm = self.local_sm = setup.createSiteManager(subfolder)
+        self.utility = setup.addUtility(root_sm, '', IIntIds, IntIdsStub())
+        self.cat = setup.addUtility(local_sm, '', ICatalog, Catalog())
+        self.cat['name'] = StubIndex('__name__', None)
+        
+        for obj in self.iterAll(self.root) :
+            self.utility.register(obj)
+      
+    def tearDown(self):
+        setup.placefulTearDown()
+
+    def iterAll(self, container) :
+        from zope.app.container.interfaces import IContainer
+        for value in container.values() :
+            yield value
+            if IContainer.providedBy(value) :
+                for obj in self.iterAll(value) :
+                    yield obj
+                    
+    def test_visitSublocations(self) :
+        """ Test the iterContained method which should return only the
+        sublocations which are registered by the IntIds.
+        """
+        
+        names = sorted([ob.__name__ for i, ob in self.cat._visitSublocations()])
+        self.assertEqual(names, [u'folder1_1', u'folder1_1_1', u'folder1_1_2'])
+            
+    def test_updateIndex(self):
+        """ Setup a catalog deeper within the containment hierarchy
+        and call the updateIndexes method. The indexed objects should should
+        be restricted to the sublocations.
+        """
+        
+        self.cat.updateIndexes()
+        index = self.cat['name']
+        names = sorted([ob.__name__ for i, ob in index.doc.items()])
+        self.assertEqual(names, [u'folder1_1', u'folder1_1_1', u'folder1_1_2'])
+        
+ 
+        
+
+
 def test_suite():
     from zope.testing import doctest
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
     suite.addTest(unittest.makeSuite(TestEventSubscribers))
+    suite.addTest(unittest.makeSuite(TestIndexUpdating))
     suite.addTest(doctest.DocTestSuite('zope.app.catalog.attribute'))
     suite.addTest(doctest.DocFileSuite(
         'README.txt',
