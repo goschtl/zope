@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 529: Undo Principal Transactions doesn't work with
+        non-root principals
+
       - Fixed issue 525: DateWidget ru-format.
         Added new Date(time)I18nWidget. Note: if you plan to use
         DatetimeI18nWidget with timezone information take a look
