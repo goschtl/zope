@@ -2,7 +2,7 @@
    xmlns="http://namespaces.zope.org/browser"
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns:event="http://namespaces.zope.org/event"
-   i18n_domain="zorg"
+   i18n_domain="zorg.ajax"
    >
     
   <resourceDirectory
