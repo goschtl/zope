@@ -9,27 +9,24 @@ It uses the version string "2.0", though really there isn't an LWP Cookies
 (domain_dot and port_spec) while still being compatible with libwww-perl,
 I hope.
 
-Copyright 2002-2004 John J Lee <jjl@pobox.com>
+Copyright 2002-2006 John J Lee <jjl@pobox.com>
 Copyright 1997-1999 Gisle Aas (original libwww-perl code)
 
-This code is free software; you can redistribute it and/or modify it under
-the terms of the BSD License (see the file COPYING included with the
-distribution).
+This code is free software; you can redistribute it and/or modify it
+under the terms of the BSD or ZPL 2.1 licenses (see the file
+COPYING.txt included with the distribution).
 
 """
 
-import time, re, string
-from _ClientCookie import reraise_unmasked_exceptions, FileCookieJar, Cookie, \
-     MISSING_FILENAME_TEXT, LoadError
-from _HeadersUtil import join_header_words, split_header_words
-from _Util import startswith, iso2time, time2isoz
-from _Debug import getLogger
-debug = getLogger("ClientCookie").debug
+import time, re, string, logging
 
-try: True
-except NameError:
-    True = 1
-    False = 0
+from _clientcookie import reraise_unmasked_exceptions, FileCookieJar, Cookie, \
+     MISSING_FILENAME_TEXT, LoadError
+from _headersutil import join_header_words, split_header_words
+from _util import startswith, iso2time, time2isoz
+
+debug = logging.getLogger("mechanize").debug
+
 
 def lwp_cookie_str(cookie):
     """Return string representation of Cookie in an the LWP cookie file format.

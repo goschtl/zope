@@ -1,33 +1,20 @@
 """Mozilla / Netscape cookie loading / saving.
 
-Copyright 2002-2004 John J Lee <jjl@pobox.com>
+Copyright 2002-2006 John J Lee <jjl@pobox.com>
 Copyright 1997-1999 Gisle Aas (original libwww-perl code)
 
-This code is free software; you can redistribute it and/or modify it under
-the terms of the BSD License (see the file COPYING included with the
-distribution).
+This code is free software; you can redistribute it and/or modify it
+under the terms of the BSD or ZPL 2.1 licenses (see the file
+COPYING.txt included with the distribution).
 
 """
 
-import re, string, time
+import re, string, time, logging
 
-from _ClientCookie import reraise_unmasked_exceptions, FileCookieJar, Cookie, \
+from _clientcookie import reraise_unmasked_exceptions, FileCookieJar, Cookie, \
      MISSING_FILENAME_TEXT, LoadError
-from _Util import startswith, endswith
-from _Debug import getLogger
-debug = getLogger("ClientCookie").debug
-
-try: True
-except NameError:
-    True = 1
-    False = 0
-
-try: issubclass(Exception(), (Exception,))
-except TypeError:
-    real_issubclass = issubclass
-    from _Util import compat_issubclass
-    issubclass = compat_issubclass
-    del compat_issubclass
+from _util import startswith, endswith
+debug = logging.getLogger("ClientCookie").debug
 
 
 class MozillaCookieJar(FileCookieJar):
