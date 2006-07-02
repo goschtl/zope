@@ -24,6 +24,8 @@ from zope.app.container.interfaces import IContainer
 from zope.app.container.btree import BTreeContainer
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.intid.interfaces import IIntIds
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.location import location
 from BTrees.IFBTree import weightedIntersection
 
 class ResultSet:
@@ -63,17 +65,31 @@ class Catalog(BTreeContainer):
         """Unregister the data from indexes of this catalog."""
         for index in self.values():
             index.unindex_doc(docid)
+            
+    def _visitSublocations(self) :
+        """Restricts the access to the objects that live within
+        the nearest site if the catalog itself is locatable.
+        """
+        locatable = IPhysicallyLocatable(self, None)
+        if locatable is not None :
+            uidutil = zapi.getUtility(IIntIds, context=self)
+            site = locatable.getNearestSite()
+            for uid in uidutil:
+                obj = uidutil.getObject(uid)
+                if location.inside(obj, site) :
+                    yield uid, obj
+        else :
+            uidutil = zapi.getUtility(IIntIds)
+            for uid in uidutil:
+                yield uid, uidutil.getObject(uid)
+                 
 
     def updateIndex(self, index):
-        uidutil = zapi.getUtility(IIntIds)
-        for uid in uidutil:
-            obj = uidutil.getObject(uid)
+        for uid, obj in self._visitSublocations() :
             index.index_doc(uid, obj)
 
     def updateIndexes(self):
-        uidutil = zapi.getUtility(IIntIds)
-        for uid in uidutil:
-            obj = uidutil.getObject(uid)
+        for uid, obj in self._visitSublocations() :
             for index in self.values():
                 index.index_doc(uid, obj)
 
