@@ -192,12 +192,12 @@ class WikiPage(ComposedAjaxPage) :
             
         return html
              
-    def wikiCommandForm(self, cmd, id, modification_stamp, current_stamp=None) :
+    def wikiCommandForm(self, cmd, menu_id, modification_stamp) :
         """ Render the link command form. """
         
         processor = self.processor = ILinkProcessor(self)
-        link_id = processor.createLinkId(id)
-        menu_id = processor.createMenuId(id)
+        link_id = processor.createLinkId(menu_id)
+        menu_id = processor.createMenuId(menu_id)
         processor.render_form = True
         processor.link_id = link_id
         processor.command = cmd
@@ -205,18 +205,15 @@ class WikiPage(ComposedAjaxPage) :
         processor.feed(body)
         placeholder = processor.placeholders.get(link_id)
         
-        if current_stamp is None :
-            current_stamp = self.getModificationStamp()
+        current_stamp = self.getModificationStamp()
         if placeholder is None :
             return self.message('Invalid link &quot;%s&quot;' % menu_id)
-        
+     
         if modification_stamp != current_stamp :
             return self._outdated()
         
-        form = placeholder._form()
-       #  print "Form:"
-#         print form
-        return form
+        return  placeholder._form()
+ 
 
     def getBaseURL(self) :
         return zapi.absoluteURL(self.container, self.request) + '/'

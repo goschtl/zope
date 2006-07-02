@@ -17,7 +17,7 @@ var WikiMenu = {
             }
       
         target = $(dropmenuID);
-            
+           
         if (window.event) 
             event.cancelBubble=true
         else if (e.stopPropagation) 
@@ -38,6 +38,12 @@ var WikiMenu = {
               
                 dropmenuobj.x= (WikiMenu.x != -1) ? WikiMenu.x : getposOffset(obj, "left")
                 dropmenuobj.y= getposOffset(obj, "top")
+                
+                if ($("wiki_content")) {
+                    var offsets = Position.positionedOffset($("wiki_content"))
+                    dropmenuobj.x -= offsets[0];
+                    dropmenuobj.y -= offsets[1];
+                    }
              
                 dropmenuobj.style.left=dropmenuobj.x-clearbrowseredge(obj, "rightedge")+"px"
                 dropmenuobj.style.top=dropmenuobj.y-clearbrowseredge(obj, "bottomedge")+obj.offsetHeight+"px"
@@ -88,7 +94,7 @@ var WikiMenu = {
             timestamp = "&modification_stamp=" + timestamp;
             
             new Ajax.Updater('wiki_link_form', './@@wikiCommandForm', 
-                { parameters: 'cmd=' + cmd + '&menu_id='+ id + timestamp + WikiMenu.extraInfo});
+                { parameters: 'cmd=' + cmd + '&menu_id='+ id + timestamp});  // + WikiMenu.extraInfo
             WikiMenu.linkID = id;  
             WikiMenu.placeNextTo(WikiMenu.caller);
             }
