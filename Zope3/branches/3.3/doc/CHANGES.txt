@@ -10,6 +10,8 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 665: ZCML swallowing KeyboardInterrupt and SystemExit.
+
       - Fixed issue 645: zope.testbrowser truncates document content after
         goBack()
 

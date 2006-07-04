@@ -220,6 +220,8 @@ class ConfigurationHandler(ContentHandler):
 
         try:
             self.context.begin(name, data, info)
+        except (KeyboardInterrupt, SystemExit):
+            raise
         except:
             if self.testing:
                 raise
@@ -324,6 +326,8 @@ class ConfigurationHandler(ContentHandler):
 
         try:
             self.context.end()
+        except (KeyboardInterrupt, SystemExit):
+            raise
         except:
             if self.testing:
                 raise
