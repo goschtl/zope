@@ -39,4 +39,5 @@ def evolve(context):
             # annotations mapping) as dirty.  It contains a reference
             # to the old class path for ghosts
             annotations = IAnnotations(obj)
-            annotations[DCkey] = annotations[DCkey]
+            if DCkey in annotations :
+                annotations[DCkey] = annotations[DCkey]
