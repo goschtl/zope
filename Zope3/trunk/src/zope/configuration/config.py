@@ -610,6 +610,8 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
                     continue
                 try:
                     callable(*args, **kw)
+                except (KeyboardInterrupt, SystemExit):
+                    raise
                 except:
                     if testing:
                         raise
