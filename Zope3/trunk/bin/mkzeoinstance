@@ -23,7 +23,12 @@ import sys
 here = os.path.dirname(os.path.realpath(__file__))
 swhome = os.path.dirname(here)
 
-for parts in [("src",), ("lib", "python"), ("Lib", "site-packages")]:
+for parts in [
+    ("src",), 
+    ("lib", "python"), 
+    ("lib64", "python"), 
+    ("Lib", "site-packages"),
+    ]:
     d = os.path.join(swhome, *(parts + ("ZEO",)))
     if os.path.isdir(d):
         d = os.path.join(swhome, *parts)

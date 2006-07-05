@@ -25,7 +25,12 @@ swhome = os.path.dirname(here)
 
 from_checkout = os.path.isdir(os.path.join(swhome, ".svn"))
 
-for parts in [("src",), ("lib", "python"), ("Lib", "site-packages")]:
+for parts in [
+    ("src",), 
+    ("lib", "python"), 
+    ("lib64", "python"), 
+    ("Lib", "site-packages"),
+    ]:
     d = os.path.join(swhome, *(parts + ("zope", "app", "appsetup")))
     if os.path.isdir(d):
         d = os.path.join(swhome, *parts)
