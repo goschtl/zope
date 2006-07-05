@@ -73,7 +73,7 @@ def rfc1123_date(ts=None):
 
 
 
-from timezones import historical_zone_info as _data
+from zope.app.timezones import historical_zone_info as _data
 
 class DateTimeError(Exception): "Date-time error"
 class DateError(DateTimeError): 'Invalid Date Components'
