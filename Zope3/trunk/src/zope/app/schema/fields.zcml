@@ -192,6 +192,17 @@
 
   </class>
 
+  <class class="zope.schema.Choice">
+    <factory
+        id="zope.schema.Choice"
+        title="Choice Field"
+        description="Choice Field" 
+        />
+
+    <require like_class="zope.schema.Field" />
+
+  </class>
+
   <class class="zope.schema.Set">
 
     <factory
@@ -239,6 +250,45 @@
 
   </class>
 
+  <class class="zope.schema.Date">
+
+    <factory
+        id="zope.schema.Date"
+        title="Date Field"
+        description="Date Field" 
+        />
+
+    <require like_class="zope.schema.Orderable" />
+    <require like_class="zope.schema.Field" />
+
+  </class>
+
+  <class class="zope.schema.Time">
+
+    <factory
+        id="zope.schema.Time"
+        title="Time Field"
+        description="Time Field" 
+        />
+
+    <require like_class="zope.schema.Orderable" />
+    <require like_class="zope.schema.Field" />
+
+  </class>
+
+  <class class="zope.schema.Timedelta">
+
+    <factory
+        id="zope.schema.Timedelta"
+        title="Timedelta Field"
+        description="Timedelta Field" 
+        />
+
+    <require like_class="zope.schema.Orderable" />
+    <require like_class="zope.schema.Field" />
+
+  </class>
+
   <class class="zope.schema.SourceText">
 
     <factory
@@ -270,6 +320,18 @@
 	id="zope.schema.URI"
 	title="URI Field"
 	description="URI Field" />
+
+    <require like_class="zope.schema.MinMaxLen" />
+    <require like_class="zope.schema.Field" />
+
+  </class>
+
+  <class class="zope.schema.DottedName">
+    <factory
+        id="zope.schema.DottedName"
+        title="Dotted Name"
+        description="Dotted Name" 
+        />
 
     <require like_class="zope.schema.MinMaxLen" />
     <require like_class="zope.schema.Field" />
