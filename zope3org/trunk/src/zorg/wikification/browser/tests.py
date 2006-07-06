@@ -8,11 +8,12 @@ from zope.app.testing import ztapi
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
 
 from zope.interface import classImplements
+from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.annotation.interfaces import IAnnotations
+from zope.annotation.interfaces import IAnnotatable
+from zope.annotation.attribute import AttributeAnnotations
+
 from zope.app import zapi
-from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.annotation.interfaces import IAnnotations
-from zope.app.annotation.interfaces import IAnnotatable
-from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.container.interfaces import IContained
 
 

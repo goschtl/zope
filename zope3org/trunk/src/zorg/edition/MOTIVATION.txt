@@ -18,15 +18,15 @@ folder tree with the following structure as our sample :
     >>> from zope.interface import directlyProvides
     >>> from ZODB.tests import util
     >>> import zope.app.versioncontrol.interfaces
-    >>> import zope.app.traversing.interfaces
+    >>> import zope.traversing.interfaces
     >>> import zope.app.folder
     >>> from zope.interface import implements
-    >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
+    >>> from zope.traversing.interfaces import IPhysicallyLocatable
     >>> class TestFolder(zope.app.folder.Folder) :
     ...     implements(IPhysicallyLocatable)
     ...     def getPath(self) : return ""
     >>> sample = TestFolder()
-    >>> directlyProvides(sample, zope.app.traversing.interfaces.IContainmentRoot)
+    >>> directlyProvides(sample, zope.traversing.interfaces.IContainmentRoot)
     >>> a = sample["a"] = TestFolder()
     >>> b = sample["b"] = TestFolder()
     >>> c = b["c"] = TestFolder()
@@ -151,7 +151,7 @@ IVersionControl.applyVersionControl) :
     
 The SimpleHistoryStorage.register method copies nothing. The copy process is 
 managed by a multi adapter that implements a versioning policy, i.e. determines
-how and what is versioned. The implementation here uses zope.app.copypastemove 
+how and what is versioned. The implementation here uses zope.copypastemove 
 to save each version as a normal copy of the original content object.
     
     >>> import zorg.edition.policies

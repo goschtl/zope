@@ -2,7 +2,7 @@ import unittest
 from zope.app.testing import setup
 from zope.app.container.sample import SampleContainer
 from zope.interface import Interface,implements,directlyProvides
-from zope.app.traversing.interfaces import ITraversable
+from zope.traversing.interfaces import ITraversable
 from zope.schema import Int
 from zope.schema.interfaces import IField
 from zope.app.container.interfaces import IReadContainer
@@ -10,14 +10,14 @@ from zorg.table.table import ReadMappingTable,SchemaCell,Row,Column,TableConfig
 from zorg.table.sort import SchemaSorter,MethodSorter
 from zorg.table.table import IRow,ITable,ICell,IColumn,ISorter
 from zope.component import provideAdapter,provideUtility
-from zope.app.size.interfaces import ISized
-from zope.app.size import DefaultSized
+from zope.size.interfaces import ISized
+from zope.size import DefaultSized
 from zope.interface.interfaces import IMethod
 from zope.publisher.browser import TestRequest
 from zope.app.testing import ztapi
 from zorg.table.browser.views import CellView,TableView
 from zope.configuration import xmlconfig
-from zope.app.traversing.interfaces import IContainmentRoot
+from zope.traversing.interfaces import IContainmentRoot
 import zope
 import zorg.table.tests
 

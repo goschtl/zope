@@ -39,7 +39,7 @@ Check the content of a the simplest document:
 
 A selection of the metadata will be copied also:
 
-    >>> from zope.app.dublincore.interfaces import IZopeDublinCore
+    >>> from zope.dublincore.interfaces import IZopeDublinCore
     >>> from datetime import datetime
     
     >>> dc = IZopeDublinCore(file)

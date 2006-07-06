@@ -5,7 +5,9 @@ from zope.app import zapi
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 from zope.formlib import form
-from zope.formlib.i18n import _
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory("zope")
+
 
 from interfaces import ITableForm
 

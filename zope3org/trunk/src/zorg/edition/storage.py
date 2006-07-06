@@ -21,13 +21,14 @@ from zope.interface import implements
 from persistent.dict import PersistentDict
 from persistent import Persistent
 
+from zope.annotation.interfaces import IAnnotatable
+from zope.annotation.interfaces import IAnnotations
+from zope.copypastemove.interfaces import IObjectCopier 
+
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
-from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.exception.interfaces import UserError
-from zope.app.copypastemove.interfaces import IObjectCopier 
 from zope.app.container.interfaces import INameChooser
-from zope.app.annotation.interfaces import IAnnotations
 from zope.app.keyreference.interfaces import IKeyReference
 
 from zope.security.management import queryInteraction

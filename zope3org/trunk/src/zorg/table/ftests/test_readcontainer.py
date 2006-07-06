@@ -1,6 +1,6 @@
 import unittest
 from zope.app.testing.functional import BrowserTestCase
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter
+from zope.rdb.interfaces import IZopeDatabaseAdapter
 from zope.app import zapi
 from zope.configuration import xmlconfig
 from zope.app.testing import ztapi
@@ -23,7 +23,7 @@ class RootTestCase(BrowserTestCase):
         i18n_domain="zope"
         package="table.ftests"
         >
-        <include package="zope.app.publisher.browser"
+        <include package="zope.publisher.browser"
         file="meta.zcml"/>
 
         <page

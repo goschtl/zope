@@ -22,11 +22,11 @@ import zope.app.testing.placelesssetup
 
 def commentSetUp(test=None) :
     
-    # zope.app.annotations
-    from zope.app.annotation.interfaces import IAnnotations
-    from zope.app.annotation.interfaces import IAnnotatable
-    from zope.app.annotation.interfaces import IAttributeAnnotatable
-    from zope.app.annotation.attribute import AttributeAnnotations
+    # zope.annotations
+    from zope.annotation.interfaces import IAnnotations
+    from zope.annotation.interfaces import IAnnotatable
+    from zope.annotation.interfaces import IAttributeAnnotatable
+    from zope.annotation.attribute import AttributeAnnotations
 
     zope.component.provideAdapter(AttributeAnnotations,
         [IAttributeAnnotatable], IAnnotations)
@@ -42,8 +42,8 @@ def commentSetUp(test=None) :
     from zorg.comment.comments import Comment
     from zorg.comment.interfaces import IAttributeAnnotableComments
     
-    from zope.app.dublincore.interfaces import IZopeDublinCore
-    from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+    from zope.dublincore.interfaces import IZopeDublinCore
+    from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 
 
     zope.interface.classImplements(File, IAnnotatable)

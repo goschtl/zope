@@ -94,10 +94,10 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
     def setUp(self, doctesttest=None):
         super(PlacelessSetup, self).setUp(doctesttest)
         
-        # zope.app.annotations
-        from zope.app.annotation.interfaces import IAnnotations
-        from zope.app.annotation.interfaces import IAttributeAnnotatable
-        from zope.app.annotation.attribute import AttributeAnnotations
+        # zope.annotations
+        from zope.annotation.interfaces import IAnnotations
+        from zope.annotation.interfaces import IAttributeAnnotatable
+        from zope.annotation.attribute import AttributeAnnotations
 
         zope.component.provideAdapter(AttributeAnnotations,
             [IAttributeAnnotatable], IAnnotations)

@@ -1,7 +1,7 @@
 
 from zope.app import zapi
-from zope.app.publisher.browser import BrowserView
-from zope.app.copypastemove.interfaces import IContainerItemRenamer
+from zope.publisher.browser import BrowserView
+from zope.copypastemove.interfaces import IContainerItemRenamer
 from zope.app.form.interfaces import IInputWidget,IDisplayWidget
 
 from zorg.table.browser.interfaces import ITableView

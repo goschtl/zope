@@ -19,16 +19,17 @@ __docformat__ = 'restructuredtext'
 import zope.event
 from zope.app import zapi
 from zope.interface import implements
-from zope.app.traversing.interfaces import TraversalError
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.lifecycleevent import ObjectCreatedEvent
+from zope.lifecycleevent import ObjectModifiedEvent
+from zope.traversing.interfaces import TraversalError
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.publisher.browser import BrowserView
+
 from zope.app.folder import Folder
 from zope.app.file import File
 from zope.app.file.interfaces import IFile
 from zope.app.container.interfaces import IContainer
-from zope.app.publisher.browser import BrowserView
-from zope.app.traversing.interfaces import IPhysicallyLocatable
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.session.interfaces import ISession
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
@@ -36,7 +37,7 @@ from zope.security import canAccess
 from zope.security.interfaces import ForbiddenAttribute
 
 from zope.publisher.browser import TestRequest
-from zope.i18nmessageid import MessageFactory
+from zope.i18n import MessageFactory
 
 _ = MessageFactory("zorg.wikification")
 
@@ -682,7 +683,8 @@ class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
         """
         if self.isAddView() :
             filepath = self.request.form.get('add', '')
-            return filepath.split(u'/')
+            names = filepath.split(u'/')
+            return [self.proposePageName(name) for name in names]
         else :
             return ['index.html']
     

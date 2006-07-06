@@ -8,7 +8,7 @@ We implement a subject that we are going to mark afterward:
 
     >>> from zope.app.container.contained import Contained
     >>> from zope.interface import implements
-    >>> from zope.app.annotation.interfaces import IAttributeAnnotatable
+    >>> from zope.annotation.interfaces import IAttributeAnnotatable
     >>> from zorg.seen.interfaces import ISeeableAttributeAnnotable
 
     >>> class Subject(Contained):

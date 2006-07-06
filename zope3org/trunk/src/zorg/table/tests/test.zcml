@@ -9,7 +9,7 @@
  <include package="zope.app.component" file="meta.zcml"/>
  <include package="zope.app.schema" file="meta.zcml"/>
  <include package="zope.app.security"/>
- <include package="zope.app.publisher.browser" file="meta.zcml"/>
+ <include package="zope.publisher.browser" file="meta.zcml"/>
  <include package="zope.app" file="menus.zcml"/>
  <include package="zope.app.pagetemplate" file="meta.zcml"/>
  <!--
@@ -20,13 +20,13 @@
   -->
  <include package="zope.app.container"/>
  <!--
- <include package="zope.app.dublincore"/>
+ <include package="zope.dublincore"/>
  -->
- <include package="zope.app.size"/>
+ <include package="zope.size"/>
  <include package="zope.app.form.browser"/>
  <include package="zope.app.pagetemplate"/>
  <include package="zope.app.component"/>
- <include package="zope.app.traversing.browser"/>
+ <include package="zope.traversing.browser"/>
  
 
 </configure>

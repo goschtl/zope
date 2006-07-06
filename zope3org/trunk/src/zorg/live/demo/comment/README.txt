@@ -118,7 +118,7 @@ new DOM element later on :
 
     >>> out1 = page1.output('uuid1')
     >>> out1
-    '{"html": "<div id=\\"comment1...", "where": null, "id": "comments"}'
+    '{..."html": "<div id=\\"comment1..."...}'
 
  
     >>> out1 == page2.output('uuid2')

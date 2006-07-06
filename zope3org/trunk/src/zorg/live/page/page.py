@@ -23,10 +23,10 @@ from zope.security.proxy import removeSecurityProxy
 
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
+from zope.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.keyreference.interfaces import IKeyReference
-from zope.app.publisher.browser import BrowserView
 from zope.app.intid.interfaces import IIntIds
 
 from zope.app.twisted.interfaces import IServerType

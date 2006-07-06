@@ -6,9 +6,9 @@ from zope.configuration import config, xmlconfig, fields
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.interface import implements, Interface
+from zope.publisher.browser import viewmeta
 from zope.app.component.metaconfigure import utility
 from zope.app.component import metaconfigure
-from zope.app.publisher.browser import viewmeta
 from zope.app.publisher.interfaces.browser import IBrowserView
 from zope.app.pagetemplate.engine import TrustedEngine
 from zope.configuration.exceptions import ConfigurationError

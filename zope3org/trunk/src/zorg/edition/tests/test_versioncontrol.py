@@ -34,42 +34,41 @@ from zope.testing import doctest
 import zope
 import persistent
 import zope.interface
-import zope.app.annotation.attribute
-import zope.app.annotation.interfaces
-import zope.app.traversing.interfaces
+import zope.annotation.attribute
+import zope.annotation.interfaces
+import zope.traversing.interfaces
 import zope.app.versioncontrol.repository
 import zope.interface.verify
+
+from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAnnotatable, IAnnotations
 
 from zope.app.versioncontrol import interfaces
 from zope.app.testing import ztapi
 from zope.app.testing.setup import setUpTraversal
 from zope.interface import classImplements
 
-from zope.app.traversing.interfaces import ITraversable, ITraverser
-from zope.app.traversing.interfaces import IPhysicallyLocatable
-from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.traversing.adapters import DefaultTraversable
-from zope.app.location.traversing import LocationPhysicallyLocatable
-from zope.app.traversing.adapters import RootPhysicallyLocatable
-from zope.app.traversing.adapters import Traverser
+from zope.traversing.interfaces import ITraversable, ITraverser
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.traversing.interfaces import IContainmentRoot
+from zope.traversing.adapters import DefaultTraversable
+from zope.traversing.adapters import RootPhysicallyLocatable
+from zope.traversing.adapters import Traverser
+from zope.location.traversing import LocationPhysicallyLocatable
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.copypastemove.interfaces import IObjectCopier
+from zope.copypastemove import ObjectCopier
 
-from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.app.container.interfaces import IContainer
 from zope.app.container.btree import BTreeContainer
 from zope.app.file.interfaces import IFile
 from zope.app.file.file import File
 from zope.app.folder.folder import Folder
-
-from zope.app.copypastemove.interfaces import IObjectCopier
-from zope.app.copypastemove import ObjectCopier
-
 from zope.app.container.interfaces import IWriteContainer, INameChooser
 from zope.app.container.contained import NameChooser
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 
 from zorg.edition.interfaces import IVersion, IUUIDGenerator, ITicketOwner
 from zorg.edition.uuid import UUIDGenerator

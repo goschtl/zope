@@ -1,4 +1,4 @@
-from zope.app.location.interfaces import ILocation
+from zope.location.interfaces import ILocation
 from zope import schema
 from zope.interface import Interface, Attribute
 

@@ -1,9 +1,9 @@
-from zope.app.publisher.browser import BrowserView
+from zope.publisher.browser import BrowserView
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 from zope.interface import Interface, implements
 from zope.app import zapi
-from zope.app.location.interfaces import ILocation
+from zope.location.interfaces import ILocation
 from zorg.table.table import TableConfig
 
 class TestView(BrowserView):

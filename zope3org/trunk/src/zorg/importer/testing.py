@@ -26,17 +26,17 @@ class PlacelessSetup(zope.app.testing.placelesssetup.PlacelessSetup):
     def setUp(self, doctesttest=None):
         super(PlacelessSetup, self).setUp(doctesttest)
         
-        # zope.app.annotations
-        from zope.app.annotation.interfaces import IAnnotations
-        from zope.app.annotation.attribute import AttributeAnnotations
+        # zope.annotations
+        from zope.annotation.interfaces import IAnnotations
+        from zope.annotation.attribute import AttributeAnnotations
         from zope.app.file.interfaces import IFile
 
         zope.component.provideAdapter(AttributeAnnotations,
             [IFile], IAnnotations)
 
         # dublin core annotations
-        from zope.app.dublincore.interfaces import IWriteZopeDublinCore
-        from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+        from zope.dublincore.interfaces import IWriteZopeDublinCore
+        from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 
         zope.component.provideAdapter(ZDCAnnotatableAdapter,
             [IFile], IWriteZopeDublinCore)

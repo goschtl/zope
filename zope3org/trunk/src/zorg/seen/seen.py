@@ -24,10 +24,10 @@ from zope.component import adapts
 from zope.event import notify
 from zope.interface import implements
 
-from zope.app.annotation.interfaces import IAnnotations
-from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.event.objectevent import Sequence, Attributes
-from zope.app.location import Location
+from zope.annotation.interfaces import IAnnotations
+from zope.lifecycleevent import ObjectModifiedEvent
+from zope.lifecycleevent import Sequence, Attributes
+from zope.location import Location
 
 from zorg.seen.interfaces import ISeeable
 from zorg.seen.interfaces import ISeen

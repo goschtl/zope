@@ -12,7 +12,6 @@
 #
 ##############################################################################
 """
-
 $Id: view.py 39651 2005-10-26 18:36:17Z oestermeier $
 """
 __docformat__ = 'restructuredtext'
@@ -24,6 +23,7 @@ from string import Template
 from persistent import Persistent
 from BTrees.OOBTree import OOBTree
 
+
 from zope.app import zapi
 from zope.interface import implements
 from zope.component import adapts
@@ -31,15 +31,13 @@ from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces import IRequest
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
-
 from zope.security.proxy import removeSecurityProxy
 from zope.security.checker import defineChecker, NoProxy
-
+from zope.traversing.interfaces import TraversalError
+from zope.traversing.interfaces import ITraversable
 from zope.app.session.interfaces import ISession
-from zope.app.datetimeutils import rfc1123_date
-from zope.app.traversing.interfaces import TraversalError
-from zope.app.traversing.interfaces import ITraversable
-from zope.app.publisher.browser import BrowserView
+from zope.datetime import rfc1123_date
+from zope.publisher.browser import BrowserView
 
 
 from zorg.ajax.interfaces import IAjaxPage

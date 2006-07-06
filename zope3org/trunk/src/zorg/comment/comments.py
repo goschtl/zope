@@ -23,11 +23,11 @@ from zope.component import adapts
 from zope.event import notify
 from zope.interface import implements
 
-from zope.app.annotation.interfaces import IAnnotations
+from zope.annotation.interfaces import IAnnotations
 from zope.app.file import File
-from zope.app.event.objectevent import Attributes, Sequence
-from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
-from zope.app.location import Location
+from zope.lifecycleevent import Attributes, Sequence
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.location import Location
 
 from zorg.comment import IAnnotableComments
 from zorg.comment import IComment
@@ -42,7 +42,7 @@ class CommentSequence(Sequence) :
        
        XXX This distinction should probably go into
        
-       zope.app.event.objectevent.Sequence
+       zope.lifecycleevent.Sequence
        
        later on.
     """

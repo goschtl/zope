@@ -7,19 +7,20 @@ from zope.interface.common import idatetime
 
 from zope.event import notify
 from zope.security.interfaces import Unauthorized
-from zope.app.exception.interfaces import UserError
-from zope.app.traversing.interfaces import TraversalError
+from zope.exception.interfaces import UserError
+from zope.traversing.interfaces import TraversalError
 
 from zope.app import zapi
-from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.copypastemove.interfaces import IPrincipalClipboard
-from zope.app.copypastemove.interfaces import IObjectCopier
-from zope.app.copypastemove.interfaces import IObjectMover
+from zope.lifecycleevent import ObjectModifiedEvent
+from zope.copypastemove.interfaces import IPrincipalClipboard
+from zope.copypastemove.interfaces import IObjectCopier
+from zope.copypastemove.interfaces import IObjectMover
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.container.interfaces import DuplicateIDError
 
 from zope.formlib import form
-from zope.formlib.i18n import _
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory("zope")
 
 from zorg.table.browser.form import TableFormBase, RowFormBase
 from zorg.table.browser.form import tableAction, rowAction

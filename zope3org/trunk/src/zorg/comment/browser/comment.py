@@ -21,11 +21,11 @@ import zope
 
 from zope.interface import implements
 from zope.component import adapts
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.app import zapi
 from zope.publisher.browser import TestRequest
+from zope.publisher.browser import BrowserView
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.publisher.browser import BrowserView
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.security.interfaces import PrincipalLookupError
 
 from zorg.comment import IComments

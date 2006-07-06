@@ -23,13 +23,13 @@ import pytz
 
 from zope.interface import implements
 from zope.component import adapts
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.app import zapi
 from zope.publisher.browser import TestRequest
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.publisher.browser import BrowserView
-from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.publisher.browser import BrowserView
 
-from zope.app.event.interfaces import IObjectModifiedEvent
+from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 from zorg.edition.interfaces import IUUIDGenerator
 from zorg.comment import IComments

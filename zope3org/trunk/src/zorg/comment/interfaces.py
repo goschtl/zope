@@ -18,9 +18,9 @@ $Id$
 
 from zope.interface import Interface, Attribute
 from zope.interface.common.mapping import IEnumerableMapping
-from zope.app.event.interfaces import ISequence
-from zope.app.annotation.interfaces import IAnnotatable
-from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.annotation.interfaces import IAnnotatable
+from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.lifecycleevent.interfaces import ISequence
 from zope.app.file.interfaces import IFile
 
 

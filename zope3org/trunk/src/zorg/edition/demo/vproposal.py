@@ -1,6 +1,6 @@
 import persistent
 import zope.interface
-from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.interfaces import IZopeDublinCore
 from zorg.edition.demo.interfaces import IVProposal
 
 class VProposal(persistent.Persistent):

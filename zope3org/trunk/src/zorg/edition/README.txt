@@ -89,7 +89,7 @@ as an example :
   >>> from zope.interface import directlyProvides
   >>> from zope.app.folder import Folder, rootFolder
   >>> from zope.app.testing.setup import setUpTraversal
-  >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
+  >>> from zope.traversing.interfaces import IPhysicallyLocatable
   >>> from ZODB.tests import util
   >>> from zorg.edition.tests.test_versioncontrol import buildRepository, buildDatabaseRoot
   >>> db_root = buildDatabaseRoot()
@@ -99,7 +99,7 @@ as an example :
   ...   def getPath(self) :
   ...       return ""
   >>> sample = TestFolder()
-  >>> directlyProvides(sample, zope.app.traversing.interfaces.IContainmentRoot)
+  >>> directlyProvides(sample, zope.traversing.interfaces.IContainmentRoot)
   >>> db_root['sample'] = sample
 
   >>> a = sample["a"] = TestFolder()
@@ -136,7 +136,7 @@ usually does for us):
 We need a way to adapt all objects into unique references for later
 access:
 ztapi.provideAdapter(IAnnotatable, ITicketOwner, TicketOwner)
-  >>> ztapi.provideAdapter(zope.app.annotation.interfaces.IAnnotatable, 
+  >>> ztapi.provideAdapter(zope.annotation.interfaces.IAnnotatable, 
   ...                                   interfaces.ITicketOwner,
   ...                                   storage.TicketOwner)    
 

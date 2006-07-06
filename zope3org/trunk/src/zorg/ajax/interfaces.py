@@ -24,7 +24,7 @@ from zope.interface.common.mapping import IEnumerableMapping
 from zope.schema import Bytes, BytesLine
 
 from zope.app.container.interfaces import IContainer
-from zope.i18nmessageid import MessageFactory
+from zope.i18n import MessageFactory
 _ = MessageFactory("zorg.ajax")
 
                 

@@ -14,9 +14,9 @@
 
 import unittest, doctest
 from zope.interface import implements
-from zope.app.copypastemove.interfaces import IObjectCopier
+from zope.copypastemove.interfaces import IObjectCopier
 from zope.app.container.interfaces import IContained
-from zope.app.traversing.interfaces import IContainmentRoot
+from zope.traversing.interfaces import IContainmentRoot
 
 from interfaces import IVersionableAspects
   

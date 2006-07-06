@@ -19,7 +19,8 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 from zope.interface import Attribute
-from zope.i18nmessageid import MessageFactory
+from zope.i18n import MessageFactory
+
 _ = MessageFactory("zorg.wikification")
           
 

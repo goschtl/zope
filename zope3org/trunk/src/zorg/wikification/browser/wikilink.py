@@ -25,15 +25,16 @@ import zope.contenttype
 from zope.interface import implements
 from zope.component import adapts
 from zope.app import zapi
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.lifecycleevent import ObjectCreatedEvent
+
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.file import File
 from zope.app.file.image import Image
 from zope.app.folder import Folder
 from zope.app.file.interfaces import IFile
-from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.container.interfaces import INameChooser
-from zope.app.traversing.interfaces import TraversalError
+from zope.traversing.interfaces import TraversalError
 from zope.publisher.browser import TestRequest
 
 from zorg.ajax.page import PageElement

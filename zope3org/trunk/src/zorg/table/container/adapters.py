@@ -1,6 +1,6 @@
 from interfaces import IMovableLocation
 from zope.interface import implements
-from zope.app.copypastemove.interfaces import IContainerItemRenamer
+from zope.copypastemove.interfaces import IContainerItemRenamer
 
 class MovableLocation(object):
 

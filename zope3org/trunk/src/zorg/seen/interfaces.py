@@ -18,8 +18,8 @@ $Id: interfaces.py 38949 2005-10-08 13:28:58Z dominikhuber $
 
 from zope.interface import Interface
 
-from zope.app.annotation.interfaces import IAnnotatable
-from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.annotation.interfaces import IAnnotatable
+from zope.annotation.interfaces import IAttributeAnnotatable
 
 from zope.interface.common.mapping import IEnumerableMapping
 from zope.interface.common.mapping import IWriteMapping

@@ -60,7 +60,7 @@ navigational structure, which is set aside for the moment :
 
 It uses the Dublin Core title (or "Untitled" if the title is not set).
 
-    >>> from zope.app.dublincore.interfaces import IZopeDublinCore
+    >>> from zope.dublincore.interfaces import IZopeDublinCore
     >>> index_page.title == IZopeDublinCore(context).title
     True
 

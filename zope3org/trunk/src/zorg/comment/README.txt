@@ -58,9 +58,9 @@ for the adapted context and the added comment:
     >>> comments.addComment('foo')
     1
 
-    >>> from zope.app.event.tests.placelesssetup import events, clearEvents
+    >>> from zope.component.eventtesting import events, clearEvents
     >>> len(events)
-    2
+    3
 
     >>> e = events.pop()
     >>> (e.object == subject, e.__class__.__name__ , 

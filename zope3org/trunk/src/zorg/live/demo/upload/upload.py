@@ -20,7 +20,7 @@ import zope
 from zope.app import zapi
 from zope.app.file.browser.file import FileUpdateView
 from zope.app.file import File
-from zope.app.event import objectevent
+from zope import lifecycleevent
 from zope.app.container.browser.adding import Adding
 
 from zorg.live.page.client import LivePageClient
@@ -43,7 +43,7 @@ class LiveFileAdd(LivePage, FileUpdateView) :
     def update_object(self, data, contenttype):
         
         f = File(data, contenttype)
-        zope.event.notify(objectevent.ObjectCreatedEvent(f))
+        zope.event.notify(lifecycleevent.ObjectCreatedEvent(f))
         
         adding = Adding(self.context, self.request)
         adding.add(f)

@@ -93,9 +93,6 @@ def test_suite():
         doctest.DocTestSuite('zorg.ajax.page', setUp=ajaxSetUp, 
                                                tearDown=ajaxTearDown,
                                                optionflags=flags),
-        doctest.DocTestSuite('zorg.ajax.livepage', setUp=ajaxSetUp, 
-                                               tearDown=ajaxTearDown,
-                                               optionflags=flags),                                       
         ))
 
 if __name__ == '__main__':

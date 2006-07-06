@@ -26,12 +26,12 @@ import zope.component
 import zope.interface
 from zope.app import zapi
 from zope.exceptions import DuplicationError
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.traversing.interfaces import TraversalError
 
 from zope.app.file import File
 from zope.app.folder import Folder
 from zope.app.container.interfaces import IContainer
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.traversing.interfaces import TraversalError
 
 from zorg.importer import IImporter
 

@@ -25,25 +25,24 @@ import zope.app.testing.setup
 
 from zope.testing import doctest, doctestunit
 from zope.app import zapi
-from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.annotation.interfaces import IAnnotations
-from zope.app.annotation.interfaces import IAnnotatable
-from zope.app.annotation.attribute import AttributeAnnotations
+from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.annotation.interfaces import IAnnotations
+from zope.annotation.interfaces import IAnnotatable
+from zope.annotation.attribute import AttributeAnnotations
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.traversing.interfaces import ITraversable, ITraverser
+from zope.traversing.interfaces import IPhysicallyLocatable
+from zope.traversing.interfaces import IContainmentRoot
+from zope.traversing.adapters import DefaultTraversable
+from zope.location.traversing import LocationPhysicallyLocatable
+from zope.traversing.adapters import RootPhysicallyLocatable
+from zope.traversing.adapters import Traverser
+
 from zope.app.container.interfaces import IContained
 from zope.app.container.contained import NameChooser
 from zope.app.container.interfaces import INameChooser
 from zope.app.folder.interfaces import IFolder
-from zope.app.traversing.interfaces import ITraversable, ITraverser
-from zope.app.traversing.interfaces import IPhysicallyLocatable
-from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.traversing.adapters import DefaultTraversable
-from zope.app.location.traversing import LocationPhysicallyLocatable
-from zope.app.traversing.adapters import RootPhysicallyLocatable
-from zope.app.traversing.adapters import Traverser
-
-
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 
 from zope.app.folder import rootFolder
 from zope.app.folder import Folder

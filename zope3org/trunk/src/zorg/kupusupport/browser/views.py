@@ -15,12 +15,12 @@ $Id: views.py 7083 2004-10-21 15:56:05Z dhuber $
 from zope.event import notify
 from zope.interface import implements
 from zope.security.interfaces import Unauthorized
+from zope.lifecycleevent import ObjectModifiedEvent
 
 from zope.app import zapi
-from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.app.container.interfaces import IContainer
-from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.publisher.browser import BrowserView
+from zope.publisher.browser import BrowserView
 
 from zorg.kupusupport.interfaces import IImageReadContainer
 from zorg.kupusupport.interfaces import IImageLibrary
@@ -37,7 +37,7 @@ class KupuEditor(BrowserView):
 
     Preparation::
 
-        >>> from zope.app.tests import placelesssetup, ztapi
+        >>> from zope.app.testing import placelesssetup, ztapi
         >>> from zope.publisher.browser import TestRequest
 
         >>> from zorg.kupusupport.interfaces import IKupuPolicy
@@ -71,7 +71,7 @@ class KupuEditor(BrowserView):
 
     There should be an ObjectModifiedEvent event logged:
 
-        >>> from zope.app.event.tests.placelesssetup import getEvents
+        >>> from zope.component.eventtesting import getEvents
         >>> from zope.app.event.interfaces import IObjectModifiedEvent
         >>> [event] = getEvents(IObjectModifiedEvent)
         >>> event.object is content
@@ -123,11 +123,11 @@ class ImageLibraryInfo(BrowserView):
 
         >>> from zope.interface import directlyProvides
         >>> from zope.publisher.browser import TestRequest
-        >>> from zope.app.annotation.interfaces import IAttributeAnnotatable, IAnnotations
-        >>> from zope.app.annotation.attribute import AttributeAnnotations
-        >>> from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-        >>> from zope.app.dublincore.interfaces import IWriteZopeDublinCore
-        >>> from zope.app.tests import setup, ztapi
+        >>> from zope.annotation.interfaces import IAttributeAnnotatable, IAnnotations
+        >>> from zope.annotation.attribute import AttributeAnnotations
+        >>> from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+        >>> from zope.dublincore.interfaces import IWriteZopeDublinCore
+        >>> from zope.app.testing import setup, ztapi
         >>> from zope.app.file.interfaces import IImage
 
         >>> from zorg.kupusupport.adapters import ImageReadContainer

@@ -1,6 +1,6 @@
 import unittest
 from zope.app.testing.functional import BrowserTestCase
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter
+from zope.rdb.interfaces import IZopeDatabaseAdapter
 from zope.app import zapi
 basic = 'mgr:mgrpw'
 
