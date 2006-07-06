@@ -2,11 +2,11 @@
 A ZSCP Implementation
 =====================
 
-The zscp module,
+The repository module,
 
   >>> from zf.zscp import repository
 
-implements the process for an SVN repository. It is controoled by the ZSCP
+implements the process for an SVN repository. It is controlled by the ZSCP
 repository object:
 
   >>> import tempfile
