@@ -1,7 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope">
-
-  <vocabulary
-      name="Object Interfaces"
-      factory=".vocabulary.ObjectInterfacesVocabulary" />
-
-</configure>
