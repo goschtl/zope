@@ -16,6 +16,14 @@ Zope Changes
 
     Bug fixes
 
+      - TAL interpreter didn't translate i18n Messages when inserted
+        as structure;
+
+      - Fixed issue 667: ZPT repeat "oddness"
+
+      - Fixed issue 646: TAL interpreter doesn't translate i18n
+        Messages when inserted as attributes;
+
       - Fixed issue 665: ZCML swallowing KeyboardInterrupt / SystemExit.
 
       - Fixed issue 525: DateWidget ru-format.
