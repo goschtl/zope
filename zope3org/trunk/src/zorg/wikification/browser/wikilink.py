@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 import re, urllib, cgi, os
 
 import zope
-import zope.contenttype
+#import zope.contenttype
 
 from zope.interface import implements
 from zope.component import adapts
@@ -41,6 +41,7 @@ from zorg.ajax.page import PageElement
 from zorg.wikification.parser import BaseHTMLProcessor
 from zorg.wikification.browser.interfaces import IWikiPage
 from zorg.wikification.browser.interfaces import ILinkProcessor
+
 
 class Placeholder(PageElement) :
     """ A base placeholder that renders a wikified link without id but
@@ -540,6 +541,7 @@ class WikiLinkProcessor(RelativeLinkProcessor) :
         """
         html = RelativeLinkProcessor.output(self)
         for placeholder in self.placeholders.values() :
+            
             html = placeholder.postProcessing(html)
                        
         return html
@@ -576,7 +578,7 @@ class MenuPlaceholder(Placeholder) :
         super(MenuPlaceholder, self).__init__(processor, index, label, link)
         self.enabled = processor.page.isEditable()
         self.menu_id = processor.createMenuId(index)
-        self.onMouseOver = "WikiMenu.dropDown(this, event, '%s');" % self.menu_id       
+        self.onMouseOver = "WikiMenu.dropDown(this, event, '%s', '');" % self.menu_id       
 
     def startTag(self, attrs) :
         """ Called when a starttag for a placeholder is detected. """
@@ -762,7 +764,7 @@ class AddObjectPlaceholder(SavingPlaceholder) :
     def postProcessing(self, html) :
         """ Replaces a textual WikiLink globally. """
         if self.global_scope and self.new_link :
-            html = html.replace("[%s]" % self.label, self.new_link)
+            replaced = html.replace("[%s]" % self.label, self.new_link)
         return html
         
         
@@ -781,7 +783,8 @@ class UploadFilePlaceholder(AddObjectPlaceholder) :
         contenttype = self.page.parameter('contenttype')
 
         filename = self.filename("data", label)
-        filename = unicode(filename, encoding="utf-8")
+        if not isinstance(filename, unicode) :
+            filename = unicode(filename, encoding="utf-8")
         name = filename or self.page.parameter('name')
 
         if not contenttype :
