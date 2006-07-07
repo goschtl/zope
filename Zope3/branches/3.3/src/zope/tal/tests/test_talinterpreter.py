@@ -223,6 +223,16 @@ class I18NCornerTestCaseBase(TestCaseBase):
             '<span i18n:translate="" tal:replace="structure bar"/>')
         self._check(program, 'BARVALUE\n')
 
+        # i18n messages defined in Python are translated automatically
+        # (no i18n:translate necessary)
+        program, macros = self._compile(
+            '<span tal:content="structure foo"/>')
+        self._check(program, '<span>FOOVALUE</span>\n')
+
+        program, macros = self._compile(
+            '<span tal:replace="structure foo"/>')
+        self._check(program, 'FOOVALUE\n')
+
     def test_structure_text_translate(self):
         program, macros = self._compile(
             '<span tal:content="structure string:BaR"/>')

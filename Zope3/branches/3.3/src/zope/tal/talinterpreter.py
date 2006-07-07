@@ -748,7 +748,10 @@ class TALInterpreter(object):
         if structure is self.Default:
             self.interpret(block)
             return
-        text = unicode(structure)
+        if isinstance(structure, I18nMessageTypes):
+            text = self.translate(structure)
+        else:
+            text = unicode(structure)
         if not (repldict or self.strictinsert):
             # Take a shortcut, no error checking
             self.stream_write(text)
@@ -765,10 +768,9 @@ class TALInterpreter(object):
             if structure is self.Default:
                 self.interpret(block)
             else:
-                if isinstance(structure, TypesToTranslate):
-                    text = self.translate(structure)
-                else:
-                    text = unicode(structure)
+                if not isinstance(structure, TypesToTranslate):
+                    structure = unicode(structure)
+                text = self.translate(structure)
                 if not (repldict or self.strictinsert):
                     # Take a shortcut, no error checking
                     self.stream_write(text)
