@@ -32,6 +32,7 @@ from zope.tal.dummyengine import DummyTranslationDomain
 from zope.tal.tests import utils
 from zope.i18nmessageid import Message
 
+
 class TestCaseBase(unittest.TestCase):
 
     def _compile(self, source):
@@ -163,6 +164,25 @@ class I18NCornerTestCaseBase(TestCaseBase):
         program, macros = self._compile(
             '<span tal:replace="foo" />')
         self._check(program, 'FOOVALUE\n')
+
+    def test_attributes_translation(self):
+        program, macros = self._compile(
+            '<span tal:attributes="test bar"/>')
+        self._check(program, '<span test="BaRvAlUe" />\n')
+
+        program, macros = self._compile(
+            '<span test="bar" i18n:attributes="test"/>')
+        self._check(program, '<span test="BAR" />\n')
+
+        program, macros = self._compile(
+            '<span tal:attributes="test bar" i18n:attributes="test"/>')
+        self._check(program, '<span test="BARVALUE" />\n')
+
+        # i18n messages defined in Python are translated automatically
+        # (no i18n:attributes necessary)
+        program, macros = self._compile(
+            '<span tal:attributes="test foo"/>')
+        self._check(program, '<span test="FOOVALUE" />\n')
 
     def test_text_variable_translate(self):
         program, macros = self._compile(
@@ -315,7 +335,7 @@ class I18NCornerTestCaseBase(TestCaseBase):
    ('endScope', ()),
    ('rawtextOffset', ('.', 1))])),
 ('endScope', ()),
-('rawtextOffset', ('</div>', 6)) 
+('rawtextOffset', ('</div>', 6))
 ]
         self._check(program,
                     '<div>THIS IS TEXT FOR <span>BARVALUE</span>.</div>\n')
@@ -466,7 +486,7 @@ class I18NCornerTestCaseMessage(I18NCornerTestCaseBase):
         return Message(msgid, domain=domain, default=default, mapping=mapping)
 
 class UnusedExplicitDomainTestCase(I18NCornerTestCaseMessage):
-    
+
     def setUp(self):
         # MultipleDomainsDummyEngine is a Engine
         # where default domain transforms to uppercase

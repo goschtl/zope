@@ -496,6 +496,10 @@ class TALInterpreter(object):
                 translated = self.translate(msgid or value, value)
                 if translated is not None:
                     value = translated
+            elif isinstance(value, I18nMessageTypes):
+                translated = self.translate(value)
+                if translated is not None:
+                    value = translated
             if value is None:
                 value = name
             return ["%s=%s" % (name, quote(value))]

@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 646: TAL interpreter doesn't translate i18n
+        Messages when inserted as attributes;
+
       - Fixed issue 665: ZCML swallowing KeyboardInterrupt and SystemExit.
 
       - Fixed issue 645: zope.testbrowser truncates document content after
