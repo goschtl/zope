@@ -41,7 +41,7 @@ The suggestions are proveded by its own view.
     >>> print browser.contents
     <BLANKLINE>
      <ul>
-      <li>United Arab Emirates</li>
+      <li>Algeria</li>
       <li>Andorra</li>
       <li>Antigua and Barbuda</li>
       <li>Afghanistan</li>
@@ -49,7 +49,6 @@ The suggestions are proveded by its own view.
       <li>Armenia</li>
       <li>Albania</li>
       <li>Angola</li>
-      <li>Netherlands Antilles</li>
       <li>Antarctica</li>
       <li>American Samoa</li>
       <li>Argentina</li>
