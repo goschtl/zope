@@ -1,0 +1,24 @@
+<configure
+ xmlns="http://namespaces.zope.org/zope"
+ xmlns:browser="http://namespaces.zope.org/browser">
+
+ <adapter
+  name="widget"
+  provides="zope.traversing.interfaces.ITraversable" for="*"
+  factory=".namespace.WidgetHandler"
+  />
+ 
+ <view
+  name="widget"
+  type="zope.interface.Interface"
+  provides="zope.traversing.interfaces.ITraversable" for="*"
+  factory=".namespace.WidgetHandler"
+  />
+
+ <browser:page
+  for="zope.app.form.browser.interfaces.IWidget"
+  name="index.html"
+  permission="zope.Public"
+  class=".browser.WidgetView"/>
+ 
+</configure>

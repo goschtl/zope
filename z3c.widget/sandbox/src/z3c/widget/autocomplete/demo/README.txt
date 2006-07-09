@@ -1,0 +1,62 @@
+=======================
+AutoCompleteWidget Demo
+=======================
+
+This demo packe provides a simple content class which uses the
+z3c autocomplete widget.
+
+    >>> from zope.testbrowser.testing import Browser
+    >>> browser = Browser()
+    >>> browser.handleErrors = False
+    >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+    >>> browser.open('http://localhost/@@contents.html')
+
+It can be added by clicking on the "Autocomplete Widget Demo" link in the
+add menu. And giving it a name.
+
+    >>> link = browser.getLink('Autocomplete Widget Demo')
+    >>> link.click()
+    >>> nameCtrl = browser.getControl(name='new_value')
+    >>> nameCtrl.value = 'mydemo'
+    >>> applyCtrl = browser.getControl('Apply')
+    >>> applyCtrl.click()
+    >>> link = browser.getLink('mydemo')
+    >>> link.click()
+    >>> browser.url
+    'http://localhost/mydemo/@@edit.html'
+
+Let us test the widget rendering by direct access.
+
+    >>> browser.open('http://localhost/mydemo/@@edit.html/++widget++country')
+    >>> print browser.contents
+    <input class="textType" ...
+    </script>
+
+The suggestions are proveded by its own view.    
+
+    >>> browser.open('http://localhost/mydemo/@@edit.html/++widget++country/suggestions')
+    >>> print browser.contents
+
+    >>> browser.open('http://localhost/mydemo/@@edit.html/++widget++country/suggestions?value=a')
+    >>> print browser.contents
+    <BLANKLINE>
+     <ul>
+      <li>United Arab Emirates</li>
+      <li>Andorra</li>
+      <li>Antigua and Barbuda</li>
+      <li>Afghanistan</li>
+      <li>Anguilla</li>
+      <li>Armenia</li>
+      <li>Albania</li>
+      <li>Angola</li>
+      <li>Netherlands Antilles</li>
+      <li>Antarctica</li>
+      <li>American Samoa</li>
+      <li>Argentina</li>
+      <li>Australia</li>
+      <li>Austria</li>
+      <li>Aruba</li>
+      <li>Azerbaijan</li>
+     </ul>
+    <BLANKLINE>
+    <BLANKLINE>

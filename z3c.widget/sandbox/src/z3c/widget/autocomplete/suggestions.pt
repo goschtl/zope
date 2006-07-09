@@ -1,0 +1,6 @@
+<metal:block tal:define="value request/form/value | nothing">
+ <ul tal:condition="value">
+  <li tal:repeat="title python:list(context.getSuggestions(value))"
+      tal:content="title"/>
+ </ul>
+</metal:block>
