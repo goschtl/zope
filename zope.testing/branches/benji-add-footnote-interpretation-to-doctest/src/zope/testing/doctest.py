@@ -571,8 +571,10 @@ class DocTestParser:
 
     # Find footnote definitions.
     _FOOTNOTE_DEFINITION_RE = re.compile(
-        r'^\.\.\s*\[\s*([^\]]+)\s*\].*$',
-        re.MULTILINE)
+        r'^\.\.\s*\[\s*([^\]]+)\s*\].*$', re.MULTILINE)
+
+    # End of footnote regex.
+    _FOOTNOTE_END_RE = re.compile(r'^\S+', re.MULTILINE)
 
     def parse(self, string, name='<string>', optionflags=0):
         """
@@ -581,51 +583,6 @@ class DocTestParser:
         Line numbers for the Examples are 0-based.  The optional
         argument `name` is a name identifying this string, and is only
         used for error messages.
-
-        If the INTERPRET_FOOTNOTES flag is passed as part of optionflags, then
-        footnotes will be looked up and their code injected at each point of
-        reference.  For example:
-
-            >>> counter = 0
-
-        Here is some text that references a footnote [1]_
-
-            >>> counter
-            1
-
-        .. [1] and here we set up the value
-            >>> counter += 1
-
-        Footnotes can also be referenced after they are defined: [1]_
-
-            >>> counter
-            2
-
-        Footnotes can also be "citations", which just means that the value in
-        the brackets is alphanumeric: [citation]_
-
-            >>> print from_citation
-            hi
-
-        .. [citation] this is a citation.
-            >>> from_citation = 'hi'
-
-        If a footnote isn't defined, it's just skipped: [not defined]_
-
-        Footnotes can contain more than one example: [multi example]_
-
-            >>> print one
-            1
-            >>> print two
-            2
-
-        .. [multi example] Here's a footnote with multiple examples:
-
-            >>> one = 1
-
-            And now another:
-
-            >>> two = 2
         """
         string = string.expandtabs()
         # If all lines begin with the same indentation, then strip it.
@@ -661,20 +618,41 @@ class DocTestParser:
             new_output = []
 
             footnotes = {}
-            continue_again = False
+            in_footnote = False
             for i, x in enumerate(output):
-                if continue_again:
-                    continue_again = False
-                    continue
+                if in_footnote:
+                    if isinstance(x, Example):
+                        footnote.append(x)
+                    elif self._FOOTNOTE_END_RE.search(x):
+                        in_footnote = False
+                        footnotes[name] = footnote
+                        del name
+                        del footnote
+                    else:
+                        footnote.append(x)
 
-                if not isinstance(x, Example):
-                    match = self._FOOTNOTE_DEFINITION_RE.search(x)
-                    if match:
-                        name = match.group(1)
-                        if i+1 < len(output):
-                            footnotes[name] = output[i+1]
-                            continue_again = True
-                        continue
+                if not in_footnote:
+                    s = x
+                    if not isinstance(s, Example):
+                        matches = list(
+                            self._FOOTNOTE_DEFINITION_RE.finditer(s))
+
+                        if matches:
+                            # all but the last one don't have any associated
+                            # code
+                            for match in matches:
+                                footnotes[match.group(1)] = []
+
+                            match = matches[-1]
+                            s = s[match.end()+1:]
+
+                            if self._FOOTNOTE_END_RE.search(s):
+                                # over before it began
+                                continue
+
+                            in_footnote = True
+                            name = match.group(1)
+                            footnote = []
 
                 new_output.append(x)
 
@@ -687,11 +665,11 @@ class DocTestParser:
                     for m in self._FOOTNOTE_REFERENCE_RE.finditer(x):
                         name = m.group(1)
                         if name not in footnotes:
-                            # apparently this footnote doesn't have any code
-                            # in it, so skip
-                            continue
+                            raise KeyError(
+                                'A footnote was referred to, but never'
+                                ' defined: %r' % name)
 
-                        new_output.append(footnotes[name])
+                        new_output.extend(footnotes[name])
                         new_output.append('') # keep the text/example balance
 
             output = new_output
@@ -2839,6 +2817,94 @@ __test__ = {"_TestClass": _TestClass,
                      27, 28, 29]
             """,
            }
+
+def _test_footnotes():
+    """
+    If the INTERPRET_FOOTNOTES flag is passed as part of optionflags, then
+    footnotes will be looked up and their code injected at each point of
+    reference.  For example:
+
+        >>> counter = 0
+
+    Here is some text that references a footnote [1]_
+
+        >>> counter
+        1
+
+    .. [1] and here we set up the value
+        >>> counter += 1
+
+    Footnotes can also be referenced after they are defined: [1]_
+
+        >>> counter
+        3
+
+    Footnotes can also be "citations", which just means that the value in
+    the brackets is alphanumeric: [citation]_
+
+        >>> print from_citation
+        hi
+
+    .. [citation] this is a citation.
+        >>> from_citation = 'hi'
+
+    Footnotes can contain more than one example: [multi example]_
+
+        >>> print one
+        1
+
+        >>> print two
+        2
+
+        >>> print three
+        3
+
+    .. [multi example] Here's a footnote with multiple examples:
+
+        >>> one = 1
+
+        And now another (note indentation to make this part of the
+        footnote):
+
+        >>> two = 2
+
+        even more:
+
+        >>> three = 3
+
+    Footnotes can have code that starts with no prose between. [quick code]_
+
+    .. [quick code] foo
+
+        >>> print 'this is some code'
+        this is some code
+
+    Footnotes can be back-to-back [first]_ [second]_
+    .. [first]
+    .. [second]
+        >>> 1+1
+        2
+
+    .. [no code] Footnotes can also be defined with no code.
+
+    Footnotes can also refer to other footnotes [other]_
+
+    .. [other] This note refer to another one [1]_
+        >>> 'foo'
+        'foo'
+
+    Or they can even refer to themselves [recursive]_
+
+    .. [recursive] this one refers to itself [recursive]_
+        >>> 'bar'
+        'bar'
+
+    The last footnote works too
+
+    .. [last] This is the last one
+        >>> 'baz'
+        'baz'
+    """
 
 def _test():
     r = unittest.TextTestRunner()
