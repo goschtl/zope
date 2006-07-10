@@ -27,6 +27,7 @@ from zope.interface import directlyProvides
 from zope.interface import implements
 from zope.schema import ValidationError
 from zope.schema.interfaces import IField
+from zope.schema.interfaces import IFromUnicode
 
 from zope.generic.face import IAttributeFaced
 from zope.generic.face import IFace
@@ -44,14 +45,14 @@ from zope.generic.configuration.field import ISubConfigurationList
 
 
 
-def createConfiguration(keyface, data):
+def createConfiguration(keyface, data, fromunicode=False):
     """Factory function for configuration data."""
 
-    return ConfigurationData(keyface, data)
+    return ConfigurationData(keyface, data, fromunicode)
 
 
 
-def createConfigurationList(field, data):
+def createConfigurationList(field, data, fromunicode=False):
 
     if ISubConfiguration.providedBy(field.value_type):
         subkeyface = field.value_type.schema
@@ -60,7 +61,7 @@ def createConfigurationList(field, data):
         while data:
             subdata = subData(str(counter), data)
             if subdata:
-                subconfigurations.append(createConfiguration(subkeyface, subdata))
+                subconfigurations.append(createConfiguration(subkeyface, subdata, fromunicode))
             else:
                 raise IndexError('list index out of range')
 
@@ -75,23 +76,32 @@ def createConfigurationList(field, data):
         # precondition: assume that everythings is ok if the start and end point is ok
         if int(indices[0]) != 0 or int(indices[-1]) != len(indices) - 1:
             raise IndexError('list index out of range')
-        return ConfigurationList([data[index] for index in indices])
+        
+        if fromunicode and IFromUnicode.providedBy(field):
+            return ConfigurationList([field.fromUnicode(data[index]) for index in indices])
+        else:
+            return ConfigurationList([data[index] for index in indices])
 
 
 
-def createConfigurationDict(field, data):
+def createConfigurationDict(field, data, fromunicode=False):
     if ISubConfiguration.providedBy(field.value_type):
         subkeyface = field.value_type.schema
         subconfigurations = {}
         while data:
             prefix = iter(data).next().split('.')[0] # evaluate the next entry  
-            subconfigurations[prefix] = createConfiguration(subkeyface, subData(prefix, data))
+            subconfigurations[prefix] = createConfiguration(subkeyface, subData(prefix, data), fromunicode)
 
         return ConfigurationDict(subconfigurations)
 
     # other objects
     else:
-        return ConfigurationDict(data)
+        if fromunicode and IFromUnicode.providedBy(field):
+            unicode_data = {}; 
+            [unicode_data.__setitem__(key, field.fromUnicode(value)) for key, value in data.items()]
+            return ConfigurationDict(unicode_data)
+        else:
+            return ConfigurationDict(data)
 
 
 
@@ -120,7 +130,7 @@ def subData(name, data):
 
 
 
-def prepareData(__keyface__, data):
+def prepareData(__keyface__, data, fromunicode):
     """Nested configuration support."""
     missedArguments = []
     relevant_data = {}
@@ -134,11 +144,11 @@ def prepareData(__keyface__, data):
 
                 if subdata or field.required is True:
                     if ISubConfiguration.providedBy(field):
-                        relevant_data[name] = createConfiguration(field.schema, subdata)
+                        relevant_data[name] = createConfiguration(field.schema, subdata, fromunicode)
                     elif ISubConfigurationList.providedBy(field):
-                        relevant_data[name] = createConfigurationList(field, subdata)
+                        relevant_data[name] = createConfigurationList(field, subdata, fromunicode)
                     elif ISubConfigurationDict.providedBy(field):
-                        relevant_data[name] = createConfigurationDict(field, subdata)
+                        relevant_data[name] = createConfigurationDict(field, subdata, fromunicode)
                     else:
                         raise NotImplementedError()
 
@@ -157,10 +167,13 @@ def prepareData(__keyface__, data):
                 relevant_data[name] = ConfigurationDict(value)
 
             elif isinstance(value, dict) and ISubConfiguration.providedBy(field):
-                relevant_data[name] = createConfiguration(field.schema, value)
+                relevant_data[name] = createConfiguration(field.schema, value, fromunicode)
 
             else:
-                relevant_data[name] = data[name]
+                if fromunicode and IFromUnicode.providedBy(field):
+                    relevant_data[name] = field.fromUnicode(data[name])
+                else:
+                    relevant_data[name] = data[name]
     
     if missedArguments:
         raise TypeError("__init__ requires '%s' of '%s'." % (', '.join(missedArguments), __keyface__.__name__))
@@ -261,14 +274,14 @@ class ConfigurationData(Persistent):
 
     implements(IAttributeFaced, IConfigurationData)
 
-    def __init__(self, __keyface__, data):
+    def __init__(self, __keyface__, data, fromunicode=False):
         # essentials
         self.__dict__['__keyface__'] = __keyface__
         self.__dict__['__conface__'] = IUndefinedContext
         directlyProvides(self, __keyface__)
 
         # set other data
-        for key, value in prepareData(__keyface__, data).items():
+        for key, value in prepareData(__keyface__, data, fromunicode).items():
             setattr(self, key, value)
 
     def __repr__(self):

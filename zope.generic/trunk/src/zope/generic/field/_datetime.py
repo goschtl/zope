@@ -63,6 +63,8 @@ class EuroDate(Date):
         u'12.03.2006'
 
         """
-
-        return unicode(value.strftime('%d.%m.%Y'))
+        if value is None:
+            return u''
+        else:
+            return unicode(value.strftime('%d.%m.%Y'))
         
