@@ -4,6 +4,11 @@
            i18n_domain="zope">
 
  <utility
+  component=".countries.territoryTranslationDomain"
+  provides="zope.i18n.ITranslationDomain"
+  name="autocomplete.demo.countries"/>
+ 
+ <utility
   provides="zope.schema.interfaces.IVocabularyFactory"
   component=".countries.territoryVocabularyFactory"
   name="autocomplete.demo.countries"

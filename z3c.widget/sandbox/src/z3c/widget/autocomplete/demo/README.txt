@@ -37,7 +37,7 @@ The suggestions are proveded by its own view.
     >>> browser.open('http://localhost/mydemo/@@edit.html/++widget++country/suggestions')
     >>> print browser.contents
 
-    >>> browser.open('http://localhost/mydemo/@@edit.html/++widget++country/suggestions?value=a')
+    >>> browser.open('http://localhost/++lang++en/mydemo/@@edit.html/++widget++country/suggestions?value=a')
     >>> print browser.contents
     <BLANKLINE>
      <ul>
@@ -56,6 +56,32 @@ The suggestions are proveded by its own view.
       <li>Austria</li>
       <li>Aruba</li>
       <li>Azerbaijan</li>
+     </ul>
+    <BLANKLINE>
+    <BLANKLINE>
+
+Suggestions are translated.
+
+    >>> browser.open('http://localhost/++lang++de/mydemo/@@edit.html/++widget++country/suggestions?value=a')
+    >>> print browser.contents
+    <BLANKLINE>
+     <ul>
+      <li>Amerikanische Jungferninseln</li>
+      <li>Amerikanisch-Ozeanien</li>
+      <li>Algerien</li>
+      <li>Andorra</li>
+      <li>Antigua und Barbuda</li>
+      <li>Afghanistan</li>
+      <li>Anguilla</li>
+      <li>Armenien</li>
+      <li>Albanien</li>
+      <li>Angola</li>
+      <li>Antarktis</li>
+      <li>Amerikanisch-Samoa</li>
+      <li>Argentinien</li>
+      <li>Australien</li>
+      <li>Aruba</li>
+      <li>Aserbaidschan</li>
      </ul>
     <BLANKLINE>
     <BLANKLINE>
