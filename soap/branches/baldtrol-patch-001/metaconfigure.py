@@ -1,0 +1,108 @@
+##############################################################################
+#
+# Copyright (c) 2005 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+SOAP configuration code
+
+$Id: $
+"""
+
+import zope.interface
+from zope.interface import Interface
+from zope.security.checker import CheckerPublic, Checker
+from zope.configuration.exceptions import ConfigurationError
+from zope.app import zapi
+from zope.app.location import Location
+from zope.app.component.interface import provideInterface
+
+# XXX handler is non-public.  Should call directives instead
+from zope.app.component.metaconfigure import handler
+
+from interfaces import ISOAPRequest
+
+
+def view(_context, for_=None, interface=None, methods=None,
+         class_=None,  permission=None, name=None):
+    
+    interface = interface or []
+    methods = methods or []
+
+    # If there were special permission settings provided, then use them
+    if permission == 'zope.Public':
+        permission = CheckerPublic
+
+    require = {}
+    for attr_name in methods:
+        require[attr_name] = permission
+
+    if interface:
+        for iface in interface:
+            for field_name in iface:
+                require[field_name] = permission
+            _context.action(
+                discriminator = None,
+                callable = provideInterface,
+                args = ('', for_)
+                )
+
+    if name:
+        # Register a single view
+        
+        if permission:
+            checker = Checker(require)
+
+            def proxyView(context, request, class_=class_, checker=checker):
+                view = class_(context, request)
+                # We need this in case the resource gets unwrapped and
+                # needs to be rewrapped
+                view.__Security_checker__ = checker
+                return view
+
+            class_ =  proxyView
+
+        # Register the new view.
+        _context.action(
+            discriminator = ('view', for_, name, ISOAPRequest),
+            callable = handler,
+            args = ('provideAdapter',
+                    (for_, ISOAPRequest), Interface, name, class_,
+                    _context.info)
+            )
+    else:
+        if permission:
+            checker = Checker({'__call__': permission})
+        else:
+            checker = None
+
+        for name in require:
+            # create a new callable class with a security checker; mix
+            # in zope.app.location.Location so that the view inherits
+            # a security context
+            cdict = {'__Security_checker__': checker,
+                     '__call__': getattr(class_, name)}
+            new_class = type(class_.__name__, (class_, Location), cdict)
+            _context.action(
+                discriminator = ('view', for_, name, ISOAPRequest),
+                callable = handler,
+                args = ('provideAdapter',
+                        (for_, ISOAPRequest), Interface, name, new_class,
+                        _context.info)
+                )
+
+    # Register the used interfaces with the interface service
+    if for_ is not None:
+        _context.action(
+            discriminator = None,
+            callable = provideInterface,
+            args = ('', for_)
+            )
