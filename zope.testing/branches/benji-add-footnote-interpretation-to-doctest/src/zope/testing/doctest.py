@@ -3024,3 +3024,8 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+# TODO:
+# - make tracebacks show where the footnote was referenced
+# - teach script_from_examples and testsource about INTERPRET_FOOTNOTES
+# - update comments (including docstring for testfile)
