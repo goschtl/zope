@@ -20,10 +20,12 @@ $Id: $
 import sys, ZSI
 from zope.app.publication.interfaces import ISOAPRequestFactory
 from zope.publisher.http import HTTPRequest, HTTPResponse
+from zope.publisher.http import DirectResult
 from soap.interfaces import ISOAPRequest, ISOAPResponse
 from ZSI import TC, ParsedSoap, ParseException
 from ZSI import SoapWriter, Fault
 from zope.security.proxy import isinstance
+from zope.security.proxy import removeSecurityProxy
 from zope.security.interfaces import IUnauthorized
 from zope.publisher.xmlrpc import premarshal
 from zope.interface import implements
@@ -39,8 +41,8 @@ class SOAPRequestFactory(object):
     """
     implements(ISOAPRequestFactory)
 
-    def __call__(self, input, output, env):
-        return SOAPRequest(input, output, env)
+    def __call__(self, input, env):
+        return SOAPRequest(input, env)
 
 factory = SOAPRequestFactory()
 
@@ -131,19 +133,19 @@ class SOAPResponse(HTTPResponse):
 
     _error = None
 
-    def setBody(self, body):
+    def setResult(self, result):
         """Sets the body of the response"""
 
         # A SOAP view can return a Fault directly to indicate an error.
-        if isinstance(body, Fault):
-            self._error = body
+        if isinstance(result, Fault):
+            self._error = result
 
         if not self._error:
             try:
                 target = self._request._target
-                body = premarshal(body)
-                output = StringIO()
-                result = body
+                result = premarshal(result)
+
+                result = removeSecurityProxy(result)
 
                 if hasattr(result, 'typecode'):
                     tc = result.typecode
@@ -151,14 +153,15 @@ class SOAPResponse(HTTPResponse):
                     tc = TC.Any(aslist=1, pname=target + 'Response')
                     result = [ result ]
 
-                SoapWriter(output).serialize(result, tc)
-                output.seek(0)
+                soapMsg = str(SoapWriter().serialize(result, tc))
 
                 if not self._status_set:
                     self.setStatus(200)
+                # updating for 3.2
+                body, headers = self._implicitResult(soapMsg)
+                r = DirectResult((body,), headers)
+                self._result = r
                 self.setHeader('content-type', 'text/xml')
-                self._body = output.read()
-                self._updateContentLength()
                 return
 
             except Exception, e:
@@ -167,18 +170,25 @@ class SOAPResponse(HTTPResponse):
         # Error occurred in input, during parsing or during processing.
         self.setStatus(500)
         self.setHeader('content-type', 'text/xml')
-        self._body = self._error.AsSOAP()
-        self._updateContentLength()
+        # updating for 3.2
+        body, headers = self._implicitResult(self._error.AsSOAP())
+        r = DirectResult((body,), headers)
+        self._result = r
+        self.setHeader('content-type', 'text/xml')
 
     def handleException(self, exc_info):
         """Handle exceptions that occur during processing."""
         type, value = exc_info[:2]
         if IUnauthorized.providedBy(value):
             self.setStatus(401)
-            self._body = ""
-            self._updateContentLength()
+            # updating for 3.2
+            body, headers = self._implicitResult("")
+            r = DirectResult((body,), headers)
+            self._result = r
+            self.setHeader('content-type', 'text/xml')
             return
         if not isinstance(value, Fault):
             value = ZSI.FaultFromException(value, 0)
         self.setStatus(500)
-        self.setBody(value)
+        self.setResult(value)
+        self.setHeader('content-type', 'text/xml')
