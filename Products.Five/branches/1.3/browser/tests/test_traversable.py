@@ -216,6 +216,13 @@ def test_view_doesnt_shadow_attribute():
       ...       attribute="eagle"
       ...       permission="zope2.Public"
       ...       />
+      ...   <browser:page
+      ...       name="mouse"
+      ...       for="OFS.interfaces.IObjectManager"
+      ...       class="Products.Five.browser.tests.pages.SimpleView"
+      ...       attribute="mouse"
+      ...       permission="zope2.Public"
+      ...       />
       ...   <five:traversable class="OFS.Application.Application"/>
       ... </configure>'''
       >>> import Products.Five
@@ -272,6 +279,27 @@ def test_view_doesnt_shadow_attribute():
       HTTP/1.1 200 OK
       ...
       The eagle has landed
+
+    However, acquired attributes *should* be shadowed. See discussion on
+    http://codespeak.net/pipermail/z3-five/2006q2/001474.html
+
+      >>> manage_addIndexSimpleContent(self.folder, 'mouse', 'Mouse')
+
+      >>> print http(r'''
+      ... GET /test_folder_1_/mouse HTTP/1.1
+      ...
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+      Default index_html called
+
+      >>> print http(r'''
+      ... GET /test_folder_1_/ftf/mouse HTTP/1.1
+      ...
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+      The mouse has been eaten by the eagle
 
     Clean up:
 
