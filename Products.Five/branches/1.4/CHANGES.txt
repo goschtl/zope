@@ -5,6 +5,9 @@ Five Changes
 Five 1.4.1 (unreleased)
 =======================
 
+* Backported the new traversal lookup order from Zope 2.10 (attribute, adapter,
+  acquired attribute).
+
 * Enabled the viewlet related directives by default.
 
 * Added acquisition wrappers to viewlets before updating or rendering.
