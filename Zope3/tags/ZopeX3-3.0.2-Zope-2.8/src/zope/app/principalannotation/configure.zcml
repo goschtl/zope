@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
+
+  <serviceType
+      id="PrincipalAnnotation"
+      interface=".interfaces.IPrincipalAnnotationService" />
+
+  <content class=".PrincipalAnnotationService">
+    <factory
+        id="zope.app.PrincipalAnnotationService"
+        />
+    <require
+        permission="zope.View"
+        interface=".interfaces.IPrincipalAnnotationService"
+        />
+    </content>
+
+  <!-- Principal annotations (user data) service -->
+
+  <browser:addMenuItem
+     class=".PrincipalAnnotationService"
+     permission="zope.ManageServices"
+     title="Principal Annotation Service"
+     description="Stores Annotations for Principals" />
+
+</configure>

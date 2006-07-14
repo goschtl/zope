@@ -1,0 +1,56 @@
+<configure 
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:test="http://namespaces.zope.org/test"
+  package="zope.configuration.tests.directives"
+  >
+
+  <directives namespace="http://namespaces.zope.org/test">
+  
+     <directive name="simple" attributes="a b c"
+                handler=".simple" description="simple example" />
+          
+  
+     <directive name="newsimple" handler=".newsimple">
+
+        <attribute name="a" description="a descr" required="yes" />
+        <attribute name="b">
+            <description>b descr</description>
+        </attribute>
+        <attribute name="c" required="yes" >
+            c descr
+        </attribute>
+
+     </directive>
+  </directives>
+
+  <test:simple a="aa" c="cc">first</test:simple>
+  <test:newsimple a="naa" c="ncc" b="nbb">second</test:newsimple>
+
+  <directives namespace="http://namespaces.zope.org/test">
+
+     <directive name="testc" handler=".Complex">
+
+        <attribute name="a" description="a descr" required="yes" />
+        <attribute name="b">
+            <description>b descr</description>
+        </attribute>
+        <attribute name="c" required="yes">
+            c descr
+        </attribute>
+
+        <subdirective name="factory">
+          <attribute name="factory" required="yes" />
+        </subdirective>
+     </directive>
+
+  </directives>
+    
+  <test:testc a="ca" c="cc">
+     Third
+     <test:factory factory=".f">
+        Fourth
+     </test:factory>    
+  </test:testc>
+
+</configure>
+
