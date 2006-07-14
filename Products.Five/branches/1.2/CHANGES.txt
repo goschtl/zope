@@ -7,8 +7,6 @@ Five 1.2.6 (unreleased)
 
 * Backported the new traversal lookup order from Zope 2.10 (attribute, adapter,
   acquired attribute).
-  request attribute that keeps Localizers list of preferred languages
-  did not exist.
 
 Five 1.2.5 (2006-05-29)
 =======================
