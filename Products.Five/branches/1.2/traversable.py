@@ -23,9 +23,12 @@ from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
 
+from Acquisition import aq_base
 import Products.Five.security
 from zExceptions import NotFound
 from ZPublisher import xmlrpc
+
+_marker = object()
 
 class FakeRequest(dict):
     implements(IBrowserRequest)
@@ -72,12 +75,12 @@ class Traversable:
                 except AttributeError:
                     pass
         else:
-            try:
+            # See if the object itself has the attribute, try acquisition
+            # later
+            if getattr(aq_base(self), name, _marker) is not _marker:
                 return getattr(self, name)
-            except AttributeError:
-                pass
-
             try:
+                # item access should never acquire
                 return self[name]
             except (KeyError, IndexError, TypeError, AttributeError):
                 pass
@@ -111,7 +114,8 @@ class Traversable:
                 AttributeError, KeyError, NotFound):
             pass
 
-        raise AttributeError, name
+        # Fallback on acquisition, let it raise an AttributeError if it must
+        return getattr(self, name)
 
     __bobo_traverse__.__five_method__ = True
 
