@@ -100,6 +100,24 @@ class DictTest(FieldTestBase):
         self.assertRaises(WrongContainedType, field.validate, {(): 'a'} )
 
 
+    def test_bind_binds_key_and_value_types(self):
+        field = self._Field_Factory(
+            __name__ = 'x',
+            title=u'Not required field', description=u'',
+            readonly=False, required=False,
+            key_type=Int(),
+            value_type=Int(),
+            )
+
+        class C(object):
+            x=None
+
+        c = C()
+        field2 = field.bind(c)
+
+        self.assertEqual(field2.key_type.context, c)
+        self.assertEqual(field2.value_type.context, c)
+
 def test_suite():
     return makeSuite(DictTest)
 
