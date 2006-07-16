@@ -16,6 +16,8 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 572: The icon directive title attribute wasn't implemented.
+
       - TAL interpreter didn't translate i18n Messages when inserted
         as structure;
 
