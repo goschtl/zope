@@ -466,6 +466,17 @@ class Dict(MinMaxLen, Iterable):
         finally:
             errors = None
 
+    def bind(self, object):
+        """See zope.schema._bootstrapinterfaces.IField."""
+        clone = super(Dict, self).bind(object)
+        # binding value_type is necessary for choices with named vocabularies,
+        # and possibly also for other fields.
+        if clone.key_type is not None:
+           clone.key_type = clone.key_type.bind(object)
+        if clone.value_type is not None:
+           clone.value_type = clone.value_type.bind(object)
+        return clone
+
 
 _isuri = re.compile(
     r"[a-zA-z0-9+.-]+:"   # scheme

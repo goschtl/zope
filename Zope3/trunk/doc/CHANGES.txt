@@ -16,7 +16,10 @@ Zope Changes
 
     Bug fixes
 
-      - Fixed issue 572: The icon directive title attribute wasn't implemented.
+      - Fixed issue 572: Dict fields with key_type or value_type set
+        didn't handle binding correctly.
+      
+      - Fixed issue 576: The icon directive title attribute wasn't implemented.
 
       - TAL interpreter didn't translate i18n Messages when inserted
         as structure;
