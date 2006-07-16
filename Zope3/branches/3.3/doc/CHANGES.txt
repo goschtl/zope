@@ -10,6 +10,8 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 564: binary set operations didn't work on proxied sets.
+
       - Fixed issue 572: Dict fields with key_type or value_type set
         didn't handle binding correctly.
       
