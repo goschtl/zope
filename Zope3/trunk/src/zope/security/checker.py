@@ -578,6 +578,7 @@ _setChecker = NamesChecker(['__iter__', '__len__', '__str__', '__contains__',
                             'copy', 'difference', 'intersection', 'issubset',
                             'issuperset', 'symmetric_difference', 'union',
                             '__and__', '__or__', '__sub__', '__xor__',
+                            '__rand__', '__ror__', '__rsub__', '__rxor__',
                             '__eq__', '__ne__', '__lt__', '__gt__',
                             '__le__', '__ge__'])
 
@@ -664,6 +665,8 @@ _default_checkers = {
                         '__add__', '__radd__', ]),
     sets.Set: _setChecker,
     sets.ImmutableSet: _setChecker,
+    set: _setChecker,
+    frozenset: _setChecker,
 
     # YAGNI: () a rock
     tuple: NamesChecker(['__getitem__', '__getslice__', '__add__', '__radd__',
@@ -703,14 +706,6 @@ _default_checkers = {
     zope.interface.declarations.Implements: _Declaration_checker,
     zope.interface.declarations.Declaration: _Declaration_checker,
 }
-
-# If we are running with Python 2.4+, setup security on the builtin
-# set and frozenset types.
-try:
-    _default_checkers[set] = _setChecker
-    _default_checkers[frozenset] = _setChecker
-except NameError:
-    pass
 
 def _clear():
     _checkers.clear()
