@@ -61,6 +61,23 @@ class FieldTestBase(TestCase):
 
         self.assertRaises(RequiredMissing, field.validate, None)
 
+class CollectionFieldTestBase(FieldTestBase):
+
+    def test_bind_binds_value_type(self):
+        field = self._Field_Factory(
+            __name__ = 'x',
+            title=u'Not required field', description=u'',
+            readonly=False, required=False,
+            value_type=Int(),
+            )
+
+        class C(object):
+            x=None
+
+        c = C()
+        field2 = field.bind(c)
+
+        self.assertEqual(field2.value_type.context, c)
 
 class FieldTest(FieldTestBase):
     """Test generic Field."""

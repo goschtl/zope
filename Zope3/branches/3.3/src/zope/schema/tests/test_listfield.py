@@ -24,9 +24,9 @@ from zope.schema.interfaces import ICollection, ISequence, IList
 from zope.schema.interfaces import NotAContainer, RequiredMissing
 from zope.schema.interfaces import WrongContainedType, WrongType, NotUnique
 from zope.schema.interfaces import TooShort, TooLong
-from zope.schema.tests.test_field import FieldTestBase
+from zope.schema.tests.test_field import CollectionFieldTestBase
 
-class ListTest(FieldTestBase):
+class ListTest(CollectionFieldTestBase):
     """Test the List Field."""
 
     _Field_Factory = List

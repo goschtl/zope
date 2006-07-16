@@ -26,9 +26,9 @@ from zope.schema.interfaces import (
 from zope.schema.interfaces import NotAContainer, RequiredMissing
 from zope.schema.interfaces import WrongContainedType, WrongType, NotUnique
 from zope.schema.interfaces import TooShort, TooLong
-from zope.schema.tests.test_field import FieldTestBase
+from zope.schema.tests.test_field import CollectionFieldTestBase
 
-class SetTest(FieldTestBase):
+class SetTest(CollectionFieldTestBase):
     """Test the Tuple Field."""
 
     _Field_Factory = Set
@@ -166,7 +166,7 @@ class SetTest(FieldTestBase):
         self.failUnless(IAbstractSet.providedBy(field))
         self.failUnless(ICollection.providedBy(field))
 
-class FrozenSetTest(FieldTestBase):
+class FrozenSetTest(CollectionFieldTestBase):
     """Test the Tuple Field."""
 
     _Field_Factory = FrozenSet
