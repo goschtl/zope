@@ -129,7 +129,7 @@ class FilterMapping(object):
 
     def __len__(self):
         '''See interface `IReadContainer`'''
-        return len(self.keys())
+        return len(tuple(self.keys()))
 
     def __contains__(self, key):
         '''See interface `IReadContainer`'''
