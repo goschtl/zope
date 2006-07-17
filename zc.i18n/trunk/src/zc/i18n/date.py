@@ -57,6 +57,20 @@ def normalize(request, dt):
     >>> dt = datetime.datetime(2006,2,1,12)    
     >>> normalize(request,dt)
     datetime.datetime(2006, 2, 1, 11, 0, tzinfo=<UTC>)
+
+    An explicit UTC tzinfo is not modified.
+    >>> dt = datetime.datetime(2006, 5, 1, 10, tzinfo=pytz.UTC)
+    >>> normalize(request, dt)
+    datetime.datetime(2006, 5, 1, 10, 0, tzinfo=<UTC>)
+
+    Other explicit tzinfo values are honored, ignoring the ITZInfo adapter,
+    converting them to UTC.
+
+    >>> dt = datetime.datetime(2006, 5, 1, 12, tzinfo=pytz.timezone(
+    ...     'US/Eastern'))
+    >>> normalize(request, dt)
+    datetime.datetime(2006, 5, 1, 16, 0, tzinfo=<UTC>)
+
     """
 
     
