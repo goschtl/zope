@@ -35,16 +35,17 @@ def normalize(request, dt):
     """this method normalizes datetime instances by converting them to
     utc, daylight saving times are also taken into account. This
     method requires an adapter to get the tzinfo from the request.
-
+    
     >>> from zope import component, interface
     >>> import pytz
+    >>> requestTZ = pytz.timezone('Europe/Vienna')
     >>> from zope.interface.common.idatetime import ITZInfo
     >>> from zope.publisher.interfaces.browser import IBrowserRequest
     >>> from zope.publisher.browser import TestRequest
     >>> @interface.implementer(ITZInfo)
     ... @component.adapter(IBrowserRequest)
     ... def tzinfo(request):
-    ...     return pytz.timezone('Europe/Vienna')
+    ...     return requestTZ
     >>> component.provideAdapter(tzinfo)
     >>> dt = datetime.datetime(2006,5,1,12)
     >>> request = TestRequest()
@@ -70,15 +71,25 @@ def normalize(request, dt):
     ...     'US/Eastern'))
     >>> normalize(request, dt)
     datetime.datetime(2006, 5, 1, 16, 0, tzinfo=<UTC>)
-
+    
+    Normalizing UTC to UTC should work if dt has no tzinfo and ITZInfo is UTC
+    >>> requestTZ = pytz.UTC
+    >>> dt = datetime.datetime(2006,5,1,12)
+    >>> normalize(request,dt)
+    datetime.datetime(2006, 5, 1, 12, 0, tzinfo=<UTC>)
     """
 
-    
     if dt.tzinfo is None:
         tzinfo = ITZInfo(request)
     else:
         tzinfo = dt.tzinfo
-        
+    
+    if tzinfo.utcoffset(None) == datetime.timedelta(0):
+        #the following fails if tzinfo == UTC, so skip it
+        #anyway converting a datetime from UTC to UTC is meaningless
+        #datetime.timedelta(0) is a better match for UTC
+        return dt.replace(tzinfo=pytz.UTC)
+    
     # we have to do this because, pytz does currently not take the
     # datetime argument into account in its dst() and utcoffset()
     # methods
