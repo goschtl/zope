@@ -63,7 +63,7 @@ import_declarations(void)
   if (! PyType_Check(i))
     {
       PyErr_SetString(PyExc_TypeError, 
-                      "zope.declarations.Implements is not a type");
+                      "zope.interface.declarations.Implements is not a type");
       return -1;
     }
 
