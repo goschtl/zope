@@ -11,7 +11,7 @@ Zope Changes
     Bugfixes
 
       - Fixed issue 664, apidoc didn't properly handle attributes that
-        showd up in dir() but that weren't gettable.
+        showed up in dir() but that weren't gettable.
 
       - Fixed issue 604, Mutable schemas were accidentally included in
         the 3.2 release even though they weren't ready and didn't
@@ -21,7 +21,7 @@ Zope Changes
 
       - Fixed issue 572: Dict fields with key_type or value_type set
         didn't handle binding correctly.
-      
+
       - Fixed issue 576: The icon directive title attribute wasn't implemented.
 
       - TAL interpreter didn't translate i18n Messages when inserted
@@ -242,7 +242,7 @@ Zope Changes
 
     Bug Fixes
 
-      - Fix get_rendered in zope.formlib. Make use of get_rendered in 
+      - Fix get_rendered in zope.formlib. Make use of get_rendered in
         setUpInputWidget which is used in AddFormBase.
 
       - Fixed error handling in sequence item input widget. This widget
