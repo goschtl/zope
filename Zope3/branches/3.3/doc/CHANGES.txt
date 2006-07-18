@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 644, ClientForm (part of mechanize) which zope.testbrowser
+        uses didn't handle stripping a new line immediately after a start tag.
+
       - Fixed issue 664, apidoc didn't properly handle attributes that
         showed up in dir() but that weren't gettable.
 
