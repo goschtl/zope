@@ -8,12 +8,8 @@ Let's setup a ZSCP site:
   >>> zscp = ZSCPSite()
 
   # Add the site to the root, so it is fully located.
-  >>> from zope.app.folder import rootFolder
-  >>> root = rootFolder()
+  >>> root = getRootFolder()
   >>> root[u'zscp'] = zscp
-
-  >>> from zf.zscp.website.site import addAuthenticationUtilityToSite
-  >>> addAuthenticationUtilityToSite(zscp, None)
 
 The object added event will normaly add the authentication utility:
 

@@ -18,9 +18,9 @@ $Id$
 
 from zope.interface import implements
 from zope.contentprovider.interfaces import IContentProvider
+from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.viewlet.viewlet import ViewletBase
 from zope.app.component.hooks import getSite
-from zope.app.traversing.browser.absoluteurl import absoluteURL
 from zope.app.pagetemplate import ViewPageTemplateFile
 
 from zf.zscp.website.browser.site import ISiteIndex

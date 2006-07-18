@@ -20,7 +20,7 @@ __docformat__ = "reStructuredText"
 import zope.event
 from zope.formlib import form
 
-from zope.app.event import objectevent
+from zope import lifecycleevent
 
 from zf.zscp.interfaces import IPublication
 from zf.zscp.package import Package
@@ -31,7 +31,7 @@ from zf.zscp.publication import Publication
 class AddPackageForm(form.AddForm):
     """Add a package to the repository."""
 
-    form_fields = form.Fields(IPublication).select('packageName', 'name', 
+    form_fields = form.Fields(IPublication).select('packageName', 'name',
         'summary', 'author', 'authorEmail', 'license', 'metadataVersion')
 
     def createAndAdd(self, data):
@@ -50,7 +50,7 @@ class AddPackageForm(form.AddForm):
         publication.license = data.get('license', [])
         publication.metadataVersion = data.get('metadataVersion', u'')
         package.publication = publication
-        zope.event.notify(objectevent.ObjectCreatedEvent(package))
+        zope.event.notify(lifecycleevent.ObjectCreatedEvent(package))
 
         # Add the register the package with the register method
         self.context.register(package)

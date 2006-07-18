@@ -18,9 +18,9 @@ $Id$
 
 from zope.interface import Interface
 from zope.interface import implements
-from zope.formlib import page
+from zope.publisher.browser import BrowserPage
+from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.app import zapi
-from zope.app.traversing.browser.absoluteurl import absoluteURL
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zc.table import table, column
 
@@ -33,7 +33,7 @@ class ISiteIndex(Interface):
     """
 
 
-class SiteIndex(page.Page):
+class SiteIndex(object):
     """Index for IZSCPSite"""
 
     implements(ISiteIndex)
@@ -53,7 +53,7 @@ def getCertification(item, formatter):
         item.publication.certificationLevel).title
 
 
-class PackageList(page.Page):
+class PackageList(BrowserPage):
     """Show a list of packages."""
 
     template = ViewPageTemplateFile('site_packages.pt')

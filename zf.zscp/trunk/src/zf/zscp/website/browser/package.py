@@ -17,7 +17,7 @@ $Id$
 """
 import zope.schema
 from zope.formlib import form
-from zope.formlib import page
+from zope.publisher.browser import BrowserPage
 from zf.zscp.interfaces import IPublication
 from zf.zscp.interfaces import IRelease
 from zf.zscp.interfaces import ICertification
@@ -56,7 +56,7 @@ class PackageEditForm(form.EditForm):
 
 
 
-class PackageInfo(page.Page):
+class PackageInfo(BrowserPage):
     """Package info view."""
 
     template = ViewPageTemplateFile('package_info.pt')
@@ -97,7 +97,7 @@ class PackageCommunity(PackageInfo):
     template = ViewPageTemplateFile('package_community.pt')
 
 
-class PackageReleases(page.Page):
+class PackageReleases(BrowserPage):
     """Release view."""
 
     template = ViewPageTemplateFile('package_releases.pt')
@@ -126,7 +126,7 @@ class PackageReleases(page.Page):
 
 
 
-class PackageClassifiers(page.Page):
+class PackageClassifiers(BrowserPage):
     """Classifier view."""
 
     template = ViewPageTemplateFile('package_classifiers.pt')
@@ -147,7 +147,7 @@ class PackageClassifiers(page.Page):
         return self.render()
 
 
-class PackageCertifications(page.Page):
+class PackageCertifications(BrowserPage):
     """Certification view."""
 
     template = ViewPageTemplateFile('package_certifications.pt')

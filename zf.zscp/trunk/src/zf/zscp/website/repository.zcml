@@ -16,7 +16,7 @@
 
   <adapter
       factory="zope.app.container.traversal.ContainerTraversable"
-      provides="zope.app.traversing.interfaces.ITraversable"
+      provides="zope.traversing.interfaces.ITraversable"
       for="zf.zscp.interfaces.IZSCPRepository"
       />
 
