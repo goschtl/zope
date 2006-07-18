@@ -16,6 +16,13 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 664, apidoc didn't properly handle attributes that
+        showd up in dir() but that weren't gettable.
+
+      - Fixed issue 604, Mutable schemas were accidentally included in
+        the 3.2 release even though they weren't ready and didn't
+        work. They are not included in the 3.3 release.
+
       - Fixed issue 564: binary set operations didn't work on proxied sets.
 
       - Fixed issue 572: Dict fields with key_type or value_type set
