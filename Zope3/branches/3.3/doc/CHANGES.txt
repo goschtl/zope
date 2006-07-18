@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 664, apidoc didn't properly handle attributes that
+        showd up in dir() but that weren't gettable.
+
       - Fixed issue 604, Mutable schemas were accidentally included in
         the 3.2 release even though they weren't ready and didn't
         work. They are not included in the 3.3 release.
