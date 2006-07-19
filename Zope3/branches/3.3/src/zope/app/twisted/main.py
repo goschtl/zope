@@ -33,7 +33,6 @@ import zope.app.appsetup
 import zope.app.appsetup.interfaces
 from zope.app import wsgi
 from zope.app.twisted import log
-from zope.app.twisted import asyncore_main_loop
 
 CONFIG_FILENAME = "zope.conf"
 
@@ -85,7 +84,6 @@ def main(args=None):
         global should_restart
         should_restart = True
         reactor.callFromThread(reactor.stop)
-    reactor.callWhenRunning(asyncore_main_loop.run_in_thread, failed)
 
     reactor.run()
 

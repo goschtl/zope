@@ -14,7 +14,7 @@
 r"""Test that ZEO is handled correctly.
 
 This is a rather evil test that involves setting up a real ZEO server
-ans some clients. We'll borrow some evil infrastructure from ZEO to do
+and some clients. We'll borrow some evil infrastructure from ZEO to do
 this.
 
 We'll start by setting up and starting a ZEO server.  
@@ -262,86 +262,6 @@ def mkfile(dir, name, template, kw):
     f = open(os.path.join(dir, name), 'w')
     f.write(template % kw)
     f.close()
-
-class BadInstance(Instance):
-
-    files = 'runzope', 'site_zcml', 'zope_conf'
-
-    def runzope(self):
-        template = """
-        import sys
-        sys.path[:] = %(path)r
-        from zope.app.twisted.main import main
-        from zope.app.twisted.tests.test_zeo import BadDispatcher
-        BadDispatcher().add_channel()
-        main(["-C", %(config)r] + sys.argv[1:])
-        """
-        template = '\n'.join([l.strip() for l in template.split('\n')])
-        mkfile(self.dir, "runzope", template, self.__dict__)
-
-    def zope_conf(self):
-        template = """
-        site-definition %(sitezcml)s
-        threads 1
-        <server>
-          type HTTP
-          address localhost:%(port)s
-        </server>
-        <zodb>
-        <demostorage>
-        </demostorage>
-        </zodb>
-        <accesslog>
-          <logfile>
-            path %(accesslog)s
-          </logfile>
-        </accesslog>
-        <eventlog>
-          <logfile>
-            path %(z3log)s
-          </logfile>
-        </eventlog>
-        """
-        mkfile(self.dir, "zope.conf", template, self.__dict__)
-
-    def start(self):
-        return os.spawnv(os.P_WAIT, sys.executable,
-                         (sys.executable, '-Wignore',
-                          os.path.join(self.dir, "runzope"),
-                          )
-                         )
-
-class BadDispatcher(asyncore.dispatcher):
-    _fileno = 42
-    def readable(self):
-        raise SystemError("I am evil")
-
-def test_asyncore_failure_causes_zope_failure():
-    """
-
-A failure of the asyncore mail loop should cause a zope process to fail:
-
-    >>> bad = BadInstance()
-    >>> bad.start()
-    1
-
-And puts a panic in the event log:
-
-    >>> print open(bad.z3log).read()
-    ------
-    ... CRITICAL ZEO.twisted The asyncore main loop died unexpectedly!
-    Traceback (most recent call last):
-    ...
-        raise SystemError("I am evil")
-    SystemError: I am evil
-    <BLANKLINE>
-
-
-Cleanup:
-
-    >>> shutil.rmtree(bad.dir)
-
-"""
         
 def test_suite():
     suite = doctest.DocTestSuite(
