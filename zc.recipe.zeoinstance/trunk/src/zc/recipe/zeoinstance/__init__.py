@@ -22,6 +22,8 @@ class Recipe:
             )
         python = buildout['buildout']['python']
         options['executable'] = buildout[python]['executable']
+        options['port'] = options.get('port', '8100')
+        options['zconfig'] = zeoclient_tempalte % options['port']
 
     def _getdbconfig(self, buildout, options):
         dbconfig = buildout[options['database']]['zconfig']
@@ -56,7 +58,10 @@ class Recipe:
         try:
             # Now, patch the zodb option in zeo.conf
             zeo_conf_path = os.path.join(location, 'etc', 'zeo.conf')
-            zeo_conf = open(zeo_conf_path).read()            
+            zeo_conf = open(zeo_conf_path).read()
+            zeo_conf = zeo_conf.replace('address 8100',
+                                        'address %s' % options['port'],
+                                        1)
             zeo_conf = (
                 zeo_conf[:zeo_conf.find('<filestorage 1>')]
                 +
@@ -73,3 +78,11 @@ class Recipe:
             raise
         
         return location
+
+zeoclient_tempalte = """\
+<zodb>
+  <zeoclient>
+     server localhost:%s
+  </zeoclient>
+</zodb>
+"""

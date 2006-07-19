@@ -1,8 +1,7 @@
 Recipe for creating a ZEO instance
 ======================================
 
-This recipe creates a Zope instance that has been extended by a
-collection of eggs.
+This recipe creates a basic ZEO instance.
 
 The recipe takes the following options:
 
@@ -18,10 +17,28 @@ database
    The name of a section defining a zconfig option that has a zodb
    section.
 
+port
+   The port to listen on. This defaults to 8100
       
+The recipe generates a zconfig option that can be used by parts
+needing a database configuration.
+
+
+
 To do
 -----
+
+- This probably only works with a zope3-internal ZEO installation,
+  because of the way we determine the location (and name?) of the
+  mkzeoinstance script.
 
 - Need tests
 
 - Support for more configuration options.
+
+- Instance generation using a recipe-internal template for zeo.conf,
+  rather than hacking the configuration file produced by
+  mkzeoinstance.
+
+
+  
