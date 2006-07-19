@@ -16,6 +16,17 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 650, a test failure on Mac OS X that seemed to
+        indicate deeper problems in ZEO's thread handling.  Refactored
+        ZEO so that ZEO clients have their own asyncore loop and don't
+        need two separate networking modes.
+
+        As part of this, some bugs in connection management that
+        weren't tested in asynchronous mode were fixed.
+
+        Added a heart-beat to try to detect lost server connections in
+        situations where such disconnections are not reported by the OS. 
+
       - Fixed issue 664, apidoc didn't properly handle attributes that
         showd up in dir() but that weren't gettable.
 
