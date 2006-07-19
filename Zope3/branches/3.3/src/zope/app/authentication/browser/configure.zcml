@@ -45,7 +45,7 @@
       permission="zope.ManageServices" />
 
   <page
-      name="plugins.html"
+      name="contents.html"
       for="..interfaces.IPluggableAuthentication"
       menu="zmi_views" title="Plugins"
       permission="zope.ManageSite"

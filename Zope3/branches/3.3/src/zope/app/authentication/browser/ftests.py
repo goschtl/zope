@@ -118,6 +118,7 @@ def test_suite():
             'group_searching_with_empty_string.txt'),
         functional.FunctionalDocFileSuite('special-groups.txt'),
         unittest.makeSuite(FunkTest),
+        functional.FunctionalDocFileSuite('issue663.txt'),
         ))
 
 if __name__ == '__main__':

@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 663, adding basic auth and session-credential
+        plugins didn't work.
+
       - Fixed issue 650, a test failure on Mac OS X that seemed to
         indicate deeper problems in ZEO's thread handling.  Refactored
         ZEO so that ZEO clients have their own asyncore loop and don't

@@ -23,4 +23,5 @@ import zope.app.container.browser.adding
 class Adding(zope.app.container.browser.adding.Adding):
     
     def nextURL(self):
-        return zapi.absoluteURL(self.context, self.request) + '/@@plugins.html'
+        return zapi.absoluteURL(self.context, self.request
+                                ) + '/@@contents.html'
