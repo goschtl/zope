@@ -17,6 +17,10 @@ PluggableAuthService changelog
         was hit in the same request, the CookieAuthHelper would throw an
         exception (http://www.zope.org/Collectors/PAS/43)
 
+    Other
+
+      - Added a DEPENDENCIES.txt. (http://www.zope.org/Collectors/PAS/44)
+
 
   PluggableAuthService 1.3 (2006/06/09)
 
