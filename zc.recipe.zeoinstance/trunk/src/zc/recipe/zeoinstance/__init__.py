@@ -1,8 +1,8 @@
 import os, re, shutil
 import zc.buildout
 
-start_section = re.compile('\n[ \t]*<>[ \t]*\n').search
-end_section = re.compile('\n[ \t]*<>[ \t]*\n').search
+start_section = re.compile('(^|\n)[ \t]*<[^>]+>[ \t]*\n').search
+end_section = re.compile('(^|\n)[ \t]*</[^>]+>[ \t]*\n').search
 
 class Recipe:
     # Need to think about the inheritence interface
@@ -13,19 +13,23 @@ class Recipe:
         self.options, self.name = options, name
 
         options['zeo'] = options.get('zeo', 'zeo')
-        self._getdbconfig()
+        self._getdbconfig(buildout, options)
         python = buildout['buildout']['python']
         options['zeo-directory'] = buildout[options['zeo']]['location']
         options['location'] = os.path.join(
             buildout['buildout']['parts-directory'],
             self.name,
             )
+        python = buildout['buildout']['python']
+        options['executable'] = buildout[python]['executable']
 
-    def _getdbconfig(self, options):
+    def _getdbconfig(self, buildout, options):
         dbconfig = buildout[options['database']]['zconfig']
+        #import pdb; pdb.set_trace()
         dbconfig = dbconfig[start_section(dbconfig).end(0):]
         dbconfig = dbconfig[start_section(dbconfig).start(0):]
         dbconfig = dbconfig[:end_section(dbconfig).end(0):]
+        dbconfig = dbconfig.replace('>', ' 1>', 1)
         options['database-config'] = dbconfig
 
     def install(self):
