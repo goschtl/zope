@@ -38,7 +38,7 @@ import zope.component.event
 
 import zope.deferredimport
 zope.deferredimport.deprecated(
-    "Use zope.component.testing.placelesssetup",
+    "Use zope.component.testing instead",
     placelesssetup = "zope.component.testing",
     )
 
