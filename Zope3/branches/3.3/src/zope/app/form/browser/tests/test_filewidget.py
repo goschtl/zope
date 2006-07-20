@@ -15,8 +15,8 @@
 
 $Id$
 """
-import unittest, doctest
-
+import unittest
+from zope.testing import doctest
 from StringIO import StringIO
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import FileWidget

@@ -15,8 +15,8 @@
 
 $Id$
 """
-import doctest
 
+from zope.testing import doctest
 import zope.security.checker
 from zope.interface import Interface, implements
 from zope.component.interfaces import IViewFactory, ComponentLookupError

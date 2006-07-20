@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest
-import doctest
+from zope.testing import doctest
 from persistent import Persistent
 from zope.interface import Interface, implements
 from zope.schema import TextLine, Text, Int, List

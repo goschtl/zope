@@ -16,8 +16,8 @@
 $Id$
 """
 import datetime
-import unittest, doctest
-
+import unittest
+from zope.testing import doctest
 from zope.datetime import parseDatetimetz
 from zope.schema import Date
 from zope.interface.verify import verifyClass
