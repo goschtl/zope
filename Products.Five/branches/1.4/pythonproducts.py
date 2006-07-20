@@ -24,8 +24,12 @@ import types
 import Products
 from App.Product import initializeProduct
 from App.ProductContext import ProductContext
+from zope.testing import cleanup
 
 _zope_app = None
+
+def isMonkeyPatched(m):
+    return hasattr(m, '__five_method__')  
 
 def setupPythonProducts(appOrContext):
     """Initialize the python-packages-as-products logic
@@ -52,6 +56,22 @@ def applyPatches(app):
     patch_ProductDispatcher__bobo_traverse__(app)
     patch_externalmethod(app)
 
+def removePatches():
+    """Remove all monkey patches.
+    """
+   
+    from App.FactoryDispatcher import FactoryDispatcher, ProductDispatcher
+    from App import Extensions   
+    from Products.ExternalMethod import ExternalMethod
+    
+    if isMonkeyPatched(ProductDispatcher.__bobo_traverse__):
+        ProductDispatcher.__bobo_traverse__ = _original__bobo_traverse__
+
+    if isMonkeyPatched(Extensions.getPath):
+        Extensions.getPath = _originalGetPath
+        ExternalMethod.getPath = _originalGetPath
+
+cleanup.addCleanUp(removePatches)
 
 # BEGIN MONKEY PATCHES
 # Most of these monkey patches were repurposed from the code I 
@@ -93,6 +113,10 @@ def patch_ProductDispatcher__bobo_traverse__(app):
     """
     
     from App.FactoryDispatcher import FactoryDispatcher, ProductDispatcher
+    
+    if isMonkeyPatched(ProductDispatcher.__bobo_traverse__):
+        return
+    
     global _original__bobo_traverse__
     _original__bobo_traverse__ = ProductDispatcher.__bobo_traverse__
     
@@ -108,6 +132,7 @@ def patch_ProductDispatcher__bobo_traverse__(app):
 
         dispatcher=dispatcher_class(product, self.aq_parent, REQUEST)
         return dispatcher.__of__(self)
+    __bobo_traverse__.__five_method__ = True
     
     ProductDispatcher.__bobo_traverse__ = __bobo_traverse__
     
@@ -120,6 +145,9 @@ def patch_externalmethod(app):
     
     from App import Extensions, FactoryDispatcher
     from Products.ExternalMethod import ExternalMethod
+
+    if isMonkeyPatched(Extensions.getPath):
+        return
     
     global _originalGetPath
     _originalGetPath = Extensions.getPath
@@ -154,5 +182,7 @@ def patch_externalmethod(app):
         except:
             pass
     
+    getPath.__five_method__ = True
+
     Extensions.getPath = getPath
     ExternalMethod.getPath = getPath

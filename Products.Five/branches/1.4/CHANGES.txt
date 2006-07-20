@@ -20,6 +20,12 @@ Five 1.4.1 (unreleased)
   to ZopeTwoPageTemplateFile and as a Zope 2 correspondence to
   zope.app.pagetemplate.ViewPageTemplateFile.
 
+Bugfixes
+--------
+
+* Made the pythonproducts monkey patching more robust by checking to
+  ensure patches aren't reapplied and cleaning up after itself.
+
 Five 1.4 (2006-05-29)
 =====================
 

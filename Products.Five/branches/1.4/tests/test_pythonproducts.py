@@ -24,9 +24,10 @@ if __name__ == '__main__':
 from Products.Five.tests import testing
 sys.path.append(testing.__path__[0])
 
-def test_registerPackage():
+def test_aRegisterPackageCall():
     """
-    Testing registerPackage
+    Testing registerPackage.  Recently renamed method to something to
+    would produce an out of order issue that breaks the test.
 
       >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> setUp()
