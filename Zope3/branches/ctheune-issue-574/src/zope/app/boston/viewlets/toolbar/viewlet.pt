@@ -1,0 +1,14 @@
+<div class="ToolBarContainer">
+	<table cellspacing="0" cellpadding="0" id="ToolBar" class="ToolBar">
+		<tr>
+			<td><img src="/++resource++toolbarGrip.gif" width="5" height="18"
+								tal:attributes="src string:${context/++resource++toolbarGrip.gif}" /></td>
+			<td tal:repeat="menuitem python:view.menus('zmi_actions')">
+				<metal:block use-macro="python:view.macros('topmenu')" />
+			</td>
+			<td tal:repeat="menuitem python:view.menus('help_actions')">
+				<metal:block use-macro="python:view.macros('helpmenu')" />
+			</td>
+		</tr>
+	</table>
+</div>
