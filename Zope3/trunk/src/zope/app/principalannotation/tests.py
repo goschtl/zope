@@ -15,7 +15,7 @@
 
 $Id$
 """
-import doctest
+from zope.testing import doctest
 from unittest import TestCase, TestLoader, TextTestRunner
 
 import zope.component

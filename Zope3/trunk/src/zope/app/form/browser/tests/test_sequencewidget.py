@@ -15,8 +15,8 @@
 
 $Id$
 """
-import unittest, doctest
-
+import unittest
+from zope.testing import doctest
 from zope.schema import Tuple, List, TextLine
 from zope.schema.interfaces import ITextLine, ValidationError
 from zope.publisher.browser import TestRequest

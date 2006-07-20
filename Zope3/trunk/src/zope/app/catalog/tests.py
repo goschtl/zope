@@ -19,7 +19,7 @@ a catalog passes on events that it receives.
 $Id$
 """
 import unittest
-import doctest
+from zope.testing import doctest
 
 import BTrees.IFBTree
 

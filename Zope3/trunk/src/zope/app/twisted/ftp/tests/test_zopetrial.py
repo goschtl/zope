@@ -25,7 +25,7 @@ $Id$
 __docformat__="restructuredtext"
 
 import unittest
-import doctest
+from zope.testing import doctest
 import sets
 import time
 import sys
