@@ -1,6 +1,6 @@
 <html metal:use-macro="context/@@standard_macros/view" i18n:domain="zope">
 <head>
-<title metal:fill-slot="title">Manager Detials</title>
+<title metal:fill-slot="title">Manager Details</title>
 </head>
 <body>
 <div metal:fill-slot="body">
