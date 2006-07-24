@@ -42,7 +42,7 @@ class TestbrowserRealClass:
 
     def startZope(self, fg=None):
         """start Zope in a daemon thread"""
-        SITE_ZCML = '/home/benji/workspace/testbrowser3/src/zope/testbrowser/ftests/real.zcml'
+        SITE_ZCML = 'ftesting.zcml'
         TARGET_PORT = realproxy.TARGET_PORT
         handle, self.conf_path = tempfile.mkstemp()
         os.write(handle, CONF % locals())
@@ -50,9 +50,7 @@ class TestbrowserRealClass:
 
         def go():
             # force the server to run with a known config
-#            args = ['-C', self.conf_path]
-            args = ['-X', 'server/address=%s' % TARGET_PORT,
-                    '-X', 'site-definition=ftesting.zcml']
+            args = ['-C', self.conf_path]
             setup(load_options(args))
             run(timeout=1.0)
 
