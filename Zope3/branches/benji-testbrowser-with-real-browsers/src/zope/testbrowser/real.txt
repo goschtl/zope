@@ -36,6 +36,22 @@ We can retrieve the current address.
     >>> browser.url
     u'http://localhost:23123/'
 
+Reload works.
+
+    >>> original_contents = browser.contents
+    >>> browser.reload()
+    >>> original_contents == browser.contents
+    True
+
+
+goBack doesn't work. XXX
+
+    >>> browser.getLink('[top]', index=0).click()
+    >>> browser.goBack()
+    >>> import time; time.sleep(1) # XXX race condition
+    >>> original_contents == browser.contents
+    False
+
 When we're done with the browser we have to close it.
 
     >>> browser.close()

@@ -60,7 +60,7 @@ class TestbrowserRealClass:
 
     def stopZope(self):
         """tell Zope to stop and wait for it to do so"""
-        import time; time.sleep(1)
+        import time; time.sleep(1) # XXX work around race condition
         ThreadedAsync.LoopCallback.exit_status = 0
         self.zope_thread.join()
         os.remove(self.conf_path)
