@@ -14,6 +14,9 @@ We can open pages and look at their contents.
     >>> browser.contents
     u'...</head>...'
 
+    >>> browser.contents
+    u'...[top]...'
+
     >>> browser.getLink('[top]', index=0)
     <Link text='[top]' url=u'http://localhost:23123/@@SelectedManagementView.html'>
 

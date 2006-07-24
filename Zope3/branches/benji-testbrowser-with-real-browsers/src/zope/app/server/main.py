@@ -71,9 +71,15 @@ def debug(args=None):
     return db
 
 
-def run():
+def run(timeout=None):
+    # if a timeout is provided, pass it on
+    if timeout is not None:
+        args = [timeout]
+    else:
+        args = []
+
     try:
-        ThreadedAsync.loop()
+        ThreadedAsync.loop(*args)
     except KeyboardInterrupt:
         # Exit without spewing an exception.
         pass

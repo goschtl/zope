@@ -20,6 +20,7 @@ __docformat__ = "reStructuredText"
 import re
 import sys
 import time
+from test import pystone
 
 class AmbiguityError(KeyError):
     pass
