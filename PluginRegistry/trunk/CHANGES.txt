@@ -1,6 +1,6 @@
 PluginRegistry Product Changelog
 
-  After PluginRegistry 1.1 (2006/02/25)
+  PluginRegistry 1.1.1 (2006/07/25)
 
     - Added workaround for autogen factories which assume they can
       pass an ID to the registry's '__init__'.  In particular, this
