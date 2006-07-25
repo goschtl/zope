@@ -23,6 +23,9 @@ Five 1.5 (unreleased)
 * Changed the tests to reflect that defaultView no only works for views
   (and not on attributes).
 
+* The FiveSiteManager classes now work again, but are deprecated for the
+  new zope.component support.
+
 Five 1.5c (2006-05-29)
 ======================
 

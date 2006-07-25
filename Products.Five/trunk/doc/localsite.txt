@@ -9,6 +9,81 @@ to locally override component registrations and have components and
 their configuration be persisted in the ZODB as well as managed
 through the web interface.
 
+
+Five 1.5 supports two distinct and slightly incompatible versions of
+local site support. The first one, (here known as "old" sites) was 
+introduced in Five 1.3 and is based on Zope 3.2s site implementation.
+But the site implementation in Zope 3.2 was overly complicated, and
+for 3.3 it was refactored, and Five 1.5 contains support for this new
+local site support as well (known as "new" sites).
+
+For documentation of how to use local sites, see the Zope 3.3 documentation.
+This document is mostly about how the implementation of the old sites work,
+and how to migrate from Five 1.3 and 1.4.
+
+
+Migration from old sites to new sites
+-------------------------------------
+
+New sites are based on Zope 3.3s new site managers and persistent 
+component registries. Old sites are based on specific Five implementation
+of site managers, and keeps utilities in a folder called "utilities".
+
+They are used basically the same, but they are created differently,
+and also, when you look up a utility with getUtility or queryUtility, in
+old sites, the utility will have an acquicition context, while in the new
+sites it will not.
+
+Setting up the site
+...................
+
+The old setup of a site was done by marking the class of the site as a
+possible site with five:localsite, and then either manually through the ZMI
+or programmatically through enableLocalSiteHook(site) turn it into a site.
+
+The new setup involves calling enableSite(site) and createing and setting
+a site manager. The simplest way to do this programatically is to look 
+up the "components.html" view on the site, and calling view.makeSite().
+As any ObjectManager can be a site there is no longer any need to specially
+mark the class as being a possible site.
+
+Registering local utilities
+...........................
+
+The old usage was to get the site manager, either throgh adapting with
+IFiveUtilityRegistry(site) or by calling getSiteManager(). You could then
+register the utilities with sitemanager.registerUtility(interface, utility)
+
+The new way is to call getSiteManager().registerUtility(object, provided).
+Note that in the old way, the first parameter is the interface name, and 
+the second the actual utility object, but in the new way, it is the other
+way around.
+
+Migrating the actual sites
+..........................
+
+Not Yet Implemented.
+
+Experimental forwards compatibility
+...................................
+
+If you have software using the old sites, and software using the new sites,
+there is sligthly experimental support to make software expecting new sites
+to work with old sites. Nothing is promised with this, as it is largely
+untested. The best thing to do is without a doubt to convert your old site
+software and your old sites to use new sites.
+
+
+
+Old site implementation details
+-------------------------------
+
+The rest of this document documents the details of the old site implementation.
+Everything from here on concerns only the old implementation and is of mainly
+hysterical interest:
+
+
+
 By default, Zope 3 has a global site which is configured through ZCML.
 It provides the fallback for all component look-up.  Local sites are
 typically set during traversal, when the traverser encounters an

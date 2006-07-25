@@ -19,7 +19,7 @@ from zope.app.component.interfaces import ISite
 from zope.app.component.hooks import clearSite
 
 from Products.Five.browser import BrowserView
-from Products.Five.component import enableSite, disableSite
+from Products.Five.site.localsite import enableLocalSiteHook, disableLocalSiteHook
 
 class LocalSiteView(BrowserView):
     """View for convering a possible site to a site
@@ -40,7 +40,7 @@ class LocalSiteView(BrowserView):
         if self.isSite():
             raise ValueError('This is already a site')
 
-        enableSite(self.context)
+        enableLocalSiteHook(self.context)
         return "This object is now a site"
 
     def unmakeSite(self):
@@ -48,7 +48,7 @@ class LocalSiteView(BrowserView):
         if not self.isSite():
             raise ValueError('This is not a site')
 
-        disableSite(self.context)
+        disableLocalSiteHook(self.context)
 
         # disableLocalSiteHook circumcised our context so that it's
         # not an ISite anymore.  That can mean that certain things for

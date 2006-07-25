@@ -9,6 +9,10 @@ First, we need to set a few things up...
 
   >>> import Products.Five
   >>> from Products.Five import zcml
+  >>> import warnings
+  >>> showwarning = warnings.showwarning
+  >>> warnings.showwarning = lambda *a, **k: None
+
   >>> zcml.load_config("meta.zcml", Products.Five)
   >>> zcml.load_config("permissions.zcml", Products.Five)
   >>> zcml.load_config("configure.zcml", Products.Five.site)
@@ -24,14 +28,15 @@ First, we need to set a few things up...
   >>> nothing = manage_addDummySite(self.folder, 'dummysite')
   >>> dummysite = self.folder.dummysite
 
-
 Local vs. global sites
 ----------------------
 
 Let's make the possible site a real site:
 
-  >>> from Products.Five.component import enableSite
-  >>> enableSite(dummysite)
+  >>> from Products.Five.site.localsite import enableLocalSiteHook
+  >>> enableLocalSiteHook(dummysite)
+
+  >>> warnings.showwarning = showwarning
 
 and tell Zope 3 about it:
 
@@ -118,7 +123,7 @@ Let's set up another site to test nested sites:
 
 Now we set the current site to the ``subsite``:
 
-  >>> enableSite(subsite)
+  >>> enableLocalSiteHook(subsite)
   >>> setSite(subsite)
 
 When we call getServices() now, we get the correct site manager:

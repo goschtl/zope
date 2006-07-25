@@ -31,6 +31,7 @@ from zope.app import zapi
 from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.component import getNextUtility
 from zope.app.component.hooks import setSite, clearSite, setHooks
+from zope.component import getSiteManager
 
 import Products.Five
 from Products.Five import zcml
@@ -38,6 +39,7 @@ from Products.Five.component import enableSite
 from Products.Five.site.interfaces import IRegisterUtilitySimply
 from Products.Five.site.tests.dummy import manage_addDummySite, \
      IDummyUtility, ISuperDummyUtility, DummyUtility
+from Products.Five.site.localsite import enableLocalSiteHook
 
 class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
 
@@ -51,10 +53,16 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         <five:localsite
             xmlns:five="http://namespaces.zope.org/five"
             class="Products.Five.site.tests.dummy.DummySite" />"""
+
+        import warnings
+        showwarning = warnings.showwarning
+        warnings.showwarning = lambda *a, **k: None
+
         zcml.load_string(zcml_text)
         manage_addDummySite(self.folder, 'site')
-        enableSite(self.folder.site)
-        setSite(self.folder.site)
+        enableLocalSiteHook(self.folder.site)
+        
+        warnings.showwarning = showwarning
 
         # Hook up custom component architecture calls; we need to do
         # this here because zope.app.component.hooks registers a
@@ -69,26 +77,26 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         from Products.Five.site.localsite import FiveSiteManager
         from Products.Five.site.utility import SimpleLocalUtilityRegistry
 
-        local_sm = zapi.getSiteManager(None)
+        local_sm = getSiteManager(None)
         self.failIf(local_sm is zapi.getGlobalSiteManager())
         self.failUnless(isinstance(local_sm, FiveSiteManager))
 
-        local_sm = zapi.getSiteManager(self.folder.site)
+        local_sm = getSiteManager(self.folder.site)
         self.failIf(local_sm is zapi.getGlobalSiteManager())
         self.failUnless(isinstance(local_sm, FiveSiteManager))
 
-        sm = zapi.getSiteManager()
+        sm = getSiteManager()
         self.failUnless(isinstance(sm.utilities, SimpleLocalUtilityRegistry))
 
     def test_getUtilitiesNoUtilitiesFolder(self):
-        sm = zapi.getSiteManager()
+        sm = getSiteManager()
         
         self.failUnless(sm.queryUtility(IDummyUtility) is None)
         self.assertEquals(list(sm.getUtilitiesFor(IDummyUtility)), [])
         self.assertEquals(list(sm.getAllUtilitiesRegisteredFor(IDummyUtility)), [])
 
     def test_registerUtilityOnUtilityRegistry(self):
-        utils = zapi.getSiteManager().utilities
+        utils = getSiteManager().utilities
         dummy = DummyUtility()
         utils.registerUtility(IDummyUtility, dummy, 'dummy')
 
@@ -99,7 +107,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
             IDummyUtility)), [dummy])
 
     def test_registerUtilityOnSiteManager(self):
-        sm = zapi.getSiteManager()
+        sm = getSiteManager()
         self.failUnless(IRegisterUtilitySimply.providedBy(sm))
         dummy = DummyUtility()
         sm.registerUtility(IDummyUtility, dummy, 'dummy')
@@ -111,7 +119,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
             IDummyUtility)), [dummy])
 
     def test_registerTwoUtilitiesWithSameNameDifferentInterface(self):
-        sm = zapi.getSiteManager()
+        sm = getSiteManager()
         self.failUnless(IRegisterUtilitySimply.providedBy(sm))
         dummy = DummyUtility()
         superdummy = DummyUtility()
@@ -129,7 +137,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         # anything registered for IDummyInterface of ISuperDummyInterface
         # should come back.
 
-        sm = zapi.getSiteManager()
+        sm = getSiteManager()
         self.failUnless(IRegisterUtilitySimply.providedBy(sm))
         dummy = DummyUtility()
         superdummy = DummyUtility()
@@ -169,13 +177,16 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
     def test_nestedSitesDontConflictButStillAcquire(self):
         # let's register a dummy utility in the dummy site
         dummy = DummyUtility()
-        sm = zapi.getSiteManager()
+        sm = getSiteManager()
         sm.registerUtility(IDummyUtility, dummy)
 
         # let's also create a subsite and make that our site
         manage_addDummySite(self.folder.site, 'subsite')
-        enableSite(self.folder.site.subsite)
-        setSite(self.folder.site.subsite)
+        import warnings
+        showwarning = warnings.showwarning
+        warnings.showwarning = lambda *a, **k: None
+        enableLocalSiteHook(self.folder.site.subsite)
+        warnings.showwarning = showwarning
 
         # we should still be able to lookup the original utility from
         # the site one level above
@@ -184,7 +195,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         # now we register a dummy utility in the subsite and see that
         # its registration doesn't conflict
         subdummy = DummyUtility()
-        sm = zapi.getSiteManager()
+        sm = getSiteManager()
         sm.registerUtility(IDummyUtility, subdummy)
 
         # when we look it up we get the more local one now because the
@@ -205,7 +216,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
     def test_registeringTwiceIsConflict(self):
         dummy1 = DummyUtility()
         dummy2 = DummyUtility()
-        sm = zapi.getSiteManager()
+        sm = getSiteManager()
         sm.registerUtility(IDummyUtility, dummy1)
         self.assertRaises(ValueError, sm.registerUtility,
                           IDummyUtility, dummy2)
@@ -216,7 +227,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
 
     def test_utilitiesHaveProperAcquisitionContext(self):
         dummy = DummyUtility()
-        sm = zapi.getSiteManager()
+        sm = getSiteManager()
         sm.registerUtility(IDummyUtility, dummy)
 
         # let's see if we can acquire something all the way from the
@@ -241,7 +252,7 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         provideUtility(global_dummy, IDummyUtility)
 
         local_dummy = DummyUtility()
-        sm = zapi.getSiteManager()
+        sm = getSiteManager()
         sm.registerUtility(IDummyUtility, local_dummy)
 
         self.assertEquals(zapi.getUtility(IDummyUtility), local_dummy)
@@ -250,11 +261,14 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
 
         # test local site vs. nested local site
         manage_addDummySite(self.folder.site, 'subsite')
-        enableSite(self.folder.site.subsite)
-        setSite(self.folder.site.subsite)
+        import warnings
+        showwarning = warnings.showwarning
+        warnings.showwarning = lambda *a, **k: None
+        enableLocalSiteHook(self.folder.site.subsite)
+        warnings.showwarning = showwarning
 
         sublocal_dummy = DummyUtility()
-        sm = zapi.getSiteManager()
+        sm = getSiteManager()
         sm.registerUtility(IDummyUtility, sublocal_dummy)
 
         self.assertEquals(zapi.getUtility(IDummyUtility), sublocal_dummy)

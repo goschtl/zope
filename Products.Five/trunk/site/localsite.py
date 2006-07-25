@@ -29,6 +29,9 @@ class FiveSiteManager(object):
         # make {get|query}NextSiteManager() work without having to
         # resort to Zope 2 acquisition
         self.context = self.__parent__ = context
+        warnings.warn("The FiveSiteManager is deprecated and will be removed "
+                      "in Zope 2.12. \nSee Five/doc/localsite.txt .",
+                      DeprecationWarning, 2)
 
     @property
     def __bases__(self):
@@ -97,3 +100,30 @@ class FiveSite:
 
     def setSiteManager(self, sm):
         raise NotImplementedError('This class has a fixed site manager')
+
+
+#BBB: Goes away in Five Zope 2.12
+
+import warnings
+from Products.Five.component import enableSite, disableSite
+from zope.app.component.hooks import setSite, clearSite, setHooks
+
+def enableLocalSiteHook(obj):
+    warnings.warn("The enableLocalSiteHook is deprecated and will be removed "
+                  "in Zope 2.12. \nSee Five/doc/localsite.txt .",
+                  DeprecationWarning, 2)
+    enableSite(obj)
+    components = FiveSiteManager(obj)
+    obj.setSiteManager(components)
+    setSite(obj)
+    setHooks()
+
+def disableLocalSiteHook(obj):
+    """Remove __before_traverse__ hook for Local Site
+    """
+    warnings.warn("The disableLocalSiteHook is deprecated and will be removed "
+                  "in Zope 2.12. \nSee Five/doc/localsite.txt .",
+                  DeprecationWarning, 2)
+    disableSite(obj)
+    clearSite()
+    obj.setSiteManager(None)

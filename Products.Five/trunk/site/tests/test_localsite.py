@@ -95,7 +95,13 @@ class SiteManagerTest(PlacelessSetup, unittest.TestCase):
         <five:localsite
             xmlns:five="http://namespaces.zope.org/five"
             class="Products.Five.site.tests.dummy.DummySite" />"""
+        import warnings
+        showwarning = warnings.showwarning
+        warnings.showwarning = lambda *a, **k: None
+
         zcml.load_string(zcml_text)
+        
+        warnings.showwarning = showwarning
 
         # Hook up custom component architecture calls; we need to do
         # this here because zope.app.component.hooks registers a

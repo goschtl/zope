@@ -25,7 +25,7 @@ from zope.app.component.interfaces import IPossibleSite
 
 from Products.Five.site.localsite import FiveSite
 
-import logging
+import logging, warnings
 
 LOG = logging.getLogger('Five')
 
@@ -40,21 +40,18 @@ def classSiteHook(class_, site_class):
     
 
 def installSiteHook(_context, class_, site_class=None):
-    if site_class is None:
-        if not IPossibleSite.implementedBy(class_):
-            # This is not a possible site, we need to monkey-patch it so that
-            # it is.
-            site_class = FiveSite
-    else:
-        if not IPossibleSite.implementedBy(site_class):
-            raise ConfigurationError('Site class does not implement '
-                                     'IPossibleClass: %s' % site_class)
+    warnings.warn_explicit("The five:localsite directive is deprecated and "
+                           "will be removed in Zope 2.12. \n"
+                           "See Five/doc/localsite.txt .",
+                           DeprecationWarning, 
+                           _context.info.file, _context.info.line)
     if site_class is not None:
         _context.action(
             discriminator = (class_,),
             callable = classSiteHook,
             args=(class_, site_class)
             )
+    if not IPossibleSite.implementedBy(class_):
         _context.action(
             discriminator = (class_, IPossibleSite),
             callable = classImplements,
