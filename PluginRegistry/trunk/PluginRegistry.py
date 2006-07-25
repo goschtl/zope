@@ -78,7 +78,11 @@ class PluginRegistry( SimpleItem ):
 
     _plugins = None
 
-    def __init__( self, plugin_type_info ):
+    def __init__( self, plugin_type_info=() ):
+
+        if isinstance(plugin_type_info, basestring):
+            # some tool is passing us our ID.
+            raise ValueError('Must pass a sequence of plugin info dicts!')
 
         self._plugin_types = [x[0] for x in plugin_type_info]
         self._plugin_type_info = PersistentMapping()
