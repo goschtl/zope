@@ -1,3 +1,6 @@
+After Version 0.2
+  - allow to subclass rendering of target
+    change order of targets rendering
 
 Version 0.2
 
