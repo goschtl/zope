@@ -259,10 +259,29 @@ def initialize(context):
                          )
 
     if profile_registry is not None:
+
+        context.registerClass( PluggableAuthService.PluggableAuthService
+                             , meta_type='Configured PAS'
+                             , permission=ManageUsers
+                             , constructors=(
+                                PluggableAuthService.addConfiguredPASForm,
+                                PluggableAuthService.addConfiguredPAS,
+                               )
+                             , icon='www/PluggableAuthService.png'
+                             )
         profile_registry.registerProfile('simple',
                                          'Simple PAS Content Profile',
                                          'Content for a simple PAS.',
                                          'profiles/simple',
+                                         'PluggableAuthService',
+                                         BASE,
+                                         IPluggableAuthService,
+                                        )
+        profile_registry.registerProfile('empty',
+                                         'Empty PAS Content Profile',
+                                         'Content for an empty PAS '
+                                         '(plugins registry only).',
+                                         'profiles/empty',
                                          'PluggableAuthService',
                                          BASE,
                                          IPluggableAuthService,

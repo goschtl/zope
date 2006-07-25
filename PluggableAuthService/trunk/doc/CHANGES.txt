@@ -2,7 +2,23 @@ PluggableAuthService changelog
 
   PluggableAuthService 1.4-beta (unreleased)
 
+    Features Added
+
+      - Created a "Configured PAS" entry in the ZMI add list, which
+        allows creating a PAS using base and extension GenericSetup profiles
+        registered for IPluggableAuthService.  This entry should eventually
+        replace the "stock" PAS entry (assuming that we make GenericSetup
+        a "hard" dependency).
+
+      - Added an "empty" GenericSetup profile, which creates a PAS containing
+        only a plugin registry and a setup tool.
+
     Bugs Fixed
+
+      - Repaired the "simple" GenericSetup profile to be useful, rather than
+        catastrophic, to apply:  it now creates and registers a set of
+        ZODB-based user / group / role plugins, along with a basic auth
+        helper.
 
       - ZODBUserManager: Extend the "notional IZODBUserManager interface"
         with the left-out updateUser facility and a corresponding

@@ -1110,6 +1110,34 @@ classImplements( PluggableAuthService
 
 InitializeClass( PluggableAuthService )
 
+class ResponseCleanup:
+    def __init__(self, resp):
+        self.resp = resp
+
+    def __del__(self):
+        # Free the references.
+        #
+        # No errors of any sort may propagate, and we don't care *what*
+        # they are, even to log them.
+        stack = getattr(self.resp, '_unauthorized_stack', [])
+        old = None
+
+        while stack:
+            old = stack.pop()
+
+        if old is not None:
+            self.resp._unauthorized = old
+        else:
+            try:
+                del self.resp._unauthorized
+            except:
+                pass
+
+        try:
+            del self.resp
+        except:
+            pass
+
 _PLUGIN_TYPE_INFO = (
     ( IExtractionPlugin
     , 'IExtractionPlugin'
@@ -1217,16 +1245,22 @@ _PLUGIN_TYPE_INFO = (
     )
   )
 
-def addPluggableAuthService( dispatcher, REQUEST=None ):
+def addPluggableAuthService( dispatcher
+                           , base_profile=None
+                           , extension_profiles=()
+                           , create_snapshot=True
+                           , setup_tool_id='setup_tool'
+                           , REQUEST=None
+                           ):
+    """ Add a PluggableAuthService to 'dispatcher'.
 
-    """ Add a PluggableAuthService to 'self.
+    o BBB for non-GenericSetup use.
     """
     pas = PluggableAuthService()
     preg = PluginRegistry( _PLUGIN_TYPE_INFO )
     preg._setId( 'plugins' )
     pas._setObject( 'plugins', preg )
     dispatcher._setObject( pas.getId(), pas )
-
 
     if REQUEST is not None:
         REQUEST['RESPONSE'].redirect(
@@ -1235,31 +1269,64 @@ def addPluggableAuthService( dispatcher, REQUEST=None ):
                                 'PluggableAuthService+added.'
                               % dispatcher.absolute_url() )
 
-class ResponseCleanup:
-    def __init__(self, resp):
-        self.resp = resp
+def addConfiguredPASForm(dispatcher):
+    """ Wrap the PTF in 'dispatcher', including 'profile_registry' in options.
+    """
+    from Products.GenericSetup import EXTENSION
+    from Products.GenericSetup import profile_registry
 
-    def __del__(self):
-        # Free the references.
-        #
-        # No errors of any sort may propagate, and we don't care *what*
-        # they are, even to log them.
-        stack = getattr(self.resp, '_unauthorized_stack', [])
-        old = None
+    wrapped = PageTemplateFile( 'pasAddForm', _wwwdir ).__of__( dispatcher )
 
-        while stack:
-            old = stack.pop()
+    base_profiles = []
+    extension_profiles = []
 
-        if old is not None:
-            self.resp._unauthorized = old
+    for info in profile_registry.listProfileInfo(for_=IPluggableAuthService):
+        if info.get('type') == EXTENSION:
+            extension_profiles.append(info)
         else:
-            try:
-                del self.resp._unauthorized
-            except:
-                pass
+            base_profiles.append(info)
 
-        try:
-            del self.resp
-        except:
-            pass
+    return wrapped( base_profiles=tuple(base_profiles),
+                    extension_profiles =tuple(extension_profiles) )
+
+def addConfiguredPAS( dispatcher
+                    , base_profile
+                    , extension_profiles=()
+                    , create_snapshot=True
+                    , setup_tool_id='setup_tool'
+                    , REQUEST=None
+                    ):
+    """ Add a PluggableAuthService to 'self.
+    """
+    from Products.GenericSetup.tool import SetupTool
+
+    pas = PluggableAuthService()
+    preg = PluginRegistry( _PLUGIN_TYPE_INFO )
+    preg._setId( 'plugins' )
+    pas._setObject( 'plugins', preg )
+    dispatcher._setObject( pas.getId(), pas )
+
+    pas = dispatcher._getOb( pas.getId() )    # wrapped
+    tool = SetupTool( setup_tool_id )
+    pas._setObject( tool.getId(), tool )
+
+    tool = pas._getOb( tool.getId() )       # wrapped
+    tool.setImportContext( 'profile-%s' % base_profile )
+    tool.runAllImportSteps()
+
+    for extension_profile in extension_profiles:
+        tool.setImportContext( 'profile-%s' % extension_profile )
+        tool.runAllImportSteps()
+
+    tool.setImportContext( 'profile-%s' % base_profile )
+
+    if create_snapshot:
+        tool.createSnapshot( 'initial_configuration' )
+
+    if REQUEST is not None:
+        REQUEST['RESPONSE'].redirect(
+                                '%s/manage_workspace'
+                                '?manage_tabs_message='
+                                'PluggableAuthService+added.'
+                              % dispatcher.absolute_url() )
 
