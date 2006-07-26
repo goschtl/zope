@@ -77,8 +77,8 @@ def createConfigurationList(field, data, fromunicode=False):
         if int(indices[0]) != 0 or int(indices[-1]) != len(indices) - 1:
             raise IndexError('list index out of range')
         
-        if fromunicode and IFromUnicode.providedBy(field):
-            return ConfigurationList([field.fromUnicode(data[index]) for index in indices])
+        if fromunicode:
+            return ConfigurationList([field.value_type.fromUnicode(data[index]) for index in indices])
         else:
             return ConfigurationList([data[index] for index in indices])
 
@@ -96,9 +96,9 @@ def createConfigurationDict(field, data, fromunicode=False):
 
     # other objects
     else:
-        if fromunicode and IFromUnicode.providedBy(field):
+        if fromunicode:
             unicode_data = {}; 
-            [unicode_data.__setitem__(key, field.fromUnicode(value)) for key, value in data.items()]
+            [unicode_data.__setitem__(key, field.value_type.fromUnicode(value)) for key, value in data.items()]
             return ConfigurationDict(unicode_data)
         else:
             return ConfigurationDict(data)
@@ -170,7 +170,7 @@ def prepareData(__keyface__, data, fromunicode):
                 relevant_data[name] = createConfiguration(field.schema, value, fromunicode)
 
             else:
-                if fromunicode and IFromUnicode.providedBy(field):
+                if fromunicode:
                     relevant_data[name] = field.fromUnicode(data[name])
                 else:
                     relevant_data[name] = data[name]

@@ -30,6 +30,7 @@ from zope.generic.configuration.field import SubConfiguration
 from zope.generic.configuration.field import SubConfigurationDict
 from zope.generic.configuration.field import SubConfigurationList
 from zope.generic.configuration.helper import configurationToDict
+from zope.generic.configuration.helper import configurationToFlatDict
 from zope.generic.configuration.helper import provideConfigurationType
 from zope.generic.configuration.helper import namesInOrder
 
