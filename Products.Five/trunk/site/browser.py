@@ -16,7 +16,9 @@
 $Id$
 """
 from zope.app.component.interfaces import ISite
-from zope.app.component.hooks import clearSite
+from zope.app.component.hooks import clearSite, setSite
+from zope.component import getSiteManager, queryMultiAdapter
+from zope.interface import Interface, providedBy
 
 from Products.Five.browser import BrowserView
 from Products.Five.site.localsite import enableLocalSiteHook, disableLocalSiteHook
@@ -31,9 +33,15 @@ class LocalSiteView(BrowserView):
             self.makeSite()
         elif form.has_key('UPDATE_UNMAKESITE'):
             self.unmakeSite()
+        elif form.has_key('UPDATE_MIGRATE'):
+            self.migrateToFive15()
 
     def isSite(self):
         return ISite.providedBy(self.context)
+
+    def isOldSite(self):
+        from Products.Five.site.interfaces import IFiveSiteManager
+        return self.isSite() and IFiveSiteManager.providedBy(getSiteManager())
 
     def makeSite(self):
         """Convert a possible site to a site"""
@@ -58,3 +66,30 @@ class LocalSiteView(BrowserView):
         clearSite()
 
         return "This object is no longer a site"
+
+    def migrateToFive15(self):
+        all_utilities = self.context.utilities.objectItems()
+
+        self.unmakeSite()
+        self.context.manage_delObjects(['utilities'])
+        components_view = queryMultiAdapter((self.context, self.request), 
+                                            Interface, 'components.html')
+        components_view.makeSite()
+        setSite(self.context)
+
+        site_manager = getSiteManager()
+        for id, utility in all_utilities:
+            info = id.split('-')
+            if len(info) == 1:
+                name = ''
+            else:
+                name = info[1]
+            interface_name = info[0]
+
+            for iface in providedBy(utility):
+                if iface.getName() == interface_name:
+                    site_manager.registerUtility(utility, iface, name=name)
+
+        return "Migration done!"
+
+        

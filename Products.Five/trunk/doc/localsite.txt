@@ -42,8 +42,15 @@ possible site with five:localsite, and then either manually through the ZMI
 or programmatically through enableLocalSiteHook(site) turn it into a site.
 
 The new setup involves calling enableSite(site) and createing and setting
-a site manager. The simplest way to do this programatically is to look 
-up the "components.html" view on the site, and calling view.makeSite().
+a site manager. The simplest way to do this manually is to go to the 
+"components.html" view of the object you want to make a site, and press the
+"Make site" button. The easist way to do this programmatically, is to look 
+up the "components.html" view on the site, and calling view.makeSite():
+
+    components_view = queryMultiAdapter((self.context, self.request), 
+                                         Interface, 'components.html')
+    components_view.makeSite()
+
 As any ObjectManager can be a site there is no longer any need to specially
 mark the class as being a possible site.
 
@@ -62,7 +69,9 @@ way around.
 Migrating the actual sites
 ..........................
 
-Not Yet Implemented.
+Go to the object of the site, and add "manage_site.html" to the URL to open
+the old site management view. There you have a button 
+"Migrate to Five.component". Press it to migrate the site.
 
 Experimental forwards compatibility
 ...................................
@@ -76,7 +85,7 @@ software and your old sites to use new sites.
 
 
 Old site implementation details
--------------------------------
+===============================
 
 The rest of this document documents the details of the old site implementation.
 Everything from here on concerns only the old implementation and is of mainly

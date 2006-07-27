@@ -277,9 +277,65 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         self.assertEquals(getNextUtility(self.folder.site, IDummyUtility),
                           global_dummy)
 
+
+class LocalUtilityMigrateTest(ZopeTestCase.ZopeTestCase):
+
+    def afterSetUp(self):
+        setUp()
+        zcml.load_config("meta.zcml", Products.Five)
+        zcml.load_config("permissions.zcml", Products.Five)
+        zcml.load_config("configure.zcml", Products.Five.component)
+        zcml.load_config("configure.zcml", Products.Five.site)
+        zcml_text = """\
+        <five:localsite
+            xmlns:five="http://namespaces.zope.org/five"
+            class="OFS.Folder.Folder" />"""
+
+        import warnings
+        showwarning = warnings.showwarning
+        warnings.showwarning = lambda *a, **k: None
+
+        zcml.load_string(zcml_text)
+        enableLocalSiteHook(self.folder)
+        
+        warnings.showwarning = showwarning
+
+        # Hook up custom component architecture calls; we need to do
+        # this here because zope.app.component.hooks registers a
+        # cleanup with the testing cleanup framework, so the hooks get
+        # torn down by placelesssetup each time.
+        setHooks()
+
+    def test_migration(self):
+        # Migrate from Five.site to Five.component
+        
+        # Register utilities
+        sm = getSiteManager()
+        self.failUnless(IRegisterUtilitySimply.providedBy(sm))
+        dummy = DummyUtility()
+        superdummy = DummyUtility()
+        directlyProvides(superdummy, ISuperDummyUtility)
+        sm.registerUtility(IDummyUtility, dummy, 'dummy')
+        sm.registerUtility(ISuperDummyUtility, superdummy, 'dummy')
+
+        self.assertEquals(zapi.getUtility(IDummyUtility, 'dummy'), dummy)
+        self.assertEquals(zapi.getUtility(ISuperDummyUtility, 'dummy'),
+                          superdummy)
+        
+        siteview = self.folder.unrestrictedTraverse('manage_site.html')
+        siteview.migrateToFive15()
+
+        self.assert_('utilities' not in self.folder.objectIds())
+        # It should still work
+        self.assertEquals(zapi.getUtility(IDummyUtility, 'dummy'), dummy)
+        self.assertEquals(zapi.getUtility(ISuperDummyUtility, 'dummy'),
+                          superdummy)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(LocalUtilityServiceTest))
+    suite.addTest(unittest.makeSuite(LocalUtilityMigrateTest))
     return suite
 
 if __name__ == '__main__':

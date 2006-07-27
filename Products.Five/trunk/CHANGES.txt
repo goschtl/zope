@@ -24,7 +24,8 @@ Five 1.5 (unreleased)
   (and not on attributes).
 
 * The FiveSiteManager classes now work again, but are deprecated for the
-  new zope.component support.
+  new zope.component support. There is also a method to migrate Five.site
+  to zope.component.
 
 Five 1.5c (2006-05-29)
 ======================

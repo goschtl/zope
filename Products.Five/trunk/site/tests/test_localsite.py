@@ -122,16 +122,10 @@ class SiteManagerTest(PlacelessSetup, unittest.TestCase):
         marker = object()
         self.assert_(queryNextSiteManager(self.root, marker) is marker)
         self.assert_(queryNextSiteManager(self.f1, marker) is getGlobalSiteManager())
-        #XXX the following used to be
-        #self.assertEqual(queryNextSiteManager(self.f2, marker), marker)
         self.assertEqual(queryNextSiteManager(self.f2, marker), self.sm1)
         self.assertEqual(queryNextSiteManager(self.sm1), getGlobalSiteManager())
         self.assertEqual(queryNextSiteManager(self.sm2), self.sm1)
-        #XXX the following used to be
-        #self.assert_(queryNextSiteManager(self.p1) is getGlobalSiteManager())
         self.assert_(queryNextSiteManager(self.p1, marker) is marker)
-        #XXX the following used to be
-        #self.assertEqual(queryNextSiteManager(self.p2), self.sm1)
         self.assert_(queryNextSiteManager(self.p2, marker) is marker)
 
         self.assert_(queryNextSiteManager(self.unparented_folder, marker)
@@ -143,16 +137,10 @@ class SiteManagerTest(PlacelessSetup, unittest.TestCase):
         from zope.app.component import getNextSiteManager
         self.assertRaises(ComponentLookupError, getNextSiteManager, self.root)
         self.assertEqual(getNextSiteManager(self.f1), getGlobalSiteManager())
-        #XXX the following used to be
-        #self.assertRaises(ComponentLookupError, getNextSiteManager, self.f2)
         self.assertEqual(getNextSiteManager(self.f2), self.sm1)
         self.assertEqual(getNextSiteManager(self.sm1), getGlobalSiteManager())
         self.assertEqual(getNextSiteManager(self.sm2), self.sm1)
-        #XXX the following used to be
-        #self.assert_(getNextSiteManager(self.p1) is getGlobalSiteManager())
         self.assertRaises(ComponentLookupError, getNextSiteManager, self.p1)
-        #XXX the following used to be
-        #self.assertEqual(getNextSiteManager(self.p2), self.sm1)
         self.assertRaises(ComponentLookupError, getNextSiteManager, self.p2)
 
         self.assertRaises(ComponentLookupError,
