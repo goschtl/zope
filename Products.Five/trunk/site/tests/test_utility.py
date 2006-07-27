@@ -118,6 +118,58 @@ class LocalUtilityServiceTest(ZopeTestCase.ZopeTestCase):
         self.assertEquals(list(zapi.getAllUtilitiesRegisteredFor(
             IDummyUtility)), [dummy])
 
+    def test_registerUtilityWithZopeComponentAPI1(self):
+        # With positional arguments
+        sm = getSiteManager()
+        dummy = DummyUtility()
+
+        sm.registerUtility(dummy, IDummyUtility, 'dummy')
+
+        self.assertEquals(zapi.getUtility(IDummyUtility, name='dummy'), dummy)
+        self.assertEquals(list(zapi.getUtilitiesFor(IDummyUtility)), 
+                          [('dummy', dummy)])
+        self.assertEquals(list(zapi.getAllUtilitiesRegisteredFor(
+            IDummyUtility)), [dummy])
+
+    def test_registerUtilityWithZopeComponentAPI1(self):
+        # Without name
+        sm = getSiteManager()
+        dummy = DummyUtility()
+
+        sm.registerUtility(dummy, IDummyUtility)
+
+        self.assertEquals(zapi.getUtility(IDummyUtility), dummy)
+        self.assertEquals(list(zapi.getUtilitiesFor(IDummyUtility)), 
+                          [('', dummy)])
+        self.assertEquals(list(zapi.getAllUtilitiesRegisteredFor(
+            IDummyUtility)), [dummy])
+
+    def test_registerUtilityWithZopeComponentAPI3(self):
+        # With keyword arguments
+        sm = getSiteManager()
+        dummy = DummyUtility()
+
+        sm.registerUtility(component=dummy, provided=IDummyUtility, 
+                           name='dummy')
+        self.assertEquals(zapi.getUtility(IDummyUtility, name='dummy'), dummy)
+        self.assertEquals(list(zapi.getUtilitiesFor(IDummyUtility)), 
+                          [('dummy', dummy)])
+        self.assertEquals(list(zapi.getAllUtilitiesRegisteredFor(
+            IDummyUtility)), [dummy])
+        
+    def test_registerUtilityWithZopeComponentAPI4(self):
+        # The Full kabob:
+        sm = getSiteManager()
+        dummy = DummyUtility()
+        
+        sm.registerUtility(component=dummy, provided=IDummyUtility, 
+                           name='dummy', info=u'The Dummy', event=True)
+        self.assertEquals(zapi.getUtility(IDummyUtility, name='dummy'), dummy)
+        self.assertEquals(list(zapi.getUtilitiesFor(IDummyUtility)), 
+                          [('dummy', dummy)])
+        self.assertEquals(list(zapi.getAllUtilitiesRegisteredFor(
+            IDummyUtility)), [dummy])
+
     def test_registerTwoUtilitiesWithSameNameDifferentInterface(self):
         sm = getSiteManager()
         self.failUnless(IRegisterUtilitySimply.providedBy(sm))

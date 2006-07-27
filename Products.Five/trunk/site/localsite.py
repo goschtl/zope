@@ -16,11 +16,25 @@
 $Id$
 """
 from zope.interface import implements
+from zope.interface.interface import InterfaceClass
 from zope.component import getGlobalSiteManager
 from zope.component.interfaces import ComponentLookupError
 from zope.app.component.interfaces import ISite, IPossibleSite
 from Acquisition import aq_parent, aq_inner
 from Products.Five.site.interfaces import IFiveSiteManager, IFiveUtilityRegistry
+
+from operator import xor
+def one_of_three(a, b, c):
+    # Logical table for a three part test where only one can be true:
+    # 0 0 0: 0
+    # 0 0 1: 1
+    # 0 1 0: 1
+    # 0 1 1: 0
+    # 1 0 0: 1
+    # 1 0 1: 0
+    # 1 1 0: 0
+    # 1 1 1: 0
+    return xor(xor(a, b), c) and not (a and b and c)
 
 class FiveSiteManager(object):
     implements(IFiveSiteManager)
@@ -89,7 +103,56 @@ class FiveSiteManager(object):
     def getAllUtilitiesRegisteredFor(self, interface):
         return self.utilities.getAllUtilitiesRegisteredFor(interface)
 
-    def registerUtility(self, interface, utility, name=''):
+    def registerUtility(self, *args, **kw):
+        # Can be called with new API:
+        #   component, provided=None, name=u'', info=u'', event=True
+        # where info and event are ignored, or old api:
+        #   interface, utility, name=''
+        name = kw.get('name', u'')
+        interface_kw = kw.get('interface', None)
+        provided_kw = kw.get('provided', None)
+        utility_kw = kw.get('utility', None)
+        component_kw = kw.get('component', None)
+
+        interface = None                      
+        utility = None
+        if len(args) > 0:
+            # Positional argument 1
+            if isinstance(args[0], InterfaceClass):
+                interface = args[0]
+            else:
+                utility = args[0]
+
+        if len(args) > 1:
+            if isinstance(args[1], InterfaceClass):
+                interface = args[1]
+            else:
+                utility = args[1]
+
+        if len(args) > 2:
+            if name:
+                raise TypeError("You can only provide one name")
+            else:
+                name = args[2]
+
+        if not one_of_three(interface is not None, 
+                            interface_kw is not None,
+                            provided_kw is not None):
+            raise TypeError("You can specify one and only one interface")
+        if interface is None:
+            interface = interface_kw
+        if interface is None:
+            interface = provided_kw
+
+        if not one_of_three(utility is not None, 
+                            utility_kw is not None,
+                            component_kw is not None):
+            raise TypeError("You can specify one and only one interface")
+        if utility is None:
+            utility = utility_kw
+        if utility is None:
+            utility = component_kw
+            
         return self.utilities.registerUtility(interface, utility, name)
 
 class FiveSite:
@@ -121,9 +184,8 @@ def enableLocalSiteHook(obj):
 def disableLocalSiteHook(obj):
     """Remove __before_traverse__ hook for Local Site
     """
-    warnings.warn("The disableLocalSiteHook is deprecated and will be removed "
-                  "in Zope 2.12. \nSee Five/doc/localsite.txt .",
-                  DeprecationWarning, 2)
+    # This method is of course deprecated too, but issuing a warning is
+    # silly.
     disableSite(obj)
     clearSite()
     obj.setSiteManager(None)

@@ -89,9 +89,7 @@ Old site implementation details
 
 The rest of this document documents the details of the old site implementation.
 Everything from here on concerns only the old implementation and is of mainly
-hysterical interest:
-
-
+hysterical interest.
 
 By default, Zope 3 has a global site which is configured through ZCML.
 It provides the fallback for all component look-up.  Local sites are
