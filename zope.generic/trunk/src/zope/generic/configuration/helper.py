@@ -123,7 +123,7 @@ def configurationToDict(configuration, all=False, tounicode=False):
             else:
                 raise RuntimeError('Data is missing', name)
 
-            if tounicode and IToUnicode.providedBy(field):
+            if tounicode and name in data and IToUnicode.providedBy(field):
                 data[name] = field.toUnicode(data[name])
 
     return data
@@ -216,7 +216,7 @@ def configurationToFlatDict(configuration, all=False, tounicode=False):
                 elif value == field.default:
                     if all:
                         data[name] = value
-    
+
                 else:
                     if all:
                         data[name] = field.default
@@ -227,7 +227,7 @@ def configurationToFlatDict(configuration, all=False, tounicode=False):
             else:
                 raise RuntimeError('Data is missing', name)
 
-            if tounicode and IToUnicode.providedBy(field):
+            if tounicode and name in data and IToUnicode.providedBy(field):
                 data[name] = field.toUnicode(data[name])
 
     return data
