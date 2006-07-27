@@ -28,7 +28,7 @@ from zope.traversing.interfaces import IPathAdapter, ITraversable
 from zope.traversing.interfaces import TraversalError
 from zope.traversing.adapters import traversePathElement
 from zope.security.untrustedpython import rcompile
-from zope.security.proxy import ProxyFactory
+from zope.security.proxy import ProxyFactory, removeSecurityProxy
 from zope.security.untrustedpython.builtins import SafeBuiltins
 from zope.i18n import translate
 
@@ -104,10 +104,6 @@ class ZopePythonExpr(PythonExpr):
 class ZopeContextBase(Context):
     """Base class for both trusted and untrusted evaluation contexts."""
 
-    def evaluateMacro(self, expr):
-        macro = Context.evaluateMacro(self, expr)
-        return macro
-
     def translate(self, msgid, domain=None, mapping=None, default=None):
         return translate(msgid, domain, mapping,
                          context=self.request, default=default)
@@ -142,6 +138,57 @@ class ZopeContextBase(Context):
 
 class ZopeContext(ZopeContextBase):
     """Evaluation context for untrusted programs."""
+
+    def evaluateMacro(self, expr):
+        """evaluateMacro gets security-proxied macro programs when this
+        is run with the zopeTraverser, and in other untrusted
+        situations. This will cause evaluation to fail in
+        zope.tal.talinterpreter, which knows nothing of security proxies. 
+        Therefore, this method removes any proxy from the evaluated
+        expression.
+        
+        >>> output = [('version', 'xxx'), ('mode', 'html'), ('other', 'things')]
+        >>> def expression(context):
+        ...     return ProxyFactory(output)
+        ...
+        >>> zc = ZopeContext(ExpressionEngine, {})
+        >>> out = zc.evaluateMacro(expression)
+        >>> type(out)
+        <type 'list'>
+
+        The method does some trivial checking to make sure we are getting
+        back a macro like we expect: it must be a sequence of sequences, in
+        which the first sequence must start with 'version', and the second
+        must start with 'mode'.
+
+        >>> del output[0]
+        >>> zc.evaluateMacro(expression) # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: ('unexpected result from macro evaluation.', ...)
+
+        >>> del output[:]
+        >>> zc.evaluateMacro(expression) # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: ('unexpected result from macro evaluation.', ...)
+
+        >>> output = None
+        >>> zc.evaluateMacro(expression) # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: ('unexpected result from macro evaluation.', ...)
+        """
+        macro = removeSecurityProxy(Context.evaluateMacro(self, expr))
+        # we'll do some basic checks that it is the sort of thing we expect
+        problem = False
+        try:
+            problem = macro[0][0] != 'version' or macro[1][0] != 'mode'
+        except (TypeError, IndexError):
+            problem = True
+        if problem:
+            raise ValueError('unexpected result from macro evaluation.', macro)
+        return macro
 
     def setContext(self, name, value):
         # Hook to allow subclasses to do things like adding security proxies
