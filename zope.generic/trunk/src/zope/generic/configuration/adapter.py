@@ -102,37 +102,32 @@ class AttributeConfigurations(DictMixin, Location):
         updated_data = {}
         errors = []
         
-        savepoint = transaction.savepoint()
-        try:
-            for name in keyface:
-                field = keyface[name]
+        for name in keyface:
+            field = keyface[name]
 
-                # readonly attribute cannot be updated
-                if field.readonly:
-                    raise ValueError(name, 'Data is readonly.')
+            # readonly attribute cannot be updated
+            if field.readonly:
+                raise ValueError(name, 'Data is readonly.')
 
-                if isconfig:
-                    value = getattr(data, name, field.missing_value)
-                # assume dict
-                else:
-                    try:
-                        value = data[name]
-                    except KeyError:
-                        continue
-                    
-                if value != getattr(current_config, name, field.missing_value):
-                    setattr(current_config, name, value)
-                    updated_data[name] = value
+            if isconfig:
+                value = getattr(data, name, field.missing_value)
+            # assume dict
+            else:
+                try:
+                    value = data[name]
+                except KeyError:
+                    continue
+                
+            if value != getattr(current_config, name, field.missing_value):
+                setattr(current_config, name, value)
+                updated_data[name] = value
 
-            # notify update
-            parent = self.__parent__
-            if updated_data and ILocation.providedBy(parent) and parent.__parent__ is not None:
-                notify(ObjectConfiguredEvent(parent, 
-                    Configuration(keyface, updated_data)))
+        # notify update
+        parent = self.__parent__
+        if updated_data and ILocation.providedBy(parent) and parent.__parent__ is not None:
+            notify(ObjectConfiguredEvent(parent, 
+                Configuration(keyface, updated_data)))
 
-        except:
-            savepoint.rollback()
-            raise
 
     def __setitem__(self, keyface, value):
         # preconditions
