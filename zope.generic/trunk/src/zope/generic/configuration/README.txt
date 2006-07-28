@@ -419,3 +419,13 @@ Nested sub-configuration dicts:
     >>> config.bar['d'].foo
     u'bla D'
 
+
+Exception handling during the update
+------------------------------------
+
+If an error occurs during the update the last state of the configuration is
+rolled back:
+    
+    TODO
+
+

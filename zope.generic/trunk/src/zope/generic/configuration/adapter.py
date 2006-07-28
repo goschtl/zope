@@ -100,33 +100,41 @@ class AttributeConfigurations(DictMixin, Location):
             return
 
         updated_data = {}
+        existing_data = {}
         errors = []
-        
-        for name in keyface:
-            field = keyface[name]
+        try:
+            for name in keyface:
+                field = keyface[name]
+    
+                # readonly attribute cannot be updated
+                if field.readonly:
+                    raise ValueError(name, 'Data is readonly.')
+    
+                if isconfig:
+                    value = getattr(data, name, field.missing_value)
+                # assume dict
+                else:
+                    try:
+                        value = data[name]
+                    except KeyError:
+                        continue
+                existing_value = getattr(current_config, name, field.missing_value)
+                if value != existing_value:
+                    existing_data[name] = existing_value
+                    setattr(current_config, name, value)
+                    updated_data[name] = value
+    
+            # notify update
+            parent = self.__parent__
+            if updated_data and ILocation.providedBy(parent) and parent.__parent__ is not None:
+                notify(ObjectConfiguredEvent(parent, 
+                    Configuration(keyface, updated_data)))
 
-            # readonly attribute cannot be updated
-            if field.readonly:
-                raise ValueError(name, 'Data is readonly.')
-
-            if isconfig:
-                value = getattr(data, name, field.missing_value)
-            # assume dict
-            else:
-                try:
-                    value = data[name]
-                except KeyError:
-                    continue
-                
-            if value != getattr(current_config, name, field.missing_value):
+        except:
+            # set the values back to the last valid configuration
+            for name, value in existing_data.items():
                 setattr(current_config, name, value)
-                updated_data[name] = value
-
-        # notify update
-        parent = self.__parent__
-        if updated_data and ILocation.providedBy(parent) and parent.__parent__ is not None:
-            notify(ObjectConfiguredEvent(parent, 
-                Configuration(keyface, updated_data)))
+            raise
 
 
     def __setitem__(self, keyface, value):
