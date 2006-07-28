@@ -1,0 +1,157 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Job Board Example\n"
+"POT-Creation-Date: Mon Apr 14 16:35:25 2003\n"
+"PO-Revision-Date: 2003-04-14 17:08-0400\n"
+"Last-Translator: Barry Warsaw <barry@python.org>\n"
+"Language-Team: English <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: JobCreateView.py:45
+msgid "Bad date string: $date"
+msgstr ""
+
+#: review.pt:11
+msgid "Action"
+msgstr "Action"
+
+#: review.pt:15
+msgid "Approve"
+msgstr "Approve"
+
+#: preview.pt:41
+msgid "Contact:"
+msgstr "Contact:"
+
+#: review.pt:14
+msgid "Defer"
+msgstr "Defer"
+
+#: review.pt:16
+msgid "Discard"
+msgstr "Discard"
+
+#: preview.pt:78
+msgid "Edit"
+msgstr "Edit"
+
+#: preview.pt:74
+msgid "Submit"
+msgstr "Submit"
+
+#: review.pt:12
+msgid "Summary"
+msgstr "Summary"
+
+#: JobListView.pt:24
+msgid "approve-submitted-jobs"
+msgstr "Approve submitted jobs"
+
+#: review.pt:3 review.pt:7
+msgid "approve-title"
+msgstr "Approve submitted jobs"
+
+#: thanks.pt:18
+msgid "back-to-job-board"
+msgstr "Back to job board"
+
+#: JobView.pt:33
+msgid "back-to-jobs"
+msgstr "Back to jobs"
+
+#: thanks.pt:16
+msgid "back-to-site-home"
+msgstr "Back to site home"
+
+#: review.pt:39
+msgid "back-to-summary"
+msgstr "Back to summary"
+
+#: edit.pt:29 JobView.pt:17
+msgid "contact"
+msgstr "Contact (where to apply)"
+
+#: edit.pt:13
+msgid "contributor-email"
+msgstr "Contributor email:"
+
+#: edit.pt:3 edit.pt:6
+msgid "enter-new-job-data"
+msgstr "Enter new job data"
+
+#: edit.pt:23 JobView.pt:10
+msgid "full-description"
+msgstr "Full description (no HTML)"
+
+#: preview.pt:10
+msgid "instructions"
+msgstr ""
+"This is what your job will look like once it is approved by the site\n"
+"manager.  To change your submission now, use your browser's Back\n"
+"button and resubmit the form.  To submit now, click on the Submit\n"
+"button below."
+
+#: JobListView.pt:3 JobListView.pt:6
+msgid "job-board-title"
+msgstr "Job Board"
+
+#: JobListView.pt:10
+msgid "job-listings"
+msgstr "Job Listings"
+
+#: edit.pt:18
+msgid "one-line-summary"
+msgstr "One-line summary:"
+
+#: JobListView.pt:23
+msgid "other-operations"
+msgstr "Other operations"
+
+#: preview.pt:3 preview.pt:8
+msgid "preview-new-job-data"
+msgstr "Preview new job data"
+
+#: edit.pt:34 JobView.pt:22 preview.pt:46
+msgid "salary"
+msgstr "Salary Range:"
+
+#: edit.pt:40 JobView.pt:25 preview.pt:50
+msgid "startdate"
+msgstr "Start Date:"
+
+#: thanks.pt:20
+msgid "submit-another"
+msgstr "Submit another job"
+
+#: JobListView.pt:8
+msgid "submit-new-job"
+msgstr "Submit a new job"
+
+#: thanks.pt:3 thanks.pt:7
+msgid "thank-you-title"
+msgstr "Thank you for your job submission"
+
+#: thanks.pt:9
+msgid "thank-you-wherenext"
+msgstr ""
+"Our site manager will review and publish it shortly.  Please use one\n"
+"of the following links to continue to use our site:"
+
+#: preview.pt:17
+msgid "verify"
+msgstr ""
+"Your contact email address is recorded as ${email}.  This address will\n"
+"not be published on the website, but we will use it to reach you if we\n"
+"have questions about your submission.  Job seekers will contact the\n"
+"address you provide in the Contact field."
+
+#: edit.pt:8
+msgid "when-done"
+msgstr "When you are done, press the Preview button below."
+
+#~ msgid "Preview"
+#~ msgstr "Preview"
+
