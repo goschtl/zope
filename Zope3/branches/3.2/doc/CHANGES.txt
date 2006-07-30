@@ -10,6 +10,8 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 681: IFormFields is missing declaration for omit()
+
       - Fixed issue 665: ZCML swallowing KeyboardInterrupt / SystemExit.
 
       - Fixed issue 529: Undo Principal Transactions doesn't work with
