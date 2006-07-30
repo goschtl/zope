@@ -77,6 +77,10 @@ Zope Changes
       - Fixed issue 543: add 'decimal'-package to
         zope/app/security/globalmodules.zcml
 
+      - Fixed issue 679: using the new IHTTPVirtualHostChanged event, session's
+        cliend id cookies fix up the set cookie path whenever the virtual host
+        information changes during a request.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Dmitry Vasiliev
