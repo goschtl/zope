@@ -117,7 +117,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 self.command,
                 urlparse.urlunparse(('', '', path, params, query, '')),
                 self.request_version))
-            self.headers['Connection'] = 'close'
+
             for key_val in self.headers.items():
                 request.write("%s: %s\r\n" % key_val)
             request.write("\r\n")

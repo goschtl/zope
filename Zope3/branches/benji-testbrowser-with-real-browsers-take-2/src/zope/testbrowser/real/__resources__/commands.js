@@ -24,10 +24,12 @@ function _tb_getUrl(info) {
 
 function _tb_reload(info) {
     top.frames[0].location = top.frames[0].location.href;
+    return '_tb_WAIT_FOR_PAGE_LOAD';
 }
 
 function _tb_goBack(info) {
     top.frames[0].history.back();
+    return '_tb_WAIT_FOR_PAGE_LOAD';
 }
 
 function _tb_rememberLinkN(info) {

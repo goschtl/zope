@@ -36,6 +36,7 @@ def getTagText(soup):
     text = re.sub(' +', ' ', text)
     return text
 
+
 class Browser(SetattrErrorsMixin):
     """A web user agent."""
     interface.implements(interfaces.IBrowser)
