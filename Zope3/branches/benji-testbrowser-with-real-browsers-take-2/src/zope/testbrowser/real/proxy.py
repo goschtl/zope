@@ -107,12 +107,10 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 self.send_header('Content-Type', 'text/plain')
                 self.end_headers()
                 self.wfile.write(simplejson.dumps(response))
-                import time;time.sleep(1)
                 return
 
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-#            print 'sending', self.remote_host
             request = StringIO()
             request.write("%s %s %s\r\n" % (
                 self.command,
@@ -124,7 +122,6 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             request.write("\r\n")
             response = self.caller(request.getvalue())
             self.connection.send(response.getOutput())
-#            print 'done with', self.path
         finally:
             self.connection.close()
 

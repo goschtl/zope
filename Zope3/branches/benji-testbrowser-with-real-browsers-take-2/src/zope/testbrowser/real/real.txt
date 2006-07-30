@@ -47,8 +47,7 @@ Reload works.
 goBack doesn't work. XXX
 
     >>> browser.getLink('[top]', index=0).click()
-    >>> browser.goBack()
-    >>> import time; time.sleep(1) # XXX race condition
+    >>> browser.goBack() # XXX race condition here?
     >>> original_contents == browser.contents
     False
 
