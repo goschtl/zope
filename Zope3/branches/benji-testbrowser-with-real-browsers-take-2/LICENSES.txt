@@ -104,3 +104,17 @@ the Python 2.4 standard library.  It is the property of the Python
 Software Foundation (PSF) and is covered by the PSF license agreement
 for Python 2.4.  We will no-longer distribute this module with Zope at
 some point on the future.
+
+----------------------------------------------------------------------
+
+The simplejson library is covered by the MIT license.
+
+----------------------------------------------------------------------
+
+The Beautiful Soup module is covered by the Python license.
+
+----------------------------------------------------------------------
+
+MochiKit is covered by the MIT license.
+
+----------------------------------------------------------------------
