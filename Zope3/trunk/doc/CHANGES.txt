@@ -12,6 +12,9 @@ Zope Changes
 
       - Added new Time field type to zope.schema
 
+      - IHTTPApplicationRequests emit a new event, IHTTPVirtualHostChanged,
+        when virtual host parameters are altered.
+
     Restructuring
 
     Bug fixes
