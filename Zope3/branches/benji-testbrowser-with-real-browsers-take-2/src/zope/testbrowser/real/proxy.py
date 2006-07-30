@@ -1,3 +1,6 @@
+from StringIO import StringIO
+from zope.app.testing import functional
+from zope.app.testing.functional import FunctionalTestSetup
 import BaseHTTPServer
 import Queue
 import SocketServer
@@ -9,8 +12,6 @@ import simplejson
 import socket
 import threading
 import urlparse
-from zope.app.testing import functional
-from StringIO import StringIO
 
 base_dir = os.path.dirname(__file__)
 allowed_resources = ['MochiKit', 'shim.js', 'commands.js', 'start.html']
@@ -144,6 +145,16 @@ class HttpServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
         self.result_queue = Queue.Queue()
         self.threads = []
         BaseHTTPServer.HTTPServer.__init__(self, *args, **kws)
+        self.setUp()
+
+    def setUp(test):
+        # FunctionalTestSetup is a borg and creates a ZODB connection lazily
+        # (when getRootFolder is called), but that happens in another thread.
+        # That's only a problem because the functional test cleanup happens
+        # in _this_ thread.  Closing a connection from a different thread
+        # makes ZODB unhappy, so we force the connection to be created now,
+        # in the thread that will eventually clean it up.
+        FunctionalTestSetup().getRootFolder()
 
     def serve_forever(self):
         """Handle one request at a time until stopped."""

@@ -23,7 +23,7 @@ def test_suite():
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     real = FunctionalDocFileSuite('real.txt', optionflags=flags)
     real.level = 2
-    return unittest.TestSuite((real))
+    return unittest.TestSuite((real,))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
