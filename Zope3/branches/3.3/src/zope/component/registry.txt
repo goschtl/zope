@@ -166,6 +166,30 @@ doesn't match the one registered, then nothing happens:
     True
     >>> components.queryUtility(tests.I1)
 
+You can get the name and utility for all of the utilities that provide
+an interface using getUtilitiesFor:
+
+    >>> sorted(components.getUtilitiesFor(tests.I2))
+    [(u'', U12(2)), (u'three', U12(3))]
+
+getAllUtilitiesRegisteredFor is similar to getUtilitiesFor except that
+it includes utilities that are overridden.  For example, we'll
+register a utility that for an extending interface of I2:
+
+    >>> components.registerUtility(tests.U('ext'), tests.I2e)
+    Registered event:
+    UtilityRegistration(<Components comps>, I2e, u'', ext, u'')
+
+We don't get the new utility for getUtilitiesFor:
+
+    >>> sorted(components.getUtilitiesFor(tests.I2))
+    [(u'', U12(2)), (u'three', U12(3))]
+
+but we do get it from getAllUtilitiesRegisteredFor:
+
+    >>> sorted(map(str, components.getAllUtilitiesRegisteredFor(tests.I2)))
+    ['U(ext)', 'U12(2)', 'U12(3)']
+
 Adapters
 --------
 

@@ -137,12 +137,10 @@ class Components(object):
             raise interfaces.ComponentLookupError(provided, name)
         return utility
 
-    #TODO needs tests
     def getUtilitiesFor(self, interface):
         for name, utility in self.utilities.lookupAll((), interface):
             yield name, utility
 
-    #TODO needs tests
     def getAllUtilitiesRegisteredFor(self, interface):
         return self.utilities.subscriptions((), interface)
 
