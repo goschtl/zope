@@ -46,6 +46,8 @@ class I1(interface.Interface):
     pass
 class I2(interface.Interface):
     pass
+class I2e(I2):
+    pass
 class I3(interface.Interface):
     pass
 
