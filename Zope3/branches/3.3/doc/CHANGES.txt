@@ -10,6 +10,10 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 675, Pluggable Authentication utilities with group
+        folders weren't updated correctly to replect the new database
+        format.
+
       - Fixed issue 663, adding basic auth and session-credential
         plugins didn't work.
 
