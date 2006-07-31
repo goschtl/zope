@@ -12,8 +12,9 @@ Zope Changes
 
       - Added new Time field type to zope.schema
 
-      - IHTTPApplicationRequests emit a new event, IHTTPVirtualHostChanged,
-        when virtual host parameters are altered.
+      - IHTTPApplicationRequests emit a new event,
+        IHTTPVirtualHostChangedEvent, when virtual host parameters are 
+        altered.
 
     Restructuring
 
@@ -77,7 +78,7 @@ Zope Changes
       - Fixed issue 543: add 'decimal'-package to
         zope/app/security/globalmodules.zcml
 
-      - Fixed issue 679: using the new IHTTPVirtualHostChanged event, session's
+      - Fixed issue 679: using the new IHTTPVirtualHostChangedEvent, session's
         cliend id cookies fix up the set cookie path whenever the virtual host
         information changes during a request.
 
