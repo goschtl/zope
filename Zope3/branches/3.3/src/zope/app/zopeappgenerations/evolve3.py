@@ -69,7 +69,10 @@ def evolve(context):
                             "like it's registered for something additional "
                             "that I don't expect")
                     r = regs[0]
-                    r.getRegistry().unregister(r)
+                    r.registry.unregisterUtility(
+                       util,
+                       zope.app.authentication.interfaces.IAuthenticatorPlugin,
+                       nm)
                     if r.name in pau.authenticatorPlugins:
                         if util.__name__ != r.name: # else no-op
                             plugins = list(pau.authenticatorPlugins)
