@@ -8,6 +8,8 @@ Five 1.4.1 (unreleased)
 Bugfixes
 --------
 
+* Fix problem with WebDAV/HEAD requests due to new traversal order.
+
 * Made the pythonproducts monkey patching more robust by checking to
   ensure patches aren't reapplied and cleaning up after itself.
 
