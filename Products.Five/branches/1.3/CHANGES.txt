@@ -8,6 +8,8 @@ Five 1.3.7 (unreleased)
 Bugfixes
 --------
 
+* Fix problem with WebDAV/HEAD requests due to new traversal order.
+
 * Backported the new traversal lookup order from Zope 2.10 (attribute, adapter,
   acquired attribute).
 
