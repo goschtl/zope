@@ -24,6 +24,7 @@ from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
 
 from Acquisition import aq_base
+from webdav.NullResource import NullResource
 import Products.Five.security
 from zExceptions import NotFound
 from ZPublisher import xmlrpc
@@ -60,7 +61,7 @@ class Traversable:
         # 1. If an object has __bobo_traverse__, use it.
         # 2. Otherwise do attribute look-up or, if that doesn't work,
         #    key item lookup.
-
+        result = _marker
         if hasattr(self, '__fallback_traverse__'):
             try:
                 return self.__fallback_traverse__(REQUEST, name)
@@ -81,7 +82,12 @@ class Traversable:
                 return getattr(self, name)
             try:
                 # item access should never acquire
-                return self[name]
+                result = self[name]
+                # WebDAV requests will always return something,
+                # sometimes it's a NullResource, which we will ignore
+                # and return later if necessary
+                if not isinstance(result, NullResource):
+                    return result
             except (KeyError, IndexError, TypeError, AttributeError):
                 pass
 
@@ -115,7 +121,12 @@ class Traversable:
             pass
 
         # Fallback on acquisition, let it raise an AttributeError if it must
-        return getattr(self, name)
+        try:
+            return getattr(self, name)
+        except AttributeError:
+            if result is not _marker:
+                return result
+            raise
 
     __bobo_traverse__.__five_method__ = True
 

@@ -5,6 +5,8 @@ Five Changes
 Five 1.2.6 (unreleased)
 =======================
 
+* Fix problem with WebDAV/HEAD requests due to new traversal order.
+
 * Backported the new traversal lookup order from Zope 2.10 (attribute, adapter,
   acquired attribute).
 

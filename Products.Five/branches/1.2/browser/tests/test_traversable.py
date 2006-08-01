@@ -301,6 +301,19 @@ def test_view_doesnt_shadow_attribute():
       ...
       The mouse has been eaten by the eagle
 
+    Head requests have some unusual behavior in Zope 2, in particular, a failed
+    item lookup on an ObjectManager returns a NullResource, rather
+    than raising a KeyError.  We need to make sure that this doesn't
+    result in acquired attributes being shadowed by the NullResource:
+
+      >>> print http(r'''
+      ... HEAD /test_folder_1_/ftf/mouse HTTP/1.1
+      ...
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+
+
     Clean up:
 
       >>> from zope.app.tests.placelesssetup import tearDown
