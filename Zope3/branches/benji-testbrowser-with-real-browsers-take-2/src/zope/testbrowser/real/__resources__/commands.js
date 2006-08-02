@@ -15,7 +15,12 @@ function _tb_stop(info) {
 }
 
 function _tb_getContents(info) {
-    return top.frames[0].document.documentElement.innerHTML;
+    temp = document.createElement('div');
+    clone = top.frames[0].document.documentElement.cloneNode(true);
+    temp.appendChild(clone);
+    contents=temp.innerHTML;
+    temp.innerHTML="";
+    return contents;
 }
 
 function _tb_getUrl(info) {
