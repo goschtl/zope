@@ -70,6 +70,11 @@
       for="zope.app.appsetup.IDatabaseOpenedEvent"
       handler=".bootstrap.bootStrapSubscriber"
       />
+      
+  <subscriber
+      for="zope.publisher.interfaces.http.IHTTPVirtualHostChangedEvent"
+      handler=".http.notifyVirtualHostChanged"
+      />
 
   <include file="browser.zcml" />
 

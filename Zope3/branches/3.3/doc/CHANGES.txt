@@ -137,6 +137,10 @@ Zope Changes
 
       - Fixed issue 632: "bin/zopectl run" drops into python shell on errors.
 
+      - Fixed issue 679: using a new IHTTPVirtualHostChangedEvent, session's
+        cliend id cookies fix up the set cookie path whenever the virtual host
+        information changes during a request.
+
     Notes
 
       If you register a new default view name for a particular layer, and this

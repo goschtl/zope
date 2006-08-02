@@ -24,8 +24,9 @@ import time
 from cStringIO import StringIO
 
 from persistent import Persistent
-from zope import schema
+from zope import schema, component
 from zope.interface import implements
+from zope.publisher.interfaces.http import IHTTPRequest
 from zope.publisher.interfaces.http import IHTTPApplicationRequest
 from zope.annotation.interfaces import IAttributeAnnotatable
 
@@ -273,3 +274,53 @@ class CookieClientIdManager(Persistent):
                     path=request.getApplicationURL(path_only=True)
                     )
 
+def notifyVirtualHostChanged(event):
+    """Adjust cookie paths when IVirtualHostRequest information changes.
+    
+    Given a event, this method should call a CookieClientIdManager's 
+    setRequestId if a cookie is present in the response for that manager. To
+    demonstrate we create a dummy manager object and event:
+    
+        >>> class DummyManager(object):
+        ...     implements(ICookieClientIdManager)
+        ...     namespace = 'foo'
+        ...     request_id = None
+        ...     def setRequestId(self, request, id):
+        ...         self.request_id = id
+        ...
+        >>> manager = DummyManager()
+        >>> component.provideUtility(manager, IClientIdManager)
+        >>> from zope.publisher.http import HTTPRequest
+        >>> class DummyEvent (object):
+        ...     request = HTTPRequest(StringIO(''), {}, None)
+        >>> event = DummyEvent()
+        
+    With no cookies present, the manager should not be called:
+    
+        >>> notifyVirtualHostChanged(event)
+        >>> manager.request_id is None
+        True
+        
+    However, when a cookie *has* been set, the manager is called so it can
+    update the cookie if need be:
+    
+        >>> event.request.response.setCookie('foo', 'bar')
+        >>> notifyVirtualHostChanged(event)
+        >>> manager.request_id
+        'bar'
+        
+    Cleanup of the utility registration:
+    
+        >>> import zope.component.testing
+        >>> zope.component.testing.tearDown()
+        
+    """
+    # the event sends us a IHTTPApplicationRequest, but we need a
+    # IHTTPRequest for the response attribute, and so does the cookie-
+    # manager.
+    request = IHTTPRequest(event.request, None)
+    manager = component.queryUtility(IClientIdManager)
+    if manager and request and ICookieClientIdManager.providedBy(manager):
+        cookie = request.response.getCookie(manager.namespace)
+        if cookie:
+            manager.setRequestId(request, cookie['value'])
