@@ -89,6 +89,8 @@ Zope Changes
         cliend id cookies fix up the set cookie path whenever the virtual host
         information changes during a request.
 
+      - Fixed cookie path handling in functional tests.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Dmitry Vasiliev
