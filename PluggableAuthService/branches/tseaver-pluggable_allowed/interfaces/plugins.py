@@ -432,7 +432,8 @@ class IRoleEnumerationPlugin( Interface ):
 
 class IRequestTypeSniffer( Interface ):
 
-    """ Given a request, detects the request type for later use by other plugins.
+    """ Given a request, detects the request type for later use by other
+        plugins.
     """
     def sniffRequestType( request ):
         """ Return a interface identifying what kind the request is.
@@ -455,8 +456,15 @@ class IChallengeProtocolChooser( Interface ):
         o Once the protocol is decided, all challenge plugins for that
             protocol will be executed.
         """
-#
-#   XXX:  Do we need a LocalRoleAlgorithm plugin type?  E.g., base_cms
-#         has two different algorithms, based on whether or not the
-#         context object implements IPlacelessSecurity.
-#
+
+class IUserAllowedPolicyPlugin( Interface ):
+
+    """ Pluggable policy for testing user access given required roles.
+    """
+    def isUserAllowed( user, object, object_roles ):
+
+        """ Return a boolean whether the user is allowed to access the object.
+
+        o Return None to indicate that this plugin cannot determine the
+          answer either way.
+        """

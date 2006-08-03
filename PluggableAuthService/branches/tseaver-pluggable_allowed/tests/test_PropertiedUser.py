@@ -31,6 +31,25 @@ class FauxProtected( Implicit ):
 
         self.__ac_local_roles__ = local_roles
 
+class FauxPluginRegistry( Implicit ):
+
+    def __init__( self, plugins=() ):
+        self.plugins = plugins
+
+    def listPlugins( self, iface ):
+        return [ ( 'plugin_%02d' % i, self.plugins[ i ] )
+                  for i in range( len( self.plugins ) ) ]
+
+class FauxPAS( Implicit ):
+
+    def __init__( self, plugins ):
+
+        self.plugins = FauxPluginRegistry( plugins )
+
+    def _getOb( self, id ):
+
+        return getattr( self, id )
+
 class PropertiedUserTests( unittest.TestCase
                            , IBasicUser_conformance
                            , IPropertiedUser_conformance
@@ -46,6 +65,9 @@ class PropertiedUserTests( unittest.TestCase
     def _makeOne( self, id='testing', login=None, *args, **kw ):
 
         return self._getTargetClass()( id, login, *args, **kw )
+
+    def _makePAS( self, *plugins ):
+        return FauxPAS( plugins )
 
     def test_empty( self ):
 
@@ -191,71 +213,81 @@ class PropertiedUserTests( unittest.TestCase
         self.assertEqual( len( local_roles ), 1 )
         self.failUnless( 'Manager' in local_roles )
 
-    def test_allowed_not_even_god_should( self ):
+    def test_allowed_not_even_god_should_do_no_plugins( self ):
 
         from AccessControl.PermissionRole import _what_not_even_god_should_do
-        user = self._makeOne()
+        pas = self._makePAS()
+        user = self._makeOne().__of__(pas)
 
         self.failIf( user.allowed( None, _what_not_even_god_should_do ) )
 
-    def test_allowed_anonymous( self ):
+    def test_allowed_anonymous_no_plugins( self ):
 
-        user = self._makeOne()
+        pas = self._makePAS()
+        user = self._makeOne().__of__(pas)
 
         self.failUnless( user.allowed( None, ('Anonymous',) ) )
 
-    def test_allowed_authenticated( self ):
+    def test_allowed_authenticated_no_plugins( self ):
 
-        user = self._makeOne()
+        pas = self._makePAS()
+        user = self._makeOne().__of__(pas)
 
         self.failUnless( user.allowed( None, ('Authenticated',) ) )
 
-    def test_allowed_authenticated_required_but_anonymous( self ):
+    def test_allowed_authenticated_required_but_anonymous_no_plugins( self ):
 
-        user = self._makeOne('Anonymous User')
+        pas = self._makePAS()
+        user = self._makeOne('Anonymous User').__of__(pas)
 
         self.failIf( user.allowed( None, ('Authenticated',) ) )
 
-    def test_allowed_global_roles_ok( self ):
+    def test_allowed_global_roles_ok_no_plugins( self ):
 
-        user = self._makeOne()
+        pas = self._makePAS()
+        user = self._makeOne().__of__(pas)
         user._addRoles( ( 'Role 1', 'Role 2' ) )
 
         self.failUnless( user.allowed( None, ( 'Role 1', ) ) )
 
-    def test_allowed_global_roles_not_ok( self ):
+    def test_allowed_global_roles_not_ok_no_plugins( self ):
 
-        user = self._makeOne()
+        pas = self._makePAS()
+        user = self._makeOne().__of__(pas)
         user._addRoles( ( 'Role 1', 'Role 2' ) )
 
         self.failIf( user.allowed( None, ( 'Role 3', ) ) )
 
-    def test_allowed_local_roles_on_user_ok( self ):
+    def test_allowed_local_roles_on_user_ok_no_plugins( self ):
 
-        user = self._makeOne( 'user' )
+        pas = self._makePAS()
+        user = self._makeOne( 'user' ).__of__(pas)
         object = FauxProtected( { 'user' : ( 'Role 1', ) } )
 
         self.failUnless( user.allowed( object, ( 'Role 1', ) ) )
 
-    def test_allowed_local_roles_on_user_not_ok( self ):
+    def test_allowed_local_roles_on_user_not_ok_no_plugins( self ):
 
-        user = self._makeOne( 'user' )
+        pas = self._makePAS()
+        user = self._makeOne( 'user' ).__of__(pas)
         object = FauxProtected( { 'user' : ( 'Role 1', ) } )
 
         self.failIf( user.allowed( object, ( 'Role 2', ) ) )
 
-    def test_allowed_local_roles_on_group_ok( self ):
+    def test_allowed_local_roles_on_group_ok_no_plugins( self ):
 
-        user = self._makeOne( 'user' )
+        pas = self._makePAS()
+        user = self._makeOne( 'user' ).__of__(pas)
         user._addGroups( ( 'Group 1', 'Group 2' ) )
         object = FauxProtected( { 'Group 1' : ( 'Role 1', ) } )
 
         self.failUnless( user.allowed( object, ( 'Role 1', ) ) )
 
-    def test_allowed_acquisition( self ):
+    def test_allowed_acquisition_no_plugins( self ):
 
         groups = ( 'Group A', 'Group B' )
-        user = self._makeOne()
+        pas = self._makePAS()
+        user = self._makeOne().__of__(pas)
         user._addGroups( groups )
 
         faux_container = FauxProtected( { 'Group A' : ( 'Manager', ) } )
@@ -264,12 +296,13 @@ class PropertiedUserTests( unittest.TestCase
 
         self.failUnless( user.allowed( faux_contained, ( 'Manager', ) ) )
 
-    def test_allowed_weslayan( self ):
+    def test_allowed_weslayan_no_plugins( self ):
 
         # Test "methodish" checks.
 
         groups = ( 'Group A', 'Group B' )
-        user = self._makeOne()
+        pas = self._makePAS()
+        user = self._makeOne().__of__(pas)
         user._addGroups( groups )
 
         faux_self = FauxProtected( { 'Group A' : ( 'Manager', ) } )
@@ -278,6 +311,27 @@ class PropertiedUserTests( unittest.TestCase
 
         self.failUnless( user.allowed( faux_method, ( 'Manager', ) ) )
 
+    def test_allowed_not_even_god_should_do_even_with_plugins( self ):
+
+        from AccessControl.PermissionRole import _what_not_even_god_should_do
+        pas = self._makePAS( allowAnything )
+        user = self._makeOne().__of__(pas)
+
+        self.failIf( user.allowed( None, _what_not_even_god_should_do ) )
+
+    def test_allowed_global_roles_not_ok_with_allowAnything_plugin( self ):
+
+        pas = self._makePAS( allowAnything )
+        user = self._makeOne().__of__(pas)
+        user._addRoles( ( 'Role 1', 'Role 2' ) )
+
+        self.failUnless( user.allowed( None, ( 'Role 3', ) ) )
+
+class AllowAnything:
+    def isUserAllowed( self, user, object, object_rules ):
+        return True
+
+allowAnything = AllowAnything()
 
 if __name__ == "__main__":
     unittest.main()

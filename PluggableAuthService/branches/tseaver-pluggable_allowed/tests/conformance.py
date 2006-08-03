@@ -174,6 +174,15 @@ class IRequestTypeSniffer_conformance:
 
         verifyClass( IRequestTypeSniffer, self._getTargetClass() )
 
+class IUserAllowedPolicyPlugin_conformance:
+
+    def test_UserAllowedPolicyPlugin_conformance( self ):
+
+        from Products.PluggableAuthService.interfaces.plugins \
+            import IUserAllowedPolicyPlugin
+
+        verifyClass( IUserAllowedPolicyPlugin, self._getTargetClass() )
+
 class IUserFolder_conformance:
 
     def test_conformance_IUserFolder( self ):

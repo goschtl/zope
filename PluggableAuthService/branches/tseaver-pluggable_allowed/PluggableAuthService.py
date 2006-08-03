@@ -79,6 +79,7 @@ from interfaces.plugins import IRoleEnumerationPlugin
 from interfaces.plugins import IRoleAssignerPlugin
 from interfaces.plugins import IChallengeProtocolChooser
 from interfaces.plugins import IRequestTypeSniffer
+from interfaces.plugins import IUserAllowedPolicyPlugin
 
 from permissions import SearchPrincipals
 
@@ -1242,6 +1243,11 @@ _PLUGIN_TYPE_INFO = (
     , 'IRequestTypeSniffer'
     , 'request_type_sniffer'
     , "Request Type Sniffer plugins detect the type of an incoming request."
+    )
+  , ( IUserAllowedPolicyPlugin
+    , 'IUserAllowedPolicyPlugin'
+    , 'user_allowed_policy'
+    , "Apply a policy for granting access to a user given the required roles."
     )
   )
 

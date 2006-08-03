@@ -22,6 +22,7 @@ from AccessControl.User import BasicUser
 from AccessControl.PermissionRole import _what_not_even_god_should_do
 
 from interfaces.authservice import IPropertiedUser
+from interfaces.plugins import IUserAllowedPolicyPlugin
 from UserPropertySheet import UserPropertySheet
 from utils import classImplements
 
@@ -149,9 +150,29 @@ class PropertiedUser( BasicUser ):
         o Ripped off from AccessControl.User.BasicUser, which provides
           no other extension mechanism. :(
         """
+        plugins = aq_parent( self )._getOb( 'plugins' )
+
+        # This isn't really a policy -- everything in Zope expects that
+        # 'roles = ()' means "VERBOTEN".
         if object_roles is _what_not_even_god_should_do:
             return 0
 
+        policies = plugins.listPlugins( IUserAllowedPolicyPlugin )
+
+        if len(policies) == 0:
+            return self._default_allow_policies( object, object_roles )
+
+        for policy_id, policy in policies:
+            result = policy.isUserAllowed( self, object, object_roles )
+            if result is None:
+                continue
+            return result
+
+        return None
+
+    def _default_allow_policies( self, object, object_roles ):
+        """ These policies reflect those from the traditional Zope acl_users.
+        """
         # Short-circuit the common case of anonymous access.
         if object_roles is None or 'Anonymous' in object_roles:
             return 1
