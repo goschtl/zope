@@ -925,7 +925,25 @@ Cleanup:
 
     """
 
-
+class StandaloneTests(unittest.TestCase):
+    def testStandalone(self):
+        import subprocess
+        import sys
+        import os
+        import StringIO
+        import tempfile
+        executable = os.path.abspath(sys.executable)
+        program = os.path.join(os.path.dirname(__file__), 'standalonetests.py')
+        paths = ':'.join(sys.path)
+        command = "%(executable)s %(program)s %(paths)s" % {
+            'executable': executable, 'program': program, 'paths': paths}
+        t = tempfile.TemporaryFile()
+        res = subprocess.call([executable, program, paths], stdout=t, stderr=t)
+        t.seek(0)
+        lines = t.readlines()
+        t.close()
+        if lines[-1][-3:-1] != 'OK':
+            self.fail(''.join(lines))
 
 def tearDownRegistryTests(tests):
     import zope.event
@@ -959,6 +977,7 @@ def test_suite():
                              setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('zcml.txt',
                              setUp=setUp, tearDown=tearDown),
+        unittest.makeSuite(StandaloneTests),
         ))
 
 if __name__ == "__main__":
