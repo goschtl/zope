@@ -942,8 +942,13 @@ class StandaloneTests(unittest.TestCase):
         t.seek(0)
         lines = t.readlines()
         t.close()
-        if lines[-1][-3:-1] != 'OK':
-            self.fail(''.join(lines))
+        for l in reversed(lines):
+            l = l.strip()
+            if l:
+                if not l.endswith('OK'):
+                    self.fail(''.join(lines))
+                else:
+                    break
 
 def tearDownRegistryTests(tests):
     import zope.event
