@@ -3,8 +3,7 @@ import doctest
 import sys
 
 if __name__ == "__main__":
-    paths = sys.argv.pop().split(':')
-    sys.path.extend(paths)
+    sys.path[:] = sys.argv.pop().split(':')
 
 from zope import interface
 from zope.component.testing import setUp, tearDown
@@ -34,7 +33,6 @@ def providing_adapter_sets_adapter_hook():
 
       >>> import zope.component
       >>> zope.component.provideAdapter(Comp, (I1,), I2)
-      >>> res = 0 #zope.component.getAdapter
       >>> adapter = I2(ob)
       >>> adapter.__class__ is Comp
       True
