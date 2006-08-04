@@ -153,7 +153,7 @@ class PropertiedUser( BasicUser ):
         plugins = aq_parent( self )._getOb( 'plugins' )
 
         # This isn't really a policy -- everything in Zope expects that
-        # 'roles = ()' means "VERBOTEN".
+        # 'roles = _what_not_even_god_should_do' means "VERBOTEN".
         if object_roles is _what_not_even_god_should_do:
             return 0
 
