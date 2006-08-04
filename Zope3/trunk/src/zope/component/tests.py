@@ -934,7 +934,7 @@ class StandaloneTests(unittest.TestCase):
         import tempfile
         executable = os.path.abspath(sys.executable)
         program = os.path.join(os.path.dirname(__file__), 'standalonetests.py')
-        paths = ':'.join(sys.path)
+        paths = ':'.join(p for p in sys.path if p)
         command = "%(executable)s %(program)s %(paths)s" % {
             'executable': executable, 'program': program, 'paths': paths}
         t = tempfile.TemporaryFile()
