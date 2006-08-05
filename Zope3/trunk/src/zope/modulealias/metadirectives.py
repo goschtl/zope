@@ -19,6 +19,12 @@ from zope.configuration.fields import PythonIdentifier
 from zope.interface import Interface
 
 class IModuleAliasDirective(Interface):
-    """ Define a new module alias """
+    """ *BBB: DEPRECATED*
+
+    The 'modulealias' directive has been deprecated and will be
+    removed in Zope 3.5. Manipulate 'sys.modules' manually instead.
+
+    Define a new module alias
+    """
     module = PythonIdentifier()
     alias = PythonIdentifier()

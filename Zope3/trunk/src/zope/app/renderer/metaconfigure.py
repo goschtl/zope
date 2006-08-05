@@ -23,8 +23,24 @@ from zope.configuration.fields import GlobalInterface, GlobalObject
 from zope.interface import Interface
 
 class IRendererDirective(Interface):
-    """Register a renderer for a paricular output interface, such as
-    IBrowserView."""
+    """
+    *BBB: DEPRECATED*
+
+    The 'renderer' directive has been deprecated and will be
+    removed in Zope 3.5.  Use the 'view' directive instead.
+
+    Example::
+
+      <browser:view
+          name=""
+          for="some.interface"
+          class="some.class"
+          permission="zope.Public"
+          />
+
+    Register a renderer for a particular output interface, such as
+    IBrowserView.
+    """
 
     sourceType = GlobalInterface(
         title=u"Source Type Interface",
