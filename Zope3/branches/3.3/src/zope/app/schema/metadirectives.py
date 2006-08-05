@@ -21,7 +21,24 @@ from zope.schema import TextLine
 
 # BBB 2006/02/24, to be removed after 12 months
 class IVocabularyDirective(Interface):
-    '''Define a named vocabulary.
+    '''
+    *BBB: DEPRECATED*
+
+    The 'vocabulary' directive has been deprecated and will be
+    removed in Zope 3.5.  Use the 'utility' directive instead to
+    register the class as a named utility:
+
+    Example::
+
+      <utility
+          provides="zope.schema.interfaces.IVocabularyFactory"
+          component="zope.app.gary.paths.Favorites"
+          name="garys-favorite-path-references"
+          />
+
+    **Previous documentation**
+
+    Define a named vocabulary.
 
     This associates a vocabulary name in the global vocabulary registry with a
     factory.  Each name may only be defined once.
