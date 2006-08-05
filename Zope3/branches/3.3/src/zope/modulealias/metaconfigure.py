@@ -32,7 +32,7 @@ class ModuleAliasException(Exception):
 
 def define_module_alias(_context, module, alias):
     warnings.warn_explicit(
-        "The 'modulealais' directive has been deprecated and will be "
+        "The 'modulealias' directive has been deprecated and will be "
         "removed in Zope 3.5.  Manipulate sys.modules manually instead.",
         DeprecationWarning, _context.info.file, _context.info.line)    
     _context.action(
