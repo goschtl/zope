@@ -15,10 +15,10 @@
 
 $Id$
 """
-from zope.app.rdb import (
+from zope.rdb import (
         ZopeDatabaseAdapter, parseDSN, ZopeConnection, ZopeCursor
         )
-from zope.app.rdb.interfaces import DatabaseException
+from zope.rdb.interfaces import DatabaseException
 from zope.publisher.interfaces import Retry
 
 from datetime import date, time, datetime, timedelta
