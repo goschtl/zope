@@ -123,7 +123,7 @@ def main(argv=sys.argv):
 
     # When generating the comments, we will not need the base directory info,
     # since it is specific to everyone's installation
-    src_start = path.rfind('lib/python')
+    src_start = path.rfind(os.path.join('lib','python'))
     base_dir = path[:src_start]
 
     output_file = domain+'.pot'
