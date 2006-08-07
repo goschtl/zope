@@ -28,6 +28,7 @@
       for="z3c.zalchemy.interfaces.ISQLAlchemyContainer"
       permission="zope.Public"
       factory="z3c.zalchemy.container.SQLAlchemyNameChooser"
+      trusted="true"
       />
 
   <include package=".browser" />
