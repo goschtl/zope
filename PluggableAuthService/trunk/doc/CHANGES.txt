@@ -1,6 +1,6 @@
 PluggableAuthService changelog
 
-  PluggableAuthService 1.4-beta (unreleased)
+  PluggableAuthService 1.4-beta (2006/08/07)
 
     Features Added
 
