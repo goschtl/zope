@@ -439,6 +439,10 @@ class seek_wrapper:
             return self.__cache.read(size)
 
         # no, so read sufficient data from wrapped file and cache it
+        if self.wrapped.read is None:
+            # XXX oops, wrapped file-like-object isn't valid, ignore it
+            return ''
+
         self.__cache.seek(0, 2)
         if size == -1:
             self.__cache.write(self.wrapped.read())
