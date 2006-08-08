@@ -39,6 +39,12 @@ class IProxyIntrospection(Interface):
         If the object isn't proxied, then just return the object.
         """
 
+    def setProxiedObject(ob1, ob2):
+        """Set the underlying object for ob1 to ob2, returning the old object.
+
+        Raises TypeError if ob1 is not a proxy.
+        """
+
     def removeAllProxies(obj):
         """Get the proxied object with no proxies
 

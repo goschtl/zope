@@ -614,6 +614,38 @@ def test_non_overridable():
     
     """
 
+def test_setProxiedObject():
+    """
+    >>> from zope.proxy import ProxyBase
+    >>> from zope.proxy import setProxiedObject, getProxiedObject
+
+    >>> class C(object):
+    ...     pass
+
+    >>> c1 = C()
+    >>> c2 = C()
+
+    >>> p = ProxyBase(c1)
+
+    `setProxiedObject()` allows us to change the object a proxy refers to,
+    returning the previous referent:
+
+    >>> old = setProxiedObject(p, c2)
+    >>> old is c1
+    True
+
+    >>> getProxiedObject(p) is c2
+    True
+
+    The first argument  to `setProxiedObject()` must be a proxy; other objects
+    cause it to raise an exception:
+
+    >>> setProxiedObject(c1, None)
+    Traceback (most recent call last):
+    TypeError: setProxiedObject() argument 1 must be zope.proxy.ProxyBase, not C
+
+    """
+
 def test_suite():
     suite = unittest.makeSuite(ProxyTestCase)
     suite.addTest(DocTestSuite())

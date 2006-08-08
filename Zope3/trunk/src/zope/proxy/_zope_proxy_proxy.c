@@ -905,6 +905,28 @@ wrapper_getobject(PyObject *unused, PyObject *obj)
 }
 
 static char
+setobject__doc__[] =
+"setProxiedObject(proxy, object) --> object\n"
+"\n"
+"Set the underlying object for proxy, returning the old proxied object.\n"
+"Raises TypeError if proxy is not a proxy.\n";
+
+static PyObject *
+wrapper_setobject(PyObject *unused, PyObject *args)
+{
+  PyObject *proxy;
+  PyObject *object;
+  PyObject *result = NULL;
+  if (PyArg_ParseTuple(args, "O!O:setProxiedObject",
+                       &ProxyType, &proxy, &object)) {
+    result = Proxy_GET_OBJECT(proxy);
+    Py_INCREF(object);
+    ((ProxyObject *) proxy)->proxy_object = object;
+  }
+  return result;
+}
+
+static char
 isProxy__doc__[] =
 "Check whether the given object is a proxy\n"
 "\n"
@@ -1065,6 +1087,7 @@ act as proxies for the original object.";
 static PyMethodDef
 module_functions[] = {
     {"getProxiedObject", wrapper_getobject, METH_O, getobject__doc__},
+    {"setProxiedObject", wrapper_setobject, METH_VARARGS, setobject__doc__},
     {"isProxy", wrapper_isProxy, METH_VARARGS, isProxy__doc__},
     {"sameProxiedObjects", wrapper_sameProxiedObjects, METH_VARARGS, 
      sameProxiedObjects__doc__},
