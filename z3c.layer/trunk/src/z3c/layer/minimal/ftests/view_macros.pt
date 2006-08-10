@@ -1,0 +1,10 @@
+﻿<metal:block define-macro="view">
+<html>
+<head>
+  <title>testing</title>
+</head>
+<body>
+<metal:block define-slot="body">body</metal:block>
+</body>
+</html>
+</metal:block>

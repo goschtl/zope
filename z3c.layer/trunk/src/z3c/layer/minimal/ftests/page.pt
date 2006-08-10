@@ -1,0 +1,7 @@
+<html metal:use-macro="context/@@standard_macros/page">
+<body>
+<metal:block fill-slot="body">
+  test page
+</metal:block>
+</body>
+</html>

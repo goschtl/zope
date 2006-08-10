@@ -1,0 +1,11 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <interface
+      interface="z3c.layer.trusted.ftests.ITrustedTestingSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="TrustedTesting"
+      />
+
+</configure>

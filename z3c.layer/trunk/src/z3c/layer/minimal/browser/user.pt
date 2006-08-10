@@ -1,0 +1,7 @@
+<html metal:use-macro="context/@@standard_macros/error">
+<body>
+<div align="center" metal:fill-slot="body">
+  <div tal:repeat="part context" tal:content="part">Error message</div>
+</div>
+</body>
+</html>

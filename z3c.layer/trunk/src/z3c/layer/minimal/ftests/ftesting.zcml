@@ -1,0 +1,76 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <interface
+      interface="z3c.layer.minimal.ftests.IMinimalTestingSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="MinimalTesting"
+      />
+
+  <browser:page
+      for="*"
+      name="standard_macros"
+      permission="zope.Public"
+      class=".TestingStandardMacros"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
+      />
+
+  <browser:page
+      for="*"
+      name="page_macros"
+      permission="zope.Public"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      template="page_macros.pt"
+      />
+
+  <browser:page
+      for="*"
+      name="view_macros"
+      permission="zope.Public"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      template="view_macros.pt"
+      />
+
+  <browser:page
+      for="*"
+      name="error_macros"
+      permission="zope.Public"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      template="error_macros.pt"
+      />
+
+  <browser:page
+      for="*"
+      name="page.html"
+      permission="zope.ManageContent"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      template="page.pt"
+      />
+
+  <browser:page
+      for="*"
+      name="forbidden.html"
+      permission="zope.View"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      class=".UnauthorizedPage"
+      />
+
+  <browser:page
+      for="*"
+      name="usererror.html"
+      permission="zope.View"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      class=".UserErrorPage"
+      />
+
+  <browser:page
+      for="*"
+      name="systemerror.html"
+      permission="zope.View"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      class=".SystemErrorPage"
+      />
+
+</configure>
