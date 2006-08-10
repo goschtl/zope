@@ -1,0 +1,30 @@
+<configure
+ xmlns="http://namespaces.zope.org/zope"
+ i18n_domain='zope'
+ >
+
+ <class class=".hashdir.HashDir">
+
+  <implements
+   interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+
+  <require
+   permission="zope.ManageServices"
+   interface=".interfaces.IHashDir"
+   />
+
+  <require
+   permission="zope.ManageServices"
+   set_schema=".interfaces.IHashDir"
+   />
+
+  </class>
+
+  <subscriber
+   for="zope.app.appsetup.IDatabaseOpenedEvent"
+   handler=".utility.bootStrapSubscriber"
+   />
+
+  
+ <include package=".browser"/>
+</configure>

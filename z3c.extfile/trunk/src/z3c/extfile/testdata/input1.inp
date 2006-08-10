@@ -1,0 +1,19 @@
+-----------------------------100323068321119442571506749230
+Content-Disposition: form-data; filename="test1.txt"; name="test1"
+Content-Type: application/octet-stream
+
+first line of 1
+second line of 1
+
+-----------------------------100323068321119442571506749230
+Content-Disposition: form-data; filename="test2.txt"; name="test2"
+Content-Type: application/octet-stream
+
+first line of 2
+second line of 2
+
+-----------------------------100323068321119442571506749230
+Content-Disposition: form-data; name="submit"
+
+submit data
+-----------------------------100323068321119442571506749230--
