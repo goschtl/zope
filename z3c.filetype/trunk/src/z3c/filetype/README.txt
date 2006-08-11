@@ -15,6 +15,7 @@ We take some files for demonstration from the testdata directory.
   >>> fileNames = sorted(os.listdir(testData))
 
   >>> for name in fileNames:
+  ...     if name==".svn": continue
   ...     path = os.path.join(testData, name)
   ...     i =  api.getInterfacesFor(file(path))
   ...     print name

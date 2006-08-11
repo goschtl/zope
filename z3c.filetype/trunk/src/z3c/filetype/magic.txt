@@ -10,6 +10,7 @@ Extract filetype from file content
   >>> testData = os.path.join(os.path.dirname(magic.__file__),'testdata')
   >>> fileNames = sorted(os.listdir(testData))
   >>> for name in fileNames:
+  ...     if name==".svn": continue
   ...     path = os.path.join(testData, name)
   ...     print name, m.detect(file(path))
   DS_Store None
