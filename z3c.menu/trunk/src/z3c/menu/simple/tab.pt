@@ -1,0 +1,4 @@
+<div class="tabMenu">
+  <tal:block repeat="viewlet view/viewlets"
+             content="structure viewlet/render" />
+</div>
