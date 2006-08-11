@@ -2,11 +2,17 @@ Zelenium Product Changelog
 
   After Zelenium 0.8
 
+    - Applied a fix from Rob Miller to make Zelenium Zuite objects functional
+      in the presence of 'five:traverse', making 'index_html' the explicit
+      default view.
+
     - Corrected the documentation in the README for capturing results of a test
       run ('auto=1' -> 'auto=true', in line with the Selenium documentation).
       Thanks to Yoshinori Okuji for pointing this out.
 
   Zelenium 0.8 (2006/05/16)
+
+    - SVN tag:  svn+ssh://svn.zope.org/repos/main/Zelenium/tags/0.8
 
     - Fixed unit tests by wrapping filesystem objects that are rendered
       during ZIP file creation - code in OFS.Image wants to acquire

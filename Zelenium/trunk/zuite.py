@@ -12,6 +12,8 @@ from urllib import unquote
 import zipfile
 import StringIO
 
+from zope.interface import implements
+
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
 from App.ImageFile import ImageFile
@@ -25,6 +27,7 @@ from OFS.OrderedFolder import OrderedFolder
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
+from interfaces import IZuite
 from permissions import ManageSeleniumTestCases
 from permissions import View
 
@@ -113,6 +116,8 @@ class Zuite( OrderedFolder ):
                      + ( { 'label' : 'Zip', 'action' : 'manage_zipfile' },
                        )
                      )
+
+    implements(IZuite)
 
     test_case_metatypes = ( 'File'
                           , 'Page Template'

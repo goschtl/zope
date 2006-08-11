@@ -1,6 +1,7 @@
 """ Zelenium product initialization
 
 This product uses the Selenium javascript to run browser-driven tests.
+
 $Id$
 """
 
