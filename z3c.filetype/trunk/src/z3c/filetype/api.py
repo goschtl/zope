@@ -2,7 +2,8 @@ from z3c.filetype import magic
 import interfaces
 from interfaces import filetypes
 from zope.contenttype import guess_content_type
-from zope import interface
+from zope import interface, component
+from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.event import notify
 from event import FileTypeModifiedEvent
 
@@ -100,3 +101,11 @@ class InterfaceSet(object):
 
         return iter(self._data)
 
+@component.adapter(interfaces.ITypeableFile,IObjectModifiedEvent)
+def handleModified(typeableFile, event):
+    """handles modification of data"""
+    #import pdb;pdb.set_trace()
+    if interfaces.IFileTypeModifiedEvent.providedBy(event):
+        # do nothing if this is already a filetype modification event
+        return
+    applyInterfaces(typeableFile)

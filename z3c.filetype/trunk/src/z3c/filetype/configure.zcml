@@ -5,6 +5,6 @@
 
  <subscriber for=".interfaces.ITypeableFile
                   zope.lifecycleevent.interfaces.IObjectModifiedEvent"
-             handler=".event.handleModified"/>
+             handler=".api.handleModified"/>
  
 </configure>

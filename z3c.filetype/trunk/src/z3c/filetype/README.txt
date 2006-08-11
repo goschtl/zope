@@ -79,6 +79,9 @@ You can also provide a path instead of a stream.
   [<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>]
 
 
+Applying filetype interfaces to objects
+=======================================
+
 There is also a convinience function which applies filetype interfaces
 to an object. This object needs to implement ITypeableFile. This also
 fires events, so let us setup the event handling.
@@ -94,7 +97,7 @@ fires events, so let us setup the event handling.
   ...         self.data = f
   >>> foo = Foo(f)
 
-The applInterfaces method returns a boolean if changes occured.
+The applyInterfaces method returns a boolean if changes occured.
 
   >>> api.applyInterfaces(foo)
   True
@@ -130,9 +133,8 @@ If we change the object the interface changes too.
 There is also an event handler registered on IObjectModified for
 ITypeableFile. We register it here in the test.
 
-  >>> from z3c.filetype.event import handleModified
   >>> from zope import component
-  >>> component.provideHandler(handleModified)
+  >>> component.provideHandler(api.handleModified)
   >>> foo.data = file(os.path.join(testData,'test.html'))
 
 So we need to fire an IObjectModifiedevent. Which is normally done by
