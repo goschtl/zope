@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 683, Globally installed "zope" package breaks
+        mkzopeinstance.
+
       - Fixed issue 676, utilities defined in Zope 3.2 weren't
         converted properly.
 
