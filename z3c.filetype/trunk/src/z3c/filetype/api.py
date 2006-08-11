@@ -1,7 +1,10 @@
 from z3c.filetype import magic
+import interfaces
 from interfaces import filetypes
 from zope.contenttype import guess_content_type
 from zope import interface
+from zope.event import notify
+from event import FileTypeModifiedEvent
 
 magicFile = magic.MagicFile()
 
@@ -41,6 +44,18 @@ def getInterfacesFor(file=None, filename=None, mimeType=None):
             ifaces.update(byMimeType(t))
     return ifaces
 
+def applyInterfaces(obj):
+    assert(interfaces.ITypeableFile.providedBy(obj))
+    ifaces = InterfaceSet(*getInterfacesFor(obj.data))
+    provided = set(interface.directlyProvidedBy(obj))
+    for iface in provided:
+        ifaces.add(iface)
+    if set(ifaces)!=provided:
+        for iface in ifaces:
+            interface.directlyProvides(obj,iface)
+        notify(FileTypeModifiedEvent(obj))
+        return True
+    return False
 
 class InterfaceSet(object):
 

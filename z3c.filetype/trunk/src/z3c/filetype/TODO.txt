@@ -6,4 +6,4 @@ Add more filetypes
 
 Adapters from IFileType to IImage, IFile
 
-
+Freeze api and write interface

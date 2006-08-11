@@ -77,3 +77,39 @@ You can also provide a path instead of a stream.
   '/.../z3c/filetype/testdata/test.tar'
   >>> sorted(api.getInterfacesFor(f.name))
   [<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>]
+
+
+There is also a convinience function which applies filetype interfaces
+to an object. This object needs to implement ITypeableFile. This also
+fires events, so let us setup the event handling.
+
+  >>> from zope.component import eventtesting
+  >>> eventtesting.setUp()
+
+  >>> from z3c.filetype import interfaces
+  >>> from zope import interface
+  >>> class Foo(object):
+  ...     interface.implements(interfaces.ITypeableFile)
+  ...     def __init__(self, f):
+  ...         self.data = f
+  >>> foo = Foo(f)
+
+The applInterfaces method returns a boolean if changes occured.
+
+  >>> api.applyInterfaces(foo)
+  True
+
+And an event should be have been fired.
+
+  >>> eventtesting.getEvents()
+  [<z3c.filetype.event.FileTypeModifiedEvent object at ...>]
+
+  >>> api.applyInterfaces(foo)
+  False
+
+Now the object should implement the right interface according to the
+ata contained.
+
+  >>> interfaces.filetypes.ITARFile.providedBy(foo)
+  True
+
