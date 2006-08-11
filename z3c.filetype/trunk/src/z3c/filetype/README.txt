@@ -104,12 +104,54 @@ And an event should be have been fired.
   >>> eventtesting.getEvents()
   [<z3c.filetype.event.FileTypeModifiedEvent object at ...>]
 
+A second applyInteraces does nothing.
+
+  >>> eventtesting.clearEvents()
   >>> api.applyInterfaces(foo)
   False
+  >>> eventtesting.getEvents()
+  []
 
 Now the object should implement the right interface according to the
 ata contained.
 
-  >>> interfaces.filetypes.ITARFile.providedBy(foo)
+  >>> sorted((interface.directlyProvidedBy(foo)))
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>]
+
+If we change the object the interface changes too.
+
+  >>> foo.data = file(os.path.join(testData,'test.flv'))
+  >>> api.applyInterfaces(foo)
   True
+  >>> sorted((interface.directlyProvidedBy(foo)))
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IFLVFile>]
+
+
+There is also an event handler registered on IObjectModified for
+ITypeableFile. We register it here in the test.
+
+  >>> from z3c.filetype.event import handleModified
+  >>> from zope import component
+  >>> component.provideHandler(handleModified)
+  >>> foo.data = file(os.path.join(testData,'test.html'))
+
+So we need to fire an IObjectModifiedevent. Which is normally done by
+the implementation.
+
+  >>> from zope.lifecycleevent import ObjectModifiedEvent
+  >>> from zope.event import notify
+  >>> eventtesting.clearEvents()
+  >>> notify(ObjectModifiedEvent(foo))
+
+Now we have two events, one we fired and one from our handler.
+
+  >>> eventtesting.getEvents()
+  [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>,
+   <z3c.filetype.event.FileTypeModifiedEvent object at ...>]
+  
+Now the file should implement another filetype.
+
+  >>> sorted((interface.directlyProvidedBy(foo)))
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IHTMLFile>]
+
 

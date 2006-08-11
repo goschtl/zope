@@ -49,7 +49,8 @@ def applyInterfaces(obj):
     ifaces = InterfaceSet(*getInterfacesFor(obj.data))
     provided = set(interface.directlyProvidedBy(obj))
     for iface in provided:
-        ifaces.add(iface)
+        if not issubclass(iface, interfaces.filetypes.ITypedFile):
+            ifaces.add(iface)
     if set(ifaces)!=provided:
         for iface in ifaces:
             interface.directlyProvides(obj,iface)
