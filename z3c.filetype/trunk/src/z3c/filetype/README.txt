@@ -2,6 +2,8 @@
 Filetype Package
 ================
 
+:ATTENTION: This package is not ready yet! see TODO.txt
+
 This package provides a way to get interfaces that are provided based
 on their content, filename or mime-type.
 
