@@ -38,14 +38,6 @@ interrupt-check-interval 200
 #   certificatepath $CONFDIR/server.pem
 # </sslserver>
 
-# A special HTTP server that records HTTP session that can be converted to
-# functional tests.
-# Server: Twisted only!
-# <server>
-#   type RecordingHTTP
-#   address 8081
-# </server>
-
 # For debugging purposes, you can use this publisher instead/as well
 # (obviously if it's as well, use a different port number). If there's
 # an exception, Zope will drop into pdb at the point of the exception.
