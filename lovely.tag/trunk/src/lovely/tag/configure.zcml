@@ -1,0 +1,54 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="lovely.tag">
+
+  <!-- Permission declarations -->
+
+  <permission
+      id="lovely.tag.UpdateTag"
+      title="Update Tag"
+      description="Allow updating of any tags."
+      />
+
+  <permission
+      id="lovely.tag.AccessTag"
+      title="Access Tag"
+      description="Allow accessing any tags related statistics."
+      />
+
+  <!-- Tagging Engine Setup -->
+
+  <class class=".engine.TaggingEngine">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="lovely.tag.UpdateTag"
+        attributes="update"
+        />
+    <require
+        permission="lovely.tag.AccessTag"
+        attributes="getTags getItems getUsers getCloud getRelatedTags"
+        />
+  </class>
+
+  <!-- Tagging adapter for taggable objects. -->
+
+  <class class=".tagging.Tagging">
+    <require
+        permission="lovely.tag.UpdateTag"
+        attributes="update"
+        />
+    <require
+        permission="lovely.tag.AccessTag"
+        attributes="getTags getUsers"
+        />
+  </class>
+
+  <adapter
+      factory=".tagging.Tagging"
+      trusted="True"
+      locate="True"
+      />
+
+</configure>
