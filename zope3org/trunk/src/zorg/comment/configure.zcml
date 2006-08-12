@@ -6,7 +6,7 @@
   <class class=".comments.Comment">
     <factory id="comment.interfaces.IComment" />
     <implements 
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
     <require
         permission="zope.Public"
@@ -60,7 +60,7 @@
   <adapter
       provides=".IComments"
       factory=".comments.CommentsForAnnotableComments"
-      for="zope.app.annotation.interfaces.IAnnotatable"
+      for="zope.annotation.interfaces.IAnnotatable"
       trusted="True" />
       
 

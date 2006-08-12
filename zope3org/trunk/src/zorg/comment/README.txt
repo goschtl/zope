@@ -6,7 +6,7 @@ This package can be used to comment components. The provided functionality relie
 on the annotations mechanism. We implement a subject that we are going to
 comment afterward:
 
-    >>> from zope.app.container.contained import Contained
+    >>> from zope.container.contained import Contained
     >>> from zope.interface import implements
     >>> from zorg.comment import IAttributeAnnotableComments
 

@@ -10,7 +10,7 @@
   <include package=".browser" /> 
   
   <class class=".vproposal.VProposal">
-    <implements interface="zope.app.annotation.IAttributeAnnotatable"/>  
+    <implements interface="zope.annotation.IAttributeAnnotatable"/>  
     <require permission="zope.View"
              interface=".interfaces.IVProposal" />
     <require permission="zope.ManageContent"

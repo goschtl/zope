@@ -23,7 +23,7 @@
 
   <adapter
       provides=".interfaces.ISeen"
-      for="zope.app.annotation.interfaces.IAnnotatable"
+      for="zope.annotation.interfaces.IAnnotatable"
       factory=".seen.SeenForAnnotableObjects"
       trusted="True" />
 

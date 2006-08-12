@@ -10,7 +10,7 @@
   -->  
   <localUtility class=".storage.SimpleHistoryStorage">
     <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
   </localUtility>   
   
   <!-- We also need a 'IVersionableAspects' multi adapter beeing responsible
@@ -63,16 +63,16 @@
   <class class="zorg.edition.storage.SimpleHistoryStorage">
    
     <require
-			permission="zope.ManageSite"
-			interface="zorg.edition.interfaces.IHistoryStorage"/>
+                        permission="zope.ManageSite"
+                        interface="zorg.edition.interfaces.IHistoryStorage"/>
         
   </class>  
   
   <class class="zorg.edition.storage.VersionHistory">
    
     <require
-			permission="zope.ManageSite"
-			interface="zorg.edition.interfaces.IVersionHistory"/>
+                        permission="zope.ManageSite"
+                        interface="zorg.edition.interfaces.IVersionHistory"/>
         
   </class> 
   
