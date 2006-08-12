@@ -1,0 +1,19 @@
+=============================
+Tagging Engine Stress Testing
+=============================
+
+Before the test, we need to make sure the key reference adapter is registered:
+
+  >>> import zope.component
+  >>> from zope.app.keyreference import testing
+  >>> zope.component.provideAdapter(testing.SimpleKeyReference)
+
+Let's start by creating a tagging engine with at least 1 million tag entries:
+
+  >>> from lovely.tag import sampledata
+  >>> engine = sampledata.generate(1e5)
+
+Let's now query for all tags specified by user srichter:
+
+  >>> len(engine.getTags(users=(u'srichter',)))
+  712
