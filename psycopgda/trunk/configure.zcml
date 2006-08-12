@@ -3,7 +3,7 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="psycopgda">
 
-  <content class=".adapter.PsycopgAdapter">
+  <class class=".adapter.PsycopgAdapter">
     <factory id="zope.da.PsycopgDA" />
     <require
         permission="zope.rdb.Use"
@@ -13,21 +13,21 @@
         permission="zope.ManageServices"
         interface="zope.rdb.interfaces.IZopeDatabaseAdapterManagement"
         />
-  </content>
+  </class>
 
-  <content class=".adapter.PsycopgConnection">
+  <class class=".adapter.PsycopgConnection">
     <require
         permission="zope.rdb.Use"
         interface="zope.rdb.interfaces.IZopeConnection"
         />
-  </content>
+  </class>
 
-  <content class=".adapter.PsycopgCursor">
+  <class class=".adapter.PsycopgCursor">
     <require
         permission="zope.rdb.Use"
         interface="zope.rdb.interfaces.IZopeCursor"
         />
-  </content>
+  </class>
 
   <browser:addform
       name="AddPsycopgDA"
