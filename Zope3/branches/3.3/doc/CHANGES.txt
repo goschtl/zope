@@ -10,6 +10,8 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 681: IFormFields is missing declaration for omit()
+
       - Fixed issue 540, Fix documentation buglet in the zope.app.demo
         package (which is not shipped in the tarball).
 
