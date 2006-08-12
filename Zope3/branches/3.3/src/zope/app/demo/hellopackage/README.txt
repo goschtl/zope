@@ -10,10 +10,3 @@ name, module name, etc. This is not the normal style of naming in Zope 3
 however.
 
 'configure.zcml' contains a lot of comments.
-
-To enable this, go to your 'products.zcml' in the Zope 3 root and 
-add the line:
-
-<include package="zope.app.demo.hellopackage" />
-
-presuming you installed this package in ZopeProducts.

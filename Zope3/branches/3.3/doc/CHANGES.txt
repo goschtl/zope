@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 540, Fix documentation buglet in the zope.app.demo
+        package (which is not shipped in the tarball).
+
       - Fixed issue 683, Globally installed "zope" package breaks
         mkzopeinstance.
 
