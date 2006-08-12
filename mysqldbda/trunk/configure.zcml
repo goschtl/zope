@@ -3,7 +3,7 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="mysqldbda">
 
-  <content class=".adapter.MySQLdbAdapter">
+  <class class=".adapter.MySQLdbAdapter">
     <factory id="zope.da.MySQLdbDA" />
     <require
         permission="zope.app.rdb.Use"
@@ -13,7 +13,7 @@
         permission="zope.ManageServices"
         interface="zope.app.rdb.interfaces.IZopeDatabaseAdapterManagement"
         />
-  </content>
+  </class>
 
   <browser:addform
       name="AddMySQLdbDA"
