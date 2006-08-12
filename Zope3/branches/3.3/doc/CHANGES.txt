@@ -10,6 +10,8 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed broken behaviour of Mail Delivery Names vocabulary.
+
       - Fixed issue 537: zope.conf advertises RecordingHTTP server
         which doesn't ship with the Zope 3 releases.
 
