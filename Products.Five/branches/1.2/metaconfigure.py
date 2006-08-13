@@ -15,9 +15,6 @@
 
 $Id$
 """
-from types import ModuleType
-
-from zope.interface import classImplements
 from zope.configuration.exceptions import ConfigurationError
 from zope.app.component import contentdirective
 from Products.Five.security import protectName, initializeClass
@@ -25,7 +22,6 @@ from Products.Five.security import protectName, initializeClass
 class ContentDirective(contentdirective.ContentDirective):
 
     def __protectName(self, name, permission_id):
-        "Set a permission on a particular name."
         self.__context.action(
             discriminator = ('five:protectName', self.__class, name),
             callable = protectName,
