@@ -15,13 +15,12 @@
 
 $Id$
 """
-import warnings
-from Products.Five.security import CheckerPublic, protectName
-from Globals import InitializeClass as initializeClass
-import zope.app.component.contentdirective
+from zope.configuration.exceptions import ConfigurationError
+from zope.app.component import contentdirective
+from Products.Five.security import protectName, initializeClass
 
-class ClassDirective(zope.app.component.contentdirective.ClassDirective):
-        
+class ClassDirective(contentdirective.ClassDirective):
+
     def __protectName(self, name, permission_id):
         self.__context.action(
             discriminator = ('five:protectName', self.__class, name),
@@ -29,16 +28,24 @@ class ClassDirective(zope.app.component.contentdirective.ClassDirective):
             args = (self.__class, name, permission_id)
             )
 
+    def __protectSetAttributes(self, attributes, permissions):
+        raise ConfigurationError('set_attributes parameter not supported.')
+
+    def __proctectSetSchema(self, schema, permission):
+        raise ConfigurationError('set_schema parameter not supported.')
+
+    def __mimic(self, _context, class_):
+        raise ConfigurationError('like_class parameter not supported.')
+
     def __call__(self):
-        """Handle empty/simple declaration."""
         return self.__context.action(
-            discriminator = ('five:initialize:class', self.__class),
+            discriminator = None,
             callable = initializeClass,
             args = (self.__class,)
             )
 
 # BBB 2006/02/24, to be removed after 12 months
-class ContentDirective(ClassDirective):
+class ContentDirective(contentdirective.ClassDirective):
 
     def __init__(self, _context, class_):
         warnings.warn_explicit(

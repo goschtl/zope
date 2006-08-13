@@ -75,6 +75,8 @@ def test_security_equivalence():
       ...   <class class="Products.Five.tests.test_security.Dummy1">
       ...     <allow attributes="foo" />
       ...     <!--deny attributes="baz" /--> <!-- XXX not yet supported -->
+      ...   </class>
+      ...   <class class="Products.Five.tests.test_security.Dummy1">
       ...     <require attributes="bar keg"
       ...              permission="zope2.ViewManagementScreens"
       ...              />

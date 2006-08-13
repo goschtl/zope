@@ -2,12 +2,14 @@
 Five Changes
 ============
 
-Five 1.5 (unreleased)
+Five 1.5 (2006-08-13)
 =====================
 
 * Enabled the viewlet related directives by default.
 
 * Added acquisition wrappers to viewlets before updating or rendering.
+
+* Allow multiple uses of the <class>/<content> directive.
 
 * Moved the custom 'provider:' tales expression back into Five.  Made the
   provider directive acquisition wrap the resultant content provider so that
@@ -79,6 +81,28 @@ Features
   deprecated, as the functionality exists in the Zope core publisher
   from Zope 2.10 and up.
 
+Five 1.4.1 (2006-08-13)
+=======================
+
+Bugfixes
+--------
+
+* Allow multiple uses of the <class>/<content> directive.
+
+* Fix problem with WebDAV/HEAD requests due to new traversal order.
+
+* Made the pythonproducts monkey patching more robust by checking to
+  ensure patches aren't reapplied and cleaning up after itself.
+
+* Backported the new traversal lookup order from Zope 2.10 (attribute, adapter,
+  acquired attribute).
+
+* Made the provider directive acquisition wrap the resultant content provider
+  so that simple providers that need security declarations (e.g. those that
+  render pagetemplates) can work with the Zope 2 security machinery.
+
+* Added acquisition wrappers to viewlets before updating or rendering.
+
 Five 1.4 (2006-05-29)
 =====================
 
@@ -140,6 +164,22 @@ Features
 
   NOTE: Anyone who copied the Five site.zcml to their
   $INSTANCE_HOME/etc/ directory is going to need to update it.
+
+Five 1.3.7 (2006-08-13)
+=======================
+
+Bugfixes
+--------
+
+* Allow multiple uses of the <class>/<content> directive.
+
+* Fix problem with WebDAV/HEAD requests due to new traversal order.
+
+* Backported the new traversal lookup order from Zope 2.10 (attribute, adapter,
+  acquired attribute).
+
+* fiveconfigure.py: Removed import of deprecated 'LOG' object from 'zLOG'
+  in favor of the facilities provided by Python's 'logging' module.
 
 Five 1.3.6 (2006-05-29)
 =======================
@@ -298,6 +338,16 @@ Restructuring
 * Backwards compatability for Zope 3-style interfaces of Zope 2
   components has been removed as that functionality is now in the Zope
   2 core as of Zope 2.9.
+
+Five 1.2.6 (2006-08-13)
+=======================
+
+* Allow multiple uses of the <class>/<content> directive.
+
+* Fix problem with WebDAV/HEAD requests due to new traversal order.
+
+* Backported the new traversal lookup order from Zope 2.10 (attribute,
+  adapter, acquired attribute).
 
 Five 1.2.5 (2006-05-29)
 =======================
