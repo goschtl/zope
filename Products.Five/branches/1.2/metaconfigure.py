@@ -24,12 +24,6 @@ from Products.Five.security import protectName, initializeClass
 
 class ContentDirective(contentdirective.ContentDirective):
 
-    def __init__(self, _context, class_):
-        self.__class = class_
-        if isinstance(self.__class, ModuleType):
-            raise ConfigurationError('Content class attribute must be a class')
-        self.__context = _context
-
     def __protectName(self, name, permission_id):
         "Set a permission on a particular name."
         self.__context.action(
