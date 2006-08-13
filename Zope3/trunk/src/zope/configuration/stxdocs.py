@@ -30,7 +30,7 @@ Options:
 $Id$
 """
 import sys, os, getopt
-import zope
+import zope.configuration
 from zope.schema import getFieldsInOrder 
 from zope.configuration import config, xmlconfig
 from zope.configuration.docutils import wrap, makeDocStructures
@@ -53,7 +53,8 @@ def _directiveDocs(name, schema, handler, info, indent_offset=0):
     if isinstance(info, xmlconfig.ParserInfo):
         # We do not want to specify the whole path; starting at the 'zope'
         # package is enough.
-        base_dir = os.path.dirname(zope.__file__)[:-4]
+        base_dir = os.path.dirname(os.path.dirname(
+            zope.configuration.__file__)[:-4]
         file = info.file.replace(base_dir, '')
 
         info_text = 'File %s, lines %i - %i.' %(file, info.line, info.eline)

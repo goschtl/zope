@@ -56,7 +56,8 @@ from zope.dependencytool import importfinder
 
 
 # Get the Zope base path
-ZOPESRC = os.path.dirname(os.path.dirname(zope.__file__))
+ZOPESRC = os.path.dirname(os.path.dirname(os.path.dirname(
+    zope.dependencytool.__file__)))
 ZOPESRCPREFIX = os.path.join(ZOPESRC, "")
 
 # Matching expression for python files.
