@@ -59,6 +59,14 @@ def test_directives():
       >>> dest.method()
       'Overridden'
 
+    Check the result of the <class> directives
+
+      >>> from Products.Five.tests.classes import One, Two, IOne, ITwo
+      >>> IOne.implementedBy(One)
+      True
+      >>> ITwo.implementedBy(One)
+      True
+
     Clean up adapter registry and others:
 
       >>> from zope.testing.cleanup import cleanUp
