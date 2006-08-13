@@ -47,4 +47,15 @@
       factory=".adapters.OriginalAdapter"
       />
 
+  <!-- this tests whether content / class can be declared on the same class
+       with two different interfaces. -->
+
+  <class class=".classes.One" >
+    <implements interface=".classes.IOne" />
+  </class>
+
+  <class class=".classes.One" >
+    <implements interface=".classes.ITwo" />
+  </class>
+
 </configure>
