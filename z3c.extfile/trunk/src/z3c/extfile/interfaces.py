@@ -24,6 +24,12 @@ class IReadFile(IFile):
     def __len__():
         """returns the length/size of file"""
 
+    def seek(offset, whence=0):
+        """see file.seek"""
+
+    def tell():
+        """see file.tell"""
+
 
 class IWriteFile(IFile):
 

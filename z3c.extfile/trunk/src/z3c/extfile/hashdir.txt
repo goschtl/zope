@@ -67,6 +67,15 @@ We can get the digest of the object
 
   >>> f.digest
   '0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d'
+
+The seek and tell operations are supported.
+
+  >>> f.seek(1)
+  >>> f.read(10)
+  'ontent 2'
+
+  >>> f.tell()
+  9L
   
 We can also get the path of the file.
 
