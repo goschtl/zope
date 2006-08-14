@@ -24,6 +24,8 @@ We take some files for demonstration from the testdata directory.
   ...     print i
   DS_Store
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IBinaryFile>])
+  ftyp.mov
+  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IVideoFile>])
   jumps.mov
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IVideoFile>])
   logo.gif

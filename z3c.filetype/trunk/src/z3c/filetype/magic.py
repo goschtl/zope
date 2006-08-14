@@ -494,16 +494,16 @@ class MagicFile:
     def detect(self,file):
         self.ack_tests = 0
         self.nak_tests = 0
-        answers = []
+        answers = set()
         for test in self.tests :
             message = test.run( file )
             if message :
                 self.ack_tests += 1
-                answers.append( message )
+                answers.add( message.strip().split()[0] )
             else:
                 self.nak_tests += 1
-        if answers :
-            return '; '.join( answers )
+        return answers
+
 #end class MagicFile
 
 def username(uid):

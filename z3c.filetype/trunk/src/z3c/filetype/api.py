@@ -33,8 +33,8 @@ def getInterfacesFor(file=None, filename=None, mimeType=None):
     
     ifaces = set()
     if file is not None:
-        t = magicFile.detect(file)
-        if t is not None:
+        types = magicFile.detect(file)
+        for t in types:
             ifaces.update(byMimeType(t))
     if mimeType is not None:
         ifaces.update(byMimeType(mimeType))

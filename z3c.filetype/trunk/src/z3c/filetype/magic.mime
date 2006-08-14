@@ -603,8 +603,18 @@
 # SGI and Apple formats
 #
 0	string		MOVI				video/sgi
-4	string		moov				video/quicktime	moov
-4	string		mdat				video/quicktime	mdat
+
+# Apple Quicktime: Scan for all known top-level QT atom markers
+4       string          moov            video/quicktime (moov)
+4       string          mdat            video/quicktime (mdat)
+4       string          ftyp            video/quicktime (ftyp)
+4       string          free            video/quicktime (free)
+4       string          junk            video/quicktime (junk)
+4       string          pnot            video/quicktime (pnot)
+4       string          skip            video/quicktime (skip)
+4       string          wide            video/quicktime (wide)
+4       string          pict            video/quicktime (pict)
+
 # The contributor claims:
 #   I couldn't find a real magic number for these, however, this
 #   -appears- to work.  Note that it might catch other files, too,
