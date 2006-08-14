@@ -65,7 +65,7 @@ class PrincipalRegistry(object):
     def unauthorized(self, id, request):
         if id is None or id is self.__defaultid:
             a = interfaces.ILoginPassword(request)
-            a.needLogin(realm="zope")
+            a.needLogin(realm="Zope")
 
     def getPrincipal(self, id):
         r = self.__principalsById.get(id)

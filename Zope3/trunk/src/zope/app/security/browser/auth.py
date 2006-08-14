@@ -110,7 +110,7 @@ class HTTPBasicAuthenticationLogin(HTTPAuthenticationLogin):
         # we don't want to keep challenging if we're authenticated
         if IUnauthenticatedPrincipal.providedBy(self.request.principal):
             # hard-code basic auth challenge
-            self.request.unauthorized("basic realm='Zope'")
+            self.request.unauthorized('basic realm="Zope"')
             return self.failed()
         else:
             if nextURL is None:

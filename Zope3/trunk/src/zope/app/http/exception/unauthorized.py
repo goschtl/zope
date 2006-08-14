@@ -29,7 +29,7 @@ class Unauthorized(object):
         self.request = request
 
     def __call__(self):
-        self.request.unauthorized("basic realm='Zope'")
+        self.request.unauthorized('basic realm="Zope"')
         return ''
 
     __str__ = __call__

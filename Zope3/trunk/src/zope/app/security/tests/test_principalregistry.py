@@ -122,10 +122,10 @@ class Test(PlacefulSetup, unittest.TestCase):
     def testUnauthorized(self):
         request = Request(None)
         self.reg.unauthorized(self.reg.unauthenticatedPrincipal(), request)
-        self.assertEquals(request.challenge, "basic realm=zope")
+        self.assertEquals(request.challenge, 'basic realm="Zope"')
         request = Request(None)
         self.reg.unauthorized(None, request)
-        self.assertEquals(request.challenge, "basic realm=zope")
+        self.assertEquals(request.challenge, 'basic realm="Zope"')
         request = Request(None)
         self.reg.unauthorized("1", request)
         self.assertEquals(request.challenge, None)
