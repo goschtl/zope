@@ -25,6 +25,9 @@ class ExtBytesProperty(object):
         return self.hd.open(digest)
 
     def __set__(self, inst, value):
+        # ignore if value is None
+        if value is None:
+            return
         # Handle case when value is a string
         if isinstance(value, unicode):
             value = value.encode('UTF-8')
