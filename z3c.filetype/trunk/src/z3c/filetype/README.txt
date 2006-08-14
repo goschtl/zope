@@ -28,6 +28,8 @@ We take some files for demonstration from the testdata directory.
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IVideoFile>])
   logo.gif
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IGIFFile>])
+  logo.gif.bz2
+  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IBZIP2File>])
   test.flv
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IFLVFile>])
   test.gnutar

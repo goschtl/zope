@@ -15,10 +15,15 @@ class IBinaryFile(ITypedFile):
 IBinaryFile.setTaggedValue(MTM,re.compile('application/octet-stream'))
 IBinaryFile.setTaggedValue(MT,'application/octet-stream')
 
-class ITARFile(ITypedFile):
+class ITARFile(IBinaryFile):
     """Binary file"""
 ITARFile.setTaggedValue(MTM,re.compile('application/x-tar'))
 ITARFile.setTaggedValue(MT,'application/x-tar')
+
+class IBZIP2File(IBinaryFile):
+    """BZIP2  file"""
+IBZIP2File.setTaggedValue(MTM,re.compile('application/x-bzip2'))
+IBZIP2File.setTaggedValue(MT,'application/x-bzip2')
 
 class IGZIPFile(IBinaryFile):
     """Binary file"""

@@ -16,6 +16,7 @@ Extract filetype from file content
   DS_Store None
   jumps.mov video/quicktime ; video/quicktime 
   logo.gif image/gif
+  logo.gif.bz2 application/x-bzip2
   test.flv video/x-flv 
   test.gnutar application/x-tar ; application/x-tar 
   test.html text/html 
