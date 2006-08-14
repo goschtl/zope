@@ -79,12 +79,12 @@ You can also provide a path instead of a stream.
   [<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>]
 
 
-Applying filetype interfaces to objects
-=======================================
+Applying filetype interfaces to objects via events
+==================================================
 
-There is also a convinience function which applies filetype interfaces
-to an object. This object needs to implement ITypeableFile. This also
-fires events, so let us setup the event handling.
+There are event handlers which apply filetype interfaces to an
+object. This object needs to implement ITypeableFile. So let us setup
+the event handling.
 
   >>> from zope.component import eventtesting
   >>> eventtesting.setUp()
@@ -97,15 +97,30 @@ fires events, so let us setup the event handling.
   ...         self.data = f
   >>> foo = Foo(f)
 
-The applyInterfaces method returns a boolean if changes occured.
+There is also an event handler registered for IObjectCreatedEvent and
+IObjectModified on  ITypeableFile. We register them here in the test.
 
-  >>> api.applyInterfaces(foo)
-  True
+  >>> from zope import component
+  >>> component.provideHandler(api.handleCreated)
+  >>> component.provideHandler(api.handleModified)
 
-And an event should be have been fired.
+So we need to fire an IObjectCreatedEvent. Which is normally done by a
+factory.
 
-  >>> eventtesting.getEvents()
-  [<z3c.filetype.event.FileTypeModifiedEvent object at ...>]
+  >>> from zope.lifecycleevent import ObjectCreatedEvent
+  >>> from zope.lifecycleevent import ObjectModifiedEvent
+  >>> from zope.event import notify
+  >>> eventtesting.clearEvents()
+  >>> notify(ObjectCreatedEvent(foo))
+  >>> sorted(eventtesting.getEvents())
+  [<z3c.filetype.event.FileTypeModifiedEvent object at ...>,
+   <zope.app.event.objectevent.ObjectCreatedEvent object at ...>]
+
+The object now implements the according interface. This is achieved by
+the evennthandler which calls applyInterfaces.
+
+  >>> sorted((interface.directlyProvidedBy(foo)))
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>]
 
 A second applyInteraces does nothing.
 
@@ -115,34 +130,13 @@ A second applyInteraces does nothing.
   >>> eventtesting.getEvents()
   []
 
-Now the object should implement the right interface according to the
-ata contained.
 
-  >>> sorted((interface.directlyProvidedBy(foo)))
-  [<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>]
-
-If we change the object the interface changes too.
+If we change the object the interface changes too. We need to fire
+an IObjectModifiedevent. Which is normally done by the implementation.
 
   >>> foo.data = file(os.path.join(testData,'test.flv'))
-  >>> api.applyInterfaces(foo)
-  True
-  >>> sorted((interface.directlyProvidedBy(foo)))
-  [<InterfaceClass z3c.filetype.interfaces.filetypes.IFLVFile>]
-
-
-There is also an event handler registered on IObjectModified for
-ITypeableFile. We register it here in the test.
-
-  >>> from zope import component
-  >>> component.provideHandler(api.handleModified)
-  >>> foo.data = file(os.path.join(testData,'test.html'))
-
-So we need to fire an IObjectModifiedevent. Which is normally done by
-the implementation.
-
-  >>> from zope.lifecycleevent import ObjectModifiedEvent
-  >>> from zope.event import notify
   >>> eventtesting.clearEvents()
+  >>> 
   >>> notify(ObjectModifiedEvent(foo))
 
 Now we have two events, one we fired and one from our handler.
@@ -150,12 +144,11 @@ Now we have two events, one we fired and one from our handler.
   >>> eventtesting.getEvents()
   [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>,
    <z3c.filetype.event.FileTypeModifiedEvent object at ...>]
-  
+
 Now the file should implement another filetype.
 
   >>> sorted((interface.directlyProvidedBy(foo)))
-  [<InterfaceClass z3c.filetype.interfaces.filetypes.IHTMLFile>]
-
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IFLVFile>]
 
 There is also an adapter from ITypedFile to IFileType, which can be
 used to get the default content type for the interface.
@@ -164,6 +157,6 @@ used to get the default content type for the interface.
   >>> component.provideAdapter(adapters.TypedFileType)
   >>> ft = interfaces.IFileType(foo)
   >>> ft.contentType
-  'text/html'
+  'video/x-flv'
   
 

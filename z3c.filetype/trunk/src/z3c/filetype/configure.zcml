@@ -7,5 +7,10 @@
                   zope.lifecycleevent.interfaces.IObjectModifiedEvent"
              handler=".api.handleModified"/>
 
+ <subscriber for=".interfaces.ITypeableFile
+                  zope.lifecycleevent.interfaces.IObjectCreatedEvent"
+             handler=".api.handleCreated"/>
+
+ 
  <adapter factory=".adapters.TypedFileType"/>
 </configure>

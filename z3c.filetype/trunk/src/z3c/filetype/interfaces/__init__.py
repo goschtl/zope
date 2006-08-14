@@ -9,7 +9,6 @@ class IFileTypeModifiedEvent(IObjectModifiedEvent):
 
     """This event is fired when the filetypes change on an object"""
 
-
 class ITypeableFile(interface.Interface):
 
     """A file object that is typeable"""
