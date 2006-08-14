@@ -47,7 +47,7 @@ class HTTPBasicAuthCredentialsPlugin(Persistent, Contained):
     protocol = 'http auth'
 
     def extractCredentials(self, request):
-        """Extracts HTTP basic auth credentisla from a request.
+        """Extracts HTTP basic auth credentials from a request.
 
         First we need to create a request that contains some credentials.
 

@@ -48,7 +48,7 @@ class Test(unittest.TestCase):
         r = Request(None)
         a = BasicAuthAdapter(r)
         a.needLogin("tim")
-        self.assertEqual(r.challenge, "basic realm=tim")
+        self.assertEqual(r.challenge, 'basic realm="tim"')
 
 def test_suite():
     loader=unittest.TestLoader()

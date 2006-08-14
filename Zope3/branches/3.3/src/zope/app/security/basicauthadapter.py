@@ -37,4 +37,4 @@ class BasicAuthAdapter(LoginPassword):
         LoginPassword.__init__(self, login, password)
 
     def needLogin(self, realm):
-        self.__request.unauthorized("basic realm=%s" % realm)
+        self.__request.unauthorized('basic realm="%s"'% realm)

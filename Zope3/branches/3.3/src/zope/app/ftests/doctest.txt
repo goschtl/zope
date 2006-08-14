@@ -23,7 +23,7 @@ First, we'll test accessing a protected page without credentials:
   HTTP/1.1 401 Unauthorized
   Content-Length: ...
   Content-Type: text/html;charset=utf-8
-  WWW-Authenticate: basic realm=zope
+  WWW-Authenticate: basic realm="Zope"
   <BLANKLINE>
   <!DOCTYPE html PUBLIC ...
 
