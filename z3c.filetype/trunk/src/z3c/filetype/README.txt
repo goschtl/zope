@@ -23,7 +23,7 @@ We take some files for demonstration from the testdata directory.
   ...     print name
   ...     print i
   DS_Store
-  set([])
+  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IBinaryFile>])
   jumps.mov
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IVideoFile>])
   logo.gif
@@ -159,4 +159,13 @@ used to get the default content type for the interface.
   >>> ft.contentType
   'video/x-flv'
   
+
+Let us try an unknown file type, this should apply an IBinaryFile
+interface.
+
+  >>> foo.data = file(os.path.join(testData,'DS_Store'))
+  >>> notify(ObjectModifiedEvent(foo))
+  >>> sorted((interface.directlyProvidedBy(foo)))
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IBinaryFile>]  
+
 

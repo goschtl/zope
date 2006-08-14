@@ -44,6 +44,8 @@ def getInterfacesFor(file=None, filename=None, mimeType=None):
         # binary files.
         if t and not t == 'text/x-unknown-content-type':
             ifaces.update(byMimeType(t))
+    if not ifaces:
+        ifaces.add(interfaces.filetypes.IBinaryFile)
     return ifaces
 
 def applyInterfaces(obj):
