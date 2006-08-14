@@ -26,15 +26,14 @@ from zope.testing.doctestunit import DocFileSuite
 
 from zope.app.testing import setup, placelesssetup
 from zope.dublincore import annotatableadapter
+from zope.dublincore import testing
 from zope.dublincore.interfaces import IWriteZopeDublinCore
 
 
 def setUp(test):
     setup.placefulSetUp()
     setup.setUpAnnotations()
-    component.provideAdapter(annotatableadapter.ZDCAnnotatableAdapter,
-                             provides=IWriteZopeDublinCore,
-                            )
+    testing.setUpDublinCore()
 
 def tearDown(test):
     setup.placefulTearDown()
