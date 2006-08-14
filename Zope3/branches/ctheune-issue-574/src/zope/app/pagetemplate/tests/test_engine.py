@@ -18,7 +18,7 @@ $Id$
 import unittest
 from zope.testing.doctestunit import DocTestSuite
 
-from zope.app.testing import ztapi
+import zope.component
 from zope.app.pagetemplate.engine import _Engine
 from zope.proxy import isProxy
 from zope.traversing.interfaces import IPathAdapter
@@ -30,10 +30,16 @@ class DummyNamespace(object):
 
 class EngineTests(unittest.TestCase):
 
+    def setUp(self):
+        gsm = zope.component.getGlobalSiteManager()
+        gsm.registerAdapter(DummyNamespace, required=(), provided=IPathAdapter, name='test')
+
+    def tearDown(self):
+        gsm = zope.component.getGlobalSiteManager()
+        gsm.unregisterAdapter(DummyNamespace, required=(), provided=IPathAdapter, name='test')
 
     def test_issue574(self):
         engine = _Engine()
-        ztapi.provideAdapter(None, IPathAdapter, DummyNamespace, 'test')
         namespace = engine.getFunctionNamespace('test')
         self.failUnless(isProxy(namespace))
 
