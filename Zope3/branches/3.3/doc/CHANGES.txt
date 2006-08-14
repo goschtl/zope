@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 682: Quoting of realm in HTTP basic authentication was not
+        conforming to RFC 2617.
+
       - Fixed broken behaviour of Mail Delivery Names vocabulary.
 
       - Fixed issue 537: zope.conf advertises RecordingHTTP server
