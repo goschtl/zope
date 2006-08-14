@@ -58,6 +58,16 @@ class IVideoFile(ITypedFile):
     """video file"""
 IVideoFile.setTaggedValue(MTM,re.compile('^video/.+$'))
 
+class IQuickTimeFile(IVideoFile, IBinaryFile):
+    """Quicktime Video File Format"""
+IQuickTimeFile.setTaggedValue(MTM,re.compile('video/quicktime'))
+IQuickTimeFile.setTaggedValue(MT,'video/quicktime')
+
+class IAVIFile(IVideoFile, IBinaryFile):
+    """Quicktime Video File Format"""
+IAVIFile.setTaggedValue(MTM,re.compile('video/x-msvideo'))
+IAVIFile.setTaggedValue(MT,'video/x-msvideo')
+
 class IFLVFile(IVideoFile, IBinaryFile):
     """Macromedia Flash FLV Video File Format"""
 IFLVFile.setTaggedValue(MTM,re.compile('video/x-flv'))

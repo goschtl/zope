@@ -24,10 +24,12 @@ We take some files for demonstration from the testdata directory.
   ...     print i
   DS_Store
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IBinaryFile>])
+  faces_gray.avi
+  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IAVIFile>])
   ftyp.mov
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IVideoFile>])
+  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IQuickTimeFile>])
   jumps.mov
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IVideoFile>])
+  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IQuickTimeFile>])
   logo.gif
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IGIFFile>])
   logo.gif.bz2
@@ -173,3 +175,9 @@ interface.
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IBinaryFile>]  
 
 
+  >>> foo.data = file(os.path.join(testData,'ftyp.mov'))
+  >>> notify(ObjectModifiedEvent(foo))
+  >>> sorted((interface.directlyProvidedBy(foo)))
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IQuickTimeFile>]
+  >>> interfaces.IFileType(foo).contentType
+  'video/quicktime'

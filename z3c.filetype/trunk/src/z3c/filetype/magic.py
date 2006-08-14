@@ -497,7 +497,7 @@ class MagicFile:
         answers = set()
         for test in self.tests :
             message = test.run( file )
-            if message :
+            if message and message.strip():
                 self.ack_tests += 1
                 answers.add( message.strip().split()[0] )
             else:

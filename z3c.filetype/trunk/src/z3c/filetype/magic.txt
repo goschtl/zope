@@ -14,6 +14,7 @@ Extract filetypes from file content
   ...     path = os.path.join(testData, name)
   ...     print name, m.detect(file(path))
   DS_Store set([])
+  faces_gray.avi set(['video/x-msvideo'])
   ftyp.mov set(['video/quicktime'])
   jumps.mov set(['video/quicktime'])
   logo.gif set(['image/gif'])
