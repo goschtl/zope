@@ -157,3 +157,13 @@ Now the file should implement another filetype.
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IHTMLFile>]
 
 
+There is also an adapter from ITypedFile to IFileType, which can be
+used to get the default content type for the interface.
+
+  >>> from z3c.filetype import adapters
+  >>> component.provideAdapter(adapters.TypedFileType)
+  >>> ft = interfaces.IFileType(foo)
+  >>> ft.contentType
+  'text/html'
+  
+

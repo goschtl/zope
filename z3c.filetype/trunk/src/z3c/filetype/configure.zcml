@@ -6,5 +6,6 @@
  <subscriber for=".interfaces.ITypeableFile
                   zope.lifecycleevent.interfaces.IObjectModifiedEvent"
              handler=".api.handleModified"/>
- 
+
+ <adapter factory=".adapters.TypedFileType"/>
 </configure>

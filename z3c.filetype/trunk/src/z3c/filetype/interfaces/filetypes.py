@@ -20,7 +20,7 @@ class ITARFile(ITypedFile):
 ITARFile.setTaggedValue(MTM,re.compile('application/x-tar'))
 ITARFile.setTaggedValue(MT,'application/x-tar')
 
-class IGZIPFile(ITypedFile):
+class IGZIPFile(IBinaryFile):
     """Binary file"""
 IGZIPFile.setTaggedValue(MTM,re.compile('application/x-gzip'))
 IGZIPFile.setTaggedValue(MT,'application/x-gzip')

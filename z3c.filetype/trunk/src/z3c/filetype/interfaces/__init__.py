@@ -1,5 +1,9 @@
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
-from zope import interface
+from zope import interface, schema
+
+class IFileType(interface.Interface):
+
+    contentType = schema.TextLine(title = u'Content Type')
 
 class IFileTypeModifiedEvent(IObjectModifiedEvent):
 
