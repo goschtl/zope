@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/browser">
+
+    <meta:directive
+        name="css-resource"
+        schema=".zcml.ICSSResourceDirective"
+        handler=".zcml.cssresource"
+        />
+
+  </meta:directives>
+
+</configure>
