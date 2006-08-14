@@ -19,10 +19,11 @@ import zope.schema
 import zope.configuration.fields
 from zope.component.zcml import handler
 from zope.interface import Interface
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.app.publisher.browser import metadirectives
+from zope.publisher.interfaces import browser
+from zope.security.checker import CheckerPublic, NamesChecker
+from zope.app.publisher.browser import metadirectives, resourcemeta
 
-from z3c.cssresource import cssresource
+import z3c.cssresource
 
 
 class ICSSResourceDirective(metadirectives.IBasicResourceInformation):
@@ -47,13 +48,18 @@ class ICSSResourceDirective(metadirectives.IBasicResourceInformation):
         )
 
 
-def cssresource(_context, name, file, layer=IDefaultBrowserLayer,
+def cssresource(_context, name, file, layer=browser.IDefaultBrowserLayer,
                 permission='zope.Public'):
 
-    factory = cssresource.CSSFileResourceFactory(file, checker, name)
+    if permission == 'zope.Public':
+        permission = CheckerPublic
+
+    checker = NamesChecker(resourcemeta.allowed_names, permission)
+
+    factory = z3c.cssresource.CSSFileResourceFactory(file, checker, name)
 
     _context.action(
-        discriminator = ('resource', name, IBrowserRequest, layer),
+        discriminator = ('resource', name, browser.IBrowserRequest, layer),
         callable = handler,
         args = ('registerAdapter',
                 factory, (layer,), Interface, name, _context.info),

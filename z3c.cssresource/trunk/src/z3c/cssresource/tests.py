@@ -19,12 +19,18 @@ __docformat__ = "reStructuredText"
 
 import doctest
 import unittest
+from zope.app.testing import placelesssetup
 from zope.testing.doctestunit import DocFileSuite
 
 def test_suite():
 
     return unittest.TestSuite((
         DocFileSuite('README.txt',
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
+        DocFileSuite('zcml.txt',
+                     setUp=placelesssetup.setUp,
+                     tearDown=placelesssetup.tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         ))
