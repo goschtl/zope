@@ -150,7 +150,7 @@ searches):
     >>> link = browser.getLink('Link Text')
     >>> link
     <Link text='Link Text'
-      url='http://localhost/@@/testbrowser/navigate.html?message=By+Link+Text'>
+      url=u'http://localhost/@@/testbrowser/navigate.html?message=By+Link+Text'>
 
 Link objects comply with the ILink interface.
 
@@ -162,11 +162,11 @@ Links expose several attributes for easy access.
     >>> link.text
     'Link Text'
     >>> link.tag # links can also be image maps.
-    'a'
+    u'a'
     >>> link.url # it's normalized
-    'http://localhost/@@/testbrowser/navigate.html?message=By+Link+Text'
+    u'http://localhost/@@/testbrowser/navigate.html?message=By+Link+Text'
     >>> link.attrs
-    {'href': 'navigate.html?message=By+Link+Text'}
+    {u'href': u'navigate.html?message=By+Link+Text'}
 
 Links can be "clicked" and the browser will navigate to the referenced URL.
 
@@ -233,7 +233,7 @@ area's id:
     >>> browser.open('http://localhost/@@/testbrowser/navigate.html')
     >>> link = browser.getLink(id='zope3')
     >>> link.tag
-    'area'
+    u'area'
     >>> link.click()
     >>> browser.url
     'http://localhost/@@/testbrowser/navigate.html?message=Zope+3+Name'
