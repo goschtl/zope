@@ -1,0 +1,30 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="lovely.remotetask">
+
+  <class class=".service.TaskService">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <require
+        permission="zope.Public"
+        interface=".interfaces.ITaskService" />
+  </class>
+
+  <class class=".job.Job">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IJob"
+        set_schema=".interfaces.IJob" />
+  </class>
+
+  <!-- Demo: Echo Task -->
+  <utility
+      factory=".task.EchoTask"
+      name="echo" />
+
+  <include package=".browser" />
+  <include file="xmlrpc.zcml" />
+
+</configure>

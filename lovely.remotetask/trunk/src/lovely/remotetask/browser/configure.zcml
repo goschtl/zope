@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser">
+
+  <addMenuItem
+      class="..service.TaskService"
+      title="Remote Task Service"
+      description="A Remote Task Service"
+      permission="zope.ManageContent"
+      />
+
+  <page
+      name="jobs.html"
+      for="..interfaces.ITaskService"
+      class=".service.JobsOverview"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Jobs"
+      />
+
+</configure>
