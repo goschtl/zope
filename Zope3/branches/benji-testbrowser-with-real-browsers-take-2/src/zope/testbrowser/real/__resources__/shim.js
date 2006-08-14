@@ -5,9 +5,10 @@ _tb_onloadFunc = function() {};
 function _tb_gotNextCommand(info) {
     log('gotNextCommand');
     var command = info[0];
+    log(command);
     last_result = eval(info[0] + '(' + info[1] + ')');
     if (last_result == '_tb_WAIT_FOR_PAGE_LOAD') {
-        _tb_waitForLoad(eval(_tb_nextCommand));
+        _tb_waitForLoad(_tb_nextCommand);
     } else if (!should_stop) {
         _tb_nextCommand();
     }
@@ -17,8 +18,8 @@ function _tb_waitForLoad(func) {
     log('waiting');
     _tb_onloadFunc = function() {
         log('loaded');
-        setTimeout(func, 500);
         _tb_onloadFunc = function() {};
+        func();
     }
 }
 

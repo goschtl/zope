@@ -33,8 +33,8 @@ except ImportError:
 def getTagText(soup):
     text = str(soup)
     text = re.sub('<[^>]*>', '', text)
-    text = re.sub(' +', ' ', text)
-    return text
+    text = re.sub('\s+', ' ', text)
+    return text.strip()
 
 
 class Browser(SetattrErrorsMixin):
@@ -59,32 +59,34 @@ class Browser(SetattrErrorsMixin):
     @property
     def url(self):
         """See zope.testbrowser.interfaces.IBrowser"""
-        return self.executeCommand('getUrl')
+        bits = list(urlparse.urlsplit(self.executeCommand('getUrl')))
+        bits[1] = 'localhost'
+        return urlparse.urlunsplit(bits)
+
 
     @property
     def isHtml(self):
         """See zope.testbrowser.interfaces.IBrowser"""
-        raise NotImplemented
+        raise NotImplementedError
 
     @property
     def title(self):
         """See zope.testbrowser.interfaces.IBrowser"""
-        raise NotImplemented
+        raise NotImplementedError
 
     @property
     def contents(self):
         """See zope.testbrowser.interfaces.IBrowser"""
-        # XXX see note in commands.js
         return self.executeCommand('getContents')
 
     @property
     def headers(self):
         """See zope.testbrowser.interfaces.IBrowser"""
-        raise NotImplemented
+        raise NotImplementedError
 
     def handleErrors():
         """See zope.testbrowser.interfaces.IBrowser"""
-        raise NotImplemented
+        raise NotImplementedError
 
     def open(self, url, data=None):
         """See zope.testbrowser.interfaces.IBrowser"""
@@ -104,7 +106,7 @@ class Browser(SetattrErrorsMixin):
 
     def executeCommand(self, command, *args):
         """Execute a JavaScript routine on the client (not an official API)"""
-        return self.serverManager.executeCommand(command, *args)
+        return str(self.serverManager.executeCommand(command, *args))
 
     def _start_timer(self):
         self.timer.start()
@@ -138,31 +140,30 @@ class Browser(SetattrErrorsMixin):
 
     def addHeader(self, key, value):
         """See zope.testbrowser.interfaces.IBrowser"""
-        raise NotImplemented
+        raise NotImplementedError
 
     def getLink(self, text=None, url=None, id=None, index=None):
         """See zope.testbrowser.interfaces.IBrowser"""
-        soup = BeautifulSoup(self.contents)('a')
+        soup = BeautifulSoup(self.contents)(re.compile('^(a|area)$'))
         links = []
 
         # "msg" holds the disambiguation message
         # the Link instance below needs to know the index of the a tag (n)
         if text is not None:
             msg = 'text %r' % text
-            links = []
             for n, a in enumerate(soup):
                 # remove all tags from the text in order to search it
                 if text in getTagText(a):
                     links.append((a, n))
         elif url is not None:
-            msg = 'url %r' % text
+            msg = 'url %r' % url
             for n, a in enumerate(soup):
-                if a['href'] == url:
+                if url in a['href']:
                     links.append((a, n))
         elif id is not None:
             msg = 'id %r' % id
             for n, a in enumerate(soup):
-                if a['id'] == id:
+                if a.get('id') == id:
                     links.append((a, n))
 
         link, n = disambiguate(links, msg, index)
@@ -170,11 +171,11 @@ class Browser(SetattrErrorsMixin):
 
     def getControl(self, label=None, name=None, index=None):
         """See zope.testbrowser.interfaces.IBrowser"""
-        raise NotImplemented
+        raise NotImplementedError
 
     def getForm(self, id=None, name=None, action=None, index=None):
         """See zope.testbrowser.interfaces.IBrowser"""
-        raise NotImplemented
+        raise NotImplementedError
 
     def _changed(self):
         self._counter += 1

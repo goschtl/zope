@@ -14,7 +14,8 @@ import threading
 import urlparse
 
 base_dir = os.path.dirname(__file__)
-allowed_resources = ['MochiKit', 'shim.js', 'commands.js', 'start.html']
+allowed_resources = ['MochiKit', 'shim.js', 'commands.js', 'start.html',
+    'workspace.html']
 
 PROXY_PORT = 23123
 PROXY_HOST = '127.0.0.1'
