@@ -16,6 +16,8 @@ Zope Changes
         IHTTPVirtualHostChangedEvent, when virtual host parameters are 
         altered.
 
+      - Dublin Core Property and testing
+
     Restructuring
 
     Bug fixes
