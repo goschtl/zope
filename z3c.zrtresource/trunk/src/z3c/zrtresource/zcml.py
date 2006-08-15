@@ -26,8 +26,8 @@ from zope.app.publisher.browser import metadirectives, resourcemeta
 import z3c.zrtresource
 
 
-class ICSSResourceDirective(metadirectives.IBasicResourceInformation):
-    """Defines a browser CSS resource"""
+class IZRTResourceDirective(metadirectives.IBasicResourceInformation):
+    """Defines a browser ZRT resource"""
 
     name = zope.schema.TextLine(
         title=u"The name of the resource",
@@ -48,7 +48,7 @@ class ICSSResourceDirective(metadirectives.IBasicResourceInformation):
         )
 
 
-def cssresource(_context, name, file, layer=browser.IDefaultBrowserLayer,
+def zrtresource(_context, name, file, layer=browser.IDefaultBrowserLayer,
                 permission='zope.Public'):
 
     if permission == 'zope.Public':
@@ -56,7 +56,7 @@ def cssresource(_context, name, file, layer=browser.IDefaultBrowserLayer,
 
     checker = NamesChecker(resourcemeta.allowed_names, permission)
 
-    factory = z3c.zrtresource.CSSFileResourceFactory(file, checker, name)
+    factory = z3c.zrtresource.ZRTFileResourceFactory(file, checker, name)
 
     _context.action(
         discriminator = ('resource', name, browser.IBrowserRequest, layer),

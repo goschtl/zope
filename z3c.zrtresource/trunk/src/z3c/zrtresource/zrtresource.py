@@ -23,16 +23,16 @@ from zope.app.publisher.browser.fileresource import FileResource
 from z3c.zrtresource import processor, replace
 
 
-class CSSFileResource(FileResource):
+class ZRTFileResource(FileResource):
 
     def GET(self):
-        data = super(CSSFileResource, self).GET()
+        data = super(ZRTFileResource, self).GET()
         # Process the file
         p = processor.ZRTProcessor(data, commands={'replace': replace.Replace})
         return p.process(self.request, getSite())
 
 
-class CSSFileResourceFactory(object):
+class ZRTFileResourceFactory(object):
 
     def __init__(self, path, checker, name):
         self.__file = File(path, name)
@@ -40,7 +40,7 @@ class CSSFileResourceFactory(object):
         self.__name = name
 
     def __call__(self, request):
-        resource = CSSFileResource(self.__file, request)
+        resource = ZRTFileResource(self.__file, request)
         resource.__Security_checker__ = self.__checker
         resource.__name__ = self.__name
         return resource

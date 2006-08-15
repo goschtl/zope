@@ -19,7 +19,7 @@ __docformat__='restructuredtext'
 import re
 import zope.interface
 from zope.app.pagetemplate import engine
-from z3c.cssresource import interfaces
+from z3c.zrtresource import interfaces
 
 # <EXPR-TYPE>"<INPUT-EXPR>" <EXPR-TYPE>"<OUTPUT-EXPR>" <NUM>
 NAME = r'[a-zA-Z0-9_-]*'

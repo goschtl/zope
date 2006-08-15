@@ -6,7 +6,7 @@
 
     <meta:directive
         name="zrt-resource"
-        schema=".zcml.ICSSResourceDirective"
+        schema=".zcml.IZRTResourceDirective"
         handler=".zcml.zrtresource"
         />
 
