@@ -291,6 +291,35 @@ or all users that have specified a particular tag:
   >>> sorted(tagging.getUsers(tags=(u'USA',)))
   [u'jodok', u'srichter']
 
+IUserTagging
+------------
+
+There is also an adapter for ITaggable objects which provides a simple
+tag attribute which accepts a list of tags defined for the ITaggable
+by the current principal.
+
+  >>> zope.component.provideAdapter(tag.UserTagging)
+  >>> userTagging = tag.interfaces.IUserTagging(image)
+  >>> userTagging.tags
+  Traceback (most recent call last):
+  ...
+  ValueError: User not found
+
+We get a ValueError because we have no interaction in this test, and
+therefore the implementation cannot find the principal. We have to
+create a principal and a participation.
+
+  >>> from zope.security.testing import Principal, Participation
+  >>> from zope.security import management
+  >>> p = Principal(u'srichter')
+  >>> participation = Participation(p)
+  >>> management.endInteraction()
+  >>> management.newInteraction(participation)
+  >>> sorted(userTagging.tags)
+  [u'USA', u'home']
+  >>> userTagging.tags = [u'zope3', u'guru']
+  >>> sorted(userTagging.tags)
+  [u'guru', u'zope3']
 
 Tag Clouds
 ----------
@@ -310,13 +339,12 @@ Now let's add some tags to generate clouds later:
   >>> engine.update(2, u'michael', [u'lovely', u'USA'])
   >>> engine.update(1, u'jodok', [u'USA',])
 
-
 The most common use-case is to generate a global tag cloud.
 
   >>> sorted(engine.getCloud())
-  [(u'Austria', 2), (u'Bizau', 1), (u'USA', 4), (u'austria', 1), (u'home', 1), 
-   (u'lovely', 2), (u'personal', 1), (u'vacation', 1), (u'work', 1)]
-
+  [(u'Austria', 2), (u'Bizau', 1), (u'USA', 3), (u'austria', 1),
+   (u'guru', 1), (u'lovely', 2), (u'personal', 1), (u'vacation', 1),
+   (u'work', 1), (u'zope3', 1)]
 
 Of course you can generate clouds on item basis. You can't pass a tuple of
 items, only a single one is allowed:
@@ -327,7 +355,7 @@ items, only a single one is allowed:
 The same applies to queries by user:
 
   >>> sorted(engine.getCloud(user=u'srichter'))
-  [(u'USA', 1), (u'home', 1)]
+  [(u'guru', 1), (u'zope3', 1)]
   
 It makes no sense to combine user and item. This will never be a cloud.
 
@@ -355,7 +383,7 @@ also search for other degrees:
 
   >>> engine.update(4, u'jodok', [u'lovely', u'dornbirn', u'personal'])
   >>> sorted(engine.getRelatedTags(u'austria', degree=3))
-  [u'Austria', u'USA', u'dornbirn', u'home', u'lovely', u'personal', 
+  [u'Austria', u'USA', u'dornbirn', u'lovely', u'personal',
    u'vacation', u'work']
 
 Frequency Of Tags
@@ -364,10 +392,11 @@ Frequency Of Tags
 If we have a list of tags we can ask for the frequencies of the tags.
 
   >>> sorted(engine.getFrequency([u'Austria', u'USA']))
-  [(u'Austria', 2), (u'USA', 4)] 
+  [(u'Austria', 2), (u'USA', 3)]
 
 We get a frequency of 0 if we ask for a tag which is not in the engine.
 
   >>> sorted(engine.getFrequency([u'Austria', u'jukart', u'USA']))
-  [(u'Austria', 2), (u'USA', 4), (u'jukart', 0)] 
+  [(u'Austria', 2), (u'USA', 3), (u'jukart', 0)]
+
 

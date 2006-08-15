@@ -126,3 +126,12 @@ class ITagging(zope.interface.Interface):
 
         See ``ITaggingEngine.getUsers()`` for more information.
         """
+
+class IUserTagging(zope.interface.Interface):
+
+    """Provides easy tagging of objects based on the current
+    principal"""
+
+    tags = zope.schema.Set(title=u'Tags',
+                           description=u'Tags for the current User')
+    

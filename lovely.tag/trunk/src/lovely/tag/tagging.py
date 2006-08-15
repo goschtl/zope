@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 import zope.component
 import zope.interface
 from zope.app import intid
-
+from zope.security.management import getInteraction
 from lovely.tag import interfaces
 
 class Tagging(object):
@@ -48,3 +48,35 @@ class Tagging(object):
     def getUsers(self, tags=None):
         """See interfaces.ITagging"""
         return self._engine.getUsers(items=(self._id,), tags=tags)
+
+class UserTagging(object):
+    
+    zope.interface.implements(interfaces.IUserTagging)
+    zope.component.adapts(interfaces.ITaggable)
+
+    def __init__(self, context):
+        self.context = context
+        ids = zope.component.getUtility(intid.interfaces.IIntIds)
+        self._id = ids.queryId(self.context)
+        if self._id is None:
+            ids.register(self.context)
+            self._id = ids.getId(self.context)
+        self._engine = zope.component.getUtility(interfaces.ITaggingEngine)
+
+    @property
+    def _pid(self):
+        participations = getInteraction().participations
+        if participations:
+            return participations[0].principal.id
+        else:
+            raise ValueError, "User not found"
+    
+    @apply
+    def tags():
+        def fget(self):
+            return self._engine.getTags(items=(self._id,),
+                                        users=(self._pid,))
+        def fset(self, value):
+            return self._engine.update(self._id, self._pid, value)
+        return property(**locals())
+

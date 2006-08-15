@@ -51,4 +51,24 @@
       locate="True"
       />
 
+
+  <!-- UserTagging adapter for taggable objects. -->
+
+  <class class=".tagging.UserTagging">
+    <require
+        permission="lovely.tag.UpdateTag"
+        set_schema=".interfaces.IUserTagging"
+        />
+    <require
+        permission="lovely.tag.AccessTag"
+        interface=".interfaces.IUserTagging"
+        />
+  </class>
+
+  <adapter
+      factory=".tagging.UserTagging"
+      trusted="True"
+      locate="True"
+      />
+  
 </configure>
