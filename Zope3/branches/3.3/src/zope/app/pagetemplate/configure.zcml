@@ -11,11 +11,20 @@
       name="zope" 
       />
 
+  <class class=".talesapi.ZopeTalesAPI">
+    <allow interface="zope.tales.interfaces.ITALESFunctionNamespace"/>
+    <allow attributes="title description created modified name title_or_name size"/>
+  </class>
+
   <adapter
       for="*"
       provides="zope.traversing.interfaces.IPathAdapter"
       factory=".urlquote.URLQuote"
       name="url"/> 
+
+  <class class=".urlquote.URLQuote">
+    <allow attributes="quote quote_plus unquote unquote_plus"/>
+  </class> 
 
  <class class="zope.tales.tales.Iterator">
     <allow interface="zope.tales.interfaces.ITALESIterator" />

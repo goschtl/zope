@@ -33,6 +33,9 @@ from zope.app.securitypolicy.principalrole import AnnotationPrincipalRoleManager
 from zope.app.homefolder.homefolder import HomeFolder, getHomeFolder
 from zope.app.homefolder.interfaces import IHomeFolder
 
+from zope.app.folder.folder import Folder
+from zope.app.folder.interfaces import IFolder
+from zope.security.checker import InterfaceChecker, defineChecker
 
 def homeFolderSetUp(test):
     placelesssetup.setUp()    
@@ -40,6 +43,7 @@ def homeFolderSetUp(test):
     setup.setUpTraversal()
 
     classImplements(File, IAttributeAnnotatable)
+
     ztapi.provideAdapter(IAnnotatable, IPrincipalRoleManager,
                          AnnotationPrincipalRoleManager)
     ztapi.provideAdapter(IPrincipal, IHomeFolder,
@@ -47,6 +51,9 @@ def homeFolderSetUp(test):
     ztapi.provideAdapter(IPrincipal, IPathAdapter,
                          getHomeFolder,
                          name="homefolder")
+    
+    testChecker = InterfaceChecker(IFolder)
+    defineChecker(Folder, testChecker)
 
     
 def test_suite():
