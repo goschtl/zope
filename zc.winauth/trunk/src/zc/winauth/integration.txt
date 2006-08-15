@@ -1,0 +1,44 @@
+======================
+Windows Authentication
+======================
+
+This package provides for authenticating windows users with their domain
+user names and passwords.
+
+WindowsAuthenticationPlugin
+===========================
+
+The authentication is done via a WindowsAuthenticationPlugin.
+
+    >>> from zc.winauth.winauth import WindowsAuthenticationPlugin
+    >>> wap = WindowsAuthenticationPlugin()
+
+When a user needs to be authenticated there credentials are passed to the
+plugin.
+
+    >>> credentials = {'login': 'testy', 'password': 'test'}
+
+The result of authentication is the principal's name with a prefix, and a
+little information about the principal.
+
+    >>> info = wap.authenticateCredentials(credentials)
+    >>> info is not None
+    True
+
+Winauth uses the Windows SID as part of the ID.
+
+    >>> info.id
+    u'...S-...-...-...'
+    >>> info.title
+    u'Testy Testerson'
+
+If an unknown user name or incorrect password are given, None is returned.
+
+    >>> badCredentials = {'login': 'testy', 'password': 'wrong'}
+    >>> wap.authenticateCredentials(badCredentials) is None
+    True
+
+If a bad ID is used to get principal info, no info is returned:
+
+    >>> print wap.principalInfo('zc.winauth.bad')
+    None

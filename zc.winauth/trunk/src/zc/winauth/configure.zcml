@@ -1,0 +1,20 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zc.winauth">
+
+  <localUtility class=".winauth.WindowsAuthenticationPlugin">
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.authentication.interfaces.IAuthenticatorPlugin"
+        />
+  </localUtility>
+
+  <browser:addMenuItem
+      title="Windows Authentication Plugin"
+      description="A Windows PAU Authentication Plugin"
+      class=".winauth.WindowsAuthenticationPlugin"
+      permission="zope.ManageContent"
+      />
+
+</configure>
