@@ -56,8 +56,10 @@ def applyInterfaces(obj):
         if not issubclass(iface, interfaces.filetypes.ITypedFile):
             ifaces.add(iface)
     if set(ifaces)!=provided:
+        from zope.proxy import removeAllProxies
+        obj = removeAllProxies(obj)
         for iface in ifaces:
-            interface.directlyProvides(obj,iface)
+            interface.directlyProvides(obj, iface)
         notify(FileTypeModifiedEvent(obj))
         return True
     return False
