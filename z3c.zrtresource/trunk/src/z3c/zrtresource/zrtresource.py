@@ -29,7 +29,7 @@ class ZRTFileResource(FileResource):
         data = super(ZRTFileResource, self).GET()
         # Process the file
         p = processor.ZRTProcessor(data, commands={'replace': replace.Replace})
-        return p.process(self.request, getSite())
+        return p.process(getSite(), self.request)
 
 
 class ZRTFileResourceFactory(object):
