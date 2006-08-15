@@ -10,11 +10,10 @@ Zope Changes
 
     Bugfixes
 
-      - Fixed issue 383: Change default configuration in zope.conf to
-        bind explicitely HTTP server to 127.0.0.1 and give information
-        how to bind to any network interfaces.
-        Note: if you omit to specify host or ip address, there's still
-        a discrepancy between Windows and other platforms.
+      - Fixed issue 383: Twisted and ZServer work the same on any platform.
+        Default configuration is to bind servers to all interfaces.
+        You find additional information in 'zope.conf' to know
+        how to bind to a specific address.
 
       - Fixed issue 574: Page template traversal adapters were not correctly
         proxied.
