@@ -1,0 +1,16 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <class class=".comment.Comment">
+      <require permission="zope.Public"
+          interface=".interfaces.IComment"/>
+  </class>
+
+  <adapter
+      factory=".comment.Comments"
+      trusted="1" permission="zope.View"
+      />
+
+  <include package=".browser" />
+
+</configure>

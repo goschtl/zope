@@ -1,0 +1,34 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zc="http://namespaces.zope.com/zc"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zc.comment"
+    >
+
+  <browser:page
+      for="..interfaces.ICommentable"
+      name="comments.html"
+      menu="zmi_views"
+      title="Comments"
+      template="comments.pt"
+      class=".views.Comments"
+      permission="zope.View"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zc.comment.interfaces.ICommentText"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".widget.Display"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zc.comment.interfaces.ICommentText"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".widget.Input"
+      permission="zope.Public"
+      />
+
+</configure>

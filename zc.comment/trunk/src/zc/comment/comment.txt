@@ -1,0 +1,114 @@
+========
+Comments
+========
+
+The comment package is a simple way to add comments to any IAnnotatable
+Zope content.  The datetime and current principals are stamped on to the
+comment.  The comment body is currently simply unicode text but intended to
+be html snippets ("rich text") at a later date.
+
+The inclusion of current principals requires an interaction, which is what we
+need to set up before we can use the system here.  Below, we set up a dummy
+interaction with dummy participants, create some content that is
+IAttributeAnnotatable, and then finally show the system in use.
+
+    >>> import zope.security.management
+    >>> import zope.security.interfaces
+    >>> from zope import interface
+    >>> class DummyPrincipal(object):
+    ...     interface.implements(zope.security.interfaces.IPrincipal)
+    ...     def __init__(self, id, title, description):
+    ...         self.id = id
+    ...         self.title = title
+    ...         self.description = description
+    ...
+    >>> alice = DummyPrincipal('alice', 'Alice Aal', 'first principal')
+    >>> betty = DummyPrincipal('betty', 'Betty Barnes', 'second principal')
+    >>> cathy = DummyPrincipal('cathy', 'Cathy Camero', 'third principal')
+    >>> class DummyParticipation(object):
+    ...     interface.implements(zope.security.interfaces.IParticipation)
+    ...     interaction = principal = None
+    ...     def __init__(self, principal):
+    ...         self.principal = principal
+    ...
+    >>> import zope.publisher.interfaces
+
+    >>> import zope.annotation.interfaces
+    >>> from zope.app.testing import ztapi
+    >>> import zope.annotation.attribute
+    >>> ztapi.provideAdapter( # hook up attribute annotations
+    ...     (zope.annotation.interfaces.IAttributeAnnotatable,),
+    ...     zope.annotation.interfaces.IAnnotations,
+    ...     zope.annotation.attribute.AttributeAnnotations)
+
+    >>> from zc.comment import comment, interfaces
+    >>> ztapi.provideAdapter( # hook up our adapter
+    ...     (zope.annotation.interfaces.IAnnotatable,),
+    ...     interfaces.IComments,
+    ...     comment.Comments)
+
+    >>> class DummyObject(object):
+    ...     interface.implements(
+    ...         zope.annotation.interfaces.IAttributeAnnotatable)
+    ...
+    >>> obj = DummyObject()
+
+    >>> a_p = DummyParticipation(alice)
+    >>> interface.directlyProvides(a_p, zope.publisher.interfaces.IRequest)
+    >>> zope.security.management.newInteraction(a_p)
+    >>> adapted = interfaces.IComments(obj)
+    >>> len(adapted)
+    0
+    >>> import datetime, pytz
+    >>> before = datetime.datetime.now(pytz.utc)
+    >>> adapted.add(u"Foo!  Bar!")
+    >>> after = datetime.datetime.now(pytz.utc)
+    >>> len(adapted)
+    1
+    >>> adapted[0].body
+    u'Foo!  Bar!'
+    >>> before <= adapted[0].date <= after
+    True
+    >>> adapted[0].principal_ids
+    ('alice',)
+    >>> zope.security.management.endInteraction()
+    >>> b_p = DummyParticipation(betty)
+    >>> interface.directlyProvides(b_p, zope.publisher.interfaces.IRequest)
+    >>> zope.security.management.newInteraction(b_p)
+    >>> adapted = interfaces.IComments(obj)
+    >>> before = datetime.datetime.now(pytz.utc)
+    >>> adapted.add(u"Shazam")
+    >>> after = datetime.datetime.now(pytz.utc)
+    >>> len(adapted)
+    2
+    >>> adapted[1].body
+    u'Shazam'
+    >>> before <= adapted[1].date <= after
+    True
+    >>> adapted[1].principal_ids
+    ('betty',)
+    >>> zope.security.management.endInteraction()
+    >>> a_p = DummyParticipation(alice)
+    >>> b_p = DummyParticipation(betty)
+    >>> c_p = DummyParticipation(cathy)
+    >>> interface.directlyProvides(a_p, zope.publisher.interfaces.IRequest)
+    >>> interface.directlyProvides(b_p, zope.publisher.interfaces.IRequest)
+
+    >>> zope.security.management.newInteraction(a_p, b_p, c_p)
+    >>> adapted = interfaces.IComments(obj)
+    >>> before = datetime.datetime.now(pytz.utc)
+    >>> adapted.add(u"Boom.")
+    >>> after = datetime.datetime.now(pytz.utc)
+    >>> len(adapted)
+    3
+    >>> adapted[2].body
+    u'Boom.'
+    >>> before <= adapted[2].date <= after
+    True
+    >>> adapted[2].principal_ids # cathy was not a request so not in list
+    ('alice', 'betty')
+    >>> adapted.add(42)
+    Traceback (most recent call last):
+    ...
+    ValueError: comment body must be unicode
+    >>> zope.security.management.endInteraction()
