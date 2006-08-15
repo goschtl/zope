@@ -3,6 +3,11 @@
  i18n_domain='zope'
  >
 
+ <class class=".hashdir.ReadFile">
+  <allow interface=".interfaces.IReadFile"/>
+ </class>
+       
+ 
  <class class=".hashdir.HashDir">
 
   <implements

@@ -30,6 +30,8 @@ class IReadFile(IFile):
     def tell():
         """see file.tell"""
 
+    def read(size):
+        """seee file.read"""
 
 class IWriteFile(IFile):
 
