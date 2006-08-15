@@ -17,16 +17,14 @@ interrupt-check-interval 200
 
 # Standard HTTP server for Zope 3.
 #
-# HTTP server is explicitely bound to local loopback.
-# You can keep this configuration if your server
-# stays behind a dedicated web server.
-# Alternatively, you can change address to 0.0.0.0:8080,
-# if you need to bind to all network interfaces.
-#
+# HTTP server is bound to all interfaces.
+# You can bind to any IP address or hostname,
+# or use 127.0.0.1:8080 for local loopback.
 # Server: All Servers
+#
 <server>
   type HTTP
-  address 127.0.0.1:8080
+  address 8080
 </server>
 
 # Ready to go HTTPS server. You just need to make sure OpenSSL is installed.
@@ -69,7 +67,7 @@ interrupt-check-interval 200
     path $DATADIR/Data.fs
   </filestorage>
 
-# uncomment this if you want to connect to a local ZEO server
+# Uncomment this if you want to connect to a local ZEO server
 # instead:
 #  <zeoclient>
 #    server localhost:8100
