@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zc="http://namespaces.zope.com/zc"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zc.site">
+
+<browser:page
+    for="*"
+    name="container_add"
+    permission="zope.Public"
+    template="addSelect.pt"
+    />
+
+</configure>
