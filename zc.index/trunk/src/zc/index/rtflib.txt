@@ -1,0 +1,249 @@
+========================================
+Microsoft Rich Text Format (RTF) library
+========================================
+
+This is a helper library that provides a lexical scanner for RTF data.
+It does as little as possible to interpret the commands in the RTF
+data beyond what's necessary to get the character data decoded
+properly.
+
+Let's import the library::
+
+  >>> from zc.index import rtflib
+
+The interface for the RTF reader is very SAX-like.  There is both a
+reader object that understands how to parse the RTF data, and a
+handler object that the application provides to make use of the
+information stored in the RTF document.
+
+If the reader is constructed without a handler, a simple handler that
+checks for group nesting is used::
+
+  >>> reader = rtflib.RtfReader()
+  >>> reader.parseString("{{{}}}")
+
+  >>> reader = rtflib.RtfReader()
+  >>> reader.parseString("}")
+  Traceback (most recent call last):
+   ...
+  ValueError: too many groups closed
+
+  >>> reader = rtflib.RtfReader()
+  >>> reader.parseString("{")
+  Traceback (most recent call last):
+   ...
+  ValueError: too few groups closed
+
+
+We can use a simple content handler to see the individual events
+reported by the parser::
+
+  >>> class Handler(object):
+  ...
+  ...     def startDocument(self):
+  ...         print "document started"
+  ...
+  ...     def endDocument(self):
+  ...         print "document ended"
+  ...
+  ...     def startGroup(self):
+  ...         print "group started"
+  ...
+  ...     def endGroup(self):
+  ...         print "group ended"
+  ...
+  ...     def command(self, cmd, arg):
+  ...         print "command:", (cmd, arg)
+  ...
+  ...     def characters(self, text):
+  ...         print repr(text)
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString(r"{abc\foo12def" "\r\n}" r"\*\foo")
+  document started
+  group started
+  u'abc'
+  command: ('foo', 12)
+  u'def'
+  group ended
+  command: ('*', None)
+  command: ('foo', None)
+  document ended
+
+Tabs are consistently reported as the "\tab" command, as recommended
+by the RTF specification::
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString("\t\\tab\t")
+  document started
+  command: ('tab', None)
+  command: ('tab', None)
+  command: ('tab', None)
+  document ended
+
+Unicode text
+------------
+
+Unicode text is handled very strangely.  There is a "\uc" command that
+specifies how many *bytes* should be skipped after a Unicode
+character, and Unicode characters are specified using the "\u"
+command.  If no "\uc" command has been given, the number of bytes to
+skip is 1.  The "\uc" command can be used to specify a skip of zero
+bytes.
+
+Using the default number of bytes to skip::
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString(r"\u123^text")
+  document started
+  u'{'
+  u'text'
+  document ended
+
+Using a specification for the default number of bytes to skip::
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString(r"\uc1\u123^text")
+  document started
+  command: ('uc', 1)
+  u'{'
+  u'text'
+  document ended
+
+Setting the number of bytes to skip to a larger number::
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString(r"\uc2\u123^text")
+  document started
+  command: ('uc', 2)
+  u'{'
+  u'ext'
+  document ended
+
+Setting the number of bytes to skip to zero::
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString(r"\uc0\u123^text")
+  document started
+  command: ('uc', 0)
+  u'{'
+  u'^text'
+  document ended
+
+The value set by the "\uc" command is scoped; when the group
+containing the setting is closed, the previous value is restored::
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString(r"\uc0{\uc2\u123xy\u125za}\u123^text")
+  document started
+  command: ('uc', 0)
+  group started
+  command: ('uc', 2)
+  u'{'
+  u'}'
+  group ended
+  u'{'
+  u'^text'
+  document ended
+
+If the document does not contain enough bytes to skip, there is an
+error::
+
+  >>> reader = rtflib.RtfReader()
+  >>> reader.parseString(r"\uc2\u123^")
+  Traceback (most recent call last):
+   ...
+  ValueError: too little data
+
+Encoded text
+------------
+
+In addition to the Unicode support, there is direct suppoort for
+encoded data in a variety of encodings, mostly identified by their
+ANSI code page numbers, with some specific encodings supported by
+name.
+
+Let's start with the typical Windows code page of 1252.  This can be
+identified using the general code-page command "\ansicpg", using the
+argument to provide the number of the code page::
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString(r"\ansicpg1252abc\'e0")
+  document started
+  command: ('ansicpg', 1252)
+  u'abc'
+  u'\xe0'
+  document ended
+
+If we use a different code page, we get a different result::
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString(r"\ansicpg857abc\'e0")
+  document started
+  command: ('ansicpg', 857)
+  u'abc'
+  u'\xd3'
+  document ended
+
+We can use Mac-Roman using the "\mac" command::
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString(r"\mac abc\'e0")
+  document started
+  command: ('mac', None)
+  u'abc'
+  u'\u2021'
+  document ended
+
+We can use IBM code page 437 (English) using the "\pc" command::
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString(r"\pc abc\'e0")
+  document started
+  command: ('pc', None)
+  u'abc'
+  u'\u03b1'
+  document ended
+
+IBM code page 850 (Western European on PS/2 systems) is available via
+the "\pca" command::
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString(r"\pca abc\'e0")
+  document started
+  command: ('pca', None)
+  u'abc'
+  u'\xd3'
+  document ended
+
+Attempting to use a hex escape without having set the encoding
+information results in an error::
+
+  >>> reader = rtflib.RtfReader()
+  >>> reader.parseString(r"\'e0")
+  Traceback (most recent call last):
+   ...
+  ValueError: cannot interpret hex escape without code page setting
+
+The setting for the code page is scoped in the same way as the "\uc"
+setting is scoped: the code page is in effect from the position at
+which it is set to the end of the enclosing group, or until a new code
+page is set, whichever comes first.  When a group is closed, the code
+page from the enclosing group is restored.  (It appears that this is
+normally only set once in typical practice, however.)
+
+Let's show that scoping is handled as described::
+
+  >>> reader = rtflib.RtfReader(Handler())
+  >>> reader.parseString(r"\pca \'e0{\mac\'e0}\'e0\pc\'e0")
+  document started
+  command: ('pca', None)
+  u'\xd3'
+  group started
+  command: ('mac', None)
+  u'\u2021'
+  group ended
+  u'\xd3'
+  command: ('pc', None)
+  u'\u03b1'
+  document ended

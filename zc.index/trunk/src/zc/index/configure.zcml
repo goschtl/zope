@@ -1,0 +1,69 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <adapter
+      zcml:condition="have program:pdftotext"
+      for="zope.mimetype.types.IContentTypePdf"
+      factory=".pdf.PDFSearchableText"
+      />
+
+  <adapter
+      zcml:condition="have program:wvWare"
+      for="zope.mimetype.types.IContentTypeMicrosoftWord"
+      factory=".msword.MSWordSearchableText"
+      />
+
+  <adapter
+      for="zope.mimetype.types.IContentTypeOpenOfficeWriter"
+      factory=".ooffice.WriterSearchableText"
+      />
+
+  <adapter
+      for="zope.mimetype.types.IContentTypeRichText"
+      factory=".rtf.RtfSearchableText"
+      />
+
+<!-- plain text -->
+
+  <adapter
+      for="zope.mimetype.types.IContentTypeTextPlain"
+      factory=".text.TextSearchableText"
+      />
+
+  <adapter
+      for="zope.mimetype.types.IContentTypeCSV"
+      factory=".text.TextSearchableText"
+      />
+
+  <adapter
+      for="zope.mimetype.types.IContentTypeTabDelimited"
+      factory=".text.TextSearchableText"
+      />
+
+<!-- html -->
+
+  <adapter
+      for="zope.mimetype.types.IContentTypeTextHtml"
+      factory=".html.HTMLSearchableText"
+      />
+
+  <adapter
+      for="zope.mimetype.types.IContentTypeHtmlApplication"
+      factory=".html.HTMLSearchableText"
+      />
+
+  <adapter
+      for="zope.mimetype.types.IContentTypeXhtml"
+      factory=".html.HTMLSearchableText"
+      />
+
+<!-- xml -->
+
+  <adapter
+      for="zope.mimetype.types.IContentTypeXml"
+      factory=".extensiblemarkuplanguage.XMLSearchableText"
+      />
+
+</configure>

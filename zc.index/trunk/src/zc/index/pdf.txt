@@ -1,0 +1,50 @@
+============================================
+Searchable text extraction for PDF documents
+============================================
+
+The `zc.index.pdf` module provides an adapter to extract searchable
+text from a Portable Document Format document.  The document must be
+stored in a content object that is adaptable to
+`zope.file.interfaces.IFile`.
+
+Now let's create an `IFile` object to work with::
+
+  >>> import zc.index.tests
+
+  >>> doc = zc.index.tests.SampleFile("mary.pdf")
+
+Let's create the adapter now::
+
+  >>> import zc.index.pdf
+
+  >>> adapter = zc.index.pdf.PDFSearchableText(doc)
+
+The `ISearchableText` interface defines a single method,
+`getSearchableText()`, which returns a sequence of Unicode strings.
+Since our example document does contain meaningful text (the lyrics
+for "Mary had a little lamb"), we can check that the sequence isn't
+empty::
+
+  >>> text = list(adapter.getSearchableText())
+  >>> bool(text)
+  True
+
+Let's build a simple set of words based on the result, and check for
+known words from the text to make sure they showed up in the results::
+
+  >>> words = zc.index.tests.wordsFromText(text)
+
+  >>> "Mary" in words
+  True
+  >>> "little" in words
+  True
+  >>> "school" in words
+  True
+
+We'll also check some words that shouldn't appear in the lyrics for
+this childhood favorite::
+
+  >>> "Python" in words
+  False
+  >>> "Zope" in words
+  False
