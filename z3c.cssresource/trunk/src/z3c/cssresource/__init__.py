@@ -1,2 +1,2 @@
 # Make a package
-from cssresource import CSSFileResource, CSSFileResourceFactory
+from zrtresource import ZRTFileResource, ZRTFileResourceFactory

@@ -15,32 +15,21 @@
 
 $Id$
 """
-import re
-
+__docformat__='restructuredtext'
+from zope.app.component.hooks import getSite
 from zope.app.publisher.fileresource import File
 from zope.app.publisher.browser.fileresource import FileResource
 
-# Allows matches of the form: /* ZOPE-COMMAND: "ORIGINAL" "FINAL" */
-directive_regex = r' */\* *%s: *"([^ "]*)" *"([^ "]*)" *\*/'
-global_replace = re.compile(directive_regex %'zope-global-replace')
+from z3c.zrtresource import processor, replace
+
 
 class CSSFileResource(FileResource):
 
-    def process(self, data):
-        # Find all directives
-        directives = re.compile(
-            directive_regex %'zope-global-replace').findall(data)
-        # Remove directives from file
-        data = re.compile(
-            (directive_regex+'\n') %'zope-global-replace').sub('', data)
-        # Now execute directives
-        for orig, final in directives:
-            data = data.replace(orig, final)
-        return data
-
     def GET(self):
         data = super(CSSFileResource, self).GET()
-        return self.process(data)
+        # Process the file
+        p = processor.ZRTProcessor(data, commands={'replace': replace.Replace})
+        return p.process(self.request, getSite())
 
 
 class CSSFileResourceFactory(object):

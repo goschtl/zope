@@ -5,9 +5,9 @@
   <meta:directives namespace="http://namespaces.zope.org/browser">
 
     <meta:directive
-        name="css-resource"
+        name="zrt-resource"
         schema=".zcml.ICSSResourceDirective"
-        handler=".zcml.cssresource"
+        handler=".zcml.zrtresource"
         />
 
   </meta:directives>

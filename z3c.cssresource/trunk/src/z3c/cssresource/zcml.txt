@@ -1,5 +1,5 @@
 ==========================
-``css-resource`` Directive
+``zrt-resource`` Directive
 ==========================
 
 This package provides a new directive to use the special resource
@@ -8,7 +8,7 @@ directive. Let's register it first:
   >>> from zope.configuration import xmlconfig
   >>> context = xmlconfig.string('''
   ... <configure i18n_domain="zope">
-  ...   <include package="z3c.cssresource" file="meta.zcml" />
+  ...   <include package="z3c.zrtresource" file="meta.zcml" />
   ... </configure>
   ... ''')
 
@@ -17,22 +17,16 @@ Now we can register a resource:
   >>> import tempfile
   >>> fn = tempfile.mktemp('.css')
   >>> open(fn, 'w').write('''\
-  ... /* zope-global-replace: "../img1" "++resource++/img" */
+  ... /* zrt-replace: "../img1" "++resource++/img" */
   ... h1 {
   ...   color: red;
   ...   background: url('../img1/mybackground.gif');
   ... }
-  ...
-  ... h2 {
-  ...   color: red;
-  ...   background: url('../img2/mybackground.gif');
-  ... }
-  ... /* zope-global-replace: "../img2" "++resource++/img" */
   ... ''')
 
   >>> context = xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope">
-  ...   <css-resource
+  ...   <zrt-resource
   ...       name="test.css"
   ...       file="%s" />
   ... </configure>
@@ -53,9 +47,3 @@ Now run it:
     color: red;
     background: url('++resource++/img/mybackground.gif');
   }
-  <BLANKLINE>
-  h2 {
-    color: red;
-    background: url('++resource++/img/mybackground.gif');
-  }
-  <BLANKLINE>

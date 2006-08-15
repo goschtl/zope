@@ -23,7 +23,7 @@ from zope.publisher.interfaces import browser
 from zope.security.checker import CheckerPublic, NamesChecker
 from zope.app.publisher.browser import metadirectives, resourcemeta
 
-import z3c.cssresource
+import z3c.zrtresource
 
 
 class ICSSResourceDirective(metadirectives.IBasicResourceInformation):
@@ -56,7 +56,7 @@ def cssresource(_context, name, file, layer=browser.IDefaultBrowserLayer,
 
     checker = NamesChecker(resourcemeta.allowed_names, permission)
 
-    factory = z3c.cssresource.CSSFileResourceFactory(file, checker, name)
+    factory = z3c.zrtresource.CSSFileResourceFactory(file, checker, name)
 
     _context.action(
         discriminator = ('resource', name, browser.IBrowserRequest, layer),
