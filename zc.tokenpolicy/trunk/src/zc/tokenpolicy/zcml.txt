@@ -1,0 +1,35 @@
+Sharing Configuration directives
+================================
+
+This package provides a couple of ZCML configuration directives for setting up
+the sharing security model.
+
+Defining lock privileges
+------------------------
+
+The tokenpolicy package allows zope.locking tokens to be associated with
+the security policy.  Defining the set of privileges affected by the
+tokens is done using the tokenPrivileges directive:
+
+    >>> zcml("""
+    ...    <configure
+    ...        xmlns="http://namespaces.zope.org/zope"
+    ...        xmlns:zc="http://namespaces.zope.com/zc"
+    ...        >
+    ...      <zc:tokenPrivileges titles="Write" />
+    ...    </configure>
+    ... """)
+
+To display the titles for the test we use a little helper:
+
+    >>> from zc.tokenpolicy import policy
+    >>> import zc.sharing.sharing
+    >>> def getPrivilegeTitles(ids): 
+    ...    return sorted(
+    ...         zc.sharing.sharing.getPrivilege(pid)['title'] for pid in ids)
+
+So now we can see that the privileges have been set correctly:
+
+    >>> getPrivilegeTitles(policy.getPrivileges())
+    [u'Write']
+
