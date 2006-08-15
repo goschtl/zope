@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zc.notification.email"
+   >
+
+  <localUtility class=".notifier.EmailNotifier">
+    <require
+        permission="zope.View"
+        interface="zc.notification.email.interfaces.IEmailNotifier"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema="zc.notification.email.interfaces.IEmailNotifier" />
+  </localUtility>
+
+  <browser:addMenuItem
+      title="Email Notifier"
+      description="An email notifier for the notification utility."
+      class=".notifier.EmailNotifier"
+      permission="zope.ManageContent"
+      />
+
+  <adapter factory=".view.EmailView" />
+
+  <include package=".browser" />
+
+</configure>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zc.notification"
+   >
+
+  <localUtility class=".notification.NotificationUtility">
+    <require
+        permission="zope.View"
+        interface="zc.notification.interfaces.INotificationUtility"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema="zc.notification.interfaces.INotificationUtility" />
+    <require
+        permission="zope.View"
+        interface="zc.notification.interfaces.INotificationUtilityConfiguration"
+        />
+ </localUtility>
+
+  <browser:addMenuItem
+      title="Notification Utility"
+      description="A Simple Notification Utility"
+      class=".notification.NotificationUtility"
+      permission="zope.ManageContent"
+      />
+
+  <utility
+     provides="zope.schema.interfaces.IVocabularyFactory"
+     name="zc.notification.notifications"
+     component=".notification.getNotificationNames"
+     />
+
+  <utility
+     provides="zope.schema.interfaces.IVocabularyFactory"
+     name="zc.notification.notifiers"
+     component=".notification.getNotifierMethods"
+     />
+
+  <include package=".email" />
+
+  <include package=".browser" />
+
+</configure>

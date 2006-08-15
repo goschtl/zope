@@ -1,0 +1,41 @@
+The requestless module provides a PageTemplateFile implementation that offers
+many of the typical Zope 3 template features but does so without a request. 
+It is useful for rendering a template for a user who is not in the current
+request, or perhaps when there is no request.
+
+Instead of a typical view-class page template, this expects to find a
+`principal` attribute on the instance to which the template has been bound,
+rather than a `request` attribute.  The principal must be adaptable to
+zope.i18n.interfaces.IUserPreferredLanguages in order for translation to
+work.
+
+Like a typical view-class page template, this expects to find a `context`
+attribute, which is often the object to be rendered.
+
+Let's have a quick demo.
+
+    >>> import zope.i18n.interfaces
+    >>> import zope.security.interfaces
+    >>> from zope import interface, component
+    >>> class DemoPrincipal(object):
+    ...     interface.implements(zope.security.interfaces.IPrincipal)
+    ...
+    >>> class DemoLanguagePrefAdapter(object):
+    ...     interface.implements(zope.i18n.interfaces.IUserPreferredLanguages)
+    ...     component.adapts(zope.security.interfaces.IPrincipal)
+    ...     def __init__(self, context):
+    ...         self.context = context
+    ...     def getPreferredLanguages(self):
+    ...         return ('en_us',)
+    ...
+    >>> component.provideAdapter(DemoLanguagePrefAdapter)
+    >>> context = {'foo': 'bar'}
+    >>> import requestless
+    >>> class Renderer(object):
+    ...     def __init__(self, context, principal):
+    ...         self.context = context
+    ...         self.principal = principal
+    ...     template = requestless.PageTemplateFile('requestless.pt')
+    ...
+    >>> Renderer(context, DemoPrincipal()).template()
+    u'<html><body>Hello bar</body></html>\n'

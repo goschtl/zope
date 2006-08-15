@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zc.notification.browser"
+   >
+
+  <browser:page
+     for="zc.notification.interfaces.INotificationUtility"
+     name="preferences.html"
+     class=".views.PreferencesForm"
+     permission="zope.View"
+     />
+
+  <browser:menuItem
+     for="zc.notification.interfaces.INotificationUtility"
+     menu="zmi_views"
+     title="Preferences"
+     action="preferences.html"
+     permission="zope.View"
+     />
+
+</configure>

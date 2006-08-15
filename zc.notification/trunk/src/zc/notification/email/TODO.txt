@@ -1,0 +1,9 @@
+Things that should be done
+--------------------------
+
+* Add and edit forms to allow management of the notifier.
+
+* Asynchronous version of the notifier (or just rely on the mail
+  delivery agent?).
+
+* More tests.

@@ -1,0 +1,206 @@
+The email view module's EmailView class is a reasonable default notification
+email, as well as a reasonable start for custom notification emails.
+
+It simply takes a notification and a principal, translates the mapping if any;
+translates the summary, if any, with the optional mapping; and translates the
+message, with the optional mapping.  It then generates either a simple text
+email, or an html/text alternative email if a `html` attribute is not None.
+The html attribute is called without arguments to render the html version
+of the email.  It is expected that the requestless template found in the
+zc.notification package will be a good implementation for the html, though
+other approaches can be used.
+
+We need to set up the translation framework. We'll set up the standard
+negotiator, and we'll set up the fallback-domain factory, which provides the test
+language for all domains::
+
+    >>> from zope import interface, component
+    >>> import zope.i18n.interfaces
+    >>> import zope.i18n.negotiator
+
+    >>> component.provideUtility(zope.i18n.negotiator.Negotiator())
+
+    >>> from zope.i18n.testmessagecatalog import TestMessageFallbackDomain
+    >>> component.provideUtility(TestMessageFallbackDomain)
+
+Now we'll set up an adapter from IPrincipal to IUserPreferredLanguages that
+returns 'test' as its language.
+
+    >>> import zope.security.interfaces
+    >>> class DemoLanguagePrefAdapter(object):
+    ...     interface.implements(zope.i18n.interfaces.IUserPreferredLanguages)
+    ...     component.adapts(zope.security.interfaces.IPrincipal)
+    ...     def __init__(self, context):
+    ...         self.context = context
+    ...     def getPreferredLanguages(self):
+    ...         return ('test',)
+    ...
+    >>> component.provideAdapter(DemoLanguagePrefAdapter)
+
+Now we'll make a principal, make a notification, instantiate the view, and
+render it.
+
+    >>> class DemoPrincipal(object):
+    ...     interface.implements(zope.security.interfaces.IPrincipal)
+    ...
+    >>> principal = DemoPrincipal()
+    >>> import zc.notification.notification
+    >>> import zope.i18nmessageid
+    >>> _ = zope.i18nmessageid.MessageFactory("view.tests")
+    >>> n = zc.notification.notification.Notification(
+    ...     name="my-notification-name",
+    ...     message=_("my-message", default=u"test notification."))
+    >>> import zc.notification.email.view
+    >>> print zc.notification.email.view.EmailView(n, principal).render()
+    Content-Type: text/plain; charset="utf-8"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: quoted-printable
+    Subject: =?utf-8?b?W1t2aWV3LnRlc3RzXVtteS1tZXNzYWdlICh0ZXN0IG5vdGlmaWNhdGlvbi4p?=
+     =?utf-8?b?XV0=?=
+    <BLANKLINE>
+    <BLANKLINE>
+
+Notice that the email only has a subject: the message is short enough to fit on
+one line, and there was no summary.  Let's look at a richer example, with
+a slightly longer single-line message.
+
+    >>> n = zc.notification.notification.Notification(
+    ...     name="my-notification-name",
+    ...     message=_("my-message-2",
+    ...               default=u"test notification number two."))
+    >>> print zc.notification.email.view.EmailView(n, principal).render()
+    Content-Type: text/plain; charset="utf-8"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: quoted-printable
+    Subject: =?utf-8?q?=5B=5Bview=2Etests=5D=5Bmy-message-2_=28test_notification_numb?=
+     =?utf-8?b?Li4u?=
+    <BLANKLINE>
+    [[view.tests][my-message-2 (test notification number two.)]]
+
+Notice that the subject is truncated, so the body contains the full message.
+Here's a multiline one with a short first line.
+
+    >>> n = zc.notification.notification.Notification(
+    ...     name="my-notification-name",
+    ...     message=_("my-message-3",
+    ...               default=u"test three.\n"
+    ...                        "It spans lines.\nIt is cool."))
+    >>> print zc.notification.email.view.EmailView(n, principal).render()
+    Content-Type: text/plain; charset="utf-8"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: quoted-printable
+    Subject: =?utf-8?b?W1t2aWV3LnRlc3RzXVtteS1tZXNzYWdlLTMgKHRlc3QgdGhyZWUu?=
+    <BLANKLINE>
+    It spans lines.
+    It is cool.)]]
+
+The first line is not repeated in the body.
+
+Now we'll turn to a rich notification: one with a summary, a mapping, and a
+multiline message.
+
+    >>> n = zc.notification.notification.Notification(
+    ...     name="my-notification-name",
+    ...     summary=_("summary-4", "A summary with ${foo} interpolation"),
+    ...     message=_("my-message-4",
+    ...               default=u"test four.\n"
+    ...                        "It spans ${number} lines.\n"
+    ...                        "It is ${adjective}."),
+    ...     mapping={'foo': _('foo-summary', 'bar'),
+    ...              'number': _('number-three', 'three'),
+    ...              'adjective': _('adjective-super', 'super')})
+    >>> print zc.notification.email.view.EmailView(n, principal).render()
+    Content-Type: text/plain; charset="utf-8"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: quoted-printable
+    Subject: =?utf-8?q?=5B=5Bview=2Etests=5D=5Bsummary-4_=28A_summary_with_=5B=5Bview?=
+     =?utf-8?b?LnRlc3RzXVtmb28tc3VtbWFyeSAoYmFyKV1dIGludGVycG9sYXRpb24pXV0=?=
+    <BLANKLINE>
+    [[view.tests][my-message-4 (test four.
+    It spans [[view.tests][number-three (three)]] lines.
+    It is [[view.tests][adjective-super (super)]].)]]
+
+Notice (as best you can) that both the summary and the message can be
+interpolated with mapping translations.
+
+The view also supports html mail as an alternate rendering.  To use this, you
+need to provide a "renderHTML" callable; the requestless template is perfect
+for this use, but the view doesn't care as long as it is callable without
+arguments.
+
+Notification mappings can include non-string values for rich uses like this.
+We give a useless example below.
+
+    >>> from zope.traversing.adapters import DefaultTraversable
+    >>> component.provideAdapter(
+    ...     DefaultTraversable, adapts=(None,))
+    >>> import zc.notification.requestless
+    >>> class RichEmailView(zc.notification.email.view.EmailView):
+    ...     renderHTML = zc.notification.requestless.PageTemplateFile(
+    ...         'view_test.pt')
+    ...
+    >>> class DemoObject(object):
+    ...     pass
+    ...
+    >>> o = DemoObject()
+    >>> o.attr = 'you could adapt my object!'
+    >>> n = zc.notification.notification.Notification(
+    ...     name="my-notification-name",
+    ...     summary=_("summary-5", "alternate plain and html renderings"),
+    ...     message=_("my-message-5",
+    ...               default=u"Important: ${message}\n"
+    ...                        "See ${url}"),
+    ...     mapping={'message': _('mapping-message', 'Fix this!'),
+    ...              'object': o,
+    ...              'url': 'http://example.com/foo.html'})
+    >>> view = RichEmailView(n, principal) 
+    >>> print view.render() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    Content-Type: multipart/alternative;
+        boundary="..."
+    MIME-Version: 1.0
+    Subject: [[view.tests][summary-5 (alternate plain and html renderings)]]
+    <BLANKLINE>
+    --...
+    Content-Type: text/plain; charset="utf-8"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: quoted-printable
+    <BLANKLINE>
+    [[view.tests][my-message-5 (Important: [[view.tests][mapping-message (Fix t=
+    his!)]]
+    See http://example.com/foo.html)]]
+    --...
+    Content-Type: text/html; charset="utf-8"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: quoted-printable
+    <BLANKLINE>
+    <html>
+      <head></head>
+      <body>
+        <h1>[[view.tests][mapping-message (Fix this!)]]</h1>
+        <p> See <a href=3D"http://example.com/foo.html">you could adapt my obje=
+    ct!</a>
+        </p>
+      </body>
+    </html>
+    <BLANKLINE>
+    <BLANKLINE>
+    --...--
+    <BLANKLINE>
+
+In addition to the `context` and `principal` attributes on the view, the
+callable has access to three other attributes on the view: `mapping`, which
+contains translated unicode message ids and untranslated normal strings;
+`summary`, the unicode interpolated summary; and `message`, the unicode
+interpolated message.  These are set during render, so they are set now.
+
+    >>> view.mapping # doctest: +NORMALIZE_WHITESPACE
+    {'url': 'http://example.com/foo.html',
+     'message': u'[[view.tests][mapping-message (Fix this!)]]'}
+    >>> view.summary
+    u'[[view.tests][summary-5 (alternate plain and html renderings)]]'
+    >>> view.message # doctest: +NORMALIZE_WHITESPACE
+    u'[[view.tests][my-message-5
+                    (Important: [[view.tests][mapping-message
+                                              (Fix this!)]]\nSee
+                    http://example.com/foo.html)]]'
+    

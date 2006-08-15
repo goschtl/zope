@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zc.notification.email.browser"
+   >
+
+  <browser:page
+     for="zc.notification.email.interfaces.IEmailNotifier"
+     name="edit.html"
+     class=".views.EditNotifierForm"
+     permission="zope.ManageSite"
+     />
+
+  <browser:menuItem
+     for="zc.notification.email.interfaces.IEmailNotifier"
+     menu="zmi_views"
+     title="Edit"
+     action="edit.html"
+     permission="zope.ManageSite"
+     />
+
+</configure>

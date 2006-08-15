@@ -1,0 +1,1 @@
+<html><body>Hello <span tal:replace="context/foo">you</span></body></html>
