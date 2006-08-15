@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zc.preview"
+    >
+
+  <browser:view
+      class=".text.TextPreview"
+      for="zope.mimetype.types.IContentTypeTextPlain"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+
+  <browser:view
+      class=".text.TextPreview"
+      for="zope.mimetype.types.IContentTypeJavaScript"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+
+  <browser:view
+      class=".text.TextPreview"
+      for="zope.mimetype.types.IContentTypeCss"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+
+</configure>

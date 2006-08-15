@@ -1,0 +1,117 @@
+===============
+iframe previews
+===============
+
+The iframe view is used for any content type that the browser knows
+how to display in an iframe.
+
+Create the browser object we'll be using.
+
+    >>> from zope.testbrowser.testing import Browser
+    >>> browser = Browser()
+    >>> browser.addHeader('Accept-Language', 'test')
+
+For each content type we will test that the view is registered and
+working, by creating a simple content content object and clicking the
+link to see the resulting view.
+
+Microsoft Word
+--------------
+
+To see how the view works, we'll create an instance of a simple content
+object:
+
+    >>> browser.open('http://localhost/@@contents.html')
+    >>> browser.getLink('[[zope][[top]]]').click()
+    >>> browser.getLink('[[zc.preview][DemoContentMicrosoftWord]]').click()
+    >>> browser.getControl(name='new_value').value = 'test.doc'
+    >>> browser.getControl('[[zope][container-apply-button (Apply)]]').click()
+
+Now click on the link to our object to see if we are getting the expected view.
+
+    >>> browser.getLink('test.doc').click()
+    >>> print browser.contents
+    <...
+       <iframe width="100%" height="300"
+               src="http://localhost/test.doc/@@inline">[[zc.preview][iframe-not-supported (
+           The inline preview is not possible because your browser
+           does not support inline frames.
+       )]]</iframe>
+    ...>
+
+
+Microsoft Excel
+---------------
+
+To see how the view works, we'll create an instance of a simple content
+object:
+
+    >>> browser.open('http://localhost/@@contents.html')
+    >>> browser.getLink('[[zope][[top]]]').click()
+    >>> browser.getLink('[[zc.preview][DemoContentMicrosoftExcel]]').click()
+    >>> browser.getControl(name='new_value').value = 'test.xls'
+    >>> browser.getControl('[[zope][container-apply-button (Apply)]]').click()
+
+Now click on the link to our object to see if we are getting the expected view.
+
+    >>> browser.getLink('test.xls').click()
+    >>> print browser.contents
+    <...
+       <iframe width="100%" height="300"
+               src="http://localhost/test.xls/@@inline">[[zc.preview][iframe-not-supported (
+           The inline preview is not possible because your browser
+           does not support inline frames.
+       )]]</iframe>
+    ...>
+
+
+Microsoft Powerpoint
+--------------------
+
+To see how the view works, we'll create an instance of a simple content
+object:
+
+    >>> browser.open('http://localhost/@@contents.html')
+    >>> browser.getLink('[[zope][[top]]]').click()
+    >>> browser.getLink('[[zc.preview][DemoContentMicrosoftPowerPoint]]').click()
+    >>> browser.getControl(name='new_value').value = 'test.ppt'
+    >>> browser.getControl('[[zope][container-apply-button (Apply)]]').click()
+
+Now click on the link to our object to see if we are getting the expected view.
+
+    >>> browser.getLink('test.ppt').click()
+    >>> print browser.contents
+    <...
+       <iframe width="100%" height="300"
+               src="http://localhost/test.ppt/@@inline">[[zc.preview][iframe-not-supported (
+           The inline preview is not possible because your browser
+           does not support inline frames.
+       )]]</iframe>
+    ...>
+
+
+Adobe Pdf
+---------
+
+To see how the view works, we'll create an instance of a simple content
+object:
+
+    >>> browser.open('http://localhost/@@contents.html')
+    >>> browser.getLink('[[zope][[top]]]').click()
+    >>> browser.getLink('[[zc.preview][DemoContentPdf]]').click()
+    >>> browser.getControl(name='new_value').value = 'test.pdf'
+    >>> browser.getControl('[[zope][container-apply-button (Apply)]]').click()
+
+Now click on the link to our object to see if we are getting the expected view.
+
+    >>> browser.getLink('test.pdf').click()
+    >>> print browser.contents
+    <...
+       <iframe width="100%" height="300"
+               src="http://localhost/test.pdf/@@inline">[[zc.preview][iframe-not-supported (
+           The inline preview is not possible because your browser
+           does not support inline frames.
+       )]]</iframe>
+    ...>
+
+

@@ -1,0 +1,64 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zc.preview">
+
+  <adapter factory=".iframe.default_template" name="iframe" />
+
+  <browser:view
+      class=".iframe.Preview"
+      for="zope.mimetype.types.IContentTypeMicrosoftWord"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+
+  <browser:view
+      class=".iframe.Preview"
+      for="zope.mimetype.types.IContentTypeMicrosoftExcel"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+
+  <browser:view
+      class=".iframe.Preview"
+      for="zope.mimetype.types.IContentTypeMicrosoftPowerPoint"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+
+  <browser:view
+      class=".iframe.Preview"
+      for="zope.mimetype.types.IContentTypePdf"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+
+  <browser:view
+      class=".iframe.Preview"
+      for="zope.mimetype.types.IContentTypeTextHtml"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+
+  <browser:view
+      class=".iframe.Preview"
+      for="zope.mimetype.types.IContentTypeHtmlApplication"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+
+  <browser:view
+      class=".iframe.Preview"
+      for="zope.mimetype.types.IContentTypeXhtml"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+
+</configure>

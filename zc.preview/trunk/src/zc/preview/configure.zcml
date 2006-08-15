@@ -1,0 +1,10 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    >
+
+  <include file="text.zcml"/>
+  <include file="iframe.zcml"/>
+  <include file="image.zcml"/>
+  <include file="default.zcml"/>
+
+</configure>

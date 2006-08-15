@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zc.preview">
+
+  <adapter factory=".image.default_template" name="image" />
+
+  <browser:view
+      class=".image.Preview"
+      for="zope.mimetype.types.IContentTypeImageGif"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+
+  <browser:view
+      class=".image.Preview"
+      for="zope.mimetype.types.IContentTypeImageJpeg"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+  <browser:view
+      class=".image.Preview"
+      for="zope.mimetype.types.IContentTypeImagePng"
+      name="display.html"
+      menu="zmi_views" title="Display"
+      permission="zope.View"
+      />
+
+</configure>

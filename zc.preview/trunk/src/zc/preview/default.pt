@@ -1,0 +1,11 @@
+<html metal:use-macro="context/@@standard_macros/view" 
+      i18n:domain="zc.preview">
+<head>
+</head>
+<body>
+<metal:block metal:fill-slot="body">
+  <p i18n:translate="">The system does not support previewing this file type.
+  </p>
+</metal:block>
+</body>
+</html>

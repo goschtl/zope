@@ -1,0 +1,107 @@
+=======================
+Plain text display view
+=======================
+
+The "preview" for plain text is simple.  It deals with documents for
+which the encoding is known, including the case of the "known"
+encoding not working with the actual data, and the case where the
+encoding is not known at all.  For the later, some attempts to guess
+common text encodings is attempted.
+
+  >>> import StringIO
+  >>> from zope.testbrowser.testing import Browser
+
+We'll be creating many example file objects, so let's create a
+convenience function to make one for us::
+
+  >>> browser = Browser()
+  >>> browser.addHeader("Authorization", "Basic user:userpw")
+  >>> browser.addHeader("Accept-Language", "en-US")
+
+  >>> def createFile(data, name, contentType="text/plain"):
+  ...     sio = StringIO.StringIO(data)
+  ...     browser.open("http://localhost/@@+/zope.file.File")
+  ...     ctrl = browser.getControl(name="form.data")
+  ...     ctrl.add_file(sio, contentType, name)
+  ...     browser.getControl("Add").click()
+
+Let's start by creating a plain text file in a simple, known
+encoding::
+
+  >>> createFile("Plain text in Latin-1: \xd8.",
+  ...            "sample-1.txt", "text/plain; charset=iso-8859-1")
+
+Using the display view, we can see the document plainly, as well as a
+note about the current encoding (since it is known)::
+
+  >>> browser.getLink("sample-1.txt").click()
+  >>> print browser.contents
+  <...utf-8...
+  ...Plain text in Latin-1: ...
+
+If we don't provide encoding information when we create the document,
+but use an encoding that's easily recognizable, we'll still be able to
+see the document text, but won't get the annotation about the encoding
+that's been used, since some guesswork was involved::
+
+  >>> createFile("Plain text in US-ASCII.", "sample-2.txt")
+
+  >>> browser.getLink("sample-2.txt").click()
+  >>> print browser.contents
+  <...Plain text in US-ASCII...
+
+A number of UTF encodings are recognized if they include a byte-order
+mark.  We'll use some Japanese example text (maybe; text is from a spam
+email) for subsequent tests::
+
+  >>> text = u"\u4f1a\u91d1\u30fb\u4f1a\u8cbb\u3092\u6255\u3063\u3066"
+  >>> utf8 = text.encode("utf-8")
+
+UTF-8 with the byte-order mark::
+
+  >>> import codecs
+
+  >>> createFile(codecs.BOM_UTF8 + text.encode("utf-8"), "sample-3.txt")
+
+  >>> browser.getLink("sample-3.txt").click()
+  >>> utf8 in browser.contents
+  True
+
+UTF-16 big-endian with the byte-order mark::
+
+  >>> createFile(codecs.BOM_UTF16_BE + text.encode("utf-16be"), "sample-4.txt")
+
+  >>> browser.getLink("sample-4.txt").click()
+  >>> utf8 in browser.contents
+  True
+
+UTF-16 little-endian with the byte-order mark::
+
+  >>> createFile(codecs.BOM_UTF16_LE + text.encode("utf-16le"), "sample-5.txt")
+
+  >>> browser.getLink("sample-5.txt").click()
+  >>> utf8 in browser.contents
+  True
+
+Handling un-decodable text
+--------------------------
+
+On the other hand, if we upload a file for which the encoding is not
+recognized automatically and don't provide encoding information, we
+get a message that the encoding is not known::
+
+  >>> createFile(text.encode("utf-8"), "bad-1.txt")
+
+  >>> browser.getLink("bad-1.txt").click()
+  >>> print browser.contents
+  <...Text encoding not specified and could not be determined...
+
+For an encoding that's specified in the initial upload of the file,
+but which is incorrect, a different error message is provided::
+
+  >>> createFile(text.encode("utf-8"),
+  ...            "bad-2.txt", "text/plain; charset=utf-16le")
+
+  >>> browser.getLink("bad-2.txt").click()
+  >>> print browser.contents
+  <...Specified text encoding does not match data...

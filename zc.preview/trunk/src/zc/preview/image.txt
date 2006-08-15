@@ -1,0 +1,34 @@
+==============
+Image previews
+==============
+
+Simple preview of images.
+
+Create the browser object we'll be using.
+
+    >>> from zope.testbrowser.testing import Browser
+    >>> browser = Browser()
+    >>> browser.addHeader("Authorization", "Basic user:userpw")
+    >>> browser.addHeader("Accept-Language", "en-US")
+
+Let's start by creating a small "image"::
+
+    >>> import StringIO
+    >>> def createFile(data, name, contentType):
+    ...     sio = StringIO.StringIO(data)
+    ...     browser.open("http://localhost/@@+/zope.file.File")
+    ...     ctrl = browser.getControl(name="form.data")
+    ...     ctrl.add_file(sio, contentType, name)
+    ...     browser.getControl("Add").click()
+
+    >>> createFile("(pretend this is png data)", "sample-1.png", "image/png")
+
+The preview view shows a simple <img> tag.
+
+    >>> browser.getLink("sample-1.png").click()
+    >>> browser.getLink("Display").click()
+    >>> print browser.contents
+    <...
+       <img src="http://localhost/sample-1.png/@@inline" alt="sample-1.png" />
+    ...
+

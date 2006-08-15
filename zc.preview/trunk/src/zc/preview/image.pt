@@ -1,0 +1,11 @@
+<html metal:use-macro="context/@@standard_macros/view" 
+      i18n:domain="zc.preview">
+<head>
+</head>
+<body>
+<metal:block metal:fill-slot="body">
+<img tal:attributes="src string:${context/@@traversedURL}/@@inline;
+                     alt context/zope:name" />
+</metal:block>
+</body>
+</html>

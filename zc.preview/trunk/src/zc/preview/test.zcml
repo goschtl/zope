@@ -1,0 +1,90 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zc.preview"
+    package="zc.preview"
+    >
+
+  <!-- This file is the equivalent of site.zcml and it is -->
+  <!-- used for functional testing setup -->
+
+  <include package="zope.app" />
+  <include package="zope.app.debugskin" />
+  <include package="zope.app.server" />
+  <include package="zope.app.authentication" />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Everybody" 
+    />
+
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User" />
+
+  <!-- Principal that tests generally run as -->
+  <principal
+      id="zope.user"
+      title="User"
+      login="user"
+      password="userpw" />
+
+  <include package="zope.formlib"/>
+  <include package="zope.mimetype" file="meta.zcml"/>
+  <include package="zope.mimetype"/>
+  <include package="zope.file"/>
+  <include package="zc.shortcut"/>
+  <include package="zc.preview"/>
+
+  <securityPolicy
+      component="zope.security.simplepolicies.PermissiveSecurityPolicy"
+      />
+
+  <adapter factory=".ntests.requestToTZInfo"/>
+
+  <!-- Load a "default" i18n domain for debugging purposes
+     production sites shouldn't do this -->
+  <include package="zope.app.i18n.tests" />
+
+  <class class=".ntests.DemoContentMicrosoftWord">
+    <implements interface="zope.mimetype.types.IContentTypeMicrosoftWord" />
+  </class>
+
+  <browser:addMenuItem
+    class=".ntests.DemoContentMicrosoftWord"
+    title="DemoContentMicrosoftWord"
+    permission="zope.ManageContent"
+    />
+
+  <class class=".ntests.DemoContentMicrosoftExcel">
+    <implements interface="zope.mimetype.types.IContentTypeMicrosoftExcel" />
+  </class>
+
+  <browser:addMenuItem
+    class=".ntests.DemoContentMicrosoftExcel"
+    title="DemoContentMicrosoftExcel"
+    permission="zope.ManageContent"
+    />
+
+  <class class=".ntests.DemoContentMicrosoftPowerPoint">
+    <implements interface="zope.mimetype.types.IContentTypeMicrosoftPowerPoint" />
+  </class>
+
+  <browser:addMenuItem
+    class=".ntests.DemoContentMicrosoftPowerPoint"
+    title="DemoContentMicrosoftPowerPoint"
+    permission="zope.ManageContent"
+    />
+
+  <class class=".ntests.DemoContentPdf">
+    <implements interface="zope.mimetype.types.IContentTypePdf" />
+  </class>
+
+  <browser:addMenuItem
+    class=".ntests.DemoContentPdf"
+    title="DemoContentPdf"
+    permission="zope.ManageContent"
+    />
+
+
+</configure>

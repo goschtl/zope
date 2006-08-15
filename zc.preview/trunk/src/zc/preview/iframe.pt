@@ -1,0 +1,14 @@
+<html metal:use-macro="context/@@standard_macros/view" 
+      i18n:domain="zc.preview">
+<head>
+</head>
+<body>
+<metal:block metal:fill-slot="body">
+  <iframe width="100%" height="300" i18n:translate="iframe-not-supported"
+          tal:attributes="src string:${context/@@traversedURL}/@@inline">
+      The inline preview is not possible because your browser
+      does not support inline frames.
+  </iframe>
+</metal:block>
+</body>
+</html>
