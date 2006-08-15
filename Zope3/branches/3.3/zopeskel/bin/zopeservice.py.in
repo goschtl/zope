@@ -105,5 +105,5 @@ if __name__ == '__main__':
     import win32serviceutil
     if os.path.exists(PYTHONSERVICE_EXE):
         # This ensures that pythonservice.exe is registered...
-        os.system('%s -register' % PYTHONSERVICE_EXE)
+        os.system('"%s" -register' % PYTHONSERVICE_EXE)
     win32serviceutil.HandleCommandLine(InstanceService)
