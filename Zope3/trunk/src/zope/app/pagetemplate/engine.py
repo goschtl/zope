@@ -249,7 +249,34 @@ class AdapterNamespaces(object):
         return namespace
 
 
-class ZopeEngine(ExpressionEngine):
+class ZopeBaseEngine(ExpressionEngine):
+
+    _create_context = ZopeContext
+
+    def __init__(self):
+        ExpressionEngine.__init__(self)
+        self.namespaces = AdapterNamespaces()
+
+    def getContext(self, __namespace=None, **namespace):
+        if __namespace:
+            if namespace:
+                namespace.update(__namespace)
+            else:
+                namespace = __namespace
+
+        context = self._create_context(self, namespace)
+
+        # Put request into context so path traversal can find it
+        if 'request' in namespace:
+            context.request = namespace['request']
+
+        # Put context into context so path traversal can find it
+        if 'context' in namespace:
+            context.context = namespace['context']
+
+        return context
+
+class ZopeEngine(ZopeBaseEngine):
     """Untrusted expression engine.
 
     This engine does not allow modules to be imported; only modules
@@ -355,33 +382,12 @@ class ZopeEngine(ExpressionEngine):
 
     """
 
-    _create_context = ZopeContext
+    def getFunctionNamespace(self, namespacename):
+        """ Returns the function namespace """
+        return ProxyFactory(
+            super(ZopeEngine, self).getFunctionNamespace(namespacename))
 
-    def __init__(self):
-        ExpressionEngine.__init__(self)
-        self.namespaces = AdapterNamespaces()
-
-    def getContext(self, __namespace=None, **namespace):
-        if __namespace:
-            if namespace:
-                namespace.update(__namespace)
-            else:
-                namespace = __namespace
-
-        context = self._create_context(self, namespace)
-
-        # Put request into context so path traversal can find it
-        if 'request' in namespace:
-            context.request = namespace['request']
-
-        # Put context into context so path traversal can find it
-        if 'context' in namespace:
-            context.context = namespace['context']
-
-        return context
-
-
-class TrustedZopeEngine(ZopeEngine):
+class TrustedZopeEngine(ZopeBaseEngine):
     """Trusted expression engine.
 
     This engine allows modules to be imported::
