@@ -151,7 +151,7 @@ class Browser(SetattrErrorsMixin):
 
     def addHeader(self, key, value):
         """See zope.testbrowser.interfaces.IBrowser"""
-        raise NotImplementedError
+        self.serverManager.addHeader(key, value)
 
     def getLink(self, text=None, url=None, id=None, index=None):
         """See zope.testbrowser.interfaces.IBrowser"""

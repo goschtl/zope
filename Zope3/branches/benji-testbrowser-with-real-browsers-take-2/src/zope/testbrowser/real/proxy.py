@@ -30,13 +30,12 @@ class Constant(object):
 UNDEFINED = Constant('undefined')
 
 class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
-#    server_version = "TinyHTTPProxy/" + __version__
-    rbufsize = 0
 
     def __init__(self, request, client_address, server):
         self.caller = functional.HTTPCaller()
         self.command_queue = server.command_queue
         self.result_queue = server.result_queue
+        self.additional_headers = server.additional_headers
         BaseHTTPServer.BaseHTTPRequestHandler.__init__(
             self, request, client_address, server)
 
@@ -119,7 +118,10 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 urlparse.urlunparse(('', '', path, params, query, '')),
                 self.request_version))
 
-            for key_val in self.headers.items():
+            headers = {}
+            headers.update(self.headers)
+            headers.update(self.additional_headers)
+            for key_val in headers.items():
                 request.write("%s: %s\r\n" % key_val)
             request.write("\r\n")
             response = self.caller(request.getvalue())
@@ -145,6 +147,7 @@ class HttpServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
         self.command_queue = Queue.Queue()
         self.result_queue = Queue.Queue()
         self.threads = []
+        self.additional_headers = {}
         BaseHTTPServer.HTTPServer.__init__(self, *args, **kws)
         self.setUp()
 
@@ -156,6 +159,9 @@ class HttpServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
         # makes ZODB unhappy, so we force the connection to be created now,
         # in the thread that will eventually clean it up.
         FunctionalTestSetup().getRootFolder()
+
+    def addHeader(self, key, value):
+        self.additional_headers[key] = value
 
     def serve_forever(self):
         """Handle one request at a time until stopped."""
@@ -198,3 +204,6 @@ class ServerManager(object):
     def executeCommand(self, command, *args):
         self.server.command_queue.put( ('_tb_'+command, simplejson.dumps(args)) )
         return self.server.result_queue.get()
+
+    def addHeader(self, key, value):
+        self.server.addHeader(key, value)
