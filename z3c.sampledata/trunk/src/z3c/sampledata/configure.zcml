@@ -12,6 +12,7 @@
     provides="z3c.sampledata.interfaces.ISampleDataPlugin"
     />
 
+  <include file="site.zcml" />
   <include package=".browser" />
 
 </configure>
