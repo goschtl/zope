@@ -8,31 +8,31 @@
 
     <utility
         factory=".sampledata.SampleTags"
-        provides="lovely.sampledata.interfaces.ISampleDataPlugin"
+        provides="z3c.sampledata.interfaces.ISampleDataPlugin"
         name="lovely.tag.sampletags"
         />
 
     <utility
         factory=".sampledata.SampleEngine"
-        provides="lovely.sampledata.interfaces.ISampleDataPlugin"
+        provides="z3c.sampledata.interfaces.ISampleDataPlugin"
         name="lovely.tag.sampleengine"
         />
 
     <SampleManager
       name="tagbrowsertest"
       >
-      <generator name="lovely.sampledata.site" />
+      <generator name="z3c.sampledata.site" />
       <generator
-        name="lovely.sampledata.intids"
-        dependsOn="lovely.sampledata.site"
-        contextFrom="lovely.sampledata.site" />
+        name="z3c.sampledata.intids"
+        dependsOn="z3c.sampledata.site"
+        contextFrom="z3c.sampledata.site" />
       <generator
         name="lovely.tag.sampleengine"
-        contextFrom="lovely.sampledata.site" />
+        contextFrom="z3c.sampledata.site" />
       <generator
         name="lovely.tag.sampletags"
         dependsOn="lovely.tag.sampleengine"
-        contextFrom="lovely.sampledata.site" />
+        contextFrom="z3c.sampledata.site" />
     </SampleManager>
 
   </configure>

@@ -11,7 +11,7 @@ We provide default views which are relevant for tagging.
 
   >>> browser.open('http://localhost/@@managesamples.html')
   >>> browser.getLink(text='tagbrowsertest').click()
-  >>> browser.getControl(name='lovely.sampledata.site.sitename').value = 'tags'
+  >>> browser.getControl(name='z3c.sampledata.site.sitename').value = 'tags'
   >>> browser.getControl('Generate').click()
 
 Tag cloud

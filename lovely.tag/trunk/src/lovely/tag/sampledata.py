@@ -22,7 +22,7 @@ from zope import interface
 from zope import component
 from zope.app.component import hooks
 
-from lovely.sampledata.interfaces import ISampleDataPlugin
+from z3c.sampledata.interfaces import ISampleDataPlugin
 from lovely import tag
 
 LOCAL_DIR = os.path.dirname(__file__)
