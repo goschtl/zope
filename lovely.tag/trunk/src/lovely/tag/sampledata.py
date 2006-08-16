@@ -65,13 +65,14 @@ class SampleEngine(object):
 
     def generate(self, context, param={}, seed=None):
         hooks.setSite(context)
-        sm = context.getSiteManager()
 
-        if 'tagging-engine' not in sm['default']:
+        engine = component.queryUtility(tag.interfaces.ITaggingEngine)
+        if engine is None:
             # Add the tagging engine
             engine = tag.TaggingEngine()
+            sm = context.getSiteManager()
             sm['default']['tagging-engine'] = engine
-            sm.registerUtility(engine, tag.interfaces.ITaggingEngine)
+            component.provideUtility(engine, tag.interfaces.ITaggingEngine)
         return engine
 
 
