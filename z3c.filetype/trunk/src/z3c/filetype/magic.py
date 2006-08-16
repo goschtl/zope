@@ -1,7 +1,7 @@
 # Found on a russian zope mailing list, and modified to fix bugs in parsing
 # the magic file and string making
 # -- Daniel Berlin <dberlin@dberlin.org>
-import sys, struct, time, re, exceptions, pprint, stat, os, pwd, grp
+import sys, struct, time, re, exceptions, pprint, stat, os,  grp
 
 _mew = 0
 
@@ -508,6 +508,7 @@ class MagicFile:
 
 def username(uid):
     try:
+        import pwd
         return pwd.getpwuid( uid )[0]
     except:
         return '#%s'%uid
