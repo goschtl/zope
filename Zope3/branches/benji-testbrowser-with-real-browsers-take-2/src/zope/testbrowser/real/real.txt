@@ -42,22 +42,29 @@ Page Contents
 
 The contents of the current page are available:
 
-    >>> print browser.contents # XXX any way to not get screwed up HTML?
-    <html><head><title>Simple Page</title></head>
-    <BLANKLINE>
-      <body>
-        <h1>Simple Page</h1>
-      </body></html>
+    >>> print browser.contents
+    <html>
+     <head>
+      <title>
+       Simple Page
+      </title>
+     </head>
+     <body>
+      <h1>
+       Simple Page
+      </h1>
+     </body>
+    </html>
 
 Making assertions about page contents is easy.
 
-    >>> '<h1>Simple Page</h1>' in browser.contents
+    >>> 'Simple Page' in browser.contents
     True
 
 Utilizing the doctest facilities, it also possible to do:
 
     >>> browser.contents
-    '...<h1>Simple Page</h1>...'
+    '...Simple Page...'
 
 Note: Unfortunately, ellipsis (...) cannot be used at the beginning of the
 output (this is a limitation of doctest).
@@ -145,8 +152,8 @@ the text you would see in a browser (text and url searches are substring
 searches):
 
     >>> browser.open('http://localhost/@@/testbrowser/navigate.html')
-    >>> browser.contents
-    '...<a href="navigate.html?message=By+Link+Text">Link Text</a>...'
+    >>> print browser.contents
+    <...<a href="navigate.html?message=By+Link+Text"> Link Text </a>...
     >>> link = browser.getLink('Link Text')
     >>> link
     <Link text='Link Text'
@@ -173,14 +180,14 @@ Links can be "clicked" and the browser will navigate to the referenced URL.
     >>> link.click()
     >>> browser.url
     'http://localhost/@@/testbrowser/navigate.html?message=By+Link+Text'
-    >>> browser.contents
-    '...Message: <em>By Link Text</em>...'
+    >>> print browser.contents
+    <...Message: <em> By Link Text </em>...
 
 When finding a link by its text, whitespace is normalized.
 
     >>> browser.open('http://localhost/@@/testbrowser/navigate.html')
     >>> browser.contents
-    '...> Link \n    with     Whitespace\tNormalization (and parens) </...'
+    '...Link \n    with     Whitespace\tNormalization (and parens)...'
     >>> link = browser.getLink('Link with Whitespace Normalization '
     ...                        '(and parens)')
     >>> link
@@ -190,8 +197,8 @@ When finding a link by its text, whitespace is normalized.
     >>> link.click()
     >>> browser.url
     'http://localhost/@@/testbrowser/navigate.html?message=By+Link+with+Normalization'
-    >>> browser.contents
-    '...Message: <em>By Link with Normalization</em>...'
+    >>> print browser.contents
+    <...Message: <em> By Link with Normalization </em>...
 
 Note that clicking a link object after its browser page has expired will
 generate an error.
@@ -204,27 +211,26 @@ generate an error.
 You can also find the link by its URL,
 
     >>> browser.open('http://localhost/@@/testbrowser/navigate.html')
-    >>> browser.contents
-    '...<a href="navigate.html?message=By+URL">Using the URL</a>...'
+    >>> print browser.contents
+    <...<a href="navigate.html?message=By+URL"> Using the URL </a>...
 
     >>> browser.getLink(url='?message=By+URL').click()
     >>> browser.url
     'http://localhost/@@/testbrowser/navigate.html?message=By+URL'
-    >>> browser.contents
-    '...Message: <em>By URL</em>...'
+    >>> print browser.contents
+    <...Message: <em> By URL </em>...
 
 or its id:
 
     >>> browser.open('http://localhost/@@/testbrowser/navigate.html')
-    >>> browser.contents
-    '...<a href="navigate.html?message=By+Id"
-    id="anchorid">By Anchor Id</a>...'
+    >>> print browser.contents
+    <...<a href="navigate.html?message=By+Id" id="anchorid"> By Anchor Id </a>...
 
     >>> browser.getLink(id='anchorid').click()
     >>> browser.url
     'http://localhost/@@/testbrowser/navigate.html?message=By+Id'
-    >>> browser.contents
-    '...Message: <em>By Id</em>...'
+    >>> print browser.contents
+    <...Message: <em> By Id </em>...
 
 You thought we were done here? Not so quickly.  The `getLink` method also
 supports image maps, though not by specifying the coordinates, but using the
@@ -237,8 +243,8 @@ area's id:
     >>> link.click()
     >>> browser.url
     'http://localhost/@@/testbrowser/navigate.html?message=Zope+3+Name'
-    >>> browser.contents
-    '...Message: <em>Zope 3 Name</em>...'
+    >>> print browser.contents
+    <...Message: <em> Zope 3 Name </em>...
 
 Getting a nonexistent link raises an exception.
 

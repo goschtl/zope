@@ -43,6 +43,7 @@ class Browser(SetattrErrorsMixin):
 
     _contents = None
     _counter = 0
+    _soup = None
 
     def __init__(self, url=None):
         self.serverManager = ServerManager()
@@ -72,12 +73,22 @@ class Browser(SetattrErrorsMixin):
     @property
     def title(self):
         """See zope.testbrowser.interfaces.IBrowser"""
-        raise NotImplementedError
+        tags = self.soup('title')
+        if not tags:
+            return None
+
+        return tags[-1].renderContents()
+
+    @property
+    def soup(self):
+        if self._soup is None:
+            self._soup = BeautifulSoup(self.executeCommand('getContents'))
+        return self._soup
 
     @property
     def contents(self):
         """See zope.testbrowser.interfaces.IBrowser"""
-        return self.executeCommand('getContents')
+        return self.soup.prettify()
 
     @property
     def headers(self):
@@ -180,6 +191,7 @@ class Browser(SetattrErrorsMixin):
     def _changed(self):
         self._counter += 1
         self._contents = None
+        self._soup = None
 
 
 class Link(SetattrErrorsMixin):
