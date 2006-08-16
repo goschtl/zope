@@ -10,6 +10,10 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 507: Default configuration exposes template code and
+        paths. Developer mode is now switched off by default and a warning is
+        issued if it is turned on.
+
       - Fixed issue 383: Twisted and ZServer work the same on any platform.
         Default configuration is to bind servers to all interfaces.
         You find additional information in 'zope.conf' to know
