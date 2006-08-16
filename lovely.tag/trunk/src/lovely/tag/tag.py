@@ -38,6 +38,8 @@ class Tag(persistent.Persistent):
 
     def __init__(self, item, user, tag):
         self.item = item
+        if not isinstance(user, unicode):
+            user = unicode(user, 'utf-8')
         self.user = user
         self.tag = tag
         self.timestamp = datetime.datetime.now()
