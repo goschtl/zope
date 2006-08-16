@@ -1,7 +1,7 @@
 from zope import interface
 from zope import schema
 
-from lovely.sampledata import _
+from z3c.sampledata import _
 
 
 class ISampleManagerDirective(interface.Interface):

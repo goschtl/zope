@@ -32,9 +32,9 @@ from zope.app.folder.folder import Folder
 from zope.app.intid import IntIds
 from zope.app.intid.interfaces import IIntIds
 
-from lovely.sampledata.interfaces import ISampleDataPlugin
+from interfaces import ISampleDataPlugin
 
-from lovely.sampledata import _
+from z3c.sampledata import _
 
 
 class ISampleSiteParameters(zope.interface.Interface):

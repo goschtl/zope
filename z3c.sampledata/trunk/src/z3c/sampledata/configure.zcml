@@ -1,15 +1,15 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
   <utility
-    name="lovely.site"
-    factory="lovely.sampledata.site.SampleSite"
-    provides="lovely.sampledata.interfaces.ISampleDataPlugin"
+    name="z3c.site"
+    factory="z3c.sampledata.site.SampleSite"
+    provides="z3c.sampledata.interfaces.ISampleDataPlugin"
     />
 
   <utility
-    name="lovely.principals"
-    factory="lovely.sampledata.principal.SamplePrincipals"
-    provides="lovely.sampledata.interfaces.ISampleDataPlugin"
+    name="z3c.principals"
+    factory="z3c.sampledata.principal.SamplePrincipals"
+    provides="z3c.sampledata.interfaces.ISampleDataPlugin"
     />
 
   <include package=".browser" />

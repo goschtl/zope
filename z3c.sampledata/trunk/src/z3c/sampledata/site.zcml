@@ -8,30 +8,30 @@
 
     <utility
         factory=".site.SampleSite"
-        provides="lovely.sampledata.interfaces.ISampleDataPlugin"
-        name="lovely.sampledata.site"
+        provides="z3c.sampledata.interfaces.ISampleDataPlugin"
+        name="z3c.sampledata.site"
         />
 
     <utility
         factory=".site.SampleIntIds"
-        provides="lovely.sampledata.interfaces.ISampleDataPlugin"
-        name="lovely.sampledata.intids"
+        provides="z3c.sampledata.interfaces.ISampleDataPlugin"
+        name="z3c.sampledata.intids"
         />
 
     <utility
         factory=".principal.SamplePrincipals"
-        provides="lovely.sampledata.interfaces.ISampleDataPlugin"
-        name="lovely.sampledata.principals"
+        provides="z3c.sampledata.interfaces.ISampleDataPlugin"
+        name="z3c.sampledata.principals"
         />
 
     <SampleManager
       name="Site with intid utility"
       >
-      <generator name="lovely.sampledata.site" />
+      <generator name="z3c.sampledata.site" />
       <generator
-        name="lovely.sampledata.intids"
-        dependsOn="lovely.sampledata.site"
-        contextFrom="lovely.sampledata.site" />
+        name="z3c.sampledata.intids"
+        dependsOn="z3c.sampledata.site"
+        contextFrom="z3c.sampledata.site" />
     </SampleManager>
 
   </configure>

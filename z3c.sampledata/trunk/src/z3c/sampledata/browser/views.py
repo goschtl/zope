@@ -6,9 +6,9 @@ from zope import formlib
 from zope.formlib import form
 from zope.app.pagetemplate import ViewPageTemplateFile
 
-from lovely.sampledata.interfaces import ISampleDataPlugin, ISampleManager
+from z3c.sampledata.interfaces import ISampleDataPlugin, ISampleManager
 
-from lovely.sampledata import _
+from z3c.sampledata import _
 
 
 class Managers(object):

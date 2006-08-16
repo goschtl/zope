@@ -28,11 +28,11 @@ from zope.app.security.interfaces import IAuthentication
 from zope.app.authentication import principalfolder
 from zope.app.component import hooks
 
-from lovely.sampledata.interfaces import ISampleDataPlugin
+from interfaces import ISampleDataPlugin
 
-from lovely.sampledata.data import DataGenerator
+from data import DataGenerator
 
-from lovely.sampledata import _
+from z3c.sampledata import _
 
 
 class ISamplePrincipalParameters(zope.interface.Interface):

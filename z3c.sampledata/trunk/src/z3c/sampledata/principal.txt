@@ -4,7 +4,7 @@ Principal Sample Data Generation
 
 This gerator creates principals from a CSV file.
 
-  >>> from lovely.sampledata.principal import SamplePrincipals
+  >>> from z3c.sampledata.principal import SamplePrincipals
   >>> generator = SamplePrincipals()
 
 Before we can use the generator we need to setup principal authentication.

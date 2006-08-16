@@ -18,7 +18,7 @@ $Id$
 import zope.interface
 import zope.schema
 
-from lovely.sampledata import _
+from z3c.sampledata import _
 
 
 class ISampleDataPlugin(zope.interface.Interface):

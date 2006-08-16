@@ -2,6 +2,6 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     zcml:condition="have devmode">
 
-  <include package="lovely.sampledata" />
+  <include package="z3c.sampledata" />
 
 </configure>
