@@ -39,6 +39,11 @@ class IImageFile(ITypedFile):
     """image files"""
 IImageFile.setTaggedValue(MTM,re.compile('^image/.+$'))
 
+class IPDFFile(IBinaryFile):
+    """pdf files"""
+IPDFFile.setTaggedValue(MTM,re.compile('application/pdf'))
+IPDFFile.setTaggedValue(MT,'application/pdf')
+
 class IJPGFile(IImageFile, IBinaryFile):
     """jpeg file"""
 IJPGFile.setTaggedValue(MTM,re.compile('image/jpe?g'))
