@@ -1,0 +1,5 @@
+<img src="star_icon.gif" alt="" tal:attributes="src context/++resource++star_icon.gif" />
+<img src="star_icon.gif" alt="" tal:attributes="src context/++resource++star_icon.gif" />
+<img src="star_icon_blank.gif" alt="" tal:attributes="src context/++resource++star_icon_blank.gif" />
+<img src="star_icon_blank.gif" alt="" tal:attributes="src context/++resource++star_icon_blank.gif" />
+<img src="star_icon_blank.gif" alt="" tal:attributes="src context/++resource++star_icon_blank.gif" />

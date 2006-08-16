@@ -11,20 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Rating definition
-
+"""
 $Id$
 """
 __docformat__ = "reStructuredText"
+
 import datetime
 import persistent
 import zope.interface
 from zope.app.container import contained
 
-from lovely.rating import interfaces
+from lovely.rating import IRating
+
 
 class Rating(contained.Contained, persistent.Persistent):
-    zope.interface.implements(interfaces.IRating)
+    zope.interface.implements(IRating)
 
     id = property(lambda self: self._id)
     value = property(lambda self: self._value)

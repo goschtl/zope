@@ -11,15 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Rating test setup
+
 $Id$
 """
-
-import zope.i18nmessageid
-_ = zope.i18nmessageid.MessageFactory('rating')
-
-from lovely.rating.interfaces import *
-
-from lovely.rating.manager import getRatingsManager
-from lovely.rating.definition import RatingDefinition
-from lovely.rating.rating import Rating

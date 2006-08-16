@@ -11,15 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Rating test setup
+
 $Id$
 """
 
-import zope.i18nmessageid
-_ = zope.i18nmessageid.MessageFactory('rating')
+from zope.publisher.browser import BrowserPage
+from zope.app.pagetemplate import ViewPageTemplateFile
 
-from lovely.rating.interfaces import *
+class RatingView(BrowserPage):
 
-from lovely.rating.manager import getRatingsManager
-from lovely.rating.definition import RatingDefinition
-from lovely.rating.rating import Rating
+    template = ViewPageTemplateFile('rating.pt')
+
+    def update(self):
+        pass
+
+    def __call__(self):
+        self.update()
+        return self.template()

@@ -23,17 +23,17 @@ from BTrees import OOBTree
 from zope import annotation
 from zope.app.container import contained
 
-from lovely.rating import interfaces, rating
+from lovely.rating import IRatable, IRatingsManager, IRatingDefinition, rating
 
 class RatingsManager(contained.Contained, persistent.Persistent):
-    zope.interface.implements(interfaces.IRatingsManager)
-    zope.component.adapts(interfaces.IRatable)
+    zope.interface.implements(IRatingsManager)
+    zope.component.adapts(IRatable)
 
     def __init__(self):
         self._storage = OOBTree.OOBTree()
 
     def _getDefinition(self, id):
-        defn = zope.component.queryUtility(interfaces.IRatingDefinition, id)
+        defn = zope.component.queryUtility(IRatingDefinition, id)
         if defn is None:
             raise ValueError('No rating definition named %r found.' % id)
         return defn

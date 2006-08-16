@@ -21,17 +21,14 @@ import zope.interface
 from zope.schema import fieldproperty
 from zope.app.container import contained
 
-from lovely.rating import interfaces
+from lovely.rating import IRatingDefinition
 
 class RatingDefinition(contained.Contained, persistent.Persistent):
-    zope.interface.implements(interfaces.IRatingDefinition)
+    zope.interface.implements(IRatingDefinition)
 
-    title = fieldproperty.FieldProperty(
-        interfaces.IRatingDefinition['title'])
-    scoreSystem = fieldproperty.FieldProperty(
-        interfaces.IRatingDefinition['scoreSystem'])
-    description = fieldproperty.FieldProperty(
-        interfaces.IRatingDefinition['description'])
+    title = fieldproperty.FieldProperty(IRatingDefinition['title'])
+    scoreSystem = fieldproperty.FieldProperty(IRatingDefinition['scoreSystem'])
+    description = fieldproperty.FieldProperty(IRatingDefinition['description'])
 
     def __init__(self, title, scoreSystem, description=None):
         self.title = title
