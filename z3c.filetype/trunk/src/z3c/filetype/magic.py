@@ -1,7 +1,7 @@
 # Found on a russian zope mailing list, and modified to fix bugs in parsing
 # the magic file and string making
 # -- Daniel Berlin <dberlin@dberlin.org>
-import sys, struct, time, re, exceptions, pprint, stat, os,  grp
+import sys, struct, time, re, exceptions, pprint, stat, os
 
 _mew = 0
 
@@ -515,6 +515,7 @@ def username(uid):
 
 def groupname(gid):
     try:
+        import grp
         return grp.getgrgid( gid )[0]
     except:
         return '#%s'%gid
