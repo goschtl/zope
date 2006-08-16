@@ -134,6 +134,7 @@ using `pause`, `retry` and `resume` (this is just for tests--remember,
 calls used in non-threaded Twisted should be non-blocking!)
 [#conflict_error_setup]_.
 
+    >>> import sys
     >>> demo.count
     0
     >>> call = Partial(demo)
@@ -336,16 +337,12 @@ Footnotes
     >>> import threading
     >>> _main = threading.Lock()
     >>> _thread = threading.Lock()
-    >>> def safe_release(lock):
-    ...     while not lock.locked():
-    ...         pass
-    ...     lock.release()
-    ...
     >>> class AltDemo(persistent.Persistent):
     ...     count = 0
     ...     def __call__(self, amount=1):
     ...         self.count += amount
-    ...         safe_release(_main)
+    ...         assert _main.locked()
+    ...         _main.release()
     ...         _thread.acquire()
     ...         return self.count
     ...
@@ -362,25 +359,23 @@ Footnotes
     ...     def run(self):
     ...         self.result = self.call()
     ...         assert _main.locked()
-    ...         safe_release(_main)
+    ...         assert _thread.locked()
+    ...         _thread.release()
+    ...         _main.release()
     ...     def retry(self):
     ...         assert _thread.locked()
-    ...         safe_release(_thread)
+    ...         _thread.release()
     ...         _main.acquire()
     ...     def resume(self, retry=True):
     ...         if retry:
-    ...             while self.thread.isAlive():
+    ...             while _thread.locked():
     ...                 self.retry()
     ...         else:
     ...             while self.thread.isAlive():
     ...                 pass
-    ...         assert _thread.locked()
-    ...         assert _main.locked()
-    ...         safe_release(_thread)
-    ...         safe_release(_main)
-    ...         assert not self.thread.isAlive()
     ...         assert not _thread.locked()
-    ...         assert not _main.locked()
+    ...         assert _main.locked()
+    ...         _main.release()
 
 .. [#conflict_error_failure] Here we create five consecutive conflict errors,
     which causes the call to give up.
