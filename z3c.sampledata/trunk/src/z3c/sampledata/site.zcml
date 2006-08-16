@@ -1,0 +1,40 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <configure
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="have devmode">
+
+  <!-- This is a configuration for the testing environment -->
+
+    <utility
+        factory=".site.SampleSite"
+        provides="lovely.sampledata.interfaces.ISampleDataPlugin"
+        name="lovely.sampledata.site"
+        />
+
+    <utility
+        factory=".site.SampleIntIds"
+        provides="lovely.sampledata.interfaces.ISampleDataPlugin"
+        name="lovely.sampledata.intids"
+        />
+
+    <utility
+        factory=".principal.SamplePrincipals"
+        provides="lovely.sampledata.interfaces.ISampleDataPlugin"
+        name="lovely.sampledata.principals"
+        />
+
+    <SampleManager
+      name="Site with intid utility"
+      >
+      <generator name="lovely.sampledata.site" />
+      <generator
+        name="lovely.sampledata.intids"
+        dependsOn="lovely.sampledata.site"
+        contextFrom="lovely.sampledata.site" />
+    </SampleManager>
+
+  </configure>
+
+</configure>
+

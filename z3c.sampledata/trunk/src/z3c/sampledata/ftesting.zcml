@@ -1,0 +1,69 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+ 
+  <include package="zope.app" />
+
+  <include package="zope.viewlet" file="meta.zcml"/>
+  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="lovely.sampledata" file="meta.zcml" />
+  
+  <include package="zope.app.server" />
+  <include package="zope.app.authentication" />
+  <securityPolicy
+    component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+  <include package="zope.app.securitypolicy" />
+  <include package="zope.app.session" />
+  
+  <include package="zope.contentprovider"/>
+  <include package="zope.viewlet"/>
+  <include package="zope.formlib"/>
+  <include package="lovely.sampledata"/>
+  
+  <role id="zope.Anonymous" title="Everybody"
+        description="All users have this role implicitly" />
+  <role id="zope.Manager" title="Site Manager" />
+  <grantAll role="zope.Manager" />
+  <principal
+   id="zope.manager"
+   title="Administrator"
+   login="mgr"
+   password="mgrpw" />
+  <grant
+   role="zope.Manager"
+   principal="zope.manager"
+   />
+  
+  <unauthenticatedPrincipal
+    id="zope.anybody"
+    title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+    id="zope.Anybody"
+    title="Unauthenticated Users" 
+    />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Authenticated Users" 
+    />
+
+  <everybodyGroup
+    id="zope.Everybody"
+    title="All Users" 
+    />
+
+  <grant permission="zope.View"
+         role="zope.Anonymous" />
+  <grant permission="zope.app.dublincore.view"
+         role="zope.Anonymous" />
+
+  <SampleManager
+    name="samplemanager"
+    >
+    <generator
+      name="lovely.principals"
+      />
+  </SampleManager>
+  
+</configure>

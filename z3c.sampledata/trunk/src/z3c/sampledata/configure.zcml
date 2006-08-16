@@ -1,0 +1,18 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <utility
+    name="lovely.site"
+    factory="lovely.sampledata.site.SampleSite"
+    provides="lovely.sampledata.interfaces.ISampleDataPlugin"
+    />
+
+  <utility
+    name="lovely.principals"
+    factory="lovely.sampledata.principal.SamplePrincipals"
+    provides="lovely.sampledata.interfaces.ISampleDataPlugin"
+    />
+
+  <include package=".browser" />
+
+</configure>
+
