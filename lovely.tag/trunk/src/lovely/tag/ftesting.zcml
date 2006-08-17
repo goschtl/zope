@@ -67,7 +67,6 @@
   <include package="z3c.sampledata" file="site.zcml"/>
 
   <include package="lovely.tag"/>
-  <include package="lovely.tag.browser" file="tag.zcml"/>
   <include package="lovely.tag" file="sampledata.zcml"/>
 
   <grant permission="zope.View"
