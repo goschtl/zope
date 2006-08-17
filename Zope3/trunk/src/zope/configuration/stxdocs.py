@@ -54,7 +54,7 @@ def _directiveDocs(name, schema, handler, info, indent_offset=0):
         # We do not want to specify the whole path; starting at the 'zope'
         # package is enough.
         base_dir = os.path.dirname(os.path.dirname(
-            zope.configuration.__file__)[:-4]
+            zope.configuration.__file__))[:-4]
         file = info.file.replace(base_dir, '')
 
         info_text = 'File %s, lines %i - %i.' %(file, info.line, info.eline)
