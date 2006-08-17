@@ -1,0 +1,34 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <!-- Permission declarations -->
+
+  <permission
+      id="lovely.flickrconnector.UpdateConnector"
+      title="Update Flickr Connector"
+      description="Allow updating of the connector configuration."
+      />
+
+  <permission
+      id="lovely.flickrconnector.AccessConnector"
+      title="Access Flickr Connector"
+      description="Allow accessing the Flickr connector."
+      />
+
+  <!-- Connector Setup -->
+
+  <class class=".connector.FlickrConnector">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="lovely.flickrconnector.UpdateConnector"
+        attributes="update"
+        />
+    <require
+        permission="lovely.flickrconnector.AccessConnector"
+        attributes="auth test photos"
+        />
+  </class>
+
+</configure>
