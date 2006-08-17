@@ -336,7 +336,7 @@ class Components(object):
             return False
 
         self._handler_registrations[:] = new
-        self.adapters.unsubscribe(required, None)
+        self.adapters.unsubscribe(required, None, factory)
 
         zope.event.notify(interfaces.Unregistered(
             HandlerRegistration(self, required, name, factory, '')
