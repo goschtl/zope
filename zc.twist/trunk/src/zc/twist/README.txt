@@ -369,9 +369,8 @@ Footnotes
     ...         _thread.release()
     ...         _main.acquire()
     ...     def resume(self, retry=True):
-    ...         if retry:
-    ...             while self.running:
-    ...                 self.retry()
+    ...         while self.running:
+    ...             self.retry()
     ...         while self.thread.isAlive():
     ...             pass
     ...         assert not _thread.locked()
@@ -389,16 +388,10 @@ Footnotes
     ...     runner.retry()
     ...
     >>> runner.resume(retry=False)
-    >>> _thread.locked()
-    False
-    >>> _main.locked()
-    False
     >>> demo.count
     4
     >>> call.attempt_count
     5
-    >>> runner.thread.isAlive()
-    False
     >>> deferred = runner.result
 
 .. [#use_original_demo] The second demo has too much thread code in it:
