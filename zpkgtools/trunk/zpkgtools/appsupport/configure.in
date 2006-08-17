@@ -77,8 +77,8 @@ get_python() {
             FULL="$DIR/$EXECUTABLE"
             if [ -x "$FULL" -a -f "$FULL" ]; then
                 CMD="import string,sys;a=string.split(sys.version)[0]"
-		# Strip trailing + from version number
-		CMD="$CMD;a=(a[-1]=='+')and(a[:-1])or(a);print a"
+                # Strip trailing + from version number
+                CMD="$CMD;a=(a[-1]=='+')and(a[:-1])or(a);print a"
                 VERSION=`"$FULL" -c "$CMD"`
                 out "  Python version $VERSION found at $FULL"
                 if [ "$VERSION" = "$TARGET" ]; then
@@ -89,7 +89,7 @@ get_python() {
                     i=1;
                     for ACC in $ACCEPTABLE; do
                         i=`expr $i + 1`
-			for SLOT in $FOUNDLIST; do
+                        for SLOT in $FOUNDLIST; do
                             if [ $SLOT -eq $i ]; then
                                 # slot "i" already populated.  This means we've
                                 # already found this particular version of
