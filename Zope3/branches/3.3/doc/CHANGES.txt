@@ -8,6 +8,12 @@ Zope Changes
 
   Zope 3.3.0b2 (UNRELEASED)
 
+    New features
+
+      - Added two new verbs for zcml:condition, 'not-have' and
+        'not-installed', which are the negated counterparts to 'have'
+        and 'installed'.
+
     Bugfixes
 
       - Fixed issue 507: Default configuration exposes template code and
