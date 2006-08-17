@@ -72,6 +72,21 @@ def getForm(forms, id=None, name=None, action=None, index=None):
 
     return disambiguate(matching_forms, '', index)
 
+def controlFactory(control, form, browser):
+    if isinstance(control, ClientForm.Item):
+        # it is a subcontrol
+        return ItemControl(control, form, browser)
+    else:
+        t = control.type
+        if t in ('checkbox', 'select', 'radio'):
+            return ListControl(control, form, browser)
+        elif t in ('submit', 'submitbutton'):
+            return SubmitControl(control, form, browser)
+        elif t=='image':
+            return ImageControl(control, form, browser)
+        else:
+            return Control(control, form, browser)
+
 
 class Control(SetattrErrorsMixin):
     """A control of a form."""
@@ -370,19 +385,3 @@ class Form(SetattrErrorsMixin):
                                            include_subcontrols=True)
         control, form = disambiguate(intermediate, msg, index)
         return controlFactory(control, form, self.browser)
-
-
-def controlFactory(control, form, browser):
-    if isinstance(control, ClientForm.Item):
-        # it is a subcontrol
-        return ItemControl(control, form, browser)
-    else:
-        t = control.type
-        if t in ('checkbox', 'select', 'radio'):
-            return ListControl(control, form, browser)
-        elif t in ('submit', 'submitbutton'):
-            return SubmitControl(control, form, browser)
-        elif t=='image':
-            return ImageControl(control, form, browser)
-        else:
-            return Control(control, form, browser)

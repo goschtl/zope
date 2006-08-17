@@ -17,20 +17,31 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 from BeautifulSoup import BeautifulSoup
+from StringIO import StringIO
 from zope.testbrowser import interfaces
 from zope.testbrowser.forms import getControl, getForm, getAllControls, \
     controlFactory
 from zope.testbrowser.real.proxy import ServerManager, PROXY_PORT
 from zope.testbrowser.utilities import disambiguate, zeroOrOne, \
     SetattrErrorsMixin, PystoneTimer
+import ClientForm
 import re
 import urlparse
-
 
 try:
     from zope import interface
 except ImportError:
     from dummymodules import interface
+
+class DummyResponse(object):
+    def __init__(self, contents, url):
+        self.stringIo = StringIO(contents)
+        self.url = url
+    def read(self, size):
+        return self.stringIo.read(size)
+
+    def geturl(self):
+        return self.url
 
 def getTagText(soup):
     text = str(soup)
@@ -46,6 +57,7 @@ class Browser(SetattrErrorsMixin):
     _contents = None
     _counter = 0
     _soup = None
+    _forms = None
 
     def __init__(self, url=None):
         self.serverManager = ServerManager()
@@ -182,23 +194,15 @@ class Browser(SetattrErrorsMixin):
         link, n = disambiguate(links, msg, index)
         return Link(link, n, self)
 
+    def _getForms(self):
+        if self._forms is None:
+            dummy_response = DummyResponse(self.contents, self.url)
+            self._forms = ClientForm.ParseResponse(dummy_response)
+        return self._forms
+
     def getControl(self, label=None, name=None, index=None):
         """See zope.testbrowser.interfaces.IBrowser"""
-        import ClientForm
-        from StringIO import StringIO
-        class DummyResponse(object):
-            def __init__(self, contents, url):
-                self.stringIo = StringIO(contents)
-                self.url = url
-            def read(self, size):
-                return self.stringIo.read(size)
-
-            def geturl(self):
-                return self.url
-
-        dummy_response = DummyResponse(self.contents, self.url)
-        forms = ClientForm.ParseResponse(dummy_response)
-        control, form = getControl(forms, label, name, index)
+        control, form = getControl(self._getForms(), label, name, index)
         return controlFactory(control, form, self)
 
     def getForm(self, id=None, name=None, action=None, index=None):
@@ -209,6 +213,7 @@ class Browser(SetattrErrorsMixin):
         self._counter += 1
         self._contents = None
         self._soup = None
+        self._forms = None
 
 
 class Link(SetattrErrorsMixin):
