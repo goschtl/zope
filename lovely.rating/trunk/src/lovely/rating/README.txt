@@ -12,9 +12,12 @@ Let's first create an object that can be rated:
   >>> import zope.annotation
   >>> import zope.interface
 
+  >>> from lovely.rating.interfaces import (IRatable,
+  ...                                       IRatingsManager,
+  ...                                       IRatingDefinition)
   >>> class Application(object):
   ...     zope.interface.implements(zope.annotation.IAttributeAnnotatable,
-  ...                               rating.interfaces.IRatable)
+  ...                               IRatable)
   ...     def __init__(self, name):
   ...         self.name = name
   ...
@@ -36,7 +39,7 @@ is to make it attribute-annotatble. Now we register an adapter that can adapt
 
 It is now trivial to get the ratings manager.
 
-  >>> manager = rating.interfaces.IRatingsManager(kde)
+  >>> manager = IRatingsManager(kde)
   >>> manager
   <RatingsManager for <Application u'KDE'>>
 
@@ -66,7 +69,7 @@ Now we can create the rating definition and register it as a utility:
   >>> usability = rating.RatingDefinition(
   ...     u'Usability', fiveSteps, u'How is the usability of the application?')
   >>> zope.component.provideUtility(
-  ...     usability, rating.interfaces.IRatingDefinition, name='usability')
+  ...     usability, IRatingDefinition, name='usability')
 
 We are finally ready to rate KDE for usability:
 
