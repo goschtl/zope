@@ -4,8 +4,8 @@
    i18n_domain="zope"
    >
 
-  <!-- Turn on the devmode -->
-  <meta:provides feature="devmode" />
+  <!-- Turn off the devmode -->
+  <meta:provides feature="nodevmode" />
 
   <include file="ftesting-base.zcml" />
 
