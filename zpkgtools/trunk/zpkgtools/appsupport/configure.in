@@ -27,7 +27,10 @@ TARGET="2.4.3"
 # sys.version) below in "best" to "worst" order, not including the
 # target version.  Up to six acceptable python versions are allowed.
 # Do not include the target version number in this list!
-ACCEPTABLE="2.4.2 2.4.1"
+
+# We need to list future Python versions here as well, otherwise they
+# wouldn't be acceptable :(
+ACCEPTABLE="2.4.7 2.4.6 2.4.5 2.4.4 2.4.2 2.4.1"
 
 # provide the executable names for all the acceptable versions
 # (and the target version) below
@@ -141,14 +144,15 @@ get_python() {
             FOUNDVERSION=$FOUNDVERSION6
         fi
         out
-        out "  !! WARNING !!"
         out "  An acceptable, but non-optimal Python version ($FOUNDVERSION)"
-        out "  was found at '$FOUND'."
-        out "  But consider installing version '$TARGET' before running"
-        out "  'make'.  If this isn't the Python version or interpreter"
-        out "  instance you wish to use, you may specify a Python interpreter"
-        out "  manually by rerunning the ./configure script with the"
-        out "  '--with-python' option."
+        out "  was found at '$FOUND'.  This may be because you have an older "
+        out "  or a newer Python version than the optimal version, $TARGET."
+        out "  If it's an older version, consider installing $TARGET and run"
+        out "  'configure' again."
+        out
+        out "  If you're not happy with the choice 'configure' made, you can"
+        out "  always manually specify a Python interpreter by rerunning"
+        out "  the 'configure' script with the '--with--python' option."
     fi
     out ""
 }
