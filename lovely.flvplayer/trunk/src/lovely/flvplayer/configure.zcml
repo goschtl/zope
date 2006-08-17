@@ -1,0 +1,15 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
+
+ <configure zcml:condition="have zc.resourcelibrary">
+  <resourceLibrary name="lovely.flvplayer"
+                   require="z3c.javascript.prototype
+                            z3c.javascript.swfobject">
+   <directory source="resources" include="flvplayer.js"/>
+  </resourceLibrary>
+ </configure>
+ 
+</configure>
