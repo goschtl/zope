@@ -1,18 +1,20 @@
 from zope.interface import implements
 from zope import component
 from zope.app.file import Image
-from zope.app.file.interfaces import IImage
+from zope.app.file.interfaces import IFile
 from zope.cachedescriptors.property import readproperty
 from PIL import Image as PILImage
 from cStringIO import StringIO
 from interfaces import IProcessableImage
 from PIL import ImageFile
+from types import StringType
+
 # see http://mail.python.org/pipermail/image-sig/2003-May/002228.html
 ImageFile.MAXBLOCK = 1024*1024
 
 class ProcessableImage(object):
 
-    component.adapts(IImage)
+    component.adapts(IFile)
     implements(IProcessableImage)
 
     def __init__(self,image):
@@ -22,7 +24,12 @@ class ProcessableImage(object):
 
     @readproperty
     def pimg(self):
-        return PILImage.open(StringIO(self.context.data))
+        data = self.context.data
+        # only make it a buffer if we need to, so we can handle
+        # efficient files, like from z3c.extfile
+        if type(data)==StringType:
+            data = StringIO(data)
+        return PILImage.open(data)
         
     def _toImage(self,*args,**kw):
         """returns an Image object from the given PIL image"""

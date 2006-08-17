@@ -6,6 +6,7 @@ from zope.dublincore.interfaces import IZopeDublinCore
 import zope.datetime 
 import time
 from datetime import datetime
+from zope.app.file.image import getImageInfo
 
 def _getNewSize(image_size, desired_size, keep_aspect):
     """Resizes image_size to desired_size, optionally keeping the
@@ -96,7 +97,8 @@ class ResizedImageView(ImageProcessorView):
 
     def __init__(self,context,request):
         super(ResizedImageView,self).__init__(context,request)
-        self.size = self.context.getImageSize()
+        t,w,h = getImageInfo(self.context.data)
+        self.size = (w,h)
         self.width = self.request.form.get('w',self.size[0])
         self.height = self.request.form.get('h',self.size[1])
 
