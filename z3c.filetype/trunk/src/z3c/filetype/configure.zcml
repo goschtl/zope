@@ -13,4 +13,8 @@
 
  
  <adapter factory=".adapters.TypedFileType"/>
+
+ <adapter factory=".size.ImageFileSized" />
+
+ 
 </configure>
