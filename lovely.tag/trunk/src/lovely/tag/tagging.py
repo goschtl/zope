@@ -77,6 +77,8 @@ class UserTagging(object):
             return self._engine.getTags(items=(self._id,),
                                         users=(self._pid,))
         def fset(self, value):
+            if value is None:
+                return
             return self._engine.update(self._id, self._pid, value)
         return property(**locals())
 

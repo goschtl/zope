@@ -133,5 +133,6 @@ class IUserTagging(zope.interface.Interface):
     principal"""
 
     tags = zope.schema.Set(title=u'Tags',
-                           description=u'Tags for the current User')
+                           description=u'Tags for the current User',
+                           required=False)
     
