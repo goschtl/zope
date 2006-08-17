@@ -18,6 +18,8 @@ $Id$
 __docformat__ = "reStructuredText"
 from BeautifulSoup import BeautifulSoup
 from zope.testbrowser import interfaces
+from zope.testbrowser.forms import getControl, getForm, getAllControls, \
+    controlFactory
 from zope.testbrowser.real.proxy import ServerManager, PROXY_PORT
 from zope.testbrowser.utilities import disambiguate, zeroOrOne, \
     SetattrErrorsMixin, PystoneTimer
@@ -182,7 +184,22 @@ class Browser(SetattrErrorsMixin):
 
     def getControl(self, label=None, name=None, index=None):
         """See zope.testbrowser.interfaces.IBrowser"""
-        raise NotImplementedError
+        import ClientForm
+        from StringIO import StringIO
+        class DummyResponse(object):
+            def __init__(self, contents, url):
+                self.stringIo = StringIO(contents)
+                self.url = url
+            def read(self, size):
+                return self.stringIo.read(size)
+
+            def geturl(self):
+                return self.url
+
+        dummy_response = DummyResponse(self.contents, self.url)
+        forms = ClientForm.ParseResponse(dummy_response)
+        control, form = getControl(forms, label, name, index)
+        return controlFactory(control, form, self)
 
     def getForm(self, id=None, name=None, action=None, index=None):
         """See zope.testbrowser.interfaces.IBrowser"""
