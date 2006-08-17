@@ -357,10 +357,12 @@ Footnotes
     ...         self.thread.start()
     ...         _main.acquire()
     ...     def run(self):
+    ...         self.running = True
     ...         self.result = self.call()
     ...         assert _main.locked()
     ...         assert _thread.locked()
     ...         _thread.release()
+    ...         self.running = False
     ...         _main.release()
     ...     def retry(self):
     ...         assert _thread.locked()
@@ -368,11 +370,10 @@ Footnotes
     ...         _main.acquire()
     ...     def resume(self, retry=True):
     ...         if retry:
-    ...             while _thread.locked():
+    ...             while self.running:
     ...                 self.retry()
-    ...         else:
-    ...             while self.thread.isAlive():
-    ...                 pass
+    ...         while self.thread.isAlive():
+    ...             pass
     ...         assert not _thread.locked()
     ...         assert _main.locked()
     ...         _main.release()
