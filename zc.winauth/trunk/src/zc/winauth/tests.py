@@ -155,7 +155,7 @@ def test_suite():
                   optionflags=doctest.NORMALIZE_WHITESPACE+doctest.ELLIPSIS,
         ))
 
-    if sys.platform.startswith('win') and 'FIPS_DEVEL_MODE' not in os.environ:
+    if sys.platform.startswith('win'):
         wap = zc.winauth.winauth.WindowsAuthenticationPlugin()
 
         # if it appears that the test user has been configured, do the
