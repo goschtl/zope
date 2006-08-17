@@ -4,7 +4,7 @@ documentation that is relevant to the usage of this UI and Zope 3 in general.
 
         Other Help / Documentation
 
-              - <a href="/++apidoc++" target="_blank">API Docs</a>
+              - <a href="/++apidoc++" target="_blank">API Docs</a> (To view this, set _devmode on_ in etc/zope.conf)
 
               - <a href="http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/FrontPage" target="_blank">Documentation Wiki</a>
 
