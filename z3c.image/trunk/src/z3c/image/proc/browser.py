@@ -7,6 +7,8 @@ import zope.datetime
 import time
 from datetime import datetime
 from zope.app.file.image import getImageInfo
+from types import StringType
+from zope.security.proxy import isinstance
 
 def _getNewSize(image_size, desired_size, keep_aspect):
     """Resizes image_size to desired_size, optionally keeping the
@@ -97,7 +99,11 @@ class ResizedImageView(ImageProcessorView):
 
     def __init__(self,context,request):
         super(ResizedImageView,self).__init__(context,request)
-        t,w,h = getImageInfo(self.context.data)
+        if not isinstance(context.data, str):
+            data = self.context.data.read(256)
+        else:
+            data = self.context.data
+        t,w,h = getImageInfo(data)
         self.size = (w,h)
         self.width = self.request.form.get('w',self.size[0])
         self.height = self.request.form.get('h',self.size[1])
