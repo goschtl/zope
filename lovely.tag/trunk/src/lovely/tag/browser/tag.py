@@ -74,7 +74,7 @@ class RelatedView(BrowserView, TaggingMixin):
         return normalize(cloud, maxTags)
 
 
-def normalize(cloud, maxTags=100):
+def normalize(cloud, maxTags=100, maxValue=6):
     if len(cloud) == 0:
         return []
     minmax = sorted(cloud, key=lambda i: i[1],reverse=True)
@@ -87,7 +87,7 @@ def normalize(cloud, maxTags=100):
     maxFreq = minmax[0][1]
     freqRange = maxFreq-minFreq
     if freqRange>0:
-        ratio = 6.0/freqRange
+        ratio = maxValue/freqRange
     else:
         ratio = None
     res = []
