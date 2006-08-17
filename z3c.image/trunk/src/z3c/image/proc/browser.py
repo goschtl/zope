@@ -1,4 +1,4 @@
-from zope.app.publisher.browser import BrowserView
+from zope.publisher.browser import BrowserView
 from cStringIO import StringIO
 from zope.app.file import Image
 from interfaces import IProcessableImage
