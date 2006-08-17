@@ -31,6 +31,12 @@ http://prototype.conio.net/"
 
 ----------------------------------------------------------------------
 
+SWFObject
+---------
+
+SWFObject is released under the MIT License. This means (basically)
+that you can use it for whatever you want with no restrictions.
+
 
 script.aculo.us
 ---------------
