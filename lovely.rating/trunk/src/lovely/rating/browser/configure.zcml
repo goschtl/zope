@@ -11,6 +11,14 @@
       template="rating.pt"
       />
 
+  <page 
+      for="*" 
+      name="ratingForm" 
+      permission="zope.Public"
+      layer="lovely.layer.mediaportal.IMediaPortalBrowserLayer"
+      template="rating_form.pt"
+      />
+
   <resource
       name="star_icon.gif"
       file="star_icon.gif"

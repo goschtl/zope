@@ -29,3 +29,17 @@ class RatingView(BrowserPage):
     def __call__(self):
         self.update()
         return self.template()
+
+
+class RatingForm(BrowserPage):
+
+    template = ViewPageTemplateFile('rating_form.pt')
+
+    def update(self):
+        rate = self.request.get('rateContent', None)
+        if rate is not None:
+            # TODO: implement rate content here
+
+    def __call__(self):
+        self.update()
+        return self.template()

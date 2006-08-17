@@ -5,6 +5,9 @@ Rating Package
 The rating package implements a rating system which can be plugged to any
 content type.
 
+  >>> from lovely.rating import IRatable
+  >>> from lovely.rating import IRatingsManager
+  >>> from lovely.rating import IRatingDefinition
   >>> from lovely import rating
 
 Let's first create an object that can be rated:
