@@ -163,6 +163,12 @@ class CheckBoxWidgetTest(SimpleInputWidgetTest):
         del self._widget.request.form['field.foo.used']
         self.assertRaises(MissingInputError, self._widget.getInputValue)
 
+    def test_required(self):
+        # checkbox widgets are never required, since there's no way to
+        # set it to "no value"
+        self.failIf(self._widget.required)
+        self.assert_(self._widget.context.required)
+
 
 def test_suite():
     return unittest.TestSuite((

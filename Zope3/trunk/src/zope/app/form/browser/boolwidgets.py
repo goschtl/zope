@@ -37,6 +37,10 @@ class CheckBoxWidget(SimpleInputWidget):
     default = 0
     extra = ''
 
+    def __init__(self, context, request):
+        super(CheckBoxWidget, self).__init__(context, request)
+        self.required = False
+
     def __call__(self):
         """Render the widget to HTML."""
         value = self._getFormValue()
@@ -94,19 +98,27 @@ class CheckBoxWidget(SimpleInputWidget):
 
 def BooleanRadioWidget(field, request, true=_('on'), false=_('off')):
     vocabulary = SimpleVocabulary.fromItems( ((true, True), (false, False)) ) 
-    return RadioWidget(field, vocabulary, request)
+    widget = RadioWidget(field, vocabulary, request)
+    if field.required:
+        widget.required = False
+    return widget
 
 
 def BooleanSelectWidget(field, request, true=_('on'), false=_('off')):
     vocabulary = SimpleVocabulary.fromItems( ((true, True), (false, False)) )
     widget = SelectWidget(field, vocabulary, request)
     widget.size = 2
+    if field.required:
+        widget.required = False
     return widget
 
 
 def BooleanDropdownWidget(field, request, true=_('on'), false=_('off')):
     vocabulary = SimpleVocabulary.fromItems( ((true, True), (false, False)) )
-    return DropdownWidget(field, vocabulary, request)
+    widget = DropdownWidget(field, vocabulary, request)
+    if field.required:
+        widget.required = False
+    return widget
 
 
 _msg_true = _("True")
