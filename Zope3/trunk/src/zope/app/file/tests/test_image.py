@@ -156,6 +156,10 @@ class TestSized(unittest.TestCase):
         self.assertEqual(s.sizeForDisplay().mapping['width'], '?')
         self.assertEqual(s.sizeForDisplay().mapping['height'], '?')
 
+    def test_getImageInfo(self):
+        from zope.app.file.image import getImageInfo
+        t, w, h = getImageInfo("\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x00\x00\x01\x00\x01\x00\x00\xff\xdb\x00C")
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestImage),
