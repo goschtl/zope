@@ -1,0 +1,66 @@
+=======================
+flickr.photos Namespace
+=======================
+
+This namespace allows to deal with photos. Tag, search,...
+
+  >>> import lovely.flickr.photos
+  >>> from lovely import flickr
+
+Here are the API key and shared secret required to execute the API calls:
+
+  >>> api = flickr.photos.APIPhotos(API_KEY)
+
+
+``search()``
+------------
+
+See ``http://www.flickr.com/services/api/flickr.photos.search.html``
+
+  >>> photos = api.search(tags='dornbirn')
+
+the ``Photos`` object contains a list of single ``Photo`` objects.
+
+  >>> photos
+  <Photos entries=4>
+  >>> photos.page
+  2
+  >>> photos.pages
+  89
+  >>> photos.perpage
+  10
+  >>> photos.total
+  881
+
+A photo itself has some properties too:
+
+  >>> photo = photos[0]
+  >>> photo
+  <Photo 2636>
+  >>> photo.id
+  2636
+  >>> photo.owner
+  u'47058503995@N01'
+  >>> photo.secret
+  u'a123456'
+  >>> photo.server
+  2
+  >>> photo.title
+  u'test_04'
+  >>> photo.ispublic
+  1
+  >>> photo.isfriend
+  0
+  >>> photo.isfamily
+  0
+
+of course we can pass unicode characters too :)
+
+  >>> api.search(tags=u'Österreich')
+  <Photos entries=1>
+
+You can use the non-pythonic way to query photos too, the result to a query
+is the same:
+
+  >>> flickr.photos.search(API_KEY, tags='dornbirn')
+  <Photos entries=4>

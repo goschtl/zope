@@ -1,0 +1,37 @@
+=====================
+flickr.auth Namespace
+=====================
+
+Usually we test offline as the Yahoo! fraud protection mechanisms block us
+after some testing. :)
+
+  >>> from lovely import flickr
+
+This test connects online to flickr. We need a key and a shared secret:
+
+  >>> API_KEY = u'a8d135acf227a6c9471c5b6d24877080'
+  >>> SECRET = u'cf4c77be4d206e6a'
+
+Furthermore, we use the cookies from a previous authenticated flickr session
+to log into flickr.com:
+
+  >>> COOKIES = u'cookie_accid=3948774; ' + \
+  ...           u'cookie_epass=3ea9f1eecf2886fe8adab2f65884bf1c'
+
+Let's now use this information to authenticate against flickr and retrieve an
+authentication token:
+
+  >>> import lovely.flickr.auth
+  >>> api = flickr.auth.APIAuth(API_KEY, SECRET)
+  >>> frob = flickr.auth.getFrob(API_KEY, SECRET)
+  >>> api.authenticateCookie(frob, [u'write'], COOKIES)
+  >>> token = api.getToken(frob).token
+
+Now that we are logged in, let's ask some interesting questions; for example a
+list of contacts:
+
+  >>> import lovely.flickr.contacts
+  >>> contacts = lovely.flickr.contacts.APIContacts(API_KEY, SECRET, token)
+
+  >>> contacts.getList()
+  <Contacts entries=3>

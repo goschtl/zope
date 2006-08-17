@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rsp stat="ok">
+<auth>
+  <token>909163-79a56fd4b2ca4a76</token>
+  <perms>write</perms>
+  <user nsid="97713796@N00" username="lovelyflickr" fullname="Lovely Flickr" />
+</auth>
+</rsp>

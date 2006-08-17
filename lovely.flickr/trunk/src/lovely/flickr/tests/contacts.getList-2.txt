@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rsp stat="ok">
+<contacts>
+  <contact nsid="12037949629@N01" username="Eric" iconserver="1"
+           realname="Eric Costello"
+           friend="1" family="0" ignored="1" />
+  <contact nsid="41578656547@N01" username="cal_abc" iconserver="1"
+           realname="Cal Henderson"
+           friend="1" family="1" ignored="0" />
+</contacts>
+</rsp>

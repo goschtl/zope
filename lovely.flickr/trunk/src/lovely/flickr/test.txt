@@ -1,0 +1,54 @@
+======================
+flickr.test Namespace
+======================
+
+This namespace allows to connect photos with blogs.
+
+  >>> import lovely.flickr.test
+  >>> from lovely import flickr
+
+As you may know already, this implementation provides an object-oriented and
+procedural implementation of the Flickr API. For this namespace we need an
+authentication token, so get it.
+
+  >>> api = flickr.test.APITest(API_KEY, SECRET, TOKEN)
+
+
+``echo()``
+----------
+
+See ``http://flickr.com/services/api/flickr.test.echo.html``
+
+Echo the server to make sure it is alive.
+
+  >>> flickr.test.echo(api_key=API_KEY, foo='bar')
+  {'api_key': 'ffd1eeacf227a6c9471c5b6d24ad77099', 'method': 'flickr.test.echo',
+   'foo': 'bar'}
+
+  >>> api.echo(foo='bar')
+  {'api_key': 'ffd1eeacf227a6c9471c5b6d24ad77099', 'method': 'flickr.test.echo',
+   'foo': 'bar'}
+
+
+``login()``
+----------
+
+See ``http://flickr.com/services/api/flickr.test.login.html``
+
+Provide all necessary authentication information and login to the service:
+
+  >>> flickr.test.login(API_KEY, SECRET, TOKEN)
+  <User u'lovelyflickr' - None>
+  >>> api.login()
+  <User u'lovelyflickr' - None>
+
+``null()``
+----------
+
+See ``http://flickr.com/services/api/flickr.test.null.html``
+
+Connect to the service with all credentials and return nothing:
+
+  >>> flickr.test.null(API_KEY, SECRET, TOKEN)
+
+  >>> api.null()

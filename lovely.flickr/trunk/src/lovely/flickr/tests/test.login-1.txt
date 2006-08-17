@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rsp stat="ok">
+<user id="97713796@N00">
+  <username>lovelyflickr</username>
+</user>
+</rsp>

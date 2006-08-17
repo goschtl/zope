@@ -1,0 +1,72 @@
+=========================
+flickr.contacts Namespace
+=========================
+
+This namespace allows to view your contacts.
+
+  >>> import lovely.flickr.contacts
+  >>> from lovely import flickr
+
+As you may know already, this implementation provides an object-oriented and
+procedural implementation of the Flickr API. For this namespace we need an
+authentication token, so get it.
+
+  >>> api = flickr.contacts.APIContacts(API_KEY, SECRET, TOKEN)
+
+
+``getList()``
+------------
+
+See ``http://www.flickr.com/services/api/flickr.contacts.getList.html``
+
+Get a list of all my contacts:
+
+  >>> contacts = api.getList()
+  >>> contacts
+  <Contacts entries=3>
+
+
+A contact itself has the following properties
+
+  >>> contact = contacts[0]
+  >>> contact
+  <Contact 12037949629@N01>
+
+  >>> contact.nsid
+  u'12037949629@N01'
+  >>> contact.username
+  u'Eric'
+  >>> contact.iconserver
+  1
+  >>> contact.realname
+  u'Eric Costello'
+  >>> contact.friend
+  1
+  >>> contact.family
+  0
+  >>> contact.ignored
+  1
+
+Show my friends only:
+
+  >>> api.getList('friends')
+  <Contacts entries=2>
+
+Now show my family only:
+
+  >>> api.getList('family')
+  <Contacts entries=1>
+
+
+``getPublicList()``
+-------------------
+
+See ``http://www.flickr.com/services/api/flickr.contacts.getPublicList.html``
+
+  >>> contacts = api.getPublicList('lovelyflickr')
+  >>> contacts
+  <Contacts entries=3>
+
+  >>> contact = contacts[0]
+  >>> contact
+  <Contact 12037949629@N01>

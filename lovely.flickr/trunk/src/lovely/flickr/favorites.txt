@@ -1,0 +1,111 @@
+==========================
+flickr.favorites Namespace
+==========================
+
+This namespace allows to view and manage your favorite photos.
+
+  >>> import lovely.flickr.favorites
+  >>> from lovely import flickr
+
+As you may know already, this implementation provides an object-oriented and
+procedural implementation of the Flickr API. For this namespace we need an
+authentication token, so get it.
+
+  >>> api = flickr.favorites.APIFavorites(API_KEY, SECRET, TOKEN)
+
+
+``getPublicList()``
+-------------------
+
+See ``http://www.flickr.com/services/api/flickr.favorites.getPublicList.html``
+
+Get the public list of your favorite photos:
+
+  >>> photos = api.getPublicList('47058503995@N01')
+  >>> photos
+  <Photos entries=4>
+
+  >>> photo = photos[0]
+  >>> photo
+  <Photo 2636>
+
+Of course you can also just call the API Function:
+
+  >>> flickr.favorites.getPublicList(API_KEY, '47058503995@N01')
+  <Photos entries=4>
+
+
+``getList()``
+------------
+
+See ``http://www.flickr.com/services/api/flickr.favorites.getList.html``
+
+Get a list of all my contacts:
+
+  >>> photos = api.getList('47058503995@N01')
+  >>> photos
+  <Photos entries=3>
+
+  >>> photo = photos[0]
+  >>> photo
+  <Photo 2635>
+
+You can also specify the list of extra meta data that you would like to
+receive:
+
+  >>> photos = photos = api.getList(
+  ...     '47058503995@N01',
+  ...     extra=['license', 'date_upload', 'date_taken', 'owner_name',
+  ...            'icon_server', 'original_format', 'last_update'])
+
+  >>> photos
+
+  >>> photo = photos[0]
+  >>> photo.license
+
+  >>> photo.date_upload
+
+  >>> photo.date_taken
+
+  >>> photo.owner_name
+
+  >>> photo.icon_server
+
+  >>> photo.original_format
+
+  >>> photo.last_update
+
+Of course you can also just call the API Function:
+
+  >>> flickr.favorites.getList(API_KEY, SECRET, TOKEN, '47058503995@N01')
+  <Photos entries=3>
+
+
+``add()``
+---------
+
+See ``http://www.flickr.com/services/api/flickr.favorites.add.html``
+
+Add a photo to the list of favorites:
+
+  >>> api.add('3000')
+
+
+Of course you can also just call the API Function:
+
+  >>> flickr.favorites.add(API_KEY, SECRET, TOKEN, '3001')
+
+
+``remove()``
+------------
+
+See ``http://www.flickr.com/services/api/flickr.favorites.remove.html``
+
+Remove a photo from the list of favorites:
+
+  >>> api.remove('3000')
+
+
+Of course you can also just call the API Function:
+
+  >>> flickr.favorites.remove(API_KEY, SECRET, TOKEN, '3001')

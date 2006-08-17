@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rsp stat="ok">
+<contacts>
+  <contact nsid="12037949629@N01" username="Eric" iconserver="1"
+           ignored="1" />
+  <contact nsid="12037949631@N01" username="neb" iconserver="1"
+           ignored="0" />
+  <contact nsid="41578656547@N01" username="cal_abc" iconserver="1"
+           ignored="0" />
+</contacts></rsp>

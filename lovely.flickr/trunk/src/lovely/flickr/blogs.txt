@@ -1,0 +1,42 @@
+======================
+flickr.blogs Namespace
+======================
+
+This namespace allows to connect photos with blogs.
+
+  >>> import lovely.flickr.blogs
+  >>> from lovely import flickr
+
+As you may know already, this implementation provides an object-oriented and
+procedural implementation of the Flickr API. For this namespace we need an
+authentication token, so get it.
+
+  >>> api = flickr.blogs.APIBlogs(API_KEY, SECRET, TOKEN)
+
+
+``getList()``
+-------------
+
+See ``http://flickr.com/services/api/flickr.blogs.getList.html``
+
+You can get a list of all your blogs:
+
+  >>> flickr.blogs.getList(API_KEY, SECRET, TOKEN)
+  [<Blog 73 - u'Bloxus test'>, <Blog 74 - u'Manila Test'>]
+
+  >>> api.getList()
+  [<Blog 73 - u'Bloxus test'>, <Blog 74 - u'Manila Test'>]
+
+
+``postPhoto()``
+------------------
+
+See ``http://flickr.com/services/api/flickr.blogs.postPhoto.html``
+
+You can now add a photo to a blog:
+
+  >>> flickr.blogs.postPhoto(API_KEY, SECRET, TOKEN,
+  ...     73, 2633, 'At Lovely Systems', 'Last week I was at ...')
+
+  >>> api.postPhoto(74, 2633, 'At Lovely Systems', 'Last week I was at ...')
+

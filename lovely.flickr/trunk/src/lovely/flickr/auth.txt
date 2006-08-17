@@ -1,0 +1,103 @@
+=====================
+flickr.auth Namespace
+=====================
+
+This namespace deals with authenticating the user and the requesting client.
+
+  >>> import lovely.flickr.auth
+  >>> from lovely import flickr
+
+As you may know already, this implementation provides an object-oriented and
+procedural implementation of the Flickr API:
+
+  >>> api = flickr.auth.APIAuth(API_KEY, SECRET)
+
+
+``getFrob()``
+-------------
+
+See ``http://www.flickr.com/services/api/flickr.auth.getFrob.html``
+
+Getting the frob is simple:
+
+  >>> frob = flickr.auth.getFrob(API_KEY, SECRET)
+  >>> frob
+  '2572639-8aac54751ebab5a7'
+
+  >>> frob2 = api.getFrob()
+  >>> frob2
+  '2572639-8aac54751ebab5a7'
+
+
+``getAuthenticationURL()`` and ``authenticate()`` [Local]
+---------------------------------------------------------
+
+Before we can continue, we need to authenticate against the Flickr Web site:
+
+  >>> url = flickr.auth.getAuthenticationURL(API_KEY, SECRET, frob, [u'write'])
+  >>> api.getAuthenticationURL(frob, [u'write'])
+  'http://www.flickr.com/services/auth/?...'
+
+This is usually done in a Web browser, but this package allows you to do it
+programmatically as well:
+
+  >>> api.authenticate(frob, [u'write'], 'lovelyflickr', 'pwd123')
+
+
+``getToken()``
+--------------
+
+See ``http://flickr.com/services/api/flickr.auth.getToken.html``
+
+Once you have a frob, you can ask for an authentication token:
+
+  >>> flickr.auth.getToken(API_KEY, SECRET, frob)
+  <Auth 909163-79a56fd4b2ca4a76>
+
+  >>> api.authenticate(frob2, [u'write'], 'lovelyflickr', 'pwd123')
+  >>> auth = api.getToken(frob2)
+  >>> auth.token
+  u'909163-79a56fd4b2ca4a76'
+  >>> auth.perms
+  [u'write']
+  >>> auth.user
+  <User u'lovelyflickr' - u'Lovely Flickr'>
+
+
+``checkToken()``
+----------------
+
+See ``http://flickr.com/services/api/flickr.auth.checkToken.html``
+
+When you have a token, you can verify it at any time:
+
+  >>> flickr.auth.checkToken(API_KEY, auth.token)
+  <Auth 909163-79a56fd4b2ca4a76>
+
+  >>> auth = api.checkToken(auth.token)
+  >>> auth.token
+  u'909163-79a56fd4b2ca4a76'
+  >>> auth.perms
+  [u'write']
+  >>> auth.user
+  <User u'lovelyflickr' - u'Lovely Flickr'>
+
+
+``getFullToken()``
+------------------
+
+See ``http://flickr.com/services/api/flickr.auth.getFullToken.html``
+
+When you have a token, you can verify it at any time:
+
+  >>> flickr.auth.getFullToken(API_KEY, SECRET, '909-a16-3fa')
+  <Auth 909163-79a56fd4b2ca4a76>
+
+  >>> auth2 = api.getFullToken('909-a16-3fa')
+  >>> auth2.token
+  u'909163-79a56fd4b2ca4a76'
+  >>> auth2.perms
+  [u'write']
+  >>> auth2.user
+  <User u'lovelyflickr' - u'Lovely Flickr'>
+
