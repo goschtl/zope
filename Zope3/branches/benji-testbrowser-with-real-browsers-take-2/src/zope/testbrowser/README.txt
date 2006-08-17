@@ -57,6 +57,8 @@ Page Contents
 The contents of the current page are available:
 
     >>> print browser.contents
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "DTD/xhtml1-strict.dtd">
     <html>
       <head>
         <title>Simple Page</title>
@@ -196,18 +198,18 @@ When finding a link by its text, whitespace is normalized.
 
     >>> browser.open('http://localhost/@@/testbrowser/navigate.html')
     >>> browser.contents
-    '...> Link Text \n    with     Whitespace\tNormalization (and parens) </...'
-    >>> link = browser.getLink('Link Text with Whitespace Normalization '
+    '...> Link \n    with     Whitespace\tNormalization (and parens) </...'
+    >>> link = browser.getLink('Link with Whitespace Normalization '
     ...                        '(and parens)')
     >>> link
-    <Link text='Link Text with Whitespace Normalization (and parens)'...>
+    <Link text='Link with Whitespace Normalization (and parens)'...>
     >>> link.text
-    'Link Text with Whitespace Normalization (and parens)'
+    'Link with Whitespace Normalization (and parens)'
     >>> link.click()
     >>> browser.url
-    'http://localhost/@@/testbrowser/navigate.html?message=By+Link+Text+with+Normalization'
+    'http://localhost/@@/testbrowser/navigate.html?message=By+Link+with+Normalization'
     >>> browser.contents
-    '...Message: <em>By Link Text with Normalization</em>...'
+    '...Message: <em>By Link with Normalization</em>...'
 
 Note that clicking a link object after its browser page has expired will
 generate an error.
@@ -322,7 +324,7 @@ AmbiguityError.
     >>> browser.getControl('Ambiguous Control')
     Traceback (most recent call last):
     ...
-    AmbiguityError: label 'Ambiguous Control'
+    AmbiguityError: "label 'Ambiguous Control'"
 
 This is also true if an option in a control is ambiguous in relation to
 the control itself.
@@ -330,7 +332,7 @@ the control itself.
     >>> browser.getControl('Sub-control Ambiguity')
     Traceback (most recent call last):
     ...
-    AmbiguityError: label 'Sub-control Ambiguity'
+    AmbiguityError: "label 'Sub-control Ambiguity'"
 
 Ambiguous controls may be specified using an index value.  We use the control's
 value attribute to show the two controls; this attribute is properly introduced
@@ -395,7 +397,7 @@ Get also accepts one other search argument, 'name'.  Only one of 'label' and
     >>> browser.getControl(name='ambiguous-control-name')
     Traceback (most recent call last):
     ...
-    AmbiguityError: name 'ambiguous-control-name'
+    AmbiguityError: "name 'ambiguous-control-name'"
     >>> browser.getControl(name='does-not-exist')
     Traceback (most recent call last):
     ...
@@ -533,7 +535,7 @@ These fields have four other attributes and an additional method:
     >>> browser.getControl('Third') # ambiguous in the browser, so useful
     Traceback (most recent call last):
     ...
-    AmbiguityError: label 'Third'
+    AmbiguityError: "label 'Third'"
 
 Finally, submit controls provide ISubmitControl, and image controls provide
 IImageSubmitControl, which extents ISubmitControl.  These both simply add a
@@ -1045,11 +1047,11 @@ the `forms.html` template, we have four forms all having a text control named
     >>> browser.getControl(name='text-value')
     Traceback (most recent call last):
     ...
-    AmbiguityError: name 'text-value'
+    AmbiguityError: "name 'text-value'"
     >>> browser.getControl('Text Control')
     Traceback (most recent call last):
     ...
-    AmbiguityError: label 'Text Control'
+    AmbiguityError: "label 'Text Control'"
 
 I'll always get an ambiguous form field.  I can use the index argument, or
 with the `getForm` method I can disambiguate by searching only within a given

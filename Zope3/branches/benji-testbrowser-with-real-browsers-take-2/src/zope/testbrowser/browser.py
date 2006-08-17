@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 from cStringIO import StringIO
 from test import pystone
 from zope.testbrowser import interfaces
+from zope.testbrowser.forms import getControl, getForm, getAllControls
 from zope.testbrowser.utilities import disambiguate, any, onlyOne, zeroOrOne, \
     SetattrErrorsMixin, PystoneTimer, compressText, RegexType
 import ClientForm
@@ -199,75 +200,6 @@ class Browser(SetattrErrorsMixin):
             args = {'text_regex': text_regex, 'url_regex': url_regex}
         return Link(self.mech_browser.find_link(**args), self)
 
-    def _findByLabel(self, label, forms, include_subcontrols=False):
-        # forms are iterable of mech_forms
-        matches = re.compile(r'(^|\b|\W)%s(\b|\W|$)'
-                             % re.escape(compressText(label))).search
-        found = []
-        for f in forms:
-            for control in f.controls:
-                phantom = control.type in ('radio', 'checkbox')
-                if not phantom:
-                    for l in control.get_labels():
-                        if matches(l.text):
-                            found.append((control, f))
-                            break
-                if include_subcontrols and (
-                    phantom or control.type=='select'):
-
-                    for i in control.items:
-                        for l in i.get_labels():
-                            if matches(l.text):
-                                found.append((i, f))
-                                found_one = True
-                                break
-
-        return found
-
-    def _findByName(self, name, forms):
-        found = []
-        for f in forms:
-            for control in f.controls:
-                if control.name==name:
-                    found.append((control, f))
-        return found
-
-    def getControl(self, label=None, name=None, index=None):
-        """See zope.testbrowser.interfaces.IBrowser"""
-        intermediate, msg = self._get_all_controls(
-            label, name, self.mech_browser.forms(), include_subcontrols=True)
-        control, form = disambiguate(intermediate, msg, index)
-        return controlFactory(control, form, self)
-
-    def _get_all_controls(self, label, name, forms, include_subcontrols=False):
-        onlyOne([label, name], '"label" and "name"')
-
-        if label is not None:
-            res = self._findByLabel(label, forms, include_subcontrols)
-            msg = 'label %r' % label
-        elif name is not None:
-            res = self._findByName(name, forms)
-            msg = 'name %r' % name
-        return res, msg
-
-    def getForm(self, id=None, name=None, action=None, index=None):
-        zeroOrOne([id, name, action], '"id", "name", and "action"')
-        if index is None and not any([id, name, action]):
-            raise ValueError(
-                'if no other arguments are given, index is required.')
-
-        matching_forms = []
-        for form in self.mech_browser.forms():
-            if ((id is not None and form.attrs.get('id') == id)
-            or (name is not None and form.name == name)
-            or (action is not None and re.search(action, str(form.action)))
-            or id == name == action == None):
-                matching_forms.append(form)
-
-        form = disambiguate(matching_forms, '', index)
-        self.mech_browser.form = form
-        return Form(self, form)
-
     def _clickSubmit(self, form, control, coord):
         self._start_timer()
         self.mech_browser.open(form.click(
@@ -277,6 +209,17 @@ class Browser(SetattrErrorsMixin):
     def _changed(self):
         self._counter += 1
         self._contents = None
+
+    def getControl(self, label=None, name=None, index=None):
+        """See zope.testbrowser.interfaces.IBrowser"""
+        forms = self.mech_browser.forms()
+        control, form = getControl(forms, label, name, index)
+        return controlFactory(control, form, self)
+
+    def getForm(self, id=None, name=None, action=None, index=None):
+        """See zope.testbrowser.interfaces.IBrowser"""
+        form = getForm(self.mech_browser.forms(), id, name, action, index)
+        return Form(self, form)
 
 
 class Link(SetattrErrorsMixin):
@@ -589,8 +532,7 @@ class Form(SetattrErrorsMixin):
             raise interfaces.ExpiredError
         form = self.mech_form
         if label is not None or name is not None:
-            intermediate, msg = self.browser._get_all_controls(
-                label, name, (form,))
+            intermediate, msg = getAllControls([form], label, name)
             intermediate = [
                 (control, form) for (control, form) in intermediate if
                 control.type in ('submit', 'submitbutton', 'image')]
@@ -610,7 +552,8 @@ class Form(SetattrErrorsMixin):
         """See zope.testbrowser.interfaces.IBrowser"""
         if self._browser_counter != self.browser._counter:
             raise interfaces.ExpiredError
-        intermediate, msg = self.browser._get_all_controls(
-            label, name, (self.mech_form,), include_subcontrols=True)
+        forms = [self.mech_form]
+        intermediate, msg = getAllControls(forms, label, name,
+                                           include_subcontrols=True)
         control, form = disambiguate(intermediate, msg, index)
         return controlFactory(control, form, self.browser)
