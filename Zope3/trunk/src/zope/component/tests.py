@@ -911,7 +911,7 @@ We want to make sure that we see updates corrextly.
     >>> r2.lookup((), IFoo, '2')
 
     >>> base.register((), IFoo, '2', Foo('2'))
-    
+
     >>> r1.lookup((), IFoo, '2')
     Foo('2')
 
@@ -923,6 +923,32 @@ Cleanup:
     >>> db.close()
     >>> clear_base()
 
+    """
+
+
+def test_multi_handler_unregistration():
+    """There was a bug where multiple handlers for the same required specification
+    would all be removed when one of them was unregistered:
+
+    >>> class I(zope.interface.Interface):
+    ...     pass
+    >>> def factory1(event):
+    ...     print "| Factory 1 is here" 
+    >>> def factory2(event):
+    ...     print "| Factory 2 is here" 
+    >>> class Event(object):
+    ...     zope.interface.implements(I)
+    >>> from zope.component.registry import Components
+    >>> registry = Components()
+    >>> registry.registerHandler(factory1, [I,])
+    >>> registry.registerHandler(factory2, [I,])
+    >>> registry.handle(Event())
+    | Factory 1 is here
+    | Factory 2 is here
+    >>> registry.unregisterHandler(factory1, [I,])
+    True
+    >>> registry.handle(Event())
+    | Factory 2 is here
     """
 
 class StandaloneTests(unittest.TestCase):
