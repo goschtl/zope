@@ -235,7 +235,8 @@ class ConfigurationHandler(ContentHandler):
 
         `expression` is a string of the form "verb arguments".
 
-        Currently the two supported verba are 'have' and 'installed'.
+        Currently the supported verbs are 'have', 'not-have',
+        'installed' and 'not-installed'.
 
         The 'have' verb takes one argument: the name of a feature.
 
@@ -245,8 +246,12 @@ class ConfigurationHandler(ContentHandler):
         >>> c = ConfigurationHandler(context, testing=True)
         >>> c.evaluateCondition("have apidoc")
         True
+        >>> c.evaluateCondition("not-have apidoc")
+        False
         >>> c.evaluateCondition("have onlinehelp")
         False
+        >>> c.evaluateCondition("not-have onlinehelp")
+        True
 
         Ill-formed expressions raise an error
 
@@ -275,8 +280,12 @@ class ConfigurationHandler(ContentHandler):
         >>> c = ConfigurationHandler(context, testing=True)
         >>> c.evaluateCondition('installed zope.interface')
         True
+        >>> c.evaluateCondition('not-installed zope.interface')
+        False
         >>> c.evaluateCondition('installed zope.foo')
         False
+        >>> c.evaluateCondition('not-installed zope.foo')
+        True
 
         Ill-formed expressions raise an error
 
@@ -292,22 +301,34 @@ class ConfigurationHandler(ContentHandler):
         """
         arguments = expression.split(None)
         verb = arguments.pop(0)
-        if verb == 'have':
+
+        if verb in ('have', 'not-have'):
             if not arguments:
                 raise ValueError("Feature name missing: %r" % expression)
             if len(arguments) > 1:
                 raise ValueError("Only one feature allowed: %r" % expression)
-            return self.context.hasFeature(arguments[0])
-        elif verb == 'installed':
+
+            if verb == 'have':
+                return self.context.hasFeature(arguments[0])
+            elif verb == 'not-have':
+                return not self.context.hasFeature(arguments[0])
+
+        elif verb in ('installed', 'not-installed'):
             if not arguments:
                 raise ValueError("Package name missing: %r" % expression)
             if len(arguments) > 1:
                 raise ValueError("Only one package allowed: %r" % expression)
+
             try:
                 __import__(arguments[0])
+                installed = True
             except ImportError:
-                return False
-            return True
+                installed = False
+
+            if verb == 'installed':
+                return installed
+            elif verb == 'not-installed':
+                return not installed
         else:
             raise ValueError("Invalid ZCML condition: %r" % expression)
 
