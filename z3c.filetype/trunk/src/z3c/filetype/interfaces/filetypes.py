@@ -15,6 +15,11 @@ class IBinaryFile(ITypedFile):
 IBinaryFile.setTaggedValue(MTM,re.compile('application/octet-stream'))
 IBinaryFile.setTaggedValue(MT,'application/octet-stream')
 
+class IZIPFile(IBinaryFile):
+    """Zip file"""
+IZIPFile.setTaggedValue(MTM,re.compile('application/x-zip'))
+IZIPFile.setTaggedValue(MT,'application/x-zip')
+
 class ITARFile(IBinaryFile):
     """Binary file"""
 ITARFile.setTaggedValue(MTM,re.compile('application/x-tar'))
@@ -59,21 +64,26 @@ class IGIFFile(IImageFile, IBinaryFile):
 IGIFFile.setTaggedValue(MTM,re.compile('image/gif'))
 IGIFFile.setTaggedValue(MT,'image/gif')
 
-class IVideoFile(ITypedFile):
+class IVideoFile(IBinaryFile):
     """video file"""
 IVideoFile.setTaggedValue(MTM,re.compile('^video/.+$'))
 
-class IQuickTimeFile(IVideoFile, IBinaryFile):
+class IQuickTimeFile(IVideoFile):
     """Quicktime Video File Format"""
 IQuickTimeFile.setTaggedValue(MTM,re.compile('video/quicktime'))
 IQuickTimeFile.setTaggedValue(MT,'video/quicktime')
 
-class IAVIFile(IVideoFile, IBinaryFile):
+class IAVIFile(IVideoFile):
     """Quicktime Video File Format"""
 IAVIFile.setTaggedValue(MTM,re.compile('video/x-msvideo'))
 IAVIFile.setTaggedValue(MT,'video/x-msvideo')
 
-class IFLVFile(IVideoFile, IBinaryFile):
+class IMPEGFile(IVideoFile):
+    """MPEG Video File Format"""
+IMPEGFile.setTaggedValue(MTM,re.compile('video/mpe?g'))
+IMPEGFile.setTaggedValue(MT,'video/mpeg')
+
+class IFLVFile(IVideoFile):
     """Macromedia Flash FLV Video File Format"""
 IFLVFile.setTaggedValue(MTM,re.compile('video/x-flv'))
 IFLVFile.setTaggedValue(MT,'video/x-flv')
