@@ -21,6 +21,13 @@ Zope Changes
     Restructuring
 
     Bug fixes
+    
+      - Fixed issue 680, html files in a resource directory was interpreted
+        as page templates, which used up processing time and caused 
+        HTML-resources that were not valid XHTML to fail.
+        
+        If you want your resources in a resource directory to be interpreted 
+        as pagetemplates they now need to have a .pt or .zpt extension.
 
       - Fixed issue 676, utilities defined in Zope 3.2 weren't
         converted properly.
