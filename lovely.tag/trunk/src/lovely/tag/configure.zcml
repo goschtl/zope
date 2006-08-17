@@ -70,5 +70,7 @@
       trusted="True"
       locate="True"
       />
-  
+
+  <include package=".browser" />
+
 </configure>
