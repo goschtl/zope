@@ -19,14 +19,14 @@ actual file content with the digest of the contents.
   >>> fp = open(os.path.join(testDir,'input1.inp'))
   >>> proc.pushInput(fp, out)
 
-  >>> print '\n'.join(hd.digests())
+  >>> print '\n'.join(sorted(hd.digests()))
   28a33adad3dbce5d72ec8012c9e0563b8ef1eb17
   3ac60068645f651bf2e528e15402a32daecb6873
 
 So now we should have two files.
 
   >>> d2, d1 = sorted(hd.digests())
-  
+
   >>> f = hd.open(d1)
   >>> print f.read()
   first line of 1
@@ -59,8 +59,8 @@ And the output only contains the digests as content.
   submit data
   -----------------------------100323068321119442571506749230--
   <BLANKLINE>
-  
+
 Cleanup
 
   >>> import shutil
-  >>> shutil.rmtree(tmp) 
+  >>> shutil.rmtree(tmp)
