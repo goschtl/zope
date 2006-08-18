@@ -14,6 +14,11 @@ Zope Changes
         'not-installed', which are the negated counterparts to 'have'
         and 'installed'.
 
+      - Added a new functional test layer,
+        zope.app.testing.functional.FunctionalNoDevMode, that is like
+        Functional, except that it doesn't have the developer mode
+        feature enabled when loading ZCML.
+
     Bugfixes
 
       - Fixed a bug on unregistering handlers. When multiple handlers for one
@@ -202,6 +207,14 @@ Zope Changes
       unless you re-register the adapter providing Interface, the
       IDefaultViewName adapter will be used instead.
 
+    Much thanks to everyone who contributed to this release:
+
+      Jim Fulton, Stephan Richter, Philipp von Weitershausen, Egon
+      Frerich, Benji York, Christian Theune, Dmitry Vasiliev, Rocky
+      Burt, Roger Ineichen, Marius Gedminas, Stuart Bishop, Martijn
+      Faassen, Steve Alexander, Tres Seaver, Baiju M, Uwe Oestermeier,
+      Gary Poster, Brian Sutherland, Florent Xicluna, Lennart Regebro.
+
   Zope 3.3.0b1 (2006/05/08)
 
     New features
@@ -388,11 +401,12 @@ Zope Changes
 
     Much thanks to everyone who contributed to this release:
 
-      Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dimitry
-      Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
-      (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute,
-      Shane Hathaway, Bjorn Tillenius, Sam Stainsby, Bernd Dorn, Benji York
-      Stuart Bishop, Christian Theune, Martijn Faassen
+      Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter,
+      Dimitry Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon
+      Frerich, Zhiyun (Simon) Hang, Tadashi Matsumoto, Simon Michael,
+      Encople Degoute, Shane Hathaway, Bjorn Tillenius, Sam Stainsby,
+      Bernd Dorn, Benji York Stuart Bishop, Christian Theune, Martijn
+      Faassen, Philipp von Weitershausen
 
   ------------------------------------------------------------------
 
