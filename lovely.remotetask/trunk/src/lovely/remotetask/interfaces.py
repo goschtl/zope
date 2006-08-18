@@ -97,14 +97,18 @@ class ITask(zope.interface.Interface):
         schema=zope.interface.Interface,
         required=False)
 
-    def __call__(self, service, input):
+    def __call__(self, service, jobid, input):
         """Execute the task.
 
-        The service argument is the task service object. It allows access to
+        The ``service`` argument is the task service object. It allows access to
         service wide data and the system as a whole.
 
-        The input object must conform to the input schema (if specified). The
-        return value must conform to the output schema.
+        Tasks do not live in a vacuum, but are tightly coupled to the job
+        executing it. The ``jobid`` argument provides the id of the job being
+        processed.
+
+        The ``input`` object must conform to the input schema (if
+        specified). The return value must conform to the output schema.
         """
 
 

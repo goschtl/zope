@@ -36,7 +36,7 @@ now define a task that simply echos an input string:
 The only API requirement on the converter is to be callable. Now we make sure
 that the task works:
 
-  >>> echoTask(service, input={'foo': 'blah'})
+  >>> echoTask(service, 1, input={'foo': 'blah'})
   {'foo': 'blah'}
 
 Let's now register the task as a utility:

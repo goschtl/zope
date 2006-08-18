@@ -35,7 +35,7 @@ class SimpleTask(object):
     def __init__(self, func):
         self.func = func
 
-    def __call__(self, service, input):
+    def __call__(self, service, jobid, input):
         return self.func(input)
 
     def __repr__(self):

@@ -121,7 +121,7 @@ class TaskService(contained.Contained, persistent.Persistent):
             self.taskInterface, name=job.task)
         job.started = datetime.datetime.now()
         try:
-            job.output = jobtask(self, job.input)
+            job.output = jobtask(self, job.id, job.input)
             job.status = interfaces.COMPLETED
         except task.TaskError, error:
             job.error = error
