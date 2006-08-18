@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:help="http://namespaces.zope.org/help"
+    i18n_domain="zope">
+
+  <help:register
+      id="pagetemplate"
+      parent="styleguide"
+      title="Page template"
+      doc_path="README.txt"
+      class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
+      />
+
+</configure>
