@@ -87,7 +87,7 @@ def test_suite():
     return unittest.TestSuite((
         FunctionalDocFileSuite('README.txt'),
         FunctionalDocFileSuite('directives.txt',
-                               package='Products.Five.viewlet'
+                               package='Products.Five.viewlet',
                                setUp=setUp, tearDown=tearDown
                                ),
         ))
