@@ -90,7 +90,7 @@ class RatingsManager(contained.Contained, persistent.Persistent):
         try:
             return total/len(ratings)
         except ZeroDivisionError:
-            return 0
+            return -1
 
     def countScores(self, id):
         """See interfaces.IRatingsManager"""
