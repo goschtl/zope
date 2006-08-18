@@ -807,8 +807,9 @@ class IComponentRegistry(interface.Interface):
         name
             The adapter name.
 
-            Note that this parameter is ignored and is reserved
-            for future use when named subscribers are implemented.
+            Currently, only the empty string is accepted.  Other
+            strings will be accepted in the future when support for
+            named subscribers is added.
 
         An Unregistered event is generated with an
         ISubscriptionAdapterRegistration.
@@ -847,8 +848,9 @@ class IComponentRegistry(interface.Interface):
         name
             The handler name.
 
-            Note that this parameter is ignored and is reserved
-            for future use when named handlers are implemented.
+            Currently, only the empty string is accepted.  Other
+            strings will be accepted in the future when support for
+            named handlers is added.
 
         info
            An object that can be converted to a string to provide
@@ -887,8 +889,9 @@ class IComponentRegistry(interface.Interface):
         name
             The handler name.
 
-            Note that this parameter is ignored and is reserved
-            for future use when named handlers are implemented.
+            Currently, only the empty string is accepted.  Other
+            strings will be accepted in the future when support for
+            named handlers is added.
 
         An Unregistered event is generated with an IHandlerRegistration.
         """
