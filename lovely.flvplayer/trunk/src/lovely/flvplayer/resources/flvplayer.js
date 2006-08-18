@@ -24,6 +24,8 @@
 */
 function createFLVPlayer(obj){
     
+    
+    
     // set default values
     var target_id = "";
     var flv_url = "";
@@ -32,6 +34,7 @@ function createFLVPlayer(obj){
     var autostart = "0";
     var flash_id = "videoplayer";
     var preview_url = "";
+    var fullscreen = "0";
     
     // check for required params
     if (obj["target_id"] == undefined) alert("ERROR: createFLVPlayer failed. target dom id is missing"); 
@@ -59,7 +62,11 @@ function createFLVPlayer(obj){
     so.addVariable("video", forceEscape(flv_url));
     so.addVariable("autostart", autostart);
     so.addVariable("baseurl", forceEscape(base_url));
+    
     if (preview_url != "") so.addVariable("preview", preview_url);
+    if (obj.fullscreen){
+         so.addVariable("fullscreen", "1");
+    }
     
     so.write(target_id);
     
@@ -95,4 +102,26 @@ function findBaseUrl(){
 */
 function forceEscape(url){
     return escape(url).split("+").join("%2B");
+}
+
+
+/**
+    TODO
+*/
+
+function openFullScreenView(video_url){ 
+    
+    var wOpen;
+    var sOptions;
+    
+    sOptions = 'status=no,menubar=no,scrollbars=no,resizable=yes,toolbar=no';
+    sOptions = sOptions + ',width=' + (screen.availWidth - 10).toString();
+    sOptions = sOptions + ',height=' + (screen.availHeight - 122).toString();
+    sOptions = sOptions + ',screenX=0,screenY=0,left=0,top=0';
+
+    wOpen = window.open( findBaseUrl()+'videofullscreen.html?url='+video_url, 'videofullscreen',  sOptions );
+    wOpen.focus();
+    wOpen.moveTo( 0, 0 );
+    wOpen.resizeTo( screen.availWidth, screen.availHeight );
+    
 }
