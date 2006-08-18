@@ -2,6 +2,22 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="lovely.rating">
 
-  <include package=".browser"/>
+  <class class=".manager.RatingsManager">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="zope.View"
+        interface=".IRatingsManager"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".IRatingsManager"
+        />
+  </class>
+
+  <adapter
+      factory=".manager.getRatingsManager"
+      />
 
 </configure>

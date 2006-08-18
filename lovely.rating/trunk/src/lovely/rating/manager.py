@@ -87,7 +87,10 @@ class RatingsManager(contained.Contained, persistent.Persistent):
         ratings = self._storage.get(id, {}).values()
         total = sum([defn.scoreSystem.getNumericalValue(rating.value)
                     for rating in ratings])
-        return total/len(ratings)
+        try:
+            return total/len(ratings)
+        except ZeroDivisionError:
+            return 0
 
     def countScores(self, id):
         """See interfaces.IRatingsManager"""
