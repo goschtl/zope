@@ -12,12 +12,22 @@ def chdir(d):
     print 'CHDIR', d
     os.chdir(d)
 
+if len(sys.argv) > 1:
+    [version] = sys.argv[1:]
+else:
+    version = '0.0.0'
+
 
 errors = []
-do('rm -rf Zope-0.0.0*')
-do('../../zpkgtools/bin/zpkg -caCZope.cfg Zope')
-do('tar xzf Zope-0.0.0.tgz')
-chdir('Zope-0.0.0')
+do('rm -rf Zope-%s*' % version)
+if version == '0.0.0':
+    do('../../zpkgtools/bin/zpkg -caCZope.cfg Zope')
+else:
+    do('../../zpkgtools/bin/zpkg -caCZope.cfg -v %s -r %s Zope'
+       % (version, version))
+    
+do('tar xzf Zope-%s.tgz' % version)
+chdir('Zope-%s' % version)
 do('./configure --prefix `pwd`/z --with-python=%s' % sys.executable)
 do('make install')
 chdir('z')
