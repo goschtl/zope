@@ -188,6 +188,10 @@ Zope Changes
         List for creators, subjects and contributors, to be in line with the
         implementation.
 
+      - Fixed issue 690: removed a javascript call from formlib/pageform.pt
+        which depended on a non-existent function. It was a holdover from when
+        the library was an external project.
+
     Notes
 
       If you register a new default view name for a particular layer, and this
