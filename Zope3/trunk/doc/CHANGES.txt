@@ -16,7 +16,8 @@ Zope Changes
         IHTTPVirtualHostChangedEvent, when virtual host parameters are 
         altered.
 
-      - Dublin Core Property and testing
+      - New Dublin Core property object that allows scalar treatment for
+        sequence types. Made it work with both Tuple and List field type.
 
     Restructuring
 
@@ -95,7 +96,7 @@ Zope Changes
 
     Much thanks to everyone who contributed to this release:
 
-      Jim Fulton, Dmitry Vasiliev
+      Jim Fulton, Dmitry Vasiliev, Martijn Faassen
 
   ------------------------------------------------------------------
 
@@ -299,13 +300,17 @@ Zope Changes
       - Fixed issue 587, make sure that utf-8 is chosen if the
         Accept-Charset header contains '*'.
 
+      - Fixed issue 534: changed interface definition to use Tuple instead of
+        List for creators, subjects and contributors, to be in line with the
+        implementation.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Brian Sutherland, Stephan Richter, Dimitry
       Vasiliev, Tim Peters, Zachery Bir, Gary Poster, Egon Frerich, Zhiyun
       (Simon) Hang, Tadashi Matsumoto, Simon Michael, Encople Degoute,
       Shane Hathaway, Bjorn Tillenius, Sam Stainsby, Bernd Dorn,
-      Stuart Bishop
+      Stuart Bishop, Martijn Faassen
 
   ------------------------------------------------------------------
 

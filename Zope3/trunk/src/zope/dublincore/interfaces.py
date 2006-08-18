@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.annotation.interfaces import IAnnotatable
 from zope.interface import Interface
-from zope.schema import Text, TextLine, Datetime, List
+from zope.schema import Text, TextLine, Datetime, Tuple
 
 class IDublinCoreElementItem(Interface):
     """A qualified dublin core element"""
@@ -270,13 +270,13 @@ class IDCExtended(Interface):
     """
 
 
-    creators = List(
+    creators = Tuple(
         title = u'Creators',
         description = u"The unqualified Dublin Core 'Creator' element values",
         value_type = TextLine(),
         )
 
-    subjects = List(
+    subjects = Tuple(
         title = u'Subjects',
         description = u"The unqualified Dublin Core 'Subject' element values",
         value_type = TextLine(),
@@ -288,7 +288,7 @@ class IDCExtended(Interface):
         u"The first unqualified Dublin Core 'Publisher' element value.",
         )
 
-    contributors = List(
+    contributors = Tuple(
         title = u'Contributors',
         description =
         u"The unqualified Dublin Core 'Contributor' element values",

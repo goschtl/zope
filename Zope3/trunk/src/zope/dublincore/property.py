@@ -55,9 +55,16 @@ class DCProperty(object):
         name = self.__name
         inst = IZopeDublinCore(inst)
         field = IZopeDublinCore[name].bind(inst)
-        if (    not isinstance(value, list)
-            and isinstance(field, schema.List)):
-            value = [value]
+        if isinstance(field, schema.List):
+            if isinstance(value, tuple):
+                value = list(value)
+            else:
+                value = [value]
+        elif isinstance(field, schema.Tuple):
+            if isinstance(value, list):
+                value = tuple(value)
+            else:
+                value = (value,)
         field.validate(value)
         if field.readonly and inst.__dict__.has_key(name):
             raise ValueError(name, 'field is readonly')
@@ -93,6 +100,8 @@ class DCListProperty(DCProperty):
         name = self.__name
         inst = IZopeDublinCore(inst)
         field = IZopeDublinCore[name].bind(inst)
+        if isinstance(field, schema.Tuple):
+            value = tuple(value)
         field.validate(value)
         if field.readonly and inst.__dict__.has_key(name):
             raise ValueError(name, 'field is readonly')
