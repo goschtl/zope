@@ -406,7 +406,7 @@ Zope Changes
       Frerich, Zhiyun (Simon) Hang, Tadashi Matsumoto, Simon Michael,
       Encople Degoute, Shane Hathaway, Bjorn Tillenius, Sam Stainsby,
       Bernd Dorn, Benji York Stuart Bishop, Christian Theune, Martijn
-      Faassen, Philipp von Weitershausen
+      Faassen, Philipp von Weitershausen, Florian Lindner
 
   ------------------------------------------------------------------
 
