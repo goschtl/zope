@@ -241,7 +241,7 @@ class ZopePublication(PublicationTraverse):
         # This transaction had an exception that reached the publisher.
         # It must definitely be aborted.
         transaction.abort()
-
+        
         # Reraise Retry exceptions for the publisher to deal with.
         if retry_allowed and isinstance(exc_info[1], Retry):
             raise
