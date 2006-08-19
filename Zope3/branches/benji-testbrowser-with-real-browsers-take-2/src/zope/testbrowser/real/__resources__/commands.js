@@ -60,7 +60,7 @@ function _tb_rememberLinkN(info) {
             });
         }
         return resultArray;
-}
+    }
 //    function getElementsByTagNames(names, node) {
 //        var results = [];
 //        for (var i in names) {
@@ -92,6 +92,32 @@ function _tb_rememberLinkN(info) {
     log(id);
     log(_tb_remembered_links[id]);
     return id;
+}
+
+function getElementByUniquifier(u) {
+    var split = u.split(' ');
+    var kind = split[0];
+    var value = split[1];
+    var doc = top.frames[0].document;
+
+    if (kind == 'id') {
+        return doc.getElementById(value);
+    } else if (kind == 'form/control') {
+        split = value.split('/');
+        var form_number = Number(split[0]);
+        var control_number = Number(split[1]);
+        return doc.forms[form_number][control_number];
+    } else {
+        return undefined;
+    }
+}
+
+function _tb_setControlValue(info) {
+    log(info);
+    var uniquifier = info[0];
+    var value = info[1];
+    var element = getElementByUniquifier(uniquifier);
+    element.value = value; // XXX need to handle different ways of setting value
 }
 
 function _tb_clickRememberedLink(info) {

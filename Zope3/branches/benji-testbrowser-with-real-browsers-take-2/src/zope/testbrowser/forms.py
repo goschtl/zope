@@ -1,4 +1,5 @@
 from cStringIO import StringIO
+from rwproperty import getproperty, setproperty
 from zope import interface
 from zope.testbrowser import interfaces
 from zope.testbrowser.utilities import disambiguate, any, onlyOne, zeroOrOne, \
@@ -112,29 +113,27 @@ class Control(SetattrErrorsMixin):
     def multiple(self):
         return bool(getattr(self.mech_control, 'multiple', False))
 
-    @apply
-    def value():
+    @getproperty
+    def value(self):
         """See zope.testbrowser.interfaces.IControl"""
+        if (self.type == 'checkbox' and
+            len(self.mech_control.items) == 1 and
+            self.mech_control.items[0].name == 'on'):
+            return self.mech_control.items[0].selected
+        return self.mech_control.value
 
-        def fget(self):
-            if (self.type == 'checkbox' and
-                len(self.mech_control.items) == 1 and
-                self.mech_control.items[0].name == 'on'):
-                return self.mech_control.items[0].selected
-            return self.mech_control.value
-
-        def fset(self, value):
-            if self._browser_counter != self.browser._counter:
-                raise interfaces.ExpiredError
-            if self.mech_control.type == 'file':
-                self.mech_control.add_file(value,
-                                           content_type=self.content_type,
-                                           filename=self.filename)
-            elif self.type == 'checkbox' and len(self.mech_control.items) == 1:
-                self.mech_control.items[0].selected = bool(value)
-            else:
-                self.mech_control.value = value
-        return property(fget, fset)
+    @setproperty
+    def value(self, value):
+        if self._browser_counter != self.browser._counter:
+            raise interfaces.ExpiredError
+        if self.mech_control.type == 'file':
+            self.mech_control.add_file(value,
+                                       content_type=self.content_type,
+                                       filename=self.filename)
+        elif self.type == 'checkbox' and len(self.mech_control.items) == 1:
+            self.mech_control.items[0].selected = bool(value)
+        else:
+            self.mech_control.value = value
 
     def add_file(self, file, content_type, filename):
         if not self.mech_control.type == 'file':

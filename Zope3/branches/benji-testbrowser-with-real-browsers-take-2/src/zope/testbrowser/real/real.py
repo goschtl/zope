@@ -16,6 +16,7 @@
 __docformat__ = "reStructuredText"
 from BeautifulSoup import BeautifulSoup
 from StringIO import StringIO
+from zope.testbrowser.rwproperty import getproperty, setproperty
 from zope.testbrowser import interfaces
 from zope.testbrowser.forms import getControl, getForm, getAllControls, \
     ControlFactory, ListControl, SubmitControl, ImageControl, Control
@@ -31,6 +32,10 @@ try:
 except ImportError:
     from dummymodules import interface
 
+
+def getControlUniquifier(control):
+    return 'form/control 0/0'
+
 class RealListControl(ListControl):
     pass
 
@@ -41,7 +46,17 @@ class RealImageControl(ImageControl):
     pass
 
 class RealControl(Control):
-    pass
+    @setproperty
+    def value(self, value):
+        self.browser._clear()
+        self.browser.executeCommand(
+            'setControlValue', getControlUniquifier(self), value)
+        Control.value.fset(self, value)
+
+    @getproperty
+    def value(self):
+        return Control.value.fget(self)
+
 
 controlFactory = ControlFactory(RealListControl, RealSubmitControl,
                                 RealImageControl, RealControl)
@@ -225,6 +240,9 @@ class Browser(SetattrErrorsMixin):
 
     def _changed(self):
         self._counter += 1
+        self._clear()
+
+    def _clear(self):
         self._contents = None
         self._soup = None
         self._forms = None
