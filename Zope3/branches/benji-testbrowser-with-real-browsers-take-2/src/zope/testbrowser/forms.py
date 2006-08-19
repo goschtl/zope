@@ -149,8 +149,7 @@ class Control(SetattrErrorsMixin):
         self.mech_control.clear()
 
     def __repr__(self):
-        return "<%s name=%r type=%r>" % (
-            self.__class__.__name__, self.name, self.type)
+        return "<Control name=%r type=%r>" % (self.name, self.type)
 
 
 class ListControl(Control):
@@ -228,6 +227,9 @@ class ListControl(Control):
         res.__dict__['control'] = self
         return res
 
+    def __repr__(self):
+        return "<ListControl name=%r type=%r>" % (self.name, self.type)
+
 
 class SubmitControl(Control):
     interface.implements(interfaces.ISubmitControl)
@@ -238,6 +240,9 @@ class SubmitControl(Control):
         self.browser._clickSubmit(self.mech_form, self.mech_control, (1,1))
         self.browser._changed()
 
+    def __repr__(self):
+        return "<SubmitControl name=%r type=%r>" % (self.name, self.type)
+
 
 class ImageControl(Control):
     interface.implements(interfaces.IImageSubmitControl)
@@ -247,6 +252,9 @@ class ImageControl(Control):
             raise interfaces.ExpiredError
         self.browser._clickSubmit(self.mech_form, self.mech_control, coord)
         self.browser._changed()
+
+    def __repr__(self):
+        return "<ImageControl name=%r type=%r>" % (self.name, self.type)
 
 
 class ItemControl(SetattrErrorsMixin):
@@ -296,9 +304,9 @@ class ItemControl(SetattrErrorsMixin):
         self.mech_item.selected = not self.mech_item.selected
 
     def __repr__(self):
-        return "<%s name=%r type=%r optionValue=%r>" % (
-            self.__class__.__name__, self.mech_item._control.name,
-            self.mech_item._control.type, self.optionValue)
+        return "<ItemControl name=%r type=%r optionValue=%r>" % (
+            self.mech_item._control.name, self.mech_item._control.type,
+            self.optionValue)
 
 
 class Form(SetattrErrorsMixin):
