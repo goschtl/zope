@@ -72,22 +72,6 @@ def getForm(forms, id=None, name=None, action=None, index=None):
 
     return disambiguate(matching_forms, '', index)
 
-def controlFactory(control, form, browser):
-    if isinstance(control, ClientForm.Item):
-        # it is a subcontrol
-        return ItemControl(control, form, browser)
-    else:
-        t = control.type
-        if t in ('checkbox', 'select', 'radio'):
-            return ListControl(control, form, browser)
-        elif t in ('submit', 'submitbutton'):
-            return SubmitControl(control, form, browser)
-        elif t=='image':
-            return ImageControl(control, form, browser)
-        else:
-            return Control(control, form, browser)
-
-
 class Control(SetattrErrorsMixin):
     """A control of a form."""
     interface.implements(interfaces.IControl)
@@ -385,3 +369,30 @@ class Form(SetattrErrorsMixin):
                                            include_subcontrols=True)
         control, form = disambiguate(intermediate, msg, index)
         return controlFactory(control, form, self.browser)
+
+
+class ControlFactory(object):
+    def __init__(self, listControlClass, submitControlClass,
+                 imageControlClass, controlClass):
+        self.listControlClass = listControlClass
+        self.submitControlClass = submitControlClass
+        self.imageControlClass = imageControlClass
+        self.controlClass = controlClass
+
+    def __call__(self, control, form, browser):
+        if isinstance(control, ClientForm.Item):
+            # it is a subcontrol
+            return ItemControl(control, form, browser)
+        else:
+            t = control.type
+            if t in ('checkbox', 'select', 'radio'):
+                return self.listControlClass(control, form, browser)
+            elif t in ('submit', 'submitbutton'):
+                return self.submitControlClass(control, form, browser)
+            elif t=='image':
+                return self.imageControlClass(control, form, browser)
+            else:
+                return self.controlClass(control, form, browser)
+
+controlFactory = ControlFactory(ListControl, SubmitControl, ImageControl,
+                                Control)

@@ -12,15 +12,13 @@
 #
 ##############################################################################
 """Browser-based Functional Doctests
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 from BeautifulSoup import BeautifulSoup
 from StringIO import StringIO
 from zope.testbrowser import interfaces
 from zope.testbrowser.forms import getControl, getForm, getAllControls, \
-    controlFactory
+    ControlFactory, ListControl, SubmitControl, ImageControl, Control
 from zope.testbrowser.real.proxy import ServerManager, PROXY_PORT
 from zope.testbrowser.utilities import disambiguate, zeroOrOne, \
     SetattrErrorsMixin, PystoneTimer
@@ -32,6 +30,22 @@ try:
     from zope import interface
 except ImportError:
     from dummymodules import interface
+
+class RealListControl(ListControl):
+    pass
+
+class RealSubmitControl(SubmitControl):
+    pass
+
+class RealImageControl(ImageControl):
+    pass
+
+class RealControl(Control):
+    pass
+
+controlFactory = ControlFactory(RealListControl, RealSubmitControl,
+                                RealImageControl, RealControl)
+
 
 class DummyResponse(object):
     def __init__(self, contents, url):
