@@ -33,24 +33,30 @@ except ImportError:
     from dummymodules import interface
 
 
-def getControlUniquifier(control):
-    return 'form/control 0/0'
+class BaseRealControl(object):
+    def getIndex(self):
+        for i,c in enumerate(self.mech_form.controls):
+            if self.mech_control == c:
+                return i
 
-class RealListControl(ListControl):
+        raise RuntimeError("couldn't find myself in my form's controls")
+
+class RealListControl(BaseRealControl, ListControl):
     pass
 
-class RealSubmitControl(SubmitControl):
+class RealSubmitControl(BaseRealControl, SubmitControl):
     pass
 
-class RealImageControl(ImageControl):
+class RealImageControl(BaseRealControl, ImageControl):
     pass
 
-class RealControl(Control):
+class RealControl(BaseRealControl, Control):
     @setproperty
     def value(self, value):
         self.browser._clear()
         self.browser.executeCommand(
-            'setControlValue', getControlUniquifier(self), value)
+            'setControlValue', self.mech_form._tb_index,
+            self.getIndex(), value)
         Control.value.fset(self, value)
 
     @getproperty
@@ -227,6 +233,11 @@ class Browser(SetattrErrorsMixin):
         if self._forms is None:
             dummy_response = DummyResponse(self.contents, self.url)
             self._forms = ClientForm.ParseResponse(dummy_response)
+
+            # later we'll need to know the index of the form on the page
+            for i,f in enumerate(self._forms):
+                f._tb_index = i;
+
         return self._forms
 
     def getControl(self, label=None, name=None, index=None):

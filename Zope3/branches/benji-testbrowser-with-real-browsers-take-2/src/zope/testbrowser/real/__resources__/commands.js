@@ -94,29 +94,13 @@ function _tb_rememberLinkN(info) {
     return id;
 }
 
-function getElementByUniquifier(u) {
-    var split = u.split(' ');
-    var kind = split[0];
-    var value = split[1];
-    var doc = top.frames[0].document;
-
-    if (kind == 'id') {
-        return doc.getElementById(value);
-    } else if (kind == 'form/control') {
-        split = value.split('/');
-        var form_number = Number(split[0]);
-        var control_number = Number(split[1]);
-        return doc.forms[form_number][control_number];
-    } else {
-        return undefined;
-    }
-}
-
 function _tb_setControlValue(info) {
     log(info);
-    var uniquifier = info[0];
-    var value = info[1];
-    var element = getElementByUniquifier(uniquifier);
+    var form_index = info[0];
+    var control_index = info[1];
+    var value = info[2];
+    var doc = top.frames[0].document;
+    var element = doc.forms[form_index][control_index];
     element.value = value; // XXX need to handle different ways of setting value
 }
 
