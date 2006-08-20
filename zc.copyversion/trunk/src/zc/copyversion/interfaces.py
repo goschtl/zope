@@ -34,6 +34,11 @@ class ResumeCopy(Exception):
     """do not use the hook: continue copying recursively
     (see ICopyHook.__call__)"""
 
+class ITokenEnforced(interface.Interface):
+    """A marker interface indicating that the instance wants to have its
+    versioning enforced by zope.locking tokens (see the subscribers module).
+    """
+
 class ICopyHook(interface.Interface):
     """an adapter to an object that is being copied"""
     def __call__(location, register):

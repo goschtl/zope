@@ -195,50 +195,6 @@ object.
     >>> d.simple_property
     'hi'
 
-Finally, it contains a subscriber that uses the zope.locking code to freeze
-objects when they are versioned.  When combined with packages such as
-zc.tokenpolicy, objects that are not version-aware can still effectively
-be governed by the versioned status for user interaction through a security
-proxy.
-
-    >>> import zope.locking.utility
-    >>> import zope.app.keyreference.interfaces
-    >>> import zope.locking.interfaces
-    >>> util = zope.locking.utility.TokenUtility()
-    >>> component.provideUtility(
-    ...     util, provides=zope.locking.interfaces.ITokenUtility)
-    >>> class DemoKeyReference(object):
-    ...     component.adapts(Demo)
-    ...     interface.implements(
-    ...         zope.app.keyreference.interfaces.IKeyReference)
-    ...     _class_counter = 0
-    ...     def __init__(self, context):
-    ...         self.context = context
-    ...         class_ = type(self)
-    ...         self._id = getattr(context, '__demo_key_reference__', None)
-    ...         if self._id is None:
-    ...             self._id = class_._class_counter
-    ...             context.__demo_key_reference__ = self._id
-    ...             class_._class_counter += 1
-    ...     key_type_id = 'zc.copyversion.README.DemoKeyReference'
-    ...     def __call__(self):
-    ...         return self.context
-    ...     def __hash__(self):
-    ...         return (self.key_type_id, self._id)
-    ...     def __cmp__(self, other):
-    ...         if self.key_type_id == other.key_type_id:
-    ...             return cmp(self._id, other._id)
-    ...         return cmp(self.key_type_id, other.key_type_id)
-    ...
-    >>> component.provideAdapter(DemoKeyReference)
-    >>> from zc.copyversion import subscribers
-    >>> component.provideHandler(subscribers.freezer)
-    >>> d = Demo()
-    >>> util.get(d) # None
-    >>> interfaces.IVersioning(d)._z_version()
-    >>> zope.locking.interfaces.IFreeze.providedBy(util.get(d))
-    True
-
 Our copyversion story still needs other components.
 
 - copy subscribers account for resetting objectlog and comments across copies.

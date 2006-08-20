@@ -20,6 +20,14 @@ def tearDown(test):
     assert zope.event.subscribers.pop().__self__ is events
     del events[:] # being paranoid
 
+def subscribersSetUp(test):
+    placelesssetup.setUp(test)
+    zope.testing.module.setUp(test, 'zc.copyversion.subscribers_txt')
+
+def subscribersTearDown(test):
+    zope.testing.module.tearDown(test)
+    placelesssetup.tearDown(test)
+
 def copierSetUp(test):
     zope.testing.module.setUp(test, 'zc.copyversion.copier_txt')
     testing.setUp(test)
@@ -35,6 +43,10 @@ def test_suite():
         doctest.DocFileSuite(
             'README.txt',
             setUp=setUp, tearDown=tearDown),
+        doctest.DocFileSuite(
+            'subscribers.txt',
+            setUp=subscribersSetUp, tearDown=subscribersTearDown,
+            optionflags=doctest.INTERPRET_FOOTNOTES),
         doctest.DocFileSuite(
             'copier.txt',
             setUp=copierSetUp,
