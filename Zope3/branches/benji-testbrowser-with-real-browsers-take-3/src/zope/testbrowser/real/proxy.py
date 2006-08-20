@@ -57,23 +57,25 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         return True
 
     def sendFile(self, path):
-        assert path.startswith('/')
+        # XXX need to make sure this is secure
         path = path[1:]
-        assert path.split('/')[1] in allowed_resources
         # XXX might use too much memory
         self.wfile.write(open(os.path.join(base_dir, path)).read())
 
     def handleRequest(self):
+#        print self.path
         (scheme, netloc, path, params, query, fragment) = urlparse.urlparse(
             self.path, 'http')
         assert netloc == ''
-#        print self.path
         if scheme != 'http':
             self.send_error(400, "unknown scheme %r" % scheme)
             return
         self.log_request()
 
         if self.command in ('GET', 'POST'):
+            if path.startswith('/selenium/'):
+                self.sendFile(path)
+                return
             if path.startswith('/__resources__/'):
                 self.sendFile(path)
                 return

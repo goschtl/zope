@@ -1,14 +1,55 @@
-<!doctype html public "-//w3c//dtd html 4.01 fRAMESET//en"
-   "HTTP://WWW.W3.ORG/tr/HTML4/FRAMESET.DTD">
 <html>
 <head>
   <title>zope.testbrowser Start Page</title>
+  <script type="text/javascript" src="/__resources__/commands.js"></script>
+<!--How many of these do I really need?-->
+  <script type="text/javascript" src="/selenium/scripts/narcissus-defs.js"></script>
+  <script type="text/javascript" src="/selenium/scripts/narcissus-parse.js"></script>
+  <script type="text/javascript" src="/selenium/scripts/narcissus-exec.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/scripts/prototype-1.4.0.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/lib/cssQuery.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/lib/cssQuery-standard.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/lib/cssQuery-level2.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/lib/cssQuery-level3.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/scripts/selenium-browserdetect.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/scripts/selenium-browserbot.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/scripts/find_matching_child.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/scripts/selenium-api.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/scripts/selenium-commandhandlers.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/scripts/selenium-executionloop.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/scripts/selenium-testrunner.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/scripts/selenium-logging.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/scripts/selenium-version.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/scripts/htmlutils.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/xpath/misc.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/xpath/dom.js"></script>
+  <script language="JavaScript" type="text/javascript" src="/selenium/xpath/xpath.js"></script>
+<!--  <script language="JavaScript" type="text/javascript" src="/selenium/scripts/user-extensions.js"></script>-->
+
+<!--Here are the testbrowser files.-->
   <script type="text/javascript" src="/__resources__/MochiKit/MochiKit.js"></script>
   <script type="text/javascript" src="/__resources__/shim.js"></script>
-  <script type="text/javascript" src="/__resources__/commands.js"></script>
+
+  <script language="JavaScript" type="text/javascript">
+function init() {
+  var _tb_app_frame = document.getElementById('aut_frame');
+  selenium = Selenium.createForFrame(_tb_app_frame);
+  selenium.page().locationStrategies['rememberedlink'] = locateElementByRememberdLink;
+}
+  </script>
 </head>
-<frameset rows="80%, 20%" border="1">
-    <frame src="about:blank" onload="_tb_onloadFunc();" />
-    <frame src="about:blank" name="log_frame" />
-</frameset>
+<body onload="init()">
+  <table border="0" style="width: 100%; height: 100%;">
+    <tr>
+      <td>
+        <h1>zope.testbrowser</h1>
+      </td>
+    </tr>
+    <tr>
+      <td height="90%">
+        <iframe name="aut_frame" id="aut_frame" src="" height="100%" width="100%"></iframe>
+      </td>
+    </tr>
+  </table>
+</body>
 </html>

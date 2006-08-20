@@ -1,17 +1,16 @@
+_tb_remembered_links = [];
+
 function log(msg) {
-    top.frames['log_frame'].document.write(msg + '<br />');
+//    top.frames['log_frame'].document.write(msg + '<br />');
 }
 
 function _tb_open(info) {
-    log('open '+info[0]);
-    _tb_remembered_links = [];
-    top.frames[0].location = info[0];
-    return '_tb_WAIT_FOR_PAGE_LOAD';
+    selenium.doOpen(info[0]);
+    selenium.doWaitForPageToLoad(10000);
 }
 
 function _tb_stop(info) {
     should_stop = true;
-    top.frames['log_frame'].document.close();
 }
 
 function _tb_getContents(info) {
@@ -24,7 +23,7 @@ function _tb_getContents(info) {
 }
 
 function _tb_getUrl(info) {
-    return top.frames[0].location.href;
+    return selenium.getLocation().href;
 }
 
 function _tb_reload(info) {
@@ -82,13 +81,13 @@ function _tb_setControlValue(info) {
     element.value = value; // XXX need to handle different ways of setting value
 }
 
+function locateElementByRememberdLink(locator, doc) {
+    var n = Number(locator);
+    return _tb_remembered_links[n];
+}
+
 function _tb_clickRememberedLink(info) {
-    log(info);
-    var n = info[0];
-    var element = _tb_remembered_links[n];
-    log(element);
-    _tb_click(element);
-    return '_tb_WAIT_FOR_PAGE_LOAD';
+    selenium.doClick('rememberedlink=' + info[0]);
 }
 
 //function _tb_doEvent(element, type) {
