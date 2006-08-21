@@ -25,8 +25,7 @@ import Products
 from App.Product import initializeProduct
 from App.ProductContext import ProductContext
 from zope.testing import cleanup
-
-_zope_app = None
+import Zope2
 
 def isMonkeyPatched(m):
     return hasattr(m, '__five_method__')  
@@ -35,26 +34,18 @@ def setupPythonProducts(appOrContext):
     """Initialize the python-packages-as-products logic
     """
     
-    from OFS.Application import Application
-    
-    global _zope_app
-    if isinstance(appOrContext, Application):
-        _zope_app = appOrContext
-    else:
-        _zope_app = appOrContext._ProductContext__app
-    
-    applyPatches(_zope_app)
+    applyPatches()
 
 
-def applyPatches(app):
+def applyPatches():
     """Apply necessary monkey patches to force Zope 2 to be capable of
     handling "products" that are not necessarily located under the Products
     package.  Ultimately all functionality provided by these patches should
     be folded into Zope 2 core.
     """
     
-    patch_ProductDispatcher__bobo_traverse__(app)
-    patch_externalmethod(app)
+    patch_ProductDispatcher__bobo_traverse__()
+    patch_externalmethod()
 
 def removePatches():
     """Remove all monkey patches.
@@ -77,11 +68,11 @@ cleanup.addCleanUp(removePatches)
 # Most of these monkey patches were repurposed from the code I 
 # wrote for Basket - Rocky
 
-def product_packages(app):
+def product_packages():
     """Returns all product packages including the regularly defined
     zope2 packages and those without the Products namespace package.
     """
-    
+
     old_product_packages = {}
     for x in dir(Products):
         m = getattr(Products, x)
@@ -89,23 +80,27 @@ def product_packages(app):
             old_product_packages[x] = m
     
     packages = {}
-    products = app.Control_Panel.Products
-    for product_id in products.objectIds():
-        product = products[product_id]
-        if hasattr(product, 'package_name'):
-            pos = product.package_name.rfind('.')
-            if pos > -1:
-                packages[product_id] = __import__(product.package_name, 
-                                                  globals(), {}, 
-                                                  product.package_name[pos+1:])
-            else:
-                packages[product_id] = __import__(product.package_name)
-        elif old_product_packages.has_key(product_id):
-            packages[product_id] = old_product_packages[product_id]
+    app = Zope2.app()
+    try:
+        products = app.Control_Panel.Products
+        for product_id in products.objectIds():
+            product = products[product_id]
+            if hasattr(product, 'package_name'):
+                pos = product.package_name.rfind('.')
+                if pos > -1:
+                    packages[product_id] = __import__(product.package_name, 
+                                                      globals(), {}, 
+                                                      product.package_name[pos+1:])
+                else:
+                    packages[product_id] = __import__(product.package_name)
+            elif old_product_packages.has_key(product_id):
+                packages[product_id] = old_product_packages[product_id]
+    finally:
+        app._p_jar.close()
     
     return packages
     
-def patch_ProductDispatcher__bobo_traverse__(app):
+def patch_ProductDispatcher__bobo_traverse__():
     """Currently, z2's App.FactoryDispatcher.ProductDispatcher only checks
     the Products module for products to look up existing factory dispatchers
     on.  This needs to be fixed to look in all enabled product packages
@@ -124,7 +119,7 @@ def patch_ProductDispatcher__bobo_traverse__(app):
         product=self.aq_acquire('_getProducts')()._product(name)
 
         # Try to get a custom dispatcher from a Python product
-        productPkgs = product_packages(app)
+        productPkgs = product_packages()
         dispatcher_class=getattr(
             productPkgs.get(name, None),
             '__FactoryDispatcher__',
@@ -137,7 +132,7 @@ def patch_ProductDispatcher__bobo_traverse__(app):
     ProductDispatcher.__bobo_traverse__ = __bobo_traverse__
     
 
-def patch_externalmethod(app):
+def patch_externalmethod():
     """In an effort to make External Methods work with regular python
     packages, this function replaces App.Extensions.getPath with a custom 
     getPath function.  See the getPath doc string for extra details.

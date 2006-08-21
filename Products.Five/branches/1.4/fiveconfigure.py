@@ -27,6 +27,7 @@ from App.Product import initializeProduct
 from App.ProductContext import ProductContext
 import Products
 from zLOG import LOG, ERROR
+import Zope2
 
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.interface.interface import InterfaceClass
@@ -266,17 +267,24 @@ def _registerPackage(module_, initFunc=None):
         raise ValueError("Must be a package and the " \
                          "package must be filesystem based")
     
-    product = initializeProduct(module_, 
-                                module_.__name__, 
-                                module_.__path__[0], 
-                                pythonproducts._zope_app)
+    app = Zope2.app()
+    try:
+        product = initializeProduct(module_, 
+                                    module_.__name__, 
+                                    module_.__path__[0],
+                                    app)
 
-    product.package_name = module_.__name__
+        product.package_name = module_.__name__
 
-    if initFunc is not None:
-        newContext = ProductContext(product, pythonproducts._zope_app, module_)
-        initFunc(newContext)
-
+        if initFunc is not None:
+            newContext = ProductContext(product, app, module_)
+            initFunc(newContext)
+    finally:
+        try:
+            import transaction
+            transaction.commit()
+        finally:
+            app._p_jar.close()
 
 def registerPackage(_context, package, initialize=None):
     """ZCML directive function for registering a python package product
