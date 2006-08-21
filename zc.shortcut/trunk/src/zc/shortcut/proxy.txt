@@ -1,15 +1,19 @@
-The zc.shortcut.proxy module includes some code useful outside of the shortcut
-package and some code specifically for shortcut usage.
+========================
+Shortcut-related proxies
+========================
+
+The `zc.shortcut.proxy` module includes some code useful outside of
+the shortcut package and some code specifically for shortcut usage.
 
 The generally useful code includes a decorator class that puts decorator
 interfaces before all of the interfaces of the wrapped object (the opposite of
-the behavior of zope.app.decorator.DecoratorSpecificationDescriptor).  It also
-includes a special implements function that should be used to declare that a
-proxy implements a given set of interfaces.  Using the
-zope.interface.implements function instead will cause
-interface.directlyProvides to fail on the proxied object (and will also have
-side effects possibly causing other proxies with the same base class to also
-be broken.
+the behavior of `zope.app.decorator.DecoratorSpecificationDescriptor`).  It
+also includes a special `implements()` function that should be used to declare
+that a proxy implements a given set of interfaces.  Using the
+`zope.interface.implements()` function instead will cause
+`interface.directlyProvides()` to fail on the proxied object (and will also
+have side effects possibly causing other proxies with the same base class to
+also be broken.
 
     >>> from zope import interface
     >>> from zc.shortcut import proxy
@@ -46,11 +50,10 @@ be broken.
 
 
 Target proxies
-==============
+--------------
 
-Target proxies are the primary shortcut-specific
-
-When a shortcut is asked for its target it actually returns a proxy::
+Target proxies are the primary shortcut-specific proxy type.
+When a shortcut is asked for its target it actually returns a proxy:
 
     >>> from zc.shortcut.shortcut import Shortcut
     >>> class MyTarget:
@@ -65,8 +68,8 @@ When a shortcut is asked for its target it actually returns a proxy::
     >>> proxy is target
     False
 
-The proxy acts as the target::
- 
+The proxy acts as the target:
+
     >>> proxy == target
     True
 
@@ -85,7 +88,7 @@ The proxy acts as the target::
     >>> proxy.attr
     'hi'
 
-The proxy also has attributes point to the shortcut and its parent and 
+The proxy also has attributes point to the shortcut and its parent and
 name:
 
     >>> proxy.__shortcut__ is sc
@@ -97,14 +100,14 @@ name:
 
 As discussed in adapters.txt, once a traversal passes through a shortcut, all
 contained objects receive their own target proxies even if they did not
-themselves come from a shortcut.  They have __traversed_parent__ and 
-__traversed_name__ attributes, pointing to the target proxy of the object
-traversed to find them and the name used, respectively, but no __shortcut__
-attribute: they effectively implement interfaces.ITraversalProxy and not
-interfaces.ITargetProxy.
+themselves come from a shortcut.  They have `__traversed_parent__` and
+`__traversed_name__` attributes, pointing to the target proxy of the object
+traversed to find them and the name used, respectively, but no `__shortcut__`
+attribute: they effectively implement `interfaces.ITraversalProxy` and not
+`interfaces.ITargetProxy`.
 
 Target proxies and the zope interface package are able to coexist with one
-another happily.  For instance, consider the case of directlyProvides.
+another happily.  For instance, consider the case of `directlyProvides()`:
 
     >>> list(interface.providedBy(target))
     []
