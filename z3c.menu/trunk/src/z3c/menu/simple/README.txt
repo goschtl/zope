@@ -200,7 +200,7 @@ Now see what we get if the tab viewlet manager get rendered:
   </span>
   </div>
 
-After showing who a tab menu item get used, we will register a menu action 
+After showing how a tab menu item get used, we will register a menu action 
 item.
 
   >>> from z3c.menu.simple.menu import ActionItem
