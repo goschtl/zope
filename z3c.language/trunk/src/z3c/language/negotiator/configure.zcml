@@ -1,0 +1,42 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.language">
+
+  <include package=".generations" />
+
+  <interface
+      interface=".IAvailableTranslationDomainLanguagesVocabulary"
+      />
+
+  <!-- local Negotiator -->
+  <localUtility class=".app.Negotiator">
+    <factory
+        id="z3c.language.negotiator.interfaces.INegotiator"
+        />
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="zope.Public"
+        interface="zope.i18n.interfaces.INegotiator"
+        />
+    <require
+        permission="zope.ManageSite"
+        interface=".interfaces.INegotiatorManager"
+        />
+    <require
+        permission="zope.ManageSite"
+        set_schema=".interfaces.INegotiatorManager"
+        />
+  </localUtility>
+
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component="
+          .vocabulary.AvailableTranslationDomainLanguagesVocabularyForZ3C"
+      name="available z3c languages"
+      />
+
+  <include package=".browser" />
+
+</configure>
