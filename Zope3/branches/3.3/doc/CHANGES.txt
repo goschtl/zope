@@ -21,6 +21,9 @@ Zope Changes
 
     Bugfixes
 
+      - Made zope.testbrowser report the selection state of ItemControls on
+        representations.
+
       - Fixed a bug on unregistering handlers. When multiple handlers for one
         specification where registered, all of them would be removed when only
         a single one was unregistered.
