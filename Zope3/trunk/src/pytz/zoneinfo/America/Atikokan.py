@@ -1,12 +1,12 @@
-'''tzinfo timezone information for America/Coral_Harbour.'''
+'''tzinfo timezone information for America/Atikokan.'''
 from pytz.tzinfo import DstTzInfo
 from pytz.tzinfo import memorized_datetime as d
 from pytz.tzinfo import memorized_ttinfo as i
 
-class Coral_Harbour(DstTzInfo):
-    '''America/Coral_Harbour timezone definition. See datetime.tzinfo for details'''
+class Atikokan(DstTzInfo):
+    '''America/Atikokan timezone definition. See datetime.tzinfo for details'''
 
-    zone = 'America/Coral_Harbour'
+    zone = 'America/Atikokan'
 
     _utc_transition_times = [
 d(1,1,1,0,0,0),
@@ -28,5 +28,5 @@ i(-18000,3600,'CPT'),
 i(-18000,0,'EST'),
         ]
 
-Coral_Harbour = Coral_Harbour()
+Atikokan = Atikokan()
 

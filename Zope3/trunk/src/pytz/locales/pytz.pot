@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: pytz 2006g\n"
-"POT-Creation-Date: 2006-05-09 08:33+UTC\n"
+"Project-Id-Version: pytz 2006j\n"
+"POT-Creation-Date: 2006-08-23 06:28+UTC\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
 
@@ -215,6 +215,9 @@ msgstr ""
 msgid "America/Asuncion"
 msgstr ""
 
+msgid "America/Atikokan"
+msgstr ""
+
 msgid "America/Atka"
 msgstr ""
 
@@ -228,6 +231,9 @@ msgid "America/Belem"
 msgstr ""
 
 msgid "America/Belize"
+msgstr ""
+
+msgid "America/Blanc-Sablon"
 msgstr ""
 
 msgid "America/Boa_Vista"
@@ -1193,10 +1199,19 @@ msgstr ""
 msgid "Europe/Gibraltar"
 msgstr ""
 
+msgid "Europe/Guernsey"
+msgstr ""
+
 msgid "Europe/Helsinki"
 msgstr ""
 
+msgid "Europe/Isle_of_Man"
+msgstr ""
+
 msgid "Europe/Istanbul"
+msgstr ""
+
+msgid "Europe/Jersey"
 msgstr ""
 
 msgid "Europe/Kaliningrad"
@@ -1296,6 +1311,9 @@ msgid "Europe/Vienna"
 msgstr ""
 
 msgid "Europe/Vilnius"
+msgstr ""
+
+msgid "Europe/Volgograd"
 msgstr ""
 
 msgid "Europe/Warsaw"
