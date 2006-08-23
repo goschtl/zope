@@ -13,11 +13,11 @@ this function uses pickling to perform the copy; however, instead of the
 hard-wired heuristic in locationCopy to determine what should be copied and
 what should remain static, this function uses adapters for pluggable behavior.
 
-Also, copy automatically sets __parent__ and __name__ of the object copy to 
-be None, if values exist for them.  If you do not want this behavior, a `clone`
-method does not include this logic.  For most use with classic Zope 3
-locations, however, you will want to use `copy`.  We'll look at a bit at both
-functions in this document.
+Also, copy automatically sets __parent__ and __name__ of the object copy
+to be None, if values exist for them.  If you do not want this behavior,
+a `clone` method does not include this logic.  For most use with classic
+Zope 3 locations, however, you will want to use `copy`.  We'll look a
+bit at both functions in this document.
 
 The clone function (and thus the copy function that wraps clone) uses
 pickle to copy the object and all its subobjects recursively.  As each
