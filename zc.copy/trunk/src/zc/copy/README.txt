@@ -1,9 +1,8 @@
 The copier module has two main components: a generic replacement for
-zope.location.pickling.locationCopy called zc.copyversion.copier.copy,
-and a replacement for zope.copypastemove.ObjectCopier that uses the new
-copy function. Additionally, the module contains an adapter for use with
-the new copy function that gives the same ILocation behavior as
-locationCopy.
+zope.location.pickling.locationCopy called zc.copy.copy, and a
+replacement for zope.copypastemove.ObjectCopier that uses the new copy
+function. Additionally, the module contains an adapter for use with the
+new copy function that gives the same ILocation behavior as locationCopy.
 
 These three components (the new copy, the new ObjectCopier, and the
 ILocation adapter) are appropriate for inclusion in Zope 3, should that be
@@ -23,14 +22,13 @@ functions in this document.
 The clone function (and thus the copy function that wraps clone) uses
 pickle to copy the object and all its subobjects recursively.  As each
 object and subobject is pickled, the function tries to adapt it to
-zc.copyversion.interfaces.ICopyHook. If a copy hook is found, the
-recursive copy is halted.  The hook is called with two values: the
-main, top-level object that is being copied; and a callable that
-supports registering functions to be called after the copy is made. 
-The copy hook should return the exact object or subobject that should
-be used at this point in the copy, or raise
-zc.copyversion.interfaces.ResumeCopy to resume copying the object or
-subobject recursively after all.
+zc.copy.interfaces.ICopyHook. If a copy hook is found, the recursive
+copy is halted.  The hook is called with two values: the main, top-level
+object that is being copied; and a callable that supports registering
+functions to be called after the copy is made. The copy hook should
+return the exact object or subobject that should be used at this point
+in the copy, or raise zc.copy.interfaces.ResumeCopy to resume copying
+the object or subobject recursively after all.
 
 We'll examine the callable a bit later: first let's examine a simple
 use.  A simple hook is to support the use case of resetting the state of
