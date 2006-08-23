@@ -17,8 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.interface.declarations import implements
-from zope.interface import classProvides
+import zope.interface
 
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleTerm
@@ -27,13 +26,12 @@ from zope.schema.vocabulary import SimpleVocabulary
 from z3c.language.switch import IAvailableLanguagesVocabulary
 
 
-
 class AvailableLanguagesVocabulary(SimpleVocabulary):
     """A vocabular of available languages from the context object."""
 
-    implements(IAvailableLanguagesVocabulary)
+    zope.interface.implements(IAvailableLanguagesVocabulary)
 
-    classProvides(IVocabularyFactory)
+    zope.interface.classProvides(IVocabularyFactory)
 
     def __init__(self, context):
         terms = []
@@ -42,7 +40,7 @@ class AvailableLanguagesVocabulary(SimpleVocabulary):
         # but just after creation of the object
         try:
             languages = context.getAvailableLanguages()
-        except:
+        except AttrbiteError:
             languages = []
 
         for lang in languages:

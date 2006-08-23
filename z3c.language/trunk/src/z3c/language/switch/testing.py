@@ -38,7 +38,6 @@ def sorted(list):
     return list
 
 
-
 ################################################################################
 #
 # Public Test implementations
@@ -49,10 +48,8 @@ class IContentObject(Interface):
     """IContentObject interface."""
 
 
-
 class II18nContentObject(Interface):
     """II18nContentObject interface."""
-
 
 
 class ContentObject(object):
@@ -76,7 +73,6 @@ class ContentObject(object):
         self._title = title
 
     title = property(getTitle, setTitle)
-
 
 
 class I18nContentObject(object):
@@ -174,7 +170,6 @@ class I18nContentObject(object):
         return language
 
 
-
 class I18nContentObjectLanguageSwitch(object):
     """Language switch for I18nContentObject."""
     
@@ -205,7 +200,6 @@ class I18nContentObjectLanguageSwitch(object):
         self.context.setTitle(title, self.getLanguage())
 
     title = property(getTitle, setTitle)
-
 
 
 ################################################################################
@@ -268,7 +262,6 @@ class BaseTestII18n(InterfaceBaseTest):
         self.failUnless(verifyClass(IReadI18n, class_))
         self.failUnless(verifyClass(IWriteI18n, class_))
         self.failUnless(verifyClass(II18n, class_))
-
 
 
 class BaseTestI18nLanguageSwitch(InterfaceBaseTest):

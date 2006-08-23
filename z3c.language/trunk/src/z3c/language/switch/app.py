@@ -17,33 +17,27 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from persistent import Persistent
-
-from zope.event import notify
+import persistent
+import zope.interface
+import zope.component
+import zope.event
+import zope.lifecycleevent
 from zope.i18n.interfaces import INegotiator
-from zope.interface import implements
-from zope.lifecycleevent import ObjectCreatedEvent
-from zope.lifecycleevent import ObjectModifiedEvent
+from zope.security.interfaces import NoInteraction
 from zope.security.management import getInteraction
 
-from zope.app import zapi
-
 from z3c.language.switch import II18n
-
 
 
 def getRequest():
     try:
         interaction = getInteraction()
         request = interaction.participations[0]
-    except:
+    except NoInteraction:
         request = None
 
-    return request
 
-
-
-class I18n(Persistent, object):
+class I18n(persistent.Persistent, object):
     """Mixin implementation of II18n.
     
     Set a factory class in our implementation. The _create method will initalize 
@@ -52,67 +46,68 @@ class I18n(Persistent, object):
 
     You can use this class as mixin for i18n implementations:
 
-        >>> from z3c.language.switch.app import I18n
-        >>> class Person(object):
-        ...     def __init__(self, firstname, lastname):
-        ...         self.firstname = firstname
-        ...         self.lastname = lastname
+    >>> from z3c.language.switch.app import I18n
+    >>> class Person(object):
+    ...     def __init__(self, firstname, lastname):
+    ...         self.firstname = firstname
+    ...         self.lastname = lastname
 
-        >>> class I18nPerson(I18n):
-        ...     _defaultLanguage = 'en'
-        ...     _factory = Person
+    >>> class I18nPerson(I18n):
+    ...     _defaultLanguage = 'en'
+    ...     _factory = Person
 
     Now you can initialize the default translation:
 
-        >>> i18n = I18nPerson(firstname='Bob', lastname='Miller')
-        >>> i18n.getDefaultLanguage()
-        'en'
-        >>> i18n.getPreferedLanguage()
-        'en'
+    >>> i18n = I18nPerson(firstname='Bob', lastname='Miller')
+    >>> i18n.getDefaultLanguage()
+    'en'
+    >>> i18n.getPreferedLanguage()
+    'en'
 
     You can access the attributes of the default translation:
 
-        >>> i18n.getAttribute('firstname')
-        'Bob'
-        >>> i18n.getAttribute('lastname')
-        'Miller'
-        
+    >>> i18n.getAttribute('firstname')
+    'Bob'
+    >>> i18n.getAttribute('lastname')
+    'Miller'
+    
     That is the same as accessing the attribute using a language parameter:
 
-        >>> i18n.getAttribute('firstname', 'en')
-        'Bob'
+    >>> i18n.getAttribute('firstname', 'en')
+    'Bob'
 
-    If an attribute is not available a AttributeError is raised. The queryAttribute
-    method offers a save way for unsecure access:
+    If an attribute is not available a AttributeError is raised. The 
+    queryAttribute method offers a save way for unsecure access:
 
-        >>> i18n.getAttribute('name')
-        Traceback (most recent call last):
-        ...
-        AttributeError: 'Person' object has no attribute 'name'
+    >>> i18n.getAttribute('name')
+    Traceback (most recent call last):
+    ...
+    AttributeError: 'Person' object has no attribute 'name'
 
-        >>> i18n.queryAttribute('name') is None
-        True
+    >>> i18n.queryAttribute('name') is None
+    True
 
     You can set the attributes an other time:
 
-        >>> i18n.setAttributes('en', firstname='Foo', lastname='Bar')
-        >>> i18n.getAttribute('firstname')
-        'Foo'
-        >>> i18n.getAttribute('lastname')
-        'Bar'
+    >>> i18n.setAttributes('en', firstname='Foo', lastname='Bar')
+    >>> i18n.getAttribute('firstname')
+    'Foo'
+    >>> i18n.getAttribute('lastname')
+    'Bar'
 
     You can initialize the default translation using a specific language:
 
-        >>> i18n = I18nPerson(defaultLanguage='fr', firstname='Robert', lastname='Moulin')
-        >>> i18n.getDefaultLanguage()
-        'fr'
-        >>> i18n.getPreferedLanguage()
-        'fr'
+    >>> i18n = I18nPerson(defaultLanguage='fr', firstname='Robert', 
+    ...                   lastname='Moulin')
+    >>> i18n.getDefaultLanguage()
+    'fr'
+    >>> i18n.getPreferedLanguage()
+    'fr'
 
     """
 
     _data = None
-    # sublclasses should overwrite this attrubute.
+    # sublclasses should overwrite this attributes.
     _defaultLanguage = None
     _factory = None
 
@@ -120,7 +115,7 @@ class I18n(Persistent, object):
     def _defaultArgs(self):
         return None
 
-    implements(II18n)
+    zope.interface.implements(II18n)
 
 
     def __init__(self, defaultLanguage=None, *args, **kws):
@@ -170,8 +165,9 @@ class I18n(Persistent, object):
         request = getRequest()
         negotiator = None
         try:
-            negotiator = zapi.getUtility(INegotiator, name='', context=self)
-        except:
+            negotiator = zope.component.queryUtility(INegotiator, 
+                name='', context=self)
+        except zope.component.ComponentLookupError:
             # can happens during tests without a site and sitemanager
             pass
         if request and negotiator:
@@ -198,7 +194,7 @@ class I18n(Persistent, object):
     def queryAttribute(self, name, language=None, default=None):
         try:
             return self.getAttribute(name, language)
-        except:
+        except AttributeError:
             return default
 
     # z3c.langauge.switch.IReadI18n
@@ -217,7 +213,7 @@ class I18n(Persistent, object):
                 args = self._defaultArgs()
 
         self._get_or_add(language, *args, **kw)
-        notify(ObjectModifiedEvent(self))
+        zope.event.notify(zope.lifecycleevent.ObjectModifiedEvent(self))
 
     def removeLanguage(self, language):
         """See `z3c.langauge.switch.interfaces.IWriteI18n`"""
@@ -230,7 +226,7 @@ class I18n(Persistent, object):
         else:
             del data[language]
             self._p_changed = True
-        notify(ObjectModifiedEvent(self))
+        zope.event.notify(zope.lifecycleevent.ObjectModifiedEvent(self))
 
     def setAttributes(self, language, **kws):
         # preconditions
@@ -249,14 +245,14 @@ class I18n(Persistent, object):
             setattr(obj, key, kws[key])
         else:
             self._p_changed = True           
-        notify(ObjectModifiedEvent(self))
+        zope.event.notify(zope.lifecycleevent.ObjectModifiedEvent(self))
 
     # private helper methods
     def _create(self, *args, **kw):
         """Create a new subobject of the type document."""
         factory = self._factory
         obj = factory(*args, **kw)
-        notify(ObjectCreatedEvent(obj))
+        zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
         return obj
 
     def _get(self, language):

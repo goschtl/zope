@@ -15,7 +15,6 @@
 """
 $Id$
 """
-
 __docformat__ = 'restructuredtext'
 
 from z3c.language.session.interfaces import *

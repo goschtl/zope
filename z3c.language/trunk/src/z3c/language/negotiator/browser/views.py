@@ -38,7 +38,7 @@ class NegotiatorView(BrowserView):
 
         try:
             offeredLanguages = negotiator.offeredLanguages
-        except:
+        except AttributeError:
             # we don't have a Negotiator instance
             # we got the global zope.i18n Negotiator
             offeredLanguages = []
@@ -53,7 +53,7 @@ class NegotiatorView(BrowserView):
         try:
             offeredLanguages = negotiator.offeredLanguages
             return True
-        except:
+        except AttributeError:
             # we don't have a Negotiator instance
             # we got the global zope.i18n Negotiator
             return False

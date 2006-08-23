@@ -17,29 +17,14 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from persistent import Persistent
-from zope.interface import implements
-
-from zope.component import ComponentLookupError
-
-from zope.i18n.interfaces import IUserPreferredLanguages
-from zope.i18n.negotiator import negotiator
-
-from zope.app.zapi import getUtility
-from zope.app.container.contained import Contained
+import zope.interface
 
 from zope.app.session.session import Session
-from zope.app.session.interfaces import ISession
-from zope.app.session.interfaces import IClientId
-from zope.app.session.interfaces import ISessionDataContainer
-from zope.app.session.session import SessionData
-from zope.app.session.session import SessionPkgData
 
 from z3c.language.session import ILanguageSession
 from z3c.language.session import IGetLanguage
 from z3c.language.session import ISetLanguage
 from z3c.language.session import sessionPkgDataId
-
 
 
 class LanguageSession(Session):
@@ -74,8 +59,7 @@ class LanguageSession(Session):
     >>> tests.tearDown()
 
     """
-
-    implements(ILanguageSession, IGetLanguage, ISetLanguage)
+    zope.interface.implements(ILanguageSession, IGetLanguage, ISetLanguage)
 
     def __init__(self, request):
         super(LanguageSession, self).__init__(request)

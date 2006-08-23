@@ -19,14 +19,12 @@ $Id$
 import unittest
 
 from zope.testing import doctest
-from zope.app.testing.functional import FunctionalDocFileSuite
-from zope.app.testing.functional import BrowserTestCase
-
+from zope.app.testing import functional
 
 
 def test_suite():
     return unittest.TestSuite((
-        FunctionalDocFileSuite(
+        functional.FunctionalDocFileSuite(
             "README.txt",
             optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE),
         ))

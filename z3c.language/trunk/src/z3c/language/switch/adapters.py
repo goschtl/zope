@@ -17,11 +17,10 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.interface import implements
+import zope.interface
 
 from z3c.language.switch import II18n
 from z3c.language.switch import II18nLanguageSwitch
-
 
 
 class I18nLanguageSwitch(object):
@@ -29,10 +28,9 @@ class I18nLanguageSwitch(object):
     
     Use the method _getI18n for set the i18n object.
     """
+    zope.interface.implements(II18nLanguageSwitch)
 
     _language = 'en'
-
-    implements(II18nLanguageSwitch)
 
     def __init__(self, context):
         self.context = context
@@ -57,13 +55,11 @@ class I18nLanguageSwitch(object):
         self._language = language
 
 
-
 class I18nAdapter(object):
     """Mixing class for i18n adapters which must provide the adapted object 
        under the attribute 'self.i18n'.
     """
-
-    implements(II18n)
+    zope.interface.implements(II18n)
 
     # z3c.langauge.switch.IReadI18n
     def getAvailableLanguages(self):

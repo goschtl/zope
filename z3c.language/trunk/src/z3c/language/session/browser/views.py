@@ -17,7 +17,8 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.interface import implements
+import zope.interface
+import zope.component
 
 from zope.publisher.browser import BrowserView
 
@@ -27,15 +28,12 @@ from z3c.language.session import ILanguageSession
 from z3c.language.session import ISetLanguage
 
 
-
-
 class LanguageSessionView(BrowserView):
 
-    implements(IHasLanguage, IGetLanguage, ISetLanguage)
+    zope.interface.implements(IHasLanguage, IGetLanguage, ISetLanguage)
 
     def hasLanguage(self):
         """View for to check if a session has a i18n language value."""
-        
         try:
             session = ILanguageSession(self.request)
             lang = session.getLanguage()
@@ -43,21 +41,18 @@ class LanguageSessionView(BrowserView):
                 return True
             else:
                 return False
-        except:
+        except zope.component.ComponentLookupError:
             return False
-
 
     def getLanguage(self):
         """View for to check if a session has a i18n language value."""
-
         _fallback = 'en'
         
         try:
             session = ILanguageSession(self.request)
             return session.getLanguage()
-        except:
+        except AttributeError:
             return _fallback
-
 
     def setLanguage(self):
         """Set the given language in the request to the session.
@@ -70,7 +65,6 @@ class LanguageSessionView(BrowserView):
         Or send the request to the view '@@setLanguage'. There has to be a 
         variable 'language' and 'nextURL' in the request like
         """
-
         nextURL = '.'
 
         if "language" in self.request:

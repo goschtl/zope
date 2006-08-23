@@ -17,14 +17,14 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from persistent import Persistent
-from zope.interface import implements
+import persistent
+import zope.interface
 
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.interfaces import INegotiator
 from zope.i18n.negotiator import negotiator
 
-from zope.app.container.contained import Contained
+from zope.app.container import contained
 
 from z3c.language.session.interfaces import ILanguageSession
 
@@ -33,7 +33,7 @@ from z3c.language.negotiator.interfaces import language_policies
 
 
 
-class Negotiator(Persistent, Contained):
+class Negotiator(persistent.Persistent, contained.Contained):
     """Loacal negotiator implementation.
 
     The negotiator let you change the policy, which is a alias
@@ -57,7 +57,7 @@ class Negotiator(Persistent, Contained):
 
     """
 
-    implements(INegotiator, INegotiatorManager)
+    zope.interface.implements(INegotiator, INegotiatorManager)
 
     def __init__(self):
         self._policy = 'session --> browser --> server'

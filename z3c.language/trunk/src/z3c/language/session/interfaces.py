@@ -17,8 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.interface import Interface
-
+import zope.interface
 from zope.schema.interfaces import IVocabularyTokenized
 
 from zope.app.session.interfaces import ISession
@@ -34,7 +33,7 @@ class ILanguageSession(ISession):
 
 
 
-class IHasLanguage(Interface):
+class IHasLanguage(zope.interface.Interface):
     """Has language API"""
 
     def hasLanguage():
@@ -42,7 +41,7 @@ class IHasLanguage(Interface):
 
 
 
-class IGetLanguage(Interface):
+class IGetLanguage(zope.interface.Interface):
     """Get language API"""
 
     def getLanguage():
@@ -50,7 +49,7 @@ class IGetLanguage(Interface):
 
 
 
-class ISetLanguage(Interface):
+class ISetLanguage(zope.interface.Interface):
     """Set language API"""
 
     def setLanguage():

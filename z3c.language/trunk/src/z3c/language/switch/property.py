@@ -20,7 +20,6 @@ __docformat__ = 'restructuredtext'
 _marker = object()
 
 
-
 class I18nFieldProperty(object):
     """Computed attributes based on schema fields and i18n implementation.
 
@@ -62,7 +61,6 @@ class I18nFieldProperty(object):
 
     def __getattr__(self, name):
         return getattr(self.__field, name)
-
 
 
 class I18nLanguageSwitchFieldProperty(object):
