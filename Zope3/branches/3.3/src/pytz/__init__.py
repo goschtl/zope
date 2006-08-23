@@ -9,7 +9,7 @@ on how to use these modules.
 '''
 
 # The Olson database has historically been updated about 4 times a year
-OLSON_VERSION = '2006g'
+OLSON_VERSION = '2006j'
 VERSION = OLSON_VERSION
 #VERSION = OLSON_VERSION + '.2'
 __version__ = OLSON_VERSION
@@ -195,8 +195,12 @@ def country_timezones(iso3166_code):
     """
     iso3166_code = iso3166_code.upper()
     if not _country_timezones_cache:
-        zone_tab_name = os.path.join(os.path.dirname(__file__), 'zone.tab')
-        for line in open(zone_tab_name):
+        try:
+            from pkg_resources import resource_stream
+            zone_tab = resource_stream(__name__, 'zone.tab')
+        except ImportError:
+            zone_tab = open(os.path.join(os.path.dirname(__file__), 'zone.tab'))
+        for line in zone_tab:
             if line.startswith('#'):
                 continue
             code, coordinates, zone = line.split(None, 4)[:3]
@@ -380,11 +384,13 @@ common_timezones = \
  'America/Araguaina',
  'America/Aruba',
  'America/Asuncion',
+ 'America/Atikokan',
  'America/Atka',
  'America/Bahia',
  'America/Barbados',
  'America/Belem',
  'America/Belize',
+ 'America/Blanc-Sablon',
  'America/Boa_Vista',
  'America/Bogota',
  'America/Boise',
@@ -653,8 +659,11 @@ common_timezones = \
  'Europe/Copenhagen',
  'Europe/Dublin',
  'Europe/Gibraltar',
+ 'Europe/Guernsey',
  'Europe/Helsinki',
+ 'Europe/Isle_of_Man',
  'Europe/Istanbul',
+ 'Europe/Jersey',
  'Europe/Kaliningrad',
  'Europe/Kiev',
  'Europe/Lisbon',
@@ -688,6 +697,7 @@ common_timezones = \
  'Europe/Vatican',
  'Europe/Vienna',
  'Europe/Vilnius',
+ 'Europe/Volgograd',
  'Europe/Warsaw',
  'Europe/Zagreb',
  'Europe/Zaporozhye',
@@ -833,11 +843,13 @@ all_timezones = \
  'America/Argentina/Ushuaia',
  'America/Aruba',
  'America/Asuncion',
+ 'America/Atikokan',
  'America/Atka',
  'America/Bahia',
  'America/Barbados',
  'America/Belem',
  'America/Belize',
+ 'America/Blanc-Sablon',
  'America/Boa_Vista',
  'America/Bogota',
  'America/Boise',
@@ -1159,8 +1171,11 @@ all_timezones = \
  'Europe/Copenhagen',
  'Europe/Dublin',
  'Europe/Gibraltar',
+ 'Europe/Guernsey',
  'Europe/Helsinki',
+ 'Europe/Isle_of_Man',
  'Europe/Istanbul',
+ 'Europe/Jersey',
  'Europe/Kaliningrad',
  'Europe/Kiev',
  'Europe/Lisbon',
@@ -1194,6 +1209,7 @@ all_timezones = \
  'Europe/Vatican',
  'Europe/Vienna',
  'Europe/Vilnius',
+ 'Europe/Volgograd',
  'Europe/Warsaw',
  'Europe/Zagreb',
  'Europe/Zaporozhye',
