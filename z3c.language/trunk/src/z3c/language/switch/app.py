@@ -35,6 +35,9 @@ def getRequest():
         request = interaction.participations[0]
     except NoInteraction:
         request = None
+    except IndexError:
+        request = None
+    return request
 
 
 class I18n(persistent.Persistent, object):
