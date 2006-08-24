@@ -11,11 +11,11 @@ from zope.app.container.interfaces import INameChooser
 import zope.app.intid
 import zope.app.intid.interfaces
 from zc.relationship import index
-from zc.copyversion import versioning
-import zc.copyversion.interfaces
+import zc.freeze
+import zc.freeze.interfaces
 import zope.app.keyreference.interfaces
 # import rwproperty
-from zc.copyversion import rwproperty
+from zc.freeze import rwproperty
 
 from zc.vault import interfaces, keyref
 
@@ -50,7 +50,7 @@ class approvalmethod(object):
         if self.reindex and manifest is not None:
             manifest.reindex(rel)
 
-class Mapping(persistent.Persistent, versioning.Versioning):
+class Mapping(persistent.Persistent, zc.freeze.Freezing):
 
     interface.implements(interfaces.IRelationshipContainment)
 
@@ -103,7 +103,7 @@ class Mapping(persistent.Persistent, versioning.Versioning):
             return default
         return self._reverse.get(value, default)
 
-    @versioning.method
+    @zc.freeze.method
     @approvalmethod(reindex=True)
     def __delitem__(self, key):
         self._delitem(key)
@@ -117,7 +117,7 @@ class Mapping(persistent.Persistent, versioning.Versioning):
         self._length.change(-1)
         event.notify(interfaces.ObjectRemoved(old, self, key))
 
-    @versioning.method
+    @zc.freeze.method
     @approvalmethod(reindex=True)
     def __setitem__(self, key, value):
         self._setitem(key, value)
@@ -158,7 +158,7 @@ class Mapping(persistent.Persistent, versioning.Versioning):
                 event.notify(interfaces.ObjectRemoved(old_value, self, key))
             event.notify(interfaces.ObjectAdded(value, self, key))
 
-    @versioning.method
+    @zc.freeze.method
     @approvalmethod(reindex=True)
     def update(self, data):
         if getattr(data, 'keys', None) is not None:
@@ -182,7 +182,7 @@ class Mapping(persistent.Persistent, versioning.Versioning):
         for k, v in data:
             self._setitem(k, v)
 
-    @versioning.method
+    @zc.freeze.method
     @approvalmethod(reindex=False)
     def updateOrder(self, order):
         order = tuple(order)
@@ -204,7 +204,7 @@ class Mapping(persistent.Persistent, versioning.Versioning):
     def __ne__(self, other):
         return not (self == other)
 
-class Relationship(keyref.Token, versioning.Versioning):
+class Relationship(keyref.Token, zc.freeze.Freezing):
     interface.implements(interfaces.IRelationship)
 
     _token = _copy_source = None
@@ -241,32 +241,32 @@ class Relationship(keyref.Token, versioning.Versioning):
     def copy_source(self): # None or tuple of (relationship, inventory)
         return self._copy_source
 
-    @versioning.method
-    def _z_version(self):
+    @zc.freeze.method
+    def _z_freeze(self):
         if self.token is None:
-            raise zc.copyversion.interfaces.VersioningError(
+            raise zc.freeze.interfaces.FreezingError(
                 'Cannot version without a token')
         vault = self.__parent__.vault
-        if not self.containment._z_versioned:
+        if not self.containment._z_frozen:
             prev = vault.getPrevious(self)
             if prev is not None:
                 if prev.containment == self.containment:
-                    assert prev.containment._z_versioned
+                    assert prev.containment._z_frozen
                     self._containment = prev.containment
-            if not self._containment._z_versioned:
-                self.containment._z_version()
+            if not self._containment._z_frozen:
+                self.containment._z_freeze()
         if self._object is not None:
-            obj_v = zc.copyversion.interfaces.IVersioning(self.object)
-            if not obj_v._z_versioned:
+            obj_v = zc.freeze.interfaces.IFreezing(self.object)
+            if not obj_v._z_frozen:
                 factory = interfaces.IVersionFactory(vault, None)
                 if factory is not None:
                     res = factory(self.object, self.__parent__)
                     if res is not self.object:
                         self.object = res
-                        obj_v = zc.copyversion.interfaces.IVersioning(res)
-                if not obj_v._z_versioned:
-                    obj_v._z_version()
-        super(Relationship, self)._z_version()
+                        obj_v = zc.freeze.interfaces.IFreezing(res)
+                if not obj_v._z_frozen:
+                    obj_v._z_freeze()
+        super(Relationship, self)._z_freeze()
 
     @property
     def token(self):
@@ -283,16 +283,16 @@ class Relationship(keyref.Token, versioning.Versioning):
     @property
     def object(self):
         return self._object
-    @versioning.setproperty
+    @zc.freeze.setproperty
     def object(self, value):
         if self.token is None and self.__parent__ is not None:
             raise ValueError('cannot change object without token')
         if self.token == self.__parent__.vault.top_token:
             raise ValueError('cannot set object of top token')
         if (value is not None and
-            not zc.copyversion.interfaces.IVersionable.providedBy(value)):
+            not zc.freeze.interfaces.IFreezable.providedBy(value)):
             raise ValueError(
-                'can only place versionable objects in vault, or None')
+                'can only place freezable objects in vault, or None')
         if self.__parent__ is not None:
             self.__parent__.checkRelationshipChange(self)
         if value is not self._object:
@@ -319,7 +319,7 @@ def localLoad(token, index, cache):
     # NOTE: a reference to this function is persisted!
     return index.__parent__.vault.intids.getObject(token)
 
-class Manifest(persistent.Persistent, versioning.Versioning,
+class Manifest(persistent.Persistent, zc.freeze.Freezing,
                zope.app.container.contained.Contained):
 
     interface.implements(interfaces.IManifest)
@@ -337,7 +337,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
                     "explicitly passed vault must have a base in base_source.")
         else: # vault but not base
             base = vault.manifest
-        if base is not None and not base._z_versioned:
+        if base is not None and not base._z_frozen:
             raise ValueError('base must be versioned')
         self.__parent__ = self._vault = vault
         self._index = index.Index(
@@ -398,7 +398,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
                 self._index.index_doc(rid, rel)
             self._bases[iid] = data
 
-    versioning.makeProperty('vault_index')
+    zc.freeze.makeProperty('vault_index')
 
     def getBaseSources(self):
         return tuple(data[1] for data in self._bases.values())
@@ -419,7 +419,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
     @property
     def vault(self):
         return self._vault
-    @versioning.setproperty
+    @zc.freeze.setproperty
     def vault(self, value):
         if self.updating:
             raise interfaces.UpdateError('Cannot change vault while updating')
@@ -456,14 +456,14 @@ class Manifest(persistent.Persistent, versioning.Versioning,
     def updating(self):
         return self._updateSource is not None
 
-    @versioning.method
-    def _z_version(self):
+    @zc.freeze.method
+    def _z_freeze(self):
         if self.updating:
-            raise zc.copyversion.interfaces.VersioningError(
+            raise zc.freeze.interfaces.FreezingError(
                 'cannot version during update')
         if (list(self.iterParentConflicts()) or
             list(self.iterOrphanConflicts())):
-            raise zc.copyversion.interfaces.VersioningError(
+            raise zc.freeze.interfaces.FreezingError(
                 'cannot version with conflicts')
         selections = set(self._iterLinked())
         b = base = self.base_source
@@ -478,8 +478,8 @@ class Manifest(persistent.Persistent, versioning.Versioning,
                 if (b is None or
                     b.object is not rel.object or
                     b.containment != rel.containment):
-                    if not rel._z_versioned:
-                        rel._z_version()
+                    if not rel._z_frozen:
+                        rel._z_freeze()
                 else:
                     selections.remove(r)
                     self._local.remove(r)
@@ -487,7 +487,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
                     self._index.unindex_doc(r)
         self._selections.clear()
         self._selections.update(selections)
-        super(Manifest, self)._z_version()
+        super(Manifest, self)._z_freeze()
 
     def _locateObject(self, relationship, force=False):
         if not force:
@@ -518,7 +518,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
         set.insert(iid)
         self._index.index_doc(iid, relationship)
 
-    @versioning.method
+    @zc.freeze.method
     def addLocal(self, relationship):
         if self.updating:
             raise interfaces.UpdateError(
@@ -532,7 +532,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
             self._index.tokenizeQuery({'token': relationship.token}))) == 1:
             self.select(relationship)
 
-    @versioning.method
+    @zc.freeze.method
     def addModified(self, relationship):
         if not self.updating:
             raise interfaces.UpdateError(
@@ -543,7 +543,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
             self._index.tokenizeQuery({'token': relationship.token}))) == 1:
             self.select(relationship)
 
-    @versioning.method
+    @zc.freeze.method
     def addSuggested(self, relationship):
         if not self.updating:
             raise interfaces.UpdateError(
@@ -554,7 +554,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
         self._add(relationship, self._suggested)
         event.notify(interfaces.SuggestedRelationshipAdded(relationship))
 
-    @versioning.method
+    @zc.freeze.method
     def beginUpdate(self, source=None, base=None):
         if self.updating:
             raise interfaces.UpdateError(
@@ -579,20 +579,20 @@ class Manifest(persistent.Persistent, versioning.Versioning,
                             o = source.getBaseSource(b.vault)
                             if o is not None:
                                 # we found one!
-                                if (o._z_version_timestamp >
-                                    b._z_version_timestamp):
+                                if (o._z_freeze_timestamp >
+                                    b._z_freeze_timestamp):
                                     b = o
                                 if base is None or (
-                                    b._z_version_timestamp >
-                                    base._z_version_timestamp):
+                                    b._z_freeze_timestamp >
+                                    base._z_freeze_timestamp):
                                     base = b
                         if base is None:
                             raise ValueError('no shared previous manifest')
                     else:
                         base = otherBase
                 elif (otherBase is None or
-                      otherBase._z_version_timestamp <=
-                      myBase._z_version_timestamp):
+                      otherBase._z_freeze_timestamp <=
+                      myBase._z_freeze_timestamp):
                     base = myBase
                 else:
                     base = otherBase
@@ -601,12 +601,12 @@ class Manifest(persistent.Persistent, versioning.Versioning,
 
         if base is source:
             raise ValueError('base is source')
-        elif base._z_version_timestamp > source._z_version_timestamp:
+        elif base._z_freeze_timestamp > source._z_freeze_timestamp:
             raise NotImplementedError(
                 "don't know how to merge to older source")
         if not interfaces.IManifest.providedBy(base):
             raise ValueError('base must be manifest')
-        if not source._z_versioned or not base._z_versioned:
+        if not source._z_frozen or not base._z_frozen:
             raise ValueError('manifests must be versioned')
         intids = self.vault.intids
         self._oldSelections.update(self._selections)
@@ -649,7 +649,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
                     resolver(self, l, s, b)
         event.notify(interfaces.UpdateBegun(self, source, base))
 
-    @versioning.method
+    @zc.freeze.method
     def beginCollectionUpdate(self, source):
         if self.updating:
             raise interfaces.UpdateError(
@@ -675,7 +675,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
         self._oldOrphanResolutions.update(self._orphanResolutions)
         tmp_source = set()
         for rel in source:
-            if not rel._z_versioned:
+            if not rel._z_frozen:
                 if rel.__parent__ is not None and rel.__parent__ is not self:
                     rel = Relationship(rel.token, relationship=rel)
                     rel.__parent__ = self
@@ -750,14 +750,14 @@ class Manifest(persistent.Persistent, versioning.Versioning,
             for b in source.getBaseSources():
                 iid = global_intids.register(b.vault)
                 o = bases.get(iid)
-                if o is None or o._z_version_timestamp < b._z_version_timestamp:
+                if o is None or o._z_freeze_timestamp < b._z_freeze_timestamp:
                     bases[iid] = b
             self._indexBases(bases.values(), source)
             existing = IFBTree.multiunion(
                 [data[0] for data in self._bases.values()])
             for i in selected:
                 orig = rel = intids.getObject(i)
-                if rel._z_versioned:
+                if rel._z_frozen:
                     create_local = False
                     source_rel = source.get(rel.token)
                     if source_rel is rel:
@@ -765,8 +765,8 @@ class Manifest(persistent.Persistent, versioning.Versioning,
                     elif source_rel is not None:
                         base_rel = base.get(rel.token)
                         if (base_rel is None or
-                            source_rel._z_version_timestamp >
-                            base_rel._z_version_timestamp):
+                            source_rel._z_freeze_timestamp >
+                            base_rel._z_freeze_timestamp):
                             create_local = True
                     if create_local:
                         rel = Relationship(
@@ -788,7 +788,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
             for i in selected:
                 if i not in existing:
                     rel = intids.getObject(i)
-                    if rel._z_versioned:
+                    if rel._z_frozen:
                         rel = Relationship(
                             rel.token, relationship=rel, source_manifest=self)
                         rel.__parent__ = self
@@ -850,7 +850,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
                     b.containment != rel.containment):
                     yield rel
 
-    @versioning.method
+    @zc.freeze.method
     def reindex(self, relationship):
         t = self.vault.intids.queryId(relationship)
         if t is not None and (t in self._local or t in self._suggested or
@@ -905,7 +905,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
         t = self.vault.intids.queryId(relationship)
         return t is not None and t in self._selections
 
-    @versioning.method
+    @zc.freeze.method
     def select(self, relationship):
         t = self.vault.intids.queryId(relationship)
         if t is None or self.getType(relationship) is None:
@@ -1031,7 +1031,7 @@ class Manifest(persistent.Persistent, versioning.Versioning,
         return (token in self._conflicts and
                 token not in self._resolutions)
 
-    @versioning.method
+    @zc.freeze.method
     def resolveUpdateConflict(self, token):
         if not self.updating:
             raise interfaces.UpdateError(
@@ -1069,11 +1069,11 @@ class Manifest(persistent.Persistent, versioning.Versioning,
                 self.getType(token) not in (interfaces.BASE, interfaces.MERGED)
                 and token not in self._orphanResolutions)
 
-    @versioning.method
+    @zc.freeze.method
     def resolveOrphanConflict(self, token):
         self._orphanResolutions.insert(token)
 
-    @versioning.method
+    @zc.freeze.method
     def undoOrphanConflictResolution(self, token):
         self._orphanResolutions.remove(token)
 
@@ -1257,8 +1257,8 @@ class Vault(persistent.Persistent, zope.app.container.contained.Contained):
         self._commit(manifest)
 
     def _commit(self, manifest):
-        if manifest._z_versioned:
-            raise zc.copyversion.interfaces.VersionedError(manifest)
+        if manifest._z_frozen:
+            raise zc.freeze.interfaces.FrozenError(manifest)
         if manifest.get(self.top_token) is None:
             raise ValueError(
                 'cannot commit a manifest without a top_token relationship')
@@ -1275,7 +1275,7 @@ class Vault(persistent.Persistent, zope.app.container.contained.Contained):
         ix = len(self)
         self._data[ix] = manifest
         manifest.vault_index = ix
-        manifest._z_version()
+        manifest._z_freeze()
         for r in manifest:
             if manifest.getLocal(r.token) is r:
                 p = self.getPrevious(r)
@@ -1294,7 +1294,7 @@ class Vault(persistent.Persistent, zope.app.container.contained.Contained):
             raise ValueError('source must be manifest')
         if source.vault.intids is not self.intids:
             raise ValueError('source must share intids')
-        if not source._z_versioned:
+        if not source._z_frozen:
             raise ValueError('source must already be versioned')
         res = Manifest(self.manifest)
         base_rels = dict((r.token, r) for r in res.base_source)

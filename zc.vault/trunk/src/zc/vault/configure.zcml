@@ -3,7 +3,7 @@
            i18n_domain="zc.task">
 
   <class class=".core.Mapping">
-    <require like_class="zc.copyversion.versioning.VersioningAdapter" />
+    <require like_class="zc.freeze.FreezingAdapter" />
     <require permission="zope.View"
         interface="zope.interface.common.mapping.IEnumerableMapping" />
     <require permission="zope.View"
@@ -24,7 +24,7 @@
   </class>
 
   <class class=".core.Relationship">
-    <require like_class="zc.copyversion.versioning.VersioningAdapter" />
+    <require like_class="zc.freeze.FreezingAdapter" />
     <require like_class=".keyref.Token" />
     <require permission="zope.View"
         attributes="token object containment children copy_source" />
@@ -40,7 +40,7 @@
   </class>
 
   <class class=".core.Manifest">
-    <require like_class="zc.copyversion.versioning.VersioningAdapter" />
+    <require like_class="zc.freeze.FreezingAdapter" />
     <require permission="zope.View"
         attributes="held vault_index getBaseSources getBaseSource base_source
                     vault merged_sources update_source update_base updating

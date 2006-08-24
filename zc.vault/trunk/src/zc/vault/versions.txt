@@ -68,8 +68,8 @@ examine the versions.
     >>> len(p.versions)
     1
     >>> p.versions[0].get('foo') # None
-    >>> import zc.copyversion.versioning
-    >>> class Demo(persistent.Persistent, zc.copyversion.versioning.Versioning):
+    >>> import zc.freeze
+    >>> class Demo(persistent.Persistent, zc.freeze.Freezing):
     ...     pass
     >>> o = p.active['foo'] = Demo()
     >>> p.commit()

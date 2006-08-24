@@ -5,8 +5,8 @@ import zope.app.container.contained
 import zope.lifecycleevent
 import zope.proxy
 # import rwproperty
-from zc.copyversion import rwproperty
-import zc.copyversion.interfaces
+from zc.freeze import rwproperty
+import zc.freeze.interfaces
 
 from zc.vault import interfaces, core
 
@@ -100,8 +100,8 @@ class InventoryContents(object):
 
     def makeMutable(self):
         # local is mutable normally; modified is mutable while updating
-        if self.inventory.manifest._z_versioned:
-            raise zc.copyversion.interfaces.VersionedError
+        if self.inventory.manifest._z_frozen:
+            raise zc.freeze.interfaces.FrozenError
         typ = self.type
         if not self.inventory.manifest.updating:
             if typ == interfaces.LOCAL:
@@ -509,7 +509,7 @@ class Inventory(persistent.Persistent, zope.app.container.contained.Contained):
                     manifest = inventory.manifest
         elif inventory is not None:
             raise ValueError('cannot pass both manifest and inventory')
-        if mutable and manifest._z_versioned:
+        if mutable and manifest._z_frozen:
             manifest = core.Manifest(manifest, vault)
             event.notify(
                 zope.lifecycleevent.ObjectCreatedEvent(manifest))

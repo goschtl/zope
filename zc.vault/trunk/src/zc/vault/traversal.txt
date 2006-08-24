@@ -41,10 +41,10 @@ with a proxy.
     >>> import persistent
     >>> import zope.annotation.interfaces
     >>> import zope.interface
-    >>> import zc.copyversion.versioning
+    >>> import zc.freeze
     >>> import zope.app.container.interfaces
     >>> class Demo(persistent.Persistent, zope.location.Location,
-    ...            zc.copyversion.versioning.Versioning):
+    ...            zc.freeze.Freezing):
     ...     zope.interface.implements(
     ...         zope.annotation.interfaces.IAttributeAnnotatable,
     ...         zope.app.container.interfaces.IContained)

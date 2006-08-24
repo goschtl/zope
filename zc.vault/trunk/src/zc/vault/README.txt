@@ -139,7 +139,7 @@ this includes any instance of a class that extends
 persistent.Persistent.
 
 All non-None objects must also be adaptable to
-zc.copyversion.interfaces.IVersionable.
+zc.freeze.interfaces.IFreezable.
 
 Here, we create an object, add it to the application, and try to add it to
 an inventory.
@@ -154,54 +154,54 @@ an inventory.
     >>> i.contents['mydemo'] = app['d1']
     Traceback (most recent call last):
     ...
-    ValueError: can only place versionable objects in vault, or None
+    ValueError: can only place freezable objects in vault, or None
 
-This error occurs because committing an inventory must version itself
-and version all of its contained objects, so that looking at an
+This error occurs because committing an inventory must freeze itself
+and freeze all of its contained objects, so that looking at an
 historical inventory displays the objects as they were at the time of
 commit.  Here's a simple demo adapter for the Demo objects.  We also
-declare that Demo is IVersionable, an important marker.
+declare that Demo is IFreezable, an important marker.
 
     >>> import pytz
     >>> import datetime
     >>> from zope import interface, component, event
-    >>> from zc.copyversion.interfaces import (
-    ...     IVersioning, ObjectVersionedEvent, IVersionable)
-    >>> from zc.copyversion.versioning import method
-    >>> class DemoVersioningAdapter(object):
-    ...     interface.implements(IVersioning)
+    >>> from zc.freeze.interfaces import (
+    ...     IFreezing, ObjectFrozenEvent, IFreezable)
+    >>> from zc.freeze import method
+    >>> class DemoFreezingAdapter(object):
+    ...     interface.implements(IFreezing)
     ...     component.adapts(Demo)
     ...     def __init__(self, context):
     ...         self.context = context
     ...     @property
-    ...     def _z_versioned(self):
-    ...         return (getattr(self.context, '_z__version_timestamp', None)
+    ...     def _z_frozen(self):
+    ...         return (getattr(self.context, '_z__freeze_timestamp', None)
     ...                 is not None)
     ...     @property
-    ...     def _z_version_timestamp(self):
-    ...         return getattr(self.context, '_z__version_timestamp', None)
+    ...     def _z_freeze_timestamp(self):
+    ...         return getattr(self.context, '_z__freeze_timestamp', None)
     ...     @method
-    ...     def _z_version(self):
-    ...         self.context._z__version_timestamp = datetime.datetime.now(
+    ...     def _z_freeze(self):
+    ...         self.context._z__freeze_timestamp = datetime.datetime.now(
     ...             pytz.utc)
-    ...         event.notify(ObjectVersionedEvent(self))
+    ...         event.notify(ObjectFrozenEvent(self))
     ...
-    >>> component.provideAdapter(DemoVersioningAdapter)
-    >>> interface.classImplements(Demo, IVersionable)
+    >>> component.provideAdapter(DemoFreezingAdapter)
+    >>> interface.classImplements(Demo, IFreezable)
 
 As an aside, it's worth noting that the manifest objects provide
-IVersioning natively, so they can already be queried for the versioning
-status and timestamp without adaptation.  When a manifest is versioned,
-all "contained" objects should be versioned as well.
+IFreezing natively, so they can already be queried for the freezing
+status and timestamp without adaptation.  When a manifest is frozen,
+all "contained" objects should be frozen as well.
 
-It's not versioned now--and neither is our demo instance.
+It's not frozen now--and neither is our demo instance.
 
-    >>> manifest._z_versioned
+    >>> manifest._z_frozen
     False
-    >>> IVersioning(app['d1'])._z_versioned
+    >>> IFreezing(app['d1'])._z_frozen
     False
 
-Now that Demo instances are versionable we can add the object to the inventory.
+Now that Demo instances are freezable we can add the object to the inventory.
 That means adding and removing objects.  Here we add one.
 
     >>> i.contents['mydemo'] = app['d1']
@@ -376,8 +376,8 @@ Reordering a container fires an event.
     >>> events[-1].old_keys
     ('abe', 'barbara', 'donald')
 
-In some circumstances it's easier set the new order from a set of tokens.  In
-that case the "updateOrderFromTokens" method is useful.
+In some circumstances it's easier to set the new order from a set of
+tokens.  In that case the "updateOrderFromTokens" method is useful.
 
     >>> def getToken(key):
     ...     return i.contents(k).token
@@ -601,7 +601,7 @@ will include the objects.
     ["<Demo u'c1'>", "<Demo u'd1'>"]
 
 Now when we commit, all objects will be versioned, and we will receive events
-for the versioning and the committing.  The events list represents recent
+for the freezing and the committing.  The events list represents recent
 events; when this document is run as a test, it is populated by listening for
 all events and attaching them to the list.
 
@@ -612,42 +612,42 @@ all events and attaching them to the list.
     True
     >>> manifest.__parent__ is v
     True
-    >>> IVersioning(app['a1'])._z_versioned
+    >>> IFreezing(app['a1'])._z_frozen
     True
-    >>> IVersioning(app['b1'])._z_versioned
+    >>> IFreezing(app['b1'])._z_frozen
     True
-    >>> IVersioning(app['c1'])._z_versioned
+    >>> IFreezing(app['c1'])._z_frozen
     True
-    >>> IVersioning(app['d1'])._z_versioned
+    >>> IFreezing(app['d1'])._z_frozen
     True
-    >>> manifest._z_versioned
+    >>> manifest._z_frozen
     True
     >>> v.manifest is manifest
     True
     >>> len(v)
     1
 
-After the versioning, the inventory enforces the versioning: no more changes
+After the committing, the inventory enforces the freeze: no more changes
 can be made.
 
     >>> i.contents['foo'] = Demo()
     Traceback (most recent call last):
     ...
-    VersionedError
+    FrozenError
     >>> i.contents.updateOrder(())
     Traceback (most recent call last):
     ...
-    VersionedError
+    FrozenError
     >>> i.contents('abe')('catherine')['foo'] = Demo()
     Traceback (most recent call last):
     ...
-    VersionedError
+    FrozenError
 
-    >>> v.manifest._z_versioned
+    >>> v.manifest._z_frozen
     True
 
-Enforcing the versioning of the inventory's objects is the responsibility of
-other configuration.
+Enforcing the freezing of the inventory's objects is the responsibility of
+other code or configuration, not the vault package.
 
 The manifest now has an __name__ which is the string of its index.  This is
 of very limited usefulness, but with the right traverser might still allow
@@ -681,7 +681,7 @@ the most recent manifest will be selected, and "mutable=True";
 
     >>> i = Inventory(vault=v, mutable=True)
     >>> manifest = i.manifest
-    >>> manifest._z_versioned
+    >>> manifest._z_frozen
     False
 
 by specifying an inventory, from which its manifest will be
@@ -689,20 +689,20 @@ extracted, and "mutable=True";
 
     >>> i = Inventory(inventory=v.inventory, mutable=True)
     >>> manifest = i.manifest
-    >>> manifest._z_versioned
+    >>> manifest._z_frozen
     False
 
 by specifying a versioned manifest and "mutable=True";
 
     >>> i = Inventory(v.manifest, mutable=True)
     >>> manifest = i.manifest
-    >>> manifest._z_versioned
+    >>> manifest._z_frozen
     False
 
 or by specifying a mutable manifest.
 
     >>> i = Inventory(Manifest(v.manifest))
-    >>> i.manifest._z_versioned
+    >>> i.manifest._z_frozen
     False
 
 These multiple spellings should be reexamined at a later date, and may have
@@ -716,7 +716,7 @@ manifest: therefore, changes to inventories that share a manifest will be
 shared among them.
 
     >>> i_extra = Inventory(i.manifest)
-    >>> manifest._z_versioned
+    >>> manifest._z_frozen
     False
 
 In any case, we now have an inventory that has the same contents as the
@@ -1074,14 +1074,14 @@ not include any changes.
     >>> i.contents('donald').local_item # None
     >>> i.contents('donald').type
     'base'
-    >>> IVersioning(app['e1'])._z_versioned
+    >>> IFreezing(app['e1'])._z_frozen
     False
 
 Our changes are a bit different than what we had when we began the commit,
 because of the version Factory.  The f1 is not versioned, because we have made
 a copy instead.
 
-    >>> IVersioning(app['f1'])._z_versioned
+    >>> IFreezing(app['f1'])._z_frozen
     False
     >>> new_changed = dict(
     ...     (getattr(item, 'name', None), item)
@@ -1096,9 +1096,9 @@ a copy instead.
     False
     >>> new_changed['fred'].object.source_name
     u'f1'
-    >>> IVersioning(new_changed['anna'].object)._z_versioned
+    >>> IFreezing(new_changed['anna'].object)._z_frozen
     True
-    >>> IVersioning(new_changed['fred'].object)._z_versioned
+    >>> IFreezing(new_changed['fred'].object)._z_frozen
     True
 
 Now that we have two versions in the vault, we can introduce two
@@ -1603,7 +1603,7 @@ are not versioned.
     UpdateError: cannot change local relationships while updating
     >>> long_running.contents('edna').relationship.object
     <Demo u'e1'>
-    >>> long_running.contents('edna').relationship._z_versioned
+    >>> long_running.contents('edna').relationship._z_frozen
     False
     >>> long_running.manifest.getType(long_running.contents.relationship)
     'local'

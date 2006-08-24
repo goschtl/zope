@@ -4,7 +4,7 @@ import zope.lifecycleevent.interfaces
 import zope.location
 import zc.objectlog.interfaces
 from zc import objectlog
-import zc.copyversion.interfaces
+import zc.freeze.interfaces
 from zc.vault.i18n import _
 from zc.vault import interfaces
 
@@ -94,7 +94,7 @@ def logCommit(ev):
         man.log(_('Committed'))
 
 @component.adapter(
-    interfaces.IRelationship, zc.copyversion.interfaces.IObjectVersionedEvent)
+    interfaces.IRelationship, zc.freeze.interfaces.IObjectFrozenEvent)
 def logVersioning(rel, ev):
     if zc.objectlog.interfaces.ILogging.providedBy(rel):
         rel.log(_('Versioned'))

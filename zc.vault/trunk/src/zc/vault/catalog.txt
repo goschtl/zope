@@ -40,8 +40,8 @@ Now we can actually create a vault and watch the references change.
     >>> i = Inventory(vault=v)
     >>> import persistent
     >>> from zope.app.container.contained import Contained
-    >>> from zc.copyversion.versioning import Versioning
-    >>> class Demo(persistent.Persistent, Contained, Versioning):
+    >>> from zc.freeze import Freezing
+    >>> class Demo(persistent.Persistent, Contained, Freezing):
     ...     def __repr__(self):
     ...         return "<%s %r>" % (self.__class__.__name__, self.__name__)
     ...

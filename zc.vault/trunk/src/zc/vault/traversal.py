@@ -7,8 +7,8 @@ import zope.copypastemove.interfaces
 import zope.app.container.interfaces
 import zope.app.container.constraints
 
-import zc.copyversion.copier
-import zc.copyversion.interfaces
+import zc.copy
+import zc.freeze.interfaces
 import zc.shortcut
 import zc.shortcut.proxy
 import zc.shortcut.interfaces
@@ -158,10 +158,10 @@ class ObjectMover(object):
         if node == target._z_inventory_node and new_name == node.name:
             return # noop
         manifest = node.inventory.manifest
-        if manifest._z_versioned:
-            raise zc.copyversion.interfaces.VersionedError(manifest)
-        if target._z_inventory_node.inventory.manifest._z_versioned:
-            raise zc.copyversion.interfaces.VersionedError(
+        if manifest._z_frozen:
+            raise zc.freeze.interfaces.FrozenError(manifest)
+        if target._z_inventory_node.inventory.manifest._z_frozen:
+            raise zc.freeze.interfaces.FrozenError(
                 target._z_inventory_node.inventory.manifest)
         checkObject(target, new_name, self.context)
         chooser = zope.app.container.interfaces.INameChooser(target)
@@ -171,14 +171,14 @@ class ObjectMover(object):
 
     def moveable(self):
         manifest = self.context._z_inventory_node.inventory.manifest
-        return not manifest._z_versioned
+        return not manifest._z_frozen
 
     def moveableTo(self, target, new_name=None):
         node = self.context._z_inventory_node
         manifest = node.inventory.manifest
-        if (not manifest._z_versioned and
+        if (not manifest._z_frozen and
             IInventoryItemAware.providedBy(target) and
-            not target._z_inventory_node.inventory.manifest._z_versioned):
+            not target._z_inventory_node.inventory.manifest._z_frozen):
             if new_name is None:
                 new_name = node.name
             try:
@@ -207,8 +207,8 @@ class ObjectCopier(object):
 
     def copyTo(self, target, new_name=None):
         if IInventoryItemAware.providedBy(target):
-            if target._z_inventory_node.inventory.manifest._z_versioned:
-                raise zc.copyversion.interfaces.VersionedError(
+            if target._z_inventory_node.inventory.manifest._z_frozen:
+                raise zc.freeze.interfaces.FrozenError(
                     target._z_inventory_node.inventory.manifest)
         else:
             if not isInventoryObject(self.context):
@@ -236,7 +236,7 @@ class ObjectCopier(object):
             else:
                 next = node(key)
                 original = next.object
-                next.object = zc.copyversion.copier.copy(original)
+                next.object = zc.copy.copy(original)
                 stack.append((next, iter(next)))
         return new_name
 
@@ -247,7 +247,7 @@ class ObjectCopier(object):
         if not self.copyable():
             return False
         if IInventoryItemAware.providedBy(target):
-            if target._z_inventory_node.inventory.manifest._z_versioned:
+            if target._z_inventory_node.inventory.manifest._z_frozen:
                 return False
             check = checkObject
         else:
@@ -275,8 +275,8 @@ class ObjectLinker(object):
 
     def linkTo(self, target, new_name=None):
         if IInventoryItemAware.providedBy(target):
-            if target._z_inventory_node.inventory.manifest._z_versioned:
-                raise zc.copyversion.interfaces.VersionedError(
+            if target._z_inventory_node.inventory.manifest._z_frozen:
+                raise zc.freeze.interfaces.FrozenError(
                     target._z_inventory_node.inventory.manifest)
         else:
             if not isInventoryObject(self.context):
@@ -299,7 +299,7 @@ class ObjectLinker(object):
 
     def linkableTo(self, target, new_name=None):
         if IInventoryItemAware.providedBy(target):
-            if target._z_inventory_node.inventory.manifest._z_versioned:
+            if target._z_inventory_node.inventory.manifest._z_frozen:
                 return False
             obj = self.context
             check = checkObject

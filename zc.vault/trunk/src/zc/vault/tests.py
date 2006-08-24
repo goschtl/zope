@@ -128,11 +128,11 @@ def catalogSetUp(test):
 
 def traversalSetUp(test):
     setUp(test)
-    import zc.copyversion.copier
-    component.provideAdapter(zc.copyversion.copier.location_copyfactory)
-    component.provideAdapter(zc.copyversion.copier.versiondata_copyfactory)
-    import zope.copypastemove
-    component.provideAdapter(zope.copypastemove.ObjectCopier)
+    import zc.copy
+    component.provideAdapter(zc.copy.location_copyfactory)
+    import zc.freeze.copier
+    component.provideAdapter(zc.freeze.copier.data_copyfactory)
+    component.provideAdapter(zc.copy.ObjectCopier)
     import zc.shortcut.adapters
     component.provideAdapter(zc.shortcut.adapters.ObjectLinkerAdapter)
 
