@@ -51,7 +51,7 @@ def normalizeDateTime(dt, request):
 def localizeDateTime(dt, request):
     if isinstance(dt, datetime.datetime) and \
         dt.tzinfo.utcoffset(None) == datetime.timedelta(0):
-        
+
         tzinfo = ITZInfo(request, None)
         if tzinfo is not None:
             dt = dt.astimezone(tzinfo)
@@ -116,7 +116,7 @@ class DatetimeWidget(DatetimeBase, textwidgets.DatetimeWidget):
 
     _format = '%Y-%m-%d %H:%M:%S'
     _showsTime = "true"
-        
+
     def _toFieldValue(self, input):
         res = super(DatetimeWidget, self)._toFieldValue(input)
         if res is not self.context.missing_value:
@@ -131,7 +131,7 @@ class DateWidget(DatetimeBase, textwidgets.DateWidget):
     _format = '%Y-%m-%d'
     _showsTime = "false"
 
-        
+
 class DatetimeDisplayBase(object):
 
     def __call__(self):

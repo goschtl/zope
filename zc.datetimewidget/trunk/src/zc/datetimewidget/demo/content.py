@@ -9,13 +9,13 @@ import pytz
 class DemoContent(Persistent,Contained):
 
     implements(IDemoContent)
-    
+
     startDate = FieldProperty(IDemoContent['startDate'])
     endDate = FieldProperty(IDemoContent['endDate'])
-    
+
     startDatetime = FieldProperty(IDemoContent['startDatetime'])
     endDatetime = FieldProperty(IDemoContent['endDatetime'])
-    
+
     def _now(self):
         dt = datetime.utcnow()
         dt = dt.replace(tzinfo=pytz.utc)

@@ -10,6 +10,3 @@ class IDemoContent(Interface):
 
     startDatetime = Datetime(title=u"Start Datetime")
     endDatetime = Datetime(title=u"End Datetime")
-
-
-
