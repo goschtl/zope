@@ -1,5 +1,5 @@
 The copier module provides an adapter that can be used with
-zc.copyversion.copier.copy (and thus the replacement ObjectCopier also in the
+zc.copy.copy (and thus the replacement ObjectCopier also in the
 same module) so that copies of objects with an object log get fresh logs.
 
 For instance, consider the following.  
@@ -38,10 +38,10 @@ The adapter addresses all of the problems.
 
     >>> import zope.component
     >>> import zc.objectlog.copier
-    >>> import zc.copyversion.copier
+    >>> import zc.copy
     >>> zope.component.provideAdapter(
     ...     zc.objectlog.copier.objectlog_copyfactory)
-    >>> emily_clone = zc.copyversion.copier.copy(emily)
+    >>> emily_clone = zc.copy.copy(emily)
     >>> len(emily_clone.log)
     0
     >>> emily_clone.log.__parent__ is emily_clone

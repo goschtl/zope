@@ -1,11 +1,11 @@
 
 import zope.component
 import zope.interface
-import zc.copyversion.interfaces
+import zc.copy.interfaces
 from zc.objectlog import interfaces, log
 
 @zope.component.adapter(interfaces.ILog)
-@zope.interface.implementer(zc.copyversion.interfaces.ICopyHook)
+@zope.interface.implementer(zc.copy.interfaces.ICopyHook)
 def objectlog_copyfactory(original):
     def factory(location, register):
         obj = log.Log(original.record_schema)
