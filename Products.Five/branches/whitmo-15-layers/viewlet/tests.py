@@ -87,8 +87,10 @@ def test_suite():
     return unittest.TestSuite((
         FunctionalDocFileSuite('README.txt'),
         FunctionalDocFileSuite('directives.txt',
-                     setUp=setUp, tearDown=tearDown
-                     ),
+                               setUp=setUp,
+                               tearDown=tearDown,
+                               package="Products.Five.viewlet"
+                               ),
         ))
 
 if __name__ == '__main__':
