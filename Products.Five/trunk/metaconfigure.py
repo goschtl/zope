@@ -15,6 +15,7 @@
 
 $Id$
 """
+import warnings
 from zope.configuration.exceptions import ConfigurationError
 from zope.app.component import contentdirective
 from Products.Five.security import protectName, initializeClass

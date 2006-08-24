@@ -2,6 +2,11 @@
 Five Changes
 ============
 
+Five 1.5.1 (unreleased)
+=====================
+
+* Fixed #2168: Missing import
+
 Five 1.5 (2006-08-13)
 =====================
 
