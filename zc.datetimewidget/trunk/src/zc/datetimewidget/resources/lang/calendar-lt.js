@@ -103,7 +103,7 @@ Calendar._TT["DRAG_TO_MOVE"] = "Tempkite";
 Calendar._TT["PART_TODAY"] = " (ðiandien)";
 Calendar._TT["MON_FIRST"] = "Pirma savaitës diena - pirmadienis";
 Calendar._TT["SUN_FIRST"] = "Pirma savaitës diena - sekmadienis";
-Calendar._TT["CLOSE"] = "Uþdaryti";
+Calendar._TT["CLOSE"] = "Uþverti";
 Calendar._TT["TODAY"] = "Ðiandien";
 Calendar._TT["TIME_PART"] = "Spustelkite arba tempkite jei norite pakeisti";
 
@@ -112,3 +112,5 @@ Calendar._TT["DEF_DATE_FORMAT"] = "%Y-%m-%d";
 Calendar._TT["TT_DATE_FORMAT"] = "%A, %Y-%m-%d";
 
 Calendar._TT["WK"] = "sav";
+Calendar._TT["WEEKEND"] = "1,7";
+Calendar._TT["TIME"] = "Laikas:";
