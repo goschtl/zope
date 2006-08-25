@@ -26,6 +26,10 @@ from permissions import AddCollectorIssue
 from permissions import EditCollectorIssue
 from permissions import AddCollectorIssueFollowup
 
+# register workflow factory
+import workflow
+del workflow
+
 this_module = sys.modules[ __name__ ]
 
 factory_type_information = (

@@ -42,7 +42,16 @@ def install(self):
     types_tool = getToolByName(self, 'portal_types')
     skins_tool = getToolByName(self, 'portal_skins')
     metadata_tool = getToolByName(self, 'portal_metadata')
+    workflow_tool = getToolByName(self, 'portal_workflow')
     catalog = getToolByName(self, 'portal_catalog')
+
+    # Setup the workflow if it doesn't already exist
+    if 'collector_issue_workflow' not in workflow_tool.objectIds():
+        print >> out, 'Adding workflow.'
+        workflow_tool.manage_addWorkflow(id='collector_issue_workflow',
+                                         workflow_type='collector_issue_workflow (Collector issue workflow)')
+        out.write('Registered collector_issue_workflow in workflow tool\n')
+    
 
     # Borrowed from CMFDefault.Portal.PortalGenerator.setupTypes()
     # We loop through anything defined in the factory type information
@@ -52,6 +61,14 @@ def install(self):
             cfm = apply(ContentFactoryMetadata, (), t)
             types_tool._setObject(t['id'], cfm)
             out.write('Registered %s with the types tool\n' % t['id'])
+
+            if t['id'] == 'Collector Issue':
+                # assign the collector issue workflow to the collector
+                # issue
+                workflow_tool.setChainForPortalTypes(['Collector Issue'],
+                                                     ['collector_issue_workflow'])
+                out.write('set collector_issue_workflow as the '
+                          'default workflow for "Collector Issue"\n')
         else:
             out.write('Skipping "%s" - already in types tool\n' % t['id'])
 

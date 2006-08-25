@@ -511,6 +511,11 @@ class CollectorCatalog(CatalogTool):
                   ('assigned_to', 'KeywordIndex'),
                   ('upload_number', 'KeywordIndex')
                   )
+        if len(standard[0]) == 3:
+            # compatibility with recent CMFCore.CatalogTool
+            # XXX we should probably invert this test and BBB the 2-tuple result
+            custom = tuple([index_tuple + (None,)
+                            for index_tuple in custom])
         return standard + custom
 
     def enumerateColumns( self ):
